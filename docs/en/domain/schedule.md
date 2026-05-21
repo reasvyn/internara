@@ -88,6 +88,36 @@ event from being saved — the event creator decides whether to proceed despite 
 Conflict information is displayed in all calendar views so that participants can identify and 
 manage their own scheduling issues.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to create events for my program so that students and mentors know what is happening |
+| Admin | As an admin, I want to create recurring events so that regular sessions are managed efficiently |
+| Admin | As an admin, I want to categorize events so that display and visibility are consistent |
+| Student | As a student, I want to view my program's calendar so that I can plan my schedule |
+| Mentor | As a mentor, I want to see my supervision sessions and mentees' events so that I can manage my time |
+| Admin | As an admin, I want event conflict detection so that scheduling problems are surfaced |
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreateScheduleAction` | Creates a new event (single or recurring) |
+| `UpdateScheduleAction` | Updates an existing event |
+| `DeleteScheduleAction` | Deletes or cancels an event |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Schedule` (event with title, times, location, category, recurrence) |
+| **Entity** | `ScheduleStatus` (ongoing/upcoming checks) |
+| **Livewire** | `ScheduleIndex` |
+| **Policy** | `SchedulePolicy` |
+
 ## Dependencies
 
 | Dependency | Reason |

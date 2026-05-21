@@ -7,6 +7,7 @@ namespace App\Domain\Registration\Models;
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Placement\Models\Placement;
+use App\Domain\Registration\Enums\AccountApplicationStatus;
 use App\Domain\School\Models\Department;
 use App\Domain\School\Models\School;
 use App\Domain\User\Models\User;
@@ -40,10 +41,14 @@ class AccountApplication extends BaseModel
 {
     use HasFactory;
 
-    protected $casts = [
-        'entry_year' => 'integer',
-        'processed_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'entry_year' => 'integer',
+            'processed_at' => 'datetime',
+            'status' => AccountApplicationStatus::class,
+        ];
+    }
 
     public function internship(): BelongsTo
     {

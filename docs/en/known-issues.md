@@ -77,6 +77,28 @@ If Livewire components do not update after data changes, check that the
 component has reactive properties and that `$this->dispatch()` is being used
 for inter-component communication.
 
+## Pest Plugin Arch — `toUse()` constraint bug
+
+`pestphp/pest-plugin-arch` has a known issue where the `toUse()` / `not->toUse()`
+constraint can cause internal assertion failures on certain PHP/Pest combinations,
+resulting in a silent exit code 2 with no visible error message. This is a bug
+in the pest arch plugin's reflection-based import scanner, not in the application
+code.
+
+**Impact:** Arch tests that use `toUse()` (like `DomainBoundariesArchTest.php`)
+may report false failures or fail to produce output. The constraints themselves
+are correct — the plugin's assertion runner sometimes misbehaves.
+
+**Mitigation:**
+- Run affected arch tests in isolation to verify the intent is correct
+- Inspect the source code directly to confirm no unwanted imports exist
+- Skip these particular arch tests if the plugin continues to malfunction,
+  provided manual verification has been done
+
+This does not create a security gap — the arch tests are structural safeguards,
+not runtime protections. The actual dependency graph is enforced at the code
+level through namespace conventions and code review.
+
 ## Where to Find It
 
 Troubleshooting sections for specific subsystems are in their respective

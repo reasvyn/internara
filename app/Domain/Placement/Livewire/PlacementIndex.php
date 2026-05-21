@@ -141,7 +141,7 @@ class PlacementIndex extends BaseRecordManager
     public function save(CreatePlacementAction $create, UpdatePlacementAction $update): void
     {
         $this->validate([
-            'formData.company_id' => ['required', 'exists:internship_companies,id'],
+            'formData.company_id' => ['required', 'exists:companies,id'],
             'formData.internship_id' => ['required', 'exists:internships,id'],
             'formData.name' => ['required', 'string', 'max:255'],
             'formData.address' => ['nullable', 'string'],

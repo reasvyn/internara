@@ -1,81 +1,274 @@
 # Installation
 
-## Step-by-Step Process Conceptually
+## Prerequisites
 
-Installing the application involves preparing the environment, configuring
-the database, running the setup wizard, and ensuring background processes are
-running. Each step prepares the next, and the setup wizard automates what
-would otherwise be a sequence of manual Artisan commands.
+| Requirement | Minimum | Recommendation |
+|---|---|---|
+| PHP | 8.4.0 | 8.4+ |
+| Composer | 2.5 | Latest |
+| Node.js | 20 | 22 LTS |
+| NPM | 10 | Latest |
+| Database | SQLite (dev) | MySQL 8 / PostgreSQL 14 (prod) |
+| Queue | `database` driver | Redis (production) |
 
-### 1. Environment Configuration
+## Quick Start
 
-The `.env` file contains all environment-specific configuration. A template
-(`.env.example`) is provided with sensible defaults for development. Copying
-and editing this file is the first step. The application key — a 32-character
-base64 string used for encryption — must be generated. Every environment
-(development, staging, production) needs a unique key.
+```bash
+# 1. Clone and install PHP dependencies
+git clone <repo-url> internara
+cd internara
+composer install
 
-### 2. Database Setup
+# 2. Environment configuration
+cp .env.example .env
+php artisan key:generate
 
-For development, the database is a file. Touching the file creates it. No
-server, no credentials, no configuration beyond the default. For production,
-a database server must be running, a database created with the correct
-character set, and credentials provided in `.env`.
+# 3. Database (SQLite for development)
+touch database/database.sqlite
+php artisan migrate --seed
 
-### 3. Default Drivers
+# 4. Frontend assets
+npm install
+npm run build
 
-The application defaults to zero-dependency database-backed drivers for
-cache, session, and queue. This means the application works immediately after
-migrations without Redis, Memcached, or any external service. For production,
-these drivers can be upgraded to Redis for better performance, but nothing
-breaks if they are not.
+# 5. Storage link
+php artisan storage:link
 
-### 4. Setup Wizard
+# 6. Start development server
+php artisan serve
+# In separate terminal:
+php artisan queue:work
+# In separate terminal:
+npm run dev
+```
 
-The setup wizard is a two-phase installation process. The command-line phase
-audits the environment, publishes vendor configurations, runs migrations, and
-seeds initial data (roles, permissions, settings, academic years). It then
-generates a one-time signed URL. The web-based phase is a 7-step wizard:
+Or use the all-in-one command:
+```bash
+composer run dev
+```
 
-1. School setup — name, address, optional logo
-2. Branding — color preset selection, tagline
-3. Academic year — year name and dates
-4. Departments — initial department creation
-5. Admin account — create the first super administrator
-6. Mail configuration — SMTP settings
-7. Completion — summary and redirect to login
+## Setup Wizard
 
-Each step validates before proceeding. The wizard can be rerun with a force
-flag if needed.
+After installation, visit the application URL. The setup wizard will guide you through:
+1. Database verification
+2. School configuration
+3. Department setup
+4. Super admin account creation
+5. Internship program configuration
 
-### 5. Admin Account
+## Production Deployment
 
-If the setup wizard is skipped, an interactive command creates a super
-administrator account. A recovery command exists for the scenario where all
-admin access is lost — it runs from the console and either resets a password
-or creates a new admin.
+### Required Background Processes
 
-### 6. Queue and Scheduler Requirements
+```bash
+# Queue worker (required for notifications, media, mail)
+php artisan queue:work --daemon
 
-The application depends on background job processing for notifications, media
-conversions, and scheduled maintenance. A queue worker must be running at all
-times in production. This is managed by Supervisor or systemd. The scheduler
-(powered by a single cron entry that runs every minute) triggers daily
-cleanup tasks, cache warming, and other periodic operations. Without these
-two processes, the application appears functional but certain features
-(notifications, certificate generation, log pruning) will not work.
+# Scheduler cron entry (runs every minute)
+* * * * * cd /path/to/app && php artisan schedule:run >> /dev/null 2>&1
 
-### 7. Production Hardening
+# Reverb WebSocket server (for real-time features)
+php artisan reverb:start
+```
 
-Before going live: disable debug mode, cache the configuration and routes,
-build frontend assets, create the storage symlink, install SSL, configure
-file permissions, and implement a backup strategy.
+### Production Database
 
-## Where to Find It
+SQLite is suitable for development only. For production, configure MySQL 8+ or
+PostgreSQL 14+ in `.env`:
 
-The `.env.example` file is at the project root. The setup wizard logic is in
-`app/Domain/Setup/` — the console command is at `Console/Commands/SetupInstall.php`
-and the Livewire wizard is at `Livewire/SetupWizard.php`. The admin commands
-are at `app/Domain/Auth/Console/Commands/`. The queue worker and scheduler
-configuration are described in the infrastructure guide (see
-`docs/en/infrastructure.md`).
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=internara
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### Supervisor Configuration
+
+Create `/etc/supervisor/conf.d/internara-worker.conf`:
+
+```ini
+[program:internara-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /path/to/app/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/path/to/app/storage/logs/worker.log
+stopwaitsecs=3600
+```
+
+```ini
+[program:internara-reverb]
+command=php /path/to/app/artisan reverb:start
+autostart=true
+autorestart=true
+user=www-data
+redirect_stderr=true
+stdout_logfile=/path/to/app/storage/logs/reverb.log
+```
+
+### Nginx Configuration
+
+```nginx
+server {
+    listen 80;
+    server_name internara.example.com;
+    root /path/to/app/public;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+```
+
+## Docker Deployment
+
+### Dockerfile
+
+```dockerfile
+FROM php:8.4-fpm
+
+# System dependencies
+RUN apt-get update && apt-get install -y \
+    git unzip curl libpng-dev libonig-dev libxml2-dev zip \
+    libpq-dev libzip-dev nodejs npm \
+    && docker-php-ext-install pdo_mysql pdo_pgsql bcmath gd zip intl
+
+# Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Application
+WORKDIR /app
+COPY . .
+
+# PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Frontend
+RUN npm install && npm run build
+
+# Permissions
+RUN chown -R www-data:www-data storage bootstrap/cache public/storage
+
+USER www-data
+
+EXPOSE 9000
+CMD ["php-fpm"]
+```
+
+### Docker Compose
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - "${APP_PORT:-9000}:9000"
+    environment:
+      - APP_ENV=production
+      - DB_CONNECTION=mysql
+      - DB_HOST=db
+      - DB_DATABASE=internara
+      - DB_USERNAME=internara
+      - DB_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - storage_data:/app/storage
+    depends_on:
+      - db
+      - redis
+
+  queue:
+    build: .
+    command: php artisan queue:work --sleep=3 --tries=3
+    environment:
+      - APP_ENV=production
+    volumes:
+      - storage_data:/app/storage
+    depends_on:
+      - db
+      - redis
+
+  reverb:
+    build: .
+    command: php artisan reverb:start
+    environment:
+      - APP_ENV=production
+    ports:
+      - "${REVERB_PORT:-8080}:8080"
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: mysql:8
+    environment:
+      - MYSQL_DATABASE=internara
+      - MYSQL_USER=internara
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+
+  scheduler:
+    build: .
+    command: php artisan schedule:work
+    depends_on:
+      - db
+
+  web:
+    image: nginx:alpine
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    volumes:
+      - ./.docker/nginx.conf:/etc/nginx/conf.d/default.conf
+      - storage_data:/app/storage
+    depends_on:
+      - app
+
+volumes:
+  mysql_data:
+  storage_data:
+```
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Blank page | Storage not writable | `chmod -R 775 storage bootstrap/cache` |
+| 404 on media URLs | Storage link missing | `php artisan storage:link` |
+| Vite manifest error | Assets not built | `npm run build` |
+| Jobs not processing | Queue worker not running | `php artisan queue:work` |
+| WebSocket not connecting | Reverb not running | `php artisan reverb:start` |
+| "Database is locked" | SQLite concurrent writes | Switch to MySQL/PG in production |

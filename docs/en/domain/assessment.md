@@ -75,6 +75,75 @@ configurable per program, not hardcoded. The final assessment score feeds into t
 domain's completion computation but does not independently determine completion — it is one 
 input among many (attendance, assignments, logbook consistency, guidance acknowledgements).
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to create rubrics with weighted criteria so that evaluations are structured and consistent |
+| Admin | As an admin, I want to define competencies and indicators so that evaluators have clear scoring guidance |
+| Teacher/Mentor | As a teacher, I want to assess a student against a rubric so that their competency level is recorded |
+| Teacher/Mentor | As a teacher, I want to score individual indicators so that evaluations are granular and traceable |
+| Teacher/Mentor | As a teacher, I want to finalize an assessment so that it becomes part of the student's permanent record |
+| Admin | As an admin, I want to schedule presentations so that students have formal evaluation events |
+| Panel | As a panel member, I want to score a presentation independently so that the evaluation is fair |
+| Admin | As an admin, I want to view assessment results so that I can track student progress |
+| System | As the system, I want to auto-calculate total scores from weighted criteria so that results are mathematically consistent |
+| System | As the system, I want to prevent edits to finalized assessments so that the audit trail is trustworthy |
+
+### Process Flow
+
+```
+Assessment Lifecycle:
+
+INITIATED ──→ IN_PROGRESS ──→ FINALIZED
+                                 (immutable)
+
+Presentation Lifecycle:
+
+SCHEDULED ──→ COMPLETED
+      │
+      ↓
+  CANCELLED
+```
+
+- **Assessment**: Starts as initiated (scoring not yet begun), moves to in-progress (evaluator scoring), then finalized (immutable record)
+- **Presentation**: Scheduled with date and panel, then completed after scoring, or cancelled if circumstances change
+- Once finalized, assessments are completely immutable — corrections require a new assessment round
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreateRubricAction` | Creates a new evaluation rubric |
+| `UpdateRubricAction` | Updates a rubric before it is used in any assessment |
+| `DeleteRubricAction` | Deletes an unused rubric |
+| `CreateCompetencyAction` | Adds a competency criterion to a rubric |
+| `UpdateCompetencyAction` | Updates a competency definition |
+| `DeleteCompetencyAction` | Removes a competency from a rubric |
+| `CreateIndicatorAction` | Creates a scoring indicator within a competency |
+| `UpdateIndicatorAction` | Updates an indicator definition |
+| `DeleteIndicatorAction` | Removes an indicator |
+| `InitializeAssessmentAction` | Starts a new assessment for a student against a rubric |
+| `ScoreIndicatorAction` | Records a score for a specific indicator |
+| `UpdateAssessmentScoresAction` | Updates scores during in-progress phase |
+| `FinalizeAssessmentAction` | Finalizes an assessment, making it immutable |
+| `AutoCalculateAssessmentAction` | Auto-calculates weighted total score from indicator scores |
+| `SchedulePresentationAction` | Schedules a presentation evaluation event |
+| `ScorePresentationAction` | Records a panel member's presentation score |
+| `CompletePresentationAction` | Finalizes a completed presentation |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Rubric`, `Competency`, `Indicator`, `Assessment`, `Presentation`, `PresentationExaminer` |
+| **Entity** | `AssessmentResult` (score calculation, finalization checks) |
+| **Enums** | `EvaluatorRole` — `ADMIN`, `TEACHER`, `SUPERVISOR`, `SYSTEM`; `PresentationStatus` — `SCHEDULED`, `COMPLETED`, `CANCELLED` |
+| **Livewire** | `RubricManager`, `AssessmentGrading`, `AssessmentView`, `PresentationSchedule` |
+| **Policy** | `AssessmentPolicy` |
+
 ## Dependencies
 
 | Dependency | Reason |

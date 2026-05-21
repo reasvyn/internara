@@ -85,6 +85,47 @@ requirements). This oversight capability ensures that automated workflows have
 an administrative escape hatch for situations that don't fit the standard
 process.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to create and manage user accounts across all roles so that the right people have system access |
+| Admin | As an admin, I want to lock or unlock user accounts so that I can respond to security concerns |
+| Super Admin | As a super admin, I want to assign or revoke roles so that access levels are properly managed |
+| Admin | As an admin, I want to publish announcements targeted by role so that I can communicate with specific user groups |
+| Admin | As an admin, I want to fulfil GDPR data export requests so that users can obtain their personal data |
+| Admin | As an admin, I want to process GDPR erasure requests so that user data is anonymized upon request |
+| Admin | As an admin, I want to browse the centralized audit log with filtering so that I can investigate actions across all domains |
+| Admin | As an admin, I want to review registrations across all programs so that I can handle edge cases and exceptions |
+| User | As a user, I want to view system announcements so that I stay informed about important updates |
+| User | As a user, I want to manage my notification preferences so that I receive relevant alerts |
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreateUserAction` | Creates a new user account in any role |
+| `UpdateUserAction` | Updates an existing user's details |
+| `DeleteUserAction` | Deletes a user account |
+| `ToggleUserStatusAction` | Toggles user account active/inactive status |
+| `ArchiveStudentAccountsAction` | Batch archives student accounts |
+| `SendAnnouncementAction` | Creates and sends a system-wide announcement |
+| `SendNotificationAction` | Sends a notification to a specific user |
+| `GetNotificationsAction` | Retrieves pending notifications for a user |
+| `MarkAsReadAction` | Marks a single notification as read |
+| `MarkAllAsReadAction` | Marks all notifications as read |
+| `DeleteNotificationAction` | Deletes a notification |
+| `GetAdminDashboardStatsAction` | Computes admin dashboard statistics |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Notification`, `GdprDeletionLog` |
+| **Livewire** | `UserManager`, `AdminManager`, `StudentManager`, `TeacherManager`, `SupervisorManager`, `MentorManager`, `MenteeManager`, `AnnouncementManager`, `AuditLogManager`, `ActivityFeedManager`, `NotificationCenter`, `NotificationBell`, `ApplicationReview`, `AccountCloneDetector`, `GdprDeletionLogs`, `AdminDashboard` |
+
 ## Dependencies
 
 | Dependency | Reason |

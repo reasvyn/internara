@@ -77,6 +77,57 @@ the entry preview (or an "add entry" button for empty days within the allowed ra
 is particularly useful for mentors during supervision sessions to quickly assess how the student 
 is tracking.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Student | As a student, I want to create daily log entries so that I document my internship activities and reflections |
+| Student | As a student, I want to save drafts before submitting so that I can refine my entries |
+| Student | As a student, I want to attach files to my log entries so that I can include supporting evidence |
+| Mentor | As a mentor, I want to view my mentees' submitted log entries so that I can monitor their progress |
+| Mentor | As a mentor, I want to acknowledge entries or return them for revision so that students get feedback |
+| Admin | As an admin, I want to view compliance reports so that I can identify students with submission gaps |
+| System | As the system, I want to notify mentors of submission gaps so that issues are addressed early |
+
+### Process Flow
+
+```
+Log Entry Lifecycle:
+
+DRAFT ──→ SUBMITTED ──→ MENTOR_ACKNOWLEDGED (immutable)
+               │
+               ↓
+       REVISION_REQUIRED ──→ DRAFT (resubmit cycle)
+```
+
+- **DRAFT**: Student composing — editable, visible only to the student
+- **SUBMITTED**: Marked as final — locked for student, visible to mentor
+- **MENTOR_ACKNOWLEDGED**: Mentor read and acknowledged — completely immutable
+- **REVISION_REQUIRED**: Mentor returned for more information — returns to DRAFT with mentor's comments
+- Each student can have at most one log entry per calendar day
+- Consecutive days without an entry beyond threshold triggers automatic notification escalation
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreateLogbookAction` | Creates a new logbook entry |
+| `UpdateLogbookAction` | Updates a draft logbook entry |
+| `SubmitLogbookAction` | Submits a log entry for mentor review |
+| `DeleteLogbookAction` | Deletes a draft logbook entry |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Logbook` (log entry with date, content, learning outcomes, attachments) |
+| **Entity** | `LogbookState` (editability, verification status checks) |
+| **Enums** | `LogbookStatus` — `DRAFT`, `SUBMITTED`, `VERIFIED`, `REVISION_REQUIRED` |
+| **Livewire** | `LogbookEntry`, `LogbookManager` |
+| **Policy** | `LogbookPolicy` |
+
 ## Dependencies
 
 | Dependency | Reason |

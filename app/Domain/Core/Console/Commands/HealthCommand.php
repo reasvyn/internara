@@ -19,20 +19,24 @@ class HealthCommand extends Command
 
     public function handle(): int
     {
-        $results = [
-            ['Environment', ...$this->checkEnvironment()],
-            ['PHP Version', ...$this->checkPhpVersion()],
-            ['PHP Extensions', ...$this->checkExtensions()],
-            ['PHP Memory', ...$this->checkMemory()],
-            ['Database', ...$this->checkDatabase()],
-            ['Storage', ...$this->checkStorage()],
-            ['Disk Space', ...$this->checkDiskSpace()],
-            ['Queue', ...$this->checkQueue()],
-            ['Cache', ...$this->checkCache()],
-            ['App Key', ...$this->checkAppKey()],
-            ['Storage Link', ...$this->checkStorageLink()],
-            ['Maintenance Mode', ...$this->checkMaintenanceMode()],
-        ];
+        $results = array_merge(
+            $this->environmentChecks(),
+            [
+                ['PHP Version', ...$this->checkPhpVersion()],
+                ['PHP Extensions', ...$this->checkExtensions()],
+                ['Recommended Extensions', ...$this->checkRecommendedExtensions()],
+                ['PHP Memory', ...$this->checkMemory()],
+                ['Database', ...$this->checkDatabase()],
+                ['Migration Status', ...$this->checkMigrations()],
+                ['Storage', ...$this->checkStorage()],
+                ['Disk Space', ...$this->checkDiskSpace()],
+                ['Queue', ...$this->checkQueue()],
+                ['Cache', ...$this->checkCache()],
+                ['App Key', ...$this->checkAppKey()],
+                ['Storage Link', ...$this->checkStorageLink()],
+                ['Maintenance Mode', ...$this->checkMaintenanceMode()],
+            ],
+        );
 
         if ($this->option('json')) {
             $this->line(json_encode($results, JSON_PRETTY_PRINT));
@@ -51,14 +55,20 @@ class HealthCommand extends Command
             return Command::FAILURE;
         }
 
-        if ($this->option('verbose')) {
-            $this->line('');
-            $this->line('PHP Extensions loaded: '.implode(', ', get_loaded_extensions()));
-        }
-
         $this->info("\nAll system health checks passed successfully.");
 
         return Command::SUCCESS;
+    }
+
+    private function environmentChecks(): array
+    {
+        $checks = [];
+
+        $checks[] = ['Environment', ...$this->checkEnvironment()];
+
+        $checks[] = ['Setup Status', ...$this->checkSetupStatus()];
+
+        return $checks;
     }
 
     protected function header(): void
@@ -78,9 +88,34 @@ class HealthCommand extends Command
         return [$exists ? 'OK' : 'FAIL', $exists ? '.env file detected' : '.env file is missing!'];
     }
 
+    protected function checkSetupStatus(): array
+    {
+        try {
+            $installed = DB::table('setups')
+                ->where('is_installed', true)
+                ->exists();
+
+            if ($installed) {
+                $setup = DB::table('setups')
+                    ->where('is_installed', true)
+                    ->first();
+
+                $completed = isset($setup->completed_steps)
+                    ? count(json_decode($setup->completed_steps, true) ?? [])
+                    : 0;
+
+                return ['OK', "System installed ({$completed} steps completed)"];
+            }
+
+            return ['WARN', 'System not installed — run setup:install then visit /setup'];
+        } catch (\Throwable) {
+            return ['WARN', 'Setup table not available — system not initialized'];
+        }
+    }
+
     protected function checkPhpVersion(): array
     {
-        $required = '8.4.0';
+        $required = config('setup.requirements.php_version', '8.4.0');
         $current = PHP_VERSION;
 
         if (version_compare($current, $required, '>=')) {
@@ -104,6 +139,21 @@ class HealthCommand extends Command
         }
 
         return ['FAIL', 'Missing: '.implode(', ', $missing)];
+    }
+
+    protected function checkRecommendedExtensions(): array
+    {
+        $recommended = config('setup.requirements.recommended_extensions', [
+            'redis', 'pcntl', 'posix',
+        ]);
+
+        $missing = array_filter($recommended, fn ($ext) => ! extension_loaded($ext));
+
+        if ($missing === []) {
+            return ['OK', 'All '.count($recommended).' recommended extensions loaded'];
+        }
+
+        return ['WARN', 'Missing: '.implode(', ', $missing)];
     }
 
     protected function checkMemory(): array
@@ -133,6 +183,34 @@ class HealthCommand extends Command
             return ['OK', "{$driver} — connected, ".count($tables).' tables'];
         } catch (\Throwable $e) {
             return ['FAIL', 'Connection failed: '.$e->getMessage()];
+        }
+    }
+
+    protected function checkMigrations(): array
+    {
+        try {
+            if (! Schema::hasTable('migrations')) {
+                return ['WARN', 'Migrations table not found — run migrations first'];
+            }
+
+            $migrationFiles = collect(File::files(database_path('migrations')))
+                ->map(fn ($f) => $f->getFilename())
+                ->filter(fn ($name) => str_ends_with($name, '.php'))
+                ->values();
+
+            $runMigrations = DB::table('migrations')->pluck('migration');
+
+            $pending = $migrationFiles->diff($runMigrations);
+
+            if ($pending->isEmpty()) {
+                return ['OK', 'All '.$migrationFiles->count().' migrations up to date'];
+            }
+
+            $count = $pending->count();
+
+            return ['WARN', "{$count} pending migration(s) — run php artisan migrate"];
+        } catch (\Throwable $e) {
+            return ['WARN', 'Could not check migration status: '.$e->getMessage()];
         }
     }
 

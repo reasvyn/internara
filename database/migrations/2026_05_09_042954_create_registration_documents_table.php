@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('registration_documents', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('registration_id')->constrained('internship_registrations')->cascadeOnDelete();
+            $table->foreignUuid('registration_id')->constrained('registrations')->cascadeOnDelete();
             $table->foreignUuid('internship_document_requirement_id')->constrained('internship_document_requirements')->cascadeOnDelete();
             $table->string('status')->default('pending')->index();
             $table->text('admin_notes')->nullable();

@@ -76,6 +76,74 @@ password for any user, logged as admin action), and recovery slip redemption (us
 recovery code, unlocks account, sets new password). All password operations record the actor, 
 target user, timestamp, method, and outcome in the audit log.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| User | As a user, I want to log in with my email and password so that I can access the system |
+| User | As a user, I want to reset my password via email so that I can regain access if I forget it |
+| User | As a user, I want to confirm my password before sensitive operations so that my account stays secure |
+| User | As a user, I want to recover my account via a recovery slip so that I can regain access if locked out |
+| Admin | As an admin, I want to lock/unlock user accounts so that I can respond to security concerns |
+| Admin | As an admin, I want to see account status history so that I can audit user lifecycle events |
+| Admin | As an admin, I want to generate recovery slips so that users who lose email access can recover their accounts |
+| Admin | As an admin, I want to manage roles and permissions so that users have appropriate access |
+| System | As the system, I want to enforce the account state machine so that invalid transitions are impossible |
+| System | As the system, I want to record all authentication attempts so that security incidents are traceable |
+
+### Process Flow
+
+```
+PROVISIONED ──→ ACTIVATED ──→ VERIFIED ──→ RESTRICTED ──→ VERIFIED
+                    │             │             │
+                    │             ├──→ SUSPENDED ──→ ACTIVATED
+                    │             │
+                    │             ├──→ INACTIVE ──→ ACTIVATED
+                    │             │
+                    │             └──→ ARCHIVED (terminal)
+                    │
+                    └──→ ARCHIVED (terminal)
+
+PROTECTED: Immutable state — applies to super_admin accounts only.
+           Cannot transition to any other state.
+```
+
+- **PROVISIONED**: Account created, awaiting activation — login blocked
+- **ACTIVATED**: Email verified, basic access granted
+- **VERIFIED**: Full identity confirmation, full access
+- **RESTRICTED**: Limited access, warning issued, login permitted but constrained
+- **SUSPENDED**: Login blocked, requires admin action, reason recorded
+- **INACTIVE**: Automatic after prolonged inactivity, login blocked, user can reactivate
+- **ARCHIVED**: Terminal — data preserved, login permanently blocked, no recovery
+- **PROTECTED**: Immutable guarantee that at least one super_admin always exists
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `LoginAction` | Authenticates user with email and password |
+| `ConfirmPasswordAction` | Confirms password for sensitive operations |
+| `SendPasswordResetLinkAction` | Sends a password reset email |
+| `ResetPasswordAction` | Resets password via email token |
+| `UpdateUserPasswordAction` | Self-service password change |
+| `ResetUserPasswordAction` | Admin-initiated password reset |
+| `GenerateRecoverySlipAction` | Generates a single-use recovery slip for locked-out users |
+| `RedeemRecoverySlipAction` | Redeems a recovery slip to unlock account and reset password |
+| `LockUserAccountAction` | Locks a user account with a reason |
+| `UnlockUserAccountAction` | Unlocks a previously locked account |
+| `DetectUserAccountCloneAction` | Detects potential duplicate accounts |
+| `UpdateRolePermissionsAction` | Updates role-permission assignments |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `User` (via Auth domain's concern) |
+| **Enums** | `AccountStatus` — 8 states with transition rules (see above); `Role` — 5 user roles (`SUPER_ADMIN`, `ADMIN`, `TEACHER`, `STUDENT`, `SUPERVISOR`) + 2 functional roles (`MENTOR`, `MENTEE`) |
+| **Livewire** | `Login`, `RegistrationCenter`, `ForgotPassword`, `ResetPassword`, `ConfirmPassword`, `AccountRecovery`, `RecoverySlipManager`, `AccountLifecycleManager` |
+
 ## Dependencies
 
 | Dependency | Reason |

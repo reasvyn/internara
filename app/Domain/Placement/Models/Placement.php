@@ -20,7 +20,7 @@ class Placement extends BaseModel
 {
     use HasFactory;
 
-    protected $table = 'internship_placements';
+    protected $table = 'placements';
 
     public function company(): BelongsTo
     {

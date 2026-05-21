@@ -16,7 +16,7 @@ class RequestPlacementChangeAction extends BaseAction
     public function execute(Registration $registration, array $data): PlacementChangeRequest
     {
         $validated = Validator::validate($data, [
-            'to_placement_id' => 'required|exists:internship_placements,id',
+            'to_placement_id' => 'required|exists:placements,id',
             'reason' => 'required|string|max:2000',
             'requested_by' => 'required|exists:users,id',
         ]);

@@ -46,6 +46,58 @@ default 30 days).
 placements/partnerships, and available placement slots (from Placement domain via
 `SUM(quota - filled_quota)`).
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to create company profiles so that I can track partner organizations |
+| Admin | As an admin, I want to create partnership agreements with start/end dates so that collaboration terms are formalized |
+| Admin | As an admin, I want to renew expired partnerships so that ongoing relationships continue smoothly |
+| Admin | As an admin, I want to terminate an active partnership when necessary so that the system reflects reality |
+| Admin | As an admin, I want to import/export companies and partnerships via CSV so that I can manage data in bulk |
+| Admin | As an admin, I want to view slot statistics per company so that I know how many placements are available |
+
+### Process Flow
+
+```
+Partnership Agreement Lifecycle:
+
+ACTIVE ──→ EXPIRED (renewable)
+    │
+    ↓
+TERMINATED (irreversible)
+```
+
+- **ACTIVE**: Agreement is operational
+- **EXPIRED**: Reached end date without renewal — renewable via `RenewPartnershipAction`
+- **TERMINATED**: Ended early via `TerminatePartnershipAction` — irreversible
+- Only expired or terminated partnerships can be deleted
+- A company cannot be deleted if it has associated placements or partnerships
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreateCompanyAction` | Creates a new company profile |
+| `UpdateCompanyAction` | Updates company details |
+| `DeleteCompanyAction` | Deletes a company (blocked if associated placements/partnerships exist) |
+| `CreatePartnershipAction` | Creates a new partnership agreement |
+| `UpdatePartnershipAction` | Updates partnership details |
+| `DeletePartnershipAction` | Deletes a non-active partnership |
+| `RenewPartnershipAction` | Renews an expired partnership |
+| `TerminatePartnershipAction` | Terminates an active partnership |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `InternshipCompany` (`companies`), `Partnership` |
+| **Entities** | `CompanyState` (deletion guard); `PartnershipState` (active/expired/terminated checks, expiry warnings) |
+| **Enums** | `PartnershipStatus` — `ACTIVE`, `EXPIRED`, `TERMINATED` |
+| **Livewire** | `CompanyManager`, `PartnershipManager` |
+
 ## Dependencies
 
 | Dependency | Reason |
@@ -64,4 +116,4 @@ terminated or expired first.
 - Partnership status transitions follow the state machine: ACTIVE → {EXPIRED, TERMINATED}.
 Terminal states (EXPIRED, TERMINATED) have no valid transitions.
 - Agreement numbers must be unique across all partnerships.
-- Companies are stored in the `internship_companies` table.
+- Companies are stored in the `companies` table.

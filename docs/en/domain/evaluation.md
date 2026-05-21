@@ -2,106 +2,114 @@
 
 ## Purpose
 
-Evaluation collects structured qualitative feedback from mentors about their assigned students at 
-defined intervals during the internship. It sits between the formal, rubric-based scoring of the 
-Assessment domain and the private, informal supervision notes of the Mentor domain. Evaluations 
-are periodic check-ins — the mentor fills out a structured form with questions about the 
-student's progress, professional behavior, technical skills, communication ability, and overall 
-performance. Unlike assessment rubrics (which produce numeric scores), evaluations capture the 
-mentor's holistic judgment in both quantitative ratings and qualitative written observations. 
-This is a deliberately simple domain: it provides a repeatable mechanism for capturing mentor 
-perspectives at the right moments.
+Evaluation collects structured feedback and satisfaction ratings from students about their
+internship experience. While Assessment measures student competency against rubrics, Evaluation
+measures the quality of the internship itself — the mentor, the program, the host company, the
+facilities, and overall satisfaction. This domain provides a multi-type evaluation framework that
+captures quantitative scores and qualitative feedback across configurable criteria, enabling
+program coordinators to measure and improve the quality of every aspect of the internship
+experience.
 
 ## Boundary
 
-**In scope:** Evaluation form definition (questions with rating scales, open text fields, section 
-grouping), evaluation form assignment to programs and evaluation cycles, evaluation instance 
-creation (matching a form to a specific mentor-student pair for a specific cycle), evaluation 
-submission by mentors (complete ratings and qualitative feedback), evaluation review by students 
-(read-only view of completed evaluations), evaluation cycle management (mid-term, final, custom 
-intervals with deadlines), evaluation completion tracking and reminder notifications, aggregate 
-evaluation summaries (average ratings per question across a cohort, rating trends over time).
+**In scope:** Multi-type evaluation submissions (mentor, program, company, facility, overall
+satisfaction), criteria-based scoring with configurable indicators per evaluation type, overall
+score computation and band classification, feedback collection with structured and open-ended
+input, evaluation listing and filtering by type, edit and delete of non-finalized evaluations,
+type-filtered browsing in both student and admin interfaces.
 
-**Out of scope:** Rubric-based competency scoring and criteria definition (Assessment domain owns 
-rubrics and competency assessments), daily task grading (Assignment domain), attendance tracking 
-and absence management (Attendance domain), logbook journaling (Logbook domain), certificate 
-eligibility decisions (Certificate domain), incident reporting (Incident domain), supervision 
-logs (Mentor domain owns mentor-private notes that are never shared with students).
+**Out of scope:** Rubric-based competency scoring and criteria definition (Assessment domain),
+daily task grading (Assignment domain), mentor-private supervision notes (Mentor domain),
+evaluation cycles and form templates (future enhancement — current implementation uses free-form
+criteria per type), incident reporting (Incident domain).
 
 ## Key Concepts
 
-**Evaluation Forms.** A form defines the complete structure of an evaluation session. Forms are 
-organized into sections, each covering a specific aspect of the student's performance: 
-Professionalism (punctuality, dress code, workplace behavior), Technical Skills (domain-specific 
-competency, tool proficiency, learning speed), Communication (written and verbal, reporting, team 
-interaction), Problem-Solving (analytical thinking, initiative, resourcefulness), and Overall 
-Assessment. Each section contains multiple questions using different response types: numeric 
-ratings (1-5 or 1-10 scale with labeled endpoints), Likert scales (Strongly Disagree to Strongly 
-Agree), Yes/No with required explanation, and open text fields for qualitative observations. 
-Forms are versioned — once an evaluation cycle starts, the form version is frozen for the 
-duration of that cycle.
+**Evaluation Types.** Each evaluation belongs to a category that determines what is being
+evaluated and what criteria apply. MENTOR: the student evaluates their mentor's performance
+(communication, responsiveness, guidance quality). PROGRAM: the student evaluates the internship
+program itself (curriculum relevance, administration, facility support). COMPANY: the student
+evaluates the host company (workplace safety, task relevance, mentoring quality). FACILITY: the
+student evaluates the physical or virtual facilities (equipment quality, workspace comfort,
+infrastructure). OVERALL: the student provides an overall satisfaction rating (overall
+satisfaction, recommendation score, experience rating). Each type has a pre-defined set of
+criteria with descriptive labels, all scored on a 0-100 scale.
 
-**Evaluation Cycles.** Evaluations are grouped into cycles that align with the internship 
-calendar. A typical internship has two standard cycles: mid-term (halfway evaluation) and final 
-(end-of-internship evaluation). Programs can define custom cycles for different assessment needs. 
-Each cycle specifies: the evaluation period (start date and end date for submission), the form to 
-be used, which mentor-student pairs are required to participate, and whether the evaluation is 
-mandatory or optional. When a cycle opens, evaluation instances are created for all eligible 
-mentor-student pairs. The system tracks completion rates — which instances are submitted, which 
-are pending, which are overdue — and sends automatic reminders to mentors with outstanding 
-evaluations.
+**Criteria Scores.** Each evaluation type has a set of named criteria scored on a 0-100 scale.
+Scores are stored as a JSON object keyed by criterion identifier. The criteria are defined in
+the EvaluationCategory enum and can be extended per type. The overall score is a separate,
+independent rating that may differ from the average of criteria scores — a student might be
+generally satisfied (high overall) while noting specific areas for improvement (lower individual
+criteria). This distinction allows both aggregate scoring and granular diagnostic data.
 
-**Evaluation Instances.** An evaluation instance is the realization of a form for a specific 
-mentor-student pair within a specific cycle. It captures the mentor's responses to every question 
-on the form at a specific point in time. Instances have a status: PENDING (created but not yet 
-started by the mentor), IN_PROGRESS (mentor has opened it and started filling responses, saves 
-are incremental), SUBMITTED (mentor has completed and submitted the evaluation — it is now 
-locked). Once SUBMITTED, the instance is immutable; the mentor cannot edit their responses, and 
-the form version is permanently tied to the instance. Submitted instances are immediately visible 
-to the student in read-only mode.
+**Score Bands.** The EvaluationResult entity classifies overall scores into bands for quick
+interpretation: EXCELLENT (85-100), GOOD (70-84), SATISFACTORY (55-69), NEEDS_IMPROVEMENT
+(40-54), and POOR (0-39). These bands are computed by the entity, not stored — they always
+reflect the current score.
 
-**Student Review.** Students can view their completed evaluations in the student dashboard. The 
-view shows the mentor's ratings for each question, any qualitative comments, and the date of 
-submission. The view is strictly read-only — students cannot respond, dispute, or annotate 
-evaluations through this domain. If a student wishes to discuss or challenge an evaluation, they 
-do so through normal mentor-student communication channels or, if the situation warrants formal 
-escalation, through the Incident domain. Evaluation data is part of the student's permanent 
-record for the internship.
+**Targeted vs. Open Evaluations.** Mentor evaluations require a specific mentor_id target.
+Program, company, and other evaluations use a polymorphic target system (target_type + target_id)
+allowing any entity to be evaluated without adding foreign key columns. The registration_id
+links evaluations to the student's internship context when applicable.
 
-**Aggregated Insights.** Beyond individual evaluations, the system compiles aggregate data across 
-a cohort. Program coordinators can view: average ratings per question across all students in a 
-program, distribution of ratings (how many students received each score level), rating trends 
-across multiple cycles (are scores improving over time), and comparative views (how this cohort 
-compares to previous cohorts). Aggregate data is anonymized — individual evaluator identities 
-and student identities are not exposed in summaries. Raw mentor identities are replaced with role 
-labels (e.g., "mentor", "supervisor") in aggregate reports.
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Student | As a student, I want to evaluate my mentor so that their performance is documented |
+| Student | As a student, I want to evaluate the internship program so that I can provide feedback on its quality |
+| Student | As a student, I want to evaluate the host company so that my workplace experience is recorded |
+| Student | As a student, I want to rate overall satisfaction so that program coordinators have a complete picture |
+| Student | As a student, I want to provide written feedback so that I can elaborate on my scores |
+| Admin | As an admin, I want to view evaluations filtered by type so that I can assess specific areas |
+| Admin | As an admin, I want to see aggregate scores and trends so that I can identify improvement areas |
+
+### Process Flow
+
+```
+Evaluation Lifecycle:
+
+CREATED ──→ UPDATED (editable until deleted)
+    │
+    ↓
+  DELETED
+```
+
+- Evaluations are mutable — they can be updated or deleted
+- Each evaluation belongs to exactly one type (mentor, program, company, facility, overall)
+- Future enhancement: add immutable / finalized state when cycles are introduced
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `EvaluateMentorAction` | Submits or updates a mentor-specific evaluation (backward compatible) |
+| `SubmitEvaluationAction` | Submits or updates any evaluation type (generic, type-aware) |
+| `DeleteEvaluationAction` | Removes an evaluation record |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Evaluation` (evaluator_id, evaluation_type, mentor_id, registration_id, target_type, target_id, overall_score, feedback, criteria_scores) |
+| **Entity** | `EvaluationResult` (score band classification, average criterion score, validity check) |
+| **Enums** | `EvaluationCategory` — `MENTOR`, `PROGRAM`, `COMPANY`, `FACILITY`, `OVERALL` (each with `label()` and `defaultCriteria()`) |
+| **Livewire** | `MentorEvaluationManager` (supports all types with dynamic criteria form, type filter) |
 
 ## Dependencies
 
 | Dependency | Reason |
 |---|---|
-| Mentor | Mentor-student assignments define which pairs are eligible for which evaluation 
-instances |
-| Registration | Student program enrollment determines which evaluation cycle applies and whether 
-the student is active |
-| Internship | Program definitions influence which evaluation forms to use, how many cycles 
-exist, and their timing |
-| Core | BaseAction, BaseModel, SmartLogger |
+| User | Evaluator and mentor identity for evaluation records |
+| Registration | Optional link to the student's internship registration for context |
+| Core | BaseAction, BaseModel, BaseEntity, SmartLogger |
 
 ## Important Rules
 
-- Evaluations are confidential between mentor and student until the evaluation cycle closes (all 
-evaluations submitted or the deadline passes). Before cycle close, only the mentor sees their 
-in-progress and submitted evaluations.
-- Once an evaluation cycle closes, all submitted evaluations become permanently immutable — no 
-edits, retractions, or deletions.
-- Each mentor-student pair can produce at most one evaluation instance per evaluation cycle — 
-no duplicate evaluations.
-- Students have read-only access to their own evaluations — no editing, no deletion, no 
-response mechanism through this domain.
-- Evaluation forms cannot be modified while referenced by an active (not yet closed) evaluation 
-cycle — modifications must wait until the cycle closes.
-- Late evaluations (not submitted by the cycle deadline) are flagged on the mentor's dashboard 
-but are not auto-submitted.
-- Aggregate reports must anonymize individual mentor identities — raw names are replaced with 
-role labels.
+- Each evaluation records who submitted it (evaluator_id) and what type it is (evaluation_type).
+- Mentor evaluations require a mentor_id; other types use the polymorphic target_type/target_id.
+- Scores must be between 0 and 100 inclusive — enforced at the validation layer.
+- Evaluations are not immutable by default; a finalized/closed state can be added later.
+- The criteria_scores JSON structure is flexible per type — no fixed schema beyond the 0-100 range.

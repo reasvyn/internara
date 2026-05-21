@@ -36,7 +36,7 @@ class IncidentForm extends Component
     public function save(ReportIncidentAction $action): void
     {
         $this->validate([
-            'formData.registration_id' => ['required', 'exists:internship_registrations,id'],
+            'formData.registration_id' => ['required', 'exists:registrations,id'],
             'formData.incident_date' => ['required', 'date'],
             'formData.type' => ['required', 'in:accident,safety_violation,harassment,disciplinary,other'],
             'formData.severity' => ['required', 'in:low,medium,high,critical'],

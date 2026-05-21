@@ -61,7 +61,8 @@ actions (school creation, department creation, super admin creation, optional in
 creation), generates a recovery key, dispatches SetupFinalized event, sends a system
 notification to the new admin, and cleans up session data.
 7. COMPLETE — success screen showing the admin's username and email, the recovery key (shown
-once, must be saved by the admin), and a button to proceed to login.
+once, must be saved by the admin), and a "Proceed to Login" button. Clicking the button
+boards the admin to the login page — the setup wizard is permanently locked after this step.
 
 **Setup Token.** A cryptographically random token that gates access to the setup wizard route.
 The token is generated via CLI (`php artisan setup:install`) or via the `GenerateSetupTokenAction`,
@@ -92,14 +93,78 @@ characters) is generated. The plaintext key is shown once on the complete screen
 with Hash::make() before storage. It serves as an emergency credential for the
 `RecoverSuperAdminAction` — allowing admin account recovery if all super admin access is lost.
 
-**CLI Commands.** Two Artisan commands are available:
+**CLI Commands.** Three Artisan commands manage the setup lifecycle:
 - `php artisan setup:install` — performs the full non-interactive installation: audits the
 environment, provisions the system (ensures .env, generates app key, runs migrations, runs
 seeders, creates storage symlink, clears caches), and generates a setup token. Outputs a
 signed URL with the token. The `--force` flag allows re-installation in non-production
-environments. Requires confirmation before proceeding.
+environments. The `--check-only` flag runs the environment audit only without provisioning
+or token generation — useful for pre-flight verification before committing to installation.
+Requires confirmation before proceeding (unless `--force` is set).
 - `php artisan setup:reset` — regenerates the setup token. Only works when the system is NOT
-yet installed (is_installed = false). Outputs the new signed URL and token.
+yet installed (is_installed = false). Outputs the new signed URL and token. If the system
+is already installed, prompts the user to run `php artisan system:health` instead.
+- `php artisan system:health` — comprehensive runtime health check that also serves as a
+pre-install readiness report. Checks include: environment, PHP version, required extensions,
+recommended extensions, PHP memory, database connection, migration status (pending count),
+storage writability, disk space, queue, cache, app key, storage link, and maintenance mode.
+Also reports whether the system has been set up via the Setup wizard.
+
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Installer | As an installer, I want to run a guided setup wizard so that I can configure the application for first use |
+| Installer | As an installer, I want an environment audit so that I can verify my server meets requirements |
+| Developer | As a developer, I want to run a pre-flight audit without provisioning so that I can check readiness before committing to installation |
+| Developer | As a developer, I want a single health check command so that I can see system status, setup phase, and pending migrations at a glance |
+| Installer | As an installer, I want to create the school, first department, and admin account in one flow so that the system is ready to use |
+| Installer | As an installer, I want to receive a recovery key at completion so that I can restore admin access if needed |
+| Admin | As an admin, I want to run setup via CLI for automated deployments so that installation is repeatable |
+| System | As the system, I want to permanently lock setup after completion so that no one can reinstall |
+
+### Process Flow
+
+```
+Setup Wizard Steps:
+
+1. WELCOME / ENVIRONMENT CHECK → 2. SCHOOL INFO → 3. DEPARTMENT
+→ 4. ADMIN ACCOUNT → 5. INTERNSHIP (optional) → 6. FINALIZE
+→ 7. COMPLETE (setup locked)
+```
+
+- Setup can only run once — the setup lock is permanent after completion
+- Environment checks MUST pass before any write operations
+- The initial admin account is created with super_admin role
+- Setup token is encrypted at rest, validated with hash_equals
+- Recovery key is shown exactly once and stored as bcrypt hash
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `GenerateSetupTokenAction` | Generates an encrypted, time-limited setup token |
+| `ValidateSetupTokenAction` | Validates a setup token for wizard access |
+| `SetupSchoolAction` | Creates the school record during setup |
+| `SetupDepartmentAction` | Creates the first department |
+| `SetupSuperAdminAction` | Creates the first super admin account |
+| `InitializeSuperAdminAction` | Initializes the super admin with proper roles |
+| `FinalizeSetupAction` | Completes setup, generates recovery key, locks installation |
+| `InstallSystemAction` | Non-interactive CLI installation |
+| `RecoverSuperAdminAction` | Emergency super admin account recovery |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Setup` (installation state, token, recovery key) |
+| **Entity** | `SetupState` (installation checks, token validation, step completion, finalization window) |
+| **Livewire** | `SetupWizard` (7-step guided installation) |
+| **Events** | `SetupFinalized` |
+| **Support** | `SystemProvisioner` (migrations, seeding, storage link) |
+| **Middleware** | `ProtectSetupRouteMiddleware`, `RequireSetupAccessMiddleware` |
 
 ## Dependencies
 
@@ -133,6 +198,11 @@ incomplete step (form data is saved to the session on every change).
 - The recovery key is shown exactly once (on the complete screen) and stored as a bcrypt hash.
 There is no way to retrieve it later.
 - The `setup:reset` command only works when `is_installed` is false — it cannot bypass the
-setup lock.
+setup lock. If the system is already installed, it prompts the user to run `system:health`.
+- The `setup:install --check-only` flag runs the full environment audit without any database
+writes or provisioning — safe to run at any time, even after installation.
+- `system:health` is the recommended first command for any developer joining the project —
+it provides a comprehensive overview of system readiness including setup phase and migration
+status.
 - The setup wizard route is protected by rate limiting (20 attempts per 60 seconds per IP)
 to prevent brute-force token guessing.

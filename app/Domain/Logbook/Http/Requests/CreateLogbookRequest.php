@@ -23,7 +23,7 @@ class CreateLogbookEntryRequest extends FormRequest
             'content' => ['required', 'string', 'max:10000'],
             'date' => ['required', 'date', 'before_or_equal:today'],
             'status' => ['sometimes', 'string'],
-            'registration_id' => ['required', 'uuid', 'exists:internship_registrations,id'],
+            'registration_id' => ['required', 'uuid', 'exists:registrations,id'],
         ];
     }
 

@@ -80,7 +80,7 @@ class RegistrationVerification extends Component
     public function confirmProcess(VerifyRegistrationAction $action): void
     {
         $this->validate([
-            'placement_id' => 'required|exists:internship_placements,id',
+            'placement_id' => 'required|exists:placements,id',
             'mentor_ids' => 'nullable|array',
             'mentor_ids.*' => 'exists:mentors,id',
         ]);

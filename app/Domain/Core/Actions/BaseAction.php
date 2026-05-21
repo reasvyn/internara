@@ -25,7 +25,8 @@ abstract class BaseAction
             ->module($this->moduleName())
             ->about($subject)
             ->withPayload($payload ?? [])
-            ->activityOnly()
+            ->withPiiMasking()
+            ->both()
             ->save();
     }
 

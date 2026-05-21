@@ -52,7 +52,7 @@ class DirectPlacementManager extends Component
     {
         $this->validate([
             'student_id' => 'required|exists:users,id',
-            'placement_id' => 'required|exists:internship_placements,id',
+            'placement_id' => 'required|exists:placements,id',
             'academic_year' => 'required',
             'mentor_ids' => 'nullable|array',
             'mentor_ids.*' => 'exists:mentors,id',

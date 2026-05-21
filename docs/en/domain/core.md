@@ -25,9 +25,11 @@ Core is the architectural foundation — every domain depends on it, it depends 
 | **Http/Requests** | `FormRequest` (extends Laravel's FormRequest — throws `ValidationFailedException` instead of redirect/JSON) |
 | **Http/Concerns** | `RespondsWithHttp` (trait — `respondSuccess()` 200, `respondCreated()` 201, `respondError()`, `respondNoContent()` 204, `respondValidationError()` 422) |
 | **Http/Middleware** | `SecurityHeaders` (configurable CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy from config), `LogContext` (injects `request_id`, method, URL, IP, `user_id`, `user_role`, `duration_ms` into log context) |
-| **Console/Commands** | `HealthCommand` (`system:health` — 12 checks: PHP version, extensions, memory, database, storage, disk, queue, cache, app key, storage link, maintenance mode), `CleanupCommand` (`system:cleanup` — prunes expired resets, stale cache tags, failed jobs, activity logs, old log files), `CacheWarmCommand` (`system:cache-warm` — pre-warms settings, brand, config, view, event caches) |
+| **Console/Commands** | `HealthCommand` (`system:health` — 14 checks: environment, setup status, PHP version, extensions, recommended extensions, memory, database, migrations pending, storage, disk, queue, cache, app key, storage link, maintenance mode), `CleanupCommand` (`system:cleanup` — prunes expired resets, stale cache tags, failed jobs, activity logs, old log files), `CacheWarmCommand` (`system:cache-warm` — pre-warms settings, brand, config, view, event caches) |
 | **Livewire** | `BaseRecordManager` (abstract CRUD base — search, filter, sort, pagination via `WithPagination`, record selection, bulk actions, mass actions) |
 | **Livewire/Concerns** | `WithSorting` (trait — safe column whitelist for `orderBy`), `WithRecordSelection` (trait — checkbox state for bulk operations) |
+| **Channels** | `CustomDatabaseChannel` (custom notification channel that dispatches in-app notifications via `SendsNotifications` contract, decoupled from any business domain) |
+| **Web Routes** | `routes/web/core.php` — `GET /` (home, handled by `Setup\HomeController`), `GET /dashboard` (auth-protected, handled by `User\DashboardController`) |
 
 ## Exception Hierarchy
 
@@ -59,6 +61,47 @@ Design rationale: `DomainException` is intentionally separate from `AppException
 - `BaseController`, `FormRequest`, `RespondsWithHttp` → foundation for HTTP layer.
 - `LabelEnum`, `StatusEnum`, `ColorableEnum` → contracts that all domain enums implement.
 - `AppException` hierarchy → all exceptions across every domain derive from this tree.
+
+## Requirements
+
+### Purpose (Developer-Facing)
+
+Core has no end-user stories — it provides the architectural foundation every domain builds on. The requirements below describe what the framework guarantees to all consuming domains.
+
+### Key Guarantees
+
+| Guarantee | Description |
+|-----------|-------------|
+| UUID primary keys | All models (except User) extend `BaseModel` with `HasUuids`, non-incrementing string keys |
+| Transaction safety | All business operations run inside `DB::transaction()` via `BaseAction` |
+| Dual-channel audit | Every action is logged to both system log and activity log via `SmartLogger` |
+| PII masking | Sensitive data (passwords, tokens, emails) is automatically masked in logs |
+| Entity purity | Business rules live in `final readonly` entities with zero framework dependencies |
+| State machine support | `BaseState` + `StatusEnum` contract for typed lifecycle management |
+| Consistent authorization | `BasePolicy` with `AuthorizesRoles` and `AuthorizesOwnership` traits |
+| Exception hierarchy | Every exception extends `AppException` or `DomainException` with structured context |
+| Console health | `system:health` runs 14 checks; `system:cleanup` prunes stale data; `system:cache-warm` pre-warms caches |
+| Security headers | CSP, X-Frame-Options, Referrer-Policy configured via `config/security-headers.php` |
+| Request tracing | Every request gets a `request_id` injected into log context |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `BaseModel` (abstract UUID model), `ActivityLog` (audit trail with scopes) |
+| **Entity** | `BaseEntity` (abstract `final readonly` with `fromModel()`) |
+| **Action** | `BaseAction` (abstract with `transaction()`, `log()`, `moduleName()`) |
+| **Policy** | `BasePolicy` (abstract with role/ownership authorization traits) |
+| **State** | `BaseState` (Spatie state machine wrapper with `label()`, `isTerminal()`, `toEnum()`) |
+| **Enums** | `AuditStatus` — `PASS`, `FAIL`, `WARN`; `AuditCategory` — `Requirements`, `Permissions`, `Database`, `Terminal`, `Recommendations` |
+| **Contracts** | `LabelEnum`, `StatusEnum`, `ColorableEnum`, `DomainEvent`, `Filterable`, `Searchable`, `Sortable` |
+| **Exceptions** | `AppException` → `ActionException`, `PresentationException`, `InfrastructureException`; `DomainException` → `RejectedException` |
+| **Support** | `SmartLogger` (fluent logger), `PiiMasker`, `HandlesActionErrors` (trait), `Integrity` |
+| **Livewire** | `BaseRecordManager` (CRUD base with search, filter, sort, pagination, bulk actions) |
+| **Middleware** | `SecurityHeaders`, `LogContext` |
+| **Channels** | `CustomDatabaseChannel` (notification dispatch via `SendsNotifications`) |
+| **Web Routes** | `routes/web/core.php` — `GET /`, `GET /dashboard` |
+| **Console** | `system:health`, `system:cleanup`, `system:cache-warm` |
 
 ## Dependencies
 

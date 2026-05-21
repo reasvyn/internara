@@ -46,7 +46,7 @@ class ReportWriter extends Component
     {
         $this->validate([
             'title' => 'required|string|max:255',
-            'registrationId' => 'required|exists:internship_registrations,id',
+            'registrationId' => 'required|exists:registrations,id',
         ]);
 
         if ($this->reportId) {

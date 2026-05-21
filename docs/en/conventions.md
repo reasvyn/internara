@@ -107,6 +107,51 @@ app/Domain/{Domain}/
 - State machine enums additionally implement `StatusEnum` (provides `canTransitionTo()`, `isTerminal()`, `validTransitions()`).
 - Business logic methods live directly on the enum, not in a separate class.
 
+### Enum Case Convention
+
+Enum **cases** use `UPPER_SNAKE` (uppercase with underscores):
+
+```php
+enum InternshipStatus: string implements StatusEnum
+{
+    case DRAFT = 'draft';
+    case PUBLISHED = 'published';
+    case ACTIVE = 'active';
+    case COMPLETED = 'completed';
+    case CANCELLED = 'cancelled';
+}
+```
+
+The `string` value (the database representation) stays lowercase. The case name
+(the PHP code representation) is `UPPER_SNAKE`. This makes enum cases visually
+distinct from other PHP identifiers (variables, methods, properties) and aligns
+with PHP's own built-in enums (`UPLOAD_ERR_OK`, `JSON_HEX_TAG`, etc.).
+
+```php
+// ✅ Correct — uppercase case, lowercase value
+case SUPER_ADMIN = 'super_admin';
+
+// ❌ Wrong — case should be uppercase
+case SuperAdmin = 'super_admin';
+```
+
+### Model $attributes Default
+
+When setting default values in Eloquent model `$attributes`, use the enum's
+`->value` property to stay in sync with the backing value:
+
+```php
+// ✅ Correct — references the enum
+protected $attributes = [
+    'status' => InternshipStatus::DRAFT->value,
+];
+
+// ❌ Wrong — hardcoded string drifts from enum
+protected $attributes = [
+    'status' => 'draft',
+];
+```
+
 ## 8. Policies
 
 - Extend `BasePolicy` (provides `AuthorizesRoles` and `AuthorizesOwnership` traits).

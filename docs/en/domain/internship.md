@@ -88,6 +88,72 @@ When it transitions to CLOSED, the system runs completion checks and enables cer
 issuance. This lifecycle ensures that operational domains never receive data out of temporal 
 context.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to create internship programs so that students have a framework to register and participate |
+| Admin | As an admin, I want to configure program requirements (attendance, assignments, briefings) so that completion criteria are defined |
+| Admin | As an admin, I want to schedule briefings so that students receive necessary orientation and information |
+| Admin | As an admin, I want to manage report requirements so that students know what deliverables are expected |
+| Admin | As an admin, I want to transition programs through their lifecycle so that the system operates within the correct temporal context |
+| Student | As a student, I want to view available internship programs so that I can make an informed choice |
+| Student | As a student, I want to access briefing materials and schedules so that I can prepare for sessions |
+| Student | As a student, I want to submit required reports so that I meet program completion criteria |
+| System | As the system, I want to gate operations by program state so that no domain receives data out of temporal context |
+
+### Process Flow
+
+```
+DRAFT ──→ PUBLISHED ──→ ACTIVE ──→ CLOSED ──→ ARCHIVED
+            │              │
+            ↓              ↓
+         CANCELLED      CANCELLED
+```
+
+- **DRAFT**: Being planned, visible only to admins
+- **PUBLISHED** (was OPEN): Accepting registrations from eligible students
+- **ACTIVE**: Internship period underway — registrations closed, operations active
+- **CLOSED**: Period ended, completion processing underway
+- **ARCHIVED**: Historical record, entirely read-only
+- **CANCELLED**: Terminated before completion
+
+Transitions: PUBLISHED requires at least one defined requirement. ACTIVE requires start date. CLOSED requires end date. ARCHIVED requires CLOSED first.
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreateInternshipAction` | Creates a new internship program |
+| `UpdateInternshipAction` | Updates an existing internship program |
+| `DeleteInternshipAction` | Deletes a draft internship program |
+| `BatchUpdateInternshipStatusAction` | Batch transitions programs to a new status |
+| `CheckCloseReadinessAction` | Checks if a program is ready to close |
+| `CreateBriefingAction` | Creates a briefing session for a program |
+| `RecordBriefingAttendanceAction` | Records student attendance at a briefing |
+| `OverrideBriefingAttendanceAction` | Admin override for briefing attendance |
+| `CreateReportAction` | Creates a report submission record |
+| `SubmitReportAction` | Submits a report for review |
+| `ApproveReportAction` | Approves a submitted report |
+| `RequestReportRevisionAction` | Requests revisions on a submitted report |
+| `AddSupervisorReportNotesAction` | Adds supervisor notes to a report |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Internship`, `Briefing`, `BriefingAttendance`, `Report`, `ReportRevision`, `InternshipDocumentRequirement` |
+| **Entities** | `InternshipPeriod` (registration window checks, academic year boundaries), `InternshipState` (deletion gating, status checks) |
+| **Enums** | `InternshipStatus` — `DRAFT`, `PUBLISHED`, `ACTIVE`, `COMPLETED`, `CANCELLED`; `ReportStatus` — `DRAFT`, `SUBMITTED`, `REVISION_REQUIRED`, `APPROVED`; `RequirementType` — `DOCUMENT`, `SKILL`, `TEXT` |
+| **States** | `Draft`, `Published`, `Active`, `Completed`, `Cancelled` |
+| **Livewire** | `InternshipManager`, `BriefingManager`, `ReportWriter`, `RequirementManager` |
+| **Policies** | `InternshipPolicy`, `InternshipRegistrationPolicy`, `CompanyPolicy` |
+| **Events** | `InternshipCreated` |
+| **Notifications** | `InternshipCreatedNotification`, `RegistrationNotification` |
+| **Rules** | `OpenForRegistration` (validation rule) |
+
 ## Dependencies
 
 | Dependency | Reason |

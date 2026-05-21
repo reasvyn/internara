@@ -16,7 +16,7 @@ use Spatie\ModelStatus\HasStatuses;
 #[Fillable(['mentee_id', 'internship_id', 'placement_id', 'academic_year', 'start_date', 'end_date', 'proposed_company_name', 'proposed_company_address', 'status'])]
 class Registration extends BaseModel
 {
-    protected $table = 'internship_registrations';
+    protected $table = 'registrations';
 
     use HasFactory, HasStatuses;
 

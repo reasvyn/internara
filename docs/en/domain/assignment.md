@@ -72,6 +72,70 @@ submissions. Individual deadline extensions (accommodations for specific student
 and logged with the reason and granting teacher. Mass deadline extensions (adjusting for the 
 entire class) are also supported with a single action.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Teacher | As a teacher, I want to create assignments with due dates so that students have clear tasks to complete |
+| Teacher | As a teacher, I want to publish assignments so that students can see and work on them |
+| Teacher | As a teacher, I want to grade submissions with scores and feedback so that students know their performance |
+| Teacher | As a teacher, I want to return submissions for revision so that students can improve their work |
+| Student | As a student, I want to view my pending and past assignments so that I can manage my workload |
+| Student | As a student, I want to submit my work, optionally saving drafts first, so that I can refine before finalizing |
+| Student | As a student, I want to receive grades and feedback so that I understand my strengths and areas for improvement |
+| Student | As a student, I want to resubmit after revision so that I can demonstrate improvement |
+| System | As the system, I want to enforce the submission state machine so that no invalid transitions occur |
+| System | As the system, I want to detect and flag late submissions so that teachers can make informed grading decisions |
+
+### Process Flow
+
+```
+Assignment Lifecycle:
+
+DRAFT ──→ PUBLISHED ──→ CLOSED
+
+Submission Lifecycle:
+
+DRAFT ──→ SUBMITTED ──→ VERIFIED ──→ GRADED (immutable)
+            │                │
+            ↓                ↓
+    REVISION_REQUIRED   REVISION_REQUIRED
+            │
+            ↓
+          DRAFT  (resubmit cycle)
+```
+
+- **Assignment**: DRAFT (teacher authoring), PUBLISHED (visible to students, accepting submissions), CLOSED (no further submissions)
+- **Submission**: DRAFT (student editing, not yet final), SUBMITTED (final, in grading queue), VERIFIED (checked for completeness), GRADED (score and feedback recorded, immutable)
+- **REVISION_REQUIRED**: Teacher returned for improvements — student starts a new DRAFT round
+- Once GRADED, submissions are immutable — corrections require an override record
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreateAssignmentAction` | Creates a new task assignment |
+| `UpdateAssignmentAction` | Updates an assignment before it receives submissions |
+| `DeleteAssignmentAction` | Deletes an unpublished assignment |
+| `PublishAssignmentAction` | Publishes an assignment, making it visible to students |
+| `SubmitAssignmentAction` | Submits a student's work as final |
+| `GradeSubmissionAction` | Grades a submission with score and feedback |
+| `VerifySubmissionAction` | Verifies a submission's completeness before grading |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Assignment`, `AssignmentType`, `Submission` |
+| **Entities** | `AssignmentRules` (mandatory flag, overdue checks); `SubmissionState` (editability, verification status) |
+| **Enums** | `AssignmentStatus` — `DRAFT`, `PUBLISHED`, `CLOSED`; `SubmissionStatus` — `DRAFT`, `SUBMITTED`, `VERIFIED`, `GRADED`, `REVISION_REQUIRED` |
+| **Livewire** | `AssignmentManager`, `Submission`, `SubmissionGrading` |
+| **Policies** | `AssignmentPolicy`, `SubmissionPolicy` |
+| **Notifications** | `AssignmentNotification`, `SubmissionFeedbackNotification` |
+| **Form Requests** | `CreateAssignmentRequest`, `SubmitAssignmentRequest` |
+
 ## Dependencies
 
 | Dependency | Reason |

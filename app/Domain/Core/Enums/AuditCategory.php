@@ -8,11 +8,11 @@ use App\Domain\Core\Contracts\LabelEnum;
 
 enum AuditCategory: string implements LabelEnum
 {
-    case Requirements = 'requirements';
-    case Permissions = 'permissions';
-    case Database = 'database';
-    case Terminal = 'terminal';
-    case Recommendations = 'recommendations';
+    case REQUIREMENTS = 'requirements';
+    case PERMISSIONS = 'permissions';
+    case DATABASE = 'database';
+    case TERMINAL = 'terminal';
+    case RECOMMENDATIONS = 'recommendations';
 
     public function label(): string
     {
@@ -22,8 +22,8 @@ enum AuditCategory: string implements LabelEnum
     public function isCritical(): bool
     {
         return match ($this) {
-            self::Requirements, self::Permissions, self::Database => true,
-            self::Terminal, self::Recommendations => false,
+            self::REQUIREMENTS, self::PERMISSIONS, self::DATABASE => true,
+            self::TERMINAL, self::RECOMMENDATIONS => false,
         };
     }
 }

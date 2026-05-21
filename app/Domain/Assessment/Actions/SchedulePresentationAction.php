@@ -14,7 +14,7 @@ class SchedulePresentationAction extends BaseAction
     public function execute(array $data): Presentation
     {
         $validated = Validator::validate($data, [
-            'registration_id' => 'required|exists:internship_registrations,id',
+            'registration_id' => 'required|exists:registrations,id',
             'scheduled_at' => 'required|date',
             'location' => 'nullable|string|max:255',
             'examiner_ids' => 'required|array|min:1|max:5',

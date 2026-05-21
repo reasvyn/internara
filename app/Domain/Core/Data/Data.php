@@ -38,9 +38,19 @@ abstract readonly class Data
             $name = $param->getName();
             $snakeKey = Str::snake($name);
 
-            $constructorParams[$name] = $data[$name]
-                ?? $data[$snakeKey]
-                ?? ($param->isDefaultValueAvailable() ? $param->getDefaultValue() : null);
+            if (array_key_exists($name, $data)) {
+                $constructorParams[$name] = $data[$name];
+            } elseif (array_key_exists($snakeKey, $data)) {
+                $constructorParams[$name] = $data[$snakeKey];
+            } elseif ($param->isDefaultValueAvailable()) {
+                $constructorParams[$name] = $param->getDefaultValue();
+            } else {
+                throw new \InvalidArgumentException(sprintf(
+                    'Missing required constructor parameter "%s" for %s',
+                    $name,
+                    static::class,
+                ));
+            }
         }
 
         return new static(...$constructorParams);

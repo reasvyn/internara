@@ -29,6 +29,32 @@ Shared has no Models, Livewire, Controllers, Routes, or Views. Pure support code
 
 **Model traits** provide reusable behavior: `HasOwner` for user-owned models (logbooks, submissions), `HasSlug` for models needing URL identifiers (handbooks, companies), `HasModelStatuses` for models with state machine lifecycles (registrations, internships).
 
+## Requirements
+
+### Purpose (Developer-Facing)
+
+Shared provides cross-domain utility code. It has no end-user stories — the consumers are developers across all business domains.
+
+### Utility Inventory
+
+| Utility | Type | Used By | Purpose |
+|---------|------|---------|---------|
+| `CsvHandler` | Final class | School, Partnership, Internship | CSV export, import, template download with optional header validation |
+| `Environment` | Final static | All domains | Centralized environment detection (`isDebugMode()`, `isDevelopment()`, `isProduction()`) |
+| `Locale` | Final class | All views | Bilingual locale management (Indonesian default, English), session-based preference |
+| `Theme` | Final static | Layout views | Color/theme resolution from settings into CSS custom properties for light/dark modes |
+| `LangChecker` | Class | Development | Extends Laravel Translator — logs warnings for missing translation keys |
+| `HasOwner` | Trait | Logbook, Submission | BelongsTo user relationship with `isOwnedBy()`, `scopeOwnedBy()` |
+| `HasSlug` | Trait | Handbook, Company | Auto-generates URL-friendly slug from model name on creation |
+| `HasModelStatuses` | Trait | Registration, Internship | Type-safe bridge between Spatie statuses and `StatusEnum` |
+
+### Rules
+
+- Shared MUST NOT import any business domain (exception: Theme imports Settings)
+- Shared MUST NOT have Models, Livewire, Controllers, Routes, Views, or migrations
+- Code belongs in Shared only when used by at least 2 different domains
+- Utilities must be stateless: static methods or immutable objects
+
 ## Dependencies
 
 | Dependency | Reason |

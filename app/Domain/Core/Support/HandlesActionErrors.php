@@ -34,7 +34,11 @@ trait HandlesActionErrors
             throw $e;
         } catch (\Throwable $e) {
             SmartLogger::error($context)
-                ->withPayload(['error' => $e->getMessage()])
+                ->withPayload([
+                    'error' => $e->getMessage(),
+                    'original_file' => $e->getFile(),
+                    'original_line' => $e->getLine(),
+                ])
                 ->systemOnly()
                 ->save();
 

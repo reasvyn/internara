@@ -39,6 +39,54 @@ start/end dates, and an `is_active` flag. At most one academic year can be activ
 activation eligibility, and deletability (cannot delete active years or years with related
 internships/assessments).
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to set up the school profile so that the institution's identity is configured |
+| Admin | As an admin, I want to manage departments so that the organizational structure is maintained |
+| Admin | As an admin, I want to create academic years so that internship programs have temporal boundaries |
+| Admin | As an admin, I want to activate and deactivate academic years so that only one year is active at a time |
+| Admin | As an admin, I want to import/export departments via CSV so that I can manage data in bulk |
+
+### Process Flow
+
+```
+Academic Year Lifecycle:
+
+INACTIVE ──→ ACTIVE (only one at a time)
+```
+
+- At most one academic year can be active at any time
+- Activating a new year automatically deactivates the current one
+- An active academic year cannot be deleted
+- A department cannot be deleted if any user profiles reference it
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `UpdateSchoolAction` | Updates the school profile |
+| `CreateDepartmentAction` | Creates a new department |
+| `UpdateDepartmentAction` | Updates department details |
+| `DeleteDepartmentAction` | Deletes a department (blocked if associated profiles exist) |
+| `CreateAcademicYearAction` | Creates a new academic year |
+| `UpdateAcademicYearAction` | Updates academic year details |
+| `DeleteAcademicYearAction` | Deletes an inactive academic year |
+| `ActivateAcademicYearAction` | Activates an academic year (deactivates current) |
+| `BulkDeleteAcademicYearsAction` | Batch deletes academic years |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `School`, `Department`, `AcademicYear` |
+| **Entities** | `SchoolState` (single-record enforcement); `DepartmentState` (deletion guard); `AcademicYearState` (active status, deletion/activation eligibility) |
+| **Livewire** | `SchoolEditor`, `DepartmentManager`, `AcademicYearIndex` |
+| **Policies** | `SchoolPolicy`, `DepartmentPolicy`, `AcademicYearPolicy` |
+
 ## Dependencies
 
 | Dependency | Reason |

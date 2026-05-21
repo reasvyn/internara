@@ -32,7 +32,7 @@ class GenerateReportRequest extends FormRequest
     {
         return [
             'document_id' => ['required', 'uuid', 'exists:documents,id'],
-            'registration_id' => ['required', 'uuid', 'exists:internship_registrations,id'],
+            'registration_id' => ['required', 'uuid', 'exists:registrations,id'],
             'options' => ['sometimes', 'array'],
         ];
     }

@@ -41,8 +41,8 @@ class ReportReview extends BaseRecordManager
     {
         return Report::query()
             ->select(['reports.*', 'users.name as student_name'])
-            ->join('internship_registrations', 'reports.registration_id', '=', 'internship_registrations.id')
-            ->join('mentees', 'internship_registrations.mentee_id', '=', 'mentees.id')
+            ->join('registrations', 'reports.registration_id', '=', 'registrations.id')
+            ->join('mentees', 'registrations.mentee_id', '=', 'mentees.id')
             ->join('users', 'mentees.user_id', '=', 'users.id');
     }
 

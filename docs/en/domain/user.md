@@ -102,6 +102,38 @@ layer — all source data lives in its respective domain. The aggregation is per
 real-time on each dashboard load, optimized through eager-loading and caching strategies to keep 
 load times under one second.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| User | As a user, I want to edit my profile so that my personal information is up to date |
+| User | As a user, I want to upload an avatar so that my account has a personal photo |
+| Student | As a student, I want to log in and be directed to my dashboard so that I can quickly access my tools |
+| Teacher/Supervisor | As a teacher or supervisor, I want to log in and be directed to my mentor dashboard so that I can manage my mentees |
+| Admin | As an admin, I want to log in and be directed to the admin dashboard so that I can manage the system |
+| System | As the system, I want to generate unique usernames so that every user has a system-wide identifier |
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `UpdateProfileAction` | Updates the user's profile with personal data |
+| `GetStudentDashboardDataAction` | Aggregates student dashboard data from multiple domains |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `User` (extends `Authenticatable`, UUID via `HasUuids`), `Profile` (extends `BaseModel`, on-demand creation) |
+| **Enums** | `BloodType` — `A`, `B`, `AB`, `O`; `Gender` — `MALE`, `FEMALE` |
+| **Livewire** | `UserDashboard`, `ProfileEditor`, `RecentActivityList` |
+| **Support** | `UserIdentifierGenerator` (unique username generation with collision avoidance) |
+| **Notifications** | `TestMailNotification` (email configuration testing) |
+| **Rules** | `SystemUsername` (username format validation) |
+| **Controllers** | `DashboardController` (role-based dashboard routing) |
+
 ## Dependencies
 
 | Dependency | Reason |

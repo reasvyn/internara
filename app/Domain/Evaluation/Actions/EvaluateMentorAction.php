@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Evaluation\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Evaluation\Enums\EvaluationCategory;
 use App\Domain\Evaluation\Models\Evaluation;
 use App\Domain\User\Models\User;
 
@@ -15,6 +16,7 @@ class EvaluateMentorAction extends BaseAction
         return $this->transaction(function () use ($evaluator, $mentor, $data, $existing) {
             if ($existing) {
                 $existing->update([
+                    'evaluation_type' => EvaluationCategory::MENTOR,
                     'overall_score' => $data['overall_score'] ?? null,
                     'feedback' => $data['feedback'] ?? null,
                     'criteria_scores' => $data['criteria_scores'] ?? [],
@@ -27,6 +29,7 @@ class EvaluateMentorAction extends BaseAction
 
             $evaluation = Evaluation::create([
                 'evaluator_id' => $evaluator->id,
+                'evaluation_type' => EvaluationCategory::MENTOR,
                 'mentor_id' => $mentor->id,
                 'overall_score' => $data['overall_score'] ?? null,
                 'feedback' => $data['feedback'] ?? null,

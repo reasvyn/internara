@@ -29,10 +29,14 @@ trait AuthorizesOwnership
 
     protected function isOwnerOrAdmin(User $user, Model $model, string $foreignKey = 'user_id'): bool
     {
-        if (method_exists($this, 'isAdmin') && $this->isAdmin($user)) {
+        if ($this->isOwner($user, $model, $foreignKey)) {
             return true;
         }
 
-        return $this->isOwner($user, $model, $foreignKey);
+        if (method_exists($this, 'isAdmin')) {
+            return $this->isAdmin($user);
+        }
+
+        return false;
     }
 }

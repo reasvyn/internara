@@ -17,7 +17,7 @@ final readonly class AuditReport extends Data
     public function passed(): bool
     {
         foreach ($this->checks as $check) {
-            if ($check->status === AuditStatus::Fail) {
+            if ($check->status === AuditStatus::FAIL) {
                 return false;
             }
         }

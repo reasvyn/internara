@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table
                 ->foreignUuid('registration_id')
-                ->constrained('internship_registrations')
+                ->constrained('registrations')
                 ->onDelete('cascade');
             $table->date('start_date');
             $table->date('end_date');

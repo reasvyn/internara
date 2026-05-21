@@ -20,7 +20,7 @@ class Company extends BaseModel
 {
     use HasFactory;
 
-    protected $table = 'internship_companies';
+    protected $table = 'companies';
 
     public function placements(): HasMany
     {

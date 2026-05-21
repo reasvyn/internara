@@ -10,8 +10,8 @@ use App\Domain\Core\Enums\AuditStatus;
 describe('AuditReport', function () {
     it('reports passed when no failing checks', function () {
         $report = new AuditReport([
-            new AuditCheck(AuditCategory::Requirements, 'php', AuditStatus::Pass, 'ok'),
-            new AuditCheck(AuditCategory::Database, 'db', AuditStatus::Pass, 'ok'),
+            new AuditCheck(AuditCategory::REQUIREMENTS, 'php', AuditStatus::PASS, 'ok'),
+            new AuditCheck(AuditCategory::DATABASE, 'db', AuditStatus::PASS, 'ok'),
         ]);
 
         expect($report->passed())->toBeTrue();
@@ -19,8 +19,8 @@ describe('AuditReport', function () {
 
     it('reports failed when any check fails', function () {
         $report = new AuditReport([
-            new AuditCheck(AuditCategory::Requirements, 'php', AuditStatus::Pass, 'ok'),
-            new AuditCheck(AuditCategory::Database, 'db', AuditStatus::Fail, 'fail'),
+            new AuditCheck(AuditCategory::REQUIREMENTS, 'php', AuditStatus::PASS, 'ok'),
+            new AuditCheck(AuditCategory::DATABASE, 'db', AuditStatus::FAIL, 'fail'),
         ]);
 
         expect($report->passed())->toBeFalse();
@@ -28,12 +28,12 @@ describe('AuditReport', function () {
 
     it('filters by category', function () {
         $report = new AuditReport([
-            new AuditCheck(AuditCategory::Requirements, 'php', AuditStatus::Pass, 'ok'),
-            new AuditCheck(AuditCategory::Database, 'db', AuditStatus::Pass, 'ok'),
-            new AuditCheck(AuditCategory::Terminal, 'term', AuditStatus::Pass, 'ok'),
+            new AuditCheck(AuditCategory::REQUIREMENTS, 'php', AuditStatus::PASS, 'ok'),
+            new AuditCheck(AuditCategory::DATABASE, 'db', AuditStatus::PASS, 'ok'),
+            new AuditCheck(AuditCategory::TERMINAL, 'term', AuditStatus::PASS, 'ok'),
         ]);
 
-        $dbChecks = $report->forCategory(AuditCategory::Database);
+        $dbChecks = $report->forCategory(AuditCategory::DATABASE);
 
         expect($dbChecks)->toHaveCount(1)
             ->and($dbChecks[0]->nameKey)->toBe('db');

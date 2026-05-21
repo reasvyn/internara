@@ -91,6 +91,70 @@ frequency and outcomes, and historical placement data (which students were place
 programs). These reports inform capacity planning, partnership development, and program 
 optimization decisions.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to create placement slots per company and program so that available positions are tracked |
+| Admin | As an admin, I want to assign students to available slots automatically or manually so that every registered student gets a placement |
+| Admin | As an admin, I want to review and approve or reject placement change requests so that transfers are managed fairly |
+| Admin | As an admin, I want to view placement reports (fill rates, waitlist, unplaced students) so that I can make capacity decisions |
+| Student | As a student, I want to confirm my placement so that I can proceed to active participation |
+| Student | As a student, I want to request a placement change if circumstances require it |
+| Student | As a student, I want to see my waitlist position so that I know where I stand |
+| Company | As a company representative, I want to confirm or decline a placed student so that I have control over who joins |
+| System | As the system, I want to enforce slot capacity so that no company exceeds its agreed limit |
+
+### Process Flow
+
+```
+Placement Assignment:
+
+PENDING ──→ CONFIRMED ──→ IN_CHANGE ──→ CHANGED (atomic swap to new slot)
+   │                          │
+   ↓                          ↓
+CANCELLED                  CANCELLED
+
+Change Request:
+
+PENDING ──→ APPROVED  (atomic: release old slot, assign new)
+   │
+   ↓
+REJECTED
+```
+
+- **PENDING**: Assigned but not yet confirmed by both parties — tentative hold on slot
+- **CONFIRMED**: Both student and company confirmed — stable operational state
+- **IN_CHANGE**: Change request initiated, current placement under review
+- **CHANGED**: Moved to a different slot — previous slot released, new slot assigned
+- **CANCELLED**: Placement no longer needed
+- Pending → Confirmed requires explicit confirmation from BOTH student AND company
+- Pending assignments auto-release after configurable window (default 7 days)
+- Change execution is ATOMIC — no gap state between slots
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreatePlacementAction` | Creates a new placement slot |
+| `UpdatePlacementAction` | Updates an existing placement |
+| `DeletePlacementAction` | Deletes a placement |
+| `DirectPlacementAction` | Manually assigns a student to a slot |
+| `RequestPlacementChangeAction` | Initiates a placement change request |
+| `ApprovePlacementChangeAction` | Approves a change request (atomic slot swap) |
+| `RejectPlacementChangeAction` | Rejects a change request |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `InternshipPlacement` (`placements`), `PlacementChangeRequest` |
+| **Entities** | `PlacementState` (placement lifecycle checks), `PlacementCapacity` (capacity calculation) |
+| **Enums** | `PlacementChangeStatus` — `PENDING`, `APPROVED`, `REJECTED` |
+| **Livewire** | `PlacementIndex`, `DirectPlacementManager`, `PlacementChangeManager`, `StudentPlacementChangeRequest` |
+
 ## Dependencies
 
 | Dependency | Reason |

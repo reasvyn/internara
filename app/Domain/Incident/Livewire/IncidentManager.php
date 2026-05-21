@@ -41,7 +41,7 @@ class IncidentManager extends BaseRecordManager
     {
         return IncidentReport::query()
             ->select(['incident_reports.*', 'users.name as student_name'])
-            ->join('internship_registrations', 'incident_reports.registration_id', '=', 'internship_registrations.id')
+            ->join('registrations', 'incident_reports.registration_id', '=', 'registrations.id')
             ->join('users', 'incident_reports.reported_by', '=', 'users.id');
     }
 

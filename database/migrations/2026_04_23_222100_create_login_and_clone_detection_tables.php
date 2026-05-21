@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->string('ip_address')->index();
-            $table->string('user_agent')->nullable();
+            $table->text('user_agent')->nullable();
             $table->boolean('successful')->default(false)->index();
             $table->string('failure_reason')->nullable(); // 'wrong_password', 'account_locked', 'mfa_failed', etc
             $table->double('latitude')->nullable(); // Geolocation
@@ -35,7 +35,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->string('ip_address');
-            $table->string('user_agent')->nullable();
+            $table->text('user_agent')->nullable();
             $table->json('suspicions'); // Array of reasons (impossible travel, simultaneous login, etc)
             $table->json('actions_taken'); // Array of actions (force_reauthentication, notify_user, etc)
             $table

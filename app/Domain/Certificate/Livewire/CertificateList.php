@@ -48,8 +48,8 @@ class CertificateList extends BaseRecordManager
     {
         return Certificate::query()
             ->select(['certificates.*', 'users.name as student_name'])
-            ->join('internship_registrations', 'certificates.registration_id', '=', 'internship_registrations.id')
-            ->join('mentees', 'internship_registrations.mentee_id', '=', 'mentees.id')
+            ->join('registrations', 'certificates.registration_id', '=', 'registrations.id')
+            ->join('mentees', 'registrations.mentee_id', '=', 'mentees.id')
             ->join('users', 'mentees.user_id', '=', 'users.id');
     }
 
@@ -90,7 +90,7 @@ class CertificateList extends BaseRecordManager
     public function saveIssue(IssueCertificateAction $issueAction): void
     {
         $this->validate([
-            'issueRegistrationId' => ['required', 'exists:internship_registrations,id'],
+            'issueRegistrationId' => ['required', 'exists:registrations,id'],
             'issueTemplateId' => ['required', 'exists:certificate_templates,id'],
         ]);
 

@@ -18,7 +18,7 @@ class Certificate extends BaseModel
     use HasFactory;
 
     protected $attributes = [
-        'status' => 'issued',
+        'status' => CertificateStatus::ISSUED->value,
     ];
 
     protected function casts(): array

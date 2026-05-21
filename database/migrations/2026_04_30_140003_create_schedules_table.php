@@ -25,6 +25,8 @@ return new class extends Migration
                 ->nullOnDelete();
             $table->foreignUuid('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
+
+            $table->index(['internship_id', 'start_at']);
         });
     }
 

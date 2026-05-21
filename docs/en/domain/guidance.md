@@ -79,6 +79,47 @@ and per cohort. Compliance data is available through dashboards and is exportabl
 audit or regulatory inspection. Reports include the full acknowledgement trail — every action 
 is timestamped and attributable.
 
+## Requirements
+
+### User Stories
+
+| Role | Story |
+|------|-------|
+| Admin | As an admin, I want to upload and version guidance documents so that students always see the latest policies |
+| Admin | As an admin, I want to assign documents to students automatically or manually so that the right students receive the right documents |
+| Student | As a student, I want to view assigned guidance documents so that I can read and understand policies |
+| Student | As a student, I want to acknowledge a document so that my compliance is recorded |
+| Admin | As an admin, I want to view compliance reports so that I can track which students have acknowledged which documents |
+
+### Process Flow
+
+```
+Acknowledgement Lifecycle:
+
+ASSIGNED ──→ VIEWED ──→ ACKNOWLEDGED (immutable)
+```
+
+- **ASSIGNED**: Document assigned to student, pending action
+- **VIEWED**: Student has opened and viewed the document
+- **ACKNOWLEDGED**: Student has acknowledged (click-through or typed name) — permanently immutable
+- Required documents that remain unacknowledged can block internship activities
+
+### Key Operations
+
+| Action | Description |
+|--------|-------------|
+| `CreateHandbookAction` | Creates a new guidance handbook or a new version |
+| `AcknowledgeHandbookAction` | Records a student's acknowledgement of a handbook version |
+
+### Technical Reference
+
+| Layer | Artifacts |
+|-------|-----------|
+| **Models** | `Handbook` (versioned document), `HandbookAcknowledgement` (immutable acknowledgement record) |
+| **Entity** | `HandbookPublishState` (published status check) |
+| **Livewire** | `HandbookIndex`, `StudentHandbookIndex` |
+| **Policy** | `HandbookPolicy` |
+
 ## Dependencies
 
 | Dependency | Reason |

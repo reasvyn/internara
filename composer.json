@@ -31,10 +31,8 @@
         "livewire/livewire": "^4.0",
         "php-flasher/flasher-laravel": "^2.4",
         "robsontenorio/mary": "^2.4",
-        "secondnetwork/blade-tabler-icons": "^3.36",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-activitylog": "^4.10",
-        "spatie/laravel-honeypot": "^4.6",
         "spatie/laravel-medialibrary": "^11.17",
         "spatie/laravel-model-states": "^2.14",
         "spatie/laravel-model-status": "^1.18",
@@ -80,11 +78,6 @@
         "dev": [
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:work --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
-        ],
-        "dev:ssr": [
-            "npm run build:ssr",
-            "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve --env=ssr\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"php artisan inertia:start-ssr\" --names=server,queue,logs,ssr --kill-others"
         ],
         "test": [
             "@php artisan optimize:clear --ansi",

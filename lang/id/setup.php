@@ -25,7 +25,7 @@ return [
         'writable_fail' => ':directory tidak dapat ditulis',
 
         'db_connection' => 'Koneksi Database',
-        'db_pass' => 'Terhubung via :driver (v:version)',
+        'db_pass' => 'Terhubung via :driver',
         'db_fail' => 'Gagal terhubung ke database',
         'db_fail_message' => 'Koneksi gagal: :error',
 
@@ -70,6 +70,8 @@ return [
         'create_super_admin_confirm' => 'Apakah Anda ingin membuat akun Super Admin sekarang?',
         'admin_created' => 'Akun Super Admin berhasil dibuat.',
         'admin_creation_failed' => 'Gagal membuat Super Admin: :message',
+        'check_only_complete' => 'Audit lingkungan berhasil. Jalankan tanpa --check-only untuk memprovisi.',
+        'try_health_check' => 'Jalankan php artisan system:health untuk mengecek status sistem.',
         'aborted' => 'Instalasi dibatalkan.',
         'executing_task' => 'Mengeksekusi instalasi sistem teknis',
         'not_installed' => 'Sistem belum terinstal. Jalankan php artisan setup:install terlebih dahulu.',

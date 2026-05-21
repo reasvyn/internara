@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Core\Channels;
 
-use App\Domain\Admin\Actions\SendNotificationAction;
+use App\Domain\Core\Contracts\SendsNotifications;
 use Illuminate\Notifications\Notification;
 
 /**
@@ -16,7 +16,7 @@ use Illuminate\Notifications\Notification;
 class CustomDatabaseChannel
 {
     public function __construct(
-        protected SendNotificationAction $sendNotification
+        protected SendsNotifications $sendNotification
     ) {}
 
     /**
