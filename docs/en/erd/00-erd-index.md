@@ -1,6 +1,6 @@
 # Entity Relationship Diagram — Internara
 
-> 75 tables across 24 domains. All primary keys are UUID v4 unless noted.
+> 74 tables across 24 domains. All primary keys are UUID v4 unless noted.
 > Timestamps (`created_at`, `updated_at`) exist on all tables unless noted.
 
 ---
@@ -41,8 +41,8 @@
 |---|---|---|---|---|
 | 01 | [01-auth.md](01-auth.md) | Identity & Access | `Auth`, `User` | 10 |
 | 02 | [02-institution.md](02-institution.md) | Institutional Setup | `School`, `Settings`, `Setup` | 5 |
-| 03 | [03-partnership.md](03-partnership.md) | Companies & Partnerships | `Partnership`, `Placement` | 4 |
-| 04 | [04-internship.md](04-internship.md) | Internship Program | `Internship`, `Schedule` | 5 |
+| 03 | [03-partnership.md](03-partnership.md) | Companies & Partnerships | `Partnership`, `Placement` | 3 |
+| 04 | [04-internship.md](04-internship.md) | Internship Program | `Internship`, `Schedule` | 6 |
 | 05 | [05-registration.md](05-registration.md) | Student Registration | `Mentee`, `Registration`, `Document` | 5 |
 | 06 | [06-daily.md](06-daily.md) | Daily Execution | `Attendance`, `Logbook` | 3 |
 | 07 | [07-mentoring.md](07-mentoring.md) | Mentoring & Teams | `Mentor` | 4 |

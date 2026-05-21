@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('setup_token')->nullable();
             $table->timestamp('token_expires_at')->nullable();
             $table->json('completed_steps')->nullable();
-            $table->foreignUuid('school_id')->nullable();
-            $table->foreignUuid('department_id')->nullable();
+            $table->foreignUuid('school_id')->nullable()->constrained('schools')->nullOnDelete();
+            $table->foreignUuid('department_id')->nullable()->constrained('departments')->nullOnDelete();
             $table->text('recovery_key')->nullable();
             $table->timestamps();
         });

@@ -77,13 +77,13 @@ Polymorphic state machine history. Records every state transition for models usi
 Audit trail for GDPR data deletion/anonymization requests.
 
 | Column | Type | Constraints | Purpose |
-|---|---|---|---|
-| id | integer | PK, AUTO_INCREMENT | |
-| user_id | integer | NULLABLE | Deleted user's ID (may be null after anonymization) |
+|---|---|---|---|---|
+| id | bigInteger | PK, AUTO_INCREMENT | |
+| user_id | bigInteger | NULLABLE | Deleted user's ID (may be null after anonymization) |
 | user_email | varchar(255) | NOT NULL | Preserved for legal reference |
 | deletion_type | varchar(255) | DEFAULT 'anonymization' | 'anonymization', 'full_deletion', 'export' |
 | reason | varchar(255) | NOT NULL | Legal basis for deletion |
-| deleted_by | integer | FK → users(id) | Admin who processed the request |
+| deleted_by | bigInteger | FK → users(id) | Admin who processed the request |
 | metadata | text | NULLABLE | JSON with deletion details |
 | deleted_at | datetime | NOT NULL | When deletion occurred |
 | created_at | timestamp | | |

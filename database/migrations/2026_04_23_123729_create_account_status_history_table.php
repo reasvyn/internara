@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('account_status_history', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('user_id');
+            $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table
                 ->string('old_status')
                 ->nullable()
@@ -23,8 +23,10 @@ return new class extends Migration
             $table->string('new_status')->comment('New status after transition');
             $table->text('reason')->nullable()->comment('Reason for status change');
             $table
-                ->uuid('triggered_by_user_id')
+                ->foreignUuid('triggered_by_user_id')
                 ->nullable()
+                ->constrained('users')
+                ->nullOnDelete()
                 ->comment('Admin who triggered change (null if system)');
             $table
                 ->string('triggered_by_role')

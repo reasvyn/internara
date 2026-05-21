@@ -16,7 +16,7 @@ return new class extends Migration
                 ->foreignUuid('registration_id')
                 ->constrained('registrations')
                 ->onDelete('cascade');
-            $table->foreignUuid('supervisor_id')->constrained('users');
+            $table->foreignUuid('supervisor_id')->constrained('users')->cascadeOnDelete();
             $table->string('type');
             $table->date('date');
             $table->string('topic')->nullable();
