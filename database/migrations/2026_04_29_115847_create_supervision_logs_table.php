@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('topic')->nullable();
             $table->text('notes');
             $table->string('status')->default('pending');
+            $table->boolean('is_verified')->default(false);
             $table->timestamp('verified_at')->nullable();
             $table->foreignUuid('verified_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();

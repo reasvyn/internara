@@ -21,6 +21,7 @@ class VerifySupervisionLogAction extends BaseAction
 
         return $this->transaction(function () use ($log, $verifier) {
             $log->update([
+                'is_verified' => true,
                 'verified_at' => Carbon::now(),
                 'status' => SupervisionLogStatus::VERIFIED->value,
                 'verified_by' => $verifier->id,

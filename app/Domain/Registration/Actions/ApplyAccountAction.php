@@ -21,7 +21,7 @@ class ApplyAccountAction extends BaseAction
         }
 
         return $this->transaction(function () use ($data) {
-            $application = AccountApplication::create($data);
+            $application = AccountApplication::create(array_merge($data, ['status' => 'pending']));
 
             $this->log('account_applied', $application, $data);
 

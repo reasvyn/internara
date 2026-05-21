@@ -9,6 +9,7 @@ use App\Domain\Attendance\Models\Attendance;
 use App\Domain\Certificate\Models\Certificate;
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Internship\Models\Internship;
+use App\Domain\Internship\Models\Report;
 use App\Domain\Logbook\Models\Logbook;
 use App\Domain\Mentee\Models\Mentee;
 use App\Domain\Mentor\Models\Mentor;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\ModelStatus\HasStatuses;
 
 #[Fillable(['mentee_id', 'internship_id', 'placement_id', 'academic_year', 'start_date', 'end_date', 'proposed_company_name', 'proposed_company_address', 'status'])]
@@ -95,5 +97,10 @@ class Registration extends BaseModel
     public function assessments(): HasMany
     {
         return $this->hasMany(Assessment::class, 'registration_id');
+    }
+
+    public function report(): HasOne
+    {
+        return $this->hasOne(Report::class, 'registration_id');
     }
 }

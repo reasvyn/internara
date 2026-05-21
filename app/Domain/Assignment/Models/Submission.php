@@ -22,7 +22,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * S1 - Secure: File upload validation via Spatie Media Library.
  * S2 - Sustain: Status tracking with rich model methods.
  */
-#[Fillable(['assignment_id', 'registration_id', 'student_id', 'content', 'metadata', 'status', 'submitted_at', 'score', 'feedback', 'graded_by', 'graded_at'])]
+#[Fillable(['assignment_id', 'registration_id', 'student_id', 'content', 'metadata', 'status', 'submitted_at', 'score', 'feedback', 'graded_by', 'graded_at', 'verified_by', 'verified_at'])]
 class Submission extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
