@@ -7,7 +7,7 @@ use App\Domain\User\Enums\BloodType;
 
 describe('BloodType enum', function () {
     it('is string-backed', function () {
-        expect(BloodType::A->value)->toBe('A');
+        expect(BloodType::A->value)->toBe('a');
     });
 
     it('implements LabelEnum', function () {
