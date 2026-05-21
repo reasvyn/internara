@@ -18,7 +18,7 @@ class PlacementChangeRequest extends BaseModel
     use HasFactory;
 
     protected $attributes = [
-        'status' => PlacementChangeStatus::Pending->value,
+        'status' => PlacementChangeStatus::PENDING->value,
     ];
 
     protected function casts(): array

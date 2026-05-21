@@ -25,7 +25,7 @@ class AbsenceRequest extends BaseModel
     }
 
     protected $attributes = [
-        'status' => AbsenceRequestStatus::Pending->value,
+        'status' => AbsenceRequestStatus::PENDING->value,
     ];
 
     protected function casts(): array

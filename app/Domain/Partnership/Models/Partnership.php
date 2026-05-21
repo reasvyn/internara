@@ -28,7 +28,7 @@ class Partnership extends BaseModel implements HasMedia
     public const COLLECTION_MOU = 'mou_document';
 
     protected $attributes = [
-        'status' => PartnershipStatus::Active->value,
+        'status' => PartnershipStatus::ACTIVE->value,
     ];
 
     protected function casts(): array

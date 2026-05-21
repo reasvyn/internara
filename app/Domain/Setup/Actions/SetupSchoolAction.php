@@ -21,8 +21,7 @@ class SetupSchoolAction extends BaseAction
                 $this->log('school_setup_completed', $school, [
                     'name' => $data['name'],
                     'code' => $data['institutional_code'],
-                ],
-                    module: 'Setup', );
+                ]);
 
                 return $school;
             });

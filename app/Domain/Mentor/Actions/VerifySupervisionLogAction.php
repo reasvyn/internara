@@ -15,15 +15,15 @@ class VerifySupervisionLogAction extends BaseAction
 {
     public function execute(SupervisionLog $log, User $verifier): SupervisionLog
     {
-        if ($log->is_verified) {
+        if ($log->status === SupervisionLogStatus::VERIFIED) {
             throw new RuntimeException('This supervision log has already been verified.');
         }
 
         return $this->transaction(function () use ($log, $verifier) {
             $log->update([
-                'is_verified' => true,
                 'verified_at' => Carbon::now(),
                 'status' => SupervisionLogStatus::VERIFIED->value,
+                'verified_by' => $verifier->id,
             ]);
 
             $this->log('supervision_log_verified', $log, ['verifier' => $verifier->name]);
