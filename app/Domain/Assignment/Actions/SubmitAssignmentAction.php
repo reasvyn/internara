@@ -8,6 +8,7 @@ use App\Domain\Assignment\Models\Assignment;
 use App\Domain\Assignment\Models\Submission;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
+use App\Domain\Mentee\Models\Mentee;
 use App\Domain\User\Models\User;
 
 class SubmitAssignmentAction extends BaseAction
@@ -23,7 +24,17 @@ class SubmitAssignmentAction extends BaseAction
         }
 
         return $this->transaction(function () use ($student, $assignment, $data) {
-            $existing = Submission::where('user_id', $student->id)
+            $mentee = Mentee::where('user_id', $student->id)->first();
+            $registration = $mentee?->registrations()
+                ->where('internship_id', $assignment->internship_id)
+                ->whereIn('status', ['active', 'placed'])
+                ->first();
+
+            if (! $registration) {
+                throw new RejectedException('No active registration found for this assignment.');
+            }
+
+            $existing = Submission::where('student_id', $student->id)
                 ->where('assignment_id', $assignment->id)
                 ->whereIn('status', ['draft', 'submitted', 'verified'])
                 ->first();
@@ -33,7 +44,8 @@ class SubmitAssignmentAction extends BaseAction
             }
 
             $submission = Submission::create([
-                'user_id' => $student->id,
+                'student_id' => $student->id,
+                'registration_id' => $registration->id,
                 'assignment_id' => $assignment->id,
                 'content' => $data['content'],
                 'status' => 'submitted',

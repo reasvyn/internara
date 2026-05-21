@@ -21,7 +21,7 @@ class SupervisionLog extends BaseModel
     use HasFactory;
 
     protected $attributes = [
-        'status' => SupervisionLogStatus::Pending->value,
+        'status' => SupervisionLogStatus::PENDING->value,
     ];
 
     protected function casts(): array

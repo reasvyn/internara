@@ -41,8 +41,7 @@ class RenderDocumentAction extends BaseAction
             'template' => $document->name,
             'registration' => $registration->id,
             'student' => $target->mentee->user->name,
-        ],
-            module: 'Document', );
+        ]);
 
         return $rendered;
     }

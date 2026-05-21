@@ -4,7 +4,16 @@ declare(strict_types=1);
 
 namespace App\Domain\Registration\Models;
 
+use App\Domain\Assessment\Models\Assessment;
+use App\Domain\Attendance\Models\Attendance;
+use App\Domain\Certificate\Models\Certificate;
 use App\Domain\Core\Models\BaseModel;
+use App\Domain\Internship\Models\Internship;
+use App\Domain\Logbook\Models\Logbook;
+use App\Domain\Mentee\Models\Mentee;
+use App\Domain\Mentor\Models\Mentor;
+use App\Domain\Mentor\Models\SupervisionLog;
+use App\Domain\Placement\Models\Placement;
 use App\Domain\Registration\Entities\RegistrationState;
 use Database\Factories\RegistrationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

@@ -13,12 +13,11 @@ class DeleteScheduleAction extends BaseAction
     public function execute(User $user, Schedule $schedule): void
     {
         $this->transaction(function () use ($schedule) {
-            $scheduleId = $schedule->id;
             $scheduleTitle = $schedule->title;
 
             $schedule->delete();
 
-            $this->log('schedule_deleted', $scheduleId, ['title' => $scheduleTitle]);
+            $this->log('schedule_deleted', $schedule, ['title' => $scheduleTitle]);
         });
     }
 }
