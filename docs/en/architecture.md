@@ -50,12 +50,12 @@ The domain directories are vertical slices that cross all layers below Layer 11.
           │  app/Domain/*/Actions/ delegating all persistence       │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
-  Layer 6 ┌──────────────────────────────────────────────────────────┐
+   Layer 6 ┌──────────────────────────────────────────────────────────┐
   Domain  │  Enums  (LabelEnum, StatusEnum, ColorableEnum)          │
   Rules   │  Entities (25, final readonly, zero framework deps)    │
-          │  States  (BaseState, InternshipState, PartnershipState) │
+          │  Entity State Classes (InternshipState, PartnershipState)│
           │  Data DTOs (AuditCheck, AuditReport)                    │
-          │  app/Domain/*/Enums/  Entities/  States/  Data/         │
+          │  app/Domain/*/Enums/  Entities/  Data/                  │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 5 ┌──────────────────────────────────────────────────────────┐
@@ -186,7 +186,7 @@ Every layer has exactly one base class from Core. There is no alternative. Build
 | Authorization | `extends BasePolicy` | `Gate::define()` with inline closures |
 | A CRUD list page | `extends BaseRecordManager` | A Livewire component from scratch |
 | A form request | `extends FormRequest` (Core's) | `extends Request` or inline validation |
-| A state machine | `extends BaseState` | Custom status columns with if/else |
+| A state machine | `implements StatusEnum` | Spatie ModelStates, custom status columns with if/else |
 | An enum | `implements LabelEnum` | A plain PHP enum or class constants |
 | Logging | `SmartLogger` | `Log::` facade or `activity()` helper |
 

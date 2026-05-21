@@ -15,7 +15,7 @@ Every layer has a designated base class from the Core domain. You MUST use them 
 | Livewire CRUD | `BaseRecordManager` | `Core/Livewire/BaseRecordManager.php` |
 | Controller | `BaseController` | `Core/Http/Controllers/BaseController.php` |
 | Form Request | `FormRequest` (Core's, not Laravel's) | `Core/Http/Requests/FormRequest.php` |
-| State | `BaseState` | `Core/States/BaseState.php` |
+| Enum | `LabelEnum` (+ optionally `StatusEnum`, `ColorableEnum`) | `Core/Contracts/` |
 | DTO | `Data` | `Core/Data/Data.php` |
 | Exception | `AppException` or `DomainException` | `Core/Exceptions/` |
 | Enum contract | `LabelEnum` (and optionally `StatusEnum`, `ColorableEnum`) | `Core/Contracts/` |
