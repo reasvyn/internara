@@ -291,7 +291,7 @@ class CompanyManager extends BaseRecordManager
         if ($this->selectedIds === []) {
             flash()->warning(__('common.actions.no_records_selected'));
 
-            return;
+            return null;
         }
 
         $companies = Company::whereIn('id', $this->selectedIds)->orderBy('name')->get();

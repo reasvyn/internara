@@ -6,6 +6,7 @@ namespace App\Domain\Auth\Models;
 
 use App\Domain\Auth\Entities\RecoveryCodeState;
 use App\Domain\Core\Models\BaseModel;
+use Database\Factories\AccountRecoveryCodeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -13,6 +14,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class AccountRecoveryCode extends BaseModel
 {
     use HasFactory;
+
+    protected static function newFactory(): AccountRecoveryCodeFactory
+    {
+        return AccountRecoveryCodeFactory::new();
+    }
 
     protected $casts = [
         'generated_at' => 'datetime',

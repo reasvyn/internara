@@ -259,7 +259,7 @@ class DepartmentManager extends BaseRecordManager
         if ($this->selectedIds === []) {
             flash()->warning(__('common.actions.no_records_selected'));
 
-            return;
+            return null;
         }
 
         $departments = Department::whereIn('id', $this->selectedIds)->orderBy('name')->get();

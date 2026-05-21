@@ -325,7 +325,7 @@ class InternshipManager extends BaseRecordManager
             $name = trim($row[0] ?? '');
 
             if ($name === '') {
-                return null;
+                return;
             }
 
             if (Internship::where('name', $name)->exists()) {
@@ -375,7 +375,7 @@ class InternshipManager extends BaseRecordManager
         if ($this->selectedIds === []) {
             flash()->warning(__('common.actions.no_records_selected'));
 
-            return;
+            return null;
         }
 
         $internships = Internship::with('academicYear')

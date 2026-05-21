@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Internship\Models;
 
 use App\Domain\Core\Models\BaseModel;
+use Database\Factories\InternshipDocumentRequirementFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +15,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class InternshipDocumentRequirement extends BaseModel
 {
     use HasFactory;
+
+    protected static function newFactory(): InternshipDocumentRequirementFactory
+    {
+        return InternshipDocumentRequirementFactory::new();
+    }
 
     protected $casts = [
         'is_mandatory' => 'boolean',

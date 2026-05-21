@@ -8,7 +8,7 @@ use App\Domain\Core\Policies\BasePolicy;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Models\User;
 
-class RegistrationPolicy extends BasePolicy
+class InternshipRegistrationPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
@@ -69,7 +69,7 @@ class RegistrationPolicy extends BasePolicy
             ->exists();
     }
 
-    private function isOwner(Registration $registration, User $user): bool
+    private function isOwnerByMentee(Registration $registration, User $user): bool
     {
         return $registration->mentee?->user_id === $user->id;
     }

@@ -7,6 +7,7 @@ namespace App\Domain\Document\Models;
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Document\Enums\DocumentCategory;
 use App\Domain\Internship\Models\InternshipDocumentRequirement;
+use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,6 +19,11 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class Document extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
+
+    protected static function newFactory(): DocumentFactory
+    {
+        return DocumentFactory::new();
+    }
 
     protected function casts(): array
     {

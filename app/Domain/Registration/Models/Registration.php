@@ -6,6 +6,7 @@ namespace App\Domain\Registration\Models;
 
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Registration\Entities\RegistrationState;
+use Database\Factories\RegistrationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +20,11 @@ class Registration extends BaseModel
     protected $table = 'registrations';
 
     use HasFactory, HasStatuses;
+
+    protected static function newFactory(): RegistrationFactory
+    {
+        return RegistrationFactory::new();
+    }
 
     protected $casts = [
         'start_date' => 'date',

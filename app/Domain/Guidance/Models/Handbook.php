@@ -7,6 +7,7 @@ namespace App\Domain\Guidance\Models;
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Guidance\Entities\HandbookPublishState;
 use App\Domain\User\Models\User;
+use Database\Factories\HandbookFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Handbook extends BaseModel
 {
     use HasFactory;
+
+    protected static function newFactory(): HandbookFactory
+    {
+        return HandbookFactory::new();
+    }
 
     protected $casts = [
         'is_active' => 'boolean',

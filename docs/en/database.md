@@ -71,9 +71,14 @@ rather than by business workflows directly.
 
 ## Schema Organization Principles
 
-Migrations are organized by domain, not by chronological order. Each domain
-has its own migration directory, and the naming convention makes it clear
-which table a migration creates or modifies. Every migration is reversible.
+All migrations live in a flat `database/migrations/` directory with
+chronological timestamp prefixes. This ensures consistent execution order
+across environments. Migration filenames indicate which table they create
+(e.g., `2026_04_29_092750_create_users_table.php`).
+
+Each domain manages its own schema concerns through distinct migration files,
+but all files coexist in the same directory. The domain ownership is evident
+from the table name, not from a directory structure.
 
 Foreign key delete behaviors follow a simple rule: cascade when the child
 record cannot exist without the parent, nullify when the relationship is
@@ -89,9 +94,31 @@ before registrations.
 
 ## Where to Find It
 
-All migrations live in `database/migrations/` organized by domain.
+All migrations live in `database/migrations/` with chronological prefixes.
 Factories are in `database/factories/`, seeders in `database/seeders/`.
 The base model class is in `app/Domain/Core/Models/BaseModel.php`.
 Database configuration is in `config/database.php`, overridable via `.env`.
-The complete list of tables, their columns, and their purposes is documented
-in this file below (the full table reference follows this section).
+
+## Full Table Reference
+
+The complete database schema (75 tables, columns, types, foreign keys, indexes,
+and business rules) is documented in the ERD docs organized by data lifecycle:
+
+| Lifecycle | File | Tables |
+|---|---|---|
+| Identity & Access | `docs/en/erd/01-auth.md` | 10 |
+| Institutional Setup | `docs/en/erd/02-institution.md` | 5 |
+| Companies & Partnerships | `docs/en/erd/03-partnership.md` | 3 |
+| Internship Program | `docs/en/erd/04-internship.md` | 6 |
+| Student Registration | `docs/en/erd/05-registration.md` | 5 |
+| Daily Execution | `docs/en/erd/06-daily.md` | 3 |
+| Mentoring & Teams | `docs/en/erd/07-mentoring.md` | 4 |
+| Assignments & Submissions | `docs/en/erd/08-assignment.md` | 3 |
+| Assessment & Grading | `docs/en/erd/09-assessment.md` | 6 |
+| Reports & Certification | `docs/en/erd/10-report.md` | 4 |
+| Guidance & Incidents | `docs/en/erd/11-guidance.md` | 3 |
+| Evaluations & Notifications | `docs/en/erd/12-evaluation.md` | 3 |
+| Admin & Audit | `docs/en/erd/13-admin.md` | 5 |
+| Infrastructure | `docs/en/erd/14-infra.md` | 11 |
+
+Start with `docs/en/erd/00-erd-index.md` for the master map and conventions.

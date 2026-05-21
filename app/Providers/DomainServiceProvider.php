@@ -18,25 +18,40 @@ class DomainServiceProvider extends ServiceProvider
 {
     private const DOMAIN_PATH = __DIR__.'/../Domain';
 
-    private const VIEWS_PATH = __DIR__.'/../../resources/views';
-
-    /**
-     * Bootstrap domain services.
-     */
     public function boot(): void
     {
-        $this->discoverPolicies();
+        if (config('domain.policies.enabled', true)) {
+            $this->discoverPolicies();
+        }
 
-        $this->discoverLivewireComponents();
+        if (config('domain.livewire.enabled', true)) {
+            $this->discoverLivewireComponents();
+        }
 
-        $this->registerBladeNamespaces();
+        if (config('domain.views.enabled', true)) {
+            $this->registerBladeNamespaces();
+        }
+    }
+
+    protected function registerCommands(): void
+    {
+        if (! config('domain.commands.enabled', true)) {
+            return;
+        }
+
+        $directory = config('domain.commands.directory', 'Console/Commands');
+
+        $this->commands([
+            __DIR__.'/../Domain/Core/Console/Commands',
+            __DIR__.'/../Domain/Setup/Console/Commands',
+            __DIR__.'/../Domain/Auth/Console/Commands',
+            __DIR__.'/../Domain/Admin/Console/Commands',
+            __DIR__.'/../Domain/User/Console/Commands',
+        ]);
     }
 
     /**
      * Auto-discover and register all Livewire components from each domain's Livewire module.
-     *
-     * Components are registered with the alias pattern: {domain}.{kebab-case-name}
-     * Concerns/traits and non-Component classes are skipped.
      */
     private function discoverLivewireComponents(): void
     {
@@ -46,22 +61,32 @@ class DomainServiceProvider extends ServiceProvider
             return;
         }
 
+        $directory = config('domain.livewire.directory', 'Livewire');
+        $excludePaths = config('domain.livewire.exclude_paths', ['Concerns', 'Traits']);
+        $registered = [];
+
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($domainDir, RecursiveDirectoryIterator::SKIP_DOTS),
         );
 
         $phpFiles = new RegexIterator($iterator, '/^.+\.php$/i', RegexIterator::GET_MATCH);
 
-        $registered = [];
-
         foreach ($phpFiles as $fileList) {
             $filePath = $fileList[0];
 
-            if (! str_contains($filePath, '/Livewire/')) {
+            if (! str_contains($filePath, '/'.$directory.'/')) {
                 continue;
             }
 
-            if (str_contains($filePath, '/Concerns/') || str_contains($filePath, '/Traits/')) {
+            $shouldSkip = false;
+            foreach ($excludePaths as $excluded) {
+                if (str_contains($filePath, '/'.$excluded.'/')) {
+                    $shouldSkip = true;
+                    break;
+                }
+            }
+
+            if ($shouldSkip) {
                 continue;
             }
 
@@ -78,7 +103,7 @@ class DomainServiceProvider extends ServiceProvider
                 continue;
             }
 
-            preg_match('#/Domain/([^/]+)/Livewire/#', $filePath, $domainMatch);
+            preg_match('#/Domain/([^/]+)/'.$directory.'/#', $filePath, $domainMatch);
             $domain = $domainMatch[1] ?? '';
 
             $alias = Str::kebab($domain).'.'.Str::kebab($className);
@@ -97,10 +122,6 @@ class DomainServiceProvider extends ServiceProvider
 
     /**
      * Auto-discover and register all policies from each domain's Policies directory.
-     *
-     * Convention: {Model}Policy in a domain's Policies/ directory gates
-     * {Model} in the same domain's Models/ directory.
-     * Skips policies that don't have a matching model.
      */
     private function discoverPolicies(): void
     {
@@ -109,6 +130,9 @@ class DomainServiceProvider extends ServiceProvider
         if ($domainDir === false) {
             return;
         }
+
+        $directory = config('domain.policies.directory', 'Policies');
+        $excludePaths = config('domain.policies.exclude_paths', ['Concerns', 'Traits']);
 
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($domainDir, RecursiveDirectoryIterator::SKIP_DOTS),
@@ -119,11 +143,19 @@ class DomainServiceProvider extends ServiceProvider
         foreach ($phpFiles as $fileList) {
             $filePath = $fileList[0];
 
-            if (! str_contains($filePath, '/Policies/')) {
+            if (! str_contains($filePath, '/'.$directory.'/')) {
                 continue;
             }
 
-            if (str_contains($filePath, '/Concerns/') || str_contains($filePath, '/Traits/')) {
+            $shouldSkip = false;
+            foreach ($excludePaths as $excluded) {
+                if (str_contains($filePath, '/'.$excluded.'/')) {
+                    $shouldSkip = true;
+                    break;
+                }
+            }
+
+            if ($shouldSkip) {
                 continue;
             }
 
@@ -145,7 +177,7 @@ class DomainServiceProvider extends ServiceProvider
                 continue;
             }
 
-            preg_match('#/Domain/([^/]+)/Policies/#', $filePath, $domainMatch);
+            preg_match('#/Domain/([^/]+)/'.$directory.'/#', $filePath, $domainMatch);
             $domain = $domainMatch[1] ?? '';
 
             $modelName = preg_replace('/Policy$/', '', $className);
@@ -161,21 +193,20 @@ class DomainServiceProvider extends ServiceProvider
 
     /**
      * Register Blade anonymous component paths for each domain view directory.
-     *
-     * Each resources/views/{domain}/ directory is registered as the
-     * x-{domain}::* Blade component namespace.
      */
     private function registerBladeNamespaces(): void
     {
-        $viewsDir = realpath(self::VIEWS_PATH);
+        $viewsDir = realpath(config('domain.paths.views', self::DOMAIN_PATH.'/../../resources/views'));
 
         if ($viewsDir === false) {
             return;
         }
 
-        $domainDirs = glob($viewsDir.'/*', GLOB_ONLYDIR);
+        $excluded = config('domain.views.exclude_directories', [
+            'components', 'emails', 'errors', 'layouts', 'mcp', 'pdf', 'vendor',
+        ]);
 
-        $excluded = ['components', 'emails', 'errors', 'layouts', 'mcp', 'pdf', 'vendor'];
+        $domainDirs = glob($viewsDir.'/*', GLOB_ONLYDIR);
 
         foreach ($domainDirs as $dir) {
             $name = basename($dir);

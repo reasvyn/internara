@@ -6,6 +6,7 @@ namespace App\Domain\Admin\Models;
 
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\User\Models\User;
+use Database\Factories\GdprDeletionLogFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,5 +28,10 @@ class GdprDeletionLog extends BaseModel
     public function deletedByUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+    protected static function newFactory(): GdprDeletionLogFactory
+    {
+        return GdprDeletionLogFactory::new();
     }
 }

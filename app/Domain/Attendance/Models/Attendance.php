@@ -7,6 +7,7 @@ namespace App\Domain\Attendance\Models;
 use App\Domain\Attendance\Entities\AttendanceStatus as AttendanceStatusEntity;
 use App\Domain\Attendance\Enums\AttendanceStatus;
 use App\Domain\Core\Models\BaseModel;
+use Database\Factories\AttendanceFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +16,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Attendance extends BaseModel
 {
     use HasFactory;
+
+    protected static function newFactory(): AttendanceFactory
+    {
+        return AttendanceFactory::new();
+    }
 
     protected $casts = [
         'date' => 'date',

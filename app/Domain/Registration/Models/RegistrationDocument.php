@@ -6,6 +6,7 @@ namespace App\Domain\Registration\Models;
 
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Registration\Enums\RegistrationDocumentStatus;
+use Database\Factories\RegistrationDocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -40,5 +41,10 @@ class RegistrationDocument extends BaseModel implements HasMedia
     public function verifiedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    protected static function newFactory(): RegistrationDocumentFactory
+    {
+        return RegistrationDocumentFactory::new();
     }
 }

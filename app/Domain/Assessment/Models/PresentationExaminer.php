@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Assessment\Models;
 
 use App\Domain\Core\Models\BaseModel;
+use Database\Factories\PresentationExaminerFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,5 +30,10 @@ class PresentationExaminer extends BaseModel
     public function examiner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'examiner_id');
+    }
+
+    protected static function newFactory(): PresentationExaminerFactory
+    {
+        return PresentationExaminerFactory::new();
     }
 }

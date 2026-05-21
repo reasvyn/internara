@@ -6,13 +6,12 @@ namespace App\Domain\Assignment\Livewire;
 
 use App\Domain\Assignment\Actions\SubmitAssignmentAction;
 use App\Domain\Assignment\Models\Assignment;
-use App\Domain\Assignment\Models\Submission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class Submission extends Component
+class SubmitAssignment extends Component
 {
     use WithFileUploads;
 

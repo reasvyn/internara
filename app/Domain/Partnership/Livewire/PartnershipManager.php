@@ -376,7 +376,7 @@ class PartnershipManager extends BaseRecordManager
         if ($this->selectedIds === []) {
             flash()->warning(__('common.actions.no_records_selected'));
 
-            return;
+            return null;
         }
 
         $partnerships = Partnership::with('company')

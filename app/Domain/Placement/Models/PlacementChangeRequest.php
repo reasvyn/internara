@@ -6,6 +6,7 @@ namespace App\Domain\Placement\Models;
 
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Placement\Enums\PlacementChangeStatus;
+use Database\Factories\PlacementChangeRequestFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -50,5 +51,10 @@ class PlacementChangeRequest extends BaseModel
     public function processor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'processed_by');
+    }
+
+    protected static function newFactory(): PlacementChangeRequestFactory
+    {
+        return PlacementChangeRequestFactory::new();
     }
 }

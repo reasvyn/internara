@@ -6,6 +6,7 @@ namespace App\Domain\Certificate\Models;
 
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\User\Models\User;
+use Database\Factories\CertificateTemplateFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,5 +32,10 @@ class CertificateTemplate extends BaseModel
     public function certificates(): HasMany
     {
         return $this->hasMany(Certificate::class, 'template_id');
+    }
+
+    protected static function newFactory(): CertificateTemplateFactory
+    {
+        return CertificateTemplateFactory::new();
     }
 }

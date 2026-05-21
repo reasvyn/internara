@@ -62,7 +62,7 @@ After installation, visit the application URL. The setup wizard will guide you t
 
 ```bash
 # Queue worker (required for notifications, media, mail)
-php artisan queue:work --daemon
+php artisan queue:work --sleep=3 --tries=3 --max-time=3600
 
 # Scheduler cron entry (runs every minute)
 * * * * * cd /path/to/app && php artisan schedule:run >> /dev/null 2>&1
@@ -154,30 +154,27 @@ server {
 
 ### Dockerfile
 
+See the generated `Dockerfile` in the project root. It installs system
+dependencies, Composer, and npm, then builds the application:
+
 ```dockerfile
 FROM php:8.4-fpm
 
-# System dependencies
 RUN apt-get update && apt-get install -y \
     git unzip curl libpng-dev libonig-dev libxml2-dev zip \
     libpq-dev libzip-dev nodejs npm \
-    && docker-php-ext-install pdo_mysql pdo_pgsql bcmath gd zip intl
+    && docker-php-ext-install pdo_mysql pdo_pgsql bcmath gd zip intl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Application
 WORKDIR /app
 COPY . .
 
-# PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
-
-# Frontend
-RUN npm install && npm run build
-
-# Permissions
-RUN chown -R www-data:www-data storage bootstrap/cache public/storage
+RUN composer install --no-dev --optimize-autoloader \
+    && npm install && npm run build \
+    && chown -R www-data:www-data storage bootstrap/cache public/storage \
+    && php artisan storage:link
 
 USER www-data
 
@@ -187,79 +184,21 @@ CMD ["php-fpm"]
 
 ### Docker Compose
 
-```yaml
-services:
-  app:
-    build: .
-    ports:
-      - "${APP_PORT:-9000}:9000"
-    environment:
-      - APP_ENV=production
-      - DB_CONNECTION=mysql
-      - DB_HOST=db
-      - DB_DATABASE=internara
-      - DB_USERNAME=internara
-      - DB_PASSWORD=${DB_PASSWORD}
-    volumes:
-      - storage_data:/app/storage
-    depends_on:
-      - db
-      - redis
+See the generated `docker-compose.yml` in the project root. Key services:
 
-  queue:
-    build: .
-    command: php artisan queue:work --sleep=3 --tries=3
-    environment:
-      - APP_ENV=production
-    volumes:
-      - storage_data:/app/storage
-    depends_on:
-      - db
-      - redis
+| Service | Purpose | Depends On |
+|---|---|---|
+| `app` | PHP-FPM application server | db, redis |
+| `queue` | Laravel queue worker | db, redis |
+| `reverb` | WebSocket server (real-time) | db, redis |
+| `scheduler` | Laravel scheduler (`schedule:work`) | db |
+| `web` | Nginx reverse proxy | app |
+| `db` | MySQL 8 database | — |
+| `redis` | Redis 7 cache/queue | — |
 
-  reverb:
-    build: .
-    command: php artisan reverb:start
-    environment:
-      - APP_ENV=production
-    ports:
-      - "${REVERB_PORT:-8080}:8080"
-    depends_on:
-      - db
-      - redis
-
-  db:
-    image: mysql:8
-    environment:
-      - MYSQL_DATABASE=internara
-      - MYSQL_USER=internara
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-  redis:
-    image: redis:7-alpine
-
-  scheduler:
-    build: .
-    command: php artisan schedule:work
-    depends_on:
-      - db
-
-  web:
-    image: nginx:alpine
-    ports:
-      - "${NGINX_PORT:-80}:80"
-    volumes:
-      - ./.docker/nginx.conf:/etc/nginx/conf.d/default.conf
-      - storage_data:/app/storage
-    depends_on:
-      - app
-
-volumes:
-  mysql_data:
-  storage_data:
+Run with:
+```bash
+docker compose up -d
 ```
 
 ## Troubleshooting

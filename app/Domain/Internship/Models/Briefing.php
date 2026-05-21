@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\Internship\Models;
 
 use App\Domain\Core\Models\BaseModel;
+use App\Domain\User\Models\User;
+use Database\Factories\BriefingFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,6 +38,11 @@ class Briefing extends BaseModel
     public function attendances(): HasMany
     {
         return $this->hasMany(BriefingAttendance::class, 'briefing_id');
+    }
+
+    protected static function newFactory(): BriefingFactory
+    {
+        return BriefingFactory::new();
     }
 
     public static function hasStudentCompletedMandatoryBriefing(string $userId, string $internshipId): bool

@@ -8,6 +8,7 @@ use App\Domain\Certificate\Enums\CertificateStatus;
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Models\User;
+use Database\Factories\CertificateFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -49,5 +50,10 @@ class Certificate extends BaseModel
     public function revoker(): BelongsTo
     {
         return $this->belongsTo(User::class, 'revoked_by');
+    }
+
+    protected static function newFactory(): CertificateFactory
+    {
+        return CertificateFactory::new();
     }
 }

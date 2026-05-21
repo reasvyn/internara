@@ -17,11 +17,7 @@ return [
     |
     */
 
-    'redirect_domains' => [
-        '*',
-        // 'https://example.com',
-        // 'http://localhost',
-    ],
+    'redirect_domains' => explode(',', (string) env('MCP_REDIRECT_DOMAINS', 'localhost')),
 
     /*
     |--------------------------------------------------------------------------

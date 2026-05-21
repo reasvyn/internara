@@ -8,6 +8,7 @@ use App\Domain\Core\Models\BaseModel;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Schedule\Entities\ScheduleStatus;
 use App\Domain\User\Models\User;
+use Database\Factories\ScheduleFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Schedule extends BaseModel
 {
     use HasFactory;
+
+    protected static function newFactory(): ScheduleFactory
+    {
+        return ScheduleFactory::new();
+    }
 
     protected $casts = [
         'start_at' => 'datetime',

@@ -7,6 +7,7 @@ namespace App\Domain\Placement\Models;
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Placement\Entities\PlacementCapacity;
 use App\Domain\Placement\Entities\PlacementState;
+use Database\Factories\PlacementFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +20,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Placement extends BaseModel
 {
     use HasFactory;
+
+    protected static function newFactory(): PlacementFactory
+    {
+        return PlacementFactory::new();
+    }
 
     protected $table = 'placements';
 

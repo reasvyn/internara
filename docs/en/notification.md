@@ -71,10 +71,7 @@ notifications are automatically retried according to the queue configuration.
 
 Notifications are in `app/Domain/*/Notifications/` organized by domain. The
 custom database channel is at
-`app/Domain/Core/Notifications/CustomDatabaseChannel.php`. The notification
-center Livewire components are in
-`app/Domain/Core/Livewire/NotificationBell.php` and
-`app/Domain/Core/Livewire/NotificationCenter.php`. Broadcast configuration
+`app/Domain/Core/Channels/CustomDatabaseChannel.php`. Broadcast configuration
 is in `config/broadcasting.php` and `config/reverb.php`. Mail configuration
 is in `config/mail.php`. Flash message configuration is in
-`config/flasher.php`.
+`config/flasher.php` (timeout, position, styling set there).

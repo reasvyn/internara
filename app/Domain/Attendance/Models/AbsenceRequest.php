@@ -8,6 +8,7 @@ use App\Domain\Attendance\Entities\AbsenceRequestStatus as AbsenceRequestStatusE
 use App\Domain\Attendance\Enums\AbsenceReasonType;
 use App\Domain\Attendance\Enums\AbsenceRequestStatus;
 use App\Domain\Core\Models\BaseModel;
+use Database\Factories\AbsenceRequestFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AbsenceRequest extends BaseModel
 {
     use HasFactory;
+
+    protected static function newFactory(): AbsenceRequestFactory
+    {
+        return AbsenceRequestFactory::new();
+    }
 
     protected $attributes = [
         'status' => AbsenceRequestStatus::Pending->value,
