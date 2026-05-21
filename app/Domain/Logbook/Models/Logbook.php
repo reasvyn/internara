@@ -7,6 +7,7 @@ namespace App\Domain\Logbook\Models;
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Logbook\Entities\LogbookState;
 use App\Domain\Logbook\Enums\LogbookStatus;
+use App\Domain\User\Models\User;
 use Database\Factories\LogbookFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

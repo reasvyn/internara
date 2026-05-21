@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Domain\Auth\Http\Middleware\CheckRoleMiddleware;
+use App\Domain\Core\Http\Middleware\LogContext;
+use App\Domain\Core\Http\Middleware\SecurityHeaders;
 use App\Domain\Settings\Http\Middleware\SetLocaleMiddleware;
 use App\Domain\Setup\Http\Middleware\ProtectSetupRouteMiddleware;
 use App\Domain\Setup\Http\Middleware\RequireSetupAccessMiddleware;
@@ -31,6 +33,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->web(append: [
+            SecurityHeaders::class,
+            LogContext::class,
             RequireSetupAccessMiddleware::class,
             SetLocaleMiddleware::class,
         ]);

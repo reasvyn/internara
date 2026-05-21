@@ -57,7 +57,7 @@ Design rationale: `DomainException` is intentionally separate from `AppException
 - `BaseEntity` → all business rule objects extend it as `final readonly`.
 - `BasePolicy` → all authorization policies extend it for role/ownership checks.
 - `BaseRecordManager` → all Livewire CRUD tables extend it for search/sort/filter/paginate.
-- `SmartLogger` → the only logger used anywhere. Zero direct `Log::` facade calls in the codebase.
+- `SmartLogger` → primary logger. `Log::withContext()` used only in `LogContext` middleware for request tracing context.
 - `BaseController`, `FormRequest`, `RespondsWithHttp` → foundation for HTTP layer.
 - `LabelEnum`, `StatusEnum`, `ColorableEnum` → contracts that all domain enums implement.
 - `AppException` hierarchy → all exceptions across every domain derive from this tree.

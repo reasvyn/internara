@@ -11,10 +11,10 @@ use App\Domain\Core\Contracts\LabelEnum;
  */
 enum BloodType: string implements LabelEnum
 {
-    case A = 'A';
-    case B = 'B';
-    case AB = 'AB';
-    case O = 'O';
+    case A = 'a';
+    case B = 'b';
+    case AB = 'ab';
+    case O = 'o';
 
     /**
      * Get the human-readable label for the blood type.

@@ -6,20 +6,23 @@ namespace App\Domain\Assessment\Models;
 
 use App\Domain\Assessment\Entities\AssessmentResult;
 use App\Domain\Core\Models\BaseModel;
+use App\Domain\User\Models\User;
 use Database\Factories\AssessmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['registration_id', 'academic_year_id', 'rubric_id', 'evaluator_id', 'type', 'score', 'content', 'feedback', 'finalized_at'])]
 class Assessment extends BaseModel
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $casts = [
         'content' => 'array',
         'score' => 'float',
         'finalized_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function registration(): BelongsTo
