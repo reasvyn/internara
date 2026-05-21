@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Core\Support;
 
+use App\Domain\Core\Exceptions\AppException;
+use App\Domain\Core\Exceptions\DomainException;
 use RuntimeException;
 
 /**
@@ -30,7 +32,7 @@ trait HandlesActionErrors
     {
         try {
             return $callback();
-        } catch (RuntimeException $e) {
+        } catch (RuntimeException|AppException|DomainException $e) {
             throw $e;
         } catch (\Throwable $e) {
             SmartLogger::error($context)

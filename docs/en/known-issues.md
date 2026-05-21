@@ -518,9 +518,9 @@ imports and code navigation.
 | 🟡 | Role enum `func_` prefix value inconsistency | Enums | ⏸️ |
 | 🟡 | Enum label translation inconsistency | Enums | ⏳ |
 | 🟡 | 4 dead contracts + RespondsWithHttp + HasAuditTrail | Architecture | ✅ Fixed |
-| 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
-| 🟡 | BaseAction does not enforce execute() method | Architecture | ⏳ |
-| 🟡 | Translation structural differences | Translation | ⏳ |
+| 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ✅ Fixed |
+| 🟡 | BaseAction does not enforce execute() method | Architecture | ⏸️ Won't fix — PHP covariance limitation |
+| 🟡 | Translation structural differences | Translation | ✅ Fixed |
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
 | 🟢 | Real-time features (Echo + Reverb) not yet active | Future | ⏳ |
 | 🟢 | Queue job formalization not evaluated | Future | ⏳ |
