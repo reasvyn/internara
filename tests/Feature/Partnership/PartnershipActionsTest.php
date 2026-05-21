@@ -143,7 +143,7 @@ describe('TerminatePartnershipAction', function () {
 
         $terminated = app(TerminatePartnershipAction::class)->execute($partnership);
 
-        expect($terminated->status)->toBe('terminated');
+        expect($terminated->status->value)->toBe('terminated');
     });
 });
 
@@ -172,6 +172,6 @@ describe('RenewPartnershipAction', function () {
 
         expect($newPartnership)->toBeInstanceOf(Partnership::class)
             ->and($newPartnership->company_id)->toBe($company->id)
-            ->and($oldPartnership->fresh()->status)->toBe('expired');
+            ->and($oldPartnership->fresh()->status->value)->toBe('expired');
     });
 });

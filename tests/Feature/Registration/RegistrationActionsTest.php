@@ -35,7 +35,7 @@ describe('ApplyAccountAction', function () {
         ]);
 
         expect($application)->toBeInstanceOf(AccountApplication::class)
-            ->and($application->status)->toBe('pending');
+            ->and($application->status->value)->toBe('pending');
     });
 
     it('throws for duplicate email', function () {
@@ -100,7 +100,7 @@ describe('RejectAccountApplicationAction', function () {
         app(RejectAccountApplicationAction::class)->execute($applicationId, $admin, 'Incomplete documents');
 
         $application = AccountApplication::find($applicationId);
-        expect($application->status)->toBe('rejected')
+        expect($application->status->value)->toBe('rejected')
             ->and($application->rejection_reason)->toBe('Incomplete documents');
     });
 });

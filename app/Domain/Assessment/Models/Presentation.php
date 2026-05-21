@@ -6,6 +6,7 @@ namespace App\Domain\Assessment\Models;
 
 use App\Domain\Assessment\Enums\PresentationStatus;
 use App\Domain\Core\Models\BaseModel;
+use App\Domain\Registration\Models\Registration;
 use Database\Factories\PresentationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

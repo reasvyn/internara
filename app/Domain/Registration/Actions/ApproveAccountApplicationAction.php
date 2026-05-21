@@ -7,6 +7,7 @@ namespace App\Domain\Registration\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Mentee\Models\Mentee;
+use App\Domain\Registration\Enums\AccountApplicationStatus;
 use App\Domain\Registration\Models\AccountApplication;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Models\Profile;
@@ -18,7 +19,7 @@ class ApproveAccountApplicationAction extends BaseAction
     {
         $application = AccountApplication::findOrFail($applicationId);
 
-        if ($application->status !== 'pending') {
+        if ($application->status !== AccountApplicationStatus::PENDING) {
             throw new RejectedException('Application is not in pending status.');
         }
 

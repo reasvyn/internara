@@ -89,8 +89,12 @@ describe('RequestPlacementChangeAction', function () {
         $this->actingAs($admin);
 
         $internship = Internship::factory()->create();
+        $currentPlacement = Placement::factory()->create([
+            'internship_id' => $internship->id,
+        ]);
         $registration = Registration::factory()->create([
             'internship_id' => $internship->id,
+            'placement_id' => $currentPlacement->id,
         ]);
         $targetPlacement = Placement::factory()->create([
             'internship_id' => $internship->id,
@@ -103,7 +107,7 @@ describe('RequestPlacementChangeAction', function () {
         ]);
 
         expect($request)->toBeInstanceOf(PlacementChangeRequest::class)
-            ->and($request->status)->toBe('pending');
+            ->and($request->status->value)->toBe('pending');
     });
 });
 
@@ -143,7 +147,7 @@ describe('ApprovePlacementChangeAction', function () {
 
         app(ApprovePlacementChangeAction::class)->execute($request);
 
-        expect($request->fresh()->status)->toBe('approved')
+        expect($request->fresh()->status->value)->toBe('approved')
             ->and($oldPlacement->fresh()->filled_quota)->toBe(0)
             ->and($newPlacement->fresh()->filled_quota)->toBe(1);
     });
@@ -171,7 +175,7 @@ describe('RejectPlacementChangeAction', function () {
 
         app(RejectPlacementChangeAction::class)->execute($request, 'Quota unavailable');
 
-        expect($request->fresh()->status)->toBe('rejected')
+        expect($request->fresh()->status->value)->toBe('rejected')
             ->and($request->fresh()->rejection_reason)->toBe('Quota unavailable');
     });
 });

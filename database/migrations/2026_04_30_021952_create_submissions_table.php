@@ -26,6 +26,9 @@ return new class extends Migration
             $table->foreignUuid('graded_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('graded_at')->nullable();
 
+            $table->foreignUuid('verified_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamp('verified_at')->nullable();
+
             $table->timestamps();
 
             $table->index(['student_id', 'status']);

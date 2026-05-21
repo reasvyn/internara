@@ -19,7 +19,7 @@ class Report extends BaseModel
     use HasFactory;
 
     protected $attributes = [
-        'status' => ReportStatus::Draft->value,
+        'status' => ReportStatus::DRAFT->value,
     ];
 
     protected function casts(): array
