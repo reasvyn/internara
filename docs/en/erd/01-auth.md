@@ -131,7 +131,7 @@ Append-only record of every login attempt. Used for security monitoring and "las
 | id | varchar(36) | PK, UUID | |
 | user_id | varchar(36) | FK → users(id), idx | Identifies the attempting user |
 | ip_address | varchar(45) | NOT NULL, idx | Source IP for geo/abuse analysis |
-| user_agent | varchar(255) | NULLABLE | Browser fingerprint |
+| user_agent | text | NULLABLE | Browser fingerprint |
 | successful | boolean | DEFAULT false | True = authentication passed |
 | failure_reason | varchar(255) | NULLABLE | 'invalid_password', 'locked_account', etc. |
 | latitude | double | NULLABLE | Geo-IP derived |
