@@ -90,7 +90,7 @@ manage their own scheduling issues.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -126,7 +126,6 @@ manage their own scheduling issues.
 dates must fall within the program's date range |
 | Core | BaseAction, BaseModel, SmartLogger |
 
-## Important Rules
 
 - Events must have start and end times that fall within their parent internship program's date 
 range — no events outside the program period are permitted.

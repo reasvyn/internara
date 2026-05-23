@@ -104,7 +104,7 @@ load times under one second.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -146,7 +146,6 @@ relationships) — these are optional associations |
 | Auth | Role enum consumed by DashboardController for role-to-dashboard routing; Apprentice 
 entity for account state checks in dashboards |
 
-## Important Rules
 
 - User extends Authenticatable, NOT BaseModel — this is the only exception to the system-wide 
 BaseModel model convention, required because Authenticatable provides password hashing, remember 

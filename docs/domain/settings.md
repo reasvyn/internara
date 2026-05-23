@@ -90,7 +90,7 @@ across the entire application.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -128,7 +128,6 @@ across the entire application.
 | Core | BaseModel, BaseAction, SmartLogger |
 | User | TestMailNotification (for email testing) |
 
-## Important Rules
 
 - Setting keys must be unique across the entire application — key collisions are rejected at 
 write time with a clear error message.

@@ -93,7 +93,7 @@ optimization decisions.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -167,7 +167,6 @@ creation |
 students, there is nothing to place |
 | Core | BaseAction, BaseModel, SmartLogger, BaseRecordManager |
 
-## Important Rules
 
 - The number of students assigned to a slot must never exceed its total capacity — enforced at 
 the database constraint level.

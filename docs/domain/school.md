@@ -41,7 +41,7 @@ internships/assessments).
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -97,7 +97,6 @@ INACTIVE ──→ ACTIVE (only one at a time)
 | User | Profile model for department association |
 | Shared | CsvHandler for import/export functionality |
 
-## Important Rules
 
 - School follows a single-record pattern — only one school profile exists.
 - At most one academic year can be marked as active at any time; activating a new year

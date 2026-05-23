@@ -84,7 +84,7 @@ tools — it only provides entry points.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -120,7 +120,6 @@ with a student role |
 registration means no mentee state |
 | Core | BaseAction, BaseModel, SmartLogger |
 
-## Important Rules
 
 - A user is a mentee only when they have the student role AND an active registration — this is 
 a derived state, not a separately stored attribute.

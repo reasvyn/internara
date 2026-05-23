@@ -54,7 +54,7 @@ links evaluations to the student's internship context when applicable.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -106,7 +106,6 @@ CREATED ──→ UPDATED (editable until deleted)
 | Registration | Optional link to the student's internship registration for context |
 | Core | BaseAction, BaseModel, BaseEntity, SmartLogger |
 
-## Important Rules
 
 - Each evaluation records who submitted it (evaluator_id) and what type it is (evaluation_type).
 - Mentor evaluations require a mentor_id; other types use the polymorphic target_type/target_id.

@@ -74,7 +74,7 @@ attendance health). Reports can be filtered by date range, status, and demograph
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -151,7 +151,6 @@ policy application |
 | Core | BaseAction for attendance operations, BaseModel for persistence, SmartLogger for audit 
 trail |
 
-## Important Rules
 
 - Attendance records are immutable after a configurable time window (default 24 hours) — 
 corrections require admin override with a logged reason.

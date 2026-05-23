@@ -48,7 +48,7 @@ placements/partnerships, and available placement slots (from Placement domain vi
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -106,7 +106,6 @@ TERMINATED (irreversible)
 | Placement | Placement model for slot statistics and delete guard |
 | Shared | CsvHandler for import/export |
 
-## Important Rules
 
 - A company cannot be deleted if it has any placements or partnerships associated.
 - Only active partnerships can be terminated.

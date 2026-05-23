@@ -109,7 +109,6 @@ Core has no end-user stories — it provides the architectural foundation every 
 |---|---|
 | None | Core is the root of the entire dependency graph. Laravel framework and Spatie packages are its only external dependencies. |
 
-## Important Rules
 
 - Core MUST NOT import any business domain.
 - All domain models extend `BaseModel` (except User which extends `Authenticatable`).

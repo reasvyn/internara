@@ -85,7 +85,7 @@ assigned until the new mentor confirms acceptance.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -144,7 +144,6 @@ registration means no mentorship relationship |
 | User | Mentor and student identity for assignments, display, dashboard, and communication |
 | Core | BaseAction, BaseModel, SmartLogger, BaseRecordManager |
 
-## Important Rules
 
 - Each student must have exactly one primary mentor assigned at all times during an active 
 internship — zero primary mentor is not a valid state.

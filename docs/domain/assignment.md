@@ -74,7 +74,7 @@ entire class) are also supported with a single action.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -148,7 +148,6 @@ DRAFT ──→ SUBMITTED ──→ VERIFIED ──→ GRADED (immutable)
 | Core | BaseAction for operations, BaseModel for persistence, SmartLogger for audit, 
 BaseRecordManager for the teacher CRUD interface |
 
-## Important Rules
 
 - Once finalized, grades cannot be changed without an override record preserving the original 
 grade and documenting the reason.

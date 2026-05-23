@@ -88,7 +88,7 @@ needs a new output format — just implement the driver contract and register it
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -137,7 +137,6 @@ needs a new output format — just implement the driver contract and register it
 audit trail |
 | Media Library | Storing and serving generated document files via spatie/laravel-medialibrary |
 
-## Important Rules
 
 - Documents are immutable after creation — regeneration creates a new version record; the 
 original is preserved for audit.

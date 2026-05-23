@@ -107,7 +107,7 @@ used in all official correspondence, on certificates, and in external verificati
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -174,7 +174,6 @@ submission |
 | Document | Storage and validation of uploaded application documents via media library |
 | Core | BaseAction, BaseModel, SmartLogger, BaseRecordManager |
 
-## Important Rules
 
 - A student can have at most one registration in a non-terminal state (DRAFT, SUBMITTED, 
 UNDER_REVIEW, APPROVED, ACTIVE) at any time — no concurrent active registrations.

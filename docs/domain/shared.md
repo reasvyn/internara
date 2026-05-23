@@ -58,7 +58,6 @@ Shared provides cross-domain utility code. It has no end-user stories — the co
 | Core | Contract interfaces (`LabelEnum`, `StatusEnum`) used by `HasModelStatuses` bridge. |
 | Settings | Theme resolves colors from the settings key-value store (documented exception). |
 
-## Important Rules
 
 - Shared MUST NOT import any business domain (exception: Theme imports Settings for color resolution, documented in arch tests).
 - Shared MUST NOT have Models, Livewire, Controllers, Routes, Views, or migrations.
