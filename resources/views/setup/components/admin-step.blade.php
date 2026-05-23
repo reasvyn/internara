@@ -19,20 +19,20 @@
         <x-mary-input
             label="{{ __('setup.wizard.email_address') }}"
             type="email"
-            wire:model.live="adminForm.email"
+            wire:model.live.debounce.500ms="adminForm.email"
         />
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <x-mary-input
                 label="{{ __('setup.wizard.password') }}"
                 type="password"
-                wire:model.live="adminForm.password"
+                wire:model.live.debounce.500ms="adminForm.password"
             />
 
             <x-mary-input
                 label="{{ __('setup.wizard.confirm_password') }}"
                 type="password"
-                wire:model.live="adminForm.password_confirmation"
+                wire:model.live.debounce.500ms="adminForm.password_confirmation"
             />
         </div>
     </div>

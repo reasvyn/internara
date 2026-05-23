@@ -15,8 +15,8 @@ class DepartmentForm extends Form
     protected function rules(): array
     {
         return [
-            'departmentForm.name' => 'required|string|max:255',
-            'departmentForm.description' => 'nullable|string',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
         ];
     }
 }

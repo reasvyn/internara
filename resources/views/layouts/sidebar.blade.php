@@ -70,8 +70,8 @@
 
         {{-- Mobile Switchers --}}
         <div class="md:hidden border-t border-base-content/10 p-3 flex items-center justify-between">
-            <livewire:core.theme-switcher />
-            <livewire:core.language-switcher />
+            <livewire:shared.theme-switcher />
+            <livewire:shared.lang-switcher />
         </div>
     </aside>
 </div>

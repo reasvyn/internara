@@ -8,13 +8,13 @@
         <x-mary-input
             label="{{ __('setup.wizard.program_name') }}"
             placeholder="{{ __('setup.wizard.program_name_placeholder') }}"
-            wire:model.live="internshipForm.name"
+            wire:model.live.debounce.500ms="internshipForm.name"
         />
 
         <x-mary-textarea
             label="{{ __('setup.wizard.program_description') }}"
             placeholder="{{ __('setup.wizard.program_description_placeholder') }}"
-            wire:model.live="internshipForm.description"
+            wire:model.live.debounce.500ms="internshipForm.description"
             rows="3"
         />
 
@@ -22,13 +22,13 @@
             <x-mary-input
                 label="{{ __('setup.wizard.start_date') }}"
                 type="date"
-                wire:model.live="internshipForm.start_date"
+                wire:model.live.debounce.500ms="internshipForm.start_date"
             />
 
             <x-mary-input
                 label="{{ __('setup.wizard.end_date') }}"
                 type="date"
-                wire:model.live="internshipForm.end_date"
+                wire:model.live.debounce.500ms="internshipForm.end_date"
             />
         </div>
     </div>

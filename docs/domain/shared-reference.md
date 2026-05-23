@@ -1,6 +1,13 @@
 # Shared — API Reference
 
-Total: 6 files
+Total: 8 files
+
+## Livewire Components
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Shared/Livewire/ThemeSwitcher.php` | `ThemeSwitcher` | `Component` | Light/dark/system theme toggle with cookie persistence |
+| `Shared/Livewire/LangSwitcher.php` | `LangSwitcher` | `Component` | EN/ID language toggle with cookie persistence |
 
 ## Support
 

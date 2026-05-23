@@ -17,13 +17,16 @@ class RequireSetupAccessMiddleware
             return $next($request);
         }
 
-        $isSetupRoute = $request->is('setup');
-        $isLivewire = $request->hasHeader('X-Livewire') || $request->is('livewire/*');
+        $path = public_path(urldecode($request->path()));
 
-        if (! $isSetupRoute && ! $isLivewire) {
-            return redirect()->route('setup');
+        if (file_exists($path) && ! is_dir($path)) {
+            return $next($request);
         }
 
-        return $next($request);
+        if ($request->hasHeader('X-Livewire') || $request->is('setup')) {
+            return $next($request);
+        }
+
+        return redirect()->route('setup');
     }
 }

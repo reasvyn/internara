@@ -1,3 +1,3 @@
 <div {{ $attributes->merge(['class' => 'flex items-center']) }}>
-    <livewire:core.language-switcher />
+    <livewire:shared.lang-switcher />
 </div>

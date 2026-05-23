@@ -9,46 +9,46 @@
             <x-mary-input
                 label="{{ __('setup.wizard.school_name') }}"
                 placeholder="{{ __('setup.wizard.school_name_placeholder') }}"
-                wire:model.live="schoolForm.name"
+                wire:model.live.debounce.500ms="schoolForm.name"
             />
         </div>
 
         <x-mary-input
             label="{{ __('setup.wizard.school_code') }}"
             placeholder="{{ __('setup.wizard.school_code_placeholder') }}"
-            wire:model.live="schoolForm.institutional_code"
+            wire:model.live.debounce.500ms="schoolForm.institutional_code"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_email') }}"
             type="email"
             placeholder="{{ __('setup.wizard.school_email_placeholder') }}"
-            wire:model.live="schoolForm.email"
+            wire:model.live.debounce.500ms="schoolForm.email"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_phone') }}"
             placeholder="{{ __('setup.wizard.school_phone_placeholder') }}"
-            wire:model.live="schoolForm.phone"
+            wire:model.live.debounce.500ms="schoolForm.phone"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_website') }}"
             type="url"
             placeholder="{{ __('setup.wizard.school_website_placeholder') }}"
-            wire:model.live="schoolForm.website"
+            wire:model.live.debounce.500ms="schoolForm.website"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_address') }}"
             placeholder="{{ __('setup.wizard.school_address') }}"
-            wire:model.live="schoolForm.address"
+            wire:model.live.debounce.500ms="schoolForm.address"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.principal_name') }}"
             placeholder="{{ __('setup.wizard.principal_name_placeholder') }}"
-            wire:model.live="schoolForm.principal_name"
+            wire:model.live.debounce.500ms="schoolForm.principal_name"
         />
     </div>
 

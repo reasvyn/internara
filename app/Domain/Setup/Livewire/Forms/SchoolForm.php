@@ -25,13 +25,13 @@ class SchoolForm extends Form
     protected function rules(): array
     {
         return [
-            'schoolForm.name' => 'required|string|max:255',
-            'schoolForm.institutional_code' => 'required|string|max:50',
-            'schoolForm.email' => 'required|email|max:255',
-            'schoolForm.address' => 'nullable|string',
-            'schoolForm.phone' => 'nullable|string|max:20',
-            'schoolForm.website' => 'nullable|url|max:255',
-            'schoolForm.principal_name' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'institutional_code' => 'required|string|max:50',
+            'email' => 'required|email|max:255',
+            'address' => 'nullable|string',
+            'phone' => 'nullable|string|max:20',
+            'website' => 'nullable|url|max:255',
+            'principal_name' => 'nullable|string|max:255',
         ];
     }
 }
