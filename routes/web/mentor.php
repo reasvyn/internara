@@ -7,8 +7,7 @@ use App\Domain\Mentor\Livewire\AssessInternship;
 use App\Domain\Mentor\Livewire\ReportNotes;
 use App\Domain\Mentor\Livewire\ReportReview;
 use App\Domain\Mentor\Livewire\Supervision\SupervisorLogManager;
-use App\Domain\Mentor\Livewire\SupervisorDashboard;
-use App\Domain\Mentor\Livewire\TeacherDashboard;
+
 
 Route::prefix('supervision')
     ->name('supervision.')
@@ -22,7 +21,6 @@ Route::prefix('teacher')
     ->name('teacher.')
     ->middleware(['auth', 'role:teacher'])
     ->group(function () {
-        Route::livewire('/dashboard', TeacherDashboard::class)->name('dashboard');
         Route::livewire('/submissions/grading', SubmissionGrading::class)->name('submissions.grading');
         Route::livewire('/assess-internship', AssessInternship::class)->name('assess-internship');
     });
@@ -31,7 +29,6 @@ Route::prefix('supervisor')
     ->name('supervisor.')
     ->middleware(['auth', 'role:supervisor'])
     ->group(function () {
-        Route::livewire('/dashboard', SupervisorDashboard::class)->name('dashboard');
         Route::livewire('/reports/notes', ReportNotes::class)->name('reports.notes');
     });
 

@@ -1,0 +1,65 @@
+<div>
+    <div class="mb-6">
+        <h2 class="text-xl font-bold">{{ __('dashboard.title') }}</h2>
+        <p class="text-sm text-base-content/50">{{ __('dashboard.subtitle', ['name' => auth()->user()->name]) }}</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <x-mary-stat
+            :title="__('dashboard.stats.supervised_students')"
+            value="{{ $this->supervisedStudents }}"
+            icon="o-users"
+            class="bg-base-100 border border-base-content/10 rounded-xl"
+            color="text-primary"
+        />
+        <x-mary-stat
+            :title="__('dashboard.stats.pending_journals')"
+            value="{{ $this->pendingJournals }}"
+            icon="o-book-open"
+            class="bg-base-100 border border-base-content/10 rounded-xl"
+            color="text-warning"
+        />
+        <x-mary-stat
+            :title="__('dashboard.stats.active_companies')"
+            value="{{ $this->activeCompanies }}"
+            icon="o-building-office"
+            class="bg-base-100 border border-base-content/10 rounded-xl"
+            color="text-secondary"
+        />
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2">
+            <x-mary-card class="bg-base-100 border border-base-content/10">
+                <x-slot:title>
+                    <span class="font-semibold">{{ __('dashboard.teacher.recent_journals') }}</span>
+                </x-slot:title>
+                <div class="flex flex-col items-center justify-center py-12 text-base-content/20">
+                    <x-mary-icon name="o-clipboard-document-check" class="size-12 mb-3" />
+                    <span class="text-xs font-medium">{{ __('dashboard.teacher.no_journals') }}</span>
+                </div>
+            </x-mary-card>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <x-mary-card class="bg-base-100 border border-base-content/10 text-center">
+                <div class="flex flex-col items-center py-4">
+                    <x-mary-avatar placeholder="{{ auth()->user()->initials() }}" class="!w-16 !h-16 mb-3" />
+                    <h3 class="font-semibold">{{ auth()->user()->name }}</h3>
+                    <p class="text-xs text-base-content/50 mt-0.5">{{ auth()->user()->getRoleNames()->first() }}</p>
+                    <div class="w-full mt-4">
+                        <x-mary-button :label="__('dashboard.profile.edit')" icon="o-user" class="btn-ghost btn-sm w-full" link="{{ route('profile') }}" />
+                    </div>
+                </div>
+            </x-mary-card>
+
+            <x-mary-button
+                :label="__('dashboard.teacher.guidance_logs')"
+                icon="o-clipboard-check"
+                class="btn-primary h-16 rounded-xl font-medium shadow-none"
+                link="{{ route('supervision.logs') }}"
+                wire:navigate
+            />
+        </div>
+    </div>
+</div>

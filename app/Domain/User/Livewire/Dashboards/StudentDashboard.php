@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Mentee\Livewire;
+namespace App\Domain\User\Livewire\Dashboards;
 
 use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Actions\GetStudentDashboardDataAction;
@@ -37,6 +37,6 @@ class StudentDashboard extends Component
     #[Layout('layouts::app')]
     public function render(): View
     {
-        return view('mentee.dashboard');
+        return view('user.dashboards.student');
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Admin\Livewire;
+namespace App\Domain\User\Livewire\Dashboards;
 
 use App\Domain\Admin\Actions\GetAdminDashboardStatsAction;
 use App\Domain\Admin\Actions\SendNotificationAction;
@@ -39,7 +39,6 @@ class AdminDashboard extends Component
         $this->totalDepartments = $stats['totalDepartments'];
         $this->activeInternships = $stats['activeInternships'];
 
-        // Send welcome notification on first dashboard visit for Super Admin
         $user = auth()->user();
         if ($user->hasRole('super_admin')) {
             $hasWelcome = Notification::where('user_id', $user->id)
@@ -69,7 +68,7 @@ class AdminDashboard extends Component
     #[Layout('layouts::app')]
     public function render(): View
     {
-        return view('admin.dashboard', [
+        return view('user.dashboards.admin', [
             'stats' => [
                 'students' => $this->totalStudents,
                 'teachers' => $this->totalTeachers,

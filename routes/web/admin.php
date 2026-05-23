@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Domain\Admin\Livewire\AdminDashboard;
 use App\Domain\Admin\Livewire\AdminManager;
 use App\Domain\Admin\Livewire\AnnouncementManager;
 use App\Domain\Admin\Livewire\GdprDeletionLogs;
@@ -17,8 +16,6 @@ Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
-        Route::livewire('/dashboard', AdminDashboard::class)->name('dashboard');
-
         Route::prefix('users')->name('users.')->group(function () {
             Route::livewire('/', UserManager::class)->name('index');
             Route::livewire('/admins', AdminManager::class)->name('admins');
