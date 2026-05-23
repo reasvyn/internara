@@ -1,4 +1,4 @@
-<x-ui::page-header :title="__('placement_change.request_title')" :subtitle="__('placement_change.request_subtitle')" />
+<x-shared::ui.page-header :title="__('placement_change.request_title')" :subtitle="__('placement_change.request_subtitle')" />
 
 <div class="max-w-2xl mx-auto mt-6">
     @if(!$registration)

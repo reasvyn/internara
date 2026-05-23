@@ -1,4 +1,4 @@
-<x-ui::record-manager
+<x-shared::ui.record-manager
     :title="__('briefing.title')"
     :subtitle="__('briefing.subtitle')"
 >
@@ -75,4 +75,4 @@
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
-</x-ui::record-manager>
+</x-shared::ui.record-manager>

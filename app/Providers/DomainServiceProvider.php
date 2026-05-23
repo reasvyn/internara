@@ -4,8 +4,21 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Admin\Actions\SendNotificationAction;
+use App\Domain\Auth\Policies\UserPolicy;
+use App\Domain\Core\Contracts\SendsNotifications;
 use App\Domain\Core\Policies\BasePolicy;
+use App\Domain\Internship\Policies\CompanyPolicy;
+use App\Domain\Internship\Policies\InternshipRegistrationPolicy;
+use App\Domain\Partnership\Models\Company;
+use App\Domain\Placement\Models\Placement;
+use App\Domain\Placement\Policies\InternshipPlacementPolicy;
+use App\Domain\Registration\Models\Registration;
+use App\Domain\Setup\Events\SetupFinalized;
+use App\Domain\Setup\Listeners\LogSetupFinalized;
+use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -18,6 +31,11 @@ use RegexIterator;
 class DomainServiceProvider extends ServiceProvider
 {
     private const DOMAIN_PATH = __DIR__.'/../Domain';
+
+    public function register(): void
+    {
+        $this->app->bind(SendsNotifications::class, SendNotificationAction::class);
+    }
 
     public function boot(): void
     {
@@ -32,6 +50,21 @@ class DomainServiceProvider extends ServiceProvider
         if (config('domain.views.enabled', true)) {
             $this->registerBladeNamespaces();
         }
+
+        // Cross-domain Blade component namespaces not covered by auto-discovery
+        Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
+
+        // Cross-domain event listeners
+        Event::listen(
+            SetupFinalized::class,
+            [LogSetupFinalized::class, 'handle'],
+        );
+
+        // Cross-domain policy registrations (auto-discovery handles domain patterns)
+        Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Placement::class, InternshipPlacementPolicy::class);
+        Gate::policy(Registration::class, InternshipRegistrationPolicy::class);
+        Gate::policy(Company::class, CompanyPolicy::class);
     }
 
     protected function registerCommands(): void

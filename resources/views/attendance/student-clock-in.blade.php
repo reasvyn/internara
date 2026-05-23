@@ -1,7 +1,7 @@
 <div>
     <x-slot:title>Attendance</x-slot:title>
 
-    <x-ui::page-header title="Attendance" description="Clock in and out for your internship." />
+    <x-shared::ui.page-header title="Attendance" description="Clock in and out for your internship." />
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <x-mary-card>

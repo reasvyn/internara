@@ -1,7 +1,7 @@
 <div>
     <x-slot:title>Absence Request</x-slot:title>
 
-    <x-ui::page-header title="Absence Request" description="Submit an absence request for your internship." />
+    <x-shared::ui.page-header title="Absence Request" description="Submit an absence request for your internship." />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <x-mary-card>

@@ -1,4 +1,4 @@
-<x-ui::record-manager
+<x-shared::ui.record-manager
     :title="__('certificate.title')"
     :subtitle="__('certificate.subtitle')"
 >
@@ -48,4 +48,4 @@
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
-</x-ui::record-manager>
+</x-shared::ui.record-manager>

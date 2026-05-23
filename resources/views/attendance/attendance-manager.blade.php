@@ -1,7 +1,7 @@
 <div>
     <x-slot:title>Attendance</x-slot:title>
 
-    <x-ui::page-header title="Attendance Management" description="Record daily attendance for your supervised students." />
+    <x-shared::ui.page-header title="Attendance Management" description="Record daily attendance for your supervised students." />
 
     <x-mary-card>
         <div class="flex gap-4 mb-6 items-end">

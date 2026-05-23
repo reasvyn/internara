@@ -1,5 +1,5 @@
 <div>
-    <x-ui::page-header :title="__('evaluation.title')" :subtitle="__('evaluation.subtitle')" />
+    <x-shared::ui.page-header :title="__('evaluation.title')" :subtitle="__('evaluation.subtitle')" />
 
     <div class="mt-6 max-w-2xl mx-auto space-y-4">
         <x-mary-card>

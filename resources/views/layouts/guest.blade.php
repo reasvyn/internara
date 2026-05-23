@@ -6,12 +6,12 @@
             <div class="container mx-auto px-6 lg:px-12">
                 <div class="flex items-center justify-between h-16">
                     <a wire:navigate href="/" class="flex items-center gap-3">
-                        <x-ui::brand size="sm" :invert="false" />
+                        <x-shared::ui.brand size="sm" :invert="false" />
                     </a>
 
                     <div class="flex items-center gap-3">
-                        <x-ui::theme-switcher />
-                        <x-ui::lang-switcher />
+                        <x-shared::ui.theme-switcher />
+                        <x-shared::ui.lang-switcher />
                     </div>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                 @isset($footer)
                     {{ $footer }}
                 @else
-                    <x-ui::credits />
+                    <x-shared::ui.credits />
                 @endisset
             </div>
         </footer>

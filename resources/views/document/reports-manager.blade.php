@@ -1,7 +1,7 @@
 <div>
     <x-slot:title>Reports</x-slot:title>
 
-    <x-ui::page-header title="Reports" />
+    <x-shared::ui.page-header title="Reports" />
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         @foreach($types as $key => $label)

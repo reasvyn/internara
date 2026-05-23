@@ -12,7 +12,7 @@
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
                     <x-mary-input :label="__('announcement.fields.title')" wire:model="title" />
-                    <x-ui::markdown-editor :label="__('announcement.fields.message')" model="message" rows="6" :hint="__('announcement.markdown_hint')" />
+                    <x-shared::ui.markdown-editor :label="__('announcement.fields.message')" model="message" rows="6" :hint="__('announcement.markdown_hint')" />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <x-mary-select :label="__('announcement.fields.type')" wire:model="type"
                             :options="[

@@ -6,7 +6,7 @@
     <aside class="bg-base-100 min-h-screen w-64 border-r border-base-content/10 flex flex-col">
         <div class="h-16 px-6 border-b border-base-content/10 flex items-center shrink-0">
             <a wire:navigate href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                <x-ui::brand size="md" :with-tagline="false" :invert="false" />
+                <x-shared::ui.brand size="md" :with-tagline="false" :invert="false" />
             </a>
         </div>
 

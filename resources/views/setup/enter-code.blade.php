@@ -5,12 +5,12 @@
         <header class="border-b border-base-content/10">
             <div class="max-w-5xl mx-auto px-6 lg:px-12">
                 <div class="flex items-center justify-between h-16">
-                    <x-ui::brand size="sm" :invert="false" />
+                    <x-shared::ui.brand size="sm" :invert="false" />
 
                     <div class="flex items-center gap-2">
-                        <x-ui::theme-switcher class="px-2" />
+                        <x-shared::ui.theme-switcher class="px-2" />
                         <div class="w-px h-5 bg-base-content/10"></div>
-                        <x-ui::lang-switcher class="px-2" />
+                        <x-shared::ui.lang-switcher class="px-2" />
                     </div>
                 </div>
             </div>

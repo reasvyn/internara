@@ -106,7 +106,7 @@
     </div>
 
     {{-- Confirm Dialog --}}
-    <x-ui::confirm
+    <x-shared::ui.confirm
         wire:model="showConfirm"
         :message="$confirmMessage"
         confirmText="{{ __('common.actions.confirm') }}"

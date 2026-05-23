@@ -8,10 +8,10 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <x-widgets::stat-card :title="__('dashboard.stats.total_students')" :value="$stats['students']" icon="o-users" color="text-primary" />
-        <x-widgets::stat-card :title="__('dashboard.stats.instructors')" :value="$stats['teachers']" icon="o-academic-cap" color="text-secondary" />
-        <x-widgets::stat-card :title="__('dashboard.stats.departments')" :value="$stats['departments']" icon="o-building-library" color="text-accent" />
-        <x-widgets::stat-card :title="__('dashboard.stats.active_programs')" :value="$stats['internships']" icon="o-briefcase" color="text-info" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.total_students')" :value="$stats['students']" icon="o-users" color="text-primary" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.instructors')" :value="$stats['teachers']" icon="o-academic-cap" color="text-secondary" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.departments')" :value="$stats['departments']" icon="o-building-library" color="text-accent" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.active_programs')" :value="$stats['internships']" icon="o-briefcase" color="text-info" />
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -34,7 +34,7 @@
         </div>
 
         <div class="flex flex-col gap-4">
-            <x-widgets::profile-summary :showEdit="true" />
+            <x-shared::widgets.profile-summary :showEdit="true" />
             <x-mary-card class="bg-gradient-to-br from-primary to-primary/80 text-white border-none">
                 <div class="py-2">
                     <h4 class="font-semibold mb-1">{{ __('dashboard.help_title') }}</h4>

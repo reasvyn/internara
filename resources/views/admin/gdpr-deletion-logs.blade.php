@@ -1,7 +1,7 @@
 <div>
     <x-slot:title>GDPR Deletion Logs</x-slot:title>
 
-    <x-ui::page-header title="GDPR Deletion Logs" />
+    <x-shared::ui.page-header title="GDPR Deletion Logs" />
 
     <x-mary-card>
         <div class="flex gap-4 mb-4">
