@@ -81,28 +81,28 @@ The verification endpoint is rate-limited to prevent abuse but otherwise unrestr
 
 ### User Stories & Rules
 
+**Template Management**
 - **Admin:** As an admin, I want to create certificate templates with branding and layout so that certificates reflect the institution's identity
+- Certificate templates cannot be deleted if any issued certificate references that template version
+- Each issued certificate records the exact template version used, enabling perfect visual reconstruction for audit
+
+**Issuance**
 - **Admin:** As an admin, I want to issue certificates individually or in batch so that completed students receive their credentials
+- **System:** As the system, I want to generate unique serial numbers so that every certificate is unambiguously identifiable
+- Certificates can only be issued for registrations with COMPLETED status — no other status qualifies, no overrides permitted
+- Serial numbers are unique, strictly sequential, and permanently retired after revocation — no reuse, no gaps filled
+- Batch issuance processes each certificate independently — one failure does not block the entire batch
+- Issued certificates are entirely immutable — any correction requires revocation of the old certificate and issuance of a new one
+
+**Revocation**
 - **Admin:** As an admin, I want to revoke a certificate when necessary so that the credentialing system remains trustworthy
+- **System:** As the system, I want to permanently retire revoked serial numbers so that verification remains unambiguous
+- Revocation is irreversible — there is no undo, no un-revoke mechanism, no grace period
+
+**Student & Public Access**
 - **Student:** As a student, I want to download my certificate so that I can present it to employers
 - **Third-party:** As an employer, I want to verify a certificate's authenticity via a public endpoint so that I can confirm a candidate's credentials
-- **System:** As the system, I want to generate unique serial numbers so that every certificate is unambiguously identifiable
-- **System:** As the system, I want to permanently retire revoked serial numbers so that verification remains unambiguous
-- Certificates can only be issued for registrations with COMPLETED status — no other status 
-qualifies, no overrides permitted.
-- Serial numbers are unique, strictly sequential, and permanently retired after revocation — no 
-reuse, no gaps filled.
-- Issued certificates are entirely immutable — any correction requires revocation of the old 
-certificate and issuance of a new one with a new serial number.
-- Revocation is irreversible — there is no undo, no un-revoke mechanism, no grace period.
-- Certificate templates cannot be deleted if any issued certificate references that template 
-version.
-- The public verification endpoint requires no authentication and must remain accessible without 
-login.
-- Each issued certificate records the exact template version used, enabling perfect visual 
-reconstruction for audit.
-- Batch issuance processes each certificate independently — one failure does not block the 
-entire batch.
+- The public verification endpoint requires no authentication and must remain accessible without login
 
 ### Process Flow
 
