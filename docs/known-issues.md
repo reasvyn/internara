@@ -156,23 +156,91 @@ This does not create a security gap — the arch tests are structural safeguards
 not runtime protections. The actual dependency graph is enforced at the code
 level through namespace conventions and code review.
 
-## Setup Wizard — Resolved Issues
+## Auth Domain — Known Issues
 
-The following Setup Wizard issues were found during audit and have been fixed:
+### A1. Hardcoded Flash Messages Without Translation 🟡
 
-| ID | Issue | Severity | Fix |
-|---|---|---|---|
-| **S1** | Step 5 validation forced optional internship fields | 🟠 | Validation now conditional via `InternshipForm::isFilled()` |
-| **S2** | Race condition on double-finalize | 🔴 | Added `lockForUpdate()` + pre-check outside transaction |
-| **S3** | Setup wizard documentation out of sync | 🟢 | Updated Finalize diagram to separate DB txn from file save |
-| **S4** | Session persistence not documented | 🟢 | Added session persistence note in `docs/setup-wizard.md` |
-| **C2** | Setup token in URL query param (logs/history leak) | 🔴 | Added code entry form at `/setup` and `POST` token validation |
-| **H3** | Environment auditor uses hardcoded default DB credentials | 🟠 | Added `forge` credential rejection in `testDatabaseConnection()` |
-| **M6** | Install audit does not validate env var template values | 🟡 | Added `warnTemplateEnvValues()` in `SetupInstallCommand` |
-| **M7** | PII in session without cleanup guarantee | 🟡 | Added `POST /setup/cleanup` route + Alpine `beforeunload` sendBeacon |
-| **P1** | Setup wizard uses inline arrays instead of Form Objects | 🟡 | Migrated to `SchoolForm`, `DepartmentForm`, `AdminForm`, `InternshipForm` |
+**Files:**
+- `app/Domain/Auth/Livewire/AccountLifecycleManager.php:29` — `flash()->success('Account locked successfully.')`
+- `app/Domain/Auth/Livewire/AccountLifecycleManager.php:37` — `flash()->success('Account unlocked successfully.')`
+- `app/Domain/Auth/Livewire/RecoverySlipManager.php:48` — `flash()->success('Recovery slip generated successfully.')`
+- `app/Domain/Auth/Livewire/AccessManager.php:49` — `flash()->success('Permissions updated successfully.')`
+- `app/Domain/Auth/Livewire/ConfirmPassword.php:23` — `flash()->success(__('auth.password_confirmed') ?? 'Password confirmed.')`
 
-## Pending Long-Term Items
+Four components use hardcoded English strings instead of `__()`. The
+`ConfirmPassword` component uses a fallback with `??` which is unnecessary
+when the lang key is properly defined.
+
+**Impact:** English text will display even when locale is `id`. Cannot be
+translated.
+
+**Fix:** Replace hardcoded strings with `__()` lang keys.
+
+### A2. Password Strength Validation Inconsistency 🟡
+
+**Files:**
+- `app/Domain/Auth/Actions/UpdateUserPasswordAction.php:132-134` — uses `['required', 'string', 'min:8']`
+- `app/Domain/Auth/Actions/ResetUserPasswordAction.php:10` — uses `Str::random(10)` without mixed-case guarantee
+- `app/Domain/Setup/Livewire/Forms/AdminForm.php` — uses `Password::min(8)->mixedCase()->numbers()`
+
+The self-service password change (`UpdateUserPasswordAction`) and
+admin-initiated password reset (`ResetUserPasswordAction`) have weaker
+validation than the setup wizard's `AdminForm`. The `ResetUserPasswordAction`
+generates a random 10-character password that may contain only lowercase
+letters, failing the mixed-case requirement used elsewhere.
+
+**Impact:** Users can set passwords without uppercase letters or digits via
+some flows, creating inconsistency with the setup wizard's enforced standard.
+
+**Fix:**
+- `UpdateUserPasswordAction`: replace `min:8` with `Password::min(8)->mixedCase()->numbers()`
+- `ResetUserPasswordAction`: use `Str::password(12)` (Laravel 11+) or a helper
+  that guarantees mixed-case characters
+
+### A3. `#[Validate]` Attribute Inconsistency in AccountRecovery 🟢
+
+**File:** `app/Domain/Auth/Livewire/AccountRecovery.php:1817-1825`
+
+The component uses a `rules(): array` method instead of `#[Validate]`
+attributes, unlike Login, ForgotPassword, ResetPassword, and ConfirmPassword
+which all use the attribute pattern:
+
+```php
+// Other components (consistent pattern):
+#[Validate('required|string')]
+public string $password = '';
+
+// AccountRecovery (inconsistent):
+public function rules(): array
+{
+    return [
+        'username' => 'required|string',
+        'recoveryCode' => 'required|string|size:12',
+        'password' => 'required|string|min:8|confirmed',
+        'password_confirmation' => 'required|string',
+    ];
+}
+```
+
+**Impact:** Minor inconsistency. Both patterns work functionally, but mixing
+styles reduces predictability for developers.
+
+**Fix:** Migrate to `#[Validate]` attributes.
+
+### A4. Auth Views Not Audited 🟢
+
+**Files:** `resources/views/auth/*.blade.php` (8 files)
+
+The Login, ForgotPassword, ResetPassword, ConfirmPassword, AccountRecovery,
+RecoveryCode, RecoverySlipManager, and AccessManager views have not been
+audited for:
+- Missing translation keys
+- Inconsistent wire:model patterns
+- Outdated Livewire alias references (e.g., `livewire:core.*`)
+- Accessibility issues
+
+**Impact:** Views may contain hardcoded text, old aliases, or other issues
+not caught during the component-level audit.
 
 ## Domain Models (Layer 5) & Domain Rules (Layer 6)
 
@@ -305,6 +373,8 @@ required pattern.
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
 | 🟡 | Livewire Form Object migration (79 components remaining) | Architecture | ⏳ |
+| 🟡 | **A1** Auth hardcoded flash messages (5 locations) | Auth | ⏳ |
+| 🟡 | **A2** Password strength inconsistency across flows | Auth | ⏳ |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ⏳ |
 | 🟡 | CsvHandler fragile magic string protocol | Shared | ⏳ |
 | 🟡 | LangChecker contradicts "stateless" rule | Shared | ⏳ |
@@ -321,16 +391,4 @@ required pattern.
 | 🟢 | App version in UI footer | Security | ⏳ |
 | 🟢 | No rate limiting on RecoverSuperAdminAction | Security | ⏳ |
 
-### ✅ Resolved — System Initialization Phase
 
-| Severity | Issue | Fix |
-|---|---|---|
-| 🔴 | **S2** Race condition on double-finalize | `lockForUpdate()` + pre-check |
-| 🔴 | **C2** Setup token in URL (logs/history leak) | Code entry form + POST validation |
-| 🟠 | **S1** Step 5 validation forces optional fields | Conditional validation via `isFilled()` |
-| 🟠 | **H3** Environment auditor forge credentials | Reject `forge` username/database |
-| 🟡 | **M6** Install audit no env var validation | `warnTemplateEnvValues()` scanner |
-| 🟡 | **M7** PII in session without cleanup | `beforeunload` + cleanup route |
-| 🟡 | **P1** Setup wizard inline arrays | 4 Form Objects (School, Dept, Admin, Internship) |
-| 🟢 | **S3** Setup wizard docs out of sync | Finalize diagram updated |
-| 🟢 | **S4** Session persistence undocumented | Added to setup-wizard.md |
