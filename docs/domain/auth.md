@@ -31,14 +31,25 @@ beyond authentication events (Admin domain), GDPR compliance workflows (Admin do
 
 ## Key Concepts
 
-**Authentication.** Users authenticate with their email address and password. The login process 
-performs three validations in sequence: (1) credential verification — does the email exist and 
-does the password match; (2) account status check — does the account's current status permit 
-login (PROVISIONED, SUSPENDED, and ARCHIVED accounts are blocked); (3) rate limit check — has 
-this IP or email exceeded the maximum consecutive failed attempts. Every login attempt, 
-successful or failed, is recorded with IP address, user agent, timestamp, and outcome. Successful 
-logins may trigger additional actions: redirecting first-time users to the setup wizard, flagging 
-accounts with expired passwords, or challenging with additional verification if enabled.
+**Authentication.** Users authenticate with their email address or username and password. The 
+login process performs four validations in sequence: (1) user resolution — does the email or 
+username exist; (2) account status check — does the account's current status permit login 
+(PROVISIONED, SUSPENDED, ARCHIVED, and LOCKED accounts are blocked); (3) credential verification 
+— does the password match the stored hash; (4) auto-lock protection — after 10 consecutive 
+failed attempts, the account is automatically locked with reason `too_many_failed_attempts`.
+Failed attempt counters are stored in cache for 1 hour and reset on successful login.
+
+Every login attempt, successful or failed, is logged via SmartLogger with user ID, identifier,
+and attempt count. A global `AuthThrottleMiddleware` limits all auth endpoints to 30 requests
+per minute per IP, with per-endpoint inline rate limiters providing additional protection:
+
+| Endpoint | Limit | Decay |
+|---|---|---|
+| Login | 5 attempts | 60 seconds |
+| Forgot password | 3 attempts | 3600 seconds |
+| Reset password | 5 attempts | 300 seconds |
+| Confirm password | 5 attempts (NEW) | 300 seconds |
+| Account recovery | 3 attempts | 300 seconds |
 
 **Role-Based Access Control.** Five user roles define access levels: SUPER_ADMIN (unrestricted 
 system access), ADMIN (operational management access), TEACHER (educational supervision), STUDENT 
@@ -61,13 +72,11 @@ path. A special state, PROTECTED, applies to super admin accounts — it is immu
 at least one super admin account always exists in the system. Each transition has explicit 
 preconditions and side effects.
 
-**Account Recovery.** Two recovery mechanisms exist. Password reset: a self-service flow where 
-users request a password reset email, click a time-limited link, and set a new password. This 
-works when the user can still access their email. Recovery slips: when the user cannot access 
-their email (locked out, email inaccessible), an admin generates a recovery slip containing a 
-single-use, time-limited recovery code. The user presents this code to unlock their account and 
-reset their password. Recovery slips are the offline-capable, admin-mediated fallback for 
-complete access loss. Both mechanisms are fully audited.
+**Account Recovery.** Three recovery mechanisms exist. See [Account Recovery](../account-recovery.md)
+for complete documentation:
+1. **Password Reset** — self-service flow via email link
+2. **Recovery Slip** — admin-mediated offline codes for locked-out users
+3. **Super Admin Recovery** — CLI-based recovery via `php artisan admin:recover`
 
 **Password Management.** Multiple password workflows: self-service change (user knows current 
 password, provides it for confirmation, sets new password), self-service reset (user forgot 

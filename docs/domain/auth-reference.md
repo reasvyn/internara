@@ -1,6 +1,6 @@
 # Auth — API Reference
 
-Total: 32 files
+Total: 38 files
 
 ## Actions
 
@@ -38,6 +38,7 @@ Total: 32 files
 | File | Class | Description |
 |---|---|---|
 | `Auth/Http/Middleware/CheckRoleMiddleware.php` | `CheckRoleMiddleware` | Middleware that checks user has required role |
+| `Auth/Http/Middleware/AuthThrottleMiddleware.php` | `AuthThrottleMiddleware` | Global rate limit (30 req/min/IP) for all auth endpoints |
 
 ## Form Requests
 
