@@ -290,6 +290,75 @@ required pattern.
 
 ---
 
+## Settings Domain — Known Issues
+
+### SE1. Broken Layout Reference in SystemSetting 🔴
+
+**File:** `app/Domain/Settings/Livewire/SystemSetting.php:286`
+
+```php
+#[Layout('layouts::app', ['title' => 'System Settings'])]
+```
+
+The layout namespace `layouts::app` no longer exists after layouts were moved to
+`resources/views/shared/layouts/`. The auto-discovery registers the `shared`
+namespace, so the correct reference is `shared::layouts.app`.
+
+**Impact:** Loading `/admin/settings` will crash with view namespace error.
+
+**Fix:** `#[Layout('shared::layouts.app', ['title' => 'System Settings'])]`
+
+### SE2. SystemSetting Uses rules() Method Instead of #[Validate] 🟡
+
+**File:** `app/Domain/Settings/Livewire/SystemSetting.php`
+
+The component uses a `rules(): array` method for validation instead of
+`#[Validate]` attributes. This is inconsistent with other refactored components
+(Login, ForgotPassword, ResetPassword, ConfirmPassword, AccountRecovery).
+
+```php
+public function rules(): array
+{
+    return [
+        'brand_name' => 'required|string|max:50',
+        // ... 18 more rules
+    ];
+}
+```
+
+**Impact:** Minor inconsistency. Both patterns work functionally.
+
+**Fix:** Migrate to `#[Validate]` attributes on each property.
+
+### SE3. No Form Objects for Settings Groups 🟡
+
+**File:** `app/Domain/Settings/Livewire/SystemSetting.php`
+
+The component has 25+ inline public properties mixing three distinct concerns:
+
+```php
+// General
+public string $brand_name = '';
+public string $site_title = '';
+public string $default_locale = 'id';
+
+// Branding colors
+public string $primary_color = '';
+public string $secondary_color = '';
+
+// Mail
+public string $mail_host = '';
+public string $mail_port = '587';
+```
+
+Each concern (general, branding, mail) should be a separate Form Object for
+better organization and testability.
+
+**Impact:** Harder to test, harder to maintain. Validates all fields even for
+partial updates.
+
+**Fix:** Extract to `BrandSettingsForm`, `ColorSettingsForm`, `MailSettingsForm`.
+
 ## User Domain — Resolved Issues
 
 | ID | Issue | Severity | Fix |
@@ -309,6 +378,9 @@ required pattern.
 |---|---|---|---|
 | 🔴 | Feature tests missing for 147 of 151 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
+| 🔴 | **SE1** Broken layout reference in SystemSetting | Settings | ⏳ |
+| 🟡 | **SE2** SystemSetting uses `rules()` instead of `#[Validate]` | Settings | ⏳ |
+| 🟡 | **SE3** No Form Objects for Settings groups | Settings | ⏳ |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
 | 🟡 | Livewire Form Object migration (77 components remaining) | Architecture | ⏳ |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ⏳ |
