@@ -35,7 +35,7 @@ class RegistrationNotification extends Notification implements ShouldQueue
 
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage())
+        return (new MailMessage)
             ->subject(__('notifications.internship_registration.mail_subject'))
             ->greeting(__('notifications.welcome.mail_greeting', ['name' => $notifiable->name]))
             ->line(

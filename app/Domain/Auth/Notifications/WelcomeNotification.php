@@ -32,7 +32,7 @@ class WelcomeNotification extends Notification implements ShouldQueue
 
     public function toMail($notifiable): MailMessage
     {
-        $message = new MailMessage()
+        $message = (new MailMessage)
             ->subject(__('notifications.welcome.mail_subject'))
             ->greeting(__('notifications.welcome.mail_greeting', ['name' => $notifiable->name]))
             ->line(__('notifications.welcome.mail_line1'))
