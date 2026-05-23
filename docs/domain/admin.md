@@ -124,7 +124,7 @@ process.
 | Layer | Artifacts |
 |-------|-----------|
 | **Models** | `Notification`, `GdprDeletionLog` |
-| **Livewire** | `UserManager`, `AdminManager`, `StudentManager`, `TeacherManager`, `SupervisorManager`, `MentorManager`, `MenteeManager`, `AnnouncementManager`, `AuditLogManager`, `ActivityFeedManager`, `NotificationCenter`, `NotificationBell`, `ApplicationReview`, `AccountCloneDetector`, `GdprDeletionLogs`, `AdminDashboard` |
+| **Livewire** | `UserManager`, `AdminManager`, `StudentManager`, `TeacherManager`, `SupervisorManager`, `MentorManager`, `MenteeManager`, `AnnouncementManager`, `AuditLogManager`, `ActivityFeedManager`, `NotificationCenter`, `NotificationBell`, `ApplicationReview`, `AccountCloneDetector`, `GdprDeletionLogs` |
 
 ## Dependencies
 

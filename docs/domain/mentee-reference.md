@@ -20,7 +20,7 @@ Total: 7 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Mentee/Livewire/StudentDashboard.php` | `StudentDashboard` | `Component` | Student dashboard showing current internship status |
+| `Mentee/Livewire/StudentDashboard.php` | `StudentDashboard` | `Component` | Student dashboard showing current internship status — *moved to `User/Livewire/Dashboards/StudentDashboard.php`* |
 
 ## Models
 

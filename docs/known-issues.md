@@ -165,71 +165,6 @@ level through namespace conventions and code review.
 | **A3** | `#[Validate]` vs `rules()` inconsistency | 🟢 | Migrated to `#[Validate]` attributes |
 | **A4** | Auth views not audited | 🟢 | Fully translated, debounce fixes applied |
 
-## User Domain — Known Issues
-
-### U1. UserDashboard References Non-Existent Components 🔴
-
-**File:** `app/Domain/User/Livewire/UserDashboard.php:12-13`
-
-The component renders two Livewire components that do not exist:
-
-```php
-<livewire:dashboard.managerial-widgets />
-<livewire:audit.recent-activity-list />
-```
-
-The auto-discovery generates aliases as `{kebab-domain}.{kebab-class-name}`.
-No component with alias `dashboard.managerial-widgets` or
-`audit.recent-activity-list` exists in any domain. Accessing the UserDashboard
-will throw `Livewire\Exceptions\ComponentNotFoundException`.
-
-**Impact:** The dashboard page crashes for users who land on it (non-admin,
-non-student, non-teacher, non-supervisor roles). This includes any user whose
-role falls through the role-specific dashboard routing.
-
-**Fix:** Replace with actual component aliases or remove the inline references.
-
-### U2. ProfileEditor Uses Arrays Instead of Form Objects 🟡
-
-**File:** `app/Domain/User/Livewire/ProfileEditor.php:26-47`
-
-The component stores form state in two flat arrays:
-
-```php
-public array $data = [];
-public array $passwordData = [];
-```
-
-Validation rules are defined inline in `save()` and `updatePassword()` methods
-instead of being declared alongside the fields in a Form Object. This causes:
-
-- Scattered validation between two methods
-- Array access (`$this->data['name']`) instead of typed properties
-- No reuse potential between profile edit contexts
-- Harder to unit test
-
-**Fix:** Extract to `App\Domain\User\Livewire\Forms\ProfileForm` and
-`PasswordForm` following the pattern in `docs/conventions.md` Section 9a.
-
-### U3. Password Change in ProfileEditor Has No Rate Limiting 🟡
-
-**File:** `app/Domain/User/Livewire/ProfileEditor.php:updatePassword()`
-
-The `updatePassword()` method calls `UpdateUserPasswordAction` without any
-rate limiting. An attacker who gains access to a logged-in session can
-repeatedly attempt password changes without throttling. Other auth endpoints
-(login, forgot password, reset password, confirm password, account recovery)
-all have rate limiters — this is the only auth action without one.
-
-**Impact:**  While the user must know the current password (validated via
-`current_password` rule), repeated attempts could be used to brute-force
-or DoS. Inconsistency with the rate-limited auth surface.
-
-**Fix:** Add RateLimiter check (e.g., 5 attempts per 300 seconds per IP)
-matching the pattern used in `ConfirmPassword`.
-
-
-
 ## Domain Models (Layer 5) & Domain Rules (Layer 6)
 
 ### Enum Label Translation Inconsistency 🟡
@@ -331,12 +266,14 @@ rendering, batch notifications. Currently all notifications use `ShouldQueue`.
 
 ### Livewire Form Object Migration 🟡
 
-**Problem:** 79 Livewire components still manage form state via flat `public`
-properties scattered across the component class. The Setup wizard has been
-migrated as a reference implementation.
+**Problem:** 77 Livewire components still manage form state via flat `public`
+properties scattered across the component class. The Setup wizard and
+ProfileEditor have been migrated as reference implementations.
 
 **Completed:**
 - ✅ `SetupWizard` → `SchoolForm`, `DepartmentForm`, `AdminForm`, `InternshipForm`
+- ✅ `ProfileEditor` → `ProfileForm`, `PasswordForm`
+- ✅ `Login` → `LoginForm`, `ForgotPassword` → `ForgotPasswordForm`, `ResetPassword` → `ResetPasswordForm`, `ConfirmPassword` → `ConfirmPasswordForm`, `AccountRecovery` → `AccountRecoveryForm`
 
 **Remaining priority:**
 
@@ -373,7 +310,7 @@ required pattern.
 | 🔴 | Feature tests missing for 147 of 151 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
-| 🟡 | Livewire Form Object migration (73 components remaining) | Architecture | ⏳ |
+| 🟡 | Livewire Form Object migration (77 components remaining) | Architecture | ⏳ |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ⏳ |
 | 🟡 | CsvHandler fragile magic string protocol | Shared | ⏳ |
 | 🟡 | LangChecker contradicts "stateless" rule | Shared | ⏳ |
