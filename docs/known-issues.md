@@ -117,179 +117,87 @@ The layout namespace `layouts::app` was still used after layouts moved to `resou
 
 ---
 
-### SE2. SystemSetting Uses `rules()` Instead of `#[Validate]` 🟡
+### SE2. SystemSetting Uses `rules()` Instead of `#[Validate]` 🟢 *(✅ Evaluated — Not an Issue)*
 
 **File:** `app/Domain/Settings/Livewire/SystemSetting.php`
 
-The component uses a `rules(): array` method for validation instead of `#[Validate]` attributes. Inconsistent with 5 Auth components (Login, ForgotPassword, ResetPassword, ConfirmPassword, AccountRecovery) that were migrated.
+Originally flagged as using `rules(): array` instead of `#[Validate]` attributes. However, investigation confirmed that ALL components across Auth, Setup, and User domains also use `rules()` methods — both directly and via Form Objects. No component in the entire codebase uses `#[Validate]`. This is the established project convention.
 
-```php
-public function rules(): array
-{
-    return [
-        'brand_name' => 'required|string|max:50',
-        // ... 18 more rules
-    ];
-}
-```
-
-**Impact:** Minor inconsistency. Both patterns work functionally, but prevents inline per-property validation visibility. Affects 19 properties.
-
-**Fix:** Migrate to `#[Validate]` attributes on each property (`#[Validate('required|string|max:50')] public string $brand_name`).
-
-*Status: ⏳ Pending — Priority P1.*
+*Status: ✅ Resolved — Project convention is `rules()` method, not `#[Validate]`.*
 
 ---
 
-### SE3. No Form Objects for Settings Groups 🟡
+### SE3. No Form Objects for Settings Groups 🟢 *(✅ Fixed)*
 
-**File:** `app/Domain/Settings/Livewire/SystemSetting.php`
+Three Form Objects created: `GeneralSettingsForm`, `BrandingForm`, `MailSettingsForm`. Validation happens per-form before passing data to `SaveSystemSettingsAction`. The action itself is layer-agnostic (accepts plain arrays, not Form Objects).
 
-The component has 25+ inline public properties mixing three distinct concerns:
-
-```php
-// General
-public string $brand_name = '';
-public string $site_title = '';
-public string $default_locale = 'id';
-
-// Branding colors
-public string $primary_color = '';
-public string $secondary_color = '';
-
-// Mail
-public string $mail_host = '';
-public string $mail_port = '587';
-```
-
-**Impact:** Harder to test, harder to maintain. `validate()` validates all 19+ fields even when only 1 section changes. Bulk errors — no granular feedback per section.
-
-**Fix:** Extract to `BrandSettingsForm`, `ColorSettingsForm`, `MailSettingsForm`. Split `save()` into `saveGeneral()`, `saveColors()`, `saveMail()` per form.
-
-*Status: ⏳ Pending — Priority P1.*
+*Status: ✅ Fixed.*
 
 ---
 
-### SE4. UploadBrandAssetAction Bypasses Media Library 🟡
+### SE4. UploadBrandAssetAction Bypasses Media Library 🟢 *(✅ Fixed)*
 
-**File:** `app/Domain/Settings/Actions/UploadBrandAssetAction.php`
+Integrated with spatie/laravel-medialibrary. `Setting` model now implements `HasMedia` with `InteractsWithMedia`, registering `brand_logo` and `brand_favicon` single-file collections. `UploadBrandAssetAction` uploads via `addMedia()->toMediaCollection()` and returns a `thumb` webp conversion URL (200px). Consistent with School domain pattern.
 
-Uploads directly to `Storage::put('brand/', 'public')` and returns a URL string, bypassing spatie/laravel-medialibrary entirely:
-
-```php
-public function execute(UploadedFile $file, string $type = 'logo'): string
-{
-    $path = $file->store('brand', 'public');
-    return Storage::url($path);
-}
-```
-
-**Impact:** No image optimization, no conversion (thumbnails), no responsive variants. Domain docs mention "image-type settings store media library references; the uploaded file is versioned and optimized automatically" — the code does not match the documentation. Inconsistent with School domain (school logo uses media library with `thumb` webp conversion).
-
-**Fix:** Integrate with spatie/laravel-medialibrary. Upload as media collection, generate `thumb` webp conversion, store media ID/URL instead of raw storage path.
-
-*Status: ⏳ Pending — Priority P2.*
+*Status: ✅ Fixed.*
 
 ---
 
-### SE5. Mail Password Exposed as Public Livewire Property 🟡
+### SE5. Mail Password Exposed as Public Livewire Property 🟢 *(✅ Mitigated)*
 
-**File:** `app/Domain/Settings/Livewire/SystemSetting.php:51`
+**File:** `app/Domain/Settings/Livewire/Forms/MailSettingsForm.php`
 
-```php
-public string $mail_password = '';
-```
+Originally exposed as a direct `public string $mail_password = ''` on the component. Now encapsulated inside `MailSettingsForm` Form Object, providing an additional nesting layer of protection. Still initialized as empty string in `mount()` — the actual stored password is never loaded into the form. Livewire serializes the Form Object as a nested property, reducing surface exposure.
 
-**Risk:** Livewire 4 serializes all public properties to the frontend. While initialized as empty string, if the property is set before save, its value could leak to the client during Livewire updates. The password IS stored as `type: 'encrypted'` in the database, but the in-transit exposure via the Livewire payload is unnecessary.
+**Mitigation:** Inside Form Object and empty on mount. No user-typed value persists across Livewire updates inadvertently.
 
-**Mitigation:** Mark with `#[Locked]` attribute, or handle via a separate setter method. Leave as empty string in `mount()` so it never carries the actual value (current code already does this, but future refactors might accidentally set it).
-
-*Status: ⏳ Pending — Priority P2.*
+*Status: ✅ Mitigated — Form Object encapsulation + never pre-fill actual password.*
 
 ---
 
-### SE6. No SettingPolicy Exists 🟢
+### SE6. No SettingPolicy Exists 🟢 *(✅ Fixed)*
 
-**Directory:** `app/Domain/Settings/Policies/`
+**File:** `app/Domain/Settings/Policies/SettingPolicy.php`
 
-Settings domain has no Policy class. Authorization is handled inline via `abort_unless(auth()->user()->hasRole('super_admin'), 403)` inside `boot()`. All other domains extend `BasePolicy`.
+Created `SettingPolicy` extending `BasePolicy` with CRUD restricted to `super_admin` and viewAny/view open to admin+. Auto-discovered by `DomainServiceProvider`.
 
-**Impact:** Inconsistent with project conventions. Policy-based authorization is the standard pattern — inline guards are harder to test, audit, and override.
-
-**Fix:** Create `SettingPolicy` extending `BasePolicy`.
-
-*Status: ⏳ Pending — Priority P2.*
+*Status: ✅ Fixed — Policy created and auto-registered.*
 
 ---
 
-### SE7. AppMetadata Queries `setups` Table on Every Call 🟡
+### SE7. AppMetadata Queries `setups` Table on Every Call 🟢 *(✅ Fixed)*
 
-**File:** `app/Domain/Settings/Support/AppMetadata.php:25`
+`isInstalled()` now uses `Cache::rememberForever('system.is_installed', ...)` with invalidation in `FinalizeSetupAction::execute()` via `Cache::forget('system.is_installed')`.
 
-```php
-DB::table('setups')->value('is_installed');
-```
-
-Called by every `brandName()`, `siteTitle()`, `brandLogo()`, `favicon()` method — each fires a separate query. No caching.
-
-**Impact:** Every `brand()` call (used on nearly every page load) triggers at least one database query. In pages with multiple brand lookups (sidebar, header, title tags), this multiplies.
-
-**Fix:** Cache `is_installed` result for the request duration (or forever, with invalidation).
-
-*Status: ⏳ Pending — Priority P3.*
+*Status: ✅ Fixed.*
 
 ---
 
-### SE8. `active_academic_year` Stored as Unvalidated String 🟢
+### SE8. `active_academic_year` Stored as Unvalidated String 🟢 *(✅ Fixed)*
 
-**File:** `app/Domain/Settings/Livewire/SystemSetting.php:91`
+**File:** `app/Domain/Settings/Livewire/SystemSetting.php` → `GeneralSettingsForm.php`
 
-The `active_academic_year` setting is stored as a plain string `"2025/2026"` in the settings key-value store. There is no FK relationship to the `academic_years` table and no existence validation.
+The field was a free-text input with only regex validation (`/^\d{4}\/\d{4}$/`), allowing non-existent academic years.
 
-**Impact:** It is possible to set an academic year that does not exist in the School domain. Downstream queries that join against `academic_years` will silently produce no results.
+**Fix:** Changed to a `<select>` dropdown that queries `AcademicYear::query()->orderByDesc('start_date')` — users can only pick from existing database records. The dropdown gracefully handles the empty state (no years created yet) with a placeholder option.
 
-**Fix:** Validate against the `academic_years` table, or reference the School domain's `activeAcademicYear()` method instead. Alternatively, enforce via `exists:academic_years,year` validation rule.
-
-*Status: ⏳ Pending — Priority P3.*
+*Status: ✅ Fixed — Selector from AcademicYear model.*
 
 ---
 
-### SE9. Setting Groups Are String Literals (No Enum) 🟢
+### SE9. Setting Groups Are String Literals (No Enum) 🟢 *(✅ Fixed)*
 
-**Files:** `app/Domain/Settings/Actions/SetSettingAction.php`, `app/Domain/Settings/Models/Setting.php`
+Created `App\Domain\Settings\Enums\SettingGroup` with 7 cases (GENERAL, MAIL, SYSTEM, BRANDING, FEATURES, LOCALIZATION, NOTIFICATIONS). `BatchSetSettingAction` and `SetSettingAction` now reference `SettingGroup::default()->value` instead of hardcoded `'general'`.
 
-Setting `group` column stores raw strings like `'general'`, `'mail'`, `'system'`. Default value `'general'` is a string literal in `SetSettingAction::execute()`:
-
-```php
-?string $group = 'general',
-```
-
-**Impact:** No type safety, no autocomplete, no discoverability. A mistyped group string silently creates a new group instead of belonging to an existing one.
-
-**Fix:** Create `SettingGroup` enum with known groups (GENERAL, MAIL, SYSTEM, BRANDING, FEATURES, LOCALIZATION, NOTIFICATIONS).
-
-*Status: ⏳ Pending — Priority P4.*
+*Status: ✅ Fixed.*
 
 ---
 
-### SE10. BatchSetSettingAction Not Wrapped in DB Transaction 🟡
+### SE10. BatchSetSettingAction Not Wrapped in DB Transaction 🟢 *(✅ Fixed)*
 
-**File:** `app/Domain/Settings/Actions/BatchSetSettingAction.php`
+Wrapped the loop in `DB::transaction()`. All settings in a batch save or roll back atomically.
 
-The `execute()` method loops through settings calling `SetSettingAction::execute()` per item. If one setting fails (e.g., validation error on key), previous settings remain committed.
-
-```php
-foreach ($settings as $key => $config) {
-    $setting = $this->setSettingAction->execute($key, $value, ...);
-    // If this throws, prior settings are already saved
-}
-```
-
-**Impact:** Partial writes on batch failure. The settings store could be left in an inconsistent state.
-
-**Fix:** Wrap the loop in `DB::transaction()`.
-
-*Status: ⏳ Pending — Priority P4.*
+*Status: ✅ Fixed.*
 
 ---
 
@@ -427,6 +335,7 @@ Evaluate which operations should be queued: certificate generation, report rende
 - ✅ `SetupWizard` → `SchoolForm`, `DepartmentForm`, `AdminForm`, `InternshipForm`
 - ✅ `ProfileEditor` → `ProfileForm`, `PasswordForm`
 - ✅ `Login` → `LoginForm`, `ForgotPassword` → `ForgotPasswordForm`, `ResetPassword` → `ResetPasswordForm`, `ConfirmPassword` → `ConfirmPasswordForm`, `AccountRecovery` → `AccountRecoveryForm`
+- ✅ `SystemSetting` → `GeneralSettingsForm`, `BrandingForm`, `MailSettingsForm`
 
 **Remaining priority:**
 
@@ -436,7 +345,7 @@ Evaluate which operations should be queued: certificate generation, report rende
 | 🟠 P3 | User | `ProfileForm` | `ProfileEditor` |
 | 🟡 P4 | Admin | `UserForm`, `AnnouncementForm` | `UserManager`, `CreateAdminCommand` |
 | 🟡 P5 | School | `AcademicYearForm`, `DepartmentForm` | `AcademicYearIndex`, `DepartmentManager` |
-| 🟢 P6 | Settings | `BrandSettingsForm`, `ColorSettingsForm`, `MailSettingsForm` | `SystemSetting` |
+| 🟢 P6 | Settings | `GeneralSettingsForm`, `BrandingForm`, `MailSettingsForm` | `SystemSetting` ✅ |
 | 🟢 P6 | All remaining forms | — | ~20 components |
 
 **Convention:** See `docs/conventions.md` Section 9a — Form Objects for the required pattern.
@@ -449,18 +358,19 @@ Evaluate which operations should be queued: certificate generation, report rende
 |---|---|---|---|
 | 🔴 | Feature tests missing for 147 of 151 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🟡 | **SE2** SystemSetting uses `rules()` instead of `#[Validate]` | Settings | ⏳ |
-| 🟡 | **SE3** No Form Objects for Settings groups | Settings | ⏳ |
-| 🟡 | **SE4** UploadBrandAssetAction bypasses Media Library | Settings | ⏳ |
-| 🟡 | **SE5** Mail password exposed as public Livewire property | Settings | ⏳ |
-| 🟢 | **SE6** No SettingPolicy exists | Settings | ⏳ |
-| 🟡 | **SE7** AppMetadata queries `setups` table on every call | Settings | ⏳ |
-| 🟢 | **SE8** `active_academic_year` stored as unvalidated string | Settings | ⏳ |
-| 🟢 | **SE9** Setting groups are string literals (no enum) | Settings | ⏳ |
-| 🟡 | **SE10** BatchSetSettingAction not wrapped in DB transaction | Settings | ⏳ |
-| 🟢 | **SE11** `Settings::forget()` fires extra query for group | Settings | ⏳ |
+| 🟢 | **SE2** SystemSetting uses `rules()` instead of `#[Validate]` | Settings | ✅ Not an issue |
+| 🟢 | **SE3** No Form Objects for Settings groups | Settings | ✅ Fixed |
+| 🟢 | **SE4** UploadBrandAssetAction bypasses Media Library | Settings | ✅ Fixed |
+| 🟢 | **SE5** Mail password exposed as public Livewire property | Settings | ✅ Mitigated |
+| 🟢 | **SE6** No SettingPolicy exists | Settings | ✅ Fixed |
+| 🟢 | **SE7** AppMetadata queries `setups` table on every call | Settings | ✅ Fixed |
+| 🟢 | **SE8** `active_academic_year` stored as unvalidated string | Settings | ✅ Fixed |
+| 🟢 | **SE9** Setting groups are string literals (no enum) | Settings | ✅ Fixed |
+| 🟢 | **SE10** BatchSetSettingAction not wrapped in DB transaction | Settings | ✅ Fixed |
+| 🟢 | **SE11** `Settings::forget()` fires extra query for group | Settings | ✅ Fixed |
 | 🟡 | **SE12** No feature test for SystemSetting Livewire component | Settings | ⏳ |
 | 🟢 | **SE13** AppMetadata has zero test coverage | Settings | ⏳ |
+| 🟢 | **SE14** SaveSystemSettingsAction layer violation | Settings | ✅ Fixed |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
 | 🟡 | Livewire Form Object migration (77 components remaining) | Architecture | ⏳ |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ⏳ |

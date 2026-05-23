@@ -6,7 +6,9 @@ namespace App\Domain\Settings\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Support\SmartLogger;
+use App\Domain\Settings\Enums\SettingGroup;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class BatchSetSettingAction extends BaseAction
 {
@@ -16,42 +18,44 @@ class BatchSetSettingAction extends BaseAction
 
     public function execute(array $settings): Collection
     {
-        $results = collect();
-        $changed = [];
+        return DB::transaction(function () use ($settings) {
+            $results = collect();
+            $changed = [];
 
-        foreach ($settings as $key => $config) {
-            if (is_array($config) && isset($config['value'])) {
-                $value = $config['value'];
-                $group = $config['group'] ?? 'general';
-                $description = $config['description'] ?? null;
-                $type = $config['type'] ?? null;
-            } else {
-                $value = $config;
-                $group = 'general';
-                $description = null;
-                $type = null;
+            foreach ($settings as $key => $config) {
+                if (is_array($config) && isset($config['value'])) {
+                    $value = $config['value'];
+                    $group = $config['group'] ?? SettingGroup::default()->value;
+                    $description = $config['description'] ?? null;
+                    $type = $config['type'] ?? null;
+                } else {
+                    $value = $config;
+                    $group = SettingGroup::default()->value;
+                    $description = null;
+                    $type = null;
+                }
+
+                $setting = $this->setSettingAction->execute($key, $value, $group, $description, $type);
+
+                if ($setting->wasRecentlyCreated || $setting->wasChanged()) {
+                    $changed[] = $key;
+                }
+
+                $results->push($setting);
             }
 
-            $setting = $this->setSettingAction->execute($key, $value, $group, $description, $type);
-
-            if ($setting->wasRecentlyCreated || $setting->wasChanged()) {
-                $changed[] = $key;
+            if ($changed !== []) {
+                $groups = $results->pluck('group')->unique()->filter()->values();
+                SmartLogger::info('Settings updated via batch')
+                    ->withPayload([
+                        'count' => count($changed),
+                        'groups' => $groups->toArray(),
+                    ])
+                    ->systemOnly()
+                    ->save();
             }
 
-            $results->push($setting);
-        }
-
-        if ($changed !== []) {
-            $groups = $results->pluck('group')->unique()->filter()->values();
-            SmartLogger::info('Settings updated via batch')
-                ->withPayload([
-                    'count' => count($changed),
-                    'groups' => $groups->toArray(),
-                ])
-                ->systemOnly()
-                ->save();
-        }
-
-        return $results;
+            return $results;
+        });
     }
 }

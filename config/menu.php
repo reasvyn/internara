@@ -158,7 +158,7 @@ return [
             'roles' => ['super_admin', 'admin'],
             'title' => 'sidebar.system',
             'items' => [
-                ['route' => 'admin.settings', 'icon' => 'o-cog-6-tooth', 'label' => 'setting.title'],
+                ['route' => 'admin.settings', 'icon' => 'o-cog-6-tooth', 'label' => 'setting.title', 'roles' => ['super_admin']],
                 ['route' => 'admin.handbooks.index', 'icon' => 'o-bookmark-square', 'label' => 'sidebar.handbooks'],
                 ['route' => 'admin.schedules.index', 'icon' => 'o-calendar-days', 'label' => 'sidebar.schedules'],
                 ['route' => 'admin.recovery-slips', 'icon' => 'o-key', 'label' => 'sidebar.recovery_slips'],

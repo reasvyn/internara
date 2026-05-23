@@ -11,6 +11,7 @@ use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Internship\Actions\CreateInternshipAction;
 use App\Domain\Setup\Events\SetupFinalized;
 use App\Domain\Setup\Models\Setup;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -76,6 +77,8 @@ final class FinalizeSetupAction extends BaseAction
                 'token_expires_at' => null,
                 'recovery_key' => $hashed,
             ])->save();
+
+            Cache::forget('system.is_installed');
 
             Event::dispatch(new SetupFinalized(
                 schoolId: $setup->school_id,

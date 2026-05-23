@@ -39,6 +39,7 @@
                             <ul class="space-y-0.5">
                                 @foreach($group['items'] as $item)
                                     @php
+                                        $itemRoles = $item['roles'] ?? $group['roles'];
                                         $active = request()->routeIs($item['route'] . '*');
                                         $url = '#';
                                         try {
@@ -49,6 +50,7 @@
                                             $url = '#';
                                         }
                                     @endphp
+                                    @if(auth()->user()->hasRole($itemRoles))
                                     <li>
                                         <a wire:navigate href="{{ $url }}"
                                            @class([
@@ -60,6 +62,7 @@
                                             <span>{{ __($item['label']) }}</span>
                                         </a>
                                     </li>
+                                    @endif
                                 @endforeach
                             </ul>
                         </div>

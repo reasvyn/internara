@@ -5,15 +5,23 @@ declare(strict_types=1);
 namespace App\Domain\Settings\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Settings\Models\Setting;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 
 class UploadBrandAssetAction extends BaseAction
 {
     public function execute(UploadedFile $file, string $type = 'logo'): string
     {
-        $path = $file->store('brand', 'public');
+        $collection = $type === 'favicon'
+            ? Setting::COLLECTION_FAVICON
+            : Setting::COLLECTION_LOGO;
 
-        return Storage::url($path);
+        $setting = Setting::firstOrCreate(['key' => $collection.'_ref']);
+
+        $setting->addMedia($file)
+            ->withCustomProperties(['type' => $type])
+            ->toMediaCollection($collection);
+
+        return $setting->getFirstMediaUrl($collection, 'thumb');
     }
 }

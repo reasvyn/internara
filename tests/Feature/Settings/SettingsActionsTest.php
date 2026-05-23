@@ -9,7 +9,6 @@ use App\Domain\Settings\Actions\UploadBrandAssetAction;
 use App\Domain\Settings\Models\Setting;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 describe('SetSettingAction', function () {
@@ -89,13 +88,17 @@ describe('TestMailSettingsAction', function () {
 });
 
 describe('UploadBrandAssetAction', function () {
-    it('stores a brand asset and returns its URL', function () {
-        Storage::fake('public');
-
+    it('stores a brand asset and returns its media URL', function () {
         $file = UploadedFile::fake()->image('logo.png');
         $url = app(UploadBrandAssetAction::class)->execute($file, 'logo');
 
-        expect($url)->toContain('/storage/brand/');
-        Storage::disk('public')->assertExists('brand/'.$file->hashName());
+        expect($url)->toBeString()->not->toBeEmpty();
+    });
+
+    it('stores a favicon and returns its media URL', function () {
+        $file = UploadedFile::fake()->image('favicon.png');
+        $url = app(UploadBrandAssetAction::class)->execute($file, 'favicon');
+
+        expect($url)->toBeString()->not->toBeEmpty();
     });
 });
