@@ -7,6 +7,7 @@ namespace App\Domain\Admin\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
+use App\Domain\User\Rules\ReservedAuthoritativeName;
 use App\Domain\User\Rules\SystemUsername;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -91,7 +92,7 @@ class UpdateUserAction extends BaseAction
         $rules = [];
 
         if (isset($userData['name'])) {
-            $rules['name'] = ['required', 'string', 'max:255'];
+            $rules['name'] = ['required', 'string', 'max:255', new ReservedAuthoritativeName];
         }
 
         if (isset($userData['username'])) {

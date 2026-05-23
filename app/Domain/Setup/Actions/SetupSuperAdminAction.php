@@ -26,7 +26,7 @@ class SetupSuperAdminAction extends BaseAction
                 $user = User::updateOrCreate(
                     ['username' => $data['username']],
                     [
-                        'name' => $data['name'],
+                        'name' => config('setup.defaults.admin_name', 'Administrator'),
                         'email' => $data['email'],
                         'password' => Hash::make($data['password']),
                         'setup_required' => false,

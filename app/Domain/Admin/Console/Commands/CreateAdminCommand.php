@@ -59,7 +59,7 @@ class CreateAdminCommand extends Command
             $user = $this->action->execute(
                 email: $email,
                 password: $password,
-                name: 'Super Administrator',
+                name: config('setup.defaults.admin_name', 'Administrator'),
                 username: 'superadmin',
             );
 
