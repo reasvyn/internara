@@ -1,4 +1,4 @@
-<x-ui::page-header :title="__('certificate.my_certificates')" :subtitle="__('certificate.my_certificates_subtitle')" />
+<x-shared::ui.page-header :title="__('certificate.my_certificates')" :subtitle="__('certificate.my_certificates_subtitle')" />
 
 <div class="max-w-3xl mx-auto mt-6">
     @forelse($certificates as $certificate)

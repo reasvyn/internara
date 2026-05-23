@@ -1,4 +1,4 @@
-<x-ui::record-manager
+<x-shared::ui.record-manager
     :title="__('placement.title')"
     :subtitle="__('placement.subtitle')"
 >
@@ -34,7 +34,7 @@
         />
     </x-slot:filters>
 
-    <x-ui::selection-bar>
+    <x-shared::ui.selection-bar>
         <x-mary-dropdown>
             <x-slot:trigger>
                 <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" label="Actions" />
@@ -45,7 +45,7 @@
                     wire:click="deleteSelected" />
             </div>
         </x-mary-dropdown>
-    </x-ui::selection-bar>
+    </x-shared::ui.selection-bar>
 
     <div class="overflow-x-auto">
         <x-mary-table
@@ -100,4 +100,4 @@
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
-</x-ui::record-manager>
+</x-shared::ui.record-manager>

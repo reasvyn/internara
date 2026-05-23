@@ -38,7 +38,7 @@
                         </div>
                     </div>
                 @else
-                    <x-widgets::empty-state
+                    <x-shared::widgets.empty-state
                         icon="o-shield-exclamation"
                         :title="__('dashboard.student.no_registration')"
                         :description="__('dashboard.student.no_registration_hint')"
@@ -49,15 +49,15 @@
 
         <div class="lg:col-span-2 space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <x-widgets::action-button :label="__('dashboard.student.write_journal')" icon="o-pencil-square" link="{{ route('student.logbook') }}" color="btn-primary" />
-                <x-widgets::action-button :label="__('dashboard.student.request_absence')" icon="o-document-plus" link="{{ route('student.attendance.absence') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
-                <x-widgets::action-button :label="__('dashboard.student.my_documents')" icon="o-document-arrow-up" link="{{ route('student.documents') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
-                <x-widgets::action-button :label="__('dashboard.student.handbooks')" icon="o-book-open" link="{{ route('student.handbooks') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
+                <x-shared::widgets.action-button :label="__('dashboard.student.write_journal')" icon="o-pencil-square" link="{{ route('student.logbook') }}" color="btn-primary" />
+                <x-shared::widgets.action-button :label="__('dashboard.student.request_absence')" icon="o-document-plus" link="{{ route('student.attendance.absence') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
+                <x-shared::widgets.action-button :label="__('dashboard.student.my_documents')" icon="o-document-arrow-up" link="{{ route('student.documents') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
+                <x-shared::widgets.action-button :label="__('dashboard.student.handbooks')" icon="o-book-open" link="{{ route('student.handbooks') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
             </div>
 
             <x-mary-card class="bg-base-100 border border-base-content/10">
                 <x-slot:title><span class="font-semibold">{{ __('dashboard.student.timeline') }}</span></x-slot:title>
-                <x-widgets::empty-state icon="o-queue-list" :title="__('dashboard.student.timeline_empty')" />
+                <x-shared::widgets.empty-state icon="o-queue-list" :title="__('dashboard.student.timeline_empty')" />
             </x-mary-card>
         </div>
     </div>

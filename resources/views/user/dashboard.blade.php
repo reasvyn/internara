@@ -15,19 +15,19 @@
                         </div>
                     </div>
                 @empty
-                    <x-widgets::empty-state icon="o-inbox" :title="__('dashboard.no_activity')" />
+                    <x-shared::widgets.empty-state icon="o-inbox" :title="__('dashboard.no_activity')" />
                 @endforelse
             </x-mary-card>
         </div>
 
         <div class="space-y-6">
-            <x-widgets::profile-summary :showEdit="true" />
+            <x-shared::widgets.profile-summary :showEdit="true" />
 
             <x-mary-card :title="__('dashboard.quick_links')" separator>
                 <div class="space-y-1">
-                    <x-widgets::quick-link :label="__('dashboard.edit_profile')" icon="o-user" link="{{ route('profile') }}" />
-                    <x-widgets::quick-link :label="__('profile.recovery.title')" icon="o-key" link="{{ route('profile.recovery') }}" />
-                    <x-widgets::quick-link :label="__('dashboard.notifications')" icon="o-bell" link="{{ route('notifications') }}" />
+                    <x-shared::widgets.quick-link :label="__('dashboard.edit_profile')" icon="o-user" link="{{ route('profile') }}" />
+                    <x-shared::widgets.quick-link :label="__('profile.recovery.title')" icon="o-key" link="{{ route('profile.recovery') }}" />
+                    <x-shared::widgets.quick-link :label="__('dashboard.notifications')" icon="o-bell" link="{{ route('notifications') }}" />
                 </div>
             </x-mary-card>
         </div>

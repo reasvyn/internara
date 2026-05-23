@@ -1,4 +1,4 @@
-<x-ui::page-header :title="__('incident.report_title')" :subtitle="__('incident.report_subtitle')" />
+<x-shared::ui.page-header :title="__('incident.report_title')" :subtitle="__('incident.report_subtitle')" />
 
 <div class="max-w-2xl mx-auto mt-6">
     <x-mary-form wire:submit="save">

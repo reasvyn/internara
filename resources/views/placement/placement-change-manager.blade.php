@@ -1,4 +1,4 @@
-<x-ui::record-manager
+<x-shared::ui.record-manager
     :title="__('placement_change.title')"
     :subtitle="__('placement_change.subtitle')"
 >
@@ -49,4 +49,4 @@
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
-</x-ui::record-manager>
+</x-shared::ui.record-manager>

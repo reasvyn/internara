@@ -1,4 +1,4 @@
-<x-ui::page-header :title="__('report.supervisor_notes_title')" :subtitle="__('report.supervisor_notes_subtitle')" />
+<x-shared::ui.page-header :title="__('report.supervisor_notes_title')" :subtitle="__('report.supervisor_notes_subtitle')" />
 
 <div class="max-w-2xl mx-auto mt-6">
     @if(!$reportId)

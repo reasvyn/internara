@@ -8,7 +8,7 @@
                     <x-mary-icon name="o-bars-3" class="size-5" />
                 </label>
                 <a wire:navigate href="{{ route('dashboard') }}">
-                    <x-ui::logo size="4" />
+                    <x-shared::ui.logo size="4" />
                 </a>
             </div>
 
@@ -18,7 +18,7 @@
                 @endif
             </div>
 
-            <x-ui::navbar-actions />
+            <x-shared::ui.navbar-actions />
         </div>
     </div>
 </header>

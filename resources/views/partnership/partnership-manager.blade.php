@@ -1,4 +1,4 @@
-<x-ui::record-manager
+<x-shared::ui.record-manager
     :title="__('partnership.title')"
     :subtitle="__('partnership.subtitle')"
 >
@@ -38,7 +38,7 @@
         />
     </x-slot:filters>
 
-    <x-ui::selection-bar>
+    <x-shared::ui.selection-bar>
         <x-mary-dropdown>
             <x-slot:trigger>
                 <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" :label="__('common.actions.bulk_actions')" />
@@ -48,7 +48,7 @@
                     wire:click="askDeleteSelected" />
             </div>
         </x-mary-dropdown>
-    </x-ui::selection-bar>
+    </x-shared::ui.selection-bar>
 
     <div class="overflow-x-auto">
         <x-mary-table
@@ -98,7 +98,7 @@
     </div>
 
     {{-- Confirm Dialog --}}
-    <x-ui::confirm
+    <x-shared::ui.confirm
         wire:model="showConfirm"
         :message="$confirmMessage"
         confirmText="{{ __('common.actions.confirm') }}"
@@ -145,4 +145,4 @@
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
-</x-ui::record-manager>
+</x-shared::ui.record-manager>
