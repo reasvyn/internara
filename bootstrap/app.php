@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Auth\Http\Middleware\AuthThrottleMiddleware;
 use App\Domain\Auth\Http\Middleware\CheckRoleMiddleware;
 use App\Domain\Core\Http\Middleware\LogContext;
 use App\Domain\Core\Http\Middleware\SecurityHeaders;
@@ -30,6 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'setup.protected' => ProtectSetupRouteMiddleware::class,
             'role' => CheckRoleMiddleware::class,
+            'auth.throttle' => AuthThrottleMiddleware::class,
         ]);
 
         $middleware->web(append: [

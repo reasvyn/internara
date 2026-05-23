@@ -5,43 +5,37 @@ declare(strict_types=1);
 namespace App\Domain\Auth\Livewire;
 
 use App\Domain\Auth\Actions\LoginAction;
+use App\Domain\Auth\Livewire\Forms\LoginForm;
 use App\Domain\Core\Support\SmartLogger;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use RuntimeException;
 
 class Login extends Component
 {
-    #[Validate('required|string')]
-    public string $identifier = '';
-
-    #[Validate('required|string')]
-    public string $password = '';
-
-    public bool $remember = false;
+    public LoginForm $form;
 
     public function login(LoginAction $loginAction): void
     {
-        $this->validate();
+        $this->form->validate();
 
         $throttleKey = $this->throttleKey();
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('identifier', __('auth.throttle', ['seconds' => $seconds]));
+            $this->addError('form.identifier', __('auth.throttle', ['seconds' => $seconds]));
 
             return;
         }
 
         try {
             $user = $loginAction->execute(
-                identifier: $this->identifier,
-                password: $this->password,
-                remember: $this->remember,
+                identifier: $this->form->identifier,
+                password: $this->form->password,
+                remember: $this->form->remember,
             );
 
             session()->regenerate();
@@ -52,7 +46,7 @@ class Login extends Component
             $this->redirect($this->getIntendedUrl(), navigate: true);
         } catch (RuntimeException $e) {
             RateLimiter::hit($throttleKey, 60);
-            $this->addError('identifier', $e->getMessage());
+            $this->addError('form.identifier', $e->getMessage());
 
             SmartLogger::error('Login error')
                 ->withPayload(['error' => $e->getMessage()])
@@ -68,7 +62,7 @@ class Login extends Component
 
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->identifier).'|'.request()->ip());
+        return Str::transliterate(Str::lower($this->form->identifier).'|'.request()->ip());
     }
 
     #[Layout('auth::layouts.auth', ['title' => 'Login'])]

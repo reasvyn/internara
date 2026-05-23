@@ -9,6 +9,7 @@ use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -21,12 +22,9 @@ class LoginAction extends BaseAction
     ): Authenticatable {
         $loginField = Str::contains($identifier, '@') ? 'email' : 'username';
 
-        $credentials = [
-            $loginField => $identifier,
-            'password' => $password,
-        ];
+        $user = User::where($loginField, $identifier)->first();
 
-        if (! Auth::attempt($credentials, $remember)) {
+        if ($user === null) {
             SmartLogger::info('login_failed')
                 ->event('login_failed')
                 ->module('Auth')
@@ -37,14 +35,43 @@ class LoginAction extends BaseAction
             throw new RuntimeException(__('auth.failed'));
         }
 
-        /** @var User $user */
-        $user = Auth::user();
+        $this->checkAccountStatus($user);
 
+        if (! Auth::attempt([$loginField => $identifier, 'password' => $password], $remember)) {
+            $this->handleFailedAttempt($user);
+
+            throw new RuntimeException(__('auth.failed'));
+        }
+
+        $this->clearFailedAttempts($user);
+
+        SmartLogger::info('login_success')
+            ->event('login_success')
+            ->module('Auth')
+            ->about($user)
+            ->activityOnly()
+            ->save();
+
+        return $user;
+    }
+
+    private function checkAccountStatus(User $user): void
+    {
         $apprentice = $user->asApprentice();
 
-        if ($apprentice->isSuspended()) {
-            Auth::logout();
+        if ($apprentice->isLocked()) {
+            SmartLogger::info('login_blocked')
+                ->event('login_blocked')
+                ->module('Auth')
+                ->about($user)
+                ->withPayload(['reason' => 'locked'])
+                ->activityOnly()
+                ->save();
 
+            throw new RuntimeException(__('auth.blocked'));
+        }
+
+        if ($apprentice->isSuspended()) {
             SmartLogger::info('login_blocked')
                 ->event('login_blocked')
                 ->module('Auth')
@@ -57,8 +84,6 @@ class LoginAction extends BaseAction
         }
 
         if ($apprentice->isArchived()) {
-            Auth::logout();
-
             SmartLogger::info('login_blocked')
                 ->event('login_blocked')
                 ->module('Auth')
@@ -71,8 +96,6 @@ class LoginAction extends BaseAction
         }
 
         if ($apprentice->isInactive()) {
-            Auth::logout();
-
             SmartLogger::info('login_blocked')
                 ->event('login_blocked')
                 ->module('Auth')
@@ -83,14 +106,36 @@ class LoginAction extends BaseAction
 
             throw new RuntimeException(__('auth.blocked'));
         }
+    }
 
-        SmartLogger::info('login_success')
-            ->event('login_success')
+    private function handleFailedAttempt(User $user): void
+    {
+        $cacheKey = 'login-failures:'.$user->id;
+        $threshold = (int) config('auth.throttle.auto_lock_threshold', 10);
+
+        $attempts = (int) Cache::get($cacheKey, 0) + 1;
+        Cache::put($cacheKey, $attempts, now()->addHours(1));
+
+        SmartLogger::info('login_failed')
+            ->event('login_failed')
             ->module('Auth')
             ->about($user)
+            ->withPayload(['attempts' => $attempts, 'threshold' => $threshold])
             ->activityOnly()
             ->save();
 
-        return $user;
+        if ($attempts >= $threshold) {
+            app(LockUserAccountAction::class)->execute(
+                $user,
+                reason: 'too_many_failed_attempts',
+            );
+
+            Cache::forget($cacheKey);
+        }
+    }
+
+    private function clearFailedAttempts(User $user): void
+    {
+        Cache::forget('login-failures:'.$user->id);
     }
 }

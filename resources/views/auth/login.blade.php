@@ -7,14 +7,14 @@
 
         <form wire:submit="login" class="space-y-5">
             <x-mary-input
-                wire:model="identifier"
+                wire:model="form.identifier"
                 label="{{ __('auth.login.identifier') }}"
                 placeholder="username@email.com"
                 icon="o-identification"
             />
 
             <x-mary-password
-                wire:model="password"
+                wire:model="form.password"
                 label="{{ __('auth.login.password') }}"
                 placeholder="••••••••"
                 icon="o-key"
@@ -23,7 +23,7 @@
 
             <div class="flex items-center justify-between">
                 <x-mary-checkbox
-                    wire:model="remember"
+                    wire:model="form.remember"
                     label="{{ __('auth.login.remember') }}"
                     class="checkbox-primary checkbox-sm rounded"
                 />

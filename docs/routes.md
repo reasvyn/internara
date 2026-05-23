@@ -54,6 +54,7 @@ These middleware are applied per-route or per-group:
 | `setup.protected` | `ProtectSetupRouteMiddleware` | Routes in `routes/web/setup.php` | Token-gates the setup wizard, rate-limits access, self-destructs after installation |
 | `guest` | Laravel core | Login, register, forgot-password | Blocks authenticated users |
 | `auth` | Laravel core | Most application routes | Requires authenticated session |
+| `auth.throttle` | `AuthThrottleMiddleware` | All auth routes (login, register, forgot/reset password, confirm password) | Global rate limit (30 requests/min/IP) across all auth endpoints |
 | `role:{roles}` | `CheckRoleMiddleware` | Admin, teacher, supervisor routes | Aborts 403 if user lacks required role |
 
 See [Setup Wizard → Middleware System](setup-wizard.md#middleware-system) for the complete

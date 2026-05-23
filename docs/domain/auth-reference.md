@@ -59,6 +59,16 @@ Total: 32 files
 | `Auth/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `Component` | Manages recovery slip generation |
 | `Auth/Livewire/ResetPassword.php` | `ResetPassword` | `Component` | Password reset form |
 
+### Livewire Form Objects
+
+| File | Class | Extends | Fields | Used By |
+|---|---|---|---|---|
+| `Auth/Livewire/Forms/LoginForm.php` | `LoginForm` | `Form` | identifier, password, remember | `Login` |
+| `Auth/Livewire/Forms/ForgotPasswordForm.php` | `ForgotPasswordForm` | `Form` | email | `ForgotPassword` |
+| `Auth/Livewire/Forms/ResetPasswordForm.php` | `ResetPasswordForm` | `Form` | token, email, password, password_confirmation | `ResetPassword` |
+| `Auth/Livewire/Forms/ConfirmPasswordForm.php` | `ConfirmPasswordForm` | `Form` | password | `ConfirmPassword` |
+| `Auth/Livewire/Forms/AccountRecoveryForm.php` | `AccountRecoveryForm` | `Form` | username, recoveryCode, password, password_confirmation | `AccountRecovery` |
+
 ## Models
 
 | File | Class | Extends | Description |

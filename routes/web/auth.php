@@ -11,7 +11,7 @@ use App\Domain\Auth\Livewire\RecoverySlipManager;
 use App\Domain\Auth\Livewire\ResetPassword;
 use App\Domain\Registration\Livewire\RegistrationCenter;
 
-Route::middleware('guest')->group(function () {
+Route::middleware(['guest', 'auth.throttle'])->group(function () {
     Route::livewire('/register', RegistrationCenter::class)->name('register');
     Route::livewire('/login', Login::class)->name('login');
     Route::livewire('/forgot-password', ForgotPassword::class)->name('password.request');
@@ -19,7 +19,7 @@ Route::middleware('guest')->group(function () {
     Route::livewire('/recover-account', AccountRecovery::class)->name('recover.account');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'auth.throttle'])->group(function () {
     Route::livewire('/user/confirm-password', ConfirmPassword::class)->name('password.confirm');
 });
 

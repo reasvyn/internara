@@ -7,7 +7,7 @@
 
         <form wire:submit="resetPassword" class="space-y-5">
             <x-mary-input
-                wire:model="email"
+                wire:model="form.email"
                 type="email"
                 label="{{ __('auth.reset_password.email') }}"
                 placeholder="user@example.com"
@@ -16,13 +16,13 @@
             />
 
             <x-mary-password
-                wire:model="password"
+                wire:model="form.password"
                 label="{{ __('auth.reset_password.password') }}"
                 placeholder="••••••••"
             />
 
             <x-mary-password
-                wire:model="password_confirmation"
+                wire:model="form.password_confirmation"
                 label="{{ __('auth.reset_password.password_confirmation') }}"
                 placeholder="••••••••"
             />
