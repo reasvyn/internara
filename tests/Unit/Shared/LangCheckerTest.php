@@ -6,6 +6,10 @@ use App\Domain\Shared\Support\LangChecker;
 use Illuminate\Translation\Translator;
 
 describe('LangChecker', function () {
+    beforeEach(function () {
+        config(['app.debug' => true]);
+        (new \App\Providers\AppServiceProvider(app()))->register();
+    });
     it('extends Laravel Translator', function () {
         $checker = app()->make('translator');
 
