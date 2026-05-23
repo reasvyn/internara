@@ -30,6 +30,10 @@ class UserPolicy extends BasePolicy
 
     public function update(User $user, User $model): bool
     {
+        if ($model->hasRole('super_admin')) {
+            return $user->id === $model->id;
+        }
+
         if ($user->id === $model->id) {
             return true;
         }
@@ -39,6 +43,10 @@ class UserPolicy extends BasePolicy
 
     public function delete(User $user, User $model): bool
     {
+        if ($model->hasRole('super_admin')) {
+            return false;
+        }
+
         if ($user->id === $model->id) {
             return false;
         }
@@ -48,11 +56,19 @@ class UserPolicy extends BasePolicy
 
     public function restore(User $user, User $model): bool
     {
+        if ($model->hasRole('super_admin')) {
+            return false;
+        }
+
         return $user->can('users.edit');
     }
 
     public function forceDelete(User $user, User $model): bool
     {
+        if ($model->hasRole('super_admin')) {
+            return false;
+        }
+
         if ($user->id === $model->id) {
             return false;
         }
