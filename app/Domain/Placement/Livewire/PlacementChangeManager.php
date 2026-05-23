@@ -73,7 +73,7 @@ class PlacementChangeManager extends BaseRecordManager
         $this->rejectingId = null;
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('placement.placement-change-manager');

@@ -137,7 +137,7 @@ class CertificateList extends BaseRecordManager
         flash()->success(__('certificate.revoked'));
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('certificate.certificate-list', [

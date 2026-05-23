@@ -249,7 +249,7 @@ Form Objects progressively reduces coupling and improves testability.
 
 ## 11. Views
 
-- Anonymous components: `x-layouts::*`, `x-shared::ui.*`, `x-shared::widgets.*`.
+- Anonymous components: `x-shared::layouts.*`, `x-shared::ui.*`, `x-shared::widgets.*`.
 - Livewire views: `resources/views/{domain}/{name}.blade.php`.
 - `@props()` declaration at top of every component.
 - maryUI components prefixed `x-mary-`.

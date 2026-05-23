@@ -59,7 +59,7 @@ class RecoveryCode extends Component
         return $pdf->download('recovery-codes-'.auth()->user()->username.'.pdf');
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('auth.recovery-code');

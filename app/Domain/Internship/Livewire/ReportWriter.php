@@ -77,7 +77,7 @@ class ReportWriter extends Component
         flash()->success(__('report.submitted'));
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('internship.report-writer', [

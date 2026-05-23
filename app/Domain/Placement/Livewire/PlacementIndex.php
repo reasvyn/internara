@@ -187,7 +187,7 @@ class PlacementIndex extends BaseRecordManager
         });
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('placement.placement-index');

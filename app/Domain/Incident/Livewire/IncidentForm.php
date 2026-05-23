@@ -56,7 +56,7 @@ class IncidentForm extends Component
         $this->formData['incident_date'] = now()->format('Y-m-d\TH:i');
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('incident.incident-form', [

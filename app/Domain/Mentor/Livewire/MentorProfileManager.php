@@ -152,7 +152,7 @@ class MentorProfileManager extends Component
         $this->editingMentor = null;
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         $query = Mentor::query()->with('user');

@@ -31,7 +31,7 @@ Layouts are split between cross-cutting and domain-specific:
 
 | Scope | Directory | Namespace | Referenced As |
 |---|---|---|---|
-| Cross-cutting | `resources/views/layouts/` | `layouts` (registered via `AppServiceProvider`) | `x-layouts::base`, `x-layouts::app` |
+| Cross-cutting | `resources/views/shared/layouts/` | `shared` (auto-registered via `DomainServiceProvider`) | `x-shared::layouts.base`, `x-shared::layouts.app` |
 | Domain-specific | `resources/views/{domain}/layouts/` | `{domain}` (auto-registered via `DomainServiceProvider`) | `setup::layouts.setup`, `auth::layouts.auth` |
 
 Cross-cutting layouts (`layouts/`) are used by the main application shell:
@@ -49,7 +49,7 @@ components via the `#[Layout]` attribute:
 - `setup/layouts/setup.blade.php` — wider multi-step layout for the wizard (used as `setup::layouts.setup`)
 
 The convention for choosing where a layout belongs:
-1. If a layout is shared by multiple domains → `resources/views/layouts/`
+1. If a layout is shared by multiple domains → `resources/views/shared/layouts/`
 2. If a layout is specific to one domain → `resources/views/{domain}/layouts/`
 
 This prevents domain-specific layouts from accumulating in the global
@@ -136,7 +136,7 @@ navigation.
 
 ## Where to Find It
 
-Layout templates are in `resources/views/layouts/`. UI components are in
+Layout templates are in `resources/views/shared/layouts/`. UI components are in
 `resources/views/components/ui/`. The CSS entry point is
 `resources/css/app.css`. JavaScript entry point is `resources/js/app.js`.
 The maryUI configuration is in `config/mary.php`. The sidebar menu

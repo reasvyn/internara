@@ -57,7 +57,7 @@ class AbsenceRequestForm extends Component
         flash()->success('Absence request submitted successfully.');
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('attendance.absence-request-form', [

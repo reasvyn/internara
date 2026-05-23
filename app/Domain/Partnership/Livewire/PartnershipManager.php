@@ -410,7 +410,7 @@ class PartnershipManager extends BaseRecordManager
         }
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('partnership.partnership-manager');

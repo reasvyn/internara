@@ -1,6 +1,6 @@
 @props(['title' => null])
 
-<x-layouts::base :$title>
+<x-shared::layouts.base :$title>
     <div
         class="min-h-screen flex flex-col bg-base-100"
         x-data
@@ -46,4 +46,4 @@
             </div>
         </footer>
     </div>
-</x-layouts::base>
+</x-shared::layouts.base>

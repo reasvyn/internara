@@ -115,7 +115,7 @@ class PresentationSchedule extends BaseRecordManager
         $this->showScoreModal = false;
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('assessment.presentation-schedule', [

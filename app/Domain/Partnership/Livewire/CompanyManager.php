@@ -312,7 +312,7 @@ class CompanyManager extends BaseRecordManager
         )->send();
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('partnership.company-manager');

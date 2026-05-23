@@ -128,7 +128,7 @@ class BriefingManager extends BaseRecordManager
         $this->showAttendanceModal = false;
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('internship.briefing-manager');

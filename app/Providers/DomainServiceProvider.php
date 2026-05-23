@@ -51,9 +51,6 @@ class DomainServiceProvider extends ServiceProvider
             $this->registerBladeNamespaces();
         }
 
-        // Cross-domain Blade component namespaces not covered by auto-discovery
-        Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
-
         // Cross-domain event listeners
         Event::listen(
             SetupFinalized::class,
@@ -236,7 +233,7 @@ class DomainServiceProvider extends ServiceProvider
         }
 
         $excluded = config('domain.views.exclude_directories', [
-            'components', 'emails', 'errors', 'layouts', 'mcp', 'pdf', 'vendor',
+            'components', 'emails', 'errors', 'mcp', 'pdf', 'vendor',
         ]);
 
         $domainDirs = glob($viewsDir.'/*', GLOB_ONLYDIR);

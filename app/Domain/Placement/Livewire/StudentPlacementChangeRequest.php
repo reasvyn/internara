@@ -66,7 +66,7 @@ class StudentPlacementChangeRequest extends Component
         $this->reset('toPlacementId', 'reason');
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         $registration = $this->registrationId

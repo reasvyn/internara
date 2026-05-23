@@ -182,7 +182,7 @@ class LogbookManager extends BaseRecordManager
         flash()->success(__('logbook.success_verified'));
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('logbook.logbook-manager');

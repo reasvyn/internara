@@ -32,21 +32,10 @@ return [
     */
 
     'component_namespaces' => [
-        'layouts' => resource_path('views/layouts'),
         'pages' => resource_path('views/pages'),
     ],
 
-    /*
-    |---------------------------------------------------------------------------
-    | Page Layout
-    |---------------------------------------------------------------------------
-    | The view that will be used as the layout when rendering a single component as
-    | an entire page via `Route::livewire('/post/create', 'pages::create-post')`.
-    | In this case, the content of pages::create-post will render into $slot.
-    |
-    */
-
-    'component_layout' => 'layouts::app',
+    'component_layout' => 'shared::layouts.app',
 
     /*
     |---------------------------------------------------------------------------
