@@ -103,13 +103,7 @@ Core has no end-user stories — it provides the architectural foundation every 
 | **Web Routes** | `routes/web/core.php` — `GET /`, `GET /dashboard` |
 | **Console** | `system:health`, `system:cleanup`, `system:cache-warm` |
 
-## Dependencies
-
-| Dependency | Reason |
-|---|---|
-| None | Core is the root of the entire dependency graph. Laravel framework and Spatie packages are its only external dependencies. |
-
-
+### User Stories & Rules
 - Core MUST NOT import any business domain.
 - All domain models extend `BaseModel` (except User which extends `Authenticatable`).
 - All domain policies extend `BasePolicy`.
@@ -118,3 +112,11 @@ Core has no end-user stories — it provides the architectural foundation every 
 - Security headers configured via `config/security-headers.php`, never hardcoded.
 - Every request log entry must include a `request_id` for traceability.
 - Console commands registered via `$schedule->command()` in `routes/console.php`.
+
+## Dependencies
+
+| Dependency | Reason |
+|---|---|
+| None | Core is the root of the entire dependency graph. Laravel framework and Spatie packages are its only external dependencies. |
+
+

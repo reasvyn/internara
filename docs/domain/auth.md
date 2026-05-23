@@ -89,18 +89,47 @@ target user, timestamp, method, and outcome in the audit log.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| User | As a user, I want to log in with my email and password so that I can access the system |
-| User | As a user, I want to reset my password via email so that I can regain access if I forget it |
-| User | As a user, I want to confirm my password before sensitive operations so that my account stays secure |
-| User | As a user, I want to recover my account via a recovery slip so that I can regain access if locked out |
-| Admin | As an admin, I want to lock/unlock user accounts so that I can respond to security concerns |
-| Admin | As an admin, I want to see account status history so that I can audit user lifecycle events |
-| Admin | As an admin, I want to generate recovery slips so that users who lose email access can recover their accounts |
-| Admin | As an admin, I want to manage roles and permissions so that users have appropriate access |
-| System | As the system, I want to enforce the account state machine so that invalid transitions are impossible |
-| System | As the system, I want to record all authentication attempts so that security incidents are traceable |
+- **User:** As a user, I want to log in with my email and password so that I can access the system
+- **User:** As a user, I want to reset my password via email so that I can regain access if I forget it
+- **User:** As a user, I want to confirm my password before sensitive operations so that my account stays secure
+- **User:** As a user, I want to recover my account via a recovery slip so that I can regain access if locked out
+- **Admin:** As an admin, I want to lock/unlock user accounts so that I can respond to security concerns
+- **Admin:** As an admin, I want to see account status history so that I can audit user lifecycle events
+- **Admin:** As an admin, I want to generate recovery slips so that users who lose email access can recover their accounts
+- **Admin:** As an admin, I want to manage roles and permissions so that users have appropriate access
+- **System:** As the system, I want to enforce the account state machine so that invalid transitions are impossible
+- **System:** As the system, I want to record all authentication attempts so that security incidents are traceable
+- Account lifecycle follows a strict state machine — invalid transitions are rejected at the 
+domain logic level, not just the UI.
+- ARCHIVED is terminal: login permanently blocked, data preserved indefinitely, no automated 
+recovery path.
+- PROTECTED accounts cannot transition to any other state — this guarantees at least one super 
+admin always exists.
+- Every login attempt must record IP address, user agent, and timestamp for security audit and 
+incident investigation.
+- Recovery codes expire after a configurable duration (default 24 hours) and are single-use — 
+redeemed codes are invalidated.
+- No user can change their own role through any interface — role changes require an authorized 
+admin.
+- Only super_admin can assign or revoke the super_admin role — enforced at the database seed 
+level and the policy level.
+- At least one super_admin account must always exist — deletion of the last super_admin is 
+blocked by the domain logic.
+- The super_admin account is **singleton, permanent, and PROTECTED**: name is always 
+"Administrator", username "superadmin". Cannot be deleted, locked, or modified by anyone
+else. The user can only change their own email and password. Enforced by 4 layers:
+  1. `UserPolicy::delete/forceDelete/restore` — returns `false` for super_admin targets
+  2. `UserPolicy::update` — only allows self-update for super_admin
+  3. `LockUserAccountAction` / `UnlockUserAccountAction` — throws for super_admin
+  4. `DeleteUserAction` — throws for super_admin
+- Reserved authoritative names (`admin`, `administrator`, `superadmin`, `superadministrator`,
+  `super_admin`, `root`, `sysadmin`, `system`) are blocked by `ReservedAuthoritativeName`
+  validation rule for all non-super-admin users.
+- All authentication-related logging uses SmartLogger with higher retention priority than 
+standard activity logs.
+- All Livewire components return `: View` for type safety — `AccessManager`, `AccountRecovery`, 
+`RecoveryCode`, and `RecoverySlipManager` were updated to match the existing pattern in 
+`Login`, `ResetPassword`, `ConfirmPassword`, and `ForgotPassword`.
 
 ### Process Flow
 
@@ -165,34 +194,3 @@ AccountStatus, LabelEnum contract for Role |
 | Registration | RegistrationCenter Livewire component (guest registration route) |
 
 
-- Account lifecycle follows a strict state machine — invalid transitions are rejected at the 
-domain logic level, not just the UI.
-- ARCHIVED is terminal: login permanently blocked, data preserved indefinitely, no automated 
-recovery path.
-- PROTECTED accounts cannot transition to any other state — this guarantees at least one super 
-admin always exists.
-- Every login attempt must record IP address, user agent, and timestamp for security audit and 
-incident investigation.
-- Recovery codes expire after a configurable duration (default 24 hours) and are single-use — 
-redeemed codes are invalidated.
-- No user can change their own role through any interface — role changes require an authorized 
-admin.
-- Only super_admin can assign or revoke the super_admin role — enforced at the database seed 
-level and the policy level.
-- At least one super_admin account must always exist — deletion of the last super_admin is 
-blocked by the domain logic.
-- The super_admin account is **singleton, permanent, and PROTECTED**: name is always 
-"Administrator", username "superadmin". Cannot be deleted, locked, or modified by anyone
-else. The user can only change their own email and password. Enforced by 4 layers:
-  1. `UserPolicy::delete/forceDelete/restore` — returns `false` for super_admin targets
-  2. `UserPolicy::update` — only allows self-update for super_admin
-  3. `LockUserAccountAction` / `UnlockUserAccountAction` — throws for super_admin
-  4. `DeleteUserAction` — throws for super_admin
-- Reserved authoritative names (`admin`, `administrator`, `superadmin`, `superadministrator`,
-  `super_admin`, `root`, `sysadmin`, `system`) are blocked by `ReservedAuthoritativeName`
-  validation rule for all non-super-admin users.
-- All authentication-related logging uses SmartLogger with higher retention priority than 
-standard activity logs.
-- All Livewire components return `: View` for type safety — `AccessManager`, `AccountRecovery`, 
-`RecoveryCode`, and `RecoverySlipManager` were updated to match the existing pattern in 
-`Login`, `ResetPassword`, `ConfirmPassword`, and `ForgotPassword`.

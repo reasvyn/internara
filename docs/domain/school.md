@@ -43,13 +43,18 @@ internships/assessments).
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Admin | As an admin, I want to set up the school profile so that the institution's identity is configured |
-| Admin | As an admin, I want to manage departments so that the organizational structure is maintained |
-| Admin | As an admin, I want to create academic years so that internship programs have temporal boundaries |
-| Admin | As an admin, I want to activate and deactivate academic years so that only one year is active at a time |
-| Admin | As an admin, I want to import/export departments via CSV so that I can manage data in bulk |
+- **Admin:** As an admin, I want to set up the school profile so that the institution's identity is configured
+- **Admin:** As an admin, I want to manage departments so that the organizational structure is maintained
+- **Admin:** As an admin, I want to create academic years so that internship programs have temporal boundaries
+- **Admin:** As an admin, I want to activate and deactivate academic years so that only one year is active at a time
+- **Admin:** As an admin, I want to import/export departments via CSV so that I can manage data in bulk
+- School follows a single-record pattern — only one school profile exists.
+- At most one academic year can be marked as active at any time; activating a new year
+deactivates the current one.
+- A department cannot be deleted if it has any user profiles associated.
+- An academic year cannot be deleted if it is active or has related internship/assessment records.
+- A department is always loaded with its school relationship (`$with = ['school']`).
+- The school logo is stored via spatie/laravel-medialibrary with a `thumb` webp conversion.
 
 ### Process Flow
 
@@ -98,10 +103,3 @@ INACTIVE ──→ ACTIVE (only one at a time)
 | Shared | CsvHandler for import/export functionality |
 
 
-- School follows a single-record pattern — only one school profile exists.
-- At most one academic year can be marked as active at any time; activating a new year
-deactivates the current one.
-- A department cannot be deleted if it has any user profiles associated.
-- An academic year cannot be deleted if it is active or has related internship/assessment records.
-- A department is always loaded with its school relationship (`$with = ['school']`).
-- The school logo is stored via spatie/laravel-medialibrary with a `thumb` webp conversion.

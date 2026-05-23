@@ -87,15 +87,30 @@ assigned until the new mentor confirms acceptance.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Admin | As an admin, I want to assign primary and co-mentors to students so that every student has proper supervision |
-| Mentor | As a mentor, I want to see my assigned students and their progress at a glance so that I can prioritize my attention |
-| Mentor | As a mentor, I want to keep private supervision notes so that I can track observations and concerns |
-| Mentor | As a mentor, I want to manage my supervision schedule so that students can book sessions with me |
-| Mentor | As a mentor, I want to hand over my students to another mentor when needed so that supervision continues seamlessly |
-| Student | As a student, I want to see who my mentors are so that I know who to contact |
-| System | As the system, I want to ensure each student has exactly one primary mentor at all times during an active internship |
+- **Admin:** As an admin, I want to assign primary and co-mentors to students so that every student has proper supervision
+- **Mentor:** As a mentor, I want to see my assigned students and their progress at a glance so that I can prioritize my attention
+- **Mentor:** As a mentor, I want to keep private supervision notes so that I can track observations and concerns
+- **Mentor:** As a mentor, I want to manage my supervision schedule so that students can book sessions with me
+- **Mentor:** As a mentor, I want to hand over my students to another mentor when needed so that supervision continues seamlessly
+- **Student:** As a student, I want to see who my mentors are so that I know who to contact
+- **System:** As the system, I want to ensure each student has exactly one primary mentor at all times during an active internship
+- Each student must have exactly one primary mentor assigned at all times during an active 
+internship — zero primary mentor is not a valid state.
+- Mentor assignments are strictly time-bound to the internship period; assignments auto-expire 
+when the period ends (data preserved, access revoked).
+- Supervision logs are strictly confidential to the creating mentor and administrators — never 
+visible to the student under any circumstances.
+- A mentor cannot be assigned as mentor to themselves — this is enforced at the assignment 
+creation level.
+- Mentor handover requires the new mentor's explicit acceptance; the outgoing mentor cannot 
+unilaterally transfer students without confirmation.
+- Primary mentors have full data access across all domains for their assigned students; 
+co-mentors have a configurable access scope set at assignment time.
+- Mentors can view student data across other domains (attendance, logbook, evaluations, 
+assignments) in read-only mode — all writes happen through the respective domain's interfaces.
+- A mentor cannot delete their supervision logs — logs can only be archived (hidden from active 
+view) but are preserved for audit.
+- All Livewire components return `: View` for type safety.
 
 ### Process Flow
 
@@ -145,20 +160,3 @@ registration means no mentorship relationship |
 | Core | BaseAction, BaseModel, SmartLogger, BaseRecordManager |
 
 
-- Each student must have exactly one primary mentor assigned at all times during an active 
-internship — zero primary mentor is not a valid state.
-- Mentor assignments are strictly time-bound to the internship period; assignments auto-expire 
-when the period ends (data preserved, access revoked).
-- Supervision logs are strictly confidential to the creating mentor and administrators — never 
-visible to the student under any circumstances.
-- A mentor cannot be assigned as mentor to themselves — this is enforced at the assignment 
-creation level.
-- Mentor handover requires the new mentor's explicit acceptance; the outgoing mentor cannot 
-unilaterally transfer students without confirmation.
-- Primary mentors have full data access across all domains for their assigned students; 
-co-mentors have a configurable access scope set at assignment time.
-- Mentors can view student data across other domains (attendance, logbook, evaluations, 
-assignments) in read-only mode — all writes happen through the respective domain's interfaces.
-- A mentor cannot delete their supervision logs — logs can only be archived (hidden from active 
-view) but are preserved for audit.
-- All Livewire components return `: View` for type safety.

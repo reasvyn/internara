@@ -86,13 +86,26 @@ tools — it only provides entry points.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Student | As a student, I want to see a personalized dashboard so that I have an overview of my internship status |
-| Student | As a student, I want to see upcoming deadlines and pending actions so that I know what needs my attention |
-| Student | As a student, I want to view my mentor's contact information so that I know who to reach out to |
-| Student | As a student, I want to track my progress against program requirements so that I can self-manage |
-| Student | As a student, I want quick links to all internship tools (logbook, clock-in, assignments) so that I navigate efficiently |
+- **Student:** As a student, I want to see a personalized dashboard so that I have an overview of my internship status
+- **Student:** As a student, I want to see upcoming deadlines and pending actions so that I know what needs my attention
+- **Student:** As a student, I want to view my mentor's contact information so that I know who to reach out to
+- **Student:** As a student, I want to track my progress against program requirements so that I can self-manage
+- **Student:** As a student, I want quick links to all internship tools (logbook, clock-in, assignments) so that I navigate efficiently
+- A user is a mentee only when they have the student role AND an active registration — this is 
+a derived state, not a separately stored attribute.
+- The student dashboard aggregates data from source domains in real-time — no stale cached data 
+is displayed to the student.
+- Mentor information is displayed read-only; mentorship management belongs to the Mentor and 
+Admin domains exclusively.
+- Students without an active registration cannot access the mentee dashboard or any internship 
+tools.
+- Mentee-specific data extensions (beyond the User Profile) are optional and shallow; the User 
+Profile is the canonical personal data store.
+- The dashboard aggregation queries must be optimized for performance — students should see 
+their dashboard in under one second despite querying multiple domains.
+- Historical mentee enrollments (past internships) provide portfolio access but do not confer any 
+current internship tool access.
+- All Livewire components return `: View` for type safety.
 
 ### Key Operations
 
@@ -121,18 +134,3 @@ registration means no mentee state |
 | Core | BaseAction, BaseModel, SmartLogger |
 
 
-- A user is a mentee only when they have the student role AND an active registration — this is 
-a derived state, not a separately stored attribute.
-- The student dashboard aggregates data from source domains in real-time — no stale cached data 
-is displayed to the student.
-- Mentor information is displayed read-only; mentorship management belongs to the Mentor and 
-Admin domains exclusively.
-- Students without an active registration cannot access the mentee dashboard or any internship 
-tools.
-- Mentee-specific data extensions (beyond the User Profile) are optional and shallow; the User 
-Profile is the canonical personal data store.
-- The dashboard aggregation queries must be optimized for performance — students should see 
-their dashboard in under one second despite querying multiple domains.
-- Historical mentee enrollments (past internships) provide portfolio access but do not confer any 
-current internship tool access.
-- All Livewire components return `: View` for type safety.

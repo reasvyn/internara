@@ -76,17 +76,29 @@ attendance health). Reports can be filtered by date range, status, and demograph
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Student | As a student, I want to clock in and clock out so that my attendance is recorded |
-| Student | As a student, I want to submit an absence request so that I am excused for planned or unplanned absences |
-| Student | As a student, I want to view my attendance record so that I can track my compliance |
-| Mentor | As a mentor, I want to view my mentees' attendance so that I can monitor their participation |
-| Mentor | As a mentor, I want to approve or reject absence requests so that absences are properly managed |
-| Admin | As an admin, I want to configure attendance policies per program (grace period, minimum hours) so that rules fit each program's needs |
-| Admin | As an admin, I want to generate attendance reports so that I can assess program compliance |
-| System | As the system, I want to compute attendance status automatically from clock-in/out data so that results are deterministic and auditable |
-| System | As the system, I want to notify mentors when attendance drops below thresholds so that issues are addressed early |
+- **Student:** As a student, I want to clock in and clock out so that my attendance is recorded
+- **Student:** As a student, I want to submit an absence request so that I am excused for planned or unplanned absences
+- **Student:** As a student, I want to view my attendance record so that I can track my compliance
+- **Mentor:** As a mentor, I want to view my mentees' attendance so that I can monitor their participation
+- **Mentor:** As a mentor, I want to approve or reject absence requests so that absences are properly managed
+- **Admin:** As an admin, I want to configure attendance policies per program (grace period, minimum hours) so that rules fit each program's needs
+- **Admin:** As an admin, I want to generate attendance reports so that I can assess program compliance
+- **System:** As the system, I want to compute attendance status automatically from clock-in/out data so that results are deterministic and auditable
+- **System:** As the system, I want to notify mentors when attendance drops below thresholds so that issues are addressed early
+- Attendance records are immutable after a configurable time window (default 24 hours) — 
+corrections require admin override with a logged reason.
+- Each program defines its own minimum attendance percentage required for completion; the 
+percentage is a policy, not a hardcoded constant.
+- Consecutive unexcused absences beyond the program's threshold trigger automatic notification 
+escalation (mentor → admin).
+- Planned absence requests require minimum advance notice (default 24 hours); unplanned requests 
+require a documented reason.
+- Clock-in is personal — only the authenticated user can clock in/out for themselves; proxy 
+clocking is prohibited and detectable.
+- Attendance status is computed automatically from raw data; manual overrides are logged and 
+preserve the original computed status.
+- Attendance cannot be recorded without a scheduled session context; clock-in outside any session 
+is recorded but flagged as unscheduled.
 
 ### Process Flow
 
@@ -152,17 +164,3 @@ policy application |
 trail |
 
 
-- Attendance records are immutable after a configurable time window (default 24 hours) — 
-corrections require admin override with a logged reason.
-- Each program defines its own minimum attendance percentage required for completion; the 
-percentage is a policy, not a hardcoded constant.
-- Consecutive unexcused absences beyond the program's threshold trigger automatic notification 
-escalation (mentor → admin).
-- Planned absence requests require minimum advance notice (default 24 hours); unplanned requests 
-require a documented reason.
-- Clock-in is personal — only the authenticated user can clock in/out for themselves; proxy 
-clocking is prohibited and detectable.
-- Attendance status is computed automatically from raw data; manual overrides are logged and 
-preserve the original computed status.
-- Attendance cannot be recorded without a scheduled session context; clock-in outside any session 
-is recorded but flagged as unscheduled.

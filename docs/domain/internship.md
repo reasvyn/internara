@@ -92,17 +92,31 @@ context.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Admin | As an admin, I want to create internship programs so that students have a framework to register and participate |
-| Admin | As an admin, I want to configure program requirements (attendance, assignments, briefings) so that completion criteria are defined |
-| Admin | As an admin, I want to schedule briefings so that students receive necessary orientation and information |
-| Admin | As an admin, I want to manage report requirements so that students know what deliverables are expected |
-| Admin | As an admin, I want to transition programs through their lifecycle so that the system operates within the correct temporal context |
-| Student | As a student, I want to view available internship programs so that I can make an informed choice |
-| Student | As a student, I want to access briefing materials and schedules so that I can prepare for sessions |
-| Student | As a student, I want to submit required reports so that I meet program completion criteria |
-| System | As the system, I want to gate operations by program state so that no domain receives data out of temporal context |
+- **Admin:** As an admin, I want to create internship programs so that students have a framework to register and participate
+- **Admin:** As an admin, I want to configure program requirements (attendance, assignments, briefings) so that completion criteria are defined
+- **Admin:** As an admin, I want to schedule briefings so that students receive necessary orientation and information
+- **Admin:** As an admin, I want to manage report requirements so that students know what deliverables are expected
+- **Admin:** As an admin, I want to transition programs through their lifecycle so that the system operates within the correct temporal context
+- **Student:** As a student, I want to view available internship programs so that I can make an informed choice
+- **Student:** As a student, I want to access briefing materials and schedules so that I can prepare for sessions
+- **Student:** As a student, I want to submit required reports so that I meet program completion criteria
+- **System:** As the system, I want to gate operations by program state so that no domain receives data out of temporal context
+- Program dates must fall entirely within the associated academic year's date range — no 
+overlap or out-of-bounds dates.
+- Program requirements apply uniformly to all enrolled students at the program level; individual 
+accommodations are managed as exceptions through the Registration domain.
+- Briefings must be scheduled before their occurrence date; retroactive briefing creation is not 
+permitted.
+- A program cannot be deleted if it has any active, closed, or completed registrations — it can 
+only be archived.
+- Report requirement changes apply prospectively only — they do not affect students who have 
+already started the program.
+- Each program must define at least one completion criterion and one assessment period to be 
+eligible for OPEN status.
+- Program status transitions are irreversible in the forward direction: ACTIVE cannot return to 
+OPEN; CLOSED cannot return to ACTIVE without explicit administrative override.
+- Archived programs are entirely read-only — no new data can be created against an archived 
+program context.
 
 ### Process Flow
 
@@ -166,19 +180,3 @@ context for all registration, placement, and operational activity |
 | Core | BaseAction, BaseModel, SmartLogger |
 
 
-- Program dates must fall entirely within the associated academic year's date range — no 
-overlap or out-of-bounds dates.
-- Program requirements apply uniformly to all enrolled students at the program level; individual 
-accommodations are managed as exceptions through the Registration domain.
-- Briefings must be scheduled before their occurrence date; retroactive briefing creation is not 
-permitted.
-- A program cannot be deleted if it has any active, closed, or completed registrations — it can 
-only be archived.
-- Report requirement changes apply prospectively only — they do not affect students who have 
-already started the program.
-- Each program must define at least one completion criterion and one assessment period to be 
-eligible for OPEN status.
-- Program status transitions are irreversible in the forward direction: ACTIVE cannot return to 
-OPEN; CLOSED cannot return to ACTIVE without explicit administrative override.
-- Archived programs are entirely read-only — no new data can be created against an archived 
-program context.

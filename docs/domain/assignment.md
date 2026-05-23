@@ -76,18 +76,29 @@ entire class) are also supported with a single action.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Teacher | As a teacher, I want to create assignments with due dates so that students have clear tasks to complete |
-| Teacher | As a teacher, I want to publish assignments so that students can see and work on them |
-| Teacher | As a teacher, I want to grade submissions with scores and feedback so that students know their performance |
-| Teacher | As a teacher, I want to return submissions for revision so that students can improve their work |
-| Student | As a student, I want to view my pending and past assignments so that I can manage my workload |
-| Student | As a student, I want to submit my work, optionally saving drafts first, so that I can refine before finalizing |
-| Student | As a student, I want to receive grades and feedback so that I understand my strengths and areas for improvement |
-| Student | As a student, I want to resubmit after revision so that I can demonstrate improvement |
-| System | As the system, I want to enforce the submission state machine so that no invalid transitions occur |
-| System | As the system, I want to detect and flag late submissions so that teachers can make informed grading decisions |
+- **Teacher:** As a teacher, I want to create assignments with due dates so that students have clear tasks to complete
+- **Teacher:** As a teacher, I want to publish assignments so that students can see and work on them
+- **Teacher:** As a teacher, I want to grade submissions with scores and feedback so that students know their performance
+- **Teacher:** As a teacher, I want to return submissions for revision so that students can improve their work
+- **Student:** As a student, I want to view my pending and past assignments so that I can manage my workload
+- **Student:** As a student, I want to submit my work, optionally saving drafts first, so that I can refine before finalizing
+- **Student:** As a student, I want to receive grades and feedback so that I understand my strengths and areas for improvement
+- **Student:** As a student, I want to resubmit after revision so that I can demonstrate improvement
+- **System:** As the system, I want to enforce the submission state machine so that no invalid transitions occur
+- **System:** As the system, I want to detect and flag late submissions so that teachers can make informed grading decisions
+- Once finalized, grades cannot be changed without an override record preserving the original 
+grade and documenting the reason.
+- Late submissions are flagged with the computed delay duration but never automatically rejected 
+— teachers retain discretion.
+- RETURNED submissions create a new version; the original submission and grade are preserved in 
+the audit trail.
+- Task due dates must fall within the internship program's date range.
+- Teachers can only grade submissions from students in their assigned mentorship groups, enforced 
+through Mentor domain assignment data.
+- Deleting a task requires explicit confirmation and cascades to all associated submissions with 
+a logged archive event.
+- A student can have at most one active (non-graded, non-returned) submission version per task at 
+any time.
 
 ### Process Flow
 
@@ -149,16 +160,3 @@ DRAFT ──→ SUBMITTED ──→ VERIFIED ──→ GRADED (immutable)
 BaseRecordManager for the teacher CRUD interface |
 
 
-- Once finalized, grades cannot be changed without an override record preserving the original 
-grade and documenting the reason.
-- Late submissions are flagged with the computed delay duration but never automatically rejected 
-— teachers retain discretion.
-- RETURNED submissions create a new version; the original submission and grade are preserved in 
-the audit trail.
-- Task due dates must fall within the internship program's date range.
-- Teachers can only grade submissions from students in their assigned mentorship groups, enforced 
-through Mentor domain assignment data.
-- Deleting a task requires explicit confirmation and cascades to all associated submissions with 
-a logged archive event.
-- A student can have at most one active (non-graded, non-returned) submission version per task at 
-any time.
