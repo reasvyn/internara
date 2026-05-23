@@ -170,7 +170,7 @@ class AcademicYearIndex extends Component
         }
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('school.academic-year-index', [

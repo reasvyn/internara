@@ -55,7 +55,7 @@ class RecoverySlipManager extends Component
         $this->selectedUser = User::find($id);
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         $users = [];

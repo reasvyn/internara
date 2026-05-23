@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="{{ request()->cookie('theme', 'system') }}">
     <head>
-        <x-layouts::base.head :$title />
+        <x-shared::layouts.base.head :$title />
         
         {{-- Dynamic Branding Colors --}}
         @php

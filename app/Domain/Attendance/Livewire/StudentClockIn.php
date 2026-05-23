@@ -33,7 +33,7 @@ class StudentClockIn extends Component
         }
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         $today = Attendance::where('user_id', auth()->id())

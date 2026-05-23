@@ -87,7 +87,7 @@ class IncidentManager extends BaseRecordManager
         $this->resolvingId = null;
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('incident.incident-manager', [

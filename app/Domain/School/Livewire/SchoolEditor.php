@@ -103,7 +103,7 @@ class SchoolEditor extends Component
         flash()->success(__('school.save_success'));
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('school.school-editor');

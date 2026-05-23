@@ -1,6 +1,6 @@
 @props(['title' => null, 'header' => null, 'footer' => null])
 
-<x-layouts::base :$title>
+<x-shared::layouts.base :$title>
     <div class="min-h-screen flex flex-col bg-base-200">
         <header class="bg-base-100/80 backdrop-blur-sm border-b border-base-content/10 sticky top-0 z-50">
             <div class="container mx-auto px-6 lg:px-12">
@@ -31,4 +31,4 @@
             </div>
         </footer>
     </div>
-</x-layouts::base>
+</x-shared::layouts.base>

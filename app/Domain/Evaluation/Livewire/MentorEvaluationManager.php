@@ -189,7 +189,7 @@ class MentorEvaluationManager extends Component
         return $type->defaultCriteria();
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         $query = Evaluation::query()->with(['evaluator', 'mentor']);

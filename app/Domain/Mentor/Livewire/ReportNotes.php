@@ -47,7 +47,7 @@ class ReportNotes extends Component
         }
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('mentor.report.notes');

@@ -75,6 +75,42 @@ Foundation → Identity → Institution → Partnership → Placement
 Start with **Core** and **Auth**, then proceed based on the feature you are
 implementing. Each domain doc links to related upstream and downstream domains.
 
+## DomainServiceProvider
+
+Registered in `bootstrap/providers.php` alongside `AppServiceProvider`.
+Handles all cross-domain infrastructure in a single place:
+
+| Responsibility | Method | Auto-Discovery |
+|---|---|---|
+| **Livewire components** | `discoverLivewireComponents()` | ✅ Scans `app/Domain/*/Livewire/`, registers as `{kebab-domain}.{kebab-class}` |
+| **Policies** | `discoverPolicies()` | ✅ Scans `app/Domain/*/Policies/`, auto-links to model matching policy name |
+| **Blade namespaces** | `registerBladeNamespaces()` | ✅ Scans `resources/views/*/`, registers as `x-{domain}::` + `{domain}::` view namespace |
+| **Blade: layouts** | `boot()` | Manual: `resources/views/shared/layouts/` → `x-shared::layouts.*` |
+| **Events** | `boot()` | Manual: `SetupFinalized` → `LogSetupFinalized` listener |
+| **Policies (cross-domain)** | `boot()` | Manual: `UserPolicy`, `InternshipPlacementPolicy`, `InternshipRegistrationPolicy`, `CompanyPolicy` |
+| **Container bindings** | `register()` | Manual: `SendsNotifications` → `SendNotificationAction` |
+
+### Blade Namespace Convention
+
+```
+views/shared/
+├── layouts/          x-shared::layouts.*       (app, base, guest, header, sidebar)
+├── ui/               x-shared::ui.*            (brand, logo, credits, navbar-actions, etc.)
+├── widgets/          x-shared::widgets.*       (stat-card, profile-summary, quick-link, etc.)
+views/auth/layouts/   auth::layouts.*           (auth-specific layouts)
+views/setup/layouts/  setup::layouts.*          (setup wizard layout)
+views/{domain}/       {domain}::*               (auto-discovered per domain)
+```
+
+The `layouts`, `ui`, and `widgets` directories under `shared/` are all accessed
+via the `shared` namespace — no need for separate namespace registrations.
+
+### Excluded Directories
+
+Directories excluded from auto-discovery in `registerBladeNamespaces()`:
+`components`, `emails`, `errors`, `mcp`, `pdf`, `vendor`. These are either
+structural (not domain views) or belong to third-party packages.
+
 ## References
 
 - `docs/architecture.md` — 12-layer architecture, domain structure diagram

@@ -80,7 +80,7 @@ class SupervisorLogManager extends Component
         flash()->success('Log verified successfully.');
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         $logs = SupervisionLog::query()

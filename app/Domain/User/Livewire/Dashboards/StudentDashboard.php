@@ -34,7 +34,7 @@ class StudentDashboard extends Component
         $this->verifiedJournals = $data['verifiedJournals'];
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('user.dashboards.student');

@@ -38,7 +38,7 @@ class GdprDeletionLogs extends Component
             ->paginate(20);
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('admin.gdpr-deletion-logs', [

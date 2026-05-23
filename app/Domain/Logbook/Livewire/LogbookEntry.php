@@ -76,7 +76,7 @@ class LogbookEntry extends Component
         }
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         $journals = Logbook::where('user_id', auth()->id())

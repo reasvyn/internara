@@ -104,7 +104,7 @@ class AttendanceManager extends Component
         flash()->success('Absence request rejected.');
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         $existing = Attendance::query()

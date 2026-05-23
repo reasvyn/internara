@@ -82,7 +82,7 @@ class ReportReview extends BaseRecordManager
         $this->revisionFeedback = '';
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('mentor.report.review', [

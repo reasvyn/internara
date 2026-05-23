@@ -5,14 +5,14 @@
     'context' => null,
 ])
 
-<x-layouts::base :$title>
+<x-shared::layouts.base :$title>
     <div class="drawer lg:drawer-open min-h-screen">
         <input id="main-drawer" type="checkbox" class="drawer-toggle" />
 
-        <x-layouts::sidebar />
+        <x-shared::layouts.sidebar />
 
         <div class="drawer-content flex flex-col bg-base-200/30">
-            <x-layouts::header :$header />
+            <x-shared::layouts.header :$header />
 
             <main id="main-content" class="flex-1 flex flex-col">
                 <div class="flex-1 container mx-auto max-w-7xl px-4 py-5 md:px-6 lg:px-8 flex flex-col">
@@ -34,7 +34,7 @@
                 </div>
             </main>
 
-            <x-layouts::base.footer />
+            <x-shared::layouts.base.footer />
         </div>
     </div>
-</x-layouts::base>
+</x-shared::layouts.base>

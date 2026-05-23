@@ -1,6 +1,6 @@
 @props(['title' => null])
 
-<x-layouts::base :$title bodyClass="min-h-screen bg-base-200 flex items-center justify-center py-8">
+<x-shared::layouts.base :$title bodyClass="min-h-screen bg-base-200 flex items-center justify-center py-8">
     <div class="w-full max-w-sm px-4">
         <div class="text-center mb-8">
             <a href="{{ route('dashboard') }}" class="inline-flex flex-col items-center gap-3 group" wire:navigate>
@@ -25,4 +25,4 @@
             <x-shared::ui.lang-switcher />
         </div>
     </div>
-</x-layouts::base>
+</x-shared::layouts.base>

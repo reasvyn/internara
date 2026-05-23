@@ -44,7 +44,7 @@ class SupervisorDashboard extends Component
             ->count();
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('user.dashboards.supervisor');

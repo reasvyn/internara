@@ -39,7 +39,7 @@ class ReportsManager extends Component
         flash()->success('Report deleted.');
     }
 
-    #[Layout('layouts::app')]
+    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         $reports = Document::query()
