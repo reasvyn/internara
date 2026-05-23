@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Session;
 
 Route::middleware('setup.protected')->group(function () {
     Route::livewire('/setup', SetupWizard::class)->name('setup');
+    Route::post('/setup', fn () => redirect()->route('setup'));
 });
 
 Route::post('/setup/cleanup', function () {
