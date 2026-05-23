@@ -114,16 +114,39 @@ Also reports whether the system has been set up via the Setup wizard.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Installer | As an installer, I want to run a guided setup wizard so that I can configure the application for first use |
-| Installer | As an installer, I want an environment audit so that I can verify my server meets requirements |
-| Developer | As a developer, I want to run a pre-flight audit without provisioning so that I can check readiness before committing to installation |
-| Developer | As a developer, I want a single health check command so that I can see system status, setup phase, and pending migrations at a glance |
-| Installer | As an installer, I want to create the school, first department, and admin account in one flow so that the system is ready to use |
-| Installer | As an installer, I want to receive a recovery key at completion so that I can restore admin access if needed |
-| Admin | As an admin, I want to run setup via CLI for automated deployments so that installation is repeatable |
-| System | As the system, I want to permanently lock setup after completion so that no one can reinstall |
+- **Installer:** As an installer, I want to run a guided setup wizard so that I can configure the application for first use
+- **Installer:** As an installer, I want an environment audit so that I can verify my server meets requirements
+- **Developer:** As a developer, I want to run a pre-flight audit without provisioning so that I can check readiness before committing to installation
+- **Developer:** As a developer, I want a single health check command so that I can see system status, setup phase, and pending migrations at a glance
+- **Installer:** As an installer, I want to create the school, first department, and admin account in one flow so that the system is ready to use
+- **Installer:** As an installer, I want to receive a recovery key at completion so that I can restore admin access if needed
+- **Admin:** As an admin, I want to run setup via CLI for automated deployments so that installation is repeatable
+- **System:** As the system, I want to permanently lock setup after completion so that no one can reinstall
+- Setup can only run once per installation — the setup lock is applied at completion and is
+irremovable through the web interface.
+- Environment checks MUST pass before any write operations (database migrations, user
+creation) are executed — no writes on a failing environment. The wizard blocks at step 1
+if critical checks fail.
+- The initial admin account MUST be created with the super_admin role — this guarantees at
+least one super_admin exists in the system from the very beginning.
+- No default or well-known credentials are ever created under any circumstances; the wizard
+requires setting a password with minimum 8 characters.
+- The setup token is encrypted at rest and validated with hash_equals to prevent timing
+attacks.
+- All setup operations are logged via SmartLogger even though no authenticated user exists.
+- The wizard supports session persistence — if closed and reopened, it resumes from the last
+incomplete step (form data is saved to the session on every change).
+- The recovery key is shown exactly once (on the complete screen) and stored as a bcrypt hash.
+There is no way to retrieve it later.
+- The `setup:reset` command only works when `is_installed` is false — it cannot bypass the
+setup lock. If the system is already installed, it prompts the user to run `system:health`.
+- The `setup:install --check-only` flag runs the full environment audit without any database
+writes or provisioning — safe to run at any time, even after installation.
+- `system:health` is the recommended first command for any developer joining the project —
+it provides a comprehensive overview of system readiness including setup phase and migration
+status.
+- The setup wizard route is protected by rate limiting (20 attempts per 60 seconds per IP)
+to prevent brute-force token guessing.
 
 ### Process Flow
 
@@ -134,12 +157,6 @@ Setup Wizard Steps:
 → 4. ADMIN ACCOUNT → 5. INTERNSHIP (optional) → 6. FINALIZE
 → 7. COMPLETE (setup locked)
 ```
-
-- Setup can only run once — the setup lock is permanent after completion
-- Environment checks MUST pass before any write operations
-- The initial admin account is created with super_admin role
-- Setup token is encrypted at rest, validated with hash_equals
-- Recovery key is shown exactly once and stored as bcrypt hash
 
 ### Key Operations
 
@@ -180,28 +197,3 @@ Setup Wizard Steps:
 | Settings | AppInfo support class for version display |
 
 
-- Setup can only run once per installation — the setup lock is applied at completion and is
-irremovable through the web interface.
-- Environment checks MUST pass before any write operations (database migrations, user
-creation) are executed — no writes on a failing environment. The wizard blocks at step 1
-if critical checks fail.
-- The initial admin account MUST be created with the super_admin role — this guarantees at
-least one super_admin exists in the system from the very beginning.
-- No default or well-known credentials are ever created under any circumstances; the wizard
-requires setting a password with minimum 8 characters.
-- The setup token is encrypted at rest and validated with hash_equals to prevent timing
-attacks.
-- All setup operations are logged via SmartLogger even though no authenticated user exists.
-- The wizard supports session persistence — if closed and reopened, it resumes from the last
-incomplete step (form data is saved to the session on every change).
-- The recovery key is shown exactly once (on the complete screen) and stored as a bcrypt hash.
-There is no way to retrieve it later.
-- The `setup:reset` command only works when `is_installed` is false — it cannot bypass the
-setup lock. If the system is already installed, it prompts the user to run `system:health`.
-- The `setup:install --check-only` flag runs the full environment audit without any database
-writes or provisioning — safe to run at any time, even after installation.
-- `system:health` is the recommended first command for any developer joining the project —
-it provides a comprehensive overview of system readiness including setup phase and migration
-status.
-- The setup wizard route is protected by rate limiting (20 attempts per 60 seconds per IP)
-to prevent brute-force token guessing.

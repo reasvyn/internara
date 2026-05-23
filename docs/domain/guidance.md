@@ -83,13 +83,27 @@ is timestamped and attributable.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Admin | As an admin, I want to upload and version guidance documents so that students always see the latest policies |
-| Admin | As an admin, I want to assign documents to students automatically or manually so that the right students receive the right documents |
-| Student | As a student, I want to view assigned guidance documents so that I can read and understand policies |
-| Student | As a student, I want to acknowledge a document so that my compliance is recorded |
-| Admin | As an admin, I want to view compliance reports so that I can track which students have acknowledged which documents |
+- **Admin:** As an admin, I want to upload and version guidance documents so that students always see the latest policies
+- **Admin:** As an admin, I want to assign documents to students automatically or manually so that the right students receive the right documents
+- **Student:** As a student, I want to view assigned guidance documents so that I can read and understand policies
+- **Student:** As a student, I want to acknowledge a document so that my compliance is recorded
+- **Admin:** As an admin, I want to view compliance reports so that I can track which students have acknowledged which documents
+- Acknowledgements are completely immutable — they permanently and indelibly record the 
+document version exact content hash, the acknowledgement timestamp, and the student's identity.
+- When a document is updated to a new version, existing acknowledgements for the old version 
+remain valid for that version, but a new acknowledgement is required for the updated version to 
+maintain compliance.
+- Required documents that are unacknowledged can block specific internship activities 
+(configurable per program — common blocks include attendance clock-in, logbook access, and 
+registration completion).
+- Students cannot be required to acknowledge documents they have not been explicitly shown — 
+the system requires the student to view the document before acknowledgement is possible.
+- Document deletion is entirely prohibited if any acknowledgement record references that document 
+or any of its versions.
+- Each acknowledgement must be cryptographically traceable to the exact document version via a 
+content hash stored with the acknowledgement record.
+- Compliance dashboards display real-time acknowledgement status computed from raw 
+acknowledgement data — no cached or stale compliance information is shown.
 
 ### Process Flow
 
@@ -102,7 +116,6 @@ ASSIGNED ──→ VIEWED ──→ ACKNOWLEDGED (immutable)
 - **ASSIGNED**: Document assigned to student, pending action
 - **VIEWED**: Student has opened and viewed the document
 - **ACKNOWLEDGED**: Student has acknowledged (click-through or typed name) — permanently immutable
-- Required documents that remain unacknowledged can block internship activities
 
 ### Key Operations
 
@@ -132,19 +145,3 @@ media library serves the files |
 | Core | BaseAction, BaseModel, SmartLogger |
 
 
-- Acknowledgements are completely immutable — they permanently and indelibly record the 
-document version exact content hash, the acknowledgement timestamp, and the student's identity.
-- When a document is updated to a new version, existing acknowledgements for the old version 
-remain valid for that version, but a new acknowledgement is required for the updated version to 
-maintain compliance.
-- Required documents that are unacknowledged can block specific internship activities 
-(configurable per program — common blocks include attendance clock-in, logbook access, and 
-registration completion).
-- Students cannot be required to acknowledge documents they have not been explicitly shown — 
-the system requires the student to view the document before acknowledgement is possible.
-- Document deletion is entirely prohibited if any acknowledgement record references that document 
-or any of its versions.
-- Each acknowledgement must be cryptographically traceable to the exact document version via a 
-content hash stored with the acknowledgement record.
-- Compliance dashboards display real-time acknowledgement status computed from raw 
-acknowledgement data — no cached or stale compliance information is shown.

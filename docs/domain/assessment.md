@@ -79,18 +79,28 @@ input among many (attendance, assignments, logbook consistency, guidance acknowl
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Admin | As an admin, I want to create rubrics with weighted criteria so that evaluations are structured and consistent |
-| Admin | As an admin, I want to define competencies and indicators so that evaluators have clear scoring guidance |
-| Teacher/Mentor | As a teacher, I want to assess a student against a rubric so that their competency level is recorded |
-| Teacher/Mentor | As a teacher, I want to score individual indicators so that evaluations are granular and traceable |
-| Teacher/Mentor | As a teacher, I want to finalize an assessment so that it becomes part of the student's permanent record |
-| Admin | As an admin, I want to schedule presentations so that students have formal evaluation events |
-| Panel | As a panel member, I want to score a presentation independently so that the evaluation is fair |
-| Admin | As an admin, I want to view assessment results so that I can track student progress |
-| System | As the system, I want to auto-calculate total scores from weighted criteria so that results are mathematically consistent |
-| System | As the system, I want to prevent edits to finalized assessments so that the audit trail is trustworthy |
+- **Admin:** As an admin, I want to create rubrics with weighted criteria so that evaluations are structured and consistent
+- **Admin:** As an admin, I want to define competencies and indicators so that evaluators have clear scoring guidance
+- **Teacher/Mentor:** As a teacher, I want to assess a student against a rubric so that their competency level is recorded
+- **Teacher/Mentor:** As a teacher, I want to score individual indicators so that evaluations are granular and traceable
+- **Teacher/Mentor:** As a teacher, I want to finalize an assessment so that it becomes part of the student's permanent record
+- **Admin:** As an admin, I want to schedule presentations so that students have formal evaluation events
+- **Panel:** As a panel member, I want to score a presentation independently so that the evaluation is fair
+- **Admin:** As an admin, I want to view assessment results so that I can track student progress
+- **System:** As the system, I want to auto-calculate total scores from weighted criteria so that results are mathematically consistent
+- **System:** As the system, I want to prevent edits to finalized assessments so that the audit trail is trustworthy
+- Every competency assessment must reference exactly one rubric version — rubric evolution does 
+not retroactively affect completed assessments.
+- Once finalized, assessments cannot be edited or deleted. Corrections require a new assessment 
+round that documents the correction context.
+- Presentation panels must have at least two evaluators; a solo evaluator is insufficient for 
+panel-based scoring validity.
+- Rubric criterion weightings must total exactly 100% across all criteria within a rubric.
+- All assessment periods must fall entirely within the parent internship program's date range.
+- Self-assessments are visible to the assigned mentor alongside the mentor's own assessment — 
+discrepancies in scoring can trigger a mentor-student discussion.
+- Assessment data feeds into the completion calculation but does not independently determine 
+completion; the Registration domain makes the final eligibility decision.
 
 ### Process Flow
 
@@ -156,15 +166,3 @@ and tracked |
 SmartLogger for audit trail |
 
 
-- Every competency assessment must reference exactly one rubric version — rubric evolution does 
-not retroactively affect completed assessments.
-- Once finalized, assessments cannot be edited or deleted. Corrections require a new assessment 
-round that documents the correction context.
-- Presentation panels must have at least two evaluators; a solo evaluator is insufficient for 
-panel-based scoring validity.
-- Rubric criterion weightings must total exactly 100% across all criteria within a rubric.
-- All assessment periods must fall entirely within the parent internship program's date range.
-- Self-assessments are visible to the assigned mentor alongside the mentor's own assessment — 
-discrepancies in scoring can trigger a mentor-student discussion.
-- Assessment data feeds into the completion calculation but does not independently determine 
-completion; the Registration domain makes the final eligibility decision.

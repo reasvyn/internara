@@ -81,15 +81,28 @@ is tracking.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Student | As a student, I want to create daily log entries so that I document my internship activities and reflections |
-| Student | As a student, I want to save drafts before submitting so that I can refine my entries |
-| Student | As a student, I want to attach files to my log entries so that I can include supporting evidence |
-| Mentor | As a mentor, I want to view my mentees' submitted log entries so that I can monitor their progress |
-| Mentor | As a mentor, I want to acknowledge entries or return them for revision so that students get feedback |
-| Admin | As an admin, I want to view compliance reports so that I can identify students with submission gaps |
-| System | As the system, I want to notify mentors of submission gaps so that issues are addressed early |
+- **Student:** As a student, I want to create daily log entries so that I document my internship activities and reflections
+- **Student:** As a student, I want to save drafts before submitting so that I can refine my entries
+- **Student:** As a student, I want to attach files to my log entries so that I can include supporting evidence
+- **Mentor:** As a mentor, I want to view my mentees' submitted log entries so that I can monitor their progress
+- **Mentor:** As a mentor, I want to acknowledge entries or return them for revision so that students get feedback
+- **Admin:** As an admin, I want to view compliance reports so that I can identify students with submission gaps
+- **System:** As the system, I want to notify mentors of submission gaps so that issues are addressed early
+- Log entries cannot be backdated beyond a configurable number of days (default 7 days) — this 
+prevents bulk retroactive filling of the logbook.
+- Acknowledged entries are completely immutable — no edits, no deletions, no changes of any 
+kind. Corrections require the mentor to return the entry (if not yet acknowledged) or the student 
+to add a new entry referencing the original.
+- Each student can have at most one log entry per calendar day — duplicate entries for the same 
+day are not permitted.
+- Log entries are private between the student and their assigned mentor — not visible to other 
+students, mentors not assigned to the student, or admins without explicit access.
+- Consecutive days without an entry beyond the program's threshold triggers automatic 
+notification escalation (mentor → coordinator).
+- Students cannot create entries for future dates — entries must be for today or past dates 
+within the allowed backdate window.
+- Mentor acknowledgement is not a quality evaluation — it is a simple confirmation that the 
+entry has been read. Quality feedback flows through Evaluation or Mentor domains.
 
 ### Process Flow
 
@@ -138,18 +151,3 @@ boundaries for allowed entry dates |
 | Core | BaseAction, BaseModel, SmartLogger, BaseRecordManager for the listing and management UI |
 
 
-- Log entries cannot be backdated beyond a configurable number of days (default 7 days) — this 
-prevents bulk retroactive filling of the logbook.
-- Acknowledged entries are completely immutable — no edits, no deletions, no changes of any 
-kind. Corrections require the mentor to return the entry (if not yet acknowledged) or the student 
-to add a new entry referencing the original.
-- Each student can have at most one log entry per calendar day — duplicate entries for the same 
-day are not permitted.
-- Log entries are private between the student and their assigned mentor — not visible to other 
-students, mentors not assigned to the student, or admins without explicit access.
-- Consecutive days without an entry beyond the program's threshold triggers automatic 
-notification escalation (mentor → coordinator).
-- Students cannot create entries for future dates — entries must be for today or past dates 
-within the allowed backdate window.
-- Mentor acknowledgement is not a quality evaluation — it is a simple confirmation that the 
-entry has been read. Quality feedback flows through Evaluation or Mentor domains.

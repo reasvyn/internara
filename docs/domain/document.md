@@ -90,13 +90,26 @@ needs a new output format — just implement the driver contract and register it
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Admin | As an admin, I want to manage document templates so that generated documents have the correct layout and branding |
-| Admin | As an admin, I want to generate a document (certificate, report, letter) from a template so that output is consistent and auditable |
-| Admin | As an admin, I want to configure output formats (PDF, XLSX, HTML) per document type so that each use case gets the right format |
-| User | As a user, I want to download a generated document so that I can print or share it |
-| Developer | As a developer, I want to register a domain-specific renderer so that my domain can produce documents through the pipeline |
+- **Admin:** As an admin, I want to manage document templates so that generated documents have the correct layout and branding
+- **Admin:** As an admin, I want to generate a document (certificate, report, letter) from a template so that output is consistent and auditable
+- **Admin:** As an admin, I want to configure output formats (PDF, XLSX, HTML) per document type so that each use case gets the right format
+- **User:** As a user, I want to download a generated document so that I can print or share it
+- **Developer:** As a developer, I want to register a domain-specific renderer so that my domain can produce documents through the pipeline
+- Documents are immutable after creation — regeneration creates a new version record; the 
+original is preserved for audit.
+- Template version changes do not retroactively alter already-generated documents — each 
+document records the exact template version used.
+- Each document type must have exactly one registered renderer — ambiguous mappings are 
+rejected at service provider registration.
+- Templates are versioned; document generation always uses a specific template version (defaults 
+to latest active, can be pinned to a specific version).
+- Generated files are stored exclusively via the media library — never on the local filesystem 
+outside the storage directory.
+- Document downloads require authorization — the caller must have view permission on the source 
+entity linked to the document.
+- The rendering pipeline is synchronous by default but supports queuing for long-running 
+generations (configurable per document type).
+- Template deletion is blocked if any Document record references that template version.
 
 ### Rendering Pipeline Flow
 
@@ -138,18 +151,3 @@ audit trail |
 | Media Library | Storing and serving generated document files via spatie/laravel-medialibrary |
 
 
-- Documents are immutable after creation — regeneration creates a new version record; the 
-original is preserved for audit.
-- Template version changes do not retroactively alter already-generated documents — each 
-document records the exact template version used.
-- Each document type must have exactly one registered renderer — ambiguous mappings are 
-rejected at service provider registration.
-- Templates are versioned; document generation always uses a specific template version (defaults 
-to latest active, can be pinned to a specific version).
-- Generated files are stored exclusively via the media library — never on the local filesystem 
-outside the storage directory.
-- Document downloads require authorization — the caller must have view permission on the source 
-entity linked to the document.
-- The rendering pipeline is synchronous by default but supports queuing for long-running 
-generations (configurable per document type).
-- Template deletion is blocked if any Document record references that template version.

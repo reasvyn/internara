@@ -95,17 +95,32 @@ optimization decisions.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Admin | As an admin, I want to create placement slots per company and program so that available positions are tracked |
-| Admin | As an admin, I want to assign students to available slots automatically or manually so that every registered student gets a placement |
-| Admin | As an admin, I want to review and approve or reject placement change requests so that transfers are managed fairly |
-| Admin | As an admin, I want to view placement reports (fill rates, waitlist, unplaced students) so that I can make capacity decisions |
-| Student | As a student, I want to confirm my placement so that I can proceed to active participation |
-| Student | As a student, I want to request a placement change if circumstances require it |
-| Student | As a student, I want to see my waitlist position so that I know where I stand |
-| Company | As a company representative, I want to confirm or decline a placed student so that I have control over who joins |
-| System | As the system, I want to enforce slot capacity so that no company exceeds its agreed limit |
+- **Admin:** As an admin, I want to create placement slots per company and program so that available positions are tracked
+- **Admin:** As an admin, I want to assign students to available slots automatically or manually so that every registered student gets a placement
+- **Admin:** As an admin, I want to review and approve or reject placement change requests so that transfers are managed fairly
+- **Admin:** As an admin, I want to view placement reports (fill rates, waitlist, unplaced students) so that I can make capacity decisions
+- **Student:** As a student, I want to confirm my placement so that I can proceed to active participation
+- **Student:** As a student, I want to request a placement change if circumstances require it
+- **Student:** As a student, I want to see my waitlist position so that I know where I stand
+- **Company:** As a company representative, I want to confirm or decline a placed student so that I have control over who joins
+- **System:** As the system, I want to enforce slot capacity so that no company exceeds its agreed limit
+- The number of students assigned to a slot must never exceed its total capacity — enforced at 
+the database constraint level.
+- Each student can have at most one active placement (PENDING or CONFIRMED status) at any time 
+— no double placements.
+- Change requests execute atomically: the old slot is released and the new slot assigned in a 
+single transaction, eliminating gap states.
+- Slots cannot be overallocated even during PENDING phase — pending assignments count toward 
+capacity.
+- A slot's capacity cannot be reduced below the current number of confirmed assignments — 
+reduce requires freeing slots first.
+- Pending placements auto-release if not confirmed within the configurable confirmation window 
+(default 7 days).
+- The waitlist is strictly ordered by objective criteria — position cannot be manually changed.
+- Company slot assignment cannot exceed the total capacity defined in the active partnership 
+agreement for that program.
+- Change request decisions (approve/reject) are logged with the decision-maker's identity and 
+reason.
 
 ### Process Flow
 
@@ -168,20 +183,3 @@ students, there is nothing to place |
 | Core | BaseAction, BaseModel, SmartLogger, BaseRecordManager |
 
 
-- The number of students assigned to a slot must never exceed its total capacity — enforced at 
-the database constraint level.
-- Each student can have at most one active placement (PENDING or CONFIRMED status) at any time 
-— no double placements.
-- Change requests execute atomically: the old slot is released and the new slot assigned in a 
-single transaction, eliminating gap states.
-- Slots cannot be overallocated even during PENDING phase — pending assignments count toward 
-capacity.
-- A slot's capacity cannot be reduced below the current number of confirmed assignments — 
-reduce requires freeing slots first.
-- Pending placements auto-release if not confirmed within the configurable confirmation window 
-(default 7 days).
-- The waitlist is strictly ordered by objective criteria — position cannot be manually changed.
-- Company slot assignment cannot exceed the total capacity defined in the active partnership 
-agreement for that program.
-- Change request decisions (approve/reject) are logged with the decision-maker's identity and 
-reason.

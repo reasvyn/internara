@@ -92,14 +92,30 @@ manage their own scheduling issues.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Admin | As an admin, I want to create events for my program so that students and mentors know what is happening |
-| Admin | As an admin, I want to create recurring events so that regular sessions are managed efficiently |
-| Admin | As an admin, I want to categorize events so that display and visibility are consistent |
-| Student | As a student, I want to view my program's calendar so that I can plan my schedule |
-| Mentor | As a mentor, I want to see my supervision sessions and mentees' events so that I can manage my time |
-| Admin | As an admin, I want event conflict detection so that scheduling problems are surfaced |
+- **Admin:** As an admin, I want to create events for my program so that students and mentors know what is happening
+- **Admin:** As an admin, I want to create recurring events so that regular sessions are managed efficiently
+- **Admin:** As an admin, I want to categorize events so that display and visibility are consistent
+- **Student:** As a student, I want to view my program's calendar so that I can plan my schedule
+- **Mentor:** As a mentor, I want to see my supervision sessions and mentees' events so that I can manage my time
+- **Admin:** As an admin, I want event conflict detection so that scheduling problems are surfaced
+- Events must have start and end times that fall within their parent internship program's date 
+range — no events outside the program period are permitted.
+- Recurring events must have an explicit end condition (end date or occurrence count) — 
+indefinite recurrence with no end is not permitted.
+- Past events (those whose end time has passed) are immutable — their details cannot be 
+modified. Corrections require canceling the past event and creating a new one.
+- Event cancellation preserves the original event record with a CANCELLED status and an optional 
+cancellation reason — the record is never deleted.
+- Every event must belong to exactly one internship program — orphan events without a program 
+are not allowed to be created.
+- Conflicting events (same participant, overlapping time ranges) are flagged with a warning but 
+are not prevented from being saved.
+- Event visibility is role-scoped: students see student-relevant events, mentors see their 
+mentees' events plus program events, admins see everything with filtering.
+- Reminder delivery is best-effort; events created with less than the reminder lead time 
+remaining may not produce that reminder.
+- Events can be moved (rescheduled) only within the parent program's date range — moving an 
+event outside the range is not permitted.
 
 ### Key Operations
 
@@ -127,21 +143,3 @@ dates must fall within the program's date range |
 | Core | BaseAction, BaseModel, SmartLogger |
 
 
-- Events must have start and end times that fall within their parent internship program's date 
-range — no events outside the program period are permitted.
-- Recurring events must have an explicit end condition (end date or occurrence count) — 
-indefinite recurrence with no end is not permitted.
-- Past events (those whose end time has passed) are immutable — their details cannot be 
-modified. Corrections require canceling the past event and creating a new one.
-- Event cancellation preserves the original event record with a CANCELLED status and an optional 
-cancellation reason — the record is never deleted.
-- Every event must belong to exactly one internship program — orphan events without a program 
-are not allowed to be created.
-- Conflicting events (same participant, overlapping time ranges) are flagged with a warning but 
-are not prevented from being saved.
-- Event visibility is role-scoped: students see student-relevant events, mentors see their 
-mentees' events plus program events, admins see everything with filtering.
-- Reminder delivery is best-effort; events created with less than the reminder lead time 
-remaining may not produce that reminder.
-- Events can be moved (rescheduled) only within the parent program's date range — moving an 
-event outside the range is not permitted.

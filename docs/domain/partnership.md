@@ -50,14 +50,21 @@ placements/partnerships, and available placement slots (from Placement domain vi
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Admin | As an admin, I want to create company profiles so that I can track partner organizations |
-| Admin | As an admin, I want to create partnership agreements with start/end dates so that collaboration terms are formalized |
-| Admin | As an admin, I want to renew expired partnerships so that ongoing relationships continue smoothly |
-| Admin | As an admin, I want to terminate an active partnership when necessary so that the system reflects reality |
-| Admin | As an admin, I want to import/export companies and partnerships via CSV so that I can manage data in bulk |
-| Admin | As an admin, I want to view slot statistics per company so that I know how many placements are available |
+- **Admin:** As an admin, I want to create company profiles so that I can track partner organizations
+- **Admin:** As an admin, I want to create partnership agreements with start/end dates so that collaboration terms are formalized
+- **Admin:** As an admin, I want to renew expired partnerships so that ongoing relationships continue smoothly
+- **Admin:** As an admin, I want to terminate an active partnership when necessary so that the system reflects reality
+- **Admin:** As an admin, I want to import/export companies and partnerships via CSV so that I can manage data in bulk
+- **Admin:** As an admin, I want to view slot statistics per company so that I know how many placements are available
+- A company cannot be deleted if it has any placements or partnerships associated.
+- Only active partnerships can be terminated.
+- Only non-active (expired or terminated) partnerships can be deleted.
+- Only expired or terminated partnerships can be renewed — active partnerships must be
+terminated or expired first.
+- Partnership status transitions follow the state machine: ACTIVE → {EXPIRED, TERMINATED}.
+Terminal states (EXPIRED, TERMINATED) have no valid transitions.
+- Agreement numbers must be unique across all partnerships.
+- Companies are stored in the `companies` table.
 
 ### Process Flow
 
@@ -107,12 +114,3 @@ TERMINATED (irreversible)
 | Shared | CsvHandler for import/export |
 
 
-- A company cannot be deleted if it has any placements or partnerships associated.
-- Only active partnerships can be terminated.
-- Only non-active (expired or terminated) partnerships can be deleted.
-- Only expired or terminated partnerships can be renewed — active partnerships must be
-terminated or expired first.
-- Partnership status transitions follow the state machine: ACTIVE → {EXPIRED, TERMINATED}.
-Terminal states (EXPIRED, TERMINATED) have no valid transitions.
-- Agreement numbers must be unique across all partnerships.
-- Companies are stored in the `companies` table.

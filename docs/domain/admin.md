@@ -89,18 +89,32 @@ process.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Admin | As an admin, I want to create and manage user accounts across all roles so that the right people have system access |
-| Admin | As an admin, I want to lock or unlock user accounts so that I can respond to security concerns |
-| Super Admin | As a super admin, I want to assign or revoke roles so that access levels are properly managed |
-| Admin | As an admin, I want to publish announcements targeted by role so that I can communicate with specific user groups |
-| Admin | As an admin, I want to fulfil GDPR data export requests so that users can obtain their personal data |
-| Admin | As an admin, I want to process GDPR erasure requests so that user data is anonymized upon request |
-| Admin | As an admin, I want to browse the centralized audit log with filtering so that I can investigate actions across all domains |
-| Admin | As an admin, I want to review registrations across all programs so that I can handle edge cases and exceptions |
-| User | As a user, I want to view system announcements so that I stay informed about important updates |
-| User | As a user, I want to manage my notification preferences so that I receive relevant alerts |
+- **Admin:** As an admin, I want to create and manage user accounts across all roles so that the right people have system access
+- **Admin:** As an admin, I want to lock or unlock user accounts so that I can respond to security concerns
+- **Super Admin:** As a super admin, I want to assign or revoke roles so that access levels are properly managed
+- **Admin:** As an admin, I want to publish announcements targeted by role so that I can communicate with specific user groups
+- **Admin:** As an admin, I want to fulfil GDPR data export requests so that users can obtain their personal data
+- **Admin:** As an admin, I want to process GDPR erasure requests so that user data is anonymized upon request
+- **Admin:** As an admin, I want to browse the centralized audit log with filtering so that I can investigate actions across all domains
+- **Admin:** As an admin, I want to review registrations across all programs so that I can handle edge cases and exceptions
+- **User:** As a user, I want to view system announcements so that I stay informed about important updates
+- **User:** As a user, I want to manage my notification preferences so that I receive relevant alerts
+- Only super_admin can assign or revoke the super_admin role — enforced at the
+  policy level, not just the UI.
+- No admin can edit their own role, permissions, or account status through the
+  admin interface (self-service prevention).
+- Account lock and unlock MUST record the acting admin's identity and the reason
+  in the audit log.
+- GDPR erasure anonymizes rather than hard-deleting: personal fields are
+  overwritten with anonymized values while foreign keys and record relationships
+  are preserved for system integrity.
+- Announcements are immutable after publishing — corrections require a new
+  announcement that can reference the superseded original.
+- All admin CRUD operations are logged at a higher audit retention priority than
+  standard user actions.
+- Bulk operations (batch user creation, mass registration approval) must provide
+  result summaries: counts of succeeded, failed, and skipped operations.
+- All Livewire components return `: View` for type safety.
 
 ### Key Operations
 
@@ -140,19 +154,3 @@ process.
 CRUD patterns |
 
 
-- Only super_admin can assign or revoke the super_admin role — enforced at the
-  policy level, not just the UI.
-- No admin can edit their own role, permissions, or account status through the
-  admin interface (self-service prevention).
-- Account lock and unlock MUST record the acting admin's identity and the reason
-  in the audit log.
-- GDPR erasure anonymizes rather than hard-deleting: personal fields are
-  overwritten with anonymized values while foreign keys and record relationships
-  are preserved for system integrity.
-- Announcements are immutable after publishing — corrections require a new
-  announcement that can reference the superseded original.
-- All admin CRUD operations are logged at a higher audit retention priority than
-  standard user actions.
-- Bulk operations (batch user creation, mass registration approval) must provide
-  result summaries: counts of succeeded, failed, and skipped operations.
-- All Livewire components return `: View` for type safety.

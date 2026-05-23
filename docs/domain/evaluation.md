@@ -56,15 +56,18 @@ links evaluations to the student's internship context when applicable.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Student | As a student, I want to evaluate my mentor so that their performance is documented |
-| Student | As a student, I want to evaluate the internship program so that I can provide feedback on its quality |
-| Student | As a student, I want to evaluate the host company so that my workplace experience is recorded |
-| Student | As a student, I want to rate overall satisfaction so that program coordinators have a complete picture |
-| Student | As a student, I want to provide written feedback so that I can elaborate on my scores |
-| Admin | As an admin, I want to view evaluations filtered by type so that I can assess specific areas |
-| Admin | As an admin, I want to see aggregate scores and trends so that I can identify improvement areas |
+- **Student:** As a student, I want to evaluate my mentor so that their performance is documented
+- **Student:** As a student, I want to evaluate the internship program so that I can provide feedback on its quality
+- **Student:** As a student, I want to evaluate the host company so that my workplace experience is recorded
+- **Student:** As a student, I want to rate overall satisfaction so that program coordinators have a complete picture
+- **Student:** As a student, I want to provide written feedback so that I can elaborate on my scores
+- **Admin:** As an admin, I want to view evaluations filtered by type so that I can assess specific areas
+- **Admin:** As an admin, I want to see aggregate scores and trends so that I can identify improvement areas
+- Each evaluation records who submitted it (evaluator_id) and what type it is (evaluation_type).
+- Mentor evaluations require a mentor_id; other types use the polymorphic target_type/target_id.
+- Scores must be between 0 and 100 inclusive — enforced at the validation layer.
+- Evaluations are not immutable by default; a finalized/closed state can be added later.
+- The criteria_scores JSON structure is flexible per type — no fixed schema beyond the 0-100 range.
 
 ### Process Flow
 
@@ -107,8 +110,3 @@ CREATED ──→ UPDATED (editable until deleted)
 | Core | BaseAction, BaseModel, BaseEntity, SmartLogger |
 
 
-- Each evaluation records who submitted it (evaluator_id) and what type it is (evaluation_type).
-- Mentor evaluations require a mentor_id; other types use the polymorphic target_type/target_id.
-- Scores must be between 0 and 100 inclusive — enforced at the validation layer.
-- Evaluations are not immutable by default; a finalized/closed state can be added later.
-- The criteria_scores JSON structure is flexible per type — no fixed schema beyond the 0-100 range.

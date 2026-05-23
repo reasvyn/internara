@@ -106,14 +106,35 @@ load times under one second.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| User | As a user, I want to edit my profile so that my personal information is up to date |
-| User | As a user, I want to upload an avatar so that my account has a personal photo |
-| Student | As a student, I want to log in and be directed to my dashboard so that I can quickly access my tools |
-| Teacher/Supervisor | As a teacher or supervisor, I want to log in and be directed to my mentor dashboard so that I can manage my mentees |
-| Admin | As an admin, I want to log in and be directed to the admin dashboard so that I can manage the system |
-| System | As the system, I want to generate unique usernames so that every user has a system-wide identifier |
+- **User:** As a user, I want to edit my profile so that my personal information is up to date
+- **User:** As a user, I want to upload an avatar so that my account has a personal photo
+- **Student:** As a student, I want to log in and be directed to my dashboard so that I can quickly access my tools
+- **Teacher/Supervisor:** As a teacher or supervisor, I want to log in and be directed to my mentor dashboard so that I can manage my mentees
+- **Admin:** As an admin, I want to log in and be directed to the admin dashboard so that I can manage the system
+- **System:** As the system, I want to generate unique usernames so that every user has a system-wide identifier
+- User extends Authenticatable, NOT BaseModel — this is the only exception to the system-wide 
+BaseModel model convention, required because Authenticatable provides password hashing, remember 
+tokens, and email verification.
+- Each user can have at most one Profile record — enforced by the one-to-one relationship; the 
+profile is created on first edit (on-demand), not automatically at user creation.
+- Both email and username must be unique system-wide — they are both valid login identifiers 
+and must be globally unique.
+- Dashboard routing is role-based with a priority order: SUPER_ADMIN > ADMIN > TEACHER = 
+SUPERVISOR > STUDENT.
+- Gender and blood type are backed by typed enums (Gender, BloodType) that implement Core's 
+LabelEnum contract — they are optional fields.
+- The avatar is a single-file media collection with exactly one required conversion (thumb, 
+200x200 WebP) and is entirely optional.
+- Username changes are logged and the old username is permanently retired — never reassigned to 
+another user.
+- Username validation is enforced by the `SystemUsername` rule: lowercase alphanumeric, starts with a letter, 3-30 characters.
+- Profile creation is demand-driven (first profile edit) — a user can operate without a profile 
+but with limited functionality.
+- The Profile's school_id and department_id foreign keys are optional — a user can exist 
+without institutional association.
+- All profile data changes are logged via SmartLogger for audit trail and GDPR compliance.
+- All Livewire components return `: View` for type safety — `ProfileEditor`, `RecentActivityList`, 
+and `UserDashboard` were updated to match the existing convention.
 
 ### Key Operations
 
@@ -147,26 +168,3 @@ relationships) — these are optional associations |
 entity for account state checks in dashboards |
 
 
-- User extends Authenticatable, NOT BaseModel — this is the only exception to the system-wide 
-BaseModel model convention, required because Authenticatable provides password hashing, remember 
-tokens, and email verification.
-- Each user can have at most one Profile record — enforced by the one-to-one relationship; the 
-profile is created on first edit (on-demand), not automatically at user creation.
-- Both email and username must be unique system-wide — they are both valid login identifiers 
-and must be globally unique.
-- Dashboard routing is role-based with a priority order: SUPER_ADMIN > ADMIN > TEACHER = 
-SUPERVISOR > STUDENT.
-- Gender and blood type are backed by typed enums (Gender, BloodType) that implement Core's 
-LabelEnum contract — they are optional fields.
-- The avatar is a single-file media collection with exactly one required conversion (thumb, 
-200x200 WebP) and is entirely optional.
-- Username changes are logged and the old username is permanently retired — never reassigned to 
-another user.
-- Username validation is enforced by the `SystemUsername` rule: lowercase alphanumeric, starts with a letter, 3-30 characters.
-- Profile creation is demand-driven (first profile edit) — a user can operate without a profile 
-but with limited functionality.
-- The Profile's school_id and department_id foreign keys are optional — a user can exist 
-without institutional association.
-- All profile data changes are logged via SmartLogger for audit trail and GDPR compliance.
-- All Livewire components return `: View` for type safety — `ProfileEditor`, `RecentActivityList`, 
-and `UserDashboard` were updated to match the existing convention.

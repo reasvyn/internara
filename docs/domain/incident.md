@@ -93,15 +93,29 @@ ensure attention.
 
 ### User Stories & Rules
 
-| Role | Story |
-|------|-------|
-| Any User | As any user, I want to report an incident so that issues are formally documented |
-| Any User | As any user, I want to report an incident anonymously so that I can raise concerns without fear |
-| Admin | As an admin, I want to be assigned as investigator so that I can examine reported incidents |
-| Admin | As an admin, I want to document investigation findings so that the incident has a complete record |
-| Admin | As an admin, I want to resolve and close incidents with documented outcomes so that the case is properly concluded |
-| Student | As a student, I want to be notified of incidents involving me so that I am aware of the process |
-| Manager | As a manager, I want to view incident statistics so that I can identify trends and improve safety |
+- **Any User:** As any user, I want to report an incident so that issues are formally documented
+- **Any User:** As any user, I want to report an incident anonymously so that I can raise concerns without fear
+- **Admin:** As an admin, I want to be assigned as investigator so that I can examine reported incidents
+- **Admin:** As an admin, I want to document investigation findings so that the incident has a complete record
+- **Admin:** As an admin, I want to resolve and close incidents with documented outcomes so that the case is properly concluded
+- **Student:** As a student, I want to be notified of incidents involving me so that I am aware of the process
+- **Manager:** As a manager, I want to view incident statistics so that I can identify trends and improve safety
+- Incidents can never be deleted from the database — they can only be closed. Hard delete is 
+blocked at the database and application levels.
+- Reporter identity is anonymous to the investigator by default; the reporter must explicitly opt 
+in to reveal their identity.
+- CRITICAL severity incidents trigger immediate out-of-band notifications to all administrators 
+— not just in-app notifications.
+- Once an incident is closed, it cannot be reopened. If new information emerges, a new incident 
+must be filed with a reference to the original.
+- Every incident timeline entry is immutable — no edits, no deletions, no retroactive 
+modifications to the incident history.
+- Resolution requires a substantive written findings summary — simply changing the status field 
+is not sufficient for closure.
+- All evidence uploads are immutable once attached to an incident; re-uploading creates a new 
+version rather than replacing the old.
+- Investigation assignments are time-bound; if no progress is made within a configurable period 
+(default 48 hours for HIGH/CRITICAL), the assignment auto-escalates.
 
 ### Process Flow
 
@@ -146,19 +160,3 @@ notifications |
 | Core | BaseAction, BaseModel, SmartLogger |
 
 
-- Incidents can never be deleted from the database — they can only be closed. Hard delete is 
-blocked at the database and application levels.
-- Reporter identity is anonymous to the investigator by default; the reporter must explicitly opt 
-in to reveal their identity.
-- CRITICAL severity incidents trigger immediate out-of-band notifications to all administrators 
-— not just in-app notifications.
-- Once an incident is closed, it cannot be reopened. If new information emerges, a new incident 
-must be filed with a reference to the original.
-- Every incident timeline entry is immutable — no edits, no deletions, no retroactive 
-modifications to the incident history.
-- Resolution requires a substantive written findings summary — simply changing the status field 
-is not sufficient for closure.
-- All evidence uploads are immutable once attached to an incident; re-uploading creates a new 
-version rather than replacing the old.
-- Investigation assignments are time-bound; if no progress is made within a configurable period 
-(default 48 hours for HIGH/CRITICAL), the assignment auto-escalates.
