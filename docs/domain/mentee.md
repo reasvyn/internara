@@ -108,7 +108,7 @@ tools — it only provides entry points.
 |-------|-----------|
 | **Models** | `Mentee` (enrollment link between user and internship) |
 | **Entity** | `MenteeState` (active registration checks, clock-in/logbook/assignment gating, duration calculations) |
-| **Livewire** | `StudentDashboard` |
+| **Livewire** | *(dashboard moved to `User/Livewire/Dashboards/StudentDashboard`)* |
 
 ## Dependencies
 

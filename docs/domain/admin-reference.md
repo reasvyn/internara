@@ -39,7 +39,7 @@ Total: 48 files
 |---|---|---|---|
 | `Admin/Livewire/AccountCloneDetector.php` | `AccountCloneDetector` | `Component` | Displays and detects cloned user accounts |
 | `Admin/Livewire/ActivityFeedManager.php` | `ActivityFeedManager` | `Component` | Shows paginated activity log feed |
-| `Admin/Livewire/AdminDashboard.php` | `AdminDashboard` | `Component` | Main admin dashboard with stats and notification sending |
+| `Admin/Livewire/AdminDashboard.php` | `AdminDashboard` | `Component` | Main admin dashboard with stats and notification sending — *moved to `User/Livewire/Dashboards/AdminDashboard.php`* |
 | `Admin/Livewire/AdminManager.php` | `AdminManager` | `BaseRecordManager` | CRUD manager for admin users |
 | `Admin/Livewire/AnnouncementManager.php` | `AnnouncementManager` | `Component` | Creates and manages announcements |
 | `Admin/Livewire/ApplicationReview.php` | `ApplicationReview` | `Component` | Reviews internship account applications |
