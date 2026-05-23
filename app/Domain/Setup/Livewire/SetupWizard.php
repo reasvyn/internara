@@ -56,7 +56,7 @@ class SetupWizard extends Component
     protected function initDefaults(): void
     {
         $this->adminForm->name = config('setup.defaults.admin_name', 'Administrator');
-        $this->adminForm->username = config('setup.defaults.admin_username', 'administrator');
+        $this->adminForm->username = config('setup.defaults.admin_username', 'superadmin');
     }
 
     public function updated(string $property): void

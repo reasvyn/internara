@@ -57,7 +57,7 @@ return [
 
     'defaults' => [
         'admin_name' => 'Administrator',
-        'admin_username' => 'admin',
+        'admin_username' => 'superadmin',
         'super_admin_default_name' => 'Super Administrator',
         'recovery_admin_name' => 'Recovery Admin',
         'username_max_length' => 20,
