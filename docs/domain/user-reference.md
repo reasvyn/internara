@@ -1,6 +1,6 @@
 # User — API Reference
 
-Total: 16 files
+Total: 20 files
 
 ## Actions
 
@@ -30,6 +30,15 @@ Total: 16 files
 | `User/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` | Profile editing form (with avatar upload and password change) |
 | `User/Livewire/RecentActivityList.php` | `RecentActivityList` | `Component` | Recent activity log listing |
 | `User/Livewire/UserDashboard.php` | `UserDashboard` | `Component` | Generic user dashboard with recent activity |
+
+### Dashboard Components
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `User/Livewire/Dashboards/AdminDashboard.php` | `AdminDashboard` | `Component` | Admin/SA dashboard with system stats and readiness |
+| `User/Livewire/Dashboards/StudentDashboard.php` | `StudentDashboard` | `Component` | Student dashboard with registration and journal stats |
+| `User/Livewire/Dashboards/TeacherDashboard.php` | `TeacherDashboard` | `Component` | Teacher dashboard with supervised students and journals |
+| `User/Livewire/Dashboards/SupervisorDashboard.php` | `SupervisorDashboard` | `Component` | Supervisor dashboard with active interns and evaluations |
 
 ### Livewire Form Objects
 

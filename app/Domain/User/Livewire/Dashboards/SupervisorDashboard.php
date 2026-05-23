@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Mentor\Livewire;
+namespace App\Domain\User\Livewire\Dashboards;
 
 use App\Domain\Evaluation\Models\Evaluation;
 use App\Domain\Logbook\Models\Logbook;
@@ -47,6 +47,6 @@ class SupervisorDashboard extends Component
     #[Layout('layouts::app')]
     public function render(): View
     {
-        return view('mentor.dashboard.supervisor');
+        return view('user.dashboards.supervisor');
     }
 }

@@ -11,7 +11,6 @@ use App\Domain\Guidance\Livewire\StudentHandbookIndex;
 use App\Domain\Incident\Livewire\IncidentForm;
 use App\Domain\Internship\Livewire\ReportWriter;
 use App\Domain\Logbook\Livewire\LogbookEntry;
-use App\Domain\Mentee\Livewire\StudentDashboard;
 use App\Domain\Mentor\Livewire\Supervision\SupervisionManager;
 use App\Domain\Placement\Livewire\StudentPlacementChangeRequest;
 use App\Domain\Registration\Livewire\RegistrationDocumentUpload;
@@ -21,7 +20,6 @@ Route::prefix('student')
     ->name('student.')
     ->middleware(['auth', 'role:student'])
     ->group(function () {
-        Route::livewire('/dashboard', StudentDashboard::class)->name('dashboard');
         Route::livewire('/logbook', LogbookEntry::class)->name('logbook');
         Route::livewire('/assignments', SubmitAssignment::class)->name('assignments');
         Route::livewire('/supervision', SupervisionManager::class)->name('supervision');
