@@ -29,10 +29,8 @@ class RecoverSuperAdminAction extends BaseAction
                 ]);
                 $user->setStatus(AccountStatus::VERIFIED);
             } else {
-                $defaultName = config('setup.defaults.recovery_admin_name', 'Recovery Admin');
-
                 $user = User::create([
-                    'name' => $defaultName,
+                    'name' => config('setup.defaults.admin_name', 'Administrator'),
                     'email' => $email,
                     'password' => Hash::make($password),
                     'username' => $this->generateUsername(),

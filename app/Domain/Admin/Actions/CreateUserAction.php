@@ -8,6 +8,7 @@ use App\Domain\Auth\Notifications\WelcomeNotification;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
+use App\Domain\User\Rules\ReservedAuthoritativeName;
 use App\Domain\User\Rules\SystemUsername;
 use App\Domain\User\Support\UserIdentifierGenerator;
 use Illuminate\Support\Facades\DB;
@@ -38,8 +39,8 @@ class CreateUserAction extends BaseAction
         $shouldSendWelcome = ! isset($userData['password']);
 
         Validator::make($userData, [
-            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'unique:users,username', new SystemUsername],
+            'name' => ['required', 'string', 'max:255', new ReservedAuthoritativeName],
+            'username' => ['required', 'string', 'unique:users,username', new SystemUsername, new ReservedAuthoritativeName],
             'email' => ['required', 'email', 'unique:users,email'],
         ])->validate();
 

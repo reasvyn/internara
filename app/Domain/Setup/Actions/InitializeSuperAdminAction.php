@@ -15,9 +15,8 @@ class InitializeSuperAdminAction extends BaseAction
 {
     public function execute(string $email, string $password, ?string $name = null, ?string $username = null): User
     {
-        return $this->transaction(function () use ($email, $password, $name, $username) {
-            $defaultName = config('setup.defaults.super_admin_default_name', 'Super Administrator');
-            $name = $name ?? $defaultName;
+        return $this->transaction(function () use ($email, $password, $username) {
+            $name = config('setup.defaults.admin_name', 'Administrator');
 
             $user = User::create([
                 'name' => $name,

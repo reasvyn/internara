@@ -103,4 +103,7 @@ return [
         'roles' => 'Peran yang Ditetapkan',
         'bio' => 'Biografi',
     ],
+    'validation' => [
+        'authoritative_reserved' => 'Nilai ":value" dicadangkan untuk super administrator dan tidak dapat digunakan.',
+    ],
 ];

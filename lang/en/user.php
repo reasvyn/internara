@@ -104,4 +104,7 @@ return [
         'success_deleted' => 'Student deleted successfully.',
         'joined' => 'Joined',
     ],
+    'validation' => [
+        'authoritative_reserved' => 'The value ":value" is reserved for the super administrator and cannot be used.',
+    ],
 ];
