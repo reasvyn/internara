@@ -59,8 +59,8 @@ class CreateAdminCommand extends Command
             $user = $this->action->execute(
                 email: $email,
                 password: $password,
-                name: 'Administrator',
-                username: 'admin',
+                name: 'Super Administrator',
+                username: 'superadmin',
             );
 
             $this->displayResult($user);
