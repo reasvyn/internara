@@ -292,21 +292,12 @@ required pattern.
 
 ## Settings Domain — Known Issues
 
-### SE1. Broken Layout Reference in SystemSetting 🔴
+### SE1. Broken Layout Reference in SystemSetting 🔴  *(✅ Fixed)*
 
 **File:** `app/Domain/Settings/Livewire/SystemSetting.php:286`
 
-```php
-#[Layout('layouts::app', ['title' => 'System Settings'])]
-```
-
-The layout namespace `layouts::app` no longer exists after layouts were moved to
-`resources/views/shared/layouts/`. The auto-discovery registers the `shared`
-namespace, so the correct reference is `shared::layouts.app`.
-
-**Impact:** Loading `/admin/settings` will crash with view namespace error.
-
-**Fix:** `#[Layout('shared::layouts.app', ['title' => 'System Settings'])]`
+The layout namespace `layouts::app` was still used after layouts moved to
+`resources/views/shared/layouts/`. Fixed to `shared::layouts.app`.
 
 ### SE2. SystemSetting Uses rules() Method Instead of #[Validate] 🟡
 
@@ -378,7 +369,7 @@ partial updates.
 |---|---|---|---|
 | 🔴 | Feature tests missing for 147 of 151 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🔴 | **SE1** Broken layout reference in SystemSetting | Settings | ⏳ |
+| 🔴 | **SE1** Broken layout reference in SystemSetting | Settings | ✅ Fixed |
 | 🟡 | **SE2** SystemSetting uses `rules()` instead of `#[Validate]` | Settings | ⏳ |
 | 🟡 | **SE3** No Form Objects for Settings groups | Settings | ⏳ |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |

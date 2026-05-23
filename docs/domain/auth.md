@@ -182,6 +182,16 @@ admin.
 level and the policy level.
 - At least one super_admin account must always exist — deletion of the last super_admin is 
 blocked by the domain logic.
+- The super_admin account is **singleton, permanent, and PROTECTED**: name is always 
+"Administrator", username "superadmin". Cannot be deleted, locked, or modified by anyone
+else. The user can only change their own email and password. Enforced by 4 layers:
+  1. `UserPolicy::delete/forceDelete/restore` — returns `false` for super_admin targets
+  2. `UserPolicy::update` — only allows self-update for super_admin
+  3. `LockUserAccountAction` / `UnlockUserAccountAction` — throws for super_admin
+  4. `DeleteUserAction` — throws for super_admin
+- Reserved authoritative names (`admin`, `administrator`, `superadmin`, `superadministrator`,
+  `super_admin`, `root`, `sysadmin`, `system`) are blocked by `ReservedAuthoritativeName`
+  validation rule for all non-super-admin users.
 - All authentication-related logging uses SmartLogger with higher retention priority than 
 standard activity logs.
 - All Livewire components return `: View` for type safety — `AccessManager`, `AccountRecovery`, 
