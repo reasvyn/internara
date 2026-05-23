@@ -10,11 +10,31 @@ use Database\Factories\SettingFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 #[Fillable(['key', 'value', 'type', 'description', 'group'])]
-class Setting extends BaseModel
+class Setting extends BaseModel implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
+
+    public const COLLECTION_LOGO = 'brand_logo';
+
+    public const COLLECTION_FAVICON = 'brand_favicon';
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection(self::COLLECTION_LOGO)->singleFile();
+        $this->addMediaCollection(self::COLLECTION_FAVICON)->singleFile();
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(200)
+            ->format('webp');
+    }
 
     public const VALID_TYPES = ['string', 'integer', 'float', 'boolean', 'json', 'encrypted', 'null'];
 

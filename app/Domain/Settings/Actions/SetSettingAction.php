@@ -15,7 +15,7 @@ class SetSettingAction extends BaseAction
     public function execute(
         string $key,
         mixed $value,
-        ?string $group = 'general',
+        ?string $group = null,
         ?string $description = null,
         ?string $type = null,
     ): Setting {

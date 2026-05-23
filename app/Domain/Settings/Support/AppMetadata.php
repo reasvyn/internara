@@ -6,6 +6,7 @@ namespace App\Domain\Settings\Support;
 
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Shared\Support\Theme;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -23,7 +24,9 @@ final class AppMetadata
     private static function isInstalled(): bool
     {
         try {
-            return (bool) DB::table('setups')->value('is_installed');
+            return (bool) Cache::rememberForever('system.is_installed', function () {
+                return DB::table('setups')->value('is_installed');
+            });
         } catch (Throwable $e) {
             return false;
         }
