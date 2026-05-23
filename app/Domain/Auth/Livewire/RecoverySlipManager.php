@@ -42,7 +42,7 @@ class RecoverySlipManager extends Component
         $this->generatedCode = $result['plaintext'];
         $this->expiresAt = $result['code']->expires_at->format('d M Y H:i');
 
-        flash()->success('Recovery slip generated successfully.');
+        flash()->success(__('auth.recovery_slip_generated'));
     }
 
     public function resetForm(): void

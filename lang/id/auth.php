@@ -50,4 +50,37 @@ return [
     'invalid_credentials' => 'Email atau kata sandi salah.',
     'email_reset_link' => 'Tautan atur ulang kata sandi telah dikirim ke email Anda.',
     'password_reset_success' => 'Kata sandi Anda telah diatur ulang.',
+    'password_confirmed' => 'Kata sandi dikonfirmasi.',
+    'account_locked' => 'Akun berhasil dikunci.',
+    'account_unlocked' => 'Akun berhasil dibuka.',
+    'recovery_slip_generated' => 'Slip pemulihan berhasil dibuat.',
+    'permissions_updated' => 'Izin berhasil diperbarui.',
+
+    // Recovery slip manager
+    'recovery_slip' => [
+        'title' => 'Slip Pemulihan',
+        'subtitle' => 'Hasilkan slip kredensial satu kali untuk pengiriman offline',
+        'generated_title' => 'Slip Kredensial Berhasil Dibuat',
+        'generated_desc' => 'Kirimkan kode ini ke pengguna secara offline. Kedaluwarsa: :date',
+        'security_note' => 'Catatan Keamanan',
+        'security_note_desc' => 'Kode ini tidak akan ditampilkan lagi. Kedaluwarsa dalam 24 jam. Verifikasi identitas penerima sebelum memberikan kode.',
+        'generate_another' => 'Hasilkan Lagi',
+        'search_user' => 'Cari Pengguna',
+        'no_users_found' => 'Tidak ada pengguna ditemukan.',
+        'selected_user' => 'Dipilih: :name (:username)',
+        'generate_slip' => 'Hasilkan Slip Pemulihan',
+        'back_to_dashboard' => 'Kembali ke Dasbor',
+    ],
+
+    // Access management
+    'access_management' => [
+        'title' => 'Manajemen Akses',
+        'subtitle' => 'Kelola peran dan izin granularnya',
+        'users_assigned' => ':count pengguna ditugaskan',
+        'permissions_granted' => ':count izin diberikan.',
+        'manage_permissions' => 'Kelola Izin',
+        'manage_title' => 'Kelola Izin: :name',
+        'cancel' => 'Batal',
+        'save' => 'Simpan Izin',
+    ],
 ];

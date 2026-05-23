@@ -10,6 +10,7 @@ use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 use RuntimeException;
 
 class UpdateUserPasswordAction extends BaseAction
@@ -51,7 +52,7 @@ class UpdateUserPasswordAction extends BaseAction
         Validator::make([
             'password' => $newPassword,
         ], [
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers()],
         ])->validate();
     }
 }

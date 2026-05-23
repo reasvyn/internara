@@ -44,7 +44,7 @@ class AccessManager extends Component
 
         $updateAction->execute($this->selectedRole, $this->selectedPermissions);
 
-        flash()->success('Permissions updated successfully.');
+        flash()->success(__('auth.permissions_updated'));
         $this->roleModal = false;
     }
 
