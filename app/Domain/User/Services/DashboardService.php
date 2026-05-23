@@ -15,7 +15,7 @@ class DashboardService
             $user->hasRole('student') => 'student.dashboard',
             $user->hasRole('teacher') => 'teacher.dashboard',
             $user->hasRole('supervisor') => 'supervisor.dashboard',
-            default => 'admin.dashboard',
+            default => 'user.dashboard',
         };
     }
 

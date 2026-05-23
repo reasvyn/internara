@@ -8,6 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Logbook\Models\Logbook;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Models\User;
+use RuntimeException;
 
 class GetStudentDashboardDataAction extends BaseAction
 {
@@ -17,7 +18,10 @@ class GetStudentDashboardDataAction extends BaseAction
     public function execute(string $userId): array
     {
         $user = User::find($userId);
-        $registration = $user?->getActiveRegistration();
+
+        throw_unless($user, new RuntimeException('User not found.'));
+
+        $registration = $user->getActiveRegistration();
 
         $totalJournals = 0;
         $verifiedJournals = 0;

@@ -15,11 +15,11 @@
                 <x-mary-form wire:submit="save">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <x-mary-input label="{{ __('profile.sidebar.username') }}" :value="$user->username" readonly />
-                        <x-mary-input label="{{ __('profile.sidebar.email') }}" wire:model="data.email" type="email" />
-                        <x-mary-input label="{{ __('setup.wizard.full_name') }}" wire:model="data.name" />
-                        <x-mary-input label="{{ __('profile.sidebar.phone') }}" wire:model="data.phone" />
-                        <x-mary-textarea label="{{ __('setup.wizard.school_address') }}" wire:model="data.address" rows="2" class="md:col-span-2" />
-                        <x-mary-textarea label="Bio" wire:model="data.bio" rows="3" class="md:col-span-2" />
+                        <x-mary-input label="{{ __('profile.sidebar.email') }}" wire:model="profileForm.email" type="email" />
+                        <x-mary-input label="{{ __('setup.wizard.full_name') }}" wire:model="profileForm.name" />
+                        <x-mary-input label="{{ __('profile.sidebar.phone') }}" wire:model="profileForm.phone" />
+                        <x-mary-textarea label="{{ __('setup.wizard.school_address') }}" wire:model="profileForm.address" rows="2" class="md:col-span-2" />
+                        <x-mary-textarea label="Bio" wire:model="profileForm.bio" rows="3" class="md:col-span-2" />
                     </div>
 
                     <x-slot:actions>
@@ -35,10 +35,10 @@
 
                 <x-mary-form wire:submit="updatePassword">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-password :label="__('profile.current_password')" wire:model="passwordData.current_password" />
+                        <x-mary-password :label="__('profile.current_password')" wire:model="passwordForm.current_password" />
                         <div></div>
-                        <x-mary-password :label="__('profile.new_password')" wire:model="passwordData.password" />
-                        <x-mary-password :label="__('profile.confirm_password')" wire:model="passwordData.password_confirmation" />
+                        <x-mary-password :label="__('profile.new_password')" wire:model="passwordForm.password" />
+                        <x-mary-password :label="__('profile.confirm_password')" wire:model="passwordForm.password_confirmation" />
                     </div>
 
                     <x-slot:actions>

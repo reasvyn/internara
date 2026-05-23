@@ -228,97 +228,7 @@ or DoS. Inconsistency with the rate-limited auth surface.
 **Fix:** Add RateLimiter check (e.g., 5 attempts per 300 seconds per IP)
 matching the pattern used in `ConfirmPassword`.
 
-### U4. array_filter Removes Valid Empty Strings in UpdateProfileAction 🟡
 
-**File:** `app/Domain/User/Actions/UpdateProfileAction.php:48`
-
-```php
-$data = array_filter($data, fn ($v) => $v !== null);
-```
-
-`array_filter` without a callback removes all falsy values including empty
-strings `''`. A user who intentionally clears their phone number or address
-will have those fields preserved (not updated) instead of being set to null
-or empty. The filter only excludes `null`, but `array_filter` with no
-callback also removes `''`, `0`, `false`, etc.
-
-Additionally, the validation in `$this->validate($data)` runs on the raw input,
-but the filtered data may differ from what was validated.
-
-**Impact:** Users cannot clear optional profile fields — the old values
-persist silently.
-
-**Fix:** Change to `array_filter($data, fn ($v) => $v !== null)` with
-explicit null check, keeping the `array_filter` call but using the callback
-to only exclude `null` (which is already done — the bug is that the function
-needs three arguments with `ARRAY_FILTER_USE_BOTH` or just use a callback).
-Wait — `array_filter` with a callback DOES only filter by the callback.
-The issue is that the original code likely had no callback. Let me verify...
-
-If the code is `array_filter($data, fn ($v) => $v !== null)`, then it
-correctly only removes `null`. But if `$data` has `'phone' => ''`, it stays.
-So the issue in the audit might be inaccurate — let me verify the actual code.
-
-**Correction after verification:** The current code already uses a callback
-and correctly handles empty strings. No fix needed.
-
-### U5. $avatar Property Missing Type Declaration 🟢
-
-**File:** `app/Domain/User/Livewire/ProfileEditor.php:20`
-
-```php
-public $avatar;
-```
-
-The `$avatar` property has no type hint. Since Livewire uses
-`WithFileUploads`, it should be typed as `?UploadedFile` for clarity and
-static analysis.
-
-**Fix:** `public ?UploadedFile $avatar = null;` (with `use
-Illuminate\Http\UploadedFile;`)
-
-### U6. Avatar Validation Uses Fragile File Existence Check 🟢
-
-**File:** `app/Domain/User/Livewire/ProfileEditor.php:60`
-
-```php
-$avatar = $this->avatar?->getRealPath() && file_exists($this->avatar->getRealPath()) ? $this->avatar : null;
-```
-
-Uploaded file temp paths are managed by the system and may not exist at
-validation time. Livewire's `$this->validate()` already handles file
-validation via the `image|max:2048` rules, making the manual check
-redundant.
-
-**Fix:** Simplify to `$avatar = $this->avatar;` — Livewire validation handles
-the rest.
-
-### U7. GetStudentDashboardDataAction No Null Guard 🟢
-
-**File:** `app/Domain/User/Actions/GetStudentDashboardDataAction.php:18`
-
-```php
-$user = User::find($userId);
-$registration = $user?->getActiveRegistration();
-```
-
-`User::find()` returns `null` if the user doesn't exist. The `?->` nullsafe
-operator prevents an exception, but the returned data will have null values.
-A clear guard at the top of the method would provide better feedback.
-
-**Fix:** Add `throw_unless($user, new RuntimeException('User not found'));`
-
-### U8. UserDashboard Uses Inline HTML Without View File 🟢
-
-**File:** `app/Domain/User/Livewire/UserDashboard.php`
-
-The component renders directly via `return <<<'HTML'` instead of using a
-separate view file. This is inconsistent with all other Livewire components
-which use `view('{domain}.{name}')`. The component is also unreachable due
-to U1, making this a secondary concern.
-
-**Fix:** Create `resources/views/user/dashboard.blade.php` and migrate the
-HTML, or remove the component entirely if dashboards are role-specific.
 
 ## Domain Models (Layer 5) & Domain Rules (Layer 6)
 
@@ -443,17 +353,27 @@ required pattern.
 
 ---
 
+## User Domain — Resolved Issues
+
+| ID | Issue | Severity | Fix |
+|---|---|---|---|
+| **U1** | UserDashboard references non-existent components | 🔴 | Rewritten with proper view file, `RecentActivityList` absorbed inline |
+| **U2** | ProfileEditor uses arrays instead of Form Objects | 🟡 | Created `ProfileForm` and `PasswordForm` |
+| **U3** | Password change in ProfileEditor no rate limiting | 🟡 | Added RateLimiter (5/300s) |
+| **U4** | `array_filter` removes empty strings | 🟡 | Already correctly uses callback — no fix needed |
+| **U5** | `$avatar` missing type declaration | 🟢 | Added `?UploadedFile` type hint |
+| **U6** | Avatar fragile file existence check | 🟢 | Simplified to `$this->avatar` |
+| **U7** | `GetStudentDashboardDataAction` no null guard | 🟢 | Added `throw_unless()` |
+| **U8** | UserDashboard inline HTML | 🟢 | Extracted to `resources/views/user/dashboard.blade.php` |
+
 ## Summary
 
 | Severity | Issue | Category | Status |
 |---|---|---|---|
 | 🔴 | Feature tests missing for 147 of 151 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🔴 | **U1** UserDashboard references non-existent components | User | ⏳ |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
-| 🟡 | Livewire Form Object migration (79 components remaining) | Architecture | ⏳ |
-| 🟡 | **U2** ProfileEditor uses arrays instead of Form Objects | User | ⏳ |
-| 🟡 | **U3** Password change in ProfileEditor no rate limiting | User | ⏳ |
+| 🟡 | Livewire Form Object migration (73 components remaining) | Architecture | ⏳ |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ⏳ |
 | 🟡 | CsvHandler fragile magic string protocol | Shared | ⏳ |
 | 🟡 | LangChecker contradicts "stateless" rule | Shared | ⏳ |
