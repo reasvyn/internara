@@ -45,7 +45,6 @@ class AppServiceProvider extends ServiceProvider
 
         Blade::anonymousComponentPath(resource_path('views/layouts'), 'layouts');
         Blade::anonymousComponentPath(resource_path('views/components/ui'), 'ui');
-        Blade::anonymousComponentPath(resource_path('views/components/widget'), 'widget');
         Blade::anonymousComponentPath(resource_path('views/shared/widgets'), 'widgets');
 
         Gate::policy(User::class, UserPolicy::class);

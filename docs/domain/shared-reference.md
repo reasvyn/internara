@@ -1,6 +1,6 @@
 # Shared — API Reference
 
-Total: 8 files
+Total: 13 files
 
 ## Livewire Components
 
@@ -8,6 +8,16 @@ Total: 8 files
 |---|---|---|---|
 | `Shared/Livewire/ThemeSwitcher.php` | `ThemeSwitcher` | `Component` | Light/dark/system theme toggle with cookie persistence |
 | `Shared/Livewire/LangSwitcher.php` | `LangSwitcher` | `Component` | EN/ID language toggle with cookie persistence |
+
+## Blade Widgets (read-only, `x-widgets::` namespace)
+
+| File | Description |
+|---|---|
+| `shared/widgets/stat-card.blade.php` | Displays a numeric statistic with icon and color |
+| `shared/widgets/profile-summary.blade.php` | User avatar, name, role with optional edit button |
+| `shared/widgets/quick-link.blade.php` | Navigation link with icon and chevron |
+| `shared/widgets/action-button.blade.php` | Full-width action button for navigation |
+| `shared/widgets/empty-state.blade.php` | Empty state placeholder with icon and text |
 
 ## Support
 
