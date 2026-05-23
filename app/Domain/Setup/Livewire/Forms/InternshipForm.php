@@ -19,10 +19,10 @@ class InternshipForm extends Form
     protected function rules(): array
     {
         return [
-            'internshipForm.name' => 'required|string|max:255',
-            'internshipForm.start_date' => 'required|date',
-            'internshipForm.end_date' => 'required|date|after:internshipForm.start_date',
-            'internshipForm.description' => 'nullable|string',
+            'name' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
+            'description' => 'nullable|string',
         ];
     }
 

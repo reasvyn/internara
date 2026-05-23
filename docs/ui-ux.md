@@ -27,15 +27,33 @@ typography) that is themeable at runtime.
 
 ## Layout Structure
 
-The primary authenticated layout uses a drawer sidebar that is hidden on
-mobile and visible on desktop. The sidebar contains navigation grouped by
-domain, filtered by the user's role. A sticky header spans the top of the
-content area with the page title on desktop and a hamburger toggle on mobile.
-The header also contains the theme switcher, language switcher, notification
-bell, and user dropdown.
+Layouts are split between cross-cutting and domain-specific:
 
-Public pages (login, password reset) use a centered card layout. The setup
-wizard uses a wider layout suitable for multi-step forms with validation.
+| Scope | Directory | Namespace | Referenced As |
+|---|---|---|---|
+| Cross-cutting | `resources/views/layouts/` | `layouts` (registered via `AppServiceProvider`) | `x-layouts::base`, `x-layouts::app` |
+| Domain-specific | `resources/views/{domain}/layouts/` | `{domain}` (auto-registered via `DomainServiceProvider`) | `setup::layouts.setup`, `auth::layouts.auth` |
+
+Cross-cutting layouts (`layouts/`) are used by the main application shell:
+- `base.blade.php` — root HTML shell with theme, branding CSS, Alpine.js
+- `base/head.blade.php` — `<head>` element with meta tags and assets
+- `base/footer.blade.php` — page footer with credits
+- `app.blade.php` — authenticated layout (drawer sidebar + header + content)
+- `guest.blade.php` — public/guest layout (centered card)
+- `sidebar.blade.php` — drawer sidebar with role-filtered navigation
+- `header.blade.php` — sticky top header with search and actions
+
+Domain-specific layouts (`{domain}/layouts/`) are used by domain Livewire
+components via the `#[Layout]` attribute:
+- `auth/layouts/auth.blade.php` — centered card for login/password-reset (used as `auth::layouts.auth`)
+- `setup/layouts/setup.blade.php` — wider multi-step layout for the wizard (used as `setup::layouts.setup`)
+
+The convention for choosing where a layout belongs:
+1. If a layout is shared by multiple domains → `resources/views/layouts/`
+2. If a layout is specific to one domain → `resources/views/{domain}/layouts/`
+
+This prevents domain-specific layouts from accumulating in the global
+directory and keeps the boundary explicit.
 
 ## Dark Mode Approach
 

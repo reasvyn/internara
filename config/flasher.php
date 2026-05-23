@@ -39,8 +39,8 @@ return Configuration::from([
     // Auto-inject assets into responses
     'inject_assets' => true,
 
-    // Enable automatic message translation
-    'translate' => true,
+    // Disable automatic translation because all messages already use __()
+    'translate' => false,
 
     // URL patterns to exclude from asset injection and flash bag conversion
     'excluded_paths' => [],

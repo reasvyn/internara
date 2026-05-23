@@ -114,11 +114,6 @@ class DomainServiceProvider extends ServiceProvider
             $registered[] = $alias;
         }
 
-        if ($registered !== []) {
-            logger()->debug('DomainServiceProvider: auto-registered Livewire components', [
-                'count' => count($registered),
-            ]);
-        }
     }
 
     /**

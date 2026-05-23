@@ -38,7 +38,7 @@ class SetupWizard extends Component
 
     public bool $securityAware = false;
 
-    protected string $recoveryKey = '';
+    public string $recoveryKey = '';
 
     public function mount(): void
     {

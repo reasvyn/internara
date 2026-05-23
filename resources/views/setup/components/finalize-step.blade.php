@@ -6,7 +6,7 @@
 
     <div class="space-y-4 mb-8">
         <label class="flex items-start gap-4 p-5 rounded-lg border border-base-content/10 cursor-pointer transition-colors hover:bg-base-200/30">
-            <input type="checkbox" wire:model.live="dataVerified" class="checkbox checkbox-primary checkbox-sm mt-0.5 rounded" />
+            <input type="checkbox" wire:model.live.debounce.500ms="dataVerified" class="checkbox checkbox-primary checkbox-sm mt-0.5 rounded" />
             <div>
                 <span class="font-semibold text-sm block mb-0.5">{{ __('setup.wizard.data_verified') }}</span>
                 <span class="text-xs text-base-content/50">{{ __('setup.wizard.data_verified_long') }}</span>
@@ -14,7 +14,7 @@
         </label>
 
         <label class="flex items-start gap-4 p-5 rounded-lg border border-base-content/10 cursor-pointer transition-colors hover:bg-base-200/30">
-            <input type="checkbox" wire:model.live="securityAware" class="checkbox checkbox-primary checkbox-sm mt-0.5 rounded" />
+            <input type="checkbox" wire:model.live.debounce.500ms="securityAware" class="checkbox checkbox-primary checkbox-sm mt-0.5 rounded" />
             <div>
                 <span class="font-semibold text-sm block mb-0.5">{{ __('setup.wizard.security_aware') }}</span>
                 <span class="text-xs text-base-content/50">{{ __('setup.wizard.security_aware_long') }}</span>

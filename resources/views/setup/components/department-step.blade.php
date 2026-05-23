@@ -12,13 +12,13 @@
         <x-mary-input
             label="{{ __('setup.wizard.department_name') }}"
             placeholder="{{ __('setup.wizard.department_name_placeholder') }}"
-            wire:model.live="departmentForm.name"
+            wire:model.live.debounce.500ms="departmentForm.name"
         />
 
         <x-mary-textarea
             label="{{ __('setup.wizard.department_description') }}"
             placeholder="{{ __('setup.wizard.department_description_placeholder') }}"
-            wire:model.live="departmentForm.description"
+            wire:model.live.debounce.500ms="departmentForm.description"
             rows="3"
         />
     </div>

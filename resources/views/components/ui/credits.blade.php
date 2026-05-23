@@ -8,7 +8,7 @@
     </div>
 
     <div class="flex flex-col items-center gap-2">
-        <livewire:core.app-signature />
+        <livewire:settings.app-signature />
         @if($full)
             <p class="text-[9px] uppercase font-black tracking-[0.4em] opacity-20">
                 {{ brand('tagline') ?: 'Professional Internship Management' }}
