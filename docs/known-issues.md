@@ -156,91 +156,169 @@ This does not create a security gap — the arch tests are structural safeguards
 not runtime protections. The actual dependency graph is enforced at the code
 level through namespace conventions and code review.
 
-## Auth Domain — Known Issues
+## Auth Domain — Resolved Issues
 
-### A1. Hardcoded Flash Messages Without Translation 🟡
+| ID | Issue | Severity | Fix |
+|---|---|---|---|
+| **A1** | Hardcoded flash messages (5 locations) | 🟡 | Replaced with `__()` lang keys |
+| **A2** | Password strength inconsistency across flows | 🟡 | `Password::mixedCase()->numbers()`, `Str::password(12)` |
+| **A3** | `#[Validate]` vs `rules()` inconsistency | 🟢 | Migrated to `#[Validate]` attributes |
+| **A4** | Auth views not audited | 🟢 | Fully translated, debounce fixes applied |
 
-**Files:**
-- `app/Domain/Auth/Livewire/AccountLifecycleManager.php:29` — `flash()->success('Account locked successfully.')`
-- `app/Domain/Auth/Livewire/AccountLifecycleManager.php:37` — `flash()->success('Account unlocked successfully.')`
-- `app/Domain/Auth/Livewire/RecoverySlipManager.php:48` — `flash()->success('Recovery slip generated successfully.')`
-- `app/Domain/Auth/Livewire/AccessManager.php:49` — `flash()->success('Permissions updated successfully.')`
-- `app/Domain/Auth/Livewire/ConfirmPassword.php:23` — `flash()->success(__('auth.password_confirmed') ?? 'Password confirmed.')`
+## User Domain — Known Issues
 
-Four components use hardcoded English strings instead of `__()`. The
-`ConfirmPassword` component uses a fallback with `??` which is unnecessary
-when the lang key is properly defined.
+### U1. UserDashboard References Non-Existent Components 🔴
 
-**Impact:** English text will display even when locale is `id`. Cannot be
-translated.
+**File:** `app/Domain/User/Livewire/UserDashboard.php:12-13`
 
-**Fix:** Replace hardcoded strings with `__()` lang keys.
-
-### A2. Password Strength Validation Inconsistency 🟡
-
-**Files:**
-- `app/Domain/Auth/Actions/UpdateUserPasswordAction.php:132-134` — uses `['required', 'string', 'min:8']`
-- `app/Domain/Auth/Actions/ResetUserPasswordAction.php:10` — uses `Str::random(10)` without mixed-case guarantee
-- `app/Domain/Setup/Livewire/Forms/AdminForm.php` — uses `Password::min(8)->mixedCase()->numbers()`
-
-The self-service password change (`UpdateUserPasswordAction`) and
-admin-initiated password reset (`ResetUserPasswordAction`) have weaker
-validation than the setup wizard's `AdminForm`. The `ResetUserPasswordAction`
-generates a random 10-character password that may contain only lowercase
-letters, failing the mixed-case requirement used elsewhere.
-
-**Impact:** Users can set passwords without uppercase letters or digits via
-some flows, creating inconsistency with the setup wizard's enforced standard.
-
-**Fix:**
-- `UpdateUserPasswordAction`: replace `min:8` with `Password::min(8)->mixedCase()->numbers()`
-- `ResetUserPasswordAction`: use `Str::password(12)` (Laravel 11+) or a helper
-  that guarantees mixed-case characters
-
-### A3. `#[Validate]` Attribute Inconsistency in AccountRecovery 🟢
-
-**File:** `app/Domain/Auth/Livewire/AccountRecovery.php:1817-1825`
-
-The component uses a `rules(): array` method instead of `#[Validate]`
-attributes, unlike Login, ForgotPassword, ResetPassword, and ConfirmPassword
-which all use the attribute pattern:
+The component renders two Livewire components that do not exist:
 
 ```php
-// Other components (consistent pattern):
-#[Validate('required|string')]
-public string $password = '';
-
-// AccountRecovery (inconsistent):
-public function rules(): array
-{
-    return [
-        'username' => 'required|string',
-        'recoveryCode' => 'required|string|size:12',
-        'password' => 'required|string|min:8|confirmed',
-        'password_confirmation' => 'required|string',
-    ];
-}
+<livewire:dashboard.managerial-widgets />
+<livewire:audit.recent-activity-list />
 ```
 
-**Impact:** Minor inconsistency. Both patterns work functionally, but mixing
-styles reduces predictability for developers.
+The auto-discovery generates aliases as `{kebab-domain}.{kebab-class-name}`.
+No component with alias `dashboard.managerial-widgets` or
+`audit.recent-activity-list` exists in any domain. Accessing the UserDashboard
+will throw `Livewire\Exceptions\ComponentNotFoundException`.
 
-**Fix:** Migrate to `#[Validate]` attributes.
+**Impact:** The dashboard page crashes for users who land on it (non-admin,
+non-student, non-teacher, non-supervisor roles). This includes any user whose
+role falls through the role-specific dashboard routing.
 
-### A4. Auth Views Not Audited 🟢
+**Fix:** Replace with actual component aliases or remove the inline references.
 
-**Files:** `resources/views/auth/*.blade.php` (8 files)
+### U2. ProfileEditor Uses Arrays Instead of Form Objects 🟡
 
-The Login, ForgotPassword, ResetPassword, ConfirmPassword, AccountRecovery,
-RecoveryCode, RecoverySlipManager, and AccessManager views have not been
-audited for:
-- Missing translation keys
-- Inconsistent wire:model patterns
-- Outdated Livewire alias references (e.g., `livewire:core.*`)
-- Accessibility issues
+**File:** `app/Domain/User/Livewire/ProfileEditor.php:26-47`
 
-**Impact:** Views may contain hardcoded text, old aliases, or other issues
-not caught during the component-level audit.
+The component stores form state in two flat arrays:
+
+```php
+public array $data = [];
+public array $passwordData = [];
+```
+
+Validation rules are defined inline in `save()` and `updatePassword()` methods
+instead of being declared alongside the fields in a Form Object. This causes:
+
+- Scattered validation between two methods
+- Array access (`$this->data['name']`) instead of typed properties
+- No reuse potential between profile edit contexts
+- Harder to unit test
+
+**Fix:** Extract to `App\Domain\User\Livewire\Forms\ProfileForm` and
+`PasswordForm` following the pattern in `docs/conventions.md` Section 9a.
+
+### U3. Password Change in ProfileEditor Has No Rate Limiting 🟡
+
+**File:** `app/Domain/User/Livewire/ProfileEditor.php:updatePassword()`
+
+The `updatePassword()` method calls `UpdateUserPasswordAction` without any
+rate limiting. An attacker who gains access to a logged-in session can
+repeatedly attempt password changes without throttling. Other auth endpoints
+(login, forgot password, reset password, confirm password, account recovery)
+all have rate limiters — this is the only auth action without one.
+
+**Impact:**  While the user must know the current password (validated via
+`current_password` rule), repeated attempts could be used to brute-force
+or DoS. Inconsistency with the rate-limited auth surface.
+
+**Fix:** Add RateLimiter check (e.g., 5 attempts per 300 seconds per IP)
+matching the pattern used in `ConfirmPassword`.
+
+### U4. array_filter Removes Valid Empty Strings in UpdateProfileAction 🟡
+
+**File:** `app/Domain/User/Actions/UpdateProfileAction.php:48`
+
+```php
+$data = array_filter($data, fn ($v) => $v !== null);
+```
+
+`array_filter` without a callback removes all falsy values including empty
+strings `''`. A user who intentionally clears their phone number or address
+will have those fields preserved (not updated) instead of being set to null
+or empty. The filter only excludes `null`, but `array_filter` with no
+callback also removes `''`, `0`, `false`, etc.
+
+Additionally, the validation in `$this->validate($data)` runs on the raw input,
+but the filtered data may differ from what was validated.
+
+**Impact:** Users cannot clear optional profile fields — the old values
+persist silently.
+
+**Fix:** Change to `array_filter($data, fn ($v) => $v !== null)` with
+explicit null check, keeping the `array_filter` call but using the callback
+to only exclude `null` (which is already done — the bug is that the function
+needs three arguments with `ARRAY_FILTER_USE_BOTH` or just use a callback).
+Wait — `array_filter` with a callback DOES only filter by the callback.
+The issue is that the original code likely had no callback. Let me verify...
+
+If the code is `array_filter($data, fn ($v) => $v !== null)`, then it
+correctly only removes `null`. But if `$data` has `'phone' => ''`, it stays.
+So the issue in the audit might be inaccurate — let me verify the actual code.
+
+**Correction after verification:** The current code already uses a callback
+and correctly handles empty strings. No fix needed.
+
+### U5. $avatar Property Missing Type Declaration 🟢
+
+**File:** `app/Domain/User/Livewire/ProfileEditor.php:20`
+
+```php
+public $avatar;
+```
+
+The `$avatar` property has no type hint. Since Livewire uses
+`WithFileUploads`, it should be typed as `?UploadedFile` for clarity and
+static analysis.
+
+**Fix:** `public ?UploadedFile $avatar = null;` (with `use
+Illuminate\Http\UploadedFile;`)
+
+### U6. Avatar Validation Uses Fragile File Existence Check 🟢
+
+**File:** `app/Domain/User/Livewire/ProfileEditor.php:60`
+
+```php
+$avatar = $this->avatar?->getRealPath() && file_exists($this->avatar->getRealPath()) ? $this->avatar : null;
+```
+
+Uploaded file temp paths are managed by the system and may not exist at
+validation time. Livewire's `$this->validate()` already handles file
+validation via the `image|max:2048` rules, making the manual check
+redundant.
+
+**Fix:** Simplify to `$avatar = $this->avatar;` — Livewire validation handles
+the rest.
+
+### U7. GetStudentDashboardDataAction No Null Guard 🟢
+
+**File:** `app/Domain/User/Actions/GetStudentDashboardDataAction.php:18`
+
+```php
+$user = User::find($userId);
+$registration = $user?->getActiveRegistration();
+```
+
+`User::find()` returns `null` if the user doesn't exist. The `?->` nullsafe
+operator prevents an exception, but the returned data will have null values.
+A clear guard at the top of the method would provide better feedback.
+
+**Fix:** Add `throw_unless($user, new RuntimeException('User not found'));`
+
+### U8. UserDashboard Uses Inline HTML Without View File 🟢
+
+**File:** `app/Domain/User/Livewire/UserDashboard.php`
+
+The component renders directly via `return <<<'HTML'` instead of using a
+separate view file. This is inconsistent with all other Livewire components
+which use `view('{domain}.{name}')`. The component is also unreachable due
+to U1, making this a secondary concern.
+
+**Fix:** Create `resources/views/user/dashboard.blade.php` and migrate the
+HTML, or remove the component entirely if dashboards are role-specific.
 
 ## Domain Models (Layer 5) & Domain Rules (Layer 6)
 
@@ -371,10 +449,11 @@ required pattern.
 |---|---|---|---|
 | 🔴 | Feature tests missing for 147 of 151 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
+| 🔴 | **U1** UserDashboard references non-existent components | User | ⏳ |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
 | 🟡 | Livewire Form Object migration (79 components remaining) | Architecture | ⏳ |
-| 🟡 | **A1** Auth hardcoded flash messages (5 locations) | Auth | ⏳ |
-| 🟡 | **A2** Password strength inconsistency across flows | Auth | ⏳ |
+| 🟡 | **U2** ProfileEditor uses arrays instead of Form Objects | User | ⏳ |
+| 🟡 | **U3** Password change in ProfileEditor no rate limiting | User | ⏳ |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ⏳ |
 | 🟡 | CsvHandler fragile magic string protocol | Shared | ⏳ |
 | 🟡 | LangChecker contradicts "stateless" rule | Shared | ⏳ |
