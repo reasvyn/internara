@@ -62,6 +62,14 @@ return [
         'no_verifications' => 'No pending verifications.',
     ],
 
+    'welcome_back' => 'Welcome back, :name!',
+    'recent_activity' => 'Recent Activity',
+    'no_activity' => 'No recent activity found.',
+    'your_profile' => 'Your Profile',
+    'edit_profile' => 'Edit Profile',
+    'quick_links' => 'Quick Links',
+    'notifications' => 'Notifications',
+
     'quick_actions' => 'Quick Actions',
     'help_title' => 'Need Help?',
     'help_desc' => 'Explore the documentation to master :app features.',

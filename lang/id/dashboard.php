@@ -62,6 +62,14 @@ return [
         'no_verifications' => 'Tidak ada verifikasi tertunda.',
     ],
 
+    'welcome_back' => 'Selamat datang kembali, :name!',
+    'recent_activity' => 'Aktivitas Terbaru',
+    'no_activity' => 'Belum ada aktivitas terbaru.',
+    'your_profile' => 'Profil Anda',
+    'edit_profile' => 'Edit Profil',
+    'quick_links' => 'Tautan Cepat',
+    'notifications' => 'Notifikasi',
+
     'quick_actions' => 'Aksi Cepat',
     'help_title' => 'Butuh Bantuan?',
     'help_desc' => 'Pelajari dokumentasi untuk menguasai fitur :app.',

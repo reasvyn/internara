@@ -7,11 +7,13 @@ use App\Domain\Auth\Livewire\RecoveryCode;
 use App\Domain\User\Http\Controllers\DashboardController;
 use App\Domain\User\Http\Controllers\HomeController;
 use App\Domain\User\Livewire\ProfileEditor;
+use App\Domain\User\Livewire\UserDashboard;
 
 Route::get('/', HomeController::class)->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::livewire('/my-dashboard', UserDashboard::class)->name('user.dashboard');
     Route::livewire('/profile', ProfileEditor::class)->name('profile');
     Route::livewire('/profile/recovery', RecoveryCode::class)->name('profile.recovery');
     Route::livewire('/notifications', NotificationCenter::class)->name('notifications');

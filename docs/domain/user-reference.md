@@ -29,7 +29,14 @@ Total: 16 files
 |---|---|---|---|
 | `User/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` | Profile editing form (with avatar upload and password change) |
 | `User/Livewire/RecentActivityList.php` | `RecentActivityList` | `Component` | Recent activity log listing |
-| `User/Livewire/UserDashboard.php` | `UserDashboard` | `Component` | Generic user dashboard |
+| `User/Livewire/UserDashboard.php` | `UserDashboard` | `Component` | Generic user dashboard with recent activity |
+
+### Livewire Form Objects
+
+| File | Class | Extends | Fields | Used By |
+|---|---|---|---|---|
+| `User/Livewire/Forms/ProfileForm.php` | `ProfileForm` | `Form` | name, email, phone, address, bio | `ProfileEditor` |
+| `User/Livewire/Forms/PasswordForm.php` | `PasswordForm` | `Form` | current_password, password, password_confirmation | `ProfileEditor` |
 
 ## Models
 

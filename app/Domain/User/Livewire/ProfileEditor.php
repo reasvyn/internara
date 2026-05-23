@@ -6,8 +6,12 @@ namespace App\Domain\User\Livewire;
 
 use App\Domain\Auth\Actions\UpdateUserPasswordAction;
 use App\Domain\User\Actions\UpdateProfileAction;
+use App\Domain\User\Livewire\Forms\PasswordForm;
+use App\Domain\User\Livewire\Forms\ProfileForm;
 use App\Domain\User\Models\User;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -17,56 +21,42 @@ class ProfileEditor extends Component
 {
     use WithFileUploads;
 
-    public $avatar;
+    public ?UploadedFile $avatar = null;
 
     public User $user;
 
-    public array $data = [];
+    public ProfileForm $profileForm;
 
-    public array $passwordData = [
-        'current_password' => '',
-        'password' => '',
-        'password_confirmation' => '',
-    ];
+    public PasswordForm $passwordForm;
 
     public function mount(): void
     {
         $this->user = auth()->user()->load(['profile', 'roles']);
 
-        $profile = $this->user->profile;
-
-        $this->data = [
-            'name' => $this->user->name,
-            'email' => $this->user->email,
-            'phone' => $profile->phone ?? '',
-            'address' => $profile->address ?? '',
-            'bio' => $profile->bio ?? '',
-        ];
+        $this->profileForm->fillFromUser($this->user);
     }
 
     public function save(UpdateProfileAction $updateProfile): void
     {
         $this->validate([
-            'data.name' => 'required|string|max:255',
-            'data.email' => 'required|email|unique:users,email,'.$this->user->id,
-            'data.phone' => 'nullable|string|max:20',
-            'data.address' => 'nullable|string|max:500',
-            'data.bio' => 'nullable|string|max:1000',
+            'profileForm.name' => 'required|string|max:255',
+            'profileForm.email' => 'required|email|unique:users,email,'.$this->user->id,
+            'profileForm.phone' => 'nullable|string|max:20',
+            'profileForm.address' => 'nullable|string|max:500',
+            'profileForm.bio' => 'nullable|string|max:1000',
             'avatar' => 'nullable|image|max:2048',
         ]);
-
-        $avatar = $this->avatar?->getRealPath() && file_exists($this->avatar->getRealPath()) ? $this->avatar : null;
 
         $updateProfile->execute(
             $this->user,
             [
-                'phone' => $this->data['phone'],
-                'address' => $this->data['address'],
-                'bio' => $this->data['bio'],
+                'phone' => $this->profileForm->phone,
+                'address' => $this->profileForm->address,
+                'bio' => $this->profileForm->bio,
             ],
-            name: $this->data['name'],
-            email: $this->data['email'],
-            avatar: $avatar,
+            name: $this->profileForm->name,
+            email: $this->profileForm->email,
+            avatar: $this->avatar,
         );
 
         flash()->success(__('profile.saved'));
@@ -74,15 +64,30 @@ class ProfileEditor extends Component
 
     public function updatePassword(UpdateUserPasswordAction $updatePassword): void
     {
-        $this->validate([
-            'passwordData.current_password' => ['required', 'current_password'],
-            'passwordData.password' => ['required', 'confirmed', Password::defaults()],
-        ]);
+        $this->passwordForm->validate();
 
-        $updatePassword->execute($this->user, $this->passwordData['password']);
+        $throttleKey = $this->passwordThrottleKey();
 
-        $this->reset('passwordData');
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('passwordForm.current_password', __('auth.throttle', ['seconds' => $seconds]));
+
+            return;
+        }
+
+        $updatePassword->execute($this->user, $this->passwordForm->password);
+
+        RateLimiter::clear($throttleKey);
+
+        $this->passwordForm->resetForm();
         flash()->success(__('profile.password_updated'));
+    }
+
+    protected function passwordThrottleKey(): string
+    {
+        return Str::transliterate(
+            'change-password|'.$this->user->id.'|'.request()->ip(),
+        );
     }
 
     public function avatarPreviewUrl(): ?string
@@ -96,11 +101,6 @@ class ProfileEditor extends Component
         } catch (\Throwable) {
             return null;
         }
-    }
-
-    public function avatarUrl(): ?string
-    {
-        return $this->user->getFirstMediaUrl('avatar') ?: null;
     }
 
     #[Layout('layouts::app')]
