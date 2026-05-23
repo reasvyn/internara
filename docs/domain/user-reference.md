@@ -1,6 +1,6 @@
 # User — API Reference
 
-Total: 20 files
+Total: 21 files
 
 ## Actions
 
@@ -70,6 +70,7 @@ Total: 20 files
 
 | File | Class | Implements | Description |
 |---|---|---|---|
+| `User/Rules/ReservedAuthoritativeName.php` | `ReservedAuthoritativeName` | `ValidationRule` | Blocks reserved names (admin, superadmin, etc.) for non-super-admin users |
 | `User/Rules/SystemUsername.php` | `SystemUsername` | `ValidationRule` | Validates system-generated usernames |
 
 ## Services

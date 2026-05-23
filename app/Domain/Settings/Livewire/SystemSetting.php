@@ -283,7 +283,7 @@ class SystemSetting extends Component
         }
     }
 
-    #[Layout('layouts::app', ['title' => 'System Settings'])]
+    #[Layout('shared::layouts.app', ['title' => 'System Settings'])]
     public function render(): View
     {
         return view('settings.system-setting');
