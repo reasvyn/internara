@@ -79,7 +79,7 @@ is tracking.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -137,7 +137,6 @@ boundaries for allowed entry dates |
 | User | Student identity for entries, mentor identity for acknowledgements and comments |
 | Core | BaseAction, BaseModel, SmartLogger, BaseRecordManager for the listing and management UI |
 
-## Important Rules
 
 - Log entries cannot be backdated beyond a configurable number of days (default 7 days) — this 
 prevents bulk retroactive filling of the logbook.

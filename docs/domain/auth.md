@@ -87,7 +87,7 @@ target user, timestamp, method, and outcome in the audit log.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -164,7 +164,6 @@ RecoveryCodeState), SmartLogger for all authentication logging, StatusEnum contr
 AccountStatus, LabelEnum contract for Role |
 | Registration | RegistrationCenter Livewire component (guest registration route) |
 
-## Important Rules
 
 - Account lifecycle follows a strict state machine — invalid transitions are rejected at the 
 domain logic level, not just the UI.

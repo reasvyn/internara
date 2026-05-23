@@ -10,7 +10,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
-use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProtectSetupRouteMiddleware
@@ -79,9 +78,9 @@ class ProtectSetupRouteMiddleware
         return $this->renderCodeEntry();
     }
 
-    private function renderCodeEntry(): View
+    private function renderCodeEntry(): Response
     {
-        return view('setup.enter-code');
+        return response()->view('setup.enter-code');
     }
 
     private function rejectToken(Request $request, string $message): Response

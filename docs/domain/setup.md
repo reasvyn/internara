@@ -112,7 +112,7 @@ Also reports whether the system has been set up via the Setup wizard.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -179,7 +179,6 @@ Setup Wizard Steps:
 | Admin | SendNotificationAction for system notifications |
 | Settings | AppInfo support class for version display |
 
-## Important Rules
 
 - Setup can only run once per installation — the setup lock is applied at completion and is
 irremovable through the web interface.

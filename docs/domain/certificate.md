@@ -79,7 +79,7 @@ The verification endpoint is rate-limited to prevent abuse but otherwise unrestr
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -142,7 +142,6 @@ ISSUED ──→ REVOKED (terminal, irreversible)
 | Internship | Program name, description, and dates appear on the certificate content |
 | Core | BaseAction, BaseModel, SmartLogger |
 
-## Important Rules
 
 - Certificates can only be issued for registrations with COMPLETED status — no other status 
 qualifies, no overrides permitted.

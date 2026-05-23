@@ -77,7 +77,7 @@ input among many (attendance, assignments, logbook consistency, guidance acknowl
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -155,7 +155,6 @@ and tracked |
 | Core | BaseAction for assessment operations, BaseModel for persistence (extends BaseModel), 
 SmartLogger for audit trail |
 
-## Important Rules
 
 - Every competency assessment must reference exactly one rubric version — rubric evolution does 
 not retroactively affect completed assessments.

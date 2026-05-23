@@ -90,7 +90,7 @@ context.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -165,7 +165,6 @@ program date ranges |
 context for all registration, placement, and operational activity |
 | Core | BaseAction, BaseModel, SmartLogger |
 
-## Important Rules
 
 - Program dates must fall entirely within the associated academic year's date range — no 
 overlap or out-of-bounds dates.

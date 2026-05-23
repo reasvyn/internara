@@ -81,7 +81,7 @@ is timestamped and attributable.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -131,7 +131,6 @@ media library serves the files |
 | User | Student identity for acknowledgement records; admin identity for assignment actions |
 | Core | BaseAction, BaseModel, SmartLogger |
 
-## Important Rules
 
 - Acknowledgements are completely immutable — they permanently and indelibly record the 
 document version exact content hash, the acknowledgement timestamp, and the student's identity.

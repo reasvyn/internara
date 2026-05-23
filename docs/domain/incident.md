@@ -91,7 +91,7 @@ ensure attention.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -145,7 +145,6 @@ and resolution |
 notifications |
 | Core | BaseAction, BaseModel, SmartLogger |
 
-## Important Rules
 
 - Incidents can never be deleted from the database — they can only be closed. Hard delete is 
 blocked at the database and application levels.

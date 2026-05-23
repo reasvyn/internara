@@ -87,7 +87,7 @@ process.
 
 ## Requirements
 
-### User Stories
+### User Stories & Rules
 
 | Role | Story |
 |------|-------|
@@ -139,7 +139,6 @@ process.
 | Core | BaseAction for operation consistency, SmartLogger for audit, BaseRecordManager for admin 
 CRUD patterns |
 
-## Important Rules
 
 - Only super_admin can assign or revoke the super_admin role — enforced at the
   policy level, not just the UI.
