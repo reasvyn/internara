@@ -17,7 +17,8 @@ describe('Exception hierarchy', function () {
     it('app exception is user facing by default', function () {
         $e = new class('test') extends AppException {};
 
-        expect($e->isUserFacing())->toBeTrue();
+        expect($e->isUserFacing())->toBeTrue()
+            ->and($e->shouldReport())->toBeTrue();
     });
 
     it('action exception is user facing', function () {

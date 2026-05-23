@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /home/reasnovynt/Projects/Dev/reasvyn/internara/app/Domain/Document</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../../_css/bootstrap.min.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../_css/billboard.min.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../_css/style.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../../index.html">/home/reasnovynt/Projects/Dev/reasvyn/internara/app</a></li>
+         <li class="breadcrumb-item"><a href="../index.html">Domain</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Document</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classesCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Actions/DeleteReportAction.php.html#10">App\Domain\Document\Actions\DeleteReportAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/GenerateReportAction.php.html#11">App\Domain\Document\Actions\GenerateReportAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/RenderDocumentAction.php.html#13">App\Domain\Document\Actions\RenderDocumentAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/SaveDocumentTemplateAction.php.html#11">App\Domain\Document\Actions\SaveDocumentTemplateAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/DocumentCategory.php.html#12">App\Domain\Document\Enums\DocumentCategory</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Http/Controllers/DocumentRenderController.php.html#16">App\Domain\Document\Http\Controllers\DocumentRenderController</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Http/Requests/GenerateReportRequest.php.html#16">App\Domain\Document\Http\Requests\GenerateReportRequest</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/ReportsManager.php.html#15">App\Domain\Document\Livewire\ReportsManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/TemplateManager.php.html#14">App\Domain\Document\Livewire\TemplateManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Document.php.html#18">App\Domain\Document\Models\Document</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/DocumentPolicy.php.html#11">App\Domain\Document\Policies\DocumentPolicy</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Support/DocumentRenderer.php.html#12">App\Domain\Document\Support\DocumentRenderer</a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Actions/RenderDocumentAction.php.html#13">App\Domain\Document\Actions\RenderDocumentAction</a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="Enums/DocumentCategory.php.html#12">App\Domain\Document\Enums\DocumentCategory</a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="Policies/DocumentPolicy.php.html#11">App\Domain\Document\Policies\DocumentPolicy</a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="Support/DocumentRenderer.php.html#12">App\Domain\Document\Support\DocumentRenderer</a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2 style="margin-top: 3rem;">Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodsCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Actions/DeleteReportAction.php.html#12"><abbr title="App\Domain\Document\Actions\DeleteReportAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/GenerateReportAction.php.html#13"><abbr title="App\Domain\Document\Actions\GenerateReportAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/RenderDocumentAction.php.html#15"><abbr title="App\Domain\Document\Actions\RenderDocumentAction::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/RenderDocumentAction.php.html#19"><abbr title="App\Domain\Document\Actions\RenderDocumentAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/RenderDocumentAction.php.html#49"><abbr title="App\Domain\Document\Actions\RenderDocumentAction::download">download</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/SaveDocumentTemplateAction.php.html#13"><abbr title="App\Domain\Document\Actions\SaveDocumentTemplateAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/DocumentCategory.php.html#20"><abbr title="App\Domain\Document\Enums\DocumentCategory::label">label</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Http/Controllers/DocumentRenderController.php.html#18"><abbr title="App\Domain\Document\Http\Controllers\DocumentRenderController::show">show</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Http/Controllers/DocumentRenderController.php.html#33"><abbr title="App\Domain\Document\Http\Controllers\DocumentRenderController::store">store</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Http/Requests/GenerateReportRequest.php.html#21"><abbr title="App\Domain\Document\Http\Requests\GenerateReportRequest::authorize">authorize</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Http/Requests/GenerateReportRequest.php.html#31"><abbr title="App\Domain\Document\Http\Requests\GenerateReportRequest::rules">rules</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Http/Requests/GenerateReportRequest.php.html#45"><abbr title="App\Domain\Document\Http\Requests\GenerateReportRequest::messages">messages</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/ReportsManager.php.html#26"><abbr title="App\Domain\Document\Livewire\ReportsManager::generateReport">generateReport</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/ReportsManager.php.html#36"><abbr title="App\Domain\Document\Livewire\ReportsManager::deleteReport">deleteReport</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/ReportsManager.php.html#42"><abbr title="App\Domain\Document\Livewire\ReportsManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/TemplateManager.php.html#31"><abbr title="App\Domain\Document\Livewire\TemplateManager::headers">headers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/TemplateManager.php.html#41"><abbr title="App\Domain\Document\Livewire\TemplateManager::templates">templates</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/TemplateManager.php.html#49"><abbr title="App\Domain\Document\Livewire\TemplateManager::createTemplate">createTemplate</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/TemplateManager.php.html#63"><abbr title="App\Domain\Document\Livewire\TemplateManager::editTemplate">editTemplate</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/TemplateManager.php.html#70"><abbr title="App\Domain\Document\Livewire\TemplateManager::saveTemplate">saveTemplate</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/TemplateManager.php.html#84"><abbr title="App\Domain\Document\Livewire\TemplateManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Document.php.html#23"><abbr title="App\Domain\Document\Models\Document::newFactory">newFactory</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Document.php.html#28"><abbr title="App\Domain\Document\Models\Document::casts">casts</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Document.php.html#36"><abbr title="App\Domain\Document\Models\Document::getDownloadNameAttribute">getDownloadNameAttribute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Document.php.html#41"><abbr title="App\Domain\Document\Models\Document::registerMediaCollections">registerMediaCollections</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Document.php.html#46"><abbr title="App\Domain\Document\Models\Document::scopeActive">scopeActive</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Document.php.html#51"><abbr title="App\Domain\Document\Models\Document::scopeOfCategory">scopeOfCategory</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Document.php.html#56"><abbr title="App\Domain\Document\Models\Document::internshipRequirements">internshipRequirements</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/DocumentPolicy.php.html#13"><abbr title="App\Domain\Document\Policies\DocumentPolicy::viewAny">viewAny</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/DocumentPolicy.php.html#20"><abbr title="App\Domain\Document\Policies\DocumentPolicy::view">view</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/DocumentPolicy.php.html#25"><abbr title="App\Domain\Document\Policies\DocumentPolicy::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/DocumentPolicy.php.html#30"><abbr title="App\Domain\Document\Policies\DocumentPolicy::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/DocumentPolicy.php.html#35"><abbr title="App\Domain\Document\Policies\DocumentPolicy::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Support/DocumentRenderer.php.html#16"><abbr title="App\Domain\Document\Support\DocumentRenderer::renderHtml">renderHtml</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Support/DocumentRenderer.php.html#27"><abbr title="App\Domain\Document\Support\DocumentRenderer::renderPdf">renderPdf</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Support/DocumentRenderer.php.html#36"><abbr title="App\Domain\Document\Support\DocumentRenderer::storePdf">storePdf</abbr></a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Enums/DocumentCategory.php.html#20"><abbr title="App\Domain\Document\Enums\DocumentCategory::label">label</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="Actions/RenderDocumentAction.php.html#49"><abbr title="App\Domain\Document\Actions\RenderDocumentAction::download">download</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="Policies/DocumentPolicy.php.html#20"><abbr title="App\Domain\Document\Policies\DocumentPolicy::view">view</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Support/DocumentRenderer.php.html#36"><abbr title="App\Domain\Document\Support\DocumentRenderer::storePdf">storePdf</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 12.5.6</a> using <a href="https://www.php.net/" target="_top">PHP 8.4.20</a> and <a href="https://phpunit.de/">PHPUnit 12.5.24</a> at Fri May 22 9:27:53 WIB 2026.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../../_js/billboard.pkgd.min.js?v=12.5.6" type="text/javascript"></script>
+  <script type="application/json" id="complexity_class">[[0,1,"Actions\/DeleteReportAction.php.html#10","App\\Domain\\Document\\Actions\\DeleteReportAction","2"],[0,1,"Actions\/GenerateReportAction.php.html#11","App\\Domain\\Document\\Actions\\GenerateReportAction","2"],[0,6,"Actions\/RenderDocumentAction.php.html#13","App\\Domain\\Document\\Actions\\RenderDocumentAction","42"],[0,1,"Actions\/SaveDocumentTemplateAction.php.html#11","App\\Domain\\Document\\Actions\\SaveDocumentTemplateAction","2"],[0,6,"Enums\/DocumentCategory.php.html#12","App\\Domain\\Document\\Enums\\DocumentCategory","42"],[0,2,"Http\/Controllers\/DocumentRenderController.php.html#16","App\\Domain\\Document\\Http\\Controllers\\DocumentRenderController","6"],[0,3,"Http\/Requests\/GenerateReportRequest.php.html#16","App\\Domain\\Document\\Http\\Requests\\GenerateReportRequest","12"],[0,3,"Livewire\/ReportsManager.php.html#15","App\\Domain\\Document\\Livewire\\ReportsManager","12"],[0,6,"Livewire\/TemplateManager.php.html#14","App\\Domain\\Document\\Livewire\\TemplateManager","42"],[0,7,"Models\/Document.php.html#18","App\\Domain\\Document\\Models\\Document","56"],[0,6,"Policies\/DocumentPolicy.php.html#11","App\\Domain\\Document\\Policies\\DocumentPolicy","42"],[0,4,"Support\/DocumentRenderer.php.html#12","App\\Domain\\Document\\Support\\DocumentRenderer","20"]]</script>
+  <script type="application/json" id="complexity_method">[[0,1,"Actions\/DeleteReportAction.php.html#12","App\\Domain\\Document\\Actions\\DeleteReportAction::execute","2"],[0,1,"Actions\/GenerateReportAction.php.html#13","App\\Domain\\Document\\Actions\\GenerateReportAction::execute","2"],[0,1,"Actions\/RenderDocumentAction.php.html#15","App\\Domain\\Document\\Actions\\RenderDocumentAction::__construct","2"],[0,1,"Actions\/RenderDocumentAction.php.html#19","App\\Domain\\Document\\Actions\\RenderDocumentAction::execute","2"],[0,4,"Actions\/RenderDocumentAction.php.html#49","App\\Domain\\Document\\Actions\\RenderDocumentAction::download","20"],[0,1,"Actions\/SaveDocumentTemplateAction.php.html#13","App\\Domain\\Document\\Actions\\SaveDocumentTemplateAction::execute","2"],[0,6,"Enums\/DocumentCategory.php.html#20","App\\Domain\\Document\\Enums\\DocumentCategory::label","42"],[0,1,"Http\/Controllers\/DocumentRenderController.php.html#18","App\\Domain\\Document\\Http\\Controllers\\DocumentRenderController::show","2"],[0,1,"Http\/Controllers\/DocumentRenderController.php.html#33","App\\Domain\\Document\\Http\\Controllers\\DocumentRenderController::store","2"],[0,1,"Http\/Requests\/GenerateReportRequest.php.html#21","App\\Domain\\Document\\Http\\Requests\\GenerateReportRequest::authorize","2"],[0,1,"Http\/Requests\/GenerateReportRequest.php.html#31","App\\Domain\\Document\\Http\\Requests\\GenerateReportRequest::rules","2"],[0,1,"Http\/Requests\/GenerateReportRequest.php.html#45","App\\Domain\\Document\\Http\\Requests\\GenerateReportRequest::messages","2"],[0,1,"Livewire\/ReportsManager.php.html#26","App\\Domain\\Document\\Livewire\\ReportsManager::generateReport","2"],[0,1,"Livewire\/ReportsManager.php.html#36","App\\Domain\\Document\\Livewire\\ReportsManager::deleteReport","2"],[0,1,"Livewire\/ReportsManager.php.html#42","App\\Domain\\Document\\Livewire\\ReportsManager::render","2"],[0,1,"Livewire\/TemplateManager.php.html#31","App\\Domain\\Document\\Livewire\\TemplateManager::headers","2"],[0,1,"Livewire\/TemplateManager.php.html#41","App\\Domain\\Document\\Livewire\\TemplateManager::templates","2"],[0,1,"Livewire\/TemplateManager.php.html#49","App\\Domain\\Document\\Livewire\\TemplateManager::createTemplate","2"],[0,1,"Livewire\/TemplateManager.php.html#63","App\\Domain\\Document\\Livewire\\TemplateManager::editTemplate","2"],[0,1,"Livewire\/TemplateManager.php.html#70","App\\Domain\\Document\\Livewire\\TemplateManager::saveTemplate","2"],[0,1,"Livewire\/TemplateManager.php.html#84","App\\Domain\\Document\\Livewire\\TemplateManager::render","2"],[0,1,"Models\/Document.php.html#23","App\\Domain\\Document\\Models\\Document::newFactory","2"],[0,1,"Models\/Document.php.html#28","App\\Domain\\Document\\Models\\Document::casts","2"],[0,1,"Models\/Document.php.html#36","App\\Domain\\Document\\Models\\Document::getDownloadNameAttribute","2"],[0,1,"Models\/Document.php.html#41","App\\Domain\\Document\\Models\\Document::registerMediaCollections","2"],[0,1,"Models\/Document.php.html#46","App\\Domain\\Document\\Models\\Document::scopeActive","2"],[0,1,"Models\/Document.php.html#51","App\\Domain\\Document\\Models\\Document::scopeOfCategory","2"],[0,1,"Models\/Document.php.html#56","App\\Domain\\Document\\Models\\Document::internshipRequirements","2"],[0,1,"Policies\/DocumentPolicy.php.html#13","App\\Domain\\Document\\Policies\\DocumentPolicy::viewAny","2"],[0,2,"Policies\/DocumentPolicy.php.html#20","App\\Domain\\Document\\Policies\\DocumentPolicy::view","6"],[0,1,"Policies\/DocumentPolicy.php.html#25","App\\Domain\\Document\\Policies\\DocumentPolicy::create","2"],[0,1,"Policies\/DocumentPolicy.php.html#30","App\\Domain\\Document\\Policies\\DocumentPolicy::update","2"],[0,1,"Policies\/DocumentPolicy.php.html#35","App\\Domain\\Document\\Policies\\DocumentPolicy::delete","2"],[0,1,"Support\/DocumentRenderer.php.html#16","App\\Domain\\Document\\Support\\DocumentRenderer::renderHtml","2"],[0,1,"Support\/DocumentRenderer.php.html#27","App\\Domain\\Document\\Support\\DocumentRenderer::renderPdf","2"],[0,2,"Support\/DocumentRenderer.php.html#36","App\\Domain\\Document\\Support\\DocumentRenderer::storePdf","6"]]</script>
+  <script type="text/javascript" defer>
+  const barLabels = [
+    '0%',
+    '0-10%',
+    '10-20%',
+    '20-30%',
+    '30-40%',
+    '40-50%',
+    '50-60%',
+    '60-70%',
+    '70-80%',
+    '80-90%',
+    '90-100%',
+    '100%'
+  ];
+  const barConfig = (name, fullName, values) => ({
+    axis: {
+      x: {
+        type: "category",
+        categories: barLabels,
+      },
+      y: {
+        label: {
+          text: `#${name}`,
+          position: 'outer-top',
+        },
+      },
+    },
+    bindto: `#${name}CoverageDistribution`,
+    data: {
+      columns: [
+        [fullName].concat(values),
+      ],
+      colors: {
+        [fullName]: "rgba(69, 114, 167, 0.75)",
+      },
+      type: "bar",
+    },
+    bar: {
+      width: {
+        ratio: 0.9,
+      },
+    },
+    grid: {
+      focus: {
+        show: false,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">Coverage ${barLabels[data[0].x]}</th></tr>
+            <tr><td class="value">${data[0].value} ${name}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  bb.generate(
+    barConfig('classes', "Class Coverage", [12,0,0,0,0,0,0,0,0,0,0,0])
+  );
+  bb.generate(
+    barConfig('methods', "Method Coverage", [36,0,0,0,0,0,0,0,0,0,0,0])
+  );
+
+  const scatterConfig = (name, complexityData) => ({
+    axis: {
+      x: {
+        label: {
+          text: 'Code Coverage (in percent)',
+          position: 'outer-right',
+        },
+        tick: {
+          values: [0, 20, 40, 60, 80, 100],
+        },
+      },
+      y: {
+        label: {
+          text: 'Cyclomatic Complexity',
+          position: 'outer-top',
+        },
+        min: 0,
+        padding: {
+          bottom: 0,
+          top: 5,
+        },
+      },
+    },
+    bindto: `#${name}Complexity`,
+    data: {
+      columns: [
+        ["complexity_x"].concat(complexityData.map(d => d[0])),
+        ["complexity"].concat(complexityData.map(d => d[1])),
+      ],
+      onclick: function(data, element) {
+        window.location = complexityData[data.index][2];
+      },
+      type: "scatter",
+      xs: {
+        "complexity": "complexity_x",
+      },
+    },
+    grid: {
+      focus: {
+        show: true,
+        y: true,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        const coverage = Math.round(data[0].x);
+        const complexity = data[0].value;
+        const targetName = complexityData[data[0].index][3];
+        const crap = complexityData[data[0].index][4];
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">${targetName}</th></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Coverage</td><td class="name">${coverage}%</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Complexity</td><td class="value">${complexity}</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Crap</td><td class="value">${crap}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  const classComplexityData = JSON.parse(document.getElementById('complexity_class').textContent);
+  bb.generate(
+    scatterConfig("class", classComplexityData)
+  );
+  const methodComplexityData = JSON.parse(document.getElementById('complexity_method').textContent);
+  bb.generate(
+    scatterConfig("method", methodComplexityData),
+  );
+  </script>
+ </body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /home/reasnovynt/Projects/Dev/reasvyn/internara/app/Domain/Registration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../../_css/bootstrap.min.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../_css/billboard.min.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../_css/style.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../../index.html">/home/reasnovynt/Projects/Dev/reasvyn/internara/app</a></li>
+         <li class="breadcrumb-item"><a href="../index.html">Domain</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Registration</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classesCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Actions/ApplyAccountAction.php.html#11">App\Domain\Registration\Actions\ApplyAccountAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/ApproveAccountApplicationAction.php.html#16">App\Domain\Registration\Actions\ApproveAccountApplicationAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/RegisterInternshipAction.php.html#15">App\Domain\Registration\Actions\RegisterInternshipAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/RejectAccountApplicationAction.php.html#13">App\Domain\Registration\Actions\RejectAccountApplicationAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/VerifyRegistrationAction.php.html#13">App\Domain\Registration\Actions\VerifyRegistrationAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#11">App\Domain\Registration\Entities\RegistrationState</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/AccountApplicationStatus.php.html#9">App\Domain\Registration\Enums\AccountApplicationStatus</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#10">App\Domain\Registration\Enums\RegistrationDocumentStatus</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/AccountApplicationForm.php.html#17">App\Domain\Registration\Livewire\AccountApplicationForm</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationCenter.php.html#13">App\Domain\Registration\Livewire\RegistrationCenter</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationDocumentUpload.php.html#15">App\Domain\Registration\Livewire\RegistrationDocumentUpload</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationVerification.php.html#16">App\Domain\Registration\Livewire\RegistrationVerification</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationWizard.php.html#16">App\Domain\Registration\Livewire\RegistrationWizard</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/AccountApplication.php.html#19">App\Domain\Registration\Models\AccountApplication</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#28">App\Domain\Registration\Models\Registration</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/RegistrationDocument.php.html#17">App\Domain\Registration\Models\RegistrationDocument</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/AccountApplicationPolicy.php.html#11">App\Domain\Registration\Policies\AccountApplicationPolicy</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationDocumentPolicy.php.html#11">App\Domain\Registration\Policies\RegistrationDocumentPolicy</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationPolicy.php.html#11">App\Domain\Registration\Policies\RegistrationPolicy</a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Entities/RegistrationState.php.html#11">App\Domain\Registration\Entities\RegistrationState</a></td><td class="text-right">0.0%</td><td class="text-right">16</td><td class="text-right">272</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#10">App\Domain\Registration\Enums\RegistrationDocumentStatus</a></td><td class="text-right">0.0%</td><td class="text-right">14</td><td class="text-right">210</td></tr>
+       <tr><td><a href="Livewire/AccountApplicationForm.php.html#17">App\Domain\Registration\Livewire\AccountApplicationForm</a></td><td class="text-right">0.0%</td><td class="text-right">13</td><td class="text-right">182</td></tr>
+       <tr><td><a href="Livewire/RegistrationDocumentUpload.php.html#15">App\Domain\Registration\Livewire\RegistrationDocumentUpload</a></td><td class="text-right">0.0%</td><td class="text-right">10</td><td class="text-right">110</td></tr>
+       <tr><td><a href="Livewire/RegistrationVerification.php.html#16">App\Domain\Registration\Livewire\RegistrationVerification</a></td><td class="text-right">0.0%</td><td class="text-right">10</td><td class="text-right">110</td></tr>
+       <tr><td><a href="Livewire/RegistrationWizard.php.html#16">App\Domain\Registration\Livewire\RegistrationWizard</a></td><td class="text-right">0.0%</td><td class="text-right">8</td><td class="text-right">72</td></tr>
+       <tr><td><a href="Policies/RegistrationPolicy.php.html#11">App\Domain\Registration\Policies\RegistrationPolicy</a></td><td class="text-right">0.0%</td><td class="text-right">7</td><td class="text-right">56</td></tr>
+       <tr><td><a href="Policies/AccountApplicationPolicy.php.html#11">App\Domain\Registration\Policies\AccountApplicationPolicy</a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="Policies/RegistrationDocumentPolicy.php.html#11">App\Domain\Registration\Policies\RegistrationDocumentPolicy</a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="Actions/VerifyRegistrationAction.php.html#13">App\Domain\Registration\Actions\VerifyRegistrationAction</a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+       <tr><td><a href="Actions/RegisterInternshipAction.php.html#15">App\Domain\Registration\Actions\RegisterInternshipAction</a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="Enums/AccountApplicationStatus.php.html#9">App\Domain\Registration\Enums\AccountApplicationStatus</a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="Actions/ApplyAccountAction.php.html#11">App\Domain\Registration\Actions\ApplyAccountAction</a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Actions/ApproveAccountApplicationAction.php.html#16">App\Domain\Registration\Actions\ApproveAccountApplicationAction</a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Actions/RejectAccountApplicationAction.php.html#13">App\Domain\Registration\Actions\RejectAccountApplicationAction</a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2 style="margin-top: 3rem;">Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodsCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Actions/ApplyAccountAction.php.html#13"><abbr title="App\Domain\Registration\Actions\ApplyAccountAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/ApproveAccountApplicationAction.php.html#18"><abbr title="App\Domain\Registration\Actions\ApproveAccountApplicationAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/RegisterInternshipAction.php.html#17"><abbr title="App\Domain\Registration\Actions\RegisterInternshipAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/RejectAccountApplicationAction.php.html#15"><abbr title="App\Domain\Registration\Actions\RejectAccountApplicationAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/VerifyRegistrationAction.php.html#15"><abbr title="App\Domain\Registration\Actions\VerifyRegistrationAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#13"><abbr title="App\Domain\Registration\Entities\RegistrationState::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#20"><abbr title="App\Domain\Registration\Entities\RegistrationState::fromModel">fromModel</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#30"><abbr title="App\Domain\Registration\Entities\RegistrationState::isActive">isActive</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#35"><abbr title="App\Domain\Registration\Entities\RegistrationState::isPending">isPending</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#40"><abbr title="App\Domain\Registration\Entities\RegistrationState::isCurrentlyOngoing">isCurrentlyOngoing</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#51"><abbr title="App\Domain\Registration\Entities\RegistrationState::hasEnded">hasEnded</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#62"><abbr title="App\Domain\Registration\Entities\RegistrationState::canBeApproved">canBeApproved</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#67"><abbr title="App\Domain\Registration\Entities\RegistrationState::daysRemaining">daysRemaining</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#78"><abbr title="App\Domain\Registration\Entities\RegistrationState::totalDuration">totalDuration</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/AccountApplicationStatus.php.html#15"><abbr title="App\Domain\Registration\Enums\AccountApplicationStatus::label">label</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#16"><abbr title="App\Domain\Registration\Enums\RegistrationDocumentStatus::label">label</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#25"><abbr title="App\Domain\Registration\Enums\RegistrationDocumentStatus::isPending">isPending</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#30"><abbr title="App\Domain\Registration\Enums\RegistrationDocumentStatus::isVerified">isVerified</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#35"><abbr title="App\Domain\Registration\Enums\RegistrationDocumentStatus::isRejected">isRejected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#40"><abbr title="App\Domain\Registration\Enums\RegistrationDocumentStatus::isTerminal">isTerminal</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#45"><abbr title="App\Domain\Registration\Enums\RegistrationDocumentStatus::validTransitions">validTransitions</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#54"><abbr title="App\Domain\Registration\Enums\RegistrationDocumentStatus::canTransitionTo">canTransitionTo</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/AccountApplicationForm.php.html#51"><abbr title="App\Domain\Registration\Livewire\AccountApplicationForm::internships">internships</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/AccountApplicationForm.php.html#57"><abbr title="App\Domain\Registration\Livewire\AccountApplicationForm::placements">placements</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/AccountApplicationForm.php.html#70"><abbr title="App\Domain\Registration\Livewire\AccountApplicationForm::schools">schools</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/AccountApplicationForm.php.html#76"><abbr title="App\Domain\Registration\Livewire\AccountApplicationForm::submit">submit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationCenter.php.html#15"><abbr title="App\Domain\Registration\Livewire\RegistrationCenter::openInternships">openInternships</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationCenter.php.html#32"><abbr title="App\Domain\Registration\Livewire\RegistrationCenter::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationDocumentUpload.php.html#24"><abbr title="App\Domain\Registration\Livewire\RegistrationDocumentUpload::mount">mount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationDocumentUpload.php.html#32"><abbr title="App\Domain\Registration\Livewire\RegistrationDocumentUpload::upload">upload</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationDocumentUpload.php.html#69"><abbr title="App\Domain\Registration\Livewire\RegistrationDocumentUpload::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationVerification.php.html#26"><abbr title="App\Domain\Registration\Livewire\RegistrationVerification::pendingRegistrations">pendingRegistrations</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationVerification.php.html#36"><abbr title="App\Domain\Registration\Livewire\RegistrationVerification::selectedRegistration">selectedRegistration</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationVerification.php.html#46"><abbr title="App\Domain\Registration\Livewire\RegistrationVerification::availablePlacements">availablePlacements</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationVerification.php.html#61"><abbr title="App\Domain\Registration\Livewire\RegistrationVerification::mentors">mentors</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationVerification.php.html#67"><abbr title="App\Domain\Registration\Livewire\RegistrationVerification::process">process</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationVerification.php.html#80"><abbr title="App\Domain\Registration\Livewire\RegistrationVerification::confirmProcess">confirmProcess</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationWizard.php.html#28"><abbr title="App\Domain\Registration\Livewire\RegistrationWizard::internships">internships</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationWizard.php.html#34"><abbr title="App\Domain\Registration\Livewire\RegistrationWizard::placements">placements</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationWizard.php.html#47"><abbr title="App\Domain\Registration\Livewire\RegistrationWizard::nextStep">nextStep</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationWizard.php.html#56"><abbr title="App\Domain\Registration\Livewire\RegistrationWizard::previousStep">previousStep</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/RegistrationWizard.php.html#61"><abbr title="App\Domain\Registration\Livewire\RegistrationWizard::submit">submit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/AccountApplication.php.html#44"><abbr title="App\Domain\Registration\Models\AccountApplication::casts">casts</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/AccountApplication.php.html#53"><abbr title="App\Domain\Registration\Models\AccountApplication::internship">internship</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/AccountApplication.php.html#58"><abbr title="App\Domain\Registration\Models\AccountApplication::placement">placement</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/AccountApplication.php.html#63"><abbr title="App\Domain\Registration\Models\AccountApplication::school">school</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/AccountApplication.php.html#68"><abbr title="App\Domain\Registration\Models\AccountApplication::department">department</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/AccountApplication.php.html#73"><abbr title="App\Domain\Registration\Models\AccountApplication::processor">processor</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/AccountApplication.php.html#78"><abbr title="App\Domain\Registration\Models\AccountApplication::newFactory">newFactory</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#35"><abbr title="App\Domain\Registration\Models\Registration::newFactory">newFactory</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#45"><abbr title="App\Domain\Registration\Models\Registration::asRegistrationState">asRegistrationState</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#50"><abbr title="App\Domain\Registration\Models\Registration::mentee">mentee</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#55"><abbr title="App\Domain\Registration\Models\Registration::internship">internship</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#60"><abbr title="App\Domain\Registration\Models\Registration::placement">placement</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#65"><abbr title="App\Domain\Registration\Models\Registration::mentors">mentors</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#72"><abbr title="App\Domain\Registration\Models\Registration::logbooks">logbooks</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#77"><abbr title="App\Domain\Registration\Models\Registration::attendances">attendances</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#82"><abbr title="App\Domain\Registration\Models\Registration::certificates">certificates</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#87"><abbr title="App\Domain\Registration\Models\Registration::supervisionLogs">supervisionLogs</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#92"><abbr title="App\Domain\Registration\Models\Registration::documents">documents</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#97"><abbr title="App\Domain\Registration\Models\Registration::assessments">assessments</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Registration.php.html#102"><abbr title="App\Domain\Registration\Models\Registration::report">report</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/RegistrationDocument.php.html#27"><abbr title="App\Domain\Registration\Models\RegistrationDocument::registerMediaCollections">registerMediaCollections</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/RegistrationDocument.php.html#32"><abbr title="App\Domain\Registration\Models\RegistrationDocument::registration">registration</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/RegistrationDocument.php.html#37"><abbr title="App\Domain\Registration\Models\RegistrationDocument::requirement">requirement</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/RegistrationDocument.php.html#42"><abbr title="App\Domain\Registration\Models\RegistrationDocument::verifiedBy">verifiedBy</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/RegistrationDocument.php.html#47"><abbr title="App\Domain\Registration\Models\RegistrationDocument::newFactory">newFactory</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/AccountApplicationPolicy.php.html#13"><abbr title="App\Domain\Registration\Policies\AccountApplicationPolicy::viewAny">viewAny</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/AccountApplicationPolicy.php.html#20"><abbr title="App\Domain\Registration\Policies\AccountApplicationPolicy::view">view</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/AccountApplicationPolicy.php.html#29"><abbr title="App\Domain\Registration\Policies\AccountApplicationPolicy::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/AccountApplicationPolicy.php.html#34"><abbr title="App\Domain\Registration\Policies\AccountApplicationPolicy::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/AccountApplicationPolicy.php.html#39"><abbr title="App\Domain\Registration\Policies\AccountApplicationPolicy::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationDocumentPolicy.php.html#13"><abbr title="App\Domain\Registration\Policies\RegistrationDocumentPolicy::viewAny">viewAny</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationDocumentPolicy.php.html#18"><abbr title="App\Domain\Registration\Policies\RegistrationDocumentPolicy::view">view</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationDocumentPolicy.php.html#27"><abbr title="App\Domain\Registration\Policies\RegistrationDocumentPolicy::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationDocumentPolicy.php.html#32"><abbr title="App\Domain\Registration\Policies\RegistrationDocumentPolicy::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationDocumentPolicy.php.html#37"><abbr title="App\Domain\Registration\Policies\RegistrationDocumentPolicy::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationPolicy.php.html#13"><abbr title="App\Domain\Registration\Policies\RegistrationPolicy::viewAny">viewAny</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationPolicy.php.html#20"><abbr title="App\Domain\Registration\Policies\RegistrationPolicy::view">view</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationPolicy.php.html#29"><abbr title="App\Domain\Registration\Policies\RegistrationPolicy::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationPolicy.php.html#34"><abbr title="App\Domain\Registration\Policies\RegistrationPolicy::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/RegistrationPolicy.php.html#43"><abbr title="App\Domain\Registration\Policies\RegistrationPolicy::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Livewire/AccountApplicationForm.php.html#76"><abbr title="App\Domain\Registration\Livewire\AccountApplicationForm::submit">submit</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">8</td><td class="text-right">72</td></tr>
+       <tr><td><a href="Livewire/RegistrationDocumentUpload.php.html#32"><abbr title="App\Domain\Registration\Livewire\RegistrationDocumentUpload::upload">upload</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="Actions/VerifyRegistrationAction.php.html#15"><abbr title="App\Domain\Registration\Actions\VerifyRegistrationAction::execute">execute</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+       <tr><td><a href="Actions/RegisterInternshipAction.php.html#17"><abbr title="App\Domain\Registration\Actions\RegisterInternshipAction::execute">execute</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="Enums/AccountApplicationStatus.php.html#15"><abbr title="App\Domain\Registration\Enums\AccountApplicationStatus::label">label</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#16"><abbr title="App\Domain\Registration\Enums\RegistrationDocumentStatus::label">label</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#45"><abbr title="App\Domain\Registration\Enums\RegistrationDocumentStatus::validTransitions">validTransitions</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#40"><abbr title="App\Domain\Registration\Entities\RegistrationState::isCurrentlyOngoing">isCurrentlyOngoing</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#78"><abbr title="App\Domain\Registration\Entities\RegistrationState::totalDuration">totalDuration</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Livewire/RegistrationDocumentUpload.php.html#69"><abbr title="App\Domain\Registration\Livewire\RegistrationDocumentUpload::render">render</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Actions/ApplyAccountAction.php.html#13"><abbr title="App\Domain\Registration\Actions\ApplyAccountAction::execute">execute</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Actions/ApproveAccountApplicationAction.php.html#18"><abbr title="App\Domain\Registration\Actions\ApproveAccountApplicationAction::execute">execute</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Actions/RejectAccountApplicationAction.php.html#15"><abbr title="App\Domain\Registration\Actions\RejectAccountApplicationAction::execute">execute</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#51"><abbr title="App\Domain\Registration\Entities\RegistrationState::hasEnded">hasEnded</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#62"><abbr title="App\Domain\Registration\Entities\RegistrationState::canBeApproved">canBeApproved</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Entities/RegistrationState.php.html#67"><abbr title="App\Domain\Registration\Entities\RegistrationState::daysRemaining">daysRemaining</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Enums/RegistrationDocumentStatus.php.html#54"><abbr title="App\Domain\Registration\Enums\RegistrationDocumentStatus::canTransitionTo">canTransitionTo</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Livewire/AccountApplicationForm.php.html#57"><abbr title="App\Domain\Registration\Livewire\AccountApplicationForm::placements">placements</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Livewire/RegistrationVerification.php.html#36"><abbr title="App\Domain\Registration\Livewire\RegistrationVerification::selectedRegistration">selectedRegistration</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Livewire/RegistrationVerification.php.html#46"><abbr title="App\Domain\Registration\Livewire\RegistrationVerification::availablePlacements">availablePlacements</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Livewire/RegistrationVerification.php.html#80"><abbr title="App\Domain\Registration\Livewire\RegistrationVerification::confirmProcess">confirmProcess</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Livewire/RegistrationWizard.php.html#34"><abbr title="App\Domain\Registration\Livewire\RegistrationWizard::placements">placements</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Livewire/RegistrationWizard.php.html#47"><abbr title="App\Domain\Registration\Livewire\RegistrationWizard::nextStep">nextStep</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Policies/AccountApplicationPolicy.php.html#20"><abbr title="App\Domain\Registration\Policies\AccountApplicationPolicy::view">view</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Policies/RegistrationDocumentPolicy.php.html#18"><abbr title="App\Domain\Registration\Policies\RegistrationDocumentPolicy::view">view</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Policies/RegistrationPolicy.php.html#20"><abbr title="App\Domain\Registration\Policies\RegistrationPolicy::view">view</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Policies/RegistrationPolicy.php.html#34"><abbr title="App\Domain\Registration\Policies\RegistrationPolicy::update">update</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 12.5.6</a> using <a href="https://www.php.net/" target="_top">PHP 8.4.20</a> and <a href="https://phpunit.de/">PHPUnit 12.5.24</a> at Fri May 22 9:27:53 WIB 2026.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../../_js/billboard.pkgd.min.js?v=12.5.6" type="text/javascript"></script>
+  <script type="application/json" id="complexity_class">[[0,2,"Actions\/ApplyAccountAction.php.html#11","App\\Domain\\Registration\\Actions\\ApplyAccountAction","6"],[0,2,"Actions\/ApproveAccountApplicationAction.php.html#16","App\\Domain\\Registration\\Actions\\ApproveAccountApplicationAction","6"],[0,4,"Actions\/RegisterInternshipAction.php.html#15","App\\Domain\\Registration\\Actions\\RegisterInternshipAction","20"],[0,2,"Actions\/RejectAccountApplicationAction.php.html#13","App\\Domain\\Registration\\Actions\\RejectAccountApplicationAction","6"],[0,5,"Actions\/VerifyRegistrationAction.php.html#13","App\\Domain\\Registration\\Actions\\VerifyRegistrationAction","30"],[0,16,"Entities\/RegistrationState.php.html#11","App\\Domain\\Registration\\Entities\\RegistrationState","272"],[0,4,"Enums\/AccountApplicationStatus.php.html#9","App\\Domain\\Registration\\Enums\\AccountApplicationStatus","20"],[0,14,"Enums\/RegistrationDocumentStatus.php.html#10","App\\Domain\\Registration\\Enums\\RegistrationDocumentStatus","210"],[0,13,"Livewire\/AccountApplicationForm.php.html#17","App\\Domain\\Registration\\Livewire\\AccountApplicationForm","182"],[0,2,"Livewire\/RegistrationCenter.php.html#13","App\\Domain\\Registration\\Livewire\\RegistrationCenter","6"],[0,10,"Livewire\/RegistrationDocumentUpload.php.html#15","App\\Domain\\Registration\\Livewire\\RegistrationDocumentUpload","110"],[0,10,"Livewire\/RegistrationVerification.php.html#16","App\\Domain\\Registration\\Livewire\\RegistrationVerification","110"],[0,8,"Livewire\/RegistrationWizard.php.html#16","App\\Domain\\Registration\\Livewire\\RegistrationWizard","72"],[0,7,"Models\/AccountApplication.php.html#19","App\\Domain\\Registration\\Models\\AccountApplication","56"],[0,13,"Models\/Registration.php.html#28","App\\Domain\\Registration\\Models\\Registration","182"],[0,5,"Models\/RegistrationDocument.php.html#17","App\\Domain\\Registration\\Models\\RegistrationDocument","30"],[0,6,"Policies\/AccountApplicationPolicy.php.html#11","App\\Domain\\Registration\\Policies\\AccountApplicationPolicy","42"],[0,6,"Policies\/RegistrationDocumentPolicy.php.html#11","App\\Domain\\Registration\\Policies\\RegistrationDocumentPolicy","42"],[0,7,"Policies\/RegistrationPolicy.php.html#11","App\\Domain\\Registration\\Policies\\RegistrationPolicy","56"]]</script>
+  <script type="application/json" id="complexity_method">[[0,2,"Actions\/ApplyAccountAction.php.html#13","App\\Domain\\Registration\\Actions\\ApplyAccountAction::execute","6"],[0,2,"Actions\/ApproveAccountApplicationAction.php.html#18","App\\Domain\\Registration\\Actions\\ApproveAccountApplicationAction::execute","6"],[0,4,"Actions\/RegisterInternshipAction.php.html#17","App\\Domain\\Registration\\Actions\\RegisterInternshipAction::execute","20"],[0,2,"Actions\/RejectAccountApplicationAction.php.html#15","App\\Domain\\Registration\\Actions\\RejectAccountApplicationAction::execute","6"],[0,5,"Actions\/VerifyRegistrationAction.php.html#15","App\\Domain\\Registration\\Actions\\VerifyRegistrationAction::execute","30"],[0,1,"Entities\/RegistrationState.php.html#13","App\\Domain\\Registration\\Entities\\RegistrationState::__construct","2"],[0,1,"Entities\/RegistrationState.php.html#20","App\\Domain\\Registration\\Entities\\RegistrationState::fromModel","2"],[0,1,"Entities\/RegistrationState.php.html#30","App\\Domain\\Registration\\Entities\\RegistrationState::isActive","2"],[0,1,"Entities\/RegistrationState.php.html#35","App\\Domain\\Registration\\Entities\\RegistrationState::isPending","2"],[0,3,"Entities\/RegistrationState.php.html#40","App\\Domain\\Registration\\Entities\\RegistrationState::isCurrentlyOngoing","12"],[0,2,"Entities\/RegistrationState.php.html#51","App\\Domain\\Registration\\Entities\\RegistrationState::hasEnded","6"],[0,2,"Entities\/RegistrationState.php.html#62","App\\Domain\\Registration\\Entities\\RegistrationState::canBeApproved","6"],[0,2,"Entities\/RegistrationState.php.html#67","App\\Domain\\Registration\\Entities\\RegistrationState::daysRemaining","6"],[0,3,"Entities\/RegistrationState.php.html#78","App\\Domain\\Registration\\Entities\\RegistrationState::totalDuration","12"],[0,4,"Enums\/AccountApplicationStatus.php.html#15","App\\Domain\\Registration\\Enums\\AccountApplicationStatus::label","20"],[0,4,"Enums\/RegistrationDocumentStatus.php.html#16","App\\Domain\\Registration\\Enums\\RegistrationDocumentStatus::label","20"],[0,1,"Enums\/RegistrationDocumentStatus.php.html#25","App\\Domain\\Registration\\Enums\\RegistrationDocumentStatus::isPending","2"],[0,1,"Enums\/RegistrationDocumentStatus.php.html#30","App\\Domain\\Registration\\Enums\\RegistrationDocumentStatus::isVerified","2"],[0,1,"Enums\/RegistrationDocumentStatus.php.html#35","App\\Domain\\Registration\\Enums\\RegistrationDocumentStatus::isRejected","2"],[0,1,"Enums\/RegistrationDocumentStatus.php.html#40","App\\Domain\\Registration\\Enums\\RegistrationDocumentStatus::isTerminal","2"],[0,4,"Enums\/RegistrationDocumentStatus.php.html#45","App\\Domain\\Registration\\Enums\\RegistrationDocumentStatus::validTransitions","20"],[0,2,"Enums\/RegistrationDocumentStatus.php.html#54","App\\Domain\\Registration\\Enums\\RegistrationDocumentStatus::canTransitionTo","6"],[0,1,"Livewire\/AccountApplicationForm.php.html#51","App\\Domain\\Registration\\Livewire\\AccountApplicationForm::internships","2"],[0,2,"Livewire\/AccountApplicationForm.php.html#57","App\\Domain\\Registration\\Livewire\\AccountApplicationForm::placements","6"],[0,1,"Livewire\/AccountApplicationForm.php.html#70","App\\Domain\\Registration\\Livewire\\AccountApplicationForm::schools","2"],[0,8,"Livewire\/AccountApplicationForm.php.html#76","App\\Domain\\Registration\\Livewire\\AccountApplicationForm::submit","72"],[0,1,"Livewire\/RegistrationCenter.php.html#15","App\\Domain\\Registration\\Livewire\\RegistrationCenter::openInternships","2"],[0,1,"Livewire\/RegistrationCenter.php.html#32","App\\Domain\\Registration\\Livewire\\RegistrationCenter::render","2"],[0,1,"Livewire\/RegistrationDocumentUpload.php.html#24","App\\Domain\\Registration\\Livewire\\RegistrationDocumentUpload::mount","2"],[0,6,"Livewire\/RegistrationDocumentUpload.php.html#32","App\\Domain\\Registration\\Livewire\\RegistrationDocumentUpload::upload","42"],[0,3,"Livewire\/RegistrationDocumentUpload.php.html#69","App\\Domain\\Registration\\Livewire\\RegistrationDocumentUpload::render","12"],[0,1,"Livewire\/RegistrationVerification.php.html#26","App\\Domain\\Registration\\Livewire\\RegistrationVerification::pendingRegistrations","2"],[0,2,"Livewire\/RegistrationVerification.php.html#36","App\\Domain\\Registration\\Livewire\\RegistrationVerification::selectedRegistration","6"],[0,2,"Livewire\/RegistrationVerification.php.html#46","App\\Domain\\Registration\\Livewire\\RegistrationVerification::availablePlacements","6"],[0,1,"Livewire\/RegistrationVerification.php.html#61","App\\Domain\\Registration\\Livewire\\RegistrationVerification::mentors","2"],[0,1,"Livewire\/RegistrationVerification.php.html#67","App\\Domain\\Registration\\Livewire\\RegistrationVerification::process","2"],[0,2,"Livewire\/RegistrationVerification.php.html#80","App\\Domain\\Registration\\Livewire\\RegistrationVerification::confirmProcess","6"],[0,1,"Livewire\/RegistrationWizard.php.html#28","App\\Domain\\Registration\\Livewire\\RegistrationWizard::internships","2"],[0,2,"Livewire\/RegistrationWizard.php.html#34","App\\Domain\\Registration\\Livewire\\RegistrationWizard::placements","6"],[0,2,"Livewire\/RegistrationWizard.php.html#47","App\\Domain\\Registration\\Livewire\\RegistrationWizard::nextStep","6"],[0,1,"Livewire\/RegistrationWizard.php.html#56","App\\Domain\\Registration\\Livewire\\RegistrationWizard::previousStep","2"],[0,1,"Livewire\/RegistrationWizard.php.html#61","App\\Domain\\Registration\\Livewire\\RegistrationWizard::submit","2"],[0,1,"Models\/AccountApplication.php.html#44","App\\Domain\\Registration\\Models\\AccountApplication::casts","2"],[0,1,"Models\/AccountApplication.php.html#53","App\\Domain\\Registration\\Models\\AccountApplication::internship","2"],[0,1,"Models\/AccountApplication.php.html#58","App\\Domain\\Registration\\Models\\AccountApplication::placement","2"],[0,1,"Models\/AccountApplication.php.html#63","App\\Domain\\Registration\\Models\\AccountApplication::school","2"],[0,1,"Models\/AccountApplication.php.html#68","App\\Domain\\Registration\\Models\\AccountApplication::department","2"],[0,1,"Models\/AccountApplication.php.html#73","App\\Domain\\Registration\\Models\\AccountApplication::processor","2"],[0,1,"Models\/AccountApplication.php.html#78","App\\Domain\\Registration\\Models\\AccountApplication::newFactory","2"],[0,1,"Models\/Registration.php.html#35","App\\Domain\\Registration\\Models\\Registration::newFactory","2"],[0,1,"Models\/Registration.php.html#45","App\\Domain\\Registration\\Models\\Registration::asRegistrationState","2"],[0,1,"Models\/Registration.php.html#50","App\\Domain\\Registration\\Models\\Registration::mentee","2"],[0,1,"Models\/Registration.php.html#55","App\\Domain\\Registration\\Models\\Registration::internship","2"],[0,1,"Models\/Registration.php.html#60","App\\Domain\\Registration\\Models\\Registration::placement","2"],[0,1,"Models\/Registration.php.html#65","App\\Domain\\Registration\\Models\\Registration::mentors","2"],[0,1,"Models\/Registration.php.html#72","App\\Domain\\Registration\\Models\\Registration::logbooks","2"],[0,1,"Models\/Registration.php.html#77","App\\Domain\\Registration\\Models\\Registration::attendances","2"],[0,1,"Models\/Registration.php.html#82","App\\Domain\\Registration\\Models\\Registration::certificates","2"],[0,1,"Models\/Registration.php.html#87","App\\Domain\\Registration\\Models\\Registration::supervisionLogs","2"],[0,1,"Models\/Registration.php.html#92","App\\Domain\\Registration\\Models\\Registration::documents","2"],[0,1,"Models\/Registration.php.html#97","App\\Domain\\Registration\\Models\\Registration::assessments","2"],[0,1,"Models\/Registration.php.html#102","App\\Domain\\Registration\\Models\\Registration::report","2"],[0,1,"Models\/RegistrationDocument.php.html#27","App\\Domain\\Registration\\Models\\RegistrationDocument::registerMediaCollections","2"],[0,1,"Models\/RegistrationDocument.php.html#32","App\\Domain\\Registration\\Models\\RegistrationDocument::registration","2"],[0,1,"Models\/RegistrationDocument.php.html#37","App\\Domain\\Registration\\Models\\RegistrationDocument::requirement","2"],[0,1,"Models\/RegistrationDocument.php.html#42","App\\Domain\\Registration\\Models\\RegistrationDocument::verifiedBy","2"],[0,1,"Models\/RegistrationDocument.php.html#47","App\\Domain\\Registration\\Models\\RegistrationDocument::newFactory","2"],[0,1,"Policies\/AccountApplicationPolicy.php.html#13","App\\Domain\\Registration\\Policies\\AccountApplicationPolicy::viewAny","2"],[0,2,"Policies\/AccountApplicationPolicy.php.html#20","App\\Domain\\Registration\\Policies\\AccountApplicationPolicy::view","6"],[0,1,"Policies\/AccountApplicationPolicy.php.html#29","App\\Domain\\Registration\\Policies\\AccountApplicationPolicy::create","2"],[0,1,"Policies\/AccountApplicationPolicy.php.html#34","App\\Domain\\Registration\\Policies\\AccountApplicationPolicy::update","2"],[0,1,"Policies\/AccountApplicationPolicy.php.html#39","App\\Domain\\Registration\\Policies\\AccountApplicationPolicy::delete","2"],[0,1,"Policies\/RegistrationDocumentPolicy.php.html#13","App\\Domain\\Registration\\Policies\\RegistrationDocumentPolicy::viewAny","2"],[0,2,"Policies\/RegistrationDocumentPolicy.php.html#18","App\\Domain\\Registration\\Policies\\RegistrationDocumentPolicy::view","6"],[0,1,"Policies\/RegistrationDocumentPolicy.php.html#27","App\\Domain\\Registration\\Policies\\RegistrationDocumentPolicy::create","2"],[0,1,"Policies\/RegistrationDocumentPolicy.php.html#32","App\\Domain\\Registration\\Policies\\RegistrationDocumentPolicy::update","2"],[0,1,"Policies\/RegistrationDocumentPolicy.php.html#37","App\\Domain\\Registration\\Policies\\RegistrationDocumentPolicy::delete","2"],[0,1,"Policies\/RegistrationPolicy.php.html#13","App\\Domain\\Registration\\Policies\\RegistrationPolicy::viewAny","2"],[0,2,"Policies\/RegistrationPolicy.php.html#20","App\\Domain\\Registration\\Policies\\RegistrationPolicy::view","6"],[0,1,"Policies\/RegistrationPolicy.php.html#29","App\\Domain\\Registration\\Policies\\RegistrationPolicy::create","2"],[0,2,"Policies\/RegistrationPolicy.php.html#34","App\\Domain\\Registration\\Policies\\RegistrationPolicy::update","6"],[0,1,"Policies\/RegistrationPolicy.php.html#43","App\\Domain\\Registration\\Policies\\RegistrationPolicy::delete","2"],[100,1,"Livewire\/AccountApplicationForm.php.html#118","App\\Domain\\Registration\\Livewire\\AccountApplicationForm::render","1"],[100,1,"Livewire\/RegistrationVerification.php.html#104","App\\Domain\\Registration\\Livewire\\RegistrationVerification::render","1"],[100,1,"Livewire\/RegistrationWizard.php.html#74","App\\Domain\\Registration\\Livewire\\RegistrationWizard::render","1"]]</script>
+  <script type="text/javascript" defer>
+  const barLabels = [
+    '0%',
+    '0-10%',
+    '10-20%',
+    '20-30%',
+    '30-40%',
+    '40-50%',
+    '50-60%',
+    '60-70%',
+    '70-80%',
+    '80-90%',
+    '90-100%',
+    '100%'
+  ];
+  const barConfig = (name, fullName, values) => ({
+    axis: {
+      x: {
+        type: "category",
+        categories: barLabels,
+      },
+      y: {
+        label: {
+          text: `#${name}`,
+          position: 'outer-top',
+        },
+      },
+    },
+    bindto: `#${name}CoverageDistribution`,
+    data: {
+      columns: [
+        [fullName].concat(values),
+      ],
+      colors: {
+        [fullName]: "rgba(69, 114, 167, 0.75)",
+      },
+      type: "bar",
+    },
+    bar: {
+      width: {
+        ratio: 0.9,
+      },
+    },
+    grid: {
+      focus: {
+        show: false,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">Coverage ${barLabels[data[0].x]}</th></tr>
+            <tr><td class="value">${data[0].value} ${name}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  bb.generate(
+    barConfig('classes', "Class Coverage", [19,0,0,0,0,0,0,0,0,0,0,0])
+  );
+  bb.generate(
+    barConfig('methods', "Method Coverage", [82,0,0,0,0,0,0,0,0,0,0,3])
+  );
+
+  const scatterConfig = (name, complexityData) => ({
+    axis: {
+      x: {
+        label: {
+          text: 'Code Coverage (in percent)',
+          position: 'outer-right',
+        },
+        tick: {
+          values: [0, 20, 40, 60, 80, 100],
+        },
+      },
+      y: {
+        label: {
+          text: 'Cyclomatic Complexity',
+          position: 'outer-top',
+        },
+        min: 0,
+        padding: {
+          bottom: 0,
+          top: 5,
+        },
+      },
+    },
+    bindto: `#${name}Complexity`,
+    data: {
+      columns: [
+        ["complexity_x"].concat(complexityData.map(d => d[0])),
+        ["complexity"].concat(complexityData.map(d => d[1])),
+      ],
+      onclick: function(data, element) {
+        window.location = complexityData[data.index][2];
+      },
+      type: "scatter",
+      xs: {
+        "complexity": "complexity_x",
+      },
+    },
+    grid: {
+      focus: {
+        show: true,
+        y: true,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        const coverage = Math.round(data[0].x);
+        const complexity = data[0].value;
+        const targetName = complexityData[data[0].index][3];
+        const crap = complexityData[data[0].index][4];
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">${targetName}</th></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Coverage</td><td class="name">${coverage}%</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Complexity</td><td class="value">${complexity}</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Crap</td><td class="value">${crap}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  const classComplexityData = JSON.parse(document.getElementById('complexity_class').textContent);
+  bb.generate(
+    scatterConfig("class", classComplexityData)
+  );
+  const methodComplexityData = JSON.parse(document.getElementById('complexity_method').textContent);
+  bb.generate(
+    scatterConfig("method", methodComplexityData),
+  );
+  </script>
+ </body>
+</html>

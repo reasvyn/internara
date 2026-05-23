@@ -1,0 +1,349 @@
+# Setup Wizard
+
+## Accessing the Wizard
+
+Run the installer to generate a signed URL with an expiring token:
+
+```bash
+php artisan setup:install
+```
+
+The command outputs a URL like:
+
+```
+https://internara.sekolah.sch.id/setup?setup_token=a1b2c3d4e5f6...
+```
+
+Open this URL in your browser. The `ProtectSetupRouteMiddleware` validates
+the token and authorizes access. The token expires in 60 minutes.
+
+> If the token expires, run `php artisan setup:reset` to generate a new
+> one (only works before the wizard is completed).
+
+The wizard has **7 steps**, displayed as a progress bar at the top. Data
+is persisted to the session so you can navigate forward and backward
+without losing input. If you refresh the page or reopen the browser, your
+progress is restored from the session automatically.
+
+> Session persistence: form data (school, department, admin email, internship)
+> is saved to the session on every field change. Passwords are excluded from
+> session storage. When the wizard completes successfully, all session data
+> is cleared. If the browser tab is closed, a cleanup request is sent
+> automatically. Otherwise, session data expires after 120 minutes.
+
+---
+
+## Step 1: Welcome & Environment Audit
+
+The wizard begins by running an automatic environment audit via
+`EnvironmentAuditor`. This checks:
+
+| Category | Checks |
+|---|---|
+| **Requirements** | PHP version ≥ 8.4.0, all required extensions installed |
+| **Permissions** | Storage and bootstrap/cache directories writable |
+| **Database** | Connection works, migrations are pending |
+| **Terminal** | Required CLI commands available (composer, node, npm) |
+| **Recommendations** | Optional extensions (opcache, redis, imagick), queue config |
+
+Each check passes (green), warns (yellow), or fails (red).
+
+**The wizard cannot proceed to step 2 unless all critical checks pass.**
+If a critical check fails, resolve the issue (e.g., install a missing
+extension, fix permissions) and refresh the page to re-run the audit.
+
+---
+
+## Step 2: School Information
+
+Configure your institution's details:
+
+| Field | Required | Rules |
+|---|---|---|
+| School Name | Yes | string, max 255 |
+| Institutional Code | Yes | string, max 50 (e.g., NPSN) |
+| Email | Yes | valid email, max 255 |
+| Address | No | string |
+| Phone | No | string, max 20 |
+| Website | No | valid URL, max 255 |
+| Principal Name | No | string, max 255 |
+
+---
+
+## Step 3: Department
+
+Create the first department / study program (jurusan):
+
+| Field | Required | Rules |
+|---|---|---|
+| Department Name | Yes | string, max 255 (e.g., "Software Engineering") |
+| Description | No | string |
+
+Additional departments can be added later from the School → Departments
+admin page.
+
+---
+
+## Step 4: Super Admin Account
+
+Create the initial administrator account with full system access:
+
+| Field | Required | Rules |
+|---|---|---|
+| Name | No | defaults to "Administrator" |
+| Username | No | defaults to "administrator", max 20 chars |
+| Email | Yes | valid email, max 255 |
+| Password | Yes | min 8 chars, must contain uppercase, lowercase, and digit |
+| Confirm Password | Yes | must match password |
+
+> **Remember these credentials.** The super admin account has unrestricted
+> access to all system features. If the password is lost, the recovery key
+> (shown in Step 7) is the only way to regain access.
+
+---
+
+## Step 5: Internship Period (Optional)
+
+Configure the first internship period if you are ready:
+
+| Field | Required | Rules |
+|---|---|---|
+| Internship Name | No | string, max 255 |
+| Description | No | string |
+| Start Date | No | valid date |
+| End Date | No | valid date, must be after start date |
+
+This step is optional. If left blank, you can create internship periods
+later from the Internship management page.
+
+---
+
+## Step 6: Finalize & Confirm
+
+Review all entered data. The finalization step requires:
+
+- **Data verification checkbox** — confirm all information is correct
+- **Security awareness checkbox** — acknowledge that you understand the
+  responsibility of the super admin account
+
+Clicking "Finish" triggers `FinalizeSetupAction`, which executes the
+following operations:
+
+```
+DB Transaction                      Outside Transaction
+┌─────────────────────────────┐     ┌──────────────────────────┐
+│ FinalizeSetupAction         │     │ SaveRecoveryKeyAction    │
+│ ├── Pre-check is_installed  │     │ (try-catch, never        │
+│ │   (with lockForUpdate)    │     │  rolls back DB)          │
+│ ├── SetupSchoolAction       │     └──────────────────────────┘
+│ │   └── School::updateOrCreate                    │
+│ ├── SetupDepartmentAction   │                     ▼
+│ │   └── Department::create  │              Return plaintext
+│ ├── SetupSuperAdminAction   │
+│ │   └── User::create + role │
+│ ├── CreateInternshipAction  │
+│ │   (if data provided)      │
+│ ├── Mark is_installed=true  │
+│ │   + recovery key (hashed) │
+│ ├── Dispatch SetupFinalized │
+│ ├── Send notification       │
+│ └── Clear session data      │
+└─────────────────────────────┘
+```
+
+The DB operations are wrapped in a transaction with `lockForUpdate()`
+on the setups table to prevent race conditions under concurrent requests.
+If the pre-check detects an already-installed system, it throws
+`RuntimeException` before any writes occur.
+
+If the recovery key file save fails (disk full, permission error), the
+DB transaction is **not** affected — the error is logged via SmartLogger
+and the setup completes successfully. The recovery key is still available
+on screen and in the database.
+
+---
+
+## Step 7: Complete — Recovery Key
+
+The final screen displays your **recovery key** — a 64-character random
+string.
+
+```
+╔══════════════════════════════════════════════════════╗
+║                   RECOVERY KEY                       ║
+║                                                      ║
+║   a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3   ║
+║                                                      ║
+║   ⚠  Save this key somewhere safe and offline.      ║
+║   It will NOT be shown again after this screen.     ║
+╚══════════════════════════════════════════════════════╝
+```
+
+### Why the Recovery Key Matters
+
+- The recovery key is the **only way to restore super admin access** if
+  all admin passwords are lost.
+- It is stored hashed in the database — the application never stores the
+  plain text in the database.
+- The system **automatically saves** the recovery key to a secure file:
+
+  ```
+  storage/app/private/.recovery-key
+  ```
+
+  This file is readable only by the server owner (permission `0600`) and
+  is not accessible via the web. A server administrator can run the
+  recovery command without needing to know the key:
+
+  ```bash
+  php artisan admin:recover
+  ```
+
+  The command automatically reads the key from the file. Use the `--key`
+  option only if the file is unavailable.
+
+  Additional commands:
+
+  ```bash
+  # Show the file path
+  php artisan admin:recovery-path
+
+  # Display the key (requires confirmation)
+  php artisan admin:recovery-show
+
+  # Regenerate the file from a known key
+  php artisan admin:recover --key=<recovery-key> --regenerate-file
+  ```
+
+  Use `--reset` to change an existing admin's password instead of creating
+  a duplicate.
+
+### Next Step
+
+Click "Go to Login" to access the login page. Use the super admin
+credentials you created in Step 4 to sign in for the first time.
+
+From here, follow the [Post-Setup Guide](post-setup.md) to configure
+your school for daily operations.
+
+---
+
+## Architecture Overview
+
+```
+Route: GET /setup
+Middleware: setup.protected (ProtectSetupRouteMiddleware)
+Component: App\Domain\Setup\Livewire\SetupWizard
+Layout: resources/views/setup/layouts/setup.blade.php
+View: resources/views/setup/setup-wizard.blade.php
+       └── includes step components from setup/components/
+               ├── welcome-step.blade.php
+               ├── school-step.blade.php
+               ├── department-step.blade.php
+               ├── admin-step.blade.php
+               ├── internship-step.blade.php
+               ├── finalize-step.blade.php
+               └── complete-step.blade.php
+```
+
+### Middleware System
+
+Two middleware classes protect the setup wizard, each with a distinct responsibility:
+
+#### `RequireSetupAccessMiddleware` (Global)
+
+Registered in the global web middleware stack via `bootstrap/app.php`. Runs on **every** request.
+
+| State | Action |
+|---|---|
+| System installed | `$next($request)` — pass through, no redirect |
+| Not installed, accessing `/setup` | `$next($request)` — let `ProtectSetupRouteMiddleware` validate |
+| Not installed, Livewire subrequest | `$next($request)` — bypass (prevents redirect loop on AJAX) |
+| Not installed, any other route | `redirect()->route('setup')` — force visitor to setup wizard |
+
+**Purpose:** Prevent access to the application when it has not been initialized. Without this
+middleware, visitors would see error pages or unconfigured homepages before setup.
+
+#### `ProtectSetupRouteMiddleware` (Route-specific, alias `setup.protected`)
+
+Applied only to the `/setup` route group. Provides three layers of protection:
+
+| Layer | Mechanism | Configuration |
+|---|---|---|
+| Rate limiting | 20 attempts per 60 seconds per IP | `config/setup.php:security` |
+| Token validation | Query string `?setup_token=` or POST input | `ValidateSetupTokenAction` decrypts and compares |
+| Session authorization | `Session::get('setup.authorized')` | Set after first successful validation |
+
+When the system is **already installed**:
+
+```
+isInstalled = true
+├── Within finalization window (5 min) AND session authorized?
+│   ├── Yes → allow (grace period for complete screen)
+│   └── No  → abort 404 (self-destruct)
+```
+
+When the system is **not installed**:
+
+```
+isInstalled = false
+├── Session authorized?
+│   ├── Yes → allow (already validated in this session)
+│   └── No  → check for token
+│       ├── Token in query string? → validate → if valid: authorize session
+│       ├── Token in POST body?    → validate → if valid: authorize + redirect GET
+│       ├── No token?              → render code entry form
+│       └── Token invalid          → 403 / Livewire JSON error
+```
+
+The code entry form (`views/setup/enter-code.blade.php`) allows administrators to enter
+the setup token manually without exposing it in a URL — mitigating server log and browser
+history leakage.
+
+#### `POST /setup/cleanup` (No middleware)
+
+A simple route that clears setup session data. Called via `navigator.sendBeacon()` when
+the browser tab is closed (`beforeunload` event). Prevents PII (school email, phone,
+address) from persisting in session storage longer than necessary.
+
+### Key Classes
+
+| Class | Location | Purpose |
+|---|---|---|
+| `SetupWizard` | `app/Domain/Setup/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
+| `SetupState` | `app/Domain/Setup/Entities/SetupState.php` | Read-only value object for setup status |
+| `Setup` | `app/Domain/Setup/Models/Setup.php` | Eloquent model (single-row, singleton) |
+| `FinalizeSetupAction` | `app/Domain/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
+| `SetupSchoolAction` | `app/Domain/Setup/Actions/SetupSchoolAction.php` | Creates/updates School record |
+| `SetupDepartmentAction` | `app/Domain/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
+| `SetupSuperAdminAction` | `app/Domain/Setup/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
+| `EnvironmentAuditor` | `app/Domain/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
+| `RequireSetupAccessMiddleware` | `app/Domain/Setup/Http/Middleware/RequireSetupAccessMiddleware.php` | Global: redirects to /setup if not installed |
+| `ProtectSetupRouteMiddleware` | `app/Domain/Setup/Http/Middleware/ProtectSetupRouteMiddleware.php` | Route: validates token, rate-limits, self-destructs |
+
+### End-to-End Flow
+
+```
+CLI: setup:install                 Browser: setup?token=...
+┌──────────────────────┐           ┌──────────────────────────────┐
+│ 1. Environment audit │           │ Step 1: Welcome (audit pass) │
+│ 2. Provision system  │  ───→     │ Step 2: School details       │
+│ 3. Generate token    │  signed   │ Step 3: First department     │
+│ 4. Print URL         │   URL     │ Step 4: Super admin account  │
+└──────────────────────┘           │ Step 5: Internship (opt)     │
+                                   │ Step 6: Finalize transaction │
+                                   │ Step 7: Recovery key         │
+                                   └──────────────┬───────────────┘
+                                                  │
+                                                  ▼
+                                        System installed
+                                        is_installed = true
+                                        Recovery key saved (hashed)
+```
+
+The `SetupState` entity (`SetupState.php`) tracks:
+- `isInstalled()` — whether setup has been completed
+- `isStepCompleted(step)` — whether a specific step was finished
+- `isWithinFinalizationWindow(minutes)` — time limit for finalization
+- `hasRecoveryKey()` — whether a recovery key exists
+- `validateToken()` — validates setup access tokens

@@ -85,4 +85,8 @@ describe('Data DTO', function () {
     it('throws for unsupported source type', function () {
         TestData::from('invalid');
     })->throws(InvalidArgumentException::class);
+
+    it('throws when required parameter is missing in fromArray', function () {
+        TestData::fromArray(['count' => 5]);
+    })->throws(InvalidArgumentException::class, 'Missing required constructor parameter "name"');
 });

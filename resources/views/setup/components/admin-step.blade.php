@@ -7,11 +7,11 @@
     <div class="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg border border-base-content/10 bg-base-200/30 px-5 py-4 mb-8">
         <div class="flex items-center gap-2 text-sm">
             <span class="text-base-content/50">{{ __('setup.wizard.full_name') }}:</span>
-            <span class="font-semibold">{{ $adminData['name'] }}</span>
+            <span class="font-semibold">{{ $adminForm->name }}</span>
         </div>
         <div class="flex items-center gap-2 text-sm">
             <span class="text-base-content/50">{{ __('setup.wizard.username') }}:</span>
-            <code class="font-mono font-semibold text-primary bg-primary/5 px-2 py-0.5 rounded">{{ $adminData['username'] }}</code>
+            <code class="font-mono font-semibold text-primary bg-primary/5 px-2 py-0.5 rounded">{{ $adminForm->username }}</code>
         </div>
     </div>
 
@@ -19,20 +19,20 @@
         <x-mary-input
             label="{{ __('setup.wizard.email_address') }}"
             type="email"
-            wire:model.live="adminData.email"
+            wire:model.live="adminForm.email"
         />
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
             <x-mary-input
                 label="{{ __('setup.wizard.password') }}"
                 type="password"
-                wire:model.live="adminData.password"
+                wire:model.live="adminForm.password"
             />
 
             <x-mary-input
                 label="{{ __('setup.wizard.confirm_password') }}"
                 type="password"
-                wire:model.live="adminData.password_confirmation"
+                wire:model.live="adminForm.password_confirmation"
             />
         </div>
     </div>

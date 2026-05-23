@@ -1,0 +1,80 @@
+# Auth — API Reference
+
+Total: 32 files
+
+## Actions
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Auth/Actions/ConfirmPasswordAction.php` | `ConfirmPasswordAction` | `BaseAction` | Validates user's current password |
+| `Auth/Actions/DetectUserAccountCloneAction.php` | `DetectUserAccountCloneAction` | `BaseAction` | Detects potential duplicate/cloned user accounts |
+| `Auth/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction` | `BaseAction` | Generates a recovery code/slip for account access |
+| `Auth/Actions/LockUserAccountAction.php` | `LockUserAccountAction` | `BaseAction` | Locks a user account with reason |
+| `Auth/Actions/LoginAction.php` | `LoginAction` | `BaseAction` | Authenticates user with credentials |
+| `Auth/Actions/RedeemRecoverySlipAction.php` | `RedeemRecoverySlipAction` | `BaseAction` | Redeems a recovery slip to reset password |
+| `Auth/Actions/ResetPasswordAction.php` | `ResetPasswordAction` | `BaseAction` | Resets password using token |
+| `Auth/Actions/ResetUserPasswordAction.php` | `ResetUserPasswordAction` | `BaseAction` | Admin-initiated password reset |
+| `Auth/Actions/SendPasswordResetLinkAction.php` | `SendPasswordResetLinkAction` | `BaseAction` | Sends password reset link email |
+| `Auth/Actions/UnlockUserAccountAction.php` | `UnlockUserAccountAction` | `BaseAction` | Unlocks a previously locked user account |
+| `Auth/Actions/UpdateRolePermissionsAction.php` | `UpdateRolePermissionsAction` | `BaseAction` | Updates Spatie permission assignments for a role |
+| `Auth/Actions/UpdateUserPasswordAction.php` | `UpdateUserPasswordAction` | `BaseAction` | Updates user's password with current password validation |
+
+## Entities
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Auth/Entities/Apprentice.php` | `Apprentice` | `BaseEntity` | Read-only DTO for user/student profile info |
+| `Auth/Entities/RecoveryCodeState.php` | `RecoveryCodeState` | `BaseEntity` | Read-only DTO for recovery code state |
+
+## Enums
+
+| File | Class | Implements | Description |
+|---|---|---|---|
+| `Auth/Enums/AccountStatus.php` | `AccountStatus` | `ColorableEnum`, `StatusEnum` | User account status states |
+| `Auth/Enums/Role.php` | `Role` | `LabelEnum` | System roles (super_admin, admin, teacher, student, supervisor) |
+
+## Middleware
+
+| File | Class | Description |
+|---|---|---|
+| `Auth/Http/Middleware/CheckRoleMiddleware.php` | `CheckRoleMiddleware` | Middleware that checks user has required role |
+
+## Form Requests
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Auth/Http/Requests/RoleRequest.php` | `RoleRequest` | `FormRequest` | Validation for role/permission operations |
+
+## Livewire Components
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Auth/Livewire/AccessManager.php` | `AccessManager` | `Component` | Manages role-permission assignments |
+| `Auth/Livewire/AccountLifecycleManager.php` | `AccountLifecycleManager` | `Component` | Manages account lock/unlock and clone detection |
+| `Auth/Livewire/AccountRecovery.php` | `AccountRecovery` | `Component` | Account recovery via recovery slip |
+| `Auth/Livewire/ConfirmPassword.php` | `ConfirmPassword` | `Component` | Password confirmation form |
+| `Auth/Livewire/ForgotPassword.php` | `ForgotPassword` | `Component` | Forgot password form with rate limiting |
+| `Auth/Livewire/Login.php` | `Login` | `Component` | Login form with rate limiting |
+| `Auth/Livewire/RecoveryCode.php` | `RecoveryCode` | `Component` | Generates and displays recovery code PDF |
+| `Auth/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `Component` | Manages recovery slip generation |
+| `Auth/Livewire/ResetPassword.php` | `ResetPassword` | `Component` | Password reset form |
+
+## Models
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Auth/Models/AccountRecoveryCode.php` | `AccountRecoveryCode` | `BaseModel` | Eloquent model for recovery codes |
+
+## Notifications
+
+| File | Class | Extends/Implements | Description |
+|---|---|---|---|
+| `Auth/Notifications/AccountStatusNotification.php` | `AccountStatusNotification` | `Notification`, `ShouldQueue` | Queued notification for account status changes |
+| `Auth/Notifications/SuperAdminRecoveredNotification.php` | `SuperAdminRecoveredNotification` | `Notification`, `ShouldQueue` | Queued notification for super admin recovery |
+| `Auth/Notifications/WelcomeNotification.php` | `WelcomeNotification` | `Notification`, `ShouldQueue` | Queued welcome notification for new users |
+
+## Policies
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Auth/Policies/UserPolicy.php` | `UserPolicy` | `BasePolicy` | Authorization for user management operations |

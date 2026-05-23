@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Setup\Actions;
 
+use App\Domain\Admin\Actions\SaveRecoveryKeyAction;
 use App\Domain\Admin\Actions\SendNotificationAction;
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Internship\Actions\CreateInternshipAction;
 use App\Domain\Setup\Events\SetupFinalized;
 use App\Domain\Setup\Models\Setup;
@@ -13,6 +15,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 final class FinalizeSetupAction extends BaseAction
 {
@@ -22,6 +25,7 @@ final class FinalizeSetupAction extends BaseAction
         protected readonly SetupSuperAdminAction $setupAdmin,
         protected readonly CreateInternshipAction $createInternship,
         protected readonly SendNotificationAction $sendNotification,
+        protected readonly SaveRecoveryKeyAction $saveRecoveryKey,
     ) {}
 
     public function execute(
@@ -31,7 +35,19 @@ final class FinalizeSetupAction extends BaseAction
         ?array $internshipData = null,
         array $stepsToComplete = ['school', 'department', 'account'],
     ): string {
-        return $this->transaction(function () use ($schoolData, $departmentData, $adminData, $internshipData, $stepsToComplete) {
+        $existing = Setup::latest('created_at')->first();
+
+        if ($existing && $existing->is_installed) {
+            throw new RuntimeException('System is already installed.');
+        }
+
+        $plaintext = $this->transaction(function () use ($schoolData, $departmentData, $adminData, $internshipData, $stepsToComplete) {
+            $setup = Setup::lockForUpdate()->latest('created_at')->first() ?? new Setup;
+
+            if ($setup->exists && $setup->is_installed) {
+                throw new RuntimeException('System is already installed.');
+            }
+
             $school = $this->setupSchool->execute($schoolData);
 
             $department = $this->setupDept->execute($school->id, $departmentData);
@@ -41,8 +57,6 @@ final class FinalizeSetupAction extends BaseAction
             if ($internshipData !== null) {
                 $this->createInternship->execute($internshipData);
             }
-
-            $setup = Setup::firstOrCreate([]);
             $completedSteps = $setup->completed_steps ?? [];
 
             foreach ($stepsToComplete as $step) {
@@ -80,5 +94,17 @@ final class FinalizeSetupAction extends BaseAction
 
             return $plaintext;
         });
+
+        try {
+            $this->saveRecoveryKey->execute($plaintext);
+        } catch (\Throwable) {
+            SmartLogger::warning('Failed to save recovery key file')
+                ->module('setup')
+                ->event('recovery_key.file_save_failed')
+                ->systemOnly()
+                ->save();
+        }
+
+        return $plaintext;
     }
 }

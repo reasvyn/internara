@@ -20,4 +20,18 @@ describe('Integrity', function () {
 
         expect(true)->toBeTrue();
     });
+
+    it('has no public methods other than verify', function () {
+        $ref = new ReflectionClass(Integrity::class);
+        $methods = $ref->getMethods(ReflectionMethod::IS_PUBLIC);
+        $methodNames = array_map(fn ($m) => $m->getName(), $methods);
+
+        expect($methodNames)->toBe(['verify']);
+    });
+
+    it('verify early-returns in test environment', function () {
+        $result = Integrity::verify();
+
+        expect($result)->toBeNull();
+    });
 });

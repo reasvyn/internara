@@ -13,12 +13,12 @@
         <dl class="space-y-3 text-sm">
             <div class="flex items-center justify-between">
                 <dt class="text-base-content/50">{{ __('setup.wizard.username') }}</dt>
-                <dd class="font-mono font-semibold text-primary">{{ $adminData['username'] }}</dd>
+                <dd class="font-mono font-semibold text-primary">{{ $adminForm->username }}</dd>
             </div>
             <div class="border-t border-base-content/10"></div>
             <div class="flex items-center justify-between">
                 <dt class="text-base-content/50">{{ __('setup.wizard.email') }}</dt>
-                <dd class="font-medium">{{ $adminData['email'] }}</dd>
+                <dd class="font-medium">{{ $adminForm->email }}</dd>
             </div>
         </dl>
 
@@ -44,11 +44,11 @@
                 type="button"
                 class="btn btn-xs btn-ghost text-error/60 hover:text-error shrink-0"
                 x-on:click="
-                    navigator.clipboard.writeText('{{ $recoveryKey }}');
+                    navigator.clipboard.writeText(@js($recoveryKey));
                     copied = true;
                     setTimeout(() => copied = false, 2000);
                 "
-                x-bind:title="copied ? '{{ __('setup.wizard.copied') }}' : '{{ __('setup.wizard.copy') }}'"
+                x-bind:title="copied ? @js(__('setup.wizard.copied')) : @js(__('setup.wizard.copy'))"
             >
                 <x-mary-icon name="o-clipboard-document" x-show="!copied" class="size-4" />
                 <x-mary-icon name="o-check" x-show="copied" class="size-4 text-success" />

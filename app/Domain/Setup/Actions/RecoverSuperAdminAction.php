@@ -50,12 +50,6 @@ class RecoverSuperAdminAction extends BaseAction
                 'email' => $email,
             ]);
 
-            SmartLogger::info('super_admin_recovery_'.$user->id)
-                ->module('setup')
-                ->event($isReset ? 'super_admin.recovered.reset' : 'super_admin.recovered.create')
-                ->systemOnly()
-                ->save();
-
             $this->notifyExistingSuperAdmins($user, $isReset);
 
             return $user;
@@ -77,12 +71,19 @@ class RecoverSuperAdminAction extends BaseAction
                 recoveredEmail: $recoveredUser->email,
                 mode: $isReset ? 'reset' : 'create',
             ));
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            SmartLogger::error('Failed to notify existing super admins about recovery')
+                ->withPayload([
+                    'recovered_user_id' => $recoveredUser->id,
+                    'error' => $e->getMessage(),
+                ])
+                ->systemOnly()
+                ->save();
         }
     }
 
     private function generateUsername(): string
     {
-        return 'admin_'.Str::random(8);
+        return 'admin_'.Str::random(16);
     }
 }

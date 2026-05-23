@@ -47,4 +47,19 @@ describe('BaseAction', function () {
 
         expect($traits)->toContain(HandlesActionErrors::class);
     });
+
+    it('provides log method', function () {
+        $ref = new ReflectionClass(BaseAction::class);
+
+        expect($ref->hasMethod('log'))->toBeTrue();
+    });
+
+    it('provides moduleName method that returns domain', function () {
+        $action = new TestAction;
+        $ref = new ReflectionMethod($action, 'moduleName');
+        $ref->setAccessible(true);
+        $module = $ref->invoke($action);
+
+        expect($module)->toBe('Unknown');
+    });
 });

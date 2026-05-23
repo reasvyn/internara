@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Console\Commands;
 
+use App\Domain\Admin\Actions\ReadRecoveryKeyAction;
+use App\Domain\Admin\Actions\SaveRecoveryKeyAction;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Settings\Support\AppInfo;
 use App\Domain\Setup\Actions\RecoverSuperAdminAction;
@@ -22,10 +24,12 @@ use function Laravel\Prompts\warning;
 
 class RecoverAdminCommand extends Command
 {
-    protected $signature = 'admin:recover {email?} {--reset} {--key=}';
+    protected $signature = 'admin:recover {email?} {--reset} {--key=} {--regenerate-file : Re-write the recovery key file from the provided --key}';
 
     public function __construct(
         private RecoverSuperAdminAction $action,
+        private ReadRecoveryKeyAction $readRecoveryKey,
+        private SaveRecoveryKeyAction $saveRecoveryKey,
     ) {
         parent::__construct();
         $this->description = __('admin.recover.description');
@@ -34,6 +38,10 @@ class RecoverAdminCommand extends Command
     public function handle(): int
     {
         $this->displayHeader();
+
+        if ($this->option('key') === null && $this->readRecoveryKey->execute() !== null) {
+            $this->components->info(__('admin.recover.key_detected'));
+        }
 
         if (! $this->verifyRecoveryKey()) {
             return self::FAILURE;
@@ -162,6 +170,10 @@ class RecoverAdminCommand extends Command
         $key = $this->option('key');
 
         if ($key === null || $key === '') {
+            $key = $this->readRecoveryKey->execute();
+        }
+
+        if ($key === null || $key === '') {
             error(__('admin.recover.key_required'));
 
             return false;
@@ -181,6 +193,11 @@ class RecoverAdminCommand extends Command
             error(__('admin.recover.key_invalid'));
 
             return false;
+        }
+
+        if ($this->option('regenerate-file')) {
+            $path = $this->saveRecoveryKey->execute($key);
+            $this->info(__('admin.recover.file_regenerated', ['path' => $path]));
         }
 
         return true;

@@ -9,46 +9,46 @@
             <x-mary-input
                 label="{{ __('setup.wizard.school_name') }}"
                 placeholder="{{ __('setup.wizard.school_name_placeholder') }}"
-                wire:model.live="schoolData.name"
+                wire:model.live="schoolForm.name"
             />
         </div>
 
         <x-mary-input
             label="{{ __('setup.wizard.school_code') }}"
             placeholder="{{ __('setup.wizard.school_code_placeholder') }}"
-            wire:model.live="schoolData.institutional_code"
+            wire:model.live="schoolForm.institutional_code"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_email') }}"
             type="email"
             placeholder="{{ __('setup.wizard.school_email_placeholder') }}"
-            wire:model.live="schoolData.email"
+            wire:model.live="schoolForm.email"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_phone') }}"
             placeholder="{{ __('setup.wizard.school_phone_placeholder') }}"
-            wire:model.live="schoolData.phone"
+            wire:model.live="schoolForm.phone"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_website') }}"
             type="url"
             placeholder="{{ __('setup.wizard.school_website_placeholder') }}"
-            wire:model.live="schoolData.website"
+            wire:model.live="schoolForm.website"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_address') }}"
             placeholder="{{ __('setup.wizard.school_address') }}"
-            wire:model.live="schoolData.address"
+            wire:model.live="schoolForm.address"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.principal_name') }}"
             placeholder="{{ __('setup.wizard.principal_name_placeholder') }}"
-            wire:model.live="schoolData.principal_name"
+            wire:model.live="schoolForm.principal_name"
         />
     </div>
 

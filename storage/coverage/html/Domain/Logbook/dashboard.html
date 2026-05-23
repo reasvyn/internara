@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /home/reasnovynt/Projects/Dev/reasvyn/internara/app/Domain/Logbook</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../../_css/bootstrap.min.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../_css/billboard.min.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../_css/style.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../../index.html">/home/reasnovynt/Projects/Dev/reasvyn/internara/app</a></li>
+         <li class="breadcrumb-item"><a href="../index.html">Domain</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Logbook</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classesCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Actions/CreateLogbookAction.php.html#13">App\Domain\Logbook\Actions\CreateLogbookAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/DeleteLogbookAction.php.html#10">App\Domain\Logbook\Actions\DeleteLogbookAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/SubmitLogbookAction.php.html#13">App\Domain\Logbook\Actions\SubmitLogbookAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/UpdateLogbookAction.php.html#10">App\Domain\Logbook\Actions\UpdateLogbookAction</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/LogbookState.php.html#11">App\Domain\Logbook\Entities\LogbookState</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/LogbookStatus.php.html#10">App\Domain\Logbook\Enums\LogbookStatus</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Http/Requests/CreateLogbookRequest.php.html#11">App\Domain\Logbook\Http\Requests\CreateLogbookEntryRequest</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookEntry.php.html#15">App\Domain\Logbook\Livewire\LogbookEntry</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#17">App\Domain\Logbook\Livewire\LogbookManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Logbook.php.html#16">App\Domain\Logbook\Models\Logbook</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/LogbookPolicy.php.html#14">App\Domain\Logbook\Policies\LogbookPolicy</a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Livewire/LogbookManager.php.html#17">App\Domain\Logbook\Livewire\LogbookManager</a></td><td class="text-right">0.0%</td><td class="text-right">20</td><td class="text-right">420</td></tr>
+       <tr><td><a href="Policies/LogbookPolicy.php.html#14">App\Domain\Logbook\Policies\LogbookPolicy</a></td><td class="text-right">0.0%</td><td class="text-right">16</td><td class="text-right">272</td></tr>
+       <tr><td><a href="Enums/LogbookStatus.php.html#10">App\Domain\Logbook\Enums\LogbookStatus</a></td><td class="text-right">0.0%</td><td class="text-right">15</td><td class="text-right">240</td></tr>
+       <tr><td><a href="Livewire/LogbookEntry.php.html#15">App\Domain\Logbook\Livewire\LogbookEntry</a></td><td class="text-right">0.0%</td><td class="text-right">8</td><td class="text-right">72</td></tr>
+       <tr><td><a href="Actions/CreateLogbookAction.php.html#13">App\Domain\Logbook\Actions\CreateLogbookAction</a></td><td class="text-right">0.0%</td><td class="text-right">7</td><td class="text-right">56</td></tr>
+       <tr><td><a href="Actions/UpdateLogbookAction.php.html#10">App\Domain\Logbook\Actions\UpdateLogbookAction</a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="Actions/SubmitLogbookAction.php.html#13">App\Domain\Logbook\Actions\SubmitLogbookAction</a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2 style="margin-top: 3rem;">Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodsCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Actions/CreateLogbookAction.php.html#15"><abbr title="App\Domain\Logbook\Actions\CreateLogbookAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/DeleteLogbookAction.php.html#12"><abbr title="App\Domain\Logbook\Actions\DeleteLogbookAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/SubmitLogbookAction.php.html#15"><abbr title="App\Domain\Logbook\Actions\SubmitLogbookAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Actions/UpdateLogbookAction.php.html#12"><abbr title="App\Domain\Logbook\Actions\UpdateLogbookAction::execute">execute</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/LogbookState.php.html#13"><abbr title="App\Domain\Logbook\Entities\LogbookState::__construct">__construct</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/LogbookState.php.html#17"><abbr title="App\Domain\Logbook\Entities\LogbookState::fromModel">fromModel</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/LogbookState.php.html#24"><abbr title="App\Domain\Logbook\Entities\LogbookState::isVerified">isVerified</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Entities/LogbookState.php.html#29"><abbr title="App\Domain\Logbook\Entities\LogbookState::canBeEdited">canBeEdited</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/LogbookStatus.php.html#17"><abbr title="App\Domain\Logbook\Enums\LogbookStatus::isFinalized">isFinalized</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/LogbookStatus.php.html#22"><abbr title="App\Domain\Logbook\Enums\LogbookStatus::requiresAction">requiresAction</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/LogbookStatus.php.html#27"><abbr title="App\Domain\Logbook\Enums\LogbookStatus::label">label</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/LogbookStatus.php.html#37"><abbr title="App\Domain\Logbook\Enums\LogbookStatus::isTerminal">isTerminal</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/LogbookStatus.php.html#42"><abbr title="App\Domain\Logbook\Enums\LogbookStatus::validTransitions">validTransitions</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Enums/LogbookStatus.php.html#52"><abbr title="App\Domain\Logbook\Enums\LogbookStatus::canTransitionTo">canTransitionTo</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Http/Requests/CreateLogbookRequest.php.html#13"><abbr title="App\Domain\Logbook\Http\Requests\CreateLogbookEntryRequest::authorize">authorize</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Http/Requests/CreateLogbookRequest.php.html#19"><abbr title="App\Domain\Logbook\Http\Requests\CreateLogbookEntryRequest::rules">rules</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Http/Requests/CreateLogbookRequest.php.html#30"><abbr title="App\Domain\Logbook\Http\Requests\CreateLogbookEntryRequest::messages">messages</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookEntry.php.html#29"><abbr title="App\Domain\Logbook\Livewire\LogbookEntry::boot">boot</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookEntry.php.html#36"><abbr title="App\Domain\Logbook\Livewire\LogbookEntry::mount">mount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookEntry.php.html#41"><abbr title="App\Domain\Logbook\Livewire\LogbookEntry::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookEntry.php.html#48"><abbr title="App\Domain\Logbook\Livewire\LogbookEntry::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookEntry.php.html#57"><abbr title="App\Domain\Logbook\Livewire\LogbookEntry::save">save</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookEntry.php.html#79"><abbr title="App\Domain\Logbook\Livewire\LogbookEntry::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#31"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::boot">boot</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#42"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::headers">headers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#54"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::query">query</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#70"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::applySearch">applySearch</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#78"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::applyFilters">applyFilters</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#85"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::students">students</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#105"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#120"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#135"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::save">save</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#157"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#165"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#177"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::verify">verify</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#185"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Logbook.php.html#21"><abbr title="App\Domain\Logbook\Models\Logbook::newFactory">newFactory</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Logbook.php.html#33"><abbr title="App\Domain\Logbook\Models\Logbook::user">user</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Logbook.php.html#38"><abbr title="App\Domain\Logbook\Models\Logbook::registration">registration</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Logbook.php.html#43"><abbr title="App\Domain\Logbook\Models\Logbook::verifier">verifier</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Models/Logbook.php.html#48"><abbr title="App\Domain\Logbook\Models\Logbook::asLogbookState">asLogbookState</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/LogbookPolicy.php.html#16"><abbr title="App\Domain\Logbook\Policies\LogbookPolicy::viewAny">viewAny</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/LogbookPolicy.php.html#27"><abbr title="App\Domain\Logbook\Policies\LogbookPolicy::view">view</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/LogbookPolicy.php.html#52"><abbr title="App\Domain\Logbook\Policies\LogbookPolicy::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/LogbookPolicy.php.html#57"><abbr title="App\Domain\Logbook\Policies\LogbookPolicy::update">update</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Policies/LogbookPolicy.php.html#66"><abbr title="App\Domain\Logbook\Policies\LogbookPolicy::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="Policies/LogbookPolicy.php.html#27"><abbr title="App\Domain\Logbook\Policies\LogbookPolicy::view">view</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">8</td><td class="text-right">72</td></tr>
+       <tr><td><a href="Actions/CreateLogbookAction.php.html#15"><abbr title="App\Domain\Logbook\Actions\CreateLogbookAction::execute">execute</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">7</td><td class="text-right">56</td></tr>
+       <tr><td><a href="Actions/UpdateLogbookAction.php.html#12"><abbr title="App\Domain\Logbook\Actions\UpdateLogbookAction::execute">execute</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">6</td><td class="text-right">42</td></tr>
+       <tr><td><a href="Enums/LogbookStatus.php.html#27"><abbr title="App\Domain\Logbook\Enums\LogbookStatus::label">label</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+       <tr><td><a href="Enums/LogbookStatus.php.html#42"><abbr title="App\Domain\Logbook\Enums\LogbookStatus::validTransitions">validTransitions</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+       <tr><td><a href="Actions/SubmitLogbookAction.php.html#15"><abbr title="App\Domain\Logbook\Actions\SubmitLogbookAction::execute">execute</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#54"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::query">query</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#85"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::students">students</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Policies/LogbookPolicy.php.html#57"><abbr title="App\Domain\Logbook\Policies\LogbookPolicy::update">update</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Policies/LogbookPolicy.php.html#66"><abbr title="App\Domain\Logbook\Policies\LogbookPolicy::delete">delete</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="Enums/LogbookStatus.php.html#52"><abbr title="App\Domain\Logbook\Enums\LogbookStatus::canTransitionTo">canTransitionTo</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Livewire/LogbookEntry.php.html#29"><abbr title="App\Domain\Logbook\Livewire\LogbookEntry::boot">boot</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Livewire/LogbookEntry.php.html#57"><abbr title="App\Domain\Logbook\Livewire\LogbookEntry::save">save</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#31"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::boot">boot</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#135"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::save">save</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="Livewire/LogbookManager.php.html#165"><abbr title="App\Domain\Logbook\Livewire\LogbookManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 12.5.6</a> using <a href="https://www.php.net/" target="_top">PHP 8.4.20</a> and <a href="https://phpunit.de/">PHPUnit 12.5.24</a> at Fri May 22 9:27:53 WIB 2026.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../../_js/billboard.pkgd.min.js?v=12.5.6" type="text/javascript"></script>
+  <script type="application/json" id="complexity_class">[[0,7,"Actions\/CreateLogbookAction.php.html#13","App\\Domain\\Logbook\\Actions\\CreateLogbookAction","56"],[0,1,"Actions\/DeleteLogbookAction.php.html#10","App\\Domain\\Logbook\\Actions\\DeleteLogbookAction","2"],[0,3,"Actions\/SubmitLogbookAction.php.html#13","App\\Domain\\Logbook\\Actions\\SubmitLogbookAction","12"],[0,6,"Actions\/UpdateLogbookAction.php.html#10","App\\Domain\\Logbook\\Actions\\UpdateLogbookAction","42"],[0,4,"Entities\/LogbookState.php.html#11","App\\Domain\\Logbook\\Entities\\LogbookState","20"],[0,15,"Enums\/LogbookStatus.php.html#10","App\\Domain\\Logbook\\Enums\\LogbookStatus","240"],[0,3,"Http\/Requests\/CreateLogbookRequest.php.html#11","App\\Domain\\Logbook\\Http\\Requests\\CreateLogbookEntryRequest","12"],[0,8,"Livewire\/LogbookEntry.php.html#15","App\\Domain\\Logbook\\Livewire\\LogbookEntry","72"],[0,20,"Livewire\/LogbookManager.php.html#17","App\\Domain\\Logbook\\Livewire\\LogbookManager","420"],[0,5,"Models\/Logbook.php.html#16","App\\Domain\\Logbook\\Models\\Logbook","30"],[0,16,"Policies\/LogbookPolicy.php.html#14","App\\Domain\\Logbook\\Policies\\LogbookPolicy","272"]]</script>
+  <script type="application/json" id="complexity_method">[[0,7,"Actions\/CreateLogbookAction.php.html#15","App\\Domain\\Logbook\\Actions\\CreateLogbookAction::execute","56"],[0,1,"Actions\/DeleteLogbookAction.php.html#12","App\\Domain\\Logbook\\Actions\\DeleteLogbookAction::execute","2"],[0,3,"Actions\/SubmitLogbookAction.php.html#15","App\\Domain\\Logbook\\Actions\\SubmitLogbookAction::execute","12"],[0,6,"Actions\/UpdateLogbookAction.php.html#12","App\\Domain\\Logbook\\Actions\\UpdateLogbookAction::execute","42"],[0,1,"Entities\/LogbookState.php.html#13","App\\Domain\\Logbook\\Entities\\LogbookState::__construct","2"],[0,1,"Entities\/LogbookState.php.html#17","App\\Domain\\Logbook\\Entities\\LogbookState::fromModel","2"],[0,1,"Entities\/LogbookState.php.html#24","App\\Domain\\Logbook\\Entities\\LogbookState::isVerified","2"],[0,1,"Entities\/LogbookState.php.html#29","App\\Domain\\Logbook\\Entities\\LogbookState::canBeEdited","2"],[0,1,"Enums\/LogbookStatus.php.html#17","App\\Domain\\Logbook\\Enums\\LogbookStatus::isFinalized","2"],[0,1,"Enums\/LogbookStatus.php.html#22","App\\Domain\\Logbook\\Enums\\LogbookStatus::requiresAction","2"],[0,5,"Enums\/LogbookStatus.php.html#27","App\\Domain\\Logbook\\Enums\\LogbookStatus::label","30"],[0,1,"Enums\/LogbookStatus.php.html#37","App\\Domain\\Logbook\\Enums\\LogbookStatus::isTerminal","2"],[0,5,"Enums\/LogbookStatus.php.html#42","App\\Domain\\Logbook\\Enums\\LogbookStatus::validTransitions","30"],[0,2,"Enums\/LogbookStatus.php.html#52","App\\Domain\\Logbook\\Enums\\LogbookStatus::canTransitionTo","6"],[0,1,"Http\/Requests\/CreateLogbookRequest.php.html#13","App\\Domain\\Logbook\\Http\\Requests\\CreateLogbookEntryRequest::authorize","2"],[0,1,"Http\/Requests\/CreateLogbookRequest.php.html#19","App\\Domain\\Logbook\\Http\\Requests\\CreateLogbookEntryRequest::rules","2"],[0,1,"Http\/Requests\/CreateLogbookRequest.php.html#30","App\\Domain\\Logbook\\Http\\Requests\\CreateLogbookEntryRequest::messages","2"],[0,2,"Livewire\/LogbookEntry.php.html#29","App\\Domain\\Logbook\\Livewire\\LogbookEntry::boot","6"],[0,1,"Livewire\/LogbookEntry.php.html#36","App\\Domain\\Logbook\\Livewire\\LogbookEntry::mount","2"],[0,1,"Livewire\/LogbookEntry.php.html#41","App\\Domain\\Logbook\\Livewire\\LogbookEntry::create","2"],[0,1,"Livewire\/LogbookEntry.php.html#48","App\\Domain\\Logbook\\Livewire\\LogbookEntry::edit","2"],[0,2,"Livewire\/LogbookEntry.php.html#57","App\\Domain\\Logbook\\Livewire\\LogbookEntry::save","6"],[0,1,"Livewire\/LogbookEntry.php.html#79","App\\Domain\\Logbook\\Livewire\\LogbookEntry::render","2"],[0,2,"Livewire\/LogbookManager.php.html#31","App\\Domain\\Logbook\\Livewire\\LogbookManager::boot","6"],[0,1,"Livewire\/LogbookManager.php.html#42","App\\Domain\\Logbook\\Livewire\\LogbookManager::headers","2"],[0,3,"Livewire\/LogbookManager.php.html#54","App\\Domain\\Logbook\\Livewire\\LogbookManager::query","12"],[0,1,"Livewire\/LogbookManager.php.html#70","App\\Domain\\Logbook\\Livewire\\LogbookManager::applySearch","2"],[0,1,"Livewire\/LogbookManager.php.html#78","App\\Domain\\Logbook\\Livewire\\LogbookManager::applyFilters","2"],[0,3,"Livewire\/LogbookManager.php.html#85","App\\Domain\\Logbook\\Livewire\\LogbookManager::students","12"],[0,1,"Livewire\/LogbookManager.php.html#105","App\\Domain\\Logbook\\Livewire\\LogbookManager::create","2"],[0,1,"Livewire\/LogbookManager.php.html#120","App\\Domain\\Logbook\\Livewire\\LogbookManager::edit","2"],[0,2,"Livewire\/LogbookManager.php.html#135","App\\Domain\\Logbook\\Livewire\\LogbookManager::save","6"],[0,1,"Livewire\/LogbookManager.php.html#157","App\\Domain\\Logbook\\Livewire\\LogbookManager::delete","2"],[0,2,"Livewire\/LogbookManager.php.html#165","App\\Domain\\Logbook\\Livewire\\LogbookManager::deleteSelected","6"],[0,1,"Livewire\/LogbookManager.php.html#177","App\\Domain\\Logbook\\Livewire\\LogbookManager::verify","2"],[0,1,"Livewire\/LogbookManager.php.html#185","App\\Domain\\Logbook\\Livewire\\LogbookManager::render","2"],[0,1,"Models\/Logbook.php.html#21","App\\Domain\\Logbook\\Models\\Logbook::newFactory","2"],[0,1,"Models\/Logbook.php.html#33","App\\Domain\\Logbook\\Models\\Logbook::user","2"],[0,1,"Models\/Logbook.php.html#38","App\\Domain\\Logbook\\Models\\Logbook::registration","2"],[0,1,"Models\/Logbook.php.html#43","App\\Domain\\Logbook\\Models\\Logbook::verifier","2"],[0,1,"Models\/Logbook.php.html#48","App\\Domain\\Logbook\\Models\\Logbook::asLogbookState","2"],[0,1,"Policies\/LogbookPolicy.php.html#16","App\\Domain\\Logbook\\Policies\\LogbookPolicy::viewAny","2"],[0,8,"Policies\/LogbookPolicy.php.html#27","App\\Domain\\Logbook\\Policies\\LogbookPolicy::view","72"],[0,1,"Policies\/LogbookPolicy.php.html#52","App\\Domain\\Logbook\\Policies\\LogbookPolicy::create","2"],[0,3,"Policies\/LogbookPolicy.php.html#57","App\\Domain\\Logbook\\Policies\\LogbookPolicy::update","12"],[0,3,"Policies\/LogbookPolicy.php.html#66","App\\Domain\\Logbook\\Policies\\LogbookPolicy::delete","12"]]</script>
+  <script type="text/javascript" defer>
+  const barLabels = [
+    '0%',
+    '0-10%',
+    '10-20%',
+    '20-30%',
+    '30-40%',
+    '40-50%',
+    '50-60%',
+    '60-70%',
+    '70-80%',
+    '80-90%',
+    '90-100%',
+    '100%'
+  ];
+  const barConfig = (name, fullName, values) => ({
+    axis: {
+      x: {
+        type: "category",
+        categories: barLabels,
+      },
+      y: {
+        label: {
+          text: `#${name}`,
+          position: 'outer-top',
+        },
+      },
+    },
+    bindto: `#${name}CoverageDistribution`,
+    data: {
+      columns: [
+        [fullName].concat(values),
+      ],
+      colors: {
+        [fullName]: "rgba(69, 114, 167, 0.75)",
+      },
+      type: "bar",
+    },
+    bar: {
+      width: {
+        ratio: 0.9,
+      },
+    },
+    grid: {
+      focus: {
+        show: false,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">Coverage ${barLabels[data[0].x]}</th></tr>
+            <tr><td class="value">${data[0].value} ${name}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  bb.generate(
+    barConfig('classes', "Class Coverage", [11,0,0,0,0,0,0,0,0,0,0,0])
+  );
+  bb.generate(
+    barConfig('methods', "Method Coverage", [46,0,0,0,0,0,0,0,0,0,0,0])
+  );
+
+  const scatterConfig = (name, complexityData) => ({
+    axis: {
+      x: {
+        label: {
+          text: 'Code Coverage (in percent)',
+          position: 'outer-right',
+        },
+        tick: {
+          values: [0, 20, 40, 60, 80, 100],
+        },
+      },
+      y: {
+        label: {
+          text: 'Cyclomatic Complexity',
+          position: 'outer-top',
+        },
+        min: 0,
+        padding: {
+          bottom: 0,
+          top: 5,
+        },
+      },
+    },
+    bindto: `#${name}Complexity`,
+    data: {
+      columns: [
+        ["complexity_x"].concat(complexityData.map(d => d[0])),
+        ["complexity"].concat(complexityData.map(d => d[1])),
+      ],
+      onclick: function(data, element) {
+        window.location = complexityData[data.index][2];
+      },
+      type: "scatter",
+      xs: {
+        "complexity": "complexity_x",
+      },
+    },
+    grid: {
+      focus: {
+        show: true,
+        y: true,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        const coverage = Math.round(data[0].x);
+        const complexity = data[0].value;
+        const targetName = complexityData[data[0].index][3];
+        const crap = complexityData[data[0].index][4];
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">${targetName}</th></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Coverage</td><td class="name">${coverage}%</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Complexity</td><td class="value">${complexity}</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Crap</td><td class="value">${crap}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  const classComplexityData = JSON.parse(document.getElementById('complexity_class').textContent);
+  bb.generate(
+    scatterConfig("class", classComplexityData)
+  );
+  const methodComplexityData = JSON.parse(document.getElementById('complexity_method').textContent);
+  bb.generate(
+    scatterConfig("method", methodComplexityData),
+  );
+  </script>
+ </body>
+</html>

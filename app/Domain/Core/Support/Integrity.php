@@ -12,7 +12,9 @@ final class Integrity
 
     public static function verify(): void
     {
-        if (app()->runningUnitTests()) {
+        $container = app();
+
+        if (method_exists($container, 'runningUnitTests') && $container->runningUnitTests()) {
             return;
         }
 

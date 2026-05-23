@@ -98,6 +98,10 @@
             "@php artisan optimize:clear --ansi",
             "vendor/bin/pest tests/Unit --colors=never"
         ],
+        "coverage": [
+            "@php artisan optimize:clear --ansi",
+            "php -d extension=pcov.so -d pcov.enabled=1 vendor/bin/pest --coverage --configuration=phpunit.coverage.xml"
+        ],
         "analyse": [
             "vendor/bin/phpstan analyse --no-progress"
         ],

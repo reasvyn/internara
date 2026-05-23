@@ -40,6 +40,10 @@ return [
         'terminal_interactive' => 'Interactive Shell (posix)',
         'terminal_interactive_pass' => 'Available',
         'terminal_interactive_fail' => 'Missing (prompts may fail)',
+
+        'frontend_assets' => 'Frontend Assets',
+        'frontend_assets_pass' => 'Built assets detected',
+        'frontend_assets_fail' => 'No built assets found. Run `npm install && npm run build`',
     ],
 
     'cli' => [
@@ -73,6 +77,19 @@ return [
         'check_only_complete' => 'Environment audit passed. Run without --check-only to provision.',
         'try_health_check' => 'Run php artisan system:health to check system status.',
         'aborted' => 'Installation aborted.',
+        'app_url_set' => 'APP_URL has been set to: :url',
+        'app_url_warning' => 'APP_URL is set to http://localhost. The signed URL below may not be reachable.',
+        'app_url_hint' => '  Use --url=https://your-domain.com to set the correct URL before installation.',
+        'quick_access' => 'Quick Access (clickable link)',
+        'url_warning' => 'Note: URL contains the token. Use the code below for a URL-free alternative.',
+        'manual_entry' => 'Manual Entry (no URL token)',
+        'visit_url_alt' => 'Visit',
+        'enter_code' => 'Enter code',
+        'start_server' => 'Start your web server (e.g., php artisan serve)',
+        'open_browser' => 'Open the signed URL above in your browser to complete the setup wizard',
+        'template_env_warning' => 'Your .env file still contains template placeholder values.',
+        'template_env_vars' => 'Variables with placeholders',
+        'template_env_fix' => '  Edit .env to set real values before going to production.',
         'executing_task' => 'Executing technical system installation',
         'not_installed' => 'System is not installed. Run php artisan setup:install first.',
         'admin_exists' => 'Super Admin already exists. Use php artisan admin:recover to create another.',
@@ -136,6 +153,15 @@ return [
         'aborted' => 'Reset aborted.',
         'success' => 'Setup status has been reset.',
         'migration_note' => 'Note: Existing database records are not deleted. Run `php artisan migrate:fresh` if needed.',
+    ],
+
+    'code_entry' => [
+        'title' => 'Enter Setup Code',
+        'description' => 'Enter the setup token that was generated when you ran php artisan setup:install.',
+        'code_label' => 'Setup Code / Token',
+        'submit' => 'Verify & Continue',
+        'help' => 'Run php artisan setup:install on the server to generate a new token if you don\'t have one.',
+        'expiry_note' => 'The token expires 60 minutes after generation.',
     ],
 
     'wizard' => [
@@ -206,6 +232,7 @@ return [
         'finish_setup' => 'Finish Setup',
         'setup_complete' => 'Setup Complete!',
         'install_failed' => 'Installation failed: :message',
+        'install_failed_generic' => 'Installation failed. Please check the system logs for details.',
         'ready_desc' => 'The system is ready to manage your internship programs. You can now log in with your administrator account.',
         'go_to_login' => 'Go to Login Page',
         'data_verified' => 'I declare that the data entered is correct',

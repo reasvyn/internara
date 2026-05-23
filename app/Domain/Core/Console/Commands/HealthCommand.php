@@ -196,6 +196,7 @@ class HealthCommand extends Command
             $migrationFiles = collect(File::files(database_path('migrations')))
                 ->map(fn ($f) => $f->getFilename())
                 ->filter(fn ($name) => str_ends_with($name, '.php'))
+                ->map(fn ($name) => preg_replace('/\.php$/', '', $name))
                 ->values();
 
             $runMigrations = DB::table('migrations')->pluck('migration');

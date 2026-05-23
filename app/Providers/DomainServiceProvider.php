@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Domain\Core\Policies\BasePolicy;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
@@ -192,7 +193,11 @@ class DomainServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register Blade anonymous component paths for each domain view directory.
+     * Register Blade anonymous component paths and view namespaces for each domain.
+     *
+     * - Anonymous components: `x-{domain}::component-name` via Blade::anonymousComponentPath
+     * - View namespaces: `{domain}::view.name` via View::addNamespace (required by Livewire
+     *   #[Layout] attribute and explicit namespace-based includes)
      */
     private function registerBladeNamespaces(): void
     {
@@ -217,6 +222,7 @@ class DomainServiceProvider extends ServiceProvider
 
             if (is_dir($dir)) {
                 Blade::anonymousComponentPath($dir, $name);
+                View::addNamespace($name, $dir);
             }
         }
     }

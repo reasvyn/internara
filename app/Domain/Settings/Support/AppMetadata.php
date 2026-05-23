@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\Settings\Support;
 
 use App\Domain\Core\Support\SmartLogger;
-use App\Domain\Setup\Models\Setup;
 use App\Domain\Shared\Support\Theme;
+use Illuminate\Support\Facades\DB;
 use Throwable;
 
 /**
@@ -23,10 +23,8 @@ final class AppMetadata
     private static function isInstalled(): bool
     {
         try {
-            return Setup::state()->isInstalled();
+            return (bool) DB::table('setups')->value('is_installed');
         } catch (Throwable $e) {
-            self::logSettingsWarning('Failed to check installation status', $e);
-
             return false;
         }
     }

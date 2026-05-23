@@ -218,15 +218,18 @@ class SystemSetting extends Component
             'mail_port' => $this->mail_port,
             'mail_encryption' => $this->mail_encryption,
             'mail_username' => $this->mail_username,
-            'mail_password' => [
-                'value' => $this->mail_password,
-                'type' => 'encrypted',
-            ],
             'primary_color' => $this->primary_color,
             'secondary_color' => $this->secondary_color,
             'accent_color' => $this->accent_color,
             'base_color' => $this->base_color,
         ];
+
+        if ($this->mail_password !== '') {
+            $settings['mail_password'] = [
+                'value' => $this->mail_password,
+                'type' => 'encrypted',
+            ];
+        }
 
         if ($this->brand_logo) {
             $settings['brand_logo'] = $uploadBrand->execute($this->brand_logo);

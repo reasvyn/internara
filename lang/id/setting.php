@@ -53,6 +53,14 @@ return [
         'save' => 'Simpan Perubahan',
     ],
 
+    'test_mail' => [
+        'subject' => 'Email Uji Coba dari :app_name',
+        'greeting' => 'Halo!',
+        'line1' => 'Ini adalah email uji coba untuk memverifikasi konfigurasi SMTP Anda.',
+        'line2' => 'Jika Anda menerima email ini, pengaturan SMTP Anda sudah benar.',
+        'action' => 'Buka Pengaturan',
+    ],
+
     'messages' => [
         'saved' => 'Pengaturan sistem berhasil diperbarui.',
         'test_email_sent' => 'Email uji coba berhasil dikirim. Silakan periksa kotak masuk Anda.',
