@@ -15,46 +15,19 @@
                         </div>
                     </div>
                 @empty
-                    <div class="py-8 text-center">
-                        <x-mary-icon name="o-inbox" class="size-8 text-base-content/20 mx-auto mb-2" />
-                        <p class="text-sm text-base-content/40">{{ __('dashboard.no_activity') }}</p>
-                    </div>
+                    <x-widgets::empty-state icon="o-inbox" :title="__('dashboard.no_activity')" />
                 @endforelse
             </x-mary-card>
         </div>
 
         <div class="space-y-6">
-            <x-mary-card :title="__('dashboard.your_profile')" separator>
-                <div class="flex items-center gap-4">
-                    <x-mary-avatar
-                        :image="auth()->user()->getFirstMediaUrl('avatar', 'thumb') ?: null"
-                        placeholder="{{ auth()->user()->initials() }}"
-                        class="!w-16 !h-16"
-                    />
-                    <div>
-                        <div class="font-bold">{{ auth()->user()->name }}</div>
-                        <div class="text-sm text-base-content/50">{{ auth()->user()->email }}</div>
-                    </div>
-                </div>
-                <x-slot:actions>
-                    <x-mary-button :label="__('dashboard.edit_profile')" icon="o-pencil" link="{{ route('profile') }}" class="btn-sm" wire:navigate />
-                </x-slot:actions>
-            </x-mary-card>
+            <x-widgets::profile-summary :showEdit="true" />
 
             <x-mary-card :title="__('dashboard.quick_links')" separator>
-                <div class="space-y-2">
-                    <a href="{{ route('profile') }}" wire:navigate class="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200/50 transition-colors">
-                        <x-mary-icon name="o-user" class="size-4 text-base-content/40" />
-                        <span class="text-sm">{{ __('dashboard.edit_profile') }}</span>
-                    </a>
-                    <a href="{{ route('profile.recovery') }}" wire:navigate class="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200/50 transition-colors">
-                        <x-mary-icon name="o-key" class="size-4 text-base-content/40" />
-                        <span class="text-sm">{{ __('profile.recovery.title') }}</span>
-                    </a>
-                    <a href="{{ route('notifications') }}" wire:navigate class="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200/50 transition-colors">
-                        <x-mary-icon name="o-bell" class="size-4 text-base-content/40" />
-                        <span class="text-sm">{{ __('dashboard.notifications') }}</span>
-                    </a>
+                <div class="space-y-1">
+                    <x-widgets::quick-link :label="__('dashboard.edit_profile')" icon="o-user" link="{{ route('profile') }}" />
+                    <x-widgets::quick-link :label="__('profile.recovery.title')" icon="o-key" link="{{ route('profile.recovery') }}" />
+                    <x-widgets::quick-link :label="__('dashboard.notifications')" icon="o-bell" link="{{ route('notifications') }}" />
                 </div>
             </x-mary-card>
         </div>

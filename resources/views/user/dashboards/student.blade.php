@@ -38,55 +38,26 @@
                         </div>
                     </div>
                 @else
-                    <div class="text-center py-8">
-                        <x-mary-icon name="o-shield-exclamation" class="size-10 text-base-content/20 mx-auto mb-3" />
-                        <p class="text-sm font-medium">{{ __('dashboard.student.no_registration') }}</p>
-                        <p class="text-xs text-base-content/40 mt-1">{{ __('dashboard.student.no_registration_hint') }}</p>
-                    </div>
+                    <x-widgets::empty-state
+                        icon="o-shield-exclamation"
+                        :title="__('dashboard.student.no_registration')"
+                        :description="__('dashboard.student.no_registration_hint')"
+                    />
                 @endif
             </x-mary-card>
         </div>
 
         <div class="lg:col-span-2 space-y-6">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <x-mary-button
-                    :label="__('dashboard.student.write_journal')"
-                    icon="o-pencil-square"
-                    class="btn-primary h-20 rounded-xl font-medium shadow-none"
-                    link="{{ route('student.logbook') }}"
-                    wire:navigate
-                />
-                <x-mary-button
-                    :label="__('dashboard.student.request_absence')"
-                    icon="o-document-plus"
-                    class="bg-base-100 border border-base-content/10 hover:bg-base-200 h-20 rounded-xl font-medium shadow-none"
-                    link="{{ route('student.attendance.absence') }}"
-                    wire:navigate
-                />
-                <x-mary-button
-                    :label="__('dashboard.student.my_documents')"
-                    icon="o-document-arrow-up"
-                    class="bg-base-100 border border-base-content/10 hover:bg-base-200 h-20 rounded-xl font-medium shadow-none"
-                    link="{{ route('student.documents') }}"
-                    wire:navigate
-                />
-                <x-mary-button
-                    :label="__('dashboard.student.handbooks')"
-                    icon="o-book-open"
-                    class="bg-base-100 border border-base-content/10 hover:bg-base-200 h-20 rounded-xl font-medium shadow-none"
-                    link="{{ route('student.handbooks') }}"
-                    wire:navigate
-                />
+                <x-widgets::action-button :label="__('dashboard.student.write_journal')" icon="o-pencil-square" link="{{ route('student.logbook') }}" color="btn-primary" />
+                <x-widgets::action-button :label="__('dashboard.student.request_absence')" icon="o-document-plus" link="{{ route('student.attendance.absence') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
+                <x-widgets::action-button :label="__('dashboard.student.my_documents')" icon="o-document-arrow-up" link="{{ route('student.documents') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
+                <x-widgets::action-button :label="__('dashboard.student.handbooks')" icon="o-book-open" link="{{ route('student.handbooks') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
             </div>
 
             <x-mary-card class="bg-base-100 border border-base-content/10">
-                <x-slot:title>
-                    <span class="font-semibold">{{ __('dashboard.student.timeline') }}</span>
-                </x-slot:title>
-                <div class="flex flex-col items-center justify-center py-12 text-base-content/20">
-                    <x-mary-icon name="o-queue-list" class="size-12 mb-3" />
-                    <span class="text-xs font-medium">{{ __('dashboard.student.timeline_empty') }}</span>
-                </div>
+                <x-slot:title><span class="font-semibold">{{ __('dashboard.student.timeline') }}</span></x-slot:title>
+                <x-widgets::empty-state icon="o-queue-list" :title="__('dashboard.student.timeline_empty')" />
             </x-mary-card>
         </div>
     </div>
