@@ -7,6 +7,10 @@ namespace App\Domain\Setup\Livewire;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Settings\Support\AppInfo;
 use App\Domain\Setup\Actions\FinalizeSetupAction;
+use App\Domain\Setup\Livewire\Forms\AdminForm;
+use App\Domain\Setup\Livewire\Forms\DepartmentForm;
+use App\Domain\Setup\Livewire\Forms\InternshipForm;
+use App\Domain\Setup\Livewire\Forms\SchoolForm;
 use App\Domain\Setup\Models\Setup;
 use App\Domain\Setup\Services\EnvironmentAuditor;
 use Illuminate\Contracts\View\View;
@@ -22,41 +26,19 @@ class SetupWizard extends Component
 
     public bool $auditPassed = false;
 
-    public array $schoolData = [
-        'name' => '',
-        'institutional_code' => '',
-        'address' => '',
-        'email' => '',
-        'phone' => '',
-        'website' => '',
-        'principal_name' => '',
-    ];
+    public SchoolForm $schoolForm;
 
-    public array $departmentData = [
-        'name' => '',
-        'description' => '',
-    ];
+    public DepartmentForm $departmentForm;
 
-    public array $adminData = [
-        'name' => '',
-        'username' => '',
-        'email' => '',
-        'password' => '',
-        'password_confirmation' => '',
-    ];
+    public AdminForm $adminForm;
 
-    public array $internshipData = [
-        'name' => '',
-        'description' => '',
-        'start_date' => '',
-        'end_date' => '',
-    ];
+    public InternshipForm $internshipForm;
 
     public bool $dataVerified = false;
 
     public bool $securityAware = false;
 
-    public string $recoveryKey = '';
+    protected string $recoveryKey = '';
 
     public function mount(): void
     {
@@ -73,26 +55,28 @@ class SetupWizard extends Component
 
     protected function initDefaults(): void
     {
-        $this->adminData['name'] = config('setup.defaults.admin_name', 'Administrator');
-        $this->adminData['username'] = config('setup.defaults.admin_username', 'administrator');
+        $this->adminForm->name = config('setup.defaults.admin_name', 'Administrator');
+        $this->adminForm->username = config('setup.defaults.admin_username', 'administrator');
     }
 
     public function updated(string $property): void
     {
-        $this->saveState();
+        if (str_starts_with($property, 'schoolForm.')
+            || str_starts_with($property, 'departmentForm.')
+            || str_starts_with($property, 'adminForm.')
+            || str_starts_with($property, 'internshipForm.')
+        ) {
+            $this->saveState();
+        }
     }
 
     protected function saveState(): void
     {
         session()->put('setup.form_data', [
-            'schoolData' => $this->schoolData,
-            'departmentData' => $this->departmentData,
-            'adminData' => [
-                'name' => $this->adminData['name'],
-                'username' => $this->adminData['username'],
-                'email' => $this->adminData['email'],
-            ],
-            'internshipData' => $this->internshipData,
+            'school' => $this->schoolForm->all(),
+            'department' => $this->departmentForm->all(),
+            'admin' => $this->adminForm->only(['name', 'username', 'email']),
+            'internship' => $this->internshipForm->all(),
         ]);
     }
 
@@ -100,24 +84,24 @@ class SetupWizard extends Component
     {
         $data = session()->get('setup.form_data', []);
 
-        if (isset($data['schoolData'])) {
-            $this->schoolData = array_merge($this->schoolData, $data['schoolData']);
+        if (isset($data['school'])) {
+            $this->schoolForm->fill($data['school']);
         }
 
-        if (isset($data['departmentData'])) {
-            $this->departmentData = array_merge($this->departmentData, $data['departmentData']);
+        if (isset($data['department'])) {
+            $this->departmentForm->fill($data['department']);
         }
 
-        if (isset($data['adminData'])) {
-            foreach ($data['adminData'] as $key => $value) {
-                if (array_key_exists($key, $this->adminData)) {
-                    $this->adminData[$key] = $value;
+        if (isset($data['admin'])) {
+            foreach ($data['admin'] as $key => $value) {
+                if (property_exists($this->adminForm, $key)) {
+                    $this->adminForm->{$key} = $value;
                 }
             }
         }
 
-        if (isset($data['internshipData'])) {
-            $this->internshipData = array_merge($this->internshipData, $data['internshipData']);
+        if (isset($data['internship'])) {
+            $this->internshipForm->fill($data['internship']);
         }
     }
 
@@ -158,32 +142,19 @@ class SetupWizard extends Component
         }
 
         if ($this->currentStep === 2) {
-            $this->validate([
-                'schoolData.name' => 'required|string|max:255',
-                'schoolData.institutional_code' => 'required|string|max:50',
-                'schoolData.email' => 'required|email|max:255',
-            ]);
+            $this->schoolForm->validate();
         }
 
         if ($this->currentStep === 3) {
-            $this->validate([
-                'departmentData.name' => 'required|string|max:255',
-            ]);
+            $this->departmentForm->validate();
         }
 
         if ($this->currentStep === 4) {
-            $this->validate([
-                'adminData.email' => 'required|email|max:255',
-                'adminData.password' => 'required|string|min:8|confirmed',
-            ]);
+            $this->adminForm->validate();
         }
 
-        if ($this->currentStep === 5) {
-            $this->validate([
-                'internshipData.name' => 'required|string|max:255',
-                'internshipData.start_date' => 'required|date',
-                'internshipData.end_date' => 'required|date|after:internshipData.start_date',
-            ]);
+        if ($this->currentStep === 5 && $this->internshipForm->isFilled()) {
+            $this->internshipForm->validate();
         }
 
         $this->currentStep++;
@@ -220,32 +191,48 @@ class SetupWizard extends Component
         ]);
 
         try {
-            $internshipData = $this->internshipData['name']
+            $internshipData = $this->internshipForm->name
                 ? [
-                    'name' => $this->internshipData['name'],
-                    'description' => $this->internshipData['description'] ?: null,
-                    'start_date' => $this->internshipData['start_date'],
-                    'end_date' => $this->internshipData['end_date'],
+                    'name' => $this->internshipForm->name,
+                    'description' => $this->internshipForm->description ?: null,
+                    'start_date' => $this->internshipForm->start_date,
+                    'end_date' => $this->internshipForm->end_date,
                 ]
                 : null;
 
             $this->recoveryKey = $finalizeSetup->execute(
-                schoolData: $this->schoolData,
-                departmentData: $this->departmentData,
-                adminData: $this->adminData,
+                schoolData: [
+                    'name' => $this->schoolForm->name,
+                    'institutional_code' => $this->schoolForm->institutional_code,
+                    'address' => $this->schoolForm->address,
+                    'email' => $this->schoolForm->email,
+                    'phone' => $this->schoolForm->phone,
+                    'website' => $this->schoolForm->website,
+                    'principal_name' => $this->schoolForm->principal_name,
+                ],
+                departmentData: [
+                    'name' => $this->departmentForm->name,
+                    'description' => $this->departmentForm->description,
+                ],
+                adminData: [
+                    'name' => $this->adminForm->name,
+                    'username' => $this->adminForm->username,
+                    'email' => $this->adminForm->email,
+                    'password' => $this->adminForm->password,
+                ],
                 internshipData: $internshipData,
             );
 
             $this->currentStep = 7;
             flash()->success(__('setup.wizard.setup_complete'));
         } catch (\RuntimeException $e) {
-            flash()->error($e->getMessage());
             SmartLogger::error('Setup wizard failed')
                 ->module('Setup')
                 ->event('wizard.failed')
-                ->withPayload(['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()])
+                ->withPayload(['error' => $e->getMessage()])
                 ->systemOnly()
                 ->save();
+            flash()->error(__('setup.wizard.install_failed_generic'));
         } catch (\Throwable $e) {
             SmartLogger::error('Setup wizard crashed')
                 ->module('Setup')
@@ -253,7 +240,7 @@ class SetupWizard extends Component
                 ->withPayload(['error' => $e->getMessage()])
                 ->systemOnly()
                 ->save();
-            flash()->error(__('setup.wizard.install_failed', ['message' => $e->getMessage()]));
+            flash()->error(__('setup.wizard.install_failed_generic'));
         }
     }
 

@@ -1,7 +1,15 @@
 @props(['title' => null])
 
 <x-layouts::base :$title>
-    <div class="min-h-screen flex flex-col bg-base-100">
+    <div
+        class="min-h-screen flex flex-col bg-base-100"
+        x-data
+        x-init="
+            window.addEventListener('beforeunload', () => {
+                navigator.sendBeacon(@js(route('setup.cleanup')));
+            });
+        "
+    >
         {{-- Header --}}
         <header class="border-b border-base-content/10">
             <div class="max-w-5xl mx-auto px-6 lg:px-12">

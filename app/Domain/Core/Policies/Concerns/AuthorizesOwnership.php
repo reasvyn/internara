@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Core\Policies\Concerns;
 
-use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -15,19 +14,19 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait AuthorizesOwnership
 {
-    protected function isOwner(User $user, Model $model, string $foreignKey = 'user_id'): bool
+    protected function isOwner(Model $user, Model $model, string $foreignKey = 'user_id'): bool
     {
         return $model->{$foreignKey} === $user->id;
     }
 
-    protected function isRelatedThrough(User $user, Model $model, string $relation, string $foreignKey = 'id'): bool
+    protected function isRelatedThrough(Model $user, Model $model, string $relation, string $foreignKey = 'id'): bool
     {
         $related = $model->{$relation};
 
         return $related !== null && $related->{$foreignKey} === $user->id;
     }
 
-    protected function isOwnerOrAdmin(User $user, Model $model, string $foreignKey = 'user_id'): bool
+    protected function isOwnerOrAdmin(Model $user, Model $model, string $foreignKey = 'user_id'): bool
     {
         if ($this->isOwner($user, $model, $foreignKey)) {
             return true;

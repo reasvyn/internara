@@ -10,6 +10,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProtectSetupRouteMiddleware
@@ -27,11 +28,15 @@ class ProtectSetupRouteMiddleware
         $state = Setup::state();
 
         if ($state->isInstalled()) {
-            if ($state->isWithinFinalizationWindow($finalizationMinutes)) {
+            if ($state->isWithinFinalizationWindow($finalizationMinutes) && Session::get('setup.authorized', false)) {
                 return $next($request);
             }
 
             abort(Response::HTTP_NOT_FOUND);
+        }
+
+        if (Session::get('setup.authorized', false)) {
+            return $next($request);
         }
 
         $key = 'setup:'.$request->ip();
@@ -49,36 +54,34 @@ class ProtectSetupRouteMiddleware
 
         RateLimiter::hit($key, $rateDecay);
 
-        if (Session::get('setup.authorized', false)) {
-            return $next($request);
-        }
+        $token = $request->query('setup_token') ?? $request->input('setup_token');
 
-        $token = $request->query('setup_token')
-            ?? $request->session()->get('setup.token_input');
+        if ($token !== null && $token !== '') {
+            try {
+                $this->validateToken->execute((string) $token);
 
-        if ($token === null && $request->hasHeader('X-Livewire')) {
-            $referer = $request->header('referer');
-            if ($referer) {
-                parse_str(parse_url($referer, PHP_URL_QUERY) ?? '', $query);
-                $token = $query['setup_token'] ?? null;
+                Session::put('setup.authorized', true);
+
+                if ($request->isMethod('POST')) {
+                    return redirect()->route('setup');
+                }
+
+                return $next($request);
+            } catch (\Exception) {
+                return $this->rejectToken($request, __('setup.invalid_token'));
             }
         }
 
-        if ($token === null) {
+        if ($request->expectsJson() || $request->hasHeader('X-Livewire')) {
             return $this->rejectToken($request, __('setup.invalid_token'));
         }
 
-        try {
-            $this->validateToken->execute((string) $token);
-        } catch (\Exception) {
-            return $this->rejectToken($request, __('setup.invalid_token'));
-        }
+        return $this->renderCodeEntry();
+    }
 
-        Session::put('setup.authorized', true);
-        Session::put('setup.token', $token);
-        $request->session()->put('setup.token_input', $token);
-
-        return $next($request);
+    private function renderCodeEntry(): View
+    {
+        return view('setup.enter-code');
     }
 
     private function rejectToken(Request $request, string $message): Response

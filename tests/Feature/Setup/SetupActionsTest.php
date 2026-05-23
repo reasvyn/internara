@@ -5,12 +5,15 @@ declare(strict_types=1);
 use App\Domain\Auth\Enums\Role;
 use App\Domain\School\Models\Department;
 use App\Domain\School\Models\School;
+use App\Domain\Setup\Actions\FinalizeSetupAction;
 use App\Domain\Setup\Actions\GenerateSetupTokenAction;
 use App\Domain\Setup\Actions\InitializeSuperAdminAction;
 use App\Domain\Setup\Actions\RecoverSuperAdminAction;
 use App\Domain\Setup\Actions\SetupDepartmentAction;
+use App\Domain\Setup\Actions\SetupSchoolAction;
 use App\Domain\Setup\Actions\SetupSuperAdminAction;
 use App\Domain\Setup\Actions\ValidateSetupTokenAction;
+use App\Domain\Setup\Models\Setup;
 use App\Domain\User\Models\User;
 use Spatie\Permission\Models\Role as RoleModel;
 
@@ -26,7 +29,7 @@ describe('SetupSuperAdminAction', function () {
             'name' => 'Super Admin',
             'username' => 'superadmin',
             'email' => 'admin@example.com',
-            'password' => 'password123',
+            'password' => 'Admin123!',
         ]);
 
         expect($user)->toBeInstanceOf(User::class)
@@ -36,8 +39,8 @@ describe('SetupSuperAdminAction', function () {
 });
 
 describe('SetupSchoolAction', function () {
-    it('creates or updates school via underlying model', function () {
-        $school = School::updateOrCreate([], [
+    it('creates a school via the action', function () {
+        $school = app(SetupSchoolAction::class)->execute([
             'name' => 'Test School',
             'institutional_code' => 'TS-'.str()->random(6),
             'address' => '123 Main St',
@@ -90,7 +93,7 @@ describe('InitializeSuperAdminAction', function () {
     it('creates a super admin user', function () {
         $user = app(InitializeSuperAdminAction::class)->execute(
             email: 'init@example.com',
-            password: 'securepass',
+            password: 'Secure1Pass',
             name: 'Init Admin',
         );
 
@@ -100,11 +103,41 @@ describe('InitializeSuperAdminAction', function () {
     });
 });
 
+describe('FinalizeSetupAction', function () {
+    it('completes full setup and returns recovery key', function () {
+        Setup::truncate();
+        Setup::create(['is_installed' => false, 'completed_steps' => []]);
+
+        $recoveryKey = app(FinalizeSetupAction::class)->execute(
+            schoolData: [
+                'name' => 'Finalize School',
+                'institutional_code' => 'FS-'.str()->random(6),
+                'address' => '456 Oak St',
+                'email' => 'finalize@test.com',
+                'phone' => '021654321',
+            ],
+            departmentData: ['name' => 'Mathematics'],
+            adminData: [
+                'name' => 'Final Admin',
+                'username' => 'finaladmin',
+                'email' => 'finaladmin@test.com',
+                'password' => 'Secure1Pass',
+            ],
+        );
+
+        expect($recoveryKey)->toBeString()->not->toBeEmpty();
+
+        $setup = Setup::first();
+        expect($setup->is_installed)->toBeTrue()
+            ->and($setup->setup_token)->toBeNull();
+    });
+});
+
 describe('RecoverSuperAdminAction', function () {
     it('creates a new super admin for recovery', function () {
         $user = app(RecoverSuperAdminAction::class)->execute(
             email: 'recover@example.com',
-            password: 'newpassword',
+            password: 'NewPass1!',
         );
 
         expect($user)->toBeInstanceOf(User::class)

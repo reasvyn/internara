@@ -18,7 +18,7 @@ class SetupSuperAdminAction extends BaseAction
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string'],
             'email' => ['required', 'email'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/'],
         ])->validate();
 
         return $this->withErrorHandling(function () use ($data) {

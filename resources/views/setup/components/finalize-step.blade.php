@@ -27,19 +27,19 @@
         <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
             <div class="flex justify-between">
                 <dt class="text-base-content/50">{{ __('setup.wizard.school_name') }}</dt>
-                <dd class="font-medium text-right">{{ $schoolData['name'] ?: '—' }}</dd>
+                <dd class="font-medium text-right">{{ $schoolForm->name ?: '—' }}</dd>
             </div>
             <div class="flex justify-between">
                 <dt class="text-base-content/50">{{ __('setup.wizard.department_name') }}</dt>
-                <dd class="font-medium text-right">{{ $departmentData['name'] ?: '—' }}</dd>
+                <dd class="font-medium text-right">{{ $departmentForm->name ?: '—' }}</dd>
             </div>
             <div class="flex justify-between">
                 <dt class="text-base-content/50">{{ __('setup.wizard.full_name') }}</dt>
-                <dd class="font-medium text-right">{{ $adminData['name'] }}</dd>
+                <dd class="font-medium text-right">{{ $adminForm->name }}</dd>
             </div>
             <div class="flex justify-between">
                 <dt class="text-base-content/50">{{ __('setup.wizard.program_name') }}</dt>
-                <dd class="font-medium text-right">{{ $internshipData['name'] ?: '—' }}</dd>
+                <dd class="font-medium text-right">{{ $internshipForm->name ?: '—' }}</dd>
             </div>
         </dl>
     </div>

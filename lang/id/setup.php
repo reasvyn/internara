@@ -40,6 +40,10 @@ return [
         'terminal_interactive' => 'Shell Interaktif (posix)',
         'terminal_interactive_pass' => 'Tersedia',
         'terminal_interactive_fail' => 'Tidak tersedia (prompt mungkin gagal)',
+
+        'frontend_assets' => 'Aset Frontend',
+        'frontend_assets_pass' => 'Aset build terdeteksi',
+        'frontend_assets_fail' => 'Aset build tidak ditemukan. Jalankan `npm install && npm run build`',
     ],
 
     'cli' => [
@@ -57,6 +61,11 @@ return [
         'installation_failed' => 'Instalasi teknis gagal: :message',
         'installation_completed' => 'Instalasi sistem teknis berhasil diselesaikan.',
         'next_steps' => 'LANGKAH SELANJUTNYA',
+        'quick_access' => 'Akses Cepat (tautan langsung)',
+        'url_warning' => 'Catatan: URL mengandung token. Gunakan kode di bawah untuk alternatif tanpa URL.',
+        'manual_entry' => 'Akses Manual (tanpa token di URL)',
+        'visit_url_alt' => 'Kunjungi',
+        'enter_code' => 'Masukkan kode',
         'visit_url' => 'Kunjungi URL setup di browser Anda untuk menyelesaikan konfigurasi:',
         'complete_wizard' => 'Selesaikan langkah-langkah web wizard untuk mengakhiri setup.',
         'token_expires' => 'Token dan URL ini akan kedaluwarsa dalam 1 jam',
@@ -73,6 +82,14 @@ return [
         'check_only_complete' => 'Audit lingkungan berhasil. Jalankan tanpa --check-only untuk memprovisi.',
         'try_health_check' => 'Jalankan php artisan system:health untuk mengecek status sistem.',
         'aborted' => 'Instalasi dibatalkan.',
+        'app_url_set' => 'APP_URL telah diatur ke: :url',
+        'app_url_warning' => 'APP_URL masih http://localhost. URL signed di bawah mungkin tidak dapat dijangkau.',
+        'app_url_hint' => '  Gunakan --url=https://domain-anda.com untuk mengatur URL yang benar sebelum instalasi.',
+        'start_server' => 'Jalankan web server (misalnya: php artisan serve)',
+        'open_browser' => 'Buka URL signed di atas di browser untuk menyelesaikan setup wizard',
+        'template_env_warning' => 'File .env Anda masih berisi nilai placeholder template.',
+        'template_env_vars' => 'Variabel dengan placeholder',
+        'template_env_fix' => '  Edit .env untuk mengisi nilai sebenarnya sebelum masuk produksi.',
         'executing_task' => 'Mengeksekusi instalasi sistem teknis',
         'not_installed' => 'Sistem belum terinstal. Jalankan php artisan setup:install terlebih dahulu.',
         'admin_exists' => 'Super Admin sudah ada. Gunakan php artisan admin:recover untuk membuat yang lain.',
@@ -136,6 +153,15 @@ return [
         'aborted' => 'Reset dibatalkan.',
         'success' => 'Status setup telah direset.',
         'migration_note' => 'Catatan: Catatan database yang ada tidak dihapus. Jalankan `php artisan migrate:fresh` jika diperlukan.',
+    ],
+
+    'code_entry' => [
+        'title' => 'Masukkan Kode Setup',
+        'description' => 'Masukkan token setup yang dihasilkan saat menjalankan php artisan setup:install.',
+        'code_label' => 'Kode / Token Setup',
+        'submit' => 'Verifikasi & Lanjutkan',
+        'help' => 'Jalankan php artisan setup:install di server untuk menghasilkan token baru jika tidak memilikinya.',
+        'expiry_note' => 'Token kedaluwarsa 60 menit setelah dibuat.',
     ],
 
     'wizard' => [
@@ -206,6 +232,7 @@ return [
         'finish_setup' => 'Selesaikan Setup',
         'setup_complete' => 'Setup Selesai!',
         'install_failed' => 'Instalasi gagal: :message',
+        'install_failed_generic' => 'Instalasi gagal. Silakan periksa log sistem untuk detail.',
         'ready_desc' => 'Sistem siap untuk mengelola program magang Anda. Anda sekarang dapat login dengan akun administrator Anda.',
         'go_to_login' => 'Ke Halaman Login',
         'data_verified' => 'Saya menyatakan bahwa data yang dimasukkan sudah benar',

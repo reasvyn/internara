@@ -6,11 +6,17 @@ namespace App\Domain\Setup\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\School\Models\Department;
+use Illuminate\Support\Facades\Validator;
 
 class SetupDepartmentAction extends BaseAction
 {
     public function execute(string $schoolId, array $data): Department
     {
+        Validator::validate($data, [
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
         return $this->withErrorHandling(function () use ($schoolId, $data) {
             return $this->transaction(function () use ($schoolId, $data) {
                 $department = Department::updateOrCreate(

@@ -21,7 +21,7 @@ class AdminPromoteCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'system:admin:promote {identifier : Email or Username of the user} {--role=admin : Role to assign (admin/super_admin)}';
+    protected $signature = 'admin:promote {identifier : Email or Username of the user} {--role=admin : Role to assign (admin/super_admin)}';
 
     /**
      * The console command description.

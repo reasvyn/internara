@@ -11,20 +11,30 @@ describe('Environment helper', function () {
         expect(Environment::isDebugMode())->toBeTrue();
     });
 
-    it('detects production', function () {
-        expect(Environment::isProduction())->toBeBool();
+    it('detects debug mode when false', function () {
+        config(['app.debug' => false]);
+
+        expect(Environment::isDebugMode())->toBeFalse();
     });
 
     it('detects testing', function () {
         expect(Environment::isTesting())->toBeTrue();
     });
 
-    it('detects maintenance mode', function () {
-        expect(Environment::isMaintenance())->toBeBool();
+    it('detects production returns boolean', function () {
+        expect(Environment::isProduction())->toBeBool();
     });
 
-    it('detects development', function () {
+    it('detects development returns boolean', function () {
         expect(Environment::isDevelopment())->toBeBool();
+    });
+
+    it('detects staging returns boolean', function () {
+        expect(Environment::isStaging())->toBeBool();
+    });
+
+    it('detects maintenance mode returns boolean', function () {
+        expect(Environment::isMaintenance())->toBeBool();
     });
 
     it('is a final class', function () {

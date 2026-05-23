@@ -20,6 +20,7 @@
             <directory>app</directory>
         </include>
     </source>
+    <!-- <coverage> is defined in phpunit.coverage.xml for pcov runs -->
     <php>
     	<ini name="memory_limit" value="512M"/>
         <env name="APP_ENV" value="testing"/>

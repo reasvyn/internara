@@ -2,11 +2,5 @@
 
 declare(strict_types=1);
 
-use App\Domain\Setup\Http\Controllers\HomeController;
-use App\Domain\User\Http\Controllers\DashboardController;
-
-Route::get('/', HomeController::class)->name('home');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', DashboardController::class)->name('dashboard');
-});
+// Core routes — currently empty after moving home and dashboard to their
+// respective domain route files (setup.php, user.php).

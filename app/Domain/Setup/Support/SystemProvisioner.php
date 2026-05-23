@@ -54,6 +54,7 @@ class SystemProvisioner
             }
 
             File::copy($examplePath, $envPath);
+            chmod($envPath, 0600);
         }
     }
 

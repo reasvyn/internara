@@ -37,8 +37,14 @@ final class InstallSystemAction extends BaseAction
             throw new RuntimeException('System audit check failed.');
         }
 
-        $this->provisioner->executeAll($force);
+        $this->withErrorHandling(
+            fn () => $this->provisioner->executeAll($force),
+            'System provisioning failed during installation',
+        );
 
-        return $this->generateToken->execute();
+        return $this->withErrorHandling(
+            fn () => $this->generateToken->execute(),
+            'Failed to generate setup token',
+        );
     }
 }

@@ -60,9 +60,9 @@ class ActivityLog extends Activity
         });
     }
 
-    public function scopeGroupedByDay(Builder $query, int $days = 30): Collection
+    public function getGroupedByDay(int $days = 30): Collection
     {
-        return $query->lastDays($days)
+        return $this->lastDays($days)
             ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date')

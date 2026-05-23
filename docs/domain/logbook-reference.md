@@ -1,0 +1,49 @@
+# Logbook — API Reference
+
+Total: 11 files
+
+## Actions
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Logbook/Actions/CreateLogbookAction.php` | `CreateLogbookAction` | `BaseAction` | Creates a daily logbook entry |
+| `Logbook/Actions/DeleteLogbookAction.php` | `DeleteLogbookAction` | `BaseAction` | Deletes a logbook entry |
+| `Logbook/Actions/SubmitLogbookAction.php` | `SubmitLogbookAction` | `BaseAction` | Submits a daily log entry |
+| `Logbook/Actions/UpdateLogbookAction.php` | `UpdateLogbookAction` | `BaseAction` | Updates a logbook entry |
+
+## Entities
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Logbook/Entities/LogbookState.php` | `LogbookState` | `BaseEntity` | Read-only DTO for logbook entry state |
+
+## Enums
+
+| File | Class | Implements | Description |
+|---|---|---|---|
+| `Logbook/Enums/LogbookStatus.php` | `LogbookStatus` | `LabelEnum`, `StatusEnum` | Logbook entry lifecycle status |
+
+## Form Requests
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Logbook/Http/Requests/CreateLogbookRequest.php` | `CreateLogbookEntryRequest` | `FormRequest` | Validation for creating logbook entries |
+
+## Livewire Components
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Logbook/Livewire/LogbookEntry.php` | `LogbookEntry` | `Component` | Student logbook entry form |
+| `Logbook/Livewire/LogbookManager.php` | `LogbookManager` | `BaseRecordManager` | CRUD manager for logbook entries |
+
+## Models
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Logbook/Models/Logbook.php` | `Logbook` | `BaseModel` | Eloquent model for daily logbook entries |
+
+## Policies
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Logbook/Policies/LogbookPolicy.php` | `LogbookPolicy` | `BasePolicy` | Authorization for logbook operations |

@@ -9,11 +9,13 @@ use App\Domain\Core\Enums\AuditCategory;
 use App\Domain\Core\Enums\AuditStatus;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Setup\Actions\GenerateSetupTokenAction;
+use App\Domain\Setup\Actions\InstallSystemAction;
 use App\Domain\Setup\Console\Commands\Traits\InteractsWithInstallerCli;
 use App\Domain\Setup\Services\EnvironmentAuditor;
-use App\Domain\Setup\Support\SystemProvisioner;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\error;
@@ -24,11 +26,14 @@ class SetupInstallCommand extends Command
 
     protected $signature = 'setup:install
         {--force : Force installation even if already installed}
-        {--check-only : Run environment audit without provisioning}';
+        {--check-only : Run environment audit without provisioning}
+        {--url= : The application URL (e.g., https://internara.example.com)}
+        {--optimize : Optimize for production (cache config, routes, views, events)}';
 
     public function __construct(
         private EnvironmentAuditor $auditor,
         private GenerateSetupTokenAction $generateToken,
+        private InstallSystemAction $installSystem,
     ) {
         parent::__construct();
         $this->description = __('setup.cli.starting_installation');
@@ -84,6 +89,14 @@ class SetupInstallCommand extends Command
                 return self::SUCCESS;
             }
 
+            if ($url = $this->option('url')) {
+                $this->setAppUrl($url);
+                $this->components->info(__('setup.cli.app_url_set', ['url' => $url]));
+            } elseif ($this->isLocalhostUrl()) {
+                $this->components->warn(__('setup.cli.app_url_warning'));
+                $this->line('  '.__('setup.cli.app_url_hint'));
+            }
+
             if (! $this->option('force') && ! $this->confirmProceed()) {
                 error(__('setup.cli.aborted'));
 
@@ -98,22 +111,23 @@ class SetupInstallCommand extends Command
                 ->event('installation.started')
                 ->save();
 
-            $provisioner = app(SystemProvisioner::class);
-            $force = (bool) $this->option('force');
+            $tokenData = $this->installSystem->execute((bool) $this->option('force'));
 
-            foreach ($provisioner->getTasks() as $key => $label) {
-                try {
-                    $provisioner->executeTask($key, $force);
-                    $this->components->twoColumnDetail($label, '<fg=green>DONE</>');
-                } catch (\Throwable $e) {
-                    $this->components->twoColumnDetail($label, '<fg=red>FAIL</>');
-                    throw $e;
-                }
+            if ($this->option('optimize')) {
+                $this->components->task(
+                    __('setup.cli.tasks.optimize'),
+                    fn () => $this->runOptimization(),
+                );
             }
 
-            $tokenData = $this->generateToken->execute();
-
             $this->displaySuccess($tokenData['plaintext'], $tokenData['expires_at']);
+
+            $this->warnTemplateEnvValues();
+
+            $this->newLine();
+            $this->components->twoColumnDetail('  <fg=white;options=bold>'.__('setup.cli.next_steps').'</>');
+            $this->line('  '.__('setup.cli.start_server'));
+            $this->line('  '.__('setup.cli.open_browser'));
 
             SmartLogger::success(__('setup.cli.installation_completed'))
                 ->module('setup')
@@ -196,10 +210,16 @@ class SetupInstallCommand extends Command
         $this->displayCompletion();
 
         $this->newLine();
+        $this->components->twoColumnDetail('  <fg=white;options=bold>'.__('setup.cli.quick_access').'</>');
         $this->line('  <fg=cyan;options=bold,underscore>'.$signedUrl.'</>');
+        $this->line('  <fg=gray>'.__('setup.cli.url_warning').'</>');
 
         $this->newLine();
-        $this->line("  Token: <fg=white;options=bold>{$token}</>");
+        $this->components->twoColumnDetail('  <fg=white;options=bold>'.__('setup.cli.manual_entry').'</>');
+        $this->line('  '.__('setup.cli.visit_url_alt').': <fg=white;options=bold>'.route('setup').'</>');
+        $this->line('  '.__('setup.cli.enter_code').": <fg=white;options=bold>{$token}</>");
+
+        $this->newLine();
         $this->line('  '.__('setup.cli.token_expires').": <fg=yellow>{$expiresAt->format('H:i:s T')}</> (in {$expiresAt->diffForHumans()})");
     }
 
@@ -212,5 +232,80 @@ class SetupInstallCommand extends Command
         if ($this->option('verbose')) {
             $this->line('<fg=gray>'.$e->getTraceAsString().'</>');
         }
+    }
+
+    private function warnTemplateEnvValues(): void
+    {
+        $envPath = base_path('.env');
+
+        if (! File::exists($envPath)) {
+            return;
+        }
+
+        $content = File::get($envPath);
+        $templatePatterns = [
+            'APP_URL' => ['your-domain.com'],
+            'DB_PASSWORD' => ['your-password', 'secret'],
+            'MAIL_USERNAME' => ['your-email@domain.com'],
+            'MAIL_PASSWORD' => ['your-password'],
+            'MAIL_FROM_ADDRESS' => ['noreply@domain.com', 'hello@example.com'],
+        ];
+
+        $found = [];
+
+        foreach ($templatePatterns as $key => $patterns) {
+            if (preg_match('/^'.preg_quote($key, '/').'=(.*)$/m', $content, $matches)) {
+                $value = trim($matches[1]);
+
+                foreach ($patterns as $pattern) {
+                    if (str_contains($value, $pattern)) {
+                        $found[] = $key;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if ($found !== []) {
+            $this->components->warn(__('setup.cli.template_env_warning'));
+            $this->line('  '.__('setup.cli.template_env_vars').': '.implode(', ', $found));
+            $this->line('  '.__('setup.cli.template_env_fix'));
+        }
+    }
+
+    private function runOptimization(): void
+    {
+        Artisan::call('config:cache');
+        Artisan::call('route:cache');
+        Artisan::call('view:cache');
+        Artisan::call('event:cache');
+    }
+
+    private function isLocalhostUrl(): bool
+    {
+        $url = config('app.url', 'http://localhost');
+
+        return str_contains($url, 'localhost')
+            || str_contains($url, '127.0.0.1')
+            || str_contains($url, 'your-domain.com');
+    }
+
+    private function setAppUrl(string $url): void
+    {
+        $envPath = base_path('.env');
+
+        if (! File::exists($envPath)) {
+            return;
+        }
+
+        $content = File::get($envPath);
+
+        if (preg_match('/^APP_URL=.*$/m', $content)) {
+            $content = preg_replace('/^APP_URL=.*$/m', "APP_URL={$url}", $content);
+        } else {
+            $content .= "\nAPP_URL={$url}\n";
+        }
+
+        File::put($envPath, $content);
     }
 }

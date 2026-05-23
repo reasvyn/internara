@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Core\Policies\Concerns;
 
-use App\Domain\Auth\Enums\Role;
-use App\Domain\User\Models\User;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Provides common role-based authorization checks for domain policies.
@@ -15,50 +14,38 @@ use App\Domain\User\Models\User;
  */
 trait AuthorizesRoles
 {
-    protected function isAdmin(User $user): bool
+    protected function isAdmin(Model $user): bool
     {
-        return $user->hasAnyRole([
-            Role::SUPER_ADMIN->value,
-            Role::ADMIN->value,
-        ]);
+        return $user->hasAnyRole(['super_admin', 'admin']);
     }
 
-    protected function isTeacher(User $user): bool
+    protected function isTeacher(Model $user): bool
     {
-        return $user->hasRole(Role::TEACHER->value);
+        return $user->hasRole('teacher');
     }
 
-    protected function isStudent(User $user): bool
+    protected function isStudent(Model $user): bool
     {
-        return $user->hasRole(Role::STUDENT->value);
+        return $user->hasRole('student');
     }
 
-    protected function isSupervisor(User $user): bool
+    protected function isSupervisor(Model $user): bool
     {
-        return $user->hasRole(Role::SUPERVISOR->value);
+        return $user->hasRole('supervisor');
     }
 
-    protected function isAdminOrTeacher(User $user): bool
+    protected function isAdminOrTeacher(Model $user): bool
     {
-        return $user->hasAnyRole([
-            Role::SUPER_ADMIN->value,
-            Role::ADMIN->value,
-            Role::TEACHER->value,
-        ]);
+        return $user->hasAnyRole(['super_admin', 'admin', 'teacher']);
     }
 
-    protected function canManageAnyRole(User $user): bool
+    protected function canManageAnyRole(Model $user): bool
     {
         return $this->isAdmin($user);
     }
 
-    protected function hasAnyOfRoles(User $user, array $roles): bool
+    protected function hasAnyOfRoles(Model $user, array $roles): bool
     {
-        $roleValues = array_map(
-            static fn ($role) => $role instanceof Role ? $role->value : $role,
-            $roles,
-        );
-
-        return $user->hasAnyRole($roleValues);
+        return $user->hasAnyRole($roles);
     }
 }

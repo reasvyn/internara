@@ -1,0 +1,49 @@
+# Placement — API Reference
+
+Total: 17 files
+
+## Actions
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Placement/Actions/ApproveChangeRequestAction.php` | `ApproveChangeRequestAction` | `BaseAction` | Approves a pending placement change request |
+| `Placement/Actions/CancelPlacementAction.php` | `CancelPlacementAction` | `BaseAction` | Cancels/removes a student placement |
+| `Placement/Actions/ChangePlacementAction.php` | `ChangePlacementAction` | `BaseAction` | Changes a student's company placement |
+| `Placement/Actions/CreatePlacementAction.php` | `CreatePlacementAction` | `BaseAction` | Creates a new student placement |
+| `Placement/Actions/RejectChangeRequestAction.php` | `RejectChangeRequestAction` | `BaseAction` | Rejects a placement change request |
+| `Placement/Actions/UpdatePlacementAction.php` | `UpdatePlacementAction` | `BaseAction` | Updates placement details |
+
+## Entities
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Placement/Entities/PlacementCapacity.php` | `PlacementCapacity` | `BaseEntity` | Read-only DTO for company placement capacity |
+| `Placement/Entities/PlacementState.php` | `PlacementState` | `BaseEntity` | Read-only DTO for placement state |
+
+## Enums
+
+| File | Class | Implements | Description |
+|---|---|---|---|
+| `Placement/Enums/PlacementChangeStatus.php` | `PlacementChangeStatus` | `StatusEnum` | Placement change request lifecycle status |
+
+## Livewire Components
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Placement/Livewire/DirectPlacementManager.php` | `DirectPlacementManager` | `Component` | Direct student-to-company assignment |
+| `Placement/Livewire/PlacementChangeManager.php` | `PlacementChangeManager` | `BaseRecordManager` | Manages placement change requests |
+| `Placement/Livewire/PlacementIndex.php` | `PlacementIndex` | `BaseRecordManager` | Paginated list of all placements |
+| `Placement/Livewire/StudentPlacementChangeRequest.php` | `StudentPlacementChangeRequest` | `Component` | Student-facing placement change form |
+
+## Models
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Placement/Models/Placement.php` | `Placement` | `BaseModel` | Eloquent model for student placements |
+| `Placement/Models/PlacementChangeRequest.php` | `PlacementChangeRequest` | `BaseModel` | Eloquent model for placement change requests |
+
+## Policies
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Placement/Policies/PlacementChangeRequestPolicy.php` | `PlacementChangeRequestPolicy` | `BasePolicy` | Authorization for placement change operations |

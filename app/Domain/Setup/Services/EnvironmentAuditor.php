@@ -20,6 +20,7 @@ class EnvironmentAuditor
             ...$this->checkPermissions(),
             ...$this->checkDatabaseConnection(),
             ...$this->checkTerminalSupport(),
+            ...$this->checkFrontendAssets(),
         ]);
     }
 
@@ -100,11 +101,15 @@ class EnvironmentAuditor
     /** @return AuditCheck[] */
     private function testDatabaseConnection(string $driver): bool
     {
-        $host = config('database.connections.'.$driver.'.host') ?: '127.0.0.1';
-        $port = config('database.connections.'.$driver.'.port') ?: '3306';
-        $database = config('database.connections.'.$driver.'.database') ?: 'forge';
-        $username = config('database.connections.'.$driver.'.username') ?: 'forge';
-        $password = config('database.connections.'.$driver.'.password') ?: '';
+        $host = config('database.connections.'.$driver.'.host', '');
+        $port = config('database.connections.'.$driver.'.port', '');
+        $database = config('database.connections.'.$driver.'.database', '');
+        $username = config('database.connections.'.$driver.'.username', '');
+        $password = config('database.connections.'.$driver.'.password', '');
+
+        if ($username === 'forge' || $database === 'forge') {
+            return false;
+        }
 
         try {
             if ($driver === 'sqlite') {
@@ -141,5 +146,21 @@ class EnvironmentAuditor
                 messageParams: [],
             ),
         ];
+    }
+
+    /** @return AuditCheck[] */
+    private function checkFrontendAssets(): array
+    {
+        $manifestPath = public_path('build/manifest.json');
+        $built = file_exists($manifestPath);
+
+        return [new AuditCheck(
+            category: AuditCategory::RECOMMENDATIONS,
+            nameKey: 'frontend_assets',
+            status: $built ? AuditStatus::PASS : AuditStatus::WARN,
+            messageKey: $built ? 'frontend_assets_pass' : 'frontend_assets_fail',
+            nameParams: [],
+            messageParams: [],
+        )];
     }
 }

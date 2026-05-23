@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Dashboard for /home/reasnovynt/Projects/Dev/reasvyn/internara/app/Domain/Admin/Livewire</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../../../_css/bootstrap.min.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../../_css/billboard.min.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../../_css/style.css?v=12.5.6" rel="stylesheet" type="text/css">
+  <link href="../../../_css/custom.css" rel="stylesheet" type="text/css">
+ </head>
+ <body>
+  <header>
+   <div class="container-fluid">
+    <div class="row">
+     <div class="col-md-12">
+      <nav aria-label="breadcrumb">
+       <ol class="breadcrumb">
+         <li class="breadcrumb-item"><a href="../../../index.html">/home/reasnovynt/Projects/Dev/reasvyn/internara/app</a></li>
+         <li class="breadcrumb-item"><a href="../../index.html">Domain</a></li>
+         <li class="breadcrumb-item"><a href="../index.html">Admin</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Livewire</a></li>
+         <li class="breadcrumb-item active">(Dashboard)</li>
+
+       </ol>
+      </nav>
+     </div>
+    </div>
+   </div>
+  </header>
+  <div class="container-fluid">
+   <div class="row">
+    <div class="col-md-12">
+     <h2>Classes</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="classesCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="classComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="AccountCloneDetector.php.html#13">App\Domain\Admin\Livewire\AccountCloneDetector</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ActivityFeedManager.php.html#11">App\Domain\Admin\Livewire\ActivityFeedManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminDashboard.php.html#14">App\Domain\Admin\Livewire\AdminDashboard</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#19">App\Domain\Admin\Livewire\AdminManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AnnouncementManager.php.html#13">App\Domain\Admin\Livewire\AnnouncementManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ApplicationReview.php.html#15">App\Domain\Admin\Livewire\ApplicationReview</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AuditLogManager.php.html#14">App\Domain\Admin\Livewire\AuditLogManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GdprDeletionLogs.php.html#14">App\Domain\Admin\Livewire\GdprDeletionLogs</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#14">App\Domain\Admin\Livewire\MenteeManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#14">App\Domain\Admin\Livewire\MentorManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationBell.php.html#12">App\Domain\Admin\Livewire\NotificationBell</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#18">App\Domain\Admin\Livewire\NotificationCenter</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Pulse/RegistrationsCard.php.html#12">App\Domain\Admin\Livewire\Pulse\RegistrationsCard</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Pulse/SystemCard.php.html#13">App\Domain\Admin\Livewire\Pulse\SystemCard</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#18">App\Domain\Admin\Livewire\StudentManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#15">App\Domain\Admin\Livewire\SupervisorManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#18">App\Domain\Admin\Livewire\TeacherManager</a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#18">App\Domain\Admin\Livewire\UserManager</a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Class</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="UserManager.php.html#18">App\Domain\Admin\Livewire\UserManager</a></td><td class="text-right">0.0%</td><td class="text-right">19</td><td class="text-right">380</td></tr>
+       <tr><td><a href="AdminManager.php.html#19">App\Domain\Admin\Livewire\AdminManager</a></td><td class="text-right">0.0%</td><td class="text-right">18</td><td class="text-right">342</td></tr>
+       <tr><td><a href="StudentManager.php.html#18">App\Domain\Admin\Livewire\StudentManager</a></td><td class="text-right">0.0%</td><td class="text-right">16</td><td class="text-right">272</td></tr>
+       <tr><td><a href="MenteeManager.php.html#14">App\Domain\Admin\Livewire\MenteeManager</a></td><td class="text-right">0.0%</td><td class="text-right">15</td><td class="text-right">240</td></tr>
+       <tr><td><a href="MentorManager.php.html#14">App\Domain\Admin\Livewire\MentorManager</a></td><td class="text-right">0.0%</td><td class="text-right">15</td><td class="text-right">240</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#18">App\Domain\Admin\Livewire\NotificationCenter</a></td><td class="text-right">0.0%</td><td class="text-right">14</td><td class="text-right">210</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#15">App\Domain\Admin\Livewire\SupervisorManager</a></td><td class="text-right">0.0%</td><td class="text-right">14</td><td class="text-right">210</td></tr>
+       <tr><td><a href="TeacherManager.php.html#18">App\Domain\Admin\Livewire\TeacherManager</a></td><td class="text-right">0.0%</td><td class="text-right">14</td><td class="text-right">210</td></tr>
+       <tr><td><a href="AnnouncementManager.php.html#13">App\Domain\Admin\Livewire\AnnouncementManager</a></td><td class="text-right">0.0%</td><td class="text-right">8</td><td class="text-right">72</td></tr>
+       <tr><td><a href="ApplicationReview.php.html#15">App\Domain\Admin\Livewire\ApplicationReview</a></td><td class="text-right">0.0%</td><td class="text-right">7</td><td class="text-right">56</td></tr>
+       <tr><td><a href="AdminDashboard.php.html#14">App\Domain\Admin\Livewire\AdminDashboard</a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+       <tr><td><a href="AuditLogManager.php.html#14">App\Domain\Admin\Livewire\AuditLogManager</a></td><td class="text-right">0.0%</td><td class="text-right">5</td><td class="text-right">30</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-12">
+     <h2 style="margin-top: 3rem;">Methods</h2>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3>Coverage Distribution</h3>
+     <div id="methodsCoverageDistribution" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3>Complexity</h3>
+     <div id="methodComplexity" style="height: 300px;">
+       <svg></svg>
+     </div>
+    </div>
+   </div>
+   <div class="row">
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Insufficient Coverage</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="AccountCloneDetector.php.html#17"><abbr title="App\Domain\Admin\Livewire\AccountCloneDetector::mount">mount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AccountCloneDetector.php.html#23"><abbr title="App\Domain\Admin\Livewire\AccountCloneDetector::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ActivityFeedManager.php.html#15"><abbr title="App\Domain\Admin\Livewire\ActivityFeedManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminDashboard.php.html#16"><abbr title="App\Domain\Admin\Livewire\AdminDashboard::boot">boot</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminDashboard.php.html#31"><abbr title="App\Domain\Admin\Livewire\AdminDashboard::mount">mount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminDashboard.php.html#69"><abbr title="App\Domain\Admin\Livewire\AdminDashboard::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#32"><abbr title="App\Domain\Admin\Livewire\AdminManager::boot">boot</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#44"><abbr title="App\Domain\Admin\Livewire\AdminManager::headers">headers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#63"><abbr title="App\Domain\Admin\Livewire\AdminManager::query">query</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#71"><abbr title="App\Domain\Admin\Livewire\AdminManager::applySearch">applySearch</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#80"><abbr title="App\Domain\Admin\Livewire\AdminManager::applyFilters">applyFilters</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#89"><abbr title="App\Domain\Admin\Livewire\AdminManager::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#103"><abbr title="App\Domain\Admin\Livewire\AdminManager::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#117"><abbr title="App\Domain\Admin\Livewire\AdminManager::save">save</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#138"><abbr title="App\Domain\Admin\Livewire\AdminManager::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#154"><abbr title="App\Domain\Admin\Livewire\AdminManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AdminManager.php.html#168"><abbr title="App\Domain\Admin\Livewire\AdminManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AnnouncementManager.php.html#30"><abbr title="App\Domain\Admin\Livewire\AnnouncementManager::boot">boot</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AnnouncementManager.php.html#35"><abbr title="App\Domain\Admin\Livewire\AnnouncementManager::updatedSendToAll">updatedSendToAll</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AnnouncementManager.php.html#42"><abbr title="App\Domain\Admin\Livewire\AnnouncementManager::save">save</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AnnouncementManager.php.html#66"><abbr title="App\Domain\Admin\Livewire\AnnouncementManager::resetForm">resetForm</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AnnouncementManager.php.html#71"><abbr title="App\Domain\Admin\Livewire\AnnouncementManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ApplicationReview.php.html#23"><abbr title="App\Domain\Admin\Livewire\ApplicationReview::pendingApplications">pendingApplications</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ApplicationReview.php.html#32"><abbr title="App\Domain\Admin\Livewire\ApplicationReview::approve">approve</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ApplicationReview.php.html#42"><abbr title="App\Domain\Admin\Livewire\ApplicationReview::confirmReject">confirmReject</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="ApplicationReview.php.html#49"><abbr title="App\Domain\Admin\Livewire\ApplicationReview::reject">reject</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AuditLogManager.php.html#24"><abbr title="App\Domain\Admin\Livewire\AuditLogManager::resetFilters">resetFilters</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="AuditLogManager.php.html#32"><abbr title="App\Domain\Admin\Livewire\AuditLogManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GdprDeletionLogs.php.html#22"><abbr title="App\Domain\Admin\Livewire\GdprDeletionLogs::headers">headers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GdprDeletionLogs.php.html#32"><abbr title="App\Domain\Admin\Livewire\GdprDeletionLogs::logs">logs</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="GdprDeletionLogs.php.html#41"><abbr title="App\Domain\Admin\Livewire\GdprDeletionLogs::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#26"><abbr title="App\Domain\Admin\Livewire\MenteeManager::boot">boot</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#37"><abbr title="App\Domain\Admin\Livewire\MenteeManager::headers">headers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#49"><abbr title="App\Domain\Admin\Livewire\MenteeManager::query">query</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#55"><abbr title="App\Domain\Admin\Livewire\MenteeManager::applySearch">applySearch</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#63"><abbr title="App\Domain\Admin\Livewire\MenteeManager::applyFilters">applyFilters</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#68"><abbr title="App\Domain\Admin\Livewire\MenteeManager::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#81"><abbr title="App\Domain\Admin\Livewire\MenteeManager::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#94"><abbr title="App\Domain\Admin\Livewire\MenteeManager::save">save</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#125"><abbr title="App\Domain\Admin\Livewire\MenteeManager::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#131"><abbr title="App\Domain\Admin\Livewire\MenteeManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MenteeManager.php.html#141"><abbr title="App\Domain\Admin\Livewire\MenteeManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#26"><abbr title="App\Domain\Admin\Livewire\MentorManager::boot">boot</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#37"><abbr title="App\Domain\Admin\Livewire\MentorManager::headers">headers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#50"><abbr title="App\Domain\Admin\Livewire\MentorManager::query">query</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#56"><abbr title="App\Domain\Admin\Livewire\MentorManager::applySearch">applySearch</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#64"><abbr title="App\Domain\Admin\Livewire\MentorManager::applyFilters">applyFilters</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#71"><abbr title="App\Domain\Admin\Livewire\MentorManager::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#84"><abbr title="App\Domain\Admin\Livewire\MentorManager::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#97"><abbr title="App\Domain\Admin\Livewire\MentorManager::save">save</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#129"><abbr title="App\Domain\Admin\Livewire\MentorManager::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#135"><abbr title="App\Domain\Admin\Livewire\MentorManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="MentorManager.php.html#145"><abbr title="App\Domain\Admin\Livewire\MentorManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationBell.php.html#16"><abbr title="App\Domain\Admin\Livewire\NotificationBell::mount">mount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationBell.php.html#21"><abbr title="App\Domain\Admin\Livewire\NotificationBell::updateUnreadCount">updateUnreadCount</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationBell.php.html#28"><abbr title="App\Domain\Admin\Livewire\NotificationBell::getListeners">getListeners</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationBell.php.html#36"><abbr title="App\Domain\Admin\Livewire\NotificationBell::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#23"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::headers">headers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#40"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::query">query</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#48"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::applySearch">applySearch</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#62"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::applyFilters">applyFilters</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#73"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::markAsRead">markAsRead</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#80"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::markAllAsRead">markAllAsRead</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#88"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::markSelectedAsRead">markSelectedAsRead</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#105"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#115"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::getListeners">getListeners</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#124"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Pulse/RegistrationsCard.php.html#15"><abbr title="App\Domain\Admin\Livewire\Pulse\RegistrationsCard::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="Pulse/SystemCard.php.html#16"><abbr title="App\Domain\Admin\Livewire\Pulse\SystemCard::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#31"><abbr title="App\Domain\Admin\Livewire\StudentManager::boot">boot</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#42"><abbr title="App\Domain\Admin\Livewire\StudentManager::headers">headers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#59"><abbr title="App\Domain\Admin\Livewire\StudentManager::query">query</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#66"><abbr title="App\Domain\Admin\Livewire\StudentManager::applySearch">applySearch</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#75"><abbr title="App\Domain\Admin\Livewire\StudentManager::applyFilters">applyFilters</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#82"><abbr title="App\Domain\Admin\Livewire\StudentManager::departments">departments</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#88"><abbr title="App\Domain\Admin\Livewire\StudentManager::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#102"><abbr title="App\Domain\Admin\Livewire\StudentManager::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#116"><abbr title="App\Domain\Admin\Livewire\StudentManager::save">save</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#143"><abbr title="App\Domain\Admin\Livewire\StudentManager::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#149"><abbr title="App\Domain\Admin\Livewire\StudentManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#159"><abbr title="App\Domain\Admin\Livewire\StudentManager::archiveAllFiltered">archiveAllFiltered</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="StudentManager.php.html#166"><abbr title="App\Domain\Admin\Livewire\StudentManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#25"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::boot">boot</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#36"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::headers">headers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#52"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::query">query</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#59"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::applySearch">applySearch</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#68"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::applyFilters">applyFilters</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#75"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#86"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#97"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::save">save</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#116"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#124"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#134"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#29"><abbr title="App\Domain\Admin\Livewire\TeacherManager::boot">boot</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#43"><abbr title="App\Domain\Admin\Livewire\TeacherManager::headers">headers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#63"><abbr title="App\Domain\Admin\Livewire\TeacherManager::query">query</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#73"><abbr title="App\Domain\Admin\Livewire\TeacherManager::applySearch">applySearch</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#82"><abbr title="App\Domain\Admin\Livewire\TeacherManager::applyFilters">applyFilters</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#91"><abbr title="App\Domain\Admin\Livewire\TeacherManager::create">create</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#103"><abbr title="App\Domain\Admin\Livewire\TeacherManager::edit">edit</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#115"><abbr title="App\Domain\Admin\Livewire\TeacherManager::save">save</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#138"><abbr title="App\Domain\Admin\Livewire\TeacherManager::delete">delete</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#146"><abbr title="App\Domain\Admin\Livewire\TeacherManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="TeacherManager.php.html#156"><abbr title="App\Domain\Admin\Livewire\TeacherManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#30"><abbr title="App\Domain\Admin\Livewire\UserManager::headers">headers</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#41"><abbr title="App\Domain\Admin\Livewire\UserManager::query">query</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#46"><abbr title="App\Domain\Admin\Livewire\UserManager::applySearch">applySearch</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#55"><abbr title="App\Domain\Admin\Livewire\UserManager::applyFilters">applyFilters</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#66"><abbr title="App\Domain\Admin\Livewire\UserManager::roles">roles</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#72"><abbr title="App\Domain\Admin\Livewire\UserManager::createUser">createUser</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#85"><abbr title="App\Domain\Admin\Livewire\UserManager::editUser">editUser</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#97"><abbr title="App\Domain\Admin\Livewire\UserManager::saveUser">saveUser</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#123"><abbr title="App\Domain\Admin\Livewire\UserManager::toggleStatus">toggleStatus</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#133"><abbr title="App\Domain\Admin\Livewire\UserManager::resetPassword">resetPassword</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#139"><abbr title="App\Domain\Admin\Livewire\UserManager::deleteUser">deleteUser</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#149"><abbr title="App\Domain\Admin\Livewire\UserManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0%</td></tr>
+       <tr><td><a href="UserManager.php.html#162"><abbr title="App\Domain\Admin\Livewire\UserManager::render">render</abbr></a></td><td class="text-right">0%</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+    <div class="col-md-6">
+     <h3 style="margin-top: 2rem;">Project Risks</h3>
+     <div class="scrollbox">
+      <table class="table">
+       <thead>
+        <tr>
+         <th>Method</th>
+         <th class="text-right">Coverage</th>
+         <th class="text-right">Complexity</th>
+         <th class="text-right"><abbr title="Change Risk Anti-Patterns (CRAP) Index">CRAP</abbr></th>
+        </tr>
+       </thead>
+       <tbody>
+       <tr><td><a href="AuditLogManager.php.html#32"><abbr title="App\Domain\Admin\Livewire\AuditLogManager::render">render</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">4</td><td class="text-right">20</td></tr>
+       <tr><td><a href="AdminDashboard.php.html#31"><abbr title="App\Domain\Admin\Livewire\AdminDashboard::mount">mount</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="AdminManager.php.html#32"><abbr title="App\Domain\Admin\Livewire\AdminManager::boot">boot</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="AdminManager.php.html#154"><abbr title="App\Domain\Admin\Livewire\AdminManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="AnnouncementManager.php.html#42"><abbr title="App\Domain\Admin\Livewire\AnnouncementManager::save">save</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="MenteeManager.php.html#94"><abbr title="App\Domain\Admin\Livewire\MenteeManager::save">save</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="MentorManager.php.html#97"><abbr title="App\Domain\Admin\Livewire\MentorManager::save">save</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#62"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::applyFilters">applyFilters</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="UserManager.php.html#97"><abbr title="App\Domain\Admin\Livewire\UserManager::saveUser">saveUser</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="UserManager.php.html#149"><abbr title="App\Domain\Admin\Livewire\UserManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">3</td><td class="text-right">12</td></tr>
+       <tr><td><a href="AdminManager.php.html#80"><abbr title="App\Domain\Admin\Livewire\AdminManager::applyFilters">applyFilters</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="AdminManager.php.html#117"><abbr title="App\Domain\Admin\Livewire\AdminManager::save">save</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="AdminManager.php.html#138"><abbr title="App\Domain\Admin\Livewire\AdminManager::delete">delete</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="AnnouncementManager.php.html#35"><abbr title="App\Domain\Admin\Livewire\AnnouncementManager::updatedSendToAll">updatedSendToAll</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="ApplicationReview.php.html#32"><abbr title="App\Domain\Admin\Livewire\ApplicationReview::approve">approve</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="ApplicationReview.php.html#49"><abbr title="App\Domain\Admin\Livewire\ApplicationReview::reject">reject</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="MenteeManager.php.html#26"><abbr title="App\Domain\Admin\Livewire\MenteeManager::boot">boot</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="MenteeManager.php.html#131"><abbr title="App\Domain\Admin\Livewire\MenteeManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="MentorManager.php.html#26"><abbr title="App\Domain\Admin\Livewire\MentorManager::boot">boot</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="MentorManager.php.html#135"><abbr title="App\Domain\Admin\Livewire\MentorManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#88"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::markSelectedAsRead">markSelectedAsRead</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="NotificationCenter.php.html#105"><abbr title="App\Domain\Admin\Livewire\NotificationCenter::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="StudentManager.php.html#31"><abbr title="App\Domain\Admin\Livewire\StudentManager::boot">boot</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="StudentManager.php.html#116"><abbr title="App\Domain\Admin\Livewire\StudentManager::save">save</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="StudentManager.php.html#149"><abbr title="App\Domain\Admin\Livewire\StudentManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#25"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::boot">boot</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#97"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::save">save</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="SupervisorManager.php.html#124"><abbr title="App\Domain\Admin\Livewire\SupervisorManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="TeacherManager.php.html#29"><abbr title="App\Domain\Admin\Livewire\TeacherManager::boot">boot</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="TeacherManager.php.html#115"><abbr title="App\Domain\Admin\Livewire\TeacherManager::save">save</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="TeacherManager.php.html#146"><abbr title="App\Domain\Admin\Livewire\TeacherManager::deleteSelected">deleteSelected</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="UserManager.php.html#123"><abbr title="App\Domain\Admin\Livewire\UserManager::toggleStatus">toggleStatus</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+       <tr><td><a href="UserManager.php.html#139"><abbr title="App\Domain\Admin\Livewire\UserManager::deleteUser">deleteUser</abbr></a></td><td class="text-right">0.0%</td><td class="text-right">2</td><td class="text-right">6</td></tr>
+
+       </tbody>
+      </table>
+     </div>
+    </div>
+   </div>
+   <footer>
+    <hr/>
+    <p>
+     <small>Generated by <a href="https://github.com/sebastianbergmann/php-code-coverage" target="_top">php-code-coverage 12.5.6</a> using <a href="https://www.php.net/" target="_top">PHP 8.4.20</a> and <a href="https://phpunit.de/">PHPUnit 12.5.24</a> at Fri May 22 9:27:53 WIB 2026.</small>
+    </p>
+   </footer>
+  </div>
+  <script src="../../../_js/billboard.pkgd.min.js?v=12.5.6" type="text/javascript"></script>
+  <script type="application/json" id="complexity_class">[[0,2,"AccountCloneDetector.php.html#13","App\\Domain\\Admin\\Livewire\\AccountCloneDetector","6"],[0,1,"ActivityFeedManager.php.html#11","App\\Domain\\Admin\\Livewire\\ActivityFeedManager","2"],[0,5,"AdminDashboard.php.html#14","App\\Domain\\Admin\\Livewire\\AdminDashboard","30"],[0,18,"AdminManager.php.html#19","App\\Domain\\Admin\\Livewire\\AdminManager","342"],[0,8,"AnnouncementManager.php.html#13","App\\Domain\\Admin\\Livewire\\AnnouncementManager","72"],[0,7,"ApplicationReview.php.html#15","App\\Domain\\Admin\\Livewire\\ApplicationReview","56"],[0,5,"AuditLogManager.php.html#14","App\\Domain\\Admin\\Livewire\\AuditLogManager","30"],[0,3,"GdprDeletionLogs.php.html#14","App\\Domain\\Admin\\Livewire\\GdprDeletionLogs","12"],[0,15,"MenteeManager.php.html#14","App\\Domain\\Admin\\Livewire\\MenteeManager","240"],[0,15,"MentorManager.php.html#14","App\\Domain\\Admin\\Livewire\\MentorManager","240"],[0,4,"NotificationBell.php.html#12","App\\Domain\\Admin\\Livewire\\NotificationBell","20"],[0,14,"NotificationCenter.php.html#18","App\\Domain\\Admin\\Livewire\\NotificationCenter","210"],[0,1,"Pulse\/RegistrationsCard.php.html#12","App\\Domain\\Admin\\Livewire\\Pulse\\RegistrationsCard","2"],[0,1,"Pulse\/SystemCard.php.html#13","App\\Domain\\Admin\\Livewire\\Pulse\\SystemCard","2"],[0,16,"StudentManager.php.html#18","App\\Domain\\Admin\\Livewire\\StudentManager","272"],[0,14,"SupervisorManager.php.html#15","App\\Domain\\Admin\\Livewire\\SupervisorManager","210"],[0,14,"TeacherManager.php.html#18","App\\Domain\\Admin\\Livewire\\TeacherManager","210"],[0,19,"UserManager.php.html#18","App\\Domain\\Admin\\Livewire\\UserManager","380"]]</script>
+  <script type="application/json" id="complexity_method">[[0,1,"AccountCloneDetector.php.html#17","App\\Domain\\Admin\\Livewire\\AccountCloneDetector::mount","2"],[0,1,"AccountCloneDetector.php.html#23","App\\Domain\\Admin\\Livewire\\AccountCloneDetector::render","2"],[0,1,"ActivityFeedManager.php.html#15","App\\Domain\\Admin\\Livewire\\ActivityFeedManager::render","2"],[0,1,"AdminDashboard.php.html#16","App\\Domain\\Admin\\Livewire\\AdminDashboard::boot","2"],[0,3,"AdminDashboard.php.html#31","App\\Domain\\Admin\\Livewire\\AdminDashboard::mount","12"],[0,1,"AdminDashboard.php.html#69","App\\Domain\\Admin\\Livewire\\AdminDashboard::render","2"],[0,3,"AdminManager.php.html#32","App\\Domain\\Admin\\Livewire\\AdminManager::boot","12"],[0,1,"AdminManager.php.html#44","App\\Domain\\Admin\\Livewire\\AdminManager::headers","2"],[0,1,"AdminManager.php.html#63","App\\Domain\\Admin\\Livewire\\AdminManager::query","2"],[0,1,"AdminManager.php.html#71","App\\Domain\\Admin\\Livewire\\AdminManager::applySearch","2"],[0,2,"AdminManager.php.html#80","App\\Domain\\Admin\\Livewire\\AdminManager::applyFilters","6"],[0,1,"AdminManager.php.html#89","App\\Domain\\Admin\\Livewire\\AdminManager::create","2"],[0,1,"AdminManager.php.html#103","App\\Domain\\Admin\\Livewire\\AdminManager::edit","2"],[0,2,"AdminManager.php.html#117","App\\Domain\\Admin\\Livewire\\AdminManager::save","6"],[0,2,"AdminManager.php.html#138","App\\Domain\\Admin\\Livewire\\AdminManager::delete","6"],[0,3,"AdminManager.php.html#154","App\\Domain\\Admin\\Livewire\\AdminManager::deleteSelected","12"],[0,1,"AdminManager.php.html#168","App\\Domain\\Admin\\Livewire\\AdminManager::render","2"],[0,1,"AnnouncementManager.php.html#30","App\\Domain\\Admin\\Livewire\\AnnouncementManager::boot","2"],[0,2,"AnnouncementManager.php.html#35","App\\Domain\\Admin\\Livewire\\AnnouncementManager::updatedSendToAll","6"],[0,3,"AnnouncementManager.php.html#42","App\\Domain\\Admin\\Livewire\\AnnouncementManager::save","12"],[0,1,"AnnouncementManager.php.html#66","App\\Domain\\Admin\\Livewire\\AnnouncementManager::resetForm","2"],[0,1,"AnnouncementManager.php.html#71","App\\Domain\\Admin\\Livewire\\AnnouncementManager::render","2"],[0,1,"ApplicationReview.php.html#23","App\\Domain\\Admin\\Livewire\\ApplicationReview::pendingApplications","2"],[0,2,"ApplicationReview.php.html#32","App\\Domain\\Admin\\Livewire\\ApplicationReview::approve","6"],[0,1,"ApplicationReview.php.html#42","App\\Domain\\Admin\\Livewire\\ApplicationReview::confirmReject","2"],[0,2,"ApplicationReview.php.html#49","App\\Domain\\Admin\\Livewire\\ApplicationReview::reject","6"],[0,1,"AuditLogManager.php.html#24","App\\Domain\\Admin\\Livewire\\AuditLogManager::resetFilters","2"],[0,4,"AuditLogManager.php.html#32","App\\Domain\\Admin\\Livewire\\AuditLogManager::render","20"],[0,1,"GdprDeletionLogs.php.html#22","App\\Domain\\Admin\\Livewire\\GdprDeletionLogs::headers","2"],[0,1,"GdprDeletionLogs.php.html#32","App\\Domain\\Admin\\Livewire\\GdprDeletionLogs::logs","2"],[0,1,"GdprDeletionLogs.php.html#41","App\\Domain\\Admin\\Livewire\\GdprDeletionLogs::render","2"],[0,2,"MenteeManager.php.html#26","App\\Domain\\Admin\\Livewire\\MenteeManager::boot","6"],[0,1,"MenteeManager.php.html#37","App\\Domain\\Admin\\Livewire\\MenteeManager::headers","2"],[0,1,"MenteeManager.php.html#49","App\\Domain\\Admin\\Livewire\\MenteeManager::query","2"],[0,1,"MenteeManager.php.html#55","App\\Domain\\Admin\\Livewire\\MenteeManager::applySearch","2"],[0,1,"MenteeManager.php.html#63","App\\Domain\\Admin\\Livewire\\MenteeManager::applyFilters","2"],[0,1,"MenteeManager.php.html#68","App\\Domain\\Admin\\Livewire\\MenteeManager::create","2"],[0,1,"MenteeManager.php.html#81","App\\Domain\\Admin\\Livewire\\MenteeManager::edit","2"],[0,3,"MenteeManager.php.html#94","App\\Domain\\Admin\\Livewire\\MenteeManager::save","12"],[0,1,"MenteeManager.php.html#125","App\\Domain\\Admin\\Livewire\\MenteeManager::delete","2"],[0,2,"MenteeManager.php.html#131","App\\Domain\\Admin\\Livewire\\MenteeManager::deleteSelected","6"],[0,1,"MenteeManager.php.html#141","App\\Domain\\Admin\\Livewire\\MenteeManager::render","2"],[0,2,"MentorManager.php.html#26","App\\Domain\\Admin\\Livewire\\MentorManager::boot","6"],[0,1,"MentorManager.php.html#37","App\\Domain\\Admin\\Livewire\\MentorManager::headers","2"],[0,1,"MentorManager.php.html#50","App\\Domain\\Admin\\Livewire\\MentorManager::query","2"],[0,1,"MentorManager.php.html#56","App\\Domain\\Admin\\Livewire\\MentorManager::applySearch","2"],[0,1,"MentorManager.php.html#64","App\\Domain\\Admin\\Livewire\\MentorManager::applyFilters","2"],[0,1,"MentorManager.php.html#71","App\\Domain\\Admin\\Livewire\\MentorManager::create","2"],[0,1,"MentorManager.php.html#84","App\\Domain\\Admin\\Livewire\\MentorManager::edit","2"],[0,3,"MentorManager.php.html#97","App\\Domain\\Admin\\Livewire\\MentorManager::save","12"],[0,1,"MentorManager.php.html#129","App\\Domain\\Admin\\Livewire\\MentorManager::delete","2"],[0,2,"MentorManager.php.html#135","App\\Domain\\Admin\\Livewire\\MentorManager::deleteSelected","6"],[0,1,"MentorManager.php.html#145","App\\Domain\\Admin\\Livewire\\MentorManager::render","2"],[0,1,"NotificationBell.php.html#16","App\\Domain\\Admin\\Livewire\\NotificationBell::mount","2"],[0,1,"NotificationBell.php.html#21","App\\Domain\\Admin\\Livewire\\NotificationBell::updateUnreadCount","2"],[0,1,"NotificationBell.php.html#28","App\\Domain\\Admin\\Livewire\\NotificationBell::getListeners","2"],[0,1,"NotificationBell.php.html#36","App\\Domain\\Admin\\Livewire\\NotificationBell::render","2"],[0,1,"NotificationCenter.php.html#23","App\\Domain\\Admin\\Livewire\\NotificationCenter::headers","2"],[0,1,"NotificationCenter.php.html#40","App\\Domain\\Admin\\Livewire\\NotificationCenter::query","2"],[0,1,"NotificationCenter.php.html#48","App\\Domain\\Admin\\Livewire\\NotificationCenter::applySearch","2"],[0,3,"NotificationCenter.php.html#62","App\\Domain\\Admin\\Livewire\\NotificationCenter::applyFilters","12"],[0,1,"NotificationCenter.php.html#73","App\\Domain\\Admin\\Livewire\\NotificationCenter::markAsRead","2"],[0,1,"NotificationCenter.php.html#80","App\\Domain\\Admin\\Livewire\\NotificationCenter::markAllAsRead","2"],[0,2,"NotificationCenter.php.html#88","App\\Domain\\Admin\\Livewire\\NotificationCenter::markSelectedAsRead","6"],[0,2,"NotificationCenter.php.html#105","App\\Domain\\Admin\\Livewire\\NotificationCenter::deleteSelected","6"],[0,1,"NotificationCenter.php.html#115","App\\Domain\\Admin\\Livewire\\NotificationCenter::getListeners","2"],[0,1,"NotificationCenter.php.html#124","App\\Domain\\Admin\\Livewire\\NotificationCenter::render","2"],[0,1,"Pulse\/RegistrationsCard.php.html#15","App\\Domain\\Admin\\Livewire\\Pulse\\RegistrationsCard::render","2"],[0,1,"Pulse\/SystemCard.php.html#16","App\\Domain\\Admin\\Livewire\\Pulse\\SystemCard::render","2"],[0,2,"StudentManager.php.html#31","App\\Domain\\Admin\\Livewire\\StudentManager::boot","6"],[0,1,"StudentManager.php.html#42","App\\Domain\\Admin\\Livewire\\StudentManager::headers","2"],[0,1,"StudentManager.php.html#59","App\\Domain\\Admin\\Livewire\\StudentManager::query","2"],[0,1,"StudentManager.php.html#66","App\\Domain\\Admin\\Livewire\\StudentManager::applySearch","2"],[0,1,"StudentManager.php.html#75","App\\Domain\\Admin\\Livewire\\StudentManager::applyFilters","2"],[0,1,"StudentManager.php.html#82","App\\Domain\\Admin\\Livewire\\StudentManager::departments","2"],[0,1,"StudentManager.php.html#88","App\\Domain\\Admin\\Livewire\\StudentManager::create","2"],[0,1,"StudentManager.php.html#102","App\\Domain\\Admin\\Livewire\\StudentManager::edit","2"],[0,2,"StudentManager.php.html#116","App\\Domain\\Admin\\Livewire\\StudentManager::save","6"],[0,1,"StudentManager.php.html#143","App\\Domain\\Admin\\Livewire\\StudentManager::delete","2"],[0,2,"StudentManager.php.html#149","App\\Domain\\Admin\\Livewire\\StudentManager::deleteSelected","6"],[0,1,"StudentManager.php.html#159","App\\Domain\\Admin\\Livewire\\StudentManager::archiveAllFiltered","2"],[0,1,"StudentManager.php.html#166","App\\Domain\\Admin\\Livewire\\StudentManager::render","2"],[0,2,"SupervisorManager.php.html#25","App\\Domain\\Admin\\Livewire\\SupervisorManager::boot","6"],[0,1,"SupervisorManager.php.html#36","App\\Domain\\Admin\\Livewire\\SupervisorManager::headers","2"],[0,1,"SupervisorManager.php.html#52","App\\Domain\\Admin\\Livewire\\SupervisorManager::query","2"],[0,1,"SupervisorManager.php.html#59","App\\Domain\\Admin\\Livewire\\SupervisorManager::applySearch","2"],[0,1,"SupervisorManager.php.html#68","App\\Domain\\Admin\\Livewire\\SupervisorManager::applyFilters","2"],[0,1,"SupervisorManager.php.html#75","App\\Domain\\Admin\\Livewire\\SupervisorManager::create","2"],[0,1,"SupervisorManager.php.html#86","App\\Domain\\Admin\\Livewire\\SupervisorManager::edit","2"],[0,2,"SupervisorManager.php.html#97","App\\Domain\\Admin\\Livewire\\SupervisorManager::save","6"],[0,1,"SupervisorManager.php.html#116","App\\Domain\\Admin\\Livewire\\SupervisorManager::delete","2"],[0,2,"SupervisorManager.php.html#124","App\\Domain\\Admin\\Livewire\\SupervisorManager::deleteSelected","6"],[0,1,"SupervisorManager.php.html#134","App\\Domain\\Admin\\Livewire\\SupervisorManager::render","2"],[0,2,"TeacherManager.php.html#29","App\\Domain\\Admin\\Livewire\\TeacherManager::boot","6"],[0,1,"TeacherManager.php.html#43","App\\Domain\\Admin\\Livewire\\TeacherManager::headers","2"],[0,1,"TeacherManager.php.html#63","App\\Domain\\Admin\\Livewire\\TeacherManager::query","2"],[0,1,"TeacherManager.php.html#73","App\\Domain\\Admin\\Livewire\\TeacherManager::applySearch","2"],[0,1,"TeacherManager.php.html#82","App\\Domain\\Admin\\Livewire\\TeacherManager::applyFilters","2"],[0,1,"TeacherManager.php.html#91","App\\Domain\\Admin\\Livewire\\TeacherManager::create","2"],[0,1,"TeacherManager.php.html#103","App\\Domain\\Admin\\Livewire\\TeacherManager::edit","2"],[0,2,"TeacherManager.php.html#115","App\\Domain\\Admin\\Livewire\\TeacherManager::save","6"],[0,1,"TeacherManager.php.html#138","App\\Domain\\Admin\\Livewire\\TeacherManager::delete","2"],[0,2,"TeacherManager.php.html#146","App\\Domain\\Admin\\Livewire\\TeacherManager::deleteSelected","6"],[0,1,"TeacherManager.php.html#156","App\\Domain\\Admin\\Livewire\\TeacherManager::render","2"],[0,1,"UserManager.php.html#30","App\\Domain\\Admin\\Livewire\\UserManager::headers","2"],[0,1,"UserManager.php.html#41","App\\Domain\\Admin\\Livewire\\UserManager::query","2"],[0,1,"UserManager.php.html#46","App\\Domain\\Admin\\Livewire\\UserManager::applySearch","2"],[0,1,"UserManager.php.html#55","App\\Domain\\Admin\\Livewire\\UserManager::applyFilters","2"],[0,1,"UserManager.php.html#66","App\\Domain\\Admin\\Livewire\\UserManager::roles","2"],[0,1,"UserManager.php.html#72","App\\Domain\\Admin\\Livewire\\UserManager::createUser","2"],[0,1,"UserManager.php.html#85","App\\Domain\\Admin\\Livewire\\UserManager::editUser","2"],[0,3,"UserManager.php.html#97","App\\Domain\\Admin\\Livewire\\UserManager::saveUser","12"],[0,2,"UserManager.php.html#123","App\\Domain\\Admin\\Livewire\\UserManager::toggleStatus","6"],[0,1,"UserManager.php.html#133","App\\Domain\\Admin\\Livewire\\UserManager::resetPassword","2"],[0,2,"UserManager.php.html#139","App\\Domain\\Admin\\Livewire\\UserManager::deleteUser","6"],[0,3,"UserManager.php.html#149","App\\Domain\\Admin\\Livewire\\UserManager::deleteSelected","12"],[0,1,"UserManager.php.html#162","App\\Domain\\Admin\\Livewire\\UserManager::render","2"],[100,1,"ApplicationReview.php.html#65","App\\Domain\\Admin\\Livewire\\ApplicationReview::render","1"]]</script>
+  <script type="text/javascript" defer>
+  const barLabels = [
+    '0%',
+    '0-10%',
+    '10-20%',
+    '20-30%',
+    '30-40%',
+    '40-50%',
+    '50-60%',
+    '60-70%',
+    '70-80%',
+    '80-90%',
+    '90-100%',
+    '100%'
+  ];
+  const barConfig = (name, fullName, values) => ({
+    axis: {
+      x: {
+        type: "category",
+        categories: barLabels,
+      },
+      y: {
+        label: {
+          text: `#${name}`,
+          position: 'outer-top',
+        },
+      },
+    },
+    bindto: `#${name}CoverageDistribution`,
+    data: {
+      columns: [
+        [fullName].concat(values),
+      ],
+      colors: {
+        [fullName]: "rgba(69, 114, 167, 0.75)",
+      },
+      type: "bar",
+    },
+    bar: {
+      width: {
+        ratio: 0.9,
+      },
+    },
+    grid: {
+      focus: {
+        show: false,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">Coverage ${barLabels[data[0].x]}</th></tr>
+            <tr><td class="value">${data[0].value} ${name}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  bb.generate(
+    barConfig('classes', "Class Coverage", [18,0,0,0,0,0,0,0,0,0,0,0])
+  );
+  bb.generate(
+    barConfig('methods', "Method Coverage", [117,0,0,0,0,0,0,0,0,0,0,1])
+  );
+
+  const scatterConfig = (name, complexityData) => ({
+    axis: {
+      x: {
+        label: {
+          text: 'Code Coverage (in percent)',
+          position: 'outer-right',
+        },
+        tick: {
+          values: [0, 20, 40, 60, 80, 100],
+        },
+      },
+      y: {
+        label: {
+          text: 'Cyclomatic Complexity',
+          position: 'outer-top',
+        },
+        min: 0,
+        padding: {
+          bottom: 0,
+          top: 5,
+        },
+      },
+    },
+    bindto: `#${name}Complexity`,
+    data: {
+      columns: [
+        ["complexity_x"].concat(complexityData.map(d => d[0])),
+        ["complexity"].concat(complexityData.map(d => d[1])),
+      ],
+      onclick: function(data, element) {
+        window.location = complexityData[data.index][2];
+      },
+      type: "scatter",
+      xs: {
+        "complexity": "complexity_x",
+      },
+    },
+    grid: {
+      focus: {
+        show: true,
+        y: true,
+      },
+      x: {
+        show: true,
+      },
+      y: {
+        show: true,
+      },
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      contents: function (data) {
+        const coverage = Math.round(data[0].x);
+        const complexity = data[0].value;
+        const targetName = complexityData[data[0].index][3];
+        const crap = complexityData[data[0].index][4];
+        return `<table class="bb-tooltip"><tbody>
+            <tr><th colspan="2">${targetName}</th></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Coverage</td><td class="name">${coverage}%</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Complexity</td><td class="value">${complexity}</td></tr>
+            <tr class="bb-tooltip-name-complexity"><td>Crap</td><td class="value">${crap}</td></tr>
+          </tbody></table>`;
+      },
+      grouped: false,
+    },
+  });
+  const classComplexityData = JSON.parse(document.getElementById('complexity_class').textContent);
+  bb.generate(
+    scatterConfig("class", classComplexityData)
+  );
+  const methodComplexityData = JSON.parse(document.getElementById('complexity_method').textContent);
+  bb.generate(
+    scatterConfig("method", methodComplexityData),
+  );
+  </script>
+ </body>
+</html>

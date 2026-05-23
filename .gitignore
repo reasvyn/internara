@@ -16,7 +16,6 @@
 .env
 .env.*
 !.env.example
-!.env.sharing
 .env.backup*
 .env.production
 /auth.json

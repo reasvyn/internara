@@ -53,6 +53,14 @@ return [
         'save' => 'Save Changes',
     ],
 
+    'test_mail' => [
+        'subject' => 'Test Mail from :app_name',
+        'greeting' => 'Hello!',
+        'line1' => 'This is a test email to verify your SMTP configuration.',
+        'line2' => 'If you received this email, your SMTP settings are configured correctly.',
+        'action' => 'Open Settings',
+    ],
+
     'messages' => [
         'saved' => 'System settings have been updated successfully.',
         'test_email_sent' => 'Test email sent successfully. Please check your inbox.',

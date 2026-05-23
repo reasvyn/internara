@@ -75,4 +75,20 @@ describe('ActivityLog scopes', function () {
 
         expect($query)->toBeInstanceOf(Builder::class);
     });
+
+    it('getGroupedByDay exists as instance method', function () {
+        expect(method_exists(ActivityLog::class, 'getGroupedByDay'))->toBeTrue();
+    });
+
+    it('scopeWhereSubject filters by type and optional id', function () {
+        $query = ActivityLog::whereSubject('App\Models\User', 'user-1');
+
+        expect($query)->toBeInstanceOf(Builder::class);
+    });
+
+    it('scopeWhereSubject filters by type only when id is null', function () {
+        $query = ActivityLog::whereSubject('App\Models\User');
+
+        expect($query)->toBeInstanceOf(Builder::class);
+    });
 });

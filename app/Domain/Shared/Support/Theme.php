@@ -13,14 +13,6 @@ final class Theme
     {
         $defaults = config('settings.colors.defaults');
 
-        if (is_string($defaults)) {
-            $preset = config("settings.colors.presets.{$defaults}.colors");
-
-            if (is_array($preset)) {
-                return $preset;
-            }
-        }
-
         if (is_array($defaults)) {
             return $defaults;
         }

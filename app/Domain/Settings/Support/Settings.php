@@ -6,9 +6,11 @@ namespace App\Domain\Settings\Support;
 
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Settings\Models\Setting;
+use App\Domain\Settings\Rules\ValidSettingKey;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Centralized system setting retrieval with multi-tier resolution and caching.
@@ -170,6 +172,9 @@ final class Settings
         $updated = 0;
 
         foreach ($settings as $key => $attributes) {
+            Validator::validate(['key' => $key], [
+                'key' => ['required', new ValidSettingKey],
+            ]);
             $value = is_array($attributes) ? ($attributes['value'] ?? null) : $attributes;
             $extra = is_array($attributes) ? array_diff_key($attributes, ['value' => null]) : [];
 

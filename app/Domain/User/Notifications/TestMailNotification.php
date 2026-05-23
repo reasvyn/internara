@@ -17,10 +17,10 @@ class TestMailNotification extends Notification
     public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(__('settings.test_mail.subject'))
-            ->greeting(__('settings.test_mail.greeting'))
-            ->line(__('settings.test_mail.line1'))
-            ->line(__('settings.test_mail.line2'))
-            ->action(__('settings.test_mail.action'), url('/admin/settings'));
+            ->subject(__('setting.test_mail.subject'))
+            ->greeting(__('setting.test_mail.greeting'))
+            ->line(__('setting.test_mail.line1'))
+            ->line(__('setting.test_mail.line2'))
+            ->action(__('setting.test_mail.action'), url('/admin/settings'));
     }
 }
