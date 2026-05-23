@@ -92,37 +92,31 @@ across the entire application.
 
 ### User Stories & Rules
 
+**Branding & Identity**
 - **Admin:** As an admin, I want to change the application name and branding colors so that the system reflects my institution's identity
 - **Admin:** As an admin, I want to upload a logo and favicon so that the application looks professional
+- Branding setting changes trigger immediate cache invalidation — visual changes take effect on the next page load, no restart needed
+- Image-type settings (logo, favicon) store media library references; the uploaded file is versioned and optimized automatically
+
+**General Configuration**
 - **Admin:** As an admin, I want to configure localization (language, timezone, date format) so that the system matches regional preferences
-- **Admin:** As an admin, I want to toggle feature flags so that I can enable or disable functionality without deployment
 - **Admin:** As an admin, I want to modify system defaults (pagination, session lifetime) so that operational behavior is tuned
+- **Admin:** As an admin, I want to toggle feature flags so that I can enable or disable functionality without deployment
+- Feature flags that are referenced by code cannot be deleted — they can only be disabled; deletion is blocked at the database level
+- Critical settings (affecting security, core functionality, or data integrity) require a confirmation dialog before the change is applied
+
+**Mail Configuration**
 - **Admin:** As an admin, I want to test email configuration so that I can verify notifications are delivered
+- `TestMailNotification` provides a simple mail message for testing SMTP configuration
+
+**System Integrity**
 - **System:** As the system, I want to invalidate the settings cache on every change so that updates take effect immediately
-- Setting keys must be unique across the entire application — key collisions are rejected at 
-write time with a clear error message.
-- Branding setting changes trigger immediate cache invalidation — visual changes take effect on 
-the next page load, no restart needed.
-- Feature flags that are referenced by code cannot be deleted — they can only be disabled; 
-deletion is blocked at the database level.
-- Setting values are validated against their declared type on every write; type mismatches are 
-rejected with validation errors.
-- All setting changes (create, update, delete) are audited with before and after values, acting 
-user, and timestamp.
-- Critical settings (affecting security, core functionality, or data integrity) require a 
-confirmation dialog before the change is applied.
-- The settings cache is invalidated on every write — there is no manual "clear cache" action 
-needed for settings.
-- Default values for all settings are defined in code (config files); database settings override 
-code defaults for the current runtime values.
-- Image-type settings (logo, favicon) store media library references; the uploaded file is 
-versioned and optimized automatically.
-- All logging uses SmartLogger (`Core\Support`). Empty catch blocks from preview URL generation 
-have been replaced with SmartLogger warnings for debugging visibility.
-- `UploadBrandAssetAction` is injected via method dependency injection in `SystemSetting::save()` 
-consistent with the existing `BatchSetSettingAction` injection pattern.
-- `TestMailNotification` lives at `App\Domain\User\Notifications\TestMailNotification` and 
-provides a simple mail message for testing SMTP configuration.
+- Setting keys must be unique across the entire application — key collisions are rejected at write time with a clear error message
+- Setting values are validated against their declared type on every write; type mismatches are rejected with validation errors
+- All setting changes (create, update, delete) are audited with before and after values, acting user, and timestamp
+- The settings cache is invalidated on every write — there is no manual "clear cache" action needed
+- Default values for all settings are defined in code (config files); database settings override code defaults for the current runtime values
+- All logging uses SmartLogger; empty catch blocks from preview URL generation have been replaced with SmartLogger warnings
 
 ### Key Operations
 

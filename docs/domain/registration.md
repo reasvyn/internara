@@ -109,34 +109,32 @@ used in all official correspondence, on certificates, and in external verificati
 
 ### User Stories & Rules
 
+**Student Application**
 - **Student:** As a student, I want to create a registration application so that I can enroll in an internship program
 - **Student:** As a student, I want to upload the required documents during registration so that my application is complete
 - **Student:** As a student, I want to track my registration status so that I know what is happening with my application
 - **Student:** As a student, I want to revise my application when asked so that I can correct issues and proceed
+- A student can have at most one registration in a non-terminal state (DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, ACTIVE) at any time — no concurrent active registrations
+- Application documents are immutable after submission — revisions create new versions; previous versions remain in the audit trail
+- Registration amendments (changes after submission) are limited to specific editable fields and are logged as amendments with the original value preserved
+- Registration numbers are globally unique and generated atomically upon first submission — no duplicates, no gaps
+
+**Admin Review**
 - **Admin:** As an admin, I want to review submitted applications so that I can approve or reject them
 - **Admin:** As an admin, I want to verify uploaded documents so that all program requirements are met
 - **Admin:** As an admin, I want to request revisions with specific change requests so that students know exactly what to fix
 - **Admin:** As an admin, I want to batch-process applications so that I can handle large applicant pools efficiently
+- Rejected applications include categorized reasons and detailed explanations, both visible to the student
+- Withdrawn registrations can be reinstated only within a configurable grace period after withdrawal (default 14 days)
+
+**State Machine & Status**
 - **System:** As the system, I want to enforce the state machine so that no invalid transitions occur
+- Registration transitions must strictly follow the defined state machine — skipping states is not permitted
+- ACTIVE status requires both APPROVED registration AND confirmed placement from the Placement domain — neither alone is sufficient
+
+**Completion & Certification**
 - **System:** As the system, I want to perform a holistic completion check across all domains so that certification eligibility is accurate
-- A student can have at most one registration in a non-terminal state (DRAFT, SUBMITTED, 
-UNDER_REVIEW, APPROVED, ACTIVE) at any time — no concurrent active registrations.
-- Registration transitions must strictly follow the defined state machine — skipping states is 
-not permitted.
-- Registration numbers are globally unique and generated atomically upon first submission — no 
-duplicates, no gaps.
-- ACTIVE status requires both APPROVED registration AND confirmed placement from the Placement 
-domain — neither alone is sufficient.
-- Withdrawn registrations can be reinstated only within a configurable grace period after 
-withdrawal (default 14 days).
-- Application documents are immutable after submission — revisions create new versions; 
-previous versions remain in the audit trail.
-- The holistic completion check is read-only — it queries but never modifies data in other 
-domains.
-- Rejected applications include categorized reasons and detailed explanations, both visible to 
-the student.
-- Registration amendments (changes after submission) are limited to specific editable fields and 
-are logged as amendments with the original value preserved.
+- The holistic completion check is read-only — it queries but never modifies data in other domains
 
 ### Process Flow
 
