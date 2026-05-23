@@ -137,7 +137,7 @@ navigation.
 ## Where to Find It
 
 Layout templates are in `resources/views/shared/layouts/`. UI components are in
-`resources/views/components/ui/`. The CSS entry point is
+`resources/views/shared/ui/`. The CSS entry point is
 `resources/css/app.css`. JavaScript entry point is `resources/js/app.js`.
 The maryUI configuration is in `config/mary.php`. The sidebar menu
 structure is in `config/menu.php`. The Livewire components for theme
