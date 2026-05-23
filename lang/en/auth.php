@@ -50,4 +50,37 @@ return [
     'invalid_credentials' => 'Invalid email or password.',
     'email_reset_link' => 'We have emailed your password reset link.',
     'password_reset_success' => 'Your password has been reset.',
+    'password_confirmed' => 'Password confirmed.',
+    'account_locked' => 'Account locked successfully.',
+    'account_unlocked' => 'Account unlocked successfully.',
+    'recovery_slip_generated' => 'Recovery slip generated successfully.',
+    'permissions_updated' => 'Permissions updated successfully.',
+
+    // Recovery slip manager
+    'recovery_slip' => [
+        'title' => 'Recovery Slip',
+        'subtitle' => 'Generate a one-time credential slip for offline delivery',
+        'generated_title' => 'Credential Slip Generated',
+        'generated_desc' => 'Deliver this code to the user offline. Expires: :date',
+        'security_note' => 'Security Note',
+        'security_note_desc' => 'This code will not be shown again. It expires in 24 hours. Verify the recipient\'s identity before delivery.',
+        'generate_another' => 'Generate Another',
+        'search_user' => 'Search User',
+        'no_users_found' => 'No users found.',
+        'selected_user' => 'Selected: :name (:username)',
+        'generate_slip' => 'Generate Recovery Slip',
+        'back_to_dashboard' => 'Back to Dashboard',
+    ],
+
+    // Access management
+    'access_management' => [
+        'title' => 'Access Management',
+        'subtitle' => 'Manage roles and their granular permissions',
+        'users_assigned' => ':count users assigned',
+        'permissions_granted' => ':count permissions granted.',
+        'manage_permissions' => 'Manage Permissions',
+        'manage_title' => 'Manage Permissions: :name',
+        'cancel' => 'Cancel',
+        'save' => 'Save Permissions',
+    ],
 ];

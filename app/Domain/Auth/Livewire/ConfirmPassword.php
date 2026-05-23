@@ -34,7 +34,7 @@ class ConfirmPassword extends Component
 
             $this->reset('password');
 
-            flash()->success(__('auth.password_confirmed') ?? 'Password confirmed.');
+            flash()->success(__('auth.password_confirmed'));
 
             $this->redirect($this->getIntendedUrl(), navigate: true);
         } catch (RuntimeException $e) {

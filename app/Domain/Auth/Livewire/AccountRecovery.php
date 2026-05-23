@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use RuntimeException;
 
@@ -17,12 +18,16 @@ class AccountRecovery extends Component
 {
     public string $step = 'code';
 
+    #[Validate('required|string')]
     public string $username = '';
 
+    #[Validate('required|string|size:12')]
     public string $recoveryCode = '';
 
+    #[Validate('required|string|min:8|confirmed')]
     public string $password = '';
 
+    #[Validate('required|string')]
     public string $password_confirmation = '';
 
     public function redeem(RedeemRecoverySlipAction $action): void
@@ -59,16 +64,6 @@ class AccountRecovery extends Component
                 ->systemOnly()
                 ->save();
         }
-    }
-
-    public function rules(): array
-    {
-        return [
-            'username' => 'required|string',
-            'recoveryCode' => 'required|string|size:12',
-            'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required|string',
-        ];
     }
 
     protected function throttleKey(): string

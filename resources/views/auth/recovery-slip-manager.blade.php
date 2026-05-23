@@ -1,5 +1,5 @@
 <div class="p-8">
-    <x-mary-header title="Recovery Slip" subtitle="Generate a one-time credential slip for offline delivery" separator progress-indicator />
+    <x-mary-header :title="__('auth.recovery_slip.title')" :subtitle="__('auth.recovery_slip.subtitle')" separator progress-indicator />
 
     <div class="max-w-2xl mx-auto">
         <x-mary-card shadow class="card-enterprise">
@@ -9,21 +9,21 @@
                         <x-mary-icon name="o-document-text" class="size-10" />
                     </div>
                     <div>
-                        <h3 class="text-xl font-black tracking-tight">Credential Slip Generated</h3>
-                        <p class="text-sm text-base-content/60 mt-2">Deliver this code to the user offline. Expires: {{ $expiresAt }}</p>
+                        <h3 class="text-xl font-black tracking-tight">{{ __('auth.recovery_slip.generated_title') }}</h3>
+                        <p class="text-sm text-base-content/60 mt-2">{{ __('auth.recovery_slip.generated_desc', ['date' => $expiresAt]) }}</p>
                     </div>
                     <div class="bg-base-200 rounded-2xl p-6">
                         <p class="text-3xl font-mono font-black tracking-[0.3em] select-all">{{ $generatedCode }}</p>
                     </div>
                     <div class="bg-warning/5 border border-warning/20 rounded-2xl p-4 text-left">
-                        <p class="text-xs font-bold uppercase tracking-widest text-warning">Security Note</p>
-                        <p class="text-xs text-base-content/60 mt-1">This code will not be shown again. It expires in 24 hours. Verify the recipient's identity before delivery.</p>
+                        <p class="text-xs font-bold uppercase tracking-widest text-warning">{{ __('auth.recovery_slip.security_note') }}</p>
+                        <p class="text-xs text-base-content/60 mt-1">{{ __('auth.recovery_slip.security_note_desc') }}</p>
                     </div>
-                    <x-mary-button label="Generate Another" icon="o-plus" class="btn-primary" wire:click="resetForm" />
+                    <x-mary-button :label="__('auth.recovery_slip.generate_another')" icon="o-plus" class="btn-primary" wire:click="resetForm" />
                 </div>
             @else
                 <div class="space-y-6">
-                    <x-mary-input wire:model.live.debounce="search" label="Search User" placeholder="Name, username, or email..." icon="o-magnifying-glass" class="rounded-2xl" />
+                    <x-mary-input wire:model.live.debounce.300ms="search" :label="__('auth.recovery_slip.search_user')" placeholder="Name, username, or email..." icon="o-magnifying-glass" class="rounded-2xl" />
 
                     @if($search)
                         <div class="space-y-2">
@@ -38,18 +38,18 @@
                                     </div>
                                 </div>
                             @empty
-                                <p class="text-sm text-base-content/40 text-center py-8">No users found.</p>
+                                <p class="text-sm text-base-content/40 text-center py-8">{{ __('auth.recovery_slip.no_users_found') }}</p>
                             @endforelse
                         </div>
                     @endif
 
                     @if($selectedUser)
                         <div class="bg-primary/5 border border-primary/20 rounded-2xl p-4">
-                            <p class="text-sm font-bold">Selected: {{ $selectedUser->name }} ({{ $selectedUser->username }})</p>
+                            <p class="text-sm font-bold">{{ __('auth.recovery_slip.selected_user', ['name' => $selectedUser->name, 'username' => $selectedUser->username]) }}</p>
                         </div>
 
                         <div class="pt-4 border-t border-base-content/5">
-                            <x-mary-button label="Generate Recovery Slip" icon="o-document-plus" class="btn-primary w-full" wire:click="generate" spinner="generate" />
+                            <x-mary-button :label="__('auth.recovery_slip.generate_slip')" icon="o-document-plus" class="btn-primary w-full" wire:click="generate" spinner="generate" />
                         </div>
                     @endif
                 </div>
@@ -57,7 +57,7 @@
         </x-mary-card>
 
         <div class="mt-6 text-center">
-            <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold uppercase tracking-widest text-base-content/40 hover:text-primary" wire:navigate>Back to Dashboard</a>
+            <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold uppercase tracking-widest text-base-content/40 hover:text-primary" wire:navigate>{{ __('auth.recovery_slip.back_to_dashboard') }}</a>
         </div>
     </div>
 </div>

@@ -183,9 +183,9 @@ describe('AuthDomainActions', function () {
         it('updates user password', function () {
             $user = User::factory()->create();
 
-            app(UpdateUserPasswordAction::class)->execute($user, 'new-secure-password');
+            app(UpdateUserPasswordAction::class)->execute($user, 'New-Secure-Password1');
 
-            expect(Hash::check('new-secure-password', $user->fresh()->password))->toBeTrue();
+            expect(Hash::check('New-Secure-Password1', $user->fresh()->password))->toBeTrue();
         });
 
         it('validates minimum password length', function () {

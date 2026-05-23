@@ -13,7 +13,7 @@ class ResetUserPasswordAction extends BaseAction
 {
     public function execute(User $user): array
     {
-        $newPassword = Str::random(10);
+        $newPassword = Str::password(12);
 
         $user->update(['password' => Hash::make($newPassword)]);
 
