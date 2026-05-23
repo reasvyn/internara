@@ -7,14 +7,14 @@
 
         <form wire:submit="redeem" class="space-y-5">
             <x-mary-input
-                wire:model="username"
+                wire:model="form.username"
                 label="{{ __('auth.account_recovery.username') }}"
                 placeholder="username"
                 icon="o-user"
             />
 
             <x-mary-input
-                wire:model="recoveryCode"
+                wire:model="form.recoveryCode"
                 label="{{ __('auth.account_recovery.recovery_code') }}"
                 placeholder="ABC2X5K9M7P1"
                 icon="o-key"
@@ -22,7 +22,7 @@
             />
 
             <x-mary-password
-                wire:model="password"
+                wire:model="form.password"
                 label="{{ __('auth.account_recovery.new_password') }}"
                 placeholder="••••••••"
                 icon="o-lock-closed"
@@ -30,7 +30,7 @@
             />
 
             <x-mary-password
-                wire:model="password_confirmation"
+                wire:model="form.password_confirmation"
                 label="{{ __('auth.account_recovery.confirm_password') }}"
                 placeholder="••••••••"
                 icon="o-shield-check"

@@ -116,4 +116,12 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    'throttle' => [
+        'max_attempts' => env('AUTH_THROTTLE_MAX', 30),
+        'decay_seconds' => env('AUTH_THROTTLE_DECAY', 60),
+        'login_max_attempts' => env('AUTH_LOGIN_MAX_ATTEMPTS', 5),
+        'login_decay_seconds' => env('AUTH_LOGIN_DECAY', 60),
+        'auto_lock_threshold' => env('AUTH_AUTO_LOCK_THRESHOLD', 10),
+    ],
+
 ];

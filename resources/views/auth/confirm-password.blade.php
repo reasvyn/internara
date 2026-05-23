@@ -7,7 +7,7 @@
 
         <form wire:submit="confirm" class="space-y-5">
             <x-mary-password
-                wire:model="password"
+                wire:model="form.password"
                 label="{{ __('auth.confirm_password.password') }}"
                 placeholder="••••••••"
                 icon="o-key"

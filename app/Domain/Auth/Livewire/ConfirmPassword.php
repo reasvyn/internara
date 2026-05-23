@@ -5,21 +5,22 @@ declare(strict_types=1);
 namespace App\Domain\Auth\Livewire;
 
 use App\Domain\Auth\Actions\ConfirmPasswordAction;
+use App\Domain\Auth\Livewire\Forms\ConfirmPasswordForm;
 use App\Domain\Core\Support\SmartLogger;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use RuntimeException;
 
 class ConfirmPassword extends Component
 {
-    #[Validate('required|string')]
-    public string $password = '';
+    public ConfirmPasswordForm $form;
 
     public function confirm(ConfirmPasswordAction $action): void
     {
-        $this->validate();
+        $this->form->validate();
 
         $user = auth()->user();
 
@@ -29,16 +30,28 @@ class ConfirmPassword extends Component
             return;
         }
 
-        try {
-            $action->execute($user, $this->password);
+        $throttleKey = $this->throttleKey();
 
-            $this->reset('password');
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $this->addError('form.password', __('auth.throttle', ['seconds' => $seconds]));
+
+            return;
+        }
+
+        try {
+            $action->execute($user, $this->form->password);
+
+            RateLimiter::clear($throttleKey);
+
+            $this->form->reset('password');
 
             flash()->success(__('auth.password_confirmed'));
 
             $this->redirect($this->getIntendedUrl(), navigate: true);
         } catch (RuntimeException $e) {
-            $this->addError('password', $e->getMessage());
+            RateLimiter::hit($throttleKey, 300);
+            $this->addError('form.password', $e->getMessage());
 
             SmartLogger::error('Password confirmation error')
                 ->withPayload([
@@ -53,6 +66,13 @@ class ConfirmPassword extends Component
     protected function getIntendedUrl(): string
     {
         return session()->pull('url.intended', route('dashboard'));
+    }
+
+    protected function throttleKey(): string
+    {
+        return Str::transliterate(
+            'confirm-password|'.request()->ip(),
+        );
     }
 
     #[Layout('auth::layouts.auth', ['title' => 'Confirm Password'])]
