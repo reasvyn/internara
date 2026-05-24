@@ -107,135 +107,17 @@ This does not create a security gap — the arch tests are structural safeguards
 
 ---
 
-## Settings Domain — Known Issues
-
-### SE1. Broken Layout Reference in SystemSetting 🔴 *(✅ Fixed)*
-
-**File:** `app/Domain/Settings/Livewire/SystemSetting.php:286`
-
-The layout namespace `layouts::app` was still used after layouts moved to `resources/views/shared/layouts/`. Fixed to `shared::layouts.app`.
-
----
-
-### SE2. SystemSetting Uses `rules()` Instead of `#[Validate]` 🟢 *(✅ Evaluated — Not an Issue)*
-
-**File:** `app/Domain/Settings/Livewire/SystemSetting.php`
-
-Originally flagged as using `rules(): array` instead of `#[Validate]` attributes. However, investigation confirmed that ALL components across Auth, Setup, and User domains also use `rules()` methods — both directly and via Form Objects. No component in the entire codebase uses `#[Validate]`. This is the established project convention.
-
-*Status: ✅ Resolved — Project convention is `rules()` method, not `#[Validate]`.*
-
----
-
-### SE3. No Form Objects for Settings Groups 🟢 *(✅ Fixed)*
-
-Three Form Objects created: `GeneralSettingsForm`, `BrandingForm`, `MailSettingsForm`. Validation happens per-form before passing data to `SaveSystemSettingsAction`. The action itself is layer-agnostic (accepts plain arrays, not Form Objects).
-
-*Status: ✅ Fixed.*
-
----
-
-### SE4. UploadBrandAssetAction Bypasses Media Library 🟢 *(✅ Fixed)*
-
-Integrated with spatie/laravel-medialibrary. `Setting` model now implements `HasMedia` with `InteractsWithMedia`, registering `brand_logo` and `brand_favicon` single-file collections. `UploadBrandAssetAction` uploads via `addMedia()->toMediaCollection()` and returns a `thumb` webp conversion URL (200px). Consistent with School domain pattern.
-
-*Status: ✅ Fixed.*
-
----
-
-### SE5. Mail Password Exposed as Public Livewire Property 🟢 *(✅ Mitigated)*
-
-**File:** `app/Domain/Settings/Livewire/Forms/MailSettingsForm.php`
-
-Originally exposed as a direct `public string $mail_password = ''` on the component. Now encapsulated inside `MailSettingsForm` Form Object, providing an additional nesting layer of protection. Still initialized as empty string in `mount()` — the actual stored password is never loaded into the form. Livewire serializes the Form Object as a nested property, reducing surface exposure.
-
-**Mitigation:** Inside Form Object and empty on mount. No user-typed value persists across Livewire updates inadvertently.
-
-*Status: ✅ Mitigated — Form Object encapsulation + never pre-fill actual password.*
-
----
-
-### SE6. No SettingPolicy Exists 🟢 *(✅ Fixed)*
-
-**File:** `app/Domain/Settings/Policies/SettingPolicy.php`
-
-Created `SettingPolicy` extending `BasePolicy` with CRUD restricted to `super_admin` and viewAny/view open to admin+. Auto-discovered by `DomainServiceProvider`.
-
-*Status: ✅ Fixed — Policy created and auto-registered.*
-
----
-
-### SE7. AppMetadata Queries `setups` Table on Every Call 🟢 *(✅ Fixed)*
-
-`isInstalled()` now uses `Cache::rememberForever('system.is_installed', ...)` with invalidation in `FinalizeSetupAction::execute()` via `Cache::forget('system.is_installed')`.
-
-*Status: ✅ Fixed.*
-
----
-
-### SE8. `active_academic_year` Stored as Unvalidated String 🟢 *(✅ Fixed)*
-
-**File:** `app/Domain/Settings/Livewire/SystemSetting.php` → `GeneralSettingsForm.php`
-
-The field was a free-text input with only regex validation (`/^\d{4}\/\d{4}$/`), allowing non-existent academic years.
-
-**Fix:** Changed to a `<select>` dropdown that queries `AcademicYear::query()->orderByDesc('start_date')` — users can only pick from existing database records. The dropdown gracefully handles the empty state (no years created yet) with a placeholder option.
-
-*Status: ✅ Fixed — Selector from AcademicYear model.*
-
----
-
-### SE9. Setting Groups Are String Literals (No Enum) 🟢 *(✅ Fixed)*
-
-Created `App\Domain\Settings\Enums\SettingGroup` with 7 cases (GENERAL, MAIL, SYSTEM, BRANDING, FEATURES, LOCALIZATION, NOTIFICATIONS). `BatchSetSettingAction` and `SetSettingAction` now reference `SettingGroup::default()->value` instead of hardcoded `'general'`.
-
-*Status: ✅ Fixed.*
-
----
-
-### SE10. BatchSetSettingAction Not Wrapped in DB Transaction 🟢 *(✅ Fixed)*
-
-Wrapped the loop in `DB::transaction()`. All settings in a batch save or roll back atomically.
-
-*Status: ✅ Fixed.*
-
----
-
-### SE11. `Settings::forget()` Fires Extra Query for Group Name 🟢
-
-**File:** `app/Domain/Settings/Support/Settings.php:312`
-
-```php
-$setting = Setting::where('key', $key)->first();
-if ($setting?->group) {
-    Cache::forget(self::CACHE_PREFIX.'group.'.$setting->group);
-}
-```
-
-An additional database query is executed just to retrieve the group name so the group cache can be invalidated.
-
-**Fix:** Accept an optional `$group` parameter (already partially supported) and prefer it over the DB lookup. The caller (`SetSettingAction`) already has the group available.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
+## Settings Domain — Remaining Issues
 
 ### SE12. No Feature Test for SystemSetting Livewire Component 🟡
 
 **Directory:** `tests/Feature/Settings/`
 
-Only `SettingsActionsTest.php` exists (unit-level tests for 4 Actions). Zero tests cover the Livewire component lifecycle: mount, render, validation, save, testEmail, preset application, file upload previews.
+Only `SettingsActionsTest.php` exists (unit-level tests for 4 Actions). Zero tests cover the Livewire component lifecycle.
 
-**Impact:** Refactoring `SystemSetting` (SE2, SE3, SE4) carries high risk of regressions that cannot be automatically detected.
+**Impact:** Refactoring `SystemSetting` carries high risk of regressions.
 
-**Fix:** Add feature test (`tests/Feature/Settings/SystemSettingTest.php`) covering:
-- Mount loads settings from DB
-- Validation errors per field
-- Successful save (general, colors, mail)
-- testEmail sends and reports result
-- applyPreset updates colors
-- Brand logo and favicon upload paths
-- Settings cache invalidation after save
+**Fix:** Add feature test (`tests/Feature/Settings/SystemSettingTest.php`) covering mount, validation, save, testEmail, preset application, file uploads, cache invalidation.
 
 *Status: ⏳ Pending — Priority P4.*
 
@@ -245,13 +127,190 @@ Only `SettingsActionsTest.php` exists (unit-level tests for 4 Actions). Zero tes
 
 **File:** `app/Domain/Settings/Support/AppMetadata.php` (252 lines)
 
-Overlapping logic with `Settings` and `Theme`. Zero tests. Methods tested implicitly through integration only.
-
-**Impact:** Logic errors in `brandName()`, `favicon()` (which has nested fallback logic), `siteTitle()` go undetected.
+Overlapping logic with `Settings` and `Theme`. Zero tests.
 
 **Fix:** Add unit tests for each public method.
 
 *Status: ⏳ Pending — Priority P4.*
+
+---
+
+## Notification Domain — Known Issues
+
+### N1. IncidentReportedNotification Uses Wrong Channel (Laravel `database`, Not Custom) 🔴
+
+**File:** `app/Domain/Incident/Notifications/IncidentReportedNotification.php`
+
+The `via()` method returns `['database', 'broadcast']` instead of `['mail', 'broadcast', CustomDatabaseChannel::class]`. It uses Laravel's native `database` channel (stored in the default `notifications` table from package migration) instead of the custom `notifications` table with the domain-defined schema.
+
+The data structure is also incompatible: `toDatabase()` returns type/incident_id/severity/description/link while the custom channel expects type/title/message/data/link via `toCustomDatabase()`.
+
+**Impact:** 🔴 Incident notifications are invisible in the Notification Center — they go to the wrong table entirely.
+
+**Fix:** Migrate to `CustomDatabaseChannel::class`. Implement `toCustomDatabase()` returning the expected schema (type, title, message, data, link). Add `ShouldQueue`.
+
+*Status: ⏳ Pending — Priority P1.*
+
+---
+
+### N2. No Notification Cleanup / Pruning Mechanism 🔴
+
+**File:** `app/Domain/Admin/Models/Notification.php`
+
+The `notifications` table has no built-in retention policy. Read notifications accumulate indefinitely. No scheduled job or Artisan command prunes old records.
+
+**Impact:** 🔴 Unbounded table growth over time. Performance degradation on queries, backup bloat.
+
+**Fix:** Add a scheduler task or command to delete notifications read more than N days ago (configurable, default 30/60/90). Run via `app/Console/Kernel::schedule()`.
+
+*Status: ⏳ Pending — Priority P1.*
+
+---
+
+### N3. Notification Center Should Be in User Domain (Not Admin) 🟡
+
+**File:** `app/Domain/Admin/Livewire/NotificationCenter.php`
+
+NotificationCenter and NotificationBell live in the Admin domain, but notifications are not an admin-only feature — every authenticated user (student, teacher, supervisor, admin) needs access to their notifications.
+
+The route at `routes/web/user.php` also places `/notifications` in the User domain's route file, but the component itself is in Admin, creating a split identity.
+
+Additionally, the Notification Center should show role-filtered content: all users see their own notifications, but admins may see additional system-level notifications.
+
+**Impact:** Architectural misplacement. Notifications are conceptually per-user, not per-admin. The Admin domain should only own admin-specific notification features (announcements, broadcast).
+
+**Fix:** Move `NotificationCenter`, `NotificationBell`, `Notification` model, and all notification Actions (`SendNotificationAction`, `MarkAsReadAction`, etc.) to the User domain. Update `DomainServiceProvider` bindings accordingly. Ensure all routes are accessible by any authenticated user via middleware `['auth']` only (no role gate).
+
+*Status: ⏳ Pending — Priority P2.*
+
+---
+
+### N4. `markSelectedAsRead()` Bypasses Action Pattern 🟡
+
+**File:** `app/Domain/Admin/Livewire/NotificationCenter.php:88`
+
+```php
+public function markSelectedAsRead(): void
+{
+    Notification::whereIn('id', $this->selectedIds)
+        ->where('user_id', Auth::id())
+        ->where('is_read', false)
+        ->update(['is_read' => true, 'read_at' => now()]);
+    // ...
+}
+```
+
+Inline query instead of delegating to an Action. Inconsistent with `markAsRead()` (uses `MarkAsReadAction`), `markAllAsRead()` (uses `MarkAllAsReadAction`), and `deleteSelected()` (uses `DeleteNotificationAction`).
+
+**Fix:** Create `MarkBatchAsReadAction` or refactor to use existing `MarkAllAsReadAction` on selected IDs.
+
+*Status: ⏳ Pending — Priority P3.*
+
+---
+
+### N5. `CustomDatabaseChannel` No Guard for Empty User ID 🟡
+
+**File:** `app/Domain/Core/Channels/CustomDatabaseChannel.php:33`
+
+```php
+$this->sendNotification->execute(
+    userId: (string) $notifiable->id,
+    // ...
+);
+```
+
+If `$notifiable->id` is null (edge case), the string cast yields `''`. `SendNotificationAction::execute()` then calls `User::findOrFail('')` which throws `ModelNotFoundException`.
+
+**Fix:** Add guard: `throw_unless($notifiable->id, ...)` or skip notification with SmartLogger warning.
+
+*Status: ⏳ Pending — Priority P3.*
+
+---
+
+### N6. `DeleteNotificationAction` PHPDoc Misleading About Security 🟢
+
+**File:** `app/Domain/Admin/Actions/DeleteNotificationAction.php`
+
+PHPDoc claims "S1 - Secure: Only owner can delete", but the Action itself does not verify ownership. It relies on the caller (Livewire component) to scope the query with `where('user_id', Auth::id())`. If called directly from another context, any notification could be deleted.
+
+**Fix:** Either add ownership verification inside the Action, or update the PHPDoc to reflect that ownership is the caller's responsibility.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### N7. `ActivityFeedManager` Queries Inline Instead of Using Action 🟢
+
+**File:** `app/Domain/Admin/Livewire/ActivityFeedManager.php:17`
+
+```php
+$activities = auth()->user()->activityLogs()->latest()->paginate(50);
+```
+
+Business logic in `render()` instead of delegating to an Action.
+
+**Fix:** Create `GetActivityLogsAction` and use it in the component.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### N8. `CustomDatabaseChannel` No Validation on `toCustomDatabase()` Return Value 🟢
+
+**File:** `app/Domain/Core/Channels/CustomDatabaseChannel.php:31`
+
+```php
+$data = $notification->toCustomDatabase($notifiable);
+$this->sendNotification->execute(
+    type: $data['type'] ?? 'general',
+    title: $data['title'] ?? 'Notification',
+    // ...
+);
+```
+
+If a notification's `toCustomDatabase()` returns missing keys, the channel silently uses hardcoded fallback defaults with no warning. Structural errors in notification classes go undetected.
+
+**Fix:** Validate the return array shape, log SmartLogger warning if keys are missing.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### N9. Zero Test Coverage for Notification Components 🟢
+
+**Directory:** `tests/Feature/Admin/`, `tests/Feature/User/`
+
+No feature tests exist for `NotificationCenter`, `NotificationBell`, `ActivityFeedManager`, or any of the 5 notification Actions (`SendNotificationAction`, `MarkAsReadAction`, `MarkAllAsReadAction`, `DeleteNotificationAction`, `GetNotificationsAction`).
+
+**Impact:** Refactoring N1-N4 carries high regression risk.
+
+**Fix:** Add tests for notification Livewire components and Actions.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### N10. `GetNotificationsAction` Is Dead Code 🟢
+
+**File:** `app/Domain/Admin/Actions/GetNotificationsAction.php`
+
+This Action exists but is never called by any component or controller. `NotificationCenter` uses `BaseRecordManager::query()` directly. `NotificationBell` uses inline `Notification::where(...)`.
+
+**Fix:** Remove dead code or integrate into NotificationCenter.
+
+*Status: ⏳ Pending — Priority P5.*
+
+---
+
+### N11. Unused Email Template `notification.blade.php` 🟢
+
+**File:** `resources/views/emails/notification.blade.php`
+
+This standalone HTML email template is not referenced by any notification class. All notifications use Laravel's built-in `MailMessage` rendering instead.
+
+**Fix:** Remove the unused template.
+
+*Status: ⏳ Pending — Priority P5.*
 
 ---
 
@@ -358,19 +417,19 @@ Evaluate which operations should be queued: certificate generation, report rende
 |---|---|---|---|
 | 🔴 | Feature tests missing for 147 of 151 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🟢 | **SE2** SystemSetting uses `rules()` instead of `#[Validate]` | Settings | ✅ Not an issue |
-| 🟢 | **SE3** No Form Objects for Settings groups | Settings | ✅ Fixed |
-| 🟢 | **SE4** UploadBrandAssetAction bypasses Media Library | Settings | ✅ Fixed |
-| 🟢 | **SE5** Mail password exposed as public Livewire property | Settings | ✅ Mitigated |
-| 🟢 | **SE6** No SettingPolicy exists | Settings | ✅ Fixed |
-| 🟢 | **SE7** AppMetadata queries `setups` table on every call | Settings | ✅ Fixed |
-| 🟢 | **SE8** `active_academic_year` stored as unvalidated string | Settings | ✅ Fixed |
-| 🟢 | **SE9** Setting groups are string literals (no enum) | Settings | ✅ Fixed |
-| 🟢 | **SE10** BatchSetSettingAction not wrapped in DB transaction | Settings | ✅ Fixed |
-| 🟢 | **SE11** `Settings::forget()` fires extra query for group | Settings | ✅ Fixed |
+| 🔴 | **N1** IncidentReportedNotification uses wrong channel (Laravel `database`) | Notifications | ⏳ |
+| 🔴 | **N2** No notification cleanup / pruning mechanism | Notifications | ⏳ |
+| 🟡 | **N3** Notification Center should be in User domain (not Admin) | Notifications | ⏳ |
+| 🟡 | **N4** `markSelectedAsRead()` bypasses Action pattern | Notifications | ⏳ |
+| 🟡 | **N5** CustomDatabaseChannel no guard for empty user ID | Notifications | ⏳ |
+| 🟢 | **N6** `DeleteNotificationAction` PHPDoc misleading about security | Notifications | ⏳ |
+| 🟢 | **N7** ActivityFeedManager queries inline instead of Action | Notifications | ⏳ |
+| 🟢 | **N8** CustomDatabaseChannel no validation on `toCustomDatabase()` return | Notifications | ⏳ |
+| 🟢 | **N9** Zero test coverage for notification components | Notifications | ⏳ |
+| 🟢 | **N10** `GetNotificationsAction` is dead code | Notifications | ⏳ |
+| 🟢 | **N11** Unused email template `notification.blade.php` | Notifications | ⏳ |
 | 🟡 | **SE12** No feature test for SystemSetting Livewire component | Settings | ⏳ |
 | 🟢 | **SE13** AppMetadata has zero test coverage | Settings | ⏳ |
-| 🟢 | **SE14** SaveSystemSettingsAction layer violation | Settings | ✅ Fixed |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
 | 🟡 | Livewire Form Object migration (77 components remaining) | Architecture | ⏳ |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ⏳ |
