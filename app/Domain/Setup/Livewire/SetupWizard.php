@@ -249,6 +249,11 @@ class SetupWizard extends Component
         $this->redirect(route('login'));
     }
 
+    public function title(): string
+    {
+        return __('setup.wizard.page_title', ['app_name' => AppInfo::get('name', config('app.name'))]);
+    }
+
     public function render(): View
     {
         $stepKeys = config('setup.wizard.step_keys', ['welcome', 'school', 'department', 'account', 'internship', 'finalize', 'complete']);

@@ -166,7 +166,7 @@ return [
 
     'wizard' => [
         'title' => 'Setup',
-        'page_title' => 'Pengaturan :app_name',
+        'page_title' => 'Instalasi :app_name',
         'requirements' => 'Persyaratan',
         'permissions' => 'Izin',
         'database' => 'Database',
