@@ -34,7 +34,12 @@
                         </div>
 
                         @if($status === 'scheduled')
-                            <x-mary-datetime :label="__('announcement.fields.scheduled_at')" wire:model="scheduled_at" />
+                            <x-mary-input
+                                :label="__('announcement.fields.scheduled_at')"
+                                type="datetime-local"
+                                wire:model="scheduled_at"
+                                :hint="__('announcement.schedule_hint')"
+                            />
                         @endif
 
                         <x-mary-toggle :label="__('announcement.send_to_all')" wire:model.live="sendToAll" />

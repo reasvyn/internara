@@ -19,6 +19,7 @@ return [
     'confirm_publish' => 'Yakin ingin mempublikasikan pengumuman ini? Pengumuman akan dikirim ke semua penerima.',
     'confirm_delete' => 'Yakin ingin menghapus pengumuman ini? Tindakan ini tidak dapat dibatalkan.',
     'scheduled_for' => 'Dijadwalkan pada',
+    'schedule_hint' => 'Tanggal dan waktu pengumuman akan dipublikasikan secara otomatis.',
     'markdown_hint' => 'Mendukung format Markdown: **tebal**, *miring*, `kode`, [tautan](https://), dll.',
     'roles_hint' => 'Kosongkan untuk mengirim ke semua pengguna dalam peran yang dipilih',
     'status' => [
