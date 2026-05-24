@@ -41,7 +41,7 @@
         />
         <x-mary-button
             label="{{ __('setup.wizard.next_step') }}"
-            icon="o-arrow-right"
+            icon-right="o-arrow-right"
             class="btn-primary btn-sm"
             wire:click="nextStep"
             spinner="nextStep"
