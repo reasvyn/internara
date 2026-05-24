@@ -127,7 +127,7 @@
                     <div class="mt-4 flex justify-end">
                         <x-mary-button
                             label="{{ __('setting.buttons.test_mail') }}"
-                            icon="o-paper-airplane"
+                            icon-right="o-paper-airplane"
                             class="btn-ghost btn-sm"
                             wire:click="testEmail"
                             spinner="testEmail"

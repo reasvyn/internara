@@ -20,7 +20,7 @@
 
                 <x-mary-textarea wire:model="reasonDescription" label="Description" rows="4" class="mt-4" />
 
-                <x-mary-button type="submit" label="Submit Request" icon="o-paper-airplane" class="btn-primary mt-4" />
+                <x-mary-button type="submit" label="Submit Request" icon-right="o-paper-airplane" class="btn-primary mt-4" />
             </form>
         </x-mary-card>
 
