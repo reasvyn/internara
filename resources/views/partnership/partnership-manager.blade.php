@@ -14,9 +14,18 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-widget::stat icon="o-hand-raised" :label="__('partnership.stats_active')" :value="$this->stats['active']" />
-        <x-widget::stat icon="o-exclamation-triangle" :label="__('partnership.stats_expiring_soon', ['days' => 30])" :value="$this->stats['expiring_soon']" class="text-warning" />
-        <x-widget::stat icon="o-clock" :label="__('partnership.stats_expired')" :value="$this->stats['expired']" />
+        <x-mary-card class="bg-base-200/40 border border-base-content/10 p-4 text-center">
+            <p class="text-2xl font-bold">{{ $this->stats['active'] }}</p>
+            <p class="text-xs text-base-content/50 mt-1">{{ __('partnership.stats_active') }}</p>
+        </x-mary-card>
+        <x-mary-card class="bg-base-200/40 border border-base-content/10 p-4 text-center">
+            <p class="text-2xl font-bold">{{ $this->stats['expiring_soon'] }}</p>
+            <p class="text-xs text-base-content/50 mt-1">{{ __('partnership.stats_expiring_soon', ['days' => 30]) }}</p>
+        </x-mary-card>
+        <x-mary-card class="bg-base-200/40 border border-base-content/10 p-4 text-center">
+            <p class="text-2xl font-bold">{{ $this->stats['expired'] }}</p>
+            <p class="text-xs text-base-content/50 mt-1">{{ __('partnership.stats_expired') }}</p>
+        </x-mary-card>
     </x-slot:stats>
 
     <x-slot:filters>
@@ -107,35 +116,35 @@
     />
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showModal" :title="$formData['id'] ? __('partnership.edit') : __('partnership.new')" class="backdrop-blur-sm">
+        <x-mary-modal wire:model="showModal" :title="$form->id ? __('partnership.edit') : __('partnership.new')" class="backdrop-blur-sm">
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
                     <x-mary-select
                         :label="__('partnership.company')"
-                        wire:model="formData.company_id"
+                        wire:model="form.company_id"
                         :options="$this->companies"
                         option-label="name"
                         option-value="id"
                         :placeholder="__('partnership.company_placeholder')"
                     />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-input :label="__('partnership.agreement_number')" wire:model="formData.agreement_number" :placeholder="__('partnership.agreement_number_placeholder')" />
-                        <x-mary-input :label="__('partnership.title_field')" wire:model="formData.title" :placeholder="__('partnership.title_placeholder')" />
-                        <x-mary-input :label="__('partnership.start_date')" wire:model="formData.start_date" type="date" />
-                        <x-mary-input :label="__('partnership.end_date')" wire:model="formData.end_date" type="date" />
+                        <x-mary-input :label="__('partnership.agreement_number')" wire:model="form.agreement_number" :placeholder="__('partnership.agreement_number_placeholder')" />
+                        <x-mary-input :label="__('partnership.title_field')" wire:model="form.title" :placeholder="__('partnership.title_placeholder')" />
+                        <x-mary-input :label="__('partnership.start_date')" wire:model="form.start_date" type="date" />
+                        <x-mary-input :label="__('partnership.end_date')" wire:model="form.end_date" type="date" />
                     </div>
-                    <x-mary-textarea :label="__('partnership.scope')" wire:model="formData.scope" :placeholder="__('partnership.scope_placeholder')" rows="2" />
+                    <x-mary-textarea :label="__('partnership.scope')" wire:model="form.scope" :placeholder="__('partnership.scope_placeholder')" rows="2" />
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <x-mary-input :label="__('partnership.contact_person_name')" wire:model="formData.contact_person_name" :placeholder="__('partnership.contact_person_name_placeholder')" />
-                        <x-mary-input :label="__('partnership.contact_person_phone')" wire:model="formData.contact_person_phone" :placeholder="__('partnership.contact_person_phone_placeholder')" />
-                        <x-mary-input :label="__('partnership.contact_person_email')" wire:model="formData.contact_person_email" :placeholder="__('partnership.contact_person_email_placeholder')" />
+                        <x-mary-input :label="__('partnership.contact_person_name')" wire:model="form.contact_person_name" :placeholder="__('partnership.contact_person_name_placeholder')" />
+                        <x-mary-input :label="__('partnership.contact_person_phone')" wire:model="form.contact_person_phone" :placeholder="__('partnership.contact_person_phone_placeholder')" />
+                        <x-mary-input :label="__('partnership.contact_person_email')" wire:model="form.contact_person_email" :placeholder="__('partnership.contact_person_email_placeholder')" />
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <x-mary-input :label="__('partnership.signed_by_school')" wire:model="formData.signed_by_school" :placeholder="__('partnership.signed_by_school_placeholder')" />
-                        <x-mary-input :label="__('partnership.signed_by_company')" wire:model="formData.signed_by_company" :placeholder="__('partnership.signed_by_company_placeholder')" />
-                        <x-mary-input :label="__('partnership.signed_at')" wire:model="formData.signed_at" type="date" />
+                        <x-mary-input :label="__('partnership.signed_by_school')" wire:model="form.signed_by_school" :placeholder="__('partnership.signed_by_school_placeholder')" />
+                        <x-mary-input :label="__('partnership.signed_by_company')" wire:model="form.signed_by_company" :placeholder="__('partnership.signed_by_company_placeholder')" />
+                        <x-mary-input :label="__('partnership.signed_at')" wire:model="form.signed_at" type="date" />
                     </div>
-                    <x-mary-textarea :label="__('partnership.notes')" wire:model="formData.notes" :placeholder="__('partnership.notes_placeholder')" rows="2" />
+                    <x-mary-textarea :label="__('partnership.notes')" wire:model="form.notes" :placeholder="__('partnership.notes_placeholder')" rows="2" />
                     <x-mary-file :label="__('partnership.mou_document')" wire:model="mouDocument" accept="pdf,jpg,jpeg,png" />
                 </div>
                 <x-slot:actions>

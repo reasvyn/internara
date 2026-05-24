@@ -64,7 +64,6 @@ terminated or expired first.
 - Partnership status transitions follow the state machine: ACTIVE → {EXPIRED, TERMINATED}.
 Terminal states (EXPIRED, TERMINATED) have no valid transitions.
 - Agreement numbers must be unique across all partnerships.
-- Companies are stored in the `companies` table.
 
 ### Process Flow
 
@@ -100,10 +99,11 @@ TERMINATED (irreversible)
 
 | Layer | Artifacts |
 |-------|-----------|
-| **Models** | `InternshipCompany` (`companies`), `Partnership` |
+| **Models** | `Company` (`companies`), `Partnership` |
 | **Entities** | `CompanyState` (deletion guard); `PartnershipState` (active/expired/terminated checks, expiry warnings) |
 | **Enums** | `PartnershipStatus` — `ACTIVE`, `EXPIRED`, `TERMINATED` |
 | **Livewire** | `CompanyManager`, `PartnershipManager` |
+| **Policies** | `CompanyPolicy`, `PartnershipPolicy` |
 
 ## Dependencies
 

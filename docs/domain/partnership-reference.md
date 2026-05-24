@@ -1,6 +1,6 @@
 # Partnership — API Reference
 
-Total: 16 files
+Total: 19 files
 
 ## Actions
 
@@ -47,3 +47,11 @@ Total: 16 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Partnership/Policies/PartnershipPolicy.php` | `PartnershipPolicy` | `BasePolicy` | Authorization for partnership operations |
+| `Partnership/Policies/CompanyPolicy.php` | `CompanyPolicy` | `BasePolicy` | Authorization for company operations |
+
+## Forms
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Partnership/Livewire/Forms/CompanyForm.php` | `CompanyForm` | `Form` | Form object for company CRUD |
+| `Partnership/Livewire/Forms/PartnershipForm.php` | `PartnershipForm` | `Form` | Form object for partnership CRUD |
