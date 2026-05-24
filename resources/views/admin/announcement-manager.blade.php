@@ -27,11 +27,14 @@
 
                     <div class="border-t border-base-content/10 pt-4 space-y-4">
                         <p class="text-sm font-medium">{{ __('announcement.delivery') }}</p>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <x-mary-radio :label="__('announcement.status.draft')" wire:model.live="status" value="draft" />
-                            <x-mary-radio :label="__('announcement.status.scheduled')" wire:model.live="status" value="scheduled" />
-                            <x-mary-radio :label="__('announcement.status.published')" wire:model.live="status" value="published" />
-                        </div>
+                        <x-mary-radio
+                            wire:model.live="status"
+                            :options="[
+                                ['id' => 'draft', 'name' => __('announcement.status.draft')],
+                                ['id' => 'scheduled', 'name' => __('announcement.status.scheduled')],
+                                ['id' => 'published', 'name' => __('announcement.status.published')],
+                            ]"
+                        />
 
                         @if($status === 'scheduled')
                             <x-mary-input
