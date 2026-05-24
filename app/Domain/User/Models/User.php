@@ -8,7 +8,6 @@ use App\Domain\Auth\Entities\Apprentice;
 use App\Domain\Guidance\Models\HandbookAcknowledgement;
 use App\Domain\Mentee\Models\Mentee;
 use App\Domain\Mentor\Models\Mentor;
-use App\Domain\Mentor\Models\Team;
 use App\Domain\Registration\Models\Registration;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -16,7 +15,6 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -72,23 +70,6 @@ class User extends Authenticatable implements HasMedia
     public function handbookAcknowledgements(): HasMany
     {
         return $this->hasMany(HandbookAcknowledgement::class);
-    }
-
-    public function teams(): BelongsToMany
-    {
-        return $this->belongsToMany(Team::class, 'team_user')
-            ->withPivot('role', 'assigned_by', 'assigned_at')
-            ->withTimestamps();
-    }
-
-    public function mentoringTeams(): BelongsToMany
-    {
-        return $this->teams()->wherePivot('role', 'mentor');
-    }
-
-    public function menteeTeams(): BelongsToMany
-    {
-        return $this->teams()->wherePivot('role', 'mentee');
     }
 
     public function registerMediaCollections(): void

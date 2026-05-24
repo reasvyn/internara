@@ -70,7 +70,7 @@ The Core domain provides base classes for every layer. You MUST use them:
 | Enum | Must implement `LabelEnum` | `app/Domain/Core/Contracts/LabelEnum.php` |
 | Logging | Use `SmartLogger` | `app/Domain/Core/Support/SmartLogger.php` |
 
-Do NOT create custom patterns. Architecture tests enforce these rules and will fail if violated.
+Do NOT create custom patterns. These rules are enforced through code review.
 
 ## Skills Activation
 
@@ -96,9 +96,9 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 ## Documentation
 
-- Comprehensive docs are available at `docs/en/`. Always refer to them before making changes.
-- Domain-specific docs at `docs/en/domain/{domain}.md`.
-- Architecture and conventions at `docs/en/architecture.md` and `docs/en/conventions.md`.
+- Comprehensive docs are available at `docs/`. Always refer to them before making changes.
+- Domain-specific docs at `docs/domain/{domain}.md`.
+- Architecture and conventions at `docs/architecture.md` and `docs/conventions.md`.
 
 ## Replies
 
@@ -172,7 +172,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test --compact` with a specific filename or filter.
 - Tests follow domain-first structure: `tests/{Feature,Unit}/{Domain}/{Name}Test.php`.
-- Arch tests enforce structural rules and must pass for any code change.
+- Code review and static analysis (PHPStan) enforce structural rules.
 
 === laravel/core rules ===
 

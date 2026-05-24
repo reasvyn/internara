@@ -23,7 +23,7 @@ class TeacherManager extends BaseRecordManager
         'id' => null,
         'name' => '',
         'email' => '',
-        'registration_number' => '', // NIP
+        'nip' => '', // NIP
     ];
 
     public function boot(): void
@@ -51,7 +51,7 @@ class TeacherManager extends BaseRecordManager
                 'class' => 'font-mono text-xs',
             ],
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
-            ['key' => 'profile.registration_number', 'label' => __('user.teacher.nip')],
+            ['key' => 'profile.nip', 'label' => __('user.teacher.nip')],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
@@ -95,7 +95,7 @@ class TeacherManager extends BaseRecordManager
             'id' => null,
             'name' => '',
             'email' => '',
-            'registration_number' => '',
+            'nip' => '',
         ];
         $this->userModal = true;
     }
@@ -107,7 +107,7 @@ class TeacherManager extends BaseRecordManager
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'registration_number' => $user->profile?->registration_number ?? '',
+            'nip' => $user->profile?->nip ?? '',
         ];
         $this->userModal = true;
     }
@@ -120,7 +120,7 @@ class TeacherManager extends BaseRecordManager
         ]);
 
         $profileData = [
-            'registration_number' => $this->userData['registration_number'],
+            'nip' => $this->userData['nip'],
         ];
 
         if ($this->userData['id']) {

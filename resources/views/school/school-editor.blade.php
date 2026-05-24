@@ -14,7 +14,7 @@
                                 <x-mary-input
                                     label="{{ __('school.name') }}"
                                     placeholder="{{ __('school.name_placeholder') }}"
-                                    wire:model="name"
+                                    wire:model="form.name"
                                 />
                             </div>
 
@@ -22,26 +22,26 @@
                                 label="{{ __('school.institutional_code') }}"
                                 placeholder="{{ __('school.institutional_code_placeholder') }}"
                                 :hint="__('school.institutional_code_hint')"
-                                wire:model="institutional_code"
+                                wire:model="form.institutional_code"
                             />
 
                             <x-mary-input
                                 label="{{ __('school.email') }}"
                                 type="email"
                                 placeholder="{{ __('school.email_placeholder') }}"
-                                wire:model="email"
+                                wire:model="form.email"
                             />
 
                             <x-mary-input
                                 label="{{ __('school.phone') }}"
                                 placeholder="{{ __('school.phone_placeholder') }}"
-                                wire:model="phone"
+                                wire:model="form.phone"
                             />
 
                             <x-mary-input
                                 label="{{ __('school.fax') }}"
                                 placeholder="{{ __('school.fax_placeholder') }}"
-                                wire:model="fax"
+                                wire:model="form.fax"
                             />
 
                             <div class="md:col-span-2">
@@ -49,14 +49,21 @@
                                     label="{{ __('school.address') }}"
                                     placeholder="{{ __('school.address_placeholder') }}"
                                     rows="3"
-                                    wire:model="address"
+                                    wire:model="form.address"
                                 />
                             </div>
 
                             <x-mary-input
+                                label="{{ __('school.website') }}"
+                                type="url"
+                                placeholder="{{ __('school.website_placeholder') }}"
+                                wire:model="form.website"
+                            />
+
+                            <x-mary-input
                                 label="{{ __('school.principal_name') }}"
                                 placeholder="{{ __('school.principal_name_placeholder') }}"
-                                wire:model="principal_name"
+                                wire:model="form.principal_name"
                             />
                         </div>
 

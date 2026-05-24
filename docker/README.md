@@ -32,7 +32,7 @@ docker compose up -d
 ```
 
 See `docker-compose.yml` for service definitions.
-See `docs/en/installation.md` for production setup guide.
+See `docs/installation.md` for production setup guide.
 
 ## 3. Shared Hosting Simulation
 

@@ -8,7 +8,7 @@
             label="{{ __('academic_year.create') }}"
             icon="o-plus"
             class="btn-primary btn-sm"
-            wire:click="$set('showModal', true)"
+            wire:click="create"
         />
     </div>
 
@@ -27,8 +27,7 @@
                 label="{{ __('academic_year.delete_selected', ['count' => count($selectedIds)]) }}"
                 icon="o-trash"
                 class="btn-error btn-sm"
-                wire:click="deleteSelected"
-                wire:confirm="{{ __('academic_year.confirm_delete_selected', ['count' => count($selectedIds)]) }}"
+                wire:click="askDeleteSelected"
                 spinner="deleteSelected"
             />
         @endif
@@ -76,6 +75,11 @@
                     <div class="flex items-center gap-2 shrink-0">
                         @if(!$year->is_active)
                             <x-mary-button
+                                icon="o-pencil"
+                                class="btn-ghost btn-sm"
+                                wire:click="edit('{{ $year->id }}')"
+                            />
+                            <x-mary-button
                                 icon="o-check"
                                 class="btn-ghost btn-sm text-success"
                                 wire:click="askActivate('{{ $year->id }}')"
@@ -114,31 +118,35 @@
         :confirmClass="$confirmType === 'activate' ? 'btn-primary' : 'btn-error'"
     />
 
-    {{-- Create Modal --}}
-    <x-mary-modal wire:model="showModal" title="{{ __('academic_year.new') }}" class="backdrop-blur-sm">
+    {{-- Create / Edit Modal --}}
+    <x-mary-modal wire:model="showModal" title="{{ $form->id ? __('academic_year.edit') : __('academic_year.new') }}" class="backdrop-blur-sm">
         <div class="space-y-4">
             <x-mary-input
                 label="{{ __('academic_year.name') }}"
-                wire:model="formData.name"
+                wire:model="form.name"
                 placeholder="e.g.: 2025/2026"
             />
             <div class="grid grid-cols-2 gap-4">
                 <x-mary-input
                     label="{{ __('academic_year.start_date') }}"
                     type="date"
-                    wire:model="formData.start_date"
+                    wire:model="form.start_date"
                 />
                 <x-mary-input
                     label="{{ __('academic_year.end_date') }}"
                     type="date"
-                    wire:model="formData.end_date"
+                    wire:model="form.end_date"
                 />
             </div>
         </div>
 
         <x-slot:actions>
-            <x-mary-button label="{{ __('common.actions.cancel') }}" wire:click="resetForm" class="btn-ghost btn-sm" />
-            <x-mary-button label="{{ __('common.actions.save') }}" wire:click="store" class="btn-primary btn-sm" spinner="store" />
+            <x-mary-button label="{{ __('common.actions.cancel') }}" wire:click="$set('showModal', false)" class="btn-ghost btn-sm" />
+            @if($form->id)
+                <x-mary-button label="{{ __('common.actions.update') }}" wire:click="update" class="btn-primary btn-sm" spinner="update" />
+            @else
+                <x-mary-button label="{{ __('common.actions.save') }}" wire:click="store" class="btn-primary btn-sm" spinner="store" />
+            @endif
         </x-slot:actions>
     </x-mary-modal>
 </div>

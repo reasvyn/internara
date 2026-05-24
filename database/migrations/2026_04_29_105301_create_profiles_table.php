@@ -31,16 +31,22 @@ return new class extends Migration
 
             $table->text('bio')->nullable();
 
-            // Identity identifiers (e.g. NISN, NIS, NIP)
-            $table->string('national_identifier')->nullable();
-            $table->string('registration_number')->nullable();
+            // Identity identifiers
+            $table->string('national_id_number', 50)->nullable();
+            $table->string('student_id_number', 50)->nullable();
 
             $table->foreignUuid('school_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignUuid('department_id')->nullable()->constrained()->onDelete('set null');
 
+            $table->string('employment_status')->nullable();
+            $table->string('nip', 18)->nullable();
+            $table->string('nuptk', 16)->nullable();
+            $table->string('competence_field')->nullable();
+            $table->string('position')->nullable();
+
             $table->timestamps();
 
-            $table->index(['national_identifier', 'registration_number']);
+            $table->index(['national_id_number', 'student_id_number']);
         });
     }
 

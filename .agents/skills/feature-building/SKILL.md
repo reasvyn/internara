@@ -14,7 +14,7 @@ Data flows unidirectionally: User input enters through a Livewire component, whi
 
 ## Feature Workflow
 
-1. Understand the domain: read `docs/en/domain/{domain}.md` for lifecycle context
+1. Understand the domain: read `docs/domain/{domain}.md` for lifecycle context
 2. Create migration and Model (UUID PK, BaseModel, Fillable attribute, HasFactory)
 3. Create Entity if business rules exist (final readonly, BaseEntity, fromModel bridge)
 4. Create Enum if state machine (string-backed, LabelEnum/StatusEnum)

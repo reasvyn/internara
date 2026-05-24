@@ -21,14 +21,14 @@ The domain directories are vertical slices that cross all layers below Layer 11.
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
  Layer 11 ┌──────────────────────────────────────────────────────────┐
-  UI /    │  Livewire 4 components (87)    Blade templates           │
+  UI /    │  Livewire 4 components (89)    Blade templates           │
   Present.│  maryUI  +  DaisyUI  +  Alpine.js  +  Tailwind CSS v4   │
           │  resources/views/{domain}/     static assets             │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
  Layer 10 ┌──────────────────────────────────────────────────────────┐
   HTTP    │  Controllers / Form Requests / Middleware / Routes       │
-  Layer   │  23 domain route files → routes/web/{domain}.php        │
+  Layer   │  24 domain route files → routes/web/{domain}.php        │
           │  SecurityHeaders, LogContext, CheckRole, SetLocale       │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
@@ -39,20 +39,20 @@ The domain directories are vertical slices that cross all layers below Layer 11.
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 8 ┌──────────────────────────────────────────────────────────┐
-  Author. │  Policies (18)  RBAC (5 roles)  Functional roles        │
+  Author. │  Policies (34)  RBAC (5 roles)  Functional roles        │
           │  BasePolicy → AuthorizesRoles + AuthorizesOwnership    │
           │  spatie/laravel-permission.  Gate::before(super_admin)   │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 7 ┌──────────────────────────────────────────────────────────┐
-  Business│  Actions (151)  → 1 class = 1 use case  →  execute()   │
+  Business│  Actions (156)  → 1 class = 1 use case  →  execute()   │
   Ops     │  BaseAction → transaction() + log() + error handling    │
           │  app/Domain/*/Actions/ delegating all persistence       │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
    Layer 6 ┌──────────────────────────────────────────────────────────┐
   Domain  │  Enums  (LabelEnum, StatusEnum, ColorableEnum)          │
-  Rules   │  Entities (25, final readonly, zero framework deps)    │
+  Rules   │  Entities (26, final readonly, zero framework deps)    │
           │  Entity State Classes (InternshipState, PartnershipState)│
           │  Data DTOs (AuditCheck, AuditReport)                    │
           │  app/Domain/*/Enums/  Entities/  Data/                  │
@@ -190,7 +190,7 @@ Every layer has exactly one base class from Core. There is no alternative. Build
 | An enum | `implements LabelEnum` | A plain PHP enum or class constants |
 | Logging | `SmartLogger` | `Log::` facade or `activity()` helper |
 
-Architecture tests enforce these rules. Violations cause test failures in CI.
+These rules are enforced through code review and static analysis (PHPStan).
 
 ## Architectural Decisions
 
@@ -257,7 +257,6 @@ Tests mirror source structure:
 ```
 tests/Feature/{Domain}/{Name}Test.php    → Integration tests
 tests/Unit/{Domain}/{Layer}/{Name}Test.php → Pure unit tests
-tests/Arch/*ArchTest.php                 → Structural enforcement
 ```
 
-Feature tests use `LazilyRefreshDatabase`. Unit tests for Entities instantiate objects directly. Architecture tests enforce the rules in this document.
+Feature tests use `LazilyRefreshDatabase`. Unit tests for Entities instantiate objects directly.

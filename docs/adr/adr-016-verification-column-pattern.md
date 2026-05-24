@@ -135,4 +135,4 @@ A new architecture test verifies:
 - `app/Domain/Mentor/Models/SupervisionLog.php` — needs remediation
 - `docs/erd/06-daily.md` — attendance/logbook ERD
 - `docs/erd/07-mentoring.md` — supervision log ERD
-- `tests/Arch/` — new architecture test needed
+- ~~`tests/Arch/` — new architecture test needed~~ (arch tests removed)

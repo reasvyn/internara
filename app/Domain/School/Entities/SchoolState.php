@@ -10,20 +10,18 @@ use Illuminate\Database\Eloquent\Model;
 final readonly class SchoolState extends BaseEntity
 {
     public function __construct(
-        private bool $singleRecordEnabled,
-        private bool $exists,
+        private int $existsCount,
     ) {}
 
     public static function fromModel(Model $model): static
     {
         return new self(
-            singleRecordEnabled: (bool) config('school.single_record', true),
-            exists: $model->getAttribute('id') !== null,
+            existsCount: $model->exists ? 1 : 0,
         );
     }
 
     public function canBeCreated(): bool
     {
-        return $this->singleRecordEnabled ? ! $this->exists : true;
+        return $this->existsCount === 0;
     }
 }

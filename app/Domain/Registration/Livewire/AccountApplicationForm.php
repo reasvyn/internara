@@ -24,9 +24,9 @@ class AccountApplicationForm extends Component
 
     public string $address = '';
 
-    public string $national_identifier = '';
+    public string $national_id_number = '';
 
-    public string $registration_number = '';
+    public string $student_id_number = '';
 
     public string $school_id = '';
 
@@ -96,8 +96,8 @@ class AccountApplicationForm extends Component
             'email' => $this->email,
             'phone' => $this->phone,
             'address' => $this->address,
-            'national_identifier' => $this->national_identifier,
-            'registration_number' => $this->registration_number,
+            'national_id_number' => $this->national_id_number,
+            'student_id_number' => $this->student_id_number,
             'school_id' => $this->school_id ?: null,
             'department_id' => $this->department_id ?: null,
             'class_name' => $this->class_name,
@@ -140,8 +140,8 @@ class AccountApplicationForm extends Component
                         </div>
 
                         <x-mary-select :label="__('internship.account_application.school')" wire:model.live="school_id" :options="$this->schools" :placeholder="__('internship.account_application.select_school')" />
-                        <x-mary-input :label="__('internship.account_application.nisn')" wire:model="national_identifier" placeholder="National Student ID" />
-                        <x-mary-input :label="__('internship.account_application.nis')" wire:model="registration_number" placeholder="School Student ID" />
+                        <x-mary-input :label="__('internship.account_application.national_id')" wire:model="national_id_number" placeholder="National ID Number" />
+                        <x-mary-input :label="__('internship.account_application.student_id')" wire:model="student_id_number" placeholder="Student ID Number" />
                         <x-mary-input :label="__('internship.account_application.class')" wire:model="class_name" placeholder="e.g. XII-RPL-1" />
                         <x-mary-input :label="__('internship.account_application.entry_year')" wire:model="entry_year" placeholder="e.g. 2024" />
 

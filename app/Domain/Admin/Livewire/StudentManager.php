@@ -23,8 +23,8 @@ class StudentManager extends BaseRecordManager
         'id' => null,
         'name' => '',
         'email' => '',
-        'national_identifier' => '',
-        'registration_number' => '',
+        'national_id_number' => '',
+        'student_id_number' => '',
         'department_id' => '',
     ];
 
@@ -48,8 +48,8 @@ class StudentManager extends BaseRecordManager
                 'label' => __('user.student.username'),
                 'class' => 'font-mono text-xs',
             ],
-            ['key' => 'profile.national_identifier', 'label' => __('user.student.nisn')],
-            ['key' => 'profile.registration_number', 'label' => __('user.student.nis')],
+            ['key' => 'profile.national_id_number', 'label' => __('user.student.nisn')],
+            ['key' => 'profile.student_id_number', 'label' => __('user.student.nis')],
             ['key' => 'profile.department.name', 'label' => __('user.student.department')],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
@@ -92,8 +92,8 @@ class StudentManager extends BaseRecordManager
             'id' => null,
             'name' => '',
             'email' => '',
-            'national_identifier' => '',
-            'registration_number' => '',
+            'national_id_number' => '',
+            'student_id_number' => '',
             'department_id' => '',
         ];
         $this->userModal = true;
@@ -106,8 +106,8 @@ class StudentManager extends BaseRecordManager
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'national_identifier' => $user->profile?->national_identifier ?? '',
-            'registration_number' => $user->profile?->registration_number ?? '',
+            'national_id_number' => $user->profile?->national_id_number ?? '',
+            'student_id_number' => $user->profile?->student_id_number ?? '',
             'department_id' => $user->profile?->department_id ?? '',
         ];
         $this->userModal = true;
@@ -118,13 +118,13 @@ class StudentManager extends BaseRecordManager
         $this->validate([
             'userData.name' => 'required|string|max:255',
             'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
-            'userData.national_identifier' => 'required|string|max:20',
+            'userData.national_id_number' => 'required|string|max:20',
             'userData.department_id' => 'required|exists:departments,id',
         ]);
 
         $profileData = [
-            'national_identifier' => $this->userData['national_identifier'],
-            'registration_number' => $this->userData['registration_number'],
+            'national_id_number' => $this->userData['national_id_number'],
+            'student_id_number' => $this->userData['student_id_number'],
             'department_id' => $this->userData['department_id'],
         ];
 

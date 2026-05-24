@@ -93,7 +93,7 @@ INACTIVE ──→ ACTIVE (only one at a time)
 |-------|-----------|
 | **Models** | `School`, `Department`, `AcademicYear` |
 | **Entities** | `SchoolState` (single-record enforcement); `DepartmentState` (deletion guard); `AcademicYearState` (active status, deletion/activation eligibility) |
-| **Livewire** | `SchoolEditor`, `DepartmentManager`, `AcademicYearIndex` |
+| **Livewire** | `SchoolEditor`, `DepartmentManager`, `AcademicYearManager` |
 | **Policies** | `SchoolPolicy`, `DepartmentPolicy`, `AcademicYearPolicy` |
 
 ## Dependencies

@@ -8,7 +8,6 @@ use App\Domain\Mentor\Livewire\ReportNotes;
 use App\Domain\Mentor\Livewire\ReportReview;
 use App\Domain\Mentor\Livewire\Supervision\SupervisorLogManager;
 
-
 Route::prefix('supervision')
     ->name('supervision.')
     ->middleware(['auth', 'role:teacher|supervisor'])

@@ -33,7 +33,7 @@ Every architectural layer has exactly one base class from Core:
 | Exception | `AppException` / `DomainException` | Structured exception hierarchy with context |
 | Enum | `LabelEnum` / `StatusEnum` | Consistent label and transition interfaces |
 
-Architecture tests (`tests/Arch/`) enforce each rule — violations fail CI.
+Architecture tests (`tests/Arch/`) previously enforced each rule — removed due to `pest-plugin-arch` bug. Rules are now enforced via code review and PHPStan.
 
 ## Consequences
 - **Positive**: Every class in a given layer behaves identically — UUID keys, transactional
@@ -53,9 +53,9 @@ Architecture tests (`tests/Arch/`) enforce each rule — violations fail CI.
 ## References
 - `docs/architecture.md` — Base Class Mandate section
 - `docs/conventions.md` — Section 0 (Mandatory Base Classes)
-- `tests/Arch/ModelLayerArchTest.php`
-- `tests/Arch/ActionLayerArchTest.php`
-- `tests/Arch/PolicyLayerArchTest.php`
-- `tests/Arch/EntityLayerArchTest.php`
-- `tests/Arch/EnumLayerArchTest.php`
-- `tests/Arch/ExceptionLayerArchTest.php`
+- ~~`tests/Arch/ModelLayerArchTest.php`~~ (removed)
+- ~~`tests/Arch/ActionLayerArchTest.php`~~ (removed)
+- ~~`tests/Arch/PolicyLayerArchTest.php`~~ (removed)
+- ~~`tests/Arch/EntityLayerArchTest.php`~~ (removed)
+- ~~`tests/Arch/EnumLayerArchTest.php`~~ (removed)
+- ~~`tests/Arch/ExceptionLayerArchTest.php`~~ (removed)

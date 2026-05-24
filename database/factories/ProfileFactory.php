@@ -33,8 +33,8 @@ class ProfileFactory extends Factory
             'emergency_contact_phone' => $this->faker->phoneNumber(),
             'emergency_contact_address' => $this->faker->address(),
             'bio' => $this->faker->sentence(),
-            'national_identifier' => $this->faker->numerify('##############'),
-            'registration_number' => $this->faker->unique()->numerify('REG-#####'),
+            'national_id_number' => $this->faker->numerify('##############'),
+            'student_id_number' => $this->faker->unique()->numerify('STU-#####'),
             'school_id' => School::factory(),
             'department_id' => Department::factory(),
         ];
@@ -43,8 +43,8 @@ class ProfileFactory extends Factory
     public function forStudent(Department|int|null $department = null): static
     {
         return $this->state(fn () => [
-            'national_identifier' => $this->faker->numerify('##############'),
-            'registration_number' => $this->faker->unique()->numerify('STD-#####'),
+            'national_id_number' => $this->faker->numerify('##############'),
+            'student_id_number' => $this->faker->unique()->numerify('STD-#####'),
             'department_id' => $department instanceof Department ? $department->id : $department ?? Department::factory(),
         ]);
     }
@@ -52,16 +52,16 @@ class ProfileFactory extends Factory
     public function forTeacher(): static
     {
         return $this->state(fn () => [
-            'national_identifier' => null,
-            'registration_number' => $this->faker->unique()->numerify('NIP-##########'),
+            'national_id_number' => null,
+            'student_id_number' => $this->faker->unique()->numerify('NIP-##########'),
         ]);
     }
 
     public function forSupervisor(): static
     {
         return $this->state(fn () => [
-            'national_identifier' => null,
-            'registration_number' => null,
+            'national_id_number' => null,
+            'student_id_number' => null,
             'department_id' => null,
         ]);
     }

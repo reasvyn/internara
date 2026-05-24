@@ -28,7 +28,7 @@ Total: 21 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `School/Livewire/AcademicYearIndex.php` | `AcademicYearIndex` | `BaseRecordManager` | CRUD manager for academic years |
+| `School/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` | CRUD manager for academic years |
 | `School/Livewire/DepartmentManager.php` | `DepartmentManager` | `BaseRecordManager` | CRUD manager for departments |
 | `School/Livewire/SchoolEditor.php` | `SchoolEditor` | `Component` | School information editor |
 
