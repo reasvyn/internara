@@ -33,6 +33,12 @@ class AnnouncementManager extends Component
 
     public bool $showForm = false;
 
+    public bool $showConfirm = false;
+
+    public ?string $confirmId = null;
+
+    public string $confirmActionType = '';
+
     public function boot(): void
     {
         abort_unless(auth()->user()->hasAnyRole(['super_admin', 'admin']), 403);
@@ -73,26 +79,50 @@ class AnnouncementManager extends Component
         $this->resetForm();
     }
 
-    public function publishNow(SendAnnouncementAction $action, string $id): void
+    public function confirmDelete(string $id): void
     {
-        $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
+        $this->confirmId = $id;
+        $this->confirmActionType = 'delete';
+        $this->showConfirm = true;
+    }
 
-        if (! $announcement->status->canTransitionTo(AnnouncementStatus::PUBLISHED)) {
-            flash()->error(__('announcement.cannot_publish'));
+    public function confirmPublish(string $id): void
+    {
+        $this->confirmId = $id;
+        $this->confirmActionType = 'publish';
+        $this->showConfirm = true;
+    }
 
+    public function confirmAction(): void
+    {
+        $id = $this->confirmId;
+
+        if ($id === null) {
             return;
         }
 
-        $action->publish($announcement);
-        flash()->success(__('announcement.published'));
-    }
+        $action = app(SendAnnouncementAction::class);
 
-    public function delete(string $id): void
-    {
-        $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
-        $announcement->delete();
+        if ($this->confirmActionType === 'delete') {
+            $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
+            $announcement->delete();
+            flash()->success(__('announcement.deleted'));
+        } elseif ($this->confirmActionType === 'publish') {
+            $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
 
-        flash()->success(__('announcement.deleted'));
+            if (! $announcement->status->canTransitionTo(AnnouncementStatus::PUBLISHED)) {
+                flash()->error(__('announcement.cannot_publish'));
+
+                return;
+            }
+
+            $action->publish($announcement);
+            flash()->success(__('announcement.published'));
+        }
+
+        $this->showConfirm = false;
+        $this->confirmId = null;
+        $this->confirmActionType = '';
     }
 
     public function resetForm(): void

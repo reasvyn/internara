@@ -28,9 +28,9 @@
                     <div class="border-t border-base-content/10 pt-4 space-y-4">
                         <p class="text-sm font-medium">{{ __('announcement.delivery') }}</p>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <x-mary-radio :label="__('announcement.status.draft')" wire:model="status" value="draft" />
-                            <x-mary-radio :label="__('announcement.status.scheduled')" wire:model="status" value="scheduled" />
-                            <x-mary-radio :label="__('announcement.status.published')" wire:model="status" value="published" />
+                            <x-mary-radio :label="__('announcement.status.draft')" wire:model.live="status" value="draft" />
+                            <x-mary-radio :label="__('announcement.status.scheduled')" wire:model.live="status" value="scheduled" />
+                            <x-mary-radio :label="__('announcement.status.published')" wire:model.live="status" value="published" />
                         </div>
 
                         @if($status === 'scheduled')
@@ -110,13 +110,11 @@
                         <div class="flex items-center gap-1 shrink-0">
                             @if($announcement->isDraft() || $announcement->isScheduled())
                                 <x-mary-button icon-right="o-paper-airplane" class="btn-ghost btn-sm text-success"
-                                    wire:click="publishNow('{{ $announcement->id }}')"
-                                    wire:confirm="{{ __('announcement.confirm_publish') }}"
+                                    wire:click="confirmPublish('{{ $announcement->id }}')"
                                     :aria-label="__('announcement.publish_now')" />
                             @endif
                             <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
-                                wire:click="delete('{{ $announcement->id }}')"
-                                wire:confirm="{{ __('announcement.confirm_delete') }}"
+                                wire:click="confirmDelete('{{ $announcement->id }}')"
                                 :aria-label="__('announcement.delete')" />
                         </div>
                     </div>
@@ -124,4 +122,11 @@
             </div>
         @endif
     </x-mary-card>
+
+    <x-shared::ui.confirm
+        :title="$confirmActionType === 'delete' ? __('common.actions.confirm_action') : __('announcement.publish_now')"
+        :message="$confirmActionType === 'delete' ? __('announcement.confirm_delete') : __('announcement.confirm_publish')"
+        :confirmText="$confirmActionType === 'delete' ? __('announcement.delete') : __('announcement.publish_now')"
+        confirmClass="btn-error"
+    />
 </div>
