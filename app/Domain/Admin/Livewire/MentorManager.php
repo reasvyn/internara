@@ -4,34 +4,27 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Livewire;
 
+use App\Domain\Admin\Livewire\Forms\MentorForm;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Mentor\Actions\CreateMentorAction;
 use App\Domain\Mentor\Actions\DeleteMentorAction;
 use App\Domain\Mentor\Actions\UpdateMentorAction;
 use App\Domain\Mentor\Models\Mentor;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class MentorManager extends BaseRecordManager
 {
+    use AuthorizesRequests;
+
     public bool $userModal = false;
 
-    public array $userData = [
-        'id' => null,
-        'name' => '',
-        'email' => '',
-        'type' => Mentor::TYPE_SCHOOL_TEACHER,
-        'is_active' => true,
-    ];
+    public MentorForm $form;
 
     public function boot(): void
     {
-        if (
-            ! auth()
-                ->user()
-                ?->hasAnyRole(['super_admin', 'admin'])
-        ) {
-            abort(403, 'Unauthorized access.');
-        }
+        $this->authorize('viewAny', Mentor::class);
     }
 
     public function headers(): array
@@ -71,53 +64,46 @@ class MentorManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->userData = [
-            'id' => null,
-            'name' => '',
-            'email' => '',
-            'type' => Mentor::TYPE_SCHOOL_TEACHER,
-            'is_active' => true,
-        ];
+        $this->form->reset();
         $this->userModal = true;
     }
 
-    public function edit(Mentor $mentor): void
+    public function edit(string $id): void
     {
+        $mentor = Mentor::with('user')->findOrFail($id);
+
         $this->resetErrorBag();
-        $this->userData = [
+        $this->form->fill([
             'id' => $mentor->id,
             'name' => $mentor->user->name,
             'email' => $mentor->user->email,
             'type' => $mentor->type,
             'is_active' => $mentor->is_active,
-        ];
+            'editingUserId' => $mentor->user_id,
+        ]);
         $this->userModal = true;
     }
 
     public function save(CreateMentorAction $createAction, UpdateMentorAction $updateAction): void
     {
-        $this->validate([
-            'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ? Mentor::find($this->userData['id'])?->user_id ?? 'NULL' : 'NULL'),
-            'userData.type' => 'required|string|in:'.Mentor::TYPE_SCHOOL_TEACHER.','.Mentor::TYPE_INDUSTRY_SUPERVISOR,
-        ]);
+        $this->form->validate();
 
-        if ($this->userData['id']) {
-            $mentor = Mentor::with('user')->findOrFail($this->userData['id']);
+        if ($this->form->id) {
+            $mentor = Mentor::with('user')->findOrFail($this->form->id);
             $updateAction->execute($mentor, [
-                'type' => $this->userData['type'],
-                'is_active' => $this->userData['is_active'],
+                'type' => $this->form->type,
+                'is_active' => $this->form->is_active,
             ]);
             flash()->success(__('user.mentor.success_updated'));
         } else {
             $createAction->execute(
                 userData: [
-                    'name' => $this->userData['name'],
-                    'email' => $this->userData['email'],
+                    'name' => $this->form->name,
+                    'email' => $this->form->email,
                 ],
                 mentorData: [
-                    'type' => $this->userData['type'],
-                    'is_active' => $this->userData['is_active'],
+                    'type' => $this->form->type,
+                    'is_active' => $this->form->is_active,
                 ],
             );
             flash()->success(__('user.mentor.success_created'));
@@ -126,8 +112,10 @@ class MentorManager extends BaseRecordManager
         $this->userModal = false;
     }
 
-    public function delete(Mentor $mentor, DeleteMentorAction $deleteAction): void
+    public function delete(string $id, DeleteMentorAction $deleteAction): void
     {
+        $mentor = Mentor::findOrFail($id);
+
         $deleteAction->execute($mentor);
         flash()->success(__('user.mentor.success_deleted'));
     }

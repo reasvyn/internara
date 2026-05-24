@@ -8,35 +8,27 @@ use App\Domain\Admin\Actions\ArchiveStudentAccountsAction;
 use App\Domain\Admin\Actions\CreateUserAction;
 use App\Domain\Admin\Actions\DeleteUserAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
+use App\Domain\Admin\Livewire\Forms\StudentForm;
 use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\School\Models\Department;
 use App\Domain\User\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 
 class StudentManager extends BaseRecordManager
 {
+    use AuthorizesRequests;
+
     public bool $userModal = false;
 
-    public array $userData = [
-        'id' => null,
-        'name' => '',
-        'email' => '',
-        'national_id_number' => '',
-        'student_id_number' => '',
-        'department_id' => '',
-    ];
+    public StudentForm $form;
 
     public function boot(): void
     {
-        if (
-            ! auth()
-                ->user()
-                ?->hasAnyRole(['super_admin', 'admin'])
-        ) {
-            abort(403, 'Unauthorized access.');
-        }
+        $this->authorize('viewAny', User::class);
     }
 
     public function headers(): array
@@ -88,60 +80,52 @@ class StudentManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->userData = [
-            'id' => null,
-            'name' => '',
-            'email' => '',
-            'national_id_number' => '',
-            'student_id_number' => '',
-            'department_id' => '',
-        ];
+        $this->form->reset();
         $this->userModal = true;
     }
 
-    public function edit(User $user): void
+    public function edit(string $id): void
     {
+        $user = User::with('profile')->findOrFail($id);
+
         $this->resetErrorBag();
-        $this->userData = [
+        $this->form->fill([
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'national_id_number' => $user->profile?->national_id_number ?? '',
             'student_id_number' => $user->profile?->student_id_number ?? '',
             'department_id' => $user->profile?->department_id ?? '',
-        ];
+        ]);
         $this->userModal = true;
     }
 
     public function save(CreateUserAction $createAction, UpdateUserAction $updateAction): void
     {
-        $this->validate([
-            'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
-            'userData.national_id_number' => 'required|string|max:20',
-            'userData.department_id' => 'required|exists:departments,id',
-        ]);
+        $this->form->validate();
 
         $profileData = [
-            'national_id_number' => $this->userData['national_id_number'],
-            'student_id_number' => $this->userData['student_id_number'],
-            'department_id' => $this->userData['department_id'],
+            'national_id_number' => $this->form->national_id_number,
+            'student_id_number' => $this->form->student_id_number,
+            'department_id' => $this->form->department_id,
         ];
 
-        if ($this->userData['id']) {
-            $user = User::findOrFail($this->userData['id']);
-            $updateAction->execute($user, $this->userData, $profileData);
+        if ($this->form->id) {
+            $user = User::findOrFail($this->form->id);
+            $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email], $profileData);
             flash()->success(__('user.student.success_updated'));
         } else {
-            $createAction->execute($this->userData, $profileData, [RoleEnum::STUDENT->value]);
+            $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], $profileData, [RoleEnum::STUDENT->value]);
             flash()->success(__('user.student.success_created'));
         }
 
         $this->userModal = false;
     }
 
-    public function delete(User $user, DeleteUserAction $deleteAction): void
+    public function delete(string $id, DeleteUserAction $deleteAction): void
     {
+        $user = User::findOrFail($id);
+
         $deleteAction->execute($user);
         flash()->success(__('user.student.success_deleted'));
     }

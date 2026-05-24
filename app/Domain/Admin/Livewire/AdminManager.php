@@ -7,40 +7,27 @@ namespace App\Domain\Admin\Livewire;
 use App\Domain\Admin\Actions\CreateUserAction;
 use App\Domain\Admin\Actions\DeleteUserAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
+use App\Domain\Admin\Livewire\Forms\AdminUserForm;
 use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\User\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-/**
- * Modernized Admin Manager using BaseRecordManager pattern.
- */
 class AdminManager extends BaseRecordManager
 {
     use AuthorizesRequests;
 
     public bool $userModal = false;
 
-    public array $userData = [
-        'id' => null,
-        'name' => '',
-        'email' => '',
-        'roles' => [RoleEnum::ADMIN->value],
-    ];
+    public AdminUserForm $form;
 
     public function boot(): void
     {
-        $user = auth()->user();
-
-        if (! $user || ! $user->hasRole('super_admin')) {
-            abort(403);
-        }
+        $this->authorize('viewAny', User::class);
     }
 
-    /**
-     * Define columns and sorting.
-     */
     public function headers(): array
     {
         return [
@@ -57,17 +44,11 @@ class AdminManager extends BaseRecordManager
         ];
     }
 
-    /**
-     * Base query for admins.
-     */
     protected function query(): Builder
     {
         return User::query()->role([RoleEnum::ADMIN->value, RoleEnum::SUPER_ADMIN->value]);
     }
 
-    /**
-     * Search implementation.
-     */
     protected function applySearch(Builder $query): Builder
     {
         return $query->where(function ($q) {
@@ -91,52 +72,49 @@ class AdminManager extends BaseRecordManager
         $this->authorize('create', User::class);
 
         $this->resetErrorBag();
-        $this->userData = [
-            'id' => null,
-            'name' => '',
-            'email' => '',
-            'roles' => [RoleEnum::ADMIN->value],
-        ];
+        $this->form->reset();
+        $this->form->roles = [RoleEnum::ADMIN->value];
         $this->userModal = true;
     }
 
-    public function edit(User $user): void
+    public function edit(string $id): void
     {
+        $user = User::with('roles')->findOrFail($id);
+
         $this->authorize('update', $user);
 
         $this->resetErrorBag();
-        $this->userData = [
+        $this->form->fill([
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'roles' => $user->roles->pluck('name')->toArray(),
-        ];
+        ]);
         $this->userModal = true;
     }
 
     public function save(CreateUserAction $createAction, UpdateUserAction $updateAction): void
     {
-        $this->validate([
-            'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
-        ]);
+        $this->form->validate();
 
-        if ($this->userData['id']) {
-            $user = User::findOrFail($this->userData['id']);
+        if ($this->form->id) {
+            $user = User::findOrFail($this->form->id);
             $this->authorize('update', $user);
-            $updateAction->execute($user, $this->userData);
+            $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email]);
             flash()->success(__('user.admin.success_updated'));
         } else {
             $this->authorize('create', User::class);
-            $createAction->execute($this->userData, [], $this->userData['roles']);
+            $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], [], $this->form->roles);
             flash()->success(__('user.admin.success_created'));
         }
 
         $this->userModal = false;
     }
 
-    public function delete(User $user, DeleteUserAction $deleteAction): void
+    public function delete(string $id, DeleteUserAction $deleteAction): void
     {
+        $user = User::findOrFail($id);
+
         $this->authorize('delete', $user);
 
         if ($user->id === auth()->id()) {

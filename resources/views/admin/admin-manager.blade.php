@@ -89,12 +89,12 @@
     </x-mary-card>
 
     {{-- Admin Modal --}}
-    <x-mary-modal wire:model="userModal" :title="$userData['id'] ? __('user.admin.edit') : __('user.admin.new')" class="backdrop-blur-sm" box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl">
+    <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.admin.edit') : __('user.admin.new')" class="backdrop-blur-sm" box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl">
         <div class="grid grid-cols-1 gap-6 pt-4">
-            <x-mary-input :label="__('user.fields.full_name')" wire:model="userData.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            <x-mary-input :label="__('user.fields.email')" type="email" wire:model="userData.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
             
-            @if(!$userData['id'])
+            @if(!$form->id)
                 <div class="bg-info/10 border border-info/20 text-info-content p-4 rounded-[1.5rem] flex items-start gap-4">
                     <x-mary-icon name="o-information-circle" class="size-6 text-info shrink-0 mt-0.5" />
                     <div>

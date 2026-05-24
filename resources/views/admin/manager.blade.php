@@ -139,13 +139,13 @@
     </x-mary-card>
 
     {{-- User Modal --}}
-    <x-mary-modal wire:model="userModal" :title="$userData['id'] ? __('user.manager.edit') : __('user.manager.new')" class="backdrop-blur-sm" box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl">
+    <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.manager.edit') : __('user.manager.new')" class="backdrop-blur-sm" box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl">
         <div class="grid grid-cols-1 gap-6 pt-4">
-            <x-mary-input :label="__('user.fields.full_name')" wire:model="userData.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            <x-mary-input :label="__('user.fields.email')" type="email" wire:model="userData.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
 
-            @if(!$userData['id'])
-                <x-mary-input :label="__('user.fields.password')" type="password" wire:model="userData.password" icon="o-lock-closed" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            @if(!$form->id)
+                <x-mary-input :label="__('user.fields.password')" type="password" wire:model="form.password" icon="o-lock-closed" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
             @endif
 
             <div>
@@ -154,7 +154,7 @@
                     @foreach($this->roles as $role)
                         <x-mary-checkbox
                             :label="$role->name"
-                            wire:model="userData.roles"
+                            wire:model="form.roles"
                             value="{{ $role->name }}"
                             class="rounded-xl"
                         />
