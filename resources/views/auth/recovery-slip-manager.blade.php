@@ -13,7 +13,9 @@
                         <p class="text-sm text-base-content/60 mt-2">{{ __('auth.recovery_slip.generated_desc', ['date' => $expiresAt]) }}</p>
                     </div>
                     <div class="bg-base-200 rounded-2xl p-6">
-                        <p class="text-3xl font-mono font-black tracking-[0.3em] select-all">{{ $generatedCode }}</p>
+                        @foreach($generatedCode as $code)
+                            <p class="text-xl font-mono font-black tracking-[0.3em] select-all">{{ $code }}</p>
+                        @endforeach
                     </div>
                     <div class="bg-warning/5 border border-warning/20 rounded-2xl p-4 text-left">
                         <p class="text-xs font-bold uppercase tracking-widest text-warning">{{ __('auth.recovery_slip.security_note') }}</p>
