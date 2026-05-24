@@ -118,7 +118,7 @@
                             @endif
                             <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
                                 wire:click="confirmDelete('{{ $announcement->id }}')"
-                                :aria-label="__('announcement.delete')" />
+                                :aria-label="__('common.actions.delete')" />
                         </div>
                     </div>
                 @endforeach
@@ -129,7 +129,7 @@
     <x-shared::ui.confirm
         :title="$confirmActionType === 'delete' ? __('common.actions.confirm_action') : __('announcement.publish_now')"
         :message="$confirmActionType === 'delete' ? __('announcement.confirm_delete') : __('announcement.confirm_publish')"
-        :confirmText="$confirmActionType === 'delete' ? __('announcement.delete') : __('announcement.publish_now')"
+        :confirmText="$confirmActionType === 'delete' ? __('common.actions.delete') : __('announcement.publish_now')"
         confirmClass="btn-error"
     />
 </div>

@@ -19,6 +19,10 @@ return [
     'all_rights_reserved' => 'Hak cipta dilindungi.',
     'built_with_love' => 'Dibuat dengan ❤️ oleh',
 
+    'write' => 'Tulis',
+    'preview' => 'Pratinjau',
+    'write_your_announcement_in_markdown' => 'Tulis pengumuman Anda dalam Markdown...',
+
     'setup_required' => [
         'title' => 'Pengaturan Akun Diperlukan',
         'description' => 'Silakan lengkapi informasi profil Anda untuk mengakses semua fitur.',

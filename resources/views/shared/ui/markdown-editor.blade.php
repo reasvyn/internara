@@ -24,12 +24,12 @@
             @click="tab = 'write'"
             :class="tab === 'write' ? 'border-b-2 border-primary text-primary font-medium' : 'text-base-content/50 hover:text-base-content'"
             class="pb-2 text-sm transition-colors"
-        >{{ __('Write') }}</button>
+        >{{ __('common.write') }}</button>
         <button type="button"
             @click="tab = 'preview'"
             :class="tab === 'preview' ? 'border-b-2 border-primary text-primary font-medium' : 'text-base-content/50 hover:text-base-content'"
             class="pb-2 text-sm transition-colors"
-        >{{ __('Preview') }}</button>
+        >{{ __('common.preview') }}</button>
     </div>
 
     <div x-show="tab === 'write'">
@@ -37,7 +37,7 @@
             wire:model="{{ $model }}"
             rows="{{ $rows }}"
             class="textarea w-full border border-base-content/10 rounded-xl bg-base-100 p-4 text-sm focus:border-primary/30 focus:outline-none transition-colors resize-y"
-            placeholder="{{ __('Write your announcement in Markdown...') }}"
+            placeholder="{{ __('common.write_your_announcement_in_markdown') }}"
         ></textarea>
     </div>
 

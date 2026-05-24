@@ -19,6 +19,10 @@ return [
     'all_rights_reserved' => 'All rights reserved.',
     'built_with_love' => 'Built with ❤️ by',
 
+    'write' => 'Write',
+    'preview' => 'Preview',
+    'write_your_announcement_in_markdown' => 'Write your announcement in Markdown...',
+
     'setup_required' => [
         'title' => 'Account Setup Required',
         'description' => 'Please complete your profile information to access all features.',
