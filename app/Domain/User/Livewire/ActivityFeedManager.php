@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Admin\Livewire;
+namespace App\Domain\User\Livewire;
 
 use Illuminate\View\View;
 use Livewire\Component;
@@ -16,7 +16,7 @@ class ActivityFeedManager extends Component
     {
         $activities = auth()->user()->activityLogs()->latest()->paginate(50);
 
-        return view('admin.activity-feed', [
+        return view('user.activity-feed', [
             'activities' => $activities,
         ]);
     }

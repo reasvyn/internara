@@ -31,4 +31,4 @@ Route::prefix('admin')
 
 Route::livewire('/admin/announcements', AnnouncementManager::class)
     ->name('admin.announcements')
-    ->middleware(['auth', 'role:super_admin']);
+    ->middleware(['auth', 'role:super_admin|admin']);

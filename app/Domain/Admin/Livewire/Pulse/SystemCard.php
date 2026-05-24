@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Livewire\Pulse;
 
-use App\Domain\Admin\Models\Notification;
+use App\Domain\User\Models\Notification;
 use App\Domain\User\Models\User;
 use Illuminate\View\View;
 use Laravel\Pulse\Livewire\Card;

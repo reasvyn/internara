@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Domain\Admin\Actions\SendNotificationAction;
 use App\Domain\Auth\Policies\UserPolicy;
 use App\Domain\Core\Contracts\SendsNotifications;
 use App\Domain\Core\Policies\BasePolicy;
@@ -16,6 +15,7 @@ use App\Domain\Placement\Policies\InternshipPlacementPolicy;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\Setup\Events\SetupFinalized;
 use App\Domain\Setup\Listeners\LogSetupFinalized;
+use App\Domain\User\Actions\SendNotificationAction;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;

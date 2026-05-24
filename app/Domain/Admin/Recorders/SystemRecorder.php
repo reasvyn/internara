@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Recorders;
 
-use App\Domain\Admin\Models\Notification;
+use App\Domain\User\Models\Notification;
 use App\Domain\User\Models\User;
 use Laravel\Pulse\Facades\Pulse;
 

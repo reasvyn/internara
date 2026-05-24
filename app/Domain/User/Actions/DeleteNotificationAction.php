@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Admin\Actions;
+namespace App\Domain\User\Actions;
 
-use App\Domain\Admin\Models\Notification;
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\User\Models\Notification;
 
 /**
  * Stateless Action to delete a notification.
  *
- * S1 - Secure: Only owner can delete.
+ * Ownership verification is the caller's responsibility.
  * S2 - Sustain: Clean removal.
  */
 class DeleteNotificationAction extends BaseAction

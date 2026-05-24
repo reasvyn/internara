@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domain\Incident\Notifications;
 
+use App\Domain\Core\Channels\CustomDatabaseChannel;
 use App\Domain\Incident\Models\IncidentReport;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class IncidentReportedNotification extends Notification
+class IncidentReportedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -16,32 +19,52 @@ class IncidentReportedNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast'];
+        return ['mail', 'broadcast', CustomDatabaseChannel::class];
     }
 
-    public function toDatabase(object $notifiable): array
+    public function toMail(object $notifiable): MailMessage
     {
-        return [
-            'type' => 'incident_reported',
-            'incident_id' => $this->incident->id,
-            'severity' => $this->incident->severity->value,
-            'description' => $this->incident->description,
-            'link' => route('admin.incidents'),
-        ];
+        return (new MailMessage)
+            ->subject(__('notifications.incident_reported.subject', [
+                'severity' => $this->incident->severity->label(),
+            ]))
+            ->greeting(__('notifications.incident_reported.greeting', ['name' => $notifiable->name]))
+            ->line(__('notifications.incident_reported.description', [
+                'description' => $this->incident->description,
+            ]))
+            ->line(__('notifications.incident_reported.severity', [
+                'severity' => $this->incident->severity->label(),
+            ]))
+            ->action(
+                __('notifications.incident_reported.action'),
+                route('admin.incidents'),
+            );
     }
 
     public function toBroadcast(object $notifiable): array
     {
-        return $this->toDatabase($notifiable);
+        return [
+            'incident_id' => $this->incident->id,
+            'severity' => $this->incident->severity->value,
+            'title' => __('notifications.incident_reported.title'),
+            'message' => $this->incident->description,
+            'link' => route('admin.incidents'),
+        ];
     }
 
-    public function broadcastType(): string
+    public function toCustomDatabase(object $notifiable): array
     {
-        return 'incident_reported';
-    }
-
-    public function databaseType(): string
-    {
-        return 'incident_reported';
+        return [
+            'type' => 'incident_reported',
+            'title' => __('notifications.incident_reported.title', [
+                'severity' => $this->incident->severity->label(),
+            ]),
+            'message' => $this->incident->description,
+            'data' => [
+                'incident_id' => $this->incident->id,
+                'severity' => $this->incident->severity->value,
+            ],
+            'link' => route('admin.incidents'),
+        ];
     }
 }

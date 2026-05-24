@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Admin\Models;
+namespace App\Domain\User\Models;
 
 use App\Domain\Core\Models\BaseModel;
-use App\Domain\User\Models\User;
 use Database\Factories\NotificationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

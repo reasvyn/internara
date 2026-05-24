@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Admin\Actions;
+namespace App\Domain\User\Actions;
 
-use App\Domain\Admin\Models\Notification;
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\User\Models\Notification;
 
 /**
  * Stateless Action to mark notification as read.
