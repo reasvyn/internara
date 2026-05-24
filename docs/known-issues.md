@@ -131,83 +131,6 @@ There is no project-wide rule about whether enum labels should be translatable o
 
 ## User Registration Area — Audit Findings
 
-### UC1. UserManager Has No `boot()` Authorization Check 🟡
-
-**File:** `app/Domain/Admin/Livewire/UserManager.php`
-
-Unlike all other admin managers (AdminManager, TeacherManager, etc.), `UserManager` has no `boot()` method. It relies entirely on route middleware `role:super_admin|admin`. No authorization at the component level.
-
-**Fix:** Add `boot()` with `$this->authorize('viewAny', User::class)` or appropriate Policy check.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### UC2. `abort(403)` Used Instead of `$this->authorize()` in 5 Managers 🟡
-
-**Files:** `TeacherManager.php`, `StudentManager.php`, `SupervisorManager.php`, `MentorManager.php`, `MenteeManager.php`
-
-All five managers use manual `abort(403)` with inline role checks in `boot()` instead of delegating to a Policy via `$this->authorize()`. Same issue as SC9 (already fixed in School components). Authorization logic is duplicated and hard to audit.
-
-**Fix:** Replace `abort(403)` with `$this->authorize()` delegating to the appropriate Policy.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### UC3. AdminManager Uses Manual Role Check Instead of Policy 🟡
-
-**File:** `app/Domain/Admin/Livewire/AdminManager.php:36-38`
-
-Uses `$user->hasRole('super_admin')` in `boot()` instead of `$this->authorize('create', User::class)`.
-
-**Fix:** Replace with `$this->authorize()`.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### UC4. Route Model Binding in `edit()` Methods (5 Components) 🟡
-
-**Files:** `UserManager`, `TeacherManager`, `StudentManager`, `SupervisorManager` use `edit(User $user)`; `MentorManager` uses `edit(Mentor $mentor)`; `MenteeManager` uses `edit(Mentee $mentee)`.
-
-Same issue as previously fixed in DepartmentManager. Livewire method calls with Route Model Binding as parameters don't resolve correctly in all contexts. Should accept `string $id` and resolve the model manually.
-
-**Fix:** Change signatures to `edit(string $id)` with `findOrFail()` inside.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### UC5. No Form Objects (All 7 Managers) 🟡
-
-**Files:** All 7 admin Livewire components.
-
-All managers use flat `userData` arrays with inline validation. Conventions.md Section 9a mandates Form Objects for complex forms.
-
-**Fix:** Extract `UserForm`, `AdminUserForm`, `StudentForm`, `TeacherForm`, `SupervisorForm`, `MentorForm`, `MenteeForm`.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### UC6. MentorManager Email Unique Validation Convoluted 🟢
-
-**File:** `app/Domain/Admin/Livewire/MentorManager.php:101`
-
-```php
-'email' => 'required|email|unique:users,email,'.
-    ($this->userData['id'] ? Mentor::find($this->userData['id'])?->user_id ?? 'NULL' : 'NULL'),
-```
-
-The unique exclusion ID traverses Mentor → User relationship. Null coalescing chain can silently fall through to `'NULL'` if the mentor is not found, causing false unique violations.
-
-**Fix:** Simplify by resolving the user ID in `edit()` and storing it separately.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
 ### UC7. Zero Livewire Feature Tests for All 7 Admin Managers 🔴
 
 **Directory:** `tests/Feature/Admin/`
@@ -284,6 +207,7 @@ Evaluate which operations should be queued: certificate generation, report rende
 - ✅ `ProfileEditor` → `ProfileForm`, `PasswordForm`
 - ✅ `Login` → `LoginForm`, `ForgotPassword` → `ForgotPasswordForm`, `ResetPassword` → `ResetPasswordForm`, `ConfirmPassword` → `ConfirmPasswordForm`, `AccountRecovery` → `AccountRecoveryForm`
 - ✅ `SystemSetting` → `GeneralSettingsForm`, `BrandingForm`, `MailSettingsForm`
+- ✅ Admin user managers → `UserForm`, `AdminUserForm`, `TeacherForm`, `StudentForm`, `SupervisorForm`, `MentorForm`, `MenteeForm`
 
 **Remaining priority:**
 
@@ -291,10 +215,9 @@ Evaluate which operations should be queued: certificate generation, report rende
 |---|---|---|---|
 | 🟠 P2 | Registration | `RegistrationForm`, `DocumentUploadForm` | `RegistrationWizard`, `RegistrationDocumentUpload` |
 | 🟠 P3 | User | `ProfileForm` | `ProfileEditor` |
-| 🟡 P4 | Admin | `UserForm`, `AnnouncementForm` | `UserManager`, `CreateAdminCommand` |
-| 🟡 P5 | School | `AcademicYearForm`, `DepartmentForm` | `AcademicYearIndex`, `DepartmentManager` |
-| 🟢 P6 | Settings | `GeneralSettingsForm`, `BrandingForm`, `MailSettingsForm` | `SystemSetting` ✅ |
-| 🟢 P6 | All remaining forms | — | ~70 components |
+| 🟡 P4 | Announcement | `AnnouncementForm` | `AnnouncementManager` |
+| 🟡 P5 | School | `AcademicYearForm`, `DepartmentForm` | `AcademicYearManager`, `DepartmentManager` ✅ |
+| 🟢 P6 | All remaining forms | — | ~60 components |
 
 **Convention:** See `docs/conventions.md` Section 9a — Form Objects for the required pattern.
 
@@ -308,12 +231,6 @@ Evaluate which operations should be queued: certificate generation, report rende
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
 | 🔴 | **N2** No notification cleanup / pruning mechanism | Notifications | ⏳ |
 | 🔴 | **UC7** Zero Livewire feature tests for all 7 admin managers | Admin | ⏳ |
-| 🟡 | **UC1** UserManager has no boot() authorization check | Admin | ⏳ |
-| 🟡 | **UC2** abort(403) used instead of authorize() in 5 managers | Admin | ⏳ |
-| 🟡 | **UC3** AdminManager uses manual role check | Admin | ⏳ |
-| 🟡 | **UC4** Route Model Binding in edit() methods (5 components) | Admin | ⏳ |
-| 🟡 | **UC5** No Form Objects (all 7 managers) | Admin | ⏳ |
-| 🟢 | **UC6** MentorManager email unique validation convoluted | Admin | ⏳ |
 | 🟢 | **SE13** AppMetadata has zero test coverage | Settings | ⏳ |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
 | 🟡 | Livewire Form Object migration (77 components remaining) | Architecture | ⏳ |

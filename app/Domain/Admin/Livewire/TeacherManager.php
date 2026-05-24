@@ -7,39 +7,27 @@ namespace App\Domain\Admin\Livewire;
 use App\Domain\Admin\Actions\CreateUserAction;
 use App\Domain\Admin\Actions\DeleteUserAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
+use App\Domain\Admin\Livewire\Forms\TeacherForm;
 use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\User\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-/**
- * Modernized Teacher Manager using BaseRecordManager pattern.
- */
 class TeacherManager extends BaseRecordManager
 {
+    use AuthorizesRequests;
+
     public bool $userModal = false;
 
-    public array $userData = [
-        'id' => null,
-        'name' => '',
-        'email' => '',
-        'nip' => '', // NIP
-    ];
+    public TeacherForm $form;
 
     public function boot(): void
     {
-        if (
-            ! auth()
-                ->user()
-                ?->hasAnyRole(['super_admin', 'admin'])
-        ) {
-            abort(403, 'Unauthorized access.');
-        }
+        $this->authorize('viewAny', User::class);
     }
 
-    /**
-     * Define columns and sorting.
-     */
     public function headers(): array
     {
         return [
@@ -57,9 +45,6 @@ class TeacherManager extends BaseRecordManager
         ];
     }
 
-    /**
-     * Base query for teachers.
-     */
     protected function query(): Builder
     {
         return User::query()
@@ -67,9 +52,6 @@ class TeacherManager extends BaseRecordManager
             ->with(['profile']);
     }
 
-    /**
-     * Search implementation.
-     */
     protected function applySearch(Builder $query): Builder
     {
         return $query->where(function ($q) {
@@ -91,52 +73,48 @@ class TeacherManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->userData = [
-            'id' => null,
-            'name' => '',
-            'email' => '',
-            'nip' => '',
-        ];
+        $this->form->reset();
         $this->userModal = true;
     }
 
-    public function edit(User $user): void
+    public function edit(string $id): void
     {
+        $user = User::with('profile')->findOrFail($id);
+
         $this->resetErrorBag();
-        $this->userData = [
+        $this->form->fill([
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'nip' => $user->profile?->nip ?? '',
-        ];
+        ]);
         $this->userModal = true;
     }
 
     public function save(CreateUserAction $createAction, UpdateUserAction $updateAction): void
     {
-        $this->validate([
-            'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
-        ]);
+        $this->form->validate();
 
         $profileData = [
-            'nip' => $this->userData['nip'],
+            'nip' => $this->form->nip,
         ];
 
-        if ($this->userData['id']) {
-            $user = User::findOrFail($this->userData['id']);
-            $updateAction->execute($user, $this->userData, $profileData);
+        if ($this->form->id) {
+            $user = User::findOrFail($this->form->id);
+            $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email], $profileData);
             flash()->success(__('user.teacher.success_updated'));
         } else {
-            $createAction->execute($this->userData, $profileData, [RoleEnum::TEACHER->value]);
+            $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], $profileData, [RoleEnum::TEACHER->value]);
             flash()->success(__('user.teacher.success_created'));
         }
 
         $this->userModal = false;
     }
 
-    public function delete(User $user, DeleteUserAction $deleteAction): void
+    public function delete(string $id, DeleteUserAction $deleteAction): void
     {
+        $user = User::findOrFail($id);
+
         $deleteAction->execute($user);
         flash()->success(__('user.teacher.success_deleted'));
     }

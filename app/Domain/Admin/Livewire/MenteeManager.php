@@ -4,34 +4,27 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Livewire;
 
+use App\Domain\Admin\Livewire\Forms\MenteeForm;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Mentee\Actions\CreateMenteeAction;
 use App\Domain\Mentee\Actions\DeleteMenteeAction;
 use App\Domain\Mentee\Actions\UpdateMenteeAction;
 use App\Domain\Mentee\Models\Mentee;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class MenteeManager extends BaseRecordManager
 {
+    use AuthorizesRequests;
+
     public bool $userModal = false;
 
-    public array $userData = [
-        'id' => null,
-        'name' => '',
-        'email' => '',
-        'internal_notes' => '',
-        'is_active' => true,
-    ];
+    public MenteeForm $form;
 
     public function boot(): void
     {
-        if (
-            ! auth()
-                ->user()
-                ?->hasAnyRole(['super_admin', 'admin'])
-        ) {
-            abort(403, 'Unauthorized access.');
-        }
+        $this->authorize('viewAny', Mentee::class);
     }
 
     public function headers(): array
@@ -68,52 +61,46 @@ class MenteeManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->userData = [
-            'id' => null,
-            'name' => '',
-            'email' => '',
-            'internal_notes' => '',
-            'is_active' => true,
-        ];
+        $this->form->reset();
         $this->userModal = true;
     }
 
-    public function edit(Mentee $mentee): void
+    public function edit(string $id): void
     {
+        $mentee = Mentee::with('user')->findOrFail($id);
+
         $this->resetErrorBag();
-        $this->userData = [
+        $this->form->fill([
             'id' => $mentee->id,
             'name' => $mentee->user->name,
             'email' => $mentee->user->email,
             'internal_notes' => $mentee->internal_notes ?? '',
             'is_active' => $mentee->is_active,
-        ];
+            'editingUserId' => $mentee->user_id,
+        ]);
         $this->userModal = true;
     }
 
     public function save(CreateMenteeAction $createAction, UpdateMenteeAction $updateAction): void
     {
-        $this->validate([
-            'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ? Mentee::find($this->userData['id'])?->user_id ?? 'NULL' : 'NULL'),
-        ]);
+        $this->form->validate();
 
-        if ($this->userData['id']) {
-            $mentee = Mentee::with('user')->findOrFail($this->userData['id']);
+        if ($this->form->id) {
+            $mentee = Mentee::with('user')->findOrFail($this->form->id);
             $updateAction->execute($mentee, [
-                'internal_notes' => $this->userData['internal_notes'],
-                'is_active' => $this->userData['is_active'],
+                'internal_notes' => $this->form->internal_notes,
+                'is_active' => $this->form->is_active,
             ]);
             flash()->success(__('user.mentee.success_updated'));
         } else {
             $createAction->execute(
                 userData: [
-                    'name' => $this->userData['name'],
-                    'email' => $this->userData['email'],
+                    'name' => $this->form->name,
+                    'email' => $this->form->email,
                 ],
                 menteeData: [
-                    'internal_notes' => $this->userData['internal_notes'],
-                    'is_active' => $this->userData['is_active'],
+                    'internal_notes' => $this->form->internal_notes,
+                    'is_active' => $this->form->is_active,
                 ],
             );
             flash()->success(__('user.mentee.success_created'));
@@ -122,8 +109,10 @@ class MenteeManager extends BaseRecordManager
         $this->userModal = false;
     }
 
-    public function delete(Mentee $mentee, DeleteMenteeAction $deleteAction): void
+    public function delete(string $id, DeleteMenteeAction $deleteAction): void
     {
+        $mentee = Mentee::findOrFail($id);
+
         $deleteAction->execute($mentee);
         flash()->success(__('user.mentee.success_deleted'));
     }

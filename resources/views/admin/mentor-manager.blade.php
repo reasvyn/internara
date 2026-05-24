@@ -124,20 +124,20 @@
     </x-mary-card>
 
     {{-- Mentor Modal --}}
-    <x-mary-modal wire:model="userModal" :title="$userData['id'] ? __('user.mentor.edit') : __('user.mentor.new')" class="backdrop-blur-sm" box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl">
+    <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.mentor.edit') : __('user.mentor.new')" class="backdrop-blur-sm" box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl">
         <div class="grid grid-cols-1 gap-6 pt-4">
-            <x-mary-input :label="__('user.fields.full_name')" wire:model="userData.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            <x-mary-input :label="__('user.fields.email')" type="email" wire:model="userData.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
             <x-mary-select 
                 :label="__('user.mentor.type')" 
-                wire:model="userData.type" 
+                wire:model="form.type" 
                 :options="[
                     ['value' => \App\Domain\Mentor\Models\Mentor::TYPE_SCHOOL_TEACHER, 'label' => __('user.mentor.school_teacher')],
                     ['value' => \App\Domain\Mentor\Models\Mentor::TYPE_INDUSTRY_SUPERVISOR, 'label' => __('user.mentor.industry_supervisor')],
                 ]" 
                 class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3"
             />
-            <x-mary-toggle :label="__('user.mentor.active')" wire:model="userData.is_active" class="rounded-[1.5rem]" />
+            <x-mary-toggle :label="__('user.mentor.active')" wire:model="form.is_active" class="rounded-[1.5rem]" />
         </div>
 
         <x-slot:actions>

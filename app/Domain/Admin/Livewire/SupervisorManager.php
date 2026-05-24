@@ -7,30 +7,25 @@ namespace App\Domain\Admin\Livewire;
 use App\Domain\Admin\Actions\CreateUserAction;
 use App\Domain\Admin\Actions\DeleteUserAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
+use App\Domain\Admin\Livewire\Forms\SupervisorForm;
 use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\User\Models\User;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class SupervisorManager extends BaseRecordManager
 {
+    use AuthorizesRequests;
+
     public bool $userModal = false;
 
-    public array $userData = [
-        'id' => null,
-        'name' => '',
-        'email' => '',
-    ];
+    public SupervisorForm $form;
 
     public function boot(): void
     {
-        if (
-            ! auth()
-                ->user()
-                ?->hasAnyRole(['super_admin', 'admin'])
-        ) {
-            abort(403, 'Unauthorized access.');
-        }
+        $this->authorize('viewAny', User::class);
     }
 
     public function headers(): array
@@ -75,46 +70,43 @@ class SupervisorManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->userData = [
-            'id' => null,
-            'name' => '',
-            'email' => '',
-        ];
+        $this->form->reset();
         $this->userModal = true;
     }
 
-    public function edit(User $user): void
+    public function edit(string $id): void
     {
+        $user = User::findOrFail($id);
+
         $this->resetErrorBag();
-        $this->userData = [
+        $this->form->fill([
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-        ];
+        ]);
         $this->userModal = true;
     }
 
     public function save(CreateUserAction $createAction, UpdateUserAction $updateAction): void
     {
-        $this->validate([
-            'userData.name' => 'required|string|max:255',
-            'userData.email' => 'required|email|unique:users,email,'.($this->userData['id'] ?? 'NULL'),
-        ]);
+        $this->form->validate();
 
-        if ($this->userData['id']) {
-            $user = User::findOrFail($this->userData['id']);
-            $updateAction->execute($user, $this->userData);
+        if ($this->form->id) {
+            $user = User::findOrFail($this->form->id);
+            $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email]);
             flash()->success(__('user.supervisor.success_updated'));
         } else {
-            $createAction->execute($this->userData, [], [RoleEnum::SUPERVISOR->value]);
+            $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], [], [RoleEnum::SUPERVISOR->value]);
             flash()->success(__('user.supervisor.success_created'));
         }
 
         $this->userModal = false;
     }
 
-    public function delete(User $user, DeleteUserAction $deleteAction): void
+    public function delete(string $id, DeleteUserAction $deleteAction): void
     {
+        $user = User::findOrFail($id);
+
         $deleteAction->execute($user);
         flash()->success(__('user.supervisor.success_deleted'));
     }

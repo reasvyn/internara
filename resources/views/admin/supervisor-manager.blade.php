@@ -87,10 +87,10 @@
     </x-mary-card>
 
     {{-- Supervisor Modal --}}
-    <x-mary-modal wire:model="userModal" :title="$userData['id'] ? __('user.supervisor.edit') : __('user.supervisor.new')" class="backdrop-blur-sm" box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl">
+    <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.supervisor.edit') : __('user.supervisor.new')" class="backdrop-blur-sm" box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl">
         <div class="grid grid-cols-1 gap-6 pt-4">
-            <x-mary-input :label="__('user.fields.full_name')" wire:model="userData.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            <x-mary-input :label="__('user.fields.email')" type="email" wire:model="userData.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
         </div>
 
         <x-slot:actions>
