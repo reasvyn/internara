@@ -54,7 +54,7 @@
 
                 <x-slot:actions>
                     <x-mary-button :label="__('common.actions.cancel')" wire:click="resetForm" class="btn-ghost btn-sm" />
-                    <x-mary-button :label="__('announcement.send')" type="submit" class="btn-primary btn-sm" icon="o-paper-airplane" spinner="save" />
+                    <x-mary-button :label="__('announcement.send')" type="submit" class="btn-primary btn-sm" icon-right="o-paper-airplane" spinner="save" />
                 </x-slot:actions>
             </x-mary-form>
         </x-mary-card>
@@ -109,7 +109,7 @@
                         </div>
                         <div class="flex items-center gap-1 shrink-0">
                             @if($announcement->isDraft() || $announcement->isScheduled())
-                                <x-mary-button icon="o-paper-airplane" class="btn-ghost btn-sm text-success"
+                                <x-mary-button icon-right="o-paper-airplane" class="btn-ghost btn-sm text-success"
                                     wire:click="publishNow('{{ $announcement->id }}')"
                                     wire:confirm="{{ __('announcement.confirm_publish') }}"
                                     :aria-label="__('announcement.publish_now')" />

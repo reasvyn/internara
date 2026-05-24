@@ -178,7 +178,7 @@
                         <div class="flex justify-end pt-4 border-t border-base-content/5">
                             <x-mary-button
                                 label="Submit Assignment"
-                                icon="o-paper-airplane"
+                                icon-right="o-paper-airplane"
                                 class="btn-primary rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 h-12 shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-transform"
                                 wire:click="submit('{{ $selectedAssignment->id }}')"
                                 spinner="submit"
