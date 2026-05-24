@@ -42,15 +42,16 @@ preventing privilege escalation. Account archival moves the user to Auth's
 ARCHIVED state — data preserved, login permanently blocked. All user management
 operations produce detailed audit log entries.
 
-**Announcements.** A simple broadcast system for time-sensitive messages.
-Announcements have a subject, body text, optional file attachments, and
-targeting rules. Targeting can be by role (all students, all teachers, all
-users), by department, by program, or by individual user. Announcements support
-scheduling (compose now, publish later) and expiration (auto-hide after a
-specified date). Once published, an announcement is immutable — corrections
-require publishing a new announcement that can reference the original.
-Announcements appear as banners or list items on targeted users' dashboards.
-There is no reply or discussion threading.
+**Announcements.** A broadcast system for time-sensitive messages with a
+three-state lifecycle: DRAFT → SCHEDULED → PUBLISHED. Announcements have a
+title, body text (Markdown supported), type (info/success/warning/error),
+optional link, and targeting rules by role. DRAFT announcements are saved
+without sending notifications. SCHEDULED announcements are set to publish
+automatically at a future date (checked every minute by the scheduler).
+PUBLISHED announcements send notifications to targeted users immediately.
+Even after publishing, an announcement can be deleted for emergency takedowns
+(e.g., incorrect or panic-inducing content). There is no reply or discussion
+threading.
 
 **GDPR Compliance.** Two data subject request workflows are supported. Data
 export: when a user requests their personal data, an admin triggers a
@@ -103,9 +104,16 @@ process.
 - No admin can edit their own role, permissions, or account status through the admin interface (self-service prevention)
 
 **Announcements**
+- **Admin:** As an admin, I want to create draft announcements so that I can prepare content before publishing
+- **Admin:** As an admin, I want to schedule announcements for future delivery so that they publish automatically at the right time
 - **Admin:** As an admin, I want to publish announcements targeted by role so that I can communicate with specific user groups
+- **Admin:** As an admin, I want to delete published announcements so that I can remove incorrect or panic-inducing messages
 - **User:** As a user, I want to view system announcements so that I stay informed about important updates
-- Announcements are immutable after publishing — corrections require a new announcement that can reference the superseded original
+- Announcements follow a DRAFT → SCHEDULED → PUBLISHED lifecycle enforced by the `AnnouncementStatus` enum
+- Notifications are only sent when an announcement reaches PUBLISHED status (via `SendAnnouncementAction`)
+- Scheduled announcements are published automatically by `announcements:publish` command (runs every minute)
+- Published announcements can be deleted — this is intentional for emergency takedowns
+- Targeting is by role; announcements sent to specific roles exclude users who share the sender's roles
 
 **GDPR Compliance**
 - **Admin:** As an admin, I want to fulfil GDPR data export requests so that users can obtain their personal data
@@ -127,20 +135,17 @@ process.
 | `DeleteUserAction` | Deletes a user account |
 | `ToggleUserStatusAction` | Toggles user account active/inactive status |
 | `ArchiveStudentAccountsAction` | Batch archives student accounts |
-| `SendAnnouncementAction` | Creates and sends a system-wide announcement |
-| `SendNotificationAction` | Sends a notification to a specific user |
-| `GetNotificationsAction` | Retrieves pending notifications for a user |
-| `MarkAsReadAction` | Marks a single notification as read |
-| `MarkAllAsReadAction` | Marks all notifications as read |
-| `DeleteNotificationAction` | Deletes a notification |
+| `SendAnnouncementAction` | Creates and sends a system-wide announcement (supports draft/scheduled/published) |
 | `GetAdminDashboardStatsAction` | Computes admin dashboard statistics |
 
 ### Technical Reference
 
 | Layer | Artifacts |
 |-------|-----------|
-| **Models** | `Notification`, `GdprDeletionLog` |
-| **Livewire** | `UserManager`, `AdminManager`, `StudentManager`, `TeacherManager`, `SupervisorManager`, `MentorManager`, `MenteeManager`, `AnnouncementManager`, `AuditLogManager`, `ActivityFeedManager`, `NotificationCenter`, `NotificationBell`, `ApplicationReview`, `AccountCloneDetector`, `GdprDeletionLogs` |
+| **Models** | `GdprDeletionLog` |
+| **Enums** | `AnnouncementStatus` (DRAFT, SCHEDULED, PUBLISHED) |
+| **Livewire** | `UserManager`, `AdminManager`, `StudentManager`, `TeacherManager`, `SupervisorManager`, `MentorManager`, `MenteeManager`, `AnnouncementManager`, `AuditLogManager`, `ApplicationReview`, `AccountCloneDetector`, `GdprDeletionLogs` |
+| **Console** | `PublishScheduledAnnouncementsCommand` (runs every minute via scheduler) |
 
 ## Dependencies
 
