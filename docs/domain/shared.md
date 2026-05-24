@@ -52,7 +52,7 @@ Shared provides cross-domain utility code. It has no end-user stories — the co
 - Utilities must be stateless: static methods or immutable objects
 
 ### User Stories & Rules
-- Shared MUST NOT import any business domain (exception: Theme imports Settings for color resolution, documented in arch tests).
+- Shared MUST NOT import any business domain (exception: Theme imports Settings for color resolution).
 - Shared MUST NOT have Models, Livewire, Controllers, Routes, Views, or migrations.
 - Utilities must be stateless: static methods or immutable readonly objects.
 - Code belongs in Shared only when used by at least 2 different domains; single-domain utilities stay in their domain.

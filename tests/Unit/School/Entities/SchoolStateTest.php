@@ -6,29 +6,14 @@ use App\Domain\Core\Entities\BaseEntity;
 use App\Domain\School\Entities\SchoolState;
 
 describe('SchoolState entity', function () {
-    it('blocks creation when single record exists', function () {
-        $entity = new SchoolState(
-            singleRecordEnabled: true,
-            exists: true,
-        );
+    it('blocks creation when a record exists', function () {
+        $entity = new SchoolState(existsCount: 1);
 
         expect($entity->canBeCreated())->toBeFalse();
     });
 
     it('allows creation when no record exists', function () {
-        $entity = new SchoolState(
-            singleRecordEnabled: true,
-            exists: false,
-        );
-
-        expect($entity->canBeCreated())->toBeTrue();
-    });
-
-    it('allows creation when single record disabled', function () {
-        $entity = new SchoolState(
-            singleRecordEnabled: false,
-            exists: true,
-        );
+        $entity = new SchoolState(existsCount: 0);
 
         expect($entity->canBeCreated())->toBeTrue();
     });

@@ -7,7 +7,7 @@ accompanied by tests that verify the change works correctly and does not break e
 Tests are a specification of what the code does — reading the tests should tell a developer what the
 system's behavioral contract is.
 
-## Feature vs Unit vs Arch Test Distinction
+## Feature vs Unit Test Distinction
 
 Feature tests test complete workflows from end to end. They hit HTTP routes, submit forms, interact
 with Livewire components, and verify database state, redirects, and response content. Feature tests
@@ -19,12 +19,6 @@ classes without the need for a database, HTTP request, or full application boot.
 because they have no dependencies. They answer the question: "does this specific function return the
 correct value given these inputs?"
 
-Arch tests enforce structural rules about the codebase. They verify that classes in certain
-directories extend the correct base classes, that domains do not import from other domains directly,
-that facades are not used in domain code, and that all files declare strict types. Arch tests are
-written once and prevent architectural drift as the codebase grows. They answer the question: "is
-the codebase still organized the way we intended?"
-
 ## When to Use Each
 
 Use a unit test for a pure business rule: an Entity method that determines whether a status
@@ -34,9 +28,6 @@ database needed, no HTTP needed.
 Use a feature test for a user-visible workflow: registering a user, submitting an assignment,
 approving an internship. The test creates any necessary records, performs the action, and verifies
 the outcome in the database, response, and session.
-
-Use an arch test for structural invariants: "all Entities are final readonly classes," "all Actions
-have a single execute() method," "Livewire components do not use facades."
 
 ## What LazilyRefreshDatabase Does
 
@@ -65,7 +56,7 @@ teardown, no dependencies. They are pure PHP function tests.
 
 ## Where to Find It
 
-Tests are organized in `tests/Feature/{Domain}/`, `tests/Unit/{Domain}/`, and `tests/Arch/`. The
+Tests are organized in `tests/Feature/{Domain}/` and `tests/Unit/{Domain}/`. The
 base `TestCase` is at `tests/TestCase.php`. Pest global configuration is at `tests/Pest.php`.
 Composer scripts for running tests are in `composer.json` under the `scripts` section.
 
@@ -81,7 +72,7 @@ composer run coverage                          # full app (unit + feature + arch
 composer run coverage -- tests/Unit/Core       # single domain (Core)
 composer run coverage -- tests/Unit/Settings   # single domain (Settings)
 composer run coverage -- tests/Unit            # unit tests only
-composer run coverage -- tests/Arch            # arch tests only
+
 composer run coverage -- --filter=BaseAction   # specific test
 ```
 

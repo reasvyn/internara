@@ -24,7 +24,7 @@ final readonly class CertificateRenderer
 
         return [
             '{student_name}' => $user?->name ?? '—',
-            '{student_nis}' => $profile?->national_identifier ?? '—',
+            '{student_nis}' => $profile?->national_id_number ?? '—',
             '{school_name}' => $school?->name ?? '—',
             '{school_code}' => '',
             '{department_name}' => $profile?->department?->name ?? '—',

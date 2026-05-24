@@ -44,8 +44,8 @@ class ApproveAccountApplicationAction extends BaseAction
                 'user_id' => $user->id,
                 'phone' => $application->phone,
                 'address' => $application->address,
-                'national_identifier' => $application->national_identifier,
-                'registration_number' => $application->registration_number,
+                'national_id_number' => $application->national_id_number,
+                'student_id_number' => $application->student_id_number,
                 'school_id' => $application->school_id,
                 'department_id' => $application->department_id,
             ]);

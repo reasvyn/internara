@@ -46,5 +46,5 @@ Action naming follows `{Verb}{Entity}Action` convention: `RegisterStudentAction`
 ## References
 - `app/Domain/Core/Actions/BaseAction.php`
 - `docs/conventions.md` — Section 5 (Actions)
-- `tests/Arch/ActionLayerArchTest.php`
+- ~~`tests/Arch/ActionLayerArchTest.php`~~ (removed)
 - Total: 150 Action classes across 24 domains

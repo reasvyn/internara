@@ -15,8 +15,8 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-widget::stat icon="o-building-office" :label="__('department.stats.total')" :value="$stats['total']" />
-        <x-widget::stat icon="o-briefcase" :label="__('department.stats.with_internships')" :value="$stats['with_internships']" />
+        <x-mary-stat icon="o-building-office" :label="__('department.stats.total')" :value="$stats['total']" />
+        <x-mary-stat icon="o-briefcase" :label="__('department.stats.with_internships')" :value="$stats['with_internships']" />
     </x-slot:stats>
 
     <x-shared::ui.selection-bar>
@@ -77,17 +77,17 @@
     />
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showModal" :title="$formData['id'] ? __('department.edit') : __('department.new')" class="backdrop-blur-sm">
+        <x-mary-modal wire:model="showModal" :title="$form->id ? __('department.edit') : __('department.new')" class="backdrop-blur-sm">
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
                     <x-mary-input
                         :label="__('department.name')"
-                        wire:model="formData.name"
+                        wire:model="form.name"
                         :placeholder="__('department.name_placeholder')"
                     />
                     <x-mary-textarea
                         :label="__('department.description')"
-                        wire:model="formData.description"
+                        wire:model="form.description"
                         rows="3"
                     />
                 </div>

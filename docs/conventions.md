@@ -22,7 +22,7 @@ Every layer has a designated base class from the Core domain. You MUST use them 
 
 **Why:** These base classes provide UUID primary keys, transaction wrapping, automatic audit logging, role/ownership authorization, search/sort/filter/pagination, and consistent error handling. Skipping them means reimplementing the same infrastructure — and creating inconsistency.
 
-**Consequence of not using them:** Architecture tests will fail. `ModelLayerArchTest` checks that models extend `BaseModel`. `PolicyLayerArchTest` checks that policies extend `BasePolicy`. `EntityLayerArchTest` checks that entities are `final readonly` and extend `BaseEntity`.
+**Consequence of not using them:** Violations will be caught by code review and PHPStan analysis.
 
 ## 1. File Structure
 
@@ -237,7 +237,7 @@ class SetupWizard extends Component
 `public` properties with scattering validation rules. Form Objects group
 related fields, centralize validation, enable reuse across components, and
 can be unit-tested independently of the Livewire lifecycle. The current
-codebase has 83 Livewire components with inline form state — migrating to
+codebase has 89 Livewire components with inline form state — migrating to
 Form Objects progressively reduces coupling and improves testability.
 
 ## 10. Controllers & Routes
@@ -262,20 +262,6 @@ Use the right exception type from `App\Domain\Core\Exceptions`:
 - `PresentationException` for HTTP-level failures (404, 403).
 - `InfrastructureException` for external system failures.
 
-## 13. Architecture Rules (Enforced by Tests)
+## 13. Code Quality Enforcement
 
-| Rule | Enforced By |
-|------|------------|
-| `declare(strict_types=1)` in all app files | `StrictTypesArchTest` |
-| No `dd()`, `dump()`, etc. | `StrictTypesArchTest` |
-| Controllers don't import Actions or Models | `LayerSeparationArchTest` |
-| Notifications don't import Livewire | `LayerSeparationArchTest` |
-| Events don't import Actions | `LayerSeparationArchTest` |
-| Services don't import Livewire | `LayerSeparationArchTest` |
-| Entities extend `BaseEntity`, are `final readonly` | `EntityLayerArchTest` |
-| Enums are string-backed, implement `LabelEnum` | `EnumLayerArchTest` |
-| Models extend `BaseModel`, use `HasUuids` | `ModelLayerArchTest` |
-| Actions have `execute()`, end with `Action` | `ActionLayerArchTest` |
-| Policies extend `BasePolicy` | `PolicyLayerArchTest` |
-| Exceptions extend `AppException` | `ExceptionLayerArchTest` |
-| Core contracts are interfaces | `ContractsArchTest` |
+Conventions in this document are enforced through code review and static analysis (PHPStan).

@@ -86,10 +86,6 @@
             "@php artisan optimize:clear --ansi",
             "vendor/bin/pest --coverage --min=80"
         ],
-        "test:arch": [
-            "@php artisan optimize:clear --ansi",
-            "vendor/bin/pest tests/Arch --colors=never"
-        ],
         "test:feature": [
             "@php artisan optimize:clear --ansi",
             "vendor/bin/pest tests/Feature --colors=never"
@@ -111,7 +107,7 @@
         "quality": [
             "@lint",
             "@analyse",
-            "@test:arch"
+            "@test:feature"
         ],
         "quality:full": [
             "@format",

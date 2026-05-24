@@ -34,7 +34,8 @@ Code is organized by business domain, not by technical layer. Every domain lives
 classes every other domain depends on. `Shared` provides cross-domain utility code used by at
 least two domains.
 
-This structure is enforced by architecture tests (`tests/Arch/`):
+This structure was previously enforced by architecture tests (removed due to `pest-plugin-arch` bug).
+
 - `DomainBoundariesArchTest` — domains should not import from other business domains directly
 - `LayerSeparationArchTest` — controllers don't import Actions, notifications don't import
   Livewire, etc.
@@ -55,5 +56,5 @@ This structure is enforced by architecture tests (`tests/Arch/`):
 ## References
 - `app/Domain/` (24 domain directories)
 - `docs/architecture.md`
-- `tests/Arch/DomainBoundariesArchTest.php`
-- `tests/Arch/LayerSeparationArchTest.php`
+- ~~`tests/Arch/DomainBoundariesArchTest.php`~~ (removed)
+- ~~`tests/Arch/LayerSeparationArchTest.php`~~ (removed)

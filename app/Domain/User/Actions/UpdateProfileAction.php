@@ -87,9 +87,14 @@ class UpdateProfileAction extends BaseAction
             'emergency_contact_phone' => ['nullable', 'string', 'max:20'],
             'emergency_contact_address' => ['nullable', 'string', 'max:500'],
             'bio' => ['nullable', 'string'],
-            'national_identifier' => ['nullable', 'string', 'max:50'],
-            'registration_number' => ['nullable', 'string', 'max:50'],
+            'national_id_number' => ['nullable', 'string', 'max:50'],
+            'student_id_number' => ['nullable', 'string', 'max:50'],
             'department_id' => ['nullable', 'exists:departments,id'],
+            'employment_status' => ['nullable', 'string'],
+            'nip' => ['nullable', 'string', 'max:18'],
+            'nuptk' => ['nullable', 'string', 'max:16'],
+            'competence_field' => ['nullable', 'string', 'max:255'],
+            'position' => ['nullable', 'string'],
         ])->validate();
     }
 }

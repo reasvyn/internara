@@ -91,7 +91,7 @@
         <div class="grid grid-cols-1 gap-6 pt-4">
             <x-mary-input :label="__('user.fields.full_name')" wire:model="userData.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
             <x-mary-input :label="__('user.fields.email')" type="email" wire:model="userData.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            <x-mary-input :label="__('user.teacher.nip')" wire:model="userData.registration_number" icon="o-hashtag" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('user.teacher.nip')" wire:model="userData.nip" icon="o-hashtag" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
         </div>
 
         <x-slot:actions>

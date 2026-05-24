@@ -53,6 +53,6 @@ This makes the boundary explicit: models handle persistence, entities handle bus
 ## References
 - `app/Domain/Core/Entities/BaseEntity.php`
 - `docs/conventions.md` — Section 6 (Entities)
-- `tests/Arch/EntityLayerArchTest.php`
+- ~~`tests/Arch/EntityLayerArchTest.php`~~ (removed)
 - Example: `app/Domain/Internship/Entities/InternshipPeriod.php`
 - Example: `app/Domain/Registration/Entities/RegistrationState.php`

@@ -8,7 +8,7 @@ This exists because a single `routes/web.php` with 200+ lines creates merge conf
 
 ## Architecture
 
-The master file `routes/web.php` `require`s 23 domain route files. Load order matters: if two files register the same route name, the later one wins.
+The master file `routes/web.php` `require`s 24 domain route files. Load order matters: if two files register the same route name, the later one wins.
 
 Route files contain:
 - `declare(strict_types=1)`

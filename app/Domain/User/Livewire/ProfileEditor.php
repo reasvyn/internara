@@ -38,28 +38,55 @@ class ProfileEditor extends Component
 
     public function save(UpdateProfileAction $updateProfile): void
     {
-        $this->validate([
+        $rules = [
             'profileForm.name' => 'required|string|max:255',
             'profileForm.email' => 'required|email|unique:users,email,'.$this->user->id,
             'profileForm.phone' => 'nullable|string|max:20',
             'profileForm.address' => 'nullable|string|max:500',
             'profileForm.bio' => 'nullable|string|max:1000',
             'avatar' => 'nullable|image|max:2048',
-        ]);
+        ];
+
+        if ($this->isStaff()) {
+            $rules = array_merge($rules, [
+                'profileForm.nip' => 'nullable|string|max:18|unique:profiles,nip,'.($this->user->profile?->id ?? 'NULL'),
+                'profileForm.nuptk' => 'nullable|string|max:16|unique:profiles,nuptk,'.($this->user->profile?->id ?? 'NULL'),
+                'profileForm.competence_field' => 'nullable|string|max:255',
+            ]);
+        }
+
+        $this->validate($rules);
+
+        $data = [
+            'phone' => $this->profileForm->phone,
+            'address' => $this->profileForm->address,
+            'bio' => $this->profileForm->bio,
+        ];
+
+        if ($this->isStaff()) {
+            $data = array_merge($data, [
+                'employment_status' => $this->profileForm->employment_status,
+                'nip' => $this->profileForm->nip,
+                'nuptk' => $this->profileForm->nuptk,
+                'competence_field' => $this->profileForm->competence_field,
+                'position' => $this->profileForm->position,
+            ]);
+        }
 
         $updateProfile->execute(
             $this->user,
-            [
-                'phone' => $this->profileForm->phone,
-                'address' => $this->profileForm->address,
-                'bio' => $this->profileForm->bio,
-            ],
+            $data,
             name: $this->profileForm->name,
             email: $this->profileForm->email,
             avatar: $this->avatar,
         );
 
         flash()->success(__('profile.saved'));
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->user->hasAnyRole(['super_admin', 'admin', 'teacher']);
     }
 
     public function updatePassword(UpdateUserPasswordAction $updatePassword): void

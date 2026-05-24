@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
 
-            $table->string('national_identifier')->nullable()->comment('NISN');
-            $table->string('registration_number')->nullable()->comment('NIS');
+            $table->string('national_id_number', 50)->nullable();
+            $table->string('student_id_number', 50)->nullable();
             $table->foreignUuid('school_id')->nullable()->constrained('schools')->onDelete('set null');
             $table->foreignUuid('department_id')->nullable()->constrained('departments')->onDelete('set null');
             $table->string('class_name')->nullable();

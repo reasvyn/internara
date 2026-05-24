@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domain\School\Livewire;
 
-use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\School\Actions\CreateDepartmentAction;
 use App\Domain\School\Actions\DeleteDepartmentAction;
 use App\Domain\School\Actions\UpdateDepartmentAction;
+use App\Domain\School\Livewire\Forms\DepartmentForm;
 use App\Domain\School\Models\Department;
 use App\Domain\School\Models\School;
 use App\Domain\Shared\Support\CsvHandler;
@@ -32,21 +32,11 @@ class DepartmentManager extends BaseRecordManager
 
     public $importFile;
 
-    public array $formData = [
-        'id' => null,
-        'name' => '',
-        'description' => '',
-    ];
+    public DepartmentForm $form;
 
     public function boot(): void
     {
-        if (
-            ! auth()
-                ->user()
-                ?->hasAnyRole(['super_admin', 'admin'])
-        ) {
-            abort(403, 'Unauthorized access.');
-        }
+        $this->authorize('viewAny', Department::class);
     }
 
     public function headers(): array
@@ -61,7 +51,7 @@ class DepartmentManager extends BaseRecordManager
 
     protected function query(): Builder
     {
-        return Department::query()->with('school');
+        return Department::query();
     }
 
     protected function applySearch(Builder $query): Builder
@@ -69,54 +59,38 @@ class DepartmentManager extends BaseRecordManager
         return $query->where('name', 'like', "%{$this->search}%");
     }
 
-    protected function applyFilters(Builder $query): Builder
-    {
-        return $query;
-    }
-
     // --- Record Actions ---
 
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->formData = [
-            'id' => null,
-            'name' => '',
-            'description' => '',
-        ];
+        $this->form->reset();
+        $this->form->id = null;
         $this->showModal = true;
     }
 
-    public function edit(Department $department): void
+    public function edit(string $id): void
     {
+        $department = Department::findOrFail($id);
+
         $this->resetErrorBag();
-        $this->formData = [
-            'id' => $department->id,
-            'name' => $department->name,
-            'description' => $department->description ?? '',
-        ];
+        $this->form->id = $department->id;
+        $this->form->name = $department->name;
+        $this->form->description = $department->description ?? '';
         $this->showModal = true;
     }
 
     public function save(CreateDepartmentAction $create, UpdateDepartmentAction $update): void
     {
-        $this->validate([
-            'formData.name' => [
-                'required',
-                'string',
-                'max:255',
-                'unique:departments,name,'.($this->formData['id'] ?? 'NULL'),
-            ],
-            'formData.description' => ['nullable', 'string', 'max:1000'],
-        ]);
+        $this->form->validate();
 
-        if ($this->formData['id']) {
-            $department = Department::findOrFail($this->formData['id']);
-            $update->execute($department, $this->formData);
+        if ($this->form->id) {
+            $department = Department::findOrFail($this->form->id);
+            $update->execute($department, $this->form->toArray());
             flash()->success(__('department.save_success_updated'));
         } else {
             $school = School::firstOrFail();
-            $create->execute(array_merge($this->formData, ['school_id' => $school->id]));
+            $create->execute(array_merge($this->form->toArray(), ['school_id' => $school->id]));
             flash()->success(__('department.save_success_created'));
         }
 
@@ -159,7 +133,7 @@ class DepartmentManager extends BaseRecordManager
                 'delete_selected' => $this->executeDeleteSelected($deleteAction),
                 default => null,
             };
-        } catch (RejectedException|\RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             flash()->error($e->getMessage());
         }
 
@@ -201,13 +175,13 @@ class DepartmentManager extends BaseRecordManager
         }
     }
 
-    public function import(CsvHandler $csv): void
+    public function import(CsvHandler $csv, CreateDepartmentAction $create): void
     {
         $this->validate([
             'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
         ]);
 
-        $result = $csv->import($this->importFile->getRealPath(), function (array $row) {
+        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use ($create) {
             $name = trim($row[0] ?? '');
 
             if ($name === '') {
@@ -218,7 +192,7 @@ class DepartmentManager extends BaseRecordManager
                 return 'skipped';
             }
 
-            Department::create([
+            $create->execute([
                 'name' => $name,
                 'description' => trim($row[1] ?? '') ?: null,
                 'school_id' => School::firstOrFail()->id,

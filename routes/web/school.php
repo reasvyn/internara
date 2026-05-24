@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\School\Livewire\AcademicYearIndex;
+use App\Domain\School\Livewire\AcademicYearManager;
 use App\Domain\School\Livewire\DepartmentManager;
 use App\Domain\School\Livewire\SchoolEditor;
 
@@ -12,5 +12,5 @@ Route::prefix('admin')
     ->group(function () {
         Route::livewire('/school', SchoolEditor::class)->name('school');
         Route::livewire('/departments', DepartmentManager::class)->name('departments');
-        Route::livewire('/academic-years', AcademicYearIndex::class)->name('academic-years.index');
+        Route::livewire('/academic-years', AcademicYearManager::class)->name('academic-years');
     });

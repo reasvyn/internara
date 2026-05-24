@@ -55,4 +55,4 @@ Both trees use the `HasExceptionContext` trait for consistent API (`withHint()`,
 - `app/Domain/Core/Exceptions/`
 - `docs/architecture.md` — Exception Hierarchy section
 - `docs/conventions.md` — Section 12 (Exceptions)
-- `tests/Arch/ExceptionLayerArchTest.php`
+- ~~`tests/Arch/ExceptionLayerArchTest.php`~~ (removed)

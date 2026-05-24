@@ -10,18 +10,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('teams', function (Blueprint $table) {
+        Schema::create('internship_phases', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('internship_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->foreignUuid('owner_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->boolean('is_active')->default(true)->index();
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->integer('order');
+            $table->string('color')->nullable();
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('teams');
+        Schema::dropIfExists('internship_phases');
     }
 };

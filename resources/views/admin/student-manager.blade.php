@@ -103,8 +103,8 @@
             <x-mary-input :label="__('user.fields.full_name')" wire:model="userData.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
             <x-mary-input :label="__('user.fields.email')" type="email" wire:model="userData.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
             
-            <x-mary-input :label="__('user.student.nisn')" wire:model="userData.national_identifier" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            <x-mary-input :label="__('user.student.nis')" wire:model="userData.registration_number" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('user.student.nisn')" wire:model="userData.national_id_number" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('user.student.nis')" wire:model="userData.student_id_number" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
             
             <div class="md:col-span-2">
                 <x-mary-select 

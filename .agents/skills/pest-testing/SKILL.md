@@ -8,7 +8,7 @@ Apply this skill whenever writing, editing, or fixing tests for this project. Ac
 
 ### Domain-First Test Structure
 
-Tests mirror the application's domain structure: `tests/Feature/{Domain}/{Name}Test.php` for integration tests and `tests/Unit/{Domain}/{Layer}/{Name}Test.php` for unit tests. Architecture tests live in `tests/Arch/ArchTest.php`. Tests are created with `php artisan make:test --pest {Name}Test` (without `Feature/` or `Unit/` prefix in the name argument).
+Tests mirror the application's domain structure: `tests/Feature/{Domain}/{Name}Test.php` for integration tests and `tests/Unit/{Domain}/{Layer}/{Name}Test.php` for unit tests. Tests are created with `php artisan make:test --pest {Name}Test` (without `Feature/` or `Unit/` prefix in the name argument).
 
 ### Testing Level Separation
 
@@ -23,7 +23,7 @@ Each layer has a distinct testing strategy:
 
 ## Architecture Tests
 
-Arch tests enforce structural rules: all Entities are `final readonly` and extend BaseEntity, all Actions have an `execute()` method, all Models extend BaseModel. These tests must pass for any code change.
+Structural rules (all Entities are `final readonly` and extend BaseEntity, all Actions have an `execute()` method, all Models extend BaseModel) are enforced through code review and PHPStan analysis.
 
 ## Verification Before Finalizing
 
