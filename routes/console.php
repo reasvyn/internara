@@ -14,6 +14,10 @@ Schedule::command('accounts:auto-inactivate', ['--days' => 90])
     ->daily()
     ->description('Auto-inactivate accounts inactive for 90+ days');
 
+Schedule::command('announcements:publish')
+    ->everyMinute()
+    ->description('Publish scheduled announcements whose scheduled_at has passed');
+
 Schedule::command('system:cleanup')
     ->daily()
     ->description('Prune expired records, stale cache, old activity logs');

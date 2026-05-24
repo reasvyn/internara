@@ -25,7 +25,18 @@
                         <x-mary-input :label="__('announcement.fields.link')" wire:model="link" placeholder="https://..." />
                     </div>
 
-                    <div class="border-t border-base-content/10 pt-4">
+                    <div class="border-t border-base-content/10 pt-4 space-y-4">
+                        <p class="text-sm font-medium">{{ __('announcement.delivery') }}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <x-mary-radio :label="__('announcement.status.draft')" wire:model="status" value="draft" />
+                            <x-mary-radio :label="__('announcement.status.scheduled')" wire:model="status" value="scheduled" />
+                            <x-mary-radio :label="__('announcement.status.published')" wire:model="status" value="published" />
+                        </div>
+
+                        @if($status === 'scheduled')
+                            <x-mary-datetime :label="__('announcement.fields.scheduled_at')" wire:model="scheduled_at" />
+                        @endif
+
                         <x-mary-toggle :label="__('announcement.send_to_all')" wire:model.live="sendToAll" />
 
                         @if(!$sendToAll)
@@ -69,10 +80,20 @@
                                 }" class="size-4" />
                             </div>
                             <div>
-                                <h4 class="text-sm font-medium">{{ $announcement->title }}</h4>
+                                <div class="flex items-center gap-2">
+                                    <h4 class="text-sm font-medium">{{ $announcement->title }}</h4>
+                                    <x-mary-badge :value="__('announcement.status.' . $announcement->status->value)" class="badge-sm
+                                        @if($announcement->isDraft()) badge-ghost
+                                        @elseif($announcement->isScheduled()) badge-warning
+                                        @else badge-success
+                                        @endif" />
+                                </div>
                                 <div class="text-xs text-base-content/60 mt-0.5 line-clamp-2 prose prose-sm max-w-none">{!! Str::markdown($announcement->message) !!}</div>
                                 <p class="text-[10px] text-base-content/40 mt-1.5">
                                     {{ $announcement->created_at->format('d M Y H:i') }}
+                                    @if($announcement->isScheduled() && $announcement->scheduled_at)
+                                        &middot; {{ __('announcement.scheduled_for') }} {{ $announcement->scheduled_at->format('d M Y H:i') }}
+                                    @endif
                                     @if($announcement->target_roles)
                                         &middot; {{ implode(', ', $announcement->target_roles) }}
                                     @else
@@ -80,6 +101,18 @@
                                     @endif
                                 </p>
                             </div>
+                        </div>
+                        <div class="flex items-center gap-1 shrink-0">
+                            @if($announcement->isDraft() || $announcement->isScheduled())
+                                <x-mary-button icon="o-paper-airplane" class="btn-ghost btn-sm text-success"
+                                    wire:click="publishNow('{{ $announcement->id }}')"
+                                    wire:confirm="{{ __('announcement.confirm_publish') }}"
+                                    :aria-label="__('announcement.publish_now')" />
+                            @endif
+                            <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
+                                wire:click="delete('{{ $announcement->id }}')"
+                                wire:confirm="{{ __('announcement.confirm_delete') }}"
+                                :aria-label="__('announcement.delete')" />
                         </div>
                     </div>
                 @endforeach

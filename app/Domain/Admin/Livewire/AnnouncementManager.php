@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\Admin\Livewire;
 
 use App\Domain\Admin\Actions\SendAnnouncementAction;
+use App\Domain\Admin\Enums\AnnouncementStatus;
 use App\Domain\Admin\Models\Announcement;
 use App\Domain\Auth\Enums\Role;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -17,6 +19,10 @@ class AnnouncementManager extends Component
     public string $message = '';
 
     public string $type = 'info';
+
+    public string $status = 'draft';
+
+    public ?string $scheduled_at = null;
 
     public ?string $link = null;
 
@@ -45,6 +51,8 @@ class AnnouncementManager extends Component
             'title' => 'required|string|max:255',
             'message' => 'required|string|max:5000',
             'type' => 'required|in:info,success,warning,error',
+            'status' => 'required|in:draft,scheduled,published',
+            'scheduled_at' => 'nullable|date|after_or_equal:now|required_if:status,scheduled',
             'link' => 'nullable|string|max:500',
             'target_roles' => 'nullable|array',
             'target_roles.*' => 'string|exists:roles,name',
@@ -54,6 +62,8 @@ class AnnouncementManager extends Component
             'title' => $this->title,
             'message' => $this->message,
             'type' => $this->type,
+            'status' => $this->status,
+            'scheduled_at' => $this->status === 'scheduled' ? $this->scheduled_at : null,
             'link' => $this->link ?: null,
             'target_roles' => $this->sendToAll ? null : $this->target_roles,
         ]);
@@ -63,9 +73,31 @@ class AnnouncementManager extends Component
         $this->resetForm();
     }
 
+    public function publishNow(SendAnnouncementAction $action, string $id): void
+    {
+        $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
+
+        if (! $announcement->status->canTransitionTo(AnnouncementStatus::PUBLISHED)) {
+            flash()->error(__('announcement.cannot_publish'));
+
+            return;
+        }
+
+        $action->publish($announcement);
+        flash()->success(__('announcement.published'));
+    }
+
+    public function delete(string $id): void
+    {
+        $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
+        $announcement->delete();
+
+        flash()->success(__('announcement.deleted'));
+    }
+
     public function resetForm(): void
     {
-        $this->reset(['title', 'message', 'type', 'link', 'target_roles', 'sendToAll', 'showForm']);
+        $this->reset(['title', 'message', 'type', 'status', 'scheduled_at', 'link', 'target_roles', 'sendToAll', 'showForm']);
     }
 
     public function render(): View
