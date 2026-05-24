@@ -16,7 +16,8 @@ class RecoverySlipManager extends Component
 
     public ?User $selectedUser = null;
 
-    public ?string $generatedCode = null;
+    /** @var array<int, string> */
+    public array $generatedCode = [];
 
     public ?string $expiresAt = null;
 

@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 use App\Domain\Settings\Support\Settings;
 
+beforeEach(function () {
+    Settings::clearOverrides();
+});
+
 describe('Settings helper', function () {
-    beforeEach(function () {
-        Settings::clearOverrides();
-    });
-
     it('resolves from AppInfo for mapped keys', function () {
-        $name = Settings::get('app_name');
-
-        expect($name)->toBeString();
+        expect(Settings::get('app_name'))->toBeString();
     });
 
     it('returns default for missing key', function () {
@@ -21,7 +19,6 @@ describe('Settings helper', function () {
 
     it('uses runtime overrides', function () {
         Settings::override(['test_override' => 'overridden']);
-
         expect(Settings::get('test_override'))->toBe('overridden');
     });
 
@@ -31,7 +28,11 @@ describe('Settings helper', function () {
 
     it('returns array for array key input', function () {
         $result = Settings::get(['app_name', 'nonexistent']);
-
         expect($result)->toHaveKeys(['app_name', 'nonexistent']);
+    });
+
+    it('returns settings from config fallback', function () {
+        config(['app.debug' => true]);
+        expect(Settings::get('app.debug'))->toBeTrue();
     });
 });

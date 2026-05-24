@@ -13,6 +13,7 @@ use App\Domain\Settings\Livewire\Forms\MailSettingsForm;
 use App\Domain\Settings\Models\Setting;
 use App\Domain\Settings\Support\Settings;
 use App\Domain\Shared\Support\Theme;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -67,9 +68,9 @@ class SystemSetting extends Component
     }
 
     #[Computed]
-    public function academicYears(GetAcademicYearsAction $action): Collection
+    public function academicYears(): Collection
     {
-        return $action->execute();
+        return app(GetAcademicYearsAction::class)->execute();
     }
 
     public function applyPreset(string $key): void

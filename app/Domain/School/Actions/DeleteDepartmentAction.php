@@ -15,7 +15,7 @@ class DeleteDepartmentAction extends BaseAction
 {
     public function execute(Department $department): void
     {
-        if (! $department->asDepartmentState()->canBeDeleted()) {
+        if ($department->profiles()->count() > 0) {
             throw new RejectedException('Cannot delete department with active profiles.');
         }
 
