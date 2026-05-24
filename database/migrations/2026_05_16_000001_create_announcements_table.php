@@ -15,6 +15,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('message');
             $table->string('type', 20)->default('info');
+            $table->string('status', 20)->default('draft');
+            $table->timestamp('scheduled_at')->nullable();
             $table->string('link')->nullable();
             $table->json('target_roles')->nullable();
             $table->uuid('created_by');
@@ -22,6 +24,7 @@ return new class extends Migration
 
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->index('created_at');
+            $table->index('status');
         });
     }
 
