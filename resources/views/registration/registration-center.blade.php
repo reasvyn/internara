@@ -32,7 +32,7 @@
                         @role('student')
                             <x-mary-button
                                 :label="__('internship.registration_center.register_now')"
-                                icon="o-arrow-right"
+                                icon-right="o-arrow-right"
                                 class="btn-primary btn-sm w-full"
                                 link="{{ route('student.internships.register') }}"
                                 wire:navigate />

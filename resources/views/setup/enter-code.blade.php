@@ -45,7 +45,7 @@
                     <x-mary-button
                         type="submit"
                         label="{{ __('setup.code_entry.submit') }}"
-                        icon="o-arrow-right"
+                        icon-right="o-arrow-right"
                         class="btn-primary w-full"
                     />
 

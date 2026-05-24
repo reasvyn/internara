@@ -59,7 +59,7 @@
 
     <x-mary-button
         label="{{ __('setup.wizard.go_to_login') }}"
-        icon="o-arrow-right"
+        icon-right="o-arrow-right"
         class="btn-primary"
         wire:click="finishSession"
     />

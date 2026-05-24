@@ -52,7 +52,7 @@
         @if($auditPassed)
             <x-mary-button
                 label="{{ __('setup.wizard.start_setup') }}"
-                icon="o-arrow-right"
+                icon-right="o-arrow-right"
                 class="btn-primary"
                 wire:click="nextStep"
                 spinner="nextStep"
