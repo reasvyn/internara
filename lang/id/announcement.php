@@ -32,7 +32,7 @@ return [
         'message' => 'Pesan',
         'type' => 'Tipe',
         'link' => 'Tautan (opsional)',
-        'scheduled_at' => 'Jadwal Tanggal & Waktu',
+        'scheduled_at' => 'Jadwal Tanggal dan Waktu',
         'target_roles' => 'Peran Target',
     ],
 ];
