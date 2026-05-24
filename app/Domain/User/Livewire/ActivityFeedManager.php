@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Livewire;
 
+use App\Domain\User\Actions\GetActivityLogsAction;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -14,7 +15,9 @@ class ActivityFeedManager extends Component
 
     public function render(): View
     {
-        $activities = auth()->user()->activityLogs()->latest()->paginate(50);
+        $activities = app(GetActivityLogsAction::class)->execute(
+            userId: auth()->id(),
+        );
 
         return view('user.activity-feed', [
             'activities' => $activities,

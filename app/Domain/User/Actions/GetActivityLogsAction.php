@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\User\Actions;
+
+use App\Domain\Core\Actions\BaseAction;
+use App\Domain\User\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
+class GetActivityLogsAction extends BaseAction
+{
+    public function execute(string $userId, int $perPage = 50): LengthAwarePaginator
+    {
+        return User::findOrFail($userId)
+            ->activityLogs()
+            ->latest()
+            ->paginate($perPage);
+    }
+}

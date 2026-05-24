@@ -6,7 +6,7 @@ use App\Domain\Core\Entities\BaseEntity;
 use App\Domain\Partnership\Entities\CompanyState;
 
 describe('CompanyState entity', function () {
-    it('can be deleted when no placements and no partnerships', function () {
+    it('can be deleted when no placements or partnerships', function () {
         $entity = new CompanyState(placementCount: 0, partnershipCount: 0);
 
         expect($entity->canBeDeleted())->toBeTrue();
@@ -20,6 +20,12 @@ describe('CompanyState entity', function () {
 
     it('cannot be deleted when has partnerships', function () {
         $entity = new CompanyState(placementCount: 0, partnershipCount: 2);
+
+        expect($entity->canBeDeleted())->toBeFalse();
+    });
+
+    it('cannot be deleted when has both', function () {
+        $entity = new CompanyState(placementCount: 1, partnershipCount: 1);
 
         expect($entity->canBeDeleted())->toBeFalse();
     });

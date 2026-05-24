@@ -80,20 +80,6 @@ Without these in `.env.example`, developers cannot discover or configure Boost.
 
 ## Settings Domain — Remaining Issues
 
-### SE12. No Feature Test for SystemSetting Livewire Component 🟡
-
-**Directory:** `tests/Feature/Settings/`
-
-Only `SettingsActionsTest.php` exists (unit-level tests for 4 Actions). Zero tests cover the Livewire component lifecycle.
-
-**Impact:** Refactoring `SystemSetting` carries high risk of regressions.
-
-**Fix:** Add feature test (`tests/Feature/Settings/SystemSettingTest.php`) covering mount, validation, save, testEmail, preset application, file uploads, cache invalidation.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
 ### SE13. AppMetadata Has Zero Test Coverage 🟢
 
 **File:** `app/Domain/Settings/Support/AppMetadata.php` (252 lines)
@@ -108,22 +94,6 @@ Overlapping logic with `Settings` and `Theme`. Zero tests.
 
 ## Notification Domain — Known Issues
 
-### N1. IncidentReportedNotification Uses Wrong Channel (Laravel `database`, Not Custom) 🔴
-
-**File:** `app/Domain/Incident/Notifications/IncidentReportedNotification.php`
-
-The `via()` method returns `['database', 'broadcast']` instead of `['mail', 'broadcast', CustomDatabaseChannel::class]`. It uses Laravel's native `database` channel (stored in the default `notifications` table from package migration) instead of the custom `notifications` table with the domain-defined schema.
-
-The data structure is also incompatible: `toDatabase()` returns type/incident_id/severity/description/link while the custom channel expects type/title/message/data/link via `toCustomDatabase()`.
-
-**Impact:** 🔴 Incident notifications are invisible in the Notification Center — they go to the wrong table entirely.
-
-**Fix:** Migrate to `CustomDatabaseChannel::class`. Implement `toCustomDatabase()` returning the expected schema (type, title, message, data, link). Add `ShouldQueue`.
-
-*Status: ⏳ Pending — Priority P1.*
-
----
-
 ### N2. No Notification Cleanup / Pruning Mechanism 🔴
 
 **File:** `app/Domain/Admin/Models/Notification.php`
@@ -135,130 +105,6 @@ The `notifications` table has no built-in retention policy. Read notifications a
 **Fix:** Add a scheduler task or command to delete notifications read more than N days ago (configurable, default 30/60/90). Run via `app/Console/Kernel::schedule()`.
 
 *Status: ⏳ Pending — Priority P1.*
-
----
-
-### N3. Notification Center Should Be in User Domain (Not Admin) 🟢 *(✅ Fixed)*
-
-All notification artifacts moved from Admin to User domain. See commit f0e755539 for full details.
-
-*Status: ✅ Fixed.*
-
----
-
-### N4. `markSelectedAsRead()` Bypasses Action Pattern 🟢 *(✅ Fixed)*
-
-**File:** `app/Domain/User/Livewire/NotificationCenter.php`
-
-Created `MarkBatchAsReadAction` in User domain. Component delegates to the Action instead of inline query.
-
-*Status: ✅ Fixed.*
-
----
-
-### N5. `CustomDatabaseChannel` No Guard for Empty User ID 🟡
-
-**File:** `app/Domain/Core/Channels/CustomDatabaseChannel.php:33`
-
-```php
-$this->sendNotification->execute(
-    userId: (string) $notifiable->id,
-    // ...
-);
-```
-
-If `$notifiable->id` is null (edge case), the string cast yields `''`. `SendNotificationAction::execute()` then calls `User::findOrFail('')` which throws `ModelNotFoundException`.
-
-**Fix:** Add guard: `throw_unless($notifiable->id, ...)` or skip notification with SmartLogger warning.
-
-*Status: ⏳ Pending — Priority P3.*
-
----
-
-### N6. `DeleteNotificationAction` PHPDoc Misleading About Security 🟢
-
-**File:** `app/Domain/Admin/Actions/DeleteNotificationAction.php`
-
-PHPDoc claims "S1 - Secure: Only owner can delete", but the Action itself does not verify ownership. It relies on the caller (Livewire component) to scope the query with `where('user_id', Auth::id())`. If called directly from another context, any notification could be deleted.
-
-**Fix:** Either add ownership verification inside the Action, or update the PHPDoc to reflect that ownership is the caller's responsibility.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### N7. `ActivityFeedManager` Queries Inline Instead of Using Action 🟢
-
-**File:** `app/Domain/Admin/Livewire/ActivityFeedManager.php:17`
-
-```php
-$activities = auth()->user()->activityLogs()->latest()->paginate(50);
-```
-
-Business logic in `render()` instead of delegating to an Action.
-
-**Fix:** Create `GetActivityLogsAction` and use it in the component.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### N8. `CustomDatabaseChannel` No Validation on `toCustomDatabase()` Return Value 🟢
-
-**File:** `app/Domain/Core/Channels/CustomDatabaseChannel.php:31`
-
-```php
-$data = $notification->toCustomDatabase($notifiable);
-$this->sendNotification->execute(
-    type: $data['type'] ?? 'general',
-    title: $data['title'] ?? 'Notification',
-    // ...
-);
-```
-
-If a notification's `toCustomDatabase()` returns missing keys, the channel silently uses hardcoded fallback defaults with no warning. Structural errors in notification classes go undetected.
-
-**Fix:** Validate the return array shape, log SmartLogger warning if keys are missing.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### N9. Zero Test Coverage for Notification Components 🟢
-
-**Directory:** `tests/Feature/Admin/`, `tests/Feature/User/`
-
-No feature tests exist for `NotificationCenter`, `NotificationBell`, `ActivityFeedManager`, or any of the 5 notification Actions (`SendNotificationAction`, `MarkAsReadAction`, `MarkAllAsReadAction`, `DeleteNotificationAction`, `GetNotificationsAction`).
-
-**Impact:** Refactoring N1-N4 carries high regression risk.
-
-**Fix:** Add tests for notification Livewire components and Actions.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### N10. `GetNotificationsAction` Is Dead Code 🟢
-
-**File:** `app/Domain/Admin/Actions/GetNotificationsAction.php`
-
-This Action exists but is never called by any component or controller. `NotificationCenter` uses `BaseRecordManager::query()` directly. `NotificationBell` uses inline `Notification::where(...)`.
-
-**Fix:** Remove dead code or integrate into NotificationCenter.
-
-*Status: ⏳ Pending — Priority P5.*
-
----
-
-### N11. Unused Email Template `notification.blade.php` 🟢
-
-**File:** `resources/views/emails/notification.blade.php`
-
-This standalone HTML email template is not referenced by any notification class. All notifications use Laravel's built-in `MailMessage` rendering instead.
-
-**Fix:** Remove the unused template.
-
-*Status: ⏳ Pending — Priority P5.*
 
 ---
 
@@ -283,6 +129,99 @@ There is no project-wide rule about whether enum labels should be translatable o
 
 ---
 
+## User Registration Area — Audit Findings
+
+### UC1. UserManager Has No `boot()` Authorization Check 🟡
+
+**File:** `app/Domain/Admin/Livewire/UserManager.php`
+
+Unlike all other admin managers (AdminManager, TeacherManager, etc.), `UserManager` has no `boot()` method. It relies entirely on route middleware `role:super_admin|admin`. No authorization at the component level.
+
+**Fix:** Add `boot()` with `$this->authorize('viewAny', User::class)` or appropriate Policy check.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### UC2. `abort(403)` Used Instead of `$this->authorize()` in 5 Managers 🟡
+
+**Files:** `TeacherManager.php`, `StudentManager.php`, `SupervisorManager.php`, `MentorManager.php`, `MenteeManager.php`
+
+All five managers use manual `abort(403)` with inline role checks in `boot()` instead of delegating to a Policy via `$this->authorize()`. Same issue as SC9 (already fixed in School components). Authorization logic is duplicated and hard to audit.
+
+**Fix:** Replace `abort(403)` with `$this->authorize()` delegating to the appropriate Policy.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### UC3. AdminManager Uses Manual Role Check Instead of Policy 🟡
+
+**File:** `app/Domain/Admin/Livewire/AdminManager.php:36-38`
+
+Uses `$user->hasRole('super_admin')` in `boot()` instead of `$this->authorize('create', User::class)`.
+
+**Fix:** Replace with `$this->authorize()`.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### UC4. Route Model Binding in `edit()` Methods (5 Components) 🟡
+
+**Files:** `UserManager`, `TeacherManager`, `StudentManager`, `SupervisorManager` use `edit(User $user)`; `MentorManager` uses `edit(Mentor $mentor)`; `MenteeManager` uses `edit(Mentee $mentee)`.
+
+Same issue as previously fixed in DepartmentManager. Livewire method calls with Route Model Binding as parameters don't resolve correctly in all contexts. Should accept `string $id` and resolve the model manually.
+
+**Fix:** Change signatures to `edit(string $id)` with `findOrFail()` inside.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### UC5. No Form Objects (All 7 Managers) 🟡
+
+**Files:** All 7 admin Livewire components.
+
+All managers use flat `userData` arrays with inline validation. Conventions.md Section 9a mandates Form Objects for complex forms.
+
+**Fix:** Extract `UserForm`, `AdminUserForm`, `StudentForm`, `TeacherForm`, `SupervisorForm`, `MentorForm`, `MenteeForm`.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### UC6. MentorManager Email Unique Validation Convoluted 🟢
+
+**File:** `app/Domain/Admin/Livewire/MentorManager.php:101`
+
+```php
+'email' => 'required|email|unique:users,email,'.
+    ($this->userData['id'] ? Mentor::find($this->userData['id'])?->user_id ?? 'NULL' : 'NULL'),
+```
+
+The unique exclusion ID traverses Mentor → User relationship. Null coalescing chain can silently fall through to `'NULL'` if the mentor is not found, causing false unique violations.
+
+**Fix:** Simplify by resolving the user ID in `edit()` and storing it separately.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### UC7. Zero Livewire Feature Tests for All 7 Admin Managers 🔴
+
+**Directory:** `tests/Feature/Admin/`
+
+Only `AdminActionsTest.php` (action-level tests) exists. Zero tests cover the Livewire lifecycle of `UserManager`, `AdminManager`, `TeacherManager`, `StudentManager`, `SupervisorManager`, `MentorManager`, or `MenteeManager`. Mounting, validation, CRUD operations, modals, and bulk actions are untested.
+
+**Impact:** 🔴 Refactoring any of these 7 components carries high regression risk.
+
+**Fix:** Add feature tests for each manager covering create, edit, delete, search, validation, and authorization.
+
+*Status: ⏳ Pending — Priority P1.*
+
+---
+
 ## Backlog — Unresolved Items
 
 ### Feature Test Coverage (139 uncovered Actions)
@@ -296,7 +235,7 @@ Only 4 of 143 Actions have feature tests (excluding Setup which is fully covered
 | Auth | 12 | 0 | 🔴 |
 | Admin | 9 | 2 | 🟡 |
 | Attendance | 8 | 0 | 🔴 |
-| Partnership | 8 | 0 | 🔴 |
+| Partnership | 8 | 8 | 🟢 ✅ |
 | Mentor | 8 | 0 | 🔴 |
 | Placement | 7 | 0 | 🔴 |
 | Assignment | 7 | 0 | 🔴 |
@@ -312,7 +251,7 @@ Only 4 of 143 Actions have feature tests (excluding Setup which is fully covered
 | Evaluation | 3 | 1 | 🟡 |
 | User | 8 | 2 | 🟢 |
 | Setup | 9 | 9 | 🟢 |
-| Settings | 6 | 0 | 🔴 |
+| Settings | 6 | 6 | 🟢 |
 
 **Target:** Minimum 1 feature test per Action in Assessment (17), Internship (16), Auth (12), Settings (6).
 
@@ -361,199 +300,23 @@ Evaluate which operations should be queued: certificate generation, report rende
 
 ---
 
-## School Domain — Institutional Information Audit
-
-### SC1. SchoolEditor Boot Blocks Admin Users Despite Route Allowing Them 🔴 *(✅ Fixed)*
-
-**File:** `app/Domain/School/Livewire/SchoolEditor.php:36-43`
-
-The `boot()` method checked `hasRole('super_admin')` exclusively, blocking admin users despite route and policy allowing them. Replaced with `$this->authorize('update', School::class)`.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC2. Import Bypasses Action Pattern (DepartmentManager) 🔴 *(✅ Fixed)*
-
-**File:** `app/Domain/School/Livewire/DepartmentManager.php:221`
-
-CSV `import()` now delegates to `CreateDepartmentAction` instead of calling `Department::create()` directly.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC3. AcademicYearIndex Extends Component Instead of BaseRecordManager 🟡 *(✅ Fixed)*
-
-**File:** `app/Domain/School/Livewire/AcademicYearManager.php:19`
-
-Renamed to `AcademicYearManager`. Now extends `BaseRecordManager` with `headers()`, `query()`, `applySearch()`, and `applySorting()`.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC4. Missing Edit Functionality for Academic Years 🟡 *(✅ Fixed)*
-
-**File:** `app/Domain/School/Livewire/AcademicYearManager.php`
-
-Added `edit()` method and `update()` action wired to `UpdateAcademicYearAction`. The create/edit modal now switches context based on `$form->id`.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC5. SchoolEditor Lacks Form Object 🟡 *(✅ Fixed)*
-
-**File:** `app/Domain/School/Livewire/SchoolEditor.php`
-
-Created `SchoolForm extends Form` with all properties, rules, and `fillFromModel()`/`toArray()` methods. SchoolEditor now delegates form state to the Form Object.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC6. DepartmentManager Lacks Form Object 🟡 *(✅ Fixed)*
-
-**File:** `app/Domain/School/Livewire/DepartmentManager.php`
-
-Created `DepartmentForm extends Form`. DepartmentManager now delegates to the Form Object.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC7. AcademicYearIndex Lacks Form Object 🟡 *(✅ Fixed)*
-
-**File:** `app/Domain/School/Livewire/AcademicYearManager.php`
-
-Created `AcademicYearForm extends Form`. AcademicYearManager now delegates to the Form Object.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC8. `website` Field in Model Fillable but Missing from UI 🟡 *(✅ Fixed)*
-
-**File:** `resources/views/school/school-editor.blade.php`
-
-Added website URL input field wired to `form.website` in the SchoolEditor view.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC9. Policies Not Called via `$this->authorize()` in Components 🟡 *(✅ Fixed)*
-
-**Files:** `app/Domain/School/Livewire/SchoolEditor.php`, `DepartmentManager.php`, `AcademicYearManager.php`
-
-All three components now use `$this->authorize()` in `boot()` instead of manual `abort()` with role checks.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC10. `config/school.php` Does Not Exist 🟡 *(✅ Closed — Not Applicable)*
-
-**Rationale:** School is now unconditionally single-record. The `SchoolState` entity was simplified to hardcode `existsCount` without config dependency. No configuration needed.
-
-*Status: ✅ Closed — Wontfix.*
-
----
-
-### SC11. Inconsistent Confirm Dialog in AcademicYearIndex 🟢 *(✅ Fixed)*
-
-**File:** `resources/views/school/academic-year-manager.blade.php`
-
-Bulk delete now uses `askDeleteSelected` → `x-shared::ui.confirm` consistent with single-record actions. Removed `wire:confirm`.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC12. `toggleSelectAll()` Hardcodes Page Size 🟢 *(✅ Fixed)*
-
-**File:** `app/Domain/School/Livewire/AcademicYearManager.php`
-
-No longer relevant — `AcademicYearManager` extends `BaseRecordManager` which handles pagination through `rows()`. Selection toggle delegates to the standard `toggleSelectAll` pattern.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC13. No Seeder for School Domain 🟢
-
-**Directory:** `database/seeders/`
-
-No dedicated seeder exists for School models. School data is created exclusively through the setup wizard.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### SC14. `docs/domain/school-reference.md` Incorrect Base Class Documentation 🟢 *(✅ Fixed)*
-
-**File:** `docs/domain/school-reference.md:31-33`
-
-Updated to reference `AcademicYearManager` extending `BaseRecordManager` (after SC3 refactor). Also updated `docs/domain/school.md`.
-
-*Status: ✅ Fixed.*
-
----
-
-### SC15. Zero Feature Tests for School Livewire Components 🔴
-
-**Directory:** `tests/Feature/School/`
-
-Only `SchoolActionsTest.php` exists — Action-level tests covering 9 of 9 Actions. Zero tests cover Livewire component lifecycle: `SchoolEditor`, `DepartmentManager`, or `AcademicYearIndex`. Mounting, validation, save, import/export, delete confirmations, and bulk actions are untested.
-
-**Impact:** 🔴 Refactoring any School Livewire component carries high regression risk. The known-issues backlog already flags this as a general problem (147 uncovered Actions from 155 total), but the School domain has 0% Livewire coverage.
-
-**Fix:** Add feature tests:
-- `SchoolEditorTest.php` — mount, validation errors, save, logo upload
-- `DepartmentManagerTest.php` — CRUD, import, export, bulk delete
-- `AcademicYearIndexTest.php` — create, activate, delete, bulk delete, search
-
-*Status: ⏳ Pending — Priority P1.*
-
----
-
 ## Summary
 
 | Severity | Issue | Category | Status |
-|---|---|---|---|
-| 🔴 | Feature tests missing for 139 of 143 Actions (excluding Setup) | Testing | ⏳ |
+|---|---|---|---|---|
+| 🔴 | Feature tests missing for 121 of 143 Actions (excluding Setup, Partnership) | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🔴 | **N1** IncidentReportedNotification uses wrong channel (Laravel `database`) | Notifications | ⏳ |
 | 🔴 | **N2** No notification cleanup / pruning mechanism | Notifications | ⏳ |
-| 🟢 | **N3** Notification Center should be in User domain (not Admin) | Notifications | ✅ Fixed |
-| 🟢 | **N4** `markSelectedAsRead()` bypasses Action pattern | Notifications | ✅ Fixed |
-| 🟡 | **N5** CustomDatabaseChannel no guard for empty user ID | Notifications | ⏳ |
-| 🟢 | **N6** `DeleteNotificationAction` PHPDoc misleading about security | Notifications | ⏳ |
-| 🟢 | **N7** ActivityFeedManager queries inline instead of Action | Notifications | ⏳ |
-| 🟢 | **N8** CustomDatabaseChannel no validation on `toCustomDatabase()` return | Notifications | ⏳ |
-| 🟢 | **N9** Zero test coverage for notification components | Notifications | ⏳ |
-| 🟢 | **N10** `GetNotificationsAction` is dead code | Notifications | ⏳ |
-| 🟢 | **N11** Unused email template `notification.blade.php` | Notifications | ⏳ |
-| 🟡 | **SE12** No feature test for SystemSetting Livewire component | Settings | ⏳ |
+| 🔴 | **UC7** Zero Livewire feature tests for all 7 admin managers | Admin | ⏳ |
+| 🟡 | **UC1** UserManager has no boot() authorization check | Admin | ⏳ |
+| 🟡 | **UC2** abort(403) used instead of authorize() in 5 managers | Admin | ⏳ |
+| 🟡 | **UC3** AdminManager uses manual role check | Admin | ⏳ |
+| 🟡 | **UC4** Route Model Binding in edit() methods (5 components) | Admin | ⏳ |
+| 🟡 | **UC5** No Form Objects (all 7 managers) | Admin | ⏳ |
+| 🟢 | **UC6** MentorManager email unique validation convoluted | Admin | ⏳ |
 | 🟢 | **SE13** AppMetadata has zero test coverage | Settings | ⏳ |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
 | 🟡 | Livewire Form Object migration (77 components remaining) | Architecture | ⏳ |
-| 🔴 | **SC15** Zero feature tests for School Livewire components | School | ⏳ |
-| 🟢 | **SC13** No seeder for School domain | School | ⏳ |
-| ✅ | **SC1** SchoolEditor boot blocks admin despite route/policy allowing them | School | ✅ Fixed |
-| ✅ | **SC2** DepartmentManager import bypasses Action pattern | School | ✅ Fixed |
-| ✅ | **SC3** AcademicYearIndex → AcademicYearManager extends BaseRecordManager | School | ✅ Fixed |
-| ✅ | **SC4** Missing edit functionality for academic years | School | ✅ Fixed |
-| ✅ | **SC5** SchoolEditor lacks Form Object | School | ✅ Fixed |
-| ✅ | **SC6** DepartmentManager lacks Form Object | School | ✅ Fixed |
-| ✅ | **SC7** AcademicYearManager lacks Form Object | School | ✅ Fixed |
-| ✅ | **SC8** `website` field in model fillable but missing from UI | School | ✅ Fixed |
-| ✅ | **SC9** Policies not called via `$this->authorize()` in components | School | ✅ Fixed |
-| ✅ | **SC10** `config/school.php` / single-record config | School | ✅ Closed |
-| ✅ | **SC11** Inconsistent confirm dialog in AcademicYearManager | School | ✅ Fixed |
-| ✅ | **SC12** `toggleSelectAll()` hardcodes page size | School | ✅ Fixed |
-| ✅ | **SC14** `docs/domain/school-reference.md` incorrect base class doc | School | ✅ Fixed |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ⏳ |
 | 🟡 | CsvHandler fragile magic string protocol | Shared | ⏳ |
 | 🟡 | LangChecker contradicts "stateless" rule | Shared | ⏳ |
@@ -562,7 +325,6 @@ Only `SchoolActionsTest.php` exists — Action-level tests covering 9 of 9 Actio
 | 🟡 | Role enum `func_` prefix value inconsistency | Enums | ⏸️ |
 | 🟡 | BaseAction does not enforce execute() method | Architecture | ⏸️ |
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
-| 🟢 | Arch tests removed (pest-plugin-arch bug) | Testing | ✅ Removed |
 | 🟢 | Real-time features (Echo + Reverb) not yet active | Future | ⏳ |
 | 🟢 | Queue job formalization not evaluated | Future | ⏳ |
 | 🟢 | PII in activity logs (partially masked) | Security | ⏳ |

@@ -15,9 +15,18 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-widget::stat icon="o-building-office-2" :label="__('company.stats.total')" :value="$this->stats['total']" />
-        <x-widget::stat icon="o-briefcase" :label="__('company.stats.with_placements')" :value="$this->stats['with_placements']" />
-        <x-widget::stat icon="o-user-plus" :label="__('company.stats.available_slots')" :value="$this->stats['available_slots']" />
+        <x-mary-card class="bg-base-200/40 border border-base-content/10 p-4 text-center">
+            <p class="text-2xl font-bold">{{ $this->stats['total'] }}</p>
+            <p class="text-xs text-base-content/50 mt-1">{{ __('company.stats.total') }}</p>
+        </x-mary-card>
+        <x-mary-card class="bg-base-200/40 border border-base-content/10 p-4 text-center">
+            <p class="text-2xl font-bold">{{ $this->stats['with_placements'] }}</p>
+            <p class="text-xs text-base-content/50 mt-1">{{ __('company.stats.with_placements') }}</p>
+        </x-mary-card>
+        <x-mary-card class="bg-base-200/40 border border-base-content/10 p-4 text-center">
+            <p class="text-2xl font-bold">{{ $this->stats['available_slots'] }}</p>
+            <p class="text-xs text-base-content/50 mt-1">{{ __('company.stats.available_slots') }}</p>
+        </x-mary-card>
     </x-slot:stats>
 
     <x-slot:filters>
@@ -91,18 +100,18 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showModal" :title="$formData['id'] ? __('company.edit') : __('company.new')" class="backdrop-blur-sm">
+        <x-mary-modal wire:model="showModal" :title="$form->id ? __('company.edit') : __('company.new')" class="backdrop-blur-sm">
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
-                    <x-mary-input :label="__('company.name')" wire:model="formData.name" :placeholder="__('company.name_placeholder')" />
+                    <x-mary-input :label="__('company.name')" wire:model="form.name" :placeholder="__('company.name_placeholder')" />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-input :label="__('company.industry_sector')" wire:model="formData.industry_sector" :placeholder="__('company.industry_sector_placeholder')" />
-                        <x-mary-input :label="__('company.email')" wire:model="formData.email" :placeholder="__('company.email_placeholder')" />
-                        <x-mary-input :label="__('company.phone')" wire:model="formData.phone" :placeholder="__('company.phone_placeholder')" />
-                        <x-mary-input :label="__('company.website')" wire:model="formData.website" :placeholder="__('company.website_placeholder')" />
+                        <x-mary-input :label="__('company.industry_sector')" wire:model="form.industry_sector" :placeholder="__('company.industry_sector_placeholder')" />
+                        <x-mary-input :label="__('company.email')" wire:model="form.email" :placeholder="__('company.email_placeholder')" />
+                        <x-mary-input :label="__('company.phone')" wire:model="form.phone" :placeholder="__('company.phone_placeholder')" />
+                        <x-mary-input :label="__('company.website')" wire:model="form.website" :placeholder="__('company.website_placeholder')" />
                     </div>
-                    <x-mary-textarea :label="__('company.address')" wire:model="formData.address" :placeholder="__('company.address_placeholder')" rows="2" />
-                    <x-mary-textarea :label="__('company.description')" wire:model="formData.description" :placeholder="__('company.description_placeholder')" rows="3" />
+                    <x-mary-textarea :label="__('company.address')" wire:model="form.address" :placeholder="__('company.address_placeholder')" rows="2" />
+                    <x-mary-textarea :label="__('company.description')" wire:model="form.description" :placeholder="__('company.description_placeholder')" rows="3" />
                 </div>
                 <x-slot:actions>
                     <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('showModal', false)" class="btn-ghost btn-sm" />

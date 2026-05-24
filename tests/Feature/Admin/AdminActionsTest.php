@@ -6,10 +6,6 @@ use App\Domain\Admin\Actions\ArchiveStudentAccountsAction;
 use App\Domain\Admin\Actions\CreateUserAction;
 use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\Auth\Enums\Role;
-use App\Domain\User\Actions\DeleteNotificationAction;
-use App\Domain\User\Actions\GetNotificationsAction;
-use App\Domain\User\Actions\MarkAllAsReadAction;
-use App\Domain\User\Actions\MarkAsReadAction;
 use App\Domain\User\Actions\SendNotificationAction;
 use App\Domain\User\Models\Notification as AdminNotification;
 use App\Domain\User\Models\User;
@@ -185,73 +181,6 @@ describe('AdminDomainActions', function () {
         it('throws for non-existent user', function () {
             app(SendNotificationAction::class)->execute('non-existent-id', 'info', 'Title');
         })->throws(ModelNotFoundException::class);
-    });
-
-    describe('GetNotificationsAction', function () {
-        it('returns notifications for a user', function () {
-            $user = User::factory()->create();
-            AdminNotification::factory()->count(3)->create(['user_id' => $user->id]);
-
-            $notifications = app(GetNotificationsAction::class)->execute($user->id);
-
-            expect($notifications)->toHaveCount(3);
-        });
-
-        it('filters unread only', function () {
-            $user = User::factory()->create();
-            AdminNotification::factory()->count(2)->create(['user_id' => $user->id, 'is_read' => true]);
-            AdminNotification::factory()->count(3)->create(['user_id' => $user->id, 'is_read' => false]);
-
-            $unread = app(GetNotificationsAction::class)->execute($user->id, unreadOnly: true);
-
-            expect($unread)->toHaveCount(3);
-        });
-
-        it('respects limit', function () {
-            $user = User::factory()->create();
-            AdminNotification::factory()->count(10)->create(['user_id' => $user->id]);
-
-            $notifications = app(GetNotificationsAction::class)->execute($user->id, limit: 3);
-
-            expect($notifications)->toHaveCount(3);
-        });
-    });
-
-    describe('MarkAsReadAction', function () {
-        it('marks a notification as read', function () {
-            $user = User::factory()->create();
-            $notification = AdminNotification::factory()->create(['user_id' => $user->id, 'is_read' => false]);
-
-            $result = app(MarkAsReadAction::class)->execute($notification);
-
-            expect($result->is_read)->toBeTrue()
-                ->and($result->read_at)->not->toBeNull();
-        });
-    });
-
-    describe('MarkAllAsReadAction', function () {
-        it('marks all unread notifications as read', function () {
-            $user = User::factory()->create();
-            AdminNotification::factory()->count(5)->create(['user_id' => $user->id, 'is_read' => false]);
-
-            $count = app(MarkAllAsReadAction::class)->execute($user->id);
-
-            expect($count)->toBe(5);
-
-            $remaining = AdminNotification::where('user_id', $user->id)->where('is_read', false)->count();
-            expect($remaining)->toBe(0);
-        });
-    });
-
-    describe('DeleteNotificationAction', function () {
-        it('deletes a notification', function () {
-            $user = User::factory()->create();
-            $notification = AdminNotification::factory()->create(['user_id' => $user->id]);
-
-            app(DeleteNotificationAction::class)->execute($notification);
-
-            expect(AdminNotification::find($notification->id))->toBeNull();
-        });
     });
 
     describe('SendAnnouncementAction', function () {

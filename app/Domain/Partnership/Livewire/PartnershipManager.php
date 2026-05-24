@@ -11,6 +11,7 @@ use App\Domain\Partnership\Actions\DeletePartnershipAction;
 use App\Domain\Partnership\Actions\TerminatePartnershipAction;
 use App\Domain\Partnership\Actions\UpdatePartnershipAction;
 use App\Domain\Partnership\Enums\PartnershipStatus;
+use App\Domain\Partnership\Livewire\Forms\PartnershipForm;
 use App\Domain\Partnership\Models\Company;
 use App\Domain\Partnership\Models\Partnership;
 use App\Domain\Shared\Support\CsvHandler;
@@ -38,22 +39,12 @@ class PartnershipManager extends BaseRecordManager
 
     public $mouDocument = null;
 
-    public array $formData = [
-        'id' => null,
-        'company_id' => '',
-        'agreement_number' => '',
-        'title' => '',
-        'start_date' => '',
-        'end_date' => '',
-        'scope' => '',
-        'contact_person_name' => '',
-        'contact_person_phone' => '',
-        'contact_person_email' => '',
-        'signed_by_school' => '',
-        'signed_by_company' => '',
-        'signed_at' => '',
-        'notes' => '',
-    ];
+    public PartnershipForm $form;
+
+    public function boot(): void
+    {
+        $this->authorize('viewAny', Partnership::class);
+    }
 
     public function headers(): array
     {
@@ -134,74 +125,45 @@ class PartnershipManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->formData = [
-            'id' => null,
-            'company_id' => '',
-            'agreement_number' => '',
-            'title' => '',
-            'start_date' => '',
-            'end_date' => '',
-            'scope' => '',
-            'contact_person_name' => '',
-            'contact_person_phone' => '',
-            'contact_person_email' => '',
-            'signed_by_school' => '',
-            'signed_by_company' => '',
-            'signed_at' => '',
-            'notes' => '',
-        ];
+        $this->form->reset();
+        $this->form->id = null;
         $this->mouDocument = null;
         $this->showModal = true;
     }
 
-    public function edit(Partnership $partnership): void
+    public function edit(string $id): void
     {
+        $partnership = Partnership::findOrFail($id);
+
         $this->resetErrorBag();
-        $this->formData = [
-            'id' => $partnership->id,
-            'company_id' => $partnership->company_id,
-            'agreement_number' => $partnership->agreement_number,
-            'title' => $partnership->title,
-            'start_date' => $partnership->start_date?->format('Y-m-d') ?? '',
-            'end_date' => $partnership->end_date?->format('Y-m-d') ?? '',
-            'scope' => $partnership->scope ?? '',
-            'contact_person_name' => $partnership->contact_person_name ?? '',
-            'contact_person_phone' => $partnership->contact_person_phone ?? '',
-            'contact_person_email' => $partnership->contact_person_email ?? '',
-            'signed_by_school' => $partnership->signed_by_school ?? '',
-            'signed_by_company' => $partnership->signed_by_company ?? '',
-            'signed_at' => $partnership->signed_at?->format('Y-m-d') ?? '',
-            'notes' => $partnership->notes ?? '',
-        ];
+        $this->form->id = $partnership->id;
+        $this->form->company_id = $partnership->company_id;
+        $this->form->agreement_number = $partnership->agreement_number;
+        $this->form->title = $partnership->title;
+        $this->form->start_date = $partnership->start_date?->format('Y-m-d') ?? '';
+        $this->form->end_date = $partnership->end_date?->format('Y-m-d') ?? '';
+        $this->form->scope = $partnership->scope ?? '';
+        $this->form->contact_person_name = $partnership->contact_person_name ?? '';
+        $this->form->contact_person_phone = $partnership->contact_person_phone ?? '';
+        $this->form->contact_person_email = $partnership->contact_person_email ?? '';
+        $this->form->signed_by_school = $partnership->signed_by_school ?? '';
+        $this->form->signed_by_company = $partnership->signed_by_company ?? '';
+        $this->form->signed_at = $partnership->signed_at?->format('Y-m-d') ?? '';
+        $this->form->notes = $partnership->notes ?? '';
         $this->showModal = true;
     }
 
     public function save(CreatePartnershipAction $create, UpdatePartnershipAction $update): void
     {
-        $this->validate([
-            'formData.company_id' => ['required', 'exists:companies,id'],
-            'formData.agreement_number' => ['required', 'string', 'max:100', 'unique:partnerships,agreement_number,'.($this->formData['id'] ?? 'NULL')],
-            'formData.title' => ['required', 'string', 'max:255'],
-            'formData.start_date' => ['required', 'date'],
-            'formData.end_date' => ['required', 'date', 'after_or_equal:formData.start_date'],
-            'formData.scope' => ['nullable', 'string', 'max:5000'],
-            'formData.contact_person_name' => ['nullable', 'string', 'max:255'],
-            'formData.contact_person_phone' => ['nullable', 'string', 'max:30'],
-            'formData.contact_person_email' => ['nullable', 'email', 'max:255'],
-            'formData.signed_by_school' => ['nullable', 'string', 'max:255'],
-            'formData.signed_by_company' => ['nullable', 'string', 'max:255'],
-            'formData.signed_at' => ['nullable', 'date'],
-            'formData.notes' => ['nullable', 'string'],
-            'mouDocument' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
-        ]);
+        $this->form->validate();
 
-        if ($this->formData['id']) {
-            $partnership = Partnership::findOrFail($this->formData['id']);
-            $update->execute($partnership, $this->formData);
+        if ($this->form->id) {
+            $partnership = Partnership::findOrFail($this->form->id);
+            $update->execute($partnership, $this->form->toArray());
             $this->uploadMouDocument($partnership);
             flash()->success(__('partnership.update_success'));
         } else {
-            $partnership = $create->execute($this->formData);
+            $partnership = $create->execute($this->form->toArray());
             $this->uploadMouDocument($partnership);
             flash()->success(__('partnership.save_success'));
         }
@@ -209,10 +171,11 @@ class PartnershipManager extends BaseRecordManager
         $this->showModal = false;
     }
 
-    // --- Direct Actions (used by tests) ---
+    // --- Direct Actions ---
 
-    public function terminate(Partnership $partnership, TerminatePartnershipAction $terminateAction): void
+    public function terminate(string $id, TerminatePartnershipAction $terminateAction): void
     {
+        $partnership = Partnership::findOrFail($id);
         $terminateAction->execute($partnership);
         flash()->success(__('partnership.terminate_success'));
     }
@@ -275,13 +238,6 @@ class PartnershipManager extends BaseRecordManager
     private function executeDelete(string $id, DeletePartnershipAction $action): void
     {
         $partnership = Partnership::findOrFail($id);
-
-        if (! $partnership->asPartnershipState()->canBeDeleted()) {
-            flash()->error(__('partnership.delete_blocked'));
-
-            return;
-        }
-
         $action->execute($partnership);
         flash()->success(__('partnership.delete_success'));
     }
@@ -315,13 +271,13 @@ class PartnershipManager extends BaseRecordManager
 
     // --- Import / Export ---
 
-    public function import(CsvHandler $csv): void
+    public function import(CsvHandler $csv, CreatePartnershipAction $create): void
     {
         $this->validate([
             'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
         ]);
 
-        $result = $csv->import($this->importFile->getRealPath(), function (array $row) {
+        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use ($create) {
             $agreementNumber = trim($row[0] ?? '');
 
             if ($agreementNumber === '') {
@@ -332,7 +288,7 @@ class PartnershipManager extends BaseRecordManager
                 return 'skipped';
             }
 
-            Partnership::create([
+            $create->execute([
                 'agreement_number' => $agreementNumber,
                 'title' => trim($row[1] ?? ''),
                 'start_date' => trim($row[2] ?? '') ?: now(),

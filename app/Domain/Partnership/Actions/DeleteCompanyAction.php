@@ -12,7 +12,7 @@ class DeleteCompanyAction extends BaseAction
 {
     public function execute(Company $company): void
     {
-        if (! $company->asCompanyState()->canBeDeleted()) {
+        if ($company->placements()->count() > 0 || $company->partnerships()->count() > 0) {
             throw new RejectedException('Cannot delete company with existing placements or partnerships.');
         }
 

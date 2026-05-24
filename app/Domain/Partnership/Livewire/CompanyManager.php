@@ -9,6 +9,7 @@ use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Partnership\Actions\CreateCompanyAction;
 use App\Domain\Partnership\Actions\DeleteCompanyAction;
 use App\Domain\Partnership\Actions\UpdateCompanyAction;
+use App\Domain\Partnership\Livewire\Forms\CompanyForm;
 use App\Domain\Partnership\Models\Company;
 use App\Domain\Placement\Models\Placement;
 use App\Domain\Shared\Support\CsvHandler;
@@ -34,16 +35,12 @@ class CompanyManager extends BaseRecordManager
 
     public $importFile = null;
 
-    public array $formData = [
-        'id' => null,
-        'name' => '',
-        'address' => '',
-        'phone' => '',
-        'email' => '',
-        'website' => '',
-        'description' => '',
-        'industry_sector' => '',
-    ];
+    public CompanyForm $form;
+
+    public function boot(): void
+    {
+        $this->authorize('viewAny', Company::class);
+    }
 
     public function headers(): array
     {
@@ -91,58 +88,37 @@ class CompanyManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->formData = [
-            'id' => null,
-            'name' => '',
-            'address' => '',
-            'phone' => '',
-            'email' => '',
-            'website' => '',
-            'description' => '',
-            'industry_sector' => '',
-        ];
+        $this->form->reset();
+        $this->form->id = null;
         $this->showModal = true;
     }
 
-    public function edit(Company $company): void
+    public function edit(string $id): void
     {
+        $company = Company::findOrFail($id);
+
         $this->resetErrorBag();
-        $this->formData = [
-            'id' => $company->id,
-            'name' => $company->name,
-            'address' => $company->address ?? '',
-            'phone' => $company->phone ?? '',
-            'email' => $company->email ?? '',
-            'website' => $company->website ?? '',
-            'description' => $company->description ?? '',
-            'industry_sector' => $company->industry_sector ?? '',
-        ];
+        $this->form->id = $company->id;
+        $this->form->name = $company->name;
+        $this->form->address = $company->address ?? '';
+        $this->form->phone = $company->phone ?? '';
+        $this->form->email = $company->email ?? '';
+        $this->form->website = $company->website ?? '';
+        $this->form->description = $company->description ?? '';
+        $this->form->industry_sector = $company->industry_sector ?? '';
         $this->showModal = true;
     }
 
     public function save(CreateCompanyAction $create, UpdateCompanyAction $update): void
     {
-        $this->validate([
-            'formData.name' => [
-                'required',
-                'string',
-                'max:255',
-                'unique:companies,name,'.($this->formData['id'] ?? 'NULL'),
-            ],
-            'formData.address' => ['required', 'string'],
-            'formData.phone' => ['nullable', 'string', 'max:20'],
-            'formData.email' => ['nullable', 'email', 'max:255'],
-            'formData.website' => ['nullable', 'url', 'max:255'],
-            'formData.description' => ['nullable', 'string'],
-            'formData.industry_sector' => ['nullable', 'string', 'max:255'],
-        ]);
+        $this->form->validate();
 
-        if ($this->formData['id']) {
-            $company = Company::findOrFail($this->formData['id']);
-            $update->execute($company, $this->formData);
+        if ($this->form->id) {
+            $company = Company::findOrFail($this->form->id);
+            $update->execute($company, $this->form->toArray());
             flash()->success(__('company.update_success'));
         } else {
-            $create->execute($this->formData);
+            $create->execute($this->form->toArray());
             flash()->success(__('company.save_success'));
         }
 
@@ -195,13 +171,6 @@ class CompanyManager extends BaseRecordManager
     private function executeDelete(string $id, DeleteCompanyAction $action): void
     {
         $company = Company::findOrFail($id);
-
-        if (! $company->asCompanyState()->canBeDeleted()) {
-            flash()->error(__('company.delete_blocked'));
-
-            return;
-        }
-
         $action->execute($company);
         flash()->success(__('company.delete_success'));
     }
@@ -228,13 +197,13 @@ class CompanyManager extends BaseRecordManager
 
     // --- Import / Export ---
 
-    public function import(CsvHandler $csv): void
+    public function import(CsvHandler $csv, CreateCompanyAction $create): void
     {
         $this->validate([
             'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
         ]);
 
-        $result = $csv->import($this->importFile->getRealPath(), function (array $row) {
+        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use ($create) {
             $name = trim($row[0] ?? '');
 
             if ($name === '') {
@@ -245,7 +214,7 @@ class CompanyManager extends BaseRecordManager
                 return 'skipped';
             }
 
-            Company::create([
+            $create->execute([
                 'name' => $name,
                 'address' => trim($row[1] ?? '') ?: null,
                 'phone' => trim($row[2] ?? '') ?: null,
