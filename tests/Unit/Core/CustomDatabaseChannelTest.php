@@ -56,11 +56,9 @@ describe('CustomDatabaseChannel', function () {
         expect(true)->toBeTrue();
     });
 
-    it('passes empty user id to sender when id is empty', function () {
+    it('skips sending when user id is empty', function () {
         $sender = Mockery::mock(SendsNotifications::class);
-        $sender->shouldReceive('execute')
-            ->with('', 'test_event', 'Test Title', 'Test message body', ['key' => 'value'], '/test')
-            ->once();
+        $sender->shouldNotReceive('execute');
 
         $channel = new CustomDatabaseChannel($sender);
         $notifiable = new stdClass;

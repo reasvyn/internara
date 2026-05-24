@@ -179,32 +179,58 @@ Additionally, the Notification Center should show role-filtered content: all use
 
 **Impact:** Architectural misplacement. Notifications are conceptually per-user, not per-admin. The Admin domain should only own admin-specific notification features (announcements, broadcast).
 
-**Fix:** Move `NotificationCenter`, `NotificationBell`, `Notification` model, and all notification Actions (`SendNotificationAction`, `MarkAsReadAction`, etc.) to the User domain. Update `DomainServiceProvider` bindings accordingly. Ensure all routes are accessible by any authenticated user via middleware `['auth']` only (no role gate).
+**Fix Plan — 4 Fase:**
+
+**Fase 1 — Pindahkan files dari Admin ke User domain (app/, views/, tests/):**
+
+Move (7 files):
+| Dari (Admin) | Ke (User) |
+|---|---|
+| `app/Domain/Admin/Models/Notification.php` | `app/Domain/User/Models/Notification.php` |
+| `app/Domain/Admin/Livewire/NotificationCenter.php` | `app/Domain/User/Livewire/NotificationCenter.php` |
+| `app/Domain/Admin/Livewire/NotificationBell.php` | `app/Domain/User/Livewire/NotificationBell.php` |
+| `app/Domain/Admin/Livewire/ActivityFeedManager.php` | `app/Domain/User/Livewire/ActivityFeedManager.php` |
+| `app/Domain/Admin/Actions/SendNotificationAction.php` | `app/Domain/User/Actions/SendNotificationAction.php` |
+| `app/Domain/Admin/Actions/MarkAsReadAction.php` | `app/Domain/User/Actions/MarkAsReadAction.php` |
+| `app/Domain/Admin/Actions/MarkAllAsReadAction.php` | `app/Domain/User/Actions/MarkAllAsReadAction.php` |
+| `app/Domain/Admin/Actions/DeleteNotificationAction.php` | `app/Domain/User/Actions/DeleteNotificationAction.php` |
+| `app/Domain/Admin/Policies/NotificationPolicy.php` | `app/Domain/User/Policies/NotificationPolicy.php` |
+| `resources/views/admin/notification-center.blade.php` | `resources/views/user/notification-center.blade.php` |
+| `resources/views/admin/notification-bell.blade.php` | `resources/views/user/notification-bell.blade.php` |
+| `resources/views/admin/activity-feed.blade.php` | `resources/views/user/activity-feed.blade.php` |
+
+Update references:
+- `routes/web/user.php` — import `App\Domain\User\Livewire\NotificationCenter`
+- `DomainServiceProvider` — binding `SendsNotifications::class` ke `\App\Domain\User\Actions\SendNotificationAction::class`
+- `app/Domain/User/Livewire/Dashboards/AdminDashboard.php` — update import `SendNotificationAction` dan `Notification` ke User namespace
+- `app/Domain/Core/Channels/CustomDatabaseChannel.php` — update import `SendsNotifications` (di Core, binding ke User)
+- `app/Domain/Admin/Livewire/AnnouncementManager.php` — update import `Notification` ke User namespace
+- `routes/web/admin.php` — update import jika ada yang reference
+- Hapus file lama dari Admin domain (after confirming all references updated)
+
+**Fase 2 — Announcements bisa dioperasikan admin biasa:**
+- `routes/web/admin.php` — middleware `role:super_admin` → `role:super_admin|admin`
+- `AnnouncementManager.php::boot()` — `hasRole('super_admin')` → panggil policy `create`
+
+**Fase 3 — Konten role-filtered di Notification Center:**
+- Tambah `scopeForRole()` di `User\Models\Notification`
+- Update `NotificationCenter::query()` untuk filter by role
+
+**Fase 4 — Perbaikan tambahan (N1, N4, N5, N6):**
+- N4: Buat `MarkBatchAsReadAction`, panggil dari `markSelectedAsRead()`
+- N5: Tambah guard di `CustomDatabaseChannel::send()`
 
 *Status: ⏳ Pending — Priority P2.*
 
 ---
 
-### N4. `markSelectedAsRead()` Bypasses Action Pattern 🟡
+### N4. `markSelectedAsRead()` Bypasses Action Pattern 🟡 *(✅ Fixed in Phase 1)*
 
-**File:** `app/Domain/Admin/Livewire/NotificationCenter.php:88`
+**File:** `app/Domain/Admin/Livewire/NotificationCenter.php:88` → `app/Domain/User/Livewire/NotificationCenter.php`
 
-```php
-public function markSelectedAsRead(): void
-{
-    Notification::whereIn('id', $this->selectedIds)
-        ->where('user_id', Auth::id())
-        ->where('is_read', false)
-        ->update(['is_read' => true, 'read_at' => now()]);
-    // ...
-}
-```
+Refactored as part of the User domain migration. Created `MarkBatchAsReadAction` in User domain. Component delegates to the Action instead of inline query.
 
-Inline query instead of delegating to an Action. Inconsistent with `markAsRead()` (uses `MarkAsReadAction`), `markAllAsRead()` (uses `MarkAllAsReadAction`), and `deleteSelected()` (uses `DeleteNotificationAction`).
-
-**Fix:** Create `MarkBatchAsReadAction` or refactor to use existing `MarkAllAsReadAction` on selected IDs.
-
-*Status: ⏳ Pending — Priority P3.*
+*Status: ✅ Fixed as part of N3 migration.*
 
 ---
 
@@ -420,7 +446,7 @@ Evaluate which operations should be queued: certificate generation, report rende
 | 🔴 | **N1** IncidentReportedNotification uses wrong channel (Laravel `database`) | Notifications | ⏳ |
 | 🔴 | **N2** No notification cleanup / pruning mechanism | Notifications | ⏳ |
 | 🟡 | **N3** Notification Center should be in User domain (not Admin) | Notifications | ⏳ |
-| 🟡 | **N4** `markSelectedAsRead()` bypasses Action pattern | Notifications | ⏳ |
+| 🟢 | **N4** `markSelectedAsRead()` bypasses Action pattern | Notifications | ✅ Fixed |
 | 🟡 | **N5** CustomDatabaseChannel no guard for empty user ID | Notifications | ⏳ |
 | 🟢 | **N6** `DeleteNotificationAction` PHPDoc misleading about security | Notifications | ⏳ |
 | 🟢 | **N7** ActivityFeedManager queries inline instead of Action | Notifications | ⏳ |

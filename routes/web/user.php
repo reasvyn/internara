@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Domain\Admin\Livewire\NotificationCenter;
 use App\Domain\Auth\Livewire\RecoveryCode;
 use App\Domain\User\Http\Controllers\DashboardController;
 use App\Domain\User\Http\Controllers\HomeController;
@@ -10,6 +9,7 @@ use App\Domain\User\Livewire\Dashboards\AdminDashboard;
 use App\Domain\User\Livewire\Dashboards\StudentDashboard;
 use App\Domain\User\Livewire\Dashboards\SupervisorDashboard;
 use App\Domain\User\Livewire\Dashboards\TeacherDashboard;
+use App\Domain\User\Livewire\NotificationCenter;
 use App\Domain\User\Livewire\ProfileEditor;
 use App\Domain\User\Livewire\UserDashboard;
 

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Admin\Livewire;
+namespace App\Domain\User\Livewire;
 
-use App\Domain\Admin\Models\Notification;
+use App\Domain\User\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -35,6 +35,6 @@ class NotificationBell extends Component
 
     public function render(): View
     {
-        return view('admin.notification-bell');
+        return view('user.notification-bell');
     }
 }

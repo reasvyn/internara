@@ -2,24 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Admin\Livewire;
+namespace App\Domain\User\Livewire;
 
-use App\Domain\Admin\Actions\DeleteNotificationAction;
-use App\Domain\Admin\Actions\MarkAllAsReadAction;
-use App\Domain\Admin\Actions\MarkAsReadAction;
-use App\Domain\Admin\Models\Notification;
 use App\Domain\Core\Livewire\BaseRecordManager;
+use App\Domain\User\Actions\DeleteNotificationAction;
+use App\Domain\User\Actions\MarkAllAsReadAction;
+use App\Domain\User\Actions\MarkAsReadAction;
+use App\Domain\User\Actions\MarkBatchAsReadAction;
+use App\Domain\User\Models\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
-/**
- * Universal Notification Center for all users.
- */
 class NotificationCenter extends BaseRecordManager
 {
-    /**
-     * Define columns.
-     */
     public function headers(): array
     {
         return [
@@ -34,31 +30,22 @@ class NotificationCenter extends BaseRecordManager
         ];
     }
 
-    /**
-     * Base query - scoped to current user.
-     */
     protected function query(): Builder
     {
-        return Notification::where('user_id', Auth::id());
+        $user = Auth::user();
+
+        return Notification::where('user_id', $user->id)
+            ->when($user->hasRole(['super_admin', 'admin']), function (Builder $q) {});
     }
 
-    /**
-     * Search implementation.
-     */
     protected function applySearch(Builder $query): Builder
     {
         return $query->where(function ($q) {
-            $q->where('title', 'like', "%{$this->search}%")->orWhere(
-                'message',
-                'like',
-                "%{$this->search}%",
-            );
+            $q->where('title', 'like', "%{$this->search}%")
+                ->orWhere('message', 'like', "%{$this->search}%");
         });
     }
 
-    /**
-     * Filter implementation.
-     */
     protected function applyFilters(Builder $query): Builder
     {
         return $query->when($this->filters['status'] ?? null, function ($q, $status) {
@@ -85,16 +72,13 @@ class NotificationCenter extends BaseRecordManager
         $this->dispatch('notifications-read');
     }
 
-    public function markSelectedAsRead(): void
+    public function markSelectedAsRead(MarkBatchAsReadAction $action): void
     {
         if (empty($this->selectedIds)) {
             return;
         }
 
-        Notification::whereIn('id', $this->selectedIds)
-            ->where('user_id', Auth::id())
-            ->where('is_read', false)
-            ->update(['is_read' => true, 'read_at' => now()]);
+        $action->execute(Auth::id(), $this->selectedIds);
 
         $this->dispatch('notifications-read');
         $this->clearSelection();
@@ -123,6 +107,6 @@ class NotificationCenter extends BaseRecordManager
 
     public function render(): View
     {
-        return view('admin.notification-center');
+        return view('user.notification-center');
     }
 }

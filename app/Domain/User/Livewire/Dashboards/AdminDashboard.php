@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\User\Livewire\Dashboards;
 
 use App\Domain\Admin\Actions\GetAdminDashboardStatsAction;
-use App\Domain\Admin\Actions\SendNotificationAction;
-use App\Domain\Admin\Models\Notification;
+use App\Domain\User\Actions\SendNotificationAction;
+use App\Domain\User\Models\Notification;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;

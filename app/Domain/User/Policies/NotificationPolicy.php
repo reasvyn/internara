@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Admin\Policies;
+namespace App\Domain\User\Policies;
 
-use App\Domain\Admin\Models\Notification;
 use App\Domain\Core\Policies\BasePolicy;
+use App\Domain\User\Models\Notification;
 use App\Domain\User\Models\User;
 
 class NotificationPolicy extends BasePolicy

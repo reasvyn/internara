@@ -29,7 +29,7 @@ class AnnouncementManager extends Component
 
     public function boot(): void
     {
-        abort_unless(auth()->user()->hasRole('super_admin'), 403);
+        abort_unless(auth()->user()->hasAnyRole(['super_admin', 'admin']), 403);
     }
 
     public function updatedSendToAll(bool $value): void

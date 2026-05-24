@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Core\Channels;
 
 use App\Domain\Core\Contracts\SendsNotifications;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notification;
 
 /**
@@ -28,10 +29,18 @@ class CustomDatabaseChannel
             return;
         }
 
+        $userId = $notifiable instanceof Model
+            ? $notifiable->getKey()
+            : ($notifiable->id ?? null);
+
+        if ($userId === null || $userId === '') {
+            return;
+        }
+
         $data = $notification->toCustomDatabase($notifiable);
 
         $this->sendNotification->execute(
-            userId: (string) $notifiable->id,
+            userId: (string) $userId,
             type: $data['type'] ?? 'general',
             title: $data['title'] ?? 'Notification',
             message: $data['message'] ?? null,
