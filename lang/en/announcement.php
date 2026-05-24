@@ -32,7 +32,7 @@ return [
         'message' => 'Message',
         'type' => 'Type',
         'link' => 'Link (optional)',
-        'scheduled_at' => 'Schedule Date & Time',
+        'scheduled_at' => 'Schedule Date and Time',
         'target_roles' => 'Target Roles',
     ],
 ];
