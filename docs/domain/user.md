@@ -91,16 +91,26 @@ a standardized 200x200 pixel WebP image for use in navigation bars, comment disp
 and notification mentions. The avatar is entirely optional — a default avatar or initials-based 
 placeholder is shown when no avatar is uploaded.
 
-**Student Dashboard Data Aggregation.** The User domain owns the student dashboard (a Livewire 
-component) that aggregates data from multiple domains to provide a comprehensive overview. It 
-pulls from: Assignment domain (pending and upcoming task deadlines, recent grades), Attendance 
-domain (today's clock-in status, attendance percentage), Logbook domain (recent entries, pending 
-acknowledgements, submission gaps), Evaluation domain (received evaluations, pending 
-evaluations), Schedule domain (upcoming events and deadlines), Guidance domain (pending document 
-acknowledgements), and Announcements (Admin domain). The dashboard is a read-only aggregation 
-layer — all source data lives in its respective domain. The aggregation is performed in 
-real-time on each dashboard load, optimized through eager-loading and caching strategies to keep 
+**Student Dashboard Data Aggregation.** The User domain owns the student dashboard (a Livewire
+component) that aggregates data from multiple domains to provide a comprehensive overview. It
+pulls from: Assignment domain (pending and upcoming task deadlines, recent grades), Attendance
+domain (today's clock-in status, attendance percentage), Logbook domain (recent entries, pending
+acknowledgements, submission gaps), Evaluation domain (received evaluations, pending
+evaluations), Schedule domain (upcoming events and deadlines), Guidance domain (pending document
+acknowledgements), and Announcements (Admin domain). The dashboard is a read-only aggregation
+layer — all source data lives in its respective domain. The aggregation is performed in
+real-time on each dashboard load, optimized through eager-loading and caching strategies to keep
 load times under one second.
+
+**Notification Center.** The User domain owns universal notification delivery — every
+authenticated user, regardless of role, can access their notifications. The `NotificationCenter`
+Livewire component lists all notifications for the current user with search, status filtering
+(unread/read), sorting, and bulk actions. The `NotificationBell` component displays the unread
+count in the navigation bar and links to the notification center. The `CustomDatabaseChannel`
+(Core domain) stores notifications in the custom `notifications` table with a flexible schema
+(type, title, message, data JSON, deep-link URL). All notification classes implement `ShouldQueue`
+for asynchronous delivery. Real-time updates are pushed via Laravel Echo (Reverb WebSocket) when
+configured. See `docs/notification.md` for the full channel strategy.
 
 ## Requirements
 
@@ -142,14 +152,20 @@ and `UserDashboard` were updated to match the existing convention.
 |--------|-------------|
 | `UpdateProfileAction` | Updates the user's profile with personal data |
 | `GetStudentDashboardDataAction` | Aggregates student dashboard data from multiple domains |
+| `SendNotificationAction` | Sends an in-app notification to a user (implements `SendsNotifications` contract) |
+| `MarkAsReadAction` | Marks a single notification as read |
+| `MarkAllAsReadAction` | Marks all unread notifications as read |
+| `MarkBatchAsReadAction` | Marks selected notifications as read |
+| `DeleteNotificationAction` | Deletes a single notification |
+| `GetNotificationsAction` | Retrieves notifications for a user with filtering |
 
 ### Technical Reference
 
 | Layer | Artifacts |
 |-------|-----------|
-| **Models** | `User` (extends `Authenticatable`, UUID via `HasUuids`), `Profile` (extends `BaseModel`, on-demand creation) |
+| **Models** | `User` (extends `Authenticatable`, UUID via `HasUuids`), `Profile` (extends `BaseModel`, on-demand creation), `Notification` (custom in-app notifications table) |
 | **Enums** | `BloodType` — `A`, `B`, `AB`, `O`; `Gender` — `MALE`, `FEMALE` |
-| **Livewire** | `UserDashboard`, `ProfileEditor`, `RecentActivityList` |
+| **Livewire** | `UserDashboard`, `ProfileEditor`, `RecentActivityList`, `NotificationCenter`, `NotificationBell`, `ActivityFeedManager` |
 | **Support** | `UserIdentifierGenerator` (unique username generation with collision avoidance) |
 | **Notifications** | `TestMailNotification` (email configuration testing) |
 | **Rules** | `SystemUsername` (username format validation) |
@@ -158,13 +174,9 @@ and `UserDashboard` were updated to match the existing convention.
 ## Dependencies
 
 | Dependency | Reason |
-|---|---|
-| Core | BaseModel (Profile extends it), BaseController (DashboardController extends it), base 
-entity for User entity extraction, SmartLogger for profile change audit, HandlesActionErrors for 
-profile editing |
-| School | Profile references School and Department models via foreign keys (belongsTo 
-relationships) — these are optional associations |
-| Auth | Role enum consumed by DashboardController for role-to-dashboard routing; Apprentice 
-entity for account state checks in dashboards |
+|---|---|---|
+| Core | BaseModel (Profile, Notification extend it), BaseController (DashboardController extends it), base entity for User entity extraction, SmartLogger for profile change audit, HandlesActionErrors for profile editing, SendsNotifications contract bound to SendNotificationAction |
+| School | Profile references School and Department models via foreign keys (belongsTo relationships) — these are optional associations |
+| Auth | Role enum consumed by DashboardController for role-to-dashboard routing; Apprentice entity for account state checks in dashboards. Notifiable trait on User model for notification delivery |
 
 
