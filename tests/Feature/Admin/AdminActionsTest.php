@@ -4,12 +4,20 @@ declare(strict_types=1);
 
 use App\Domain\Admin\Actions\ArchiveStudentAccountsAction;
 use App\Domain\Admin\Actions\CreateUserAction;
+use App\Domain\Admin\Actions\DeleteUserAction;
+use App\Domain\Admin\Actions\GetAdminDashboardStatsAction;
+use App\Domain\Admin\Actions\ReadRecoveryKeyAction;
+use App\Domain\Admin\Actions\SaveRecoveryKeyAction;
+use App\Domain\Admin\Actions\SendAnnouncementAction;
+use App\Domain\Admin\Actions\ToggleUserStatusAction;
+use App\Domain\Admin\Actions\UpdateUserAction;
 use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\Auth\Enums\Role;
 use App\Domain\User\Actions\SendNotificationAction;
 use App\Domain\User\Models\Notification as AdminNotification;
 use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role as RoleModel;
@@ -102,7 +110,7 @@ describe('AdminDomainActions', function () {
     describe('DeleteUserAction', function () {
         it('prevents self-deletion', function () {
             $user = User::factory()->create();
-            $user->assignRole(Role::SUPER_ADMIN->value);
+            $user->assignRole(Role::ADMIN->value);
 
             $this->actingAs($user);
 
@@ -232,6 +240,48 @@ describe('AdminDomainActions', function () {
             $count = app(ArchiveStudentAccountsAction::class)->execute($query);
 
             expect($count)->toBe(0);
+        });
+    });
+
+    describe('SaveRecoveryKeyAction', function () {
+        it('saves a recovery key file', function () {
+            $key = 'test-recovery-key-12345';
+
+            $path = app(SaveRecoveryKeyAction::class)->execute($key);
+
+            expect(File::exists($path))->toBeTrue()
+                ->and(File::get($path))->toContain($key);
+
+            File::delete($path);
+        });
+    });
+
+    describe('ReadRecoveryKeyAction', function () {
+        it('returns null when file does not exist', function () {
+            $path = storage_path('app/private/.recovery-key');
+            $backup = null;
+
+            if (File::exists($path)) {
+                $backup = File::get($path);
+                File::delete($path);
+            }
+
+            $result = app(ReadRecoveryKeyAction::class)->execute();
+
+            expect($result)->toBeNull();
+
+            if ($backup !== null) {
+                File::put($path, $backup);
+            }
+        });
+
+        it('reads a saved recovery key', function () {
+            $key = 'saved-recovery-key-abc';
+            app(SaveRecoveryKeyAction::class)->execute($key);
+
+            $result = app(ReadRecoveryKeyAction::class)->execute();
+
+            expect($result)->toBe($key);
         });
     });
 });

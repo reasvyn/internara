@@ -10,11 +10,12 @@ use Spatie\Permission\Models\Role as RoleModel;
 describe('DeleteUserAction', function () {
     beforeEach(function () {
         RoleModel::create(['name' => Role::SUPER_ADMIN->value, 'guard_name' => 'web']);
+        RoleModel::create(['name' => Role::ADMIN->value, 'guard_name' => 'web']);
     });
 
     it('prevents self-deletion', function () {
         $user = User::factory()->create();
-        $user->assignRole(Role::SUPER_ADMIN->value);
+        $user->assignRole(Role::ADMIN->value);
 
         $this->actingAs($user);
 
