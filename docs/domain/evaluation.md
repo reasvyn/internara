@@ -21,7 +21,8 @@ type-filtered browsing in both student and admin interfaces.
 **Out of scope:** Rubric-based competency scoring and criteria definition (Assessment domain),
 daily task grading (Assignment domain), mentor-private supervision notes (Mentor domain),
 evaluation cycles and form templates (future enhancement — current implementation uses free-form
-criteria per type), incident reporting (Incident domain).
+criteria per type), certificate gating (future — evaluation completion is not yet a prerequisite
+for certificate issuance), incident reporting (Incident domain).
 
 ## Key Concepts
 
@@ -68,6 +69,7 @@ links evaluations to the student's internship context when applicable.
 - Scores must be between 0 and 100 inclusive — enforced at the validation layer.
 - Evaluations are not immutable by default; a finalized/closed state can be added later.
 - The criteria_scores JSON structure is flexible per type — no fixed schema beyond the 0-100 range.
+- Evaluation completion is not yet a prerequisite for certificate issuance or grade publication (future enhancement).
 
 ### Process Flow
 
