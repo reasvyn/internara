@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\User\Models\User;
-use Illuminate\Support\Facades\Schema;
 
 beforeEach(function () {
     app()->setLocale('en');

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Domain\Admin\Enums\AnnouncementStatus;
 use App\Domain\Admin\Models\Announcement;
-use App\Domain\Admin\Notifications\AnnouncementNotification;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
 

@@ -207,12 +207,20 @@ final class SmartLogger
                 $activity->causedBy($causer);
             }
 
+            $ip = Request::ip();
+            $ua = Request::userAgent();
+
+            if ($this->maskPii) {
+                $ip = $ip !== null ? PiiMasker::maskIp($ip) : null;
+                $ua = $ua !== null ? PiiMasker::maskUserAgent($ua) : null;
+            }
+
             $activity
                 ->event($this->event ?? $this->face)
                 ->withProperties(array_filter([
                     'payload' => $this->payload !== [] ? $this->payload : null,
-                    'ip_address' => Request::ip(),
-                    'user_agent' => Request::userAgent(),
+                    'ip_address' => $ip,
+                    'user_agent' => $ua,
                 ]));
 
             if ($this->module !== null) {

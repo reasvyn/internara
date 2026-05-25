@@ -6,7 +6,11 @@ namespace App\Domain\Core\Support;
 
 use App\Domain\Core\Exceptions\AppException;
 use App\Domain\Core\Exceptions\DomainException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 use RuntimeException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Provides consistent error handling and logging for Action classes.
@@ -32,7 +36,7 @@ trait HandlesActionErrors
     {
         try {
             return $callback();
-        } catch (RuntimeException|AppException|DomainException $e) {
+        } catch (RuntimeException|AppException|DomainException|ValidationException|AuthorizationException|ModelNotFoundException|NotFoundHttpException $e) {
             throw $e;
         } catch (\Throwable $e) {
             SmartLogger::error($context)
