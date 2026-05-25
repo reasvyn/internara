@@ -96,15 +96,6 @@ class NotificationCenter extends BaseRecordManager
         });
     }
 
-    public function getListeners(): array
-    {
-        $userId = Auth::id();
-
-        return [
-            "echo-private:App.Domain.User.Models.User.{$userId},.Illuminate\Notifications\Events\BroadcastNotificationCreated" => '$refresh',
-        ];
-    }
-
     public function render(): View
     {
         return view('user.notification-center');
