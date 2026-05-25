@@ -6,30 +6,17 @@ namespace App\Domain\Admin\Livewire;
 
 use App\Domain\Admin\Actions\SendAnnouncementAction;
 use App\Domain\Admin\Enums\AnnouncementStatus;
+use App\Domain\Admin\Livewire\Forms\AnnouncementForm;
 use App\Domain\Admin\Models\Announcement;
 use App\Domain\Auth\Enums\Role;
+use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
 
 class AnnouncementManager extends Component
 {
-    public string $title = '';
-
-    public string $message = '';
-
-    public string $type = 'info';
-
-    public string $status = 'draft';
-
-    public ?string $scheduled_at = null;
-
-    public ?string $link = null;
-
-    /** @var string[] */
-    public array $target_roles = [];
-
-    public bool $sendToAll = true;
+    public AnnouncementForm $form;
 
     public bool $showForm = false;
 
@@ -41,38 +28,18 @@ class AnnouncementManager extends Component
 
     public function boot(): void
     {
-        abort_unless(auth()->user()->hasAnyRole(['super_admin', 'admin']), 403);
-    }
-
-    public function updatedSendToAll(bool $value): void
-    {
-        if ($value) {
-            $this->target_roles = [];
-        }
+        $this->authorize('viewAny', User::class);
     }
 
     public function save(SendAnnouncementAction $action): void
     {
-        $this->validate([
-            'title' => 'required|string|max:255',
-            'message' => 'required|string|max:5000',
-            'type' => 'required|in:info,success,warning,error',
-            'status' => 'required|in:draft,scheduled,published',
-            'scheduled_at' => 'nullable|date|after_or_equal:now|required_if:status,scheduled',
-            'link' => 'nullable|string|max:500',
-            'target_roles' => 'nullable|array',
-            'target_roles.*' => 'string|exists:roles,name',
-        ]);
+        if ($this->form->sendToAll) {
+            $this->form->target_roles = [];
+        }
 
-        $action->execute([
-            'title' => $this->title,
-            'message' => $this->message,
-            'type' => $this->type,
-            'status' => $this->status,
-            'scheduled_at' => $this->status === 'scheduled' ? $this->scheduled_at : null,
-            'link' => $this->link ?: null,
-            'target_roles' => $this->sendToAll ? null : $this->target_roles,
-        ]);
+        $this->form->validate();
+
+        $action->execute($this->form->toPayload());
 
         flash()->success(__('announcement.sent'));
 
@@ -127,7 +94,8 @@ class AnnouncementManager extends Component
 
     public function resetForm(): void
     {
-        $this->reset(['title', 'message', 'type', 'status', 'scheduled_at', 'link', 'target_roles', 'sendToAll', 'showForm']);
+        $this->form->reset();
+        $this->showForm = false;
     }
 
     public function render(): View

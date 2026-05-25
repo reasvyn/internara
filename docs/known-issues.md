@@ -208,6 +208,10 @@ Laravel Echo and Reverb are installed but no real-time channels are active. Cand
 
 Evaluate which operations should be queued: certificate generation, report rendering, batch notifications. Currently all notifications use `ShouldQueue`.
 
+### AccountStatus label() Now Uses __() 🟡 *(✅ Fixed)*
+
+`AccountStatus::label()` now wraps its key in `__()`. Created `lang/{en,id}/account_status.php` with status label translations.
+
 ### Livewire Form Object Migration 🟡
 
 **Problem:** 81 Livewire components still manage form state via flat `public` properties scattered across the component class. The Setup wizard and ProfileEditor have been migrated as reference implementations.
@@ -225,7 +229,7 @@ Evaluate which operations should be queued: certificate generation, report rende
 |---|---|---|---|
 | 🟠 P2 | Registration | `RegistrationForm`, `DocumentUploadForm` | `RegistrationWizard`, `RegistrationDocumentUpload` |
 | 🟠 P3 | User | `ProfileForm` | `ProfileEditor` |
-| 🟡 P4 | Announcement | `AnnouncementForm` | `AnnouncementManager` |
+| 🟡 P4 | Announcement | `AnnouncementForm` | `AnnouncementManager` ✅ |
 | 🟡 P5 | School | `AcademicYearForm`, `DepartmentForm` | `AcademicYearManager`, `DepartmentManager` ✅ |
 | 🟢 P6 | All remaining forms | — | ~60 components |
 
@@ -247,7 +251,7 @@ Evaluate which operations should be queued: certificate generation, report rende
 | 🟡 | Enum label translation inconsistency | Enums | ⏳ |
 | 🟡 | 48 FK columns without individual indexes | Database | ⏳ |
 | 🟡 | Role enum `func_` prefix value inconsistency | Enums | ⏸️ |
-| 🟡 | BaseAction does not enforce execute() method | Architecture | ⏸️ |
+| 🟡 | BaseAction cannot enforce execute() — signatures vary | Architecture | ⏸️ Cannot enforce |
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
 | 🟢 | Real-time features (Echo + Reverb) not yet active | Future | ⏳ |
 | 🟢 | Queue job formalization not evaluated | Future | ⏳ |

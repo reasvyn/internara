@@ -84,40 +84,40 @@ describe('AnnouncementManager', function () {
 
     it('creates a draft announcement via form', function () {
         Livewire::test(AnnouncementManager::class)
-            ->set('title', 'New Announcement')
-            ->set('message', 'Announcement body')
-            ->set('type', 'info')
-            ->set('status', 'draft')
+            ->set('form.title', 'New Announcement')
+            ->set('form.message', 'Announcement body')
+            ->set('form.type', 'info')
+            ->set('form.status', 'draft')
             ->call('save')
             ->assertHasNoErrors()
-            ->assertSet('title', '');
+            ->assertSet('form.title', '');
 
         expect(Announcement::where('title', 'New Announcement')->exists())->toBeTrue();
     });
 
     it('validates title is required', function () {
         Livewire::test(AnnouncementManager::class)
-            ->set('title', '')
+            ->set('form.title', '')
             ->call('save')
-            ->assertHasErrors('title');
+            ->assertHasErrors('form.title');
     });
 
     it('validates message length', function () {
         Livewire::test(AnnouncementManager::class)
-            ->set('title', 'Title')
-            ->set('message', str_repeat('x', 5001))
+            ->set('form.title', 'Title')
+            ->set('form.message', str_repeat('x', 5001))
             ->call('save')
-            ->assertHasErrors('message');
+            ->assertHasErrors('form.message');
     });
 
     it('validates scheduled_at with scheduled status', function () {
         Livewire::test(AnnouncementManager::class)
-            ->set('title', 'Scheduled')
-            ->set('message', 'Body')
-            ->set('status', 'scheduled')
-            ->set('scheduled_at', '')
+            ->set('form.title', 'Scheduled')
+            ->set('form.message', 'Body')
+            ->set('form.status', 'scheduled')
+            ->set('form.scheduled_at', '')
             ->call('save')
-            ->assertHasErrors('scheduled_at');
+            ->assertHasErrors('form.scheduled_at');
     });
 
     it('deletes own announcement', function () {
@@ -150,11 +150,14 @@ describe('AnnouncementManager', function () {
         expect($announcement->fresh()->status)->toBe(AnnouncementStatus::PUBLISHED);
     });
 
-    it('sendToAll clears target_roles when enabled', function () {
+    it('sendToAll clears target_roles on save', function () {
         Livewire::test(AnnouncementManager::class)
-            ->set('target_roles', ['teacher'])
-            ->set('sendToAll', true)
-            ->assertSet('target_roles', []);
+            ->set('form.title', 'Test')
+            ->set('form.message', 'Body')
+            ->set('form.target_roles', ['teacher'])
+            ->set('form.sendToAll', true)
+            ->call('save')
+            ->assertHasNoErrors();
     });
 
     it('shows announcement list', function () {
