@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('indicators', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignIdFor(Competency::class)->constrained()->cascadeOnDelete();
+            $table->index('competency_id');
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('max_score', 5, 1)->default(100);

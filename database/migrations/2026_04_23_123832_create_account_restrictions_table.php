@@ -26,6 +26,7 @@ return new class extends Migration
 
             $table->text('reason')->nullable()->comment('Why this restriction was applied');
             $table->foreignUuid('applied_by_user_id')->constrained('users')->onDelete('cascade');
+            $table->index('applied_by_user_id');
 
             $table->timestamp('applied_at');
             $table->timestamp('expires_at')

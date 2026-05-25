@@ -36,7 +36,9 @@ return new class extends Migration
             $table->string('student_id_number', 50)->nullable();
 
             $table->foreignUuid('school_id')->nullable()->constrained()->onDelete('set null');
+            $table->index('school_id');
             $table->foreignUuid('department_id')->nullable()->constrained()->onDelete('set null');
+            $table->index('department_id');
 
             $table->string('employment_status')->nullable();
             $table->string('nip', 18)->nullable();

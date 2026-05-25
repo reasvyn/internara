@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('competencies', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignIdFor(Rubric::class)->constrained()->cascadeOnDelete();
+            $table->index('rubric_id');
             $table->string('name');
             $table->text('description')->nullable();
             $table->unsignedTinyInteger('weight')->default(0);

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->foreignUuid('school_id')->nullable()->constrained()->onDelete('set null');
+            $table->index('school_id');
             $table->timestamps();
         });
     }

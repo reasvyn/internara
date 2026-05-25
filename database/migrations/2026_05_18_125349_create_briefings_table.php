@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->boolean('is_mandatory')->default(true);
             $table->foreignUuid('internship_id')->constrained()->cascadeOnDelete();
+            $table->index('internship_id');
             $table->foreignUuid('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });

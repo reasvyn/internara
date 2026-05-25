@@ -13,6 +13,7 @@ return new class extends Migration
         Schema::create('presentations', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('registration_id')->constrained('registrations')->cascadeOnDelete();
+            $table->index('registration_id');
             $table->dateTime('scheduled_at');
             $table->string('location')->nullable();
             $table->string('status')->default('scheduled')->index();

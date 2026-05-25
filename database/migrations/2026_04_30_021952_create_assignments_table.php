@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('status', 20)->default('draft');
             $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignUuid('document_id')->nullable()->constrained('documents')->nullOnDelete();
+            $table->index('document_id');
             $table->timestamps();
 
             $table
@@ -36,6 +37,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('internships')
                 ->onDelete('cascade');
+            $table->index('assignment_type_id');
             $table->index(['internship_id', 'status']);
         });
     }
