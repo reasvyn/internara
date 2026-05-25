@@ -233,7 +233,7 @@ All 34 enum `label()` methods now wrap return values in `__()`. Indonesian hardc
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ✅ Fixed |
 | 🟡 | Enum label translation — 34 enums use `__()` consistently | Enums | ✅ Fixed |
 | 🟡 | FK columns without individual indexes | Database | ✅ Fixed |
-| 🟡 | Role enum `func_` prefix value inconsistency | Enums | ⏸️ |
+| 🟡 | Role enum `func_` prefix — resolved via translation | Enums | ✅ Fixed |
 | 🟡 | BaseAction cannot enforce execute() — signatures vary | Architecture | ⏸️ Cannot enforce |
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
 | 🟢 | Real-time features (Echo + Reverb) not yet active | Future | ⏳ |
