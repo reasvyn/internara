@@ -141,7 +141,7 @@ DRAFT ──→ SUBMITTED ──→ VERIFIED ──→ GRADED (immutable)
 | **Models** | `Assignment`, `AssignmentType`, `Submission` |
 | **Entities** | `AssignmentRules` (mandatory flag, overdue checks); `SubmissionState` (editability, verification status) |
 | **Enums** | `AssignmentStatus` — `DRAFT`, `PUBLISHED`, `CLOSED`; `SubmissionStatus` — `DRAFT`, `SUBMITTED`, `VERIFIED`, `GRADED`, `REVISION_REQUIRED` |
-| **Livewire** | `AssignmentManager`, `Submission`, `SubmissionGrading` |
+| **Livewire** | `AssignmentManager`, `SubmitAssignment`, `SubmissionGrading` |
 | **Policies** | `AssignmentPolicy`, `SubmissionPolicy` |
 | **Notifications** | `AssignmentNotification`, `SubmissionFeedbackNotification` |
 | **Form Requests** | `CreateAssignmentRequest`, `SubmitAssignmentRequest` |

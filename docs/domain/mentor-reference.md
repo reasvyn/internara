@@ -1,6 +1,6 @@
 # Mentor — API Reference
 
-Total: 27 files
+Total: 25 files
 
 ## Actions
 
@@ -55,7 +55,6 @@ Total: 27 files
 |---|---|---|---|
 | `Mentor/Models/Mentor.php` | `Mentor` | `BaseModel` | Eloquent model for mentors |
 | `Mentor/Models/SupervisionLog.php` | `SupervisionLog` | `BaseModel` | Eloquent model for supervision visit logs |
-| `Mentor/Models/Team.php` | `Team` | `BaseModel` | Eloquent model for mentor teams |
 
 ## Policies
 

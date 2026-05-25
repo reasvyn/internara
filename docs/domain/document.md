@@ -140,7 +140,7 @@ generations (configurable per document type).
 | **Enums** | `DocumentCategory` — `APPLICATION`, `PERMIT`, `CERTIFICATE`, `REPORT`, `LETTER` |
 | **Livewire** | `TemplateManager`, `ReportsManager` |
 | **Support** | `DocumentRenderer` (rendering pipeline orchestration) |
-| **Controllers** | `DocumentRenderController` (download endpoint) |
+| **Http/Controllers** | `DocumentRenderController` (download endpoint) |
 
 ## Dependencies
 

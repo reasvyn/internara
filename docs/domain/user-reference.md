@@ -1,6 +1,6 @@
 # User — API Reference
 
-Total: 21 files
+Total: 23 files
 
 ## Actions
 

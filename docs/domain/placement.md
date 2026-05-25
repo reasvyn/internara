@@ -165,7 +165,7 @@ REJECTED
 
 | Layer | Artifacts |
 |-------|-----------|
-| **Models** | `InternshipPlacement` (`placements`), `PlacementChangeRequest` |
+| **Models** | `Placement` (`placements`), `PlacementChangeRequest` |
 | **Entities** | `PlacementState` (placement lifecycle checks), `PlacementCapacity` (capacity calculation) |
 | **Enums** | `PlacementChangeStatus` — `PENDING`, `APPROVED`, `REJECTED` |
 | **Livewire** | `PlacementIndex`, `DirectPlacementManager`, `PlacementChangeManager`, `StudentPlacementChangeRequest` |

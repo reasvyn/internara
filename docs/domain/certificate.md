@@ -143,7 +143,7 @@ ISSUED ──→ REVOKED (terminal, irreversible)
 | **Models** | `Certificate`, `CertificateTemplate` |
 | **Enums** | `CertificateStatus` — `ISSUED`, `REVOKED` (terminal) |
 | **Livewire** | `CertificateTemplateManager`, `CertificateList`, `StudentCertificates` |
-| **Controller** | `CertificateDownloadController` (authenticated download) |
+| **Http/Controllers** | `CertificateDownloadController` (authenticated download) |
 | **Support** | `CertificateRenderer` (PDF rendering pipeline) |
 
 ## Dependencies

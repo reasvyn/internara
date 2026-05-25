@@ -126,6 +126,8 @@ across the entire application.
 | `BatchSetSettingAction` | Sets multiple settings in one operation |
 | `UploadBrandAssetAction` | Uploads a branding asset (logo, favicon) |
 | `TestMailSettingsAction` | Sends a test email to verify mail configuration |
+| `SaveSystemSettingsAction` | Saves system-wide settings configuration |
+| `GetAcademicYearsAction` | Retrieves academic years for settings configuration |
 
 ### Technical Reference
 

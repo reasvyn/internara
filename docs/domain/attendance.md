@@ -150,7 +150,7 @@ PENDING ──→ APPROVED
 | **Enums** | `AttendanceStatus` — `PRESENT`, `LATE`, `EARLY_OUT`, `ABSENT`, `PERMISSION`, `SICK`; `AbsenceRequestStatus` — `PENDING`, `APPROVED`, `REJECTED`; `AbsenceReasonType` — `SICK`, `PERMISSION`, `EMERGENCY`, `OTHER` |
 | **Livewire** | `AttendanceManager`, `StudentClockIn`, `AbsenceRequestForm` |
 | **Policy** | `AttendancePolicy` |
-| **Form Requests** | `ClockInRequest`, `ClockOutRequest`, `SubmitAbsenceRequest` |
+| **Http/Requests** | `ClockInRequest`, `ClockOutRequest`, `SubmitAbsenceRequest` |
 
 ## Dependencies
 

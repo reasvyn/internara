@@ -144,7 +144,7 @@ PENDING ──→ IN_PROGRESS ──→ SUBMITTED ──→ VERIFIED ──→ C
 
 | Layer | Artifacts |
 |-------|-----------|
-| **Models** | `Mentor`, `SupervisionLog`, `Team` |
+| **Models** | `Mentor`, `SupervisionLog` |
 | **Entities** | `MentorRole` (role-based capability checks — verify attendance, logbook, grade, etc.); `SupervisionStatus` (completed/active checks) |
 | **Enums** | `SupervisionLogStatus` — `PENDING`, `IN_PROGRESS`, `SUBMITTED`, `VERIFIED`, `COMPLETED`, `CANCELLED`; `SupervisionType` — `GUIDANCE`, `SUPERVISORING`, `MONITORING` |
 | **Livewire** | `MentorProfileManager`, `AssessInternship`, `EvaluateMentor`, `ReportNotes`, `ReportReview` — *(dashboards moved to `User/Livewire/Dashboards/`)* |
