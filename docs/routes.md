@@ -16,6 +16,8 @@ Route files contain:
 - Route definitions grouped by middleware (guest, auth, role-specific)
 - Named routes using `->name()` with dot-separated naming
 
+> **Warning:** Duplicate route registrations exist between `routes/web/registration.php` and `routes/web/mentee.php`. `RegistrationWizard` is registered at both `/register` (name: `registration.wizard`) AND `/student/internships/register` (name: `student.internships.register`). `RegistrationDocumentUpload` is registered at both `/registration/documents` AND `/student/documents`. These should be consolidated to a single canonical registration per component.
+
 Two route types exist:
 
 - **Livewire pages** (`Route::livewire()`) — full-page components that handle both GET and POST. Used for most interactive features.

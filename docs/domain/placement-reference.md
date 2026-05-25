@@ -7,8 +7,8 @@ Total: 17 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Placement/Actions/ApprovePlacementChangeAction.php` | `ApprovePlacementChangeAction` | `BaseAction` | Approves a pending placement change request |
-| `Placement/Actions/CreatePlacementAction.php` | `CreatePlacementAction` | `BaseAction` | Creates a new student placement |
-| `Placement/Actions/DeletePlacementAction.php` | `DeletePlacementAction` | `BaseAction` | Deletes a placement record |
+| `Placement/Actions/CreatePlacementAction.php` | `CreatePlacementAction` | `BaseAction` | Creates a new placement slot |
+| `Placement/Actions/DeletePlacementAction.php` | `DeletePlacementAction` | `BaseAction` | Deletes an empty placement slot |
 | `Placement/Actions/DirectPlacementAction.php` | `DirectPlacementAction` | `BaseAction` | Directly assigns a student to a company |
 | `Placement/Actions/RejectPlacementChangeAction.php` | `RejectPlacementChangeAction` | `BaseAction` | Rejects a placement change request |
 | `Placement/Actions/RequestPlacementChangeAction.php` | `RequestPlacementChangeAction` | `BaseAction` | Submits a request to change placement |

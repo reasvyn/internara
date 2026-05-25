@@ -55,21 +55,11 @@ The central entity. Links a mentee to an internship program and placement.
 
 **Status transitions (Spatie Model States):**
 ```
-pending ──► registered ──► placed ──► active ──► completed ──► archived
-  │            │             │          │
-  └── rejected ┘             └── suspended
+pending ──► active
 ```
 
-- `pending` — Application submitted, awaiting approval
-- `registered` — Approved, no placement yet
-- `placed` — Assigned to a placement slot
-- `active` — Internship in progress
-- `completed` — All requirements met
-- `suspended` — Temporary hold (can return to `active`)
-- `archived` — Final state for historical records
-- `rejected` — Application denied
-
-**Placement counter:** When status transitions to `placed`, `placements.filled_quota` is incremented.
+- `pending` — Registration submitted, awaiting admin verification and placement
+- `active` — Verified and placed; student can participate in internship activities
 
 ### account_applications
 
@@ -130,7 +120,7 @@ Document submissions for a registration.
 | id | varchar(36) | PK, UUID | |
 | registration_id | varchar(36) | FK → registrations(id), CAS | |
 | internship_document_requirement_id | varchar(36) | FK → internship_document_requirements(id) | Links to the required document definition |
-| status | varchar(255) | DEFAULT 'pending' | 'pending' → 'submitted' → 'verified' / 'rejected' |
+| status | varchar(255) | DEFAULT 'pending' | 'pending' → 'verified' / 'rejected' |
 | admin_notes | text | NULLABLE | | |
 | verified_by | varchar(36) | FK → users(id), SNU | Admin who verified |
 | verified_at | timestamp | NULLABLE | |
@@ -139,10 +129,13 @@ Document submissions for a registration.
 
 **Status transitions:**
 ```
-pending ──► submitted ──► verified
-                  │
-                  └──► rejected  (can resubmit → back to pending)
+pending ──► verified
+pending ──► rejected
 ```
+
+- `pending` — Document uploaded, awaiting verification
+- `verified` — Admin has verified the document
+- `rejected` — Document rejected; student can re-upload
 
 ---
 
