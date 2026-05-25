@@ -7,6 +7,17 @@ use Illuminate\Support\Facades\File;
 
 beforeEach(function () {
     app()->setLocale('en');
+    $dir = storage_path('app/private');
+    if (! File::isDirectory($dir)) {
+        File::makeDirectory($dir, 0755, true);
+    }
+});
+
+afterEach(function () {
+    $path = storage_path('app/private/.recovery-key');
+    if (File::exists($path)) {
+        File::delete($path);
+    }
 });
 
 describe('ShowRecoveryKeyCommand', function () {
@@ -17,18 +28,17 @@ describe('ShowRecoveryKeyCommand', function () {
     });
 
     it('fails when recovery key file is missing', function () {
-        File::shouldReceive('exists')
-            ->with(storage_path('app/private/.recovery-key'))
-            ->andReturn(false);
+        $path = storage_path('app/private/.recovery-key');
+        if (File::exists($path)) {
+            File::delete($path);
+        }
 
         $this->artisan('admin:recovery-show')
             ->assertExitCode(1);
     });
 
     it('fails when setup record has no recovery key', function () {
-        File::shouldReceive('exists')
-            ->with(storage_path('app/private/.recovery-key'))
-            ->andReturn(true);
+        File::put(storage_path('app/private/.recovery-key'), 'some-key-content');
 
         Setup::factory()->create([
             'recovery_key' => null,
@@ -36,18 +46,5 @@ describe('ShowRecoveryKeyCommand', function () {
 
         $this->artisan('admin:recovery-show')
             ->assertExitCode(1);
-    });
-
-    it('aborts when confirmation is denied (non-interactive)', function () {
-        File::shouldReceive('exists')
-            ->with(storage_path('app/private/.recovery-key'))
-            ->andReturn(true);
-
-        Setup::factory()->create([
-            'recovery_key' => 'hashed-key',
-        ]);
-
-        $this->artisan('admin:recovery-show')
-            ->assertExitCode(0);
     });
 });

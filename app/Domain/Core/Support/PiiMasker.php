@@ -136,4 +136,34 @@ final class PiiMasker
 
         return substr($first, 0, 1).'. '.$last;
     }
+
+    public static function maskIp(?string $ip): ?string
+    {
+        if ($ip === null || $ip === '') {
+            return $ip;
+        }
+
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            $parts = explode(':', $ip);
+
+            return count($parts) >= 2 ? $parts[0].'::****' : '****';
+        }
+
+        $parts = explode('.', $ip);
+
+        if (count($parts) === 4) {
+            return $parts[0].'.'.$parts[1].'.***.***';
+        }
+
+        return '***.***.***.***';
+    }
+
+    public static function maskUserAgent(?string $ua): ?string
+    {
+        if ($ua === null || $ua === '') {
+            return $ua;
+        }
+
+        return substr($ua, 0, 50).'...';
+    }
 }

@@ -10,15 +10,26 @@ use App\Domain\Auth\Notifications\SuperAdminRecoveredNotification;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
+use RuntimeException;
 
 class RecoverSuperAdminAction extends BaseAction
 {
     public function execute(string $email, string $password, bool $isReset = false): User
     {
-        return $this->transaction(function () use ($email, $password, $isReset) {
+        $cacheKey = 'recover_admin_attempts_'.md5($email);
+        $attempts = (int) Cache::get($cacheKey, 0);
+
+        if ($attempts >= 3) {
+            throw new RuntimeException('Too many recovery attempts. Try again in 15 minutes.');
+        }
+
+        Cache::put($cacheKey, $attempts + 1, 900);
+
+        return $this->transaction(function () use ($email, $password, $isReset, $cacheKey) {
             if ($isReset) {
                 $user = User::where('email', $email)->firstOrFail();
 
@@ -49,6 +60,8 @@ class RecoverSuperAdminAction extends BaseAction
             ]);
 
             $this->notifyExistingSuperAdmins($user, $isReset);
+
+            Cache::forget($cacheKey);
 
             return $user;
         });

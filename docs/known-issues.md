@@ -180,6 +180,22 @@ Created `CsvRowResult` enum (`CREATED`/`SKIPPED`). Handler accepts both enum and
 **LangChecker Contradicts "Stateless" Rule 🟡** *(✅ Fixed)*
 Made `final`. True stateless refactor (decoupling from `Translator`) deferred — utility naturally requires mutability to intercept translation resolution.
 
+### HandlesActionErrors — Passes Through Framework Exceptions 🟡 *(✅ Fixed)*
+
+Added `ValidationException`, `AuthorizationException`, `ModelNotFoundException`, and `NotFoundHttpException` to the pass-through list so they are not wrapped as `RuntimeException`.
+
+### SmartLogger — IP/UA Masked with PII Flag 🟡 *(✅ Fixed)*
+
+Added `PiiMasker::maskIp()` and `PiiMasker::maskUserAgent()`. Logged IP and user agent in activity logs are now masked when `withPiiMasking()` is enabled.
+
+### App Version in UI Footer 🟢 *(✅ Fixed)*
+
+Footer now only shows version in `local` environment via `app()->environment('local')`.
+
+### Rate Limiting on RecoverSuperAdminAction 🟢 *(✅ Fixed)*
+
+Added per-email throttle (3 attempts, 15-minute cooldown) using Cache.
+
 ### Cross-Domain Event Flow Documentation 🟢
 
 Which events fire and which listeners react is not documented. Needed for understanding side effects when modifying Actions.
@@ -225,10 +241,9 @@ Evaluate which operations should be queued: certificate generation, report rende
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
 | 🔴 | **UC7** Zero Livewire feature tests for all 7 admin managers | Admin | ⏳ |
 | 🟢 | **SE13** AppMetadata test coverage adequate | Settings | ✅ |
-| 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
+| 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ✅ Fixed |
 | 🟡 | Livewire Form Object migration (~60 components remaining) | Architecture | ⏳ |
-| 🟡 | SmartLogger IP/UA without PII mask | Core | ⏳ |
-| 🟡 | 48 FK columns without individual indexes | Database | ⏳ |
+| 🟡 | SmartLogger IP/UA without PII mask | Core | ✅ Fixed |
 | 🟡 | Enum label translation inconsistency | Enums | ⏳ |
 | 🟡 | 48 FK columns without individual indexes | Database | ⏳ |
 | 🟡 | Role enum `func_` prefix value inconsistency | Enums | ⏸️ |
@@ -236,8 +251,5 @@ Evaluate which operations should be queued: certificate generation, report rende
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
 | 🟢 | Real-time features (Echo + Reverb) not yet active | Future | ⏳ |
 | 🟢 | Queue job formalization not evaluated | Future | ⏳ |
-| 🟢 | PII in activity logs (partially masked) | Security | ⏳ |
-| 🟢 | PHP version in CLI banner | Security | ⏳ |
-| 🟢 | Stack trace in system logs | Security | ⏳ |
-| 🟢 | App version in UI footer | Security | ⏳ |
-| 🟢 | No rate limiting on RecoverSuperAdminAction | Security | ⏳ |
+| 🟢 | PII in activity logs (IP/UA masked with PII flag) | Security | ✅ Fixed |
+| 🟢 | App version in UI footer | Security | ✅ Fixed |

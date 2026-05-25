@@ -5,6 +5,6 @@
         'mx-auto px-4 sm:px-6 lg:px-8',
         'container max-w-7xl' => !$fullWidth,
     ])>
-        <x-shared::ui.credit :show-version="true" class="justify-center" />
+        <x-shared::ui.credit :show-version="app()->environment('local')" class="justify-center" />
     </div>
 </footer>
