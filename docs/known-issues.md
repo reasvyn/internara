@@ -208,6 +208,10 @@ Laravel Echo and Reverb are installed but no real-time channels are active. Cand
 
 Evaluate which operations should be queued: certificate generation, report rendering, batch notifications. Currently all notifications use `ShouldQueue`.
 
+### FK Columns Without Individual Indexes 🟡 *(✅ Fixed)*
+
+Added `$table->index()` calls for 37 FK columns across 24 original table creation migrations (separate from `foreignUuid()` chains — SQLite ignores chained `->index()`).
+
 ### AccountStatus label() Now Uses __() 🟡 *(✅ Fixed)*
 
 `AccountStatus::label()` now wraps its key in `__()`. Created `lang/{en,id}/account_status.php` with status label translations.
@@ -249,7 +253,7 @@ Evaluate which operations should be queued: certificate generation, report rende
 | 🟡 | Livewire Form Object migration (~60 components remaining) | Architecture | ⏳ |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ✅ Fixed |
 | 🟡 | Enum label translation inconsistency | Enums | ⏳ |
-| 🟡 | 38 FK columns without individual indexes — fix by integrating into original table creation migrations | Database | ⏳ |
+| 🟡 | FK columns without individual indexes | Database | ✅ Fixed |
 | 🟡 | Role enum `func_` prefix value inconsistency | Enums | ⏸️ |
 | 🟡 | BaseAction cannot enforce execute() — signatures vary | Architecture | ⏸️ Cannot enforce |
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |

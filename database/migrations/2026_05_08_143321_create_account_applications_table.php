@@ -21,12 +21,16 @@ return new class extends Migration
             $table->string('national_id_number', 50)->nullable();
             $table->string('student_id_number', 50)->nullable();
             $table->foreignUuid('school_id')->nullable()->constrained('schools')->onDelete('set null');
+            $table->index('school_id');
             $table->foreignUuid('department_id')->nullable()->constrained('departments')->onDelete('set null');
+            $table->index('department_id');
             $table->string('class_name')->nullable();
             $table->integer('entry_year')->nullable();
 
             $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
+            $table->index('internship_id');
             $table->foreignUuid('placement_id')->nullable()->constrained('placements')->onDelete('set null');
+            $table->index('placement_id');
             $table->string('academic_year')->nullable();
             $table->string('proposed_company_name')->nullable();
             $table->text('proposed_company_address')->nullable();

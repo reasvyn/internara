@@ -12,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('gdpr_deletion_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable(); // Nullable after deletion
+            $table->unsignedBigInteger('user_id')->nullable()->index(); // Nullable after deletion
             $table->string('user_email')->index();
             $table
                 ->enum('deletion_type', ['anonymization', 'permanent_deletion'])

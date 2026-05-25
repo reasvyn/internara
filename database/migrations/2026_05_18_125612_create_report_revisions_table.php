@@ -13,6 +13,7 @@ return new class extends Migration
         Schema::create('report_revisions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('report_id')->constrained()->cascadeOnDelete();
+            $table->index('report_id');
             $table->integer('round');
             $table->text('feedback');
             $table->foreignUuid('requested_by')->constrained('users')->cascadeOnDelete();

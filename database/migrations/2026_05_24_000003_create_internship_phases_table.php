@@ -13,6 +13,7 @@ return new class extends Migration
         Schema::create('internship_phases', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('internship_id')->constrained()->cascadeOnDelete();
+            $table->index('internship_id');
             $table->string('name');
             $table->text('description')->nullable();
             $table->date('start_date');

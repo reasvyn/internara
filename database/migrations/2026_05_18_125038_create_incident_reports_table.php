@@ -13,6 +13,7 @@ return new class extends Migration
         Schema::create('incident_reports', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('registration_id')->constrained('registrations')->cascadeOnDelete();
+            $table->index('registration_id');
             $table->foreignUuid('reported_by')->constrained('users')->cascadeOnDelete();
             $table->dateTime('incident_date');
             $table->string('type')->index();

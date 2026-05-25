@@ -15,6 +15,7 @@ return new class extends Migration
             $table->foreignUuid('registration_id')->constrained('registrations')->onDelete('cascade');
             $table->foreignUuid('academic_year_id')->nullable()->constrained('academic_years')->onDelete('set null');
             $table->foreignUuid('rubric_id')->nullable()->constrained('rubrics')->nullOnDelete();
+            $table->index('rubric_id');
             $table->foreignUuid('evaluator_id')->constrained('users')->onDelete('cascade');
 
             $table->string('type', 20)->default('final'); // midterm, final, periodic

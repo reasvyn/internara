@@ -19,6 +19,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('placements')
                 ->onDelete('set null');
+            $table->index('placement_id');
 
             $table->string('academic_year')->nullable();
             $table->date('start_date')->nullable();

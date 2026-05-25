@@ -19,7 +19,9 @@ return new class extends Migration
                 ->foreignUuid('company_id')
                 ->constrained('companies')
                 ->onDelete('cascade');
+            $table->index('company_id');
             $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
+            $table->index('internship_id');
             $table->string('name');
             $table->text('address')->nullable();
             $table->integer('quota')->default(1);
