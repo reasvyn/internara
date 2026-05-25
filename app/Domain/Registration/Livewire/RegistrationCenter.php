@@ -5,13 +5,22 @@ declare(strict_types=1);
 namespace App\Domain\Registration\Livewire;
 
 use App\Domain\Internship\Models\Internship;
+use App\Domain\Registration\Models\Registration;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class RegistrationCenter extends Component
 {
+    use AuthorizesRequests;
+
+    public function boot(): void
+    {
+        $this->authorize('viewAny', Registration::class);
+    }
+
     #[Computed]
     public function openInternships(): Collection
     {

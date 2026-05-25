@@ -26,4 +26,14 @@ class InternshipGroupForm extends Form
             'placement_id' => ['nullable', 'exists:placements,id'],
         ];
     }
+
+    public function all(): array
+    {
+        return [
+            'name' => $this->name,
+            'internship_id' => $this->internship_id,
+            'placement_id' => $this->placement_id ?: null,
+            'description' => $this->description,
+        ];
+    }
 }

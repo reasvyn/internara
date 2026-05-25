@@ -6,6 +6,7 @@ namespace App\Domain\Placement\Models;
 
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Internship\Models\Internship;
+use App\Domain\Partnership\Models\Company;
 use App\Domain\Placement\Entities\PlacementCapacity;
 use App\Domain\Placement\Entities\PlacementState;
 use Database\Factories\PlacementFactory;

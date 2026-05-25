@@ -5,18 +5,25 @@ declare(strict_types=1);
 namespace App\Domain\Registration\Livewire;
 
 use App\Domain\Internship\Models\InternshipDocumentRequirement;
+use App\Domain\Registration\Actions\UploadRegistrationDocumentAction;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\Registration\Models\RegistrationDocument;
 use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\UploadedFile;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
 class RegistrationDocumentUpload extends Component
 {
-    use WithFileUploads;
+    use AuthorizesRequests, WithFileUploads;
 
     public ?Registration $registration = null;
+
+    public function boot(): void
+    {
+        $this->authorize('create', RegistrationDocument::class);
+    }
 
     /** @var array<string, UploadedFile> */
     public array $uploads = [];
@@ -29,10 +36,10 @@ class RegistrationDocumentUpload extends Component
                 ->first(fn ($reg) => $reg->hasStatus('pending'));
     }
 
-    public function upload(): void
+    public function upload(UploadRegistrationDocumentAction $action): void
     {
         if (! $this->registration) {
-            flash()->error('No active or pending registration found.');
+            flash()->error(__('registration.document_upload.no_registration'));
 
             return;
         }
@@ -48,22 +55,10 @@ class RegistrationDocumentUpload extends Component
 
         $this->validate($rules);
 
-        foreach ($requirements as $req) {
-            if (! isset($this->uploads[$req->id])) {
-                continue;
-            }
-
-            $registrationDoc = RegistrationDocument::create([
-                'registration_id' => $this->registration->id,
-                'internship_document_requirement_id' => $req->id,
-                'status' => 'pending',
-            ]);
-
-            $registrationDoc->addMedia($this->uploads[$req->id])->toMediaCollection('file');
-        }
+        $action->execute($this->registration, $this->uploads);
 
         $this->uploads = [];
-        flash()->success('Documents uploaded successfully.');
+        flash()->success(__('registration.document_upload.success'));
     }
 
     public function render(): View

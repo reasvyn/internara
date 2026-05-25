@@ -50,4 +50,6 @@ return [
     'recovery_slips' => 'Kode Pemulihan',
     'notifications' => 'Notifikasi',
     'announcements' => 'Pengumuman',
+    'browse_programs' => 'Lihat Program',
+    'my_documents' => 'Dokumen Saya',
 ];
