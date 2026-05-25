@@ -249,7 +249,7 @@ Evaluate which operations should be queued: certificate generation, report rende
 | 🟡 | Livewire Form Object migration (~60 components remaining) | Architecture | ⏳ |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ✅ Fixed |
 | 🟡 | Enum label translation inconsistency | Enums | ⏳ |
-| 🟡 | 48 FK columns without individual indexes | Database | ⏳ |
+| 🟡 | 38 FK columns without individual indexes — fix by integrating into original table creation migrations | Database | ⏳ |
 | 🟡 | Role enum `func_` prefix value inconsistency | Enums | ⏸️ |
 | 🟡 | BaseAction cannot enforce execute() — signatures vary | Architecture | ⏸️ Cannot enforce |
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
