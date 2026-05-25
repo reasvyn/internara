@@ -11,10 +11,10 @@
         <x-mary-card class="bg-base-100 border border-base-content/10 mb-6">
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
-                    <x-mary-input :label="__('announcement.fields.title')" wire:model="title" />
-                    <x-shared::ui.markdown-editor :label="__('announcement.fields.message')" model="message" rows="6" :hint="__('announcement.markdown_hint')" />
+                    <x-mary-input :label="__('announcement.fields.title')" wire:model="form.title" />
+                    <x-shared::ui.markdown-editor :label="__('announcement.fields.message')" model="form.message" rows="6" :hint="__('announcement.markdown_hint')" />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-select :label="__('announcement.fields.type')" wire:model="type"
+                        <x-mary-select :label="__('announcement.fields.type')" wire:model="form.type"
                             :options="[
                                 ['id' => 'info', 'name' => 'Info'],
                                 ['id' => 'success', 'name' => 'Success'],
@@ -22,13 +22,13 @@
                                 ['id' => 'error', 'name' => 'Error'],
                             ]"
                         />
-                        <x-mary-input :label="__('announcement.fields.link')" wire:model="link" placeholder="https://..." />
+                        <x-mary-input :label="__('announcement.fields.link')" wire:model="form.link" placeholder="https://..." />
                     </div>
 
                     <div class="border-t border-base-content/10 pt-4 space-y-4">
                         <p class="text-sm font-medium">{{ __('announcement.delivery') }}</p>
                         <x-mary-radio
-                            wire:model.live="status"
+                            wire:model.live="form.status"
                             :options="[
                                 ['id' => 'draft', 'name' => __('announcement.status.draft')],
                                 ['id' => 'scheduled', 'name' => __('announcement.status.scheduled')],
@@ -40,16 +40,16 @@
                             <x-mary-input
                                 :label="__('announcement.fields.scheduled_at')"
                                 type="datetime-local"
-                                wire:model="scheduled_at"
+                                wire:model="form.scheduled_at"
                                 :hint="__('announcement.schedule_hint')"
                             />
                         @endif
 
-                        <x-mary-toggle :label="__('announcement.send_to_all')" wire:model.live="sendToAll" />
+                        <x-mary-toggle :label="__('announcement.send_to_all')" wire:model.live="form.sendToAll" />
 
                         @if(!$sendToAll)
                             <div class="mt-4">
-                                <x-mary-choices :label="__('announcement.fields.target_roles')" wire:model="target_roles" :options="$roles" multiple :hint="__('announcement.roles_hint')" />
+                                <x-mary-choices :label="__('announcement.fields.target_roles')" wire:model="form.target_roles" :options="$roles" multiple :hint="__('announcement.roles_hint')" />
                             </div>
                         @endif
                     </div>

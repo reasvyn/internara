@@ -34,7 +34,7 @@ enum AccountStatus: string implements ColorableEnum, StatusEnum
 
     public function label(): string
     {
-        return 'account_status.status.'.$this->value;
+        return __('account_status.status.'.$this->value);
     }
 
     public function allowsLogin(): bool
