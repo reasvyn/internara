@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\Internship\Models;
 
 use App\Domain\Core\Models\BaseModel;
+use App\Domain\Document\Models\Document;
+use App\Domain\Registration\Models\RegistrationDocument;
 use Database\Factories\InternshipDocumentRequirementFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

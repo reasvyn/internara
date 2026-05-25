@@ -1,12 +1,12 @@
 <div>
-    <x-mary-header :title="__('internship.registration_center.title')" :subtitle="__('internship.registration_center.subtitle')" separator />
+    <x-mary-header :title="__('registration.center.title')" :subtitle="__('registration.center.subtitle')" separator />
 
     @if($this->openInternships->isEmpty())
         <div class="flex flex-col items-center justify-center py-24 text-center">
             <x-mary-icon name="o-x-circle" class="size-20 text-base-300 mb-6" />
-            <h2 class="text-2xl font-black text-base-content/60 mb-2">{{ __('internship.registration_center.empty') }}</h2>
+            <h2 class="text-2xl font-black text-base-content/60 mb-2">{{ __('registration.center.empty') }}</h2>
             <p class="text-base-content/40 max-w-md">
-                {{ __('internship.registration_center.empty_desc') }}
+                {{ __('registration.center.empty_desc') }}
             </p>
         </div>
     @else
@@ -23,7 +23,7 @@
                         @if($internship->registration_start_date || $internship->registration_end_date)
                             <p class="text-primary font-medium">
                                 <x-mary-icon name="o-clock" class="size-4 inline" />
-                                {{ __('internship.registration_center.title') }}: {{ $internship->registration_start_date?->format('d M Y') ?? '–' }} – {{ $internship->registration_end_date?->format('d M Y') ?? '–' }}
+                                {{ __('registration.center.title') }}: {{ $internship->registration_start_date?->format('d M Y') ?? '–' }} – {{ $internship->registration_end_date?->format('d M Y') ?? '–' }}
                             </p>
                         @endif
                     </div>
@@ -31,21 +31,21 @@
                     @auth
                         @role('student')
                             <x-mary-button
-                                :label="__('internship.registration_center.register_now')"
+                                :label="__('registration.center.register_now')"
                                 icon-right="o-arrow-right"
                                 class="btn-primary btn-sm w-full"
-                                link="{{ route('student.internships.register') }}"
+                                link="{{ route('registration.wizard') }}"
                                 wire:navigate />
                         @else
                             <x-mary-button
-                                :label="__('internship.registration_center.view_details')"
+                                :label="__('registration.center.view_details')"
                                 icon="o-eye"
                                 class="btn-ghost btn-sm w-full"
                                 disabled />
                         @endrole
                     @else
                         <x-mary-button
-                            :label="__('internship.registration_center.register_guest')"
+                            :label="__('registration.center.register_guest')"
                             icon="o-user-plus"
                             class="btn-primary btn-sm w-full"
                             link="{{ route('apply') }}"

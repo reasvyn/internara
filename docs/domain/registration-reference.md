@@ -22,8 +22,8 @@ Total: 18 files
 
 | File | Class | Implements | Description |
 |---|---|---|---|
-| `Registration/Enums/AccountApplicationStatus.php` | `AccountApplicationStatus` | `StatusEnum` | Account application lifecycle status |
-| `Registration/Enums/RegistrationDocumentStatus.php` | `RegistrationDocumentStatus` | `LabelEnum` | Registration document verification status |
+| `Registration/Enums/AccountApplicationStatus.php` | `AccountApplicationStatus` | `LabelEnum`, `StatusEnum` | Account application lifecycle status |
+| `Registration/Enums/RegistrationDocumentStatus.php` | `RegistrationDocumentStatus` | `LabelEnum`, `StatusEnum` | Registration document verification status |
 
 ## Livewire Components
 

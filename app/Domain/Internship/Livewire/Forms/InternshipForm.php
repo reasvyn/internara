@@ -19,9 +19,9 @@ class InternshipForm extends Form
 
     public string $end_date = '';
 
-    public string $registration_start_date = '';
+    public ?string $registration_start_date = null;
 
-    public string $registration_end_date = '';
+    public ?string $registration_end_date = null;
 
     public string $description = '';
 

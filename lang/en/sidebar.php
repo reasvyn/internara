@@ -50,4 +50,6 @@ return [
     'recovery_slips' => 'Recovery Slips',
     'notifications' => 'Notifications',
     'announcements' => 'Announcements',
+    'browse_programs' => 'Browse Programs',
+    'my_documents' => 'My Documents',
 ];
