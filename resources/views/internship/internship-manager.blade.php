@@ -15,10 +15,10 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-widget::stat icon="o-calendar" :label="__('internship.stats.total')" :value="$this->stats['total']" />
-        <x-widget::stat icon="o-play" :label="__('internship.stats.active')" :value="$this->stats['active']" />
-        <x-widget::stat icon="o-briefcase" :label="__('internship.stats.total_placements')" :value="$this->stats['total_placements']" />
-        <x-widget::stat icon="o-user-group" :label="__('internship.stats.total_registrations')" :value="$this->stats['total_registrations']" />
+        <x-shared::widgets.stat-card icon="o-calendar" :title="__('internship.stats.total')" :value="$this->stats['total']" />
+        <x-shared::widgets.stat-card icon="o-play" :title="__('internship.stats.active')" :value="$this->stats['active']" />
+        <x-shared::widgets.stat-card icon="o-briefcase" :title="__('internship.stats.total_placements')" :value="$this->stats['total_placements']" />
+        <x-shared::widgets.stat-card icon="o-user-group" :title="__('internship.stats.total_registrations')" :value="$this->stats['total_registrations']" />
     </x-slot:stats>
 
     <x-slot:filters>

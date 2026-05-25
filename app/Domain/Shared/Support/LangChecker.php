@@ -7,7 +7,7 @@ namespace App\Domain\Shared\Support;
 use App\Domain\Core\Support\SmartLogger;
 use Illuminate\Translation\Translator;
 
-class LangChecker extends Translator
+final class LangChecker extends Translator
 {
     public function get($key, array $replace = [], $locale = null, $fallback = true): string|array
     {

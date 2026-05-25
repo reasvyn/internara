@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Shared\Support;
 
+use App\Domain\Shared\Enums\CsvRowResult;
 use Illuminate\Support\Collection;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -69,7 +70,7 @@ final class CsvHandler
                 continue;
             }
 
-            if ($result === 'skipped') {
+            if ($result === CsvRowResult::SKIPPED || $result === 'skipped') {
                 $skipped++;
 
                 continue;

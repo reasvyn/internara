@@ -13,10 +13,10 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-widget::stat icon="o-briefcase" label="Total Placements" :value="$this->stats['total']" />
-        <x-widget::stat icon="o-user-group" label="Total Quota" :value="$this->stats['total_quota']" />
-        <x-widget::stat icon="o-check-circle" label="Filled" :value="$this->stats['filled']" color="success" />
-        <x-widget::stat icon="o-plus-circle" label="Available" :value="$this->stats['available']" />
+        <x-shared::widgets.stat-card icon="o-briefcase" title="Total Placements" :value="$this->stats['total']" />
+        <x-shared::widgets.stat-card icon="o-user-group" title="Total Quota" :value="$this->stats['total_quota']" />
+        <x-shared::widgets.stat-card icon="o-check-circle" title="Filled" :value="$this->stats['filled']" color="text-success" />
+        <x-shared::widgets.stat-card icon="o-plus-circle" title="Available" :value="$this->stats['available']" />
     </x-slot:stats>
 
     <x-slot:filters>
