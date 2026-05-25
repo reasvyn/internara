@@ -164,18 +164,6 @@ Zero tests cover `InternshipManager`, `InternshipGroupManager`, `InternshipPhase
 
 ## Guidance Domain — Audit Findings
 
-### GD1. Documentation vs Implementation Gap 🟡
-
-**File:** `docs/domain/guidance.md`
-
-Docs describe versioned documents with content hashing, auto-assignment by program/cohort, compliance dashboards, typed-name digital signatures, and document lifecycle (ASSIGNED→VIEWED→ACKNOWLEDGED). Actual implementation is basic: plain text handbooks with simple acknowledgement. No version tracking, no auto-assignment, no dashboards, no content hashing.
-
-**Fix:** Either implement documented features or align docs with actual implementation.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
 ### GD2. No `UpdateHandbookAction` or `DeleteHandbookAction` 🟡
 
 **Files:** `app/Domain/Guidance/Actions/`
@@ -294,7 +282,7 @@ Uses `'Handbook created successfully.'` and `'Handbook acknowledged.'` instead o
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
 | 🔴 | **GD7** target_audience field added | Guidance | ✅ Fixed |
 | 🔴 | **GD10** Livewire tests for Guidance components | Guidance | ✅ Fixed |
-| 🟡 | **GD1** Documentation vs implementation gap | Guidance | ⏳ |
+| 🟡 | **GD1** Documentation vs implementation gap | Guidance | ✅ Fixed |
 | 🟢 | **GD8** Acknowledgement not used as gate | Guidance | ⏳ |
 | 🟢 | **GD9** Hardcoded English flash messages | Guidance | ✅ Fixed |
 | 🟡 | **IM1** InternshipManager uses abort(403) instead of authorize | Internship | ✅ Fixed |
