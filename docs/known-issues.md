@@ -296,13 +296,13 @@ Uses `'Handbook created successfully.'` and `'Handbook acknowledged.'` instead o
 | 🔴 | **GD10** Zero Livewire tests for Guidance components | Guidance | ⏳ |
 | 🔴 | **IM7** Zero Livewire tests for Internship managers | Internship | ⏳ |
 | 🟡 | **GD1** Documentation vs implementation gap | Guidance | ⏳ |
-| 🟡 | **GD2** No update/delete handbook actions | Guidance | ⏳ |
-| 🟡 | **GD3** HandbookIndex flat form state | Guidance | ⏳ |
-| 🟡 | **GD4** Gate::authorize instead of $this->authorize | Guidance | ⏳ |
-| 🟡 | **GD5** No boot() authorization (both components) | Guidance | ⏳ |
-| 🟡 | **GD6** Route Model Binding in acknowledge() | Guidance | ⏳ |
+| 🟡 | **GD2** No update/delete handbook actions | Guidance | ✅ Fixed |
+| 🟡 | **GD3** HandbookIndex flat form state | Guidance | ✅ Fixed |
+| 🟡 | **GD4** Gate::authorize instead of $this->authorize | Guidance | ✅ Fixed |
+| 🟡 | **GD5** No boot() authorization (both components) | Guidance | ✅ Fixed |
+| 🟡 | **GD6** Route Model Binding in acknowledge() | Guidance | ✅ Fixed |
 | 🟢 | **GD8** Acknowledgement not used as gate | Guidance | ⏳ |
-| 🟢 | **GD9** Hardcoded English flash messages | Guidance | ⏳ |
+| 🟢 | **GD9** Hardcoded English flash messages | Guidance | ✅ Fixed |
 | 🟡 | **IM1** InternshipManager uses abort(403) instead of authorize | Internship | ✅ Fixed |
 | 🟡 | **IM2** Flat formData arrays instead of Form Objects (4 components) | Internship | ✅ Fixed |
 | 🟡 | **IM3** Route Model Binding in edit() (4 components) | Internship | ✅ Fixed |
