@@ -9,6 +9,8 @@ return [
         'teacher' => 'Teacher',
         'student' => 'Student',
         'supervisor' => 'Supervisor',
+        'func_mentor' => 'Mentor',
+        'func_mentee' => 'Mentee',
     ],
 
     'permission' => [

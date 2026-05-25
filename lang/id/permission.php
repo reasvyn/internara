@@ -9,6 +9,8 @@ return [
         'teacher' => 'Guru Pembimbing',
         'student' => 'Siswa',
         'supervisor' => 'Pembimbing Industri',
+        'func_mentor' => 'Pembimbing',
+        'func_mentee' => 'Terbimbing',
     ],
 
     'permission' => [
