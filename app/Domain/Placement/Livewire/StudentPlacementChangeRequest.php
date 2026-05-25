@@ -5,27 +5,29 @@ declare(strict_types=1);
 namespace App\Domain\Placement\Livewire;
 
 use App\Domain\Placement\Actions\RequestPlacementChangeAction;
+use App\Domain\Placement\Livewire\Forms\PlacementChangeForm;
 use App\Domain\Placement\Models\Placement;
 use App\Domain\Placement\Models\PlacementChangeRequest;
 use App\Domain\Registration\Models\Registration;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class StudentPlacementChangeRequest extends Component
 {
+    use AuthorizesRequests;
+
     public ?string $registrationId = null;
 
-    public string $toPlacementId = '';
-
-    public string $reason = '';
+    public PlacementChangeForm $form;
 
     public ?PlacementChangeRequest $pendingRequest = null;
 
     public function boot(): void
     {
-        abort_unless(auth()->user()->hasRole('student'), 403);
+        $this->authorize('create', PlacementChangeRequest::class);
     }
 
     public function mount(): void
@@ -46,16 +48,13 @@ class StudentPlacementChangeRequest extends Component
 
     public function submit(RequestPlacementChangeAction $action): void
     {
-        $this->validate([
-            'toPlacementId' => ['required', 'exists:placements,id'],
-            'reason' => ['required', 'string', 'min:20', 'max:2000'],
-        ]);
+        $this->form->validate();
 
         $registration = Registration::findOrFail($this->registrationId);
 
         $action->execute($registration, [
-            'to_placement_id' => $this->toPlacementId,
-            'reason' => $this->reason,
+            'to_placement_id' => $this->form->to_placement_id,
+            'reason' => $this->form->reason,
             'requested_by' => auth()->id(),
         ]);
 
@@ -63,7 +62,7 @@ class StudentPlacementChangeRequest extends Component
         $this->pendingRequest = PlacementChangeRequest::where('registration_id', $registration->id)
             ->where('status', 'pending')
             ->first();
-        $this->reset('toPlacementId', 'reason');
+        $this->form->reset();
     }
 
     #[Layout('shared::layouts.app')]

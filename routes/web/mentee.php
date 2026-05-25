@@ -13,8 +13,6 @@ use App\Domain\Internship\Livewire\ReportWriter;
 use App\Domain\Logbook\Livewire\LogbookEntry;
 use App\Domain\Mentor\Livewire\Supervision\SupervisionManager;
 use App\Domain\Placement\Livewire\StudentPlacementChangeRequest;
-use App\Domain\Registration\Livewire\RegistrationDocumentUpload;
-use App\Domain\Registration\Livewire\RegistrationWizard;
 
 Route::prefix('student')
     ->name('student.')
@@ -24,11 +22,9 @@ Route::prefix('student')
         Route::livewire('/assignments', SubmitAssignment::class)->name('assignments');
         Route::livewire('/supervision', SupervisionManager::class)->name('supervision');
         Route::livewire('/assessments', AssessmentView::class)->name('assessments');
-        Route::livewire('/internships/register', RegistrationWizard::class)->name('internships.register');
         Route::livewire('/handbooks', StudentHandbookIndex::class)->name('handbooks');
         Route::livewire('/attendance', StudentClockIn::class)->name('attendance');
         Route::livewire('/attendance/absence', AbsenceRequestForm::class)->name('attendance.absence');
-        Route::livewire('/documents', RegistrationDocumentUpload::class)->name('documents');
         Route::livewire('/incidents/report', IncidentForm::class)->name('incidents.report');
         Route::livewire('/reports', ReportWriter::class)->name('reports');
         Route::livewire('/internships/placement-change', StudentPlacementChangeRequest::class)->name('internships.placement-change');

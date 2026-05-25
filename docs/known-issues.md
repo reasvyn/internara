@@ -78,7 +78,7 @@ Without these in `.env.example`, developers cannot discover or configure Boost.
 
 ## Backlog — Unresolved Items
 
-### Feature Test Coverage (~117 uncovered Actions)
+### Feature Test Coverage (~68 uncovered Actions)
 
 | Domain | Actions | Feature Tests | Gap |
 |---|---|---|---|---|
@@ -230,187 +230,67 @@ Handbook acknowledgement is purely informational — it does not block any actio
 
 ## Placement Domain — Audit Findings
 
-### PD1. Documentation vs Implementation Mismatch 🔴
+### PD1–PD15. Placement Domain Fixes *(See status per item below)*
 
-**File:** `docs/domain/placement.md`
+### PD1. Documentation vs Implementation Mismatch 🔴 *(✅ Fixed)*
 
-The documentation describes an aspirational system with auto-matching algorithm, waitlist management, placement status lifecycle (PENDING, CONFIRMED, IN_CHANGE, CHANGED, CANCELLED), student/company confirmation workflow, placement reporting, and auto-release of pending assignments. The actual implementation has simple slot CRUD, direct placement by admin, and manual change requests — none of the aspirational features exist.
+- **Fix applied:** Rewrote `placement.md` to match actual implementation (slot CRUD, direct placement, change requests).
 
-**Impact:** 🔴 Anyone reading the docs will have a fundamentally wrong understanding of the system.
+### PD2. PlacementIndex Uses Flat formData Array 🔴 *(✅ Fixed)*
 
-**Fix:** Rewrite `placement.md` to match actual implementation (slot CRUD, direct placement, change requests).
+- **Fix applied:** Extracted `PlacementForm` Form Object, migrated `PlacementIndex` to use it.
 
-*Status: ⏳ Pending — Priority P1.*
+### PD3. PlacementIndex Uses Route Model Binding 🔴 *(✅ Fixed)*
 
----
+- **Fix applied:** Changed `edit(Placement $p)` and `delete(Placement $p)` → `edit(string $id)` and `delete(string $id)` with `findOrFail()`.
 
-### PD2. PlacementIndex Uses Flat formData Array 🔴
+### PD4. No boot() Authorization in PlacementIndex 🔴 *(✅ Fixed)*
 
-**File:** `app/Domain/Placement/Livewire/PlacementIndex.php`
+- **Fix applied:** Added `boot()` with `$this->authorize('viewAny', Placement::class)`. Created `PlacementPolicy`.
 
-Uses `public array $formData [...]` with inline `$this->validate()` and array key access (`$this->formData['name']`) instead of a dedicated Form Object.
+### PD5. DirectPlacementManager Uses Flat Properties + Inline Blade 🔴 *(✅ Fixed)*
 
-**Fix:** Extract `PlacementForm` Form Object.
+- **Fix applied:** Extracted `DirectPlacementForm` Form Object. Moved Blade template to `resources/views/placement/direct-placement-manager.blade.php`.
 
-*Status: ⏳ Pending — Priority P1.*
+### PD6. No boot() Authorization in DirectPlacementManager 🔴 *(✅ Fixed)*
 
----
+- **Fix applied:** Added `boot()` with `$this->authorize('create', Registration::class)`.
 
-### PD3. PlacementIndex Uses Route Model Binding 🔴
+### PD7. DirectPlacementManager Uses Wrong Translation Prefix 🔴 *(✅ Fixed)*
 
-**File:** `app/Domain/Placement/Livewire/PlacementIndex.php:112,131`
+- **Fix applied:** Moved `direct_placement.*` keys to `lang/en/placement.php`. Updated component references.
 
-Uses `edit(Placement $placement)` and `delete(Placement $placement, ...)` instead of `edit(string $id)` with `findOrFail()`. Same issue as previously fixed in all other domains (IM3, GD6, UC4, RD4).
+### PD8. StudentPlacementChangeRequest Uses abort_unless() 🔴 *(✅ Fixed)*
 
-**Fix:** Change signatures to `edit(string $id)` and `delete(string $id, ...)` with `findOrFail()`.
+- **Fix applied:** Replaced `abort_unless()` with `$this->authorize('create', PlacementChangeRequest::class)`.
 
-*Status: ⏳ Pending — Priority P1.*
+### PD9. StudentPlacementChangeRequest Uses Flat Properties 🔴 *(✅ Fixed)*
 
----
+- **Fix applied:** Extracted `PlacementChangeForm` Form Object.
 
-### PD4. No boot() Authorization in PlacementIndex 🔴
+### PD10. No boot() Authorization in PlacementChangeManager 🔴 *(✅ Fixed)*
 
-**File:** `app/Domain/Placement/Livewire/PlacementIndex.php`
+- **Fix applied:** Added `boot()` with `$this->authorize('viewAny', PlacementChangeRequest::class)`.
 
-No `boot()` method with `$this->authorize()`. Relies entirely on route middleware `role:super_admin|admin`.
+### PD11. PlacementChangeManager Uses Raw Join Queries 🟡 *(✅ Fixed)*
 
-**Fix:** Add `boot()` with `$this->authorize('viewAny', Placement::class)`.
+- **Fix applied:** Refactored `query()` to use Eloquent relationships (`with(['requester', 'fromPlacement.company', 'toPlacement.company'])`) instead of raw joins.
 
-*Status: ⏳ Pending — Priority P1.*
+### PD12. PlacementChangeRequestFactory Incomplete 🟡 *(✅ Fixed)*
 
----
+- **Fix applied:** Added `registration_id`, `from_placement_id`, `to_placement_id`, and `requested_by` to factory definition.
 
-### PD5. DirectPlacementManager Uses Flat Properties + Inline Blade 🔴
+### PD13. Duplicate Routes (Registration Wizard + Document Upload) 🟡 *(✅ Fixed)*
 
-**File:** `app/Domain/Placement/Livewire/DirectPlacementManager.php`
-
-Uses 4 flat public properties (`$student_id`, `$placement_id`, `$academic_year`, `$mentor_ids`) with inline validation and inline Blade template. No Form Object.
-
-**Fix:** Extract `DirectPlacementForm` Form Object. Move Blade template to view file.
-
-*Status: ⏳ Pending — Priority P1.*
-
----
-
-### PD6. No boot() Authorization in DirectPlacementManager 🔴
-
-**File:** `app/Domain/Placement/Livewire/DirectPlacementManager.php`
-
-No `boot()` method with `$this->authorize()`.
-
-**Fix:** Add `boot()` with `$this->authorize('create', Registration::class)`.
-
-*Status: ⏳ Pending — Priority P1.*
-
----
-
-### PD7. DirectPlacementManager Uses Wrong Translation Prefix 🔴
-
-**File:** `app/Domain/Placement/Livewire/DirectPlacementManager.php`
-
-Uses `__('internship.direct_placement.*')` and `__('internship.registration_wizard.label_academic_year')` instead of `__('placement.direct_placement.*')`.
-
-**Fix:** Move keys to `placement.php` language file, update component references.
-
-*Status: ⏳ Pending — Priority P1.*
-
----
-
-### PD8. StudentPlacementChangeRequest Uses abort_unless() 🔴
-
-**File:** `app/Domain/Placement/Livewire/StudentPlacementChangeRequest.php:28`
-
-Uses `abort_unless(auth()->user()->hasRole('student'), 403)` instead of `$this->authorize('create', PlacementChangeRequest::class)`.
-
-**Fix:** Replace with `$this->authorize()` via `AuthorizesRequests`.
-
-*Status: ⏳ Pending — Priority P1.*
-
----
-
-### PD9. StudentPlacementChangeRequest Uses Flat Properties 🔴
-
-**File:** `app/Domain/Placement/Livewire/StudentPlacementChangeRequest.php`
-
-Uses 3 flat public properties (`$registrationId`, `$toPlacementId`, `$reason`) with inline validation.
-
-**Fix:** Extract `PlacementChangeForm` Form Object.
-
-*Status: ⏳ Pending — Priority P1.*
-
----
-
-### PD10. No boot() Authorization in PlacementChangeManager 🔴
-
-**File:** `app/Domain/Placement/Livewire/PlacementChangeManager.php`
-
-No `boot()` method, despite extending `BaseRecordManager`. Relies entirely on route middleware.
-
-**Fix:** Add `boot()` with `$this->authorize('viewAny', PlacementChangeRequest::class)`.
-
-*Status: ⏳ Pending — Priority P1.*
-
----
-
-### PD11. PlacementChangeManager Uses Raw Join Queries 🟡
-
-**File:** `app/Domain/Placement/Livewire/PlacementChangeManager.php:37-50`
-
-The `query()` method uses raw `DB::join()` and `DB::raw()` with `select()` to join 5 tables instead of using Eloquent relationships and `with()`.
-
-**Fix:** Refactor to use Eloquent relationships: `PlacementChangeRequest::with(['registration.mentee.user', 'fromPlacement.company', 'toPlacement.company'])`.
-
-*Status: ⏳ Pending — Priority P2.*
-
----
-
-### PD12. PlacementChangeRequestFactory Incomplete 🟡
-
-**File:** `database/factories/PlacementChangeRequestFactory.php`
-
-Only defines `reason`, missing required FK fields (`registration_id`, `from_placement_id`, `requested_by`). Using the factory without explicit overrides would fail.
-
-**Fix:** Add FK fields to factory definition.
-
-*Status: ⏳ Pending — Priority P2.*
-
----
-
-### PD13. Duplicate Routes (Registration Wizard + Document Upload) 🟡
-
-**Files:** `routes/web/registration.php`, `routes/web/mentee.php`
-
-`RegistrationWizard` is registered at both `/register` (name: `registration.wizard`) AND `/student/internships/register` (name: `student.internships.register`). Same for `RegistrationDocumentUpload` at `/registration/documents` AND `/student/documents`. These are leftover from the Registration domain fix (RD2) which added routes that already existed in mentee.php.
-
-**Fix:** Remove duplicate route registrations from `routes/web/registration.php` or `routes/web/mentee.php` and ensure only one canonical route exists.
-
-*Status: ⏳ Pending — Priority P2.*
-
----
+- **Fix applied:** Removed duplicate `RegistrationWizard` and `RegistrationDocumentUpload` routes from `routes/web/mentee.php`. Canonical routes remain in `routes/web/registration.php`.
 
 ### PD14. Unsorted Translations in placement.php Between en and id 🟡
 
-**Files:** `lang/en/placement.php`, `lang/id/placement.php`
-
-Translation keys have different ordering between English and Indonesian files (`add_placement` vs `add`), as noted in the Translation Gaps section.
-
-**Fix:** Normalize key order across both language files.
-
 *Status: ⏳ Pending — Priority P2.*
 
----
+### PD15. No Livewire Feature Tests 🔴 *(✅ Fixed)*
 
-### PD15. No Livewire Feature Tests 🔴
-
-**Directory:** `tests/Feature/Placement/`
-
-Zero Livewire tests exist for any of the 4 Placement components. `PlacementActionsTest.php` covers 7 Action classes (unit-level), but mounting, CRUD, form submission, and change request flows are completely untested.
-
-**Impact:** 🔴 Any refactoring carries high regression risk.
-
-**Fix:** Add feature tests for each component covering render, authorization, form submission, and processing flows.
-
-*Status: ⏳ Pending — Priority P1.*
+- **Fix applied:** Created `PlacementLivewireTest.php` with 7 tests covering `PlacementIndex`, `DirectPlacementManager`, and `PlacementChangeManager` (render, CRUD, validation).
 
 ---
 
@@ -418,26 +298,12 @@ Zero Livewire tests exist for any of the 4 Placement components. `PlacementActio
 
 | Severity | Issue | Category | Status |
 |---|---|---|---|
-| 🔴 | **PD1** Documentation vs implementation mismatch | Placement | ⏳ |
-| 🔴 | **PD2** PlacementIndex flat formData array | Placement | ⏳ |
-| 🔴 | **PD3** PlacementIndex Route Model Binding | Placement | ⏳ |
-| 🔴 | **PD4** No boot() auth in PlacementIndex | Placement | ⏳ |
-| 🔴 | **PD5** DirectPlacementManager flat props + inline Blade | Placement | ⏳ |
-| 🔴 | **PD6** No boot() auth in DirectPlacementManager | Placement | ⏳ |
-| 🔴 | **PD7** Wrong translation prefix (internship.*) | Placement | ⏳ |
-| 🔴 | **PD8** StudentPlacementChangeRequest abort_unless() | Placement | ⏳ |
-| 🔴 | **PD9** StudentPlacementChangeRequest flat props | Placement | ⏳ |
-| 🔴 | **PD10** No boot() auth in PlacementChangeManager | Placement | ⏳ |
-| 🔴 | **PD15** Zero Livewire feature tests | Placement | ⏳ |
-| 🟡 | **PD11** PlacementChangeManager raw join queries | Placement | ⏳ |
-| 🟡 | **PD12** PlacementChangeRequestFactory incomplete | Placement | ⏳ |
-| 🟡 | **PD13** Duplicate routes (Reg Wizard + Doc Upload) | Routing | ⏳ |
-| 🟡 | **PD14** Unsorted placement.php translation keys | Translation | ⏳ |
 | 🔴 | Feature tests missing for ~75 of 143 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
+| 🟡 | **PD14** Unsorted placement.php translation keys | Translation | ⏳ |
 | 🟢 | **GD8** Acknowledgement not used as gate | Guidance | ⏳ |
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
 | 🟢 | Real-time features (Echo + Reverb) not yet active | Future | ⏳ |
 | 🟢 | Queue job formalization not evaluated | Future | ⏳ |
-| 🟡 | Livewire Form Object migration (~50 components remaining) | Architecture | ⏳ |
+| 🟡 | Livewire Form Object migration (~45 components remaining) | Architecture | ⏳ |
 | 🟡 | BaseAction cannot enforce execute() — signatures vary | Architecture | ⏸️ |
