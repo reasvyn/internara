@@ -48,9 +48,9 @@
         <x-mary-modal wire:model="showModal" :title="$confirmTarget ? 'Edit Group' : 'New Group'" class="backdrop-blur-sm">
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
-                    <x-mary-input label="Name" wire:model="formData.name" required />
-                    <x-mary-select label="Internship" wire:model="formData.internship_id" :options="$internships" required />
-                    <x-mary-textarea label="Description" wire:model="formData.description" rows="2" />
+                    <x-mary-input label="Name" wire:model="form.name" required />
+                    <x-mary-select label="Internship" wire:model="form.internship_id" :options="$internships" required />
+                    <x-mary-textarea label="Description" wire:model="form.description" rows="2" />
                 </div>
                 <x-slot:actions>
                     <x-mary-button label="Cancel" wire:click="$set('showModal', false)" class="btn-ghost btn-sm" />

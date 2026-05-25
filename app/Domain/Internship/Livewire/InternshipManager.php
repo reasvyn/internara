@@ -12,6 +12,7 @@ use App\Domain\Internship\Actions\CreateInternshipAction;
 use App\Domain\Internship\Actions\DeleteInternshipAction;
 use App\Domain\Internship\Actions\UpdateInternshipAction;
 use App\Domain\Internship\Enums\InternshipStatus;
+use App\Domain\Internship\Livewire\Forms\InternshipForm;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Placement\Models\Placement;
 use App\Domain\Registration\Models\Registration;
@@ -19,12 +20,13 @@ use App\Domain\School\Models\AcademicYear;
 use App\Domain\Shared\Support\CsvHandler;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\WithFileUploads;
 
 class InternshipManager extends BaseRecordManager
 {
-    use WithFileUploads;
+    use AuthorizesRequests, WithFileUploads;
 
     public bool $showModal = false;
 
@@ -42,27 +44,11 @@ class InternshipManager extends BaseRecordManager
 
     public ?string $readinessInternshipId = null;
 
-    public array $formData = [
-        'id' => null,
-        'name' => '',
-        'academic_year_id' => '',
-        'start_date' => '',
-        'end_date' => '',
-        'registration_start_date' => '',
-        'registration_end_date' => '',
-        'description' => '',
-        'status' => 'draft',
-    ];
+    public InternshipForm $form;
 
     public function boot(): void
     {
-        if (
-            ! auth()
-                ->user()
-                ?->hasAnyRole(['super_admin', 'admin'])
-        ) {
-            abort(403, 'Unauthorized access.');
-        }
+        $this->authorize('viewAny', Internship::class);
     }
 
     public function headers(): array
@@ -138,24 +124,17 @@ class InternshipManager extends BaseRecordManager
     {
         $this->resetErrorBag();
         $activeYear = AcademicYear::where('is_active', true)->first();
-        $this->formData = [
-            'id' => null,
-            'name' => '',
-            'academic_year_id' => $activeYear?->id ?? '',
-            'start_date' => '',
-            'end_date' => '',
-            'registration_start_date' => '',
-            'registration_end_date' => '',
-            'description' => '',
-            'status' => InternshipStatus::DRAFT->value,
-        ];
+        $this->form->reset();
+        $this->form->academic_year_id = $activeYear?->id ?? '';
         $this->showModal = true;
     }
 
-    public function edit(Internship $internship): void
+    public function edit(string $id): void
     {
+        $internship = Internship::findOrFail($id);
+
         $this->resetErrorBag();
-        $this->formData = [
+        $this->form->fill([
             'id' => $internship->id,
             'name' => $internship->name,
             'academic_year_id' => $internship->academic_year_id ?? '',
@@ -165,38 +144,22 @@ class InternshipManager extends BaseRecordManager
             'registration_end_date' => $internship->registration_end_date?->format('Y-m-d') ?? '',
             'description' => $internship->description ?? '',
             'status' => $internship->status->value,
-        ];
+        ]);
         $this->showModal = true;
     }
 
     public function save(CreateInternshipAction $create, UpdateInternshipAction $update): void
     {
-        $validStatuses = collect(InternshipStatus::cases())->map(fn ($s) => $s->value)->toArray();
+        $this->form->registration_start_date = $this->form->registration_start_date ?: null;
+        $this->form->registration_end_date = $this->form->registration_end_date ?: null;
 
-        $this->formData['registration_start_date'] = $this->formData['registration_start_date'] ?: null;
-        $this->formData['registration_end_date'] = $this->formData['registration_end_date'] ?: null;
+        $this->form->validate();
 
-        $this->validate([
-            'formData.name' => [
-                'required',
-                'string',
-                'max:255',
-                'unique:internships,name,'.($this->formData['id'] ?? 'NULL'),
-            ],
-            'formData.academic_year_id' => ['nullable', 'string'],
-            'formData.start_date' => ['required', 'date'],
-            'formData.end_date' => ['required', 'date', 'after:formData.start_date'],
-            'formData.registration_start_date' => ['nullable', 'date'],
-            'formData.registration_end_date' => ['nullable', 'date', 'after_or_equal:formData.registration_start_date'],
-            'formData.description' => ['nullable', 'string'],
-            'formData.status' => ['required', 'string', 'in:'.implode(',', $validStatuses)],
-        ]);
-
-        if ($this->formData['id']) {
-            $internship = Internship::findOrFail($this->formData['id']);
+        if ($this->form->id) {
+            $internship = Internship::findOrFail($this->form->id);
 
             try {
-                $update->execute($internship, $this->formData);
+                $update->execute($internship, $this->form->all());
                 flash()->success(__('internship.update_success'));
             } catch (RejectedException $e) {
                 flash()->error($e->getMessage());
@@ -205,7 +168,7 @@ class InternshipManager extends BaseRecordManager
             }
         } else {
             try {
-                $create->execute($this->formData);
+                $create->execute($this->form->all());
                 flash()->success(__('internship.save_success'));
             } catch (RejectedException $e) {
                 flash()->error($e->getMessage());

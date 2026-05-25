@@ -138,81 +138,15 @@ Evaluate which operations should be queued: certificate generation, report rende
 
 ## Internship Management — Audit Findings
 
-### IM1. InternshipManager Uses `abort(403)` Instead of `$this->authorize()` 🟡
+### IM1–IM6, IM8. Internship Management Fixes 🟡 *(✅ Fixed)*
 
-**File:** `app/Domain/Internship/Livewire/InternshipManager.php:57-66`
-
-Uses manual `hasAnyRole()` check in `boot()` instead of delegating to `InternshipPolicy` via `$this->authorize()`. Same pattern as previously fixed in School and Admin components.
-
-**Fix:** Replace with `$this->authorize('viewAny', Internship::class)`.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### IM2. Flat `formData` Arrays Instead of Form Objects (4 Components) 🟡
-
-**Files:**
-- `InternshipManager.php` — uses `$formData` array with inline validation
-- `InternshipGroupManager.php` — uses `$formData` and `$memberFormData` arrays
-- `InternshipPhaseManager.php` — uses `$formData` array
-- `RequirementManager.php` — uses `$formData` array
-
-All four components validate inline with rules like `'formData.name' => ...`. Should use dedicated Form Objects for separation of concerns.
-
-**Fix:** Extract `InternshipForm`, `InternshipGroupForm`, `InternshipPhaseForm`, `RequirementForm`.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### IM3. Route Model Binding in `edit()` Methods (3 Components) 🟡
-
-**Files:** `InternshipGroupManager.php:88`, `InternshipPhaseManager.php:79`, `RequirementManager.php:58`
-
-Uses `edit(InternshipGroup $group)` etc. instead of `edit(string $id)`. Same issue as previously fixed in DepartmentManager and Admin managers.
-
-**Fix:** Change signatures to `edit(string $id)` with `findOrFail()` inside.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### IM4. RequirementManager Has No `boot()` Authorization 🟡
-
-**File:** `app/Domain/Internship/Livewire/RequirementManager.php`
-
-Unlike the other three Internship managers (`InternshipManager`, `InternshipGroupManager`, `InternshipPhaseManager`), `RequirementManager` has no `boot()` method and no authorization check at the component level. Relies entirely on route middleware.
-
-**Fix:** Add `boot()` with `$this->authorize()` delegating to an appropriate Policy.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### IM5. InternshipGroupManager `confirmAction()` No Authorization Guard 🟡
-
-**File:** `app/Domain/Internship/Livewire/InternshipGroupManager.php:134-151`
-
-The `confirmAction()` method deletes a group via `DeleteInternshipGroupAction` without calling `$this->authorize('delete', $group)`. Relies only on the Action-level guard.
-
-**Fix:** Add `$this->authorize('delete', $group)` before executing delete action. Also fix `delete` scope in `InternshipGroupPolicy` — currently only allows `super_admin`.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
-
-### IM6. Hardcoded English Flash Messages (3 Components) 🟢
-
-**Files:** `InternshipGroupManager.php`, `InternshipPhaseManager.php`, `RequirementManager.php`
-
-Uses plain English strings like `'Group deleted.'`, `'Phase created.'`, `'Requirement saved successfully.'` instead of translation keys like `__('internship.group_deleted')`.
-
-**Fix:** Replace hardcoded strings with `__()` translation keys.
-
-*Status: ⏳ Pending — Priority P4.*
-
----
+- **IM1:** `InternshipManager::boot()` — `abort(403)` → `$this->authorize('viewAny', Internship::class)`
+- **IM2:** Created 5 Form Objects (`InternshipForm`, `InternshipGroupForm`, `InternshipPhaseForm`, `InternshipRequirementForm`, `BriefingForm`), migrated all managers + views
+- **IM3:** Route Model Binding → `string $id` in all 5 managers (Internship, Group, Phase, Requirement, Briefing)
+- **IM4:** Added `boot()` authorization to `RequirementManager` and `BriefingManager`
+- **IM5:** Added `$this->authorize('delete')` to `GroupManager::confirmAction()`, fixed `InternshipGroupPolicy` delete scope to `isAdmin()`
+- **IM6:** Created translation keys for all hardcoded English flash messages (group, phase, requirement)
+- **IM8:** `InternshipGroupPolicy::delete()` — `super_admin` only → `isAdmin()`
 
 ### IM7. Zero Livewire Feature Tests for All 5 Internship Managers 🔴
 
@@ -254,13 +188,13 @@ Only `super_admin` can delete groups. All other admin-level operations (`create`
 | 🔴 | Feature tests missing for ~110 of 143 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
 | 🔴 | **IM7** Zero Livewire tests for 5 Internship managers | Internship | ⏳ |
-| 🟡 | **IM1** InternshipManager uses abort(403) instead of authorize | Internship | ⏳ |
-| 🟡 | **IM2** Flat formData arrays instead of Form Objects (4 components) | Internship | ⏳ |
-| 🟡 | **IM3** Route Model Binding in edit() (3 components) | Internship | ⏳ |
-| 🟡 | **IM4** RequirementManager has no boot() authorization | Internship | ⏳ |
-| 🟡 | **IM5** InternshipGroupManager confirmAction no auth guard | Internship | ⏳ |
-| 🟡 | **IM8** InternshipGroupPolicy delete restricted to super_admin | Internship | 🤔 |
-| 🟢 | **IM6** Hardcoded English flash messages (3 components) | Internship | ⏳ |
+| 🟡 | **IM1** InternshipManager uses abort(403) instead of authorize | Internship | ✅ Fixed |
+| 🟡 | **IM2** Flat formData arrays instead of Form Objects (5 components) | Internship | ✅ Fixed |
+| 🟡 | **IM3** Route Model Binding in edit() (5 components) | Internship | ✅ Fixed |
+| 🟡 | **IM4** RequirementManager + BriefingManager no boot() authorization | Internship | ✅ Fixed |
+| 🟡 | **IM5** InternshipGroupManager confirmAction no auth guard | Internship | ✅ Fixed |
+| 🟡 | **IM8** InternshipGroupPolicy delete restricted to super_admin | Internship | ✅ Fixed |
+| 🟢 | **IM6** Hardcoded English flash messages (5 components) | Internship | ✅ Fixed |
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
 | 🟢 | Real-time features (Echo + Reverb) not yet active | Future | ⏳ |
 | 🟢 | Queue job formalization not evaluated | Future | ⏳ |

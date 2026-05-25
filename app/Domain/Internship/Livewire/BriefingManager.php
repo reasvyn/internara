@@ -8,16 +8,25 @@ use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Internship\Actions\CreateBriefingAction;
 use App\Domain\Internship\Actions\OverrideBriefingAttendanceAction;
 use App\Domain\Internship\Actions\RecordBriefingAttendanceAction;
+use App\Domain\Internship\Livewire\Forms\BriefingForm;
 use App\Domain\Internship\Models\Briefing;
 use App\Domain\Internship\Models\BriefingAttendance;
 use App\Domain\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 
 class BriefingManager extends BaseRecordManager
 {
+    use AuthorizesRequests;
+
+    public function boot(): void
+    {
+        $this->authorize('viewAny', Internship::class);
+    }
+
     public bool $showModal = false;
 
     public bool $showAttendanceModal = false;
@@ -26,15 +35,7 @@ class BriefingManager extends BaseRecordManager
 
     public array $attendees = [];
 
-    public array $formData = [
-        'id' => null,
-        'title' => '',
-        'description' => '',
-        'date' => '',
-        'location' => '',
-        'is_mandatory' => true,
-        'internship_id' => '',
-    ];
+    public BriefingForm $form;
 
     public function headers(): array
     {
@@ -66,17 +67,16 @@ class BriefingManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->formData = [
-            'id' => null, 'title' => '', 'description' => '', 'date' => '',
-            'location' => '', 'is_mandatory' => true, 'internship_id' => '',
-        ];
+        $this->form->reset();
         $this->showModal = true;
     }
 
-    public function edit(Briefing $briefing): void
+    public function edit(string $id): void
     {
+        $briefing = Briefing::findOrFail($id);
+
         $this->resetErrorBag();
-        $this->formData = [
+        $this->form->fill([
             'id' => $briefing->id,
             'title' => $briefing->title,
             'description' => $briefing->description ?? '',
@@ -84,24 +84,16 @@ class BriefingManager extends BaseRecordManager
             'location' => $briefing->location ?? '',
             'is_mandatory' => $briefing->is_mandatory,
             'internship_id' => $briefing->internship_id,
-        ];
+        ]);
         $this->showModal = true;
     }
 
     public function save(CreateBriefingAction $create): void
     {
-        $this->validate([
-            'formData.title' => ['required', 'string', 'max:255'],
-            'formData.description' => ['nullable', 'string', 'max:5000'],
-            'formData.date' => ['required', 'date'],
-            'formData.location' => ['nullable', 'string', 'max:255'],
-            'formData.is_mandatory' => ['boolean'],
-            'formData.internship_id' => ['required', 'exists:internships,id'],
-        ]);
+        $this->form->validate();
 
         $create->execute([
-            ...$this->formData,
-            'is_mandatory' => $this->formData['is_mandatory'] ?? true,
+            ...$this->form->all(),
             'created_by' => auth()->id(),
         ]);
 
@@ -109,8 +101,9 @@ class BriefingManager extends BaseRecordManager
         $this->showModal = false;
     }
 
-    public function manageAttendance(Briefing $briefing): void
+    public function manageAttendance(string $id): void
     {
+        $briefing = Briefing::findOrFail($id);
         $this->attendanceBriefingId = $briefing->id;
         $this->attendees = BriefingAttendance::query()
             ->where('briefing_id', $briefing->id)

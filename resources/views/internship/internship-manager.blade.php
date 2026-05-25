@@ -115,20 +115,20 @@
     />
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showModal" :title="$formData['id'] ? __('internship.edit_batch') : __('internship.new_batch')" separator class="backdrop-blur-sm">
+        <x-mary-modal wire:model="showModal" :title="$form->id ? __('internship.edit_batch') : __('internship.new_batch')" separator class="backdrop-blur-sm">
             <div class="space-y-6">
-                <x-mary-input :label="__('internship.name')" wire:model="formData.name" :placeholder="__('internship.name_placeholder')" icon="o-academic-cap" class="rounded-xl border-base-300" />
-                <x-mary-select :label="__('internship.academic_year')" wire:model="formData.academic_year_id" :options="$this->academicYears" icon="o-calendar-days" class="rounded-xl border-base-300" />
+                <x-mary-input :label="__('internship.name')" wire:model="form.name" :placeholder="__('internship.name_placeholder')" icon="o-academic-cap" class="rounded-xl border-base-300" />
+                <x-mary-select :label="__('internship.academic_year')" wire:model="form.academic_year_id" :options="$this->academicYears" icon="o-calendar-days" class="rounded-xl border-base-300" />
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <x-mary-datepicker :label="__('internship.start_date')" wire:model="formData.start_date" icon="o-calendar" class="rounded-xl border-base-300" />
-                    <x-mary-datepicker :label="__('internship.end_date')" wire:model="formData.end_date" icon="o-calendar" class="rounded-xl border-base-300" />
+                    <x-mary-datepicker :label="__('internship.start_date')" wire:model="form.start_date" icon="o-calendar" class="rounded-xl border-base-300" />
+                    <x-mary-datepicker :label="__('internship.end_date')" wire:model="form.end_date" icon="o-calendar" class="rounded-xl border-base-300" />
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <x-mary-datepicker :label="__('internship.registration_start_date')" wire:model="formData.registration_start_date" icon="o-clock" class="rounded-xl border-base-300" />
-                    <x-mary-datepicker :label="__('internship.registration_end_date')" wire:model="formData.registration_end_date" icon="o-clock" class="rounded-xl border-base-300" />
+                    <x-mary-datepicker :label="__('internship.registration_start_date')" wire:model="form.registration_start_date" icon="o-clock" class="rounded-xl border-base-300" />
+                    <x-mary-datepicker :label="__('internship.registration_end_date')" wire:model="form.registration_end_date" icon="o-clock" class="rounded-xl border-base-300" />
                 </div>
-                <x-mary-select :label="__('internship.status')" wire:model="formData.status" :options="$this->statusOptions" icon="o-flag" class="rounded-xl border-base-300" />
-                <x-mary-textarea :label="__('internship.description')" wire:model="formData.description" :placeholder="__('internship.description_placeholder')" rows="2" icon="o-document-text" class="rounded-xl border-base-300" />
+                <x-mary-select :label="__('internship.status')" wire:model="form.status" :options="$this->statusOptions" icon="o-flag" class="rounded-xl border-base-300" />
+                <x-mary-textarea :label="__('internship.description')" wire:model="form.description" :placeholder="__('internship.description_placeholder')" rows="2" icon="o-document-text" class="rounded-xl border-base-300" />
             </div>
             <x-slot:actions>
                 <x-mary-button :label="__('internship.cancel')" @click="$wire.showModal = false" class="rounded-xl" />

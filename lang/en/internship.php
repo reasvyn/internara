@@ -181,4 +181,20 @@ return [
         'submit' => 'Submit Application',
         'success' => 'Application submitted successfully. You will be notified once reviewed.',
     ],
+
+    // Groups
+    'group_created' => 'Group created.',
+    'group_updated' => 'Group updated.',
+    'group_deleted' => 'Group deleted.',
+    'member_added' => 'Member added.',
+    'member_removed' => 'Member removed.',
+
+    // Phases
+    'phase_created' => 'Phase created.',
+    'phase_updated' => 'Phase updated.',
+    'phase_deleted' => 'Phase deleted.',
+
+    // Requirements
+    'requirement_saved' => 'Requirement saved successfully.',
+    'requirement_removed' => 'Requirement removed.',
 ];

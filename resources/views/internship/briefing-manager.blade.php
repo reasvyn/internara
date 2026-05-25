@@ -36,17 +36,17 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showModal" :title="$formData['id'] ? __('briefing.edit') : __('briefing.new')" class="backdrop-blur-sm">
+        <x-mary-modal wire:model="showModal" :title="$form->id ? __('briefing.edit') : __('briefing.new')" class="backdrop-blur-sm">
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
-                    <x-mary-input :label="__('briefing.title_field')" wire:model="formData.title" />
-                    <x-mary-select :label="__('briefing.internship')" wire:model="formData.internship_id"
+                    <x-mary-input :label="__('briefing.title_field')" wire:model="form.title" />
+                    <x-mary-select :label="__('briefing.internship')" wire:model="form.internship_id"
                         :options="$this->internships" option-label="name" option-value="id"
                         :placeholder="__('briefing.internship_placeholder')" />
-                    <x-mary-input :label="__('briefing.date')" wire:model="formData.date" type="datetime-local" />
-                    <x-mary-input :label="__('briefing.location')" wire:model="formData.location" />
-                    <x-mary-textarea :label="__('briefing.description')" wire:model="formData.description" rows="3" />
-                    <x-mary-checkbox :label="__('briefing.is_mandatory')" wire:model="formData.is_mandatory" />
+                    <x-mary-input :label="__('briefing.date')" wire:model="form.date" type="datetime-local" />
+                    <x-mary-input :label="__('briefing.location')" wire:model="form.location" />
+                    <x-mary-textarea :label="__('briefing.description')" wire:model="form.description" rows="3" />
+                    <x-mary-checkbox :label="__('briefing.is_mandatory')" wire:model="form.is_mandatory" />
                 </div>
                 <x-slot:actions>
                     <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('showModal', false)" class="btn-ghost btn-sm" />

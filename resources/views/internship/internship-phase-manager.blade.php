@@ -43,13 +43,13 @@
         <x-mary-modal wire:model="showModal" :title="$confirmTarget ? 'Edit Phase' : 'New Phase'" class="backdrop-blur-sm">
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
-                    <x-mary-input label="Name" wire:model="formData.name" required />
-                    <x-mary-textarea label="Description" wire:model="formData.description" rows="2" />
+                    <x-mary-input label="Name" wire:model="form.name" required />
+                    <x-mary-textarea label="Description" wire:model="form.description" rows="2" />
                     <div class="grid grid-cols-2 gap-4">
-                        <x-mary-input label="Start Date" type="date" wire:model="formData.start_date" required />
-                        <x-mary-input label="End Date" type="date" wire:model="formData.end_date" required />
+                        <x-mary-input label="Start Date" type="date" wire:model="form.start_date" required />
+                        <x-mary-input label="End Date" type="date" wire:model="form.end_date" required />
                     </div>
-                    <x-mary-input label="Color (hex)" wire:model="formData.color" placeholder="#3b82f6" />
+                    <x-mary-input label="Color (hex)" wire:model="form.color" placeholder="#3b82f6" />
                 </div>
                 <x-slot:actions>
                     <x-mary-button label="Cancel" wire:click="$set('showModal', false)" class="btn-ghost btn-sm" />

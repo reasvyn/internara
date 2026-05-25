@@ -10,14 +10,18 @@ use App\Domain\Internship\Actions\CreateInternshipGroupAction;
 use App\Domain\Internship\Actions\DeleteInternshipGroupAction;
 use App\Domain\Internship\Actions\RemoveMemberFromGroupAction;
 use App\Domain\Internship\Actions\UpdateInternshipGroupAction;
+use App\Domain\Internship\Livewire\Forms\InternshipGroupForm;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Internship\Models\InternshipGroup;
 use App\Domain\Internship\Models\InternshipGroupMember;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class InternshipGroupManager extends BaseRecordManager
 {
+    use AuthorizesRequests;
+
     public bool $showModal = false;
 
     public bool $showMemberModal = false;
@@ -32,12 +36,7 @@ class InternshipGroupManager extends BaseRecordManager
 
     public ?string $internshipId = null;
 
-    public array $formData = [
-        'name' => '',
-        'internship_id' => '',
-        'placement_id' => '',
-        'description' => '',
-    ];
+    public InternshipGroupForm $form;
 
     public array $memberFormData = [
         'group_id' => '',
@@ -76,43 +75,36 @@ class InternshipGroupManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->formData = [
-            'name' => '',
-            'internship_id' => '',
-            'placement_id' => '',
-            'description' => '',
-        ];
+        $this->form->reset();
         $this->showModal = true;
     }
 
-    public function edit(InternshipGroup $group): void
+    public function edit(string $id): void
     {
+        $group = InternshipGroup::findOrFail($id);
+
         $this->resetErrorBag();
-        $this->formData = [
+        $this->form->fill([
             'name' => $group->name,
             'internship_id' => $group->internship_id,
             'placement_id' => $group->placement_id ?? '',
             'description' => $group->description ?? '',
-        ];
+        ]);
         $this->confirmTarget = $group->id;
         $this->showModal = true;
     }
 
     public function save(CreateInternshipGroupAction $create, UpdateInternshipGroupAction $update): void
     {
-        $this->validate([
-            'formData.name' => ['required', 'string', 'max:255'],
-            'formData.internship_id' => ['required', 'exists:internships,id'],
-            'formData.placement_id' => ['nullable', 'exists:placements,id'],
-        ]);
+        $this->form->validate();
 
         if ($this->confirmTarget) {
             $group = InternshipGroup::findOrFail($this->confirmTarget);
-            $update->execute($group, $this->formData);
-            flash()->success('Group updated.');
+            $update->execute($group, $this->form->all());
+            flash()->success(__('internship.group_updated'));
         } else {
-            $create->execute($this->formData);
-            flash()->success('Group created.');
+            $create->execute($this->form->all());
+            flash()->success(__('internship.group_created'));
         }
 
         $this->showModal = false;
@@ -139,8 +131,9 @@ class InternshipGroupManager extends BaseRecordManager
 
         try {
             $group = InternshipGroup::findOrFail($this->confirmTarget);
+            $this->authorize('delete', $group);
             $deleteAction->execute($group);
-            flash()->success('Group deleted.');
+            flash()->success(__('internship.group_deleted'));
         } catch (\RuntimeException $e) {
             flash()->error($e->getMessage());
         }
@@ -186,7 +179,7 @@ class InternshipGroupManager extends BaseRecordManager
             'mentor_id' => '',
         ];
 
-        flash()->success('Member added.');
+        flash()->success(__('internship.member_added'));
     }
 
     public function removeMember(string $memberId, RemoveMemberFromGroupAction $action): void
@@ -194,7 +187,7 @@ class InternshipGroupManager extends BaseRecordManager
         $member = InternshipGroupMember::findOrFail($memberId);
         $action->execute($member);
 
-        flash()->success('Member removed.');
+        flash()->success(__('internship.member_removed'));
     }
 
     // ---

@@ -8,6 +8,7 @@ use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Internship\Actions\CreateInternshipPhaseAction;
 use App\Domain\Internship\Actions\DeleteInternshipPhaseAction;
 use App\Domain\Internship\Actions\UpdateInternshipPhaseAction;
+use App\Domain\Internship\Livewire\Forms\InternshipPhaseForm;
 use App\Domain\Internship\Models\InternshipPhase;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,13 +27,7 @@ class InternshipPhaseManager extends BaseRecordManager
     #[Url(as: 'internship', history: true)]
     public ?string $internshipId = null;
 
-    public array $formData = [
-        'name' => '',
-        'description' => '',
-        'start_date' => '',
-        'end_date' => '',
-        'color' => '',
-    ];
+    public InternshipPhaseForm $form;
 
     public function boot(): void
     {
@@ -65,50 +60,42 @@ class InternshipPhaseManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->formData = [
-            'name' => '',
-            'description' => '',
-            'start_date' => '',
-            'end_date' => '',
-            'color' => '',
-        ];
+        $this->form->reset();
         $this->confirmTarget = null;
         $this->showModal = true;
     }
 
-    public function edit(InternshipPhase $phase): void
+    public function edit(string $id): void
     {
+        $phase = InternshipPhase::findOrFail($id);
+
         $this->resetErrorBag();
-        $this->formData = [
+        $this->form->fill([
             'name' => $phase->name,
             'description' => $phase->description ?? '',
             'start_date' => $phase->start_date->format('Y-m-d'),
             'end_date' => $phase->end_date->format('Y-m-d'),
             'color' => $phase->color ?? '',
-        ];
+        ]);
         $this->confirmTarget = $phase->id;
         $this->showModal = true;
     }
 
     public function save(CreateInternshipPhaseAction $create, UpdateInternshipPhaseAction $update): void
     {
-        $this->validate([
-            'formData.name' => ['required', 'string', 'max:255'],
-            'formData.start_date' => ['required', 'date'],
-            'formData.end_date' => ['required', 'date', 'after_or_equal:formData.start_date'],
-            'formData.color' => ['nullable', 'string', 'max:7'],
-        ]);
+        $this->form->validate();
 
         if ($this->confirmTarget) {
             $phase = InternshipPhase::findOrFail($this->confirmTarget);
-            $update->execute($phase, $this->formData);
-            flash()->success('Phase updated.');
+            $update->execute($phase, $this->form->all());
+            flash()->success(__('internship.phase_updated'));
         } else {
-            $this->formData['internship_id'] = $this->internshipId;
+            $data = $this->form->all();
+            $data['internship_id'] = $this->internshipId;
             $maxOrder = InternshipPhase::where('internship_id', $this->internshipId)->max('order');
-            $this->formData['order'] = ($maxOrder ?? 0) + 1;
-            $create->execute($this->formData);
-            flash()->success('Phase created.');
+            $data['order'] = ($maxOrder ?? 0) + 1;
+            $create->execute($data);
+            flash()->success(__('internship.phase_created'));
         }
 
         $this->showModal = false;
@@ -132,7 +119,7 @@ class InternshipPhaseManager extends BaseRecordManager
 
         $phase = InternshipPhase::findOrFail($this->confirmTarget);
         $deleteAction->execute($phase);
-        flash()->success('Phase deleted.');
+        flash()->success(__('internship.phase_deleted'));
 
         $this->showConfirm = false;
         $this->confirmTarget = null;

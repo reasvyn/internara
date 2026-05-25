@@ -40,16 +40,16 @@
         @endif
     </x-mary-card>
 
-    <x-mary-modal wire:model="requirementModal" title="{{ $formData['id'] ? 'Edit Requirement' : 'Add Requirement' }}" separator class="backdrop-blur-sm">
+    <x-mary-modal wire:model="requirementModal" title="{{ $form->id ? 'Edit Requirement' : 'Add Requirement' }}" separator class="backdrop-blur-sm">
         <x-mary-form wire:submit="save">
             <x-mary-select
                 label="Document Template"
-                wire:model="formData.document_id"
+                wire:model="form.document_id"
                 :options="$this->availableDocuments"
                 placeholder="Select a document template"
                 icon="o-document-text" />
 
-            <x-mary-checkbox label="Mandatory (student must upload this document)" wire:model="formData.is_mandatory" />
+            <x-mary-checkbox label="Mandatory (student must upload this document)" wire:model="form.is_mandatory" />
 
             <x-slot:actions>
                 <x-mary-button label="Cancel" wire:click="$set('requirementModal', false)" />
