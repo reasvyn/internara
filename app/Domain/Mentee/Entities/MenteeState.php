@@ -55,14 +55,14 @@ final readonly class MenteeState extends BaseEntity
         return $today->between($this->startDate, $this->endDate, true);
     }
 
-    public function canClockIn(?Carbon $today = null, bool $briefingCompleted = true): bool
+    public function canClockIn(?Carbon $today = null): bool
     {
-        return $this->hasActiveRegistration && $this->isWithinInternshipPeriod($today) && $briefingCompleted;
+        return $this->hasActiveRegistration && $this->isWithinInternshipPeriod($today);
     }
 
-    public function canSubmitLogbook(?Carbon $today = null, bool $briefingCompleted = true): bool
+    public function canSubmitLogbook(?Carbon $today = null): bool
     {
-        return $this->hasActiveRegistration && $this->isWithinInternshipPeriod($today) && $briefingCompleted;
+        return $this->hasActiveRegistration && $this->isWithinInternshipPeriod($today);
     }
 
     public function canSubmitAssignment(?Carbon $today = null): bool

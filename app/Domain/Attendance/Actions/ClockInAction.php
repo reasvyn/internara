@@ -7,7 +7,6 @@ namespace App\Domain\Attendance\Actions;
 use App\Domain\Attendance\Models\Attendance;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
-use App\Domain\Internship\Models\Briefing;
 use App\Domain\User\Models\User;
 use Carbon\Carbon;
 
@@ -22,10 +21,6 @@ class ClockInAction extends BaseAction
 
             if (! $registration) {
                 throw new RejectedException('No active internship registration found.');
-            }
-
-            if (! Briefing::hasStudentCompletedMandatoryBriefing($user->id, $registration->internship_id)) {
-                throw new RejectedException('You must attend the mandatory briefing before clocking in.');
             }
 
             $existingLog = Attendance::where('user_id', $user->id)

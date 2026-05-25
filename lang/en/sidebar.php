@@ -35,7 +35,6 @@ return [
     'guidance_logs' => 'Guidance Logs',
     'account_lifecycle' => 'Account Lifecycle',
     'gdpr_logs' => 'GDPR Logs',
-    'briefings' => 'Briefings',
     'partnerships' => 'Partnerships',
     'placement_changes' => 'Placement Changes',
     'presentations' => 'Presentations',

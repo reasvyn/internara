@@ -12,21 +12,16 @@ use App\Domain\Internship\Actions\AddSupervisorReportNotesAction;
 use App\Domain\Internship\Actions\ApproveReportAction;
 use App\Domain\Internship\Actions\BatchUpdateInternshipStatusAction;
 use App\Domain\Internship\Actions\CheckCloseReadinessAction;
-use App\Domain\Internship\Actions\CreateBriefingAction;
 use App\Domain\Internship\Actions\CreateInternshipAction;
 use App\Domain\Internship\Actions\CreateReportAction;
 use App\Domain\Internship\Actions\CreateRequirementAction;
 use App\Domain\Internship\Actions\DeleteInternshipAction;
 use App\Domain\Internship\Actions\DeleteRequirementAction;
-use App\Domain\Internship\Actions\OverrideBriefingAttendanceAction;
-use App\Domain\Internship\Actions\RecordBriefingAttendanceAction;
 use App\Domain\Internship\Actions\RequestReportRevisionAction;
 use App\Domain\Internship\Actions\SubmitReportAction;
 use App\Domain\Internship\Actions\UpdateInternshipAction;
 use App\Domain\Internship\Actions\UpdateRequirementAction;
 use App\Domain\Internship\Enums\InternshipStatus;
-use App\Domain\Internship\Models\Briefing;
-use App\Domain\Internship\Models\BriefingAttendance;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Internship\Models\InternshipDocumentRequirement;
 use App\Domain\Internship\Models\Report;
@@ -35,7 +30,6 @@ use App\Domain\Mentor\Models\SupervisionLog;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\School\Models\AcademicYear;
 use App\Domain\User\Models\User;
-use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role as RoleModel;
 
 beforeEach(function () {
@@ -116,57 +110,6 @@ describe('InternshipDomainActions', function () {
 
             app(DeleteInternshipAction::class)->execute($internship);
         })->throws(RejectedException::class);
-    });
-
-    describe('CreateBriefingAction', function () {
-        it('creates a briefing', function () {
-            $admin = User::factory()->create();
-            $admin->assignRole(Role::SUPER_ADMIN->value);
-            $internship = Internship::factory()->create();
-
-            $briefing = app(CreateBriefingAction::class)->execute([
-                'title' => 'Welcome Briefing',
-                'date' => now()->addDays(7)->toDateString(),
-                'internship_id' => $internship->id,
-                'created_by' => $admin->id,
-            ]);
-
-            expect($briefing)->toBeInstanceOf(Briefing::class)
-                ->and($briefing->title)->toBe('Welcome Briefing')
-                ->and($briefing->internship_id)->toBe($internship->id);
-        });
-
-        it('validates required fields', function () {
-            app(CreateBriefingAction::class)->execute([]);
-        })->throws(ValidationException::class);
-    });
-
-    describe('RecordBriefingAttendanceAction', function () {
-        it('records attendance for briefing', function () {
-            $briefing = Briefing::factory()->create();
-            $user = User::factory()->create();
-
-            app(RecordBriefingAttendanceAction::class)->execute($briefing, [
-                ['user_id' => $user->id, 'attended' => true],
-            ]);
-
-            $attendance = BriefingAttendance::where('briefing_id', $briefing->id)
-                ->where('user_id', $user->id)
-                ->first();
-
-            expect($attendance)->not->toBeNull()
-                ->and($attendance->attended)->toBeTrue();
-        });
-    });
-
-    describe('OverrideBriefingAttendanceAction', function () {
-        it('overrides attendance status', function () {
-            $attendance = BriefingAttendance::factory()->create(['attended' => false]);
-
-            $result = app(OverrideBriefingAttendanceAction::class)->execute($attendance, true);
-
-            expect($result->attended)->toBeTrue();
-        });
     });
 
     describe('CreateReportAction', function () {
