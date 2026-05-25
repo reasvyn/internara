@@ -121,7 +121,7 @@ Only 4 of 143 Actions have feature tests (excluding Setup which is fully covered
 | Assessment | 17 | 0 | 🔴 |
 | Internship | 16 | 0 | 🔴 |
 | Auth | 12 | 0 | 🔴 |
-| Admin | 9 | 2 | 🟡 |
+| Admin | 9 | 9 | 🟢 ✅ |
 | Attendance | 8 | 0 | 🔴 |
 | Partnership | 8 | 8 | 🟢 ✅ |
 | Mentor | 8 | 0 | 🔴 |
@@ -183,9 +183,13 @@ Evaluate which operations should be queued: certificate generation, report rende
 
 Added `$table->index()` calls for 37 FK columns across 24 original table creation migrations (separate from `foreignUuid()` chains — SQLite ignores chained `->index()`).
 
-### UC7 — Livewire Tests for All 7 Admin Managers 🔴 *(✅ Fixed)*
+### UC7 — Complete Test Coverage for Admin User Management 🔴 *(✅ Fixed)*
 
-Created 45 tests across `UserManagerTest`, `AdminManagerTest`, `TeacherManagerTest`, `StudentManagerTest`, `SupervisorManagerTest`, `MentorManagerTest`, and `MenteeManagerTest`. Each covers render, authorization, create, edit, delete, and validation.
+**Livewire tests:** 45 tests across all 7 admin managers (render, authorization, create, edit, delete, validation, search, status toggle).
+
+**Action tests:** Fixed pre-existing `BindingResolutionException` failures (missing imports in `AdminActionsTest.php`). Fixed `DeleteUserActionTest` self-deletion test (used `SUPER_ADMIN` which triggers the super_admin guard before self-check). Added `ReadRecoveryKeyActionTest` and `SaveRecoveryKeyActionTest`.
+
+**Result:** All 9 Admin Actions now have feature tests. 21 Admin action tests + 45 Livewire tests = **66 total tests** for user management.
 
 ### Enum Labels Use `__()` Consistently 🟡 *(✅ Fixed)*
 
@@ -220,7 +224,7 @@ All 34 enum `label()` methods now wrap return values in `__()`. Indonesian hardc
 
 | Severity | Issue | Category | Status |
 |---|---|---|---|---|
-| 🔴 | Feature tests missing for 121 of 143 Actions (excluding Setup, Partnership) | Testing | ⏳ |
+| 🔴 | Feature tests missing for ~110 of 143 Actions (excluding Setup, Partnership, Admin) | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
 | 🔴 | **UC7** Livewire feature tests for all 7 admin managers | Admin | ✅ Fixed |
 | 🟢 | **SE13** AppMetadata test coverage adequate | Settings | ✅ |
