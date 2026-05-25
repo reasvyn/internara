@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * S2 - Sustain: Single source of truth for guidance materials.
  */
-#[Fillable(['title', 'slug', 'content', 'version', 'is_active', 'published_at', 'created_by'])]
+#[Fillable(['title', 'slug', 'content', 'version', 'is_active', 'target_audience', 'published_at', 'created_by'])]
 class Handbook extends BaseModel
 {
     use HasFactory;

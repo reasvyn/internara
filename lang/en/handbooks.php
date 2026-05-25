@@ -20,6 +20,12 @@ return [
     'deleted' => 'Handbook deleted successfully.',
     'acknowledged' => 'Handbook acknowledged.',
 
+    'target_audience' => 'Target Audience',
+    'audience_all' => 'All Roles',
+    'audience_student' => 'Students',
+    'audience_teacher' => 'Teachers',
+    'audience_supervisor' => 'Supervisors',
+
     'student_subtitle' => 'Read and acknowledge guidance documents',
     'version' => 'Version',
     'acknowledge' => 'Mark as Read',

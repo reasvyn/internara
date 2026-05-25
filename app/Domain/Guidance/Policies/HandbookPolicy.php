@@ -13,12 +13,12 @@ use App\Domain\User\Models\User;
  */
 class HandbookPolicy extends BasePolicy
 {
-    public function viewAny(User $user): bool
+    public function viewAny(?User $user): bool
     {
         return true;
     }
 
-    public function view(User $user, Handbook $handbook): bool
+    public function view(?User $user, Handbook $handbook): bool
     {
         return true;
     }

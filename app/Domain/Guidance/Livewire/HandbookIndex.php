@@ -25,7 +25,7 @@ class HandbookIndex extends Component
 
     public function boot(): void
     {
-        $this->authorize('viewAny', Handbook::class);
+        $this->authorize('create', Handbook::class);
     }
 
     public function create(): void

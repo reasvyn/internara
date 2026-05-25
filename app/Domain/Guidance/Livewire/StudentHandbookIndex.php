@@ -28,8 +28,18 @@ class StudentHandbookIndex extends Component
 
     public function render(): View
     {
-        $handbooks = Handbook::with(['acknowledgements' => fn ($q) => $q->where('user_id', auth()->id())])
+        $user = auth()->user();
+
+        $audience = match (true) {
+            $user->hasRole('student') => ['all', 'student'],
+            $user->hasRole('teacher') => ['all', 'teacher'],
+            $user->hasRole('supervisor') => ['all', 'supervisor'],
+            default => ['all'],
+        };
+
+        $handbooks = Handbook::with(['acknowledgements' => fn ($q) => $q->where('user_id', $user->id)])
             ->where('is_active', true)
+            ->whereIn('target_audience', $audience)
             ->latest()
             ->get();
 

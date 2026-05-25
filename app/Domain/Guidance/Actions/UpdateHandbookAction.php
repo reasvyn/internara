@@ -17,6 +17,7 @@ class UpdateHandbookAction extends BaseAction
                 'content' => $data['content'] ?? $handbook->content,
                 'version' => $data['version'] ?? $handbook->version,
                 'is_active' => $data['is_active'] ?? $handbook->is_active,
+                'target_audience' => $data['target_audience'] ?? $handbook->target_audience,
                 'published_at' => isset($data['is_active']) && $data['is_active'] && ! $handbook->published_at
                     ? now()
                     : $handbook->published_at,

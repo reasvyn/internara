@@ -23,6 +23,7 @@ class HandbookFactory extends Factory
             'content' => $this->faker->paragraphs(5, true),
             'version' => $this->faker->numberBetween(1, 5),
             'is_active' => true,
+            'target_audience' => 'all',
             'published_at' => $this->faker->dateTimeBetween('-30 days', 'now'),
             'created_by' => User::factory(),
         ];
