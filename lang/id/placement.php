@@ -5,10 +5,9 @@ declare(strict_types=1);
 return [
     'title' => 'Penempatan Magang',
     'subtitle' => 'Kelola kuota dan posisi yang tersedia untuk siswa',
-    'add' => 'Tambah Penempatan',
     'add_placement' => 'Tambah Penempatan',
-    'edit' => 'Ubah Penempatan',
-    'new' => 'Penempatan Baru',
+    'edit_placement' => 'Ubah Penempatan',
+    'new_placement' => 'Penempatan Baru',
     'company' => 'Perusahaan',
     'company_placeholder' => 'Pilih Perusahaan',
     'internship' => 'Batch Magang',
@@ -41,5 +40,19 @@ return [
         'total_quota' => 'Total Kuota',
         'filled' => 'Terisi',
         'available' => 'Slot Tersedia',
+    ],
+
+    'direct_placement' => [
+        'title' => 'Penempatan Langsung',
+        'subtitle' => 'Menugaskan siswa ke mitra industri secara manual',
+        'student' => 'Siswa Target',
+        'select_student' => 'Cari dan pilih siswa',
+        'academic_year' => 'Tahun Akademik',
+        'placement' => 'Target Penempatan',
+        'select_placement' => 'Pilih mitra industri',
+        'mentors' => 'Pembimbing',
+        'select_mentors' => 'Pilih pembimbing',
+        'assign' => 'Tugaskan Penempatan',
+        'success' => 'Siswa berhasil ditempatkan.',
     ],
 ];

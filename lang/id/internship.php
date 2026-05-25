@@ -44,15 +44,7 @@ return [
     'template_example_name' => 'contoh: PKL Semester Ganjil 2026/2027',
     'template_example_description' => 'contoh: Program magang untuk semester ganjil',
     'requirements' => 'Persyaratan Dokumen',
-    'registration_verification' => 'Verifikasi Pendaftaran',
-    'registration_verification_subtitle' => 'Tinjau dan proses pendaftaran siswa yang tertunda',
-    'no_pending_registrations' => 'Tidak ada pendaftaran tertunda',
-    'all_registrations_processed' => 'Semua pendaftaran siswa telah diproses.',
-    'process' => 'Proses',
-    'verify_and_place' => 'Verifikasi & Tempatkan',
-    'verified_and_placed' => 'Pendaftaran diverifikasi dan siswa berhasil ditempatkan.',
-    'not_pending_anymore' => 'Pendaftaran tidak lagi dalam status tertunda.',
-    'no_docs' => 'Tidak ada dokumen',
+
     'stats' => [
         'total' => 'Total Batch',
         'active' => 'Batch Aktif',
@@ -71,6 +63,25 @@ return [
 
     'date_before_academic_year_start' => 'Tanggal mulai :date sebelum tahun akademik dimulai (:year_start).',
     'date_after_academic_year_end' => 'Tanggal selesai :date setelah tahun akademik berakhir (:year_end).',
+
+    'applications' => [
+        'title' => 'Pendaftar Akun',
+        'subtitle' => 'Tinjau dan kelola pendaftar yang tertunda',
+        'empty' => 'Tidak ada pendaftar tertunda',
+        'empty_desc' => 'Semua pendaftar telah diproses.',
+        'name' => 'Nama',
+        'email' => 'Email',
+        'program' => 'Program',
+        'school' => 'Sekolah',
+        'submitted' => 'Diajukan',
+        'approve' => 'Setujui',
+        'reject' => 'Tolak',
+        'reject_title' => 'Tolak Pendaftar',
+        'rejection_reason' => 'Alasan Penolakan',
+        'cancel' => 'Batal',
+        'success_approved' => 'Pendaftar disetujui. Akun dan registrasi berhasil dibuat.',
+        'success_rejected' => 'Pendaftar ditolak.',
+    ],
 
     // Groups
     'group_created' => 'Grup berhasil dibuat.',
