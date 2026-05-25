@@ -18,6 +18,10 @@ Schedule::command('announcements:publish')
     ->everyMinute()
     ->description('Publish scheduled announcements whose scheduled_at has passed');
 
+Schedule::command('notifications:prune', ['--days' => 30])
+    ->daily()
+    ->description('Delete read notifications older than 30 days');
+
 Schedule::command('system:cleanup')
     ->daily()
     ->description('Prune expired records, stale cache, old activity logs');

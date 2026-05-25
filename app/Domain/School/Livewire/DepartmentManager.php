@@ -11,6 +11,7 @@ use App\Domain\School\Actions\UpdateDepartmentAction;
 use App\Domain\School\Livewire\Forms\DepartmentForm;
 use App\Domain\School\Models\Department;
 use App\Domain\School\Models\School;
+use App\Domain\Shared\Enums\CsvRowResult;
 use App\Domain\Shared\Support\CsvHandler;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -189,7 +190,7 @@ class DepartmentManager extends BaseRecordManager
             }
 
             if (Department::where('name', $name)->exists()) {
-                return 'skipped';
+                return CsvRowResult::SKIPPED;
             }
 
             $create->execute([
@@ -198,7 +199,7 @@ class DepartmentManager extends BaseRecordManager
                 'school_id' => School::firstOrFail()->id,
             ]);
 
-            return 'created';
+            return CsvRowResult::CREATED;
         });
 
         $this->importFile = null;

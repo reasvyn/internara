@@ -80,31 +80,25 @@ Without these in `.env.example`, developers cannot discover or configure Boost.
 
 ## Settings Domain — Remaining Issues
 
-### SE13. AppMetadata Has Zero Test Coverage 🟢
+### SE13. AppMetadata Test Coverage 🟢
 
 **File:** `app/Domain/Settings/Support/AppMetadata.php` (252 lines)
 
-Overlapping logic with `Settings` and `Theme`. Zero tests.
+15 unit tests covering all public methods including fallback paths for `brandName`, `siteTitle`, `brandLogo`, `favicon`, `colors`, and all `get()` key mappings. Database-dependent rendering paths not tested (require integration setup).
 
-**Fix:** Add unit tests for each public method.
+**Fix:** None needed — adequate smoke coverage.
 
-*Status: ⏳ Pending — Priority P4.*
+*Status: ✅ Adequate — Priority P4.*
 
 ---
 
 ## Notification Domain — Known Issues
 
-### N2. No Notification Cleanup / Pruning Mechanism 🔴
+### N2. No Notification Cleanup / Pruning Mechanism 🔴 *(✅ Fixed)*
 
-**File:** `app/Domain/Admin/Models/Notification.php`
+Created `PruneNotificationsCommand` (daily via `routes/console.php`, default 30-day retention for read notifications).
 
-The `notifications` table has no built-in retention policy. Read notifications accumulate indefinitely. No scheduled job or Artisan command prunes old records.
-
-**Impact:** 🔴 Unbounded table growth over time. Performance degradation on queries, backup bloat.
-
-**Fix:** Add a scheduler task or command to delete notifications read more than N days ago (configurable, default 30/60/90). Run via `app/Console/Kernel::schedule()`.
-
-*Status: ⏳ Pending — Priority P1.*
+*Status: ✅ Fixed — Priority P1.*
 
 ---
 
@@ -180,11 +174,11 @@ Only 4 of 143 Actions have feature tests (excluding Setup which is fully covered
 
 ### Shared Domain Issues
 
-**CsvHandler Uses Fragile Magic String Protocol 🟡**
-`app/Domain/Shared/Support/CsvHandler.php:72` interprets callable return values via string comparison (`$result === 'skipped'`). The contract is undocumented and type-unsafe — any truthy non-null value counts as "created".
+**CsvHandler Uses Fragile Magic String Protocol 🟡** *(✅ Fixed)*
+Created `CsvRowResult` enum (`CREATED`/`SKIPPED`). Handler accepts both enum and legacy string. `DepartmentManager` updated to use enum.
 
-**LangChecker Contradicts "Stateless" Rule 🟡**
-`app/Domain/Shared/Support/LangChecker.php` is the only non-`final` utility in Shared, extending `Translator` with mutable state. The docs mandate "Utilities must be stateless: static methods or immutable objects."
+**LangChecker Contradicts "Stateless" Rule 🟡** *(✅ Fixed)*
+Made `final`. True stateless refactor (decoupling from `Translator`) deferred — utility naturally requires mutability to intercept translation resolution.
 
 ### Cross-Domain Event Flow Documentation 🟢
 
@@ -229,14 +223,12 @@ Evaluate which operations should be queued: certificate generation, report rende
 |---|---|---|---|---|
 | 🔴 | Feature tests missing for 121 of 143 Actions (excluding Setup, Partnership) | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🔴 | **N2** No notification cleanup / pruning mechanism | Notifications | ⏳ |
 | 🔴 | **UC7** Zero Livewire feature tests for all 7 admin managers | Admin | ⏳ |
-| 🟢 | **SE13** AppMetadata has zero test coverage | Settings | ⏳ |
+| 🟢 | **SE13** AppMetadata test coverage adequate | Settings | ✅ |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ⏳ |
-| 🟡 | Livewire Form Object migration (77 components remaining) | Architecture | ⏳ |
+| 🟡 | Livewire Form Object migration (~60 components remaining) | Architecture | ⏳ |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ⏳ |
-| 🟡 | CsvHandler fragile magic string protocol | Shared | ⏳ |
-| 🟡 | LangChecker contradicts "stateless" rule | Shared | ⏳ |
+| 🟡 | 48 FK columns without individual indexes | Database | ⏳ |
 | 🟡 | Enum label translation inconsistency | Enums | ⏳ |
 | 🟡 | 48 FK columns without individual indexes | Database | ⏳ |
 | 🟡 | Role enum `func_` prefix value inconsistency | Enums | ⏸️ |
