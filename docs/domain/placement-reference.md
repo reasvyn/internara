@@ -6,11 +6,12 @@ Total: 17 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Placement/Actions/ApproveChangeRequestAction.php` | `ApproveChangeRequestAction` | `BaseAction` | Approves a pending placement change request |
-| `Placement/Actions/CancelPlacementAction.php` | `CancelPlacementAction` | `BaseAction` | Cancels/removes a student placement |
-| `Placement/Actions/ChangePlacementAction.php` | `ChangePlacementAction` | `BaseAction` | Changes a student's company placement |
+| `Placement/Actions/ApprovePlacementChangeAction.php` | `ApprovePlacementChangeAction` | `BaseAction` | Approves a pending placement change request |
 | `Placement/Actions/CreatePlacementAction.php` | `CreatePlacementAction` | `BaseAction` | Creates a new student placement |
-| `Placement/Actions/RejectChangeRequestAction.php` | `RejectChangeRequestAction` | `BaseAction` | Rejects a placement change request |
+| `Placement/Actions/DeletePlacementAction.php` | `DeletePlacementAction` | `BaseAction` | Deletes a placement record |
+| `Placement/Actions/DirectPlacementAction.php` | `DirectPlacementAction` | `BaseAction` | Directly assigns a student to a company |
+| `Placement/Actions/RejectPlacementChangeAction.php` | `RejectPlacementChangeAction` | `BaseAction` | Rejects a placement change request |
+| `Placement/Actions/RequestPlacementChangeAction.php` | `RequestPlacementChangeAction` | `BaseAction` | Submits a request to change placement |
 | `Placement/Actions/UpdatePlacementAction.php` | `UpdatePlacementAction` | `BaseAction` | Updates placement details |
 
 ## Entities

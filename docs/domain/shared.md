@@ -4,7 +4,7 @@
 
 Shared is a collection of cross-domain utility code that doesn't belong to any single business domain or to Core. When two or more domains need the same function (environment detection, locale management, CSV handling), the logic lives here — not in Core (which handles infrastructure patterns) and not in any business domain.
 
-Shared has no Models, Livewire, Controllers, Routes, or Views. Pure support code.
+Shared has no Models, Controllers, Routes, or Views. Pure support code with minimal Livewire components for cross-domain UI utilities.
 
 ## Support Utilities
 
@@ -43,17 +43,20 @@ Shared provides cross-domain utility code. It has no end-user stories — the co
 | `Theme` | Final static | Layout views | Color/theme resolution from settings into CSS custom properties for light/dark modes |
 | `LangChecker` | Class | Development | Extends Laravel Translator — logs warnings for missing translation keys |
 | `HasModelStatuses` | Trait | Registration, Internship | Type-safe bridge between Spatie statuses and `StatusEnum` |
+| `LangSwitcher` | Livewire | All views | Bilingual language switcher component |
+| `ThemeSwitcher` | Livewire | Layout views | Theme toggle component (light/dark mode) |
+| `CsvRowResult` | Enum | School, Partnership | CSV import row result tracking |
 
 ### Rules
 
 - Shared MUST NOT import any business domain (exception: Theme imports Settings)
-- Shared MUST NOT have Models, Livewire, Controllers, Routes, Views, or migrations
+- Shared MUST NOT have Models, Controllers, Routes, Views, or migrations (Livewire UI utilities are the sole exception)
 - Code belongs in Shared only when used by at least 2 different domains
 - Utilities must be stateless: static methods or immutable objects
 
 ### User Stories & Rules
 - Shared MUST NOT import any business domain (exception: Theme imports Settings for color resolution).
-- Shared MUST NOT have Models, Livewire, Controllers, Routes, Views, or migrations.
+- Shared MUST NOT have Models, Controllers, Routes, Views, or migrations (Livewire UI utilities are the sole exception).
 - Utilities must be stateless: static methods or immutable readonly objects.
 - Code belongs in Shared only when used by at least 2 different domains; single-domain utilities stay in their domain.
 - Changes to Shared affect every consuming domain — backward compatibility matters.

@@ -180,9 +180,9 @@ PROTECTED: Immutable state — applies to super_admin accounts only.
 
 | Layer | Artifacts |
 |-------|-----------|
-| **Models** | `User` (via Auth domain's concern) |
+| **Models** | `AccountRecoveryCode` |
 | **Enums** | `AccountStatus` — 8 states with transition rules (see above); `Role` — 5 user roles (`SUPER_ADMIN`, `ADMIN`, `TEACHER`, `STUDENT`, `SUPERVISOR`) + 2 functional roles (`MENTOR`, `MENTEE`) |
-| **Livewire** | `Login`, `RegistrationCenter`, `ForgotPassword`, `ResetPassword`, `ConfirmPassword`, `AccountRecovery`, `RecoverySlipManager`, `AccountLifecycleManager` |
+| **Livewire** | `Login`, `ForgotPassword`, `ResetPassword`, `ConfirmPassword`, `AccountRecovery`, `RecoverySlipManager`, `AccountLifecycleManager`, `AccessManager`, `RecoveryCode` |
 
 ## Dependencies
 

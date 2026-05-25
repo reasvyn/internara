@@ -136,6 +136,8 @@ process.
 | `ToggleUserStatusAction` | Toggles user account active/inactive status |
 | `ArchiveStudentAccountsAction` | Batch archives student accounts |
 | `SendAnnouncementAction` | Creates and sends a system-wide announcement (supports draft/scheduled/published) |
+| `SaveRecoveryKeyAction` | Saves a recovery key for emergency access |
+| `ReadRecoveryKeyAction` | Reads a stored recovery key |
 | `GetAdminDashboardStatsAction` | Computes admin dashboard statistics |
 
 ### Technical Reference

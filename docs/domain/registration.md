@@ -172,7 +172,7 @@ DRAFT ──→ SUBMITTED ──→ UNDER_REVIEW ──→ APPROVED ──→ AC
 |-------|-----------|
 | **Models** | `Registration` (`registrations`), `AccountApplication`, `RegistrationDocument` |
 | **Entity** | `RegistrationState` (status checks, date calculations, approval gating) |
-| **Enums** | `RegistrationDocumentStatus` — `PENDING`, `VERIFIED`, `REJECTED` |
+| **Enums** | `RegistrationDocumentStatus` — `PENDING`, `VERIFIED`, `REJECTED`; `AccountApplicationStatus` |
 | **Livewire** | `RegistrationWizard`, `AccountApplicationForm`, `RegistrationCenter`, `RegistrationDocumentUpload`, `RegistrationVerification` |
 
 ## Dependencies

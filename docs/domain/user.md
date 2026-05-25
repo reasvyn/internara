@@ -157,19 +157,19 @@ and `UserDashboard` were updated to match the existing convention.
 | `MarkAllAsReadAction` | Marks all unread notifications as read |
 | `MarkBatchAsReadAction` | Marks selected notifications as read |
 | `DeleteNotificationAction` | Deletes a single notification |
-| `GetNotificationsAction` | Retrieves notifications for a user with filtering |
+| `GetActivityLogsAction` | Retrieves activity logs for a user with filtering |
 
 ### Technical Reference
 
 | Layer | Artifacts |
 |-------|-----------|
 | **Models** | `User` (extends `Authenticatable`, UUID via `HasUuids`), `Profile` (extends `BaseModel`, on-demand creation), `Notification` (custom in-app notifications table) |
-| **Enums** | `BloodType` — `A`, `B`, `AB`, `O`; `Gender` — `MALE`, `FEMALE` |
+| **Enums** | `BloodType` — `A`, `B`, `AB`, `O`; `Gender` — `MALE`, `FEMALE`; `StructuralPosition`; `EmploymentStatus` |
 | **Livewire** | `UserDashboard`, `ProfileEditor`, `RecentActivityList`, `NotificationCenter`, `NotificationBell`, `ActivityFeedManager` |
 | **Support** | `UserIdentifierGenerator` (unique username generation with collision avoidance) |
 | **Notifications** | `TestMailNotification` (email configuration testing) |
-| **Rules** | `SystemUsername` (username format validation) |
-| **Controllers** | `DashboardController` (role-based dashboard routing) |
+| **Rules** | `SystemUsername` (username format validation), `ReservedAuthoritativeName` (reserved name blocking) |
+| **Controllers** | `DashboardController` (role-based dashboard routing), `HomeController` (landing page) |
 
 ## Dependencies
 

@@ -69,7 +69,7 @@ The token is generated via CLI (`php artisan setup:install`) or via the `Generat
 encrypted with Laravel's encryption (Crypt::encryptString), and stored with a configurable
 expiration (default 60 minutes). The token can be passed as a query parameter (`?setup_token=...`)
 or stored in the session. Access is rate-limited (20 attempts per 60 seconds per IP).
-The middleware `ProtectSetupRouteMiddleware` handles all token validation and session management.
+The middleware `ProtectSetupRouteMiddleware` (at `Http/Middleware/`) handles all token validation and session management.
 
 **Environment Audit.** Before any database writes occur, the system performs a comprehensive
 audit of the server environment. Each check is independent and self-contained — the auditor
@@ -181,7 +181,7 @@ Setup Wizard Steps:
 | **Livewire** | `SetupWizard` (7-step guided installation) |
 | **Events** | `SetupFinalized` |
 | **Support** | `SystemProvisioner` (migrations, seeding, storage link) |
-| **Middleware** | `ProtectSetupRouteMiddleware`, `RequireSetupAccessMiddleware` |
+| **Http/Middleware** | `ProtectSetupRouteMiddleware`, `RequireSetupAccessMiddleware` |
 
 ## Dependencies
 
