@@ -7,22 +7,26 @@ namespace App\Domain\Placement\Livewire;
 use App\Domain\Auth\Enums\Role;
 use App\Domain\Mentor\Models\Mentor;
 use App\Domain\Placement\Actions\DirectPlacementAction;
+use App\Domain\Placement\Livewire\Forms\DirectPlacementForm;
 use App\Domain\Placement\Models\Placement;
+use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class DirectPlacementManager extends Component
 {
-    public string $student_id = '';
+    use AuthorizesRequests;
 
-    public string $placement_id = '';
+    public DirectPlacementForm $form;
 
-    public string $academic_year = '';
-
-    public array $mentor_ids = [];
+    public function boot(): void
+    {
+        $this->authorize('create', Registration::class);
+    }
 
     #[Computed]
     public function students(): Collection
@@ -50,25 +54,19 @@ class DirectPlacementManager extends Component
 
     public function submit(DirectPlacementAction $placementAction): void
     {
-        $this->validate([
-            'student_id' => 'required|exists:users,id',
-            'placement_id' => 'required|exists:placements,id',
-            'academic_year' => 'required',
-            'mentor_ids' => 'nullable|array',
-            'mentor_ids.*' => 'exists:mentors,id',
-        ]);
+        $this->form->validate();
 
-        $student = User::findOrFail($this->student_id);
+        $student = User::findOrFail($this->form->student_id);
 
         try {
             $placementAction->execute($student, [
-                'placement_id' => $this->placement_id,
-                'academic_year' => $this->academic_year,
-                'mentor_ids' => $this->mentor_ids,
+                'placement_id' => $this->form->placement_id,
+                'academic_year' => $this->form->academic_year,
+                'mentor_ids' => $this->form->mentor_ids,
             ]);
 
-            flash()->success(__('internship.direct_placement.success'));
-            $this->reset(['student_id', 'placement_id', 'mentor_ids']);
+            flash()->success(__('placement.direct_placement.success'));
+            $this->form->reset();
         } catch (\Throwable $e) {
             flash()->error($e->getMessage());
         }
@@ -76,49 +74,6 @@ class DirectPlacementManager extends Component
 
     public function render(): View
     {
-        return <<<'HTML'
-        <div>
-            <x-mary-header :title="__('internship.direct_placement.title')" :subtitle="__('internship.direct_placement.subtitle')" separator />
-
-            <x-mary-card>
-                <x-mary-form wire:submit="submit">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-select
-                            :label="__('internship.direct_placement.student')"
-                            wire:model="student_id"
-                            :options="$this->students"
-                            :placeholder="__('internship.direct_placement.select_student')"
-                            icon="o-user" />
-
-                        <x-mary-input
-                            :label="__('internship.registration_wizard.label_academic_year')"
-                            wire:model="academic_year"
-                            placeholder="e.g. 2025/2026" />
-
-                        <x-mary-select
-                            :label="__('internship.direct_placement.placement')"
-                            wire:model="placement_id"
-                            :options="$this->placements"
-                            :placeholder="__('internship.direct_placement.select_placement')"
-                            class="md:col-span-2"
-                            icon="o-briefcase" />
-
-                        <x-mary-select
-                            :label="__('internship.direct_placement.mentors')"
-                            wire:model="mentor_ids"
-                            :options="$this->mentors"
-                            :placeholder="__('internship.direct_placement.select_mentors')"
-                            multiple
-                            class="md:col-span-2"
-                            icon="o-user-group" />
-                    </div>
-
-                    <x-slot:actions>
-                        <x-mary-button :label="__('internship.direct_placement.assign')" type="submit" icon="o-check" class="btn-primary" />
-                    </x-slot:actions>
-                </x-mary-form>
-            </x-mary-card>
-        </div>
-        HTML;
+        return view('placement.direct-placement-manager');
     }
 }

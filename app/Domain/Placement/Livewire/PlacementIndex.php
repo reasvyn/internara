@@ -10,33 +10,28 @@ use App\Domain\Partnership\Models\Company;
 use App\Domain\Placement\Actions\CreatePlacementAction;
 use App\Domain\Placement\Actions\DeletePlacementAction;
 use App\Domain\Placement\Actions\UpdatePlacementAction;
+use App\Domain\Placement\Livewire\Forms\PlacementForm;
 use App\Domain\Placement\Models\Placement;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 
-/**
- * Modernized Placement Manager using BaseRecordManager pattern.
- */
 class PlacementIndex extends BaseRecordManager
 {
+    use AuthorizesRequests;
+
     public bool $showModal = false;
 
-    public array $formData = [
-        'id' => null,
-        'company_id' => '',
-        'internship_id' => '',
-        'name' => '',
-        'address' => '',
-        'quota' => null,
-        'description' => '',
-    ];
+    public PlacementForm $form;
 
-    /**
-     * Define columns and sorting.
-     */
+    public function boot(): void
+    {
+        $this->authorize('viewAny', Placement::class);
+    }
+
     public function headers(): array
     {
         return [
@@ -49,17 +44,11 @@ class PlacementIndex extends BaseRecordManager
         ];
     }
 
-    /**
-     * Base query for placements.
-     */
     protected function query(): Builder
     {
         return Placement::query()->with(['company', 'internship']);
     }
 
-    /**
-     * Search implementation.
-     */
     protected function applySearch(Builder $query): Builder
     {
         return $query
@@ -67,9 +56,6 @@ class PlacementIndex extends BaseRecordManager
             ->orWhereHas('company', fn ($q) => $q->where('name', 'like', "%{$this->search}%"));
     }
 
-    /**
-     * Filter implementation.
-     */
     protected function applyFilters(Builder $query): Builder
     {
         return $query
@@ -111,22 +97,16 @@ class PlacementIndex extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->formData = [
-            'id' => null,
-            'company_id' => '',
-            'internship_id' => '',
-            'name' => '',
-            'address' => '',
-            'quota' => null,
-            'description' => '',
-        ];
+        $this->form->reset();
         $this->showModal = true;
     }
 
-    public function edit(Placement $placement): void
+    public function edit(string $id): void
     {
+        $placement = Placement::findOrFail($id);
+
         $this->resetErrorBag();
-        $this->formData = [
+        $this->form->fill([
             'id' => $placement->id,
             'company_id' => $placement->company_id,
             'internship_id' => $placement->internship_id,
@@ -134,27 +114,20 @@ class PlacementIndex extends BaseRecordManager
             'address' => $placement->address ?? '',
             'quota' => $placement->quota,
             'description' => $placement->description ?? '',
-        ];
+        ]);
         $this->showModal = true;
     }
 
     public function save(CreatePlacementAction $create, UpdatePlacementAction $update): void
     {
-        $this->validate([
-            'formData.company_id' => ['required', 'exists:companies,id'],
-            'formData.internship_id' => ['required', 'exists:internships,id'],
-            'formData.name' => ['required', 'string', 'max:255'],
-            'formData.address' => ['nullable', 'string'],
-            'formData.quota' => ['required', 'integer', 'min:1'],
-            'formData.description' => ['nullable', 'string'],
-        ]);
+        $this->form->validate();
 
-        if ($this->formData['id']) {
-            $placement = Placement::findOrFail($this->formData['id']);
-            $update->execute($placement, $this->formData);
+        if ($this->form->id) {
+            $placement = Placement::findOrFail($this->form->id);
+            $update->execute($placement, $this->form->all());
             flash()->success(__('placement.update_success'));
         } else {
-            $create->execute($this->formData);
+            $create->execute($this->form->all());
             flash()->success(__('placement.save_success'));
         }
 
@@ -162,9 +135,11 @@ class PlacementIndex extends BaseRecordManager
     }
 
     public function delete(
-        Placement $placement,
+        string $id,
         DeletePlacementAction $deleteAction,
     ): void {
+        $placement = Placement::findOrFail($id);
+
         if (! $placement->asPlacementState()->canBeDeleted()) {
             flash()->error(__('placement.delete_blocked'));
 

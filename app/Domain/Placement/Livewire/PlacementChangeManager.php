@@ -10,23 +10,31 @@ use App\Domain\Placement\Actions\RejectPlacementChangeAction;
 use App\Domain\Placement\Models\PlacementChangeRequest;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Layout;
 
 class PlacementChangeManager extends BaseRecordManager
 {
+    use AuthorizesRequests;
+
     public bool $showRejectModal = false;
 
     public ?string $rejectingId = null;
 
     public string $rejectionReason = '';
 
+    public function boot(): void
+    {
+        $this->authorize('viewAny', PlacementChangeRequest::class);
+    }
+
     public function headers(): array
     {
         return [
             ['key' => 'created_at', 'label' => __('placement_change.requested_at'), 'sortable' => true],
-            ['key' => 'student_name', 'label' => __('placement_change.student'), 'sortable' => true],
-            ['key' => 'from_company', 'label' => __('placement_change.from_company')],
-            ['key' => 'to_company', 'label' => __('placement_change.to_company')],
+            ['key' => 'requester.name', 'label' => __('placement_change.student'), 'sortable' => true],
+            ['key' => 'fromPlacement.company.name', 'label' => __('placement_change.from_company')],
+            ['key' => 'toPlacement.company.name', 'label' => __('placement_change.to_company')],
             ['key' => 'status', 'label' => __('placement_change.status'), 'sortable' => true],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
@@ -35,18 +43,12 @@ class PlacementChangeManager extends BaseRecordManager
     protected function query(): Builder
     {
         return PlacementChangeRequest::query()
-            ->select([
-                'placement_change_requests.*',
-                'students.name as student_name',
-                'from_company.name as from_company',
-                'to_company.name as to_company',
-            ])
-            ->join('registrations', 'placement_change_requests.registration_id', '=', 'registrations.id')
-            ->join('users as students', 'placement_change_requests.requested_by', '=', 'students.id')
-            ->join('placements as from_p', 'placement_change_requests.from_placement_id', '=', 'from_p.id')
-            ->join('companies as from_company', 'from_p.company_id', '=', 'from_company.id')
-            ->leftJoin('placements as to_p', 'placement_change_requests.to_placement_id', '=', 'to_p.id')
-            ->leftJoin('companies as to_company', 'to_p.company_id', '=', 'to_company.id');
+            ->with([
+                'requester',
+                'fromPlacement.company',
+                'toPlacement.company',
+                'registration.mentee.user',
+            ]);
     }
 
     public function approve(string $id, ApprovePlacementChangeAction $action): void

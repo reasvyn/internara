@@ -32,12 +32,12 @@
 
             <x-mary-form wire:submit="submit">
                 <div class="space-y-5">
-                    <x-mary-select :label="__('placement_change.target_placement')" wire:model="toPlacementId"
+                    <x-mary-select :label="__('placement_change.target_placement')" wire:model="form.to_placement_id"
                         :placeholder="__('placement_change.target_placeholder')"
                         :options="$availablePlacements"
                         option-label="company.name"
                         option-value="id" />
-                    <x-mary-textarea :label="__('placement_change.reason')" wire:model="reason"
+                    <x-mary-textarea :label="__('placement_change.reason')" wire:model="form.reason"
                         :placeholder="__('placement_change.reason_placeholder')" rows="4" />
                 </div>
                 <x-slot:actions>

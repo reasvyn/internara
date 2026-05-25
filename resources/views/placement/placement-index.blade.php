@@ -81,17 +81,17 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showModal" title="{{ $formData['id'] ? 'Edit Placement' : 'New Placement' }}" class="backdrop-blur-sm">
+        <x-mary-modal wire:model="showModal" title="{{ $form->id ? 'Edit Placement' : 'New Placement' }}" class="backdrop-blur-sm">
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
-                    <x-mary-input label="Placement Name" wire:model="formData.name" placeholder="e.g. Frontend Web Developer" />
+                    <x-mary-input label="Placement Name" wire:model="form.name" placeholder="e.g. Frontend Web Developer" />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-select label="Partner Company" wire:model="formData.company_id" :options="$this->companies" placeholder="Select Company" />
-                        <x-mary-select label="Internship Batch" wire:model="formData.internship_id" :options="$this->internships" placeholder="Select Batch" />
-                        <x-mary-input label="Quota" type="number" wire:model="formData.quota" />
+                        <x-mary-select label="Partner Company" wire:model="form.company_id" :options="$this->companies" placeholder="Select Company" />
+                        <x-mary-select label="Internship Batch" wire:model="form.internship_id" :options="$this->internships" placeholder="Select Batch" />
+                        <x-mary-input label="Quota" type="number" wire:model="form.quota" />
                     </div>
-                    <x-mary-textarea label="Worksite Address (Optional)" wire:model="formData.address" rows="2" placeholder="Leave empty to use company address" />
-                    <x-mary-textarea label="Job Description" wire:model="formData.description" rows="3" />
+                    <x-mary-textarea label="Worksite Address (Optional)" wire:model="form.address" rows="2" placeholder="Leave empty to use company address" />
+                    <x-mary-textarea label="Job Description" wire:model="form.description" rows="3" />
                 </div>
                 <x-slot:actions>
                     <x-mary-button label="Cancel" wire:click="$set('showModal', false)" class="btn-ghost btn-sm" />

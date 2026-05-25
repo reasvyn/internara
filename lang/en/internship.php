@@ -72,19 +72,6 @@ return [
     'date_before_academic_year_start' => 'Start date :date is before the academic year start (:year_start).',
     'date_after_academic_year_end' => 'End date :date is after the academic year end (:year_end).',
 
-    'direct_placement' => [
-        'title' => 'Direct Placement',
-        'subtitle' => 'Manually assign students to industry partners',
-        'student' => 'Target Student',
-        'select_student' => 'Search and select student',
-        'placement' => 'Target Placement',
-        'select_placement' => 'Select industry partner',
-        'mentors' => 'Assigned Mentors',
-        'select_mentors' => 'Select mentors',
-        'assign' => 'Assign Placement',
-        'success' => 'Student placed successfully.',
-    ],
-
     'applications' => [
         'title' => 'Account Applications',
         'subtitle' => 'Review and manage pending applications',

@@ -41,4 +41,18 @@ return [
         'filled' => 'Filled',
         'available' => 'Available Slots',
     ],
+
+    'direct_placement' => [
+        'title' => 'Direct Placement',
+        'subtitle' => 'Manually assign students to industry partners',
+        'student' => 'Target Student',
+        'select_student' => 'Search and select student',
+        'academic_year' => 'Academic Year',
+        'placement' => 'Target Placement',
+        'select_placement' => 'Select industry partner',
+        'mentors' => 'Assigned Mentors',
+        'select_mentors' => 'Select mentors',
+        'assign' => 'Assign Placement',
+        'success' => 'Student placed successfully.',
+    ],
 ];
