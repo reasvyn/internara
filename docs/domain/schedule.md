@@ -3,34 +3,30 @@
 ## Purpose
 
 Schedule handles the time dimension of internships — it answers "when do things happen?" This 
-includes briefing dates, assessment periods, supervision sessions, company visits, deadlines of 
+includes orientation dates, assessment periods, supervision sessions, company visits, deadlines of 
 various types, and any other time-boxed events that give structure to an internship timeline. 
 Unlike domain-specific deadlines (assignment due dates live in Assignment, attendance session 
 times live in Attendance), Schedule manages the shared calendaring that multiple domains 
-reference: briefing dates affect Attendance (mandatory briefings must be attended), assessment 
-dates affect Assessment (evaluation events happen on specific dates), supervision sessions affect 
-Mentor (mentor availability and session scheduling), and deadline markers affect everything. 
-Schedule provides a unified calendar so that everyone — students, mentors, admins — can see 
-what is happening and when.
+reference: assessment dates affect Assessment (evaluation events happen on specific dates), 
+supervision sessions affect Mentor (mentor availability and session scheduling), and deadline 
+markers affect everything. Schedule provides a unified calendar so that everyone — students, 
+mentors, admins — can see what is happening and when.
 
 ## Boundary
 
 **In scope:** Event definitions (title, description, start and end times with timezone, location 
 or virtual link, category, program association), recurring event support (daily, weekly, 
-biweekly, monthly, custom patterns with end conditions), event categorization (briefing, 
-assessment, supervision, visit, deadline, holiday, general), event visibility rules (who sees 
+biweekly, monthly, custom patterns with end conditions), event categorization (assessment, supervision, visit, deadline, holiday, general), event visibility rules (who sees 
 which events based on role, program enrollment, and involvement), calendar views (day, week, 
 month, agenda — tailored to each role's needs), event reminders and notifications (configurable 
 timing per category, multiple reminders per event, in-app and email delivery), event conflict 
 detection (overlapping events for same participant, flagged but not prevented).
 
 **Out of scope:** Attendance recording against events (Attendance domain applies attendance 
-status — did the student show up? — Schedule only knows the event exists), briefing content 
-and materials management (Internship domain defines what briefings cover and what materials are 
-needed), assessment period configuration and scoring (Assessment domain owns evaluation period 
-setup and scoring rubrics), task due dates (Assignment domain owns task-specific deadlines), 
-program date ranges (Internship domain defines when the program starts and ends — events must 
-fall within those bounds).
+status — did the student show up? — Schedule only knows the event exists), assessment period 
+configuration and scoring (Assessment domain owns evaluation period setup and scoring rubrics), 
+task due dates (Assignment domain owns task-specific deadlines), program date ranges (Internship 
+domain defines when the program starts and ends — events must fall within those bounds).
 
 ## Key Concepts
 
@@ -43,12 +39,11 @@ rule. Events can be single-occurrence (happens once and done) or recurring (happ
 pattern). Recurrence rules support: daily, weekly on specific days, biweekly, monthly on a 
 specific date or weekday, and custom patterns. Each recurrence rule must have an end condition 
 — either an end date or a maximum occurrence count. Recurring events generate individual 
-instances that can be modified independently: you can cancel one instance of a recurring briefing 
+instances that can be modified independently: you can cancel one instance of a recurring event
 without affecting the rest of the series.
 
-**Event Categories.** Events are classified into categories that drive consistent behavior. 
-BRIEFING: a mandatory or optional informational session — appears on attendance tracking views, 
-visible to all relevant students and mentors. ASSESSMENT: an evaluation event — visible to the 
+**Event Categories.** Events are classified into categories that drive consistent behavior.
+ASSESSMENT: an evaluation event — visible to the 
 student being assessed and the assessment panel. SUPERVISION: a mentor-student meeting — 
 visible only to the mentor and the specific student(s) involved, supports conflict detection. 
 VISIT: a company site visit — visible to the student, mentor, and company contact. DEADLINE: a 
@@ -59,10 +54,10 @@ program participants. Each category has configurable defaults for visibility sco
 timing, and whether attendance is tracked.
 
 **Calendar Views.** The schedule provides role-appropriate calendar views through a Livewire 
-component. Students see: mandatory events for their program (briefings, assessments), their 
+component. Students see: mandatory events for their program, their 
 personal supervision sessions, deadlines, and holidays. Mentors see: events for all their 
 assigned students (supervision sessions, assessments they participate in), plus program-level 
-events they need to attend (mentor meetings, briefings they are presenting), plus their own 
+events they need to attend (mentor meetings), plus their own 
 availability windows. Admins see: all events across all programs, with powerful filtering by 
 program, category, date range, and mentor. Each view supports four display modes: DAY (detailed 
 hourly view), WEEK (five-day or seven-day view), MONTH (overview grid), and AGENDA (scrollable 
@@ -70,7 +65,7 @@ list of upcoming events sorted by date). Views are responsive and optimized for 
 mobile use.
 
 **Reminders and Notifications.** Events can have configured reminders sent before the event start 
-time. Reminder timing is set per event category (e.g., briefings remind 1 day before and 1 hour 
+time. Reminder timing is set per event category (e.g., assessments remind 1 day before and 1 hour 
 before; supervision sessions remind 2 hours before; deadlines remind 3 days, 1 day, and 1 hour 
 before). Multiple reminders per event are supported with independent timing. Reminders are 
 delivered through in-app notifications (visible in the notification center) and email (sent to 

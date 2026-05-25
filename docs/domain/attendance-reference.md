@@ -6,7 +6,7 @@ Total: 21 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Attendance/Actions/ClockInAction.php` | `ClockInAction` | `BaseAction` | Records clock-in with IP tracking and briefing validation |
+| `Attendance/Actions/ClockInAction.php` | `ClockInAction` | `BaseAction` | Records clock-in with IP tracking and schedule validation |
 | `Attendance/Actions/ClockOutAction.php` | `ClockOutAction` | `BaseAction` | Records clock-out with IP tracking |
 | `Attendance/Actions/CreateAttendanceAction.php` | `CreateAttendanceAction` | `BaseAction` | Creates an attendance record |
 | `Attendance/Actions/DeleteAttendanceAction.php` | `DeleteAttendanceAction` | `BaseAction` | Deletes an attendance record |

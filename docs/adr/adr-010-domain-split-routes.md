@@ -20,7 +20,7 @@ Routes are split into 23 domain-specific files under `routes/web/{domain}.php`.
 The master `routes/web.php` requires them in dependency order — foundational domains
 (Setup, Core, Auth) first, then business domains, then cross-cutting domains (Admin).
 
-Route naming follows `{prefix}.{resource}.{action}` (e.g., `admin.internships.briefings`).
+Route naming follows `{prefix}.{resource}.{action}` (e.g., `admin.internships.show`).
 All routes use `->name()` for named route generation via `route()`.
 
 Livewire components are auto-discovered from `app/Domain/*/Livewire/` by

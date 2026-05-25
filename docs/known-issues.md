@@ -141,14 +141,14 @@ Evaluate which operations should be queued: certificate generation, report rende
 ### IM1–IM6, IM8. Internship Management Fixes 🟡 *(✅ Fixed)*
 
 - **IM1:** `InternshipManager::boot()` — `abort(403)` → `$this->authorize('viewAny', Internship::class)`
-- **IM2:** Created 5 Form Objects (`InternshipForm`, `InternshipGroupForm`, `InternshipPhaseForm`, `InternshipRequirementForm`, `BriefingForm`), migrated all managers + views
-- **IM3:** Route Model Binding → `string $id` in all 5 managers (Internship, Group, Phase, Requirement, Briefing)
-- **IM4:** Added `boot()` authorization to `RequirementManager` and `BriefingManager`
+- **IM2:** Created 4 Form Objects (`InternshipForm`, `InternshipGroupForm`, `InternshipPhaseForm`, `InternshipRequirementForm`), migrated all managers + views
+- **IM3:** Route Model Binding → `string $id` in all 4 managers (Internship, Group, Phase, Requirement)
+- **IM4:** Added `boot()` authorization to `RequirementManager`
 - **IM5:** Added `$this->authorize('delete')` to `GroupManager::confirmAction()`, fixed `InternshipGroupPolicy` delete scope to `isAdmin()`
 - **IM6:** Created translation keys for all hardcoded English flash messages (group, phase, requirement)
 - **IM8:** `InternshipGroupPolicy::delete()` — `super_admin` only → `isAdmin()`
 
-### IM7. Zero Livewire Feature Tests for All 4 Internship Managers 🔴
+### IM7. Zero Livewire Feature Tests for All Internship Managers 🔴
 
 **Directory:** `tests/Feature/Internship/` (does not exist)
 
@@ -168,14 +168,14 @@ Zero tests cover `InternshipManager`, `InternshipGroupManager`, `InternshipPhase
 |---|---|---|---|
 | 🔴 | Feature tests missing for ~110 of 143 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🔴 | **IM7** Zero Livewire tests for 4 Internship managers | Internship | ⏳ |
+| 🔴 | **IM7** Zero Livewire tests for Internship managers | Internship | ⏳ |
 | 🟡 | **IM1** InternshipManager uses abort(403) instead of authorize | Internship | ✅ Fixed |
-| 🟡 | **IM2** Flat formData arrays instead of Form Objects (5 components) | Internship | ✅ Fixed |
-| 🟡 | **IM3** Route Model Binding in edit() (5 components) | Internship | ✅ Fixed |
-| 🟡 | **IM4** RequirementManager + BriefingManager no boot() authorization | Internship | ✅ Fixed |
+| 🟡 | **IM2** Flat formData arrays instead of Form Objects (4 components) | Internship | ✅ Fixed |
+| 🟡 | **IM3** Route Model Binding in edit() (4 components) | Internship | ✅ Fixed |
+| 🟡 | **IM4** RequirementManager had no boot() authorization | Internship | ✅ Fixed |
 | 🟡 | **IM5** InternshipGroupManager confirmAction no auth guard | Internship | ✅ Fixed |
 | 🟡 | **IM8** InternshipGroupPolicy delete restricted to super_admin | Internship | ✅ Fixed |
-| 🟢 | **IM6** Hardcoded English flash messages (5 components) | Internship | ✅ Fixed |
+| 🟢 | **IM6** Hardcoded English flash messages (4 components) | Internship | ✅ Fixed |
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
 | 🟢 | Real-time features (Echo + Reverb) not yet active | Future | ⏳ |
 | 🟢 | Queue job formalization not evaluated | Future | ⏳ |

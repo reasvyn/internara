@@ -26,7 +26,7 @@ bulk operations across cohorts.
 verification), password management (Auth domain handles password rules and
 resets), profile editing by the user themselves (User domain), business domain
 decisions like placement allocation (Placement domain), content authoring beyond
-announcements (Internship domain owns briefings and reports), day-to-day
+announcements (Internship domain owns reports), day-to-day
 mentoring activities (Mentor domain).
 
 ## Key Concepts

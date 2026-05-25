@@ -8,7 +8,7 @@ Mentee provides the student's day-to-day experience: their personalized dashboar
 into who their mentor is and how to contact them, aggregated progress tracking against program 
 requirements, and self-service entry points to all internship tools. This is a thin domain — it 
 does not own substantial data of its own. Instead, it aggregates data owned by other domains 
-(Assignments, Logbook, Attendance, Evaluations, Briefings) and presents it from the student's 
+(Assignments, Logbook, Attendance, Evaluations) and presents it from the student's 
 perspective. The domain exists as a conceptual boundary because the student experience is 
 distinct enough from identity management and registration workflows to warrant its own home.
 
@@ -16,7 +16,7 @@ distinct enough from identity management and registration workflows to warrant i
 
 **In scope:** Mentee enrollment (links a user with student role to their active internship 
 registration), student dashboard (aggregated view of assignments, logbook entries, attendance 
-records, evaluations, briefings, announcements, deadlines), mentor visibility (who is assigned as 
+records, evaluations, announcements, deadlines), mentor visibility (who is assigned as 
 primary and co-mentors, contact information, supervision schedule), progress tracking (completed 
 vs. pending requirements aggregated in real-time from all source domains), self-service access 
 routing to internship tools (logbook, submissions, attendance clock-in, evaluations, guidance 
@@ -46,7 +46,7 @@ accessible for portfolio review but do not grant access to current internship to
 all internship activities. It is a read-only aggregation layer — all data lives in its source 
 domains but is collected and presented here for convenience. Typical dashboard sections include: 
 CURRENT STATUS (brief summary — "You are in week 5 of 12"), UPCOMING DEADLINES (assignment due 
-dates, briefing dates, assessment dates, report deadlines — pulled from Assignment and Schedule 
+dates, assessment dates, report deadlines — pulled from Assignment and Schedule 
 domains), PENDING ACTIONS (unsubmitted assignments, unacknowledged logbook entries, incomplete 
 guidance acknowledgements, missing attendance clock-ins — actionable items that need the 
 student's attention), RECENT ACTIVITY (latest logbook entry, most recent grade, last evaluation 
@@ -66,7 +66,7 @@ reduces the student's uncertainty about who to contact for what purpose.
 **Progress Tracking.** Students can view their progress toward program completion at any time. 
 The progress view shows requirements defined by the Internship domain with completion status 
 computed in real-time from the source domains: assignments completed vs. total, attendance 
-percentage vs. minimum, logbook entries submitted vs. expected, briefings attended vs. required, 
+percentage vs. minimum, logbook entries submitted vs. expected, 
 evaluations received vs. scheduled, guidance documents acknowledged vs. assigned, and total hours 
 logged vs. minimum. Each requirement shows a status indicator (completed, in-progress, not 
 started, behind), a progress bar or percentage, and the specific threshold. This real-time 

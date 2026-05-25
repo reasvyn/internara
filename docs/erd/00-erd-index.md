@@ -160,8 +160,7 @@ ACADEMIC_YEAR ──1:*── Internship
                      │                        │
                      │                        └──1:*── Partnership
                      │
-                     ├──1:*── Briefing ──1:*── BriefingAttendance
-                     ├──1:*── Assignment ──*:1── AssignmentType
+                      ├──1:*── Assignment ──*:1── AssignmentType
                      ├──1:*── Rubric ──1:*── Competency ──1:*── Indicator
                      ├──1:*── DocumentRequirement ──*:1── Document
                      └──1:*── Schedule
