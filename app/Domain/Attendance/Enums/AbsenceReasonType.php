@@ -24,10 +24,10 @@ enum AbsenceReasonType: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::SICK => 'Sakit',
-            self::PERMISSION => 'Izin',
-            self::EMERGENCY => 'Darurat',
-            self::OTHER => 'Lainnya',
+            self::SICK => __('Sick'),
+            self::PERMISSION => __('Permission'),
+            self::EMERGENCY => __('Emergency'),
+            self::OTHER => __('Other'),
         };
     }
 }

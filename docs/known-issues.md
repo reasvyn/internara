@@ -104,24 +104,7 @@ Created `PruneNotificationsCommand` (daily via `routes/console.php`, default 30-
 
 ## Domain Models (Layer 5) & Domain Rules (Layer 6)
 
-### Enum Label Translation Inconsistency 🟡
 
-**Directory:** `app/Domain/*/Enums/`
-
-Only 3 enums use `__()` for translatable labels. The remaining 26 use hardcoded English strings (or Indonesian for `AbsenceReasonType` and `SupervisionType`):
-
-| Pattern | Enums |
-|---|---|
-| Uses `__()` for labels | `AuditCategory`, `AccountApplicationStatus`, `Role` |
-| Hardcoded English | 23 enums (AuditStatus, RegistrationDocumentStatus, etc.) |
-| Hardcoded Indonesian | `AbsenceReasonType` (`'Sakit'`, `'Izin'`), `SupervisionType` (`'Bimbingan'`, `'Mentoring'`) |
-| Returns key string only | `AccountStatus` (returns `'account_status.status.'.$this->value` without `__()`) |
-
-There is no project-wide rule about whether enum labels should be translatable or hardcoded. This inconsistency means UI elements that render `$enum->label()` may display English in some places and Indonesian in others.
-
-*Status: ⏳ Pending — establish and enforce a consistent label strategy.*
-
----
 
 ## User Registration Area — Audit Findings
 
@@ -252,7 +235,7 @@ Added `$table->index()` calls for 37 FK columns across 24 original table creatio
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ✅ Fixed |
 | 🟡 | Livewire Form Object migration (~60 components remaining) | Architecture | ⏳ |
 | 🟡 | SmartLogger IP/UA without PII mask | Core | ✅ Fixed |
-| 🟡 | Enum label translation inconsistency | Enums | ⏳ |
+| 🟡 | Enum label translation — 34 enums use `__()` consistently | Enums | ✅ Fixed |
 | 🟡 | FK columns without individual indexes | Database | ✅ Fixed |
 | 🟡 | Role enum `func_` prefix value inconsistency | Enums | ⏸️ |
 | 🟡 | BaseAction cannot enforce execute() — signatures vary | Architecture | ⏸️ Cannot enforce |

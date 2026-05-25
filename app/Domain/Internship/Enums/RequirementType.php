@@ -23,9 +23,9 @@ enum RequirementType: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::DOCUMENT => 'Document',
-            self::SKILL => 'Skill',
-            self::TEXT => 'Text',
+            self::DOCUMENT => __('Document'),
+            self::SKILL => __('Skill'),
+            self::TEXT => __('Text'),
         };
     }
 }

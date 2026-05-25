@@ -17,11 +17,11 @@ enum EvaluationCategory: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::MENTOR => 'Mentor Evaluation',
-            self::PROGRAM => 'Program Evaluation',
-            self::COMPANY => 'Company Evaluation',
-            self::FACILITY => 'Facility Evaluation',
-            self::OVERALL => 'Overall Satisfaction',
+            self::MENTOR => __('Mentor Evaluation'),
+            self::PROGRAM => __('Program Evaluation'),
+            self::COMPANY => __('Company Evaluation'),
+            self::FACILITY => __('Facility Evaluation'),
+            self::OVERALL => __('Overall Satisfaction'),
         };
     }
 

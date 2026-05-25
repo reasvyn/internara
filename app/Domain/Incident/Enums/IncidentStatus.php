@@ -16,10 +16,10 @@ enum IncidentStatus: string implements StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::REPORTED => 'Reported',
-            self::INVESTIGATING => 'Investigating',
-            self::RESOLVED => 'Resolved',
-            self::CLOSED => 'Closed',
+            self::REPORTED => __('Reported'),
+            self::INVESTIGATING => __('Investigating'),
+            self::RESOLVED => __('Resolved'),
+            self::CLOSED => __('Closed'),
         };
     }
 

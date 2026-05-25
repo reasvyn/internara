@@ -16,10 +16,10 @@ enum IncidentSeverity: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::LOW => 'Low',
-            self::MEDIUM => 'Medium',
-            self::HIGH => 'High',
-            self::CRITICAL => 'Critical',
+            self::LOW => __('Low'),
+            self::MEDIUM => __('Medium'),
+            self::HIGH => __('High'),
+            self::CRITICAL => __('Critical'),
         };
     }
 }

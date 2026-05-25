@@ -27,10 +27,10 @@ enum LogbookStatus: string implements LabelEnum, StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::DRAFT => 'Draft',
-            self::SUBMITTED => 'Submitted',
-            self::VERIFIED => 'Verified',
-            self::REVISION_REQUIRED => 'Revision Required',
+            self::DRAFT => __('Draft'),
+            self::SUBMITTED => __('Submitted'),
+            self::VERIFIED => __('Verified'),
+            self::REVISION_REQUIRED => __('Revision Required'),
         };
     }
 

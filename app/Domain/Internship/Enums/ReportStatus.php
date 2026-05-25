@@ -17,10 +17,10 @@ enum ReportStatus: string implements LabelEnum, StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::DRAFT => 'Draft',
-            self::SUBMITTED => 'Submitted',
-            self::REVISION_REQUIRED => 'Revision Required',
-            self::APPROVED => 'Approved',
+            self::DRAFT => __('Draft'),
+            self::SUBMITTED => __('Submitted'),
+            self::REVISION_REQUIRED => __('Revision Required'),
+            self::APPROVED => __('Approved'),
         };
     }
 

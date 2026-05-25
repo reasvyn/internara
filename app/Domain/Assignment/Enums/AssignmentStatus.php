@@ -21,9 +21,9 @@ enum AssignmentStatus: string implements LabelEnum, StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::DRAFT => 'Draft',
-            self::PUBLISHED => 'Published',
-            self::CLOSED => 'Closed',
+            self::DRAFT => __('Draft'),
+            self::PUBLISHED => __('Published'),
+            self::CLOSED => __('Closed'),
         };
     }
 

@@ -28,12 +28,12 @@ enum SupervisionLogStatus: string implements StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::PENDING => 'Pending',
-            self::IN_PROGRESS => 'In Progress',
-            self::SUBMITTED => 'Submitted',
-            self::VERIFIED => 'Verified',
-            self::COMPLETED => 'Completed',
-            self::CANCELLED => 'Cancelled',
+            self::PENDING => __('Pending'),
+            self::IN_PROGRESS => __('In Progress'),
+            self::SUBMITTED => __('Submitted'),
+            self::VERIFIED => __('Verified'),
+            self::COMPLETED => __('Completed'),
+            self::CANCELLED => __('Cancelled'),
         };
     }
 
