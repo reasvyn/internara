@@ -46,6 +46,7 @@ class SecurityHeaders
             'script-src' => $viteUrl,
             'style-src' => $viteUrl,
             'img-src' => $viteUrl,
+            'font-src' => $viteUrl,
             'connect-src' => str_replace('http', 'ws', $viteUrl).' '.$viteUrl,
         ];
 
