@@ -78,43 +78,9 @@ Without these in `.env.example`, developers cannot discover or configure Boost.
 
 
 
-## Settings Domain — Remaining Issues
-
-### SE13. AppMetadata Test Coverage 🟢
-
-**File:** `app/Domain/Settings/Support/AppMetadata.php` (252 lines)
-
-15 unit tests covering all public methods including fallback paths for `brandName`, `siteTitle`, `brandLogo`, `favicon`, `colors`, and all `get()` key mappings. Database-dependent rendering paths not tested (require integration setup).
-
-**Fix:** None needed — adequate smoke coverage.
-
-*Status: ✅ Adequate — Priority P4.*
-
----
-
-## Notification Domain — Known Issues
-
-### N2. No Notification Cleanup / Pruning Mechanism 🔴 *(✅ Fixed)*
-
-Created `PruneNotificationsCommand` (daily via `routes/console.php`, default 30-day retention for read notifications).
-
-*Status: ✅ Fixed — Priority P1.*
-
----
-
-## Domain Models (Layer 5) & Domain Rules (Layer 6)
-
-
-
-## User Registration Area — Audit Findings
-
----
-
 ## Backlog — Unresolved Items
 
 ### Feature Test Coverage (139 uncovered Actions)
-
-Only 4 of 143 Actions have feature tests (excluding Setup which is fully covered). Critical for stability before production deployment.
 
 | Domain | Actions | Feature Tests | Gap |
 |---|---|---|---|
@@ -141,32 +107,6 @@ Only 4 of 143 Actions have feature tests (excluding Setup which is fully covered
 | Setup | 9 | 9 | 🟢 |
 | Settings | 6 | 6 | 🟢 |
 
-**Target:** Minimum 1 feature test per Action in Assessment (17), Internship (16), Auth (12), Settings (6).
-
-### Shared Domain Issues
-
-**CsvHandler Uses Fragile Magic String Protocol 🟡** *(✅ Fixed)*
-Created `CsvRowResult` enum (`CREATED`/`SKIPPED`). Handler accepts both enum and legacy string. `DepartmentManager` updated to use enum.
-
-**LangChecker Contradicts "Stateless" Rule 🟡** *(✅ Fixed)*
-Made `final`. True stateless refactor (decoupling from `Translator`) deferred — utility naturally requires mutability to intercept translation resolution.
-
-### HandlesActionErrors — Passes Through Framework Exceptions 🟡 *(✅ Fixed)*
-
-Added `ValidationException`, `AuthorizationException`, `ModelNotFoundException`, and `NotFoundHttpException` to the pass-through list so they are not wrapped as `RuntimeException`.
-
-### SmartLogger — IP/UA Masked with PII Flag 🟡 *(✅ Fixed)*
-
-Added `PiiMasker::maskIp()` and `PiiMasker::maskUserAgent()`. Logged IP and user agent in activity logs are now masked when `withPiiMasking()` is enabled.
-
-### App Version in UI Footer 🟢 *(✅ Fixed)*
-
-Footer now only shows version in `local` environment via `app()->environment('local')`.
-
-### Rate Limiting on RecoverSuperAdminAction 🟢 *(✅ Fixed)*
-
-Added per-email throttle (3 attempts, 15-minute cooldown) using Cache.
-
 ### Cross-Domain Event Flow Documentation 🟢
 
 Which events fire and which listeners react is not documented. Needed for understanding side effects when modifying Actions.
@@ -179,64 +119,150 @@ Laravel Echo and Reverb are installed but no real-time channels are active. Cand
 
 Evaluate which operations should be queued: certificate generation, report rendering, batch notifications. Currently all notifications use `ShouldQueue`.
 
-### FK Columns Without Individual Indexes 🟡 *(✅ Fixed)*
-
-Added `$table->index()` calls for 37 FK columns across 24 original table creation migrations (separate from `foreignUuid()` chains — SQLite ignores chained `->index()`).
-
-### UC7 — Complete Test Coverage for Admin User Management 🔴 *(✅ Fixed)*
-
-**Livewire tests:** 45 tests across all 7 admin managers (render, authorization, create, edit, delete, validation, search, status toggle).
-
-**Action tests:** Fixed pre-existing `BindingResolutionException` failures (missing imports in `AdminActionsTest.php`). Fixed `DeleteUserActionTest` self-deletion test (used `SUPER_ADMIN` which triggers the super_admin guard before self-check). Added `ReadRecoveryKeyActionTest` and `SaveRecoveryKeyActionTest`.
-
-**Result:** All 9 Admin Actions now have feature tests. 21 Admin action tests + 45 Livewire tests = **66 total tests** for user management.
-
-### Enum Labels Use `__()` Consistently 🟡 *(✅ Fixed)*
-
-All 34 enum `label()` methods now wrap return values in `__()`. Indonesian hardcoded strings in `AbsenceReasonType` and `SupervisionType` converted to English (translation keys). 106 string literals updated across 27 files.
-
 ### Livewire Form Object Migration 🟡
 
-**Problem:** 81 Livewire components still manage form state via flat `public` properties scattered across the component class. The Setup wizard and ProfileEditor have been migrated as reference implementations.
+**Problem:** 81 Livewire components still manage form state via flat `public` properties scattered across the component class.
 
 **Completed:**
-- ✅ `SetupWizard` → `SchoolForm`, `DepartmentForm`, `AdminForm`, `InternshipForm`
-- ✅ `ProfileEditor` → `ProfileForm`, `PasswordForm`
-- ✅ `Login` → `LoginForm`, `ForgotPassword` → `ForgotPasswordForm`, `ResetPassword` → `ResetPasswordForm`, `ConfirmPassword` → `ConfirmPasswordForm`, `AccountRecovery` → `AccountRecoveryForm`
-- ✅ `SystemSetting` → `GeneralSettingsForm`, `BrandingForm`, `MailSettingsForm`
-- ✅ Admin user managers → `UserForm`, `AdminUserForm`, `TeacherForm`, `StudentForm`, `SupervisorForm`, `MentorForm`, `MenteeForm`
+- ✅ `SetupWizard`, `ProfileEditor`, `Login`, `SystemSetting`
+- ✅ Admin user managers (7 forms)
+- ✅ `AnnouncementManager`, `AcademicYearManager`, `DepartmentManager`
 
 **Remaining priority:**
+- 🟠 P2: Registration (`RegistrationWizard`, `RegistrationDocumentUpload`)
+- 🟡 P4: ~60 remaining components
 
-| Priority | Domain | Form | Components Affected |
-|---|---|---|---|
-| 🟠 P2 | Registration | `RegistrationForm`, `DocumentUploadForm` | `RegistrationWizard`, `RegistrationDocumentUpload` |
-| 🟠 P3 | User | `ProfileForm` | `ProfileEditor` |
-| 🟡 P4 | Announcement | `AnnouncementForm` | `AnnouncementManager` ✅ |
-| 🟡 P5 | School | `AcademicYearForm`, `DepartmentForm` | `AcademicYearManager`, `DepartmentManager` ✅ |
-| 🟢 P6 | All remaining forms | — | ~60 components |
+**Convention:** See `docs/conventions.md` Section 9a — Form Objects.
 
-**Convention:** See `docs/conventions.md` Section 9a — Form Objects for the required pattern.
+---
+
+## Internship Management — Audit Findings
+
+### IM1. InternshipManager Uses `abort(403)` Instead of `$this->authorize()` 🟡
+
+**File:** `app/Domain/Internship/Livewire/InternshipManager.php:57-66`
+
+Uses manual `hasAnyRole()` check in `boot()` instead of delegating to `InternshipPolicy` via `$this->authorize()`. Same pattern as previously fixed in School and Admin components.
+
+**Fix:** Replace with `$this->authorize('viewAny', Internship::class)`.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### IM2. Flat `formData` Arrays Instead of Form Objects (4 Components) 🟡
+
+**Files:**
+- `InternshipManager.php` — uses `$formData` array with inline validation
+- `InternshipGroupManager.php` — uses `$formData` and `$memberFormData` arrays
+- `InternshipPhaseManager.php` — uses `$formData` array
+- `RequirementManager.php` — uses `$formData` array
+
+All four components validate inline with rules like `'formData.name' => ...`. Should use dedicated Form Objects for separation of concerns.
+
+**Fix:** Extract `InternshipForm`, `InternshipGroupForm`, `InternshipPhaseForm`, `RequirementForm`.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### IM3. Route Model Binding in `edit()` Methods (3 Components) 🟡
+
+**Files:** `InternshipGroupManager.php:88`, `InternshipPhaseManager.php:79`, `RequirementManager.php:58`
+
+Uses `edit(InternshipGroup $group)` etc. instead of `edit(string $id)`. Same issue as previously fixed in DepartmentManager and Admin managers.
+
+**Fix:** Change signatures to `edit(string $id)` with `findOrFail()` inside.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### IM4. RequirementManager Has No `boot()` Authorization 🟡
+
+**File:** `app/Domain/Internship/Livewire/RequirementManager.php`
+
+Unlike the other three Internship managers (`InternshipManager`, `InternshipGroupManager`, `InternshipPhaseManager`), `RequirementManager` has no `boot()` method and no authorization check at the component level. Relies entirely on route middleware.
+
+**Fix:** Add `boot()` with `$this->authorize()` delegating to an appropriate Policy.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### IM5. InternshipGroupManager `confirmAction()` No Authorization Guard 🟡
+
+**File:** `app/Domain/Internship/Livewire/InternshipGroupManager.php:134-151`
+
+The `confirmAction()` method deletes a group via `DeleteInternshipGroupAction` without calling `$this->authorize('delete', $group)`. Relies only on the Action-level guard.
+
+**Fix:** Add `$this->authorize('delete', $group)` before executing delete action. Also fix `delete` scope in `InternshipGroupPolicy` — currently only allows `super_admin`.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### IM6. Hardcoded English Flash Messages (3 Components) 🟢
+
+**Files:** `InternshipGroupManager.php`, `InternshipPhaseManager.php`, `RequirementManager.php`
+
+Uses plain English strings like `'Group deleted.'`, `'Phase created.'`, `'Requirement saved successfully.'` instead of translation keys like `__('internship.group_deleted')`.
+
+**Fix:** Replace hardcoded strings with `__()` translation keys.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### IM7. Zero Livewire Feature Tests for All 5 Internship Managers 🔴
+
+**Directory:** `tests/Feature/Internship/` (does not exist)
+
+Zero tests cover `InternshipManager`, `InternshipGroupManager`, `InternshipPhaseManager`, `RequirementManager`, or `BriefingManager`. Mounting, CRUD operations, modals, validation, authorization, import/export are untested.
+
+**Impact:** 🔴 Refactoring carries high regression risk.
+
+**Fix:** Add feature tests for each manager covering render, authorization, create, edit, delete, validation, search.
+
+*Status: ⏳ Pending — Priority P1.*
+
+---
+
+### IM8. InternshipGroupPolicy Delete Restricted to `super_admin` Only 🤔
+
+**File:** `app/Domain/Internship/Policies/InternshipGroupPolicy.php:33-36`
+
+```php
+public function delete(User $user, InternshipGroup $group): bool
+{
+    return $user->hasRole('super_admin');
+}
+```
+
+Only `super_admin` can delete groups. All other admin-level operations (`create`, `update`) allow `isAdmin()`. This may be intentional (groups contain members, deletion is destructive) but inconsistent with other policies.
+
+**Fix:** Confirm intent. If intentional, document rationale. If not, change to `$this->isAdmin($user)`.
+
+*Status: ⏳ Pending — Need confirmation.*
 
 ---
 
 ## Summary
 
 | Severity | Issue | Category | Status |
-|---|---|---|---|---|
-| 🔴 | Feature tests missing for ~110 of 143 Actions (excluding Setup, Partnership, Admin) | Testing | ⏳ |
+|---|---|---|---|
+| 🔴 | Feature tests missing for ~110 of 143 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🔴 | **UC7** Livewire feature tests for all 7 admin managers | Admin | ✅ Fixed |
-| 🟢 | **SE13** AppMetadata test coverage adequate | Settings | ✅ |
-| 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ✅ Fixed |
-| 🟡 | Livewire Form Object migration (~60 components remaining) | Architecture | ⏳ |
-| 🟡 | SmartLogger IP/UA without PII mask | Core | ✅ Fixed |
-| 🟡 | Enum label translation — 34 enums use `__()` consistently | Enums | ✅ Fixed |
-| 🟡 | FK columns without individual indexes | Database | ✅ Fixed |
-| 🟡 | Role enum `func_` prefix — resolved via translation | Enums | ✅ Fixed |
-| 🟡 | BaseAction cannot enforce execute() — signatures vary | Architecture | ⏸️ Cannot enforce |
+| 🔴 | **IM7** Zero Livewire tests for 5 Internship managers | Internship | ⏳ |
+| 🟡 | **IM1** InternshipManager uses abort(403) instead of authorize | Internship | ⏳ |
+| 🟡 | **IM2** Flat formData arrays instead of Form Objects (4 components) | Internship | ⏳ |
+| 🟡 | **IM3** Route Model Binding in edit() (3 components) | Internship | ⏳ |
+| 🟡 | **IM4** RequirementManager has no boot() authorization | Internship | ⏳ |
+| 🟡 | **IM5** InternshipGroupManager confirmAction no auth guard | Internship | ⏳ |
+| 🟡 | **IM8** InternshipGroupPolicy delete restricted to super_admin | Internship | 🤔 |
+| 🟢 | **IM6** Hardcoded English flash messages (3 components) | Internship | ⏳ |
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
 | 🟢 | Real-time features (Echo + Reverb) not yet active | Future | ⏳ |
 | 🟢 | Queue job formalization not evaluated | Future | ⏳ |
-| 🟢 | PII in activity logs (IP/UA masked with PII flag) | Security | ✅ Fixed |
-| 🟢 | App version in UI footer | Security | ✅ Fixed |
+| 🟡 | Livewire Form Object migration (~60 components remaining) | Architecture | ⏳ |
+| 🟡 | BaseAction cannot enforce execute() — signatures vary | Architecture | ⏸️ |
