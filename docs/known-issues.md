@@ -148,11 +148,11 @@ Evaluate which operations should be queued: certificate generation, report rende
 - **IM6:** Created translation keys for all hardcoded English flash messages (group, phase, requirement)
 - **IM8:** `InternshipGroupPolicy::delete()` — `super_admin` only → `isAdmin()`
 
-### IM7. Zero Livewire Feature Tests for All 5 Internship Managers 🔴
+### IM7. Zero Livewire Feature Tests for All 4 Internship Managers 🔴
 
 **Directory:** `tests/Feature/Internship/` (does not exist)
 
-Zero tests cover `InternshipManager`, `InternshipGroupManager`, `InternshipPhaseManager`, `RequirementManager`, or `BriefingManager`. Mounting, CRUD operations, modals, validation, authorization, import/export are untested.
+Zero tests cover `InternshipManager`, `InternshipGroupManager`, `InternshipPhaseManager`, or `RequirementManager`. Mounting, CRUD operations, modals, validation, authorization, import/export are untested.
 
 **Impact:** 🔴 Refactoring carries high regression risk.
 
@@ -162,32 +162,13 @@ Zero tests cover `InternshipManager`, `InternshipGroupManager`, `InternshipPhase
 
 ---
 
-### IM8. InternshipGroupPolicy Delete Restricted to `super_admin` Only 🤔
-
-**File:** `app/Domain/Internship/Policies/InternshipGroupPolicy.php:33-36`
-
-```php
-public function delete(User $user, InternshipGroup $group): bool
-{
-    return $user->hasRole('super_admin');
-}
-```
-
-Only `super_admin` can delete groups. All other admin-level operations (`create`, `update`) allow `isAdmin()`. This may be intentional (groups contain members, deletion is destructive) but inconsistent with other policies.
-
-**Fix:** Confirm intent. If intentional, document rationale. If not, change to `$this->isAdmin($user)`.
-
-*Status: ⏳ Pending — Need confirmation.*
-
----
-
 ## Summary
 
 | Severity | Issue | Category | Status |
 |---|---|---|---|
 | 🔴 | Feature tests missing for ~110 of 143 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🔴 | **IM7** Zero Livewire tests for 5 Internship managers | Internship | ⏳ |
+| 🔴 | **IM7** Zero Livewire tests for 4 Internship managers | Internship | ⏳ |
 | 🟡 | **IM1** InternshipManager uses abort(403) instead of authorize | Internship | ✅ Fixed |
 | 🟡 | **IM2** Flat formData arrays instead of Form Objects (5 components) | Internship | ✅ Fixed |
 | 🟡 | **IM3** Route Model Binding in edit() (5 components) | Internship | ✅ Fixed |

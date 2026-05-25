@@ -35,7 +35,6 @@ return [
     'guidance_logs' => 'Catatan Bimbingan',
     'account_lifecycle' => 'Siklus Akun',
     'gdpr_logs' => 'Log GDPR',
-    'briefings' => 'Pembekalan',
     'partnerships' => 'Kemitraan',
     'placement_changes' => 'Mutasi Penempatan',
     'presentations' => 'Sidang',

@@ -6,7 +6,6 @@ namespace App\Domain\Logbook\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
-use App\Domain\Internship\Models\Briefing;
 use App\Domain\Logbook\Models\Logbook;
 use App\Domain\User\Models\User;
 
@@ -20,10 +19,6 @@ class CreateLogbookAction extends BaseAction
 
             if (! $registration) {
                 throw new RejectedException('No active internship registration found.');
-            }
-
-            if (! Briefing::hasStudentCompletedMandatoryBriefing($user->id, $registration->internship_id)) {
-                throw new RejectedException('You must attend the mandatory briefing before submitting logbook entries.');
             }
 
             $entry = Logbook::create([

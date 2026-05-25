@@ -60,17 +60,6 @@ describe('MenteeState', function () {
             isActive: true,
         );
 
-        expect($state->canClockIn(briefingCompleted: true))->toBeTrue();
-    });
-
-    it('cannot clock in without briefing', function () {
-        $state = new MenteeState(
-            hasActiveRegistration: true,
-            startDate: Carbon::now()->subDay(),
-            endDate: Carbon::now()->addMonth(),
-            isActive: true,
-        );
-
-        expect($state->canClockIn(briefingCompleted: false))->toBeFalse();
+        expect($state->canClockIn())->toBeTrue();
     });
 });

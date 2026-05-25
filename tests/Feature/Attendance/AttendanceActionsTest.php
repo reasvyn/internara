@@ -17,7 +17,6 @@ use App\Domain\Attendance\Models\AbsenceRequest;
 use App\Domain\Attendance\Models\Attendance;
 use App\Domain\Auth\Enums\Role;
 use App\Domain\Core\Exceptions\RejectedException;
-use App\Domain\Internship\Models\Briefing;
 use App\Domain\Mentee\Models\Mentee;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Models\User;
@@ -80,7 +79,7 @@ describe('DeleteAttendanceAction', function () {
 });
 
 describe('ClockInAction', function () {
-    it('clocks in user with active registration and completed briefing', function () {
+    it('clocks in user with active registration', function () {
         RoleModel::create(['name' => Role::SUPERVISOR->value, 'guard_name' => 'web']);
         $user = User::factory()->create();
         $mentee = Mentee::factory()->create(['user_id' => $user->id]);
@@ -88,16 +87,6 @@ describe('ClockInAction', function () {
             'mentee_id' => $mentee->id,
         ]);
         $registration->setStatus('active', 'test');
-        $briefing = Briefing::factory()->create([
-            'internship_id' => $registration->internship_id,
-            'created_by' => User::factory(),
-        ]);
-        DB::table('briefing_attendances')->insert([
-            'id' => (string) Str::uuid(),
-            'briefing_id' => $briefing->id,
-            'user_id' => $user->id,
-            'attended' => true,
-        ]);
 
         $log = app(ClockInAction::class)->execute($user, ['latitude' => -6.2, 'longitude' => 106.8]);
 
