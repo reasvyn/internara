@@ -20,11 +20,11 @@ enum DocumentCategory: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::APPLICATION => 'Application',
-            self::PERMIT => 'Permit',
-            self::CERTIFICATE => 'Certificate',
-            self::REPORT => 'Report',
-            self::LETTER => 'Letter',
+            self::APPLICATION => __('Application'),
+            self::PERMIT => __('Permit'),
+            self::CERTIFICATE => __('Certificate'),
+            self::REPORT => __('Report'),
+            self::LETTER => __('Letter'),
         };
     }
 }

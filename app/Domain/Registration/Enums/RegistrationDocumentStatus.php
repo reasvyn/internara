@@ -16,9 +16,9 @@ enum RegistrationDocumentStatus: string implements LabelEnum, StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::PENDING => 'Pending',
-            self::VERIFIED => 'Verified',
-            self::REJECTED => 'Rejected',
+            self::PENDING => __('Pending'),
+            self::VERIFIED => __('Verified'),
+            self::REJECTED => __('Rejected'),
         };
     }
 

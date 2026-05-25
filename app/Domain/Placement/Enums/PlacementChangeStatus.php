@@ -16,9 +16,9 @@ enum PlacementChangeStatus: string implements LabelEnum, StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::PENDING => 'Pending',
-            self::APPROVED => 'Approved',
-            self::REJECTED => 'Rejected',
+            self::PENDING => __('Pending'),
+            self::APPROVED => __('Approved'),
+            self::REJECTED => __('Rejected'),
         };
     }
 

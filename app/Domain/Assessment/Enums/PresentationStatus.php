@@ -16,9 +16,9 @@ enum PresentationStatus: string implements LabelEnum, StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::SCHEDULED => 'Scheduled',
-            self::COMPLETED => 'Completed',
-            self::CANCELLED => 'Cancelled',
+            self::SCHEDULED => __('Scheduled'),
+            self::COMPLETED => __('Completed'),
+            self::CANCELLED => __('Cancelled'),
         };
     }
 

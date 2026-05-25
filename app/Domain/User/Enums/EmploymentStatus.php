@@ -17,11 +17,11 @@ enum EmploymentStatus: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::FULL_TIME => 'Full-time',
-            self::PART_TIME => 'Part-time',
-            self::CONTRACT => 'Contract',
-            self::TEMPORARY => 'Temporary',
-            self::VOLUNTEER => 'Volunteer',
+            self::FULL_TIME => __('Full-time'),
+            self::PART_TIME => __('Part-time'),
+            self::CONTRACT => __('Contract'),
+            self::TEMPORARY => __('Temporary'),
+            self::VOLUNTEER => __('Volunteer'),
         };
     }
 }
