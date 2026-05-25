@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('content');
             $table->integer('version')->default(1);
             $table->boolean('is_active')->default(true);
+            $table->string('target_audience')->default('all');
             $table->timestamp('published_at')->nullable();
             $table->foreignUuid('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();

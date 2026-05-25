@@ -292,15 +292,9 @@ Uses `'Handbook created successfully.'` and `'Handbook acknowledged.'` instead o
 |---|---|---|---|
 | 🔴 | Feature tests missing for ~110 of 143 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🔴 | **GD7** No target_audience on handbooks | Guidance | ⏳ |
-| 🔴 | **GD10** Zero Livewire tests for Guidance components | Guidance | ⏳ |
-| 🔴 | **IM7** Zero Livewire tests for Internship managers | Internship | ⏳ |
+| 🔴 | **GD7** target_audience field added | Guidance | ✅ Fixed |
+| 🔴 | **GD10** Livewire tests for Guidance components | Guidance | ✅ Fixed |
 | 🟡 | **GD1** Documentation vs implementation gap | Guidance | ⏳ |
-| 🟡 | **GD2** No update/delete handbook actions | Guidance | ✅ Fixed |
-| 🟡 | **GD3** HandbookIndex flat form state | Guidance | ✅ Fixed |
-| 🟡 | **GD4** Gate::authorize instead of $this->authorize | Guidance | ✅ Fixed |
-| 🟡 | **GD5** No boot() authorization (both components) | Guidance | ✅ Fixed |
-| 🟡 | **GD6** Route Model Binding in acknowledge() | Guidance | ✅ Fixed |
 | 🟢 | **GD8** Acknowledgement not used as gate | Guidance | ⏳ |
 | 🟢 | **GD9** Hardcoded English flash messages | Guidance | ✅ Fixed |
 | 🟡 | **IM1** InternshipManager uses abort(403) instead of authorize | Internship | ✅ Fixed |

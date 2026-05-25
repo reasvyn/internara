@@ -18,6 +18,8 @@ class HandbookForm extends Form
 
     public bool $is_active = false;
 
+    public string $target_audience = 'all';
+
     public function rules(): array
     {
         return [
@@ -25,6 +27,7 @@ class HandbookForm extends Form
             'content' => ['required', 'string'],
             'version' => ['required', 'integer', 'min:1'],
             'is_active' => ['boolean'],
+            'target_audience' => ['required', 'in:all,student,teacher,supervisor'],
         ];
     }
 }

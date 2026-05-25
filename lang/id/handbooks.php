@@ -20,6 +20,12 @@ return [
     'deleted' => 'Panduan berhasil dihapus.',
     'acknowledged' => 'Panduan telah ditandai sudah dibaca.',
 
+    'target_audience' => 'Target Audiens',
+    'audience_all' => 'Semua Peran',
+    'audience_student' => 'Siswa',
+    'audience_teacher' => 'Guru',
+    'audience_supervisor' => 'Pembimbing Industri',
+
     'student_subtitle' => 'Baca dan tandai panduan yang sudah dipelajari',
     'version' => 'Versi',
     'acknowledge' => 'Tandai Sudah Dibaca',

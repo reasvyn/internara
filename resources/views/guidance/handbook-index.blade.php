@@ -33,6 +33,13 @@
             <x-mary-input :label="__('handbooks.title_field')" wire:model="form.title" />
             <x-mary-textarea :label="__('handbooks.content_field')" wire:model="form.content" rows="8" />
             <x-mary-input :label="__('handbooks.version_field')" type="number" wire:model="form.version" />
+            <x-mary-select :label="__('handbooks.target_audience')" wire:model="form.target_audience"
+                :options="[
+                    ['id' => 'all', 'name' => __('handbooks.audience_all')],
+                    ['id' => 'student', 'name' => __('handbooks.audience_student')],
+                    ['id' => 'teacher', 'name' => __('handbooks.audience_teacher')],
+                    ['id' => 'supervisor', 'name' => __('handbooks.audience_supervisor')],
+                ]" />
             <x-mary-toggle :label="__('handbooks.active')" wire:model="form.is_active" />
         </div>
         <x-slot:actions>

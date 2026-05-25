@@ -25,6 +25,7 @@ class CreateHandbookAction extends BaseAction
                 'content' => $data['content'] ?? '',
                 'version' => $data['version'] ?? '1.0',
                 'is_active' => $data['is_active'] ?? false,
+                'target_audience' => $data['target_audience'] ?? 'all',
                 'published_at' => $data['is_active'] ? now() : null,
                 'created_by' => $user->id,
             ]);
