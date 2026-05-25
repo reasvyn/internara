@@ -108,18 +108,6 @@ Created `PruneNotificationsCommand` (daily via `routes/console.php`, default 30-
 
 ## User Registration Area — Audit Findings
 
-### UC7. Zero Livewire Feature Tests for All 7 Admin Managers 🔴
-
-**Directory:** `tests/Feature/Admin/`
-
-Only `AdminActionsTest.php` (action-level tests) exists. Zero tests cover the Livewire lifecycle of `UserManager`, `AdminManager`, `TeacherManager`, `StudentManager`, `SupervisorManager`, `MentorManager`, or `MenteeManager`. Mounting, validation, CRUD operations, modals, and bulk actions are untested.
-
-**Impact:** 🔴 Refactoring any of these 7 components carries high regression risk.
-
-**Fix:** Add feature tests for each manager covering create, edit, delete, search, validation, and authorization.
-
-*Status: ⏳ Pending — Priority P1.*
-
 ---
 
 ## Backlog — Unresolved Items
@@ -195,9 +183,13 @@ Evaluate which operations should be queued: certificate generation, report rende
 
 Added `$table->index()` calls for 37 FK columns across 24 original table creation migrations (separate from `foreignUuid()` chains — SQLite ignores chained `->index()`).
 
-### AccountStatus label() Now Uses __() 🟡 *(✅ Fixed)*
+### UC7 — Livewire Tests for All 7 Admin Managers 🔴 *(✅ Fixed)*
 
-`AccountStatus::label()` now wraps its key in `__()`. Created `lang/{en,id}/account_status.php` with status label translations.
+Created 45 tests across `UserManagerTest`, `AdminManagerTest`, `TeacherManagerTest`, `StudentManagerTest`, `SupervisorManagerTest`, `MentorManagerTest`, and `MenteeManagerTest`. Each covers render, authorization, create, edit, delete, and validation.
+
+### Enum Labels Use `__()` Consistently 🟡 *(✅ Fixed)*
+
+All 34 enum `label()` methods now wrap return values in `__()`. Indonesian hardcoded strings in `AbsenceReasonType` and `SupervisionType` converted to English (translation keys). 106 string literals updated across 27 files.
 
 ### Livewire Form Object Migration 🟡
 
@@ -230,7 +222,7 @@ Added `$table->index()` calls for 37 FK columns across 24 original table creatio
 |---|---|---|---|---|
 | 🔴 | Feature tests missing for 121 of 143 Actions (excluding Setup, Partnership) | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🔴 | **UC7** Zero Livewire feature tests for all 7 admin managers | Admin | ⏳ |
+| 🔴 | **UC7** Livewire feature tests for all 7 admin managers | Admin | ✅ Fixed |
 | 🟢 | **SE13** AppMetadata test coverage adequate | Settings | ✅ |
 | 🟡 | HandlesActionErrors swallows custom exceptions | Architecture | ✅ Fixed |
 | 🟡 | Livewire Form Object migration (~60 components remaining) | Architecture | ⏳ |
