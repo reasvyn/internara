@@ -45,10 +45,12 @@ If Livewire components do not update after data changes, check that the componen
 The `lang/id/` directory is missing translations compared to `lang/en/`:
 
 | File | en Keys | id Keys | Gap |
-|---|---|---|---|
-| `internship.php` | 184 | 74 | **110 keys missing** (registration center, wizard, verification, direct placement, applications — entire sections) |
+|---|---|---|---|---|
+| `internship.php` | 82 | 69 | **13 keys missing** (legacy flat registration_verification keys) |
+| `registration.php` | 45 | 45 | 🟢 ✅ |
+| `placement.php` | 57 | 57 | 🟢 ✅ (PD14 fixed) |
 
-Additionally, `user.php` has different key ordering/structure between en and id, and `placement.php` uses different key names (`add_placement` vs `add`).
+Additionally, `user.php` has different key ordering/structure between en and id.
 
 All Indonesian text that falls through missing keys renders in English (Laravel fallback behavior). This affects the admin panel and student-facing features.
 
@@ -300,7 +302,7 @@ Handbook acknowledgement is purely informational — it does not block any actio
 |---|---|---|---|
 | 🔴 | Feature tests missing for ~75 of 143 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
-| 🟡 | **PD14** Unsorted placement.php translation keys | Translation | ⏳ |
+| 🟡 | **PD14** Unsorted placement.php translation keys | Translation | ✅ Fixed |
 | 🟢 | **GD8** Acknowledgement not used as gate | Guidance | ⏳ |
 | 🟢 | Cross-domain event flow undocumented | Documentation | ⏳ |
 | 🟢 | Real-time features (Echo + Reverb) not yet active | Future | ⏳ |

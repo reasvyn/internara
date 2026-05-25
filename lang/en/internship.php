@@ -48,15 +48,7 @@ return [
     'template_example_name' => 'e.g. PKL Semester Ganjil 2026/2027',
     'template_example_description' => 'e.g. Internship program for odd semester',
     'requirements' => 'Document Requirements',
-    'registration_verification' => 'Registration Verification',
-    'registration_verification_subtitle' => 'Review and process pending student registrations',
-    'no_pending_registrations' => 'No pending registrations',
-    'all_registrations_processed' => 'All student registrations have been processed.',
-    'process' => 'Process',
-    'verify_and_place' => 'Verify & Place',
-    'verified_and_placed' => 'Registration verified and student placed successfully.',
-    'not_pending_anymore' => 'Registration is no longer pending.',
-    'no_docs' => 'No docs',
+
     'stats' => [
         'total' => 'Total Batches',
         'active' => 'Active Batches',
