@@ -162,13 +162,147 @@ Zero tests cover `InternshipManager`, `InternshipGroupManager`, `InternshipPhase
 
 ---
 
+## Guidance Domain — Audit Findings
+
+### GD1. Documentation vs Implementation Gap 🟡
+
+**File:** `docs/domain/guidance.md`
+
+Docs describe versioned documents with content hashing, auto-assignment by program/cohort, compliance dashboards, typed-name digital signatures, and document lifecycle (ASSIGNED→VIEWED→ACKNOWLEDGED). Actual implementation is basic: plain text handbooks with simple acknowledgement. No version tracking, no auto-assignment, no dashboards, no content hashing.
+
+**Fix:** Either implement documented features or align docs with actual implementation.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### GD2. No `UpdateHandbookAction` or `DeleteHandbookAction` 🟡
+
+**Files:** `app/Domain/Guidance/Actions/`
+
+Admin can create handbooks (`CreateHandbookAction`) but there is no action to update or delete them. To fix content or deactivate a handbook, one must go directly to the database.
+
+**Fix:** Create `UpdateHandbookAction` and wire into admin Livewire component.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### GD3. `HandbookIndex` Uses Flat Form State Instead of Form Object 🟡
+
+**File:** `app/Domain/Admin/Livewire/HandbookIndex.php`
+
+Uses public properties `$title`, `$content`, `$version` with inline validation instead of a dedicated `HandbookForm` Form Object. Same pattern as previously fixed in Admin and Internship managers.
+
+**Fix:** Extract `HandbookForm` Form Object.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### GD4. `HandbookIndex` Uses `Gate::authorize()` Instead of `$this->authorize()` 🟡
+
+**File:** `app/Domain/Admin/Livewire/HandbookIndex.php:37,64`
+
+Uses `Gate::authorize('create', Handbook::class)` and `Gate::authorize('viewAny', Handbook::class)` instead of `$this->authorize()`. Inconsistent with the rest of the codebase.
+
+**Fix:** Replace with `$this->authorize()`.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### GD5. No `boot()` Authorization in Both Livewire Components 🟡
+
+**Files:** `HandbookIndex.php`, `StudentHandbookIndex.php`
+
+Neither component has a `boot()` method. `HandbookIndex` puts authorization inline in `render()`. `StudentHandbookIndex` has no authorization at all — relies entirely on route middleware.
+
+**Fix:** Add `boot()` with `$this->authorize()`.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### GD6. Route Model Binding in `acknowledge()` (Both Components) 🟡
+
+**Files:** `HandbookIndex.php:56`, `StudentHandbookIndex.php:14`
+
+Both use `acknowledge(Handbook $handbook, AcknowledgeHandbookAction $action)` instead of `acknowledge(string $id, ...)`. Same issue as previously fixed in all other domains.
+
+**Fix:** Change signatures to `acknowledge(string $id, ...)` with `findOrFail()`.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### GD7. No `target_audience` Concept 🔴
+
+**Model:** `app/Domain/Guidance/Models/Handbook.php`
+
+Handbooks have no target audience field. All handbooks are shown to all users regardless of role (student, teacher, supervisor). Users need role-specific handbooks — e.g., handbooks for teachers/supervisors should not appear in student lists.
+
+**Impact:** 🔴 Wrong handbooks shown to wrong users. No way to have role-specific guidance materials.
+
+**Fix:** Add `target_audience` field to Handbook model, filter by user role in queries.
+
+*Status: ⏳ Pending — Priority P1.*
+
+---
+
+### GD8. No Gate / Acknowledgement as Requirement 🟢
+
+Handbook acknowledgement is purely informational — it does not block any action. Registration, attendance clock-in, logbook submission all work without having acknowledged any handbook.
+
+**Fix:** Add configurable gating logic (e.g., must acknowledge specific handbooks before registration).
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### GD9. Hardcoded English Flash Messages 🟢
+
+**Files:** `HandbookIndex.php:53,59`
+
+Uses `'Handbook created successfully.'` and `'Handbook acknowledged.'` instead of translation keys like `__('handbook.created')`.
+
+**Fix:** Replace with `__()` translation keys.
+
+*Status: ⏳ Pending — Priority P4.*
+
+---
+
+### GD10. Zero Livewire Feature Tests 🔴
+
+**Directory:** `tests/Feature/Guidance/` (exists, but only action tests)
+
+`GuidanceActionsTest.php` covers `CreateHandbookAction` (2 tests) and `AcknowledgeHandbookAction` (1 test). Zero tests for `HandbookIndex` or `StudentHandbookIndex` — mounting, form submission, acknowledgement flow, authorization.
+
+**Impact:** 🔴 Refactoring carries high regression risk.
+
+**Fix:** Add feature tests for both Livewire components.
+
+*Status: ⏳ Pending — Priority P1.*
+
+---
+
 ## Summary
 
 | Severity | Issue | Category | Status |
 |---|---|---|---|
 | 🔴 | Feature tests missing for ~110 of 143 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
+| 🔴 | **GD7** No target_audience on handbooks | Guidance | ⏳ |
+| 🔴 | **GD10** Zero Livewire tests for Guidance components | Guidance | ⏳ |
 | 🔴 | **IM7** Zero Livewire tests for Internship managers | Internship | ⏳ |
+| 🟡 | **GD1** Documentation vs implementation gap | Guidance | ⏳ |
+| 🟡 | **GD2** No update/delete handbook actions | Guidance | ⏳ |
+| 🟡 | **GD3** HandbookIndex flat form state | Guidance | ⏳ |
+| 🟡 | **GD4** Gate::authorize instead of $this->authorize | Guidance | ⏳ |
+| 🟡 | **GD5** No boot() authorization (both components) | Guidance | ⏳ |
+| 🟡 | **GD6** Route Model Binding in acknowledge() | Guidance | ⏳ |
+| 🟢 | **GD8** Acknowledgement not used as gate | Guidance | ⏳ |
+| 🟢 | **GD9** Hardcoded English flash messages | Guidance | ⏳ |
 | 🟡 | **IM1** InternshipManager uses abort(403) instead of authorize | Internship | ✅ Fixed |
 | 🟡 | **IM2** Flat formData arrays instead of Form Objects (4 components) | Internship | ✅ Fixed |
 | 🟡 | **IM3** Route Model Binding in edit() (4 components) | Internship | ✅ Fixed |
