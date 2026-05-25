@@ -8,24 +8,29 @@ use App\Domain\Document\Models\Document;
 use App\Domain\Internship\Actions\CreateRequirementAction;
 use App\Domain\Internship\Actions\DeleteRequirementAction;
 use App\Domain\Internship\Actions\UpdateRequirementAction;
+use App\Domain\Internship\Livewire\Forms\InternshipRequirementForm;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Internship\Models\InternshipDocumentRequirement;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class RequirementManager extends Component
 {
+    use AuthorizesRequests;
+
     public string $internshipId = '';
+
+    public function boot(): void
+    {
+        $this->authorize('viewAny', Internship::class);
+    }
 
     public bool $requirementModal = false;
 
-    public array $formData = [
-        'id' => null,
-        'document_id' => '',
-        'is_mandatory' => true,
-    ];
+    public InternshipRequirementForm $form;
 
     public function mount(string $internshipId): void
     {
@@ -47,22 +52,20 @@ class RequirementManager extends Component
     public function add(): void
     {
         $this->resetErrorBag();
-        $this->formData = [
-            'id' => null,
-            'document_id' => '',
-            'is_mandatory' => true,
-        ];
+        $this->form->reset();
         $this->requirementModal = true;
     }
 
-    public function edit(InternshipDocumentRequirement $requirement): void
+    public function edit(string $id): void
     {
+        $requirement = InternshipDocumentRequirement::findOrFail($id);
+
         $this->resetErrorBag();
-        $this->formData = [
+        $this->form->fill([
             'id' => $requirement->id,
             'document_id' => $requirement->document_id,
             'is_mandatory' => $requirement->is_mandatory,
-        ];
+        ]);
         $this->requirementModal = true;
     }
 
@@ -70,30 +73,28 @@ class RequirementManager extends Component
         CreateRequirementAction $createAction,
         UpdateRequirementAction $updateAction,
     ): void {
-        $this->validate([
-            'formData.document_id' => 'required|exists:documents,id',
-            'formData.is_mandatory' => 'boolean',
-        ]);
+        $this->form->validate();
 
         try {
-            if ($this->formData['id']) {
-                $requirement = InternshipDocumentRequirement::findOrFail($this->formData['id']);
-                $updateAction->execute($requirement, $this->formData['document_id'], $this->formData['is_mandatory']);
+            if ($this->form->id) {
+                $requirement = InternshipDocumentRequirement::findOrFail($this->form->id);
+                $updateAction->execute($requirement, $this->form->document_id, $this->form->is_mandatory);
             } else {
-                $createAction->execute($this->internshipId, $this->formData['document_id'], $this->formData['is_mandatory']);
+                $createAction->execute($this->internshipId, $this->form->document_id, $this->form->is_mandatory);
             }
 
-            flash()->success('Requirement saved successfully.');
+            flash()->success(__('internship.requirement_saved'));
             $this->requirementModal = false;
         } catch (\RuntimeException $e) {
             flash()->error($e->getMessage());
         }
     }
 
-    public function remove(InternshipDocumentRequirement $requirement, DeleteRequirementAction $action): void
+    public function remove(string $id, DeleteRequirementAction $action): void
     {
+        $requirement = InternshipDocumentRequirement::findOrFail($id);
         $action->execute($requirement);
-        flash()->success('Requirement removed.');
+        flash()->success(__('internship.requirement_removed'));
     }
 
     public function render(): View

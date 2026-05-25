@@ -32,6 +32,6 @@ class InternshipGroupPolicy extends BasePolicy
 
     public function delete(User $user, InternshipGroup $group): bool
     {
-        return $user->hasRole('super_admin');
+        return $this->isAdmin($user);
     }
 }

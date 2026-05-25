@@ -71,4 +71,20 @@ return [
 
     'date_before_academic_year_start' => 'Tanggal mulai :date sebelum tahun akademik dimulai (:year_start).',
     'date_after_academic_year_end' => 'Tanggal selesai :date setelah tahun akademik berakhir (:year_end).',
+
+    // Groups
+    'group_created' => 'Grup berhasil dibuat.',
+    'group_updated' => 'Grup berhasil diperbarui.',
+    'group_deleted' => 'Grup berhasil dihapus.',
+    'member_added' => 'Anggota berhasil ditambahkan.',
+    'member_removed' => 'Anggota berhasil dihapus.',
+
+    // Phases
+    'phase_created' => 'Tahapan berhasil dibuat.',
+    'phase_updated' => 'Tahapan berhasil diperbarui.',
+    'phase_deleted' => 'Tahapan berhasil dihapus.',
+
+    // Requirements
+    'requirement_saved' => 'Persyaratan berhasil disimpan.',
+    'requirement_removed' => 'Persyaratan berhasil dihapus.',
 ];
