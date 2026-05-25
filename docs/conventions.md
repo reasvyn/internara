@@ -155,7 +155,7 @@ protected $attributes = [
 ## 8. Policies
 
 - Extend `BasePolicy` (provides `AuthorizesRoles` and `AuthorizesOwnership` traits).
-- Register via `Gate::policy()` in `AppServiceProvider`.
+- Register via `Gate::policy()` in `DomainServiceProvider` (auto-discovered from `app/Domain/*/Policies/`).
 - `super_admin` bypasses all gates via `Gate::before()`.
 
 ## 9. Livewire Components
@@ -186,8 +186,7 @@ Rules:
 - Naming: `{Entity}Form` — `UserForm`, `InternshipForm`.
 - All form state (public properties), validation rules, and form-specific
   logic live inside the Form Object.
-- The parent component delegates to the Form Object via `#[Rule]` attributes
-  or explicit `$form->validate()` calls.
+- The parent component delegates to the Form Object via explicit `$form->validate()` calls.
 - Form Objects must NOT call Actions directly — they return validated data
   to the parent component, which dispatches the Action.
 
@@ -236,9 +235,7 @@ class SetupWizard extends Component
 **Rationale:** Without Form Objects, components accumulate dozens of flat
 `public` properties with scattering validation rules. Form Objects group
 related fields, centralize validation, enable reuse across components, and
-can be unit-tested independently of the Livewire lifecycle. The current
-codebase has 89 Livewire components with inline form state — migrating to
-Form Objects progressively reduces coupling and improves testability.
+can be unit-tested independently of the Livewire lifecycle.
 
 ## 10. Controllers & Routes
 

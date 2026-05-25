@@ -120,21 +120,7 @@ in the wizard:
 Attach file templates if available. Requirements can be mandatory or
 optional.
 
-### 10. Schedule Briefings
-
-**Internship → Briefings** — create briefing sessions to prepare students
-before placement:
-
-| Field | Example |
-|---|---|
-| Title | "PKL Preparation Briefing" |
-| Date & Time | July 28, 2025 09:00 |
-| Location | School Hall |
-| Mandatory | Yes |
-
-Attendance is recorded during the briefing via the system.
-
-### 11. Open Student Registration
+### 10. Open Student Registration
 
 **Registration** — open the registration period so students can apply:
 
@@ -208,8 +194,7 @@ Phase 2 — People
 Phase 3 — Internship Setup
 □ 9. Internship period created
 □ 10. Document requirements configured
-□ 11. Briefing sessions scheduled
-□ 12. Registration opened for students
+□ 11. Registration opened for students
 
 Phase 4 — Placements
 □ 13. Student registrations verified
@@ -236,7 +221,7 @@ Phase 5 — Live
 | [Partnership](domain/partnership.md) | Company and MoU management |
 | [Registration](domain/registration.md) | Student registration and verification |
 | [Placement](domain/placement.md) | Student placement and change requests |
-| [Internship](domain/internship.md) | Periods, briefings, document requirements |
+| [Internship](domain/internship.md) | Periods, document requirements |
 | [Mentor](domain/mentor.md) | Mentor assignment and supervision logs |
 | [Attendance](domain/attendance.md) | Clock-in/out, absence requests |
 | [Assignment](domain/assignment.md) | Assignments, submissions, grading |

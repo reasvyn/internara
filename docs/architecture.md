@@ -20,8 +20,8 @@ The domain directories are vertical slices that cross all layers below Layer 11.
           │  ├── Enums/   ├── Entities/ ├── Policies/ ├── ...        │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
- Layer 11 ┌──────────────────────────────────────────────────────────┐
-  UI /    │  Livewire 4 components (89)    Blade templates           │
+  Layer 11 ┌──────────────────────────────────────────────────────────┐
+  UI /    │  Livewire 4 components (80)    Blade templates           │
   Present.│  maryUI  +  DaisyUI  +  Alpine.js  +  Tailwind CSS v4   │
           │  resources/views/{domain}/     static assets             │
           └──────────────────────────────────────────────────────────┘
@@ -39,20 +39,20 @@ The domain directories are vertical slices that cross all layers below Layer 11.
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 8 ┌──────────────────────────────────────────────────────────┐
-  Author. │  Policies (34)  RBAC (5 roles)  Functional roles        │
+  Author. │  Policies (36)  RBAC (5 roles)  Functional roles        │
           │  BasePolicy → AuthorizesRoles + AuthorizesOwnership    │
           │  spatie/laravel-permission.  Gate::before(super_admin)   │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 7 ┌──────────────────────────────────────────────────────────┐
-  Business│  Actions (156)  → 1 class = 1 use case  →  execute()   │
+  Business│  Actions (161)  → 1 class = 1 use case  →  execute()   │
   Ops     │  BaseAction → transaction() + log() + error handling    │
           │  app/Domain/*/Actions/ delegating all persistence       │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
    Layer 6 ┌──────────────────────────────────────────────────────────┐
-  Domain  │  Enums  (LabelEnum, StatusEnum, ColorableEnum)          │
-  Rules   │  Entities (26, final readonly, zero framework deps)    │
+   Domain  │  Enums  (35, LabelEnum, StatusEnum, ColorableEnum)      │
+  Rules   │  Entities (27, final readonly, zero framework deps)    │
           │  Entity State Classes (InternshipState, PartnershipState)│
           │  Data DTOs (AuditCheck, AuditReport)                    │
           │  app/Domain/*/Enums/  Entities/  Data/                  │
@@ -81,7 +81,7 @@ The domain directories are vertical slices that cross all layers below Layer 11.
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 2 ┌──────────────────────────────────────────────────────────┐
-  Persist.│  Database: SQLite/MySQL, 75 tables, migrations          │
+  Persist.│  Database: SQLite/MySQL, 63 migrations                  │
           │  Config: .env, config/*.php, Runtime settings table     │
           │  Files: Spatie Media Library (polymorphic attachments)  │
           │  Cache: Laravel cache + queue (jobs) + session          │
@@ -160,7 +160,7 @@ Not every domain needs every layer. `Mentee` might only need Models + Livewire +
 | **Partnership** | External relationships | Companies, partnership agreements |
 | **Placement** | Slot management | Capacity, direct assignments, change requests |
 | **Registration** | Student enrollment | Applications, wizard, document upload |
-| **Internship** | Program execution | Briefings, reports, requirements |
+| **Internship** | Program execution | Reports, requirements |
 | **Mentor** | Mentoring & supervision | Logs, teacher/supervisor portals |
 | **Mentee** | Student role | Dashboard, program participation |
 | **Attendance** | Presence tracking | Clock-in/out, absence requests |
@@ -170,7 +170,7 @@ Not every domain needs every layer. `Mentee` might only need Models + Livewire +
 | **Incident** | Issue reporting | Report, investigation, resolution |
 | **Assignment** | Tasks & submissions | Creation, grading workflow |
 | **Assessment** | Competency evaluation | Rubrics, scoring, presentations |
-| **Evaluation** | Mentor quality | Feedback collection |
+| **Evaluation** | Program & mentor quality | Multi-type feedback collection (program, company, facility, mentor, overall) |
 | **Document** | Template management | Rendering, report generation |
 | **Certificate** | Credentialing | Issuance, templates, revocation |
 

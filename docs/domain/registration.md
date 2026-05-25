@@ -4,7 +4,7 @@
 
 Registration manages the entire journey from "I want to intern" to "I am actively participating 
 in an internship." It is the gateway domain — a student cannot access any internship activity 
-(attendance, assignments, logbook, evaluations, briefings) without an active registration. This 
+(attendance, assignments, logbook, evaluations) without an active registration. This 
 domain owns the application wizard (the multi-step form that collects student information and 
 documents), the document upload requirements (defining what must be submitted per program), the 
 approval workflow (admin review, approval, rejection, or revision requests), the registration 
@@ -92,7 +92,7 @@ performs a cross-domain readiness check. It queries: Attendance domain (minimum 
 percentage met?), Assignment domain (all required assignments submitted with passing grades?), 
 Assessment domain (all required evaluations and assessments completed?), Guidance domain (all 
 required documents acknowledged?), Logbook domain (minimum entry count and consistency met?), 
-Schedule domain (mandatory briefings attended?), and Internship domain (all program-level 
+and Internship domain (all program-level 
 requirements satisfied?). Each check returns pass/fail with details. The check is read-only — 
 it queries data from other domains but never modifies it. The results are presented as a 
 checklist showing which requirements are met and which are not, with specific details for each 

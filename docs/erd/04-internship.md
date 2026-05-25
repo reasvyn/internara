@@ -1,14 +1,14 @@
 # 04 — Internship Program
 
-> **Lifecycle:** Program creation → Placement slots → Briefing sessions → Scheduling → Document requirements
+> **Lifecycle:** Program creation → Placement slots → Scheduling → Document requirements
 > **Domains:** `Internship`, `Schedule`
-> **Tables:** 6 (`internships`, `briefings`, `briefing_attendances`, `internship_document_requirements`, `placement_change_requests`, `schedules`)
+> **Tables:** 4 (`internships`, `internship_document_requirements`, `placement_change_requests`, `schedules`)
 
 ---
 
 ## Purpose
 
-Defines the internship program container — the overarching structure that holds all other lifecycles. An `internships` row represents one internship period (semester) for a specific academic year. It configures dates, weights, and program-level settings. Supporting entities handle pre-internship briefings, document requirements, scheduling, and placement changes.
+Defines the internship program container — the overarching structure that holds all other lifecycles. An `internships` row represents one internship period (semester) for a specific academic year. It configures dates, weights, and program-level settings. Supporting entities handle document requirements, scheduling, and placement changes.
 
 ---
 
@@ -51,39 +51,6 @@ draft ──► open ──► active ──► completed ──► archived
 **Constraint:** `presentation_weight + report_weight` should equal 100 (enforced in application).
 
 **Foreign Keys:** Referenced by 10+ tables. This is the second most-referenced table after `users`.
-
-### briefings
-
-Pre-internship orientation sessions.
-
-| Column | Type | Constraints | Purpose |
-|---|---|---|---|
-| id | varchar(36) | PK, UUID | |
-| title | varchar(255) | NOT NULL | Briefing title |
-| description | text | NULLABLE | Detailed agenda |
-| date | datetime | NOT NULL | Scheduled date/time |
-| location | varchar(255) | NULLABLE | Physical room or virtual link |
-| is_mandatory | boolean | DEFAULT true | Whether attendance is required |
-| internship_id | varchar(36) | FK → internships(id), CAS | Parent program |
-| created_by | varchar(36) | FK → users(id), idx | Who created the briefing |
-| created_at | timestamp | | |
-| updated_at | timestamp | | |
-
-### briefing_attendances
-
-Attendance records for briefing sessions.
-
-| Column | Type | Constraints | Purpose |
-|---|---|---|---|
-| id | varchar(36) | PK, UUID | |
-| briefing_id | varchar(36) | FK → briefings(id), CAS | Which briefing |
-| user_id | varchar(36) | FK → users(id), CAS | Which student |
-| attended | boolean | DEFAULT false | Marked present/absent |
-| notes | text | NULLABLE | Reason for absence, etc. |
-| created_at | timestamp | | |
-| updated_at | timestamp | | |
-
-**Constraint:** One record per `[briefing_id, user_id]` pair (enforced in application, no DB unique constraint because absent students may not have a record).
 
 ### internship_document_requirements
 
@@ -135,7 +102,7 @@ Calendar events linked to internship programs.
 | description | text | NULLABLE | |
 | start_at | datetime | NOT NULL | Event start |
 | end_at | datetime | NULLABLE | Event end |
-| type | varchar(255) | NOT NULL | 'briefing', 'presentation', 'visit', 'deadline', 'other' |
+| type | varchar(255) | NOT NULL | 'presentation', 'visit', 'deadline', 'other' |
 | location | varchar(255) | NULLABLE | |
 | internship_id | varchar(36) | FK → internships(id), idx | Associated program (nullable for school-wide events) |
 | created_by | varchar(36) | FK → users(id) | |
@@ -196,5 +163,4 @@ draft ──────► open ──────► active ──────
 | `internships.id` | `assignments.internship_id` | 08-assignment |
 | `internships.id` | `rubrics.internship_id` | 09-assessment |
 | `internships.id` | `schedules.internship_id` | 04-internship |
-| `internships.id` | `briefings.internship_id` | 04-internship |
 | `internships.id` | `internship_document_requirements.internship_id` | 04-internship |

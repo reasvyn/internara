@@ -34,7 +34,7 @@
 | **Placement** | Slot management, quotas, direct assignments, change requests | [API Reference](placement-reference.md) |
 | **Registration** | Student enrollment, applications, document upload, wizard | [API Reference](registration-reference.md) |
 | **Mentee** | Student role activation, dashboard, program participation | [API Reference](mentee-reference.md) |
-| **Internship** | Program execution, briefings, reports, document requirements | [API Reference](internship-reference.md) |
+| **Internship** | Program execution, reports, document requirements | [API Reference](internship-reference.md) |
 
 ## Execution
 
@@ -43,7 +43,7 @@
 | **Mentor** | Mentoring, supervision logs, team groupings | [API Reference](mentor-reference.md) |
 | **Attendance** | Clock-in/out, geo-location, absence requests | [API Reference](attendance-reference.md) |
 | **Logbook** | Daily student journal entries, verification | [API Reference](logbook-reference.md) |
-| **Schedule** | Calendar events, deadlines, briefing scheduling | [API Reference](schedule-reference.md) |
+| **Schedule** | Calendar events, deadlines, event scheduling | [API Reference](schedule-reference.md) |
 | **Assignment** | Task creation, submissions, grading workflow | [API Reference](assignment-reference.md) |
 | **Guidance** | Handbooks, versioned documents, acknowledgements | [API Reference](guidance-reference.md) |
 | **Incident** | Issue reporting, investigation, resolution workflow | [API Reference](incident-reference.md) |

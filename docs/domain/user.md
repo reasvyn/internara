@@ -21,7 +21,7 @@ generation (system-wide unique usernames computed from user attributes with coll
 role-based dashboard routing (DashboardController inspects the user's highest-priority role and 
 redirects to the correct dashboard), profile editing (self-service updates to personal data with 
 appropriate validation), dashboard data aggregation (the student dashboard pulls together 
-assignment, attendance, logbook, evaluation, and briefing data from multiple domains for a 
+assignment, attendance, logbook, and evaluation data from multiple domains for a 
 unified overview), avatar management (single image per user with automated thumbnail conversion).
 
 **Out of scope:** Authentication and login flows (Auth domain handles login form, credential 

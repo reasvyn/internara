@@ -1,6 +1,6 @@
 # Internship — API Reference
 
-Total: 41 files
+Total: 35 files
 
 ## Actions
 
@@ -10,14 +10,11 @@ Total: 41 files
 | `Internship/Actions/ApproveReportAction.php` | `ApproveReportAction` | `BaseAction` | Approves a submitted internship report |
 | `Internship/Actions/BatchUpdateInternshipStatusAction.php` | `BatchUpdateInternshipStatusAction` | `BaseAction` | Batch updates statuses for multiple internships |
 | `Internship/Actions/CheckCloseReadinessAction.php` | `CheckCloseReadinessAction` | `BaseAction` | Checks if an internship is ready to close |
-| `Internship/Actions/CreateBriefingAction.php` | `CreateBriefingAction` | `BaseAction` | Creates a briefing session |
 | `Internship/Actions/CreateInternshipAction.php` | `CreateInternshipAction` | `BaseAction` | Creates a new internship period |
 | `Internship/Actions/CreateReportAction.php` | `CreateReportAction` | `BaseAction` | Creates an internship report draft |
 | `Internship/Actions/CreateRequirementAction.php` | `CreateRequirementAction` | `BaseAction` | Creates a document requirement for internship |
 | `Internship/Actions/DeleteInternshipAction.php` | `DeleteInternshipAction` | `BaseAction` | Deletes an internship |
 | `Internship/Actions/DeleteRequirementAction.php` | `DeleteRequirementAction` | `BaseAction` | Deletes a document requirement |
-| `Internship/Actions/OverrideBriefingAttendanceAction.php` | `OverrideBriefingAttendanceAction` | `BaseAction` | Admin override of briefing attendance |
-| `Internship/Actions/RecordBriefingAttendanceAction.php` | `RecordBriefingAttendanceAction` | `BaseAction` | Records attendance for a briefing |
 | `Internship/Actions/RequestReportRevisionAction.php` | `RequestReportRevisionAction` | `BaseAction` | Requests revision of a submitted report |
 | `Internship/Actions/SubmitReportAction.php` | `SubmitReportAction` | `BaseAction` | Submits a report for review |
 | `Internship/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseAction` | Updates internship details |
@@ -62,7 +59,6 @@ Total: 41 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Internship/Livewire/BriefingManager.php` | `BriefingManager` | `BaseRecordManager` | Manages briefings and attendance |
 | `Internship/Livewire/InternshipManager.php` | `InternshipManager` | `BaseRecordManager` | Full CRUD manager for internships |
 | `Internship/Livewire/ReportWriter.php` | `ReportWriter` | `Component` | Report writing/submission interface |
 | `Internship/Livewire/RequirementManager.php` | `RequirementManager` | `Component` | Manages document requirements |
@@ -71,8 +67,6 @@ Total: 41 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Internship/Models/Briefing.php` | `Briefing` | `BaseModel` | Eloquent model for briefing sessions |
-| `Internship/Models/BriefingAttendance.php` | `BriefingAttendance` | `BaseModel` | Eloquent model for briefing attendance records |
 | `Internship/Models/Internship.php` | `Internship` | `BaseModel` | Eloquent model for internships |
 | `Internship/Models/InternshipDocumentRequirement.php` | `InternshipDocumentRequirement` | `BaseModel` | Eloquent model for required documents |
 | `Internship/Models/Report.php` | `Report` | `BaseModel` | Eloquent model for internship reports |
