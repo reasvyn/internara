@@ -166,7 +166,7 @@ and `UserDashboard` were updated to match the existing convention.
 |-------|-----------|
 | **Models** | `User` (extends `Authenticatable`, UUID via `HasUuids`), `Profile` (extends `BaseModel`, on-demand creation), `Notification` (custom in-app notifications table) |
 | **Enums** | `BloodType` — `A`, `B`, `AB`, `O`; `Gender` — `MALE`, `FEMALE`; `EmploymentStatus` (keyed translations via `user.employment.*`) |
-| **Livewire** | `UserDashboard`, `ProfileEditor`, `RecentActivityList`, `NotificationCenter`, `NotificationBell`, `ActivityFeedManager`; Dashboards: `AdminDashboard`, `StudentDashboard`, `SupervisorDashboard`, `TeacherDashboard` |
+| **Livewire** | `UserDashboard` (base layout — shared header, sidebar with profile summary, recent activity, quick links), `ProfileEditor`, `RecentActivityList`, `NotificationCenter`, `NotificationBell`, `ActivityFeedManager`; Dashboards (extend `UserDashboard`): `AdminDashboard` (stat cards + readiness check), `StudentDashboard` (registration info + journal progress + action buttons), `TeacherDashboard` (stat cards + guidance logs), `SupervisorDashboard` (stat cards + verification queue) |
 | **Shared UI** | `x-shared::ui.display-field` — read-only display field for super admin immutable attributes (name, username) |
 | **Policies** | `ProfilePolicy`, `NotificationPolicy` |
 | **Support** | `UserIdentifierGenerator` (unique username generation with collision avoidance), `DashboardService` (role-based routing with `getDashboardForUser()` and `getSharedStats()`) |

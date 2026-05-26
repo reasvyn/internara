@@ -5,14 +5,21 @@ declare(strict_types=1);
 namespace App\Domain\User\Livewire;
 
 use App\Domain\Core\Models\ActivityLog;
+use App\Domain\User\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('shared::layouts.app')]
 class UserDashboard extends Component
 {
-    public function recentActivities(): Collection
+    public function getUser(): ?User
+    {
+        return auth()->user();
+    }
+
+    public function getRecentActivities(): Collection
     {
         return ActivityLog::causedBy(auth()->user())
             ->latest()
@@ -20,11 +27,8 @@ class UserDashboard extends Component
             ->get();
     }
 
-    #[Layout('shared::layouts.app')]
     public function render(): View
     {
-        return view('user.dashboard', [
-            'activities' => $this->recentActivities(),
-        ]);
+        return view('user.dashboard');
     }
 }
