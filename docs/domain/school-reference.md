@@ -36,7 +36,7 @@ Total: 24 files
 
 | File | Class | Extends | Fields | Used By |
 |---|---|---|---|---|
-| `School/Livewire/Forms/AcademicYearForm.php` | `AcademicYearForm` | `Form` | id, name, start_date, end_date | `AcademicYearManager` |
+| `School/Livewire/Forms/AcademicYearForm.php` | `AcademicYearForm` | `Form` | name, start_date, end_date | `AcademicYearManager` |
 | `School/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` | `Form` | id, name, description | `DepartmentManager` |
 | `School/Livewire/Forms/SchoolForm.php` | `SchoolForm` | `Form` | name, institutional_code, email, phone, address, website, fax, principal_name | `SchoolEditor` |
 
