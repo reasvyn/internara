@@ -111,7 +111,7 @@ class AcademicYearManager extends BaseRecordManager
 
     public function store(CreateAcademicYearAction $action): void
     {
-        $this->form->validate();
+        $this->form->validate($this->form->rules());
 
         $action->execute($this->form->toArray());
 
@@ -125,7 +125,7 @@ class AcademicYearManager extends BaseRecordManager
     {
         $year = AcademicYear::findOrFail($this->editingYearId);
 
-        $this->form->validate();
+        $this->form->validate($this->form->rules($this->editingYearId));
 
         $action->execute($year, $this->form->toArray());
 
