@@ -26,7 +26,7 @@ return [
             'title' => 'sidebar.foundation',
             'items' => [
                 ['route' => 'admin.school', 'icon' => 'o-academic-cap', 'label' => 'school.title'],
-                ['route' => 'admin.academic-years.index', 'icon' => 'o-calendar', 'label' => 'sidebar.academic_years'],
+                ['route' => 'admin.academic-years', 'icon' => 'o-calendar', 'label' => 'sidebar.academic_years'],
                 ['route' => 'admin.departments', 'icon' => 'o-rectangle-group', 'label' => 'department.title'],
             ],
         ],

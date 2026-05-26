@@ -73,6 +73,15 @@ class SystemSetting extends Component
         return app(GetAcademicYearsAction::class)->execute();
     }
 
+    #[Computed]
+    public function academicYearOptions(): array
+    {
+        return $this->academicYears->map(fn ($year) => [
+            'id' => $year->name,
+            'name' => $year->name,
+        ])->toArray();
+    }
+
     public function applyPreset(string $key): void
     {
         $this->brandingForm->applyPreset($key);

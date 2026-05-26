@@ -28,13 +28,8 @@
                         <x-mary-select
                             label="{{ __('setting.fields.active_academic_year') }}"
                             wire:model="generalForm.active_academic_year"
-                        >
-                            @forelse($this->academicYears as $year)
-                                <option value="{{ $year->name }}">{{ $year->name }}</option>
-                            @empty
-                                <option value="">{{ __('No academic years available') }}</option>
-                            @endforelse
-                        </x-mary-select>
+                            :options="$this->academicYearOptions"
+                        />
                     </div>
                 </x-mary-card>
 

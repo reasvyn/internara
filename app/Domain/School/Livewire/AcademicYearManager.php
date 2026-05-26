@@ -75,6 +75,17 @@ class AcademicYearManager extends BaseRecordManager
 
     // --- CRUD ---
 
+    public function toggleSelectAll(): void
+    {
+        $ids = $this->rows()->pluck('id')->toArray();
+
+        if (count($this->selectedIds) === count($ids)) {
+            $this->clearSelection();
+        } else {
+            $this->selectAll($ids);
+        }
+    }
+
     public function create(): void
     {
         $this->resetErrorBag();
