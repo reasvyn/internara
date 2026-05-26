@@ -74,7 +74,7 @@ Admin → RecoverySlipManager (admin/recovery-slips)
   │   └── GenerateRecoverySlipAction::execute(user)
   │       ├── 10 random codes (12 chars, uppercase)
   │       ├── Each hashed with Hash::make()
-  │       ├── Expiry: 24 hours
+  │       ├── Expiry: none (valid indefinitely until used)
   │       └── Logged: recovery_slips_generated
   └── Deliver codes offline (copy/screenshot/verbal)
 ```
@@ -89,7 +89,7 @@ User → /recover-account
   ├── Submit → AccountRecovery Livewire
   │   └── RedeemRecoverySlipAction::execute(username, code, password)
   │       ├── Find user by username
-  │       ├── Find unused, non-expired recovery code
+  │       ├── Find unused, non-expired recovery code (null expires_at or future)
   │       ├── Hash::check(code, code_hash)
   │       ├── Update user password
   │       ├── Mark code as used (used_at = now)
@@ -126,12 +126,12 @@ User → /recover-account
 | `code_hash` | varchar(255) | Bcrypt hash of the plaintext code |
 | `generated_at` | timestamp | When the batch was generated |
 | `used_at` | timestamp | Null = unused; set on redemption |
-| `expires_at` | timestamp | Codes invalid after this time (24h) |
+| `expires_at` | timestamp | Nullable. Null = never expires; set value = invalid after this time |
 
 Each code is single-use. Multiple codes per user (10 per batch). Codes are
 validated via `RecoveryCodeState::isValid()` which checks:
 - `used_at === null` (not yet redeemed)
-- `expires_at > now()` (not expired)
+- `expires_at === null || now < expires_at` (not expired, or no expiry)
 
 ---
 
