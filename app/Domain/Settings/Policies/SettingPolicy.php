@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Settings\Policies;
 
 use App\Domain\Core\Policies\BasePolicy;
-use App\Domain\Settings\Models\Setting;
 use App\Domain\User\Models\User;
 
 class SettingPolicy extends BasePolicy
@@ -25,12 +24,12 @@ class SettingPolicy extends BasePolicy
         return $user->hasRole('super_admin');
     }
 
-    public function update(User $user, Setting $setting): bool
+    public function update(User $user): bool
     {
         return $user->hasRole('super_admin');
     }
 
-    public function delete(User $user, Setting $setting): bool
+    public function delete(User $user): bool
     {
         return $user->hasRole('super_admin');
     }
