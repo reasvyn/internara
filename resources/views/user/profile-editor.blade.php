@@ -5,58 +5,61 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {{-- Main form --}}
         <div class="lg:col-span-2 space-y-6">
-            {{-- Profile Information --}}
             <x-mary-card class="bg-base-100 border border-base-content/10">
                 <x-slot:title><span class="font-semibold">{{ __('profile.information') }}</span></x-slot:title>
                 <x-slot:subtitle><span class="text-xs text-base-content/50">{{ __('profile.information_desc') }}</span></x-slot:subtitle>
 
                 <x-mary-form wire:submit="save">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-input label="{{ __('profile.sidebar.username') }}" :value="$user->username" readonly />
-                        <x-mary-input label="{{ __('profile.sidebar.email') }}" wire:model="profileForm.email" type="email" />
-                        <x-mary-input label="{{ __('setup.wizard.full_name') }}" wire:model="profileForm.name" />
-                        <x-mary-input label="{{ __('profile.sidebar.phone') }}" wire:model="profileForm.phone" />
-                        <x-mary-textarea label="{{ __('setup.wizard.school_address') }}" wire:model="profileForm.address" rows="2" class="md:col-span-2" />
+                        @if($this->isSuperAdmin())
+                            <x-shared::ui.display-field
+                                :label="__('setup.wizard.full_name')"
+                                :value="$user->name"
+                                icon="o-shield-check"
+                            />
+                            <x-shared::ui.display-field
+                                :label="__('profile.sidebar.username')"
+                                :value="$user->username"
+                                icon="o-at-symbol"
+                            />
+                        @else
+                            <x-mary-input :label="__('setup.wizard.full_name')" wire:model="profileForm.name" />
+                        @endif
+                        <x-mary-input :label="__('profile.sidebar.email')" wire:model="profileForm.email" type="email" />
+                        <x-mary-input :label="__('profile.sidebar.phone')" wire:model="profileForm.phone" />
+                        <x-mary-textarea :label="__('setup.wizard.school_address')" wire:model="profileForm.address" rows="2" class="md:col-span-2" />
                         <x-mary-textarea label="Bio" wire:model="profileForm.bio" rows="3" class="md:col-span-2" />
                     </div>
+
+                    @if($this->isStaff())
+                        <hr class="my-6 border-base-content/10" />
+
+                        <h3 class="font-semibold mb-4">{{ __('profile.staff_information') }}</h3>
+                        <p class="text-xs text-base-content/50 mb-4">{{ __('profile.staff_information_desc') }}</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <x-mary-select :label="__('profile.employment_status')" wire:model="profileForm.employment_status" :placeholder="__('profile.select_option')">
+                                @foreach(App\Domain\User\Enums\EmploymentStatus::cases() as $status)
+                                    <option value="{{ $status->value }}">{{ $status->label() }}</option>
+                                @endforeach
+                            </x-mary-select>
+                            <x-mary-select :label="__('profile.position')" wire:model="profileForm.position" :placeholder="__('profile.select_option')">
+                                @foreach(App\Domain\User\Enums\StructuralPosition::cases() as $pos)
+                                    <option value="{{ $pos->value }}">{{ $pos->label() }}</option>
+                                @endforeach
+                            </x-mary-select>
+                            <x-mary-input label="NIP" wire:model="profileForm.nip" placeholder="National staff ID" />
+                            <x-mary-input label="NUPTK" wire:model="profileForm.nuptk" placeholder="Teacher registry number" />
+                            <x-mary-input :label="__('profile.competence_field')" wire:model="profileForm.competence_field" class="md:col-span-2" />
+                        </div>
+                    @endif
 
                     <x-slot:actions>
                         <x-mary-button :label="__('profile.save_profile')" type="submit" class="btn-primary" icon="o-check" spinner="save" />
                     </x-slot:actions>
                 </x-mary-form>
             </x-mary-card>
-
-            {{-- Staff Information --}}
-            @if($this->isStaff())
-                <x-mary-card class="bg-base-100 border border-base-content/10">
-                    <x-slot:title><span class="font-semibold">{{ __('profile.staff_information') }}</span></x-slot:title>
-                    <x-slot:subtitle><span class="text-xs text-base-content/50">{{ __('profile.staff_information_desc') }}</span></x-slot:subtitle>
-
-                    <x-mary-form wire:submit="save">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-mary-select label="{{ __('profile.employment_status') }}" wire:model="profileForm.employment_status" placeholder="{{ __('profile.select_option') }}">
-                                @foreach(App\Domain\User\Enums\EmploymentStatus::cases() as $status)
-                                    <option value="{{ $status->value }}">{{ $status->label() }}</option>
-                                @endforeach
-                            </x-mary-select>
-                            <x-mary-select label="{{ __('profile.position') }}" wire:model="profileForm.position" placeholder="{{ __('profile.select_option') }}">
-                                @foreach(App\Domain\User\Enums\StructuralPosition::cases() as $pos)
-                                    <option value="{{ $pos->value }}">{{ $pos->label() }}</option>
-                                @endforeach
-                            </x-mary-select>
-                            <x-mary-input label="NIP / National ID" wire:model="profileForm.nip" placeholder="National staff ID" />
-                            <x-mary-input label="NUPTK" wire:model="profileForm.nuptk" placeholder="Teacher registry number" />
-                            <x-mary-input label="{{ __('profile.competence_field') }}" wire:model="profileForm.competence_field" class="md:col-span-2" />
-                        </div>
-
-                        <x-slot:actions>
-                            <x-mary-button :label="__('profile.save_profile')" type="submit" class="btn-primary btn-sm" icon="o-check" spinner="save" />
-                        </x-slot:actions>
-                    </x-mary-form>
-                </x-mary-card>
-            @endif
 
             {{-- Password --}}
             <x-mary-card class="bg-base-100 border border-base-content/10">
@@ -122,16 +125,6 @@
                     <div class="flex items-center gap-3 text-base-content/40 text-xs">
                         <x-mary-icon name="o-calendar" class="size-4 shrink-0" />
                         <span>{{ __('profile.sidebar.joined', ['date' => $user->created_at->format('M Y')]) }}</span>
-                    </div>
-                </div>
-            </x-mary-card>
-
-            <x-mary-card class="bg-warning/5 border border-warning/20">
-                <div class="flex items-start gap-3">
-                    <x-mary-icon name="o-shield-exclamation" class="size-5 text-warning shrink-0 mt-0.5" />
-                    <div>
-                        <h4 class="text-sm font-semibold text-warning mb-1">{{ __('profile.password') }}</h4>
-                        <p class="text-xs text-warning/70">{{ __('profile.password_desc') }}</p>
                     </div>
                 </div>
             </x-mary-card>

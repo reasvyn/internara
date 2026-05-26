@@ -39,13 +39,16 @@ class ProfileEditor extends Component
     public function save(UpdateProfileAction $updateProfile): void
     {
         $rules = [
-            'profileForm.name' => 'required|string|max:255',
             'profileForm.email' => 'required|email|unique:users,email,'.$this->user->id,
             'profileForm.phone' => 'nullable|string|max:20',
             'profileForm.address' => 'nullable|string|max:500',
             'profileForm.bio' => 'nullable|string|max:1000',
             'avatar' => 'nullable|image|max:2048',
         ];
+
+        if (! $this->isSuperAdmin()) {
+            $rules['profileForm.name'] = 'required|string|max:255';
+        }
 
         if ($this->isStaff()) {
             $rules = array_merge($rules, [
@@ -76,7 +79,7 @@ class ProfileEditor extends Component
         $updateProfile->execute(
             $this->user,
             $data,
-            name: $this->profileForm->name,
+            name: $this->isSuperAdmin() ? null : $this->profileForm->name,
             email: $this->profileForm->email,
             avatar: $this->avatar,
         );
@@ -87,6 +90,11 @@ class ProfileEditor extends Component
     public function isStaff(): bool
     {
         return $this->user->hasAnyRole(['super_admin', 'admin', 'teacher']);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->user->hasRole('super_admin');
     }
 
     public function updatePassword(UpdateUserPasswordAction $updatePassword): void
