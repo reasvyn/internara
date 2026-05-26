@@ -274,12 +274,7 @@ describe('SetupDepartmentAction', function () {
 
 describe('SetupSuperAdminAction', function () {
     it('creates super admin user', function () {
-        $user = app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Administrator',
-            'username' => 'superadmin',
-            'email' => 'admin@example.com',
-            'password' => 'Secure1Pass',
-        ]);
+        $user = app(SetupSuperAdminAction::class)->execute('admin@example.com', 'Secure1Pass');
 
         expect($user)->toBeInstanceOf(User::class);
         expect($user->email)->toBe('admin@example.com');
@@ -288,12 +283,7 @@ describe('SetupSuperAdminAction', function () {
     });
 
     it('assigns canonical name and username from config defaults', function () {
-        app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Admin',
-            'username' => 'custom',
-            'email' => 'admin@example.com',
-            'password' => 'Secure1Pass',
-        ]);
+        app(SetupSuperAdminAction::class)->execute('admin@example.com', 'Secure1Pass');
 
         $user = User::first();
         expect($user->username)->toBe('superadmin');
@@ -301,22 +291,15 @@ describe('SetupSuperAdminAction', function () {
     });
 
     it('rejects re-initialization when immutable super admin exists', function () {
-        app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Admin', 'username' => 'superadmin',
-            'email' => 'admin@example.com', 'password' => 'Secure1Pass',
-        ]);
+        app(SetupSuperAdminAction::class)->execute('admin@example.com', 'Secure1Pass');
 
-        expect(fn () => app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Hacker', 'username' => 'hacker',
-            'email' => 'evil@example.com', 'password' => 'Hack1234',
-        ]))->toThrow(RejectedException::class, 'cannot be re-initialized');
+        expect(fn () => app(SetupSuperAdminAction::class)->execute('evil@example.com', 'Hack1234')
+        )->toThrow(RejectedException::class, 'cannot be re-initialized');
     });
 
     it('validates password strength', function () {
-        expect(fn () => app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Admin', 'username' => 'superadmin',
-            'email' => 'admin@example.com', 'password' => 'weak',
-        ]))->toThrow(ValidationException::class);
+        expect(fn () => app(SetupSuperAdminAction::class)->execute('admin@example.com', 'weak')
+        )->toThrow(ValidationException::class);
     });
 });
 

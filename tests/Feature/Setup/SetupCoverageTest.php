@@ -72,45 +72,30 @@ describe('validation boundaries - SetupSchoolAction', function () {
 
 describe('validation boundaries - SetupSuperAdminAction', function () {
     it('rejects password without uppercase', function () {
-        expect(fn () => app(SetupSuperAdminAction::class)->execute([
-            'name' => 'A', 'username' => 'sa',
-            'email' => 'a@b.com', 'password' => 'lowercase1',
-        ]))->toThrow(ValidationException::class);
+        expect(fn () => app(SetupSuperAdminAction::class)->execute('a@b.com', 'lowercase1')
+        )->toThrow(ValidationException::class);
     });
 
     it('rejects password without lowercase', function () {
-        expect(fn () => app(SetupSuperAdminAction::class)->execute([
-            'name' => 'A', 'username' => 'sa',
-            'email' => 'a@b.com', 'password' => 'UPPERCASE1',
-        ]))->toThrow(ValidationException::class);
+        expect(fn () => app(SetupSuperAdminAction::class)->execute('a@b.com', 'UPPERCASE1')
+        )->toThrow(ValidationException::class);
     });
 
     it('rejects password without digit', function () {
-        expect(fn () => app(SetupSuperAdminAction::class)->execute([
-            'name' => 'A', 'username' => 'sa',
-            'email' => 'a@b.com', 'password' => 'NoDigits!',
-        ]))->toThrow(ValidationException::class);
+        expect(fn () => app(SetupSuperAdminAction::class)->execute('a@b.com', 'NoDigits!')
+        )->toThrow(ValidationException::class);
     });
 
     it('rejects short password', function () {
-        expect(fn () => app(SetupSuperAdminAction::class)->execute([
-            'name' => 'A', 'username' => 'sa',
-            'email' => 'a@b.com', 'password' => 'Ab1',
-        ]))->toThrow(ValidationException::class);
+        expect(fn () => app(SetupSuperAdminAction::class)->execute('a@b.com', 'Ab1')
+        )->toThrow(ValidationException::class);
     });
 
-    it('rejects missing name', function () {
-        expect(fn () => app(SetupSuperAdminAction::class)->execute([
-            'name' => '', 'username' => 'sa',
-            'email' => 'a@b.com', 'password' => 'Secure1Pass',
-        ]))->toThrow(ValidationException::class);
-    });
+    it('enforces canonical name from config', function () {
+        $user = app(SetupSuperAdminAction::class)->execute('a@b.com', 'Secure1Pass');
 
-    it('rejects missing username', function () {
-        expect(fn () => app(SetupSuperAdminAction::class)->execute([
-            'name' => 'A', 'username' => '',
-            'email' => 'a@b.com', 'password' => 'Secure1Pass',
-        ]))->toThrow(ValidationException::class);
+        expect($user->name)->toBe(config('setup.defaults.admin_name', 'Administrator'));
+        expect($user->username)->toBe(config('setup.defaults.admin_username', 'superadmin'));
     });
 });
 

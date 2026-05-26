@@ -113,7 +113,9 @@ class EnvironmentAuditor
 
         try {
             if ($driver === 'sqlite') {
-                return file_exists($database) || is_writable(dirname($database));
+                $dbPath = str_starts_with($database, '/') ? $database : base_path($database);
+
+                return file_exists($dbPath) || is_writable(dirname($dbPath));
             }
 
             $dsn = "{$driver}:host={$host};port={$port};dbname={$database}";

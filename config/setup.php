@@ -72,7 +72,8 @@ return [
     'security' => [
         'rate_limit_attempts' => 20,
         'rate_limit_decay_seconds' => 60,
-        'finalization_window_minutes' => 5,
+        'finalization_window_seconds' => 30,
+        'finalization_window_minutes' => 0.5,
     ],
 
     /*

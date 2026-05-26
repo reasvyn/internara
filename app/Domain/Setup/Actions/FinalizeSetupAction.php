@@ -53,7 +53,7 @@ final class FinalizeSetupAction extends BaseAction
 
             $department = $this->setupDept->execute($school->id, $departmentData);
 
-            $admin = $this->setupAdmin->execute($adminData);
+            $admin = $this->setupAdmin->execute($adminData['email'], $adminData['password']);
 
             if ($internshipData !== null) {
                 $this->createInternship->execute($internshipData);
@@ -70,7 +70,7 @@ final class FinalizeSetupAction extends BaseAction
             $plaintext = Str::random($keyLength);
             $hashed = Hash::make($plaintext);
 
-            $setup->forceFill([
+            $setup->fill([
                 'is_installed' => true,
                 'completed_steps' => $completedSteps,
                 'setup_token' => null,

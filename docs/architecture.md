@@ -53,7 +53,7 @@ The domain directories are vertical slices that cross all layers below Layer 11.
    Layer 6 ┌──────────────────────────────────────────────────────────┐
    Domain  │  Enums  (35, LabelEnum, StatusEnum, ColorableEnum)      │
   Rules   │  Entities (27, final readonly, zero framework deps)    │
-          │  State entities (via BaseEntity, no separate States/)   │
+           │  State entities (via BaseEntity or BaseState for state machines) │
           │  Data DTOs (AuditCheck, AuditReport)                    │
           │  app/Domain/*/Enums/  Entities/  Data/                  │
           └──────────────────────────────────────────────────────────┘
@@ -66,7 +66,7 @@ The domain directories are vertical slices that cross all layers below Layer 11.
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 4 ┌──────────────────────────────────────────────────────────┐
-  Core    │  BaseModel  BaseAction  BaseEntity  BasePolicy           │
+  Core    │  BaseModel  BaseAction  BaseEntity  BasePolicy  BaseState  │
   Base    │  BaseRecordManager  BaseController  FormRequest          │
   Classes │  Data (DTO)                                              │
           │  SmartLogger  PiiMasker  HandlesActionErrors             │
@@ -118,7 +118,7 @@ A domain directory `app/Domain/{Domain}/` combines multiple layers:
 | 7 | `Actions/` | Business operations |
 | 6 | `Enums/`, `Entities/`, `Data/` | Domain rules (state entities are in `Entities/`, no separate `States/` directory) |
 | 5 | `Models/` | Persistence |
-| 4 | (uses Core's base classes) | |
+| 4 | (uses Core's base classes: `app/Domain/Core/{Actions,Models,Policies,States,...}`) | |
 | 3 | (uses Core's contracts) | |
 | 2 | (uses database/config) | |
 | 1 | (uses PHP/Laravel) | |
@@ -149,7 +149,7 @@ Not every domain needs every layer. `Mentee` might only need Models + Livewire +
 
 | Domain | Boundary | Key Concept |
 |--------|----------|-------------|
-| **Core** | Base classes & infrastructure everything depends on | `BaseModel`, `BaseEntity`, `BaseAction`, `AppException`, `Integrity` |
+| **Core** | Base classes & infrastructure everything depends on | `BaseModel`, `BaseEntity`, `BaseAction`, `BaseState`, `AppException`, `Integrity` |
 | **Shared** | Utilities shared across domains, no business logic | `Theme`, `CsvHandler`, `Environment`, `Locale` |
 | **Auth** | Identity & access control | Login, passwords, account lifecycle, recovery |
 | **User** | User profile & identity | Profile editing, dashboard routing |
@@ -183,6 +183,7 @@ Every layer has exactly one base class from Core. There is no alternative. Build
 | A database table | `extends BaseModel` | `extends Model` |
 | A business operation | `extends BaseAction` | A custom service with multiple methods |
 | Business rules | `extends BaseEntity` (final readonly) | A trait, a helper class, or inline in the model |
+| State machine | `extends BaseState` or `implements StatusEnum` | Custom status columns with if/else |
 | Authorization | `extends BasePolicy` | `Gate::define()` with inline closures |
 | A CRUD list page | `extends BaseRecordManager` | A Livewire component from scratch |
 | A form request | `extends FormRequest` (Core's) | `extends Request` or inline validation |

@@ -278,10 +278,15 @@ When the system is **already installed**:
 
 ```
 isInstalled = true
-├── Within finalization window (5 min) AND session authorized?
-│   ├── Yes → allow (grace period for complete screen)
-│   └── No  → abort 404 (self-destruct)
+├── Within finalization window (30 sec) AND setup.completed flag?
+│   ├── Yes → allow (grace period for complete screen only, step 7)
+│   └── No  → force-clear ALL setup session data → abort 404 (self-destruct)
 ```
+
+The finalization window uses `setup.completed`, NOT `setup.authorized`. The flag is set by
+`SetupWizard.finish()` after finalization succeeds, and cleared when the user clicks
+"Go to Login" (`finishSession()`). During this window, **only the complete page** is accessible —
+the wizard is locked and returns 404 for any other step.
 
 When the system is **not installed**:
 
@@ -290,11 +295,15 @@ isInstalled = false
 ├── Session authorized?
 │   ├── Yes → allow (already validated in this session)
 │   └── No  → check for token
-│       ├── Token in query string? → validate → if valid: authorize session
-│       ├── Token in POST body?    → validate → if valid: authorize + redirect GET
-│       ├── No token?              → render code entry form
-│       └── Token invalid          → 403 / Livewire JSON error
+│       ├── Token in query string? → validate → if valid: consume token (single-use), authorize session
+│       ├── Token in POST body?    → validate → if valid: consume token (single-use), authorize + redirect GET
+│       ├── No token?              → check rate limit → render code entry form or 429
+│       └── Token invalid          → rate-limit and reject (403 / Livewire JSON error)
 ```
+
+Token validation uses `ValidateSetupTokenAction` inside `lockForUpdate()` transaction.
+After successful validation, the token is immediately nullified in the database —
+it cannot be replayed. Valid tokens also clear the rate limiter for the IP.
 
 The code entry form (`views/setup/enter-code.blade.php`) allows administrators to enter
 the setup token manually without exposing it in a URL — mitigating server log and browser
@@ -344,6 +353,7 @@ CLI: setup:install                 Browser: setup?token=...
 The `SetupState` entity (`SetupState.php`) tracks:
 - `isInstalled()` — whether setup has been completed
 - `isStepCompleted(step)` — whether a specific step was finished
-- `isWithinFinalizationWindow(minutes)` — time limit for finalization
+- `isWithinFinalizationWindow(minutes)` — time limit for finalization (minutes)
+- `isWithinFinalizationWindowSeconds(seconds)` — time limit for finalization (seconds, default 30)
 - `hasRecoveryKey()` — whether a recovery key exists
 - `validateToken()` — validates setup access tokens

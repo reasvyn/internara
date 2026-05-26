@@ -26,7 +26,7 @@ final class GenerateSetupTokenAction extends BaseAction
             $expiresAt = now()->addMinutes($expiryMinutes);
 
             $setup = Setup::firstOrCreate([]);
-            $setup->forceFill([
+            $setup->fill([
                 'setup_token' => $encrypted,
                 'token_expires_at' => $expiresAt,
             ])->save();

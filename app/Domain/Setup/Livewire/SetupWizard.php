@@ -42,7 +42,15 @@ class SetupWizard extends Component
 
     public function mount(): void
     {
-        if (Setup::state()->isInstalled()) {
+        $state = Setup::state();
+
+        if ($state->isInstalled()) {
+            if (session()->get('setup.completed', false)) {
+                $this->currentStep = 7;
+
+                return;
+            }
+
             $this->redirect(route('login'));
 
             return;
@@ -215,8 +223,6 @@ class SetupWizard extends Component
                     'description' => $this->departmentForm->description,
                 ],
                 adminData: [
-                    'name' => $this->adminForm->name,
-                    'username' => $this->adminForm->username,
                     'email' => $this->adminForm->email,
                     'password' => $this->adminForm->password,
                 ],
@@ -224,6 +230,7 @@ class SetupWizard extends Component
             );
 
             $this->currentStep = 7;
+            session()->put('setup.completed', true);
             flash()->success(__('setup.wizard.setup_complete'));
         } catch (\RuntimeException $e) {
             SmartLogger::error('Setup wizard failed')
@@ -246,6 +253,7 @@ class SetupWizard extends Component
 
     public function finishSession(): void
     {
+        session()->forget('setup.completed');
         $this->redirect(route('login'));
     }
 

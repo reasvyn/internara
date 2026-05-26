@@ -69,8 +69,11 @@ boards the admin to the login page — the setup wizard is permanently locked af
 The token is generated via CLI (`php artisan setup:install`) or via the `GenerateSetupTokenAction`,
 encrypted with Laravel's encryption (Crypt::encryptString), and stored with a configurable
 expiration (default 60 minutes). The token can be passed as a query parameter (`?setup_token=...`)
-or stored in the session. Access is rate-limited (20 attempts per 60 seconds per IP).
-The middleware `ProtectSetupRouteMiddleware` (at `Http/Middleware/`) handles all token validation and session management.
+or submitted via the code entry form. **The token is single-use** — after successful validation,
+`ValidateSetupTokenAction` immediately nullifies `setup_token` and `token_expires_at` in the
+database inside a `lockForUpdate()` transaction, preventing replay attacks. Access is rate-limited
+(20 attempts per 60 seconds per IP). The middleware `ProtectSetupRouteMiddleware` (at
+`Http/Middleware/`) handles all token validation and session management.
 
 **Environment Audit.** Before any database writes occur, the system performs a comprehensive
 audit of the server environment. Each check is independent and self-contained — the auditor
@@ -81,13 +84,22 @@ terminal support. Each check result includes the expected value, the actual valu
 guidance on how to resolve failures. The audit is designed to be re-runnable — the installer
 can fix issues and re-run without side effects.
 
-**Setup Lock.** Once the wizard completes successfully, the application is permanently locked.
-The setup routes become inaccessible — attempting to access them returns a 404 response.
+**Setup Lock (Self-Destruction).** Once the wizard completes successfully, the application is
+permanently locked. The setup routes become inaccessible — attempting to access them returns a
+404 response. All setup session data (`setup.authorized`, `setup.token`, `setup.form_data`,
+`setup.completed`) is force-cleared on any post-install access attempt.
+
 The lock is stored in the database as `is_installed = true` on the Setup model. A short
-finalization window (configurable, default 5 minutes) allows the complete step to display
-after installation before the lock fully engages. The lock can only be reset through the CLI
-command `php artisan setup:reset`, which regenerates the setup token if the system is not
-already installed.
+finalization window (configurable, default **30 seconds**) allows the **complete step only**
+(step 7, showing the recovery key) to display after installation before the lock fully engages.
+During this window, the `setup.completed` session flag must be present — the old `setup.authorized`
+flag is NOT sufficient to bypass the lock. Once the user clicks "Go to Login," the
+`setup.completed` flag is cleared, and the window closes immediately.
+
+The lock can only be reset through `php artisan setup:install --force`, which runs
+`migrate:fresh` and regenerates a setup token. This requires the environment to be in the
+`force_allowed_environments` list (default: `local`, `dev`, `development`, `testing`).
+`php artisan setup:reset` only works before installation (`is_installed = false`).
 
 **Recovery Key.** After finalization, a cryptographically random recovery key (default 64
 characters) is generated. The plaintext key is shown once on the complete screen and hashed
@@ -124,7 +136,10 @@ Also reports whether the system has been set up via the Setup wizard.
 - **Admin:** As an admin, I want to run setup via CLI for automated deployments so that installation is repeatable
 - **System:** As the system, I want to permanently lock setup after completion so that no one can reinstall
 - Setup can only run once per installation — the setup lock is applied at completion and is
-irremovable through the web interface.
+irremovable through the web interface. The lock self-destructs: all setup routes return 404,
+all setup session data is cleared.
+- The setup token is **single-use**. After successful validation, it is immediately consumed
+(nullified in the database) inside a `lockForUpdate()` transaction to prevent replay attacks.
 - Environment checks MUST pass before any write operations (database migrations, user
 creation) are executed — no writes on a failing environment. The wizard blocks at step 1
 if critical checks fail.
@@ -132,8 +147,11 @@ if critical checks fail.
 least one super_admin exists in the system from the very beginning.
 - No default or well-known credentials are ever created under any circumstances; the wizard
 requires setting a password with minimum 8 characters.
-- The setup token is encrypted at rest and validated with hash_equals to prevent timing
-attacks.
+- The setup token is encrypted at rest, validated with hash_equals to prevent timing attacks,
+and **consumed after first successful validation** (single-use, replay-proof).
+- The finalization window uses `setup.completed` session flag (set only by `SetupWizard.finish()`
+on step 6 submission), NOT `setup.authorized`. This ensures only the complete page (step 7)
+is accessible during the window, not the full wizard.
 - All setup operations are logged via SmartLogger even though no authenticated user exists.
 - The wizard supports session persistence — if closed and reopened, it resumes from the last
 incomplete step (form data is saved to the session on every change).
@@ -167,8 +185,8 @@ Setup Wizard Steps:
 | `ValidateSetupTokenAction` | Validates a setup token for wizard access |
 | `SetupSchoolAction` | Creates the school record during setup |
 | `SetupDepartmentAction` | Creates the first department |
-| `SetupSuperAdminAction` | Creates the first super admin account (name and username from config defaults) |
-| `InitializeSuperAdminAction` | Initializes the super admin with proper roles, accepts optional custom name and username |
+| `SetupSuperAdminAction` | Creates the first super admin account. Accepts only `(string $email, string $password)` — name and username are ALWAYS from config defaults, enforced by type signature |
+| `InitializeSuperAdminAction` | Initializes the super admin with proper roles. Name and username always from config defaults |
 | `FinalizeSetupAction` | Completes setup, generates recovery key, locks installation |
 | `InstallSystemAction` | Non-interactive CLI installation |
 | `RecoverSuperAdminAction` | Emergency super admin account recovery |
@@ -178,8 +196,9 @@ Setup Wizard Steps:
 | Layer | Artifacts |
 |-------|-----------|
 | **Models** | `Setup` (installation state, token, recovery key; `belongsTo` School and Department) |
-| **Entity** | `SetupState` (installation checks, token validation, step completion, finalization window) |
+| **Entity** | `SetupState` (installation checks, token validation, step completion, finalization window in minutes and seconds) |
 | **Enums** | *(none — installation state tracked via `Setup` model boolean fields)* |
+| **Core/States** | `BaseState` (abstract readonly base for state entities, extends `BaseEntity`) |
 | **Livewire** | `SetupWizard` (7-step guided installation) |
 | **Livewire/Forms** | `SchoolForm`, `DepartmentForm`, `AdminForm`, `InternshipForm` |
 | **Http/Middleware** | `ProtectSetupRouteMiddleware`, `RequireSetupAccessMiddleware` |

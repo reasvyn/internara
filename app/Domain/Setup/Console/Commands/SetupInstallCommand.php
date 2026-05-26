@@ -43,12 +43,10 @@ class SetupInstallCommand extends Command
     {
         $this->displayBanner();
 
-        if ($this->option('force')) {
-            $this->components->warn(__('setup.cli.force_warning'));
-        }
-
         try {
-            if ($this->isInstalled() && ! $this->option('force')) {
+            $isInstalled = $this->isInstalled();
+
+            if ($isInstalled && ! $this->option('force')) {
                 error(__('setup.cli.already_installed'));
                 $this->info(__('setup.cli.try_health_check'));
 
@@ -56,11 +54,20 @@ class SetupInstallCommand extends Command
             }
 
             if ($this->option('force')) {
+                $this->components->warn(__('setup.cli.force_warning'));
+
                 $allowed = config('setup.force_allowed_environments', ['local', 'dev', 'development', 'testing']);
                 if (! in_array(app()->environment(), $allowed, true)) {
                     error(__('setup.cli.force_restricted'));
 
                     return self::FAILURE;
+                }
+
+                if (app()->resolved('session.store')) {
+                    session()->forget([
+                        'setup.authorized', 'setup.token', 'setup.token_input',
+                        'setup.form_data', 'setup.completed',
+                    ]);
                 }
             }
 
@@ -111,7 +118,7 @@ class SetupInstallCommand extends Command
                 ->event('installation.started')
                 ->save();
 
-            $tokenData = $this->installSystem->execute((bool) $this->option('force'));
+            $tokenData = $this->installSystem->execute((bool) $this->option('force'), $report);
 
             if ($this->option('optimize')) {
                 $this->components->task(
