@@ -18,8 +18,8 @@ class PasswordForm extends Form
     protected function rules(): array
     {
         return [
-            'passwordForm.current_password' => ['required', 'current_password'],
-            'passwordForm.password' => ['required', 'confirmed', Password::defaults()],
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }
 
