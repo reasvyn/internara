@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 use App\Domain\Auth\Actions\ConfirmPasswordAction;
 use App\Domain\Auth\Actions\DetectUserAccountCloneAction;
 use App\Domain\Auth\Actions\GenerateRecoverySlipAction;

@@ -12,7 +12,7 @@ Core is the architectural foundation — every domain depends on it, it depends 
 | **Models/Concerns** | *(none currently)* |
 | **Entities** | `BaseEntity` (abstract readonly class, `fromModel(Model): static` — the single framework dependency) |
 | **Actions** | `BaseAction` (abstract — `execute()`, `transaction()` wrapping, `log()` via SmartLogger, `moduleName()` auto-detection from namespace) |
-| **Support** | `SmartLogger` (fluent dual-channel logger — system + activity, PII masking, context enrichment), `PiiMasker` (static masker for passwords, tokens, emails, phones, names, credit cards, SSNs), `HandlesActionErrors` (trait — try-catch-log-rethrow), `Integrity` (final static — `verify()` checks `composer.json` author at boot, attribution protection) |
+| **Support** | `SmartLogger` (fluent dual-channel logger — system + activity, PII masking, context enrichment), `PiiMasker` (static masker for passwords, tokens, emails, phones, names, credit cards, SSNs), `HandlesActionErrors` (trait — try-catch-log-rethrow), `Integrity` (final static — `verify()` checks `composer.json` author at boot, attribution protection), `PasswordRules` (shared password validation rules — `default()` and `defaultAsArray()`, ensures consistent password policy across all Auth and Setup actions) |
 | **Policies** | `BasePolicy` (abstract, bundles `AuthorizesOwnership` + `AuthorizesRoles` traits) |
 | **Policies/Concerns** | `AuthorizesOwnership` (trait — `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()`), `AuthorizesRoles` (trait — `isAdmin()`, `isTeacher()`, `isStudent()`, `isSupervisor()`, `hasAnyOfRoles()`) |
 | **Exceptions** | `AppException` (abstract, extends RuntimeException, uses `HasExceptionContext`), `DomainException` (abstract, parallel tree, deliberately NOT a child of AppException), 4 abstract branches + 6 concrete exceptions |
@@ -97,7 +97,7 @@ Core has no end-user stories — it provides the architectural foundation every 
 | **Enums** | `AuditStatus` — `PASS`, `FAIL`, `WARN`; `AuditCategory` — `Requirements`, `Permissions`, `Database`, `Terminal`, `Recommendations` |
 | **Contracts** | `LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications` |
 | **Exceptions** | `AppException` → `ActionException`, `PresentationException`, `InfrastructureException`; `DomainException` → `RejectedException` |
-| **Support** | `SmartLogger` (fluent logger), `PiiMasker`, `HandlesActionErrors` (trait), `Integrity` |
+| **Support** | `SmartLogger` (fluent logger), `PiiMasker`, `HandlesActionErrors` (trait), `Integrity`, `PasswordRules` |
 | **Livewire** | `BaseRecordManager` (CRUD base with search, filter, sort, pagination, bulk actions) |
 | **Middleware** | `SecurityHeaders`, `LogContext` |
 | **Channels** | `CustomDatabaseChannel` (custom notification channel) |

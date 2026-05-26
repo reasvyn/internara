@@ -33,13 +33,13 @@ describe('RecoveryCodeState', function () {
         expect($state->isValid())->toBeFalse();
     });
 
-    it('is invalid when expires_at is null', function () {
+    it('is valid when expires_at is null (no expiry)', function () {
         $state = new RecoveryCodeState(
             usedAt: null,
             expiresAt: null,
         );
 
-        expect($state->isValid())->toBeFalse();
+        expect($state->isValid())->toBeTrue();
     });
 
     it('is final readonly', function () {

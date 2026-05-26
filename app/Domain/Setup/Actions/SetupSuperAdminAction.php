@@ -8,6 +8,7 @@ use App\Domain\Auth\Entities\SuperAdminIntegrityRules;
 use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
+use App\Domain\Core\Support\PasswordRules;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -18,7 +19,7 @@ class SetupSuperAdminAction extends BaseAction
     {
         Validator::make(['email' => $email, 'password' => $password], [
             'email' => ['required', 'email'],
-            'password' => ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/'],
+            'password' => PasswordRules::defaultAsArray(),
         ])->validate();
 
         return $this->withErrorHandling(function () use ($email, $password) {

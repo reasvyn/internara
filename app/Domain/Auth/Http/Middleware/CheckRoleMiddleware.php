@@ -61,9 +61,6 @@ class CheckRoleMiddleware
             );
         }
 
-        abort(
-            403,
-            'Your identity profile does not have the required clearance level to access this encrypted node.',
-        );
+        abort(403, __('Access denied.'));
     }
 }

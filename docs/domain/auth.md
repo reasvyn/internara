@@ -32,16 +32,21 @@ beyond authentication events (Admin domain), GDPR compliance workflows (Admin do
 ## Key Concepts
 
 **Authentication.** Users authenticate with their email address or username and password. The 
-login process performs four validations in sequence: (1) user resolution — does the email or 
-username exist; (2) account status check — does the account's current status permit login 
-(PROVISIONED, SUSPENDED, ARCHIVED, and LOCKED accounts are blocked); (3) credential verification 
-— does the password match the stored hash; (4) auto-lock protection — after 10 consecutive 
-failed attempts, the account is automatically locked with reason `too_many_failed_attempts`.
-Failed attempt counters are stored in cache for 1 hour and reset on successful login.
+login process performs five validations in sequence: (1) user resolution — does the email or 
+username exist; (2) account status check — does the account's current status permit login via 
+`AccountStatus::allowsLogin()` (PROVISIONED, SUSPENDED, and ARCHIVED are blocked); (3) lock 
+check — is the account manually locked (`locked_at` set); (4) credential verification — does 
+the password match the stored hash; (5) auto-lock protection — after 10 consecutive failed 
+attempts (configurable via `auth.throttle.auto_lock_threshold`), the account is automatically 
+locked with reason `too_many_failed_attempts`. Failed attempt counters use `Cache::lock()` for 
+atomic increments to prevent race conditions under concurrent requests, are stored in cache 
+for 1 hour, and reset on successful login.
 
 Every login attempt, successful or failed, is logged via SmartLogger with user ID, identifier,
-and attempt count. A global `AuthThrottleMiddleware` limits all auth endpoints to 30 requests
-per minute per IP, with per-endpoint inline rate limiters providing additional protection:
+and attempt count. The session is regenerated inside `LoginAction::execute()` itself — not in
+the Livewire component — ensuring session fixation protection regardless of caller (Livewire,
+API, or CLI). A global `AuthThrottleMiddleware` limits all auth endpoints to 30 requests per
+minute per IP, with per-endpoint inline rate limiters providing additional protection:
 
 | Endpoint | Limit | Decay |
 |---|---|---|
@@ -102,7 +107,7 @@ target user, timestamp, method, and outcome in the audit log.
 - **User:** As a user, I want to confirm my password before sensitive operations so that my account stays secure
 - **User:** As a user, I want to change my password from my profile so that I can update it regularly
 - Password reset links expire after 60 minutes and are single-use
-- New passwords must meet minimum complexity: at least 8 characters, mixed case, and at least one digit
+- New passwords must meet minimum complexity: at least 8 characters, mixed case, and at least one digit — enforced via `PasswordRules` helper (`app/Domain/Core/Support/PasswordRules.php`) across all Auth and Setup actions
 - Password confirmation sessions expire after a configurable timeout — the user must re-confirm for subsequent sensitive operations
 
 **Account Recovery**
@@ -193,7 +198,7 @@ PROTECTED: Immutable state — applies to super_admin accounts only.
 during recovery |
 | Core | BaseAction for operations, BaseEntity for business rule encapsulation (Apprentice, 
 RecoveryCodeState), SmartLogger for all authentication logging, StatusEnum contract for 
-AccountStatus, LabelEnum contract for Role |
+AccountStatus, LabelEnum contract for Role, PasswordRules for consistent password validation |
 | Registration | RegistrationCenter Livewire component (guest registration route) |
 
 

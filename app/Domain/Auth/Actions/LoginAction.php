@@ -45,6 +45,8 @@ class LoginAction extends BaseAction
 
         $this->clearFailedAttempts($user);
 
+        session()->regenerate();
+
         SmartLogger::info('login_success')
             ->event('login_success')
             ->module('Auth')
@@ -71,36 +73,26 @@ class LoginAction extends BaseAction
             throw new RuntimeException(__('auth.blocked'));
         }
 
-        if ($apprentice->isSuspended()) {
+        if (! $apprentice->status()->allowsLogin()) {
+            $status = $apprentice->status()->value;
+
             SmartLogger::info('login_blocked')
                 ->event('login_blocked')
                 ->module('Auth')
                 ->about($user)
-                ->withPayload(['status' => 'suspended'])
+                ->withPayload(['status' => $status])
                 ->activityOnly()
                 ->save();
 
             throw new RuntimeException(__('auth.blocked'));
         }
 
-        if ($apprentice->isArchived()) {
+        if ($apprentice->requiresSetup()) {
             SmartLogger::info('login_blocked')
                 ->event('login_blocked')
                 ->module('Auth')
                 ->about($user)
-                ->withPayload(['status' => 'archived'])
-                ->activityOnly()
-                ->save();
-
-            throw new RuntimeException(__('auth.blocked'));
-        }
-
-        if ($apprentice->isInactive()) {
-            SmartLogger::info('login_blocked')
-                ->event('login_blocked')
-                ->module('Auth')
-                ->about($user)
-                ->withPayload(['status' => 'inactive'])
+                ->withPayload(['reason' => 'setup_required'])
                 ->activityOnly()
                 ->save();
 
@@ -113,24 +105,32 @@ class LoginAction extends BaseAction
         $cacheKey = 'login-failures:'.$user->id;
         $threshold = (int) config('auth.throttle.auto_lock_threshold', 10);
 
-        $attempts = (int) Cache::get($cacheKey, 0) + 1;
-        Cache::put($cacheKey, $attempts, now()->addHours(1));
+        $lock = Cache::lock($cacheKey.'.lock', 5);
 
-        SmartLogger::info('login_failed')
-            ->event('login_failed')
-            ->module('Auth')
-            ->about($user)
-            ->withPayload(['attempts' => $attempts, 'threshold' => $threshold])
-            ->activityOnly()
-            ->save();
+        $lock->block(3);
 
-        if ($attempts >= $threshold) {
-            app(LockUserAccountAction::class)->execute(
-                $user,
-                reason: 'too_many_failed_attempts',
-            );
+        try {
+            $attempts = (int) Cache::get($cacheKey, 0) + 1;
+            Cache::put($cacheKey, $attempts, now()->addHours(1));
 
-            Cache::forget($cacheKey);
+            SmartLogger::info('login_failed')
+                ->event('login_failed')
+                ->module('Auth')
+                ->about($user)
+                ->withPayload(['attempts' => $attempts, 'threshold' => $threshold])
+                ->activityOnly()
+                ->save();
+
+            if ($attempts >= $threshold) {
+                app(LockUserAccountAction::class)->execute(
+                    $user,
+                    reason: 'too_many_failed_attempts',
+                );
+
+                Cache::forget($cacheKey);
+            }
+        } finally {
+            $lock->release();
         }
     }
 

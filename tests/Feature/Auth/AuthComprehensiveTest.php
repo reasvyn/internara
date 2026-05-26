@@ -109,19 +109,22 @@ describe('UserPolicy', function () {
 
 describe('LoginAction', function () {
     it('logs in with email', function () {
-        User::factory()->create(['email' => 'test@example.com', 'password' => Hash::make('Secure1Pass')]);
+        $user = User::factory()->create(['email' => 'test@example.com', 'password' => Hash::make('Secure1Pass')]);
+        $user->setStatus(AccountStatus::VERIFIED->value);
         $result = app(LoginAction::class)->execute('test@example.com', 'Secure1Pass');
         expect($result)->toBeInstanceOf(User::class);
     });
 
     it('logs in with username', function () {
-        User::factory()->create(['username' => 'testuser', 'email' => 't@t.com', 'password' => Hash::make('Secure1Pass')]);
+        $user = User::factory()->create(['username' => 'testuser', 'email' => 't@t.com', 'password' => Hash::make('Secure1Pass')]);
+        $user->setStatus(AccountStatus::VERIFIED->value);
         $result = app(LoginAction::class)->execute('testuser', 'Secure1Pass');
         expect($result)->toBeInstanceOf(User::class);
     });
 
     it('rejects wrong credentials', function () {
-        User::factory()->create(['email' => 'a@b.com', 'password' => Hash::make('right')]);
+        $user = User::factory()->create(['email' => 'a@b.com', 'password' => Hash::make('right')]);
+        $user->setStatus(AccountStatus::VERIFIED->value);
         expect(fn () => app(LoginAction::class)->execute('a@b.com', 'wrong'))
             ->toThrow(RuntimeException::class, __('auth.failed'));
     });
@@ -134,7 +137,8 @@ describe('LoginAction', function () {
     });
 
     it('blocks locked account', function () {
-        User::factory()->create(['email' => 'l@t.com', 'password' => Hash::make('Secure1Pass'), 'locked_at' => now(), 'locked_reason' => 'test']);
+        $user = User::factory()->create(['email' => 'l@t.com', 'password' => Hash::make('Secure1Pass'), 'locked_at' => now(), 'locked_reason' => 'test']);
+        $user->setStatus(AccountStatus::VERIFIED->value);
         expect(fn () => app(LoginAction::class)->execute('l@t.com', 'Secure1Pass'))
             ->toThrow(RuntimeException::class);
     });
@@ -146,11 +150,11 @@ describe('LoginAction', function () {
             ->toThrow(RuntimeException::class);
     });
 
-    it('blocks inactive account', function () {
+    it('allows inactive account to login (read-only)', function () {
         $user = User::factory()->create(['email' => 'i@t.com', 'password' => Hash::make('Secure1Pass')]);
         $user->setStatus(AccountStatus::INACTIVE->value);
-        expect(fn () => app(LoginAction::class)->execute('i@t.com', 'Secure1Pass'))
-            ->toThrow(RuntimeException::class);
+        $result = app(LoginAction::class)->execute('i@t.com', 'Secure1Pass');
+        expect($result->email)->toBe('i@t.com');
     });
 });
 

@@ -38,7 +38,6 @@ class Login extends Component
                 remember: $this->form->remember,
             );
 
-            session()->regenerate();
             RateLimiter::clear($throttleKey);
 
             flash()->success(__('auth.login.welcome_back', ['name' => $user->name]));

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Domain\Auth\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Core\Support\PasswordRules;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rules\Password;
 use RuntimeException;
 
 class UpdateUserPasswordAction extends BaseAction
@@ -32,8 +32,6 @@ class UpdateUserPasswordAction extends BaseAction
                     ->activityOnly()
                     ->save();
             });
-        } catch (RuntimeException $e) {
-            throw $e;
         } catch (\Throwable $e) {
             SmartLogger::error('Failed to update user password')
                 ->withPayload([
@@ -52,7 +50,7 @@ class UpdateUserPasswordAction extends BaseAction
         Validator::make([
             'password' => $newPassword,
         ], [
-            'password' => ['required', 'string', Password::min(8)->mixedCase()->numbers()],
+            'password' => PasswordRules::default(),
         ])->validate();
     }
 }
