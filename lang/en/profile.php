@@ -32,6 +32,11 @@ return [
     'position_guru_pembimbing' => 'Supervising Teacher',
     'position_supervisor_industri' => 'Industry Supervisor',
     'position_placeholder' => 'e.g., Head of Department',
+    'bio' => 'Bio',
+    'nip' => 'NIP',
+    'nip_placeholder' => 'National staff ID',
+    'nuptk' => 'NUPTK',
+    'nuptk_placeholder' => 'Teacher registry number',
     'new_password' => 'New Password',
     'confirm_password' => 'Confirm Password',
 
