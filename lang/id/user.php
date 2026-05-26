@@ -91,6 +91,8 @@ return [
         'edit' => 'Ubah Guru',
         'save' => 'Simpan Guru',
         'success_created' => 'Guru berhasil ditambahkan.',
+        'success_updated' => 'Guru berhasil diperbarui.',
+        'success_deleted' => 'Guru berhasil dihapus.',
     ],
     'supervisor' => [
         'title' => 'Manajemen Supervisor',
@@ -102,6 +104,8 @@ return [
         'edit' => 'Ubah Supervisor',
         'save' => 'Simpan Supervisor',
         'success_created' => 'Supervisor berhasil ditambahkan.',
+        'success_updated' => 'Supervisor berhasil diperbarui.',
+        'success_deleted' => 'Supervisor berhasil dihapus.',
     ],
     'admin' => [
         'title' => 'Manajemen Administrator',
@@ -111,6 +115,8 @@ return [
         'edit' => 'Ubah Admin',
         'save' => 'Simpan Admin',
         'success_created' => 'Admin berhasil ditambahkan.',
+        'success_updated' => 'Admin berhasil diperbarui.',
+        'success_deleted' => 'Admin berhasil dihapus.',
     ],
     'fields' => [
         'full_name' => 'Nama Lengkap',

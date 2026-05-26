@@ -160,6 +160,7 @@ return [
         'username_format' => 'The :attribute must start with "u" followed by at least 8 alphanumeric characters.',
     ],
 
+    '(and :count more error)' => '(and :count more error)',
     '(and :count more errors)' => '(and :count more errors)',
 
     'attributes' => [
