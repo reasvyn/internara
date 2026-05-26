@@ -16,6 +16,7 @@ use App\Domain\Shared\Support\CsvHandler;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\WithFileUploads;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DepartmentManager extends BaseRecordManager
 {
@@ -216,7 +217,7 @@ class DepartmentManager extends BaseRecordManager
         ]));
     }
 
-    public function export(CsvHandler $csv): mixed
+    public function export(CsvHandler $csv): StreamedResponse
     {
         $departments = Department::query()
             ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
@@ -226,10 +227,10 @@ class DepartmentManager extends BaseRecordManager
         return $csv->export($departments, ['name', 'description'],
             fn ($d) => [$d->name, $d->description ?? ''],
             'departments.csv',
-        )->send();
+        );
     }
 
-    public function exportSelected(CsvHandler $csv): mixed
+    public function exportSelected(CsvHandler $csv): ?StreamedResponse
     {
         if ($this->selectedIds === []) {
             flash()->warning(__('common.actions.no_records_selected'));
@@ -242,16 +243,16 @@ class DepartmentManager extends BaseRecordManager
         return $csv->export($departments, ['name', 'description'],
             fn ($d) => [$d->name, $d->description ?? ''],
             'departments-selected.csv',
-        )->send();
+        );
     }
 
-    public function downloadTemplate(CsvHandler $csv): mixed
+    public function downloadTemplate(CsvHandler $csv): StreamedResponse
     {
         return $csv->downloadTemplate(
             ['name', 'description'],
             [__('department.template_example_name'), __('department.template_example_description')],
             'departments-template.csv',
-        )->send();
+        );
     }
 
     public function stats(): array
