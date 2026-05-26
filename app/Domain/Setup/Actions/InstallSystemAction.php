@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Setup\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Core\Data\AuditReport;
 use App\Domain\Setup\Services\EnvironmentAuditor;
 use App\Domain\Setup\Support\SystemProvisioner;
 use Illuminate\Support\Carbon;
@@ -29,9 +30,11 @@ final class InstallSystemAction extends BaseAction
      *
      * @return array{plaintext: string, expires_at: Carbon}
      */
-    public function execute(bool $force = false): array
+    public function execute(bool $force = false, ?AuditReport $report = null): array
     {
-        $report = $this->auditor->audit();
+        if ($report === null) {
+            $report = $this->auditor->audit();
+        }
 
         if (! $report->passed()) {
             throw new RuntimeException('System audit check failed.');

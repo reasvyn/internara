@@ -14,18 +14,17 @@ use Illuminate\Support\Facades\Validator;
 
 class SetupSuperAdminAction extends BaseAction
 {
-    public function execute(array $data): User
+    public function execute(string $email, string $password): User
     {
-        Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string'],
+        Validator::make(['email' => $email, 'password' => $password], [
             'email' => ['required', 'email'],
             'password' => ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/'],
         ])->validate();
 
-        return $this->withErrorHandling(function () use ($data) {
-            return $this->transaction(function () use ($data) {
+        return $this->withErrorHandling(function () use ($email, $password) {
+            return $this->transaction(function () use ($email, $password) {
                 $username = config('setup.defaults.admin_username', 'superadmin');
+                $adminName = config('setup.defaults.admin_name', 'Administrator');
 
                 $existing = User::where('username', $username)->first();
 
@@ -40,9 +39,9 @@ class SetupSuperAdminAction extends BaseAction
                 $user = User::updateOrCreate(
                     ['username' => $username],
                     [
-                        'name' => config('setup.defaults.admin_name', 'Administrator'),
-                        'email' => $data['email'],
-                        'password' => Hash::make($data['password']),
+                        'name' => $adminName,
+                        'email' => $email,
+                        'password' => Hash::make($password),
                         'setup_required' => false,
                     ],
                 );
@@ -51,7 +50,7 @@ class SetupSuperAdminAction extends BaseAction
 
                 $user->assignRole(RoleEnum::SUPER_ADMIN->value);
 
-                $this->log('super_admin_created', $user, ['username' => $data['username']]);
+                $this->log('super_admin_created', $user, ['username' => $username]);
 
                 return $user;
             });

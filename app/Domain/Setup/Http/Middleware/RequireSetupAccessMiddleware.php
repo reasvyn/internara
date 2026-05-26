@@ -17,9 +17,10 @@ class RequireSetupAccessMiddleware
             return $next($request);
         }
 
-        $path = public_path(urldecode($request->path()));
+        $decoded = urldecode($request->path());
+        $resolved = realpath(public_path($decoded));
 
-        if (file_exists($path) && ! is_dir($path)) {
+        if ($resolved !== false && str_starts_with($resolved, public_path()) && ! is_dir($resolved)) {
             return $next($request);
         }
 

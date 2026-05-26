@@ -156,6 +156,18 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - All files must begin with `declare(strict_types=1)`.
 - Use `protected readonly` promotion for Action constructor dependencies.
 
+=== domain invariants ===
+
+# Domain Invariants (DO NOT VIOLATE)
+
+- **Super Admin name is ALWAYS `Administrator`** (from config `setup.defaults.admin_name`).
+- **Super Admin username is ALWAYS `superadmin`** (from config `setup.defaults.admin_username`).
+- These are canonical, non-customizable credentials enforced by `SetupSuperAdminAction`
+  which only accepts `(string $email, string $password)` — no name/username parameters.
+- Any code that calls `SetupSuperAdminAction::execute()` must NOT pass name or username.
+- The `InitializeSuperAdminAction` (CLI recovery) must also use config defaults, NOT caller-provided values.
+- `FinalizeSetupAction` must only extract `email` and `password` from `adminData` array.
+
 === deployments rules ===
 
 # Deployment

@@ -1,4 +1,4 @@
-@props(['title' => null])
+@props(['title' => null, 'error' => null])
 
 <x-shared::layouts.base :$title>
     <div class="min-h-screen flex flex-col bg-base-100">
@@ -49,7 +49,11 @@
                         class="btn-primary w-full"
                     />
 
-                    @if ($errors->any())
+                    @if ($error)
+                        <div class="bg-error/5 border border-error/20 rounded-lg px-4 py-3 text-sm text-error">
+                            {{ $error }}
+                        </div>
+                    @elseif ($errors->any())
                         <div class="bg-error/5 border border-error/20 rounded-lg px-4 py-3 text-sm text-error">
                             {{ $errors->first() }}
                         </div>

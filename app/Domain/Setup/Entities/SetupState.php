@@ -87,6 +87,15 @@ final readonly class SetupState extends BaseEntity
         return $this->updatedAt->diffInMinutes(now()) < $minutes;
     }
 
+    public function isWithinFinalizationWindowSeconds(int $seconds = 30): bool
+    {
+        if ($this->updatedAt === null) {
+            return false;
+        }
+
+        return $this->updatedAt->diffInSeconds(now()) < $seconds;
+    }
+
     public function hasRecoveryKey(): bool
     {
         return $this->recoveryKey !== null;

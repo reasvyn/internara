@@ -13,26 +13,33 @@ final class ValidateSetupTokenAction extends BaseAction
 {
     public function execute(string $token): void
     {
-        $setup = Setup::latest('created_at')->first();
+        $this->transaction(function () use ($token) {
+            $setup = Setup::lockForUpdate()->latest('created_at')->first();
 
-        if (! $setup) {
-            throw new RuntimeException('Invalid setup token.');
-        }
+            if (! $setup) {
+                throw new RuntimeException('Invalid setup token.');
+            }
 
-        $state = $setup->asSetupState();
+            $state = $setup->asSetupState();
 
-        if (! $state->hasStoredToken() || $state->isTokenExpired(now())) {
-            throw new RuntimeException('Invalid setup token.');
-        }
+            if (! $state->hasStoredToken() || $state->isTokenExpired(now())) {
+                throw new RuntimeException('Invalid setup token.');
+            }
 
-        try {
-            $decrypted = Crypt::decryptString($setup->setup_token);
-        } catch (\Throwable) {
-            throw new RuntimeException('Invalid setup token.');
-        }
+            try {
+                $decrypted = Crypt::decryptString($setup->setup_token);
+            } catch (\Throwable) {
+                throw new RuntimeException('Invalid setup token.');
+            }
 
-        if (! hash_equals($decrypted, $token)) {
-            throw new RuntimeException('Invalid setup token.');
-        }
+            if (! hash_equals($decrypted, $token)) {
+                throw new RuntimeException('Invalid setup token.');
+            }
+
+            $setup->fill([
+                'setup_token' => null,
+                'token_expires_at' => null,
+            ])->save();
+        });
     }
 }

@@ -207,12 +207,7 @@ describe('xss prevention', function () {
 
     it('uses canonical name from config, not input', function () {
         $xss = '<img src=x onerror=alert(1)>';
-        $user = app(SetupSuperAdminAction::class)->execute([
-            'name' => $xss,
-            'username' => 'sa',
-            'email' => 'admin@test.com',
-            'password' => 'Secure1Pass',
-        ]);
+        $user = app(SetupSuperAdminAction::class)->execute('admin@test.com', 'Secure1Pass');
 
         expect($user->name)->toBe(config('setup.defaults.admin_name', 'Administrator'));
     });
@@ -234,16 +229,10 @@ describe('mass assignment protection', function () {
         expect($school->is_admin ?? false)->toBeFalse();
     });
 
-    it('ignores unexpected fields in admin data', function () {
-        $user = app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Admin',
-            'username' => 'custom',
-            'email' => 'admin@test.com',
-            'password' => 'Secure1Pass',
-            'is_admin' => true,
-            'email_verified_at' => now(),
-        ]);
+    it('enforces canonical name and username regardless of input', function () {
+        $user = app(SetupSuperAdminAction::class)->execute('admin@test.com', 'Secure1Pass');
 
+        expect($user->name)->toBe(config('setup.defaults.admin_name', 'Administrator'));
         expect($user->username)->toBe(config('setup.defaults.admin_username', 'superadmin'));
     });
 });
@@ -252,32 +241,21 @@ describe('mass assignment protection', function () {
 
 describe('super admin integrity', function () {
     it('prevents recreating immutable super admin', function () {
-        app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Admin', 'username' => 'superadmin',
-            'email' => 'admin@example.com', 'password' => 'Secure1Pass',
-        ]);
+        app(SetupSuperAdminAction::class)->execute('admin@example.com', 'Secure1Pass');
 
-        expect(fn () => app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Hacker', 'username' => 'superadmin',
-            'email' => 'evil@example.com', 'password' => 'Hack1234',
-        ]))->toThrow(RejectedException::class);
+        expect(fn () => app(SetupSuperAdminAction::class)->execute('evil@example.com', 'Hack1234')
+        )->toThrow(RejectedException::class);
     });
 
     it('preserves super admin password hash without rehash needed', function () {
-        app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Admin', 'username' => 'superadmin',
-            'email' => 'admin@example.com', 'password' => 'Secure1Pass',
-        ]);
+        app(SetupSuperAdminAction::class)->execute('admin@example.com', 'Secure1Pass');
 
         $user = User::first();
         expect(Hash::needsRehash($user->password))->toBeFalse();
     });
 
     it('does not expose password hash in user serialization', function () {
-        app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Admin', 'username' => 'superadmin',
-            'email' => 'admin@example.com', 'password' => 'Secure1Pass',
-        ]);
+        app(SetupSuperAdminAction::class)->execute('admin@example.com', 'Secure1Pass');
 
         $json = User::first()->toJson();
         $decoded = json_decode($json, true);
@@ -286,10 +264,7 @@ describe('super admin integrity', function () {
     });
 
     it('grants super admin role on creation', function () {
-        $user = app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Admin', 'username' => 'superadmin',
-            'email' => 'admin@example.com', 'password' => 'Secure1Pass',
-        ]);
+        $user = app(SetupSuperAdminAction::class)->execute('admin@example.com', 'Secure1Pass');
 
         expect($user->hasRole(Role::SUPER_ADMIN->value))->toBeTrue();
     });
