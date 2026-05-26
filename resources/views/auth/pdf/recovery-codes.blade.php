@@ -39,7 +39,6 @@
 
     <div class="footer">
         <p>{{ __('profile.recovery.generated_at', ['date' => $generatedAt]) }}</p>
-        <p>{{ __('profile.recovery.expires_at', ['date' => $expiresAt]) }}</p>
     </div>
 </body>
 </html>

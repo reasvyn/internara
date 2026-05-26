@@ -27,8 +27,10 @@ final readonly class RecoveryCodeState extends BaseEntity
     {
         $now ??= new Carbon;
 
-        return $this->usedAt === null
-            && $this->expiresAt !== null
-            && $now->lessThan($this->expiresAt);
+        if ($this->usedAt !== null) {
+            return false;
+        }
+
+        return $this->expiresAt === null || $now->lessThan($this->expiresAt);
     }
 }

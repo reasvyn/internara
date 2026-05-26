@@ -41,7 +41,7 @@ class RecoverySlipManager extends Component
         $result = $action->execute($this->selectedUser);
 
         $this->generatedCode = $result['plaintext'];
-        $this->expiresAt = $result['code']->expires_at->format('d M Y H:i');
+        $this->expiresAt = $result['expires_at'];
 
         flash()->success(__('auth.recovery_slip_generated'));
     }
