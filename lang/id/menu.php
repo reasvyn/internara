@@ -5,6 +5,10 @@ declare(strict_types=1);
 return [
     'sidebar' => [
         'absence' => 'Absensi',
+        'navigation' => 'Navigasi',
+        'groups' => 'Grup',
+        'phases' => 'Fase',
+        'evaluations' => 'Evaluasi',
         'academic_years' => 'Tahun Ajaran',
         'account_lifecycle' => 'Siklus Akun',
         'announcements' => 'Pengumuman',

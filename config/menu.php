@@ -4,22 +4,16 @@ declare(strict_types=1);
 
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Sidebar Navigation Groups
-    |--------------------------------------------------------------------------
-    |
-    | Each group has:
-    |   - roles: which user roles can see this group
-    |   - title: translation key for the group header
-    |   - items: array of menu items with route name, icon, and label
-    |
-    | Groups are ordered by internship lifecycle phase.
-    | Configuration menus that rarely change are at the bottom.
-    |
-    */
-
     'groups' => [
+        // Dashboard
+        'dashboard' => [
+            'roles' => ['super_admin', 'admin', 'teacher', 'supervisor', 'student'],
+            'title' => 'sidebar.navigation',
+            'items' => [
+                ['route' => 'dashboard', 'icon' => 'o-home', 'label' => 'dashboard.title'],
+            ],
+        ],
+
         // Phase 1: Foundation
         'foundation' => [
             'roles' => ['super_admin', 'admin'],
@@ -37,11 +31,12 @@ return [
             'title' => 'sidebar.internship',
             'items' => [
                 ['route' => 'admin.internships', 'icon' => 'o-briefcase', 'label' => 'internship.title'],
+                ['route' => 'admin.internships.groups', 'icon' => 'o-user-group', 'label' => 'sidebar.groups'],
+                ['route' => 'admin.internships.phases', 'icon' => 'o-list-bullet', 'label' => 'sidebar.phases'],
                 ['route' => 'admin.companies', 'icon' => 'o-building-office', 'label' => 'company.title'],
                 ['route' => 'admin.partnerships', 'icon' => 'o-hand-raised', 'label' => 'sidebar.partnerships'],
                 ['route' => 'admin.internships.placements', 'icon' => 'o-map-pin', 'label' => 'sidebar.placements'],
                 ['route' => 'admin.internships.placements.changes', 'icon' => 'o-arrows-right-left', 'label' => 'sidebar.placement_changes'],
-                ['route' => 'admin.internships.briefings', 'icon' => 'o-academic-cap', 'label' => 'sidebar.briefings'],
                 ['route' => 'admin.internships.requirements', 'icon' => 'o-document-text', 'label' => 'sidebar.requirements'],
             ],
         ],
@@ -79,11 +74,12 @@ return [
                 ['route' => 'admin.assessments.rubrics', 'icon' => 'o-clipboard-document-list', 'label' => 'sidebar.rubrics'],
                 ['route' => 'admin.submissions.grading', 'icon' => 'o-check-badge', 'label' => 'sidebar.submissions'],
                 ['route' => 'admin.presentations', 'icon' => 'o-presentation-chart-line', 'label' => 'sidebar.presentations'],
+                ['route' => 'admin.evaluations', 'icon' => 'o-star', 'label' => 'sidebar.evaluations'],
             ],
         ],
 
         'operations' => [
-            'roles' => ['super_admin', 'admin'],
+            'roles' => ['super_admin', 'admin', 'teacher', 'supervisor'],
             'title' => 'sidebar.operations',
             'items' => [
                 ['route' => 'notifications', 'icon' => 'o-bell', 'label' => 'sidebar.notifications'],
@@ -91,7 +87,6 @@ return [
                 ['route' => 'admin.attendance', 'icon' => 'o-clock', 'label' => 'sidebar.attendance'],
                 ['route' => 'admin.assignments', 'icon' => 'o-document-duplicate', 'label' => 'sidebar.assignments'],
                 ['route' => 'admin.logbook', 'icon' => 'o-book-open', 'label' => 'sidebar.logbook'],
-                ['route' => 'admin.reports', 'icon' => 'o-document-text', 'label' => 'sidebar.final_reports'],
                 ['route' => 'admin.incidents', 'icon' => 'o-exclamation-triangle', 'label' => 'sidebar.incidents'],
             ],
         ],
@@ -101,20 +96,20 @@ return [
             'roles' => ['student'],
             'title' => 'sidebar.student_portal',
             'items' => [
-                ['route' => 'notifications', 'icon' => 'o-bell', 'label' => 'sidebar.notifications'],
                 ['route' => 'student.logbook', 'icon' => 'o-book-open', 'label' => 'sidebar.logbook'],
                 ['route' => 'student.attendance', 'icon' => 'o-clock', 'label' => 'sidebar.attendance'],
                 ['route' => 'student.attendance.absence', 'icon' => 'o-exclamation-circle', 'label' => 'sidebar.absence'],
                 ['route' => 'student.assignments', 'icon' => 'o-document-duplicate', 'label' => 'sidebar.assignments'],
                 ['route' => 'student.supervision', 'icon' => 'o-user-group', 'label' => 'sidebar.supervision'],
                 ['route' => 'student.assessments', 'icon' => 'o-clipboard-document-check', 'label' => 'sidebar.assessments'],
-                ['route' => 'registration.center', 'icon' => 'o-briefcase', 'label' => 'sidebar.browse_programs'],
-                ['route' => 'registration.wizard', 'icon' => 'o-document-plus', 'label' => 'sidebar.register_internship'],
-                ['route' => 'registration.documents', 'icon' => 'o-document-arrow-up', 'label' => 'sidebar.my_documents'],
                 ['route' => 'student.incidents.report', 'icon' => 'o-exclamation-triangle', 'label' => 'sidebar.report_incident'],
                 ['route' => 'student.reports', 'icon' => 'o-document-text', 'label' => 'sidebar.my_report'],
                 ['route' => 'student.internships.placement-change', 'icon' => 'o-arrows-right-left', 'label' => 'sidebar.request_placement_change'],
                 ['route' => 'student.certificates', 'icon' => 'o-document-check', 'label' => 'sidebar.my_certificates'],
+                ['route' => 'student.handbooks', 'icon' => 'o-bookmark-square', 'label' => 'sidebar.handbooks'],
+                ['route' => 'registration.center', 'icon' => 'o-briefcase', 'label' => 'sidebar.browse_programs'],
+                ['route' => 'registration.wizard', 'icon' => 'o-document-plus', 'label' => 'sidebar.register_internship'],
+                ['route' => 'registration.documents', 'icon' => 'o-document-arrow-up', 'label' => 'sidebar.my_documents'],
             ],
         ],
 
@@ -123,7 +118,6 @@ return [
             'roles' => ['teacher'],
             'title' => 'sidebar.teacher_portal',
             'items' => [
-                ['route' => 'notifications', 'icon' => 'o-bell', 'label' => 'sidebar.notifications'],
                 ['route' => 'teacher.submissions.grading', 'icon' => 'o-check-badge', 'label' => 'sidebar.submissions'],
                 ['route' => 'teacher.assess-internship', 'icon' => 'o-clipboard-document-list', 'label' => 'sidebar.assess'],
                 ['route' => 'supervision.logs', 'icon' => 'o-clipboard-check', 'label' => 'sidebar.guidance_logs'],
@@ -135,7 +129,6 @@ return [
             'roles' => ['supervisor'],
             'title' => 'sidebar.supervisor_portal',
             'items' => [
-                ['route' => 'notifications', 'icon' => 'o-bell', 'label' => 'sidebar.notifications'],
                 ['route' => 'supervision.logs', 'icon' => 'o-clipboard-check', 'label' => 'sidebar.guidance_logs'],
                 ['route' => 'supervision.submissions.grading', 'icon' => 'o-check-badge', 'label' => 'sidebar.submissions'],
                 ['route' => 'supervisor.reports.notes', 'icon' => 'o-document-text', 'label' => 'sidebar.report_notes'],
@@ -148,6 +141,7 @@ return [
             'title' => 'sidebar.reports',
             'items' => [
                 ['route' => 'admin.reports.index', 'icon' => 'o-document-chart-bar', 'label' => 'sidebar.reports'],
+                ['route' => 'admin.reports.review', 'icon' => 'o-eye', 'label' => 'sidebar.final_reports'],
                 ['route' => 'admin.certificates', 'icon' => 'o-document-check', 'label' => 'sidebar.certificates'],
                 ['route' => 'admin.certificates.templates', 'icon' => 'o-document-duplicate', 'label' => 'sidebar.certificate_templates'],
                 ['route' => 'admin.accounts.lifecycle', 'icon' => 'o-arrow-path', 'label' => 'sidebar.account_lifecycle'],

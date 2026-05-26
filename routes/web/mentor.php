@@ -35,5 +35,5 @@ Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
-        Route::livewire('/reports', ReportReview::class)->name('reports');
+        Route::livewire('/internships/reports/review', ReportReview::class)->name('reports.review');
     });
