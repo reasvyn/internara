@@ -102,6 +102,7 @@ class AcademicYearManager extends BaseRecordManager
 
         $this->resetErrorBag();
         $this->editingYearId = $year->id;
+        $this->form->id = $year->id;
         $this->form->name = $year->name;
         $this->form->start_date = $year->start_date->format('Y-m-d');
         $this->form->end_date = $year->end_date->format('Y-m-d');
