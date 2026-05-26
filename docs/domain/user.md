@@ -153,6 +153,9 @@ and `UserDashboard` were updated to match the existing convention.
 |--------|-------------|
 | `UpdateProfileAction` | Updates the user's profile with personal data; rejects super admin name changes via `SuperAdminIntegrityRules` |
 | `GetStudentDashboardDataAction` | Aggregates student dashboard data from multiple domains |
+| `GetTeacherDashboardStatsAction` | Aggregates teacher dashboard stats (supervised students, pending journals, active companies) |
+| `GetSupervisorDashboardStatsAction` | Aggregates supervisor dashboard stats (active interns, pending evaluations, verified journals) |
+| `GetProfileFormDataAction` | Determines role-appropriate profile fields (staff fields excluded for students/supervisors) |
 | `SendNotificationAction` | Sends an in-app notification to a user (implements `SendsNotifications` contract); validates required fields internally |
 | `MarkAsReadAction` | Marks a single notification as read |
 | `MarkAllAsReadAction` | Marks all unread notifications as read |
@@ -166,7 +169,7 @@ and `UserDashboard` were updated to match the existing convention.
 |-------|-----------|
 | **Models** | `User` (extends `Authenticatable`, UUID via `HasUuids`), `Profile` (extends `BaseModel`, on-demand creation), `Notification` (custom in-app notifications table) |
 | **Enums** | `BloodType` — `A`, `B`, `AB`, `O`; `Gender` — `MALE`, `FEMALE`; `EmploymentStatus` (keyed translations via `user.employment.*`) |
-| **Livewire** | `UserDashboard` (base layout — shared header, sidebar with profile summary, recent activity, quick links), `ProfileEditor`, `RecentActivityList`, `NotificationCenter`, `NotificationBell`, `ActivityFeedManager`; Dashboards (extend `UserDashboard`): `AdminDashboard` (stat cards + readiness check), `StudentDashboard` (registration info + journal progress + action buttons), `TeacherDashboard` (stat cards + guidance logs), `SupervisorDashboard` (stat cards + verification queue) |
+| **Livewire** | `UserDashboard` (base layout — shared header, sidebar with profile summary, recent activity, quick links), `ProfileEditor` (role-aware fields via `GetProfileFormDataAction` — staff fields hidden for students/supervisors), `RecentActivityList`, `NotificationCenter`, `NotificationBell`, `ActivityFeedManager`; Dashboards (extend `UserDashboard`, all use Actions instead of inline `#[Computed]`): `AdminDashboard` (stat cards via `GetAdminDashboardStatsAction` + readiness check), `StudentDashboard` (registration info via `GetStudentDashboardDataAction` + journal progress + action buttons), `TeacherDashboard` (stat cards via `GetTeacherDashboardStatsAction` + guidance logs), `SupervisorDashboard` (stat cards via `GetSupervisorDashboardStatsAction` + verification queue) |
 | **Shared UI** | `x-shared::ui.display-field` — read-only display field for super admin immutable attributes (name, username) |
 | **Policies** | `ProfilePolicy`, `NotificationPolicy` |
 | **Support** | `UserIdentifierGenerator` (unique username generation with collision avoidance), `DashboardService` (role-based routing with `getDashboardForUser()` and `getSharedStats()`) |

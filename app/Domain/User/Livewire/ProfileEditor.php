@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\User\Livewire;
 
 use App\Domain\Auth\Actions\UpdateUserPasswordAction;
+use App\Domain\User\Actions\GetProfileFormDataAction;
 use App\Domain\User\Actions\UpdateProfileAction;
 use App\Domain\User\Livewire\Forms\PasswordForm;
 use App\Domain\User\Livewire\Forms\ProfileForm;
@@ -17,6 +18,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
+#[Layout('shared::layouts.app')]
 class ProfileEditor extends Component
 {
     use WithFileUploads;
@@ -29,9 +31,22 @@ class ProfileEditor extends Component
 
     public PasswordForm $passwordForm;
 
-    public function mount(): void
+    public bool $canChangeName = true;
+
+    public bool $isStaff = false;
+
+    /** @var string[] */
+    public array $staffFields = [];
+
+    public function mount(GetProfileFormDataAction $action): void
     {
         $this->user = auth()->user()->load(['profile', 'roles']);
+
+        $formData = $action->execute($this->user);
+
+        $this->canChangeName = $formData['canChangeName'];
+        $this->isStaff = $formData['staffFields'] !== [];
+        $this->staffFields = $formData['staffFields'];
 
         $this->profileForm->fillFromUser($this->user);
     }
@@ -46,11 +61,11 @@ class ProfileEditor extends Component
             'avatar' => 'nullable|image|max:2048',
         ];
 
-        if (! $this->isSuperAdmin()) {
+        if ($this->canChangeName) {
             $rules['profileForm.name'] = 'required|string|max:255';
         }
 
-        if ($this->isStaff()) {
+        if ($this->isStaff) {
             $profileId = $this->user->profile?->id ?? 'NULL';
             $rules = array_merge($rules, [
                 'profileForm.nip' => "nullable|string|max:18|unique:profiles,nip,{$profileId}",
@@ -67,7 +82,7 @@ class ProfileEditor extends Component
             'bio' => $this->profileForm->bio,
         ];
 
-        if ($this->isStaff()) {
+        if ($this->isStaff) {
             $data = array_merge($data, [
                 'employment_status' => $this->profileForm->employment_status,
                 'nip' => $this->profileForm->nip,
@@ -80,22 +95,12 @@ class ProfileEditor extends Component
         $updateProfile->execute(
             $this->user,
             $data,
-            name: $this->isSuperAdmin() ? null : $this->profileForm->name,
+            name: $this->canChangeName ? $this->profileForm->name : null,
             email: $this->profileForm->email,
             avatar: $this->avatar,
         );
 
         flash()->success(__('profile.saved'));
-    }
-
-    public function isStaff(): bool
-    {
-        return $this->user->hasAnyRole(['super_admin', 'admin', 'teacher']);
-    }
-
-    public function isSuperAdmin(): bool
-    {
-        return $this->user->hasRole('super_admin');
     }
 
     public function updatePassword(UpdateUserPasswordAction $updatePassword): void
@@ -139,7 +144,6 @@ class ProfileEditor extends Component
         }
     }
 
-    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('user.profile-editor');
