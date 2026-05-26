@@ -57,6 +57,7 @@ return [
         'more' => 'More actions',
         'reset' => 'Reset',
         'reset_filters' => 'Reset Filters',
+        'close' => 'Close',
         'back' => 'Back',
         'next' => 'Next',
         'delete_selected' => 'Delete Selected',
