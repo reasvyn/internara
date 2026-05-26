@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Settings\Livewire;
 
+use App\Domain\School\Actions\ActivateAcademicYearAction;
+use App\Domain\School\Models\AcademicYear;
 use App\Domain\Settings\Actions\GetAcademicYearsAction;
 use App\Domain\Settings\Actions\SaveSystemSettingsAction;
 use App\Domain\Settings\Actions\TestMailSettingsAction;
@@ -87,20 +89,24 @@ class SystemSetting extends Component
         $this->brandingForm->applyPreset($key);
     }
 
-    public function save(SaveSystemSettingsAction $action): void
-    {
+    public function save(
+        SaveSystemSettingsAction $action,
+        ActivateAcademicYearAction $activateYear,
+    ): void {
         $this->authorize('update', Setting::class);
 
         $this->generalForm->validate();
         $this->brandingForm->validate();
         $this->mailSettingsForm->validate();
 
+        $selectedYear = $this->generalForm->active_academic_year;
+
         $action->execute(
             general: [
                 'brand_name' => $this->generalForm->brand_name,
                 'site_title' => $this->generalForm->site_title,
                 'default_locale' => $this->generalForm->default_locale,
-                'active_academic_year' => $this->generalForm->active_academic_year,
+                'active_academic_year' => $selectedYear,
             ],
             branding: [
                 'primary_color' => $this->brandingForm->primary_color,
@@ -120,6 +126,14 @@ class SystemSetting extends Component
                 'mail_password' => $this->mailSettingsForm->mail_password,
             ],
         );
+
+        if ($selectedYear) {
+            $year = AcademicYear::where('name', $selectedYear)->first();
+
+            if ($year && $year->asAcademicYearState()->canBeActivated()) {
+                $activateYear->execute($year);
+            }
+        }
 
         flash()->success(__('setting.messages.saved'));
 
