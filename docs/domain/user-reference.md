@@ -37,7 +37,7 @@ Total: 36 files
 |---|---|---|---|
 | `User/Livewire/ActivityFeedManager.php` | `ActivityFeedManager` | `Component` | Paginated activity feed with filters |
 | `User/Livewire/NotificationBell.php` | `NotificationBell` | `Component` | Dropdown notification bell indicator |
-| `User/Livewire/NotificationCenter.php` | `NotificationCenter` | `Component` | Full-page notification center |
+| `User/Livewire/NotificationCenter.php` | `NotificationCenter` | `BaseRecordManager` | Full-page notification center with viewer modal, Markdown rendering, filters, bulk actions |
 | `User/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` | Profile editing form (with avatar upload and password change) |
 | `User/Livewire/RecentActivityList.php` | `RecentActivityList` | `Component` | Recent activity log listing |
 | `User/Livewire/UserDashboard.php` | `UserDashboard` | `Component` | Generic user dashboard with recent activity |
