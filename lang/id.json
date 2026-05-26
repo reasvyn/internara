@@ -7,18 +7,5 @@
     "This action is unauthorized.": "Tindakan ini tidak diizinkan.",
     "Hello!": "Halo!",
     "Whoops!": "Waduh!",
-    "Regards,": "Salam,",
-    "setting.groups.color_scheme": "Skema Warna",
-    "setting.fields.primary_color": "Warna Utama",
-    "setting.fields.secondary_color": "Warna Sekunder",
-    "setting.fields.accent_color": "Warna Aksen",
-    "Setup Selesai!": "Setup Selesai!",
-    "Audit sistem harus lulus sebelum melanjutkan.": "Audit sistem harus lulus sebelum melanjutkan.",
-    "Selamat datang kembali, Administrator!": "Selamat datang kembali, Administrator!",
-    "Tahun akademik dibuat.": "Tahun akademik dibuat.",
-    "Tahun akademik diaktifkan.": "Tahun akademik diaktifkan.",
-    "Tahun akademik dihapus.": "Tahun akademik dihapus.",
-    "Perusahaan berhasil dibuat.": "Perusahaan berhasil dibuat.",
-    "Perusahaan berhasil diperbarui.": "Perusahaan berhasil diperbarui.",
-    "Perusahaan berhasil dihapus.": "Perusahaan berhasil dihapus."
+    "Regards,": "Salam,"
 }

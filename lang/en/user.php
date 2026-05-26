@@ -25,6 +25,7 @@ return [
         'username' => 'Username',
         'password' => 'Password',
         'roles' => 'Roles',
+        'bio' => 'Bio',
     ],
     'admin' => [
         'title' => 'Admin Manager',
@@ -53,6 +54,8 @@ return [
         'title' => 'Supervisor Manager',
         'subtitle' => 'MANAGE ALL MENTORS / SUPERVISORS',
         'name' => 'Name',
+        'phone' => 'Phone Number',
+        'company' => 'Partner Company',
         'new' => 'New Supervisor',
         'edit' => 'Edit Supervisor',
         'save' => 'Save Supervisor',
@@ -103,6 +106,8 @@ return [
         'success_updated' => 'Student updated successfully.',
         'success_deleted' => 'Student deleted successfully.',
         'joined' => 'Joined',
+        'update' => 'Update Student',
+        'delete' => 'Delete Student',
     ],
     'employment' => [
         'full_time' => 'Full-time',
