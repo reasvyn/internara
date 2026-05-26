@@ -173,7 +173,7 @@ class DepartmentManager extends BaseRecordManager
     public function updatedImportFile(): void
     {
         if ($this->importFile) {
-            $this->import();
+            $this->import(app(CsvHandler::class), app(CreateDepartmentAction::class));
         }
     }
 
