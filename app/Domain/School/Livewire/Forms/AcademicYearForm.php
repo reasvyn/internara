@@ -25,6 +25,20 @@ class AcademicYearForm extends Form
         ];
     }
 
+    public function messages(): array
+    {
+        return [
+            'name.unique' => __('validation.unique'),
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.unique' => __('validation.unique'),
+        ];
+    }
+
     public function toArray(): array
     {
         return [
