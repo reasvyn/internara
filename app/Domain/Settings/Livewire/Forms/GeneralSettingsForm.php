@@ -12,6 +12,10 @@ class GeneralSettingsForm extends Form
 
     public string $site_title = '';
 
+    public string $default_locale = 'id';
+
+    public string $active_academic_year = '';
+
     protected function rules(): array
     {
         return [
