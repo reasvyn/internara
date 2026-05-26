@@ -104,6 +104,15 @@ return [
         'success_deleted' => 'Student deleted successfully.',
         'joined' => 'Joined',
     ],
+    'structural' => [
+        'principal' => 'Principal',
+        'vice_principal' => 'Vice Principal',
+        'head_of_department' => 'Head of Department',
+        'program_coordinator' => 'Program Coordinator',
+        'supervising_teacher' => 'Supervising Teacher',
+        'industry_supervisor' => 'Industry Supervisor',
+    ],
+
     'validation' => [
         'authoritative_reserved' => 'The value ":value" is reserved for the super administrator and cannot be used.',
     ],
