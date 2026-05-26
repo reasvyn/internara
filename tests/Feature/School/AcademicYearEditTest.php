@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 use App\Domain\Auth\Enums\Role;
 use App\Domain\School\Livewire\AcademicYearManager;
 use App\Domain\School\Models\AcademicYear;
