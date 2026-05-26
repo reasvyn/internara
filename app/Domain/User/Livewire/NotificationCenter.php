@@ -13,11 +13,9 @@ use App\Domain\User\Models\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Livewire\Attributes\Locked;
 
 class NotificationCenter extends BaseRecordManager
 {
-    #[Locked]
     public ?string $viewingNotificationId = null;
 
     public function viewNotification(string $id): void

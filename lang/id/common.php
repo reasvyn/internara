@@ -57,6 +57,7 @@ return [
         'more' => 'Tindakan lainnya',
         'reset' => 'Reset',
         'reset_filters' => 'Reset Filter',
+        'close' => 'Tutup',
         'back' => 'Kembali',
         'next' => 'Lanjut',
         'delete_selected' => 'Hapus Terpilih',
