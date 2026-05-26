@@ -27,6 +27,8 @@ class AcademicYearManager extends BaseRecordManager
 
     public ?string $confirmTarget = null;
 
+    public ?string $editingYearId = null;
+
     public AcademicYearForm $form;
 
     public function boot(): void
@@ -90,7 +92,7 @@ class AcademicYearManager extends BaseRecordManager
     {
         $this->resetErrorBag();
         $this->form->reset();
-        $this->form->id = null;
+        $this->editingYearId = null;
         $this->showModal = true;
     }
 
@@ -99,7 +101,7 @@ class AcademicYearManager extends BaseRecordManager
         $year = AcademicYear::findOrFail($id);
 
         $this->resetErrorBag();
-        $this->form->id = $year->id;
+        $this->editingYearId = $year->id;
         $this->form->name = $year->name;
         $this->form->start_date = $year->start_date->format('Y-m-d');
         $this->form->end_date = $year->end_date->format('Y-m-d');
@@ -113,17 +115,20 @@ class AcademicYearManager extends BaseRecordManager
         $action->execute($this->form->toArray());
 
         $this->showModal = false;
+        $this->editingYearId = null;
         $this->form->reset();
         flash()->success(__('academic_year.created'));
     }
 
     public function update(UpdateAcademicYearAction $action): void
     {
+        $year = AcademicYear::findOrFail($this->editingYearId);
+
         $this->form->validate();
 
-        $year = AcademicYear::findOrFail($this->form->id);
         $action->execute($year, $this->form->toArray());
 
+        $this->editingYearId = null;
         $this->showModal = false;
         $this->form->reset();
         flash()->success(__('academic_year.updated'));

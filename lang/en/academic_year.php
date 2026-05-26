@@ -7,6 +7,7 @@ return [
     'subtitle' => 'Manage academic year periods',
     'create' => 'New Year',
     'new' => 'New Academic Year',
+    'edit' => 'Edit Academic Year',
     'name' => 'Year Name',
     'start_date' => 'Start Date',
     'end_date' => 'End Date',

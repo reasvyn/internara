@@ -119,7 +119,7 @@
     />
 
     {{-- Create / Edit Modal --}}
-    <x-mary-modal wire:model="showModal" title="{{ $form->id ? __('academic_year.edit') : __('academic_year.new') }}" class="backdrop-blur-sm">
+    <x-mary-modal wire:model="showModal" title="{{ $editingYearId ? __('academic_year.edit') : __('academic_year.new') }}" class="backdrop-blur-sm">
         <div class="space-y-4">
             <x-mary-input
                 label="{{ __('academic_year.name') }}"
@@ -142,7 +142,7 @@
 
         <x-slot:actions>
             <x-mary-button label="{{ __('common.actions.cancel') }}" wire:click="$set('showModal', false)" class="btn-ghost btn-sm" />
-            @if($form->id)
+            @if($editingYearId)
                 <x-mary-button label="{{ __('common.actions.update') }}" wire:click="update" class="btn-primary btn-sm" spinner="update" />
             @else
                 <x-mary-button label="{{ __('common.actions.save') }}" wire:click="store" class="btn-primary btn-sm" spinner="store" />
