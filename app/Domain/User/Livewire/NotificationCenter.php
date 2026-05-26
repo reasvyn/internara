@@ -13,9 +13,41 @@ use App\Domain\User\Models\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Livewire\Attributes\Locked;
 
 class NotificationCenter extends BaseRecordManager
 {
+    #[Locked]
+    public ?string $viewingNotificationId = null;
+
+    public function viewNotification(string $id): void
+    {
+        $notification = Notification::where('user_id', Auth::id())->findOrFail($id);
+
+        if (! $notification->is_read) {
+            app(MarkAsReadAction::class)->execute($notification);
+            $this->dispatch('notification-read');
+        }
+
+        $this->viewingNotificationId = $id;
+    }
+
+    public function closeViewer(): void
+    {
+        $this->viewingNotificationId = null;
+    }
+
+    public function getViewedNotificationProperty(): ?Notification
+    {
+        if ($this->viewingNotificationId === null) {
+            return null;
+        }
+
+        return Notification::where('user_id', Auth::id())
+            ->where('id', $this->viewingNotificationId)
+            ->first();
+    }
+
     public function headers(): array
     {
         return [

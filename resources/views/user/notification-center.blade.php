@@ -120,6 +120,7 @@
                     @if($notification->link)
                         <x-mary-button icon="o-arrow-top-right-on-square" class="btn-ghost btn-sm" :link="$notification->link" x-on:click.prevent="$wire.markAsRead('{{ $notification->id }}'); window.open('{{ $notification->link }}', '_blank')" :aria-label="__('notifications.view_details')" />
                     @endif
+                    <x-mary-button icon="o-eye" class="btn-ghost btn-sm" x-on:click="$wire.viewNotification('{{ $notification->id }}')" :aria-label="__('notifications.ui.read')" />
                     @if(!$notification->is_read)
                         <x-mary-button icon="o-check" class="btn-ghost btn-sm text-success" x-on:click="$wire.markAsRead('{{ $notification->id }}')" :aria-label="__('notifications.ui.mark_all_read')" />
                     @endif
@@ -128,4 +129,25 @@
 
         </x-mary-table>
     </div>
+
+    {{-- Notification Viewer Modal --}}
+    <x-mary-modal wire:model="viewingNotificationId" title="{{ $this->viewedNotification?->title ?? '' }}" class="backdrop-blur-sm" size="lg">
+        @if($this->viewedNotification)
+            <div class="space-y-4">
+                <div class="prose prose-sm max-w-none">
+                    {!! Str::markdown($this->viewedNotification->message ?? '') !!}
+                </div>
+                <div class="text-xs text-base-content/40 border-t border-base-content/10 pt-3">
+                    {{ $this->viewedNotification->created_at->format('d M Y H:i') }}
+                </div>
+            </div>
+        @endif
+
+        <x-slot:actions>
+            <x-mary-button :label="__('common.actions.close')" wire:click="closeViewer" class="btn-ghost btn-sm" />
+            @if($this->viewedNotification?->link)
+                <x-mary-button :label="__('notifications.view_details')" icon="o-arrow-top-right-on-square" :link="$this->viewedNotification->link" class="btn-primary btn-sm" />
+            @endif
+        </x-slot:actions>
+    </x-mary-modal>
 </div>
