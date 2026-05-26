@@ -143,6 +143,7 @@ but with limited functionality.
 - The Profile's school_id and department_id foreign keys are optional — a user can exist 
 without institutional association.
 - All profile data changes are logged via SmartLogger for audit trail and GDPR compliance.
+- `UpdateProfileAction` uses `array_filter(fn ($v) => $v !== null && $v !== '')` — empty strings are preserved to allow field clearing, only null values are removed.
 - All Livewire components return `: View` for type safety — `ProfileEditor`, `RecentActivityList`, 
 and `UserDashboard` were updated to match the existing convention.
 
@@ -150,9 +151,9 @@ and `UserDashboard` were updated to match the existing convention.
 
 | Action | Description |
 |--------|-------------|
-| `UpdateProfileAction` | Updates the user's profile with personal data |
+| `UpdateProfileAction` | Updates the user's profile with personal data; rejects super admin name changes via `SuperAdminIntegrityRules` |
 | `GetStudentDashboardDataAction` | Aggregates student dashboard data from multiple domains |
-| `SendNotificationAction` | Sends an in-app notification to a user (implements `SendsNotifications` contract) |
+| `SendNotificationAction` | Sends an in-app notification to a user (implements `SendsNotifications` contract); validates required fields internally |
 | `MarkAsReadAction` | Marks a single notification as read |
 | `MarkAllAsReadAction` | Marks all unread notifications as read |
 | `MarkBatchAsReadAction` | Marks selected notifications as read |
@@ -168,7 +169,7 @@ and `UserDashboard` were updated to match the existing convention.
 | **Livewire** | `UserDashboard`, `ProfileEditor`, `RecentActivityList`, `NotificationCenter`, `NotificationBell`, `ActivityFeedManager`; Dashboards: `AdminDashboard`, `StudentDashboard`, `SupervisorDashboard`, `TeacherDashboard` |
 | **Shared UI** | `x-shared::ui.display-field` — read-only display field for super admin immutable attributes (name, username) |
 | **Policies** | `ProfilePolicy`, `NotificationPolicy` |
-| **Support** | `UserIdentifierGenerator` (unique username generation with collision avoidance), `DashboardService` (role-based routing) |
+| **Support** | `UserIdentifierGenerator` (unique username generation with collision avoidance), `DashboardService` (role-based routing with `getDashboardForUser()` and `getSharedStats()`) |
 | **Notifications** | `TestMailNotification` (email configuration testing) |
 | **Rules** | `SystemUsername` (username format validation), `ReservedAuthoritativeName` (reserved name blocking) |
 | **Controllers** | `DashboardController` (role-based dashboard routing), `HomeController` (landing page) |

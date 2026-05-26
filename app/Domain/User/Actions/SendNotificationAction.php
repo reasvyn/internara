@@ -8,6 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Contracts\SendsNotifications;
 use App\Domain\User\Models\Notification;
 use App\Domain\User\Models\User;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Stateless Action to send in-app notification.
@@ -25,6 +26,16 @@ class SendNotificationAction extends BaseAction implements SendsNotifications
         ?array $data = null,
         ?string $link = null,
     ): Notification {
+        Validator::make([
+            'userId' => $userId,
+            'type' => $type,
+            'title' => $title,
+        ], [
+            'userId' => 'required|string',
+            'type' => 'required|string|max:50',
+            'title' => 'required|string|max:255',
+        ])->validate();
+
         $user = User::findOrFail($userId);
 
         $notification = Notification::create([

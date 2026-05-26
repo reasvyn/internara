@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 use App\Domain\User\Livewire\NotificationBell;
 use App\Domain\User\Livewire\NotificationCenter;
 use App\Domain\User\Models\Notification;
