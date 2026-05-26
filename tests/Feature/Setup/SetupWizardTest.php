@@ -6,8 +6,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
+use App\Domain\Internship\Models\Internship;
+use App\Domain\School\Models\Department;
+use App\Domain\School\Models\School;
 use App\Domain\Setup\Livewire\SetupWizard;
 use App\Domain\Setup\Models\Setup;
+use App\Domain\User\Models\User;
+use Spatie\Permission\Models\Role;
 
 // ─── Mount / Initialization ────────────────────────────────────────────────
 
@@ -259,6 +264,69 @@ describe('validation', function () {
     });
 });
 
-// ─── FinalizeSetupAction Tests ─────────────────────────────────────────────
+// ─── End-to-End SetupWizard finish() ──────────────────────────────────────
 
-// These are fully covered in TechnicalInstallationTest.php.
+describe('finish', function () {
+    beforeEach(function () {
+        foreach (['super_admin', 'admin', 'student', 'teacher', 'supervisor'] as $role) {
+            Role::firstOrCreate(['name' => $role, 'guard_name' => 'web']);
+        }
+    });
+
+    it('completes setup and transitions to step 7', function () {
+        Setup::query()->delete();
+        Setup::create(['is_installed' => false]);
+
+        Livewire::test(SetupWizard::class)
+            ->call('nextStep')
+            ->set('schoolForm.name', 'SMK 1')
+            ->set('schoolForm.institutional_code', '001')
+            ->set('schoolForm.email', 'a@b.com')
+            ->call('nextStep')
+            ->set('departmentForm.name', 'TKI')
+            ->call('nextStep')
+            ->set('adminForm.email', 'admin@test.com')
+            ->set('adminForm.password', 'Secure1Pass')
+            ->set('adminForm.password_confirmation', 'Secure1Pass')
+            ->call('nextStep')
+            ->call('nextStep')
+            ->set('dataVerified', true)
+            ->set('securityAware', true)
+            ->call('finish')
+            ->assertSet('currentStep', 7)
+            ->assertSet('recoveryKey', fn ($key) => is_string($key) && $key !== '')
+            ->assertHasNoErrors();
+    });
+
+    it('creates school, department, admin, and internship records', function () {
+        Setup::query()->delete();
+        Setup::create(['is_installed' => false]);
+
+        Livewire::test(SetupWizard::class)
+            ->call('nextStep')
+            ->set('schoolForm.name', 'SMK Negeri 2')
+            ->set('schoolForm.institutional_code', '002')
+            ->set('schoolForm.email', 'info@smkn2.sch.id')
+            ->call('nextStep')
+            ->set('departmentForm.name', 'Multimedia')
+            ->call('nextStep')
+            ->set('adminForm.email', 'admin@smkn2.sch.id')
+            ->set('adminForm.password', 'Secure1Pass')
+            ->set('adminForm.password_confirmation', 'Secure1Pass')
+            ->call('nextStep')
+            ->set('internshipForm.name', 'PKL 2026')
+            ->set('internshipForm.start_date', '2026-07-01')
+            ->set('internshipForm.end_date', '2026-12-31')
+            ->call('nextStep')
+            ->set('dataVerified', true)
+            ->set('securityAware', true)
+            ->call('finish')
+            ->assertSet('currentStep', 7);
+
+        expect(School::count())->toBe(1);
+        expect(Department::count())->toBe(1);
+        expect(User::count())->toBe(1);
+        expect(Internship::count())->toBe(1);
+        expect(Setup::first()->is_installed)->toBeTrue();
+    });
+});

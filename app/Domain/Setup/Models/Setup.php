@@ -6,10 +6,13 @@ namespace App\Domain\Setup\Models;
 
 use App\Domain\Core\Models\BaseModel;
 use App\Domain\Core\Support\SmartLogger;
+use App\Domain\School\Models\Department;
+use App\Domain\School\Models\School;
 use App\Domain\Setup\Entities\SetupState;
 use Database\Factories\SetupFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\QueryException;
 
 #[Fillable(['is_installed', 'setup_token', 'token_expires_at', 'completed_steps', 'school_id', 'department_id', 'recovery_key'])]
@@ -29,6 +32,16 @@ class Setup extends BaseModel
     protected static function newFactory(): SetupFactory
     {
         return SetupFactory::new();
+    }
+
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class);
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
     }
 
     public function asSetupState(): SetupState
