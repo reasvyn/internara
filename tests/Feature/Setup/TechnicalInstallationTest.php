@@ -11,6 +11,7 @@ use App\Domain\Auth\Enums\Role;
 use App\Domain\Core\Data\AuditReport;
 use App\Domain\Core\Enums\AuditCategory;
 use App\Domain\Core\Exceptions\RejectedException;
+use App\Domain\Internship\Models\Internship;
 use App\Domain\School\Models\Department;
 use App\Domain\School\Models\School;
 use App\Domain\Setup\Actions\FinalizeSetupAction;
@@ -32,6 +33,7 @@ use App\Domain\Setup\Services\EnvironmentAuditor;
 use App\Domain\Setup\Support\SystemProvisioner;
 use App\Domain\User\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -285,17 +287,17 @@ describe('SetupSuperAdminAction', function () {
         expect($user->hasVerifiedEmail())->toBeTrue();
     });
 
-    it('assigns correct username and name from config', function () {
+    it('uses passed name and username instead of config defaults', function () {
         app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Admin',
-            'username' => 'custom',
+            'name' => 'Custom Name',
+            'username' => 'custom_user',
             'email' => 'admin@example.com',
             'password' => 'Secure1Pass',
         ]);
 
         $user = User::first();
-        expect($user->username)->toBe('superadmin');
-        expect($user->name)->toBe('Administrator');
+        expect($user->username)->toBe('custom_user');
+        expect($user->name)->toBe('Custom Name');
     });
 
     it('rejects re-initialization when immutable super admin exists', function () {
@@ -305,7 +307,7 @@ describe('SetupSuperAdminAction', function () {
         ]);
 
         expect(fn () => app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Hacker', 'username' => 'hacker',
+            'name' => 'Hacker', 'username' => 'superadmin',
             'email' => 'evil@example.com', 'password' => 'Hack1234',
         ]))->toThrow(RejectedException::class, 'cannot be re-initialized');
     });
@@ -347,6 +349,18 @@ describe('InitializeSuperAdminAction', function () {
         );
 
         expect($user->username)->not->toBeNull();
+    });
+
+    it('uses custom name and username when provided', function () {
+        $user = app(InitializeSuperAdminAction::class)->execute(
+            email: 'custom@example.com',
+            password: 'Secure1Pass',
+            name: 'Custom Name',
+            username: 'custom_admin',
+        );
+
+        expect($user->name)->toBe('Custom Name');
+        expect($user->username)->toBe('custom_admin');
     });
 });
 
@@ -400,6 +414,44 @@ describe('RecoverSuperAdminAction', function () {
         );
 
         expect(true)->toBeTrue();
+    });
+
+    it('throws when reset mode user not found', function () {
+        expect(fn () => app(RecoverSuperAdminAction::class)->execute(
+            email: 'nonexistent@example.com',
+            password: 'Secure1Pass',
+            isReset: true,
+        ))->toThrow(ModelNotFoundException::class);
+    });
+
+    it('throws when reset mode user lacks PROTECTED status', function () {
+        $user = User::factory()->create(['email' => 'unprotected@example.com']);
+        $user->assignRole(Role::SUPER_ADMIN->value);
+
+        expect(fn () => app(RecoverSuperAdminAction::class)->execute(
+            email: 'unprotected@example.com',
+            password: 'Secure1Pass',
+            isReset: true,
+        ))->toThrow(RejectedException::class, 'expected PROTECTED status');
+    });
+
+    it('clears lock fields in reset mode', function () {
+        $user = User::factory()->create([
+            'email' => 'locked@example.com',
+            'locked_at' => now(),
+            'locked_reason' => 'compromised',
+        ]);
+        $user->assignRole(Role::SUPER_ADMIN->value);
+        $user->setStatus(AccountStatus::PROTECTED->value);
+
+        $result = app(RecoverSuperAdminAction::class)->execute(
+            email: 'locked@example.com',
+            password: 'NewSecure1',
+            isReset: true,
+        );
+
+        expect($result->locked_at)->toBeNull();
+        expect($result->locked_reason)->toBeNull();
     });
 });
 
@@ -464,6 +516,23 @@ describe('FinalizeSetupAction', function () {
         );
 
         Event::assertDispatched(SetupFinalized::class);
+    });
+
+    it('creates internship when data is provided', function () {
+        app(FinalizeSetupAction::class)->execute(
+            schoolData: ['name' => 'SMK 1', 'institutional_code' => '001', 'email' => 'a@b.com'],
+            departmentData: ['name' => 'TKI'],
+            adminData: ['name' => 'A', 'username' => 'sa', 'email' => 'a@b.com', 'password' => 'Secure1Pass'],
+            internshipData: [
+                'name' => 'PKL 2026',
+                'description' => 'Magang industri',
+                'start_date' => '2026-07-01',
+                'end_date' => '2026-12-31',
+            ],
+        );
+
+        expect(Internship::count())->toBe(1);
+        expect(Internship::first()->name)->toBe('PKL 2026');
     });
 });
 
@@ -562,6 +631,19 @@ describe('Setup model', function () {
 
         expect($state)->toBeInstanceOf(SetupState::class);
         expect($state->isInstalled())->toBeFalse();
+    });
+
+    it('belongs to school and department', function () {
+        $school = School::factory()->create();
+        $department = Department::factory()->create(['school_id' => $school->id]);
+
+        $setup = Setup::factory()->create([
+            'school_id' => $school->id,
+            'department_id' => $department->id,
+        ]);
+
+        expect($setup->school->id)->toBe($school->id);
+        expect($setup->department->id)->toBe($department->id);
     });
 });
 

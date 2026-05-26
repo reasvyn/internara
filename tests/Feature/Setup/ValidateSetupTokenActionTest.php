@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Setup\Actions\GenerateSetupTokenAction;
 use App\Domain\Setup\Actions\ValidateSetupTokenAction;
