@@ -108,7 +108,7 @@ target user, timestamp, method, and outcome in the audit log.
 **Account Recovery**
 - **User:** As a user, I want to recover my account via a recovery slip so that I can regain access if locked out and cannot access email
 - **Admin:** As an admin, I want to generate recovery slips for locked-out users so that they can regain access offline
-- Recovery codes expire after 24 hours and are single-use — redeemed codes are invalidated immediately
+- Recovery codes never expire (valid indefinitely until used) and are single-use — redeemed codes are invalidated immediately
 - Recovery codes are delivered offline (admin-to-user) — never sent via email or stored in plaintext
 
 **Account Lifecycle**

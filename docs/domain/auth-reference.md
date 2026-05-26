@@ -8,7 +8,7 @@ Total: 39 files
 |---|---|---|---|
 | `Auth/Actions/ConfirmPasswordAction.php` | `ConfirmPasswordAction` | `BaseAction` | Validates user's current password |
 | `Auth/Actions/DetectUserAccountCloneAction.php` | `DetectUserAccountCloneAction` | `BaseAction` | Detects potential duplicate/cloned user accounts |
-| `Auth/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction` | `BaseAction` | Generates a recovery code/slip for account access |
+| `Auth/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction` | `BaseAction` | Generates 10 recovery codes (no expiry, single-use each) |
 | `Auth/Actions/LockUserAccountAction.php` | `LockUserAccountAction` | `BaseAction` | Locks a user account with reason (blocks super_admin) |
 | `Auth/Actions/LoginAction.php` | `LoginAction` | `BaseAction` | Authenticates user with credentials |
 | `Auth/Actions/RedeemRecoverySlipAction.php` | `RedeemRecoverySlipAction` | `BaseAction` | Redeems a recovery slip to reset password |

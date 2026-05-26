@@ -29,7 +29,7 @@ Total: 36 files
 | `User/Enums/BloodType.php` | `BloodType` | `LabelEnum` | Blood type enum |
 | `User/Enums/EmploymentStatus.php` | `EmploymentStatus` | `LabelEnum` | Employment status enum |
 | `User/Enums/Gender.php` | `Gender` | `LabelEnum` | Gender enum |
-| `User/Enums/StructuralPosition.php` | `StructuralPosition` | `LabelEnum` | Structural position enum |
+| `User/Enums/StructuralPosition.php` | `StructuralPosition` | `LabelEnum` | Structural position enum (legacy — position is now free text field) |
 
 ## Livewire Components
 
