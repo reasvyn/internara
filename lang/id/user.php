@@ -47,6 +47,15 @@ return [
         'success_updated' => 'Peserta magang berhasil diperbarui.',
         'success_deleted' => 'Peserta magang berhasil dihapus.',
     ],
+    'structural' => [
+        'principal' => 'Kepala Sekolah',
+        'vice_principal' => 'Wakil Kepala Sekolah',
+        'head_of_department' => 'Kepala Jurusan',
+        'program_coordinator' => 'Koordinator Program',
+        'supervising_teacher' => 'Guru Pembimbing',
+        'industry_supervisor' => 'Supervisor Industri',
+    ],
+
     'student' => [
         'title' => 'Manajemen Siswa',
         'subtitle' => 'Kelola semua siswa dan profil magang mereka',

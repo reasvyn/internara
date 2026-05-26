@@ -18,12 +18,12 @@ enum StructuralPosition: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::PRINCIPAL => __('Principal'),
-            self::VICE_PRINCIPAL => __('Vice Principal'),
-            self::HEAD_OF_DEPARTMENT => __('Head of Department'),
-            self::PROGRAM_COORDINATOR => __('Program Coordinator'),
-            self::SUPERVISING_TEACHER => __('Supervising Teacher'),
-            self::INDUSTRY_SUPERVISOR => __('Industry Supervisor'),
+            self::PRINCIPAL => __('user.structural.principal'),
+            self::VICE_PRINCIPAL => __('user.structural.vice_principal'),
+            self::HEAD_OF_DEPARTMENT => __('user.structural.head_of_department'),
+            self::PROGRAM_COORDINATOR => __('user.structural.program_coordinator'),
+            self::SUPERVISING_TEACHER => __('user.structural.supervising_teacher'),
+            self::INDUSTRY_SUPERVISOR => __('user.structural.industry_supervisor'),
         };
     }
 }
