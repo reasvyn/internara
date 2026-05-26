@@ -32,6 +32,11 @@ return [
     'position_guru_pembimbing' => 'Guru Pembimbing',
     'position_supervisor_industri' => 'Supervisor Industri',
     'position_placeholder' => 'Contoh: Kepala Jurusan',
+    'bio' => 'Biografi',
+    'nip' => 'NIP',
+    'nip_placeholder' => 'Nomor induk pegawai nasional',
+    'nuptk' => 'NUPTK',
+    'nuptk_placeholder' => 'Nomor registrasi guru',
     'new_password' => 'Kata Sandi Baru',
     'confirm_password' => 'Konfirmasi Kata Sandi',
 

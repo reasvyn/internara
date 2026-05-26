@@ -29,7 +29,7 @@
                         <x-mary-input :label="__('profile.sidebar.email')" wire:model="profileForm.email" type="email" />
                         <x-mary-input :label="__('profile.sidebar.phone')" wire:model="profileForm.phone" />
                         <x-mary-textarea :label="__('setup.wizard.school_address')" wire:model="profileForm.address" rows="2" class="md:col-span-2" />
-                        <x-mary-textarea label="Bio" wire:model="profileForm.bio" rows="3" class="md:col-span-2" />
+                        <x-mary-textarea :label="__('profile.bio')" wire:model="profileForm.bio" rows="3" class="md:col-span-2" />
                     </div>
 
                     @if($this->isStaff())
@@ -41,8 +41,8 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <x-mary-select :label="__('profile.employment_status')" wire:model="profileForm.employment_status" :placeholder="__('profile.select_option')" :options="\App\Domain\User\Enums\EmploymentStatus::options()" />
                             <x-mary-input :label="__('profile.position')" wire:model="profileForm.position" :placeholder="__('profile.position_placeholder')" />
-                            <x-mary-input label="NIP" wire:model="profileForm.nip" placeholder="National staff ID" />
-                            <x-mary-input label="NUPTK" wire:model="profileForm.nuptk" placeholder="Teacher registry number" />
+                            <x-mary-input :label="__('profile.nip')" wire:model="profileForm.nip" :placeholder="__('profile.nip_placeholder')" />
+                            <x-mary-input :label="__('profile.nuptk')" wire:model="profileForm.nuptk" :placeholder="__('profile.nuptk_placeholder')" />
                             <x-mary-input :label="__('profile.competence_field')" wire:model="profileForm.competence_field" class="md:col-span-2" />
                         </div>
                     @endif
