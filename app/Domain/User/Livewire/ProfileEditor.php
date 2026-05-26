@@ -51,9 +51,10 @@ class ProfileEditor extends Component
         }
 
         if ($this->isStaff()) {
+            $profileId = $this->user->profile?->id ?? 'NULL';
             $rules = array_merge($rules, [
-                'profileForm.nip' => 'nullable|string|max:18|unique:profiles,nip,'.($this->user->profile?->id ?? 'NULL'),
-                'profileForm.nuptk' => 'nullable|string|max:16|unique:profiles,nuptk,'.($this->user->profile?->id ?? 'NULL'),
+                'profileForm.nip' => "nullable|string|max:18|unique:profiles,nip,{$profileId}",
+                'profileForm.nuptk' => "nullable|string|max:16|unique:profiles,nuptk,{$profileId}",
                 'profileForm.competence_field' => 'nullable|string|max:255',
             ]);
         }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Livewire\Forms;
 
-use Illuminate\Validation\Rules\Password;
+use App\Domain\Core\Support\PasswordRules;
 use Livewire\Form;
 
 class PasswordForm extends Form
@@ -19,7 +19,7 @@ class PasswordForm extends Form
     {
         return [
             'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'password' => [...PasswordRules::default(), 'confirmed'],
         ];
     }
 

@@ -27,7 +27,6 @@ class DashboardService
         return [
             'user_name' => $user?->name,
             'user_role' => $user?->getRoleNames()->first(),
-            'last_login' => $user?->last_login_at,
         ];
     }
 }

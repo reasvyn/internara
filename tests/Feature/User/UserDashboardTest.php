@@ -55,9 +55,10 @@ describe('DashboardService', function () {
     });
 
     it('returns shared stats', function () {
-        User::factory()->create(['name' => 'Test'])->assignRole(Role::STUDENT->value);
+        $user = User::factory()->create(['name' => 'Test'])->assignRole(Role::STUDENT->value);
+        $this->actingAs($user);
         $stats = app(DashboardService::class)->getSharedStats();
-        expect($stats)->toHaveKeys(['user_name', 'user_role', 'last_login']);
+        expect($stats)->toHaveKeys(['user_name', 'user_role']);
     });
 });
 

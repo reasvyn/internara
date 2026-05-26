@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 use App\Domain\User\Actions\DeleteNotificationAction;
 use App\Domain\User\Actions\MarkAllAsReadAction;
 use App\Domain\User\Actions\MarkAsReadAction;
