@@ -6,37 +6,37 @@
 
 ## Contents
 
-- [1. Auth — Keamanan & Identitas](#1-auth--keamanan--identitas)
-- [2. User — Identitas & Profil](#2-user--identitas--profil)
-- [3. School — Institusi](#3-school--institusi)
-- [4. Settings — Konfigurasi Runtime](#4-settings--konfigurasi-runtime)
-- [5. Setup — Instalasi](#5-setup--instalasi)
-- [6. Registration — Pendaftaran Magang](#6-registration--pendaftaran-magang)
-- [7. Internship — Program Magang](#7-internship--program-magang)
-- [8. Placement — Penempatan](#8-placement--penempatan)
-- [9. Partnership — Kemitraan](#9-partnership--kemitraan)
-- [10. Mentee — Siswa](#10-mentee--siswa)
-- [11. Mentor — Supervisi](#11-mentor--supervisi)
-- [12. Attendance — Kehadiran](#12-attendance--kehadiran)
-- [13. Logbook — Jurnal Harian](#13-logbook--jurnal-harian)
-- [14. Schedule — Jadwal](#14-schedule--jadwal)
-- [15. Assignment — Tugas](#15-assignment--tugas)
-- [16. Guidance — Panduan](#16-guidance--panduan)
-- [17. Incident — Insiden](#17-incident--insiden)
-- [18. Assessment — Penilaian Kompetensi](#18-assessment--penilaian-kompetensi)
-- [19. Evaluation — Evaluasi Mentor/Program](#19-evaluation--evaluasi-mentorprogram)
-- [20. Document — Dokumen & Rendering](#20-document--dokumen--rendering)
-- [21. Certificate — Sertifikat](#21-certificate--sertifikat)
-- [22. Admin — Administrasi Sistem](#22-admin--administrasi-sistem)
-- [23. Core — Fondasi Arsitektural](#23-core--fondasi-arsitektural)
-- [24. Shared — Utilitas Lintas Domain](#24-shared--utilitas-lintas-domain)
+- [1. Auth — Security & Identity](#1-auth--security--identity)
+- [2. User — Identity & Profile](#2-user--identity--profile)
+- [3. School — Institution](#3-school--institution)
+- [4. Settings — Runtime Configuration](#4-settings--runtime-configuration)
+- [5. Setup — Installation](#5-setup--installation)
+- [6. Registration — Internship Enrollment](#6-registration--internship-enrollment)
+- [7. Internship — Program Management](#7-internship--program-management)
+- [8. Placement — Slot Assignment](#8-placement--slot-assignment)
+- [9. Partnership — External Relations](#9-partnership--external-relations)
+- [10. Mentee — Student Role](#10-mentee--student-role)
+- [11. Mentor — Supervision](#11-mentor--supervision)
+- [12. Attendance — Presence Tracking](#12-attendance--presence-tracking)
+- [13. Logbook — Daily Journal](#13-logbook--daily-journal)
+- [14. Schedule — Calendar Events](#14-schedule--calendar-events)
+- [15. Assignment — Tasks & Submissions](#15-assignment--tasks--submissions)
+- [16. Guidance — Handbooks](#16-guidance--handbooks)
+- [17. Incident — Issue Reporting](#17-incident--issue-reporting)
+- [18. Assessment — Competency Evaluation](#18-assessment--competency-evaluation)
+- [19. Evaluation — Feedback Collection](#19-evaluation--feedback-collection)
+- [20. Document — Templates & Rendering](#20-document--templates--rendering)
+- [21. Certificate — Credentialing](#21-certificate--credentialing)
+- [22. Admin — System Administration](#22-admin--system-administration)
+- [23. Core — Architectural Foundation](#23-core--architectural-foundation)
+- [24. Shared — Cross-domain Utilities](#24-shared--cross-domain-utilities)
 - [Role Access Matrix](#role-access-matrix)
 
 ---
 
-## 1. Auth — Keamanan & Identitas
+## 1. Auth — Security & Identity
 
-Security boundary — login, autentikasi, RBAC, account lifecycle, recovery.
+Security boundary — login, authentication, RBAC, account lifecycle, recovery.
 
 | Feature | Description | Access |
 |---|---|---|
@@ -55,7 +55,7 @@ Security boundary — login, autentikasi, RBAC, account lifecycle, recovery.
 
 ---
 
-## 2. User — Identitas & Profil
+## 2. User — Identity & Profile
 
 Identity persistence — user profiles, dashboard routing, avatar, notifications.
 
@@ -68,7 +68,7 @@ Identity persistence — user profiles, dashboard routing, avatar, notifications
 | Admin Dashboard | System overview: user stats, readiness checklist, quick links | Admin |
 | Teacher Dashboard | Supervision view: supervised students, pending journals, active companies | Teacher |
 | Supervisor Dashboard | Industry view: active interns, pending evaluations, verified journals | Supervisor |
-| Student Dashboard | Registration status, journal progress, quick actions (write journal, clock in, etc.) | Student |
+| Student Dashboard | Registration status, journal progress, quick actions (write logbook, clock in, etc.) | Student |
 | Notification Center | Full-page with search, filter (unread/read), sorting, bulk mark-read/delete | Auth |
 | Notification Bell | Navbar indicator with unread count | Auth |
 | Recent Activity Feed | Chronological user activity log | Auth |
@@ -76,7 +76,7 @@ Identity persistence — user profiles, dashboard routing, avatar, notifications
 
 ---
 
-## 3. School — Institusi
+## 3. School — Institution
 
 Institutional foundation — school profile, departments, academic years.
 
@@ -91,7 +91,7 @@ Institutional foundation — school profile, departments, academic years.
 
 ---
 
-## 4. Settings — Konfigurasi Runtime
+## 4. Settings — Runtime Configuration
 
 Key-value configuration that changes without deployment.
 
@@ -106,7 +106,7 @@ Key-value configuration that changes without deployment.
 
 ---
 
-## 5. Setup — Instalasi
+## 5. Setup — Installation
 
 First-run wizard — prepares the application from empty database to fully operational.
 
@@ -123,7 +123,7 @@ First-run wizard — prepares the application from empty database to fully opera
 
 ---
 
-## 6. Registration — Pendaftaran Magang
+## 6. Registration — Internship Enrollment
 
 Gateway domain — student enrollment into internship programs.
 
@@ -138,7 +138,7 @@ Gateway domain — student enrollment into internship programs.
 
 ---
 
-## 7. Internship — Program Magang
+## 7. Internship — Program Management
 
 Core operational domain — program definitions, requirements, reports, groups, phases.
 
@@ -155,7 +155,7 @@ Core operational domain — program definitions, requirements, reports, groups, 
 
 ---
 
-## 8. Placement — Penempatan
+## 8. Placement — Slot Assignment
 
 Bridge between supply (company slots) and demand (students needing host organizations).
 
@@ -169,7 +169,7 @@ Bridge between supply (company slots) and demand (students needing host organiza
 
 ---
 
-## 9. Partnership — Kemitraan
+## 9. Partnership — External Relations
 
 External relationships — companies and partnership agreements.
 
@@ -183,7 +183,7 @@ External relationships — companies and partnership agreements.
 
 ---
 
-## 10. Mentee — Siswa
+## 10. Mentee — Student Role
 
 Student's lens — dashboard, progress tracking, self-service access.
 
@@ -195,7 +195,7 @@ Student's lens — dashboard, progress tracking, self-service access.
 
 ---
 
-## 11. Mentor — Supervisi
+## 11. Mentor — Supervision
 
 Supervision toolkit for teachers and company supervisors.
 
@@ -210,7 +210,7 @@ Supervision toolkit for teachers and company supervisors.
 
 ---
 
-## 12. Attendance — Kehadiran
+## 12. Attendance — Presence Tracking
 
 Presence tracking during internship.
 
@@ -226,7 +226,7 @@ Presence tracking during internship.
 
 ---
 
-## 13. Logbook — Jurnal Harian
+## 13. Logbook — Daily Journal
 
 Daily journaling — students record activities, learnings, and plans.
 
@@ -241,7 +241,7 @@ Daily journaling — students record activities, learnings, and plans.
 
 ---
 
-## 14. Schedule — Jadwal
+## 14. Schedule — Calendar Events
 
 Event calendar management.
 
@@ -256,7 +256,7 @@ Event calendar management.
 
 ---
 
-## 15. Assignment — Tugas
+## 15. Assignment — Tasks & Submissions
 
 Task-based learning — teachers create tasks, students submit, teachers grade.
 
@@ -271,7 +271,7 @@ Task-based learning — teachers create tasks, students submit, teachers grade.
 
 ---
 
-## 16. Guidance — Panduan
+## 16. Guidance — Handbooks
 
 Handbooks and documents that users must read and acknowledge.
 
@@ -284,7 +284,7 @@ Handbooks and documents that users must read and acknowledge.
 
 ---
 
-## 17. Incident — Insiden
+## 17. Incident — Issue Reporting
 
 Structured incident reporting, investigation, and resolution.
 
@@ -299,7 +299,7 @@ Structured incident reporting, investigation, and resolution.
 
 ---
 
-## 18. Assessment — Penilaian Kompetensi
+## 18. Assessment — Competency Evaluation
 
 Rubric-based competency evaluation framework.
 
@@ -314,7 +314,7 @@ Rubric-based competency evaluation framework.
 
 ---
 
-## 19. Evaluation — Evaluasi Mentor/Program
+## 19. Evaluation — Feedback Collection
 
 Structured feedback collection about the internship experience.
 
@@ -329,7 +329,7 @@ Structured feedback collection about the internship experience.
 
 ---
 
-## 20. Document — Dokumen & Rendering
+## 20. Document — Templates & Rendering
 
 Rendering engine for generated PDF, spreadsheet, and other output files.
 
@@ -343,7 +343,7 @@ Rendering engine for generated PDF, spreadsheet, and other output files.
 
 ---
 
-## 21. Certificate — Sertifikat
+## 21. Certificate — Credentialing
 
 Credentialing — templates, issuance, revocation, and verification.
 
@@ -359,7 +359,7 @@ Credentialing — templates, issuance, revocation, and verification.
 
 ---
 
-## 22. Admin — Administrasi Sistem
+## 22. Admin — System Administration
 
 System-level management across all domains.
 
@@ -382,7 +382,7 @@ System-level management across all domains.
 
 ---
 
-## 23. Core — Fondasi Arsitektural
+## 23. Core — Architectural Foundation
 
 Base classes, contracts, and infrastructure used across all domains.
 
@@ -408,7 +408,7 @@ Base classes, contracts, and infrastructure used across all domains.
 
 ---
 
-## 24. Shared — Utilitas Lintas Domain
+## 24. Shared — Cross-domain Utilities
 
 Cross-domain utilities without business logic.
 
