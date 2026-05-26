@@ -83,8 +83,8 @@
                                 <x-mary-icon name="o-chevron-down" class="size-4" />
                             </div>
                         </summary>
-                        <div class="mt-2 text-xs max-w-none text-base-content/70 leading-relaxed">
-                            {!! nl2br(e($notification->message)) !!}
+                        <div class="mt-2 text-xs max-w-none text-base-content/70 leading-relaxed prose prose-sm">
+                            {!! Str::markdown($notification->message) !!}
                         </div>
                     </details>
                 @else
