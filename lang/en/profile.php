@@ -31,6 +31,7 @@ return [
     'position_kaprodi' => 'Head of Department',
     'position_guru_pembimbing' => 'Supervising Teacher',
     'position_supervisor_industri' => 'Industry Supervisor',
+    'position_placeholder' => 'e.g., Head of Department',
     'new_password' => 'New Password',
     'confirm_password' => 'Confirm Password',
 

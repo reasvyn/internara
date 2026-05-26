@@ -42,6 +42,6 @@ class ProfileForm extends Form
         $this->nip = $profile->nip ?? null;
         $this->nuptk = $profile->nuptk ?? null;
         $this->competence_field = $profile->competence_field ?? null;
-        $this->position = $profile->position?->value ?? null;
+        $this->position = $profile->position ?? null;
     }
 }

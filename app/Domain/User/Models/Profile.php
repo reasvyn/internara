@@ -10,7 +10,6 @@ use App\Domain\School\Models\School;
 use App\Domain\User\Enums\BloodType;
 use App\Domain\User\Enums\EmploymentStatus;
 use App\Domain\User\Enums\Gender;
-use App\Domain\User\Enums\StructuralPosition;
 use Database\Factories\ProfileFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,7 +53,6 @@ class Profile extends BaseModel
             'gender' => Gender::class,
             'blood_type' => BloodType::class,
             'employment_status' => EmploymentStatus::class,
-            'position' => StructuralPosition::class,
             'dob' => 'date',
         ];
     }

@@ -24,4 +24,13 @@ enum EmploymentStatus: string implements LabelEnum
             self::VOLUNTEER => __('user.employment.volunteer'),
         };
     }
+
+    /** @return list<array{id: string, name: string}> */
+    public static function options(): array
+    {
+        return array_map(fn (self $case) => [
+            'id' => $case->value,
+            'name' => $case->label(),
+        ], self::cases());
+    }
 }
