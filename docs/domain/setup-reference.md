@@ -13,7 +13,7 @@ Total: 26 files
 | `Setup/Actions/RecoverSuperAdminAction.php` | `RecoverSuperAdminAction` | `BaseAction` | Recovers super admin account with notification |
 | `Setup/Actions/SetupDepartmentAction.php` | `SetupDepartmentAction` | `BaseAction` | Creates department during setup |
 | `Setup/Actions/SetupSchoolAction.php` | `SetupSchoolAction` | `BaseAction` | Creates school during setup |
-| `Setup/Actions/SetupSuperAdminAction.php` | `SetupSuperAdminAction` | `BaseAction` | Creates super admin during setup |
+| `Setup/Actions/SetupSuperAdminAction.php` | `SetupSuperAdminAction` | `BaseAction` | Creates or updates super admin using provided name and username |
 | `Setup/Actions/ValidateSetupTokenAction.php` | `ValidateSetupTokenAction` | `BaseAction` | Validates a setup access token |
 
 ## Console Commands
@@ -68,7 +68,7 @@ Total: 26 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Setup/Models/Setup.php` | `Setup` | `BaseModel` | Eloquent model for installation state |
+| `Setup/Models/Setup.php` | `Setup` | `BaseModel` | Eloquent model for installation state (belongsTo School and Department) |
 
 ## Policies
 
