@@ -131,7 +131,7 @@
     </div>
 
     {{-- Notification Viewer Modal --}}
-    <x-mary-modal wire:model="viewingNotificationId" title="{{ $this->viewedNotification?->title ?? '' }}" class="backdrop-blur-sm" size="lg">
+    <x-mary-modal wire:model="showViewer" title="{{ $this->viewedNotification?->title ?? '' }}" class="backdrop-blur-sm" size="lg">
         @if($this->viewedNotification)
             <div class="space-y-4">
                 <div class="prose prose-sm max-w-none">

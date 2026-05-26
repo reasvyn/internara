@@ -16,6 +16,8 @@ use Illuminate\View\View;
 
 class NotificationCenter extends BaseRecordManager
 {
+    public bool $showViewer = false;
+
     public ?string $viewingNotificationId = null;
 
     public function viewNotification(string $id): void
@@ -28,10 +30,12 @@ class NotificationCenter extends BaseRecordManager
         }
 
         $this->viewingNotificationId = $id;
+        $this->showViewer = true;
     }
 
     public function closeViewer(): void
     {
+        $this->showViewer = false;
         $this->viewingNotificationId = null;
     }
 
