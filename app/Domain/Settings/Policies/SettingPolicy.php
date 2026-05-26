@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Settings\Policies;
 
 use App\Domain\Core\Policies\BasePolicy;
+use App\Domain\Settings\Models\Setting;
 use App\Domain\User\Models\User;
 
 class SettingPolicy extends BasePolicy
