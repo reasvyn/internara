@@ -129,6 +129,9 @@ across the entire application.
 | `SaveSystemSettingsAction` | Saves system-wide settings configuration |
 | `GetAcademicYearsAction` | Retrieves academic years for settings configuration |
 
+When `active_academic_year` is saved via System Settings, the selected academic year is
+automatically activated (deactivating all others) through `ActivateAcademicYearAction`.
+
 ### Technical Reference
 
 | Layer | Artifacts |

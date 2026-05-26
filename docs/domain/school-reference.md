@@ -1,6 +1,6 @@
 # School — API Reference
 
-Total: 21 files
+Total: 24 files
 
 ## Actions
 
@@ -28,9 +28,17 @@ Total: 21 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `School/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` | CRUD manager for academic years |
+| `School/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` | CRUD manager for academic years with toggleSelectAll bulk selection |
 | `School/Livewire/DepartmentManager.php` | `DepartmentManager` | `BaseRecordManager` | CRUD manager for departments |
 | `School/Livewire/SchoolEditor.php` | `SchoolEditor` | `Component` | School information editor |
+
+### Livewire Form Objects
+
+| File | Class | Extends | Fields | Used By |
+|---|---|---|---|---|
+| `School/Livewire/Forms/AcademicYearForm.php` | `AcademicYearForm` | `Form` | id, name, start_date, end_date | `AcademicYearManager` |
+| `School/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` | `Form` | id, name, description | `DepartmentManager` |
+| `School/Livewire/Forms/SchoolForm.php` | `SchoolForm` | `Form` | name, institutional_code, email, phone, address, website, fax, principal_name | `SchoolEditor` |
 
 ## Models
 
