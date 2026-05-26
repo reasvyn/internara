@@ -26,7 +26,7 @@ final readonly class SuperAdminIntegrityRules extends BaseEntity
             name: $model->name,
             username: $model->username,
             isSuperAdmin: $model->hasRole(Role::SUPER_ADMIN->value),
-            status: $model->status,
+            status: $model->status ? AccountStatus::tryFrom($model->status) : null,
             superAdminCount: User::role(Role::SUPER_ADMIN->value)->count(),
         );
     }
