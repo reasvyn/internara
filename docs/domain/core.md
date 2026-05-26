@@ -20,12 +20,12 @@ Core is the architectural foundation — every domain depends on it, it depends 
 | **Contracts** | `LabelEnum` (`label(): string`), `StatusEnum` (extends LabelEnum — `canTransitionTo()`, `isTerminal()`, `validTransitions()`), `ColorableEnum` (`color(): string`), `SendsNotifications` |
 | **Data** | `Data` (abstract readonly DTO — `toArray()`, `fromArray()`, `from()`), `AuditCheck` (category + status + message keys), `AuditReport` (aggregates checks, `passed()`, `forCategory()`) |
 | **Enums** | `AuditCategory` (Requirements, Permissions, Database, Terminal, Recommendations — `isCritical()`), `AuditStatus` (Pass, Fail, Warn — `symbol()`) |
-| **States** | `StatusEnum` contract — states are managed via enums implementing `canTransitionTo()`, `isTerminal()`, `validTransitions()` |
+| **Contracts/States** | `StatusEnum` contract — state machine via `canTransitionTo()`, `isTerminal()`, `validTransitions()`. No separate `States/` directory exists; state entities use `BaseEntity`. |
 | **Http/Controllers** | `BaseController` (abstract marker — no methods yet, available for cross-cutting HTTP concerns) |
 | **Http/Requests** | `FormRequest` (extends Laravel's FormRequest — throws `ValidationFailedException` instead of redirect/JSON) |
 | **Http/Concerns** | *(none currently)* |
 | **Http/Middleware** | `SecurityHeaders` (configurable CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy from config), `LogContext` (injects `request_id`, method, URL, IP, `user_id`, `user_role`, `duration_ms` into log context) |
-| **Console/Commands** | `HealthCommand` (`system:health` — 14 checks: environment, setup status, PHP version, extensions, recommended extensions, memory, database, migrations pending, storage, disk, queue, cache, app key, storage link, maintenance mode), `CleanupCommand` (`system:cleanup` — prunes expired resets, stale cache tags, failed jobs, activity logs, old log files), `CacheWarmCommand` (`system:cache-warm` — pre-warms settings, brand, config, view, event caches) |
+| **Console/Commands** | `HealthCommand` (`system:health` — 15 checks: environment, setup status, PHP version, extensions, recommended extensions, memory, database, migrations pending, storage, disk, queue, cache, app key, storage link, maintenance mode), `CleanupCommand` (`system:cleanup` — prunes expired resets, stale cache tags, failed jobs, activity logs, old log files), `CacheWarmCommand` (`system:cache-warm` — pre-warms settings, brand, config, view, event caches) |
 | **Livewire** | `BaseRecordManager` (abstract CRUD base — search, filter, sort, pagination via `WithPagination`, record selection, bulk actions, mass actions) |
 | **Livewire/Concerns** | `WithSorting` (trait — safe column whitelist for `orderBy`), `WithRecordSelection` (trait — checkbox state for bulk operations) |
 | **Channels** | `CustomDatabaseChannel` (custom notification channel, decoupled from any business domain) |
@@ -60,7 +60,8 @@ Design rationale: `DomainException` is intentionally separate from `AppException
 - `SmartLogger` → primary logger. `Log::withContext()` used only in `LogContext` middleware for request tracing context.
 - `BaseController`, `FormRequest` → foundation for HTTP layer.
 - `LabelEnum`, `StatusEnum`, `ColorableEnum` → contracts that all domain enums implement.
-- `AppException` hierarchy → all exceptions across every domain derive from this tree.
+- `AppException` hierarchy → layered exceptions (action, infrastructure, presentation) and their subtypes.
+- `DomainException` hierarchy → parallel tree for domain invariant violations, deliberately separate from AppException.
 
 ## Requirements
 
@@ -80,7 +81,7 @@ Core has no end-user stories — it provides the architectural foundation every 
 | State machine support | `StatusEnum` contract for typed lifecycle management |
 | Consistent authorization | `BasePolicy` with `AuthorizesRoles` and `AuthorizesOwnership` traits |
 | Exception hierarchy | Every exception extends `AppException` or `DomainException` with structured context |
-| Console health | `system:health` runs 14 checks; `system:cleanup` prunes stale data; `system:cache-warm` pre-warms caches |
+| Console health | `system:health` runs 15 checks; `system:cleanup` prunes stale data; `system:cache-warm` pre-warms caches |
 | Security headers | CSP, X-Frame-Options, Referrer-Policy configured via `config/security-headers.php` |
 | Request tracing | Every request gets a `request_id` injected into log context |
 

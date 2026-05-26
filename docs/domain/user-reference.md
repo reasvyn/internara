@@ -1,12 +1,18 @@
 # User — API Reference
 
-Total: 23 files
+Total: 36 files
 
 ## Actions
 
 | File | Class | Extends | Description |
 |---|---|---|---|
+| `User/Actions/DeleteNotificationAction.php` | `DeleteNotificationAction` | `BaseAction` | Deletes a single notification |
+| `User/Actions/GetActivityLogsAction.php` | `GetActivityLogsAction` | `BaseAction` | Retrieves paginated activity logs |
 | `User/Actions/GetStudentDashboardDataAction.php` | `GetStudentDashboardDataAction` | `BaseAction` | Gathers all data needed for student dashboard |
+| `User/Actions/MarkAllAsReadAction.php` | `MarkAllAsReadAction` | `BaseAction` | Marks all unread notifications as read |
+| `User/Actions/MarkAsReadAction.php` | `MarkAsReadAction` | `BaseAction` | Marks a single notification as read |
+| `User/Actions/MarkBatchAsReadAction.php` | `MarkBatchAsReadAction` | `BaseAction` | Marks multiple notifications as read in batch |
+| `User/Actions/SendNotificationAction.php` | `SendNotificationAction` | `BaseAction` | Sends a notification to a user |
 | `User/Actions/UpdateProfileAction.php` | `UpdateProfileAction` | `BaseAction` | Updates user profile with avatar upload |
 
 ## Controllers
@@ -21,12 +27,17 @@ Total: 23 files
 | File | Class | Implements | Description |
 |---|---|---|---|
 | `User/Enums/BloodType.php` | `BloodType` | `LabelEnum` | Blood type enum |
+| `User/Enums/EmploymentStatus.php` | `EmploymentStatus` | `LabelEnum` | Employment status enum |
 | `User/Enums/Gender.php` | `Gender` | `LabelEnum` | Gender enum |
+| `User/Enums/StructuralPosition.php` | `StructuralPosition` | `LabelEnum` | Structural position enum |
 
 ## Livewire Components
 
 | File | Class | Extends | Description |
 |---|---|---|---|
+| `User/Livewire/ActivityFeedManager.php` | `ActivityFeedManager` | `Component` | Paginated activity feed with filters |
+| `User/Livewire/NotificationBell.php` | `NotificationBell` | `Component` | Dropdown notification bell indicator |
+| `User/Livewire/NotificationCenter.php` | `NotificationCenter` | `Component` | Full-page notification center |
 | `User/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` | Profile editing form (with avatar upload and password change) |
 | `User/Livewire/RecentActivityList.php` | `RecentActivityList` | `Component` | Recent activity log listing |
 | `User/Livewire/UserDashboard.php` | `UserDashboard` | `Component` | Generic user dashboard with recent activity |
@@ -51,6 +62,7 @@ Total: 23 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
+| `User/Models/Notification.php` | `Notification` | `BaseModel` | Eloquent model for in-app notifications |
 | `User/Models/Profile.php` | `Profile` | `BaseModel` | Eloquent model for user profiles (department, school, bio) |
 | `User/Models/User.php` | `User` | `Model` (Authenticatable) | Eloquent model for users (with relations to mentor, mentee, roles) |
 
@@ -64,6 +76,7 @@ Total: 23 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
+| `User/Policies/NotificationPolicy.php` | `NotificationPolicy` | `BasePolicy` | Authorization for notification operations |
 | `User/Policies/ProfilePolicy.php` | `ProfilePolicy` | `BasePolicy` | Authorization for profile operations |
 
 ## Rules

@@ -93,7 +93,7 @@ Change Request:
 | **Models** | `Placement` (`placements`), `PlacementChangeRequest` |
 | **Entities** | `PlacementState` (deletion gating — canBeDeleted), `PlacementCapacity` (capacity calculation — isFull, availableSlots) |
 | **Enums** | `PlacementChangeStatus` — `PENDING`, `APPROVED`, `REJECTED` (implements `LabelEnum`, `StatusEnum`) |
-| **Policies** | `PlacementChangeRequestPolicy` — gates change request CRUD by role |
+| **Policies** | `PlacementPolicy` (placement CRUD), `PlacementChangeRequestPolicy` (change request CRUD) |
 
 ## Dependencies
 

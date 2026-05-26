@@ -1,6 +1,6 @@
 # Setup — API Reference
 
-Total: 25 files
+Total: 26 files
 
 ## Actions
 
@@ -22,6 +22,12 @@ Total: 25 files
 |---|---|---|---|
 | `Setup/Console/Commands/SetupInstallCommand.php` | `SetupInstallCommand` | `Command` | CLI command for headless installation |
 | `Setup/Console/Commands/SetupResetCommand.php` | `SetupResetCommand` | `Command` | CLI command to reset setup state |
+
+### Console Traits
+
+| File | Class | Description |
+|---|---|---|
+| `Setup/Console/Commands/Traits/InteractsWithInstallerCli.php` | `InteractsWithInstallerCli` | Trait providing shared CLI I/O helpers for installation commands |
 
 ## Entities
 

@@ -165,8 +165,9 @@ and `UserDashboard` were updated to match the existing convention.
 |-------|-----------|
 | **Models** | `User` (extends `Authenticatable`, UUID via `HasUuids`), `Profile` (extends `BaseModel`, on-demand creation), `Notification` (custom in-app notifications table) |
 | **Enums** | `BloodType` — `A`, `B`, `AB`, `O`; `Gender` — `MALE`, `FEMALE`; `StructuralPosition`; `EmploymentStatus` |
-| **Livewire** | `UserDashboard`, `ProfileEditor`, `RecentActivityList`, `NotificationCenter`, `NotificationBell`, `ActivityFeedManager` |
-| **Support** | `UserIdentifierGenerator` (unique username generation with collision avoidance) |
+| **Livewire** | `UserDashboard`, `ProfileEditor`, `RecentActivityList`, `NotificationCenter`, `NotificationBell`, `ActivityFeedManager`; Dashboards: `AdminDashboard`, `StudentDashboard`, `SupervisorDashboard`, `TeacherDashboard` |
+| **Policies** | `ProfilePolicy`, `NotificationPolicy` |
+| **Support** | `UserIdentifierGenerator` (unique username generation with collision avoidance), `DashboardService` (role-based routing) |
 | **Notifications** | `TestMailNotification` (email configuration testing) |
 | **Rules** | `SystemUsername` (username format validation), `ReservedAuthoritativeName` (reserved name blocking) |
 | **Controllers** | `DashboardController` (role-based dashboard routing), `HomeController` (landing page) |

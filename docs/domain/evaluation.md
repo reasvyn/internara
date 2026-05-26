@@ -102,6 +102,7 @@ CREATED ──→ UPDATED (editable until deleted)
 | **Entity** | `EvaluationResult` (score band classification, average criterion score, validity check) |
 | **Enums** | `EvaluationCategory` — `MENTOR`, `PROGRAM`, `COMPANY`, `FACILITY`, `OVERALL` (each with `label()` and `defaultCriteria()`) |
 | **Livewire** | `MentorEvaluationManager` (supports all types with dynamic criteria form, type filter) |
+| **Policies** | `EvaluationPolicy` |
 
 ## Dependencies
 

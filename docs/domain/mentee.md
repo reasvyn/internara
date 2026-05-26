@@ -122,6 +122,7 @@ current internship tool access.
 | **Models** | `Mentee` (enrollment link between user and internship) |
 | **Entity** | `MenteeState` (active registration checks, clock-in/logbook/assignment gating, duration calculations) |
 | **Livewire** | *(dashboard moved to `User/Livewire/Dashboards/StudentDashboard`)* |
+| **Policies** | `MenteePolicy` |
 
 ## Dependencies
 

@@ -1,6 +1,6 @@
 # Auth — API Reference
 
-Total: 38 files
+Total: 39 files
 
 ## Actions
 
@@ -25,6 +25,7 @@ Total: 38 files
 |---|---|---|---|
 | `Auth/Entities/Apprentice.php` | `Apprentice` | `BaseEntity` | Read-only DTO for user/student profile info |
 | `Auth/Entities/RecoveryCodeState.php` | `RecoveryCodeState` | `BaseEntity` | Read-only DTO for recovery code state |
+| `Auth/Entities/SuperAdminIntegrityRules.php` | `SuperAdminIntegrityRules` | `BaseEntity` | Enforces super admin invariants: fixed name/username, immutability, deletion/lock protection |
 
 ## Enums
 

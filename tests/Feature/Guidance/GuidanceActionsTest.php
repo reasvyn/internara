@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Auth\Enums\Role;
 use App\Domain\Guidance\Actions\AcknowledgeHandbookAction;
 use App\Domain\Guidance\Actions\CreateHandbookAction;
 use App\Domain\Guidance\Actions\DeleteHandbookAction;
@@ -9,7 +10,6 @@ use App\Domain\Guidance\Actions\UpdateHandbookAction;
 use App\Domain\Guidance\Livewire\HandbookIndex;
 use App\Domain\Guidance\Livewire\StudentHandbookIndex;
 use App\Domain\Guidance\Models\Handbook;
-use App\Domain\Auth\Enums\Role;
 use App\Domain\User\Models\User;
 use Spatie\Permission\Models\Role as RoleModel;
 

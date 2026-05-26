@@ -10,6 +10,9 @@ This exists because a single `routes/web.php` with 200+ lines creates merge conf
 
 The master file `routes/web.php` `require`s 24 domain route files. Load order matters: if two files register the same route name, the later one wins.
 
+Additional route files exist outside `web/`: `console.php` (Artisan commands),  
+`channels.php` (broadcasting), and `ai.php` (model/AI interactions).
+
 Route files contain:
 - `declare(strict_types=1)`
 - Class imports for the handlers used in that file

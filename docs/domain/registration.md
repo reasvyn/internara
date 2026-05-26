@@ -18,7 +18,7 @@ Registration manages the student enrollment journey into internship programs. It
 
 2. **Guest user (no account)** fills out the `AccountApplicationForm` with personal and school information plus internship preferences. An admin reviews (`ApplicationReview`), approves (which auto-creates a User + Mentee + Registration in `active` status), or rejects with a reason.
 
-**Registration Status.** Registrations use a simple 2-status system managed by Spatie's `laravel-model-statuses`:
+**Registration Status.** Registrations use a simple 2-status system:
 
 | Status | Meaning |
 |--------|---------|
@@ -69,6 +69,7 @@ Guest path:     AccountApplicationForm → [pending] → ApplicationReview → [
 | `ApproveAccountApplicationAction` | Admin approves a pending application, auto-creates User + Mentee + Registration as active |
 | `RejectAccountApplicationAction` | Admin rejects a pending application with a reason |
 | `RegisterInternshipAction` | Authenticated student registers for an internship program (creates pending Registration) |
+| `UploadRegistrationDocumentAction` | Student uploads a required document for their registration |
 | `VerifyRegistrationAction` | Admin verifies a pending registration, assigns placement and mentors (transitions to active) |
 
 ### Livewire Components
@@ -88,8 +89,9 @@ Guest path:     AccountApplicationForm → [pending] → ApplicationReview → [
 | **Models** | `Registration` (`registrations`), `AccountApplication`, `RegistrationDocument` |
 | **Entity** | `RegistrationState` (status checks, date calculations, approval gating) |
 | **Enums** | `RegistrationDocumentStatus` — `PENDING`, `VERIFIED`, `REJECTED` (implements `LabelEnum`, `StatusEnum`); `AccountApplicationStatus` — `PENDING`, `APPROVED`, `REJECTED` (implements `LabelEnum`, `StatusEnum`) |
-| **Livewire** | `RegistrationCenter`, `RegistrationWizard`, `RegistrationDocumentUpload`, `RegistrationVerification`, `AccountApplicationForm` |
+| **Livewire** | `RegistrationCenter`, `RegistrationWizard`, `RegistrationDocumentUpload`, `RegistrationVerification`, `AccountApplicationForm`, `ApplyPage` |
 | **Form Objects** | `AccountApplicationFormData` (AccountApplicationForm), `RegistrationWizardForm` (RegistrationWizard) |
+| **Actions** | *(see Key Operations above)* including `UploadRegistrationDocumentAction` |
 
 ## Dependencies
 

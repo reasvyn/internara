@@ -1,6 +1,6 @@
 # Settings — API Reference
 
-Total: 14 files
+Total: 16 files
 
 ## Actions
 
@@ -16,6 +16,12 @@ Total: 14 files
 | File | Class | Implements | Description |
 |---|---|---|---|
 | `Settings/Casts/SettingValueCast.php` | `SettingValueCast` | `CastsAttributes` | Custom Eloquent cast for encrypted setting values |
+
+## Enums
+
+| File | Class | Implements | Description |
+|---|---|---|---|
+| `Settings/Enums/SettingGroup.php` | `SettingGroup` | `LabelEnum` | Setting group classification |
 
 ## Middleware
 
@@ -35,6 +41,12 @@ Total: 14 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Settings/Models/Setting.php` | `Setting` | `BaseModel` | Eloquent model for key-value settings |
+
+## Policies
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Settings/Policies/SettingPolicy.php` | `SettingPolicy` | `BasePolicy` | Authorization for setting operations |
 
 ## Rules
 

@@ -134,6 +134,8 @@ across the entire application.
 | Layer | Artifacts |
 |-------|-----------|
 | **Models** | `Setting` (key-value store with type enforcement) |
+| **Enums** | `SettingGroup` — `GENERAL`, `SECURITY`, `LOCALIZATION`, `SYSTEM`, `FEATURES`, `NOTIFICATIONS` |
+| **Policies** | `SettingPolicy` |
 | **Livewire** | `SystemSetting`, `AppSignature` |
 | **Support** | `Color` (color computation), `Settings` (cached setting retrieval), `AppInfo`, `AppMetadata` |
 | **Middleware** | `SetLocaleMiddleware` |

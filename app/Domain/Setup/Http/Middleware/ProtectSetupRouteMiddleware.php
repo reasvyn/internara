@@ -60,6 +60,7 @@ class ProtectSetupRouteMiddleware
                 $this->validateToken->execute((string) $token);
 
                 Session::put('setup.authorized', true);
+                Session::regenerate();
 
                 if ($request->isMethod('POST')) {
                     return redirect()->route('setup');

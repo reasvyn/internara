@@ -15,7 +15,7 @@ Shared has no Models, Controllers, Routes, or Views. Pure support code with mini
 | `Theme` | Final static | Color/theme resolution system. `defaults()`, `presets()`, `all()`, `get(key)`, `cssVariables()` — resolves colors from the settings key-value store into CSS custom properties for both light and dark modes. |
 | `CsvHandler` | Final class | `export(Collection, headers, rowMapper, filename)`, `downloadTemplate(headers, exampleRow, filename)`, `import(filePath, rowProcessor, expectedHeaders)` — CSV export/import with optional header validation. |
 | `LangChecker` | Class (extends Translator) | Extends Laravel's `Translator`. Logs a warning when a translation key is not found — helps detect untranslated strings during development. Includes caller location in the warning. |
-| `HasModelStatuses` | Trait | Bridges Spatie's generic `HasStatuses` with the application's typed `StatusEnum`. `setStatusEnum(StatusEnum)`, `hasStatusEnum(StatusEnum)`, `currentStatus(): ?StatusEnum` — type-safe status management for stateful models. |
+| `HasModelStatuses` | Trait | Bridges Spatie's generic `HasStatuses` (deprecated) with the application's typed `StatusEnum`. `setStatusEnum(StatusEnum)`, `hasStatusEnum(StatusEnum)`, `currentStatus(): ?StatusEnum` — type-safe status management for stateful models. Being migrated to plain `StatusEnum` columns. |
 
 ## Key Concepts
 
@@ -25,7 +25,7 @@ Shared has no Models, Controllers, Routes, or Views. Pure support code with mini
 
 **Theme system** (`Theme`) resolves colors from the database settings store into CSS custom properties using the `Color` utility from the Settings domain. It generates light and dark mode variables from a single color configuration — shades, content colors, and contrast colors are computed automatically.
 
-**Model traits** provide reusable behavior: `HasModelStatuses` for models with state machine lifecycles (registrations, internships), bridging Spatie's `HasStatuses` with typed `StatusEnum`.
+**Model traits** provide reusable behavior: `HasModelStatuses` for models with state machine lifecycles (registrations, internships), bridging Spatie's legacy `HasStatuses` with typed `StatusEnum`. New models use plain `StatusEnum` columns directly.
 
 ## Requirements
 
@@ -42,7 +42,7 @@ Shared provides cross-domain utility code. It has no end-user stories — the co
 | `Locale` | Final class | All views | Bilingual locale management (Indonesian default, English), session-based preference |
 | `Theme` | Final static | Layout views | Color/theme resolution from settings into CSS custom properties for light/dark modes |
 | `LangChecker` | Class | Development | Extends Laravel Translator — logs warnings for missing translation keys |
-| `HasModelStatuses` | Trait | Registration, Internship | Type-safe bridge between Spatie statuses and `StatusEnum` |
+| `HasModelStatuses` | Trait | Registration, Internship (deprecated) | Type-safe bridge between Spatie statuses and `StatusEnum`. Being migrated to plain columns. |
 | `LangSwitcher` | Livewire | All views | Bilingual language switcher component |
 | `ThemeSwitcher` | Livewire | Layout views | Theme toggle component (light/dark mode) |
 | `CsvRowResult` | Enum | School, Partnership | CSV import row result tracking |
@@ -65,7 +65,7 @@ Shared provides cross-domain utility code. It has no end-user stories — the co
 
 | Dependency | Reason |
 |---|---|
-| Core | Contract interfaces (`LabelEnum`, `StatusEnum`) used by `HasModelStatuses` bridge. |
+| Core | Contract interfaces (`LabelEnum`, `StatusEnum`) used by `HasModelStatuses` bridge (legacy). |
 | Settings | Theme resolves colors from the settings key-value store (documented exception). |
 
 

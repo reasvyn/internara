@@ -144,7 +144,7 @@ process.
 
 | Layer | Artifacts |
 |-------|-----------|
-| **Models** | `GdprDeletionLog` |
+| **Models** | `Announcement`, `GdprDeletionLog` |
 | **Enums** | `AnnouncementStatus` (DRAFT, SCHEDULED, PUBLISHED) |
 | **Livewire** | `UserManager`, `AdminManager`, `StudentManager`, `TeacherManager`, `SupervisorManager`, `MentorManager`, `MenteeManager`, `AnnouncementManager`, `AuditLogManager`, `ApplicationReview`, `AccountCloneDetector`, `GdprDeletionLogs` |
 | **Console** | `PublishScheduledAnnouncementsCommand` (runs every minute via scheduler) |

@@ -1,6 +1,6 @@
 # Mentor — API Reference
 
-Total: 25 files
+Total: 26 files
 
 ## Actions
 
@@ -60,4 +60,5 @@ Total: 25 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
+| `Mentor/Policies/MentorPolicy.php` | `MentorPolicy` | `BasePolicy` | Authorization for mentor operations |
 | `Mentor/Policies/SupervisionLogPolicy.php` | `SupervisionLogPolicy` | `BasePolicy` | Authorization for supervision log operations |

@@ -30,6 +30,8 @@ Total: 46 files
 | `Admin/Console/Commands/PulseRecordSnapshotsCommand.php` | `PulseRecordSnapshotsCommand` | `Command` | Captures Pulse snapshot data |
 | `Admin/Console/Commands/RecoverAdminCommand.php` | `RecoverAdminCommand` | `Command` | Interactive CLI to recover super admin access |
 | `Admin/Console/Commands/ShowRecoveryPathCommand.php` | `ShowRecoveryPathCommand` | `Command` | Displays the recovery key file path |
+| `Admin/Console/Commands/PruneNotificationsCommand.php` | `PruneNotificationsCommand` | `Command` | Prunes old read notifications |
+| `Admin/Console/Commands/PublishScheduledAnnouncementsCommand.php` | `PublishScheduledAnnouncementsCommand` | `Command` | Publishes scheduled announcements |
 | `Admin/Console/Commands/ShowRecoveryKeyCommand.php` | `ShowRecoveryKeyCommand` | `Command` | Displays the stored recovery key (with confirmation) |
 
 ## Livewire Components
@@ -62,6 +64,12 @@ Total: 46 files
 | `Admin/Models/GdprDeletionLog.php` | `GdprDeletionLog` | `BaseModel` | Eloquent model for GDPR deletion audit trail |
 | `User/Models/Notification.php` | `Notification` | `BaseModel` | Eloquent model for system notifications — *moved from `Admin`* |
 
+## Enums
+
+| File | Class | Implements | Description |
+|---|---|---|---|
+| `Admin/Enums/AnnouncementStatus.php` | `AnnouncementStatus` | `LabelEnum` | Announcement lifecycle status (DRAFT, SCHEDULED, PUBLISHED) |
+
 ## Notifications
 
 | File | Class | Extends/Implements | Description |
@@ -74,6 +82,19 @@ Total: 46 files
 |---|---|---|---|
 | `Admin/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` | `BasePolicy` | Authorization for GDPR log viewing |
 | `User/Policies/NotificationPolicy.php` | `NotificationPolicy` | `BasePolicy` | Authorization for notification access — *moved from `Admin`* |
+
+### Livewire Form Objects
+
+| File | Class | Extends | Fields | Used By |
+|---|---|---|---|---|
+| `Admin/Livewire/Forms/AdminUserForm.php` | `AdminUserForm` | `Form` | name, email, username, password, role | `AdminManager` |
+| `Admin/Livewire/Forms/AnnouncementForm.php` | `AnnouncementForm` | `Form` | title, message, type, target_roles, scheduled_at | `AnnouncementManager` |
+| `Admin/Livewire/Forms/MenteeForm.php` | `MenteeForm` | `Form` | internal_notes | `MenteeManager` |
+| `Admin/Livewire/Forms/MentorForm.php` | `MentorForm` | `Form` | type, is_active | `MentorManager` |
+| `Admin/Livewire/Forms/StudentForm.php` | `StudentForm` | `Form` | name, email, username, password | `StudentManager` |
+| `Admin/Livewire/Forms/SupervisorForm.php` | `SupervisorForm` | `Form` | name, email, username, password | `SupervisorManager` |
+| `Admin/Livewire/Forms/TeacherForm.php` | `TeacherForm` | `Form` | name, email, username, password | `TeacherManager` |
+| `Admin/Livewire/Forms/UserForm.php` | `UserForm` | `Form` | name, email | `UserManager` |
 
 ## Recorders (Pulse)
 

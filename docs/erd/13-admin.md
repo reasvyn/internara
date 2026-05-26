@@ -54,9 +54,10 @@ SmartLogger::info('User registered')
 
 **Data growth:** This is the fastest-growing table. Every action log call creates a row. Estimate ~50 rows per active user per day. Pruned by `system:cleanup` (retention configurable).
 
-### statuses (Spatie Model States)
+### statuses (Legacy — being removed)
 
-Polymorphic state machine history. Records every state transition for models using Spatie ModelStates.
+Polymorphic state machine history. Previously used by `spatie/laravel-model-status` for models that
+have since migrated to plain `StatusEnum` columns or `HasModelStatuses` bridge.
 
 | Column | Type | Constraints | Purpose |
 |---|---|---|---|
@@ -67,10 +68,6 @@ Polymorphic state machine history. Records every state transition for models usi
 | model_id | integer | NOT NULL | Polymorphic: model ID |
 | created_at | timestamp | | |
 | updated_at | timestamp | | |
-
-**Used by models with Spatie ModelStates:** `Internship` (status), `InternshipRegistration` (status), `Report` (status), etc.
-
-**Note:** Not all status fields use Spatie ModelStates. Simple two-state statuses (like `account_applications.status: pending/approved/rejected`) use plain string columns with `StatusEnum` contracts.
 
 ### gdpr_deletion_logs
 

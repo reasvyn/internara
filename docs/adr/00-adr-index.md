@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-> 16 records documenting the key architectural decisions behind Internara.
+> 17 records documenting the key architectural decisions behind Internara.
 > Each ADR follows the format: Context → Decision → Consequences → References.
 
 ## Index
@@ -23,6 +23,7 @@
 | 014 | [Unified Health Check](adr-014-unified-health-check.md) | ✅ Accepted |
 | 015 | [HasAuditTrail Adoption Strategy](adr-015-has-audit-trail-adoption.md) | ✅ Accepted (New 2026-05-21) |
 | 016 | [Verification Column Pattern](adr-016-verification-column-pattern.md) | ✅ Accepted (New 2026-05-21) |
+| 017 | [Shared Hosting Deployment](adr-017-shared-hosting-deployment.md) | ✅ Accepted |
 
 ## Reading Order
 
@@ -39,6 +40,7 @@ Key clusters:
 | **Interface** | 009–010 | UI framework, routing |
 | **Quality** | 011–014 | Exceptions, RBAC, config, health |
 | **Refinements** | 015–016 | Audit trails, verification patterns |
+| **Deployment** | 017 | Shared hosting deployment |
 
 ## References
 
