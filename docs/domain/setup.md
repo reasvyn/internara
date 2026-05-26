@@ -50,9 +50,10 @@ allows re-running the audit after fixing issues.
 2. SCHOOL — set up the institution: name, institutional code, email, phone, website, address,
 and principal name. Email and institutional code are required.
 3. DEPARTMENT — create the first department with name and optional description.
-4. ADMIN ACCOUNT — create the first user with super_admin role. Displays the pre-configured
-name and username from config, requires email, password, and password confirmation. Email is
-verified automatically on creation. Password must be at least 8 characters.
+4. ADMIN ACCOUNT — create the first user with super_admin role. Pre-fills name and username
+from config defaults (customizable via the wizard form), requires email, password, and password
+confirmation. Email is verified automatically on creation. Password must be at least 8 characters
+with mixed case and at least one digit.
 5. INTERNSHIP (optional) — optionally create an initial internship program with name,
 description, start date, and end date. This step can be skipped by leaving the name empty.
 6. FINALIZE — confirmation step requiring two checkboxes: data verification and security
@@ -166,8 +167,8 @@ Setup Wizard Steps:
 | `ValidateSetupTokenAction` | Validates a setup token for wizard access |
 | `SetupSchoolAction` | Creates the school record during setup |
 | `SetupDepartmentAction` | Creates the first department |
-| `SetupSuperAdminAction` | Creates the first super admin account |
-| `InitializeSuperAdminAction` | Initializes the super admin with proper roles |
+| `SetupSuperAdminAction` | Creates or updates super admin account using provided name and username |
+| `InitializeSuperAdminAction` | Initializes the super admin with proper roles, accepts optional custom name and username |
 | `FinalizeSetupAction` | Completes setup, generates recovery key, locks installation |
 | `InstallSystemAction` | Non-interactive CLI installation |
 | `RecoverSuperAdminAction` | Emergency super admin account recovery |
@@ -176,7 +177,7 @@ Setup Wizard Steps:
 
 | Layer | Artifacts |
 |-------|-----------|
-| **Models** | `Setup` (installation state, token, recovery key) |
+| **Models** | `Setup` (installation state, token, recovery key; `belongsTo` School and Department) |
 | **Entity** | `SetupState` (installation checks, token validation, step completion, finalization window) |
 | **Enums** | *(none — installation state tracked via `Setup` model boolean fields)* |
 | **Livewire** | `SetupWizard` (7-step guided installation) |
