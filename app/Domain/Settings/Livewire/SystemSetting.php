@@ -136,8 +136,6 @@ class SystemSetting extends Component
         }
 
         flash()->success(__('setting.messages.saved'));
-
-        $this->redirectRoute('admin.settings', navigate: true);
     }
 
     public function testEmail(TestMailSettingsAction $action): void
