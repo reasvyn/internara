@@ -49,14 +49,19 @@ class RecoveryCode extends Component
             return redirect()->back();
         }
 
+        $username = auth()->user()->username;
+
         $pdf = Pdf::loadView('auth.pdf.recovery-codes', [
             'codes' => $codes,
-            'username' => auth()->user()->username,
+            'username' => $username,
             'generatedAt' => now()->format('d M Y H:i'),
             'expiresAt' => $expiresAt,
         ]);
 
-        return $pdf->download('recovery-codes-'.auth()->user()->username.'.pdf');
+        return response()->streamDownload(
+            fn () => print ($pdf->output()),
+            'recovery-codes-'.$username.'.pdf',
+        );
     }
 
     #[Layout('shared::layouts.app')]

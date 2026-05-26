@@ -27,7 +27,6 @@
                     </div>
 
                     <div class="bg-warning/5 border border-warning/20 rounded-xl p-4 text-left space-y-2 text-xs">
-                        <p class="flex items-start gap-2"><x-mary-icon name="o-clock" class="size-3 mt-0.5 shrink-0" /> {{ __('profile.recovery.expires_at', ['date' => $expiresAt]) }}</p>
                         <p class="flex items-start gap-2"><x-mary-icon name="o-shield-exclamation" class="size-3 mt-0.5 shrink-0" /> {{ __('profile.recovery.one_time_per_code') }}</p>
                         <p class="flex items-start gap-2"><x-mary-icon name="o-eye-slash" class="size-3 mt-0.5 shrink-0" /> {{ __('profile.recovery.store_securely') }}</p>
                     </div>

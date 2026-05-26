@@ -61,7 +61,7 @@ return [
         'title' => 'Recovery Slip',
         'subtitle' => 'Generate a one-time credential slip for offline delivery',
         'generated_title' => 'Credential Slip Generated',
-        'generated_desc' => 'Deliver this code to the user offline. Expires: :date',
+        'generated_desc' => 'Deliver these codes to the user offline. Each code can only be used once.',
         'security_note' => 'Security Note',
         'security_note_desc' => 'This code will not be shown again. It expires in 24 hours. Verify the recipient\'s identity before delivery.',
         'generate_another' => 'Generate Another',

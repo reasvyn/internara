@@ -19,7 +19,7 @@ class AccountRecoveryCodeFactory extends Factory
             'user_id' => User::factory(),
             'code_hash' => Hash::make(strtoupper(str()->random(12))),
             'generated_at' => now(),
-            'expires_at' => now()->addHours(24),
+            'expires_at' => null,
         ];
     }
 }

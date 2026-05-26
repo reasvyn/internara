@@ -61,7 +61,7 @@ return [
         'title' => 'Slip Pemulihan',
         'subtitle' => 'Hasilkan slip kredensial satu kali untuk pengiriman offline',
         'generated_title' => 'Slip Kredensial Berhasil Dibuat',
-        'generated_desc' => 'Kirimkan kode ini ke pengguna secara offline. Kedaluwarsa: :date',
+        'generated_desc' => 'Kirimkan kode-kode ini ke pengguna secara offline. Setiap kode hanya bisa digunakan sekali.',
         'security_note' => 'Catatan Keamanan',
         'security_note_desc' => 'Kode ini tidak akan ditampilkan lagi. Kedaluwarsa dalam 24 jam. Verifikasi identitas penerima sebelum memberikan kode.',
         'generate_another' => 'Hasilkan Lagi',

@@ -26,7 +26,7 @@ class GenerateRecoverySlipAction extends BaseAction
                 'user_id' => $user->id,
                 'code_hash' => Hash::make($plaintext),
                 'generated_at' => now(),
-                'expires_at' => now()->addHours(24),
+                'expires_at' => null,
             ]);
 
             if ($i === 0) {
@@ -36,12 +36,12 @@ class GenerateRecoverySlipAction extends BaseAction
             $codes[] = $plaintext;
         }
 
-        $this->log('recovery_slips_generated', $user, ['count' => self::CODE_COUNT, 'expires_at' => now()->addHours(24)->toIso8601String()]);
+        $this->log('recovery_slips_generated', $user, ['count' => self::CODE_COUNT]);
 
         return [
             'code' => $firstCode,
             'plaintext' => $codes,
-            'expires_at' => now()->addHours(24)->format('d M Y H:i'),
+            'expires_at' => null,
         ];
     }
 }
