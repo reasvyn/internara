@@ -5,6 +5,10 @@ declare(strict_types=1);
 return [
     'sidebar' => [
         'absence' => 'Absence',
+        'navigation' => 'Navigation',
+        'groups' => 'Groups',
+        'phases' => 'Phases',
+        'evaluations' => 'Evaluations',
         'academic_years' => 'Academic Years',
         'account_lifecycle' => 'Account Lifecycle',
         'announcements' => 'Announcements',
