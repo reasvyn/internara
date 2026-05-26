@@ -47,6 +47,14 @@ return [
         'success_updated' => 'Peserta magang berhasil diperbarui.',
         'success_deleted' => 'Peserta magang berhasil dihapus.',
     ],
+    'employment' => [
+        'full_time' => 'Tetap',
+        'part_time' => 'Paruh Waktu',
+        'contract' => 'Kontrak',
+        'temporary' => 'Sementara',
+        'volunteer' => 'Relawan',
+    ],
+
     'structural' => [
         'principal' => 'Kepala Sekolah',
         'vice_principal' => 'Wakil Kepala Sekolah',

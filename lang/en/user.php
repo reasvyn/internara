@@ -104,6 +104,14 @@ return [
         'success_deleted' => 'Student deleted successfully.',
         'joined' => 'Joined',
     ],
+    'employment' => [
+        'full_time' => 'Full-time',
+        'part_time' => 'Part-time',
+        'contract' => 'Contract',
+        'temporary' => 'Temporary',
+        'volunteer' => 'Volunteer',
+    ],
+
     'structural' => [
         'principal' => 'Principal',
         'vice_principal' => 'Vice Principal',

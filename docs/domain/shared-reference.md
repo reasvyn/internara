@@ -1,6 +1,6 @@
 # Shared — API Reference
 
-Total: 13 files
+Total: 14 files
 
 ## Livewire Components
 
@@ -20,6 +20,7 @@ Total: 13 files
 | `shared/ui/lang-switcher.blade.php` | Language toggle wrapper (EN/ID) |
 | `shared/ui/navbar-actions.blade.php` | Navbar action items (theme, lang, notifications, user) |
 | `shared/ui/confirm.blade.php` | Confirmation dialog |
+| `shared/ui/display-field.blade.php` | Read-only display field with label and optional icon |
 | `shared/ui/page-header.blade.php` | Page header with title and actions |
 | `shared/ui/markdown-editor.blade.php` | Markdown editor component |
 | `shared/ui/record-manager.blade.php` | Data table with bulk actions |
