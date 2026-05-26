@@ -50,10 +50,10 @@ allows re-running the audit after fixing issues.
 2. SCHOOL — set up the institution: name, institutional code, email, phone, website, address,
 and principal name. Email and institutional code are required.
 3. DEPARTMENT — create the first department with name and optional description.
-4. ADMIN ACCOUNT — create the first user with super_admin role. Pre-fills name and username
-from config defaults (customizable via the wizard form), requires email, password, and password
-confirmation. Email is verified automatically on creation. Password must be at least 8 characters
-with mixed case and at least one digit.
+4. ADMIN ACCOUNT — create the first user with super_admin role. Displays the configured
+name and username from config defaults (overrides form input to enforce canonical credentials),
+requires email, password, and password confirmation. Email is verified automatically on creation.
+Password must be at least 8 characters with mixed case and at least one digit.
 5. INTERNSHIP (optional) — optionally create an initial internship program with name,
 description, start date, and end date. This step can be skipped by leaving the name empty.
 6. FINALIZE — confirmation step requiring two checkboxes: data verification and security
@@ -167,7 +167,7 @@ Setup Wizard Steps:
 | `ValidateSetupTokenAction` | Validates a setup token for wizard access |
 | `SetupSchoolAction` | Creates the school record during setup |
 | `SetupDepartmentAction` | Creates the first department |
-| `SetupSuperAdminAction` | Creates or updates super admin account using provided name and username |
+| `SetupSuperAdminAction` | Creates the first super admin account (name and username from config defaults) |
 | `InitializeSuperAdminAction` | Initializes the super admin with proper roles, accepts optional custom name and username |
 | `FinalizeSetupAction` | Completes setup, generates recovery key, locks installation |
 | `InstallSystemAction` | Non-interactive CLI installation |

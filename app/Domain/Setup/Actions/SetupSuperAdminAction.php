@@ -25,7 +25,7 @@ class SetupSuperAdminAction extends BaseAction
 
         return $this->withErrorHandling(function () use ($data) {
             return $this->transaction(function () use ($data) {
-                $username = $data['username'];
+                $username = config('setup.defaults.admin_username', 'superadmin');
 
                 $existing = User::where('username', $username)->first();
 
@@ -40,7 +40,7 @@ class SetupSuperAdminAction extends BaseAction
                 $user = User::updateOrCreate(
                     ['username' => $username],
                     [
-                        'name' => $data['name'],
+                        'name' => config('setup.defaults.admin_name', 'Administrator'),
                         'email' => $data['email'],
                         'password' => Hash::make($data['password']),
                         'setup_required' => false,
