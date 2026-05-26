@@ -23,6 +23,8 @@ return [
     'phone_placeholder' => 'e.g. +62 21 1234567',
     'fax' => 'Fax Number',
     'fax_placeholder' => 'e.g. +62 21 7654321',
+    'website' => 'Website',
+    'website_placeholder' => 'e.g. https://smkn1-jkt.sch.id',
     'principal_name' => 'Principal / Headmaster Name',
     'principal_name_placeholder' => 'Full name with academic titles.',
     'logo' => 'Official Logo',

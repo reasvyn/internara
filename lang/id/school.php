@@ -23,6 +23,8 @@ return [
     'phone_placeholder' => 'contoh: +62 21 1234567',
     'fax' => 'Nomor Faks',
     'fax_placeholder' => 'contoh: +62 21 7654321',
+    'website' => 'Situs Web',
+    'website_placeholder' => 'contoh: https://smkn1-jkt.sch.id',
     'principal_name' => 'Nama Kepala Sekolah',
     'principal_name_placeholder' => 'Nama lengkap beserta gelar akademik.',
     'logo' => 'Logo Resmi',
