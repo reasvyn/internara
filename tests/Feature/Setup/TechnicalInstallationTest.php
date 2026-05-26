@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\Auth\Enums\Role;
 use App\Domain\Core\Data\AuditReport;
@@ -21,16 +25,18 @@ use App\Domain\Setup\Actions\ValidateSetupTokenAction;
 use App\Domain\Setup\Entities\SetupState;
 use App\Domain\Setup\Events\SetupFinalized;
 use App\Domain\Setup\Listeners\LogSetupFinalized;
+use App\Domain\Setup\Livewire\SetupWizard;
 use App\Domain\Setup\Models\Setup;
+use App\Domain\Setup\Policies\SetupPolicy;
 use App\Domain\Setup\Services\EnvironmentAuditor;
 use App\Domain\Setup\Support\SystemProvisioner;
 use App\Domain\User\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role as RoleModel;
 
@@ -39,7 +45,7 @@ use Spatie\Permission\Models\Role as RoleModel;
 beforeEach(function () {
     RoleModel::firstOrCreate(['name' => Role::SUPER_ADMIN->value]);
     RoleModel::firstOrCreate(['name' => Role::ADMIN->value]);
-    Setup::truncate();
+    Setup::query()->delete();
 });
 
 // ─── SetupState Entity ─────────────────────────────────────────────────────
@@ -160,7 +166,7 @@ describe('ValidateSetupTokenAction', function () {
     });
 
     it('rejects token when no setup record exists', function () {
-        Setup::truncate();
+        Setup::query()->delete();
 
         expect(fn () => app(ValidateSetupTokenAction::class)->execute('any-token'))
             ->toThrow(RuntimeException::class, 'Invalid setup token.');
@@ -556,5 +562,163 @@ describe('Setup model', function () {
 
         expect($state)->toBeInstanceOf(SetupState::class);
         expect($state->isInstalled())->toBeFalse();
+    });
+});
+
+// ─── SetupPolicy ──────────────────────────────────────────────────────────
+
+describe('SetupPolicy', function () {
+    it('allows admin to view any', function () {
+        $user = User::factory()->create();
+        $user->assignRole(Role::ADMIN->value);
+        $policy = app(SetupPolicy::class);
+
+        expect($policy->viewAny($user))->toBeTrue();
+    });
+
+    it('denies non-admin to view any', function () {
+        $user = User::factory()->create();
+        $policy = app(SetupPolicy::class);
+
+        expect($policy->viewAny($user))->toBeFalse();
+    });
+
+    it('allows admin to view', function () {
+        $user = User::factory()->create();
+        $user->assignRole(Role::ADMIN->value);
+        $setup = Setup::create(['is_installed' => false]);
+        $policy = app(SetupPolicy::class);
+
+        expect($policy->view($user, $setup))->toBeTrue();
+    });
+
+    it('blocks create for everyone', function () {
+        $user = User::factory()->create();
+        $user->assignRole(Role::SUPER_ADMIN->value);
+        $policy = app(SetupPolicy::class);
+
+        expect($policy->create($user))->toBeFalse();
+    });
+
+    it('allows admin to update', function () {
+        $user = User::factory()->create();
+        $user->assignRole(Role::ADMIN->value);
+        $setup = Setup::create(['is_installed' => false]);
+        $policy = app(SetupPolicy::class);
+
+        expect($policy->update($user, $setup))->toBeTrue();
+    });
+
+    it('blocks delete for everyone', function () {
+        $user = User::factory()->create();
+        $user->assignRole(Role::SUPER_ADMIN->value);
+        $setup = Setup::create(['is_installed' => false]);
+        $policy = app(SetupPolicy::class);
+
+        expect($policy->delete($user, $setup))->toBeFalse();
+    });
+});
+
+// ─── SystemProvisioner ────────────────────────────────────────────────────
+
+describe('SystemProvisioner', function () {
+    it('throws on unknown task', function () {
+        $provisioner = app(SystemProvisioner::class);
+
+        expect(fn () => $provisioner->executeTask('unknown_task'))
+            ->toThrow(InvalidArgumentException::class);
+    });
+
+    it('executes all tasks without error', function () {
+        $provisioner = app(SystemProvisioner::class);
+
+        $provisioner->executeAll();
+
+        expect(true)->toBeTrue();
+    });
+
+    it('ensures env file exists', function () {
+        $provisioner = app(SystemProvisioner::class);
+
+        $provisioner->executeTask('ensure_env');
+
+        expect(file_exists(base_path('.env')))->toBeTrue();
+    });
+
+    it('generates app key when missing', function () {
+        $provisioner = app(SystemProvisioner::class);
+
+        $provisioner->executeTask('ensure_env');
+        $provisioner->executeTask('generate_key');
+
+        expect(config('app.key'))->not->toBeEmpty();
+    });
+
+    it('runs migrations', function () {
+        $provisioner = app(SystemProvisioner::class);
+
+        $provisioner->executeTask('ensure_env');
+        $provisioner->executeTask('run_migrations');
+
+        $tables = DB::select('SELECT name FROM sqlite_master WHERE type=\'table\'');
+        expect($tables)->not->toBeEmpty();
+    });
+
+    it('runs seeders', function () {
+        $provisioner = app(SystemProvisioner::class);
+
+        $provisioner->executeTask('ensure_env');
+        $provisioner->executeTask('run_migrations');
+        $provisioner->executeTask('run_seeders');
+
+        expect(RoleModel::count())->toBeGreaterThan(0);
+    });
+
+    it('clears caches', function () {
+        $provisioner = app(SystemProvisioner::class);
+
+        $provisioner->executeTask('clear_cache');
+
+        expect(true)->toBeTrue();
+    });
+});
+
+// ─── SetupWizard Edge Cases ────────────────────────────────────────────────
+
+describe('SetupWizard edge cases', function () {
+    it('goToStep ignores invalid step key', function () {
+        Setup::query()->delete();
+        Setup::create(['is_installed' => false]);
+
+        Livewire::test(SetupWizard::class)
+            ->call('goToStep', 'nonexistent')
+            ->assertSet('currentStep', 1);
+    });
+
+    it('goToStep navigates backwards to visited step', function () {
+        Setup::query()->delete();
+        Setup::create(['is_installed' => false]);
+
+        Livewire::test(SetupWizard::class)
+            ->call('nextStep')
+            ->call('goToStep', 'welcome')
+            ->assertSet('currentStep', 1);
+    });
+
+    it('finishSession redirects to login', function () {
+        Setup::query()->delete();
+        Setup::create(['is_installed' => false]);
+
+        Livewire::test(SetupWizard::class)
+            ->call('finishSession')
+            ->assertRedirect(route('login'));
+    });
+
+    it('renders with title', function () {
+        Setup::query()->delete();
+        Setup::create(['is_installed' => false]);
+
+        Livewire::test(SetupWizard::class)
+            ->assertSuccessful();
     });
 });

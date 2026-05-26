@@ -2,17 +2,11 @@
 
 declare(strict_types=1);
 use App\Domain\User\Models\User;
-use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Tests\TestCase;
 
 pest()
     ->extend(TestCase::class)
-    ->use(LazilyRefreshDatabase::class)
-    ->in(__DIR__.'/Feature');
-
-pest()
-    ->extend(TestCase::class)
-    ->in(__DIR__.'/Unit');
+    ->in(__DIR__.'/Feature', __DIR__.'/Unit');
 
 expect()->extend('toBeOne', function () {
     return $this->toBe(1);

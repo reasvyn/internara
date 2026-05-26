@@ -18,9 +18,9 @@ class SchoolForm extends Form
 
     public string $phone = '';
 
-    public string $website = '';
+    public ?string $website = null;
 
-    public string $principal_name = '';
+    public ?string $principal_name = null;
 
     protected function rules(): array
     {
