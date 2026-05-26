@@ -4,43 +4,30 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Livewire\Dashboards;
 
-use App\Domain\Evaluation\Models\Evaluation;
-use App\Domain\Logbook\Models\Logbook;
-use App\Domain\Registration\Models\Registration;
+use App\Domain\User\Actions\GetSupervisorDashboardStatsAction;
 use App\Domain\User\Livewire\UserDashboard;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Livewire\Attributes\Computed;
 
 class SupervisorDashboard extends UserDashboard
 {
+    public int $activeInterns = 0;
+
+    public int $pendingEvaluations = 0;
+
+    public int $verifiedJournals = 0;
+
     public function boot(): void
     {
         abort_unless(auth()->user()?->hasRole('supervisor'), 403);
     }
 
-    #[Computed]
-    public function activeInterns(): int
+    public function mount(GetSupervisorDashboardStatsAction $action): void
     {
-        return Registration::whereHas('statuses', fn ($q) => $q->where('name', 'active'))
-            ->whereHas('mentors', fn ($q) => $q->where('user_id', Auth::id()))
-            ->count();
-    }
+        $stats = $action->execute();
 
-    #[Computed]
-    public function pendingEvaluations(): int
-    {
-        return Evaluation::where('mentor_id', Auth::id())->count();
-    }
-
-    #[Computed]
-    public function verifiedJournals(): int
-    {
-        return Logbook::where('is_verified', true)
-            ->whereHas('registration', fn ($q) => $q
-                ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
-                ->whereHas('mentors', fn ($q) => $q->where('user_id', Auth::id())))
-            ->count();
+        $this->activeInterns = $stats['activeInterns'];
+        $this->pendingEvaluations = $stats['pendingEvaluations'];
+        $this->verifiedJournals = $stats['verifiedJournals'];
     }
 
     public function render(): View

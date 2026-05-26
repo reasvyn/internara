@@ -2,9 +2,9 @@
     <x-mary-header :title="__('dashboard.title')" :subtitle="__('dashboard.subtitle', ['name' => auth()->user()->name])" separator />
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.supervised_students')" :value="$this->supervisedStudents" icon="o-users" color="text-primary" />
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.pending_journals')" :value="$this->pendingJournals" icon="o-book-open" color="text-warning" />
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.active_companies')" :value="$this->activeCompanies" icon="o-building-office" color="text-secondary" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.supervised_students')" :value="$supervisedStudents" icon="o-users" color="text-primary" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.pending_journals')" :value="$pendingJournals" icon="o-book-open" color="text-warning" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.active_companies')" :value="$activeCompanies" icon="o-building-office" color="text-secondary" />
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">

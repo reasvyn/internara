@@ -12,7 +12,7 @@
 
                 <x-mary-form wire:submit="save">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        @if($this->isSuperAdmin())
+                        @if(!$canChangeName)
                             <x-shared::ui.display-field
                                 :label="__('setup.wizard.full_name')"
                                 :value="$user->name"
@@ -32,7 +32,7 @@
                         <x-mary-textarea :label="__('profile.bio')" wire:model="profileForm.bio" rows="3" class="md:col-span-2" />
                     </div>
 
-                    @if($this->isStaff())
+                    @if($isStaff)
                         <hr class="my-6 border-base-content/10" />
 
                         <h3 class="font-semibold mb-4">{{ __('profile.staff_information') }}</h3>
