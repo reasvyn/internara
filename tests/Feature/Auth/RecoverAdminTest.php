@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
+use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\Auth\Enums\Role;
 use App\Domain\Setup\Actions\RecoverSuperAdminAction;
 use App\Domain\Setup\Models\Setup;
@@ -41,6 +46,7 @@ describe('RecoverSuperAdminAction', function () {
             'email' => 'existing@test.com',
             'password' => Hash::make('old-password'),
         ])->assignRole(Role::SUPER_ADMIN->value);
+        $existing->setStatus(AccountStatus::PROTECTED);
 
         $result = app(RecoverSuperAdminAction::class)->execute(
             email: 'existing@test.com',

@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 use App\Domain\Auth\Actions\GenerateRecoverySlipAction;
 use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\Auth\Enums\Role;
