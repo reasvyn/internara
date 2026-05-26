@@ -205,7 +205,7 @@ describe('xss prevention', function () {
             ->toThrow(ValidationException::class);
     });
 
-    it('allows XSS-like characters in admin name but escapes on output', function () {
+    it('uses canonical name from config, not input', function () {
         $xss = '<img src=x onerror=alert(1)>';
         $user = app(SetupSuperAdminAction::class)->execute([
             'name' => $xss,
@@ -214,7 +214,7 @@ describe('xss prevention', function () {
             'password' => 'Secure1Pass',
         ]);
 
-        expect($user->name)->toBe($xss);
+        expect($user->name)->toBe(config('setup.defaults.admin_name', 'Administrator'));
     });
 });
 
@@ -237,14 +237,14 @@ describe('mass assignment protection', function () {
     it('ignores unexpected fields in admin data', function () {
         $user = app(SetupSuperAdminAction::class)->execute([
             'name' => 'Admin',
-            'username' => 'superadmin',
+            'username' => 'custom',
             'email' => 'admin@test.com',
             'password' => 'Secure1Pass',
             'is_admin' => true,
             'email_verified_at' => now(),
         ]);
 
-        expect($user->username)->toBe('superadmin');
+        expect($user->username)->toBe(config('setup.defaults.admin_username', 'superadmin'));
     });
 });
 

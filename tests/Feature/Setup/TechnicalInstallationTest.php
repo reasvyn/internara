@@ -287,17 +287,17 @@ describe('SetupSuperAdminAction', function () {
         expect($user->hasVerifiedEmail())->toBeTrue();
     });
 
-    it('uses passed name and username instead of config defaults', function () {
+    it('assigns canonical name and username from config defaults', function () {
         app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Custom Name',
-            'username' => 'custom_user',
+            'name' => 'Admin',
+            'username' => 'custom',
             'email' => 'admin@example.com',
             'password' => 'Secure1Pass',
         ]);
 
         $user = User::first();
-        expect($user->username)->toBe('custom_user');
-        expect($user->name)->toBe('Custom Name');
+        expect($user->username)->toBe('superadmin');
+        expect($user->name)->toBe('Administrator');
     });
 
     it('rejects re-initialization when immutable super admin exists', function () {
@@ -307,7 +307,7 @@ describe('SetupSuperAdminAction', function () {
         ]);
 
         expect(fn () => app(SetupSuperAdminAction::class)->execute([
-            'name' => 'Hacker', 'username' => 'superadmin',
+            'name' => 'Hacker', 'username' => 'hacker',
             'email' => 'evil@example.com', 'password' => 'Hack1234',
         ]))->toThrow(RejectedException::class, 'cannot be re-initialized');
     });
