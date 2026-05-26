@@ -36,7 +36,7 @@
                             ]"
                         />
 
-                        @if($status === 'scheduled')
+                        @if($form->status === 'scheduled')
                             <x-mary-input
                                 :label="__('announcement.fields.scheduled_at')"
                                 type="datetime-local"
@@ -47,7 +47,7 @@
 
                         <x-mary-toggle :label="__('announcement.send_to_all')" wire:model.live="form.sendToAll" />
 
-                        @if(!$sendToAll)
+                        @if(!$form->sendToAll)
                             <div class="mt-4">
                                 <x-mary-choices :label="__('announcement.fields.target_roles')" wire:model="form.target_roles" :options="$roles" multiple :hint="__('announcement.roles_hint')" />
                             </div>
