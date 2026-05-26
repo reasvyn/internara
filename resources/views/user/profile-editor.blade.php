@@ -39,16 +39,8 @@
                         <p class="text-xs text-base-content/50 mb-4">{{ __('profile.staff_information_desc') }}</p>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-mary-select :label="__('profile.employment_status')" wire:model="profileForm.employment_status" :placeholder="__('profile.select_option')">
-                                @foreach(App\Domain\User\Enums\EmploymentStatus::cases() as $status)
-                                    <option value="{{ $status->value }}">{{ $status->label() }}</option>
-                                @endforeach
-                            </x-mary-select>
-                            <x-mary-select :label="__('profile.position')" wire:model="profileForm.position" :placeholder="__('profile.select_option')">
-                                @foreach(App\Domain\User\Enums\StructuralPosition::cases() as $pos)
-                                    <option value="{{ $pos->value }}">{{ $pos->label() }}</option>
-                                @endforeach
-                            </x-mary-select>
+                            <x-mary-select :label="__('profile.employment_status')" wire:model="profileForm.employment_status" :placeholder="__('profile.select_option')" :options="\App\Domain\User\Enums\EmploymentStatus::options()" />
+                            <x-mary-input :label="__('profile.position')" wire:model="profileForm.position" :placeholder="__('profile.position_placeholder')" />
                             <x-mary-input label="NIP" wire:model="profileForm.nip" placeholder="National staff ID" />
                             <x-mary-input label="NUPTK" wire:model="profileForm.nuptk" placeholder="Teacher registry number" />
                             <x-mary-input :label="__('profile.competence_field')" wire:model="profileForm.competence_field" class="md:col-span-2" />

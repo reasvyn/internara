@@ -31,6 +31,7 @@ return [
     'position_kaprodi' => 'Kaprodi',
     'position_guru_pembimbing' => 'Guru Pembimbing',
     'position_supervisor_industri' => 'Supervisor Industri',
+    'position_placeholder' => 'Contoh: Kepala Jurusan',
     'new_password' => 'Kata Sandi Baru',
     'confirm_password' => 'Konfirmasi Kata Sandi',
 
