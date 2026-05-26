@@ -46,17 +46,21 @@ ambiguity. Each role's capabilities are enumerated and reviewed.
 ## How Gate::before Bypass Works
 
 Laravel's authorization system evaluates policies for each ability check.
-The `Gate::before` callback intercepts every authorization check before the
-policy is consulted. For super_admin users, this callback returns `true`,
-granting access to everything. For all other users, it returns `null`,
-which means "I have no opinion — let the policy decide." This is distinct
-from returning `false`, which would deny access even if the policy would
-grant it.
+The `spatie/laravel-permission` package auto-registers a `Gate::before`
+callback via the `register_permission_check_method` config (enabled in
+`config/permission.php`). For super_admin users, this callback returns
+`true`, granting access to everything. For all other users, it returns
+`null`, which means "I have no opinion — let the policy decide." This is
+distinct from returning `false`, which would deny access even if the policy
+would grant it.
 
 This pattern means super_admin is not a role that has "all permissions"
 assigned to it in the database. It simply skips the permission system
 entirely. This is more efficient and guarantees that super_admin never
 accidentally lacks a permission.
+
+In tests, `Gate::before` is additionally registered in
+`tests/TestCase.php` to ensure the bypass works during testing.
 
 ## What CheckRoleMiddleware Does
 
@@ -73,11 +77,11 @@ gated by the roles that should have access.
 
 ## Where to Find It
 
-Roles and permissions are defined in
-`app/Domain/Auth/Enums/Role.php` and
-`app/Domain/Auth/Enums/Permission.php`. The seeder is at
-`database/seeders/RolePermissionSeeder.php`. The middleware is at
-`app/Domain/Auth/Http/Middleware/CheckRoleMiddleware.php`. The
-`Gate::before` registration is in `app/Providers/AppServiceProvider.php`.
-Policies are in `app/Domain/*/Policies/`. The spatie package configuration
-is in `config/permission.php`.
+Roles are defined in `app/Domain/Auth/Enums/Role.php`. Permissions are
+managed dynamically via `spatie/laravel-permission` (database-driven, no
+enum class). The seeder is at `database/seeders/RolePermissionSeeder.php`.
+The middleware is at `app/Domain/Auth/Http/Middleware/CheckRoleMiddleware.php`.
+The `Gate::before` bypass for `super_admin` is auto-registered by
+`spatie/laravel-permission` via the `register_permission_check_method`
+config in `config/permission.php`. Policies are in `app/Domain/*/Policies/`.
+The spatie package configuration is in `config/permission.php`.

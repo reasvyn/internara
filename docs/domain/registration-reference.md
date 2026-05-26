@@ -1,6 +1,6 @@
 # Registration — API Reference
 
-Total: 18 files
+Total: 22 files
 
 ## Actions
 
@@ -10,6 +10,7 @@ Total: 18 files
 | `Registration/Actions/ApproveAccountApplicationAction.php` | `ApproveAccountApplicationAction` | `BaseAction` | Approves a pending account application |
 | `Registration/Actions/RejectAccountApplicationAction.php` | `RejectAccountApplicationAction` | `BaseAction` | Rejects an account application with reason |
 | `Registration/Actions/RegisterInternshipAction.php` | `RegisterInternshipAction` | `BaseAction` | Registers a student for an internship program |
+| `Registration/Actions/UploadRegistrationDocumentAction.php` | `UploadRegistrationDocumentAction` | `BaseAction` | Uploads a required document for registration |
 | `Registration/Actions/VerifyRegistrationAction.php` | `VerifyRegistrationAction` | `BaseAction` | Verifies a student's registration |
 
 ## Entities
@@ -30,6 +31,7 @@ Total: 18 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Registration/Livewire/AccountApplicationForm.php` | `AccountApplicationForm` | `Component` | Student account application form |
+| `Registration/Livewire/ApplyPage.php` | `ApplyPage` | `Component` | Internship program application page |
 | `Registration/Livewire/RegistrationCenter.php` | `RegistrationCenter` | `Component` | Central registration management hub |
 | `Registration/Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload` | `Component` | Document upload for registration |
 | `Registration/Livewire/RegistrationVerification.php` | `RegistrationVerification` | `Component` | Admin verification of registrations |

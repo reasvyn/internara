@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Admin\Console\Commands;
 
 use App\Domain\Auth\Enums\AccountStatus;
+use App\Domain\Auth\Enums\Role;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
 use Carbon\Carbon;
@@ -29,6 +30,7 @@ class AutoInactivateAccounts extends Command
         $dryRun = (bool) $this->option('dry-run');
 
         $users = User::query()
+            ->whereDoesntHave('roles', fn ($q) => $q->where('name', Role::SUPER_ADMIN->value))
             ->whereHas('statuses', fn ($q) => $q->where('name', AccountStatus::VERIFIED->value))
             ->whereDoesntHave('statuses', fn ($q) => $q->whereIn('name', [
                 AccountStatus::INACTIVE->value,

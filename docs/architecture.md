@@ -21,7 +21,7 @@ The domain directories are vertical slices that cross all layers below Layer 11.
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 11 ┌──────────────────────────────────────────────────────────┐
-  UI /    │  Livewire 4 components (80)    Blade templates           │
+  UI /    │  Livewire 4 components (88)    Blade templates           │
   Present.│  maryUI  +  DaisyUI  +  Alpine.js  +  Tailwind CSS v4   │
           │  resources/views/{domain}/     static assets             │
           └──────────────────────────────────────────────────────────┘
@@ -41,11 +41,11 @@ The domain directories are vertical slices that cross all layers below Layer 11.
   Layer 8 ┌──────────────────────────────────────────────────────────┐
   Author. │  Policies (36)  RBAC (5 roles)  Functional roles        │
           │  BasePolicy → AuthorizesRoles + AuthorizesOwnership    │
-          │  spatie/laravel-permission.  Gate::before(super_admin)   │
+          │  spatie/laravel-permission auto-registers Gate::before  │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 7 ┌──────────────────────────────────────────────────────────┐
-  Business│  Actions (161)  → 1 class = 1 use case  →  execute()   │
+  Business│  Actions (164)  → 1 class = 1 use case  →  execute()   │
   Ops     │  BaseAction → transaction() + log() + error handling    │
           │  app/Domain/*/Actions/ delegating all persistence       │
           └──────────────────────────────────────────────────────────┘
@@ -53,7 +53,7 @@ The domain directories are vertical slices that cross all layers below Layer 11.
    Layer 6 ┌──────────────────────────────────────────────────────────┐
    Domain  │  Enums  (35, LabelEnum, StatusEnum, ColorableEnum)      │
   Rules   │  Entities (27, final readonly, zero framework deps)    │
-          │  Entity State Classes (InternshipState, PartnershipState)│
+          │  State entities (via BaseEntity, no separate States/)   │
           │  Data DTOs (AuditCheck, AuditReport)                    │
           │  app/Domain/*/Enums/  Entities/  Data/                  │
           └──────────────────────────────────────────────────────────┘
@@ -68,15 +68,15 @@ The domain directories are vertical slices that cross all layers below Layer 11.
   Layer 4 ┌──────────────────────────────────────────────────────────┐
   Core    │  BaseModel  BaseAction  BaseEntity  BasePolicy           │
   Base    │  BaseRecordManager  BaseController  FormRequest          │
-  Classes │  BaseState  Data (DTO)                                   │
+  Classes │  Data (DTO)                                              │
           │  SmartLogger  PiiMasker  HandlesActionErrors             │
           │  app/Domain/Core/{Actions,Models,Policies,etc}          │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 3 ┌──────────────────────────────────────────────────────────┐
   Core    │  Contracts: LabelEnum, StatusEnum, ColorableEnum         │
-  Contracts│  DomainEvent, Filterable, Searchable, Sortable          │
-          │  Exception: AppException → Action/Presentation/...     │
+  Contracts│  SendsNotifications                                     │
+          │  Exception: AppException + DomainException (dual tree) │
           │  app/Domain/Core/{Contracts,Exceptions}                 │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
@@ -116,7 +116,7 @@ A domain directory `app/Domain/{Domain}/` combines multiple layers:
 | 9 | `Listeners/`, `Notifications/`, `Console/` | Communication |
 | 8 | `Policies/` | Authorization |
 | 7 | `Actions/` | Business operations |
-| 6 | `Enums/`, `Entities/`, `States/`, `Data/` | Domain rules |
+| 6 | `Enums/`, `Entities/`, `Data/` | Domain rules (state entities are in `Entities/`, no separate `States/` directory) |
 | 5 | `Models/` | Persistence |
 | 4 | (uses Core's base classes) | |
 | 3 | (uses Core's contracts) | |
@@ -186,7 +186,7 @@ Every layer has exactly one base class from Core. There is no alternative. Build
 | Authorization | `extends BasePolicy` | `Gate::define()` with inline closures |
 | A CRUD list page | `extends BaseRecordManager` | A Livewire component from scratch |
 | A form request | `extends FormRequest` (Core's) | `extends Request` or inline validation |
-| A state machine | `implements StatusEnum` | Spatie ModelStates, custom status columns with if/else |
+| A state machine | `implements StatusEnum` | Custom status columns with if/else |
 | An enum | `implements LabelEnum` | A plain PHP enum or class constants |
 | Logging | `SmartLogger` | `Log::` facade or `activity()` helper |
 
@@ -241,14 +241,34 @@ Cross-domain communication (when one domain needs data from another) must use:
 
 ## Exceptions
 
-All application exceptions derive from `App\Domain\Core\Exceptions\AppException`. The hierarchy distinguishes four categories:
+Two separate exception hierarchies exist. Both use the `HasExceptionContext` trait for consistent
+hint, context, and CLI-friendly output.
 
-- **ActionException** — business operation failed (e.g., duplicate entry)
-- **DomainException** — domain invariant violated (e.g., invalid state transition)
-- **InfrastructureException** — external system failed (e.g., mail server down)
-- **PresentationException** — HTTP-layer failure (e.g., not found, unauthorized)
+### AppException hierarchy
 
-Each carries a user-facing hint, debug context, and CLI-friendly output.
+`AppException` extends `RuntimeException`. All derive from it:
+
+```
+AppException (abstract)
+├── ActionException (abstract) — business operation failed
+│   ├── ConflictException — duplicate or conflicting state
+│   └── ValidationFailedException — input validation failure
+├── InfrastructureException (abstract) — external system failure
+│   └── RateLimitException — rate limit exceeded
+└── PresentationException (abstract) — HTTP-layer failure
+    ├── NotFoundException — resource not found
+    └── UnauthorizedException — access denied
+```
+
+### DomainException hierarchy (separate tree)
+
+`DomainException` is deliberately **not** a child of `AppException`. This keeps domain catch
+blocks isolated from layered framework concerns:
+
+```
+DomainException (abstract, extends RuntimeException)
+└── RejectedException — domain invariant violated (e.g., invalid state transition)
+```
 
 ## Testing Strategy
 

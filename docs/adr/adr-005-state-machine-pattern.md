@@ -74,14 +74,11 @@ $internship->asInternshipState()->canTransitionTo(InternshipStatus::ACTIVE);
 Entity state classes contain pure business rules (zero framework dependencies beyond the
 `Model` import in `fromModel()`).
 
-### Spatie laravel-model-status
+### Legacy: Spatie laravel-model-status (removed)
 
-The `spatie/laravel-model-status` package is used directly by two models:
-- `User` — tracks account lifecycle statuses
-- `Registration` — tracks registration workflow statuses
-
-Both models use the `HasStatuses` trait directly from the Spatie package. This is kept
-because these models need persisted status history (via the `statuses` polymorphic table).
+The `spatie/laravel-model-status` package was previously used by `User` and `Registration`
+models for status tracking. It has been removed — both models now use plain `StatusEnum`
+columns with the `HasModelStatuses` bridge trait (being migrated to direct `StatusEnum` columns).
 
 ## Consequences
 - **Positive**: Transition rules are documented in code — open the enum to see valid transitions.

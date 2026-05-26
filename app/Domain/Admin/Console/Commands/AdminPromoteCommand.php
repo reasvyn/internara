@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Console\Commands;
 
+use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
 use Illuminate\Console\Command;
@@ -56,6 +57,16 @@ class AdminPromoteCommand extends Command
             $this->error("Role '{$roleName}' does not exist in the database.");
 
             return Command::FAILURE;
+        }
+
+        if ($roleName === RoleEnum::SUPER_ADMIN->value) {
+            $existingCount = User::role(RoleEnum::SUPER_ADMIN->value)->count();
+
+            if ($existingCount > 0) {
+                $this->error('A super admin already exists. Only one super admin account is permitted.');
+
+                return Command::FAILURE;
+            }
         }
 
         if ($user->hasRole($roleName)) {

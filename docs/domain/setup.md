@@ -178,10 +178,16 @@ Setup Wizard Steps:
 |-------|-----------|
 | **Models** | `Setup` (installation state, token, recovery key) |
 | **Entity** | `SetupState` (installation checks, token validation, step completion, finalization window) |
+| **Enums** | *(none — installation state tracked via `Setup` model boolean fields)* |
 | **Livewire** | `SetupWizard` (7-step guided installation) |
-| **Events** | `SetupFinalized` |
-| **Support** | `SystemProvisioner` (migrations, seeding, storage link) |
+| **Livewire/Forms** | `SchoolForm`, `DepartmentForm`, `AdminForm`, `InternshipForm` |
 | **Http/Middleware** | `ProtectSetupRouteMiddleware`, `RequireSetupAccessMiddleware` |
+| **Console/Commands** | `SetupInstallCommand`, `SetupResetCommand` |
+| **Events** | `SetupFinalized` |
+| **Listeners** | `LogSetupFinalized` |
+| **Services** | `EnvironmentAuditor` (pre-installation environment validation) |
+| **Policies** | `SetupPolicy` |
+| **Support** | `SystemProvisioner` (migrations, seeding, storage link) |
 
 ## Dependencies
 

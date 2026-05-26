@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Actions;
 
+use App\Domain\Auth\Entities\SuperAdminIntegrityRules;
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\Profile;
 use App\Domain\User\Models\User;
@@ -28,6 +30,12 @@ class UpdateProfileAction extends BaseAction
      */
     public function execute(User $user, array $data, ?string $name = null, ?string $email = null, ?UploadedFile $avatar = null): Profile
     {
+        $integrity = SuperAdminIntegrityRules::fromModel($user);
+
+        if ($name !== null && ! $integrity->canChangeName()) {
+            throw new RejectedException('Cannot change super admin name.');
+        }
+
         $this->validate($data);
 
         $data = array_filter($data, fn ($v) => $v !== null);

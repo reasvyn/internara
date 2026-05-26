@@ -62,9 +62,10 @@ can be correlated with the specific request and user that triggered it.
 
 ## Health Command Capabilities
 
-The health check command performs a 12-point system verification: checks
-that the `.env` file exists, PHP version is 8.4+, required extensions are
-loaded, PHP memory limit is adequate, database connection works, storage
+The health check command performs a 15-point system verification: checks
+environment setup, setup status, PHP version is 8.4+, required extensions are
+loaded, recommended extensions are present, PHP memory limit is adequate,
+database connection works, migration status is up-to-date, storage
 directories are writable, disk usage is below thresholds, queue table is
 accessible, cache store responds to read and write, application key is set
 and valid, storage symlink exists, and the application is not in maintenance

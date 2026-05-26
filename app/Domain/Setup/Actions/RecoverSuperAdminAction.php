@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Setup\Actions;
 
+use App\Domain\Auth\Entities\SuperAdminIntegrityRules;
 use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\Auth\Enums\Role;
 use App\Domain\Auth\Notifications\SuperAdminRecoveredNotification;
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Cache;
@@ -33,12 +35,17 @@ class RecoverSuperAdminAction extends BaseAction
             if ($isReset) {
                 $user = User::where('email', $email)->firstOrFail();
 
+                $integrity = SuperAdminIntegrityRules::fromModel($user);
+
+                if ($user->hasRole(Role::SUPER_ADMIN->value) && ! $integrity->hasProtectedStatus()) {
+                    throw new RejectedException('Super admin account integrity violation: expected PROTECTED status.');
+                }
+
                 $user->update([
                     'password' => Hash::make($password),
                     'locked_at' => null,
                     'locked_reason' => null,
                 ]);
-                $user->setStatus(AccountStatus::VERIFIED);
             } else {
                 $user = User::create([
                     'name' => config('setup.defaults.admin_name', 'Administrator'),

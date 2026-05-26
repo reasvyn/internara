@@ -138,6 +138,7 @@ DRAFT ──→ SUBMITTED ──→ MENTOR_ACKNOWLEDGED (immutable)
 | **Models** | `Logbook` (log entry with date, content, learning outcomes, attachments) |
 | **Entity** | `LogbookState` (editability, verification status checks) |
 | **Enums** | `LogbookStatus` — `DRAFT`, `SUBMITTED`, `VERIFIED`, `REVISION_REQUIRED` |
+| **Http/Requests** | `CreateLogbookRequest` |
 | **Livewire** | `LogbookEntry`, `LogbookManager` |
 | **Policy** | `LogbookPolicy` |
 

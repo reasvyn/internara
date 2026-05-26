@@ -148,6 +148,7 @@ REPORTED ──→ INVESTIGATING ──→ RESOLVED ──→ CLOSED (immutable)
 | **Enums** | `IncidentSeverity` — `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`; `IncidentStatus` — `REPORTED`, `INVESTIGATING`, `RESOLVED`, `CLOSED`; `IncidentType` — `ACCIDENT`, `SAFETY_VIOLATION`, `HARASSMENT`, `DISCIPLINARY`, `OTHER` |
 | **Livewire** | `IncidentForm`, `IncidentManager` |
 | **Notifications** | `IncidentReportedNotification` |
+| **Policies** | `IncidentReportPolicy` |
 
 ## Dependencies
 

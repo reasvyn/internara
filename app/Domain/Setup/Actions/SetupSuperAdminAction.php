@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Setup\Actions;
 
+use App\Domain\Auth\Entities\SuperAdminIntegrityRules;
 use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -23,8 +25,20 @@ class SetupSuperAdminAction extends BaseAction
 
         return $this->withErrorHandling(function () use ($data) {
             return $this->transaction(function () use ($data) {
+                $username = config('setup.defaults.admin_username', 'superadmin');
+
+                $existing = User::where('username', $username)->first();
+
+                if ($existing !== null) {
+                    $integrity = SuperAdminIntegrityRules::fromModel($existing);
+
+                    if ($integrity->isImmutable()) {
+                        throw new RejectedException('Super admin already exists and cannot be re-initialized.');
+                    }
+                }
+
                 $user = User::updateOrCreate(
-                    ['username' => $data['username']],
+                    ['username' => $username],
                     [
                         'name' => config('setup.defaults.admin_name', 'Administrator'),
                         'email' => $data['email'],

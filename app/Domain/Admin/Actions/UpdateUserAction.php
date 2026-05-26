@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Actions;
 
+use App\Domain\Auth\Entities\SuperAdminIntegrityRules;
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
 use App\Domain\User\Rules\ReservedAuthoritativeName;
@@ -35,6 +37,16 @@ class UpdateUserAction extends BaseAction
         ?array $profileData = null,
         ?array $roles = null,
     ): User {
+        $integrity = SuperAdminIntegrityRules::fromModel($user);
+
+        if (isset($userData['name']) && ! $integrity->canChangeName()) {
+            throw new RejectedException('Cannot change super admin name.');
+        }
+
+        if (isset($userData['username']) && ! $integrity->canChangeUsername()) {
+            throw new RejectedException('Cannot change super admin username.');
+        }
+
         $this->validateUserData($userData, $user);
 
         return $this->withErrorHandling(function () use ($user, $userData, $profileData, $roles) {

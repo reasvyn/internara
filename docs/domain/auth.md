@@ -182,7 +182,8 @@ PROTECTED: Immutable state — applies to super_admin accounts only.
 |-------|-----------|
 | **Models** | `AccountRecoveryCode` |
 | **Enums** | `AccountStatus` — 8 states with transition rules (see above); `Role` — 5 user roles (`SUPER_ADMIN`, `ADMIN`, `TEACHER`, `STUDENT`, `SUPERVISOR`) + 2 functional roles (`MENTOR`, `MENTEE`) |
-| **Livewire** | `Login`, `ForgotPassword`, `ResetPassword`, `ConfirmPassword`, `AccountRecovery`, `RecoverySlipManager`, `AccountLifecycleManager`, `AccessManager`, `RecoveryCode` |
+| **Entities** | `Apprentice` (account lifecycle checks), `RecoveryCodeState` (recovery code validity), `SuperAdminIntegrityRules` (super admin integrity invariants) |
+| **Livewire** | `Login`, `ForgotPassword`, `ResetPassword`, `ConfirmPassword`, `AccountRecovery`, `RecoverySlipManager`, `AccountLifecycleManager`, `AccessManager`, `RecoveryCode`; Forms: `LoginForm`, `ForgotPasswordForm`, `ResetPasswordForm`, `ConfirmPasswordForm`, `AccountRecoveryForm` |
 
 ## Dependencies
 

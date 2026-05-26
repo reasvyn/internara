@@ -18,7 +18,6 @@ Every layer has a designated base class from the Core domain. You MUST use them 
 | Enum | `LabelEnum` (+ optionally `StatusEnum`, `ColorableEnum`) | `Core/Contracts/` |
 | DTO | `Data` | `Core/Data/Data.php` |
 | Exception | `AppException` or `DomainException` | `Core/Exceptions/` |
-| Enum contract | `LabelEnum` (and optionally `StatusEnum`, `ColorableEnum`) | `Core/Contracts/` |
 
 **Why:** These base classes provide UUID primary keys, transaction wrapping, automatic audit logging, role/ownership authorization, search/sort/filter/pagination, and consistent error handling. Skipping them means reimplementing the same infrastructure — and creating inconsistency.
 
@@ -40,6 +39,7 @@ app/Domain/{Domain}/
 ├── Listeners/      → Event subscribers (optional)
 ├── Console/        → Artisan commands (optional)
 ├── Support/        → Domain utilities (optional)
+├── Services/       → Domain-specific services (optional)
 └── Data/           → DTOs (optional)
 ```
 
@@ -254,10 +254,14 @@ can be unit-tested independently of the Livewire lifecycle.
 ## 12. Exceptions
 
 Use the right exception type from `App\Domain\Core\Exceptions`:
-- `ActionException` for business operation failures.
-- `DomainException` for domain invariant violations.
-- `PresentationException` for HTTP-level failures (404, 403).
-- `InfrastructureException` for external system failures.
+
+**AppException hierarchy** (extends `RuntimeException`):
+- `ActionException` — business operation failures, with `ConflictException` and `ValidationFailedException` subtypes.
+- `InfrastructureException` — external system failures, with `RateLimitException` subtype.
+- `PresentationException` — HTTP-level failures (404, 403), with `NotFoundException` and `UnauthorizedException` subtypes.
+
+**DomainException hierarchy** (separate tree, extends `RuntimeException`):
+- `DomainException` — domain invariant violations, with `RejectedException` subtype.
 
 ## 13. Code Quality Enforcement
 

@@ -144,6 +144,7 @@ ISSUED ──→ REVOKED (terminal, irreversible)
 | **Enums** | `CertificateStatus` — `ISSUED`, `REVOKED` (terminal) |
 | **Livewire** | `CertificateTemplateManager`, `CertificateList`, `StudentCertificates` |
 | **Http/Controllers** | `CertificateDownloadController` (authenticated download) |
+| **Policies** | `CertificatePolicy`, `CertificateTemplatePolicy` |
 | **Support** | `CertificateRenderer` (PDF rendering pipeline) |
 
 ## Dependencies

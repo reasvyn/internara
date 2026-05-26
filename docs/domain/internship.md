@@ -105,7 +105,7 @@ context.
 ### Process Flow
 
 ```
-DRAFT ──→ PUBLISHED ──→ ACTIVE ──→ CLOSED ──→ ARCHIVED
+DRAFT ──→ PUBLISHED ──→ ACTIVE ──→ COMPLETED
             │              │
             ↓              ↓
          CANCELLED      CANCELLED
@@ -114,11 +114,10 @@ DRAFT ──→ PUBLISHED ──→ ACTIVE ──→ CLOSED ──→ ARCHIVED
 - **DRAFT**: Being planned, visible only to admins
 - **PUBLISHED** (was OPEN): Accepting registrations from eligible students
 - **ACTIVE**: Internship period underway — registrations closed, operations active
-- **CLOSED**: Period ended, completion processing underway
-- **ARCHIVED**: Historical record, entirely read-only
-- **CANCELLED**: Terminated before completion
+- **COMPLETED**: Period ended, completion processing finished
+- **CANCELLED**: Terminated before completion (from DRAFT or PUBLISHED)
 
-Transitions: PUBLISHED requires at least one defined requirement. ACTIVE requires start date. CLOSED requires end date. ARCHIVED requires CLOSED first.
+Transitions: PUBLISHED requires at least one defined requirement. ACTIVE requires start date. COMPLETED requires end date.
 
 ### Key Operations
 
@@ -129,6 +128,17 @@ Transitions: PUBLISHED requires at least one defined requirement. ACTIVE require
 | `DeleteInternshipAction` | Deletes a draft internship program |
 | `BatchUpdateInternshipStatusAction` | Batch transitions programs to a new status |
 | `CheckCloseReadinessAction` | Checks if a program is ready to close |
+| `CreateRequirementAction` | Creates a document requirement |
+| `UpdateRequirementAction` | Updates a document requirement |
+| `DeleteRequirementAction` | Deletes a document requirement |
+| `CreateInternshipGroupAction` | Creates an internship group |
+| `UpdateInternshipGroupAction` | Updates an internship group |
+| `DeleteInternshipGroupAction` | Deletes an internship group |
+| `AddMemberToGroupAction` | Adds a member to an internship group |
+| `RemoveMemberFromGroupAction` | Removes a member from an internship group |
+| `CreateInternshipPhaseAction` | Creates an internship phase |
+| `UpdateInternshipPhaseAction` | Updates an internship phase |
+| `DeleteInternshipPhaseAction` | Deletes an internship phase |
 | `CreateReportAction` | Creates a report submission record |
 | `SubmitReportAction` | Submits a report for review |
 | `ApproveReportAction` | Approves a submitted report |
@@ -139,13 +149,15 @@ Transitions: PUBLISHED requires at least one defined requirement. ACTIVE require
 
 | Layer | Artifacts |
 |-------|-----------|
-| **Models** | `Internship`, `Report`, `ReportRevision`, `InternshipDocumentRequirement` |
-| **Entities** | `InternshipPeriod` (registration window checks, academic year boundaries), `InternshipState` (deletion gating, status checks) |
-| **Enums** | `InternshipStatus` — `DRAFT`, `PUBLISHED`, `ACTIVE`, `COMPLETED`, `CANCELLED`; `ReportStatus` — `DRAFT`, `SUBMITTED`, `REVISION_REQUIRED`, `APPROVED`; `RequirementType` — `DOCUMENT`, `SKILL`, `TEXT` |
-| **States** | `Draft`, `Published`, `Active`, `Completed`, `Cancelled` |
-| **Livewire** | `InternshipManager`, `ReportWriter`, `RequirementManager` |
-| **Policies** | `InternshipPolicy`, `InternshipRegistrationPolicy`, `CompanyPolicy` |
+| **Models** | `Internship`, `InternshipGroup`, `InternshipGroupMember`, `InternshipPhase`, `Report`, `ReportRevision`, `InternshipDocumentRequirement` |
+| **Entities** | `InternshipPeriod` (registration window checks, academic year boundaries), `InternshipState` (deletion gating, status checks), `InternshipGroupState` (group lifecycle checks) |
+| **Enums** | `InternshipStatus` — `DRAFT`, `PUBLISHED`, `ACTIVE`, `COMPLETED`, `CANCELLED`; `ReportStatus` — `DRAFT`, `SUBMITTED`, `REVISION_REQUIRED`, `APPROVED`; `RequirementType` — `DOCUMENT`, `SKILL`, `TEXT`; `InternshipGroupRole` — member roles within groups |
+| **Http/Controllers** | `ReportController` (download internship report documents) |
+| **Http/Requests** | `CreateInternshipRequest`, `RegisterStudentRequest` |
+| **Livewire** | `InternshipManager`, `ReportWriter`, `RequirementManager`, `InternshipGroupManager`, `InternshipPhaseManager` |
+| **Policies** | `InternshipPolicy`, `InternshipRegistrationPolicy`, `CompanyPolicy`, `InternshipGroupPolicy`, `InternshipPhasePolicy` |
 | **Events** | `InternshipCreated` |
+| **Listeners** | `NotifyAdminsInternshipCreated` |
 | **Notifications** | `InternshipCreatedNotification`, `RegistrationNotification` |
 | **Rules** | `OpenForRegistration` (validation rule) |
 

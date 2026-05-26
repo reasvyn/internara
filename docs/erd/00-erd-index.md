@@ -92,10 +92,10 @@ Referential actions:
 | **Foreign keys** | `foreignUuid()->constrained()` with explicit `onDelete` behavior |
 | **Timestamps** | `created_at` + `updated_at` on all tables. Append-only logs omit `updated_at` |
 | **Soft deletes** | Only `assessments` uses `softDeletes()` |
-| **Status state machines** | Spatie Model States via `statuses` polymorphic table for complex workflows |
+| **Status state machines** | `StatusEnum` interface with `validTransitions()` / `canTransitionTo()` — no Spatie dependency |
 | **Enum statuses** | Simple string-based status columns with `LabelEnum` + `StatusEnum` contracts |
 | **JSON columns** | Used for flexible schemas: `config`, `metadata`, `content`, `properties` |
-| **Polymorphic** | Spatie: `activity_log`, `media`, `statuses`, `model_has_roles`, `model_has_permissions` |
+| **Polymorphic** | Spatie: `activity_log`, `media`, `model_has_roles`, `model_has_permissions` |
 | **Pivot tables** | `registration_mentor`, `team_user`, `role_has_permissions` |
 
 ---

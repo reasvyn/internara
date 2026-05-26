@@ -74,7 +74,7 @@ Admin creates/publishes handbook → User views handbook → User acknowledges (
 |-------|-----------|
 | **Models** | `Handbook` (title, slug, content, version, is_active, target_audience), `HandbookAcknowledgement` (user_id, handbook_id, acknowledged_at, ip_address) |
 | **Entity** | `HandbookPublishState` (published status check) |
-| **Enum** | `target_audience` values: `all`, `student`, `teacher`, `supervisor` |
+| **Enums** | *(none — target_audience is a string column with `in:all,student,teacher,supervisor` validation)* |
 | **Livewire** | `HandbookIndex` (admin CRUD), `StudentHandbookIndex` (user view + acknowledge) |
 | **Policy** | `HandbookPolicy` |
 

@@ -1,6 +1,6 @@
 # Placement — API Reference
 
-Total: 17 files
+Total: 18 files
 
 ## Actions
 
@@ -48,3 +48,4 @@ Total: 17 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Placement/Policies/PlacementChangeRequestPolicy.php` | `PlacementChangeRequestPolicy` | `BasePolicy` | Authorization for placement change operations |
+| `Placement/Policies/PlacementPolicy.php` | `PlacementPolicy` | `BasePolicy` | Authorization for placement CRUD operations |

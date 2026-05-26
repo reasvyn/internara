@@ -85,7 +85,7 @@ Without these in `.env.example`, developers cannot discover or configure Boost.
 | Domain | Actions | Feature Tests | Gap |
 |---|---|---|---|---|
 | Assessment | 17 | 0 | 🔴 |
-| Internship | 16 | 7 | 🟡 |
+| Internship | 21 | 7 | 🔴 |
 | Auth | 12 | 0 | 🔴 |
 | Admin | 9 | 9 | 🟢 ✅ |
 | Attendance | 8 | 0 | 🔴 |
@@ -94,7 +94,7 @@ Without these in `.env.example`, developers cannot discover or configure Boost.
 | Placement | 7 | 7 | 🟢 ✅ |
 | Assignment | 7 | 0 | 🔴 |
 | School | 9 | 0 | 🔴 |
-| Registration | 5 | 5 | 🟢 ✅ |
+| Registration | 6 | 2 | 🟡 |
 | Document | 4 | 0 | 🔴 |
 | Logbook | 4 | 0 | 🔴 |
 | Certificate | 4 | 0 | 🔴 |
@@ -103,7 +103,7 @@ Without these in `.env.example`, developers cannot discover or configure Boost.
 | Schedule | 3 | 0 | 🔴 |
 | Guidance | 2 | 2 | 🟢 ✅ |
 | Evaluation | 3 | 1 | 🟡 |
-| User | 8 | 2 | 🟢 |
+| User | 8 | 5 | 🟢 |
 | Setup | 9 | 9 | 🟢 |
 | Settings | 6 | 6 | 🟢 |
 
@@ -300,7 +300,7 @@ Handbook acknowledgement is purely informational — it does not block any actio
 
 | Severity | Issue | Category | Status |
 |---|---|---|---|
-| 🔴 | Feature tests missing for ~75 of 143 Actions | Testing | ⏳ |
+| 🔴 | Feature tests missing for ~75 of 164 Actions | Testing | ⏳ |
 | 🔴 | Indonesian `internship.php` missing 110 keys | Translation | ⏳ |
 | 🟡 | **PD14** Unsorted placement.php translation keys | Translation | ✅ Fixed |
 | 🟢 | **GD8** Acknowledgement not used as gate | Guidance | ⏳ |

@@ -102,7 +102,9 @@ Database configuration is in `config/database.php`, overridable via `.env`.
 ## Full Table Reference
 
 The complete database schema (75 tables, columns, types, foreign keys, indexes,
-and business rules) is documented in the ERD docs organized by data lifecycle:
+and business rules) is documented in the ERD docs organized by data lifecycle.
+
+The schema is organized into 14 lifecycle groups with 15 ERD reference files:
 
 | Lifecycle | File | Tables |
 |---|---|---|

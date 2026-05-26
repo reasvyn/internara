@@ -76,6 +76,8 @@ final class FinalizeSetupAction extends BaseAction
                 'setup_token' => null,
                 'token_expires_at' => null,
                 'recovery_key' => $hashed,
+                'school_id' => $school->id,
+                'department_id' => $department->id,
             ])->save();
 
             Cache::forget('system.is_installed');
