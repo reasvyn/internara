@@ -6,17 +6,16 @@ namespace App\Domain\User\Livewire\Dashboards;
 
 use App\Domain\Logbook\Models\Logbook;
 use App\Domain\Registration\Models\Registration;
+use App\Domain\User\Livewire\UserDashboard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\Layout;
-use Livewire\Component;
 
-class TeacherDashboard extends Component
+class TeacherDashboard extends UserDashboard
 {
     public function boot(): void
     {
-        abort_unless(auth()->user()->hasRole('teacher'), 403);
+        abort_unless(auth()->user()?->hasRole('teacher'), 403);
     }
 
     #[Computed]
@@ -49,7 +48,6 @@ class TeacherDashboard extends Component
             ->count();
     }
 
-    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('user.dashboards.teacher');

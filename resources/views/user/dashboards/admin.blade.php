@@ -1,11 +1,5 @@
 <div>
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h2 class="text-xl font-bold">{{ __('dashboard.title') }}</h2>
-            <p class="text-sm text-base-content/50">{{ __('dashboard.subtitle', ['name' => auth()->user()->name]) }}</p>
-        </div>
-        <x-mary-button :label="__('setting.title')" icon="o-cog-6-tooth" link="{{ route('admin.settings') }}" class="btn-ghost btn-sm" />
-    </div>
+    <x-mary-header :title="__('dashboard.title')" :subtitle="__('dashboard.subtitle', ['name' => auth()->user()->name])" separator />
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <x-shared::widgets.stat-card :title="__('dashboard.stats.total_students')" :value="$stats['students']" icon="o-users" color="text-primary" />
@@ -34,7 +28,8 @@
         </div>
 
         <div class="flex flex-col gap-4">
-            <x-shared::widgets.profile-summary :showEdit="true" />
+            @include('user.dashboards._sidebar')
+
             <x-mary-card class="bg-gradient-to-br from-primary to-primary/80 text-white border-none">
                 <div class="py-2">
                     <h4 class="font-semibold mb-1">{{ __('dashboard.help_title') }}</h4>

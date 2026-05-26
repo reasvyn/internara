@@ -1,8 +1,5 @@
 <div>
-    <div class="mb-6">
-        <h2 class="text-xl font-bold">{{ __('dashboard.title') }}</h2>
-        <p class="text-sm text-base-content/50">{{ __('dashboard.student.welcome', ['name' => auth()->user()->name]) }}</p>
-    </div>
+    <x-mary-header :title="__('dashboard.title')" :subtitle="__('dashboard.student.welcome', ['name' => auth()->user()->name])" separator />
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="space-y-6">
@@ -59,6 +56,8 @@
                 <x-slot:title><span class="font-semibold">{{ __('dashboard.student.timeline') }}</span></x-slot:title>
                 <x-shared::widgets.empty-state icon="o-queue-list" :title="__('dashboard.student.timeline_empty')" />
             </x-mary-card>
+
+            @include('user.dashboards._sidebar')
         </div>
     </div>
 </div>

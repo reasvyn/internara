@@ -1,8 +1,5 @@
 <div>
-    <div class="mb-6">
-        <h2 class="text-xl font-bold">{{ __('dashboard.title') }}</h2>
-        <p class="text-sm text-base-content/50">{{ __('dashboard.subtitle', ['name' => auth()->user()->name]) }}</p>
-    </div>
+    <x-mary-header :title="__('dashboard.title')" :subtitle="__('dashboard.subtitle', ['name' => auth()->user()->name])" separator />
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <x-shared::widgets.stat-card :title="__('dashboard.stats.supervised_students')" :value="$this->supervisedStudents" icon="o-users" color="text-primary" />
@@ -19,7 +16,7 @@
         </div>
 
         <div class="flex flex-col gap-4">
-            <x-shared::widgets.profile-summary :showEdit="true" />
+            @include('user.dashboards._sidebar')
             <x-shared::widgets.action-button :label="__('dashboard.teacher.guidance_logs')" icon="o-clipboard-check" link="{{ route('supervision.logs') }}" color="btn-primary" />
         </div>
     </div>

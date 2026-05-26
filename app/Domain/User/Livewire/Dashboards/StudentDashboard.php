@@ -6,15 +6,14 @@ namespace App\Domain\User\Livewire\Dashboards;
 
 use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Actions\GetStudentDashboardDataAction;
+use App\Domain\User\Livewire\UserDashboard;
 use Illuminate\View\View;
-use Livewire\Attributes\Layout;
-use Livewire\Component;
 
-class StudentDashboard extends Component
+class StudentDashboard extends UserDashboard
 {
     public function boot(): void
     {
-        abort_unless(auth()->user()->hasRole('student'), 403);
+        abort_unless(auth()->user()?->hasRole('student'), 403);
     }
 
     public ?Registration $registration = null;
@@ -34,7 +33,6 @@ class StudentDashboard extends Component
         $this->verifiedJournals = $data['verifiedJournals'];
     }
 
-    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('user.dashboards.student');

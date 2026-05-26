@@ -7,17 +7,16 @@ namespace App\Domain\User\Livewire\Dashboards;
 use App\Domain\Evaluation\Models\Evaluation;
 use App\Domain\Logbook\Models\Logbook;
 use App\Domain\Registration\Models\Registration;
+use App\Domain\User\Livewire\UserDashboard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\Layout;
-use Livewire\Component;
 
-class SupervisorDashboard extends Component
+class SupervisorDashboard extends UserDashboard
 {
     public function boot(): void
     {
-        abort_unless(auth()->user()->hasRole('supervisor'), 403);
+        abort_unless(auth()->user()?->hasRole('supervisor'), 403);
     }
 
     #[Computed]
@@ -44,7 +43,6 @@ class SupervisorDashboard extends Component
             ->count();
     }
 
-    #[Layout('shared::layouts.app')]
     public function render(): View
     {
         return view('user.dashboards.supervisor');
