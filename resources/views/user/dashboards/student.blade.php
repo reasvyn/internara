@@ -51,7 +51,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <x-shared::widgets.action-button :label="__('dashboard.student.write_journal')" icon="o-pencil-square" link="{{ route('student.logbook') }}" color="btn-primary" />
                 <x-shared::widgets.action-button :label="__('dashboard.student.request_absence')" icon="o-document-plus" link="{{ route('student.attendance.absence') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
-                <x-shared::widgets.action-button :label="__('dashboard.student.my_documents')" icon="o-document-arrow-up" link="{{ route('student.documents') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
+                <x-shared::widgets.action-button :label="__('dashboard.student.my_documents')" icon="o-document-arrow-up" link="{{ route('registration.documents') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
                 <x-shared::widgets.action-button :label="__('dashboard.student.handbooks')" icon="o-book-open" link="{{ route('student.handbooks') }}" color="bg-base-100 border border-base-content/10 hover:bg-base-200 text-base-content" />
             </div>
 
