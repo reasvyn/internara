@@ -221,8 +221,9 @@ it('exports selected departments', function () {
 });
 
 it('shows warning when exporting with no selection', function () {
-    Livewire::test(DepartmentManager::class)
-        ->call('exportSelected');
+    Livewire::test(\App\Domain\School\Livewire\DepartmentManager::class)
+        ->call('exportSelected')
+        ->assertHasNoErrors();
 });
 
 // ─── Download Template ────────────────────────────────────────────────────────
