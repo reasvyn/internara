@@ -7,6 +7,7 @@ return [
     'subtitle' => 'Kelola periode tahun akademik',
     'create' => 'Tahun Baru',
     'new' => 'Tahun Akademik Baru',
+    'edit' => 'Ubah Tahun Akademik',
     'name' => 'Nama Tahun',
     'start_date' => 'Tanggal Mulai',
     'end_date' => 'Tanggal Selesai',
