@@ -7,6 +7,7 @@ namespace App\Domain\Setup\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Setup\Models\Setup;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
@@ -30,6 +31,8 @@ final class GenerateSetupTokenAction extends BaseAction
                 'setup_token' => $encrypted,
                 'token_expires_at' => $expiresAt,
             ])->save();
+
+            Cache::forget('setup.is_installed');
 
             return [
                 'plaintext' => $plaintext,

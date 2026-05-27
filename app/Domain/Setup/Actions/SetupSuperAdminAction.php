@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Setup\Actions;
 
 use App\Domain\Auth\Entities\SuperAdminIntegrityRules;
+use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
@@ -50,6 +51,7 @@ class SetupSuperAdminAction extends BaseAction
                 $user->markEmailAsVerified();
 
                 $user->assignRole(RoleEnum::SUPER_ADMIN->value);
+                $user->setStatus(AccountStatus::PROTECTED);
 
                 $this->log('super_admin_created', $user, ['username' => $username]);
 

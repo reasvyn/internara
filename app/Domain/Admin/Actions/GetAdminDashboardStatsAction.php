@@ -9,6 +9,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\School\Models\Department;
 use App\Domain\User\Models\User;
+use Illuminate\Support\Facades\Cache;
 
 class GetAdminDashboardStatsAction extends BaseAction
 {
@@ -17,11 +18,13 @@ class GetAdminDashboardStatsAction extends BaseAction
      */
     public function execute(): array
     {
-        return [
-            'totalStudents' => User::role(RoleEnum::STUDENT->value)->count(),
-            'totalTeachers' => User::role(RoleEnum::TEACHER->value)->count(),
-            'totalDepartments' => Department::count(),
-            'activeInternships' => Internship::where('status', 'active')->count(),
-        ];
+        return Cache::remember('admin.dashboard.stats', 300, function () {
+            return [
+                'totalStudents' => User::role(RoleEnum::STUDENT->value)->count(),
+                'totalTeachers' => User::role(RoleEnum::TEACHER->value)->count(),
+                'totalDepartments' => Department::count(),
+                'activeInternships' => Internship::where('status', 'active')->count(),
+            ];
+        });
     }
 }

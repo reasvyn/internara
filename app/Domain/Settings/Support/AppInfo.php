@@ -6,22 +6,27 @@ namespace App\Domain\Settings\Support;
 
 use App\Domain\Core\Support\Integrity;
 use App\Domain\Core\Support\SmartLogger;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 
 final class AppInfo
 {
     private static ?array $info = null;
 
+    private const CACHE_KEY = 'appinfo.metadata';
+
     public static function all(): array
     {
         Integrity::verify();
 
         if (self::$info === null) {
-            $path = base_path('composer.json');
+            self::$info = Cache::remember('appinfo.metadata', 86400, function () {
+                $path = base_path('composer.json');
 
-            if (! File::exists($path)) {
-                self::$info = [];
-            } else {
+                if (! File::exists($path)) {
+                    return [];
+                }
+
                 try {
                     $rawContent = File::get($path);
                     $data = json_decode($rawContent, true);
@@ -35,24 +40,24 @@ final class AppInfo
                             ->systemOnly()
                             ->save();
 
-                        self::$info = [];
-                    } else {
-                        $data = is_array($data) ? $data : [];
-                        $author = $data['authors'][0] ?? [];
-
-                        if (isset($author['homepage']) && ! isset($author['github'])) {
-                            $author['github'] = $author['homepage'];
-                        }
-
-                        self::$info = [
-                            'name' => $data['display_name'] ?? $data['name'] ?? 'Laravel',
-                            'version' => $data['version'] ?? '1.0.0',
-                            'description' => $data['description'] ?? '',
-                            'license' => $data['license'] ?? '',
-                            'author' => $author,
-                            'support' => $data['support'] ?? [],
-                        ];
+                        return [];
                     }
+
+                    $data = is_array($data) ? $data : [];
+                    $author = $data['authors'][0] ?? [];
+
+                    if (isset($author['homepage']) && ! isset($author['github'])) {
+                        $author['github'] = $author['homepage'];
+                    }
+
+                    return [
+                        'name' => $data['display_name'] ?? $data['name'] ?? 'Laravel',
+                        'version' => $data['version'] ?? '1.0.0',
+                        'description' => $data['description'] ?? '',
+                        'license' => $data['license'] ?? '',
+                        'author' => $author,
+                        'support' => $data['support'] ?? [],
+                    ];
                 } catch (\Throwable $e) {
                     SmartLogger::error('Failed to read composer.json metadata')
                         ->withPayload([
@@ -62,9 +67,9 @@ final class AppInfo
                         ->systemOnly()
                         ->save();
 
-                    self::$info = [];
+                    return [];
                 }
-            }
+            });
         }
 
         return self::$info;
@@ -93,5 +98,6 @@ final class AppInfo
     public static function clearCache(): void
     {
         self::$info = null;
+        Cache::forget(self::CACHE_KEY);
     }
 }
