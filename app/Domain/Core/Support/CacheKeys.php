@@ -62,6 +62,11 @@ final readonly class CacheKeys
 
     public const string DOMAIN_VIEWS = 'domain.discovered_views';
 
+    // ─── Auth / Rate Limiting ──────────────────────────────────────────────
+    // Key pattern: auth.login-failures:{userId}
+    // Invalidation: successful login (LoginAction::clearFailedAttempts)
+    public const string AUTH_LOGIN_FAILURES = 'auth.login-failures:';
+
     // ─── Health Check ──────────────────────────────────────────────────────
     public const string HEALTH_CHECK = 'health_check';
 }
