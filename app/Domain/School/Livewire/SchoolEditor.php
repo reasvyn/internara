@@ -69,6 +69,7 @@ class SchoolEditor extends Component
         $updateSchool->execute($this->school, $data);
 
         flash()->success(__('school.save_success'));
+        $this->dispatch('saved');
     }
 
     #[Layout('shared::layouts.app')]

@@ -156,7 +156,7 @@ and `UserDashboard` were updated to match the existing convention.
 | `GetTeacherDashboardStatsAction` | Aggregates teacher dashboard stats (supervised students, pending journals, active companies) |
 | `GetSupervisorDashboardStatsAction` | Aggregates supervisor dashboard stats (active interns, pending evaluations, verified journals) |
 | `GetProfileFormDataAction` | Determines role-appropriate profile fields (staff fields excluded for students/supervisors) |
-| `SendNotificationAction` | Sends an in-app notification to a user (implements `SendsNotifications` contract); validates required fields internally |
+| `SendNotificationAction` | Sends an in-app notification to a user (implements `SendsNotifications` contract); validates required fields internally; invalidates `CacheKeys::NOTIFICATION_UNREAD` |
 | `MarkAsReadAction` | Marks a single notification as read |
 | `MarkAllAsReadAction` | Marks all unread notifications as read |
 | `MarkBatchAsReadAction` | Marks selected notifications as read |

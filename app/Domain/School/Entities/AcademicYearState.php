@@ -16,11 +16,17 @@ final readonly class AcademicYearState extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
+        $hasInternships = $model->relationLoaded('internships')
+            ? $model->internships->isNotEmpty()
+            : $model->internships()->exists();
+
+        $hasAssessments = $model->relationLoaded('assessments')
+            ? $model->assessments->isNotEmpty()
+            : $model->assessments()->exists();
+
         return new self(
             isActive: (bool) ($model->is_active ?? false),
-            hasRelatedRecords: $model->relationLoaded('internships')
-                ? $model->internships->isNotEmpty()
-                : $model->internships()->exists(),
+            hasRelatedRecords: $hasInternships || $hasAssessments,
         );
     }
 

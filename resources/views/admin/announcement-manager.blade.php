@@ -130,6 +130,6 @@
         :title="$confirmActionType === 'delete' ? __('common.actions.confirm_action') : __('announcement.publish_now')"
         :message="$confirmActionType === 'delete' ? __('announcement.confirm_delete') : __('announcement.confirm_publish')"
         :confirmText="$confirmActionType === 'delete' ? __('common.actions.delete') : __('announcement.publish_now')"
-        confirmClass="btn-error"
+        :confirmClass="$confirmActionType === 'publish' ? 'btn-success' : 'btn-error'"
     />
 </div>

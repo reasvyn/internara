@@ -7,6 +7,7 @@ namespace App\Domain\School\Livewire;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\School\Actions\ActivateAcademicYearAction;
+use App\Domain\School\Actions\BulkDeleteAcademicYearsAction;
 use App\Domain\School\Actions\CreateAcademicYearAction;
 use App\Domain\School\Actions\DeleteAcademicYearAction;
 use App\Domain\School\Actions\UpdateAcademicYearAction;
@@ -172,6 +173,7 @@ class AcademicYearManager extends BaseRecordManager
     public function confirmAction(
         ActivateAcademicYearAction $activateAction,
         DeleteAcademicYearAction $deleteAction,
+        BulkDeleteAcademicYearsAction $bulkDeleteAction,
     ): void {
         if ($this->confirmTarget === null && $this->confirmType !== 'delete_selected') {
             return;
@@ -181,7 +183,7 @@ class AcademicYearManager extends BaseRecordManager
             match ($this->confirmType) {
                 'activate' => $this->executeActivate($this->confirmTarget, $activateAction),
                 'delete' => $this->executeDelete($this->confirmTarget, $deleteAction),
-                'delete_selected' => $this->executeDeleteSelected($deleteAction),
+                'delete_selected' => $this->executeDeleteSelected($bulkDeleteAction),
                 default => null,
             };
         } catch (RejectedException $e) {
@@ -207,14 +209,12 @@ class AcademicYearManager extends BaseRecordManager
         flash()->success(__('academic_year.deleted'));
     }
 
-    private function executeDeleteSelected(DeleteAcademicYearAction $action): void
+    private function executeDeleteSelected(BulkDeleteAcademicYearsAction $action): void
     {
-        $this->performBulkAction('Delete', function ($id) use ($action) {
-            $year = AcademicYear::find($id);
-            if ($year && $year->asAcademicYearState()->canBeDeleted()) {
-                $action->execute($year);
-            }
-        });
+        $count = $action->execute($this->selectedIds);
+
+        flash()->success(__('academic_year.deleted_selected', ['count' => $count]));
+        $this->clearSelection();
     }
 
     public function render(): View
