@@ -8,7 +8,18 @@
         <div class="lg:col-span-2">
             <div class="bg-base-100 border border-base-content/10 rounded-xl">
                 <div class="p-6 sm:p-8">
-                    <form wire:submit="save" class="space-y-5">
+                    <form wire:submit="save" class="space-y-5"
+                        x-data="{ isDirty: false }"
+                        @input="isDirty = true"
+                        x-init="
+                            $wire.on('saved', () => isDirty = false);
+                            window.addEventListener('beforeunload', (e) => {
+                                if (isDirty) {
+                                    e.preventDefault();
+                                    e.returnValue = '';
+                                }
+                            });
+                        ">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div class="md:col-span-2">
                                 <x-mary-input

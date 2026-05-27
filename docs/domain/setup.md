@@ -166,6 +166,8 @@ it provides a comprehensive overview of system readiness including setup phase a
 status.
 - The setup wizard route is protected by rate limiting (20 attempts per 60 seconds per IP)
 to prevent brute-force token guessing.
+- `Setup::state()` is cached via `CacheKeys::SETUP_INSTALLED` (1h TTL). The cache is invalidated
+by `FinalizeSetupAction` and `GenerateSetupTokenAction`.
 
 ### Process Flow
 
@@ -188,7 +190,7 @@ Setup Wizard Steps:
 | `SetupSuperAdminAction` | Creates the first super admin account. Accepts only `(string $email, string $password)` — name and username are ALWAYS from config defaults, enforced by type signature |
 | `InitializeSuperAdminAction` | Initializes the super admin with proper roles. Name and username always from config defaults |
 | `FinalizeSetupAction` | Completes setup, generates recovery key, locks installation |
-| `InstallSystemAction` | Non-interactive CLI installation |
+| `InstallSystemAction` | Non-interactive CLI installation — caches `CacheKeys::SETUP_INSTALLED` via `RequireSetupAccessMiddleware` |
 | `RecoverSuperAdminAction` | Emergency super admin account recovery |
 
 ### Technical Reference

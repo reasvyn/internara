@@ -97,7 +97,7 @@ Core has no end-user stories — it provides the architectural foundation every 
 | **Enums** | `AuditStatus` — `PASS`, `FAIL`, `WARN`; `AuditCategory` — `Requirements`, `Permissions`, `Database`, `Terminal`, `Recommendations` |
 | **Contracts** | `LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications` |
 | **Exceptions** | `AppException` → `ActionException`, `PresentationException`, `InfrastructureException`; `DomainException` → `RejectedException` |
-| **Support** | `SmartLogger` (fluent logger), `PiiMasker`, `HandlesActionErrors` (trait), `Integrity`, `PasswordRules` |
+| **Support** | `SmartLogger` (fluent logger), `PiiMasker`, `HandlesActionErrors` (trait), `Integrity`, `PasswordRules`, `CacheKeys` (central registry of all application cache keys with named constants and invalidation documentation) |
 | **Livewire** | `BaseRecordManager` (CRUD base with search, filter, sort, pagination, bulk actions) |
 | **Middleware** | `SecurityHeaders`, `LogContext` |
 | **Channels** | `CustomDatabaseChannel` (custom notification channel) |
@@ -113,6 +113,7 @@ Core has no end-user stories — it provides the architectural foundation every 
 - Security headers configured via `config/security-headers.php`, never hardcoded.
 - Every request log entry must include a `request_id` for traceability.
 - Console commands registered via `$schedule->command()` in `routes/console.php`.
+- All cache keys MUST be defined as constants in `CacheKeys` — never hardcode cache key strings. Every read/write/invalidation uses `CacheKeys::KEY_NAME`. Every write action that modifies cached data MUST invalidate the affected keys.
 
 ## Dependencies
 
