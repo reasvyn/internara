@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Settings\Actions;
 
-use App\Domain\Core\Actions\BaseAction;
 use App\Domain\School\Models\AcademicYear;
 use Illuminate\Support\Collection;
 
-class GetAcademicYearsAction extends BaseAction
+class GetAcademicYearsAction
 {
     public function execute(): Collection
     {

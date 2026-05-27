@@ -7,7 +7,7 @@ Total: 21 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Settings/Actions/BatchSetSettingAction.php` | `BatchSetSettingAction` | `BaseAction` | Sets multiple settings atomically in a transaction |
-| `Settings/Actions/GetAcademicYearsAction.php` | `GetAcademicYearsAction` | `BaseAction` | Lists academic years for settings configuration (Read Action heritage — should not extend BaseAction) |
+| `Settings/Actions/GetAcademicYearsAction.php` | `GetAcademicYearsAction` | — | Lists academic years for settings configuration (Read Action — no transaction/log needed) |
 | `Settings/Actions/SaveSystemSettingsAction.php` | `SaveSystemSettingsAction` | `BaseAction` | Orchestrates complete system settings form (general + branding + mail) |
 | `Settings/Actions/SetSettingAction.php` | `SetSettingAction` | `BaseAction` | Creates or updates a single setting with type auto-detection |
 | `Settings/Actions/TestMailSettingsAction.php` | `TestMailSettingsAction` | `BaseAction` | Sends test email to verify SMTP configuration |
