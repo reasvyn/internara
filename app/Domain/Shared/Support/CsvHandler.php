@@ -70,7 +70,7 @@ final class CsvHandler
                 continue;
             }
 
-            if ($result === CsvRowResult::SKIPPED || $result === 'skipped') {
+            if ($result === CsvRowResult::SKIPPED) {
                 $skipped++;
 
                 continue;

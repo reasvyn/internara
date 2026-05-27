@@ -33,11 +33,6 @@ final class Theme
         return config('settings.colors.presets', []);
     }
 
-    public static function presetKeys(): array
-    {
-        return array_keys(self::presets());
-    }
-
     public static function all(): array
     {
         $defaults = self::defaults();
