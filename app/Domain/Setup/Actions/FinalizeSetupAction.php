@@ -80,6 +80,7 @@ final class FinalizeSetupAction extends BaseAction
                 'department_id' => $department->id,
             ])->save();
 
+            Cache::forget('setup.is_installed');
             Cache::forget('system.is_installed');
 
             Event::dispatch(new SetupFinalized(

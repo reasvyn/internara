@@ -7,13 +7,14 @@ namespace App\Domain\Setup\Http\Middleware;
 use App\Domain\Setup\Models\Setup;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
 class RequireSetupAccessMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (Setup::state()->isInstalled()) {
+        if ($this->isInstalledCached()) {
             return $next($request);
         }
 
@@ -29,5 +30,12 @@ class RequireSetupAccessMiddleware
         }
 
         return redirect()->route('setup');
+    }
+
+    private function isInstalledCached(): bool
+    {
+        return (bool) Cache::remember('setup.is_installed', 3600, function () {
+            return Setup::state()->isInstalled();
+        });
     }
 }

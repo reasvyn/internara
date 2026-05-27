@@ -6,6 +6,7 @@ namespace App\Domain\User\Livewire;
 
 use App\Domain\User\Models\Notification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -20,9 +21,23 @@ class NotificationBell extends Component
 
     public function updateUnreadCount(): void
     {
-        $this->unreadCount = Notification::where('user_id', Auth::id())
-            ->where('is_read', false)
-            ->count();
+        $userId = Auth::id();
+
+        if ($userId === null) {
+            $this->unreadCount = 0;
+
+            return;
+        }
+
+        $this->unreadCount = Cache::remember(
+            'notification.unread:'.$userId,
+            60,
+            function () use ($userId) {
+                return Notification::where('user_id', $userId)
+                    ->where('is_read', false)
+                    ->count();
+            },
+        );
     }
 
     public function getListeners(): array

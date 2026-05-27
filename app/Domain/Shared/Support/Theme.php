@@ -6,6 +6,7 @@ namespace App\Domain\Shared\Support;
 
 use App\Domain\Settings\Support\Color;
 use App\Domain\Settings\Support\Settings;
+use Illuminate\Support\Facades\Cache;
 
 final class Theme
 {
@@ -66,49 +67,51 @@ final class Theme
 
     public static function cssVariables(): array
     {
-        $colors = self::all();
+        return Cache::remember('theme.css_variables', 3600, function () {
+            $colors = self::all();
 
-        $light = [];
-        $dark = [];
+            $light = [];
+            $dark = [];
 
-        $baseShades = Color::computeBaseShades(self::base());
-        $light['--color-base-100'] = $baseShades['base100'];
-        $light['--color-base-200'] = $baseShades['base200'];
-        $light['--color-base-300'] = $baseShades['base300'];
-        $light['--color-base-content'] = $baseShades['content'];
+            $baseShades = Color::computeBaseShades(self::base());
+            $light['--color-base-100'] = $baseShades['base100'];
+            $light['--color-base-200'] = $baseShades['base200'];
+            $light['--color-base-300'] = $baseShades['base300'];
+            $light['--color-base-content'] = $baseShades['content'];
 
-        $darkShades = Color::computeDarkShades(self::base());
-        $dark['--color-base-100'] = $darkShades['base100'];
-        $dark['--color-base-200'] = $darkShades['base200'];
-        $dark['--color-base-300'] = $darkShades['base300'];
-        $dark['--color-base-content'] = $darkShades['content'];
+            $darkShades = Color::computeDarkShades(self::base());
+            $dark['--color-base-100'] = $darkShades['base100'];
+            $dark['--color-base-200'] = $darkShades['base200'];
+            $dark['--color-base-300'] = $darkShades['base300'];
+            $dark['--color-base-content'] = $darkShades['content'];
 
-        $map = [
-            'primary' => ['--color-primary', '--p'],
-            'secondary' => ['--color-secondary', '--s'],
-            'accent' => ['--color-accent', '--a'],
-        ];
+            $map = [
+                'primary' => ['--color-primary', '--p'],
+                'secondary' => ['--color-secondary', '--s'],
+                'accent' => ['--color-accent', '--a'],
+            ];
 
-        foreach ($map as $key => $variables) {
-            $hex = $colors[$key];
+            foreach ($map as $key => $variables) {
+                $hex = $colors[$key];
 
-            foreach ($variables as $var) {
-                $light[$var] = $hex;
+                foreach ($variables as $var) {
+                    $light[$var] = $hex;
+                }
+                $light['--color-'.$key.'-content'] = Color::contrastColor($hex);
+                $light['--'.$key[0].'c'] = Color::contrastColor($hex);
+
+                $lightened = Color::lighten($hex, 40);
+                foreach ($variables as $var) {
+                    $dark[$var] = $lightened;
+                }
+                $dark['--color-'.$key.'-content'] = '#ffffff';
+                $dark['--'.$key[0].'c'] = '#ffffff';
+
+                $light['--brand-'.$key] = $hex;
+                $dark['--brand-'.$key] = $lightened;
             }
-            $light['--color-'.$key.'-content'] = Color::contrastColor($hex);
-            $light['--'.$key[0].'c'] = Color::contrastColor($hex);
 
-            $lightened = Color::lighten($hex, 40);
-            foreach ($variables as $var) {
-                $dark[$var] = $lightened;
-            }
-            $dark['--color-'.$key.'-content'] = '#ffffff';
-            $dark['--'.$key[0].'c'] = '#ffffff';
-
-            $light['--brand-'.$key] = $hex;
-            $dark['--brand-'.$key] = $lightened;
-        }
-
-        return compact('light', 'dark');
+            return compact('light', 'dark');
+        });
     }
 }

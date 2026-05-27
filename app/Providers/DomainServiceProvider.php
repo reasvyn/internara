@@ -18,19 +18,23 @@ use App\Domain\Setup\Listeners\LogSetupFinalized;
 use App\Domain\User\Actions\SendNotificationAction;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use RegexIterator;
 
 class DomainServiceProvider extends ServiceProvider
 {
     private const DOMAIN_PATH = __DIR__.'/../Domain';
+
+    private const CACHE_KEY_POLICIES = 'domain.discovered_policies';
+
+    private const CACHE_KEY_LIVEWIRE = 'domain.discovered_livewire';
+
+    private const CACHE_KEY_VIEWS = 'domain.discovered_views';
 
     public function register(): void
     {
@@ -51,13 +55,11 @@ class DomainServiceProvider extends ServiceProvider
             $this->registerBladeNamespaces();
         }
 
-        // Cross-domain event listeners
         Event::listen(
             SetupFinalized::class,
             [LogSetupFinalized::class, 'handle'],
         );
 
-        // Cross-domain policy registrations (auto-discovery handles domain patterns)
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Placement::class, InternshipPlacementPolicy::class);
         Gate::policy(Registration::class, InternshipRegistrationPolicy::class);
@@ -70,8 +72,6 @@ class DomainServiceProvider extends ServiceProvider
             return;
         }
 
-        $directory = config('domain.commands.directory', 'Console/Commands');
-
         $this->commands([
             __DIR__.'/../Domain/Core/Console/Commands',
             __DIR__.'/../Domain/Setup/Console/Commands',
@@ -81,174 +81,177 @@ class DomainServiceProvider extends ServiceProvider
         ]);
     }
 
-    /**
-     * Auto-discover and register all Livewire components from each domain's Livewire module.
-     */
     private function discoverLivewireComponents(): void
     {
-        $domainDir = realpath(self::DOMAIN_PATH);
+        $cacheKey = self::CACHE_KEY_LIVEWIRE;
+        $ttl = 86400;
 
-        if ($domainDir === false) {
-            return;
-        }
-
-        $directory = config('domain.livewire.directory', 'Livewire');
-        $excludePaths = config('domain.livewire.exclude_paths', ['Concerns', 'Traits']);
-        $registered = [];
-
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($domainDir, RecursiveDirectoryIterator::SKIP_DOTS),
-        );
-
-        $phpFiles = new RegexIterator($iterator, '/^.+\.php$/i', RegexIterator::GET_MATCH);
-
-        foreach ($phpFiles as $fileList) {
-            $filePath = $fileList[0];
-
-            if (! str_contains($filePath, '/'.$directory.'/')) {
-                continue;
+        $components = Cache::remember($cacheKey, $ttl, function () {
+            $result = [];
+            $domainDir = realpath(self::DOMAIN_PATH);
+            if ($domainDir === false) {
+                return $result;
             }
 
-            $shouldSkip = false;
-            foreach ($excludePaths as $excluded) {
-                if (str_contains($filePath, '/'.$excluded.'/')) {
-                    $shouldSkip = true;
-                    break;
+            $directory = config('domain.livewire.directory', 'Livewire');
+            $excludePaths = config('domain.livewire.exclude_paths', ['Concerns', 'Traits']);
+            $files = $this->scanPhpFiles($domainDir);
+
+            foreach ($files as $filePath) {
+                if (! str_contains($filePath, '/'.$directory.'/')) {
+                    continue;
                 }
+
+                if ($this->isExcludedPath($filePath, $excludePaths)) {
+                    continue;
+                }
+
+                $content = file_get_contents($filePath);
+                if (! preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
+                    continue;
+                }
+
+                $className = basename($filePath, '.php');
+                $fqcn = $nsMatch[1].'\\'.$className;
+
+                if (! is_subclass_of($fqcn, 'Livewire\Component')) {
+                    continue;
+                }
+
+                preg_match('#/Domain/([^/]+)/'.$directory.'/#', $filePath, $domainMatch);
+                $domain = $domainMatch[1] ?? '';
+                $alias = Str::kebab($domain).'.'.Str::kebab($className);
+
+                $result[$alias] = $fqcn;
             }
 
-            if ($shouldSkip) {
-                continue;
-            }
+            return $result;
+        });
 
-            $content = file_get_contents($filePath);
-
-            if (! preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
-                continue;
-            }
-
-            $className = basename($filePath, '.php');
-            $fqcn = $nsMatch[1].'\\'.$className;
-
-            if (! is_subclass_of($fqcn, 'Livewire\Component')) {
-                continue;
-            }
-
-            preg_match('#/Domain/([^/]+)/'.$directory.'/#', $filePath, $domainMatch);
-            $domain = $domainMatch[1] ?? '';
-
-            $alias = Str::kebab($domain).'.'.Str::kebab($className);
-
+        foreach ($components as $alias => $fqcn) {
             Livewire::component($alias, $fqcn);
-
-            $registered[] = $alias;
         }
-
     }
 
-    /**
-     * Auto-discover and register all policies from each domain's Policies directory.
-     */
     private function discoverPolicies(): void
     {
-        $domainDir = realpath(self::DOMAIN_PATH);
+        $cacheKey = self::CACHE_KEY_POLICIES;
+        $ttl = 86400;
 
-        if ($domainDir === false) {
-            return;
-        }
-
-        $directory = config('domain.policies.directory', 'Policies');
-        $excludePaths = config('domain.policies.exclude_paths', ['Concerns', 'Traits']);
-
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($domainDir, RecursiveDirectoryIterator::SKIP_DOTS),
-        );
-
-        $phpFiles = new RegexIterator($iterator, '/^.+\.php$/i', RegexIterator::GET_MATCH);
-
-        foreach ($phpFiles as $fileList) {
-            $filePath = $fileList[0];
-
-            if (! str_contains($filePath, '/'.$directory.'/')) {
-                continue;
+        $policies = Cache::remember($cacheKey, $ttl, function () {
+            $result = [];
+            $domainDir = realpath(self::DOMAIN_PATH);
+            if ($domainDir === false) {
+                return $result;
             }
 
-            $shouldSkip = false;
-            foreach ($excludePaths as $excluded) {
-                if (str_contains($filePath, '/'.$excluded.'/')) {
-                    $shouldSkip = true;
-                    break;
+            $directory = config('domain.policies.directory', 'Policies');
+            $excludePaths = config('domain.policies.exclude_paths', ['Concerns', 'Traits']);
+            $files = $this->scanPhpFiles($domainDir);
+
+            foreach ($files as $filePath) {
+                if (! str_contains($filePath, '/'.$directory.'/')) {
+                    continue;
                 }
+
+                if ($this->isExcludedPath($filePath, $excludePaths)) {
+                    continue;
+                }
+
+                $className = basename($filePath, '.php');
+                if (! str_ends_with($className, 'Policy')) {
+                    continue;
+                }
+
+                $content = file_get_contents($filePath);
+                if (! preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
+                    continue;
+                }
+
+                $policyClass = $nsMatch[1].'\\'.$className;
+                if (! is_subclass_of($policyClass, BasePolicy::class)) {
+                    continue;
+                }
+
+                preg_match('#/Domain/([^/]+)/'.$directory.'/#', $filePath, $domainMatch);
+                $domain = $domainMatch[1] ?? '';
+                $modelName = preg_replace('/Policy$/', '', $className);
+                $modelClass = "App\\Domain\\{$domain}\\Models\\{$modelName}";
+
+                if (! class_exists($modelClass)) {
+                    continue;
+                }
+
+                $result[$modelClass] = $policyClass;
             }
 
-            if ($shouldSkip) {
-                continue;
-            }
+            return $result;
+        });
 
-            $className = basename($filePath, '.php');
-
-            if (! str_ends_with($className, 'Policy')) {
-                continue;
-            }
-
-            $content = file_get_contents($filePath);
-
-            if (! preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
-                continue;
-            }
-
-            $policyClass = $nsMatch[1].'\\'.$className;
-
-            if (! is_subclass_of($policyClass, BasePolicy::class)) {
-                continue;
-            }
-
-            preg_match('#/Domain/([^/]+)/'.$directory.'/#', $filePath, $domainMatch);
-            $domain = $domainMatch[1] ?? '';
-
-            $modelName = preg_replace('/Policy$/', '', $className);
-            $modelClass = "App\\Domain\\{$domain}\\Models\\{$modelName}";
-
-            if (! class_exists($modelClass)) {
-                continue;
-            }
-
+        foreach ($policies as $modelClass => $policyClass) {
             Gate::policy($modelClass, $policyClass);
         }
     }
 
-    /**
-     * Register Blade anonymous component paths and view namespaces for each domain.
-     *
-     * - Anonymous components: `x-{domain}::component-name` via Blade::anonymousComponentPath
-     * - View namespaces: `{domain}::view.name` via View::addNamespace (required by Livewire
-     *   #[Layout] attribute and explicit namespace-based includes)
-     */
     private function registerBladeNamespaces(): void
     {
-        $viewsDir = realpath(config('domain.paths.views', self::DOMAIN_PATH.'/../../resources/views'));
+        $cacheKey = self::CACHE_KEY_VIEWS;
+        $ttl = 86400;
 
-        if ($viewsDir === false) {
-            return;
-        }
-
-        $excluded = config('domain.views.exclude_directories', [
-            'components', 'emails', 'errors', 'mcp', 'pdf', 'vendor',
-        ]);
-
-        $domainDirs = glob($viewsDir.'/*', GLOB_ONLYDIR);
-
-        foreach ($domainDirs as $dir) {
-            $name = basename($dir);
-
-            if (in_array($name, $excluded, true)) {
-                continue;
+        $namespaces = Cache::remember($cacheKey, $ttl, function () {
+            $result = [];
+            $viewsDir = realpath(config('domain.paths.views', self::DOMAIN_PATH.'/../../resources/views'));
+            if ($viewsDir === false) {
+                return $result;
             }
 
-            if (is_dir($dir)) {
-                Blade::anonymousComponentPath($dir, $name);
-                View::addNamespace($name, $dir);
+            $excluded = config('domain.views.exclude_directories', [
+                'components', 'emails', 'errors', 'mcp', 'pdf', 'vendor',
+            ]);
+
+            $domainDirs = glob($viewsDir.'/*', GLOB_ONLYDIR);
+            foreach ($domainDirs as $dir) {
+                $name = basename($dir);
+                if (in_array($name, $excluded, true)) {
+                    continue;
+                }
+                $result[] = ['name' => $name, 'path' => $dir];
+            }
+
+            return $result;
+        });
+
+        foreach ($namespaces as $ns) {
+            if (is_dir($ns['path'])) {
+                Blade::anonymousComponentPath($ns['path'], $ns['name']);
+                View::addNamespace($ns['name'], $ns['path']);
             }
         }
+    }
+
+    private function scanPhpFiles(string $dir): array
+    {
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir, \RecursiveDirectoryIterator::SKIP_DOTS),
+        );
+        $files = [];
+        foreach ($iterator as $file) {
+            if ($file->isFile() && $file->getExtension() === 'php') {
+                $files[] = $file->getPathname();
+            }
+        }
+
+        return $files;
+    }
+
+    private function isExcludedPath(string $filePath, array $excludePaths): bool
+    {
+        foreach ($excludePaths as $excluded) {
+            if (str_contains($filePath, '/'.$excluded.'/')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
