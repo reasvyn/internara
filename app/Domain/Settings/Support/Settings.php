@@ -303,28 +303,27 @@ final class Settings
     {
         Cache::forget(self::CACHE_PREFIX.$key);
 
-        if ($group) {
+        if ($group !== null) {
             Cache::forget(self::CACHE_PREFIX.'group.'.$group);
+        } else {
+            // Fetch the setting's group from database only when not provided
+            try {
+                $setting = Setting::where('key', $key)->first();
+
+                if ($setting?->group) {
+                    Cache::forget(self::CACHE_PREFIX.'group.'.$setting->group);
+                }
+            } catch (QueryException $e) {
+                self::logQueryWarning('Failed to invalidate setting group cache', $e, [
+                    'key' => $key,
+                ]);
+            }
         }
 
         Cache::forget(self::CACHE_PREFIX.'all');
 
         if (str_contains($key, 'color') || str_contains($key, 'brand')) {
             Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
-        }
-
-        // Also invalidate any group cache this key might belong to
-        // by fetching the setting's group from the database
-        try {
-            $setting = Setting::where('key', $key)->first();
-
-            if ($setting?->group) {
-                Cache::forget(self::CACHE_PREFIX.'group.'.$setting->group);
-            }
-        } catch (QueryException $e) {
-            self::logQueryWarning('Failed to invalidate setting group cache', $e, [
-                'key' => $key,
-            ]);
         }
     }
 

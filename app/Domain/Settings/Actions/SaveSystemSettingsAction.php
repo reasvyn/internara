@@ -23,7 +23,7 @@ class SaveSystemSettingsAction extends BaseAction
         $settings = [
             'brand_name' => $general['brand_name'] ?? '',
             'site_title' => $general['site_title'] ?? '',
-            'default_locale' => $general['default_locale'] ?? 'id',
+            'default_locale' => $general['default_locale'] ?? 'en',
             'active_academic_year' => $general['active_academic_year'] ?? '',
             'primary_color' => $branding['primary_color'] ?? '',
             'secondary_color' => $branding['secondary_color'] ?? '',
