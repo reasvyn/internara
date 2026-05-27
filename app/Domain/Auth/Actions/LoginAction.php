@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Auth\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -102,7 +103,7 @@ class LoginAction extends BaseAction
 
     private function handleFailedAttempt(User $user): void
     {
-        $cacheKey = 'login-failures:'.$user->id;
+        $cacheKey = CacheKeys::AUTH_LOGIN_FAILURES.$user->id;
         $threshold = (int) config('auth.throttle.auto_lock_threshold', 10);
 
         $lock = Cache::lock($cacheKey.'.lock', 5);

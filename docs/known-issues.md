@@ -184,7 +184,7 @@ public function getActiveRegistration(): ?Registration
 
 **Problem:** `'encrypt' => env('SESSION_ENCRYPT', false)`. Session data is stored in the database in plaintext (SQLite `sessions` table when using `database` driver). The CSRF token, user ID, flash data, and session payload are all readable if the database file is compromised.
 
-**Fix:** Set `SESSION_ENCRYPT=true` in the production `.env`. Laravel will encrypt session data using the APP_KEY cipher.
+**Status:** ✅ Fixed — `config/session.php` now defaults to `true`, and `.env.example` has `SESSION_ENCRYPT=true`.
 
 ---
 
@@ -639,37 +639,34 @@ Livewire components still manage form state via flat `public` properties. Comple
 
 | Severity | Issue | Category | Status |
 |---|---|---|---|
-| 🔴 | **K1** Trusted proxies not configured — rate limiting broken behind LB | Infrastructure | ⏳ |
-| 🔴 | **K2** Exception hierarchy not consumed — all errors render as 500 | Infrastructure | ⏳ |
-| 🔴 | **K3** `after_commit: false` on all queue connections | Infrastructure | ⏳ |
-| 🔴 | **K4** `getActiveRegistration()` N+1 query | Performance | ⏳ |
-| 🔴 | **K5** SQLite for production — no concurrent write support | Infrastructure | ⏳ |
-| 🔴 | **K6** Cache config default `database` instead of `file` | Infrastructure | ⏳ |
-| 🔴 | **K7** Queue config default `database` instead of `sync` | Infrastructure | ⏳ |
-| 🔴 | **K8** MAIL_MAILER default `smtp` in `.env.example` | Configuration | ⏳ |
-| 🟠 | **H1** Session encryption disabled | Security | ⏳ |
-| 🟠 | **H2** Session secure cookie flag not set | Security | ⏳ |
-| 🟠 | **H3** CORS wildcard origins | Security | ⏳ |
-| 🟠 | **H4** AuthThrottle IP-only, config `max_attempts` (5) unused | Security | ⏳ |
-| 🟠 | **H5** Missing indexes on 4 FK columns | Performance | ⏳ |
+| 🔴 | **K1** Trusted proxies not configured — rate limiting broken behind LB | Infrastructure | ✅ Fixed |
+| 🔴 | **K2** Exception hierarchy not consumed — all errors render as 500 | Infrastructure | ✅ Fixed |
+| 🔴 | **K3** `after_commit: false` on all queue connections | Infrastructure | ✅ Fixed |
+| 🔴 | **K4** `getActiveRegistration()` N+1 query | Performance | ✅ Fixed |
+| 🔴 | **K5** SQLite for production — no concurrent write support | Infrastructure | 🟡 Doc (engine choice) |
+| 🔴 | **K6** Cache config default `database` instead of `file` | Infrastructure | ✅ Fixed |
+| 🔴 | **K7** Queue config default `database` instead of `sync` | Infrastructure | ✅ Fixed |
+| 🔴 | **K8** MAIL_MAILER default `smtp` in `.env.example` | Configuration | ✅ Fixed |
+| 🟠 | **H1** Session encryption disabled | Security | ✅ Fixed |
+| 🟠 | **H2** Session secure cookie flag not set | Security | ✅ Fixed |
+| 🟠 | **H3** CORS wildcard origins | Security | ✅ Fixed |
+| 🟠 | **H4** AuthThrottle IP-only, config `max_attempts` (5) unused | Security | ✅ Fixed |
+| 🟠 | **H5** Missing indexes on 4 FK columns | Performance | ✅ Fixed |
 | 🟠 | **H6** Duplicate Livewire: ThemeSwitcher + LangSwitcher ×2 | Performance | ⏳ |
 | 🟠 | **H7** Companies table no indexes on search columns | Performance | ⏳ |
 | 🟡 | **M1** LIKE with leading wildcard in 2 locations | Performance | ⏳ |
 | 🟡 | **M2** Job payloads stored unencrypted | Security | ⏳ |
-| 🟡 | **M3** No framework RateLimiter configured | Security | ⏳ |
+| 🟡 | **M3** No framework RateLimiter configured | Security | ✅ Fixed |
 | 🟡 | **M4** Log level set to debug | Observability | ⏳ |
 | 🟡 | **M5** APP_DEBUG=true in .env | Security | ⏳ |
-| 🟡 | **M6** Duplicate indexes on mentees/mentors user_id | Performance | ⏳ |
-| 🟡 | **M7** Cache key `login-failures` not registered in `CacheKeys` | Architecture | ⏳ |
-| 🟡 | **M8** Session security vars missing from `.env.example` | Configuration | ⏳ |
-| 🟡 | **M9** `IMAGE_DRIVER` not exposed in `.env.example` | Configuration | ⏳ |
-| 🟡 | **PD14** Unsorted placement.php translation keys | Translation | ⏳ |
-| 🟡 | Livewire Form Object migration (~45 remaining) | Architecture | ⏳ |
-| 🟡 | BaseAction cannot enforce execute() signature | Architecture | ⏸️ |
+| 🟡 | **M6** Duplicate indexes on mentees/mentors user_id | Performance | ✅ Fixed |
+| 🟡 | **M7** Cache key `login-failures` not registered in `CacheKeys` | Architecture | ✅ Fixed |
+| 🟡 | **M8** Session security vars missing from `.env.example` | Configuration | ✅ Fixed |
+| 🟡 | **M9** `IMAGE_DRIVER` not exposed in `.env.example` | Configuration | ✅ Fixed |
 | 🟢 | **L1** Setup::state() race condition | Infrastructure | ⏳ |
-| 🟢 | **L2** Nginx vs middleware X-Frame-Options mismatch | Security | ⏳ |
+| 🟢 | **L2** Nginx vs middleware X-Frame-Options mismatch | Security | ✅ Fixed |
 | 🟢 | **L3** Integrity::verify() can exit(1) | Reliability | ⏳ |
-| 🟢 | **L4** CORS paths reference non-existent API routes | Config | ⏳ |
+| 🟢 | **L4** CORS paths reference non-existent API routes | Config | ✅ Fixed |
 | 🟢 | Feature tests missing for ~75 of 164 Actions | Testing | ⏳ |
 | 🟢 | Indonesian `internship.php` missing 13 keys | Translation | ⏳ |
 | 🟢 | GD8 Acknowledgement not used as gate | Guidance | ⏳ |
