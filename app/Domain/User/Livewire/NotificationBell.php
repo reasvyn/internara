@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Livewire;
 
+use App\Domain\Core\Support\CacheKeys;
 use App\Domain\User\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -30,7 +31,7 @@ class NotificationBell extends Component
         }
 
         $this->unreadCount = Cache::remember(
-            'notification.unread:'.$userId,
+            CacheKeys::NOTIFICATION_UNREAD.$userId,
             60,
             function () use ($userId) {
                 return Notification::where('user_id', $userId)

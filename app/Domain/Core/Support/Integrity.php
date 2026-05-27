@@ -4,32 +4,18 @@ declare(strict_types=1);
 
 namespace App\Domain\Core\Support;
 
-use Illuminate\Support\Facades\Cache;
 use RuntimeException;
 
 final class Integrity
 {
     private const AUTHOR_NAME = 'Reas Vyn';
 
-    private const CACHE_KEY = 'core.integrity_verified';
-
     public static function verify(): void
     {
-        $container = app();
-
-        if (method_exists($container, 'runningUnitTests') && $container->runningUnitTests()) {
-            return;
-        }
-
-        if (Cache::get(self::CACHE_KEY, false)) {
-            return;
-        }
-
         $path = dirname(__DIR__, 4).'/composer.json';
 
         try {
             self::verifyComposerFile($path);
-            Cache::put(self::CACHE_KEY, true, 86400);
         } catch (RuntimeException $e) {
             self::fatal($e->getMessage());
         }
@@ -66,11 +52,6 @@ final class Integrity
 
     private static function fatal(string $message): never
     {
-        SmartLogger::error('System integrity check failed')
-            ->withPayload(['message' => $message])
-            ->systemOnly()
-            ->save();
-
         $appName = self::resolveAppName();
 
         if (PHP_SAPI === 'cli') {
@@ -89,29 +70,25 @@ final class Integrity
 
     private static function resolveAppName(): string
     {
-        $info = Cache::remember('core.app_name', 86400, function () {
-            $path = dirname(__DIR__, 4).'/composer.json';
+        $path = dirname(__DIR__, 4).'/composer.json';
 
-            if (! file_exists($path)) {
+        if (! file_exists($path)) {
+            return 'Application';
+        }
+
+        try {
+            $content = file_get_contents($path);
+
+            if ($content === false) {
                 return 'Application';
             }
 
-            try {
-                $content = file_get_contents($path);
+            $info = json_decode($content, true);
 
-                if ($content === false) {
-                    return 'Application';
-                }
-
-                $info = json_decode($content, true);
-
-                return is_array($info) ? ($info['name'] ?? 'Application') : 'Application';
-            } catch (\Throwable) {
-                return 'Application';
-            }
-        });
-
-        return $info;
+            return is_array($info) ? ($info['name'] ?? 'Application') : 'Application';
+        } catch (\Throwable) {
+            return 'Application';
+        }
     }
 
     private static function fatalHtml(string $message, string $appName): string

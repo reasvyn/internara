@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Shared\Support;
 
+use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Settings\Support\Color;
 use App\Domain\Settings\Support\Settings;
 use Illuminate\Support\Facades\Cache;
@@ -67,7 +68,7 @@ final class Theme
 
     public static function cssVariables(): array
     {
-        return Cache::remember('theme.css_variables', 3600, function () {
+        return Cache::remember(CacheKeys::THEME_CSS_VARIABLES, 3600, function () {
             $colors = self::all();
 
             $light = [];

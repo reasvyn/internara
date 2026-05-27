@@ -7,6 +7,7 @@ namespace App\Providers;
 use App\Domain\Auth\Policies\UserPolicy;
 use App\Domain\Core\Contracts\SendsNotifications;
 use App\Domain\Core\Policies\BasePolicy;
+use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Internship\Policies\CompanyPolicy;
 use App\Domain\Internship\Policies\InternshipRegistrationPolicy;
 use App\Domain\Partnership\Models\Company;
@@ -29,12 +30,6 @@ use Livewire\Livewire;
 class DomainServiceProvider extends ServiceProvider
 {
     private const DOMAIN_PATH = __DIR__.'/../Domain';
-
-    private const CACHE_KEY_POLICIES = 'domain.discovered_policies';
-
-    private const CACHE_KEY_LIVEWIRE = 'domain.discovered_livewire';
-
-    private const CACHE_KEY_VIEWS = 'domain.discovered_views';
 
     public function register(): void
     {
@@ -83,10 +78,7 @@ class DomainServiceProvider extends ServiceProvider
 
     private function discoverLivewireComponents(): void
     {
-        $cacheKey = self::CACHE_KEY_LIVEWIRE;
-        $ttl = 86400;
-
-        $components = Cache::remember($cacheKey, $ttl, function () {
+        $components = Cache::remember(CacheKeys::DOMAIN_LIVEWIRE, 86400, function () {
             $result = [];
             $domainDir = realpath(self::DOMAIN_PATH);
             if ($domainDir === false) {
@@ -135,10 +127,7 @@ class DomainServiceProvider extends ServiceProvider
 
     private function discoverPolicies(): void
     {
-        $cacheKey = self::CACHE_KEY_POLICIES;
-        $ttl = 86400;
-
-        $policies = Cache::remember($cacheKey, $ttl, function () {
+        $policies = Cache::remember(CacheKeys::DOMAIN_POLICIES, 86400, function () {
             $result = [];
             $domainDir = realpath(self::DOMAIN_PATH);
             if ($domainDir === false) {
@@ -195,10 +184,7 @@ class DomainServiceProvider extends ServiceProvider
 
     private function registerBladeNamespaces(): void
     {
-        $cacheKey = self::CACHE_KEY_VIEWS;
-        $ttl = 86400;
-
-        $namespaces = Cache::remember($cacheKey, $ttl, function () {
+        $namespaces = Cache::remember(CacheKeys::DOMAIN_VIEWS, 86400, function () {
             $result = [];
             $viewsDir = realpath(config('domain.paths.views', self::DOMAIN_PATH.'/../../resources/views'));
             if ($viewsDir === false) {
