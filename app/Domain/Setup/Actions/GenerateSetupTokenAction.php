@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Setup\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Setup\Models\Setup;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -32,7 +33,7 @@ final class GenerateSetupTokenAction extends BaseAction
                 'token_expires_at' => $expiresAt,
             ])->save();
 
-            Cache::forget('setup.is_installed');
+            Cache::forget(CacheKeys::SETUP_INSTALLED);
 
             return [
                 'plaintext' => $plaintext,

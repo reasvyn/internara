@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Settings\Support;
 
+use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Core\Support\Integrity;
 use App\Domain\Core\Support\SmartLogger;
 use Illuminate\Support\Facades\Cache;
@@ -13,14 +14,12 @@ final class AppInfo
 {
     private static ?array $info = null;
 
-    private const CACHE_KEY = 'appinfo.metadata';
-
     public static function all(): array
     {
         Integrity::verify();
 
         if (self::$info === null) {
-            self::$info = Cache::remember('appinfo.metadata', 86400, function () {
+            self::$info = Cache::remember(CacheKeys::APPINFO_METADATA, 86400, function () {
                 $path = base_path('composer.json');
 
                 if (! File::exists($path)) {
@@ -98,6 +97,6 @@ final class AppInfo
     public static function clearCache(): void
     {
         self::$info = null;
-        Cache::forget(self::CACHE_KEY);
+        Cache::forget(CacheKeys::APPINFO_METADATA);
     }
 }

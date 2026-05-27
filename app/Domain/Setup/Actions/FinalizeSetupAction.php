@@ -6,6 +6,7 @@ namespace App\Domain\Setup\Actions;
 
 use App\Domain\Admin\Actions\SaveRecoveryKeyAction;
 use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Internship\Actions\CreateInternshipAction;
 use App\Domain\Setup\Events\SetupFinalized;
@@ -80,8 +81,7 @@ final class FinalizeSetupAction extends BaseAction
                 'department_id' => $department->id,
             ])->save();
 
-            Cache::forget('setup.is_installed');
-            Cache::forget('system.is_installed');
+            Cache::forget(CacheKeys::SETUP_INSTALLED);
 
             Event::dispatch(new SetupFinalized(
                 schoolId: $setup->school_id,

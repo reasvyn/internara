@@ -6,8 +6,10 @@ namespace App\Domain\User\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Contracts\SendsNotifications;
+use App\Domain\Core\Support\CacheKeys;
 use App\Domain\User\Models\Notification;
 use App\Domain\User\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -47,6 +49,8 @@ class SendNotificationAction extends BaseAction implements SendsNotifications
             'link' => $link,
             'is_read' => false,
         ]);
+
+        Cache::forget(CacheKeys::NOTIFICATION_UNREAD.$user->id);
 
         return $notification;
     }

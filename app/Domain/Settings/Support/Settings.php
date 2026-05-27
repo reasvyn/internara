@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Settings\Support;
 
+use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Settings\Models\Setting;
 use App\Domain\Settings\Rules\ValidSettingKey;
@@ -216,6 +217,7 @@ final class Settings
     {
         Cache::forget(self::CACHE_PREFIX.'group.'.$name);
         Cache::forget(self::CACHE_PREFIX.'all');
+        Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
 
         try {
             $keys = Setting::group($name)->pluck('key');
@@ -306,6 +308,10 @@ final class Settings
         }
 
         Cache::forget(self::CACHE_PREFIX.'all');
+
+        if (str_contains($key, 'color') || str_contains($key, 'brand')) {
+            Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
+        }
 
         // Also invalidate any group cache this key might belong to
         // by fetching the setting's group from the database
