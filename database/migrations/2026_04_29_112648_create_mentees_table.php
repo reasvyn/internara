@@ -13,7 +13,6 @@ return new class extends Migration
         Schema::create('mentees', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->nullable()->constrained('users')->onDelete('cascade')->index();
-            $table->index('user_id');
             $table->boolean('is_active')->default(true)->index();
             $table->text('internal_notes')->nullable();
             $table->timestamps();

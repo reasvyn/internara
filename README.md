@@ -1,13 +1,15 @@
 # Internara
 
-**Self-hosted internship management system** for schools, vocational programs, and educational institutions. Manages the full internship lifecycle — from registration to final reporting.
+**Self-hosted vocational fieldwork management system** for upper-secondary schools and educational institutions running compulsory work placement programs. Internara manages the full program lifecycle — from registration through placement, daily operations, assessment, and certification.
+
+Built for schools that manage mandatory on-site industry placements for their students. Installed on your own infrastructure, operated by your own staff. Not SaaS, not multi-tenant, not centrally managed.
 
 ## Features
 
-- **For Schools** — manage departments, academic years, and company partnerships
-- **For Students** — log attendance, journals, track competency progress, and submit assignments
-- **For Teachers** — manage placements, assessments, supervision visits, and grading
-- **For Supervisors** — evaluate students and provide industry feedback
+- **For Schools** — manage academic years, departments, programs, and company partnerships
+- **For Students** — log attendance, write daily journals, submit assignments and reports, track progress
+- **For Teachers** — supervise students, review journals, grade assignments and reports, conduct assessments
+- **For Industry Supervisors** — verify attendance, review journals, submit placement evaluations
 
 ## Architecture
 
@@ -54,7 +56,7 @@ php artisan key:generate
 php artisan setup:install
 ```
 
-Follow the setup wizard to configure your school and admin account. Access the app at `http://localhost:8000`.
+Follow the setup wizard to configure your institution and admin account. Access the app at `http://localhost:8000`.
 
 ## Requirements
 
@@ -78,13 +80,15 @@ Follow the setup wizard to configure your school and admin account. Access the a
 
 ## Documentation
 
-### Core
+### Product
+- [Product Definition](docs/product-definition.md)
 - [Architecture](docs/architecture.md)
 - [Coding Conventions](docs/conventions.md)
-- [Database](docs/database.md)
+
+### Setup & Operation
+- [Getting Started](docs/getting-started.md)
 - [Installation](docs/installation.md)
 - [Configuration](docs/configuration.md)
-- [Testing](docs/testing.md)
 - [Infrastructure](docs/infrastructure.md)
 
 ### Security & Access
@@ -96,11 +100,13 @@ Follow the setup wizard to configure your school and admin account. Access the a
 - [Branding](docs/branding.md)
 
 ### Technical Reference
+- [Database](docs/database.md)
 - [Routes](docs/routes.md)
 - [Session](docs/session.md)
 - [Cache](docs/cache.md)
 - [Filesystem](docs/filesystem.md)
 - [Notifications](docs/notification.md)
+- [Testing](docs/testing.md)
 - [Known Issues](docs/known-issues.md)
 
 ### Domain Reference

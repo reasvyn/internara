@@ -122,8 +122,8 @@ class User extends Authenticatable implements HasMedia
     public function getActiveRegistration(): ?Registration
     {
         return $this->registrations()
-            ->get()
-            ->first(fn (Registration $reg) => $reg->hasStatus('active'));
+            ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+            ->first();
     }
 
     public function scopeActive(Builder $query): Builder

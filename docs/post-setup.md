@@ -79,7 +79,7 @@ Only companies with an active partnership can host students.
 
 Each account needs: name, email, username, and an initial password.
 
-> See [Authentication & RBAC](blueprints/09-authentication-rbac.md) for
+> See [RBAC](rbac.md) for
 > the full role hierarchy and permission model.
 
 ### 7. Assign Mentors
@@ -103,7 +103,7 @@ in the wizard:
 
 | Field | Example |
 |---|---|
-| Name | "PKL 2025/2026" |
+| Name | "Work Placement 2025/2026" |
 | Description | "Industrial practice for grade XII students" |
 | Start Date | August 1, 2025 |
 | End Date | December 19, 2025 |
@@ -159,7 +159,7 @@ before the change takes effect.
 
 ### 15. Verify Daily Operations
 
-Before the first day of PKL, confirm these workflows work:
+Before the first day of the placement program, confirm these workflows work:
 
 | Workflow | How To Verify |
 |---|---|
@@ -215,7 +215,7 @@ Phase 5 — Live
 
 | Document | What It Covers |
 |---|---|
-| [RBAC & Roles](blueprints/09-authentication-rbac.md) | Role hierarchy, permissions, policies |
+| [RBAC](rbac.md) | Role hierarchy, permissions, policies |
 | [Domain Index](domain/domain-index.md) | All domain documentation |
 | [School](domain/school.md) | Managing schools, departments, academic years |
 | [Partnership](domain/partnership.md) | Company and MoU management |

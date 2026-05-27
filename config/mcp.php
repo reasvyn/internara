@@ -13,7 +13,7 @@ return [
     | for redirect URIs. Each domain should be specified with its scheme
     | and host. Domains not in this list will raise validation errors.
     |
-    | An "*" may be used to allow all domains.
+    | Restrict this to known application domains in production.
     |
     */
 

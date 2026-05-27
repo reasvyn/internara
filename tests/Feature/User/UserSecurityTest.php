@@ -13,12 +13,12 @@ use App\Domain\User\Rules\ReservedAuthoritativeName;
 use App\Domain\User\Rules\SystemUsername;
 use App\Domain\User\Services\DashboardService;
 use App\Domain\User\Support\UserIdentifierGenerator;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role as RoleModel;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     foreach (['super_admin', 'admin', 'student', 'teacher', 'supervisor'] as $role) {

@@ -115,4 +115,4 @@ structural (not domain views) or belong to third-party packages.
 
 - `docs/architecture.md` — 12-layer architecture, domain structure diagram
 - `docs/conventions.md` — coding conventions for domain classes
-- `docs/erd/00-erd-index.md` — complete ERD organized by data lifecycle
+- `docs/database.md` — database design, engine comparison, index strategy

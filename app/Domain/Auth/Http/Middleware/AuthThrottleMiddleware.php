@@ -13,10 +13,22 @@ class AuthThrottleMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
+        $path = $request->path();
+        $isLogin = str_contains($path, 'login');
+
+        $maxAttempts = $isLogin
+            ? (int) config('auth.throttle.login_max_attempts', 5)
+            : (int) config('auth.throttle.max_attempts', 30);
+
+        $decaySeconds = $isLogin
+            ? (int) config('auth.throttle.login_decay_seconds', 60)
+            : (int) config('auth.throttle.decay_seconds', 60);
+
         $key = 'auth-throttle:'.$request->ip();
 
-        $maxAttempts = (int) config('auth.throttle.max_attempts', 30);
-        $decaySeconds = (int) config('auth.throttle.decay_seconds', 60);
+        if ($isLogin) {
+            $key = 'login:'.$request->ip().':'.md5((string) $request->input('email', ''));
+        }
 
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
             $seconds = RateLimiter::availableIn($key);
