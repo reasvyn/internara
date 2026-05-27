@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\School\Livewire;
 
+use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\School\Actions\CreateDepartmentAction;
 use App\Domain\School\Actions\DeleteDepartmentAction;
@@ -160,12 +161,35 @@ class DepartmentManager extends BaseRecordManager
 
     private function executeDeleteSelected(DeleteDepartmentAction $action): void
     {
-        $this->performBulkAction('Delete', function ($id) use ($action) {
+        $deleted = 0;
+        $blocked = 0;
+
+        foreach ($this->selectedIds as $id) {
             $department = Department::find($id);
-            if ($department && $department->asDepartmentState()->canBeDeleted()) {
-                $action->execute($department);
+            if (! $department) {
+                continue;
             }
-        });
+            if (! $department->asDepartmentState()->canBeDeleted()) {
+                $blocked++;
+
+                continue;
+            }
+            try {
+                $action->execute($department);
+                $deleted++;
+            } catch (RejectedException) {
+                $blocked++;
+            }
+        }
+
+        if ($deleted > 0) {
+            flash()->success(trans_choice('department.delete_success_bulk', $deleted, ['count' => $deleted]));
+        }
+        if ($blocked > 0) {
+            flash()->error(trans_choice('department.delete_blocked_bulk', $blocked, ['count' => $blocked]));
+        }
+
+        $this->clearSelection();
     }
 
     // --- Import / Export / Template ---

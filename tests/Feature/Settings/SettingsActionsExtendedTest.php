@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 use App\Domain\School\Models\AcademicYear;
 use App\Domain\Settings\Actions\GetAcademicYearsAction;
 use App\Domain\Settings\Actions\SaveSystemSettingsAction;

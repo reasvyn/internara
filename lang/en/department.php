@@ -26,6 +26,8 @@ return [
     'delete_success' => 'Department deleted successfully.',
     'cancel' => 'Cancel',
     'save' => 'Save',
+    'delete_success_bulk' => '{0} No departments deleted|{1} 1 department deleted|[2,*] :count departments deleted.',
+    'delete_blocked_bulk' => '{0} No departments skipped|{1} 1 department skipped (has profiles)|[2,*] :count departments skipped (have profiles).',
     'import_invalid' => 'Invalid CSV format. The file must have a "name" column.',
     'import_summary' => ':created departments imported, :skipped skipped (duplicates).',
     'template_example_name' => 'e.g. Software Engineering',
