@@ -7,11 +7,11 @@ use App\Domain\Setup\Actions\GenerateSetupTokenAction;
 use App\Domain\Setup\Actions\ValidateSetupTokenAction;
 use App\Domain\Setup\Livewire\SetupWizard;
 use App\Domain\Setup\Models\Setup;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Session;
 use Spatie\Permission\Models\Role as RoleModel;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     foreach (['super_admin', 'admin', 'student', 'teacher', 'supervisor'] as $role) {

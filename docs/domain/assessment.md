@@ -5,7 +5,7 @@
 Assessment defines the framework for measuring student competency during internships. While daily 
 task grading (Assignment) tracks individual assignments and mentor feedback (Evaluation) captures 
 qualitative observations, Assessment provides the structured, rubric-based evaluation that 
-answers: what does a successful intern look like, and does this student measure up against that 
+answers: what does a successful student on placement look like, and does this student measure up against that 
 standard? It defines the criteria (rubrics), the scoring model (competency assessments), and the 
 formal evaluation events (presentations) that produce comparable, defensible competency data. 
 This data is used by the Registration domain to determine completion and by the Certificate 

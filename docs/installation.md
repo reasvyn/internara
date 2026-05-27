@@ -159,8 +159,9 @@ maintenance_work_mem = 128MB
 random_page_cost = 1.1
 ```
 
-> See [Database Engine Setup](blueprints/04-database-engine-setup.md) for
-> connection pooling, read replicas, and migration strategy.
+Connection pooling (ProxySQL for MySQL, PgBouncer for PostgreSQL) is recommended
+for high-traffic deployments. Laravel also supports read/write separation for
+database replicas in `config/database.php`.
 
 ### 4. Background Processes with Supervisor
 
@@ -216,7 +217,8 @@ Alternatively, use a cron entry for the scheduler:
 ### 5. Storage Persistence
 
 For multi-server deployments, replace local storage with S3-compatible
-object storage. See [File Storage Setup](blueprints/05-file-storage-setup.md).
+object storage (`config/filesystems.php`). Supported providers include
+AWS S3, MinIO, DigitalOcean Spaces, and Cloudflare R2.
 
 ---
 
@@ -337,8 +339,8 @@ complete the setup wizard.
 public/storage → storage/app/public
 ```
 
-> See [Shared Hosting Deployment](blueprints/11-shared-hosting-deployment.md)
-> for the full guide.
+For institutions that outgrow shared hosting, see the VPS section above
+for the upgrade path.
 
 ---
 
@@ -360,6 +362,107 @@ BROADCAST_CONNECTION=reverb
 4. Configure Supervisor for queue worker + Reverb + scheduler
 5. Set up minute-level cron
 6. All features become available automatically
+
+---
+
+## Backup & Disaster Recovery
+
+### What to Back Up
+
+| Asset | Location | Frequency | Retention |
+|---|---|---|---|
+| **Database** | SQLite file or MySQL/PG dump | Daily | 30 days |
+| **User uploads** | `storage/app/` (local) or S3 bucket | Daily | 30 days |
+| **Environment config** | `.env` (store securely, not in repo) | Per deployment | Permanent |
+| **Application code** | Git repository | Per commit | Permanent |
+
+### SQLite Backup (Development)
+
+```bash
+cp database/database.sqlite backups/$(date +%Y%m%d_%H%M%S).sqlite
+```
+
+### MySQL / PostgreSQL Backup (Production)
+
+```bash
+# MySQL
+mysqldump --single-transaction --routines --triggers \
+    -u internara -p internara \
+    | gzip > backups/db_$(date +%Y%m%d).sql.gz
+
+# PostgreSQL
+pg_dump -U internara -h localhost internara \
+    | gzip > backups/db_$(date +%Y%m%d).sql.gz
+```
+
+Automate with cron:
+```cron
+0 2 * * * /path/to/backup-script.sh
+```
+
+### Full Restoration
+
+```bash
+# 1. Restore database
+gunzip -c backups/db_20260101.sql.gz | mysql -u internara -p internara
+
+# 2. Restore files
+tar -xzf backups/storage_20260101.tar.gz -C storage/app
+
+# 3. Rebuild cache
+php artisan optimize:clear
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# 4. Verify
+php artisan system:health
+```
+
+### Monitoring
+
+| Check | Command | Alert If |
+|---|---|---|
+| Backup age | `find backups/ -mtime +1` | No backup in 24h |
+| Disk space | `df -h /` | Usage > 90% |
+| Database connectivity | `php artisan system:health` | Health check fails |
+
+---
+
+## Performance Tuning
+
+### OpCache
+
+Recommended `opcache.ini` settings for production:
+
+```ini
+opcache.enable=1
+opcache.memory_consumption=256
+opcache.max_accelerated_files=20000
+opcache.validate_timestamps=0
+opcache.revalidate_freq=2
+```
+
+For development, disable OpCache to avoid stale bytecode.
+
+### Production Optimization Commands
+
+```bash
+# Enable all caches
+php artisan optimize
+
+# Individual caches
+php artisan config:cache     # Merge config files
+php artisan route:cache      # Cache route registration
+php artisan view:cache       # Compile Blade templates
+php artisan event:cache      # Cache event discovery
+```
+
+### Queue Monitoring
+
+```bash
+php artisan queue:monitor database:default --max=100
+```
 
 ---
 
@@ -417,9 +520,5 @@ php artisan system:health
 |---|---|
 | [Getting Started](getting-started.md) | End-to-end walkthrough from clone to wizard |
 | [Infrastructure](infrastructure.md) | Deployment overview, storage, HA considerations |
-| [System Requirements](blueprints/01-system-requirements.md) | Detailed PHP extensions, health checks |
-| [Environment Config](blueprints/03-environment-configuration.md) | Three-tier config, dev vs prod, security |
-| [Database Engine Setup](blueprints/04-database-engine-setup.md) | Full DB setup, tuning, known differences |
-| [File Storage Setup](blueprints/05-file-storage-setup.md) | Media library, S3, image conversions |
-| [Shared Hosting](blueprints/11-shared-hosting-deployment.md) | Full shared hosting guide |
-| [Backup & Recovery](blueprints/06-backup-disaster-recovery.md) | Database dump, file backup, retention |
+| [Configuration](configuration.md) | Environment setup, localization, security settings |
+| [Database](database.md) | Database design, engine comparison, index strategy |

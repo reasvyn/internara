@@ -1,5 +1,20 @@
 # Role-Based Access Control
 
+## Authentication Flow
+
+```
+Request → Authenticate middleware → Session created → RBAC gate
+```
+
+| Feature | Implementation |
+|---|---|
+| Login | Email or username + bcrypt password |
+| Session | Database driver, 120 min lifetime, HTTP-only cookie |
+| Password reset | Token-based, stored in `password_reset_tokens` |
+| Email verification | Token-based with `activation_tokens` table |
+| Account locking | `users.locked_at` + `locked_reason` columns |
+| Rate limiting | Login attempts throttled per IP |
+
 ## Role Hierarchy Design
 
 The application defines five user roles in a flat hierarchy: super_admin,
@@ -12,13 +27,13 @@ Super admins manage the application infrastructure — they configure settings,
 manage all user accounts, and have unrestricted access. There should be very
 few super admin accounts.
 
-Admins handle school-level operations: manage users, internships, companies,
-departments, and the operational aspects of the internship program. They have
+Admins handle school-level operations: manage users, placement programs, companies,
+departments, and the operational aspects of the placement program. They have
 broad but not unrestricted access.
 
 Teachers provide academic supervision: they can view and manage student
 assignments and assessments, verify journals, and mentor students during
-their internship.
+their placement program.
 
 Supervisors provide industry-side supervision: they register attendance,
 verify journals from the company perspective, and evaluate student
@@ -27,12 +42,28 @@ performance at the placement site.
 Students are the participants: they submit assignments, write journals,
 clock attendance, and view their own records.
 
-A second family of functional roles (Admin, Mentor, Mentee) exists for
-business logic only. These are logical groupings resolved at runtime — they
-are never stored in the database and never used in route middleware. A Mentor
-resolves to teacher + supervisor; a Mentee resolves to student. This
-separation keeps the route security layer simple (concrete roles only) while
-allowing Actions to write role-agnostic business logic.
+### Functional Roles
+
+A second family of functional roles exists for business logic only. These
+are logical groupings resolved at runtime — never stored in the database
+and never used in route middleware:
+
+| Functional Role | Resolves From |
+|---|---|
+| `mentor` | `teacher`, `supervisor` |
+| `mentee` | `student` |
+
+This decouples the mentoring subsystem from specific user types —
+a `teacher` and a `supervisor` both resolve to `mentor` without sharing
+the same user role. See `Role::resolvesTo()` in code.
+
+## Permission Model
+
+Permissions are checked at three levels:
+
+1. **Routes** — `CheckRoleMiddleware` with `role:{role1|role2}` syntax
+2. **Livewire components** — Authorization checks in component methods
+3. **Policies** — Policy methods via `BasePolicy` traits
 
 ## Why Flat Roles Instead of Hierarchical Permissions
 

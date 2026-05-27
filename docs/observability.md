@@ -15,16 +15,22 @@ space running low? Are all required services running?
 
 ## Laravel Pulse for Performance
 
-Laravel Pulse provides a real-time performance dashboard. It records:
-slow database queries (those exceeding a configurable threshold), slow HTTP
-requests, slow queued jobs, exceptions, cache hit/miss ratios, queue
-throughput, and server resource usage. The dashboard is accessible at a
-configurable URL path and is restricted to authorized users.
+Laravel Pulse provides a real-time performance dashboard with configurable
+recorders:
 
+| Recorder | What It Tracks | Threshold |
+|---|---|---|
+| Slow Queries | Database queries exceeding threshold | 1,000 ms |
+| Slow Requests | HTTP requests exceeding threshold | 1,000 ms |
+| Slow Jobs | Queued jobs exceeding threshold | 1,000 ms |
+| Exceptions | All unhandled exceptions | Always |
+| Cache | Cache hit/miss ratio | Always |
+| Queues | Queue throughput | Always |
+
+The dashboard is accessible at `/pulse` and restricted to authorized users.
 Pulse records are ingested synchronously by default (on every request) or
 asynchronously via Redis for high-traffic deployments. Data retention is
-configurable — old records are automatically pruned. Pulse is disabled in
-the test environment to avoid overhead.
+configurable — old records are automatically pruned by the scheduler.
 
 ## SmartLogger Dual-Channel Approach
 
@@ -48,6 +54,31 @@ and log to activity only (business audit via Actions). The fluent API
 attaches a causer (who), a subject (what was acted upon), a payload (context
 data), a module name, and an event name. Personally identifiable information
 can be automatically masked before logging.
+
+## Log Channels
+
+Logging is configured in `config/logging.php` with the following available
+channels:
+
+| Channel | Use Case | Rotation |
+|---|---|---|
+| `single` | Development — one file | Manual |
+| `daily` | Production — daily rotation, 14 day retention | Automatic |
+| `slack` | Critical errors to Slack webhook | N/A |
+| `stderr` | Docker/container friendly | N/A |
+| `syslog` | System syslog integration | System-managed |
+| `null` | Discard (testing) | N/A |
+
+The default log stack uses the `daily` channel in production:
+
+```env
+LOG_CHANNEL=stack
+LOG_STACK=daily
+LOG_LEVEL=debug
+```
+
+Activity log retention is configured in `config/activitylog.php` and pruned
+by the `system:cleanup` command (default 365 days).
 
 ## Log Context Enrichment
 

@@ -55,7 +55,7 @@ class ActivityLog extends Activity
     public function scopeForModule(Builder $query, string $module): Builder
     {
         return $query->where(function (Builder $q) use ($module) {
-            $q->where('subject_type', 'like', "%\\{$module}\\%")
+            $q->where('subject_type', 'like', "App\\Domain\\{$module}\\%")
                 ->orWhere('log_name', $module);
         });
     }

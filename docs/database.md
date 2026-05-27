@@ -101,26 +101,77 @@ Database configuration is in `config/database.php`, overridable via `.env`.
 
 ## Full Table Reference
 
-The complete database schema (75 tables, columns, types, foreign keys, indexes,
-and business rules) is documented in the ERD docs organized by data lifecycle.
+The database schema covers 75+ tables organized into lifecycle groups:
+Identity & Access, Institutional Setup, Partnerships, Internship Program,
+Registration, Daily Operations (attendance, logbook), Mentoring, Assignments,
+Assessment, Reports, Guidance & Incidents, Evaluations, Admin & Audit, and
+Infrastructure (cache, queue, sessions, media, notifications, activity log).
 
-The schema is organized into 14 lifecycle groups with 15 ERD reference files:
+Refer to individual domain documentation for table details and relationships.
 
-| Lifecycle | File | Tables |
-|---|---|---|
-| Identity & Access | `docs/erd/01-auth.md` | 10 |
-| Institutional Setup | `docs/erd/02-institution.md` | 5 |
-| Companies & Partnerships | `docs/erd/03-partnership.md` | 3 |
-| Internship Program | `docs/erd/04-internship.md` | 6 |
-| Student Registration | `docs/erd/05-registration.md` | 5 |
-| Daily Execution | `docs/erd/06-daily.md` | 3 |
-| Mentoring & Teams | `docs/erd/07-mentoring.md` | 4 |
-| Assignments & Submissions | `docs/erd/08-assignment.md` | 3 |
-| Assessment & Grading | `docs/erd/09-assessment.md` | 6 |
-| Reports & Certification | `docs/erd/10-report.md` | 4 |
-| Guidance & Incidents | `docs/erd/11-guidance.md` | 3 |
-| Evaluations & Notifications | `docs/erd/12-evaluation.md` | 3 |
-| Admin & Audit | `docs/erd/13-admin.md` | 5 |
-| Infrastructure | `docs/erd/14-infra.md` | 11 |
+---
 
-Start with `docs/erd/00-erd-index.md` for the master map and conventions.
+## Engine Comparison
+
+| Feature | SQLite | MySQL 8+ | MariaDB 10.6+ | PostgreSQL 14+ |
+|---|---|---|---|---|
+| **Setup** | Zero — file-based | Server install | Server install | Server install |
+| **Concurrent writes** | ❌ Locks entire file | ✅ Row-level locking | ✅ Row-level locking | ✅ MVCC |
+| **Connection pooling** | Not needed | ProxySQL | ProxySQL | PgBouncer |
+| **Read replicas** | Not supported | Supported | Supported | Supported |
+| **Default for** | Development, testing | Production | Production | Production |
+
+### Known SQLite vs MySQL/PostgreSQL Differences
+
+| Difference | Impact |
+|---|---|
+| SQLite does not enforce column length | A `varchar(255)` column accepts longer values in SQLite, but MySQL truncates. Ensure data fits constraints. |
+| SQLite has no native `ENUM` type | Enum columns are stored as `text` with check constraints. Migrations abstract this difference. |
+| SQLite locks on write | Under concurrent write load, "database is locked" errors occur. Switch to MySQL/PG in production. |
+| SQLite `ALTER TABLE` is limited | Some schema changes require table recreation. |
+
+### Connection Pooling
+
+For high-traffic deployments:
+- **MySQL**: ProxySQL or configure `max_connections` appropriately
+- **PostgreSQL**: PgBondary for transaction-mode pooling
+
+Laravel supports read/write separation for replicas:
+
+```php
+// config/database.php
+'read' => ['host' => ['192.168.1.1']],
+'write' => ['host' => ['192.168.1.2']],
+```
+
+### Index Strategy
+
+Internara uses composite indexes for common query patterns:
+
+| Pattern | Index Example |
+|---|---|
+| FK + status filter | `[registration_id, status]` on `attendances` |
+| User + date lookup | `[user_id, date]` on `logbooks` and `attendances` |
+| Polymorphic lookup | `[subject_type, subject_id]` on `activity_log` |
+
+### Migration Strategy
+
+After switching the database connection, run migrations to create the schema:
+
+```bash
+php artisan migrate
+```
+
+When migrating from SQLite to MySQL with existing data, use Laravel's
+dump and schema sync tools.
+
+## Infrastructure Context
+
+| Tier | Engine | Connection Pooling | Read Replicas |
+|---|---|---|---|
+| 1 (Shared) | MySQL / MariaDB (shared) | Not needed | Not supported |
+| 2 (VPS) | MySQL 8+ / PostgreSQL 14+ | Optional (ProxySQL / PgBouncer) | Optional |
+| 3 (HA) | MySQL 8+ / PostgreSQL 14+ | ✅ Required | ✅ Recommended |
+
+See [Infrastructure → Database Strategy](infrastructure.md#4-database-strategy) for detailed
+tier-based database configuration, connection pooling setup, and replication strategy.

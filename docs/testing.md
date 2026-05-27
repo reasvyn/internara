@@ -26,7 +26,7 @@ transition is allowed, an Action that computes a score, a Support class that for
 database needed, no HTTP needed.
 
 Use a feature test for a user-visible workflow: registering a user, submitting an assignment,
-approving an internship. The test creates any necessary records, performs the action, and verifies
+approving a placement. The test creates any necessary records, performs the action, and verifies
 the outcome in the database, response, and session.
 
 ## What LazilyRefreshDatabase Does
@@ -54,11 +54,34 @@ further.
 This makes Entity tests the fastest and most reliable tests in the suite. They have no setup, no
 teardown, no dependencies. They are pure PHP function tests.
 
+## Running Tests by Tier
+
+```bash
+# Development (Tier 1) — full suite
+php artisan test
+
+# CI (Tier 2+) — parallel, coverage
+php artisan test --parallel
+composer run coverage
+
+# Single domain
+php artisan test --filter=Internship
+
+# Single test
+php artisan test --filter=testName
+```
+
 ## Where to Find It
 
-Tests are organized in `tests/Feature/{Domain}/` and `tests/Unit/{Domain}/`. The
-base `TestCase` is at `tests/TestCase.php`. Pest global configuration is at `tests/Pest.php`.
-Composer scripts for running tests are in `composer.json` under the `scripts` section.
+- `tests/Feature/{Domain}/` — feature tests organized by domain
+- `tests/Unit/{Domain}/` — unit tests organized by domain
+- `tests/TestCase.php` — base test case with `LazilyRefreshDatabase`
+- `tests/Pest.php` — Pest global configuration
+- `phpunit.xml` — PHPUnit configuration
+- `phpunit.coverage.xml` — coverage-specific configuration
+- `composer.json` — test scripts in `scripts` section
+- `docs/conventions.md` — Section 19 (Testing conventions)
+- `docs/infrastructure.md` — tier-based infrastructure design
 
 ## Code Coverage
 

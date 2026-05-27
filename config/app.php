@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => (bool) env('APP_DEBUG', env('APP_ENV', 'production') !== 'production' && env('APP_ENV', 'production') !== 'testing'),
 
     /*
     |--------------------------------------------------------------------------

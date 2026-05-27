@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 use App\Domain\Admin\Actions\SaveRecoveryKeyAction;
 use App\Domain\Auth\Enums\AccountStatus;

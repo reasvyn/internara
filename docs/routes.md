@@ -105,8 +105,40 @@ This means a new Livewire component works immediately without any registration s
 3. Name it with `->name('{prefix}.{resource}.{action}')`
 4. Add sidebar menu entry in `config/menu.php`
 
-For a new domain: create `routes/web/{domain}.php`, add `require` in `routes/web.php` at the correct position for load-order precedence.
+For a new domain: create `routes/web/{domain}.php`, add `require` in `routes/web.php`
+at the correct position for load-order precedence.
 
-## Route Caching
+## Route Caching (Tier 2+)
 
-Not currently enabled because `routes/web/user.php` contains a Closure route (POST `/logout`). To enable route caching, replace the Closure with a controller invokable. `Route::livewire()` calls are compatible with route caching.
+```bash
+php artisan route:cache
+```
+
+Before caching, ensure no route files contain Closure routes (replace with controller
+classes). `Route::livewire()` is compatible with route caching. Clear and rebuild after
+route changes:
+
+```bash
+php artisan route:clear
+php artisan route:cache
+```
+
+## Infrastructure Context
+
+| Tier | Route Handling | Caching |
+|---|---|---|
+| 1 (Shared) | Standard — no cache | ❌ Not needed |
+| 2 (VPS) | Cached after deployment | ✅ `php artisan route:cache` |
+| 3 (HA) | Cached per server | ✅ `route:cache` after each deploy |
+
+## Where to Find It
+
+- `routes/web.php` — master file with requires in dependency order
+- `routes/web/` — 24 domain route files
+- `routes/console.php` — Artisan command registrations
+- `routes/channels.php` — broadcasting channel definitions
+- `routes/ai.php` — AI integration routes
+- `app/Domain/Core/Http/Middleware/` — global middleware classes
+- `app/Domain/Auth/Http/Middleware/` — auth middleware (CheckRole, AuthThrottle)
+- `config/menu.php` — sidebar navigation mapping routes to menu items
+- `docs/infrastructure.md` — tier-based infrastructure design

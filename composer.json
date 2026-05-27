@@ -4,7 +4,7 @@
     "display_name": "Internara",
     "version": "0.1.0",
     "type": "project",
-    "description": "The practical field work management system build with Laravel.",
+    "description": "Self-hosted vocational fieldwork management system built with Laravel.",
     "keywords": [
         "laravel",
         "framework"

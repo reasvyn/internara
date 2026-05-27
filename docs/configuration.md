@@ -2,78 +2,83 @@
 
 ## Config File Organization
 
-Configuration files live in the `config/` directory, one file per subsystem.
-Each file returns a PHP array of default values. This organization makes it
-obvious where to find configuration for any given concern — database settings
-in `config/database.php`, mail settings in `config/mail.php`, caching in
-`config/cache.php`, and so on.
+Configuration files live in the `config/` directory, one file per subsystem. Each file returns
+a PHP array of default values. Environment variables (`.env`) override these defaults at
+runtime without modifying the files.
 
-There are approximately 20 configuration files covering application settings,
-database connections, cache stores, session behavior, queue connections, mail
-drivers, broadcasting, filesystem disks, logging channels, security headers,
-CORS, localization, third-party packages (media library, permissions,
-activity log), Livewire, the menu structure, and the setup wizard.
+Configuration files are organized into three tiers matching the infrastructure design
+(see [Infrastructure](infrastructure.md)):
+
+| Tier | Storage | Precedence | Changed By | Effect |
+|---|---|---|---|---|
+| **Environment** | `.env` + `config/*.php` `env()` calls | Highest | Operations, deployment | Requires `config:cache` rebuild |
+| **Code defaults** | `config/*.php` hardcoded fallbacks | Medium | Developers, deployment | Deployment required |
+| **Runtime settings** | Database `settings` table | Lowest (overrides code) | Admins via web UI | Immediate (cache invalidated) |
+
+---
 
 ## Environment Variable Conventions
 
-Configuration files read environment variables via the `env()` helper. This
-creates a two-tier system: defaults are defined in the config files and can
-be overridden by `.env` values. Environment variables follow a naming
-convention that makes their origin clear: `APP_*` for application settings,
-`DB_*` for database, `MAIL_*` for mail, `SESSION_*` for sessions,
-`CACHE_*` for cache, `QUEUE_*` for queue, `BROADCAST_*` for broadcasting,
-`REDIS_*` for Redis, `AWS_*` for cloud services, `LOG_*` for logging,
-`PULSE_*` for monitoring.
+Variables follow a naming convention that makes their origin clear:
 
-Variables prefixed with `VITE_` are explicitly exposed to the frontend
-build pipeline for use in JavaScript.
+| Prefix | Domain | Example |
+|---|---|---|
+| `APP_*` | Application | `APP_NAME`, `APP_ENV`, `APP_KEY`, `APP_DEBUG`, `APP_URL` |
+| `DB_*` | Database | `DB_CONNECTION`, `DB_HOST`, `DB_DATABASE` |
+| `MAIL_*` | Mail | `MAIL_MAILER`, `MAIL_HOST`, `MAIL_USERNAME` |
+| `SESSION_*` | Session | `SESSION_DRIVER`, `SESSION_LIFETIME` |
+| `CACHE_*` | Cache | `CACHE_STORE`, `CACHE_PREFIX` |
+| `QUEUE_*` | Queue | `QUEUE_CONNECTION` |
+| `BROADCAST_*` | Broadcasting | `BROADCAST_CONNECTION` |
+| `REDIS_*` | Redis | `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD` |
+| `AWS_*` | Cloud storage | `AWS_ACCESS_KEY_ID`, `AWS_BUCKET` |
+| `LOG_*` | Logging | `LOG_CHANNEL`, `LOG_LEVEL`, `LOG_STACK` |
+| `PULSE_*` | Monitoring | `PULSE_ENABLED` |
+| `VITE_*` | Frontend | `VITE_REVERB_APP_KEY` |
 
-## Three Configuration Tiers
+---
 
-The application has three distinct configuration systems, each serving a
-different purpose.
+## Three Configuration Tiers in Detail
 
-The `config()` tier stores infrastructure defaults: database credentials,
-queue drivers, mail settings, cache store selection. These values are
-typically set once per environment and rarely change. They can be cached
-via `php artisan config:cache`, which merges all config files into a single
-file for faster loading.
+### 1. Environment Tier (`.env` + `config/*.php`)
 
-The `setting()` tier stores dynamic business rules: site name, brand colors,
-operational thresholds, attendance policies. These values are editable at
-runtime through the admin panel, stored in the `settings` database table, and
-cached indefinitely with automatic invalidation on update.
+The `.env` file is the highest-priority configuration. It stores environment-specific values
+that MUST NOT be committed to version control:
 
-The `app_info()` tier reads metadata from `composer.json`: application name,
-version, author, license. This is the single source of truth for static
-metadata that changes only between releases.
+```env
+# .env — DO NOT COMMIT
+APP_KEY=base64:abc123...
+DB_PASSWORD=supersecret
+MAIL_PASSWORD=mailpass
+```
 
-## Settings Key-Value Store
+Configuration files read environment variables via `env()`:
 
-The settings system differs from configuration files in a fundamental way:
-config files are code that is version-controlled and changes require a deploy.
-Settings are data that are stored in the database and can be changed at
-runtime by authorized administrators. Settings are cached with
-`Cache::rememberForever()` and each key is invalidated individually when its
-value changes. This means changing a brand color in the admin panel takes
-effect immediately without a deploy or cache clear.
+```php
+// config/database.php
+'default' => env('DB_CONNECTION', 'sqlite'),
+```
 
-Settings support typed values: string, integer, float, boolean, JSON, and
-encrypted (for sensitive values like mail passwords). Keys use lowercase
-dot-notation and each key belongs to a logical group (general, system,
-operational). The group is used for organization in the admin panel and for
-selective cache invalidation.
+Values from `config/*.php` are cached by `php artisan config:cache`, which merges all
+config files into a single cached file. After caching, `env()` calls inside config files
+become inert — only the cached values are used. This means `.env` changes require
+`php artisan config:cache` to take effect.
 
-## Notable Config Files
+### 2. Code Defaults Tier (`config/*.php` fallbacks)
 
-| File | Purpose |
-|---|---|
-| `config/security-headers.php` | CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy. Applied by `SecurityHeaders` middleware. |
-| `config/setup.php` | Wizard steps, default values, audit categories, extension requirements. Consumed by setup commands. |
-| `config/menu.php` | Sidebar navigation structure. Each entry maps to a named route and role requirement. |
-| `config/flasher.php` | Flash message configuration (timeout, position, styling). Used by `flash()` helper. |
+The second argument to `env()` provides a hardcoded default:
 
-## The `setting()` Helper
+```php
+'default' => env('DB_CONNECTION', 'sqlite'),  // sqlite is the code default
+```
+
+These defaults are version-controlled and change only with deployments. They ensure the
+application works with zero configuration in a fresh installation.
+
+### 3. Runtime Settings Tier (Database `settings` table)
+
+The `setting()` helper reads from the `settings` database table, which stores runtime-
+configurable values:
 
 ```php
 $value = setting('app_name', 'Internara');          // with default fallback
@@ -81,18 +86,129 @@ $value = setting('primary_color');                    // returns null if missing
 setting(['app_name' => 'Internara Baru'], $cacheTtl); // write (optional TTL override)
 ```
 
-The helper reads from the database `settings` table. Values are cached
-indefinitely with `Cache::rememberForever()`. On write, the cache key is
-invalidated immediately so the new value is visible on the next read.
+| Feature | Behavior |
+|---|---|
+| Storage | `settings` table — key, value, type, group |
+| Caching | `Cache::rememberForever()` — indefinite, invalidated on write |
+| Types | string, integer, float, boolean, JSON, encrypted |
+| Access | Admins via web UI; any code via `setting()` helper |
+| Scope | Brand colors, app name, feature flags, operational thresholds |
 
-The companion `brand()` helper reads brand-specific settings and returns
-structured arrays (colors, logo paths, etc.) for use in Blade templates.
+Settings take effect immediately — no deployment, no cache clear, no server restart.
+
+---
+
+## Development vs Production
+
+| Aspect | Development | Production (Tier 1) | Production (Tier 2+) |
+|---|---|---|---|
+| **Database** | SQLite (file) | MySQL / MariaDB | MySQL / PostgreSQL |
+| **Cache driver** | `file` | `file` or `database` | `redis` |
+| **Queue driver** | `sync` | `sync` | `redis` |
+| **Session driver** | `file` | `database` | `redis` |
+| **Mail driver** | `log` | SMTP | SES / SMTP |
+| **Debug mode** | `APP_DEBUG=true` | `false` | `false` |
+| **OpCache** | Disabled | Enabled | Enabled |
+| **Composer** | Full install | `--optimize-autoloader --no-dev` | Same |
+| **Asset build** | `npm run dev` (HMR) | `npm run build` | `npm run build` |
+
+See [Infrastructure → Three Deployment Tiers](infrastructure.md#1-three-deployment-tiers)
+for the complete tier breakdown.
+
+---
+
+## Security Hardening
+
+| Setting | Tier 1 | Tier 2+ | Why |
+|---|---|---|---|
+| `APP_DEBUG` | `false` | `false` | Never expose stack traces in production |
+| `APP_ENV` | `production` | `production` | Enables production-only behavior |
+| `APP_KEY` | Random 32-char base64 | Same | Session encryption, signed URLs |
+| `SESSION_DRIVER` | `database` | `redis` | `file` breaks on multi-server |
+| `SESSION_SAME_SITE` | `lax` | `lax` | CSRF prevention |
+| `SESSION_SECURE_COOKIE` | `true` | `true` | HTTPS only |
+| `CSP_ENABLED` | `true` | `true` | Content Security Policy |
+| `HONEYPOT_ENABLED` | `true` | `true` | Bot prevention |
+
+```bash
+# Verify all security settings
+php artisan system:health
+```
+
+---
+
+## Localization Configuration
+
+Internara ships with two language packs:
+
+| Locale | Language | Status |
+|---|---|---|
+| `en` | English | Complete (default) |
+| `id` | Indonesian | Complete |
+
+Locale resolution order:
+1. User preference (stored in session by `LanguageSwitcher`)
+2. `APP_LOCALE` environment variable
+3. Browser `Accept-Language` header
+
+```env
+APP_LOCALE=en
+APP_FALLBACK_LOCALE=en
+```
+
+See [Localization](localization.md) for adding new languages.
+
+---
+
+## Complete Config File Reference
+
+| File | Contents | Environment Variable |
+|---|---|---|
+| `config/app.php` | Application name, env, debug, URL, timezone, locale | `APP_*` |
+| `config/database.php` | Database connections, Redis config | `DB_*`, `REDIS_*` |
+| `config/cache.php` | Cache stores, per-store configuration | `CACHE_*` |
+| `config/session.php` | Session driver, lifetime, cookie settings | `SESSION_*` |
+| `config/queue.php` | Queue connections, retry limits | `QUEUE_*` |
+| `config/mail.php` | Mail driver, SMTP credentials, from address | `MAIL_*` |
+| `config/broadcasting.php` | Broadcast driver, Reverb/Pusher config | `BROADCAST_*` |
+| `config/filesystems.php` | Disk definitions, cloud storage | `FILESYSTEM_DISK`, `AWS_*` |
+| `config/logging.php` | Log channels, rotation, levels | `LOG_*` |
+| `config/security-headers.php` | CSP, X-Frame-Options, Referrer-Policy | `CSP_*` |
+| `config/setup.php` | Setup wizard steps, requirements, defaults | — |
+| `config/menu.php` | Sidebar navigation structure | — |
+| `config/permission.php` | Spatie permission caching | — |
+| `config/activitylog.php` | Activity log retention, model | — |
+| `config/media-library.php` | Media library paths, queue, conversions | — |
+| `config/flasher.php` | Flash message style, timeout, position | — |
+| `config/localization.php` | Supported locales, fallback rules | — |
+| `config/pulse.php` | Pulse recorders, ingestion, pruning | `PULSE_*` |
+| `config/reverb.php` | WebSocket server, apps, scaling | `REVERB_*`, `VITE_REVERB_*` |
+| `config/mary.php` | maryUI component configuration | — |
+
+---
+
+## The `brand()` Helper
+
+The companion `brand()` helper reads brand-specific settings (colors, logo, favicon) and
+returns structured data for use in Blade templates:
+
+```php
+brand('name');          // Application name from settings
+brand('logo');          // Logo URL (uploaded or default)
+brand('colors');        // Array of primary, secondary, accent, base
+```
+
+Values resolve through a fallback chain: runtime settings → config defaults → hardcoded
+defaults. See [Branding](branding.md) for details.
+
+---
 
 ## Where to Find It
 
-All configuration files are in `config/`. The settings model is at
-`app/Domain/Settings/Models/Setting.php`. The settings resolver (with
-multi-tier caching) is at `app/Domain/Settings/Support/Settings.php`. The
-`AppMetadata` class that powers the `brand()` helper is at
-`app/Domain/Settings/Support/AppMetadata.php`. The `AppInfo` class that
-reads `composer.json` is at `app/Domain/Settings/Support/AppInfo.php`.
+- All configuration files: `config/`
+- Environment template: `.env.example`
+- Settings model: `app/Domain/Settings/Models/Setting.php`
+- Settings resolver: `app/Domain/Settings/Support/Settings.php`
+- Brand resolver: `app/Domain/Settings/Support/AppMetadata.php`
+- App info (composer.json): `app/Domain/Settings/Support/AppInfo.php`
+- Infrastructure tiers: [Infrastructure](infrastructure.md)
