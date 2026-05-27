@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace App\Domain\Shared\Support;
 
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Cookie;
 
 final class Locale
 {
-    public const DEFAULT_LOCALE = 'id';
+    public const DEFAULT_LOCALE = 'en';
 
     public const SUPPORTED_LOCALES = [
-        'en' => ['name' => 'English', 'native' => 'English', 'icon' => 'us'],
-        'id' => ['name' => 'Indonesian', 'native' => 'Bahasa Indonesia', 'icon' => 'id'],
+        'en' => ['name' => 'English', 'native' => 'English'],
+        'id' => ['name' => 'Indonesian', 'native' => 'Bahasa Indonesia'],
     ];
 
     public static function set(string $locale): bool
@@ -22,7 +22,7 @@ final class Locale
             return false;
         }
 
-        Session::put('locale', $locale);
+        Cookie::queue(Cookie::forever('locale', $locale));
         App::setLocale($locale);
 
         return true;
@@ -30,7 +30,7 @@ final class Locale
 
     public static function current(): string
     {
-        $locale = Session::get('locale', config('app.locale', self::DEFAULT_LOCALE));
+        $locale = Cookie::get('locale', config('app.locale', self::DEFAULT_LOCALE));
 
         return isset(self::SUPPORTED_LOCALES[$locale]) ? $locale : self::DEFAULT_LOCALE;
     }
