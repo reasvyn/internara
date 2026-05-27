@@ -52,7 +52,7 @@ class Setup extends BaseModel
     public static function state(): SetupState
     {
         try {
-            $model = self::latest('created_at')->first() ?? new self;
+            $model = self::lockForUpdate()->latest('created_at')->first() ?? new self;
         } catch (QueryException $e) {
             SmartLogger::warning('Setups table does not exist yet, assuming not installed')
                 ->withPayload(['error' => $e->getMessage()])

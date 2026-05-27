@@ -17,6 +17,12 @@ final class Integrity
         try {
             self::verifyComposerFile($path);
         } catch (RuntimeException $e) {
+            if (app()->environment('local', 'testing')) {
+                SmartLogger::warning($e->getMessage())->systemOnly()->save();
+
+                return;
+            }
+
             self::fatal($e->getMessage());
         }
     }

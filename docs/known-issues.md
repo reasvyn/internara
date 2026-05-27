@@ -279,15 +279,7 @@ Schema::table('announcements', fn (Blueprint $t) => $t->index('created_by'));
 
 **Impact:** Every authenticated page load includes ~8KB of duplicate Livewire hydration data. Theme toggles update two components instead of one.
 
-**Fix:** Render the sidebar instances only on mobile (`lg:hidden`) or remove them:
-
-```blade
-{{-- sidebar.blade.php --}}
-<div class="lg:hidden">
-    <livewire:shared.theme-switcher />
-    <livewire:shared.lang-switcher />
-</div>
-```
+**Status:** ✅ Resolved by design — navbar instances use `hidden md:flex` (desktop only), sidebar instances use `md:hidden` (mobile only). Never rendered simultaneously at the same viewport size.
 
 ---
 
@@ -371,16 +363,18 @@ While the code defaults are secure, administrators cannot discover or verify the
 
 ### M1. LIKE Queries with Leading Wildcard
 
-**Files:** `CompanyManager.php:71`, `ActivityLog.php:57-60`
+**Files:** `CompanyManager.php:71`, `CompanyManager.php:65-66`
 
-**Problem:** Two locations use `LIKE '%value'` (leading wildcard), which prevents B-tree index usage:
+**Problem:** Two locations use `LIKE '%value%'` (leading wildcard), which prevents B-tree index usage:
 
-1. `CompanyManager::search()` → `where('industry_sector', 'like', "%{$v}%")`
-2. `ActivityLog::scopeForModule()` → `LIKE %\{module}\%` pattern on `subject_type`
+1. `CompanyManager::applySearch()` → `where('name', 'like', "%{$this->search}%")`
+2. `CompanyManager::applyFilters()` → `where('industry_sector', 'like', "%{$v}%")`
 
-**Impact:** Full table scan on every company sector search. Activity log queries with module filter degrade on large datasets.
+**Impact:** Full table scan on every company search. At school scale (< 10,000 companies), this is acceptable but should be noted.
 
-**Fix:** For prefix-matching (e.g., sector starts with), remove the leading `%`. For full-text search, consider SQLite FTS or PostgreSQL `tsvector`.
+**Note:** `ActivityLog::scopeForModule()` uses `App\Domain\{Module}\%` (prefix match), which CAN use a B-tree index — not affected by this issue.
+
+**Fix:** For prefix-matching (name starts with), remove the leading `%`. For mid-string search at school scale, leading `%` is acceptable. Consider SQLite FTS or PostgreSQL `tsvector` for future scaling.
 
 ---
 
@@ -392,7 +386,7 @@ While the code defaults are secure, administrators cannot discover or verify the
 - Read all data from queued jobs (including sensitive model attributes)
 - Possibly craft malicious serialized objects (PHP object injection vectors)
 
-**Fix:** Use the Redis queue driver with TLS in production, or encrypt sensitive data before queueing.
+**Status:** 🟡 Low priority — default queue is `sync` (no jobs table used). Only relevant for future Tier 2+ deployments with Redis/database queue. When upgrading, use Redis with TLS encryption.
 
 ---
 
@@ -425,7 +419,7 @@ While the code defaults are secure, administrators cannot discover or verify the
 
 **Problem:** `LOG_LEVEL=debug`. All SQL queries, HTTP requests, and framework internal messages are written to the log file. In production, this can generate gigabytes of log data and potentially leak sensitive information.
 
-**Fix:** Set `LOG_LEVEL=warning` or `error` in the production `.env`. Use the `daily` log channel for automatic rotation.
+**Status:** ⏳ Expected in development — `LOG_LEVEL=debug` is correct for local debugging. For production deployment, the checklist in `docs/deployment.md` requires setting `LOG_LEVEL=warning` or `error`.
 
 ---
 
@@ -435,7 +429,7 @@ While the code defaults are secure, administrators cannot discover or verify the
 
 **Problem:** `APP_DEBUG=true` must be set to `false` in production. While this is acceptable for development, CI/CD pipelines must ensure the production `.env` has `APP_DEBUG=false` to prevent stack trace leakage.
 
-**Fix:** Ensure deployment scripts explicitly set `APP_DEBUG=false`.
+**Status:** ⏳ Expected in development — `APP_DEBUG=true` enables detailed error pages for local debugging. The production checklist in `docs/deployment.md` enforces `APP_DEBUG=false`.
 
 ---
 
@@ -653,9 +647,9 @@ Livewire components still manage form state via flat `public` properties. Comple
 | 🟠 | **H4** AuthThrottle IP-only, config `max_attempts` (5) unused | Security | ✅ Fixed |
 | 🟠 | **H5** Missing indexes on 4 FK columns | Performance | ✅ Fixed |
 | 🟠 | **H6** Duplicate Livewire: ThemeSwitcher + LangSwitcher ×2 | Performance | ⏳ |
-| 🟠 | **H7** Companies table no indexes on search columns | Performance | ⏳ |
-| 🟡 | **M1** LIKE with leading wildcard in 2 locations | Performance | ⏳ |
-| 🟡 | **M2** Job payloads stored unencrypted | Security | ⏳ |
+| 🟠 | **H7** Companies table no indexes on search columns | Performance | ✅ Fixed |
+| 🟡 | **M1** LIKE with leading wildcard in 2 locations | Performance | 🟡 Wontfix (school-scale) |
+| 🟡 | **M2** Job payloads stored unencrypted | Security | 🟡 Low priority (sync default) |
 | 🟡 | **M3** No framework RateLimiter configured | Security | ✅ Fixed |
 | 🟡 | **M4** Log level set to debug | Observability | ⏳ |
 | 🟡 | **M5** APP_DEBUG=true in .env | Security | ⏳ |
@@ -663,9 +657,9 @@ Livewire components still manage form state via flat `public` properties. Comple
 | 🟡 | **M7** Cache key `login-failures` not registered in `CacheKeys` | Architecture | ✅ Fixed |
 | 🟡 | **M8** Session security vars missing from `.env.example` | Configuration | ✅ Fixed |
 | 🟡 | **M9** `IMAGE_DRIVER` not exposed in `.env.example` | Configuration | ✅ Fixed |
-| 🟢 | **L1** Setup::state() race condition | Infrastructure | ⏳ |
+| 🟢 | **L1** Setup::state() race condition | Infrastructure | ✅ Fixed |
 | 🟢 | **L2** Nginx vs middleware X-Frame-Options mismatch | Security | ✅ Fixed |
-| 🟢 | **L3** Integrity::verify() can exit(1) | Reliability | ⏳ |
+| 🟢 | **L3** Integrity::verify() can exit(1) | Reliability | ✅ Fixed |
 | 🟢 | **L4** CORS paths reference non-existent API routes | Config | ✅ Fixed |
 | 🟢 | Feature tests missing for ~75 of 164 Actions | Testing | ⏳ |
 | 🟢 | Indonesian `internship.php` missing 13 keys | Translation | ⏳ |
