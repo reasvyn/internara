@@ -25,12 +25,12 @@ class SettingPolicy extends BasePolicy
         return $user->hasRole('super_admin');
     }
 
-    public function update(User $user): bool
+    public function update(User $user, Setting $setting): bool
     {
         return $user->hasRole('super_admin');
     }
 
-    public function delete(User $user): bool
+    public function delete(User $user, Setting $setting): bool
     {
         return $user->hasRole('super_admin');
     }

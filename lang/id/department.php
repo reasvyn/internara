@@ -26,6 +26,8 @@ return [
     'delete_success' => 'Jurusan berhasil dihapus.',
     'cancel' => 'Batal',
     'save' => 'Simpan',
+    'delete_success_bulk' => '{0} Tidak ada jurusan yang dihapus|{1} 1 jurusan dihapus|[2,*] :count jurusan dihapus.',
+    'delete_blocked_bulk' => '{0} Tidak ada jurusan yang dilewati|{1} 1 jurusan dilewati (memiliki profil)|[2,*] :count jurusan dilewati (memiliki profil).',
     'import_invalid' => 'Format CSV tidak valid. File harus memiliki kolom "name".',
     'import_summary' => ':created jurusan diimpor, :skip dilewati (duplikat).',
     'template_example_name' => 'contoh: Rekayasa Perangkat Lunak',

@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
 use App\Domain\Settings\Actions\BatchSetSettingAction;
 use App\Domain\Settings\Actions\SetSettingAction;
 use App\Domain\Settings\Actions\TestMailSettingsAction;

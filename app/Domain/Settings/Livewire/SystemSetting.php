@@ -40,10 +40,10 @@ class SystemSetting extends Component
     {
         $this->authorize('viewAny', Setting::class);
 
+        $defaults = Theme::defaults();
+
         $this->app_name = Settings::get('app_name', app_info('name'));
         $this->app_version = Settings::get('app_version', app_info('version'));
-
-        $defaults = Theme::defaults();
 
         $this->generalForm->brand_name = Settings::get('brand_name', brand('name'));
         $this->generalForm->site_title = Settings::get('site_title', brand('site_title'));

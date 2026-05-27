@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Settings\Support;
 
+use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Shared\Support\Theme;
 use Illuminate\Support\Facades\Cache;
@@ -24,7 +25,7 @@ final class AppMetadata
     private static function isInstalled(): bool
     {
         try {
-            return (bool) Cache::rememberForever('system.is_installed', function () {
+            return (bool) Cache::rememberForever(CacheKeys::SETUP_INSTALLED, function () {
                 return DB::table('setups')->value('is_installed');
             });
         } catch (Throwable $e) {

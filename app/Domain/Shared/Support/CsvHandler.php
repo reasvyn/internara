@@ -14,10 +14,10 @@ final class CsvHandler
     {
         $callback = function () use ($items, $headers, $rowMapper) {
             $handle = fopen('php://output', 'w');
-            fputcsv($handle, $headers);
+            fputcsv($handle, $headers, escape: '');
 
             foreach ($items as $item) {
-                fputcsv($handle, $rowMapper($item));
+                fputcsv($handle, $rowMapper($item), escape: '');
             }
 
             fclose($handle);
@@ -33,8 +33,8 @@ final class CsvHandler
     {
         $callback = function () use ($headers, $exampleRow) {
             $handle = fopen('php://output', 'w');
-            fputcsv($handle, $headers);
-            fputcsv($handle, $exampleRow);
+            fputcsv($handle, $headers, escape: '');
+            fputcsv($handle, $exampleRow, escape: '');
             fclose($handle);
         };
 
@@ -47,7 +47,7 @@ final class CsvHandler
     public function import(string $filePath, callable $rowProcessor, ?array $expectedHeaders = null): array
     {
         $handle = fopen($filePath, 'r');
-        $header = fgetcsv($handle);
+        $header = fgetcsv($handle, escape: '');
 
         if ($expectedHeaders !== null) {
             foreach ($expectedHeaders as $i => $expected) {
@@ -63,7 +63,7 @@ final class CsvHandler
         $created = 0;
         $skipped = 0;
 
-        while (($row = fgetcsv($handle)) !== false) {
+        while (($row = fgetcsv($handle, escape: '')) !== false) {
             $result = $rowProcessor($row);
 
             if ($result === null) {

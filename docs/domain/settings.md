@@ -122,7 +122,7 @@ across the entire application.
 
 | Action | Description |
 |--------|-------------|
-| `SetSettingAction` | Sets a single setting value |
+| `SetSettingAction` | Sets a single setting value; auto-detects type (`string`, `integer`, `boolean`, `float`, `json`, `encrypted`, `null`) |
 | `BatchSetSettingAction` | Sets multiple settings in one operation |
 | `UploadBrandAssetAction` | Uploads a branding asset (logo, favicon) |
 | `TestMailSettingsAction` | Sends a test email to verify mail configuration |
