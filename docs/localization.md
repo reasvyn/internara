@@ -1,4 +1,7 @@
 # Localization
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 Internara is designed for a global audience with Indonesian vocational education
 as its primary design reference. The interface and data model use international

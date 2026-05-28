@@ -1,4 +1,7 @@
 # Registration — API Reference
+> Last updated: 2026-05-26
+> Changes: fix: enforce super admin integrity with SuperAdminIntegrityRules across all code paths
+
 
 Total: 22 files
 

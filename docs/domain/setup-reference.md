@@ -1,4 +1,7 @@
 # Setup — API Reference
+> Last updated: 2026-05-28
+> Changes: docs: add ideal setup domain design
+
 
 Total: 27 files
 

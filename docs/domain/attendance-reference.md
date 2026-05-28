@@ -1,4 +1,7 @@
 # Attendance — API Reference
+> Last updated: 2026-05-25
+> Changes: docs: update entire documentation to reflect actual implementation
+
 
 Total: 21 files
 

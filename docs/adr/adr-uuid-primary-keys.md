@@ -1,4 +1,7 @@
 # ADR-001: UUID Primary Keys
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 ## Status
 Accepted

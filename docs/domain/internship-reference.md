@@ -1,4 +1,7 @@
 # Internship — API Reference
+> Last updated: 2026-05-25
+> Changes: docs: align all documentation with actual implementation (placement, registration, internship reference, ERD, routes)
+
 
 Total: 57 files
 

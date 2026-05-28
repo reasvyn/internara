@@ -1,4 +1,7 @@
 # Backup & Recovery
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 Regular backups protect your school's data against hardware failure, accidental
 deletion, and security incidents. This guide covers what to back up, how to

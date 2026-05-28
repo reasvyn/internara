@@ -1,4 +1,7 @@
 # Coding Conventions
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 This document describes conventions for writing code in the Internara codebase. These rules
 exist to produce consistent, predictable code that any team member can read without

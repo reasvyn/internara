@@ -1,4 +1,7 @@
 # Domain Index
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 > 24 business domains organized by the internship lifecycle.
 > Each domain owns its complete vertical slice: persistence, business rules,

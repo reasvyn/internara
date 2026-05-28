@@ -1,4 +1,7 @@
 # Architecture Decision Records
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 > 12 records documenting the key architectural decisions behind Internara.
 > Each ADR follows the format: Context → Decision → Consequences → References.

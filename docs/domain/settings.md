@@ -1,4 +1,7 @@
 # Settings Domain
+> Last updated: 2026-05-28
+> Changes: docs: update shared-reference, add ideal settings domain design
+
 
 ## Purpose
 

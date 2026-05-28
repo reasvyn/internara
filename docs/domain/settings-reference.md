@@ -1,4 +1,7 @@
 # Settings — API Reference
+> Last updated: 2026-05-28
+> Changes: refactor(settings): implement ideal design — fix locale, optimize cache, convert Read Action
+
 
 Total: 21 files
 

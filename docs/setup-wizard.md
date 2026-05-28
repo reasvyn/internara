@@ -1,4 +1,7 @@
 # Setup Wizard
+> Last updated: 2026-05-26
+> Changes: fix(setup): comprehensive security hardening, self-destruction, and single-use token
+
 
 ## Accessing the Wizard
 

@@ -1,4 +1,7 @@
 # Core Domain
+> Last updated: 2026-05-27
+> Changes: feat(core): implement HasValidationRules contract for shared validation
+
 
 ## Purpose
 

@@ -1,4 +1,7 @@
 # Setup Domain
+> Last updated: 2026-05-28
+> Changes: docs: add ideal setup domain design
+
 
 ## Purpose
 

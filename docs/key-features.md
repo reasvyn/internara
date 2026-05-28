@@ -1,4 +1,7 @@
 # Key Features
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 > Every feature in Internara belongs to one of **24 business domains**. Each domain owns its
 > complete vertical slice: persistence, business rules, UI components, authorization, and HTTP

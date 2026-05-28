@@ -1,4 +1,7 @@
 # Deployment
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 Internara is designed to be installed on the school's own infrastructure. This guide covers the three supported deployment paths and the operational requirements for each.
 
