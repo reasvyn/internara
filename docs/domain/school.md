@@ -1,112 +1,62 @@
 # School Domain
-> Last updated: 2026-05-26
-> Changes: fix: enforce super admin integrity with SuperAdminIntegrityRules across all code paths
-
 
 ## Purpose
 
-School provides the institutional foundation that all operational domains build on. It answers
-three structural questions: which school exists, what departments it contains, and what academic
-years define the temporal boundaries for programs. This is structural configuration data — it
-defines the organizational hierarchy that every other domain references for context.
+School provides the institutional foundation — schools, departments, and academic years that
+define the structural boundaries for all operational domains.
 
-## Boundary
+---
 
-**In scope:** School profile (legal name, institutional code, address, contact information,
-logo via media library), department definitions (name, description, school association),
-academic year management (name, start/end dates, is_active flag with single-active constraint),
-school single-record enforcement (configurable via `school.single_record`), import/export of
-departments via CSV.
+## Design Principles
 
-**Out of scope:** Internship program definitions (Internship domain), user profiles and their
-department associations (User domain), partnership company management (Partnership domain),
-registration processing (Registration domain), runtime application configuration (Settings domain).
+### 1. Singleton School
 
-## Key Concepts
+The school is created once during setup. There is exactly one school per installation.
 
-**Schools.** A single school profile representing the educational institution. Has: name,
-institutional code, address, email, phone, fax, principal name, and optional logo (via
-spatie/laravel-medialibrary with a webp thumb conversion). The school is created once during
-setup and edited via the admin SchoolEditor Livewire component. The `SchoolState` entity enforces
-a single-record constraint (configurable via `school.single_record`).
+### 2. Single Active Academic Year
 
-**Departments.** Organizational units within the school. Each department has a name and optional
-description, and belongs to the school. Departments are managed via the `DepartmentManager`
-Livewire component (extends `BaseRecordManager`), with full CRUD, search, sort, pagination,
-bulk selection, CSV import/export/template download, and stats display. The `DepartmentState`
-entity checks if a department can be deleted (no associated user profiles).
+Only one academic year can be active at any time. Activating a new year deactivates all others.
 
-**Academic Years.** Defines temporal boundaries for internship programs. Each year has a name,
-start/end dates, and an `is_active` flag. At most one academic year can be active at a time
-(enforced by `ActivateAcademicYearAction`). The `AcademicYearState` entity checks active status,
-activation eligibility, and deletability (cannot delete active years or years with related
-internships/assessments).
+### 3. Department Deletion Guard
 
-## Requirements
+Departments with active profiles cannot be deleted — enforced by `DepartmentState` entity.
 
-### User Stories & Rules
+---
 
-**School Profile**
-- **Admin:** As an admin, I want to set up the school profile so that the institution's identity is configured
-- School follows a single-record pattern — only one school profile exists
-- The school logo is stored via spatie/laravel-medialibrary with a `thumb` webp conversion
+## Models
 
-**Departments**
-- **Admin:** As an admin, I want to manage departments so that the organizational structure is maintained
-- **Admin:** As an admin, I want to import/export departments via CSV so that I can manage data in bulk
-- A department cannot be deleted if it has any user profiles associated
-- A department is always loaded with its school relationship (`$with = ['school']`)
-
-**Academic Years**
-- **Admin:** As an admin, I want to create academic years so that internship programs have temporal boundaries
-- **Admin:** As an admin, I want to activate and deactivate academic years so that only one year is active at a time
-- At most one academic year can be marked as active at any time; activating a new year deactivates the current one
-- An academic year cannot be deleted if it is active or has related internship/assessment records
-
-### Process Flow
-
-```
-Academic Year Lifecycle:
-
-INACTIVE ──→ ACTIVE (only one at a time)
-```
-
-- At most one academic year can be active at any time
-- Activating a new year automatically deactivates the current one
-- An active academic year cannot be deleted
-- A department cannot be deleted if any user profiles reference it
-
-### Key Operations
-
-| Action | Description |
-|--------|-------------|
-| `UpdateSchoolAction` | Updates the school profile |
-| `CreateDepartmentAction` | Creates a new department |
-| `UpdateDepartmentAction` | Updates department details |
-| `DeleteDepartmentAction` | Deletes a department (blocked if associated profiles exist) |
-| `CreateAcademicYearAction` | Creates a new academic year |
-| `UpdateAcademicYearAction` | Updates academic year details |
-| `DeleteAcademicYearAction` | Deletes an inactive academic year |
-| `ActivateAcademicYearAction` | Activates an academic year (deactivates current) |
-| `BulkDeleteAcademicYearsAction` | Batch deletes academic years |
-
-### Technical Reference
-
-| Layer | Artifacts |
-|-------|-----------|
-| **Models** | `School`, `Department`, `AcademicYear` |
-| **Entities** | `SchoolState` (single-record enforcement); `DepartmentState` (deletion guard); `AcademicYearState` (active status, deletion/activation eligibility) |
-| **Livewire** | `SchoolEditor`, `DepartmentManager`, `AcademicYearManager`; Forms: `SchoolForm`, `DepartmentForm`, `AcademicYearForm` |
-| **Policies** | `SchoolPolicy`, `DepartmentPolicy`, `AcademicYearPolicy` |
-
-## Dependencies
-
-| Dependency | Reason |
+| Model | Key Fields |
 |---|---|
-| Core | BaseModel, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, SmartLogger, RejectedException |
-| Internship | hasManyThrough for internships via departments |
-| Assessment | hasMany for assessments via academic years |
-| User | Profile model for department association |
-| Shared | CsvHandler for import/export functionality |
+| `School` | name, institutional_code, address, email, phone, logo (media) |
+| `Department` | name, description, school_id |
+| `AcademicYear` | name, start_date, end_date, is_active |
 
+## Actions
 
+| Action | Type |
+|---|---|
+| `UpdateSchoolAction` | Command |
+| `CreateDepartmentAction` | Command |
+| `UpdateDepartmentAction` | Command |
+| `DeleteDepartmentAction` | Command |
+| `CreateAcademicYearAction` | Command |
+| `UpdateAcademicYearAction` | Command |
+| `ActivateAcademicYearAction` | Command |
+| `DeleteAcademicYearAction` | Command |
+| `BulkDeleteAcademicYearsAction` | Command |
+
+## Entities
+
+| Entity | Purpose |
+|---|---|
+| `SchoolState` | canBeCreated — enforces singleton |
+| `DepartmentState` | canBeDeleted — checks active profiles |
+| `AcademicYearState` | canBeActivated, canBeDeleted — lifecycle rules |
+
+## Where to Find It
+
+- `app/Domain/School/Models/School.php`
+- `app/Domain/School/Models/Department.php`
+- `app/Domain/School/Models/AcademicYear.php`
+- `app/Domain/School/Actions/` — 9 Actions
+- `app/Domain/School/Policies/` — AcademicYearPolicy, DepartmentPolicy, SchoolPolicy

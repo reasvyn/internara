@@ -31,7 +31,7 @@ final class SendAnnouncementAction extends BaseAction
             ? AnnouncementStatus::from($validated['status'])
             : AnnouncementStatus::default();
 
-        return $this->withErrorHandling(function () use ($validated, $status) {
+        return $this->transaction(function () use ($validated, $status) {
             return $this->transaction(function () use ($validated, $status) {
                 $announcement = Announcement::create([
                     'title' => $validated['title'],
@@ -56,7 +56,7 @@ final class SendAnnouncementAction extends BaseAction
 
                 return $announcement;
             });
-        }, 'Failed to send announcement');
+        });
     }
 
     public function publish(Announcement $announcement): void
