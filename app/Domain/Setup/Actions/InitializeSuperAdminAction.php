@@ -11,7 +11,7 @@ use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class InitializeSuperAdminAction extends BaseAction
+final class InitializeSuperAdminAction extends BaseAction
 {
     public function execute(string $email, string $password, ?string $name = null, ?string $username = null): User
     {

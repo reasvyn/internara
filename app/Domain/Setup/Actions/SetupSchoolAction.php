@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\School\Models\School;
 use Illuminate\Support\Facades\Validator;
 
-class SetupSchoolAction extends BaseAction
+final class SetupSchoolAction extends BaseAction
 {
     public function execute(array $data): School
     {
@@ -22,20 +22,18 @@ class SetupSchoolAction extends BaseAction
             'principal_name' => 'nullable|string|max:255',
         ]);
 
-        return $this->withErrorHandling(function () use ($data) {
-            return $this->transaction(function () use ($data) {
-                $school = School::updateOrCreate(
-                    [],
-                    $data,
-                );
+        return $this->transaction(function () use ($data) {
+            $school = School::updateOrCreate(
+                [],
+                $data,
+            );
 
-                $this->log('school_setup_completed', $school, [
-                    'name' => $data['name'],
-                    'code' => $data['institutional_code'],
-                ]);
+            $this->log('school_setup_completed', $school, [
+                'name' => $data['name'],
+                'code' => $data['institutional_code'],
+            ]);
 
-                return $school;
-            });
-        }, 'Failed to setup school');
+            return $school;
+        });
     }
 }
