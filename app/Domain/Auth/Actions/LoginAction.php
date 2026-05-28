@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use RuntimeException;
 
-class LoginAction extends BaseAction
+final class LoginAction extends BaseAction
 {
     public function execute(
         string $identifier,
@@ -137,6 +137,6 @@ class LoginAction extends BaseAction
 
     private function clearFailedAttempts(User $user): void
     {
-        Cache::forget('login-failures:'.$user->id);
+        Cache::forget(CacheKeys::AUTH_LOGIN_FAILURES.$user->id);
     }
 }
