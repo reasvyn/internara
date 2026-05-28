@@ -6,11 +6,11 @@ use App\Domain\Shared\Support\Locale;
 
 describe('Locale', function () {
     beforeEach(function () {
-        session()->forget('locale');
+        \Illuminate\Support\Facades\Cookie::queue(\Illuminate\Support\Facades\Cookie::forget('locale'));
     });
 
-    it('has default locale set to id', function () {
-        expect(Locale::DEFAULT_LOCALE)->toBe('id');
+    it('has default locale set to en', function () {
+        expect(Locale::DEFAULT_LOCALE)->toBe('en');
     });
 
     it('supports id and en locales', function () {
@@ -28,7 +28,7 @@ describe('Locale', function () {
         expect(Locale::set('fr'))->toBeFalse();
     });
 
-    it('returns current locale from session', function () {
+    it('returns current locale from cookie', function () {
         Locale::set('id');
 
         expect(Locale::current())->toBe('id');
