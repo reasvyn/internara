@@ -65,6 +65,21 @@ final class AppMetadata
             ->save();
     }
 
+    private static function resolveString(string $settingKey, string $fallback, string $context): string
+    {
+        if (! self::isInstalled()) {
+            return $fallback;
+        }
+
+        $value = self::withFallback(
+            fn () => Settings::get($settingKey, $fallback),
+            $fallback,
+            $context,
+        );
+
+        return is_string($value) ? $value : $fallback;
+    }
+
     /**
      * Get the core application name from Composer (SSoT).
      */
@@ -79,17 +94,7 @@ final class AppMetadata
      */
     public static function brandName(): string
     {
-        if (! self::isInstalled()) {
-            return self::appName();
-        }
-
-        $value = self::withFallback(
-            fn () => Settings::get('brand_name', self::appName()),
-            self::appName(),
-            'Failed to get brand name from settings',
-        );
-
-        return is_string($value) ? $value : self::appName();
+        return self::resolveString('brand_name', self::appName(), 'Failed to get brand name from settings');
     }
 
     /**
@@ -101,13 +106,7 @@ final class AppMetadata
             return __('setup.wizard.page_title', ['app_name' => self::appName()]);
         }
 
-        $value = self::withFallback(
-            fn (): mixed => Settings::get('site_title', self::brandName()),
-            self::brandName(),
-            'Failed to get site title from settings',
-        );
-
-        return is_string($value) ? $value : self::brandName();
+        return self::resolveString('site_title', self::brandName(), 'Failed to get site title from settings');
     }
 
     /**
@@ -123,19 +122,15 @@ final class AppMetadata
      */
     public static function brandLogo(): string
     {
-        $defaultLogo = self::appLogo();
+        $default = self::appLogo();
 
         if (! self::isInstalled()) {
-            return $defaultLogo;
+            return $default;
         }
 
-        $logo = self::withFallback(
-            fn () => Settings::get('brand_logo'),
-            null,
-            'Failed to get brand logo from settings',
-        );
+        $logo = self::withFallback(fn () => Settings::get('brand_logo'), null, 'Failed to get brand logo from settings');
 
-        return is_string($logo) && $logo !== '' ? $logo : $defaultLogo;
+        return is_string($logo) && $logo !== '' ? $logo : $default;
     }
 
     /**
@@ -143,27 +138,23 @@ final class AppMetadata
      */
     public static function favicon(): string
     {
-        $defaultFavicon = asset('/brand/favicon.ico');
+        $default = asset('/brand/favicon.ico');
 
         if (! self::isInstalled()) {
-            return $defaultFavicon;
+            return $default;
         }
 
-        return self::withFallback(
-            function () use ($defaultFavicon): string {
-                $favicon = Settings::get('site_favicon');
+        return self::withFallback(function () use ($default): string {
+            $favicon = Settings::get('site_favicon');
 
-                if (is_string($favicon) && $favicon !== '') {
-                    return $favicon;
-                }
+            if (is_string($favicon) && $favicon !== '') {
+                return $favicon;
+            }
 
-                $logo = Settings::get('brand_logo');
+            $logo = Settings::get('brand_logo');
 
-                return is_string($logo) && $logo !== '' ? $logo : $defaultFavicon;
-            },
-            $defaultFavicon,
-            'Failed to get favicon from settings',
-        );
+            return is_string($logo) && $logo !== '' ? $logo : $default;
+        }, $default, 'Failed to get favicon from settings');
     }
 
     /**
@@ -173,11 +164,7 @@ final class AppMetadata
      */
     public static function colors(): array
     {
-        return self::withFallback(
-            fn () => Theme::all(),
-            Theme::defaults(),
-            'Failed to get branding colors from settings',
-        );
+        return self::withFallback(fn () => Theme::all(), Theme::defaults(), 'Failed to get branding colors from settings');
     }
 
     /**
