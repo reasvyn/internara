@@ -6,6 +6,7 @@ namespace App\Domain\Settings\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Support\SmartLogger;
+use App\Domain\Shared\Support\Locale;
 use Illuminate\Http\UploadedFile;
 
 class SaveSystemSettingsAction extends BaseAction
@@ -23,7 +24,7 @@ class SaveSystemSettingsAction extends BaseAction
         $settings = [
             'brand_name' => $general['brand_name'] ?? '',
             'site_title' => $general['site_title'] ?? '',
-            'default_locale' => $general['default_locale'] ?? 'en',
+            'default_locale' => $general['default_locale'] ?? Locale::DEFAULT_LOCALE,
             'active_academic_year' => $general['active_academic_year'] ?? '',
             'primary_color' => $branding['primary_color'] ?? '',
             'secondary_color' => $branding['secondary_color'] ?? '',
