@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Partnership\Models\Partnership;
 
-class TerminatePartnershipAction extends BaseAction
+final class TerminatePartnershipAction extends BaseAction
 {
     public function execute(Partnership $partnership): Partnership
     {

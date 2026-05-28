@@ -8,7 +8,7 @@ use App\Domain\Assessment\Enums\EvaluatorRole;
 use App\Domain\Assessment\Models\Competency;
 use App\Domain\Core\Actions\BaseAction;
 
-class CreateCompetencyAction extends BaseAction
+final class CreateCompetencyAction extends BaseAction
 {
     public function execute(
         string $rubricId,

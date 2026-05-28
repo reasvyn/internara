@@ -9,7 +9,7 @@ use App\Domain\Incident\Models\IncidentReport;
 use Illuminate\Support\Facades\Validator;
 use RuntimeException;
 
-class ResolveIncidentAction extends BaseAction
+final class ResolveIncidentAction extends BaseAction
 {
     public function execute(IncidentReport $incident, array $data): IncidentReport
     {

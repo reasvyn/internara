@@ -7,7 +7,7 @@ namespace App\Domain\Assessment\Actions;
 use App\Domain\Assessment\Models\Rubric;
 use App\Domain\Core\Actions\BaseAction;
 
-class UpdateRubricAction extends BaseAction
+final class UpdateRubricAction extends BaseAction
 {
     public function execute(Rubric $rubric, string $name, ?string $description = null, bool $isActive = true): Rubric
     {

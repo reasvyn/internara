@@ -7,7 +7,7 @@ namespace App\Domain\User\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\User\Models\User;
 
-class GetProfileFormDataAction extends BaseAction
+final class GetProfileFormDataAction extends BaseAction
 {
     private const ROLE_STAFF = ['super_admin', 'admin', 'teacher'];
 

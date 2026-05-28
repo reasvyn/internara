@@ -7,7 +7,7 @@ namespace App\Domain\Mentor\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Mentor\Models\Mentor;
 
-class DeleteMentorAction extends BaseAction
+final class DeleteMentorAction extends BaseAction
 {
     public function execute(Mentor $mentor): void
     {

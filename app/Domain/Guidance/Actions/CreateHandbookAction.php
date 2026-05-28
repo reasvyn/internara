@@ -14,7 +14,7 @@ use Illuminate\Support\Str;
  *
  * S1 - Secure: Only authorized roles can create guidance documents.
  */
-class CreateHandbookAction extends BaseAction
+final class CreateHandbookAction extends BaseAction
 {
     public function execute(User $user, array $data): Handbook
     {

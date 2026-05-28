@@ -11,7 +11,7 @@ use App\Domain\Placement\Models\Placement;
 use App\Domain\Placement\Models\PlacementChangeRequest;
 use App\Domain\Registration\Models\Registration;
 
-class ApprovePlacementChangeAction extends BaseAction
+final class ApprovePlacementChangeAction extends BaseAction
 {
     public function execute(PlacementChangeRequest $request): void
     {

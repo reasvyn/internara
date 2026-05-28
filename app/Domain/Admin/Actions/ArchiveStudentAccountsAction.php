@@ -8,7 +8,7 @@ use App\Domain\Auth\Enums\Role;
 use App\Domain\Core\Actions\BaseAction;
 use Illuminate\Database\Eloquent\Builder;
 
-class ArchiveStudentAccountsAction extends BaseAction
+final class ArchiveStudentAccountsAction extends BaseAction
 {
     public function execute(Builder $query): int
     {

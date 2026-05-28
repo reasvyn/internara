@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\School\Models\AcademicYear;
 
-class BulkDeleteAcademicYearsAction extends BaseAction
+final class BulkDeleteAcademicYearsAction extends BaseAction
 {
     public function execute(array $ids): int
     {

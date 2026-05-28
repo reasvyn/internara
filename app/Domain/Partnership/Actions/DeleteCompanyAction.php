@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Partnership\Models\Company;
 
-class DeleteCompanyAction extends BaseAction
+final class DeleteCompanyAction extends BaseAction
 {
     public function execute(Company $company): void
     {

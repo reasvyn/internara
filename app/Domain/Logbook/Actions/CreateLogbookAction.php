@@ -9,7 +9,7 @@ use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Logbook\Models\Logbook;
 use App\Domain\User\Models\User;
 
-class CreateLogbookAction extends BaseAction
+final class CreateLogbookAction extends BaseAction
 {
     public function execute(string $userId, array $data): Logbook
     {

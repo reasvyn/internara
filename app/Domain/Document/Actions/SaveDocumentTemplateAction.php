@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Document\Models\Document;
 use Illuminate\Support\Str;
 
-class SaveDocumentTemplateAction extends BaseAction
+final class SaveDocumentTemplateAction extends BaseAction
 {
     public function execute(array $data): Document
     {

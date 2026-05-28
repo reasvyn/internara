@@ -8,7 +8,7 @@ use App\Domain\Assignment\Models\Submission;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 
-class GradeSubmissionAction extends BaseAction
+final class GradeSubmissionAction extends BaseAction
 {
     public function execute(Submission $submission, int $score, ?string $feedback = null): Submission
     {

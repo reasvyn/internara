@@ -7,7 +7,7 @@ namespace App\Domain\Partnership\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Partnership\Models\Company;
 
-class CreateCompanyAction extends BaseAction
+final class CreateCompanyAction extends BaseAction
 {
     public function execute(array $data): Company
     {

@@ -9,7 +9,7 @@ use App\Domain\Internship\Events\InternshipCreated;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\School\Models\AcademicYear;
 
-class CreateInternshipAction extends BaseAction
+final class CreateInternshipAction extends BaseAction
 {
     public function execute(array $data): Internship
     {

@@ -11,7 +11,7 @@ use Illuminate\Support\Arr;
 /**
  * Action to create a new department.
  */
-class CreateDepartmentAction extends BaseAction
+final class CreateDepartmentAction extends BaseAction
 {
     public function execute(array $data): Department
     {

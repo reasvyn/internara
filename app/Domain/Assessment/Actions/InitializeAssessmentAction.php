@@ -9,7 +9,7 @@ use App\Domain\Assessment\Models\Rubric;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Registration\Models\Registration;
 
-class InitializeAssessmentAction extends BaseAction
+final class InitializeAssessmentAction extends BaseAction
 {
     /**
      * Find or create an assessment for a registration.

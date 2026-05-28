@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Schedule\Models\Schedule;
 use App\Domain\User\Models\User;
 
-class CreateScheduleAction extends BaseAction
+final class CreateScheduleAction extends BaseAction
 {
     public function execute(User $user, array $data): Schedule
     {

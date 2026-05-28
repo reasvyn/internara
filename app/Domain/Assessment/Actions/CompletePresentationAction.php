@@ -7,7 +7,7 @@ namespace App\Domain\Assessment\Actions;
 use App\Domain\Assessment\Models\Presentation;
 use App\Domain\Core\Actions\BaseAction;
 
-class CompletePresentationAction extends BaseAction
+final class CompletePresentationAction extends BaseAction
 {
     public function execute(Presentation $presentation, int $reportWeight = 50, int $presentationWeight = 50): Presentation
     {

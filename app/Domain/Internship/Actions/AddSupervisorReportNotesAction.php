@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Internship\Models\Report;
 use Illuminate\Support\Facades\Validator;
 
-class AddSupervisorReportNotesAction extends BaseAction
+final class AddSupervisorReportNotesAction extends BaseAction
 {
     public function execute(Report $report, string $notes): Report
     {

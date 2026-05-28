@@ -8,7 +8,7 @@ use App\Domain\Attendance\Models\Attendance;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\User\Models\User;
 
-class CreateAttendanceAction extends BaseAction
+final class CreateAttendanceAction extends BaseAction
 {
     public function execute(User $user, array $data): Attendance
     {

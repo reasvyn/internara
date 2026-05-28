@@ -11,7 +11,7 @@ use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Mentor\Models\Mentor;
 use App\Domain\User\Models\User;
 
-class ScoreIndicatorAction extends BaseAction
+final class ScoreIndicatorAction extends BaseAction
 {
     public function execute(Assessment $assessment, string $indicatorId, float $score, User $evaluator): Assessment
     {

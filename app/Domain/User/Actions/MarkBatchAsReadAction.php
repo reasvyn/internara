@@ -9,7 +9,7 @@ use App\Domain\Core\Support\CacheKeys;
 use App\Domain\User\Models\Notification;
 use Illuminate\Support\Facades\Cache;
 
-class MarkBatchAsReadAction extends BaseAction
+final class MarkBatchAsReadAction extends BaseAction
 {
     public function execute(string $userId, array $ids): int
     {

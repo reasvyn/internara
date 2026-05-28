@@ -7,7 +7,7 @@ namespace App\Domain\Admin\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use Illuminate\Support\Facades\File;
 
-class SaveRecoveryKeyAction extends BaseAction
+final class SaveRecoveryKeyAction extends BaseAction
 {
     public function execute(string $plaintext): string
     {

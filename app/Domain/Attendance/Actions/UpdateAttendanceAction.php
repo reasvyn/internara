@@ -7,7 +7,7 @@ namespace App\Domain\Attendance\Actions;
 use App\Domain\Attendance\Models\Attendance;
 use App\Domain\Core\Actions\BaseAction;
 
-class UpdateAttendanceAction extends BaseAction
+final class UpdateAttendanceAction extends BaseAction
 {
     public function execute(Attendance $log, array $data): Attendance
     {

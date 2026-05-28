@@ -7,7 +7,7 @@ namespace App\Domain\Mentor\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Mentor\Models\Mentor;
 
-class ToggleMentorActiveAction extends BaseAction
+final class ToggleMentorActiveAction extends BaseAction
 {
     public function execute(Mentor $mentor): Mentor
     {

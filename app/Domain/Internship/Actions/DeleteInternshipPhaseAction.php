@@ -7,7 +7,7 @@ namespace App\Domain\Internship\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Internship\Models\InternshipPhase;
 
-class DeleteInternshipPhaseAction extends BaseAction
+final class DeleteInternshipPhaseAction extends BaseAction
 {
     public function execute(InternshipPhase $phase): void
     {

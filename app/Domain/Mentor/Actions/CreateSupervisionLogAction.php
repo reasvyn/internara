@@ -11,7 +11,7 @@ use App\Domain\Mentor\Models\SupervisionLog;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Models\User;
 
-class CreateSupervisionLogAction extends BaseAction
+final class CreateSupervisionLogAction extends BaseAction
 {
     public function execute(User $user, string $registrationId, array $data): SupervisionLog
     {

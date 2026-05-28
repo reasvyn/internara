@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
-class DeleteUserAction extends BaseAction
+final class DeleteUserAction extends BaseAction
 {
     public function execute(User $user): void
     {

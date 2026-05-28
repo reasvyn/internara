@@ -9,7 +9,7 @@ use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Internship\Enums\InternshipStatus;
 use App\Domain\Internship\Models\Internship;
 
-class UpdateInternshipAction extends BaseAction
+final class UpdateInternshipAction extends BaseAction
 {
     public function execute(Internship $internship, array $data): Internship
     {

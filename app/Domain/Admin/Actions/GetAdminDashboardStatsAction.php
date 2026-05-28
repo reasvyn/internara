@@ -12,7 +12,7 @@ use App\Domain\School\Models\Department;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Cache;
 
-class GetAdminDashboardStatsAction extends BaseAction
+final class GetAdminDashboardStatsAction extends BaseAction
 {
     /**
      * @return array<string, int>

@@ -10,7 +10,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\User\Models\User;
 
-class ProcessAbsenceAction extends BaseAction
+final class ProcessAbsenceAction extends BaseAction
 {
     public function execute(AbsenceRequest $absence, User $processor, AbsenceRequestStatus $status, ?string $notes = null): AbsenceRequest
     {

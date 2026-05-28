@@ -10,7 +10,7 @@ use App\Domain\Certificate\Support\CertificateRenderer;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Registration\Models\Registration;
 
-class IssueCertificateAction extends BaseAction
+final class IssueCertificateAction extends BaseAction
 {
     public function __construct(
         protected readonly CertificateRenderer $renderer,

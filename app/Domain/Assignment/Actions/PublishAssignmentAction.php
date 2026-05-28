@@ -8,7 +8,7 @@ use App\Domain\Assignment\Models\Assignment;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 
-class PublishAssignmentAction extends BaseAction
+final class PublishAssignmentAction extends BaseAction
 {
     public function execute(Assignment $assignment): Assignment
     {

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Cache;
  * Ownership verification is the caller's responsibility.
  * S2 - Sustain: Clean removal.
  */
-class DeleteNotificationAction extends BaseAction
+final class DeleteNotificationAction extends BaseAction
 {
     public function execute(Notification $notification): void
     {

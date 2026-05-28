@@ -10,7 +10,7 @@ use App\Domain\Logbook\Models\Logbook;
 use App\Domain\Registration\Models\Registration;
 use Illuminate\Support\Facades\Auth;
 
-class GetSupervisorDashboardStatsAction extends BaseAction
+final class GetSupervisorDashboardStatsAction extends BaseAction
 {
     /** @return array{activeInterns: int, pendingEvaluations: int, verifiedJournals: int} */
     public function execute(): array

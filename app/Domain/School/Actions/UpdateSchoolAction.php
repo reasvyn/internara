@@ -13,7 +13,7 @@ use App\Domain\School\Models\School;
  * S1 - Secure: Logged for accountability.
  * S2 - Sustain: Atomic updates.
  */
-class UpdateSchoolAction extends BaseAction
+final class UpdateSchoolAction extends BaseAction
 {
     public function execute(School $school, array $data): School
     {

@@ -11,7 +11,7 @@ use App\Domain\User\Models\User;
 use Carbon\Carbon;
 use RuntimeException;
 
-class VerifySupervisionLogAction extends BaseAction
+final class VerifySupervisionLogAction extends BaseAction
 {
     public function execute(SupervisionLog $log, User $verifier): SupervisionLog
     {

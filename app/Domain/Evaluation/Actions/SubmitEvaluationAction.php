@@ -9,7 +9,7 @@ use App\Domain\Evaluation\Enums\EvaluationCategory;
 use App\Domain\Evaluation\Models\Evaluation;
 use App\Domain\User\Models\User;
 
-class SubmitEvaluationAction extends BaseAction
+final class SubmitEvaluationAction extends BaseAction
 {
     public function execute(
         User $evaluator,

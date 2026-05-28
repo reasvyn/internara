@@ -10,7 +10,7 @@ use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Models\User;
 use RuntimeException;
 
-class GetStudentDashboardDataAction extends BaseAction
+final class GetStudentDashboardDataAction extends BaseAction
 {
     /**
      * @return array{registration: ?Registration, totalJournals: int, verifiedJournals: int}

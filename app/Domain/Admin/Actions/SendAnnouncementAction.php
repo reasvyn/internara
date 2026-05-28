@@ -12,7 +12,7 @@ use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 
-class SendAnnouncementAction extends BaseAction
+final class SendAnnouncementAction extends BaseAction
 {
     public function execute(array $data): Announcement
     {

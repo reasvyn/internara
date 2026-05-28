@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Registration\Models\AccountApplication;
 
-class ApplyAccountAction extends BaseAction
+final class ApplyAccountAction extends BaseAction
 {
     public function execute(array $data): AccountApplication
     {

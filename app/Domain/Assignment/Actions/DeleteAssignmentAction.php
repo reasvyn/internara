@@ -13,7 +13,7 @@ use App\Domain\Core\Actions\BaseAction;
  * S1 - Secure: Cascades to submissions via DB constraint.
  * S2 - Sustain: Clean removal.
  */
-class DeleteAssignmentAction extends BaseAction
+final class DeleteAssignmentAction extends BaseAction
 {
     public function execute(Assignment $assignment): void
     {

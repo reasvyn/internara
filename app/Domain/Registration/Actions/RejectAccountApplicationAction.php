@@ -10,7 +10,7 @@ use App\Domain\Registration\Enums\AccountApplicationStatus;
 use App\Domain\Registration\Models\AccountApplication;
 use App\Domain\User\Models\User;
 
-class RejectAccountApplicationAction extends BaseAction
+final class RejectAccountApplicationAction extends BaseAction
 {
     public function execute(string $applicationId, User $admin, string $reason): void
     {

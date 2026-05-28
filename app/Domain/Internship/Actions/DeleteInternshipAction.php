@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Internship\Models\Internship;
 
-class DeleteInternshipAction extends BaseAction
+final class DeleteInternshipAction extends BaseAction
 {
     public function execute(Internship $internship): void
     {

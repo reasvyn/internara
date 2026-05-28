@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Schedule\Models\Schedule;
 use App\Domain\User\Models\User;
 
-class DeleteScheduleAction extends BaseAction
+final class DeleteScheduleAction extends BaseAction
 {
     public function execute(User $user, Schedule $schedule): void
     {

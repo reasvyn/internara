@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Internship\Models\Report;
 use Illuminate\Support\Facades\Validator;
 
-class CreateReportAction extends BaseAction
+final class CreateReportAction extends BaseAction
 {
     public function execute(array $data): Report
     {

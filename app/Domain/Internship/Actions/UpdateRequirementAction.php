@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Internship\Models\InternshipDocumentRequirement;
 
-class UpdateRequirementAction extends BaseAction
+final class UpdateRequirementAction extends BaseAction
 {
     public function execute(InternshipDocumentRequirement $requirement, string $documentId, bool $isMandatory): InternshipDocumentRequirement
     {

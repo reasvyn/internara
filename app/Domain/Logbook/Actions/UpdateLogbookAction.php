@@ -7,7 +7,7 @@ namespace App\Domain\Logbook\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Logbook\Models\Logbook;
 
-class UpdateLogbookAction extends BaseAction
+final class UpdateLogbookAction extends BaseAction
 {
     public function execute(Logbook $entry, array $data): Logbook
     {

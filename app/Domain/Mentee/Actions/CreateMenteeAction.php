@@ -12,7 +12,7 @@ use App\Domain\User\Support\UserIdentifierGenerator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class CreateMenteeAction extends BaseAction
+final class CreateMenteeAction extends BaseAction
 {
     public function execute(array $userData, array $menteeData = []): Mentee
     {

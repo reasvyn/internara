@@ -9,7 +9,7 @@ use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Internship\Models\Report;
 use App\Domain\Internship\Models\ReportRevision;
 
-class RequestReportRevisionAction extends BaseAction
+final class RequestReportRevisionAction extends BaseAction
 {
     public function execute(Report $report, string $feedback): Report
     {

@@ -7,7 +7,7 @@ namespace App\Domain\Guidance\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Guidance\Models\Handbook;
 
-class UpdateHandbookAction extends BaseAction
+final class UpdateHandbookAction extends BaseAction
 {
     public function execute(Handbook $handbook, array $data): Handbook
     {

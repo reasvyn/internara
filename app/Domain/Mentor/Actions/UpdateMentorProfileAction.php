@@ -7,7 +7,7 @@ namespace App\Domain\Mentor\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Mentor\Models\Mentor;
 
-class UpdateMentorProfileAction extends BaseAction
+final class UpdateMentorProfileAction extends BaseAction
 {
     public function execute(
         Mentor $mentor,

@@ -19,7 +19,7 @@ use RuntimeException;
  * S1 - Secure: Atomic profile updates with auditing and validation.
  * S2 - Sustain: Proper error handling and logging.
  */
-class UpdateProfileAction extends BaseAction
+final class UpdateProfileAction extends BaseAction
 {
     /**
      * Execute the profile update.
@@ -40,8 +40,7 @@ class UpdateProfileAction extends BaseAction
 
         $data = array_filter($data, fn ($v) => $v !== null);
 
-        return $this->withErrorHandling(function () use ($user, $data, $name, $email, $avatar) {
-            return DB::transaction(function () use ($user, $data, $name, $email, $avatar) {
+        return DB::transaction(function () use ($user, $data, $name, $email, $avatar) {
                 if ($name !== null || $email !== null) {
                     $userData = [];
                     if ($name !== null) {

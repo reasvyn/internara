@@ -12,7 +12,7 @@ use App\Domain\Placement\Models\Placement;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Models\User;
 
-class DirectPlacementAction extends BaseAction
+final class DirectPlacementAction extends BaseAction
 {
     public function execute(User $student, array $data): Registration
     {

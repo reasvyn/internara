@@ -9,7 +9,7 @@ use App\Domain\Logbook\Models\Logbook;
 use App\Domain\Registration\Models\Registration;
 use Illuminate\Support\Facades\Auth;
 
-class GetTeacherDashboardStatsAction extends BaseAction
+final class GetTeacherDashboardStatsAction extends BaseAction
 {
     /** @return array{supervisedStudents: int, pendingJournals: int, activeCompanies: int} */
     public function execute(): array

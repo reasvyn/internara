@@ -11,7 +11,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\User\Models\User;
 
-class ToggleUserStatusAction extends BaseAction
+final class ToggleUserStatusAction extends BaseAction
 {
     public function execute(User $user, ?string $reason = null): User
     {

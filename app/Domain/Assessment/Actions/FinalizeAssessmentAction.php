@@ -9,7 +9,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\User\Models\User;
 
-class FinalizeAssessmentAction extends BaseAction
+final class FinalizeAssessmentAction extends BaseAction
 {
     public function execute(Assessment $assessment, User $finalizer): Assessment
     {

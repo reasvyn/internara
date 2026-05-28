@@ -7,7 +7,7 @@ namespace App\Domain\Document\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Document\Models\Document;
 
-class DeleteReportAction extends BaseAction
+final class DeleteReportAction extends BaseAction
 {
     public function execute(Document $report): void
     {

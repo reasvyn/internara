@@ -20,7 +20,7 @@ use RuntimeException;
  * S1 - Secure: Atomic user creation with profile and role assignment.
  * S2 - Sustain: Proper error handling and logging.
  */
-class CreateUserAction extends BaseAction
+final class CreateUserAction extends BaseAction
 {
     /**
      * Create a new user with associated profile and roles.

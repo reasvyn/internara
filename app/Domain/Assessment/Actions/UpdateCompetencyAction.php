@@ -8,7 +8,7 @@ use App\Domain\Assessment\Enums\EvaluatorRole;
 use App\Domain\Assessment\Models\Competency;
 use App\Domain\Core\Actions\BaseAction;
 
-class UpdateCompetencyAction extends BaseAction
+final class UpdateCompetencyAction extends BaseAction
 {
     public function execute(
         Competency $competency,

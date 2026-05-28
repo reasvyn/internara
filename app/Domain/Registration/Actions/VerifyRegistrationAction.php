@@ -10,7 +10,7 @@ use App\Domain\Mentor\Models\Mentor;
 use App\Domain\Placement\Models\Placement;
 use App\Domain\Registration\Models\Registration;
 
-class VerifyRegistrationAction extends BaseAction
+final class VerifyRegistrationAction extends BaseAction
 {
     public function execute(string $registrationId, array $data): Registration
     {

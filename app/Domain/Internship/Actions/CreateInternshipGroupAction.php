@@ -7,7 +7,7 @@ namespace App\Domain\Internship\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Internship\Models\InternshipGroup;
 
-class CreateInternshipGroupAction extends BaseAction
+final class CreateInternshipGroupAction extends BaseAction
 {
     public function execute(array $data): InternshipGroup
     {

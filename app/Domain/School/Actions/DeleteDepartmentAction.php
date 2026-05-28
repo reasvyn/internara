@@ -11,7 +11,7 @@ use App\Domain\School\Models\Department;
 /**
  * Action to delete a department.
  */
-class DeleteDepartmentAction extends BaseAction
+final class DeleteDepartmentAction extends BaseAction
 {
     public function execute(Department $department): void
     {

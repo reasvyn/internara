@@ -7,7 +7,7 @@ namespace App\Domain\Assessment\Actions;
 use App\Domain\Assessment\Models\Assessment;
 use App\Domain\Core\Actions\BaseAction;
 
-class UpdateAssessmentScoresAction extends BaseAction
+final class UpdateAssessmentScoresAction extends BaseAction
 {
     /**
      * Update the score for a specific indicator within an assessment.

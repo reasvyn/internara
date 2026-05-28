@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Cache;
  * S1 - Secure: Only user can mark their own notifications.
  * S2 - Sustain: Batch operation.
  */
-class MarkAllAsReadAction extends BaseAction
+final class MarkAllAsReadAction extends BaseAction
 {
     public function execute(string $userId): int
     {
