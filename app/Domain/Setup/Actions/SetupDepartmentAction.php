@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\School\Models\Department;
 use Illuminate\Support\Facades\Validator;
 
-class SetupDepartmentAction extends BaseAction
+final class SetupDepartmentAction extends BaseAction
 {
     public function execute(string $schoolId, array $data): Department
     {
@@ -17,17 +17,15 @@ class SetupDepartmentAction extends BaseAction
             'description' => 'nullable|string',
         ]);
 
-        return $this->withErrorHandling(function () use ($schoolId, $data) {
-            return $this->transaction(function () use ($schoolId, $data) {
-                $department = Department::updateOrCreate(
-                    ['school_id' => $schoolId, 'name' => $data['name']],
-                    [...$data, 'school_id' => $schoolId],
-                );
+        return $this->transaction(function () use ($schoolId, $data) {
+            $department = Department::updateOrCreate(
+                ['school_id' => $schoolId, 'name' => $data['name']],
+                [...$data, 'school_id' => $schoolId],
+            );
 
-                $this->log('department_setup_completed', $department, array_merge($data, ['school_id' => $schoolId]));
+            $this->log('department_setup_completed', $department, array_merge($data, ['school_id' => $schoolId]));
 
-                return $department;
-            });
-        }, 'Failed to setup department');
+            return $department;
+        });
     }
 }

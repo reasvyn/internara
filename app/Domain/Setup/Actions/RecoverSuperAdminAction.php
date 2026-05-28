@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use RuntimeException;
 
-class RecoverSuperAdminAction extends BaseAction
+final class RecoverSuperAdminAction extends BaseAction
 {
     public function execute(string $email, string $password, bool $isReset = false): User
     {

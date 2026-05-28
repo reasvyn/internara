@@ -14,7 +14,7 @@ use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class SetupSuperAdminAction extends BaseAction
+final class SetupSuperAdminAction extends BaseAction
 {
     public function execute(string $email, string $password): User
     {
@@ -23,40 +23,38 @@ class SetupSuperAdminAction extends BaseAction
             'password' => PasswordRules::defaultAsArray(),
         ])->validate();
 
-        return $this->withErrorHandling(function () use ($email, $password) {
-            return $this->transaction(function () use ($email, $password) {
-                $username = config('setup.defaults.admin_username', 'superadmin');
-                $adminName = config('setup.defaults.admin_name', 'Administrator');
+        return $this->transaction(function () use ($email, $password) {
+            $username = config('setup.defaults.admin_username', 'superadmin');
+            $adminName = config('setup.defaults.admin_name', 'Administrator');
 
-                $existing = User::where('username', $username)->first();
+            $existing = User::where('username', $username)->first();
 
-                if ($existing !== null) {
-                    $integrity = SuperAdminIntegrityRules::fromModel($existing);
+            if ($existing !== null) {
+                $integrity = SuperAdminIntegrityRules::fromModel($existing);
 
-                    if ($integrity->isImmutable()) {
-                        throw new RejectedException('Super admin already exists and cannot be re-initialized.');
-                    }
+                if ($integrity->isImmutable()) {
+                    throw new RejectedException('Super admin already exists and cannot be re-initialized.');
                 }
+            }
 
-                $user = User::updateOrCreate(
-                    ['username' => $username],
-                    [
-                        'name' => $adminName,
-                        'email' => $email,
-                        'password' => Hash::make($password),
-                        'setup_required' => false,
-                    ],
-                );
+            $user = User::updateOrCreate(
+                ['username' => $username],
+                [
+                    'name' => $adminName,
+                    'email' => $email,
+                    'password' => Hash::make($password),
+                    'setup_required' => false,
+                ],
+            );
 
-                $user->markEmailAsVerified();
+            $user->markEmailAsVerified();
 
-                $user->assignRole(RoleEnum::SUPER_ADMIN->value);
-                $user->setStatus(AccountStatus::PROTECTED);
+            $user->assignRole(RoleEnum::SUPER_ADMIN->value);
+            $user->setStatus(AccountStatus::PROTECTED);
 
-                $this->log('super_admin_created', $user, ['username' => $username]);
+            $this->log('super_admin_created', $user, ['username' => $username]);
 
-                return $user;
-            });
-        }, 'Failed to setup super admin');
+            return $user;
+        });
     }
 }
