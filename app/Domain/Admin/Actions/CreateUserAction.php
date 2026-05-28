@@ -44,8 +44,7 @@ final class CreateUserAction extends BaseAction
             'email' => ['required', 'email', 'unique:users,email'],
         ])->validate();
 
-        $user = $this->withErrorHandling(function () use ($userData, $profileData, $roles, $plainPassword) {
-            return DB::transaction(function () use ($userData, $profileData, $roles, $plainPassword) {
+        $user = $this->transaction(function () use ($userData, $profileData, $roles, $plainPassword) {
                 $user = User::create([
                     'name' => $userData['name'],
                     'email' => $userData['email'],
@@ -74,8 +73,7 @@ final class CreateUserAction extends BaseAction
                     ->save();
 
                 return $user;
-            });
-        }, 'Failed to create user');
+        });
 
         if ($shouldSendWelcome && $user->email) {
             try {

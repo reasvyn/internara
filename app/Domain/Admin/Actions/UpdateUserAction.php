@@ -49,8 +49,7 @@ final class UpdateUserAction extends BaseAction
 
         $this->validateUserData($userData, $user);
 
-        return $this->withErrorHandling(function () use ($user, $userData, $profileData, $roles) {
-            return DB::transaction(function () use ($user, $userData, $profileData, $roles) {
+        return $this->transaction(function () use ($user, $userData, $profileData, $roles) {
                 $updateData = array_filter(
                     [
                         'name' => $userData['name'] ?? null,
@@ -91,7 +90,7 @@ final class UpdateUserAction extends BaseAction
 
                 return $user;
             });
-        }, 'Failed to update user');
+        });
     }
 
     /**
