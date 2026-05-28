@@ -1,6 +1,6 @@
 # Setup — API Reference
 
-Total: 26 files
+Total: 27 files
 
 ## Actions
 

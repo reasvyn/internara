@@ -2,226 +2,428 @@
 
 ## Purpose
 
-Setup handles the first-run experience — the one-time installation wizard that runs when the
-application is deployed for the first time to a new environment. Its job is to take a blank
-database and an unconfigured server and turn them into a fully operational, configured
-application. It performs an environment audit (checking PHP version, required extensions,
-directory permissions, database connectivity), runs database migrations and seeders, creates a
-setup token (gate for wizard access), guides through initial configuration (school, department,
-admin account, optional internship program), generates a recovery key, and locks itself
-permanently upon completion. All setup functionality is also available via CLI commands for
-automated deployments.
+Setup manages the first-run experience — the one-time process of turning a blank database and
+unconfigured server into a fully operational application. It is the only domain that runs
+before authentication exists, before any business data exists, and before the system is
+considered "installed."
 
-## Boundary
+Once setup completes successfully, the domain permanently locks itself. Every route, action,
+and middleware in Setup becomes inert — returning 404 for web routes and rejecting CLI
+commands — until explicitly reset via `--force` in development environments.
 
-**In scope:** Multi-step interactive installation wizard with 7 guided steps (welcome/audit,
-school info, department, admin account, optional internship program, finalize/confirm,
-complete), server environment requirements audit (PHP version, PHP extensions, filesystem
-permissions, database connectivity), database initialization (full migration execution and
-foundational data seeding), setup token generation with configurable expiry and encryption,
-initial super admin account creation (the first User with super_admin role), school
-configuration (institution name, code, address, email, phone, website, principal name),
-department creation (name and description), optional internship program initialization,
-recovery key generation (hashed+salted, shown once), setup completion lock (permanently
-prevents re-running), session-based wizard progress persistence, CLI-based non-interactive
-commands (setup:install and setup:reset), recovery admin account creation for emergency
-access restoration.
+---
 
-**Out of scope:** Ongoing system configuration after setup (Settings domain handles all
-runtime configuration changes), user management beyond the initial admin account (Admin domain
-handles ongoing user CRUD), school management after initial setup (School domain manages
-departments, academic years, and school profile changes), partnership management (Partnership
-domain), any operational business domain logic — registrations, placements, assignments,
-attendance, evaluations, certificates, etc., data migration or upgrades for existing
-installations (covered by Laravel's standard migration system), multi-tenant or organization
-setup beyond single-institution configuration.
+## Design Principles
 
-## Key Concepts
+### 1. Single-Use, Replay-Proof Token
 
-**Installation Wizard.** A 7-step guided process presented through a clean, branded interface
-with session persistence (progress is maintained if the user closes and reopens the browser):
-1. WELCOME/ENVIRONMENT CHECK — automated audit of the server environment. Each check produces
-PASS, FAIL, or WARNING: PHP version must be 8.4 or higher; required PHP extensions (BCMath,
-Ctype, Mbstring, OpenSSL, PDO, Tokenizer, XML, GD, Curl, Intl, Zip) must all be present;
-storage/ and bootstrap/cache directories must be writable by the web server; database
-connection must be reachable and credentials valid; terminal support (pcntl and posix
-extensions). FAIL checks block progression; WARNING checks are advisory. A "Recheck" button
-allows re-running the audit after fixing issues.
-2. SCHOOL — set up the institution: name, institutional code, email, phone, website, address,
-and principal name. Email and institutional code are required.
-3. DEPARTMENT — create the first department with name and optional description.
-4. ADMIN ACCOUNT — create the first user with super_admin role. Displays the configured
-name and username from config defaults (overrides form input to enforce canonical credentials),
-requires email, password, and password confirmation. Email is verified automatically on creation.
-Password must be at least 8 characters with mixed case and at least one digit.
-5. INTERNSHIP (optional) — optionally create an initial internship program with name,
-description, start date, and end date. This step can be skipped by leaving the name empty.
-6. FINALIZE — confirmation step requiring two checkboxes: data verification and security
-awareness acknowledgement. Shows a summary of all entered data. Upon submission, executes all
-actions (school creation, department creation, super admin creation, optional internship
-creation), generates a recovery key, dispatches SetupFinalized event, sends a system
-notification to the new admin, and cleans up session data.
-7. COMPLETE — success screen showing the admin's username and email, the recovery key (shown
-once, must be saved by the admin), and a "Proceed to Login" button. Clicking the button
-boards the admin to the login page — the setup wizard is permanently locked after this step.
+Access to the setup wizard is gated by a cryptographically random token. The token is:
 
-**Setup Token.** A cryptographically random token that gates access to the setup wizard route.
-The token is generated via CLI (`php artisan setup:install`) or via the `GenerateSetupTokenAction`,
-encrypted with Laravel's encryption (Crypt::encryptString), and stored with a configurable
-expiration (default 60 minutes). The token can be passed as a query parameter (`?setup_token=...`)
-or submitted via the code entry form. **The token is single-use** — after successful validation,
-`ValidateSetupTokenAction` immediately nullifies `setup_token` and `token_expires_at` in the
-database inside a `lockForUpdate()` transaction, preventing replay attacks. Access is rate-limited
-(20 attempts per 60 seconds per IP). The middleware `ProtectSetupRouteMiddleware` (at
-`Http/Middleware/`) handles all token validation and session management.
+- **Encrypted at rest** — stored using Laravel's encryption
+- **Time-limited** — configurable expiry (default 60 minutes)
+- **Single-use** — consumed atomically on first successful validation via `lockForUpdate()`
+- **Rate-limited** — 20 attempts per 60 seconds per IP
+- **Timing-attack resistant** — validated with `hash_equals()`
 
-**Environment Audit.** Before any database writes occur, the system performs a comprehensive
-audit of the server environment. Each check is independent and self-contained — the auditor
-runs all checks, collects all results, and presents them together. FAIL-level checks: PHP
-version minimum, required PHP extensions, directory permissions (storage, bootstrap/cache),
-database connectivity. WARNING-level checks: optional extensions (redis, pcntl, posix) and
-terminal support. Each check result includes the expected value, the actual value, and specific
-guidance on how to resolve failures. The audit is designed to be re-runnable — the installer
-can fix issues and re-run without side effects.
+After successful validation, the token is immediately nullified in the database. A second
+request with the same token is rejected. This prevents replay attacks even if the token
+is intercepted after validation.
 
-**Setup Lock (Self-Destruction).** Once the wizard completes successfully, the application is
-permanently locked. The setup routes become inaccessible — attempting to access them returns a
-404 response. All setup session data (`setup.authorized`, `setup.token`, `setup.form_data`,
-`setup.completed`) is force-cleared on any post-install access attempt.
+### 2. Fail-Fast Environment Audit
 
-The lock is stored in the database as `is_installed = true` on the Setup model. A short
-finalization window (configurable, default **30 seconds**) allows the **complete step only**
-(step 7, showing the recovery key) to display after installation before the lock fully engages.
-During this window, the `setup.completed` session flag must be present — the old `setup.authorized`
-flag is NOT sufficient to bypass the lock. Once the user clicks "Go to Login," the
-`setup.completed` flag is cleared, and the window closes immediately.
+Before any database write occurs, the system performs a comprehensive audit of the server
+environment. Each check is independent and produces PASS, FAIL, or WARN:
 
-The lock can only be reset through `php artisan setup:install --force`, which runs
-`migrate:fresh` and regenerates a setup token. This requires the environment to be in the
-`force_allowed_environments` list (default: `local`, `dev`, `development`, `testing`).
-`php artisan setup:reset` only works before installation (`is_installed = false`).
+| Level | Blocks Installation | Examples |
+|---|---|---|
+| FAIL | ✅ Yes | PHP version < 8.4, missing required extensions, unwritable storage, no database |
+| WARN | ❌ No | Missing optional extensions, no frontend assets built, no terminal support |
 
-**Recovery Key.** After finalization, a cryptographically random recovery key (default 64
-characters) is generated. The plaintext key is shown once on the complete screen and hashed
-with Hash::make() before storage. It serves as an emergency credential for the
-`RecoverSuperAdminAction` — allowing admin account recovery if all super admin access is lost.
+FAIL-level checks block progression unconditionally. WARN-level checks are advisory —
+the installer can proceed but should be aware of limitations.
 
-**CLI Commands.** Three Artisan commands manage the setup lifecycle:
-- `php artisan setup:install` — performs the full non-interactive installation: audits the
-environment, provisions the system (ensures .env, generates app key, runs migrations, runs
-seeders, creates storage symlink, clears caches), and generates a setup token. Outputs a
-signed URL with the token. The `--force` flag allows re-installation in non-production
-environments. The `--check-only` flag runs the environment audit only without provisioning
-or token generation — useful for pre-flight verification before committing to installation.
-Requires confirmation before proceeding (unless `--force` is set).
-- `php artisan setup:reset` — regenerates the setup token. Only works when the system is NOT
-yet installed (is_installed = false). Outputs the new signed URL and token. If the system
-is already installed, prompts the user to run `php artisan system:health` instead.
-- `php artisan system:health` — comprehensive runtime health check that also serves as a
-pre-install readiness report. Checks include: environment, PHP version, required extensions,
-recommended extensions, PHP memory, database connection, migration status (pending count),
-storage writability, disk space, queue, cache, app key, storage link, and maintenance mode.
-Also reports whether the system has been set up via the Setup wizard.
+The audit is designed to be re-runnable with zero side effects. The installer can fix
+issues and re-run the audit without concern.
 
-## Requirements
+### 3. Self-Destructing Lock
 
-### User Stories & Rules
+Once the wizard completes successfully:
 
-- **Installer:** As an installer, I want to run a guided setup wizard so that I can configure the application for first use
-- **Installer:** As an installer, I want an environment audit so that I can verify my server meets requirements
-- **Developer:** As a developer, I want to run a pre-flight audit without provisioning so that I can check readiness before committing to installation
-- **Developer:** As a developer, I want a single health check command so that I can see system status, setup phase, and pending migrations at a glance
-- **Installer:** As an installer, I want to create the school, first department, and admin account in one flow so that the system is ready to use
-- **Installer:** As an installer, I want to receive a recovery key at completion so that I can restore admin access if needed
-- **Admin:** As an admin, I want to run setup via CLI for automated deployments so that installation is repeatable
-- **System:** As the system, I want to permanently lock setup after completion so that no one can reinstall
-- Setup can only run once per installation — the setup lock is applied at completion and is
-irremovable through the web interface. The lock self-destructs: all setup routes return 404,
-all setup session data is cleared.
-- The setup token is **single-use**. After successful validation, it is immediately consumed
-(nullified in the database) inside a `lockForUpdate()` transaction to prevent replay attacks.
-- Environment checks MUST pass before any write operations (database migrations, user
-creation) are executed — no writes on a failing environment. The wizard blocks at step 1
-if critical checks fail.
-- The initial admin account MUST be created with the super_admin role — this guarantees at
-least one super_admin exists in the system from the very beginning.
-- No default or well-known credentials are ever created under any circumstances; the wizard
-requires setting a password with minimum 8 characters.
-- The setup token is encrypted at rest, validated with hash_equals to prevent timing attacks,
-and **consumed after first successful validation** (single-use, replay-proof).
-- The finalization window uses `setup.completed` session flag (set only by `SetupWizard.finish()`
-on step 6 submission), NOT `setup.authorized`. This ensures only the complete page (step 7)
-is accessible during the window, not the full wizard.
-- All setup operations are logged via SmartLogger even though no authenticated user exists.
-- The wizard supports session persistence — if closed and reopened, it resumes from the last
-incomplete step (form data is saved to the session on every change).
-- The recovery key is shown exactly once (on the complete screen) and stored as a bcrypt hash.
-There is no way to retrieve it later.
-- The `setup:reset` command only works when `is_installed` is false — it cannot bypass the
-setup lock. If the system is already installed, it prompts the user to run `system:health`.
-- The `setup:install --check-only` flag runs the full environment audit without any database
-writes or provisioning — safe to run at any time, even after installation.
-- `system:health` is the recommended first command for any developer joining the project —
-it provides a comprehensive overview of system readiness including setup phase and migration
-status.
-- The setup wizard route is protected by rate limiting (20 attempts per 60 seconds per IP)
-to prevent brute-force token guessing.
-- `Setup::state()` is cached via `CacheKeys::SETUP_INSTALLED` (1h TTL). The cache is invalidated
-by `FinalizeSetupAction` and `GenerateSetupTokenAction`.
+1. The `is_installed` flag is set to `true` in the database
+2. All setup session data is force-cleared
+3. Setup routes return 404 for all requests
+4. CLI commands (except `--force` in non-production) are blocked
 
-### Process Flow
+A short **finalization window** (default 30 seconds) allows the completion screen
+(step 7) to render after installation. During this window, only the `setup.completed`
+session flag grants access — the `setup.authorized` flag is insufficient.
+
+The lock can only be reset via `php artisan setup:install --force`, which runs
+`migrate:fresh` and regenerates a token. This is restricted to non-production
+environments.
+
+### 4. Recovery Key as Last Resort
+
+At finalization, a cryptographically random recovery key (default 64 characters) is
+generated. It is:
+
+- **Shown exactly once** — on the completion screen
+- **Hashed with bcrypt** before storage — never stored in plaintext
+- **Irretrievable** — no admin panel, no CLI command can display it again
+
+The recovery key serves as an emergency credential for the `RecoverSuperAdminAction`,
+enabling admin account recovery if all super admin access is lost. The recovery
+command (`admin:recover`) prompts for the key and verifies it against the stored
+hash.
+
+### 5. Shared Actions Between Web and CLI
+
+Both the web wizard and the CLI installer delegate to the same underlying Actions.
+The `FinalizeSetupAction`, `SetupSchoolAction`, `SetupDepartmentAction`, and
+`SetupSuperAdminAction` are used identically whether invoked from the browser or
+the command line. This ensures consistency — the CLI path produces the same result
+as the web wizard.
+
+---
+
+## Layer Structure
 
 ```
-Setup Wizard Steps:
-
-1. WELCOME / ENVIRONMENT CHECK → 2. SCHOOL INFO → 3. DEPARTMENT
-→ 4. ADMIN ACCOUNT → 5. INTERNSHIP (optional) → 6. FINALIZE
-→ 7. COMPLETE (setup locked)
+app/Domain/Setup/
+├── Actions/         → Command and Process Actions for installation
+├── Console/         → Artisan commands (CLI installation)
+├── Entities/        → SetupState — immutable installation state
+├── Events/          → SetupFinalized — dispatched on completion
+├── Http/
+│   └── Middleware/   → Token gating and installation redirect
+├── Listeners/       → Side effects on setup completion
+├── Livewire/        → 7-step wizard component
+│   └── Forms/       → Form Objects per wizard step
+├── Models/          → Setup — installation state persistence
+├── Policies/        → Authorization guard for setup operations
+└── Support/         → Environment auditor and system provisioner
 ```
 
-### Key Operations
+---
 
-| Action | Description |
-|--------|-------------|
-| `GenerateSetupTokenAction` | Generates an encrypted, time-limited setup token |
-| `ValidateSetupTokenAction` | Validates a setup token for wizard access |
-| `SetupSchoolAction` | Creates the school record during setup |
-| `SetupDepartmentAction` | Creates the first department |
-| `SetupSuperAdminAction` | Creates the first super admin account. Accepts only `(string $email, string $password)` — name and username are ALWAYS from config defaults, enforced by type signature |
-| `InitializeSuperAdminAction` | Initializes the super admin with proper roles. Name and username always from config defaults |
-| `FinalizeSetupAction` | Completes setup, generates recovery key, locks installation |
-| `InstallSystemAction` | Non-interactive CLI installation — caches `CacheKeys::SETUP_INSTALLED` via `RequireSetupAccessMiddleware` |
-| `RecoverSuperAdminAction` | Emergency super admin account recovery |
+## Actions
 
-### Technical Reference
+### Command Actions
 
-| Layer | Artifacts |
-|-------|-----------|
-| **Models** | `Setup` (installation state, token, recovery key; `belongsTo` School and Department) |
-| **Entity** | `SetupState` (installation checks, token validation, step completion, finalization window in minutes and seconds) |
-| **Enums** | *(none — installation state tracked via `Setup` model boolean fields)* |
-| **Core/States** | `BaseState` (abstract readonly base for state entities, extends `BaseEntity`) |
-| **Livewire** | `SetupWizard` (7-step guided installation) |
-| **Livewire/Forms** | `SchoolForm`, `DepartmentForm`, `AdminForm`, `InternshipForm` |
-| **Http/Middleware** | `ProtectSetupRouteMiddleware`, `RequireSetupAccessMiddleware` |
-| **Console/Commands** | `SetupInstallCommand`, `SetupResetCommand` |
-| **Events** | `SetupFinalized` |
-| **Listeners** | `LogSetupFinalized` |
-| **Services** | `EnvironmentAuditor` (pre-installation environment validation) |
-| **Policies** | `SetupPolicy` |
-| **Support** | `SystemProvisioner` (migrations, seeding, storage link) |
+| Action | Input | Side Effects | Description |
+|---|---|---|---|
+| `SetupSchoolAction` | School data array | Creates School record, audit log | Creates the institution record during setup |
+| `SetupDepartmentAction` | Department data array | Creates Department record, audit log | Creates the first department/study program |
+| `SetupSuperAdminAction` | `(string email, string password)` | Creates User + assigns super_admin role, audit log | Creates the first admin. Name and username are ALWAYS from config defaults — only email and password are accepted |
+| `SetupDepartmentAction` | Department data | Creates department, audit log | Creates the first department |
+| `GenerateSetupTokenAction` | None | Encrypted token in DB, cache invalidation | Generates a time-limited, single-use setup token |
+| `RecoverSuperAdminAction` | Recovery key, new credentials | Validates hash, creates new super_admin | Emergency admin recovery when all access is lost |
 
-## Dependencies
+### Process Actions
 
-| Dependency | Reason |
+| Action | Coordinates | Description |
+|---|---|---|
+| `FinalizeSetupAction` | `SetupSchoolAction` + `SetupDepartmentAction` + `SetupSuperAdminAction` + optionally `CreateInternshipAction` | Orchestrates the complete finalization: school, department, admin, optional internship, recovery key generation, setup lock |
+| `InstallSystemAction` | `SystemProvisioner` tasks | Non-interactive CLI installation: `.env` setup, key generation, migrations, seeding, storage link, cache clear |
+
+### Hybrid Action (Read + Command)
+
+| Action | Read Phase | Command Phase |
+|---|---|---|
+| `ValidateSetupTokenAction` | Validates token (check expiry, hash_equals) | Consumes token (nullifies in DB with `lockForUpdate()`) |
+
+---
+
+## Domain Invariants
+
+### Super Admin Creation
+
+`SetupSuperAdminAction` accepts exactly two parameters:
+
+```
+execute(string $email, string $password): User
+```
+
+Name and username are ALWAYS derived from config:
+- `config('setup.defaults.admin_name')` — always `"Administrator"`
+- `config('setup.defaults.admin_username')` — always `"superadmin"`
+
+These are canonical, non-customizable values enforced at the Action signature level.
+Callers cannot pass name or username — the type signature prevents it.
+
+### Token Lifecycle
+
+```
+Generated (encrypted, time-limited, stored in DB)
+    │
+    ├── Expired (no access — must regenerate)
+    │     └── setup:reset or setup:install
+    │
+    └── Presented (in query param or POST body)
+          │
+          ├── Invalid/Expired → rate limit hit → rejected
+          │
+          └── Valid
+                └── Consumed (nullified in DB via lockForUpdate)
+                      └── Session authorized → wizard access granted
+                            └── Finalized → setup locked permanently
+```
+
+### Setup Lock States
+
+```
+Pre-install:
+  └── is_installed = false
+  └── Setup routes: accessible with valid token
+  └── setup:reset: works
+
+Post-install (finalization window):
+  └── is_installed = true
+  └── setup.completed in session: step 7 accessible (30s window)
+  └── Without setup.completed: 404
+
+Post-install (locked):
+  └── is_installed = true
+  └── Setup routes: 404
+  └── setup:reset: blocked (suggests system:health)
+  └── setup:install --force: works only in non-production
+```
+
+---
+
+## Entities
+
+### SetupState
+
+An immutable readonly entity that represents the current state of the installation.
+All methods are pure — no database queries, no side effects.
+
+| Method | Returns | Description |
+|---|---|---|
+| `isInstalled()` | `bool` | Whether installation has been completed |
+| `hasStoredToken()` | `bool` | Whether a token exists in storage |
+| `isTokenExpired(?Carbon)` | `bool` | Whether the token has exceeded its expiry |
+| `validateToken(string, string, ?Carbon)` | `bool` | Constant-time token comparison using `hash_equals()` |
+| `isStepCompleted(string)` | `bool` | Whether a specific wizard step is done |
+| `allStepsCompleted()` | `bool` | Whether all required steps are done |
+| `updatedAt()` | `?Carbon` | Timestamp of last state change |
+| `isWithinFinalizationWindowSeconds(int)` | `bool` | Whether within the post-install display window |
+| `hasRecoveryKey()` | `bool` | Whether a recovery key hash exists |
+
+SetupState extends `BaseEntity` and is constructed via `fromModel(Model)`. The
+constructor receives all values as primitives — no database access in any method.
+
+---
+
+## Services
+
+### EnvironmentAuditor
+
+Performs a read-only audit of the server environment. All checks are independent and
+side-effect-free. Returns an `AuditReport` containing `AuditCheck` results grouped
+by category.
+
+| Check Category | Level | Checks |
+|---|---|---|
+| REQUIREMENTS | FAIL | PHP version ≥ 8.4, required extensions (12), storage permissions, database connectivity |
+| RECOMMENDATIONS | WARN | Optional extensions (redis, pcntl, posix), frontend assets built |
+| PERMISSIONS | FAIL | Storage and bootstrap/cache writability |
+| DATABASE | FAIL | Database connection with configured credentials |
+| TERMINAL | WARN | pcntl and posix availability |
+
+The auditor raises no exceptions — every failure is captured as an `AuditCheck`
+with FAIL status. The caller decides how to respond.
+
+### SystemProvisioner
+
+Executes provisioning tasks for CLI installation. Each task is independent and
+reported separately:
+
+| Task | Command | Side Effect |
+|---|---|---|
+| `ensure_env` | Copy `.env.example` → `.env` | File creation (0600 permissions) |
+| `generate_key` | `key:generate` | `.env` modification |
+| `run_migrations` | `migrate --force` | Database schema |
+| `run_seeders` | `db:seed --force` | Database data |
+| `storage_link` | `storage:link` | Symlink creation |
+| `clear_cache` | `config:clear`, `cache:clear`, `route:clear`, `view:clear` | Cache flush |
+
+---
+
+## Middleware
+
+### RequireSetupAccessMiddleware
+
+Applied globally to all web routes via `bootstrap/app.php`. Responsibilities:
+
+1. Check the cached `setup.is_installed` flag
+2. If installed: pass through (normal application operation)
+3. If not installed: redirect ALL non-setup routes to `/setup`
+4. Allow static assets (files in `public/`) and Livewire subrequests to pass through
+
+This middleware ensures that before installation, every page visit redirects to the
+setup wizard — there is no way to access any application route before setup completes.
+
+### ProtectSetupRouteMiddleware
+
+Applied only to `routes/web/setup.php`. Responsibilities:
+
+1. Check `is_installed` flag
+2. If installed: enforce finalization window or return 404
+3. If not installed: check session authorization or validate token
+4. Rate-limit token validation attempts (20/60s per IP)
+5. On success: authorize the session, forward to wizard
+6. On failure: throttle or reject
+
+This middleware is the primary security gate for the setup process.
+
+---
+
+## Events
+
+### SetupFinalized
+
+Dispatched when the setup process completes successfully.
+
+```php
+final readonly class SetupFinalized
+{
+    public function __construct(
+        public ?string $schoolId,
+        public \DateTimeImmutable $installedAt,
+    ) {}
+}
+```
+
+**Listener:** `LogSetupFinalized` — logs completion via SmartLogger.
+
+The event carries minimal data (schoolId and timestamp) to avoid coupling the event to
+domain models. Listeners that need additional context should query the Setup model.
+
+---
+
+## Livewire Components
+
+### SetupWizard
+
+A single Livewire component managing the 7-step installation wizard. Uses 4 Form Objects
+for step-specific validation:
+
+| Step | Key | Form Object | Validation |
+|---|---|---|---|
+| 1 | `welcome` | — | Environment audit results (pass/fail) |
+| 2 | `school` | `SchoolForm` | Name, institutional code, email required |
+| 3 | `department` | `DepartmentForm` | Name required |
+| 4 | `account` | `AdminForm` | Email, password required. Password ≥ 8 chars, mixed case + number |
+| 5 | `internship` | `InternshipForm` | Optional — skipped if name empty |
+| 6 | `finalize` | — | Two checkboxes: data verified, security aware |
+| 7 | `complete` | — | Recovery key display, proceed to login |
+
+**Session persistence:** Form data is saved to the session on every change. If the user
+closes and reopens the browser, the wizard resumes from the last incomplete step.
+
+---
+
+## Models
+
+### Setup
+
+A singleton model (single record) that tracks installation state:
+
+| Column | Type | Purpose |
+|---|---|---|
+| `is_installed` | boolean | Whether setup completed successfully |
+| `setup_token` | text, nullable | Encrypted setup token (nullified after use) |
+| `token_expires_at` | datetime, nullable | Token expiry timestamp |
+| `completed_steps` | JSON array | Wizard steps that have been completed |
+| `recovery_key` | text, nullable | Bcrypt hash of the recovery key |
+| `school_id` | UUID FK, nullable | Reference to created school |
+| `department_id` | UUID FK, nullable | Reference to created department |
+
+The `state()` static method provides read-once access with `lockForUpdate()` to
+prevent race conditions during concurrent setup requests. It gracefully degrades when
+the setups table does not yet exist (before first migration).
+
+---
+
+## Console Commands
+
+| Command | Signature | Purpose |
+|---|---|---|
+| `setup:install` | `{--check-only} {--force}` | Full installation or pre-flight audit |
+| `setup:reset` | — | Regenerate setup token (pre-install only) |
+
+`setup:install` performs:
+1. Environment audit (halt on FAIL if not `--check-only`)
+2. System provisioning (`.env`, key, migrations, seeders, storage, cache)
+3. Token generation with signed URL output
+
+`--check-only` runs only the audit — no writes, no provisioning.
+`--force` allows re-installation in non-production environments (runs `migrate:fresh`).
+
+---
+
+## Policies
+
+### SetupPolicy
+
+Super admin only:
+
+| Method | Access |
 |---|---|
-| Every domain | Setup runs the complete migration set (all domains) and seeds foundational data |
-| Core | BaseAction, BaseEntity, SmartLogger, HandlesActionErrors, AuditReport |
-| Auth | Role enum, AccountStatus enum for super admin creation |
-| School | School and Department model creation |
-| User | User model creation for the admin account |
-| Internship | CreateInternshipAction for optional program creation |
-| Admin | SendNotificationAction for system notifications |
-| Settings | AppInfo support class for version display |
+| `viewAny`, `view` | super_admin, admin |
+| `create`, `update`, `delete` | super_admin only |
 
+Setup management is restricted to prevent unauthorized re-configuration.
 
+---
+
+## Dependency Graph
+
+```
+Setup Domain
+├── Core            → BaseAction, BaseEntity, BaseState, SmartLogger,
+│                      AuditReport, AuditCheck, CacheKeys
+├── Auth            → Role enum, AccountStatus enum
+├── School          → School, Department models (school/dept creation)
+├── User            → User model (admin account creation)
+├── Internship      → CreateInternshipAction (optional program creation)
+├── Admin           → SendNotificationAction (system notification)
+└── Settings        → AppInfo (version display in wizard)
+```
+
+Setup has the widest dependency graph of any domain — it touches almost every other
+domain to create initial records. This is intentional and unavoidable: installation
+must bootstrap the entire system.
+
+---
+
+## What Setup Does NOT Cover
+
+| Excluded | Reason | Handled By |
+|---|---|---|
+| Ongoing configuration | Runtime changes after install | Settings domain |
+| User management | Beyond initial admin | Admin domain |
+| School changes | Academic years, departments after setup | School domain |
+| Partnerships, placements, etc. | Operational domains | Respective business domains |
+| Data migration | Schema changes | Laravel migrations (`database/migrations/`) |
+| Multi-tenant provisioning | Single-institution only | Out of scope |
+
+---
+
+## Where to Find It
+
+- `app/Domain/Setup/Actions/FinalizeSetupAction.php` — orchestrated finalization
+- `app/Domain/Setup/Actions/SetupSuperAdminAction.php` — super admin creation
+- `app/Domain/Setup/Actions/GenerateSetupTokenAction.php` — token generation
+- `app/Domain/Setup/Actions/ValidateSetupTokenAction.php` — token validation
+- `app/Domain/Setup/Actions/RecoverSuperAdminAction.php` — emergency recovery
+- `app/Domain/Setup/Entities/SetupState.php` — immutable installation state
+- `app/Domain/Setup/Services/EnvironmentAuditor.php` — pre-install audit
+- `app/Domain/Setup/Support/SystemProvisioner.php` — CLI provisioning
+- `app/Domain/Setup/Models/Setup.php` — installation state model
+- `app/Domain/Setup/Livewire/SetupWizard.php` — 7-step wizard
+- `app/Domain/Setup/Http/Middleware/ProtectSetupRouteMiddleware.php` — token gate
+- `app/Domain/Setup/Http/Middleware/RequireSetupAccessMiddleware.php` — install redirect
+- `config/setup.php` — requirements, defaults, security thresholds
+- `routes/web/setup.php` — setup route definitions
