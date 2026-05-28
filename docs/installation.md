@@ -1,4 +1,7 @@
 # Installation
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 Detailed deployment reference for production and development environments.
 For a quick end-to-end walkthrough, see [Getting Started](getting-started.md).

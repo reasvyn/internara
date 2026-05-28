@@ -1,4 +1,7 @@
 # Mentee — API Reference
+> Last updated: 2026-05-23
+> Changes: cleanup: remove orphaned dashboard views, update domain docs, mark User issues resolved
+
 
 Total: 7 files
 

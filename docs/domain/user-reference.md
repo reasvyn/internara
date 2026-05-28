@@ -1,4 +1,7 @@
 # User — API Reference
+> Last updated: 2026-05-26
+> Changes: docs: update school-reference and user-reference for recent changes; add AcademicYearEditTest
+
 
 Total: 36 files
 

@@ -1,4 +1,7 @@
 # Known Issues and Gotchas
+> Last updated: 2026-05-27
+> Changes: fix: resolve remaining known issues (H6, H7, M1, M2, L1, L3)
+
 
 ## Infrastructure — Critical
 

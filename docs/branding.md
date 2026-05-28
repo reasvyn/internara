@@ -1,4 +1,7 @@
 # Branding and Theming
+> Last updated: 2026-05-23
+> Changes: fix: complete system initialization overhaul — security, middleware, recovery, form objects, docs
+
 
 ## How Theming Works
 

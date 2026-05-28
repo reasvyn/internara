@@ -1,4 +1,7 @@
 # Shared Domain
+> Last updated: 2026-05-27
+> Changes: docs: update core-reference and redesign shared domain
+
 
 ## Purpose
 

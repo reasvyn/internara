@@ -1,4 +1,7 @@
 # Core — API Reference
+> Last updated: 2026-05-27
+> Changes: docs: update core-reference and redesign shared domain
+
 
 Total: 47 files
 

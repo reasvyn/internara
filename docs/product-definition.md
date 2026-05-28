@@ -1,4 +1,7 @@
 # Product Definition
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 ## What Is Internara?
 

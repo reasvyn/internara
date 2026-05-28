@@ -1,4 +1,7 @@
 # Getting Started
+> Last updated: 2026-05-23
+> Changes: fix: complete system initialization overhaul — security, middleware, recovery, form objects, docs
+
 
 This guide walks you from cloning the repository to completing the setup
 wizard — everything you need to get Internara running on your server.

@@ -1,4 +1,7 @@
 # Assignment Domain
+> Last updated: 2026-05-25
+> Changes: docs: audit and fix all 20+ domain + reference docs for accuracy
+
 
 ## Purpose
 

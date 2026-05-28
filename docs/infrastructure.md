@@ -1,4 +1,7 @@
 # Infrastructure
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 This document describes the ideal infrastructure design for Internara — what the system
 looks like at each deployment tier and how components relate. It serves as a reference for

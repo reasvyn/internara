@@ -1,4 +1,7 @@
 # Auth Domain
+> Last updated: 2026-05-26
+> Changes: fix(auth): comprehensive security hardening, atomic brute-force lock, and PasswordRules
+
 
 ## Purpose
 

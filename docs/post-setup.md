@@ -1,4 +1,7 @@
 # Post-Setup: First Actions as Administrator
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 Congratulations — the setup wizard is complete and Internara is running.
 This guide walks through the essential first steps to prepare the system

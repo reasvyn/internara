@@ -1,4 +1,7 @@
 # Partnership Domain
+> Last updated: 2026-05-25
+> Changes: docs: add user registration audit findings (UC1-UC7) to known-issues, remove resolved entries
+
 
 ## Purpose
 

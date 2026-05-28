@@ -1,4 +1,7 @@
 # User Domain
+> Last updated: 2026-05-27
+> Changes: docs: add CacheKeys, setup caching, and notification invalidation to domain docs
+
 
 ## Purpose
 

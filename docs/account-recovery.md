@@ -1,4 +1,7 @@
 # Account Recovery
+> Last updated: 2026-05-26
+> Changes: docs: update docs for non-expiring recovery codes and profile redesign
+
 
 ## Purpose
 

@@ -1,4 +1,7 @@
 # UI/UX Design
+> Last updated: 2026-05-23
+> Changes: fix: technical installation broken references
+
 
 ## Design System Philosophy
 

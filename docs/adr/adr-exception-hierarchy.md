@@ -1,4 +1,7 @@
 # Exception Hierarchy — AppException vs DomainException
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 ## Status
 Accepted

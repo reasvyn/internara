@@ -1,4 +1,7 @@
 # Schedule Domain
+> Last updated: 2026-05-25
+> Changes: docs: update entire documentation to reflect actual implementation
+
 
 ## Purpose
 

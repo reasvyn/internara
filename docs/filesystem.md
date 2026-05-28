@@ -1,4 +1,7 @@
 # Filesystem
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 ## Storage Architecture
 
