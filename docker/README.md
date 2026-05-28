@@ -1,4 +1,7 @@
 # Docker Environments
+> Last updated: 2026-05-24
+> Changes: feat: restructure institutional data, add staff/group/phase features, remove arch tests
+
 
 Internara provides three Docker environments for different use cases.
 
