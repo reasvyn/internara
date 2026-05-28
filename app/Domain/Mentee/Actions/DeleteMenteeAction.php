@@ -7,7 +7,7 @@ namespace App\Domain\Mentee\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Mentee\Models\Mentee;
 
-class DeleteMenteeAction extends BaseAction
+final class DeleteMenteeAction extends BaseAction
 {
     public function execute(Mentee $mentee): void
     {

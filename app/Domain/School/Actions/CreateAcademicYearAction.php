@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\School\Models\AcademicYear;
 use Illuminate\Support\Facades\Validator;
 
-class CreateAcademicYearAction extends BaseAction
+final class CreateAcademicYearAction extends BaseAction
 {
     public function execute(array $data): AcademicYear
     {

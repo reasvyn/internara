@@ -9,7 +9,7 @@ use App\Domain\Attendance\Models\AbsenceRequest;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\User\Models\User;
 
-class SubmitAbsenceAction extends BaseAction
+final class SubmitAbsenceAction extends BaseAction
 {
     public function execute(User $user, array $data): AbsenceRequest
     {

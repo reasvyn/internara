@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Partnership\Models\Partnership;
 
-class RenewPartnershipAction extends BaseAction
+final class RenewPartnershipAction extends BaseAction
 {
     public function __construct(
         protected readonly CreatePartnershipAction $createPartnership,

@@ -7,7 +7,7 @@ namespace App\Domain\Assignment\Actions;
 use App\Domain\Assignment\Models\Submission;
 use App\Domain\Core\Actions\BaseAction;
 
-class VerifySubmissionAction extends BaseAction
+final class VerifySubmissionAction extends BaseAction
 {
     public function execute(Submission $submission): Submission
     {

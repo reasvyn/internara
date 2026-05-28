@@ -13,7 +13,7 @@ use App\Domain\School\Models\AcademicYear;
  * S1 - Secure: Logged for audit trail.
  * S2 - Sustain: Atomic updates.
  */
-class UpdateAcademicYearAction extends BaseAction
+final class UpdateAcademicYearAction extends BaseAction
 {
     public function execute(AcademicYear $year, array $data): AcademicYear
     {

@@ -7,7 +7,7 @@ namespace App\Domain\Admin\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use Illuminate\Support\Facades\File;
 
-class ReadRecoveryKeyAction extends BaseAction
+final class ReadRecoveryKeyAction extends BaseAction
 {
     public function execute(): ?string
     {

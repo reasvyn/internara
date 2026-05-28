@@ -8,7 +8,7 @@ use App\Domain\Certificate\Models\CertificateTemplate;
 use App\Domain\Core\Actions\BaseAction;
 use Illuminate\Support\Facades\Validator;
 
-class CreateCertificateTemplateAction extends BaseAction
+final class CreateCertificateTemplateAction extends BaseAction
 {
     public function execute(array $data): CertificateTemplate
     {

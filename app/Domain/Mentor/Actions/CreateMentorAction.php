@@ -13,7 +13,7 @@ use App\Domain\User\Support\UserIdentifierGenerator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class CreateMentorAction extends BaseAction
+final class CreateMentorAction extends BaseAction
 {
     public function execute(array $userData, array $mentorData, ?string $role = null): Mentor
     {

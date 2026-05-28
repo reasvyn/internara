@@ -7,7 +7,7 @@ namespace App\Domain\Attendance\Actions;
 use App\Domain\Attendance\Models\Attendance;
 use App\Domain\Core\Actions\BaseAction;
 
-class DeleteAttendanceAction extends BaseAction
+final class DeleteAttendanceAction extends BaseAction
 {
     public function execute(Attendance $log): void
     {

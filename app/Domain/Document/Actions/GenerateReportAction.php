@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Document\Models\Document;
 use Illuminate\Support\Facades\Storage;
 
-class GenerateReportAction extends BaseAction
+final class GenerateReportAction extends BaseAction
 {
     public function execute(array $data): Document
     {

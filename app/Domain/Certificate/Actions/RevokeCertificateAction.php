@@ -8,7 +8,7 @@ use App\Domain\Certificate\Models\Certificate;
 use App\Domain\Core\Actions\BaseAction;
 use RuntimeException;
 
-class RevokeCertificateAction extends BaseAction
+final class RevokeCertificateAction extends BaseAction
 {
     public function execute(Certificate $certificate): Certificate
     {

@@ -7,7 +7,7 @@ namespace App\Domain\Guidance\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Guidance\Models\Handbook;
 
-class DeleteHandbookAction extends BaseAction
+final class DeleteHandbookAction extends BaseAction
 {
     public function execute(Handbook $handbook): void
     {

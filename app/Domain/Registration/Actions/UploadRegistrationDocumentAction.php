@@ -10,7 +10,7 @@ use App\Domain\Registration\Models\Registration;
 use App\Domain\Registration\Models\RegistrationDocument;
 use Illuminate\Http\UploadedFile;
 
-class UploadRegistrationDocumentAction extends BaseAction
+final class UploadRegistrationDocumentAction extends BaseAction
 {
     /**
      * @param array<string, UploadedFile> $uploads requirement_id => UploadedFile

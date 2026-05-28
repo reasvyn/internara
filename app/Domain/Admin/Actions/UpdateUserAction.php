@@ -20,7 +20,7 @@ use RuntimeException;
  * S1 - Secure: Atomic user update with profile and role sync.
  * S2 - Sustain: Proper error handling and logging.
  */
-class UpdateUserAction extends BaseAction
+final class UpdateUserAction extends BaseAction
 {
     /**
      * Update an existing user.

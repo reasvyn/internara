@@ -11,7 +11,7 @@ use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Mentee\Models\Mentee;
 use App\Domain\User\Models\User;
 
-class SubmitAssignmentAction extends BaseAction
+final class SubmitAssignmentAction extends BaseAction
 {
     public function execute(User $student, Assignment $assignment, array $data): Submission
     {

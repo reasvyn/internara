@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Internship\Enums\InternshipStatus;
 use Illuminate\Database\Eloquent\Builder;
 
-class BatchUpdateInternshipStatusAction extends BaseAction
+final class BatchUpdateInternshipStatusAction extends BaseAction
 {
     public function execute(Builder $query, InternshipStatus $status): int
     {

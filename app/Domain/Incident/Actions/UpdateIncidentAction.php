@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Incident\Models\IncidentReport;
 use Illuminate\Support\Facades\Validator;
 
-class UpdateIncidentAction extends BaseAction
+final class UpdateIncidentAction extends BaseAction
 {
     public function execute(IncidentReport $incident, array $data): IncidentReport
     {

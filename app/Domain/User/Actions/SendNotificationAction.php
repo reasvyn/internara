@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Validator;
  * S1 - Secure: Validates user exists.
  * S2 - Sustain: Single-purpose action.
  */
-class SendNotificationAction extends BaseAction implements SendsNotifications
+final class SendNotificationAction extends BaseAction implements SendsNotifications
 {
     public function execute(
         string $userId,

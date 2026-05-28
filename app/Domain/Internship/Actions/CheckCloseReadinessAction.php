@@ -12,7 +12,7 @@ use App\Domain\Internship\Models\Internship;
 use App\Domain\Mentor\Models\SupervisionLog;
 use App\Domain\Registration\Models\Registration;
 
-class CheckCloseReadinessAction extends BaseAction
+final class CheckCloseReadinessAction extends BaseAction
 {
     /**
      * @return array<string, array{passed: bool, total: int, pending: int, message: string}>

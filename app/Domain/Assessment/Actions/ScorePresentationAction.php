@@ -8,7 +8,7 @@ use App\Domain\Assessment\Models\PresentationExaminer;
 use App\Domain\Core\Actions\BaseAction;
 use Illuminate\Support\Facades\Validator;
 
-class ScorePresentationAction extends BaseAction
+final class ScorePresentationAction extends BaseAction
 {
     public function execute(PresentationExaminer $examiner, array $data): PresentationExaminer
     {

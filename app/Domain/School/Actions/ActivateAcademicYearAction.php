@@ -13,7 +13,7 @@ use App\Domain\School\Models\AcademicYear;
  *
  * S1 - Secure: Only one academic year can be active at a time.
  */
-class ActivateAcademicYearAction extends BaseAction
+final class ActivateAcademicYearAction extends BaseAction
 {
     public function execute(AcademicYear $year): AcademicYear
     {

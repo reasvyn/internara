@@ -13,7 +13,7 @@ use App\Domain\Core\Actions\BaseAction;
  * S1 - Secure: Validated updates with authorization check.
  * S2 - Sustain: Single-purpose action.
  */
-class UpdateAssignmentAction extends BaseAction
+final class UpdateAssignmentAction extends BaseAction
 {
     public function execute(
         Assignment $assignment,

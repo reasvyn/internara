@@ -10,7 +10,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Internship\Models\Report;
 use Illuminate\Support\Facades\DB;
 
-class AutoCalculateAssessmentAction extends BaseAction
+final class AutoCalculateAssessmentAction extends BaseAction
 {
     public function execute(Assessment $assessment): Assessment
     {

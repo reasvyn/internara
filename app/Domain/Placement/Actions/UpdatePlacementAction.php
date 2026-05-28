@@ -7,7 +7,7 @@ namespace App\Domain\Placement\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Placement\Models\Placement;
 
-class UpdatePlacementAction extends BaseAction
+final class UpdatePlacementAction extends BaseAction
 {
     public function execute(Placement $placement, array $data): Placement
     {

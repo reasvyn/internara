@@ -7,7 +7,7 @@ namespace App\Domain\Assessment\Actions;
 use App\Domain\Assessment\Models\Indicator;
 use App\Domain\Core\Actions\BaseAction;
 
-class CreateIndicatorAction extends BaseAction
+final class CreateIndicatorAction extends BaseAction
 {
     public function execute(
         string $competencyId,

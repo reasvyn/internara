@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Internship\Models\Report;
 
-class SubmitReportAction extends BaseAction
+final class SubmitReportAction extends BaseAction
 {
     public function execute(Report $report, array $content): Report
     {

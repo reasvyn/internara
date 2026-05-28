@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Placement\Models\Placement;
 
-class DeletePlacementAction extends BaseAction
+final class DeletePlacementAction extends BaseAction
 {
     public function execute(Placement $placement): void
     {

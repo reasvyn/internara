@@ -7,7 +7,7 @@ namespace App\Domain\Internship\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Internship\Models\InternshipGroupMember;
 
-class RemoveMemberFromGroupAction extends BaseAction
+final class RemoveMemberFromGroupAction extends BaseAction
 {
     public function execute(InternshipGroupMember $member): void
     {

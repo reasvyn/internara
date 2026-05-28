@@ -14,7 +14,7 @@ use App\Domain\Core\Actions\BaseAction;
  * S1 - Secure: Validated creation with type verification.
  * S2 - Sustain: Clear single-purpose action.
  */
-class CreateAssignmentAction extends BaseAction
+final class CreateAssignmentAction extends BaseAction
 {
     public function execute(
         string $assignmentTypeId,

@@ -10,7 +10,7 @@ use App\Domain\Registration\Models\Registration;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
-class BatchIssueCertificateAction extends BaseAction
+final class BatchIssueCertificateAction extends BaseAction
 {
     public function __construct(protected readonly IssueCertificateAction $issueCertificate) {}
 

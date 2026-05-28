@@ -9,7 +9,7 @@ use App\Domain\Assessment\Models\PresentationExaminer;
 use App\Domain\Core\Actions\BaseAction;
 use Illuminate\Support\Facades\Validator;
 
-class SchedulePresentationAction extends BaseAction
+final class SchedulePresentationAction extends BaseAction
 {
     public function execute(array $data): Presentation
     {

@@ -10,7 +10,7 @@ use App\Domain\Document\Support\DocumentRenderer;
 use App\Domain\Registration\Models\Registration;
 use Illuminate\Support\Facades\Storage;
 
-class RenderDocumentAction extends BaseAction
+final class RenderDocumentAction extends BaseAction
 {
     public function __construct(
         private readonly DocumentRenderer $renderer,

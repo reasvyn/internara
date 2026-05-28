@@ -12,7 +12,7 @@ use App\Domain\Mentee\Models\Mentee;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\User\Models\User;
 
-class RegisterInternshipAction extends BaseAction
+final class RegisterInternshipAction extends BaseAction
 {
     public function execute(User $student, array $data): Registration
     {

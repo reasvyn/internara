@@ -13,7 +13,7 @@ use App\Domain\School\Models\AcademicYear;
  *
  * S1 - Secure: Logged for audit trail. Cannot delete active year.
  */
-class DeleteAcademicYearAction extends BaseAction
+final class DeleteAcademicYearAction extends BaseAction
 {
     /**
      * @throws RuntimeException when the year is active or has linked data

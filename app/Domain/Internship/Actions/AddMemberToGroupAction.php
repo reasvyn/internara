@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Internship\Models\InternshipGroup;
 use App\Domain\Internship\Models\InternshipGroupMember;
 
-class AddMemberToGroupAction extends BaseAction
+final class AddMemberToGroupAction extends BaseAction
 {
     public function execute(InternshipGroup $group, array $data): InternshipGroupMember
     {

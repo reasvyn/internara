@@ -7,13 +7,13 @@ use App\Domain\School\Entities\DepartmentState;
 
 describe('DepartmentState entity', function () {
     it('can be deleted when no profiles', function () {
-        $entity = new DepartmentState(profileCount: 0);
+        $entity = new DepartmentState(profileCount: 0, hasProfiles: false);
 
         expect($entity->canBeDeleted())->toBeTrue();
     });
 
     it('cannot be deleted when has profiles', function () {
-        $entity = new DepartmentState(profileCount: 5);
+        $entity = new DepartmentState(profileCount: 5, hasProfiles: true);
 
         expect($entity->canBeDeleted())->toBeFalse();
     });

@@ -7,7 +7,7 @@ namespace App\Domain\Assessment\Actions;
 use App\Domain\Assessment\Models\Competency;
 use App\Domain\Core\Actions\BaseAction;
 
-class DeleteCompetencyAction extends BaseAction
+final class DeleteCompetencyAction extends BaseAction
 {
     public function execute(Competency $competency): void
     {

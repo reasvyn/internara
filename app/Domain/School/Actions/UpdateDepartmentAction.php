@@ -11,7 +11,7 @@ use Illuminate\Support\Arr;
 /**
  * Action to update an existing department.
  */
-class UpdateDepartmentAction extends BaseAction
+final class UpdateDepartmentAction extends BaseAction
 {
     public function execute(Department $department, array $data): Department
     {

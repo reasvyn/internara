@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Partnership\Models\Partnership;
 use Illuminate\Support\Facades\Validator;
 
-class UpdatePartnershipAction extends BaseAction
+final class UpdatePartnershipAction extends BaseAction
 {
     public function execute(Partnership $partnership, array $data): Partnership
     {

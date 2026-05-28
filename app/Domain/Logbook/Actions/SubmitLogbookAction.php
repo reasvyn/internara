@@ -10,7 +10,7 @@ use App\Domain\Logbook\Models\Logbook;
 use App\Domain\User\Models\User;
 use Carbon\Carbon;
 
-class SubmitLogbookAction extends BaseAction
+final class SubmitLogbookAction extends BaseAction
 {
     public function execute(User $user, array $data): Logbook
     {

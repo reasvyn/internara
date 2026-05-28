@@ -11,7 +11,7 @@ use App\Domain\Placement\Models\PlacementChangeRequest;
 use App\Domain\Registration\Models\Registration;
 use Illuminate\Support\Facades\Validator;
 
-class RequestPlacementChangeAction extends BaseAction
+final class RequestPlacementChangeAction extends BaseAction
 {
     public function execute(Registration $registration, array $data): PlacementChangeRequest
     {

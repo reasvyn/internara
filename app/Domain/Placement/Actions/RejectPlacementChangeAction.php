@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Placement\Models\PlacementChangeRequest;
 
-class RejectPlacementChangeAction extends BaseAction
+final class RejectPlacementChangeAction extends BaseAction
 {
     public function execute(PlacementChangeRequest $request, string $reason): void
     {

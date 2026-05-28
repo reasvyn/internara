@@ -12,7 +12,7 @@ use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
 
-class ReportIncidentAction extends BaseAction
+final class ReportIncidentAction extends BaseAction
 {
     public function execute(array $data): IncidentReport
     {

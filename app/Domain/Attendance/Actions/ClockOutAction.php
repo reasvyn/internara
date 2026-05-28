@@ -10,7 +10,7 @@ use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\User\Models\User;
 use Carbon\Carbon;
 
-class ClockOutAction extends BaseAction
+final class ClockOutAction extends BaseAction
 {
     public function execute(User $user, array $data, ?string $requestIp = null): Attendance
     {

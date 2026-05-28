@@ -9,7 +9,7 @@ use App\Domain\Mentor\Models\Mentor;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\DB;
 
-class CreateMentorProfileAction extends BaseAction
+final class CreateMentorProfileAction extends BaseAction
 {
     public function execute(
         string $userId,

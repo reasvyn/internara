@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Cache;
  * S1 - Secure: Only notification owner can mark as read.
  * S2 - Sustain: Single-purpose action.
  */
-class MarkAsReadAction extends BaseAction
+final class MarkAsReadAction extends BaseAction
 {
     public function execute(Notification $notification): Notification
     {

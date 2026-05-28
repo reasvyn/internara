@@ -7,7 +7,7 @@ namespace App\Domain\Attendance\Actions;
 use App\Domain\Attendance\Models\Attendance;
 use App\Domain\Core\Actions\BaseAction;
 
-class VerifyAttendanceAction extends BaseAction
+final class VerifyAttendanceAction extends BaseAction
 {
     public function execute(Attendance $log): Attendance
     {

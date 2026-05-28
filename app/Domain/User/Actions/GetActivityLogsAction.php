@@ -8,7 +8,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Models\ActivityLog;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class GetActivityLogsAction extends BaseAction
+final class GetActivityLogsAction extends BaseAction
 {
     public function execute(string $userId, int $perPage = 50): LengthAwarePaginator
     {

@@ -13,7 +13,7 @@ use App\Domain\User\Models\User;
  *
  * S1 - Secure: Creates immutable audit trail for compliance.
  */
-class AcknowledgeHandbookAction extends BaseAction
+final class AcknowledgeHandbookAction extends BaseAction
 {
     public function execute(User $user, Handbook $handbook): void
     {
