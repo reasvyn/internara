@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Shared\Enums\CsvRowResult;
 use App\Domain\Shared\Support\CsvHandler;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -92,11 +93,11 @@ describe('CsvHandler', function () {
         $result = $handler->import($csvPath, function (array $row) {
             static $seen = [];
             if (in_array($row[0], $seen, true)) {
-                return 'skipped';
+                return CsvRowResult::SKIPPED;
             }
             $seen[] = $row[0];
 
-            return 'created';
+            return CsvRowResult::CREATED;
         });
 
         unlink($csvPath);

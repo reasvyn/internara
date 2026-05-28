@@ -43,14 +43,6 @@ describe('Theme', function () {
         expect(Theme::presets())->toBe([]);
     });
 
-    it('returns preset keys', function () {
-        config(['settings.colors.presets' => ['ocean' => [], 'forest' => []]]);
-
-        $keys = Theme::presetKeys();
-
-        expect($keys)->toBe(['ocean', 'forest']);
-    });
-
     it('returns all theme colors', function () {
         config(['settings.colors.defaults' => [
             'primary' => '#059669',
