@@ -1,4 +1,7 @@
 # Internara
+> Last updated: 2026-05-27
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+
 
 **Self-hosted vocational fieldwork management system** for upper-secondary schools and educational institutions running compulsory work placement programs. Internara manages the full program lifecycle — from registration through placement, daily operations, assessment, and certification.
 

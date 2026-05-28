@@ -1,4 +1,7 @@
 <laravel-boost-guidelines>
+> Last updated: 2026-05-20
+> Changes: refactor: adopt domain-first architecture across all layers
+
 === foundation rules ===
 
 # Laravel Boost Guidelines
