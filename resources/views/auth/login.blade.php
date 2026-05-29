@@ -9,7 +9,7 @@
             <x-mary-input
                 wire:model="form.identifier"
                 :label="__('auth.login.identifier')"
-                placeholder="username@email.com"
+                :placeholder="__('auth.login.identifier_placeholder')"
                 icon="o-identification"
             />
 

@@ -13,22 +13,22 @@ use App\Domain\Auth\Livewire\ResetPassword;
 use App\Domain\Registration\Livewire\RegistrationCenter;
 
 Route::middleware(['guest', 'auth.throttle'])->group(function () {
-    Route::livewire('/register', RegistrationCenter::class)->name('register');
-    Route::livewire('/login', Login::class)->name('login');
-    Route::livewire('/activate', ActivateAccount::class)->name('activate');
-    Route::livewire('/forgot-password', ForgotPassword::class)->name('password.request');
-    Route::livewire('/reset-password/{token}', ResetPassword::class)->name('password.reset');
-    Route::livewire('/recover-account', AccountRecovery::class)->name('recover.account');
+    Route::get('/register', RegistrationCenter::class)->name('register');
+    Route::get('/login', Login::class)->name('login');
+    Route::get('/activate', ActivateAccount::class)->name('activate');
+    Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
+    Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
+    Route::get('/recover-account', AccountRecovery::class)->name('recover.account');
 });
 
 Route::middleware(['auth', 'auth.throttle'])->group(function () {
-    Route::livewire('/user/confirm-password', ConfirmPassword::class)->name('password.confirm');
+    Route::get('/user/confirm-password', ConfirmPassword::class)->name('password.confirm');
 });
 
 Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
-        Route::livewire('/accounts', AccountLifecycleManager::class)->name('accounts.lifecycle');
-        Route::livewire('/recovery-slips', RecoverySlipManager::class)->name('recovery-slips');
+        Route::get('/accounts', AccountLifecycleManager::class)->name('accounts.lifecycle');
+        Route::get('/recovery-slips', RecoverySlipManager::class)->name('recovery-slips');
     });

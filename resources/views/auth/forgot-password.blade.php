@@ -26,7 +26,7 @@
                     wire:model="form.email"
                     type="email"
                     :label="__('auth.forgot_password.email')"
-                    placeholder="user@example.com"
+                    :placeholder="__('auth.forgot_password.email_placeholder')"
                     icon="o-envelope"
                 />
 
