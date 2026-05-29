@@ -18,8 +18,8 @@ return [
         'submit' => 'Go to Dashboard',
         'welcome_back' => 'Welcome back, :name!',
         'back_to_login' => 'Back to login',
-        'no_account' => 'No account yet?',
-        'claim_account' => 'Claim via Activation Code',
+        'no_account' => 'Have an activation code?',
+        'claim_account' => 'Activate your account',
     ],
     'forgot_password' => [
         'subtitle' => 'Enter your email to receive a reset link',

@@ -18,8 +18,8 @@ return [
         'submit' => 'Masuk ke Dasbor',
         'welcome_back' => 'Selamat datang kembali, :name!',
         'back_to_login' => 'Kembali ke halaman masuk',
-        'no_account' => 'Belum memiliki akun?',
-        'claim_account' => 'Klaim Akun via Kode Aktivasi',
+        'no_account' => 'Punya kode aktivasi?',
+        'claim_account' => 'Aktivasi Akun di sini',
     ],
     'forgot_password' => [
         'subtitle' => 'Masukkan email Anda untuk menerima tautan atur ulang kata sandi',
