@@ -59,6 +59,7 @@ return [
         'reset' => 'Reset',
         'reset_filters' => 'Reset Filter',
         'close' => 'Tutup',
+        'optional' => 'Opsional',
         'back' => 'Kembali',
         'next' => 'Lanjut',
         'delete_selected' => 'Hapus Terpilih',
