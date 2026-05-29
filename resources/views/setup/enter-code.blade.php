@@ -35,7 +35,7 @@
                         <x-mary-input
                             label="{{ __('setup.code_entry.code_label') }}"
                             name="setup_token"
-                            placeholder="e.g., a1b2c3d4e5f6g7h8i9j0..."
+                            placeholder="{{ __('setup.code_entry.placeholder') }}"
                             required
                             autofocus
                             autocomplete="off"
