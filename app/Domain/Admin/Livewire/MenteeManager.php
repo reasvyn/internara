@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Livewire;
 
+use App\Domain\Admin\Livewire\Concerns\DownloadsAccountSlips;
 use App\Domain\Admin\Livewire\Forms\MenteeForm;
-use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Mentee\Actions\CreateMenteeAction;
 use App\Domain\Mentee\Actions\DeleteMenteeAction;
@@ -17,7 +17,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class MenteeManager extends BaseRecordManager
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, DownloadsAccountSlips;
 
     public bool $userModal = false;
 
@@ -106,8 +106,10 @@ class MenteeManager extends BaseRecordManager
                     'is_active' => $this->form->is_active,
                 ],
             );
-            $code = ActivationToken::generateFor($mentee->user);
-            flash()->success(__('user.mentee.success_created_activation', ['code' => $code]));
+            $this->userModal = false;
+            $this->redirect(route('admin.users.account-slip', $mentee->user));
+
+            return;
         }
 
         $this->userModal = false;

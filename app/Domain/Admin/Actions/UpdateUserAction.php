@@ -11,7 +11,6 @@ use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
 use App\Domain\User\Rules\ReservedAuthoritativeName;
 use App\Domain\User\Rules\SystemUsername;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RuntimeException;
@@ -50,46 +49,46 @@ final class UpdateUserAction extends BaseAction
         $this->validateUserData($userData, $user);
 
         return $this->transaction(function () use ($user, $userData, $profileData, $roles) {
-                $updateData = array_filter(
-                    [
-                        'name' => $userData['name'] ?? null,
-                        'email' => $userData['email'] ?? null,
-                        'username' => $userData['username'] ?? null,
-                        'password' => isset($userData['password'])
-                            ? Hash::make($userData['password'])
-                            : null,
-                        'setup_required' => $userData['setup_required'] ?? null,
-                        'locked_at' => array_key_exists('locked_at', $userData) ? $userData['locked_at'] : null,
-                        'locked_reason' => array_key_exists('locked_reason', $userData) ? $userData['locked_reason'] : null,
-                    ],
-                    fn ($v) => $v !== null,
-                );
+            $updateData = array_filter(
+                [
+                    'name' => $userData['name'] ?? null,
+                    'email' => $userData['email'] ?? null,
+                    'username' => $userData['username'] ?? null,
+                    'password' => isset($userData['password'])
+                        ? Hash::make($userData['password'])
+                        : null,
+                    'setup_required' => $userData['setup_required'] ?? null,
+                    'locked_at' => array_key_exists('locked_at', $userData) ? $userData['locked_at'] : null,
+                    'locked_reason' => array_key_exists('locked_reason', $userData) ? $userData['locked_reason'] : null,
+                ],
+                fn ($v) => $v !== null,
+            );
 
-                if ($updateData !== []) {
-                    $user->update($updateData);
-                }
+            if ($updateData !== []) {
+                $user->update($updateData);
+            }
 
-                if ($profileData !== null && $profileData !== []) {
-                    $user->profile()->updateOrCreate(['user_id' => $user->id], $profileData);
-                }
+            if ($profileData !== null && $profileData !== []) {
+                $user->profile()->updateOrCreate(['user_id' => $user->id], $profileData);
+            }
 
-                if ($roles !== null) {
-                    $user->syncRoles($roles);
-                }
+            if ($roles !== null) {
+                $user->syncRoles($roles);
+            }
 
-                SmartLogger::info('user_updated')
-                    ->event('user_updated')
-                    ->module('Auth')
-                    ->about($user)
-                    ->withPayload([
-                        'email' => $user->email,
-                        'roles' => $roles,
-                    ])
-                    ->activityOnly()
-                    ->save();
+            SmartLogger::info('user_updated')
+                ->event('user_updated')
+                ->module('Auth')
+                ->about($user)
+                ->withPayload([
+                    'email' => $user->email,
+                    'roles' => $roles,
+                ])
+                ->activityOnly()
+                ->save();
 
-                return $user;
-            });
+            return $user;
+        });
     }
 
     /**

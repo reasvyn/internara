@@ -11,7 +11,6 @@ use App\Domain\User\Models\User;
 use App\Domain\User\Rules\ReservedAuthoritativeName;
 use App\Domain\User\Rules\SystemUsername;
 use App\Domain\User\Support\UserIdentifierGenerator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RuntimeException;
@@ -45,34 +44,34 @@ final class CreateUserAction extends BaseAction
         ])->validate();
 
         $user = $this->transaction(function () use ($userData, $profileData, $roles, $plainPassword) {
-                $user = User::create([
-                    'name' => $userData['name'],
-                    'email' => $userData['email'],
-                    'username' => $userData['username'],
-                    'password' => Hash::make($plainPassword),
-                    'setup_required' => $userData['setup_required'] ?? false,
-                ]);
+            $user = User::create([
+                'name' => $userData['name'],
+                'email' => $userData['email'],
+                'username' => $userData['username'],
+                'password' => Hash::make($plainPassword),
+                'setup_required' => $userData['setup_required'] ?? false,
+            ]);
 
-                if (! empty($profileData)) {
-                    $user->profile()->create($profileData);
-                }
+            if (! empty($profileData)) {
+                $user->profile()->create($profileData);
+            }
 
-                if (! empty($roles)) {
-                    $user->syncRoles($roles);
-                }
+            if (! empty($roles)) {
+                $user->syncRoles($roles);
+            }
 
-                SmartLogger::info('user_created')
-                    ->event('user_created')
-                    ->module('Auth')
-                    ->about($user)
-                    ->withPayload([
-                        'email' => $user->email,
-                        'roles' => $roles,
-                    ])
-                    ->activityOnly()
-                    ->save();
+            SmartLogger::info('user_created')
+                ->event('user_created')
+                ->module('Auth')
+                ->about($user)
+                ->withPayload([
+                    'email' => $user->email,
+                    'roles' => $roles,
+                ])
+                ->activityOnly()
+                ->save();
 
-                return $user;
+            return $user;
         });
 
         if ($shouldSendWelcome && $user->email) {

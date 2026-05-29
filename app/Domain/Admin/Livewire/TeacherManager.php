@@ -7,9 +7,9 @@ namespace App\Domain\Admin\Livewire;
 use App\Domain\Admin\Actions\CreateUserAction;
 use App\Domain\Admin\Actions\DeleteUserAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
+use App\Domain\Admin\Livewire\Concerns\DownloadsAccountSlips;
 use App\Domain\Admin\Livewire\Forms\TeacherForm;
 use App\Domain\Auth\Enums\Role as RoleEnum;
-use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\User\Models\User;
 use Illuminate\Contracts\View\View;
@@ -18,7 +18,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class TeacherManager extends BaseRecordManager
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, DownloadsAccountSlips;
 
     public bool $userModal = false;
 
@@ -105,8 +105,10 @@ class TeacherManager extends BaseRecordManager
             flash()->success(__('user.teacher.success_updated'));
         } else {
             $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], $profileData, [RoleEnum::TEACHER->value], false);
-            $code = ActivationToken::generateFor($user);
-            flash()->success(__('user.teacher.success_created_activation', ['code' => $code]));
+            $this->userModal = false;
+            $this->redirect(route('admin.users.account-slip', $user));
+
+            return;
         }
 
         $this->userModal = false;

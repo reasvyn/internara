@@ -20,6 +20,8 @@ return [
         'status_changed' => 'Status pengguna berubah. Notifikasi terkirim.',
         'password_reset' => 'Password direset ke: :password',
         'password_reset_activation' => 'Password direset. Kode aktivasi: :code',
+        'download_slip' => 'Unduh Slip',
+        'download_slips' => 'Unduh Slip Akun',
         'change_status' => 'Ubah Status',
         'new_status' => 'Status Baru',
         'status_reason' => 'Alasan',
