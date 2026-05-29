@@ -30,19 +30,19 @@
     </div>
 
     @if($recoveryKey)
-    <div class="max-w-sm mx-auto bg-error/5 border border-error/20 rounded-xl p-6 mb-6 text-left">
-        <h4 class="text-xs font-semibold uppercase tracking-wider text-error/60 mb-2">{{ __('setup.wizard.recovery_key_title') }}</h4>
-        <p class="text-xs text-error/70 leading-relaxed mb-3">
+    <div class="max-w-sm mx-auto bg-warning/5 border border-warning/20 rounded-xl p-6 mb-6 text-left">
+        <h4 class="text-xs font-semibold uppercase tracking-wider text-warning/60 mb-2">{{ __('setup.wizard.recovery_key_title') }}</h4>
+        <p class="text-xs text-warning/70 leading-relaxed mb-3">
             {{ __('setup.wizard.recovery_key_desc') }}
         </p>
         <div
-            class="bg-base-100 rounded-lg px-3 py-2.5 border border-error/10 flex items-center gap-2"
+            class="bg-base-100 rounded-lg px-3 py-2.5 border border-warning/10 flex items-center gap-2"
             x-data="{ copied: false }"
         >
-            <code class="text-sm font-mono font-bold text-error break-all select-all flex-1">{{ $recoveryKey }}</code>
+            <code class="text-sm font-mono font-bold text-warning break-all select-all flex-1">{{ $recoveryKey }}</code>
             <button
                 type="button"
-                class="btn btn-xs btn-ghost text-error/60 hover:text-error shrink-0"
+                class="btn btn-xs btn-ghost text-warning/60 hover:text-warning shrink-0"
                 x-on:click="
                     navigator.clipboard.writeText(@js($recoveryKey));
                     copied = true;

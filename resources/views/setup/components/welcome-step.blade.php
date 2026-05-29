@@ -2,6 +2,9 @@
 
 <div class="p-6 sm:p-8">
     <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center size-14 rounded-full bg-primary/10 text-primary mb-5">
+            <x-mary-icon name="o-rocket-launch" class="size-7" />
+        </div>
         <h2 class="text-xl font-bold mb-2">{{ __('setup.wizard.welcome') }}</h2>
         <p class="text-sm text-base-content/60 max-w-md mx-auto">
             {{ __('setup.wizard.welcome_desc') }}
@@ -19,7 +22,7 @@
                     <div class="space-y-2">
                         @foreach($category['checks'] as $check)
                             <div @class([
-                                'flex items-center gap-3 px-4 py-3 rounded-lg border text-sm',
+                                'flex items-center gap-3 px-4 py-3 rounded-lg border text-sm transition-colors',
                                 'border-success/20 bg-success/5' => $check['status'] === 'pass',
                                 'border-error/20 bg-error/5' => $check['status'] === 'fail',
                                 'border-warning/20 bg-warning/5' => $check['status'] === 'warn',
@@ -58,14 +61,19 @@
                 spinner="nextStep"
             />
         @else
-            <p class="text-xs text-base-content/50 mr-auto">{{ __('setup.wizard.audit_must_pass') }}</p>
-            <x-mary-button
-                label="{{ __('setup.wizard.recheck') }}"
-                icon="o-arrow-path"
-                class="btn-warning"
-                wire:click="runAudit"
-                spinner="runAudit"
-            />
+            <div class="flex items-center gap-3 w-full">
+                <div class="flex-1 bg-warning/5 border border-warning/20 rounded-lg px-4 py-3">
+                    <p class="text-xs text-warning/80 font-medium">{{ __('setup.wizard.requirements_not_met') }}</p>
+                    <p class="text-xs text-warning/60 mt-0.5">{{ __('setup.wizard.audit_must_pass') }}</p>
+                </div>
+                <x-mary-button
+                    label="{{ __('setup.wizard.recheck') }}"
+                    icon="o-arrow-path"
+                    class="btn-warning"
+                    wire:click="runAudit"
+                    spinner="runAudit"
+                />
+            </div>
         @endif
     </div>
 </div>

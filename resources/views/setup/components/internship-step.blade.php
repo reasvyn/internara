@@ -1,6 +1,9 @@
 <div class="p-6 sm:p-8">
     <div class="mb-8">
-        <h2 class="text-xl font-bold mb-1">{{ __('setup.wizard.internship') }}</h2>
+        <div class="flex items-center gap-3 mb-1">
+            <h2 class="text-xl font-bold">{{ __('setup.wizard.internship') }}</h2>
+            <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-base-content/10 text-base-content/50">{{ __('common.optional') }}</span>
+        </div>
         <p class="text-sm text-base-content/50">{{ __('setup.wizard.internship_subtitle') }}</p>
     </div>
 

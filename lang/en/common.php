@@ -59,6 +59,7 @@ return [
         'reset' => 'Reset',
         'reset_filters' => 'Reset Filters',
         'close' => 'Close',
+        'optional' => 'Optional',
         'back' => 'Back',
         'next' => 'Next',
         'delete_selected' => 'Delete Selected',
