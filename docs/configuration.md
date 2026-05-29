@@ -37,7 +37,7 @@ Variables follow a naming convention that makes their origin clear:
 | `AWS_*` | Cloud storage | `AWS_ACCESS_KEY_ID`, `AWS_BUCKET` |
 | `LOG_*` | Logging | `LOG_CHANNEL`, `LOG_LEVEL`, `LOG_STACK` |
 | `PULSE_*` | Monitoring | `PULSE_ENABLED` |
-| `VITE_*` | Frontend | `VITE_REVERB_APP_KEY` |
+| `VITE_*` | Frontend | various Vite env vars |
 
 ---
 
@@ -185,7 +185,6 @@ See [Localization](localization.md) for adding new languages.
 | `config/flasher.php` | Flash message style, timeout, position | — |
 | `config/localization.php` | Supported locales, fallback rules | — |
 | `config/pulse.php` | Pulse recorders, ingestion, pruning | `PULSE_*` |
-| `config/reverb.php` | WebSocket server, apps, scaling | `REVERB_*`, `VITE_REVERB_*` |
 | `config/mary.php` | maryUI component configuration | — |
 
 ---

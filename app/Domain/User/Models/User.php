@@ -99,11 +99,6 @@ class User extends Authenticatable implements HasMedia
         return strtoupper(substr($this->name, 0, 2));
     }
 
-    public function receivesBroadcastNotificationsOn(): string
-    {
-        return 'App.Domain.User.Models.User.'.$this->id;
-    }
-
     public function asApprentice(): Apprentice
     {
         return Apprentice::fromModel($this);

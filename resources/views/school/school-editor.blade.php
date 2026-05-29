@@ -119,9 +119,21 @@
                                 <x-mary-icon name="o-camera" class="size-8 text-base-100" />
                             </div>
                         </div>
+                        @if($school->getFirstMediaUrl('logo', 'thumb'))
+                            <button type="button"
+                                wire:click="$set('showConfirm', true)"
+                                class="absolute -top-2 -right-2 size-6 bg-error text-error-content rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm opacity-0 group-hover:opacity-100">
+                                <x-mary-icon name="o-x-mark" class="size-3" />
+                            </button>
+                        @endif
                     </div>
                     <p class="text-[10px] text-base-content/40 text-center">{{ __('school.logo_hint') }}</p>
                 </div>
+
+                @include('shared.ui.confirm', [
+                    'message' => __('school.logo_remove_confirm'),
+                    'confirmText' => __('common.actions.remove'),
+                ])
             </div>
 
             {{-- System Context --}}

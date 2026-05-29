@@ -6,18 +6,21 @@ namespace App\Domain\Partnership\Livewire;
 
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Core\Livewire\BaseRecordManager;
+use App\Domain\Partnership\Actions\BatchDeleteCompanyAction;
 use App\Domain\Partnership\Actions\CreateCompanyAction;
 use App\Domain\Partnership\Actions\DeleteCompanyAction;
 use App\Domain\Partnership\Actions\UpdateCompanyAction;
 use App\Domain\Partnership\Livewire\Forms\CompanyForm;
 use App\Domain\Partnership\Models\Company;
 use App\Domain\Placement\Models\Placement;
+use App\Domain\Shared\Enums\CsvRowResult;
 use App\Domain\Shared\Support\CsvHandler;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CompanyManager extends BaseRecordManager
 {
@@ -61,14 +64,19 @@ class CompanyManager extends BaseRecordManager
 
     protected function applySearch(Builder $query): Builder
     {
-        return $query
-            ->where('name', 'like', "%{$this->search}%")
-            ->orWhere('industry_sector', 'like', "%{$this->search}%");
+        return $query->where(function ($q) {
+            $q->where('name', 'like', "%{$this->search}%")
+                ->orWhere('email', 'like', "%{$this->search}%")
+                ->orWhere('industry_sector', 'like', "%{$this->search}%");
+        });
     }
 
     protected function applyFilters(Builder $query): Builder
     {
-        return $query->when($this->filters['industry_sector'] ?? null, fn ($q, $v) => $q->where('industry_sector', 'like', "%{$v}%"));
+        return $query
+            ->when($this->filters['industry_sector'] ?? null, fn ($q, $v) => $q->where('industry_sector', 'like', "%{$v}%"))
+            ->when($this->filters['phone'] ?? null, fn ($q, $v) => $q->where('phone', 'like', "%{$v}%"))
+            ->when($this->filters['has_placements'] ?? null, fn ($q, $v) => $v === 'yes' ? $q->has('placements') : $q->doesntHave('placements'));
     }
 
     #[Computed]
@@ -77,6 +85,7 @@ class CompanyManager extends BaseRecordManager
         return [
             'total' => Company::count(),
             'with_placements' => Company::whereHas('placements')->orWhereHas('partnerships')->count(),
+            'active_partnerships' => Company::whereHas('partnerships', fn ($q) => $q->where('status', 'active'))->count(),
             'available_slots' => Placement::query()
                 ->selectRaw('SUM(quota - filled_quota) as available')
                 ->value('available') ?? 0,
@@ -147,7 +156,7 @@ class CompanyManager extends BaseRecordManager
         $this->showConfirm = true;
     }
 
-    public function confirmAction(DeleteCompanyAction $deleteAction): void
+    public function confirmAction(DeleteCompanyAction $deleteAction, BatchDeleteCompanyAction $batchDelete): void
     {
         if ($this->confirmTarget === null && $this->confirmType !== 'delete_selected') {
             return;
@@ -156,7 +165,7 @@ class CompanyManager extends BaseRecordManager
         try {
             match ($this->confirmType) {
                 'delete' => $this->executeDelete($this->confirmTarget, $deleteAction),
-                'delete_selected' => $this->executeDeleteSelected($deleteAction),
+                'delete_selected' => $this->executeDeleteSelected($batchDelete),
                 default => null,
             };
         } catch (RejectedException) {
@@ -175,27 +184,32 @@ class CompanyManager extends BaseRecordManager
         flash()->success(__('company.delete_success'));
     }
 
-    private function executeDeleteSelected(DeleteCompanyAction $action): void
+    private function executeDeleteSelected(BatchDeleteCompanyAction $action): void
     {
-        $count = 0;
+        $result = $action->execute($this->selectedIds);
 
-        foreach ($this->selectedIds as $id) {
-            $company = Company::find($id);
-
-            if ($company && $company->asCompanyState()->canBeDeleted()) {
-                $action->execute($company);
-                $count++;
-            }
+        if ($result['deleted'] > 0) {
+            flash()->success(__('common.actions.bulk_action_done', [
+                'count' => $result['deleted'],
+                'action' => __('common.actions.delete'),
+            ]));
         }
 
-        if ($count > 0) {
-            flash()->success(__('common.actions.bulk_action_done', ['count' => $count, 'action' => __('common.actions.delete')]));
+        if ($result['blocked'] > 0) {
+            flash()->warning(__('company.delete_blocked_bulk', ['count' => $result['blocked']]));
         }
 
         $this->clearSelection();
     }
 
     // --- Import / Export ---
+
+    public function updatedImportFile(): void
+    {
+        if ($this->importFile) {
+            $this->import(app(CsvHandler::class), app(CreateCompanyAction::class));
+        }
+    }
 
     public function import(CsvHandler $csv, CreateCompanyAction $create): void
     {
@@ -211,7 +225,7 @@ class CompanyManager extends BaseRecordManager
             }
 
             if (Company::where('name', $name)->exists()) {
-                return 'skipped';
+                return CsvRowResult::SKIPPED;
             }
 
             $create->execute([
@@ -224,7 +238,7 @@ class CompanyManager extends BaseRecordManager
                 'industry_sector' => trim($row[6] ?? '') ?: null,
             ]);
 
-            return 'created';
+            return CsvRowResult::CREATED;
         });
 
         $this->importFile = null;
@@ -241,7 +255,7 @@ class CompanyManager extends BaseRecordManager
         ]));
     }
 
-    public function export(CsvHandler $csv): mixed
+    public function export(CsvHandler $csv): StreamedResponse
     {
         $companies = Company::query()
             ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
@@ -252,10 +266,11 @@ class CompanyManager extends BaseRecordManager
             $companies,
             [__('common.name'), __('common.address'), __('common.phone'), __('common.email'), __('common.website'), __('common.description'), __('company.industry_sector')],
             fn ($c) => [$c->name, $c->address ?? '', $c->phone ?? '', $c->email ?? '', $c->website ?? '', $c->description ?? '', $c->industry_sector ?? ''],
-        )->send();
+            'companies.csv',
+        );
     }
 
-    public function exportSelected(CsvHandler $csv): mixed
+    public function exportSelected(CsvHandler $csv): ?StreamedResponse
     {
         if ($this->selectedIds === []) {
             flash()->warning(__('common.actions.no_records_selected'));
@@ -269,16 +284,17 @@ class CompanyManager extends BaseRecordManager
             $companies,
             [__('common.name'), __('common.address'), __('common.phone'), __('common.email'), __('common.website'), __('common.description'), __('company.industry_sector')],
             fn ($c) => [$c->name, $c->address ?? '', $c->phone ?? '', $c->email ?? '', $c->website ?? '', $c->description ?? '', $c->industry_sector ?? ''],
-        )->send();
+            'companies-selected.csv',
+        );
     }
 
-    public function downloadTemplate(CsvHandler $csv): mixed
+    public function downloadTemplate(CsvHandler $csv): StreamedResponse
     {
         return $csv->downloadTemplate(
             [__('common.name'), __('common.address'), __('common.phone'), __('common.email'), __('common.website'), __('common.description'), __('company.industry_sector')],
             [__('company.name_placeholder'), __('company.address_placeholder'), __('company.phone_placeholder'), __('company.email_placeholder'), __('company.website_placeholder'), '', __('company.industry_sector_placeholder')],
             'companies-template.csv',
-        )->send();
+        );
     }
 
     #[Layout('shared::layouts.app')]

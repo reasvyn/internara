@@ -158,12 +158,17 @@ return [
 
     'custom' => [
         'username_format' => 'The :attribute must start with "u" followed by at least 8 alphanumeric characters.',
+        'address' => [
+            'required' => 'The address field is required.',
+        ],
     ],
 
     '(and :count more error)' => '(and :count more error)',
     '(and :count more errors)' => '(and :count more errors)',
 
     'attributes' => [
+        'address' => 'address',
+        'avatar' => 'profile picture',
         'formData.name' => 'company name',
         'formData.address' => 'company address',
         'formData.phone' => 'phone',

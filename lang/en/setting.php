@@ -63,6 +63,11 @@ return [
 
     'messages' => [
         'saved' => 'System settings have been updated successfully.',
+        'logo_saved' => 'Brand logo saved successfully.',
+        'logo_removed' => 'Brand logo removed successfully.',
+        'favicon_saved' => 'Favicon saved successfully.',
+        'favicon_removed' => 'Favicon removed successfully.',
+        'remove_asset_confirm' => 'Are you sure you want to remove this asset?',
         'test_email_sent' => 'Test email sent successfully. Please check your inbox.',
         'test_email_failed' => 'Failed to send test email.',
     ],

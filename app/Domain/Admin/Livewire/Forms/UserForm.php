@@ -16,20 +16,12 @@ class UserForm extends Form
 
     public array $roles = [];
 
-    public string $password = '';
-
     public function rules(): array
     {
-        $rules = [
+        return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,'.($this->id ?? 'NULL'),
             'roles' => 'required|array|min:1',
         ];
-
-        if (! $this->id) {
-            $rules['password'] = 'required|min:8';
-        }
-
-        return $rules;
     }
 }

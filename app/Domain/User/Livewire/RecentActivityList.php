@@ -30,8 +30,8 @@ class RecentActivityList extends Component
                         <x-mary-icon name="o-bolt" class="size-4 opacity-50" />
                     </div>
                     <div>
-                        <div class="text-sm font-medium">{{ str($activity->description)->headline() }}</div>
-                        <div class="text-xs opacity-50">{{ $activity->created_at->diffForHumans() }} &bull; {{ $activity->properties->get('ip_address', '-') }}</div>
+                        <div class="text-sm font-medium">{{ __("activity.{$activity->description}") !== "activity.{$activity->description}" ? __("activity.{$activity->description}") : str($activity->description)->headline() }}</div>
+                        <div class="text-xs opacity-50">{{ $activity->created_at->locale(app()->getLocale())->diffForHumans() }} &bull; {{ $activity->properties->get('ip_address', '-') }}</div>
                     </div>
                 </div>
             @empty

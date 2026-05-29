@@ -40,6 +40,7 @@ return [
         'confirm' => 'Konfirmasi',
         'edit' => 'Ubah',
         'delete' => 'Hapus',
+        'remove' => 'Hapus',
         'create' => 'Buat',
         'update' => 'Perbarui',
         'view' => 'Lihat',
@@ -67,7 +68,10 @@ return [
         'no_records_matching' => 'Tidak ada data yang cocok dengan filter saat ini.',
         'bulk_action_done' => ':count data diperbarui melalui :action.',
         'mass_action_done' => ':count data diproses melalui aksi massal: :action.',
+        'all' => 'Semua',
     ],
+    'yes' => 'Ya',
+    'no' => 'Tidak',
     'status' => [
         'active' => 'Aktif',
         'inactive' => 'Tidak Aktif',

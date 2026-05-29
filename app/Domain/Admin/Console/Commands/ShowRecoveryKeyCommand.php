@@ -9,9 +9,6 @@ use App\Domain\Setup\Models\Setup;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-use function Laravel\Prompts\confirm;
-use function Laravel\Prompts\warning;
-
 class ShowRecoveryKeyCommand extends Command
 {
     protected $signature = 'admin:recovery-show';
@@ -36,9 +33,9 @@ class ShowRecoveryKeyCommand extends Command
             return self::FAILURE;
         }
 
-        warning(__('admin.recovery_show.warning'));
+        $this->components->warn(__('admin.recovery_show.warning'));
 
-        $confirmed = confirm(
+        $confirmed = $this->components->confirm(
             label: __('admin.recovery_show.confirm'),
             default: false,
         );

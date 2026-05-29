@@ -7,9 +7,6 @@ namespace App\Domain\Setup\Console\Commands\Traits;
 use App\Domain\Settings\Support\AppInfo;
 use App\Domain\Setup\Models\Setup;
 
-use function Laravel\Prompts\intro;
-use function Laravel\Prompts\outro;
-
 trait InteractsWithInstallerCli
 {
     protected function displayBanner(): void
@@ -22,16 +19,25 @@ trait InteractsWithInstallerCli
         $this->components->twoColumnDetail(__('setup.cli.php_version'), PHP_VERSION);
         $this->components->twoColumnDetail(__('setup.cli.environment'), app()->environment());
         $this->components->twoColumnDetail(__('setup.cli.timezone'), config('app.timezone'));
-        $this->newLine();
-
-        intro(__('setup.cli.banner_title').' (v'.AppInfo::version().')');
     }
 
-    protected function displayCompletion(?string $message = null): void
+    protected function displayCompletion(): void
     {
-        $message ??= __('setup.cli.installation_completed');
         $this->newLine();
-        outro($message);
+        $this->line('  <fg=black;bg=green> '.__('setup.cli.installation_completed').' </>');
+    }
+
+    protected function displaySection(string $title): void
+    {
+        $this->newLine();
+        $this->line('<fg=white;options=bold>  '.$title.'</>');
+    }
+
+    protected function displayError(string $message): void
+    {
+        $this->newLine();
+        $this->line('  <fg=white;options=bold;bg=red> ERROR </>');
+        $this->line('  <fg=red>'.$message.'</>');
     }
 
     protected function isInstalled(): bool

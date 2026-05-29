@@ -75,7 +75,6 @@ final class UpdateProfileAction extends BaseAction
 
                 return $profile;
             });
-        }, 'Failed to update profile');
     }
 
     /**

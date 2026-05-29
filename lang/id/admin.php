@@ -58,6 +58,38 @@ return [
         'missing' => 'File tidak ditemukan',
     ],
 
+    'promote' => [
+        'user_not_found' => "Pengguna dengan identifier ':identifier' tidak ditemukan.",
+        'invalid_role' => "Peran tidak valid: ':role'. Hanya admin atau super_admin yang diizinkan.",
+        'role_absent' => "Peran ':role' tidak ditemukan di database.",
+        'super_admin_exists' => 'Super admin sudah ada. Hanya satu akun super admin yang diizinkan.',
+        'already_has_role' => "Pengguna :name sudah memiliki peran ':role'.",
+        'success' => 'Berhasil menaikkan pangkat :name (:email) menjadi :role.',
+    ],
+
+    'auto_inactivate' => [
+        'none_found' => 'Tidak ada akun yang tidak aktif.',
+        'found' => 'Ditemukan :count akun yang tidak aktif selama lebih dari :days hari.',
+        'dry_run' => 'Akan menonaktifkan: :email (:name)',
+        'completed' => 'Menonaktifkan :count akun.',
+    ],
+
+    'prune_notifications' => [
+        'invalid_days' => 'Hari retensi minimal 1.',
+        'completed' => 'Membersihkan :count notifikasi terbaca lebih lama dari :days hari.',
+    ],
+
+    'publish_announcements' => [
+        'none_found' => 'Tidak ada pengumuman terjadwal yang akan dipublikasikan.',
+        'published' => 'Mempublikasikan: :title',
+        'completed' => 'Mempublikasikan :count pengumuman terjadwal.',
+    ],
+
+    'pulse_record' => [
+        'started' => 'Merekam snapshot Pulse...',
+        'completed' => 'Snapshot berhasil direkam.',
+    ],
+
     'recovery_show' => [
         'warning' => 'Kunci pemulihan memberikan akses super admin. Hanya bagikan dengan administrator server tepercaya.',
         'confirm' => 'Anda yakin ingin menampilkan kunci pemulihan?',

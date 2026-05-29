@@ -1,173 +1,181 @@
-<div class="animate-in fade-in slide-in-from-bottom-8 duration-1000">
-    {{-- Header Section --}}
-    <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
-        <div>
-            <h2 class="text-3xl font-black tracking-tightest text-base-content">{{ __('user.manager.title') }}</h2>
-            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-base-content/40 mt-2">{{ __('user.manager.subtitle') }}</p>
-        </div>
-        <x-mary-button :label="__('user.manager.new')" icon="o-plus" class="btn-primary rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-8 h-12 shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-transform" wire:click="createUser" />
-    </div>
+<x-shared::ui.record-manager
+    :title="__('user.manager.title')"
+    :subtitle="__('user.manager.subtitle')"
+>
+    <x-slot:headerActions>
+        <x-mary-button :label="__('user.manager.new')" icon="o-plus" class="btn-primary btn-sm" wire:click="createUser" />
+    </x-slot:headerActions>
 
-    {{-- Controls Section --}}
-    <div class="mb-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-        <div class="w-full lg:max-w-md relative group">
-            <div class="absolute inset-0 bg-primary/5 rounded-[1.5rem] blur-md transition-opacity duration-300 opacity-0 group-focus-within:opacity-100"></div>
-            <x-mary-input
-                wire:model.live.debounce.300ms="search"
-                placeholder="{{ __('common.actions.search') }}"
-                icon="o-magnifying-glass"
-                clearable
-                class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 transition-all duration-300 bg-base-200/50 focus:bg-base-100 h-14 relative z-10"
-            />
-        </div>
-        <div class="flex gap-4 w-full lg:w-auto">
-            <x-mary-select
-                wire:model.live="filters.role"
-                placeholder="{{ __('Role') }}"
-                :options="$this->roles->pluck('name', 'name')"
-                class="rounded-[1.5rem] border-base-content/5 bg-base-200/50 h-14 min-w-[160px]"
-            />
-            <x-mary-select
-                wire:model.live="filters.status"
-                placeholder="{{ __('Status') }}"
-                :options="['verified' => 'Verified', 'suspended' => 'Suspended', 'provisioned' => 'Provisioned', 'archived' => 'Archived']"
-                class="rounded-[1.5rem] border-base-content/5 bg-base-200/50 h-14 min-w-[160px]"
-            />
-        </div>
-    </div>
+    <x-slot:extraMenu>
+        <x-mary-menu-item :title="__('common.actions.import')" icon="o-arrow-up-tray" onclick="document.getElementById('import-csv').click()" />
+        <input id="import-csv" type="file" accept=".csv" wire:model="importFile" class="hidden" />
+        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
+        <x-mary-menu-item :title="__('common.actions.template')" icon="o-document-arrow-down" wire:click="downloadTemplate" />
+    </x-slot:extraMenu>
 
-    {{-- Selection Bar --}}
-    @if($this->selected_count > 0)
-        <div class="mb-8 p-4 bg-primary/5 border border-primary/20 rounded-[2rem] flex flex-col sm:flex-row items-center justify-between gap-6 animate-in fade-in slide-in-from-top-4 duration-500 shadow-xl shadow-primary/5 backdrop-blur-md">
-            <div class="flex items-center gap-5 pl-2">
-                <div class="size-12 rounded-[1.5rem] bg-primary text-primary-content flex items-center justify-center font-black shadow-lg shadow-primary/30 text-lg">
-                    {{ $this->selected_count }}
-                </div>
-                <div class="text-center sm:text-left">
-                    <h4 class="font-black text-sm text-primary uppercase tracking-tight">{{ __('Records Selected') }}</h4>
-                    <p class="text-[9px] uppercase font-black tracking-[0.3em] opacity-50 mt-1">{{ __('Apply bulk operations') }}</p>
-                </div>
+    <x-slot:stats>
+        <x-shared::widgets.stat-card icon="o-users" :title="__('user.manager.stats_total')" :value="$this->stats['total']" />
+        <x-shared::widgets.stat-card icon="o-shield-check" :title="__('user.manager.stats_admins')" :value="$this->stats['admins']" />
+        <x-shared::widgets.stat-card icon="o-check-badge" :title="__('user.manager.stats_active')" :value="$this->stats['active']" />
+        <x-shared::widgets.stat-card icon="o-clock" :title="__('user.manager.stats_pending')" :value="$this->stats['pending']" />
+    </x-slot:stats>
+
+    <x-slot:filters>
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.fields.roles') }}</label>
+        <select wire:model.live="filters.role" class="select select-bordered select-sm w-full text-sm">
+            <option value="">{{ __('common.actions.all') }}</option>
+            @foreach($this->roles as $role)
+                <option value="{{ $role->name }}">{{ $role->name }}</option>
+            @endforeach
+        </select>
+
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.manager.status') }}</label>
+        <select wire:model.live="filters.status" class="select select-bordered select-sm w-full text-sm">
+            <option value="">{{ __('common.actions.all') }}</option>
+            <option value="verified">{{ __('common.status.verified') }}</option>
+            <option value="suspended">{{ __('user.manager.status_suspended') }}</option>
+            <option value="provisioned">{{ __('user.manager.status_provisioned') }}</option>
+            <option value="archived">{{ __('user.manager.status_archived') }}</option>
+        </select>
+
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.manager.created_from') }}</label>
+        <input wire:model.live="filters.created_from" type="date" class="input input-bordered input-sm w-full text-sm" />
+
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.manager.created_to') }}</label>
+        <input wire:model.live="filters.created_to" type="date" class="input input-bordered input-sm w-full text-sm" />
+    </x-slot:filters>
+
+    <x-shared::ui.selection-bar>
+        <x-mary-dropdown>
+            <x-slot:trigger>
+                <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" :label="__('common.actions.bulk_actions')" />
+            </x-slot:trigger>
+            <div class="p-1.5 w-48">
+                <x-mary-menu-item :title="__('common.actions.export_selected')" icon="o-arrow-down-tray" wire:click="exportSelected" />
+                <hr class="border-base-content/10" />
+                <x-mary-menu-item :title="__('common.actions.delete_selected')" icon="o-trash" class="text-error"
+                    wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="deleteSelected" />
             </div>
-            <div class="flex items-center gap-4 pr-2">
-                <div class="flex gap-2">
-                    <x-mary-button
-                        :label="__('common.actions.delete_selected')"
-                        icon="o-trash"
-                        class="btn-error text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6 shadow-lg shadow-error/20 hover:scale-105 transition-transform"
-                        :wire:confirm="__('common.actions.confirm_action')"
-                        wire:click="deleteSelected"
-                    />
-                </div>
-                <div class="w-px h-8 bg-primary/20 mx-2"></div>
-                <x-mary-button
-                    label="{{ __('Cancel') }}"
-                    wire:click="clearSelection"
-                    class="btn-ghost rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-base-content/5"
-                />
-            </div>
-        </div>
-    @endif
+        </x-mary-dropdown>
+    </x-shared::ui.selection-bar>
 
-    {{-- Table Section --}}
-    <x-mary-card shadow class="card-enterprise !bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 overflow-hidden">
-        <div class="table-enterprise overflow-x-auto">
-            <x-mary-table
-                :headers="$this->headers()"
-                :rows="$this->rows()"
-                :sort-by="$sortBy"
-                with-pagination
-                selectable
-                wire:model="selectedIds"
-                class="table-md w-full whitespace-nowrap"
-            >
-                @scope('cell_name', $user)
-                    <div class="flex items-center gap-4 py-2">
-                        <x-mary-avatar :title="$user->name" class="w-10 h-10 rounded-2xl shadow-sm border border-base-content/5" />
-                        <div class="flex flex-col">
-                            <span class="font-black text-sm tracking-tight text-base-content">{{ $user->name }}</span>
-                            <span class="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 mt-1">{{ $user->username }}</span>
-                        </div>
-                    </div>
-                @endscope
-
-                @scope('cell_email', $user)
+    <div class="overflow-x-auto">
+        <x-mary-table
+            :headers="$this->headers()"
+            :rows="$this->rows()"
+            :sort-by="$sortBy"
+            with-pagination
+            selectable
+            wire:model="selectedIds"
+            class="table-sm"
+        >
+            @scope('cell_name', $user)
+                <div class="flex items-center gap-3 py-1">
+                    <x-shared::ui.avatar :user="$user" size="size-9" />
                     <div class="flex flex-col">
-                        <span class="font-medium text-sm">{{ $user->email }}</span>
-                        <span class="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 mt-1">{{ $user->id }}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="font-medium text-sm">{{ $user->name }}</span>
+                            @if($user->hasRole('super_admin'))
+                                <x-mary-icon name="o-shield-check" class="size-4 text-primary" tooltip="Protected" />
+                            @endif
+                        </div>
+                        <span class="text-xs text-base-content/50">{{ $user->username }}</span>
                     </div>
-                @endscope
+                </div>
+            @endscope
 
-                @scope('cell_roles_list', $user)
-                    <div class="flex flex-wrap gap-1.5">
-                        @foreach($user->roles as $role)
-                            <span class="badge badge-sm badge-soft badge-primary font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">
-                                {{ $role->name }}
-                            </span>
-                        @endforeach
-                    </div>
-                @endscope
+            @scope('cell_email', $user)
+                <span class="text-sm">{{ $user->email }}</span>
+            @endscope
 
-                @scope('cell_status', $user)
-                    @php
-                        $status = $user->latestStatus()?->name ?? 'unknown';
-                        $badgeClass = match($status) {
-                            'verified' => 'badge-success',
-                            'suspended' => 'badge-warning',
-                            'provisioned' => 'badge-info',
-                            'archived' => 'badge-error',
-                            'protected' => 'badge-primary',
-                            default => 'badge-ghost',
-                        };
-                    @endphp
-                    <span class="badge badge-sm {{ $badgeClass }} font-black uppercase tracking-wider text-[9px] px-3 py-2 rounded-xl">
-                        {{ $status }}
-                    </span>
-                @endscope
-
-                @scope('actions', $user)
-                    <div class="flex items-center justify-end gap-1 py-2">
-                        <x-mary-button icon="o-pencil" class="btn-ghost btn-sm btn-circle text-primary hover:bg-primary/10 transition-colors" wire:click="editUser('{{ $user->id }}')" tooltip="Edit" />
-                        <x-mary-button icon="o-shield-check" class="btn-ghost btn-sm btn-circle text-warning hover:bg-warning/10 transition-colors" wire:click="toggleStatus('{{ $user->id }}')" tooltip="Toggle Status" />
-                        <x-mary-button icon="o-key" class="btn-ghost btn-sm btn-circle text-info hover:bg-info/10 transition-colors" wire:click="resetPassword('{{ $user->id }}')" tooltip="Reset Password" />
-                        @if($user->id !== auth()->id())
-                            <x-mary-button icon="o-trash" class="btn-ghost btn-sm btn-circle text-error hover:bg-error/10 transition-colors" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="deleteUser('{{ $user->id }}')" tooltip="Delete" />
-                        @endif
-                    </div>
-                @endscope
-            </x-mary-table>
-        </div>
-    </x-mary-card>
-
-    {{-- User Modal --}}
-    <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.manager.edit') : __('user.manager.new')" class="backdrop-blur-sm" box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl">
-        <div class="grid grid-cols-1 gap-6 pt-4">
-            <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-
-            @if(!$form->id)
-                <x-mary-input :label="__('user.fields.password')" type="password" wire:model="form.password" icon="o-lock-closed" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            @endif
-
-            <div>
-                <label class="font-black text-[10px] uppercase tracking-[0.2em] opacity-60 mb-3 block">{{ __('user.fields.roles') }}</label>
-                <div class="flex flex-wrap gap-3">
-                    @foreach($this->roles as $role)
-                        <x-mary-checkbox
-                            :label="$role->name"
-                            wire:model="form.roles"
-                            value="{{ $role->name }}"
-                            class="rounded-xl"
-                        />
+            @scope('cell_roles_list', $user)
+                <div class="flex flex-wrap gap-1">
+                    @foreach($user->roles as $role)
+                        <span class="badge badge-sm badge-soft badge-primary font-medium text-[10px]">
+                            {{ $role->name }}
+                        </span>
                     @endforeach
                 </div>
-            </div>
-        </div>
+            @endscope
 
-        <x-slot:actions>
-            <div class="flex gap-4 pt-6 border-t border-base-content/5 w-full justify-end">
-                <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('userModal', false)" class="btn-ghost rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] px-8" />
-                <x-mary-button :label="__('user.manager.save')" type="submit" class="btn-primary rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 shadow-xl shadow-primary/20" wire:click="saveUser" spinner="saveUser" />
+            @scope('cell_status', $user)
+                @php
+                    $status = $user->latestStatus()?->name ?? 'unknown';
+                    $badgeClass = match($status) {
+                        'verified' => 'badge-success',
+                        'suspended' => 'badge-warning',
+                        'provisioned' => 'badge-info',
+                        'archived' => 'badge-error',
+                        'protected' => 'badge-primary',
+                        default => 'badge-ghost',
+                    };
+                @endphp
+                <span class="badge badge-sm {{ $badgeClass }} font-medium text-[10px]">
+                    {{ __("user.manager.status_{$status}") }}
+                </span>
+            @endscope
+
+            @scope('actions', $user)
+                @if($user->hasRole('super_admin'))
+                    <div class="flex justify-end">
+                        <span class="text-xs text-base-content/40 italic">{{ __('user.manager.protected') }}</span>
+                    </div>
+                @else
+                    <div class="flex justify-end gap-1">
+                        <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="editUser('{{ $user->id }}')" :aria-label="__('common.actions.edit')" />
+                        <x-mary-button icon="o-shield-check" class="btn-ghost btn-sm text-warning" wire:click="askChangeStatus('{{ $user->id }}')" :aria-label="__('user.manager.change_status')" />
+                        <x-mary-button icon="o-key" class="btn-ghost btn-sm text-info" wire:click="resetPassword('{{ $user->id }}')" :aria-label="__('user.manager.reset_password')" />
+                        @if($user->id !== auth()->id())
+                            <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="deleteUser('{{ $user->id }}')" :aria-label="__('common.actions.delete')" />
+                        @endif
+                    </div>
+                @endif
+            @endscope
+        </x-mary-table>
+    </div>
+
+    {{-- Status Modal --}}
+    <x-mary-modal wire:model="showStatusModal" :title="__('user.manager.change_status')" separator class="backdrop-blur-sm">
+        <x-mary-form wire:submit="changeStatus" class="space-y-5">
+            <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
+                <x-mary-select :label="__('user.manager.new_status')" wire:model="selectedStatus" :options="$this->statusOptions" icon="o-flag" />
+                <x-mary-textarea :label="__('user.manager.status_reason')" wire:model="statusReason" :placeholder="__('user.manager.status_reason_placeholder')" rows="2" icon="o-document-text" class="mt-4" />
             </div>
-        </x-slot:actions>
+
+            <x-slot:actions>
+                <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('showStatusModal', false)" class="btn-ghost btn-sm" />
+                <x-mary-button :label="__('user.manager.change_status')" class="btn-primary btn-sm" type="submit" spinner="changeStatus" />
+            </x-slot:actions>
+        </x-mary-form>
     </x-mary-modal>
-</div>
+
+    <x-slot:modal>
+        <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.manager.edit') : __('user.manager.new')" separator class="backdrop-blur-sm">
+            <x-mary-form wire:submit="saveUser" class="space-y-5">
+                <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('user.manager.account') }}</p>
+                    <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
+                    <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" />
+                </div>
+
+                <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('user.fields.roles') }}</p>
+                    <div class="flex flex-wrap gap-3">
+                        @foreach($this->roles as $role)
+                            <x-mary-checkbox
+                                :label="$role->name"
+                                wire:model="form.roles"
+                                value="{{ $role->name }}"
+                            />
+                        @endforeach
+                    </div>
+                </div>
+
+                <x-slot:actions>
+                    <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('userModal', false)" class="btn-ghost btn-sm" />
+                    <x-mary-button :label="__('user.manager.save')" class="btn-primary btn-sm" type="submit" spinner="saveUser" />
+                </x-slot:actions>
+            </x-mary-form>
+        </x-mary-modal>
+    </x-slot:modal>
+</x-shared::ui.record-manager>

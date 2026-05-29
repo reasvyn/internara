@@ -22,6 +22,8 @@ class SchoolEditor extends Component
 
     public School $school;
 
+    public bool $showConfirm = false;
+
     public function boot(): void
     {
         $this->authorize('update', School::class);
@@ -46,6 +48,33 @@ class SchoolEditor extends Component
         return $rules;
     }
 
+    public function updatedLogoFile(UpdateSchoolAction $updateSchool): void
+    {
+        $this->validate(['logo_file' => ['nullable', 'image', 'max:2048']]);
+
+        $updateSchool->execute($this->school, [
+            'logo_file' => $this->logo_file,
+        ]);
+
+        flash()->success(__('school.logo_saved'));
+        $this->dispatch('logo-updated');
+    }
+
+    public function removeLogo(UpdateSchoolAction $updateSchool): void
+    {
+        $this->school->clearMediaCollection(School::COLLECTION_LOGO);
+        $this->logo_file = null;
+
+        flash()->success(__('school.logo_removed'));
+        $this->dispatch('logo-updated');
+    }
+
+    public function confirmAction(): void
+    {
+        $this->removeLogo(app(UpdateSchoolAction::class));
+        $this->showConfirm = false;
+    }
+
     public function logoPreviewUrl(): ?string
     {
         if ($this->logo_file === null) {
@@ -64,7 +93,6 @@ class SchoolEditor extends Component
         $this->validate();
 
         $data = $this->form->toArray();
-        $data['logo_file'] = $this->logo_file;
 
         $updateSchool->execute($this->school, $data);
 

@@ -44,22 +44,6 @@ services:
       redis:
         condition: service_started
 
-  reverb:
-    build: .
-    command: php artisan reverb:start
-    environment:
-      APP_ENV: production
-      APP_KEY: "${APP_KEY}"
-      REVERB_HOST: 0.0.0.0
-      REVERB_PORT: 8080
-    ports:
-      - "${REVERB_PORT:-8080}:8080"
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-
   scheduler:
     build: .
     command: php artisan schedule:work

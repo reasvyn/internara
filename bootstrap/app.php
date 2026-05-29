@@ -40,7 +40,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'setup.protected' => ProtectSetupRouteMiddleware::class,
             'role' => CheckRoleMiddleware::class,
             'auth.throttle' => AuthThrottleMiddleware::class,
-            'throttle' => 'throttle',
         ]);
 
         $middleware->trustProxies(at: '*');

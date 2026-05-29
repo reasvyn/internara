@@ -55,9 +55,8 @@ The same codebase runs across all tiers — only configuration differs.
 │  Session: Redis                         │
 │  Mail:    SMTP / Mailgun / SES          │
 │  Storage: local + backup to S3          │
-│  Reverb:  optional (real-time notif)    │
 │  Cron:    minutely (system cron)        │
-│  Process: Supervisor (queue + reverb)   │
+│  Process: Supervisor (queue)            │
 ├─────────────────────────────────────────┤
 │  Est. cost: $20-80/month                │
 └─────────────────────────────────────────┘
@@ -78,7 +77,6 @@ The same codebase runs across all tiers — only configuration differs.
 │  Session: Redis cluster                 │
 │  Mail:    SES / SMTP relay              │
 │  Storage: S3 / Cloudflare R2            │
-│  Reverb:  dedicated server              │
 │  Cron:    single server (system cron)   │
 │  Process: Supervisor on each server     │
 ├─────────────────────────────────────────┤
@@ -125,11 +123,11 @@ Internet
        │
        ├─────────────────┬──────────────────┬─────────────────┐
        ▼                 ▼                  ▼                 ▼
-┌────────────┐  ┌────────────┐  ┌──────────────┐  ┌──────────────┐
-│ Database   │  │   Redis    │  │ Queue Worker │  │   Reverb     │
-│ MySQL / PG │  │  cache /   │  │  (async)     │  │  WebSocket   │
-│ SQLite*    │  │  session   │  │              │  │  (optional)  │
-└────────────┘  └────────────┘  └──────────────┘  └──────────────┘
+┌────────────┐  ┌────────────┐  ┌──────────────┐
+│ Database   │  │   Redis    │  │ Queue Worker │
+│ MySQL / PG │  │  cache /   │  │  (async)     │
+│ SQLite*    │  │  session   │  │              │
+└────────────┘  └────────────┘  └──────────────┘
 
 * SQLite only in Tier 1 / development / testing
 ```
@@ -145,7 +143,7 @@ queue runs synchronously, and the scheduler is triggered via HTTP webhook.
 |---|---|---|---|---|
 | **Queue Worker** | `queue:work --sleep=3 --tries=3` | sync (inline) | Supervisor | Notifications, media conversions, mail |
 | **Scheduler** | `schedule:run` | `/cron/{secret}` | system cron | Daily cleanup, cache warm, Pulse recording |
-| **Reverb** | `reverb:start` | ❌ | Supervisor | Real-time WebSocket notifications |
+
 
 ### Supervisor Configuration (Tier 2+)
 
@@ -382,7 +380,7 @@ REDIS_QUEUE_DB=2  # Queue
 | SQLite "database is locked" | Engine | Switch to MySQL / PostgreSQL |
 | Queue backlog growing | Worker | Add Supervisor `numprocs`, switch to Redis |
 | Disk > 85% full | Storage | Add storage, enable S3, prune old data |
-| Reverb connections > 1000 | Horizontal | Dedicated Reverb server, load balance |
+
 | Page load > 500ms | Cache | Enable Redis, warm caches, add OpCache |
 
 ### Vertical vs Horizontal
@@ -391,7 +389,7 @@ REDIS_QUEUE_DB=2  # Queue
 |---|---|---|
 | 1→2 | ✅ Sufficient for < 200 users | ❌ Not needed |
 | 2→3 | ❌ Diminishing returns | ✅ Required for redundancy |
-| 3+ | ✅ Database only | ✅ App + queue + reverb |
+| 3+ | ✅ Database only | ✅ App + queue |
 
 ---
 
@@ -400,7 +398,7 @@ REDIS_QUEUE_DB=2  # Queue
 ### Network
 
 - HTTPS only (Let's Encrypt / Cloudflare)
-- Firewall: allow ports 80, 443, (8080 for Reverb if external)
+- Firewall: allow ports 80, 443
 - Fail2ban for SSH
 - CSP, HSTS, X-Frame-Options headers applied by middleware
 

@@ -1,117 +1,88 @@
-<div class="animate-in fade-in slide-in-from-bottom-8 duration-1000">
-    {{-- Header Section --}}
-    <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
-        <div>
-            <h2 class="text-3xl font-black tracking-tightest text-base-content">{{ __('user.mentee.title') }}</h2>
-            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-base-content/40 mt-2">{{ __('user.mentee.subtitle') }}</p>
-        </div>
-        <x-mary-button :label="__('user.mentee.new')" icon="o-plus" class="btn-primary rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-8 h-12 shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-transform" wire:click="create" />
+<x-shared::ui.record-manager
+    :title="__('user.mentee.title')"
+    :subtitle="__('user.mentee.subtitle')"
+>
+    <x-slot:headerActions>
+        <x-mary-button :label="__('user.mentee.new')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+    </x-slot:headerActions>
+
+    <x-slot:filters>
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.mentee.is_active') }}</label>
+        <select wire:model.live="filters.is_active" class="select select-bordered select-sm w-full text-sm">
+            <option value="">{{ __('common.actions.all') }}</option>
+            <option value="yes">{{ __('common.yes') }}</option>
+            <option value="no">{{ __('common.no') }}</option>
+        </select>
+
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.manager.created_from') }}</label>
+        <input wire:model.live="filters.created_from" type="date" class="input input-bordered input-sm w-full text-sm" />
+
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.manager.created_to') }}</label>
+        <input wire:model.live="filters.created_to" type="date" class="input input-bordered input-sm w-full text-sm" />
+    </x-slot:filters>
+
+    <x-shared::ui.selection-bar>
+        <x-mary-button
+            :label="__('common.actions.delete_selected')"
+            icon="o-trash"
+            class="btn-sm btn-error text-white"
+            :wire:confirm="__('common.actions.confirm_action')"
+            wire:click="deleteSelected"
+        />
+    </x-shared::ui.selection-bar>
+
+    <div class="overflow-x-auto">
+        <x-mary-table
+            :headers="$this->headers()"
+            :rows="$this->rows()"
+            :sort-by="$sortBy"
+            with-pagination
+            selectable
+            wire:model="selectedIds"
+            class="table-sm"
+        >
+            @scope('cell_name', $mentee)
+                <div class="flex items-center gap-3 py-1">
+                    <x-shared::ui.avatar :user="$mentee->user" size="size-9" />
+                    <div class="flex flex-col">
+                        <span class="font-medium text-sm">{{ $mentee->user->name }}</span>
+                        <span class="text-xs text-base-content/50">{{ $mentee->user->email }}</span>
+                    </div>
+                </div>
+            @endscope
+
+            @scope('cell_is_active', $mentee)
+                @if($mentee->is_active)
+                    <x-mary-icon name="o-check-circle" class="size-5 text-success" />
+                @else
+                    <x-mary-icon name="o-x-circle" class="size-5 text-error" />
+                @endif
+            @endscope
+
+            @scope('actions', $mentee)
+                <div class="flex justify-end gap-1">
+                    <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $mentee->id }}')" :aria-label="__('common.actions.edit')" />
+                    <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="delete('{{ $mentee->id }}')" :aria-label="__('common.actions.delete')" />
+                </div>
+            @endscope
+        </x-mary-table>
     </div>
 
-    {{-- Controls Section --}}
-    <div class="mb-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-        <div class="w-full lg:max-w-md relative group">
-            <div class="absolute inset-0 bg-primary/5 rounded-[1.5rem] blur-md transition-opacity duration-300 opacity-0 group-focus-within:opacity-100"></div>
-            <x-mary-input 
-                wire:model.live.debounce.300ms="search" 
-                placeholder="{{ __('common.actions.search') }}" 
-                icon="o-magnifying-glass" 
-                clearable 
-                class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 transition-all duration-300 bg-base-200/50 focus:bg-base-100 h-14 relative z-10"
-            />
-        </div>
-    </div>
-
-    {{-- Selection Bar --}}
-    @if($this->selected_count > 0)
-        <div class="mb-8 p-4 bg-primary/5 border border-primary/20 rounded-[2rem] flex flex-col sm:flex-row items-center justify-between gap-6 animate-in fade-in slide-in-from-top-4 duration-500 shadow-xl shadow-primary/5 backdrop-blur-md">
-            <div class="flex items-center gap-5 pl-2">
-                <div class="size-12 rounded-[1.5rem] bg-primary text-primary-content flex items-center justify-center font-black shadow-lg shadow-primary/30 text-lg">
-                    {{ $this->selected_count }}
+    <x-slot:modal>
+        <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.mentee.edit') : __('user.mentee.new')" separator class="backdrop-blur-sm">
+            <x-mary-form wire:submit="save" class="space-y-5">
+                <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('user.manager.account') }}</p>
+                    <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
+                    <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" />
+                    <x-mary-toggle :label="__('user.mentee.is_active')" wire:model="form.is_active" class="mt-4" />
                 </div>
-                <div class="text-center sm:text-left">
-                    <h4 class="font-black text-sm text-primary uppercase tracking-tight">{{ __('Records Selected') }}</h4>
-                    <p class="text-[9px] uppercase font-black tracking-[0.3em] opacity-50 mt-1">{{ __('Apply bulk operations') }}</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-4 pr-2">
-                <div class="flex gap-2">
-                    <x-mary-button 
-                        :label="__('common.actions.delete_selected')" 
-                        icon="o-trash" 
-                        class="btn-error text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6 shadow-lg shadow-error/20 hover:scale-105 transition-transform" 
-                        :wire:confirm="__('common.actions.confirm_action')"
-                        wire:click="deleteSelected" 
-                    />
-                </div>
-                <div class="w-px h-8 bg-primary/20 mx-2"></div>
-                <x-mary-button 
-                    label="{{ __('Cancel') }}" 
-                    wire:click="clearSelection" 
-                    class="btn-ghost rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-base-content/5" 
-                />
-            </div>
-        </div>
-    @endif
 
-    {{-- Table Section --}}
-    <x-mary-card shadow class="card-enterprise !bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 overflow-hidden">
-        <div class="table-enterprise overflow-x-auto">
-            <x-mary-table 
-                :headers="$this->headers()" 
-                :rows="$this->rows()" 
-                :sort-by="$sortBy"
-                with-pagination 
-                selectable
-                wire:model="selectedIds"
-                class="table-md w-full whitespace-nowrap"
-            >
-                @scope('cell_name', $mentee)
-                    <div class="flex items-center gap-4 py-2">
-                        <x-mary-avatar :title="$mentee->user->name" class="w-10 h-10 rounded-2xl shadow-sm border border-base-content/5" />
-                        <div class="flex flex-col">
-                            <span class="font-black text-sm tracking-tight text-base-content">{{ $mentee->user->name }}</span>
-                            <span class="text-[9px] font-black uppercase tracking-[0.2em] opacity-40 mt-1">{{ $mentee->id }}</span>
-                        </div>
-                    </div>
-                @endscope
-
-                @scope('cell_email', $mentee)
-                    <span class="font-mono text-xs text-base-content/70">{{ $mentee->user->email }}</span>
-                @endscope
-
-                @scope('cell_is_active', $mentee)
-                    @if($mentee->is_active)
-                        <x-mary-icon name="o-check-circle" class="text-success w-5 h-5" />
-                    @else
-                        <x-mary-icon name="o-x-circle" class="text-error w-5 h-5" />
-                    @endif
-                @endscope
-
-                @scope('actions', $mentee)
-                    <div class="flex items-center justify-end gap-2 py-2">
-                        <x-mary-button icon="o-pencil" class="btn-ghost btn-sm btn-circle text-primary hover:bg-primary/10 transition-colors" wire:click="edit('{{ $mentee->id }}')" tooltip="Edit" />
-                        <x-mary-button icon="o-trash" class="btn-ghost btn-sm btn-circle text-error hover:bg-error/10 transition-colors" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="delete('{{ $mentee->id }}')" tooltip="Delete" />
-                    </div>
-                @endscope
-            </x-mary-table>
-        </div>
-    </x-mary-card>
-
-    {{-- Mentee Modal --}}
-    <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.mentee.edit') : __('user.mentee.new')" class="backdrop-blur-sm" box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl">
-        <div class="grid grid-cols-1 gap-6 pt-4">
-            <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            <x-mary-textarea :label="__('user.mentee.internal_notes')" wire:model="form.internal_notes" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
-            <x-mary-toggle :label="__('user.mentee.active')" wire:model="form.is_active" class="rounded-[1.5rem]" />
-        </div>
-
-        <x-slot:actions>
-            <div class="flex gap-4 pt-6 border-t border-base-content/5 w-full justify-end">
-                <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('userModal', false)" class="btn-ghost rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] px-8" />
-                <x-mary-button :label="__('user.mentee.save')" type="submit" class="btn-primary rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 shadow-xl shadow-primary/20" wire:click="save" spinner="save" />
-            </div>
-        </x-slot:actions>
-    </x-mary-modal>
-</div>
+                <x-slot:actions>
+                    <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('userModal', false)" class="btn-ghost btn-sm" />
+                    <x-mary-button :label="__('user.mentee.save')" class="btn-primary btn-sm" type="submit" spinner="save" />
+                </x-slot:actions>
+            </x-mary-form>
+        </x-mary-modal>
+    </x-slot:modal>
+</x-shared::ui.record-manager>

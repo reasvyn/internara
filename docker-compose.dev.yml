@@ -25,21 +25,12 @@ services:
       DB_CONNECTION: sqlite
       # Use database queue for dev (replace with redis for full experience)
       QUEUE_CONNECTION: database
-      # Broadcasting via Reverb
-      BROADCAST_CONNECTION: reverb
-      REVERB_APP_ID: '${REVERB_APP_ID:-dev-app-id}'
-      REVERB_APP_KEY: '${REVERB_APP_KEY:-dev-app-key}'
-      REVERB_APP_SECRET: '${REVERB_APP_SECRET:-dev-app-secret}'
-      REVERB_HOST: 0.0.0.0
-      REVERB_PORT: 8080
-      REVERB_SCHEME: http
     volumes:
       - '.:/var/www/html'
     networks:
       - sail
     depends_on:
       - queue
-      - reverb
 
   queue:
     image: sail-8.4/app
@@ -52,29 +43,6 @@ services:
     environment:
       DB_CONNECTION: sqlite
       QUEUE_CONNECTION: database
-    volumes:
-      - '.:/var/www/html'
-    networks:
-      - sail
-
-  reverb:
-    image: sail-8.4/app
-    build:
-      context: ./docker/8.4
-      dockerfile: Dockerfile
-      args:
-        WWWGROUP: '${WWWGROUP:-1000}'
-    command: php artisan reverb:start
-    ports:
-      - '${REVERB_PORT:-8080}:8080'
-    environment:
-      DB_CONNECTION: sqlite
-      REVERB_APP_ID: '${REVERB_APP_ID:-dev-app-id}'
-      REVERB_APP_KEY: '${REVERB_APP_KEY:-dev-app-key}'
-      REVERB_APP_SECRET: '${REVERB_APP_SECRET:-dev-app-secret}'
-      REVERB_HOST: 0.0.0.0
-      REVERB_PORT: 8080
-      REVERB_SCHEME: http
     volumes:
       - '.:/var/www/html'
     networks:

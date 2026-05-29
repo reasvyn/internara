@@ -8,7 +8,6 @@ use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\Auth\Enums\Role;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class AutoInactivateAccounts extends Command
@@ -26,7 +25,7 @@ class AutoInactivateAccounts extends Command
 
     public function handle(): int
     {
-        $threshold = Carbon::now()->subDays((int) $this->option('days'));
+        $threshold = now()->subDays((int) $this->option('days'));
         $dryRun = (bool) $this->option('dry-run');
 
         $users = User::query()
@@ -44,16 +43,16 @@ class AutoInactivateAccounts extends Command
             ->get();
 
         if ($users->isEmpty()) {
-            $this->info('No inactive accounts found.');
+            $this->components->info(__('admin.auto_inactivate.none_found'));
 
             return self::SUCCESS;
         }
 
-        $this->info("Found {$users->count()} accounts inactive for more than {$this->option('days')} days.");
+        $this->components->info(__('admin.auto_inactivate.found', ['count' => $users->count(), 'days' => $this->option('days')]));
 
         if ($dryRun) {
             foreach ($users as $user) {
-                $this->line("  [DRY-RUN] Would inactivate: {$user->email} ({$user->name})");
+                $this->line('  [DRY-RUN] '.__('admin.auto_inactivate.dry_run', ['email' => $user->email, 'name' => $user->name]));
             }
 
             return self::SUCCESS;
@@ -77,7 +76,7 @@ class AutoInactivateAccounts extends Command
 
         $bar->finish();
         $this->newLine();
-        $this->info("Inactivated {$users->count()} accounts.");
+        $this->components->info(__('admin.auto_inactivate.completed', ['count' => $users->count()]));
 
         return self::SUCCESS;
     }

@@ -16,12 +16,12 @@ class PulseRecordSnapshotsCommand extends Command
 
     public function handle(): int
     {
-        $this->info('Recording Pulse snapshots...');
+        $this->components->info(__('admin.pulse_record.started'));
 
         RegistrationRecorder::recordSnapshot();
         SystemRecorder::recordSnapshot();
 
-        $this->info('Snapshots recorded successfully.');
+        $this->components->info(__('admin.pulse_record.completed'));
 
         return Command::SUCCESS;
     }

@@ -3,10 +3,11 @@
 declare(strict_types=1);
 
 use App\Domain\Shared\Support\Locale;
+use Illuminate\Support\Facades\Cookie;
 
 describe('Locale', function () {
     beforeEach(function () {
-        \Illuminate\Support\Facades\Cookie::queue(\Illuminate\Support\Facades\Cookie::forget('locale'));
+        Cookie::queue(Cookie::forget('locale'));
     });
 
     it('has default locale set to en', function () {

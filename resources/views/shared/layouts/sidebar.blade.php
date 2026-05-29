@@ -12,26 +12,6 @@
 
         <nav class="flex-1 overflow-y-auto px-3 py-6 space-y-6">
             @auth
-                {{-- Dashboard --}}
-                <ul class="space-y-0.5">
-                    <li>
-                        @php
-                            $active = request()->routeIs('dashboard');
-                            $dashboardUrl = '#';
-                            try { $dashboardUrl = route('dashboard'); } catch (\Throwable) { $dashboardUrl = '#'; }
-                        @endphp
-                        <a wire:navigate href="{{ $dashboardUrl }}"
-                           @class([
-                               'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
-                               'bg-primary/10 text-primary font-medium' => $active,
-                               'text-base-content/60 hover:bg-base-200 hover:text-base-content' => !$active,
-                           ])>
-                            <x-mary-icon name="o-home" class="size-4 shrink-0" />
-                            <span>{{ __('dashboard.title') }}</span>
-                        </a>
-                    </li>
-                </ul>
-
                 @foreach(config('menu.groups') as $group)
                     @if(auth()->user()->hasRole($group['roles']))
                         <div>

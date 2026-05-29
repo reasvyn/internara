@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Admin\Livewire;
 
 use App\Domain\Admin\Livewire\Forms\MenteeForm;
+use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Mentee\Actions\CreateMenteeAction;
 use App\Domain\Mentee\Actions\DeleteMenteeAction;
@@ -30,7 +31,6 @@ class MenteeManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
             ['key' => 'name', 'label' => __('user.mentee.name'), 'sortable' => true],
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
             ['key' => 'is_active', 'label' => __('user.mentee.active')],
@@ -55,7 +55,10 @@ class MenteeManager extends BaseRecordManager
 
     protected function applyFilters(Builder $query): Builder
     {
-        return $query->when($this->filters['is_active'] ?? null, fn ($q, $v) => $q->where('is_active', $v === 'yes'));
+        return $query
+            ->when($this->filters['is_active'] ?? null, fn ($q, $v) => $q->where('is_active', $v === 'yes'))
+            ->when($this->filters['created_from'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
+            ->when($this->filters['created_to'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '<=', $v));
     }
 
     public function create(): void
@@ -93,7 +96,7 @@ class MenteeManager extends BaseRecordManager
             ]);
             flash()->success(__('user.mentee.success_updated'));
         } else {
-            $createAction->execute(
+            $mentee = $createAction->execute(
                 userData: [
                     'name' => $this->form->name,
                     'email' => $this->form->email,
@@ -103,7 +106,8 @@ class MenteeManager extends BaseRecordManager
                     'is_active' => $this->form->is_active,
                 ],
             );
-            flash()->success(__('user.mentee.success_created'));
+            $code = ActivationToken::generateFor($mentee->user);
+            flash()->success(__('user.mentee.success_created_activation', ['code' => $code]));
         }
 
         $this->userModal = false;

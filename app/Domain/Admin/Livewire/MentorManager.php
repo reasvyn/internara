@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Admin\Livewire;
 
 use App\Domain\Admin\Livewire\Forms\MentorForm;
+use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Mentor\Actions\CreateMentorAction;
 use App\Domain\Mentor\Actions\DeleteMentorAction;
@@ -30,7 +31,6 @@ class MentorManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
             ['key' => 'name', 'label' => __('user.mentor.name'), 'sortable' => true],
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
             ['key' => 'type', 'label' => __('user.mentor.type'), 'sortable' => true],
@@ -58,7 +58,9 @@ class MentorManager extends BaseRecordManager
     {
         return $query
             ->when($this->filters['type'] ?? null, fn ($q, $v) => $q->where('type', $v))
-            ->when($this->filters['is_active'] ?? null, fn ($q, $v) => $q->where('is_active', $v === 'yes'));
+            ->when($this->filters['is_active'] ?? null, fn ($q, $v) => $q->where('is_active', $v === 'yes'))
+            ->when($this->filters['created_from'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
+            ->when($this->filters['created_to'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '<=', $v));
     }
 
     public function create(): void
@@ -96,7 +98,7 @@ class MentorManager extends BaseRecordManager
             ]);
             flash()->success(__('user.mentor.success_updated'));
         } else {
-            $createAction->execute(
+            $mentor = $createAction->execute(
                 userData: [
                     'name' => $this->form->name,
                     'email' => $this->form->email,
@@ -106,7 +108,8 @@ class MentorManager extends BaseRecordManager
                     'is_active' => $this->form->is_active,
                 ],
             );
-            flash()->success(__('user.mentor.success_created'));
+            $code = ActivationToken::generateFor($mentor->user);
+            flash()->success(__('user.mentor.success_created_activation', ['code' => $code]));
         }
 
         $this->userModal = false;

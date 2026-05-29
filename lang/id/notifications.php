@@ -87,6 +87,7 @@ return [
     'ui' => [
         'title' => 'Pusat Notifikasi',
         'subtitle' => 'Tetap terinformasi dengan aktivitas sistem',
+        'refresh' => 'Segarkan',
         'mark_all_read' => 'Tandai Semua Dibaca',
         'delete_selected' => 'Hapus Terpilih',
         'are_you_sure' => 'Apakah Anda yakin?',

@@ -14,13 +14,8 @@ use App\Domain\User\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 
-use function Laravel\Prompts\error;
-use function Laravel\Prompts\info;
-use function Laravel\Prompts\intro;
-use function Laravel\Prompts\note;
 use function Laravel\Prompts\password;
 use function Laravel\Prompts\text;
-use function Laravel\Prompts\warning;
 
 class RecoverAdminCommand extends Command
 {
@@ -48,7 +43,6 @@ class RecoverAdminCommand extends Command
         }
 
         $this->displayGuide();
-        note(__('admin.section_account'));
 
         $email = $this->argument('email') ?? text(
             label: __('admin.field_email'),
@@ -68,7 +62,7 @@ class RecoverAdminCommand extends Command
                 ->systemOnly()
                 ->save();
 
-            error(__('admin.recover.already_exists', ['email' => $email]));
+            $this->displayError(__('admin.recover.already_exists', ['email' => $email]));
 
             return self::FAILURE;
         }
@@ -82,12 +76,10 @@ class RecoverAdminCommand extends Command
                 ->systemOnly()
                 ->save();
 
-            error(__('admin.recover.not_found', ['email' => $email]));
+            $this->displayError(__('admin.recover.not_found', ['email' => $email]));
 
             return self::FAILURE;
         }
-
-        note($isReset ? __('admin.recover.section_reset') : __('admin.recover.section_set_password'));
 
         $password = password(
             label: $isReset ? __('admin.field_new_password') : __('admin.field_password'),
@@ -101,12 +93,12 @@ class RecoverAdminCommand extends Command
         );
 
         if ($password !== $confirmPassword) {
-            error(__('admin.recover.password_mismatch'));
+            $this->displayError(__('admin.recover.password_mismatch'));
 
             return self::FAILURE;
         }
 
-        $this->displaySeparator();
+        $this->newLine();
 
         if (! $this->confirmRecovery($email, $isReset)) {
             return self::FAILURE;
@@ -138,7 +130,7 @@ class RecoverAdminCommand extends Command
                 ->systemOnly()
                 ->save();
 
-            error(__('setup.cli.installation_failed', ['message' => $e->getMessage()]));
+            $this->displayError(__('setup.cli.installation_failed', ['message' => $e->getMessage()]));
 
             return self::FAILURE;
         }
@@ -147,8 +139,8 @@ class RecoverAdminCommand extends Command
     private function displayHeader(): void
     {
         $this->newLine();
-        intro(__('admin.title'));
-        $this->line('  <fg=gray>'.__('admin.recover.subtitle').'  '.__('admin.version', ['version' => AppInfo::version()]).'</>');
+        $this->line('  <fg=white;options=bold;bg=blue> '.__('admin.title').' </>');
+        $this->line('  <fg=blue>'.__('admin.recover.subtitle').'</> <fg=gray>'.__('admin.version', ['version' => AppInfo::version()]).'</>');
         $this->newLine();
     }
 
@@ -158,11 +150,11 @@ class RecoverAdminCommand extends Command
         $this->newLine();
     }
 
-    private function displaySeparator(): void
+    private function displayError(string $message): void
     {
         $this->newLine();
-        $this->line('  <fg=gray>'.str_repeat('─', 48).'</>');
-        $this->newLine();
+        $this->line('  <fg=white;options=bold;bg=red> ERROR </>');
+        $this->line('  <fg=red>'.$message.'</>');
     }
 
     private function verifyRecoveryKey(): bool
@@ -174,7 +166,7 @@ class RecoverAdminCommand extends Command
         }
 
         if ($key === null || $key === '') {
-            error(__('admin.recover.key_required'));
+            $this->displayError(__('admin.recover.key_required'));
 
             return false;
         }
@@ -190,14 +182,14 @@ class RecoverAdminCommand extends Command
                 ->systemOnly()
                 ->save();
 
-            error(__('admin.recover.key_invalid'));
+            $this->displayError(__('admin.recover.key_invalid'));
 
             return false;
         }
 
         if ($this->option('regenerate-file')) {
             $path = $this->saveRecoveryKey->execute($key);
-            $this->info(__('admin.recover.file_regenerated', ['path' => $path]));
+            $this->components->info(__('admin.recover.file_regenerated', ['path' => $path]));
         }
 
         return true;
@@ -210,7 +202,7 @@ class RecoverAdminCommand extends Command
             : __('admin.recover.confirm_mode_create');
 
         $this->newLine();
-        warning(__('admin.recover.confirm_warning', ['mode' => $mode, 'email' => $email]));
+        $this->components->warn(__('admin.recover.confirm_warning', ['mode' => $mode, 'email' => $email]));
 
         $confirmation = text(
             label: __('admin.recover.confirm_prompt'),
@@ -218,7 +210,7 @@ class RecoverAdminCommand extends Command
         );
 
         if ($confirmation !== $email) {
-            error(__('admin.recover.aborted'));
+            $this->displayError(__('admin.recover.aborted'));
 
             return false;
         }
@@ -230,11 +222,11 @@ class RecoverAdminCommand extends Command
     {
         $this->newLine();
         $message = $isReset ? __('admin.recover.success_reset') : __('admin.recover.success_create');
-        info($message);
+        $this->components->info($message);
         $this->newLine();
         $this->line('  <fg=yellow>'.__('admin.field_email_result').'</>  <fg=cyan>'.$user->email.'</>');
         $this->line('  <fg=yellow>'.__('admin.field_username').'</> <fg=cyan>'.$user->username.'</>');
         $this->newLine();
-        warning(__('admin.recover.change_password'));
+        $this->components->warn(__('admin.recover.change_password'));
     }
 }

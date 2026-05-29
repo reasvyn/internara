@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Domain\Auth\Livewire\AccountLifecycleManager;
 use App\Domain\Auth\Livewire\AccountRecovery;
+use App\Domain\Auth\Livewire\ActivateAccount;
 use App\Domain\Auth\Livewire\ConfirmPassword;
 use App\Domain\Auth\Livewire\ForgotPassword;
 use App\Domain\Auth\Livewire\Login;
@@ -14,6 +15,7 @@ use App\Domain\Registration\Livewire\RegistrationCenter;
 Route::middleware(['guest', 'auth.throttle'])->group(function () {
     Route::livewire('/register', RegistrationCenter::class)->name('register');
     Route::livewire('/login', Login::class)->name('login');
+    Route::livewire('/activate', ActivateAccount::class)->name('activate');
     Route::livewire('/forgot-password', ForgotPassword::class)->name('password.request');
     Route::livewire('/reset-password/{token}', ResetPassword::class)->name('password.reset');
     Route::livewire('/recover-account', AccountRecovery::class)->name('recover.account');

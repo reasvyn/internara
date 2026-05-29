@@ -7,25 +7,22 @@
 
 Internara delivers notifications through multiple channels, each serving a different purpose.
 A single notification can be sent through several channels simultaneously — e.g., a welcome
-message is delivered as email (external reach), in-app notification (persistent record), and
-broadcast (real-time).
+message is delivered as email (external reach) and in-app notification (persistent record).
 
 ```
 Notification sent
     │
     ├── CustomDatabaseChannel ─────► notifications table ──► in-app center
     ├── MailChannel ───────────────► SMTP / SES / Mailgun  ──► email inbox
-    ├── BroadcastChannel ─────────► Reverb WebSocket ──────► real-time badge
     └── (future) WebhookChannel ──► external URL ──────────► webhook receiver
 ```
 
 ### Channel Selection by Tier
 
 | Channel | Tier 1 | Tier 2 | Tier 3 |
-|---|---|---|---|
+|---|---|---|---|---|
 | In-app (database) | ✅ | ✅ | ✅ |
 | Mail | ✅ (sync) | ✅ (async via queue) | ✅ (async via queue) |
-| Broadcast (Reverb) | ❌ | ✅ Optional | ✅ Required |
 | Flash messages | ✅ | ✅ | ✅ |
 
 ---
@@ -234,47 +231,6 @@ To comply with rate limits, use queued notifications with proper backoff:
 
 ---
 
-## Broadcast Channel (Real-Time)
-
-When Laravel Reverb is configured, notifications are pushed to the browser in real time via
-WebSocket. The notification bell badge updates and new notifications appear in the list
-without polling.
-
-### How It Works
-
-```
-App ──broadcast()──► Reverb ──WebSocket──► Browser
-                                              │
-                                         Echo.listen()
-                                              │
-                                         Update badge count
-                                         Prepend notification
-```
-
-### Configuration
-
-```env
-# Tier 2+
-BROADCAST_CONNECTION=reverb
-REVERB_APP_ID=app-id
-REVERB_APP_KEY=app-key
-REVERB_APP_SECRET=app-secret
-REVERB_HOST=0.0.0.0
-REVERB_PORT=8080
-
-VITE_REVERB_APP_KEY="${REVERB_APP_KEY}"
-VITE_REVERB_HOST="${REVERB_HOST}"
-VITE_REVERB_PORT="${REVERB_PORT}"
-VITE_REVERB_SCHEME="${REVERB_SCHEME}"
-```
-
-### Graceful Degradation
-
-If Reverb is not configured, the broadcast channel is silently skipped. Notifications still
-arrive via the in-app channel — the user sees them on the next page load.
-
----
-
 ## Flash Messages
 
 Flash messages provide **instant action feedback** — "Profile updated successfully" or
@@ -292,7 +248,7 @@ flash()->warning(__('disk_space_low'));
 | Persistence | Single request | Until read/pruned |
 | Display | Toast, auto-dismiss | Notification center |
 | Use case | Action feedback | Event notification |
-| Channels | Session only | Database + mail + broadcast |
+| Channels | Session only | Database + mail |
 
 ---
 
@@ -301,10 +257,9 @@ flash()->warning(__('disk_space_low'));
 Notifications are **always queued** (Tier 2+) or **synchronous** (Tier 1 `QUEUE_CONNECTION=sync`).
 
 | Channel | Tier 1 | Tier 2+ |
-|---|---|---|
+|---|---|---|---|
 | CustomDatabaseChannel | Sync (inline) | Async (queue) |
 | Mail | Sync (inline) | Async (queue) |
-| Broadcast | ❌ Not available | Async (queue) |
 
 Failed notifications are automatically retried (default: 3 attempts). After max retries,
 they are stored in `failed_jobs` for manual inspection.
@@ -359,8 +314,7 @@ Created (via Action/Event)
     │
     ├── delivered to channels
     │     ├── in-app: stored in notifications table
-    │     ├── mail: queued, sent asynchronously
-    │     └── broadcast: pushed via WebSocket
+    │     └── mail: queued, sent asynchronously
     │
     ├── delivered → read by user
     │     └── marked as read (updated_at set)
@@ -375,7 +329,6 @@ Created (via Action/Event)
 |---|---|---|
 | In-app (database) | 365 days (configurable) | `notifications:prune` via scheduler |
 | Mail | N/A (recipient manages) | N/A |
-| Broadcast | N/A (real-time only) | N/A |
 
 ---
 
@@ -386,8 +339,6 @@ Created (via Action/Event)
 - `app/Domain/User/Actions/SendNotificationAction.php` — notification dispatch action
 - `app/Domain/Core/Contracts/SendsNotifications.php` — notification contract
 - `app/Domain/Admin/Console/Commands/PruneNotificationsCommand.php` — notification pruning
-- `config/broadcasting.php` — broadcast driver configuration
-- `config/reverb.php` — Reverb WebSocket server configuration
 - `config/mail.php` — mail driver and SMTP configuration
 - `config/flasher.php` — flash message styling and timeout
 - `docs/infrastructure.md` — tier-based infrastructure design

@@ -9,6 +9,7 @@ use App\Domain\Admin\Actions\DeleteUserAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
 use App\Domain\Admin\Livewire\Forms\SupervisorForm;
 use App\Domain\Auth\Enums\Role as RoleEnum;
+use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\User\Models\User;
 use Illuminate\Contracts\View\View;
@@ -31,7 +32,6 @@ class SupervisorManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
             ['key' => 'name', 'label' => __('user.supervisor.name'), 'sortable' => true],
             [
                 'key' => 'username',
@@ -62,7 +62,9 @@ class SupervisorManager extends BaseRecordManager
 
     protected function applyFilters(Builder $query): Builder
     {
-        return $query->when($this->filters['setup_required'] ?? null, fn ($q, $v) => $q->where('setup_required', $v === 'yes'));
+        return $query
+            ->when($this->filters['created_from'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
+            ->when($this->filters['created_to'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '<=', $v));
     }
 
     // --- Record Actions ---
@@ -96,8 +98,9 @@ class SupervisorManager extends BaseRecordManager
             $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email]);
             flash()->success(__('user.supervisor.success_updated'));
         } else {
-            $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], [], [RoleEnum::SUPERVISOR->value]);
-            flash()->success(__('user.supervisor.success_created'));
+            $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], [], [RoleEnum::SUPERVISOR->value], false);
+            $code = ActivationToken::generateFor($user);
+            flash()->success(__('user.supervisor.success_created_activation', ['code' => $code]));
         }
 
         $this->userModal = false;

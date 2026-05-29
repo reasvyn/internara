@@ -19,7 +19,7 @@ class PruneNotificationsCommand extends Command
         $days = (int) $this->option('days');
 
         if ($days < 1) {
-            $this->error('Retention days must be at least 1.');
+            $this->components->error(__('admin.prune_notifications.invalid_days'));
 
             return self::FAILURE;
         }
@@ -30,7 +30,7 @@ class PruneNotificationsCommand extends Command
             ->where('created_at', '<', $cutoff)
             ->delete();
 
-        $this->info("Pruned {$deleted} read notification(s) older than {$days} days.");
+        $this->components->info(__('admin.prune_notifications.completed', ['count' => $deleted, 'days' => $days]));
 
         return self::SUCCESS;
     }

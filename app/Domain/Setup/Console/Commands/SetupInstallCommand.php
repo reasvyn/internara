@@ -12,6 +12,8 @@ use App\Domain\Setup\Actions\GenerateSetupTokenAction;
 use App\Domain\Setup\Actions\InstallSystemAction;
 use App\Domain\Setup\Console\Commands\Traits\InteractsWithInstallerCli;
 use App\Domain\Setup\Services\EnvironmentAuditor;
+use App\Domain\Setup\Support\SystemProvisioner;
+use App\Providers\DomainServiceProvider;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -27,11 +29,11 @@ class SetupInstallCommand extends Command
     protected $signature = 'setup:install
         {--force : Force installation even if already installed}
         {--check-only : Run environment audit without provisioning}
-        {--url= : The application URL (e.g., https://internara.example.com)}
-        {--optimize : Optimize for production (cache config, routes, views, events)}';
+        {--url= : The application URL (e.g., https://internara.example.com)}';
 
     public function __construct(
         private EnvironmentAuditor $auditor,
+        private SystemProvisioner $provisioner,
         private GenerateSetupTokenAction $generateToken,
         private InstallSystemAction $installSystem,
     ) {
@@ -47,8 +49,8 @@ class SetupInstallCommand extends Command
             $isInstalled = $this->isInstalled();
 
             if ($isInstalled && ! $this->option('force')) {
-                error(__('setup.cli.already_installed'));
-                $this->info(__('setup.cli.try_health_check'));
+                $this->displayError(__('setup.cli.already_installed'));
+                $this->line('  '.__('setup.cli.try_health_check'));
 
                 return self::FAILURE;
             }
@@ -58,7 +60,7 @@ class SetupInstallCommand extends Command
 
                 $allowed = config('setup.force_allowed_environments', ['local', 'dev', 'development', 'testing']);
                 if (! in_array(app()->environment(), $allowed, true)) {
-                    error(__('setup.cli.force_restricted'));
+                    $this->displayError(__('setup.cli.force_restricted'));
 
                     return self::FAILURE;
                 }
@@ -85,20 +87,20 @@ class SetupInstallCommand extends Command
                     ->event('audit.failed')
                     ->save();
 
-                error(__('setup.cli.audit_failed'));
+                $this->displayError(__('setup.cli.audit_failed'));
 
                 return self::FAILURE;
             }
 
             if ($this->option('check-only')) {
-                $this->info(__('setup.cli.check_only_complete'));
+                $this->line('  <fg=green>'.__('setup.cli.check_only_complete').'</>');
 
                 return self::SUCCESS;
             }
 
             if ($url = $this->option('url')) {
                 $this->setAppUrl($url);
-                $this->components->info(__('setup.cli.app_url_set', ['url' => $url]));
+                $this->line('  <fg=green>'.__('setup.cli.app_url_set', ['url' => $url]).'</>');
             } elseif ($this->isLocalhostUrl()) {
                 $this->components->warn(__('setup.cli.app_url_warning'));
                 $this->line('  '.__('setup.cli.app_url_hint'));
@@ -110,31 +112,43 @@ class SetupInstallCommand extends Command
                 return self::FAILURE;
             }
 
-            $this->newLine();
-            $this->components->twoColumnDetail('  <fg=white;options=bold>'.__('setup.cli.starting_installation').'</>');
+            $this->displaySection(__('setup.cli.starting_installation'));
 
             SmartLogger::info(__('setup.cli.starting_installation'))
                 ->module('setup')
                 ->event('installation.started')
                 ->save();
 
-            $tokenData = $this->installSystem->execute((bool) $this->option('force'), $report);
+            $force = (bool) $this->option('force');
 
-            if ($this->option('optimize')) {
+            foreach ($this->provisioner->getTasks() as $task => $label) {
                 $this->components->task(
-                    __('setup.cli.tasks.optimize'),
-                    fn () => $this->runOptimization(),
+                    $label,
+                    fn () => $this->provisioner->executeTask($task, $force),
                 );
             }
+
+            $tokenData = $this->generateToken->execute();
+
+            $this->newLine();
+            $this->components->task(
+                __('setup.cli.tasks.optimize'),
+                fn () => $this->runOptimization(),
+            );
+
+            $this->newLine();
+            $provider = app()->getProvider(DomainServiceProvider::class);
+            $this->components->task(__('setup.cli.tasks.discover_livewire'), fn () => $provider->discoverLivewireComponents());
+            $this->components->task(__('setup.cli.tasks.discover_policies'), fn () => $provider->discoverPolicies());
+            $this->components->task(__('setup.cli.tasks.discover_views'), fn () => $provider->registerBladeNamespaces());
 
             $this->displaySuccess($tokenData['plaintext'], $tokenData['expires_at']);
 
             $this->warnTemplateEnvValues();
 
-            $this->newLine();
-            $this->components->twoColumnDetail('  <fg=white;options=bold>'.__('setup.cli.next_steps').'</>');
-            $this->line('  '.__('setup.cli.start_server'));
-            $this->line('  '.__('setup.cli.open_browser'));
+            $this->displaySection(__('setup.cli.next_steps'));
+            $this->line('  <fg=gray>'.__('setup.cli.start_server').'</>');
+            $this->line('  <fg=gray>'.__('setup.cli.open_browser').'</>');
 
             SmartLogger::success(__('setup.cli.installation_completed'))
                 ->module('setup')
@@ -173,7 +187,7 @@ class SetupInstallCommand extends Command
             }
 
             $this->newLine();
-            $this->components->twoColumnDetail('  <fg=green;options=bold>'.$category->label().'</>');
+            $this->line('<fg=green;options=bold>  '.$category->label().'</>');
 
             foreach ($categoryChecks as $check) {
                 $this->components->twoColumnDetail(
@@ -217,24 +231,24 @@ class SetupInstallCommand extends Command
         $this->displayCompletion();
 
         $this->newLine();
-        $this->components->twoColumnDetail('  <fg=white;options=bold>'.__('setup.cli.quick_access').'</>');
+        $this->line('<fg=white;options=bold>  '.__('setup.cli.quick_access').'</>');
         $this->line('  <fg=cyan;options=bold,underscore>'.$signedUrl.'</>');
         $this->line('  <fg=gray>'.__('setup.cli.url_warning').'</>');
 
         $this->newLine();
-        $this->components->twoColumnDetail('  <fg=white;options=bold>'.__('setup.cli.manual_entry').'</>');
+        $this->line('<fg=white;options=bold>  '.__('setup.cli.manual_entry').'</>');
         $this->line('  '.__('setup.cli.visit_url_alt').': <fg=white;options=bold>'.route('setup').'</>');
         $this->line('  '.__('setup.cli.enter_code').": <fg=white;options=bold>{$token}</>");
 
         $this->newLine();
-        $this->line('  '.__('setup.cli.token_expires').": <fg=yellow>{$expiresAt->format('H:i:s T')}</> (in {$expiresAt->diffForHumans()})");
+        $remainingMinutes = max(1, $expiresAt->diffInRealMinutes(now()));
+        $this->line('  '.__('setup.cli.token_expires').": <fg=yellow>{$expiresAt->format('H:i:s T')} (".__('setup.cli.expires_in_minutes', ['count' => $remainingMinutes]).')</>');
     }
 
     protected function handleError(\Throwable $e): void
     {
         $this->newLine();
-
-        error($e->getMessage());
+        $this->displayError($e->getMessage());
 
         if ($this->option('verbose')) {
             $this->line('<fg=gray>'.$e->getTraceAsString().'</>');

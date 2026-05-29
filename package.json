@@ -27,10 +27,8 @@
         "@prettier/plugin-php": "^0.24.0",
         "@tailwindcss/vite": "^4.1.18",
         "daisyui": "^5.5.19",
-        "laravel-echo": "^2.3.4",
         "prettier": "^3.8.1",
         "prettier-plugin-blade": "^2.1.21",
-        "pusher-js": "^8.5.0",
         "tailwindcss": "^4.2.4"
     }
 }

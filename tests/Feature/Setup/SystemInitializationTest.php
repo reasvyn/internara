@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use Illuminate\Console\Command;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Console\Command;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -141,7 +141,7 @@ describe('SystemProvisioner failure paths', function () {
 
         try {
             $provisioner->executeAll();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Migration task may conflict with test environment — skip gracefully
             $this->fail('executeAll threw: '.$e->getMessage());
         }

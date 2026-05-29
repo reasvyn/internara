@@ -10,30 +10,12 @@ use App\Domain\User\Models\User;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Role;
 
-/**
- * CLI tool to promote a user to Admin role.
- *
- * S1 - Secure: Traceable administrative action via CLI.
- */
 class AdminPromoteCommand extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'admin:promote {identifier : Email or Username of the user} {--role=admin : Role to assign (admin/super_admin)}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Promote a user to an administrative role';
 
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
         $identifier = $this->argument('identifier');
@@ -42,19 +24,19 @@ class AdminPromoteCommand extends Command
         $user = User::where('email', $identifier)->orWhere('username', $identifier)->first();
 
         if (! $user) {
-            $this->error("User not found with identifier: {$identifier}");
+            $this->components->error(__('admin.promote.user_not_found', ['identifier' => $identifier]));
 
             return Command::FAILURE;
         }
 
         if (! in_array($roleName, ['admin', 'super_admin'])) {
-            $this->error("Invalid role: {$roleName}. Only admin or super_admin are allowed.");
+            $this->components->error(__('admin.promote.invalid_role', ['role' => $roleName]));
 
             return Command::FAILURE;
         }
 
         if (! Role::where('name', $roleName)->exists()) {
-            $this->error("Role '{$roleName}' does not exist in the database.");
+            $this->components->error(__('admin.promote.role_absent', ['role' => $roleName]));
 
             return Command::FAILURE;
         }
@@ -63,21 +45,21 @@ class AdminPromoteCommand extends Command
             $existingCount = User::role(RoleEnum::SUPER_ADMIN->value)->count();
 
             if ($existingCount > 0) {
-                $this->error('A super admin already exists. Only one super admin account is permitted.');
+                $this->components->error(__('admin.promote.super_admin_exists'));
 
                 return Command::FAILURE;
             }
         }
 
         if ($user->hasRole($roleName)) {
-            $this->warn("User {$user->name} already has the '{$roleName}' role.");
+            $this->components->warn(__('admin.promote.already_has_role', ['name' => $user->name, 'role' => $roleName]));
 
             return Command::SUCCESS;
         }
 
         $user->assignRole($roleName);
 
-        $this->info("Successfully promoted {$user->name} ({$user->email}) to {$roleName}.");
+        $this->components->info(__('admin.promote.success', ['name' => $user->name, 'email' => $user->email, 'role' => $roleName]));
 
         SmartLogger::info('User promoted via CLI')
             ->withPayload([

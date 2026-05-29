@@ -21,39 +21,39 @@ class CleanupCommand extends Command
     {
         if (
             ! $this->option('force') &&
-            ! $this->confirm('This will perform system cleanup tasks. Continue?')
+            ! $this->components->confirm(__('setup.system.cleanup_confirm'), default: true)
         ) {
             return Command::SUCCESS;
         }
 
-        $this->info('Starting System Cleanup...');
+        $this->info(__('setup.system.cleanup_starting'));
 
         $tasks = [
-            'auth:clear-resets' => 'Clearing expired password resets',
-            'cache:prune-stale-tags' => 'Pruning stale cache tags',
-            'queue:prune-failed' => 'Pruning stale failed jobs',
-            'activitylog:clean' => 'Cleaning old activity logs',
-            'media-library:clean' => 'Cleaning old media files',
+            'auth:clear-resets' => __('setup.system.cleanup_task_resets'),
+            'cache:prune-stale-tags' => __('setup.system.cleanup_task_cache_tags'),
+            'queue:prune-failed' => __('setup.system.cleanup_task_failed_jobs'),
+            'activitylog:clean' => __('setup.system.cleanup_task_activity_log'),
+            'media-library:clean' => __('setup.system.cleanup_task_media'),
         ];
 
         foreach ($tasks as $command => $description) {
-            $this->info("  → {$description}...");
-
             try {
                 Artisan::call($command);
+                $this->components->task($description, fn () => true);
             } catch (\Throwable $e) {
                 SmartLogger::warning("Cleanup task failed: {$command}")
                     ->withPayload(['error' => $e->getMessage()])
                     ->systemOnly()
                     ->save();
 
-                $this->warn("    ✗ Failed: {$e->getMessage()}");
+                $this->components->task($description, fn () => false);
             }
         }
 
         $this->pruneLogFiles();
 
-        $this->info("\nSystem maintenance completed.");
+        $this->newLine();
+        $this->components->info(__('setup.system.cleanup_completed'));
 
         return Command::SUCCESS;
     }
@@ -77,9 +77,15 @@ class CleanupCommand extends Command
         }
 
         if ($count > 0) {
-            $this->info("  → Pruned {$count} log file(s) older than {$retention} days");
+            $this->components->task(
+                __('setup.system.cleanup_pruned_logs', ['count' => $count, 'days' => $retention]),
+                fn () => true,
+            );
         } else {
-            $this->info('  → No log files to prune');
+            $this->components->task(
+                __('setup.system.cleanup_no_logs'),
+                fn () => true,
+            );
         }
     }
 }

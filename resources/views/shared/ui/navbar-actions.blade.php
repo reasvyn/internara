@@ -36,10 +36,7 @@
                 <x-slot:trigger>
                     <button class="flex items-center gap-2 btn btn-ghost btn-sm rounded-lg px-2">
                         <span class="text-sm font-medium hidden sm:inline">{{ auth()->user()->name }}</span>
-                        <x-mary-avatar
-                            placeholder="{{ auth()->user()->initials() }}"
-                            class="size-8"
-                        />
+                        <x-shared::ui.avatar :user="auth()->user()" size="size-8" />
                     </button>
                 </x-slot:trigger>
 

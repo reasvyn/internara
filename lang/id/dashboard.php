@@ -70,6 +70,7 @@ return [
     'quick_links' => 'Tautan Cepat',
     'notifications' => 'Notifikasi',
 
+    'system_settings' => 'Pengaturan Sistem',
     'quick_actions' => 'Aksi Cepat',
     'help_title' => 'Butuh Bantuan?',
     'help_desc' => 'Pelajari dokumentasi untuk menguasai fitur :app.',

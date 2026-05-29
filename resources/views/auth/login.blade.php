@@ -8,14 +8,14 @@
         <form wire:submit="login" class="space-y-5">
             <x-mary-input
                 wire:model="form.identifier"
-                label="{{ __('auth.login.identifier') }}"
+                :label="__('auth.login.identifier')"
                 placeholder="username@email.com"
                 icon="o-identification"
             />
 
             <x-mary-password
                 wire:model="form.password"
-                label="{{ __('auth.login.password') }}"
+                :label="__('auth.login.password')"
                 placeholder="••••••••"
                 icon="o-key"
                 right
@@ -24,7 +24,7 @@
             <div class="flex items-center justify-between">
                 <x-mary-checkbox
                     wire:model="form.remember"
-                    label="{{ __('auth.login.remember') }}"
+                    :label="__('auth.login.remember')"
                     class="checkbox-primary checkbox-sm rounded"
                 />
 
@@ -36,7 +36,7 @@
             <div class="pt-5 border-t border-base-content/10">
                 <x-mary-button
                     type="submit"
-                    label="{{ __('auth.login.submit') }}"
+                    :label="__('auth.login.submit')"
                     class="btn-primary w-full"
                     spinner="login"
                 />

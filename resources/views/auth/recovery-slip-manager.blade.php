@@ -33,7 +33,7 @@
                                 <div wire:key="user-{{ $user->id }}" 
                                      wire:click="selectUser('{{ $user->id }}')"
                                      class="flex items-center gap-4 p-4 rounded-2xl border transition-all cursor-pointer {{ $selectedUser?->id === $user->id ? 'border-primary bg-primary/5' : 'border-base-content/5 hover:bg-base-200' }}">
-                                    <x-mary-avatar :title="$user->name" class="size-10 rounded-xl" />
+                                    <x-shared::ui.avatar :user="$user" size="size-10" />
                                     <div>
                                         <p class="font-bold text-sm">{{ $user->name }}</p>
                                         <p class="text-xs text-base-content/50">{{ $user->username }} @if($user->email) &middot; {{ $user->email }} @endif</p>

@@ -19,6 +19,7 @@ return [
     'n_selected' => ':count selected',
     'delete_selected' => 'Delete (:count)',
     'created' => 'Academic year created.',
+    'updated' => 'Academic year updated.',
     'activated' => 'Academic year activated.',
     'deleted' => 'Academic year deleted.',
     'confirm_activate' => 'Activate ":name"? The current active year will be deactivated.',

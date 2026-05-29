@@ -63,6 +63,11 @@ return [
 
     'messages' => [
         'saved' => 'Pengaturan sistem berhasil diperbarui.',
+        'logo_saved' => 'Logo brand berhasil disimpan.',
+        'logo_removed' => 'Logo brand berhasil dihapus.',
+        'favicon_saved' => 'Favicon berhasil disimpan.',
+        'favicon_removed' => 'Favicon berhasil dihapus.',
+        'remove_asset_confirm' => 'Apakah Anda yakin ingin menghapus aset ini?',
         'test_email_sent' => 'Email uji coba berhasil dikirim. Silakan periksa kotak masuk Anda.',
         'test_email_failed' => 'Gagal mengirim email uji coba.',
     ],

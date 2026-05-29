@@ -22,19 +22,19 @@ class HealthCommand extends Command
         $results = array_merge(
             $this->environmentChecks(),
             [
-                ['PHP Version', ...$this->checkPhpVersion()],
-                ['PHP Extensions', ...$this->checkExtensions()],
-                ['Recommended Extensions', ...$this->checkRecommendedExtensions()],
-                ['PHP Memory', ...$this->checkMemory()],
-                ['Database', ...$this->checkDatabase()],
-                ['Migration Status', ...$this->checkMigrations()],
-                ['Storage', ...$this->checkStorage()],
-                ['Disk Space', ...$this->checkDiskSpace()],
-                ['Queue', ...$this->checkQueue()],
-                ['Cache', ...$this->checkCache()],
-                ['App Key', ...$this->checkAppKey()],
-                ['Storage Link', ...$this->checkStorageLink()],
-                ['Maintenance Mode', ...$this->checkMaintenanceMode()],
+                [__('setup.system.php_version'), ...$this->checkPhpVersion()],
+                [__('setup.system.extensions'), ...$this->checkExtensions()],
+                [__('setup.system.recommended_extensions'), ...$this->checkRecommendedExtensions()],
+                [__('setup.system.php_memory'), ...$this->checkMemory()],
+                [__('setup.system.database'), ...$this->checkDatabase()],
+                [__('setup.system.migration_status'), ...$this->checkMigrations()],
+                [__('setup.system.storage'), ...$this->checkStorage()],
+                [__('setup.system.disk_space'), ...$this->checkDiskSpace()],
+                [__('setup.system.queue'), ...$this->checkQueue()],
+                [__('setup.system.cache'), ...$this->checkCache()],
+                [__('setup.system.app_key'), ...$this->checkAppKey()],
+                [__('setup.system.storage_link'), ...$this->checkStorageLink()],
+                [__('setup.system.maintenance_mode'), ...$this->checkMaintenanceMode()],
             ],
         );
 
@@ -44,18 +44,18 @@ class HealthCommand extends Command
             return Command::SUCCESS;
         }
 
-        $this->header();
-        $this->table(['Service', 'Status', 'Details'], $results);
+        $this->healthHeader();
+        $this->table([__('setup.system.service'), __('setup.system.status'), __('setup.system.details')], $results);
 
         $hasFailures = collect($results)->contains(fn ($r) => $r[1] === 'FAIL');
 
         if ($hasFailures) {
-            $this->error("\nSystem health checks failed! Please review the details above.");
+            $this->error("\n".__('setup.system.health_failed'));
 
             return Command::FAILURE;
         }
 
-        $this->info("\nAll system health checks passed successfully.");
+        $this->info("\n".__('setup.system.health_passed'));
 
         return Command::SUCCESS;
     }
@@ -64,21 +64,21 @@ class HealthCommand extends Command
     {
         $checks = [];
 
-        $checks[] = ['Environment', ...$this->checkEnvironment()];
+        $checks[] = [__('setup.system.environment'), ...$this->checkEnvironment()];
 
-        $checks[] = ['Setup Status', ...$this->checkSetupStatus()];
+        $checks[] = [__('setup.system.setup_status'), ...$this->checkSetupStatus()];
 
         return $checks;
     }
 
-    protected function header(): void
+    protected function healthHeader(): void
     {
-        $this->line('<fg=cyan>==================================================</>');
-        $this->line('<fg=cyan>         INTERNARA SYSTEM HEALTH CHECK            </>');
-        $this->line('<fg=cyan>==================================================</>');
-        $this->line('Time: '.now()->toDateTimeString());
-        $this->line('Env:  '.app()->environment());
-        $this->line('');
+        $this->newLine();
+        $this->line('  <fg=white;options=bold;bg=green> '.__('setup.system.health_header').' </>');
+        $this->newLine();
+        $this->components->twoColumnDetail(__('setup.system.time'), now()->toDateTimeString());
+        $this->components->twoColumnDetail(__('setup.system.environment'), app()->environment());
+        $this->newLine();
     }
 
     protected function checkEnvironment(): array

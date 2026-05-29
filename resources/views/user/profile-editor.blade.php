@@ -24,12 +24,12 @@
                                 icon="o-at-symbol"
                             />
                         @else
-                            <x-mary-input :label="__('setup.wizard.full_name')" wire:model="profileForm.name" />
+                            <x-mary-input :label="__('setup.wizard.full_name')" wire:model="profileForm.name" :placeholder="__('profile.name_placeholder')" icon="o-user" />
                         @endif
-                        <x-mary-input :label="__('profile.sidebar.email')" wire:model="profileForm.email" type="email" />
-                        <x-mary-input :label="__('profile.sidebar.phone')" wire:model="profileForm.phone" />
-                        <x-mary-textarea :label="__('setup.wizard.school_address')" wire:model="profileForm.address" rows="2" class="md:col-span-2" />
-                        <x-mary-textarea :label="__('profile.bio')" wire:model="profileForm.bio" rows="3" class="md:col-span-2" />
+                        <x-mary-input :label="__('profile.sidebar.email')" wire:model="profileForm.email" type="email" :placeholder="__('profile.email_placeholder')" icon="o-envelope" />
+                        <x-mary-input :label="__('profile.sidebar.phone')" wire:model="profileForm.phone" :placeholder="__('profile.phone_placeholder')" icon="o-phone" />
+                        <x-mary-textarea :label="__('setup.wizard.school_address')" wire:model="profileForm.address" rows="2" class="md:col-span-2" :placeholder="__('profile.address_placeholder')" icon="o-map-pin" />
+                        <x-mary-textarea :label="__('profile.bio')" wire:model="profileForm.bio" rows="3" class="md:col-span-2" :placeholder="__('profile.bio_placeholder')" icon="o-document-text" />
                     </div>
 
                     @if($isStaff)
@@ -39,11 +39,11 @@
                         <p class="text-xs text-base-content/50 mb-4">{{ __('profile.staff_information_desc') }}</p>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-mary-select :label="__('profile.employment_status')" wire:model="profileForm.employment_status" :placeholder="__('profile.select_option')" :options="\App\Domain\User\Enums\EmploymentStatus::options()" />
-                            <x-mary-input :label="__('profile.position')" wire:model="profileForm.position" :placeholder="__('profile.position_placeholder')" />
-                            <x-mary-input :label="__('profile.nip')" wire:model="profileForm.nip" :placeholder="__('profile.nip_placeholder')" />
-                            <x-mary-input :label="__('profile.nuptk')" wire:model="profileForm.nuptk" :placeholder="__('profile.nuptk_placeholder')" />
-                            <x-mary-input :label="__('profile.competence_field')" wire:model="profileForm.competence_field" class="md:col-span-2" />
+                            <x-mary-select :label="__('profile.employment_status')" wire:model="profileForm.employment_status" :placeholder="__('profile.select_option')" :options="\App\Domain\User\Enums\EmploymentStatus::options()" icon="o-briefcase" />
+                            <x-mary-input :label="__('profile.position')" wire:model="profileForm.position" :placeholder="__('profile.position_placeholder')" icon="o-identification" />
+                            <x-mary-input :label="__('profile.nip')" wire:model="profileForm.nip" :placeholder="__('profile.nip_placeholder')" icon="o-document-text" />
+                            <x-mary-input :label="__('profile.nuptk')" wire:model="profileForm.nuptk" :placeholder="__('profile.nuptk_placeholder')" icon="o-document-text" />
+                            <x-mary-input :label="__('profile.competence_field')" wire:model="profileForm.competence_field" class="md:col-span-2" :placeholder="__('profile.competence_field_placeholder')" icon="o-academic-cap" />
                         </div>
                     @endif
 
@@ -59,11 +59,10 @@
                 <x-slot:subtitle><span class="text-xs text-base-content/50">{{ __('profile.password_desc') }}</span></x-slot:subtitle>
 
                 <x-mary-form wire:submit="updatePassword">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-password :label="__('profile.current_password')" wire:model="passwordForm.current_password" />
-                        <div></div>
-                        <x-mary-password :label="__('profile.new_password')" wire:model="passwordForm.password" />
-                        <x-mary-password :label="__('profile.confirm_password')" wire:model="passwordForm.password_confirmation" />
+                    <div class="space-y-5">
+                        <x-mary-password :label="__('profile.current_password')" wire:model="passwordForm.current_password" :placeholder="__('profile.current_password_placeholder')" icon="o-lock-closed" right />
+                        <x-mary-password :label="__('profile.new_password')" wire:model="passwordForm.password" :placeholder="__('profile.new_password_placeholder')" icon="o-key" right />
+                        <x-mary-password :label="__('profile.confirm_password')" wire:model="passwordForm.password_confirmation" :placeholder="__('profile.confirm_password_placeholder')" icon="o-key" right />
                     </div>
 
                     <x-slot:actions>
@@ -80,21 +79,30 @@
                     <div class="relative mb-3 group">
                         <div class="cursor-pointer relative" onclick="document.getElementById('avatar-upload').click()">
                             <input id="avatar-upload" type="file" wire:model="avatar" accept="image/png,image/jpeg,image/webp" class="hidden" />
-                            <x-mary-avatar
-                                :image="$this->avatarPreviewUrl() ?? $user->getFirstMediaUrl('avatar', 'thumb') ?: null"
-                                placeholder="{{ $user->initials() }}"
-                                class="!w-20 !h-20"
-                            />
+                            <div class="size-20 rounded-full bg-base-200 flex items-center justify-center overflow-hidden border-2 border-base-content/10">
+                                @if($this->avatarPreviewUrl() ?? $user->getFirstMediaUrl('avatar', 'thumb'))
+                                    <img src="{{ $this->avatarPreviewUrl() ?? $user->getFirstMediaUrl('avatar', 'thumb') }}" alt="Avatar" class="size-full object-cover" />
+                                @else
+                                    <span class="text-lg font-medium text-base-content/60">{{ $user->initials() }}</span>
+                                @endif
+                            </div>
                             <div class="absolute inset-0 flex items-center justify-center rounded-full bg-base-content/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                 <x-mary-icon name="o-camera" class="size-6 text-base-100" />
                             </div>
                         </div>
-                        @if($avatar || $user->getFirstMediaUrl('avatar'))
-                            <button type="button" wire:click="$set('avatar', null)" class="absolute -top-1 -right-1 size-5 bg-error text-error-content rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+                        @if($user->getFirstMediaUrl('avatar'))
+                            <button type="button"
+                                wire:click="$set('showConfirm', true)"
+                                class="absolute -top-1 -right-1 size-5 bg-error text-error-content rounded-full flex items-center justify-center hover:scale-110 transition-transform opacity-0 group-hover:opacity-100">
                                 <x-mary-icon name="o-x-mark" class="size-3" />
                             </button>
                         @endif
                     </div>
+
+                    @include('shared.ui.confirm', [
+                        'message' => __('profile.avatar_remove_confirm'),
+                        'confirmText' => __('common.actions.remove'),
+                    ])
                     <h3 class="font-semibold text-lg mt-3">{{ $user->name }}</h3>
                     <p class="text-xs text-base-content/50">{{ '@'.$user->username }}</p>
                     <div class="flex flex-wrap justify-center gap-1 mt-3">

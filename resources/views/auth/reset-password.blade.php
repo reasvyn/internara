@@ -9,7 +9,7 @@
             <x-mary-input
                 wire:model="form.email"
                 type="email"
-                label="{{ __('auth.reset_password.email') }}"
+                :label="__('auth.reset_password.email')"
                 placeholder="user@example.com"
                 icon="o-envelope"
                 readonly
@@ -17,20 +17,24 @@
 
             <x-mary-password
                 wire:model="form.password"
-                label="{{ __('auth.reset_password.password') }}"
+                :label="__('auth.reset_password.password')"
                 placeholder="••••••••"
+                icon="o-key"
+                right
             />
 
             <x-mary-password
                 wire:model="form.password_confirmation"
-                label="{{ __('auth.reset_password.password_confirmation') }}"
+                :label="__('auth.reset_password.password_confirmation')"
                 placeholder="••••••••"
+                icon="o-key"
+                right
             />
 
             <div class="pt-5 border-t border-base-content/10">
                 <x-mary-button
                     type="submit"
-                    label="{{ __('passwords.reset_password') }}"
+                    :label="__('passwords.reset_password')"
                     class="btn-primary w-full"
                     spinner="resetPassword"
                 />

@@ -25,13 +25,12 @@ class AdminManager extends BaseRecordManager
 
     public function boot(): void
     {
-        $this->authorize('viewAny', User::class);
+        $this->authorize('viewAdmin', User::class);
     }
 
     public function headers(): array
     {
         return [
-            ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
             ['key' => 'name', 'label' => __('user.admin.name'), 'sortable' => true],
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
             [
@@ -81,7 +80,11 @@ class AdminManager extends BaseRecordManager
     {
         $user = User::with('roles')->findOrFail($id);
 
-        $this->authorize('update', $user);
+        if ($user->hasRole('super_admin')) {
+            flash()->error(__('user.admin.cannot_edit'));
+
+            return;
+        }
 
         $this->resetErrorBag();
         $this->form->fill([
@@ -115,10 +118,14 @@ class AdminManager extends BaseRecordManager
     {
         $user = User::findOrFail($id);
 
-        $this->authorize('delete', $user);
+        if ($user->hasRole('super_admin')) {
+            flash()->error(__('user.admin.cannot_delete'));
+
+            return;
+        }
 
         if ($user->id === auth()->id()) {
-            flash()->error('Cannot delete yourself.');
+            flash()->error(__('user.admin.cannot_delete_self'));
 
             return;
         }
@@ -136,8 +143,7 @@ class AdminManager extends BaseRecordManager
                 return;
             }
             $user = User::find($id);
-            if ($user) {
-                $this->authorize('delete', $user);
+            if ($user && ! $user->hasRole('super_admin')) {
                 $deleteAction->execute($user);
             }
         });

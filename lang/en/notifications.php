@@ -13,6 +13,7 @@ return [
         'mail_username' => 'Username: :username',
         'mail_password' => 'Temporary Password: :password',
         'mail_line2' => 'Please change your password after logging in.',
+        'mail_line3' => 'Thank you for using our application!',
         'mail_action' => 'Log In Now',
     ],
     'account_status' => [
@@ -87,6 +88,7 @@ return [
     'ui' => [
         'title' => 'Notification Center',
         'subtitle' => 'Stay updated with system activities',
+        'refresh' => 'Refresh',
         'mark_all_read' => 'Mark All as Read',
         'delete_selected' => 'Delete Selected',
         'are_you_sure' => 'Are you sure?',

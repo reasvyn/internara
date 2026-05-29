@@ -10,6 +10,7 @@ use App\Domain\Internship\Actions\CreateInternshipGroupAction;
 use App\Domain\Internship\Actions\DeleteInternshipGroupAction;
 use App\Domain\Internship\Actions\RemoveMemberFromGroupAction;
 use App\Domain\Internship\Actions\UpdateInternshipGroupAction;
+use App\Domain\Internship\Enums\InternshipGroupRole;
 use App\Domain\Internship\Livewire\Forms\InternshipGroupForm;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Internship\Models\InternshipGroup;
@@ -17,6 +18,7 @@ use App\Domain\Internship\Models\InternshipGroupMember;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Livewire\Attributes\Computed;
 
 class InternshipGroupManager extends BaseRecordManager
 {
@@ -33,6 +35,8 @@ class InternshipGroupManager extends BaseRecordManager
     public string $confirmType = '';
 
     public ?string $confirmTarget = null;
+
+    public ?string $editingId = null;
 
     public ?string $internshipId = null;
 
@@ -53,9 +57,9 @@ class InternshipGroupManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'name', 'label' => 'Name', 'sortable' => true],
-            ['key' => 'internship', 'label' => 'Internship', 'sortable' => false],
-            ['key' => 'member_count', 'label' => 'Members', 'sortable' => false],
+            ['key' => 'name', 'label' => __('internship.group_name'), 'sortable' => true],
+            ['key' => 'internship', 'label' => __('internship.title'), 'sortable' => false],
+            ['key' => 'member_count', 'label' => __('internship.members'), 'sortable' => false],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
@@ -76,6 +80,7 @@ class InternshipGroupManager extends BaseRecordManager
     {
         $this->resetErrorBag();
         $this->form->reset();
+        $this->editingId = null;
         $this->showModal = true;
     }
 
@@ -84,13 +89,13 @@ class InternshipGroupManager extends BaseRecordManager
         $group = InternshipGroup::findOrFail($id);
 
         $this->resetErrorBag();
+        $this->editingId = $group->id;
         $this->form->fill([
             'name' => $group->name,
             'internship_id' => $group->internship_id,
             'placement_id' => $group->placement_id ?? '',
             'description' => $group->description ?? '',
         ]);
-        $this->confirmTarget = $group->id;
         $this->showModal = true;
     }
 
@@ -98,8 +103,8 @@ class InternshipGroupManager extends BaseRecordManager
     {
         $this->form->validate();
 
-        if ($this->confirmTarget) {
-            $group = InternshipGroup::findOrFail($this->confirmTarget);
+        if ($this->editingId) {
+            $group = InternshipGroup::findOrFail($this->editingId);
             $update->execute($group, $this->form->all());
             flash()->success(__('internship.group_updated'));
         } else {
@@ -108,7 +113,7 @@ class InternshipGroupManager extends BaseRecordManager
         }
 
         $this->showModal = false;
-        $this->confirmTarget = null;
+        $this->editingId = null;
     }
 
     // --- Delete ---
@@ -119,7 +124,7 @@ class InternshipGroupManager extends BaseRecordManager
 
         $this->confirmTarget = $id;
         $this->confirmType = 'delete';
-        $this->confirmMessage = __('Delete :name?', ['name' => $group->name]);
+        $this->confirmMessage = __('internship.confirm_delete_group', ['name' => $group->name]);
         $this->showConfirm = true;
     }
 
@@ -158,8 +163,10 @@ class InternshipGroupManager extends BaseRecordManager
 
     public function addMember(AddMemberToGroupAction $action): void
     {
+        $allowedRoles = implode(',', array_map(fn ($r) => $r->value, InternshipGroupRole::cases()));
+
         $this->validate([
-            'memberFormData.role' => ['required', 'in:student,school_teacher,industry_supervisor'],
+            'memberFormData.role' => ['required', "in:{$allowedRoles}"],
             'memberFormData.registration_id' => ['required_if:memberFormData.role,student', 'nullable', 'exists:registrations,id'],
             'memberFormData.mentor_id' => ['required_if:memberFormData.role,school_teacher,industry_supervisor', 'nullable', 'exists:mentors,id'],
         ]);
@@ -192,15 +199,22 @@ class InternshipGroupManager extends BaseRecordManager
 
     // ---
 
+    #[Computed]
     public function internships(): array
     {
         return Internship::pluck('name', 'id')->toArray();
     }
 
+    #[Computed]
+    public function roleOptions(): array
+    {
+        return collect(InternshipGroupRole::cases())
+            ->map(fn ($r) => ['id' => $r->value, 'name' => $r->label()])
+            ->toArray();
+    }
+
     public function render(): View
     {
-        return view('internship.internship-group-manager', [
-            'internships' => $this->internships(),
-        ]);
+        return view('internship.internship-group-manager');
     }
 }
