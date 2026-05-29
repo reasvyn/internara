@@ -286,6 +286,27 @@ return [
         ],
     ],
 
+    'guide' => [
+        'title' => 'Setup Guide',
+        'intro' => 'Follow these steps to complete the system installation:',
+        'step1_title' => 'Welcome & System Audit',
+        'step1_desc' => 'The system checks technical requirements: PHP version, extensions, directory permissions, database connection, and more. Ensure all checks pass before proceeding.',
+        'step2_title' => 'School Information',
+        'step2_desc' => 'Enter your institution data: school name, institutional code, address, contact details, and principal name. This becomes the system\'s primary identity.',
+        'step3_title' => 'Department',
+        'step3_desc' => 'Create your first department. You can add more departments later through the admin panel.',
+        'step4_title' => 'Admin Account',
+        'step4_desc' => 'The super administrator account will be created with a pre-set name and username. Simply enter a valid email and a strong password.',
+        'step5_title' => 'Internship Program (Optional)',
+        'step5_desc' => 'Configure your first internship program. Enter the program name, start and end dates. This step can be skipped and done later.',
+        'step6_title' => 'Finalize',
+        'step6_desc' => 'Review all entered data. Make sure you understand the security implications of the administrator credentials.',
+        'step7_title' => 'Complete',
+        'step7_desc' => 'The system is ready! Save your login credentials and recovery key in a secure place. The recovery key is required if the password is lost.',
+        'tip_title' => 'Tip',
+        'tip_desc' => 'All data can be modified later through the settings panel after logging in.',
+    ],
+
     'system' => [
         'health_header' => 'SYSTEM HEALTH CHECK',
         'environment' => 'Environment',

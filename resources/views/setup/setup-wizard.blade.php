@@ -85,4 +85,6 @@
             @include('setup.components.complete-step')
         @endif
     </div>
+
+    @include('setup.components.setup-guide')
 </div>

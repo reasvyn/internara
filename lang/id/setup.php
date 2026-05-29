@@ -286,6 +286,27 @@ return [
         ],
     ],
 
+    'guide' => [
+        'title' => 'Petunjuk Instalasi',
+        'intro' => 'Ikuti langkah-langkah berikut untuk menyelesaikan pemasangan sistem:',
+        'step1_title' => 'Sambutan & Audit Sistem',
+        'step1_desc' => 'Sistem akan memeriksa persyaratan teknis: versi PHP, ekstensi, izin direktori, koneksi database, dan lainnya. Pastikan semua pemeriksaan lulus sebelum melanjutkan.',
+        'step2_title' => 'Informasi Sekolah',
+        'step2_desc' => 'Masukkan data institusi: nama sekolah, kode NPSN, alamat, kontak, dan nama kepala sekolah. Data ini menjadi identitas utama sistem.',
+        'step3_title' => 'Jurusan',
+        'step3_desc' => 'Buat jurusan pertama. Anda dapat menambahkan lebih banyak jurusan nanti melalui panel administrator.',
+        'step4_title' => 'Akun Administrator',
+        'step4_desc' => 'Akun super administrator akan dibuat dengan nama dan username yang sudah ditentukan. Cukup masukkan email dan kata sandi yang aman.',
+        'step5_title' => 'Program Magang (Opsional)',
+        'step5_desc' => 'Konfigurasi program magang pertama. Isi nama, tanggal mulai dan selesai. Langkah ini dapat dilewati dan dilakukan nanti.',
+        'step6_title' => 'Finalisasi',
+        'step6_desc' => 'Periksa kembali semua data. Pastikan Anda memahami konsekuensi keamanan dari kredensial administrator.',
+        'step7_title' => 'Selesai',
+        'step7_desc' => 'Sistem siap digunakan! Simpan kredensial login dan kunci pemulihan di tempat aman. Kunci pemulihan diperlukan jika kata sandi hilang.',
+        'tip_title' => 'Tips',
+        'tip_desc' => 'Semua data dapat diubah nanti melalui panel pengaturan setelah login.',
+    ],
+
     'system' => [
         'health_header' => 'PEMERIKSAAN KESEHATAN SISTEM',
         'environment' => 'Lingkungan',
