@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Actions;
 
-use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\Auth\Entities\SuperAdminIntegrityRules;
+use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\Auth\Notifications\AccountStatusNotification;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;

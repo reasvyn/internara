@@ -90,6 +90,15 @@ return [
         'completed' => 'Snapshots recorded successfully.',
     ],
 
+    'account_slip' => [
+        'title' => 'Account Activation',
+        'name' => 'Name',
+        'username' => 'Username',
+        'email' => 'Email',
+        'activation_code' => 'Activation Code',
+        'instruction' => 'Visit /activate and enter this code to claim your account.',
+    ],
+
     'recovery_show' => [
         'warning' => 'The recovery key grants super admin access. Only share this with trusted server administrators.',
         'confirm' => 'Are you sure you want to display the recovery key?',

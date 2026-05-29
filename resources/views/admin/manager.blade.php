@@ -50,7 +50,9 @@
             <x-slot:trigger>
                 <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" :label="__('common.actions.bulk_actions')" />
             </x-slot:trigger>
-            <div class="p-1.5 w-48">
+            <div class="p-1.5 w-52">
+                <x-mary-menu-item :title="__('user.manager.download_slips')" icon="o-document-arrow-down" wire:click="downloadSelectedSlips" />
+                <hr class="border-base-content/10" />
                 <x-mary-menu-item :title="__('common.actions.export_selected')" icon="o-arrow-down-tray" wire:click="exportSelected" />
                 <hr class="border-base-content/10" />
                 <x-mary-menu-item :title="__('common.actions.delete_selected')" icon="o-trash" class="text-error"
@@ -125,6 +127,7 @@
                         <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="editUser('{{ $user->id }}')" :aria-label="__('common.actions.edit')" />
                         <x-mary-button icon="o-shield-check" class="btn-ghost btn-sm text-warning" wire:click="askChangeStatus('{{ $user->id }}')" :aria-label="__('user.manager.change_status')" />
                         <x-mary-button icon="o-key" class="btn-ghost btn-sm text-info" wire:click="resetPassword('{{ $user->id }}')" :aria-label="__('user.manager.reset_password')" />
+                        <x-mary-button icon="o-document-arrow-down" class="btn-ghost btn-sm text-primary" wire:click="downloadAccountSlip('{{ $user->id }}')" :aria-label="__('user.manager.download_slip')" />
                         @if($user->id !== auth()->id())
                             <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="deleteUser('{{ $user->id }}')" :aria-label="__('common.actions.delete')" />
                         @endif

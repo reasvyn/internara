@@ -15,6 +15,7 @@ final class BatchDeleteUserAction extends BaseAction
 
     /**
      * @param string[] $ids
+     *
      * @return array{deleted: int, skipped: int}
      */
     public function execute(array $ids): array

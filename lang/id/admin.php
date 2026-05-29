@@ -90,6 +90,15 @@ return [
         'completed' => 'Snapshot berhasil direkam.',
     ],
 
+    'account_slip' => [
+        'title' => 'Aktivasi Akun',
+        'name' => 'Nama',
+        'username' => 'Nama Pengguna',
+        'email' => 'Email',
+        'activation_code' => 'Kode Aktivasi',
+        'instruction' => 'Kunjungi /activate dan masukkan kode ini untuk mengklaim akun Anda.',
+    ],
+
     'recovery_show' => [
         'warning' => 'Kunci pemulihan memberikan akses super admin. Hanya bagikan dengan administrator server tepercaya.',
         'confirm' => 'Anda yakin ingin menampilkan kunci pemulihan?',

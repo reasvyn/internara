@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Livewire;
 
+use App\Domain\Admin\Livewire\Concerns\DownloadsAccountSlips;
 use App\Domain\Admin\Livewire\Forms\MentorForm;
-use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Mentor\Actions\CreateMentorAction;
 use App\Domain\Mentor\Actions\DeleteMentorAction;
@@ -17,7 +17,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class MentorManager extends BaseRecordManager
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, DownloadsAccountSlips;
 
     public bool $userModal = false;
 
@@ -108,8 +108,10 @@ class MentorManager extends BaseRecordManager
                     'is_active' => $this->form->is_active,
                 ],
             );
-            $code = ActivationToken::generateFor($mentor->user);
-            flash()->success(__('user.mentor.success_created_activation', ['code' => $code]));
+            $this->userModal = false;
+            $this->redirect(route('admin.users.account-slip', $mentor->user));
+
+            return;
         }
 
         $this->userModal = false;

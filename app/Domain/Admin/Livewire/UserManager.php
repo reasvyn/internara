@@ -8,11 +8,8 @@ use App\Domain\Admin\Actions\BatchDeleteUserAction;
 use App\Domain\Admin\Actions\CreateUserAction;
 use App\Domain\Admin\Actions\DeleteUserAction;
 use App\Domain\Admin\Actions\GetUserManagerStatsAction;
-use App\Domain\Admin\Actions\SetUserStatusAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
 use App\Domain\Admin\Livewire\Forms\UserForm;
-use App\Domain\Auth\Enums\AccountStatus;
-use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Shared\Enums\CsvRowResult;
 use App\Domain\Shared\Support\CsvHandler;
@@ -135,8 +132,10 @@ class UserManager extends BaseRecordManager
             flash()->success(__('user.manager.success_updated'));
         } else {
             $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], [], $this->form->roles);
-            $code = ActivationToken::generateFor($user);
-            flash()->success(__('user.manager.success_created_activation', ['code' => $code]));
+            $this->userModal = false;
+            $this->redirect(route('admin.users.account-slip', $user));
+
+            return;
         }
 
         $this->userModal = false;
@@ -146,8 +145,25 @@ class UserManager extends BaseRecordManager
     {
         $user = User::findOrFail($id);
 
-        $code = ActivationToken::generateFor($user);
-        flash()->info(__('user.manager.password_reset_activation', ['code' => $code]));
+        $this->redirect(route('admin.users.account-slip', $user));
+    }
+
+    public function downloadAccountSlip(string $id): void
+    {
+        $user = User::findOrFail($id);
+
+        $this->redirect(route('admin.users.account-slip', $user));
+    }
+
+    public function downloadSelectedSlips(): void
+    {
+        if ($this->selectedIds === []) {
+            flash()->warning(__('common.actions.no_records_selected'));
+
+            return;
+        }
+
+        $this->redirect(route('admin.users.account-slips.batch', ['ids' => implode(',', $this->selectedIds)]));
     }
 
     public function deleteUser(string $id, DeleteUserAction $deleteAction): void
