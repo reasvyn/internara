@@ -6,7 +6,7 @@ use App\Domain\Setup\Livewire\SetupWizard;
 use Illuminate\Support\Facades\Session;
 
 Route::middleware('setup.protected')->group(function () {
-    Route::livewire('/setup', SetupWizard::class)->name('setup');
+    Route::get('/setup', SetupWizard::class)->name('setup');
     Route::post('/setup', fn () => redirect()->route('setup'));
 });
 

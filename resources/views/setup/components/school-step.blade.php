@@ -41,7 +41,7 @@
 
         <x-mary-input
             label="{{ __('setup.wizard.school_address') }}"
-            placeholder="{{ __('setup.wizard.school_address') }}"
+            placeholder="{{ __('setup.wizard.school_address_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.address"
         />
 
