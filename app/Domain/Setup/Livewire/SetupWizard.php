@@ -34,6 +34,8 @@ class SetupWizard extends Component
 
     public InternshipForm $internshipForm;
 
+    public bool $showGuide = false;
+
     public bool $dataVerified = false;
 
     public bool $securityAware = false;
