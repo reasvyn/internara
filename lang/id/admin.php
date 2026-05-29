@@ -97,6 +97,7 @@ return [
         'email' => 'Email',
         'activation_code' => 'Kode Aktivasi',
         'instruction' => 'Kunjungi /activate dan masukkan kode ini untuk mengklaim akun Anda.',
+        'code_expiry' => 'Kedaluwarsa dalam :days hari',
     ],
 
     'recovery_show' => [

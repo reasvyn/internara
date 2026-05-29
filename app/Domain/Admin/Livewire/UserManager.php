@@ -10,6 +10,7 @@ use App\Domain\Admin\Actions\DeleteUserAction;
 use App\Domain\Admin\Actions\GetUserManagerStatsAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
 use App\Domain\Admin\Livewire\Forms\UserForm;
+use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Shared\Enums\CsvRowResult;
 use App\Domain\Shared\Support\CsvHandler;
@@ -145,25 +146,8 @@ class UserManager extends BaseRecordManager
     {
         $user = User::findOrFail($id);
 
-        $this->redirect(route('admin.users.account-slip', $user));
-    }
-
-    public function downloadAccountSlip(string $id): void
-    {
-        $user = User::findOrFail($id);
-
-        $this->redirect(route('admin.users.account-slip', $user));
-    }
-
-    public function downloadSelectedSlips(): void
-    {
-        if ($this->selectedIds === []) {
-            flash()->warning(__('common.actions.no_records_selected'));
-
-            return;
-        }
-
-        $this->redirect(route('admin.users.account-slips.batch', ['ids' => implode(',', $this->selectedIds)]));
+        ActivationToken::revokeFor($user);
+        flash()->success(__('user.manager.password_reset'));
     }
 
     public function deleteUser(string $id, DeleteUserAction $deleteAction): void

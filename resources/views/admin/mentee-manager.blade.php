@@ -62,6 +62,7 @@
             @scope('actions', $mentee)
                 <div class="flex justify-end gap-1">
                     <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $mentee->id }}')" :aria-label="__('common.actions.edit')" />
+                    <x-mary-button icon="o-key" class="btn-ghost btn-sm text-primary" wire:click="showSlip('{{ $mentee->id }}')" :aria-label="__('user.manager.account_slip')" />
                     <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="delete('{{ $mentee->id }}')" :aria-label="__('common.actions.delete')" />
                 </div>
             @endscope
@@ -85,4 +86,5 @@
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
+    @include('admin.components.account-slip-modal')
 </x-shared::ui.record-manager>
