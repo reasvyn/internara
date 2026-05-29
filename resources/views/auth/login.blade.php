@@ -43,4 +43,12 @@
             </div>
         </form>
     </div>
+
+    <div class="mt-5 pt-5 border-t border-base-content/10 text-center">
+        <p class="text-xs text-base-content/50">{{ __('auth.login.no_account') }}</p>
+        <a href="{{ route('activate') }}" class="inline-flex items-center text-xs font-medium text-primary hover:text-primary-focus transition-colors mt-0.5" wire:navigate>
+            <x-mary-icon name="o-rocket-launch" class="size-3 mr-1" />
+            {{ __('auth.login.claim_account') }}
+        </a>
+    </div>
 </div>
