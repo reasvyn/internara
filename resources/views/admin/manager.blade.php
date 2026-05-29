@@ -126,8 +126,7 @@
                     <div class="flex justify-end gap-1">
                         <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="editUser('{{ $user->id }}')" :aria-label="__('common.actions.edit')" />
                         <x-mary-button icon="o-shield-check" class="btn-ghost btn-sm text-warning" wire:click="askChangeStatus('{{ $user->id }}')" :aria-label="__('user.manager.change_status')" />
-                        <x-mary-button icon="o-key" class="btn-ghost btn-sm text-info" wire:click="resetPassword('{{ $user->id }}')" :aria-label="__('user.manager.reset_password')" />
-                        <x-mary-button icon="o-document-arrow-down" class="btn-ghost btn-sm text-primary" wire:click="downloadAccountSlip('{{ $user->id }}')" :aria-label="__('user.manager.download_slip')" />
+                        <x-mary-button icon="o-key" class="btn-ghost btn-sm text-primary" wire:click="showSlip('{{ $user->id }}')" :aria-label="__('user.manager.account_slip')" />
                         @if($user->id !== auth()->id())
                             <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="deleteUser('{{ $user->id }}')" :aria-label="__('common.actions.delete')" />
                         @endif
@@ -181,4 +180,6 @@
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
+
+    @include('admin.components.account-slip-modal')
 </x-shared::ui.record-manager>

@@ -19,8 +19,13 @@ return [
         'status_changed' => 'User status changed. Notification sent.',
         'password_reset' => 'Password reset to: :password',
         'password_reset_activation' => 'Password reset. Activation code: :code',
+        'account_slip' => 'Activation Slip',
         'download_slip' => 'Download Slip',
         'download_slips' => 'Download Account Slips',
+        'regenerate_code' => 'Regenerate Code',
+        'send_code' => 'Send to Email',
+        'code_regenerated' => 'Activation code regenerated successfully.',
+        'code_sent' => 'Activation code sent to the user\'s email.',
         'change_status' => 'Change Status',
         'new_status' => 'New Status',
         'status_reason' => 'Reason',
@@ -170,5 +175,16 @@ return [
 
     'validation' => [
         'authoritative_reserved' => 'The value ":value" is reserved for the super administrator and cannot be used.',
+    ],
+
+    'activation' => [
+        'email_subject' => 'Account Activation Code',
+        'email_greeting' => 'Hello :name!',
+        'email_intro' => 'Your account has been created. Use the activation code below to claim your account:',
+        'email_action' => 'Activate Account',
+        'email_expiry' => 'This code expires in :days days.',
+        'email_ignore' => 'If you did not create this account, ignore this email.',
+        'notification_title' => 'Activation Code',
+        'notification_message' => 'Your account activation code has been issued.',
     ],
 ];

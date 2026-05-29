@@ -27,7 +27,7 @@ class ActivateAccount extends Component
     {
         $this->validate([
             'email' => 'required|email|exists:users,email',
-            'code' => 'required|string|size:6',
+            'code' => 'required|string|min:16|max:19',
             'password' => 'required|string|min:8|confirmed',
         ]);
 

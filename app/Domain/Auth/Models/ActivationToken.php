@@ -8,6 +8,7 @@ use App\Domain\Core\Models\BaseModel;
 use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class ActivationToken extends BaseModel
 {
@@ -34,9 +35,10 @@ class ActivationToken extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-    public static function generateFor(User $user, int $ttlDays = 7): string
+    public static function generateFor(User $user, int $ttlDays = 30): string
     {
-        $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $raw = strtoupper(Str::random(16));
+        $code = implode('-', str_split($raw, 4));
 
         self::updateOrCreate(
             ['user_id' => $user->id, 'token_type' => 'activation'],
@@ -49,5 +51,12 @@ class ActivationToken extends BaseModel
         );
 
         return $code;
+    }
+
+    public static function revokeFor(User $user): void
+    {
+        self::where('user_id', $user->id)
+            ->where('token_type', 'activation')
+            ->delete();
     }
 }

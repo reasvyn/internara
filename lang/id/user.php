@@ -20,8 +20,13 @@ return [
         'status_changed' => 'Status pengguna berubah. Notifikasi terkirim.',
         'password_reset' => 'Password direset ke: :password',
         'password_reset_activation' => 'Password direset. Kode aktivasi: :code',
+        'account_slip' => 'Slip Aktivasi',
         'download_slip' => 'Unduh Slip',
         'download_slips' => 'Unduh Slip Akun',
+        'regenerate_code' => 'Regenerasi Kode',
+        'send_code' => 'Kirim ke Email',
+        'code_regenerated' => 'Kode aktivasi berhasil diperbarui.',
+        'code_sent' => 'Kode aktivasi berhasil dikirim ke email pengguna.',
         'change_status' => 'Ubah Status',
         'new_status' => 'Status Baru',
         'status_reason' => 'Alasan',
@@ -170,5 +175,16 @@ return [
     ],
     'validation' => [
         'authoritative_reserved' => 'Nilai ":value" dicadangkan untuk super administrator dan tidak dapat digunakan.',
+    ],
+
+    'activation' => [
+        'email_subject' => 'Kode Aktivasi Akun',
+        'email_greeting' => 'Halo :name!',
+        'email_intro' => 'Akun Anda telah dibuat. Gunakan kode aktivasi berikut untuk mengklaim akun Anda:',
+        'email_action' => 'Aktivasi Akun',
+        'email_expiry' => 'Kode ini berlaku selama :days hari.',
+        'email_ignore' => 'Jika Anda tidak membuat akun ini, abaikan email ini.',
+        'notification_title' => 'Kode Aktivasi',
+        'notification_message' => 'Kode aktivasi akun Anda telah diterbitkan.',
     ],
 ];

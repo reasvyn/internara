@@ -97,6 +97,7 @@ return [
         'email' => 'Email',
         'activation_code' => 'Activation Code',
         'instruction' => 'Visit /activate and enter this code to claim your account.',
+        'code_expiry' => 'Expires in :days days',
     ],
 
     'recovery_show' => [
