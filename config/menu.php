@@ -14,7 +14,7 @@ return [
             ],
         ],
 
-        // Phase 1: Foundation
+        // Institution Foundation
         'foundation' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'sidebar.foundation',
@@ -25,7 +25,7 @@ return [
             ],
         ],
 
-        // Phase 2: Internship Planning
+        // Internship Planning
         'internship' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'sidebar.internship',
@@ -41,7 +41,7 @@ return [
             ],
         ],
 
-        // Phase 3: Registration
+        // Registration
         'registration' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'sidebar.registration',
@@ -57,6 +57,7 @@ return [
             'roles' => ['super_admin', 'admin'],
             'title' => 'sidebar.people',
             'items' => [
+                ['route' => 'admin.users.index', 'icon' => 'o-users', 'label' => 'user.manager.title', 'roles' => ['super_admin']],
                 ['route' => 'admin.users.admins', 'icon' => 'o-user-circle', 'label' => 'user.admin.title'],
                 ['route' => 'admin.users.teachers', 'icon' => 'o-academic-cap', 'label' => 'user.teacher.title'],
                 ['route' => 'admin.users.supervisors', 'icon' => 'o-eye', 'label' => 'user.supervisor.title'],
@@ -66,7 +67,7 @@ return [
             ],
         ],
 
-        // Phase 4-5: Operations & Assessment
+        // Operations & Assessment
         'assessment' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'sidebar.assessment',
@@ -135,7 +136,7 @@ return [
             ],
         ],
 
-        // Phase 6-7: Reports & Archive
+        // Reports & Archive
         'reports' => [
             'roles' => ['super_admin', 'admin'],
             'title' => 'sidebar.reports',

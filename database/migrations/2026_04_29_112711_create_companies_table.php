@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('website')->nullable();
             $table->text('description')->nullable();
             $table->string('industry_sector')->nullable();
+            $table->index('name');
+            $table->index('industry_sector');
             $table->timestamps();
         });
     }

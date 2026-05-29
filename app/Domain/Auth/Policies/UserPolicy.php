@@ -14,6 +14,11 @@ class UserPolicy extends BasePolicy
         return $user->can('users.view');
     }
 
+    public function viewAdmin(User $user): bool
+    {
+        return $user->hasRole('super_admin');
+    }
+
     public function view(User $user, User $model): bool
     {
         if ($user->id === $model->id) {

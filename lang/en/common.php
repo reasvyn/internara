@@ -40,6 +40,7 @@ return [
         'confirm' => 'Confirm',
         'edit' => 'Edit',
         'delete' => 'Delete',
+        'remove' => 'Remove',
         'create' => 'Create',
         'update' => 'Update',
         'view' => 'View',
@@ -67,7 +68,10 @@ return [
         'no_records_matching' => 'No records matching current filters.',
         'bulk_action_done' => ':count records updated via :action.',
         'mass_action_done' => ':count records processed via mass action: :action.',
+        'all' => 'All',
     ],
+    'yes' => 'Yes',
+    'no' => 'No',
     'status' => [
         'active' => 'Active',
         'inactive' => 'Inactive',

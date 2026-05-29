@@ -14,6 +14,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('registration_id')->constrained('registrations')->cascadeOnDelete();
             $table->index('registration_id');
+            $table->index('graded_by');
             $table->string('title');
             $table->string('status')->default('draft')->index();
             $table->json('chapter_structure')->nullable();

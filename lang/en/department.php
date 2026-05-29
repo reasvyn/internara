@@ -10,6 +10,7 @@ return [
     'new' => 'New Department',
     'delete_confirm' => 'Are you sure you want to delete this department? This action cannot be undone.',
     'delete_selected_confirm' => 'Are you sure you want to delete the selected departments? Only departments without students will be deleted.',
+    'confirm_delete_selected' => 'Are you sure you want to delete the selected departments? Only departments without students will be deleted.',
     'delete_blocked' => 'Cannot delete: this department has :count student profile(s) associated.',
     'selected_count' => '{0} departments selected|{1} department selected|[2,*] departments selected',
     'stats' => [

@@ -158,12 +158,17 @@ return [
 
     'custom' => [
         'username_format' => ':Attribute harus diawali dengan "u" diikuti minimal 8 karakter alfanumerik.',
+        'address' => [
+            'required' => 'Bidang alamat wajib diisi.',
+        ],
     ],
 
     '(and :count more error)' => '(dan :count kesalahan lainnya)',
     '(and :count more errors)' => '(dan :count kesalahan lainnya)',
 
     'attributes' => [
+        'address' => 'alamat',
+        'avatar' => 'foto profil',
         'formData.name' => 'nama perusahaan',
         'formData.address' => 'alamat perusahaan',
         'formData.phone' => 'telepon',

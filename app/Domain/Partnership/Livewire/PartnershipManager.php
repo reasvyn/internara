@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PartnershipManager extends BaseRecordManager
 {
@@ -98,10 +99,10 @@ class PartnershipManager extends BaseRecordManager
         $expired = Partnership::where('status', 'expired')->count();
 
         return [
-            'active' => $active,
-            'expired' => $expired,
-            'expiring_soon' => $expiringSoon,
             'total' => Partnership::count(),
+            'active' => $active,
+            'expiring_soon' => $expiringSoon,
+            'expired' => $expired,
         ];
     }
 
@@ -214,6 +215,7 @@ class PartnershipManager extends BaseRecordManager
     public function confirmAction(
         DeletePartnershipAction $deleteAction,
         TerminatePartnershipAction $terminateAction,
+        BatchDeletePartnershipAction $batchDelete,
     ): void {
         if ($this->confirmTarget === null && $this->confirmType !== 'delete_selected') {
             return;
@@ -223,7 +225,7 @@ class PartnershipManager extends BaseRecordManager
             match ($this->confirmType) {
                 'delete' => $this->executeDelete($this->confirmTarget, $deleteAction),
                 'terminate' => $this->executeTerminate($this->confirmTarget, $terminateAction),
-                'delete_selected' => $this->executeDeleteSelected($deleteAction),
+                'delete_selected' => $this->executeDeleteSelected($batchDelete),
                 default => null,
             };
         } catch (RejectedException|\RuntimeException $e) {
@@ -249,111 +251,22 @@ class PartnershipManager extends BaseRecordManager
         flash()->success(__('partnership.terminate_success'));
     }
 
-    private function executeDeleteSelected(DeletePartnershipAction $action): void
+    private function executeDeleteSelected(BatchDeletePartnershipAction $action): void
     {
-        $count = 0;
+        $result = $action->execute($this->selectedIds);
 
-        foreach ($this->selectedIds as $id) {
-            $partnership = Partnership::find($id);
-
-            if ($partnership && $partnership->asPartnershipState()->canBeDeleted()) {
-                $action->execute($partnership);
-                $count++;
-            }
+        if ($result['deleted'] > 0) {
+            flash()->success(__('common.actions.bulk_action_done', [
+                'count' => $result['deleted'],
+                'action' => __('common.actions.delete'),
+            ]));
         }
 
-        if ($count > 0) {
-            flash()->success(__('common.actions.bulk_action_done', ['count' => $count, 'action' => __('common.actions.delete')]));
+        if ($result['blocked'] > 0) {
+            flash()->warning(__('partnership.delete_blocked_bulk', ['count' => $result['blocked']]));
         }
 
         $this->clearSelection();
-    }
-
-    // --- Import / Export ---
-
-    public function import(CsvHandler $csv, CreatePartnershipAction $create): void
-    {
-        $this->validate([
-            'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
-        ]);
-
-        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use ($create) {
-            $agreementNumber = trim($row[0] ?? '');
-
-            if ($agreementNumber === '') {
-                return null;
-            }
-
-            if (Partnership::where('agreement_number', $agreementNumber)->exists()) {
-                return 'skipped';
-            }
-
-            $create->execute([
-                'agreement_number' => $agreementNumber,
-                'title' => trim($row[1] ?? ''),
-                'start_date' => trim($row[2] ?? '') ?: now(),
-                'end_date' => trim($row[3] ?? '') ?: now()->addYear(),
-                'scope' => trim($row[4] ?? '') ?: null,
-            ]);
-
-            return 'created';
-        });
-
-        $this->importFile = null;
-
-        if ($result['invalid']) {
-            flash()->error(__('common.actions.import_invalid'));
-
-            return;
-        }
-
-        flash()->success(__('common.actions.import_summary', [
-            'created' => $result['created'],
-            'skipped' => $result['skipped'],
-        ]));
-    }
-
-    public function export(CsvHandler $csv): mixed
-    {
-        $partnerships = Partnership::with('company')
-            ->when($this->search, fn ($q) => $q->where('agreement_number', 'like', "%{$this->search}%"))
-            ->orderBy('agreement_number')
-            ->get();
-
-        return $csv->export(
-            $partnerships,
-            [__('partnership.agreement_number'), __('partnership.title_field'), __('partnership.company'), __('partnership.start_date'), __('partnership.end_date')],
-            fn ($p) => [$p->agreement_number, $p->title, $p->company?->name ?? '', $p->start_date?->format('Y-m-d') ?? '', $p->end_date?->format('Y-m-d') ?? ''],
-        )->send();
-    }
-
-    public function exportSelected(CsvHandler $csv): mixed
-    {
-        if ($this->selectedIds === []) {
-            flash()->warning(__('common.actions.no_records_selected'));
-
-            return null;
-        }
-
-        $partnerships = Partnership::with('company')
-            ->whereIn('id', $this->selectedIds)
-            ->orderBy('agreement_number')
-            ->get();
-
-        return $csv->export(
-            $partnerships,
-            [__('partnership.agreement_number'), __('partnership.title_field'), __('partnership.company'), __('partnership.start_date'), __('partnership.end_date')],
-            fn ($p) => [$p->agreement_number, $p->title, $p->company?->name ?? '', $p->start_date?->format('Y-m-d') ?? '', $p->end_date?->format('Y-m-d') ?? ''],
-        )->send();
-    }
-
-    public function downloadTemplate(CsvHandler $csv): mixed
-    {
-        return $csv->downloadTemplate(
-            [__('partnership.agreement_number'), __('partnership.title_field'), __('partnership.start_date'), __('partnership.end_date')],
-            ['421/PKS/2025', __('partnership.title_placeholder'), now()->format('Y-m-d'), now()->addYear()->format('Y-m-d')],
-            'partnerships-template.csv',
-        )->send();
     }
 
     private function uploadMouDocument(Partnership $partnership): void

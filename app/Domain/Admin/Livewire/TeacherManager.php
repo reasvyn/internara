@@ -9,6 +9,7 @@ use App\Domain\Admin\Actions\DeleteUserAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
 use App\Domain\Admin\Livewire\Forms\TeacherForm;
 use App\Domain\Auth\Enums\Role as RoleEnum;
+use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\User\Models\User;
 use Illuminate\Contracts\View\View;
@@ -31,7 +32,6 @@ class TeacherManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
             ['key' => 'name', 'label' => __('user.teacher.name'), 'sortable' => true],
             [
                 'key' => 'username',
@@ -64,8 +64,8 @@ class TeacherManager extends BaseRecordManager
     protected function applyFilters(Builder $query): Builder
     {
         return $query
-            ->when($this->filters['department_id'] ?? null, fn ($q, $v) => $q->whereHas('profile', fn ($q) => $q->where('department_id', $v)))
-            ->when($this->filters['setup_required'] ?? null, fn ($q, $v) => $q->where('setup_required', $v === 'yes'));
+            ->when($this->filters['created_from'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
+            ->when($this->filters['created_to'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '<=', $v));
     }
 
     // --- Record Actions ---
@@ -104,8 +104,9 @@ class TeacherManager extends BaseRecordManager
             $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email], $profileData);
             flash()->success(__('user.teacher.success_updated'));
         } else {
-            $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], $profileData, [RoleEnum::TEACHER->value]);
-            flash()->success(__('user.teacher.success_created'));
+            $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], $profileData, [RoleEnum::TEACHER->value], false);
+            $code = ActivationToken::generateFor($user);
+            flash()->success(__('user.teacher.success_created_activation', ['code' => $code]));
         }
 
         $this->userModal = false;

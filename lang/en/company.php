@@ -28,6 +28,8 @@ return [
     'placements_count' => 'Placements',
     'partnerships_count' => 'Partnerships',
     'search_placeholder' => 'Search by company name...',
+    'identity' => 'Identity',
+    'contact' => 'Contact Information',
     'cancel' => 'Cancel',
     'save' => 'Save',
     'save_success' => 'Company created successfully.',
@@ -36,11 +38,13 @@ return [
     'delete_confirm' => 'Are you sure you want to delete this company?',
     'delete_selected_confirm' => 'Delete selected companies? Only companies without active placements or partnerships will be deleted.',
     'delete_blocked' => 'Cannot delete company: it has active placements or partnerships.',
+    'delete_blocked_bulk' => '{0} No companies skipped|{1} 1 company skipped|[2,*] :count companies skipped (have placements or partnerships).',
     'selected_count' => '{0} companies selected|{1} company selected|[2,*] companies selected',
     'actions' => 'Actions',
     'stats' => [
         'total' => 'Total Companies',
         'with_placements' => 'With Placements',
+        'active_partnerships' => 'Active Partnerships',
         'available_slots' => 'Available Slots',
     ],
 ];

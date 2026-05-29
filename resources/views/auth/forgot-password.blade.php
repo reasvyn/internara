@@ -14,7 +14,7 @@
                 <p class="text-xs text-success/70 mb-6">{{ __('passwords.sent_detail') }}</p>
                 <x-mary-button
                     link="{{ route('login') }}"
-                    label="{{ __('auth.login.back_to_login') }}"
+                    :label="__('auth.login.back_to_login')"
                     icon="o-arrow-left"
                     class="btn-outline btn-primary w-full"
                     wire:navigate
@@ -25,7 +25,7 @@
                 <x-mary-input
                     wire:model="form.email"
                     type="email"
-                    label="{{ __('auth.forgot_password.email') }}"
+                    :label="__('auth.forgot_password.email')"
                     placeholder="user@example.com"
                     icon="o-envelope"
                 />
@@ -33,7 +33,7 @@
                 <div class="pt-5 border-t border-base-content/10">
                     <x-mary-button
                         type="submit"
-                        label="{{ __('passwords.send_reset_link') }}"
+                        :label="__('passwords.send_reset_link')"
                         class="btn-primary w-full"
                         spinner="sendResetLink"
                     />

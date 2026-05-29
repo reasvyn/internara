@@ -42,9 +42,14 @@ describe('BaseState', function () {
     });
 
     it('returns false for isState when status property is missing', function () {
-        $entity = new class extends BaseState {
+        $entity = new class extends BaseState
+        {
             public function __construct() {}
-            public static function fromModel(Model $model): static { return new self; }
+
+            public static function fromModel(Model $model): static
+            {
+                return new self;
+            }
         };
 
         expect($entity->isState('anything'))->toBeFalse();

@@ -9,14 +9,13 @@ use Illuminate\Support\Facades\Artisan;
 
 class CacheWarmCommand extends Command
 {
-    protected $signature = 'system:cache-warm
-        {--domains=* : Specific domain caches to warm (e.g. admin, school)}';
+    protected $signature = 'system:cache-warm';
 
     protected $description = 'Pre-warm application caches for faster first requests';
 
     public function handle(): int
     {
-        $this->info('Starting cache warm...');
+        $this->info(__('setup.system.cache_warm_starting'));
 
         $this->warmSettings();
         $this->warmBrand();
@@ -24,40 +23,71 @@ class CacheWarmCommand extends Command
         $this->warmViews();
         $this->warmEvents();
 
-        $this->info("\nServer is ready — all caches warmed.");
+        $this->newLine();
+        $this->components->info(__('setup.system.cache_warm_completed'));
 
         return Command::SUCCESS;
     }
 
     protected function warmSettings(): void
     {
-        $this->info('  → Warming settings cache...');
-        setting('app_name', skipCache: false);
-        setting('primary_color', skipCache: false);
+        $this->components->task(
+            __('setup.system.cache_warm_settings'),
+            function () {
+                setting('app_name', skipCache: false);
+                setting('primary_color', skipCache: false);
+
+                return true;
+            },
+        );
     }
 
     protected function warmBrand(): void
     {
-        $this->info('  → Warming brand cache...');
-        brand('name');
-        brand('colors');
+        $this->components->task(
+            __('setup.system.cache_warm_brand'),
+            function () {
+                brand('name');
+                brand('colors');
+
+                return true;
+            },
+        );
     }
 
     protected function warmConfig(): void
     {
-        $this->info('  → Caching config...');
-        Artisan::call('config:cache');
+        $this->components->task(
+            __('setup.system.cache_warm_config'),
+            function () {
+                Artisan::call('config:cache');
+
+                return true;
+            },
+        );
     }
 
     protected function warmViews(): void
     {
-        $this->info('  → Caching views...');
-        Artisan::call('view:cache');
+        $this->components->task(
+            __('setup.system.cache_warm_views'),
+            function () {
+                Artisan::call('view:cache');
+
+                return true;
+            },
+        );
     }
 
     protected function warmEvents(): void
     {
-        $this->info('  → Caching events...');
-        Artisan::call('event:cache');
+        $this->components->task(
+            __('setup.system.cache_warm_events'),
+            function () {
+                Artisan::call('event:cache');
+
+                return true;
+            },
+        );
     }
 }

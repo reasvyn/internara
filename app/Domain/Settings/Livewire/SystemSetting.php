@@ -9,12 +9,14 @@ use App\Domain\School\Models\AcademicYear;
 use App\Domain\Settings\Actions\GetAcademicYearsAction;
 use App\Domain\Settings\Actions\SaveSystemSettingsAction;
 use App\Domain\Settings\Actions\TestMailSettingsAction;
+use App\Domain\Settings\Actions\UploadBrandAssetAction;
 use App\Domain\Settings\Livewire\Forms\BrandingForm;
 use App\Domain\Settings\Livewire\Forms\GeneralSettingsForm;
 use App\Domain\Settings\Livewire\Forms\MailSettingsForm;
 use App\Domain\Settings\Models\Setting;
 use App\Domain\Settings\Support\Settings;
 use App\Domain\Shared\Support\Theme;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -35,6 +37,10 @@ class SystemSetting extends Component
     public string $app_name = '';
 
     public string $app_version = '';
+
+    public bool $showConfirm = false;
+
+    public ?string $confirmTarget = null;
 
     public function mount(): void
     {
@@ -87,6 +93,78 @@ class SystemSetting extends Component
     public function applyPreset(string $key): void
     {
         $this->brandingForm->applyPreset($key);
+    }
+
+    public function updatedBrandingFormBrandLogo(UploadBrandAssetAction $uploadBrand): void
+    {
+        $this->brandingForm->validate(['brand_logo' => 'nullable|image|max:1024']);
+
+        if ($this->brandingForm->brand_logo instanceof UploadedFile) {
+            $url = $uploadBrand->execute($this->brandingForm->brand_logo);
+            Settings::set('brand_logo', $url);
+            $this->brandingForm->current_logo_url = $url;
+            flash()->success(__('setting.messages.logo_saved'));
+        }
+    }
+
+    public function updatedBrandingFormSiteFavicon(UploadBrandAssetAction $uploadBrand): void
+    {
+        $this->brandingForm->validate(['site_favicon' => 'nullable|image|max:512']);
+
+        if ($this->brandingForm->site_favicon instanceof UploadedFile) {
+            $url = $uploadBrand->execute($this->brandingForm->site_favicon, 'favicon');
+            Settings::set('site_favicon', $url);
+            $this->brandingForm->current_favicon_url = $url;
+            flash()->success(__('setting.messages.favicon_saved'));
+        }
+    }
+
+    public function confirmRemoveBrandLogo(): void
+    {
+        $setting = Setting::firstOrCreate(['key' => 'logo_ref']);
+
+        // Clear only the brand_logo media, not the favicon
+        $logos = $setting->getMedia(Setting::COLLECTION_LOGO);
+        foreach ($logos as $media) {
+            $properties = $media->getCustomProperties();
+            if (($properties['type'] ?? '') === 'logo') {
+                $media->delete();
+            }
+        }
+
+        Settings::set('brand_logo', '');
+        $this->brandingForm->current_logo_url = null;
+        $this->brandingForm->brand_logo = null;
+
+        flash()->success(__('setting.messages.logo_removed'));
+    }
+
+    public function confirmRemoveFavicon(): void
+    {
+        $setting = Setting::firstOrCreate(['key' => 'favicon_ref']);
+
+        $favicons = $setting->getMedia(Setting::COLLECTION_FAVICON);
+        foreach ($favicons as $media) {
+            $media->delete();
+        }
+
+        Settings::set('site_favicon', '');
+        $this->brandingForm->current_favicon_url = null;
+        $this->brandingForm->site_favicon = null;
+
+        flash()->success(__('setting.messages.favicon_removed'));
+    }
+
+    public function confirmAction(): void
+    {
+        match ($this->confirmTarget) {
+            'removeBrandLogo' => $this->confirmRemoveBrandLogo(),
+            'removeFavicon' => $this->confirmRemoveFavicon(),
+            default => null,
+        };
+
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
     }
 
     public function save(

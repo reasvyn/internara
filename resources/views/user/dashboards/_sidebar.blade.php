@@ -7,8 +7,8 @@
                 <x-mary-icon name="o-bolt" class="size-4 text-base-content/30" />
             </div>
             <div>
-                <div class="text-sm font-medium">{{ str($activity->description)->headline() }}</div>
-                <div class="text-xs text-base-content/40">{{ $activity->created_at->diffForHumans() }}</div>
+                <div class="text-sm font-medium">{{ __("activity.{$activity->description}") !== "activity.{$activity->description}" ? __("activity.{$activity->description}") : str($activity->description)->headline() }}</div>
+                <div class="text-xs text-base-content/40">{{ $activity->created_at->locale(app()->getLocale())->diffForHumans() }}</div>
             </div>
         </div>
     @empty
@@ -21,5 +21,8 @@
         <x-shared::widgets.quick-link :label="__('dashboard.edit_profile')" icon="o-user" link="{{ route('profile') }}" />
         <x-shared::widgets.quick-link :label="__('profile.recovery.title')" icon="o-key" link="{{ route('profile.recovery') }}" />
         <x-shared::widgets.quick-link :label="__('dashboard.notifications')" icon="o-bell" link="{{ route('notifications') }}" />
+        @if(auth()->user()?->hasRole('super_admin'))
+            <x-shared::widgets.quick-link :label="__('dashboard.system_settings')" icon="o-cog-6-tooth" link="{{ route('admin.settings') }}" />
+        @endif
     </div>
 </x-mary-card>

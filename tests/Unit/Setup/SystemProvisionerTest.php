@@ -23,6 +23,6 @@ describe('SystemProvisioner', function () {
         $provisioner = new SystemProvisioner;
 
         expect(fn () => $provisioner->executeTask('nonexistent'))
-            ->toThrow(\InvalidArgumentException::class);
+            ->toThrow(InvalidArgumentException::class);
     });
 });

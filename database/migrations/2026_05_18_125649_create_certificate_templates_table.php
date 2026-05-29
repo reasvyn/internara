@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('content_template');
             $table->boolean('is_active')->default(true);
             $table->foreignUuid('created_by')->constrained('users')->cascadeOnDelete();
+            $table->index('created_by');
             $table->timestamps();
         });
     }

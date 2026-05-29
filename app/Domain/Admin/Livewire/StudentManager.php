@@ -10,17 +10,21 @@ use App\Domain\Admin\Actions\DeleteUserAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
 use App\Domain\Admin\Livewire\Forms\StudentForm;
 use App\Domain\Auth\Enums\Role as RoleEnum;
+use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\School\Models\Department;
+use App\Domain\Shared\Support\CsvHandler;
 use App\Domain\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
+use Livewire\WithFileUploads;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StudentManager extends BaseRecordManager
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, WithFileUploads;
 
     public bool $userModal = false;
 
@@ -66,9 +70,10 @@ class StudentManager extends BaseRecordManager
 
     protected function applyFilters(Builder $query): Builder
     {
-        return $query->when($this->filters['department_id'] ?? null, function ($q, $deptId) {
-            $q->whereHas('profile', fn ($qp) => $qp->where('department_id', $deptId));
-        });
+        return $query
+            ->when($this->filters['department_id'] ?? null, fn ($q, $deptId) => $q->whereHas('profile', fn ($qp) => $qp->where('department_id', $deptId)))
+            ->when($this->filters['created_from'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
+            ->when($this->filters['created_to'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '<=', $v));
     }
 
     #[Computed]
@@ -115,8 +120,9 @@ class StudentManager extends BaseRecordManager
             $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email], $profileData);
             flash()->success(__('user.student.success_updated'));
         } else {
-            $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], $profileData, [RoleEnum::STUDENT->value]);
-            flash()->success(__('user.student.success_created'));
+            $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], $profileData, [RoleEnum::STUDENT->value], false);
+            $code = ActivationToken::generateFor($user);
+            flash()->success(__('user.student.success_created_activation', ['code' => $code]));
         }
 
         $this->userModal = false;
@@ -145,6 +151,23 @@ class StudentManager extends BaseRecordManager
         $this->performMassAction('Archive Filtered', function ($query) use ($action) {
             $action->execute($query);
         });
+    }
+
+    public function export(CsvHandler $csv): StreamedResponse
+    {
+        $users = User::query()
+            ->role(RoleEnum::STUDENT->value)
+            ->with('profile.department')
+            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->orderBy('name')
+            ->get();
+
+        return $csv->export(
+            $users,
+            [__('user.fields.full_name'), __('user.fields.email'), __('user.student.nisn'), __('user.student.nis')],
+            fn ($u) => [$u->name, $u->email, $u->profile?->national_id_number ?? '', $u->profile?->student_id_number ?? ''],
+            'students.csv',
+        );
     }
 
     public function render(): View

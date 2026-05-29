@@ -22,17 +22,18 @@ class PublishScheduledAnnouncementsCommand extends Command
             ->get();
 
         if ($due->isEmpty()) {
-            $this->info('No scheduled announcements due for publication.');
+            $this->components->info(__('admin.publish_announcements.none_found'));
 
             return self::SUCCESS;
         }
 
         foreach ($due as $announcement) {
             $action->publish($announcement);
-            $this->line("Published: {$announcement->title}");
+            $this->components->task(__('admin.publish_announcements.published', ['title' => $announcement->title]), fn () => true);
         }
 
-        $this->info("Published {$due->count()} scheduled announcement(s).");
+        $this->newLine();
+        $this->components->info(__('admin.publish_announcements.completed', ['count' => $due->count()]));
 
         return self::SUCCESS;
     }

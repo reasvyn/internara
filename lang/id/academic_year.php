@@ -19,6 +19,7 @@ return [
     'n_selected' => ':count terpilih',
     'delete_selected' => 'Hapus (:count)',
     'created' => 'Tahun akademik dibuat.',
+    'updated' => 'Tahun akademik diperbarui.',
     'activated' => 'Tahun akademik diaktifkan.',
     'deleted' => 'Tahun akademik dihapus.',
     'confirm_activate' => 'Aktifkan ":name"? Tahun yang aktif saat ini akan dinonaktifkan.',

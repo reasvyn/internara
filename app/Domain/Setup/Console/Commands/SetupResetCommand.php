@@ -10,9 +10,6 @@ use App\Domain\Setup\Console\Commands\Traits\InteractsWithInstallerCli;
 use App\Domain\Setup\Models\Setup;
 use Illuminate\Console\Command;
 
-use function Laravel\Prompts\error;
-use function Laravel\Prompts\note;
-
 class SetupResetCommand extends Command
 {
     use InteractsWithInstallerCli;
@@ -30,9 +27,8 @@ class SetupResetCommand extends Command
         $this->displayBanner();
 
         if (Setup::state()->isInstalled()) {
-            error(__('setup.reset.protected'));
-
-            $this->info(__('setup.cli.try_health_check'));
+            $this->displayError(__('setup.reset.protected'));
+            $this->line('  '.__('setup.cli.try_health_check'));
 
             SmartLogger::info(__('setup.reset.protected'))
                 ->module('setup')
@@ -44,9 +40,26 @@ class SetupResetCommand extends Command
 
         $result = app(GenerateSetupTokenAction::class)->execute();
         $signedUrl = route('setup', ['setup_token' => $result['plaintext']]);
-        note("URL: <fg=cyan;options=bold,underscore>{$signedUrl}</>");
-        note("Token: <fg=white;options=bold>{$result['plaintext']}</>");
-        note("Expires: {$result['expires_at']->format('H:i:s T')} (in {$result['expires_at']->diffForHumans()})");
+
+        $this->displaySection(__('setup.reset.new_token_generated'));
+        $this->newLine();
+        $this->line('<fg=white;options=bold>  '.__('setup.cli.quick_access').'</>');
+        $this->line('  <fg=cyan;options=bold,underscore>'.$signedUrl.'</>');
+        $this->line('  <fg=gray>'.__('setup.cli.url_warning').'</>');
+
+        $this->newLine();
+        $this->line('<fg=white;options=bold>  '.__('setup.cli.manual_entry').'</>');
+        $this->line('  '.__('setup.cli.visit_url_alt').': <fg=white;options=bold>'.route('setup').'</>');
+        $this->line('  '.__('setup.cli.enter_code').": <fg=white;options=bold>{$result['plaintext']}</>");
+
+        $this->newLine();
+        $remainingMinutes = max(1, $result['expires_at']->diffInRealMinutes(now()));
+        $this->line('  '.__('setup.cli.token_expires').": <fg=yellow>{$result['expires_at']->format('H:i:s T')} (".__('setup.cli.expires_in_minutes', ['count' => $remainingMinutes]).')</>');
+
+        SmartLogger::info(__('setup.reset.success'))
+            ->module('setup')
+            ->event('reset.completed')
+            ->save();
 
         return self::SUCCESS;
     }

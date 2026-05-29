@@ -90,7 +90,6 @@ final class UpdateUserAction extends BaseAction
 
                 return $user;
             });
-        });
     }
 
     /**

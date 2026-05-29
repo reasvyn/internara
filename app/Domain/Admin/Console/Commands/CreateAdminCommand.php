@@ -9,13 +9,8 @@ use App\Domain\Setup\Actions\InitializeSuperAdminAction;
 use App\Domain\User\Models\User;
 use Illuminate\Console\Command;
 
-use function Laravel\Prompts\error;
-use function Laravel\Prompts\info;
-use function Laravel\Prompts\intro;
-use function Laravel\Prompts\note;
 use function Laravel\Prompts\password;
 use function Laravel\Prompts\text;
-use function Laravel\Prompts\warning;
 
 class CreateAdminCommand extends Command
 {
@@ -33,13 +28,12 @@ class CreateAdminCommand extends Command
         $this->displayHeader();
 
         if ($this->hasSuperAdmin()) {
-            error(__('admin.create.already_exists'));
+            $this->displayError(__('admin.create.already_exists'));
 
             return self::FAILURE;
         }
 
         $this->displayGuide();
-        note(__('admin.section_account'));
 
         $email = $this->argument('email') ?? text(
             label: __('admin.field_email'),
@@ -53,7 +47,7 @@ class CreateAdminCommand extends Command
             validate: fn (string $value) => strlen($value) < 8 ? __('admin.create.password_min') : null,
         );
 
-        $this->displaySeparator();
+        $this->newLine();
 
         try {
             $user = $this->action->execute(
@@ -67,7 +61,7 @@ class CreateAdminCommand extends Command
 
             return self::SUCCESS;
         } catch (\Throwable $e) {
-            error(__('setup.cli.admin_creation_failed', ['message' => $e->getMessage()]));
+            $this->displayError(__('setup.cli.admin_creation_failed', ['message' => $e->getMessage()]));
 
             return self::FAILURE;
         }
@@ -76,8 +70,8 @@ class CreateAdminCommand extends Command
     private function displayHeader(): void
     {
         $this->newLine();
-        intro(__('admin.title'));
-        $this->line('  <fg=gray>'.__('admin.create.subtitle').'  '.__('admin.version', ['version' => AppInfo::version()]).'</>');
+        $this->line('  <fg=white;options=bold;bg=blue> '.__('admin.title').' </>');
+        $this->line('  <fg=blue>'.__('admin.create.subtitle').'</> <fg=gray>'.__('admin.version', ['version' => AppInfo::version()]).'</>');
         $this->newLine();
     }
 
@@ -87,11 +81,11 @@ class CreateAdminCommand extends Command
         $this->newLine();
     }
 
-    private function displaySeparator(): void
+    private function displayError(string $message): void
     {
         $this->newLine();
-        $this->line('  <fg=gray>'.str_repeat('─', 48).'</>');
-        $this->newLine();
+        $this->line('  <fg=white;options=bold;bg=red> ERROR </>');
+        $this->line('  <fg=red>'.$message.'</>');
     }
 
     private function hasSuperAdmin(): bool
@@ -102,11 +96,11 @@ class CreateAdminCommand extends Command
     private function displayResult(User $user): void
     {
         $this->newLine();
-        info(__('admin.create.success'));
+        $this->components->info(__('admin.create.success'));
         $this->newLine();
         $this->line('  <fg=yellow>'.__('admin.field_email_result').'</>  <fg=cyan>'.$user->email.'</>');
         $this->line('  <fg=yellow>'.__('admin.field_username').'</> <fg=cyan>'.$user->username.'</>');
         $this->newLine();
-        warning(__('admin.create.change_password'));
+        $this->components->warn(__('admin.create.change_password'));
     }
 }

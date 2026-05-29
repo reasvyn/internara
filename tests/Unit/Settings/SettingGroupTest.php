@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Core\Contracts\LabelEnum;
 use App\Domain\Settings\Enums\SettingGroup;
 
 describe('SettingGroup', function () {
@@ -36,7 +37,7 @@ describe('SettingGroup', function () {
     it('implements LabelEnum', function () {
         $reflection = new ReflectionClass(SettingGroup::class);
 
-        expect($reflection->implementsInterface(\App\Domain\Core\Contracts\LabelEnum::class))->toBeTrue();
+        expect($reflection->implementsInterface(LabelEnum::class))->toBeTrue();
     });
 
     it('returns translated label', function () {

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Domain\Settings\Actions\TestMailSettingsAction;
-use App\Domain\Settings\Support\Settings;
 use Illuminate\Support\Facades\Config;
 
 describe('TestMailSettingsAction', function () {
@@ -22,7 +21,7 @@ describe('TestMailSettingsAction', function () {
                 'from_address' => 'from@test.local',
                 'from_name' => 'Test',
             ]);
-        } catch (\Throwable) {
+        } catch (Throwable) {
             // Expected: mail delivery will fail in test environment
         }
 

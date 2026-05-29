@@ -189,17 +189,6 @@ stdout_logfile=/path/to/app/storage/logs/worker.log
 stopwaitsecs=3600
 ```
 
-`/etc/supervisor/conf.d/internara-reverb.conf`:
-```ini
-[program:internara-reverb]
-command=php /path/to/app/artisan reverb:start
-autostart=true
-autorestart=true
-user=www-data
-redirect_stderr=true
-stdout_logfile=/path/to/app/storage/logs/reverb.log
-```
-
 `/etc/supervisor/conf.d/internara-scheduler.conf`:
 ```ini
 [program:internara-scheduler]
@@ -241,7 +230,6 @@ services:
 |---|---|---|---|
 | `app` | Custom (Dockerfile) | PHP-FPM application server | db, redis |
 | `queue` | Custom (Dockerfile) | Laravel queue worker | db, redis |
-| `reverb` | Custom (Dockerfile) | WebSocket server | db, redis |
 | `scheduler` | Custom (Dockerfile) | Scheduler daemon | db |
 | `web` | nginx:alpine | Reverse proxy | app |
 | `db` | mysql:8 | Database | — |
@@ -260,7 +248,7 @@ the signed setup URL, then open it in your browser.
 ### Development with Laravel Sail
 
 ```bash
-# Start Sail environment (SQLite + queue + Reverb)
+# Start Sail environment (SQLite + queue)
 ./vendor/bin/sail up -d
 
 # Or with MySQL instead of SQLite:
@@ -276,7 +264,7 @@ the signed setup URL, then open it in your browser.
 | Feature | Why It Doesn't Work | Alternative |
 |---|---|---|
 | Queue worker | No long-running processes | Set `QUEUE_CONNECTION=sync` — jobs run during HTTP request |
-| Reverb WebSocket | No custom servers | Page refresh shows new notifications |
+
 | Redis / Memcached | Not installed | Use `file` or `database` driver |
 | Minute-level cron | Min interval often 5–15 min | Hit `/cron/{secret}` web endpoint |
 
@@ -347,10 +335,9 @@ When the institution outgrows shared hosting:
 QUEUE_CONNECTION=redis
 CACHE_STORE=redis
 SESSION_DRIVER=redis
-BROADCAST_CONNECTION=reverb
 ```
 
-4. Configure Supervisor for queue worker + Reverb + scheduler
+4. Configure Supervisor for queue worker + scheduler
 5. Set up minute-level cron
 6. All features become available automatically
 

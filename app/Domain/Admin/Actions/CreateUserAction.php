@@ -31,12 +31,12 @@ final class CreateUserAction extends BaseAction
      *
      * @throws RuntimeException when user creation fails
      */
-    public function execute(array $userData, array $profileData = [], array $roles = []): User
+    public function execute(array $userData, array $profileData = [], array $roles = [], bool $sendNotification = true): User
     {
         $userData['username'] =
             $userData['username'] ?? UserIdentifierGenerator::generateUsername();
         $plainPassword = $userData['password'] ?? str()->random(12);
-        $shouldSendWelcome = ! isset($userData['password']);
+        $shouldSendWelcome = $sendNotification && ! isset($userData['password']);
 
         Validator::make($userData, [
             'name' => ['required', 'string', 'max:255', new ReservedAuthoritativeName],

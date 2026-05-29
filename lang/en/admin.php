@@ -58,6 +58,38 @@ return [
         'missing' => 'File not found',
     ],
 
+    'promote' => [
+        'user_not_found' => "User not found with identifier: ':identifier'.",
+        'invalid_role' => "Invalid role: ':role'. Only admin or super_admin are allowed.",
+        'role_absent' => "Role ':role' does not exist in the database.",
+        'super_admin_exists' => 'A super admin already exists. Only one super admin account is permitted.',
+        'already_has_role' => "User :name already has the ':role' role.",
+        'success' => 'Successfully promoted :name (:email) to :role.',
+    ],
+
+    'auto_inactivate' => [
+        'none_found' => 'No inactive accounts found.',
+        'found' => 'Found :count accounts inactive for more than :days days.',
+        'dry_run' => 'Would inactivate: :email (:name)',
+        'completed' => 'Inactivated :count accounts.',
+    ],
+
+    'prune_notifications' => [
+        'invalid_days' => 'Retention days must be at least 1.',
+        'completed' => 'Pruned :count read notification(s) older than :days days.',
+    ],
+
+    'publish_announcements' => [
+        'none_found' => 'No scheduled announcements due for publication.',
+        'published' => 'Published: :title',
+        'completed' => 'Published :count scheduled announcement(s).',
+    ],
+
+    'pulse_record' => [
+        'started' => 'Recording Pulse snapshots...',
+        'completed' => 'Snapshots recorded successfully.',
+    ],
+
     'recovery_show' => [
         'warning' => 'The recovery key grants super admin access. Only share this with trusted server administrators.',
         'confirm' => 'Are you sure you want to display the recovery key?',

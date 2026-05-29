@@ -17,12 +17,14 @@ use App\Domain\Internship\Models\Internship;
 use App\Domain\Placement\Models\Placement;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\School\Models\AcademicYear;
+use App\Domain\Shared\Enums\CsvRowResult;
 use App\Domain\Shared\Support\CsvHandler;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
 use Livewire\WithFileUploads;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class InternshipManager extends BaseRecordManager
 {
@@ -272,11 +274,11 @@ class InternshipManager extends BaseRecordManager
     public function updatedImportFile(): void
     {
         if ($this->importFile) {
-            $this->import();
+            $this->import(app(CsvHandler::class), app(CreateInternshipAction::class));
         }
     }
 
-    public function import(CsvHandler $csv): void
+    public function import(CsvHandler $csv, CreateInternshipAction $create): void
     {
         $this->validate([
             'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
@@ -284,27 +286,27 @@ class InternshipManager extends BaseRecordManager
 
         $activeYear = AcademicYear::where('is_active', true)->first();
 
-        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use ($activeYear) {
+        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use ($activeYear, $create) {
             $name = trim($row[0] ?? '');
 
             if ($name === '') {
-                return;
+                return null;
             }
 
             if (Internship::where('name', $name)->exists()) {
-                return 'skipped';
+                return CsvRowResult::SKIPPED;
             }
 
-            Internship::create([
+            $create->execute([
                 'name' => $name,
                 'description' => trim($row[1] ?? '') ?: null,
                 'academic_year_id' => $activeYear?->id,
                 'start_date' => $activeYear?->start_date ?? now(),
                 'end_date' => $activeYear?->end_date ?? now()->addYear(),
-                'status' => InternshipStatus::DRAFT,
+                'status' => InternshipStatus::DRAFT->value,
             ]);
 
-            return 'created';
+            return CsvRowResult::CREATED;
         });
 
         $this->importFile = null;
@@ -321,7 +323,7 @@ class InternshipManager extends BaseRecordManager
         ]));
     }
 
-    public function export(CsvHandler $csv): mixed
+    public function export(CsvHandler $csv): StreamedResponse
     {
         $internships = Internship::with('academicYear')
             ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
@@ -330,10 +332,11 @@ class InternshipManager extends BaseRecordManager
 
         return $csv->export($internships, ['name', 'description', 'status', 'start_date', 'end_date'],
             fn ($i) => [$i->name, $i->description ?? '', $i->status->value, $i->start_date->format('Y-m-d'), $i->end_date->format('Y-m-d')],
-        )->send();
+            'internships.csv',
+        );
     }
 
-    public function exportSelected(CsvHandler $csv): mixed
+    public function exportSelected(CsvHandler $csv): ?StreamedResponse
     {
         if ($this->selectedIds === []) {
             flash()->warning(__('common.actions.no_records_selected'));
@@ -348,16 +351,17 @@ class InternshipManager extends BaseRecordManager
 
         return $csv->export($internships, ['name', 'description', 'status', 'start_date', 'end_date'],
             fn ($i) => [$i->name, $i->description ?? '', $i->status->value, $i->start_date->format('Y-m-d'), $i->end_date->format('Y-m-d')],
-        )->send();
+            'internships-selected.csv',
+        );
     }
 
-    public function downloadTemplate(CsvHandler $csv): mixed
+    public function downloadTemplate(CsvHandler $csv): StreamedResponse
     {
         return $csv->downloadTemplate(
             ['name', 'description', 'status', 'start_date', 'end_date'],
             [__('internship.template_example_name'), __('internship.template_example_description'), 'draft', now()->format('Y-m-d'), now()->addYear()->format('Y-m-d')],
             'internships-template.csv',
-        )->send();
+        );
     }
 
     // --- Pre-Close Readiness ---

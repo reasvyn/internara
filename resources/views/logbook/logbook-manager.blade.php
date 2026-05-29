@@ -82,7 +82,7 @@
             >
                 @scope('cell_user.name', $entry)
                     <div class="flex items-center gap-3 py-1">
-                        <x-mary-avatar :title="$entry->user->name" class="size-9 rounded-xl" />
+                        <x-shared::ui.avatar :user="$entry->user" size="size-9" />
                         <div class="flex flex-col">
                             <span class="font-bold text-sm">{{ $entry->user->name }}</span>
                             <span class="text-[10px] opacity-50 font-mono">{{ $entry->user->email }}</span>

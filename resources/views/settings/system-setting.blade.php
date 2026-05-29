@@ -171,6 +171,13 @@
                                         <x-mary-icon name="o-camera" class="size-8 text-base-100" />
                                     </div>
                                 </div>
+                                @if($brandingForm->current_logo_url)
+                                    <button type="button"
+                                        wire:click="$set('confirmTarget', 'removeBrandLogo'); $set('showConfirm', true)"
+                                        class="absolute -top-2 -right-2 size-6 bg-error text-error-content rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm opacity-0 group-hover:opacity-100">
+                                        <x-mary-icon name="o-x-mark" class="size-3" />
+                                    </button>
+                                @endif
                             </div>
                         </div>
 
@@ -193,10 +200,22 @@
                                         <x-mary-icon name="o-camera" class="size-5 text-base-100" />
                                     </div>
                                 </div>
+                                @if($brandingForm->current_favicon_url)
+                                    <button type="button"
+                                        wire:click="$set('confirmTarget', 'removeFavicon'); $set('showConfirm', true)"
+                                        class="absolute -top-2 -right-2 size-6 bg-error text-error-content rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm opacity-0 group-hover:opacity-100">
+                                        <x-mary-icon name="o-x-mark" class="size-3" />
+                                    </button>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </x-mary-card>
+
+                @include('shared.ui.confirm', [
+                    'message' => __('setting.messages.remove_asset_confirm'),
+                    'confirmText' => __('common.actions.remove'),
+                ])
             </div>
         </div>
 

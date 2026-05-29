@@ -51,6 +51,29 @@ class ProfileEditor extends Component
         $this->profileForm->fillFromUser($this->user);
     }
 
+    public bool $showConfirm = false;
+
+    public function updatedAvatar(): void
+    {
+        $this->validate(['avatar' => ['nullable', 'image', 'max:2048']]);
+
+        app(UpdateProfileAction::class)->execute(
+            $this->user,
+            [],
+            avatar: $this->avatar,
+        );
+
+        flash()->success(__('profile.avatar_saved'));
+    }
+
+    public function confirmRemoveAvatar(): void
+    {
+        $this->user->clearMediaCollection('avatar');
+        $this->avatar = null;
+
+        flash()->success(__('profile.avatar_removed'));
+    }
+
     public function save(UpdateProfileAction $updateProfile): void
     {
         $rules = [
@@ -58,7 +81,6 @@ class ProfileEditor extends Component
             'profileForm.phone' => 'nullable|string|max:20',
             'profileForm.address' => 'nullable|string|max:500',
             'profileForm.bio' => 'nullable|string|max:1000',
-            'avatar' => 'nullable|image|max:2048',
         ];
 
         if ($this->canChangeName) {
@@ -97,10 +119,15 @@ class ProfileEditor extends Component
             $data,
             name: $this->canChangeName ? $this->profileForm->name : null,
             email: $this->profileForm->email,
-            avatar: $this->avatar,
         );
 
         flash()->success(__('profile.saved'));
+    }
+
+    public function confirmAction(): void
+    {
+        $this->confirmRemoveAvatar();
+        $this->showConfirm = false;
     }
 
     public function updatePassword(UpdateUserPasswordAction $updatePassword): void

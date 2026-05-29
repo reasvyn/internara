@@ -25,11 +25,9 @@
         <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('internship.status') }}</label>
         <select wire:model.live="filters.status" class="select select-bordered select-sm w-full text-sm">
             <option value="">{{ __('internship.all_statuses') }}</option>
-            <option value="active">{{ __('internship.statuses.active') }}</option>
-            <option value="published">{{ __('internship.statuses.published') }}</option>
-            <option value="completed">{{ __('internship.statuses.completed') }}</option>
-            <option value="draft">{{ __('internship.statuses.draft') }}</option>
-            <option value="cancelled">{{ __('internship.statuses.cancelled') }}</option>
+            @foreach($this->statusOptions as $opt)
+                <option value="{{ $opt['id'] }}">{{ $opt['name'] }}</option>
+            @endforeach
         </select>
 
         <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('internship.filter_academic_year') }}</label>
@@ -116,23 +114,38 @@
 
     <x-slot:modal>
         <x-mary-modal wire:model="showModal" :title="$form->id ? __('internship.edit_batch') : __('internship.new_batch')" separator class="backdrop-blur-sm">
-            <div class="space-y-6">
-                <x-mary-input :label="__('internship.name')" wire:model="form.name" :placeholder="__('internship.name_placeholder')" icon="o-academic-cap" class="rounded-xl border-base-300" />
-                <x-mary-select :label="__('internship.academic_year')" wire:model="form.academic_year_id" :options="$this->academicYears" icon="o-calendar-days" class="rounded-xl border-base-300" />
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <x-mary-datepicker :label="__('internship.start_date')" wire:model="form.start_date" icon="o-calendar" class="rounded-xl border-base-300" />
-                    <x-mary-datepicker :label="__('internship.end_date')" wire:model="form.end_date" icon="o-calendar" class="rounded-xl border-base-300" />
+            <div class="space-y-5">
+                <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('internship.identity') }}</p>
+                    <x-mary-input :label="__('internship.name')" wire:model="form.name" :placeholder="__('internship.name_placeholder')" icon="o-academic-cap" />
+                    <x-mary-select :label="__('internship.academic_year')" wire:model="form.academic_year_id" :options="$this->academicYears" icon="o-calendar-days" class="mt-4" />
+                    <x-mary-textarea :label="__('internship.description')" wire:model="form.description" :placeholder="__('internship.description_placeholder')" rows="2" icon="o-document-text" class="mt-4" />
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <x-mary-datepicker :label="__('internship.registration_start_date')" wire:model="form.registration_start_date" icon="o-clock" class="rounded-xl border-base-300" />
-                    <x-mary-datepicker :label="__('internship.registration_end_date')" wire:model="form.registration_end_date" icon="o-clock" class="rounded-xl border-base-300" />
+
+                <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('internship.dates') }}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-mary-datepicker :label="__('internship.start_date')" wire:model="form.start_date" icon="o-calendar" />
+                        <x-mary-datepicker :label="__('internship.end_date')" wire:model="form.end_date" icon="o-calendar" />
+                    </div>
                 </div>
-                <x-mary-select :label="__('internship.status')" wire:model="form.status" :options="$this->statusOptions" icon="o-flag" class="rounded-xl border-base-300" />
-                <x-mary-textarea :label="__('internship.description')" wire:model="form.description" :placeholder="__('internship.description_placeholder')" rows="2" icon="o-document-text" class="rounded-xl border-base-300" />
+
+                <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('internship.registration') }}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-mary-datepicker :label="__('internship.registration_start_date')" wire:model="form.registration_start_date" icon="o-clock" />
+                        <x-mary-datepicker :label="__('internship.registration_end_date')" wire:model="form.registration_end_date" icon="o-clock" />
+                    </div>
+                </div>
+
+                <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('internship.configuration') }}</p>
+                    <x-mary-select :label="__('internship.status')" wire:model="form.status" :options="$this->statusOptions" icon="o-flag" />
+                </div>
             </div>
             <x-slot:actions>
-                <x-mary-button :label="__('internship.cancel')" @click="$wire.showModal = false" class="rounded-xl" />
-                <x-mary-button :label="__('internship.save')" class="btn-primary rounded-xl font-bold uppercase tracking-widest" wire:click="save" spinner="save" />
+                <x-mary-button :label="__('internship.cancel')" @click="$wire.showModal = false" class="btn-ghost btn-sm" />
+                <x-mary-button :label="__('internship.save')" class="btn-primary btn-sm" wire:click="save" spinner="save" />
             </x-slot:actions>
         </x-mary-modal>
     </x-slot:modal>

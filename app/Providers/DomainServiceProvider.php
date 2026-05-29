@@ -76,7 +76,7 @@ class DomainServiceProvider extends ServiceProvider
         ]);
     }
 
-    private function discoverLivewireComponents(): void
+    public function discoverLivewireComponents(): void
     {
         $components = Cache::remember(CacheKeys::DOMAIN_LIVEWIRE, 86400, function () {
             $result = [];
@@ -125,7 +125,7 @@ class DomainServiceProvider extends ServiceProvider
         }
     }
 
-    private function discoverPolicies(): void
+    public function discoverPolicies(): void
     {
         $policies = Cache::remember(CacheKeys::DOMAIN_POLICIES, 86400, function () {
             $result = [];
@@ -182,7 +182,7 @@ class DomainServiceProvider extends ServiceProvider
         }
     }
 
-    private function registerBladeNamespaces(): void
+    public function registerBladeNamespaces(): void
     {
         $namespaces = Cache::remember(CacheKeys::DOMAIN_VIEWS, 86400, function () {
             $result = [];

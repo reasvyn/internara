@@ -17,7 +17,10 @@
                 class="sm:max-w-xs"
                 aria-label="{{ __('notifications.ui.all_status') }}"
             />
-            <x-mary-button :label="__('notifications.ui.mark_all_read')" icon="o-check-badge" class="btn-ghost btn-sm" wire:click="markAllAsRead" />
+            <div class="flex items-center gap-2">
+                <x-mary-button :label="__('notifications.ui.mark_all_read')" icon="o-check-badge" class="btn-ghost btn-sm" wire:click="markAllAsRead" />
+                <x-mary-button icon="o-arrow-path" class="btn-ghost btn-sm btn-square" wire:click="$refresh" :aria-label="__('notifications.ui.refresh')" />
+            </div>
         </div>
     </x-mary-card>
 

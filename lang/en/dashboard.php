@@ -70,6 +70,7 @@ return [
     'quick_links' => 'Quick Links',
     'notifications' => 'Notifications',
 
+    'system_settings' => 'System Settings',
     'quick_actions' => 'Quick Actions',
     'help_title' => 'Need Help?',
     'help_desc' => 'Explore the documentation to master :app features.',

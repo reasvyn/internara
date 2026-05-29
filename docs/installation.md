@@ -187,18 +187,6 @@ stdout_logfile=/path/to/app/storage/logs/worker.log
 stopwaitsecs=3600
 ```
 
-Create `/etc/supervisor/conf.d/internara-reverb.conf`:
-
-```ini
-[program:internara-reverb]
-command=php /path/to/app/artisan reverb:start
-autostart=true
-autorestart=true
-user=www-data
-redirect_stderr=true
-stdout_logfile=/path/to/app/storage/logs/reverb.log
-```
-
 Create `/etc/supervisor/conf.d/internara-scheduler.conf`:
 
 ```ini
@@ -236,7 +224,6 @@ services:
 |---|---|---|---|
 | `app` | Custom (Dockerfile) | PHP-FPM application server | db, redis |
 | `queue` | Custom (Dockerfile) | Laravel queue worker | db, redis |
-| `reverb` | Custom (Dockerfile) | WebSocket server | db, redis |
 | `scheduler` | Custom (Dockerfile) | Scheduler daemon | db |
 | `web` | nginx:alpine | Reverse proxy | app |
 | `db` | mysql:8 | Database | — |
@@ -359,10 +346,9 @@ When your institution outgrows shared hosting:
 QUEUE_CONNECTION=redis
 CACHE_STORE=redis
 SESSION_DRIVER=redis
-BROADCAST_CONNECTION=reverb
 ```
 
-4. Configure Supervisor for queue worker + Reverb + scheduler
+4. Configure Supervisor for queue worker + scheduler
 5. Set up minute-level cron
 6. All features become available automatically
 
@@ -484,7 +470,6 @@ php artisan queue:monitor database:default --max=100
 | `php artisan admin:recovery-show` | Display the stored recovery key (with confirmation) |
 | `php artisan system:health` | Comprehensive health check |
 | `php artisan queue:work` | Start queue worker |
-| `php artisan reverb:start` | Start WebSocket server |
 | `php artisan storage:link` | Create public storage symlink |
 
 ## Troubleshooting
@@ -495,7 +480,6 @@ php artisan queue:monitor database:default --max=100
 | 404 on media URLs | Storage link missing | `php artisan storage:link` |
 | Vite manifest error | Assets not built | `npm run build` |
 | Jobs not processing | Queue worker not running | Start worker or check Supervisor |
-| WebSocket not connecting | Reverb not running | `php artisan reverb:start` |
 | "Database is locked" | SQLite concurrent writes | Switch to MySQL/PG in production |
 | 503 Service Unavailable | Maintenance mode on | `php artisan up` |
 | Class "Redis" not found | Missing `ext-redis` | Install PHP Redis extension |

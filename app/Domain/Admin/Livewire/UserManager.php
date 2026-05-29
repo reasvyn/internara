@@ -4,25 +4,42 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Livewire;
 
+use App\Domain\Admin\Actions\BatchDeleteUserAction;
 use App\Domain\Admin\Actions\CreateUserAction;
 use App\Domain\Admin\Actions\DeleteUserAction;
-use App\Domain\Admin\Actions\ToggleUserStatusAction;
+use App\Domain\Admin\Actions\GetUserManagerStatsAction;
+use App\Domain\Admin\Actions\SetUserStatusAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
 use App\Domain\Admin\Livewire\Forms\UserForm;
-use App\Domain\Auth\Actions\ResetUserPasswordAction;
+use App\Domain\Auth\Enums\AccountStatus;
+use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
+use App\Domain\Shared\Enums\CsvRowResult;
+use App\Domain\Shared\Support\CsvHandler;
 use App\Domain\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Computed;
+use Livewire\WithFileUploads;
 use Spatie\Permission\Models\Role;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserManager extends BaseRecordManager
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, WithFileUploads;
 
     public bool $userModal = false;
+
+    public bool $showStatusModal = false;
+
+    public ?string $statusTarget = null;
+
+    public string $selectedStatus = '';
+
+    public string $statusReason = '';
+
+    public $importFile = null;
 
     public UserForm $form;
 
@@ -63,14 +80,22 @@ class UserManager extends BaseRecordManager
                 $q->role($role);
             })
             ->when($this->filters['status'] ?? null, function ($q, $status) {
-                $q->whereHas('statuses', fn ($qs) => $qs->where('name', $status)->latest());
-            });
+                $q->whereHas('statuses', fn ($qs) => $qs->where('name', $status)->latest('id'));
+            })
+            ->when($this->filters['created_from'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
+            ->when($this->filters['created_to'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '<=', $v));
     }
 
     #[Computed]
     public function roles()
     {
-        return Role::all();
+        return Role::whereNotIn('name', ['super_admin', 'admin'])->get();
+    }
+
+    #[Computed]
+    public function stats(): array
+    {
+        return app(GetUserManagerStatsAction::class)->execute();
     }
 
     public function createUser(): void
@@ -83,6 +108,12 @@ class UserManager extends BaseRecordManager
     public function editUser(string $id): void
     {
         $user = User::with('roles')->findOrFail($id);
+
+        if ($user->hasRole('super_admin')) {
+            flash()->error(__('user.manager.cannot_edit_super_admin'));
+
+            return;
+        }
 
         $this->resetErrorBag();
         $this->form->fill([
@@ -103,36 +134,31 @@ class UserManager extends BaseRecordManager
             $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email], null, $this->form->roles);
             flash()->success(__('user.manager.success_updated'));
         } else {
-            $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], [], $this->form->roles);
-            flash()->success(__('user.manager.success_created'));
+            $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], [], $this->form->roles);
+            $code = ActivationToken::generateFor($user);
+            flash()->success(__('user.manager.success_created_activation', ['code' => $code]));
         }
 
         $this->userModal = false;
     }
 
-    public function toggleStatus(string $id, ToggleUserStatusAction $action): void
+    public function resetPassword(string $id): void
     {
         $user = User::findOrFail($id);
 
-        try {
-            $action->execute($user);
-            flash()->success(__('user.manager.status_changed'));
-        } catch (\RuntimeException $e) {
-            flash()->error($e->getMessage());
-        }
-    }
-
-    public function resetPassword(string $id, ResetUserPasswordAction $action): void
-    {
-        $user = User::findOrFail($id);
-
-        $result = $action->execute($user);
-        flash()->info(__('user.manager.password_reset', ['password' => $result['new_password']]));
+        $code = ActivationToken::generateFor($user);
+        flash()->info(__('user.manager.password_reset_activation', ['code' => $code]));
     }
 
     public function deleteUser(string $id, DeleteUserAction $deleteAction): void
     {
         $user = User::findOrFail($id);
+
+        if ($user->hasRole('super_admin')) {
+            flash()->error(__('user.manager.cannot_delete_super_admin'));
+
+            return;
+        }
 
         try {
             $deleteAction->execute($user);
@@ -142,17 +168,108 @@ class UserManager extends BaseRecordManager
         }
     }
 
-    public function deleteSelected(DeleteUserAction $deleteAction): void
+    public function deleteSelected(BatchDeleteUserAction $batchDelete): void
     {
-        $this->performBulkAction('Delete', function ($id) use ($deleteAction) {
-            if ($id === auth()->id()) {
-                return;
+        $result = $batchDelete->execute($this->selectedIds);
+
+        if ($result['deleted'] > 0) {
+            flash()->success(__('common.actions.bulk_action_done', [
+                'count' => $result['deleted'],
+                'action' => __('common.actions.delete'),
+            ]));
+        }
+
+        $this->clearSelection();
+    }
+
+    // --- Import / Export ---
+
+    public function updatedImportFile(): void
+    {
+        if ($this->importFile) {
+            $this->import(app(CsvHandler::class), app(CreateUserAction::class));
+        }
+    }
+
+    public function import(CsvHandler $csv, CreateUserAction $create): void
+    {
+        $this->validate([
+            'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
+        ]);
+
+        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use ($create) {
+            $name = trim($row[0] ?? '');
+
+            if ($name === '') {
+                return null;
             }
-            $user = User::find($id);
-            if ($user) {
-                $deleteAction->execute($user);
+
+            if (User::where('email', trim($row[1] ?? ''))->exists()) {
+                return CsvRowResult::SKIPPED;
             }
+
+            $create->execute([
+                'name' => $name,
+                'email' => trim($row[1] ?? ''),
+            ], [], []);
+
+            return CsvRowResult::CREATED;
         });
+
+        $this->importFile = null;
+
+        if ($result['invalid']) {
+            flash()->error(__('common.actions.import_invalid'));
+
+            return;
+        }
+
+        flash()->success(__('common.actions.import_summary', [
+            'created' => $result['created'],
+            'skipped' => $result['skipped'],
+        ]));
+    }
+
+    public function export(CsvHandler $csv): StreamedResponse
+    {
+        $users = User::query()
+            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->orderBy('name')
+            ->get();
+
+        return $csv->export(
+            $users,
+            [__('user.fields.full_name'), __('user.fields.email'), __('user.fields.username')],
+            fn ($u) => [$u->name, $u->email, $u->username],
+            'users.csv',
+        );
+    }
+
+    public function exportSelected(CsvHandler $csv): ?StreamedResponse
+    {
+        if ($this->selectedIds === []) {
+            flash()->warning(__('common.actions.no_records_selected'));
+
+            return null;
+        }
+
+        $users = User::whereIn('id', $this->selectedIds)->orderBy('name')->get();
+
+        return $csv->export(
+            $users,
+            [__('user.fields.full_name'), __('user.fields.email'), __('user.fields.username')],
+            fn ($u) => [$u->name, $u->email, $u->username],
+            'users-selected.csv',
+        );
+    }
+
+    public function downloadTemplate(CsvHandler $csv): StreamedResponse
+    {
+        return $csv->downloadTemplate(
+            [__('user.fields.full_name'), __('user.fields.email')],
+            [__('user.manager.name_placeholder'), __('user.manager.email_placeholder')],
+            'users-template.csv',
+        );
     }
 
     public function render(): View

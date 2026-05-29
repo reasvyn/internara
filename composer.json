@@ -26,7 +26,6 @@
         "laravel-lang/lang": "^15.26",
         "laravel/framework": "^13.0",
         "laravel/pulse": "*",
-        "laravel/reverb": "^1.10",
         "laravel/tinker": "^3.0",
         "livewire/livewire": "^4.0",
         "php-flasher/flasher-laravel": "^2.4",
