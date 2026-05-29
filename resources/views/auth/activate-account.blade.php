@@ -10,14 +10,14 @@
                 wire:model="email"
                 type="email"
                 :label="__('auth.activate.email')"
-                placeholder="user@example.com"
+                :placeholder="__('auth.activate.email_placeholder')"
                 icon="o-envelope"
             />
 
             <x-mary-input
                 wire:model="code"
                 :label="__('auth.activate.code')"
-                placeholder="000000"
+                :placeholder="__('auth.activate.code_placeholder')"
                 icon="o-hashtag"
                 maxlength="6"
             />

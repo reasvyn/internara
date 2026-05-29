@@ -10,7 +10,7 @@
                 wire:model="form.email"
                 type="email"
                 :label="__('auth.reset_password.email')"
-                placeholder="user@example.com"
+                :placeholder="__('auth.reset_password.email_placeholder')"
                 icon="o-envelope"
                 readonly
             />

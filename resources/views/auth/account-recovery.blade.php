@@ -8,15 +8,15 @@
         <form wire:submit="redeem" class="space-y-5">
             <x-mary-input
                 wire:model="form.username"
-                label="{{ __('auth.account_recovery.username') }}"
-                placeholder="username"
+                :label="__('auth.account_recovery.username')"
+                :placeholder="__('auth.account_recovery.username_placeholder')"
                 icon="o-user"
             />
 
             <x-mary-input
                 wire:model="form.recoveryCode"
-                label="{{ __('auth.account_recovery.recovery_code') }}"
-                placeholder="ABC2X5K9M7P1"
+                :label="__('auth.account_recovery.recovery_code')"
+                :placeholder="__('auth.account_recovery.recovery_code_placeholder')"
                 icon="o-key"
                 class="font-mono tracking-widest"
             />
