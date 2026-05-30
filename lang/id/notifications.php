@@ -103,4 +103,17 @@ return [
     ],
 
     'view_details' => 'Lihat detail',
+
+    'guide' => [
+        'title' => 'Panduan Notifikasi',
+        'intro' => 'Berikut cara mengelola notifikasi di sistem:',
+        'read_title' => 'Membaca Notifikasi',
+        'read_desc' => 'Klik pada notifikasi untuk membaca detailnya. Notifikasi yang sudah dibaca akan berubah tampilan agar mudah dibedakan.',
+        'mark_title' => 'Menandai Notifikasi',
+        'mark_desc' => 'Gunakan tombol "Tandai Semua Dibaca" untuk membersihkan semua notifikasi sekaligus, atau tandai satu per satu.',
+        'batch_title' => 'Aksi Berkelompok',
+        'batch_desc' => 'Centang beberapa notifikasi untuk menghapus atau menandai dibaca secara bersamaan.',
+        'bell_title' => 'Lonceng Notifikasi',
+        'bell_desc' => 'Ikon lonceng di pojok kanan atas menampilkan jumlah notifikasi yang belum dibaca. Klik untuk akses cepat.',
+    ],
 ];
