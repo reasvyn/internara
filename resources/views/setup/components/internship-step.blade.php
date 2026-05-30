@@ -12,6 +12,7 @@
             label="{{ __('setup.wizard.program_name') }}"
             placeholder="{{ __('setup.wizard.program_name_placeholder') }}"
             wire:model.live.debounce.500ms="internshipForm.name"
+            icon="o-briefcase"
         />
 
         <x-mary-textarea
@@ -19,6 +20,7 @@
             placeholder="{{ __('setup.wizard.program_description_placeholder') }}"
             wire:model.live.debounce.500ms="internshipForm.description"
             rows="3"
+            icon="o-document-text"
         />
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -26,12 +28,14 @@
                 label="{{ __('setup.wizard.start_date') }}"
                 type="date"
                 wire:model.live.debounce.500ms="internshipForm.start_date"
+                icon="o-calendar"
             />
 
             <x-mary-input
                 label="{{ __('setup.wizard.end_date') }}"
                 type="date"
                 wire:model.live.debounce.500ms="internshipForm.end_date"
+                icon="o-calendar-days"
             />
         </div>
     </div>

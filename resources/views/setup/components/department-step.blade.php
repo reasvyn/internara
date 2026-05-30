@@ -13,6 +13,7 @@
             label="{{ __('setup.wizard.department_name') }}"
             placeholder="{{ __('setup.wizard.department_name_placeholder') }}"
             wire:model.live.debounce.500ms="departmentForm.name"
+            icon="o-building-library"
         />
 
         <x-mary-textarea
@@ -20,6 +21,7 @@
             placeholder="{{ __('setup.wizard.department_description_placeholder') }}"
             wire:model.live.debounce.500ms="departmentForm.description"
             rows="3"
+            icon="o-document-text"
         />
     </div>
 
