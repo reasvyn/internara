@@ -15,24 +15,13 @@ class AdminDashboard extends UserDashboard
         abort_unless(auth()->user()?->hasAnyRole(['super_admin', 'admin']), 403);
     }
 
-    public int $totalStudents = 0;
-
-    public int $totalTeachers = 0;
-
-    public int $totalDepartments = 0;
-
-    public int $activeInternships = 0;
+    public array $stats = [];
 
     public array $readiness = [];
 
     public function mount(GetAdminDashboardStatsAction $statsAction): void
     {
-        $stats = $statsAction->execute();
-
-        $this->totalStudents = $stats['totalStudents'];
-        $this->totalTeachers = $stats['totalTeachers'];
-        $this->totalDepartments = $stats['totalDepartments'];
-        $this->activeInternships = $stats['activeInternships'];
+        $this->stats = $statsAction->execute();
 
         $this->readiness = [
             'database' => ['label' => __('dashboard.readiness.database'), 'passed' => true],
@@ -47,12 +36,7 @@ class AdminDashboard extends UserDashboard
     {
         return view('user.dashboards.admin', [
             'roleContent' => true,
-            'stats' => [
-                'students' => $this->totalStudents,
-                'teachers' => $this->totalTeachers,
-                'departments' => $this->totalDepartments,
-                'internships' => $this->activeInternships,
-            ],
+            'stats' => $this->stats,
             'readiness' => $this->readiness,
         ]);
     }
