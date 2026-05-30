@@ -87,4 +87,17 @@ return [
         'step_3' => 'Gunakan salah satu kode di halaman Pemulihan Akun jika kehilangan akses',
         'code_generated' => '10 kode pemulihan berhasil dibuat.',
     ],
+
+    'guide' => [
+        'title' => 'Panduan Profil',
+        'intro' => 'Berikut hal yang bisa Anda lakukan di halaman profil:',
+        'edit_title' => 'Informasi Profil',
+        'edit_desc' => 'Perbarui data diri seperti nama, email, nomor telepon, alamat, dan bio. Data ini digunakan di seluruh sistem.',
+        'avatar_title' => 'Foto Profil',
+        'avatar_desc' => 'Klik avatar untuk mengunggah foto. Format PNG, JPEG, atau WebP, maksimal 2 MB. Klik ikon X untuk menghapus.',
+        'password_title' => 'Kata Sandi',
+        'password_desc' => 'Ganti kata sandi secara berkala untuk keamanan akun. Pastikan kata sandi baru minimal 8 karakter.',
+        'recovery_title' => 'Kode Pemulihan',
+        'recovery_desc' => 'Buat kode pemulihan untuk mengakses akun jika kata sandi hilang. Simpan kode di tempat aman.',
+    ],
 ];
