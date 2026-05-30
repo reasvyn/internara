@@ -31,6 +31,7 @@
                                     label="{{ __('school.name') }}"
                                     placeholder="{{ __('school.name_placeholder') }}"
                                     wire:model="form.name"
+                                    icon="o-academic-cap"
                                 />
                             </div>
 
@@ -39,6 +40,7 @@
                                 placeholder="{{ __('school.institutional_code_placeholder') }}"
                                 :hint="__('school.institutional_code_hint')"
                                 wire:model="form.institutional_code"
+                                icon="o-identification"
                             />
 
                             <x-mary-input
@@ -46,18 +48,21 @@
                                 type="email"
                                 placeholder="{{ __('school.email_placeholder') }}"
                                 wire:model="form.email"
+                                icon="o-envelope"
                             />
 
                             <x-mary-input
                                 label="{{ __('school.phone') }}"
                                 placeholder="{{ __('school.phone_placeholder') }}"
                                 wire:model="form.phone"
+                                icon="o-phone"
                             />
 
                             <x-mary-input
                                 label="{{ __('school.fax') }}"
                                 placeholder="{{ __('school.fax_placeholder') }}"
                                 wire:model="form.fax"
+                                icon="o-printer"
                             />
 
                             <div class="md:col-span-2">
@@ -66,6 +71,7 @@
                                     placeholder="{{ __('school.address_placeholder') }}"
                                     rows="3"
                                     wire:model="form.address"
+                                    icon="o-map-pin"
                                 />
                             </div>
 
@@ -74,12 +80,14 @@
                                 type="url"
                                 placeholder="{{ __('school.website_placeholder') }}"
                                 wire:model="form.website"
+                                icon="o-globe-alt"
                             />
 
                             <x-mary-input
                                 label="{{ __('school.principal_name') }}"
                                 placeholder="{{ __('school.principal_name_placeholder') }}"
                                 wire:model="form.principal_name"
+                                icon="o-user-circle"
                             />
                         </div>
 
