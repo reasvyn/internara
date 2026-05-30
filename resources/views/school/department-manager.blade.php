@@ -1,3 +1,4 @@
+<div>
 <x-shared::ui.record-manager
     :title="__('department.title')"
     :subtitle="__('department.subtitle')"
@@ -103,3 +104,4 @@
 </x-shared::ui.record-manager>
 
 @include('school.components.department-guide')
+</div>
