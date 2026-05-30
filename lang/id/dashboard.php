@@ -24,13 +24,17 @@ return [
     ],
 
     'pipeline' => [
-        'title' => 'Pipeline PKL',
-        'subtitle' => 'Satu siklus penuh dari pendaftaran hingga sertifikat',
-        'pending' => 'Pendaftaran',
-        'active' => 'Magang Aktif',
-        'placement' => 'Penempatan',
-        'logbook' => 'Jurnal',
-        'certificate' => 'Sertifikat',
+        'title' => 'Curah PKL',
+        'subtitle' => 'Alur peserta dari pendaftaran hingga penyelesaian — semakin lebar bar, semakin banyak peserta di tahap itu',
+        'throughput' => 'Ketuntasan',
+        'students' => 'Siswa',
+        'registered' => 'Mendaftar',
+        'placed' => 'Ditempatkan',
+        'active' => 'Aktif',
+        'completed' => 'Selesai',
+        'absorption' => 'Serapan',
+        'completion_rate' => 'Tingkat Selesai',
+        'bottleneck' => 'Hambatan',
     ],
 
     'funnel' => [

@@ -11,48 +11,105 @@
         <x-shared::widgets.stat-card :title="__('dashboard.stats.internships')" :value="$stats['activeInternships']" :suffix="__('dashboard.stats.active')" icon="o-flag" color="text-info" />
     </div>
 
-    {{-- PKL Pipeline --}}
+    {{-- PKL Funnel --}}
     <div class="bg-base-100 border border-base-content/10 rounded-xl p-5 mb-8">
-        <div class="flex items-center gap-2 mb-5">
-            <div class="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                <x-mary-icon name="o-arrow-trending-up" class="size-4" />
+        <div class="flex items-start gap-3 mb-6">
+            <div class="size-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <x-mary-icon name="o-funnel" class="size-4" />
             </div>
-            <div>
-                <h3 class="font-semibold text-sm">{{ __('dashboard.pipeline.title') }}</h3>
-                <p class="text-xs text-base-content/50">{{ __('dashboard.pipeline.subtitle') }}</p>
+            <div class="flex-1">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-semibold">{{ __('dashboard.pipeline.title') }}</h3>
+                        <p class="text-xs text-base-content/50 mt-0.5">{{ __('dashboard.pipeline.subtitle') }}</p>
+                    </div>
+                    @php
+                        $totalSt = $stats['totalStudents'];
+                        $registered = $stats['registrationsTotal'];
+                        $placed = $stats['placementFilled'];
+                        $active = $stats['registrationsActive'];
+                        $completed = $stats['certificatesIssued'];
+                    @endphp
+                    <div class="text-right shrink-0">
+                        <span class="text-xs text-base-content/40 block">{{ __('dashboard.pipeline.throughput') }}</span>
+                        <span class="text-lg font-bold tabular-nums {{ $totalSt > 0 ? 'text-success' : 'text-base-content/30' }}">
+                            {{ $totalSt > 0 ? round(($completed / $totalSt) * 100) : 0 }}%
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
 
         @php
-            $pipeline = [
-                ['key' => 'registrationsPending', 'label' => __('dashboard.pipeline.pending'), 'value' => $stats['registrationsPending'], 'color' => 'bg-warning'],
-                ['key' => 'registrationsActive', 'label' => __('dashboard.pipeline.active'), 'value' => $stats['registrationsActive'], 'color' => 'bg-info'],
-                ['key' => 'placementFilled', 'label' => __('dashboard.pipeline.placement'), 'value' => $stats['placementFilled'], 'color' => 'bg-primary'],
-                ['key' => 'logbookVerified', 'label' => __('dashboard.pipeline.logbook'), 'value' => $stats['logbookVerified'], 'color' => 'bg-secondary'],
-                ['key' => 'certificatesIssued', 'label' => __('dashboard.pipeline.certificate'), 'value' => $stats['certificatesIssued'], 'color' => 'bg-success'],
+            $stages = [
+                ['key' => 'totalStudents', 'label' => __('dashboard.pipeline.students'), 'v' => $totalSt, 'c' => 'bg-base-content/20'],
+                ['key' => 'registrationsTotal', 'label' => __('dashboard.pipeline.registered'), 'v' => $registered, 'c' => 'bg-warning'],
+                ['key' => 'placementFilled', 'label' => __('dashboard.pipeline.placed'), 'v' => $placed, 'c' => 'bg-primary'],
+                ['key' => 'registrationsActive', 'label' => __('dashboard.pipeline.active'), 'v' => $active, 'c' => 'bg-info'],
+                ['key' => 'certificatesIssued', 'label' => __('dashboard.pipeline.completed'), 'v' => $completed, 'c' => 'bg-success'],
             ];
-            $maxV = max(array_column($pipeline, 'value')) ?: 1;
+            $maxV = max(array_column($stages, 'v')) ?: 1;
         @endphp
 
-        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
-            @foreach($pipeline as $i => $item)
-                <div class="text-center">
-                    <div class="relative h-32 bg-base-200/50 rounded-lg flex flex-col items-center justify-end px-2 pb-3 overflow-hidden">
-                        <div class="absolute bottom-0 left-0 right-0 rounded-lg transition-all duration-700 {{ $item['color'] }}"
-                            style="height: {{ max(3, ($item['value'] / $maxV) * 100) }}%">
-                        </div>
-                        <div class="relative z-10 text-center">
-                            <span class="block text-xl font-bold tabular-nums text-white drop-shadow-sm">{{ $item['value'] }}</span>
-                            <span class="block text-[10px] text-white/80 mt-0.5">{{ $item['label'] }}</span>
-                        </div>
+        <div class="space-y-1">
+            @foreach($stages as $i => $stage)
+                @php
+                    $prevV = $i > 0 ? $stages[$i - 1]['v'] : $stage['v'];
+                    $drop = $prevV > 0 ? round((1 - ($stage['v'] / $prevV)) * 100) : 0;
+                @endphp
+                <div class="flex items-center gap-3 py-2">
+                    <div class="w-24 shrink-0 text-right">
+                        <span class="text-xs font-medium text-base-content/70">{{ $stage['label'] }}</span>
                     </div>
-                    @if($i < count($pipeline) - 1)
-                        <div class="text-center mt-1">
-                            <x-mary-icon name="o-arrow-down" class="size-3 text-base-content/20" />
+                    <div class="flex-1 h-7 bg-base-200/50 rounded-md overflow-hidden relative">
+                        <div class="h-full rounded-md transition-all duration-700 {{ $stage['c'] }}"
+                            style="width: {{ max(2, ($stage['v'] / $maxV) * 100) }}%">
                         </div>
-                    @endif
+                        <span class="absolute inset-0 flex items-center px-2 text-xs font-bold tabular-nums {{ $stage['v'] > 0 ? 'text-white drop-shadow-sm' : 'text-base-content/40' }}">
+                            {{ $stage['v'] }}
+                        </span>
+                    </div>
+                    <div class="w-16 shrink-0 text-left">
+                        @if($i > 0)
+                            <span class="text-xs {{ $drop > 20 ? 'text-error font-medium' : 'text-base-content/40' }}">
+                                -{{ $drop }}%
+                            </span>
+                        @else
+                            <span class="text-xs text-base-content/20">—</span>
+                        @endif
+                    </div>
                 </div>
+                @if($i < count($stages) - 1)
+                    <div class="flex items-center gap-3">
+                        <div class="w-24 shrink-0"></div>
+                        <div class="flex-1 flex items-center gap-1.5 px-0.5">
+                            <div class="h-px flex-1 bg-base-content/10"></div>
+                            <x-mary-icon name="o-arrow-down" class="size-2.5 text-base-content/20" />
+                        </div>
+                        <div class="w-16 shrink-0"></div>
+                    </div>
+                @endif
             @endforeach
+        </div>
+
+        @php
+            $absorption = $totalSt > 0 ? round(($placed / $totalSt) * 100) : 0;
+            $completionRate = $placed > 0 ? round(($completed / $placed) * 100) : 0;
+            $bottleneck = $registered > $placed ? round((($registered - $placed) / $registered) * 100) : 0;
+        @endphp
+        <div class="grid grid-cols-3 gap-4 mt-5 pt-4 border-t border-base-content/10">
+            <div class="text-center">
+                <span class="text-lg font-bold tabular-nums text-primary">{{ $absorption }}%</span>
+                <p class="text-[10px] text-base-content/50 mt-0.5">{{ __('dashboard.pipeline.absorption') }}</p>
+            </div>
+            <div class="text-center">
+                <span class="text-lg font-bold tabular-nums text-success">{{ $completionRate }}%</span>
+                <p class="text-[10px] text-base-content/50 mt-0.5">{{ __('dashboard.pipeline.completion_rate') }}</p>
+            </div>
+            <div class="text-center">
+                <span class="text-lg font-bold tabular-nums {{ $bottleneck > 20 ? 'text-error' : 'text-base-content' }}">{{ $bottleneck }}%</span>
+                <p class="text-[10px] text-base-content/50 mt-0.5">{{ __('dashboard.pipeline.bottleneck') }}</p>
+            </div>
         </div>
     </div>
 
