@@ -14,10 +14,10 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-shared::widgets.stat-card icon="o-users" :title="__('user.manager.stats_total')" :value="$this->stats['total']" />
-        <x-shared::widgets.stat-card icon="o-shield-check" :title="__('user.manager.stats_admins')" :value="$this->stats['admins']" />
-        <x-shared::widgets.stat-card icon="o-check-badge" :title="__('user.manager.stats_active')" :value="$this->stats['active']" />
-        <x-shared::widgets.stat-card icon="o-clock" :title="__('user.manager.stats_pending')" :value="$this->stats['pending']" />
+        <x-shared::widgets.stat-card icon="o-users" :title="__('user.manager.stats_total')" :value="$this->stats['total']" color="text-primary" />
+        <x-shared::widgets.stat-card icon="o-shield-check" :title="__('user.manager.stats_admins')" :value="$this->stats['admins']" color="text-secondary" />
+        <x-shared::widgets.stat-card icon="o-check-badge" :title="__('user.manager.stats_active')" :value="$this->stats['active']" color="text-success" />
+        <x-shared::widgets.stat-card icon="o-clock" :title="__('user.manager.stats_pending')" :value="$this->stats['pending']" color="text-warning" />
     </x-slot:stats>
 
     <x-slot:filters>
@@ -182,4 +182,5 @@
     </x-slot:modal>
 
     @include('admin.components.account-slip-modal')
+    @include('admin.components.user-guide')
 </x-shared::ui.record-manager>

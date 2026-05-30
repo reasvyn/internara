@@ -187,4 +187,17 @@ return [
         'notification_title' => 'Kode Aktivasi',
         'notification_message' => 'Kode aktivasi akun Anda telah diterbitkan.',
     ],
+
+    'guide' => [
+        'title' => 'Panduan Manajemen Pengguna',
+        'intro' => 'Kelola semua pengguna sistem, dari pembuatan hingga penghapusan:',
+        'create_title' => 'Membuat Pengguna',
+        'create_desc' => 'Klik "Pengguna Baru" untuk membuat akun. Isi nama dan email, lalu atur peran. Setelah disimpan, unduh slip aktivasi untuk diberikan ke pengguna.',
+        'slip_title' => 'Slip Aktivasi',
+        'slip_desc' => 'Setiap pengguna baru mendapat kode aktivasi 16 karakter. Klik ikon kunci untuk melihat slip, unduh PDF, atau kirim kode ke email pengguna.',
+        'import_title' => 'Impor CSV',
+        'import_desc' => 'Impor banyak pengguna sekaligus dari file CSV. Kolom pertama: nama, kolom kedua: email. Pengguna dengan email duplikat akan dilewati.',
+        'roles_title' => 'Peran & Akses',
+        'roles_desc' => 'Setiap pengguna dapat memiliki beberapa peran. Peran menentukan fitur dan halaman yang dapat diakses. Super admin memiliki akses penuh.',
+    ],
 ];
