@@ -21,12 +21,38 @@ class AdminDashboard extends UserDashboard
     {
         $this->stats = $statsAction->execute();
 
+        $dbOk = $this->checkDatabase();
+        $mailOk = $this->checkMail();
+        $cacheOk = $this->checkCache();
+        $queueOk = $this->checkQueue();
+        $storageOk = $this->checkStorage();
+
         $this->readiness = [
-            'database' => ['label' => __('dashboard.readiness.database'), 'passed' => $this->checkDatabase()],
-            'mail' => ['label' => __('dashboard.readiness.mail'), 'passed' => $this->checkMail()],
-            'cache' => ['label' => __('dashboard.readiness.cache'), 'passed' => $this->checkCache()],
-            'queue' => ['label' => __('dashboard.readiness.queue'), 'passed' => $this->checkQueue()],
-            'storage' => ['label' => __('dashboard.readiness.storage'), 'passed' => $this->checkStorage()],
+            'database' => [
+                'label' => __('dashboard.readiness.database'),
+                'passed' => $dbOk,
+                'status' => $dbOk ? __('dashboard.readiness.connected') : __('dashboard.readiness.disconnected'),
+            ],
+            'mail' => [
+                'label' => __('dashboard.readiness.mail'),
+                'passed' => $mailOk,
+                'status' => $mailOk ? __('dashboard.readiness.configured') : __('dashboard.readiness.not_configured'),
+            ],
+            'cache' => [
+                'label' => __('dashboard.readiness.cache'),
+                'passed' => $cacheOk,
+                'status' => $cacheOk ? __('dashboard.readiness.responding') : __('dashboard.readiness.not_responding'),
+            ],
+            'queue' => [
+                'label' => __('dashboard.readiness.queue'),
+                'passed' => $queueOk,
+                'status' => $queueOk ? __('dashboard.readiness.ready') : __('dashboard.readiness.unavailable'),
+            ],
+            'storage' => [
+                'label' => __('dashboard.readiness.storage'),
+                'passed' => $storageOk,
+                'status' => $storageOk ? __('dashboard.readiness.linked') : __('dashboard.readiness.missing'),
+            ],
         ];
     }
 

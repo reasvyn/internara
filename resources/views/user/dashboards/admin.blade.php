@@ -209,7 +209,7 @@
                             <x-mary-icon :name="$status['passed'] ? 'o-check-circle' : 'o-x-circle'" class="size-4 shrink-0" :class="$status['passed'] ? 'text-success' : 'text-error'" />
                             <div class="min-w-0">
                                 <p class="text-xs font-medium truncate">{{ $status['label'] }}</p>
-                                <p class="text-[10px] {{ $status['passed'] ? 'text-success' : 'text-error' }}">{{ $status['passed'] ? __('common.status.completed') : __('common.status.pending') }}</p>
+                                <p class="text-[10px] {{ $status['passed'] ? 'text-success' : 'text-error' }}">{{ $status['status'] }}</p>
                             </div>
                         </div>
                     @endforeach
