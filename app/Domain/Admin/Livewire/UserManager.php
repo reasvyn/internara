@@ -126,11 +126,21 @@ class UserManager extends BaseRecordManager
         }
 
         $this->resetErrorBag();
+        $user->load('profile');
         $this->form->fill([
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'roles' => $user->roles->pluck('name')->toArray(),
+            'phone' => $user->profile?->phone ?? '',
+            'address' => $user->profile?->address ?? '',
+            'bio' => $user->profile?->bio ?? '',
+            'gender' => $user->profile?->gender?->value ?? '',
+            'pob' => $user->profile?->pob ?? '',
+            'dob' => $user->profile?->dob?->format('Y-m-d') ?? '',
+            'emergency_contact_name' => $user->profile?->emergency_contact_name ?? '',
+            'emergency_contact_phone' => $user->profile?->emergency_contact_phone ?? '',
+            'emergency_contact_address' => $user->profile?->emergency_contact_address ?? '',
         ]);
         $this->userModal = true;
     }
@@ -141,7 +151,22 @@ class UserManager extends BaseRecordManager
 
         if ($this->form->id) {
             $user = User::findOrFail($this->form->id);
-            $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email], null, $this->form->roles);
+            $updateAction->execute(
+                $user,
+                ['name' => $this->form->name, 'email' => $this->form->email],
+                [
+                    'phone' => $this->form->phone ?: null,
+                    'address' => $this->form->address ?: null,
+                    'bio' => $this->form->bio ?: null,
+                    'gender' => $this->form->gender ?: null,
+                    'pob' => $this->form->pob ?: null,
+                    'dob' => $this->form->dob ?: null,
+                    'emergency_contact_name' => $this->form->emergency_contact_name ?: null,
+                    'emergency_contact_phone' => $this->form->emergency_contact_phone ?: null,
+                    'emergency_contact_address' => $this->form->emergency_contact_address ?: null,
+                ],
+                $this->form->roles,
+            );
             flash()->success(__('user.manager.success_updated'));
         } else {
             $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], [], $this->form->roles);

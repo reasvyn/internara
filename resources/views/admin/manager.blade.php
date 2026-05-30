@@ -152,12 +152,40 @@
     </x-mary-modal>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.manager.edit') : __('user.manager.new')" separator class="backdrop-blur-sm">
+        <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.manager.edit') : __('user.manager.new')" separator class="backdrop-blur-sm" size="lg">
             <x-mary-form wire:submit="saveUser" class="space-y-5">
                 <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
                     <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('user.manager.account') }}</p>
                     <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
                     <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" />
+                </div>
+
+                <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
+                    <div class="flex items-center gap-2 mb-4">
+                        <x-mary-icon name="o-identification" class="size-4 text-primary" />
+                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.manager.profile') }}</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-mary-input :label="__('user.fields.phone')" wire:model="form.phone" icon="o-phone" />
+                        <x-mary-select :label="__('user.fields.gender')" wire:model="form.gender"
+                            :options="[['id' => 'L', 'name' => 'Laki-laki'], ['id' => 'P', 'name' => 'Perempuan']]" />
+                        <x-mary-input :label="__('user.fields.pob')" wire:model="form.pob" icon="o-map-pin" />
+                        <x-mary-input :label="__('user.fields.dob')" type="date" wire:model="form.dob" icon="o-calendar" />
+                    </div>
+                    <x-mary-textarea :label="__('user.fields.address')" wire:model="form.address" rows="2" class="mt-4" icon="o-map-pin" />
+                    <x-mary-textarea :label="__('user.fields.bio')" wire:model="form.bio" rows="2" class="mt-4" icon="o-document-text" />
+                </div>
+
+                <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
+                    <div class="flex items-center gap-2 mb-4">
+                        <x-mary-icon name="o-phone" class="size-4 text-warning" />
+                        <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.fields.emergency') }}</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-mary-input :label="__('user.fields.emergency_contact_name')" wire:model="form.emergency_contact_name" icon="o-user" />
+                        <x-mary-input :label="__('user.fields.emergency_contact_phone')" wire:model="form.emergency_contact_phone" icon="o-phone" />
+                        <x-mary-textarea :label="__('user.fields.emergency_contact_address')" wire:model="form.emergency_contact_address" rows="2" class="md:col-span-2" icon="o-map-pin" />
+                    </div>
                 </div>
 
                 <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
