@@ -19,6 +19,7 @@ return [
     'user_account_locked' => 'Akun Dikunci',
     'user_account_unlocked' => 'Akun Dibuka',
     'account_auto_inactivated' => 'Akun Dinonaktifkan Otomatis',
+    'recovery_slips_generated' => 'Slip Pemulihan Dibuat',
     'profile_updated' => 'Profil Diperbarui',
     'settings_updated' => 'Pengaturan Diperbarui',
     'title' => 'Log Aktivitas',

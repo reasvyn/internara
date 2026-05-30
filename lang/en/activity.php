@@ -19,6 +19,7 @@ return [
     'user_account_locked' => 'Account Locked',
     'user_account_unlocked' => 'Account Unlocked',
     'account_auto_inactivated' => 'Account Auto-Inactivated',
+    'recovery_slips_generated' => 'Recovery Slips Generated',
     'profile_updated' => 'Profile Updated',
     'settings_updated' => 'Settings Updated',
     'title' => 'Activity Log',
