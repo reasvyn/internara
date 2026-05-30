@@ -20,8 +20,8 @@
     {{-- Stats --}}
     <div class="grid grid-cols-3 gap-4 mb-6">
         <x-shared::widgets.stat-card :title="__('academic_year.stats_total')" :value="$stats['total']" icon="o-calendar-days" color="text-primary" />
-        <x-shared::widgets.stat-card :title="__('academic_year.stats_active')" :value="$stats['active']" icon="o-check-circle" color="text-success" />
-        <x-shared::widgets.stat-card :title="__('academic_year.stats_with_internships')" :value="$stats['withInternships']" icon="o-briefcase" color="text-info" />
+        <x-shared::widgets.stat-card :title="__('academic_year.stats_total_internships')" :value="$stats['totalInternships']" icon="o-briefcase" color="text-info" />
+        <x-shared::widgets.stat-card :title="__('academic_year.stats_with_internships')" :value="$stats['withInternships']" icon="o-building-library" color="text-secondary" />
     </div>
 
     {{-- Search --}}

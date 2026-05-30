@@ -82,7 +82,7 @@ class AcademicYearManager extends BaseRecordManager
     {
         return [
             'total' => AcademicYear::count(),
-            'active' => AcademicYear::where('is_active', true)->count(),
+            'totalInternships' => Internship::count(),
             'withInternships' => AcademicYear::whereHas('internships')->count(),
         ];
     }

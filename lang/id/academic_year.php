@@ -33,8 +33,8 @@ return [
     'name_placeholder' => 'contoh: 2025/2026',
 
     'stats_total' => 'Total Tahun',
-    'stats_active' => 'Aktif',
-    'stats_with_internships' => 'Digunakan Magang',
+    'stats_total_internships' => 'Total Program Magang',
+    'stats_with_internships' => 'Tahun dengan Magang',
 
     'guide' => [
         'title' => 'Panduan Tahun Akademik',
