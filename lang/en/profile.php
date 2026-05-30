@@ -100,4 +100,17 @@ return [
         'recovery_title' => 'Recovery Codes',
         'recovery_desc' => 'Generate recovery codes to access your account if the password is lost. Store the codes in a safe place.',
     ],
+
+    'guide_recovery' => [
+        'title' => 'Recovery Codes Guide',
+        'intro' => 'Recovery codes let you access your account if you lose your password:',
+        'generate_title' => 'Generating Codes',
+        'generate_desc' => 'Click "Generate Recovery Codes" to create 10 single-use codes. Each code can only be used once.',
+        'download_title' => 'Saving Codes',
+        'download_desc' => 'Download the recovery codes PDF and store it securely. Codes will not be shown again after you leave this page.',
+        'security_title' => 'Security',
+        'security_desc' => 'Recovery codes are as sensitive as your password. Do not share them. Store them in a location only you can access.',
+        'regenerate_title' => 'Regenerating Codes',
+        'regenerate_desc' => 'If you suspect your old codes are compromised, generate new ones. Old codes will be invalidated automatically.',
+    ],
 ];
