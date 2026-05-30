@@ -39,4 +39,6 @@
             </x-mary-card>
         </div>
     </div>
+
+    @include('user.components.dashboard-guide')
 </div>
