@@ -73,5 +73,5 @@
         </div>
     </div>
 
-    @include('user.components.recovery-guide')
+    @include('auth.components.recovery-guide')
 </div>
