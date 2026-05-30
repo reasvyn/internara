@@ -1,5 +1,5 @@
 <div class="p-8">
-    <x-mary-header title="Account Lifecycle" subtitle="Manage user account statuses and restrictions" separator progress-indicator>
+    <x-mary-header :title="__('auth.lifecycle.title')" :subtitle="__('auth.lifecycle.subtitle')" separator progress-indicator>
         <x-slot:actions>
             <x-mary-button label="Detect Clones" icon="o-user-group" class="btn-secondary" href="{{ route('admin.accounts.detect-clones') }}" />
         </x-slot:actions>

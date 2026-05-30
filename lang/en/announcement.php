@@ -33,6 +33,7 @@ return [
         'type' => 'Type',
         'link' => 'Link (optional)',
         'scheduled_at' => 'Schedule Date and Time',
+        'link_placeholder' => 'https://...',
         'target_roles' => 'Target Roles',
     ],
 ];

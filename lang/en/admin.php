@@ -100,6 +100,17 @@ return [
         'code_expiry' => 'Expires in :days days',
     ],
 
+    'gdpr_logs' => [
+        'title' => 'GDPR Deletion Logs',
+        'search_placeholder' => 'Search by email...',
+        'type_placeholder' => 'All types',
+    ],
+
+    'clone_detection' => [
+        'title' => 'Account Clone Detection',
+        'subtitle' => 'Suspicious duplicate accounts',
+    ],
+
     'recovery_show' => [
         'warning' => 'The recovery key grants super admin access. Only share this with trusted server administrators.',
         'confirm' => 'Are you sure you want to display the recovery key?',

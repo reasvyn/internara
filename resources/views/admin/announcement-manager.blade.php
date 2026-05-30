@@ -22,7 +22,7 @@
                                 ['id' => 'error', 'name' => 'Error'],
                             ]"
                         />
-                        <x-mary-input :label="__('announcement.fields.link')" wire:model="form.link" placeholder="https://..." />
+                        <x-mary-input :label="__('announcement.fields.link')" wire:model="form.link" :placeholder="__('announcement.fields.link_placeholder')" />
                     </div>
 
                     <div class="border-t border-base-content/10 pt-4 space-y-4">

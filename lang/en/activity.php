@@ -21,4 +21,9 @@ return [
     'account_auto_inactivated' => 'Account Auto-Inactivated',
     'profile_updated' => 'Profile Updated',
     'settings_updated' => 'Settings Updated',
+    'title' => 'Activity Log',
+    'subtitle' => 'User activity tracking',
+    'filter_user' => 'All users',
+    'filter_module' => 'All modules',
+    'filter_action' => 'All actions',
 ];

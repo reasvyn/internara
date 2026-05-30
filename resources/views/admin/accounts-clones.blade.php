@@ -1,5 +1,5 @@
 <div>
-    <x-mary-header title="Account Clone Detection" subtitle="Suspicious duplicate accounts" separator />
+    <x-mary-header :title="__('admin.clone_detection.title')" :subtitle="__('admin.clone_detection.subtitle')" separator />
 
     <x-mary-card>
         @forelse($clones as $clone)

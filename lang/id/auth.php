@@ -73,6 +73,11 @@ return [
     'email_reset_link' => 'Tautan atur ulang kata sandi telah dikirim ke email Anda.',
     'password_reset_success' => 'Kata sandi Anda telah diatur ulang.',
     'password_confirmed' => 'Kata sandi dikonfirmasi.',
+    'lifecycle' => [
+        'title' => 'Siklus Hidup Akun',
+        'subtitle' => 'Kelola status dan pembatasan akun pengguna',
+    ],
+
     'account_locked' => 'Akun berhasil dikunci.',
     'account_unlocked' => 'Akun berhasil dibuka.',
     'recovery_slip_generated' => 'Slip pemulihan berhasil dibuat.',
@@ -88,6 +93,7 @@ return [
         'security_note_desc' => 'Kode ini tidak akan ditampilkan lagi. Kedaluwarsa dalam 24 jam. Verifikasi identitas penerima sebelum memberikan kode.',
         'generate_another' => 'Hasilkan Lagi',
         'search_user' => 'Cari Pengguna',
+        'search_placeholder' => 'Nama, username, atau email...',
         'no_users_found' => 'Tidak ada pengguna ditemukan.',
         'selected_user' => 'Dipilih: :name (:username)',
         'generate_slip' => 'Hasilkan Slip Pemulihan',
