@@ -15,7 +15,7 @@ return [
     'selected_count' => '{0} departments selected|{1} department selected|[2,*] departments selected',
     'stats' => [
         'total' => 'Total Departments',
-        'with_internships' => 'With Internships',
+        'with_students' => 'Has Students',
     ],
     'search_placeholder' => 'Search department...',
     'name' => 'Department Name',
