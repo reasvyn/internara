@@ -1,13 +1,23 @@
 <div>
-    <div class="mb-6">
-        <h2 class="text-xl font-bold">{{ __('profile.title') }}</h2>
-        <p class="text-sm text-base-content/50 mt-1">{{ __('profile.subtitle') }}</p>
+    <div class="mb-6 flex items-center gap-4">
+        <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+            <x-mary-icon name="o-user-circle" class="size-6" />
+        </div>
+        <div>
+            <h2 class="text-xl font-bold">{{ __('profile.title') }}</h2>
+            <p class="text-sm text-base-content/50 mt-0.5">{{ __('profile.subtitle') }}</p>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 space-y-6">
             <x-mary-card class="bg-base-100 border border-base-content/10">
-                <x-slot:title><span class="font-semibold">{{ __('profile.information') }}</span></x-slot:title>
+                <x-slot:title>
+                    <div class="flex items-center gap-2">
+                        <x-mary-icon name="o-pencil-square" class="size-5 text-primary" />
+                        <span class="font-semibold">{{ __('profile.information') }}</span>
+                    </div>
+                </x-slot:title>
                 <x-slot:subtitle><span class="text-xs text-base-content/50">{{ __('profile.information_desc') }}</span></x-slot:subtitle>
 
                 <x-mary-form wire:submit="save">
@@ -33,17 +43,20 @@
                     </div>
 
                     @if($isStaff)
-                        <hr class="my-6 border-base-content/10" />
+                        <div class="mt-6 pt-6 border-t border-base-content/10">
+                            <div class="flex items-center gap-2 mb-1">
+                                <x-mary-icon name="o-briefcase" class="size-5 text-primary" />
+                                <h3 class="font-semibold">{{ __('profile.staff_information') }}</h3>
+                            </div>
+                            <p class="text-xs text-base-content/50 mb-4">{{ __('profile.staff_information_desc') }}</p>
 
-                        <h3 class="font-semibold mb-4">{{ __('profile.staff_information') }}</h3>
-                        <p class="text-xs text-base-content/50 mb-4">{{ __('profile.staff_information_desc') }}</p>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-mary-select :label="__('profile.employment_status')" wire:model="profileForm.employment_status" :placeholder="__('profile.select_option')" :options="\App\Domain\User\Enums\EmploymentStatus::options()" icon="o-briefcase" />
-                            <x-mary-input :label="__('profile.position')" wire:model="profileForm.position" :placeholder="__('profile.position_placeholder')" icon="o-identification" />
-                            <x-mary-input :label="__('profile.nip')" wire:model="profileForm.nip" :placeholder="__('profile.nip_placeholder')" icon="o-document-text" />
-                            <x-mary-input :label="__('profile.nuptk')" wire:model="profileForm.nuptk" :placeholder="__('profile.nuptk_placeholder')" icon="o-document-text" />
-                            <x-mary-input :label="__('profile.competence_field')" wire:model="profileForm.competence_field" class="md:col-span-2" :placeholder="__('profile.competence_field_placeholder')" icon="o-academic-cap" />
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <x-mary-select :label="__('profile.employment_status')" wire:model="profileForm.employment_status" :placeholder="__('profile.select_option')" :options="\App\Domain\User\Enums\EmploymentStatus::options()" icon="o-briefcase" />
+                                <x-mary-input :label="__('profile.position')" wire:model="profileForm.position" :placeholder="__('profile.position_placeholder')" icon="o-identification" />
+                                <x-mary-input :label="__('profile.nip')" wire:model="profileForm.nip" :placeholder="__('profile.nip_placeholder')" icon="o-document-text" />
+                                <x-mary-input :label="__('profile.nuptk')" wire:model="profileForm.nuptk" :placeholder="__('profile.nuptk_placeholder')" icon="o-document-text" />
+                                <x-mary-input :label="__('profile.competence_field')" wire:model="profileForm.competence_field" class="md:col-span-2" :placeholder="__('profile.competence_field_placeholder')" icon="o-academic-cap" />
+                            </div>
                         </div>
                     @endif
 
@@ -55,7 +68,12 @@
 
             {{-- Password --}}
             <x-mary-card class="bg-base-100 border border-base-content/10">
-                <x-slot:title><span class="font-semibold">{{ __('profile.password') }}</span></x-slot:title>
+                <x-slot:title>
+                    <div class="flex items-center gap-2">
+                        <x-mary-icon name="o-lock-closed" class="size-5 text-primary" />
+                        <span class="font-semibold">{{ __('profile.password') }}</span>
+                    </div>
+                </x-slot:title>
                 <x-slot:subtitle><span class="text-xs text-base-content/50">{{ __('profile.password_desc') }}</span></x-slot:subtitle>
 
                 <x-mary-form wire:submit="updatePassword">
@@ -75,15 +93,15 @@
         {{-- Sidebar --}}
         <div class="space-y-6">
             <x-mary-card class="bg-base-100 border border-base-content/10">
-                <div class="flex flex-col items-center py-4">
+                <div class="flex flex-col items-center py-6">
                     <div class="relative mb-3 group">
                         <div class="cursor-pointer relative" onclick="document.getElementById('avatar-upload').click()">
                             <input id="avatar-upload" type="file" wire:model="avatar" accept="image/png,image/jpeg,image/webp" class="hidden" />
-                            <div class="size-20 rounded-full bg-base-200 flex items-center justify-center overflow-hidden border-2 border-base-content/10">
+                            <div class="size-24 rounded-full bg-base-200 flex items-center justify-center overflow-hidden border-2 border-base-content/10 ring-2 ring-primary/10 group-hover:ring-primary/30 transition-all">
                                 @if($this->avatarPreviewUrl() ?? $user->getFirstMediaUrl('avatar', 'thumb'))
                                     <img src="{{ $this->avatarPreviewUrl() ?? $user->getFirstMediaUrl('avatar', 'thumb') }}" alt="Avatar" class="size-full object-cover" />
                                 @else
-                                    <span class="text-lg font-medium text-base-content/60">{{ $user->initials() }}</span>
+                                    <span class="text-2xl font-bold text-base-content/60">{{ $user->initials() }}</span>
                                 @endif
                             </div>
                             <div class="absolute inset-0 flex items-center justify-center rounded-full bg-base-content/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -103,22 +121,22 @@
                         'message' => __('profile.avatar_remove_confirm'),
                         'confirmText' => __('common.actions.remove'),
                     ])
-                    <h3 class="font-semibold text-lg mt-3">{{ $user->name }}</h3>
-                    <p class="text-xs text-base-content/50">{{ '@'.$user->username }}</p>
+                    <h3 class="font-semibold text-lg mt-2">{{ $user->name }}</h3>
+                    <p class="text-xs text-base-content/50 mt-0.5">{{ '@'.$user->username }}</p>
                     <div class="flex flex-wrap justify-center gap-1 mt-3">
                         @foreach($user->roles as $role)
-                            <x-mary-badge :value="$role->name" class="badge-primary badge-sm" />
+                            <x-mary-badge :value="$role->name" class="badge-primary badge-sm font-medium" />
                         @endforeach
                     </div>
                 </div>
-                <div class="border-t border-base-content/10 pt-4 pb-2 px-4 space-y-3 text-sm">
-                    <div class="flex items-center gap-3 text-base-content/60">
-                        <x-mary-icon name="o-envelope" class="size-4 shrink-0" />
+                <div class="border-t border-base-content/10 pt-4 pb-2 px-5 space-y-3 text-sm">
+                    <div class="flex items-center gap-3 text-base-content/70">
+                        <x-mary-icon name="o-envelope" class="size-4 shrink-0 text-base-content/40" />
                         <span class="truncate">{{ $user->email }}</span>
                     </div>
                     @if($user->profile?->phone)
-                        <div class="flex items-center gap-3 text-base-content/60">
-                            <x-mary-icon name="o-phone" class="size-4 shrink-0" />
+                        <div class="flex items-center gap-3 text-base-content/70">
+                            <x-mary-icon name="o-phone" class="size-4 shrink-0 text-base-content/40" />
                             <span>{{ $user->profile->phone }}</span>
                         </div>
                     @endif
@@ -131,16 +149,20 @@
 
             <a href="{{ route('profile.recovery') }}" wire:navigate>
                 <x-mary-card class="bg-base-100 border border-base-content/10 hover:bg-base-200/50 transition-colors cursor-pointer">
-                    <div class="flex items-center gap-3">
-                        <x-mary-icon name="o-key" class="size-5 text-base-content/40 shrink-0" />
-                        <div>
-                            <p class="text-sm font-medium">{{ __('profile.recovery.title') }}</p>
-                            <p class="text-xs text-base-content/50">{{ __('profile.recovery.subtitle') }}</p>
+                    <div class="flex items-center gap-3 px-1">
+                        <div class="size-10 rounded-lg bg-warning/10 text-warning flex items-center justify-center shrink-0">
+                            <x-mary-icon name="o-key" class="size-5" />
                         </div>
-                        <x-mary-icon name="o-chevron-right" class="size-4 text-base-content/20 ml-auto shrink-0" />
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium">{{ __('profile.recovery.title') }}</p>
+                            <p class="text-xs text-base-content/50 truncate">{{ __('profile.recovery.subtitle') }}</p>
+                        </div>
+                        <x-mary-icon name="o-chevron-right" class="size-4 text-base-content/20 shrink-0" />
                     </div>
                 </x-mary-card>
             </a>
         </div>
     </div>
+
+    @include('user.components.profile-guide')
 </div>

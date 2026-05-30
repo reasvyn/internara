@@ -87,4 +87,17 @@ return [
         'step_3' => 'Use any code at the Account Recovery page if you lose access',
         'code_generated' => '10 recovery codes generated successfully.',
     ],
+
+    'guide' => [
+        'title' => 'Profile Guide',
+        'intro' => 'Here is what you can do on the profile page:',
+        'edit_title' => 'Profile Information',
+        'edit_desc' => 'Update your personal details such as name, email, phone number, address, and bio. This data is used across the system.',
+        'avatar_title' => 'Profile Picture',
+        'avatar_desc' => 'Click the avatar to upload a photo. Supports PNG, JPEG, or WebP, up to 2 MB. Click the X icon to remove.',
+        'password_title' => 'Password',
+        'password_desc' => 'Change your password regularly for account security. Ensure your new password is at least 8 characters.',
+        'recovery_title' => 'Recovery Codes',
+        'recovery_desc' => 'Generate recovery codes to access your account if the password is lost. Store the codes in a safe place.',
+    ],
 ];
