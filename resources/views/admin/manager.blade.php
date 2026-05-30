@@ -156,7 +156,7 @@
     </x-mary-modal>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.manager.edit') : __('user.manager.new')" separator class="backdrop-blur-sm" size="lg">
+        <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.manager.edit') : __('user.manager.new')" separator class="backdrop-blur-sm" size="xl">
             <x-mary-form wire:submit="saveUser" class="space-y-5">
                 <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
                     <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('user.manager.account') }}</p>
