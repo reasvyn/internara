@@ -91,6 +91,16 @@ class UserManager extends BaseRecordManager
     }
 
     #[Computed]
+    public function statusOptions(): array
+    {
+        return collect(AccountStatus::cases())
+            ->reject(fn ($s) => $s === AccountStatus::PROTECTED || $s === AccountStatus::ARCHIVED)
+            ->map(fn ($s) => ['id' => $s->value, 'name' => $s->label()])
+            ->values()
+            ->toArray();
+    }
+
+    #[Computed]
     public function stats(): array
     {
         return app(GetUserManagerStatsAction::class)->execute();
