@@ -11,6 +11,7 @@ use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Logbook\Models\Logbook;
+use App\Domain\Mentor\Models\Mentor;
 use App\Domain\Partnership\Models\Company;
 use App\Domain\Partnership\Models\Partnership;
 use App\Domain\Placement\Models\Placement;
@@ -32,7 +33,7 @@ final class GetAdminDashboardStatsAction extends BaseAction
                 'totalStudents' => $students,
                 'totalTeachers' => User::role(RoleEnum::TEACHER->value)->count(),
                 'totalSupervisors' => User::role(RoleEnum::SUPERVISOR->value)->count(),
-                'totalMentors' => User::role(RoleEnum::MENTOR->value)->count(),
+                'totalMentors' => Mentor::count(),
                 'totalCompanies' => Company::count(),
                 'totalPartnerships' => Partnership::count(),
                 'totalDepartments' => Department::count(),
