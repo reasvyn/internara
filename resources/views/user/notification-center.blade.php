@@ -153,4 +153,6 @@
             @endif
         </x-slot:actions>
     </x-mary-modal>
+
+    @include('user.components.dashboard-guide')
 </div>
