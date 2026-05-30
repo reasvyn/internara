@@ -25,6 +25,7 @@ return [
 
     'pipeline' => [
         'title' => 'PKL Pipeline',
+        'subtitle' => 'Full lifecycle from registration to certificate',
         'pending' => 'Registrations',
         'active' => 'Active Internships',
         'placement' => 'Placements',

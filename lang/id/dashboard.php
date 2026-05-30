@@ -25,6 +25,7 @@ return [
 
     'pipeline' => [
         'title' => 'Pipeline PKL',
+        'subtitle' => 'Satu siklus penuh dari pendaftaran hingga sertifikat',
         'pending' => 'Pendaftaran',
         'active' => 'Magang Aktif',
         'placement' => 'Penempatan',
