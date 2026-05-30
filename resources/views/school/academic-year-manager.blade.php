@@ -1,8 +1,13 @@
 <div class="py-4">
     <div class="flex items-center justify-between mb-6">
-        <div>
-            <h2 class="text-xl font-bold">{{ __('academic_year.title') }}</h2>
-            <p class="text-sm text-base-content/50 mt-1">{{ __('academic_year.subtitle') }}</p>
+        <div class="flex items-center gap-4">
+            <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                <x-mary-icon name="o-calendar-days" class="size-6" />
+            </div>
+            <div>
+                <h2 class="text-xl font-bold">{{ __('academic_year.title') }}</h2>
+                <p class="text-sm text-base-content/50 mt-0.5">{{ __('academic_year.subtitle') }}</p>
+            </div>
         </div>
         <x-mary-button
             label="{{ __('academic_year.create') }}"
@@ -61,9 +66,9 @@
                             wire:model.live="selectedIds"
                         />
                         @if($year->is_active)
-                            <span class="size-2 rounded-full bg-success shrink-0" title="Active"></span>
+                            <span class="size-2 rounded-full bg-success shrink-0" :title="__('academic_year.active')"></span>
                         @else
-                            <span class="size-2 rounded-full bg-base-content/20 shrink-0" title="Inactive"></span>
+                            <span class="size-2 rounded-full bg-base-content/20 shrink-0" :title="__('academic_year.inactive')"></span>
                         @endif
                         <div class="min-w-0">
                             <p class="text-sm font-medium truncate">{{ $year->name }}</p>
@@ -124,18 +129,21 @@
             <x-mary-input
                 label="{{ __('academic_year.name') }}"
                 wire:model="form.name"
-                placeholder="e.g.: 2025/2026"
+                :placeholder="__('academic_year.name_placeholder')"
+                icon="o-academic-cap"
             />
             <div class="grid grid-cols-2 gap-4">
                 <x-mary-input
                     label="{{ __('academic_year.start_date') }}"
                     type="date"
                     wire:model="form.start_date"
+                    icon="o-calendar"
                 />
                 <x-mary-input
                     label="{{ __('academic_year.end_date') }}"
                     type="date"
                     wire:model="form.end_date"
+                    icon="o-calendar-days"
                 />
             </div>
         </div>
@@ -149,4 +157,6 @@
             @endif
         </x-slot:actions>
     </x-mary-modal>
+
+    @include('school.components.academic-year-guide')
 </div>
