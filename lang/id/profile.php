@@ -100,4 +100,17 @@ return [
         'recovery_title' => 'Kode Pemulihan',
         'recovery_desc' => 'Buat kode pemulihan untuk mengakses akun jika kata sandi hilang. Simpan kode di tempat aman.',
     ],
+
+    'guide_recovery' => [
+        'title' => 'Panduan Kode Pemulihan',
+        'intro' => 'Kode pemulihan digunakan untuk mengakses akun jika kata sandi hilang:',
+        'generate_title' => 'Membuat Kode',
+        'generate_desc' => 'Klik "Buat Kode Pemulihan" untuk menghasilkan 10 kode satu kali pakai. Setiap kode hanya bisa digunakan sekali.',
+        'download_title' => 'Menyimpan Kode',
+        'download_desc' => 'Unduh PDF kode pemulihan dan simpan di tempat aman. Kode tidak akan ditampilkan lagi setelah halaman ini ditutup.',
+        'security_title' => 'Keamanan',
+        'security_desc' => 'Kode pemulihan setara dengan kata sandi Anda. Jangan bagikan kepada siapa pun. Simpan di lokasi yang hanya Anda akses.',
+        'regenerate_title' => 'Memperbarui Kode',
+        'regenerate_desc' => 'Jika kode lama dicurigai bocor, buat ulang kode baru. Kode lama otomatis tidak berlaku.',
+    ],
 ];
