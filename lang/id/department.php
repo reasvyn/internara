@@ -33,4 +33,17 @@ return [
     'import_summary' => ':created jurusan diimpor, :skipped dilewati (duplikat).',
     'template_example_name' => 'contoh: Rekayasa Perangkat Lunak',
     'template_example_description' => 'contoh: Jurusan yang berfokus pada pengembangan perangkat lunak',
+
+    'guide' => [
+        'title' => 'Panduan Jurusan',
+        'intro' => 'Kelola unit organisasi akademik (jurusan/kompetensi keahlian):',
+        'create_title' => 'Menambah Jurusan',
+        'create_desc' => 'Buat jurusan baru dengan nama dan deskripsi. Nama jurusan harus unik dalam sistem.',
+        'edit_title' => 'Mengubah Jurusan',
+        'edit_desc' => 'Perbarui nama atau deskripsi jurusan yang sudah ada. Perubahan langsung diterapkan di seluruh sistem.',
+        'import_title' => 'Impor CSV',
+        'import_desc' => 'Impor banyak jurusan sekaligus dari file CSV. Kolom pertama: nama, kolom kedua: deskripsi (opsional).',
+        'delete_title' => 'Menghapus Jurusan',
+        'delete_desc' => 'Jurusan yang masih memiliki profil siswa tidak dapat dihapus. Pindahkan siswa terlebih dahulu jika perlu.',
+    ],
 ];

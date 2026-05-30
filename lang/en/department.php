@@ -33,4 +33,17 @@ return [
     'import_summary' => ':created departments imported, :skipped skipped (duplicates).',
     'template_example_name' => 'e.g. Software Engineering',
     'template_example_description' => 'e.g. Department focused on software development',
+
+    'guide' => [
+        'title' => 'Department Guide',
+        'intro' => 'Manage academic organizational units (departments/competency areas):',
+        'create_title' => 'Adding a Department',
+        'create_desc' => 'Create a new department with a name and description. The department name must be unique in the system.',
+        'edit_title' => 'Editing a Department',
+        'edit_desc' => 'Update the name or description of an existing department. Changes apply system-wide immediately.',
+        'import_title' => 'CSV Import',
+        'import_desc' => 'Import multiple departments at once from a CSV file. First column: name, second column: description (optional).',
+        'delete_title' => 'Deleting a Department',
+        'delete_desc' => 'Departments that still have student profiles cannot be deleted. Move students first if needed.',
+    ],
 ];

@@ -84,11 +84,13 @@
                         :label="__('department.name')"
                         wire:model="form.name"
                         :placeholder="__('department.name_placeholder')"
+                        icon="o-building-library"
                     />
                     <x-mary-textarea
                         :label="__('department.description')"
                         wire:model="form.description"
                         rows="3"
+                        icon="o-document-text"
                     />
                 </div>
                 <x-slot:actions>
@@ -99,3 +101,5 @@
         </x-mary-modal>
     </x-slot:modal>
 </x-shared::ui.record-manager>
+
+@include('school.components.department-guide')
