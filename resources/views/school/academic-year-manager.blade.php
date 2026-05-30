@@ -66,9 +66,9 @@
                             wire:model.live="selectedIds"
                         />
                         @if($year->is_active)
-                            <span class="size-2 rounded-full bg-success shrink-0" :title="__('academic_year.active')"></span>
+                            <span class="size-2 rounded-full bg-success shrink-0" title="{{ __('academic_year.active') }}"></span>
                         @else
-                            <span class="size-2 rounded-full bg-base-content/20 shrink-0" :title="__('academic_year.inactive')"></span>
+                            <span class="size-2 rounded-full bg-base-content/20 shrink-0" title="{{ __('academic_year.inactive') }}"></span>
                         @endif
                         <div class="min-w-0">
                             <p class="text-sm font-medium truncate">{{ $year->name }}</p>
