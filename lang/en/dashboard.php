@@ -24,13 +24,17 @@ return [
     ],
 
     'pipeline' => [
-        'title' => 'PKL Pipeline',
-        'subtitle' => 'Full lifecycle from registration to certificate',
-        'pending' => 'Registrations',
-        'active' => 'Active Internships',
-        'placement' => 'Placements',
-        'logbook' => 'Logbook Entries',
-        'certificate' => 'Certificates',
+        'title' => 'PKL Funnel',
+        'subtitle' => 'Student flow from registration to completion — wider bar means more students at that stage',
+        'throughput' => 'Throughput',
+        'students' => 'Students',
+        'registered' => 'Registered',
+        'placed' => 'Placed',
+        'active' => 'Active',
+        'completed' => 'Completed',
+        'absorption' => 'Absorption',
+        'completion_rate' => 'Completion Rate',
+        'bottleneck' => 'Bottleneck',
     ],
 
     'funnel' => [
