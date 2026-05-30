@@ -24,7 +24,7 @@ return [
     ],
 
     'pipeline' => [
-        'title' => 'Curah PKL',
+        'title' => 'Alur PKL',
         'subtitle' => 'Alur peserta dari pendaftaran hingga penyelesaian — semakin lebar bar, semakin banyak peserta di tahap itu',
         'throughput' => 'Ketuntasan',
         'students' => 'Siswa',
