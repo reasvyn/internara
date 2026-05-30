@@ -32,6 +32,10 @@ return [
     'inactive' => 'Tidak Aktif',
     'name_placeholder' => 'contoh: 2025/2026',
 
+    'stats_total' => 'Total Tahun',
+    'stats_active' => 'Aktif',
+    'stats_with_internships' => 'Digunakan Magang',
+
     'guide' => [
         'title' => 'Panduan Tahun Akademik',
         'intro' => 'Atur periode tahun ajaran yang digunakan sebagai acuan program magang:',

@@ -15,6 +15,7 @@ use App\Domain\School\Livewire\Forms\AcademicYearForm;
 use App\Domain\School\Models\AcademicYear;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Computed;
 
 class AcademicYearManager extends BaseRecordManager
 {
@@ -74,6 +75,16 @@ class AcademicYearManager extends BaseRecordManager
     protected function perPage(): int
     {
         return 10;
+    }
+
+    #[Computed]
+    public function stats(): array
+    {
+        return [
+            'total' => AcademicYear::count(),
+            'active' => AcademicYear::where('is_active', true)->count(),
+            'withInternships' => AcademicYear::whereHas('internships')->count(),
+        ];
     }
 
     // --- CRUD ---
@@ -221,6 +232,7 @@ class AcademicYearManager extends BaseRecordManager
     {
         return view('school.academic-year-manager', [
             'years' => $this->rows(),
+            'stats' => $this->stats,
         ]);
     }
 }
