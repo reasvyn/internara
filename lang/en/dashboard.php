@@ -8,15 +8,44 @@ return [
 
     'stats' => [
         'total_students' => 'Total Students',
-        'instructors' => 'Instructors',
+        'instructors' => 'Teachers',
+        'supervisors' => 'Supervisors',
         'departments' => 'Departments',
+        'companies' => 'Companies',
+        'internships' => 'Internships',
         'active_programs' => 'Active Programs',
+        'active' => 'Active',
         'supervised_students' => 'Supervised Students',
         'pending_journals' => 'Pending Journals',
         'active_companies' => 'Active Companies',
         'active_interns' => 'Active Interns',
         'pending_evaluations' => 'Pending Evaluations',
         'verified_journals' => 'Verified Journals',
+    ],
+
+    'pipeline' => [
+        'title' => 'PKL Pipeline',
+        'pending' => 'Registrations',
+        'active' => 'Active Internships',
+        'placement' => 'Placements',
+        'logbook' => 'Logbook Entries',
+        'certificate' => 'Certificates',
+    ],
+
+    'funnel' => [
+        'registration' => 'Registration',
+        'activity' => 'Activity',
+        'completion' => 'Completion',
+        'total' => 'Total Registered',
+        'active' => 'Active',
+        'completed' => 'Completed',
+        'attendance' => 'Verified Attendance',
+        'logbook' => 'Verified Logbooks',
+        'pending' => 'Pending Review',
+        'placement_fill' => 'Placements Filled',
+        'certificates' => 'Certificates Issued',
+        'companies_active' => 'Active Companies',
+        'partnerships' => 'Active Partnerships',
     ],
 
     'readiness' => [

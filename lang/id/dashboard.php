@@ -8,15 +8,44 @@ return [
 
     'stats' => [
         'total_students' => 'Total Siswa',
-        'instructors' => 'Instruktur',
+        'instructors' => 'Guru',
+        'supervisors' => 'Pembimbing',
         'departments' => 'Jurusan',
+        'companies' => 'Perusahaan',
+        'internships' => 'Magang',
         'active_programs' => 'Program Aktif',
+        'active' => 'Aktif',
         'supervised_students' => 'Siswa Bimbingan',
         'pending_journals' => 'Jurnal Tertunda',
         'active_companies' => 'Perusahaan Aktif',
         'active_interns' => 'Magang Aktif',
         'pending_evaluations' => 'Evaluasi Tertunda',
         'verified_journals' => 'Jurnal Terverifikasi',
+    ],
+
+    'pipeline' => [
+        'title' => 'Pipeline PKL',
+        'pending' => 'Pendaftaran',
+        'active' => 'Magang Aktif',
+        'placement' => 'Penempatan',
+        'logbook' => 'Jurnal',
+        'certificate' => 'Sertifikat',
+    ],
+
+    'funnel' => [
+        'registration' => 'Registrasi',
+        'activity' => 'Aktivitas',
+        'completion' => 'Penyelesaian',
+        'total' => 'Total Daftar',
+        'active' => 'Aktif',
+        'completed' => 'Selesai',
+        'attendance' => 'Absensi Terverifikasi',
+        'logbook' => 'Jurnal Terverifikasi',
+        'pending' => 'Pending Review',
+        'placement_fill' => 'Penempatan Terisi',
+        'certificates' => 'Sertifikat Terbit',
+        'companies_active' => 'Perusahaan Aktif',
+        'partnerships' => 'Mitra Aktif',
     ],
 
     'readiness' => [
