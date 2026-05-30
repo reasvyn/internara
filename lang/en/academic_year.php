@@ -33,8 +33,8 @@ return [
     'name_placeholder' => 'e.g.: 2025/2026',
 
     'stats_total' => 'Total Years',
-    'stats_active' => 'Active',
-    'stats_with_internships' => 'Used by Internships',
+    'stats_total_internships' => 'Total Internships',
+    'stats_with_internships' => 'Years with Internships',
 
     'guide' => [
         'title' => 'Academic Year Guide',
