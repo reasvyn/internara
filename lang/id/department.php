@@ -15,7 +15,7 @@ return [
     'selected_count' => '{0} jurusan dipilih|{1} jurusan dipilih|[2,*] jurusan dipilih',
     'stats' => [
         'total' => 'Total Jurusan',
-        'with_internships' => 'Dengan Magang',
+        'with_students' => 'Memiliki Siswa',
     ],
     'search_placeholder' => 'Cari jurusan...',
     'name' => 'Nama Jurusan',
