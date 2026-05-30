@@ -33,7 +33,7 @@
                         <div class="flex items-center gap-2">
                             <span class="font-medium text-sm">{{ $user->name }}</span>
                             @if($user->hasRole('super_admin'))
-                                <x-mary-icon name="o-shield-check" class="size-4 text-primary" tooltip="Protected" />
+                                <x-mary-icon name="o-shield-check" class="size-4 text-primary" :tooltip="__('user.manager.protected')" />
                             @endif
                         </div>
                         <span class="text-xs text-base-content/50">{{ $user->email }}</span>

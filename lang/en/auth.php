@@ -73,6 +73,11 @@ return [
     'email_reset_link' => 'We have emailed your password reset link.',
     'password_reset_success' => 'Your password has been reset.',
     'password_confirmed' => 'Password confirmed.',
+    'lifecycle' => [
+        'title' => 'Account Lifecycle',
+        'subtitle' => 'Manage user account statuses and restrictions',
+    ],
+
     'account_locked' => 'Account locked successfully.',
     'account_unlocked' => 'Account unlocked successfully.',
     'recovery_slip_generated' => 'Recovery slip generated successfully.',
@@ -88,6 +93,7 @@ return [
         'security_note_desc' => 'This code will not be shown again. It expires in 24 hours. Verify the recipient\'s identity before delivery.',
         'generate_another' => 'Generate Another',
         'search_user' => 'Search User',
+        'search_placeholder' => 'Name, username, or email...',
         'no_users_found' => 'No users found.',
         'selected_user' => 'Selected: :name (:username)',
         'generate_slip' => 'Generate Recovery Slip',

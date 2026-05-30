@@ -113,4 +113,9 @@ return [
         'regenerate_title' => 'Memperbarui Kode',
         'regenerate_desc' => 'Jika kode lama dicurigai bocor, buat ulang kode baru. Kode lama otomatis tidak berlaku.',
     ],
+
+    'activity_feed' => [
+        'title' => 'Aktivitas Terbaru',
+        'subtitle' => 'Aktivitas pengguna terkini',
+    ],
 ];

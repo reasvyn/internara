@@ -113,4 +113,9 @@ return [
         'regenerate_title' => 'Regenerating Codes',
         'regenerate_desc' => 'If you suspect your old codes are compromised, generate new ones. Old codes will be invalidated automatically.',
     ],
+
+    'activity_feed' => [
+        'title' => 'Activity Feed',
+        'subtitle' => 'Recent user activity',
+    ],
 ];

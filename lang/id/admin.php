@@ -100,6 +100,17 @@ return [
         'code_expiry' => 'Kedaluwarsa dalam :days hari',
     ],
 
+    'gdpr_logs' => [
+        'title' => 'Log Penghapusan GDPR',
+        'search_placeholder' => 'Cari berdasarkan email...',
+        'type_placeholder' => 'Semua tipe',
+    ],
+
+    'clone_detection' => [
+        'title' => 'Deteksi Klon Akun',
+        'subtitle' => 'Akun duplikat yang mencurigakan',
+    ],
+
     'recovery_show' => [
         'warning' => 'Kunci pemulihan memberikan akses super admin. Hanya bagikan dengan administrator server tepercaya.',
         'confirm' => 'Anda yakin ingin menampilkan kunci pemulihan?',

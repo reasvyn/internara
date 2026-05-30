@@ -33,6 +33,7 @@ return [
         'type' => 'Tipe',
         'link' => 'Tautan (opsional)',
         'scheduled_at' => 'Jadwal Tanggal dan Waktu',
+        'link_placeholder' => 'https://...',
         'target_roles' => 'Peran Target',
     ],
 ];

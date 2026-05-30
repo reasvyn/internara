@@ -25,7 +25,7 @@
                 </div>
             @else
                 <div class="space-y-6">
-                    <x-mary-input wire:model.live.debounce.300ms="search" :label="__('auth.recovery_slip.search_user')" placeholder="Name, username, or email..." icon="o-magnifying-glass" class="rounded-2xl" />
+                    <x-mary-input wire:model.live.debounce.300ms="search" :label="__('auth.recovery_slip.search_user')" :placeholder="__('auth.recovery_slip.search_placeholder')" icon="o-magnifying-glass" class="rounded-2xl" />
 
                     @if($search)
                         <div class="space-y-2">

@@ -1,5 +1,5 @@
 <div>
-    <x-mary-header title="Activity Feed" subtitle="Recent user activity" separator />
+    <x-mary-header :title="__('profile.activity_feed.title')" :subtitle="__('profile.activity_feed.subtitle')" separator />
 
     <x-mary-card>
         @forelse($activities as $activity)
