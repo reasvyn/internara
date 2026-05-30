@@ -83,7 +83,7 @@
     --color-success-content: oklch(100% 0 0);
     --color-warning: oklch(70% 0.6 80); /* Bold Amber */
     --color-warning-content: oklch(10% 0 0);
-    --color-error: oklch(55% 0.62 25); /* Bold Red */
+    --color-error: oklch(55% 0.50 25); /* Muted Red */
     --color-error-content: oklch(100% 0 0);
     --radius-selector: 0.25rem;
     --radius-field: 0.25rem;
@@ -110,7 +110,7 @@
     --color-success-content: oklch(10% 0 0);
     --color-warning: oklch(75% 0.45 80); /* Eye-catching Amber */
     --color-warning-content: oklch(10% 0 0);
-    --color-error: oklch(65% 0.48 25); /* Eye-catching Red */
+    --color-error: oklch(65% 0.38 25); /* Muted Red */
     --color-error-content: oklch(10% 0 0);
     --radius-selector: 0.25rem;
     --radius-field: 0.25rem;
