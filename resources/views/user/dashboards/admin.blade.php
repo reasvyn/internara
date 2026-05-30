@@ -26,8 +26,7 @@
                 ['key' => 'logbookVerified', 'label' => __('dashboard.pipeline.logbook'), 'value' => $stats['logbookVerified'], 'color' => 'bg-secondary'],
                 ['key' => 'certificatesIssued', 'label' => __('dashboard.pipeline.certificate'), 'value' => $stats['certificatesIssued'], 'color' => 'bg-success'],
             ];
-            $maxPipeline = max(array_column($pipeline, 'value'), [1]);
-            $maxPipeline = max($maxPipeline, 1);
+            $maxPipeline = max(array_column($pipeline, 'value')) ?: 1;
         @endphp
 
         <div class="bg-base-100 border border-base-content/10 rounded-xl p-5">
@@ -92,15 +91,17 @@
             </x-slot:title>
             <div class="space-y-4 mt-2">
                 @php
-                    $attTotal = max($stats['attendanceVerified'] + $stats['attendanceUnverified'], 1);
-                    $attPct = round(($stats['attendanceVerified'] / $attTotal) * 100);
-                    $logTotal = max($stats['logbookVerified'] + $stats['logbookPending'], 1);
-                    $logPct = round(($stats['logbookVerified'] / $logTotal) * 100);
+                    $attDenom = max($stats['attendanceVerified'] + $stats['attendanceUnverified'], 1);
+                    $attPct = round(($stats['attendanceVerified'] / $attDenom) * 100);
+                    $attDisplay = $attDenom - ($stats['attendanceUnverified'] === 0 && $stats['attendanceVerified'] === 0 ? 0 : $stats['attendanceUnverified']);
+                    $logDenom = max($stats['logbookVerified'] + $stats['logbookPending'], 1);
+                    $logPct = round(($stats['logbookVerified'] / $logDenom) * 100);
+                    $logDisplay = $logDenom - ($stats['logbookPending'] === 0 && $stats['logbookVerified'] === 0 ? 0 : $stats['logbookPending']);
                 @endphp
                 <div>
                     <div class="flex justify-between text-xs mb-1">
                         <span class="text-base-content/60">{{ __('dashboard.funnel.attendance') }}</span>
-                        <span class="font-semibold">{{ $stats['attendanceVerified'] }}/{{ $attTotal - 1 }} <span class="text-base-content/40 font-normal">({{ $attPct }}%)</span></span>
+                        <span class="font-semibold">{{ $stats['attendanceVerified'] }}/{{ $attDisplay }} <span class="text-base-content/40 font-normal">({{ $attPct }}%)</span></span>
                     </div>
                     <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
                         <div class="h-full rounded-full bg-success transition-all" style="width: {{ $attPct }}%"></div>
@@ -109,7 +110,7 @@
                 <div>
                     <div class="flex justify-between text-xs mb-1">
                         <span class="text-base-content/60">{{ __('dashboard.funnel.logbook') }}</span>
-                        <span class="font-semibold">{{ $stats['logbookVerified'] }}/{{ $logTotal - 1 }} <span class="text-base-content/40 font-normal">({{ $logPct }}%)</span></span>
+                        <span class="font-semibold">{{ $stats['logbookVerified'] }}/{{ $logDisplay }} <span class="text-base-content/40 font-normal">({{ $logPct }}%)</span></span>
                     </div>
                     <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
                         <div class="h-full rounded-full bg-secondary transition-all" style="width: {{ $logPct }}%"></div>
@@ -134,14 +135,14 @@
             </x-slot:title>
             <div class="space-y-4 mt-2">
                 @php
-                    $capTotal = max($stats['placementCapacity'], 1);
-                    $fillPct = round(($stats['placementFilled'] / $capTotal) * 100);
+                    $capDenom = max($stats['placementCapacity'], 1);
+                    $fillPct = round(($stats['placementFilled'] / $capDenom) * 100);
                     $certPct = $stats['certificatesTotal'] > 0 ? round(($stats['certificatesIssued'] / $stats['certificatesTotal']) * 100) : 0;
                 @endphp
                 <div>
                     <div class="flex justify-between text-xs mb-1">
                         <span class="text-base-content/60">{{ __('dashboard.funnel.placement_fill') }}</span>
-                        <span class="font-semibold">{{ $stats['placementFilled'] }}/{{ $capTotal - 1 }} <span class="text-base-content/40 font-normal">({{ $fillPct }}%)</span></span>
+                        <span class="font-semibold">{{ $stats['placementFilled'] }}/{{ $stats['placementCapacity'] }} <span class="text-base-content/40 font-normal">({{ $fillPct }}%)</span></span>
                     </div>
                     <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
                         <div class="h-full rounded-full bg-primary transition-all" style="width: {{ $fillPct }}%"></div>
