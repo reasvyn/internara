@@ -21,7 +21,7 @@
                         </div>
                     </x-slot:title>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-input label="{{ __('setting.fields.brand_name') }}" wire:model="generalForm.brand_name" />
+                        <x-mary-input label="{{ __('setting.fields.brand_name') }}" wire:model="generalForm.brand_name" icon="o-building-library" />
                         <x-mary-select
                             label="{{ __('setting.fields.default_locale') }}"
                             wire:model="generalForm.default_locale"
@@ -34,6 +34,7 @@
                             label="{{ __('setting.fields.site_title') }}"
                             wire:model="generalForm.site_title"
                             class="md:col-span-2"
+                            icon="o-globe-alt"
                         />
                         <x-mary-select
                             label="{{ __('setting.fields.active_academic_year') }}"
@@ -101,14 +102,14 @@
                     </x-slot:title>
                     <x-slot:subtitle><span class="text-xs text-base-content/50">{{ __('setting.hints.mail') }}</span></x-slot:subtitle>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-input label="{{ __('setting.fields.mail_from_address') }}" type="email" wire:model="mailSettingsForm.mail_from_address" />
-                        <x-mary-input label="{{ __('setting.fields.mail_from_name') }}" wire:model="mailSettingsForm.mail_from_name" />
-                        <x-mary-input label="{{ __('setting.fields.mail_host') }}" wire:model="mailSettingsForm.mail_host" />
-                        <x-mary-input label="{{ __('setting.fields.mail_port') }}" wire:model="mailSettingsForm.mail_port" />
+                        <x-mary-input label="{{ __('setting.fields.mail_from_address') }}" type="email" wire:model="mailSettingsForm.mail_from_address" icon="o-envelope" />
+                        <x-mary-input label="{{ __('setting.fields.mail_from_name') }}" wire:model="mailSettingsForm.mail_from_name" icon="o-tag" />
+                        <x-mary-input label="{{ __('setting.fields.mail_host') }}" wire:model="mailSettingsForm.mail_host" icon="o-server" />
+                        <x-mary-input label="{{ __('setting.fields.mail_port') }}" wire:model="mailSettingsForm.mail_port" icon="o-numbered-list" />
                         <x-mary-select label="{{ __('setting.fields.mail_encryption') }}" wire:model="mailSettingsForm.mail_encryption"
                             :options="[['id' => 'tls', 'name' => 'TLS'], ['id' => 'ssl', 'name' => 'SSL'], ['id' => 'none', 'name' => 'None']]" />
-                        <x-mary-input label="{{ __('setting.fields.mail_username') }}" wire:model="mailSettingsForm.mail_username" />
-                        <x-mary-input label="{{ __('setting.fields.mail_password') }}" type="password" wire:model="mailSettingsForm.mail_password" />
+                        <x-mary-input label="{{ __('setting.fields.mail_username') }}" wire:model="mailSettingsForm.mail_username" icon="o-user" />
+                        <x-mary-input label="{{ __('setting.fields.mail_password') }}" type="password" wire:model="mailSettingsForm.mail_password" icon="o-key" />
                     </div>
                     <div class="mt-4 flex justify-end">
                         <x-mary-button label="{{ __('setting.buttons.test_mail') }}" icon-right="o-paper-airplane" class="btn-ghost btn-sm" wire:click="testEmail" spinner="testEmail" />

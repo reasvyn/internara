@@ -10,6 +10,7 @@
                 label="{{ __('setup.wizard.school_name') }}"
                 placeholder="{{ __('setup.wizard.school_name_placeholder') }}"
                 wire:model.live.debounce.500ms="schoolForm.name"
+                icon="o-academic-cap"
             />
         </div>
 
@@ -17,6 +18,7 @@
             label="{{ __('setup.wizard.school_code') }}"
             placeholder="{{ __('setup.wizard.school_code_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.institutional_code"
+            icon="o-identification"
         />
 
         <x-mary-input
@@ -24,12 +26,14 @@
             type="email"
             placeholder="{{ __('setup.wizard.school_email_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.email"
+            icon="o-envelope"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_phone') }}"
             placeholder="{{ __('setup.wizard.school_phone_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.phone"
+            icon="o-phone"
         />
 
         <x-mary-input
@@ -37,18 +41,21 @@
             type="url"
             placeholder="{{ __('setup.wizard.school_website_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.website"
+            icon="o-globe-alt"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.school_address') }}"
             placeholder="{{ __('setup.wizard.school_address_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.address"
+            icon="o-map-pin"
         />
 
         <x-mary-input
             label="{{ __('setup.wizard.principal_name') }}"
             placeholder="{{ __('setup.wizard.principal_name_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.principal_name"
+            icon="o-user-circle"
         />
     </div>
 

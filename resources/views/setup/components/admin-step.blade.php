@@ -21,6 +21,7 @@
             label="{{ __('setup.wizard.email_address') }}"
             type="email"
             wire:model.live.debounce.500ms="adminForm.email"
+            icon="o-envelope"
         />
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -28,12 +29,14 @@
                 label="{{ __('setup.wizard.password') }}"
                 type="password"
                 wire:model.live.debounce.500ms="adminForm.password"
+                icon="o-key"
             />
 
             <x-mary-input
                 label="{{ __('setup.wizard.confirm_password') }}"
                 type="password"
                 wire:model.live.debounce.500ms="adminForm.password_confirmation"
+                icon="o-key"
             />
         </div>
     </div>
