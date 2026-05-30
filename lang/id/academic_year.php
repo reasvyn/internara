@@ -29,4 +29,19 @@ return [
     'already_active' => 'Tahun akademik sudah aktif.',
     'cannot_delete_active' => 'Tidak dapat menghapus ":name" karena ini tahun akademik yang aktif.',
     'cannot_delete_has_data' => 'Tidak dapat menghapus ":name" karena memiliki data magang atau penilaian yang tertaut.',
+    'inactive' => 'Tidak Aktif',
+    'name_placeholder' => 'contoh: 2025/2026',
+
+    'guide' => [
+        'title' => 'Panduan Tahun Akademik',
+        'intro' => 'Atur periode tahun ajaran yang digunakan sebagai acuan program magang:',
+        'list_title' => 'Daftar Tahun',
+        'list_desc' => 'Setiap tahun akademik memiliki nama, tanggal mulai, dan tanggal selesai. Tahun yang aktif ditandai dengan indikator hijau.',
+        'create_title' => 'Membuat Tahun Baru',
+        'create_desc' => 'Klik "Tahun Baru" untuk menambahkan periode baru. Simpan nama dalam format tahun ajaran, misalnya 2025/2026.',
+        'activate_title' => 'Mengaktifkan',
+        'activate_desc' => 'Hanya satu tahun yang bisa aktif dalam satu waktu. Mengaktifkan tahun baru otomatis menonaktifkan tahun sebelumnya.',
+        'delete_title' => 'Menghapus',
+        'delete_desc' => 'Tahun akademik yang sedang aktif atau memiliki data tertaut tidak dapat dihapus. Nonaktifkan terlebih dahulu jika perlu.',
+    ],
 ];
