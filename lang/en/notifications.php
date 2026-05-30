@@ -104,4 +104,17 @@ return [
     ],
 
     'view_details' => 'View details',
+
+    'guide' => [
+        'title' => 'Notification Guide',
+        'intro' => 'Learn how to manage your notifications:',
+        'read_title' => 'Reading Notifications',
+        'read_desc' => 'Click a notification to view its details. Read notifications are visually distinguished from unread ones.',
+        'mark_title' => 'Marking Notifications',
+        'mark_desc' => 'Use "Mark All as Read" to clear all notifications at once, or mark them individually.',
+        'batch_title' => 'Batch Actions',
+        'batch_desc' => 'Select multiple notifications to delete or mark as read in bulk.',
+        'bell_title' => 'Notification Bell',
+        'bell_desc' => 'The bell icon in the top-right corner shows your unread count. Click for quick access.',
+    ],
 ];
