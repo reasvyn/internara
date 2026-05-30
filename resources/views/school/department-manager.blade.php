@@ -16,8 +16,10 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-shared::widgets.stat-card :title="__('department.stats.total')" :value="$stats['total']" icon="o-building-library" color="text-primary" />
-        <x-shared::widgets.stat-card :title="__('department.stats.with_students')" :value="$stats['with_internships']" icon="o-users" color="text-secondary" />
+        <div class="col-span-4 grid grid-cols-2 gap-4 max-w-lg mx-auto w-full">
+            <x-shared::widgets.stat-card :title="__('department.stats.total')" :value="$stats['total']" icon="o-building-library" color="text-primary" />
+            <x-shared::widgets.stat-card :title="__('department.stats.with_students')" :value="$stats['with_internships']" icon="o-users" color="text-secondary" />
+        </div>
     </x-slot:stats>
 
     <x-shared::ui.selection-bar>
