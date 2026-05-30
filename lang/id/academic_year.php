@@ -17,7 +17,7 @@ return [
     'search_placeholder' => 'Cari tahun akademik...',
     'select_all' => 'Pilih semua',
     'n_selected' => ':count terpilih',
-    'delete_selected' => 'Hapus (:count)',
+    'delete_selected' => 'Hapus Terpilih',
     'created' => 'Tahun akademik dibuat.',
     'updated' => 'Tahun akademik diperbarui.',
     'activated' => 'Tahun akademik diaktifkan.',

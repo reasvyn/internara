@@ -17,7 +17,7 @@
         />
     </div>
 
-    {{-- Search & Bulk Actions --}}
+    {{-- Search --}}
     <div class="flex items-center gap-3 mb-4">
         <div class="flex-1">
             <x-mary-input
@@ -27,16 +27,17 @@
                 clearable
             />
         </div>
-        @if($selectedIds !== [])
-            <x-mary-button
-                label="{{ __('academic_year.delete_selected', ['count' => count($selectedIds)]) }}"
-                icon="o-trash"
-                class="btn-error btn-sm"
-                wire:click="askDeleteSelected"
-                spinner="deleteSelected"
-            />
-        @endif
     </div>
+
+    {{-- Selection Bar --}}
+    <x-shared::ui.selection-bar>
+        <x-mary-button
+            label="{{ __('academic_year.delete_selected') }}"
+            icon="o-trash"
+            class="btn-error btn-sm"
+            wire:click="askDeleteSelected"
+        />
+    </x-shared::ui.selection-bar>
 
     {{-- List --}}
     <div class="bg-base-100 border border-base-content/10 rounded-xl overflow-hidden">
