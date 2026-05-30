@@ -32,6 +32,10 @@ return [
     'inactive' => 'Inactive',
     'name_placeholder' => 'e.g.: 2025/2026',
 
+    'stats_total' => 'Total Years',
+    'stats_active' => 'Active',
+    'stats_with_internships' => 'Used by Internships',
+
     'guide' => [
         'title' => 'Academic Year Guide',
         'intro' => 'Manage academic periods used as a reference for internship programs:',

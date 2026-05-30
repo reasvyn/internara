@@ -17,6 +17,13 @@
         />
     </div>
 
+    {{-- Stats --}}
+    <div class="grid grid-cols-3 gap-4 mb-6">
+        <x-shared::widgets.stat-card :title="__('academic_year.stats_total')" :value="$stats['total']" icon="o-calendar-days" color="text-primary" />
+        <x-shared::widgets.stat-card :title="__('academic_year.stats_active')" :value="$stats['active']" icon="o-check-circle" color="text-success" />
+        <x-shared::widgets.stat-card :title="__('academic_year.stats_with_internships')" :value="$stats['withInternships']" icon="o-briefcase" color="text-info" />
+    </div>
+
     {{-- Search --}}
     <div class="flex items-center gap-3 mb-4">
         <div class="flex-1">
