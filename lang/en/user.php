@@ -187,4 +187,17 @@ return [
         'notification_title' => 'Activation Code',
         'notification_message' => 'Your account activation code has been issued.',
     ],
+
+    'guide' => [
+        'title' => 'User Management Guide',
+        'intro' => 'Manage all system users, from creation to deletion:',
+        'create_title' => 'Creating Users',
+        'create_desc' => 'Click "New User" to create an account. Fill in name and email, then assign roles. After saving, download the activation slip to give to the user.',
+        'slip_title' => 'Activation Slip',
+        'slip_desc' => 'Each new user receives a 16-character activation code. Click the key icon to view the slip, download the PDF, or send the code via email.',
+        'import_title' => 'CSV Import',
+        'import_desc' => 'Import multiple users at once from a CSV file. First column: name, second column: email. Duplicate emails will be skipped.',
+        'roles_title' => 'Roles & Access',
+        'roles_desc' => 'Each user can have multiple roles. Roles determine which features and pages are accessible. Super admin has full access.',
+    ],
 ];
