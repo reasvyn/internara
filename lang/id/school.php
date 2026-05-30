@@ -40,4 +40,17 @@ return [
     'audit_logged' => 'Tercatat Audit',
     'discard' => 'Batal',
     'save_changes' => 'Simpan Perubahan',
+
+    'guide' => [
+        'title' => 'Panduan Profil Sekolah',
+        'intro' => 'Kelola identitas dan informasi kontak institusi Anda:',
+        'identity_title' => 'Identitas Sekolah',
+        'identity_desc' => 'Nama sekolah dan kode institusi digunakan sebagai identitas utama di seluruh sistem, termasuk sertifikat dan surat resmi.',
+        'contact_title' => 'Kontak & Alamat',
+        'contact_desc' => 'Email, telepon, fax, dan alamat resmi digunakan untuk korespondensi dan tercantum di dokumen resmi.',
+        'logo_title' => 'Logo Sekolah',
+        'logo_desc' => 'Unggah logo resmi institusi. Logo muncul di laporan, sertifikat, dan sudut kanan atas sistem.',
+        'system_title' => 'Konteks Sistem',
+        'system_desc' => 'Data sekolah ditautkan ke sertifikat dan laporan. Pastikan informasi selalu terkini.',
+    ],
 ];

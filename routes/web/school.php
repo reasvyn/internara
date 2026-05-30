@@ -10,7 +10,7 @@ Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
-        Route::livewire('/school', SchoolEditor::class)->name('school');
-        Route::livewire('/departments', DepartmentManager::class)->name('departments');
-        Route::livewire('/academic-years', AcademicYearManager::class)->name('academic-years');
+        Route::get('/school', SchoolEditor::class)->name('school');
+        Route::get('/departments', DepartmentManager::class)->name('departments');
+        Route::get('/academic-years', AcademicYearManager::class)->name('academic-years');
     });

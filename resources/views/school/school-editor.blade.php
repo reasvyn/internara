@@ -1,7 +1,12 @@
 <div class="py-4">
-    <div class="mb-6">
-        <h2 class="text-xl font-bold">{{ __('school.title') }}</h2>
-        <p class="text-sm text-base-content/50 mt-1">{{ __('school.subtitle') }}</p>
+    <div class="mb-6 flex items-center gap-4">
+        <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+            <x-mary-icon name="o-building-library" class="size-6" />
+        </div>
+        <div>
+            <h2 class="text-xl font-bold">{{ __('school.title') }}</h2>
+            <p class="text-sm text-base-content/50 mt-0.5">{{ __('school.subtitle') }}</p>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -155,4 +160,6 @@
             </div>
         </div>
     </div>
+
+    @include('school.components.school-guide')
 </div>

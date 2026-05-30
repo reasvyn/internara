@@ -40,4 +40,17 @@ return [
     'audit_logged' => 'Audit-Logged',
     'discard' => 'Discard',
     'save_changes' => 'Save Changes',
+
+    'guide' => [
+        'title' => 'School Profile Guide',
+        'intro' => 'Manage your institution\'s identity and contact information:',
+        'identity_title' => 'School Identity',
+        'identity_desc' => 'The school name and institutional code are used as the primary identity across the system, including certificates and official letters.',
+        'contact_title' => 'Contact & Address',
+        'contact_desc' => 'Email, phone, fax, and official address are used for correspondence and appear on official documents.',
+        'logo_title' => 'School Logo',
+        'logo_desc' => 'Upload the official institution logo. The logo appears on reports, certificates, and the top-right corner of the system.',
+        'system_title' => 'System Context',
+        'system_desc' => 'School data is linked to certificates and reports. Make sure the information is always up to date.',
+    ],
 ];
