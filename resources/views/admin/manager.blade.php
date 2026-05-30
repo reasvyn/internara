@@ -90,6 +90,10 @@
                 <span class="text-sm">{{ $user->email }}</span>
             @endscope
 
+            @scope('cell_profile.phone', $user)
+                <span class="text-sm text-base-content/60">{{ $user->profile?->phone ?? '—' }}</span>
+            @endscope
+
             @scope('cell_roles_list', $user)
                 <div class="flex flex-wrap gap-1">
                     @foreach($user->roles as $role)
