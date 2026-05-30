@@ -17,7 +17,7 @@ return [
     'search_placeholder' => 'Search academic years...',
     'select_all' => 'Select all',
     'n_selected' => ':count selected',
-    'delete_selected' => 'Delete (:count)',
+    'delete_selected' => 'Delete Selected',
     'created' => 'Academic year created.',
     'updated' => 'Academic year updated.',
     'activated' => 'Academic year activated.',
