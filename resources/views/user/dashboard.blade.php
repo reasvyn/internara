@@ -28,4 +28,6 @@
             @include('user.dashboards._sidebar')
         </div>
     </div>
+
+    @include('user.components.dashboard-guide')
 </div>

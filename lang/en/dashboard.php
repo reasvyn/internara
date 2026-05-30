@@ -75,4 +75,17 @@ return [
     'help_title' => 'Need Help?',
     'help_desc' => 'Explore the documentation to master :app features.',
     'read_docs' => 'Read Documentation',
+
+    'guide' => [
+        'title' => 'Dashboard Guide',
+        'intro' => 'A quick guide to help you navigate the system:',
+        'nav_title' => 'Navigation',
+        'nav_desc' => 'Use the sidebar menu to switch between pages. Each role has a tailored menu based on their responsibilities.',
+        'notif_title' => 'Notifications',
+        'notif_desc' => 'New notifications appear on the bell icon. Click to view details or mark as read.',
+        'profile_title' => 'Profile & Settings',
+        'profile_desc' => 'Manage your profile, change passwords, and set language preferences in the settings menu.',
+        'support_title' => 'Help Center',
+        'support_desc' => 'Comprehensive documentation is available to help you make the most of the system.',
+    ],
 ];

@@ -75,4 +75,17 @@ return [
     'help_title' => 'Butuh Bantuan?',
     'help_desc' => 'Pelajari dokumentasi untuk menguasai fitur :app.',
     'read_docs' => 'Baca Dokumentasi',
+
+    'guide' => [
+        'title' => 'Panduan Dasbor',
+        'intro' => 'Berikut panduan singkat untuk membantu Anda menavigasi sistem:',
+        'nav_title' => 'Navigasi',
+        'nav_desc' => 'Gunakan menu samping untuk berpindah antarhalaman. Setiap peran memiliki menu yang disesuaikan dengan tugas masing-masing.',
+        'notif_title' => 'Notifikasi',
+        'notif_desc' => 'Notifikasi baru muncul di ikon lonceng. Klik untuk melihat detail atau tandai sudah dibaca.',
+        'profile_title' => 'Profil & Pengaturan',
+        'profile_desc' => 'Kelola profil, ubah kata sandi, dan atur preferensi bahasa melalui menu pengaturan.',
+        'support_title' => 'Pusat Bantuan',
+        'support_desc' => 'Dokumentasi lengkap tersedia untuk membantu Anda memaksimalkan penggunaan sistem.',
+    ],
 ];
