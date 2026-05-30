@@ -37,6 +37,7 @@ return [
         'account' => 'Akun',
         'name_placeholder' => 'Contoh: John Doe',
         'email_placeholder' => 'Contoh: john@example.com',
+        'profile' => 'Informasi Profil',
         'toggle_status' => 'Alihkan Status',
         'stats_total' => 'Total Pengguna',
         'stats_admins' => 'Administrator',
@@ -182,7 +183,6 @@ return [
         'emergency_contact_phone' => 'Telepon Kontak Darurat',
         'emergency_contact_address' => 'Alamat Kontak Darurat',
     ],
-    'profile' => 'Informasi Profil',
     'validation' => [
         'authoritative_reserved' => 'Nilai ":value" dicadangkan untuk super administrator dan tidak dapat digunakan.',
     ],

@@ -53,6 +53,7 @@ return [
         'protected' => 'Protected',
         'cannot_delete_super_admin' => 'Cannot delete super administrator account.',
         'cannot_edit_super_admin' => 'Cannot edit super administrator account.',
+        'profile' => 'Profile Information',
     ],
     'fields' => [
         'full_name' => 'Full Name',
@@ -71,7 +72,6 @@ return [
         'emergency_contact_phone' => 'Emergency Contact Phone',
         'emergency_contact_address' => 'Emergency Contact Address',
     ],
-    'profile' => 'Profile Information',
     'admin' => [
         'title' => 'Admin Manager',
         'subtitle' => 'Manage system administrators',
