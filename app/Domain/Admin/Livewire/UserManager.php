@@ -53,6 +53,7 @@ class UserManager extends BaseRecordManager
         return [
             ['key' => 'name', 'label' => __('user.manager.name'), 'sortable' => true],
             ['key' => 'email', 'label' => __('user.manager.email')],
+            ['key' => 'profile.phone', 'label' => __('user.fields.phone')],
             ['key' => 'roles_list', 'label' => __('user.manager.roles')],
             ['key' => 'status', 'label' => __('user.manager.status')],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
@@ -61,7 +62,7 @@ class UserManager extends BaseRecordManager
 
     protected function query(): Builder
     {
-        return User::query()->with(['roles', 'statuses']);
+        return User::query()->with(['roles', 'statuses', 'profile']);
     }
 
     protected function applySearch(Builder $query): Builder
@@ -69,7 +70,8 @@ class UserManager extends BaseRecordManager
         return $query->where(function ($q) {
             $q->where('name', 'like', "%{$this->search}%")
                 ->orWhere('email', 'like', "%{$this->search}%")
-                ->orWhere('username', 'like', "%{$this->search}%");
+                ->orWhere('username', 'like', "%{$this->search}%")
+                ->orWhereHas('profile', fn ($p) => $p->where('phone', 'like', "%{$this->search}%"));
         });
     }
 
@@ -248,7 +250,9 @@ class UserManager extends BaseRecordManager
             $create->execute([
                 'name' => $name,
                 'email' => trim($row[1] ?? ''),
-            ], [], []);
+            ], [
+                'phone' => trim($row[2] ?? '') ?: null,
+            ], []);
 
             return CsvRowResult::CREATED;
         });
@@ -270,14 +274,15 @@ class UserManager extends BaseRecordManager
     public function export(CsvHandler $csv): StreamedResponse
     {
         $users = User::query()
+            ->with('profile')
             ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
             ->orderBy('name')
             ->get();
 
         return $csv->export(
             $users,
-            [__('user.fields.full_name'), __('user.fields.email'), __('user.fields.username')],
-            fn ($u) => [$u->name, $u->email, $u->username],
+            [__('user.fields.full_name'), __('user.fields.email'), __('user.fields.username'), __('user.fields.phone'), __('user.fields.address')],
+            fn ($u) => [$u->name, $u->email, $u->username, $u->profile?->phone ?? '', $u->profile?->address ?? ''],
             'users.csv',
         );
     }
@@ -290,12 +295,12 @@ class UserManager extends BaseRecordManager
             return null;
         }
 
-        $users = User::whereIn('id', $this->selectedIds)->orderBy('name')->get();
+        $users = User::with('profile')->whereIn('id', $this->selectedIds)->orderBy('name')->get();
 
         return $csv->export(
             $users,
-            [__('user.fields.full_name'), __('user.fields.email'), __('user.fields.username')],
-            fn ($u) => [$u->name, $u->email, $u->username],
+            [__('user.fields.full_name'), __('user.fields.email'), __('user.fields.username'), __('user.fields.phone'), __('user.fields.address')],
+            fn ($u) => [$u->name, $u->email, $u->username, $u->profile?->phone ?? '', $u->profile?->address ?? ''],
             'users-selected.csv',
         );
     }
@@ -303,8 +308,8 @@ class UserManager extends BaseRecordManager
     public function downloadTemplate(CsvHandler $csv): StreamedResponse
     {
         return $csv->downloadTemplate(
-            [__('user.fields.full_name'), __('user.fields.email')],
-            [__('user.manager.name_placeholder'), __('user.manager.email_placeholder')],
+            [__('user.fields.full_name'), __('user.fields.email'), __('user.fields.phone')],
+            [__('user.manager.name_placeholder'), __('user.manager.email_placeholder'), __('user.fields.phone')],
             'users-template.csv',
         );
     }
