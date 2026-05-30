@@ -20,4 +20,6 @@
             <x-shared::widgets.action-button :label="__('dashboard.teacher.guidance_logs')" icon="o-clipboard-check" link="{{ route('supervision.logs') }}" color="btn-primary" />
         </div>
     </div>
+
+    @include('user.components.dashboard-guide')
 </div>

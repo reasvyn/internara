@@ -20,4 +20,6 @@
             <x-shared::widgets.action-button :label="__('dashboard.read_docs')" icon="o-book-open" link="https://github.com/reasvyn/internara" color="btn-ghost bg-base-200/50" />
         </div>
     </div>
+
+    @include('user.components.dashboard-guide')
 </div>
