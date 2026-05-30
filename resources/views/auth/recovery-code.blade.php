@@ -1,7 +1,12 @@
 <div>
-    <div class="mb-6">
-        <h2 class="text-xl font-bold">{{ __('profile.recovery.title') }}</h2>
-        <p class="text-sm text-base-content/50 mt-1">{{ __('profile.recovery.subtitle') }}</p>
+    <div class="mb-6 flex items-center gap-4">
+        <div class="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+            <x-mary-icon name="o-key" class="size-6" />
+        </div>
+        <div>
+            <h2 class="text-xl font-bold">{{ __('profile.recovery.title') }}</h2>
+            <p class="text-sm text-base-content/50 mt-0.5">{{ __('profile.recovery.subtitle') }}</p>
+        </div>
     </div>
 
     <div class="max-w-lg mx-auto">
@@ -61,10 +66,12 @@
             @endif
         </x-mary-card>
 
-        <div class="mt-5 text-center">
-            <a href="{{ route('profile') }}" class="text-xs text-base-content/50 hover:text-primary transition-colors" wire:navigate>
-                <x-mary-icon name="o-arrow-left" class="size-3 mr-1" /> {{ __('profile.recovery.back') }}
+        <div class="mt-6 text-center">
+            <a href="{{ route('profile') }}" class="inline-flex items-center gap-1.5 text-xs text-base-content/50 hover:text-primary transition-colors font-medium" wire:navigate>
+                <x-mary-icon name="o-arrow-left" class="size-3" /> {{ __('profile.recovery.back') }}
             </a>
         </div>
     </div>
+
+    @include('user.components.profile-guide')
 </div>
