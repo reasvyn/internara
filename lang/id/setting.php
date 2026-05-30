@@ -71,4 +71,17 @@ return [
         'test_email_sent' => 'Email uji coba berhasil dikirim. Silakan periksa kotak masuk Anda.',
         'test_email_failed' => 'Gagal mengirim email uji coba.',
     ],
+
+    'guide' => [
+        'title' => 'Panduan Pengaturan',
+        'intro' => 'Konfigurasi sistem agar sesuai dengan kebutuhan institusi Anda:',
+        'general_title' => 'Pengaturan Umum',
+        'general_desc' => 'Atur nama aplikasi, judul situs, bahasa default, dan tahun ajaran aktif. Nama aplikasi muncul di judul browser dan kop surat.',
+        'branding_title' => 'Tampilan & Warna',
+        'branding_desc' => 'Pilih skema warna dari prasetel atau atur warna kustom. Unggah logo dan ikon untuk identitas institusi.',
+        'mail_title' => 'Email',
+        'mail_desc' => 'Konfigurasi server SMTP untuk mengirim notifikasi email. Gunakan tombol Uji Coba untuk memverifikasi pengaturan.',
+        'identity_title' => 'Aset Identitas',
+        'identity_desc' => 'Logo dan favicon digunakan di seluruh sistem. Format PNG atau WebP disarankan untuk hasil terbaik.',
+    ],
 ];

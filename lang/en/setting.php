@@ -71,4 +71,17 @@ return [
         'test_email_sent' => 'Test email sent successfully. Please check your inbox.',
         'test_email_failed' => 'Failed to send test email.',
     ],
+
+    'guide' => [
+        'title' => 'Settings Guide',
+        'intro' => 'Configure the system to match your institution\'s needs:',
+        'general_title' => 'General Settings',
+        'general_desc' => 'Set the application name, site title, default language, and active academic year. The app name appears in browser tabs and document headers.',
+        'branding_title' => 'Appearance & Colors',
+        'branding_desc' => 'Choose a color scheme from presets or set custom colors. Upload a logo and favicon for your institution\'s identity.',
+        'mail_title' => 'Email',
+        'mail_desc' => 'Configure the SMTP server for sending email notifications. Use the Test button to verify your settings.',
+        'identity_title' => 'Identity Assets',
+        'identity_desc' => 'The logo and favicon are used across the entire system. PNG or WebP format is recommended for best results.',
+    ],
 ];
