@@ -2,20 +2,25 @@
     <x-mary-header :title="__('dashboard.title')" :subtitle="__('dashboard.subtitle', ['name' => auth()->user()->name])" separator />
 
     {{-- People Overview --}}
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-8">
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.total_students')" :value="$stats['totalStudents']" icon="o-users" color="text-primary" size="sm" />
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.instructors')" :value="$stats['totalTeachers']" icon="o-academic-cap" color="text-secondary" size="sm" />
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.supervisors')" :value="$stats['totalSupervisors']" icon="o-briefcase" color="text-accent" size="sm" />
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.departments')" :value="$stats['totalDepartments']" icon="o-building-library" color="text-primary" size="sm" />
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.companies')" :value="$stats['totalCompanies']" icon="o-building-office" color="text-secondary" size="sm" />
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.internships')" :value="$stats['activeInternships']" :suffix="__('dashboard.stats.active')" icon="o-flag" color="text-info" size="sm" />
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.total_students')" :value="$stats['totalStudents']" icon="o-users" color="text-primary" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.instructors')" :value="$stats['totalTeachers']" icon="o-academic-cap" color="text-secondary" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.supervisors')" :value="$stats['totalSupervisors']" icon="o-briefcase" color="text-accent" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.departments')" :value="$stats['totalDepartments']" icon="o-building-library" color="text-primary" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.companies')" :value="$stats['totalCompanies']" icon="o-building-office" color="text-secondary" />
+        <x-shared::widgets.stat-card :title="__('dashboard.stats.internships')" :value="$stats['activeInternships']" :suffix="__('dashboard.stats.active')" icon="o-flag" color="text-info" />
     </div>
 
-    {{-- PKL Lifecycle Pipeline --}}
-    <div class="mb-8">
-        <div class="flex items-center gap-2 mb-4">
-            <x-mary-icon name="o-rectangle-stack" class="size-5 text-primary" />
-            <h3 class="font-semibold text-sm">{{ __('dashboard.pipeline.title') }}</h3>
+    {{-- PKL Pipeline --}}
+    <div class="bg-base-100 border border-base-content/10 rounded-xl p-5 mb-8">
+        <div class="flex items-center gap-2 mb-5">
+            <div class="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                <x-mary-icon name="o-arrow-trending-up" class="size-4" />
+            </div>
+            <div>
+                <h3 class="font-semibold text-sm">{{ __('dashboard.pipeline.title') }}</h3>
+                <p class="text-xs text-base-content/50">{{ __('dashboard.pipeline.subtitle') }}</p>
+            </div>
         </div>
 
         @php
@@ -26,177 +31,187 @@
                 ['key' => 'logbookVerified', 'label' => __('dashboard.pipeline.logbook'), 'value' => $stats['logbookVerified'], 'color' => 'bg-secondary'],
                 ['key' => 'certificatesIssued', 'label' => __('dashboard.pipeline.certificate'), 'value' => $stats['certificatesIssued'], 'color' => 'bg-success'],
             ];
-            $maxPipeline = max(array_column($pipeline, 'value')) ?: 1;
+            $maxV = max(array_column($pipeline, 'value')) ?: 1;
         @endphp
 
-        <div class="bg-base-100 border border-base-content/10 rounded-xl p-5">
-            <div class="space-y-4">
-                @foreach($pipeline as $item)
-                    <div>
-                        <div class="flex items-center justify-between text-sm mb-1.5">
-                            <span class="font-medium">{{ $item['label'] }}</span>
-                            <span class="font-bold tabular-nums">{{ $item['value'] }}</span>
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+            @foreach($pipeline as $i => $item)
+                <div class="text-center">
+                    <div class="relative h-32 bg-base-200/50 rounded-lg flex flex-col items-center justify-end px-2 pb-3 overflow-hidden">
+                        <div class="absolute bottom-0 left-0 right-0 rounded-lg transition-all duration-700 {{ $item['color'] }}"
+                            style="height: {{ max(3, ($item['value'] / $maxV) * 100) }}%">
                         </div>
-                        <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
-                            <div class="h-full rounded-full transition-all duration-700 {{ $item['color'] }}"
-                                style="width: {{ max(1, ($item['value'] / $maxPipeline) * 100) }}%">
-                            </div>
+                        <div class="relative z-10 text-center">
+                            <span class="block text-xl font-bold tabular-nums text-white drop-shadow-sm">{{ $item['value'] }}</span>
+                            <span class="block text-[10px] text-white/80 mt-0.5">{{ $item['label'] }}</span>
                         </div>
                     </div>
-                @endforeach
-            </div>
+                    @if($i < count($pipeline) - 1)
+                        <div class="text-center mt-1">
+                            <x-mary-icon name="o-arrow-down" class="size-3 text-base-content/20" />
+                        </div>
+                    @endif
+                </div>
+            @endforeach
         </div>
     </div>
 
-    {{-- Lifecycle Metrics Grid --}}
+    {{-- Main Content: 2/3 + 1/3 --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {{-- Registration Funnel --}}
-        <x-mary-card class="bg-base-100 border border-base-content/10">
-            <x-slot:title>
-                <div class="flex items-center gap-2">
-                    <x-mary-icon name="o-user-plus" class="size-4 text-primary" />
-                    <span class="font-semibold text-sm">{{ __('dashboard.funnel.registration') }}</span>
-                </div>
-            </x-slot:title>
-            <div class="space-y-3 mt-2">
-                @php
-                    $regTotal = max($stats['registrationsTotal'], 1);
-                    $funnel = [
-                        ['label' => __('dashboard.funnel.total'), 'value' => $stats['registrationsTotal'], 'pct' => 100, 'color' => 'bg-base-content/20'],
-                        ['label' => __('dashboard.funnel.active'), 'value' => $stats['registrationsActive'], 'pct' => round(($stats['registrationsActive'] / $regTotal) * 100), 'color' => 'bg-info'],
-                        ['label' => __('dashboard.funnel.completed'), 'value' => $stats['registrationsCompleted'], 'pct' => round(($stats['registrationsCompleted'] / $regTotal) * 100), 'color' => 'bg-success'],
-                    ];
-                @endphp
-                @foreach($funnel as $f)
-                    <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <span class="text-base-content/60">{{ $f['label'] }}</span>
-                            <span class="font-semibold">{{ $f['value'] }} <span class="text-base-content/40 font-normal">({{ $f['pct'] }}%)</span></span>
+        {{-- Left: Lifecycle Cards --}}
+        <div class="lg:col-span-2 space-y-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <x-mary-card class="bg-base-100 border border-base-content/10">
+                    <x-slot:title>
+                        <div class="flex items-center gap-2">
+                            <div class="size-6 rounded-md bg-primary/10 text-primary flex items-center justify-center">
+                                <x-mary-icon name="o-user-plus" class="size-3.5" />
+                            </div>
+                            <span class="font-semibold text-sm">{{ __('dashboard.funnel.registration') }}</span>
                         </div>
-                        <div class="h-2 bg-base-200 rounded-full overflow-hidden">
-                            <div class="h-full rounded-full {{ $f['color'] }}" style="width: {{ $f['pct'] }}%"></div>
+                    </x-slot:title>
+                    @php
+                        $regT = max($stats['registrationsTotal'], 1);
+                        $funnel = [
+                            ['label' => __('dashboard.funnel.total'), 'v' => $stats['registrationsTotal'], 'p' => 100, 'c' => 'bg-base-content/20'],
+                            ['label' => __('dashboard.funnel.active'), 'v' => $stats['registrationsActive'], 'p' => round(($stats['registrationsActive'] / $regT) * 100), 'c' => 'bg-info'],
+                            ['label' => __('dashboard.funnel.completed'), 'v' => $stats['registrationsCompleted'], 'p' => round(($stats['registrationsCompleted'] / $regT) * 100), 'c' => 'bg-success'],
+                        ];
+                    @endphp
+                    <div class="space-y-3 mt-2">
+                        @foreach($funnel as $f)
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-base-content/60">{{ $f['label'] }}</span>
+                                    <span class="font-semibold">{{ $f['v'] }} <span class="text-base-content/40 font-normal">({{ $f['p'] }}%)</span></span>
+                                </div>
+                                <div class="h-2 bg-base-200 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full {{ $f['c'] }}" style="width: {{ $f['p'] }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </x-mary-card>
+
+                <x-mary-card class="bg-base-100 border border-base-content/10">
+                    <x-slot:title>
+                        <div class="flex items-center gap-2">
+                            <div class="size-6 rounded-md bg-secondary/10 text-secondary flex items-center justify-center">
+                                <x-mary-icon name="o-clipboard-document-check" class="size-3.5" />
+                            </div>
+                            <span class="font-semibold text-sm">{{ __('dashboard.funnel.activity') }}</span>
+                        </div>
+                    </x-slot:title>
+                    @php
+                        $attD = max($stats['attendanceVerified'] + $stats['attendanceUnverified'], 1);
+                        $attP = round(($stats['attendanceVerified'] / $attD) * 100);
+                        $logD = max($stats['logbookVerified'] + $stats['logbookPending'], 1);
+                        $logP = round(($stats['logbookVerified'] / $logD) * 100);
+                    @endphp
+                    <div class="space-y-4 mt-2">
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-base-content/60">{{ __('dashboard.funnel.attendance') }}</span>
+                                <span class="font-semibold">{{ $stats['attendanceVerified'] }}/{{ $attD }} ({{ $attP }}%)</span>
+                            </div>
+                            <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full bg-success transition-all" style="width: {{ $attP }}%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-base-content/60">{{ __('dashboard.funnel.logbook') }}</span>
+                                <span class="font-semibold">{{ $stats['logbookVerified'] }}/{{ $logD }} ({{ $logP }}%)</span>
+                            </div>
+                            <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full bg-secondary transition-all" style="width: {{ $logP }}%"></div>
+                            </div>
+                        </div>
+                        <div class="pt-2 border-t border-base-content/10 flex items-center justify-between text-xs">
+                            <span class="text-base-content/60">{{ __('dashboard.funnel.pending') }}</span>
+                            <span class="font-semibold text-warning">{{ $stats['logbookPending'] }}</span>
                         </div>
                     </div>
-                @endforeach
+                </x-mary-card>
             </div>
-        </x-mary-card>
 
-        {{-- Attendance & Logbooks --}}
-        <x-mary-card class="bg-base-100 border border-base-content/10">
-            <x-slot:title>
-                <div class="flex items-center gap-2">
-                    <x-mary-icon name="o-clipboard-document-check" class="size-4 text-primary" />
-                    <span class="font-semibold text-sm">{{ __('dashboard.funnel.activity') }}</span>
-                </div>
-            </x-slot:title>
-            <div class="space-y-4 mt-2">
-                @php
-                    $attDenom = max($stats['attendanceVerified'] + $stats['attendanceUnverified'], 1);
-                    $attPct = round(($stats['attendanceVerified'] / $attDenom) * 100);
-                    $attDisplay = $attDenom - ($stats['attendanceUnverified'] === 0 && $stats['attendanceVerified'] === 0 ? 0 : $stats['attendanceUnverified']);
-                    $logDenom = max($stats['logbookVerified'] + $stats['logbookPending'], 1);
-                    $logPct = round(($stats['logbookVerified'] / $logDenom) * 100);
-                    $logDisplay = $logDenom - ($stats['logbookPending'] === 0 && $stats['logbookVerified'] === 0 ? 0 : $stats['logbookPending']);
-                @endphp
-                <div>
-                    <div class="flex justify-between text-xs mb-1">
-                        <span class="text-base-content/60">{{ __('dashboard.funnel.attendance') }}</span>
-                        <span class="font-semibold">{{ $stats['attendanceVerified'] }}/{{ $attDisplay }} <span class="text-base-content/40 font-normal">({{ $attPct }}%)</span></span>
-                    </div>
-                    <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
-                        <div class="h-full rounded-full bg-success transition-all" style="width: {{ $attPct }}%"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-xs mb-1">
-                        <span class="text-base-content/60">{{ __('dashboard.funnel.logbook') }}</span>
-                        <span class="font-semibold">{{ $stats['logbookVerified'] }}/{{ $logDisplay }} <span class="text-base-content/40 font-normal">({{ $logPct }}%)</span></span>
-                    </div>
-                    <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
-                        <div class="h-full rounded-full bg-secondary transition-all" style="width: {{ $logPct }}%"></div>
-                    </div>
-                </div>
-                <div class="pt-3 border-t border-base-content/10">
-                    <div class="flex items-center justify-between text-xs">
-                        <span class="text-base-content/60">{{ __('dashboard.funnel.pending') }}</span>
-                        <span class="font-semibold text-warning">{{ $stats['logbookPending'] }}</span>
-                    </div>
-                </div>
-            </div>
-        </x-mary-card>
-
-        {{-- Certificates & Placements --}}
-        <x-mary-card class="bg-base-100 border border-base-content/10">
-            <x-slot:title>
-                <div class="flex items-center gap-2">
-                    <x-mary-icon name="o-document-check" class="size-4 text-primary" />
-                    <span class="font-semibold text-sm">{{ __('dashboard.funnel.completion') }}</span>
-                </div>
-            </x-slot:title>
-            <div class="space-y-4 mt-2">
-                @php
-                    $capDenom = max($stats['placementCapacity'], 1);
-                    $fillPct = round(($stats['placementFilled'] / $capDenom) * 100);
-                    $certPct = $stats['certificatesTotal'] > 0 ? round(($stats['certificatesIssued'] / $stats['certificatesTotal']) * 100) : 0;
-                @endphp
-                <div>
-                    <div class="flex justify-between text-xs mb-1">
-                        <span class="text-base-content/60">{{ __('dashboard.funnel.placement_fill') }}</span>
-                        <span class="font-semibold">{{ $stats['placementFilled'] }}/{{ $stats['placementCapacity'] }} <span class="text-base-content/40 font-normal">({{ $fillPct }}%)</span></span>
-                    </div>
-                    <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
-                        <div class="h-full rounded-full bg-primary transition-all" style="width: {{ $fillPct }}%"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="flex justify-between text-xs mb-1">
-                        <span class="text-base-content/60">{{ __('dashboard.funnel.certificates') }}</span>
-                        <span class="font-semibold">{{ $stats['certificatesIssued'] }}/{{ max($stats['certificatesTotal'], 1) }} <span class="text-base-content/40 font-normal">({{ $certPct }}%)</span></span>
-                    </div>
-                    <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
-                        <div class="h-full rounded-full bg-success transition-all" style="width: {{ $certPct }}%"></div>
-                    </div>
-                </div>
-                <div class="pt-3 border-t border-base-content/10 space-y-1.5">
-                    <div class="flex items-center justify-between text-xs">
-                        <span class="text-base-content/60">{{ __('dashboard.funnel.companies_active') }}</span>
-                        <span class="font-semibold">{{ $stats['companiesActive'] }}</span>
-                    </div>
-                    <div class="flex items-center justify-between text-xs">
-                        <span class="text-base-content/60">{{ __('dashboard.funnel.partnerships') }}</span>
-                        <span class="font-semibold">{{ $stats['totalPartnerships'] }}</span>
-                    </div>
-                </div>
-            </div>
-        </x-mary-card>
-    </div>
-
-    {{-- Bottom Row --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2">
+            {{-- Readiness --}}
             <x-mary-card class="bg-base-100 border border-base-content/10">
                 <x-slot:title>
                     <div class="flex items-center gap-2">
-                        <x-mary-icon name="o-check-circle" class="size-4 text-primary" />
+                        <div class="size-6 rounded-md bg-success/10 text-success flex items-center justify-center">
+                            <x-mary-icon name="o-check-circle" class="size-3.5" />
+                        </div>
                         <span class="font-semibold text-sm">{{ __('dashboard.readiness.title') }}</span>
                     </div>
                 </x-slot:title>
                 <x-slot:subtitle><span class="text-xs text-base-content/50">{{ __('dashboard.readiness.subtitle') }}</span></x-slot:subtitle>
-                <div class="space-y-3 mt-4">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
                     @foreach($readiness as $key => $status)
-                        <div class="flex items-center justify-between px-4 py-3 rounded-lg bg-base-200/30 border border-base-content/10">
-                            <div class="flex items-center gap-3">
-                                <x-mary-icon :name="$status['passed'] ? 'o-check-circle' : 'o-x-circle'" class="size-5 shrink-0" :class="$status['passed'] ? 'text-success' : 'text-error'" />
-                                <span class="text-sm">{{ $status['label'] }}</span>
+                        <div class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-base-200/30 border border-base-content/10">
+                            <x-mary-icon :name="$status['passed'] ? 'o-check-circle' : 'o-x-circle'" class="size-4 shrink-0" :class="$status['passed'] ? 'text-success' : 'text-error'" />
+                            <div class="min-w-0">
+                                <p class="text-xs font-medium truncate">{{ $status['label'] }}</p>
+                                <p class="text-[10px]" :class="$status['passed'] ? 'text-success' : 'text-error'">{{ $status['passed'] ? __('common.status.completed') : __('common.status.pending') }}</p>
                             </div>
-                            <x-mary-badge :label="$status['passed'] ? __('common.status.completed') : __('common.status.pending')" :class="$status['passed'] ? 'badge-success badge-sm' : 'badge-error badge-sm'" />
                         </div>
                     @endforeach
                 </div>
             </x-mary-card>
         </div>
 
-        <div class="flex flex-col gap-4">
+        {{-- Right: Sidebar --}}
+        <div class="space-y-6">
+            <x-mary-card class="bg-base-100 border border-base-content/10">
+                <x-slot:title>
+                    <div class="flex items-center gap-2">
+                        <div class="size-6 rounded-md bg-primary/10 text-primary flex items-center justify-center">
+                            <x-mary-icon name="o-document-check" class="size-3.5" />
+                        </div>
+                        <span class="font-semibold text-sm">{{ __('dashboard.funnel.completion') }}</span>
+                    </div>
+                </x-slot:title>
+                @php
+                    $capD = max($stats['placementCapacity'], 1);
+                    $fillP = round(($stats['placementFilled'] / $capD) * 100);
+                    $certP = $stats['certificatesTotal'] > 0 ? round(($stats['certificatesIssued'] / $stats['certificatesTotal']) * 100) : 0;
+                @endphp
+                <div class="space-y-4 mt-2">
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-base-content/60">{{ __('dashboard.funnel.placement_fill') }}</span>
+                            <span class="font-semibold">{{ $stats['placementFilled'] }}/{{ $stats['placementCapacity'] }} ({{ $fillP }}%)</span>
+                        </div>
+                        <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
+                            <div class="h-full rounded-full bg-primary transition-all" style="width: {{ $fillP }}%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-base-content/60">{{ __('dashboard.funnel.certificates') }}</span>
+                            <span class="font-semibold">{{ $stats['certificatesIssued'] }}/{{ max($stats['certificatesTotal'], 1) }} ({{ $certP }}%)</span>
+                        </div>
+                        <div class="h-2.5 bg-base-200 rounded-full overflow-hidden">
+                            <div class="h-full rounded-full bg-success transition-all" style="width: {{ $certP }}%"></div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-base-content/10 space-y-2">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-base-content/60">{{ __('dashboard.stats.companies') }}</span>
+                            <span class="font-semibold">{{ $stats['totalCompanies'] }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-base-content/60">{{ __('dashboard.funnel.companies_active') }}</span>
+                            <span class="font-semibold">{{ $stats['companiesActive'] }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-base-content/60">{{ __('dashboard.funnel.partnerships') }}</span>
+                            <span class="font-semibold">{{ $stats['totalPartnerships'] }}</span>
+                        </div>
+                    </div>
+                </div>
+            </x-mary-card>
+
             @include('user.dashboards._sidebar')
 
             <x-mary-card class="bg-gradient-to-br from-primary to-primary/80 text-white border-none">
