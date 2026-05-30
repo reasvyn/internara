@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <x-mary-form wire:submit="save">
+    <x-mary-form wire:submit="save" id="settings-form">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 space-y-6">
                 {{-- General --}}
@@ -211,7 +211,7 @@
         </div>
 
         <x-slot:actions>
-            <x-mary-button :label="__('setting.buttons.save')" type="submit" class="btn-primary" icon="o-check" spinner="save" />
+            <x-mary-button :label="__('setting.buttons.save')" type="submit" form="settings-form" class="btn-primary" icon="o-check" spinner="save" />
         </x-slot:actions>
     </x-mary-form>
 
