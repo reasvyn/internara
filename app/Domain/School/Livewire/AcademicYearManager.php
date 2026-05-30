@@ -6,6 +6,7 @@ namespace App\Domain\School\Livewire;
 
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Core\Livewire\BaseRecordManager;
+use App\Domain\Internship\Models\Internship;
 use App\Domain\School\Actions\ActivateAcademicYearAction;
 use App\Domain\School\Actions\BulkDeleteAcademicYearsAction;
 use App\Domain\School\Actions\CreateAcademicYearAction;
