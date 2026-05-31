@@ -2,60 +2,6 @@
 > Last updated: 2026-06-01
 > Changes: docs: comprehensive documentation vs implementation audit across all 24 domains
 
-## Summary
-
-| # | Issue | Category | Severity | Status |
-|---|-------|----------|----------|--------|
-| A1 | Internship lifecycle: overview says ARCHIVED, code has CANCELLED | Doc-Implementation | 🔴 Critical | Open |
-| A2 | CheckCloseReadinessAction missing certificate issuance check | Doc-Implementation | 🔴 Critical | Open |
-| A3 | AccountApplicationForm wrong path and extends in reference doc | Documentation | 🔴 Critical | Open |
-| A4 | PlacementForm fields mismatch (status/academic_year vs name/address/quota) | Documentation | 🔴 Critical | Open |
-| A5 | DirectPlacementForm missing mentor_ids field | Documentation | 🔴 Critical | Open |
-| A6 | ProfileForm missing 5 staff fields (employment_status, nip, nuptk, competence_field, position) | Documentation | 🔴 Critical | Open |
-| A7 | MentorProfileManager and EvaluateMentor have no route registration — unreachable | Implementation | 🔴 Critical | Open |
-| A8 | SupervisionManager described as "manages" but is student-facing read-only | Doc-Implementation | 🟠 High | Open |
-| A9 | RegistrationWizardForm not documented at all | Documentation | 🟠 High | Open |
-| A10 | Internship dependency graph claims BaseState — no file imports it | Documentation | 🟠 High | Open |
-| A11 | Mentor dependency graph missing Internship and Evaluation | Documentation | 🟠 High | Open |
-| A12 | Partnership dependency graph missing Placement and Shared/CsvHandler | Documentation | 🟠 Medium | Open |
-| A13 | Logbook dependency graph claims Mentor — no direct import exists | Documentation | 🟠 Medium | Open |
-| A14 | Assessment EvaluatorRole enum description missing ADMIN and SYSTEM cases | Documentation | 🟠 Medium | Open |
-| A15 | Auth Role enum description missing MENTOR and MENTEE cases | Documentation | 🟠 Medium | Open |
-| A16 | Certificate EvaluatorRole description inaccurate | Documentation | 🟠 Medium | Open |
-| A17 | PlacementPolicy only has viewAny — missing create/update/delete | Implementation | 🟠 Medium | Open |
-| A18 | AccessManager (Auth) has no route — unreachable | Implementation | 🟠 Medium | Open |
-| A19 | AuditLogManager and AccountCloneDetector (Admin) have no routes — unreachable | Implementation | 🟠 Medium | Open |
-| A20 | Document template version not tracked despite Principle 2 claiming it | Doc-Implementation | 🟠 Medium | Open |
-| A21 | Shared overview says "no Views" but views exist (layouts, UI components) | Documentation | 🟠 Medium | Open |
-| A22 | Shared Design Principle 2: classes not all final/static/readonly | Doc-Implementation | 🟠 Medium | Open |
-| A23 | Schedule overview describes calendar UI that does not exist | Doc-Implementation | 🔴 Critical | Open |
-| A24 | Attendance overview describes features not implemented (geo-fencing, auto-notify, digital signature, auto-calculate duration) | Doc-Implementation | 🟠 Medium | Open |
-| A25 | Certificate overview mentions features not in reference doc (preview, batch progress bar) | Doc-Implementation | 🟡 Low | Open |
-| A26 | Logbook overview mentions features not implemented (digital signature, auto-save, compliance monitoring, photo captions) | Doc-Implementation | 🟠 Medium | Open |
-| A27 | Mentee dependency graph claims Internship — no direct import exists | Documentation | 🟡 Low | Open |
-| A28 | Evaluation dependency graph claims Mentor and Internship — only Registration is imported | Documentation | 🟡 Low | Open |
-| A29 | Document dependency graph claims Certificate — only enum label reference exists | Documentation | 🟡 Low | Open |
-| A30 | Admin has undocumented DownloadsAccountSlips Livewire concern | Documentation | 🟡 Low | Open |
-| A31 | Shared Blade UI components missing avatar and credit from reference doc | Documentation | 🟡 Low | Open |
-| A32 | HasModelStatuses trait deprecated but not noted in reference doc | Documentation | 🟡 Low | Open |
-| A33 | LangChecker extends Translator (violates "final readonly" principle) | Implementation | 🟡 Low | Open |
-| A34 | AuditCategory enum description glosses over TERMINAL and RECOMMENDATIONS cases | Documentation | 🟡 Low | Open |
-| A35 | HandbookForm missing $id field from reference doc | Documentation | 🟡 Low | Open |
-| A36 | Incident notification ShouldQueue interface missing from reference doc | Documentation | 🟡 Low | Open |
-| A37 | LogbookEntry missing WithPagination and WithFileUploads traits from reference doc | Documentation | 🟡 Low | Open |
-| A38 | MenteeState entity methods undocumented (canClockIn, canSubmitLogbook, etc.) | Documentation | 🟡 Low | Open |
-| A39 | Evaluation FACILITY enum case not mentioned in overview | Documentation | 🟡 Low | Open |
-| A40 | 5 overview docs missing "Last updated" header | Documentation | 🟡 Low | Open |
-| B1 | Feature test coverage — 68 Actions uncovered | Backlog | 🔴 High | Open |
-| B2 | GD8 — Acknowledgement not used as gate | Backlog | 🟠 Medium | Open |
-| B3 | Livewire Form Object migration (~45 components) | Backlog | 🟡 Low | Open |
-| B4 | Cross-domain event flow undocumented | Backlog | 🟡 Low | Open |
-| B5 | Real-time features (Echo + Reverb) | Backlog | 🟡 Low | Open |
-| B6 | BaseAction cannot enforce execute() signature | Backlog | 🟡 Low | Open |
-| I1 | SQLite for production — no concurrent writes | Infrastructure | ⏳ Known | Guidance |
-| I2 | Duplicate Livewire instances (theme/lang switcher) | Infrastructure | ⏳ Known | Monitored |
-
----
 
 ## Critical Implementation Issues
 
@@ -360,6 +306,61 @@ SQLite uses file-level locking. Under concurrent load, "database is locked" erro
 ThemeSwitcher and LangSwitcher are mounted in both sidebar and navbar. Resolved by CSS media queries (desktop shows navbar, mobile shows sidebar) but still two component instances per page. Status: monitored, not critical.
 
 ---
+
+---
+
+## Summary
+
+| # | Issue | Category | Severity | Status |
+|---|-------|----------|----------|--------|
+| A1 | Internship lifecycle: overview says ARCHIVED, code has CANCELLED | Doc-Implementation | 🔴 Critical | Open |
+| A2 | CheckCloseReadinessAction missing certificate issuance check | Doc-Implementation | 🔴 Critical | Open |
+| A3 | AccountApplicationForm wrong path and extends in reference doc | Documentation | 🔴 Critical | Open |
+| A4 | PlacementForm fields mismatch (status/academic_year vs name/address/quota) | Documentation | 🔴 Critical | Open |
+| A5 | DirectPlacementForm missing mentor_ids field | Documentation | 🔴 Critical | Open |
+| A6 | ProfileForm missing 5 staff fields (employment_status, nip, nuptk, competence_field, position) | Documentation | 🔴 Critical | Open |
+| A7 | MentorProfileManager and EvaluateMentor have no route registration — unreachable | Implementation | 🔴 Critical | Open |
+| A8 | SupervisionManager described as "manages" but is student-facing read-only | Doc-Implementation | 🟠 High | Open |
+| A9 | RegistrationWizardForm not documented at all | Documentation | 🟠 High | Open |
+| A10 | Internship dependency graph claims BaseState — no file imports it | Documentation | 🟠 High | Open |
+| A11 | Mentor dependency graph missing Internship and Evaluation | Documentation | 🟠 High | Open |
+| A12 | Partnership dependency graph missing Placement and Shared/CsvHandler | Documentation | 🟠 Medium | Open |
+| A13 | Logbook dependency graph claims Mentor — no direct import exists | Documentation | 🟠 Medium | Open |
+| A14 | Assessment EvaluatorRole enum description missing ADMIN and SYSTEM cases | Documentation | 🟠 Medium | Open |
+| A15 | Auth Role enum description missing MENTOR and MENTEE cases | Documentation | 🟠 Medium | Open |
+| A16 | Certificate EvaluatorRole description inaccurate | Documentation | 🟠 Medium | Open |
+| A17 | PlacementPolicy only has viewAny — missing create/update/delete | Implementation | 🟠 Medium | Open |
+| A18 | AccessManager (Auth) has no route — unreachable | Implementation | 🟠 Medium | Open |
+| A19 | AuditLogManager and AccountCloneDetector (Admin) have no routes — unreachable | Implementation | 🟠 Medium | Open |
+| A20 | Document template version not tracked despite Principle 2 claiming it | Doc-Implementation | 🟠 Medium | Open |
+| A21 | Shared overview says "no Views" but views exist (layouts, UI components) | Documentation | 🟠 Medium | Open |
+| A22 | Shared Design Principle 2: classes not all final/static/readonly | Doc-Implementation | 🟠 Medium | Open |
+| A23 | Schedule overview describes calendar UI that does not exist | Doc-Implementation | 🔴 Critical | Open |
+| A24 | Attendance overview describes features not implemented (geo-fencing, auto-notify, digital signature, auto-calculate duration) | Doc-Implementation | 🟠 Medium | Open |
+| A25 | Certificate overview mentions features not in reference doc (preview, batch progress bar) | Doc-Implementation | 🟡 Low | Open |
+| A26 | Logbook overview mentions features not implemented (digital signature, auto-save, compliance monitoring, photo captions) | Doc-Implementation | 🟠 Medium | Open |
+| A27 | Mentee dependency graph claims Internship — no direct import exists | Documentation | 🟡 Low | Open |
+| A28 | Evaluation dependency graph claims Mentor and Internship — only Registration is imported | Documentation | 🟡 Low | Open |
+| A29 | Document dependency graph claims Certificate — only enum label reference exists | Documentation | 🟡 Low | Open |
+| A30 | Admin has undocumented DownloadsAccountSlips Livewire concern | Documentation | 🟡 Low | Open |
+| A31 | Shared Blade UI components missing avatar and credit from reference doc | Documentation | 🟡 Low | Open |
+| A32 | HasModelStatuses trait deprecated but not noted in reference doc | Documentation | 🟡 Low | Open |
+| A33 | LangChecker extends Translator (violates "final readonly" principle) | Implementation | 🟡 Low | Open |
+| A34 | AuditCategory enum description glosses over TERMINAL and RECOMMENDATIONS cases | Documentation | 🟡 Low | Open |
+| A35 | HandbookForm missing $id field from reference doc | Documentation | 🟡 Low | Open |
+| A36 | Incident notification ShouldQueue interface missing from reference doc | Documentation | 🟡 Low | Open |
+| A37 | LogbookEntry missing WithPagination and WithFileUploads traits from reference doc | Documentation | 🟡 Low | Open |
+| A38 | MenteeState entity methods undocumented (canClockIn, canSubmitLogbook, etc.) | Documentation | 🟡 Low | Open |
+| A39 | Evaluation FACILITY enum case not mentioned in overview | Documentation | 🟡 Low | Open |
+| A40 | 5 overview docs missing "Last updated" header | Documentation | 🟡 Low | Open |
+| B1 | Feature test coverage — 68 Actions uncovered | Backlog | 🔴 High | Open |
+| B2 | GD8 — Acknowledgement not used as gate | Backlog | 🟠 Medium | Open |
+| B3 | Livewire Form Object migration (~45 components) | Backlog | 🟡 Low | Open |
+| B4 | Cross-domain event flow undocumented | Backlog | 🟡 Low | Open |
+| B5 | Real-time features (Echo + Reverb) | Backlog | 🟡 Low | Open |
+| B6 | BaseAction cannot enforce execute() signature | Backlog | 🟡 Low | Open |
+| I1 | SQLite for production — no concurrent writes | Infrastructure | ⏳ Known | Guidance |
+| I2 | Duplicate Livewire instances (theme/lang switcher) | Infrastructure | ⏳ Known | Monitored |
 
 **Categories:** A = Audit (new findings), B = Backlog, I = Infrastructure  
 **Severity:** 🔴 Critical = must fix, 🟠 High/Medium = should fix, 🟡 Low = nice to have, ⏳ = known/acknowledged
