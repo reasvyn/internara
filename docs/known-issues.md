@@ -123,6 +123,12 @@ Evaluation collects only student→mentor and student→company feedback. Missin
 
 ---
 
+## Reference Documentation — Missing Dependency Graphs
+
+19 domain reference docs do not have a `## Dependency Graph` section showing cross-domain relationships. Only Core, Shared, Auth, Settings, and Setup reference docs have them. Adding dependency graphs to remaining 19 reference docs would make cross-domain dependencies explicit and auditable.
+
+---
+
 ## Infrastructure
 
 ### K5. SQLite for Production — No Concurrent Write Support 🔴
