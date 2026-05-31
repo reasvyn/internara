@@ -13,6 +13,7 @@ return [
         'mail_username' => 'Username: :username',
         'mail_password' => 'Kata Sandi Sementara: :password',
         'mail_line2' => 'Silakan ganti kata sandi Anda setelah masuk.',
+        'mail_line3' => 'Terima kasih telah menggunakan aplikasi kami!',
         'mail_action' => 'Masuk Sekarang',
     ],
     'account_status' => [

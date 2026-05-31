@@ -23,6 +23,8 @@ return [
         'account_slip' => 'Slip Aktivasi',
         'download_slip' => 'Unduh Slip',
         'download_slips' => 'Unduh Slip Akun',
+        'lock_selected' => 'Kunci Terpilih',
+        'unlock_selected' => 'Buka Kunci Terpilih',
         'regenerate_code' => 'Regenerasi Kode',
         'send_code' => 'Kirim ke Email',
         'code_regenerated' => 'Kode aktivasi berhasil diperbarui.',

@@ -70,6 +70,8 @@ return [
         'bulk_action_done' => ':count data diperbarui melalui :action.',
         'mass_action_done' => ':count data diproses melalui aksi massal: :action.',
         'all' => 'Semua',
+        'lock' => 'Kunci',
+        'unlock' => 'Buka Kunci',
     ],
     'yes' => 'Ya',
     'no' => 'Tidak',
@@ -91,4 +93,7 @@ return [
     'email' => 'Email',
     'website' => 'Situs Web',
     'description' => 'Deskripsi',
+    'pagination' => [
+        'per_page' => 'Per halaman',
+    ],
 ];
