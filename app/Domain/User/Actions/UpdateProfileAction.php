@@ -41,40 +41,40 @@ final class UpdateProfileAction extends BaseAction
         $data = array_filter($data, fn ($v) => $v !== null);
 
         return DB::transaction(function () use ($user, $data, $name, $email, $avatar) {
-                if ($name !== null || $email !== null) {
-                    $userData = [];
-                    if ($name !== null) {
-                        $userData['name'] = $name;
-                    }
-                    if ($email !== null) {
-                        $userData['email'] = $email;
-                    }
-                    $user->update($userData);
+            if ($name !== null || $email !== null) {
+                $userData = [];
+                if ($name !== null) {
+                    $userData['name'] = $name;
                 }
-
-                if ($avatar !== null) {
-                    $user->addMedia($avatar)->toMediaCollection('avatar');
+                if ($email !== null) {
+                    $userData['email'] = $email;
                 }
+                $user->update($userData);
+            }
 
-                if ($data === []) {
-                    return $user->profile ?? $user->profile()->create([]);
-                }
+            if ($avatar !== null) {
+                $user->addMedia($avatar)->toMediaCollection('avatar');
+            }
 
-                $profile = $user->profile()->updateOrCreate(
-                    ['user_id' => $user->id],
-                    $data,
-                );
+            if ($data === []) {
+                return $user->profile ?? $user->profile()->create([]);
+            }
 
-                SmartLogger::info('profile_updated')
-                    ->event('profile_updated')
-                    ->module('Profile')
-                    ->about($profile)
-                    ->withPayload(array_keys($data))
-                    ->activityOnly()
-                    ->save();
+            $profile = $user->profile()->updateOrCreate(
+                ['user_id' => $user->id],
+                $data,
+            );
 
-                return $profile;
-            });
+            SmartLogger::info('profile_updated')
+                ->event('profile_updated')
+                ->module('Profile')
+                ->about($profile)
+                ->withPayload(array_keys($data))
+                ->activityOnly()
+                ->save();
+
+            return $profile;
+        });
     }
 
     /**

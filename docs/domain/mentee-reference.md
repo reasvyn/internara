@@ -1,9 +1,10 @@
 # Mentee — API Reference
-> Last updated: 2026-05-23
-> Changes: cleanup: remove orphaned dashboard views, update domain docs, mark User issues resolved
+> Last updated: 2026-05-31
+> Changes: docs: audit — all items Implemented
 
+> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 6 files
+Total: 6 files — ✅ 6 Implemented
 
 ## Actions
 

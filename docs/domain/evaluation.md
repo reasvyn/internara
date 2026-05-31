@@ -3,7 +3,7 @@
 ## Purpose
 
 Evaluation collects structured feedback about the placement experience from multiple
-perspectives — students rate mentors, companies, and overall satisfaction.
+perspectives — students rate mentors, companies, facilities, and overall satisfaction.
 
 ---
 
@@ -12,7 +12,7 @@ perspectives — students rate mentors, companies, and overall satisfaction.
 ### 1. Multi-Perspective Feedback
 
 Evaluation gathers feedback from all angles of the placement experience — students rate
-mentors and companies, teachers rate programs, and the system aggregates across perspectives.
+mentors, companies, and facilities; teachers rate programs; and the system aggregates across perspectives.
 No single viewpoint defines quality.
 
 ### 2. Anonymous Where Appropriate
@@ -31,7 +31,7 @@ shared across all evaluation types for comparability.
 
 ## Domain Boundary
 
-The Evaluation domain owns structured feedback collection — the multi-perspective assessment of placement quality gathered throughout and at the end of the program lifecycle. Students evaluate their mentors on communication, responsiveness, and guidance quality. They evaluate their host companies on workplace safety, task relevance, and mentoring effectiveness. They also submit an independent overall satisfaction rating. The system maps numeric scores to five performance bands: excellent, good, satisfactory, needs improvement, and poor. Administrators can view all evaluations filtered by type with aggregate scores and trend analysis. A separate program quality evaluation — completed by administrators and teachers during program closure — assesses curriculum alignment, completion rates, partner satisfaction, and areas for improvement. The system automatically aggregates scores and generates trend reports across all evaluation types.
+The Evaluation domain owns structured feedback collection — the multi-perspective assessment of placement quality gathered throughout and at the end of the program lifecycle. Students evaluate their mentors on communication, responsiveness, and guidance quality. They evaluate their host companies on workplace safety, task relevance, and mentoring effectiveness. They evaluate workplace facilities on infrastructure, cleanliness, and accessibility. They also submit an independent overall satisfaction rating. The system maps numeric scores to five performance bands: excellent, good, satisfactory, needs improvement, and poor. Administrators can view all evaluations filtered by type with aggregate scores and trend analysis. A separate program quality evaluation — completed by administrators and teachers during program closure — assesses curriculum alignment, completion rates, partner satisfaction, and areas for improvement. The system automatically aggregates scores and generates trend reports across all evaluation types.
 
 Evaluation does not own student identity data (User/Mentee), program definitions (Internship), mentor assignment records (Mentor), rubric definitions (Assessment), or certificate issuance (Certificate). It collects feedback about those domains' performance but does not manage their data or workflows. It does not own the entities being evaluated — it owns only the evaluation responses and their aggregation.
 

@@ -1,9 +1,10 @@
 # Settings — API Reference
-> Last updated: 2026-05-28
-> Changes: refactor(settings): implement ideal design — fix locale, optimize cache, convert Read Action
+> Last updated: 2026-05-31
+> Changes: docs: audit — all items Implemented
 
+> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 21 files
+Total: 21 files — ✅ 21 Implemented
 
 ## Actions
 

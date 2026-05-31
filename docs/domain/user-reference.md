@@ -1,9 +1,10 @@
 # User — API Reference
-> Last updated: 2026-05-26
-> Changes: docs: update school-reference and user-reference for recent changes; add AcademicYearEditTest
+> Last updated: 2026-05-31
+> Changes: docs: audit — all items Implemented
 
+> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 40 files
+Total: 40 files — ✅ 40 Implemented
 
 ## Actions
 

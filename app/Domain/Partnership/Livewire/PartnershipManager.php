@@ -14,13 +14,11 @@ use App\Domain\Partnership\Enums\PartnershipStatus;
 use App\Domain\Partnership\Livewire\Forms\PartnershipForm;
 use App\Domain\Partnership\Models\Company;
 use App\Domain\Partnership\Models\Partnership;
-use App\Domain\Shared\Support\CsvHandler;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PartnershipManager extends BaseRecordManager
 {

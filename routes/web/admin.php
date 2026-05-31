@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 use App\Domain\Admin\Actions\GenerateAccountSlipAction;
+use App\Domain\Admin\Livewire\AccountCloneDetector;
 use App\Domain\Admin\Livewire\AdminManager;
 use App\Domain\Admin\Livewire\AnnouncementManager;
+use App\Domain\Admin\Livewire\AuditLogManager;
 use App\Domain\Admin\Livewire\GdprDeletionLogs;
 use App\Domain\Admin\Livewire\MenteeManager;
 use App\Domain\Admin\Livewire\MentorManager;
@@ -40,6 +42,8 @@ Route::prefix('admin')
         });
 
         Route::get('/gdpr-logs', GdprDeletionLogs::class)->name('gdpr-logs');
+        Route::get('/audit-log', AuditLogManager::class)->name('audit-log');
+        Route::get('/accounts/clones', AccountCloneDetector::class)->name('accounts.clones');
     });
 
 Route::get('/admin/announcements', AnnouncementManager::class)

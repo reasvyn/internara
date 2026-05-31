@@ -1,9 +1,10 @@
 # Logbook — API Reference
-> Last updated: 2026-05-23
-> Changes: fix: complete system initialization overhaul — security, middleware, recovery, form objects, docs
+> Last updated: 2026-05-31
+> Changes: docs: audit — all items Implemented
 
+> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 11 files
+Total: 11 files — ✅ 11 Implemented
 
 ## Actions
 

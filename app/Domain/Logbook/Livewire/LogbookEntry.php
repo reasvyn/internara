@@ -15,7 +15,7 @@ use Livewire\WithPagination;
 
 class LogbookEntry extends Component
 {
-    use WithPagination, WithFileUploads;
+    use WithFileUploads, WithPagination;
 
     public bool $showModal = false;
 

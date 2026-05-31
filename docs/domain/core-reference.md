@@ -1,9 +1,10 @@
 # Core — API Reference
-> Last updated: 2026-05-27
-> Changes: docs: update core-reference and redesign shared domain
+> Last updated: 2026-05-31
+> Changes: docs: audit — all items Implemented
 
+> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 48 files
+Total: 48 files — ✅ 48 Implemented
 
 ## Actions
 
@@ -54,7 +55,7 @@ Total: 48 files
 
 | File | Class | Implements | Description |
 |---|---|---|---|
-| `Core/Enums/AuditCategory.php` | `AuditCategory` | `LabelEnum` | Audit check categories (Requirements, Permissions, Database, etc.) |
+| `Core/Enums/AuditCategory.php` | `AuditCategory` | `LabelEnum` | Audit check categories: REQUIREMENTS, PERMISSIONS, DATABASE, TERMINAL, RECOMMENDATIONS |
 | `Core/Enums/AuditStatus.php` | `AuditStatus` | `LabelEnum` | Audit check pass/fail/warn status |
 
 ## Exceptions
