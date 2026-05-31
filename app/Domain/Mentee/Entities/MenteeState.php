@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Mentee\Entities;
 
 use App\Domain\Core\Entities\BaseEntity;
-use App\Domain\Registration\Models\Registration;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -23,7 +22,7 @@ final readonly class MenteeState extends BaseEntity
     {
         $registrations = $model->getRelationValue('registrations');
         $active = $registrations instanceof Collection
-            ? $registrations->first(fn (Registration $reg) => $reg->hasStatus('active'))
+            ? $registrations->first(fn ($reg) => $reg->hasStatus('active'))
             : null;
 
         return new self(

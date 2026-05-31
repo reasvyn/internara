@@ -19,6 +19,8 @@ final class SetUserStatusAction extends BaseAction
             throw new RejectedException('Cannot change your own status.');
         }
 
+        $user->super_admin_count = User::role('super_admin')->count();
+
         $integrity = SuperAdminIntegrityRules::fromModel($user);
 
         if (! $integrity->canBeLocked()) {

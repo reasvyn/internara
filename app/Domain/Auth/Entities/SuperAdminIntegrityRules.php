@@ -7,7 +7,6 @@ namespace App\Domain\Auth\Entities;
 use App\Domain\Auth\Enums\AccountStatus;
 use App\Domain\Auth\Enums\Role;
 use App\Domain\Core\Entities\BaseEntity;
-use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 final readonly class SuperAdminIntegrityRules extends BaseEntity
@@ -27,7 +26,7 @@ final readonly class SuperAdminIntegrityRules extends BaseEntity
             username: $model->username,
             isSuperAdmin: $model->hasRole(Role::SUPER_ADMIN->value),
             status: $model->status ? AccountStatus::tryFrom($model->status) : null,
-            superAdminCount: User::role(Role::SUPER_ADMIN->value)->count(),
+            superAdminCount: (int) ($model->super_admin_count ?? 0),
         );
     }
 
