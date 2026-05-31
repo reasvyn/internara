@@ -42,3 +42,8 @@ Total: 8 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Evaluation/Policies/EvaluationPolicy.php` | `EvaluationPolicy` | `BasePolicy` | Authorization for evaluation operations |
+
+## Where to Find It
+
+- `app/Domain/Evaluation/Models/Evaluation.php`
+- `app/Domain/Evaluation/Actions/`

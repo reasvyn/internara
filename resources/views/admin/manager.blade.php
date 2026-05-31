@@ -53,6 +53,9 @@
             <div class="p-1.5 w-52">
                 <x-mary-menu-item :title="__('user.manager.download_slips')" icon="o-document-arrow-down" wire:click="downloadSelectedSlips" />
                 <hr class="border-base-content/10" />
+                <x-mary-menu-item :title="__('user.manager.lock_selected')" icon="o-lock-closed" class="text-warning" wire:click="lockSelected" />
+                <x-mary-menu-item :title="__('user.manager.unlock_selected')" icon="o-lock-open" class="text-success" wire:click="unlockSelected" />
+                <hr class="border-base-content/10" />
                 <x-mary-menu-item :title="__('common.actions.export_selected')" icon="o-arrow-down-tray" wire:click="exportSelected" />
                 <hr class="border-base-content/10" />
                 <x-mary-menu-item :title="__('common.actions.delete_selected')" icon="o-trash" class="text-error"

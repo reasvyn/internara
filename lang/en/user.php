@@ -22,6 +22,8 @@ return [
         'account_slip' => 'Activation Slip',
         'download_slip' => 'Download Slip',
         'download_slips' => 'Download Account Slips',
+        'lock_selected' => 'Lock Selected',
+        'unlock_selected' => 'Unlock Selected',
         'regenerate_code' => 'Regenerate Code',
         'send_code' => 'Send to Email',
         'code_regenerated' => 'Activation code regenerated successfully.',

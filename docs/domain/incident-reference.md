@@ -45,3 +45,8 @@ Total: 11 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Incident/Policies/IncidentReportPolicy.php` | `IncidentReportPolicy` | `BasePolicy` | Authorization for incident operations |
+
+## Where to Find It
+
+- `app/Domain/Incident/Models/IncidentReport.php`
+- `app/Domain/Incident/Actions/`

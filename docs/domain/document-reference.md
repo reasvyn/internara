@@ -56,3 +56,8 @@ Total: 12 files
 | File | Class | Description |
 |---|---|---|
 | `Document/Support/DocumentRenderer.php` | `DocumentRenderer` | Renders Blade templates to PDF via DomPDF |
+
+## Where to Find It
+
+- `app/Domain/Document/Models/Document.php`
+- `app/Domain/Document/Actions/`

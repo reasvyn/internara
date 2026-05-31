@@ -33,58 +33,28 @@ Every authenticated user has access to notifications regardless of role.
 
 ---
 
-## Actions
+## Domain Boundary
 
-### Command Actions
+The User domain owns the identity persistence layer — everything that makes a person known to the system beyond authentication. It manages user identities with UUID primary keys and extended profiles containing personal data (phone, address, gender, blood type, emergency contact, national identifier, and school or department affiliations). It handles avatar uploads via the media library, generating WebP thumbnails for display. It provides the notification center — a full-page interface with search, filter by read status, sorting, and bulk mark-read or delete operations — plus a navbar bell indicator showing unread counts.
 
-| Action | Description |
-|---|---|
-| `UpdateProfileAction` | Updates profile with personal data; blocks super admin name changes |
-| `SendNotificationAction` | Sends in-app notification via `SendsNotifications` contract |
-| `MarkAsReadAction` | Marks single notification as read |
-| `MarkAllAsReadAction` | Marks all notifications as read |
-| `MarkBatchAsReadAction` | Marks selected notifications as read |
-| `DeleteNotificationAction` | Deletes a single notification |
+User does not own authentication, roles, permissions, account lifecycle, or password management — those belong to Auth. It does not own school profiles, academic years, or department data (School), program definitions (Internship), or any operational workflow domains. The User domain receives a verified identity from Auth and provides the persistent record that operational domains reference.
 
-### Read Actions
-
-| Action | Description |
-|---|---|
-| `GetStudentDashboardDataAction` | Aggregates student dashboard from multiple domains |
-| `GetTeacherDashboardStatsAction` | Teacher stats (supervised students, pending journals) |
-| `GetSupervisorDashboardStatsAction` | Supervisor stats (active interns, pending evaluations) |
-| `GetProfileFormDataAction` | Role-appropriate profile fields |
-| `GetActivityLogsAction` | User activity log with filtering |
+The domain depends on the Auth domain for role definitions and authentication status, on the School domain for department and school affiliations in the extended profile, and on Core for base model infrastructure. It does not control or manage data in those referenced domains — it only stores foreign key references to them.
 
 ---
 
-## Models
+## Key Features
 
-| Model | Base | Key Fields |
-|---|---|---|
-| `User` | `Authenticatable` + `HasUuids` | name, email, username, password, locked_at, setup_required |
-| `Profile` | `BaseModel` | phone, address, gender, blood_type, emergency_contact, school_id, department_id |
-| `Notification` | `BaseModel` | type, title, message, data, link, is_read |
-
----
-
-## Enums
-
-| Enum | Values |
-|---|---|
-| `Gender` | MALE, FEMALE |
-| `BloodType` | A, B, AB, O |
-| `EmploymentStatus` | Keyed translations via `user.employment.*` |
-| `StructuralPosition` | Organizational positions |
-
----
-
-## Where to Find It
-
-- `app/Domain/User/Models/User.php` — central identity model
-- `app/Domain/User/Models/Profile.php` — extended personal data
-- `app/Domain/User/Actions/UpdateProfileAction.php` — profile editing
-- `app/Domain/User/Actions/SendNotificationAction.php` — notification dispatch
-- `app/Domain/User/Livewire/` — dashboards, profile editor, notification center
-- `app/Domain/User/Support/UserIdentifierGenerator.php` — username generation
-- `app/Domain/User/Rules/` — username and reserved name validation
+- Edit personal profile data including name, email, phone number, address, and bio through self-service forms.
+- Upload a single avatar image that is automatically converted to a WebP thumbnail.
+- Route authenticated users to their correct dashboard based on role priority after login.
+- Display system-wide statistics, readiness checklists, and quick links on the administrator dashboard.
+- Show supervised students, pending journal entries, and active companies on the teacher dashboard.
+- Present active participants, pending evaluations, and verified journals on the supervisor dashboard.
+- Provide registration status, journal progress, and quick actions on the student dashboard.
+- View, search, filter, sort, and bulk-manage all notifications in a dedicated notification center with an unread-count badge.
+- Generate unique usernames automatically with collision avoidance when new users are created.
+- Upload and crop a profile photo with a live preview before saving.
+- View unread notification counts as a badge on the navigation bar bell icon.
+- Switch the display language from any page via a language selector in the user menu.
+- Mark all notifications as read in a single bulk action from the notification center.

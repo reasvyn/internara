@@ -23,40 +23,26 @@ Departments with active profiles cannot be deleted — enforced by `DepartmentSt
 
 ---
 
-## Models
+## Domain Boundary
 
-| Model | Key Fields |
-|---|---|
-| `School` | name, institutional_code, address, email, phone, logo (media) |
-| `Department` | name, description, school_id |
-| `AcademicYear` | name, start_date, end_date, is_active |
+The School domain owns the institutional foundation of the application — the school itself, its departments, and its academic years. This includes the school profile with legal name, code, address, contact information, and logo. Departments are managed with full CRUD operations including search, sort, pagination, and bulk selection. Academic years follow a single-active constraint: activating one academic year deactivates all others, and bulk deletion is supported only for inactive academic years.
 
-## Actions
+School does not own user management, program definitions, placement slots, registration workflows, or any operational domain. It provides the structural context (which school, which department, which academic year) that other domains reference via foreign keys. It does not manage runtime configuration (Settings), authentication (Auth), or administrative functions (Admin).
 
-| Action | Type |
-|---|---|
-| `UpdateSchoolAction` | Command |
-| `CreateDepartmentAction` | Command |
-| `UpdateDepartmentAction` | Command |
-| `DeleteDepartmentAction` | Command |
-| `CreateAcademicYearAction` | Command |
-| `UpdateAcademicYearAction` | Command |
-| `ActivateAcademicYearAction` | Command |
-| `DeleteAcademicYearAction` | Command |
-| `BulkDeleteAcademicYearsAction` | Command |
+The domain references user profiles through department affiliations and is referenced by virtually every operational domain (Internship, Registration, Placement, and others) that needs school and department context. School does not control or manage data in those consuming domains — it defines the structural boundaries within which they operate.
 
-## Entities
+---
 
-| Entity | Purpose |
-|---|---|
-| `SchoolState` | canBeCreated — enforces singleton |
-| `DepartmentState` | canBeDeleted — checks active profiles |
-| `AcademicYearState` | canBeActivated, canBeDeleted — lifecycle rules |
+## Key Features
 
-## Where to Find It
-
-- `app/Domain/School/Models/School.php`
-- `app/Domain/School/Models/Department.php`
-- `app/Domain/School/Models/AcademicYear.php`
-- `app/Domain/School/Actions/` — 9 Actions
-- `app/Domain/School/Policies/` — AcademicYearPolicy, DepartmentPolicy, SchoolPolicy
+- Edit the school profile including legal name, code, address, contact information, and institutional logo.
+- Create, update, and delete departments with search, sort, pagination, and bulk selection capabilities.
+- Create, update, and delete academic years with an enforced single-active constraint across the system.
+- Activate an academic year from the system settings interface, automatically deactivating all others.
+- Bulk-delete multiple inactive academic years in a single operation.
+- Prevent deletion of departments that still have active user profiles associated with them.
+- Filter the department list by name or code using a search bar with real-time results.
+- Sort department and academic year tables by clicking on column headers.
+- Select multiple departments or inactive academic years for batch deletion with a confirmation dialog.
+- Receive a flash toast notification confirming successful creation, update, or deletion of departments and academic years.
+- Upload a school logo and see an instant preview before saving.

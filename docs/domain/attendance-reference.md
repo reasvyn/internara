@@ -61,3 +61,8 @@ Total: 21 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Attendance/Policies/AttendancePolicy.php` | `AttendancePolicy` | `BasePolicy` | Authorization for attendance operations |
+
+## Where to Find It
+
+- `app/Domain/Attendance/Models/`
+- `app/Domain/Attendance/Actions/`

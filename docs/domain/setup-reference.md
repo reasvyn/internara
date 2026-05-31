@@ -90,3 +90,38 @@ Total: 27 files
 | File | Class | Description |
 |---|---|---|
 | `Setup/Support/SystemProvisioner.php` | `SystemProvisioner` | Provisions system (runs migrations, creates storage link, etc.) |
+
+## Where to Find It
+
+- `app/Domain/Setup/Actions/FinalizeSetupAction.php` — orchestrated finalization
+- `app/Domain/Setup/Actions/SetupSuperAdminAction.php` — super admin creation
+- `app/Domain/Setup/Actions/GenerateSetupTokenAction.php` — token generation
+- `app/Domain/Setup/Actions/ValidateSetupTokenAction.php` — token validation
+- `app/Domain/Setup/Actions/RecoverSuperAdminAction.php` — emergency recovery
+- `app/Domain/Setup/Entities/SetupState.php` — immutable installation state
+- `app/Domain/Setup/Services/EnvironmentAuditor.php` — pre-install audit
+- `app/Domain/Setup/Support/SystemProvisioner.php` — CLI provisioning
+- `app/Domain/Setup/Models/Setup.php` — installation state model
+- `app/Domain/Setup/Livewire/SetupWizard.php` — 7-step wizard
+- `app/Domain/Setup/Http/Middleware/ProtectSetupRouteMiddleware.php` — token gate
+- `app/Domain/Setup/Http/Middleware/RequireSetupAccessMiddleware.php` — install redirect
+- `config/setup.php` — requirements, defaults, security thresholds
+- `routes/web/setup.php` — setup route definitions
+
+## Dependency Graph
+
+```
+Setup Domain
+├── Core            → BaseAction, BaseEntity, BaseState, SmartLogger,
+│                      AuditReport, AuditCheck, CacheKeys
+├── Auth            → Role enum, AccountStatus enum
+├── School          → School, Department models (school/dept creation)
+├── User            → User model (admin account creation)
+├── Internship      → CreateInternshipAction (optional program creation)
+├── Admin           → SendNotificationAction (system notification)
+└── Settings        → AppInfo (version display in wizard)
+```
+
+Setup has the widest dependency graph of any domain — it touches almost every other
+domain to create initial records. This is intentional and unavoidable: installation
+must bootstrap the entire system.

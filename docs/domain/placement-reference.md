@@ -52,3 +52,8 @@ Total: 18 files
 |---|---|---|---|
 | `Placement/Policies/PlacementChangeRequestPolicy.php` | `PlacementChangeRequestPolicy` | `BasePolicy` | Authorization for placement change operations |
 | `Placement/Policies/PlacementPolicy.php` | `PlacementPolicy` | `BasePolicy` | Authorization for placement CRUD operations |
+
+## Where to Find It
+
+- `app/Domain/Placement/Models/`
+- `app/Domain/Placement/Actions/`

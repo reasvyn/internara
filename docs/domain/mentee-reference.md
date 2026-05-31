@@ -36,3 +36,8 @@ Total: 7 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Mentee/Policies/MenteePolicy.php` | `MenteePolicy` | `BasePolicy` | Authorization for mentee operations |
+
+## Where to Find It
+
+- `app/Domain/Mentee/Models/Mentee.php`
+- `app/Domain/Mentee/Actions/`

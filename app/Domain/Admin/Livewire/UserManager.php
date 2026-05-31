@@ -8,11 +8,12 @@ use App\Domain\Admin\Actions\BatchDeleteUserAction;
 use App\Domain\Admin\Actions\CreateUserAction;
 use App\Domain\Admin\Actions\DeleteUserAction;
 use App\Domain\Admin\Actions\GetUserManagerStatsAction;
+use App\Domain\Admin\Actions\RevokeUserActivationTokensAction;
+use App\Domain\Admin\Actions\SetUserStatusAction;
 use App\Domain\Admin\Actions\UpdateUserAction;
 use App\Domain\Admin\Livewire\Concerns\DownloadsAccountSlips;
 use App\Domain\Admin\Livewire\Forms\UserForm;
 use App\Domain\Auth\Enums\AccountStatus;
-use App\Domain\Auth\Models\ActivationToken;
 use App\Domain\Core\Livewire\BaseRecordManager;
 use App\Domain\Shared\Enums\CsvRowResult;
 use App\Domain\Shared\Support\CsvHandler;
@@ -181,11 +182,11 @@ class UserManager extends BaseRecordManager
         $this->userModal = false;
     }
 
-    public function resetPassword(string $id): void
+    public function resetPassword(string $id, RevokeUserActivationTokensAction $revokeAction): void
     {
         $user = User::findOrFail($id);
 
-        ActivationToken::revokeFor($user);
+        $revokeAction->execute($user);
         flash()->success(__('user.manager.password_reset'));
     }
 
@@ -219,6 +220,22 @@ class UserManager extends BaseRecordManager
         }
 
         $this->clearSelection();
+    }
+
+    public function lockSelected(SetUserStatusAction $setStatus): void
+    {
+        $this->performBulkAction(__('common.actions.lock'), function (string $id) use ($setStatus): void {
+            $user = User::findOrFail($id);
+            $setStatus->execute($user, AccountStatus::SUSPENDED, 'Batch lock by administrator');
+        });
+    }
+
+    public function unlockSelected(SetUserStatusAction $setStatus): void
+    {
+        $this->performBulkAction(__('common.actions.unlock'), function (string $id) use ($setStatus): void {
+            $user = User::findOrFail($id);
+            $setStatus->execute($user, AccountStatus::ACTIVATED);
+        });
     }
 
     // --- Import / Export ---

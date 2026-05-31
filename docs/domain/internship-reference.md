@@ -121,3 +121,11 @@ Total: 57 files
 | File | Class | Implements | Description |
 |---|---|---|---|
 | `Internship/Rules/OpenForRegistration.php` | `OpenForRegistration` | `ValidationRule` | Validation rule checking internship is open for registration |
+
+## Where to Find It
+
+- `app/Domain/Internship/Models/`
+- `app/Domain/Internship/Actions/` — 21 Actions
+- `app/Domain/Internship/Enums/` — InternshipStatus, ReportStatus, GroupRole
+- `app/Domain/Internship/Events/InternshipCreated.php`
+- `app/Domain/Internship/Policies/` — 3 Policies: InternshipPolicy, InternshipGroupPolicy, InternshipPhasePolicy (CompanyPolicy and InternshipRegistrationPolicy are cross-domain — see Partnership and Registration)

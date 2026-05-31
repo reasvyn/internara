@@ -12,7 +12,51 @@ Conventions are organized from foundational (base classes, structure) to specifi
 
 ---
 
-## 0. Mandatory Base Classes
+## 0. Documentation-First
+
+### Documentation as Single Source of Truth
+
+Documentation is the **authoritative reference** for the system. It defines what the system
+does, how it is structured, and why decisions were made. Code implements what documentation
+describes — not the other way around. When documentation and implementation disagree,
+documentation is the SSOT and implementation must be corrected.
+
+### Document First, Then Implement
+
+Every change — feature, refactor, bug fix — begins with documentation. Before writing a
+single line of code, the relevant docs must be updated to describe the intended outcome.
+This applies at all scales:
+
+- **New feature** → document the feature in `key-features.md`, update the domain's
+  conceptual doc (`{domain}.md`) and API reference (`{domain}-reference.md`)
+- **Architecture change** → update `architecture.md` and any affected ADRs
+- **Bug fix** → if the fix changes behavior, update the affected docs
+- **Refactor** → if the refactor moves code between domains, update both domains' docs
+  and `domain-index.md`
+
+Implementation follows documentation. The docs describe the target state; code catches up.
+
+### Two Documentation Tiers
+
+Each domain has two documents serving different audiences:
+
+| Document | Audience | Content |
+|---|---|---|
+| `docs/domain/{domain}.md` | Architects, developers, stakeholders | Purpose, design principles, domain boundary — pure conceptual design, no implementation details |
+| `docs/domain/{domain}-reference.md` | Developers, reviewers | Full API reference — file paths, class names, table schemas, dependency graphs |
+
+When describing a domain's behavior, write the conceptual doc. When listing files or
+classes, write the reference doc. Never mix implementation details into conceptual docs.
+
+### Documentation Updates as Part of Definition of Done
+
+A change is not complete until the relevant documentation is updated. This is enforced
+through code review — a PR that changes code without corresponding doc updates is
+incomplete and must not be merged.
+
+---
+
+## 1. Mandatory Base Classes
 
 Every architectural layer has exactly one base class from Core. There is no alternative.
 
@@ -41,7 +85,7 @@ Every architectural layer has exactly one base class from Core. There is no alte
 
 ---
 
-## 1. File Structure
+## 2. File Structure
 
 ```
 app/Domain/{Domain}/
@@ -76,7 +120,7 @@ framework services (container, config, facades) and does not fit the Action patt
 
 ---
 
-## 2. General PHP
+## 3. General PHP
 
 - `declare(strict_types=1)` in every file except migrations and config.
 - Constructor property promotion: `public function __construct(protected readonly X $x) {}`.
@@ -94,7 +138,7 @@ framework services (container, config, facades) and does not fit the Action patt
 
 ---
 
-## 3. Naming Conventions
+## 4. Naming Conventions
 
 | Element | Convention | Example |
 |---|---|---|
@@ -126,7 +170,7 @@ framework services (container, config, facades) and does not fit the Action patt
 
 ---
 
-## 4. Models
+## 5. Models
 
 - Extend `BaseModel` (UUID PK, `HasUuids`, non-incrementing, string key type).
   Exception: `User` extends `Authenticatable` with manual `HasUuids`.
@@ -170,7 +214,7 @@ protected static function newFactory(): InternshipFactory
 
 ---
 
-## 5. Actions: Command, Read, Process
+## 6. Actions: Command, Read, Process
 
 Actions are the single entry point for business operations. There are three types, each
 with a distinct contract.
@@ -310,7 +354,7 @@ class RegisterStudentProcess extends BaseAction
 
 ---
 
-## 6. Entities
+## 7. Entities
 
 - `final readonly` class extending `BaseEntity`.
 - Zero framework dependencies — no Eloquent, no Facades, no Container.
@@ -348,7 +392,7 @@ no setup — just `new RegistrationState(...)` and assert.
 
 ---
 
-## 7. Enums
+## 8. Enums
 
 - All enums are `string`-backed.
 - All implement `LabelEnum` (provides `label(): string`).
@@ -390,7 +434,7 @@ protected $attributes = [
 
 ---
 
-## 8. Policies
+## 9. Policies
 
 - Extend `BasePolicy` (provides `AuthorizesRoles` and `AuthorizesOwnership` traits).
 - Auto-discovered from `app/Domain/*/Policies/` by `DomainServiceProvider`. Convention:
@@ -421,7 +465,7 @@ class AcademicYearPolicy extends BasePolicy
 
 ---
 
-## 9. Livewire Components
+## 10. Livewire Components
 
 - CRUD table components extend `BaseRecordManager` (provides search, filter, sort,
   pagination, selection, bulk actions).
@@ -472,7 +516,7 @@ class AcademicYearForm extends Form
 
 ---
 
-## 10. Data / DTOs
+## 11. Data / DTOs
 
 DTOs are optional but recommended for Action inputs that have stabilized (3+ parameters
 or multiple callers). They live in `app/Domain/{Domain}/Data/`.
@@ -503,7 +547,7 @@ Phase 3 — execute(Data $data)             → DTO only (final)
 
 ---
 
-## 11. Events & Listeners
+## 12. Events & Listeners
 
 Events decouple side effects from core business logic. They are optional but encouraged
 when a Command Action triggers multiple downstream reactions.
@@ -559,7 +603,7 @@ Event::listen(
 
 ---
 
-## 12. Notifications
+## 13. Notifications
 
 - Extend `Illuminate\Notifications\Notification`.
 - Implement `ShouldQueue` for channel delivery via queue worker.
@@ -606,7 +650,7 @@ class InternshipCreatedNotification extends Notification implements ShouldQueue
 
 ---
 
-## 13. Controllers & Routes
+## 14. Controllers & Routes
 
 ### Controllers
 
@@ -638,7 +682,7 @@ Route::middleware(['guest', 'auth.throttle'])->group(function () { ... });
 
 ---
 
-## 14. Console Commands
+## 15. Console Commands
 
 - Command signature follows `{domain}:{action}` naming.
 - Use verb-noun pairs: `system:health`, `admin:recover`, `notifications:prune`.
@@ -664,7 +708,7 @@ class HealthCommand extends Command
 
 ---
 
-## 15. Blade Views
+## 16. Blade Views
 
 - Livewire views: `resources/views/{domain}/{component-name}.blade.php`.
 - Anonymous components: `x-shared::layouts.*`, `x-shared::ui.*`, `x-shared::widgets.*`.
@@ -675,7 +719,7 @@ class HealthCommand extends Command
 
 ---
 
-## 16. Migrations, Factories & Seeders
+## 17. Migrations, Factories & Seeders
 
 ### Migrations
 
@@ -743,7 +787,7 @@ class InternshipFactory extends Factory
 
 ---
 
-## 17. Cache Keys
+## 18. Cache Keys
 
 - Every cache key MUST be declared as a constant in `App\Domain\Core\Support\CacheKeys`.
 - Naming: `{domain}.{purpose}[.{qualifier}]`.
@@ -769,7 +813,7 @@ final readonly class CacheKeys
 
 ---
 
-## 18. Cross-Domain Communication
+## 19. Cross-Domain Communication
 
 No domain may import another domain's Models, Actions, or Livewire components directly.
 Four communication patterns are allowed, listed from most to least preferred:
@@ -817,7 +861,7 @@ Only Process Actions may call other domains' Actions via constructor injection.
 
 ---
 
-## 19. Testing
+## 20. Testing
 
 ### File Structure
 
@@ -868,7 +912,7 @@ describe('AccountStatus', function () {
 
 ---
 
-## 20. Code Quality Enforcement
+## 21. Code Quality Enforcement
 
 | Tool | What It Enforces | How |
 |---|---|---|

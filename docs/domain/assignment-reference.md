@@ -67,3 +67,8 @@ Total: 22 files
 |---|---|---|---|
 | `Assignment/Policies/AssignmentPolicy.php` | `AssignmentPolicy` | `BasePolicy` | Authorization for assignment operations |
 | `Assignment/Policies/SubmissionPolicy.php` | `SubmissionPolicy` | `BasePolicy` | Authorization for submission operations |
+
+## Where to Find It
+
+- `app/Domain/Assignment/Models/`
+- `app/Domain/Assignment/Actions/`

@@ -36,3 +36,8 @@ Total: 7 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Schedule/Policies/SchedulePolicy.php` | `SchedulePolicy` | `BasePolicy` | Authorization for schedule operations |
+
+## Where to Find It
+
+- `app/Domain/Schedule/Models/Schedule.php`
+- `app/Domain/Schedule/Actions/`

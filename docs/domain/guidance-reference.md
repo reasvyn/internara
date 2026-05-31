@@ -37,3 +37,8 @@ Total: 8 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Guidance/Policies/HandbookPolicy.php` | `HandbookPolicy` | `BasePolicy` | Authorization for handbook operations |
+
+## Where to Find It
+
+- `app/Domain/Guidance/Models/`
+- `app/Domain/Guidance/Actions/`

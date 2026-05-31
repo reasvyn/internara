@@ -50,3 +50,8 @@ Total: 11 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Logbook/Policies/LogbookPolicy.php` | `LogbookPolicy` | `BasePolicy` | Authorization for logbook operations |
+
+## Where to Find It
+
+- `app/Domain/Logbook/Models/Logbook.php`
+- `app/Domain/Logbook/Actions/`

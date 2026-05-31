@@ -55,3 +55,9 @@ Total: 22 files
 | `Registration/Policies/AccountApplicationPolicy.php` | `AccountApplicationPolicy` | `BasePolicy` | Authorization for account application operations |
 | `Registration/Policies/RegistrationPolicy.php` | `RegistrationPolicy` | `BasePolicy` | Authorization for registration operations |
 | `Registration/Policies/RegistrationDocumentPolicy.php` | `RegistrationDocumentPolicy` | `BasePolicy` | Authorization for registration document operations |
+
+## Where to Find It
+
+- `app/Domain/Registration/Models/`
+- `app/Domain/Registration/Actions/`
+- `app/Domain/Registration/Livewire/`

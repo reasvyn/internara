@@ -51,16 +51,26 @@
                 class="sm:max-w-xs"
                 aria-label="{{ __('common.actions.search') }}"
             />
-            @if(isset($filters))
-                <div x-data="{ filtersOpen: false }" class="relative">
-                    <x-mary-button icon="o-adjustments-horizontal" class="btn-ghost btn-sm" :label="__('common.actions.filters')" x-on:click="filtersOpen = !filtersOpen" x-bind:aria-expanded="filtersOpen" />
-                    <div x-show="filtersOpen" x-on:click.outside="filtersOpen = false" class="absolute right-0 mt-2 p-4 space-y-4 w-80 bg-base-100 border border-base-content/10 rounded-xl shadow-xl z-50" x-cloak>
-                        {{ $filters }}
+            <div class="flex items-center gap-3">
+                <label class="flex items-center gap-2 text-sm text-base-content/60">
+                    <span>{{ __('common.pagination.per_page') }}</span>
+                    <select wire:model.live="perPage" class="select select-bordered select-sm text-sm w-20">
+                        @foreach($this->perPageOptions() as $option)
+                            <option value="{{ $option }}">{{ $option }}</option>
+                        @endforeach
+                    </select>
+                </label>
+                @if(isset($filters))
+                    <div x-data="{ filtersOpen: false }" class="relative">
+                        <x-mary-button icon="o-adjustments-horizontal" class="btn-ghost btn-sm" :label="__('common.actions.filters')" x-on:click="filtersOpen = !filtersOpen" x-bind:aria-expanded="filtersOpen" />
+                        <div x-show="filtersOpen" x-on:click.outside="filtersOpen = false" class="absolute right-0 mt-2 p-4 space-y-4 w-80 bg-base-100 border border-base-content/10 rounded-xl shadow-xl z-50" x-cloak>
+                            {{ $filters }}
 
-                        <x-mary-button :label="__('common.actions.reset_filters')" icon="o-x-mark" class="btn-ghost btn-sm w-full" wire:click="resetFilters" x-on:click="filtersOpen = false" />
+                            <x-mary-button :label="__('common.actions.reset_filters')" icon="o-x-mark" class="btn-ghost btn-sm w-full" wire:click="resetFilters" x-on:click="filtersOpen = false" />
+                        </div>
                     </div>
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
     </x-mary-card>
 

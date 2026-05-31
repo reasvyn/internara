@@ -3,7 +3,7 @@
 > Changes: docs: update school-reference and user-reference for recent changes; add AcademicYearEditTest
 
 
-Total: 36 files
+Total: 39 files
 
 ## Actions
 
@@ -11,7 +11,10 @@ Total: 36 files
 |---|---|---|---|
 | `User/Actions/DeleteNotificationAction.php` | `DeleteNotificationAction` | `BaseAction` | Deletes a single notification |
 | `User/Actions/GetActivityLogsAction.php` | `GetActivityLogsAction` | `BaseAction` | Retrieves paginated activity logs |
+| `User/Actions/GetProfileFormDataAction.php` | `GetProfileFormDataAction` | `BaseAction` | Resolves role-appropriate profile form fields |
 | `User/Actions/GetStudentDashboardDataAction.php` | `GetStudentDashboardDataAction` | `BaseAction` | Gathers all data needed for student dashboard |
+| `User/Actions/GetSupervisorDashboardStatsAction.php` | `GetSupervisorDashboardStatsAction` | `BaseAction` | Aggregates supervisor dashboard statistics |
+| `User/Actions/GetTeacherDashboardStatsAction.php` | `GetTeacherDashboardStatsAction` | `BaseAction` | Aggregates teacher dashboard statistics |
 | `User/Actions/MarkAllAsReadAction.php` | `MarkAllAsReadAction` | `BaseAction` | Marks all unread notifications as read |
 | `User/Actions/MarkAsReadAction.php` | `MarkAsReadAction` | `BaseAction` | Marks a single notification as read |
 | `User/Actions/MarkBatchAsReadAction.php` | `MarkBatchAsReadAction` | `BaseAction` | Marks multiple notifications as read in batch |
@@ -81,6 +84,7 @@ Total: 36 files
 |---|---|---|---|
 | `User/Policies/NotificationPolicy.php` | `NotificationPolicy` | `BasePolicy` | Authorization for notification operations |
 | `User/Policies/ProfilePolicy.php` | `ProfilePolicy` | `BasePolicy` | Authorization for profile operations |
+| `User/Policies/UserPolicy.php` | `UserPolicy` | `BasePolicy` | Authorization for user management operations |
 
 ## Rules
 
@@ -100,3 +104,13 @@ Total: 36 files
 | File | Class | Description |
 |---|---|---|
 | `User/Support/UserIdentifierGenerator.php` | `UserIdentifierGenerator` | Generates unique system usernames |
+
+## Where to Find It
+
+- `app/Domain/User/Models/User.php` — central identity model
+- `app/Domain/User/Models/Profile.php` — extended personal data
+- `app/Domain/User/Actions/UpdateProfileAction.php` — profile editing
+- `app/Domain/User/Actions/SendNotificationAction.php` — notification dispatch
+- `app/Domain/User/Livewire/` — dashboards, profile editor, notification center
+- `app/Domain/User/Support/UserIdentifierGenerator.php` — username generation
+- `app/Domain/User/Rules/` — username and reserved name validation

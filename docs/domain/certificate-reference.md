@@ -53,3 +53,8 @@ Total: 14 files
 | File | Class | Description |
 |---|---|---|
 | `Certificate/Support/CertificateRenderer.php` | `CertificateRenderer` | Renders certificate PDF using Blade + DomPDF |
+
+## Where to Find It
+
+- `app/Domain/Certificate/Models/`
+- `app/Domain/Certificate/Actions/`
