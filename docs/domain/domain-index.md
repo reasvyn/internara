@@ -90,7 +90,7 @@ Handles all cross-domain infrastructure in a single place:
 | **Blade namespaces** | `registerBladeNamespaces()` | ✅ Scans `resources/views/*/`, registers as `x-{domain}::` + `{domain}::` view namespace |
 | **Blade: layouts** | `boot()` | Manual: `resources/views/shared/layouts/` → `x-shared::layouts.*` |
 | **Events** | `boot()` | Manual: `SetupFinalized` → `LogSetupFinalized` listener |
-| **Policies (cross-domain)** | `boot()` | Manual: `UserPolicy`, `InternshipPlacementPolicy`, `InternshipRegistrationPolicy`, `CompanyPolicy` |
+| **Policies (cross-domain)** | `boot()` | Manual: `InternshipRegistrationPolicy`, `CompanyPolicy` |
 | **Container bindings** | `register()` | Manual: `SendsNotifications` → `SendNotificationAction` |
 
 ### Blade Namespace Convention

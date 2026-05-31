@@ -75,3 +75,32 @@ Total: 21 files
 | `Settings/Support/AppMetadata.php` | `AppMetadata` | Brand resolver combining Settings + AppInfo + Theme with fallback chains |
 | `Settings/Support/Color.php` | `Color` | Pure color utility — hex conversion, luminance, contrast, lighten/darken, shade computation |
 | `Settings/Support/Settings.php` | `Settings` | Central settings engine — 5-tier resolution (override → AppInfo → DB → config → default), cache invalidation, batch operations |
+
+## Where to Find It
+
+- `app/Domain/Settings/Support/Settings.php` — settings resolution engine
+- `app/Domain/Settings/Support/AppInfo.php` — composer.json metadata
+- `app/Domain/Settings/Support/AppMetadata.php` — brand resolver
+- `app/Domain/Settings/Support/Color.php` — color utility
+- `app/Domain/Settings/Models/Setting.php` — key-value model
+- `app/Domain/Settings/Casts/SettingValueCast.php` — type casting
+- `app/Domain/Settings/Enums/SettingGroup.php` — group classification
+- `app/Domain/Settings/Rules/ValidSettingKey.php` — key validation
+- `app/Domain/Settings/Policies/SettingPolicy.php` — authorization
+- `app/Support/helpers.php` — `setting()` and `brand()` helper functions
+- `config/settings.php` — color presets and defaults
+
+## Dependency Graph
+
+```
+Settings Domain
+├── Core          → BaseModel, BaseAction, SmartLogger, CacheKeys, Integrity
+├── User          → TestMailNotification (email testing)
+├── Shared        → Theme::all(), Theme::defaults() (consumed by AppMetadata)
+├── School        → AcademicYear (GetAcademicYearsAction, cross-domain violation)
+└── Laravel       → Crypt, Cache, Config, Validator
+```
+
+**Cross-domain note:** `GetAcademicYearsAction` imports from `School\Models\AcademicYear`,
+which violates the no-sibling-import rule. Long-term fix: move academic year queries to the
+School domain and call via Action delegation or a Core contract.

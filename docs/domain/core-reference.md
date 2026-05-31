@@ -3,7 +3,7 @@
 > Changes: docs: update core-reference and redesign shared domain
 
 
-Total: 47 files
+Total: 48 files
 
 ## Actions
 
@@ -23,6 +23,7 @@ Total: 47 files
 |---|---|---|---|
 | `Core/Console/Commands/CacheWarmCommand.php` | `CacheWarmCommand` | `Command` | Pre-warms settings, brand, config, view, and event caches |
 | `Core/Console/Commands/CleanupCommand.php` | `CleanupCommand` | `Command` | Prunes expired resets, stale cache, failed jobs, old logs |
+| `Core/Console/Commands/DomainDiscoverCommand.php` | `DomainDiscoverCommand` | `Command` | Re-discovers and registers domain Livewire components, policies, and Blade namespaces |
 | `Core/Console/Commands/HealthCommand.php` | `HealthCommand` | `Command` | 15-point system health check (PHP, extensions, DB, storage, queue, cache) |
 
 ## Contracts
@@ -146,3 +147,29 @@ Total: 47 files
 | `Core/Support/PasswordRules.php` | `PasswordRules` | Shared password validation rules — `default()` and `defaultAsArray()` |
 | `Core/Support/PiiMasker.php` | `PiiMasker` | PII masking for passwords, tokens, emails, phones, names, IPs, user agents |
 | `Core/Support/SmartLogger.php` | `SmartLogger` | Fluent dual-channel logger (system + activity) with PII masking and 3 routing modes |
+
+## Dependency Graph
+
+```
+                  ┌─────────────────────────────────┐
+                  │      All Business Domains        │
+                  │  (Auth, School, Internship, ...)  │
+                  └──────────────┬──────────────────┘
+                                 │ depends on
+                                 ▼
+                  ┌─────────────────────────────────┐
+                  │            Core Domain           │
+                  │  ┌───────┬──────┬────────┬────┐  │
+                  │  │Contract│Base │Infra   │Frame│  │
+                  │  │  ts    │Classes│structure│work│  │
+                  │  └───────┴──────┴────────┴────┘  │
+                  └──────────────┬──────────────────┘
+                                 │ depends on
+                                 ▼
+                  ┌─────────────────────────────────┐
+                  │   Laravel + Spatie + PHP 8.4     │
+                  └─────────────────────────────────┘
+```
+
+Core is the root of the entire dependency graph. Nothing depends on it that isn't in the
+Laravel framework, Spatie packages, or PHP standard library.

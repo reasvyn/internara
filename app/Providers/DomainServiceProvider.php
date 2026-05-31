@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Domain\Auth\Policies\UserPolicy;
 use App\Domain\Core\Contracts\SendsNotifications;
 use App\Domain\Core\Policies\BasePolicy;
 use App\Domain\Core\Support\CacheKeys;
@@ -55,7 +54,6 @@ class DomainServiceProvider extends ServiceProvider
             [LogSetupFinalized::class, 'handle'],
         );
 
-        Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Placement::class, InternshipPlacementPolicy::class);
         Gate::policy(Registration::class, InternshipRegistrationPolicy::class);
         Gate::policy(Company::class, CompanyPolicy::class);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Auth\Policies;
+namespace App\Domain\User\Policies;
 
 use App\Domain\Core\Policies\BasePolicy;
 use App\Domain\User\Models\User;

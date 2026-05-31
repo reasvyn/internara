@@ -58,3 +58,8 @@ Total: 19 files
 |---|---|---|---|
 | `Partnership/Livewire/Forms/CompanyForm.php` | `CompanyForm` | `Form` | Form object for company CRUD |
 | `Partnership/Livewire/Forms/PartnershipForm.php` | `PartnershipForm` | `Form` | Form object for partnership CRUD |
+
+## Where to Find It
+
+- `app/Domain/Partnership/Models/`
+- `app/Domain/Partnership/Actions/`

@@ -58,3 +58,11 @@ Total: 24 files
 | `School/Policies/AcademicYearPolicy.php` | `AcademicYearPolicy` | `BasePolicy` | Authorization for academic year operations |
 | `School/Policies/DepartmentPolicy.php` | `DepartmentPolicy` | `BasePolicy` | Authorization for department operations |
 | `School/Policies/SchoolPolicy.php` | `SchoolPolicy` | `BasePolicy` | Authorization for school operations |
+
+## Where to Find It
+
+- `app/Domain/School/Models/School.php`
+- `app/Domain/School/Models/Department.php`
+- `app/Domain/School/Models/AcademicYear.php`
+- `app/Domain/School/Actions/` — 9 Actions
+- `app/Domain/School/Policies/` — AcademicYearPolicy, DepartmentPolicy, SchoolPolicy

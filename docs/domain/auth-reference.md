@@ -90,6 +90,31 @@ Total: 39 files
 
 ## Policies
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Auth/Policies/UserPolicy.php` | `UserPolicy` | `BasePolicy` | Authorization for user management operations |
+Auth does not own policies — `UserPolicy` lives in the [User domain](user-reference.md).
+
+## Where to Find It
+
+- `app/Domain/Auth/Enums/AccountStatus.php` — 8-state account lifecycle
+- `app/Domain/Auth/Enums/Role.php` — role definitions with functional mapping
+- `app/Domain/Auth/Entities/Apprentice.php` — account access checks
+- `app/Domain/Auth/Entities/SuperAdminIntegrityRules.php` — super admin invariants
+- `app/Domain/Auth/Actions/LoginAction.php` — 5-step authentication
+- `app/Domain/Auth/Actions/LockUserAccountAction.php` — atomic lock with super admin protection
+- `app/Domain/Auth/Http/Middleware/AuthThrottleMiddleware.php` — per-endpoint rate limiting
+- `app/Domain/Auth/Http/Middleware/CheckRoleMiddleware.php` — route-level role gating
+- `app/Domain/Auth/Notifications/` — notification classes
+- `app/Domain/Auth/Livewire/` — auth UI components
+- `docs/rbac.md` — RBAC design and role hierarchy
+- `docs/account-recovery.md` — recovery mechanisms
+
+## Dependency Graph
+
+```
+Auth Domain
+├── Core      → BaseAction, BaseEntity, CacheKeys, SmartLogger, PasswordRules,
+│                HandlesActionErrors, LabelEnum, StatusEnum, ColorableEnum
+├── User      → User model (subject of authentication), Profile accessed
+│                for identity confirmation during recovery
+├── Setup     → SetupSuperAdminAction (recovery flow), FinalizeSetupAction
+└── Admin     → AdminPromoteCommand (super admin promotion)
+```

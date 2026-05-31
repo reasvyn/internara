@@ -9,7 +9,7 @@ Total: 9 files
 
 | File | Class | Implements | Description |
 |---|---|---|---|
-| `Shared/Enums/CsvRowResult.php` | `CsvRowResult` | — | CSV import row result: CREATED or SKIPPED |
+| `Shared/Enums/CsvRowResult.php` | `CsvRowResult` | `LabelEnum` | CSV import row result: CREATED or SKIPPED |
 
 ## Livewire Components
 
@@ -55,3 +55,36 @@ Total: 9 files
 | `shared/widgets/quick-link.blade.php` | Navigation link with icon and chevron |
 | `shared/widgets/action-button.blade.php` | Full-width action button for navigation |
 | `shared/widgets/empty-state.blade.php` | Empty state placeholder with icon and text |
+
+## Where to Find It
+
+- `app/Domain/Shared/Support/Environment.php` — environment detection
+- `app/Domain/Shared/Support/Locale.php` — locale management
+- `app/Domain/Shared/Support/Theme.php` — theme/color resolution
+- `app/Domain/Shared/Support/CsvHandler.php` — CSV handler
+- `app/Domain/Shared/Support/LangChecker.php` — translation key checker
+- `app/Domain/Shared/Support/HasModelStatuses.php` — legacy Spatie bridge trait
+- `app/Domain/Shared/Enums/CsvRowResult.php` — CSV import result enum
+- `app/Domain/Shared/Livewire/LangSwitcher.php` — language switcher component
+- `app/Domain/Shared/Livewire/ThemeSwitcher.php` — theme switcher component
+- `resources/views/shared/` — Blade views for Livewire components and layouts
+
+## Dependency Graph
+
+```
+                  ┌─────────────────────────┐
+                  │  Shared Domain           │
+                  │  ┌──────┬──────┬──────┐  │
+                  │  │Enums │Livewr│Support│  │
+                  │  └──┬───┴──────┴──┬───┘  │
+                  └────┼──────────────┼──────┘
+                       │              │
+          ┌────────────┘              └────────────┐
+          ▼                                        ▼
+┌──────────────────┐                  ┌──────────────────────┐
+│   Core Domain    │                  │  Settings Domain     │
+│  (Contracts)     │                  │  (Color, Settings)   │
+└──────────────────┘                  │  — Theme only, doc'd │
+                                      │    exception         │
+                                      └──────────────────────┘
+```

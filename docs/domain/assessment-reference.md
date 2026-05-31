@@ -65,3 +65,8 @@ Total: 31 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Assessment/Policies/AssessmentPolicy.php` | `AssessmentPolicy` | `BasePolicy` | Authorization for assessment operations |
+
+## Where to Find It
+
+- `app/Domain/Assessment/Models/`
+- `app/Domain/Assessment/Actions/` — 16 Actions

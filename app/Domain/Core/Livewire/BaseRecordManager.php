@@ -18,6 +18,8 @@ abstract class BaseRecordManager extends Component
 
     public string $search = '';
 
+    public int $perPage = 10;
+
     public array $filters = [];
 
     /** @var string[] */
@@ -29,6 +31,11 @@ abstract class BaseRecordManager extends Component
     }
 
     public function updatedFilters(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage(): void
     {
         $this->resetPage();
     }
@@ -59,12 +66,12 @@ abstract class BaseRecordManager extends Component
 
         $query = $this->applySorting($query);
 
-        return $query->paginate($this->perPage());
+        return $query->paginate($this->perPage);
     }
 
-    protected function perPage(): int
+    protected function perPageOptions(): array
     {
-        return 10;
+        return [10, 25, 50, 100];
     }
 
     protected function applySearch(Builder $query): Builder

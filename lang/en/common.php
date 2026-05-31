@@ -70,6 +70,8 @@ return [
         'bulk_action_done' => ':count records updated via :action.',
         'mass_action_done' => ':count records processed via mass action: :action.',
         'all' => 'All',
+        'lock' => 'Lock',
+        'unlock' => 'Unlock',
     ],
     'yes' => 'Yes',
     'no' => 'No',
@@ -91,4 +93,7 @@ return [
     'email' => 'Email',
     'website' => 'Website',
     'description' => 'Description',
+    'pagination' => [
+        'per_page' => 'Per page',
+    ],
 ];
