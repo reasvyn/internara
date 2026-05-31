@@ -47,7 +47,7 @@ Total: 24 files
 | `Mentor/Livewire/MentorProfileManager.php` | `MentorProfileManager` | `Component` | View/manage mentor profiles |
 | `Mentor/Livewire/ReportNotes.php` | `ReportNotes` | `Component` | Add supervisor notes to reports |
 | `Mentor/Livewire/ReportReview.php` | `ReportReview` | `BaseRecordManager` | Review and approve/reject reports |
-| `Mentor/Livewire/Supervision/SupervisionManager.php` | `SupervisionManager` | `Component` | Manages supervision visit records |
+| `Mentor/Livewire/Supervision/SupervisionManager.php` | `SupervisionManager` | `Component` | Lists supervision logs for the student's active registration (student-facing read-only) |
 | `Mentor/Livewire/Supervision/SupervisorLogManager.php` | `SupervisorLogManager` | `Component` | Manages supervisor log entries |
 
 ## Models
@@ -73,10 +73,12 @@ Total: 24 files
 
 ```
 Mentor Domain
-├── Core         → BaseModel, BaseAction, SmartLogger
-├── User         → User model (mentor identity)
-├── Registration → Registration records (mentor assignment)
-└── Auth         → Role, permissions (mentor authorization)
+├── Core          → BaseModel, BaseAction, SmartLogger
+├── User          → User model (mentor identity)
+├── Registration  → Registration records (mentor assignment)
+├── Auth          → Role, permissions (mentor authorization)
+├── Internship    → Report, ReportStatus (report review workflow)
+└── Evaluation    → EvaluateMentorAction (mentor evaluation submission)
 ```
 
 Consumed by:

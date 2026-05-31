@@ -6,6 +6,7 @@ use App\Domain\Assignment\Livewire\SubmissionGrading;
 use App\Domain\Mentor\Livewire\AssessInternship;
 use App\Domain\Mentor\Livewire\ReportNotes;
 use App\Domain\Mentor\Livewire\ReportReview;
+use App\Domain\Mentor\Livewire\MentorProfileManager;
 use App\Domain\Mentor\Livewire\Supervision\SupervisorLogManager;
 
 Route::prefix('supervision')
@@ -36,4 +37,5 @@ Route::prefix('admin')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/internships/reports/review', ReportReview::class)->name('reports.review');
+        Route::livewire('/mentors/profiles', MentorProfileManager::class)->name('mentors.profiles');
     });

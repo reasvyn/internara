@@ -38,7 +38,7 @@ Total: 11 files
 
 | File | Class | Extends/Implements | Description |
 |---|---|---|---|
-| `Incident/Notifications/IncidentReportedNotification.php` | `IncidentReportedNotification` | `Notification` | Notification for reported incidents |
+| `Incident/Notifications/IncidentReportedNotification.php` | `IncidentReportedNotification` | `Notification`, `ShouldQueue` | Queued notification for reported incidents |
 
 ## Policies
 

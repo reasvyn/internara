@@ -133,7 +133,7 @@ Total: 55 files
 ```
 Internship Domain
 ├── Core         → BaseModel, BaseAction, BaseEntity, SmartLogger, CacheKeys,
-│                   HandlesActionErrors, BasePolicy, BaseState
+│                   HandlesActionErrors, BasePolicy
 ├── User         → User model (participant identity)
 ├── School       → School, AcademicYear models (institutional context)
 ├── Registration → Registration records (enrollment context)

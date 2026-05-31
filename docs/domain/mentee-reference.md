@@ -17,7 +17,7 @@ Total: 6 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Mentee/Entities/MenteeState.php` | `MenteeState` | `BaseEntity` | Read-only DTO for mentee's current state (registration, internship) |
+| `Mentee/Entities/MenteeState.php` | `MenteeState` | `BaseEntity` | Read-only DTO for mentee state: canClockIn, canSubmitLogbook, canSubmitAssignment, hasEnded, daysRemaining |
 
 Mentee does not own Livewire components — `StudentDashboard` moved to the [User domain](user-reference.md).
 
@@ -44,8 +44,7 @@ Mentee does not own Livewire components — `StudentDashboard` moved to the [Use
 Mentee Domain
 ├── Core         → BaseModel, BaseAction, SmartLogger
 ├── User         → User model (student identity)
-├── Registration → Registration records (mentee enrollment)
-└── Internship   → Internship records (mentee placement)
+└── Registration → Registration records (mentee enrollment)
 ```
 
 Consumed by:

@@ -37,7 +37,7 @@ Total: 31 files
 
 | File | Class | Implements | Description |
 |---|---|---|---|
-| `Assessment/Enums/EvaluatorRole.php` | `EvaluatorRole` | `LabelEnum` | Evaluator role (teacher/industry) |
+| `Assessment/Enums/EvaluatorRole.php` | `EvaluatorRole` | `LabelEnum` | Evaluator role (admin, teacher, supervisor, system) |
 | `Assessment/Enums/PresentationStatus.php` | `PresentationStatus` | `LabelEnum`, `StatusEnum` | Presentation lifecycle status |
 
 ## Livewire Components

@@ -31,7 +31,7 @@ Total: 11 files
 
 | File | Class | Extends | Fields | Used By |
 |---|---|---|---|---|
-| `Guidance/Livewire/Forms/HandbookForm.php` | `HandbookForm` | `Form` | title, content, version, is_active, target_audience | `HandbookIndex` |
+| `Guidance/Livewire/Forms/HandbookForm.php` | `HandbookForm` | `Form` | id, title, content, version, is_active, target_audience | `HandbookIndex` |
 
 ## Models
 
