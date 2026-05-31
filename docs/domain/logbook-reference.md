@@ -43,7 +43,7 @@ Total: 11 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Logbook/Models/Logbook.php` | `Logbook` | `BaseModel` | Eloquent model for daily logbook entries |
+| `Logbook/Models/Logbook.php` | `Logbook` | `BaseModel`, `HasMedia` | Eloquent model for daily logbook entries with photo collection support |
 
 ## Policies
 

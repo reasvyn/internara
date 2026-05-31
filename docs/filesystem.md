@@ -76,6 +76,7 @@ processing.
 | `Document` | `file` | Single | Uploaded document template |
 | `Submission` | `file` | Multiple | Assignment submission files |
 | `RegistrationDocument` | `file` | Single | Identity or requirement document |
+| `Logbook` | `photos` | Multiple | Daily activity photo documentation |
 | `Partnership` | `mou_document` | Single | Signed MoU agreement |
 | `Certificate` | `output` | Single | Generated certificate PDF |
 
