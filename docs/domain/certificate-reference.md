@@ -58,3 +58,19 @@ Total: 14 files
 
 - `app/Domain/Certificate/Models/`
 - `app/Domain/Certificate/Actions/`
+
+## Dependency Graph
+
+```
+Certificate Domain
+├── Core         → BaseModel, BaseAction, SmartLogger
+├── User         → User model (certificate recipient)
+├── Registration → Registration records (completion context)
+├── Internship   → Internship records (completion validation)
+├── Document     → Document generation and storage
+└── Assessment   → Assessment results (issuance criteria)
+```
+
+Consumed by:
+  Mentee (download certificate), Internship (closure issuance)
+

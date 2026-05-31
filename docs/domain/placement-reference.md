@@ -65,3 +65,20 @@ Total: 21 files
 
 - `app/Domain/Placement/Models/`
 - `app/Domain/Placement/Actions/`
+
+## Dependency Graph
+
+```
+Placement Domain
+├── Core         → BaseModel, BaseAction, SmartLogger
+├── Partnership  → Company/partner records (placement host)
+├── Internship   → Internship records (placement target)
+├── User         → User model (placed student/mentor)
+├── Registration → Registration records (placement context)
+├── Mentee       → Mentee records (student placement)
+└── Mentor       → Mentor records (supervisor placement)
+```
+
+Consumed by:
+  Registration (placement assignment), Internship (placement execution)
+

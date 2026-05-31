@@ -115,3 +115,25 @@ Total: 55 files
 - `app/Domain/Admin/Actions/` — 14 Actions
 - `app/Domain/Admin/Console/Commands/` — CLI admin tools
 - `app/Domain/Admin/Livewire/` — user managers, announcement manager
+
+## Dependency Graph
+
+```
+Admin Domain
+├── Core         → BaseAction, BaseRecordManager, SmartLogger, CacheKeys,
+│                   HandlesActionErrors, BasePolicy, BaseEntity
+├── Auth         → Role, AccountStatus, CheckRoleMiddleware
+├── User         → User model, Profile, UserPolicy
+├── School       → School, Department, AcademicYear models
+├── Settings     → System settings, branding config
+├── Shared       → Shared utilities, file handling
+├── Partnership  → Company records for admin oversight
+├── Placement    → Placement records for admin oversight
+├── Registration → Registration records for admin oversight
+├── Mentee       → Mentee records for admin management
+├── Mentor       → Mentor records for admin management
+└── Internship   → Internship records for admin oversight
+```
+
+Consumed by: all domains (system administration)
+

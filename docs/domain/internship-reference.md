@@ -129,3 +129,24 @@ Total: 57 files
 - `app/Domain/Internship/Enums/` — InternshipStatus, ReportStatus, GroupRole
 - `app/Domain/Internship/Events/InternshipCreated.php`
 - `app/Domain/Internship/Policies/` — 3 Policies: InternshipPolicy, InternshipGroupPolicy, InternshipPhasePolicy (CompanyPolicy and InternshipRegistrationPolicy are cross-domain — see Partnership and Registration)
+
+## Dependency Graph
+
+```
+Internship Domain
+├── Core         → BaseModel, BaseAction, BaseEntity, SmartLogger, CacheKeys,
+│                   HandlesActionErrors, BasePolicy, BaseState
+├── User         → User model (participant identity)
+├── School       → School, AcademicYear models (institutional context)
+├── Registration → Registration records (enrollment context)
+├── Placement    → Placement records (assignment context)
+├── Mentee       → Mentee records (student participation)
+├── Mentor       → Mentor records (supervisor assignment)
+├── Document     → Document generation (reports, attachments)
+├── Assessment   → Assessment results (performance tracking)
+├── Evaluation   → Evaluation records (quality measurement)
+└── Certificate  → Certificate issuance triggers
+```
+
+Consumed by: all operational domains (central internship lifecycle)
+

@@ -66,3 +66,16 @@ Total: 24 files
 - `app/Domain/School/Models/AcademicYear.php`
 - `app/Domain/School/Actions/` — 9 Actions
 - `app/Domain/School/Policies/` — AcademicYearPolicy, DepartmentPolicy, SchoolPolicy
+
+## Dependency Graph
+
+```
+School Domain
+├── Core  → BaseModel, BaseAction, SmartLogger, BasePolicy
+└── User  → User model (student/teacher affiliation)
+```
+
+Consumed by:
+  User (profile affiliation), Internship (institutional context),
+  Registration (school-based enrollment), Settings (school configuration)
+

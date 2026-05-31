@@ -47,3 +47,18 @@ Total: 8 files
 
 - `app/Domain/Evaluation/Models/Evaluation.php`
 - `app/Domain/Evaluation/Actions/`
+
+## Dependency Graph
+
+```
+Evaluation Domain
+├── Core         → BaseModel, BaseAction, SmartLogger
+├── User         → User model (evaluator/evaluatee)
+├── Registration → Registration records (evaluation context)
+├── Mentor       → Mentor records (supervisor evaluation)
+└── Internship   → Internship records (internship evaluation)
+```
+
+Consumed by:
+  Internship (closure evaluation, quality assessment)
+

@@ -50,3 +50,16 @@ Total: 11 files
 
 - `app/Domain/Incident/Models/IncidentReport.php`
 - `app/Domain/Incident/Actions/`
+
+## Dependency Graph
+
+```
+Incident Domain
+├── Core         → BaseModel, BaseAction, SmartLogger
+├── User         → User model (reporter/assignee)
+└── Registration → Registration records (incident context)
+```
+
+Consumed by:
+  Admin (incident review), Mentee (incident reporting)
+

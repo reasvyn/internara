@@ -61,3 +61,20 @@ Total: 22 files
 - `app/Domain/Registration/Models/`
 - `app/Domain/Registration/Actions/`
 - `app/Domain/Registration/Livewire/`
+
+## Dependency Graph
+
+```
+Registration Domain
+├── Core         → BaseModel, BaseAction, SmartLogger, BasePolicy,
+│                   HandlesActionErrors
+├── User         → User model (registrant identity)
+├── Internship   → Internship records (registration target)
+├── Placement    → Placement records (placement context)
+├── Mentee       → Mentee records (student registration)
+├── Mentor       → Mentor records (mentor registration)
+└── School       → School, AcademicYear (institutional context)
+```
+
+Consumed by: all operational domains (entry point for internship participation)
+

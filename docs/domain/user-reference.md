@@ -114,3 +114,16 @@ Total: 40 files
 - `app/Domain/User/Livewire/` — dashboards, profile editor, notification center
 - `app/Domain/User/Support/UserIdentifierGenerator.php` — username generation
 - `app/Domain/User/Rules/` — username and reserved name validation
+
+## Dependency Graph
+
+```
+User Domain
+├── Core   → BaseModel, BaseAction, BaseEntity, SmartLogger, PasswordRules,
+│            HandlesActionErrors, BasePolicy, PiiMasker
+├── Auth   → Role, AccountStatus, activation tokens
+└── School → School, Department (user affiliation)
+```
+
+Consumed by: all domains (universal identity and profile provider)
+

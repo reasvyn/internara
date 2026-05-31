@@ -41,3 +41,16 @@ Total: 7 files
 
 - `app/Domain/Schedule/Models/Schedule.php`
 - `app/Domain/Schedule/Actions/`
+
+## Dependency Graph
+
+```
+Schedule Domain
+├── Core       → BaseModel, BaseAction, SmartLogger
+├── User       → User model (participant identity)
+└── Internship → Internship records (schedule context)
+```
+
+Consumed by:
+  Mentee (schedule viewing), Mentor (visit planning)
+
