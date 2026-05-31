@@ -7,10 +7,6 @@ namespace App\Providers;
 use App\Domain\Core\Contracts\SendsNotifications;
 use App\Domain\Core\Policies\BasePolicy;
 use App\Domain\Core\Support\CacheKeys;
-use App\Domain\Internship\Policies\CompanyPolicy;
-use App\Domain\Internship\Policies\InternshipRegistrationPolicy;
-use App\Domain\Partnership\Models\Company;
-use App\Domain\Registration\Models\Registration;
 use App\Domain\Setup\Events\SetupFinalized;
 use App\Domain\Setup\Listeners\LogSetupFinalized;
 use App\Domain\User\Actions\SendNotificationAction;
@@ -50,9 +46,6 @@ class DomainServiceProvider extends ServiceProvider
             SetupFinalized::class,
             [LogSetupFinalized::class, 'handle'],
         );
-
-        Gate::policy(Registration::class, InternshipRegistrationPolicy::class);
-        Gate::policy(Company::class, CompanyPolicy::class);
     }
 
     protected function registerCommands(): void

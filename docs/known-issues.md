@@ -17,17 +17,17 @@
 
 **Files:** `app/Domain/Internship/Policies/CompanyPolicy.php` and `app/Domain/Partnership/Policies/CompanyPolicy.php`
 
-Two CompanyPolicy implementations exist with different logic. The Internship version (46 lines, with placements-exists guard on delete) overrides the Partnership version (37 lines, simpler) via manual `Gate::policy()` in `DomainServiceProvider:61`. Auto-discovery maps `Partnership\Policies\CompanyPolicy` → `Partnership\Models\Company`, but the manual registration replaces it.
+Two CompanyPolicy implementations existed with different logic. The Internship version (with placements-exists guard on delete) overrode the Partnership version via manual `Gate::policy()`.
 
-**Fix:** Consolidate into `Partnership/Policies/CompanyPolicy.php`. Update `DomainServiceProvider` to either let auto-discovery handle it or point to the Partnership version.
+**Status:** ✅ Fixed — consolidated into `Partnership/Policies/CompanyPolicy.php` with `forceDelete()` and placements guard. Deleted Internship version. Auto-discovery now handles the mapping.
 
 ### InternshipRegistrationPolicy in Wrong Domain 🔴
 
 **File:** `app/Domain/Internship/Policies/InternshipRegistrationPolicy.php`
 
-This policy gates `Registration\Models\Registration` but lives in the Internship domain. Registered manually in `DomainServiceProvider:60`. The Registration domain already has its own `RegistrationPolicy.php` but the Internship version overrides it.
+This policy gated `Registration\Models\Registration` but lived in the Internship domain with manual Gate::policy registration.
 
-**Fix:** Move to `Registration/Policies/InternshipRegistrationPolicy.php` and update `DomainServiceProvider`.
+**Status:** ✅ Fixed — merged into `Registration/Policies/RegistrationPolicy.php` with `approve()`, `isAssignedMentor()`, and `isPending()` checks. Deleted Internship version. Auto-discovery now handles the mapping.
 
 ### 564 Files Without declare(strict_types=1) 🔴
 
@@ -193,8 +193,8 @@ No abstract execute() method on BaseAction. Each Action defines its own signatur
 | # | Issue | Category | Severity | Status |
 |---|-------|----------|----------|--------|
 | I1 | InternshipPlacementPolicy file missing — fatal error | Implementation | 🔴 Critical | ✅ Fixed |
-| I2 | Duplicate CompanyPolicy (Internship + Partnership) | Implementation | 🔴 Critical | Open |
-| I3 | InternshipRegistrationPolicy in wrong domain | Implementation | 🔴 Critical | Open |
+| I2 | Duplicate CompanyPolicy (Internship + Partnership) | Implementation | 🔴 Critical | ✅ Fixed |
+| I3 | InternshipRegistrationPolicy in wrong domain | Implementation | 🔴 Critical | ✅ Fixed |
 | I4 | 564 files without `declare(strict_types=1)` | Implementation | 🔴 Critical | Open |
 | I5 | 2 Entities importing Models | Implementation | 🔴 Critical | Open |
 | D1 | Site visit scheduling & logging | Documentation | 🔴 High | Open |

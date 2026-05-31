@@ -13,13 +13,21 @@ class RegistrationPolicy extends BasePolicy
     public function viewAny(User $user): bool
     {
         return $this->hasAnyOfRoles($user, [
-            'super_admin', 'admin', 'teacher', 'supervisor',
+            'super_admin',
+            'admin',
+            'teacher',
+            'supervisor',
+            'student',
         ]);
     }
 
     public function view(User $user, Registration $registration): bool
     {
         if ($this->isAdmin($user)) {
+            return true;
+        }
+
+        if ($this->isAssignedMentor($user, $registration)) {
             return true;
         }
 
@@ -37,11 +45,27 @@ class RegistrationPolicy extends BasePolicy
             return true;
         }
 
-        return $registration->mentee?->user_id === $user->id;
+        return $this->isOwner($registration, $user) && $registration->isPending();
+    }
+
+    public function approve(User $user, Registration $registration): bool
+    {
+        return $this->isAdmin($user);
     }
 
     public function delete(User $user, Registration $registration): bool
     {
-        return $this->isAdmin($user);
+        if ($this->isAdmin($user)) {
+            return true;
+        }
+
+        return $this->isOwner($registration, $user) && $registration->isPending();
+    }
+
+    private function isAssignedMentor(User $user, Registration $registration): bool
+    {
+        return $user->mentors()
+            ->whereHas('registrations', fn ($q) => $q->where('registration_id', $registration->id))
+            ->exists();
     }
 }

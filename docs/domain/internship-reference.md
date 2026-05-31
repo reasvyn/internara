@@ -3,7 +3,7 @@
 > Changes: docs: align all documentation with actual implementation (placement, registration, internship reference, ERD, routes)
 
 
-Total: 57 files
+Total: 55 files
 
 ## Actions
 
@@ -110,11 +110,9 @@ Total: 57 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Internship/Policies/CompanyPolicy.php` | `CompanyPolicy` | `BasePolicy` | Authorization for company operations |
 | `Internship/Policies/InternshipGroupPolicy.php` | `InternshipGroupPolicy` | `BasePolicy` | Authorization for group operations |
 | `Internship/Policies/InternshipPhasePolicy.php` | `InternshipPhasePolicy` | `BasePolicy` | Authorization for phase operations |
 | `Internship/Policies/InternshipPolicy.php` | `InternshipPolicy` | `BasePolicy` | Authorization for internship operations |
-| `Internship/Policies/InternshipRegistrationPolicy.php` | `InternshipRegistrationPolicy` | `BasePolicy` | Authorization for registration operations |
 
 ## Rules
 
@@ -128,7 +126,7 @@ Total: 57 files
 - `app/Domain/Internship/Actions/` — 21 Actions
 - `app/Domain/Internship/Enums/` — InternshipStatus, ReportStatus, GroupRole
 - `app/Domain/Internship/Events/InternshipCreated.php`
-- `app/Domain/Internship/Policies/` — 3 Policies: InternshipPolicy, InternshipGroupPolicy, InternshipPhasePolicy (CompanyPolicy and InternshipRegistrationPolicy are cross-domain — see Partnership and Registration)
+- `app/Domain/Internship/Policies/` — 3 Policies: InternshipPolicy, InternshipGroupPolicy, InternshipPhasePolicy
 
 ## Dependency Graph
 
