@@ -11,7 +11,7 @@
 
 `DomainServiceProvider` imports `App\Domain\Placement\Policies\InternshipPlacementPolicy` and registers it via `Gate::policy(Placement::class, ...)`. The file does not exist — only `PlacementPolicy.php` and `PlacementChangeRequestPolicy.php` exist in that directory. This causes a fatal `ClassNotFoundError` on every request.
 
-**Fix:** Either create the file at `app/Domain/Placement/Policies/InternshipPlacementPolicy.php` or remove the import and registration from `DomainServiceProvider`.
+**Status:** ✅ Fixed — removed import and Gate::policy. `PlacementPolicy` already handles Placement model via auto-discovery.
 
 ### Duplicate CompanyPolicy in Two Domains 🔴
 
@@ -192,7 +192,7 @@ No abstract execute() method on BaseAction. Each Action defines its own signatur
 
 | # | Issue | Category | Severity | Status |
 |---|-------|----------|----------|--------|
-| I1 | InternshipPlacementPolicy file missing — fatal error | Implementation | 🔴 Critical | Open |
+| I1 | InternshipPlacementPolicy file missing — fatal error | Implementation | 🔴 Critical | ✅ Fixed |
 | I2 | Duplicate CompanyPolicy (Internship + Partnership) | Implementation | 🔴 Critical | Open |
 | I3 | InternshipRegistrationPolicy in wrong domain | Implementation | 🔴 Critical | Open |
 | I4 | 564 files without `declare(strict_types=1)` | Implementation | 🔴 Critical | Open |
