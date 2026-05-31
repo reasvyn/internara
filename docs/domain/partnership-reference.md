@@ -65,3 +65,16 @@ Total: 21 files
 
 - `app/Domain/Partnership/Models/`
 - `app/Domain/Partnership/Actions/`
+
+## Dependency Graph
+
+```
+Partnership Domain
+├── Core  → BaseModel, BaseAction, SmartLogger
+└── User  → User model (company contact/representative)
+```
+
+Consumed by:
+  Placement (company selection), Registration (partner validation),
+  Internship (company context)
+

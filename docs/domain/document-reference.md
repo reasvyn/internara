@@ -61,3 +61,17 @@ Total: 12 files
 
 - `app/Domain/Document/Models/Document.php`
 - `app/Domain/Document/Actions/`
+
+## Dependency Graph
+
+```
+Document Domain
+├── Core         → BaseModel, BaseAction, SmartLogger
+├── Internship   → Internship records (document context)
+├── Registration → Registration records (document ownership)
+└── Certificate  → Certificate templates and rendering data
+```
+
+Consumed by:
+  Certificate (PDF rendering), Internship (report generation)
+

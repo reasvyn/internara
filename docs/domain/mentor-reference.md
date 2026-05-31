@@ -68,3 +68,17 @@ Total: 24 files
 
 - `app/Domain/Mentor/Models/`
 - `app/Domain/Mentor/Actions/`
+
+## Dependency Graph
+
+```
+Mentor Domain
+├── Core         → BaseModel, BaseAction, SmartLogger
+├── User         → User model (mentor identity)
+├── Registration → Registration records (mentor assignment)
+└── Auth         → Role, permissions (mentor authorization)
+```
+
+Consumed by:
+  Mentee (dashboard display), Admin (mentor management)
+

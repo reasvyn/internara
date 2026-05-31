@@ -72,3 +72,17 @@ Total: 23 files
 
 - `app/Domain/Assignment/Models/`
 - `app/Domain/Assignment/Actions/`
+
+## Dependency Graph
+
+```
+Assignment Domain
+├── Core         → BaseModel, BaseAction, SmartLogger
+├── User         → User model (assignee/assigner)
+├── Internship   → Internship records (assignment context)
+└── Registration → Registration records (student context)
+```
+
+Consumed by:
+  Mentee (dashboard view), Mentor (grading and review)
+

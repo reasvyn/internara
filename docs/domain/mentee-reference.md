@@ -37,3 +37,17 @@ Mentee does not own Livewire components — `StudentDashboard` moved to the [Use
 
 - `app/Domain/Mentee/Models/Mentee.php`
 - `app/Domain/Mentee/Actions/`
+
+## Dependency Graph
+
+```
+Mentee Domain
+├── Core         → BaseModel, BaseAction, SmartLogger
+├── User         → User model (student identity)
+├── Registration → Registration records (mentee enrollment)
+└── Internship   → Internship records (mentee placement)
+```
+
+Consumed by:
+  Admin (student management), Mentor (supervision relationship)
+

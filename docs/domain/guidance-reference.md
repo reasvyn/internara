@@ -50,3 +50,15 @@ Total: 11 files
 
 - `app/Domain/Guidance/Models/`
 - `app/Domain/Guidance/Actions/`
+
+## Dependency Graph
+
+```
+Guidance Domain
+├── Core  → BaseModel, BaseAction, SmartLogger
+└── User  → User model (author/reader identity)
+```
+
+Consumed by:
+  Mentee (reading guidance), Mentor (reading guidance materials)
+

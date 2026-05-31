@@ -55,3 +55,18 @@ Total: 11 files
 
 - `app/Domain/Logbook/Models/Logbook.php`
 - `app/Domain/Logbook/Actions/`
+
+## Dependency Graph
+
+```
+Logbook Domain
+├── Core         → BaseModel, BaseAction, SmartLogger
+├── User         → User model (author identity)
+├── Registration → Registration records (logbook context)
+└── Mentor       → Mentor records (reviewer assignment)
+```
+
+Consumed by:
+  Mentee (dashboard entry), Mentor (logbook review),
+  Internship (closure verification)
+

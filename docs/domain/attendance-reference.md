@@ -66,3 +66,19 @@ Total: 22 files
 
 - `app/Domain/Attendance/Models/`
 - `app/Domain/Attendance/Actions/`
+
+## Dependency Graph
+
+```
+Attendance Domain
+├── Core         → BaseModel, BaseAction, SmartLogger
+├── User         → User model (attendee identity)
+├── Registration → Registration records (attendance context)
+├── Mentee       → Mentee records (student attendance)
+└── Mentor       → Mentor records (supervisor attendance)
+```
+
+Consumed by:
+  Internship (closure requirements), Mentee (progress tracking),
+  Mentor (supervision records)
+

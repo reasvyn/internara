@@ -70,3 +70,19 @@ Total: 31 files
 
 - `app/Domain/Assessment/Models/`
 - `app/Domain/Assessment/Actions/` — 16 Actions
+
+## Dependency Graph
+
+```
+Assessment Domain
+├── Core         → BaseModel, BaseAction, SmartLogger, BaseEntity
+├── User         → User model (assessor/assessee identity)
+├── Registration → Registration records (assessment context)
+├── Internship   → Internship records (assessment target)
+└── Assignment   → Assignment records (grading input)
+```
+
+Consumed by:
+  Internship (closure assessment), Certificate (issuance validation),
+  Mentee (progress tracking)
+
