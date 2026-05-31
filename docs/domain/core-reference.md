@@ -173,3 +173,20 @@ Total: 48 files
 
 Core is the root of the entire dependency graph. Nothing depends on it that isn't in the
 Laravel framework, Spatie packages, or PHP standard library.
+
+## Where to Find It
+
+- `app/Domain/Core/Actions/BaseAction.php` — abstract action base
+- `app/Domain/Core/Models/BaseModel.php` — abstract model base with UUID
+- `app/Domain/Core/Entities/BaseEntity.php` — abstract entity base
+- `app/Domain/Core/Policies/BasePolicy.php` — abstract policy base
+- `app/Domain/Core/States/BaseState.php` — abstract state base
+- `app/Domain/Core/Livewire/BaseRecordManager.php` — abstract CRUD Livewire base
+- `app/Domain/Core/Support/SmartLogger.php` — dual-channel logger
+- `app/Domain/Core/Support/CacheKeys.php` — cache key registry
+- `app/Domain/Core/Support/PiiMasker.php` — PII masking
+- `app/Domain/Core/Support/PasswordRules.php` — password validation rules
+- `app/Domain/Core/Exceptions/` — exception hierarchy
+- `app/Domain/Core/Contracts/` — core interfaces
+- `app/Domain/Core/Http/Middleware/` — global middleware
+- `app/Domain/Core/Console/Commands/` — system CLI commands
