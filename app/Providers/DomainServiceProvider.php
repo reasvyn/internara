@@ -10,13 +10,10 @@ use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Internship\Policies\CompanyPolicy;
 use App\Domain\Internship\Policies\InternshipRegistrationPolicy;
 use App\Domain\Partnership\Models\Company;
-use App\Domain\Placement\Models\Placement;
-use App\Domain\Placement\Policies\InternshipPlacementPolicy;
 use App\Domain\Registration\Models\Registration;
 use App\Domain\Setup\Events\SetupFinalized;
 use App\Domain\Setup\Listeners\LogSetupFinalized;
 use App\Domain\User\Actions\SendNotificationAction;
-use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -54,7 +51,6 @@ class DomainServiceProvider extends ServiceProvider
             [LogSetupFinalized::class, 'handle'],
         );
 
-        Gate::policy(Placement::class, InternshipPlacementPolicy::class);
         Gate::policy(Registration::class, InternshipRegistrationPolicy::class);
         Gate::policy(Company::class, CompanyPolicy::class);
     }
