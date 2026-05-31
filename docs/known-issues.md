@@ -293,19 +293,7 @@ Laravel Echo and Reverb installed but no real-time channels active.
 
 No abstract execute() method on BaseAction. Each Action defines its own signature.
 
----
 
-## Infrastructure
-
-### I1. SQLite for Production — No Concurrent Write Support ⏳
-
-SQLite uses file-level locking. Under concurrent load, "database is locked" errors occur. Use MySQL 8+ or PostgreSQL 15+ in production. Status: documented guidance.
-
-### I2. Duplicate Livewire Instances ⏳
-
-ThemeSwitcher and LangSwitcher are mounted in both sidebar and navbar. Resolved by CSS media queries (desktop shows navbar, mobile shows sidebar) but still two component instances per page. Status: monitored, not critical.
-
----
 
 ---
 
@@ -359,8 +347,5 @@ ThemeSwitcher and LangSwitcher are mounted in both sidebar and navbar. Resolved 
 | B4 | Cross-domain event flow undocumented | Backlog | 🟡 Low | Open |
 | B5 | Real-time features (Echo + Reverb) | Backlog | 🟡 Low | Open |
 | B6 | BaseAction cannot enforce execute() signature | Backlog | 🟡 Low | Open |
-| I1 | SQLite for production — no concurrent writes | Infrastructure | ⏳ Known | Guidance |
-| I2 | Duplicate Livewire instances (theme/lang switcher) | Infrastructure | ⏳ Known | Monitored |
-
-**Categories:** A = Audit (new findings), B = Backlog, I = Infrastructure  
-**Severity:** 🔴 Critical = must fix, 🟠 High/Medium = should fix, 🟡 Low = nice to have, ⏳ = known/acknowledged
+**Categories:** A = Audit (new findings), B = Backlog  
+**Severity:** 🔴 Critical = must fix, 🟠 High/Medium = should fix, 🟡 Low = nice to have
