@@ -30,4 +30,9 @@ return [
     'version' => 'Versi',
     'acknowledge' => 'Tandai Sudah Dibaca',
     'no_handbooks' => 'Belum ada panduan tersedia.',
+
+    'file' => 'Berkas PDF',
+    'download' => 'Unduh',
+    'file_uploaded' => 'Berkas PDF berhasil diunggah.',
+    'remove_file' => 'Hapus berkas yang ada?',
 ];

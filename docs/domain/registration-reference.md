@@ -44,7 +44,7 @@ Total: 22 files — ✅ 22 Implemented
 
 | File | Class | Extends | Fields | Used By |
 |---|---|---|---|---|
-| `Registration/Livewire/Forms/AccountApplicationForm.php` | `AccountApplicationForm` | `Form` | name, email, phone, address | `ApplyPage` |
+| `Registration/Livewire/Forms/AccountApplicationForm.php` | `AccountApplicationForm` | `Form` | id, name, email, phone, address, national_id_number, student_id_number, school_id, department_id, class_name, entry_year, internship_id, placement_id, academic_year, proposed_company_name, proposed_company_address, use_placement | `ApplyPage` |
 | `Registration/Livewire/Forms/RegistrationWizardForm.php` | `RegistrationWizardForm` | `Form` | internship_id, placement_id, academic_year, proposed_company_name, proposed_company_address | `RegistrationWizard` |
 
 ## Models

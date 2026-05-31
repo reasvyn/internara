@@ -1,50 +1,52 @@
 <div>
-    <x-shared::ui.page-header :title="__('handbooks.title')" :subtitle="__('handbooks.subtitle')" />
-
-    <div class="mb-4 flex justify-end">
-        <x-mary-button :label="__('handbooks.create')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+    <div class="mb-6">
+        <h2 class="text-xl font-bold">{{ __('dashboard.title') }}</h2>
+        <p class="text-sm text-base-content/50">{{ __('handbooks.student_subtitle') }}</p>
     </div>
 
-    <x-mary-card>
-        <x-mary-table :headers="[
-            ['key' => 'title', 'label' => __('handbooks.title_field'), 'sortable' => true],
-            ['key' => 'version', 'label' => __('handbooks.version_field'), 'sortable' => true],
-            ['key' => 'is_active', 'label' => __('handbooks.status')],
-            ['key' => 'actions', 'label' => ''],
-        ]" :rows="$handbooks" with-pagination>
-            @scope('cell_is_active', $handbook)
-                <x-mary-badge :value="$handbook->is_active ? __('handbooks.active') : __('handbooks.inactive')"
-                    :class="$handbook->is_active ? 'badge-success' : 'badge-ghost'" />
-            @endscope
-            @scope('actions', $handbook)
-                <div class="flex gap-1">
-                    <x-mary-button icon="o-pencil" class="btn-ghost btn-sm btn-circle"
-                        wire:click="edit('{{ $handbook->id }}')" />
-                    <x-mary-button icon="o-trash" class="btn-ghost btn-sm btn-circle text-error"
-                        wire:click="delete('{{ $handbook->id }}')"
-                        wire:confirm="{{ __('common.actions.confirm_action') }}" />
+    <div class="space-y-4">
+        @forelse($handbooks as $handbook)
+            <x-mary-card class="bg-base-100 border border-base-content/10">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-semibold truncate">{{ $handbook->title }}</h3>
+                        <p class="text-xs text-base-content/50 mt-1">
+                            {{ __('handbooks.version') }} {{ $handbook->version }} &middot;
+                            {{ $handbook->published_at?->format('d M Y') ?? '-' }}
+                        </p>
+                        @if($handbook->content)
+                            <div class="mt-3 text-sm text-base-content/70 prose prose-sm max-w-none">
+                                {!! Str::markdown($handbook->content) !!}
+                            </div>
+                        @endif
+                        @if($handbook->getFirstMediaUrl('file'))
+                            <div class="mt-2">
+                                <x-mary-button icon="o-document" :label="__('handbooks.download')" class="btn-ghost btn-xs"
+                                    :href="$handbook->getFirstMediaUrl('file')" external />
+                            </div>
+                        @endif
+                    </div>
+                    <div class="shrink-0">
+                        @php
+                            $acknowledged = $handbook->acknowledgements->isNotEmpty();
+                        @endphp
+                        @if($acknowledged)
+                            <x-mary-badge :value="__('handbooks.acknowledged')" class="badge-success" />
+                        @else
+                            <x-mary-button
+                                wire:click="acknowledge('{{ $handbook->id }}')"
+                                :label="__('handbooks.acknowledge')"
+                                class="btn-primary btn-sm"
+                            />
+                        @endif
+                    </div>
                 </div>
-            @endscope
-        </x-mary-table>
-    </x-mary-card>
-
-    <x-mary-modal wire:model="showModal" :title="$form->id ? __('handbooks.edit') : __('handbooks.create')">
-        <div class="space-y-4">
-            <x-mary-input :label="__('handbooks.title_field')" wire:model="form.title" />
-            <x-mary-textarea :label="__('handbooks.content_field')" wire:model="form.content" rows="8" />
-            <x-mary-input :label="__('handbooks.version_field')" type="number" wire:model="form.version" />
-            <x-mary-select :label="__('handbooks.target_audience')" wire:model="form.target_audience"
-                :options="[
-                    ['id' => 'all', 'name' => __('handbooks.audience_all')],
-                    ['id' => 'student', 'name' => __('handbooks.audience_student')],
-                    ['id' => 'teacher', 'name' => __('handbooks.audience_teacher')],
-                    ['id' => 'supervisor', 'name' => __('handbooks.audience_supervisor')],
-                ]" />
-            <x-mary-toggle :label="__('handbooks.active')" wire:model="form.is_active" />
-        </div>
-        <x-slot:actions>
-            <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('showModal', false)" class="btn-ghost" />
-            <x-mary-button :label="__('common.actions.save')" wire:click="store" class="btn-primary" spinner="store" />
-        </x-slot:actions>
-    </x-mary-modal>
+            </x-mary-card>
+        @empty
+            <div class="flex flex-col items-center justify-center py-12 text-base-content/20">
+                <x-mary-icon name="o-book-open" class="size-12 mb-3" />
+                <span class="text-xs font-medium">{{ __('handbooks.no_handbooks') }}</span>
+            </div>
+        @endforelse
+    </div>
 </div>

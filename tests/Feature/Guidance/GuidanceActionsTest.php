@@ -8,18 +8,15 @@ use App\Domain\Guidance\Actions\CreateHandbookAction;
 use App\Domain\Guidance\Actions\DeleteHandbookAction;
 use App\Domain\Guidance\Actions\UpdateHandbookAction;
 use App\Domain\Guidance\Livewire\HandbookIndex;
-use App\Domain\Guidance\Livewire\StudentHandbookIndex;
+use App\Domain\Guidance\Livewire\HandbookManager;
 use App\Domain\Guidance\Models\Handbook;
 use App\Domain\User\Models\User;
 use Spatie\Permission\Models\Role as RoleModel;
 
 beforeEach(function () {
     app()->setLocale('en');
-    RoleModel::create(['name' => Role::SUPER_ADMIN->value, 'guard_name' => 'web']);
-    RoleModel::create(['name' => Role::ADMIN->value, 'guard_name' => 'web']);
-    RoleModel::create(['name' => Role::STUDENT->value, 'guard_name' => 'web']);
-    RoleModel::create(['name' => Role::TEACHER->value, 'guard_name' => 'web']);
-    RoleModel::create(['name' => Role::SUPERVISOR->value, 'guard_name' => 'web']);
+    collect([Role::SUPER_ADMIN, Role::ADMIN, Role::STUDENT, Role::TEACHER, Role::SUPERVISOR])
+        ->each(fn ($r) => RoleModel::firstOrCreate(['name' => $r->value, 'guard_name' => 'web']));
 });
 
 describe('CreateHandbookAction', function () {
@@ -104,14 +101,14 @@ describe('AcknowledgeHandbookAction', function () {
     });
 });
 
-describe('HandbookIndex (Admin)', function () {
+describe('HandbookManager (Admin)', function () {
     beforeEach(function () {
         $this->admin = User::factory()->create()->assignRole(Role::SUPER_ADMIN->value);
         $this->actingAs($this->admin);
     });
 
     it('renders the page', function () {
-        Livewire::test(HandbookIndex::class)
+        Livewire::test(HandbookManager::class)
             ->assertSuccessful();
     });
 
@@ -119,12 +116,12 @@ describe('HandbookIndex (Admin)', function () {
         $student = User::factory()->create()->assignRole(Role::STUDENT->value);
         $this->actingAs($student);
 
-        Livewire::test(HandbookIndex::class)
+        Livewire::test(HandbookManager::class)
             ->assertForbidden();
     });
 
     it('creates a handbook via form', function () {
-        Livewire::test(HandbookIndex::class)
+        Livewire::test(HandbookManager::class)
             ->call('create')
             ->set('form.title', 'Test Handbook')
             ->set('form.content', 'Test content')
@@ -136,7 +133,7 @@ describe('HandbookIndex (Admin)', function () {
     });
 
     it('validates required fields', function () {
-        Livewire::test(HandbookIndex::class)
+        Livewire::test(HandbookManager::class)
             ->call('create')
             ->set('form.title', '')
             ->set('form.content', '')
@@ -147,7 +144,7 @@ describe('HandbookIndex (Admin)', function () {
     it('edits a handbook', function () {
         $handbook = Handbook::factory()->create();
 
-        Livewire::test(HandbookIndex::class)
+        Livewire::test(HandbookManager::class)
             ->call('edit', $handbook->id)
             ->set('form.title', 'Updated Title')
             ->call('store')
@@ -159,7 +156,7 @@ describe('HandbookIndex (Admin)', function () {
     it('deletes a handbook', function () {
         $handbook = Handbook::factory()->create();
 
-        Livewire::test(HandbookIndex::class)
+        Livewire::test(HandbookManager::class)
             ->call('delete', $handbook->id)
             ->assertHasNoErrors();
 
@@ -167,7 +164,7 @@ describe('HandbookIndex (Admin)', function () {
     });
 });
 
-describe('StudentHandbookIndex', function () {
+describe('HandbookIndex (User)', function () {
     it('shows handbooks matching student audience', function () {
         $student = User::factory()->create()->assignRole(Role::STUDENT->value);
         $this->actingAs($student);
@@ -175,7 +172,7 @@ describe('StudentHandbookIndex', function () {
         Handbook::factory()->create(['title' => 'Student Guide', 'target_audience' => 'student', 'is_active' => true]);
         Handbook::factory()->create(['title' => 'Teacher Guide', 'target_audience' => 'teacher', 'is_active' => true]);
 
-        Livewire::test(StudentHandbookIndex::class)
+        Livewire::test(HandbookIndex::class)
             ->assertSuccessful();
     });
 
@@ -185,7 +182,7 @@ describe('StudentHandbookIndex', function () {
 
         $handbook = Handbook::factory()->create(['is_active' => true]);
 
-        Livewire::test(StudentHandbookIndex::class)
+        Livewire::test(HandbookIndex::class)
             ->call('acknowledge', $handbook->id)
             ->assertHasNoErrors();
 

@@ -7,7 +7,7 @@ use App\Domain\Assignment\Livewire\SubmitAssignment;
 use App\Domain\Attendance\Livewire\AbsenceRequestForm;
 use App\Domain\Attendance\Livewire\StudentClockIn;
 use App\Domain\Certificate\Livewire\StudentCertificates;
-use App\Domain\Guidance\Livewire\StudentHandbookIndex;
+use App\Domain\Guidance\Livewire\HandbookIndex;
 use App\Domain\Incident\Livewire\IncidentForm;
 use App\Domain\Internship\Livewire\ReportWriter;
 use App\Domain\Logbook\Livewire\LogbookEntry;
@@ -23,7 +23,7 @@ Route::prefix('student')
         Route::livewire('/assignments', SubmitAssignment::class)->name('assignments');
         Route::livewire('/supervision', SupervisionManager::class)->name('supervision');
         Route::livewire('/assessments', AssessmentView::class)->name('assessments');
-        Route::livewire('/handbooks', StudentHandbookIndex::class)->name('handbooks');
+        Route::livewire('/handbooks', HandbookIndex::class)->name('handbooks');
         Route::livewire('/attendance', StudentClockIn::class)->name('attendance');
         Route::livewire('/attendance/absence', AbsenceRequestForm::class)->name('attendance.absence');
         Route::livewire('/incidents/report', IncidentForm::class)->name('incidents.report');

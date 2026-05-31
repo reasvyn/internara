@@ -7,6 +7,7 @@ namespace App\Domain\Guidance\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Guidance\Models\Handbook;
 use App\Domain\User\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 /**
@@ -16,9 +17,12 @@ use Illuminate\Support\Str;
  */
 final class CreateHandbookAction extends BaseAction
 {
-    public function execute(User $user, array $data): Handbook
+    /**
+     * @param array<int, UploadedFile> $files
+     */
+    public function execute(User $user, array $data, array $files = []): Handbook
     {
-        return $this->transaction(function () use ($user, $data) {
+        return $this->transaction(function () use ($user, $data, $files) {
             $handbook = Handbook::create([
                 'title' => $data['title'],
                 'slug' => Str::slug($data['title']),
@@ -29,6 +33,10 @@ final class CreateHandbookAction extends BaseAction
                 'published_at' => $data['is_active'] ? now() : null,
                 'created_by' => $user->id,
             ]);
+
+            foreach ($files as $file) {
+                $handbook->addMedia($file)->toMediaCollection('files');
+            }
 
             $this->log('handbook_created', $handbook, ['title' => $handbook->title, 'version' => $handbook->version]);
 

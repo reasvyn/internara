@@ -44,7 +44,7 @@ Total: 12 files — ✅ 12 Implemented
 
 | File | Class | Extends/Implements | Description |
 |---|---|---|---|
-| `Document/Models/Document.php` | `Document` | `BaseModel`, `HasMedia` | Eloquent model for documents with media library |
+| `Document/Models/Document.php` | `Document` | `BaseModel`, `HasMedia` | Eloquent model for documents with media library; has `template_version` (int, default 1) and `template_id` (FK to self) for version traceability |
 
 ## Policies
 

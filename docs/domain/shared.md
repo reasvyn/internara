@@ -10,9 +10,10 @@ Shared is a collection of cross-domain utility code that doesn't belong to any s
 domain or to Core. When two or more domains need the same function — environment detection,
 locale management, CSV handling, theme resolution — the logic lives here.
 
-Shared has no Models, Controllers, Routes, Views, or database migrations. It contains only
-pure utility classes, support traits, and a minimal set of Livewire components for cross-domain
-UI features (language and theme switching).
+Shared has no Models, Controllers, Routes, or database migrations. It contains Blade views
+(Livewire component views, layout files, UI partials), pure utility classes, support traits,
+and a minimal set of Livewire components for cross-domain UI features (language and theme
+switching).
 
 ---
 
@@ -35,6 +36,14 @@ Every class in Shared is either:
 
 This guarantees that Shared utilities have no side effects and are safe to call from
 anywhere in the application.
+
+Known exceptions:
+- **`CsvHandler`** — uses instance methods (`export`, `import`, `downloadTemplate`) because
+  it depends on injected StreamedResponse and Storage abstractions. Could be refactored to
+  static methods, but the current pattern follows Laravel's response builder conventions.
+- **`LangChecker`** — must extend `Illuminate\Translation\Translator` because
+  `flasher-laravel` type-hints the concrete class, and service providers call
+  `addNamespace()`/`addPath()` on it. Cannot be final readonly or static-only.
 
 ### 3. No Business Logic
 

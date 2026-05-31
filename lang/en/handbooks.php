@@ -30,4 +30,9 @@ return [
     'version' => 'Version',
     'acknowledge' => 'Mark as Read',
     'no_handbooks' => 'No handbooks available.',
+
+    'file' => 'PDF File',
+    'download' => 'Download',
+    'file_uploaded' => 'PDF file uploaded successfully.',
+    'remove_file' => 'Remove existing file?',
 ];
