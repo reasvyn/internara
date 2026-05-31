@@ -367,30 +367,30 @@ Not every domain needs every layer. `Mentee` might only need Models + Livewire +
 
 | Domain | Boundary | Key Concept |
 |--------|----------|-------------|
-| **Core** | Base classes & infrastructure everything depends on | `BaseModel`, `BaseEntity`, `BaseAction`, `BaseState`, `AppException`, `Integrity` |
-| **Shared** | Utilities shared across domains, no business logic | `Theme`, `CsvHandler`, `Environment`, `Locale` |
-| **Auth** | Identity & access control | Login, passwords, account lifecycle, recovery |
-| **User** | User profile & identity | Profile editing, dashboard routing |
-| **School** | Institution configuration | Departments, academic years |
-| **Settings** | Runtime configuration | Key-value store, branding, localization |
-| **Setup** | First-run installation | Wizard, environment audit, provisioning |
-| **Admin** | System administration | User CRUD, announcements, GDPR |
-| **Partnership** | External relationships | Companies, partnership agreements |
+| **Core** | Base classes & infrastructure everything depends on | Base model, base action, base entity, contracts, logging, exceptions |
+| **Shared** | Utilities shared across domains, no business logic | Theme, CSV handler, environment detection, locale management |
+| **Auth** | Identity & access control | Login, passwords, account lifecycle, recovery, RBAC |
+| **User** | User identity & profile | Identity persistence, profile editing, dashboards, notifications |
+| **School** | Institution configuration | School profile, departments, academic years |
+| **Settings** | Runtime configuration | Key-value store, branding, localization, feature flags |
+| **Setup** | First-run installation | Wizard, environment audit, provisioning, recovery key |
+| **Admin** | System administration | User CRUD, announcements, GDPR, audit logs |
+| **Partnership** | External relationships | Companies, partnership agreements, MoU |
 | **Placement** | Slot management | Capacity, direct assignments, change requests |
-| **Registration** | Student enrollment | Applications, wizard, document upload |
-| **Internship** | Program execution | Reports, requirements |
-| **Mentor** | Mentoring & supervision | Logs, teacher/supervisor portals |
-| **Mentee** | Student role | Dashboard, program participation |
-| **Attendance** | Presence tracking | Clock-in/out, absence requests |
-| **Logbook** | Daily journals | Student diary entries |
-| **Schedule** | Event planning | Calendar management |
+| **Registration** | Student enrollment | Applications, wizard, document upload, verification |
+| **Internship** | Program execution | Program lifecycle, groups, phases, reports, closure & archival |
+| **Mentor** | Mentoring & supervision | Dual mentorship, supervision logs, grading, site visits |
+| **Mentee** | Student role | Dashboard, progress tracking, self-service access |
+| **Attendance** | Presence tracking | Clock-in/out, absence requests, compliance monitoring |
+| **Logbook** | Daily journals | Student diary entries, photo documentation, mentor review |
+| **Schedule** | Event planning | Calendar management, recurrence, reminders |
 | **Guidance** | Handbooks | Versioned documents, acknowledgements |
-| **Incident** | Issue reporting | Report, investigation, resolution |
-| **Assignment** | Tasks & submissions | Creation, grading workflow |
-| **Assessment** | Competency evaluation | Rubrics, scoring, presentations |
-| **Evaluation** | Program & mentor quality | Multi-type feedback collection (program, company, facility, mentor, overall) |
-| **Document** | Template management | Rendering, report generation |
-| **Certificate** | Credentialing | Issuance, templates, revocation |
+| **Incident** | Issue reporting | Report, investigation, resolution workflow |
+| **Assignment** | Tasks & submissions | Task creation, grading workflow, revision loop |
+| **Assessment** | Competency evaluation | Rubrics, scoring, presentations, weighted criteria |
+| **Evaluation** | Feedback collection | Multi-type feedback (program, company, mentor, overall) |
+| **Document** | Template management | Rendering engine, PDF generation, report templates |
+| **Certificate** | Credentialing | Issuance, templates, revocation, serial number tracking |
 
 ---
 
