@@ -1,21 +1,50 @@
 # Known Issues and Gotchas
-> Last updated: 2026-05-31
-> Changes: docs: replace resolved infrastructure issues with design audit findings
+> Last updated: 2026-06-01
+> Changes: docs: comprehensive documentation vs implementation audit — add new findings, remove resolved
 
 
-## Documentation — Missing Design Principles
+## Implementation — Critical
 
-7 domain docs have no Design Principles section. These domains define operational workflows that need explicit design guidance.
+### InternshipPlacementPolicy Referenced but File Missing 🔴
 
-| Domain | Why It Needs Principles |
-|--------|------------------------|
-| **Assessment** | Scoring methodology, rubric weighting rules, finalization policy, presentation exam ethics |
-| **Assignment** | Submission deadline policy, grading rubric alignment, revision cycle rules, mandatory vs optional assignments |
-| **Document** | Template versioning policy, renderer selection rules, data injection contract, file format decisions |
-| **Evaluation** | Anonymity guarantees, score band calibration, multi-perspective aggregation, feedback ownership |
-| **Incident** | Severity classification rules, escalation thresholds, investigation timeline, resolution outcome policy |
-| **Mentee** | Dashboard data freshness, progress calculation formula, quick-action routing rules, mentor visibility policy |
-| **Schedule** | Recurrence engine rules, conflict detection thresholds, reminder timing defaults, event immutability window |
+**File:** `app/Providers/DomainServiceProvider.php:14,57`
+
+`DomainServiceProvider` imports `App\Domain\Placement\Policies\InternshipPlacementPolicy` and registers it via `Gate::policy(Placement::class, ...)`. The file does not exist — only `PlacementPolicy.php` and `PlacementChangeRequestPolicy.php` exist in that directory. This causes a fatal `ClassNotFoundError` on every request.
+
+**Fix:** Either create the file at `app/Domain/Placement/Policies/InternshipPlacementPolicy.php` or remove the import and registration from `DomainServiceProvider`.
+
+### Duplicate CompanyPolicy in Two Domains 🔴
+
+**Files:** `app/Domain/Internship/Policies/CompanyPolicy.php` and `app/Domain/Partnership/Policies/CompanyPolicy.php`
+
+Two CompanyPolicy implementations exist with different logic. The Internship version (46 lines, with placements-exists guard on delete) overrides the Partnership version (37 lines, simpler) via manual `Gate::policy()` in `DomainServiceProvider:61`. Auto-discovery maps `Partnership\Policies\CompanyPolicy` → `Partnership\Models\Company`, but the manual registration replaces it.
+
+**Fix:** Consolidate into `Partnership/Policies/CompanyPolicy.php`. Update `DomainServiceProvider` to either let auto-discovery handle it or point to the Partnership version.
+
+### InternshipRegistrationPolicy in Wrong Domain 🔴
+
+**File:** `app/Domain/Internship/Policies/InternshipRegistrationPolicy.php`
+
+This policy gates `Registration\Models\Registration` but lives in the Internship domain. Registered manually in `DomainServiceProvider:60`. The Registration domain already has its own `RegistrationPolicy.php` but the Internship version overrides it.
+
+**Fix:** Move to `Registration/Policies/InternshipRegistrationPolicy.php` and update `DomainServiceProvider`.
+
+### 564 Files Without declare(strict_types=1) 🔴
+
+Convention requires `declare(strict_types=1)` in every PHP file. Across the entire `app/Domain/` directory, 564 files are missing this declaration. Domains most affected: Auth, Assessment, Admin, Internship, Placement, Registration, and several others.
+
+**Fix:** Batch-add `declare(strict_types=1)` to all affected files. This is a mechanical change that should be done with a script.
+
+### 2 Entities Importing Models 🔴
+
+| Entity | Imports | Violation |
+|--------|---------|-----------|
+| `Auth/Entities/SuperAdminIntegrityRules.php` | `User\Models\User` | Entity imports Model + cross-domain import |
+| `Mentee/Entities/MenteeState.php` | `Registration\Models\Registration` | Entity imports Model + cross-domain import |
+
+Convention requires entities to have zero framework dependencies and never import Models.
+
+**Fix:** Replace Model references with primitives or DTOs in entity constructors. Use `fromModel()` to bridge persistence.
 
 ---
 
@@ -23,17 +52,10 @@
 
 ### Site Visit Scheduling & Logging 🔴
 
-Teachers must conduct site visits to placement locations. Currently no domain documents site visit scheduling, travel planning, or visit result logging. Mentor domain has supervision logs but they are private notes, not formal visit records.
+Teachers must conduct site visits to placement locations. Mentor domain has supervision logs but they are private notes, not formal visit records with scheduling, travel planning, or visit result logging.
 
-**Suggested domain:** Mentor or a dedicated SiteVisit sub-concern.
+**Suggested domain:** Mentor.
 **Priority:** High — regulatory requirement for Indonesian vocational education.
-
-### Daily Photo Documentation 🔴
-
-Many vocational schools require daily photo evidence of student activities — not just text journals. Logbook domain should support photo capture and attachment as first-class feature, not just generic file upload.
-
-**Suggested domain:** Logbook.
-**Status:** ✅ Implemented — photo collection with camera capture and manual upload fallback.
 
 ### Geo-fencing for Attendance Verification 🟠
 
@@ -44,7 +66,7 @@ Current GPS coordinate capture provides location but not verification. Geo-fenci
 
 ### Placement Agreement Generation 🟠
 
-Schools need auto-generated administrative letters from placement data: surat tugas, MoU summaries, placement confirmation letters. Document domain handles rendering but no domain defines the letter templates or triggers.
+Schools need auto-generated administrative letters from placement data: surat tugas, MoU summaries, placement confirmation letters.
 
 **Suggested domain:** Document (templates) + Placement (data source).
 **Priority:** Medium — reduces administrative burden.
@@ -58,21 +80,21 @@ Current evaluation is student→mentor and student→company only. An ideal syst
 
 ### Offline Mode Design 🟡
 
-Product definition states offline-capable but no domain doc designs how Attendance and Logbook work without connectivity. Should document offline queue, conflict resolution, and sync strategy.
+Product definition states offline-capable but no domain doc designs how Attendance and Logbook work without connectivity.
 
 **Suggested domain:** Attendance, Logbook.
 **Priority:** Low — important for schools with unreliable internet.
 
 ### Bulk Communication to Segmented Groups 🟡
 
-Announcements target by role only. Admins need to message specific segments: "all students at Company X", "all mentors for Program Y".
+Announcements target by role only. Admins need to message "all students at Company X" or "all mentors for Program Y".
 
 **Suggested domain:** Admin.
 **Priority:** Low — future enhancement.
 
 ### Digital Signature / E-Sign 🟡
 
-Mentor verification of logbooks and attendance currently relies on click-to-verify. Electronic signature via canvas or uploaded signature image would strengthen legal validity.
+Mentor verification relies on click-to-verify. Electronic signature would strengthen legal validity of logbook and attendance records.
 
 **Suggested domain:** Logbook, Attendance.
 **Priority:** Low — future enhancement.
@@ -83,11 +105,11 @@ Mentor verification of logbooks and attendance currently relies on click-to-veri
 
 ### Mentor: Mixed Responsibilities 🟠
 
-Mentor domain currently mixes two distinct responsibilities under one domain: supervision logs (private mentor notes) and grading (assignment assessment). These serve different workflows and have different authorization rules. Supervision is a mentor-student private record; grading is an academic evaluation visible to the student.
+Mentor domain mixes two distinct responsibilities: supervision logs (private mentor notes) and grading (assignment assessment). These serve different workflows with different authorization rules.
 
 ### Evaluation: Limited Perspective Coverage 🟡
 
-Evaluation collects only student→mentor and student→company feedback. Missing perspectives documented in product definition: mentor→student performance assessment, self-evaluation, and program quality evaluation by the school.
+Evaluation collects only student→mentor and student→company feedback. Missing: mentor→student performance, self-evaluation, and program quality evaluation.
 
 ---
 
@@ -97,29 +119,9 @@ Evaluation collects only student→mentor and student→company feedback. Missin
 |------------|--------|----------|
 | Mobile-responsive clock-in button (large touch target) | Attendance | 🟠 |
 | Offline queue with background sync | Attendance, Logbook | 🟡 |
-| Photo capture via device camera (not just upload) | Logbook | 🟠 |
 | Canvas-based digital signature pad | Logbook, Attendance | 🟡 |
 | Placement location map view | Placement, Mentor | 🟡 |
 | Progress ring/badge widget on dashboards | Mentee, User | 🟡 |
-
----
-
-## Reference Documentation — Inaccurate File Counts
-
-10 domain reference docs have file counts that don't match the actual code. Each domain's reference doc needs verification of both the count and the table entries (some files missing from tables, others listed but moved to different domains).
-
-| Domain | Doc Says | Actual | Gap | Likely Cause |
-|--------|----------|--------|-----|--------------|
-| Assignment | 22 | 23 | +1 | Missing file in tables |
-| Attendance | 21 | 22 | +1 | Missing file in tables |
-| Auth | 39 | 40 | +1 | UserPolicy moved to User, ActivationToken added |
-| Guidance | 8 | 11 | +3 | HandbookAcknowledgement, Livewire Forms, HandbookForm not listed |
-| Mentee | 7 | 6 | -1 | Listed file moved to User domain |
-| Mentor | 26 | 24 | -2 | Listed files moved to User domain |
-| Partnership | 19 | 21 | +2 | Batch delete actions not listed |
-| Placement | 18 | 21 | +3 | Livewire Forms, StudentPlacementChangeRequest not listed |
-| Setup | 27 | 26 | -1 | Listed file moved |
-| User | 39 | 40 | +1 | UserPolicy added |
 
 ---
 
@@ -127,11 +129,11 @@ Evaluation collects only student→mentor and student→company feedback. Missin
 
 ### K5. SQLite for Production — No Concurrent Write Support 🔴
 
-SQLite uses file-level locking. Under concurrent load, "database is locked" errors occur on simultaneous operations. Use MySQL 8+ or PostgreSQL 15+ in production. Status: documented guidance — engine choice.
+SQLite uses file-level locking. Under concurrent load, "database is locked" errors occur. Use MySQL 8+ or PostgreSQL 15+ in production. Status: documented guidance.
 
-### H6. Duplicate Livewire: ThemeSwitcher + LangSwitcher ×2 ⏳
+### H6. Duplicate Livewire Instances ⏳
 
-ThemeSwitcher and LangSwitcher are mounted in both sidebar and navbar. Currently resolved by CSS media queries (desktop shows navbar, mobile shows sidebar) but they are still two component instances per page. Status: monitored, not critical.
+ThemeSwitcher and LangSwitcher are mounted in both sidebar and navbar. Resolved by CSS media queries (desktop shows navbar, mobile shows sidebar) but still two component instances per page. Status: monitored, not critical.
 
 ---
 
@@ -166,24 +168,20 @@ ThemeSwitcher and LangSwitcher are mounted in both sidebar and navbar. Currently
 
 ### GD8. Acknowledgement Not Used as Gate ⏳
 
-Handbook acknowledgement is purely informational — no action is blocked. Registration, attendance clock-in, and logbook submission work without acknowledged handbooks.
+Handbook acknowledgement is purely informational — no action is blocked.
 
 ### Livewire Form Object Migration ⏳
 
-~45 Livewire components still manage form state via flat public properties. Migration completed for: Setup, Auth, Profile, Settings, Internship, Guidance, Registration, Placement.
+~45 components still manage form state via flat public properties. Completed: Setup, Auth, Profile, Settings, Internship, Guidance, Registration, Placement.
 
 ### Cross-Domain Event Flow Undocumented ⏳
 
-Which events fire and which listeners react is not documented. Needed for understanding side effects when modifying Actions.
+Which events fire and which listeners react is not documented.
 
 ### Real-Time Features (Future) ⏳
 
-Laravel Echo and Reverb installed but no real-time channels active. Candidates: notification delivery, dashboard updates, attendance confirmations.
-
-### Translation Gaps
-
-All translation gaps have been resolved. Key counts are now equal between EN and ID for all domain translation files.
+Laravel Echo and Reverb installed but no real-time channels active.
 
 ### BaseAction Cannot Enforce execute() Signature ⏳
 
-BaseAction has no abstract execute() method. Each Action defines its own signature. No way to enforce a consistent calling convention at the abstract level.
+No abstract execute() method on BaseAction. Each Action defines its own signature.
