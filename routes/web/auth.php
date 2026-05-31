@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Domain\Auth\Livewire\AccessManager;
 use App\Domain\Auth\Livewire\AccountLifecycleManager;
 use App\Domain\Auth\Livewire\AccountRecovery;
 use App\Domain\Auth\Livewire\ActivateAccount;
@@ -31,4 +32,5 @@ Route::prefix('admin')
     ->group(function () {
         Route::get('/accounts', AccountLifecycleManager::class)->name('accounts.lifecycle');
         Route::get('/recovery-slips', RecoverySlipManager::class)->name('recovery-slips');
+        Route::get('/access', AccessManager::class)->name('access');
     });

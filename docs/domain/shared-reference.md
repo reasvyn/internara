@@ -1,9 +1,10 @@
 # Shared — API Reference
-> Last updated: 2026-05-28
-> Changes: docs: update shared-reference, add ideal settings domain design
+> Last updated: 2026-05-31
+> Changes: docs: audit — all items Implemented
 
+> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 9 files
+Total: 9 files — ✅ 9 Implemented (+ 17 Blade UI components)
 
 ## Enums
 
@@ -25,7 +26,7 @@ Total: 9 files
 | `Shared/Support/CsvHandler.php` | `CsvHandler` | CSV export (streamed), import with header validation, template download |
 | `Shared/Support/Environment.php` | `Environment` | Centralized environment detection — `isDebugMode()`, `isDevelopment()`, `isProduction()`, etc. |
 | `Shared/Support/HasModelStatuses.php` | `HasModelStatuses` | Trait — bridges legacy Spatie HasStatuses with typed StatusEnum. @deprecated |
-| `Shared/Support/LangChecker.php` | `LangChecker` | Extended Translator — logs warning on missing translation keys (dev only) |
+| `Shared/Support/LangChecker.php` | `LangChecker` | Implements Translator contract — logs warning on missing translation keys (dev only) |
 | `Shared/Support/Locale.php` | `Locale` | Locale management — set, current, all, keys, isSupported, metadata. Cookie-based persistence |
 | `Shared/Support/Theme.php` | `Theme` | Theme/color resolution — defaults, presets, all, cssVariables (cached) |
 
@@ -42,6 +43,8 @@ Total: 9 files
 | `shared/ui/confirm.blade.php` | Confirmation dialog |
 | `shared/ui/display-field.blade.php` | Read-only display field with label and optional icon |
 | `shared/ui/page-header.blade.php` | Page header with title and actions |
+| `shared/ui/avatar.blade.php` | User avatar with fallback initials |
+| `shared/ui/credit.blade.php` | Footer credit line |
 | `shared/ui/markdown-editor.blade.php` | Markdown editor component |
 | `shared/ui/record-manager.blade.php` | Data table with bulk actions |
 | `shared/ui/selection-bar.blade.php` | Selection bar for bulk operations |
@@ -62,7 +65,7 @@ Total: 9 files
 - `app/Domain/Shared/Support/Locale.php` — locale management
 - `app/Domain/Shared/Support/Theme.php` — theme/color resolution
 - `app/Domain/Shared/Support/CsvHandler.php` — CSV handler
-- `app/Domain/Shared/Support/LangChecker.php` — translation key checker
+- `app/Domain/Shared/Support/LangChecker.php` — translation key checker (deprecated — use Laravel's built-in trans())
 - `app/Domain/Shared/Support/HasModelStatuses.php` — legacy Spatie bridge trait
 - `app/Domain/Shared/Enums/CsvRowResult.php` — CSV import result enum
 - `app/Domain/Shared/Livewire/LangSwitcher.php` — language switcher component

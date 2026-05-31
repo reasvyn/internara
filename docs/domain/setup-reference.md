@@ -1,9 +1,10 @@
 # Setup — API Reference
-> Last updated: 2026-05-28
-> Changes: docs: add ideal setup domain design
+> Last updated: 2026-05-31
+> Changes: docs: audit — all items Implemented
 
+> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 26 files
+Total: 26 files — ✅ 26 Implemented
 
 ## Actions
 

@@ -1,9 +1,10 @@
 # Auth — API Reference
-> Last updated: 2026-05-26
-> Changes: docs: update docs for non-expiring recovery codes and profile redesign
+> Last updated: 2026-05-31
+> Changes: docs: audit — all items Implemented
 
+> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 40 files
+Total: 40 files — ✅ 40 Implemented
 
 ## Actions
 

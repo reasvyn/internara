@@ -1,9 +1,10 @@
 # Partnership — API Reference
-> Last updated: 2026-05-25
-> Changes: docs: add user registration audit findings (UC1-UC7) to known-issues, remove resolved entries
+> Last updated: 2026-05-31
+> Changes: docs: audit — all items Implemented
 
+> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 21 files
+Total: 21 files — ✅ 21 Implemented
 
 ## Actions
 

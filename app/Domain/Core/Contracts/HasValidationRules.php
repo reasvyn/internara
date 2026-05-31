@@ -26,6 +26,7 @@ interface HasValidationRules
      * Return validation rules for the entity.
      *
      * @param string|null $excludeId Optional ID to exclude (for unique rules on update).
+     *
      * @return array<string, mixed>
      */
     public static function rules(?string $excludeId = null): array;

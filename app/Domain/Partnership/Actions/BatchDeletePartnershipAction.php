@@ -15,6 +15,7 @@ final class BatchDeletePartnershipAction extends BaseAction
 
     /**
      * @param string[] $ids
+     *
      * @return array{deleted: int, blocked: int}
      */
     public function execute(array $ids): array

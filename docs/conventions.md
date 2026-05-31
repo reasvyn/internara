@@ -1,6 +1,6 @@
 # Coding Conventions
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+> Last updated: 2026-05-31
+> **Context:** ✅ All conventions are enforced — see [domain index](domain/domain-index.md) for implementation status.
 
 
 This document describes conventions for writing code in the Internara codebase. These rules

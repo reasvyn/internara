@@ -1,9 +1,10 @@
 # Admin — API Reference
-> Last updated: 2026-05-26
-> Changes: fix: enforce super admin integrity with SuperAdminIntegrityRules across all code paths
+> Last updated: 2026-05-31
+> Changes: docs: audit — all items Implemented
 
+> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 55 files
+Total: 55 files — ✅ 55 Implemented
 
 ## Actions
 
@@ -55,7 +56,8 @@ Total: 55 files
 | `Admin/Livewire/StudentManager.php` | `StudentManager` | `BaseRecordManager` | CRUD manager for student users |
 | `Admin/Livewire/SupervisorManager.php` | `SupervisorManager` | `BaseRecordManager` | CRUD manager for supervisor users |
 | `Admin/Livewire/TeacherManager.php` | `TeacherManager` | `BaseRecordManager` | CRUD manager for teacher users |
-| `Admin/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` | CRUD manager for all users with search, filters, sort, bulk lock/unlock/delete, CSV import/export, template download, pagination control |
+| `Admin/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` | CRUD manager for all users with search, filters, sort, bulk lock/unlock/delete, CSV import/export, template download, pagination control, account slip download |
+| `Admin/Livewire/Concerns/DownloadsAccountSlips.php` | `DownloadsAccountSlips` | — | Trait used by UserManager for generating/downloading account slips |
 
 ## Models
 

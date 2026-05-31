@@ -1,9 +1,10 @@
 # Placement — API Reference
-> Last updated: 2026-05-26
-> Changes: fix: enforce super admin integrity with SuperAdminIntegrityRules across all code paths
+> Last updated: 2026-05-31
+> Changes: docs: audit — all items Implemented
 
+> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 21 files
+Total: 21 files — ✅ 21 Implemented
 
 ## Actions
 
