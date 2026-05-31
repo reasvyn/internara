@@ -185,3 +185,40 @@ Laravel Echo and Reverb installed but no real-time channels active.
 ### BaseAction Cannot Enforce execute() Signature ⏳
 
 No abstract execute() method on BaseAction. Each Action defines its own signature.
+
+---
+
+## Summary
+
+| # | Issue | Category | Severity | Status |
+|---|-------|----------|----------|--------|
+| I1 | InternshipPlacementPolicy file missing — fatal error | Implementation | 🔴 Critical | Open |
+| I2 | Duplicate CompanyPolicy (Internship + Partnership) | Implementation | 🔴 Critical | Open |
+| I3 | InternshipRegistrationPolicy in wrong domain | Implementation | 🔴 Critical | Open |
+| I4 | 564 files without `declare(strict_types=1)` | Implementation | 🔴 Critical | Open |
+| I5 | 2 Entities importing Models | Implementation | 🔴 Critical | Open |
+| D1 | Site visit scheduling & logging | Documentation | 🔴 High | Open |
+| D2 | Geo-fencing for attendance verification | Documentation | 🟠 Medium | Open |
+| D3 | Placement agreement generation | Documentation | 🟠 Medium | Open |
+| D4 | Mentor: mixed responsibilities boundary | Documentation | 🟠 Medium | Open |
+| D5 | Mobile-responsive clock-in button | Documentation | 🟠 Medium | Open |
+| D6 | 360-degree evaluation | Documentation | 🟡 Low | Open |
+| D7 | Offline mode design | Documentation | 🟡 Low | Open |
+| D8 | Bulk communication to segmented groups | Documentation | 🟡 Low | Open |
+| D9 | Digital signature / e-sign | Documentation | 🟡 Low | Open |
+| D10 | Evaluation: limited perspective coverage | Documentation | 🟡 Low | Open |
+| D11 | Offline queue with background sync | Documentation | 🟡 Low | Open |
+| D12 | Canvas-based digital signature pad | Documentation | 🟡 Low | Open |
+| D13 | Placement location map view | Documentation | 🟡 Low | Open |
+| D14 | Progress ring/badge on dashboards | Documentation | 🟡 Low | Open |
+| B1 | Feature test coverage — 68 Actions uncovered | Backlog | 🔴 High | Open |
+| B2 | GD8 — Acknowledgement not used as gate | Backlog | 🟠 Medium | Open |
+| B3 | Livewire Form Object migration (~45 components) | Backlog | 🟡 Low | Open |
+| B4 | Cross-domain event flow undocumented | Backlog | 🟡 Low | Open |
+| B5 | Real-time features (Echo + Reverb) | Backlog | 🟡 Low | Open |
+| B6 | BaseAction cannot enforce execute() signature | Backlog | 🟡 Low | Open |
+| I6 | SQLite for production — no concurrent writes | Infrastructure | ⏳ Known | Guidance |
+| I7 | Duplicate Livewire instances (theme/lang switcher) | Infrastructure | ⏳ Known | Monitored |
+
+**Categories:** I = Implementation, D = Documentation, B = Backlog  
+**Severity:** 🔴 Critical/High = must fix, 🟠 Medium = should fix, 🟡 Low = nice to have, ⏳ = known/acknowledged
