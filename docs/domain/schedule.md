@@ -2,53 +2,50 @@
 
 ## Purpose
 
-Schedule manages calendar events — deadlines, site visits, presentations, and other
-program events.
+Schedule manages time-based entries — deadlines, site visits, presentations, and other
+program events — as a simple record collection.
 
 ---
 
 ## Design Principles
 
-### 1. Recurrence Without Duplication
+### 1. Entry Status
 
-Recurring events maintain a single definition with a recurrence rule — they are not stored
-as multiple individual records. The recurrence engine expands the rule into visible
-occurrences within the requested date range.
+Each schedule entry has a computed status based on its time range: upcoming, ongoing,
+or past. Status is derived from the current time relative to the entry's start and end
+dates, not stored as a fixed state.
 
-### 2. Conflict Awareness
+### 2. Authoritative Time Source
 
-Overlapping events generate warnings but do not block creation. The system detects time
-conflicts and surfaces them to the user, who decides how to resolve them. Blocking
-scheduling creates more problems than it solves in educational contexts.
-
-### 3. Past Immutability
-
-Events in the past are locked. Corrections require cancellation and recreation — the
-original event remains in the record as cancelled, and a new event is created. This
-preserves the audit trail of what was originally scheduled.
+The server clock is the single source of truth for determining past, present, and future
+entries. Client-side time zone detection may adjust the display but never changes the
+canonical time boundaries.
 
 ---
 
 ## Domain Boundary
 
-The Schedule domain owns the event calendar — the creation, management, and display of all time-bound activities within the system. It handles individual events with titles, descriptions, start and end times, locations, categories, and program associations. It supports recurring events with daily, weekly, biweekly, and monthly repetition patterns, each with a configurable end condition. Calendar views are available in day, week, month, and agenda formats accessible to students, mentors, and administrators. The system provides configurable in-app and email reminders for upcoming events and detects scheduling conflicts with warnings.
+The Schedule domain owns schedule entries — the creation, management, and listing of
+time-bound records. Each entry has a title, description, start and end times, and an
+optional program association. Entries are managed through a paginated listing interface
+with basic create, read, update, and delete operations.
 
-Schedule does not own attendance records (Attendance), program definitions (Internship), student identity data (User), or any operational domain data. Schedule events may reference a program for contextual association, but the domain does not manage program details or lifecycle. It does not own the entities that attend scheduled events — only the event definitions themselves.
+Schedule does not own attendance records (Attendance), program definitions (Internship),
+student identity data (User), or any operational domain data. Schedule entries may
+reference a program for contextual association, but the domain does not manage program
+details or lifecycle. It does not own calendar rendering, recurrence engines, reminders,
+conflict detection, or visual calendar views — those are aspirational features not yet
+implemented.
 
-The domain depends on Internship for program context when events are program-specific, and on User for determining which events are visible to which users. It provides the temporal framework that other domains may reference, but events are self-contained within the Schedule domain.
+The domain depends on Internship for program context and on User for participant identity.
+It provides the temporal records that other domains may reference, but entries are
+self-contained within the Schedule domain.
 
 ---
 
 ## Key Features
 
-- Create, update, and delete calendar events with title, description, time range, location, category, and program association.
-- Define recurring events with daily, weekly, biweekly, or monthly repetition and a configurable end condition.
-- Display events in day, week, month, and agenda calendar views for students, mentors, and administrators.
-- Send configurable in-app and email reminders to participants ahead of upcoming events.
-- Detect overlapping or conflicting events and display a warning when scheduling conflicts arise.
-- Lock past events as immutable, requiring cancellation and recreation instead of direct edits for corrections.
-- Browse a visual calendar with day, week, month, and agenda views toggled by a view switcher.
-- Create events by clicking on a calendar time slot, opening a pop-up form pre-filled with the selected date and time.
-- View color-coded events by category on the calendar for quick visual identification.
-- Receive a pop-up reminder notification before an upcoming event with a configurable lead time.
-- Filter calendar events by program or category using dropdown selectors above the calendar.
+- Create, update, and delete schedule entries with title, description, and time range.
+- View a paginated list of schedule entries sorted by date.
+- Browse past, ongoing, and upcoming entries with computed status labels.
+- Filter entries by program association using a dropdown selector.

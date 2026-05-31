@@ -11,6 +11,7 @@ use App\Domain\Guidance\Livewire\StudentHandbookIndex;
 use App\Domain\Incident\Livewire\IncidentForm;
 use App\Domain\Internship\Livewire\ReportWriter;
 use App\Domain\Logbook\Livewire\LogbookEntry;
+use App\Domain\Mentor\Livewire\EvaluateMentor;
 use App\Domain\Mentor\Livewire\Supervision\SupervisionManager;
 use App\Domain\Placement\Livewire\StudentPlacementChangeRequest;
 
@@ -29,4 +30,5 @@ Route::prefix('student')
         Route::livewire('/reports', ReportWriter::class)->name('reports');
         Route::livewire('/internships/placement-change', StudentPlacementChangeRequest::class)->name('internships.placement-change');
         Route::livewire('/certificates', StudentCertificates::class)->name('certificates');
+        Route::livewire('/mentors/evaluate', EvaluateMentor::class)->name('mentors.evaluate');
     });

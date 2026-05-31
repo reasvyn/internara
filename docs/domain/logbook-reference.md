@@ -36,7 +36,7 @@ Total: 11 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Logbook/Livewire/LogbookEntry.php` | `LogbookEntry` | `Component` | Student logbook entry form |
+| `Logbook/Livewire/LogbookEntry.php` | `LogbookEntry` | `Component`, `WithPagination`, `WithFileUploads` | Student logbook entry form with camera/photo upload |
 | `Logbook/Livewire/LogbookManager.php` | `LogbookManager` | `BaseRecordManager` | CRUD manager for logbook entries |
 
 ## Models
@@ -62,8 +62,7 @@ Total: 11 files
 Logbook Domain
 ├── Core         → BaseModel, BaseAction, SmartLogger
 ├── User         → User model (author identity)
-├── Registration → Registration records (logbook context)
-└── Mentor       → Mentor records (reviewer assignment)
+└── Registration → Registration records (logbook context)
 ```
 
 Consumed by:

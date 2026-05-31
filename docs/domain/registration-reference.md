@@ -33,12 +33,18 @@ Total: 22 files
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Registration/Livewire/AccountApplicationForm.php` | `AccountApplicationForm` | `Component` | Student account application form |
 | `Registration/Livewire/ApplyPage.php` | `ApplyPage` | `Component` | Internship program application page |
 | `Registration/Livewire/RegistrationCenter.php` | `RegistrationCenter` | `Component` | Central registration management hub |
 | `Registration/Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload` | `Component` | Document upload for registration |
 | `Registration/Livewire/RegistrationVerification.php` | `RegistrationVerification` | `Component` | Admin verification of registrations |
 | `Registration/Livewire/RegistrationWizard.php` | `RegistrationWizard` | `Component` | Multi-step registration flow |
+
+### Livewire Form Objects
+
+| File | Class | Extends | Fields | Used By |
+|---|---|---|---|---|
+| `Registration/Livewire/Forms/AccountApplicationForm.php` | `AccountApplicationForm` | `Form` | name, email, phone, address | `ApplyPage` |
+| `Registration/Livewire/Forms/RegistrationWizardForm.php` | `RegistrationWizardForm` | `Form` | internship_id, placement_id, academic_year, proposed_company_name, proposed_company_address | `RegistrationWizard` |
 
 ## Models
 

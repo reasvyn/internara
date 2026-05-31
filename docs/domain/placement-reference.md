@@ -50,9 +50,9 @@ Total: 21 files
 
 | File | Class | Extends | Fields | Used By |
 |---|---|---|---|---|
-| `Placement/Livewire/Forms/DirectPlacementForm.php` | `DirectPlacementForm` | `Form` | student_id, placement_id, academic_year | `DirectPlacementManager` |
+| `Placement/Livewire/Forms/DirectPlacementForm.php` | `DirectPlacementForm` | `Form` | student_id, placement_id, academic_year, mentor_ids | `DirectPlacementManager` |
 | `Placement/Livewire/Forms/PlacementChangeForm.php` | `PlacementChangeForm` | `Form` | to_placement_id, reason | `StudentPlacementChangeRequest` |
-| `Placement/Livewire/Forms/PlacementForm.php` | `PlacementForm` | `Form` | company_id, internship_id, description, status, academic_year | `PlacementIndex` |
+| `Placement/Livewire/Forms/PlacementForm.php` | `PlacementForm` | `Form` | company_id, internship_id, name, address, quota, description | `PlacementIndex` |
 
 ## Policies
 

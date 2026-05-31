@@ -61,7 +61,7 @@ Total: 40 files
 
 | File | Class | Extends | Fields | Used By |
 |---|---|---|---|---|
-| `User/Livewire/Forms/ProfileForm.php` | `ProfileForm` | `Form` | name, email, phone, address, bio | `ProfileEditor` |
+| `User/Livewire/Forms/ProfileForm.php` | `ProfileForm` | `Form` | name, email, phone, address, bio, employment_status, nip, nuptk, competence_field, position | `ProfileEditor` |
 | `User/Livewire/Forms/PasswordForm.php` | `PasswordForm` | `Form` | current_password, password, password_confirmation | `ProfileEditor` |
 
 ## Models

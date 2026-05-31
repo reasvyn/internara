@@ -35,7 +35,7 @@ Total: 40 files
 | File | Class | Implements | Description |
 |---|---|---|---|
 | `Auth/Enums/AccountStatus.php` | `AccountStatus` | `ColorableEnum`, `StatusEnum` | User account status states |
-| `Auth/Enums/Role.php` | `Role` | `LabelEnum` | System roles (super_admin, admin, teacher, student, supervisor) |
+| `Auth/Enums/Role.php` | `Role` | `LabelEnum` | System roles (super_admin, admin, teacher, student, supervisor) + functional roles (mentor, mentee) |
 
 ## Middleware
 

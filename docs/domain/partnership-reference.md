@@ -70,8 +70,10 @@ Total: 21 files
 
 ```
 Partnership Domain
-├── Core  → BaseModel, BaseAction, SmartLogger
-└── User  → User model (company contact/representative)
+├── Core       → BaseModel, BaseAction, SmartLogger
+├── User       → User model (company contact/representative)
+├── Placement  → Placement models (slot counting, placement guard on delete)
+└── Shared     → CsvHandler (CSV import/export for companies and partnerships)
 ```
 
 Consumed by:
