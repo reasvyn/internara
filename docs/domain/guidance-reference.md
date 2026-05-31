@@ -3,7 +3,7 @@
 > Changes: fix: complete system initialization overhaul — security, middleware, recovery, form objects, docs
 
 
-Total: 8 files
+Total: 11 files
 
 ## Actions
 
@@ -11,6 +11,8 @@ Total: 8 files
 |---|---|---|---|
 | `Guidance/Actions/AcknowledgeHandbookAction.php` | `AcknowledgeHandbookAction` | `BaseAction` | Records student acknowledgment of a handbook |
 | `Guidance/Actions/CreateHandbookAction.php` | `CreateHandbookAction` | `BaseAction` | Creates a new handbook with slug |
+| `Guidance/Actions/DeleteHandbookAction.php` | `DeleteHandbookAction` | `BaseAction` | Deletes a handbook |
+| `Guidance/Actions/UpdateHandbookAction.php` | `UpdateHandbookAction` | `BaseAction` | Updates an existing handbook |
 
 ## Entities
 
@@ -24,6 +26,12 @@ Total: 8 files
 |---|---|---|---|
 | `Guidance/Livewire/HandbookIndex.php` | `HandbookIndex` | `Component` | Admin handbook management with pagination |
 | `Guidance/Livewire/StudentHandbookIndex.php` | `StudentHandbookIndex` | `Component` | Student handbook view with acknowledgment |
+
+### Livewire Form Objects
+
+| File | Class | Extends | Fields | Used By |
+|---|---|---|---|---|
+| `Guidance/Livewire/Forms/HandbookForm.php` | `HandbookForm` | `Form` | title, content, version, is_active, target_audience | `HandbookIndex` |
 
 ## Models
 

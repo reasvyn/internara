@@ -3,7 +3,7 @@
 > Changes: docs: update docs for non-expiring recovery codes and profile redesign
 
 
-Total: 39 files
+Total: 40 files
 
 ## Actions
 
@@ -63,6 +63,7 @@ Total: 39 files
 | `Auth/Livewire/RecoveryCode.php` | `RecoveryCode` | `Component` | Generates and displays recovery code PDF |
 | `Auth/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `Component` | Manages recovery slip generation |
 | `Auth/Livewire/ResetPassword.php` | `ResetPassword` | `Component` | Password reset form |
+| `Auth/Livewire/ActivateAccount.php` | `ActivateAccount` | `Component` | Account activation via token |
 
 ### Livewire Form Objects
 
@@ -79,6 +80,7 @@ Total: 39 files
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Auth/Models/AccountRecoveryCode.php` | `AccountRecoveryCode` | `BaseModel` | Eloquent model for recovery codes |
+| `Auth/Models/ActivationToken.php` | `ActivationToken` | `BaseModel` | Eloquent model for account activation tokens |
 
 ## Notifications
 

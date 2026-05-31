@@ -104,6 +104,25 @@ Evaluation collects only student→mentor and student→company feedback. Missin
 
 ---
 
+## Reference Documentation — Inaccurate File Counts
+
+10 domain reference docs have file counts that don't match the actual code. Each domain's reference doc needs verification of both the count and the table entries (some files missing from tables, others listed but moved to different domains).
+
+| Domain | Doc Says | Actual | Gap | Likely Cause |
+|--------|----------|--------|-----|--------------|
+| Assignment | 22 | 23 | +1 | Missing file in tables |
+| Attendance | 21 | 22 | +1 | Missing file in tables |
+| Auth | 39 | 40 | +1 | UserPolicy moved to User, ActivationToken added |
+| Guidance | 8 | 11 | +3 | HandbookAcknowledgement, Livewire Forms, HandbookForm not listed |
+| Mentee | 7 | 6 | -1 | Listed file moved to User domain |
+| Mentor | 26 | 24 | -2 | Listed files moved to User domain |
+| Partnership | 19 | 21 | +2 | Batch delete actions not listed |
+| Placement | 18 | 21 | +3 | Livewire Forms, StudentPlacementChangeRequest not listed |
+| Setup | 27 | 26 | -1 | Listed file moved |
+| User | 39 | 40 | +1 | UserPolicy added |
+
+---
+
 ## Infrastructure
 
 ### K5. SQLite for Production — No Concurrent Write Support 🔴

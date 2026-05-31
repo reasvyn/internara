@@ -3,12 +3,14 @@
 > Changes: docs: add user registration audit findings (UC1-UC7) to known-issues, remove resolved entries
 
 
-Total: 19 files
+Total: 21 files
 
 ## Actions
 
 | File | Class | Extends | Description |
 |---|---|---|---|
+| `Partnership/Actions/BatchDeleteCompanyAction.php` | `BatchDeleteCompanyAction` | `BaseAction` | Batch deletes multiple companies |
+| `Partnership/Actions/BatchDeletePartnershipAction.php` | `BatchDeletePartnershipAction` | `BaseAction` | Batch deletes multiple partnerships |
 | `Partnership/Actions/CreateCompanyAction.php` | `CreateCompanyAction` | `BaseAction` | Creates a new company record |
 | `Partnership/Actions/CreatePartnershipAction.php` | `CreatePartnershipAction` | `BaseAction` | Creates a partnership/MoU agreement |
 | `Partnership/Actions/DeleteCompanyAction.php` | `DeleteCompanyAction` | `BaseAction` | Deletes a company record |

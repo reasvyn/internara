@@ -3,7 +3,7 @@
 > Changes: fix: enforce super admin integrity with SuperAdminIntegrityRules across all code paths
 
 
-Total: 26 files
+Total: 24 files
 
 ## Actions
 
@@ -47,8 +47,6 @@ Total: 26 files
 | `Mentor/Livewire/MentorProfileManager.php` | `MentorProfileManager` | `Component` | View/manage mentor profiles |
 | `Mentor/Livewire/ReportNotes.php` | `ReportNotes` | `Component` | Add supervisor notes to reports |
 | `Mentor/Livewire/ReportReview.php` | `ReportReview` | `BaseRecordManager` | Review and approve/reject reports |
-| `Mentor/Livewire/SupervisorDashboard.php` | `SupervisorDashboard` | `Component` | Supervisor dashboard with evaluations and logbooks — *moved to `User/Livewire/Dashboards/SupervisorDashboard.php`* |
-| `Mentor/Livewire/TeacherDashboard.php` | `TeacherDashboard` | `Component` | Teacher dashboard with logbooks — *moved to `User/Livewire/Dashboards/TeacherDashboard.php`* |
 | `Mentor/Livewire/Supervision/SupervisionManager.php` | `SupervisionManager` | `Component` | Manages supervision visit records |
 | `Mentor/Livewire/Supervision/SupervisorLogManager.php` | `SupervisorLogManager` | `Component` | Manages supervisor log entries |
 

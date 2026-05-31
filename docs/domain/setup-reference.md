@@ -3,7 +3,7 @@
 > Changes: docs: add ideal setup domain design
 
 
-Total: 27 files
+Total: 26 files
 
 ## Actions
 

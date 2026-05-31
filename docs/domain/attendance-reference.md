@@ -3,7 +3,7 @@
 > Changes: docs: update entire documentation to reflect actual implementation
 
 
-Total: 21 files
+Total: 22 files
 
 ## Actions
 
