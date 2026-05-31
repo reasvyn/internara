@@ -1,6 +1,6 @@
 # Known Issues and Gotchas
 > Last updated: 2026-06-01
-> Changes: updated to reflect resolved issues (A1-A7, A17-A19, A23, A33) and current open items
+> Changes: added L1 — logbook industry supervisor feedback gap
 
 ## Resolved Issues
 
@@ -140,6 +140,7 @@ Design Principle 2 says "Template version tracked at generation time" but `Rende
 - `LogbookEntry` missing `WithPagination` and `WithFileUploads` traits from reference doc. (A37)
 - `LogbookManager` routed in `routes/web/logbook.php`, `LogbookEntry` routed in `routes/web/mentee.php` — not noted.
 - No Routes, Tests, or Events/Notifications sections.
+- **L1 — No feedback container for industry supervisors (DUDI):** Logbook currently only supports verification by `school_teacher`. Industry supervisors (`industry_supervisor`) cannot add per-entry notes/feedback, provide optional acknowledgment, or submit a final rubric-based score. Impact: domain goals unmet — students receive no DUDI input, no evidence of industry involvement in mentoring, and no logbook compilation for PKL report materials. Design proposal in `docs/domain/logbook.md` (Planned Enhancements). (🔴 High)
 
 ### Mentee
 
@@ -349,7 +350,8 @@ No abstract execute() method on BaseAction. Each Action defines its own signatur
 | B3 | Livewire Form Object migration (~45 components) | Backlog | 🟡 Low | Open |
 | B4 | Cross-domain event flow undocumented | Backlog | 🟡 Low | Open |
 | B5 | Real-time features (Echo + Reverb) | Backlog | 🟡 Low | Open |
-| B6 | BaseAction cannot enforce execute() signature | Backlog | 🟡 Low | Open |
+ | B6 | BaseAction cannot enforce execute() signature | Backlog | 🟡 Low | Open |
+| L1 | Logbook: no industry supervisor feedback container | Design Gap | 🔴 High | Proposal |
 
 **Categories:** A = Audit (new findings), B = Backlog
 **Severity:** 🔴 Critical = must fix, 🟠 High/Medium = should fix, 🟡 Low = nice to have
