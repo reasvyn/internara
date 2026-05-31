@@ -3,7 +3,7 @@
 > Changes: cleanup: remove orphaned dashboard views, update domain docs, mark User issues resolved
 
 
-Total: 7 files
+Total: 6 files
 
 ## Actions
 
@@ -19,11 +19,7 @@ Total: 7 files
 |---|---|---|---|
 | `Mentee/Entities/MenteeState.php` | `MenteeState` | `BaseEntity` | Read-only DTO for mentee's current state (registration, internship) |
 
-## Livewire Components
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Mentee/Livewire/StudentDashboard.php` | `StudentDashboard` | `Component` | Student dashboard showing current internship status — *moved to `User/Livewire/Dashboards/StudentDashboard.php`* |
+Mentee does not own Livewire components — `StudentDashboard` moved to the [User domain](user-reference.md).
 
 ## Models
 

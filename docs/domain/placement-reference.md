@@ -3,7 +3,7 @@
 > Changes: fix: enforce super admin integrity with SuperAdminIntegrityRules across all code paths
 
 
-Total: 18 files
+Total: 21 files
 
 ## Actions
 
@@ -45,6 +45,14 @@ Total: 18 files
 |---|---|---|---|
 | `Placement/Models/Placement.php` | `Placement` | `BaseModel` | Eloquent model for student placements |
 | `Placement/Models/PlacementChangeRequest.php` | `PlacementChangeRequest` | `BaseModel` | Eloquent model for placement change requests |
+
+### Livewire Form Objects
+
+| File | Class | Extends | Fields | Used By |
+|---|---|---|---|---|
+| `Placement/Livewire/Forms/DirectPlacementForm.php` | `DirectPlacementForm` | `Form` | student_id, placement_id, academic_year | `DirectPlacementManager` |
+| `Placement/Livewire/Forms/PlacementChangeForm.php` | `PlacementChangeForm` | `Form` | to_placement_id, reason | `StudentPlacementChangeRequest` |
+| `Placement/Livewire/Forms/PlacementForm.php` | `PlacementForm` | `Form` | company_id, internship_id, description, status, academic_year | `PlacementIndex` |
 
 ## Policies
 
