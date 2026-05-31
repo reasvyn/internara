@@ -33,7 +33,7 @@ Teachers must conduct site visits to placement locations. Currently no domain do
 Many vocational schools require daily photo evidence of student activities — not just text journals. Logbook domain should support photo capture and attachment as first-class feature, not just generic file upload.
 
 **Suggested domain:** Logbook.
-**Priority:** High — common regulatory requirement.
+**Status:** ✅ Implemented — photo collection with camera capture and manual upload fallback.
 
 ### Geo-fencing for Attendance Verification 🟠
 

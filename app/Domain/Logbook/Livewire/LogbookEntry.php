@@ -10,11 +10,12 @@ use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 class LogbookEntry extends Component
 {
-    use WithPagination;
+    use WithPagination, WithFileUploads;
 
     public bool $showModal = false;
 
@@ -25,6 +26,8 @@ class LogbookEntry extends Component
     public string $learning_outcomes = '';
 
     public string $journalId = '';
+
+    public array $photos = [];
 
     public function boot(): void
     {
@@ -40,7 +43,7 @@ class LogbookEntry extends Component
 
     public function create(): void
     {
-        $this->reset(['journalId', 'content', 'learning_outcomes']);
+        $this->reset(['journalId', 'content', 'learning_outcomes', 'photos']);
         $this->date = Carbon::today()->toDateString();
         $this->showModal = true;
     }
@@ -60,6 +63,7 @@ class LogbookEntry extends Component
             'date' => 'required|date',
             'content' => 'required|min:10',
             'learning_outcomes' => 'nullable|string',
+            'photos.*' => 'nullable|image|max:10240',
         ]);
 
         try {
@@ -67,6 +71,7 @@ class LogbookEntry extends Component
                 'date' => $this->date,
                 'content' => $this->content,
                 'learning_outcomes' => $this->learning_outcomes,
+                'photos' => $this->photos,
             ]);
 
             $this->showModal = false;
@@ -74,6 +79,11 @@ class LogbookEntry extends Component
         } catch (\Throwable $e) {
             flash()->error($e->getMessage());
         }
+    }
+
+    public function removePhoto(int $index): void
+    {
+        unset($this->photos[$index]);
     }
 
     #[Layout('shared::layouts.app')]
