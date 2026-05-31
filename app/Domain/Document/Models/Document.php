@@ -11,11 +11,12 @@ use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-#[Fillable(['name', 'slug', 'category', 'description', 'content', 'is_active'])]
+#[Fillable(['name', 'slug', 'category', 'description', 'content', 'file_path', 'is_active', 'template_version', 'template_id'])]
 class Document extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
@@ -30,7 +31,13 @@ class Document extends BaseModel implements HasMedia
         return [
             'category' => DocumentCategory::class,
             'is_active' => 'boolean',
+            'template_version' => 'integer',
         ];
+    }
+
+    public function template(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'template_id');
     }
 
     public function getDownloadNameAttribute(): string

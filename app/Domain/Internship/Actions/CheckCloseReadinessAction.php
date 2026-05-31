@@ -7,6 +7,8 @@ namespace App\Domain\Internship\Actions;
 use App\Domain\Assessment\Models\Assessment;
 use App\Domain\Assignment\Models\Submission;
 use App\Domain\Attendance\Models\Attendance;
+use App\Domain\Certificate\Enums\CertificateStatus;
+use App\Domain\Certificate\Models\Certificate;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Internship\Models\Internship;
 use App\Domain\Mentor\Models\SupervisionLog;
@@ -28,6 +30,7 @@ final class CheckCloseReadinessAction extends BaseAction
             'submissions' => $this->checkSubmissions($registrations),
             'supervision_logs' => $this->checkSupervisionLogs($registrations),
             'attendance' => $this->checkAttendance($registrations),
+            'certificates' => $this->checkCertificates($registrations),
         ];
     }
 
@@ -96,6 +99,25 @@ final class CheckCloseReadinessAction extends BaseAction
             'message' => $pending === 0
                 ? 'All attendance records verified.'
                 : "{$pending} attendance record(s) not yet verified.",
+        ];
+    }
+
+    private function checkCertificates($registrationIds): array
+    {
+        $total = Certificate::whereIn('registration_id', $registrationIds)->count();
+        $pending = Certificate::whereIn('registration_id', $registrationIds)
+            ->where('status', '!=', CertificateStatus::ISSUED)
+            ->count();
+
+        return [
+            'passed' => $pending === 0 && $total > 0,
+            'total' => $total,
+            'pending' => $pending,
+            'message' => match (true) {
+                $total === 0 => 'No certificates issued.',
+                $pending === 0 => 'All certificates issued.',
+                default => "{$pending} certificate(s) not yet issued.",
+            },
         ];
     }
 }

@@ -33,7 +33,7 @@ use App\Domain\User\Models\User;
 use Spatie\Permission\Models\Role as RoleModel;
 
 beforeEach(function () {
-    collect(Role::cases())->each(fn ($r) => RoleModel::create(['name' => $r->value, 'guard_name' => 'web']));
+    collect(Role::cases())->each(fn ($r) => RoleModel::firstOrCreate(['name' => $r->value, 'guard_name' => 'web']));
 });
 
 describe('InternshipDomainActions', function () {
@@ -278,7 +278,7 @@ describe('InternshipDomainActions', function () {
 
             $result = app(CheckCloseReadinessAction::class)->execute($internship);
 
-            expect($result)->toHaveKeys(['assessments', 'submissions', 'supervision_logs', 'attendance']);
+            expect($result)->toHaveKeys(['assessments', 'submissions', 'supervision_logs', 'attendance', 'certificates']);
         });
 
         it('reports pending items as not ready', function () {

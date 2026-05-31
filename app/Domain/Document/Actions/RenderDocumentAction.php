@@ -35,6 +35,8 @@ final class RenderDocumentAction extends BaseAction
             'content' => $document->content,
             'file_path' => $path,
             'is_active' => true,
+            'template_version' => $document->template_version,
+            'template_id' => $document->id,
         ]);
 
         $this->log('document_rendered', $rendered, [
