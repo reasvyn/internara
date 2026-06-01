@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Mentor\Policies;
 
 use App\Domain\Core\Policies\BasePolicy;
+use App\Domain\Mentor\Models\Mentor;
 use App\Domain\Mentor\Models\SupervisionLog;
 use App\Domain\User\Models\User;
 
@@ -35,11 +36,11 @@ class SupervisionLogPolicy extends BasePolicy
 
         $registration = $log->registration;
 
-        if ($this->isTeacher($user) && $registration && $registration->teacher_id === $user->id) {
+        if ($this->isTeacher($user) && $registration && $registration->mentors()->where('user_id', $user->id)->where('type', Mentor::TYPE_SCHOOL_TEACHER)->exists()) {
             return true;
         }
 
-        if ($this->isSupervisor($user) && $registration && $registration->mentor_id === $user->id) {
+        if ($this->isSupervisor($user) && $registration && $registration->mentors()->where('user_id', $user->id)->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)->exists()) {
             return true;
         }
 

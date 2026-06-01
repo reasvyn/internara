@@ -38,9 +38,8 @@ class SupervisorLogManager extends Component
     public function students()
     {
         return Registration::query()
-            ->with(['student'])
-            ->where('teacher_id', auth()->id())
-            ->orWhere('mentor_id', auth()->id())
+            ->with(['mentee'])
+            ->whereHas('mentors', fn ($q) => $q->where('user_id', auth()->id()))
             ->get();
     }
 

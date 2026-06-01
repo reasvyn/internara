@@ -1,6 +1,6 @@
 # Known Issues and Gotchas
 > Last updated: 2026-06-01
-> Changes: added L1 — logbook industry supervisor feedback gap
+> Changes: added infrastructure audit findings (C1-C12)
 
 ## Resolved Issues
 
@@ -253,6 +253,154 @@ None of these cross-domain routings are documented in the domain reference docs.
 
 ---
 
+## Infrastructure Audit Findings
+
+### C1. Read Actions Extending BaseAction (9 files) 🔴
+
+| File | Location | Issue |
+|------|----------|-------|
+| `GetAdminDashboardStatsAction.php` | `app/Domain/Admin/Actions/` | Read-only query, unnecessarily extends BaseAction |
+| `GetUserManagerStatsAction.php` | `app/Domain/Admin/Actions/` | Same — returns cached counts |
+| `ReadRecoveryKeyAction.php` | `app/Domain/Admin/Actions/` | Pure file read operation |
+| `DetectUserAccountCloneAction.php` | `app/Domain/Auth/Actions/` | Read-only duplicate email detection |
+| `GetTeacherDashboardStatsAction.php` | `app/Domain/User/Actions/` | Pure READ query |
+| `GetSupervisorDashboardStatsAction.php` | `app/Domain/User/Actions/` | Same |
+| `GetStudentDashboardDataAction.php` | `app/Domain/User/Actions/` | Same |
+| `GetProfileFormDataAction.php` | `app/Domain/User/Actions/` | Returns static field config |
+| `GetActivityLogsAction.php` | `app/Domain/User/Actions/` | Read-only paginated query |
+
+The Action Triad (docs/architecture.md) mandates that Read Actions should NOT extend BaseAction — they should be plain invocable classes. These 9 files should be refactored to remove the BaseAction parent.
+
+### C2. Actions Missing execute() Method (2 files) 🔴
+
+| File | Location | Issue |
+|------|----------|-------|
+| `GenerateAccountSlipAction.php` | `app/Domain/Admin/Actions/` | Has `download()`/`downloadBatch()` but no `execute()` |
+| `CompileLogbookReportAction.php` | `app/Domain/Logbook/Actions/` | Has `download()` but no `execute()` |
+
+All actions must expose a single `execute()` method per the documented pattern.
+
+### C3. GetAcademicYearsAction Missing BaseAction Altogether 🔴
+
+**File:** `app/Domain/Settings/Actions/GetAcademicYearsAction.php`
+
+This action extends nothing (`class GetAcademicYearsAction` with no `extends`). It happens to fit the Read Action pattern correctly (no BaseAction), but the bare class structure deviates from project conventions.
+
+### C4. Livewire CRUD Components Not Extending BaseRecordManager (5 files) 🟠
+
+| File | Location | Current Base |
+|------|----------|-------------|
+| `AnnouncementManager.php` | `app/Domain/Admin/Livewire/` | `extends Component` |
+| `RubricManager.php` | `app/Domain/Assessment/Livewire/` | `extends Component` |
+| `AttendanceManager.php` | `app/Domain/Attendance/Livewire/` | `extends Component` (with `WithPagination`) |
+| `RequirementManager.php` | `app/Domain/Internship/Livewire/` | `extends Component` |
+| `TemplateManager.php` | `app/Domain/Document/Livewire/` | `extends Component` (with `WithPagination`) |
+
+These are CRUD management components and should extend `BaseRecordManager` (`app/Domain/Core/Livewire/BaseRecordManager.php`) to inherit search, sort, filter, pagination, and export functionality.
+
+### C5. State Entities Should Extend BaseState (17 files) 🟠
+
+These entities manage state machine logic but extend `BaseEntity` directly. They should extend `BaseState` which provides `isState()` and `isStateIn()` helpers and inherits from `BaseEntity`.
+
+| Domain | File |
+|--------|------|
+| Attendance | `AttendanceStatus.php`, `AbsenceRequestStatus.php` |
+| Auth | `RecoveryCodeState.php` |
+| Guidance | `HandbookPublishState.php` |
+| Internship | `InternshipState.php`, `InternshipGroupState.php` |
+| Logbook | `LogbookState.php` |
+| Mentor | `SupervisionStatus.php` |
+| Partnership | `CompanyState.php`, `PartnershipState.php` |
+| Placement | `PlacementState.php` |
+| Registration | `RegistrationState.php` |
+| Schedule | `ScheduleStatus.php` |
+| School | `AcademicYearState.php`, `DepartmentState.php`, `SchoolState.php` |
+| Setup | `SetupState.php` |
+
+Additionally, `BaseState` from `app/Domain/Core/States/BaseState.php` is never imported or used anywhere outside Core — it's defined but has zero consumption across the entire codebase.
+
+### C6. DomainServiceProvider registerCommands() Dead Code 🔴
+
+**File:** `app/Providers/DomainServiceProvider.php:51-64`
+
+`registerCommands()` is defined but never called from `boot()`, `register()`, or anywhere else. The corresponding `config('domain.commands')` key does not exist in `config/domain.php` — the method's config read always falls back to default `true`. The method and its associated config concept are dead code.
+
+### C7. Dead Config in config/domain.php (factories Section) 🟠
+
+**File:** `config/domain.php:97-103`
+
+The `factories` block defines `enabled`, `path`, `namespace`, and `faker` settings but `config('domain.factories')` is referenced zero times across the entire codebase. Entirely unused.
+
+### C8. config/mary.php References Non-Existent Class 🔴
+
+**File:** `config/mary.php:43`
+
+```php
+'class' => 'App\Support\Spotlight',
+```
+
+`App\Support\Spotlight` does not exist — glob search for `app/Support/Spotlight.php` returns nothing. Will cause a runtime error if the maryUI spotlight component is used.
+
+### C9. View Naming Mismatch: SubmitAssignment 🟡
+
+**File:** `app/Domain/Assignment/Livewire/SubmitAssignment.php`
+
+The component's `render()` returns `view('assignment.submission')` but the file on disk is `resources/views/assignment/submit-assignment.blade.php`. Either rename the view file or fix the render call.
+
+### C10. Missing Entity Accessor Methods (2 files) 🟡
+
+| Model | Entity | Missing Accessor |
+|-------|--------|-----------------|
+| `User` (in Auth/User) | `Auth\SuperAdminIntegrityRules` | `asSuperAdminIntegrityRules()` |
+| `Evaluation` | `Evaluation\EvaluationResult` | `asEvaluationResult()` |
+
+Models should expose entities via `as{EntityName}()` accessors per documented pattern.
+
+### C11. AnnouncementStatus Missing StatusEnum Interface 🟡
+
+**File:** `app/Domain/Admin/Enums/AnnouncementStatus.php`
+
+This enum defines state transitions (`DRAFT → SCHEDULED → PUBLISHED`) and has a `canTransitionTo()` method, but does not implement `StatusEnum`. This means `isTerminal()` and `validTransitions()` are missing. It should `implements LabelEnum, StatusEnum`.
+
+### C12. Cross-Domain Import Violations (170+ files) 🔴
+
+Scanning all `use App\Domain\` statements across the codebase reveals approximately 170 cases where a file in one business domain directly imports from another sibling domain — violating the documented rule that cross-domain communication should only happen via Events/Core contracts.
+
+**Most imported domains (by other domains):**
+
+| Domain | Times Imported | Typical Usage |
+|--------|---------------|---------------|
+| Registration | 44 | Eloquent FK relationships (registrations table is central hub) |
+| Internship | 32 | FK relationships + Action invocations |
+| Mentor | 22 | FK + Actions (mentor_id lookups) |
+| School | 17 | FK relationships |
+| Placement | 12 | FK + Actions |
+
+**Most violating domains:**
+
+| Source Domain | Violations |
+|---------------|------------|
+| Registration | 33 | 
+| Admin | 27 |
+| Internship | 22 |
+| User | 15 |
+| Placement | 12 |
+
+**Pattern breakdown:**
+- ~85% are Model imports for Eloquent FK relationships
+- ~10% are direct Action invocations (should use Events)
+- ~5% are Support/Rules/other
+
+The Registration model alone imports from 8 different sibling domains (Assessment, Attendance, Certificate, Internship, Logbook, Mentee, Mentor, Placement). Admin's `GetAdminDashboardStatsAction` imports from 13 domains. Events are underutilized — only `InternshipCreated` event is used for cross-domain communication.
+
+### C13. Integrity.php Uses raw echo/exit for Pre-Boot Errors ⚠️
+
+**File:** `app/Domain/Core/Support/Integrity.php:64-74`
+
+Uses `echo`, HTML output, and `exit(1)` for fatal error handling. This is intentional (runs before Laravel framework is fully loaded), not a debug leftover. Accepted but not ideal — consider routing through a boot-time handler when possible.
+
+---
+
 ## Pre-Existing Backlog
 
 ### B1. Feature Test Coverage 🔴
@@ -350,8 +498,21 @@ No abstract execute() method on BaseAction. Each Action defines its own signatur
 | B3 | Livewire Form Object migration (~45 components) | Backlog | 🟡 Low | Open |
 | B4 | Cross-domain event flow undocumented | Backlog | 🟡 Low | Open |
 | B5 | Real-time features (Echo + Reverb) | Backlog | 🟡 Low | Open |
- | B6 | BaseAction cannot enforce execute() signature | Backlog | 🟡 Low | Open |
+| B6 | BaseAction cannot enforce execute() signature | Backlog | 🟡 Low | Open |
+| C1 | Read Actions extending BaseAction (9 files) | Infrastructure | 🔴 High | Open |
+| C2 | Actions missing execute() method (2 files) | Infrastructure | 🔴 High | Open |
+| C3 | GetAcademicYearsAction missing BaseAction | Infrastructure | 🔴 High | Open |
+| C4 | Livewire CRUD not extending BaseRecordManager (5 files) | Infrastructure | 🟠 High | Open |
+| C5 | State entities not extending BaseState (17 files) | Infrastructure | 🟠 High | Open |
+| C6 | DomainServiceProvider registerCommands() dead code | Infrastructure | 🔴 High | Open |
+| C7 | Dead config: factories section in domain.php | Infrastructure | 🟠 Medium | Open |
+| C8 | config/mary.php references non-existent Spotlight class | Infrastructure | 🔴 High | Open |
+| C9 | View naming mismatch: SubmitAssignment | Infrastructure | 🟡 Low | Open |
+| C10 | Missing entity accessor methods (2 files) | Infrastructure | 🟡 Low | Open |
+| C11 | AnnouncementStatus missing StatusEnum | Infrastructure | 🟡 Low | Open |
+| C12 | Cross-domain import violations (170+ files) | Architecture | 🔴 High | Open |
+| C13 | Integrity.php raw echo/exit for pre-boot errors | Architecture | ⚠️ Note | Open |
 | L1 | Logbook: no industry supervisor feedback container | Design Gap | 🔴 High | Proposal |
 
-**Categories:** A = Audit (new findings), B = Backlog
+**Categories:** A = Audit (doc-implementation), B = Backlog, C = Infrastructure/code audit
 **Severity:** 🔴 Critical = must fix, 🟠 High/Medium = should fix, 🟡 Low = nice to have

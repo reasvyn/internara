@@ -7,6 +7,7 @@ namespace App\Domain\Assignment\Livewire;
 use App\Domain\Assignment\Actions\GradeSubmissionAction;
 use App\Domain\Assignment\Models\Assignment;
 use App\Domain\Assignment\Models\Submission;
+use App\Domain\Mentor\Models\Mentor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -100,9 +101,9 @@ class SubmissionGrading extends Component
 
         $user = Auth::user();
         if ($user->hasRole('teacher')) {
-            $query->whereHas('registration', fn ($q) => $q->where('teacher_id', $user->id));
+            $query->whereHas('registration', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_SCHOOL_TEACHER)));
         } elseif ($user->hasRole('supervisor')) {
-            $query->whereHas('registration', fn ($q) => $q->where('mentor_id', $user->id));
+            $query->whereHas('registration', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)));
         }
 
         return view('assignment.grading.submission-grading', [

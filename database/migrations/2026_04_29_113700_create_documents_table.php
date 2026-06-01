@@ -18,6 +18,14 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->longText('content')->nullable();
             $table->boolean('is_active')->default(true)->index();
+
+            $table->unsignedInteger('template_version')->default(1)->after('is_active');
+            $table
+                ->foreignUuid('template_id')
+                ->nullable()
+                ->constrained('documents')
+                ->nullOnDelete();
+
             $table->timestamps();
             $table->index(['category', 'is_active']);
         });

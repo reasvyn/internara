@@ -40,11 +40,9 @@ describe('BaseRecordManager', function () {
     });
 
     it('has default perPage of 10', function () {
-        $ref = new ReflectionMethod(BaseRecordManager::class, 'perPage');
-        $ref->setAccessible(true);
-        $manager = Mockery::mock(BaseRecordManager::class)->makePartial();
+        $manager = new TestRecordManager;
 
-        expect($ref->invoke($manager))->toBe(10);
+        expect($manager->perPage)->toBe(10);
     });
 
     it('starts with empty search and filters', function () {

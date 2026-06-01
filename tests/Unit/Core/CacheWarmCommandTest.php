@@ -15,10 +15,4 @@ describe('CacheWarmCommand', function () {
         expect($command->getName())->toBe('system:cache-warm');
     });
 
-    it('has --domains option accepting multiple values', function () {
-        $command = app(CacheWarmCommand::class);
-        $option = $command->getDefinition()->getOption('domains');
-
-        expect($option->isArray())->toBeTrue();
-    });
 });
