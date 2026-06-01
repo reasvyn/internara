@@ -1,9 +1,9 @@
 # Architecture Decision Records
-> Last updated: 2026-05-31
+> Last updated: 2026-06-01
 > **Status:** ✅ All ADR decisions are reflected in the current implementation — verified against [domain references](domain/domain-index.md).
 
 
-> 12 records documenting the key architectural decisions behind Internara.
+> 13 records documenting the key architectural decisions behind Internara.
 > Each ADR follows the format: Context → Decision → Consequences → References.
 
 ## Foundation
@@ -28,6 +28,12 @@
 | [Base Class Mandate](adr-base-class-mandate.md) | ✅ Accepted |
 | [Exception Hierarchy](adr-exception-hierarchy.md) | ✅ Accepted |
 | [Flat RBAC with Functional Roles](adr-flat-rbac-with-functional-roles.md) | ✅ Accepted |
+
+## Strategy
+
+| Record | Status |
+|---|---|
+| [Performance & Optimization Strategy](adr-performance-optimization.md) | ✅ Accepted |
 
 ## Governing Decisions
 
