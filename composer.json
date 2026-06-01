@@ -30,7 +30,6 @@
         "livewire/livewire": "^4.0",
         "php-flasher/flasher-laravel": "^2.4",
         "robsontenorio/mary": "^2.4",
-        "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-activitylog": "^5.0",
         "spatie/laravel-medialibrary": "^11.17",
         "spatie/laravel-model-status": "^1.18",
