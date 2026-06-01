@@ -12,13 +12,13 @@ return new class extends Migration
     {
         Schema::create('gdpr_deletion_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable()->index(); // Nullable after deletion
+            $table->uuid('user_id')->nullable()->index(); // Nullable after deletion
             $table->string('user_email')->index();
             $table
                 ->enum('deletion_type', ['anonymization', 'permanent_deletion'])
                 ->default('anonymization');
             $table->string('reason');
-            $table->foreignId('deleted_by')->constrained('users')->onDelete('cascade');
+            $table->foreignUuid('deleted_by')->constrained('users')->onDelete('cascade');
             $table->json('metadata')->nullable(); // User data snapshot for audit
             $table->dateTime('deleted_at');
             $table->timestamps();

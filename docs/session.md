@@ -1,6 +1,6 @@
 # Session
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+> Last updated: 2026-06-01
+> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul; fixed core.php reference to auth.php for password confirmation routes
 
 
 ## Purpose
@@ -164,6 +164,6 @@ restarts.
 - `config/session.php` — session driver, lifetime, cookie settings
 - `database/migrations/` — sessions table migration
 - `app/Domain/Settings/Http/Middleware/SetLocaleMiddleware.php` — locale persistence
-- `routes/web/core.php` — password confirmation routes
+- `routes/web/auth.php` — password confirmation routes (`/user/confirm-password`)
 - `bootstrap/app.php` — middleware configuration
 - `docs/infrastructure.md` — tier-based infrastructure design

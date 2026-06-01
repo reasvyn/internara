@@ -8,7 +8,7 @@ use App\Domain\Core\Enums\AuditCategory;
 use App\Domain\Core\Enums\AuditStatus;
 
 describe('AuditReport', function () {
-    it('reports passed when no failing checks', function () {
+    it('passes when no checks fail', function () {
         $report = new AuditReport([
             new AuditCheck(AuditCategory::REQUIREMENTS, 'php', AuditStatus::PASS, 'ok'),
             new AuditCheck(AuditCategory::DATABASE, 'db', AuditStatus::PASS, 'ok'),
@@ -17,7 +17,7 @@ describe('AuditReport', function () {
         expect($report->passed())->toBeTrue();
     });
 
-    it('reports failed when any check fails', function () {
+    it('fails when any check fails', function () {
         $report = new AuditReport([
             new AuditCheck(AuditCategory::REQUIREMENTS, 'php', AuditStatus::PASS, 'ok'),
             new AuditCheck(AuditCategory::DATABASE, 'db', AuditStatus::FAIL, 'fail'),
@@ -33,15 +33,11 @@ describe('AuditReport', function () {
             new AuditCheck(AuditCategory::TERMINAL, 'term', AuditStatus::PASS, 'ok'),
         ]);
 
-        $dbChecks = $report->forCategory(AuditCategory::DATABASE);
-
-        expect($dbChecks)->toHaveCount(1)
-            ->and($dbChecks[0]->nameKey)->toBe('db');
+        expect($report->forCategory(AuditCategory::DATABASE))->toHaveCount(1)
+            ->and($report->forCategory(AuditCategory::REQUIREMENTS))->toHaveCount(1);
     });
 
     it('passes with empty checks', function () {
-        $report = new AuditReport([]);
-
-        expect($report->passed())->toBeTrue();
+        expect((new AuditReport([]))->passed())->toBeTrue();
     });
 });

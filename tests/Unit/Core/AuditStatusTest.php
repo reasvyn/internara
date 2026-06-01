@@ -6,10 +6,18 @@ use App\Domain\Core\Contracts\LabelEnum;
 use App\Domain\Core\Enums\AuditStatus;
 
 describe('AuditStatus', function () {
-    it('is string-backed', function () {
+    it('is string-backed with 3 cases', function () {
+        expect(AuditStatus::cases())->toHaveCount(3);
+    });
+
+    it('has correct values', function () {
         expect(AuditStatus::PASS->value)->toBe('pass')
             ->and(AuditStatus::FAIL->value)->toBe('fail')
             ->and(AuditStatus::WARN->value)->toBe('warn');
+    });
+
+    it('implements LabelEnum', function () {
+        expect(AuditStatus::PASS)->toBeInstanceOf(LabelEnum::class);
     });
 
     it('returns labels', function () {
@@ -22,9 +30,5 @@ describe('AuditStatus', function () {
         expect(AuditStatus::PASS->symbol())->not->toBeEmpty()
             ->and(AuditStatus::FAIL->symbol())->not->toBeEmpty()
             ->and(AuditStatus::WARN->symbol())->not->toBeEmpty();
-    });
-
-    it('implements LabelEnum', function () {
-        expect(AuditStatus::PASS)->toBeInstanceOf(LabelEnum::class);
     });
 });

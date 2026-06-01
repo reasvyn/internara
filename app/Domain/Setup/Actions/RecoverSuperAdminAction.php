@@ -10,6 +10,7 @@ use App\Domain\Auth\Enums\Role;
 use App\Domain\Auth\Notifications\SuperAdminRecoveredNotification;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
+use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Cache;
@@ -22,7 +23,7 @@ final class RecoverSuperAdminAction extends BaseAction
 {
     public function execute(string $email, string $password, bool $isReset = false): User
     {
-        $cacheKey = 'recover_admin_attempts_'.md5($email);
+        $cacheKey = CacheKeys::RECOVER_ADMIN_ATTEMPTS.md5($email);
         $attempts = (int) Cache::get($cacheKey, 0);
 
         if ($attempts >= 3) {

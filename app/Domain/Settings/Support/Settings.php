@@ -28,8 +28,6 @@ use Illuminate\Support\Facades\Validator;
  */
 final class Settings
 {
-    protected const CACHE_PREFIX = 'settings.';
-
     /**
      * @var array<string, mixed>
      */
@@ -96,12 +94,12 @@ final class Settings
     public static function all(bool $skipCache = false): Collection
     {
         if ($skipCache) {
-            Cache::forget(self::CACHE_PREFIX.'all');
+            Cache::forget(CacheKeys::SETTINGS_ALL);
         }
 
         try {
             return Cache::rememberForever(
-                self::CACHE_PREFIX.'all',
+                CacheKeys::SETTINGS_ALL,
                 fn () => Setting::all()->pluck('value', 'key'),
             );
         } catch (QueryException $e) {
@@ -125,12 +123,12 @@ final class Settings
     public static function group(string $name, bool $skipCache = false): Collection
     {
         if ($skipCache) {
-            Cache::forget(self::CACHE_PREFIX.'group.'.$name);
+            Cache::forget(CacheKeys::SETTINGS_GROUP.$name);
         }
 
         try {
             return Cache::rememberForever(
-                self::CACHE_PREFIX.'group.'.$name,
+                CacheKeys::SETTINGS_GROUP.$name,
                 fn () => Setting::group($name)->get(),
             );
         } catch (QueryException $e) {
@@ -215,15 +213,15 @@ final class Settings
      */
     public static function forgetGroup(string $name): void
     {
-        Cache::forget(self::CACHE_PREFIX.'group.'.$name);
-        Cache::forget(self::CACHE_PREFIX.'all');
+        Cache::forget(CacheKeys::SETTINGS_GROUP.$name);
+        Cache::forget(CacheKeys::SETTINGS_ALL);
         Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
 
         try {
             $keys = Setting::group($name)->pluck('key');
 
             foreach ($keys as $key) {
-                Cache::forget(self::CACHE_PREFIX.$key);
+                Cache::forget(CacheKeys::SETTINGS_KEY.$key);
             }
         } catch (QueryException $e) {
             self::logQueryWarning('Failed to forget group cache keys', $e, [
@@ -240,12 +238,12 @@ final class Settings
     public static function keys(bool $skipCache = false): Collection
     {
         if ($skipCache) {
-            Cache::forget(self::CACHE_PREFIX.'keys');
+            Cache::forget(CacheKeys::SETTINGS_KEYS);
         }
 
         try {
             return Cache::rememberForever(
-                self::CACHE_PREFIX.'keys',
+                CacheKeys::SETTINGS_KEYS,
                 fn () => Setting::query()->orderBy('key')->pluck('key'),
             );
         } catch (QueryException $e) {
@@ -301,17 +299,17 @@ final class Settings
      */
     public static function forget(string $key, ?string $group = null): void
     {
-        Cache::forget(self::CACHE_PREFIX.$key);
+        Cache::forget(CacheKeys::SETTINGS_KEY.$key);
 
         if ($group !== null) {
-            Cache::forget(self::CACHE_PREFIX.'group.'.$group);
+            Cache::forget(CacheKeys::SETTINGS_GROUP.$group);
         } else {
             // Fetch the setting's group from database only when not provided
             try {
                 $setting = Setting::where('key', $key)->first();
 
                 if ($setting?->group) {
-                    Cache::forget(self::CACHE_PREFIX.'group.'.$setting->group);
+                    Cache::forget(CacheKeys::SETTINGS_GROUP.$setting->group);
                 }
             } catch (QueryException $e) {
                 self::logQueryWarning('Failed to invalidate setting group cache', $e, [
@@ -320,7 +318,7 @@ final class Settings
             }
         }
 
-        Cache::forget(self::CACHE_PREFIX.'all');
+        Cache::forget(CacheKeys::SETTINGS_KEY.'all');
 
         if (str_contains($key, 'color') || str_contains($key, 'brand')) {
             Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
@@ -349,11 +347,11 @@ final class Settings
 
         // 3. Database (cached)
         if ($skipCache) {
-            Cache::forget(self::CACHE_PREFIX.$key);
+            Cache::forget(CacheKeys::SETTINGS_KEY.$key);
         }
 
         try {
-            $dbValue = Cache::rememberForever(self::CACHE_PREFIX.$key, function () use ($key) {
+            $dbValue = Cache::rememberForever(CacheKeys::SETTINGS_KEY.$key, function () use ($key) {
                 $setting = Setting::where('key', $key)->first();
 
                 return $setting?->value;

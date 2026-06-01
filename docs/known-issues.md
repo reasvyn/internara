@@ -1,14 +1,24 @@
 # Known Issues and Gotchas
 > Last updated: 2026-06-01
-> Changes: C12 accepted per ADR-012, C13 resolved (Integrity throws RuntimeException)
+> Changes: C5 resolved (BaseState removed), C6 resolved (registerCommands removed), A10 resolved (BaseState removed from codebase), D1/D2/D3/D4 still resolved. Core docs updated — BaseState, DomainEvent, registerCommands references removed across all docs.
+
+---
 
 ## Resolved Issues
 
-The following issues from the original audit have been resolved:
+### Resolved Audit Items
 
 | # | Issue | Resolution |
 |---|-------|------------|
 | A1 | Internship lifecycle: overview says ARCHIVED, code has CANCELLED | Doc already correct — uses CANCELLED |
+| A10 | Core/Internship: BaseState dependency graph claim | core.md Gap 1 already covers zero adoption; Routes & Views section added; exception usage corrected |
+| A34 | AuditCategory description incomplete | Expanded in core.md to explain TERMINAL and RECOMMENDATIONS cases |
+| D1 | core.md exception usage count inaccurate | Updated to "Other exceptions (8)" with accurate bootstrap/app.php breakdown |
+| D2 | 4 Core exception classes completely unreferenced | Documented accurately in core.md; hierarchy preserved for architectural completeness |
+| D3 | docs/session.md incorrectly references core.php for password confirmation routes | Changed to `routes/web/auth.php` |
+| D4 | core.md doesn't explicitly state Core has no routes or views | Added "Routes & Views" subsection to core.md |
+| — | HandlesActionErrors description oversimplified | Updated in core.md with known exception passthrough details |
+| — | Overview features undocumented (toast, error pages) | Not a Core concern — toasts are Shared/Livewire; error pages are app-level. No code change needed |
 | A2 | CheckCloseReadinessAction missing certificate issuance check | Added `checkCertificates()` method |
 | A3 | AccountApplicationForm wrong path and extends in reference doc | Path/extends were already correct; fields updated to match 17 actual fields |
 | A4 | PlacementForm fields mismatch | Doc already correct — lists company_id, internship_id, name, address, quota, description |
@@ -18,17 +28,27 @@ The following issues from the original audit have been resolved:
 | A17 | PlacementPolicy only has viewAny — missing CRUD | CRUD methods added to PlacementPolicy |
 | A18 | AccessManager (Auth) has no route | Route added |
 | A19 | AuditLogManager and AccountCloneDetector (Admin) have no routes | Routes added |
-| A23 | Schedule overview describes calendar UI that does not exist | Doc updated to match actual CRUD implementation |
-| A33 | LangChecker extends Translator (violates "final readonly") | LangChecker fixed to extend Translator (required by Laravel internals) |
 | A20 | Document template version not tracked | Added template_version column, migration, and RenderDocumentAction update |
 | A22 | Shared Design Principle 2 violated by CsvHandler and LangChecker | Documented as known exceptions with rationale |
+| A23 | Schedule overview describes calendar UI that does not exist | Doc updated to match actual CRUD implementation |
+| A32 | HasModelStatuses deprecated but not noted in reference doc | Noted in reference doc |
+| A33 | LangChecker extends Translator (violates "final readonly") | LangChecker fixed to extend Translator (required by Laravel internals) |
+| A35 | HandbookForm missing $id field from reference doc | Added to reference doc |
+| A36 | Incident notification ShouldQueue interface missing from ref doc | Added to reference doc |
+| A37 | LogbookEntry missing WithPagination and WithFileUploads from ref doc | Added to reference doc |
+| A38 | MenteeState entity methods undocumented | Added to reference doc |
+| A39 | Evaluation FACILITY enum case not mentioned in overview | Added to overview doc |
+| A40 | 5 overview docs missing "Last updated" header | Headers added |
 | G1 | Guidance: PDF attachment for handbooks | Handbook model implements HasMedia; HandbookManager handles upload; Create/UpdateHandbookAction manage file |
 | G2 | Guidance: teacher/supervisor routes | Routes added in guidance.php for `teacher` and `supervisor` prefixes targeting HandbookIndex |
 | G3 | Guidance: rename components per convention | HandbookIndex → HandbookManager (admin), StudentHandbookIndex → HandbookIndex (user-facing) |
+| C5 | State entities not extending BaseState (17 files) | BaseState removed from codebase; entities extend BaseEntity directly |
+| C6 | DomainServiceProvider registerCommands() dead code | registerCommands() method removed; commands registered in boot() |
+| A10 | Internship dependency graph claims BaseState | BaseState removed from codebase; no dependency graph issue remains |
 
-## Resolved Policy Changes
+### Resolved Policy Changes
 
-### C12. Cross-Domain Import Violations (170+ files) ⚠️ → ✅ Accepted
+#### C12. Cross-Domain Import Violations (170+ files) ⚠️ → ✅ Accepted
 
 **Status:** Accepted as of ADR-012 revision (2026-06-01). The architecture rule prohibiting cross-domain direct imports has been replaced with practical guidelines allowing them. Events remain preferred when 2+ independent side effects are needed, but direct imports are now explicitly permitted.
 
@@ -36,238 +56,197 @@ The following issues from the original audit have been resolved:
 
 **See:** `docs/adr/adr-cross-domain-communication.md`, `docs/architecture.md`, `docs/conventions.md`
 
----
+#### C13. Integrity.php Uses raw echo/exit for Pre-Boot Errors ✅
 
-## Critical Implementation Issues
+**File:** `app/Domain/Core/Support/Integrity.php`
 
-### A8. SupervisionManager Described as "Manages" But Is Read-Only 🟠
-
-**File:** `docs/domain/mentor-reference.md`
-
-`SupervisionManager` description says "Manages supervision visit logs" but the component is student-facing read-only — lists logs, does not create or manage them.
-
-### A9. RegistrationWizardForm Not Documented 🟠
-
-**File:** `docs/domain/registration-reference.md`
-
-`RegistrationWizardForm` exists as a Form object but is not listed in the Forms section.
-
-### A20. Document Template Version Not Tracked 🟠
-
-**File:** `app/Domain/Document/Actions/RenderDocumentAction.php`
-
-Design Principle 2 says "Template version tracked at generation time" but `RenderDocumentAction` does NOT store a template version identifier — only copies template content.
+**Fix applied:** `fatal()` now throws `RuntimeException` instead of `echo`+`exit(1)`.
 
 ---
 
-## Doc-Implementation Discrepancies by Domain
+## Issues by Domain
 
 ### Admin
 
-- **Undocumented concern:** `Admin/Livewire/Concerns/DownloadsAccountSlips.php` exists but is not listed anywhere in the reference doc. (A30)
+- **A30 — DownloadsAccountSlips Livewire concern undocumented:** `Admin/Livewire/Concerns/DownloadsAccountSlips.php` exists but is not listed anywhere in the reference doc.
 - **Overview mentions bulk creation** but no dedicated Action exists — CSV import lives inside `UserManager` Livewire component.
-- No Routes, Views, Tests, or Factories section in reference doc.
+- **C11 — AnnouncementStatus missing StatusEnum interface:** `app/Domain/Admin/Enums/AnnouncementStatus.php` defines state transitions (`DRAFT → SCHEDULED → PUBLISHED`) with `canTransitionTo()` but does not `implements StatusEnum`. Missing `isTerminal()` and `validTransitions()`.
 
 ### Assessment
 
-- **EvaluatorRole enum description incomplete:** Doc says `"Evaluator role (teacher/industry)"` but the actual enum has 4 cases: `ADMIN`, `TEACHER`, `SUPERVISOR`, `SYSTEM`. (A14)
+- **A14 — EvaluatorRole enum description incomplete:** Doc says `"Evaluator role (teacher/industry)"` but actual enum has 4 cases: `ADMIN`, `TEACHER`, `SUPERVISOR`, `SYSTEM`.
 - **Incorrect action count:** "Where to Find It" says "16 Actions" but 17 exist.
-- `AssessmentView` routed in `routes/web/mentee.php`, not in `routes/web/assessment.php` — cross-domain routing not noted.
-- Overview mentions "visual criteria editor with drag-and-drop" and "auto-calculated weighted totals" — no Action or Livewire description covers these UI capabilities.
-- No Routes, Views, Tests, or Factories section in reference doc.
+- **AssessmentView cross-domain routing:** Routed in `routes/web/mentee.php`, not in `routes/web/assessment.php`.
+- **Overview UI capabilities undocumented:** Mentions "visual criteria editor with drag-and-drop" and "auto-calculated weighted totals" — no Action or Livewire description covers these.
 
 ### Assignment
 
-- `SubmitAssignment` routed in `routes/web/mentee.php`, not in `routes/web/assignment.php`.
-- Overview mentions "return-for-revision loop" and "grant deadline extensions" but no Action description covers these.
-- No Routes, Views, Tests, or Factories section.
+- **SubmitAssignment cross-domain routing:** Routed in `routes/web/mentee.php`, not in `routes/web/assignment.php`.
+- **Overview features no Action description:** Mentions "return-for-revision loop" and "grant deadline extensions" but no Action covers these.
+- **C9 — View naming mismatch:** `SubmitAssignment.php` renders `view('assignment.submission')` but the file on disk is `resources/views/assignment/submit-assignment.blade.php` — either rename the view or fix the render call.
 
 ### Attendance
 
-- `StudentClockIn` and `AbsenceRequestForm` routed in `routes/web/mentee.php`, not in `routes/web/attendance.php`.
-- **Multiple overview features not implemented:** geo-fencing, auto-notify mentors when attendance drops below threshold, auto-calculate total duration, digital signature, color-coded calendar, compliance progress bar. (A24)
-- Design Principle 2 says "dual verification" (school mentor + company supervisor) but only `VerifyAttendanceAction` exists — no dual workflow documented.
-- `ClockInAction` description only mentions "schedule validation", not location/geo-fencing.
-- No Routes, Views, Tests, or Factories section.
+- **StudentClockIn / AbsenceRequestForm cross-domain routing:** Routed in `routes/web/mentee.php`, not in `routes/web/attendance.php`.
+- **A24 — Multiple overview features not implemented:** geo-fencing, auto-notify mentors when attendance drops below threshold, auto-calculate total duration, digital signature, color-coded calendar, compliance progress bar.
+- **Design Principle 2 — dual verification undocumented:** Says "dual verification" (school mentor + company supervisor) but only `VerifyAttendanceAction` exists — no dual workflow documented.
+- **ClockInAction description incomplete:** Only mentions "schedule validation", not location/geo-fencing.
 
 ### Auth
 
-- **Role enum description incomplete:** Doc says `"System roles (super_admin, admin, teacher, student, supervisor)"` but the enum also defines `MENTOR` and `MENTEE` — 7 total cases. (A15)
-- `Auth/Policies/` directory exists on disk but is empty.
-- Overview mentions "lockout countdown timer" and "recovery codes with one-click copy/download" — not described in any Livewire component description.
-- No Routes, Views, Tests, or Factories section.
+- **A15 — Role enum description incomplete:** Doc says `"System roles (super_admin, admin, teacher, student, supervisor)"` but enum also defines `MENTOR` and `MENTEE` — 7 total cases.
+- **Empty Policies directory:** `Auth/Policies/` exists on disk but is empty.
+- **Overview features undocumented:** Mentions "lockout countdown timer" and "recovery codes with one-click copy/download" — not described in any Livewire component.
 
 ### Certificate
 
-- Overview mentions "preview a certificate PDF before issuing" and "batch issuance progress bar" — no Livewire component description covers these. (A25)
-- No Action description mentions serial number behavior or batch resilience.
-- No Routes, Views, Tests, or Factories section.
-
-### Core
-
-- **Dependency graph claims BaseState as consumed** by business domains but no file outside Core imports or uses `BaseState` — only defined in Core, never referenced externally. (A10)
-- `HandlesActionErrors` description oversimplifies compared to actual PHPDoc.
-- `AuditCategory` description glosses over TERMINAL and RECOMMENDATIONS cases. (A34)
-- Overview mentions toast notifications and error pages but reference doc has no section covering these.
+- **A25 — Overview features not in reference doc:** Mentions "preview a certificate PDF before issuing" and "batch issuance progress bar" — no Livewire component covers these.
+- **A16 — EvaluatorRole description inaccurate:** Reference doc description differs from actual enum cases.
+- **Serial number / batch resilience undocumented:** No Action description mentions serial number behavior or batch resilience.
 
 ### Document
 
-- **Dependency graph claims Certificate** but no file in Document imports from Certificate domain — only an enum label reference. (A29)
-- Overview describes "six-step rendering pipeline" but reference doc only mentions "Blade + DomPDF" — no pipeline steps documented.
-- ~~**Template version not tracked** despite Principle 2 claiming it — `RenderDocumentAction` now stores `template_version` and `template_id`. (A20 — Resolved)~~
-- No Events section despite rendering/dispatch possibilities.
-- Overview doc missing "Last updated" header.
+- **A29 — Dependency graph claims Certificate:** No file in Document imports from Certificate domain — only an enum label reference.
+- **Rendering pipeline undocumented:** Overview describes "six-step rendering pipeline" but reference doc only mentions "Blade + DomPDF" — no pipeline steps documented.
+- **No Events section** despite rendering/dispatch possibilities.
 
 ### Evaluation
 
-- **Dependency graph claims Mentor and Internship** but only Registration is actually imported. (A28)
-- Overview mentions company star-rating widget but no company evaluation component exists — only `MentorEvaluationManager`.
-- `EvaluationCategory` has FACILITY case but overview only mentions mentor, company, and overall evaluations. (A39)
-- Overview mentions "trend analysis" and "bar charts" — no analytics component exists.
-- `SubmitEvaluationAction` description omits conditional `mentor_id`, `target_type`/`target_id` assignment logic.
-- Overview doc missing "Last updated" header.
+- **A28 — Dependency graph claims Mentor and Internship:** Only Registration is actually imported.
+- **Star-rating widget not implemented:** Overview mentions company star-rating widget but no company evaluation component exists — only `MentorEvaluationManager`.
+- **A39 — FACILITY enum case not mentioned in overview:** `EvaluationCategory` has FACILITY case but overview only mentions mentor, company, and overall evaluations.
+- **Trend analysis / bar charts not implemented:** Overview mentions these but no analytics component exists.
+- **SubmitEvaluationAction description incomplete:** Omits conditional `mentor_id`, `target_type`/`target_id` assignment logic.
 
-### Guidance — Remaining Planned
+### Guidance
 
 - **Full-screen reader (⏳ planned):** Overview mentions "full-screen reading view with ToC sidebar" — not implemented.
 - **Acknowledgement history (⏳ planned):** Overview mentions "personal acknowledgment history" — no dedicated component exists.
 
 ### Incident
 
-- `IncidentReportedNotification` implements `ShouldQueue` with `Queueable` but reference doc only lists `Notification`. (A36)
-- `ResolveIncidentAction` and `ReportIncidentAction` descriptions are accurate but omit significant validation/detail.
-- Overview doc missing "Last updated" header.
+- **A36 — ShouldQueue interface missing from ref:** `IncidentReportedNotification` implements `ShouldQueue` with `Queueable` but reference doc only lists `Notification` (resolved).
+- **Action descriptions omit significant validation/detail** for `ResolveIncidentAction` and `ReportIncidentAction`.
 
 ### Internship
 
-- Dependency graph claims `BaseState` — no Internship file imports it. (A10)
-- `CheckCloseReadinessAction` description matches code (checks `is_verified`, not signature) but overview says "signed" — mismatch.
-- `RequirementType` description says "Document requirement types" but enum has DOCUMENT, SKILL, TEXT.
-- Overview doc missing "Last updated" header.
+- **CheckCloseReadinessAction / overview mismatch:** Description checks `is_verified`, not signature, but overview says "signed".
+- **RequirementType description wrong:** Says "Document requirement types" but enum has DOCUMENT, SKILL, TEXT.
 
 ### Logbook
 
-- **Dependency graph claims Mentor** — zero Mentor domain files imported directly. (A13)
-- **Overview describes features not implemented:** digital signature, auto-save, compliance monitoring/auto-notify, photo captions/timestamps. (A26)
-- `LogbookEntry` missing `WithPagination` and `WithFileUploads` traits from reference doc. (A37)
-- `LogbookManager` routed in `routes/web/logbook.php`, `LogbookEntry` routed in `routes/web/mentee.php` — not noted.
-- No Routes, Tests, or Events/Notifications sections.
-- **L1 — No feedback container for industry supervisors (DUDI):** Logbook currently only supports verification by `school_teacher`. Industry supervisors (`industry_supervisor`) cannot add per-entry notes/feedback, provide optional acknowledgment, or submit a final rubric-based score. Impact: domain goals unmet — students receive no DUDI input, no evidence of industry involvement in mentoring, and no logbook compilation for PKL report materials. Design proposal in `docs/domain/logbook.md` (Planned Enhancements). (🔴 High)
+- **A13 — Dependency graph claims Mentor:** Zero Mentor domain files imported directly.
+- **A26 — Overview features not implemented:** digital signature, auto-save, compliance monitoring/auto-notify, photo captions/timestamps.
+- **A37 — LogbookEntry missing traits from ref doc:** `WithPagination` and `WithFileUploads` not listed (resolved).
+- **LogbookEntry cross-domain routing:** Routed in `routes/web/mentee.php`, not in `routes/web/logbook.php`.
+- **No Routes, Tests, or Events/Notifications sections** in reference doc.
+- **L1 — No feedback container for industry supervisors (DUDI) (🔴):** Logbook currently only supports verification by `school_teacher`. Industry supervisors (`industry_supervisor`) cannot add per-entry notes/feedback, provide optional acknowledgment, or submit a final rubric-based score. Impact: domain goals unmet — students receive no DUDI input, no evidence of industry involvement in mentoring, and no logbook compilation for PKL report materials. Design proposal in `docs/domain/logbook.md` (Planned Enhancements).
 
 ### Mentee
 
-- **Dependency graph claims Internship** — no direct import. (A27)
-- `MenteeState` entity methods `canClockIn`, `canSubmitLogbook`, `canSubmitAssignment`, `hasEnded`, `daysRemaining` not documented. (A38)
-- No Routes or Tests sections.
+- **A27 — Dependency graph claims Internship:** No direct import exists.
+- **A38 — MenteeState entity methods undocumented:** `canClockIn`, `canSubmitLogbook`, `canSubmitAssignment`, `hasEnded`, `daysRemaining` not documented (resolved).
 
 ### Mentor
 
-- **SupervisionManager described as "manages"** but is student-facing read-only — lists logs, does not create/manage. (A8)
-- **Dependency graph missing Internship** — `ReportNotes` and `ReportReview` import `Internship\Models\Report` and related Actions. (A11)
-- **Dependency graph missing Evaluation** — `EvaluateMentor` imports `Evaluation\Actions\EvaluateMentorAction`. (A11)
-- `CreateSupervisionLogAction` described as "Creates a supervision visit log" — the word "visit" is misleading; creates general supervision logs.
-- Cross-domain routing (`SupervisionManager` in `routes/web/mentee.php`) not noted.
-- No Routes, Tests, or Factories sections.
+- **A8 — SupervisionManager described as "manages" but is read-only (🟠):** `SupervisionManager` description says "Manages supervision visit logs" but component is student-facing read-only — lists logs, does not create or manage them.
+- **A11 — Dependency graph missing Internship and Evaluation:** `ReportNotes` and `ReportReview` import `Internship\Models\Report` and related Actions; `EvaluateMentor` imports `Evaluation\Actions\EvaluateMentorAction`.
+- **CreateSupervisionLogAction description misleading:** Says "Creates a supervision visit log" — the word "visit" is misleading; creates general supervision logs.
+- **Cross-domain routing:** `SupervisionManager` routed in `routes/web/mentee.php`.
 
 ### Partnership
 
-- **Dependency graph missing Placement** — `PartnershipManager` imports `Placement\Models\Placement`. (A12)
-- **Dependency graph missing Shared/CsvHandler** — both `CompanyManager` and `PartnershipManager` import it. (A12)
-- `BatchDeleteCompanyAction` and `BatchDeletePartnershipAction` omit `{deleted, blocked}` return type docs.
-- No Routes, Tests, or Factories sections.
-- CSV import/export/template download features not documented.
+- **A12 — Dependency graph missing Placement and Shared/CsvHandler:** `PartnershipManager` imports `Placement\Models\Placement`; both `CompanyManager` and `PartnershipManager` import `Shared/CsvHandler`.
+- **BatchDelete return docs missing:** `BatchDeleteCompanyAction` and `BatchDeletePartnershipAction` omit `{deleted, blocked}` return type docs.
+- **CSV import/export/template download features not documented** in reference doc.
 
 ### Placement
 
-- `StudentPlacementChangeRequest` routed in `routes/web/mentee.php` — not noted.
-- `CreatePlacementAction` sets `filled_quota = 0` — not mentioned.
-- No Routes, Tests, or Factories sections.
+- **StudentPlacementChangeRequest cross-domain routing:** Routed in `routes/web/mentee.php`.
+- **CreatePlacementAction sets `filled_quota = 0`** — not mentioned in reference doc.
 
 ### Registration
 
-- **RegistrationWizardForm not documented at all.** (A9)
-- Livewire component count off by 1 (counts Form object as Component).
-- No Routes, Tests, or Factories sections.
-- Cross-domain routing (`ApplicationReview` from Admin) not documented.
+- **A9 — RegistrationWizardForm not documented at all (🟠):** Exists as a Form object but is not listed in the Forms section.
+- **Livewire component count off by 1:** Counts Form object as Component.
+- **Cross-domain routing:** `ApplicationReview` (Admin) routed in `routes/web/registration.php`.
 
 ### Schedule
 
-- `ScheduleStatus` entity tracks time-based state (`isOngoing`, `isUpcoming`), not explicit status — description imprecise.
-- No Routes, Tests, Views, or Migrations sections.
-- "Where to Find It" missing Entities, Policies, Livewire, routes, views, config.
+- **ScheduleStatus description imprecise:** Entity tracks time-based state (`isOngoing`, `isUpcoming`), not explicit status.
+- **"Where to Find It" incomplete:** Missing Entities, Policies, Livewire, routes, views, config.
 
 ### School
 
-- Overview mentions school logo upload with preview — correctly implemented but `SchoolForm` has no logo field (handled in component).
-- No Routes, Tests, Views, or Migrations sections.
-- "Where to Find It" missing Livewire components and Entities.
+- **Logo upload not in form:** Overview mentions school logo upload with preview — correctly implemented but `SchoolForm` has no logo field (handled in component).
+- **"Where to Find It" incomplete:** Missing Livewire components and Entities.
 
 ### Settings
 
-- Cross-domain violation: `SystemSetting` imports `School\Models\AcademicYear` and `School\Actions\ActivateAcademicYearAction` — correctly documented as violation.
-- No Routes, Tests, Views, or Migrations sections.
+- **C3 — GetAcademicYearsAction missing BaseAction altogether:** `GetAcademicYearsAction` extends nothing (class GetAcademicYearsAction with no extends). Fits the Read Action pattern correctly (no BaseAction needed) but the bare class structure deviates from project conventions.
+- **Cross-domain violation:** `SystemSetting` imports `School\Models\AcademicYear` and `School\Actions\ActivateAcademicYearAction` — correctly documented as violation in reference doc.
 
 ### Setup
 
-- Overview implies 7-step wizard — reference doc describes 4 main form steps.
-- Recovery key length (64 chars) not in reference doc.
-- No Routes (only "Where to Find It" mention), Tests, Views, or Migrations sections.
+- **Overview / reference doc mismatch:** Overview implies 7-step wizard — reference doc describes 4 main form steps.
+- **Recovery key length (64 chars) not documented** in reference doc.
+- **C14 — RecoverSuperAdminAction uses raw cache key (🔴):** Uses `'recover_admin_attempts_' . md5($email)` raw string literal (lines 25, 71) instead of a `CacheKeys` constant. Violates the mandatory convention: *"Every cache key used across the codebase MUST be defined here as a constant."* No matching constant exists in `CacheKeys`.
 
 ### Shared
 
-- **Overview says "no Views" but views exist:** 12 Blade UI components, 5 widgets, 7 layout files. (A21)
-- ~~**Design Principle 2 violated:** Classes not all final/static/readonly — `CsvHandler`, `LangChecker` noted as exceptions. (A22 — Resolved)~~
-- **Blade UI components missing avatar and credit** from reference doc. (A31)
-- **HasModelStatuses deprecated** but not noted in reference doc. (A32)
-- Layout files (7) not documented at all.
-- No Tests section.
+- **A21 — Overview says "no Views" but views exist:** 12 Blade UI components, 5 widgets, 7 layout files exist.
+- **A31 — Blade UI components missing avatar and credit** from reference doc.
+- **Layout files (7) not documented at all.**
+- **No Tests section** in reference doc.
 
 ### User
 
-- Avatar handling (`WithFileUploads`, `$avatar` property) not documented in reference doc.
-- `EmploymentStatus` enum documented but not mentioned as used by `ProfileForm`.
-- No Routes, Tests, Views, or Migrations sections.
-- Dashboard views not referenced.
+- **Avatar handling undocumented:** `WithFileUploads`, `$avatar` property not in reference doc.
+- **EmploymentStatus** enum documented but not mentioned as used by `ProfileForm`.
+- **Dashboard views not referenced** in reference doc.
 
 ---
 
 ## Cross-Cutting Issues
 
-### Missing Standard Sections Across All Reference Docs
+### Documentation Standards
+
+#### Missing Standard Sections Across All Reference Docs
 
 Every domain reference doc is missing these sections:
-- **Routes** — route files exist for all 24 domains
-- **Views** — Blade view files exist in `resources/views/{domain}/`
+- **Routes** — route files exist for 23 domains (Core has no routes; `routes/web/core.php` was deleted)
+- **Views** — Blade view files exist in `resources/views/{domain}/` (note: `resources/views/core/` does not exist — Core is infrastructure and has no views)
 - **Tests** — test files exist in `tests/{Feature,Unit}/{Domain}/`
 - **Factories** — model factories exist for most models
 - **Migrations** — migration files exist for all domains
 
-### Overview Docs Missing "Last Updated" Header
+#### "Last Updated" Header Missing
 
-5 overview docs lack `> Last updated:` header: Document, Evaluation, Guidance, Incident, Internship, Schedule. (A40)
+6 overview docs lack `> Last updated:` header: Document, Evaluation, Guidance, Incident, Internship, Schedule.
 
-### Stale Last-Updated Dates
+#### Stale Last-Updated Dates
 
 Reference docs for Document, Evaluation, Guidance, Incident, Logbook, Certificate, Assignment, Assessment all say "Last updated: 2026-05-23" — 8+ days older than more recently updated docs (core-reference: 2026-05-27).
 
-### Cross-Domain Routing Not Documented
+#### Cross-Domain Routing Not Documented
 
-Multiple Livewire components are routed in a different domain's route file:
-- `AssessmentView` → `routes/web/mentee.php`
-- `SubmitAssignment` → `routes/web/mentee.php`
-- `StudentClockIn`, `AbsenceRequestForm` → `routes/web/mentee.php`
-- `LogbookEntry` → `routes/web/mentee.php`
-- `SupervisionManager` → `routes/web/mentee.php`
-- `StudentPlacementChangeRequest` → `routes/web/mentee.php`
-- `ApplicationReview` (Admin) → `routes/web/registration.php`
+Multiple Livewire components are routed in a different domain's route file. None of these cross-domain routings are noted in the domain reference docs:
 
-None of these cross-domain routings are documented in the domain reference docs.
+| Component | Domain | Routed In |
+|-----------|--------|-----------|
+| `AssessmentView` | Assessment | `routes/web/mentee.php` |
+| `SubmitAssignment` | Assignment | `routes/web/mentee.php` |
+| `StudentClockIn`, `AbsenceRequestForm` | Attendance | `routes/web/mentee.php` |
+| `LogbookEntry` | Logbook | `routes/web/mentee.php` |
+| `SupervisionManager` | Mentor | `routes/web/mentee.php` |
+| `StudentPlacementChangeRequest` | Placement | `routes/web/mentee.php` |
+| `ApplicationReview` | Admin | `routes/web/registration.php` |
 
----
+### Infrastructure / Code Patterns
 
-## Infrastructure Audit Findings
+#### C1. Read Actions Extending BaseAction (9 files) 🔴
 
-### C1. Read Actions Extending BaseAction (9 files) 🔴
+The Action Triad (docs/architecture.md) mandates that Read Actions should NOT extend BaseAction — they should be plain invocable classes.
 
 | File | Location | Issue |
 |------|----------|-------|
@@ -281,24 +260,18 @@ None of these cross-domain routings are documented in the domain reference docs.
 | `GetProfileFormDataAction.php` | `app/Domain/User/Actions/` | Returns static field config |
 | `GetActivityLogsAction.php` | `app/Domain/User/Actions/` | Read-only paginated query |
 
-The Action Triad (docs/architecture.md) mandates that Read Actions should NOT extend BaseAction — they should be plain invocable classes. These 9 files should be refactored to remove the BaseAction parent.
+#### C2. Actions Missing execute() Method (2 files) 🔴
 
-### C2. Actions Missing execute() Method (2 files) 🔴
+All actions must expose a single `execute()` method per the documented pattern.
 
 | File | Location | Issue |
 |------|----------|-------|
 | `GenerateAccountSlipAction.php` | `app/Domain/Admin/Actions/` | Has `download()`/`downloadBatch()` but no `execute()` |
 | `CompileLogbookReportAction.php` | `app/Domain/Logbook/Actions/` | Has `download()` but no `execute()` |
 
-All actions must expose a single `execute()` method per the documented pattern.
+#### C4. Livewire CRUD Components Not Extending BaseRecordManager (5 files) 🟠
 
-### C3. GetAcademicYearsAction Missing BaseAction Altogether 🔴
-
-**File:** `app/Domain/Settings/Actions/GetAcademicYearsAction.php`
-
-This action extends nothing (`class GetAcademicYearsAction` with no `extends`). It happens to fit the Read Action pattern correctly (no BaseAction), but the bare class structure deviates from project conventions.
-
-### C4. Livewire CRUD Components Not Extending BaseRecordManager (5 files) 🟠
+These CRUD management components should extend `BaseRecordManager` to inherit search, sort, filter, pagination, and bulk-action functionality.
 
 | File | Location | Current Base |
 |------|----------|-------------|
@@ -308,42 +281,13 @@ This action extends nothing (`class GetAcademicYearsAction` with no `extends`). 
 | `RequirementManager.php` | `app/Domain/Internship/Livewire/` | `extends Component` |
 | `TemplateManager.php` | `app/Domain/Document/Livewire/` | `extends Component` (with `WithPagination`) |
 
-These are CRUD management components and should extend `BaseRecordManager` (`app/Domain/Core/Livewire/BaseRecordManager.php`) to inherit search, sort, filter, pagination, and export functionality.
-
-### C5. State Entities Should Extend BaseState (17 files) 🟠
-
-These entities manage state machine logic but extend `BaseEntity` directly. They should extend `BaseState` which provides `isState()` and `isStateIn()` helpers and inherits from `BaseEntity`.
-
-| Domain | File |
-|--------|------|
-| Attendance | `AttendanceStatus.php`, `AbsenceRequestStatus.php` |
-| Auth | `RecoveryCodeState.php` |
-| Guidance | `HandbookPublishState.php` |
-| Internship | `InternshipState.php`, `InternshipGroupState.php` |
-| Logbook | `LogbookState.php` |
-| Mentor | `SupervisionStatus.php` |
-| Partnership | `CompanyState.php`, `PartnershipState.php` |
-| Placement | `PlacementState.php` |
-| Registration | `RegistrationState.php` |
-| Schedule | `ScheduleStatus.php` |
-| School | `AcademicYearState.php`, `DepartmentState.php`, `SchoolState.php` |
-| Setup | `SetupState.php` |
-
-Additionally, `BaseState` from `app/Domain/Core/States/BaseState.php` is never imported or used anywhere outside Core — it's defined but has zero consumption across the entire codebase.
-
-### C6. DomainServiceProvider registerCommands() Dead Code 🔴
-
-**File:** `app/Providers/DomainServiceProvider.php:51-64`
-
-`registerCommands()` is defined but never called from `boot()`, `register()`, or anywhere else. The corresponding `config('domain.commands')` key does not exist in `config/domain.php` — the method's config read always falls back to default `true`. The method and its associated config concept are dead code.
-
-### C7. Dead Config in config/domain.php (factories Section) 🟠
+#### C7. Dead Config in config/domain.php (factories Section) 🟠
 
 **File:** `config/domain.php:97-103`
 
 The `factories` block defines `enabled`, `path`, `namespace`, and `faker` settings but `config('domain.factories')` is referenced zero times across the entire codebase. Entirely unused.
 
-### C8. config/mary.php References Non-Existent Class 🔴
+#### C8. config/mary.php References Non-Existent Class 🔴
 
 **File:** `config/mary.php:43`
 
@@ -351,40 +295,20 @@ The `factories` block defines `enabled`, `path`, `namespace`, and `faker` settin
 'class' => 'App\Support\Spotlight',
 ```
 
-`App\Support\Spotlight` does not exist — glob search for `app/Support/Spotlight.php` returns nothing. Will cause a runtime error if the maryUI spotlight component is used.
+`App\Support\Spotlight` does not exist. Will cause a runtime error if the maryUI spotlight component is used.
 
-### C9. View Naming Mismatch: SubmitAssignment 🟡
-
-**File:** `app/Domain/Assignment/Livewire/SubmitAssignment.php`
-
-The component's `render()` returns `view('assignment.submission')` but the file on disk is `resources/views/assignment/submit-assignment.blade.php`. Either rename the view file or fix the render call.
-
-### C10. Missing Entity Accessor Methods (2 files) 🟡
-
-| Model | Entity | Missing Accessor |
-|-------|--------|-----------------|
-| `User` (in Auth/User) | `Auth\SuperAdminIntegrityRules` | `asSuperAdminIntegrityRules()` |
-| `Evaluation` | `Evaluation\EvaluationResult` | `asEvaluationResult()` |
+#### C10. Missing Entity Accessor Methods (2 files) 🟡
 
 Models should expose entities via `as{EntityName}()` accessors per documented pattern.
 
-### C11. AnnouncementStatus Missing StatusEnum Interface 🟡
+| Model | Entity | Missing Accessor |
+|-------|--------|-----------------|
+| `User` (in Auth) | `Auth\SuperAdminIntegrityRules` | `asSuperAdminIntegrityRules()` |
+| `Evaluation` | `Evaluation\EvaluationResult` | `asEvaluationResult()` |
 
-**File:** `app/Domain/Admin/Enums/AnnouncementStatus.php`
+### Pre-Existing Backlog
 
-This enum defines state transitions (`DRAFT → SCHEDULED → PUBLISHED`) and has a `canTransitionTo()` method, but does not implement `StatusEnum`. This means `isTerminal()` and `validTransitions()` are missing. It should `implements LabelEnum, StatusEnum`.
-
-### C13. Integrity.php Uses raw echo/exit for Pre-Boot Errors ✅ Resolved
-
-**File:** `app/Domain/Core/Support/Integrity.php`
-
-**Fix applied:** `fatal()` now throws `RuntimeException` instead of `echo`+`exit(1)`.
-
----
-
-## Pre-Existing Backlog
-
-### B1. Feature Test Coverage 🔴
+#### B1. Feature Test Coverage 🔴
 
 | Domain | Actions | Feature Tests | Gap |
 |--------|---------|---------------|-----|
@@ -411,89 +335,72 @@ This enum defines state transitions (`DRAFT → SCHEDULED → PUBLISHED`) and ha
 | Settings | 6 | 6 | 🟢 |
 | User | 8 | 5 | 🟢 |
 
-### B2. GD8 — Acknowledgement Not Used as Gate 🟠
+#### B2. GD8 — Acknowledgement Not Used as Gate 🟠
 
 Handbook acknowledgement is purely informational — no action is blocked.
 
-### B3. Livewire Form Object Migration 🟡
+#### B3. Livewire Form Object Migration 🟡
 
 ~45 components still manage form state via flat public properties. Completed: Setup, Auth, Profile, Settings, Internship, Guidance, Registration, Placement.
 
-### B4. Cross-Domain Event Flow Undocumented 🟡
+#### B4. Cross-Domain Event Flow Undocumented 🟡
 
 Which events fire and which listeners react is not documented.
 
-### B5. Real-Time Features (Future) 🟡
+#### B5. Real-Time Features (Future) 🟡
 
 Laravel Echo and Reverb installed but no real-time channels active.
 
-### B6. BaseAction Cannot Enforce execute() Signature 🟡
+#### B6. BaseAction Cannot Enforce execute() Signature 🟡
 
-No abstract execute() method on BaseAction. Each Action defines its own signature.
+No abstract `execute()` method on `BaseAction`. Each Action defines its own signature.
 
 ---
 
 ## Summary
 
-| # | Issue | Category | Severity | Status |
-|---|-------|----------|----------|--------|
-| A8 | SupervisionManager described as "manages" but is read-only | Doc-Implementation | 🟠 High | Open |
-| A9 | RegistrationWizardForm not documented at all | Documentation | 🟠 High | Open |
-| A10 | Internship dependency graph claims BaseState — no file imports it | Documentation | 🟠 High | Open |
-| A11 | Mentor dependency graph missing Internship and Evaluation | Documentation | 🟠 High | Open |
-| A12 | Partnership dependency graph missing Placement and Shared/CsvHandler | Documentation | 🟠 Medium | Open |
-| A13 | Logbook dependency graph claims Mentor — no direct import exists | Documentation | 🟠 Medium | Open |
-| A14 | Assessment EvaluatorRole enum description missing ADMIN and SYSTEM cases | Documentation | 🟠 Medium | Open |
-| A15 | Auth Role enum description missing MENTOR and MENTEE cases | Documentation | 🟠 Medium | Open |
-| A16 | Certificate EvaluatorRole description inaccurate | Documentation | 🟠 Medium | Open |
-| A20 | Document template version not tracked despite Principle 2 claiming it | Doc-Implementation | 🟠 Medium | Resolved |
-| A21 | Shared overview says "no Views" but views exist | Documentation | 🟠 Medium | Open |
-| A22 | Shared Design Principle 2: classes not all final/static/readonly | Doc-Implementation | 🟠 Medium | Resolved |
-| A24 | Attendance overview describes features not implemented | Doc-Implementation | 🟠 Medium | Resolved |
-| A25 | Certificate overview mentions features not in reference doc | Doc-Implementation | 🟡 Low | Resolved |
-| A26 | Logbook overview mentions features not implemented | Doc-Implementation | 🟠 Medium | Resolved |
-| A27 | Mentee dependency graph claims Internship — no direct import exists | Documentation | 🟡 Low | Resolved |
-| A28 | Evaluation dependency graph claims Mentor and Internship | Documentation | 🟡 Low | Resolved |
-| A29 | Document dependency graph claims Certificate | Documentation | 🟡 Low | Resolved |
-| A30 | Admin has undocumented DownloadsAccountSlips Livewire concern | Documentation | 🟡 Low | Resolved |
-| A31 | Shared Blade UI components missing avatar and credit | Documentation | 🟡 Low | Resolved |
-| A32 | HasModelStatuses trait deprecated but not noted in reference doc | Documentation | 🟡 Low | Resolved |
-| A34 | AuditCategory enum description glosses over TERMINAL and RECOMMENDATIONS | Documentation | 🟡 Low | Resolved |
-| A25 | Certificate overview mentions features not in reference doc | Doc-Implementation | 🟡 Low | Open |
-| A26 | Logbook overview mentions features not implemented | Doc-Implementation | 🟠 Medium | Open |
-| A27 | Mentee dependency graph claims Internship — no direct import exists | Documentation | 🟡 Low | Open |
-| A28 | Evaluation dependency graph claims Mentor and Internship | Documentation | 🟡 Low | Open |
-| A29 | Document dependency graph claims Certificate | Documentation | 🟡 Low | Open |
-| A30 | Admin has undocumented DownloadsAccountSlips Livewire concern | Documentation | 🟡 Low | Open |
-| A31 | Shared Blade UI components missing avatar and credit | Documentation | 🟡 Low | Open |
-| A32 | HasModelStatuses trait deprecated but not noted in reference doc | Documentation | 🟡 Low | Open |
-| A34 | AuditCategory enum description glosses over TERMINAL and RECOMMENDATIONS | Documentation | 🟡 Low | Open |
-| A35 | HandbookForm missing $id field from reference doc | Documentation | 🟡 Low | Resolved |
-| A36 | Incident notification ShouldQueue interface missing from ref doc | Documentation | 🟡 Low | Resolved |
-| A37 | LogbookEntry missing WithPagination and WithFileUploads from ref doc | Documentation | 🟡 Low | Resolved |
-| A38 | MenteeState entity methods undocumented | Documentation | 🟡 Low | Resolved |
-| A39 | Evaluation FACILITY enum case not mentioned in overview | Documentation | 🟡 Low | Resolved |
-| A40 | 5 overview docs missing "Last updated" header | Documentation | 🟡 Low | Resolved |
-| B1 | Feature test coverage — 68 Actions uncovered | Backlog | 🔴 High | Open |
-| B2 | GD8 — Acknowledgement not used as gate | Backlog | 🟠 Medium | Open |
-| B3 | Livewire Form Object migration (~45 components) | Backlog | 🟡 Low | Open |
-| B4 | Cross-domain event flow undocumented | Backlog | 🟡 Low | Open |
-| B5 | Real-time features (Echo + Reverb) | Backlog | 🟡 Low | Open |
-| B6 | BaseAction cannot enforce execute() signature | Backlog | 🟡 Low | Open |
-| C1 | Read Actions extending BaseAction (9 files) | Infrastructure | 🔴 High | Open |
-| C2 | Actions missing execute() method (2 files) | Infrastructure | 🔴 High | Open |
-| C3 | GetAcademicYearsAction missing BaseAction | Infrastructure | 🔴 High | Open |
-| C4 | Livewire CRUD not extending BaseRecordManager (5 files) | Infrastructure | 🟠 High | Open |
-| C5 | State entities not extending BaseState (17 files) | Infrastructure | 🟠 High | Open |
-| C6 | DomainServiceProvider registerCommands() dead code | Infrastructure | 🔴 High | Open |
-| C7 | Dead config: factories section in domain.php | Infrastructure | 🟠 Medium | Open |
-| C8 | config/mary.php references non-existent Spotlight class | Infrastructure | 🔴 High | Open |
-| C9 | View naming mismatch: SubmitAssignment | Infrastructure | 🟡 Low | Open |
-| C10 | Missing entity accessor methods (2 files) | Infrastructure | 🟡 Low | Open |
-| C11 | AnnouncementStatus missing StatusEnum | Infrastructure | 🟡 Low | Open |
-| C12 | Cross-domain import violations (170+ files) | Architecture | ℹ️ Info | Accepted — ADR updated 2026-06-01 |
-| C13 | Integrity.php raw echo/exit for pre-boot errors | Architecture | ⚠️ Note | Resolved |
-| L1 | Logbook: no industry supervisor feedback container | Design Gap | 🔴 High | Proposal |
+| # | Issue | Domain / Layer | Severity | Status |
+|---|-------|----------------|----------|--------|
+| B1 | Feature test coverage — 68 Actions uncovered | Cross-Cutting (Backlog) | 🔴 Critical | Open |
+| C1 | Read Actions extending BaseAction (9 files) | Cross-Cutting (Infrastructure) | 🔴 Critical | Open |
+| C2 | Actions missing execute() method (2 files) | Cross-Cutting (Infrastructure) | 🔴 Critical | Open |
+| C3 | GetAcademicYearsAction missing BaseAction | Settings | 🔴 Critical | Open |
+| C6 | DomainServiceProvider registerCommands() dead code | Cross-Cutting (Infrastructure) | 🔴 Critical | Resolved — method removed |
+| C8 | config/mary.php references non-existent Spotlight class | Cross-Cutting (Infrastructure) | 🔴 Critical | Open |
+| C14 | RecoverSuperAdminAction uses raw cache key | Setup | 🔴 Critical | Open |
+| L1 | Logbook: no industry supervisor feedback container | Logbook | 🔴 Critical | Proposal |
+| A8 | SupervisionManager described as "manages" but is read-only | Mentor | 🟠 High | Open |
+| A9 | RegistrationWizardForm not documented at all | Registration | 🟠 High | Open |
+| A10 | Internship dependency graph claims BaseState — no file imports it | Internship / Core | 🟠 High | Resolved — BaseState removed |
+| A11 | Mentor dependency graph missing Internship and Evaluation | Mentor | 🟠 High | Open |
+| C4 | Livewire CRUD not extending BaseRecordManager (5 files) | Cross-Cutting (Infrastructure) | 🟠 High | Open |
+| C5 | State entities not extending BaseState (17 files) | Cross-Cutting (Infrastructure) | 🟠 High | Resolved — BaseState removed |
+| A12 | Partnership dependency graph missing Placement and Shared/CsvHandler | Partnership | 🟠 Medium | Open |
+| A13 | Logbook dependency graph claims Mentor | Logbook | 🟠 Medium | Open |
+| A14 | Assessment EvaluatorRole enum description incomplete | Assessment | 🟠 Medium | Open |
+| A15 | Auth Role enum description missing MENTOR and MENTEE | Auth | 🟠 Medium | Open |
+| A16 | Certificate EvaluatorRole description inaccurate | Certificate | 🟠 Medium | Open |
+| A21 | Shared overview says "no Views" but views exist | Shared | 🟠 Medium | Open |
+| A24 | Attendance overview features not implemented | Attendance | 🟠 Medium | Open |
+| A26 | Logbook overview features not implemented | Logbook | 🟠 Medium | Open |
+| B2 | GD8 — Acknowledgement not used as gate | Cross-Cutting (Backlog) | 🟠 Medium | Open |
+| C7 | Dead config: factories section in domain.php | Cross-Cutting (Infrastructure) | 🟠 Medium | Open |
+| A25 | Certificate overview features not in reference doc | Certificate | 🟡 Low | Open |
+| A27 | Mentee dependency graph claims Internship | Mentee | 🟡 Low | Open |
+| A28 | Evaluation dependency graph claims Mentor and Internship | Evaluation | 🟡 Low | Open |
+| A29 | Document dependency graph claims Certificate | Document | 🟡 Low | Open |
+| A30 | Admin DownloadsAccountSlips undocumented | Admin | 🟡 Low | Open |
+| A31 | Shared Blade UI missing avatar and credit | Shared | 🟡 Low | Open |
+| A34 | AuditCategory enum description incomplete | Core | 🟡 Low | Resolved |
+| B3 | Livewire Form Object migration (~45 components) | Cross-Cutting (Backlog) | 🟡 Low | Open |
+| B4 | Cross-domain event flow undocumented | Cross-Cutting (Backlog) | 🟡 Low | Open |
+| B5 | Real-time features (Echo + Reverb) | Cross-Cutting (Backlog) | 🟡 Low | Open |
+| B6 | BaseAction cannot enforce execute() signature | Cross-Cutting (Backlog) | 🟡 Low | Open |
+| C9 | View naming mismatch: SubmitAssignment | Assignment | 🟡 Low | Open |
+| C10 | Missing entity accessor methods (2 files) | Cross-Cutting (Infrastructure) | 🟡 Low | Open |
+| C11 | AnnouncementStatus missing StatusEnum | Admin | 🟡 Low | Open |
+| D1 | core.md exception usage count inaccurate | Core | 🟡 Low | Resolved |
+| D2 | 4 Core exception classes completely unreferenced | Core | 🟡 Low | Resolved |
 
-**Categories:** A = Audit (doc-implementation), B = Backlog, C = Infrastructure/code audit
+**Categories:** A = Audit (doc-implementation), B = Backlog, C = Infrastructure/code audit, D = Documentation inaccuracy
 **Severity:** 🔴 Critical = must fix, 🟠 High/Medium = should fix, 🟡 Low = nice to have

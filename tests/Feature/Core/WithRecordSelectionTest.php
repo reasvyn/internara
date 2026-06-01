@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Domain\Core\Livewire\Concerns\WithRecordSelection;
 use Livewire\Component;
 
-class TestWithRecordSelectionComponent extends Component
+class TestSelectionComponent extends Component
 {
     use WithRecordSelection;
 
@@ -14,13 +14,11 @@ class TestWithRecordSelectionComponent extends Component
 
 describe('WithRecordSelection', function () {
     it('starts with empty selection', function () {
-        $component = new TestWithRecordSelectionComponent;
-
-        expect($component->selectedIds)->toBe([]);
+        expect((new TestSelectionComponent)->selectedIds)->toBe([]);
     });
 
     it('clears selection', function () {
-        $component = new TestWithRecordSelectionComponent;
+        $component = new TestSelectionComponent;
         $component->selectedIds = ['1', '2', '3'];
 
         $component->clearSelection();
@@ -29,7 +27,7 @@ describe('WithRecordSelection', function () {
     });
 
     it('selects all given ids', function () {
-        $component = new TestWithRecordSelectionComponent;
+        $component = new TestSelectionComponent;
 
         $component->selectAll(['a', 'b', 'c']);
 
@@ -37,15 +35,13 @@ describe('WithRecordSelection', function () {
     });
 
     it('returns selected count', function () {
-        $component = new TestWithRecordSelectionComponent;
+        $component = new TestSelectionComponent;
         $component->selectedIds = ['x', 'y'];
 
         expect($component->selected_count)->toBe(2);
     });
 
-    it('returns zero count when nothing selected', function () {
-        $component = new TestWithRecordSelectionComponent;
-
-        expect($component->selected_count)->toBe(0);
+    it('count is zero when nothing selected', function () {
+        expect((new TestSelectionComponent)->selected_count)->toBe(0);
     });
 });

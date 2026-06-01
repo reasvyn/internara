@@ -43,31 +43,6 @@ Business rules live in dedicated **Entity** classes that are:
 Models expose entities via named accessors like `asRegistrationState()`, `asInternshipPeriod()`.
 This makes the boundary explicit: models handle persistence, entities handle business rules.
 
-### State Machine Entities (BaseState)
-
-For business processes with explicit lifecycles (registration status, internship status,
-account status), entities extend `BaseState` instead of `BaseEntity`:
-
-```php
-abstract readonly class BaseState extends BaseEntity
-{
-    public function isState(string $state): bool
-    {
-        return property_exists($this, 'status') && $this->status === $state;
-    }
-
-    public function isStateIn(array $states): bool
-    {
-        return property_exists($this, 'status') && in_array($this->status, $states, true);
-    }
-}
-```
-
-State transitions are validated by the enum's `StatusEnum` contract (`canTransitionTo()`,
-`validTransitions()`, `isTerminal()`), not by the entity. The entity provides the current
-state snapshot; the enum defines allowed transitions. This separation keeps entity logic
-focused on business rules rather than lifecycle mechanics.
-
 ### Shared Validation Rules (Gradual Adoption)
 
 Entities can also expose validation rules that are shared between Form Objects and Form
@@ -107,8 +82,6 @@ Entities are not the only readonly data class in the system. The distinction:
 - **Positive**: Entity tests need minimal setup — construct and assert. They run in milliseconds.
 - **Positive**: Business rules are isolated from raw database access patterns. Renaming a column
   affects only the `fromModel()` bridge.
-- **Positive**: `BaseState` provides a lightweight state-machine helper without requiring a
-  separate pattern. Combined with `StatusEnum`, it covers all state management needs.
 - **Positive**: Framework dependencies are allowed when practical — no artificially enforced
   purity that slows development.
 - **Negative**: Bridge code (`fromModel()`) must be maintained alongside model changes.
@@ -116,7 +89,6 @@ Entities are not the only readonly data class in the system. The distinction:
 ## References
 
 - `app/Domain/Core/Entities/BaseEntity.php` — base entity class
-- `app/Domain/Core/States/BaseState.php` — state machine entity base
 - `app/Domain/Core/Contracts/StatusEnum.php` — state transition contract
 - `app/Domain/Internship/Entities/InternshipPeriod.php` — example entity
 - `app/Domain/Registration/Entities/RegistrationState.php` — example state entity

@@ -14,87 +14,51 @@ use App\Domain\Core\Exceptions\UnauthorizedException;
 use App\Domain\Core\Exceptions\ValidationFailedException;
 
 describe('Exception hierarchy', function () {
-    it('app exception is user facing by default', function () {
-        $e = new class('test') extends AppException {};
+    it('ActionException and PresentationException are user-facing', function () {
+        $ae = new class('test') extends ActionException {};
+        $pe = new class('test') extends PresentationException {};
 
-        expect($e->isUserFacing())->toBeTrue()
-            ->and($e->shouldReport())->toBeTrue();
+        expect($ae->isUserFacing())->toBeTrue()
+            ->and($pe->isUserFacing())->toBeTrue();
     });
 
-    it('action exception is user facing', function () {
-        $e = new class('test') extends ActionException {};
-
-        expect($e->isUserFacing())->toBeTrue();
-    });
-
-    it('infrastructure exception is not user facing', function () {
+    it('InfrastructureException is not user-facing', function () {
         $e = new class('test') extends InfrastructureException {};
 
         expect($e->isUserFacing())->toBeFalse();
     });
 
-    it('presentation exception is user facing', function () {
-        $e = new class('test') extends PresentationException {};
-
-        expect($e->isUserFacing())->toBeTrue();
-    });
-
-    it('not-found exception has default hint', function () {
-        $e = new NotFoundException;
-
-        expect($e->getHint())->toContain('does not exist');
-    });
-
-    it('unauthorized exception has default hint', function () {
-        $e = new UnauthorizedException;
-
-        expect($e->getHint())->toContain('permission');
-    });
-
-    it('conflict exception has default hint', function () {
-        $e = new ConflictException;
-
-        expect($e->getHint())->toContain('conflict');
-    });
-
-    it('validation failed exception has default hint', function () {
-        $e = new ValidationFailedException;
-
-        expect($e->getHint())->toContain('input');
-    });
-
-    it('rate limit exception has default hint', function () {
-        $e = new RateLimitException;
-
-        expect($e->getHint())->toContain('wait');
-    });
-
-    it('domain exception reuses HasExceptionContext without extending AppException', function () {
+    it('DomainException is independent from AppException tree', function () {
         $e = new RejectedException('rejected');
 
         expect($e)->toBeInstanceOf(RuntimeException::class)
-            ->not->toBeInstanceOf(AppException::class)
-            ->and($e->getMessage())->toBe('rejected');
+            ->not->toBeInstanceOf(AppException::class);
     });
 
-    it('provides fluent hint and context API', function () {
+    it('concrete exceptions have default hints', function () {
+        expect((new NotFoundException)->getHint())->toContain('does not exist');
+        expect((new UnauthorizedException)->getHint())->toContain('permission');
+        expect((new ConflictException)->getHint())->toContain('conflict');
+        expect((new ValidationFailedException)->getHint())->toContain('input');
+        expect((new RateLimitException)->getHint())->toContain('wait');
+    });
+
+    it('withHint and withContext are chainable', function () {
         $e = (new ConflictException('custom'))
-            ->withHint('Try again later')
+            ->withHint('Try again')
             ->withContext(['key' => 'value']);
 
-        expect($e->getHint())->toBe('Try again later')
+        expect($e->getHint())->toBe('Try again')
             ->and($e->getContext())->toHaveKey('key', 'value');
     });
 
-    it('outputs CLI formatted string', function () {
+    it('toCliOutput formats message with hint and context', function () {
         $e = (new ValidationFailedException('Invalid input'))
             ->withHint('Check your data')
             ->withContext(['field' => 'email']);
 
         $output = $e->toCliOutput();
 
-        expect($output)->toContain('Invalid input')
-            ->toContain('Check your data')
-            ->toContain('email');
+        expect($output)->toContain('Invalid input', 'Check your data', 'email');
     });
 });

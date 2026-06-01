@@ -113,7 +113,7 @@ Total: 26 files — ✅ 26 Implemented
 
 ```
 Setup Domain
-├── Core            → BaseAction, BaseEntity, BaseState, SmartLogger,
+├── Core            → BaseAction, BaseEntity, SmartLogger,
 │                      AuditReport, AuditCheck, CacheKeys
 ├── Auth            → Role enum, AccountStatus enum
 ├── School          → School, Department models (school/dept creation)

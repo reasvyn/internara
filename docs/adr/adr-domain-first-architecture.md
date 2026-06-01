@@ -42,7 +42,7 @@ Code is organized by business domain, not by technical layer. Every domain lives
 
 | Domain | Boundary | Key Concept |
 |---|---|---|
-| **Core** | Base classes & infrastructure everything depends on | `BaseModel`, `BaseEntity`, `BaseAction`, `BaseState`, `AppException`, `Integrity` |
+| **Core** | Base classes & infrastructure everything depends on | `BaseModel`, `BaseEntity`, `BaseAction`, `AppException`, `Integrity` |
 | **Shared** | Utilities shared across domains, no business logic | `Theme`, `CsvHandler`, `Environment`, `Locale` |
 | **Auth** | Identity & access control | Login, passwords, account lifecycle, recovery |
 | **User** | User profile & identity | Profile editing, dashboard routing |

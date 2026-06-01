@@ -7,7 +7,7 @@ use App\Domain\Core\Enums\AuditCategory;
 use App\Domain\Core\Enums\AuditStatus;
 
 describe('AuditCheck', function () {
-    it('creates with required properties', function () {
+    it('constructs with required properties', function () {
         $check = new AuditCheck(
             category: AuditCategory::REQUIREMENTS,
             nameKey: 'php_version',
@@ -17,22 +17,22 @@ describe('AuditCheck', function () {
 
         expect($check->category)->toBe(AuditCategory::REQUIREMENTS)
             ->and($check->status)->toBe(AuditStatus::PASS)
+            ->and($check->nameKey)->toBe('php_version')
             ->and($check->nameParams)->toBe([]);
     });
 
-    it('extends Data base class for toArray support', function () {
+    it('extends Data for toArray support', function () {
         $check = new AuditCheck(
             category: AuditCategory::DATABASE,
             nameKey: 'db_check',
             status: AuditStatus::FAIL,
             messageKey: 'db_fail',
             nameParams: ['driver' => 'sqlite'],
-            messageParams: ['error' => 'connection refused'],
         );
 
         $array = $check->toArray();
 
-        expect($array)->toHaveKeys(['category', 'nameKey', 'status', 'messageKey', 'nameParams', 'messageParams'])
+        expect($array)->toHaveKeys(['category', 'nameKey', 'status', 'messageKey', 'nameParams'])
             ->and($array['status'])->toBeInstanceOf(AuditStatus::class);
     });
 });

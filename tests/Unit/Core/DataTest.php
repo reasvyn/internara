@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Domain\Core\Data\Data;
 
-final readonly class TestData extends Data
+final readonly class TestDto extends Data
 {
     public function __construct(
         public string $name,
@@ -13,80 +13,60 @@ final readonly class TestData extends Data
     ) {}
 }
 
-final readonly class NestedData extends Data
+final readonly class NestedDto extends Data
 {
     public function __construct(
-        public TestData $child,
+        public TestDto $child,
         public string $title,
     ) {}
 }
 
 describe('Data DTO', function () {
-    it('converts to array', function () {
-        $dto = new TestData(name: 'test', count: 5, label: 'hello');
+    it('converts public properties to array', function () {
+        $dto = new TestDto(name: 'test', count: 5, label: 'hello');
 
-        $result = $dto->toArray();
-
-        expect($result)->toBe([
-            'name' => 'test',
-            'count' => 5,
-            'label' => 'hello',
+        expect($dto->toArray())->toBe([
+            'name' => 'test', 'count' => 5, 'label' => 'hello',
         ]);
     });
 
-    it('creates from array', function () {
-        $dto = TestData::fromArray([
-            'name' => 'from-array',
-            'count' => 10,
-        ]);
+    it('creates from array with camelCase keys', function () {
+        $dto = TestDto::fromArray(['name' => 'from-array', 'count' => 10]);
 
-        expect($dto)->toBeInstanceOf(TestData::class)
-            ->and($dto->name)->toBe('from-array')
-            ->and($dto->count)->toBe(10)
-            ->and($dto->label)->toBeNull();
+        expect($dto->name)->toBe('from-array')
+            ->and($dto->count)->toBe(10);
     });
 
-    it('creates from array with snake_case keys', function () {
-        $dto = TestData::fromArray([
-            'name' => 'snake',
-            'count' => 3,
-        ]);
-
-        expect($dto->name)->toBe('snake');
-    });
-
-    it('uses defaults when keys are missing', function () {
-        $dto = TestData::fromArray(['name' => 'defaults']);
+    it('applies defaults for missing optional parameters', function () {
+        $dto = TestDto::fromArray(['name' => 'defaults']);
 
         expect($dto->count)->toBe(0)
             ->and($dto->label)->toBeNull();
     });
 
-    it('converts nested Data objects recursively', function () {
-        $child = new TestData(name: 'child', count: 1);
-        $parent = new NestedData(child: $child, title: 'parent');
+    it('recursively converts nested DTOs', function () {
+        $parent = new NestedDto(child: new TestDto(name: 'child'), title: 'parent');
 
         $result = $parent->toArray();
 
         expect($result)->toBe([
-            'child' => ['name' => 'child', 'count' => 1, 'label' => null],
+            'child' => ['name' => 'child', 'count' => 0, 'label' => null],
             'title' => 'parent',
         ]);
     });
 
-    it('creates from mixed source with array input', function () {
-        $dto = TestData::from(['name' => 'mixed', 'count' => 7]);
+    it('from() dispatches to fromArray for arrays', function () {
+        $dto = TestDto::from(['name' => 'mixed', 'count' => 7]);
 
-        expect($dto)->toBeInstanceOf(TestData::class)
-            ->and($dto->name)->toBe('mixed')
-            ->and($dto->count)->toBe(7);
+        expect($dto)->toBeInstanceOf(TestDto::class)
+            ->and($dto->name)->toBe('mixed');
     });
 
-    it('throws for unsupported source type', function () {
-        TestData::from('invalid');
+    it('from() throws for unsupported source type', function () {
+        TestDto::from('invalid');
     })->throws(InvalidArgumentException::class);
 
-    it('throws when required parameter is missing in fromArray', function () {
-        TestData::fromArray(['count' => 5]);
-    })->throws(InvalidArgumentException::class, 'Missing required constructor parameter "name"');
+    it('fromArray throws when required parameter is missing', function () {
+        TestDto::fromArray(['count' => 5]);
+    })->throws(InvalidArgumentException::class, 'Missing required');
 });

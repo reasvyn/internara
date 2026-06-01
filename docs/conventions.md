@@ -66,7 +66,7 @@ Core provides base classes for every layer. Use them when they add value — ski
 | Action (Command / Process) | `BaseAction` | `transaction()`, `log()`, `HandlesActionErrors` |
 | Action (Read) | None required | Read operations don't need transaction or logging |
 | Entity | `BaseEntity` | `final readonly`, `fromModel(Model): static` contract |
-| State entity | `BaseState` (extends BaseEntity) | `isState()`, `isStateIn()` for state-machine helpers |
+| State entity | `BaseEntity` | State-machine helpers defined per entity |
 | Policy | `BasePolicy` | `AuthorizesRoles`, `AuthorizesOwnership` traits |
 | Livewire CRUD | `BaseRecordManager` | Search, filter, sort, pagination, bulk actions |
 | Controller | `BaseController` (optional) | Marker for controllers, can extend Laravel's `Controller` directly |
@@ -361,7 +361,7 @@ class RegisterStudentProcess extends BaseAction
 - Bridge from persistence via `fromModel(Model): static`.
 - Named accessors on models: `asRegistrationState()`, `asInternshipPeriod()`.
 - Business logic methods only — no persistence, no HTTP, no I/O.
-- State machine entities extend `BaseState` (adds `isState()`, `isStateIn()`).
+- State machine entities extend `BaseEntity` directly.
 
 ```php
 final readonly class RegistrationState extends BaseEntity
