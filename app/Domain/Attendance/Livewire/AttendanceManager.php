@@ -61,8 +61,14 @@ class AttendanceManager extends Component
             'records.*.status' => 'required|string|in:present,late,early_out,absent,permission,sick',
         ]);
 
+        $registrationIds = array_keys($this->records);
+        $registrations = Registration::with('mentee')
+            ->whereIn('id', $registrationIds)
+            ->get()
+            ->keyBy('id');
+
         foreach ($this->records as $registrationId => $data) {
-            $registration = Registration::find($registrationId);
+            $registration = $registrations->get($registrationId);
             if (! $registration) {
                 continue;
             }
