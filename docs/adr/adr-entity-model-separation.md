@@ -1,17 +1,16 @@
 # ADR-004: Entity-Model Separation
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+> Last updated: 2026-06-01
+> Changes: feat: relaxed framework dependency constraints for development speed
 
 
 ## Status
-Accepted
+Accepted (Revised 2026-06-01)
 
 ## Context
 
 Eloquent models in Laravel mix persistence (database queries, relationships, scopes) with
 business logic (validation rules, status checks, permission gating). This coupling makes
-business logic untestable without a database connection and tightly binds domain rules to the
-ORM.
+business logic harder to test in isolation and tightly binds domain rules to the ORM.
 
 For example, checking whether a registration can be approved requires:
 
@@ -24,16 +23,9 @@ This logic can only be tested with a database, a model factory, and all the asso
 It is also tightly coupled to the database schema — renaming the `placement_id` column breaks
 business logic.
 
-Three alternatives were considered:
-
-1. **Put logic in the model**: Simplest, Laravel convention — but couples business rules to
-   the ORM, making tests slow and refactoring risky. Every test needs a database.
-2. **Put logic in Actions**: Actions would contain all business rules as private methods —
-   but this leads to code duplication when multiple actions need the same check, and prevents
-   reuse outside action contexts.
-3. **Entities with BaseState**: A dedicated class hierarchy for business rules, with a
-   separate `BaseState` subclass for state-machine logic (status transitions, lifecycle
-   guards). This is the selected approach.
+However, in practice, the development velocity cost of strict framework isolation outweighs
+the long-term testability benefits for this project's team size and scope. A pragmatic balance
+is preferred.
 
 ## Decision
 
@@ -41,12 +33,12 @@ Business rules live in dedicated **Entity** classes that are:
 
 - `final readonly` — immutable after construction. An entity represents a snapshot of state
   at a point in time; it never mutates.
-- **Zero framework dependencies** — no Eloquent, no Facades, no Container. This guarantees
-  entities can be instantiated and tested in pure PHP.
+- **Framework dependencies allowed** — entities may use Eloquent models, Carbon, and other
+  framework classes where practical. The priority is testability, not purity.
 - **Testable by simple construction** — `new RegistrationState(status: 'pending', ...)`. No
   database, no mocking, no setup.
-- **Bridged from persistence** via `fromModel(Model): static` — the single connection to the
-  ORM. This method extracts data from an Eloquent model and constructs the entity.
+- **Bridged from persistence** via `fromModel(Model): static` — extracts data from an
+  Eloquent model and constructs the entity.
 
 Models expose entities via named accessors like `asRegistrationState()`, `asInternshipPeriod()`.
 This makes the boundary explicit: models handle persistence, entities handle business rules.
@@ -105,32 +97,21 @@ Entities are not the only readonly data class in the system. The distinction:
 | Aspect | Entity (`BaseEntity`) | DTO (`Data`) |
 |---|---|---|
 | Purpose | Business rules, state queries | Data transfer, input/output contracts |
-| Framework deps | Zero (except `fromModel` bridge) | Zero |
+| Framework deps | Pragmatic — allowed | Pragmatic — allowed |
 | Mutation | Never | Never |
 | Used by | Actions, Policies, Livewire | Actions (input), Livewire (form mapping) |
 | fromModel | Yes — bridge from persistence | Optional — can be constructed from array |
 
-Both are `final readonly`. Entities carry business logic methods; DTOs are pure data carriers.
-
 ## Consequences
 
-- **Positive**: Entity tests need zero setup — construct and assert. They run in milliseconds,
-  not seconds. The entire entity test suite completes faster than a single database-dependent test.
-- **Positive**: Business rules are decoupled from database schema. Renaming a column affects
-  only the `fromModel()` bridge, not the entity's logic.
-- **Positive**: Entities can be used anywhere — Actions, Livewire components, controllers,
-  tests — without database access. This enables policy checks and validation without
-  querying the database.
+- **Positive**: Entity tests need minimal setup — construct and assert. They run in milliseconds.
+- **Positive**: Business rules are isolated from raw database access patterns. Renaming a column
+  affects only the `fromModel()` bridge.
 - **Positive**: `BaseState` provides a lightweight state-machine helper without requiring a
   separate pattern. Combined with `StatusEnum`, it covers all state management needs.
-- **Positive**: Entities can serve as the source of truth for validation rules, eliminating
-  duplication between Form Objects and Form Requests.
+- **Positive**: Framework dependencies are allowed when practical — no artificially enforced
+  purity that slows development.
 - **Negative**: Bridge code (`fromModel()`) must be maintained alongside model changes.
-  Adding a column to a model requires adding it to the entity and its `fromModel()` method.
-- **Negative**: Some developers may find the indirection unfamiliar — "why is this logic not
-  on the model?" The answer is testability and framework independence.
-- **Negative**: Not every domain needs entities — only domains with meaningful business rules
-  should create them (approximately 25 entities across 24 domains is appropriate).
 
 ## References
 

@@ -1,6 +1,6 @@
 # Core — API Reference
-> Last updated: 2026-05-31
-> Changes: docs: audit — all items Implemented
+> Last updated: 2026-06-01
+> Changes: removed HasValidationRules (dead contract), added DomainEvent base event class
 
 > **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
@@ -32,7 +32,6 @@ Total: 48 files — ✅ 48 Implemented
 | File | Class/Interface | Description |
 |---|---|---|
 | `Core/Contracts/ColorableEnum.php` | `ColorableEnum` | Interface for enums that provide CSS color values for UI badges |
-| `Core/Contracts/HasValidationRules.php` | `HasValidationRules` | Interface for entities that expose shared validation rules |
 | `Core/Contracts/LabelEnum.php` | `LabelEnum` | Interface for enums that provide human-readable labels |
 | `Core/Contracts/SendsNotifications.php` | `SendsNotifications` | Interface for notification-sending services |
 | `Core/Contracts/StatusEnum.php` | `StatusEnum` | Interface for state-machine enums with lifecycle transitions |
@@ -50,6 +49,12 @@ Total: 48 files — ✅ 48 Implemented
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Core/Entities/BaseEntity.php` | `BaseEntity` | — | Abstract `final readonly` base with `fromModel(Model): static` bridge |
+
+## Events
+
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `Core/Events/DomainEvent.php` | `DomainEvent` | — | Convenience base class for all domain events; optional, not enforced |
 
 ## Enums
 

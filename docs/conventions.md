@@ -56,9 +56,9 @@ incomplete and must not be merged.
 
 ---
 
-## 1. Mandatory Base Classes
+## 1. Base Classes
 
-Every architectural layer has exactly one base class from Core. There is no alternative.
+Core provides base classes for every layer. Use them when they add value — skip them when they don't.
 
 | Layer | Base Class | Provides |
 |---|---|---|
@@ -69,7 +69,7 @@ Every architectural layer has exactly one base class from Core. There is no alte
 | State entity | `BaseState` (extends BaseEntity) | `isState()`, `isStateIn()` for state-machine helpers |
 | Policy | `BasePolicy` | `AuthorizesRoles`, `AuthorizesOwnership` traits |
 | Livewire CRUD | `BaseRecordManager` | Search, filter, sort, pagination, bulk actions |
-| Controller | `BaseController` | Cross-cutting HTTP concerns |
+| Controller | `BaseController` (optional) | Marker for controllers, can extend Laravel's `Controller` directly |
 | Form Request | `FormRequest` (Core's) | Consistent `ValidationFailedException` on failure |
 | Enum | Implements `LabelEnum` | `label(): string` |
 | Status enum | Implements `StatusEnum` (+ LabelEnum) | `canTransitionTo()`, `validTransitions()`, `isTerminal()` |
@@ -77,11 +77,11 @@ Every architectural layer has exactly one base class from Core. There is no alte
 | Cache key | `CacheKeys` constant | Centralized key registry, prevents collisions |
 | DTO | `Data` (from `Core/Data/Data.php`) | `toArray()`, `fromArray()`, `from()` |
 
-### Exceptions
+### Notes
 
-- **User model**: Cannot extend `BaseModel` (requires `Authenticatable`). Must manually apply
-  `HasUuids` and override `getIncrementing()` / `getKeyType()` for UUID consistency.
-- **Notifications**: Extend `Illuminate\Notifications\Notification`, not a Core base class.
+- **User model**: Extends `Illuminate\Foundation\Auth\User` directly. Apply `HasUuids` trait manually for UUID consistency.
+- **Notifications**: Extend `Illuminate\Notifications\Notification` directly.
+- **Base classes are helpers, not mandates.** If a base class adds no value for your use case, use the framework class directly.
 
 ---
 
@@ -357,8 +357,7 @@ class RegisterStudentProcess extends BaseAction
 ## 7. Entities
 
 - `final readonly` class extending `BaseEntity`.
-- Zero framework dependencies — no Eloquent, no Facades, no Container.
-- All state injected via constructor. No methods that query the database.
+- All state injected via constructor.
 - Bridge from persistence via `fromModel(Model): static`.
 - Named accessors on models: `asRegistrationState()`, `asInternshipPeriod()`.
 - Business logic methods only — no persistence, no HTTP, no I/O.
@@ -387,8 +386,7 @@ final readonly class RegistrationState extends BaseEntity
 }
 ```
 
-**Rationale:** Entities are the testable core of business logic. No database, no mocking,
-no setup — just `new RegistrationState(...)` and assert.
+**Rationale:** Entities keep business logic testable and isolated from raw Eloquent access patterns. Framework dependencies (Eloquent, Carbon) are allowed when practical.
 
 ---
 
@@ -815,49 +813,25 @@ final readonly class CacheKeys
 
 ## 19. Cross-Domain Communication
 
-No domain may import another domain's Models, Actions, or Livewire components directly.
-Four communication patterns are allowed, listed from most to least preferred:
-
-### 1. Core Contracts (Layer 3)
-
-Shared interfaces in `App\Domain\Core\Contracts\`. Any domain implements them, any domain
-consumes them via the container.
+Cross-domain imports are **allowed** — import Models, Actions, Policies, or other classes
+from sibling domains directly when needed.
 
 ```php
-// Core/Contracts/SendsNotifications.php
-interface SendsNotifications
-{
-    public function execute(string $userId, string $type, string $title, ?string $message = null): mixed;
-}
+// ✅ Direct import — perfectly fine
+use App\Domain\School\Models\AcademicYear;
 
-// Consumption in any domain
-public function __construct(
-    protected readonly SendsNotifications $notifications,
-) {}
+$activeYear = AcademicYear::where('is_active', true)->first();
 ```
 
-### 2. Domain Events (Layer 9)
+### Guidelines
 
-A Command Action dispatches an event; listeners in any domain react.
+1. **Direct import** (simplest, preferred for straightforward access)
+2. **Domain Events** (preferred when the same event triggers 2+ independent reactions)
+3. **Action delegation** (fine for cross-domain Action calls)
+4. **Core contracts** (useful for abstractions used broadly across domains)
 
-```
-Internship\Actions\CreateInternshipAction
-  → event(new InternshipCreated(...))
-    → Internship\Listeners\NotifyAdmins (same domain)
-    → Admin\Listeners\InvalidateDashboardCache (different domain)
-```
-
-### 3. Action Delegation (Process Actions Only)
-
-Only Process Actions may call other domains' Actions via constructor injection.
-
-### 4. What is NOT Allowed
-
-| ❌ Violation | Correct Alternative |
-|---|---|
-| `Internship\Models\Internship` imports `School\Models\AcademicYear` | Use AcademicYearId value object, query via School domain |
-| `Internship\Policies\CompanyPolicy` gates `Partnership\Models\Company` | Define policy in `Partnership\Policies`, register in `DomainServiceProvider` |
-| Livewire component calls `OtherDomain\Models\X::where(...)` | Use Read Action in the target domain |
+Use events when you want to add new reactions without modifying the caller. Use direct
+imports for everything else.
 
 ---
 
@@ -927,7 +901,6 @@ describe('AccountStatus', function () {
 - [ ] No `dd()`, `dump()`, `var_dump()`, `ray()` left in code
 - [ ] All user-facing strings use `__()` helper
 - [ ] Action follows the correct triad pattern (Command/Read/Process)
-- [ ] Cross-domain imports are via allowed patterns only (contracts, events, delegation)
 - [ ] Cache keys registered in `CacheKeys` constants
 - [ ] Tests pass: `php artisan test --compact`
 - [ ] Pint clean: `vendor/bin/pint --dirty --format agent`
