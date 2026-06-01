@@ -73,7 +73,8 @@ Follow the setup wizard to configure your institution and admin account. Access 
 | Layer | Technology |
 |-------|-----------|
 | Framework | Laravel 13 |
-| Frontend | Livewire 4, Alpine.js, Tailwind CSS v4, DaisyUI, maryUI |
+| Frontend | Livewire 4, Alpine.js, Tailwind CSS v4, DaisyUI 5, maryUI 2 |
+| Build Tooling | Vite 8, Prettier 3 |
 | Database | SQLite / MySQL / MariaDB / PostgreSQL |
 | Realtime | Laravel Reverb (WebSockets) |
 | Queue | Database / Redis |

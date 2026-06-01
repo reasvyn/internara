@@ -101,9 +101,10 @@ The domain directories are vertical slices that cross all layers below Layer 11.
                                          ▲ depends on
   Layer 1 ┌──────────────────────────────────────────────────────────┐
   Infra   │  PHP 8.4  +  Laravel 13  +  Composer packages           │
-          │  Spatie: activitylog, medialibrary, permission, states  │
+          │  Spatie: activitylog v5, medialibrary v11, permission   │
+          │  v8, model-status v1                                     │
           │  Livewire 4  +  Tailwind CSS 4  +  Alpine.js            │
-          │  npm packages: Vite, Reverb, Echo, flatpickr, marked    │
+          │  npm packages: Vite 8, flatpickr, marked                │
           └──────────────────────────────────────────────────────────┘
 ```
 
