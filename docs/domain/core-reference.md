@@ -1,6 +1,6 @@
 # Core — API Reference
 > Last updated: 2026-06-01
-> Changes: removed HasValidationRules (dead contract), added DomainEvent base event class
+> Changes: removed BaseState, DomainEvent; removed registerCommands() refs; updated CacheKeys count
 
 > **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
@@ -49,12 +49,6 @@ Total: 48 files — ✅ 48 Implemented
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `Core/Entities/BaseEntity.php` | `BaseEntity` | — | Abstract `final readonly` base with `fromModel(Model): static` bridge |
-
-## Events
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Core/Events/DomainEvent.php` | `DomainEvent` | — | Convenience base class for all domain events; optional, not enforced |
 
 ## Enums
 
@@ -137,12 +131,6 @@ Total: 48 files — ✅ 48 Implemented
 | `Core/Policies/Concerns/AuthorizesOwnership.php` | `AuthorizesOwnership` | `isOwner()`, `isOwnerOrAdmin()`, `isRelatedThrough()` |
 | `Core/Policies/Concerns/AuthorizesRoles.php` | `AuthorizesRoles` | `isAdmin()`, `isTeacher()`, `isStudent()`, `isSupervisor()`, `hasAnyOfRoles()` |
 
-## States
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Core/States/BaseState.php` | `BaseState` | `BaseEntity` | Abstract `final readonly` base for state entities with `isState()`, `isStateIn()` |
-
 ## Support
 
 | File | Class | Description |
@@ -186,7 +174,6 @@ Laravel framework, Spatie packages, or PHP standard library.
 - `app/Domain/Core/Models/BaseModel.php` — abstract model base with UUID
 - `app/Domain/Core/Entities/BaseEntity.php` — abstract entity base
 - `app/Domain/Core/Policies/BasePolicy.php` — abstract policy base
-- `app/Domain/Core/States/BaseState.php` — abstract state base
 - `app/Domain/Core/Livewire/BaseRecordManager.php` — abstract CRUD Livewire base
 - `app/Domain/Core/Support/SmartLogger.php` — dual-channel logger
 - `app/Domain/Core/Support/CacheKeys.php` — cache key registry
@@ -196,3 +183,7 @@ Laravel framework, Spatie packages, or PHP standard library.
 - `app/Domain/Core/Contracts/` — core interfaces
 - `app/Domain/Core/Http/Middleware/` — global middleware
 - `app/Domain/Core/Console/Commands/` — system CLI commands
+- `resources/views/core/` — does not exist (Core is infrastructure and has no Blade views)
+- `routes/web/core.php` — deleted (was a placeholder; Core owns no routes)
+
+> **Note:** Core has no routes and no views. The master `routes/web.php` does not require a Core route file. There are 23 domain route files (not 24).

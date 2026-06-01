@@ -37,7 +37,7 @@ domain reinventing the same patterns.
 Core has three responsibilities:
 
 1. **Provide base classes** — `BaseModel`, `BaseAction`, `BaseEntity`, `BasePolicy`,
-   `BaseRecordManager`, `BaseController`, `Data`, `FormRequest`, `BaseState`, `DomainEvent`. These
+   `BaseRecordManager`, `BaseController`, `Data`, `FormRequest`. These
    establish a consistent structure across all 465+ files in the application.
 
 2. **Define shared contracts** — `LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`.
@@ -163,24 +163,6 @@ constructor injection over framework access.
 
 **Usage count:** 28 entities across 13 domains.
 
-#### State Entity Layer — `BaseState`
-
-**File:** `app/Domain/Core/States/BaseState.php`
-
-**Purpose:** Specialized base for state-machine entities. Extends `BaseEntity` and adds status query
-helpers.
-
-**What it provides:**
-
-- `isState(string $state): bool` — checks if the entity's `$status` property equals the given state
-- `isStateIn(array $states): bool` — checks if `$status` is within a set of valid states
-
-**Current adoption:** Zero. All 17 state entities across domains extend `BaseEntity` directly
-instead of `BaseState`. The `isState()`/`isStateIn()` helpers are reimplemented individually. This
-is a known gap (see Known Gaps below).
-
-**Usage count:** 0 files outside Core extend `BaseState`.
-
 #### Policy Layer — `BasePolicy`
 
 **File:** `app/Domain/Core/Policies/BasePolicy.php`
@@ -259,22 +241,6 @@ default redirect on validation failure.
 
 **Usage count:** 0 direct imports of `Data` itself; 2 subclasses (`AuditCheck`, `AuditReport`) used
 for setup auditing.
-
-#### Event Base — `DomainEvent`
-
-**File:** `app/Domain/Core/Events/DomainEvent.php`
-
-**Purpose:** Convenience base class for domain events.
-
-**What it provides:**
-
-- `Dispatchable` trait — `SomeEvent::dispatch()`
-- `InteractsWithSockets` trait — broadcasting support
-- `SerializesModels` trait — queued listener support
-
-**Adoption:** 0 files outside Core use `DomainEvent`. It was added in 2026-06-01 and has not yet
-been adopted. Business domains use Laravel's event system directly with custom event classes (not
-extending this base).
 
 ---
 
@@ -379,11 +345,15 @@ both trees.
 | `RejectedException`  | 48 imports            | The most-used exception — the standard "business rule violation" signal |
 | `AppException`       | 1 import              | Rarely caught directly (usually caught by HTTP error handlers)          |
 | `DomainException`    | 1 import              | Same pattern                                                            |
-| Other exceptions (6) | 0 imports             | Only used in `bootstrap/app.php` for HTTP error rendering               |
+| Other exceptions (8) | 0 imports             | 4 registered in `bootstrap/app.php`; 4 completely unreferenced           |
 
 **Observation:** `RejectedException` carries the entire exception usage weight in business domains.
 Other exception classes are used primarily in HTTP error handling infrastructure. This is by design
-— most domain code needs only a "rejected" signal.
+— most domain code needs only a "rejected" signal. Of the 8 unused exceptions, 4 are referenced
+only in `bootstrap/app.php` (`ValidationFailedException`, `RateLimitException`, `NotFoundException`,
+`UnauthorizedException`), and 4 have zero references anywhere (`ActionException`,
+`ConflictException`, `InfrastructureException`, `PresentationException`) — abstract hierarchy
+placeholders preserved for architectural completeness.
 
 ---
 
@@ -441,9 +411,11 @@ is called (which is the default in `BaseAction::log()`).
 
 **File:** `app/Domain/Core/Support/HandlesActionErrors.php`
 
-**Purpose:** Try-catch-log-rethrow pattern for Actions. Wraps a callback so that unexpected
-`Throwable` errors are logged to the system log (not the activity log) and rethrown as
-`RuntimeException`.
+**Purpose:** Try-catch-log-rethrow pattern for Actions. Wraps a callback so that known exceptions
+(`RuntimeException`, `AppException`, `DomainException`, `ValidationException`,
+`AuthorizationException`, `ModelNotFoundException`, `NotFoundHttpException`) are re-thrown
+directly without logging. Unknown `\Throwable` errors are logged to the system log via
+`SmartLogger` and rethrown as `RuntimeException` with context preservation.
 
 **Usage:** Used by `BaseAction` via trait. 1 direct import outside Core.
 
@@ -485,7 +457,7 @@ be defined here as a typed string constant.
 
 **TTL legend:** short (<5 min), medium (5 min–1h), long (1h–24h), static (until flush), forever.
 
-**Current keys (12):**
+**Current keys (14):**
 
 | Constant                | Key                          | TTL     | Invalidated By        |
 | ----------------------- | ---------------------------- | ------- | --------------------- |
@@ -493,8 +465,6 @@ be defined here as a typed string constant.
 | `ADMIN_DASHBOARD_STATS` | `admin.dashboard.stats`      | medium  | Various CRUD actions  |
 | `THEME_CSS_VARIABLES`   | `theme.css_variables`        | long    | Settings update       |
 | `NOTIFICATION_UNREAD`   | `notification.unread:`       | medium  | MarkAsReadAction      |
-| `CORE_INTEGRITY`        | `core.integrity_verified`    | forever | composer.json changes |
-| `CORE_APP_NAME`         | `core.app_name`              | forever | composer.json changes |
 | `APPINFO_METADATA`      | `appinfo.metadata`           | forever | composer.json changes |
 | `DOMAIN_LIVEWIRE`       | `domain.discovered_livewire` | static  | Structural changes    |
 | `DOMAIN_POLICIES`       | `domain.discovered_policies` | static  | Structural changes    |
@@ -538,10 +508,8 @@ Core owns 4 system-level Artisan commands that operate across all domains.
 | `system:cache-warm` | `CacheWarmCommand`      | Pre-warms config, views, events, settings, and brand caches                              |
 | `domain:discover`   | `DomainDiscoverCommand` | Rediscover and register domain Livewire components, policies, and Blade namespaces       |
 
-All commands are registered in `DomainServiceProvider` but the `registerCommands()` method is not
-called from `boot()` or `register()` — this is a known dead-code gap (C6 in known-issues.md). They
-are registered directly in `config/app.php`'s `providers` array via artisan command auto-discovery
-or manual registration in `Console\Kernel`.
+All commands are registered directly in `DomainServiceProvider::boot()` via artisan command
+auto-discovery.
 
 ---
 
@@ -569,7 +537,9 @@ Core defines 2 enums used during system setup and auditing.
 | `AuditStatus`   | `LabelEnum` | PASS, FAIL, WARN                                               | Results of individual audit checks      |
 
 `AuditCategory::isCritical()` returns `true` for REQUIREMENTS, PERMISSIONS, and DATABASE — used by
-the setup wizard to determine if setup can proceed.
+the setup wizard to determine if setup can proceed. The remaining cases — `TERMINAL` (CLI
+availability checks) and `RECOMMENDATIONS` (non-blocking optimizations) — return `false`, meaning
+they do not block setup.
 
 ---
 
@@ -581,6 +551,15 @@ the setup wizard to determine if setup can proceed.
 Currently adopted by 0 business domain events. Domains create their own event classes without
 extending this base. Adoption is optional — the base class exists to standardize event structure
 when teams grow.
+
+---
+
+### Routes & Views
+
+Core owns **no HTTP routes** and **no Blade views**. The `routes/web/core.php` file was removed
+(was a placeholder after routes moved to respective business domains, e.g., password confirmation
+→ `routes/web/auth.php`, dashboard → `routes/web/user.php`). Core is infrastructure-only; every
+other domain defines its own routes and views.
 
 ---
 
@@ -652,7 +631,7 @@ Here is how each architectural layer should interact with Core:
 | Actions (Read)     | (none)                                          | Plain class with constructor injection                   |
 | Actions (Process)  | `BaseAction`                                    | `class MyProcess extends BaseAction`                     |
 | Entities           | `BaseEntity`                                    | `final readonly class MyEntity extends BaseEntity`       |
-| State Entities     | `BaseEntity` or `BaseState`                     | Extend `BaseState` for state-machine helpers (preferred) |
+| State Entities     | `BaseEntity`                                     | State-machine helpers defined per entity |
 | Policies           | `BasePolicy`                                    | `class MyPolicy extends BasePolicy`                      |
 | Livewire CRUD      | `BaseRecordManager`                             | `class MyManager extends BaseRecordManager`              |
 | Livewire (simple)  | `Component` (Livewire's)                        | Plain Livewire component                                 |
@@ -750,7 +729,7 @@ These are things that may seem like infrastructure but should NOT be in Core:
 ### Adding a New Console Command
 
 1. Create the command in `app/Domain/Core/Console/Commands/`
-2. Register it in `DomainServiceProvider::registerCommands()` (once the dead-code issue is fixed)
+2. Register it in `DomainServiceProvider::boot()`
 3. Prefix the command name with `system:` to distinguish from domain commands
 
 ### Adding a New Support Utility
@@ -797,10 +776,11 @@ As of 2026-06-01, across 409 files in 23 business domains:
 
 **Zero-adoption classes (outside tests/bootstrap):**
 
-- `BaseState` — never extended by domain entities (all use BaseEntity directly)
-- `DomainEvent` — never extended by domain events
 - `PiiMasker` — only used internally by SmartLogger
-- 6 exception classes — only used in `bootstrap/app.php` for HTTP rendering
+- 8 exception classes with 0 business domain imports — 4 registered in `bootstrap/app.php`
+  (`ValidationFailedException`, `RateLimitException`, `NotFoundException`, `UnauthorizedException`),
+  4 completely unreferenced (`ActionException`, `ConflictException`, `InfrastructureException`,
+  `PresentationException`)
 
 ---
 
@@ -837,19 +817,9 @@ domain code signals failure via `RejectedException` rather than framework-specif
 **Recommendation:** No action needed. The hierarchy is correct. Encourage `ConflictException` and
 `ValidationFailedException` adoption when appropriate.
 
-### Gap 4: registerCommands() Dead Code
+### Gap 4: CacheKeys Needs Expansion
 
-**Issue:** `DomainServiceProvider::registerCommands()` is never called. Console commands are
-currently registered through alternative mechanisms (auto-discovery or manual registration).
-
-**Impact:** Commands still work. The dead code is harmless.
-
-**Recommendation:** Wire `registerCommands()` into `boot()` or remove the method entirely. See
-known-issue C6.
-
-### Gap 5: CacheKeys Needs Expansion
-
-**Issue:** Only 12 cache keys are registered. As domains add more caching, `CacheKeys` should grow
+**Issue:** Only 14 cache keys are registered. As domains add more caching, `CacheKeys` should grow
 to include every cached value.
 
 **Impact:** Low. New keys can be added as needed.

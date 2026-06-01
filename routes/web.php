@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 require __DIR__.'/web/setup.php';
 require __DIR__.'/web/cron.php';
-require __DIR__.'/web/core.php';
 require __DIR__.'/web/auth.php';
 require __DIR__.'/web/user.php';
 require __DIR__.'/web/registration.php';

@@ -5,24 +5,17 @@ declare(strict_types=1);
 use App\Domain\Core\Support\PasswordRules;
 
 describe('PasswordRules', function () {
-    it('returns default rule set', function () {
+    it('default() returns array with required and string', function () {
         $rules = PasswordRules::default();
 
-        expect($rules)->toBeArray()
-            ->and($rules)->toContain('required', 'string');
+        expect($rules)->toContain('required', 'string');
     });
 
-    it('returns array-based rules', function () {
+    it('defaultAsArray() returns explicit min:8 with regex rules', function () {
         $rules = PasswordRules::defaultAsArray();
 
-        expect($rules)->toBeArray()
-            ->and($rules)->toContain('required', 'string', 'min:8');
-    });
-
-    it('requires mixed case and numbers in array rules', function () {
-        $rules = PasswordRules::defaultAsArray();
-
-        expect($rules)->toContain('regex:/[A-Z]/')
+        expect($rules)->toContain('required', 'string', 'min:8')
+            ->toContain('regex:/[A-Z]/')
             ->toContain('regex:/[a-z]/')
             ->toContain('regex:/[0-9]/');
     });

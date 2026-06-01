@@ -69,4 +69,21 @@ final readonly class CacheKeys
 
     // ─── Health Check ──────────────────────────────────────────────────────
     public const string HEALTH_CHECK = 'health_check';
+
+    // ─── Super Admin Recovery ──────────────────────────────────────────────
+    // Key pattern: recover_admin_attempts_{md5(email)}
+    // Invalidation: successful recovery (RecoverSuperAdminAction)
+    public const string RECOVER_ADMIN_ATTEMPTS = 'recover_admin_attempts_';
+
+    // ─── Settings ──────────────────────────────────────────────────────────
+    // Key pattern: settings.{key}
+    // Invalidation: Settings::set(), Settings::forget()
+    // TTL: forever — flushed on setting changes
+    public const string SETTINGS_ALL = 'settings.all';
+
+    public const string SETTINGS_GROUP = 'settings.group.';
+
+    public const string SETTINGS_KEYS = 'settings.keys';
+
+    public const string SETTINGS_KEY = 'settings.';
 }

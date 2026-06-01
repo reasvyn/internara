@@ -14,7 +14,7 @@ class CreateStatusesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->text('reason')->nullable();
-            $table->morphs('model');
+            $table->uuidMorphs('model');
             $table->timestamps();
         });
     }

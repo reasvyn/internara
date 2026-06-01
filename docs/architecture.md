@@ -64,7 +64,7 @@ The domain directories are vertical slices that cross all layers below Layer 11.
    Layer 6 ┌──────────────────────────────────────────────────────────┐
    Domain  │  Enums  (35, LabelEnum, StatusEnum, ColorableEnum)      │
   Rules   │  Entities (27, final readonly, framework deps allowed)  │
-          │  State entities (via BaseEntity or BaseState for state machines) │
+           │  State entities (via BaseEntity) │
           │  Data DTOs (AuditCheck, AuditReport)                    │
           │  app/Domain/*/Enums/  Entities/  Data/                  │
           └──────────────────────────────────────────────────────────┘
@@ -77,7 +77,7 @@ The domain directories are vertical slices that cross all layers below Layer 11.
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 4 ┌──────────────────────────────────────────────────────────┐
-  Core    │  BaseAction  ReadAction  BaseEntity  BasePolicy  BaseState│
+   Core    │  BaseAction  ReadAction  BaseEntity  BasePolicy│
   Base    │  BaseRecordManager  BaseController  FormRequest          │
   Classes │  Data (DTO)                                              │
           │  SmartLogger  PiiMasker  HandlesActionErrors             │
@@ -750,7 +750,7 @@ Cache::forget(CacheKeys::ADMIN_DASHBOARD_STATS);
 // Step 2 — event dispatched, listener flushes
 class InvalidateDashboardCache
 {
-    public function handle(DomainEvent $event): void
+    public function handle(object $event): void
     {
         Cache::forget(CacheKeys::ADMIN_DASHBOARD_STATS);
     }

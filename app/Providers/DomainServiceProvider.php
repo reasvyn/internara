@@ -48,21 +48,6 @@ class DomainServiceProvider extends ServiceProvider
         );
     }
 
-    protected function registerCommands(): void
-    {
-        if (! config('domain.commands.enabled', true)) {
-            return;
-        }
-
-        $this->commands([
-            __DIR__.'/../Domain/Core/Console/Commands',
-            __DIR__.'/../Domain/Setup/Console/Commands',
-            __DIR__.'/../Domain/Auth/Console/Commands',
-            __DIR__.'/../Domain/Admin/Console/Commands',
-            __DIR__.'/../Domain/User/Console/Commands',
-        ]);
-    }
-
     public function discoverLivewireComponents(): void
     {
         $components = Cache::remember(CacheKeys::DOMAIN_LIVEWIRE, 86400, function () {

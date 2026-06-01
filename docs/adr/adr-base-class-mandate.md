@@ -37,7 +37,7 @@ Every architectural layer has exactly one base class from Core. There is no alte
 | Action (Read) | None required | Not needed — reads don't need transaction/log | — |
 | Action (Process) | `BaseAction` | Same as Command — orchestration with tx + log | extends check |
 | Entity | `BaseEntity` | `final readonly`, `fromModel(Model): static` | `final readonly` + extends |
-| State | `BaseState` (extends BaseEntity) | `isState()`, `isStateIn()` state-machine helpers | extends check |
+| State | `BaseEntity` | State-machine helpers defined per entity | — |
 | Policy | `BasePolicy` | `AuthorizesRoles` + `AuthorizesOwnership` traits | extends check |
 | Livewire CRUD | `BaseRecordManager` | Search, filter, sort, pagination, bulk actions | extends check |
 | Livewire simple | `Component` (Livewire's) | Standard Livewire component | — |
@@ -94,7 +94,6 @@ mechanism. Violations are considered blocking in code review.
 - `app/Domain/Core/Models/BaseModel.php` — base model with UUID
 - `app/Domain/Core/Actions/BaseAction.php` — base action with tx + log
 - `app/Domain/Core/Entities/BaseEntity.php` — base entity (final readonly)
-- `app/Domain/Core/States/BaseState.php` — base state entity
 - `app/Domain/Core/Policies/BasePolicy.php` — base policy with role/ownership traits
 - `app/Domain/Core/Livewire/BaseRecordManager.php` — base CRUD component
 - `app/Domain/Core/Http/Controllers/BaseController.php` — base controller

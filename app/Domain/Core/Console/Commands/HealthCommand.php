@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Core\Console\Commands;
 
+use App\Domain\Core\Support\CacheKeys;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -271,8 +272,8 @@ class HealthCommand extends Command
     protected function checkCache(): array
     {
         try {
-            Cache::store()->put('health_check', true, 10);
-            $val = Cache::store()->get('health_check');
+            Cache::store()->put(CacheKeys::HEALTH_CHECK, true, 10);
+            $val = Cache::store()->get(CacheKeys::HEALTH_CHECK);
 
             return [$val ? 'OK' : 'FAIL', 'Cache driver responding'];
         } catch (\Throwable $e) {
