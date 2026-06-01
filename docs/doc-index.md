@@ -64,6 +64,7 @@ Complete catalog of all documentation files in the `docs/` directory.
 | [Notifications](notification.md) | Multi-channel notification system, CustomDatabaseChannel, mail deliverability, SPF/DKIM/DMARC, broadcast |
 | [Queue](queue.md) | Queue drivers, worker management, Supervisor, job lifecycle, retry/backoff, scaling |
 | [Testing](testing.md) | Testing philosophy, feature vs unit test distinction, LazilyRefreshDatabase, entity testing, code coverage |
+| [Scaling Guide](scaling.md) | When and how to scale from MVP to 2000 users, tier transitions, load testing, monitoring thresholds |
 | [Known Issues](known-issues.md) | Known limitations, caveats, and workarounds |
 | [Backup & Recovery](backup-recovery.md) | Backup strategies, database dumps, file backup, restoration steps, point-in-time recovery, monitoring |
 | [Localization](localization.md) | Supported languages, translation structure, locale resolution, community contribution guide for adding new languages |
