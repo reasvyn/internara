@@ -1,6 +1,6 @@
 # Known Issues and Gotchas
 > Last updated: 2026-06-01
-> Changes: added infrastructure audit findings (C1-C12)
+> Changes: C12 accepted per ADR-012, C13 resolved (Integrity throws RuntimeException)
 
 ## Resolved Issues
 
@@ -25,6 +25,18 @@ The following issues from the original audit have been resolved:
 | G1 | Guidance: PDF attachment for handbooks | Handbook model implements HasMedia; HandbookManager handles upload; Create/UpdateHandbookAction manage file |
 | G2 | Guidance: teacher/supervisor routes | Routes added in guidance.php for `teacher` and `supervisor` prefixes targeting HandbookIndex |
 | G3 | Guidance: rename components per convention | HandbookIndex → HandbookManager (admin), StudentHandbookIndex → HandbookIndex (user-facing) |
+
+## Resolved Policy Changes
+
+### C12. Cross-Domain Import Violations (170+ files) ⚠️ → ✅ Accepted
+
+**Status:** Accepted as of ADR-012 revision (2026-06-01). The architecture rule prohibiting cross-domain direct imports has been replaced with practical guidelines allowing them. Events remain preferred when 2+ independent side effects are needed, but direct imports are now explicitly permitted.
+
+**Rationale:** 85% of violations were Eloquent FK relationships — impossible to route through events without excessive ceremony. Enforcement was causing more harm than good.
+
+**See:** `docs/adr/adr-cross-domain-communication.md`, `docs/architecture.md`, `docs/conventions.md`
+
+---
 
 ## Critical Implementation Issues
 
@@ -362,42 +374,11 @@ Models should expose entities via `as{EntityName}()` accessors per documented pa
 
 This enum defines state transitions (`DRAFT → SCHEDULED → PUBLISHED`) and has a `canTransitionTo()` method, but does not implement `StatusEnum`. This means `isTerminal()` and `validTransitions()` are missing. It should `implements LabelEnum, StatusEnum`.
 
-### C12. Cross-Domain Import Violations (170+ files) 🔴
+### C13. Integrity.php Uses raw echo/exit for Pre-Boot Errors ✅ Resolved
 
-Scanning all `use App\Domain\` statements across the codebase reveals approximately 170 cases where a file in one business domain directly imports from another sibling domain — violating the documented rule that cross-domain communication should only happen via Events/Core contracts.
+**File:** `app/Domain/Core/Support/Integrity.php`
 
-**Most imported domains (by other domains):**
-
-| Domain | Times Imported | Typical Usage |
-|--------|---------------|---------------|
-| Registration | 44 | Eloquent FK relationships (registrations table is central hub) |
-| Internship | 32 | FK relationships + Action invocations |
-| Mentor | 22 | FK + Actions (mentor_id lookups) |
-| School | 17 | FK relationships |
-| Placement | 12 | FK + Actions |
-
-**Most violating domains:**
-
-| Source Domain | Violations |
-|---------------|------------|
-| Registration | 33 | 
-| Admin | 27 |
-| Internship | 22 |
-| User | 15 |
-| Placement | 12 |
-
-**Pattern breakdown:**
-- ~85% are Model imports for Eloquent FK relationships
-- ~10% are direct Action invocations (should use Events)
-- ~5% are Support/Rules/other
-
-The Registration model alone imports from 8 different sibling domains (Assessment, Attendance, Certificate, Internship, Logbook, Mentee, Mentor, Placement). Admin's `GetAdminDashboardStatsAction` imports from 13 domains. Events are underutilized — only `InternshipCreated` event is used for cross-domain communication.
-
-### C13. Integrity.php Uses raw echo/exit for Pre-Boot Errors ⚠️
-
-**File:** `app/Domain/Core/Support/Integrity.php:64-74`
-
-Uses `echo`, HTML output, and `exit(1)` for fatal error handling. This is intentional (runs before Laravel framework is fully loaded), not a debug leftover. Accepted but not ideal — consider routing through a boot-time handler when possible.
+**Fix applied:** `fatal()` now throws `RuntimeException` instead of `echo`+`exit(1)`.
 
 ---
 
@@ -510,8 +491,8 @@ No abstract execute() method on BaseAction. Each Action defines its own signatur
 | C9 | View naming mismatch: SubmitAssignment | Infrastructure | 🟡 Low | Open |
 | C10 | Missing entity accessor methods (2 files) | Infrastructure | 🟡 Low | Open |
 | C11 | AnnouncementStatus missing StatusEnum | Infrastructure | 🟡 Low | Open |
-| C12 | Cross-domain import violations (170+ files) | Architecture | 🔴 High | Open |
-| C13 | Integrity.php raw echo/exit for pre-boot errors | Architecture | ⚠️ Note | Open |
+| C12 | Cross-domain import violations (170+ files) | Architecture | ℹ️ Info | Accepted — ADR updated 2026-06-01 |
+| C13 | Integrity.php raw echo/exit for pre-boot errors | Architecture | ⚠️ Note | Resolved |
 | L1 | Logbook: no industry supervisor feedback container | Design Gap | 🔴 High | Proposal |
 
 **Categories:** A = Audit (doc-implementation), B = Backlog, C = Infrastructure/code audit

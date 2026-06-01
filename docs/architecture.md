@@ -63,7 +63,7 @@ The domain directories are vertical slices that cross all layers below Layer 11.
                                          ▲ depends on
    Layer 6 ┌──────────────────────────────────────────────────────────┐
    Domain  │  Enums  (35, LabelEnum, StatusEnum, ColorableEnum)      │
-  Rules   │  Entities (27, final readonly, zero framework deps)    │
+  Rules   │  Entities (27, final readonly, framework deps allowed)  │
           │  State entities (via BaseEntity or BaseState for state machines) │
           │  Data DTOs (AuditCheck, AuditReport)                    │
           │  app/Domain/*/Enums/  Entities/  Data/                  │
@@ -112,9 +112,9 @@ The domain directories are vertical slices that cross all layers below Layer 11.
 
 1. A layer may only depend on layers **below** it. Layer 12 depends on 1–11, Layer 7 depends on 1–6.
 2. **Core** (layers 3–4) depends on nothing except Laravel/Spatie. No business domain imports Core.
-3. **No sibling imports.** `School` domain must not import `Internship` domain. Cross-domain communication goes through Events (Layer 9), Core contracts (Layer 3), or Action delegation.
-4. **Persistence isolation.** Actions never call Eloquent directly — they delegate to Models. Entities never import Models.
-5. **UI isolation.** Livewire components never import other domains' Livewire components. Communication uses events or redirects.
+3. **Sibling imports allowed.** `School` domain may import `Internship` domain directly. Prefer events for loose coupling when side effects are involved, but direct imports are fine for straightforward cross-domain access.
+4. **Persistence isolation.** Actions never call Eloquent directly — they delegate to Models.
+5. **UI isolation.** Livewire components should not import other domains' Livewire components directly. Use events or redirects for UI communication.
 
 ### How Domain Directories Map to Layers
 
@@ -464,48 +464,38 @@ Events can be introduced incrementally. Start without them, add them when a seco
 
 ## Cross-Domain Communication
 
-This is the most frequently violated rule in the codebase. **No domain may import another domain's Models, Actions, or Livewire components.** The following patterns are the only allowed communication paths:
+Cross-domain imports are **allowed** — import Models, Actions, Policies, or Livewire components from other domains directly when needed. The following patterns provide guidance, not enforcement:
 
-### 1. Core Contracts (Layer 3)
+### 1. Direct Import (simplest)
 
-Shared interfaces defined in `App\Domain\Core\Contracts\`. Any domain can implement a Core contract, and any domain can consume it through Laravel's service container.
-
-**Currently defined:**
-- `LabelEnum` — human-readable labels for enums
-- `StatusEnum` — lifecycle management (transitions, terminal states)
-- `ColorableEnum` — badge/color variants for statuses
-- `SendsNotifications` — notification dispatch abstraction
-- `SendsNotifications` is bound to `SendNotificationAction` in `DomainServiceProvider`
-
-**When to use:** When multiple domains need the same abstraction (notifications, logging, reporting).
-
-### 2. Domain Events (Layer 9)
-
-Events are the primary mechanism for cross-domain communication. A Command Action dispatches an event; listeners in the same or different domain react.
-
-**Rules:**
-- Event classes are concrete, lightweight DTOs with public readonly properties
-- Events belong to the domain that emits them (not the consuming domain)
-- Listeners can live in any domain and are registered in `DomainServiceProvider`
-- Listeners SHOULD be queued (`ShouldQueue`) for non-critical side effects
-
-**Example:**
 ```php
-// app/Domain/Internship/Events/InternshipCreated.php
-class InternshipCreated
-{
-    public function __construct(
-        public readonly Internship $internship,
-        public readonly ?User $createdBy = null,
-    ) {}
-}
+use App\Domain\School\Models\AcademicYear;
 
-// app/Domain/Internship/Listeners/NotifyAdminsInternshipCreated.php
+$year = AcademicYear::where('is_active', true)->first();
+```
+
+Use when straightforward access to another domain's data or logic is needed.
+
+### 2. Core Contracts (Layer 3)
+
+Shared interfaces in `App\Domain\Core\Contracts\` for abstractions used across many domains:
+
+- `LabelEnum`, `StatusEnum`, `ColorableEnum` — enum contracts
+- `SendsNotifications` — notification dispatch (bound to `SendNotificationAction`)
+
+### 3. Domain Events (Layer 9)
+
+Events decouple side effects from core business logic. Use events when the same occurrence triggers multiple downstream reactions, especially cross-domain:
+
+```php
+// Emitting domain
+event(new InternshipCreated($internship, auth()->user()));
+
+// Reacting domain
 class NotifyAdminsInternshipCreated implements ShouldQueue
 {
     public function handle(InternshipCreated $event): void
     {
-        $admins = User::role(['super_admin', 'admin'])->get();
         Notification::send($admins, new InternshipCreatedNotification(
             internshipName: $event->internship->name,
         ));
@@ -513,35 +503,20 @@ class NotifyAdminsInternshipCreated implements ShouldQueue
 }
 ```
 
-### 3. Action Delegation
+### 4. Action Delegation
 
-A domain may call another domain's Action through its public `execute()` method. This is the tightest coupling allowed between domains and should be used sparingly.
+Any Action may call another domain's Action:
 
-**Rules:**
-- Only Process Actions should delegate to other domains' Actions
-- The called Action must accept primitive types or DTOs — never the calling domain's Models
-- Cross-domain Action calls MUST be authorized in the calling layer
-
-**Example:**
 ```php
-class CloseInternshipProcess extends BaseAction
+class CloseInternshipAction extends BaseAction
 {
     public function __construct(
         protected readonly \App\Domain\Assessment\Actions\FinalizeAssessmentsAction $finalizeAssessments,
-        protected readonly \App\Domain\Certificate\Actions\IssueCertificatesAction $issueCertificates,
     ) {}
-    // ...
 }
 ```
 
-### 4. What NOT to do
-
-| ❌ Violation | Why it's wrong | Correct approach |
-|---|---|---|
-| `Internship\Models\Internship` imports `School\Models\AcademicYear` | Sibling domain import — creates tight coupling | AcademicYear relationship belongs in `School\Models`, accessed through Core contract or query |
-| `Internship\Policies\CompanyPolicy` gates `Partnership\Models\Company` | Policy for one domain lives in another | Define `CompanyPolicy` in `Partnership\Policies`, register cross-domain in `DomainServiceProvider` |
-| `Internship\Policies\InternshipRegistrationPolicy` gates `Registration\Models\Registration` | Same violation | Registration policy belongs in `Registration\Policies` |
-| Livewire component calls `OtherDomain\Models\X::where(...)` | UI layer reaches into another domain's persistence | Use Read Action in the target domain or a Core contract |
+**Guideline:** Prefer direct imports for simplicity. Use events when the same event triggers 2+ independent side effects, or when you want to add new reactions without modifying existing code.
 
 ---
 
@@ -699,7 +674,6 @@ Command Action → event({Entity}Updated) → CacheInvalidationListener → Cach
 | **Persistence isolation** | Entities (Layer 6) never import Models (Layer 5) | An Entity calling `User::find()` |
 | **Action gate** | All mutations go through Command Actions (Layer 7). No `Model::save()` outside Actions | A Livewire component calling `$user->save()` |
 | **Authorize first** | Every Action must be preceded by a policy check (Layer 8) | An Action that modifies data without calling `$this->authorize()` |
-| **Event over import** | Prefer domain events over direct Action delegation across domains | Calling `OtherDomain\Actions\X::execute()` from a Command Action (use Process instead) |
 
 ---
 
@@ -795,6 +769,5 @@ class InvalidateDashboardCache
 - The `InitializeSuperAdminAction` (CLI recovery) must also use config defaults, NOT caller-provided values.
 - `FinalizeSetupAction` must only extract `email` and `password` from `adminData` array.
 - UUID primary keys on all models (via BaseModel/HasUuids). Foreign keys use `foreignUuid()->constrained()`.
-- No domain may import another domain's Models, Actions, or Livewire components.
 - All enums are string-backed and implement `LabelEnum`. State machine enums also implement `StatusEnum`.
 - All files must begin with `declare(strict_types=1)`.

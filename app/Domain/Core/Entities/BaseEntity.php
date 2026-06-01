@@ -9,9 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Base class for domain entities.
  *
- * Entities are pure business rule objects with zero framework dependencies
- * EXCEPT this single `Model` import, which is the sole bridge to the ORM
- * via the `fromModel()` factory method.
+ * Entities are immutable business rule objects. Framework dependencies
+ * (Eloquent, Carbon) are allowed when practical.
  *
  * @template TModel of Model
  */
