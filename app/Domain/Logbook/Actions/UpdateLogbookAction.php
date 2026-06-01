@@ -20,6 +20,9 @@ final class UpdateLogbookAction extends BaseAction
                 'verified_by' => isset($data['is_verified']) && $data['is_verified'] ? auth()->id() : null,
                 'verified_at' => isset($data['is_verified']) && $data['is_verified'] ? now() : null,
                 'mentor_feedback' => $data['mentor_feedback'] ?? null,
+                'supervisor_note' => $data['supervisor_note'] ?? null,
+                'supervisor_id' => $data['supervisor_id'] ?? null,
+                'supervisor_reviewed_at' => $data['supervisor_reviewed_at'] ?? null,
             ], fn ($v) => $v !== null);
 
             if ($updateData !== []) {

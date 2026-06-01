@@ -6,6 +6,7 @@ namespace App\Domain\Attendance\Policies;
 
 use App\Domain\Attendance\Models\Attendance;
 use App\Domain\Core\Policies\BasePolicy;
+use App\Domain\Mentor\Models\Mentor;
 use App\Domain\User\Models\User;
 
 /**
@@ -33,7 +34,10 @@ class AttendancePolicy extends BasePolicy
         if (
             $this->isTeacher($user) &&
             $log->registration &&
-            $log->registration->teacher_id === $user->id
+            $log->registration->mentors()
+                ->where('user_id', $user->id)
+                ->where('type', Mentor::TYPE_SCHOOL_TEACHER)
+                ->exists()
         ) {
             return true;
         }
@@ -41,7 +45,10 @@ class AttendancePolicy extends BasePolicy
         if (
             $this->isSupervisor($user) &&
             $log->registration &&
-            $log->registration->mentor_id === $user->id
+            $log->registration->mentors()
+                ->where('user_id', $user->id)
+                ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)
+                ->exists()
         ) {
             return true;
         }

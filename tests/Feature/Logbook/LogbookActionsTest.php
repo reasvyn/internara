@@ -15,8 +15,8 @@ use App\Domain\User\Models\User;
 use Spatie\Permission\Models\Role as RoleModel;
 
 beforeEach(function () {
-    RoleModel::create(['name' => Role::STUDENT->value, 'guard_name' => 'web']);
-    RoleModel::create(['name' => Role::SUPER_ADMIN->value, 'guard_name' => 'web']);
+    RoleModel::firstOrCreate(['name' => Role::STUDENT->value, 'guard_name' => 'web']);
+    RoleModel::firstOrCreate(['name' => Role::SUPER_ADMIN->value, 'guard_name' => 'web']);
 });
 
 describe('CreateLogbookAction', function () {

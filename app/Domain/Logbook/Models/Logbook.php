@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-#[Fillable(['user_id', 'registration_id', 'date', 'content', 'learning_outcomes', 'status', 'is_verified', 'verified_by', 'verified_at', 'mentor_feedback'])]
+#[Fillable(['user_id', 'registration_id', 'date', 'content', 'learning_outcomes', 'status', 'is_verified', 'verified_by', 'verified_at', 'mentor_feedback', 'supervisor_note', 'supervisor_reviewed_at', 'supervisor_id'])]
 class Logbook extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
@@ -38,6 +38,7 @@ class Logbook extends BaseModel implements HasMedia
         'status' => LogbookStatus::class,
         'is_verified' => 'boolean',
         'verified_at' => 'datetime',
+        'supervisor_reviewed_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
@@ -53,6 +54,11 @@ class Logbook extends BaseModel implements HasMedia
     public function verifier(): BelongsTo
     {
         return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function supervisor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'supervisor_id');
     }
 
     public function asLogbookState(): LogbookState

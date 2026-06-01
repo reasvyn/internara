@@ -9,6 +9,7 @@ use App\Domain\Logbook\Actions\CreateLogbookAction;
 use App\Domain\Logbook\Actions\DeleteLogbookAction;
 use App\Domain\Logbook\Actions\UpdateLogbookAction;
 use App\Domain\Logbook\Models\Logbook;
+use App\Domain\Mentor\Models\Mentor;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
@@ -17,6 +18,8 @@ use Livewire\Attributes\Layout;
 class LogbookManager extends BaseRecordManager
 {
     public bool $showModal = false;
+
+    public bool $showSupervisorNoteModal = false;
 
     public array $formData = [
         'id' => null,
@@ -27,6 +30,10 @@ class LogbookManager extends BaseRecordManager
         'status' => 'draft',
         'mentor_feedback' => '',
     ];
+
+    public ?string $supervisorNoteEntryId = null;
+
+    public string $supervisorNote = '';
 
     public function boot(): void
     {
@@ -41,14 +48,21 @@ class LogbookManager extends BaseRecordManager
 
     public function headers(): array
     {
-        return [
+        $headers = [
             ['key' => 'user.name', 'label' => __('logbook.student'), 'sortable' => true],
             ['key' => 'date', 'label' => __('logbook.date'), 'sortable' => true],
             ['key' => 'content', 'label' => __('logbook.content')],
             ['key' => 'status', 'label' => __('logbook.status'), 'sortable' => true],
             ['key' => 'is_verified', 'label' => __('logbook.verified')],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
+
+        if (auth()->user()?->hasRole('supervisor')) {
+            $headers[] = ['key' => 'supervisor_note', 'label' => __('logbook.supervisor_note')];
+        }
+
+        $headers[] = ['key' => 'actions', 'label' => '', 'sortable' => false];
+
+        return $headers;
     }
 
     protected function query(): Builder
@@ -56,12 +70,12 @@ class LogbookManager extends BaseRecordManager
         $user = auth()->user();
 
         $query = Logbook::query()
-            ->with(['user', 'registration', 'verifier']);
+            ->with(['user', 'registration', 'verifier', 'supervisor']);
 
         if ($user->hasRole('teacher')) {
-            $query->whereHas('registration', fn ($q) => $q->where('teacher_id', $user->id));
+            $query->whereHas('registration', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_SCHOOL_TEACHER)));
         } elseif ($user->hasRole('supervisor')) {
-            $query->whereHas('registration', fn ($q) => $q->where('mentor_id', $user->id));
+            $query->whereHas('registration', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)));
         }
 
         return $query;
@@ -89,9 +103,9 @@ class LogbookManager extends BaseRecordManager
 
         $user = auth()->user();
         if ($user->hasRole('teacher')) {
-            $query->whereHas('registrations', fn ($q) => $q->where('teacher_id', $user->id));
+            $query->whereHas('registrations', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_SCHOOL_TEACHER)));
         } elseif ($user->hasRole('supervisor')) {
-            $query->whereHas('registrations', fn ($q) => $q->where('mentor_id', $user->id));
+            $query->whereHas('registrations', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)));
         }
 
         return $query->orderBy('name')
@@ -180,6 +194,39 @@ class LogbookManager extends BaseRecordManager
             'is_verified' => ! $entry->is_verified,
         ]);
         flash()->success(__('logbook.success_verified'));
+    }
+
+    // --- Supervisor Note ---
+
+    public function editSupervisorNote(Logbook $entry): void
+    {
+        $this->resetErrorBag();
+        $this->supervisorNoteEntryId = $entry->id;
+        $this->supervisorNote = $entry->supervisor_note ?? '';
+        $this->showSupervisorNoteModal = true;
+    }
+
+    public function saveSupervisorNote(UpdateLogbookAction $update): void
+    {
+        $this->validate([
+            'supervisorNote' => ['nullable', 'string', 'max:5000'],
+        ]);
+
+        $entry = Logbook::findOrFail($this->supervisorNoteEntryId);
+
+        $this->authorize('addSupervisorNote', $entry);
+
+        $update->execute($entry, [
+            'supervisor_note' => $this->supervisorNote,
+            'supervisor_id' => auth()->id(),
+            'supervisor_reviewed_at' => now()->toDateTimeString(),
+        ]);
+
+        $this->showSupervisorNoteModal = false;
+        $this->supervisorNoteEntryId = null;
+        $this->supervisorNote = '';
+
+        flash()->success(__('logbook.supervisor_note_saved'));
     }
 
     #[Layout('shared::layouts.app')]

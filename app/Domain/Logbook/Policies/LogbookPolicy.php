@@ -6,10 +6,12 @@ namespace App\Domain\Logbook\Policies;
 
 use App\Domain\Core\Policies\BasePolicy;
 use App\Domain\Logbook\Models\Logbook;
+use App\Domain\Mentor\Models\Mentor;
 use App\Domain\User\Models\User;
 
 /**
  * S1 - Secure: Students can only view/edit their own journals. Submitted journals are immutable.
+ * L1 - Optional supervisor note: supervisors can add notes without affecting entry status.
  */
 class LogbookPolicy extends BasePolicy
 {
@@ -33,7 +35,10 @@ class LogbookPolicy extends BasePolicy
         if (
             $this->isTeacher($user) &&
             $entry->registration &&
-            $entry->registration->teacher_id === $user->id
+            $entry->registration->mentors()
+                ->where('user_id', $user->id)
+                ->where('type', Mentor::TYPE_SCHOOL_TEACHER)
+                ->exists()
         ) {
             return true;
         }
@@ -41,12 +46,28 @@ class LogbookPolicy extends BasePolicy
         if (
             $this->isSupervisor($user) &&
             $entry->registration &&
-            $entry->registration->mentor_id === $user->id
+            $entry->registration->mentors()
+                ->where('user_id', $user->id)
+                ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)
+                ->exists()
         ) {
             return true;
         }
 
         return $entry->user_id === $user->id;
+    }
+
+    public function addSupervisorNote(User $user, Logbook $entry): bool
+    {
+        if (! $this->isSupervisor($user)) {
+            return false;
+        }
+
+        return $entry->registration &&
+            $entry->registration->mentors()
+                ->where('user_id', $user->id)
+                ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)
+                ->exists();
     }
 
     public function create(User $user): bool

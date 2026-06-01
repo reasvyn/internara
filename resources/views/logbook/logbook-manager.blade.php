@@ -113,10 +113,24 @@
                     @endif
                 @endscope
 
+                @scope('cell_supervisor_note', $entry)
+                    @if($entry->supervisor_note)
+                        <div class="max-w-xs truncate text-sm text-base-content/70">
+                            {{ \Illuminate\Support\Str::limit($entry->supervisor_note, 60) }}
+                        </div>
+                    @else
+                        <span class="text-xs text-base-content/30 italic">{{ __('logbook.no_supervisor_note') }}</span>
+                    @endif
+                @endscope
+
                 @scope('actions', $entry)
                     <div class="flex justify-end gap-1">
+                        @if(auth()->user()?->hasRole('supervisor'))
+                            <x-mary-button icon="o-chat-bubble-bottom-center-text" class="btn-ghost btn-sm text-info" wire:click="editSupervisorNote('{{ $entry->id }}')" tooltip="{{ __('logbook.edit_supervisor_note') }}" />
+                        @endif
                         <x-mary-button icon="o-check" class="btn-ghost btn-sm text-success" wire:click="verify('{{ $entry->id }}')" tooltip="Toggle Verify" />
                         <x-mary-button icon="o-pencil" class="btn-ghost btn-sm text-primary" wire:click="edit('{{ $entry->id }}')" tooltip="Edit" />
+                        <x-mary-button icon="o-document-arrow-down" class="btn-ghost btn-sm text-secondary" :href="route('admin.logbook.report', $entry->registration_id)" external tooltip="{{ __('logbook.download_report') }}" />
                         <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
                             :wire:confirm="__('common.actions.confirm_action')"
                             wire:click="delete('{{ $entry->id }}')" tooltip="Delete" />
@@ -125,6 +139,23 @@
             </x-mary-table>
         </div>
     </x-mary-card>
+
+    {{-- Supervisor Note Modal --}}
+    <x-mary-modal wire:model="showSupervisorNoteModal" :title="__('logbook.edit_supervisor_note')" separator class="backdrop-blur-sm">
+        <div class="space-y-6">
+            <x-mary-textarea
+                :label="__('logbook.supervisor_note')"
+                wire:model="supervisorNote"
+                :placeholder="__('logbook.supervisor_note_placeholder')"
+                rows="4"
+                class="rounded-xl border-base-300"
+            />
+        </div>
+        <x-slot:actions>
+            <x-mary-button :label="__('common.actions.cancel')" @click="$wire.showSupervisorNoteModal = false" class="rounded-xl" />
+            <x-mary-button :label="__('logbook.save')" class="btn-primary rounded-xl font-bold uppercase tracking-widest" wire:click="saveSupervisorNote" spinner="saveSupervisorNote" />
+        </x-slot:actions>
+    </x-mary-modal>
 
     {{-- Form Modal --}}
     <x-mary-modal wire:model="showModal" :title="$formData['id'] ? __('logbook.edit') : __('logbook.new')" separator class="backdrop-blur-sm">
