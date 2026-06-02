@@ -1,6 +1,6 @@
 # Core — API Reference
-> Last updated: 2026-06-01
-> Changes: removed BaseState, DomainEvent; removed registerCommands() refs; updated CacheKeys count
+> Last updated: 2026-06-02
+> Changes: removed BaseState, DomainEvent; removed registerCommands() refs; updated CacheKeys count; added symbol()/isCritical() details
 
 > **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
@@ -54,8 +54,8 @@ Total: 48 files — ✅ 48 Implemented
 
 | File | Class | Implements | Description |
 |---|---|---|---|
-| `Core/Enums/AuditCategory.php` | `AuditCategory` | `LabelEnum` | Audit check categories: REQUIREMENTS, PERMISSIONS, DATABASE, TERMINAL, RECOMMENDATIONS |
-| `Core/Enums/AuditStatus.php` | `AuditStatus` | `LabelEnum` | Audit check pass/fail/warn status |
+| `Core/Enums/AuditCategory.php` | `AuditCategory` | `LabelEnum` | Audit check categories: REQUIREMENTS, PERMISSIONS, DATABASE, TERMINAL, RECOMMENDATIONS. `isCritical()` returns `true` for REQUIREMENTS, PERMISSIONS, DATABASE |
+| `Core/Enums/AuditStatus.php` | `AuditStatus` | `LabelEnum` | Audit check pass/fail/warn status. `symbol()` returns '✓', '✗', or '⚠' for CLI output |
 
 ## Exceptions
 
