@@ -1,5 +1,5 @@
 # Architecture
-> Last updated: 2026-05-31
+> Last updated: 2026-06-02
 > **Context:** ✅ All 24 domains are fully implemented per the [domain audit](domain/domain-index.md).
 
 
@@ -76,10 +76,10 @@ The domain directories are vertical slices that cross all layers below Layer 11.
           │  app/Domain/*/Models/  +  factories + seeders           │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
-  Layer 4 ┌──────────────────────────────────────────────────────────┐
-   Core    │  BaseAction  ReadAction  BaseEntity  BasePolicy│
-  Base    │  BaseRecordManager  BaseController  FormRequest          │
-  Classes │  Data (DTO)                                              │
+   Layer 4 ┌──────────────────────────────────────────────────────────┐
+    Core    │  BaseAction  BaseEntity  BasePolicy                     │
+   Base    │  BaseRecordManager  BaseController  FormRequest          │
+   Classes │  Data (DTO)  HandlesActionErrors                        │
           │  SmartLogger  PiiMasker  HandlesActionErrors             │
           │  app/Domain/Core/{Actions,Models,Policies,etc}          │
           └──────────────────────────────────────────────────────────┘
@@ -403,14 +403,13 @@ Every layer has exactly one base class from Core. There is no alternative.
 |---|---|---|
 | A database table | `extends BaseModel` | `extends Model` |
 | A business operation (mutation) | `extends BaseAction` | A custom service with multiple methods |
-| A read operation (complex query) | A plain class or `ReadAction` base | A service with mixed read/write methods |
+| A read operation (complex query) | A plain class | A service with mixed read/write methods |
 | A multi-step process | `extends BaseAction` (Process pattern) | Inline orchestration in Livewire |
 | Business rules | `extends BaseEntity` (final readonly) | A trait, a helper class, or inline in the model |
-| State machine | `extends BaseState` or `implements StatusEnum` | Custom status columns with if/else |
+| State machine | `implements StatusEnum` | Custom status columns with if/else |
 | Authorization | `extends BasePolicy` | `Gate::define()` with inline closures |
 | A CRUD list page | `extends BaseRecordManager` | A Livewire component from scratch |
 | A HTTP form request | `extends FormRequest` (Core's) | `extends Request` or inline validation |
-| A state machine | `implements StatusEnum` | Custom status columns with if/else |
 | An enum | `implements LabelEnum` | A plain PHP enum or class constants |
 | Logging | `SmartLogger` | `Log::` facade or `activity()` helper |
 | Cache key registry | `CacheKeys` constants | Hardcoded strings everywhere |

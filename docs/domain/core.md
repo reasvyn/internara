@@ -1,6 +1,6 @@
 # Core Domain — Context Boundaries & Rules
 
-> Last updated: 2026-06-01
+> Last updated: 2026-06-02
 
 ## Table of Contents
 
@@ -338,6 +338,18 @@ tree communicates a fundamentally different kind of failure.
 **Shared trait:** `HasExceptionContext` provides `withHint()`, `withContext()`, `toCliOutput()` to
 both trees.
 
+**Exception API:**
+
+All exceptions inherit two behavioral methods via `HasExceptionContext`:
+
+| Method | Return | Default | Overridden In | Purpose |
+|---|---|---|---|---|
+| `isUserFacing(): bool` | Whether message is safe to expose to users | `true` | `InfrastructureException` → `false` | Prevents internal error details in production UI |
+| `shouldReport(): bool` | Whether exception is written to logs | `true` | (none) | Suppress logging for expected/handled failures |
+
+These are checked in `bootstrap/app.php` by the `AppException` renderer: non-user-facing exceptions
+show a generic "An unexpected error occurred." message instead of the actual exception text.
+
 **Usage statistics:**
 
 | Exception            | Business Domain Usage | Notes                                                                   |
@@ -387,7 +399,7 @@ SmartLogger::error('Payment failed', ['txn' => 'abc'])
 | `systemOnly()`     | ✅                       | ❌                             | Technical operations, errors |
 | `activityOnly()`   | ❌                       | ✅                             | Audit-only events            |
 
-**Usage:** 40 files import and use `SmartLogger`. It is the backbone of all observability.
+**Usage:** 40+ files across domains import and use `SmartLogger`. It is the backbone of all observability.
 
 #### PiiMasker
 
@@ -406,6 +418,17 @@ is called (which is the default in `BaseAction::log()`).
 - Recursive array traversal
 
 **Usage:** Only imported directly by `SmartLogger` (it is not used independently).
+
+#### Integrity
+
+**File:** `app/Domain/Core/Support/Integrity.php`
+
+**Purpose:** Runtime verification of `composer.json` authorship. Ensures the `authors[0].name`
+matches the canonical author (`Reas Vyn`). In `local`/`testing` environments, a mismatch logs a
+warning. In production, a mismatch throws `RuntimeException`.
+
+**Usage:** Called during application bootstrap by the Setup domain's environment audit. Not directly
+imported by business domain code.
 
 #### HandlesActionErrors
 
@@ -457,20 +480,27 @@ be defined here as a typed string constant.
 
 **TTL legend:** short (<5 min), medium (5 min–1h), long (1h–24h), static (until flush), forever.
 
-**Current keys (14):**
+**Current keys (17):**
 
-| Constant                | Key                          | TTL     | Invalidated By        |
-| ----------------------- | ---------------------------- | ------- | --------------------- |
-| `SETUP_INSTALLED`       | `setup.is_installed`         | forever | FinalizeSetupAction   |
-| `ADMIN_DASHBOARD_STATS` | `admin.dashboard.stats`      | medium  | Various CRUD actions  |
-| `THEME_CSS_VARIABLES`   | `theme.css_variables`        | long    | Settings update       |
-| `NOTIFICATION_UNREAD`   | `notification.unread:`       | medium  | MarkAsReadAction      |
-| `APPINFO_METADATA`      | `appinfo.metadata`           | forever | composer.json changes |
-| `DOMAIN_LIVEWIRE`       | `domain.discovered_livewire` | static  | Structural changes    |
-| `DOMAIN_POLICIES`       | `domain.discovered_policies` | static  | Structural changes    |
-| `DOMAIN_VIEWS`          | `domain.discovered_views`    | static  | Structural changes    |
-| `AUTH_LOGIN_FAILURES`   | `auth.login-failures:`       | medium  | Successful login      |
-| `HEALTH_CHECK`          | `health_check`               | short   | Each health check run |
+| Constant                | Key                          | TTL     | Invalidated By                                    |
+| ----------------------- | ---------------------------- | ------- | ------------------------------------------------- |
+| `SETUP_INSTALLED`       | `setup.is_installed`         | forever | FinalizeSetupAction, GenerateSetupTokenAction     |
+| `ADMIN_DASHBOARD_STATS` | `admin.dashboard.stats`      | medium  | User/Department/Internship CRUD actions            |
+| `THEME_CSS_VARIABLES`   | `theme.css_variables`        | long    | Settings update (color change)                    |
+| `NOTIFICATION_UNREAD`   | `notification.unread:`       | medium  | MarkAsRead/MarkAllAsRead/SendNotification actions |
+| `CORE_INTEGRITY`        | `core.integrity_verified`    | forever | composer.json changes (manual flush)              |
+| `CORE_APP_NAME`         | `core.app_name`              | forever | composer.json changes (manual flush)              |
+| `APPINFO_METADATA`      | `appinfo.metadata`           | forever | composer.json changes                             |
+| `DOMAIN_LIVEWIRE`       | `domain.discovered_livewire` | static  | Structural changes (add/remove Livewire components)|
+| `DOMAIN_POLICIES`       | `domain.discovered_policies` | static  | Structural changes (add/remove policies)          |
+| `DOMAIN_VIEWS`          | `domain.discovered_views`    | static  | Structural changes (add/remove view directories)  |
+| `AUTH_LOGIN_FAILURES`   | `auth.login-failures:`       | medium  | Successful login (LoginAction::clearFailedAttempts)|
+| `HEALTH_CHECK`          | `health_check`               | short   | Each health check run                             |
+| `RECOVER_ADMIN_ATTEMPTS`| `recover_admin_attempts_`    | medium  | Successful recovery (RecoverSuperAdminAction)     |
+| `SETTINGS_ALL`          | `settings.all`               | forever | Settings::set(), Settings::forget()               |
+| `SETTINGS_GROUP`        | `settings.group.`            | forever | Settings::set(), Settings::forget()               |
+| `SETTINGS_KEYS`         | `settings.keys`              | forever | Settings::set(), Settings::forget()               |
+| `SETTINGS_KEY`          | `settings.`                  | forever | Settings::set(), Settings::forget()               |
 
 **Usage:** 15 files across domains reference `CacheKeys`.
 
@@ -545,12 +575,14 @@ they do not block setup.
 
 ### 3.10 Events
 
-`DomainEvent` is a convenience base class added for unifying domain event patterns. It provides
-`Dispatchable`, `InteractsWithSockets`, and `SerializesModels` traits.
+Events are defined per domain. Core provides no base event class — each domain defines `final readonly`
+event classes with the `Dispatchable` trait. This avoids coupling domain events to a shared hierarchy
+and keeps event definitions self-contained.
 
-Currently adopted by 0 business domain events. Domains create their own event classes without
-extending this base. Adoption is optional — the base class exists to standardize event structure
-when teams grow.
+**Convention:** Events live in `app/Domain/{Domain}/Events/` and use the naming `{Entity}{PastTenseAction}`
+(e.g., `InternshipCreated`, `ReportApproved`).
+
+**Registration:** Event-to-listener bindings are registered in `DomainServiceProvider::boot()`.
 
 ---
 
@@ -743,70 +775,53 @@ These are things that may seem like infrastructure but should NOT be in Core:
 
 ## Current Usage Statistics
 
-As of 2026-06-01, across 409 files in 23 business domains:
+As of 2026-06-02, across all business domains (excluding `Core/` itself):
 
-| Rank | Core Class              | Usages | Category      |
-| ---- | ----------------------- | ------ | ------------- |
-| 1    | `BaseAction`            | 174    | Actions       |
-| 2    | `BaseModel`             | 49     | Models        |
-| 3    | `RejectedException`     | 48     | Exceptions    |
-| 4    | `SmartLogger`           | 40     | Logging       |
-| 5    | `BasePolicy`            | 34     | Authorization |
-| 6    | `LabelEnum`             | 31     | Contracts     |
-| 7    | `BaseEntity`            | 28     | Entities      |
-| 8    | `BaseRecordManager`     | 25     | Livewire      |
-| 9    | `StatusEnum`            | 17     | Contracts     |
-| 10   | `CacheKeys`             | 15     | Caching       |
-| 11   | `FormRequest`           | 11     | HTTP          |
-| 12   | `CustomDatabaseChannel` | 10     | Notifications |
-| 13   | `BaseController`        | 5      | HTTP          |
-| 14   | `AuditStatus`           | 4      | Enums         |
-| 15   | `AuditCategory`         | 4      | Enums         |
-| 16   | `PasswordRules`         | 3      | Support       |
-| 17   | `ActivityLog`           | 3      | Models        |
-| 18   | `AuditReport`           | 3      | DTOs          |
-| 19   | `SendsNotifications`    | 2      | Contracts     |
-| 20   | `HasExceptionContext`   | 2      | Exceptions    |
-| 21   | Others (8 classes)      | 1 each | Various       |
+| Rank | Core Class              | Unique Files | Category      |
+| ---- | ----------------------- | ------------ | ------------- |
+| 1    | `BaseAction`            | 173          | Actions       |
+| 2    | `BaseModel`             | 49           | Models        |
+| 3    | `RejectedException`     | 116          | Exceptions    |
+| 4    | `SmartLogger`           | 37           | Logging       |
+| 5    | `BasePolicy`            | 35           | Authorization |
+| 6    | `LabelEnum`             | 29           | Contracts     |
+| 7    | `BaseEntity`            | 27           | Entities      |
+| 8    | `BaseRecordManager`     | 25           | Livewire      |
+| 9    | `CustomDatabaseChannel` | 20           | Notifications |
+| 10   | `StatusEnum`            | 16           | Contracts     |
+| 11   | `CacheKeys`             | 15           | Caching       |
+| 12   | `FormRequest`           | 11           | HTTP          |
+| 13   | `ActivityLog`           | 9            | Models        |
+| 14   | `PasswordRules`         | 6            | Support       |
+| 15   | `BaseController`        | 5            | HTTP          |
+| 16   | `AuditStatus`           | 4            | Enums         |
+| 17   | `AuditCategory`         | 4            | Enums         |
+| 18   | `AuditReport`           | 3            | DTOs          |
+| 19   | `SendsNotifications`    | 2            | Contracts     |
+| 20   | `ColorableEnum`         | 1            | Contracts     |
+| 21   | Others (6 classes)      | 1 each       | Various       |
 
-**Heaviest-consuming domains:** Internship (46 files), Admin (31), Auth (28), Assessment (28), User
-(27).
+**Notes:**
+- Usage counts are unique files importing or referencing the class (not total references).
+- `SmartLogger` has 37 unique importers in business domains + 6 in Core itself = 43 total.
+- `RejectedException` (116 files) and `SmartLogger` (37 files) are the most-used infrastructure
+  classes — they carry the entire logging and domain-error signaling load.
+- `PiiMasker` is not directly imported by any business domain — it's used only through
+  `SmartLogger::withPiiMasking()`.
 
-**Lightest-consuming domains:** Shared (4), Mentee (6), Schedule (6), Evaluation (7).
+**Zero-adoption exception classes:**
 
-**Zero-adoption classes (outside tests/bootstrap):**
-
-- `PiiMasker` — only used internally by SmartLogger
-- 8 exception classes with 0 business domain imports — 4 registered in `bootstrap/app.php`
+- 8 exception classes have 0 business domain imports — 4 registered in `bootstrap/app.php`
   (`ValidationFailedException`, `RateLimitException`, `NotFoundException`, `UnauthorizedException`),
   4 completely unreferenced (`ActionException`, `ConflictException`, `InfrastructureException`,
-  `PresentationException`)
+  `PresentationException`). These are abstract hierarchy placeholders preserved for architectural
+  completeness and ready for adoption when needed.
 
 ---
 
 ## Known Gaps & Future Direction
 
-### Gap 1: BaseState Has Zero Adoption
-
-**Issue:** `BaseState` provides `isState()` and `isStateIn()` helpers, but no state entity extends
-it. All 17 state entities across domains extend `BaseEntity` directly and duplicate these checks.
-
-**Impact:** Low. The helpers are simple enough that each entity reimplements them in 2-3 lines.
-
-**Recommendation:** Migrate state entities to `BaseState` when modifying them for other reasons. Do
-not prioritize a dedicated refactor.
-
-### Gap 2: DomainEvent Has Zero Adoption
-
-**Issue:** `DomainEvent` exists as a convenience base but no domain event uses it. Business domains
-define event classes independently.
-
-**Impact:** None. The base class is optional by design. It exists for future standardization when
-the team grows and event conventions need enforcement.
-
-**Recommendation:** Leave as-is. Adoption will happen naturally when conventions tighten.
-
-### Gap 3: Exception Classes Underutilized
+### Gap 1: Exception Classes Underutilized
 
 **Issue:** Of 11 exception classes, only `RejectedException` is widely used (48 imports). Six
 classes have zero business domain usage and are only referenced in HTTP error rendering.
@@ -817,7 +832,7 @@ domain code signals failure via `RejectedException` rather than framework-specif
 **Recommendation:** No action needed. The hierarchy is correct. Encourage `ConflictException` and
 `ValidationFailedException` adoption when appropriate.
 
-### Gap 4: CacheKeys Needs Expansion
+### Gap 2: CacheKeys Needs Expansion
 
 **Issue:** Only 14 cache keys are registered. As domains add more caching, `CacheKeys` should grow
 to include every cached value.
