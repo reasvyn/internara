@@ -1,6 +1,7 @@
 # Core Domain — Context Boundaries & Rules
 
 > Last updated: 2026-06-02
+> Changes: comprehensive docs-vs-implementation audit — fix base class count, usage statistics, exception table, cache keys count, metadata
 
 ## Table of Contents
 
@@ -95,7 +96,7 @@ important invariant of the entire architecture.
 
 ### 3.1 Base Classes (Layer 4)
 
-Core provides 9 base classes that every domain layer must (or may) extend.
+Core provides 8 base classes that every domain layer must (or may) extend.
 
 #### Model Layer — `BaseModel`
 
@@ -123,6 +124,9 @@ across all 50+ models and 75+ tables.
 **Purpose:** Base class for Command Actions (mutations) and Process Actions (orchestration). Read
 Actions should NOT extend `BaseAction` — they should be plain invocable classes.
 
+Note: `BaseAction` is used only for mutation and orchestration. Read-only operations use
+plain classes with constructor injection — they do not extend `BaseAction`.
+
 **What it provides:**
 
 - `transaction(callable): mixed` — wraps logic in `DB::transaction()`
@@ -141,7 +145,7 @@ Actions should NOT extend `BaseAction` — they should be plain invocable classe
 | Compose other Actions | ❌                     | ✅ Required             |
 | Naming pattern        | `{Verb}{Entity}Action` | `{Verb}{Entity}Process` |
 
-**Usage count:** 174 files extend `BaseAction` — the single most-used Core class.
+**Usage count:** 173 files extend `BaseAction` — the single most-used Core class.
 
 #### Entity Layer — `BaseEntity`
 
@@ -161,7 +165,7 @@ Carbon) where practical. The original "zero framework dependencies" mandate was 
 prioritize development speed over architectural purity. However, entities should still prefer
 constructor injection over framework access.
 
-**Usage count:** 28 entities across 13 domains.
+**Usage count:** 27 entities across 13 domains.
 
 #### Policy Layer — `BasePolicy`
 
@@ -256,7 +260,7 @@ architectural abstraction boundary that crosses domains without coupling them.
 **Purpose:** Every string-backed enum must implement this. Provides a `label(): string` method for
 human-readable display values.
 
-**Usage:** 31 enums implement `LabelEnum`.
+**Usage:** 29 enums implement `LabelEnum`.
 
 ```php
 enum InternshipStatus: string implements LabelEnum
@@ -284,7 +288,7 @@ must provide both).
 - `validTransitions(): array` — list of valid target states
 - `isTerminal(): bool` — whether this is a final (non-transitionable) state
 
-**Usage:** 17 enums implement `StatusEnum`.
+**Usage:** 16 enums implement `StatusEnum`.
 
 #### `ColorableEnum`
 
@@ -354,7 +358,7 @@ show a generic "An unexpected error occurred." message instead of the actual exc
 
 | Exception            | Business Domain Usage | Notes                                                                   |
 | -------------------- | --------------------- | ----------------------------------------------------------------------- |
-| `RejectedException`  | 48 imports            | The most-used exception — the standard "business rule violation" signal |
+| `RejectedException`  | 116 imports           | The most-used exception — the standard "business rule violation" signal |
 | `AppException`       | 1 import              | Rarely caught directly (usually caught by HTTP error handlers)          |
 | `DomainException`    | 1 import              | Same pattern                                                            |
 | Other exceptions (8) | 0 imports             | 4 registered in `bootstrap/app.php`; 4 completely unreferenced           |
@@ -399,7 +403,7 @@ SmartLogger::error('Payment failed', ['txn' => 'abc'])
 | `systemOnly()`     | ✅                       | ❌                             | Technical operations, errors |
 | `activityOnly()`   | ❌                       | ✅                             | Audit-only events            |
 
-**Usage:** 40+ files across domains import and use `SmartLogger`. It is the backbone of all observability.
+**Usage:** 37 files across domains import and use `SmartLogger` (43 including Core itself). It is the backbone of all observability.
 
 #### PiiMasker
 
@@ -454,7 +458,7 @@ audit queries.
 
 **Additional methods:** `getGroupedByDay()` — daily activity counts for dashboards.
 
-**Usage:** 3 direct imports (typically for admin audit log views).
+**Usage:** 9 direct imports (typically for admin audit log views).
 
 #### LogContext Middleware
 
@@ -823,7 +827,7 @@ As of 2026-06-02, across all business domains (excluding `Core/` itself):
 
 ### Gap 1: Exception Classes Underutilized
 
-**Issue:** Of 11 exception classes, only `RejectedException` is widely used (48 imports). Six
+**Issue:** Of 11 exception classes, only `RejectedException` is widely used (116 imports). Eight
 classes have zero business domain usage and are only referenced in HTTP error rendering.
 
 **Impact:** None. The hierarchy is complete and ready to use. Low usage reflects the fact that most
@@ -834,7 +838,7 @@ domain code signals failure via `RejectedException` rather than framework-specif
 
 ### Gap 2: CacheKeys Needs Expansion
 
-**Issue:** Only 14 cache keys are registered. As domains add more caching, `CacheKeys` should grow
+**Issue:** Only 17 cache keys are registered. As domains add more caching, `CacheKeys` should grow
 to include every cached value.
 
 **Impact:** Low. New keys can be added as needed.
