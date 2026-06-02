@@ -1,10 +1,10 @@
 # Shared — API Reference
-> Last updated: 2026-05-31
-> Changes: docs: audit — all items Implemented
+> Last updated: 2026-06-02
+> Changes: docs: audit — add Layouts and Livewire Views sections
 
 > **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 9 files — ✅ 9 Implemented (+ 17 Blade UI components)
+Total: 9 PHP files — ✅ 9 Implemented (+ 28 Blade views across 4 sections)
 
 ## Enums
 
@@ -26,9 +26,21 @@ Total: 9 files — ✅ 9 Implemented (+ 17 Blade UI components)
 | `Shared/Support/CsvHandler.php` | `CsvHandler` | CSV export (streamed), import with header validation, template download |
 | `Shared/Support/Environment.php` | `Environment` | Centralized environment detection — `isDebugMode()`, `isDevelopment()`, `isProduction()`, etc. |
 | `Shared/Support/HasModelStatuses.php` | `HasModelStatuses` | Trait — bridges legacy Spatie HasStatuses with typed StatusEnum. @deprecated |
-| `Shared/Support/LangChecker.php` | `LangChecker` | Implements Translator contract — logs warning on missing translation keys (dev only) |
+| `Shared/Support/LangChecker.php` | `LangChecker` | @deprecated Implements Translator contract — logs warning on missing translation keys (dev only) |
 | `Shared/Support/Locale.php` | `Locale` | Locale management — set, current, all, keys, isSupported, metadata. Cookie-based persistence |
 | `Shared/Support/Theme.php` | `Theme` | Theme/color resolution — defaults, presets, all, cssVariables (cached) |
+
+## Layouts (`x-shared::layouts.*`)
+
+| File | Description |
+|---|---|
+| `shared/layouts/base.blade.php` | HTML document skeleton — meta tags, favicon, Vite assets, CSS custom properties for theme, theme init script, flasher render, Livewire event listeners |
+| `shared/layouts/base/head.blade.php` | `<head>` partial — preconnect hints, meta tags, CSRF token, title, favicon, manifest, Vite assets, head stack |
+| `shared/layouts/base/footer.blade.php` | Footer partial — credit line with optional full-width mode |
+| `shared/layouts/app.blade.php` | Authenticated application shell — sidebar drawer, header with breadcrumb context, main content area, footer |
+| `shared/layouts/guest.blade.php` | Unauthenticated landing shell — brand header with theme/lang toggles, main content, footer |
+| `shared/layouts/sidebar.blade.php` | Collapsible sidebar drawer — role-based menu groups, brand logo, mobile theme/lang toggles |
+| `shared/layouts/header.blade.php` | Sticky top header — mobile hamburger, page title, navbar actions (theme/lang/user) |
 
 ## Blade UI Components (`x-shared::ui.*`)
 
@@ -59,6 +71,13 @@ Total: 9 files — ✅ 9 Implemented (+ 17 Blade UI components)
 | `shared/widgets/action-button.blade.php` | Full-width action button for navigation |
 | `shared/widgets/empty-state.blade.php` | Empty state placeholder with icon and text |
 
+## Livewire Views
+
+| File | Description |
+|---|---|
+| `shared/theme-switcher.blade.php` | Theme switcher dropdown — light/dark/system options with icon indicators, wire:click delegates to ThemeSwitcher component |
+| `shared/lang-switcher.blade.php` | Language switcher dropdown — EN/ID options with locale abbreviation, wire:click delegates to LangSwitcher component |
+
 ## Where to Find It
 
 - `app/Domain/Shared/Support/Environment.php` — environment detection
@@ -70,7 +89,7 @@ Total: 9 files — ✅ 9 Implemented (+ 17 Blade UI components)
 - `app/Domain/Shared/Enums/CsvRowResult.php` — CSV import result enum
 - `app/Domain/Shared/Livewire/LangSwitcher.php` — language switcher component
 - `app/Domain/Shared/Livewire/ThemeSwitcher.php` — theme switcher component
-- `resources/views/shared/` — Blade views for Livewire components and layouts
+- `resources/views/shared/` — Blade views: layouts (7), UI components (14), widgets (5), Livewire views (2)
 
 ## Dependency Graph
 

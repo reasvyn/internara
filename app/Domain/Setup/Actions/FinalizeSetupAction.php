@@ -107,7 +107,6 @@ final class FinalizeSetupAction extends BaseAction
             SmartLogger::warning('Failed to save recovery key file')
                 ->module('setup')
                 ->event('recovery_key.file_save_failed')
-                ->systemOnly()
                 ->save();
         }
 

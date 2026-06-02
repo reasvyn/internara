@@ -1,7 +1,7 @@
 # Shared Domain
-> Last updated: 2026-05-31
-> Changes: docs: audit — all 9 reference + 17 Blade items Implemented
-> **Status:** ✅ **Fully Implemented** — all PHP files and Blade components in [reference](shared-reference.md) exist
+> Last updated: 2026-06-02
+> Changes: docs: audit — full Shared audit, 28 Blade views documented
+> **Status:** ✅ **Fully Implemented** — all PHP files and Blade views in [reference](shared-reference.md) exist
 
 
 ## Purpose
@@ -11,9 +11,9 @@ domain or to Core. When two or more domains need the same function — environme
 locale management, CSV handling, theme resolution — the logic lives here.
 
 Shared has no Models, Controllers, Routes, or database migrations. It contains Blade views
-(Livewire component views, layout files, UI partials), pure utility classes, support traits,
-and a minimal set of Livewire components for cross-domain UI features (language and theme
-switching).
+(layout templates, UI partials, widget partials, and Livewire component views), pure utility
+classes, support traits, and a minimal set of Livewire components for cross-domain UI features
+(language and theme switching).
 
 ---
 
@@ -106,3 +106,10 @@ Shared references and consumes settings from the Settings domain (specifically f
 - Toggle between light mode, dark mode, and system-default themes via a theme selector accessible from any page.
 - Import records from a CSV file with a validation summary showing accepted, skipped, and errored rows.
 - Download CSV template files with pre-filled header rows and example data entries.
+- Render the HTML document skeleton with meta tags, favicon, Vite assets, CSS custom properties, and theme initialization via the `layouts.base` template.
+- Provide an authenticated application shell with sidebar navigation, top header, breadcrumb context, and footer via the `layouts.app` template.
+- Provide an unauthenticated landing shell with brand header, theme/language toggles, and footer via the `layouts.guest` template.
+- Render a collapsible sidebar drawer with role-based menu items grouped by category via the `layouts.sidebar` partial.
+- Render a sticky top header with mobile drawer toggle, page title, and navbar action items via the `layouts.header` partial.
+- Display a Livewire theme switcher dropdown (light/dark/system) with icon indicators via the `theme-switcher` view.
+- Display a Livewire language switcher dropdown (EN/ID) with locale abbreviation via the `lang-switcher` view.

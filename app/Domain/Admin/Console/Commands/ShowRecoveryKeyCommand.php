@@ -36,7 +36,7 @@ class ShowRecoveryKeyCommand extends Command
         $this->components->warn(__('admin.recovery_show.warning'));
 
         $confirmed = $this->components->confirm(
-            label: __('admin.recovery_show.confirm'),
+            question: __('admin.recovery_show.confirm'),
             default: false,
         );
 

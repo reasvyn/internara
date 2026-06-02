@@ -39,6 +39,7 @@ class SupervisorManager extends BaseRecordManager
                 'class' => 'font-mono text-xs',
             ],
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
+            ['key' => 'profile.company_id', 'label' => __('user.supervisor.company')],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
@@ -48,7 +49,7 @@ class SupervisorManager extends BaseRecordManager
     {
         return User::query()
             ->role(RoleEnum::SUPERVISOR->value)
-            ->with(['profile']);
+            ->with(['profile.company']);
     }
 
     protected function applySearch(Builder $query): Builder
@@ -78,13 +79,15 @@ class SupervisorManager extends BaseRecordManager
 
     public function edit(string $id): void
     {
-        $user = User::findOrFail($id);
+        $user = User::with('profile')->findOrFail($id);
 
         $this->resetErrorBag();
         $this->form->fill([
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
+            'phone' => $user->profile?->phone ?? '',
+            'company_id' => $user->profile?->company_id ?? null,
         ]);
         $this->userModal = true;
     }
@@ -93,12 +96,17 @@ class SupervisorManager extends BaseRecordManager
     {
         $this->form->validate();
 
+        $profileData = [
+            'phone' => $this->form->phone,
+            'company_id' => $this->form->company_id,
+        ];
+
         if ($this->form->id) {
             $user = User::findOrFail($this->form->id);
-            $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email]);
+            $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email], $profileData);
             flash()->success(__('user.supervisor.success_updated'));
         } else {
-            $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], [], [RoleEnum::SUPERVISOR->value], false);
+            $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], $profileData, [RoleEnum::SUPERVISOR->value], false);
             $this->userModal = false;
             $this->redirect(route('admin.users.account-slip', $user));
 

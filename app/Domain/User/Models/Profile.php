@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\User\Models;
 
 use App\Domain\Core\Models\BaseModel;
+use App\Domain\Partnership\Models\Company;
 use App\Domain\School\Models\Department;
 use App\Domain\School\Models\School;
 use App\Domain\User\Enums\BloodType;
@@ -32,10 +33,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'school_id',
     'department_id',
     'employment_status',
-    'nip',
-    'nuptk',
+    'employee_id_number',
+    'educator_id_number',
     'competence_field',
-    'position',
+    'job_title',
+    'company_id',
 ])]
 
 class Profile extends BaseModel
@@ -70,5 +72,10 @@ class Profile extends BaseModel
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class);
     }
 }

@@ -25,6 +25,9 @@ return new class extends Migration
             $table->timestamp('locked_at')->nullable();
             $table->string('locked_reason')->nullable();
             $table->timestamps();
+
+            $table->index('locked_at');
+            $table->index('setup_required');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

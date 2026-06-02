@@ -1,10 +1,10 @@
 # Auth — API Reference
-> Last updated: 2026-05-31
-> Changes: docs: audit — all items Implemented
+> Last updated: 2026-06-02
+> Changes: cleanup: remove AccessManager, UpdateRolePermissionsAction (RBAC role-only)
 
 > **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 40 files — ✅ 40 Implemented
+Total: 38 files — ✅ 38 Implemented
 
 ## Actions
 
@@ -20,7 +20,6 @@ Total: 40 files — ✅ 40 Implemented
 | `Auth/Actions/ResetUserPasswordAction.php` | `ResetUserPasswordAction` | `BaseAction` | Admin-initiated password reset |
 | `Auth/Actions/SendPasswordResetLinkAction.php` | `SendPasswordResetLinkAction` | `BaseAction` | Sends password reset link email |
 | `Auth/Actions/UnlockUserAccountAction.php` | `UnlockUserAccountAction` | `BaseAction` | Unlocks a previously locked user account |
-| `Auth/Actions/UpdateRolePermissionsAction.php` | `UpdateRolePermissionsAction` | `BaseAction` | Updates Spatie permission assignments for a role |
 | `Auth/Actions/UpdateUserPasswordAction.php` | `UpdateUserPasswordAction` | `BaseAction` | Updates user's password with current password validation |
 
 ## Entities
@@ -55,7 +54,6 @@ Total: 40 files — ✅ 40 Implemented
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Auth/Livewire/AccessManager.php` | `AccessManager` | `Component` | Manages role-permission assignments |
 | `Auth/Livewire/AccountLifecycleManager.php` | `AccountLifecycleManager` | `Component` | Manages account lock/unlock and clone detection |
 | `Auth/Livewire/AccountRecovery.php` | `AccountRecovery` | `Component` | Account recovery via recovery slip |
 | `Auth/Livewire/ConfirmPassword.php` | `ConfirmPassword` | `Component` | Password confirmation form |

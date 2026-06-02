@@ -44,6 +44,10 @@
                 </div>
             @endscope
 
+            @scope('cell_profile_company_id', $user)
+                <span class="text-sm">{{ $user->profile?->company?->name ?? '—' }}</span>
+            @endscope
+
             @scope('actions', $user)
                 <div class="flex justify-end gap-1">
                     <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $user->id }}')" :aria-label="__('common.actions.edit')" />
@@ -61,6 +65,8 @@
                     <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('user.manager.account') }}</p>
                     <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
                     <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" />
+                    <x-mary-input :label="__('user.supervisor.phone')" wire:model="form.phone" icon="o-phone" />
+                    <x-mary-select :label="__('user.supervisor.company')" wire:model="form.company_id" :placeholder="__('user.supervisor.company_placeholder')" :options="\App\Domain\Partnership\Models\Company::pluck('name', 'id')->toArray()" icon="o-building-office" />
                 </div>
 
                 <x-slot:actions>

@@ -97,10 +97,10 @@ final class UpdateProfileAction extends BaseAction
             'student_id_number' => ['nullable', 'string', 'max:50'],
             'department_id' => ['nullable', 'exists:departments,id'],
             'employment_status' => ['nullable', 'string'],
-            'nip' => ['nullable', 'string', 'max:18'],
-            'nuptk' => ['nullable', 'string', 'max:16'],
+            'employee_id_number' => ['nullable', 'string', 'max:30'],
+            'educator_id_number' => ['nullable', 'string', 'max:30'],
             'competence_field' => ['nullable', 'string', 'max:255'],
-            'position' => ['nullable', 'string'],
+            'job_title' => ['nullable', 'string'],
         ])->validate();
     }
 }

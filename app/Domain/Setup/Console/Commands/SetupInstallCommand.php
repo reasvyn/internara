@@ -15,8 +15,11 @@ use App\Domain\Setup\Services\EnvironmentAuditor;
 use App\Domain\Setup\Support\SystemProvisioner;
 use App\Providers\DomainServiceProvider;
 use Illuminate\Console\Command;
+use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\File;
 
 use function Laravel\Prompts\confirm;
@@ -300,6 +303,10 @@ class SetupInstallCommand extends Command
         Artisan::call('route:cache');
         Artisan::call('view:cache');
         Artisan::call('event:cache');
+
+        Container::setInstance($this->laravel);
+        Facade::setFacadeApplication($this->laravel);
+        Model::setConnectionResolver($this->laravel['db']);
     }
 
     private function isLocalhostUrl(): bool
