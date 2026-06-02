@@ -1,7 +1,7 @@
 # Domain Index
 
-> Last updated: 2026-06-01 Changes: updated Core entry with overview link and context boundary
-> description
+> Last updated: 2026-06-02
+> Changes: updated Core entry with overview link and context boundary description
 
 > 24 business domains organized by the internship lifecycle. Each domain owns its complete vertical
 > slice: persistence, business rules, UI components, authorization, and HTTP interface.

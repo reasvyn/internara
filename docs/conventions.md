@@ -1,5 +1,6 @@
 # Coding Conventions
-> Last updated: 2026-05-31
+> Last updated: 2026-06-02
+> Changes: update metadata date
 > **Context:** ✅ All conventions are enforced — see [domain index](domain/domain-index.md) for implementation status.
 
 

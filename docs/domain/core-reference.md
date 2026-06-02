@@ -4,7 +4,7 @@
 
 > **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 48 files — ✅ 48 Implemented
+Total: 46 files — ✅ 46 Implemented
 
 ## Actions
 

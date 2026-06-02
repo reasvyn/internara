@@ -1,5 +1,6 @@
 # Architecture
 > Last updated: 2026-06-02
+> Changes: deduplicate HandlesActionErrors in Layer 4, remove States from domain mapping, expand caching table 7→17 keys, add metadata
 > **Context:** ✅ All 24 domains are fully implemented per the [domain audit](domain/domain-index.md).
 
 
@@ -80,7 +81,7 @@ The domain directories are vertical slices that cross all layers below Layer 11.
     Core    │  BaseAction  BaseEntity  BasePolicy                     │
    Base    │  BaseRecordManager  BaseController  FormRequest          │
    Classes │  Data (DTO)  HandlesActionErrors                        │
-          │  SmartLogger  PiiMasker  HandlesActionErrors             │
+           │  SmartLogger  PiiMasker                                 │
           │  app/Domain/Core/{Actions,Models,Policies,etc}          │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
@@ -130,7 +131,7 @@ A domain directory `app/Domain/{Domain}/` combines multiple layers:
 | 7 | `Actions/` | Business operations |
 | 6 | `Enums/`, `Entities/`, `Data/` | Domain rules |
 | 5 | `Models/` | Persistence |
-| 4 | (uses Core's base classes: `app/Domain/Core/{Actions,Models,Policies,States,...}`) | |
+| 4 | (uses Core's base classes: `app/Domain/Core/{Actions,Models,Policies,...}`) | |
 | 3 | (uses Core's contracts) | |
 | 2 | (uses database/config) | |
 | 1 | (uses PHP/Laravel) | |
@@ -653,13 +654,23 @@ Command Action → event({Entity}Updated) → CacheInvalidationListener → Cach
 
 | Data | Cache Key | TTL | Invalidated By |
 |---|---|---|---|
-| Setup status | `setup.is_installed` | forever | `SetupFinalized` event |
-| Admin dashboard stats | `admin.dashboard.stats` | 5 min | Periodic refresh |
-| Theme CSS variables | `theme.css_variables` | 24h | Settings update |
-| Unread notification count | `notification.unread:{userId}` | 5 min | MarkAsRead/New notification |
-| Livewire component map | `domain.discovered_livewire` | 24h | `cache:clear` after structural change |
-| Policy map | `domain.discovered_policies` | 24h | `cache:clear` after structural change |
-| View namespaces | `domain.discovered_views` | 24h | `cache:clear` after structural change |
+| Setup status | `setup.is_installed` | forever | FinalizeSetupAction, GenerateSetupTokenAction |
+| Admin dashboard stats | `admin.dashboard.stats` | medium | User/Department/Internship CRUD actions |
+| Theme CSS variables | `theme.css_variables` | long | Settings update (color change) |
+| Unread notification count | `notification.unread:{userId}` | medium | MarkAsRead/MarkAllAsRead/SendNotification actions |
+| Core integrity | `core.integrity_verified` | forever | composer.json changes (manual flush) |
+| Core app name | `core.app_name` | forever | composer.json changes (manual flush) |
+| App metadata | `appinfo.metadata` | forever | composer.json changes |
+| Livewire component map | `domain.discovered_livewire` | static | Structural component changes |
+| Policy map | `domain.discovered_policies` | static | Structural policy changes |
+| View namespaces | `domain.discovered_views` | static | Structural view directory changes |
+| Login failure count | `auth.login-failures:{userId}` | medium | Successful login |
+| Health check | `health_check` | short | Each health check run |
+| Recovery attempts | `recover_admin_attempts_{md5(email)}` | medium | Successful recovery |
+| All settings | `settings.all` | forever | Settings::set(), Settings::forget() |
+| Setting group | `settings.group.{name}` | forever | Settings::set(), Settings::forget() |
+| Setting keys | `settings.keys` | forever | Settings::set(), Settings::forget() |
+| Individual setting | `settings.{key}` | forever | Settings::set(), Settings::forget() |
 
 ---
 
