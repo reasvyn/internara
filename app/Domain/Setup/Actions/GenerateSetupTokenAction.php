@@ -19,26 +19,28 @@ final class GenerateSetupTokenAction extends BaseAction
      */
     public function execute(): array
     {
-        return $this->transaction(function () {
-            $length = (int) config('setup.token.length', 64);
-            $expiryMinutes = (int) config('setup.token.expiry_minutes', 60);
+        return Cache::lock('setup.token.generation', 10)->block(15, function () {
+            return $this->transaction(function () {
+                $length = (int) config('setup.token.length', 64);
+                $expiryMinutes = (int) config('setup.token.expiry_minutes', 60);
 
-            $plaintext = Str::random($length);
-            $encrypted = Crypt::encryptString($plaintext);
-            $expiresAt = now()->addMinutes($expiryMinutes);
+                $plaintext = Str::random($length);
+                $encrypted = Crypt::encryptString($plaintext);
+                $expiresAt = now()->addMinutes($expiryMinutes);
 
-            $setup = Setup::firstOrCreate([]);
-            $setup->fill([
-                'setup_token' => $encrypted,
-                'token_expires_at' => $expiresAt,
-            ])->save();
+                $setup = Setup::firstOrCreate([]);
+                $setup->fill([
+                    'setup_token' => $encrypted,
+                    'token_expires_at' => $expiresAt,
+                ])->save();
 
-            Cache::forget(CacheKeys::SETUP_INSTALLED);
+                Cache::forget(CacheKeys::SETUP_INSTALLED);
 
-            return [
-                'plaintext' => $plaintext,
-                'expires_at' => $expiresAt,
-            ];
+                return [
+                    'plaintext' => $plaintext,
+                    'expires_at' => $expiresAt,
+                ];
+            });
         });
     }
 }

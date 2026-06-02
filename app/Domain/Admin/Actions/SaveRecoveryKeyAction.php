@@ -6,8 +6,9 @@ namespace App\Domain\Admin\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use Illuminate\Support\Facades\File;
+use RuntimeException;
 
-final class SaveRecoveryKeyAction extends BaseAction
+class SaveRecoveryKeyAction extends BaseAction
 {
     public function execute(string $plaintext): string
     {
@@ -27,7 +28,10 @@ final class SaveRecoveryKeyAction extends BaseAction
                 .PHP_EOL
                 .$plaintext.PHP_EOL;
 
-            File::put($path, $header);
+            if (File::put($path, $header) === false) {
+                throw new RuntimeException(sprintf('Failed to write recovery key to [%s]', $path));
+            }
+
             File::chmod($path, 0600);
 
             $this->log('recovery_key_saved');

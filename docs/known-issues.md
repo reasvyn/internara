@@ -1,66 +1,6 @@
 # Known Issues and Gotchas
-> Last updated: 2026-06-01
-> Changes: C5 resolved (BaseState removed), C6 resolved (registerCommands removed), A10 resolved (BaseState removed from codebase), D1/D2/D3/D4 still resolved. Core docs updated — BaseState, DomainEvent, registerCommands references removed across all docs.
-
----
-
-## Resolved Issues
-
-### Resolved Audit Items
-
-| # | Issue | Resolution |
-|---|-------|------------|
-| A1 | Internship lifecycle: overview says ARCHIVED, code has CANCELLED | Doc already correct — uses CANCELLED |
-| A10 | Core/Internship: BaseState dependency graph claim | core.md Gap 1 already covers zero adoption; Routes & Views section added; exception usage corrected |
-| A34 | AuditCategory description incomplete | Expanded in core.md to explain TERMINAL and RECOMMENDATIONS cases |
-| D1 | core.md exception usage count inaccurate | Updated to "Other exceptions (8)" with accurate bootstrap/app.php breakdown |
-| D2 | 4 Core exception classes completely unreferenced | Documented accurately in core.md; hierarchy preserved for architectural completeness |
-| D3 | docs/session.md incorrectly references core.php for password confirmation routes | Changed to `routes/web/auth.php` |
-| D4 | core.md doesn't explicitly state Core has no routes or views | Added "Routes & Views" subsection to core.md |
-| — | HandlesActionErrors description oversimplified | Updated in core.md with known exception passthrough details |
-| — | Overview features undocumented (toast, error pages) | Not a Core concern — toasts are Shared/Livewire; error pages are app-level. No code change needed |
-| A2 | CheckCloseReadinessAction missing certificate issuance check | Added `checkCertificates()` method |
-| A3 | AccountApplicationForm wrong path and extends in reference doc | Path/extends were already correct; fields updated to match 17 actual fields |
-| A4 | PlacementForm fields mismatch | Doc already correct — lists company_id, internship_id, name, address, quota, description |
-| A5 | DirectPlacementForm missing mentor_ids | Doc already includes mentor_ids |
-| A6 | ProfileForm missing 5 staff fields | Doc already lists all 10 fields |
-| A7 | MentorProfileManager and EvaluateMentor have no route | Both already routed (mentee.php, mentor.php) |
-| A17 | PlacementPolicy only has viewAny — missing CRUD | CRUD methods added to PlacementPolicy |
-| A18 | AccessManager (Auth) has no route | Route added |
-| A19 | AuditLogManager and AccountCloneDetector (Admin) have no routes | Routes added |
-| A20 | Document template version not tracked | Added template_version column, migration, and RenderDocumentAction update |
-| A22 | Shared Design Principle 2 violated by CsvHandler and LangChecker | Documented as known exceptions with rationale |
-| A23 | Schedule overview describes calendar UI that does not exist | Doc updated to match actual CRUD implementation |
-| A32 | HasModelStatuses deprecated but not noted in reference doc | Noted in reference doc |
-| A33 | LangChecker extends Translator (violates "final readonly") | LangChecker fixed to extend Translator (required by Laravel internals) |
-| A35 | HandbookForm missing $id field from reference doc | Added to reference doc |
-| A36 | Incident notification ShouldQueue interface missing from ref doc | Added to reference doc |
-| A37 | LogbookEntry missing WithPagination and WithFileUploads from ref doc | Added to reference doc |
-| A38 | MenteeState entity methods undocumented | Added to reference doc |
-| A39 | Evaluation FACILITY enum case not mentioned in overview | Added to overview doc |
-| A40 | 5 overview docs missing "Last updated" header | Headers added |
-| G1 | Guidance: PDF attachment for handbooks | Handbook model implements HasMedia; HandbookManager handles upload; Create/UpdateHandbookAction manage file |
-| G2 | Guidance: teacher/supervisor routes | Routes added in guidance.php for `teacher` and `supervisor` prefixes targeting HandbookIndex |
-| G3 | Guidance: rename components per convention | HandbookIndex → HandbookManager (admin), StudentHandbookIndex → HandbookIndex (user-facing) |
-| C5 | State entities not extending BaseState (17 files) | BaseState removed from codebase; entities extend BaseEntity directly |
-| C6 | DomainServiceProvider registerCommands() dead code | registerCommands() method removed; commands registered in boot() |
-| A10 | Internship dependency graph claims BaseState | BaseState removed from codebase; no dependency graph issue remains |
-
-### Resolved Policy Changes
-
-#### C12. Cross-Domain Import Violations (170+ files) ⚠️ → ✅ Accepted
-
-**Status:** Accepted as of ADR-012 revision (2026-06-01). The architecture rule prohibiting cross-domain direct imports has been replaced with practical guidelines allowing them. Events remain preferred when 2+ independent side effects are needed, but direct imports are now explicitly permitted.
-
-**Rationale:** 85% of violations were Eloquent FK relationships — impossible to route through events without excessive ceremony. Enforcement was causing more harm than good.
-
-**See:** `docs/adr/adr-cross-domain-communication.md`, `docs/architecture.md`, `docs/conventions.md`
-
-#### C13. Integrity.php Uses raw echo/exit for Pre-Boot Errors ✅
-
-**File:** `app/Domain/Core/Support/Integrity.php`
-
-**Fix applied:** `fatal()` now throws `RuntimeException` instead of `echo`+`exit(1)`.
+> Last updated: 2026-06-02
+> Changes: removed all resolved issues (A1, A10, A34, C5, C6, D1–D4, etc.); updated User section with audit findings
 
 ---
 
@@ -125,7 +65,6 @@
 
 ### Incident
 
-- **A36 — ShouldQueue interface missing from ref:** `IncidentReportedNotification` implements `ShouldQueue` with `Queueable` but reference doc only lists `Notification` (resolved).
 - **Action descriptions omit significant validation/detail** for `ResolveIncidentAction` and `ReportIncidentAction`.
 
 ### Internship
@@ -137,7 +76,6 @@
 
 - **A13 — Dependency graph claims Mentor:** Zero Mentor domain files imported directly.
 - **A26 — Overview features not implemented:** digital signature, auto-save, compliance monitoring/auto-notify, photo captions/timestamps.
-- **A37 — LogbookEntry missing traits from ref doc:** `WithPagination` and `WithFileUploads` not listed (resolved).
 - **LogbookEntry cross-domain routing:** Routed in `routes/web/mentee.php`, not in `routes/web/logbook.php`.
 - **No Routes, Tests, or Events/Notifications sections** in reference doc.
 - **L1 — No feedback container for industry supervisors (DUDI) (🔴):** Logbook currently only supports verification by `school_teacher`. Industry supervisors (`industry_supervisor`) cannot add per-entry notes/feedback, provide optional acknowledgment, or submit a final rubric-based score. Impact: domain goals unmet — students receive no DUDI input, no evidence of industry involvement in mentoring, and no logbook compilation for PKL report materials. Design proposal in `docs/domain/logbook.md` (Planned Enhancements).
@@ -145,7 +83,6 @@
 ### Mentee
 
 - **A27 — Dependency graph claims Internship:** No direct import exists.
-- **A38 — MenteeState entity methods undocumented:** `canClockIn`, `canSubmitLogbook`, `canSubmitAssignment`, `hasEnded`, `daysRemaining` not documented (resolved).
 
 ### Mentor
 
@@ -201,9 +138,7 @@
 
 ### User
 
-- **Avatar handling undocumented:** `WithFileUploads`, `$avatar` property not in reference doc.
-- **EmploymentStatus** enum documented but not mentioned as used by `ProfileForm`.
-- **Dashboard views not referenced** in reference doc.
+_No open issues._
 
 ---
 
@@ -365,16 +300,13 @@ No abstract `execute()` method on `BaseAction`. Each Action defines its own sign
 | C1 | Read Actions extending BaseAction (9 files) | Cross-Cutting (Infrastructure) | 🔴 Critical | Open |
 | C2 | Actions missing execute() method (2 files) | Cross-Cutting (Infrastructure) | 🔴 Critical | Open |
 | C3 | GetAcademicYearsAction missing BaseAction | Settings | 🔴 Critical | Open |
-| C6 | DomainServiceProvider registerCommands() dead code | Cross-Cutting (Infrastructure) | 🔴 Critical | Resolved — method removed |
 | C8 | config/mary.php references non-existent Spotlight class | Cross-Cutting (Infrastructure) | 🔴 Critical | Open |
 | C14 | RecoverSuperAdminAction uses raw cache key | Setup | 🔴 Critical | Open |
 | L1 | Logbook: no industry supervisor feedback container | Logbook | 🔴 Critical | Proposal |
 | A8 | SupervisionManager described as "manages" but is read-only | Mentor | 🟠 High | Open |
 | A9 | RegistrationWizardForm not documented at all | Registration | 🟠 High | Open |
-| A10 | Internship dependency graph claims BaseState — no file imports it | Internship / Core | 🟠 High | Resolved — BaseState removed |
 | A11 | Mentor dependency graph missing Internship and Evaluation | Mentor | 🟠 High | Open |
 | C4 | Livewire CRUD not extending BaseRecordManager (5 files) | Cross-Cutting (Infrastructure) | 🟠 High | Open |
-| C5 | State entities not extending BaseState (17 files) | Cross-Cutting (Infrastructure) | 🟠 High | Resolved — BaseState removed |
 | A12 | Partnership dependency graph missing Placement and Shared/CsvHandler | Partnership | 🟠 Medium | Open |
 | A13 | Logbook dependency graph claims Mentor | Logbook | 🟠 Medium | Open |
 | A14 | Assessment EvaluatorRole enum description incomplete | Assessment | 🟠 Medium | Open |
@@ -391,7 +323,6 @@ No abstract `execute()` method on `BaseAction`. Each Action defines its own sign
 | A29 | Document dependency graph claims Certificate | Document | 🟡 Low | Open |
 | A30 | Admin DownloadsAccountSlips undocumented | Admin | 🟡 Low | Open |
 | A31 | Shared Blade UI missing avatar and credit | Shared | 🟡 Low | Open |
-| A34 | AuditCategory enum description incomplete | Core | 🟡 Low | Resolved |
 | B3 | Livewire Form Object migration (~45 components) | Cross-Cutting (Backlog) | 🟡 Low | Open |
 | B4 | Cross-domain event flow undocumented | Cross-Cutting (Backlog) | 🟡 Low | Open |
 | B5 | Real-time features (Echo + Reverb) | Cross-Cutting (Backlog) | 🟡 Low | Open |
@@ -399,8 +330,6 @@ No abstract `execute()` method on `BaseAction`. Each Action defines its own sign
 | C9 | View naming mismatch: SubmitAssignment | Assignment | 🟡 Low | Open |
 | C10 | Missing entity accessor methods (2 files) | Cross-Cutting (Infrastructure) | 🟡 Low | Open |
 | C11 | AnnouncementStatus missing StatusEnum | Admin | 🟡 Low | Open |
-| D1 | core.md exception usage count inaccurate | Core | 🟡 Low | Resolved |
-| D2 | 4 Core exception classes completely unreferenced | Core | 🟡 Low | Resolved |
 
 **Categories:** A = Audit (doc-implementation), B = Backlog, C = Infrastructure/code audit, D = Documentation inaccuracy
 **Severity:** 🔴 Critical = must fix, 🟠 High/Medium = should fix, 🟡 Low = nice to have

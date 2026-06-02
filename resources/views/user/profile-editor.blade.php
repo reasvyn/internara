@@ -52,9 +52,9 @@
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <x-mary-select :label="__('profile.employment_status')" wire:model="profileForm.employment_status" :placeholder="__('profile.select_option')" :options="\App\Domain\User\Enums\EmploymentStatus::options()" icon="o-briefcase" />
-                                <x-mary-input :label="__('profile.position')" wire:model="profileForm.position" :placeholder="__('profile.position_placeholder')" icon="o-identification" />
-                                <x-mary-input :label="__('profile.nip')" wire:model="profileForm.nip" :placeholder="__('profile.nip_placeholder')" icon="o-document-text" />
-                                <x-mary-input :label="__('profile.nuptk')" wire:model="profileForm.nuptk" :placeholder="__('profile.nuptk_placeholder')" icon="o-document-text" />
+                                <x-mary-input :label="__('profile.job_title')" wire:model="profileForm.job_title" :placeholder="__('profile.job_title_placeholder')" icon="o-identification" />
+                                <x-mary-input :label="__('profile.employee_id_number')" wire:model="profileForm.employee_id_number" :placeholder="__('profile.employee_id_number_placeholder')" icon="o-document-text" />
+                                <x-mary-input :label="__('profile.educator_id_number')" wire:model="profileForm.educator_id_number" :placeholder="__('profile.educator_id_number_placeholder')" icon="o-document-text" />
                                 <x-mary-input :label="__('profile.competence_field')" wire:model="profileForm.competence_field" class="md:col-span-2" :placeholder="__('profile.competence_field_placeholder')" icon="o-academic-cap" />
                             </div>
                         </div>

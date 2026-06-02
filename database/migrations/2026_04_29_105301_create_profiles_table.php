@@ -41,10 +41,13 @@ return new class extends Migration
             $table->index('department_id');
 
             $table->string('employment_status')->nullable();
-            $table->string('nip', 18)->nullable();
-            $table->string('nuptk', 16)->nullable();
+            $table->string('employee_id_number', 30)->nullable()->unique();
+            $table->string('educator_id_number', 30)->nullable()->unique();
             $table->string('competence_field')->nullable();
-            $table->string('position')->nullable();
+            $table->string('job_title')->nullable();
+
+            $table->foreignUuid('company_id')->nullable()->constrained()->onDelete('set null');
+            $table->index('company_id');
 
             $table->timestamps();
 

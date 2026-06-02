@@ -99,16 +99,4 @@ return [
         'generate_slip' => 'Generate Recovery Slip',
         'back_to_dashboard' => 'Back to Dashboard',
     ],
-
-    // Access management
-    'access_management' => [
-        'title' => 'Access Management',
-        'subtitle' => 'Manage roles and their granular permissions',
-        'users_assigned' => ':count users assigned',
-        'permissions_granted' => ':count permissions granted.',
-        'manage_permissions' => 'Manage Permissions',
-        'manage_title' => 'Manage Permissions: :name',
-        'cancel' => 'Cancel',
-        'save' => 'Save Permissions',
-    ],
 ];

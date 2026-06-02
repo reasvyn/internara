@@ -11,7 +11,7 @@ class UserPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->can('users.view');
+        return $user->hasAnyRole(['super_admin', 'admin']);
     }
 
     public function viewAdmin(User $user): bool
@@ -25,12 +25,12 @@ class UserPolicy extends BasePolicy
             return true;
         }
 
-        return $user->can('users.view');
+        return $user->hasAnyRole(['super_admin', 'admin']);
     }
 
     public function create(User $user): bool
     {
-        return $user->can('users.create');
+        return $user->hasAnyRole(['super_admin', 'admin']);
     }
 
     public function update(User $user, User $model): bool
@@ -43,7 +43,7 @@ class UserPolicy extends BasePolicy
             return true;
         }
 
-        return $user->can('users.edit');
+        return $user->hasAnyRole(['super_admin', 'admin']);
     }
 
     public function delete(User $user, User $model): bool
@@ -56,7 +56,7 @@ class UserPolicy extends BasePolicy
             return false;
         }
 
-        return $user->can('users.delete');
+        return $user->hasAnyRole(['super_admin', 'admin']);
     }
 
     public function restore(User $user, User $model): bool
@@ -65,7 +65,7 @@ class UserPolicy extends BasePolicy
             return false;
         }
 
-        return $user->can('users.edit');
+        return $user->hasAnyRole(['super_admin', 'admin']);
     }
 
     public function forceDelete(User $user, User $model): bool
@@ -78,6 +78,6 @@ class UserPolicy extends BasePolicy
             return false;
         }
 
-        return $user->can('users.delete');
+        return $user->hasAnyRole(['super_admin', 'admin']);
     }
 }

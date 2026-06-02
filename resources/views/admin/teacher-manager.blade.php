@@ -61,7 +61,7 @@
                     <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('user.manager.account') }}</p>
                     <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
                     <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" />
-                    <x-mary-input :label="__('user.teacher.nip')" wire:model="form.nip" icon="o-identification" class="mt-4" />
+                    <x-mary-input :label="__('user.teacher.employee_id_number')" wire:model="form.employee_id_number" icon="o-identification" class="mt-4" />
                 </div>
 
                 <x-slot:actions>

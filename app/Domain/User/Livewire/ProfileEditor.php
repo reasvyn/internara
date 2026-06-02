@@ -90,8 +90,8 @@ class ProfileEditor extends Component
         if ($this->isStaff) {
             $profileId = $this->user->profile?->id ?? 'NULL';
             $rules = array_merge($rules, [
-                'profileForm.nip' => "nullable|string|max:18|unique:profiles,nip,{$profileId}",
-                'profileForm.nuptk' => "nullable|string|max:16|unique:profiles,nuptk,{$profileId}",
+                'profileForm.employee_id_number' => "nullable|string|max:30|unique:profiles,employee_id_number,{$profileId}",
+                'profileForm.educator_id_number' => "nullable|string|max:30|unique:profiles,educator_id_number,{$profileId}",
                 'profileForm.competence_field' => 'nullable|string|max:255',
             ]);
         }
@@ -107,10 +107,10 @@ class ProfileEditor extends Component
         if ($this->isStaff) {
             $data = array_merge($data, [
                 'employment_status' => $this->profileForm->employment_status,
-                'nip' => $this->profileForm->nip,
-                'nuptk' => $this->profileForm->nuptk,
+                'employee_id_number' => $this->profileForm->employee_id_number,
+                'educator_id_number' => $this->profileForm->educator_id_number,
                 'competence_field' => $this->profileForm->competence_field,
-                'position' => $this->profileForm->position,
+                'job_title' => $this->profileForm->job_title,
             ]);
         }
 

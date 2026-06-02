@@ -39,7 +39,7 @@ class TeacherManager extends BaseRecordManager
                 'class' => 'font-mono text-xs',
             ],
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
-            ['key' => 'profile.nip', 'label' => __('user.teacher.nip')],
+            ['key' => 'profile.employee_id_number', 'label' => __('user.teacher.employee_id_number')],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
@@ -86,7 +86,7 @@ class TeacherManager extends BaseRecordManager
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'nip' => $user->profile?->nip ?? '',
+            'employee_id_number' => $user->profile?->employee_id_number ?? '',
         ]);
         $this->userModal = true;
     }
@@ -96,7 +96,7 @@ class TeacherManager extends BaseRecordManager
         $this->form->validate();
 
         $profileData = [
-            'nip' => $this->form->nip,
+            'employee_id_number' => $this->form->employee_id_number,
         ];
 
         if ($this->form->id) {

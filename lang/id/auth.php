@@ -99,16 +99,4 @@ return [
         'generate_slip' => 'Hasilkan Slip Pemulihan',
         'back_to_dashboard' => 'Kembali ke Dasbor',
     ],
-
-    // Access management
-    'access_management' => [
-        'title' => 'Manajemen Akses',
-        'subtitle' => 'Kelola peran dan izin granularnya',
-        'users_assigned' => ':count pengguna ditugaskan',
-        'permissions_granted' => ':count izin diberikan.',
-        'manage_permissions' => 'Kelola Izin',
-        'manage_title' => 'Kelola Izin: :name',
-        'cancel' => 'Batal',
-        'save' => 'Simpan Izin',
-    ],
 ];

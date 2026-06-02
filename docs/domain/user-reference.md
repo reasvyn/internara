@@ -1,6 +1,6 @@
 # User — API Reference
-> Last updated: 2026-05-31
-> Changes: docs: audit — all items Implemented
+> Last updated: 2026-06-02
+> Changes: user: fix — ProfileEditor description now includes WithFileUploads/avatar; ProfileForm notes EmploymentStatus enum; added Views section
 
 > **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
@@ -45,7 +45,7 @@ Total: 40 files — ✅ 40 Implemented
 | `User/Livewire/ActivityFeedManager.php` | `ActivityFeedManager` | `Component` | Paginated activity feed with filters |
 | `User/Livewire/NotificationBell.php` | `NotificationBell` | `Component` | Dropdown notification bell indicator |
 | `User/Livewire/NotificationCenter.php` | `NotificationCenter` | `BaseRecordManager` | Full-page notification center with viewer modal, Markdown rendering, filters, bulk actions |
-| `User/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` | Profile editing form (with avatar upload and password change) |
+| `User/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` (uses `WithFileUploads`) | Profile editing form with avatar upload (`$avatar`), live preview, password change |
 | `User/Livewire/RecentActivityList.php` | `RecentActivityList` | `Component` | Recent activity log listing |
 | `User/Livewire/UserDashboard.php` | `UserDashboard` | `Component` | Generic user dashboard with recent activity |
 
@@ -62,7 +62,7 @@ Total: 40 files — ✅ 40 Implemented
 
 | File | Class | Extends | Fields | Used By |
 |---|---|---|---|---|
-| `User/Livewire/Forms/ProfileForm.php` | `ProfileForm` | `Form` | name, email, phone, address, bio, employment_status, nip, nuptk, competence_field, position | `ProfileEditor` |
+| `User/Livewire/Forms/ProfileForm.php` | `ProfileForm` | `Form` | name, email, phone, address, bio, employment_status (`EmploymentStatus`), employee_id_number, educator_id_number, competence_field, job_title | `ProfileEditor` |
 | `User/Livewire/Forms/PasswordForm.php` | `PasswordForm` | `Form` | current_password, password, password_confirmation | `ProfileEditor` |
 
 ## Models
@@ -70,7 +70,7 @@ Total: 40 files — ✅ 40 Implemented
 | File | Class | Extends | Description |
 |---|---|---|---|
 | `User/Models/Notification.php` | `Notification` | `BaseModel` | Eloquent model for in-app notifications |
-| `User/Models/Profile.php` | `Profile` | `BaseModel` | Eloquent model for user profiles (department, school, bio) |
+| `User/Models/Profile.php` | `Profile` | `BaseModel` | Eloquent model for user profiles (department, school, company, bio) |
 | `User/Models/User.php` | `User` | `Model` (Authenticatable) | Eloquent model for users (with relations to mentor, mentee, roles) |
 
 ## Notifications
@@ -127,4 +127,22 @@ User Domain
 ```
 
 Consumed by: all domains (universal identity and profile provider)
+
+## Views
+
+| File | Description |
+|---|---|
+| `resources/views/user/dashboard.blade.php` | Generic user dashboard layout |
+| `resources/views/user/dashboards/admin.blade.php` | Admin/SA dashboard with stats, readiness, quick links |
+| `resources/views/user/dashboards/student.blade.php` | Student dashboard with registration status, journal progress |
+| `resources/views/user/dashboards/teacher.blade.php` | Teacher dashboard with supervised students, journals |
+| `resources/views/user/dashboards/supervisor.blade.php` | Supervisor dashboard with participants, evaluations |
+| `resources/views/user/dashboards/_sidebar.blade.php` | Shared dashboard sidebar partial |
+| `resources/views/user/profile-editor.blade.php` | Profile edit form with avatar upload, password change |
+| `resources/views/user/notification-center.blade.php` | Full-page notification center with viewer modal |
+| `resources/views/user/notification-bell.blade.php` | Navbar bell indicator with unread count |
+| `resources/views/user/activity-feed.blade.php` | Paginated activity log listing |
+| `resources/views/user/components/dashboard-guide.blade.php` | Dashboard help/info component |
+| `resources/views/user/components/profile-guide.blade.php` | Profile help/info component |
+| `resources/views/user/components/notification-guide.blade.php` | Notification help/info component |
 

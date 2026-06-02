@@ -14,7 +14,8 @@ class SetupResetCommand extends Command
 {
     use InteractsWithInstallerCli;
 
-    protected $signature = 'setup:reset';
+    protected $signature = 'setup:reset
+                            {--force : Skip the isInstalled guard — use when installation is corrupted}';
 
     public function __construct()
     {
@@ -26,7 +27,7 @@ class SetupResetCommand extends Command
     {
         $this->displayBanner();
 
-        if (Setup::state()->isInstalled()) {
+        if (Setup::state()->isInstalled() && ! $this->option('force')) {
             $this->displayError(__('setup.reset.protected'));
             $this->line('  '.__('setup.cli.try_health_check'));
 

@@ -28,9 +28,9 @@ final class GetProfileFormDataAction extends BaseAction
         if ($isStaff) {
             $staffFields = [
                 'employment_status',
-                'position',
-                'nip',
-                'nuptk',
+                'job_title',
+                'employee_id_number',
+                'educator_id_number',
                 'competence_field',
             ];
         }

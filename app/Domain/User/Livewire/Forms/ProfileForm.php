@@ -21,13 +21,13 @@ class ProfileForm extends Form
 
     public ?string $employment_status = null;
 
-    public ?string $nip = null;
+    public ?string $employee_id_number = null;
 
-    public ?string $nuptk = null;
+    public ?string $educator_id_number = null;
 
     public ?string $competence_field = null;
 
-    public ?string $position = null;
+    public ?string $job_title = null;
 
     public function fillFromUser(User $user): void
     {
@@ -39,9 +39,9 @@ class ProfileForm extends Form
         $this->address = $profile->address ?? '';
         $this->bio = $profile->bio ?? '';
         $this->employment_status = $profile->employment_status?->value ?? null;
-        $this->nip = $profile->nip ?? null;
-        $this->nuptk = $profile->nuptk ?? null;
+        $this->employee_id_number = $profile->employee_id_number ?? null;
+        $this->educator_id_number = $profile->educator_id_number ?? null;
         $this->competence_field = $profile->competence_field ?? null;
-        $this->position = $profile->position ?? null;
+        $this->job_title = $profile->job_title ?? null;
     }
 }

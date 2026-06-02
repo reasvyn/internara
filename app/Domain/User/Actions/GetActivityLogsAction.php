@@ -12,7 +12,7 @@ final class GetActivityLogsAction extends BaseAction
 {
     public function execute(string $userId, int $perPage = 50): LengthAwarePaginator
     {
-        return ActivityLog::causedBy($userId)
+        return ActivityLog::forUser($userId)
             ->latest()
             ->paginate($perPage);
     }

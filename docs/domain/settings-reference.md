@@ -4,7 +4,7 @@
 
 > **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
 
-Total: 21 files — ✅ 21 Implemented
+Total: 20 files — ✅ 20 Implemented
 
 ## Actions
 
@@ -39,7 +39,6 @@ Total: 21 files — ✅ 21 Implemented
 
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `Settings/Livewire/AppSignature.php` | `AppSignature` | `Component` | Displays application name, version, author, license |
 | `Settings/Livewire/SystemSetting.php` | `SystemSetting` | `Component` | Main system settings page with General/Branding/Mail tabs |
 
 ### Livewire Forms

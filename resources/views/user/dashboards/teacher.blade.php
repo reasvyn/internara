@@ -21,7 +21,7 @@
                 <x-shared::widgets.empty-state icon="o-clipboard-document-check" :title="__('dashboard.teacher.no_journals')" />
             </x-mary-card>
 
-            <x-shared::widgets.action-button :label="__('dashboard.teacher.guidance_logs')" icon="o-clipboard-check" link="{{ route('supervision.logs') }}" color="btn-primary" />
+            <x-shared::widgets.action-button :label="__('dashboard.teacher.guidance_logs')" icon="o-check-badge" link="{{ route('supervision.logs') }}" color="btn-primary" />
         </div>
 
         <div class="space-y-4">
