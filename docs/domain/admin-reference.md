@@ -109,6 +109,22 @@ This domain depends on:
 
 ---
 
+## Console Commands
+
+| Command Signature | Class | Description |
+|---|---|---|
+| `setup:install` | `SetupInstallCommand` | Provisions the system, runs database seeds, and initializes roles. |
+| `setup:reset-token` | `SetupResetTokenCommand` | Generates a new setup token (usable only if installation is incomplete). |
+| `admin:create` | `CreateAdminCommand` | Creates the initial superadmin account when none exists. |
+| `admin:recover` | `RecoverAdminCommand` | Interactive command to reset a superadmin's password or re-create it. |
+| `admin:recovery-show` | `ShowRecoveryKeyCommand` | Displays the current recovery key after confirmation. |
+| `admin:recovery-path` | `ShowRecoveryPathCommand` | Displays the absolute file path of the recovery key. |
+
+> [!NOTE]
+> The legacy `admin:promote` command has been removed because role mappings and promotions are handled directly by functional/standard roles logic or user-management interfaces.
+
+---
+
 ## File Organization
 
 ```
