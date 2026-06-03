@@ -20,7 +20,7 @@ https://internara.sekolah.sch.id/setup?setup_token=a1b2c3d4e5f6...
 Open this URL in your browser. The `ProtectSetupRouteMiddleware` validates
 the token and authorizes access. The token expires in 60 minutes.
 
-> If the token expires, run `php artisan setup:reset` to generate a new
+> If the token expires, run `php artisan setup:reset-token` to generate a new
 > one (only works before the wizard is completed).
 
 The wizard has **7 steps**, displayed as a progress bar at the top. Data

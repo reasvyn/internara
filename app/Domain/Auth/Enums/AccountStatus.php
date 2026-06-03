@@ -67,7 +67,7 @@ enum AccountStatus: string implements ColorableEnum, StatusEnum
             self::VERIFIED => [self::RESTRICTED, self::SUSPENDED, self::ARCHIVED, self::INACTIVE],
             self::PROTECTED => [],
             self::RESTRICTED => [self::VERIFIED, self::SUSPENDED, self::ARCHIVED],
-            self::SUSPENDED => [self::VERIFIED, self::ARCHIVED],
+            self::SUSPENDED => [self::ACTIVATED, self::VERIFIED, self::ARCHIVED],
             self::INACTIVE => [self::VERIFIED, self::ARCHIVED, self::SUSPENDED],
             self::ARCHIVED => [],
         };

@@ -41,10 +41,10 @@ return [
             'prefix' => '',
             'prefix_indexes' => null,
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
-            'busy_timeout' => null,
-            'journal_mode' => null,
+            'busy_timeout' => 5000,
+            'journal_mode' => 'wal',
             'synchronous' => null,
-            'transaction_mode' => 'DEFERRED',
+            'transaction_mode' => 'IMMEDIATE',
             'pragmas' => [],
         ],
 
