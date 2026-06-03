@@ -1,89 +1,68 @@
 # Assessment — API Reference
-> Last updated: 2026-05-31
-> Changes: docs: audit — all items Implemented
 
-> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
+> Last updated: 2026-06-03
+> **Status:** ✅ **Fully Implemented** — Aggregate-rooted layout mapping for the Assessment domain
 
-Total: 31 files — ✅ 31 Implemented
+This reference defines the structured aggregates and code layout within the **Assessment** domain.
 
-## Actions
+---
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Assessment/Actions/AutoCalculateAssessmentAction.php` | `AutoCalculateAssessmentAction` | `BaseAction` | Auto-calculates final assessment from submissions and reports |
-| `Assessment/Actions/CompletePresentationAction.php` | `CompletePresentationAction` | `BaseAction` | Marks a presentation as complete with final scores |
-| `Assessment/Actions/CreateCompetencyAction.php` | `CreateCompetencyAction` | `BaseAction` | Creates a new competency within a rubric |
-| `Assessment/Actions/CreateIndicatorAction.php` | `CreateIndicatorAction` | `BaseAction` | Creates a new indicator within a competency |
-| `Assessment/Actions/CreateRubricAction.php` | `CreateRubricAction` | `BaseAction` | Creates a new rubric for an assessment |
-| `Assessment/Actions/DeleteCompetencyAction.php` | `DeleteCompetencyAction` | `BaseAction` | Deletes a competency |
-| `Assessment/Actions/DeleteIndicatorAction.php` | `DeleteIndicatorAction` | `BaseAction` | Deletes an indicator |
-| `Assessment/Actions/DeleteRubricAction.php` | `DeleteRubricAction` | `BaseAction` | Deletes a rubric |
-| `Assessment/Actions/FinalizeAssessmentAction.php` | `FinalizeAssessmentAction` | `BaseAction` | Finalizes an assessment, locking scores |
-| `Assessment/Actions/InitializeAssessmentAction.php` | `InitializeAssessmentAction` | `BaseAction` | Sets up a new assessment from a rubric |
-| `Assessment/Actions/SchedulePresentationAction.php` | `SchedulePresentationAction` | `BaseAction` | Schedules a presentation with date and examiners |
-| `Assessment/Actions/ScoreIndicatorAction.php` | `ScoreIndicatorAction` | `BaseAction` | Scores a specific indicator for an assessment |
-| `Assessment/Actions/ScorePresentationAction.php` | `ScorePresentationAction` | `BaseAction` | Scores presentation by an examiner |
-| `Assessment/Actions/UpdateAssessmentScoresAction.php` | `UpdateAssessmentScoresAction` | `BaseAction` | Updates all scores on an assessment |
-| `Assessment/Actions/UpdateCompetencyAction.php` | `UpdateCompetencyAction` | `BaseAction` | Updates a competency's details |
-| `Assessment/Actions/UpdateIndicatorAction.php` | `UpdateIndicatorAction` | `BaseAction` | Updates an indicator's details |
-| `Assessment/Actions/UpdateRubricAction.php` | `UpdateRubricAction` | `BaseAction` | Updates a rubric's details |
+## 1. Assessment Aggregate
+Handles student performance scoring initialization, final score compiling, and locking grades.
 
-## Entities
+- **Eloquent Models**:
+  - `Assessment` (`app/Domain/Assessment/Models/Assessment.php`)
+- **Policies**:
+  - `AssessmentPolicy` (`app/Domain/Assessment/Policies/AssessmentPolicy.php`)
+- **Command Actions**:
+  - `InitializeAssessmentAction` (`app/Domain/Assessment/Actions/InitializeAssessmentAction.php`)
+  - `UpdateAssessmentScoresAction` (`app/Domain/Assessment/Actions/UpdateAssessmentScoresAction.php`)
+  - `ScoreIndicatorAction` (`app/Domain/Assessment/Actions/ScoreIndicatorAction.php`)
+  - `FinalizeAssessmentAction` (`app/Domain/Assessment/Actions/FinalizeAssessmentAction.php`)
+  - `AutoCalculateAssessmentAction` (`app/Domain/Assessment/Actions/AutoCalculateAssessmentAction.php`)
+- **Livewire UI Components**:
+  - `AssessmentGrading` (`app/Domain/Assessment/Livewire/AssessmentGrading.php`)
+  - `AssessmentView` (`app/Domain/Assessment/Livewire/AssessmentView.php`)
+- **Entities (Domain Rules)**:
+  - `AssessmentResult` (`app/Domain/Assessment/Entities/AssessmentResult.php`)
+- **Enums**:
+  - `EvaluatorRole` (`app/Domain/Assessment/Enums/EvaluatorRole.php`)
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Assessment/Entities/AssessmentResult.php` | `AssessmentResult` | `BaseEntity` | Read-only DTO for computed assessment results |
+---
 
-## Enums
+## 2. Presentation Aggregate
+Manages student final presentations exams scheduling and scores evaluation.
 
-| File | Class | Implements | Description |
-|---|---|---|---|
-| `Assessment/Enums/EvaluatorRole.php` | `EvaluatorRole` | `LabelEnum` | Evaluator role (admin, teacher, supervisor, system) |
-| `Assessment/Enums/PresentationStatus.php` | `PresentationStatus` | `LabelEnum`, `StatusEnum` | Presentation lifecycle status |
+- **Eloquent Models**:
+  - `Presentation` (`app/Domain/Assessment/Models/Presentation.php`)
+  - `PresentationExaminer` (`app/Domain/Assessment/Models/PresentationExaminer.php`)
+- **Command Actions**:
+  - `SchedulePresentationAction` (`app/Domain/Assessment/Actions/SchedulePresentationAction.php`)
+  - `ScorePresentationAction` (`app/Domain/Assessment/Actions/ScorePresentationAction.php`)
+  - `CompletePresentationAction` (`app/Domain/Assessment/Actions/CompletePresentationAction.php`)
+- **Livewire UI Components**:
+  - `PresentationSchedule` (`app/Domain/Assessment/Livewire/PresentationSchedule.php`)
+- **Enums**:
+  - `PresentationStatus` (`app/Domain/Assessment/Enums/PresentationStatus.php`)
 
-## Livewire Components
+---
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Assessment/Livewire/AssessmentGrading.php` | `AssessmentGrading` | `Component` | Grading interface for an assessment |
-| `Assessment/Livewire/AssessmentView.php` | `AssessmentView` | `Component` | Read-only view of an assessment |
-| `Assessment/Livewire/PresentationSchedule.php` | `PresentationSchedule` | `BaseRecordManager` | Manages presentation scheduling and scoring |
-| `Assessment/Livewire/RubricManager.php` | `RubricManager` | `Component` | CRUD management of rubrics, competencies, indicators |
+## 3. Rubric Aggregate
+Manages competency definitions, scoring indicators setups, and active rubrics matching.
 
-## Models
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Assessment/Models/Assessment.php` | `Assessment` | `BaseModel` | Eloquent model for student assessments (soft-deletes) |
-| `Assessment/Models/Competency.php` | `Competency` | `BaseModel` | Eloquent model for rubric competencies |
-| `Assessment/Models/Indicator.php` | `Indicator` | `BaseModel` | Eloquent model for rubric indicators (scoring items) |
-| `Assessment/Models/Presentation.php` | `Presentation` | `BaseModel` | Eloquent model for student presentations |
-| `Assessment/Models/PresentationExaminer.php` | `PresentationExaminer` | `BaseModel` | Pivot model linking examiners to presentations |
-| `Assessment/Models/Rubric.php` | `Rubric` | `BaseModel` | Eloquent model for rubrics |
-
-## Policies
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Assessment/Policies/AssessmentPolicy.php` | `AssessmentPolicy` | `BasePolicy` | Authorization for assessment operations |
-
-## Where to Find It
-
-- `app/Domain/Assessment/Models/`
-- `app/Domain/Assessment/Actions/` — 16 Actions
-
-## Dependency Graph
-
-```
-Assessment Domain
-├── Core         → BaseModel, BaseAction, SmartLogger, BaseEntity
-├── User         → User model (assessor/assessee identity)
-├── Registration → Registration records (assessment context)
-├── Internship   → Internship records (assessment target)
-└── Assignment   → Assignment records (grading input)
-```
-
-Consumed by:
-  Internship (closure assessment), Certificate (issuance validation),
-  Mentee (progress tracking)
-
+- **Eloquent Models**:
+  - `Rubric` (`app/Domain/Assessment/Models/Rubric.php`)
+  - `Competency` (`app/Domain/Assessment/Models/Competency.php`)
+  - `Indicator` (`app/Domain/Assessment/Models/Indicator.php`)
+- **Command Actions**:
+  - `CreateRubricAction` (`app/Domain/Assessment/Actions/CreateRubricAction.php`)
+  - `UpdateRubricAction` (`app/Domain/Assessment/Actions/UpdateRubricAction.php`)
+  - `DeleteRubricAction` (`app/Domain/Assessment/Actions/DeleteRubricAction.php`)
+  - `CreateCompetencyAction` (`app/Domain/Assessment/Actions/CreateCompetencyAction.php`)
+  - `UpdateCompetencyAction` (`app/Domain/Assessment/Actions/UpdateCompetencyAction.php`)
+  - `DeleteCompetencyAction` (`app/Domain/Assessment/Actions/DeleteCompetencyAction.php`)
+  - `CreateIndicatorAction` (`app/Domain/Assessment/Actions/CreateIndicatorAction.php`)
+  - `UpdateIndicatorAction` (`app/Domain/Assessment/Actions/UpdateIndicatorAction.php`)
+  - `DeleteIndicatorAction` (`app/Domain/Assessment/Actions/DeleteIndicatorAction.php`)
+- **Livewire UI Components**:
+  - `RubricManager` (`app/Domain/Assessment/Livewire/RubricManager.php`)

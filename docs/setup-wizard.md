@@ -236,10 +236,10 @@ your school for daily operations.
 ```
 Route: GET /setup
 Middleware: setup.protected (ProtectSetupRouteMiddleware)
-Component: App\Domain\Setup\Livewire\SetupWizard
-Layout: resources/views/setup/layouts/setup.blade.php
-View: resources/views/setup/setup-wizard.blade.php
-       └── includes step components from setup/components/
+Component: App\Domain\Admin\Aggregates\Setup\Livewire\SetupWizard
+Layout: resources/views/administration/setup/layouts/setup.blade.php
+View: resources/views/administration/setup/setup-wizard.blade.php
+       └── includes step components from administration/setup/components/
                ├── welcome-step.blade.php
                ├── school-step.blade.php
                ├── department-step.blade.php
@@ -308,7 +308,7 @@ Token validation uses `ValidateSetupTokenAction` inside `lockForUpdate()` transa
 After successful validation, the token is immediately nullified in the database —
 it cannot be replayed. Valid tokens also clear the rate limiter for the IP.
 
-The code entry form (`views/setup/enter-code.blade.php`) allows administrators to enter
+The code entry form (`views/administration/setup/enter-code.blade.php`) allows administrators to enter
 the setup token manually without exposing it in a URL — mitigating server log and browser
 history leakage.
 
@@ -322,16 +322,16 @@ address) from persisting in session storage longer than necessary.
 
 | Class | Location | Purpose |
 |---|---|---|
-| `SetupWizard` | `app/Domain/Setup/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
-| `SetupState` | `app/Domain/Setup/Entities/SetupState.php` | Read-only value object for setup status |
-| `Setup` | `app/Domain/Setup/Models/Setup.php` | Eloquent model (single-row, singleton) |
-| `FinalizeSetupAction` | `app/Domain/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
-| `SetupSchoolAction` | `app/Domain/Setup/Actions/SetupSchoolAction.php` | Creates/updates School record |
-| `SetupDepartmentAction` | `app/Domain/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
-| `SetupSuperAdminAction` | `app/Domain/Setup/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
-| `EnvironmentAuditor` | `app/Domain/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
-| `RequireSetupAccessMiddleware` | `app/Domain/Setup/Http/Middleware/RequireSetupAccessMiddleware.php` | Global: redirects to /setup if not installed |
-| `ProtectSetupRouteMiddleware` | `app/Domain/Setup/Http/Middleware/ProtectSetupRouteMiddleware.php` | Route: validates token, rate-limits, self-destructs |
+| `SetupWizard` | `app/Domain/Administration/Aggregates/Setup/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
+| `SetupState` | `app/Domain/Administration/Aggregates/Setup/Entities/SetupState.php` | Read-only value object for setup status |
+| `Setup` | `app/Domain/Administration/Aggregates/Setup/Models/Setup.php` | Eloquent model (single-row, singleton) |
+| `FinalizeSetupAction` | `app/Domain/Administration/Aggregates/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
+| `SetupSchoolAction` | `app/Domain/Administration/Aggregates/Setup/Actions/SetupSchoolAction.php` | Creates/updates School record |
+| `SetupDepartmentAction` | `app/Domain/Administration/Aggregates/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
+| `SetupSuperAdminAction` | `app/Domain/Administration/Aggregates/Setup/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
+| `EnvironmentAuditor` | `app/Domain/Administration/Aggregates/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
+| `RequireSetupAccessMiddleware` | `app/Domain/Academics/Http/Middleware/RequireSetupAccessMiddleware.php` | Global: redirects to /setup if not installed |
+| `ProtectSetupRouteMiddleware` | `app/Domain/Academics/Http/Middleware/ProtectSetupRouteMiddleware.php` | Route: validates token, rate-limits, self-destructs |
 
 ### End-to-End Flow
 

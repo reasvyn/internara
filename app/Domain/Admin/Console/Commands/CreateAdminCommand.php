@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Console\Commands;
 
-use App\Domain\Settings\Support\AppInfo;
-use App\Domain\Setup\Actions\InitializeSuperAdminAction;
+use App\Domain\Admin\Aggregates\Setup\Actions\InitializeSuperAdminAction;
+use App\Domain\Settings\Aggregates\Setting\Support\AppInfo;
 use App\Domain\User\Models\User;
 use Illuminate\Console\Command;
 

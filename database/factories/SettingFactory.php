@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Settings\Models\Setting;
+use App\Domain\Settings\Aggregates\Setting\Models\Setting;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Crypt;
 

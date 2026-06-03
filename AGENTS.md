@@ -32,27 +32,31 @@ This application is a Laravel application and its main Laravel ecosystems packag
 This project uses a **Domain-first, Action-based MVC** architecture:
 
 ```
-app/Domain/{Domain}/
-├── Actions/        Business logic (single execute() method)
-├── Models/         Eloquent data access
-├── Livewire/       Reactive UI components
-├── Policies/       Authorization gates
-├── Enums/          Constants with behavior
-├── Entities/       Pure business rules (no ORM)
-├── Http/           Controllers, middleware, requests
-├── Notifications/  Multi-channel alerts
-├── Events/         Domain events
-├── Listeners/      Event subscribers
-├── Console/        Artisan commands
-├── Support/        Domain utilities
-├── Contracts/      Interfaces
-└── Data/           Data transfer objects
+    app/Domain/{Domain}/
+    ├── Aggregates/{Aggregate}/  Aggregate-rooted modules (Actions, Models, Policies, Livewire)
+    ├── Types/           Shared value objects, flat enums, rules
+    ├── Http/            Cross-aggregate controllers, middleware
+    ├── Console/         Cross-aggregate artisan commands
+    ├── Livewire/        Cross-aggregate UI (dashboards, global components)
+    ├── Support/         Shared domain utilities
+    └── Services/        Infrastructure services
 ```
 
-- Backend: `app/Domain/{Domain}/` — all code for a business concept lives in one directory
-- Views: `resources/views/{domain}/{component}.blade.php` — Blade views mirror domain structure
+- Backend: `app/Domain/{Domain}/Aggregates/{Aggregate}/` — aggregate-rooted modules with colocated layers
+- Views: `resources/views/{domain}/{aggregate}/{component}.blade.php` — Blade views mirror aggregate structure
 - Routes: `routes/web/{domain}.php` — routes split by domain, master `routes/web.php` requires all
-- Tests: `tests/{Feature,Unit}/{Domain}/{Name}Test.php` — tests organized by domain
+- Tests: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php` — tests organized by domain and aggregate
+
+### Directory Convention
+
+All aggregate code lives under `app/Domain/{Domain}/Aggregates/{AggregateName}/`.
+Cross-aggregate files (shared Actions, Http, Console, Livewire, Support, Services) stay at the domain root.
+
+**Example:** Auth domain has aggregates under `app/Domain/Auth/Aggregates/Password/`, `app/Domain/Auth/Aggregates/Login/`, etc.
+User domain will have `app/Domain/User/Aggregates/Profile/`, `app/Domain/User/Aggregates/Notification/`.
+
+Views mirror the aggregate name but without `aggregates/` in the path:
+`resources/views/auth/password/`, `resources/views/user/profile/`.
 
 ### MANDATORY: Use Core Base Classes
 
@@ -185,7 +189,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test --compact` with a specific filename or filter.
-- Tests follow domain-first structure: `tests/{Feature,Unit}/{Domain}/{Name}Test.php`.
+- Tests follow domain-first, aggregate-based structure: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php`.
 - Code review and static analysis (PHPStan) enforce structural rules.
 
 === laravel/core rules ===
@@ -226,9 +230,11 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Livewire allows building dynamic, reactive interfaces in PHP without writing JavaScript.
 - You can use Alpine.js for client-side interactions instead of JavaScript frameworks.
 - Keep state server-side so the UI reflects it. Validate and authorize in actions as you would in HTTP requests.
-- Livewire components are auto-discovered by DomainServiceProvider from `app/Domain/*/Livewire/`.
-- Component alias pattern: `{kebab-domain}.{kebab-class-name}` (e.g., `admin.user-manager`).
-- Views are located at `resources/views/{domain}/{component-name}.blade.php`.
+- Livewire components are auto-discovered by DomainServiceProvider from `app/Domain/*/Aggregates/*/Livewire/` and `app/Domain/*/Livewire/`.
+- Component alias pattern (aggregate): `{kebab-domain}.{kebab-aggregate}.{kebab-name}` (e.g., `admin.user.user-manager`)
+- Component alias pattern (root): `{kebab-domain}.{kebab-name}` (e.g., `user.profile-editor`)
+- Views for aggregate components: `resources/views/{domain}/{aggregate}/{component-name}.blade.php`
+- Views for root components: `resources/views/{domain}/{component-name}.blade.php`
 - CRUD table components extend `BaseRecordManager`.
 
 === pint/core rules ===
@@ -246,7 +252,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - The `{name}` argument should not include the test suite directory. Use `php artisan make:test --pest SomeFeatureTest` instead of `php artisan make:test --pest Feature/SomeFeatureTest`.
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
-- Structure tests by domain: `tests/Feature/{Domain}/{Name}Test.php` and `tests/Unit/{Domain}/{Layer}/{Name}Test.php`.
+- Structure tests by domain and aggregate: `tests/Feature/{Domain}/{Aggregate}/{Name}Test.php` and `tests/Unit/{Domain}/{Aggregate}/{Name}Test.php`.
 
 === spatie/laravel-medialibrary rules ===
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Livewire;
 
-use App\Domain\Internship\Actions\ApproveAccountApplicationAction;
-use App\Domain\Internship\Actions\RejectAccountApplicationAction;
-use App\Domain\Registration\Models\AccountApplication;
+use App\Domain\Enrollment\Models\AccountApplication;
+use App\Domain\Program\Actions\ApproveAccountApplicationAction;
+use App\Domain\Program\Actions\RejectAccountApplicationAction;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;

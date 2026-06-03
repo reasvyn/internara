@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Partnership\Models\Partnership;
+use App\Domain\Partners\Aggregates\Partnership\Models\Partnership;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PartnershipFactory extends Factory

@@ -218,7 +218,7 @@ collisions and path traversal.
 - `config/dompdf.php` — DomPDF configuration for certificate/report rendering
 - `app/Domain/*/Models/*.php` — `registerMediaCollections()` and
   `registerMediaConversions()` methods
-- `app/Domain/Certificate/Support/CertificateRenderer.php` — certificate PDF generation
+- `app/Domain/Certification/Support/CertificateRenderer.php` — certificate PDF generation
 - `database/migrations/` — media table migration
 - `docs/infrastructure.md` — tier-based infrastructure design
 - `docs/media-library.md` — detailed media library documentation

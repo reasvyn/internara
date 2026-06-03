@@ -3,7 +3,7 @@
 > Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
 
-> Every feature in Internara belongs to one of **24 business domains**. Each domain owns its
+> Every feature in Internara belongs to one of **23 domains**. Each domain owns its
 > complete vertical slice: persistence, business rules, UI components, authorization, and HTTP
 > interface.
 >
@@ -14,7 +14,7 @@
 ## Contents
 
 - [1. Core — Architectural Foundation](#1-core--architectural-foundation)
-- [2. Shared — Cross-domain Utilities](#2-shared--cross-domain-utilities)
+- [2. Core — Cross-domain Utilities](#2-core--cross-domain-utilities)
 - [3. Setup — Installation](#3-setup--installation)
 - [4. Auth — Security & Identity](#4-auth--security--identity)
 - [5. User — Identity & Profile](#5-user--identity--profile)
@@ -68,7 +68,7 @@ Base classes, contracts, and infrastructure used across all domains.
 
 ---
 
-## 2. Shared — Cross-domain Utilities
+## 2. Core (Cross-domain Utilities)
 
 Cross-domain utilities without business logic.
 
@@ -468,7 +468,7 @@ These features are implemented within the **Internship** domain (closure logic a
 
 ---
 
-> **Total: 24 business domains with 160+ features covering the complete program lifecycle:**
+> **Total: 23 domains with 160+ features covering the complete program lifecycle:**
 > Foundation → Installation → Identity → Institution → Partnerships → Program Setup → Enrollment
 > → Daily Operations → Assessment & Reporting → Evaluation → Certification → **Closure & Archival**
 >

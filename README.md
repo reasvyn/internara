@@ -1,6 +1,6 @@
 # Internara
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+> Last updated: 2026-06-03
+> Changes: restructure 23 domains into 16 for SMA/SMK context
 
 
 **Self-hosted vocational fieldwork management system** for upper-secondary schools and educational institutions running compulsory work placement programs. Internara manages the full program lifecycle — from registration through placement, daily operations, assessment, and certification.
@@ -20,30 +20,22 @@ Internara follows a **Domain-first, Action-based MVC** architecture. Business lo
 
 ```
 app/Domain/
-├── Admin/          System administration
-├── Assessment/     Rubrics, competencies, grading
-├── Assignment/     Tasks, submissions
-├── Attendance/     Clock-in/out
-├── Auth/           Authentication
-├── Certificate/    Certificate management
-├── Core/           Base classes, contracts
-├── Document/       Templates, rendering
-├── Evaluation/     Mentor evaluations
-├── Guidance/       Handbooks
-├── Incident/       Reporting
-├── Internship/     Program management
-├── Logbook/        Student journals
-├── Mentee/         Student role
-├── Mentor/         Supervision
-├── Partnership/    Companies
-├── Placement/      Slot assignment
-├── Registration/   Applications
-├── Schedule/       Events
-├── School/         Institution
-├── Settings/       Configuration
-├── Setup/          Installation
-├── Shared/         Cross-domain utilities
-└── User/           Identity & profile
+├── Core/           Base classes, contracts, cross-domain utilities
+├── Auth/           Authentication, RBAC, account lifecycle
+├── User/           User identity, profiles, dashboards
+├── Academics/      School profile, departments, setup wizard
+├── Partners/       Companies (DUDI), MoU agreements
+├── Program/        PKL lifecycle, phases, groups, requirements
+├── Enrollment/     Registration, placement, slot management
+├── Guidance/       Supervision, mentoring, handbooks
+├── Journals/       Logbook, attendance, scheduling
+├── Assignments/    Tasks, submissions, grading
+├── Reports/        Final reports, supervisor review
+├── Assessment/     Rubrics, scoring, evaluations
+├── Certification/  Certificates, document templates
+├── Incidents/      Issue reporting, resolution
+├── Settings/       Runtime configuration, branding
+└── Administration/ User CRUD, announcements, GDPR
 ```
 
 Each domain is self-contained with its own Models, Actions, Livewire components, Policies, Enums, Entities, and optional Http/Notifications/Events layers — all colocated for high cohesion and low coupling.
@@ -114,30 +106,22 @@ Follow the setup wizard to configure your institution and admin account. Access 
 - [Known Issues](docs/known-issues.md)
 
 ### Domain Reference
-- [Admin](docs/domain/admin.md)
-- [Assessment](docs/domain/assessment.md)
-- [Assignment](docs/domain/assignment.md)
-- [Attendance](docs/domain/attendance.md)
-- [Auth](docs/domain/auth.md)
-- [Certificate](docs/domain/certificate.md)
 - [Core](docs/domain/core.md)
-- [Document](docs/domain/document.md)
-- [Evaluation](docs/domain/evaluation.md)
-- [Guidance](docs/domain/guidance.md)
-- [Incident](docs/domain/incident.md)
-- [Internship](docs/domain/internship.md)
-- [Logbook](docs/domain/logbook.md)
-- [Mentee](docs/domain/mentee.md)
-- [Mentor](docs/domain/mentor.md)
-- [Partnership](docs/domain/partnership.md)
-- [Placement](docs/domain/placement.md)
-- [Registration](docs/domain/registration.md)
-- [Schedule](docs/domain/schedule.md)
-- [School](docs/domain/school.md)
-- [Settings](docs/domain/settings.md)
-- [Setup](docs/domain/setup.md)
-- [Shared](docs/domain/shared.md)
+- [Auth](docs/domain/auth.md)
 - [User](docs/domain/user.md)
+- [Academics](docs/domain/academics.md)
+- [Partners](docs/domain/partners.md)
+- [Program](docs/domain/program.md)
+- [Enrollment](docs/domain/enrollment.md)
+- [Guidance](docs/domain/guidance.md)
+- [Journals](docs/domain/journals.md)
+- [Assignments](docs/domain/assignments.md)
+- [Reports](docs/domain/reports.md)
+- [Assessment](docs/domain/assessment.md)
+- [Certification](docs/domain/certification.md)
+- [Incidents](docs/domain/incidents.md)
+- [Settings](docs/domain/settings.md)
+- [Administration](docs/domain/administration.md)
 
 ## License
 

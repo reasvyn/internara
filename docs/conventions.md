@@ -1,6 +1,6 @@
 # Coding Conventions
-> Last updated: 2026-06-02
-> Changes: update metadata date
+> Last updated: 2026-06-03
+> Changes: merge Shared domain into Core — update Blade component references (x-shared:: → x-core::) and layout namespace
 > **Context:** ✅ All conventions are enforced — see [domain index](domain/domain-index.md) for implementation status.
 
 
@@ -88,26 +88,61 @@ Core provides base classes for every layer. Use them when they add value — ski
 
 ## 2. File Structure
 
+### Domain Structure — Aggregate-Based
+
+Code is organized by domain, then by **DDD Aggregate** within each domain. Each aggregate
+directory is a self-contained vertical slice with its own technical layers. Files that span
+multiple aggregates live at the domain root.
+
 ```
 app/Domain/{Domain}/
-├── Actions/         → Command, Read, Process — 1 class = 1 use case
-├── Models/          → Eloquent persistence layer
-├── Livewire/        → Reactive UI components
-│   └── Forms/       → Form Objects for complex forms (optional)
-├── Policies/        → Authorization gates
-├── Enums/           → Constants with behavior (LabelEnum, StatusEnum)
-├── Entities/        → Business rules without framework dependencies
-├── Data/            → DTOs for typed input/output (optional, gradual)
-├── Http/            → Controllers & middleware (optional, Livewire-first)
+├── {Aggregate}/                    → One directory per aggregate root
+│   ├── Actions/                    → Business operations (Command, Read, Process)
+│   ├── Models/                     → Eloquent models belonging to this aggregate
+│   ├── Policies/                   → Authorization gates
+│   ├── Livewire/                   → UI components (optional)
+│   │   └── Forms/                  → Form Objects (optional)
+│   ├── Entities/                   → Pure business rules (optional)
+│   ├── Enums/                      → Enum specific to this aggregate (optional)
+│   ├── Events/                     → Domain events (optional)
+│   ├── Listeners/                  → Event subscribers (optional)
+│   └── Notifications/              → Multi-channel alerts (optional)
+├── Types/                          → Shared value objects, flat enums, rules (optional)
+├── Actions/                        → Cross-aggregate orchestration (optional)
+├── Http/                           → Cross-aggregate controllers & middleware (optional)
 │   ├── Controllers/
 │   └── Middleware/
-├── Notifications/   → Mail, database, broadcast alerts (optional)
-├── Events/          → Domain events emitted (optional, gradual)
-├── Listeners/       → Event subscribers (optional, gradual)
-├── Console/         → Artisan commands (optional)
-├── Support/         → Pure utility classes, no Eloquent (optional)
-└── Contracts/       → Domain interfaces (optional)
+├── Console/                        → Cross-aggregate artisan commands (optional)
+├── Livewire/                       → Cross-aggregate UI (dashboards, etc.) (optional)
+│   └── Forms/                      → Form Objects (optional)
+├── Notifications/                  → Cross-aggregate notifications (optional)
+├── Events/                         → Cross-aggregate events (optional)
+├── Listeners/                      → Cross-aggregate listeners (optional)
+├── Support/                        → Shared domain utilities (optional)
+└── Services/                       → Infrastructure services (optional)
 ```
+
+### Aggregate Grouping Rules
+
+- **Aggregate directory** — named after the aggregate root concept (`User/`, `Profile/`,
+  `Internship/`, `Placement/`, etc.)
+- **`Types/`** — value objects, simple enums, and validation rules too small for their own
+  aggregate. Examples: `Gender.php`, `BloodType.php`, `SystemUsername.php`.
+- **Root `Actions/`** — cross-aggregate orchestration (dashboard stats, multi-aggregate
+  queries, services that span aggregates).
+- **Root `Http/`** — cross-aggregate controllers (dashboards, home page).
+- **Root `Console/`** — domain-wide artisan commands (not specific to one aggregate).
+- **Root `Livewire/`** — cross-aggregate UI components (dashboards, global widgets).
+- **Root `Support/`** — shared utilities not belonging to any single aggregate.
+
+### Aggregate Encapsulation Rules
+
+1. Files inside an aggregate directory MUST NOT import from sibling aggregate directories
+   within the same domain. Cross-aggregate access goes through the domain root.
+2. Root domain files (`Actions/`, `Http/`, `Console/`, `Livewire/`) MAY import from any
+   aggregate within the same domain — they are the coordination layer.
+3. An aggregate MAY import from other domains (respecting cross-domain rules in
+   [architecture.md](architecture.md)).
 
 ### Services vs Support
 
@@ -143,6 +178,8 @@ framework services (container, config, facades) and does not fit the Action patt
 
 | Element | Convention | Example |
 |---|---|---|
+| Aggregate directory | Singular `{Name}` (aggregate root concept) | `User`, `Profile`, `Internship`, `Placement` |
+| Types directory | `Types/` for small value objects | `Types/Gender.php`, `Types/BloodType.php` |
 | Model | Singular `{Name}` | `User`, `AcademicYear`, `Internship` |
 | Command Action | `{Verb}{Entity}Action` | `CreateUserAction`, `ApproveRegistrationAction` |
 | Read Action | `{Context}Reader`, `Get{Dashboard}Data`, `{Entity}Query` | `InternshipDashboardReader`, `GetStudentStatsData` |
@@ -150,6 +187,8 @@ framework services (container, config, facades) and does not fit the Action patt
 | Entity | `{Name}` | `Apprentice`, `InternshipPeriod`, `RegistrationState` |
 | Data / DTO | `{Verb}{Entity}Data` or `{Entity}Data` | `CreateInternshipData`, `ApproveReportData` |
 | Livewire | `{Name}` — suffixed with Manager, Editor, Center | `UserManager`, `ProfileEditor`, `RegistrationCenter` |
+| Livewire alias (aggregate) | `{kebab-domain}.{kebab-aggregate}.{kebab-name}` | `admin.user.user-manager` |
+| Livewire alias (root) | `{kebab-domain}.{kebab-name}` | `user.profile-editor` |
 | Livewire Form | `{Entity}Form` | `AcademicYearForm`, `SchoolForm` |
 | Policy | `{Name}Policy` | `UserPolicy`, `InternshipPolicy` |
 | Enum | `{Name}` | `AccountStatus`, `InternshipStatus`, `Role` |
@@ -472,7 +511,17 @@ class AcademicYearPolicy extends BasePolicy
 - Components delegate all writes to Command Actions.
 - Components delegate complex queries to Read Actions.
 - Computed properties use the `#[Computed]` attribute.
-- Views live in `resources/views/{domain}/{component-name}.blade.php`.
+- Aggregate-specific components live in the aggregate's Livewire directory:
+  `app/Domain/{Domain}/{Aggregate}/Livewire/`
+- Cross-aggregate components (dashboards, global widgets) live in the domain root:
+  `app/Domain/{Domain}/Livewire/`
+- Views live in `resources/views/{domain}/{aggregate}/{component-name}.blade.php`
+  for aggregate-specific views, or `resources/views/{domain}/{component-name}.blade.php`
+  for cross-aggregate views.
+- Component alias (aggregate): `{kebab-domain}.{kebab-aggregate}.{kebab-name}` —
+  e.g., `admin.user.user-manager`
+- Component alias (root): `{kebab-domain}.{kebab-name}` —
+  e.g., `user.profile-editor`
 
 ### Form Objects
 
@@ -709,11 +758,26 @@ class HealthCommand extends Command
 
 ## 16. Blade Views
 
-- Livewire views: `resources/views/{domain}/{component-name}.blade.php`.
-- Anonymous components: `x-shared::layouts.*`, `x-shared::ui.*`, `x-shared::widgets.*`.
+Views mirror the aggregate-based source structure:
+
+```
+resources/views/{domain}/
+├── {aggregate}/                    → Views for a specific aggregate
+│   ├── {component-name}.blade.php  → Livewire component view
+│   └── components/                 → Sub-views (optional)
+├── layouts/                        → Domain-specific layouts (cross-cutting)
+├── components/                     → Shared sub-views (cross-cutting)
+└── partials/                       → Reusable partials (cross-cutting)
+```
+
+- Aggregate-specific views: `resources/views/{domain}/{aggregate}/{component-name}.blade.php`
+  — mirrors the Livewire component path `app/Domain/{Domain}/{Aggregate}/Livewire/`.
+- Cross-aggregate views: `resources/views/{domain}/{component-name}.blade.php`
+  — for dashboards and components that span multiple aggregates.
+- Anonymous components: `x-core::layouts.*`, `x-core::ui.*`, `x-core::widgets.*`.
 - `@props()` declaration at the top of every component template.
 - maryUI components prefixed with `x-mary-`.
-- Layouts: `x-shared::layouts.app` (authenticated), `x-shared::layouts.guest` (public).
+- Layouts: `x-core::layouts.app` (authenticated), `x-core::layouts.guest` (public).
 - Domain-specific layouts in `resources/views/{domain}/layouts/`.
 
 ---
@@ -819,7 +883,7 @@ from sibling domains directly when needed.
 
 ```php
 // ✅ Direct import — perfectly fine
-use App\Domain\School\Models\AcademicYear;
+use App\Domain\Academics\Models\AcademicYear;
 
 $activeYear = AcademicYear::where('is_active', true)->first();
 ```
@@ -840,11 +904,12 @@ imports for everything else.
 
 ### File Structure
 
-Tests mirror source structure:
+Tests mirror the aggregate-based source structure:
 
 ```
-tests/Feature/{Domain}/{Name}Test.php        → Integration tests (Actions, Livewire)
-tests/Unit/{Domain}/{Layer}/{Name}Test.php   → Pure unit tests (Entities, Enums, Data)
+tests/Feature/{Domain}/{Aggregate}/{Name}Test.php  → Integration tests (Actions, Livewire)
+tests/Unit/{Domain}/{Aggregate}/{Name}Test.php     → Pure unit tests (Entities, Enums)
+tests/Unit/{Domain}/Types/{Name}Test.php           → Value objects, flat enums, rules
 ```
 
 ### Naming

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Certificate\Models\Certificate;
+use App\Domain\Certification\Aggregates\Certificate\Models\Certificate;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CertificateFactory extends Factory

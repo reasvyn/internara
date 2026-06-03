@@ -1,6 +1,6 @@
 # Testing
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+> Last updated: 2026-06-03
+> Changes: add TDD methodology, update test paths to aggregate-based structure
 
 
 ## Testing Philosophy
@@ -9,6 +9,147 @@ The test suite is organized by domain and by test type. Every change to the code
 accompanied by tests that verify the change works correctly and does not break existing behavior.
 Tests are a specification of what the code does — reading the tests should tell a developer what the
 system's behavioral contract is.
+
+## TDD Approach
+
+This project follows **Test-Driven Development (TDD)** — write the test first, watch it fail, then
+write the implementation to make it pass. Tests are not an afterthought; they drive the design.
+
+### Red-Green-Refactor Cycle
+
+Every feature or fix follows the same three-step cycle:
+
+1. **🔴 Red** — Write a failing test that describes the desired behavior. Running the test confirms
+   the feature does not exist yet. This step forces you to think about the interface before the
+   implementation — what should the method accept, return, and what edge cases exist?
+2. **🟢 Green** — Write the minimum implementation to make the test pass. No extra code, no
+   premature optimization, no gold-plating. Just enough to turn the test green.
+3. **🔵 Refactor** — Clean up the implementation and test. Improve naming, extract helpers,
+   optimize, add documentation. The test stays green throughout.
+
+### Test-First Workflow
+
+```bash
+# 1. Write a failing test
+php artisan make:test --pest CreateInternshipActionTest
+
+# Edit the test file with the expected behavior
+
+# 2. Confirm it fails
+php artisan test --compact --filter=CreateInternshipAction
+
+# 3. Write the implementation in app/Domain/{Domain}/Actions/
+
+# 4. Confirm it passes
+php artisan test --compact --filter=CreateInternshipAction
+
+# 5. Refactor and re-run
+php artisan test --compact --filter=CreateInternshipAction
+```
+
+### Layer-by-Layer TDD
+
+Each layer of the architecture has a natural TDD progression:
+
+| Layer | TDD Entry Point | What You Test First |
+|---|---|---|
+| **Entity** | Unit test | Construct with test data, assert business rule methods |
+| **Enum** | Unit test | Assert `label()`, transition rules, terminal states |
+| **Command Action** | Feature test | Factory + execute → assert database state changed |
+| **Read Action** | Feature test | Set up data → call method → assert returned structure |
+| **Process Action** | Feature test | Complete workflow + partial failure scenarios |
+| **Livewire** | Feature test | Render → interact → assert component state / redirect |
+| **Policy** | Unit test | Mock user/model → assert boolean gate methods |
+| **Console Command** | Feature test | Call command → assert exit code / output |
+
+### TDD by Development Scenario
+
+#### New Entity or Enum
+
+1. Write a unit test that constructs the entity/enum and asserts behavior
+2. Confirm test fails (entity does not exist yet)
+3. Create the entity/enum class
+4. Confirm test passes
+
+#### New Command Action
+
+1. Write a feature test that creates records via factory, calls the Action, and asserts
+   database state or return value
+2. Confirm test fails (Action does not exist yet)
+3. Create the Action class with the `execute()` method
+4. Confirm test passes
+
+#### New Livewire Component
+
+1. Write a feature test that renders the component via `Livewire::test()` and asserts
+   initial state
+2. Confirm test fails
+3. Scaffold the component
+4. Add tests for each interaction (create, update, delete, filter, search)
+5. Implement each interaction test-first
+
+#### Bug Fix
+
+1. Write a test that reproduces the bug (it fails)
+2. Fix the implementation
+3. Confirm the test now passes
+4. Verify no existing tests broke
+
+### Test Naming Convention
+
+Tests use descriptive `it()` statements that read like specifications:
+
+```php
+describe('CreateInternshipAction', function () {
+    it('creates an internship with active academic year', function () { ... });
+    it('rejects creation when academic year is missing', function () { ... });
+    it('assigns default status of draft', function () { ... });
+    it('logs the creation event', function () { ... });
+});
+```
+
+The `it()` description should complete the sentence: "it **creates an internship with active
+academic year**". This makes test output read as executable documentation.
+
+### TDD and the Action Triad
+
+The three Action types map to distinct TDD approaches:
+
+- **Command Action** → Test that the mutation happened (database row created, status changed,
+  log recorded). Use `LazilyRefreshDatabase` + factory + `assertDatabaseHas()`.
+- **Read Action** → Test that the correct data is returned given a known state.
+  No database mutation expected — assert return values only.
+- **Process Action** → Test the orchestration: that each sub-action was called with the
+  correct arguments. Use Mockery to mock child Actions and assert they received the right input.
+
+### Running TDD Cycle Efficiently
+
+Run only the tests relevant to your current work:
+
+```bash
+# Single test class
+php artisan test --compact --filter=CreateInternshipAction
+
+# Single test method
+php artisan test --compact --filter='it creates an internship'
+
+# All tests for a domain
+php artisan test --compact --filter=Internship
+
+# Full suite before committing
+php artisan test --compact
+```
+
+### When TDD Is Optional
+
+TDD is **recommended for all new code**, but not strictly mandatory in these cases:
+
+- **Exploratory/prototype code** — use TDD-light: write a high-level test, then iterate quickly
+- **Trivial changes** — renaming, simple config changes, static text without logic
+- **Migration-only changes** — schema changes without new business logic
+
+Any code merged to a shared branch must still have tests. TDD is the preferred path, but the
+gate is passing tests, not the process that produced them.
 
 ## Feature vs Unit Test Distinction
 
@@ -76,8 +217,9 @@ php artisan test --filter=testName
 
 ## Where to Find It
 
-- `tests/Feature/{Domain}/` — feature tests organized by domain
-- `tests/Unit/{Domain}/` — unit tests organized by domain
+- `tests/Feature/{Domain}/{Aggregate}/` — feature tests organized by domain and aggregate
+- `tests/Unit/{Domain}/{Aggregate}/` — unit tests organized by domain and aggregate
+- `tests/Unit/{Domain}/Types/` — unit tests for value objects, flat enums, rules
 - `tests/TestCase.php` — base test case with `LazilyRefreshDatabase`
 - `tests/Pest.php` — Pest global configuration
 - `phpunit.xml` — PHPUnit configuration

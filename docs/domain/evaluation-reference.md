@@ -1,63 +1,26 @@
 # Evaluation — API Reference
-> Last updated: 2026-05-31
-> Changes: docs: audit — all items Implemented
 
-> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
+> Last updated: 2026-06-03
+> **Status:** ✅ **Fully Implemented** — Aggregate-rooted layout mapping for the Evaluation domain
 
-Total: 8 files — ✅ 8 Implemented
+This reference defines the structured aggregates and code layout within the **Evaluation** domain.
 
-## Actions
+---
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Evaluation/Actions/DeleteEvaluationAction.php` | `DeleteEvaluationAction` | `BaseAction` | Deletes an evaluation |
-| `Evaluation/Actions/EvaluateMentorAction.php` | `EvaluateMentorAction` | `BaseAction` | Submits a mentor evaluation (upsert logic) |
-| `Evaluation/Actions/SubmitEvaluationAction.php` | `SubmitEvaluationAction` | `BaseAction` | Submits a general evaluation (upsert) |
+## 1. Evaluation Aggregate
+Collects multi-perspective internship quality feedback (student evaluating mentors, companies, and facilities).
 
-## Entities
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Evaluation/Entities/EvaluationResult.php` | `EvaluationResult` | `BaseEntity` | Read-only DTO for computed evaluation results |
-
-## Enums
-
-| File | Class | Implements | Description |
-|---|---|---|---|
-| `Evaluation/Enums/EvaluationCategory.php` | `EvaluationCategory` | `LabelEnum` | Evaluation type categories |
-
-## Livewire Components
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Evaluation/Livewire/MentorEvaluationManager.php` | `MentorEvaluationManager` | `Component` | UI for managing mentor evaluations |
-
-## Models
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Evaluation/Models/Evaluation.php` | `Evaluation` | `BaseModel` | Eloquent model for evaluations |
-
-## Policies
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Evaluation/Policies/EvaluationPolicy.php` | `EvaluationPolicy` | `BasePolicy` | Authorization for evaluation operations |
-
-## Where to Find It
-
-- `app/Domain/Evaluation/Models/Evaluation.php`
-- `app/Domain/Evaluation/Actions/`
-
-## Dependency Graph
-
-```
-Evaluation Domain
-├── Core         → BaseModel, BaseAction, SmartLogger
-├── User         → User model (evaluator/evaluatee)
-└── Registration → Registration records (evaluation context)
-```
-
-Consumed by:
-  Internship (closure evaluation, quality assessment)
-
+- **Eloquent Models**:
+  - `Evaluation` (`app/Domain/Evaluation/Models/Evaluation.php`)
+- **Policies**:
+  - `EvaluationPolicy` (`app/Domain/Evaluation/Policies/EvaluationPolicy.php`)
+- **Command Actions**:
+  - `SubmitEvaluationAction` (`app/Domain/Evaluation/Actions/SubmitEvaluationAction.php`)
+  - `DeleteEvaluationAction` (`app/Domain/Evaluation/Actions/DeleteEvaluationAction.php`)
+  - `EvaluateMentorAction` (`app/Domain/Evaluation/Actions/EvaluateMentorAction.php`)
+- **Livewire UI Components**:
+  - `MentorEvaluationManager` (`app/Domain/Evaluation/Livewire/MentorEvaluationManager.php`)
+- **Entities (Domain Rules)**:
+  - `EvaluationResult` (`app/Domain/Evaluation/Entities/EvaluationResult.php`)
+- **Enums**:
+  - `EvaluationCategory` (`app/Domain/Evaluation/Enums/EvaluationCategory.php`)

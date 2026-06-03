@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Guidance\Models\Handbook;
+use App\Domain\Guidance\Aggregates\Handbook\Models\Handbook;
 use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

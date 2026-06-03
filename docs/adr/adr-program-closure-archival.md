@@ -173,9 +173,9 @@ expiry must do so via database-level operations (documented but not automated).
 
 ## References
 
-- `app/Domain/Internship/Actions/CheckCloseReadinessAction.php` — readiness verification
-- `app/Domain/Admin/Actions/ArchiveStudentAccountsAction.php` — student archive
+- `app/Domain/Program/Actions/CheckCloseReadinessAction.php` — readiness verification
+- `app/Domain/Administration/Actions/ArchiveStudentAccountsAction.php` — student archive
 - `app/Domain/Auth/Enums/AccountStatus.php` — ARCHIVED status
-- `app/Domain/Internship/Enums/InternshipStatus.php` — program lifecycle enum
+- `app/Domain/Program/Enums/InternshipStatus.php` — program lifecycle enum
 - `docs/key-features.md` — Program Closure & Archival section
 - `docs/architecture.md` — Action Triad (Process Actions)

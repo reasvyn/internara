@@ -18,7 +18,7 @@
                             </div>
                         </div>
                     @empty
-                        <x-shared::widgets.empty-state icon="o-inbox" :title="__('dashboard.no_activity')" />
+                        <x-core::widgets.empty-state icon="o-inbox" :title="__('dashboard.no_activity')" />
                     @endforelse
                 </x-mary-card>
             @endif

@@ -1,148 +1,125 @@
-# User — API Reference
-> Last updated: 2026-06-02
-> Changes: user: fix — ProfileEditor description now includes WithFileUploads/avatar; ProfileForm notes EmploymentStatus enum; added Views section
+# User & Auth — API Reference
 
-> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
+> Last updated: 2026-06-03
+> **Status:** ✅ **Fully Implemented** — Reference synchronized with 16 domains structure
 
-Total: 40 files — ✅ 40 Implemented
+This reference details the class structures, models, controllers, actions, and Livewire components belonging to the **User & Auth** domain.
+
+---
 
 ## Actions
 
+### Authentication & Lifecycle Actions
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `User/Actions/DeleteNotificationAction.php` | `DeleteNotificationAction` | `BaseAction` | Deletes a single notification |
-| `User/Actions/GetActivityLogsAction.php` | `GetActivityLogsAction` | `BaseAction` | Retrieves paginated activity logs |
-| `User/Actions/GetProfileFormDataAction.php` | `GetProfileFormDataAction` | `BaseAction` | Resolves role-appropriate profile form fields |
-| `User/Actions/GetStudentDashboardDataAction.php` | `GetStudentDashboardDataAction` | `BaseAction` | Gathers all data needed for student dashboard |
-| `User/Actions/GetSupervisorDashboardStatsAction.php` | `GetSupervisorDashboardStatsAction` | `BaseAction` | Aggregates supervisor dashboard statistics |
-| `User/Actions/GetTeacherDashboardStatsAction.php` | `GetTeacherDashboardStatsAction` | `BaseAction` | Aggregates teacher dashboard statistics |
-| `User/Actions/MarkAllAsReadAction.php` | `MarkAllAsReadAction` | `BaseAction` | Marks all unread notifications as read |
+| `Auth/Actions/LoginAction.php` | `LoginAction` | `BaseAction` | Authenticates users, validates lock state, and regenerates sessions |
+| `Auth/Actions/ConfirmPasswordAction.php` | `ConfirmPasswordAction` | `BaseAction` | Verifies current user password before sensitive actions |
+| `Auth/Actions/LockUserAccountAction.php` | `LockUserAccountAction` | `BaseAction` | Suspends an account with audit comments, protecting super admins |
+| `Auth/Actions/UnlockUserAccountAction.php` | `UnlockUserAccountAction` | `BaseAction` | Restores access to a suspended account |
+| `Auth/Actions/DetectUserAccountCloneAction.php` | `DetectUserAccountCloneAction` | `BaseAction` | Identifies duplicate profiles by scanning national IDs, emails, or phone numbers |
+| `Auth/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction` | `BaseAction` | Creates 10 secure, single-use, timing-attack resistant recovery codes |
+| `Auth/Actions/RedeemRecoverySlipAction.php` | `RedeemRecoverySlipAction` | `BaseAction` | Consumes a recovery code to bypass forgotten passwords |
+| `Auth/Actions/SendPasswordResetLinkAction.php` | `SendPasswordResetLinkAction` | `BaseAction` | Sends a time-limited email reset token |
+| `Auth/Actions/ResetPasswordAction.php` | `ResetPasswordAction` | `BaseAction` | Resets user password via email token |
+| `Auth/Actions/ResetUserPasswordAction.php` | `ResetUserPasswordAction` | `BaseAction` | Admin-initiated password reset command |
+| `Auth/Actions/UpdateUserPasswordAction.php` | `UpdateUserPasswordAction` | `BaseAction` | Updates user password after validating current password |
+
+### Profile & Notification Actions
+| File | Class | Extends | Description |
+|---|---|---|---|
+| `User/Actions/UpdateProfileAction.php` | `UpdateProfileAction` | `BaseAction` | Updates name, contact details, and uploads avatar image |
+| `User/Actions/GetProfileFormDataAction.php` | `GetProfileFormDataAction` | `BaseAction` | Resolves profile attributes based on user role |
+| `User/Actions/SendNotificationAction.php` | `SendNotificationAction` | `BaseAction` | Dispatches in-app and email notifications; implements `SendsNotifications` |
 | `User/Actions/MarkAsReadAction.php` | `MarkAsReadAction` | `BaseAction` | Marks a single notification as read |
-| `User/Actions/MarkBatchAsReadAction.php` | `MarkBatchAsReadAction` | `BaseAction` | Marks multiple notifications as read in batch |
-| `User/Actions/SendNotificationAction.php` | `SendNotificationAction` | `BaseAction` | Sends a notification to a user |
-| `User/Actions/UpdateProfileAction.php` | `UpdateProfileAction` | `BaseAction` | Updates user profile with avatar upload |
+| `User/Actions/MarkAllAsReadAction.php` | `MarkAllAsReadAction` | `BaseAction` | Marks all notifications for a user as read |
+| `User/Actions/MarkBatchAsReadAction.php` | `MarkBatchAsReadAction` | `BaseAction` | Marks multiple selected notifications as read |
+| `User/Actions/DeleteNotificationAction.php` | `DeleteNotificationAction` | `BaseAction` | Deletes a single notification |
 
-## Controllers
+### Dashboard & Analytics Actions (Read-only Queries)
+| File | Class | Description |
+|---|---|---|
+| `User/Actions/GetStudentDashboardDataAction.php` | `GetStudentDashboardDataAction` | Gathers enrollment status, phase information, and journal stats for students |
+| `User/Actions/GetTeacherDashboardStatsAction.php` | `GetTeacherDashboardStatsAction` | Gathers statistics of supervised students, pending journals, and visits |
+| `User/Actions/GetSupervisorDashboardStatsAction.php` | `GetSupervisorDashboardStatsAction` | Gathers company-level active interns and pending evaluations |
+| `User/Actions/GetActivityLogsAction.php` | `GetActivityLogsAction` | Retrieves paginated user activity logs |
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `User/Http/Controllers/DashboardController.php` | `DashboardController` | `BaseController` | Redirects users to role-appropriate dashboard |
-| `User/Http/Controllers/HomeController.php` | `HomeController` | `BaseController` | Handles root URL routing (setup vs login) |
-
-## Enums
-
-| File | Class | Implements | Description |
-|---|---|---|---|
-| `User/Enums/BloodType.php` | `BloodType` | `LabelEnum` | Blood type enum |
-| `User/Enums/EmploymentStatus.php` | `EmploymentStatus` | `LabelEnum` | Employment status enum |
-| `User/Enums/Gender.php` | `Gender` | `LabelEnum` | Gender enum |
-| `User/Enums/StructuralPosition.php` | `StructuralPosition` | `LabelEnum` | Structural position enum (legacy — position is now free text field) |
+---
 
 ## Livewire Components
 
+### Security & Lifecycle UI
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `User/Livewire/ActivityFeedManager.php` | `ActivityFeedManager` | `Component` | Paginated activity feed with filters |
-| `User/Livewire/NotificationBell.php` | `NotificationBell` | `Component` | Dropdown notification bell indicator |
-| `User/Livewire/NotificationCenter.php` | `NotificationCenter` | `BaseRecordManager` | Full-page notification center with viewer modal, Markdown rendering, filters, bulk actions |
-| `User/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` (uses `WithFileUploads`) | Profile editing form with avatar upload (`$avatar`), live preview, password change |
-| `User/Livewire/RecentActivityList.php` | `RecentActivityList` | `Component` | Recent activity log listing |
-| `User/Livewire/UserDashboard.php` | `UserDashboard` | `Component` | Generic user dashboard with recent activity |
+| `Auth/Livewire/Login.php` | `Login` | `Component` | Credentials entry form with validation and rate limits |
+| `Auth/Livewire/ForgotPassword.php` | `ForgotPassword` | `Component` | Requests recovery email link |
+| `Auth/Livewire/ResetPassword.php` | `ResetPassword` | `Component` | Token password reset entry |
+| `Auth/Livewire/ConfirmPassword.php` | `ConfirmPassword` | `Component` | Secure action gate validation |
+| `Auth/Livewire/AccountRecovery.php` | `AccountRecovery` | `Component` | Code recovery slip redemption UI |
+| `Auth/Livewire/RecoveryCode.php` | `RecoveryCode` | `Component` | PDF recovery slip export and visual copy interface |
+| `Auth/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `Component` | Admin workspace to manage user recovery slips |
+| `Auth/Livewire/AccountLifecycleManager.php` | `AccountLifecycleManager` | `Component` | Interface to lock, unlock, and audit account status changes |
+| `Auth/Livewire/ActivateAccount.php` | `ActivateAccount` | `Component` | Token activation flow for newly provisioned accounts |
 
-### Dashboard Components
-
+### Profile & Dashboard UI
 | File | Class | Extends | Description |
 |---|---|---|---|
-| `User/Livewire/Dashboards/AdminDashboard.php` | `AdminDashboard` | `Component` | Admin/SA dashboard with system stats and readiness |
-| `User/Livewire/Dashboards/StudentDashboard.php` | `StudentDashboard` | `Component` | Student dashboard with registration and journal stats |
-| `User/Livewire/Dashboards/TeacherDashboard.php` | `TeacherDashboard` | `Component` | Teacher dashboard with supervised students and journals |
-| `User/Livewire/Dashboards/SupervisorDashboard.php` | `SupervisorDashboard` | `Component` | Supervisor dashboard with active interns and evaluations |
+| `User/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` | Tabbed editor managing personal, professional, and password details |
+| `User/Livewire/NotificationBell.php` | `NotificationBell` | `Component` | Header bell dropdown displaying top 5 unread alerts and cached count |
+| `User/Livewire/NotificationCenter.php` | `NotificationCenter` | `BaseRecordManager` | Full-page notification viewer supporting search and bulk deletions |
+| `User/Livewire/ActivityFeedManager.php` | `ActivityFeedManager` | `Component` | Paginated causal audit feed filtered by date and severity |
+| `User/Livewire/UserDashboard.php` | `UserDashboard` | `Component` | Fallback dashboard for accounts without clear roles |
+| `User/Livewire/Dashboards/AdminDashboard.php` | `AdminDashboard` | `Component` | Visual overview of setup state, system cards, and administrator shortcuts |
+| `User/Livewire/Dashboards/StudentDashboard.php` | `StudentDashboard` | `Component` | Interactive timeline showing student placement status and journals |
+| `User/Livewire/Dashboards/TeacherDashboard.php` | `TeacherDashboard` | `Component` | Grid highlighting assigned student records and outstanding logs |
+| `User/Livewire/Dashboards/SupervisorDashboard.php` | `SupervisorDashboard` | `Component` | Industrial feedback center displaying current interns and rubrics |
 
-### Livewire Form Objects
+---
+
+## Form Objects
 
 | File | Class | Extends | Fields | Used By |
 |---|---|---|---|---|
-| `User/Livewire/Forms/ProfileForm.php` | `ProfileForm` | `Form` | name, email, phone, address, bio, employment_status (`EmploymentStatus`), employee_id_number, educator_id_number, competence_field, job_title | `ProfileEditor` |
+| `Auth/Livewire/Forms/LoginForm.php` | `LoginForm` | `Form` | identifier, password, remember | `Login` |
+| `Auth/Livewire/Forms/ForgotPasswordForm.php` | `ForgotPasswordForm` | `Form` | email | `ForgotPassword` |
+| `Auth/Livewire/Forms/ResetPasswordForm.php` | `ResetPasswordForm` | `Form` | token, email, password, password_confirmation | `ResetPassword` |
+| `Auth/Livewire/Forms/ConfirmPasswordForm.php` | `ConfirmPasswordForm` | `Form` | password | `ConfirmPassword` |
+| `Auth/Livewire/Forms/AccountRecoveryForm.php` | `AccountRecoveryForm` | `Form` | username, recoveryCode, password, password_confirmation | `AccountRecovery` |
+| `User/Livewire/Forms/ProfileForm.php` | `ProfileForm` | `Form` | name, email, phone, address, gender, blood_type, national_id_number, emergency_contact, staff fields | `ProfileEditor` |
 | `User/Livewire/Forms/PasswordForm.php` | `PasswordForm` | `Form` | current_password, password, password_confirmation | `ProfileEditor` |
+
+---
 
 ## Models
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `User/Models/Notification.php` | `Notification` | `BaseModel` | Eloquent model for in-app notifications |
-| `User/Models/Profile.php` | `Profile` | `BaseModel` | Eloquent model for user profiles (department, school, company, bio) |
-| `User/Models/User.php` | `User` | `Model` (Authenticatable) | Eloquent model for users (with relations to mentor, mentee, roles) |
+### User (`User.php`)
+- **Extends**: `Illuminate\Foundation\Auth\User` (implements authenticatable contracts)
+- **Relationships**:
+  - `profile` → `HasOne` (Profile)
+  - `notifications` → `HasMany` (Notification)
+  - `recoveryCodes` → `HasMany` (AccountRecoveryCode)
+  - `activationToken` → `HasOne` (ActivationToken)
 
-## Notifications
+### Profile (`Profile.php`)
+- **Extends**: `BaseModel`
+- **Fields**: phone, address, gender, blood_type, national_id_number, employee_id_number, educator_id_number, job_title, department_id, company_id, school_id
+- **Relationships**:
+  - `user` → `BelongsTo` (User)
 
-| File | Class | Extends/Implements | Description |
-|---|---|---|---|
-| `User/Notifications/TestMailNotification.php` | `TestMailNotification` | `Notification` | Simple test mail notification |
+### Notification (`Notification.php`)
+- **Extends**: `BaseModel`
+- **Fields**: type, title, message, data (json), link, is_read, read_at
+
+### AccountRecoveryCode (`AccountRecoveryCode.php`)
+- **Extends**: `BaseModel`
+- **Fields**: code (hashed), is_used, used_at
+
+### ActivationToken (`ActivationToken.php`)
+- **Extends**: `BaseModel`
+- **Fields**: token (hashed), expires_at, is_used
+
+---
 
 ## Policies
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `User/Policies/NotificationPolicy.php` | `NotificationPolicy` | `BasePolicy` | Authorization for notification operations |
-| `User/Policies/ProfilePolicy.php` | `ProfilePolicy` | `BasePolicy` | Authorization for profile operations |
-| `User/Policies/UserPolicy.php` | `UserPolicy` | `BasePolicy` | Authorization for user management operations |
-
-## Rules
-
-| File | Class | Implements | Description |
-|---|---|---|---|
-| `User/Rules/ReservedAuthoritativeName.php` | `ReservedAuthoritativeName` | `ValidationRule` | Blocks reserved names (admin, superadmin, etc.) for non-super-admin users |
-| `User/Rules/SystemUsername.php` | `SystemUsername` | `ValidationRule` | Validates system-generated usernames |
-
-## Services
-
-| File | Class | Description |
-|---|---|---|
-| `User/Services/DashboardService.php` | `DashboardService` | Resolves role-appropriate dashboard for a user |
-
-## Support
-
-| File | Class | Description |
-|---|---|---|
-| `User/Support/UserIdentifierGenerator.php` | `UserIdentifierGenerator` | Generates unique system usernames |
-
-## Where to Find It
-
-- `app/Domain/User/Models/User.php` — central identity model
-- `app/Domain/User/Models/Profile.php` — extended personal data
-- `app/Domain/User/Actions/UpdateProfileAction.php` — profile editing
-- `app/Domain/User/Actions/SendNotificationAction.php` — notification dispatch
-- `app/Domain/User/Livewire/` — dashboards, profile editor, notification center
-- `app/Domain/User/Support/UserIdentifierGenerator.php` — username generation
-- `app/Domain/User/Rules/` — username and reserved name validation
-
-## Dependency Graph
-
-```
-User Domain
-├── Core   → BaseModel, BaseAction, BaseEntity, SmartLogger, PasswordRules,
-│            HandlesActionErrors, BasePolicy, PiiMasker
-├── Auth   → Role, AccountStatus, activation tokens
-└── School → School, Department (user affiliation)
-```
-
-Consumed by: all domains (universal identity and profile provider)
-
-## Views
-
-| File | Description |
-|---|---|
-| `resources/views/user/dashboard.blade.php` | Generic user dashboard layout |
-| `resources/views/user/dashboards/admin.blade.php` | Admin/SA dashboard with stats, readiness, quick links |
-| `resources/views/user/dashboards/student.blade.php` | Student dashboard with registration status, journal progress |
-| `resources/views/user/dashboards/teacher.blade.php` | Teacher dashboard with supervised students, journals |
-| `resources/views/user/dashboards/supervisor.blade.php` | Supervisor dashboard with participants, evaluations |
-| `resources/views/user/dashboards/_sidebar.blade.php` | Shared dashboard sidebar partial |
-| `resources/views/user/profile-editor.blade.php` | Profile edit form with avatar upload, password change |
-| `resources/views/user/notification-center.blade.php` | Full-page notification center with viewer modal |
-| `resources/views/user/notification-bell.blade.php` | Navbar bell indicator with unread count |
-| `resources/views/user/activity-feed.blade.php` | Paginated activity log listing |
-| `resources/views/user/components/dashboard-guide.blade.php` | Dashboard help/info component |
-| `resources/views/user/components/profile-guide.blade.php` | Profile help/info component |
-| `resources/views/user/components/notification-guide.blade.php` | Notification help/info component |
-
+- `UserPolicy`: Controls view, edit, creation, and deletion checks. Restricts self-deletion, super admin deletion, and limits non-owners from modifying profiles.
+- `NotificationPolicy`: Ensures only users themselves can read and mark their notifications as read, and restricts global creations to administrators.

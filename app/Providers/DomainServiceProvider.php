@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Domain\Academics\Events\SetupFinalized;
+use App\Domain\Academics\Listeners\LogSetupFinalized;
 use App\Domain\Core\Contracts\SendsNotifications;
+use App\Domain\Core\Contracts\SettingsStore;
 use App\Domain\Core\Policies\BasePolicy;
 use App\Domain\Core\Support\CacheKeys;
-use App\Domain\Setup\Events\SetupFinalized;
-use App\Domain\Setup\Listeners\LogSetupFinalized;
-use App\Domain\User\Actions\SendNotificationAction;
+use App\Domain\Settings\Aggregates\Setting\Support\Settings;
+use App\Domain\User\Aggregates\Notification\Actions\SendNotificationAction;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -26,6 +28,16 @@ class DomainServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(SendsNotifications::class, SendNotificationAction::class);
+
+        $this->app->singleton(SettingsStore::class, function () {
+            return new class implements SettingsStore
+            {
+                public function get(string $key, mixed $default = null): mixed
+                {
+                    return Settings::get($key, $default);
+                }
+            };
+        });
     }
 
     public function boot(): void
@@ -82,9 +94,12 @@ class DomainServiceProvider extends ServiceProvider
                     continue;
                 }
 
-                preg_match('#/Domain/([^/]+)/'.$directory.'/#', $filePath, $domainMatch);
+                preg_match('#/Domain/([^/]+)(?:/Aggregates/([^/]+))?/'.$directory.'/#', $filePath, $domainMatch);
                 $domain = $domainMatch[1] ?? '';
-                $alias = Str::kebab($domain).'.'.Str::kebab($className);
+                $aggregate = $domainMatch[2] ?? '';
+                $alias = $aggregate
+                    ? Str::kebab($domain).'.'.Str::kebab($aggregate).'.'.Str::kebab($className)
+                    : Str::kebab($domain).'.'.Str::kebab($className);
 
                 $result[$alias] = $fqcn;
             }
@@ -134,10 +149,13 @@ class DomainServiceProvider extends ServiceProvider
                     continue;
                 }
 
-                preg_match('#/Domain/([^/]+)/'.$directory.'/#', $filePath, $domainMatch);
+                preg_match('#/Domain/([^/]+)(?:/Aggregates/([^/]+))?/'.$directory.'/#', $filePath, $domainMatch);
                 $domain = $domainMatch[1] ?? '';
+                $aggregate = $domainMatch[2] ?? '';
                 $modelName = preg_replace('/Policy$/', '', $className);
-                $modelClass = "App\\Domain\\{$domain}\\Models\\{$modelName}";
+                $modelClass = $aggregate
+                    ? "App\\Domain\\{$domain}\\Aggregates\\{$aggregate}\\Models\\{$modelName}"
+                    : "App\\Domain\\{$domain}\\Models\\{$modelName}";
 
                 if (! class_exists($modelClass)) {
                     continue;

@@ -39,11 +39,11 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 ## Application Structure & Architecture
 
-- Stick to the established directory structure:
-    - Backend: `app/Domain/{Domain}/` — Actions, Models, Livewire, Policies, Enums, Entities, etc.
-    - Views: `resources/views/{domain}/{component}.blade.php`
+- Stick to the established directory structure (aggregate-based):
+    - Backend: `app/Domain/{Domain}/{Aggregate}/` — aggregate-rooted modules (Actions, Models, Policies colocated)
+    - Views: `resources/views/{domain}/{aggregate}/{component}.blade.php` — views mirror aggregate structure
     - Routes: `routes/web/{domain}.php`, master `routes/web.php` requires all
-    - Tests: `tests/{Feature,Unit}/{Domain}/{Name}Test.php`
+    - Tests: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php` — tests organized by domain and aggregate
 - Role-Based Access Control (RBAC):
     - Use standard roles: `super_admin`, `admin`, `student`, `teacher`, `supervisor`.
     - Avoid using "Mentor" in industry contexts; use "Supervisor" instead.

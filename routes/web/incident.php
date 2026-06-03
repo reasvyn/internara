@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Incident\Livewire\IncidentManager;
+use App\Domain\Incident\Aggregates\IncidentReport\Livewire\IncidentManager;
 
 Route::prefix('admin')
     ->name('admin.')

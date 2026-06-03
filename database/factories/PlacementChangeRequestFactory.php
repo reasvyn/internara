@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Internship\Models\Internship;
-use App\Domain\Placement\Models\Placement;
-use App\Domain\Placement\Models\PlacementChangeRequest;
-use App\Domain\Registration\Models\Registration;
+use App\Domain\Enrollment\Models\Placement;
+use App\Domain\Enrollment\Models\PlacementChangeRequest;
+use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Program\Aggregates\Internship\Models\Internship;
 use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

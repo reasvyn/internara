@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Models;
 
-use App\Domain\Auth\Entities\Apprentice;
-use App\Domain\Guidance\Models\HandbookAcknowledgement;
-use App\Domain\Mentee\Models\Mentee;
-use App\Domain\Mentor\Models\Mentor;
-use App\Domain\Registration\Models\Registration;
+use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Guidance\Aggregates\HandbookAcknowledgement\Models\HandbookAcknowledgement;
+use App\Domain\Guidance\Aggregates\Mentee\Models\Mentee;
+use App\Domain\Guidance\Aggregates\Mentor\Models\Mentor;
+use App\Domain\User\Entities\Apprentice;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use RuntimeException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -31,6 +32,15 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements HasMedia
 {
     use HasFactory, HasRoles, HasStatuses, HasUuids, InteractsWithMedia, Notifiable;
+
+    public function delete(): ?bool
+    {
+        if ($this->hasRole('super_admin')) {
+            throw new RuntimeException('Super administrator accounts cannot be deleted.');
+        }
+
+        return parent::delete();
+    }
 
     protected static function newFactory(): UserFactory
     {
@@ -45,6 +55,15 @@ class User extends Authenticatable implements HasMedia
             'password' => 'hashed',
             'setup_required' => 'boolean',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::deleting(function (User $user) {
+            if ($user->hasRole('super_admin')) {
+                throw new RuntimeException('Super administrator accounts cannot be deleted.');
+            }
+        });
     }
 
     public function profile(): HasOne

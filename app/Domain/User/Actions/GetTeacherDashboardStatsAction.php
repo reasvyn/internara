@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\User\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
-use App\Domain\Logbook\Models\Logbook;
-use App\Domain\Registration\Models\Registration;
+use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Journals\Aggregates\Logbook\Models\Logbook;
 use Illuminate\Support\Facades\Auth;
 
 final class GetTeacherDashboardStatsAction extends BaseAction

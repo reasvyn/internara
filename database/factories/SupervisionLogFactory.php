@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Mentor\Enums\SupervisionLogStatus;
-use App\Domain\Mentor\Enums\SupervisionType;
-use App\Domain\Mentor\Models\SupervisionLog;
-use App\Domain\Registration\Models\Registration;
+use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Guidance\Aggregates\SupervisionLog\Enums\SupervisionLogStatus;
+use App\Domain\Guidance\Aggregates\SupervisionLog\Enums\SupervisionType;
+use App\Domain\Guidance\Aggregates\SupervisionLog\Models\SupervisionLog;
 use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

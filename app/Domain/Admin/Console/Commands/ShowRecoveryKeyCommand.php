@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Console\Commands;
 
+use App\Domain\Admin\Aggregates\Setup\Models\Setup;
 use App\Domain\Core\Support\SmartLogger;
-use App\Domain\Setup\Models\Setup;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 

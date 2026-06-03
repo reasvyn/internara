@@ -12,7 +12,7 @@ Complete catalog of all documentation files in the `docs/` directory.
 | Document                                    | Description                                                                                                                                |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | [Product Definition](product-definition.md) | What Internara is, core principles, user personas, scope, deployment model, localization, licensing                                        |
-| [Key Features](key-features.md)             | Complete feature inventory across all 24 domains, organized by program lifecycle                                                           |
+| [Key Features](key-features.md)             | Complete feature inventory across all 23 domains, organized by program lifecycle                                                           |
 | [Architecture](architecture.md)             | 12-layer architecture, Action Triad (Command/Read/Process), cross-domain rules, exception hierarchy, caching, validation, testing strategy |
 | [Coding Conventions](conventions.md)        | Mandatory base classes, naming conventions, file structure, PHP rules, policy/enum conventions                                             |
 
@@ -84,7 +84,6 @@ Each domain has two documents:
 | Domain     | Overview                     | Reference                               |
 | ---------- | ---------------------------- | --------------------------------------- |
 | **Core**   | [Overview](domain/core.md)   | [Reference](domain/core-reference.md)   |
-| **Shared** | [Overview](domain/shared.md) | [Reference](domain/shared-reference.md) |
 
 ### Identity & Access
 
@@ -132,7 +131,7 @@ Each domain has two documents:
 | **Document**    | [Overview](domain/document.md)    | [Reference](domain/document-reference.md)    |
 | **Certificate** | [Overview](domain/certificate.md) | [Reference](domain/certificate-reference.md) |
 
-### Administration
+### Admin
 
 | Domain    | Overview                    | Reference                              |
 | --------- | --------------------------- | -------------------------------------- |

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Domain\School\Models\AcademicYear;
-use App\Domain\School\Models\Department;
-use App\Domain\School\Models\School;
+use App\Domain\Academics\Aggregates\AcademicYear\Models\AcademicYear;
+use App\Domain\Academics\Aggregates\Department\Models\Department;
+use App\Domain\Academics\Aggregates\School\Models\School;
 use Illuminate\Database\Seeder;
 
 class SchoolSeeder extends Seeder

@@ -1,18 +1,18 @@
 # Architecture
-> Last updated: 2026-06-02
-> Changes: deduplicate HandlesActionErrors in Layer 4, remove States from domain mapping, expand caching table 7→17 keys, add metadata
-> **Context:** ✅ All 24 domains are fully implemented per the [domain audit](domain/domain-index.md).
+> Last updated: 2026-06-03
+> Changes: restructure 23 domains into 16 — merge School+Setup→Academics, Partnership→Partners, Registration+Placement→Enrollment, Internship→Program+Reports, Mentee+Mentor+Guidance→Guidance, Attendance+Logbook+Schedule→Journals, Assessment+Evaluation→Assessment, Certificate+Document→Certification, Admin→Administration
+> **Context:** ✅ All 16 domains defined in the [domain index](domain/domain-index.md).
 
 
 ## Philosophy
 
-Internara organizes code by **business domain**, not by technical layer. Each business concept — Auth, School, Internship, Assessment — owns its complete vertical slice: persistence, business rules, UI components, authorization, and HTTP interface.
+Internara organizes code by **business domain**, not by technical layer. Each business concept — User, Academics, Program, Assessment — owns its complete vertical slice: persistence, business rules, UI components, authorization, and HTTP interface.
 
-This approach exists because flat layering (`app/Models/`, `app/Livewire/`, `app/Actions/`) scatters a single feature across 8+ directories, making it hard to reason about boundaries, impossible to enforce encapsulation, and expensive to refactor. Domain colocation solves this by ensuring everything related to "Registration" lives under `app/Domain/Registration/`.
+This approach exists because flat layering (`app/Models/`, `app/Livewire/`, `app/Actions/`) scatters a single feature across 8+ directories, making it hard to reason about boundaries, impossible to enforce encapsulation, and expensive to refactor. Domain colocation solves this by ensuring everything related to "Enrollment" lives under `app/Domain/Enrollment/`.
 
 Every architectural decision below serves three goals:
 - **S1 - Secure**: Protect data integrity, enforce authorization, prevent leakage
-- **S2 - Sustain**: Keep the codebase maintainable as it grows across 24 domains
+- **S2 - Sustain**: Keep the codebase maintainable as it grows across 16 domains
 - **S3 - Scalable**: Design for team expansion and feature accretion without rewrites
 
 ---
@@ -23,13 +23,14 @@ The system is built in **12 layers**, bottom to top. Each layer depends only on 
 The domain directories are vertical slices that cross all layers below Layer 11.
 
 ```
- Layer 12 ┌──────────────────────────────────────────────────────────┐
-  Business│  24 Domains: Auth, School, Internship, Registration...   │
-  Domains │  Each domain is a vertical slice of layers 1–11          │
-          │  app/Domain/{Domain}/                                    │
-          │  ├── Models/  ├── Actions/  ├── Livewire/  ├── Http/     │
-          │  ├── Enums/   ├── Entities/ ├── Policies/ ├── ...        │
-          └──────────────────────────────────────────────────────────┘
+  Layer 12 ┌──────────────────────────────────────────────────────────┐
+   Business│  16 Domains: User, Academics, Program, Enrollment...     │
+   Domains │  Each domain is a vertical slice of layers 1–11          │
+   (Domain)│  app/Domain/{Domain}/                                    │
+           │  ├── {Aggregate}/  ← colocated Actions, Models, Policies │
+           │  ├── Types/        ← shared enums, value objects         │
+           │  └── (root files)  ← cross-aggregate Http, Console, ...  │
+           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 11 ┌──────────────────────────────────────────────────────────┐
   UI /    │  Livewire 4 components (88)    Blade templates           │
@@ -39,7 +40,7 @@ The domain directories are vertical slices that cross all layers below Layer 11.
                                          ▲ depends on
  Layer 10 ┌──────────────────────────────────────────────────────────┐
   HTTP    │  Controllers / Middleware / Routes                       │
-  Layer   │  24 domain route files → routes/web/{domain}.php        │
+  Layer   │  16 domain route files → routes/web/{domain}.php        │
           │  SecurityHeaders, LogContext, CheckRole, SetLocale       │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
@@ -113,28 +114,36 @@ The domain directories are vertical slices that cross all layers below Layer 11.
 
 1. A layer may only depend on layers **below** it. Layer 12 depends on 1–11, Layer 7 depends on 1–6.
 2. **Core** (layers 3–4) depends on nothing except Laravel/Spatie. No business domain imports Core.
-3. **Sibling imports allowed.** `School` domain may import `Internship` domain directly. Prefer events for loose coupling when side effects are involved, but direct imports are fine for straightforward cross-domain access.
+3. **Sibling imports allowed.** `Academics` domain may import `Program` domain directly. Prefer events for loose coupling when side effects are involved, but direct imports are fine for straightforward cross-domain access.
 4. **Persistence isolation.** Actions never call Eloquent directly — they delegate to Models.
 5. **UI isolation.** Livewire components should not import other domains' Livewire components directly. Use events or redirects for UI communication.
 
 ### How Domain Directories Map to Layers
 
-A domain directory `app/Domain/{Domain}/` combines multiple layers:
+A domain directory `app/Domain/{Domain}/` combines multiple layers. Within each domain,
+code is further organized by **DDD Aggregate** — a cluster of domain objects treated
+as a single unit. Each aggregate directory is itself a vertical slice containing its own
+Actions, Models, Policies, and optionally Livewire, Entities, Enums, and Notifications.
 
 | Layer | Directory within Domain | Example |
-|---|---|---|
-| 12 | `app/Domain/Registration/` | The domain itself |
-| 11 | `resources/views/registration/` | Blade views |
-| 10 | `routes/web/registration.php` | Route definitions |
-| 9 | `Listeners/`, `Notifications/`, `Console/` | Communication |
-| 8 | `Policies/` | Authorization |
-| 7 | `Actions/` | Business operations |
-| 6 | `Enums/`, `Entities/`, `Data/` | Domain rules |
-| 5 | `Models/` | Persistence |
+|---|---|---|---|
+| 12 | `app/Domain/{Domain}/` | The domain itself |
+| 11 | `resources/views/{domain}/{aggregate}/` | Blade views (per aggregate) |
+| 10 | `routes/web/{domain}.php` | Route definitions |
+| 9 | `{Aggregate}/Listeners/`, `{Aggregate}/Notifications/`, `Console/` | Communication |
+| 8 | `{Aggregate}/Policies/` | Authorization |
+| 7 | `{Aggregate}/Actions/` | Business operations |
+| 6 | `{Aggregate}/Entities/`, `{Aggregate}/Enums/`, `Types/` | Domain rules |
+| 5 | `{Aggregate}/Models/` | Persistence |
 | 4 | (uses Core's base classes: `app/Domain/Core/{Actions,Models,Policies,...}`) | |
 | 3 | (uses Core's contracts) | |
 | 2 | (uses database/config) | |
 | 1 | (uses PHP/Laravel) | |
+
+The mapping above uses `{Aggregate}/` as a placeholder for each aggregate directory
+(e.g., `Program/Actions/`, `Enrollment/Policies/`). Cross-aggregate files
+(shared Actions, Http, Console) live at the domain root, directly under
+`app/Domain/{Domain}/` without an aggregate subdirectory.
 
 ---
 
@@ -142,7 +151,7 @@ A domain directory `app/Domain/{Domain}/` combines multiple layers:
 
 This is the most important architectural decision in Internara. Actions are not monolithic — they split into three distinct categories, each with a specific base class and contract.
 
-All three live under `app/Domain/{Domain}/Actions/` and follow the single `execute()` method convention.
+All three live under `app/Domain/{Domain}/{Aggregate}/Actions/` (or root `Actions/` for cross-aggregate actions) and follow the single `execute()` method convention.
 
 ### 1. Command Actions (Mutations)
 
@@ -340,59 +349,108 @@ Events decouple side effects from core business logic. A Command Action's respon
 
 ## Domain Structure
 
-Every domain follows this directory layout. Directories marked (optional) exist only when the domain needs that layer.
+Every domain follows this directory layout. Within each domain, code is organized by
+**DDD Aggregate** — a cluster of domain objects treated as a single unit. Each aggregate
+has its own technical-layer subdirectories for high cohesion. Files that span multiple
+aggregates (dashboards, shared utilities, console commands) live at the domain root.
 
 ```
 app/Domain/{Domain}/
-├── Actions/         → Command, Read, Process — 1 class = 1 use case
-├── Models/          → Eloquent persistence layer
-├── Livewire/        → Reactive UI components
-│   └── Forms/       → Form Objects for complex forms (optional)
-├── Policies/        → Authorization gates
-├── Enums/           → Constants with behavior (LabelEnum, StatusEnum)
-├── Entities/        → Business rules without framework dependencies
-├── Data/            → DTOs for typed input/output (optional, gradual)
-├── Http/            → Controllers & middleware (optional, Livewire-first)
-├── Notifications/   → Mail, database, broadcast alerts (optional)
-├── Events/          → Domain events emitted (optional, gradual)
-├── Listeners/       → Event subscribers (optional, gradual)
-├── Console/         → Artisan commands (optional)
-├── Support/         → Domain utilities (optional)
-└── Contracts/       → Domain interfaces (optional)
+├── {Aggregate}/                    → One directory per aggregate root
+│   ├── Actions/                    → Business operations (Command, Read, Process)
+│   ├── Models/                     → Eloquent models belonging to this aggregate
+│   ├── Policies/                   → Authorization gates
+│   ├── Livewire/                   → UI components (optional)
+│   │   └── Forms/                  → Form Objects (optional)
+│   ├── Entities/                   → Pure business rules (optional)
+│   ├── Enums/                      → Enum specific to this aggregate (optional)
+│   ├── Events/                     → Domain events (optional)
+│   ├── Listeners/                  → Event subscribers (optional)
+│   └── Notifications/              → Multi-channel alerts (optional)
+├── Types/                          → Shared value objects, flat enums, rules (optional)
+├── Actions/                        → Cross-aggregate orchestration (optional)
+├── Http/                           → Cross-aggregate controllers & middleware (optional)
+│   ├── Controllers/
+│   └── Middleware/
+├── Console/                        → Cross-aggregate artisan commands (optional)
+├── Livewire/                       → Cross-aggregate UI (dashboards, etc.) (optional)
+│   └── Forms/                      → Form Objects (optional)
+├── Notifications/                  → Cross-aggregate notifications (optional)
+├── Events/                         → Cross-aggregate events (optional)
+├── Listeners/                      → Cross-aggregate listeners (optional)
+├── Support/                        → Shared domain utilities (optional)
+└── Services/                       → Infrastructure services (optional)
 ```
 
-Not every domain needs every layer. `Mentee` might only need Models + Livewire + Actions. `Certificate` adds Http when downloads are needed.
+Not every domain needs every directory. `Incidents` might only have `IncidentReport/` aggregate.
+`Certification` adds `Http/` when downloads are needed. Tools and simple value objects
+too small for their own aggregate live in `Types/`.
+
+### Aggregate Mapping
+
+Each domain contains the following aggregates:
+
+| Domain | Aggregates | Cross-Aggregate Root Files |
+|---|---|---|---|
+| **Core** | — | (infrastructure + cross-domain utilities) |
+| **User** | `Login/`, `Password/`, `ActivationToken/`, `AccountRecovery/`, `AccountStatus/`, `Profile/`, `Notification/` | Http, Livewire (login, recovery, dashboards, editors) |
+| **Academics** | `School/`, `Department/`, `AcademicYear/`, `Setup/` | Console, Events, Listeners, Http, Livewire (wizard), Services, Support |
+| **Partners** | `Company/`, `Partnership/` | — |
+| **Program** | `Internship/`, `InternshipPhase/`, `InternshipGroup/`, `DocumentRequirement/` | Http, Events, Listeners, Notifications, Rules |
+| **Enrollment** | `Registration/`, `AccountApplication/`, `RegistrationDocument/`, `Placement/`, `PlacementChangeRequest/` | — |
+| **Guidance** | `Mentee/`, `Mentor/`, `SupervisionLog/`, `Handbook/`, `HandbookAcknowledgement/` | Http |
+| **Journals** | `Attendance/`, `AbsenceRequest/`, `Logbook/`, `IndustryAssessment/`, `Schedule/` | Http |
+| **Assignments** | `Assignment/`, `Submission/` | Http, Notifications |
+| **Reports** | `Report/` | Http |
+| **Assessment** | `Assessment/`, `Rubric/`, `Competency/`, `Indicator/`, `Presentation/` | — |
+| **Evaluation** | `Evaluation/` | — |
+| **Certification** | `Certificate/`, `CertificateTemplate/`, `Document/` | Http, Support |
+| **Incidents** | `IncidentReport/` | — |
+| **Settings** | `Setting/` | Http, Livewire (system settings), Support |
+| **Administration** | `Announcement/`, `GdprDeletionLog/` | Console, Notifications, Livewire (audit, pulse), Services |
+
+### Views Structure
+
+Blade views mirror both the domain and aggregate structure:
+
+```
+resources/views/{domain}/
+├── {aggregate}/                    → Views for a specific aggregate
+│   ├── {component-name}.blade.php  → Livewire component view
+│   └── components/                 → Sub-views (optional)
+├── layouts/                        → Domain-specific layouts (optional, cross-cutting)
+├── components/                     → Shared sub-views (optional, cross-cutting)
+└── partials/                       → Reusable partials (optional, cross-cutting)
+```
+
+Cross-aggregate views (dashboards, global components) live directly in the domain
+view directory without an aggregate subdirectory. The Livewire component alias follows
+`{kebab-domain}.{kebab-aggregate}.{kebab-component-name}` for aggregate-specific
+components, and `{kebab-domain}.{kebab-component-name}` for cross-aggregate
+components.
 
 ---
 
-## 24 Domains at a Glance
+## 16 Domains at a Glance
 
 | Domain | Boundary | Key Concept |
 |--------|----------|-------------|
-| **Core** | Base classes & infrastructure everything depends on | Base model, base action, base entity, contracts, logging, exceptions |
-| **Shared** | Utilities shared across domains, no business logic | Theme, CSV handler, environment detection, locale management |
-| **Auth** | Identity & access control | Login, passwords, account lifecycle, recovery, RBAC |
-| **User** | User identity & profile | Identity persistence, profile editing, dashboards, notifications |
-| **School** | Institution configuration | School profile, departments, academic years |
-| **Settings** | Runtime configuration | Key-value store, branding, localization, feature flags |
-| **Setup** | First-run installation | Wizard, environment audit, provisioning, recovery key |
-| **Admin** | System administration | User CRUD, announcements, GDPR, audit logs |
-| **Partnership** | External relationships | Companies, partnership agreements, MoU |
-| **Placement** | Slot management | Capacity, direct assignments, change requests |
-| **Registration** | Student enrollment | Applications, wizard, document upload, verification |
-| **Internship** | Program execution | Program lifecycle, groups, phases, reports, closure & archival |
-| **Mentor** | Mentoring & supervision | Dual mentorship, supervision logs, grading, site visits |
-| **Mentee** | Student role | Dashboard, progress tracking, self-service access |
-| **Attendance** | Presence tracking | Clock-in/out, absence requests, compliance monitoring |
-| **Logbook** | Daily journals | Student diary entries, photo documentation, mentor review |
-| **Schedule** | Event planning | Calendar management, recurrence, reminders |
-| **Guidance** | Handbooks | Versioned documents, acknowledgements |
-| **Incident** | Issue reporting | Report, investigation, resolution workflow |
-| **Assignment** | Tasks & submissions | Task creation, grading workflow, revision loop |
-| **Assessment** | Competency evaluation | Rubrics, scoring, presentations, weighted criteria |
-| **Evaluation** | Feedback collection | Multi-type feedback (program, company, mentor, overall) |
-| **Document** | Template management | Rendering engine, PDF generation, report templates |
-| **Certificate** | Credentialing | Issuance, templates, revocation, serial number tracking |
+| **Core** | Base classes, infrastructure, and cross-domain utilities everything depends on | Base model, base action, base entity, contracts, logging, exceptions, theme, CSV handler, environment detection, locale management |
+| **User** | Identity, access, and profiles | Login, passwords, account lifecycle, recovery, RBAC, profile editing, notifications |
+| **Academics** | Institution setup & configuration | School profile, departments, academic years, first-run wizard |
+| **Partners** | External relationships | Companies, partnership agreements, MoU |
+| **Program** | PKL program lifecycle | Program lifecycle, phases, groups, document requirements |
+| **Enrollment** | Student registration & placement | Applications, wizard, document upload, verification, slot management, change requests |
+| **Guidance** | Mentoring & supervision | Student role activation, supervision logs, handbooks, acknowledgements |
+| **Journals** | Daily activities | Daily logbook, attendance, absence requests, scheduling |
+| **Assignments** | Tasks & submissions | Task creation, grading workflow, revision loop |
+| **Reports** | Student final reports | Report writing, revisions, supervisor review |
+| **Assessment** | Competency evaluation | Rubrics, scoring, presentations |
+| **Evaluation** | Program evaluation & feedback | Mentor evaluation, program feedback, user satisfaction |
+| **Certification** | Credentialing | Certificate issuance, templates, document generation, PDF rendering |
+| **Incidents** | Issue reporting | Report, investigation, resolution workflow |
+| **Settings** | Runtime configuration | Key-value store, branding, localization |
+| **Administration** | System oversight | User CRUD, announcements, GDPR compliance, audit logs |
 
 ---
 
@@ -469,7 +527,7 @@ Cross-domain imports are **allowed** — import Models, Actions, Policies, or Li
 ### 1. Direct Import (simplest)
 
 ```php
-use App\Domain\School\Models\AcademicYear;
+use App\Domain\Academics\Models\AcademicYear;
 
 $year = AcademicYear::where('is_active', true)->first();
 ```
@@ -569,7 +627,9 @@ Validation happens at the **outermost layer** possible. Livewire is the primary 
 
 ### Livewire Form Objects (Primary)
 
-Complex forms MUST extract validation into Form Objects under `app/Domain/{Domain}/Livewire/Forms/{Name}Form.php`:
+Complex forms MUST extract validation into Form Objects under
+`app/Domain/{Domain}/{Aggregate}/Livewire/Forms/{Name}Form.php` (or root
+`Livewire/Forms/` for cross-aggregate forms):
 
 ```php
 class AcademicYearForm extends Form
@@ -679,8 +739,10 @@ Command Action → event({Entity}Updated) → CacheInvalidationListener → Cach
 | Rule | Explanation | Violation Example |
 |---|---|---|
 | **Downward only** | Layer N may only use layers < N | A Controller (10) importing from another domain's Livewire (11) |
-| **Core independence** | Core (Layers 3–4) must not import any business domain | Core importing a School model |
-| **No sibling imports** | Domains at Layer 12 must not import each other | `School` importing `Internship` models |
+| **Core independence** | Core (Layers 3–4) must not import any business domain | Core importing an Academics model |
+| **No sibling imports** | Domains at Layer 12 must not import each other | `Academics` importing `Program` models |
+| **Aggregate encapsulation** | Aggregate directories MUST NOT import sibling aggregates. Cross-aggregate access goes through the domain root | `Profile/Actions/UpdateProfileAction.php` importing `Notification/Models/Notification.php` |
+| **Root for cross-cutting** | Cross-aggregate code lives at the domain root, not in any single aggregate | A dashboard action in `User/Actions/` that queries both Profile and Notification |
 | **Persistence isolation** | Entities (Layer 6) never import Models (Layer 5) | An Entity calling `User::find()` |
 | **Action gate** | All mutations go through Command Actions (Layer 7). No `Model::save()` outside Actions | A Livewire component calling `$user->save()` |
 | **Authorize first** | Every Action must be preceded by a policy check (Layer 8) | An Action that modifies data without calling `$this->authorize()` |
@@ -689,11 +751,12 @@ Command Action → event({Entity}Updated) → CacheInvalidationListener → Cach
 
 ## Testing Strategy
 
-Tests mirror source structure:
+Tests mirror the aggregate-based source structure:
 
 ```
-tests/Feature/{Domain}/{Name}Test.php       → Integration tests (Action-level)
-tests/Unit/{Domain}/{Layer}/{Name}Test.php  → Pure unit tests (Entities, Enums)
+tests/Feature/{Domain}/{Aggregate}/{Name}Test.php  → Integration tests
+tests/Unit/{Domain}/{Aggregate}/{Name}Test.php     → Pure unit tests
+tests/Unit/{Domain}/Types/{Name}Test.php           → Value objects, flat enums, rules
 ```
 
 ### Feature Tests

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Internship\Models\Internship;
-use App\Domain\Mentee\Models\Mentee;
-use App\Domain\Registration\Models\Registration;
+use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Guidance\Aggregates\Mentee\Models\Mentee;
+use App\Domain\Program\Aggregates\Internship\Models\Internship;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RegistrationFactory extends Factory
