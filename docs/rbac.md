@@ -101,7 +101,7 @@ In tests, `Gate::before` is additionally registered in
 Route-level role verification is handled by `CheckRoleMiddleware`. This
 middleware intercepts requests after authentication and checks whether the
 authenticated user has at least one of the required roles. It accepts
-pipe-delimited role names (e.g., `super_admin|admin`). If the user lacks any
+pipe-delimited role names (e.g., `superadmin|admin`). If the user lacks any
 of the required roles, the middleware returns a 403 response for
 authenticated users or redirects to login for unauthenticated requests.
 

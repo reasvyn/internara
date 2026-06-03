@@ -213,6 +213,15 @@ Server admin SSH into the machine
 | `RecoverSuperAdminAction` | `Setup/Actions/RecoverSuperAdminAction.php` | Creates/resets super admin |
 | `SaveRecoveryKeyAction` | `Admin/Actions/SaveRecoveryKeyAction.php` | Saves key to storage file |
 | `ReadRecoveryKeyAction` | `Admin/Actions/ReadRecoveryKeyAction.php` | Reads key from storage file |
+| `SuperAdminIntegrityRules` | `User/Entities/SuperAdminIntegrityRules.php` | Enforces superadmin integrity constraints |
+
+### Super Admin Integrity Constraints
+
+To secure the platform's root-level account, the following strict constraints are programmatically enforced:
+*   **Uniqueness**: There must be exactly one superadmin account in the database. Creating another superadmin is prevented at the action level.
+*   **Immutability of Username & Name**: The superadmin's name (permanently set to `Administrator`) and username (permanently set to `superadmin`) can never be modified. Attempting to change them via user or profile update actions throws a `RejectedException`.
+*   **Undeletability**: The superadmin account cannot be deleted. Any attempt to call the Eloquent `delete()` method or trigger the `deleting` model event throws a `RuntimeException`. The only way to remove it is a hard delete directly in the database (which is restricted in production).
+*   **Role Mapping**: The superadmin role was renamed from `super_admin` to `superadmin` across the codebase. To preserve backwards-compatibility with legacy third-party or spatie integrations, the `User` model intercepts role calls (e.g. `hasRole`, `assignRole`, `syncRoles`) and seamlessly maps `super_admin` to `superadmin`.
 
 ---
 
