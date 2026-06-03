@@ -27,12 +27,13 @@ Core identity system. All other domains depend on User. Admin manages lifecycle.
 
 ## Domain Rules
 
-- Unique usernames are generated from the email address local part (only lowercase alphanumeric) and incremented on collision (e.g., usertest, usertest1, usertest2)
-- Unique emails required
-- Passwords hashed using bcrypt with salting
-- Account lockable by admin (preserves data)
-- Recovery codes are cryptographically secure and single-use
-- Super admin (superadmin/Administrator) immutable
+- **Username Generation**: Unique usernames are generated from the email address local part. Only lowercase alphanumeric characters are allowed (spaces and symbols are removed). In case of collisions, numeric suffix increments are appended (e.g., `usertest` -> `usertest1` -> `usertest2`). This is managed by `UserIdentifierGenerator`.
+- **Email Requirements**: Unique email addresses are mandatory for all user accounts.
+- **Password Security**: Passwords are securely hashed using Bcrypt with salting.
+- **Account Lifecycles**: Accounts can be locked or suspended by administrators, which blocks active login sessions while preserving operational data.
+- **Recovery Codes**: Generated recovery codes are cryptographically secure, hashed in the database, and single-use.
+- **Super Admin Account**: The superadmin account is immutable, undeletable, and limited to a single instance.
+- **Superadmin Role Mapping**: The superadmin role was renamed from `super_admin` to `superadmin`. To prevent breaking third-party packages (e.g., Spatie) and legacy code, the `User` model overrides role-related methods (`hasRole`, `assignRole`, `syncRoles`, etc.) to map `super_admin` to `superadmin` automatically.
 
 ---
 
