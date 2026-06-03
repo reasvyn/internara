@@ -7,8 +7,18 @@
 
 The test suite is organized by domain and by test type. Every change to the codebase must be
 accompanied by tests that verify the change works correctly and does not break existing behavior.
-Tests are a specification of what the code does — reading the tests should tell a developer what the
-system's behavioral contract is.
+## Scope Isolation
+
+To maintain strict modularity, high code quality, and predictable testing boundaries, this project enforces **Scope Isolation** in all test files:
+
+*   **One File, One Scope**: Do NOT combine multiple distinct testing scopes into a single test file. For example, do not group different console commands (e.g. `system:health` and `system:cleanup`) or different actions/components under a single test file.
+*   **Dedicated Test Files**: Every console command, action, and Livewire component must have its own dedicated test file (e.g. `SystemHealthCommandTest.php` and `SystemCleanupCommandTest.php`).
+*   **Comprehensive Coverage**: A test suite should not be measured by lines of code, but by depth. Each dedicated test file must thoroughly cover the target scope from multiple angles:
+    *   Happy path scenarios.
+    *   Validation constraints and failure modes.
+    *   Edge cases and boundary inputs.
+    *   Error handling (graceful failures, logging).
+    *   Mocking dependencies/actions and verifying the entire execution chain.
 
 ## TDD Approach
 

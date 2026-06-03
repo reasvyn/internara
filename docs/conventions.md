@@ -912,6 +912,13 @@ tests/Unit/{Domain}/{Aggregate}/{Name}Test.php     → Pure unit tests (Entities
 tests/Unit/{Domain}/Types/{Name}Test.php           → Value objects, flat enums, rules
 ```
 
+### Scope Isolation (CRITICAL)
+
+- **Do NOT combine multiple distinct testing scopes into a single test file** (e.g., do not group multiple separate console commands or actions into a single `ConsoleCommandsTest` or `SetupTest`).
+- Each command, action, and component must have its own **dedicated test file** to ensure single-responsibility and comprehensive test coverage from all angles.
+- If a test file becomes too fat or too thin, it should be split or deepened appropriately.
+- Ensure you test each component thoroughly from multiple angles (happy path, validation failures, edge cases, error handling, mock assertions) including its entire chain of dependencies.
+
 ### Naming
 
 ```php
