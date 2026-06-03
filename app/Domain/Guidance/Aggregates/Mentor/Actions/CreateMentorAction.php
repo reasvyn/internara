@@ -23,7 +23,7 @@ final class CreateMentorAction extends BaseAction
             default => Role::TEACHER->value,
         };
 
-        $userData['username'] = $userData['username'] ?? UserIdentifierGenerator::generateUsername();
+        $userData['username'] = $userData['username'] ?? UserIdentifierGenerator::generateUsername($userData['email'] ?? '');
 
         Validator::make($userData, [
             'name' => ['required', 'string', 'max:255'],

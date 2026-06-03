@@ -7,6 +7,7 @@ namespace App\Domain\User\Aggregates\Login\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Core\Support\SmartLogger;
+use App\Domain\User\Aggregates\AccountStatus\Actions\LockUserAccountAction;
 use App\Domain\User\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;

@@ -1,109 +1,119 @@
-# Program — API Reference
+# Program — Technical Reference
 
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Reference mapped to the Program domain
+> **Status:** ✅ **Fully Implemented** — Complete technical reference for the Program domain.
 
-This reference details the class structures, models, actions, and Livewire components belonging to the **Program** domain.
+Detailed structural and implementation reference for the **Program** domain.
+
+---
+
+## Overview
+
+Manages internship and practicum programs, phases, and requirements
+
+### Domain Statistics
+- **Actions**: 16 business logic operations
+- **Models**: 5 data entities
+- **Livewire Components**: 4 UI components
+- **Policies**: 3 authorization rules
+- **Aggregates**: 4 domain aggregates
+
+### Aggregates
+- `DocumentRequirement`
+- `Internship`
+- `InternshipGroup`
+- `InternshipPhase`
+
+---
+
+## Dependency Graph
+
+This domain depends on:
+- **Academics**
+- **Assessment**
+- **Assignment**
+- **Certification**
+- **Core**
+- **Enrollment**
+- **Guidance**
+- **Journals**
+- **User**
 
 ---
 
 ## Actions
 
-### Program Lifecycle Actions
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Program/Actions/CreateInternshipAction.php` | `CreateInternshipAction` | `BaseAction` | Provisions a new internship program period |
-| `Program/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseAction` | Updates calendar ranges and attributes |
-| `Program/Actions/DeleteInternshipAction.php` | `DeleteInternshipAction` | `BaseAction` | Deletes a program (aborts if student registrations exist) |
-| `Program/Actions/BatchUpdateInternshipStatusAction.php` | `BatchUpdateInternshipStatusAction` | `BaseAction` | Bulk updates statuses across multiple programs |
-| `Program/Actions/CheckCloseReadinessAction.php` | `CheckCloseReadinessAction` | `BaseAction` | Audits documentation and grades to check close-readiness |
-
-### Phase, Group, and Requirement Actions
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Program/Actions/CreateInternshipPhaseAction.php` | `CreateInternshipPhaseAction` | `BaseAction` | Creates calendar phase timelines within a program |
-| `Program/Actions/UpdateInternshipPhaseAction.php` | `UpdateInternshipPhaseAction` | `BaseAction` | Modifies phase descriptions or dates |
-| `Program/Actions/DeleteInternshipPhaseAction.php` | `DeleteInternshipPhaseAction` | `BaseAction` | Deletes phase spans |
-| `Program/Actions/CreateInternshipGroupAction.php` | `CreateInternshipGroupAction` | `BaseAction` | Creates student-mentor supervision groups |
-| `Program/Actions/UpdateInternshipGroupAction.php` | `UpdateInternshipGroupAction` | `BaseAction` | Edits supervision group identifiers |
-| `Program/Actions/DeleteInternshipGroupAction.php` | `DeleteInternshipGroupAction` | `BaseAction` | Deletes empty supervision groups |
-| `Program/Actions/AddMemberToGroupAction.php` | `AddMemberToGroupAction` | `BaseAction` | Adds student or mentor users to a group |
-| `Program/Actions/RemoveMemberFromGroupAction.php` | `RemoveMemberFromGroupAction` | `BaseAction` | Removes users from a group |
-| `Program/Actions/CreateRequirementAction.php` | `CreateRequirementAction` | `BaseAction` | Creates required enrollment document placeholders |
-| `Program/Actions/UpdateRequirementAction.php` | `UpdateRequirementAction` | `BaseAction` | Modifies document requirement parameters |
-| `Program/Actions/DeleteRequirementAction.php` | `DeleteRequirementAction` | `BaseAction` | Removes document requirement parameters |
-
----
-
-## Livewire Components
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Program/Livewire/InternshipManager.php` | `InternshipManager` | `BaseRecordManager` | Admin CRUD managing program periods and statuses |
-| `Program/Livewire/InternshipPhaseManager.php` | `InternshipPhaseManager` | `BaseRecordManager` | Admin timeline scheduler mapping program phases |
-| `Program/Livewire/InternshipGroupManager.php` | `InternshipGroupManager` | `BaseRecordManager` | Admin interface managing group supervision mappings |
-| `Program/Livewire/RequirementManager.php` | `RequirementManager` | `Component` | Admin editor tracking required files checksheets |
-
-### Livewire Form Objects
-| File | Class | Extends | Used By |
-|---|---|---|---|
-| `Program/Livewire/Forms/InternshipForm.php` | `InternshipForm` | `Form` | `InternshipManager` |
-| `Program/Livewire/Forms/InternshipPhaseForm.php` | `InternshipPhaseForm` | `Form` | `InternshipPhaseManager` |
-| `Program/Livewire/Forms/InternshipGroupForm.php` | `InternshipGroupForm` | `Form` | `InternshipGroupManager` |
-| `Program/Livewire/Forms/InternshipRequirementForm.php` | `InternshipRequirementForm` | `Form` | `RequirementManager` |
+| File | Class | Extends |
+|---|---|---|
+| `Aggregates/InternshipGroup/Actions/AddMemberToGroupAction.php` | `AddMemberToGroupAction` | `BaseAction` |
+| `Aggregates/Internship/Actions/BatchUpdateInternshipStatusAction.php` | `BatchUpdateInternshipStatusAction` | `BaseAction` |
+| `Aggregates/Internship/Actions/CheckCloseReadinessAction.php` | `CheckCloseReadinessAction` | `BaseAction` |
+| `Aggregates/Internship/Actions/CreateInternshipAction.php` | `CreateInternshipAction` | `BaseAction` |
+| `Aggregates/InternshipGroup/Actions/CreateInternshipGroupAction.php` | `CreateInternshipGroupAction` | `BaseAction` |
+| `Aggregates/InternshipPhase/Actions/CreateInternshipPhaseAction.php` | `CreateInternshipPhaseAction` | `BaseAction` |
+| `Aggregates/DocumentRequirement/Actions/CreateRequirementAction.php` | `CreateRequirementAction` | `BaseAction` |
+| `Aggregates/Internship/Actions/DeleteInternshipAction.php` | `DeleteInternshipAction` | `BaseAction` |
+| `Aggregates/InternshipGroup/Actions/DeleteInternshipGroupAction.php` | `DeleteInternshipGroupAction` | `BaseAction` |
+| `Aggregates/InternshipPhase/Actions/DeleteInternshipPhaseAction.php` | `DeleteInternshipPhaseAction` | `BaseAction` |
+| `Aggregates/DocumentRequirement/Actions/DeleteRequirementAction.php` | `DeleteRequirementAction` | `BaseAction` |
+| `Aggregates/InternshipGroup/Actions/RemoveMemberFromGroupAction.php` | `RemoveMemberFromGroupAction` | `BaseAction` |
+| `Aggregates/Internship/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseAction` |
+| `Aggregates/InternshipGroup/Actions/UpdateInternshipGroupAction.php` | `UpdateInternshipGroupAction` | `BaseAction` |
+| `Aggregates/InternshipPhase/Actions/UpdateInternshipPhaseAction.php` | `UpdateInternshipPhaseAction` | `BaseAction` |
+| `Aggregates/DocumentRequirement/Actions/UpdateRequirementAction.php` | `UpdateRequirementAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-### Internship (`Internship.php`)
-- **Extends**: `BaseModel`
-- **Fields**: name, start_date, end_date, academic_year_id, status (cast to `InternshipStatus` enum)
-- **Relationships**:
-  - `phases` → `HasMany` (InternshipPhase)
-  - `groups` → `HasMany` (InternshipGroup)
-  - `requirements` → `HasMany` (InternshipDocumentRequirement)
-
-### InternshipPhase (`InternshipPhase.php`)
-- **Extends**: `BaseModel`
-- **Fields**: internship_id, name, start_date, end_date, description
-
-### InternshipGroup (`InternshipGroup.php`)
-- **Extends**: `BaseModel`
-- **Fields**: internship_id, name, description
-- **Relationships**:
-  - `members` → `HasMany` (InternshipGroupMember)
-
-### InternshipGroupMember (`InternshipGroupMember.php`)
-- **Extends**: `BaseModel`
-- **Fields**: internship_group_id, user_id, role (cast to `InternshipGroupRole` enum)
-
-### InternshipDocumentRequirement (`InternshipDocumentRequirement.php`)
-- **Extends**: `BaseModel`
-- **Fields**: internship_id, name, description, category, type (cast to `RequirementType` enum), is_mandatory
+| File | Class |
+|---|---|
+| `Aggregates/Internship/Models/Internship.php` | `Internship` |
+| `Aggregates/DocumentRequirement/Models/InternshipDocumentRequirement.php` | `InternshipDocumentRequirement` |
+| `Aggregates/InternshipGroup/Models/InternshipGroup.php` | `InternshipGroup` |
+| `Aggregates/InternshipGroup/Models/InternshipGroupMember.php` | `InternshipGroupMember` |
+| `Aggregates/InternshipPhase/Models/InternshipPhase.php` | `InternshipPhase` |
 
 ---
 
-## Entities, Enums, and Events
+## Livewire Components
 
-### Entities
-- `InternshipState`: DTO evaluating date conditions.
-- `InternshipPeriod`: DTO checking program active ranges.
-- `InternshipGroupState`: DTO mapping group rosters.
-
-### Enums
-- `InternshipStatus` (implements `LabelEnum`, `StatusEnum`): `DRAFT`, `PUBLISHED`, `ACTIVE`, `CLOSING`, `CLOSED`.
-- `RequirementType` (implements `LabelEnum`): `PDF_FILE`, `IMAGE_FILE`, `DIGITAL_SIGNATURE`.
-- `InternshipGroupRole` (implements `LabelEnum`): `STUDENT`, `ACADEMIC_MENTOR`, `COMPANY_SUPERVISOR`.
-
-### Events
-- `InternshipCreated`: Dispatched when an internship is created.
-- `NotifyAdminsInternshipCreated`: Listener notifying admins on publication.
+| File | Component | Extends |
+|---|---|---|
+| `Aggregates/InternshipGroup/Livewire/InternshipGroupManager.php` | `InternshipGroupManager` | `BaseRecordManager` |
+| `Aggregates/Internship/Livewire/InternshipManager.php` | `InternshipManager` | `BaseRecordManager` |
+| `Aggregates/InternshipPhase/Livewire/InternshipPhaseManager.php` | `InternshipPhaseManager` | `BaseRecordManager` |
+| `Aggregates/DocumentRequirement/Livewire/RequirementManager.php` | `RequirementManager` | `Component` |
 
 ---
 
-## Policies
+## Authorization Policies
 
-- `InternshipPolicy`: Gated checks for program CRUD operations.
-- `InternshipPhasePolicy`: Restricts phase modifications.
-- `InternshipGroupPolicy`: Restricts group assignments and memberships.
+| File | Policy |
+|---|---|
+| `Aggregates/InternshipGroup/Policies/InternshipGroupPolicy.php` | `InternshipGroupPolicy` |
+| `Aggregates/InternshipPhase/Policies/InternshipPhasePolicy.php` | `InternshipPhasePolicy` |
+| `Aggregates/Internship/Policies/InternshipPolicy.php` | `InternshipPolicy` |
+
+---
+
+## File Organization
+
+```
+app/Domain/Program/
+├── Aggregates/           ← Aggregate roots
+│   └── {Aggregate}/
+│       ├── Actions/
+│       ├── Models/
+│       ├── Policies/
+│       └── Livewire/
+├── Http/
+├── Livewire/
+├── Types/
+├── Services/
+└── Support/
+```
+
+---
+
+*For overview and business context, see [program.md](program.md)*

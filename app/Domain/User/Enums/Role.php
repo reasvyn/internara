@@ -8,7 +8,7 @@ use App\Domain\Core\Contracts\LabelEnum;
 
 enum Role: string implements LabelEnum
 {
-    case SUPER_ADMIN = 'super_admin';
+    case SUPER_ADMIN = 'superadmin';
     case ADMIN = 'admin';
     case TEACHER = 'teacher';
     case STUDENT = 'student';

@@ -1,26 +1,88 @@
-# Evaluation — API Reference
+# Evaluation — Technical Reference
 
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Aggregate-rooted layout mapping for the Evaluation domain
+> **Status:** ✅ **Fully Implemented** — Complete technical reference for the Evaluation domain.
 
-This reference defines the structured aggregates and code layout within the **Evaluation** domain.
+Detailed structural and implementation reference for the **Evaluation** domain.
 
 ---
 
-## 1. Evaluation Aggregate
-Collects multi-perspective internship quality feedback (student evaluating mentors, companies, and facilities).
+## Overview
 
-- **Eloquent Models**:
-  - `Evaluation` (`app/Domain/Evaluation/Models/Evaluation.php`)
-- **Policies**:
-  - `EvaluationPolicy` (`app/Domain/Evaluation/Policies/EvaluationPolicy.php`)
-- **Command Actions**:
-  - `SubmitEvaluationAction` (`app/Domain/Evaluation/Actions/SubmitEvaluationAction.php`)
-  - `DeleteEvaluationAction` (`app/Domain/Evaluation/Actions/DeleteEvaluationAction.php`)
-  - `EvaluateMentorAction` (`app/Domain/Evaluation/Actions/EvaluateMentorAction.php`)
-- **Livewire UI Components**:
-  - `MentorEvaluationManager` (`app/Domain/Evaluation/Livewire/MentorEvaluationManager.php`)
-- **Entities (Domain Rules)**:
-  - `EvaluationResult` (`app/Domain/Evaluation/Entities/EvaluationResult.php`)
-- **Enums**:
-  - `EvaluationCategory` (`app/Domain/Evaluation/Enums/EvaluationCategory.php`)
+Manages supervisor and teacher evaluations of students
+
+### Domain Statistics
+- **Actions**: 3 business logic operations
+- **Models**: 1 data entities
+- **Livewire Components**: 1 UI components
+- **Policies**: 1 authorization rules
+- **Aggregates**: 1 domain aggregates
+
+### Aggregates
+- `Evaluation`
+
+---
+
+## Dependency Graph
+
+This domain depends on:
+- **Core**
+- **Enrollment**
+- **User**
+
+---
+
+## Actions
+
+| File | Class | Extends |
+|---|---|---|
+| `Aggregates/Evaluation/Actions/DeleteEvaluationAction.php` | `DeleteEvaluationAction` | `BaseAction` |
+| `Aggregates/Evaluation/Actions/EvaluateMentorAction.php` | `EvaluateMentorAction` | `BaseAction` |
+| `Aggregates/Evaluation/Actions/SubmitEvaluationAction.php` | `SubmitEvaluationAction` | `BaseAction` |
+
+---
+
+## Models
+
+| File | Class |
+|---|---|
+| `Aggregates/Evaluation/Models/Evaluation.php` | `Evaluation` |
+
+---
+
+## Livewire Components
+
+| File | Component | Extends |
+|---|---|---|
+| `Aggregates/Evaluation/Livewire/MentorEvaluationManager.php` | `MentorEvaluationManager` | `Component` |
+
+---
+
+## Authorization Policies
+
+| File | Policy |
+|---|---|
+| `Aggregates/Evaluation/Policies/EvaluationPolicy.php` | `EvaluationPolicy` |
+
+---
+
+## File Organization
+
+```
+app/Domain/Evaluation/
+├── Aggregates/           ← Aggregate roots
+│   └── {Aggregate}/
+│       ├── Actions/
+│       ├── Models/
+│       ├── Policies/
+│       └── Livewire/
+├── Http/
+├── Livewire/
+├── Types/
+├── Services/
+└── Support/
+```
+
+---
+
+*For overview and business context, see [evaluation.md](evaluation.md)*

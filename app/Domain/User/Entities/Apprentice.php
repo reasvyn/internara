@@ -7,7 +7,6 @@ namespace App\Domain\User\Entities;
 use App\Domain\Core\Entities\BaseEntity;
 use App\Domain\User\Enums\AccountStatus;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 
 final readonly class Apprentice extends BaseEntity
 {
@@ -19,8 +18,9 @@ final readonly class Apprentice extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
-        $statuses = $model->getRelationValue('statuses');
-        $latestName = $statuses instanceof Collection ? $statuses->last()?->name : null;
+        $latestName = $model->relationLoaded('statuses')
+            ? $model->statuses->last()?->name
+            : $model->latestStatus()?->name;
 
         return new self(
             status: AccountStatus::tryFrom($latestName ?? '') ?? AccountStatus::PROVISIONED,

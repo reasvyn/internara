@@ -1,33 +1,64 @@
-# Academics Domain
+# Academics — Documentation Overview
+
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Institutional aggregates reference
+> **Status:** ✅ **Fully Implemented** — Comprehensive overview of the Academics domain.
 
-## Purpose
+Manages educational institutions, departments, and academic calendar periods
 
-Academics manages institutional foundation — school profile, departments (program keahlian), and academic years.
-
----
-
-## Design Principles
-
-### 1. Single-Active Academic Year
-
-Exactly one academic year is active at any time. Activating a new year automatically deactivates the previous one.
-
-### 2. Department Lifecycle
-
-Departments (program keahlian) are protected from deletion while they have active student profiles or programs.
+For complete technical reference including API, models, actions, and components, see [academics-reference.md](academics-reference.md).
 
 ---
 
-## Domain Boundary
+## Key Principles
 
-Academics owns the institution's structural data: school identity, department/program keahlian definitions, and academic year periods. It does not own runtime configuration (Settings), user accounts (User/Auth), or program definitions (Program).
+- School is the primary institutional entity
+- Departments organize academic divisions
+- Academic years define curriculum timelines
+- Administrative authorization required for all operations
 
 ---
 
-## Key Features
+## Context Boundary
 
-- School profile editor: legal name, code, address, contact, logo
-- Department manager: CRUD program keahlian with search, sort, paginate, bulk selection
-- Academic year manager: CRUD with single-active constraint and bulk delete
+Owns school, department, and academic year definitions. Serves as reference data for Enrollment and Program domains. Used by Admin for setup configuration.
+
+---
+
+## Domain Rules
+
+- Only one active academic year at a time
+- Departments cannot be deleted while referenced by active programs
+- School details updated exclusively through admin interface
+- All dates must be chronologically valid
+
+---
+
+## Aggregates
+
+- **AcademicYear**: Core business entity for academicyear management
+- **Department**: Core business entity for department management
+- **School**: Core business entity for school management
+
+---
+
+## Quick References
+
+### Actions & Business Logic
+- **9** actions across all aggregates
+- Business logic operations for academics domain
+
+### Data & Persistence
+- **3** models managing core data
+- Eloquent relationships and queries
+
+### User Interface
+- **3** Livewire components for real-time interaction
+- Views in `resources/views/academics/`
+
+### Authorization
+- **3** authorization policies
+- Role-based access control per resource
+
+---
+
+For complete technical reference, see [academics-reference.md](academics-reference.md).

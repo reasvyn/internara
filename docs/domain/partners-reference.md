@@ -1,77 +1,99 @@
-# Partners — API Reference
+# Partners — Technical Reference
 
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Consolidated Company and Partnership references
+> **Status:** ✅ **Fully Implemented** — Complete technical reference for the Partners domain.
 
-This reference details the class structures, models, actions, and Livewire components belonging to the **Partners** domain.
+Detailed structural and implementation reference for the **Partners** domain.
+
+---
+
+## Overview
+
+Manages partner companies and partnership agreements
+
+### Domain Statistics
+- **Actions**: 10 business logic operations
+- **Models**: 2 data entities
+- **Livewire Components**: 2 UI components
+- **Policies**: 2 authorization rules
+- **Aggregates**: 2 domain aggregates
+
+### Aggregates
+- `Company`
+- `Partnership`
+
+---
+
+## Dependency Graph
+
+This domain depends on:
+- **Core**
+- **Enrollment**
+- **User**
 
 ---
 
 ## Actions
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Partners/Actions/CreateCompanyAction.php` | `CreateCompanyAction` | `BaseAction` | Registers a new company profile with contact credentials |
-| `Partners/Actions/UpdateCompanyAction.php` | `UpdateCompanyAction` | `BaseAction` | Edits company details (name, email, sector, etc.) |
-| `Partners/Actions/DeleteCompanyAction.php` | `DeleteCompanyAction` | `BaseAction` | Removes a company profile (aborts if placement records exist) |
-| `Partners/Actions/BatchDeleteCompanyAction.php` | `BatchDeleteCompanyAction` | `BaseAction` | Batch deletes multiple company records |
-| `Partners/Actions/CreatePartnershipAction.php` | `CreatePartnershipAction` | `BaseAction` | Creates a new MoU agreement for a company |
-| `Partners/Actions/UpdatePartnershipAction.php` | `UpdatePartnershipAction` | `BaseAction` | Modifies an existing MoU agreement |
-| `Partners/Actions/DeletePartnershipAction.php` | `DeletePartnershipAction` | `BaseAction` | Removes a partnership agreement |
-| `Partners/Actions/BatchDeletePartnershipAction.php` | `BatchDeletePartnershipAction` | `BaseAction` | Batch deletes multiple partnership agreements |
-| `Partners/Actions/RenewPartnershipAction.php` | `RenewPartnershipAction` | `BaseAction` | Extends partnership span by spawning a sequential agreement |
-| `Partners/Actions/TerminatePartnershipAction.php` | `TerminatePartnershipAction` | `BaseAction` | Terminates active agreements and logs the reason |
-
----
-
-## Livewire Components
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Partners/Livewire/CompanyManager.php` | `CompanyManager` | `BaseRecordManager` | Company list, search, filters, and CRUD controls |
-| `Partners/Livewire/PartnershipManager.php` | `PartnershipManager` | `BaseRecordManager` | Agreement management, status controls, and PDF uploads |
-
-### Livewire Form Objects
-| File | Class | Extends | Fields | Used By |
-|---|---|---|---|---|
-| `Partners/Livewire/Forms/CompanyForm.php` | `CompanyForm` | `Form` | name, industry_sector, email, phone, address, website, contact_person | `CompanyManager` |
-| `Partners/Livewire/Forms/PartnershipForm.php` | `PartnershipForm` | `Form` | company_id, agreement_number, start_date, end_date, witness_name, status | `PartnershipManager` |
+| File | Class | Extends |
+|---|---|---|
+| `Aggregates/Company/Actions/BatchDeleteCompanyAction.php` | `BatchDeleteCompanyAction` | `BaseAction` |
+| `Aggregates/Partnership/Actions/BatchDeletePartnershipAction.php` | `BatchDeletePartnershipAction` | `BaseAction` |
+| `Aggregates/Company/Actions/CreateCompanyAction.php` | `CreateCompanyAction` | `BaseAction` |
+| `Aggregates/Partnership/Actions/CreatePartnershipAction.php` | `CreatePartnershipAction` | `BaseAction` |
+| `Aggregates/Company/Actions/DeleteCompanyAction.php` | `DeleteCompanyAction` | `BaseAction` |
+| `Aggregates/Partnership/Actions/DeletePartnershipAction.php` | `DeletePartnershipAction` | `BaseAction` |
+| `Aggregates/Partnership/Actions/RenewPartnershipAction.php` | `RenewPartnershipAction` | `BaseAction` |
+| `Aggregates/Partnership/Actions/TerminatePartnershipAction.php` | `TerminatePartnershipAction` | `BaseAction` |
+| `Aggregates/Company/Actions/UpdateCompanyAction.php` | `UpdateCompanyAction` | `BaseAction` |
+| `Aggregates/Partnership/Actions/UpdatePartnershipAction.php` | `UpdatePartnershipAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-### Company (`Company.php`)
-- **Extends**: `BaseModel`
-- **Fields**: name, industry_sector, email, phone, address, website, contact_person
-- **Relationships**:
-  - `partnerships` → `HasMany` (Partnership)
-  - `placements` → `HasMany` (via Enrollment domain)
-
-### Partnership (`Partnership.php`)
-- **Extends**: `BaseModel` (implements `HasMedia` for MoU PDF storage)
-- **Fields**: company_id, agreement_number, start_date, end_date, witness_name, status (cast to `PartnershipStatus` enum)
-- **Relationships**:
-  - `company` → `BelongsTo` (Company)
+| File | Class |
+|---|---|
+| `Aggregates/Company/Models/Company.php` | `Company` |
+| `Aggregates/Partnership/Models/Partnership.php` | `Partnership` |
 
 ---
 
-## Entities & Enums
+## Livewire Components
 
-### Entities
-- `CompanyState`: Read-only DTO for current company properties.
-- `PartnershipState`: Read-only DTO for current agreement properties.
-
-### Enums
-- `PartnershipStatus` (implements `LabelEnum`, `StatusEnum`):
-  - `DRAFT` ('Draft')
-  - `ACTIVE` ('Active')
-  - `EXPIRED` ('Expired')
-  - `TERMINATED` ('Terminated')
+| File | Component | Extends |
+|---|---|---|
+| `Aggregates/Company/Livewire/CompanyManager.php` | `CompanyManager` | `BaseRecordManager` |
+| `Aggregates/Partnership/Livewire/PartnershipManager.php` | `PartnershipManager` | `BaseRecordManager` |
 
 ---
 
-## Policies
+## Authorization Policies
 
-- `CompanyPolicy`: Secures company registration, updates, and deletes. Prevents deletion when placements are linked.
-- `PartnershipPolicy`: Secures MoU creations and terminations. Ensures draft agreements can be modified while active ones have locked date fields.
+| File | Policy |
+|---|---|
+| `Aggregates/Company/Policies/CompanyPolicy.php` | `CompanyPolicy` |
+| `Aggregates/Partnership/Policies/PartnershipPolicy.php` | `PartnershipPolicy` |
+
+---
+
+## File Organization
+
+```
+app/Domain/Partners/
+├── Aggregates/           ← Aggregate roots
+│   └── {Aggregate}/
+│       ├── Actions/
+│       ├── Models/
+│       ├── Policies/
+│       └── Livewire/
+├── Http/
+├── Livewire/
+├── Types/
+├── Services/
+└── Support/
+```
+
+---
+
+*For overview and business context, see [partners.md](partners.md)*

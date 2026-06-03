@@ -1,96 +1,121 @@
-# Guidance — API Reference
+# Guidance — Technical Reference
 
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Aggregate-rooted layout mapping for the Guidance domain
+> **Status:** ✅ **Fully Implemented** — Complete technical reference for the Guidance domain.
 
-This reference defines the structured aggregates and code layout within the **Guidance** domain.
-
----
-
-## 1. Handbook Aggregate
-Manages procedure guides, Markdown rendering, PDF attachments, and immutable reader acknowledgments.
-
-- **Eloquent Models**:
-  - `Handbook` (`app/Domain/Guidance/Models/Handbook.php`)
-  - `HandbookAcknowledgement` (`app/Domain/Guidance/Models/HandbookAcknowledgement.php`)
-- **Policies**:
-  - `HandbookPolicy` (`app/Domain/Guidance/Policies/HandbookPolicy.php`)
-- **Command Actions**:
-  - `CreateHandbookAction` (`app/Domain/Guidance/Actions/CreateHandbookAction.php`)
-  - `UpdateHandbookAction` (`app/Domain/Guidance/Actions/UpdateHandbookAction.php`)
-  - `DeleteHandbookAction` (`app/Domain/Guidance/Actions/DeleteHandbookAction.php`)
-  - `AcknowledgeHandbookAction` (`app/Domain/Guidance/Actions/AcknowledgeHandbookAction.php`)
-- **Livewire UI Components**:
-  - `HandbookManager` (`app/Domain/Guidance/Livewire/HandbookManager.php`)
-  - `HandbookIndex` (`app/Domain/Guidance/Livewire/HandbookIndex.php`)
-- **Form Objects**:
-  - `HandbookForm` (`app/Domain/Guidance/Livewire/Forms/HandbookForm.php`)
-- **Entities (Domain Rules)**:
-  - `HandbookPublishState` (`app/Domain/Guidance/Entities/HandbookPublishState.php`)
+Detailed structural and implementation reference for the **Guidance** domain.
 
 ---
 
-## 2. Mentee Aggregate
-Manages student mentee activations, internship remaining days computation, and operational progress rules.
+## Overview
 
-- **Eloquent Models**:
-  - `Mentee` (`app/Domain/Guidance/Models/Mentee.php`)
-- **Policies**:
-  - `MenteePolicy` (`app/Domain/Guidance/Policies/MenteePolicy.php`)
-- **Command Actions**:
-  - `CreateMenteeAction` (`app/Domain/Guidance/Actions/CreateMenteeAction.php`)
-  - `UpdateMenteeAction` (`app/Domain/Guidance/Actions/UpdateMenteeAction.php`)
-  - `DeleteMenteeAction` (`app/Domain/Guidance/Actions/DeleteMenteeAction.php`)
-- **Livewire UI Components**:
-  - `MenteeManager` (`app/Domain/Guidance/Livewire/MenteeManager.php`)
-- **Form Objects**:
-  - `MenteeForm` (`app/Domain/Guidance/Livewire/Forms/MenteeForm.php`)
-- **Entities (Domain Rules)**:
-  - `MenteeState` (`app/Domain/Guidance/Entities/MenteeState.php`)
+Manages mentoring relationships, student guidance, and supervision logs
 
----
+### Domain Statistics
+- **Actions**: 15 business logic operations
+- **Models**: 5 data entities
+- **Livewire Components**: 9 UI components
+- **Policies**: 4 authorization rules
+- **Aggregates**: 5 domain aggregates
 
-## 3. Mentor Aggregate
-Manages mentor assignments, industrial or academic classifications, and mentor rating evaluations.
-
-- **Eloquent Models**:
-  - `Mentor` (`app/Domain/Guidance/Models/Mentor.php`)
-- **Policies**:
-  - `MentorPolicy` (`app/Domain/Guidance/Policies/MentorPolicy.php`)
-- **Command Actions**:
-  - `CreateMentorAction` (`app/Domain/Guidance/Actions/CreateMentorAction.php`)
-  - `UpdateMentorAction` (`app/Domain/Guidance/Actions/UpdateMentorAction.php`)
-  - `DeleteMentorAction` (`app/Domain/Guidance/Actions/DeleteMentorAction.php`)
-  - `ToggleMentorActiveAction` (`app/Domain/Guidance/Actions/ToggleMentorActiveAction.php`)
-  - `CreateMentorProfileAction` (`app/Domain/Guidance/Actions/CreateMentorProfileAction.php`)
-  - `UpdateMentorProfileAction` (`app/Domain/Guidance/Actions/UpdateMentorProfileAction.php`)
-- **Livewire UI Components**:
-  - `MentorManager` (`app/Domain/Guidance/Livewire/MentorManager.php`)
-  - `MentorProfileManager` (`app/Domain/Guidance/Livewire/MentorProfileManager.php`)
-  - `EvaluateMentor` (`app/Domain/Guidance/Livewire/EvaluateMentor.php`)
-  - `AssessInternship` (`app/Domain/Guidance/Livewire/AssessInternship.php`)
-- **Form Objects**:
-  - `MentorForm` (`app/Domain/Guidance/Livewire/Forms/MentorForm.php`)
-- **Entities (Domain Rules)**:
-  - `MentorRole` (`app/Domain/Guidance/Entities/MentorRole.php`)
+### Aggregates
+- `Handbook`
+- `HandbookAcknowledgement`
+- `Mentee`
+- `Mentor`
+- `SupervisionLog`
 
 ---
 
-## 4. SupervisionLog Aggregate
-Orchestrates on-site visitations logs, phone logs, and verification checks.
+## Dependency Graph
 
-- **Eloquent Models**:
-  - `SupervisionLog` (`app/Domain/Guidance/Models/SupervisionLog.php`)
-- **Policies**:
-  - `SupervisionLogPolicy` (`app/Domain/Guidance/Policies/SupervisionLogPolicy.php`)
-- **Command Actions**:
-  - `CreateSupervisionLogAction` (`app/Domain/Guidance/Actions/CreateSupervisionLogAction.php`)
-  - `VerifySupervisionLogAction` (`app/Domain/Guidance/Actions/VerifySupervisionLogAction.php`)
-- **Livewire UI Components**:
-  - `SupervisionManager` (`app/Domain/Guidance/Livewire/Supervision/SupervisionManager.php`)
-  - `SupervisorLogManager` (`app/Domain/Guidance/Livewire/Supervision/SupervisorLogManager.php`)
-- **Entities (Domain Rules)**:
-  - `SupervisionStatus` (`app/Domain/Guidance/Entities/SupervisionStatus.php`)
-- **Enums**:
-  - `SupervisionLogStatus` (`app/Domain/Guidance/Enums/SupervisionLogStatus.php`)
-  - `SupervisionType` (`app/Domain/Guidance/Enums/SupervisionType.php`)
+This domain depends on:
+- **Core**
+- **Enrollment**
+- **Evaluation**
+- **Reports**
+- **User**
+
+---
+
+## Actions
+
+| File | Class | Extends |
+|---|---|---|
+| `Aggregates/HandbookAcknowledgement/Actions/AcknowledgeHandbookAction.php` | `AcknowledgeHandbookAction` | `BaseAction` |
+| `Aggregates/Handbook/Actions/CreateHandbookAction.php` | `CreateHandbookAction` | `BaseAction` |
+| `Aggregates/Mentee/Actions/CreateMenteeAction.php` | `CreateMenteeAction` | `BaseAction` |
+| `Aggregates/Mentor/Actions/CreateMentorAction.php` | `CreateMentorAction` | `BaseAction` |
+| `Aggregates/Mentor/Actions/CreateMentorProfileAction.php` | `CreateMentorProfileAction` | `BaseAction` |
+| `Aggregates/SupervisionLog/Actions/CreateSupervisionLogAction.php` | `CreateSupervisionLogAction` | `BaseAction` |
+| `Aggregates/Handbook/Actions/DeleteHandbookAction.php` | `DeleteHandbookAction` | `BaseAction` |
+| `Aggregates/Mentee/Actions/DeleteMenteeAction.php` | `DeleteMenteeAction` | `BaseAction` |
+| `Aggregates/Mentor/Actions/DeleteMentorAction.php` | `DeleteMentorAction` | `BaseAction` |
+| `Aggregates/Mentor/Actions/ToggleMentorActiveAction.php` | `ToggleMentorActiveAction` | `BaseAction` |
+| `Aggregates/Handbook/Actions/UpdateHandbookAction.php` | `UpdateHandbookAction` | `BaseAction` |
+| `Aggregates/Mentee/Actions/UpdateMenteeAction.php` | `UpdateMenteeAction` | `BaseAction` |
+| `Aggregates/Mentor/Actions/UpdateMentorAction.php` | `UpdateMentorAction` | `BaseAction` |
+| `Aggregates/Mentor/Actions/UpdateMentorProfileAction.php` | `UpdateMentorProfileAction` | `BaseAction` |
+| `Aggregates/SupervisionLog/Actions/VerifySupervisionLogAction.php` | `VerifySupervisionLogAction` | `BaseAction` |
+
+---
+
+## Models
+
+| File | Class |
+|---|---|
+| `Aggregates/Handbook/Models/Handbook.php` | `Handbook` |
+| `Aggregates/HandbookAcknowledgement/Models/HandbookAcknowledgement.php` | `HandbookAcknowledgement` |
+| `Aggregates/Mentee/Models/Mentee.php` | `Mentee` |
+| `Aggregates/Mentor/Models/Mentor.php` | `Mentor` |
+| `Aggregates/SupervisionLog/Models/SupervisionLog.php` | `SupervisionLog` |
+
+---
+
+## Livewire Components
+
+| File | Component | Extends |
+|---|---|---|
+| `Aggregates/Mentor/Livewire/AssessInternship.php` | `AssessInternship` | `Component` |
+| `Aggregates/Mentor/Livewire/EvaluateMentor.php` | `EvaluateMentor` | `Component` |
+| `Aggregates/Handbook/Livewire/HandbookIndex.php` | `HandbookIndex` | `Component` |
+| `Aggregates/Handbook/Livewire/HandbookManager.php` | `HandbookManager` | `BaseRecordManager` |
+| `Aggregates/Mentor/Livewire/MentorProfileManager.php` | `MentorProfileManager` | `Component` |
+| `Aggregates/Mentor/Livewire/ReportNotes.php` | `ReportNotes` | `Component` |
+| `Aggregates/Mentor/Livewire/ReportReview.php` | `ReportReview` | `BaseRecordManager` |
+| `Aggregates/SupervisionLog/Livewire/SupervisionManager.php` | `SupervisionManager` | `Component` |
+| `Aggregates/SupervisionLog/Livewire/SupervisorLogManager.php` | `SupervisorLogManager` | `Component` |
+
+---
+
+## Authorization Policies
+
+| File | Policy |
+|---|---|
+| `Aggregates/Handbook/Policies/HandbookPolicy.php` | `HandbookPolicy` |
+| `Aggregates/Mentee/Policies/MenteePolicy.php` | `MenteePolicy` |
+| `Aggregates/Mentor/Policies/MentorPolicy.php` | `MentorPolicy` |
+| `Aggregates/SupervisionLog/Policies/SupervisionLogPolicy.php` | `SupervisionLogPolicy` |
+
+---
+
+## File Organization
+
+```
+app/Domain/Guidance/
+├── Aggregates/           ← Aggregate roots
+│   └── {Aggregate}/
+│       ├── Actions/
+│       ├── Models/
+│       ├── Policies/
+│       └── Livewire/
+├── Http/
+├── Livewire/
+├── Types/
+├── Services/
+└── Support/
+```
+
+---
+
+*For overview and business context, see [guidance.md](guidance.md)*

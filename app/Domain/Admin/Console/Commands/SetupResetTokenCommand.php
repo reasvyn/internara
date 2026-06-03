@@ -17,8 +17,9 @@ class SetupResetTokenCommand extends Command
 
     protected $signature = 'setup:reset-token';
 
-    public function __construct()
-    {
+    public function __construct(
+        private GenerateSetupTokenAction $generateToken,
+    ) {
         parent::__construct();
         $this->description = __('setup.reset_token.description');
     }
@@ -46,7 +47,7 @@ class SetupResetTokenCommand extends Command
             return self::FAILURE;
         }
 
-        $result = app(GenerateSetupTokenAction::class)->execute();
+        $result = $this->generateToken->execute();
         $signedUrl = route('setup', ['setup_token' => $result['plaintext']]);
 
         $this->displaySection(__('setup.reset_token.new_token_generated'));

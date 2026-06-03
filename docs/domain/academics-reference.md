@@ -1,71 +1,104 @@
-# Academics — API Reference
+# Academics — Technical Reference
 
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Reference for the Academics domain aggregates
+> **Status:** ✅ **Fully Implemented** — Complete technical reference for the Academics domain.
 
-This reference details the class structures, models, actions, and Livewire components belonging to the **Academics** domain.
+Detailed structural and implementation reference for the **Academics** domain.
+
+---
+
+## Overview
+
+Manages educational institutions, departments, and academic calendar periods
+
+### Domain Statistics
+- **Actions**: 9 business logic operations
+- **Models**: 3 data entities
+- **Livewire Components**: 3 UI components
+- **Policies**: 3 authorization rules
+- **Aggregates**: 3 domain aggregates
+
+### Aggregates
+- `AcademicYear`
+- `Department`
+- `School`
+
+---
+
+## Dependency Graph
+
+This domain depends on:
+- **Admin**
+- **Assessment**
+- **Core**
+- **Program**
+- **User**
 
 ---
 
 ## Actions
 
-### Institutional Metadata Actions
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Academics/Aggregates/School/Actions/UpdateSchoolAction.php` | `UpdateSchoolAction` | `BaseAction` | Modifies base school identifiers, principal information, and contact credentials |
-| `Academics/Aggregates/Department/Actions/CreateDepartmentAction.php` | `CreateDepartmentAction` | `BaseAction` | Provisions a study department program |
-| `Academics/Aggregates/Department/Actions/UpdateDepartmentAction.php` | `UpdateDepartmentAction` | `BaseAction` | Updates department definitions and program keahlian |
-| `Academics/Aggregates/Department/Actions/DeleteDepartmentAction.php` | `DeleteDepartmentAction` | `BaseAction` | Deletes a study program (aborts if references exist) |
-| `Academics/Aggregates/AcademicYear/Actions/CreateAcademicYearAction.php` | `CreateAcademicYearAction` | `BaseAction` | Creates an academic calendar span |
-| `Academics/Aggregates/AcademicYear/Actions/UpdateAcademicYearAction.php` | `UpdateAcademicYearAction` | `BaseAction` | Edits start and end dates of calendar spans |
-| `Academics/Aggregates/AcademicYear/Actions/DeleteAcademicYearAction.php` | `DeleteAcademicYearAction` | `BaseAction` | Removes academic span records |
-| `Academics/Aggregates/AcademicYear/Actions/BulkDeleteAcademicYearsAction.php` | `BulkDeleteAcademicYearsAction` | `BaseAction` | Removes selected academic span records in batches |
-| `Academics/Aggregates/AcademicYear/Actions/ActivateAcademicYearAction.php` | `ActivateAcademicYearAction` | `BaseAction` | Set academic span as active and deactivates others |
-
----
-
-## Livewire Components
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Academics/Aggregates/School/Livewire/SchoolEditor.php` | `SchoolEditor` | `Component` | Form handling legal school info, logos, and contacts |
-| `Academics/Aggregates/Department/Livewire/DepartmentManager.php` | `DepartmentManager` | `BaseRecordManager` | Study program list, search, and bulk deletion |
-| `Academics/Aggregates/AcademicYear/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` | Grid toggle, edit, and calendar span creations |
-
-### Livewire Form Objects
-| File | Class | Extends | Used By |
-|---|---|---|---|
-| `Academics/Aggregates/School/Livewire/Forms/SchoolForm.php` | `SchoolForm` | `Form` | `SchoolEditor` |
-| `Academics/Aggregates/Department/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` | `Form` | `DepartmentManager` |
-| `Academics/Aggregates/AcademicYear/Livewire/Forms/AcademicYearForm.php` | `AcademicYearForm` | `Form` | `AcademicYearManager` |
+| File | Class | Extends |
+|---|---|---|
+| `Aggregates/AcademicYear/Actions/ActivateAcademicYearAction.php` | `ActivateAcademicYearAction` | `BaseAction` |
+| `Aggregates/AcademicYear/Actions/BulkDeleteAcademicYearsAction.php` | `BulkDeleteAcademicYearsAction` | `BaseAction` |
+| `Aggregates/AcademicYear/Actions/CreateAcademicYearAction.php` | `CreateAcademicYearAction` | `BaseAction` |
+| `Aggregates/Department/Actions/CreateDepartmentAction.php` | `CreateDepartmentAction` | `BaseAction` |
+| `Aggregates/AcademicYear/Actions/DeleteAcademicYearAction.php` | `DeleteAcademicYearAction` | `BaseAction` |
+| `Aggregates/Department/Actions/DeleteDepartmentAction.php` | `DeleteDepartmentAction` | `BaseAction` |
+| `Aggregates/AcademicYear/Actions/UpdateAcademicYearAction.php` | `UpdateAcademicYearAction` | `BaseAction` |
+| `Aggregates/Department/Actions/UpdateDepartmentAction.php` | `UpdateDepartmentAction` | `BaseAction` |
+| `Aggregates/School/Actions/UpdateSchoolAction.php` | `UpdateSchoolAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-### School (`School.php`)
-- **Extends**: `BaseModel`
-- **Fields**: name, institutional_code, email, phone, address, website, principal_name
-
-### Department (`Department.php`)
-- **Extends**: `BaseModel`
-- **Fields**: name, code, description, is_active
-
-### AcademicYear (`AcademicYear.php`)
-- **Extends**: `BaseModel`
-- **Fields**: name, start_date, end_date, is_active
+| File | Class |
+|---|---|
+| `Aggregates/AcademicYear/Models/AcademicYear.php` | `AcademicYear` |
+| `Aggregates/Department/Models/Department.php` | `Department` |
+| `Aggregates/School/Models/School.php` | `School` |
 
 ---
 
-## Policies
+## Livewire Components
 
-- `SchoolPolicy`: Restricts modifications of basic school layouts to administrators.
-- `DepartmentPolicy`: Validates studies creation, editing, and deletion. Prevents deletion when referenced by students.
-- `AcademicYearPolicy`: Gated CRUD checks. Protects the active year from deletion.
+| File | Component | Extends |
+|---|---|---|
+| `Aggregates/AcademicYear/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` |
+| `Aggregates/Department/Livewire/DepartmentManager.php` | `DepartmentManager` | `BaseRecordManager` |
+| `Aggregates/School/Livewire/SchoolEditor.php` | `SchoolEditor` | `Component` |
 
 ---
 
-## Middleware
+## Authorization Policies
 
-- `RequireSetupAccessMiddleware` (`app/Domain/Academics/Http/Middleware/RequireSetupAccessMiddleware.php`): Checks setup status globally. If false, redirects HTTP calls to `/setup`. Bypasses livewire/assets.
-- `ProtectSetupRouteMiddleware` (`app/Domain/Academics/Http/Middleware/ProtectSetupRouteMiddleware.php`): Limits token endpoint calls to 20/min/IP. Ensures valid token session hash exists. Throws 404 once installed.
+| File | Policy |
+|---|---|
+| `Aggregates/AcademicYear/Policies/AcademicYearPolicy.php` | `AcademicYearPolicy` |
+| `Aggregates/Department/Policies/DepartmentPolicy.php` | `DepartmentPolicy` |
+| `Aggregates/School/Policies/SchoolPolicy.php` | `SchoolPolicy` |
+
+---
+
+## File Organization
+
+```
+app/Domain/Academics/
+├── Aggregates/           ← Aggregate roots
+│   └── {Aggregate}/
+│       ├── Actions/
+│       ├── Models/
+│       ├── Policies/
+│       └── Livewire/
+├── Http/
+├── Livewire/
+├── Types/
+├── Services/
+└── Support/
+```
+
+---
+
+*For overview and business context, see [academics.md](academics.md)*

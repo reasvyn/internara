@@ -1,98 +1,118 @@
-# Enrollment — API Reference
+# Enrollment — Technical Reference
 
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Aggregate-rooted layout mapping for the Enrollment domain
+> **Status:** ✅ **Fully Implemented** — Complete technical reference for the Enrollment domain.
 
-This reference defines the structured aggregates and code layout within the **Enrollment** domain.
-
----
-
-## 1. AccountApplication Aggregate
-Manages unauthenticated user applications for program admission and user credentials auto-provisioning upon approval.
-
-- **Eloquent Models**:
-  - `AccountApplication` (`app/Domain/Enrollment/Models/AccountApplication.php`)
-- **Policies**:
-  - `AccountApplicationPolicy` (`app/Domain/Enrollment/Policies/AccountApplicationPolicy.php`)
-- **Command Actions**:
-  - `ApplyAccountAction` (`app/Domain/Enrollment/Actions/ApplyAccountAction.php`)
-  - `ApproveAccountApplicationAction` (`app/Domain/Enrollment/Actions/ApproveAccountApplicationAction.php`)
-  - `RejectAccountApplicationAction` (`app/Domain/Enrollment/Actions/RejectAccountApplicationAction.php`)
-- **Livewire UI Components**:
-  - `ApplyPage` (`app/Domain/Enrollment/Livewire/ApplyPage.php`)
-- **Form Objects**:
-  - `AccountApplicationForm` (`app/Domain/Enrollment/Livewire/Forms/AccountApplicationForm.php`)
-- **Enums**:
-  - `AccountApplicationStatus` (`app/Domain/Enrollment/Enums/AccountApplicationStatus.php`)
+Detailed structural and implementation reference for the **Enrollment** domain.
 
 ---
 
-## 2. Registration Aggregate
-Handles program registrations, required uploads, checksheet validations, and student activation milestones.
+## Overview
 
-- **Eloquent Models**:
-  - `Registration` (`app/Domain/Enrollment/Models/Registration.php`)
-  - `RegistrationDocument` (`app/Domain/Enrollment/Models/RegistrationDocument.php`)
-- **Policies**:
-  - `RegistrationPolicy` (`app/Domain/Enrollment/Policies/RegistrationPolicy.php`)
-  - `RegistrationDocumentPolicy` (`app/Domain/Enrollment/Policies/RegistrationDocumentPolicy.php`)
-- **Command Actions**:
-  - `RegisterInternshipAction` (`app/Domain/Enrollment/Actions/RegisterInternshipAction.php`)
-  - `UploadRegistrationDocumentAction` (`app/Domain/Enrollment/Actions/UploadRegistrationDocumentAction.php`)
-  - `VerifyRegistrationAction` (`app/Domain/Enrollment/Actions/VerifyRegistrationAction.php`)
-- **Livewire UI Components**:
-  - `RegistrationWizard` (`app/Domain/Enrollment/Livewire/RegistrationWizard.php`)
-  - `RegistrationCenter` (`app/Domain/Enrollment/Livewire/RegistrationCenter.php`)
-  - `RegistrationDocumentUpload` (`app/Domain/Enrollment/Livewire/RegistrationDocumentUpload.php`)
-  - `RegistrationVerification` (`app/Domain/Enrollment/Livewire/RegistrationVerification.php`)
-- **Form Objects**:
-  - `RegistrationWizardForm` (`app/Domain/Enrollment/Livewire/Forms/RegistrationWizardForm.php`)
-- **Entities (Domain Rules)**:
-  - `RegistrationState` (`app/Domain/Enrollment/Entities/RegistrationState.php`)
-- **Enums**:
-  - `RegistrationDocumentStatus` (`app/Domain/Enrollment/Enums/RegistrationDocumentStatus.php`)
+Manages student registration and placement phase progression
+
+### Domain Statistics
+- **Actions**: 13 business logic operations
+- **Models**: 5 data entities
+- **Livewire Components**: 9 UI components
+- **Policies**: 5 authorization rules
+- **Aggregates**: 0 domain aggregates
 
 ---
 
-## 3. Placement Aggregate
-Governs internship placements slots at host companies and handles quota limits and assignments.
+## Dependency Graph
 
-- **Eloquent Models**:
-  - `Placement` (`app/Domain/Enrollment/Models/Placement.php`)
-- **Policies**:
-  - `PlacementPolicy` (`app/Domain/Enrollment/Policies/PlacementPolicy.php`)
-- **Command Actions**:
-  - `CreatePlacementAction` (`app/Domain/Enrollment/Actions/CreatePlacementAction.php`)
-  - `UpdatePlacementAction` (`app/Domain/Enrollment/Actions/UpdatePlacementAction.php`)
-  - `DeletePlacementAction` (`app/Domain/Enrollment/Actions/DeletePlacementAction.php`)
-  - `DirectPlacementAction` (`app/Domain/Enrollment/Actions/DirectPlacementAction.php`)
-- **Livewire UI Components**:
-  - `PlacementIndex` (`app/Domain/Enrollment/Livewire/PlacementIndex.php`)
-  - `DirectPlacementManager` (`app/Domain/Enrollment/Livewire/DirectPlacementManager.php`)
-- **Form Objects**:
-  - `PlacementForm` (`app/Domain/Enrollment/Livewire/Forms/PlacementForm.php`)
-  - `DirectPlacementForm` (`app/Domain/Enrollment/Livewire/Forms/DirectPlacementForm.php`)
-- **Entities (Domain Rules)**:
-  - `PlacementState` (`app/Domain/Enrollment/Entities/PlacementState.php`)
-  - `PlacementCapacity` (`app/Domain/Enrollment/Entities/PlacementCapacity.php`)
+This domain depends on:
+- **Academics**
+- **Assessment**
+- **Certification**
+- **Core**
+- **Guidance**
+- **Journals**
+- **Partners**
+- **Program**
+- **Reports**
+- **User**
 
 ---
 
-## 4. PlacementChange Aggregate
-Orchestrates placement swaps, student requests, and quota releases.
+## Actions
 
-- **Eloquent Models**:
-  - `PlacementChangeRequest` (`app/Domain/Enrollment/Models/PlacementChangeRequest.php`)
-- **Policies**:
-  - `PlacementChangeRequestPolicy` (`app/Domain/Enrollment/Policies/PlacementChangeRequestPolicy.php`)
-- **Command Actions**:
-  - `RequestPlacementChangeAction` (`app/Domain/Enrollment/Actions/RequestPlacementChangeAction.php`)
-  - `ApprovePlacementChangeAction` (`app/Domain/Enrollment/Actions/ApprovePlacementChangeAction.php`)
-  - `RejectPlacementChangeAction` (`app/Domain/Enrollment/Actions/RejectPlacementChangeAction.php`)
-- **Livewire UI Components**:
-  - `StudentPlacementChangeRequest` (`app/Domain/Enrollment/Livewire/StudentPlacementChangeRequest.php`)
-  - `PlacementChangeManager` (`app/Domain/Enrollment/Livewire/PlacementChangeManager.php`)
-- **Form Objects**:
-  - `PlacementChangeForm` (`app/Domain/Enrollment/Livewire/Forms/PlacementChangeForm.php`)
-- **Enums**:
-  - `PlacementChangeStatus` (`app/Domain/Enrollment/Enums/PlacementChangeStatus.php`)
+| File | Class | Extends |
+|---|---|---|
+| `Actions/ApplyAccountAction.php` | `ApplyAccountAction` | `BaseAction` |
+| `Actions/ApproveAccountApplicationAction.php` | `ApproveAccountApplicationAction` | `BaseAction` |
+| `Actions/ApprovePlacementChangeAction.php` | `ApprovePlacementChangeAction` | `BaseAction` |
+| `Actions/CreatePlacementAction.php` | `CreatePlacementAction` | `BaseAction` |
+| `Actions/DeletePlacementAction.php` | `DeletePlacementAction` | `BaseAction` |
+| `Actions/DirectPlacementAction.php` | `DirectPlacementAction` | `BaseAction` |
+| `Actions/RegisterInternshipAction.php` | `RegisterInternshipAction` | `BaseAction` |
+| `Actions/RejectAccountApplicationAction.php` | `RejectAccountApplicationAction` | `BaseAction` |
+| `Actions/RejectPlacementChangeAction.php` | `RejectPlacementChangeAction` | `BaseAction` |
+| `Actions/RequestPlacementChangeAction.php` | `RequestPlacementChangeAction` | `BaseAction` |
+| `Actions/UpdatePlacementAction.php` | `UpdatePlacementAction` | `BaseAction` |
+| `Actions/UploadRegistrationDocumentAction.php` | `UploadRegistrationDocumentAction` | `BaseAction` |
+| `Actions/VerifyRegistrationAction.php` | `VerifyRegistrationAction` | `BaseAction` |
+
+---
+
+## Models
+
+| File | Class |
+|---|---|
+| `Models/AccountApplication.php` | `AccountApplication` |
+| `Models/Placement.php` | `Placement` |
+| `Models/PlacementChangeRequest.php` | `PlacementChangeRequest` |
+| `Models/Registration.php` | `Registration` |
+| `Models/RegistrationDocument.php` | `RegistrationDocument` |
+
+---
+
+## Livewire Components
+
+| File | Component | Extends |
+|---|---|---|
+| `Livewire/ApplyPage.php` | `ApplyPage` | `Component` |
+| `Livewire/DirectPlacementManager.php` | `DirectPlacementManager` | `Component` |
+| `Livewire/PlacementChangeManager.php` | `PlacementChangeManager` | `BaseRecordManager` |
+| `Livewire/PlacementIndex.php` | `PlacementIndex` | `BaseRecordManager` |
+| `Livewire/RegistrationCenter.php` | `RegistrationCenter` | `Component` |
+| `Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload` | `Component` |
+| `Livewire/RegistrationVerification.php` | `RegistrationVerification` | `Component` |
+| `Livewire/RegistrationWizard.php` | `RegistrationWizard` | `Component` |
+| `Livewire/StudentPlacementChangeRequest.php` | `StudentPlacementChangeRequest` | `Component` |
+
+---
+
+## Authorization Policies
+
+| File | Policy |
+|---|---|
+| `Policies/AccountApplicationPolicy.php` | `AccountApplicationPolicy` |
+| `Policies/PlacementChangeRequestPolicy.php` | `PlacementChangeRequestPolicy` |
+| `Policies/PlacementPolicy.php` | `PlacementPolicy` |
+| `Policies/RegistrationDocumentPolicy.php` | `RegistrationDocumentPolicy` |
+| `Policies/RegistrationPolicy.php` | `RegistrationPolicy` |
+
+---
+
+## File Organization
+
+```
+app/Domain/Enrollment/
+├── Aggregates/           ← Aggregate roots
+│   └── {Aggregate}/
+│       ├── Actions/
+│       ├── Models/
+│       ├── Policies/
+│       └── Livewire/
+├── Http/
+├── Livewire/
+├── Types/
+├── Services/
+└── Support/
+```
+
+---
+
+*For overview and business context, see [enrollment.md](enrollment.md)*

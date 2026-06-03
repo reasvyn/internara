@@ -1,95 +1,120 @@
-# Journals — API Reference
+# Journals — Technical Reference
 
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Aggregate-rooted layout mapping for the Journals domain
+> **Status:** ✅ **Fully Implemented** — Complete technical reference for the Journals domain.
 
-This reference defines the structured aggregates and code layout within the **Journals** domain.
-
----
-
-## 1. Attendance Aggregate
-Tracks daily student clock-in/outs, IP networks, geolocation coords, and locks attendance records.
-
-- **Eloquent Models**:
-  - `Attendance` (`app/Domain/Journals/Models/Attendance.php`)
-- **Policies**:
-  - `AttendancePolicy` (`app/Domain/Journals/Policies/AttendancePolicy.php`)
-- **Command Actions**:
-  - `ClockInAction` (`app/Domain/Journals/Actions/ClockInAction.php`)
-  - `ClockOutAction` (`app/Domain/Journals/Actions/ClockOutAction.php`)
-  - `CreateAttendanceAction` (`app/Domain/Journals/Actions/CreateAttendanceAction.php`)
-  - `UpdateAttendanceAction` (`app/Domain/Journals/Actions/UpdateAttendanceAction.php`)
-  - `DeleteAttendanceAction` (`app/Domain/Journals/Actions/DeleteAttendanceAction.php`)
-  - `VerifyAttendanceAction` (`app/Domain/Journals/Actions/VerifyAttendanceAction.php`)
-- **Livewire UI Components**:
-  - `StudentClockIn` (`app/Domain/Journals/Livewire/StudentClockIn.php`)
-  - `AttendanceManager` (`app/Domain/Journals/Livewire/AttendanceManager.php`)
-- **Form Requests / Validations**:
-  - `ClockInRequest` (`app/Domain/Journals/Http/Requests/ClockInRequest.php`)
-  - `ClockOutRequest` (`app/Domain/Journals/Http/Requests/ClockOutRequest.php`)
-- **Entities (Domain Rules)**:
-  - `AttendanceStatus` (`app/Domain/Journals/Entities/AttendanceStatus.php`)
-- **Enums**:
-  - `AttendanceStatus` (`app/Domain/Journals/Enums/AttendanceStatus.php`)
+Detailed structural and implementation reference for the **Journals** domain.
 
 ---
 
-## 2. Absence Aggregate
-Manages leave requests, sick note document uploads, and leaves approvals.
+## Overview
 
-- **Eloquent Models**:
-  - `AbsenceRequest` (`app/Domain/Journals/Models/AbsenceRequest.php`)
-- **Command Actions**:
-  - `SubmitAbsenceAction` (`app/Domain/Journals/Actions/SubmitAbsenceAction.php`)
-  - `ProcessAbsenceAction` (`app/Domain/Journals/Actions/ProcessAbsenceAction.php`)
-- **Livewire UI Components**:
-  - `AbsenceRequestForm` (`app/Domain/Journals/Livewire/AbsenceRequestForm.php`)
-- **Form Requests / Validations**:
-  - `SubmitAbsenceRequest` (`app/Domain/Journals/Http/Requests/SubmitAbsenceRequest.php`)
-- **Entities (Domain Rules)**:
-  - `AbsenceRequestStatus` (`app/Domain/Journals/Entities/AbsenceRequestStatus.php`)
-- **Enums**:
-  - `AbsenceRequestStatus` (`app/Domain/Journals/Enums/AbsenceRequestStatus.php`)
-  - `AbsenceReasonType` (`app/Domain/Journals/Enums/AbsenceReasonType.php`)
+Manages student logbooks, attendance tracking, and schedule management
 
----
+### Domain Statistics
+- **Actions**: 17 business logic operations
+- **Models**: 5 data entities
+- **Livewire Components**: 7 UI components
+- **Policies**: 3 authorization rules
+- **Aggregates**: 5 domain aggregates
 
-## 3. Logbook Aggregate
-Handles compilation of work logs, image attachments for proof of work, and mentor return-for-revision workflows.
-
-- **Eloquent Models**:
-  - `Logbook` (`app/Domain/Journals/Models/Logbook.php`)
-- **Policies**:
-  - `LogbookPolicy` (`app/Domain/Journals/Policies/LogbookPolicy.php`)
-- **Command Actions**:
-  - `CreateLogbookAction` (`app/Domain/Journals/Actions/CreateLogbookAction.php`)
-  - `UpdateLogbookAction` (`app/Domain/Journals/Actions/UpdateLogbookAction.php`)
-  - `SubmitLogbookAction` (`app/Domain/Journals/Actions/SubmitLogbookAction.php`)
-  - `DeleteLogbookAction` (`app/Domain/Journals/Actions/DeleteLogbookAction.php`)
-- **Livewire UI Components**:
-  - `LogbookEntry` (`app/Domain/Journals/Livewire/LogbookEntry.php`)
-  - `LogbookManager` (`app/Domain/Journals/Livewire/LogbookManager.php`)
-- **Form Requests / Validations**:
-  - `CreateLogbookRequest` (`app/Domain/Journals/Http/Requests/CreateLogbookRequest.php`)
-- **Entities (Domain Rules)**:
-  - `LogbookState` (`app/Domain/Journals/Entities/LogbookState.php`)
-- **Enums**:
-  - `LogbookStatus` (`app/Domain/Journals/Enums/LogbookStatus.php`)
+### Aggregates
+- `AbsenceRequest`
+- `Attendance`
+- `IndustryAssessment`
+- `Logbook`
+- `Schedule`
 
 ---
 
-## 4. Schedule Aggregate
-Configures calendar schedules and shift parameters.
+## Dependency Graph
 
-- **Eloquent Models**:
-  - `Schedule` (`app/Domain/Journals/Models/Schedule.php`)
-- **Policies**:
-  - `SchedulePolicy` (`app/Domain/Journals/Policies/SchedulePolicy.php`)
-- **Command Actions**:
-  - `CreateScheduleAction` (`app/Domain/Journals/Actions/CreateScheduleAction.php`)
-  - `UpdateScheduleAction` (`app/Domain/Journals/Actions/UpdateScheduleAction.php`)
-  - `DeleteScheduleAction` (`app/Domain/Journals/Actions/DeleteScheduleAction.php`)
-- **Livewire UI Components**:
-  - `ScheduleIndex` (`app/Domain/Journals/Livewire/ScheduleIndex.php`)
-- **Entities (Domain Rules)**:
-  - `ScheduleStatus` (`app/Domain/Journals/Entities/ScheduleStatus.php`)
+This domain depends on:
+- **Core**
+- **Enrollment**
+- **Guidance**
+- **Program**
+- **User**
+
+---
+
+## Actions
+
+| File | Class | Extends |
+|---|---|---|
+| `Aggregates/Attendance/Actions/ClockInAction.php` | `ClockInAction` | `BaseAction` |
+| `Aggregates/Attendance/Actions/ClockOutAction.php` | `ClockOutAction` | `BaseAction` |
+| `Aggregates/Logbook/Actions/CompileLogbookReportAction.php` | `CompileLogbookReportAction` | `BaseAction` |
+| `Aggregates/Attendance/Actions/CreateAttendanceAction.php` | `CreateAttendanceAction` | `BaseAction` |
+| `Aggregates/Logbook/Actions/CreateLogbookAction.php` | `CreateLogbookAction` | `BaseAction` |
+| `Aggregates/Schedule/Actions/CreateScheduleAction.php` | `CreateScheduleAction` | `BaseAction` |
+| `Aggregates/Attendance/Actions/DeleteAttendanceAction.php` | `DeleteAttendanceAction` | `BaseAction` |
+| `Aggregates/Logbook/Actions/DeleteLogbookAction.php` | `DeleteLogbookAction` | `BaseAction` |
+| `Aggregates/Schedule/Actions/DeleteScheduleAction.php` | `DeleteScheduleAction` | `BaseAction` |
+| `Aggregates/AbsenceRequest/Actions/ProcessAbsenceAction.php` | `ProcessAbsenceAction` | `BaseAction` |
+| `Aggregates/AbsenceRequest/Actions/SubmitAbsenceAction.php` | `SubmitAbsenceAction` | `BaseAction` |
+| `Aggregates/IndustryAssessment/Actions/SubmitIndustryAssessmentAction.php` | `SubmitIndustryAssessmentAction` | `BaseAction` |
+| `Aggregates/Logbook/Actions/SubmitLogbookAction.php` | `SubmitLogbookAction` | `BaseAction` |
+| `Aggregates/Attendance/Actions/UpdateAttendanceAction.php` | `UpdateAttendanceAction` | `BaseAction` |
+| `Aggregates/Logbook/Actions/UpdateLogbookAction.php` | `UpdateLogbookAction` | `BaseAction` |
+| `Aggregates/Schedule/Actions/UpdateScheduleAction.php` | `UpdateScheduleAction` | `BaseAction` |
+| `Aggregates/Attendance/Actions/VerifyAttendanceAction.php` | `VerifyAttendanceAction` | `BaseAction` |
+
+---
+
+## Models
+
+| File | Class |
+|---|---|
+| `Aggregates/AbsenceRequest/Models/AbsenceRequest.php` | `AbsenceRequest` |
+| `Aggregates/Attendance/Models/Attendance.php` | `Attendance` |
+| `Aggregates/IndustryAssessment/Models/IndustryAssessment.php` | `IndustryAssessment` |
+| `Aggregates/Logbook/Models/Logbook.php` | `Logbook` |
+| `Aggregates/Schedule/Models/Schedule.php` | `Schedule` |
+
+---
+
+## Livewire Components
+
+| File | Component | Extends |
+|---|---|---|
+| `Aggregates/AbsenceRequest/Livewire/AbsenceRequestForm.php` | `AbsenceRequestForm` | `Component` |
+| `Aggregates/Attendance/Livewire/AttendanceManager.php` | `AttendanceManager` | `Component` |
+| `Aggregates/IndustryAssessment/Livewire/IndustryAssessmentForm.php` | `IndustryAssessmentForm` | `Component` |
+| `Aggregates/Logbook/Livewire/LogbookEntry.php` | `LogbookEntry` | `Component` |
+| `Aggregates/Logbook/Livewire/LogbookManager.php` | `LogbookManager` | `BaseRecordManager` |
+| `Aggregates/Schedule/Livewire/ScheduleIndex.php` | `ScheduleIndex` | `Component` |
+| `Aggregates/Attendance/Livewire/StudentClockIn.php` | `StudentClockIn` | `Component` |
+
+---
+
+## Authorization Policies
+
+| File | Policy |
+|---|---|
+| `Aggregates/Attendance/Policies/AttendancePolicy.php` | `AttendancePolicy` |
+| `Aggregates/Logbook/Policies/LogbookPolicy.php` | `LogbookPolicy` |
+| `Aggregates/Schedule/Policies/SchedulePolicy.php` | `SchedulePolicy` |
+
+---
+
+## File Organization
+
+```
+app/Domain/Journals/
+├── Aggregates/           ← Aggregate roots
+│   └── {Aggregate}/
+│       ├── Actions/
+│       ├── Models/
+│       ├── Policies/
+│       └── Livewire/
+├── Http/
+├── Livewire/
+├── Types/
+├── Services/
+└── Support/
+```
+
+---
+
+*For overview and business context, see [journals.md](journals.md)*
