@@ -32,6 +32,23 @@ test('system:cleanup command runs successfully with force option', function () {
     expect(File::exists($dummyLog))->toBeFalse();
 });
 
+test('system:cleanup command aborts when confirmation is declined', function () {
+    $this->artisan('system:cleanup')
+        ->expectsConfirmation(__('setup.system.cleanup_confirm'), 'no')
+        ->assertExitCode(0);
+});
+
+test('system:cleanup command runs when confirmation is accepted', function () {
+    $this->artisan('system:cleanup')
+        ->expectsConfirmation(__('setup.system.cleanup_confirm'), 'yes')
+        ->assertExitCode(0);
+});
+
+test('system:health command runs in standard mode', function () {
+    $this->artisan('system:health')
+        ->assertSuccessful();
+});
+
 test('system:cache-warm command runs successfully', function () {
     // Mock the inner Artisan calls to prevent caching configuration/views/events during testing
     Artisan::shouldReceive('call')
