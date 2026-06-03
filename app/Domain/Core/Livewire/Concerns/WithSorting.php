@@ -15,13 +15,15 @@ trait WithSorting
 
     protected function applySorting(Builder $query): Builder
     {
-        $column = in_array($this->sortBy['column'], $this->sortableColumns, true)
-            ? $this->sortBy['column']
-            : 'id';
+        $column = $this->sortBy['column'] ?? 'id';
+        if (! in_array($column, $this->sortableColumns, true)) {
+            $column = 'id';
+        }
 
-        $direction = in_array($this->sortBy['direction'], ['asc', 'desc'], true)
-            ? $this->sortBy['direction']
-            : 'asc';
+        $direction = $this->sortBy['direction'] ?? 'asc';
+        if (! in_array($direction, ['asc', 'desc'], true)) {
+            $direction = 'asc';
+        }
 
         return $query->orderBy($column, $direction);
     }

@@ -52,6 +52,10 @@ abstract class BaseRecordManager extends Component
 
     public function rows(): LengthAwarePaginator
     {
+        if (! in_array($this->perPage, $this->perPageOptions(), true)) {
+            $this->perPage = 10;
+        }
+
         $query = $this->query();
 
         if ($this->with !== []) {
