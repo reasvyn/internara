@@ -8,6 +8,7 @@ use App\Domain\Enrollment\Models\Registration;
 use App\Domain\Guidance\Aggregates\HandbookAcknowledgement\Models\HandbookAcknowledgement;
 use App\Domain\Guidance\Aggregates\Mentee\Models\Mentee;
 use App\Domain\Guidance\Aggregates\Mentor\Models\Mentor;
+use App\Domain\User\Aggregates\Profile\Models\Profile;
 use App\Domain\User\Entities\Apprentice;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
