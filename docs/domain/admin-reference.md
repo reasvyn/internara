@@ -1,141 +1,126 @@
 # Admin — API Reference
-> Last updated: 2026-05-31
-> Changes: docs: audit — all items Implemented
 
-> **Legend:** ✅ Implemented = code exists | ⏳ Planned = not yet implemented
+> Last updated: 2026-06-03
+> **Status:** ✅ **Fully Implemented** — Aggregate-rooted layout mapping for the Admin domain including Setup
 
-Total: 55 files — ✅ 55 Implemented
+This reference defines the structured aggregates and code layout within the **Administration** domain.
 
-## Actions
+---
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Admin/Actions/ArchiveStudentAccountsAction.php` | `ArchiveStudentAccountsAction` | `BaseAction` | Archives inactive student accounts in chunks |
-| `Admin/Actions/BatchDeleteUserAction.php` | `BatchDeleteUserAction` | `BaseAction` | Batch deletes selected users with result summary |
-| `Admin/Actions/CreateUserAction.php` | `CreateUserAction` | `BaseAction` | Creates a new user with system username, hashed password, sends welcome |
-| `Admin/Actions/DeleteUserAction.php` | `DeleteUserAction` | `BaseAction` | Deletes a user with logging |
-| `Admin/Actions/GenerateAccountSlipAction.php` | `GenerateAccountSlipAction` | `BaseAction` | Generates account recovery slip for a user |
-| `Admin/Actions/GetAdminDashboardStatsAction.php` | `GetAdminDashboardStatsAction` | `BaseAction` | Aggregates dashboard statistics (users, internships, departments) |
-| `Admin/Actions/GetUserManagerStatsAction.php` | `GetUserManagerStatsAction` | `BaseAction` | Aggregates user manager statistics |
-| `Admin/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | `BaseAction` | Reads the recovery key plaintext from the storage file |
-| `Admin/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseAction` | Revokes all activation tokens for a user |
-| `Admin/Actions/SaveRecoveryKeyAction.php` | `SaveRecoveryKeyAction` | `BaseAction` | Saves the recovery key to storage/app/private/.recovery-key |
-| `Admin/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | `BaseAction` | Creates an announcement and broadcasts to target role |
-| `Admin/Actions/SetUserStatusAction.php` | `SetUserStatusAction` | `BaseAction` | Sets a user's account status with reason and notification |
-| `Admin/Actions/ToggleUserStatusAction.php` | `ToggleUserStatusAction` | `BaseAction` | Toggles user active/inactive status with notification |
-| `Admin/Actions/UpdateUserAction.php` | `UpdateUserAction` | `BaseAction` | Updates user details and profile with logging |
+## 1. Setup Aggregate
+Handles the first-run application bootstrap, system installation, environment auditing, school/department provisioning, and recovery commands.
 
-## Console Commands
+- **Eloquent Models**:
+  - `Setup` (`app/Domain/Administration/Aggregates/Setup/Models/Setup.php`)
+- **Policies**:
+  - `SetupPolicy` (`app/Domain/Administration/Aggregates/Setup/Policies/SetupPolicy.php`)
+- **Command Actions**:
+  - `GenerateSetupTokenAction` (`app/Domain/Administration/Aggregates/Setup/Actions/GenerateSetupTokenAction.php`)
+  - `ValidateSetupTokenAction` (`app/Domain/Administration/Aggregates/Setup/Actions/ValidateSetupTokenAction.php`)
+  - `InstallSystemAction` (`app/Domain/Administration/Aggregates/Setup/Actions/InstallSystemAction.php`)
+  - `SetupSchoolAction` (`app/Domain/Administration/Aggregates/Setup/Actions/SetupSchoolAction.php`)
+  - `SetupDepartmentAction` (`app/Domain/Administration/Aggregates/Setup/Actions/SetupDepartmentAction.php`)
+  - `SetupSuperAdminAction` (`app/Domain/Administration/Aggregates/Setup/Actions/SetupSuperAdminAction.php`)
+  - `FinalizeSetupAction` (`app/Domain/Administration/Aggregates/Setup/Actions/FinalizeSetupAction.php`)
+  - `InitializeSuperAdminAction` (`app/Domain/Administration/Aggregates/Setup/Actions/InitializeSuperAdminAction.php`)
+  - `RecoverSuperAdminAction` (`app/Domain/Administration/Aggregates/Setup/Actions/RecoverSuperAdminAction.php`)
+- **Console Commands**:
+  - `SetupInstallCommand` (`app/Domain/Administration/Console/Commands/SetupInstallCommand.php`)
+  - `SetupResetTokenCommand` (`app/Domain/Administration/Console/Commands/SetupResetTokenCommand.php`)
+- **Livewire UI Components**:
+  - `SetupWizard` (`app/Domain/Administration/Aggregates/Setup/Livewire/SetupWizard.php`)
+- **Livewire Form Objects**:
+  - `SetupSchoolForm` (`app/Domain/Administration/Aggregates/Setup/Livewire/Forms/SetupSchoolForm.php`)
+  - `SetupDepartmentForm` (`app/Domain/Administration/Aggregates/Setup/Livewire/Forms/SetupDepartmentForm.php`)
+  - `AdminForm` (`app/Domain/Administration/Aggregates/Setup/Livewire/Forms/AdminForm.php`)
+  - `InternshipForm` (`app/Domain/Administration/Aggregates/Setup/Livewire/Forms/InternshipForm.php`)
+- **Entities (Domain Rules)**:
+  - `SetupState` (`app/Domain/Administration/Aggregates/Setup/Entities/SetupState.php`)
+- **Support & Services**:
+  - `SystemProvisioner` (`app/Domain/Administration/Aggregates/Setup/Support/SystemProvisioner.php`)
+  - `EnvironmentAuditor` (`app/Domain/Administration/Aggregates/Setup/Services/EnvironmentAuditor.php`)
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Admin/Console/Commands/AdminPromoteCommand.php` | `AdminPromoteCommand` | `Command` | Promotes a user to admin role |
-| `Admin/Console/Commands/AutoInactivateAccounts.php` | `AutoInactivateAccounts` | `Command` | Auto-inactivates stale user accounts |
-| `Admin/Console/Commands/CreateAdminCommand.php` | `CreateAdminCommand` | `Command` | Interactive CLI to create a new admin user |
-| `Admin/Console/Commands/PulseRecordSnapshotsCommand.php` | `PulseRecordSnapshotsCommand` | `Command` | Captures Pulse snapshot data |
-| `Admin/Console/Commands/RecoverAdminCommand.php` | `RecoverAdminCommand` | `Command` | Interactive CLI to recover super admin access |
-| `Admin/Console/Commands/ShowRecoveryPathCommand.php` | `ShowRecoveryPathCommand` | `Command` | Displays the recovery key file path |
-| `Admin/Console/Commands/PruneNotificationsCommand.php` | `PruneNotificationsCommand` | `Command` | Prunes old read notifications |
-| `Admin/Console/Commands/PublishScheduledAnnouncementsCommand.php` | `PublishScheduledAnnouncementsCommand` | `Command` | Publishes scheduled announcements |
-| `Admin/Console/Commands/ShowRecoveryKeyCommand.php` | `ShowRecoveryKeyCommand` | `Command` | Displays the stored recovery key (with confirmation) |
+---
 
-## Livewire Components
+## 2. Oversight Aggregate
+Provides system management, user accounts mapping, recovery key operations, credentials slip generation, and system health checks.
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Admin/Livewire/AccountCloneDetector.php` | `AccountCloneDetector` | `Component` | Displays and detects cloned user accounts |
-| `Admin/Livewire/AdminManager.php` | `AdminManager` | `BaseRecordManager` | CRUD manager for admin users |
-| `Admin/Livewire/AnnouncementManager.php` | `AnnouncementManager` | `Component` | Creates and manages announcements |
-| `Admin/Livewire/ApplicationReview.php` | `ApplicationReview` | `Component` | Reviews internship account applications |
-| `Admin/Livewire/AuditLogManager.php` | `AuditLogManager` | `Component` | Paginated audit log viewer |
-| `Admin/Livewire/GdprDeletionLogs.php` | `GdprDeletionLogs` | `Component` | Views GDPR deletion logs |
-| `Admin/Livewire/MenteeManager.php` | `MenteeManager` | `BaseRecordManager` | CRUD manager for mentee records |
-| `Admin/Livewire/MentorManager.php` | `MentorManager` | `BaseRecordManager` | CRUD manager for mentor records |
-| `Admin/Livewire/Pulse/RegistrationsCard.php` | `RegistrationsCard` | `Card` | Pulse dashboard card showing registration stats |
-| `Admin/Livewire/Pulse/SystemCard.php` | `SystemCard` | `Card` | Pulse dashboard card showing system health |
-| `Admin/Livewire/StudentManager.php` | `StudentManager` | `BaseRecordManager` | CRUD manager for student users |
-| `Admin/Livewire/SupervisorManager.php` | `SupervisorManager` | `BaseRecordManager` | CRUD manager for supervisor users |
-| `Admin/Livewire/TeacherManager.php` | `TeacherManager` | `BaseRecordManager` | CRUD manager for teacher users |
-| `Admin/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` | CRUD manager for all users with search, filters, sort, bulk lock/unlock/delete, CSV import/export, template download, pagination control, account slip download |
-| `Admin/Livewire/Concerns/DownloadsAccountSlips.php` | `DownloadsAccountSlips` | — | Trait used by UserManager for generating/downloading account slips |
+- **Policies**:
+  - `UserPolicy` (`app/Domain/User/Policies/UserPolicy.php` — consumed contextually)
+- **Command Actions**:
+  - `CreateUserAction` (`app/Domain/Administration/Actions/CreateUserAction.php`)
+  - `UpdateUserAction` (`app/Domain/Administration/Actions/UpdateUserAction.php`)
+  - `ArchiveStudentAccountsAction` (`app/Domain/Administration/Actions/ArchiveStudentAccountsAction.php`)
+  - `BatchDeleteUserAction` (`app/Domain/Administration/Actions/BatchDeleteUserAction.php`)
+  - `SetUserStatusAction` (`app/Domain/Administration/Actions/SetUserStatusAction.php`)
+  - `ToggleUserStatusAction` (`app/Domain/Administration/Actions/ToggleUserStatusAction.php`)
+  - `RevokeUserActivationTokensAction` (`app/Domain/Administration/Actions/RevokeUserActivationTokensAction.php`)
+  - `GetAdminDashboardStatsAction` (`app/Domain/Administration/Actions/GetAdminDashboardStatsAction.php`)
+  - `GetUserManagerStatsAction` (`app/Domain/Administration/Actions/GetUserManagerStatsAction.php`)
+  - `SaveRecoveryKeyAction` (`app/Domain/Administration/Actions/SaveRecoveryKeyAction.php`)
+  - `ReadRecoveryKeyAction` (`app/Domain/Administration/Actions/ReadRecoveryKeyAction.php`)
+  - `GenerateAccountSlipAction` (`app/Domain/Administration/Actions/GenerateAccountSlipAction.php`)
+- **Console Commands**:
+  - `AdminPromoteCommand` (`app/Domain/Administration/Console/Commands/AdminPromoteCommand.php`)
+  - `CreateAdminCommand` (`app/Domain/Administration/Console/Commands/CreateAdminCommand.php`)
+  - `RecoverAdminCommand` (`app/Domain/Administration/Console/Commands/RecoverAdminCommand.php`)
+  - `AutoInactivateAccounts` (`app/Domain/Administration/Console/Commands/AutoInactivateAccounts.php`)
+  - `PruneNotificationsCommand` (`app/Domain/Administration/Console/Commands/PruneNotificationsCommand.php`)
+  - `ShowRecoveryPathCommand` (`app/Domain/Administration/Console/Commands/ShowRecoveryPathCommand.php`)
+  - `ShowRecoveryKeyCommand` (`app/Domain/Administration/Console/Commands/ShowRecoveryKeyCommand.php`)
+  - `PulseRecordSnapshotsCommand` (`app/Domain/Administration/Console/Commands/PulseRecordSnapshotsCommand.php`)
+- **Livewire UI Components**:
+  - `UserManager` (`app/Domain/Administration/Livewire/UserManager.php`)
+  - `AdminManager` (`app/Domain/Administration/Livewire/AdminManager.php`)
+  - `StudentManager` (`app/Domain/Administration/Livewire/StudentManager.php`)
+  - `TeacherManager` (`app/Domain/Administration/Livewire/TeacherManager.php`)
+  - `SupervisorManager` (`app/Domain/Administration/Livewire/SupervisorManager.php`)
+  - `ApplicationReview` (`app/Domain/Administration/Livewire/ApplicationReview.php`)
+  - `AccountCloneDetector` (`app/Domain/Administration/Livewire/AccountCloneDetector.php`)
+  - `Pulse/SystemCard` (`app/Domain/Administration/Livewire/Pulse/SystemCard.php`)
+  - `Pulse/RegistrationsCard` (`app/Domain/Administration/Livewire/Pulse/RegistrationsCard.php`)
+- **Livewire Form Objects**:
+  - `UserForm` (`app/Domain/Administration/Livewire/Forms/UserForm.php`)
+  - `AdminUserForm` (`app/Domain/Administration/Livewire/Forms/AdminUserForm.php`)
+  - `StudentForm` (`app/Domain/Administration/Livewire/Forms/StudentForm.php`)
+  - `TeacherForm` (`app/Domain/Administration/Livewire/Forms/TeacherForm.php`)
+  - `SupervisorForm` (`app/Domain/Administration/Livewire/Forms/SupervisorForm.php`)
+- **Pulse Metrics Recorders**:
+  - `SystemRecorder` (`app/Domain/Administration/Recorders/SystemRecorder.php`)
+  - `RegistrationRecorder` (`app/Domain/Administration/Recorders/RegistrationRecorder.php`)
+- **Oversight Services**:
+  - `PulseGuard` (`app/Domain/Administration/Services/PulseGuard.php`)
 
-## Models
+---
 
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Admin/Models/Announcement.php` | `Announcement` | `BaseModel` | Eloquent model for broadcast announcements |
-| `Admin/Models/GdprDeletionLog.php` | `GdprDeletionLog` | `BaseModel` | Eloquent model for GDPR deletion audit trail |
+## 3. Announcement Aggregate
+Manages broadcast notices lifecycle, future schedules, and role-targeted dispatches.
 
-## Enums
+- **Eloquent Models**:
+  - `Announcement` (`app/Domain/Administration/Models/Announcement.php`)
+- **Command Actions**:
+  - `SendAnnouncementAction` (`app/Domain/Administration/Actions/SendAnnouncementAction.php`)
+- **Console Commands**:
+  - `PublishScheduledAnnouncementsCommand` (`app/Domain/Administration/Console/Commands/PublishScheduledAnnouncementsCommand.php`)
+- **Livewire UI Components**:
+  - `AnnouncementManager` (`app/Domain/Administration/Livewire/AnnouncementManager.php`)
+- **Livewire Form Objects**:
+  - `AnnouncementForm` (`app/Domain/Administration/Livewire/Forms/AnnouncementForm.php`)
+- **Notifications**:
+  - `AnnouncementNotification` (`app/Domain/Administration/Notifications/AnnouncementNotification.php`)
+  - `ActivationCodeNotification` (`app/Domain/Administration/Notifications/ActivationCodeNotification.php`)
+- **Enums**:
+  - `AnnouncementStatus` (`app/Domain/Administration/Enums/AnnouncementStatus.php`)
 
-| File | Class | Implements | Description |
-|---|---|---|---|
-| `Admin/Enums/AnnouncementStatus.php` | `AnnouncementStatus` | `LabelEnum` | Announcement lifecycle status (DRAFT, SCHEDULED, PUBLISHED) |
+---
 
-## Notifications
+## 4. Compliance Aggregate
+Tracks GDPR erasure logs and displays activity audit logs.
 
-| File | Class | Extends/Implements | Description |
-|---|---|---|---|
-| `Admin/Notifications/ActivationCodeNotification.php` | `ActivationCodeNotification` | `Notification` | Email notification with activation code |
-| `Admin/Notifications/AnnouncementNotification.php` | `AnnouncementNotification` | `Notification`, `ShouldQueue` | Queued mail + database notification for announcements |
-
-## Policies
-
-| File | Class | Extends | Description |
-|---|---|---|---|
-| `Admin/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` | `BasePolicy` | Authorization for GDPR log viewing |
-
-### Livewire Form Objects
-
-| File | Class | Extends | Fields | Used By |
-|---|---|---|---|---|
-| `Admin/Livewire/Forms/AdminUserForm.php` | `AdminUserForm` | `Form` | name, email, username, password, role | `AdminManager` |
-| `Admin/Livewire/Forms/AnnouncementForm.php` | `AnnouncementForm` | `Form` | title, message, type, target_roles, scheduled_at | `AnnouncementManager` |
-| `Admin/Livewire/Forms/MenteeForm.php` | `MenteeForm` | `Form` | internal_notes | `MenteeManager` |
-| `Admin/Livewire/Forms/MentorForm.php` | `MentorForm` | `Form` | type, is_active | `MentorManager` |
-| `Admin/Livewire/Forms/StudentForm.php` | `StudentForm` | `Form` | name, email, username, password | `StudentManager` |
-| `Admin/Livewire/Forms/SupervisorForm.php` | `SupervisorForm` | `Form` | name, email, username, password | `SupervisorManager` |
-| `Admin/Livewire/Forms/TeacherForm.php` | `TeacherForm` | `Form` | name, email, username, password | `TeacherManager` |
-| `Admin/Livewire/Forms/UserForm.php` | `UserForm` | `Form` | name, email | `UserManager` |
-
-## Recorders (Pulse)
-
-| File | Class | Description |
-|---|---|---|
-| `Admin/Recorders/RegistrationRecorder.php` | `RegistrationRecorder` | Records registration Pulse metrics |
-| `Admin/Recorders/SystemRecorder.php` | `SystemRecorder` | Records system Pulse metrics |
-
-## Services
-
-| File | Class | Description |
-|---|---|---|
-| `Admin/Services/PulseGuard.php` | `PulseGuard` | Authorizes Pulse dashboard access by role |
-
-## Where to Find It
-
-- `app/Domain/Admin/Models/`
-- `app/Domain/Admin/Actions/` — 14 Actions
-- `app/Domain/Admin/Console/Commands/` — CLI admin tools
-- `app/Domain/Admin/Livewire/` — user managers, announcement manager
-
-## Dependency Graph
-
-```
-Admin Domain
-├── Core         → BaseAction, BaseRecordManager, SmartLogger, CacheKeys,
-│                   HandlesActionErrors, BasePolicy, BaseEntity
-├── Auth         → Role, AccountStatus, CheckRoleMiddleware
-├── User         → User model, Profile, UserPolicy
-├── School       → School, Department, AcademicYear models
-├── Settings     → System settings, branding config
-├── Shared       → Shared utilities, file handling
-├── Partnership  → Company records for admin oversight
-├── Placement    → Placement records for admin oversight
-├── Registration → Registration records for admin oversight
-├── Mentee       → Mentee records for admin management
-├── Mentor       → Mentor records for admin management
-└── Internship   → Internship records for admin oversight
-```
-
-Consumed by: all domains (system administration)
-
+- **Eloquent Models**:
+  - `GdprDeletionLog` (`app/Domain/Administration/Models/GdprDeletionLog.php`)
+- **Policies**:
+  - `GdprDeletionLogPolicy` (`app/Domain/Administration/Policies/GdprDeletionLogPolicy.php`)
+- **Livewire UI Components**:
+  - `GdprDeletionLogs` (`app/Domain/Administration/Livewire/GdprDeletionLogs.php`)
+  - `AuditLogManager` (`app/Domain/Administration/Livewire/AuditLogManager.php`)

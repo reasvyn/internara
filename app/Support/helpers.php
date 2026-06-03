@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\Settings\Support\AppInfo;
-use App\Domain\Settings\Support\AppMetadata;
-use App\Domain\Settings\Support\Settings;
+use App\Domain\Settings\Aggregates\Setting\Support\AppInfo;
+use App\Domain\Settings\Aggregates\Setting\Support\AppMetadata;
+use App\Domain\Settings\Aggregates\Setting\Support\Settings;
 
 if (! function_exists('setting')) {
     /**

@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-The domain-first architecture (ADR-002) organizes code into 24 business domains, each owning
+The domain-first architecture (ADR-002) organizes code into 16 domains, each owning
 its complete vertical slice. Business processes naturally span multiple domains — a student
 registration involves the Registration, Placement, Mentee, and Internship domains. Closing
 a program involves the Internship, Assessment, Certificate, and User domains.
@@ -34,7 +34,7 @@ contract, and any domain can consume it through Laravel's service container.
 ```
 App\Domain\Core\Contracts\SendsNotifications
     ↑ implements                   ↑ calls via DI
-App\Domain\User\Actions\        App\Domain\Internship\Actions\
+App\Domain\User\Actions\        App\Domain\Program\Actions\
 SendNotificationAction           CreateInternshipAction
 ```
 
@@ -98,7 +98,7 @@ class CloseInternshipAction extends BaseAction
 ## References
 
 - `app/Domain/Core/Contracts/` — shared contracts
-- `app/Domain/Internship/Events/InternshipCreated.php` — event example
+- `app/Domain/Program/Events/InternshipCreated.php` — event example
 - `app/Providers/DomainServiceProvider.php` — contract bindings, listener registration
 - `docs/architecture.md` — Cross-Domain Communication section
 - `docs/architecture.md` — Dependency Rules table

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Internship\Models\Internship;
-use App\Domain\Schedule\Models\Schedule;
+use App\Domain\Journals\Aggregates\Schedule\Models\Schedule;
+use App\Domain\Program\Aggregates\Internship\Models\Internship;
 use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

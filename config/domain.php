@@ -16,13 +16,22 @@ return [
     */
 
     'list' => [
-        'Core', 'Shared',
-        'Auth', 'User',
-        'School', 'Settings', 'Setup',
-        'Partnership', 'Placement', 'Registration', 'Mentee', 'Internship',
-        'Mentor', 'Attendance', 'Logbook', 'Schedule', 'Assignment', 'Guidance', 'Incident',
-        'Assessment', 'Evaluation', 'Document', 'Certificate',
-        'Admin',
+        'Core',
+        'User',
+        'Academics',
+        'Partners',
+        'Program',
+        'Enrollment',
+        'Guidance',
+        'Journals',
+        'Assignment',
+        'Reports',
+        'Assessment',
+        'Evaluation',
+        'Certification',
+        'Incident',
+        'Settings',
+        'Administration',
     ],
 
     /*

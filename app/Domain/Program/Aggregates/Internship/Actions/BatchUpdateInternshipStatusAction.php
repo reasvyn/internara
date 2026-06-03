@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Program\Aggregates\Internship\Actions;
+
+use App\Domain\Core\Actions\BaseAction;
+use App\Domain\Program\Aggregates\Internship\Enums\InternshipStatus;
+use Illuminate\Database\Eloquent\Builder;
+
+final class BatchUpdateInternshipStatusAction extends BaseAction
+{
+    public function execute(Builder $query, InternshipStatus $status): int
+    {
+        return $query->update(['status' => $status->value]);
+    }
+}

@@ -8,42 +8,13 @@ Accepted
 
 ## Context
 
-The application manages a complex business domain — vocational fieldwork management — with 24 distinct
-business concepts spanning the full program lifecycle: from institutional setup and partnership
-management through student registration, daily operations (attendance, logbooks, assignments),
-competency assessment, certification, and finally program closure and archival.
+The application manages a complex business domain — vocational fieldwork management — with 23 distinct
 
-Two organizational approaches were considered:
-
-1. **Flat layering** (Laravel defaults): `app/Models/`, `app/Http/Controllers/`,
-   `app/Livewire/`, `app/Policies/` — all models in one directory, all controllers in another,
-   etc. This is the conventional Laravel structure, suitable for simple CRUD applications with
-   few business concepts.
-
-2. **Domain-first**: Each business concept owns its complete vertical slice in one directory —
-   `app/Domain/{Domain}/` containing Models, Actions, Livewire, Policies, Entities, Enums,
-   etc.
-
-Flat layering scatters a single feature (e.g., "submit an assignment") across 8+ directories:
-the Model is in `app/Models/`, the form request in `app/Http/Requests/`, the policy in
-`app/Policies/`, the Livewire component in `app/Livewire/`, the notification in
-`app/Notifications/`, the event in `app/Events/`, the listener in `app/Listeners/`, and the
-view in `resources/views/`. This makes it difficult to:
-
-- Reason about feature boundaries and encapsulation — related code is physically separated
-- Enforce architectural rules — nothing prevents a notification from importing a Livewire component
-- Refactor a domain without touching unrelated code — changes ripple across 8+ directories
-- Onboard new developers — the cognitive overhead of navigating 8+ directories per feature
-
-## Decision
-
-Code is organized by business domain, not by technical layer. Every domain lives under
-`app/Domain/{Domain}/` and owns its complete vertical slice. The 24 domains are:
+`app/Domain/{Domain}/` and owns its complete vertical slice. The 23 domains are:
 
 | Domain | Boundary | Key Concept |
 |---|---|---|
-| **Core** | Base classes & infrastructure everything depends on | `BaseModel`, `BaseEntity`, `BaseAction`, `AppException`, `Integrity` |
-| **Shared** | Utilities shared across domains, no business logic | `Theme`, `CsvHandler`, `Environment`, `Locale` |
+| **Core** | Base classes, infrastructure, and cross-domain utilities everything depends on | `BaseModel`, `BaseEntity`, `BaseAction`, `AppException`, `Integrity`, `Theme`, `CsvHandler`, `Environment`, `Locale` |
 | **Auth** | Identity & access control | Login, passwords, account lifecycle, recovery |
 | **User** | User profile & identity | Profile editing, dashboard routing |
 | **School** | Institution configuration | Departments, academic years |
@@ -174,7 +145,7 @@ Until they are restored, boundary enforcement relies on code review and PHPStan 
 
 ## References
 
-- `app/Domain/` (24 domain directories)
+- `app/Domain/` (23 domain directories; the former Shared domain was merged into Core)
 - `app/Domain/Core/` (base classes, contracts, exceptions, infrastructure)
 - `app/Providers/DomainServiceProvider.php` (auto-discovery, manual registrations)
 - `docs/architecture.md` — 12-layer architecture, dependency rules, cross-domain communication

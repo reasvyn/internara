@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Livewire;
 
-use App\Domain\Auth\Actions\DetectUserAccountCloneAction;
+use App\Domain\User\Aggregates\AccountStatus\Actions\DetectUserAccountCloneAction;
 use App\Domain\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Gate;

@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Actions;
 
-use App\Domain\Attendance\Models\Attendance;
-use App\Domain\Auth\Enums\Role as RoleEnum;
-use App\Domain\Certificate\Models\Certificate;
+use App\Domain\Academics\Aggregates\Department\Models\Department;
+use App\Domain\Certification\Aggregates\Certificate\Models\Certificate;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Support\CacheKeys;
-use App\Domain\Internship\Models\Internship;
-use App\Domain\Logbook\Models\Logbook;
-use App\Domain\Mentor\Models\Mentor;
-use App\Domain\Partnership\Models\Company;
-use App\Domain\Partnership\Models\Partnership;
-use App\Domain\Placement\Models\Placement;
-use App\Domain\Registration\Models\Registration;
-use App\Domain\School\Models\Department;
+use App\Domain\Enrollment\Models\Placement;
+use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Guidance\Aggregates\Mentor\Models\Mentor;
+use App\Domain\Journals\Aggregates\Attendance\Models\Attendance;
+use App\Domain\Journals\Aggregates\Logbook\Models\Logbook;
+use App\Domain\Partners\Aggregates\Company\Models\Company;
+use App\Domain\Partners\Aggregates\Partnership\Models\Partnership;
+use App\Domain\Program\Aggregates\Internship\Models\Internship;
+use App\Domain\User\Enums\Role as RoleEnum;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Cache;
 

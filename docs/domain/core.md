@@ -1,7 +1,7 @@
 # Core Domain — Context Boundaries & Rules
 
-> Last updated: 2026-06-02
-> Changes: comprehensive docs-vs-implementation audit — fix base class count, usage statistics, exception table, cache keys count, metadata
+> Last updated: 2026-06-03
+> Changes: merge Shared domain into Core — add cross-domain utilities section (3.11), Blade views, Livewire components; update usage statistics, dependency rules, and domain count
 
 ## Table of Contents
 
@@ -16,9 +16,10 @@
     - 3.6 Middleware
     - 3.7 Console Commands
     - 3.8 Data Transfer Objects
-    - 3.9 Enums
-    - 3.10 Events
-4. [Dependency Rules](#dependency-rules)
+     - 3.9 Enums
+     - 3.10 Events
+     - 3.11 Cross-Domain Utilities
+ 4. [Dependency Rules](#dependency-rules)
 5. [Usage Patterns by Domain Layer](#usage-patterns-by-domain-layer)
 6. [What Belongs in Core](#what-belongs-in-core)
 7. [What Does NOT Belong in Core](#what-does-not-belong-in-core)
@@ -32,10 +33,10 @@
 
 Core is the **root of the dependency graph**. Every other business domain depends on Core; Core
 depends on nothing except Laravel, Spatie packages, and PHP 8.4. It provides the shared
-infrastructure, contracts, and base classes that make the 24-domain architecture work without every
-domain reinventing the same patterns.
+infrastructure, contracts, base classes, and cross-domain utilities that make the 23-domain
+architecture work without every domain reinventing the same patterns.
 
-Core has three responsibilities:
+Core has four responsibilities:
 
 1. **Provide base classes** — `BaseModel`, `BaseAction`, `BaseEntity`, `BasePolicy`,
    `BaseRecordManager`, `BaseController`, `Data`, `FormRequest`. These
@@ -51,6 +52,11 @@ Core has three responsibilities:
    `domain:discover`), notification channels (`CustomDatabaseChannel`), and DTOs (`Data`,
    `AuditCheck`, `AuditReport`).
 
+4. **Provide cross-domain utilities** — environment detection, locale management, theme/color
+   resolution, CSV handling, translation key checking (dev), and the legacy Spatie status bridge.
+   These Livewire components and Blade views (layouts, UI components, widgets) serve every domain
+   and were historically in the Shared domain before being merged into Core.
+
 ---
 
 ## Context Boundary
@@ -61,7 +67,7 @@ important invariant of the entire architecture.
 
 ```
 ┌─────────────────────────────────────────────────┐
-│              24 Business Domains                 │
+│              22 Business Domains                 │
 │  (Auth, School, Internship, Registration, ...)   │
 │         All import from Core                     │
 └──────────────────┬──────────────────────────────┘
@@ -72,6 +78,7 @@ important invariant of the entire architecture.
 │  Base classes  │  Contracts  │  Infrastructure   │
 │  Exceptions    │  Logging    │  Caching          │
 │  Middleware    │  Commands   │  DTOs             │
+│  Cross-domain  │  Blade UI   │  Utilities        │
 └──────────────────┬──────────────────────────────┘
                    │  depends on
                    ▼
@@ -592,10 +599,144 @@ and keeps event definitions self-contained.
 
 ### Routes & Views
 
-Core owns **no HTTP routes** and **no Blade views**. The `routes/web/core.php` file was removed
+Core owns **no HTTP routes** but **does own Blade views**. The `routes/web/core.php` file was removed
 (was a placeholder after routes moved to respective business domains, e.g., password confirmation
-→ `routes/web/auth.php`, dashboard → `routes/web/user.php`). Core is infrastructure-only; every
-other domain defines its own routes and views.
+→ `routes/web/auth.php`, dashboard → `routes/web/user.php`). Core does not define business routes.
+
+Core owns cross-domain Blade views at `resources/views/core/`:
+
+| Directory           | Namespace          | Description                                  |
+| ------------------- | ------------------ | -------------------------------------------- |
+| `core/layouts/`     | `x-core::layouts.*`| Authenticated shell, guest shell, base HTML  |
+| `core/ui/`          | `x-core::ui.*`     | Buttons, cards, confirm dialogs, navbars     |
+| `core/widgets/`     | `x-core::widgets.*`| Stat cards, profile summary, quick links     |
+
+Lifecycle: `LangSwitcher` and `ThemeSwitcher` are auto-discovered Livewire components (aliased
+`core.lang-switcher` and `core.theme-switcher`). Their Blade views live in `resources/views/core/`.
+
+Livewire component alias pattern: `core.{kebab-name}` (e.g., `core.lang-switcher`).
+
+---
+
+### 3.11 Cross-Domain Utilities
+
+These were historically part of the **Shared domain**, which was merged into Core. They are
+cross-cutting utilities that serve at least two business domains, have no business logic, and
+operate on framework abstractions. They are grouped under Core because they are infrastructure —
+not because they represent a business concept.
+
+#### 3.11.1 Environment Detection
+
+**File:** `app/Domain/Core/Support/Environment.php`
+
+**Purpose:** Centralized environment detection. Provides static methods to check the runtime
+environment without scattering `app()->environment()` calls across the codebase.
+
+**API:**
+
+- `isDebugMode(): bool` — whether APP_DEBUG is enabled
+- `isDevelopment(): bool` — local or dev environment
+- `isProduction(): bool` — production environment
+- `isTesting(): bool` — testing environment
+- `isUnitTests(): bool` — running under PHPUnit
+- `shouldDisplayDebugbar(): bool` — debugbar visibility check
+
+**Usage:** Imported by 6 files across domains.
+
+#### 3.11.2 Locale Management
+
+**File:** `app/Domain/Core/Support/Locale.php`
+
+**Purpose:** Manages bilingual locale switching (Indonesian/English) with session and cookie
+persistence. Single source of truth for the current locale.
+
+**API:**
+
+- `set(string $locale): void` — switches locale, persists to cookie
+- `current(): string` — returns 'id' or 'en'
+- `all(): array` — returns ['id', 'en']
+- `keys(): array` — returns ['id' => 'Bahasa Indonesia', 'en' => 'English']
+- `isSupported(string $locale): bool` — validates supported locale
+- `metadata(string $locale): array` — returns locale metadata
+- `supportedLocales(): array` — returns supported locale codes
+
+**Domains consumed by:** Auth, Layout, Settings (SetLocaleMiddleware).
+**Usage:** Imported by 4 files.
+
+#### 3.11.3 Theme System
+
+**File:** `app/Domain/Core/Support/Theme.php`
+
+**Purpose:** Resolves application color settings into CSS custom properties for light and dark
+theme rendering. Values are cached via `CacheKeys::THEME_CSS_VARIABLES`.
+
+**API:**
+
+- `defaults(): array` — default color values
+- `presets(): array` — available theme presets
+- `all(): array` — resolved colors from settings
+- `cssVariables(): string` — CSS custom properties string (cached)
+
+**Cross-domain dependency:** Reads color values from the Settings domain. This is a documented
+exception — color resolution must access the settings store, and duplicating it in Core would
+introduce coupling. Core itself does NOT import Settings; Theme is a utility that receives data.
+
+**Usage:** Imported by 4 files (Settings Livewire components and seeders).
+
+#### 3.11.4 CSV Handling
+
+**File:** `app/Domain/Core/Support/CsvHandler.php`
+
+**Purpose:** CSV export via StreamedResponse, import with header validation, and template download.
+
+**API:**
+
+- `export(Collection $data, array $headers, string $filename): StreamedResponse`
+- `import(UploadedFile $file): CsvRowResult[]` — validates headers, returns row results
+- `downloadTemplate(array $headers, string $filename): StreamedResponse`
+
+**Usage:** Imported by 5 files (Admin and Partnership Livewire components).
+
+#### 3.11.5 Translation Key Checker (Dev Only)
+
+**File:** `app/Domain/Core/Support/LangChecker.php`
+
+**Purpose:** @deprecated. Extends `Illuminate\Translation\Translator` to log warnings when
+translation keys are missing (development only). Required because `flasher-laravel` type-hints
+the concrete Translator class.
+
+**Usage:** Registered in `AppServiceProvider`. Not imported by business domain code.
+
+#### 3.11.6 Legacy Spatie Status Bridge
+
+**File:** `app/Domain/Core/Support/HasModelStatuses.php`
+
+**Purpose:** @deprecated. Trait that bridges legacy Spatie `HasStatuses` with typed `StatusEnum`.
+Should be removed once all models migrate away from Spatie's status system.
+
+**Usage:** Imported by 1 file.
+
+#### 3.11.7 CsvRowResult Enum
+
+**File:** `app/Domain/Core/Enums/CsvRowResult.php`
+
+**Purpose:** Enum for CSV import row processing results. Implements `LabelEnum`.
+
+**Cases:** `CREATED`, `SKIPPED`.
+
+**Usage:** Imported by 4 files (Admin, Partnership, Internship, School Livewire components).
+
+#### 3.11.8 Livewire UI Components
+
+**File:** `app/Domain/Core/Livewire/LangSwitcher.php`, `app/Domain/Core/Livewire/ThemeSwitcher.php`
+
+**Purpose:** Cross-domain Livewire components for language and theme toggling. Aliased as
+`core.lang-switcher` and `core.theme-switcher`.
+
+| Component      | Alias               | View                          | Description                                      |
+| -------------- | ------------------- | ----------------------------- | ------------------------------------------------ |
+| `LangSwitcher` | `core.lang-switcher` | `resources/views/core/lang-switcher.blade.php` | Language toggle — delegates to `Locale::set()`   |
+| `ThemeSwitcher`| `core.theme-switcher`| `resources/views/core/theme-switcher.blade.php`| Light/dark/system theme toggle with persistence  |
 
 ---
 
@@ -607,7 +748,7 @@ These rules are **absolute invariants**:
 
 ```php
 // ❌ FORBIDDEN — Core importing from a business domain
-use App\Domain\School\Models\AcademicYear;
+use App\Domain\Academics\Models\AcademicYear;
 
 // ❌ FORBIDDEN — even indirectly through dynamic references
 $class = 'App\\Domain\\School\\Models\\AcademicYear';
@@ -627,8 +768,8 @@ use App\Domain\Core\Models\BaseModel;
 use App\Domain\Core\Support\SmartLogger;
 ```
 
-This is bidirectional for all 24 domains. Every domain depends on Core for base classes, contracts,
-logging, exceptions, and infrastructure.
+This is bidirectional for all 23 domains. Every domain depends on Core for base classes, contracts,
+logging, exceptions, infrastructure, and cross-domain utilities.
 
 ### Rule 3: Core Depends Only on Framework + Spatie + PHP
 
@@ -686,9 +827,10 @@ Here is how each architectural layer should interact with Core:
 
 These criteria determine whether new code should be added to Core:
 
-1. **Used by 3+ domains** — If a utility, base class, contract, or infrastructure component is
-   needed by 3 or more business domains, it belongs in Core. Examples: `BaseAction` (174 usages),
-   `SmartLogger` (40 usages), `BaseModel` (49 usages).
+1. **Used by 2+ domains** — If a utility, base class, contract, infrastructure component, or
+   cross-cutting UI is needed by 2 or more business domains, it belongs in Core. Examples:
+   `BaseAction` (174 usages), `SmartLogger` (40 usages), `BaseModel` (49 usages), `CsvHandler`
+   (5 usages in 4 domains), `Theme` (cross-domain color resolution).
 
 2. **Cross-cutting infrastructure** — Global middleware, shared console commands, notification
    channels, exception hierarchy. These affect every request or every domain. Examples:
@@ -709,7 +851,8 @@ These criteria determine whether new code should be added to Core:
 These are things that may seem like infrastructure but should NOT be in Core:
 
 1. **Single-domain utilities** — If only one domain uses it, put it in that domain's `Support/`
-   directory. Example: CSV handling belongs in `Shared`, not Core.
+   directory. Example: a PDF rendering utility used only by Document belongs in `Document/Support/`,
+   not Core.
 
 2. **Business-specific base classes** — If a base class is specific to one domain's behavior
    pattern, define it in that domain. Example: A `BaseAttendanceAction` would belong in
@@ -725,8 +868,9 @@ These are things that may seem like infrastructure but should NOT be in Core:
 5. **Database migrations** — Migrations live in `database/migrations/`. Even if they create tables
    for Core features (like activity_log indexes), they are not part of the Core domain.
 
-6. **UI components** — Blade components, Alpine.js snippets, and Tailwind utilities do not belong in
-   Core. They belong in `Shared` (for cross-domain UI) or in individual domains.
+6. **Domain-specific UI components** — Blade components, Alpine.js snippets, and Tailwind utilities
+   that serve a single domain belong in that domain, not in Core. Core only owns cross-domain UI
+   (layouts, global widgets, theme/language switchers).
 
 7. **Package discovery and service providers** — `DomainServiceProvider` is at `app/Providers/`, not
    inside Core. It orchestrates cross-domain registration.
@@ -779,31 +923,37 @@ These are things that may seem like infrastructure but should NOT be in Core:
 
 ## Current Usage Statistics
 
-As of 2026-06-02, across all business domains (excluding `Core/` itself):
+As of 2026-06-03, across all business domains (excluding `Core/` itself):
 
-| Rank | Core Class              | Unique Files | Category      |
-| ---- | ----------------------- | ------------ | ------------- |
-| 1    | `BaseAction`            | 173          | Actions       |
-| 2    | `BaseModel`             | 49           | Models        |
-| 3    | `RejectedException`     | 116          | Exceptions    |
-| 4    | `SmartLogger`           | 37           | Logging       |
-| 5    | `BasePolicy`            | 35           | Authorization |
-| 6    | `LabelEnum`             | 29           | Contracts     |
-| 7    | `BaseEntity`            | 27           | Entities      |
-| 8    | `BaseRecordManager`     | 25           | Livewire      |
-| 9    | `CustomDatabaseChannel` | 20           | Notifications |
-| 10   | `StatusEnum`            | 16           | Contracts     |
-| 11   | `CacheKeys`             | 15           | Caching       |
-| 12   | `FormRequest`           | 11           | HTTP          |
-| 13   | `ActivityLog`           | 9            | Models        |
-| 14   | `PasswordRules`         | 6            | Support       |
-| 15   | `BaseController`        | 5            | HTTP          |
-| 16   | `AuditStatus`           | 4            | Enums         |
-| 17   | `AuditCategory`         | 4            | Enums         |
-| 18   | `AuditReport`           | 3            | DTOs          |
-| 19   | `SendsNotifications`    | 2            | Contracts     |
-| 20   | `ColorableEnum`         | 1            | Contracts     |
-| 21   | Others (6 classes)      | 1 each       | Various       |
+| Rank | Core Class              | Unique Files | Category          |
+| ---- | ----------------------- | ------------ | ----------------- |
+| 1    | `BaseAction`            | 173          | Actions           |
+| 2    | `RejectedException`     | 116          | Exceptions        |
+| 3    | `BaseModel`             | 49           | Models            |
+| 4    | `SmartLogger`           | 37           | Logging           |
+| 5    | `BasePolicy`            | 35           | Authorization     |
+| 6    | `LabelEnum`             | 29           | Contracts         |
+| 7    | `BaseEntity`            | 27           | Entities          |
+| 8    | `BaseRecordManager`     | 25           | Livewire          |
+| 9    | `CustomDatabaseChannel` | 20           | Notifications     |
+| 10   | `StatusEnum`            | 16           | Contracts         |
+| 11   | `CacheKeys`             | 15           | Caching           |
+| 12   | `FormRequest`           | 11           | HTTP              |
+| 13   | `ActivityLog`           | 9            | Models            |
+| 14   | `PasswordRules`         | 6            | Support           |
+| 15   | `CsvHandler`            | 5            | Support (ex-Shared)|
+| 16   | `BaseController`        | 5            | HTTP              |
+| 17   | `AuditStatus`           | 4            | Enums             |
+| 18   | `AuditCategory`         | 4            | Enums             |
+| 19   | `Locale`                | 4            | Support (ex-Shared)|
+| 20   | `CsvRowResult`          | 4            | Enums (ex-Shared) |
+| 21   | `Theme`                 | 4            | Support (ex-Shared)|
+| 22   | `AuditReport`           | 3            | DTOs              |
+| 23   | `Environment`           | 2            | Support (ex-Shared)|
+| 24   | `SendsNotifications`    | 2            | Contracts         |
+| 25   | `ColorableEnum`         | 1            | Contracts         |
+| 26   | `HasModelStatuses`      | 1            | Support (ex-Shared)|
+| 27   | Others (6 classes)      | 1 each       | Various           |
 
 **Notes:**
 - Usage counts are unique files importing or referencing the class (not total references).

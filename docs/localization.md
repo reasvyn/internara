@@ -219,6 +219,6 @@ Before submitting, verify:
 - `config/app.php` — `locale`, `fallback_locale`, `available_locales`
 - `config/localization.php` — locale resolution configuration
 - `app/Domain/Settings/Http/Middleware/SetLocaleMiddleware.php` — locale detection
-- `app/Domain/Shared/Livewire/LanguageSwitcher.php` — UI language toggle
+- `app/Domain/Core/Livewire/LangSwitcher.php` — UI language toggle
 - `lang/` — translation files
 - `app/Domain/Core/Contracts/LabelEnum.php` — enum label contract

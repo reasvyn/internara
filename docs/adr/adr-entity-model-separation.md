@@ -90,7 +90,7 @@ Entities are not the only readonly data class in the system. The distinction:
 
 - `app/Domain/Core/Entities/BaseEntity.php` — base entity class
 - `app/Domain/Core/Contracts/StatusEnum.php` — state transition contract
-- `app/Domain/Internship/Entities/InternshipPeriod.php` — example entity
+- `app/Domain/Program/Entities/InternshipPeriod.php` — example entity
 - `app/Domain/Registration/Entities/RegistrationState.php` — example state entity
 - `app/Domain/Core/Data/Data.php` — DTO base class (complementary, not competing)
 - `docs/architecture.md` — Validation Strategy section

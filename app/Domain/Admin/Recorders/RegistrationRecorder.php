@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Recorders;
 
-use App\Domain\Registration\Models\Registration;
+use App\Domain\Enrollment\Models\Registration;
 use Laravel\Pulse\Facades\Pulse;
 
 /**

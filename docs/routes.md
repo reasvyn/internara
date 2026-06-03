@@ -1,5 +1,5 @@
 # Routes
-> Last updated: 2026-05-27
+> Last updated: 2026-06-03
 > Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
 
@@ -11,7 +11,7 @@ This exists because a single `routes/web.php` with 200+ lines creates merge conf
 
 ## Architecture
 
-The master file `routes/web.php` `require`s 24 domain route files. Load order matters: if two files register the same route name, the later one wins.
+The master file `routes/web.php` `require`s 22 domain route files (Core has no routes). Load order matters: if two files register the same route name, the later one wins.
 
 Additional route files exist outside `web/`: `console.php` (Artisan commands),  
 `channels.php` (broadcasting), and `ai.php` (model/AI interactions).
@@ -137,7 +137,7 @@ php artisan route:cache
 ## Where to Find It
 
 - `routes/web.php` — master file with requires in dependency order
-- `routes/web/` — 24 domain route files
+- `routes/web/` — 22 domain route files
 - `routes/console.php` — Artisan command registrations
 - `routes/channels.php` — broadcasting channel definitions
 - `routes/ai.php` — AI integration routes

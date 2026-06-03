@@ -1,47 +1,67 @@
 # Guidance Domain
-> Last updated: 2026-05-31
-> **Status:** ✅ **Fully Implemented** (11 files) + ⏳ **Planned enhancements** (see [reference](guidance-reference.md))
+
+> Last updated: 2026-06-03
+> **Status:** ✅ **Fully Implemented** — Consolidated Student Mentoring, Teacher/Supervisor Roles, Handbooks, and Supervision Visit Logs
 
 ## Purpose
 
-Guidance manages handbooks and documents that users must read and acknowledge —
-versioned guides, procedure manuals, policies, and internship implementation
-guidelines. Each handbook pairs Markdown content with an optional downloadable PDF
-for more detailed information.
+The **Guidance** domain manages the mentoring, supervision, and reading compliance workflows for the internship program. This includes student role activation (`Mentee`), teacher/supervisor profiles (`Mentor`), student-mentor supervision logging, handbook publishing, and reader acknowledgment tracking.
+
+It governs the daily guidance relationship. A student (`Mentee`) must be assigned to one or more `Mentor` records (school teacher and company supervisor) who monitor and verify their activities throughout the program.
 
 ---
 
 ## Design Principles
 
-### 1. Versioned Documents
+### 1. Active Supervision Relationships
+- **Mentee (Student Role)**: Activated upon verified registration. Tracks progress flags like `canClockIn`, `canSubmitLogbook`, and remaining internship days.
+- **Mentor (Supervisor/Teacher Role)**: Connects a user profile to mentoring duties. Tracks whether they are an industrial supervisor or school teacher.
+- **Supervision Log**: Chronicles supervision interactions (visitations, phone calls, or digital syncs) between mentors and mentees. Logs are immutable once verified by administrators.
 
-Every handbook update creates a new version. Previous versions remain accessible.
+### 2. Versioned Handbooks and Acknowledgment Compliance
+The system tracks reading compliance for key documents:
+- **Handbooks**: Contain procedure manuals, guidelines, and policies (in Markdown format) targeted to specific audiences (All, Students only, Teachers only, or Supervisors only) with optional PDF attachments.
+- **Acknowledgements**: Immutable receipts tracking who read what handbook version, including the reader's IP address and exact timestamp, guaranteeing complete traceability.
 
-### 2. Acknowledgement Tracking
-
-User acknowledgements are immutable — user, timestamp, and IP are recorded.
+### 3. Derived Mentoring Capability
+- The system resolves users to `Mentor` capabilities dynamically using their database roles (`Role::resolvesTo()`).
+- This allows both host company supervisors and school teachers to execute supervision reviews and log validations without duplicating business rules.
 
 ---
 
 ## Domain Boundary
 
-The Guidance domain owns handbooks and reference documents that users must read and acknowledge during their placement program. It manages versioned handbooks with titles, URL slugs, Markdown-formatted content, optional downloadable PDF attachments, and active or inactive status. Each handbook targets a specific audience by role — all users, students only, teachers only, or supervisors only — ensuring that each group sees only the content relevant to them. The domain enforces an immutable acknowledgment system: when a user confirms they have read a handbook, the acknowledgment is permanently recorded with the user identity, exact timestamp, and IP address.
+### Technical Ownership
+- **Mentee States**: Activations, program durations, permission flags.
+- **Mentor Profiles**: Industrial vs academic classifications, supervisor profile details.
+- **Supervision Logs**: Logging visitation details, sync topics, dates, and verification states.
+- **Handbooks**: Markdown content rendering, slug generation, PDF attachments.
+- **Immutable Acknowledgements**: Reader logs, timestamp audits, and IP address mappings.
 
-Guidance does not own user identity or profile data (User), program definitions or requirements (Internship), document templates or rendering (Document), or any operational domain data. It owns the handbook content and the record of who has acknowledged reading it. It does not manage course materials, assignment instructions, or assessment criteria — those belong to their respective operational domains.
+### Dependencies
+- **Core**: Uses `BaseModel`, `BaseAction`, `BasePolicy`, and `SmartLogger` for mutation audit logs.
+- **User**: Resolves identities for mentors, mentees, and handbook readers.
+- **Enrollment**: Placement assignments establish the student-mentor matching context.
+- **Media Library (Spatie)**: Stores uploaded PDF copies of handbooks.
 
-The domain depends on User for identity in acknowledgment records and role-based audience filtering, and on Auth for role definitions used in audience targeting. For PDF storage it depends on Media Library (Spatie). It is a standalone content domain — handbooks do not reference program-specific data, and no other domain depends on guidance content for its own business logic.
+---
+
+## Domain Rules & Invariants
+
+- **R1 — Supervision Verification Constraint**: Supervision visit logs can only transition to `VERIFIED` by an administrator or school teacher, not by industrial mentors.
+- **R2 — Role-Restricted Handbook Views**: Handbook indexes automatically filter documents so users only see books matching their assigned role.
+- **R3 — Immutable Acknowledgement Record**: Acknowledgements cannot be modified or deleted. Only additions are allowed.
+- **R4 — Supervision Logs Scope**: Supervision log entries must lie within the academic year dates of the student's active registration.
+- **R5 — Mentee State Gating**: `canSubmitLogbook` resolves to false if the registration is suspended or if the program end date has passed.
 
 ---
 
 ## Key Features
 
-- Create, update, and deactivate handbooks with a title, URL slug, Markdown content, optional PDF attachment, and version tracking.
-- Upload a PDF file alongside each handbook for users who need the complete printed document.
-- Display handbooks filtered by the reader's role so students, teachers, and supervisors see only their relevant documents.
-- Record immutable acknowledgments when a user confirms they have read a handbook, storing the user identity, timestamp, and IP address.
-- Set the target audience for each handbook to all users, students only, teachers only, or supervisors only.
-- Browse a library of handbooks filtered automatically by the current user's role assignment.
-- Acknowledge a handbook with a single acknowledgment button that records the timestamp permanently.
-- Download the full PDF document for offline reading.
-- ⏳ Read handbooks in a full-screen reading view with a table of contents sidebar generated from Markdown headings.
-- ⏳ View a personal acknowledgment history listing all confirmed handbooks with acknowledgment dates.
+- **Handbook Publisher (Markdown)**: Create version-controlled handbooks with online Markdown preview and PDF download link.
+- **Audience Filtering**: Targets handbooks specifically to students, teachers, supervisors, or system-wide users.
+- **Supervision Visit Logger**: Allows school teachers to log on-site visits to company locations, recording topics discussed and student conditions.
+- **Supervisor Verification Workflow**: Admins or teachers can verify supervision logs, transforming them into permanent records.
+- **Mentee Progress Checkers**: Dynamic DTO evaluations on remaining internship days, status warnings, and submittal rights.
+- **Handbook Reading Compliance Tracker**: Grid showing reading statistics across classes and roles for compliance checks.
+- **Online Handbook Reader**: Full-screen reading viewer containing Markdown content sections and downloading features.

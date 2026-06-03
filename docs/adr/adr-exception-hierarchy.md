@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-A 24-domain, 465-file application needs a consistent way to signal failures across layers.
+A 23-domain, 465-file application needs a consistent way to signal failures across layers.
 A `UserNotFoundException` thrown from an Action and a `ValidationFailedException` thrown from
 a FormRequest should be distinguishable by their purpose, not just their class name.
 

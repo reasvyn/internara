@@ -11,7 +11,7 @@ Domain-mirrored views keep template files discoverable. maryUI components provid
 ## When It Applies
 
 Every Blade view should:
-- Live in `resources/views/{domain}/{component-name}.blade.php`
+- Live in `resources/views/{domain}/{aggregate}/{component-name}.blade.php` for aggregate-specific views, or `resources/views/{domain}/{component-name}.blade.php` for cross-aggregate views
 - Use maryUI components (`x-mary-*`) for forms, tables, buttons, modals
 - Use `__('domain.key')` for all user-facing strings
 - Receive data from the component/controller — never call Eloquent directly

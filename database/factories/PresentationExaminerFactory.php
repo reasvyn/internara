@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Assessment\Models\Presentation;
-use App\Domain\Assessment\Models\PresentationExaminer;
+use App\Domain\Assessment\Aggregates\Presentation\Models\Presentation;
+use App\Domain\Assessment\Aggregates\Presentation\Models\PresentationExaminer;
 use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

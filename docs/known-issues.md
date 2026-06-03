@@ -1,5 +1,5 @@
 # Known Issues and Gotchas
-> Last updated: 2026-06-02
+> Last updated: 2026-06-03
 > Changes: removed all resolved issues (A1, A10, A34, C5, C6, D1–D4, etc.); updated User section with audit findings
 
 ---
@@ -10,7 +10,7 @@
 
 - **A30 — DownloadsAccountSlips Livewire concern undocumented:** `Admin/Livewire/Concerns/DownloadsAccountSlips.php` exists but is not listed anywhere in the reference doc.
 - **Overview mentions bulk creation** but no dedicated Action exists — CSV import lives inside `UserManager` Livewire component.
-- **C11 — AnnouncementStatus missing StatusEnum interface:** `app/Domain/Admin/Enums/AnnouncementStatus.php` defines state transitions (`DRAFT → SCHEDULED → PUBLISHED`) with `canTransitionTo()` but does not `implements StatusEnum`. Missing `isTerminal()` and `validTransitions()`.
+- **C11 — AnnouncementStatus missing StatusEnum interface:** `app/Domain/Administration/Enums/AnnouncementStatus.php` defines state transitions (`DRAFT → SCHEDULED → PUBLISHED`) with `canTransitionTo()` but does not `implements StatusEnum`. Missing `isTerminal()` and `validTransitions()`.
 
 ### Assessment
 
@@ -93,7 +93,7 @@
 
 ### Partnership
 
-- **A12 — Dependency graph missing Placement and Shared/CsvHandler:** `PartnershipManager` imports `Placement\Models\Placement`; both `CompanyManager` and `PartnershipManager` import `Shared/CsvHandler`.
+- **A12 — Dependency graph missing Placement and Core/CsvHandler:** `PartnershipManager` imports `Placement\Models\Placement`; both `CompanyManager` and `PartnershipManager` import `Core\Support\CsvHandler`.
 - **BatchDelete return docs missing:** `BatchDeleteCompanyAction` and `BatchDeletePartnershipAction` omit `{deleted, blocked}` return type docs.
 - **CSV import/export/template download features not documented** in reference doc.
 
@@ -129,12 +129,13 @@
 - **Recovery key length (64 chars) not documented** in reference doc.
 - **C14 — RecoverSuperAdminAction uses raw cache key (🔴):** Uses `'recover_admin_attempts_' . md5($email)` raw string literal (lines 25, 71) instead of a `CacheKeys` constant. Violates the mandatory convention: *"Every cache key used across the codebase MUST be defined here as a constant."* No matching constant exists in `CacheKeys`.
 
-### Shared
+### Core
 
-- **A21 — Overview says "no Views" but views exist:** 12 Blade UI components, 5 widgets, 7 layout files exist.
-- **A31 — Blade UI components missing avatar and credit** from reference doc.
-- **Layout files (7) not documented at all.**
-- **No Tests section** in reference doc.
+- *(Shared domain was merged into Core. All Shared issues below are carried over.)*
+- **A21 — Core overview previously said "no Views" but views exist (carried over from Shared):** 12 Blade UI components, 5 widgets, 7 layout files exist.
+- **A31 — Core Blade UI components missing avatar and credit** from reference doc (carried over from Shared).
+- **Layout files (7) not documented at all** in Core reference doc.
+- **No Tests section** in Core reference doc.
 
 ### User
 
@@ -150,8 +151,8 @@ _No open issues._
 
 Every domain reference doc is missing these sections:
 - **Routes** — route files exist for 23 domains (Core has no routes; `routes/web/core.php` was deleted)
-- **Views** — Blade view files exist in `resources/views/{domain}/` (note: `resources/views/core/` does not exist — Core is infrastructure and has no views)
-- **Tests** — test files exist in `tests/{Feature,Unit}/{Domain}/`
+- **Views** — Blade view files exist in `resources/views/{domain}/` (note: `resources/views/core/` contains Core's cross-domain Blade views — layouts, UI components, widgets)
+- **Tests** — test files exist in `tests/{Feature,Unit}/{Domain}/{Aggregate}/`
 - **Factories** — model factories exist for most models
 - **Migrations** — migration files exist for all domains
 
@@ -185,9 +186,9 @@ The Action Triad (docs/architecture.md) mandates that Read Actions should NOT ex
 
 | File | Location | Issue |
 |------|----------|-------|
-| `GetAdminDashboardStatsAction.php` | `app/Domain/Admin/Actions/` | Read-only query, unnecessarily extends BaseAction |
-| `GetUserManagerStatsAction.php` | `app/Domain/Admin/Actions/` | Same — returns cached counts |
-| `ReadRecoveryKeyAction.php` | `app/Domain/Admin/Actions/` | Pure file read operation |
+| `GetAdminDashboardStatsAction.php` | `app/Domain/Administration/Actions/` | Read-only query, unnecessarily extends BaseAction |
+| `GetUserManagerStatsAction.php` | `app/Domain/Administration/Actions/` | Same — returns cached counts |
+| `ReadRecoveryKeyAction.php` | `app/Domain/Administration/Actions/` | Pure file read operation |
 | `DetectUserAccountCloneAction.php` | `app/Domain/Auth/Actions/` | Read-only duplicate email detection |
 | `GetTeacherDashboardStatsAction.php` | `app/Domain/User/Actions/` | Pure READ query |
 | `GetSupervisorDashboardStatsAction.php` | `app/Domain/User/Actions/` | Same |
@@ -201,7 +202,7 @@ All actions must expose a single `execute()` method per the documented pattern.
 
 | File | Location | Issue |
 |------|----------|-------|
-| `GenerateAccountSlipAction.php` | `app/Domain/Admin/Actions/` | Has `download()`/`downloadBatch()` but no `execute()` |
+| `GenerateAccountSlipAction.php` | `app/Domain/Administration/Actions/` | Has `download()`/`downloadBatch()` but no `execute()` |
 | `CompileLogbookReportAction.php` | `app/Domain/Logbook/Actions/` | Has `download()` but no `execute()` |
 
 #### C4. Livewire CRUD Components Not Extending BaseRecordManager (5 files) 🟠
@@ -210,11 +211,11 @@ These CRUD management components should extend `BaseRecordManager` to inherit se
 
 | File | Location | Current Base |
 |------|----------|-------------|
-| `AnnouncementManager.php` | `app/Domain/Admin/Livewire/` | `extends Component` |
+| `AnnouncementManager.php` | `app/Domain/Administration/Livewire/` | `extends Component` |
 | `RubricManager.php` | `app/Domain/Assessment/Livewire/` | `extends Component` |
 | `AttendanceManager.php` | `app/Domain/Attendance/Livewire/` | `extends Component` (with `WithPagination`) |
-| `RequirementManager.php` | `app/Domain/Internship/Livewire/` | `extends Component` |
-| `TemplateManager.php` | `app/Domain/Document/Livewire/` | `extends Component` (with `WithPagination`) |
+| `RequirementManager.php` | `app/Domain/Program/Livewire/` | `extends Component` |
+| `TemplateManager.php` | `app/Domain/Certification/Livewire/` | `extends Component` (with `WithPagination`) |
 
 #### C7. Dead Config in config/domain.php (factories Section) 🟠
 
@@ -307,22 +308,14 @@ No abstract `execute()` method on `BaseAction`. Each Action defines its own sign
 | A9 | RegistrationWizardForm not documented at all | Registration | 🟠 High | Open |
 | A11 | Mentor dependency graph missing Internship and Evaluation | Mentor | 🟠 High | Open |
 | C4 | Livewire CRUD not extending BaseRecordManager (5 files) | Cross-Cutting (Infrastructure) | 🟠 High | Open |
-| A12 | Partnership dependency graph missing Placement and Shared/CsvHandler | Partnership | 🟠 Medium | Open |
+| A12 | Partnership dependency graph missing Placement and Core/CsvHandler | Partnership | 🟠 Medium | Open |
 | A13 | Logbook dependency graph claims Mentor | Logbook | 🟠 Medium | Open |
 | A14 | Assessment EvaluatorRole enum description incomplete | Assessment | 🟠 Medium | Open |
 | A15 | Auth Role enum description missing MENTOR and MENTEE | Auth | 🟠 Medium | Open |
 | A16 | Certificate EvaluatorRole description inaccurate | Certificate | 🟠 Medium | Open |
-| A21 | Shared overview says "no Views" but views exist | Shared | 🟠 Medium | Open |
-| A24 | Attendance overview features not implemented | Attendance | 🟠 Medium | Open |
-| A26 | Logbook overview features not implemented | Logbook | 🟠 Medium | Open |
-| B2 | GD8 — Acknowledgement not used as gate | Cross-Cutting (Backlog) | 🟠 Medium | Open |
-| C7 | Dead config: factories section in domain.php | Cross-Cutting (Infrastructure) | 🟠 Medium | Open |
-| A25 | Certificate overview features not in reference doc | Certificate | 🟡 Low | Open |
-| A27 | Mentee dependency graph claims Internship | Mentee | 🟡 Low | Open |
-| A28 | Evaluation dependency graph claims Mentor and Internship | Evaluation | 🟡 Low | Open |
-| A29 | Document dependency graph claims Certificate | Document | 🟡 Low | Open |
-| A30 | Admin DownloadsAccountSlips undocumented | Admin | 🟡 Low | Open |
-| A31 | Shared Blade UI missing avatar and credit | Shared | 🟡 Low | Open |
+| A21 | Core overview says "no Views" but views exist (carried over from Shared) | Core | 🟠 Medium | Open |
+
+| A31 | Core Blade UI missing avatar and credit (carried over from Shared) | Core | 🟡 Low | Open |
 | B3 | Livewire Form Object migration (~45 components) | Cross-Cutting (Backlog) | 🟡 Low | Open |
 | B4 | Cross-domain event flow undocumented | Cross-Cutting (Backlog) | 🟡 Low | Open |
 | B5 | Real-time features (Echo + Reverb) | Cross-Cutting (Backlog) | 🟡 Low | Open |

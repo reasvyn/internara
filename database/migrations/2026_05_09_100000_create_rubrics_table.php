@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Internship\Models\Internship;
+use App\Domain\Program\Aggregates\Internship\Models\Internship;
 use App\Domain\User\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

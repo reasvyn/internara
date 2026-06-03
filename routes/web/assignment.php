@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Assignment\Livewire\AssignmentManager as AdminAssignmentManager;
-use App\Domain\Assignment\Livewire\SubmissionGrading;
+use App\Domain\Assignment\Aggregates\Assignment\Livewire\AssignmentManager as AdminAssignmentManager;
+use App\Domain\Assignment\Aggregates\Submission\Livewire\SubmissionGrading;
 
 Route::prefix('admin')
     ->name('admin.')

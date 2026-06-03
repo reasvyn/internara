@@ -1,61 +1,81 @@
 # Admin Domain
-> Last updated: 2026-05-31
-> **Status:** ✅ **Fully Implemented** — all 55 files in [reference](admin-reference.md) exist
+
+> Last updated: 2026-06-03
+> **Status:** ✅ **Fully Implemented** — Consolidated Admin operations, System Oversight, and Setup Bootstrap
 
 ## Purpose
 
-Admin provides system-level management across all domains — user CRUD, announcements,
-GDPR compliance, and system oversight.
+The **Administration** domain manages system-wide operations that span across multiple domains. This includes administrator oversight, system-wide role-based user CRUD, GDPR compliance logging, broadcast announcements, audit log viewers, custom dashboard monitoring (Laravel Pulse metrics), and the first-run installation and setup process.
+
+It is the control room of the system. System administrators use the Administration panels to monitor server health, check security logs, review system backup paths, orchestrate user accounts, and bootstrap or recover the system.
 
 ---
 
 ## Design Principles
 
-### 1. User CRUD with Role Enforcement
+### 1. Unified User Management and Role Control
+- Provides unified CRUD managers for all five base user roles: Students, Teachers, Supervisors, Admins, and Super Admins.
+- Assignment check rules prevent non-super-admins from assigning the `super_admin` role.
+- Enforces system username guidelines and blocks reserved authoritative names (`root`, `sysadmin`, etc.) for normal accounts.
 
-User management gates role assignment. Only super_admin can assign the super_admin role.
-Reserved authoritative names are blocked for non-super-admin users.
+### 2. GDPR Compliance and Right to Erasure
+- The system logs all user deletion operations in `GdprDeletionLog` to maintain an audit trail of user data removal.
+- Deleting a user records the acting administrator, target email address, date of deletion, and deletion reason. The records are permanent and read-only.
 
-### 2. Announcement Lifecycle
+### 3. Role-Targeted Announcement Lifecycle
+Announcements are broadcast messages targeted at specific user roles:
+- Lifecycle follows `AnnouncementStatus`: `DRAFT` ➔ `SCHEDULED` ➔ `PUBLISHED`.
+- **Scheduled Broadcasts**: Administrators write announcements and select target roles. Setting a future date schedules the broadcast. The system scheduler runs every minute (`PublishScheduledAnnouncementsCommand`) to publish scheduled announcements.
+- **Delivery Channels**: Announcements are sent via database alerts and queued emails using `AnnouncementNotification`.
 
-Announcements flow through DRAFT → SCHEDULED → PUBLISHED. Scheduled announcements are
-auto-published by scheduler every minute.
+### 4. Real-time Security Monitoring and Pulse Analytics
+- **Audit Logs**: Provides a central, read-only list of activity log records (via Core's `ActivityLog`) allowing search, level filters, and target user matching.
+- **Pulse Integration**: Captures registration rates and system resource metrics using customized recorders (`RegistrationRecorder`, `SystemRecorder`) displayed in dashboard cards.
 
-### 3. Bulk Operations
-
-Mass user creation and bulk archive operations support result summaries and error
-handling without blocking the entire batch.
+### 5. System Bootstrap as Administration Foundation
+- **Setup Wizard**: The domain manages the first-run installation process via a 7-step wizard: environment check, school details, department setup, initial admin account credentials, and finalization.
+- **Dormancy and Recovery**: Once successfully installed, the setup route is locked out and throws a 404. CLI-based recovery is provided to recreate the default super admin or reset setup tokens.
 
 ---
 
 ## Domain Boundary
 
-The Admin domain owns system-level management across all business domains — the administrative interface for creating, updating, locking, unlocking, and archiving users across all roles (students, teachers, supervisors, and fellow administrators). It manages announcements with a full lifecycle (draft, scheduled, published) including role-targeted delivery and automatic scheduled publishing. It provides the centralized audit log viewer for compliance, the GDPR deletion log for data erasure requests, and account clone detection for identifying potential duplicates. Bulk operations for mass user creation and student archival are also handled here.
+### Technical Ownership
+- **User CRUD Oversight**: CRUD forms for all roles, bulk archiving, account status overrides.
+- **Announcement Engine**: Broadcast creations, scheduling calendars, role-targeted notification dispatches.
+- **GDPR Logs**: Storing, retrieving, and sealing account deletion trails.
+- **Recovery Infrastructure**: Saving recovery private keys to isolated private storage and exposing path summaries.
+- **Livewire Pulse Cards**: Visual card components displaying memory, disk, database, and enrollment rates.
+- **System Setup Bootstrap**: First-run installation flow, environment checks, and admin credentials bootstrapping.
 
-Admin does not own the underlying business logic of any operational domain. It does not define program structures (Internship), manage placement slots (Placement), evaluate students (Assessment), issue certificates (Certificate), or control authentication and authorization (Auth). Admin provides the management interface across all domains — reading, creating, and modifying data — but delegates business rules and validation to each domain's own Actions and Entities.
+### Dependencies
+- **Core**: Uses base actions, base policies, `SmartLogger`, and activity models.
+- **User**: Interfaces directly with the base `User` and `Profile` models to execute administrative updates.
+- **Enrollment / Guidance / Program**: Integrates dashboard cards with statistics from these domains.
+- **Academics**: Provisions school details and study programs during setup.
 
-The domain references every other domain through its management interfaces: User data for role-based CRUD, Auth for account lifecycle operations, Internship for program closure and archival access, and School for department management context. It does not own the data in those domains — it orchestrates administrative operations across them while each domain retains ownership of its own business rules.
+---
+
+## Domain Rules & Invariants
+
+- **R1 — Deletion Auditing**: Deleting any user account must create a corresponding `GdprDeletionLog` entry before committing the deletion transaction.
+- **R2 — Role Promotion Restrictions**: Only users with the `super_admin` role can promote other users to `super_admin` or edit super admin accounts.
+- **R3 — Super Admin Protection**: The Super Admin account is protected from being locked or deleted by any user (including themselves).
+- **R4 — Future Schedule Boundaries**: Scheduled announcements must have a `scheduled_at` timestamp in the future. Draft announcements have a null `scheduled_at` timestamp.
+- **R5 — Immutable Deletion Logs**: GDPR deletion log records are read-only; no updates or deletions are allowed via policies or actions.
+- **R6 — Setup Dormancy**: Once setup is committed, further HTTP setup access is permanently blocked (returning 404).
 
 ---
 
 ## Key Features
 
-- Create, update, lock, unlock, and mark users as alumni across all five base user roles.
-- Manage administrator accounts with role-enforced creation and super-admin-only role assignment.
-- Manage student accounts with support for bulk archiving of completed program participants.
-- Manage teacher and supervisor accounts including profile data and role assignment.
-- Broadcast announcements with a draft, scheduled, and published lifecycle supporting Markdown content and role-targeted audiences.
-- Publish scheduled announcements automatically every minute through the system scheduler.
-- View a centralized, read-only audit log with comprehensive filters for compliance monitoring.
-- Detect potential duplicate accounts by matching email, phone, or national identifier across the user base.
-- Review guest applications and approve or reject them, auto-creating user accounts on approval.
-- Perform bulk user creation operations with detailed result summaries and per-record error handling.
-- Access read-only archived program data including grades, attendance summaries, and certificate records.
-- Search users across name, email, and username with a text search bar that filters results in real time.
-- Sort the user list by clicking on column headers for name, role, status, or creation date.
-- Filter users by role, account status, or department with dropdown selectors above the table.
-- Select multiple users for batch archive, batch lock, or batch unlock operations with a confirmation dialog.
-- Import users from a CSV file with validation and a per-row result summary showing successes and failures.
-- Export the current filtered and sorted user list to CSV respecting the active search and filter state.
-- Download a CSV template with the correct column headers and example data for user import.
-- Configure the number of rows displayed per page via a pagination size selector.
+- **Centralized User Workspace**: Integrated manager combining filters, text searches, bulk actions, and CSV imports/exports for all user accounts.
+- **Admin Setup & CLI Promoter**: Artisan command to promote users (`system:promote`) and interactive command to create new admins (`system:admin:create`).
+- **Markdown Announcement Broadcaster**: Composer supporting Markdown syntax, scheduled publishing, and role-based audience targets.
+- **GDPR Auditor Panel**: Admin logs page showing data deletion histories.
+- **Pulse Server Health Grid**: Live charts displaying database queries, CPU usages, memory levels, and student registration curves.
+- **CSV User Import Utility**: Upload template CSVs to bulk-create students, teachers, or supervisors with inline row validation and errors summary.
+- **Offline Account Slips Generator**: Admin tool generating printable PDFs with login credentials and recovery instructions to deliver offline to new users.
+- **Audit Log Viewer**: High-performance grid displaying system operations, filterable by date, action category, or actor IP.
+- **7-step Setup Wizard**: Environment audit, school profile setup, study program registration, initial administrator credentials setup, and installation finalize.
+- **CLI Installer and Recovery**: CLI recovery commands to regenerate setup tokens or hard-provision super admin passwords.

@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-In a 24-domain codebase with 10+ architectural layers and 160+ Actions across 50+ models,
+In a 23-domain codebase with 10+ architectural layers and 160+ Actions across 50+ models,
 consistency is not optional. Every developer writing a new model, action, or policy must make
 the same structural decisions — or the codebase drifts into an inconsistent state where some
 models extend `BaseModel`, others extend `Model` directly, and some actions use `SmartLogger`

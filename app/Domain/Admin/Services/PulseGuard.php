@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Services;
 
-use App\Domain\Auth\Enums\Role;
+use App\Domain\User\Enums\Role;
 use App\Domain\User\Models\User;
 
 /**

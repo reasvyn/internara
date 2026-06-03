@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Assessment\Models\Assessment;
-use App\Domain\Registration\Models\Registration;
-use App\Domain\School\Models\AcademicYear;
+use App\Domain\Academics\Aggregates\AcademicYear\Models\AcademicYear;
+use App\Domain\Assessment\Aggregates\Assessment\Models\Assessment;
+use App\Domain\Enrollment\Models\Registration;
 use App\Domain\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

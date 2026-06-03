@@ -3,9 +3,9 @@
 
     {{-- Stats --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.supervised_students')" :value="$supervisedStudents" icon="o-users" color="text-primary" />
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.pending_journals')" :value="$pendingJournals" icon="o-book-open" color="text-warning" />
-        <x-shared::widgets.stat-card :title="__('dashboard.stats.active_companies')" :value="$activeCompanies" icon="o-building-office" color="text-secondary" />
+        <x-core::widgets.stat-card :title="__('dashboard.stats.supervised_students')" :value="$supervisedStudents" icon="o-users" color="text-primary" />
+        <x-core::widgets.stat-card :title="__('dashboard.stats.pending_journals')" :value="$pendingJournals" icon="o-book-open" color="text-warning" />
+        <x-core::widgets.stat-card :title="__('dashboard.stats.active_companies')" :value="$activeCompanies" icon="o-building-office" color="text-secondary" />
     </div>
 
     {{-- Main + Sidebar --}}
@@ -18,21 +18,21 @@
                         <span class="font-semibold text-sm">{{ __('dashboard.teacher.recent_journals') }}</span>
                     </div>
                 </x-slot:title>
-                <x-shared::widgets.empty-state icon="o-clipboard-document-check" :title="__('dashboard.teacher.no_journals')" />
+                <x-core::widgets.empty-state icon="o-clipboard-document-check" :title="__('dashboard.teacher.no_journals')" />
             </x-mary-card>
 
-            <x-shared::widgets.action-button :label="__('dashboard.teacher.guidance_logs')" icon="o-check-badge" link="{{ route('supervision.logs') }}" color="btn-primary" />
+            <x-core::widgets.action-button :label="__('dashboard.teacher.guidance_logs')" icon="o-check-badge" link="{{ route('supervision.logs') }}" color="btn-primary" />
         </div>
 
         <div class="space-y-4">
-            <x-shared::widgets.profile-summary :showEdit="true" />
+            <x-core::widgets.profile-summary :showEdit="true" />
             <x-mary-card :title="__('dashboard.quick_links')" separator>
                 <div class="space-y-1">
-                    <x-shared::widgets.quick-link :label="__('dashboard.edit_profile')" icon="o-user" link="{{ route('profile') }}" />
-                    <x-shared::widgets.quick-link :label="__('profile.recovery.title')" icon="o-key" link="{{ route('profile.recovery') }}" />
-                    <x-shared::widgets.quick-link :label="__('dashboard.notifications')" icon="o-bell" link="{{ route('notifications') }}" />
+                    <x-core::widgets.quick-link :label="__('dashboard.edit_profile')" icon="o-user" link="{{ route('profile') }}" />
+                    <x-core::widgets.quick-link :label="__('profile.recovery.title')" icon="o-key" link="{{ route('profile.recovery') }}" />
+                    <x-core::widgets.quick-link :label="__('dashboard.notifications')" icon="o-bell" link="{{ route('notifications') }}" />
                     @if(auth()->user()?->hasRole('super_admin'))
-                        <x-shared::widgets.quick-link :label="__('dashboard.system_settings')" icon="o-cog-6-tooth" link="{{ route('admin.settings') }}" />
+                        <x-core::widgets.quick-link :label="__('dashboard.system_settings')" icon="o-cog-6-tooth" link="{{ route('admin.settings') }}" />
                     @endif
                 </div>
             </x-mary-card>

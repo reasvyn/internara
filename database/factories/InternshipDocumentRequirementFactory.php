@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Document\Models\Document;
-use App\Domain\Internship\Models\Internship;
-use App\Domain\Internship\Models\InternshipDocumentRequirement;
+use App\Domain\Certification\Aggregates\Document\Models\Document;
+use App\Domain\Program\Aggregates\Internship\Models\Internship;
+use App\Domain\Program\Aggregates\Internship\Models\InternshipDocumentRequirement;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class InternshipDocumentRequirementFactory extends Factory

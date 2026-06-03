@@ -34,7 +34,7 @@ Layouts are split between cross-cutting and domain-specific:
 
 | Scope | Directory | Namespace | Referenced As |
 |---|---|---|---|
-| Cross-cutting | `resources/views/shared/layouts/` | `shared` (auto-registered via `DomainServiceProvider`) | `x-shared::layouts.base`, `x-shared::layouts.app` |
+| Cross-cutting | `resources/views/core/layouts/` | `core` (auto-registered via `DomainServiceProvider`) | `x-core::layouts.base`, `x-core::layouts.app` |
 | Domain-specific | `resources/views/{domain}/layouts/` | `{domain}` (auto-registered via `DomainServiceProvider`) | `setup::layouts.setup`, `auth::layouts.auth` |
 
 Cross-cutting layouts (`layouts/`) are used by the main application shell:
@@ -52,7 +52,7 @@ components via the `#[Layout]` attribute:
 - `setup/layouts/setup.blade.php` — wider multi-step layout for the wizard (used as `setup::layouts.setup`)
 
 The convention for choosing where a layout belongs:
-1. If a layout is shared by multiple domains → `resources/views/shared/layouts/`
+1. If a layout is shared by multiple domains → `resources/views/core/layouts/`
 2. If a layout is specific to one domain → `resources/views/{domain}/layouts/`
 
 This prevents domain-specific layouts from accumulating in the global
@@ -120,10 +120,10 @@ Directories excluded from registration: `components`, `emails`, `errors`,
 `layouts`, `mcp`, `pdf`, `vendor`. These are either core structural directories
 or belong to third-party packages that manage their own namespaces.
 
-The `setup::layouts.setup` layout used by `SetupWizard` depends on this
-namespace registration. Without `View::addNamespace('setup', ...)`, the
-Livewire `#[Layout('setup::layouts.setup')]` attribute would fail with
-"No hint path defined for [setup]".
+The `administration::setup.layouts.setup` layout used by `SetupWizard` depends on this
+namespace registration. Without `View::addNamespace('administration', ...)`, the
+Livewire `#[Layout('administration::setup.layouts.setup')]` attribute would fail with
+"No hint path defined for [administration]".
 
 ## SPA Navigation
 
@@ -139,10 +139,10 @@ navigation.
 
 ## Where to Find It
 
-Layout templates are in `resources/views/shared/layouts/`. UI components are in
-`resources/views/shared/ui/`. The CSS entry point is
+Layout templates are in `resources/views/core/layouts/`. UI components are in
+`resources/views/core/ui/`. The CSS entry point is
 `resources/css/app.css`. JavaScript entry point is `resources/js/app.js`.
 The maryUI configuration is in `config/mary.php`. The sidebar menu
 structure is in `config/menu.php`. The Livewire components for theme
 switching and language switching are in
-`app/Domain/Core/Livewire/` and `app/Domain/Shared/Livewire/`.
+`app/Domain/Core/Livewire/`.

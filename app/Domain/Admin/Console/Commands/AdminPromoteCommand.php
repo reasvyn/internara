@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Admin\Console\Commands;
 
-use App\Domain\Auth\Enums\Role as RoleEnum;
 use App\Domain\Core\Support\SmartLogger;
+use App\Domain\User\Enums\Role as RoleEnum;
 use App\Domain\User\Models\User;
 use Illuminate\Console\Command;
 use Spatie\Permission\Models\Role;

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Auth\Http\Middleware\AuthThrottleMiddleware;
-use App\Domain\Auth\Http\Middleware\CheckRoleMiddleware;
+use App\Domain\Academics\Http\Middleware\ProtectSetupRouteMiddleware;
+use App\Domain\Academics\Http\Middleware\RequireSetupAccessMiddleware;
 use App\Domain\Core\Exceptions\AppException;
 use App\Domain\Core\Exceptions\NotFoundException;
 use App\Domain\Core\Exceptions\RateLimitException;
@@ -12,8 +12,8 @@ use App\Domain\Core\Exceptions\ValidationFailedException;
 use App\Domain\Core\Http\Middleware\LogContext;
 use App\Domain\Core\Http\Middleware\SecurityHeaders;
 use App\Domain\Settings\Http\Middleware\SetLocaleMiddleware;
-use App\Domain\Setup\Http\Middleware\ProtectSetupRouteMiddleware;
-use App\Domain\Setup\Http\Middleware\RequireSetupAccessMiddleware;
+use App\Domain\User\Http\Middleware\AuthThrottleMiddleware;
+use App\Domain\User\Http\Middleware\CheckRoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;

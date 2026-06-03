@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Internship\Models\Report;
-use App\Domain\Registration\Models\Registration;
+use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Reports\Aggregates\Report\Models\Report;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReportFactory extends Factory

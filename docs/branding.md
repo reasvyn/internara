@@ -88,7 +88,7 @@ templates use Courier New for recovery codes and system fonts for body text.
 The `brand()` and `app_info()` helper functions are defined in
 `app/Support/helpers.php`. The `AppMetadata` class that resolves brand values
 is at `app/Domain/Settings/Support/AppMetadata.php`. The `Theme` class for
-color computation is at `app/Domain/Shared/Support/Theme.php`. The `Color`
+color computation is at `app/Domain/Core/Support/Theme.php`. The `Color`
 utility class is at `app/Domain/Settings/Support/Color.php`. The admin
 branding form is the `SystemSetting` Livewire component at
 `app/Domain/Settings/Livewire/SystemSetting.php`. Color presets and defaults
