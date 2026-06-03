@@ -26,10 +26,14 @@ Manages system initialization, user account lifecycle, and announcements. Works 
 
 ## Domain Rules
 
-- Setup runs once per instance
-- Super admin account (superadmin/Administrator) is immutable
-- Account suspension preserves data but blocks login
-- All account changes are audit-logged
+- **Setup Execution**: The setup installation runs exactly once per system instance.
+- **Super Admin Integrity & Constraints**: The root-level account (`superadmin`) is protected by strict integrity rules:
+  *   **Uniqueness**: Only one superadmin account is allowed in the database.
+  *   **Permanence**: The name is permanently locked to `Administrator` (or config default) and the username is locked to `superadmin`. Updates via standard actions are blocked.
+  *   **Undeletability**: The superadmin account is completely undeletable. Model deletions or `deleting` events throw a `RuntimeException`.
+  *   **Status**: The superadmin account must maintain the `PROTECTED` account lifecycle status.
+- **Account Suspension**: Suspension preserves account data but blocks active user login sessions.
+- **Auditing**: All account changes, status toggles, and recovery attempts are fully audit-logged via `SmartLogger`.
 
 ---
 
