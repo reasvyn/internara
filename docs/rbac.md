@@ -20,10 +20,10 @@ Request → Authenticate middleware → Session created → RBAC gate
 
 ## Role Hierarchy Design
 
-The application defines five user roles in a flat hierarchy: super_admin,
+The application defines five user roles in a flat hierarchy: superadmin,
 admin, teacher, supervisor, and student. These are not arranged in a tree
 where each role inherits the permissions of the roles below it. Instead,
-each role has its own explicit set of permissions, and the super_admin role
+each role has its own explicit set of permissions, and the superadmin role
 bypasses all permission checks entirely.
 
 Super admins manage the application infrastructure — they configure settings,
@@ -82,15 +82,15 @@ ambiguity. Each role's capabilities are enumerated and reviewed.
 Laravel's authorization system evaluates policies for each ability check.
 The `spatie/laravel-permission` package auto-registers a `Gate::before`
 callback via the `register_permission_check_method` config (enabled in
-`config/permission.php`). For super_admin users, this callback returns
+`config/permission.php`). For superadmin users, this callback returns
 `true`, granting access to everything. For all other users, it returns
 `null`, which means "I have no opinion — let the policy decide." This is
 distinct from returning `false`, which would deny access even if the policy
 would grant it.
 
-This pattern means super_admin is not a role that has "all permissions"
+This pattern means superadmin is not a role that has "all permissions"
 assigned to it in the database. It simply skips the permission system
-entirely. This is more efficient and guarantees that super_admin never
+entirely. This is more efficient and guarantees that superadmin never
 accidentally lacks a permission.
 
 In tests, `Gate::before` is additionally registered in
@@ -115,7 +115,7 @@ Roles are defined in `app/Domain/Auth/Enums/Role.php`. Permissions are
 managed dynamically via `spatie/laravel-permission` (database-driven, no
 enum class). The seeder is at `database/seeders/RolePermissionSeeder.php`.
 The middleware is at `app/Domain/Auth/Http/Middleware/CheckRoleMiddleware.php`.
-The `Gate::before` bypass for `super_admin` is auto-registered by
+The `Gate::before` bypass for `superadmin` is auto-registered by
 `spatie/laravel-permission` via the `register_permission_check_method`
 config in `config/permission.php`. Policies are in `app/Domain/*/Policies/`.
 The spatie package configuration is in `config/permission.php`.

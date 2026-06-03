@@ -16,7 +16,7 @@ final class CreateMenteeAction extends BaseAction
 {
     public function execute(array $userData, array $menteeData = []): Mentee
     {
-        $userData['username'] = $userData['username'] ?? UserIdentifierGenerator::generateUsername();
+        $userData['username'] = $userData['username'] ?? UserIdentifierGenerator::generateUsername($userData['email'] ?? '');
 
         Validator::make($userData, [
             'name' => ['required', 'string', 'max:255'],

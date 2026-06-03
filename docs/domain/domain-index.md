@@ -1,81 +1,301 @@
-# Domain Index
+# Domain Documentation Index
 
 > Last updated: 2026-06-03
-> Changes: merge Auth into User domain; add Evaluation as standalone domain; update domain counts
+> **Status:** ✅ **Complete** — All 16 domains fully documented with consistent structure.
 
-> 16 domains organized by the internship (PKL) lifecycle. Each domain owns its complete vertical
-> slice: persistence, business rules, UI components, authorization, and HTTP interface.
+Complete index of domain documentation for the Internara internship management system. Each domain manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire components.
 
-## Domains by Operational Flow
+---
 
-| # | Domain | Purpose | Key Aggregates |
-|---|--------|---------|----------------|
-| 1 | **Core** | Platform root: base classes, contracts, exceptions, logging, caching, middleware, DTOs, cross-domain Blade views | — (infrastructure) |
-| 2 | **User** | Authentication, profiles, notifications, account lifecycle, recovery, RBAC | `Login/`, `Password/`, `ActivationToken/`, `AccountRecovery/`, `AccountStatus/`, `Profile/`, `Notification/` |
-| 3 | **Academics** | School profile, departments (program keahlian), academic years, first-run wizard | `School/`, `Department/`, `AcademicYear/`, `Setup/` |
-| 4 | **Partners** | Companies (DUDI), MoU agreements, contact management | `Company/`, `Partnership/` |
-| 5 | **Program** | PKL program lifecycle, phases, groups, document requirements | `Internship/`, `InternshipPhase/`, `InternshipGroup/`, `DocumentRequirement/` |
-| 6 | **Enrollment** | Student registration, placement, slot management, change requests | `Registration/`, `AccountApplication/`, `RegistrationDocument/`, `Placement/`, `PlacementChangeRequest/` |
-| 7 | **Guidance** | Student role activation, supervision logs, handbooks, acknowledgements | `Mentee/`, `Mentor/`, `SupervisionLog/`, `Handbook/`, `HandbookAcknowledgement/` |
-| 8 | **Journals** | Daily logbook, attendance (clock-in/out), absence requests, scheduling | `Attendance/`, `AbsenceRequest/`, `Logbook/`, `IndustryAssessment/`, `Schedule/` |
-| 9 | **Assignments** | Task creation, submissions, grading workflow | `Assignment/`, `Submission/` |
-| 10 | **Reports** | Student final reports, revisions, supervisor review | `Report/` |
-| 11 | **Assessment** | Competency rubrics, scoring, presentations | `Assessment/`, `Rubric/`, `Competency/`, `Indicator/`, `Presentation/` |
-| 12 | **Evaluation** | Program evaluation and user feedback | `Evaluation/` |
-| 13 | **Certification** | Certificate issuance, templates, document generation, PDF rendering | `Certificate/`, `CertificateTemplate/`, `Document/` |
-| 14 | **Incidents** | Issue reporting, investigation, resolution workflow | `IncidentReport/` |
-| 15 | **Settings** | Runtime configuration, key-value store, branding, localization | `Setting/` |
-| 16 | **Administration** | User CRUD, announcements, GDPR compliance, system oversight | `Announcement/`, `GdprDeletionLog/` |
+## Documentation Structure
 
-## Reading Order
+Each domain has two files:
+- **`{domain}.md`** — Business overview, principles, context, and rules
+- **`{domain}-reference.md`** — Technical API reference, file organization, and implementation details
 
-Domains are ordered by their position in the PKL lifecycle:
+---
 
-```
-Foundation → Identity → Institution → Partners → Enrollment
-→ Program → Execution → Evaluation → Certification
-```
+## Core Domains
 
-Start with **Core** and **User**, then proceed based on the feature you are implementing. Each
-domain doc links to related upstream and downstream domains.
+### 1. Core — Foundation & Infrastructure
+**Purpose:** Foundational utilities, base classes, and application-wide contracts
 
-## DomainServiceProvider
+- Overview: [core.md](core.md)
+- Reference: [core-reference.md](core-reference.md)
 
-Registered in `bootstrap/providers.php` alongside `AppServiceProvider`. Handles all cross-domain
-infrastructure in a single place:
+**Key Concepts:** BaseModel, BaseAction, BasePolicy, Contracts, Exceptions
 
-| Responsibility              | Method                         | Auto-Discovery                                                                           |
-| --------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------- |
-| **Livewire components**     | `discoverLivewireComponents()` | ✅ Scans `app/Domain/*/Livewire/`, registers as `{kebab-domain}.{kebab-class}`           |
-| **Policies**                | `discoverPolicies()`           | ✅ Scans `app/Domain/*/Policies/`, auto-links to model matching policy name              |
-| **Blade namespaces**        | `registerBladeNamespaces()`    | ✅ Scans `resources/views/*/`, registers as `x-{domain}::` + `{domain}::` view namespace |
-| **Blade: layouts**          | `boot()`                       | Manual: `resources/views/core/layouts/` → `x-core::layouts.*`                        |
-| **Events**                  | `boot()`                       | Manual: `SetupFinalized` → `LogSetupFinalized` listener                                  |
-| **Policies (cross-domain)** | `boot()`                       | Manual: `InternshipRegistrationPolicy`, `CompanyPolicy`                                  |
-| **Container bindings**      | `register()`                   | Manual: `SendsNotifications` → `SendNotificationAction`                                  |
+---
 
-### Blade Namespace Convention
+### 2. User — Authentication & Identity
+**Purpose:** User management, authentication, profiles, notifications, and account recovery
 
-```
-views/core/
-├── layouts/          x-core::layouts.*       (app, base, guest, header, sidebar)
-├── ui/               x-core::ui.*            (brand, logo, credits, navbar-actions, etc.)
-├── widgets/          x-core::widgets.*       (stat-card, profile-summary, quick-link, etc.)
-views/user/layouts/   user::layouts.*           (user-specific layouts)
-views/{domain}/       {domain}::*               (auto-discovered per domain)
-```
+- Overview: [user.md](user.md)
+- Reference: [user-reference.md](user-reference.md)
 
-The `layouts`, `ui`, and `widgets` directories under `core/` are all accessed via the `core`
-namespace — no need for separate namespace registrations.
+**Key Concepts:** Login, Recovery Codes, Profiles, Notifications, Activation
 
-### Excluded Directories
+**Dependencies:** Core, Admin
 
-Directories excluded from auto-discovery in `registerBladeNamespaces()`: `components`, `emails`,
-`errors`, `mcp`, `pdf`, `vendor`. These are either structural (not domain views) or belong to
-third-party packages.
+---
 
-## References
+### 3. Admin — System Administration
+**Purpose:** System setup, user administration, announcements, and compliance
 
-- `docs/architecture.md` — 12-layer architecture, domain structure diagram
-- `docs/conventions.md` — coding conventions for domain classes
-- `docs/database.md` — database design, engine comparison, index strategy
+- Overview: [admin.md](admin.md)
+- Reference: [admin-reference.md](admin-reference.md)
+
+**Key Concepts:** Setup Wizard, Account Lifecycle, GDPR Compliance, Announcements
+
+**Dependencies:** User, Academics, Core
+
+---
+
+## Academic Domains
+
+### 4. Academics — Educational Structure
+**Purpose:** Schools, departments, and academic calendar management
+
+- Overview: [academics.md](academics.md)
+- Reference: [academics-reference.md](academics-reference.md)
+
+**Key Concepts:** School, Department, AcademicYear
+
+**Dependencies:** Core
+
+**Used By:** Program, Enrollment, Assessment
+
+---
+
+### 5. Program — Internship Programs
+**Purpose:** Internship/practicum programs, phases, groups, and schedules
+
+- Overview: [program.md](program.md)
+- Reference: [program-reference.md](program-reference.md)
+
+**Key Concepts:** Internship, Phase, InternshipGroup, Schedule, DocumentRequirement
+
+**Dependencies:** Academics, Partners, Core
+
+**Used By:** Enrollment, Journals, Evaluation
+
+---
+
+### 6. Enrollment — Student Placement
+**Purpose:** Student registration and phase progression tracking
+
+- Overview: [enrollment.md](enrollment.md)
+- Reference: [enrollment-reference.md](enrollment-reference.md)
+
+**Key Concepts:** Registration, Placement, Phase Progression
+
+**Dependencies:** User, Program, Academics, Core
+
+**Used By:** Journals, Assessment, Evaluation
+
+---
+
+## Evaluation & Assessment Domains
+
+### 7. Assessment — Evaluation Framework
+**Purpose:** Rubrics, assessments, and scoring frameworks
+
+- Overview: [assessment.md](assessment.md)
+- Reference: [assessment-reference.md](assessment-reference.md)
+
+**Key Concepts:** Rubric, Assessment, Presentation
+
+**Dependencies:** Core
+
+**Used By:** Evaluation
+
+---
+
+### 8. Evaluation — Performance Feedback
+**Purpose:** Supervisor and teacher evaluations of students
+
+- Overview: [evaluation.md](evaluation.md)
+- Reference: [evaluation-reference.md](evaluation-reference.md)
+
+**Key Concepts:** Evaluation, Scoring, Feedback
+
+**Dependencies:** User, Assessment, Program, Core
+
+**Used By:** Certification
+
+---
+
+### 9. Assignment — Course Work
+**Purpose:** Assignment management and submission tracking
+
+- Overview: [assignment.md](assignment.md)
+- Reference: [assignment-reference.md](assignment-reference.md)
+
+**Key Concepts:** Assignment, Submission, Grading
+
+**Dependencies:** User, Program, Core
+
+---
+
+## Tracking & Activity Domains
+
+### 10. Journals — Student Activity Tracking
+**Purpose:** Logbooks, attendance, schedules, and industry assessments
+
+- Overview: [journals.md](journals.md)
+- Reference: [journals-reference.md](journals-reference.md)
+
+**Key Concepts:** Logbook, Attendance, Schedule, IndustryAssessment
+
+**Dependencies:** Enrollment, Program, Core
+
+**Used By:** Evaluation
+
+---
+
+### 11. Guidance — Mentoring & Supervision
+**Purpose:** Mentor relationships, guidance, handbooks, and supervision logs
+
+- Overview: [guidance.md](guidance.md)
+- Reference: [guidance-reference.md](guidance-reference.md)
+
+**Key Concepts:** Mentor, Supervisor, Handbook, SupervisionLog
+
+**Dependencies:** User, Program, Core
+
+---
+
+### 12. Incident — Issue Tracking
+**Purpose:** Incident reports and workplace concern documentation
+
+- Overview: [incident.md](incident.md)
+- Reference: [incident-reference.md](incident-reference.md)
+
+**Key Concepts:** IncidentReport, Severity, Resolution
+
+**Dependencies:** User, Program, Core
+
+---
+
+## Supporting Domains
+
+### 13. Partners — Industrial Partners
+**Purpose:** Company management and partnership agreements
+
+- Overview: [partners.md](partners.md)
+- Reference: [partners-reference.md](partners-reference.md)
+
+**Key Concepts:** Company, Partnership
+
+**Dependencies:** Core
+
+**Used By:** Program, Guidance
+
+---
+
+### 14. Certification — Credentials
+**Purpose:** Certificate generation and credential management
+
+- Overview: [certification.md](certification.md)
+- Reference: [certification-reference.md](certification-reference.md)
+
+**Key Concepts:** Certificate, Document, CertificateTemplate
+
+**Dependencies:** User, Evaluation, Program, Core
+
+---
+
+### 15. Reports — Business Intelligence
+**Purpose:** Report generation and data export
+
+- Overview: [reports.md](reports.md)
+- Reference: [reports-reference.md](reports-reference.md)
+
+**Key Concepts:** Report, Export, Analytics
+
+**Dependencies:** User, Program, Evaluation, Enrollment, Core
+
+---
+
+### 16. Settings — System Configuration
+**Purpose:** System-wide settings and preferences
+
+- Overview: [settings.md](settings.md)
+- Reference: [settings-reference.md](settings-reference.md)
+
+**Key Concepts:** Setting, Configuration, Preferences
+
+**Dependencies:** Core
+
+**Used By:** All domains
+
+---
+
+## Quick Access Guide
+
+### By Business Function
+
+**User Management**: [user.md](user.md) → [admin.md](admin.md)
+
+**Academic Setup**: [academics.md](academics.md) → [program.md](program.md) → [enrollment.md](enrollment.md)
+
+**Evaluation**: [assignment.md](assignment.md) → [assessment.md](assessment.md) → [evaluation.md](evaluation.md) → [certification.md](certification.md)
+
+**Activity Tracking**: [enrollment.md](enrollment.md) → [journals.md](journals.md) → [guidance.md](guidance.md)
+
+**Reporting**: [reports.md](reports.md)
+
+### By Role
+
+**Super Admin**: [admin.md](admin.md), [user.md](user.md), [settings.md](settings.md)
+
+**Academics**: [academics.md](academics.md), [program.md](program.md), [assignment.md](assignment.md)
+
+**Supervisor**: [program.md](program.md), [enrollment.md](enrollment.md), [journals.md](journals.md), [guidance.md](guidance.md)
+
+**Teacher**: [user.md](user.md), [evaluation.md](evaluation.md), [incident.md](incident.md)
+
+**Student**: [enrollment.md](enrollment.md), [journals.md](journals.md), [assignment.md](assignment.md), [guidance.md](guidance.md)
+
+---
+
+## Implementation Guidelines
+
+### Creating New Features
+1. Identify which domain(s) own the feature
+2. Review [domain.md](domain.md) for business rules
+3. Check [domain-reference.md](domain-reference.md) for API structure
+4. Follow aggregate-based organization under `app/Domain/{Domain}/Aggregates/`
+5. Create Action, Model, Policy, and tests
+
+### Extending Domains
+1. Understand current aggregate boundaries
+2. Add features to existing aggregates when possible
+3. Create new aggregates only for distinct business concepts
+4. Update documentation after changes
+
+### Cross-Domain Communication
+1. One domain depends on another
+2. Use dependency injection in Actions
+3. Emit events for loose coupling
+4. Avoid circular dependencies
+
+---
+
+## Architecture Overview
+
+All 16 domains built on:
+- **Layer 1**: Database (SQLite for development)
+- **Layer 2**: Models & Relationships
+- **Layer 3**: Actions & Business Logic
+- **Layer 4**: Policies & Authorization
+- **Layer 5**: HTTP Routes & Controllers
+- **Layer 6**: Form Requests & Validation
+- **Layer 7**: Livewire Components
+- **Layer 8**: Blade Views
+
+Each domain is a vertical slice cross-cutting all layers.
+
+---
+
+*Last synchronized with architecture at 2026-06-03*

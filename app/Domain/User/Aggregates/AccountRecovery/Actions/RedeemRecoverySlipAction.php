@@ -21,26 +21,30 @@ class RedeemRecoverySlipAction extends BaseAction
                 throw new RuntimeException(__('auth.failed'));
             }
 
-            $recoveryCode = AccountRecoveryCode::where('user_id', $user->id)
+            $recoveryCodes = AccountRecoveryCode::where('user_id', $user->id)
                 ->whereNull('used_at')
                 ->where(function ($q) {
                     $q->whereNull('expires_at')
                         ->orWhere('expires_at', '>', now());
                 })
-                ->first();
+                ->get();
 
-            if (! $recoveryCode || ! $recoveryCode->asRecoveryCodeState()->isValid()) {
-                throw new RuntimeException(__('passwords.token'));
+            $matchedCode = null;
+            foreach ($recoveryCodes as $rc) {
+                if ($rc->asRecoveryCodeState()->isValid() && Hash::check(strtoupper($code), $rc->code_hash)) {
+                    $matchedCode = $rc;
+                    break;
+                }
             }
 
-            if (! Hash::check(strtoupper($code), $recoveryCode->code_hash)) {
+            if (! $matchedCode) {
                 $this->log('recovery_slip_failed', $user);
 
                 throw new RuntimeException(__('passwords.token'));
             }
 
             $user->update(['password' => Hash::make($newPassword)]);
-            $recoveryCode->update(['used_at' => now()]);
+            $matchedCode->update(['used_at' => now()]);
 
             $this->log('recovery_slip_redeemed', $user);
 

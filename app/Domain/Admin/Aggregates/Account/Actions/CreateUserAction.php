@@ -33,7 +33,7 @@ final class CreateUserAction extends BaseAction
     public function execute(array $userData, array $profileData = [], array $roles = [], bool $sendNotification = true): User
     {
         $userData['username'] =
-            $userData['username'] ?? UserIdentifierGenerator::generateUsername();
+            $userData['username'] ?? UserIdentifierGenerator::generateUsername($userData['email'] ?? '');
         $plainPassword = $userData['password'] ?? str()->random(12);
         $shouldSendWelcome = $sendNotification && ! isset($userData['password']);
 

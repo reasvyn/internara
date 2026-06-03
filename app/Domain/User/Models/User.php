@@ -31,11 +31,119 @@ use Spatie\Permission\Traits\HasRoles;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, HasRoles, HasStatuses, HasUuids, InteractsWithMedia, Notifiable;
+    use HasFactory, HasStatuses, HasUuids, InteractsWithMedia, Notifiable;
+    use HasRoles {
+        hasRole as parentHasRole;
+        hasAnyRole as parentHasAnyRole;
+        hasAllRoles as parentHasAllRoles;
+        assignRole as parentAssignRole;
+        removeRole as parentRemoveRole;
+        syncRoles as parentSyncRoles;
+        scopeRole as parentScopeRole;
+        scopeWithoutRole as parentScopeWithoutRole;
+    }
+
+    public function hasRole($roles, ?string $guard = null): bool
+    {
+        if (is_string($roles) && $roles === 'super_admin') {
+            $roles = 'superadmin';
+        } elseif (is_array($roles)) {
+            $roles = array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $roles);
+        }
+
+        return $this->parentHasRole($roles, $guard);
+    }
+
+    public function hasAnyRole(...$roles): bool
+    {
+        $normalized = [];
+        foreach ($roles as $role) {
+            if (is_array($role)) {
+                $normalized = array_merge($normalized, array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role));
+            } else {
+                $normalized[] = $role === 'super_admin' ? 'superadmin' : $role;
+            }
+        }
+
+        return $this->parentHasAnyRole($normalized);
+    }
+
+    public function hasAllRoles(...$roles): bool
+    {
+        $normalized = [];
+        foreach ($roles as $role) {
+            if (is_array($role)) {
+                $normalized = array_merge($normalized, array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role));
+            } else {
+                $normalized[] = $role === 'super_admin' ? 'superadmin' : $role;
+            }
+        }
+
+        return $this->parentHasAllRoles($normalized);
+    }
+
+    public function assignRole(...$roles): static
+    {
+        $normalized = [];
+        foreach ($roles as $role) {
+            if (is_array($role)) {
+                $normalized = array_merge($normalized, array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role));
+            } else {
+                $normalized[] = $role === 'super_admin' ? 'superadmin' : $role;
+            }
+        }
+
+        return $this->parentAssignRole($normalized);
+    }
+
+    public function removeRole($role): static
+    {
+        if (is_string($role) && $role === 'super_admin') {
+            $role = 'superadmin';
+        }
+
+        return $this->parentRemoveRole($role);
+    }
+
+    public function syncRoles(...$roles): static
+    {
+        $normalized = [];
+        foreach ($roles as $role) {
+            if (is_array($role)) {
+                $normalized = array_merge($normalized, array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role));
+            } else {
+                $normalized[] = $role === 'super_admin' ? 'superadmin' : $role;
+            }
+        }
+
+        return $this->parentSyncRoles($normalized);
+    }
+
+    public function scopeRole(Builder $query, $roles, $guard = null): Builder
+    {
+        if (is_string($roles) && $roles === 'super_admin') {
+            $roles = 'superadmin';
+        } elseif (is_array($roles)) {
+            $roles = array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $roles);
+        }
+
+        return $this->parentScopeRole($query, $roles, $guard);
+    }
+
+    public function scopeWithoutRole(Builder $query, $roles, $guard = null): Builder
+    {
+        if (is_string($roles) && $roles === 'super_admin') {
+            $roles = 'superadmin';
+        } elseif (is_array($roles)) {
+            $roles = array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $roles);
+        }
+
+        return $this->parentScopeWithoutRole($query, $roles, $guard);
+    }
 
     public function delete(): ?bool
     {
-        if ($this->hasRole('super_admin')) {
+        if ($this->hasRole('superadmin')) {
             throw new RuntimeException('Super administrator accounts cannot be deleted.');
         }
 
@@ -60,7 +168,7 @@ class User extends Authenticatable implements HasMedia
     protected static function booted(): void
     {
         static::deleting(function (User $user) {
-            if ($user->hasRole('super_admin')) {
+            if ($user->hasRole('superadmin')) {
                 throw new RuntimeException('Super administrator accounts cannot be deleted.');
             }
         });

@@ -11,19 +11,19 @@ test('PiiMasker fully masks sensitive keys', function () {
 });
 
 test('PiiMasker partially masks email', function () {
-    expect(maskEmailForTest('john@example.com'))->toBe('jo***@example.com');
-    expect(maskEmailForTest('ab@domain.com'))->toBe('a***@domain.com');
-    expect(maskEmailForTest('a'))->toBe('***');
+    expect(PiiMasker::maskValue('email', 'john@example.com'))->toBe('jo***@example.com');
+    expect(PiiMasker::maskValue('email', 'ab@domain.com'))->toBe('a***@domain.com');
+    expect(PiiMasker::maskValue('email', 'a'))->toBe('***');
 });
 
 test('PiiMasker partially masks phone', function () {
-    expect(maskPhoneForTest('123456789'))->toBe('*****6789');
-    expect(maskPhoneForTest('123'))->toBe('***');
+    expect(PiiMasker::maskValue('phone', '123456789'))->toBe('*****6789');
+    expect(PiiMasker::maskValue('phone', '123'))->toBe('***');
 });
 
 test('PiiMasker partially masks name', function () {
-    expect(maskNameForTest('John Doe'))->toBe('J. Doe');
-    expect(maskNameForTest('John'))->toBe('J***');
+    expect(PiiMasker::maskValue('name', 'John Doe'))->toBe('J. Doe');
+    expect(PiiMasker::maskValue('name', 'John'))->toBe('J***');
 });
 
 test('PiiMasker masks IP addresses correctly', function () {
@@ -53,38 +53,3 @@ test('PiiMasker masks arrays recursively', function () {
     expect($masked['nested']['email'])->toBe('jo***@example.com');
     expect($masked['nested']['unrelated'])->toBe('some-data');
 });
-
-// Polyfills to test private methods via public helpers if needed, but wait!
-// PiiMasker uses self::{$method}((string) $value) inside maskValue() when key matches the partial mask keys.
-// So we can call maskValue() instead of calling the private methods directly!
-// Let's modify the email/phone/name tests to use maskValue()!
-class PiiMaskerTestHelper
-{
-    public static function maskEmail(string $val)
-    {
-        return PiiMasker::maskValue('email', $val);
-    }
-
-    public static function maskPhone(string $val)
-    {
-        return PiiMasker::maskValue('phone', $val);
-    }
-
-    public static function maskName(string $val)
-    {
-        return PiiMasker::maskValue('name', $val);
-    }
-}
-
-function maskEmailForTest(string $val)
-{
-    return PiiMaskerTestHelper::maskEmail($val);
-}
-function maskPhoneForTest(string $val)
-{
-    return PiiMaskerTestHelper::maskPhone($val);
-}
-function maskNameForTest(string $val)
-{
-    return PiiMaskerTestHelper::maskName($val);
-}

@@ -21,21 +21,21 @@ Internara follows a **Domain-first, Action-based MVC** architecture. Business lo
 ```
 app/Domain/
 ├── Core/           Base classes, contracts, cross-domain utilities
-├── Auth/           Authentication, RBAC, account lifecycle
-├── User/           User identity, profiles, dashboards
-├── Academics/      School profile, departments, setup wizard
-├── Partners/       Companies (DUDI), MoU agreements
-├── Program/        PKL lifecycle, phases, groups, requirements
-├── Enrollment/     Registration, placement, slot management
-├── Guidance/       Supervision, mentoring, handbooks
-├── Journals/       Logbook, attendance, scheduling
-├── Assignments/    Tasks, submissions, grading
-├── Reports/        Final reports, supervisor review
-├── Assessment/     Rubrics, scoring, evaluations
-├── Certification/  Certificates, document templates
-├── Incidents/      Issue reporting, resolution
-├── Settings/       Runtime configuration, branding
-└── Administration/ User CRUD, announcements, GDPR
+├── User/           User identity, profiles, dashboards, auth, notifications
+├── Academics/      School profile, departments, academic years, setup wizard
+├── Partners/       Companies (DUDI), MoU agreements, partnerships
+├── Program/        PKL lifecycle, phases, groups, document requirements
+├── Enrollment/     Registration, placement, slot management, change requests
+├── Guidance/       Supervision logs, student roles, handbooks
+├── Journals/       Daily logbook, attendance, absence requests, scheduling
+├── Assignment/     Task creation, submissions, grading workflow
+├── Reports/        Student final reports, supervisor review
+├── Assessment/     Competency rubrics, indicator scoring, presentations
+├── Evaluation/     Program quality, evaluations, feedback loops
+├── Certification/  Certificate template design, document generation
+├── Incident/       Issue reporting, investigation, resolution workflow
+├── Settings/       Runtime configuration, branding metadata
+└── Admin/          User management, announcements, GDPR compliance
 ```
 
 Each domain is self-contained with its own Models, Actions, Livewire components, Policies, Enums, Entities, and optional Http/Notifications/Events layers — all colocated for high cohesion and low coupling.

@@ -29,19 +29,17 @@ final class LockUserAccountAction extends BaseAction
             return;
         }
 
-        $this->transaction(function () use ($user, $reason) {
-            $user->update([
-                'locked_at' => now(),
-                'locked_reason' => $reason,
-            ]);
+        $user->update([
+            'locked_at' => now(),
+            'locked_reason' => $reason,
+        ]);
 
-            SmartLogger::info('user_account_locked')
-                ->event('user_account_locked')
-                ->module('Auth')
-                ->about($user)
-                ->withPayload(['reason' => $reason])
-                ->activityOnly()
-                ->save();
-        });
+        SmartLogger::info('user_account_locked')
+            ->event('user_account_locked')
+            ->module('Auth')
+            ->about($user)
+            ->withPayload(['reason' => $reason])
+            ->activityOnly()
+            ->save();
     }
 }

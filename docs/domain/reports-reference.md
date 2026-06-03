@@ -1,39 +1,84 @@
-# Reports — API Reference
+# Reports — Technical Reference
 
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Aggregate-rooted layout mapping for the Reports domain
+> **Status:** ✅ **Fully Implemented** — Complete technical reference for the Reports domain.
 
-This reference defines the structured aggregates and code layout within the **Reports** domain.
-
----
-
-## 1. Report Aggregate
-Manages student final reports compilement, PDF attachments, teacher evaluations, and supervisor annotations notes.
-
-- **Eloquent Models**:
-  - `Report` (`app/Domain/Reports/Models/Report.php`)
-- **Policies**:
-  - `ReportPolicy` (`app/Domain/Reports/Policies/ReportPolicy.php`)
-- **Command Actions**:
-  - `CreateReportAction` (`app/Domain/Reports/Actions/CreateReportAction.php`)
-  - `SubmitReportAction` (`app/Domain/Reports/Actions/SubmitReportAction.php`)
-  - `ApproveReportAction` (`app/Domain/Reports/Actions/ApproveReportAction.php`)
-  - `AddSupervisorReportNotesAction` (`app/Domain/Reports/Actions/AddSupervisorReportNotesAction.php`)
-- **HTTP Controllers**:
-  - `ReportController` (`app/Domain/Reports/Http/Controllers/ReportController.php`)
-- **Livewire UI Components**:
-  - `ReportWriter` (`app/Domain/Reports/Livewire/ReportWriter.php`)
-  - `ReportReview` (`app/Domain/Reports/Livewire/ReportReview.php`)
-  - `ReportNotes` (`app/Domain/Reports/Livewire/ReportNotes.php`)
-- **Enums**:
-  - `ReportStatus` (`app/Domain/Reports/Enums/ReportStatus.php`)
+Detailed structural and implementation reference for the **Reports** domain.
 
 ---
 
-## 2. ReportRevision Aggregate
-Tracks requested revision logs, comments histories, and revision numbers.
+## Overview
 
-- **Eloquent Models**:
-  - `ReportRevision` (`app/Domain/Reports/Models/ReportRevision.php`)
-- **Command Actions**:
-  - `RequestReportRevisionAction` (`app/Domain/Reports/Actions/RequestReportRevisionAction.php`)
+Generates reports and analytics across the application
+
+### Domain Statistics
+- **Actions**: 5 business logic operations
+- **Models**: 2 data entities
+- **Livewire Components**: 1 UI components
+- **Policies**: 0 authorization rules
+- **Aggregates**: 1 domain aggregates
+
+### Aggregates
+- `Report`
+
+---
+
+## Dependency Graph
+
+This domain depends on:
+- **Certification**
+- **Core**
+- **Enrollment**
+- **User**
+
+---
+
+## Actions
+
+| File | Class | Extends |
+|---|---|---|
+| `Aggregates/Report/Actions/AddSupervisorReportNotesAction.php` | `AddSupervisorReportNotesAction` | `BaseAction` |
+| `Aggregates/Report/Actions/ApproveReportAction.php` | `ApproveReportAction` | `BaseAction` |
+| `Aggregates/Report/Actions/CreateReportAction.php` | `CreateReportAction` | `BaseAction` |
+| `Aggregates/Report/Actions/RequestReportRevisionAction.php` | `RequestReportRevisionAction` | `BaseAction` |
+| `Aggregates/Report/Actions/SubmitReportAction.php` | `SubmitReportAction` | `BaseAction` |
+
+---
+
+## Models
+
+| File | Class |
+|---|---|
+| `Aggregates/Report/Models/Report.php` | `Report` |
+| `Aggregates/Report/Models/ReportRevision.php` | `ReportRevision` |
+
+---
+
+## Livewire Components
+
+| File | Component | Extends |
+|---|---|---|
+| `Aggregates/Report/Livewire/ReportWriter.php` | `ReportWriter` | `Component` |
+
+---
+
+## File Organization
+
+```
+app/Domain/Reports/
+├── Aggregates/           ← Aggregate roots
+│   └── {Aggregate}/
+│       ├── Actions/
+│       ├── Models/
+│       ├── Policies/
+│       └── Livewire/
+├── Http/
+├── Livewire/
+├── Types/
+├── Services/
+└── Support/
+```
+
+---
+
+*For overview and business context, see [reports.md](reports.md)*

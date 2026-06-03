@@ -2,31 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Livewire\BaseRecordManager;
-use App\Domain\Core\Models\ActivityLog;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Tests\Feature\Core\Livewire\Mocks\TestRecordManager;
 
 uses(RefreshDatabase::class);
-
-class TestRecordManager extends BaseRecordManager
-{
-    public function headers(): array
-    {
-        return ['ID'];
-    }
-
-    protected function query(): Builder
-    {
-        return ActivityLog::query();
-    }
-
-    public function render()
-    {
-        return '<div>Test Component</div>';
-    }
-}
 
 test('BaseRecordManager sanitizes invalid or dangerous perPage values', function () {
     $component = Livewire::test(TestRecordManager::class);
