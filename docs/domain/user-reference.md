@@ -12,11 +12,11 @@ Detailed structural and implementation reference for the **User** domain.
 Handles authentication, user profiles, notifications, and account recovery
 
 ### Domain Statistics
-- **Actions**: 22 business logic operations
+- **Actions**: 25 business logic operations
 - **Models**: 5 data entities
 - **Livewire Components**: 15 UI components
 - **Policies**: 3 authorization rules
-- **Aggregates**: 7 domain aggregates
+- **Aggregates**: 8 domain aggregates
 
 ### Aggregates
 - `AccountRecovery`
@@ -26,6 +26,7 @@ Handles authentication, user profiles, notifications, and account recovery
 - `Notification`
 - `Password`
 - `Profile`
+- `SuperAdmin`
 
 ---
 
@@ -56,16 +57,19 @@ This domain depends on:
 | `Actions/GetStudentDashboardDataAction.php` | `GetStudentDashboardDataAction` | `BaseAction` |
 | `Actions/GetSupervisorDashboardStatsAction.php` | `GetSupervisorDashboardStatsAction` | `BaseAction` |
 | `Actions/GetTeacherDashboardStatsAction.php` | `GetTeacherDashboardStatsAction` | `BaseAction` |
+| `Aggregates/SuperAdmin/Actions/InitializeSuperAdminAction.php` | `InitializeSuperAdminAction` | `BaseAction` |
 | `Aggregates/AccountStatus/Actions/LockUserAccountAction.php` | `LockUserAccountAction` | `BaseAction` |
 | `Aggregates/Login/Actions/LoginAction.php` | `LoginAction` | `BaseAction` |
 | `Aggregates/Notification/Actions/MarkAllAsReadAction.php` | `MarkAllAsReadAction` | `BaseAction` |
 | `Aggregates/Notification/Actions/MarkAsReadAction.php` | `MarkAsReadAction` | `BaseAction` |
 | `Aggregates/Notification/Actions/MarkBatchAsReadAction.php` | `MarkBatchAsReadAction` | `BaseAction` |
+| `Aggregates/SuperAdmin/Actions/RecoverSuperAdminAction.php` | `RecoverSuperAdminAction` | `BaseAction` |
 | `Aggregates/AccountRecovery/Actions/RedeemRecoverySlipAction.php` | `RedeemRecoverySlipAction` | `BaseAction` |
 | `Aggregates/Password/Actions/ResetPasswordAction.php` | `ResetPasswordAction` | `BaseAction` |
 | `Aggregates/Password/Actions/ResetUserPasswordAction.php` | `ResetUserPasswordAction` | `BaseAction` |
 | `Aggregates/Notification/Actions/SendNotificationAction.php` | `SendNotificationAction` | `BaseAction` |
 | `Aggregates/Password/Actions/SendPasswordResetLinkAction.php` | `SendPasswordResetLinkAction` | `BaseAction` |
+| `Aggregates/SuperAdmin/Actions/SetupSuperAdminAction.php` | `SetupSuperAdminAction` | `BaseAction` |
 | `Aggregates/AccountStatus/Actions/UnlockUserAccountAction.php` | `UnlockUserAccountAction` | `BaseAction` |
 | `Aggregates/Profile/Actions/UpdateProfileAction.php` | `UpdateProfileAction` | `BaseAction` |
 | `Aggregates/Password/Actions/UpdateUserPasswordAction.php` | `UpdateUserPasswordAction` | `BaseAction` |

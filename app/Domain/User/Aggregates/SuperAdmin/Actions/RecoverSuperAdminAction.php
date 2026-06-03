@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Admin\Aggregates\Setup\Actions;
+namespace App\Domain\User\Aggregates\SuperAdmin\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Core\Support\SmartLogger;
-use App\Domain\User\Aggregates\AccountRecovery\Notifications\SuperAdminRecoveredNotification;
-use App\Domain\User\Entities\SuperAdminIntegrityRules;
+use App\Domain\User\Aggregates\SuperAdmin\Notifications\SuperAdminRecoveredNotification;
+use App\Domain\User\Aggregates\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Domain\User\Enums\AccountStatus;
 use App\Domain\User\Enums\Role;
 use App\Domain\User\Models\User;

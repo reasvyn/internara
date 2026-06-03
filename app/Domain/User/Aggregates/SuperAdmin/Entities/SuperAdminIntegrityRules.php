@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Entities;
+namespace App\Domain\User\Aggregates\SuperAdmin\Entities;
 
 use App\Domain\Core\Entities\BaseEntity;
 use App\Domain\User\Enums\AccountStatus;

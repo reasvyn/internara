@@ -12,6 +12,7 @@ use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Program\Aggregates\Internship\Actions\CreateInternshipAction;
 use App\Domain\User\Aggregates\Notification\Actions\SendNotificationAction;
+use App\Domain\User\Aggregates\SuperAdmin\Actions\SetupSuperAdminAction;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;

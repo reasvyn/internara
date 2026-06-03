@@ -7,7 +7,7 @@ namespace App\Domain\Admin\Aggregates\Account\Actions;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Core\Support\SmartLogger;
-use App\Domain\User\Entities\SuperAdminIntegrityRules;
+use App\Domain\User\Aggregates\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Domain\User\Models\User;
 use App\Domain\User\Rules\ReservedAuthoritativeName;
 use App\Domain\User\Rules\SystemUsername;

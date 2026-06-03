@@ -12,7 +12,7 @@ Detailed structural and implementation reference for the **Admin** domain.
 Handles system setup, configuration, announcements, and account administration
 
 ### Domain Statistics
-- **Actions**: 23 business logic operations
+- **Actions**: 20 business logic operations
 - **Models**: 3 data entities
 - **Livewire Components**: 11 UI components
 - **Policies**: 2 authorization rules
@@ -55,17 +55,14 @@ This domain depends on:
 | `Aggregates/Setup/Actions/GenerateSetupTokenAction.php` | `GenerateSetupTokenAction` | `BaseAction` |
 | `Actions/GetAdminDashboardStatsAction.php` | `GetAdminDashboardStatsAction` | `BaseAction` |
 | `Aggregates/Account/Actions/GetUserManagerStatsAction.php` | `GetUserManagerStatsAction` | `BaseAction` |
-| `Aggregates/Setup/Actions/InitializeSuperAdminAction.php` | `InitializeSuperAdminAction` | `BaseAction` |
 | `Aggregates/Setup/Actions/InstallSystemAction.php` | `InstallSystemAction` | `BaseAction` |
 | `Aggregates/Account/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | `BaseAction` |
-| `Aggregates/Setup/Actions/RecoverSuperAdminAction.php` | `RecoverSuperAdminAction` | `BaseAction` |
 | `Aggregates/Account/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseAction` |
 | `Aggregates/Account/Actions/SaveRecoveryKeyAction.php` | `SaveRecoveryKeyAction` | `BaseAction` |
 | `Aggregates/Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | `BaseAction` |
 | `Aggregates/Account/Actions/SetUserStatusAction.php` | `SetUserStatusAction` | `BaseAction` |
 | `Aggregates/Setup/Actions/SetupDepartmentAction.php` | `SetupDepartmentAction` | `BaseAction` |
 | `Aggregates/Setup/Actions/SetupSchoolAction.php` | `SetupSchoolAction` | `BaseAction` |
-| `Aggregates/Setup/Actions/SetupSuperAdminAction.php` | `SetupSuperAdminAction` | `BaseAction` |
 | `Aggregates/Account/Actions/ToggleUserStatusAction.php` | `ToggleUserStatusAction` | `BaseAction` |
 | `Aggregates/Account/Actions/UpdateUserAction.php` | `UpdateUserAction` | `BaseAction` |
 | `Aggregates/Setup/Actions/ValidateSetupTokenAction.php` | `ValidateSetupTokenAction` | `BaseAction` |

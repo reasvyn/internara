@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Admin\Aggregates\Setup\Actions;
+namespace App\Domain\User\Aggregates\SuperAdmin\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\User\Enums\AccountStatus;

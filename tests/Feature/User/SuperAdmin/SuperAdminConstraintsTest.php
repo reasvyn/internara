@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Admin\Setup;
+namespace Tests\Feature\User\SuperAdmin;
 
 use App\Domain\Admin\Aggregates\Account\Actions\UpdateUserAction;
-use App\Domain\Admin\Aggregates\Setup\Actions\SetupSuperAdminAction;
+use App\Domain\User\Aggregates\SuperAdmin\Actions\SetupSuperAdminAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\User\Aggregates\Profile\Actions\UpdateProfileAction;
 use App\Domain\User\Enums\AccountStatus;

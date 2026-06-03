@@ -6,10 +6,10 @@ namespace App\Domain\Admin\Console\Commands;
 
 use App\Domain\Admin\Aggregates\Account\Actions\ReadRecoveryKeyAction;
 use App\Domain\Admin\Aggregates\Account\Actions\SaveRecoveryKeyAction;
-use App\Domain\Admin\Aggregates\Setup\Actions\RecoverSuperAdminAction;
 use App\Domain\Admin\Aggregates\Setup\Models\Setup;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Settings\Aggregates\Setting\Support\AppInfo;
+use App\Domain\User\Aggregates\SuperAdmin\Actions\RecoverSuperAdminAction;
 use App\Domain\User\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
