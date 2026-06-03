@@ -58,33 +58,33 @@
     {{-- Step Content --}}
     <div class="bg-base-100 border border-base-content/10 rounded-xl">
         @if($currentStep === 1)
-            @include('setup.components.welcome-step', ['auditResults' => $audit, 'auditPassed' => $auditPassed])
+            @include('admin.setup.components.welcome-step', ['auditResults' => $audit, 'auditPassed' => $auditPassed])
         @endif
 
         @if($currentStep === 2)
-            @include('setup.components.school-step')
+            @include('admin.setup.components.school-step')
         @endif
 
         @if($currentStep === 3)
-            @include('setup.components.department-step')
+            @include('admin.setup.components.department-step')
         @endif
 
         @if($currentStep === 4)
-            @include('setup.components.admin-step')
+            @include('admin.setup.components.admin-step')
         @endif
 
         @if($currentStep === 5)
-            @include('setup.components.internship-step')
+            @include('admin.setup.components.internship-step')
         @endif
 
         @if($currentStep === 6)
-            @include('setup.components.finalize-step')
+            @include('admin.setup.components.finalize-step')
         @endif
 
         @if($currentStep === 7)
-            @include('setup.components.complete-step')
+            @include('admin.setup.components.complete-step')
         @endif
     </div>
 
-    @include('setup.components.setup-guide')
+    @include('admin.setup.components.setup-guide')
 </div>

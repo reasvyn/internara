@@ -270,7 +270,7 @@ class SetupWizard extends Component
     {
         $stepKeys = config('setup.wizard.step_keys', ['welcome', 'school', 'department', 'account', 'internship', 'finalize', 'complete']);
 
-        return view('setup.setup-wizard', [
+        return view('admin.setup.setup-wizard', [
             'appName' => AppInfo::get('name', config('app.name')),
             'appVersion' => AppInfo::version(),
             'stepKeys' => $stepKeys,
