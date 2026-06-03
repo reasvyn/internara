@@ -16,6 +16,24 @@ For complete technical reference including API, models, actions, and components,
 - BasePolicy standardizes authorization
 - Shared contracts and utilities available to all domains
 
+### Mandatory Base Classes
+
+Every layer within the project must extend the corresponding Core base class:
+
+| Layer | Base Class | Location |
+|---|---|---|
+| **Model** | `BaseModel` (or `Authenticatable`) | `app/Domain/Core/Models/BaseModel.php` |
+| **Action** | `BaseAction` | `app/Domain/Core/Actions/BaseAction.php` |
+| **Entity** | `BaseEntity` (final readonly) | `app/Domain/Core/Entities/BaseEntity.php` |
+| **Policy** | `BasePolicy` | `app/Domain/Core/Policies/BasePolicy.php` |
+| **Livewire CRUD** | `BaseRecordManager` | `app/Domain/Core/Livewire/BaseRecordManager.php` |
+| **Controller** | `BaseController` | `app/Domain/Core/Http/Controllers/BaseController.php` |
+| **Form Request** | `FormRequest` (Core's request) | `app/Domain/Core/Http/Requests/FormRequest.php` |
+| **DTO** | `Data` | `app/Domain/Core/Data/Data.php` |
+| **Exception** | `AppException` or `DomainException` | `app/Domain/Core/Exceptions/` |
+| **Enum** | Must implement `LabelEnum` | `app/Domain/Core/Contracts/LabelEnum.php` |
+| **Logging** | Use `SmartLogger` | `app/Domain/Core/Support/SmartLogger.php` |
+
 ---
 
 ## Context Boundary
