@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Aggregates\AccountRecovery\Notifications;
+namespace App\Domain\User\Aggregates\SuperAdmin\Notifications;
 
 use App\Domain\Core\Channels\CustomDatabaseChannel;
 use Illuminate\Bus\Queueable;

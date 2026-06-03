@@ -46,13 +46,14 @@ Core identity system. All other domains depend on User. Admin manages lifecycle.
 - **Notification**: Core business entity for notification management
 - **Password**: Core business entity for password management
 - **Profile**: Core business entity for profile management
+- **SuperAdmin**: Core business entity for superadmin management and integrity constraints
 
 ---
 
 ## Quick References
 
 ### Actions & Business Logic
-- **22** actions across all aggregates
+- **25** actions across all aggregates
 - Business logic operations for user domain
 
 ### Data & Persistence

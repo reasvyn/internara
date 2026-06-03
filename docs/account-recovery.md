@@ -210,10 +210,10 @@ Server admin SSH into the machine
 | `RecoverAdminCommand` | `Admin/Console/Commands/RecoverAdminCommand.php` | CLI interactive recovery |
 | `ShowRecoveryPathCommand` | `Admin/Console/Commands/ShowRecoveryPathCommand.php` | Display key file path |
 | `ShowRecoveryKeyCommand` | `Admin/Console/Commands/ShowRecoveryKeyCommand.php` | Display key (with confirmation) |
-| `RecoverSuperAdminAction` | `Setup/Actions/RecoverSuperAdminAction.php` | Creates/resets super admin |
+| `RecoverSuperAdminAction` | `User/Aggregates/SuperAdmin/Actions/RecoverSuperAdminAction.php` | Creates/resets super admin |
 | `SaveRecoveryKeyAction` | `Admin/Actions/SaveRecoveryKeyAction.php` | Saves key to storage file |
 | `ReadRecoveryKeyAction` | `Admin/Actions/ReadRecoveryKeyAction.php` | Reads key from storage file |
-| `SuperAdminIntegrityRules` | `User/Entities/SuperAdminIntegrityRules.php` | Enforces superadmin integrity constraints |
+| `SuperAdminIntegrityRules` | `User/Aggregates/SuperAdmin/Entities/SuperAdminIntegrityRules.php` | Enforces superadmin integrity constraints |
 
 ### Super Admin Integrity Constraints
 

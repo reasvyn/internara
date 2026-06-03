@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Aggregates\Profile\Actions;
 
-use App\Domain\User\Entities\SuperAdminIntegrityRules;
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
 use App\Domain\Core\Support\SmartLogger;
 use App\Domain\User\Aggregates\Profile\Models\Profile;
+use App\Domain\User\Aggregates\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Domain\User\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;

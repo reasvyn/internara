@@ -6,7 +6,7 @@ namespace App\Domain\User\Aggregates\Password\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
-use App\Domain\User\Entities\SuperAdminIntegrityRules;
+use App\Domain\User\Aggregates\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Domain\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
