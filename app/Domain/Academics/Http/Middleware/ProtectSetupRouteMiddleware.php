@@ -83,7 +83,7 @@ class ProtectSetupRouteMiddleware
                 );
             }
 
-            return response()->view('setup.enter-code', [
+            return response()->view('admin.setup.enter-code', [
                 'error' => __('setup.rate_limited', ['seconds' => $seconds]),
             ], Response::HTTP_TOO_MANY_REQUESTS);
         }
@@ -98,7 +98,7 @@ class ProtectSetupRouteMiddleware
             return $this->rejectToken($request, __('setup.invalid_token'));
         }
 
-        return response()->view('setup.enter-code');
+        return response()->view('admin.setup.enter-code');
     }
 
     private function rejectToken(Request $request, string $message): Response
