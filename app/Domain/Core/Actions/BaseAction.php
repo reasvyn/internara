@@ -13,9 +13,13 @@ abstract class BaseAction
 {
     use HandlesActionErrors;
 
-    protected function transaction(callable $callback): mixed
+    protected function transaction(callable $callback, int $attempts = 3): mixed
     {
-        return DB::transaction($callback);
+        if (DB::transactionLevel() > 0) {
+            return $callback();
+        }
+
+        return DB::transaction($callback, $attempts);
     }
 
     protected function log(string $action, ?Model $subject = null, ?array $payload = null): void

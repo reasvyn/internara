@@ -13,39 +13,32 @@ beforeEach(function () {
     Setup::query()->delete();
 });
 
-describe('SetupResetCommand', function () {
-    it('rejects reset when installed without --force', function () {
+describe('SetupResetTokenCommand', function () {
+    it('rejects reset when installed', function () {
         Setup::factory()->installed()->create();
 
-        $this->artisan('setup:reset')
+        $this->artisan('setup:reset-token')
             ->assertFailed();
     });
 
-    it('shows error when installed without --force', function () {
+    it('shows error when installed', function () {
         Setup::factory()->installed()->create();
 
-        $this->artisan('setup:reset')
-            ->expectsOutputToContain(__('setup.reset.protected'));
-    });
-
-    it('generates new token when installed with --force', function () {
-        Setup::factory()->installed()->create();
-
-        $this->artisan('setup:reset --force')
-            ->assertSuccessful();
+        $this->artisan('setup:reset-token')
+            ->expectsOutputToContain(__('setup.reset_token.protected'));
     });
 
     it('generates new token when not installed', function () {
         Setup::factory()->create(['is_installed' => false]);
 
-        $this->artisan('setup:reset')
+        $this->artisan('setup:reset-token')
             ->assertSuccessful();
     });
 
     it('outputs a setup token on success', function () {
         Setup::factory()->create(['is_installed' => false]);
 
-        $this->artisan('setup:reset')
+        $this->artisan('setup:reset-token')
             ->assertSuccessful()
             ->expectsOutputToContain(route('setup'));
     });
@@ -53,7 +46,7 @@ describe('SetupResetCommand', function () {
     it('displays quick access URL on success', function () {
         Setup::factory()->create(['is_installed' => false]);
 
-        $this->artisan('setup:reset')
+        $this->artisan('setup:reset-token')
             ->assertSuccessful()
             ->expectsOutputToContain(__('setup.cli.quick_access'));
     });
@@ -61,7 +54,7 @@ describe('SetupResetCommand', function () {
     it('displays manual entry code on success', function () {
         Setup::factory()->create(['is_installed' => false]);
 
-        $this->artisan('setup:reset')
+        $this->artisan('setup:reset-token')
             ->assertSuccessful()
             ->expectsOutputToContain(__('setup.cli.manual_entry'));
     });
@@ -69,7 +62,7 @@ describe('SetupResetCommand', function () {
     it('displays token expiration on success', function () {
         Setup::factory()->create(['is_installed' => false]);
 
-        $this->artisan('setup:reset')
+        $this->artisan('setup:reset-token')
             ->assertSuccessful()
             ->expectsOutputToContain(__('setup.cli.token_expires'));
     });
@@ -77,7 +70,7 @@ describe('SetupResetCommand', function () {
     it('saves new token to database on success', function () {
         Setup::factory()->create(['is_installed' => false]);
 
-        $this->artisan('setup:reset')
+        $this->artisan('setup:reset-token')
             ->assertSuccessful();
 
         $setup = Setup::first();
@@ -88,10 +81,10 @@ describe('SetupResetCommand', function () {
     it('can generate multiple tokens sequentially', function () {
         Setup::factory()->create(['is_installed' => false]);
 
-        $this->artisan('setup:reset')->assertSuccessful();
+        $this->artisan('setup:reset-token')->assertSuccessful();
         $firstToken = Setup::first()->setup_token;
 
-        $this->artisan('setup:reset')->assertSuccessful();
+        $this->artisan('setup:reset-token')->assertSuccessful();
         $secondToken = Setup::first()->setup_token;
 
         expect($secondToken)->not->toBe($firstToken);
@@ -100,19 +93,19 @@ describe('SetupResetCommand', function () {
     it('displays banner with php version', function () {
         Setup::factory()->create(['is_installed' => false]);
 
-        $this->artisan('setup:reset')
+        $this->artisan('setup:reset-token')
             ->expectsOutputToContain(__('setup.cli.banner_title'));
     });
 
     it('displays new token generated section', function () {
         Setup::factory()->create(['is_installed' => false]);
 
-        $this->artisan('setup:reset')
-            ->expectsOutputToContain(__('setup.reset.new_token_generated'));
+        $this->artisan('setup:reset-token')
+            ->expectsOutputToContain(__('setup.reset_token.new_token_generated'));
     });
 
     it('handles empty setups table gracefully', function () {
-        $this->artisan('setup:reset')
+        $this->artisan('setup:reset-token')
             ->assertSuccessful();
     });
 });

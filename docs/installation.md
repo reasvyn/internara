@@ -462,7 +462,7 @@ php artisan queue:monitor database:default --max=100
 | `php artisan setup:install` | Audit, provision, generate signed setup URL |
 | `php artisan setup:install --check-only` | Run environment audit without provisioning |
 | `php artisan setup:install --force` | **Hard reset.** Runs `migrate:fresh`, clears all setup session data, regenerates token. Only available in non-production environments by default. The ONLY way to reset a locked system. |
-| `php artisan setup:reset` | Regenerate setup token (only when `is_installed = false`) |
+| `php artisan setup:reset-token` | Regenerate setup token (only when `is_installed = false`) |
 | `php artisan admin:recover` | Recover super admin access (auto-detects key from storage file) |
 | `php artisan admin:recover --key=<key>` | Recover super admin access (manual key override) |
 | `php artisan admin:recover --regenerate-file` | Re-write the recovery key file from a provided --key |
@@ -483,10 +483,10 @@ php artisan queue:monitor database:default --max=100
 | "Database is locked" | SQLite concurrent writes | Switch to MySQL/PG in production |
 | 503 Service Unavailable | Maintenance mode on | `php artisan up` |
 | Class "Redis" not found | Missing `ext-redis` | Install PHP Redis extension |
-| Setup token expired | Token older than 60 min | Run `php artisan setup:reset` (pre-install) or `setup:install` |
+| Setup token expired | Token older than 60 min | Run `php artisan setup:reset-token` (pre-install) or `setup:install` |
 | Setup wizard 403 | Invalid or missing token, or token already consumed | Use the signed URL from `setup:install` — tokens are single-use |
 | Setup wizard 404 | System already installed | System is locked. Use `php artisan setup:install --force` to hard-reset |
-| Token consumed before use | Token validated in another browser tab | Generate a new one with `setup:reset` (pre-install) |
+| Token consumed before use | Token validated in another browser tab | Generate a new one with `setup:reset-token` (pre-install) |
 
 ### Verification
 

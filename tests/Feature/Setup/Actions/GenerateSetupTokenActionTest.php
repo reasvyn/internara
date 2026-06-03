@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -81,5 +82,17 @@ describe('GenerateSetupTokenAction', function () {
         $result2 = $action->execute();
 
         expect($result1['plaintext'])->not->toBe($result2['plaintext']);
+    });
+
+    it('does not deadlock within existing transaction via nested savepoint', function () {
+        DB::beginTransaction();
+
+        $result = app(GenerateSetupTokenAction::class)->execute();
+
+        expect($result)->toHaveKeys(['plaintext', 'expires_at']);
+
+        DB::rollBack();
+
+        expect(Setup::count())->toBe(0);
     });
 });

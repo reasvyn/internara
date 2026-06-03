@@ -165,7 +165,7 @@ php artisan serve
 | Command | Purpose |
 |---|---|
 | `php artisan setup:install` | Audit, provision, and generate setup URL |
-| `php artisan setup:reset` | Regenerate setup token (before installation) |
+| `php artisan setup:reset-token` | Regenerate setup token (before installation) |
 | `php artisan admin:recover` | Recover super admin access (auto-detects key from storage file) |
 | `php artisan admin:recover --key=<key>` | Recover super admin access (manual key override) |
 | `php artisan admin:recovery-path` | Show the recovery key file location |

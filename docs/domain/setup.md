@@ -112,7 +112,7 @@ Callers cannot pass name or username — the type signature prevents it.
 Generated (encrypted, time-limited, stored in DB)
     │
     ├── Expired (no access — must regenerate)
-    │     └── setup:reset or setup:install
+    │     └── setup:reset-token or setup:install
     │
     └── Presented (in query param or POST body)
           │
@@ -130,7 +130,7 @@ Generated (encrypted, time-limited, stored in DB)
 Pre-install:
   └── is_installed = false
   └── Setup routes: accessible with valid token
-  └── setup:reset: works
+  └── setup:reset-token: works
 
 Post-install (finalization window):
   └── is_installed = true
@@ -140,7 +140,7 @@ Post-install (finalization window):
 Post-install (locked):
   └── is_installed = true
   └── Setup routes: 404
-  └── setup:reset: blocked (suggests system:health)
+  └── setup:reset-token: blocked (suggests system:health)
   └── setup:install --force: works only in non-production
 ```
 
