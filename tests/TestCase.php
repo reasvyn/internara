@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\Domain\Academics\Models\Setup;
+use App\Domain\Admin\Aggregates\Setup\Models\Setup;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Gate;
 use Throwable;
