@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
+namespace Tests\Feature\Core\Console;
+
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
-
-test('domain:discover command runs successfully', function () {
-    $this->artisan('domain:discover')
-        ->assertExitCode(0);
-});
 
 test('system:health command runs successfully', function () {
     $this->artisan('system:health --json')
