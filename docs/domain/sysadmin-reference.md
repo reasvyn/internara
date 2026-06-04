@@ -1,7 +1,7 @@
 # SysAdmin — Technical Reference
 
 > Last updated: 2026-06-04
-> Changes: Converted Status metadata to Changes format
+> Changes: Updated setup:install description to reflect SetupSeeder (Roles + AcademicYear); added SetupSeeder to seeders list
 
 Detailed structural and implementation reference for the **SysAdmin** domain.
 
@@ -121,7 +121,7 @@ This domain depends on:
 
 | Command Signature | Class | Description |
 |---|---|---|
-| `setup:install` | `SetupInstallCommand` | Provisions the system, runs database seeds, and initializes roles. |
+| `setup:install` | `SetupInstallCommand` | Provisions the system, seeds Roles and AcademicYear via `SetupSeeder`, and generates a setup token. |
 | `setup:reset-token` | `SetupResetTokenCommand` | Generates a new setup token (usable only if installation is incomplete). |
 | `admin:create` | `CreateAdminCommand` | Creates the initial superadmin account when none exists. |
 | `admin:recover` | `RecoverAdminCommand` | Interactive command to reset a superadmin's password or re-create it. |

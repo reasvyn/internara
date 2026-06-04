@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\SysAdmin\Aggregates\Setup\Support;
 
+use Database\Seeders\SetupSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use RuntimeException;
@@ -81,11 +82,8 @@ class SystemProvisioner
 
     private function runSeeders(): void
     {
-        $exitCode = Artisan::call('db:seed', ['--force' => true]);
-
-        if ($exitCode !== 0) {
-            throw new RuntimeException('Seeding failed');
-        }
+        $seeder = app(SetupSeeder::class);
+        $seeder->run();
     }
 
     private function createStorageSymlink(): void
