@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Core\Console\Commands;
+namespace App\Domain\SysAdmin\Console\Commands;
 
+use App\Domain\Core\Support\SmartLogger;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
-class CacheWarmCommand extends Command
+class SystemCacheWarmCommand extends Command
 {
     protected $signature = 'system:cache-warm';
 
@@ -15,18 +16,35 @@ class CacheWarmCommand extends Command
 
     public function handle(): int
     {
-        $this->info(__('setup.system.cache_warm_starting'));
+        try {
+            $this->info(__('setup.system.cache_warm_starting'));
 
-        $this->warmSettings();
-        $this->warmBrand();
-        $this->warmConfig();
-        $this->warmViews();
-        $this->warmEvents();
+            $this->warmSettings();
+            $this->warmBrand();
+            $this->warmConfig();
+            $this->warmViews();
+            $this->warmEvents();
 
-        $this->newLine();
-        $this->components->info(__('setup.system.cache_warm_completed'));
+            $this->newLine();
+            $this->components->info(__('setup.system.cache_warm_completed'));
 
-        return Command::SUCCESS;
+            SmartLogger::info(__('setup.system.cache_warm_completed'))
+                ->module('system')
+                ->event('cache.warm.completed')
+                ->save();
+
+            return Command::SUCCESS;
+        } catch (\Throwable $e) {
+            SmartLogger::error('Cache warm failed')
+                ->module('system')
+                ->event('cache.warm.failed')
+                ->withPayload(['error' => $e->getMessage()])
+                ->save();
+
+            $this->error(__('setup.system.cache_warm_starting').': '.$e->getMessage());
+
+            return Command::FAILURE;
+        }
     }
 
     protected function warmSettings(): void

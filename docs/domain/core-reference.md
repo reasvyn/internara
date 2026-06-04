@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
 > Last updated: 2026-06-04
-> Changes: Renamed FormRequest→BaseFormRequest, Data→BaseData; fixed middleware list (only 2 in Core); fixed support classes list (13, not 8); fixed file tree; added missing contracts, enums, views, channels, tests sections
+> Changes: Moved system:* commands to SysAdmin (only domain:discover remains in Core); updated stat from 4→1 commands
 
 Detailed structural and implementation reference for the **Core** domain.
 
@@ -23,7 +23,7 @@ Provides foundational infrastructure, base classes, contracts, and application-w
 - **Policies**: 1 BasePolicy + 2 concern traits (AuthorizesRoles, AuthorizesOwnership)
 - **Data/DTOs**: 3 (BaseData, AuditCheck, AuditReport)
 - **Channels**: 1 (CustomDatabaseChannel)
-- **Console Commands**: 4 (system:health, system:cleanup, system:cache-warm, domain:discover)
+- **Console Commands**: 1 (domain:discover) — system:* commands moved to SysAdmin
 - **Views**: 29 (7 layouts, 15 UI components, 5 widgets, 2 top-level)
 - **Tests**: 14 (9 Feature + 5 Unit)
 - **Aggregates**: 0 (Core has no aggregates — it provides infrastructure)
@@ -182,10 +182,7 @@ app/Domain/Core/
 │   └── CustomDatabaseChannel.php          ← Custom DB notification channel
 ├── Console/
 │   └── Commands/
-│       ├── CacheWarmCommand.php           ← system:cache-warm
-│       ├── CleanupCommand.php             ← system:cleanup
-│       ├── DomainDiscoverCommand.php      ← domain:discover
-│       └── HealthCommand.php              ← system:health
+│       └── DomainDiscoverCommand.php      ← domain:discover
 ├── Contracts/
 │   ├── ColorableEnum.php                  ← CSS color variant contract
 │   ├── LabelEnum.php                      ← Enum label contract

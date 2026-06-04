@@ -144,6 +144,7 @@ return [
             'discover_policies' => 'Mendaftarkan kebijakan',
             'discover_views' => 'Mendaftarkan namespace tampilan',
             'discover_complete' => 'Cache penemuan domain dihangatkan.',
+            'discover_failed' => 'Penemuan domain gagal',
         ],
     ],
 

@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Core\Console\Commands;
+namespace App\Domain\SysAdmin\Console\Commands;
 
 use App\Domain\Core\Support\CacheKeys;
+use App\Domain\Core\Support\SmartLogger;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 
-class HealthCommand extends Command
+class SystemHealthCommand extends Command
 {
     protected $signature = 'system:health
         {--json : Output results as JSON}';
@@ -20,45 +21,57 @@ class HealthCommand extends Command
 
     public function handle(): int
     {
-        $results = array_merge(
-            $this->environmentChecks(),
-            [
-                [__('setup.system.php_version'), ...$this->checkPhpVersion()],
-                [__('setup.system.extensions'), ...$this->checkExtensions()],
-                [__('setup.system.recommended_extensions'), ...$this->checkRecommendedExtensions()],
-                [__('setup.system.php_memory'), ...$this->checkMemory()],
-                [__('setup.system.database'), ...$this->checkDatabase()],
-                [__('setup.system.migration_status'), ...$this->checkMigrations()],
-                [__('setup.system.storage'), ...$this->checkStorage()],
-                [__('setup.system.disk_space'), ...$this->checkDiskSpace()],
-                [__('setup.system.queue'), ...$this->checkQueue()],
-                [__('setup.system.cache'), ...$this->checkCache()],
-                [__('setup.system.app_key'), ...$this->checkAppKey()],
-                [__('setup.system.storage_link'), ...$this->checkStorageLink()],
-                [__('setup.system.maintenance_mode'), ...$this->checkMaintenanceMode()],
-            ],
-        );
+        try {
+            $results = array_merge(
+                $this->environmentChecks(),
+                [
+                    [__('setup.system.php_version'), ...$this->checkPhpVersion()],
+                    [__('setup.system.extensions'), ...$this->checkExtensions()],
+                    [__('setup.system.recommended_extensions'), ...$this->checkRecommendedExtensions()],
+                    [__('setup.system.php_memory'), ...$this->checkMemory()],
+                    [__('setup.system.database'), ...$this->checkDatabase()],
+                    [__('setup.system.migration_status'), ...$this->checkMigrations()],
+                    [__('setup.system.storage'), ...$this->checkStorage()],
+                    [__('setup.system.disk_space'), ...$this->checkDiskSpace()],
+                    [__('setup.system.queue'), ...$this->checkQueue()],
+                    [__('setup.system.cache'), ...$this->checkCache()],
+                    [__('setup.system.app_key'), ...$this->checkAppKey()],
+                    [__('setup.system.storage_link'), ...$this->checkStorageLink()],
+                    [__('setup.system.maintenance_mode'), ...$this->checkMaintenanceMode()],
+                ],
+            );
 
-        if ($this->option('json')) {
-            $this->line(json_encode($results, JSON_PRETTY_PRINT));
+            if ($this->option('json')) {
+                $this->line(json_encode($results, JSON_PRETTY_PRINT));
+
+                return Command::SUCCESS;
+            }
+
+            $this->healthHeader();
+            $this->table([__('setup.system.service'), __('setup.system.status'), __('setup.system.details')], $results);
+
+            $hasFailures = collect($results)->contains(fn ($r) => $r[1] === 'FAIL');
+
+            if ($hasFailures) {
+                $this->error("\n".__('setup.system.health_failed'));
+
+                return Command::FAILURE;
+            }
+
+            $this->info("\n".__('setup.system.health_passed'));
 
             return Command::SUCCESS;
-        }
+        } catch (\Throwable $e) {
+            SmartLogger::error(__('setup.system.health_failed'))
+                ->module('system')
+                ->event('health.check.failed')
+                ->withPayload(['error' => $e->getMessage()])
+                ->save();
 
-        $this->healthHeader();
-        $this->table([__('setup.system.service'), __('setup.system.status'), __('setup.system.details')], $results);
-
-        $hasFailures = collect($results)->contains(fn ($r) => $r[1] === 'FAIL');
-
-        if ($hasFailures) {
-            $this->error("\n".__('setup.system.health_failed'));
+            $this->error("\n".__('setup.system.health_failed').': '.$e->getMessage());
 
             return Command::FAILURE;
         }
-
-        $this->info("\n".__('setup.system.health_passed'));
-
-        return Command::SUCCESS;
     }
 
     private function environmentChecks(): array

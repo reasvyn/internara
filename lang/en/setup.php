@@ -144,6 +144,7 @@ return [
             'discover_policies' => 'Discovering policies',
             'discover_views' => 'Registering view namespaces',
             'discover_complete' => 'Domain discovery caches warmed.',
+            'discover_failed' => 'Domain discovery failed',
         ],
     ],
 

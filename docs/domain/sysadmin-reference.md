@@ -1,7 +1,7 @@
 # SysAdmin — Technical Reference
 
 > Last updated: 2026-06-04
-> Changes: Updated setup:install description to reflect SetupSeeder (Roles + AcademicYear); added SetupSeeder to seeders list
+> Changes: Added system:* commands (system:health, system:cleanup, system:cache-warm) moved from Core; updated file tree with all 11 console commands
 
 Detailed structural and implementation reference for the **SysAdmin** domain.
 
@@ -121,6 +121,9 @@ This domain depends on:
 
 | Command Signature | Class | Description |
 |---|---|---|
+| `system:health` | `SystemHealthCommand` | Comprehensive system health check with JSON output support. |
+| `system:cleanup` | `SystemCleanupCommand` | Routine maintenance: prune resets, cache tags, failed jobs, activity logs, media, and old log files. |
+| `system:cache-warm` | `SystemCacheWarmCommand` | Pre-warms application caches (config, views, events, settings, brand). |
 | `setup:install` | `SetupInstallCommand` | Provisions the system, seeds Roles and AcademicYear via `SetupSeeder`, and generates a setup token. |
 | `setup:reset-token` | `SetupResetTokenCommand` | Generates a new setup token (usable only if installation is incomplete). |
 | `admin:create` | `CreateAdminCommand` | Creates the initial superadmin account when none exists. |
@@ -183,6 +186,17 @@ app/Domain/SysAdmin/
 ├── Actions/              ← Cross-aggregate actions
 ├── Console/              ← Cross-aggregate artisan commands
 │   └── Commands/
+│       ├── SystemHealthCommand.php         ← system:health
+│       ├── SystemCleanupCommand.php        ← system:cleanup
+│       ├── SystemCacheWarmCommand.php      ← system:cache-warm
+│       ├── SetupInstallCommand.php         ← setup:install
+│       ├── SetupResetTokenCommand.php      ← setup:reset-token
+│       ├── CreateAdminCommand.php          ← admin:create
+│       ├── RecoverAdminCommand.php         ← admin:recover
+│       ├── ShowRecoveryKeyCommand.php      ← admin:recovery-show
+│       ├── ShowRecoveryPathCommand.php     ← admin:recovery-path
+│       ├── PruneNotificationsCommand.php   ← notifications:prune
+│       └── PulseRecordSnapshotsCommand.php ← pulse:record-snapshots
 ├── Livewire/             ← Cross-aggregate UI (audit, pulse)
 │   └── Pulse/
 ├── Recorders/            ← Pulse recorders
