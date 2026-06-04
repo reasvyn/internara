@@ -11,7 +11,9 @@ class LogSetupFinalized
 {
     public function handle(SetupFinalized $event): void
     {
-        SmartLogger::info('System setup finalized')
+        SmartLogger::info('setup_finalized')
+            ->event('setup_finalized')
+            ->module('SysAdmin')
             ->withPayload([
                 'school_id' => $event->schoolId,
                 'installed_at' => $event->installedAt->format('Y-m-d H:i:s'),

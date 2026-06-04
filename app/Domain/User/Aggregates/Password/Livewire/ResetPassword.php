@@ -53,7 +53,9 @@ class ResetPassword extends Component
             RateLimiter::hit($throttleKey, 300);
             $this->addError('form.email', $e->getMessage());
 
-            SmartLogger::error('Password reset error')
+            SmartLogger::error('password_reset_error')
+                ->event('password_reset_error')
+                ->module('Auth')
                 ->withPayload(['error' => $e->getMessage()])
                 ->systemOnly()
                 ->save();

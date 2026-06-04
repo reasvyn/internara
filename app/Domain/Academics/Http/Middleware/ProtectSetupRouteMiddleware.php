@@ -25,7 +25,7 @@ class ProtectSetupRouteMiddleware
     {
         view()->share('errors', session()->get('errors') ?? new ViewErrorBag);
 
-        $state = Setup::state();
+        $state = Setup::readonlyState();
 
         if ($state->isInstalled()) {
             return $this->handleInstalled($request, $next, $state);

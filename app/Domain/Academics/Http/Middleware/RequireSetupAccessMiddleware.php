@@ -36,7 +36,7 @@ class RequireSetupAccessMiddleware
     private function isInstalledCached(): bool
     {
         return (bool) Cache::remember(CacheKeys::SETUP_INSTALLED, 3600, function () {
-            return Setup::state()->isInstalled();
+            return Setup::readonlyState()->isInstalled();
         });
     }
 }

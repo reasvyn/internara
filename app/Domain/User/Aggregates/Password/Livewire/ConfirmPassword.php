@@ -53,7 +53,9 @@ class ConfirmPassword extends Component
             RateLimiter::hit($throttleKey, 300);
             $this->addError('form.password', $e->getMessage());
 
-            SmartLogger::error('Password confirmation error')
+            SmartLogger::error('password_confirmation_error')
+                ->event('password_confirmation_error')
+                ->module('Auth')
                 ->withPayload([
                     'user_id' => $user->id,
                     'error' => $e->getMessage(),

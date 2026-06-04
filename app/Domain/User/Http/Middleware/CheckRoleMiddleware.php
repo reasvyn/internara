@@ -40,7 +40,9 @@ class CheckRoleMiddleware
             return $next($request);
         }
 
-        SmartLogger::warning('Unauthorized role access attempt blocked by CheckRoleMiddleware middleware')
+        SmartLogger::warning('unauthorized_role_access')
+            ->event('unauthorized_role_access')
+            ->module('User')
             ->withPayload([
                 'user_id' => $user->id,
                 'required_roles' => $normalizedRoles,

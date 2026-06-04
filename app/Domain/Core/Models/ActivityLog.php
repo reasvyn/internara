@@ -56,6 +56,7 @@ class ActivityLog extends Activity
     {
         return $query->where(function (Builder $q) use ($module) {
             $q->where('subject_type', 'like', "App\\Domain\\{$module}\\%")
+                ->orWhere('log_name', strtolower($module))
                 ->orWhere('log_name', $module);
         });
     }

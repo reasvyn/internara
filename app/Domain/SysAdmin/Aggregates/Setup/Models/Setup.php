@@ -65,4 +65,15 @@ class Setup extends BaseModel
 
         return SetupState::fromModel($model);
     }
+
+    public static function readonlyState(): SetupState
+    {
+        try {
+            $model = self::latest('created_at')->first() ?? new self;
+        } catch (QueryException) {
+            $model = new self;
+        }
+
+        return SetupState::fromModel($model);
+    }
 }

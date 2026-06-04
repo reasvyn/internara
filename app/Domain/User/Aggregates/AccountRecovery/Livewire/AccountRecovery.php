@@ -49,7 +49,9 @@ class AccountRecovery extends Component
             RateLimiter::hit($throttleKey, 300);
             $this->addError('form.recoveryCode', $e->getMessage());
 
-            SmartLogger::error('Account recovery error')
+            SmartLogger::error('account_recovery_error')
+                ->event('account_recovery_error')
+                ->module('User')
                 ->withPayload(['error' => $e->getMessage()])
                 ->systemOnly()
                 ->save();

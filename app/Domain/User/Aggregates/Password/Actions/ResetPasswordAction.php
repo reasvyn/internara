@@ -20,6 +20,17 @@ class ResetPasswordAction extends BaseAction
         string $password,
         string $passwordConfirmation,
     ): bool {
+        if ($password !== $passwordConfirmation) {
+            SmartLogger::info('password_reset_confirmation_mismatch')
+                ->event('password_reset_confirmation_mismatch')
+                ->module('Auth')
+                ->withPayload(['email' => $email])
+                ->activityOnly()
+                ->save();
+
+            throw new RuntimeException(__('validation.custom.password.confirmed'));
+        }
+
         $credentials = [
             'email' => $email,
             'token' => $token,

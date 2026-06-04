@@ -172,7 +172,14 @@ return [
             ],
         ],
         'email' => [
+            'required' => 'Bidang email wajib diisi.',
             'email' => 'Alamat email harus berupa alamat surel yang valid.',
+        ],
+        'password' => [
+            'required' => 'Bidang kata sandi wajib diisi.',
+        ],
+        'password_confirmation' => [
+            'required' => 'Bidang konfirmasi kata sandi wajib diisi.',
         ],
         'name' => [
             'required' => 'Bidang nama wajib diisi.',
