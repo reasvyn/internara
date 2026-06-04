@@ -172,7 +172,14 @@ return [
             ],
         ],
         'email' => [
+            'required' => 'The email field is required.',
             'email' => 'The email must be a valid email address.',
+        ],
+        'password' => [
+            'required' => 'The password field is required.',
+        ],
+        'password_confirmation' => [
+            'required' => 'The password confirmation field is required.',
         ],
         'name' => [
             'required' => 'The name field is required.',

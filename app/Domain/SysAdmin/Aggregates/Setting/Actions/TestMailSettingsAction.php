@@ -27,7 +27,9 @@ class TestMailSettingsAction extends BaseAction
 
             return true;
         } catch (\Throwable $e) {
-            SmartLogger::error('SMTP Test Failed')
+            SmartLogger::error('smtp_test_failed')
+                ->event('smtp_test_failed')
+                ->module('SysAdmin')
                 ->withPayload(['error' => $e->getMessage()])
                 ->systemOnly()
                 ->save();

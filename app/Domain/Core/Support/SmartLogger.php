@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Core\Support;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log as LogFacade;
 use Illuminate\Support\Facades\Request;
@@ -158,6 +159,19 @@ final class SmartLogger
     {
         if ($this->maskPii) {
             $this->payload = PiiMasker::maskArray($this->payload);
+        }
+
+        if ($this->event !== null) {
+            $locale = App::getLocale();
+            $description = __('log.'.$this->event, [], $locale);
+            if ($description !== 'log.'.$this->event) {
+                $this->context['event_description'] = $description;
+            }
+            $altLocale = $locale === 'id' ? 'en' : 'id';
+            $altDescription = __('log.'.$this->event, [], $altLocale);
+            if ($altDescription !== 'log.'.$this->event) {
+                $this->context['event_description_'.$altLocale] = $altDescription;
+            }
         }
 
         $causer = $this->causer ?? Auth::user();

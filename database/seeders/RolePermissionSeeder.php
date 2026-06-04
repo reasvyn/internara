@@ -18,7 +18,7 @@ class RolePermissionSeeder extends Seeder
 
     protected function createRoles(): void
     {
-        foreach (Role::cases() as $role) {
+        foreach (Role::userRoles() as $role) {
             RoleModel::firstOrCreate(['name' => $role->value]);
         }
     }
