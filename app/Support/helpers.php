@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\Settings\Aggregates\Setting\Support\AppInfo;
-use App\Domain\Settings\Aggregates\Setting\Support\AppMetadata;
-use App\Domain\Settings\Aggregates\Setting\Support\Settings;
+use App\Domain\SysAdmin\Aggregates\Setting\Support\AppInfo;
+use App\Domain\SysAdmin\Aggregates\Setting\Support\AppMetadata;
+use App\Domain\SysAdmin\Aggregates\Setting\Support\Settings;
 
 if (! function_exists('setting')) {
     /**

@@ -1,7 +1,7 @@
 # User — Technical Reference
 
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Complete technical reference for the User domain.
+> Changes: Converted Status metadata to Changes format
 
 Detailed structural and implementation reference for the **User** domain.
 
@@ -34,7 +34,7 @@ Handles authentication, user profiles, notifications, and account recovery
 
 This domain depends on:
 - **Academics**
-- **Admin**
+- **SysAdmin**
 - **Core**
 - **Enrollment**
 - **Evaluation**

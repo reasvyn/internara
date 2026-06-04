@@ -37,7 +37,7 @@ class IncidentReportedNotification extends Notification implements ShouldQueue
             ]))
             ->action(
                 __('notifications.incident_reported.action'),
-                route('admin.incidents'),
+                route('sysadmin.incidents'),
             );
     }
 
@@ -48,7 +48,7 @@ class IncidentReportedNotification extends Notification implements ShouldQueue
             'severity' => $this->incident->severity->value,
             'title' => __('notifications.incident_reported.title'),
             'message' => $this->incident->description,
-            'link' => route('admin.incidents'),
+            'link' => route('sysadmin.incidents'),
         ];
     }
 
@@ -64,7 +64,7 @@ class IncidentReportedNotification extends Notification implements ShouldQueue
                 'incident_id' => $this->incident->id,
                 'severity' => $this->incident->severity->value,
             ],
-            'link' => route('admin.incidents'),
+            'link' => route('sysadmin.incidents'),
         ];
     }
 }

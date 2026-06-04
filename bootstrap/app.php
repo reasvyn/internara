@@ -11,7 +11,7 @@ use App\Domain\Core\Exceptions\UnauthorizedException;
 use App\Domain\Core\Exceptions\ValidationFailedException;
 use App\Domain\Core\Http\Middleware\LogContext;
 use App\Domain\Core\Http\Middleware\SecurityHeaders;
-use App\Domain\Settings\Http\Middleware\SetLocaleMiddleware;
+use App\Domain\SysAdmin\Aggregates\Setting\Http\Middleware\SetLocaleMiddleware;
 use App\Domain\User\Http\Middleware\AuthThrottleMiddleware;
 use App\Domain\User\Http\Middleware\CheckRoleMiddleware;
 use Illuminate\Foundation\Application;
@@ -30,7 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
         __DIR__.'/../app/Domain/Core/Console/Commands',
         __DIR__.'/../app/Domain/Setup/Console/Commands',
         __DIR__.'/../app/Domain/Auth/Console/Commands',
-        __DIR__.'/../app/Domain/Admin/Console/Commands',
+        __DIR__.'/../app/Domain/SysAdmin/Console/Commands',
         __DIR__.'/../app/Domain/User/Console/Commands',
     ])
     ->withMiddleware(function (Middleware $middleware) {

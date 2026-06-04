@@ -29,7 +29,7 @@ test('PasswordRules returns expected rules', function () {
 
 test('CacheKeys contains expected constants', function () {
     expect(CacheKeys::SETUP_INSTALLED)->toBe('setup.is_installed');
-    expect(CacheKeys::ADMIN_DASHBOARD_STATS)->toBe('admin.dashboard.stats');
+    expect(CacheKeys::ADMIN_DASHBOARD_STATS)->toBe('sysadmin.dashboard.stats');
     expect(CacheKeys::THEME_CSS_VARIABLES)->toBe('theme.css_variables');
 });
 

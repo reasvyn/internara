@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\Program\Aggregates\InternshipGroup\Models;
 
 use App\Domain\Core\Models\BaseModel;
-use App\Domain\Guidance\Aggregates\Mentor\Models\Mentor;
 use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Guidance\Aggregates\Mentor\Models\Mentor;
 use Database\Factories\InternshipGroupMemberFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

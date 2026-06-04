@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\User\SuperAdmin;
 
-use App\Domain\Admin\Aggregates\Account\Actions\UpdateUserAction;
-use App\Domain\User\Aggregates\SuperAdmin\Actions\SetupSuperAdminAction;
 use App\Domain\Core\Exceptions\RejectedException;
+use App\Domain\SysAdmin\Aggregates\Account\Actions\UpdateUserAction;
 use App\Domain\User\Aggregates\Profile\Actions\UpdateProfileAction;
+use App\Domain\User\Aggregates\SuperAdmin\Actions\SetupSuperAdminAction;
 use App\Domain\User\Enums\AccountStatus;
 use App\Domain\User\Enums\Role as RoleEnum;
 use App\Domain\User\Models\User;
@@ -58,7 +58,7 @@ test('ensure there must and can only be one superadmin in the database', functio
 
     // Attempting to run admin:create command also fails when one already exists
     $this->artisan('admin:create newadmin@example.com SecurePassword123!')
-        ->expectsOutputToContain(__('admin.create.already_exists'))
+        ->expectsOutputToContain(__('sysadmin.create.already_exists'))
         ->assertFailed();
 });
 

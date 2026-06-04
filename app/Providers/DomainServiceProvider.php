@@ -10,7 +10,7 @@ use App\Domain\Core\Contracts\SendsNotifications;
 use App\Domain\Core\Contracts\SettingsStore;
 use App\Domain\Core\Policies\BasePolicy;
 use App\Domain\Core\Support\CacheKeys;
-use App\Domain\Settings\Aggregates\Setting\Support\Settings;
+use App\Domain\SysAdmin\Aggregates\Setting\Support\Settings;
 use App\Domain\User\Aggregates\Notification\Actions\SendNotificationAction;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Admin\Aggregates\Setup\Livewire\SetupWizard;
+use App\Domain\SysAdmin\Aggregates\Setup\Livewire\SetupWizard;
 use Illuminate\Support\Facades\Session;
 
 Route::middleware('setup.protected')->group(function () {

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Domain\Enrollment\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
-use App\Domain\Program\Aggregates\Internship\Models\InternshipDocumentRequirement;
 use App\Domain\Enrollment\Models\Registration;
 use App\Domain\Enrollment\Models\RegistrationDocument;
+use App\Domain\Program\Aggregates\Internship\Models\InternshipDocumentRequirement;
 use Illuminate\Http\UploadedFile;
 
 final class UploadRegistrationDocumentAction extends BaseAction

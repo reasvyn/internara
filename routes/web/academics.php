@@ -7,7 +7,7 @@ use App\Domain\Academics\Aggregates\Department\Livewire\DepartmentManager;
 use App\Domain\Academics\Aggregates\School\Livewire\SchoolEditor;
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::get('/school', SchoolEditor::class)->name('school');

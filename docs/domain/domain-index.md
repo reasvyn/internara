@@ -1,7 +1,7 @@
 # Domain Documentation Index
 
-> Last updated: 2026-06-03
-> **Status:** ✅ **Complete** — All 16 domains fully documented with consistent structure.
+> Last updated: 2026-06-04
+> Changes: Converted Status metadata to Changes format; reconciled architecture layers with 12-layer model
 
 Complete index of domain documentation for the Internara internship management system. Each domain manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire components.
 
@@ -35,19 +35,21 @@ Each domain has two files:
 
 **Key Concepts:** Login, Recovery Codes, Profiles, Notifications, Activation
 
-**Dependencies:** Core, Admin
+**Dependencies:** Core, SysAdmin
 
 ---
 
-### 3. Admin — System Administration
-**Purpose:** System setup, user administration, announcements, and compliance
+### 3. SysAdmin — System Administration
+**Purpose:** System setup, user administration, announcements, compliance, system configuration, audit logging, and health monitoring
 
-- Overview: [admin.md](admin.md)
-- Reference: [admin-reference.md](admin-reference.md)
+- Overview: [sysadmin.md](sysadmin.md)
+- Reference: [sysadmin-reference.md](sysadmin-reference.md)
 
-**Key Concepts:** Setup Wizard, Account Lifecycle, GDPR Compliance, Announcements
+**Key Concepts:** Setup Wizard, Account Lifecycle, GDPR Compliance, Announcements, Settings, Pulse Monitoring
 
 **Dependencies:** User, Academics, Core
+
+**Used By:** All domains (via Settings)
 
 ---
 
@@ -199,7 +201,7 @@ Each domain has two files:
 - Overview: [certification.md](certification.md)
 - Reference: [certification-reference.md](certification-reference.md)
 
-**Key Concepts:** Certificate, Document, CertificateTemplate
+**Key Concepts:** Certificate, CertificateTemplate
 
 **Dependencies:** User, Evaluation, Program, Core
 
@@ -217,17 +219,15 @@ Each domain has two files:
 
 ---
 
-### 16. Settings — System Configuration
-**Purpose:** System-wide settings and preferences
+### 16. Document — Official Correspondence
+**Purpose:** Official document templates and generation for institutional correspondence (surat menyurat)
 
-- Overview: [settings.md](settings.md)
-- Reference: [settings-reference.md](settings-reference.md)
+- Overview: [document.md](document.md)
+- Reference: [document-reference.md](document-reference.md)
 
-**Key Concepts:** Setting, Configuration, Preferences
+**Key Concepts:** OfficialDocument, DocumentCategory, DocumentRenderer
 
-**Dependencies:** Core
-
-**Used By:** All domains
+**Dependencies:** Core, User
 
 ---
 
@@ -235,7 +235,7 @@ Each domain has two files:
 
 ### By Business Function
 
-**User Management**: [user.md](user.md) → [admin.md](admin.md)
+**User Management**: [user.md](user.md) → [sysadmin.md](sysadmin.md)
 
 **Academic Setup**: [academics.md](academics.md) → [program.md](program.md) → [enrollment.md](enrollment.md)
 
@@ -245,9 +245,11 @@ Each domain has two files:
 
 **Reporting**: [reports.md](reports.md)
 
+**Official Correspondence**: [document.md](document.md)
+
 ### By Role
 
-**Super Admin**: [admin.md](admin.md), [user.md](user.md), [settings.md](settings.md)
+**Super Admin**: [sysadmin.md](sysadmin.md), [user.md](user.md)
 
 **Academics**: [academics.md](academics.md), [program.md](program.md), [assignment.md](assignment.md)
 
@@ -263,8 +265,8 @@ Each domain has two files:
 
 ### Creating New Features
 1. Identify which domain(s) own the feature
-2. Review [domain.md](domain.md) for business rules
-3. Check [domain-reference.md](domain-reference.md) for API structure
+2. Review `{domain}.md` for business rules
+3. Check `{domain}-reference.md` for API structure
 4. Follow aggregate-based organization under `app/Domain/{Domain}/Aggregates/`
 5. Create Action, Model, Policy, and tests
 
@@ -284,18 +286,25 @@ Each domain has two files:
 
 ## Architecture Overview
 
-All 16 domains built on:
-- **Layer 1**: Database (SQLite for development)
-- **Layer 2**: Models & Relationships
-- **Layer 3**: Actions & Business Logic
-- **Layer 4**: Policies & Authorization
-- **Layer 5**: HTTP Routes & Controllers
-- **Layer 6**: Form Requests & Validation
-- **Layer 7**: Livewire Components
-- **Layer 8**: Blade Views
+All 16 domains are vertical slices cross-cutting the 12-layer architecture defined in [architecture.md](../architecture.md):
+
+| Layer | Name | Description |
+|---|---|---|
+| 1 | Infrastructure | PHP 8.4, Laravel 13, Composer/Spatie packages, npm assets |
+| 2 | Persistence | Database (SQLite/MySQL), config, media library, cache, queue |
+| 3 | Core Contracts | LabelEnum, StatusEnum, ColorableEnum, exception hierarchy |
+| 4 | Core Base Classes | BaseModel, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, FormRequest, Data, SmartLogger |
+| 5 | Domain Models | Eloquent models (50+), UUID PKs, factories, seeders |
+| 6 | Domain Rules | Enums, Entities (final readonly), Data DTOs |
+| 7 | Business Ops | Command Actions (mutations), Read Actions (queries), Process Actions (orchestration) |
+| 8 | Authorization | Policies (36), RBAC (5 roles + 2 functional), spatie/permission |
+| 9 | Communication | Events, Listeners, Notifications, Console Commands |
+| 10 | HTTP Layer | Controllers, Middleware, 16 domain route files |
+| 11 | UI / Presentation | Livewire 4 components, Blade templates, maryUI + DaisyUI + Tailwind CSS v4 |
+| 12 | Business Domains | Each domain is a vertical slice of layers 1–11 |
 
 Each domain is a vertical slice cross-cutting all layers.
 
 ---
 
-*Last synchronized with architecture at 2026-06-03*
+*Last synchronized with architecture at 2026-06-04*

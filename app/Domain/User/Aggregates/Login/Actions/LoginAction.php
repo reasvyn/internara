@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\Domain\User\Aggregates\Login\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
-use App\Domain\Core\Support\CacheKeys;
 use App\Domain\Core\Support\SmartLogger;
-use App\Domain\User\Aggregates\AccountStatus\Actions\LockUserAccountAction;
 use App\Domain\User\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -22,11 +21,25 @@ final class LoginAction extends BaseAction
         string $password,
         bool $remember = false,
     ): Authenticatable {
+        $identifierHash = md5($identifier);
+        $lockoutKey = "login:lockout:{$identifierHash}";
+
+        $lockoutUntil = Cache::get($lockoutKey);
+        if ($lockoutUntil !== null) {
+            $lockoutTime = Carbon::parse($lockoutUntil);
+            if (now()->lt($lockoutTime)) {
+                $seconds = (int) ceil(now()->diffInSeconds($lockoutTime));
+                throw new RuntimeException(__('auth.throttle', ['seconds' => $seconds]) ?: "Too many login attempts. Please try again in {$seconds} seconds.");
+            }
+        }
+
         $loginField = Str::contains($identifier, '@') ? 'email' : 'username';
 
         $user = User::where($loginField, $identifier)->first();
 
         if ($user === null) {
+            $this->handleFailedAttempt($identifier);
+
             SmartLogger::info('login_failed')
                 ->event('login_failed')
                 ->module('Auth')
@@ -40,12 +53,12 @@ final class LoginAction extends BaseAction
         $this->checkAccountStatus($user);
 
         if (! Auth::attempt([$loginField => $identifier, 'password' => $password], $remember)) {
-            $this->handleFailedAttempt($user);
+            $this->handleFailedAttempt($identifier);
 
             throw new RuntimeException(__('auth.failed'));
         }
 
-        $this->clearFailedAttempts($user);
+        $this->clearFailedAttempts($identifier);
 
         session()->regenerate();
 
@@ -102,42 +115,32 @@ final class LoginAction extends BaseAction
         }
     }
 
-    private function handleFailedAttempt(User $user): void
+    private function handleFailedAttempt(string $identifier): void
     {
-        $cacheKey = CacheKeys::AUTH_LOGIN_FAILURES.$user->id;
-        $threshold = (int) config('auth.throttle.auto_lock_threshold', 10);
+        $identifierHash = md5($identifier);
+        $attemptsKey = "login:attempts:{$identifierHash}";
+        $lockoutKey = "login:lockout:{$identifierHash}";
 
-        $lock = Cache::lock($cacheKey.'.lock', 5);
+        $attempts = (int) Cache::get($attemptsKey, 0) + 1;
+        Cache::put($attemptsKey, $attempts, now()->addHours(24));
 
-        $lock->block(3);
+        if ($attempts >= 10) {
+            $durationSeconds = 10 * (2 ** ($attempts - 10));
+            Cache::put($lockoutKey, now()->addSeconds($durationSeconds), now()->addSeconds($durationSeconds));
 
-        try {
-            $attempts = (int) Cache::get($cacheKey, 0) + 1;
-            Cache::put($cacheKey, $attempts, now()->addHours(1));
-
-            SmartLogger::info('login_failed')
-                ->event('login_failed')
+            SmartLogger::info('login_throttle_triggered')
+                ->event('login_throttle_triggered')
                 ->module('Auth')
-                ->about($user)
-                ->withPayload(['attempts' => $attempts, 'threshold' => $threshold])
+                ->withPayload(['identifier' => $identifier, 'attempts' => $attempts, 'duration_seconds' => $durationSeconds])
                 ->activityOnly()
                 ->save();
-
-            if ($attempts >= $threshold) {
-                app(LockUserAccountAction::class)->execute(
-                    $user,
-                    reason: 'too_many_failed_attempts',
-                );
-
-                Cache::forget($cacheKey);
-            }
-        } finally {
-            $lock->release();
         }
     }
 
-    private function clearFailedAttempts(User $user): void
+    private function clearFailedAttempts(string $identifier): void
     {
-        Cache::forget(CacheKeys::AUTH_LOGIN_FAILURES.$user->id);
+        $identifierHash = md5($identifier);
+        Cache::forget("login:attempts:{$identifierHash}");
+        Cache::forget("login:lockout:{$identifierHash}");
     }
 }

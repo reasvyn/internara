@@ -1,7 +1,7 @@
 # Academics — Technical Reference
 
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Complete technical reference for the Academics domain.
+> Changes: Converted Status metadata to Changes format
 
 Detailed structural and implementation reference for the **Academics** domain.
 
@@ -28,7 +28,7 @@ Manages educational institutions, departments, and academic calendar periods
 ## Dependency Graph
 
 This domain depends on:
-- **Admin**
+- **SysAdmin**
 - **Assessment**
 - **Core**
 - **Program**

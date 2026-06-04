@@ -91,33 +91,62 @@ test('LoginAction authenticates with email or username', function () {
     expect($auth2->id)->toBe($user->id);
 });
 
-test('LoginAction handles wrong password and locks account on threshold', function () {
-    // Default threshold is 10 failed attempts
+test('LoginAction handles failed attempts and rate limits exponentially starting at 10 attempts without locking account', function () {
     $user = User::factory()->create([
-        'username' => 'lockeduser',
+        'username' => 'throttleuser',
         'password' => Hash::make('CorrectPassword123!'),
     ]);
-
-    // Attach ACTIVATED status to allow login
     $user->setStatus(AccountStatus::ACTIVATED->value);
 
     $loginAction = app(LoginAction::class);
 
-    // Attempts 1-9: Failed but not locked yet
-    for ($i = 1; $i < 10; $i++) {
-        expect(fn () => $loginAction->execute('lockeduser', 'wrong_pass'))->toThrow(RuntimeException::class);
+    $identifierHash = md5('throttleuser');
+    Cache::forget("login:attempts:{$identifierHash}");
+    Cache::forget("login:lockout:{$identifierHash}");
+
+    // Attempts 1 to 9: should fail with standard auth.failed
+    for ($i = 1; $i <= 9; $i++) {
+        expect(fn () => $loginAction->execute('throttleuser', 'wrong_pass'))
+            ->toThrow(RuntimeException::class, __('auth.failed'));
         expect($user->fresh()->locked_at)->toBeNull();
     }
 
-    // Attempt 10: Failed (reaches limit of 10) - account locked
-    expect(fn () => $loginAction->execute('lockeduser', 'wrong_pass'))->toThrow(RuntimeException::class);
+    // Attempt 10: fails and triggers a 10s lockout
+    try {
+        $loginAction->execute('throttleuser', 'wrong_pass');
+        $this->fail('Expected exception was not thrown.');
+    } catch (RuntimeException $e) {
+        // May throw either rate limit error or standard auth.failed depending on implementation
+    }
 
-    $user = $user->fresh();
-    expect($user->locked_at)->not->toBeNull();
-    expect($user->locked_reason)->toBe('too_many_failed_attempts');
+    expect($user->fresh()->locked_at)->toBeNull(); // account must NOT be locked
 
-    // Locked user login attempts are blocked immediately
-    expect(fn () => $loginAction->execute('lockeduser', 'CorrectPassword123!'))->toThrow(RuntimeException::class, __('auth.blocked'));
+    // Attempt 11: should be blocked immediately with throttle message (lockout is active)
+    try {
+        $loginAction->execute('throttleuser', 'CorrectPassword123!');
+        $this->fail('Expected exception was not thrown.');
+    } catch (RuntimeException $e) {
+        expect($e->getMessage())->toContain(__('auth.throttle', ['seconds' => 10]) ?? '10');
+    }
+
+    // Let's verify exponential duration calculation
+    // Bypass lockout time by forgetting the lockout key in cache
+    Cache::forget("login:lockout:{$identifierHash}");
+
+    // Attempt 11 fails -> lockout 20 seconds
+    try {
+        $loginAction->execute('throttleuser', 'wrong_pass');
+        $this->fail('Expected exception was not thrown.');
+    } catch (RuntimeException $e) {
+        // lockout is now 20 seconds
+    }
+
+    try {
+        $loginAction->execute('throttleuser', 'CorrectPassword123!');
+        $this->fail('Expected exception was not thrown.');
+    } catch (RuntimeException $e) {
+        expect($e->getMessage())->toContain(__('auth.throttle', ['seconds' => 20]) ?? '20');
+    }
 });
 
 test('ConfirmPasswordAction stores time in session on success', function () {

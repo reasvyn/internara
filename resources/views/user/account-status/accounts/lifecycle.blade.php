@@ -1,7 +1,7 @@
 <div class="p-8">
     <x-mary-header :title="__('auth.lifecycle.title')" :subtitle="__('auth.lifecycle.subtitle')" separator progress-indicator>
         <x-slot:actions>
-            <x-mary-button label="Detect Clones" icon="o-user-group" class="btn-secondary" href="{{ route('admin.accounts.detect-clones') }}" />
+            <x-mary-button label="Detect Clones" icon="o-user-group" class="btn-secondary" href="{{ route('sysadmin.accounts.detect-clones') }}" />
         </x-slot:actions>
     </x-mary-header>
 
@@ -59,7 +59,7 @@
                 @scope('cell_actions', $user)
                     <div class="flex gap-2">
                         @if ($user->locked_at)
-                            <form action="{{ route('admin.accounts.unlock', $user) }}" method="POST">
+                            <form action="{{ route('sysadmin.accounts.unlock', $user) }}" method="POST">
                                 @csrf
                                 <x-mary-button
                                     icon="o-lock-open"
@@ -69,7 +69,7 @@
                                 />
                             </form>
                         @else
-                            <form action="{{ route('admin.accounts.lock', $user) }}" method="POST">
+                            <form action="{{ route('sysadmin.accounts.lock', $user) }}" method="POST">
                                 @csrf
                                 <x-mary-button
                                     icon="o-lock-closed"

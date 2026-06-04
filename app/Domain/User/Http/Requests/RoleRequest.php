@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Http\Requests;
 
-use App\Domain\Core\Http\Requests\FormRequest;
+use App\Domain\Core\Http\Requests\BaseFormRequest;
 use Illuminate\Contracts\Validation\Rule;
 
 /**
@@ -13,7 +13,7 @@ use Illuminate\Contracts\Validation\Rule;
  * S1 - Secure: Validates role requirements.
  * S2 - Sustain: Clear validation rules.
  */
-class RoleRequest extends FormRequest
+class RoleRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

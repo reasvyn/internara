@@ -80,23 +80,23 @@ Each domain has two documents under `docs/domain/`:
 See the [Domain Index](domain/domain-index.md) for more details on operational flow.
 
 | # | Domain | Overview | Reference |
-|---|---|---|---|
+|---|---|---|---|---|
 | 1 | **Core** | [Overview](domain/core.md) | [Reference](domain/core-reference.md) |
 | 2 | **User** | [Overview](domain/user.md) | [Reference](domain/user-reference.md) |
-| 3 | **Admin** | [Overview](domain/admin.md) | [Reference](domain/admin-reference.md) |
+| 3 | **SysAdmin** | [Overview](domain/sysadmin.md) | [Reference](domain/sysadmin-reference.md) |
 | 4 | **Academics** | [Overview](domain/academics.md) | [Reference](domain/academics-reference.md) |
 | 5 | **Program** | [Overview](domain/program.md) | [Reference](domain/program-reference.md) |
 | 6 | **Enrollment** | [Overview](domain/enrollment.md) | [Reference](domain/enrollment-reference.md) |
-| 7 | **Journals** | [Overview](domain/journals.md) | [Reference](domain/journals-reference.md) |
-| 8 | **Guidance** | [Overview](domain/guidance.md) | [Reference](domain/guidance-reference.md) |
-| 9 | **Incident** | [Overview](domain/incident.md) | [Reference](domain/incident-reference.md) |
-| 10 | **Assignment** | [Overview](domain/assignment.md) | [Reference](domain/assignment-reference.md) |
-| 11 | **Assessment** | [Overview](domain/assessment.md) | [Reference](domain/assessment-reference.md) |
-| 12 | **Evaluation** | [Overview](domain/evaluation.md) | [Reference](domain/evaluation-reference.md) |
-| 13 | **Certification** | [Overview](domain/certification.md) | [Reference](domain/certification-reference.md) |
-| 14 | **Partners** | [Overview](domain/partners.md) | [Reference](domain/partners-reference.md) |
+| 7 | **Assessment** | [Overview](domain/assessment.md) | [Reference](domain/assessment-reference.md) |
+| 8 | **Evaluation** | [Overview](domain/evaluation.md) | [Reference](domain/evaluation-reference.md) |
+| 9 | **Assignment** | [Overview](domain/assignment.md) | [Reference](domain/assignment-reference.md) |
+| 10 | **Journals** | [Overview](domain/journals.md) | [Reference](domain/journals-reference.md) |
+| 11 | **Guidance** | [Overview](domain/guidance.md) | [Reference](domain/guidance-reference.md) |
+| 12 | **Incident** | [Overview](domain/incident.md) | [Reference](domain/incident-reference.md) |
+| 13 | **Partners** | [Overview](domain/partners.md) | [Reference](domain/partners-reference.md) |
+| 14 | **Certification** | [Overview](domain/certification.md) | [Reference](domain/certification-reference.md) |
 | 15 | **Reports** | [Overview](domain/reports.md) | [Reference](domain/reports-reference.md) |
-| 16 | **Settings** | [Overview](domain/settings.md) | [Reference](domain/settings-reference.md) |
+| 16 | **Document** | [Overview](domain/document.md) | [Reference](domain/document-reference.md) |
 
 ---
 

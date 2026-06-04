@@ -31,7 +31,7 @@ final readonly class CacheKeys
 
     // ─── Admin Dashboard ───────────────────────────────────────────────────
     // Invalidation: User/Department/Internship CRUD actions
-    public const string ADMIN_DASHBOARD_STATS = 'admin.dashboard.stats';
+    public const string ADMIN_DASHBOARD_STATS = 'sysadmin.dashboard.stats';
 
     // ─── Theme / Branding ──────────────────────────────────────────────────
     // Invalidation: Settings update (color change)

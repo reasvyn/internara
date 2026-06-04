@@ -30,8 +30,8 @@ return [
         'Evaluation',
         'Certification',
         'Incident',
-        'Settings',
-        'Administration',
+        'Document',
+        'SysAdmin',
     ],
 
     /*

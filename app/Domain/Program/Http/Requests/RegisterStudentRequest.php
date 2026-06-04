@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Program\Http\Requests;
 
-use App\Domain\Core\Http\Requests\FormRequest;
+use App\Domain\Core\Http\Requests\BaseFormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rules\Password;
 
@@ -13,7 +13,7 @@ use Illuminate\Validation\Rules\Password;
  *
  * S1 - Secure: Validates student registration at HTTP layer.
  */
-class RegisterStudentRequest extends FormRequest
+class RegisterStudentRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

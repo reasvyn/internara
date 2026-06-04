@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Domain\Program\Aggregates\InternshipGroup\Livewire;
 
 use App\Domain\Core\Livewire\BaseRecordManager;
+use App\Domain\Program\Aggregates\Internship\Models\Internship;
+use App\Domain\Program\Aggregates\Internship\Models\InternshipGroup;
+use App\Domain\Program\Aggregates\Internship\Models\InternshipGroupMember;
 use App\Domain\Program\Aggregates\InternshipGroup\Actions\AddMemberToGroupAction;
 use App\Domain\Program\Aggregates\InternshipGroup\Actions\CreateInternshipGroupAction;
 use App\Domain\Program\Aggregates\InternshipGroup\Actions\DeleteInternshipGroupAction;
@@ -12,9 +15,6 @@ use App\Domain\Program\Aggregates\InternshipGroup\Actions\RemoveMemberFromGroupA
 use App\Domain\Program\Aggregates\InternshipGroup\Actions\UpdateInternshipGroupAction;
 use App\Domain\Program\Aggregates\InternshipGroup\Enums\InternshipGroupRole;
 use App\Domain\Program\Aggregates\InternshipGroup\Livewire\Forms\InternshipGroupForm;
-use App\Domain\Program\Aggregates\Internship\Models\Internship;
-use App\Domain\Program\Aggregates\Internship\Models\InternshipGroup;
-use App\Domain\Program\Aggregates\Internship\Models\InternshipGroupMember;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

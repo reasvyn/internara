@@ -6,7 +6,7 @@ namespace App\Domain\Assignment\Aggregates\Assignment\Http\Requests;
 
 use App\Domain\Assignment\Aggregates\Assignment\Models\Assignment;
 use App\Domain\Assignment\Aggregates\Assignment\Models\AssignmentType;
-use App\Domain\Core\Http\Requests\FormRequest;
+use App\Domain\Core\Http\Requests\BaseFormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rules\Enum;
 
@@ -15,7 +15,7 @@ use Illuminate\Validation\Rules\Enum;
  *
  * S1 - Secure: Validates assignment creation at HTTP layer.
  */
-class CreateAssignmentRequest extends FormRequest
+class CreateAssignmentRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

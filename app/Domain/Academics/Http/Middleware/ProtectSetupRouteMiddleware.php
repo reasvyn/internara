@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Domain\Academics\Http\Middleware;
 
-use App\Domain\Admin\Aggregates\Setup\Actions\ValidateSetupTokenAction;
-use App\Domain\Admin\Aggregates\Setup\Entities\SetupState;
-use App\Domain\Admin\Aggregates\Setup\Models\Setup;
+use App\Domain\SysAdmin\Aggregates\Setup\Actions\ValidateSetupTokenAction;
+use App\Domain\SysAdmin\Aggregates\Setup\Entities\SetupState;
+use App\Domain\SysAdmin\Aggregates\Setup\Models\Setup;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\ViewErrorBag;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProtectSetupRouteMiddleware
@@ -21,6 +22,8 @@ class ProtectSetupRouteMiddleware
 
     public function handle(Request $request, Closure $next): Response
     {
+        view()->share('errors', session()->get('errors') ?? new ViewErrorBag);
+
         $state = Setup::state();
 
         if ($state->isInstalled()) {
@@ -83,8 +86,9 @@ class ProtectSetupRouteMiddleware
                 );
             }
 
-            return response()->view('admin.setup.enter-code', [
+            return response()->view('sysadmin.setup.enter-code', [
                 'error' => __('setup.rate_limited', ['seconds' => $seconds]),
+                'errors' => session()->get('errors') ?? new ViewErrorBag,
             ], Response::HTTP_TOO_MANY_REQUESTS);
         }
 
@@ -98,7 +102,9 @@ class ProtectSetupRouteMiddleware
             return $this->rejectToken($request, __('setup.invalid_token'));
         }
 
-        return response()->view('admin.setup.enter-code');
+        return response()->view('sysadmin.setup.enter-code', [
+            'errors' => session()->get('errors') ?? new ViewErrorBag,
+        ]);
     }
 
     private function rejectToken(Request $request, string $message): Response

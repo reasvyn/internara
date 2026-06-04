@@ -1,6 +1,6 @@
 # Architecture Decision Records
 > Last updated: 2026-06-01
-> **Status:** ✅ All ADR decisions are reflected in the current implementation — verified against [domain references](domain/domain-index.md).
+> Changes: Converted Status metadata to Changes format
 
 
 > 13 records documenting the key architectural decisions behind Internara.

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Program\Aggregates\DocumentRequirement\Livewire;
 
-use App\Domain\Certification\Aggregates\Document\Models\Document;
+use App\Domain\Document\Models\Document;
 use App\Domain\Program\Aggregates\DocumentRequirement\Actions\CreateRequirementAction;
 use App\Domain\Program\Aggregates\DocumentRequirement\Actions\DeleteRequirementAction;
 use App\Domain\Program\Aggregates\DocumentRequirement\Actions\UpdateRequirementAction;

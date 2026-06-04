@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Http\Controllers;
 
-use App\Domain\Admin\Aggregates\Setup\Models\Setup;
 use App\Domain\Core\Http\Controllers\BaseController;
+use App\Domain\SysAdmin\Aggregates\Setup\Models\Setup;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 

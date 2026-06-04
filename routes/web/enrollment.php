@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Domain\Admin\Livewire\ApplicationReview;
 use App\Domain\Enrollment\Livewire\ApplyPage;
 use App\Domain\Enrollment\Livewire\DirectPlacementManager;
 use App\Domain\Enrollment\Livewire\PlacementChangeManager;
@@ -11,6 +10,7 @@ use App\Domain\Enrollment\Livewire\RegistrationCenter;
 use App\Domain\Enrollment\Livewire\RegistrationDocumentUpload;
 use App\Domain\Enrollment\Livewire\RegistrationVerification;
 use App\Domain\Enrollment\Livewire\RegistrationWizard;
+use App\Domain\SysAdmin\Livewire\ApplicationReview;
 
 Route::middleware('guest')->group(function () {
     Route::livewire('/apply', ApplyPage::class)->name('apply');
@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/internships/registrations/pending', RegistrationVerification::class)->name('internships.registrations.pending');
@@ -31,7 +31,7 @@ Route::prefix('admin')
     });
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/internships/placements', PlacementIndex::class)->name('internships.placements');

@@ -1,9 +1,9 @@
 # Core — Documentation Overview
 
-> Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Comprehensive overview of the Core domain.
+> Last updated: 2026-06-04
+> Changes: Rewrote overview with developer-friendly content, added error handling, failure modes, and CLI commands
 
-Provides foundational infrastructure, base classes, and application-wide utilities
+Foundational infrastructure, base classes, contracts, and cross-domain utilities that every other domain depends on.
 
 For complete technical reference including API, models, actions, and components, see [core-reference.md](core-reference.md).
 
@@ -11,63 +11,81 @@ For complete technical reference including API, models, actions, and components,
 
 ## Key Principles
 
-- BaseModel provides standard persistence features
-- BaseAction enforces single-responsibility pattern
-- BasePolicy standardizes authorization
-- Shared contracts and utilities available to all domains
-
-### Mandatory Base Classes
-
-Every layer within the project must extend the corresponding Core base class:
-
-| Layer | Base Class | Location |
-|---|---|---|
-| **Model** | `BaseModel` (or `Authenticatable`) | `app/Domain/Core/Models/BaseModel.php` |
-| **Action** | `BaseAction` | `app/Domain/Core/Actions/BaseAction.php` |
-| **Entity** | `BaseEntity` (final readonly) | `app/Domain/Core/Entities/BaseEntity.php` |
-| **Policy** | `BasePolicy` | `app/Domain/Core/Policies/BasePolicy.php` |
-| **Livewire CRUD** | `BaseRecordManager` | `app/Domain/Core/Livewire/BaseRecordManager.php` |
-| **Controller** | `BaseController` | `app/Domain/Core/Http/Controllers/BaseController.php` |
-| **Form Request** | `FormRequest` (Core's request) | `app/Domain/Core/Http/Requests/FormRequest.php` |
-| **DTO** | `Data` | `app/Domain/Core/Data/Data.php` |
-| **Exception** | `AppException` or `DomainException` | `app/Domain/Core/Exceptions/` |
-| **Enum** | Must implement `LabelEnum` | `app/Domain/Core/Contracts/LabelEnum.php` |
-| **Logging** | Use `SmartLogger` | `app/Domain/Core/Support/SmartLogger.php` |
+- **Base classes are mandatory** — every Model, Action, Policy, Entity, Controller, FormRequest, Enum, and Livewire CRUD component must extend the corresponding Core base class. No exceptions.
+- **Contracts over implementations** — enums implement `LabelEnum`, state machines implement `StatusEnum`. Consistency across all 16 domains.
+- **SmartLogger dual-channel** — all logging goes through `SmartLogger`, which simultaneously writes to system and activity channels with automatic PII masking.
+- **Exceptions are typed** — use `AppException` for layered framework failures (action/infrastructure/presentation) and `DomainException` for domain invariant violations.
+- **Core has zero business domain dependencies** — it depends only on Laravel, Spatie packages, and PHP. No business domain ever imports Core (Core imports nothing from business domains).
 
 ---
 
 ## Context Boundary
 
-Foundational - all domains depend on Core. Core has minimal external dependencies.
+Core is the foundation layer (Layers 3–4 in the 12-layer architecture). Every domain depends on it. Core itself depends on nothing except Laravel/Spatie/PHP. It provides:
+
+- **Layer 3 (Contracts)**: Enum contracts, exception hierarchy, notification contract
+- **Layer 4 (Base Classes)**: BaseModel, BaseAction, BasePolicy, BaseEntity, BaseRecordManager, BaseController, BaseFormRequest, BaseData DTO
+- **Cross-domain utilities**: SmartLogger, CacheKeys, theme system, locale management, CSV handler, environment detection, security middleware
 
 ---
 
 ## Domain Rules
 
-- All models extend BaseModel or Authenticatable
-- All business logic encapsulated in Actions
-- Authorization checked through Policies
-- Consistent exception handling across domains
+- All models **must** extend `BaseModel` (or `Authenticatable` for User). UUID primary keys via `HasUuids` trait are enforced at the base level.
+- All business mutations **must** go through `BaseAction::execute()`, which wraps in `$this->transaction()` and logs via `$this->log()`. Livewire components must never call `Model::save()` directly.
+- All authorization **must** go through `BasePolicy`. Inline `Gate::define()` with closures is forbidden.
+- State machine enums **must** implement `StatusEnum` with `canTransitionTo()`, `isTerminal()`, and `validTransitions()`.
+- All enums **must** implement `LabelEnum` (provides `label(): string` for UI display).
+- Form Requests **must** extend Core's `BaseFormRequest` (throws `ValidationFailedException` instead of redirecting).
+- Cache keys **must** be defined as constants in `CacheKeys`, not hardcoded as strings.
+- Cross-domain communication uses four patterns: direct imports, core contracts, domain events, and action delegation.
+
+---
+
+## Aggregates
+
+Core has no aggregates — it provides infrastructure, not business entities. Code is organized by function:
+
+- **Actions/**: `BaseAction` + `HandlesActionErrors` trait
+- **Models/**: `BaseModel`, `ActivityLog` (Spatie)
+- **Policies/**: `BasePolicy`
+- **Entities/**: `BaseEntity` (final readonly base)
+- **Livewire/**: `BaseRecordManager`, `LangSwitcher`, `ThemeSwitcher`
+- **Http/**: `BaseController`, `BaseFormRequest`, `SecurityHeaders`, `LogContext` middleware
+- **Contracts/**: `LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`, `SettingsStore`
+- **Exceptions/**: `AppException` + `DomainException` dual hierarchy
+- **Support/**: `SmartLogger`, `PiiMasker`, `CacheKeys`, `Environment`, `CsvHandler`, `Theme`, `Color`, `Locale`, `LangChecker`, `HandlesActionErrors`, `PasswordRules`, `Integrity`
+- **Data/**: `BaseData` (abstract readonly DTO base), `AuditCheck`, `AuditReport`
+- **Enums/**: `CsvRowResult`, `AuditCategory`, `AuditStatus`
+
+---
+
+## Error Handling & Failure Modes
+
+- **Missing base class extension**: PHPStan enforces that every Model/Action/Policy/Entity extends the correct Core base class. CI will fail with a static analysis error.
+- **Skipping BaseAction**: If a mutation bypasses `BaseAction` and calls `Model::save()` directly from a Livewire component, it violates the Action Gate rule. Enforced through code review.
+- **Bypassing FormRequest**: Using `extends Request` (Laravel's base) instead of Core's `BaseFormRequest` means validation failures will redirect instead of returning JSON. API clients and Livewire subrequests will break.
+- **Missing StatusEnum**: State machine enums without `canTransitionTo()` allow invalid transitions silently. The system will not prevent a `REVOKED` certificate from being re-issued.
 
 ---
 
 ## Quick References
 
 ### Actions & Business Logic
-- **1** actions across all aggregates
-- Business logic operations for core domain
+- **1** action (`BaseAction`)
+- Provides transaction management, activity logging, and error handling for all command/process actions
 
 ### Data & Persistence
-- **2** models managing core data
-- Eloquent relationships and queries
+- **2** models (`BaseModel`, `ActivityLog`)
+- BaseModel enforces UUID PKs, HasFactory, and soft-delete support across all domain models
 
 ### User Interface
 - **3** Livewire components for real-time interaction
 - Views in `resources/views/core/`
 
 ### Authorization
-- **1** authorization policies
-- Role-based access control per resource
+- **1** authorization policy (`BasePolicy`)
+- Provides `before()` gate bypass for superadmin, role checks with `AuthorizesRoles`, ownership checks with `AuthorizesOwnership`
 
 ---
 

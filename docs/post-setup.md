@@ -220,12 +220,12 @@ Phase 5 — Live
 |---|---|
 | [RBAC](rbac.md) | Role hierarchy, permissions, policies |
 | [Domain Index](domain/domain-index.md) | All domain documentation |
-| [School](domain/school.md) | Managing schools, departments, academic years |
-| [Partnership](domain/partnership.md) | Company and MoU management |
-| [Registration](domain/registration.md) | Student registration and verification |
-| [Placement](domain/placement.md) | Student placement and change requests |
-| [Internship](domain/internship.md) | Periods, document requirements |
-| [Mentor](domain/mentor.md) | Mentor assignment and supervision logs |
-| [Attendance](domain/attendance.md) | Clock-in/out, absence requests |
+| [Academics](domain/academics.md) | Managing schools, departments, academic years |
+| [Partners](domain/partners.md) | Company and MoU management |
+| [Enrollment](domain/enrollment.md) | Student registration and verification |
+| [Enrollment](domain/enrollment.md) | Student placement and change requests |
+| [Program](domain/program.md) | Periods, document requirements |
+| [Guidance](domain/guidance.md) | Mentor assignment and supervision logs |
+| [Journals](domain/journals.md) | Clock-in/out, absence requests |
 | [Assignment](domain/assignment.md) | Assignments, submissions, grading |
-| [Logbook](domain/logbook.md) | Daily activity journal |
+| [Journals](domain/journals.md) | Daily activity journal |

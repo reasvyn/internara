@@ -68,7 +68,7 @@ Route::prefix('supervisor')
     });
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/handbooks', HandbookManager::class)->name('handbooks.index');

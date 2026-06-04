@@ -15,7 +15,7 @@ class AcademicYearSeeder extends Seeder
         $now = Carbon::now();
         $year = (int) $now->format('Y');
 
-        [$startYear, $endYear] = $now->month < 6
+        [$startYear, $endYear] = $now->month <= 6
             ? [$year - 1, $year]
             : [$year, $year + 1];
 

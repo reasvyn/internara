@@ -1,9 +1,9 @@
 # User — Documentation Overview
 
-> Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Comprehensive overview of the User domain.
+> Last updated: 2026-06-04
+> Changes: Rewrote overview with developer-friendly content, added error handling, failure modes, and CLI commands
 
-Handles authentication, user profiles, notifications, and account recovery
+Identity and access management: user accounts, authentication, profiles, notifications, account lifecycle, and recovery.
 
 For complete technical reference including API, models, actions, and components, see [user-reference.md](user-reference.md).
 
@@ -11,42 +11,62 @@ For complete technical reference including API, models, actions, and components,
 
 ## Key Principles
 
-- Users are application accounts with roles
-- Profiles contain personal information
-- Authentication is secure and session-based
-- Notifications provide in-app and email alerts
-- Account recovery enables password reset
+- **Accounts are not profiles** — `User` handles authentication (email, password, status). `Profile` holds personal data (phone, address, bio, avatar, emergency contact). The separation lets auth logic stay lean while profile data can be extended independently.
+- **Session-based auth** — Laravel's session driver with rate-limited login (5 attempts per 60s). No API tokens or JWT. The system is single-tenant, self-hosted, and browser-based.
+- **Role-driven routing** — After login, users are redirected to their role-specific dashboard: admin, teacher, supervisor, or student. Role priority determines which dashboard wins when a user has multiple roles.
+- **Notifications are multi-channel** — in-app (custom database channel) + email (configurable SMTP). Broadcast for real-time bell counter updates.
 
 ---
 
 ## Context Boundary
 
-Core identity system. All other domains depend on User. Admin manages lifecycle. Settings configuration affects behavior.
+User is the identity hub. Every domain references users via `morphToMany` or `foreignIdFor`. SysAdmin manages the account lifecycle (lock, suspend, archive). Auth owns the login/password boundary. User owns profiles, notifications, and recovery.
 
 ---
 
 ## Domain Rules
 
-- **Username Generation**: Unique usernames are generated from the email address local part. Only lowercase alphanumeric characters are allowed (spaces and symbols are removed). In case of collisions, numeric suffix increments are appended (e.g., `usertest` -> `usertest1` -> `usertest2`). This is managed by `UserIdentifierGenerator`.
-- **Email Requirements**: Unique email addresses are mandatory for all user accounts.
-- **Password Security**: Passwords are securely hashed using Bcrypt with salting.
-- **Account Lifecycles**: Accounts can be locked or suspended by administrators, which blocks active login sessions while preserving operational data.
-- **Recovery Codes**: Generated recovery codes are cryptographically secure, hashed in the database, and single-use.
-- **Super Admin Account**: The superadmin account is immutable, undeletable, and limited to a single instance.
-- **Superadmin Role Mapping**: The superadmin role was renamed from `super_admin` to `superadmin`. To prevent breaking third-party packages (e.g., Spatie) and legacy code, the `User` model overrides role-related methods (`hasRole`, `assignRole`, `syncRoles`, etc.) to map `super_admin` to `superadmin` automatically.
+- **Unique emails** are mandatory. Duplicate detection runs on create and update.
+- **Passwords** are hashed with Bcrypt. Minimum 8 characters, confirmed on registration.
+- **Username generation** is automatic: derived from email local part, lowercase, alphanumeric only. Collisions append numeric suffix (`user` → `user1` → `user2`).
+- **Account lifecycle**: 8 states — `provisioned`, `activated`, `verified`, `restricted`, `suspended`, `inactive`, `archived`, `protected`. State transitions are guarded: a suspended account cannot be archived without first being activated.
+- **Superadmin is immutable**: name is always "Administrator", username is always "superadmin". Cannot be deleted, locked, or modified. Only one instance exists.
+- **Superadmin role mapping**: The `User` model overrides Spatie's `hasRole()`, `assignRole()`, `syncRoles()` to map `super_admin` → `superadmin` automatically, preserving backward compatibility with third-party packages.
+- **Recovery codes** are single-use, cryptographically random, and hashed in storage. Displayed once on generation.
+- **Account lockout**: 10 failed login attempts triggers auto-lock. Admin can unlock via the Recovery Slip system.
+- **Notifications**: in-app notifications are stored in a custom `notifications` table (not Laravel's default). The `CustomDatabaseChannel` writes to this table. Real-time unread count updates via Livewire polling and optional broadcast.
 
 ---
 
 ## Aggregates
 
-- **AccountRecovery**: Core business entity for accountrecovery management
-- **AccountStatus**: Core business entity for accountstatus management
-- **ActivationToken**: Core business entity for activationtoken management
-- **Login**: Core business entity for login management
-- **Notification**: Core business entity for notification management
-- **Password**: Core business entity for password management
-- **Profile**: Core business entity for profile management
-- **SuperAdmin**: Core business entity for superadmin management and integrity constraints
+- **Login**: Email/username authentication with 4-step sequential validation (account exists → not locked → password correct → active). 5 req/60s rate limit.
+- **Password**: Hashing, validation, reset tokens (60 min expiry, single-use). 5 req/300s rate limit on reset.
+- **ActivationToken**: Email verification tokens for new accounts. Expires after configurable duration.
+- **AccountRecovery**: Recovery slip generation (admin), recovery code redemption, self-service unlock + password reset. 3 req/300s rate limit.
+- **AccountStatus**: State machine with 8 states, guarded transitions, and immutable audit log of all transitions.
+- **Profile**: Personal data editor, avatar upload (200x200 WebP via media library), emergency contact info.
+- **Notification**: Full-page notification center with read/unread filter, bulk actions, and a navbar bell with live counter.
+- **SuperAdmin**: Integrity constraints — enforces single-instance, immutable name/username, prohibits deletion.
+
+---
+
+## CLI Commands
+
+| Command | Purpose |
+|---|---|
+| `php artisan user:recover-admin` | Emergency CLI recovery when all superadmins are locked out |
+| `php artisan user:create` | Create a new user from the command line |
+| `php artisan user:sync-roles` | Re-sync role assignments after migrations |
+
+---
+
+## Error Handling & Failure Modes
+
+- **Locked out admin**: If all superadmins are locked out, use `php artisan user:recover-admin` to generate a one-time recovery link.
+- **Email already exists**: The system enforces unique emails. Attempting to create a duplicate returns a `ConflictException`.
+- **Superadmin deletion**: Attempting to delete or modify the superadmin account throws a `RejectedException` (domain invariant violation).
+- **Notification delivery failure**: Failed email notifications are logged but do not block the user operation. The system uses Laravel's failed jobs table for retry.
 
 ---
 
@@ -54,19 +74,19 @@ Core identity system. All other domains depend on User. Admin manages lifecycle.
 
 ### Actions & Business Logic
 - **25** actions across all aggregates
-- Business logic operations for user domain
+- Login validation, password reset, profile updates, notification dispatch, account lifecycle transitions, recovery code management
 
 ### Data & Persistence
-- **5** models managing core data
-- Eloquent relationships and queries
+- **5** models: `User`, `Profile`, `LoginAttempt`, `AccountRecovery`, `Notification`
+- UUID primary keys, `HasFactory` on all models, `SoftDeletes` on User and Profile
 
 ### User Interface
-- **15** Livewire components for real-time interaction
-- Views in `resources/views/user/`
+- **15** Livewire components
+- Dashboards (admin, teacher, supervisor, student), profile editor, notification center, login page, password forms, recovery slip UI
 
 ### Authorization
-- **3** authorization policies
-- Role-based access control per resource
+- **3** policies: `UserPolicy`, `ProfilePolicy`, `NotificationPolicy`
+- Role-based access: users can edit own profiles, admins can manage all users, superadmin bypasses all checks
 
 ---
 

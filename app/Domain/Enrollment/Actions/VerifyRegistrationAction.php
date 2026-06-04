@@ -6,9 +6,9 @@ namespace App\Domain\Enrollment\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
-use App\Domain\Guidance\Aggregates\Mentor\Models\Mentor;
 use App\Domain\Enrollment\Models\Placement;
 use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Guidance\Aggregates\Mentor\Models\Mentor;
 
 final class VerifyRegistrationAction extends BaseAction
 {

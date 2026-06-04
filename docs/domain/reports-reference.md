@@ -1,7 +1,7 @@
 # Reports — Technical Reference
 
 > Last updated: 2026-06-03
-> **Status:** ✅ **Fully Implemented** — Complete technical reference for the Reports domain.
+> Changes: Converted Status metadata to Changes format
 
 Detailed structural and implementation reference for the **Reports** domain.
 

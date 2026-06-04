@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Aggregates\Profile\Models;
 
-use App\Domain\Core\Models\BaseModel;
-use App\Domain\Partners\Aggregates\Company\Models\Company;
 use App\Domain\Academics\Aggregates\Department\Models\Department;
 use App\Domain\Academics\Aggregates\School\Models\School;
+use App\Domain\Core\Models\BaseModel;
+use App\Domain\Partners\Aggregates\Company\Models\Company;
 use App\Domain\User\Enums\BloodType;
 use App\Domain\User\Enums\EmploymentStatus;
 use App\Domain\User\Enums\Gender;

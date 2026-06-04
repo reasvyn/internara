@@ -59,7 +59,7 @@
         </x-mary-card>
 
         <div class="mt-6 text-center">
-            <a href="{{ route('admin.dashboard') }}" class="text-xs font-bold uppercase tracking-widest text-base-content/40 hover:text-primary" wire:navigate>{{ __('auth.recovery_slip.back_to_dashboard') }}</a>
+            <a href="{{ route('sysadmin.dashboard') }}" class="text-xs font-bold uppercase tracking-widest text-base-content/40 hover:text-primary" wire:navigate>{{ __('auth.recovery_slip.back_to_dashboard') }}</a>
         </div>
     </div>
 </div>

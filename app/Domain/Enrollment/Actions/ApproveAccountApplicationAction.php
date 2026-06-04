@@ -6,10 +6,10 @@ namespace App\Domain\Enrollment\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
-use App\Domain\Guidance\Aggregates\Mentee\Models\Mentee;
 use App\Domain\Enrollment\Enums\AccountApplicationStatus;
 use App\Domain\Enrollment\Models\AccountApplication;
 use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Guidance\Aggregates\Mentee\Models\Mentee;
 use App\Domain\User\Aggregates\Profile\Models\Profile;
 use App\Domain\User\Models\User;
 

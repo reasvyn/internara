@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Journals\Aggregates\Attendance\Http\Requests;
 
-use App\Domain\Core\Http\Requests\FormRequest;
+use App\Domain\Core\Http\Requests\BaseFormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 /**
@@ -12,7 +12,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
  *
  * S1 - Secure: Validates attendance clock out data at HTTP layer.
  */
-class ClockOutRequest extends FormRequest
+class ClockOutRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

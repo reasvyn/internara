@@ -6,10 +6,10 @@ namespace App\Domain\Enrollment\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Core\Exceptions\RejectedException;
+use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Guidance\Aggregates\Mentee\Models\Mentee;
 use App\Domain\Program\Aggregates\Internship\Models\Internship;
 use App\Domain\Program\Notifications\RegistrationNotification;
-use App\Domain\Guidance\Aggregates\Mentee\Models\Mentee;
-use App\Domain\Enrollment\Models\Registration;
 use App\Domain\User\Models\User;
 
 final class RegisterInternshipAction extends BaseAction

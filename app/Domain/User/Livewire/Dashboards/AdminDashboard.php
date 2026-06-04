@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\User\Livewire\Dashboards;
 
-use App\Domain\Admin\Actions\GetAdminDashboardStatsAction;
 use App\Domain\Core\Support\CacheKeys;
+use App\Domain\SysAdmin\Actions\GetAdminDashboardStatsAction;
 use App\Domain\User\Livewire\UserDashboard;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
