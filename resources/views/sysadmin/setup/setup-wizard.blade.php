@@ -62,15 +62,15 @@
         @endif
 
         @if($currentStep === 2)
-            @include('sysadmin.setup.components.school-step')
+            @include('sysadmin.setup.components.admin-step')
         @endif
 
         @if($currentStep === 3)
-            @include('sysadmin.setup.components.department-step')
+            @include('sysadmin.setup.components.school-step')
         @endif
 
         @if($currentStep === 4)
-            @include('sysadmin.setup.components.admin-step')
+            @include('sysadmin.setup.components.department-step')
         @endif
 
         @if($currentStep === 5)

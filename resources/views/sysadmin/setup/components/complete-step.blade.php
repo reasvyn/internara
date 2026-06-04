@@ -1,4 +1,10 @@
-<div class="p-8 sm:p-12 text-center">
+<div class="p-8 sm:p-12 text-center"
+    x-data="{ seconds: 59 }"
+    x-init="
+        let timer = setInterval(() => { if (seconds > 0) seconds--; }, 1000);
+        setTimeout(() => { window.location.href = @js(route('login')); }, 60000);
+    "
+>
     <div class="inline-flex items-center justify-center size-16 rounded-full bg-primary/10 text-primary mb-6">
         <x-mary-icon name="o-check" class="size-8" />
     </div>
@@ -56,6 +62,10 @@
         </div>
     </div>
     @endif
+
+    <p class="text-sm text-base-content/40 mb-4">
+        {{ __('setup.wizard.auto_redirect_in') }} <span x-text="seconds" class="font-mono font-semibold text-base-content/60"></span> {{ __('setup.wizard.seconds') }}
+    </p>
 
     <x-mary-button
         label="{{ __('setup.wizard.go_to_login') }}"

@@ -154,15 +154,15 @@ class SetupWizard extends Component
         }
 
         if ($this->currentStep === 2) {
-            $this->schoolForm->validate();
+            $this->adminForm->validate();
         }
 
         if ($this->currentStep === 3) {
-            $this->departmentForm->validate();
+            $this->schoolForm->validate();
         }
 
         if ($this->currentStep === 4) {
-            $this->adminForm->validate();
+            $this->departmentForm->validate();
         }
 
         if ($this->currentStep === 5 && $this->internshipForm->isFilled()) {
@@ -181,7 +181,7 @@ class SetupWizard extends Component
 
     public function goToStep(string $stepKey): void
     {
-        $stepKeys = config('setup.wizard.step_keys', ['welcome', 'school', 'department', 'account', 'internship', 'finalize', 'complete']);
+        $stepKeys = config('setup.wizard.step_keys', ['welcome', 'account', 'school', 'department', 'internship', 'finalize', 'complete']);
         $stepIndex = array_search($stepKey, $stepKeys, true);
 
         if ($stepIndex === false) {
@@ -268,7 +268,7 @@ class SetupWizard extends Component
 
     public function render(): View
     {
-        $stepKeys = config('setup.wizard.step_keys', ['welcome', 'school', 'department', 'account', 'internship', 'finalize', 'complete']);
+        $stepKeys = config('setup.wizard.step_keys', ['welcome', 'account', 'school', 'department', 'internship', 'finalize', 'complete']);
 
         return view('sysadmin.setup.setup-wizard', [
             'appName' => AppInfo::get('name', config('app.name')),

@@ -251,6 +251,8 @@ return [
         'recovery_key_desc' => 'Simpan kunci ini di tempat yang aman. Anda akan membutuhkannya untuk memulihkan akses administrator jika kata sandi hilang.',
         'copy' => 'Salin',
         'copied' => 'Tersalin!',
+        'auto_redirect_in' => 'Mengarahkan ke login dalam',
+        'seconds' => 'detik',
         'step_labels' => [
             'welcome' => 'Selamat Datang',
             'school' => 'Sekolah',

@@ -45,8 +45,8 @@ return [
     */
 
     'wizard' => [
-        'step_keys' => ['welcome', 'school', 'department', 'account', 'internship', 'finalize', 'complete'],
-        'finalize_steps' => ['school', 'department', 'account'],
+        'step_keys' => ['welcome', 'account', 'school', 'department', 'internship', 'finalize', 'complete'],
+        'finalize_steps' => ['account', 'school', 'department'],
     ],
 
     /*
