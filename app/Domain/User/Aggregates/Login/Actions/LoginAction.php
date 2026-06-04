@@ -11,7 +11,6 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 use RuntimeException;
 
 final class LoginAction extends BaseAction
@@ -33,7 +32,7 @@ final class LoginAction extends BaseAction
             }
         }
 
-        $loginField = Str::contains($identifier, '@') ? 'email' : 'username';
+        $loginField = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         $user = User::where($loginField, $identifier)->first();
 

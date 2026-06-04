@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     'failed' => 'Kredensial ini tidak cocok dengan catatan kami.',
     'password' => 'Kata sandi yang diberikan salah.',
+    'blocked' => 'Akun Anda telah diblokir. Silakan hubungi administrator.',
     'throttle' => 'Terlalu banyak percobaan masuk. Silakan coba lagi dalam :seconds detik.',
     'title' => 'Autentikasi',
     'login' => [

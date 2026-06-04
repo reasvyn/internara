@@ -17,23 +17,27 @@ final class ValidateSetupTokenAction extends BaseAction
             $setup = Setup::lockForUpdate()->latest('created_at')->first();
 
             if (! $setup) {
-                throw new RuntimeException('Invalid setup token.');
+                throw new RuntimeException('No setup configuration found. Run php artisan setup:install first.');
             }
 
             $state = $setup->asSetupState();
 
-            if (! $state->hasStoredToken() || $state->isTokenExpired(now())) {
-                throw new RuntimeException('Invalid setup token.');
+            if (! $state->hasStoredToken()) {
+                throw new RuntimeException('Setup token is missing from the system.');
+            }
+
+            if ($state->isTokenExpired(now())) {
+                throw new RuntimeException('Setup token has expired.');
             }
 
             try {
                 $decrypted = Crypt::decryptString($setup->setup_token);
             } catch (\Throwable) {
-                throw new RuntimeException('Invalid setup token.');
+                throw new RuntimeException('Setup token is malformed or corrupted.');
             }
 
             if (! hash_equals($decrypted, $token)) {
-                throw new RuntimeException('Invalid setup token.');
+                throw new RuntimeException('The provided setup token does not match.');
             }
 
             $setup->fill([

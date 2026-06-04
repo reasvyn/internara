@@ -34,6 +34,8 @@ final class GenerateSetupTokenAction extends BaseAction
                     'token_expires_at' => $expiresAt,
                 ])->save();
 
+                $setup->increment('token_version');
+
                 Cache::forget(CacheKeys::SETUP_INSTALLED);
 
                 return [

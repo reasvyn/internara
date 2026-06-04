@@ -27,7 +27,7 @@ class AuthThrottleMiddleware
         $key = 'auth-throttle:'.$request->ip();
 
         if ($isLogin) {
-            $key = 'login:'.$request->ip().':'.md5((string) $request->input('email', ''));
+            $key = 'login:'.$request->ip().':'.md5((string) $request->input('identifier', ''));
         }
 
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
@@ -43,7 +43,9 @@ class AuthThrottleMiddleware
                 ->with('error', __('auth.throttle', ['seconds' => $seconds]));
         }
 
-        RateLimiter::hit($key, $decaySeconds);
+        if (! $request->isMethod('get')) {
+            RateLimiter::hit($key, $decaySeconds);
+        }
 
         return $next($request);
     }

@@ -46,7 +46,19 @@ class SetupWizard extends Component
 
     public function mount(): void
     {
-        $state = Setup::state();
+        try {
+            $state = Setup::state();
+        } catch (\Throwable $e) {
+            SmartLogger::error('Setup wizard mount failed')
+                ->module('Setup')
+                ->event('wizard.mount_failed')
+                ->withPayload(['error' => $e->getMessage()])
+                ->systemOnly()
+                ->save();
+            $this->redirect(route('login'));
+
+            return;
+        }
 
         if ($state->isInstalled()) {
             if (session()->get('setup.completed', false)) {
@@ -61,7 +73,20 @@ class SetupWizard extends Component
         }
 
         $this->initDefaults();
-        $this->runAudit(app(EnvironmentAuditor::class));
+
+        try {
+            $this->runAudit(app(EnvironmentAuditor::class));
+        } catch (\Throwable $e) {
+            SmartLogger::error('Setup wizard audit failed during mount')
+                ->module('Setup')
+                ->event('wizard.audit_failed')
+                ->withPayload(['error' => $e->getMessage()])
+                ->systemOnly()
+                ->save();
+            $this->audit = ['categories' => []];
+            $this->auditPassed = false;
+        }
+
         $this->restoreState();
     }
 
@@ -119,7 +144,20 @@ class SetupWizard extends Component
 
     public function runAudit(EnvironmentAuditor $auditor): void
     {
-        $report = $auditor->audit();
+        try {
+            $report = $auditor->audit();
+        } catch (\Throwable $e) {
+            SmartLogger::error('Environment auditor threw exception')
+                ->module('Setup')
+                ->event('wizard.audit_exception')
+                ->withPayload(['error' => $e->getMessage()])
+                ->systemOnly()
+                ->save();
+            $this->audit = ['categories' => []];
+            $this->auditPassed = false;
+
+            return;
+        }
 
         $categories = [];
         foreach ($report->checks as $check) {

@@ -10,7 +10,7 @@ use App\Domain\Enrollment\Livewire\RegistrationCenter;
 use App\Domain\Enrollment\Livewire\RegistrationDocumentUpload;
 use App\Domain\Enrollment\Livewire\RegistrationVerification;
 use App\Domain\Enrollment\Livewire\RegistrationWizard;
-use App\Domain\SysAdmin\Livewire\ApplicationReview;
+use App\Domain\Enrollment\Livewire\StudentPlacementChangeRequest;
 
 Route::middleware('guest')->group(function () {
     Route::livewire('/apply', ApplyPage::class)->name('apply');
@@ -22,12 +22,18 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/registration/documents', RegistrationDocumentUpload::class)->name('registration.documents');
 });
 
+Route::prefix('student')
+    ->name('student.')
+    ->middleware(['auth', 'role:student'])
+    ->group(function () {
+        Route::livewire('/internships/placement-change', StudentPlacementChangeRequest::class)->name('internships.placement-change');
+    });
+
 Route::prefix('admin')
     ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/internships/registrations/pending', RegistrationVerification::class)->name('internships.registrations.pending');
-        Route::livewire('/applications', ApplicationReview::class)->name('applications');
     });
 
 Route::prefix('admin')
