@@ -161,6 +161,22 @@ return [
         'address' => [
             'required' => 'Bidang alamat wajib diisi.',
         ],
+        'password' => [
+            'confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'min' => [
+                'string' => 'Kata sandi minimal berisi :min karakter.',
+            ],
+            'password' => [
+                'mixed' => 'Kata sandi harus mengandung setidaknya satu huruf kapital dan satu huruf kecil.',
+                'numbers' => 'Kata sandi harus mengandung setidaknya satu angka.',
+            ],
+        ],
+        'email' => [
+            'email' => 'Alamat email harus berupa alamat surel yang valid.',
+        ],
+        'name' => [
+            'required' => 'Bidang nama wajib diisi.',
+        ],
     ],
 
     '(and :count more error)' => '(dan :count kesalahan lainnya)',
