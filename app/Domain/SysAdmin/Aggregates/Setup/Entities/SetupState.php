@@ -17,6 +17,7 @@ final readonly class SetupState extends BaseEntity
         private array $completedSteps,
         private ?string $recoveryKey,
         private ?Carbon $updatedAt = null,
+        private int $tokenVersion = 0,
     ) {}
 
     public static function fromModel(Model $model): static
@@ -28,6 +29,7 @@ final readonly class SetupState extends BaseEntity
             completedSteps: $model->getAttribute('completed_steps') ?? [],
             recoveryKey: $model->getAttribute('recovery_key'),
             updatedAt: $model->getAttribute('updated_at'),
+            tokenVersion: (int) ($model->getAttribute('token_version') ?? 0),
         );
     }
 
@@ -99,5 +101,10 @@ final readonly class SetupState extends BaseEntity
     public function hasRecoveryKey(): bool
     {
         return $this->recoveryKey !== null;
+    }
+
+    public function tokenVersion(): int
+    {
+        return $this->tokenVersion;
     }
 }

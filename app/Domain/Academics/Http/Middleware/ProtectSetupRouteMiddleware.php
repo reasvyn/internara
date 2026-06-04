@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Academics\Http\Middleware;
 
+use App\Domain\Core\Support\SmartLogger;
 use App\Domain\SysAdmin\Aggregates\Setup\Actions\ValidateSetupTokenAction;
 use App\Domain\SysAdmin\Aggregates\Setup\Entities\SetupState;
 use App\Domain\SysAdmin\Aggregates\Setup\Models\Setup;
@@ -30,8 +31,16 @@ class ProtectSetupRouteMiddleware
             return $this->handleInstalled($request, $next, $state);
         }
 
+        $currentVersion = $state->tokenVersion();
+
         if (Session::get('setup.authorized', false)) {
-            return $next($request);
+            $sessionVersion = (int) Session::get('setup.token_version', 0);
+
+            if ($sessionVersion === $currentVersion) {
+                return $next($request);
+            }
+
+            Session::forget('setup.authorized');
         }
 
         $rateAttempts = (int) config('setup.security.rate_limit_attempts', 20);
@@ -40,11 +49,21 @@ class ProtectSetupRouteMiddleware
 
         $token = $request->query('setup_token') ?? $request->input('setup_token');
 
+        if ($token === null || $token === '') {
+            SmartLogger::info('Setup route accessed without token')
+                ->module('Setup')
+                ->event('token.missing')
+                ->withPayload(['ip' => $request->ip()])
+                ->systemOnly()
+                ->save();
+        }
+
         if ($token !== null && $token !== '') {
             try {
                 $this->validateToken->execute((string) $token);
 
                 Session::put('setup.authorized', true);
+                Session::put('setup.token_version', $state->tokenVersion());
                 Session::regenerate();
                 RateLimiter::clear($key);
 
@@ -53,7 +72,14 @@ class ProtectSetupRouteMiddleware
                 }
 
                 return $next($request);
-            } catch (\Exception) {
+            } catch (\Exception $e) {
+                SmartLogger::warning('Invalid setup token attempt')
+                    ->module('Setup')
+                    ->event('token.validation_failed')
+                    ->withPayload(['ip' => $request->ip(), 'error' => $e->getMessage()])
+                    ->systemOnly()
+                    ->save();
+
                 return $this->throttleOrReject($request, $key, $rateAttempts, $rateDecay);
             }
         }

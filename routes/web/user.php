@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Domain\Enrollment\Livewire\RegistrationCenter;
 use App\Domain\User\Aggregates\AccountRecovery\Livewire\AccountRecovery;
 use App\Domain\User\Aggregates\AccountRecovery\Livewire\RecoveryCode;
 use App\Domain\User\Aggregates\AccountRecovery\Livewire\RecoverySlipManager;
@@ -69,7 +68,6 @@ Route::prefix('supervisor')
     });
 
 Route::middleware(['guest', 'auth.throttle'])->group(function () {
-    Route::get('/register', RegistrationCenter::class)->name('register');
     Route::get('/login', Login::class)->name('login');
     Route::get('/activate', ActivateAccount::class)->name('activate');
     Route::get('/forgot-password', ForgotPassword::class)->name('password.request');

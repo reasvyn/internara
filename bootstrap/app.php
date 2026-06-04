@@ -40,6 +40,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->trustProxies(at: '*');
 
+        $middleware->validateCsrfTokens(except: [
+            'setup',
+        ]);
+
         $middleware->web(append: [
             SecurityHeaders::class,
             LogContext::class,

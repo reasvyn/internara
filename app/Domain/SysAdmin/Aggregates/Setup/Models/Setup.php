@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\QueryException;
 
-#[Fillable(['is_installed', 'setup_token', 'token_expires_at', 'completed_steps', 'school_id', 'department_id', 'recovery_key'])]
+#[Fillable(['is_installed', 'setup_token', 'token_expires_at', 'token_version', 'completed_steps', 'school_id', 'department_id', 'recovery_key'])]
 class Setup extends BaseModel
 {
     use HasFactory;
@@ -25,6 +25,7 @@ class Setup extends BaseModel
         return [
             'is_installed' => 'boolean',
             'token_expires_at' => 'datetime',
+            'token_version' => 'integer',
             'completed_steps' => 'array',
         ];
     }

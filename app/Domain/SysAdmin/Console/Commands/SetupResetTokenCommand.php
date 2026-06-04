@@ -62,7 +62,7 @@ class SetupResetTokenCommand extends Command
         $this->line('  '.__('setup.cli.enter_code').": <fg=white;options=bold>{$result['plaintext']}</>");
 
         $this->newLine();
-        $remainingMinutes = max(1, $result['expires_at']->diffInRealMinutes(now()));
+        $remainingMinutes = max(1, $result['expires_at']->diffInUTCMinutes(now()));
         $this->line('  '.__('setup.cli.token_expires').": <fg=yellow>{$result['expires_at']->format('H:i:s T')} (".__('setup.cli.expires_in_minutes', ['count' => $remainingMinutes]).')</>');
 
         SmartLogger::info(__('setup.reset_token.success'))

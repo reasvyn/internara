@@ -47,7 +47,9 @@ class Login extends Component
             RateLimiter::hit($throttleKey, 60);
             $this->addError('form.identifier', $e->getMessage());
 
-            SmartLogger::error('Login error')
+            SmartLogger::error('Login failed for identifier')
+                ->module('Auth')
+                ->event('login.error')
                 ->withPayload(['error' => $e->getMessage()])
                 ->systemOnly()
                 ->save();

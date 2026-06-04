@@ -11,9 +11,14 @@ use App\Domain\SysAdmin\Aggregates\Account\Livewire\UserManager;
 use App\Domain\SysAdmin\Aggregates\Announcement\Livewire\AnnouncementManager;
 use App\Domain\SysAdmin\Aggregates\GdprDeletionLog\Livewire\GdprDeletionLogs;
 use App\Domain\SysAdmin\Aggregates\Setting\Livewire\SystemSetting;
+use App\Domain\SysAdmin\Aggregates\Setup\Livewire\SetupWizard;
 use App\Domain\SysAdmin\Livewire\AccountCloneDetector;
+use App\Domain\SysAdmin\Livewire\ApplicationReview;
 use App\Domain\SysAdmin\Livewire\AuditLogManager;
 use App\Domain\User\Models\User;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Session;
+use Laravel\Pulse\Pulse;
 
 Route::prefix('admin')
     ->name('admin.')
@@ -43,6 +48,10 @@ Route::prefix('admin')
         Route::get('/accounts/clones', AccountCloneDetector::class)->name('accounts.clones');
     });
 
+Route::get('/admin/applications', ApplicationReview::class)
+    ->name('sysadmin.applications')
+    ->middleware(['auth', 'role:super_admin|admin']);
+
 Route::get('/admin/announcements', AnnouncementManager::class)
     ->name('sysadmin.announcements')
     ->middleware(['auth', 'role:super_admin|admin']);
@@ -50,3 +59,44 @@ Route::get('/admin/announcements', AnnouncementManager::class)
 Route::livewire('/admin/settings', SystemSetting::class)
     ->name('admin.settings')
     ->middleware(['auth', 'role:super_admin']);
+
+// ──────────────────────────────────────────────
+// Setup aggregate (clustered with its own middleware)
+// ──────────────────────────────────────────────
+
+Route::middleware('setup.protected')->group(function () {
+    Route::get('/setup', SetupWizard::class)->name('setup');
+    Route::post('/setup', fn () => redirect()->route('setup'));
+});
+
+Route::post('/setup/cleanup', function () {
+    Session::forget(['setup.form_data', 'setup.authorized']);
+
+    return response()->noContent();
+})->name('setup.cleanup');
+
+// ──────────────────────────────────────────────
+// Cron / system
+// ──────────────────────────────────────────────
+
+Route::get('/cron/{secret}', function (string $secret) {
+    if ($secret !== config('app.cron_secret')) {
+        abort(403, 'Invalid cron secret.');
+    }
+
+    $output = [];
+
+    $exitCode = Artisan::call('schedule:run');
+    $output['schedule:run'] = $exitCode;
+
+    if (class_exists(Pulse::class)) {
+        $exitCode = Artisan::call('pulse:check');
+        $output['pulse:check'] = $exitCode;
+    }
+
+    return response()->json([
+        'status' => 'ok',
+        'timestamp' => now()->toIso8601String(),
+        'commands' => $output,
+    ]);
+})->name('cron');
