@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Journals\Aggregates\Logbook\Http\Requests;
 
-use App\Domain\Core\Http\Requests\FormRequest;
+use App\Domain\Core\Http\Requests\BaseFormRequest;
 use App\Domain\Journals\Aggregates\Logbook\Models\Logbook;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class CreateLogbookEntryRequest extends FormRequest
+class CreateLogbookEntryRequest extends BaseFormRequest
 {
     public function authorize(): bool
     {

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Settings\Aggregates\Setting\Models\Setting;
-use App\Domain\Settings\Aggregates\Setting\Support\Settings;
+use App\Domain\SysAdmin\Aggregates\Setting\Models\Setting;
+use App\Domain\SysAdmin\Aggregates\Setting\Support\Settings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 

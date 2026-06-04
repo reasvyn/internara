@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Academics\Listeners;
 
-use App\Domain\Core\Support\SmartLogger;
 use App\Domain\Academics\Events\SetupFinalized;
+use App\Domain\Core\Support\SmartLogger;
 
 class LogSetupFinalized
 {

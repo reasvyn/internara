@@ -41,7 +41,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/dashboard', AdminDashboard::class)->name('dashboard');
@@ -82,7 +82,7 @@ Route::middleware(['auth', 'auth.throttle'])->group(function () {
 });
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::get('/accounts', AccountLifecycleManager::class)->name('accounts.lifecycle');

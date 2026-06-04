@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Program\Http\Requests;
 
-use App\Domain\Core\Http\Requests\FormRequest;
+use App\Domain\Core\Http\Requests\BaseFormRequest;
 use App\Domain\Program\Aggregates\Internship\Enums\InternshipStatus;
 use App\Domain\Program\Aggregates\Internship\Models\Internship;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -16,7 +16,7 @@ use Illuminate\Validation\Rules\Enum;
  * S1 - Secure: Centralizes validation logic at the HTTP layer.
  * Validated data can be safely passed to Actions.
  */
-class CreateInternshipRequest extends FormRequest
+class CreateInternshipRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

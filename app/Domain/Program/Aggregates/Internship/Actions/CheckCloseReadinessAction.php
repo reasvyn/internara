@@ -6,13 +6,13 @@ namespace App\Domain\Program\Aggregates\Internship\Actions;
 
 use App\Domain\Assessment\Aggregates\Assessment\Models\Assessment;
 use App\Domain\Assignment\Aggregates\Submission\Models\Submission;
-use App\Domain\Journals\Aggregates\Attendance\Models\Attendance;
 use App\Domain\Certification\Aggregates\Certificate\Enums\CertificateStatus;
 use App\Domain\Certification\Aggregates\Certificate\Models\Certificate;
 use App\Domain\Core\Actions\BaseAction;
-use App\Domain\Guidance\Aggregates\SupervisionLog\Models\SupervisionLog;
-use App\Domain\Program\Aggregates\Internship\Models\Internship;
 use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Guidance\Aggregates\SupervisionLog\Models\SupervisionLog;
+use App\Domain\Journals\Aggregates\Attendance\Models\Attendance;
+use App\Domain\Program\Aggregates\Internship\Models\Internship;
 
 final class CheckCloseReadinessAction extends BaseAction
 {

@@ -130,7 +130,7 @@
                         @endif
                         <x-mary-button icon="o-check" class="btn-ghost btn-sm text-success" wire:click="verify('{{ $entry->id }}')" tooltip="Toggle Verify" />
                         <x-mary-button icon="o-pencil" class="btn-ghost btn-sm text-primary" wire:click="edit('{{ $entry->id }}')" tooltip="Edit" />
-                        <x-mary-button icon="o-document-arrow-down" class="btn-ghost btn-sm text-secondary" :href="route('admin.logbook.report', $entry->registration_id)" external tooltip="{{ __('logbook.download_report') }}" />
+                        <x-mary-button icon="o-document-arrow-down" class="btn-ghost btn-sm text-secondary" :href="route('sysadmin.logbook.report', $entry->registration_id)" external tooltip="{{ __('logbook.download_report') }}" />
                         <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
                             :wire:confirm="__('common.actions.confirm_action')"
                             wire:click="delete('{{ $entry->id }}')" tooltip="Delete" />

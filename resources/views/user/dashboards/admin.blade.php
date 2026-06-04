@@ -237,7 +237,7 @@
                     <x-core::widgets.quick-link :label="__('profile.recovery.title')" icon="o-key" link="{{ route('profile.recovery') }}" />
                     <x-core::widgets.quick-link :label="__('dashboard.notifications')" icon="o-bell" link="{{ route('notifications') }}" />
                     @if(auth()->user()?->hasRole('super_admin'))
-                        <x-core::widgets.quick-link :label="__('dashboard.system_settings')" icon="o-cog-6-tooth" link="{{ route('admin.settings') }}" />
+                        <x-core::widgets.quick-link :label="__('dashboard.system_settings')" icon="o-cog-6-tooth" link="{{ route('sysadmin.settings') }}" />
                     @endif
                 </div>
             </x-mary-card>

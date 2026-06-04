@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Journals\Aggregates\AbsenceRequest\Http\Requests;
 
-use App\Domain\Core\Http\Requests\FormRequest;
+use App\Domain\Core\Http\Requests\BaseFormRequest;
 use App\Domain\Journals\Aggregates\AbsenceRequest\Enums\AbsenceReasonType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rules\Enum;
@@ -14,7 +14,7 @@ use Illuminate\Validation\Rules\Enum;
  *
  * S1 - Secure: Validates absence submission at HTTP layer.
  */
-class SubmitAbsenceRequest extends FormRequest
+class SubmitAbsenceRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

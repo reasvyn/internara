@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Assignment\Aggregates\Submission\Http\Requests;
 
-use App\Domain\Core\Http\Requests\FormRequest;
+use App\Domain\Core\Http\Requests\BaseFormRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 /**
@@ -12,7 +12,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
  *
  * S1 - Secure: Validates assignment submission at HTTP layer.
  */
-class SubmitAssignmentRequest extends FormRequest
+class SubmitAssignmentRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

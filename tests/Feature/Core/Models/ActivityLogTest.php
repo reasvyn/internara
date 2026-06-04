@@ -24,7 +24,7 @@ test('ActivityLog scope query filters work as expected', function () {
         'log_name' => 'admin',
         'description' => 'User updated settings',
         'event' => 'updated',
-        'subject_type' => 'App\Domain\Admin\Models\Setting',
+        'subject_type' => 'App\Domain\SysAdmin\Models\Setting',
         'subject_id' => '22222222-2222-2222-2222-222222222222',
         'causer_type' => 'App\Domain\User\Models\User',
         'causer_id' => '22222222-2222-2222-2222-222222222222',

@@ -1,6 +1,6 @@
 # Role-Based Access Control
 > Last updated: 2026-05-31
-> **Context:** ✅ RBAC is fully implemented — see [Auth](domain/auth-reference.md) and [User](domain/user-reference.md) reference docs.
+> **Context:** ✅ RBAC is fully implemented — see [User](domain/user-reference.md) and [Core](domain/core-reference.md) reference docs.
 
 
 ## Authentication Flow

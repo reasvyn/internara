@@ -1,6 +1,6 @@
 # Known Issues and Gotchas
-> Last updated: 2026-06-03
-> Changes: removed all resolved issues (A1, A10, A34, C5, C6, D1–D4, etc.); updated User section with audit findings
+> Last updated: 2026-06-04
+> Changes: Added A40–A49 for half-implemented features (User progress/quick actions, Program closure pipeline, Admin MentorManager/MenteeManager, Evaluation company/aggregation)
 
 ---
 
@@ -11,6 +11,8 @@
 - **A30 — DownloadsAccountSlips Livewire concern undocumented:** `Admin/Livewire/Concerns/DownloadsAccountSlips.php` exists but is not listed anywhere in the reference doc.
 - **Overview mentions bulk creation** but no dedicated Action exists — CSV import lives inside `UserManager` Livewire component.
 - **C11 — AnnouncementStatus missing StatusEnum interface:** `app/Domain/Administration/Enums/AnnouncementStatus.php` defines state transitions (`DRAFT → SCHEDULED → PUBLISHED`) with `canTransitionTo()` but does not `implements StatusEnum`. Missing `isTerminal()` and `validTransitions()`.
+- **A46 — MentorManager not implemented:** No Livewire component exists for managing mentor records despite being listed in key-features.md.
+- **A47 — MenteeManager not implemented:** No Livewire component exists for managing mentee records despite being listed in key-features.md.
 
 ### Assessment
 
@@ -57,6 +59,8 @@
 - **A39 — FACILITY enum case not mentioned in overview:** `EvaluationCategory` has FACILITY case but overview only mentions mentor, company, and overall evaluations.
 - **Trend analysis / bar charts not implemented:** Overview mentions these but no analytics component exists.
 - **SubmitEvaluationAction description incomplete:** Omits conditional `mentor_id`, `target_type`/`target_id` assignment logic.
+- **A48 — Company evaluation not implemented:** Only `MentorEvaluationManager` exists. Company evaluation, overall satisfaction, and program quality evaluation are not implemented.
+- **A49 — Evaluation aggregation not implemented:** No analytics/aggregation component exists for trend reporting across evaluation types.
 
 ### Guidance
 
@@ -71,6 +75,9 @@
 
 - **CheckCloseReadinessAction / overview mismatch:** Description checks `is_verified`, not signature, but overview says "signed".
 - **RequirementType description wrong:** Says "Document requirement types" but enum has DOCUMENT, SKILL, TEXT.
+- **A43 — Closure pipeline beyond readiness check not implemented:** ADR describes 7-step pipeline but only `CheckCloseReadinessAction` and batch status update to COMPLETED exist. Finalize assessments, trigger evaluation, issue certificates, archive program, archive accounts, and generate report steps are not implemented.
+- **A44 — Archived program view not implemented:** No dedicated Livewire component or route exists for browsing archived programs.
+- **A45 — Archive restoration not implemented:** No action exists to un-archive a program.
 
 ### Logbook
 
@@ -139,7 +146,9 @@
 
 ### User
 
-_No open issues._
+- **A40 — Student dashboard progress tracking limited:** Only journal verification progress is displayed. Assignments, attendance %, evaluations, and guidance docs are not tracked despite being listed in key-features.md.
+- **A41 — Student dashboard quick actions incomplete:** Only 4 buttons exist (write journal, request absence, documents, handbooks). Clock in, submit assignments, and view evaluations are not implemented as quick actions.
+- **A42 — No dedicated ProgressTracker or QuickActions Livewire components:** Both features are embedded inside StudentDashboard rather than being isolated, reusable components.
 
 ---
 
@@ -316,6 +325,16 @@ No abstract `execute()` method on `BaseAction`. Each Action defines its own sign
 | A21 | Core overview says "no Views" but views exist (carried over from Shared) | Core | 🟠 Medium | Open |
 
 | A31 | Core Blade UI missing avatar and credit (carried over from Shared) | Core | 🟡 Low | Open |
+| A40 | Student dashboard progress tracking limited | User | 🟠 Medium | Open |
+| A41 | Student dashboard quick actions incomplete | User | 🟠 Medium | Open |
+| A42 | No dedicated ProgressTracker/QuickActions components | User | 🟡 Low | Open |
+| A43 | Closure pipeline beyond readiness check not implemented | Internship | 🟠 High | Open |
+| A44 | Archived program view not implemented | Internship | 🟠 Medium | Open |
+| A45 | Archive restoration not implemented | Internship | 🟡 Low | Open |
+| A46 | MentorManager not implemented | Admin | 🟠 High | Open |
+| A47 | MenteeManager not implemented | Admin | 🟠 High | Open |
+| A48 | Company/satisfaction/program quality evaluations not implemented | Evaluation | 🟠 High | Open |
+| A49 | Evaluation aggregation not implemented | Evaluation | 🟠 Medium | Open |
 | B3 | Livewire Form Object migration (~45 components) | Cross-Cutting (Backlog) | 🟡 Low | Open |
 | B4 | Cross-domain event flow undocumented | Cross-Cutting (Backlog) | 🟡 Low | Open |
 | B5 | Real-time features (Echo + Reverb) | Cross-Cutting (Backlog) | 🟡 Low | Open |

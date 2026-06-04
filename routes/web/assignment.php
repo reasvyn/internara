@@ -6,7 +6,7 @@ use App\Domain\Assignment\Aggregates\Assignment\Livewire\AssignmentManager as Ad
 use App\Domain\Assignment\Aggregates\Submission\Livewire\SubmissionGrading;
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/assignments', AdminAssignmentManager::class)->name('assignments');

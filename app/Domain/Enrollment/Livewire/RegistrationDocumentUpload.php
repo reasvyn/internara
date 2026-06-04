@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Enrollment\Livewire;
 
-use App\Domain\Program\Aggregates\Internship\Models\InternshipDocumentRequirement;
 use App\Domain\Enrollment\Actions\UploadRegistrationDocumentAction;
 use App\Domain\Enrollment\Models\Registration;
 use App\Domain\Enrollment\Models\RegistrationDocument;
+use App\Domain\Program\Aggregates\Internship\Models\InternshipDocumentRequirement;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\UploadedFile;

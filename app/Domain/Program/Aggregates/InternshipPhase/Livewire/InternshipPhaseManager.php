@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Domain\Program\Aggregates\InternshipPhase\Livewire;
 
 use App\Domain\Core\Livewire\BaseRecordManager;
+use App\Domain\Program\Aggregates\Internship\Models\InternshipPhase;
 use App\Domain\Program\Aggregates\InternshipPhase\Actions\CreateInternshipPhaseAction;
 use App\Domain\Program\Aggregates\InternshipPhase\Actions\DeleteInternshipPhaseAction;
 use App\Domain\Program\Aggregates\InternshipPhase\Actions\UpdateInternshipPhaseAction;
 use App\Domain\Program\Aggregates\InternshipPhase\Livewire\Forms\InternshipPhaseForm;
-use App\Domain\Program\Aggregates\Internship\Models\InternshipPhase;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;

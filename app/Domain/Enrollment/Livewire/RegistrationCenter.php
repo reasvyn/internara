@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Enrollment\Livewire;
 
-use App\Domain\Program\Aggregates\Internship\Models\Internship;
 use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Program\Aggregates\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

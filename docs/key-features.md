@@ -1,9 +1,8 @@
 # Key Features
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+> Last updated: 2026-06-04
+> Changes: Restructured all feature sections from 25 old-domain groups into 16 current domains; pruned non-existent features (Mentor/Mentee Manager, Company/Overall/Program Quality Evaluation, Evaluation Aggregation, closure pipeline beyond readiness check); corrected User dashboard features (Journal Progress, Dashboard Quick Actions)
 
-
-> Every feature in Internara belongs to one of **23 domains**. Each domain owns its
+> Every feature in Internara belongs to one of **16 domains**. Each domain owns its
 > complete vertical slice: persistence, business rules, UI components, authorization, and HTTP
 > interface.
 >
@@ -13,38 +12,29 @@
 
 ## Contents
 
-- [1. Core — Architectural Foundation](#1-core--architectural-foundation)
-- [2. Core — Cross-domain Utilities](#2-core--cross-domain-utilities)
-- [3. Setup — Installation](#3-setup--installation)
-- [4. Auth — Security & Identity](#4-auth--security--identity)
-- [5. User — Identity & Profile](#5-user--identity--profile)
-- [6. School — Institution](#6-school--institution)
-- [7. Settings — Runtime Configuration](#7-settings--runtime-configuration)
-- [8. Partnership — External Relations](#8-partnership--external-relations)
-- [9. Internship — Program Management](#9-internship--program-management)
-- [10. Placement — Slot Assignment](#10-placement--slot-assignment)
-- [11. Registration — Student Enrollment](#11-registration--student-enrollment)
-- [12. Mentee — Student Role](#12-mentee--student-role)
-- [13. Attendance — Presence Tracking](#13-attendance--presence-tracking)
-- [14. Logbook — Daily Journal](#14-logbook--daily-journal)
-- [15. Assignment — Tasks & Submissions](#15-assignment--tasks--submissions)
-- [16. Mentor — Supervision](#16-mentor--supervision)
-- [17. Schedule — Calendar Events](#17-schedule--calendar-events)
-- [18. Guidance — Handbooks](#18-guidance--handbooks)
-- [19. Incident — Issue Reporting](#19-incident--issue-reporting)
-- [20. Assessment — Competency Evaluation](#20-assessment--competency-evaluation)
-- [21. Evaluation — Feedback Collection](#21-evaluation--feedback-collection)
-- [22. Document — Templates & Rendering](#22-document--templates--rendering)
-- [23. Certificate — Credentialing](#23-certificate--credentialing)
-- [24. Admin — System Administration](#24-admin--system-administration)
-- [25. Program Closure & Archival](#25-program-closure--archival)
+- [1. Core — Foundation & Infrastructure](#1-core--foundation--infrastructure)
+- [2. User — Identity, Auth & Profiles](#2-user--identity-auth--profiles)
+- [3. SysAdmin — System Administration](#3-sysadmin--system-administration)
+- [4. Academics — School & Departments](#4-academics--school--departments)
+- [5. Program — Internship Lifecycle](#5-program--internship-lifecycle)
+- [6. Enrollment — Registration & Placement](#6-enrollment--registration--placement)
+- [7. Assessment — Competency Evaluation](#7-assessment--competency-evaluation)
+- [8. Evaluation — Feedback Collection](#8-evaluation--feedback-collection)
+- [9. Assignment — Tasks & Submissions](#9-assignment--tasks--submissions)
+- [10. Journals — Logbook, Attendance & Scheduling](#10-journals--logbook-attendance--scheduling)
+- [11. Guidance — Mentoring & Handbooks](#11-guidance--mentoring--handbooks)
+- [12. Incident — Issue Reporting](#12-incident--issue-reporting)
+- [13. Partners — Companies & Agreements](#13-partners--companies--agreements)
+- [14. Certification — Credentialing](#14-certification--credentialing)
+- [15. Reports — Student Final Reports](#15-reports--student-final-reports)
+- [16. Document — Templates & Rendering](#16-document--templates--rendering)
 - [Role Access Matrix](#role-access-matrix)
 
 ---
 
-## 1. Core — Architectural Foundation
+## 1. Core — Foundation & Infrastructure
 
-Base classes, contracts, and infrastructure used across all domains.
+Base classes, contracts, infrastructure, and cross-domain utilities used by every domain.
 
 | Feature | Description |
 |---|---|
@@ -53,29 +43,22 @@ Base classes, contracts, and infrastructure used across all domains.
 | Base Entity | `final readonly` business rules with zero framework dependencies |
 | Base Policy | Authorization with role and ownership checks |
 | Base Record Manager | CRUD Livewire base with search, filter, sort, pagination, bulk actions |
+| Base Controller | Common controller utilities for HTTP endpoints |
+| FormRequest | Validation exception handling without redirect |
+| Data (DTO) | Abstract readonly data transfer objects with `fromArray()` / `toArray()` |
 | SmartLogger | Dual-channel fluent logger (system + activity) with PII masking |
 | Exception Hierarchy | AppException (action/infrastructure/presentation) + DomainException (separate tree) |
 | StatusEnum Contract | State machine via `canTransitionTo()`, `isTerminal()`, `validTransitions()` |
 | ColorableEnum Contract | Status enums with CSS color variant support |
-| FormRequest | Validation exception handling without redirect |
-| Data (DTO) | Abstract readonly data transfer objects |
+| LabelEnum Contract | All enums implement `label(): string` for UI display |
 | Security Headers Middleware | CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy |
 | Log Context Middleware | Request tracing (request_id, method, URL, IP, user) |
 | System Health | 15-point check: environment, PHP, extensions, memory, DB, migrations, storage, disk, queue, cache, app key |
 | System Cleanup | Prune expired resets, stale cache, failed jobs, old logs |
 | Activity Logging | Spatie Activity Log with query scopes |
 | HandlesActionErrors Trait | Consistent try-catch-log-rethrow pattern |
-
----
-
-## 2. Core (Cross-domain Utilities)
-
-Cross-domain utilities without business logic.
-
-| Feature | Description |
-|---|---|
 | Environment Detection | Centralized environment checks (debug, development, production) |
-| Locale Management | Bilingual Indonesian/English with session preference |
+| Locale Management | Bilingual English/Indonesian with session preference |
 | Theme System | Color resolution from settings into CSS custom properties (light/dark) |
 | CSV Handler | Export, import, and template download with optional header validation |
 | Language Switcher | Livewire bilingual toggle |
@@ -84,26 +67,9 @@ Cross-domain utilities without business logic.
 
 ---
 
-## 3. Setup — Installation
+## 2. User — Identity, Auth & Profiles
 
-First-run wizard — prepares the application from empty database to fully operational.
-
-| Feature | Description | Access |
-|---|---|---|
-| 7-Step Setup Wizard | Guided: Environment Check, School, Department, Admin Account, Program (optional), Finalize, Complete | Guest (token) |
-| Environment Audit | PHP version, extensions, directory permissions, database, terminal | Installer |
-| Setup Token | Encrypted random token gates wizard access | System |
-| School Initialization | Create first school profile | Installer |
-| Super Admin Creation | Create first super_admin account (name always "Administrator", username "superadmin") | Installer |
-| Recovery Key Generation | 64-char random key (shown once, hashed in storage) | Installer |
-| CLI Install | `php artisan setup:install` with `--check-only` and `--force` flags | CLI |
-| Super Admin Recovery | Emergency CLI recovery when all super admins are lost | CLI |
-
----
-
-## 4. Auth — Security & Identity
-
-Security boundary — login, authentication, RBAC, account lifecycle, recovery.
+Authentication, user profiles, role-based dashboards, notifications, account lifecycle, and recovery.
 
 | Feature | Description | Access |
 |---|---|---|
@@ -119,15 +85,6 @@ Security boundary — login, authentication, RBAC, account lifecycle, recovery.
 | Clone Account Detection | Detect duplicates by email, phone, or identifier | Admin |
 | Account Lifecycle Manager | View and manage user account lifecycle states | Admin |
 | Recovery Code Manager | Generate and display recovery codes for user access | Auth + Admin |
-
----
-
-## 5. User — Identity & Profile
-
-Identity persistence — user profiles, dashboard routing, avatar, notifications.
-
-| Feature | Description | Access |
-|---|---|---|
 | User & Profile Models | UUID-based user identity with extended profile (phone, address, gender, blood type, emergency contact, national ID, school/department FK) | All |
 | Profile Editor | Self-service personal data update (name, email, phone, address, bio) | Auth |
 | Avatar Upload | Single image via media library, 200x200 WebP thumbnail | Auth |
@@ -135,15 +92,54 @@ Identity persistence — user profiles, dashboard routing, avatar, notifications
 | Admin Dashboard | System overview: user stats, readiness checklist, quick links | Admin |
 | Teacher Dashboard | Supervision view: supervised students, pending journals, active companies | Teacher |
 | Supervisor Dashboard | Industry view: active participants, pending evaluations, verified journals | Supervisor |
-| Student Dashboard | Registration status, journal progress, quick actions (write logbook, clock in, etc.) | Student |
+| Student Dashboard | Registration status, journal progress, quick action buttons (write journal, request absence, documents, handbooks) | Student |
 | Notification Center | Full-page with search, filter (unread/read), sorting, bulk mark-read/delete | Auth |
 | Notification Bell | Navbar indicator with unread count | Auth |
 | Recent Activity Feed | Chronological user activity log | Auth |
 | Username Generation | Unique username generation with collision avoidance | System |
+| Journal Progress | Journal verification progress (verified/total) on dashboard | Student |
+| Mentor Visibility | See assigned mentors with contact info, photo | Student |
+| Dashboard Quick Actions | Write journal, request absence, view documents, browse handbooks | Student |
 
 ---
 
-## 6. School — Institution
+## 3. SysAdmin — System Administration
+
+Setup wizard, runtime configuration, user CRUD, announcements, audit logging, health monitoring, and GDPR compliance.
+
+| Feature | Description | Access |
+|---|---|---|
+| 7-Step Setup Wizard | Guided: Environment Check, School, Department, Admin Account, Program (optional), Finalize, Complete | Guest (token) |
+| Environment Audit | PHP version, extensions, directory permissions, database, terminal | Installer |
+| Setup Token | Encrypted random token gates wizard access | System |
+| School Initialization | Create first school profile | Installer |
+| Super Admin Creation | Create first super_admin account (name always "Administrator", username "superadmin") | Installer |
+| Recovery Key Generation | 64-char random key (shown once, hashed in storage) | Installer |
+| CLI Install | `php artisan setup:install` with `--check-only` and `--force` flags | CLI |
+| Super Admin Recovery | Emergency CLI recovery when all super admins are lost | CLI |
+| System Setting Manager | Key-value store with type enforcement (boolean, text, numeric, JSON, image, color) | Super Admin |
+| Branding Configuration | App name, logo, favicon, colors (primary/secondary/accent), custom CSS | Super Admin |
+| Feature Flags | Enable/disable features at runtime | Super Admin |
+| Mail Configuration | SMTP settings with test email verification | Super Admin |
+| Cache Invalidation | Every setting change immediately invalidates cache | System |
+| Settings Audit Trail | Every change logged with before/after values, user, timestamp | System |
+| User Manager | CRUD all roles: create, update, lock/unlock, mark as alumni | Admin |
+| Admin Manager | Manage admin accounts | Super Admin |
+| Student Manager | Manage student accounts; bulk archive completed students | Admin |
+| Teacher Manager | Manage teacher accounts | Admin |
+| Supervisor Manager | Manage supervisor accounts | Admin |
+| Announcement Manager | Broadcast system with DRAFT/SCHEDULED/PUBLISHED lifecycle, Markdown, role-targeted | Admin |
+| Scheduled Announcements | Auto-publish via scheduler every minute | System |
+| Audit Log Manager | Centralized read-only audit log with filters | Admin |
+| Account Clone Detector | Detect potential duplicate accounts | Admin |
+| GDPR Deletion Logs | View GDPR erasure request history | Admin |
+| Application Review | Review guest applications, approve (auto-create user) or reject | Admin |
+| Bulk Operations | Mass user creation with result summaries | Admin |
+| Archived Record Access | Read-only access to data from closed/archived programs | Admin |
+
+---
+
+## 4. Academics — School & Departments
 
 Institutional foundation — school profile, departments, academic years.
 
@@ -158,38 +154,9 @@ Institutional foundation — school profile, departments, academic years.
 
 ---
 
-## 7. Settings — Runtime Configuration
+## 5. Program — Internship Lifecycle
 
-Key-value configuration that changes without deployment.
-
-| Feature | Description | Access |
-|---|---|---|
-| System Setting Manager | Key-value store with type enforcement (boolean, text, numeric, JSON, image, color) | Super Admin |
-| Branding Configuration | App name, logo, favicon, colors (primary/secondary/accent), custom CSS | Super Admin |
-| Feature Flags | Enable/disable features at runtime | Super Admin |
-| Mail Configuration | SMTP settings with test email verification | Super Admin |
-| Cache Invalidation | Every setting change immediately invalidates cache | System |
-| Audit Trail | Every change logged with before/after values, user, timestamp | System |
-
----
-
-## 8. Partnership — External Relations
-
-External relationships — companies and partnership agreements.
-
-| Feature | Description | Access |
-|---|---|---|
-| Company Manager | CRUD company profiles (name, address, industry, website, contact) | Admin |
-| Partnership Manager | CRUD agreements (number, title, dates, scope, contact person, signing parties) | Admin |
-| Partnership Lifecycle | ACTIVE, EXPIRED, TERMINATED with transition rules | System |
-| MOU Document Upload | Upload agreement documents via media library | Admin |
-| Expiry Detection | Warns when partnership is expiring (default 30 days) | System |
-
----
-
-## 9. Internship — Program Management
-
-Core operational domain — program definitions, requirements, reports, groups, phases.
+Program definitions, requirements, groups, phases, lifecycle management, and closure readiness.
 
 | Feature | Description | Access |
 |---|---|---|
@@ -198,30 +165,14 @@ Core operational domain — program definitions, requirements, reports, groups, 
 | Requirement Manager | Document requirements per program (DOCUMENT, SKILL, TEXT) | Admin |
 | Group Manager | Groups with member roles | Admin |
 | Phase Manager | Program phases/timeline stages | Admin |
-| Report Writer | Student writes and submits final reports | Student |
-| Report Review | Admin/teacher review submitted reports with revision workflow | Admin |
-| Supervisor Notes | Supervisor adds notes to student reports | Supervisor |
 | Program Lifecycle Extension | Extend program dates when necessary, with audit trail | Admin |
+| Closure Readiness Check | Automated verification: all assessments finalized, all submissions graded, all attendance verified, all supervision logs signed, all certificates issued | Admin |
 
 ---
 
-## 10. Placement — Slot Assignment
+## 6. Enrollment — Registration & Placement
 
-Bridge between supply (company slots) and demand (students needing host organizations).
-
-| Feature | Description | Access |
-|---|---|---|
-| Placement Index | CRUD slots per company per program with quota tracking | Admin |
-| Direct Placement | Assign student directly to slot (auto-creates Mentee+Registration) | Admin |
-| Placement Change Request | Student requests slot change with reason | Student |
-| Change Request Management | Admin reviews, approves, or rejects placement changes | Admin |
-| Capacity Enforcement | Atomic quota increment/decrement, never exceeds limit | System |
-
----
-
-## 11. Registration — Student Enrollment
-
-Gateway domain — student enrollment into programs.
+Student registration, placement slot assignment, and change requests.
 
 | Feature | Description | Access |
 |---|---|---|
@@ -231,55 +182,44 @@ Gateway domain — student enrollment into programs.
 | Document Upload | Upload required documents per program requirements | Student |
 | Registration Verification | Admin review pending registrations, assign placement and mentors, activate | Admin |
 | Application Review | Admin approves guest applications (auto-creates User+Mentee+Registration) or rejects | Admin |
+| Placement Index | CRUD slots per company per program with quota tracking | Admin |
+| Direct Placement | Assign student directly to slot (auto-creates Mentee+Registration) | Admin |
+| Placement Change Request | Student requests slot change with reason | Student |
+| Change Request Management | Admin reviews, approves, or rejects placement changes | Admin |
+| Capacity Enforcement | Atomic quota increment/decrement, never exceeds limit | System |
 
 ---
 
-## 12. Mentee — Student Role
+## 7. Assessment — Competency Evaluation
 
-Student's lens — dashboard, progress tracking, self-service access.
+Rubric-based competency evaluation framework with presentations.
 
 | Feature | Description | Access |
 |---|---|---|
-| Progress Tracking | Real-time: assignments, attendance %, logbook entries, evaluations, guidance docs | Student |
-| Mentor Visibility | See assigned mentors with contact info, photo | Student |
-| Quick Actions | Write logbook, clock in, submit assignments, view evaluations | Student |
+| Rubric Manager | CRUD weighted criteria, performance levels, descriptive anchors | Admin |
+| Competency Manager | Manage competencies and indicators within rubrics | Admin |
+| Assessment Grading | Score against rubric, auto-calculate weighted total | Teacher |
+| Presentation Schedule | Panel-based evaluation scheduling | Admin |
+| Presentation Lifecycle | SCHEDULED → COMPLETED / CANCELLED | Admin |
+| Finalization | Finalized assessments immutable — corrections require new round | System |
 
 ---
 
-## 13. Attendance — Presence Tracking
+## 8. Evaluation — Feedback Collection
 
-Presence tracking during the placement program.
+Structured mentor evaluation with score bands and admin oversight.
 
 | Feature | Description | Access |
 |---|---|---|
-| Student Clock In | Timestamp-based, optional GPS data | Student |
-| Student Clock Out | Auto-compute duration | Student |
-| Absence Request | Submit planned or unplanned absence with reason and optional docs | Student |
-| Absence Approval | Mentor approves single-day, extended requires additional approval | Mentor + Admin |
-| Attendance Manager | CRUD records, filter, sort, reports | Admin |
-| Compliance Monitoring | Notify mentor when attendance drops below threshold | System |
-| Immutable Records | Records immutable after configurable window (default 24h) | System |
+| Mentor Evaluation | Student rates mentor communication, responsiveness, guidance quality | Student |
+| Score Bands | EXCELLENT (85-100), GOOD (70-84), SATISFACTORY (55-69), NEEDS_IMPROVEMENT (40-54), POOR (0-39) | System |
+| Admin View | Filter by type, aggregate scores, trends | Admin |
 
 ---
 
-## 14. Logbook — Daily Journal
+## 9. Assignment — Tasks & Submissions
 
-Daily journaling — students record activities, learnings, and plans.
-
-| Feature | Description | Access |
-|---|---|---|
-| Logbook Entry | Daily entry: date, activities, learnings, challenges, plans, attachments | Student |
-| Draft Workflow | DRAFT → SUBMITTED → VERIFIED, optional REVISION_REQUIRED → DRAFT | Student + Mentor |
-| Mentor Review | View, acknowledge, comment, return for revision | Mentor |
-| Calendar View | Color-coded: green (acknowledged), yellow (submitted), blue (draft), gray (no entry) | Student + Mentor |
-| Compliance Monitoring | Auto-notify if N days without entry (default 3 to mentor, 5+ to coordinator) | System |
-| One Entry Per Day | Maximum one entry per calendar day per student | System |
-
----
-
-## 15. Assignment — Tasks & Submissions
-
-Task-based learning — teachers create tasks, students submit, teachers grade.
+Task creation, student submissions, grading workflow, and revision loop.
 
 | Feature | Description | Access |
 |---|---|---|
@@ -292,26 +232,25 @@ Task-based learning — teachers create tasks, students submit, teachers grade.
 
 ---
 
-## 16. Mentor — Supervision
+## 10. Journals — Logbook, Attendance & Scheduling
 
-Supervision toolkit for teachers and company supervisors.
-
-| Feature | Description | Access |
-|---|---|---|
-| Supervision Logs | Private notes: observations, concerns, action items | Mentor |
-| Supervision Log Manager | Manage logs with search and filter | Mentor |
-| Report Review | View mentee submitted reports | Mentor |
-| Assess Student Performance | Evaluate student against program competencies | Teacher |
-| Submissions Grading | Grade student submissions | Teacher |
-
----
-
-## 17. Schedule — Calendar Events
-
-Event calendar management.
+Daily activity tracking: logbook entries, attendance with clock-in/out, absence requests, and schedule management.
 
 | Feature | Description | Access |
 |---|---|---|
+| Logbook Entry | Daily entry: date, activities, learnings, challenges, plans, attachments | Student |
+| Logbook Draft Workflow | DRAFT → SUBMITTED → VERIFIED, optional REVISION_REQUIRED → DRAFT | Student + Mentor |
+| Mentor Review | View, acknowledge, comment, return for revision | Mentor |
+| Calendar View | Color-coded: green (verified), yellow (submitted), blue (draft), gray (no entry) | Student + Mentor |
+| Compliance Monitoring | Auto-notify if N days without entry (default 3 to mentor, 5+ to coordinator) | System |
+| One Entry Per Day | Maximum one entry per calendar day per student | System |
+| Student Clock In | Timestamp-based, optional GPS data | Student |
+| Student Clock Out | Auto-compute duration | Student |
+| Absence Request | Submit planned or unplanned absence with reason and optional docs | Student |
+| Absence Approval | Mentor approves single-day, extended requires additional approval | Mentor + Admin |
+| Attendance Manager | CRUD records, filter, sort, reports | Admin |
+| Attendance Compliance | Notify mentor when attendance drops below threshold | System |
+| Immutable Attendance Records | Records immutable after configurable window (default 24h) | System |
 | Schedule Index | CRUD events: title, description, times, location, category, program | Admin |
 | Recurring Events | Daily, weekly, biweekly, monthly with end condition | Admin |
 | Calendar Views | Day, week, month, agenda | Student + Mentor + Admin |
@@ -321,12 +260,17 @@ Event calendar management.
 
 ---
 
-## 18. Guidance — Handbooks
+## 11. Guidance — Mentoring & Handbooks
 
-Handbooks and documents that users must read and acknowledge.
+Mentoring relationships, supervision logs, handbooks, and acknowledgement tracking.
 
 | Feature | Description | Access |
 |---|---|---|
+| Supervision Logs | Private notes: observations, concerns, action items | Mentor |
+| Supervision Log Manager | Manage logs with search and filter | Mentor |
+| Report Review | View mentee submitted reports | Mentor |
+| Assess Student Performance | Evaluate student against program competencies | Teacher |
+| Submissions Grading | Grade student submissions | Teacher |
 | Handbook Manager | CRUD handbooks: title, slug, content (Markdown), version, active/inactive | Admin |
 | Student Handbook View | Browse and read handbooks by role | Student/Teacher/Supervisor |
 | Acknowledgement System | Immutable acknowledgement with user, timestamp, IP | User |
@@ -334,7 +278,7 @@ Handbooks and documents that users must read and acknowledge.
 
 ---
 
-## 19. Incident — Issue Reporting
+## 12. Incident — Issue Reporting
 
 Structured incident reporting, investigation, and resolution.
 
@@ -349,55 +293,23 @@ Structured incident reporting, investigation, and resolution.
 
 ---
 
-## 20. Assessment — Competency Evaluation
+## 13. Partners — Companies & Agreements
 
-Rubric-based competency evaluation framework.
-
-| Feature | Description | Access |
-|---|---|---|
-| Rubric Manager | CRUD weighted criteria, performance levels, descriptive anchors | Admin |
-| Competency Manager | Manage competencies and indicators within rubrics | Admin |
-| Assessment Grading | Score against rubric, auto-calculate weighted total | Teacher |
-| Presentation Schedule | Panel-based evaluation scheduling | Admin |
-| Presentation Lifecycle | SCHEDULED → COMPLETED / CANCELLED | Admin |
-| Finalization | Finalized assessments immutable — corrections require new round | System |
-
----
-
-## 21. Evaluation — Feedback Collection
-
-Structured feedback collection about the placement experience and program quality. Evaluations are collected from multiple perspectives throughout the program lifecycle.
+External relationship management — company profiles and partnership agreements.
 
 | Feature | Description | Access |
 |---|---|---|
-| Mentor Evaluation | Student rates mentor communication, responsiveness, guidance quality | Student |
-| Company Evaluation | Student rates workplace safety, task relevance, mentoring | Student |
-| Overall Satisfaction | Independent overall satisfaction rating | Student |
-| Score Bands | EXCELLENT (85-100), GOOD (70-84), SATISFACTORY (55-69), NEEDS_IMPROVEMENT (40-54), POOR (0-39) | System |
-| Admin View | Filter by type, aggregate scores, trends | Admin |
-| Program Quality Evaluation | Admin/teacher evaluates program outcomes: curriculum alignment, completion rates, partner satisfaction, areas for improvement. Triggered during program closure. | Admin |
-| Evaluation Aggregation | Automated scoring and trend reporting across all evaluation types | System |
+| Company Manager | CRUD company profiles (name, address, industry, website, contact) | Admin |
+| Partnership Manager | CRUD agreements (number, title, dates, scope, contact person, signing parties) | Admin |
+| Partnership Lifecycle | ACTIVE, EXPIRED, TERMINATED with transition rules | System |
+| MOU Document Upload | Upload agreement documents via media library | Admin |
+| Expiry Detection | Warns when partnership is expiring (default 30 days) | System |
 
 ---
 
-## 22. Document — Templates & Rendering
+## 14. Certification — Credentialing
 
-Rendering engine for generated PDF, spreadsheet, and other output files.
-
-| Feature | Description | Access |
-|---|---|---|
-| Template Manager | Upload and manage document templates (Blade, CSS, XLSX) | Admin |
-| Rendering Pipeline | 6-step: resolve template → discover renderer → gather data → inject → invoke driver → store | System |
-| Reports Manager | Generate, view, and download reports | Admin |
-| Download Endpoints | Authorized PDF and document downloads | Auth |
-| Template Versioning | Every document records exact template version used | System |
-| Archive Report Generation | Generate comprehensive program archive reports (grade summaries, attendance records, completion status) during closure | Admin |
-
----
-
-## 23. Certificate — Credentialing
-
-Credentialing — templates, issuance, revocation, and verification.
+Certificate templates, issuance, revocation, and verification.
 
 | Feature | Description | Access |
 |---|---|---|
@@ -411,47 +323,29 @@ Credentialing — templates, issuance, revocation, and verification.
 
 ---
 
-## 24. Admin — System Administration
+## 15. Reports — Student Final Reports
 
-System-level management across all domains.
+Student-authored final reports with revision workflow and supervisor review.
 
 | Feature | Description | Access |
 |---|---|---|
-| User Manager | CRUD all roles: create, update, lock/unlock, mark as alumni | Admin |
-| Admin Manager | Manage admin accounts | Super Admin |
-| Student Manager | Manage student accounts; bulk archive completed students | Admin |
-| Teacher Manager | Manage teacher accounts | Admin |
-| Supervisor Manager | Manage supervisor accounts | Admin |
-| Mentor Manager | Manage mentor records | Admin |
-| Mentee Manager | Manage mentee records | Admin |
-| Announcement Manager | Broadcast system with DRAFT/SCHEDULED/PUBLISHED lifecycle, Markdown, role-targeted | Admin |
-| Scheduled Announcements | Auto-publish via scheduler every minute | System |
-| Audit Log Manager | Centralized read-only audit log with filters | Admin |
-| Account Clone Detector | Detect potential duplicate accounts | Admin |
-| GDPR Deletion Logs | View GDPR erasure request history | Admin |
-| Application Review | Review guest applications, approve (auto-create user) or reject | Admin |
-| Bulk Operations | Mass user creation with result summaries | Admin |
-| Archived Record Access | Read-only access to data from closed/archived programs | Admin |
+| Report Writer | Student writes and submits final internship reports | Student |
+| Report Review | Admin/teacher review submitted reports with revision workflow | Admin |
+| Supervisor Notes | Supervisor adds notes to student reports | Supervisor |
 
 ---
 
-## 25. Program Closure & Archival
+## 16. Document — Templates & Rendering
 
-The final stage of the program lifecycle. Once all students have completed their placements, all assessments are finalized, all certificates are issued, and all evaluations are collected, the program enters closure. This stage ensures that program data is preserved as an immutable school archive before the program is marked complete.
-
-These features are implemented within the **Internship** domain (closure logic and data snapshot) and the **User** domain (alumni status), coordinated by a Process Action.
+Rendering engine for official documents, PDF generation, and template management.
 
 | Feature | Description | Access |
 |---|---|---|
-| Closure Readiness Check | Automated verification: all assessments finalized, all submissions graded, all attendance verified, all supervision logs signed, all certificates issued | Admin |
-| Program Finalization | Compute final grade aggregates, lock all mutable records, freeze assessment scores | Admin |
-| Student Alumni Marking | All active students in the program are automatically marked as alumni (AccountStatus → ARCHIVED). Their accounts remain accessible (read-only dashboard, certificate download) but cannot participate in new programs. | System |
-| Data Snapshot | Immutable archive of all program records: registrations, attendance, logbooks, assignments, assessments, evaluations, certificates. Stored as a versioned snapshot. | System |
-| Program Status Transition | Program moves from COMPLETED → ARCHIVED once the snapshot is confirmed. Archived programs are read-only everywhere. | Admin |
-| Archived Program View | Read-only access to browse archived programs. All data preserved in its final state: grades, attendance summaries, journal archives, certificate records. | Admin |
-| Program Evaluation Trigger | When a program is archived, admin/teachers are prompted to complete a Program Quality Evaluation before the closure is finalized. | Admin |
-| Archive Report | Generated summary document containing: student rosters, final grade sheets, attendance summaries, certificate logs, evaluation aggregates. Suitable for school records and accreditation. | Admin |
-| Archive Restoration (exceptional) | In rare cases where an archived program must be reopened (e.g., data correction), a controlled un-archive process with full audit trail. Requires super_admin authorization. | Super Admin |
+| Template Manager | Upload and manage document templates (Blade, CSS, XLSX) | Admin |
+| Rendering Pipeline | 6-step: resolve template → discover renderer → gather data → inject → invoke driver → store | System |
+| Reports Manager | Generate, view, and download reports | Admin |
+| Download Endpoints | Authorized PDF and document downloads | Auth |
+| Template Versioning | Every document records exact template version used | System |
 
 ---
 
@@ -460,17 +354,17 @@ These features are implemented within the **Internship** domain (closure logic a
 | Role | Domain Access |
 |---|---|
 | **SUPER_ADMIN** | Unrestricted — bypasses all permission checks |
-| **ADMIN** | School, Settings, Admin, Partnership, Placement, Registration, Internship (including closure & archival), Assessment, Certificate, Document, Schedule, Attendance, Logbook (read), Incident, Guidance, User management, Evaluation (admin view) |
-| **TEACHER** | Mentor (supervision), Assignment (grading), Assessment (grading), Logbook (review), Attendance (approve absence), Evaluation (program quality) |
-| **SUPERVISOR** | Mentor (supervision), Report (notes), Logbook (review), Attendance (approve absence) |
-| **STUDENT** | Mentee (dashboard), Registration, Logbook, Attendance (clock-in), Assignment (submit), Assessment (view), Evaluation (submit), Incident (report), Placement (change request), Certificate (download), Guidance (view), Schedule (view) |
-| **GUEST** | Setup wizard, Registration (apply), Login, Forgot/Reset Password |
+| **ADMIN** | Academics, SysAdmin, Partners, Program, Enrollment, Assessment, Certificate, Document, Journals (read), Incident, Guidance, User management, Evaluation (admin view) |
+| **TEACHER** | Guidance (supervision), Assignment (grading), Assessment (grading), Journals (logbook review, attendance approve), Evaluation (admin view) |
+| **SUPERVISOR** | Guidance (supervision), Reports (notes), Journals (logbook review, attendance approve) |
+| **STUDENT** | User (dashboard), Enrollment (registration, placement request), Journals (logbook, attendance), Assignment (submit), Assessment (view), Evaluation (submit), Incident (report), Certification (download), Guidance (view) |
+| **GUEST** | SysAdmin (setup wizard), Enrollment (apply), User (login, forgot/reset password) |
 
 ---
 
-> **Total: 23 domains with 160+ features covering the complete program lifecycle:**
-> Foundation → Installation → Identity → Institution → Partnerships → Program Setup → Enrollment
-> → Daily Operations → Assessment & Reporting → Evaluation → Certification → **Closure & Archival**
+> **Total: 16 domains with 150+ features covering the complete program lifecycle:**
+> Foundation → Identity → System Administration → Institution → Partnerships → Program Setup
+> → Enrollment → Daily Operations → Assessment → Evaluation → Certification → **Closure**
 >
 > See [Architecture](architecture.md) for the domain structure and [Product Definition](product-definition.md)
 > for the product vision and scope.

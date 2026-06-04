@@ -7,7 +7,7 @@ use App\Domain\Assessment\Aggregates\Presentation\Livewire\PresentationSchedule;
 use App\Domain\Assessment\Aggregates\Rubric\Livewire\RubricManager;
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/assessments/rubrics', RubricManager::class)->name('assessments.rubrics');
@@ -22,7 +22,7 @@ Route::livewire('/evaluate', MentorEvaluationManager::class)
     ->middleware('auth');
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/evaluations', MentorEvaluationManager::class)->name('evaluations');

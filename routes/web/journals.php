@@ -10,7 +10,7 @@ use App\Domain\Journals\Aggregates\Logbook\Livewire\LogbookManager;
 use App\Domain\Journals\Aggregates\Schedule\Livewire\ScheduleIndex;
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/attendance', AttendanceManager::class)->name('attendance');
@@ -18,7 +18,7 @@ Route::prefix('admin')
     });
 
 Route::livewire('/admin/logbook', LogbookManager::class)
-    ->name('admin.logbook')
+    ->name('sysadmin.logbook')
     ->middleware(['auth', 'role:super_admin|admin|teacher|supervisor']);
 
 Route::livewire('/supervisor/logbook/assessment', IndustryAssessmentForm::class)
@@ -28,5 +28,5 @@ Route::livewire('/supervisor/logbook/assessment', IndustryAssessmentForm::class)
 Route::get('/admin/logbook/report/{registration}', function (Registration $registration) {
     return app(CompileLogbookReportAction::class)->download($registration);
 })
-    ->name('admin.logbook.report')
+    ->name('sysadmin.logbook.report')
     ->middleware(['auth', 'role:super_admin|admin|teacher|supervisor']);

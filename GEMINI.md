@@ -1,6 +1,6 @@
 <laravel-boost-guidelines>
-> Last updated: 2026-05-20
-> Changes: refactor: adopt domain-first architecture across all layers
+> Last updated: 2026-06-04
+> Changes: sync with AGENTS.md — added architecture, domain invariants, and base class mandate sections
 
 === foundation rules ===
 
@@ -31,19 +31,66 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
 
+## Architecture (IMPORTANT)
+
+This project uses a **Domain-first, Action-based MVC** architecture:
+
+```
+    app/Domain/{Domain}/
+    ├── Aggregates/{Aggregate}/  Aggregate-rooted modules (Actions, Models, Policies, Livewire)
+    ├── Types/           Shared value objects, flat enums, rules
+    ├── Http/            Cross-aggregate controllers, middleware
+    ├── Console/         Cross-aggregate artisan commands
+    ├── Livewire/        Cross-aggregate UI (dashboards, global components)
+    ├── Support/         Shared domain utilities
+    └── Services/        Infrastructure services
+```
+
+- Backend: `app/Domain/{Domain}/Aggregates/{Aggregate}/` — aggregate-rooted modules with colocated layers
+- Views: `resources/views/{domain}/{aggregate}/{component}.blade.php` — Blade views mirror aggregate structure
+- Routes: `routes/web/{domain}.php` — routes split by domain, master `routes/web.php` requires all
+- Tests: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php` — tests organized by domain and aggregate
+
+### Directory Convention
+
+All aggregate code lives under `app/Domain/{Domain}/Aggregates/{AggregateName}/`.
+Cross-aggregate files (shared Actions, Http, Console, Livewire, Support, Services) stay at the domain root.
+
+Views mirror the aggregate name but without `aggregates/` in the path:
+`resources/views/auth/password/`, `resources/views/user/profile/`.
+
+### MANDATORY: Use Core Base Classes
+
+The Core domain provides base classes for every layer. You MUST use them:
+
+| Layer | Base Class | Location |
+|---|---|---|
+| Model | `BaseModel` (or `Authenticatable`) | `app/Domain/Core/Models/BaseModel.php` |
+| Action | `BaseAction` | `app/Domain/Core/Actions/BaseAction.php` |
+| Entity | `BaseEntity` (final readonly) | `app/Domain/Core/Entities/BaseEntity.php` |
+| Policy | `BasePolicy` | `app/Domain/Core/Policies/BasePolicy.php` |
+| Livewire CRUD | `BaseRecordManager` | `app/Domain/Core/Livewire/BaseRecordManager.php` |
+| Controller | `BaseController` | `app/Domain/Core/Http/Controllers/BaseController.php` |
+| Form Request | `FormRequest` (Core's, not Laravel's) | `app/Domain/Core/Http/Requests/FormRequest.php` |
+| DTO | `Data` | `app/Domain/Core/Data/Data.php` |
+| Exception | `AppException` or `DomainException` | `app/Domain/Core/Exceptions/` |
+| Enum | Must implement `LabelEnum` | `app/Domain/Core/Contracts/LabelEnum.php` |
+| Logging | Use `SmartLogger` | `app/Domain/Core/Support/SmartLogger.php` |
+
+Do NOT create custom patterns. These rules are enforced through code review.
+
 ## Conventions
 
 - You must follow all existing code conventions used in this application. When creating or editing a file, check sibling files for the correct structure, approach, and naming.
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
 - Check for existing components to reuse before writing a new one.
 
-## Application Structure & Architecture
+## Conventions (cont.)
 
-- Stick to the established directory structure (aggregate-based):
-    - Backend: `app/Domain/{Domain}/{Aggregate}/` — aggregate-rooted modules (Actions, Models, Policies colocated)
-    - Views: `resources/views/{domain}/{aggregate}/{component}.blade.php` — views mirror aggregate structure
-    - Routes: `routes/web/{domain}.php`, master `routes/web.php` requires all
-    - Tests: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php` — tests organized by domain and aggregate
+- Actions are single-responsibility classes with one `execute()` method. Livewire components delegate all business logic to Actions.
+- Entities are `final readonly` classes with zero framework dependencies. Models expose them via `as{EntityName}()` accessors.
+- All enums are string-backed and implement `LabelEnum`. State machine enums implement `StatusEnum`.
+- UUID primary keys on all models (via BaseModel/HasUuids). Foreign keys use `foreignUuid()->constrained()`.
 - Role-Based Access Control (RBAC):
     - Use standard roles: `super_admin`, `admin`, `student`, `teacher`, `supervisor`.
     - Avoid using "Mentor" in industry contexts; use "Supervisor" instead.
@@ -111,11 +158,26 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Prefer PHPDoc blocks over inline comments. Only add inline comments for exceptionally complex logic.
 - Use array shape type definitions in PHPDoc blocks.
 
+=== domain invariants ===
+
+# Domain Invariants (DO NOT VIOLATE)
+
+- **Super Admin name is ALWAYS `Administrator`** (from config `setup.defaults.admin_name`).
+- **Super Admin username is ALWAYS `superadmin`** (from config `setup.defaults.admin_username`).
+- These are canonical, non-customizable credentials enforced by `SetupSuperAdminAction`
+  which only accepts `(string $email, string $password)` — no name/username parameters.
+- Any code that calls `SetupSuperAdminAction::execute()` must NOT pass name or username.
+- The `InitializeSuperAdminAction` (CLI recovery) must also use config defaults, NOT caller-provided values.
+- `FinalizeSetupAction` must only extract `email` and `password` from `adminData` array.
+
 === deployments rules ===
 
 # Deployment
 
 - Laravel can be deployed using [Laravel Cloud](https://cloud.laravel.com/), which is the fastest way to deploy and scale production Laravel applications.
+- Ensure queue worker is running: `php artisan queue:work`
+- Ensure scheduler is configured: `* * * * * cd /path && php artisan schedule:run >> /dev/null 2>&1`
+- Storage link must exist: `php artisan storage:link`
 
 === tests rules ===
 
@@ -123,6 +185,8 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test --compact` with a specific filename or filter.
+- Tests follow domain-first, aggregate-based structure: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php`.
+- Code review and static analysis (PHPStan) enforce structural rules.
 
 === laravel/core rules ===
 
@@ -134,7 +198,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 ### Model Creation
 
-- When creating new models, place them inside `app/Domain/{Domain}/Models/`. Create useful factories and seeders for them too.
+- When creating new models, create useful factories and seeders for them too. Ask the user if they need any other things, using `php artisan make:model --help` to check the available options.
 
 ## APIs & Eloquent Resources
 
@@ -161,6 +225,12 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Livewire allows building dynamic, reactive interfaces in PHP without writing JavaScript.
 - You can use Alpine.js for client-side interactions instead of JavaScript frameworks.
 - Keep state server-side so the UI reflects it. Validate and authorize in actions as you would in HTTP requests.
+- Livewire components are auto-discovered by DomainServiceProvider from `app/Domain/*/Aggregates/*/Livewire/` and `app/Domain/*/Livewire/`.
+- Component alias pattern (aggregate): `{kebab-domain}.{kebab-aggregate}.{kebab-name}` (e.g., `admin.user.user-manager`)
+- Component alias pattern (root): `{kebab-domain}.{kebab-name}` (e.g., `user.profile-editor`)
+- Views for aggregate components: `resources/views/{domain}/{aggregate}/{component-name}.blade.php`
+- Views for root components: `resources/views/{domain}/{component-name}.blade.php`
+- CRUD table components extend `BaseRecordManager`.
 
 === pint/core rules ===
 
@@ -177,6 +247,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - The `{name}` argument should not include the test suite directory. Use `php artisan make:test --pest SomeFeatureTest` instead of `php artisan make:test --pest Feature/SomeFeatureTest`.
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
+- Structure tests by domain and aggregate: `tests/Feature/{Domain}/{Aggregate}/{Name}Test.php` and `tests/Unit/{Domain}/{Aggregate}/{Name}Test.php`.
 
 === spatie/laravel-medialibrary rules ===
 
@@ -184,5 +255,6 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - `spatie/laravel-medialibrary` associates files with Eloquent models, with support for collections, conversions, and responsive images.
 - Always activate the `medialibrary-development` skill when working with media uploads, conversions, collections, responsive images, or any code that uses the `HasMedia` interface or `InteractsWithMedia` trait.
+- Media collections are defined in the domain's Models. Storage is handled through the media library's integration with Laravel filesystem.
 
 </laravel-boost-guidelines>

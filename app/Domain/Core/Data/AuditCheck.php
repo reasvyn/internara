@@ -7,7 +7,7 @@ namespace App\Domain\Core\Data;
 use App\Domain\Core\Enums\AuditCategory;
 use App\Domain\Core\Enums\AuditStatus;
 
-final readonly class AuditCheck extends Data
+final readonly class AuditCheck extends BaseData
 {
     public function __construct(
         public AuditCategory $category,

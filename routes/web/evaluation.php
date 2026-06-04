@@ -9,7 +9,7 @@ Route::livewire('/evaluate', MentorEvaluationManager::class)
     ->middleware('auth');
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/evaluations', MentorEvaluationManager::class)->name('evaluations');

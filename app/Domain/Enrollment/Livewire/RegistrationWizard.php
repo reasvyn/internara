@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Domain\Enrollment\Livewire;
 
-use App\Domain\Program\Aggregates\Internship\Enums\InternshipStatus;
-use App\Domain\Program\Aggregates\Internship\Models\Internship;
-use App\Domain\Enrollment\Models\Placement;
 use App\Domain\Enrollment\Actions\RegisterInternshipAction;
 use App\Domain\Enrollment\Livewire\Forms\RegistrationWizardForm;
+use App\Domain\Enrollment\Models\Placement;
 use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Program\Aggregates\Internship\Enums\InternshipStatus;
+use App\Domain\Program\Aggregates\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

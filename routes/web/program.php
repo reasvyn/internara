@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use App\Domain\Program\Aggregates\InternshipGroup\Livewire\InternshipGroupManager;
-use App\Domain\Program\Aggregates\Internship\Livewire\InternshipManager;
-use App\Domain\Program\Aggregates\InternshipPhase\Livewire\InternshipPhaseManager;
 use App\Domain\Program\Aggregates\DocumentRequirement\Livewire\RequirementManager;
+use App\Domain\Program\Aggregates\Internship\Livewire\InternshipManager;
+use App\Domain\Program\Aggregates\InternshipGroup\Livewire\InternshipGroupManager;
+use App\Domain\Program\Aggregates\InternshipPhase\Livewire\InternshipPhaseManager;
 
 Route::prefix('admin')
-    ->name('admin.')
+    ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/internships', InternshipManager::class)->name('internships');

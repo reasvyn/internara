@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Domain\Enrollment\Models;
 
-use App\Domain\Core\Models\BaseModel;
-use App\Domain\Program\Aggregates\Internship\Models\Internship;
-use App\Domain\Enrollment\Models\Placement;
-use App\Domain\Enrollment\Enums\AccountApplicationStatus;
 use App\Domain\Academics\Aggregates\Department\Models\Department;
 use App\Domain\Academics\Aggregates\School\Models\School;
+use App\Domain\Core\Models\BaseModel;
+use App\Domain\Enrollment\Enums\AccountApplicationStatus;
+use App\Domain\Program\Aggregates\Internship\Models\Internship;
 use App\Domain\User\Models\User;
 use Database\Factories\AccountApplicationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

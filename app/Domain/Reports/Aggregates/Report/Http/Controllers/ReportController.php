@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Reports\Aggregates\Report\Http\Controllers;
 
-use App\Domain\Certification\Aggregates\Document\Models\Document;
 use App\Domain\Core\Http\Controllers\BaseController;
+use App\Domain\Document\Models\Document;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -35,12 +35,12 @@ class ReportController extends BaseController
 
         if ($document->file_path) {
             return redirect()
-                ->route('admin.reports.index')
+                ->route('sysadmin.reports.index')
                 ->with('error', 'Report file not found on disk.');
         }
 
         return redirect()
-            ->route('admin.reports.index')
+            ->route('sysadmin.reports.index')
             ->with('error', 'Report file not found.');
     }
 }

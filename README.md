@@ -1,6 +1,6 @@
 # Internara
 > Last updated: 2026-06-03
-> Changes: restructure 23 domains into 16 for SMA/SMK context
+> Changes: docs: comprehensive documentation audit and overhaul
 
 
 **Self-hosted vocational fieldwork management system** for upper-secondary schools and educational institutions running compulsory work placement programs. Internara manages the full program lifecycle — from registration through placement, daily operations, assessment, and certification.
@@ -21,21 +21,21 @@ Internara follows a **Domain-first, Action-based MVC** architecture. Business lo
 ```
 app/Domain/
 ├── Core/           Base classes, contracts, cross-domain utilities
-├── User/           User identity, profiles, dashboards, auth, notifications
-├── Academics/      School profile, departments, academic years, setup wizard
-├── Partners/       Companies (DUDI), MoU agreements, partnerships
-├── Program/        PKL lifecycle, phases, groups, document requirements
-├── Enrollment/     Registration, placement, slot management, change requests
-├── Guidance/       Supervision logs, student roles, handbooks
-├── Journals/       Daily logbook, attendance, absence requests, scheduling
-├── Assignment/     Task creation, submissions, grading workflow
+├── User/           Identity, authentication, profiles, notifications
+├── SysAdmin/       Setup, settings, announcements, audit, health
+├── Academics/      School profile, departments, academic years
+├── Program/        Internship lifecycle, phases, groups, requirements
+├── Enrollment/     Registration, placement, slot management
+├── Assessment/     Rubrics, competency scoring, presentations
+├── Evaluation/     Mentor/company/program quality feedback
+├── Assignment/     Tasks, submissions, grading workflow
+├── Journals/       Logbook, attendance, absence, scheduling
+├── Guidance/       Mentoring, supervision logs, handbooks
+├── Incident/       Issue reporting, investigation, resolution
+├── Partners/       Companies, partnership agreements, MoU
+├── Certification/  Certificate templates, issuance, revocation
 ├── Reports/        Student final reports, supervisor review
-├── Assessment/     Competency rubrics, indicator scoring, presentations
-├── Evaluation/     Program quality, evaluations, feedback loops
-├── Certification/  Certificate template design, document generation
-├── Incident/       Issue reporting, investigation, resolution workflow
-├── Settings/       Runtime configuration, branding metadata
-└── Admin/          User management, announcements, GDPR compliance
+└── Document/       Official document templates, PDF rendering
 ```
 
 Each domain is self-contained with its own Models, Actions, Livewire components, Policies, Enums, Entities, and optional Http/Notifications/Events layers — all colocated for high cohesion and low coupling.
@@ -107,21 +107,21 @@ Follow the setup wizard to configure your institution and admin account. Access 
 
 ### Domain Reference
 - [Core](docs/domain/core.md)
-- [Auth](docs/domain/auth.md)
 - [User](docs/domain/user.md)
+- [SysAdmin](docs/domain/sysadmin.md)
 - [Academics](docs/domain/academics.md)
-- [Partners](docs/domain/partners.md)
 - [Program](docs/domain/program.md)
 - [Enrollment](docs/domain/enrollment.md)
-- [Guidance](docs/domain/guidance.md)
-- [Journals](docs/domain/journals.md)
-- [Assignments](docs/domain/assignments.md)
-- [Reports](docs/domain/reports.md)
 - [Assessment](docs/domain/assessment.md)
+- [Evaluation](docs/domain/evaluation.md)
+- [Assignment](docs/domain/assignment.md)
+- [Journals](docs/domain/journals.md)
+- [Guidance](docs/domain/guidance.md)
+- [Incident](docs/domain/incident.md)
+- [Partners](docs/domain/partners.md)
 - [Certification](docs/domain/certification.md)
-- [Incidents](docs/domain/incidents.md)
-- [Settings](docs/domain/settings.md)
-- [Administration](docs/domain/administration.md)
+- [Reports](docs/domain/reports.md)
+- [Document](docs/domain/document.md)
 
 ## License
 

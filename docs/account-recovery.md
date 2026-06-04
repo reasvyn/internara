@@ -244,9 +244,9 @@ Global: AuthThrottleMiddleware (30 req/min/IP)
 
 | Document | Contents |
 |---|---|---|
-| [Auth Domain](domain/auth.md) | Authentication, RBAC, account lifecycle |
-| [Auth API Reference](domain/auth-reference.md) | Complete class listing |
+| [User Domain](domain/user.md) | Authentication, RBAC, account lifecycle |
+| [User API Reference](domain/user-reference.md) | Complete class listing |
 | [Setup Wizard](setup-wizard.md) | Installation, recovery key generation |
 | [Post-Setup](post-setup.md) | First admin actions |
-| [ERD: Identity & Access](erd/01-auth.md) | Database schema for auth tables |
+| [Database](database.md) | Database design, UUID PKs, schema organization |
 | [RBAC](rbac.md) | Role and permission system |

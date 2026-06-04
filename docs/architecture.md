@@ -1,6 +1,6 @@
 # Architecture
-> Last updated: 2026-06-03
-> Changes: restructure 23 domains into 16 — merge School+Setup→Academics, Partnership→Partners, Registration+Placement→Enrollment, Internship→Program+Reports, Mentee+Mentor+Guidance→Guidance, Attendance+Logbook+Schedule→Journals, Assessment+Evaluation→Assessment, Certificate+Document→Certification, Admin→Administration
+> Last updated: 2026-06-04
+> Changes: rename Admin→SysAdmin, merge Settings→SysAdmin, extract Document from Certification, add Document domain
 > **Context:** ✅ All 16 domains defined in the [domain index](domain/domain-index.md).
 
 
@@ -404,10 +404,10 @@ Each domain contains the following aggregates:
 | **Reports** | `Report/` | Http |
 | **Assessment** | `Assessment/`, `Rubric/`, `Competency/`, `Indicator/`, `Presentation/` | — |
 | **Evaluation** | `Evaluation/` | — |
-| **Certification** | `Certificate/`, `CertificateTemplate/`, `Document/` | Http, Support |
+| **Certification** | `Certificate/` | Http, Support |
 | **Incidents** | `IncidentReport/` | — |
-| **Settings** | `Setting/` | Http, Livewire (system settings), Support |
-| **Administration** | `Announcement/`, `GdprDeletionLog/` | Console, Notifications, Livewire (audit, pulse), Services |
+| **Document** | `OfficialDocument/` | Models, Enums, Policies, Support |
+| **SysAdmin** | `Account/`, `Announcement/`, `GdprDeletionLog/`, `Setting/`, `Setup/` | Actions, Console, Livewire (audit, pulse), Recorders, Services |
 
 ### Views Structure
 
@@ -447,10 +447,10 @@ components.
 | **Reports** | Student final reports | Report writing, revisions, supervisor review |
 | **Assessment** | Competency evaluation | Rubrics, scoring, presentations |
 | **Evaluation** | Program evaluation & feedback | Mentor evaluation, program feedback, user satisfaction |
-| **Certification** | Credentialing | Certificate issuance, templates, document generation, PDF rendering |
+| **Certification** | Credentialing | Certificate issuance, templates, credential tracking |
 | **Incidents** | Issue reporting | Report, investigation, resolution workflow |
-| **Settings** | Runtime configuration | Key-value store, branding, localization |
-| **Administration** | System oversight | User CRUD, announcements, GDPR compliance, audit logs |
+| **Document** | Official correspondence | Document templates, PDF rendering, permits, letters (surat menyurat) |
+| **SysAdmin** | System administration & configuration | User CRUD, announcements, GDPR compliance, audit logs, settings, Pulse monitoring |
 
 ---
 

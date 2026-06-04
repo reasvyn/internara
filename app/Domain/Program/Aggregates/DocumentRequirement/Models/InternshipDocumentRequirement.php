@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Program\Aggregates\DocumentRequirement\Models;
 
-use App\Domain\Certification\Aggregates\Document\Models\Document;
 use App\Domain\Core\Models\BaseModel;
+use App\Domain\Document\Models\Document;
 use App\Domain\Enrollment\Models\RegistrationDocument;
 use Database\Factories\InternshipDocumentRequirementFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

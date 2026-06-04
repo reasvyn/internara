@@ -70,18 +70,18 @@ The `setup.protected` middleware flow:
 
 ```mermaid
 flowchart TD
-    A[Request to /setup] --> B{Sudah terinstal?}
-    B -->|Ya| C{Dalam finalization window\n5 menit + session authorized?}
-    C -->|Ya| D[Lanjut ke wizard]
-    C -->|Tidak| E[404 Not Found\nSelf-destruct]
-    B -->|Tidak| F{Session authorized?}
-    F -->|Ya| G[Lanjut ke wizard]
-    F -->|Tidak| H{Ada token di\nquery string atau POST?}
-    H -->|Ya & Valid| I[Set session authorized]
-    I --> J[Lanjut]
-    H -->|Tidak| K{Request dari\nLivewire?}
-    K -->|Ya| L[403 JSON response]
-    K -->|Tidak| M[Tampilkan halaman\nentry code]
+    A[Request to /setup] --> B{Already installed?}
+    B -->|Yes| C{In finalization window\n5 min + session authorized?}
+    C -->|Yes| D[Proceed to wizard]
+    C -->|No| E[404 Not Found\nSelf-destruct]
+    B -->|No| F{Session authorized?}
+    F -->|Yes| G[Proceed to wizard]
+    F -->|No| H{Token in query\nstring or POST?}
+    H -->|Yes & Valid| I[Set session authorized]
+    I --> J[Proceed]
+    H -->|No| K{Request from\nLivewire?}
+    K -->|Yes| L[403 JSON response]
+    K -->|No| M[Show entry code\npage]
     H -->|Token invalid| L
 ```
 

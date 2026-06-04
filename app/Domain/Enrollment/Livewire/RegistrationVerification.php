@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Enrollment\Livewire;
 
-use App\Domain\Guidance\Aggregates\Mentor\Models\Mentor;
-use App\Domain\Enrollment\Models\Placement;
 use App\Domain\Enrollment\Actions\VerifyRegistrationAction;
+use App\Domain\Enrollment\Models\Placement;
 use App\Domain\Enrollment\Models\Registration;
+use App\Domain\Guidance\Aggregates\Mentor\Models\Mentor;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
