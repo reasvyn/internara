@@ -4,22 +4,26 @@ declare(strict_types=1);
 
 namespace Tests\Feature\SysAdmin\Setup;
 
+use App\Domain\Academics\Aggregates\AcademicYear\Models\AcademicYear;
 use App\Domain\SysAdmin\Aggregates\Setup\Models\Setup;
-use App\Domain\SysAdmin\Aggregates\Setup\Support\SystemProvisioner;
-use Database\Seeders\RolePermissionSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
-use Spatie\Permission\Models\Role;
+use App\Domain\User\Enums\Role;
+use Carbon\Carbon;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Spatie\Permission\Models\Role as RoleModel;
 
-uses(RefreshDatabase::class);
+uses(DatabaseMigrations::class);
 
-test('setup:install command warns and exits if system is already installed', function () {
+beforeEach(function () {
+    Setup::factory()->create(['is_installed' => true]);
+});
+
+test('setup:install warns and exits if system is already installed', function () {
     $this->artisan('setup:install')
         ->expectsOutputToContain(__('setup.cli.already_installed'))
         ->assertFailed();
 });
 
-test('setup:install command run audit only with --check-only option without provisioning', function () {
+test('setup:install runs audit only with --check-only without provisioning', function () {
     Setup::query()->update(['is_installed' => false]);
 
     $this->artisan('setup:install --check-only')
@@ -27,44 +31,80 @@ test('setup:install command run audit only with --check-only option without prov
         ->assertSuccessful();
 });
 
-test('setup:install command forces system provisioning in testing mode', function () {
-    $mockProvisioner = Mockery::mock(SystemProvisioner::class);
-    $mockProvisioner->shouldReceive('getTasks')->andReturn([
-        'ensure_env' => 'Ensure env',
-    ]);
-    $mockProvisioner->shouldReceive('executeTask')->withAnyArgs()->andReturnNull();
-    $mockProvisioner->shouldReceive('executeAll')->withAnyArgs()->andReturnNull();
-
-    $this->instance(SystemProvisioner::class, $mockProvisioner);
+test('setup:install with --force provisions the system', function () {
+    Setup::query()->update(['is_installed' => false]);
 
     $this->artisan('setup:install --force')
         ->assertSuccessful();
 });
 
-test('setup:install command initiates all 5 standard roles in database', function () {
-    Role::query()->delete();
-
-    $mockProvisioner = Mockery::mock(SystemProvisioner::class);
-    $mockProvisioner->shouldReceive('getTasks')->andReturn([
-        'ensure_env' => 'Ensure env',
-        'run_seeders' => 'Run seeders',
-    ]);
-    $mockProvisioner->shouldReceive('executeTask')->withAnyArgs()->andReturnUsing(function ($task, $force = false) {
-        if ($task === 'run_seeders') {
-            $seeder = new RolePermissionSeeder;
-            $seeder->run();
-        }
-    });
-    $mockProvisioner->shouldReceive('executeAll')->withAnyArgs()->andReturnNull();
-
-    $this->instance(SystemProvisioner::class, $mockProvisioner);
+test('setup:install seeds all 5 standard roles', function () {
+    Setup::query()->update(['is_installed' => false]);
 
     $this->artisan('setup:install --force')
         ->assertSuccessful();
 
-    expect(Role::where('name', 'superadmin')->exists())->toBeTrue();
-    expect(Role::where('name', 'admin')->exists())->toBeTrue();
-    expect(Role::where('name', 'student')->exists())->toBeTrue();
-    expect(Role::where('name', 'teacher')->exists())->toBeTrue();
-    expect(Role::where('name', 'supervisor')->exists())->toBeTrue();
+    expect(RoleModel::where('name', Role::SUPER_ADMIN->value)->exists())->toBeTrue();
+    expect(RoleModel::where('name', Role::ADMIN->value)->exists())->toBeTrue();
+    expect(RoleModel::where('name', Role::STUDENT->value)->exists())->toBeTrue();
+    expect(RoleModel::where('name', Role::TEACHER->value)->exists())->toBeTrue();
+    expect(RoleModel::where('name', Role::SUPERVISOR->value)->exists())->toBeTrue();
+});
+
+test('setup:install does not seed functional roles', function () {
+    Setup::query()->update(['is_installed' => false]);
+
+    $this->artisan('setup:install --force')
+        ->assertSuccessful();
+
+    expect(RoleModel::where('name', 'func_mentor')->exists())->toBeFalse();
+    expect(RoleModel::where('name', 'func_mentee')->exists())->toBeFalse();
+});
+
+test('setup:install seeds AcademicYear', function () {
+    Setup::query()->update(['is_installed' => false]);
+
+    $this->artisan('setup:install --force')
+        ->assertSuccessful();
+
+    expect(AcademicYear::count())->toBe(1);
+    expect(AcademicYear::where('is_active', true)->exists())->toBeTrue();
+});
+
+test('setup:install generates a setup token', function () {
+    Setup::query()->update(['is_installed' => false]);
+
+    $this->artisan('setup:install --force')
+        ->assertSuccessful();
+
+    $setup = Setup::first();
+    expect($setup->setup_token)->not->toBeNull();
+    expect($setup->token_expires_at)->not->toBeNull();
+});
+
+test('setup:install token expiry is within configured window', function () {
+    Setup::query()->update(['is_installed' => false]);
+
+    $this->artisan('setup:install --force')
+        ->assertSuccessful();
+
+    $setup = Setup::first();
+    $expectedExpiry = (int) config('setup.token.expiry_minutes', 60);
+
+    expect($setup->token_expires_at->diffInMinutes(now()))->toBeLessThanOrEqual($expectedExpiry + 1);
+});
+
+test('setup:install does not mark system as fully installed (set by wizard finalize)', function () {
+    Setup::query()->update(['is_installed' => false]);
+
+    $this->artisan('setup:install --force')
+        ->assertSuccessful();
+
+    // is_installed is only set to true by FinalizeSetupAction
+    // when the web wizard completes
+    expect(Setup::state()->isInstalled())->toBeFalse();
+});
+
+afterEach(function () {
+    Carbon::setTestNow();
 });
