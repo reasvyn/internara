@@ -161,6 +161,22 @@ return [
         'address' => [
             'required' => 'The address field is required.',
         ],
+        'password' => [
+            'confirmed' => 'The password confirmation does not match.',
+            'min' => [
+                'string' => 'The password must be at least :min characters.',
+            ],
+            'password' => [
+                'mixed' => 'The password must contain at least one uppercase and one lowercase letter.',
+                'numbers' => 'The password must contain at least one number.',
+            ],
+        ],
+        'email' => [
+            'email' => 'The email must be a valid email address.',
+        ],
+        'name' => [
+            'required' => 'The name field is required.',
+        ],
     ],
 
     '(and :count more error)' => '(and :count more error)',
