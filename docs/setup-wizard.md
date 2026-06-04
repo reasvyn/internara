@@ -57,7 +57,29 @@ extension, fix permissions) and refresh the page to re-run the audit.
 
 ---
 
-## Step 2: School Information
+## Step 2: Super Admin Account
+
+Create the initial administrator account with full system access:
+
+| Field | Required | Rules |
+|---|---|---|
+| Name | No | defaults to "Administrator" (immutable) |
+| Username | No | defaults to "superadmin" (immutable) |
+| Email | Yes | valid email, max 255 |
+| Password | Yes | min 8 chars, must contain uppercase, lowercase, and digit |
+| Confirm Password | Yes | must match password |
+
+> The super admin **name** and **username** are permanently locked to
+> "Administrator" and "superadmin" respectively. They cannot be changed
+> through any interface — only via direct database modification.
+
+> **Remember these credentials.** The super admin account has unrestricted
+> access to all system features. If the password is lost, the recovery key
+> (shown in Step 7) is the only way to regain access.
+
+---
+
+## Step 3: School Information
 
 Configure your institution's details:
 
@@ -73,7 +95,7 @@ Configure your institution's details:
 
 ---
 
-## Step 3: Department
+## Step 4: Department
 
 Create the first department / study program (jurusan):
 
@@ -84,24 +106,6 @@ Create the first department / study program (jurusan):
 
 Additional departments can be added later from the School → Departments
 admin page.
-
----
-
-## Step 4: Super Admin Account
-
-Create the initial administrator account with full system access:
-
-| Field | Required | Rules |
-|---|---|---|
-| Name | No | defaults to "Administrator" |
-| Username | No | defaults to "administrator", max 20 chars |
-| Email | Yes | valid email, max 255 |
-| Password | Yes | min 8 chars, must contain uppercase, lowercase, and digit |
-| Confirm Password | Yes | must match password |
-
-> **Remember these credentials.** The super admin account has unrestricted
-> access to all system features. If the password is lost, the recovery key
-> (shown in Step 7) is the only way to regain access.
 
 ---
 
@@ -221,10 +225,16 @@ string.
   Use `--reset` to change an existing admin's password instead of creating
   a duplicate.
 
+### Auto-Redirect
+
+The system automatically redirects you to the login page after **60 seconds**.
+A countdown timer is displayed at the bottom of the screen. You can also
+click "Go to Login" at any time to skip the countdown.
+
 ### Next Step
 
-Click "Go to Login" to access the login page. Use the super admin
-credentials you created in Step 4 to sign in for the first time.
+Use the super admin credentials you created in Step 2 to sign in for the
+first time.
 
 From here, follow the [Post-Setup Guide](post-setup.md) to configure
 your school for daily operations.
@@ -315,21 +325,21 @@ history leakage.
 #### `POST /setup/cleanup` (No middleware)
 
 A simple route that clears setup session data. Called via `navigator.sendBeacon()` when
-the browser tab is closed (`beforeunload` event). Prevents PII (school email, phone,
+the browser tab is closed (`beforeunload` event). Prevents PII (admin email, school email, phone,
 address) from persisting in session storage longer than necessary.
 
 ### Key Classes
 
 | Class | Location | Purpose |
 |---|---|---|
-| `SetupWizard` | `app/Domain/Administration/Aggregates/Setup/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
-| `SetupState` | `app/Domain/Administration/Aggregates/Setup/Entities/SetupState.php` | Read-only value object for setup status |
-| `Setup` | `app/Domain/Administration/Aggregates/Setup/Models/Setup.php` | Eloquent model (single-row, singleton) |
-| `FinalizeSetupAction` | `app/Domain/Administration/Aggregates/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
-| `SetupSchoolAction` | `app/Domain/Admin/Aggregates/Setup/Actions/SetupSchoolAction.php` | Creates/updates School record |
-| `SetupDepartmentAction` | `app/Domain/Admin/Aggregates/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
+| `SetupWizard` | `app/Domain/SysAdmin/Aggregates/Setup/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
+| `SetupState` | `app/Domain/SysAdmin/Aggregates/Setup/Entities/SetupState.php` | Read-only value object for setup status |
+| `Setup` | `app/Domain/SysAdmin/Aggregates/Setup/Models/Setup.php` | Eloquent model (single-row, singleton) |
+| `FinalizeSetupAction` | `app/Domain/SysAdmin/Aggregates/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
+| `SetupSchoolAction` | `app/Domain/SysAdmin/Aggregates/Setup/Actions/SetupSchoolAction.php` | Creates/updates School record |
+| `SetupDepartmentAction` | `app/Domain/SysAdmin/Aggregates/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
 | `SetupSuperAdminAction` | `app/Domain/User/Aggregates/SuperAdmin/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
-| `EnvironmentAuditor` | `app/Domain/Admin/Aggregates/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
+| `EnvironmentAuditor` | `app/Domain/SysAdmin/Aggregates/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
 | `RequireSetupAccessMiddleware` | `app/Domain/Academics/Http/Middleware/RequireSetupAccessMiddleware.php` | Global: redirects to /setup if not installed |
 | `ProtectSetupRouteMiddleware` | `app/Domain/Academics/Http/Middleware/ProtectSetupRouteMiddleware.php` | Route: validates token, rate-limits, self-destructs |
 
@@ -339,9 +349,9 @@ address) from persisting in session storage longer than necessary.
 CLI: setup:install                 Browser: setup?token=...
 ┌──────────────────────┐           ┌──────────────────────────────┐
 │ 1. Environment audit │           │ Step 1: Welcome (audit pass) │
-│ 2. Provision system  │  ───→     │ Step 2: School details       │
-│ 3. Generate token    │  signed   │ Step 3: First department     │
-│ 4. Print URL         │   URL     │ Step 4: Super admin account  │
+│ 2. Provision system  │  ───→     │ Step 2: Super admin account  │
+│ 3. Generate token    │  signed   │ Step 3: School details       │
+│ 4. Print URL         │   URL     │ Step 4: First department     │
 └──────────────────────┘           │ Step 5: Internship (opt)     │
                                    │ Step 6: Finalize transaction │
                                    │ Step 7: Recovery key         │

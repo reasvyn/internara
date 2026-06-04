@@ -251,6 +251,8 @@ return [
         'recovery_key_desc' => 'Save this key in a secure place. You will need it to recover administrator access if the password is lost.',
         'copy' => 'Copy',
         'copied' => 'Copied!',
+        'auto_redirect_in' => 'Redirecting to login in',
+        'seconds' => 'seconds',
         'step_labels' => [
             'welcome' => 'Welcome',
             'school' => 'School',

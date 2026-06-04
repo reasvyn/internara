@@ -36,7 +36,7 @@ final class FinalizeSetupAction extends BaseAction
         array $departmentData,
         array $adminData,
         ?array $internshipData = null,
-        array $stepsToComplete = ['school', 'department', 'account'],
+        array $stepsToComplete = ['account', 'school', 'department'],
     ): string {
         $existing = Setup::latest('created_at')->first();
 
