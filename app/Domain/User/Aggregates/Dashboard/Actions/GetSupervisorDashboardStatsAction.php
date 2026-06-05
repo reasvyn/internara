@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Actions;
+namespace App\Domain\User\Aggregates\Dashboard\Actions;
 
 use App\Domain\Core\Actions\BaseAction;
 use App\Domain\Enrollment\Models\Registration;

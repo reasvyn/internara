@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Livewire;
+namespace App\Domain\User\Aggregates\Dashboard\Livewire;
 
 use App\Domain\Core\Models\ActivityLog;
 use App\Domain\User\Models\User;
@@ -29,6 +29,6 @@ class UserDashboard extends Component
 
     public function render(): View
     {
-        return view('user.dashboard');
+        return view('user.dashboard.index');
     }
 }

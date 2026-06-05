@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Actions;
+namespace App\Domain\User\Aggregates\Dashboard\Actions;
 
 use App\Domain\Assignment\Aggregates\Submission\Enums\SubmissionStatus;
 use App\Domain\Assignment\Aggregates\Submission\Models\Submission;

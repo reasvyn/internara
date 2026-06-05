@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Livewire\Dashboards;
+namespace App\Domain\User\Aggregates\Dashboard\Livewire;
 
-use App\Domain\User\Actions\GetSupervisorDashboardStatsAction;
-use App\Domain\User\Livewire\UserDashboard;
+use App\Domain\User\Aggregates\Dashboard\Actions\GetSupervisorDashboardStatsAction;
 use Illuminate\View\View;
 
 class SupervisorDashboard extends UserDashboard
@@ -38,6 +37,6 @@ class SupervisorDashboard extends UserDashboard
 
     public function render(): View
     {
-        return view('user.dashboards.supervisor');
+        return view('user.dashboard.supervisor');
     }
 }

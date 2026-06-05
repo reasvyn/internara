@@ -25,7 +25,7 @@
         </div>
 
         <div class="space-y-6">
-            @include('user.dashboards._sidebar')
+            @include('user.dashboard._sidebar')
         </div>
     </div>
 

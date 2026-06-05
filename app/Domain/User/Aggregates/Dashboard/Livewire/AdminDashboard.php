@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Livewire\Dashboards;
+namespace App\Domain\User\Aggregates\Dashboard\Livewire;
 
 use App\Domain\Core\Support\CacheKeys;
 use App\Domain\SysAdmin\Actions\GetAdminDashboardStatsAction;
-use App\Domain\User\Livewire\UserDashboard;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -59,7 +58,7 @@ class AdminDashboard extends UserDashboard
 
     public function render(): View
     {
-        return view('user.dashboards.admin', [
+        return view('user.dashboard.admin', [
             'roleContent' => true,
             'stats' => $this->stats,
             'readiness' => $this->readiness,
