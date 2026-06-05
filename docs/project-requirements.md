@@ -1,7 +1,7 @@
 # Project Requirements — PKL Management System (SMA/SMK)
 
 > Last updated: 2026-06-05
-> Changes: Created comprehensive requirements specification for Indonesian SMA/SMK PKL lifecycle under global standards at 500–1000 user scale
+> Changes: Expanded Indonesian SMA/SMK PKL requirements to include deep functional state machines, technical offline sync protocols, infrastructure size metrics, and security/compliance policies
 
 This document specifies the functional, non-functional, and localized compliance requirements for the **Internara** fieldwork management system, tailored to Indonesian vocational school (SMK/SMA) regulations while upholding global enterprise engineering standards.
 
@@ -67,28 +67,171 @@ To comply with the Indonesian Ministry of Education (Kemendikbudristek) regulati
 
 ---
 
-## 4. Non-Functional Requirements (Global Industry Standards)
+## 4. Detailed Functional Workflows (State Transitions)
 
-### 4.1 Performance & Scalability (At 1,000 Users Scale)
-* **Concurrency**: Must sustain up to 100 requests per second (RPS) during peak clock-in windows without exceeding a response time of 500ms.
-* **Caching**: Aggressive caching of static queries (e.g., student dashboard statistics, theme styles) using a central registry (`app/Support/CacheKeys.php`).
-* **Database Strategy**: For 500–1000 active users, SQLite is suitable for read-heavy local deployments. However, the system must support simple migration to PostgreSQL or MySQL for production scalability.
+The core lifecycle operations in Internara are governed by strict state machines. Developers must ensure that all mutations validate these state boundaries to prevent data integrity anomalies.
 
-### 4.2 Security & Data Protection
-* **PII Redaction**: All student personal details (NISN, emails, phone numbers) must be masked in application log channels using `PiiMasker`.
-* **Action Logs (Audit Trail)**: Every mutation (e.g., changing placement, editing scores) must be recorded in an immutable audit trail using Spatie Activity Log.
-* **Content Security Policy (CSP)**: Strict headers to prevent XSS and clickjacking.
+### 4.1 Placement Lifecycle State Machine
+Placements manage the allocation of a student to a specific corporate partner slot during a phase.
 
-### 4.3 Reliability & Asynchronous Processing
-* **Background Queuing**: Heavy tasks (PDF certificate compiling, email notifications, media uploads) must be delegated to queue workers (`queue:work` with Redis/Database drivers) to keep the HTTP response loop fast and responsive.
+```
+       +--------------+
+       |   PENDING    | (Student assigned, awaiting corporate approval)
+       +--------------+
+              |
+              | Corporate Approves
+              v
+       +--------------+
+       |   APPROVED   | (Confirmed, awaiting starting calendar date)
+       +--------------+
+              |
+              | First Clock-In recorded
+              v
+       +--------------+
+       |    ACTIVE    | (Currently attending fieldwork on-site)
+       +--------------+
+         /          \
+        /            \  End date reached (Normal Completion)
+       /              \
+      v                v
++------------+   +------------+
+| TERMINATED |   | COMPLETED  | (Awaiting final reports and grading)
++------------+   +------------+
+```
+
+* **Transition Constraints**:
+  * A placement can only transition to `ACTIVE` from `APPROVED`.
+  * `TERMINATED` represents abnormal terminations (e.g., student misconduct, health issues). This state requires an associated `Incident` record link.
+  * Transitions to `COMPLETED` trigger automated notification dispatches to the assigned `Teacher` to schedule the final thesis/report exam.
+
+### 4.2 Reflective Journal Approval State Machine
+Daily journals compiled by students require dual-mentor verification.
+
+```
+ +-------------+
+ |    DRAFT    | (Saved locally or server-side by Student)
+ +-------------+
+        |
+        | Student Submits
+        v
+ +-------------+
+ |  SUBMITTED  | (Visible in Supervisor queue for review)
+ +-------------+
+    /       \
+   /         \ Supervisor Approves
+  / Rejected  v
+ /       +-------------+
+v        | SUPERVISOR  | (Visible in Teacher queue for final signoff)
++-----+  |  APPROVED   |
+| RECV|  +-------------+
++-----+     /       \
+           /         \ Teacher Approves
+          / Rejected  v
+         /       +-------------+
+        v        |  FINALIZED  | (Locked, factored into grading)
+                 +-------------+
+```
+
+* **Transition Constraints**:
+  * Once a journal transitions to `FINALIZED`, the content becomes read-only for students, supervisors, and teachers.
+  * If the Supervisor or Teacher rejects the entry (`RECV` - *Revision Required*), the status reverts, unlocking edit access for the student, and requires a mandatory feedback string.
 
 ---
 
-## 5. Summary of Compliance Matrix
+## 5. Network & Offline Synchronization Protocols
 
-| Requirement | SMK Regulations | Global Engineering Standard | Internara Implementation |
-|---|---|---|---|
-| **Identity** | NISN, NPSN, Jurusan | UUID Primary Keys, Relational Integrity | BaseModel + UUIDs, customized attributes |
-| **Attendance** | Validated Presence | Geofencing, Cryptographic Timestamps | Browser Location API + timezone logs |
-| **Audit Log** | Supervisor Approvals | Immutable Action Audit Logs | Spatie activitylog + SmartLogger |
-| **Certification** | Grade Sheet PDF | Cryptographic Verification QR Code | Document module + QR verification route |
+Due to unreliable mobile data access at remote host locations (e.g., agricultural fields, rural workshops), Internara implements a secure client-side buffering protocol for location tracking.
+
+```
+[Attendance Trigger] 
+       |
+       v
+[Detect Connectivity]
+   /        \
+  / Online   \ Offline
+ v            v
+[Post DB]  [Store in Browser IndexedDB/LocalStorage]
+           * Encrypt coordinates with Session Hash
+           * Seal payload with Device Timestamp
+                  |
+                  +---> [Worker Detects Network Restored]
+                            |
+                            v
+                        [Decrypt & Validate Payload Hash]
+                            |
+                            v
+                        [Sync with API Endpoint]
+```
+
+### 5.1 Verification Security against Clock Spoofing
+To prevent students from bypassing attendance rules (e.g., disabling network connectivity to manually back-date timestamps on their client devices), the offline sync payload must follow this validation protocol:
+1. **Payload Signing**: Every offline-logged coordinate pair (`lat`, `lng`) and timestamp (`logged_at`) is packaged with a client-generated checksum generated from the student's active session token.
+2. **Network Integrity Verification**: Upon syncing with the server, the endpoint compares the client-reported `logged_at` timestamp with the server receipt timestamp. If the time delta exceeds the threshold (e.g., out-of-bounds syncing delay greater than 24 hours), the record is marked `PENDING_REVIEW` for the Supervisor to manually audit.
+3. **Mock Location Detection**: Client-side JS scripts check browser APIs for the presence of mock location providers. If flags are active, the payload is labeled with a spoof indicator.
+
+---
+
+## 6. Infrastructure Dimensioning & Concurrency Optimization
+
+The system is configured to support cohorts of **500 to 1,000 active students** placed simultaneously. The following sizing configurations are recommended for server deployments:
+
+### 6.1 Server Sizing & Virtualization (Production)
+* **Compute Instance (VPS)**: Minimum 2 vCPUs (Intel Xeon / AMD EPYC optimized), 4GB RAM, and 50GB NVMe SSD storage.
+* **PHP Pool Configuration (`php-fpm.conf`)**:
+  * `pm = dynamic`
+  * `pm.max_children = 50`
+  * `pm.start_servers = 10`
+  * `pm.min_spare_servers = 5`
+  * `pm.max_spare_servers = 20`
+* **Nginx Configuration**: Max client body size set to 10MB to accommodate student photo uploads for attendance verification, with `gzip` compression enabled for JSON and HTML formats.
+
+### 6.2 Caching & Queue Worker Configuration
+* **Cache Provider**: Redis (highly recommended over database cache driver for large cohorts to avoid write locking during peak periods).
+* **Queue Strategy**: Separate queue pipelines:
+  * `default`: For notifications, daily email reminders.
+  * `documents`: Dedicated queue worker for compiling PDF report packages and certificates via headless chromium or wkhtmltopdf.
+* **Supervisor Worker Allocation**: Allocate a minimum of 2 child processes for the `documents` queue to prevent processing congestion during the graduation period.
+
+### 6.3 Database Settings (SQLite WAL Mode)
+If SQLite is chosen as the database engine (for small-to-medium schools under 500 active students), the developer must verify that SQLite runs in Write-Ahead Logging (WAL) mode to allow concurrent reads during student check-ins:
+```sql
+PRAGMA journal_mode=WAL;
+PRAGMA synchronous=NORMAL;
+PRAGMA busy_timeout=5000;
+```
+
+---
+
+## 7. Security, Compliance & Audit Trail Architecture
+
+### 7.1 PII Redaction Mapping
+To comply with the Indonesian Personal Data Protection Law (UU No. 27 Tahun 2022 - *UU PDP*), student and supervisor data must be masked in log outputs. The following fields are labeled sensitive and parsed through the system masker:
+
+```
++--------------------+----------------------------+-----------------------+
+| Database Field     | Classification             | Masking Algorithm     |
++--------------------+----------------------------+-----------------------+
+| email              | Direct Identifier          | Redact user part      |
+| phone              | Direct Identifier          | Mask mid digits       |
+| national_id_number | Indirect Identifier (NISN) | Mask trailing chars   |
+| password           | Credential                 | Full redaction        |
+| address            | Indirect Identifier        | Generic city output   |
++--------------------+----------------------------+-----------------------+
+```
+
+### 7.2 Cryptographic PDF Seals
+Printed certificates utilize a unique hash generated from the compiled grade record:
+```
+Certificate Hash = SHA-256(student_id + institutional_code + final_score + issuer_private_key)
+```
+The resulting hash is embedded in a QR code link pointed back to:
+`https://internara.school.sch.id/verify/{hash}`
+
+This verifier endpoint yields the authentic digital record, exposing any offline manipulation of the printed document.
+
+---
+
+## 8. Disaster Recovery Targets
+
+* **Recovery Point Objective (RPO)**: Maximum 4 hours of data loss. Database backups (SQLite files or MySQL dumps) must be scheduled via system cron tasks every 4 hours and mirrored to an off-site S3-compatible cloud storage bucket.
+* **Recovery Time Objective (RTO)**: Under 1 hour to spin up a replacement Docker VM instance and restore the latest database state.
