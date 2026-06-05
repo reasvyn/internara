@@ -100,7 +100,7 @@
 
 ### Partnership
 
-- **A12 — Dependency graph missing Placement and Core/CsvHandler:** `PartnershipManager` imports `Placement\Models\Placement`; both `CompanyManager` and `PartnershipManager` import `Core\Support\CsvHandler`.
+- **A12 — Dependency graph missing Placement and CsvHandler:** `PartnershipManager` imports `Placement\Models\Placement`; both `CompanyManager` and `PartnershipManager` import `Support\CsvHandler`.
 - **BatchDelete return docs missing:** `BatchDeleteCompanyAction` and `BatchDeletePartnershipAction` omit `{deleted, blocked}` return type docs.
 - **CSV import/export/template download features not documented** in reference doc.
 

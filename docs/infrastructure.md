@@ -147,17 +147,32 @@ queue runs synchronously, and the scheduler is triggered via HTTP webhook.
 
 ### Supervisor Configuration (Tier 2+)
 
+To handle concurrent notifications and heavy document compilation at scale, separate queue pipelines must be run:
+* **`default` queue**: Processes emails, alerts, and general events.
+* **`documents` queue**: Dedicated exclusively to compiling PDF certificates and reports.
+
 `/etc/supervisor/conf.d/internara-worker.conf`:
 ```ini
-[program:internara-worker]
+[program:internara-default-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /path/to/app/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+command=php /path/to/app/artisan queue:work --queue=default --sleep=3 --tries=3 --max-time=3600
 autostart=true
 autorestart=true
 user=www-data
 numprocs=2
 redirect_stderr=true
-stdout_logfile=/path/to/app/storage/logs/worker.log
+stdout_logfile=/path/to/app/storage/logs/default-worker.log
+stopwaitsecs=3600
+
+[program:internara-documents-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /path/to/app/artisan queue:work --queue=documents --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/path/to/app/storage/logs/documents-worker.log
 stopwaitsecs=3600
 ```
 

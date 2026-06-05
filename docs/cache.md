@@ -263,8 +263,8 @@ the cache for first requests after deployment.
 
 - `config/cache.php` — cache store definitions, per-store configuration
 - `config/database.php` — Redis connection settings under the `redis` key
-- `app/Core/Support/CacheKeys.php` — centralized cache key registry
-- `app/Settings/Support/Settings.php` — settings caching layer
+- `app/Support/CacheKeys.php` — centralized cache key registry
+- `app/SysAdmin/Setting/Support/Settings.php` — settings caching layer
 - `app/Core/Console/Commands/CacheWarmCommand.php` — cache warming
 - `database/migrations/` — cache and cache_locks table migrations
 - `docs/infrastructure.md` — tier-based infrastructure design
