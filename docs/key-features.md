@@ -202,6 +202,7 @@ Rubric-based competency evaluation framework with presentations.
 | Presentation Schedule | Panel-based evaluation scheduling | Admin |
 | Presentation Lifecycle | SCHEDULED → COMPLETED / CANCELLED | Admin |
 | Finalization | Finalized assessments immutable — corrections require new round | System |
+| Dual Mentor Fallback | Proxy evaluation entry or dynamic weight redistribution if supervisor is inactive | Teacher / Admin |
 
 ---
 
@@ -239,7 +240,7 @@ Daily activity tracking: logbook entries, attendance with clock-in/out, absence 
 | Feature | Description | Access |
 |---|---|---|
 | Logbook Entry | Daily entry: date, activities, learnings, challenges, plans, attachments | Student |
-| Logbook Draft Workflow | DRAFT → SUBMITTED → VERIFIED, optional REVISION_REQUIRED → DRAFT | Student + Mentor |
+| Logbook Draft Workflow | DRAFT → SUBMITTED → VERIFIED (or FINALIZED), with a 48h Teacher verification override fallback | Student + Mentor |
 | Mentor Review | View, acknowledge, comment, return for revision | Mentor |
 | Calendar View | Color-coded: green (verified), yellow (submitted), blue (draft), gray (no entry) | Student + Mentor |
 | Compliance Monitoring | Auto-notify if N days without entry (default 3 to mentor, 5+ to coordinator) | System |
