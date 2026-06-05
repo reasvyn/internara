@@ -134,7 +134,8 @@
 
 - **Overview / reference doc mismatch:** Overview implies 7-step wizard — reference doc describes 4 main form steps.
 - **Recovery key length (64 chars) not documented** in reference doc.
-- **C14 — RecoverSuperAdminAction uses raw cache key (🔴):** Uses `'recover_admin_attempts_' . md5($email)` raw string literal (lines 25, 71) instead of a `CacheKeys` constant. Violates the mandatory convention: *"Every cache key used across the codebase MUST be defined here as a constant."* No matching constant exists in `CacheKeys`.
+- **C14 — RecoverSuperAdminAction uses raw cache key (✅ Resolved):** Now uses `CacheKeys::RECOVER_ADMIN_ATTEMPTS . md5($email)` adhering to the mandatory convention.
+
 
 ### Core
 
@@ -311,7 +312,7 @@ No abstract `execute()` method on `BaseAction`. Each Action defines its own sign
 | C2 | Actions missing execute() method (2 files) | Cross-Cutting (Infrastructure) | 🔴 Critical | Open |
 | C3 | GetAcademicYearsAction missing BaseAction | Settings | 🔴 Critical | Open |
 | C8 | config/mary.php references non-existent Spotlight class | Cross-Cutting (Infrastructure) | 🔴 Critical | Open |
-| C14 | RecoverSuperAdminAction uses raw cache key | Setup | 🔴 Critical | Open |
+| C14 | RecoverSuperAdminAction uses raw cache key | Setup | 🔴 Critical | Resolved |
 | L1 | Logbook: no industry supervisor feedback container | Logbook | 🔴 Critical | Proposal |
 | A8 | SupervisionManager described as "manages" but is read-only | Mentor | 🟠 High | Open |
 | A9 | RegistrationWizardForm not documented at all | Registration | 🟠 High | Open |
