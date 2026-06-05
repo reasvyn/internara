@@ -13,6 +13,7 @@ For complete technical reference including API, models, actions, and components,
 
 - **One logbook entry per day** — students write one daily entry covering activities, learnings, challenges, and plans. The system enforces a maximum of one entry per calendar day per student.
 - **Logbook has a draft→submit→verify workflow** — entries start in DRAFT, move to SUBMITTED (student submits), then VERIFIED (mentor acknowledges). Mentor can request REVISION_REQUIRED which sends it back to DRAFT.
+- **Dual Mentor Fallback & Optionality** — Industry supervisors verify daily journals, but to avoid blocking student workflows, all supervisor actions are optional. If a supervisor is inactive, the assigned school teacher can bypass the supervisor queue and verify the journal entry directly.
 - **Attendance is timestamp-based** — students clock in and out. Duration is auto-computed. Optional GPS data can be attached. Records are immutable after a configurable window (default 24h).
 - **Absence requires approval** — planned or unplanned absences must be submitted with a reason. Single-day absences are approved by the mentor. Extended absences require additional approval.
 - **Schedules define work expectations** — admins create schedules with recurring events. Students see their weekly work plan. Conflicts are detected and warned.
@@ -28,7 +29,8 @@ Tracks activity within an enrollment (student + program). Enrollment provides th
 ## Module Rules
 
 - **One logbook entry per calendar day per student.** Attempting to create a second entry returns a `ConflictException`.
-- **Logbook draft workflow**: DRAFT → SUBMITTED → VERIFIED. Mentor can send SUBMITTED back to DRAFT via REVISION_REQUIRED. VERIFIED is terminal (immutable).
+- **Logbook draft workflow**: DRAFT → SUBMITTED → VERIFIED (or FINALIZED). Industry supervisor approves SUBMITTED.
+- **Teacher Verification Bypass**: If an entry remains in `SUBMITTED` for more than 48 hours without supervisor action, the school teacher can bypass the supervisor and directly sign off/finalize the entry (tagged as `verified_by_fallback` in audit logs).
 - **Attendance records are immutable after the configurable window** (default 24 hours from clock-out). Corrections require admin override.
 - **Absence requests** require a reason. Extended absences (configurable threshold, default 3+ days) require secondary approval from a coordinator.
 - **Compliance monitoring**: if a student has no logbook entry for N days (default 3), the mentor is notified. At N+2 days, the program coordinator is also notified.
