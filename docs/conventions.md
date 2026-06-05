@@ -71,7 +71,7 @@ Core provides base classes for every layer. Use them when they add value — ski
 | Policy | `BasePolicy` | `AuthorizesRoles`, `AuthorizesOwnership` traits |
 | Livewire CRUD | `BaseRecordManager` | Search, filter, sort, pagination, bulk actions |
 | Controller | `BaseController` (optional) | Marker for controllers, can extend Laravel's `Controller` directly |
-| Form Request | `FormRequest` (Core's) | Consistent `ValidationFailedException` on failure |
+| Form Request | `BaseFormRequest` | Consistent `ValidationFailedException` on failure (located in `app/Core/Http/Requests/BaseFormRequest.php`) |
 | Enum | Implements `LabelEnum` | `label(): string` |
 | Status enum | Implements `StatusEnum` (+ LabelEnum) | `canTransitionTo()`, `validTransitions()`, `isTerminal()` |
 | Exception | Extends `AppException` or `DomainException` | `HasExceptionContext` trait |
@@ -249,14 +249,13 @@ framework services (container, config, facades) and does not fit the Action patt
 | Read Action | `{Context}Reader`, `Get{Dashboard}Data`, `{Entity}Query` | `InternshipDashboardReader`, `GetStudentStatsData` |
 | Process Action | `{Verb}{Entity}Process` | `RegisterStudentProcess`, `CloseInternshipProcess` |
 | Entity | `{Name}` | `Apprentice`, `InternshipPeriod`, `RegistrationState` |
-| Data / DTO | `{Verb}{Entity}Data` or `{Entity}Data` | `CreateInternshipData`, `ApproveReportData` |
+| Data / DTO | `{Verb}{Entity}Data` or `{Entity}Data` (extending `BaseData`) | `CreateInternshipData`, `ApproveReportData` |
 | Livewire | `{Name}` — suffixed with Manager, Editor, Center | `UserManager`, `ProfileEditor`, `RegistrationCenter` |
 | Livewire alias (submodule) | `{kebab-module}.{kebab-submodule}.{kebab-name}` | `admin.user.user-manager` |
 | Livewire alias (root) | `{kebab-module}.{kebab-name}` | `user.profile-editor` |
-| Livewire Form | `{Entity}Form` | `AcademicYearForm`, `SchoolForm` |
+| Livewire Form | `{Entity}Form` (extending `Livewire\Form`) | `AcademicYearForm`, `SchoolForm` |
 | Policy | `{Name}Policy` | `UserPolicy`, `InternshipPolicy` |
-| Enum | `{Name}` | `AccountStatus`, `InternshipStatus`, `Role` |
-| Enum case | `UPPER_SNAKE` | `SUPER_ADMIN`, `DRAFT`, `PENDING_REVIEW` |
+| Exception | `{Name}Exception` | `ConflictException`, `ValidationFailedException` |
 | Controller | `{Name}Controller` | `DashboardController`, `ReportController` |
 | Middleware | `{Name}Middleware` | `CheckRoleMiddleware`, `SetLocaleMiddleware` |
 | Event | `{Entity}{Actioned}` — past tense | `InternshipCreated`, `ReportApproved`, `StudentRegistered` |
@@ -636,10 +635,10 @@ or multiple callers). They live in `app/{Module}/Data/`.
 
 - Extend `App\Core\Data\BaseData`.
 - `final readonly` class with typed constructor parameters.
-- Use `Data::fromArray()` during migration for backward compatibility.
+- Use `BaseData::fromArray()` during migration for backward compatibility.
 
 ```php
-final readonly class CreateInternshipData extends Data
+final readonly class CreateInternshipData extends BaseData
 {
     public function __construct(
         public string $name,
@@ -965,7 +964,57 @@ imports for everything else.
 
 ---
 
-## 20. Testing
+## 20. Exception Hierarchy & Handling
+
+Two separate exception hierarchies exist. Both use the `HasExceptionContext` trait for consistent CLI-friendly output and error hinting:
+
+1. **`AppException` Hierarchy** (abstract base: `app/Core/Exceptions/AppException.php`):
+   - Derives from standard PHP `RuntimeException`.
+   - Used for application-level, HTTP-level, or infrastructure-level failures.
+   - Core concrete exceptions (located under `app/Exceptions/`) include:
+     - `ConflictException` (conflict state / duplicate records)
+     - `NotFoundException` (HTTP 404 / resource missing)
+     - `UnauthorizedException` (HTTP 403 / permission denied)
+     - `ValidationFailedException` (HTTP 422 / request validation error)
+     - `RateLimitException` (HTTP 429 / request rate limit exceeded)
+
+2. **`DomainException` Hierarchy** (abstract base: `app/Core/Exceptions/DomainException.php`):
+   - Derives from standard PHP `RuntimeException` (does *not* extend `AppException` to isolate domain invariant checks from framework catch blocks).
+   - Used for violations of business rules or invalid model transitions.
+   - Core concrete exceptions (located under `app/Exceptions/`) include:
+     - `RejectedException` (thrown when a domain rule or invariant is violated)
+
+### Rules & Conventions
+- All abstract base exceptions live in `app/Core/Exceptions/`.
+- All concrete exceptions (concrete class implementations) live in `app/Exceptions/`.
+- Actions must throw specific concrete exceptions with a clear error message, optional hint, and relevant metadata context.
+
+---
+
+## 21. Dual Mentor Fallback Protocol
+
+Internara implements a **Dual Mentor Fallback & Optionality Protocol** to ensure that academic progress and student workflows are never blocked by industry supervisor inactivity. 
+
+### Coding & Architectural Conventions
+1. **Actions & Parameters Optionality**:
+   - Any Action that performs verification or sign-off (e.g., `VerifyAttendanceAction`, `FinalizeLogbookAction`, `SubmitEvaluationAction`) must accept nullable parameters or have fallback paths if the industry supervisor is unavailable.
+2. **Bypass Window (Journals/Attendance)**:
+   - Reflective logbooks and attendances support a Teacher override. If a logbook remains in the `SUBMITTED` state for more than the bypass window (default: 48 hours), the assigned `Teacher` can bypass the supervisor.
+   - The corresponding Command Action (e.g. `BypassSupervisorVerificationAction` or equivalent) must:
+     - Transition the logbook/attendance to `FINALIZED` / `VERIFIED`.
+     - Record `verified_by_fallback = true` or set the fallback verifier fields.
+     - Append an audit trail log using `SmartLogger` detailing the teacher who authorized the override.
+     - Clear the supervisor's pending verification queue.
+3. **Grading & Rubric Fallback**:
+   - End-of-placement competency evaluations support:
+     - **Proxy Entry**: Enabling the `Teacher` to enter scores on behalf of the supervisor (controlled via a proxy toggle).
+     - **Weight Redistribution**: Dynamically redistributing the supervisor's weight (40%) to the Teacher (new weight: 40%) and Report/Exam (new weight: 60%) if no supervisor scores are submitted.
+4. **Transparent Compliance Stamping**:
+   - Any document or certificate compiled using fallback weights or proxy scores must be stamped with a metadata tag (`fallback_weights` or `proxy_scores`) to maintain transparent compliance audits.
+
+---
+
+## 22. Testing
 
 ### File Structure
 
@@ -1033,7 +1082,7 @@ describe('AccountStatus', function () {
 
 ---
 
-## 21. Code Quality Enforcement
+## 23. Code Quality Enforcement
 
 | Tool | What It Enforces | How |
 |---|---|---|
