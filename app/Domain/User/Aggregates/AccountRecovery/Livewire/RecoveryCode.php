@@ -46,12 +46,12 @@ class RecoveryCode extends Component
         if (empty($codes)) {
             flash()->error(__('profile.recovery.no_codes'));
 
-            return redirect()->back();
+            return redirect()->route('profile');
         }
 
         $username = auth()->user()->username;
 
-        $pdf = Pdf::loadView('auth.account-recovery.pdf.recovery-codes', [
+        $pdf = Pdf::loadView('user.account-recovery.pdf.recovery-codes', [
             'codes' => $codes,
             'username' => $username,
             'generatedAt' => now()->format('d M Y H:i'),
