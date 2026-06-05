@@ -136,6 +136,6 @@ class TeacherManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('sysadmin.teacher-manager');
+        return view('sysadmin.account.teacher-manager');
     }
 }

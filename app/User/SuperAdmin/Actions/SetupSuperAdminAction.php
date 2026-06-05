@@ -7,10 +7,10 @@ namespace App\User\SuperAdmin\Actions;
 use App\Core\Actions\BaseAction;
 use App\Exceptions\RejectedException;
 use App\Support\PasswordRules;
-use App\User\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Enums\AccountStatus;
 use App\User\Enums\Role as RoleEnum;
 use App\User\Models\User;
+use App\User\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 

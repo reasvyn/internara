@@ -174,6 +174,6 @@ class StudentManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('sysadmin.student-manager');
+        return view('sysadmin.account.student-manager');
     }
 }

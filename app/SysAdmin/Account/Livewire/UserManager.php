@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Account\Livewire;
 
-use App\Enums\CsvRowResult;
 use App\Core\Livewire\BaseRecordManager;
+use App\Enums\CsvRowResult;
 use App\Support\CsvHandler;
 use App\SysAdmin\Account\Actions\BatchDeleteUserAction;
 use App\SysAdmin\Account\Actions\CreateUserAction;
@@ -333,6 +333,6 @@ class UserManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('sysadmin.manager');
+        return view('sysadmin.account.user-manager');
     }
 }

@@ -11,8 +11,8 @@ use App\Academics\AcademicYear\Actions\DeleteAcademicYearAction;
 use App\Academics\AcademicYear\Actions\UpdateAcademicYearAction;
 use App\Academics\AcademicYear\Livewire\Forms\AcademicYearForm;
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
+use App\Exceptions\RejectedException;
 use App\Program\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -231,7 +231,7 @@ class AcademicYearManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('school.academic-year-manager', [
+        return view('academics.academic-year.academic-year-manager', [
             'years' => $this->rows(),
             'stats' => $this->stats,
         ]);

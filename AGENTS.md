@@ -93,7 +93,7 @@ The Core module provides base classes for every layer. You MUST use them:
 | Controller | `BaseController` | `app/Core/Http/Controllers/BaseController.php` |
 | Form Request | `FormRequest` (Core's, not Laravel's) | `app/Core/Http/Requests/FormRequest.php` |
 | DTO | `BaseData` | `app/Core/Data/BaseData.php` |
-| Exception | `AppException` or `DomainException` | `app/Core/Exceptions/` |
+| Exception | `AppException` or `ModuleException` | `app/Core/Exceptions/` |
 | Enum | Must implement `LabelEnum` | `app/Core/Contracts/LabelEnum.php` |
 | Logging | Use `SmartLogger` | `app/Core/Support/SmartLogger.php` |
 

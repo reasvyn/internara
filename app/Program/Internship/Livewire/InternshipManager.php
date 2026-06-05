@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\Program\Internship\Livewire;
 
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Enums\CsvRowResult;
-use App\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
-use App\Support\CsvHandler;
 use App\Enrollment\Models\Placement;
 use App\Enrollment\Models\Registration;
+use App\Enums\CsvRowResult;
+use App\Exceptions\RejectedException;
 use App\Program\Internship\Actions\BatchUpdateInternshipStatusAction;
 use App\Program\Internship\Actions\CheckCloseReadinessAction;
 use App\Program\Internship\Actions\CreateInternshipAction;
@@ -19,6 +18,7 @@ use App\Program\Internship\Actions\UpdateInternshipAction;
 use App\Program\Internship\Enums\InternshipStatus;
 use App\Program\Internship\Livewire\Forms\InternshipForm;
 use App\Program\Internship\Models\Internship;
+use App\Support\CsvHandler;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -381,6 +381,6 @@ class InternshipManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('internship.internship-manager');
+        return view('program.internship.internship-manager');
     }
 }

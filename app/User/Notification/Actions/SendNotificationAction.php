@@ -7,8 +7,8 @@ namespace App\User\Notification\Actions;
 use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Support\CacheKeys;
-use App\User\Notification\Models\Notification;
 use App\User\Models\User;
+use App\User\Notification\Models\Notification;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 

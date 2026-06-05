@@ -55,7 +55,7 @@ Located in `app/Exceptions/`. These extend the abstract exceptions defined in `a
 | `ConflictException` | `App\Core\Exceptions\ActionException` | 409 | Duplicate resource or conflicting operation (e.g. active placement collision). |
 | `NotFoundException` | `App\Core\Exceptions\PresentationException` | 404 | Requested resource does not exist. |
 | `RateLimitException` | `App\Core\Exceptions\InfrastructureException` | 429 | Rate limit limit exceeded. |
-| `RejectedException` | `App\Core\Exceptions\DomainException` | 400 (or action error) | Domain invariant violation (e.g. invalid state machine transition). |
+| `RejectedException` | `App\Core\Exceptions\ModuleException` | 400 (or action error) | Domain invariant violation (e.g. invalid state machine transition). |
 | `UnauthorizedException` | `App\Core\Exceptions\PresentationException` | 403 | User is not authorized to perform the action. |
 | `ValidationFailedException` | `App\Core\Exceptions\ActionException` | 422 | Input validation failed. |
 

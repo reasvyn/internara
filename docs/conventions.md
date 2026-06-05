@@ -1,6 +1,6 @@
 # Coding Conventions
-> Last updated: 2026-06-03
-> Changes: merge Shared module into Core — update Blade component references (x-shared:: → x-core::) and layout namespace
+> Last updated: 2026-06-05
+> Changes: Add BaseEvent to base-classes table, update section 12 events to require BaseEvent, add SmartLogger integration subsection
 > **Context:** ✅ All conventions are enforced — see [module index](modules/module-index.md) for implementation status.
 
 
@@ -74,9 +74,10 @@ Core provides base classes for every layer. Use them when they add value — ski
 | Form Request | `BaseFormRequest` | Consistent `ValidationFailedException` on failure (located in `app/Core/Http/Requests/BaseFormRequest.php`) |
 | Enum | Implements `LabelEnum` | `label(): string` |
 | Status enum | Implements `StatusEnum` (+ LabelEnum) | `canTransitionTo()`, `validTransitions()`, `isTerminal()` |
-| Exception | Extends `AppException` or `DomainException` | `HasExceptionContext` trait |
+| Exception | Extends `AppException` or `ModuleException` | `HasExceptionContext` trait |
 | Cache key | `CacheKeys` constant | Centralized key registry, prevents collisions |
 | DTO | `BaseData` | `app/Core/Data/BaseData.php` |
+| Event | `BaseEvent` | `Dispatchable`, `eventName()` for log translation, `toPayload()` for logging payload |
 
 ### Notes
 
@@ -666,20 +667,24 @@ when a Command Action triggers multiple downstream reactions.
 
 ### Event Conventions
 
-- Event classes are lightweight DTOs with `public readonly` properties.
-- Use the `Dispatchable` trait or `final readonly` class.
+- All new events MUST extend `BaseEvent` (`app/Core/Events/BaseEvent.php`).
+- `BaseEvent` provides the `Dispatchable` trait and the `eventName(): string` contract — used by SmartLogger for log description translation.
+- Events are lightweight classes with public typed properties.
 - Events belong to the module that emits them.
 - Event naming: `{Entity}{PastTenseAction}` — `InternshipCreated`, `ReportApproved`.
 
 ```php
-final readonly class InternshipCreated
+final readonly class InternshipCreated extends BaseEvent
 {
-    use Dispatchable;
-
     public function __construct(
         public readonly Internship $internship,
         public readonly ?User $createdBy = null,
     ) {}
+
+    public function eventName(): string
+    {
+        return 'internship_created';
+    }
 }
 ```
 
@@ -712,6 +717,25 @@ Event::listen(
     [LogSetupFinalized::class, 'handle'],
 );
 ```
+
+### SmartLogger Integration
+
+Events extending `BaseEvent` integrate automatically with SmartLogger. Pass the event object to `event()` instead of a string key:
+
+```php
+SmartLogger::success('User registered')
+    ->event(new UserRegistered($user))
+    ->for($admin)
+    ->save();
+```
+
+When a `BaseEvent` is passed:
+
+1. **Dispatch**: `event($baseEvent)` is called automatically inside `save()`.
+2. **Event name**: `$baseEvent->eventName()` provides the log translation key (replaces the string argument).
+3. **Payload merging**: `$baseEvent->toPayload()` (public properties) is merged first, then explicit `withPayload()` overrides.
+
+This pattern ensures every event is both dispatched and logged with a single fluent call, keeping the audit trail consistent with the event structure.
 
 ---
 
@@ -978,7 +1002,7 @@ Two separate exception hierarchies exist. Both use the `HasExceptionContext` tra
      - `ValidationFailedException` (HTTP 422 / request validation error)
      - `RateLimitException` (HTTP 429 / request rate limit exceeded)
 
-2. **`DomainException` Hierarchy** (abstract base: `app/Core/Exceptions/DomainException.php`):
+2. **`ModuleException` Hierarchy** (abstract base: `app/Core/Exceptions/ModuleException.php`):
    - Derives from standard PHP `RuntimeException` (does *not* extend `AppException` to isolate domain invariant checks from framework catch blocks).
    - Used for violations of business rules or invalid model transitions.
    - Core concrete exceptions (located under `app/Exceptions/`) include:
@@ -1032,8 +1056,10 @@ tests/{Feature,Unit}/{Component}/{Name}Test.php    → Shared component tests (D
   → mirrors `app/User/Profile/Actions/UpdateProfileAction.php`
 - `tests/Unit/Enums/AuditCategoryTest.php`
   → mirrors `app/Enums/AuditCategory.php`
-- `tests/Feature/Core/Livewire/LivewireComponentsTest.php`
-  → mirrors `app/Livewire/LangSwitcher.php` and `app/Livewire/ThemeSwitcher.php`
+- `tests/Feature/Livewire/LangSwitcherTest.php`
+  → mirrors `app/Livewire/LangSwitcher.php`
+- `tests/Feature/Livewire/ThemeSwitcherTest.php`
+  → mirrors `app/Livewire/ThemeSwitcher.php`
 
 ### Scope Isolation (CRITICAL)
 

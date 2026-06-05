@@ -1,6 +1,6 @@
 # SmartLogger Dual-Channel Logging
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+> Last updated: 2026-06-05
+> Changes: Add BaseEvent integration section, update event() signature to string|BaseEvent union type
 
 
 ## Status
@@ -78,7 +78,7 @@ Each method returns the same fluent builder with these configuration methods:
 | `about(?Model $subject)` | Set the subject entity (what was acted upon) | `null` |
 | `withPayload(array)` | Attach contextual data (before/after values, IDs) | `[]` |
 | `module(string)` | Set the modules/module name (e.g., "Registration") | Auto-detected from Action namespace |
-| `event(string)` | Set the event name (e.g., "registration_approved") | Same as message string |
+| `event(string\|BaseEvent)` | Set the event name or BaseEvent object | Same as message string |
 | `channel(string)` | Set a custom log channel name | `null` |
 | `withPiiMasking()` | Enable automatic PII masking on payload | Disabled |
 
@@ -169,6 +169,62 @@ database is unavailable or the Spatie package throws an exception, SmartLogger:
 The system log channel (`writeSystemLog()`) is not wrapped — if the log file is unwritable,
 the application has a storage problem that should surface immediately.
 
+### BaseEvent Integration
+
+Events that need automatic logging integration extend `App\Core\Events\BaseEvent`:
+
+```php
+abstract class BaseEvent
+{
+    use Dispatchable;
+
+    /** Log translation key, e.g. "user_registered" */
+    abstract public function eventName(): string;
+
+    /** Auto-extract public properties for log payload:
+     *  - Model values → {name}_id
+     *  - Objects with toArray() → serialized
+     *  - Scalars → pass through
+     */
+    public function toPayload(): array
+    {
+        foreach (get_object_vars($this) as $key => $value) {
+            if ($value instanceof Model) {
+                $result[$key.'_id'] = $value->getKey();
+            } elseif (is_object($value) && method_exists($value, 'toArray')) {
+                $result[$key] = $value->toArray();
+            } elseif (! is_object($value)) {
+                $result[$key] = $value;
+            }
+        }
+        return $result ?? [];
+    }
+}
+```
+
+SmartLogger accepts `BaseEvent` objects directly via `event()`, replacing the string event name:
+
+```php
+SmartLogger::success('User registered')
+    ->event(new UserRegistered($user))
+    ->for($admin)
+    ->save();
+```
+
+When a `BaseEvent` is passed:
+
+1. **Event dispatch**: `event($baseEvent)` is called inside `save()` — listeners react before the audit trail is written.
+2. **Event name resolution**: `$baseEvent->eventName()` provides the log translation key (replaces the string argument).
+3. **Payload merging**: `$baseEvent->toPayload()` is merged first, then explicit `withPayload()` values override — explicit payload always wins.
+
+Updated fluent API signature:
+
+| Method | Purpose | Default |
+|---|---|---|
+| `event(string\|BaseEvent)` | Event name key or BaseEvent object | Same as message string |
+
+**Backward compatibility**: All existing `event('string_key')` calls work unchanged. The `string|BaseEvent` union type is purely additive — no existing code needs modification.
+
 ### Retention
 
 | Channel | Retention | Pruning Mechanism |
@@ -210,4 +266,5 @@ the application has a storage problem that should surface immediately.
 - `app/Core/Models/ActivityLog.php` — activity log model with query scopes
 - `config/logging.php` — log channel configuration (daily, 14-day retention)
 - `config/activitylog.php` — Spatie Activitylog config (365-day retention)
+- `app/Core/Events/BaseEvent.php` — abstract base event with Dispatchable, eventName(), toPayload()
 - `docs/infrastructure/observability.md` — observability overview (Pulse, health checks, logging)

@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Console\Commands;
 
-use App\Data\AuditReport;
-use App\Enums\AuditStatus;
 use App\Core\Support\SmartLogger;
+use App\Data\AuditReport;
 use App\Enums\AuditCategory;
+use App\Enums\AuditStatus;
 use App\Providers\AppServiceProvider;
+use App\Setup\Actions\GenerateSetupTokenAction;
+use App\Setup\Support\SystemProvisioner;
 use App\SysAdmin\Console\Commands\Traits\InteractsWithInstallerCli;
-use App\SysAdmin\Setup\Actions\GenerateSetupTokenAction;
-use App\SysAdmin\Setup\Actions\InstallSystemAction;
-use App\SysAdmin\Setup\Services\EnvironmentAuditor;
-use App\SysAdmin\Setup\Support\SystemProvisioner;
+use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use Illuminate\Console\Command;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
@@ -21,9 +20,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\File;
-
-use function Laravel\Prompts\confirm;
-use function Laravel\Prompts\error;
 
 class SetupInstallCommand extends Command
 {
@@ -38,7 +34,6 @@ class SetupInstallCommand extends Command
         private EnvironmentAuditor $auditor,
         private SystemProvisioner $provisioner,
         private GenerateSetupTokenAction $generateToken,
-        private InstallSystemAction $installSystem,
     ) {
         parent::__construct();
         $this->description = __('setup.cli.starting_installation');
@@ -49,70 +44,8 @@ class SetupInstallCommand extends Command
         $this->displayBanner();
 
         try {
-            $isInstalled = $this->isInstalled();
-
-            if ($isInstalled && ! $this->option('force')) {
-                $this->displayError(__('setup.cli.already_installed'));
-                $this->line('  '.__('setup.cli.try_health_check'));
-
-                return self::FAILURE;
-            }
-
-            if ($this->option('force')) {
-                $this->components->warn(__('setup.cli.force_warning'));
-
-                $allowed = config('setup.force_allowed_environments', ['local', 'dev', 'development', 'testing']);
-                if (! in_array(app()->environment(), $allowed, true)) {
-                    $this->displayError(__('setup.cli.force_restricted'));
-
-                    return self::FAILURE;
-                }
-
-                if (app()->resolved('session.store')) {
-                    session()->forget([
-                        'setup.authorized', 'setup.token', 'setup.token_input',
-                        'setup.form_data', 'setup.completed',
-                    ]);
-                }
-            }
-
-            $report = $this->auditor->audit();
-            $this->displayAuditResults($report);
-
-            $failed = array_values(array_filter(
-                $report->checks,
-                fn ($check) => $this->isCriticalCategory($check->category) && $check->status === AuditStatus::FAIL,
-            ));
-
-            if ($failed !== []) {
-                SmartLogger::error(__('setup.cli.audit_failed'))
-                    ->module('setup')
-                    ->event('audit.failed')
-                    ->save();
-
-                $this->displayError(__('setup.cli.audit_failed'));
-
-                return self::FAILURE;
-            }
-
-            if ($this->option('check-only')) {
-                $this->line('  <fg=green>'.__('setup.cli.check_only_complete').'</>');
-
-                return self::SUCCESS;
-            }
-
-            if ($url = $this->option('url')) {
-                $this->setAppUrl($url);
-                $this->line('  <fg=green>'.__('setup.cli.app_url_set', ['url' => $url]).'</>');
-            } elseif ($this->isLocalhostUrl()) {
-                $this->components->warn(__('setup.cli.app_url_warning'));
-                $this->line('  '.__('setup.cli.app_url_hint'));
-            }
-
-            if (! $this->option('force') && ! $this->confirmProceed()) {
-                error(__('setup.cli.aborted'));
-
-                return self::FAILURE;
+            if ($earlyExit = $this->handlePreFlight()) {
+                return $earlyExit;
             }
 
             $this->displaySection(__('setup.cli.starting_installation'));
@@ -172,6 +105,76 @@ class SetupInstallCommand extends Command
         }
     }
 
+    protected function handlePreFlight(): ?int
+    {
+        $isInstalled = $this->isInstalled();
+
+        if ($isInstalled && ! $this->option('force')) {
+            $this->displayError(__('setup.cli.already_installed'));
+            $this->line('  '.__('setup.cli.try_health_check'));
+
+            return self::FAILURE;
+        }
+
+        if ($this->option('force')) {
+            $allowed = config('setup.force_allowed_environments', ['local', 'dev', 'development', 'testing']);
+
+            if (! in_array(app()->environment(), $allowed, true)) {
+                $this->displayError(__('setup.cli.force_restricted'));
+
+                return self::FAILURE;
+            }
+
+            if (app()->resolved('session.store')) {
+                session()->forget([
+                    'setup.authorized', 'setup.token', 'setup.token_input',
+                    'setup.form_data', 'setup.completed',
+                ]);
+            }
+        }
+
+        $report = $this->auditor->audit();
+        $this->displayAuditResults($report);
+
+        $failed = array_values(array_filter(
+            $report->checks,
+            fn ($check) => $this->isCriticalCategory($check->category) && $check->status === AuditStatus::FAIL,
+        ));
+
+        if ($failed !== []) {
+            SmartLogger::error(__('setup.cli.audit_failed'))
+                ->module('setup')
+                ->event('audit.failed')
+                ->save();
+
+            $this->displayError(__('setup.cli.audit_failed'));
+
+            return self::FAILURE;
+        }
+
+        if ($this->option('check-only')) {
+            $this->line('  <fg=green>'.__('setup.cli.check_only_complete').'</>');
+
+            return self::SUCCESS;
+        }
+
+        if ($url = $this->option('url')) {
+            $this->setAppUrl($url);
+            $this->line('  <fg=green>'.__('setup.cli.app_url_set', ['url' => $url]).'</>');
+        } elseif ($this->isLocalhostUrl()) {
+            $this->components->warn(__('setup.cli.app_url_warning'));
+            $this->line('  '.__('setup.cli.app_url_hint'));
+        }
+
+        if (! $this->option('force') && ! $this->confirmProceed()) {
+            $this->line('  <fg=red>'.__('setup.cli.aborted').'</>');
+
+            return self::FAILURE;
+        }
+
+        return null;
+    }
+
     protected function displayAuditResults(AuditReport $report): void
     {
         $categories = config('setup.audit_categories', [
@@ -221,10 +224,7 @@ class SetupInstallCommand extends Command
 
     protected function confirmProceed(): bool
     {
-        return confirm(
-            label: __('setup.cli.proceed_confirm'),
-            default: true,
-        );
+        return $this->confirm(__('setup.cli.proceed_confirm'), true);
     }
 
     protected function displaySuccess(string $token, Carbon $expiresAt): void
@@ -297,7 +297,7 @@ class SetupInstallCommand extends Command
         }
     }
 
-    private function runOptimization(): void
+    protected function runOptimization(): void
     {
         Artisan::call('config:cache');
         Artisan::call('route:cache');

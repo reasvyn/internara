@@ -1,7 +1,7 @@
 # Module Documentation Index
 
-> Last updated: 2026-06-04
-> Changes: Converted Status metadata to Changes format; reconciled architecture layers with 12-layer model
+> Last updated: 2026-06-05
+> Changes: Added Setup module to module index; updated total module count to 18; synchronized with SysAdmin restructuring
 
 Complete index of module documentation for the Internara internship management system. Each module manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire components.
 
@@ -50,16 +50,30 @@ Each module has two files:
 ---
 
 ### 3. SysAdmin — System Administration
-**Purpose:** System setup, user administration, announcements, compliance, system configuration, audit logging, and health monitoring
+**Purpose:** User administration, announcements, compliance, system configuration, audit logging, and health monitoring
 
 - Overview: [sysadmin.md](sysadmin.md)
 - Reference: [sysadmin-reference.md](sysadmin-reference.md)
 
-**Key Concepts:** Setup Wizard, Account Lifecycle, GDPR Compliance, Announcements, Settings, Pulse Monitoring
+**Key Concepts:** Account Lifecycle, GDPR Compliance, Announcements, Settings, Pulse Monitoring
 
 **Dependencies:** User, Academics, Core
 
 **Used By:** All modules (via Settings)
+
+---
+
+### 3b. Setup — Installation & Provisioning
+**Purpose:** One-time technical installation, environment check, database provisioning, and setup token lifecycle management
+
+- Overview: [setup.md](setup.md)
+- Reference: [setup-reference.md](setup-reference.md)
+
+**Key Concepts:** SetupWizard, SetupState, EnvironmentAuditor, SystemProvisioner
+
+**Dependencies:** Core, Academics
+
+**Used By:** None (one-time initialization)
 
 ---
 
@@ -296,7 +310,7 @@ Each module has two files:
 
 ## Architecture Overview
 
-All 16 modules are vertical slices cross-cutting the 12-layer architecture defined in [architecture.md](../architecture.md):
+All 18 modules are vertical slices cross-cutting the 12-layer architecture defined in [architecture.md](../architecture.md):
 
 | Layer | Name | Description |
 |---|---|---|
@@ -309,7 +323,7 @@ All 16 modules are vertical slices cross-cutting the 12-layer architecture defin
 | 7 | Business Ops | Command Actions (mutations), Read Actions (queries), Process Actions (orchestration) |
 | 8 | Authorization | Policies (36), RBAC (5 roles + 2 functional), spatie/permission |
 | 9 | Communication | Events, Listeners, Notifications, Console Commands |
-| 10 | HTTP Layer | Controllers, Middleware, 16 module route files |
+| 10 | HTTP Layer | Controllers, Middleware, 18 module route files |
 | 11 | UI / Presentation | Livewire 4 components, Blade templates, maryUI + DaisyUI + Tailwind CSS v4 |
 | 12 | Business Modules | Each module is a vertical slice of layers 1–11 |
 
@@ -317,4 +331,4 @@ Each module is a vertical slice cross-cutting all layers.
 
 ---
 
-*Last synchronized with architecture at 2026-06-04*
+*Last synchronized with architecture at 2026-06-05*

@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
 > Last updated: 2026-06-05
-> Changes: Removed shared enums, exceptions, DTOs, support utilities, and Livewire switchers that have been moved to the Shared module
+> Changes: Added BaseEvent base class, events statistics, and Events section
 
 Detailed structural and implementation reference for the **Core** module.
 
@@ -13,12 +13,13 @@ Provides foundational infrastructure, base classes, contracts, and request lifec
 
 ### Module Statistics
 - **Contracts**: 5 (LabelEnum, StatusEnum, ColorableEnum, SendsNotifications, SettingsStore)
-- **Base Classes**: 8 (BaseModel, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, BaseController, BaseFormRequest, BaseData)
-- **Exceptions**: 6 files (base hierarchy: AppException tree + DomainException tree, plus abstract layers and HasExceptionContext trait)
+- **Base Classes**: 9 (BaseModel, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, BaseController, BaseFormRequest, BaseData, BaseEvent)
+- **Exceptions**: 6 files (base hierarchy: AppException tree + ModuleException tree, plus abstract layers and HasExceptionContext trait)
 - **Middleware**: 2 (SecurityHeaders, LogContext) — RequireSetupAccess is in Academics, SetLocale is in SysAdmin
 - **Support Classes**: 2 (SmartLogger, LangChecker)
 - **Models**: 2 (ActivityLog, BaseModel is abstract)
 - **Enums**: 0 (all system-wide concrete enums moved to Shared)
+- **Events**: 1 (BaseEvent abstract base, concrete events in module submodules)
 - **Livewire Components**: 1 (BaseRecordManager CRUD base component)
 - **Policies**: 1 BasePolicy (concern traits moved to Shared)
 - **Data/DTOs**: 1 (BaseData DTO base, concrete DTOs moved to Shared)
@@ -35,7 +36,7 @@ Provides foundational infrastructure, base classes, contracts, and request lifec
 
 ### 1. The Transaction & Logging Engine (`BaseAction.php`)
 Every Command and Process Action extends `BaseAction`. When `execute()` is called, it triggers the inherited `transaction()` and `log()` logic:
-- **`transaction(Closure $callback)`**: Uses Laravel's DB transaction manager. If any query throws a Throwable, the transaction catches it, rolls back all database modifications, processes it through `HandlesActionErrors`, and rethrows it as an `AppException` or `DomainException`.
+- **`transaction(Closure $callback)`**: Uses Laravel's DB transaction manager. If any query throws a Throwable, the transaction catches it, rolls back all database modifications, processes it through `HandlesActionErrors`, and rethrows it as an `AppException` or `ModuleException`.
 - **`log(string $event, Model $model, array $context = [])`**: Relies on `SmartLogger` to record mutations into Spatie's activity log tables. The context stores metadata like before/after states, omitting masked PII attributes.
 
 ### 2. Dual-channel Output Stream (`SmartLogger.php`)
@@ -76,10 +77,10 @@ AppException (abstract, extends RuntimeException)
 └── PresentationException (abstract) — HTTP-layer failure
 ```
 
-### DomainException Tree (separate, isolated)
+### ModuleException Tree (separate, isolated)
 
 ```
-DomainException (abstract, extends RuntimeException)
+ModuleException (abstract, extends RuntimeException)
 ```
 
 ---
@@ -98,6 +99,7 @@ Located in `app/Core/`:
 | `BaseController` | `Http/Controllers/BaseController.php` | Common controller utilities | All HTTP controllers |
 | `BaseFormRequest` | `Http/Requests/BaseFormRequest.php` | Validation without redirect (throws `ValidationFailedException`) | All form requests |
 | `BaseData` | `Data/BaseData.php` | Abstract readonly DTO with `fromArray()` and `toArray()` | All data transfer objects |
+| `BaseEvent` | `Events/BaseEvent.php` | Abstract base event with `Dispatchable`, `eventName()`, `toPayload()` auto-extracts public properties for logging | All module events |
 
 ---
 
@@ -117,6 +119,14 @@ Core provides 2 middleware in `app/Core/Http/Middleware/`:
 | File | Class | Extends | Purpose |
 |---|---|---|---|
 | `Actions/BaseAction.php` | `BaseAction` | (abstract) | Base for all Command and Process Actions: transaction, log, error handling |
+
+---
+
+## Events
+
+| File | Class | Extends | Purpose |
+|---|---|---|---|
+| `Events/BaseEvent.php` | `BaseEvent` | (abstract) | Base for all module events — Dispatchable, eventName() for log integration, toPayload() for logging payload |
 
 ---
 
@@ -177,12 +187,14 @@ app/Core/
 │   └── BaseData.php                       ← Abstract readonly DTO base
 ├── Entities/
 │   └── BaseEntity.php                     ← Final readonly business rules base
+├── Events/
+│   └── BaseEvent.php                      ← Abstract base event with Dispatchable, eventName(), toPayload()
 ├── Exceptions/
 │   ├── Concerns/
 │   │   └── HasExceptionContext.php        ← Hint, context, CLI format trait
 │   ├── ActionException.php                ← Business operation failures (abstract)
 │   ├── AppException.php                   ← Abstract root for layered exceptions
-│   ├── DomainException.php                ← Abstract root for module invariants
+│   ├── ModuleException.php                ← Abstract root for module invariants
 │   ├── InfrastructureException.php        ← External system failures (abstract)
 │   └── PresentationException.php          ← HTTP-layer failures (abstract)
 ├── Http/

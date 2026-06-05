@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Enrollment\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Exceptions\RejectedException;
 use App\Enrollment\Enums\AccountApplicationStatus;
 use App\Enrollment\Models\AccountApplication;
 use App\Enrollment\Models\Registration;
+use App\Exceptions\RejectedException;
 use App\Guidance\Mentee\Models\Mentee;
-use App\User\Profile\Models\Profile;
 use App\User\Models\User;
+use App\User\Profile\Models\Profile;
 
 final class ApproveAccountApplicationAction extends BaseAction
 {

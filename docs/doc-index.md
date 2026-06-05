@@ -124,7 +124,7 @@ See the [Module Index](modules/module-index.md) for more details on operational 
 | Record | Decision |
 |---|---|
 | [Base Class Mandate](adr/adr-base-class-mandate.md) | Mandatory base classes from Core module |
-| [Exception Hierarchy](adr/adr-exception-hierarchy.md) | Dual exception hierarchy (AppException + DomainException) |
+| [Exception Hierarchy](adr/adr-exception-hierarchy.md) | Dual exception hierarchy (AppException + ModuleException) |
 | [Flat RBAC with Functional Roles](adr/adr-flat-rbac-with-functional-roles.md) | Flat RBAC with derived functional roles |
 
 ### Governing Decisions

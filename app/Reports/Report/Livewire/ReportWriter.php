@@ -80,7 +80,7 @@ class ReportWriter extends Component
     #[Layout('core::layouts.app')]
     public function render(): View
     {
-        return view('internship.report-writer', [
+        return view('reports.report.report-writer', [
             'registrations' => Registration::query()
                 ->whereHas('mentee', fn (Builder $q) => $q->where('user_id', auth()->id()))
                 ->whereIn('status', ['active', 'completed'])

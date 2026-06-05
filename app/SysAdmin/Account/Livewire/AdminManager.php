@@ -151,6 +151,6 @@ class AdminManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('sysadmin.admin-manager');
+        return view('sysadmin.account.admin-manager');
     }
 }

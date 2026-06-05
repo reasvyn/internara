@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\User\Profile\Livewire;
 
+use App\User\Models\User;
 use App\User\Password\Actions\UpdateUserPasswordAction;
 use App\User\Profile\Actions\GetProfileFormDataAction;
 use App\User\Profile\Actions\UpdateProfileAction;
 use App\User\Profile\Livewire\Forms\PasswordForm;
 use App\User\Profile\Livewire\Forms\ProfileForm;
-use App\User\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;

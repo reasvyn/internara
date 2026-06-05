@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\SysAdmin\Setting\Support\AppInfo;
-use App\SysAdmin\Setting\Support\AppMetadata;
-use App\SysAdmin\Setting\Support\Settings;
+use App\SysAdmin\Settings\Support\AppInfo;
+use App\SysAdmin\Settings\Support\AppMetadata;
+use App\SysAdmin\Settings\Support\Settings;
 
 if (! function_exists('setting')) {
     /**

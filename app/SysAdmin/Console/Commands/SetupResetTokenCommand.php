@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\SysAdmin\Console\Commands;
 
 use App\Core\Support\SmartLogger;
-use App\SysAdmin\Setup\Actions\GenerateSetupTokenAction;
-use App\SysAdmin\Setup\Models\Setup;
+use App\Setup\Actions\GenerateSetupTokenAction;
+use App\Setup\Models\Setup;
 use App\SysAdmin\Console\Commands\Traits\InteractsWithInstallerCli;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;

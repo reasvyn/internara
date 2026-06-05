@@ -14,7 +14,7 @@ For complete technical reference including API, models, actions, and components,
 - **Base classes are mandatory** — every Model, Action, Policy, Entity, Controller, FormRequest, Enum, and Livewire CRUD component must extend the corresponding Core base class. No exceptions.
 - **Contracts over implementations** — enums implement `LabelEnum`, state machines implement `StatusEnum`. Consistency across all 16 modules.
 - **SmartLogger dual-channel** — all logging goes through `SmartLogger`, which simultaneously writes to system and activity channels with automatic PII masking.
-- **Exceptions are typed** — use `AppException` for layered framework failures (action/infrastructure/presentation) and `DomainException` for module invariant violations.
+- **Exceptions are typed** — use `AppException` for layered framework failures (action/infrastructure/presentation) and `ModuleException` for module invariant violations.
 - **Core has zero business module dependencies** — it depends only on Laravel, Spatie packages, and PHP. No business module ever imports Core (Core imports nothing from business modules).
 
 ---
@@ -41,7 +41,7 @@ Instead of hardcoding route configuration or class listings:
 ### 4. Resilient Double-tree Exception Hierarchy
 To isolate system exceptions from client-facing application issues:
 * **`AppException` Tree**: Handled presentation, action, or infrastructure failures (e.g., Redis down, duplicate unique keys).
-* **`DomainException` Tree**: Catches strictly business invariant rejections (e.g., state machine bypasses, invalid grading ranges). Enables custom presentation views and clean logs.
+* **`ModuleException` Tree**: Catches strictly business invariant rejections (e.g., state machine bypasses, invalid grading ranges). Enables custom presentation views and clean logs.
 
 ### 5. Decoupled Asynchronous Comm (Cross-Module Event Bus)
 Modules communicate via events. For example, when an enrollment completes, it fires a `PlacementCompleted` event. Listeners in the `Certification` and `Evaluation` modules handle the follow-up asynchronously. This prevents circular coupling between packages.
@@ -82,7 +82,7 @@ Core has no submodules — it provides infrastructure, not business entities. Co
 - **Livewire/**: `BaseRecordManager`
 - **Http/**: `BaseController`, `BaseFormRequest`, `SecurityHeaders`, `LogContext` middleware
 - **Contracts/**: `LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`, `SettingsStore`
-- **Exceptions/**: `AppException` and `DomainException` dual hierarchies, plus abstract exceptions (`ActionException`, `InfrastructureException`, `PresentationException`) and concerns (`HasExceptionContext`)
+- **Exceptions/**: `AppException` and `ModuleException` dual hierarchies, plus abstract exceptions (`ActionException`, `InfrastructureException`, `PresentationException`) and concerns (`HasExceptionContext`)
 - **Support/**: `SmartLogger`, `LangChecker`
 - **Data/**: `BaseData` (abstract readonly DTO base)
 

@@ -9,15 +9,13 @@ use App\SysAdmin\Account\Livewire\SupervisorManager;
 use App\SysAdmin\Account\Livewire\TeacherManager;
 use App\SysAdmin\Account\Livewire\UserManager;
 use App\SysAdmin\Announcement\Livewire\AnnouncementManager;
-use App\SysAdmin\GdprDeletionLog\Livewire\GdprDeletionLogs;
-use App\SysAdmin\Livewire\AccountCloneDetector;
 use App\SysAdmin\Livewire\ApplicationReview;
-use App\SysAdmin\Livewire\AuditLogManager;
-use App\SysAdmin\Setting\Livewire\SystemSetting;
-use App\SysAdmin\Setup\Livewire\SetupWizard;
+use App\SysAdmin\Observability\GdprDeletionLog\Livewire\GdprDeletionLogs;
+use App\SysAdmin\Observability\Livewire\AccountCloneDetector;
+use App\SysAdmin\Observability\Livewire\AuditLogManager;
+use App\SysAdmin\Settings\Livewire\SystemSetting;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Session;
 use Laravel\Pulse\Pulse;
 
 Route::prefix('admin')
@@ -59,21 +57,6 @@ Route::get('/admin/announcements', AnnouncementManager::class)
 Route::livewire('/admin/settings', SystemSetting::class)
     ->name('admin.settings')
     ->middleware(['auth', 'role:super_admin']);
-
-// ──────────────────────────────────────────────
-// Setup submodule (clustered with its own middleware)
-// ──────────────────────────────────────────────
-
-Route::middleware('setup.protected')->group(function () {
-    Route::get('/setup', SetupWizard::class)->name('setup');
-    Route::post('/setup', fn () => redirect()->route('setup'));
-});
-
-Route::post('/setup/cleanup', function () {
-    Session::forget(['setup.form_data', 'setup.authorized']);
-
-    return response()->noContent();
-})->name('setup.cleanup');
 
 // ──────────────────────────────────────────────
 // Cron / system

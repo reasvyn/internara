@@ -10,9 +10,9 @@ use App\Academics\Department\Actions\UpdateDepartmentAction;
 use App\Academics\Department\Livewire\Forms\DepartmentForm;
 use App\Academics\Department\Models\Department;
 use App\Academics\School\Models\School;
+use App\Core\Livewire\BaseRecordManager;
 use App\Enums\CsvRowResult;
 use App\Exceptions\RejectedException;
-use App\Core\Livewire\BaseRecordManager;
 use App\Support\CsvHandler;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -289,7 +289,7 @@ class DepartmentManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('school.department-manager', [
+        return view('academics.department.department-manager', [
             'stats' => $this->stats(),
         ]);
     }

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Data;
 
-use App\Enums\AuditStatus;
+use App\Core\Data\BaseData;
 use App\Enums\AuditCategory;
+use App\Enums\AuditStatus;
 
 final readonly class AuditCheck extends BaseData
 {

@@ -1,4 +1,8 @@
 <x-pulse>
+    <livewire:sys-admin.observability.system-card cols="4" rows="2" />
+
+    <livewire:sys-admin.observability.registrations-card cols="4" rows="2" />
+
     <livewire:pulse.servers cols="full" />
 
     <livewire:pulse.usage cols="4" rows="2" />

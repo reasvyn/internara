@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Http\Controllers;
 
 use App\Core\Http\Controllers\BaseController;
-use App\SysAdmin\Setup\Models\Setup;
+use App\Setup\Models\Setup;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
