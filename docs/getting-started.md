@@ -157,7 +157,7 @@ php artisan serve
 | [Installation](installation.md) | Detailed deployment options, server config, troubleshooting |
 | [Setup Wizard](setup-wizard.md) | Complete walkthrough of all 7 wizard steps |
 | [Post-Setup](post-setup.md) | First actions after the wizard completes |
-| [Architecture](architecture.md) | System design, domains, layers |
+| [Architecture](architecture.md) | System design, modules, layers |
 | [Infrastructure](infrastructure.md) | Deployment options, background processes, storage |
 
 ## Command Reference

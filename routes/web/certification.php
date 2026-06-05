@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Domain\Certification\Aggregates\Certificate\Http\Controllers\CertificateDownloadController;
-use App\Domain\Certification\Aggregates\Certificate\Livewire\CertificateList;
-use App\Domain\Certification\Aggregates\Certificate\Livewire\CertificateTemplateManager;
-use App\Domain\Certification\Aggregates\Certificate\Livewire\StudentCertificates;
+use App\Certification\Certificate\Http\Controllers\CertificateDownloadController;
+use App\Certification\Certificate\Livewire\CertificateList;
+use App\Certification\Certificate\Livewire\CertificateTemplateManager;
+use App\Certification\Certificate\Livewire\StudentCertificates;
 
 Route::middleware('auth')->group(function () {
     Route::get('/certificates/{certificate}/download', CertificateDownloadController::class)

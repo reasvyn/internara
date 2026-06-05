@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Exceptions\ActionException;
-use App\Domain\Core\Exceptions\AppException;
-use App\Domain\Core\Exceptions\ConflictException;
-use App\Domain\Core\Exceptions\InfrastructureException;
-use App\Domain\Core\Exceptions\NotFoundException;
-use App\Domain\Core\Exceptions\PresentationException;
-use App\Domain\Core\Exceptions\RateLimitException;
-use App\Domain\Core\Exceptions\UnauthorizedException;
-use App\Domain\Core\Exceptions\ValidationFailedException;
+use App\Core\Exceptions\ActionException;
+use App\Core\Exceptions\AppException;
+use App\Core\Exceptions\ConflictException;
+use App\Core\Exceptions\InfrastructureException;
+use App\Core\Exceptions\NotFoundException;
+use App\Core\Exceptions\PresentationException;
+use App\Core\Exceptions\RateLimitException;
+use App\Core\Exceptions\UnauthorizedException;
+use App\Core\Exceptions\ValidationFailedException;
 
 test('AppException is abstract', function () {
     $ref = new ReflectionClass(AppException::class);

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Livewire\LangSwitcher;
-use App\Domain\Core\Livewire\ThemeSwitcher;
-use App\Domain\Core\Support\Locale;
+use App\Core\Livewire\LangSwitcher;
+use App\Core\Livewire\ThemeSwitcher;
+use App\Core\Support\Locale;
 use Livewire\Livewire;
 
 test('LangSwitcher initializes with current locale and changes locale successfully', function () {

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Domain\Enrollment\Livewire\ApplyPage;
-use App\Domain\Enrollment\Livewire\DirectPlacementManager;
-use App\Domain\Enrollment\Livewire\PlacementChangeManager;
-use App\Domain\Enrollment\Livewire\PlacementIndex;
-use App\Domain\Enrollment\Livewire\RegistrationCenter;
-use App\Domain\Enrollment\Livewire\RegistrationDocumentUpload;
-use App\Domain\Enrollment\Livewire\RegistrationVerification;
-use App\Domain\Enrollment\Livewire\RegistrationWizard;
-use App\Domain\Enrollment\Livewire\StudentPlacementChangeRequest;
+use App\Enrollment\Livewire\ApplyPage;
+use App\Enrollment\Livewire\DirectPlacementManager;
+use App\Enrollment\Livewire\PlacementChangeManager;
+use App\Enrollment\Livewire\PlacementIndex;
+use App\Enrollment\Livewire\RegistrationCenter;
+use App\Enrollment\Livewire\RegistrationDocumentUpload;
+use App\Enrollment\Livewire\RegistrationVerification;
+use App\Enrollment\Livewire\RegistrationWizard;
+use App\Enrollment\Livewire\StudentPlacementChangeRequest;
 
 Route::middleware('guest')->group(function () {
     Route::livewire('/apply', ApplyPage::class)->name('apply');

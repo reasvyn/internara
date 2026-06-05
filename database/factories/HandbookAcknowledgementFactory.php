@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Guidance\Aggregates\Handbook\Models\Handbook;
-use App\Domain\Guidance\Aggregates\HandbookAcknowledgement\Models\HandbookAcknowledgement;
-use App\Domain\User\Models\User;
+use App\Guidance\Handbook\Models\Handbook;
+use App\Guidance\HandbookAcknowledgement\Models\HandbookAcknowledgement;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class HandbookAcknowledgementFactory extends Factory

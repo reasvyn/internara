@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\User\Aggregates\Profile\Livewire\ProfileEditor;
-use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\User\Enums\Role as RoleEnum;
+use App\User\Models\User;
+use App\User\Profile\Livewire\ProfileEditor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Models\ActivityLog;
+use App\Core\Models\ActivityLog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -13,9 +13,9 @@ test('ActivityLog scope query filters work as expected', function () {
         'log_name' => 'setup',
         'description' => 'System setup completed',
         'event' => 'installed',
-        'subject_type' => 'App\Domain\Setup\Models\Setup',
+        'subject_type' => 'App\Setup\Models\Setup',
         'subject_id' => '123e4567-e89b-12d3-a456-426614174000',
-        'causer_type' => 'App\Domain\User\Models\User',
+        'causer_type' => 'App\User\Models\User',
         'causer_id' => '11111111-1111-1111-1111-111111111111',
         'created_at' => now(),
     ]);
@@ -24,9 +24,9 @@ test('ActivityLog scope query filters work as expected', function () {
         'log_name' => 'admin',
         'description' => 'User updated settings',
         'event' => 'updated',
-        'subject_type' => 'App\Domain\SysAdmin\Models\Setting',
+        'subject_type' => 'App\SysAdmin\Models\Setting',
         'subject_id' => '22222222-2222-2222-2222-222222222222',
-        'causer_type' => 'App\Domain\User\Models\User',
+        'causer_type' => 'App\User\Models\User',
         'causer_id' => '22222222-2222-2222-2222-222222222222',
         'created_at' => now()->subDays(5),
     ]);
@@ -37,7 +37,7 @@ test('ActivityLog scope query filters work as expected', function () {
     expect($forUser1->first()->description)->toBe('System setup completed');
 
     // WhereSubject scope
-    $whereSub = ActivityLog::whereSubject('App\Domain\Setup\Models\Setup', '123e4567-e89b-12d3-a456-426614174000')->get();
+    $whereSub = ActivityLog::whereSubject('App\Setup\Models\Setup', '123e4567-e89b-12d3-a456-426614174000')->get();
     expect($whereSub)->toHaveCount(1);
 
     // OfAction scope
@@ -69,7 +69,7 @@ test('ActivityLog scope query filters work as expected', function () {
     expect($grouped)->not->toBeEmpty();
 
     // getSubjectModelAttribute
-    $log = ActivityLog::where('subject_type', 'App\Domain\Setup\Models\Setup')->first();
+    $log = ActivityLog::where('subject_type', 'App\Setup\Models\Setup')->first();
     expect($log->subject_model)->toBe('Setup');
 
     $logNoSubject = new ActivityLog;

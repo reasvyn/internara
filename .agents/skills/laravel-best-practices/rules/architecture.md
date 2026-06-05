@@ -6,7 +6,7 @@ All code lives under `app/Domain/{Domain}/` — no top-level `app/Models/`, `app
 
 ## Why It Matters
 
-Domain-first grouping keeps every concept self-contained. When working on "Academic Year," all its code — Model, Action, Entity, Livewire, Policy, Enum — is in `app/Domain/School/` (or whichever domain owns it). This is faster to navigate than Laravel's default layer-first structure where related code is scattered across `app/Models/`, `app/Http/Controllers/`, etc.
+Module-first grouping keeps every concept self-contained. When working on "Academic Year," all its code — Model, Action, Entity, Livewire, Policy, Enum — is in `app/Domain/School/` (or whichever module owns it). This is faster to navigate than Laravel's default layer-first structure where related code is scattered across `app/Models/`, `app/Http/Controllers/`, etc.
 
 Constructor injection over `app()` or `resolve()` makes dependencies explicit and testable. Interfaces at system boundaries (PaymentGateway, NotificationService) allow swapping implementations without changing business logic.
 
@@ -21,4 +21,4 @@ Additional practices:
 - `Concurrency::run()` for parallel independent operations
 - `Context` for request-scoped data (tenant ID, request ID)
 
-Exceptions: The User model extends `Illuminate\Foundation\Auth\User` rather than `BaseModel`, placed in `app/Domain/User/Models/`.
+Exceptions: The User model extends `Illuminate\Foundation\Auth\User` rather than `BaseModel`, placed in `app/User/Models/`.

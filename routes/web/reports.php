@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Reports\Aggregates\Report\Http\Controllers\ReportController;
-use App\Domain\Reports\Aggregates\Report\Livewire\ReportWriter;
+use App\Reports\Report\Http\Controllers\ReportController;
+use App\Reports\Report\Livewire\ReportWriter;
 
 Route::prefix('student')
     ->name('student.')

@@ -1471,7 +1471,7 @@
             },
             "suggest": {
                 "ext-curl": "Required for CURL handler support",
-                "ext-intl": "Required for Internationalized Domain Name (IDN) support",
+                "ext-intl": "Required for Internationalized Module Name (IDN) support",
                 "psr/log": "Required for using the Log middleware"
             },
             "type": "library",

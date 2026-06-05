@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-use App\Domain\Academics\Http\Middleware\ProtectSetupRouteMiddleware;
-use App\Domain\Academics\Http\Middleware\RequireSetupAccessMiddleware;
-use App\Domain\Core\Exceptions\AppException;
-use App\Domain\Core\Exceptions\NotFoundException;
-use App\Domain\Core\Exceptions\RateLimitException;
-use App\Domain\Core\Exceptions\UnauthorizedException;
-use App\Domain\Core\Exceptions\ValidationFailedException;
-use App\Domain\Core\Http\Middleware\LogContext;
-use App\Domain\Core\Http\Middleware\SecurityHeaders;
-use App\Domain\SysAdmin\Aggregates\Setting\Http\Middleware\SetLocaleMiddleware;
-use App\Domain\User\Http\Middleware\AuthThrottleMiddleware;
-use App\Domain\User\Http\Middleware\CheckRoleMiddleware;
+use App\Academics\Http\Middleware\ProtectSetupRouteMiddleware;
+use App\Academics\Http\Middleware\RequireSetupAccessMiddleware;
+use App\Core\Exceptions\AppException;
+use App\Core\Exceptions\NotFoundException;
+use App\Core\Exceptions\RateLimitException;
+use App\Core\Exceptions\UnauthorizedException;
+use App\Core\Exceptions\ValidationFailedException;
+use App\Core\Http\Middleware\LogContext;
+use App\Core\Http\Middleware\SecurityHeaders;
+use App\SysAdmin\Setting\Http\Middleware\SetLocaleMiddleware;
+use App\User\Http\Middleware\AuthThrottleMiddleware;
+use App\User\Http\Middleware\CheckRoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -27,9 +27,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withCommands([
-        __DIR__.'/../app/Domain/Core/Console/Commands',
-        __DIR__.'/../app/Domain/SysAdmin/Console/Commands',
-        __DIR__.'/../app/Domain/User/Console/Commands',
+        __DIR__.'/../app/Core/Console/Commands',
+        __DIR__.'/../app/SysAdmin/Console/Commands',
+        __DIR__.'/../app/User/Console/Commands',
     ])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([

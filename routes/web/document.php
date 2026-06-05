@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Document\Aggregates\OfficialDocument\Http\Controllers\DocumentRenderController;
-use App\Domain\Document\Aggregates\OfficialDocument\Livewire\ReportsManager;
+use App\Document\OfficialDocument\Http\Controllers\DocumentRenderController;
+use App\Document\OfficialDocument\Livewire\ReportsManager;
 
 Route::prefix('admin')
     ->name('sysadmin.')

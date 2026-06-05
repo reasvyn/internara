@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\SysAdmin\Aggregates\Announcement\Models\Announcement;
-use App\Domain\User\Models\User;
+use App\SysAdmin\Announcement\Models\Announcement;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AnnouncementFactory extends Factory

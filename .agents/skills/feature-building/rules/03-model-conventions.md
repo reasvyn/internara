@@ -11,7 +11,7 @@ Consistent model conventions ensure every Model in the codebase follows the same
 ## When It Applies
 
 Every Model creation follows these rules:
-- Business models extend `App\Domain\Core\Models\BaseModel` (UUID PK)
+- Business models extend `App\Core\Models\BaseModel` (UUID PK)
 - User extends `Illuminate\Foundation\Auth\User` (applies `HasUuids` independently)
 - Mass assignment uses `#[Fillable([...])]` attribute
 - Hidden fields use `#[Hidden([...])]` attribute
@@ -22,4 +22,4 @@ Every Model creation follows these rules:
 
 Media-related methods go on the Model: `registerMediaCollections()`, `registerMediaConversions()`.
 
-Exceptions: The User model does not extend BaseModel because it extends the framework's Authentication base class. All other domain models extend BaseModel.
+Exceptions: The User model does not extend BaseModel because it extends the framework's Authentication base class. All other module models extend BaseModel.

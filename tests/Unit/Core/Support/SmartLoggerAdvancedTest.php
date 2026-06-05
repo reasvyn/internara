@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Support\SmartLogger;
-use App\Domain\User\Models\User;
+use App\Core\Support\SmartLogger;
+use App\User\Models\User;
 use Illuminate\Support\Facades\Log;
 
 test('SmartLogger systemOnly skips activity log', function () {

@@ -45,7 +45,7 @@ The system log captures technical details — error messages, stack traces,
 debug information, infrastructure warnings. This is what an operator reads
 to diagnose problems.
 
-The activity log captures business-domain audit events — user registered,
+The activity log captures business-module audit events — user registered,
 internship approved, role assigned, setting changed. This is what an auditor
 reads to verify compliance. The activity log is immutable: records are never
 updated or deleted through the application. Old records are pruned by a
@@ -110,11 +110,11 @@ for integration with external monitoring systems.
 
 ## Where to Find It
 
-The SmartLogger is at `app/Domain/Core/Support/SmartLogger.php`. The PII
-masker is at `app/Domain/Core/Support/PiiMasker.php`. The log context
-middleware is at `app/Domain/Core/Http/Middleware/LogContext.php`. The health
-command is at `app/Domain/Core/Console/Commands/HealthCommand.php`. The
+The SmartLogger is at `app/Core/Support/SmartLogger.php`. The PII
+masker is at `app/Core/Support/PiiMasker.php`. The log context
+middleware is at `app/Core/Http/Middleware/LogContext.php`. The health
+command is at `app/Core/Console/Commands/HealthCommand.php`. The
 cleanup command is at
-`app/Domain/Core/Console/Commands/CleanupCommand.php`. Pulse configuration
+`app/Core/Console/Commands/CleanupCommand.php`. Pulse configuration
 is in `config/pulse.php`. Activity log configuration is in
 `config/activitylog.php`. Logging configuration is in `config/logging.php`.

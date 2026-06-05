@@ -1,7 +1,7 @@
 # Coding Conventions
 > Last updated: 2026-06-03
-> Changes: merge Shared domain into Core — update Blade component references (x-shared:: → x-core::) and layout namespace
-> **Context:** ✅ All conventions are enforced — see [domain index](domain/domain-index.md) for implementation status.
+> Changes: merge Shared module into Core — update Blade component references (x-shared:: → x-core::) and layout namespace
+> **Context:** ✅ All conventions are enforced — see [module index](modules/module-index.md) for implementation status.
 
 
 This document describes conventions for writing code in the Internara codebase. These rules
@@ -28,25 +28,25 @@ Every change — feature, refactor, bug fix — begins with documentation. Befor
 single line of code, the relevant docs must be updated to describe the intended outcome.
 This applies at all scales:
 
-- **New feature** → document the feature in `key-features.md`, update the domain's
-  conceptual doc (`{domain}.md`) and API reference (`{domain}-reference.md`)
+- **New feature** → document the feature in `key-features.md`, update the module's
+  conceptual doc (`{module}.md`) and API reference (`{module}-reference.md`)
 - **Architecture change** → update `architecture.md` and any affected ADRs
 - **Bug fix** → if the fix changes behavior, update the affected docs
-- **Refactor** → if the refactor moves code between domains, update both domains' docs
-  and `domain-index.md`
+- **Refactor** → if the refactor moves code between modules, update both modules' docs
+  and `module-index.md`
 
 Implementation follows documentation. The docs describe the target state; code catches up.
 
 ### Two Documentation Tiers
 
-Each domain has two documents serving different audiences:
+Each module has two documents serving different audiences:
 
 | Document | Audience | Content |
 |---|---|---|
-| `docs/domain/{domain}.md` | Architects, developers, stakeholders | Purpose, design principles, domain boundary — pure conceptual design, no implementation details |
-| `docs/domain/{domain}-reference.md` | Developers, reviewers | Full API reference — file paths, class names, table schemas, dependency graphs |
+| `docs/modules/{module}.md` | Architects, developers, stakeholders | Purpose, design principles, module boundary — pure conceptual design, no implementation details |
+| `docs/modules/{module}-reference.md` | Developers, reviewers | Full API reference — file paths, class names, table schemas, dependency graphs |
 
-When describing a domain's behavior, write the conceptual doc. When listing files or
+When describing a module's behavior, write the conceptual doc. When listing files or
 classes, write the reference doc. Never mix implementation details into conceptual docs.
 
 ### Documentation Updates as Part of Definition of Done
@@ -88,60 +88,60 @@ Core provides base classes for every layer. Use them when they add value — ski
 
 ## 2. File Structure
 
-### Domain Structure — Aggregate-Based
+### Module Structure — Submodule-Based
 
-Code is organized by domain, then by **DDD Aggregate** within each domain. Each aggregate
+Code is organized by module, then by **Submodule** within each module. Each submodule
 directory is a self-contained vertical slice with its own technical layers. Files that span
-multiple aggregates live at the domain root.
+multiple submodules live at the module root.
 
 ```
-app/Domain/{Domain}/
-├── {Aggregate}/                    → One directory per aggregate root
+app/Module/{Module}/
+├── {SubModule}/                    → One directory per submodule root
 │   ├── Actions/                    → Business operations (Command, Read, Process)
-│   ├── Models/                     → Eloquent models belonging to this aggregate
+│   ├── Models/                     → Eloquent models belonging to this submodule
 │   ├── Policies/                   → Authorization gates
 │   ├── Livewire/                   → UI components (optional)
 │   │   └── Forms/                  → Form Objects (optional)
 │   ├── Entities/                   → Pure business rules (optional)
-│   ├── Enums/                      → Enum specific to this aggregate (optional)
-│   ├── Events/                     → Domain events (optional)
+│   ├── Enums/                      → Enum specific to this submodule (optional)
+│   ├── Events/                     → Module events (optional)
 │   ├── Listeners/                  → Event subscribers (optional)
 │   └── Notifications/              → Multi-channel alerts (optional)
 ├── Types/                          → Shared value objects, flat enums, rules (optional)
-├── Actions/                        → Cross-aggregate orchestration (optional)
-├── Http/                           → Cross-aggregate controllers & middleware (optional)
+├── Actions/                        → Cross-submodule orchestration (optional)
+├── Http/                           → Cross-submodule controllers & middleware (optional)
 │   ├── Controllers/
 │   └── Middleware/
-├── Console/                        → Cross-aggregate artisan commands (optional)
-├── Livewire/                       → Cross-aggregate UI (dashboards, etc.) (optional)
+├── Console/                        → Cross-submodule artisan commands (optional)
+├── Livewire/                       → Cross-submodule UI (dashboards, etc.) (optional)
 │   └── Forms/                      → Form Objects (optional)
-├── Notifications/                  → Cross-aggregate notifications (optional)
-├── Events/                         → Cross-aggregate events (optional)
-├── Listeners/                      → Cross-aggregate listeners (optional)
-├── Support/                        → Shared domain utilities (optional)
+├── Notifications/                  → Cross-submodule notifications (optional)
+├── Events/                         → Cross-submodule events (optional)
+├── Listeners/                      → Cross-submodule listeners (optional)
+├── Support/                        → Shared module utilities (optional)
 └── Services/                       → Infrastructure services (optional)
 ```
 
-### Aggregate Grouping Rules
+### Submodule Grouping Rules
 
-- **Aggregate directory** — named after the aggregate root concept (`User/`, `Profile/`,
+- **Submodule directory** — named after the submodule root concept (`User/`, `Profile/`,
   `Internship/`, `Placement/`, etc.)
 - **`Types/`** — value objects, simple enums, and validation rules too small for their own
-  aggregate. Examples: `Gender.php`, `BloodType.php`, `SystemUsername.php`.
-- **Root `Actions/`** — cross-aggregate orchestration (dashboard stats, multi-aggregate
-  queries, services that span aggregates).
-- **Root `Http/`** — cross-aggregate controllers (dashboards, home page).
-- **Root `Console/`** — domain-wide artisan commands (not specific to one aggregate).
-- **Root `Livewire/`** — cross-aggregate UI components (dashboards, global widgets).
-- **Root `Support/`** — shared utilities not belonging to any single aggregate.
+  submodule. Examples: `Gender.php`, `BloodType.php`, `SystemUsername.php`.
+- **Root `Actions/`** — cross-submodule orchestration (dashboard stats, multi-submodule
+  queries, services that span submodules).
+- **Root `Http/`** — cross-submodule controllers (dashboards, home page).
+- **Root `Console/`** — module-wide artisan commands (not specific to one submodule).
+- **Root `Livewire/`** — cross-submodule UI components (dashboards, global widgets).
+- **Root `Support/`** — shared utilities not belonging to any single submodule.
 
-### Aggregate Encapsulation Rules
+### Submodule Encapsulation Rules
 
-1. Files inside an aggregate directory MUST NOT import from sibling aggregate directories
-   within the same domain. Cross-aggregate access goes through the domain root.
-2. Root domain files (`Actions/`, `Http/`, `Console/`, `Livewire/`) MAY import from any
-   aggregate within the same domain — they are the coordination layer.
-3. An aggregate MAY import from other domains (respecting cross-domain rules in
+1. Files inside an submodule directory MUST NOT import from sibling submodule directories
+   within the same module. Cross-submodule access goes through the module root.
+2. Root module files (`Actions/`, `Http/`, `Console/`, `Livewire/`) MAY import from any
+   submodule within the same module — they are the coordination layer.
+3. An submodule MAY import from other modules (respecting cross-module rules in
    [architecture.md](architecture.md)).
 
 ### Services vs Support
@@ -178,7 +178,7 @@ framework services (container, config, facades) and does not fit the Action patt
 
 | Element | Convention | Example |
 |---|---|---|
-| Aggregate directory | Singular `{Name}` (aggregate root concept) | `User`, `Profile`, `Internship`, `Placement` |
+| Submodule directory | Singular `{Name}` (submodule root concept) | `User`, `Profile`, `Internship`, `Placement` |
 | Types directory | `Types/` for small value objects | `Types/Gender.php`, `Types/BloodType.php` |
 | Model | Singular `{Name}` | `User`, `AcademicYear`, `Internship` |
 | Command Action | `{Verb}{Entity}Action` | `CreateUserAction`, `ApproveRegistrationAction` |
@@ -187,8 +187,8 @@ framework services (container, config, facades) and does not fit the Action patt
 | Entity | `{Name}` | `Apprentice`, `InternshipPeriod`, `RegistrationState` |
 | Data / DTO | `{Verb}{Entity}Data` or `{Entity}Data` | `CreateInternshipData`, `ApproveReportData` |
 | Livewire | `{Name}` — suffixed with Manager, Editor, Center | `UserManager`, `ProfileEditor`, `RegistrationCenter` |
-| Livewire alias (aggregate) | `{kebab-domain}.{kebab-aggregate}.{kebab-name}` | `admin.user.user-manager` |
-| Livewire alias (root) | `{kebab-domain}.{kebab-name}` | `user.profile-editor` |
+| Livewire alias (submodule) | `{kebab-module}.{kebab-submodule}.{kebab-name}` | `admin.user.user-manager` |
+| Livewire alias (root) | `{kebab-module}.{kebab-name}` | `user.profile-editor` |
 | Livewire Form | `{Entity}Form` | `AcademicYearForm`, `SchoolForm` |
 | Policy | `{Name}Policy` | `UserPolicy`, `InternshipPolicy` |
 | Enum | `{Name}` | `AccountStatus`, `InternshipStatus`, `Role` |
@@ -198,7 +198,7 @@ framework services (container, config, facades) and does not fit the Action patt
 | Event | `{Entity}{Actioned}` — past tense | `InternshipCreated`, `ReportApproved`, `StudentRegistered` |
 | Listener | `{Verb}{Entity}` or react to event name | `NotifyAdminsInternshipCreated`, `LogSetupFinalized` |
 | Notification | `{Entity}{NotificationType}Notification` | `InternshipCreatedNotification`, `WelcomeNotification` |
-| Console command | `{domain}:{action}` | `system:health`, `admin:recover`, `notifications:prune` |
+| Console command | `{module}:{action}` | `system:health`, `admin:recover`, `notifications:prune` |
 | Route name | `{prefix}.{resource}.{action}` | `admin.users.index`, `internship.reports.show` |
 | Config key | `snake_case` with `{file}.{key}` | `app.name`, `database.default` |
 | Column / table | `snake_case` | `user_id`, `academic_year_id`, `academic_years` |
@@ -269,7 +269,7 @@ with a distinct contract.
 - Single public `execute()` method. Never add a second public method.
 - MUST wrap all database operations in `$this->transaction()`.
 - MUST call `$this->log()` after successful mutation.
-- SHOULD dispatch a domain event for significant state changes.
+- SHOULD dispatch a module event for significant state changes.
 - MUST be preceded by a policy check in the calling layer.
 - Constructor dependencies use `protected readonly` promotion.
 
@@ -302,7 +302,7 @@ class SubmitLogbookAction extends BaseAction
 
 ### 5b. Read Actions (Queries)
 
-**Purpose:** Complex read operations — aggregation, filtering, cross-domain data assembly.
+**Purpose:** Complex read operations — aggregation, filtering, cross-module data assembly.
 Not for simple `Model::find()` or `Model::where()` — those stay in Livewire.
 
 **Base class:** None required. A plain class with constructor injection. May use
@@ -349,7 +349,7 @@ class InternshipProgressReader
 **Contract:**
 - MUST compose other Actions via constructor injection.
 - MUST handle partial failure — what happens to steps 1–2 if step 3 fails?
-- SHOULD emit a single domain event representing the completed process.
+- SHOULD emit a single module event representing the completed process.
 - MUST NOT duplicate business logic that already exists in Command Actions.
 
 **Naming:** `{Verb}{Entity}Process` — `RegisterStudentProcess`, `CloseInternshipProcess`.
@@ -475,10 +475,10 @@ protected $attributes = [
 ## 9. Policies
 
 - Extend `BasePolicy` (provides `AuthorizesRoles` and `AuthorizesOwnership` traits).
-- Auto-discovered from `app/Domain/*/Policies/` by `DomainServiceProvider`. Convention:
-  `{Model}Policy` in the same domain as `{Model}`.
-- Cross-domain policies (where a policy gates a model from another domain) must be
-  registered manually in `DomainServiceProvider::boot()`.
+- Auto-discovered from `app/Module/*/Policies/` by `AppServiceProvider`. Convention:
+  `{Model}Policy` in the same module as `{Model}`.
+- Cross-module policies (where a policy gates a model from another module) must be
+  registered manually in `AppServiceProvider::boot()`.
 - `super_admin` bypasses all gates via `Gate::before()`.
 
 ```php
@@ -511,21 +511,21 @@ class AcademicYearPolicy extends BasePolicy
 - Components delegate all writes to Command Actions.
 - Components delegate complex queries to Read Actions.
 - Computed properties use the `#[Computed]` attribute.
-- Aggregate-specific components live in the aggregate's Livewire directory:
-  `app/Domain/{Domain}/{Aggregate}/Livewire/`
-- Cross-aggregate components (dashboards, global widgets) live in the domain root:
-  `app/Domain/{Domain}/Livewire/`
-- Views live in `resources/views/{domain}/{aggregate}/{component-name}.blade.php`
-  for aggregate-specific views, or `resources/views/{domain}/{component-name}.blade.php`
-  for cross-aggregate views.
-- Component alias (aggregate): `{kebab-domain}.{kebab-aggregate}.{kebab-name}` —
+- Submodule-specific components live in the submodule's Livewire directory:
+  `app/Module/{Module}/{SubModule}/Livewire/`
+- Cross-submodule components (dashboards, global widgets) live in the module root:
+  `app/Module/{Module}/Livewire/`
+- Views live in `resources/views/{module}/{submodule}/{component-name}.blade.php`
+  for submodule-specific views, or `resources/views/{module}/{component-name}.blade.php`
+  for cross-submodule views.
+- Component alias (submodule): `{kebab-module}.{kebab-submodule}.{kebab-name}` —
   e.g., `admin.user.user-manager`
-- Component alias (root): `{kebab-domain}.{kebab-name}` —
+- Component alias (root): `{kebab-module}.{kebab-name}` —
   e.g., `user.profile-editor`
 
 ### Form Objects
 
-Complex forms MUST be extracted into `app/Domain/{Domain}/Livewire/Forms/{Name}Form.php`:
+Complex forms MUST be extracted into `app/Module/{Module}/Livewire/Forms/{Name}Form.php`:
 
 ```php
 class AcademicYearForm extends Form
@@ -567,9 +567,9 @@ class AcademicYearForm extends Form
 ## 11. Data / DTOs
 
 DTOs are optional but recommended for Action inputs that have stabilized (3+ parameters
-or multiple callers). They live in `app/Domain/{Domain}/Data/`.
+or multiple callers). They live in `app/Module/{Module}/Data/`.
 
-- Extend `App\Domain\Core\Data\Data`.
+- Extend `App\Core\Data\Data`.
 - `final readonly` class with typed constructor parameters.
 - Use `Data::fromArray()` during migration for backward compatibility.
 
@@ -604,7 +604,7 @@ when a Command Action triggers multiple downstream reactions.
 
 - Event classes are lightweight DTOs with `public readonly` properties.
 - Use the `Dispatchable` trait or `final readonly` class.
-- Events belong to the domain that emits them.
+- Events belong to the module that emits them.
 - Event naming: `{Entity}{PastTenseAction}` — `InternshipCreated`, `ReportApproved`.
 
 ```php
@@ -622,7 +622,7 @@ final readonly class InternshipCreated
 ### Listener Conventions
 
 - Listeners implement `ShouldQueue` for non-critical side effects.
-- Listeners can live in any domain.
+- Listeners can live in any module.
 - Listener naming: describe what the listener does — `NotifyAdminsInternshipCreated`,
   `InvalidateDashboardCache`, `LogSetupFinalized`.
 
@@ -641,7 +641,7 @@ class NotifyAdminsInternshipCreated implements ShouldQueue
 
 ### Registration
 
-Listeners are registered in `DomainServiceProvider::boot()`:
+Listeners are registered in `AppServiceProvider::boot()`:
 ```php
 Event::listen(
     SetupFinalized::class,
@@ -708,7 +708,7 @@ class InternshipCreatedNotification extends Notification implements ShouldQueue
 
 ### Routes
 
-- Routes are split by domain in `routes/web/{domain}.php`.
+- Routes are split by module in `routes/web/{module}.php`.
 - Master `routes/web.php` requires them in dependency order.
 - All routes use `->name()`: `Route::get(...)->name('admin.users.index')`.
 - Route naming: `{prefix}.{resource}.{action}`.
@@ -732,11 +732,11 @@ Route::middleware(['guest', 'auth.throttle'])->group(function () { ... });
 
 ## 15. Console Commands
 
-- Command signature follows `{domain}:{action}` naming.
+- Command signature follows `{module}:{action}` naming.
 - Use verb-noun pairs: `system:health`, `admin:recover`, `notifications:prune`.
 - Arguments use curly braces: `{email?}`, `{--force}`.
 - Use Laravel's `Command` base class (not a Core base class).
-- Commands live in the owning domain's `Console/Commands/` directory.
+- Commands live in the owning module's `Console/Commands/` directory.
 
 ```php
 class HealthCommand extends Command
@@ -758,27 +758,27 @@ class HealthCommand extends Command
 
 ## 16. Blade Views
 
-Views mirror the aggregate-based source structure:
+Views mirror the submodule-based source structure:
 
 ```
-resources/views/{domain}/
-├── {aggregate}/                    → Views for a specific aggregate
+resources/views/{module}/
+├── {submodule}/                    → Views for a specific submodule
 │   ├── {component-name}.blade.php  → Livewire component view
 │   └── components/                 → Sub-views (optional)
-├── layouts/                        → Domain-specific layouts (cross-cutting)
+├── layouts/                        → Module-specific layouts (cross-cutting)
 ├── components/                     → Shared sub-views (cross-cutting)
 └── partials/                       → Reusable partials (cross-cutting)
 ```
 
-- Aggregate-specific views: `resources/views/{domain}/{aggregate}/{component-name}.blade.php`
-  — mirrors the Livewire component path `app/Domain/{Domain}/{Aggregate}/Livewire/`.
-- Cross-aggregate views: `resources/views/{domain}/{component-name}.blade.php`
-  — for dashboards and components that span multiple aggregates.
+- Submodule-specific views: `resources/views/{module}/{submodule}/{component-name}.blade.php`
+  — mirrors the Livewire component path `app/Module/{Module}/{SubModule}/Livewire/`.
+- Cross-submodule views: `resources/views/{module}/{component-name}.blade.php`
+  — for dashboards and components that span multiple submodules.
 - Anonymous components: `x-core::layouts.*`, `x-core::ui.*`, `x-core::widgets.*`.
 - `@props()` declaration at the top of every component template.
 - maryUI components prefixed with `x-mary-`.
 - Layouts: `x-core::layouts.app` (authenticated), `x-core::layouts.guest` (public).
-- Domain-specific layouts in `resources/views/{domain}/layouts/`.
+- Module-specific layouts in `resources/views/{module}/layouts/`.
 
 ---
 
@@ -845,15 +845,15 @@ class InternshipFactory extends Factory
 ### Seeders
 
 - Seeders are idempotent — running them multiple times does not duplicate data.
-- Seeding order respects domain dependencies: school → user → permissions → internships.
+- Seeding order respects module dependencies: school → user → permissions → internships.
 - Use `firstOrCreate()` for reference data, `create()` for test data.
 
 ---
 
 ## 18. Cache Keys
 
-- Every cache key MUST be declared as a constant in `App\Domain\Core\Support\CacheKeys`.
-- Naming: `{domain}.{purpose}[.{qualifier}]`.
+- Every cache key MUST be declared as a constant in `App\Core\Support\CacheKeys`.
+- Naming: `{module}.{purpose}[.{qualifier}]`.
 - TTL is documented in a comment next to the constant.
 - Invalidation trigger is documented in a comment.
 
@@ -876,14 +876,14 @@ final readonly class CacheKeys
 
 ---
 
-## 19. Cross-Domain Communication
+## 19. Cross-Module Communication
 
-Cross-domain imports are **allowed** — import Models, Actions, Policies, or other classes
-from sibling domains directly when needed.
+Cross-module imports are **allowed** — import Models, Actions, Policies, or other classes
+from sibling modules directly when needed.
 
 ```php
 // ✅ Direct import — perfectly fine
-use App\Domain\Academics\Models\AcademicYear;
+use App\Academics\Models\AcademicYear;
 
 $activeYear = AcademicYear::where('is_active', true)->first();
 ```
@@ -891,9 +891,9 @@ $activeYear = AcademicYear::where('is_active', true)->first();
 ### Guidelines
 
 1. **Direct import** (simplest, preferred for straightforward access)
-2. **Domain Events** (preferred when the same event triggers 2+ independent reactions)
-3. **Action delegation** (fine for cross-domain Action calls)
-4. **Core contracts** (useful for abstractions used broadly across domains)
+2. **Module Events** (preferred when the same event triggers 2+ independent reactions)
+3. **Action delegation** (fine for cross-module Action calls)
+4. **Core contracts** (useful for abstractions used broadly across modules)
 
 Use events when you want to add new reactions without modifying the caller. Use direct
 imports for everything else.
@@ -904,12 +904,12 @@ imports for everything else.
 
 ### File Structure
 
-Tests mirror the aggregate-based source structure:
+Tests mirror the submodule-based source structure:
 
 ```
-tests/Feature/{Domain}/{Aggregate}/{Name}Test.php  → Integration tests (Actions, Livewire)
-tests/Unit/{Domain}/{Aggregate}/{Name}Test.php     → Pure unit tests (Entities, Enums)
-tests/Unit/{Domain}/Types/{Name}Test.php           → Value objects, flat enums, rules
+tests/Feature/{Module}/{SubModule}/{Name}Test.php  → Integration tests (Actions, Livewire)
+tests/Unit/{Module}/{SubModule}/{Name}Test.php     → Pure unit tests (Entities, Enums)
+tests/Unit/{Module}/Types/{Name}Test.php           → Value objects, flat enums, rules
 ```
 
 ### Scope Isolation (CRITICAL)

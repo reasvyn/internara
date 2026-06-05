@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Assessment\Aggregates\Presentation\Models\Presentation;
-use App\Domain\Enrollment\Models\Registration;
+use App\Assessment\Presentation\Models\Presentation;
+use App\Enrollment\Models\Registration;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PresentationFactory extends Factory

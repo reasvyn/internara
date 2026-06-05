@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\SysAdmin\Setup;
 
-use App\Domain\Academics\Aggregates\AcademicYear\Models\AcademicYear;
-use App\Domain\User\Enums\Role;
+use App\Academics\AcademicYear\Models\AcademicYear;
+use App\User\Enums\Role;
 use Carbon\Carbon;
 use Database\Seeders\SetupSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;

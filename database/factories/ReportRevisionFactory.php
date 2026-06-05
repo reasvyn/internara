@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Reports\Aggregates\Report\Models\ReportRevision;
+use App\Reports\Report\Models\ReportRevision;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReportRevisionFactory extends Factory

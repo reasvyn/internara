@@ -30,12 +30,12 @@ typography) that is themeable at runtime.
 
 ## Layout Structure
 
-Layouts are split between cross-cutting and domain-specific:
+Layouts are split between cross-cutting and module-specific:
 
 | Scope | Directory | Namespace | Referenced As |
 |---|---|---|---|
-| Cross-cutting | `resources/views/core/layouts/` | `core` (auto-registered via `DomainServiceProvider`) | `x-core::layouts.base`, `x-core::layouts.app` |
-| Domain-specific | `resources/views/{domain}/layouts/` | `{domain}` (auto-registered via `DomainServiceProvider`) | `setup::layouts.setup`, `auth::layouts.auth` |
+| Cross-cutting | `resources/views/core/layouts/` | `core` (auto-registered via `AppServiceProvider`) | `x-core::layouts.base`, `x-core::layouts.app` |
+| Module-specific | `resources/views/{module}/layouts/` | `{module}` (auto-registered via `AppServiceProvider`) | `setup::layouts.setup`, `auth::layouts.auth` |
 
 Cross-cutting layouts (`layouts/`) are used by the main application shell:
 - `base.blade.php` — root HTML shell with theme, branding CSS, Alpine.js
@@ -46,16 +46,16 @@ Cross-cutting layouts (`layouts/`) are used by the main application shell:
 - `sidebar.blade.php` — drawer sidebar with role-filtered navigation
 - `header.blade.php` — sticky top header with search and actions
 
-Domain-specific layouts (`{domain}/layouts/`) are used by domain Livewire
+Module-specific layouts (`{module}/layouts/`) are used by module Livewire
 components via the `#[Layout]` attribute:
 - `auth/layouts/auth.blade.php` — centered card for login/password-reset (used as `auth::layouts.auth`)
 - `setup/layouts/setup.blade.php` — wider multi-step layout for the wizard (used as `setup::layouts.setup`)
 
 The convention for choosing where a layout belongs:
-1. If a layout is shared by multiple domains → `resources/views/core/layouts/`
-2. If a layout is specific to one domain → `resources/views/{domain}/layouts/`
+1. If a layout is shared by multiple modules → `resources/views/core/layouts/`
+2. If a layout is specific to one module → `resources/views/{module}/layouts/`
 
-This prevents domain-specific layouts from accumulating in the global
+This prevents module-specific layouts from accumulating in the global
 directory and keeps the boundary explicit.
 
 ## Dark Mode Approach
@@ -88,20 +88,20 @@ wide on large monitors.
 
 ## View Namespaces
 
-Each domain's view directory (`resources/views/{domain}/`) is registered as a
-Blade namespace by `DomainServiceProvider::registerBladeNamespaces()`. This
+Each module's view directory (`resources/views/{module}/`) is registered as a
+Blade namespace by `AppServiceProvider::registerBladeNamespaces()`. This
 provides two access patterns:
 
 | Pattern | Syntax | Example | Mechanism |
 |---|---|---|---|
-| Anonymous component | `x-{domain}::component-name` | `x-setup::brand` | `Blade::anonymousComponentPath()` |
-| View include | `{domain}::view.name` | `setup::layouts.setup` | `View::addNamespace()` |
+| Anonymous component | `x-{module}::component-name` | `x-setup::brand` | `Blade::anonymousComponentPath()` |
+| View include | `{module}::view.name` | `setup::layouts.setup` | `View::addNamespace()` |
 
 Anonymous components are used for reusable UI fragments (cards, modals, buttons).
 View namespace includes are required by Livewire's `#[Layout]` attribute and
-explicit `@include('{domain}::view')` directives.
+explicit `@include('{module}::view')` directives.
 
-The registration happens at boot time in `DomainServiceProvider`:
+The registration happens at boot time in `AppServiceProvider`:
 
 ```php
 foreach ($domainDirs as $dir) {
@@ -145,4 +145,4 @@ Layout templates are in `resources/views/core/layouts/`. UI components are in
 The maryUI configuration is in `config/mary.php`. The sidebar menu
 structure is in `config/menu.php`. The Livewire components for theme
 switching and language switching are in
-`app/Domain/Core/Livewire/`.
+`app/Core/Livewire/`.

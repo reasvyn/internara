@@ -2,11 +2,11 @@
 
 ## When to Activate
 
-Apply this skill whenever writing, reviewing, or refactoring any Laravel PHP code — including controllers, models, migrations, form requests, policies, jobs, scheduled commands, service classes, Eloquent queries, Blade views, and route definitions. This skill is context-aware of the Domain-first Action-based MVC architecture and overrides default Laravel conventions where they conflict.
+Apply this skill whenever writing, reviewing, or refactoring any Laravel PHP code — including controllers, models, migrations, form requests, policies, jobs, scheduled commands, service classes, Eloquent queries, Blade views, and route definitions. This skill is context-aware of the Module-first Action-based MVC architecture and overrides default Laravel conventions where they conflict.
 
 ## Core Principles
 
-The primary architectural rule: all code lives under `app/Domain/{Domain}/` instead of the default `app/Models/`, `app/Http/Controllers/`, etc. This domain-first structure keeps every concept self-contained. Views mirror at `resources/views/{domain}/`, routes are split into `routes/web/{domain}.php`.
+The primary architectural rule: all code lives under `app/Domain/{Domain}/` instead of the default `app/Models/`, `app/Http/Controllers/`, etc. This module-first structure keeps every concept self-contained. Views mirror at `resources/views/{domain}/`, routes are split into `routes/web/{domain}.php`.
 
 ### Key Overrides vs Standard Laravel
 
@@ -22,7 +22,7 @@ Models handle data access only: relationships, scopes, casts, attributes. Entiti
 
 ## Verification Points
 
-- Does the code follow Domain-first structure? (check sibling files for convention)
+- Does the code follow Module-first structure? (check sibling files for convention)
 - Is business logic in Actions, not Models or Livewire?
 - Are business rule checks delegated to Entities?
 - Are UUID primary keys used (BaseModel)?

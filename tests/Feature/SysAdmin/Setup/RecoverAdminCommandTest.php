@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\SysAdmin\Setup;
 
-use App\Domain\SysAdmin\Aggregates\Setup\Models\Setup;
-use App\Domain\User\Enums\AccountStatus;
-use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\SysAdmin\Setup\Models\Setup;
+use App\User\Enums\AccountStatus;
+use App\User\Enums\Role as RoleEnum;
+use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;

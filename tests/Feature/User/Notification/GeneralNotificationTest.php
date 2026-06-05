@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Domain\User\Aggregates\Notification\Models\Notification as DbNotification;
-use App\Domain\User\Aggregates\Notification\Notifications\GeneralNotification;
-use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\User\Enums\Role as RoleEnum;
+use App\User\Models\User;
+use App\User\Notification\Models\Notification as DbNotification;
+use App\User\Notification\Notifications\GeneralNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Spatie\Permission\Models\Role;

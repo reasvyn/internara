@@ -6,7 +6,7 @@ After extracting Actions and Entities, the Livewire component should contain onl
 
 ## Why It Matters
 
-A well-structured component is easy to audit for security (auth in `boot()`), easy to test (all logic is in injectable Actions), and easy to understand (public properties describe the complete UI state). The component becomes a thin coordination layer between the browser and the domain.
+A well-structured component is easy to audit for security (auth in `boot()`), easy to test (all logic is in injectable Actions), and easy to understand (public properties describe the complete UI state). The component becomes a thin coordination layer between the browser and the module.
 
 ## When It Applies
 

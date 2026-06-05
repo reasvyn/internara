@@ -37,7 +37,7 @@ public function scopeWithLastLogin($query): void
 }
 ```
 
-## Use Conditional Aggregates Instead of Multiple Count Queries
+## Use Conditional Submodules Instead of Multiple Count Queries
 
 Replace N separate `count()` queries with a single query using `CASE WHEN` inside `selectRaw()`. Use `toBase()` to skip model hydration when you only need scalar values.
 

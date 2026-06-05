@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Entities\BaseEntity;
+use App\Core\Entities\BaseEntity;
 use Illuminate\Database\Eloquent\Model;
 
 test('BaseEntity is abstract and readonly', function () {

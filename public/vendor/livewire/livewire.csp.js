@@ -13834,7 +13834,7 @@ ${expression ? 'Expression: "' + expression + '"\n\n' : ""}`, el);
     coordinator_default.addErrorHandler("navigate", (error2) => {
       if (error2 instanceof DOMException && error2.name === "SecurityError") {
         console.error(
-          "Livewire: You can't use wire:navigate with a link to a different root domain: " + url
+          "Livewire: You can't use wire:navigate with a link to a different root module: " + url
         );
       }
     });

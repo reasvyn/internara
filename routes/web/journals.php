@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Domain\Enrollment\Models\Registration;
-use App\Domain\Journals\Aggregates\AbsenceRequest\Livewire\AbsenceRequestForm;
-use App\Domain\Journals\Aggregates\Attendance\Livewire\AttendanceManager;
-use App\Domain\Journals\Aggregates\Attendance\Livewire\StudentClockIn;
-use App\Domain\Journals\Aggregates\IndustryAssessment\Livewire\IndustryAssessmentForm;
-use App\Domain\Journals\Aggregates\Logbook\Actions\CompileLogbookReportAction;
-use App\Domain\Journals\Aggregates\Logbook\Livewire\LogbookEntry;
-use App\Domain\Journals\Aggregates\Logbook\Livewire\LogbookManager;
-use App\Domain\Journals\Aggregates\Schedule\Livewire\ScheduleIndex;
+use App\Enrollment\Models\Registration;
+use App\Journals\AbsenceRequest\Livewire\AbsenceRequestForm;
+use App\Journals\Attendance\Livewire\AttendanceManager;
+use App\Journals\Attendance\Livewire\StudentClockIn;
+use App\Journals\IndustryAssessment\Livewire\IndustryAssessmentForm;
+use App\Journals\Logbook\Actions\CompileLogbookReportAction;
+use App\Journals\Logbook\Livewire\LogbookEntry;
+use App\Journals\Logbook\Livewire\LogbookManager;
+use App\Journals\Schedule\Livewire\ScheduleIndex;
 
 Route::prefix('student')
     ->name('student.')

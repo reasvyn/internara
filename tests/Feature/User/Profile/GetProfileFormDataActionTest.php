@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\User\Aggregates\Profile\Actions\GetProfileFormDataAction;
-use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\User\Enums\Role as RoleEnum;
+use App\User\Models\User;
+use App\User\Profile\Actions\GetProfileFormDataAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
 

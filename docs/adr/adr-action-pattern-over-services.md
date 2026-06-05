@@ -26,7 +26,7 @@ operations:
 
 - **Mutations** — writes that create, update, or delete state. These need transactions,
   logging, and error handling.
-- **Reads** — queries that retrieve and aggregate data without changing state. These need
+- **Reads** — queries that retrieve and submodule data without changing state. These need
   neither transactions nor logging.
 - **Orchestrations** — multi-step workflows that coordinate multiple mutations and reads.
   These need transaction management at the process level, not at each individual step.
@@ -37,7 +37,7 @@ overhead and forces mutations to skip orchestration boundaries.
 ## Decision
 
 Business operations are organized into three distinct action types, all living under
-`app/Domain/{Domain}/Actions/` and following the single `execute()` method convention.
+`app/Module/{Module}/Actions/` and following the single `execute()` method convention.
 
 ### 1. Command Actions (Mutations)
 
@@ -49,7 +49,7 @@ send notifications, upload files.
 **Contract:**
 - MUST wrap all database operations in `$this->transaction()`
 - MUST call `$this->log()` after successful mutation
-- SHOULD dispatch domain events for significant state changes
+- SHOULD dispatch module events for significant state changes
 - MUST be preceded by a policy check in the calling layer
 
 **Naming:** `{Verb}{Entity}Action` — `RegisterStudentAction`, `ApproveRegistrationAction`
@@ -79,7 +79,7 @@ class SubmitLogbookAction extends BaseAction
 ### 2. Read Actions (Queries)
 
 **Purpose:** Complex read operations that involve aggregation, filtering, authorization,
-or cross-domain data assembly. Not for simple `Model::find()` or `Model::where()` —
+or cross-module data assembly. Not for simple `Model::find()` or `Model::where()` —
 those stay in Livewire components.
 
 **Base class:** None required. A plain class with constructor injection. May use
@@ -130,7 +130,7 @@ branching, or external service calls.
 **Contract:**
 - MUST compose other Actions via constructor injection
 - MUST handle partial failure — if step 3 of 5 fails, what happens to steps 1–2?
-- SHOULD emit a single domain event representing the completed process
+- SHOULD emit a single module event representing the completed process
 - MUST NOT duplicate business logic that already exists in Command Actions
 
 **Naming:** `{Verb}{Entity}Process` — `RegisterStudentProcess`, `CloseInternshipProcess`
@@ -215,7 +215,7 @@ is gradual and non-breaking:
 
 ## References
 
-- `app/Domain/Core/Actions/BaseAction.php` — base class for Command and Process Actions
-- `app/Domain/Core/Support/HandlesActionErrors.php` — error handling trait
+- `app/Core/Actions/BaseAction.php` — base class for Command and Process Actions
+- `app/Core/Support/HandlesActionErrors.php` — error handling trait
 - `docs/architecture.md` — Action Triad section
 - `docs/conventions.md` — Section 5 (Actions)

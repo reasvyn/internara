@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\SysAdmin\Aggregates\Setup\Models\Setup;
+use App\SysAdmin\Setup\Models\Setup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 

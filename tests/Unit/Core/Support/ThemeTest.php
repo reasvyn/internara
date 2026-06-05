@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Support\Color;
-use App\Domain\Core\Support\Theme;
+use App\Core\Support\Color;
+use App\Core\Support\Theme;
 
 test('Theme returns default colors when settings store is empty', function () {
     $defaults = Theme::defaults();

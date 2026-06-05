@@ -314,7 +314,7 @@ Copy the signed URL from the output and open it in your browser.
 **6. Set up cron** in cPanel to hit the scheduler endpoint:
 
 ```cron
-* * * * * curl -s https://your-domain.com/cron/your-cron-secret-here
+* * * * * curl -s https://your-module.com/cron/your-cron-secret-here
 ```
 
 **7. Storage link** — create manually if SSH is not available:

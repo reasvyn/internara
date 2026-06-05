@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Guidance\Aggregates\Mentee\Models\Mentee;
-use App\Domain\User\Models\User;
+use App\Guidance\Mentee\Models\Mentee;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MenteeFactory extends Factory

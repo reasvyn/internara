@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\SysAdmin\Setup;
 
-use App\Domain\SysAdmin\Aggregates\Setup\Livewire\SetupWizard;
-use App\Domain\SysAdmin\Aggregates\Setup\Models\Setup;
-use App\Domain\User\Enums\Role as RoleEnum;
+use App\SysAdmin\Setup\Livewire\SetupWizard;
+use App\SysAdmin\Setup\Models\Setup;
+use App\User\Enums\Role as RoleEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;

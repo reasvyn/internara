@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Document\Enums\DocumentCategory;
-use App\Domain\Document\Models\Document;
+use App\Document\Enums\DocumentCategory;
+use App\Document\Models\Document;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DocumentFactory extends Factory

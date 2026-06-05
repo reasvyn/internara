@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Program\DocumentRequirement\Actions;
+
+use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
+use App\Program\Internship\Models\InternshipDocumentRequirement;
+
+final class UpdateRequirementAction extends BaseAction
+{
+    public function execute(InternshipDocumentRequirement $requirement, string $documentId, bool $isMandatory): InternshipDocumentRequirement
+    {
+        $exists = InternshipDocumentRequirement::where('internship_id', $requirement->internship_id)
+            ->where('document_id', $documentId)
+            ->where('id', '!=', $requirement->id)
+            ->exists();
+
+        if ($exists) {
+            throw new RejectedException('This document is already a requirement for this internship.');
+        }
+
+        $requirement->update([
+            'document_id' => $documentId,
+            'is_mandatory' => $isMandatory,
+        ]);
+
+        return $requirement->fresh();
+    }
+}

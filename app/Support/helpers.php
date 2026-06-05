@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\SysAdmin\Aggregates\Setting\Support\AppInfo;
-use App\Domain\SysAdmin\Aggregates\Setting\Support\AppMetadata;
-use App\Domain\SysAdmin\Aggregates\Setting\Support\Settings;
+use App\SysAdmin\Setting\Support\AppInfo;
+use App\SysAdmin\Setting\Support\AppMetadata;
+use App\SysAdmin\Setting\Support\Settings;
 
 if (! function_exists('setting')) {
     /**
@@ -14,7 +14,7 @@ if (! function_exists('setting')) {
      * S2 - Sustain: Single API for reading settings.
      * S3 - Scalable: Leverages cached Settings.
      *
-     * Note: Writing settings should use SetSettingAction directly from the calling domain.
+     * Note: Writing settings should use SetSettingAction directly from the calling module.
      *
      * @param string|array|null $key Setting key, or null to get Settings instance
      * @param mixed $default Default value when getting a setting

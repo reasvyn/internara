@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Exceptions\RejectedException;
-use App\Domain\User\Aggregates\Profile\Actions\UpdateProfileAction;
-use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\Core\Exceptions\RejectedException;
+use App\User\Enums\Role as RoleEnum;
+use App\User\Models\User;
+use App\User\Profile\Actions\UpdateProfileAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Models\Role;

@@ -2,13 +2,13 @@
 
 ## What It Enforces
 
-A structured exception hierarchy separates domain exceptions from framework exceptions. `RejectedException` communicates business rule violations. `HandlesActionErrors` trait wraps infrastructure failures. Components catch `RejectedException` for flash messages. JSON responses for API routes.
+A structured exception hierarchy separates module exceptions from framework exceptions. `RejectedException` communicates business rule violations. `HandlesActionErrors` trait wraps infrastructure failures. Components catch `RejectedException` for flash messages. JSON responses for API routes.
 
 ## Why It Matters
 
 Different exception types enable different handling strategies. `ValidationException` is automatic from `Validator::validate()` — caught by Livewire's error bag. `RejectedException` is explicit — caught by component try/catch, displayed as a flash message. Infrastructure exceptions are caught and logged by `HandlesActionErrors`, then rethrown as generic errors.
 
-The separation between `DomainException` and `AppException` keeps domain catch blocks isolated from the layered framework. Business logic never needs to catch framework-level exceptions.
+The separation between `DomainException` and `AppException` keeps module catch blocks isolated from the layered framework. Business logic never needs to catch framework-level exceptions.
 
 ## When It Applies
 

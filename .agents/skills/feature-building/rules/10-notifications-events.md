@@ -2,7 +2,7 @@
 
 ## What It Enforces
 
-Flash messages use PHPFlasher (`flash()->success()`) — never maryUI Toast methods. Notifications implement `ShouldQueue` and use `Queueable`. Domain events are dispatched from Actions, never from Livewire components.
+Flash messages use PHPFlasher (`flash()->success()`) — never maryUI Toast methods. Notifications implement `ShouldQueue` and use `Queueable`. Module events are dispatched from Actions, never from Livewire components.
 
 ## Why It Matters
 

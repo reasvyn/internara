@@ -210,10 +210,10 @@ Server admin SSH into the machine
 | `RecoverAdminCommand` | `Admin/Console/Commands/RecoverAdminCommand.php` | CLI interactive recovery |
 | `ShowRecoveryPathCommand` | `Admin/Console/Commands/ShowRecoveryPathCommand.php` | Display key file path |
 | `ShowRecoveryKeyCommand` | `Admin/Console/Commands/ShowRecoveryKeyCommand.php` | Display key (with confirmation) |
-| `RecoverSuperAdminAction` | `User/Aggregates/SuperAdmin/Actions/RecoverSuperAdminAction.php` | Creates/resets super admin |
+| `RecoverSuperAdminAction` | `User/SuperAdmin/Actions/RecoverSuperAdminAction.php` | Creates/resets super admin |
 | `SaveRecoveryKeyAction` | `Admin/Actions/SaveRecoveryKeyAction.php` | Saves key to storage file |
 | `ReadRecoveryKeyAction` | `Admin/Actions/ReadRecoveryKeyAction.php` | Reads key from storage file |
-| `SuperAdminIntegrityRules` | `User/Aggregates/SuperAdmin/Entities/SuperAdminIntegrityRules.php` | Enforces superadmin integrity constraints |
+| `SuperAdminIntegrityRules` | `User/SuperAdmin/Entities/SuperAdminIntegrityRules.php` | Enforces superadmin integrity constraints |
 
 ### Super Admin Integrity Constraints
 
@@ -244,8 +244,8 @@ Global: AuthThrottleMiddleware (30 req/min/IP)
 
 | Document | Contents |
 |---|---|---|
-| [User Domain](domain/user.md) | Authentication, RBAC, account lifecycle |
-| [User API Reference](domain/user-reference.md) | Complete class listing |
+| [User Module](modules/user.md) | Authentication, RBAC, account lifecycle |
+| [User API Reference](modules/user-reference.md) | Complete class listing |
 | [Setup Wizard](setup-wizard.md) | Installation, recovery key generation |
 | [Post-Setup](post-setup.md) | First admin actions |
 | [Database](database.md) | Database design, UUID PKs, schema organization |

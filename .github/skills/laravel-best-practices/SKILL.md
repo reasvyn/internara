@@ -33,7 +33,7 @@ Check sibling files, related controllers, models, or tests for established patte
 
 - `addSelect()` subqueries over eager-loading entire has-many for a single value
 - Dynamic relationships via subquery FK + `belongsTo`
-- Conditional aggregates (`CASE WHEN` in `selectRaw`) over multiple count queries
+- Conditional submodules (`CASE WHEN` in `selectRaw`) over multiple count queries
 - `setRelation()` to prevent circular N+1 queries
 - `whereIn` + `pluck()` over `whereHas` for better index usage
 - Two simple queries can beat one complex query

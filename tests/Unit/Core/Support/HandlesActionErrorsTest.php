@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Exceptions\ConflictException;
-use App\Domain\Core\Exceptions\RejectedException;
-use App\Domain\Core\Support\HandlesActionErrors;
+use App\Core\Exceptions\ConflictException;
+use App\Core\Exceptions\RejectedException;
+use App\Core\Support\HandlesActionErrors;
 
 test('HandlesActionErrors wraps successful execution', function () {
     $class = new class

@@ -158,7 +158,7 @@ class TopSellers extends Card
 }
 ```
 
-`$this->aggregate(type, aggregates)` returns a `Collection` of `stdClass` objects with `key` and one property per aggregation method. `$this->aggregateTotal(type, aggregate)` returns a single scalar.
+`$this->aggregate(type, submodules)` returns a `Collection` of `stdClass` objects with `key` and one property per aggregation method. `$this->aggregateTotal(type, submodule)` returns a single scalar.
 
 ### Custom Recorders
 

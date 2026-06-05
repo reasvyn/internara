@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Data\BaseData;
+use App\Core\Data\BaseData;
 
 test('BaseData toArray returns all public properties', function () {
     $dto = new readonly class('John', 'john@test.com') extends BaseData

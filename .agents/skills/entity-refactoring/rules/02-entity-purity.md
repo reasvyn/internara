@@ -12,7 +12,7 @@ The `final readonly` constraint enforces immutability. An Entity's state is set 
 
 ## When It Applies
 
-Always when creating Entity classes. The factory method `fromModel(Model): static` is the only bridge between the framework world and the pure domain world. It extracts only the values the Entity needs from the Model — never passes the whole Model to the Entity.
+Always when creating Entity classes. The factory method `fromModel(Model): static` is the only bridge between the framework world and the pure module world. It extracts only the values the Entity needs from the Model — never passes the whole Model to the Entity.
 
 Entity methods return business answers, not raw data: `canLogin()`, `isTerminal()`, `requiresAction()`, `canTransitionTo()`, `canBeDeleted()`. Simple getters for Entity-owned state (like `status(): AccountStatus`) are acceptable.
 

@@ -173,7 +173,7 @@ For shared hosting without minute-level cron, a web-accessible endpoint
 triggers the scheduler:
 
 ```cron
-* * * * * curl -s https://your-domain.com/cron/your-cron-secret-here
+* * * * * curl -s https://your-module.com/cron/your-cron-secret-here
 ```
 
 Generate the secret: `php -r "echo bin2hex(random_bytes(16));"`

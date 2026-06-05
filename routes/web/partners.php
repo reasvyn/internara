@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Partners\Aggregates\Company\Livewire\CompanyManager;
-use App\Domain\Partners\Aggregates\Partnership\Livewire\PartnershipManager;
+use App\Partners\Company\Livewire\CompanyManager;
+use App\Partners\Partnership\Livewire\PartnershipManager;
 
 Route::prefix('admin')
     ->name('sysadmin.')

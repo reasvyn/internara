@@ -320,7 +320,7 @@ complete the setup wizard.
 **6. Set up cron** in cPanel to hit the scheduler endpoint:
 
 ```cron
-* * * * * curl -s https://your-domain.com/cron/your-cron-secret-here
+* * * * * curl -s https://your-module.com/cron/your-cron-secret-here
 ```
 
 **7. Storage link** — create manually if SSH is not available:

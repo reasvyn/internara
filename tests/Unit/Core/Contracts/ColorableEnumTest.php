@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Contracts\ColorableEnum;
+use App\Core\Contracts\ColorableEnum;
 
 test('ColorableEnum interface requires color method', function () {
     $ref = new ReflectionClass(ColorableEnum::class);

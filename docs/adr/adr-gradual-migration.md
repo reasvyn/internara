@@ -9,14 +9,14 @@ Accepted
 ## Context
 
 The Internara codebase aspires to several architectural ideals — typed DTOs for all Action
-inputs, domain events for every significant state change, event-driven cache invalidation,
+inputs, module events for every significant state change, event-driven cache invalidation,
 shared validation rules in Entities, and architecture tests enforcing boundaries.
 
 However, imposing all ideals from day one creates friction that slows development:
 
 - **Typed DTOs** require defining a class (with constructor, properties, `fromArray()`) for
   every Action input — significant boilerplate before any business logic is written.
-- **Domain events** require defining an event class, a listener class, registering the
+- **Module events** require defining an event class, a listener class, registering the
   listener, and deciding whether to queue it — overhead that discourages creating events
   for genuinely important state changes.
 - **Event-driven cache invalidation** requires a dedicated listener class for every cache
@@ -63,7 +63,7 @@ public function execute(CreateInternshipData|array $data): Internship
 **When to migrate:** When an Action's input grows beyond 3 parameters, or when the Action
 is called from multiple places and the input contract needs to be enforced.
 
-### Pattern: Domain Events for Side Effects
+### Pattern: Module Events for Side Effects
 
 | Phase | Convention | When |
 |---|---|---|
@@ -103,8 +103,8 @@ listener needs to react to the same event.
 | Phase | Convention | When |
 |---|---|---|
 | **Start** | `Cache::forget()` inline in the Action | Quick — "just make it work" |
-| **Stabilize** | Event dispatched, `CacheInvalidationListener` flushes keys | When multiple events affect the same cache key, or when cache keys become shared across domains |
-| **Final** | Cache keys registered in `CacheKeys`, invalidated via listeners | Full event-driven invalidation across all domains |
+| **Stabilize** | Event dispatched, `CacheInvalidationListener` flushes keys | When multiple events affect the same cache key, or when cache keys become shared across modules |
+| **Final** | Cache keys registered in `CacheKeys`, invalidated via listeners | Full event-driven invalidation across all modules |
 
 ### Pattern: Shared Validation Rules in Entities
 
@@ -112,14 +112,14 @@ listener needs to react to the same event.
 |---|---|---|
 | **Start** | Validation rules in the Form Object only | Quick — rules are co-located with the UI |
 | **Stabilize** | `Entity::rules()` static method, referenced by both Form Object and Form Request | When the same entity is edited from two different forms |
-| **Final** | All domain validation rules centralized in Entities | Full DRY validation across all UI layers |
+| **Final** | All module validation rules centralized in Entities | Full DRY validation across all UI layers |
 
 ### Pattern: Architecture Tests
 
 | Phase | Convention | When |
 |---|---|---|
 | **Start** | No architecture tests — boundaries enforced by code review | During rapid exploration and prototyping |
-| **Stabilize** | Critical boundary tests restored (domain boundaries, layer separation) | When the domain structure stabilizes |
+| **Stabilize** | Critical boundary tests restored (module boundaries, layer separation) | When the module structure stabilizes |
 | **Final** | Full architecture test suite (naming, conventions, dependency rules) | When the codebase reaches v1.0 |
 
 Note: Architecture tests were previously implemented via `pest-plugin-arch` but removed due
@@ -151,7 +151,7 @@ stabilizes.
 
 ## References
 
-- `app/Domain/Core/Data/Data.php` — DTO base class with `fromArray()` support
+- `app/Core/Data/Data.php` — DTO base class with `fromArray()` support
 - `docs/architecture.md` — Migration Paths section
 - `docs/architecture.md` — Action Triad section
 - `docs/architecture.md` — Validation Strategy section

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Guidance\Aggregates\Mentor\Models\Mentor;
-use App\Domain\User\Models\User;
+use App\Guidance\Mentor\Models\Mentor;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MentorFactory extends Factory

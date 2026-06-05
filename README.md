@@ -16,11 +16,11 @@ Built for schools that manage mandatory on-site industry placements for their st
 
 ## Architecture
 
-Internara follows a **Domain-first, Action-based MVC** architecture. Business logic is organized by domain, not by technical layer.
+Internara follows a **Module-first, Action-based MVC** architecture. Business logic is organized by module, not by technical layer.
 
 ```
 app/Domain/
-├── Core/           Base classes, contracts, cross-domain utilities
+├── Core/           Base classes, contracts, cross-module utilities
 ├── User/           Identity, authentication, profiles, notifications
 ├── SysAdmin/       Setup, settings, announcements, audit, health
 ├── Academics/      School profile, departments, academic years
@@ -38,7 +38,7 @@ app/Domain/
 └── Document/       Official document templates, PDF rendering
 ```
 
-Each domain is self-contained with its own Models, Actions, Livewire components, Policies, Enums, Entities, and optional Http/Notifications/Events layers — all colocated for high cohesion and low coupling.
+Each module is self-contained with its own Models, Actions, Livewire components, Policies, Enums, Entities, and optional Http/Notifications/Events layers — all colocated for high cohesion and low coupling.
 
 ## Quick Start
 
@@ -105,7 +105,7 @@ Follow the setup wizard to configure your institution and admin account. Access 
 - [Testing](docs/testing.md)
 - [Known Issues](docs/known-issues.md)
 
-### Domain Reference
+### Module Reference
 - [Core](docs/domain/core.md)
 - [User](docs/domain/user.md)
 - [SysAdmin](docs/domain/sysadmin.md)

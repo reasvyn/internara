@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\User;
 
-use App\Domain\User\Models\User;
-use App\Domain\User\Support\UserIdentifierGenerator;
+use App\User\Models\User;
+use App\User\Support\UserIdentifierGenerator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Domain\Core\Support\Theme;
-use App\Domain\SysAdmin\Aggregates\Setting\Casts\SettingValueCast;
-use App\Domain\SysAdmin\Aggregates\Setting\Models\Setting;
-use App\Domain\SysAdmin\Aggregates\Setting\Support\AppInfo;
+use App\Core\Support\Theme;
+use App\SysAdmin\Setting\Casts\SettingValueCast;
+use App\SysAdmin\Setting\Models\Setting;
+use App\SysAdmin\Setting\Support\AppInfo;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

@@ -1,6 +1,6 @@
 <laravel-boost-guidelines>
 > Last updated: 2026-06-04
-> Changes: sync with AGENTS.md — added architecture, domain invariants, and base class mandate sections
+> Changes: sync with AGENTS.md — added architecture, module invariants, and base class mandate sections
 
 === foundation rules ===
 
@@ -33,49 +33,49 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 ## Architecture (IMPORTANT)
 
-This project uses a **Domain-first, Action-based MVC** architecture:
+This project uses a **Module-first, Action-based MVC** architecture:
 
 ```
     app/Domain/{Domain}/
-    ├── Aggregates/{Aggregate}/  Aggregate-rooted modules (Actions, Models, Policies, Livewire)
+    ├── {Aggregate}/  Aggregate-rooted modules (Actions, Models, Policies, Livewire)
     ├── Types/           Shared value objects, flat enums, rules
-    ├── Http/            Cross-aggregate controllers, middleware
-    ├── Console/         Cross-aggregate artisan commands
-    ├── Livewire/        Cross-aggregate UI (dashboards, global components)
-    ├── Support/         Shared domain utilities
+    ├── Http/            Cross-submodule controllers, middleware
+    ├── Console/         Cross-submodule artisan commands
+    ├── Livewire/        Cross-submodule UI (dashboards, global components)
+    ├── Support/         Shared module utilities
     └── Services/        Infrastructure services
 ```
 
-- Backend: `app/Domain/{Domain}/Aggregates/{Aggregate}/` — aggregate-rooted modules with colocated layers
-- Views: `resources/views/{domain}/{aggregate}/{component}.blade.php` — Blade views mirror aggregate structure
-- Routes: `routes/web/{domain}.php` — routes split by domain, master `routes/web.php` requires all
-- Tests: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php` — tests organized by domain and aggregate
+- Backend: `app/Domain/{Domain}/{Aggregate}/` — aggregate-rooted modules with colocated layers
+- Views: `resources/views/{domain}/{aggregate}/{component}.blade.php` — Blade views mirror submodule structure
+- Routes: `routes/web/{domain}.php` — routes split by module, master `routes/web.php` requires all
+- Tests: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php` — tests organized by module and aggregate
 
 ### Directory Convention
 
-All aggregate code lives under `app/Domain/{Domain}/Aggregates/{AggregateName}/`.
-Cross-aggregate files (shared Actions, Http, Console, Livewire, Support, Services) stay at the domain root.
+All submodule code lives under `app/Domain/{Domain}/{AggregateName}/`.
+Cross-submodule files (shared Actions, Http, Console, Livewire, Support, Services) stay at the module root.
 
-Views mirror the aggregate name but without `aggregates/` in the path:
+Views mirror the submodule name but without `` in the path:
 `resources/views/auth/password/`, `resources/views/user/profile/`.
 
 ### MANDATORY: Use Core Base Classes
 
-The Core domain provides base classes for every layer. You MUST use them:
+The Core module provides base classes for every layer. You MUST use them:
 
 | Layer | Base Class | Location |
 |---|---|---|
-| Model | `BaseModel` (or `Authenticatable`) | `app/Domain/Core/Models/BaseModel.php` |
-| Action | `BaseAction` | `app/Domain/Core/Actions/BaseAction.php` |
-| Entity | `BaseEntity` (final readonly) | `app/Domain/Core/Entities/BaseEntity.php` |
-| Policy | `BasePolicy` | `app/Domain/Core/Policies/BasePolicy.php` |
-| Livewire CRUD | `BaseRecordManager` | `app/Domain/Core/Livewire/BaseRecordManager.php` |
-| Controller | `BaseController` | `app/Domain/Core/Http/Controllers/BaseController.php` |
-| Form Request | `FormRequest` (Core's, not Laravel's) | `app/Domain/Core/Http/Requests/FormRequest.php` |
-| DTO | `Data` | `app/Domain/Core/Data/Data.php` |
-| Exception | `AppException` or `DomainException` | `app/Domain/Core/Exceptions/` |
-| Enum | Must implement `LabelEnum` | `app/Domain/Core/Contracts/LabelEnum.php` |
-| Logging | Use `SmartLogger` | `app/Domain/Core/Support/SmartLogger.php` |
+| Model | `BaseModel` (or `Authenticatable`) | `app/Core/Models/BaseModel.php` |
+| Action | `BaseAction` | `app/Core/Actions/BaseAction.php` |
+| Entity | `BaseEntity` (final readonly) | `app/Core/Entities/BaseEntity.php` |
+| Policy | `BasePolicy` | `app/Core/Policies/BasePolicy.php` |
+| Livewire CRUD | `BaseRecordManager` | `app/Core/Livewire/BaseRecordManager.php` |
+| Controller | `BaseController` | `app/Core/Http/Controllers/BaseController.php` |
+| Form Request | `FormRequest` (Core's, not Laravel's) | `app/Core/Http/Requests/FormRequest.php` |
+| DTO | `Data` | `app/Core/Data/Data.php` |
+| Exception | `AppException` or `DomainException` | `app/Core/Exceptions/` |
+| Enum | Must implement `LabelEnum` | `app/Core/Contracts/LabelEnum.php` |
+| Logging | Use `SmartLogger` | `app/Core/Support/SmartLogger.php` |
 
 Do NOT create custom patterns. These rules are enforced through code review.
 
@@ -117,7 +117,7 @@ Do NOT create custom patterns. These rules are enforced through code review.
 - Laravel Boost is an MCP server with tools designed specifically for this application. Prefer Boost tools over manual alternatives like shell commands or file reads.
 - Use `database-query` to run read-only queries against the database instead of writing raw SQL in tinker.
 - Use `database-schema` to inspect table structure before writing migrations or models.
-- Use `get-absolute-url` to resolve the correct scheme, domain, and port for project URLs. Always use this before sharing a URL with the user.
+- Use `get-absolute-url` to resolve the correct scheme, module, and port for project URLs. Always use this before sharing a URL with the user.
 - Use `browser-logs` to read browser logs, errors, and exceptions. Only recent logs are useful, ignore old entries.
 
 ## Searching Documentation (IMPORTANT)
@@ -158,9 +158,9 @@ Do NOT create custom patterns. These rules are enforced through code review.
 - Prefer PHPDoc blocks over inline comments. Only add inline comments for exceptionally complex logic.
 - Use array shape type definitions in PHPDoc blocks.
 
-=== domain invariants ===
+=== module invariants ===
 
-# Domain Invariants (DO NOT VIOLATE)
+# Module Invariants (DO NOT VIOLATE)
 
 - **Super Admin name is ALWAYS `Administrator`** (from config `setup.defaults.admin_name`).
 - **Super Admin username is ALWAYS `superadmin`** (from config `setup.defaults.admin_username`).
@@ -185,7 +185,7 @@ Do NOT create custom patterns. These rules are enforced through code review.
 
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test --compact` with a specific filename or filter.
-- Tests follow domain-first, aggregate-based structure: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php`.
+- Tests follow module-first, submodule-based structure: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php`.
 - Code review and static analysis (PHPStan) enforce structural rules.
 
 === laravel/core rules ===
@@ -225,10 +225,10 @@ Do NOT create custom patterns. These rules are enforced through code review.
 - Livewire allows building dynamic, reactive interfaces in PHP without writing JavaScript.
 - You can use Alpine.js for client-side interactions instead of JavaScript frameworks.
 - Keep state server-side so the UI reflects it. Validate and authorize in actions as you would in HTTP requests.
-- Livewire components are auto-discovered by DomainServiceProvider from `app/Domain/*/Aggregates/*/Livewire/` and `app/Domain/*/Livewire/`.
+- Livewire components are auto-discovered by AppServiceProvider from `app/Domain/*/*/Livewire/` and `app/Domain/*/Livewire/`.
 - Component alias pattern (aggregate): `{kebab-domain}.{kebab-aggregate}.{kebab-name}` (e.g., `admin.user.user-manager`)
 - Component alias pattern (root): `{kebab-domain}.{kebab-name}` (e.g., `user.profile-editor`)
-- Views for aggregate components: `resources/views/{domain}/{aggregate}/{component-name}.blade.php`
+- Views for submodule components: `resources/views/{domain}/{aggregate}/{component-name}.blade.php`
 - Views for root components: `resources/views/{domain}/{component-name}.blade.php`
 - CRUD table components extend `BaseRecordManager`.
 
@@ -247,7 +247,7 @@ Do NOT create custom patterns. These rules are enforced through code review.
 - The `{name}` argument should not include the test suite directory. Use `php artisan make:test --pest SomeFeatureTest` instead of `php artisan make:test --pest Feature/SomeFeatureTest`.
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
-- Structure tests by domain and aggregate: `tests/Feature/{Domain}/{Aggregate}/{Name}Test.php` and `tests/Unit/{Domain}/{Aggregate}/{Name}Test.php`.
+- Structure tests by module and submodule: `tests/Feature/{Domain}/{Aggregate}/{Name}Test.php` and `tests/Unit/{Domain}/{Aggregate}/{Name}Test.php`.
 
 === spatie/laravel-medialibrary rules ===
 

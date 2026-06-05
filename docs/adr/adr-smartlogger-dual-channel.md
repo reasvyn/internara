@@ -77,7 +77,7 @@ Each method returns the same fluent builder with these configuration methods:
 | `for(?Model $user)` | Set the causer (who performed the action) | `Auth::user()` |
 | `about(?Model $subject)` | Set the subject entity (what was acted upon) | `null` |
 | `withPayload(array)` | Attach contextual data (before/after values, IDs) | `[]` |
-| `module(string)` | Set the domain/module name (e.g., "Registration") | Auto-detected from Action namespace |
+| `module(string)` | Set the modules/module name (e.g., "Registration") | Auto-detected from Action namespace |
 | `event(string)` | Set the event name (e.g., "registration_approved") | Same as message string |
 | `channel(string)` | Set a custom log channel name | `null` |
 | `withPiiMasking()` | Enable automatic PII masking on payload | Disabled |
@@ -124,13 +124,13 @@ are masked regardless of depth.
 
 ### Activity Log Query Scopes
 
-The `ActivityLog` model extends Spatie's `Activity` with domain-specific scopes that make
+The `ActivityLog` model extends Spatie's `Activity` with module-specific scopes that make
 the audit trail queryable:
 
 ```php
 ActivityLog::forUser($userId)         // All actions by a specific user
     ->ofAction('registration_approved') // Filter by event name
-    ->forModule('Registration')         // Filter by domain module
+    ->forModule('Registration')         // Filter by module module
     ->recent(50)                        // Latest 50 entries
     ->get();
 ```
@@ -202,12 +202,12 @@ the application has a storage problem that should surface immediately.
 
 ## References
 
-- `app/Domain/Core/Support/SmartLogger.php` — fluent dual-channel logger
-- `app/Domain/Core/Support/PiiMasker.php` — PII masking engine
-- `app/Domain/Core/Support/HandlesActionErrors.php` — error handling with system-only logging
-- `app/Domain/Core/Actions/BaseAction.php` — `log()` method wrapping SmartLogger
-- `app/Domain/Core/Http/Middleware/LogContext.php` — system log context enrichment
-- `app/Domain/Core/Models/ActivityLog.php` — activity log model with query scopes
+- `app/Core/Support/SmartLogger.php` — fluent dual-channel logger
+- `app/Core/Support/PiiMasker.php` — PII masking engine
+- `app/Core/Support/HandlesActionErrors.php` — error handling with system-only logging
+- `app/Core/Actions/BaseAction.php` — `log()` method wrapping SmartLogger
+- `app/Core/Http/Middleware/LogContext.php` — system log context enrichment
+- `app/Core/Models/ActivityLog.php` — activity log model with query scopes
 - `config/logging.php` — log channel configuration (daily, 14-day retention)
 - `config/activitylog.php` — Spatie Activitylog config (365-day retention)
 - `docs/observability.md` — observability overview (Pulse, health checks, logging)

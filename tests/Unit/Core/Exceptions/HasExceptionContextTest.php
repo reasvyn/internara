@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Exceptions\Concerns\HasExceptionContext;
+use App\Core\Exceptions\Concerns\HasExceptionContext;
 
 test('HasExceptionContext provides hint via withHint and getHint', function () {
     $e = new class('Test error') extends RuntimeException

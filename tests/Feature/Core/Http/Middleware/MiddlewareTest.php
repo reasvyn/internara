@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Http\Middleware\LogContext;
-use App\Domain\Core\Http\Middleware\SecurityHeaders;
+use App\Core\Http\Middleware\LogContext;
+use App\Core\Http\Middleware\SecurityHeaders;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;

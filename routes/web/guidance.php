@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Domain\Guidance\Aggregates\Handbook\Livewire\HandbookIndex;
-use App\Domain\Guidance\Aggregates\Handbook\Livewire\HandbookManager;
-use App\Domain\Guidance\Aggregates\Mentor\Livewire\AssessInternship;
-use App\Domain\Guidance\Aggregates\Mentor\Livewire\EvaluateMentor;
-use App\Domain\Guidance\Aggregates\Mentor\Livewire\MentorProfileManager;
-use App\Domain\Guidance\Aggregates\Mentor\Livewire\ReportNotes;
-use App\Domain\Guidance\Aggregates\Mentor\Livewire\ReportReview;
-use App\Domain\Guidance\Aggregates\SupervisionLog\Livewire\SupervisionManager;
-use App\Domain\Guidance\Aggregates\SupervisionLog\Livewire\SupervisorLogManager;
+use App\Guidance\Handbook\Livewire\HandbookIndex;
+use App\Guidance\Handbook\Livewire\HandbookManager;
+use App\Guidance\Mentor\Livewire\AssessInternship;
+use App\Guidance\Mentor\Livewire\EvaluateMentor;
+use App\Guidance\Mentor\Livewire\MentorProfileManager;
+use App\Guidance\Mentor\Livewire\ReportNotes;
+use App\Guidance\Mentor\Livewire\ReportReview;
+use App\Guidance\SupervisionLog\Livewire\SupervisionManager;
+use App\Guidance\SupervisionLog\Livewire\SupervisorLogManager;
 
 // Student routes (previously in mentee.php)
 Route::prefix('student')

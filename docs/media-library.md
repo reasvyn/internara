@@ -166,6 +166,6 @@ filenames to prevent name collisions and path traversal.
 
 - `config/media-library.php` — global media library configuration
 - `config/filesystems.php` — disk definitions (local, public, s3)
-- `app/Domain/*/Models/*.php` — `registerMediaCollections()` and
+- `app/Module/*/Models/*.php` — `registerMediaCollections()` and
   `registerMediaConversions()` methods on each model
 - `database/migrations/` — the `media` table migration

@@ -11,7 +11,7 @@
 | Record | Status |
 |---|---|
 | [UUID Primary Keys](adr-uuid-primary-keys.md) | ✅ Accepted |
-| [Domain-First Architecture](adr-domain-first-architecture.md) | ✅ Accepted |
+| [Module-First Architecture](adr-module-first-architecture.md) | ✅ Accepted |
 | [Action Pattern over Services](adr-action-pattern-over-services.md) | ✅ Accepted |
 | [Entity-Model Separation](adr-entity-model-separation.md) | ✅ Accepted |
 
@@ -40,7 +40,7 @@
 | Record | Status |
 |---|---|
 | [Self-Hosted Single-Tenant Architecture](adr-self-hosted-single-tenant.md) | ✅ Accepted |
-| [Cross-Domain Communication Discipline](adr-cross-domain-communication.md) | ✅ Accepted |
+| [Cross-Module Communication Discipline](adr-cross-module-communication.md) | ✅ Accepted |
 | [Gradual Migration / Optional Complexity](adr-gradual-migration.md) | ✅ Accepted |
 | [Program Closure & Archival](adr-program-closure-archival.md) | ✅ Accepted |
 

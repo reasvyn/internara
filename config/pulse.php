@@ -14,7 +14,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | This is the subdomain which the Pulse dashboard will be accessible from.
-    | When set to null, the dashboard will reside under the same domain as
+    | When set to null, the dashboard will reside under the same module as
     | the application. Remember to configure your DNS entries correctly.
     |
     */

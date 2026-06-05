@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Exceptions\DomainException;
-use App\Domain\Core\Exceptions\RejectedException;
+use App\Core\Exceptions\DomainException;
+use App\Core\Exceptions\RejectedException;
 
 test('DomainException is abstract and extends RuntimeException', function () {
     $ref = new ReflectionClass(DomainException::class);
@@ -14,7 +14,7 @@ test('DomainException is abstract and extends RuntimeException', function () {
 test('DomainException is NOT an AppException (decoupled hierarchy)', function () {
     $ref = new ReflectionClass(DomainException::class);
     $parent = $ref->getParentClass()->getName();
-    expect($parent)->not->toBe('App\Domain\Core\Exceptions\AppException');
+    expect($parent)->not->toBe('App\Core\Exceptions\AppException');
 });
 
 test('RejectedException extends DomainException', function () {

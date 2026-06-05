@@ -2,11 +2,11 @@
 
 ## What It Enforces
 
-Routes are organized by domain in `routes/web/{domain}.php` files, required from `routes/web.php`. Routes use dot-separated hierarchical names via `->name()`. Menu items are defined in `config/menu.php` grouped by internship lifecycle phase.
+Routes are organized by module in `routes/web/{domain}.php` files, required from `routes/web.php`. Routes use dot-separated hierarchical names via `->name()`. Menu items are defined in `config/menu.php` grouped by internship lifecycle phase.
 
 ## Why It Matters
 
-Domain-split route files keep routing concerns close to their domain. Dot-separated names provide a predictable, hierarchical naming scheme. Role-based route groups enforce authorization at the routing layer, reducing per-method checks.
+Domain-split route files keep routing concerns close to their module. Dot-separated names provide a predictable, hierarchical naming scheme. Role-based route groups enforce authorization at the routing layer, reducing per-method checks.
 
 ## When It Applies
 

@@ -7,7 +7,7 @@ All side effects belong in the Action — never in the Livewire component.
 | Side Effect | Tool | Method |
 |---|---|---|
 | Audit logging | `$this->log()` on `BaseAction` | `$this->log('user_created', $user, [...])` |
-| Domain events | `Event::dispatch()` | `event(new UserCreated($user))` |
+| Module events | `Event::dispatch()` | `event(new UserCreated($user))` |
 | Notifications | `Notification::send()` | `$user->notify(new WelcomeNotification(...))` |
 | Cache invalidation | `Cache::forget()` | `Cache::forget('settings.all')` |
 | Flash messages | ❌ NOT here | Belongs in the Livewire component |
@@ -19,10 +19,10 @@ Wrap ALL mutations and side effects in `$this->transaction()`:
 ```php
 declare(strict_types=1);
 
-namespace App\Domain\User\Actions;
+namespace App\User\Actions;
 
-use App\Domain\Core\Actions\BaseAction;
-use App\Domain\User\Models\User;
+use App\Core\Actions\BaseAction;
+use App\User\Models\User;
 use Illuminate\Support\Facades\Validator;
 
 class CreateUserAction extends BaseAction

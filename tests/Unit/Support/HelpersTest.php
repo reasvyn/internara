@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\SysAdmin\Aggregates\Setting\Support\AppInfo;
-use App\Domain\SysAdmin\Aggregates\Setting\Support\AppMetadata;
-use App\Domain\SysAdmin\Aggregates\Setting\Support\Settings;
+use App\SysAdmin\Setting\Support\AppInfo;
+use App\SysAdmin\Setting\Support\AppMetadata;
+use App\SysAdmin\Setting\Support\Settings;
 
 test('setting helper returns settings class when no argument is passed', function () {
     expect(setting())->toBeInstanceOf(Settings::class);

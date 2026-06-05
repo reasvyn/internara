@@ -2,7 +2,7 @@
 
 ## What It Enforces
 
-Tests use Pest v4 with domain-first structure. `LazilyRefreshDatabase` over `RefreshDatabase` for speed. `assertModelExists()` over `assertDatabaseHas()` for clarity. Factory states and sequences over manual model creation. `Event::fake()` and `Http::fake()` after factory setup.
+Tests use Pest v4 with module-first structure. `LazilyRefreshDatabase` over `RefreshDatabase` for speed. `assertModelExists()` over `assertDatabaseHas()` for clarity. Factory states and sequences over manual model creation. `Event::fake()` and `Http::fake()` after factory setup.
 
 ## Why It Matters
 

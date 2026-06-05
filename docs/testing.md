@@ -1,11 +1,11 @@
 # Testing
 > Last updated: 2026-06-03
-> Changes: add TDD methodology, update test paths to aggregate-based structure
+> Changes: add TDD methodology, update test paths to submodule-based structure
 
 
 ## Testing Philosophy
 
-The test suite is organized by domain and by test type. Every change to the codebase must be
+The test suite is organized by module and by test type. Every change to the codebase must be
 accompanied by tests that verify the change works correctly and does not break existing behavior.
 ## Scope Isolation
 
@@ -48,7 +48,7 @@ php artisan make:test --pest CreateInternshipActionTest
 # 2. Confirm it fails
 php artisan test --compact --filter=CreateInternshipAction
 
-# 3. Write the implementation in app/Domain/{Domain}/Actions/
+# 3. Write the implementation in app/Module/{Module}/Actions/
 
 # 4. Confirm it passes
 php artisan test --compact --filter=CreateInternshipAction
@@ -143,7 +143,7 @@ php artisan test --compact --filter=CreateInternshipAction
 # Single test method
 php artisan test --compact --filter='it creates an internship'
 
-# All tests for a domain
+# All tests for a module
 php artisan test --compact --filter=Internship
 
 # Full suite before committing
@@ -218,7 +218,7 @@ php artisan test
 php artisan test --parallel
 composer run coverage
 
-# Single domain
+# Single module
 php artisan test --filter=Internship
 
 # Single test
@@ -227,9 +227,9 @@ php artisan test --filter=testName
 
 ## Where to Find It
 
-- `tests/Feature/{Domain}/{Aggregate}/` — feature tests organized by domain and aggregate
-- `tests/Unit/{Domain}/{Aggregate}/` — unit tests organized by domain and aggregate
-- `tests/Unit/{Domain}/Types/` — unit tests for value objects, flat enums, rules
+- `tests/Feature/{Module}/{SubModule}/` — feature tests organized by module and submodule
+- `tests/Unit/{Module}/{SubModule}/` — unit tests organized by module and submodule
+- `tests/Unit/{Module}/Types/` — unit tests for value objects, flat enums, rules
 - `tests/TestCase.php` — base test case with `LazilyRefreshDatabase`
 - `tests/Pest.php` — Pest global configuration
 - `phpunit.xml` — PHPUnit configuration
@@ -247,8 +247,8 @@ from the main `phpunit.xml`).
 
 ```bash
 composer run coverage                          # full app (unit + feature + arch)
-composer run coverage -- tests/Unit/Core       # single domain (Core)
-composer run coverage -- tests/Unit/Settings   # single domain (Settings)
+composer run coverage -- tests/Unit/Core       # single module (Core)
+composer run coverage -- tests/Unit/Settings   # single module (Settings)
 composer run coverage -- tests/Unit            # unit tests only
 
 composer run coverage -- --filter=BaseAction   # specific test

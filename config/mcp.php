@@ -6,14 +6,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Redirect Domains
+    | Redirect Modules
     |--------------------------------------------------------------------------
     |
-    | These domains are the domains that OAuth clients are permitted to use
-    | for redirect URIs. Each domain should be specified with its scheme
-    | and host. Domains not in this list will raise validation errors.
+    | These modules are the modules that OAuth clients are permitted to use
+    | for redirect URIs. Each module should be specified with its scheme
+    | and host. Modules not in this list will raise validation errors.
     |
-    | Restrict this to known application domains in production.
+    | Restrict this to known application modules in production.
     |
     */
 

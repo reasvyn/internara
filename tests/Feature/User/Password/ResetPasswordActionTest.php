@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Domain\User\Aggregates\Password\Actions\ResetPasswordAction;
-use App\Domain\User\Aggregates\Password\Actions\SendPasswordResetLinkAction;
-use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\User\Enums\Role as RoleEnum;
+use App\User\Models\User;
+use App\User\Password\Actions\ResetPasswordAction;
+use App\User\Password\Actions\SendPasswordResetLinkAction;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
