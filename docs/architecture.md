@@ -26,7 +26,7 @@ The module directories are vertical slices that cross all layers below Layer 11.
   Layer 12 ┌──────────────────────────────────────────────────────────┐
    Business│  16 Modules: User, Academics, Program, Enrollment...     │
    Modules │  Each module is a vertical slice of layers 1–11          │
-   (Module)│  app/{Module}/                                    │
+   (Module)│  app/{Module}/                                           │
            │  ├── {SubModule}/  ← colocated Actions, Models, Policies │
            │  ├── Types/        ← shared enums, value objects         │
            │  └── (root files)  ← cross-submodule Http, Console, ...  │
@@ -38,7 +38,7 @@ The module directories are vertical slices that cross all layers below Layer 11.
           │  resources/views/{module}/     static assets             │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
- Layer 10 ┌──────────────────────────────────────────────────────────┐
+  Layer 10 ┌──────────────────────────────────────────────────────────┐
   HTTP    │  Controllers / Middleware / Routes                       │
   Layer   │  16 module route files → routes/web/{module}.php        │
           │  SecurityHeaders, LogContext, CheckRole, SetLocale       │
@@ -59,17 +59,15 @@ The module directories are vertical slices that cross all layers below Layer 11.
   Layer 7 ┌──────────────────────────────────────────────────────────┐
   Business│  Command Actions — mutations  (transaction + log)        │
   Ops     │  Read Actions     — queries   (lightweight, no tx)      │
-          │  Process Actions  — multi-step orchestration             │
+  Utilites│  Process Actions  — multi-step orchestration             │
           │  app/*/Actions/  →  1 class = 1 use case         │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
    Layer 6 ┌──────────────────────────────────────────────────────────┐
-   Module  │  Enums  (35, LabelEnum, StatusEnum, ColorableEnum)      │
-  Rules   │  Entities (27, final readonly, framework deps allowed)  │
-           │  State entities (via BaseEntity) │
-          │  Data DTOs (AuditCheck, AuditReport)                    │
-          │  app/*/Enums/  Entities/  Data/                  │
-          └──────────────────────────────────────────────────────────┘
+   Shared /│  Shared Components (app/Support/, app/Exceptions/, etc.) │
+   Domain  │  Cross-module enums, exceptions, global Livewire,        │
+   Rules   │  Entities (27), Data DTOs (AuditCheck, AuditReport)      │
+           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 5 ┌──────────────────────────────────────────────────────────┐
   Module  │  Eloquent Models (50)  →  extend BaseModel              │
@@ -79,12 +77,11 @@ The module directories are vertical slices that cross all layers below Layer 11.
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
    Layer 4 ┌──────────────────────────────────────────────────────────┐
-    Core    │  BaseAction  BaseEntity  BasePolicy                     │
-   Base    │  BaseRecordManager  BaseController  FormRequest          │
-   Classes │  Data (DTO)  HandlesActionErrors                        │
-           │  SmartLogger  PiiMasker                                 │
-          │  app/Core/{Actions,Models,Policies,etc}          │
-          └──────────────────────────────────────────────────────────┘
+    Core   │  BaseAction  BaseEntity  BasePolicy                      │
+    Base   │  BaseRecordManager  BaseController  BaseFormRequest      │
+   Classes │  BaseData (DTO)                                          │
+           │  app/Core/                                               │
+           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 3 ┌──────────────────────────────────────────────────────────┐
   Core    │  Contracts: LabelEnum, StatusEnum, ColorableEnum         │
