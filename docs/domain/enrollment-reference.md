@@ -84,6 +84,14 @@ This domain depends on:
 
 ---
 
+## Livewire Forms
+
+| File | Form Class | Extends | Description |
+|---|---|---|---|
+| `Livewire/Forms/RegistrationWizardForm.php` | `RegistrationWizardForm` | `Form` | Form state and validation rules for the multi-step registration wizard |
+
+---
+
 ## Authorization Policies
 
 | File | Policy |

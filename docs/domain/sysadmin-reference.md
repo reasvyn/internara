@@ -107,6 +107,14 @@ This domain depends on:
 
 ---
 
+## Livewire Concerns
+
+| File | Concern / Trait | Description |
+|---|---|---|
+| `Aggregates/Account/Livewire/Concerns/DownloadsAccountSlips.php` | `DownloadsAccountSlips` | Shared concern for downloading PDF account slips and access credentials for newly created users |
+
+---
+
 ## Authorization Policies
 
 | File | Policy |

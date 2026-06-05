@@ -8,7 +8,7 @@
 
 ### Admin
 
-- **A30 — DownloadsAccountSlips Livewire concern undocumented:** `Admin/Livewire/Concerns/DownloadsAccountSlips.php` exists but is not listed anywhere in the reference doc.
+- **A30 — DownloadsAccountSlips Livewire concern undocumented (✅ Resolved):** Now listed under the Livewire Concerns section in `sysadmin-reference.md`.
 - **Overview mentions bulk creation** but no dedicated Action exists — CSV import lives inside `UserManager` Livewire component.
 - **C11 — AnnouncementStatus missing StatusEnum interface:** `app/Domain/Administration/Enums/AnnouncementStatus.php` defines state transitions (`DRAFT → SCHEDULED → PUBLISHED`) with `canTransitionTo()` but does not `implements StatusEnum`. Missing `isTerminal()` and `validTransitions()`.
 - **A46 — MentorManager not implemented:** No Livewire component exists for managing mentor records despite being listed in key-features.md.
@@ -111,7 +111,7 @@
 
 ### Registration
 
-- **A9 — RegistrationWizardForm not documented at all (🟠):** Exists as a Form object but is not listed in the Forms section.
+- **A9 — RegistrationWizardForm not documented at all (✅ Resolved):** Now documented under the Livewire Forms section in `enrollment-reference.md`.
 - **Livewire component count off by 1:** Counts Form object as Component.
 - **Cross-domain routing:** `ApplicationReview` (Admin) routed in `routes/web/registration.php`.
 
@@ -315,7 +315,7 @@ No abstract `execute()` method on `BaseAction`. Each Action defines its own sign
 | C14 | RecoverSuperAdminAction uses raw cache key | Setup | 🔴 Critical | Resolved |
 | L1 | Logbook: no industry supervisor feedback container | Logbook | 🔴 Critical | Proposal |
 | A8 | SupervisionManager described as "manages" but is read-only | Mentor | 🟠 High | Open |
-| A9 | RegistrationWizardForm not documented at all | Registration | 🟠 High | Open |
+| A9 | RegistrationWizardForm not documented at all | Registration | 🟠 High | Resolved |
 | A11 | Mentor dependency graph missing Internship and Evaluation | Mentor | 🟠 High | Open |
 | C4 | Livewire CRUD not extending BaseRecordManager (5 files) | Cross-Cutting (Infrastructure) | 🟠 High | Open |
 | A12 | Partnership dependency graph missing Placement and Core/CsvHandler | Partnership | 🟠 Medium | Open |
