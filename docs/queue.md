@@ -69,24 +69,36 @@ REDIS_PORT=6379
 
 ### Supervisor Configuration (Future)
 
-When deploying with a queue worker, Supervisor keeps the worker process alive:
+When deploying with a queue worker, Supervisor manages separate process groups for general notifications and document compilation:
 
 ```ini
-[program:internara-worker]
+[program:internara-default-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /path/to/app/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+command=php /path/to/app/artisan queue:work --queue=default --sleep=3 --tries=3 --max-time=3600
 autostart=true
 autorestart=true
 user=www-data
 numprocs=2
 redirect_stderr=true
-stdout_logfile=/path/to/app/storage/logs/worker.log
+stdout_logfile=/path/to/app/storage/logs/default-worker.log
+stopwaitsecs=3600
+
+[program:internara-documents-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /path/to/app/artisan queue:work --queue=documents --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/path/to/app/storage/logs/documents-worker.log
 stopwaitsecs=3600
 ```
 
 ```bash
-# Start worker (development only — Supervisor for production)
-php artisan queue:work --sleep=3 --tries=3
+# Start workers (development only)
+php artisan queue:work --queue=default --sleep=3 --tries=3
+php artisan queue:work --queue=documents --sleep=3 --tries=3
 ```
 
 ---
