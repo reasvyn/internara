@@ -7,8 +7,8 @@ namespace App\Domain\User\Aggregates\Profile\Livewire;
 use App\Domain\User\Aggregates\Password\Actions\UpdateUserPasswordAction;
 use App\Domain\User\Aggregates\Profile\Actions\GetProfileFormDataAction;
 use App\Domain\User\Aggregates\Profile\Actions\UpdateProfileAction;
-use App\Domain\User\Livewire\Forms\PasswordForm;
-use App\Domain\User\Livewire\Forms\ProfileForm;
+use App\Domain\User\Aggregates\Profile\Livewire\Forms\PasswordForm;
+use App\Domain\User\Aggregates\Profile\Livewire\Forms\ProfileForm;
 use App\Domain\User\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\RateLimiter;
@@ -33,6 +33,8 @@ class ProfileEditor extends Component
 
     public bool $canChangeName = true;
 
+    public bool $canChangeUsername = true;
+
     public bool $isStaff = false;
 
     /** @var string[] */
@@ -45,6 +47,7 @@ class ProfileEditor extends Component
         $formData = $action->execute($this->user);
 
         $this->canChangeName = $formData['canChangeName'];
+        $this->canChangeUsername = $formData['canChangeUsername'];
         $this->isStaff = $formData['staffFields'] !== [];
         $this->staffFields = $formData['staffFields'];
 
@@ -87,6 +90,10 @@ class ProfileEditor extends Component
             $rules['profileForm.name'] = 'required|string|max:255';
         }
 
+        if ($this->canChangeUsername) {
+            $rules['profileForm.username'] = 'required|string|alpha_num|lowercase|max:50|unique:users,username,'.$this->user->id;
+        }
+
         if ($this->isStaff) {
             $profileId = $this->user->profile?->id ?? 'NULL';
             $rules = array_merge($rules, [
@@ -119,6 +126,7 @@ class ProfileEditor extends Component
             $data,
             name: $this->canChangeName ? $this->profileForm->name : null,
             email: $this->profileForm->email,
+            username: $this->canChangeUsername ? $this->profileForm->username : null,
         );
 
         flash()->success(__('profile.saved'));

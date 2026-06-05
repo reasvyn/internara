@@ -13,6 +13,8 @@ class ProfileForm extends Form
 
     public string $email = '';
 
+    public string $username = '';
+
     public string $phone = '';
 
     public string $address = '';
@@ -35,6 +37,7 @@ class ProfileForm extends Form
 
         $this->name = $user->name;
         $this->email = $user->email;
+        $this->username = $user->username;
         $this->phone = $profile->phone ?? '';
         $this->address = $profile->address ?? '';
         $this->bio = $profile->bio ?? '';

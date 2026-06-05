@@ -15,7 +15,7 @@ final class GetProfileFormDataAction extends BaseAction
 
     private const ROLE_SUPERVISOR = ['supervisor'];
 
-    /** @return array{fields: string[], staffFields: string[], canChangeName: bool, role: string} */
+    /** @return array{fields: string[], staffFields: string[], canChangeName: bool, canChangeUsername: bool, role: string} */
     public function execute(User $user): array
     {
         $role = $user->getRoleNames()->first() ?? 'unknown';
@@ -39,6 +39,7 @@ final class GetProfileFormDataAction extends BaseAction
             'fields' => $fields,
             'staffFields' => $staffFields,
             'canChangeName' => ! $isSuperAdmin,
+            'canChangeUsername' => ! $isSuperAdmin,
             'role' => $role,
         ];
     }
