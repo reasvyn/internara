@@ -266,3 +266,31 @@ php -d extension=pcov.so -d pcov.enabled=1 vendor/bin/pest --coverage
 ```
 
 The `composer run coverage` script handles this automatically.
+
+---
+
+## Testing the Dual Mentor Fallback Protocol
+
+Testing the **Dual Mentor Fallback & Optionality Protocol** requires verifying both the standard supervisor-led paths and the teacher-led fallback/bypass paths.
+
+### 1. Attendance & Daily Journal Override Tests
+Feature tests for journals and attendance must verify:
+- **Auto-escalation flag**: Assert that logbooks or attendance records in the `SUBMITTED` state for longer than the bypass window (default: 48 hours) correctly trigger the auto-escalation flag.
+- **Teacher override bypass action**:
+  - Mock/authenticate as a `Teacher` user and call the verification action (e.g. `BypassSupervisorVerificationAction` or a general verification action with a fallback override parameter).
+  - Assert that the record transitions successfully to `FINALIZED` / `VERIFIED`.
+  - Assert that `verified_by_fallback` is set to `true` (or the corresponding fallback verifier fields are stamped).
+  - Verify that an audit trail log is appended detailing the override.
+  - Verify that the record is removed from the corporate supervisor's queue.
+
+### 2. Competency Evaluation & Grading Tests
+Tests for end-of-placement grading must cover the three evaluation paths:
+- **Standard path**: Verify that the calculated grade correctly combines supervisor score (40%), teacher score (20%), and exam score (40%).
+- **Proxy path**:
+  - Verify that a `Teacher` can submit scores on behalf of the supervisor (proxy toggle = active).
+  - Verify that the compiled output/certificate is stamped with the `proxy_scores` metadata tag.
+- **Weight redistribution path**:
+  - Set up a placement with no supervisor score submitted.
+  - Call the final grading action and assert that it correctly redistributes the 40% supervisor weight: 20% added to the teacher's evaluation (now 40%) and 20% to the exam (now 60%), using the formula:
+    `Grade = (Teacher × 40%) + (Exam × 60%)`
+  - Assert that the compiled output/certificate is stamped with the `fallback_weights` metadata tag.
