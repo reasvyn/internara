@@ -28,6 +28,9 @@ Owns rubric and assessment definitions. Evaluation module consumes assessment re
 
 - **Assessment finalization is irreversible**: once finalized, scores cannot be modified. Any corrections require a new assessment round.
 - **Rubric scores follow the defined performance levels** (typically 1-5, but configurable per rubric). Weighted total is auto-calculated.
+- **Dual Mentor Grading Fallback**: Supervisor evaluations are optional. If the corporate supervisor fails to submit their evaluation, the school Teacher is authorized to:
+  * Enable **Proxy Evaluation** to input scores on behalf of the supervisor based on physical reports.
+  * Trigger **Weight Redistribution**, which dynamically shifts the supervisor's weight (e.g., 40%) to the Teacher's evaluation and Report/Exam components.
 - **Presentations have a lifecycle**: SCHEDULED → COMPLETED (if successful) or CANCELLED (if not). Only one active presentation per student per program.
 - **Only authorized teachers/supervisors** can submit assessment scores. Students can view their own assessments but not modify them.
 - **Rubrics can be reused** across multiple assessments and programs. Changes to a rubric do not affect already-finalized assessments (which store a snapshot of the rubric at time of grading).
