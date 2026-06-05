@@ -47,6 +47,7 @@ User is the identity hub. Every domain references users via `morphToMany` or `fo
 - **AccountStatus**: State machine with 8 states, guarded transitions, and immutable audit log of all transitions.
 - **Profile**: Personal data editor, avatar upload (200x200 WebP via media library), emergency contact info.
 - **Notification**: Full-page notification center with read/unread filter, bulk actions, and a navbar bell with live counter.
+- **Dashboard**: Role-specific portals (admin, teacher, supervisor, student) displaying stats, metrics, and workflows tailored to each role's administrative context.
 - **SuperAdmin**: Integrity constraints — enforces single-instance, immutable name/username, prohibits deletion.
 
 ---
