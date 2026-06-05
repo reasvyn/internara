@@ -16,6 +16,10 @@ class SupervisorDashboard extends UserDashboard
 
     public int $verifiedJournals = 0;
 
+    public int $pendingJournals = 0;
+
+    public int $pendingAttendance = 0;
+
     public function boot(): void
     {
         abort_unless(auth()->user()?->hasRole('supervisor'), 403);
@@ -28,6 +32,8 @@ class SupervisorDashboard extends UserDashboard
         $this->activeInterns = $stats['activeInterns'];
         $this->pendingEvaluations = $stats['pendingEvaluations'];
         $this->verifiedJournals = $stats['verifiedJournals'];
+        $this->pendingJournals = $stats['pendingJournals'];
+        $this->pendingAttendance = $stats['pendingAttendance'];
     }
 
     public function render(): View

@@ -2,10 +2,13 @@
     <x-mary-header :title="__('dashboard.title')" :subtitle="__('dashboard.subtitle', ['name' => auth()->user()->name])" separator />
 
     {{-- Stats --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
         <x-core::widgets.stat-card :title="__('dashboard.stats.supervised_students')" :value="$supervisedStudents" icon="o-users" color="text-primary" />
         <x-core::widgets.stat-card :title="__('dashboard.stats.pending_journals')" :value="$pendingJournals" icon="o-book-open" color="text-warning" />
         <x-core::widgets.stat-card :title="__('dashboard.stats.active_companies')" :value="$activeCompanies" icon="o-building-office" color="text-secondary" />
+        <x-core::widgets.stat-card :title="__('Ungraded Submissions')" :value="$ungradedSubmissions" icon="o-document-check" color="text-error" />
+        <x-core::widgets.stat-card :title="__('Supervision Logs')" :value="$supervisionLogsCount" icon="o-check-badge" color="text-success" />
+        <x-core::widgets.stat-card :title="__('Unresolved Incidents')" :value="$unresolvedIncidents" icon="o-shield-exclamation" color="text-error" />
     </div>
 
     {{-- Main + Sidebar --}}
@@ -21,7 +24,11 @@
                 <x-core::widgets.empty-state icon="o-clipboard-document-check" :title="__('dashboard.teacher.no_journals')" />
             </x-mary-card>
 
-            <x-core::widgets.action-button :label="__('dashboard.teacher.guidance_logs')" icon="o-check-badge" link="{{ route('supervision.logs') }}" color="btn-primary" />
+            <div class="grid grid-cols-2 gap-4">
+                <x-core::widgets.action-button :label="__('Verify Logbooks')" icon="o-pencil-square" link="{{ route('sysadmin.logbook') }}" color="btn-primary" />
+                <x-core::widgets.action-button :label="__('Grade Assignments')" icon="o-document-check" link="{{ route('teacher.submissions.grading') }}" color="btn-secondary" />
+                <x-core::widgets.action-button :label="__('Supervision Logs')" icon="o-check-badge" link="{{ route('supervision.logs') }}" color="btn-accent" />
+            </div>
         </div>
 
         <div class="space-y-4">

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Journals\Aggregates\Attendance\Models;
 
 use App\Domain\Core\Models\BaseModel;
+use App\Domain\Enrollment\Models\Registration;
 use App\Domain\Journals\Aggregates\Attendance\Entities\AttendanceStatus as AttendanceStatusEntity;
 use App\Domain\Journals\Aggregates\Attendance\Enums\AttendanceStatus;
 use App\Domain\User\Models\User;
