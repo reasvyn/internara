@@ -143,8 +143,8 @@ return [
             'discover_livewire' => 'Mendaftarkan komponen Livewire',
             'discover_policies' => 'Mendaftarkan kebijakan',
             'discover_views' => 'Mendaftarkan namespace tampilan',
-            'discover_complete' => 'Cache penemuan domain dihangatkan.',
-            'discover_failed' => 'Penemuan domain gagal',
+            'discover_complete' => 'Cache penemuan module dihangatkan.',
+            'discover_failed' => 'Penemuan module gagal',
         ],
     ],
 

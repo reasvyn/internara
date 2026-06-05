@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Partners\Aggregates\Company\Models\Company;
+use App\Partners\Company\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

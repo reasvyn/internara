@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Domain\User\Aggregates\Login\Actions\LoginAction;
-use App\Domain\User\Enums\AccountStatus;
-use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\User\Enums\AccountStatus;
+use App\User\Enums\Role as RoleEnum;
+use App\User\Login\Actions\LoginAction;
+use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;

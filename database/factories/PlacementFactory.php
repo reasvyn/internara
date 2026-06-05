@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Enrollment\Models\Placement;
-use App\Domain\Partners\Aggregates\Company\Models\Company;
-use App\Domain\Program\Aggregates\Internship\Models\Internship;
+use App\Enrollment\Models\Placement;
+use App\Partners\Company\Models\Company;
+use App\Program\Internship\Models\Internship;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

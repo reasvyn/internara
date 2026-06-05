@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Domain\Assessment\Aggregates\Assessment\Livewire\AssessmentGrading;
-use App\Domain\Assessment\Aggregates\Assessment\Livewire\AssessmentView;
-use App\Domain\Assessment\Aggregates\Presentation\Livewire\PresentationSchedule;
-use App\Domain\Assessment\Aggregates\Rubric\Livewire\RubricManager;
+use App\Assessment\Assessment\Livewire\AssessmentGrading;
+use App\Assessment\Assessment\Livewire\AssessmentView;
+use App\Assessment\Presentation\Livewire\PresentationSchedule;
+use App\Assessment\Rubric\Livewire\RubricManager;
 
 Route::middleware('auth')->group(function () {
     Route::livewire('/assessments', AssessmentView::class)->name('assessments');

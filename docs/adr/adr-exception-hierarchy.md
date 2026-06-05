@@ -8,19 +8,19 @@ Accepted
 
 ## Context
 
-A 23-domain, 465-file application needs a consistent way to signal failures across layers.
+A 23-module, 465-file application needs a consistent way to signal failures across layers.
 A `UserNotFoundException` thrown from an Action and a `ValidationFailedException` thrown from
 a FormRequest should be distinguishable by their purpose, not just their class name.
 
 The default Laravel pattern — throwing `Exception` or `RuntimeException` subclasses — makes
-it impossible for a catch block to distinguish "this is a domain logic failure you should
+it impossible for a catch block to distinguish "this is a module logic failure you should
 handle differently" from "this is an infrastructure failure you should report to operations"
 without inspecting the class hierarchy at runtime.
 
 Two alternatives were considered:
 
 1. **Single exception tree**: All application exceptions extend a single `AppException`.
-   Simple — but a controller trying to catch domain violations (`catch (RejectedException)`)
+   Simple — but a controller trying to catch module violations (`catch (RejectedException)`)
    would also catch framework-layer failures like `ValidationFailedException` if they share
    the same root. Catch blocks cannot distinguish intent.
 
@@ -58,7 +58,7 @@ RuntimeException
     │  Business rule violations. Things a user or admin should understand.
     │  Deliberately NOT a child of AppException.
     │
-    └── RejectedException — domain invariant violated (e.g., invalid state transition)
+    └── RejectedException — module invariant violated (e.g., invalid state transition)
 ```
 
 ### Why Two Roots?
@@ -66,7 +66,7 @@ RuntimeException
 `DomainException` is intentionally NOT a child of `AppException`. This means:
 
 ```php
-// A controller can catch domain violations specifically
+// A controller can catch module violations specifically
 catch (DomainException $e) {
     flash()->error($e->getMessage());
     return; // Never catches infrastructure errors
@@ -76,12 +76,12 @@ catch (DomainException $e) {
 catch (InfrastructureException $e) {
     Log::error('External service failed', ['exception' => $e]);
     flash()->error('A temporary error occurred. Please try again.');
-    return; // Never catches domain violations
+    return; // Never catches module violations
 }
 ```
 
 If `DomainException` extended `AppException`, a `catch (AppException)` block would catch both
-domain violations and infrastructure errors, forcing every handler to inspect the class
+module violations and infrastructure errors, forcing every handler to inspect the class
 hierarchy to distinguish them.
 
 ### HasExceptionContext Trait
@@ -107,12 +107,12 @@ Both trees use the `HasExceptionContext` trait, providing a consistent API:
 | External API timeout | `InfrastructureException` | AppException → InfrastructureException |
 | Rate limit exceeded | `RateLimitException` | AppException → InfrastructureException |
 | Invalid state transition | `RejectedException` | DomainException |
-| Domain invariant violated | `RejectedException` | DomainException |
+| Module invariant violated | `RejectedException` | DomainException |
 | General business rule failure | `RejectedException` | DomainException |
 
 ## Consequences
 
-- **Positive**: Catch blocks can target domain failures or framework failures independently.
+- **Positive**: Catch blocks can target module failures or framework failures independently.
   A controller can catch `DomainException` for user-facing error messages without worrying
   about catching infrastructure errors.
 - **Positive**: Exception class communicates intent — `RejectedException` means "business rule
@@ -122,7 +122,7 @@ Both trees use the `HasExceptionContext` trait, providing a consistent API:
 - **Positive**: `toCliOutput()` ensures CLI commands (artisan, tinker) display errors with
   consistent formatting including hints and context.
 - **Negative**: Two abstract roots means developers must choose which tree to extend.
-  Misclassification (throwing `AppException` for a domain failure) is possible and requires
+  Misclassification (throwing `AppException` for a module failure) is possible and requires
   code review to catch.
 - **Negative**: HTTP error handlers must branch for both trees — separate `render()` paths
   for `AppException` and `DomainException`.
@@ -131,9 +131,9 @@ Both trees use the `HasExceptionContext` trait, providing a consistent API:
 
 ## References
 
-- `app/Domain/Core/Exceptions/AppException.php` — abstract root for framework exceptions
-- `app/Domain/Core/Exceptions/DomainException.php` — abstract root for domain exceptions
-- `app/Domain/Core/Exceptions/Concerns/HasExceptionContext.php` — shared trait
-- `app/Domain/Core/Exceptions/RejectedException.php` — most commonly used domain exception
+- `app/Core/Exceptions/AppException.php` — abstract root for framework exceptions
+- `app/Core/Exceptions/DomainException.php` — abstract root for module exceptions
+- `app/Core/Exceptions/Concerns/HasExceptionContext.php` — shared trait
+- `app/Core/Exceptions/RejectedException.php` — most commonly used module exception
 - `docs/architecture.md` — Exception Hierarchy section
 - `docs/conventions.md` — Section 12 (Exceptions)

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Academics\Aggregates\AcademicYear\Models\AcademicYear;
-use App\Domain\Program\Aggregates\Internship\Models\Internship;
+use App\Academics\AcademicYear\Models\AcademicYear;
+use App\Program\Internship\Models\Internship;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class InternshipFactory extends Factory

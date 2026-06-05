@@ -1,12 +1,12 @@
 # Database
 > Last updated: 2026-05-31
-> **Context:** ✅ Database schema is fully implemented across all domains — verified in [reference docs](domain/domain-index.md).
+> **Context:** ✅ Database schema is fully implemented across all modules — verified in [reference docs](modules/module-index.md).
 
 
 ## Design Philosophy
 
 The database is organized around the concept that every piece of persistent
-state belongs to a domain. Tables are not flat or arbitrary; they are grouped
+state belongs to a module. Tables are not flat or arbitrary; they are grouped
 into five conceptual categories that mirror the application's architecture:
 core, operational, assessment, security, and supporting. This structure makes
 it obvious where data lives and how it relates.
@@ -79,19 +79,19 @@ chronological timestamp prefixes. This ensures consistent execution order
 across environments. Migration filenames indicate which table they create
 (e.g., `2026_04_29_092750_create_users_table.php`).
 
-Each domain manages its own schema concerns through distinct migration files,
-but all files coexist in the same directory. The domain ownership is evident
+Each module manages its own schema concerns through distinct migration files,
+but all files coexist in the same directory. The module ownership is evident
 from the table name, not from a directory structure.
 
 Foreign key delete behaviors follow a simple rule: cascade when the child
 record cannot exist without the parent, nullify when the relationship is
 optional, and restrict when deletion should be prevented. Composite indexes
-are created for the specific query patterns each domain uses, not
+are created for the specific query patterns each module uses, not
 speculatively for every column combination.
 
-Factories and seeders mirror this domain structure. Each model has a
+Factories and seeders mirror this module structure. Each model has a
 factory, and seeders are idempotent — they can be run multiple times without
-duplicating data. The seeding order respects domain dependencies: school
+duplicating data. The seeding order respects module dependencies: school
 data before user data, permissions before role assignments, internships
 before registrations.
 
@@ -99,7 +99,7 @@ before registrations.
 
 All migrations live in `database/migrations/` with chronological prefixes.
 Factories are in `database/factories/`, seeders in `database/seeders/`.
-The base model class is in `app/Domain/Core/Models/BaseModel.php`.
+The base model class is in `app/Core/Models/BaseModel.php`.
 Database configuration is in `config/database.php`, overridable via `.env`.
 
 ## Full Table Reference
@@ -110,7 +110,7 @@ Registration, Daily Operations (attendance, logbook), Mentoring, Assignments,
 Assessment, Reports, Guidance & Incidents, Evaluations, Admin & Audit, and
 Infrastructure (cache, queue, sessions, media, notifications, activity log).
 
-Refer to individual domain documentation for table details and relationships.
+Refer to individual module documentation for table details and relationships.
 
 ---
 

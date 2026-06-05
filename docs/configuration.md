@@ -24,7 +24,7 @@ Configuration files are organized into three tiers matching the infrastructure d
 
 Variables follow a naming convention that makes their origin clear:
 
-| Prefix | Domain | Example |
+| Prefix | Module | Example |
 |---|---|---|
 | `APP_*` | Application | `APP_NAME`, `APP_ENV`, `APP_KEY`, `APP_DEBUG`, `APP_URL` |
 | `DB_*` | Database | `DB_CONNECTION`, `DB_HOST`, `DB_DATABASE` |
@@ -209,8 +209,8 @@ defaults. See [Branding](branding.md) for details.
 
 - All configuration files: `config/`
 - Environment template: `.env.example`
-- Settings model: `app/Domain/Settings/Models/Setting.php`
-- Settings resolver: `app/Domain/Settings/Support/Settings.php`
-- Brand resolver: `app/Domain/Settings/Support/AppMetadata.php`
-- App info (composer.json): `app/Domain/Settings/Support/AppInfo.php`
+- Settings model: `app/Module/Settings/Models/Setting.php`
+- Settings resolver: `app/Module/Settings/Support/Settings.php`
+- Brand resolver: `app/Module/Settings/Support/AppMetadata.php`
+- App info (composer.json): `app/Module/Settings/Support/AppInfo.php`
 - Infrastructure tiers: [Infrastructure](infrastructure.md)

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Actions\BaseAction;
+use App\Core\Actions\BaseAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

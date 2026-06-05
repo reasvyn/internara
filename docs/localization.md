@@ -22,12 +22,12 @@ guide below for adding a new language.
 Internara uses Laravel's built-in localization system. Translation files are
 stored in two formats:
 
-1. **PHP files** — `lang/{locale}/{domain}.php` for structured translations.
-   Keys follow `{domain}.{key}` dot notation. Example: `auth.failed`,
+1. **PHP files** — `lang/{locale}/{module}.php` for structured translations.
+   Keys follow `{module}.{key}` dot notation. Example: `auth.failed`,
    `validation.required`, `registration.status.pending`.
 
 2. **JSON files** — `lang/{locale}.json` for short strings and UI labels
-   that don't belong to a specific domain.
+   that don't belong to a specific module.
 
 ### Locale Resolution
 
@@ -42,7 +42,7 @@ interface. Their preference persists across sessions.
 
 ## Translation File Structure
 
-Translation files mirror the application's domain structure:
+Translation files mirror the application's module structure:
 
 ```
 lang/
@@ -54,7 +54,7 @@ lang/
 │   ├── registration.php
 │   ├── internship.php
 │   ├── attendance.php
-│   └── ... (one file per domain that needs translations)
+│   └── ... (one file per module that needs translations)
 ├── id/
 │   ├── auth.php
 │   ├── validation.php
@@ -218,7 +218,7 @@ Before submitting, verify:
 
 - `config/app.php` — `locale`, `fallback_locale`, `available_locales`
 - `config/localization.php` — locale resolution configuration
-- `app/Domain/Settings/Http/Middleware/SetLocaleMiddleware.php` — locale detection
-- `app/Domain/Core/Livewire/LangSwitcher.php` — UI language toggle
+- `app/Module/Settings/Http/Middleware/SetLocaleMiddleware.php` — locale detection
+- `app/Core/Livewire/LangSwitcher.php` — UI language toggle
 - `lang/` — translation files
-- `app/Domain/Core/Contracts/LabelEnum.php` — enum label contract
+- `app/Core/Contracts/LabelEnum.php` — enum label contract

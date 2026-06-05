@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Domain\User\Aggregates\Login\Actions\LoginAction;
-use App\Domain\User\Aggregates\Notification\Actions\MarkAsReadAction;
-use App\Domain\User\Aggregates\Notification\Actions\SendNotificationAction;
-use App\Domain\User\Aggregates\Notification\Models\Notification;
-use App\Domain\User\Aggregates\Password\Actions\ConfirmPasswordAction;
-use App\Domain\User\Aggregates\Password\Actions\UpdateUserPasswordAction;
-use App\Domain\User\Enums\AccountStatus;
-use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\User\Enums\AccountStatus;
+use App\User\Enums\Role as RoleEnum;
+use App\User\Login\Actions\LoginAction;
+use App\User\Models\User;
+use App\User\Notification\Actions\MarkAsReadAction;
+use App\User\Notification\Actions\SendNotificationAction;
+use App\User\Notification\Models\Notification;
+use App\User\Password\Actions\ConfirmPasswordAction;
+use App\User\Password\Actions\UpdateUserPasswordAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;

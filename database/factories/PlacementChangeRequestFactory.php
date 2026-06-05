@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Enrollment\Models\Placement;
-use App\Domain\Enrollment\Models\PlacementChangeRequest;
-use App\Domain\Enrollment\Models\Registration;
-use App\Domain\Program\Aggregates\Internship\Models\Internship;
-use App\Domain\User\Models\User;
+use App\Enrollment\Models\Placement;
+use App\Enrollment\Models\PlacementChangeRequest;
+use App\Enrollment\Models\Registration;
+use App\Program\Internship\Models\Internship;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PlacementChangeRequestFactory extends Factory

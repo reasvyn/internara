@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Academics\AcademicYear;
 
-use App\Domain\Academics\Aggregates\AcademicYear\Models\AcademicYear;
+use App\Academics\AcademicYear\Models\AcademicYear;
 use Carbon\Carbon;
 use Database\Seeders\AcademicYearSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\SysAdmin\Setup;
 
-use App\Domain\User\Enums\Role as RoleEnum;
+use App\User\Enums\Role as RoleEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Spatie\Permission\Models\Role;

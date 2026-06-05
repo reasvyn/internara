@@ -88,7 +88,7 @@ opcache.revalidate_freq=0               ; Check every request
 
 1. **If you update a value, invalidate its cache entry.** This is the fundamental rule.
 2. Prefer **targeted invalidation** — clear only the keys that changed, not everything.
-3. Use **event-driven invalidation** for cross-domain cache keys — the Command Action
+3. Use **event-driven invalidation** for cross-module cache keys — the Command Action
    dispatches an event, a listener flushes the affected keys.
 4. Full cache flushes (`php artisan cache:clear`) are for maintenance only, not normal
    operations.
@@ -128,7 +128,7 @@ Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
 
 ### Centralized Registry
 
-Every cache key MUST be declared as a constant in `App\Domain\Core\Support\CacheKeys`.
+Every cache key MUST be declared as a constant in `App\Core\Support\CacheKeys`.
 This prevents collisions, makes dependencies discoverable, and enables systematic flushing.
 
 ```php
@@ -151,13 +151,13 @@ final readonly class CacheKeys
 ### Naming Convention
 
 ```
-{domain}.{purpose}[.{qualifier}]
+{module}.{purpose}[.{qualifier}]
 
 Examples:
-  setup.is_installed              → domain: setup, purpose: installation status
-  admin.dashboard.stats           → domain: admin, purpose: dashboard statistics
-  notification.unread:{userId}    → domain: notification, purpose: unread count
-  theme.css_variables             → domain: theme, purpose: CSS custom properties
+  setup.is_installed              → module: setup, purpose: installation status
+  admin.dashboard.stats           → module: admin, purpose: dashboard statistics
+  notification.unread:{userId}    → module: notification, purpose: unread count
+  theme.css_variables             → module: theme, purpose: CSS custom properties
 ```
 
 ### TTL Legend
@@ -263,8 +263,8 @@ the cache for first requests after deployment.
 
 - `config/cache.php` — cache store definitions, per-store configuration
 - `config/database.php` — Redis connection settings under the `redis` key
-- `app/Domain/Core/Support/CacheKeys.php` — centralized cache key registry
-- `app/Domain/Settings/Support/Settings.php` — settings caching layer
-- `app/Domain/Core/Console/Commands/CacheWarmCommand.php` — cache warming
+- `app/Core/Support/CacheKeys.php` — centralized cache key registry
+- `app/Module/Settings/Support/Settings.php` — settings caching layer
+- `app/Core/Console/Commands/CacheWarmCommand.php` — cache warming
 - `database/migrations/` — cache and cache_locks table migrations
 - `docs/infrastructure.md` — tier-based infrastructure design

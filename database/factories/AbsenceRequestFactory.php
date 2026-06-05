@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Enrollment\Models\Registration;
-use App\Domain\Journals\Aggregates\AbsenceRequest\Enums\AbsenceReasonType;
-use App\Domain\Journals\Aggregates\AbsenceRequest\Enums\AbsenceRequestStatus;
-use App\Domain\Journals\Aggregates\AbsenceRequest\Models\AbsenceRequest;
-use App\Domain\User\Models\User;
+use App\Enrollment\Models\Registration;
+use App\Journals\AbsenceRequest\Enums\AbsenceReasonType;
+use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
+use App\Journals\AbsenceRequest\Models\AbsenceRequest;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

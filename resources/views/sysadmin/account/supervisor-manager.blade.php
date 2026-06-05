@@ -66,7 +66,7 @@
                     <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
                     <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" />
                     <x-mary-input :label="__('user.supervisor.phone')" wire:model="form.phone" icon="o-phone" />
-                    <x-mary-select :label="__('user.supervisor.company')" wire:model="form.company_id" :placeholder="__('user.supervisor.company_placeholder')" :options="\App\Domain\Partners\Aggregates\Company\Models\Company::pluck('name', 'id')->toArray()" icon="o-building-office" />
+                    <x-mary-select :label="__('user.supervisor.company')" wire:model="form.company_id" :placeholder="__('user.supervisor.company_placeholder')" :options="\App\Partners\Company\Models\Company::pluck('name', 'id')->toArray()" icon="o-building-office" />
                 </div>
 
                 <x-slot:actions>

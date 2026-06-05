@@ -19,7 +19,7 @@ certificates, the program must be formally closed. Closure involves:
 
 - Verifying that all required components are complete (assessments finalized, submissions
   graded, attendance verified, supervision logs signed, certificates issued)
-- Computing and locking final grade aggregates for each student
+- Computing and locking final grade submodules for each student
 - Triggering a Program Quality Evaluation (admin/teacher assessment of the program's
   outcomes)
 - Marking the program status from `COMPLETED` to `ARCHIVED`
@@ -40,11 +40,11 @@ The codebase already has some related infrastructure:
 
 | Component | Location | Status |
 |---|---|---|
-| `CheckCloseReadinessAction` | Internship domain | ✅ Exists — checks assessments, submissions, logs, attendance |
-| `ArchiveStudentAccountsAction` | Admin domain | ✅ Exists — bulk archives student accounts (status → ARCHIVED) |
+| `CheckCloseReadinessAction` | Internship module | ✅ Exists — checks assessments, submissions, logs, attendance |
+| `ArchiveStudentAccountsAction` | Admin module | ✅ Exists — bulk archives student accounts (status → ARCHIVED) |
 | `AccountStatus::ARCHIVED` | Auth enum | ✅ Exists — account lifecycle includes archived state |
 | `InternshipStatus::COMPLETED` | Internship enum | ✅ Exists — but no transition to ARCHIVED |
-| Program Quality Evaluation | Evaluation domain | ⚠️ Defined in key-features but not yet implemented as trigger |
+| Program Quality Evaluation | Evaluation module | ⚠️ Defined in key-features but not yet implemented as trigger |
 
 What does NOT exist:
 
@@ -77,7 +77,7 @@ CloseProgramProcess
   │      Verify: all assessments finalized, all submissions graded,
   │      all attendance verified, all certificates issued
   │
-  ├─ 2. Trigger Program Quality Evaluation (Evaluation domain)
+  ├─ 2. Trigger Program Quality Evaluation (Evaluation module)
   │      Admin/teacher must submit evaluation before closure proceeds
   │
   ├─ 3. FinalizeAssessmentsAction
@@ -173,9 +173,9 @@ expiry must do so via database-level operations (documented but not automated).
 
 ## References
 
-- `app/Domain/Program/Actions/CheckCloseReadinessAction.php` — readiness verification
-- `app/Domain/Administration/Actions/ArchiveStudentAccountsAction.php` — student archive
-- `app/Domain/Auth/Enums/AccountStatus.php` — ARCHIVED status
-- `app/Domain/Program/Enums/InternshipStatus.php` — program lifecycle enum
+- `app/Program/Actions/CheckCloseReadinessAction.php` — readiness verification
+- `app/Module/Administration/Actions/ArchiveStudentAccountsAction.php` — student archive
+- `app/Module/Auth/Enums/AccountStatus.php` — ARCHIVED status
+- `app/Program/Enums/InternshipStatus.php` — program lifecycle enum
 - `docs/key-features.md` — Program Closure & Archival section
 - `docs/architecture.md` — Action Triad (Process Actions)

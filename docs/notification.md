@@ -106,8 +106,8 @@ queued (Tier 2+) or sent synchronously (Tier 1).
 |---|---|---|---|---|
 | `log` | ✅ Dev | ❌ | ❌ | None |
 | `smtp` | ✅ | ✅ | ✅ | SMTP server credentials |
-| `ses` | ❌ | ✅ | ✅ | AWS account, SES verified domain |
-| `mailgun` | ❌ | ✅ | ✅ | Mailgun account, domain verification |
+| `ses` | ❌ | ✅ | ✅ | AWS account, SES verified module |
+| `mailgun` | ❌ | ✅ | ✅ | Mailgun account, module verification |
 | `postmark` | ❌ | ✅ | ✅ | Postmark account, server token |
 | `sendmail` | ⚠️ Unreliable | ❌ | ❌ | `sendmail` binary on server |
 
@@ -143,7 +143,7 @@ AWS_SECRET_ACCESS_KEY=your-secret
 AWS_DEFAULT_REGION=ap-southeast-1
 ```
 
-SES requires domain verification and may start in sandbox mode (verified emails only).
+SES requires module verification and may start in sandbox mode (verified emails only).
 Request production access for sending to unverified recipients.
 
 ### Development Configuration
@@ -158,23 +158,23 @@ MAIL_MAILER=preview  # requires mail-preview package
 
 ### Deliverability Setup
 
-To ensure emails reach recipients (not spam), configure these DNS records for your domain:
+To ensure emails reach recipients (not spam), configure these DNS records for your module:
 
 ```
 Record    Type    Value
 ──────────────────────────────────────
 SPF       TXT     v=spf1 include:_spf.google.com ~all
 DKIM      TXT     (provided by your email provider)
-DMARC     TXT     v=DMARC1; p=quarantine; rua=mailto:dmarc@your-domain
+DMARC     TXT     v=DMARC1; p=quarantine; rua=mailto:dmarc@your-module
 MX        MX      (your email provider's MX record)
 ```
 
 | Record | Purpose | Risk if Missing |
 |---|---|---|
-| **SPF** | Authorizes which servers can send from your domain | Email marked as spam or rejected |
+| **SPF** | Authorizes which servers can send from your module | Email marked as spam or rejected |
 | **DKIM** | Cryptographic signature verifying email integrity | Email fails authentication checks |
-| **DMARC** | Policy for how receivers handle unauthenticated email | Spoofers can impersonate your domain |
-| **Reverse DNS (PTR)** | Maps your mail server IP back to your domain | Some receivers reject unauthenticated IPs |
+| **DMARC** | Policy for how receivers handle unauthenticated email | Spoofers can impersonate your module |
+| **Reverse DNS (PTR)** | Maps your mail server IP back to your module | Some receivers reject unauthenticated IPs |
 
 ### Queue Integration
 
@@ -334,11 +334,11 @@ Created (via Action/Event)
 
 ## Where to Find It
 
-- `app/Domain/Core/Channels/CustomDatabaseChannel.php` — custom database channel
-- `app/Domain/*/Notifications/` — notification classes organized by domain
-- `app/Domain/User/Actions/SendNotificationAction.php` — notification dispatch action
-- `app/Domain/Core/Contracts/SendsNotifications.php` — notification contract
-- `app/Domain/Administration/Console/Commands/PruneNotificationsCommand.php` — notification pruning
+- `app/Core/Channels/CustomDatabaseChannel.php` — custom database channel
+- `app/Module/*/Notifications/` — notification classes organized by module
+- `app/User/Actions/SendNotificationAction.php` — notification dispatch action
+- `app/Core/Contracts/SendsNotifications.php` — notification contract
+- `app/Module/Administration/Console/Commands/PruneNotificationsCommand.php` — notification pruning
 - `config/mail.php` — mail driver and SMTP configuration
 - `config/flasher.php` — flash message styling and timeout
 - `docs/infrastructure.md` — tier-based infrastructure design

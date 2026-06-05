@@ -56,7 +56,7 @@
                             <p class="text-xs text-base-content/50 mb-4">{{ __('profile.staff_information_desc') }}</p>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <x-mary-select :label="__('profile.employment_status')" wire:model="profileForm.employment_status" :placeholder="__('profile.select_option')" :options="\App\Domain\User\Enums\EmploymentStatus::options()" icon="o-briefcase" />
+                                <x-mary-select :label="__('profile.employment_status')" wire:model="profileForm.employment_status" :placeholder="__('profile.select_option')" :options="\App\User\Enums\EmploymentStatus::options()" icon="o-briefcase" />
                                 <x-mary-input :label="__('profile.job_title')" wire:model="profileForm.job_title" :placeholder="__('profile.job_title_placeholder')" icon="o-identification" />
                                 <x-mary-input :label="__('profile.employee_id_number')" wire:model="profileForm.employee_id_number" :placeholder="__('profile.employee_id_number_placeholder')" icon="o-document-text" />
                                 <x-mary-input :label="__('profile.educator_id_number')" wire:model="profileForm.educator_id_number" :placeholder="__('profile.educator_id_number_placeholder')" icon="o-document-text" />

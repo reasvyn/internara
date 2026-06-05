@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-In a 23-domain codebase with 10+ architectural layers and 160+ Actions across 50+ models,
+In a 23-module codebase with 10+ architectural layers and 160+ Actions across 50+ models,
 consistency is not optional. Every developer writing a new model, action, or policy must make
 the same structural decisions — or the codebase drifts into an inconsistent state where some
 models extend `BaseModel`, others extend `Model` directly, and some actions use `SmartLogger`
@@ -76,7 +76,7 @@ mechanism. Violations are considered blocking in code review.
   actions, authorized policies. Predictability across 465+ files.
 - **Positive**: Cross-cutting changes (e.g., adding a new feature to `BaseAction`) apply to
   all 150+ actions automatically.
-- **Positive**: New developers can look at any existing domain file and know the structure —
+- **Positive**: New developers can look at any existing module file and know the structure —
   every model, action, and policy follows the same pattern.
 - **Positive**: Cache keys are declared in one place — discovering what cache keys exist and
   what invalidates them requires reading one file.
@@ -91,15 +91,15 @@ mechanism. Violations are considered blocking in code review.
 
 ## References
 
-- `app/Domain/Core/Models/BaseModel.php` — base model with UUID
-- `app/Domain/Core/Actions/BaseAction.php` — base action with tx + log
-- `app/Domain/Core/Entities/BaseEntity.php` — base entity (final readonly)
-- `app/Domain/Core/Policies/BasePolicy.php` — base policy with role/ownership traits
-- `app/Domain/Core/Livewire/BaseRecordManager.php` — base CRUD component
-- `app/Domain/Core/Http/Controllers/BaseController.php` — base controller
-- `app/Domain/Core/Http/Requests/FormRequest.php` — base form request
-- `app/Domain/Core/Contracts/LabelEnum.php` — enum contract
-- `app/Domain/Core/Contracts/StatusEnum.php` — status enum contract
-- `app/Domain/Core/Support/CacheKeys.php` — cache key registry
+- `app/Core/Models/BaseModel.php` — base model with UUID
+- `app/Core/Actions/BaseAction.php` — base action with tx + log
+- `app/Core/Entities/BaseEntity.php` — base entity (final readonly)
+- `app/Core/Policies/BasePolicy.php` — base policy with role/ownership traits
+- `app/Core/Livewire/BaseRecordManager.php` — base CRUD component
+- `app/Core/Http/Controllers/BaseController.php` — base controller
+- `app/Core/Http/Requests/FormRequest.php` — base form request
+- `app/Core/Contracts/LabelEnum.php` — enum contract
+- `app/Core/Contracts/StatusEnum.php` — status enum contract
+- `app/Core/Support/CacheKeys.php` — cache key registry
 - `docs/architecture.md` — Base Class Mandate section
 - `docs/conventions.md` — Section 0 (Mandatory Base Classes)

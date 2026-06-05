@@ -1931,7 +1931,7 @@ namespace  {
         }
 
         /**
-         * Add subselect queries to include an aggregate value for a relationship.
+         * Add subselect queries to include an submodule value for a relationship.
          *
          * @param mixed $relations
          * @param \Illuminate\Contracts\Database\Query\Expression|string $column
@@ -4420,7 +4420,7 @@ namespace  {
         }
 
         /**
-         * Execute an aggregate function on the database.
+         * Execute an submodule function on the database.
          *
          * @param string $function
          * @param array $columns
@@ -4434,7 +4434,7 @@ namespace  {
         }
 
         /**
-         * Execute a numeric aggregate function on the database.
+         * Execute a numeric submodule function on the database.
          *
          * @param string $function
          * @param array $columns

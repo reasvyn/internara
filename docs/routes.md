@@ -5,13 +5,13 @@
 
 ## Philosophy
 
-Routes are owned by domains, not by a single file. Each domain registers its own routes in its own file under `routes/web/{domain}.php`. The master `routes/web.php` simply stitches them together.
+Routes are owned by modules, not by a single file. Each module registers its own routes in its own file under `routes/web/{module}.php`. The master `routes/web.php` simply stitches them together.
 
-This exists because a single `routes/web.php` with 200+ lines creates merge conflicts and obscures which domain owns which route. Splitting by domain means you find a registration route in `registration.php`, not by grepping a thousand-line file.
+This exists because a single `routes/web.php` with 200+ lines creates merge conflicts and obscures which module owns which route. Splitting by module means you find a registration route in `registration.php`, not by grepping a thousand-line file.
 
 ## Architecture
 
-The master file `routes/web.php` `require`s 22 domain route files (Core has no routes). Load order matters: if two files register the same route name, the later one wins.
+The master file `routes/web.php` `require`s 22 module route files (Core has no routes). Load order matters: if two files register the same route name, the later one wins.
 
 Additional route files exist outside `web/`: `console.php` (Artisan commands),  
 `channels.php` (broadcasting), and `ai.php` (model/AI interactions).
@@ -97,18 +97,18 @@ All routes use `<prefix>.<resource>.<action>` naming. Prefixes match URL structu
 
 ## Livewire Auto-Discovery
 
-Livewire components are NOT registered in route files. The `DomainServiceProvider` scans `app/Domain/{Domain}/Livewire/` at boot, automatically registering each component with alias `{kebab-domain}.{kebab-class-name}`.
+Livewire components are NOT registered in route files. The `AppServiceProvider` scans `app/Module/{Module}/Livewire/` at boot, automatically registering each component with alias `{kebab-module}.{kebab-class-name}`.
 
 This means a new Livewire component works immediately without any registration step — just create the class and its Blade view. The route file only needs `Route::livewire('/path', Component::class)`.
 
 ## Adding a Route
 
-1. Open `routes/web/{domain}.php` for the relevant domain
+1. Open `routes/web/{module}.php` for the relevant module
 2. Add `Route::livewire()` or `Route::get()` inside the correct middleware group
 3. Name it with `->name('{prefix}.{resource}.{action}')`
 4. Add sidebar menu entry in `config/menu.php`
 
-For a new domain: create `routes/web/{domain}.php`, add `require` in `routes/web.php`
+For a new module: create `routes/web/{module}.php`, add `require` in `routes/web.php`
 at the correct position for load-order precedence.
 
 ## Route Caching (Tier 2+)
@@ -137,11 +137,11 @@ php artisan route:cache
 ## Where to Find It
 
 - `routes/web.php` — master file with requires in dependency order
-- `routes/web/` — 22 domain route files
+- `routes/web/` — 22 module route files
 - `routes/console.php` — Artisan command registrations
 - `routes/channels.php` — broadcasting channel definitions
 - `routes/ai.php` — AI integration routes
-- `app/Domain/Core/Http/Middleware/` — global middleware classes
-- `app/Domain/Auth/Http/Middleware/` — auth middleware (CheckRole, AuthThrottle)
+- `app/Core/Http/Middleware/` — global middleware classes
+- `app/Module/Auth/Http/Middleware/` — auth middleware (CheckRole, AuthThrottle)
 - `config/menu.php` — sidebar navigation mapping routes to menu items
 - `docs/infrastructure.md` — tier-based infrastructure design

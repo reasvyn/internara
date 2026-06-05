@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Assessment\Aggregates\Presentation\Models\Presentation;
-use App\Domain\Assessment\Aggregates\Presentation\Models\PresentationExaminer;
-use App\Domain\User\Models\User;
+use App\Assessment\Presentation\Models\Presentation;
+use App\Assessment\Presentation\Models\PresentationExaminer;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PresentationExaminerFactory extends Factory

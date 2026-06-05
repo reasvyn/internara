@@ -33,7 +33,7 @@ Internara is purpose-built for structured industry placement programs — not ge
 
 ### Globally Usable, Locally Rooted
 
-Internara uses international terminology and supports multiple languages (Indonesian and English shipped, more via community translation). The data model uses generic identifiers — `national_id` rather than a country-specific field. The domain-driven architecture allows workflows to be adapted per installation through configuration, not code changes.
+Internara uses international terminology and supports multiple languages (Indonesian and English shipped, more via community translation). The data model uses generic identifiers — `national_id` rather than a country-specific field. The module-driven architecture allows workflows to be adapted per installation through configuration, not code changes.
 
 The primary design reference is the Indonesian vocational upper-secondary school system, where mandatory industry placement is a graduation requirement. However, the system is structured to accommodate placement programs in other educational systems by localizing terminology, adjusting academic calendars, and configuring assessment weights.
 

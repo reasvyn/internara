@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Assessment\Aggregates\Rubric\Models\Rubric;
-use App\Domain\User\Models\User;
+use App\Assessment\Rubric\Models\Rubric;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RubricFactory extends Factory

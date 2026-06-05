@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Support\Environment;
+use App\Core\Support\Environment;
 use Illuminate\Contracts\Foundation\MaintenanceMode;
 
 test('Environment checks debug mode based on config', function () {

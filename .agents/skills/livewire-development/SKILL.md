@@ -21,7 +21,7 @@ They must NOT contain:
 
 ### Component Location and Discovery
 
-Components live in `app/Domain/{Domain}/Livewire/` and are auto-discovered by DomainServiceProvider. The alias pattern is `{kebab-domain}.{kebab-class-name}`. Views are at `resources/views/{domain}/{component-name}.blade.php`. CRUD table components extend `BaseRecordManager` which provides pagination, search, sort, and selection.
+Components live in `app/Domain/{Domain}/Livewire/` and are auto-discovered by AppServiceProvider. The alias pattern is `{kebab-domain}.{kebab-class-name}`. Views are at `resources/views/{domain}/{component-name}.blade.php`. CRUD table components extend `BaseRecordManager` which provides pagination, search, sort, and selection.
 
 ## Architecture Patterns
 

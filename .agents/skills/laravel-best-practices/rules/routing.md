@@ -2,11 +2,11 @@
 
 ## What It Enforces
 
-Routes are split by domain into `routes/web/{domain}.php` files, required from `routes/web.php`. Livewire components use `Route::livewire()` for direct binding. Controllers, when used, delegate business logic to Actions. Routes use named dot notation and implicit model binding.
+Routes are split by module into `routes/web/{domain}.php` files, required from `routes/web.php`. Livewire components use `Route::livewire()` for direct binding. Controllers, when used, delegate business logic to Actions. Routes use named dot notation and implicit model binding.
 
 ## Why It Matters
 
-Domain-split route files keep routing organized and co-located with the domain they serve. `Route::livewire()` eliminates the Controller layer for Livewire-backed pages. Named routes with dot notation provide a hierarchical, predictable naming scheme. Implicit model binding eliminates manual `findOrFail()` calls.
+Domain-split route files keep routing organized and co-located with the module they serve. `Route::livewire()` eliminates the Controller layer for Livewire-backed pages. Named routes with dot notation provide a hierarchical, predictable naming scheme. Implicit model binding eliminates manual `findOrFail()` calls.
 
 ## When It Applies
 

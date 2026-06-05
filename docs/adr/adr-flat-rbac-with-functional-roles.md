@@ -105,10 +105,10 @@ The `BasePolicy` provides two traits that standardize authorization:
 
 ## References
 
-- `app/Domain/Auth/Enums/Role.php` — role definitions with `resolvesTo()` mapping
-- `app/Domain/Core/Policies/BasePolicy.php` — base authorization class
-- `app/Domain/Core/Policies/Concerns/AuthorizesRoles.php` — role check methods
-- `app/Domain/Core/Policies/Concerns/AuthorizesOwnership.php` — ownership check methods
-- `app/Domain/Auth/Http/Middleware/CheckRoleMiddleware.php` — route-level gating
+- `app/Module/Auth/Enums/Role.php` — role definitions with `resolvesTo()` mapping
+- `app/Core/Policies/BasePolicy.php` — base authorization class
+- `app/Core/Policies/Concerns/AuthorizesRoles.php` — role check methods
+- `app/Core/Policies/Concerns/AuthorizesOwnership.php` — ownership check methods
+- `app/Module/Auth/Http/Middleware/CheckRoleMiddleware.php` — route-level gating
 - `docs/rbac.md` — detailed RBAC documentation
 - `docs/architecture.md` — Authorization (Layer 8) section

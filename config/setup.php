@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-use App\Domain\Core\Enums\AuditCategory;
+use App\Core\Enums\AuditCategory;
 
 return [
 

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Data\AuditCheck;
-use App\Domain\Core\Data\AuditReport;
-use App\Domain\Core\Data\BaseData;
-use App\Domain\Core\Enums\AuditCategory;
-use App\Domain\Core\Enums\AuditStatus;
+use App\Core\Data\AuditCheck;
+use App\Core\Data\AuditReport;
+use App\Core\Data\BaseData;
+use App\Core\Enums\AuditCategory;
+use App\Core\Enums\AuditStatus;
 
 test('AuditCheck is a BaseData DTO', function () {
     $check = new AuditCheck(
@@ -37,7 +37,7 @@ test('AuditCheck toArray returns all properties', function () {
     expect($array['nameParams'])->toBe(['driver' => 'mysql']);
 });
 
-test('AuditReport aggregates checks and determines pass/fail', function () {
+test('AuditReport submodules checks and determines pass/fail', function () {
     $checks = [
         new AuditCheck(AuditCategory::DATABASE, 'db.conn', AuditStatus::PASS, 'ok'),
         new AuditCheck(AuditCategory::PERMISSIONS, 'perm.storage', AuditStatus::PASS, 'ok'),

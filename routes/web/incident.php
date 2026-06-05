@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Incident\Aggregates\IncidentReport\Livewire\IncidentForm;
-use App\Domain\Incident\Aggregates\IncidentReport\Livewire\IncidentManager;
+use App\Incident\IncidentReport\Livewire\IncidentForm;
+use App\Incident\IncidentReport\Livewire\IncidentManager;
 
 Route::prefix('student')
     ->name('student.')

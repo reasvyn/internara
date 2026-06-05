@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Support\PiiMasker;
+use App\Core\Support\PiiMasker;
 
 test('PiiMasker fully masks sensitive keys', function () {
     expect(PiiMasker::maskValue('password', 'secret123'))->toBe('***');

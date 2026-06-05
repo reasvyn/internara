@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Incident\Aggregates\IncidentReport\Models\IncidentReport;
+use App\Incident\IncidentReport\Models\IncidentReport;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class IncidentReportFactory extends Factory

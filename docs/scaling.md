@@ -65,7 +65,7 @@ Do NOT scale preemptively. Scale when you observe these symptoms:
 ```env
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://your-domain.com
+APP_URL=https://your-module.com
 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -158,7 +158,7 @@ AWS_ACCESS_KEY_ID=your-key
 AWS_SECRET_ACCESS_KEY=your-secret
 AWS_DEFAULT_REGION=us-east-1
 AWS_BUCKET=internara-production
-AWS_URL=https://cdn.your-domain.com
+AWS_URL=https://cdn.your-module.com
 ```
 
 3. Migrate existing files:
@@ -182,7 +182,7 @@ upstream internara {
 
 server {
     listen 443 ssl;
-    server_name your-domain.com;
+    server_name your-module.com;
 
     location / {
         proxy_pass http://internara;
@@ -430,7 +430,7 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 export default function () {
-    const res = http.get('https://your-domain.com/login');
+    const res = http.get('https://your-module.com/login');
     check(res, {
         'login page loads': (r) => r.status === 200,
         'load time < 500ms': (r) => r.timings.duration < 500,

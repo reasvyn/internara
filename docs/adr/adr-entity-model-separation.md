@@ -10,7 +10,7 @@ Accepted (Revised 2026-06-01)
 
 Eloquent models in Laravel mix persistence (database queries, relationships, scopes) with
 business logic (validation rules, status checks, permission gating). This coupling makes
-business logic harder to test in isolation and tightly binds domain rules to the ORM.
+business logic harder to test in isolation and tightly binds module rules to the ORM.
 
 For example, checking whether a registration can be approved requires:
 
@@ -88,10 +88,10 @@ Entities are not the only readonly data class in the system. The distinction:
 
 ## References
 
-- `app/Domain/Core/Entities/BaseEntity.php` — base entity class
-- `app/Domain/Core/Contracts/StatusEnum.php` — state transition contract
-- `app/Domain/Program/Entities/InternshipPeriod.php` — example entity
-- `app/Domain/Registration/Entities/RegistrationState.php` — example state entity
-- `app/Domain/Core/Data/Data.php` — DTO base class (complementary, not competing)
+- `app/Core/Entities/BaseEntity.php` — base entity class
+- `app/Core/Contracts/StatusEnum.php` — state transition contract
+- `app/Program/Entities/InternshipPeriod.php` — example entity
+- `app/Module/Registration/Entities/RegistrationState.php` — example state entity
+- `app/Core/Data/Data.php` — DTO base class (complementary, not competing)
 - `docs/architecture.md` — Validation Strategy section
 - `docs/conventions.md` — Section 6 (Entities)

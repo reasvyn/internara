@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Support\Locale;
+use App\Core\Support\Locale;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cookie;
 

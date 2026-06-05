@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\SysAdmin\Setup;
 
-use App\Domain\SysAdmin\Aggregates\Setup\Models\Setup;
+use App\SysAdmin\Setup\Models\Setup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 

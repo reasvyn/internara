@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-use App\Domain\User\Aggregates\AccountRecovery\Livewire\AccountRecovery;
-use App\Domain\User\Aggregates\AccountRecovery\Livewire\RecoveryCode;
-use App\Domain\User\Aggregates\AccountRecovery\Livewire\RecoverySlipManager;
-use App\Domain\User\Aggregates\AccountStatus\Livewire\AccountLifecycleManager;
-use App\Domain\User\Aggregates\ActivationToken\Livewire\ActivateAccount;
-use App\Domain\User\Aggregates\Dashboard\Livewire\AdminDashboard;
-use App\Domain\User\Aggregates\Dashboard\Livewire\StudentDashboard;
-use App\Domain\User\Aggregates\Dashboard\Livewire\SupervisorDashboard;
-use App\Domain\User\Aggregates\Dashboard\Livewire\TeacherDashboard;
-use App\Domain\User\Aggregates\Dashboard\Livewire\UserDashboard;
-use App\Domain\User\Aggregates\Login\Livewire\Login;
-use App\Domain\User\Aggregates\Notification\Livewire\NotificationCenter;
-use App\Domain\User\Aggregates\Password\Livewire\ConfirmPassword;
-use App\Domain\User\Aggregates\Password\Livewire\ForgotPassword;
-use App\Domain\User\Aggregates\Password\Livewire\ResetPassword;
-use App\Domain\User\Aggregates\Profile\Livewire\ProfileEditor;
-use App\Domain\User\Http\Controllers\DashboardController;
-use App\Domain\User\Http\Controllers\HomeController;
+use App\User\AccountRecovery\Livewire\AccountRecovery;
+use App\User\AccountRecovery\Livewire\RecoveryCode;
+use App\User\AccountRecovery\Livewire\RecoverySlipManager;
+use App\User\AccountStatus\Livewire\AccountLifecycleManager;
+use App\User\ActivationToken\Livewire\ActivateAccount;
+use App\User\Dashboard\Livewire\AdminDashboard;
+use App\User\Dashboard\Livewire\StudentDashboard;
+use App\User\Dashboard\Livewire\SupervisorDashboard;
+use App\User\Dashboard\Livewire\TeacherDashboard;
+use App\User\Dashboard\Livewire\UserDashboard;
+use App\User\Http\Controllers\DashboardController;
+use App\User\Http\Controllers\HomeController;
+use App\User\Login\Livewire\Login;
+use App\User\Notification\Livewire\NotificationCenter;
+use App\User\Password\Livewire\ConfirmPassword;
+use App\User\Password\Livewire\ForgotPassword;
+use App\User\Password\Livewire\ResetPassword;
+use App\User\Profile\Livewire\ProfileEditor;
 
 Route::get('/', HomeController::class)->name('home');
 

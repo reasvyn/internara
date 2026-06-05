@@ -246,7 +246,7 @@ your school for daily operations.
 ```
 Route: GET /setup
 Middleware: setup.protected (ProtectSetupRouteMiddleware)
-Component: App\Domain\Admin\Aggregates\Setup\Livewire\SetupWizard
+Component: App\Admin\Submodules\Setup\Livewire\SetupWizard
 Layout: resources/views/administration/setup/layouts/setup.blade.php
 View: resources/views/administration/setup/setup-wizard.blade.php
        └── includes step components from administration/setup/components/
@@ -332,16 +332,16 @@ address) from persisting in session storage longer than necessary.
 
 | Class | Location | Purpose |
 |---|---|---|
-| `SetupWizard` | `app/Domain/SysAdmin/Aggregates/Setup/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
-| `SetupState` | `app/Domain/SysAdmin/Aggregates/Setup/Entities/SetupState.php` | Read-only value object for setup status |
-| `Setup` | `app/Domain/SysAdmin/Aggregates/Setup/Models/Setup.php` | Eloquent model (single-row, singleton) |
-| `FinalizeSetupAction` | `app/Domain/SysAdmin/Aggregates/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
-| `SetupSchoolAction` | `app/Domain/SysAdmin/Aggregates/Setup/Actions/SetupSchoolAction.php` | Creates/updates School record |
-| `SetupDepartmentAction` | `app/Domain/SysAdmin/Aggregates/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
-| `SetupSuperAdminAction` | `app/Domain/User/Aggregates/SuperAdmin/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
-| `EnvironmentAuditor` | `app/Domain/SysAdmin/Aggregates/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
-| `RequireSetupAccessMiddleware` | `app/Domain/Academics/Http/Middleware/RequireSetupAccessMiddleware.php` | Global: redirects to /setup if not installed |
-| `ProtectSetupRouteMiddleware` | `app/Domain/Academics/Http/Middleware/ProtectSetupRouteMiddleware.php` | Route: validates token, rate-limits, self-destructs |
+| `SetupWizard` | `app/SysAdmin/Setup/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
+| `SetupState` | `app/SysAdmin/Setup/Entities/SetupState.php` | Read-only value object for setup status |
+| `Setup` | `app/SysAdmin/Setup/Models/Setup.php` | Eloquent model (single-row, singleton) |
+| `FinalizeSetupAction` | `app/SysAdmin/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
+| `SetupSchoolAction` | `app/SysAdmin/Setup/Actions/SetupSchoolAction.php` | Creates/updates School record |
+| `SetupDepartmentAction` | `app/SysAdmin/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
+| `SetupSuperAdminAction` | `app/User/SuperAdmin/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
+| `EnvironmentAuditor` | `app/SysAdmin/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
+| `RequireSetupAccessMiddleware` | `app/Academics/Http/Middleware/RequireSetupAccessMiddleware.php` | Global: redirects to /setup if not installed |
+| `ProtectSetupRouteMiddleware` | `app/Academics/Http/Middleware/ProtectSetupRouteMiddleware.php` | Route: validates token, rate-limits, self-destructs |
 
 ### End-to-End Flow
 

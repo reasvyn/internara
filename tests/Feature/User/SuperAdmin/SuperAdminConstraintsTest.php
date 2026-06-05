@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Feature\User\SuperAdmin;
 
-use App\Domain\Core\Exceptions\RejectedException;
-use App\Domain\SysAdmin\Aggregates\Account\Actions\UpdateUserAction;
-use App\Domain\User\Aggregates\Profile\Actions\UpdateProfileAction;
-use App\Domain\User\Aggregates\SuperAdmin\Actions\SetupSuperAdminAction;
-use App\Domain\User\Enums\AccountStatus;
-use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\Core\Exceptions\RejectedException;
+use App\SysAdmin\Account\Actions\UpdateUserAction;
+use App\User\Enums\AccountStatus;
+use App\User\Enums\Role as RoleEnum;
+use App\User\Models\User;
+use App\User\Profile\Actions\UpdateProfileAction;
+use App\User\SuperAdmin\Actions\SetupSuperAdminAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use RuntimeException;
 use Spatie\Permission\Models\Role;

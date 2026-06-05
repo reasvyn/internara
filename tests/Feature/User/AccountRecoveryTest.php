@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Domain\User\Aggregates\AccountRecovery\Actions\GenerateRecoverySlipAction;
-use App\Domain\User\Aggregates\AccountRecovery\Actions\RedeemRecoverySlipAction;
-use App\Domain\User\Aggregates\AccountRecovery\Models\AccountRecoveryCode;
-use App\Domain\User\Models\User;
+use App\User\AccountRecovery\Actions\GenerateRecoverySlipAction;
+use App\User\AccountRecovery\Actions\RedeemRecoverySlipAction;
+use App\User\AccountRecovery\Models\AccountRecoveryCode;
+use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 

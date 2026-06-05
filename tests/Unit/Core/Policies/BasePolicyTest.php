@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Policies\BasePolicy;
-use App\Domain\Core\Policies\Concerns\AuthorizesOwnership;
-use App\Domain\Core\Policies\Concerns\AuthorizesRoles;
+use App\Core\Policies\BasePolicy;
+use App\Core\Policies\Concerns\AuthorizesOwnership;
+use App\Core\Policies\Concerns\AuthorizesRoles;
 
 test('BasePolicy is abstract', function () {
     $ref = new ReflectionClass(BasePolicy::class);

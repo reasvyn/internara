@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\User\Aggregates\Password\Livewire\ConfirmPassword;
-use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\User\Enums\Role as RoleEnum;
+use App\User\Models\User;
+use App\User\Password\Livewire\ConfirmPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;

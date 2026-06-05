@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature\SysAdmin\Setup;
 
-use App\Domain\Academics\Aggregates\AcademicYear\Models\AcademicYear;
-use App\Domain\SysAdmin\Aggregates\Setup\Models\Setup;
-use App\Domain\User\Enums\Role;
+use App\Academics\AcademicYear\Models\AcademicYear;
+use App\SysAdmin\Setup\Models\Setup;
+use App\User\Enums\Role;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Spatie\Permission\Models\Role as RoleModel;

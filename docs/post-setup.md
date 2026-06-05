@@ -219,13 +219,13 @@ Phase 5 — Live
 | Document | What It Covers |
 |---|---|
 | [RBAC](rbac.md) | Role hierarchy, permissions, policies |
-| [Domain Index](domain/domain-index.md) | All domain documentation |
-| [Academics](domain/academics.md) | Managing schools, departments, academic years |
-| [Partners](domain/partners.md) | Company and MoU management |
-| [Enrollment](domain/enrollment.md) | Student registration and verification |
-| [Enrollment](domain/enrollment.md) | Student placement and change requests |
-| [Program](domain/program.md) | Periods, document requirements |
-| [Guidance](domain/guidance.md) | Mentor assignment and supervision logs |
-| [Journals](domain/journals.md) | Clock-in/out, absence requests |
-| [Assignment](domain/assignment.md) | Assignments, submissions, grading |
-| [Journals](domain/journals.md) | Daily activity journal |
+| [Module Index](modules/module-index.md) | All module documentation |
+| [Academics](modules/academics.md) | Managing schools, departments, academic years |
+| [Partners](modules/partners.md) | Company and MoU management |
+| [Enrollment](modules/enrollment.md) | Student registration and verification |
+| [Enrollment](modules/enrollment.md) | Student placement and change requests |
+| [Program](modules/program.md) | Periods, document requirements |
+| [Guidance](modules/guidance.md) | Mentor assignment and supervision logs |
+| [Journals](modules/journals.md) | Clock-in/out, absence requests |
+| [Assignment](modules/assignment.md) | Assignments, submissions, grading |
+| [Journals](modules/journals.md) | Daily activity journal |

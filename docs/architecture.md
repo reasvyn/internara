@@ -1,18 +1,18 @@
 # Architecture
 > Last updated: 2026-06-04
-> Changes: rename Admin→SysAdmin, merge Settings→SysAdmin, extract Document from Certification, add Document domain
-> **Context:** ✅ All 16 domains defined in the [domain index](domain/domain-index.md).
+> Changes: rename Admin→SysAdmin, merge Settings→SysAdmin, extract Document from Certification, add Document module
+> **Context:** ✅ All 16 modules defined in the [module index](modules/module-index.md).
 
 
 ## Philosophy
 
-Internara organizes code by **business domain**, not by technical layer. Each business concept — User, Academics, Program, Assessment — owns its complete vertical slice: persistence, business rules, UI components, authorization, and HTTP interface.
+Internara organizes code by **business module**, not by technical layer. Each business concept — User, Academics, Program, Assessment — owns its complete vertical slice: persistence, business rules, UI components, authorization, and HTTP interface.
 
-This approach exists because flat layering (`app/Models/`, `app/Livewire/`, `app/Actions/`) scatters a single feature across 8+ directories, making it hard to reason about boundaries, impossible to enforce encapsulation, and expensive to refactor. Domain colocation solves this by ensuring everything related to "Enrollment" lives under `app/Domain/Enrollment/`.
+This approach exists because flat layering (`app/Models/`, `app/Livewire/`, `app/Actions/`) scatters a single feature across 8+ directories, making it hard to reason about boundaries, impossible to enforce encapsulation, and expensive to refactor. Module colocation solves this by ensuring everything related to "Enrollment" lives under `app/Enrollment/`.
 
 Every architectural decision below serves three goals:
 - **S1 - Secure**: Protect data integrity, enforce authorization, prevent leakage
-- **S2 - Sustain**: Keep the codebase maintainable as it grows across 16 domains
+- **S2 - Sustain**: Keep the codebase maintainable as it grows across 16 modules
 - **S3 - Scalable**: Design for team expansion and feature accretion without rewrites
 
 ---
@@ -20,33 +20,33 @@ Every architectural decision below serves three goals:
 ## Layered Architecture
 
 The system is built in **12 layers**, bottom to top. Each layer depends only on layers below it.
-The domain directories are vertical slices that cross all layers below Layer 11.
+The module directories are vertical slices that cross all layers below Layer 11.
 
 ```
   Layer 12 ┌──────────────────────────────────────────────────────────┐
-   Business│  16 Domains: User, Academics, Program, Enrollment...     │
-   Domains │  Each domain is a vertical slice of layers 1–11          │
-   (Domain)│  app/Domain/{Domain}/                                    │
-           │  ├── {Aggregate}/  ← colocated Actions, Models, Policies │
+   Business│  16 Modules: User, Academics, Program, Enrollment...     │
+   Modules │  Each module is a vertical slice of layers 1–11          │
+   (Module)│  app/Module/{Module}/                                    │
+           │  ├── {SubModule}/  ← colocated Actions, Models, Policies │
            │  ├── Types/        ← shared enums, value objects         │
-           │  └── (root files)  ← cross-aggregate Http, Console, ...  │
+           │  └── (root files)  ← cross-submodule Http, Console, ...  │
            └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 11 ┌──────────────────────────────────────────────────────────┐
   UI /    │  Livewire 4 components (88)    Blade templates           │
   Present.│  maryUI  +  DaisyUI  +  Alpine.js  +  Tailwind CSS v4   │
-          │  resources/views/{domain}/     static assets             │
+          │  resources/views/{module}/     static assets             │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
  Layer 10 ┌──────────────────────────────────────────────────────────┐
   HTTP    │  Controllers / Middleware / Routes                       │
-  Layer   │  16 domain route files → routes/web/{domain}.php        │
+  Layer   │  16 module route files → routes/web/{module}.php        │
           │  SecurityHeaders, LogContext, CheckRole, SetLocale       │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 9 ┌──────────────────────────────────────────────────────────┐
   Comm.   │  Events + Listeners + Notifications + Console Commands  │
-          │  Cross-domain communication via events                  │
+          │  Cross-module communication via events                  │
           │  system:health, system:cleanup, system:cache-warm        │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
@@ -60,22 +60,22 @@ The domain directories are vertical slices that cross all layers below Layer 11.
   Business│  Command Actions — mutations  (transaction + log)        │
   Ops     │  Read Actions     — queries   (lightweight, no tx)      │
           │  Process Actions  — multi-step orchestration             │
-          │  app/Domain/*/Actions/  →  1 class = 1 use case         │
+          │  app/Module/*/Actions/  →  1 class = 1 use case         │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
    Layer 6 ┌──────────────────────────────────────────────────────────┐
-   Domain  │  Enums  (35, LabelEnum, StatusEnum, ColorableEnum)      │
+   Module  │  Enums  (35, LabelEnum, StatusEnum, ColorableEnum)      │
   Rules   │  Entities (27, final readonly, framework deps allowed)  │
            │  State entities (via BaseEntity) │
           │  Data DTOs (AuditCheck, AuditReport)                    │
-          │  app/Domain/*/Enums/  Entities/  Data/                  │
+          │  app/Module/*/Enums/  Entities/  Data/                  │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 5 ┌──────────────────────────────────────────────────────────┐
-  Domain  │  Eloquent Models (50)  →  extend BaseModel              │
+  Module  │  Eloquent Models (50)  →  extend BaseModel              │
   Models  │  UUID primary keys (HasUuids), HasFactory               │
           │  Relationships, Scopes, Accessors, Mutators             │
-          │  app/Domain/*/Models/  +  factories + seeders           │
+          │  app/Module/*/Models/  +  factories + seeders           │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
    Layer 4 ┌──────────────────────────────────────────────────────────┐
@@ -83,14 +83,14 @@ The domain directories are vertical slices that cross all layers below Layer 11.
    Base    │  BaseRecordManager  BaseController  FormRequest          │
    Classes │  Data (DTO)  HandlesActionErrors                        │
            │  SmartLogger  PiiMasker                                 │
-          │  app/Domain/Core/{Actions,Models,Policies,etc}          │
+          │  app/Core/{Actions,Models,Policies,etc}          │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 3 ┌──────────────────────────────────────────────────────────┐
   Core    │  Contracts: LabelEnum, StatusEnum, ColorableEnum         │
   Contracts│  SendsNotifications                                     │
           │  Exception: AppException + DomainException (dual tree) │
-          │  app/Domain/Core/{Contracts,Exceptions}                 │
+          │  app/Core/{Contracts,Exceptions}                 │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 2 ┌──────────────────────────────────────────────────────────┐
@@ -113,37 +113,37 @@ The domain directories are vertical slices that cross all layers below Layer 11.
 ### Layer Dependency Rules
 
 1. A layer may only depend on layers **below** it. Layer 12 depends on 1–11, Layer 7 depends on 1–6.
-2. **Core** (layers 3–4) depends on nothing except Laravel/Spatie. No business domain imports Core.
-3. **Sibling imports allowed.** `Academics` domain may import `Program` domain directly. Prefer events for loose coupling when side effects are involved, but direct imports are fine for straightforward cross-domain access.
+2. **Core** (layers 3–4) depends on nothing except Laravel/Spatie. No business module imports Core.
+3. **Sibling imports allowed.** `Academics` module may import `Program` module directly. Prefer events for loose coupling when side effects are involved, but direct imports are fine for straightforward cross-module access.
 4. **Persistence isolation.** Actions never call Eloquent directly — they delegate to Models.
-5. **UI isolation.** Livewire components should not import other domains' Livewire components directly. Use events or redirects for UI communication.
+5. **UI isolation.** Livewire components should not import other modules' Livewire components directly. Use events or redirects for UI communication.
 
-### How Domain Directories Map to Layers
+### How Module Directories Map to Layers
 
-A domain directory `app/Domain/{Domain}/` combines multiple layers. Within each domain,
-code is further organized by **DDD Aggregate** — a cluster of domain objects treated
-as a single unit. Each aggregate directory is itself a vertical slice containing its own
+A module directory `app/Module/{Module}/` combines multiple layers. Within each module,
+code is further organized by **Submodule** — a cluster of module objects treated
+as a single unit. Each submodule directory is itself a vertical slice containing its own
 Actions, Models, Policies, and optionally Livewire, Entities, Enums, and Notifications.
 
-| Layer | Directory within Domain | Example |
+| Layer | Directory within Module | Example |
 |---|---|---|---|
-| 12 | `app/Domain/{Domain}/` | The domain itself |
-| 11 | `resources/views/{domain}/{aggregate}/` | Blade views (per aggregate) |
-| 10 | `routes/web/{domain}.php` | Route definitions |
-| 9 | `{Aggregate}/Listeners/`, `{Aggregate}/Notifications/`, `Console/` | Communication |
-| 8 | `{Aggregate}/Policies/` | Authorization |
-| 7 | `{Aggregate}/Actions/` | Business operations |
-| 6 | `{Aggregate}/Entities/`, `{Aggregate}/Enums/`, `Types/` | Domain rules |
-| 5 | `{Aggregate}/Models/` | Persistence |
-| 4 | (uses Core's base classes: `app/Domain/Core/{Actions,Models,Policies,...}`) | |
+| 12 | `app/Module/{Module}/` | The module itself |
+| 11 | `resources/views/{module}/{submodule}/` | Blade views (per submodule) |
+| 10 | `routes/web/{module}.php` | Route definitions |
+| 9 | `{SubModule}/Listeners/`, `{SubModule}/Notifications/`, `Console/` | Communication |
+| 8 | `{SubModule}/Policies/` | Authorization |
+| 7 | `{SubModule}/Actions/` | Business operations |
+| 6 | `{SubModule}/Entities/`, `{SubModule}/Enums/`, `Types/` | Module rules |
+| 5 | `{SubModule}/Models/` | Persistence |
+| 4 | (uses Core's base classes: `app/Core/{Actions,Models,Policies,...}`) | |
 | 3 | (uses Core's contracts) | |
 | 2 | (uses database/config) | |
 | 1 | (uses PHP/Laravel) | |
 
-The mapping above uses `{Aggregate}/` as a placeholder for each aggregate directory
-(e.g., `Program/Actions/`, `Enrollment/Policies/`). Cross-aggregate files
-(shared Actions, Http, Console) live at the domain root, directly under
-`app/Domain/{Domain}/` without an aggregate subdirectory.
+The mapping above uses `{SubModule}/` as a placeholder for each submodule directory
+(e.g., `Program/Actions/`, `Enrollment/Policies/`). Cross-submodule files
+(shared Actions, Http, Console) live at the module root, directly under
+`app/Module/{Module}/` without an submodule subdirectory.
 
 ---
 
@@ -151,7 +151,7 @@ The mapping above uses `{Aggregate}/` as a placeholder for each aggregate direct
 
 This is the most important architectural decision in Internara. Actions are not monolithic — they split into three distinct categories, each with a specific base class and contract.
 
-All three live under `app/Domain/{Domain}/{Aggregate}/Actions/` (or root `Actions/` for cross-aggregate actions) and follow the single `execute()` method convention.
+All three live under `app/Module/{Module}/{SubModule}/Actions/` (or root `Actions/` for cross-submodule actions) and follow the single `execute()` method convention.
 
 ### 1. Command Actions (Mutations)
 
@@ -162,7 +162,7 @@ All three live under `app/Domain/{Domain}/{Aggregate}/Actions/` (or root `Action
 **Contract:**
 - MUST wrap all database operations in `$this->transaction()`
 - MUST call `$this->log()` after successful mutation
-- MUST dispatch domain events for significant state changes
+- MUST dispatch module events for significant state changes
 - MUST be preceded by a policy check in the calling layer (Livewire/Controller)
 - MUST NOT return the model directly when a DTO or entity is more appropriate
 
@@ -195,7 +195,7 @@ class ApproveReportAction extends BaseAction
 
 ### 2. Read Actions (Queries)
 
-**Purpose:** Complex read operations that involve aggregation, filtering, authorization, or cross-domain data assembly. Not for simple `Model::find()` or `Model::where()` — those stay in Livewire.
+**Purpose:** Complex read operations that involve aggregation, filtering, authorization, or cross-module data assembly. Not for simple `Model::find()` or `Model::where()` — those stay in Livewire.
 
 **Base class:** None required. A simple non-abstract class with constructor injection is sufficient. May extend `BaseAction` only if it benefits from `HandlesActionErrors` (but does NOT call `transaction()` or `log()`).
 
@@ -242,7 +242,7 @@ class InternshipDashboardReader
 **Contract:**
 - MUST compose other Actions via constructor injection
 - MUST handle partial failure — if step 3 of 5 fails, what happens to steps 1–2?
-- SHOULD emit a single domain event representing the completed process
+- SHOULD emit a single module event representing the completed process
 - MUST NOT duplicate business logic that already exists in Command Actions
 
 **Naming:** `{Verb}{Entity}Process` — `RegisterStudentProcess`, `CloseInternshipProcess`
@@ -325,7 +325,7 @@ Livewire → Model::query() → Database
 Complex query:
 Livewire → Read Action → Model::query() → Database
            │              │
-           ├─ Policy check └─ Aggregate/filter/transform
+           ├─ Policy check └─ Submodule/filter/transform
            └─ Return typed result
 ```
 
@@ -347,52 +347,52 @@ Events decouple side effects from core business logic. A Command Action's respon
 
 ---
 
-## Domain Structure
+## Module Structure
 
-Every domain follows this directory layout. Within each domain, code is organized by
-**DDD Aggregate** — a cluster of domain objects treated as a single unit. Each aggregate
+Every module follows this directory layout. Within each module, code is organized by
+**Submodule** — a cluster of module objects treated as a single unit. Each submodule
 has its own technical-layer subdirectories for high cohesion. Files that span multiple
-aggregates (dashboards, shared utilities, console commands) live at the domain root.
+submodules (dashboards, shared utilities, console commands) live at the module root.
 
 ```
-app/Domain/{Domain}/
-├── {Aggregate}/                    → One directory per aggregate root
+app/Module/{Module}/
+├── {SubModule}/                    → One directory per submodule root
 │   ├── Actions/                    → Business operations (Command, Read, Process)
-│   ├── Models/                     → Eloquent models belonging to this aggregate
+│   ├── Models/                     → Eloquent models belonging to this submodule
 │   ├── Policies/                   → Authorization gates
 │   ├── Livewire/                   → UI components (optional)
 │   │   └── Forms/                  → Form Objects (optional)
 │   ├── Entities/                   → Pure business rules (optional)
-│   ├── Enums/                      → Enum specific to this aggregate (optional)
-│   ├── Events/                     → Domain events (optional)
+│   ├── Enums/                      → Enum specific to this submodule (optional)
+│   ├── Events/                     → Module events (optional)
 │   ├── Listeners/                  → Event subscribers (optional)
 │   └── Notifications/              → Multi-channel alerts (optional)
 ├── Types/                          → Shared value objects, flat enums, rules (optional)
-├── Actions/                        → Cross-aggregate orchestration (optional)
-├── Http/                           → Cross-aggregate controllers & middleware (optional)
+├── Actions/                        → Cross-submodule orchestration (optional)
+├── Http/                           → Cross-submodule controllers & middleware (optional)
 │   ├── Controllers/
 │   └── Middleware/
-├── Console/                        → Cross-aggregate artisan commands (optional)
-├── Livewire/                       → Cross-aggregate UI (dashboards, etc.) (optional)
+├── Console/                        → Cross-submodule artisan commands (optional)
+├── Livewire/                       → Cross-submodule UI (dashboards, etc.) (optional)
 │   └── Forms/                      → Form Objects (optional)
-├── Notifications/                  → Cross-aggregate notifications (optional)
-├── Events/                         → Cross-aggregate events (optional)
-├── Listeners/                      → Cross-aggregate listeners (optional)
-├── Support/                        → Shared domain utilities (optional)
+├── Notifications/                  → Cross-submodule notifications (optional)
+├── Events/                         → Cross-submodule events (optional)
+├── Listeners/                      → Cross-submodule listeners (optional)
+├── Support/                        → Shared module utilities (optional)
 └── Services/                       → Infrastructure services (optional)
 ```
 
-Not every domain needs every directory. `Incidents` might only have `IncidentReport/` aggregate.
+Not every module needs every directory. `Incidents` might only have `IncidentReport/` submodule.
 `Certification` adds `Http/` when downloads are needed. Tools and simple value objects
-too small for their own aggregate live in `Types/`.
+too small for their own submodule live in `Types/`.
 
-### Aggregate Mapping
+### Submodule Mapping
 
-Each domain contains the following aggregates:
+Each module contains the following submodules:
 
-| Domain | Aggregates | Cross-Aggregate Root Files |
+| Module | Submodules | Cross-Submodule Root Files |
 |---|---|---|---|
-| **Core** | — | (infrastructure + cross-domain utilities) |
+| **Core** | — | (infrastructure + cross-module utilities) |
 | **User** | `Login/`, `Password/`, `ActivationToken/`, `AccountRecovery/`, `AccountStatus/`, `Profile/`, `Notification/`, `Dashboard/` | Http, Livewire (login, recovery, dashboards, editors) |
 | **Academics** | `School/`, `Department/`, `AcademicYear/`, `Setup/` | Console, Events, Listeners, Http, Livewire (wizard), Services, Support |
 | **Partners** | `Company/`, `Partnership/` | — |
@@ -411,31 +411,31 @@ Each domain contains the following aggregates:
 
 ### Views Structure
 
-Blade views mirror both the domain and aggregate structure:
+Blade views mirror both the module and submodule structure:
 
 ```
-resources/views/{domain}/
-├── {aggregate}/                    → Views for a specific aggregate
+resources/views/{module}/
+├── {submodule}/                    → Views for a specific submodule
 │   ├── {component-name}.blade.php  → Livewire component view
 │   └── components/                 → Sub-views (optional)
-├── layouts/                        → Domain-specific layouts (optional, cross-cutting)
+├── layouts/                        → Module-specific layouts (optional, cross-cutting)
 ├── components/                     → Shared sub-views (optional, cross-cutting)
 └── partials/                       → Reusable partials (optional, cross-cutting)
 ```
 
-Cross-aggregate views (dashboards, global components) live directly in the domain
-view directory without an aggregate subdirectory. The Livewire component alias follows
-`{kebab-domain}.{kebab-aggregate}.{kebab-component-name}` for aggregate-specific
-components, and `{kebab-domain}.{kebab-component-name}` for cross-aggregate
+Cross-submodule views (dashboards, global components) live directly in the module
+view directory without an submodule subdirectory. The Livewire component alias follows
+`{kebab-module}.{kebab-submodule}.{kebab-component-name}` for submodule-specific
+components, and `{kebab-module}.{kebab-component-name}` for cross-submodule
 components.
 
 ---
 
-## 16 Domains at a Glance
+## 16 Modules at a Glance
 
-| Domain | Boundary | Key Concept |
+| Module | Boundary | Key Concept |
 |--------|----------|-------------|
-| **Core** | Base classes, infrastructure, and cross-domain utilities everything depends on | Base model, base action, base entity, contracts, logging, exceptions, theme, CSV handler, environment detection, locale management |
+| **Core** | Base classes, infrastructure, and cross-module utilities everything depends on | Base model, base action, base entity, contracts, logging, exceptions, theme, CSV handler, environment detection, locale management |
 | **User** | Identity, access, and profiles | Login, passwords, account lifecycle, recovery, RBAC, profile editing, notifications |
 | **Academics** | Institution setup & configuration | School profile, departments, academic years, first-run wizard |
 | **Partners** | External relationships | Companies, partnership agreements, MoU |
@@ -497,13 +497,13 @@ Models couple business logic to the database. When `User::isSuspended()` calls `
 
 Auto-incrementing IDs leak information (user count, growth rate) and create merge conflicts in distributed workflows. UUIDs are globally unique, require no coordination, and work across SQLite, MySQL, and PostgreSQL identically.
 
-### Why domain-split routes?
+### Why module-split routes?
 
-A single `routes/web.php` with 200+ lines creates merge conflicts and makes it hard to find routes for a feature. Splitting by domain means each team member owns their domain's route file without touching others.
+A single `routes/web.php` with 200+ lines creates merge conflicts and makes it hard to find routes for a feature. Splitting by module means each team member owns their module's route file without touching others.
 
 ### Why DTOs are optional (but recommended)?
 
-During rapid development, `execute(array $data)` is faster to write and refactor. DTOs (via `App\Domain\Core\Data\Data`) add type safety, autocomplete, and documentation at the cost of boilerplate. The recommended approach is:
+During rapid development, `execute(array $data)` is faster to write and refactor. DTOs (via `App\Core\Data\Data`) add type safety, autocomplete, and documentation at the cost of boilerplate. The recommended approach is:
 
 1. Start with `array $data` for speed
 2. Migrate to typed DTOs when an Action's input stabilizes or grows beyond 3 parameters
@@ -514,42 +514,42 @@ During rapid development, `execute(array $data)` is faster to write and refactor
 Every Command Action *can* dispatch events, but not every command *must*. The rule of thumb:
 - If side effects exist (notifications, cache invalidation, audit beyond SmartLogger) → dispatch an event
 - If the action only mutates database state and logs → no event needed
-- If cross-domain coordination is needed → event is required
+- If cross-module coordination is needed → event is required
 
 Events can be introduced incrementally. Start without them, add them when a second listener needs to react to the same occurrence.
 
 ---
 
-## Cross-Domain Communication
+## Cross-Module Communication
 
-Cross-domain imports are **allowed** — import Models, Actions, Policies, or Livewire components from other domains directly when needed. The following patterns provide guidance, not enforcement:
+Cross-module imports are **allowed** — import Models, Actions, Policies, or Livewire components from other modules directly when needed. The following patterns provide guidance, not enforcement:
 
 ### 1. Direct Import (simplest)
 
 ```php
-use App\Domain\Academics\Models\AcademicYear;
+use App\Academics\Models\AcademicYear;
 
 $year = AcademicYear::where('is_active', true)->first();
 ```
 
-Use when straightforward access to another domain's data or logic is needed.
+Use when straightforward access to another module's data or logic is needed.
 
 ### 2. Core Contracts (Layer 3)
 
-Shared interfaces in `App\Domain\Core\Contracts\` for abstractions used across many domains:
+Shared interfaces in `App\Core\Contracts\` for abstractions used across many modules:
 
 - `LabelEnum`, `StatusEnum`, `ColorableEnum` — enum contracts
 - `SendsNotifications` — notification dispatch (bound to `SendNotificationAction`)
 
-### 3. Domain Events (Layer 9)
+### 3. Module Events (Layer 9)
 
-Events decouple side effects from core business logic. Use events when the same occurrence triggers multiple downstream reactions, especially cross-domain:
+Events decouple side effects from core business logic. Use events when the same occurrence triggers multiple downstream reactions, especially cross-module:
 
 ```php
-// Emitting domain
+// Emitting module
 event(new InternshipCreated($internship, auth()->user()));
 
-// Reacting domain
+// Reacting module
 class NotifyAdminsInternshipCreated implements ShouldQueue
 {
     public function handle(InternshipCreated $event): void
@@ -563,13 +563,13 @@ class NotifyAdminsInternshipCreated implements ShouldQueue
 
 ### 4. Action Delegation
 
-Any Action may call another domain's Action:
+Any Action may call another module's Action:
 
 ```php
 class CloseInternshipAction extends BaseAction
 {
     public function __construct(
-        protected readonly \App\Domain\Assessment\Actions\FinalizeAssessmentsAction $finalizeAssessments,
+        protected readonly \App\Assessment\Actions\FinalizeAssessmentsAction $finalizeAssessments,
     ) {}
 }
 ```
@@ -600,11 +600,11 @@ AppException (abstract)
 
 ### DomainException hierarchy (separate tree)
 
-`DomainException` is deliberately **not** a child of `AppException`. This keeps domain catch blocks isolated from layered framework concerns:
+`DomainException` is deliberately **not** a child of `AppException`. This keeps module catch blocks isolated from layered framework concerns:
 
 ```
 DomainException (abstract, extends RuntimeException)
-└── RejectedException — domain invariant violated (e.g., invalid state transition)
+└── RejectedException — module invariant violated (e.g., invalid state transition)
 ```
 
 ### When to use which
@@ -617,7 +617,7 @@ DomainException (abstract, extends RuntimeException)
 | Resource not found | `NotFoundException` | AppException |
 | External API timeout | `InfrastructureException` or `RateLimitException` | AppException |
 | Invalid state transition | `RejectedException` | DomainException |
-| Domain invariant violated | `RejectedException` | DomainException |
+| Module invariant violated | `RejectedException` | DomainException |
 
 ---
 
@@ -628,8 +628,8 @@ Validation happens at the **outermost layer** possible. Livewire is the primary 
 ### Livewire Form Objects (Primary)
 
 Complex forms MUST extract validation into Form Objects under
-`app/Domain/{Domain}/{Aggregate}/Livewire/Forms/{Name}Form.php` (or root
-`Livewire/Forms/` for cross-aggregate forms):
+`app/Module/{Module}/{SubModule}/Livewire/Forms/{Name}Form.php` (or root
+`Livewire/Forms/` for cross-submodule forms):
 
 ```php
 class AcademicYearForm extends Form
@@ -676,7 +676,7 @@ Both Form Objects and Form Requests can reference the same rules.
 
 ### Form Requests (Secondary)
 
-For the rare HTTP controller-based routes, `App\Domain\Core\Http\Requests\FormRequest` provides `ValidationFailedException` on failure instead of Laravel's default redirect.
+For the rare HTTP controller-based routes, `App\Core\Http\Requests\FormRequest` provides `ValidationFailedException` on failure instead of Laravel's default redirect.
 
 ---
 
@@ -684,7 +684,7 @@ For the rare HTTP controller-based routes, `App\Domain\Core\Http\Requests\FormRe
 
 ### Centralized Key Registry
 
-Every cache key across the codebase MUST be defined in `App\Domain\Core\Support\CacheKeys` as a constant. This prevents key collisions and makes cache dependencies discoverable.
+Every cache key across the codebase MUST be defined in `App\Core\Support\CacheKeys` as a constant. This prevents key collisions and makes cache dependencies discoverable.
 
 ```php
 final readonly class CacheKeys
@@ -721,9 +721,9 @@ Command Action → event({Entity}Updated) → CacheInvalidationListener → Cach
 | Core integrity | `core.integrity_verified` | forever | composer.json changes (manual flush) |
 | Core app name | `core.app_name` | forever | composer.json changes (manual flush) |
 | App metadata | `appinfo.metadata` | forever | composer.json changes |
-| Livewire component map | `domain.discovered_livewire` | static | Structural component changes |
-| Policy map | `domain.discovered_policies` | static | Structural policy changes |
-| View namespaces | `domain.discovered_views` | static | Structural view directory changes |
+| Livewire component map | `module.discovered_livewire` | static | Structural component changes |
+| Policy map | `module.discovered_policies` | static | Structural policy changes |
+| View namespaces | `module.discovered_views` | static | Structural view directory changes |
 | Login failure count | `auth.login-failures:{userId}` | medium | Successful login |
 | Health check | `health_check` | short | Each health check run |
 | Recovery attempts | `recover_admin_attempts_{md5(email)}` | medium | Successful recovery |
@@ -738,11 +738,11 @@ Command Action → event({Entity}Updated) → CacheInvalidationListener → Cach
 
 | Rule | Explanation | Violation Example |
 |---|---|---|
-| **Downward only** | Layer N may only use layers < N | A Controller (10) importing from another domain's Livewire (11) |
-| **Core independence** | Core (Layers 3–4) must not import any business domain | Core importing an Academics model |
-| **No sibling imports** | Domains at Layer 12 must not import each other | `Academics` importing `Program` models |
-| **Aggregate encapsulation** | Aggregate directories MUST NOT import sibling aggregates. Cross-aggregate access goes through the domain root | `Profile/Actions/UpdateProfileAction.php` importing `Notification/Models/Notification.php` |
-| **Root for cross-cutting** | Cross-aggregate code lives at the domain root, not in any single aggregate | A dashboard action in `User/Actions/` that queries both Profile and Notification |
+| **Downward only** | Layer N may only use layers < N | A Controller (10) importing from another module's Livewire (11) |
+| **Core independence** | Core (Layers 3–4) must not import any business module | Core importing an Academics model |
+| **No sibling imports** | Modules at Layer 12 must not import each other | `Academics` importing `Program` models |
+| **Submodule encapsulation** | Submodule directories MUST NOT import sibling submodules. Cross-submodule access goes through the module root | `Profile/Actions/UpdateProfileAction.php` importing `Notification/Models/Notification.php` |
+| **Root for cross-cutting** | Cross-submodule code lives at the module root, not in any single submodule | A dashboard action in `User/Actions/` that queries both Profile and Notification |
 | **Persistence isolation** | Entities (Layer 6) never import Models (Layer 5) | An Entity calling `User::find()` |
 | **Action gate** | All mutations go through Command Actions (Layer 7). No `Model::save()` outside Actions | A Livewire component calling `$user->save()` |
 | **Authorize first** | Every Action must be preceded by a policy check (Layer 8) | An Action that modifies data without calling `$this->authorize()` |
@@ -751,12 +751,12 @@ Command Action → event({Entity}Updated) → CacheInvalidationListener → Cach
 
 ## Testing Strategy
 
-Tests mirror the aggregate-based source structure:
+Tests mirror the submodule-based source structure:
 
 ```
-tests/Feature/{Domain}/{Aggregate}/{Name}Test.php  → Integration tests
-tests/Unit/{Domain}/{Aggregate}/{Name}Test.php     → Pure unit tests
-tests/Unit/{Domain}/Types/{Name}Test.php           → Value objects, flat enums, rules
+tests/Feature/{Module}/{SubModule}/{Name}Test.php  → Integration tests
+tests/Unit/{Module}/{SubModule}/{Name}Test.php     → Pure unit tests
+tests/Unit/{Module}/Types/{Name}Test.php           → Value objects, flat enums, rules
 ```
 
 ### Feature Tests
@@ -832,7 +832,7 @@ class InvalidateDashboardCache
 
 ---
 
-## Domain Invariants (DO NOT VIOLATE)
+## Module Invariants (DO NOT VIOLATE)
 
 - **Super Admin name is ALWAYS `Administrator`** (from config `setup.defaults.admin_name`).
 - **Super Admin username is ALWAYS `superadmin`** (from config `setup.defaults.admin_username`).

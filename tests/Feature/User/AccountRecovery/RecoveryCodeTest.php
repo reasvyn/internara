@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Domain\User\Aggregates\AccountRecovery\Livewire\RecoveryCode;
-use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Models\User;
+use App\User\AccountRecovery\Livewire\RecoveryCode;
+use App\User\Enums\Role as RoleEnum;
+use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;

@@ -2,7 +2,7 @@
 
 ## When to Activate
 
-Apply this skill when building any new feature, modifying existing code, or adding a new domain concept. This skill encodes the full feature lifecycle — from understanding domain context through testing and quality checks.
+Apply this skill when building any new feature, modifying existing code, or adding a new module concept. This skill encodes the full feature lifecycle — from understanding module context through testing and quality checks.
 
 ## Core Principles
 
@@ -14,7 +14,7 @@ Data flows unidirectionally: User input enters through a Livewire component, whi
 
 ## Feature Workflow
 
-1. Understand the domain: read `docs/domain/{domain}.md` for lifecycle context
+1. Understand the module: read `docs/domain/{domain}.md` for lifecycle context
 2. Create migration and Model (UUID PK, BaseModel, Fillable attribute, HasFactory)
 3. Create Entity if business rules exist (final readonly, BaseEntity, fromModel bridge)
 4. Create Enum if state machine (string-backed, LabelEnum/StatusEnum)

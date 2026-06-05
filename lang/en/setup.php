@@ -143,8 +143,8 @@ return [
             'discover_livewire' => 'Discovering Livewire components',
             'discover_policies' => 'Discovering policies',
             'discover_views' => 'Registering view namespaces',
-            'discover_complete' => 'Domain discovery caches warmed.',
-            'discover_failed' => 'Domain discovery failed',
+            'discover_complete' => 'Module discovery caches warmed.',
+            'discover_failed' => 'Module discovery failed',
         ],
     ],
 

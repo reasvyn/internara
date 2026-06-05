@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Contracts\StatusEnum;
+use App\Core\Contracts\StatusEnum;
 
 test('StatusEnum extends LabelEnum', function () {
     $ref = new ReflectionClass(StatusEnum::class);
     $interfaces = $ref->getInterfaceNames();
-    expect($interfaces)->toContain('App\Domain\Core\Contracts\LabelEnum');
+    expect($interfaces)->toContain('App\Core\Contracts\LabelEnum');
 });
 
 test('StatusEnum contract requires all state machine methods', function () {

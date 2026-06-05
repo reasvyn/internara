@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-use App\Domain\SysAdmin\Aggregates\Account\Actions\GenerateAccountSlipAction;
-use App\Domain\SysAdmin\Aggregates\Account\Livewire\AdminManager;
-use App\Domain\SysAdmin\Aggregates\Account\Livewire\StudentManager;
-use App\Domain\SysAdmin\Aggregates\Account\Livewire\SupervisorManager;
-use App\Domain\SysAdmin\Aggregates\Account\Livewire\TeacherManager;
-use App\Domain\SysAdmin\Aggregates\Account\Livewire\UserManager;
-use App\Domain\SysAdmin\Aggregates\Announcement\Livewire\AnnouncementManager;
-use App\Domain\SysAdmin\Aggregates\GdprDeletionLog\Livewire\GdprDeletionLogs;
-use App\Domain\SysAdmin\Aggregates\Setting\Livewire\SystemSetting;
-use App\Domain\SysAdmin\Aggregates\Setup\Livewire\SetupWizard;
-use App\Domain\SysAdmin\Livewire\AccountCloneDetector;
-use App\Domain\SysAdmin\Livewire\ApplicationReview;
-use App\Domain\SysAdmin\Livewire\AuditLogManager;
-use App\Domain\User\Models\User;
+use App\SysAdmin\Account\Actions\GenerateAccountSlipAction;
+use App\SysAdmin\Account\Livewire\AdminManager;
+use App\SysAdmin\Account\Livewire\StudentManager;
+use App\SysAdmin\Account\Livewire\SupervisorManager;
+use App\SysAdmin\Account\Livewire\TeacherManager;
+use App\SysAdmin\Account\Livewire\UserManager;
+use App\SysAdmin\Announcement\Livewire\AnnouncementManager;
+use App\SysAdmin\GdprDeletionLog\Livewire\GdprDeletionLogs;
+use App\SysAdmin\Livewire\AccountCloneDetector;
+use App\SysAdmin\Livewire\ApplicationReview;
+use App\SysAdmin\Livewire\AuditLogManager;
+use App\SysAdmin\Setting\Livewire\SystemSetting;
+use App\SysAdmin\Setup\Livewire\SetupWizard;
+use App\User\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Session;
 use Laravel\Pulse\Pulse;
@@ -61,7 +61,7 @@ Route::livewire('/admin/settings', SystemSetting::class)
     ->middleware(['auth', 'role:super_admin']);
 
 // ──────────────────────────────────────────────
-// Setup aggregate (clustered with its own middleware)
+// Setup submodule (clustered with its own middleware)
 // ──────────────────────────────────────────────
 
 Route::middleware('setup.protected')->group(function () {

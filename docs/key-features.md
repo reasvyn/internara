@@ -1,12 +1,12 @@
 # Key Features
 > Last updated: 2026-06-04
-> Changes: Restructured all feature sections from 25 old-domain groups into 16 current domains; pruned non-existent features (Mentor/Mentee Manager, Company/Overall/Program Quality Evaluation, Evaluation Aggregation, closure pipeline beyond readiness check); corrected User dashboard features (Journal Progress, Dashboard Quick Actions)
+> Changes: Restructured all feature sections from 25 old-module groups into 16 current modules; pruned non-existent features (Mentor/Mentee Manager, Company/Overall/Program Quality Evaluation, Evaluation Aggregation, closure pipeline beyond readiness check); corrected User dashboard features (Journal Progress, Dashboard Quick Actions)
 
-> Every feature in Internara belongs to one of **16 domains**. Each domain owns its
+> Every feature in Internara belongs to one of **16 modules**. Each module owns its
 > complete vertical slice: persistence, business rules, UI components, authorization, and HTTP
 > interface.
 >
-> Domains below are listed in **program lifecycle order** — from system foundation through
+> Modules below are listed in **program lifecycle order** — from system foundation through
 > installation, daily operations, assessment, certification, and finally program closure and
 > archival.
 
@@ -34,7 +34,7 @@
 
 ## 1. Core — Foundation & Infrastructure
 
-Base classes, contracts, infrastructure, and cross-domain utilities used by every domain.
+Base classes, contracts, infrastructure, and cross-module utilities used by every module.
 
 | Feature | Description |
 |---|---|
@@ -213,7 +213,7 @@ Structured mentor evaluation with score bands and admin oversight.
 |---|---|---|
 | Mentor Evaluation | Student rates mentor communication, responsiveness, guidance quality | Student |
 | Score Bands | EXCELLENT (85-100), GOOD (70-84), SATISFACTORY (55-69), NEEDS_IMPROVEMENT (40-54), POOR (0-39) | System |
-| Admin View | Filter by type, aggregate scores, trends | Admin |
+| Admin View | Filter by type, submodule scores, trends | Admin |
 
 ---
 
@@ -351,7 +351,7 @@ Rendering engine for official documents, PDF generation, and template management
 
 ## Role Access Matrix
 
-| Role | Domain Access |
+| Role | Module Access |
 |---|---|
 | **SUPER_ADMIN** | Unrestricted — bypasses all permission checks |
 | **ADMIN** | Academics, SysAdmin, Partners, Program, Enrollment, Assessment, Certificate, Document, Journals (read), Incident, Guidance, User management, Evaluation (admin view) |
@@ -362,9 +362,9 @@ Rendering engine for official documents, PDF generation, and template management
 
 ---
 
-> **Total: 16 domains with 150+ features covering the complete program lifecycle:**
+> **Total: 16 modules with 150+ features covering the complete program lifecycle:**
 > Foundation → Identity → System Administration → Institution → Partnerships → Program Setup
 > → Enrollment → Daily Operations → Assessment → Evaluation → Certification → **Closure**
 >
-> See [Architecture](architecture.md) for the domain structure and [Product Definition](product-definition.md)
+> See [Architecture](architecture.md) for the module structure and [Product Definition](product-definition.md)
 > for the product vision and scope.

@@ -8,7 +8,7 @@ Apply this skill whenever writing, editing, or fixing tests for this project. Ac
 
 ### Domain-First Test Structure
 
-Tests mirror the application's aggregate-based domain structure: `tests/Feature/{Domain}/{Aggregate}/{Name}Test.php` for integration tests and `tests/Unit/{Domain}/{Aggregate}/{Name}Test.php` for unit tests. Small value objects and flat enums go in `tests/Unit/{Domain}/Types/{Name}Test.php`. Tests are created with `php artisan make:test --pest {Name}Test` (without `Feature/` or `Unit/` prefix in the name argument).
+Tests mirror the application's aggregate-based module structure: `tests/Feature/{Domain}/{Aggregate}/{Name}Test.php` for integration tests and `tests/Unit/{Domain}/{Aggregate}/{Name}Test.php` for unit tests. Small value objects and flat enums go in `tests/Unit/{Domain}/Types/{Name}Test.php`. Tests are created with `php artisan make:test --pest {Name}Test` (without `Feature/` or `Unit/` prefix in the name argument).
 
 ### Testing Level Separation
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Domain\Evaluation\Aggregates\Evaluation\Enums\EvaluationCategory;
-use App\Domain\Evaluation\Aggregates\Evaluation\Models\Evaluation;
-use App\Domain\User\Models\User;
+use App\Evaluation\Evaluation\Enums\EvaluationCategory;
+use App\Evaluation\Evaluation\Models\Evaluation;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EvaluationFactory extends Factory

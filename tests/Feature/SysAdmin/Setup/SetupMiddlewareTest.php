@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\SysAdmin\Setup;
 
-use App\Domain\Academics\Http\Middleware\ProtectSetupRouteMiddleware;
-use App\Domain\Academics\Http\Middleware\RequireSetupAccessMiddleware;
-use App\Domain\Core\Support\CacheKeys;
-use App\Domain\SysAdmin\Aggregates\Setup\Actions\GenerateSetupTokenAction;
-use App\Domain\SysAdmin\Aggregates\Setup\Models\Setup;
+use App\Academics\Http\Middleware\ProtectSetupRouteMiddleware;
+use App\Academics\Http\Middleware\RequireSetupAccessMiddleware;
+use App\Core\Support\CacheKeys;
+use App\SysAdmin\Setup\Actions\GenerateSetupTokenAction;
+use App\SysAdmin\Setup\Models\Setup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

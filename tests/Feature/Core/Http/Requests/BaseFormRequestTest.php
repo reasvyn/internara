@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Core\Exceptions\ValidationFailedException;
-use App\Domain\Core\Http\Requests\BaseFormRequest;
+use App\Core\Exceptions\ValidationFailedException;
+use App\Core\Http\Requests\BaseFormRequest;
 use Illuminate\Contracts\Validation\Validator;
 
 test('BaseFormRequest throws ValidationFailedException on failed validation', function () {

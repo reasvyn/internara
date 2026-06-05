@@ -20,7 +20,7 @@ this application:
   sequence generator. Schools operating on unreliable networks may need offline-capable
   deployments.
 - **Foreign key consistency**: With 75+ tables referencing each other, mixing integer PKs
-  across domains would require coordination. UUIDs make every foreign key universally unique
+  across modules would require coordination. UUIDs make every foreign key universally unique
   without a central authority.
 - **Merge conflicts**: If two environments (staging, production) need data merged, integer IDs
   almost certainly collide. Schools running pilot programs in staging alongside production
@@ -75,7 +75,7 @@ This is enforced by code review — no mixed key types are permitted.
 
 ## References
 
-- `app/Domain/Core/Models/BaseModel.php` — base class with HasUuids trait
-- `app/Domain/User/Models/User.php` — exception pattern (Authenticatable + manual UUID)
+- `app/Core/Models/BaseModel.php` — base class with HasUuids trait
+- `app/User/Models/User.php` — exception pattern (Authenticatable + manual UUID)
 - `docs/conventions.md` — Section 4 (Models)
 - `docs/database.md` — UUID Primary Keys section

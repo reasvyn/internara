@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Domain\Program\Aggregates\DocumentRequirement\Livewire\RequirementManager;
-use App\Domain\Program\Aggregates\Internship\Livewire\InternshipManager;
-use App\Domain\Program\Aggregates\InternshipGroup\Livewire\InternshipGroupManager;
-use App\Domain\Program\Aggregates\InternshipPhase\Livewire\InternshipPhaseManager;
+use App\Program\DocumentRequirement\Livewire\RequirementManager;
+use App\Program\Internship\Livewire\InternshipManager;
+use App\Program\InternshipGroup\Livewire\InternshipGroupManager;
+use App\Program\InternshipPhase\Livewire\InternshipPhaseManager;
 
 Route::prefix('admin')
     ->name('sysadmin.')
