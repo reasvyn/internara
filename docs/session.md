@@ -148,7 +148,7 @@ Redis's key expiry — no application-level GC needed.
 The user's language preference is stored in the session by `SetLocaleMiddleware`:
 
 ```php
-// app/Module/Settings/Http/Middleware/SetLocaleMiddleware.php
+// app/Settings/Http/Middleware/SetLocaleMiddleware.php
 $locale = session('locale', config('app.locale'));
 app()->setLocale($locale);
 ```
@@ -163,7 +163,7 @@ restarts.
 
 - `config/session.php` — session driver, lifetime, cookie settings
 - `database/migrations/` — sessions table migration
-- `app/Module/Settings/Http/Middleware/SetLocaleMiddleware.php` — locale persistence
+- `app/Settings/Http/Middleware/SetLocaleMiddleware.php` — locale persistence
 - `routes/web/auth.php` — password confirmation routes (`/user/confirm-password`)
 - `bootstrap/app.php` — middleware configuration
 - `docs/infrastructure.md` — tier-based infrastructure design

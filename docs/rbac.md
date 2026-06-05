@@ -111,11 +111,11 @@ gated by the roles that should have access.
 
 ## Where to Find It
 
-Roles are defined in `app/Module/Auth/Enums/Role.php`. Permissions are
+Roles are defined in `app/Auth/Enums/Role.php`. Permissions are
 managed dynamically via `spatie/laravel-permission` (database-driven, no
 enum class). The seeder is at `database/seeders/RolePermissionSeeder.php`.
-The middleware is at `app/Module/Auth/Http/Middleware/CheckRoleMiddleware.php`.
+The middleware is at `app/Auth/Http/Middleware/CheckRoleMiddleware.php`.
 The `Gate::before` bypass for `superadmin` is auto-registered by
 `spatie/laravel-permission` via the `register_permission_check_method`
-config in `config/permission.php`. Policies are in `app/Module/*/Policies/`.
+config in `config/permission.php`. Policies are in `app/*/Policies/`.
 The spatie package configuration is in `config/permission.php`.

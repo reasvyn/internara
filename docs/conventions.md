@@ -76,7 +76,7 @@ Core provides base classes for every layer. Use them when they add value — ski
 | Status enum | Implements `StatusEnum` (+ LabelEnum) | `canTransitionTo()`, `validTransitions()`, `isTerminal()` |
 | Exception | Extends `AppException` or `DomainException` | `HasExceptionContext` trait |
 | Cache key | `CacheKeys` constant | Centralized key registry, prevents collisions |
-| DTO | `Data` (from `Core/Data/Data.php`) | `toArray()`, `fromArray()`, `from()` |
+| DTO | `BaseData` | `app/Core/Data/BaseData.php` |
 
 ### Notes
 
@@ -88,14 +88,26 @@ Core provides base classes for every layer. Use them when they add value — ski
 
 ## 2. File Structure
 
+### Path Convention
+
+All code follows a strict two-tier path convention:
+
+| Scope | Pattern | Example |
+|---|---|---|
+| Module-specific | `app/{Module}/{Submodule}/{Component}/{ClassName}.php` | `app/User/Profile/Actions/UpdateProfileAction.php` |
+| Shared (cross-module) | `app/{Component}/{ClassName}.php` | `app/Data/AuditCheck.php` |
+
+Where `{Component}` is the technical layer (Actions, Models, Policies, Livewire, etc.)
+and `{ClassName}` is the PascalCase filename matching the class.
+
 ### Module Structure — Submodule-Based
 
 Code is organized by module, then by **Submodule** within each module. Each submodule
-directory is a self-contained vertical slice with its own technical layers. Files that span
-multiple submodules live at the module root.
+directory is a self-contained vertical slice with its own technical component layers.
+Files that span multiple submodules live at the module root.
 
 ```
-app/Module/{Module}/
+app/{Module}/
 ├── {SubModule}/                    → One directory per submodule root
 │   ├── Actions/                    → Business operations (Command, Read, Process)
 │   ├── Models/                     → Eloquent models belonging to this submodule
@@ -120,6 +132,58 @@ app/Module/{Module}/
 ├── Listeners/                      → Cross-submodule listeners (optional)
 ├── Support/                        → Shared module utilities (optional)
 └── Services/                       → Infrastructure services (optional)
+```
+
+### Shared (Cross-Module) Structure
+
+Code that is shared across multiple modules lives directly under `app/`, not inside any
+module directory:
+
+```
+app/
+├── Data/              → DTOs shared across modules (AuditCheck, AuditReport)
+├── Enums/             → Cross-module enums (AuditCategory, AuditStatus, CsvRowResult)
+├── Exceptions/        → Concrete exception classes (ConflictException, NotFoundException)
+├── Livewire/          → Global UI components (LangSwitcher, ThemeSwitcher)
+│   └── Concerns/      → Livewire traits (WithRecordSelection, WithSorting)
+├── Policies/
+│   └── Concerns/      → Policy traits (AuthorizesOwnership, AuthorizesRoles)
+└── Support/           → Static utilities (CacheKeys, Locale, Theme, PiiMasker)
+```
+
+### Views & Tests Mirror Structure
+
+```
+# Module views
+resources/views/{module}/{submodule}/{component-name}.blade.php
+  → app/{Module}/{Submodule}/Livewire/{ComponentName}.php
+
+# Shared views
+resources/views/livewire/{component-name}.blade.php
+  → app/Livewire/{ComponentName}.php
+
+# Module tests
+tests/{Feature,Unit}/{Module}/{Submodule}/{Name}Test.php
+  → app/{Module}/{Submodule}/{Component}/{Name}.php
+
+# Shared tests
+tests/{Feature,Unit}/{Component}/{Name}Test.php
+  → app/{Component}/{Name}.php
+```
+
+### No Redundant Namespace Segments
+
+The class name must never be repeated in the path. This keeps namespaces clean and prevents
+unnecessary nesting:
+
+```php
+// ✅ Correct — unique segments
+app/User/Models/User.php              // namespace App\User\Models
+app/Academics/School/Models/School.php // namespace App\Academics\School\Models
+
+// ❌ Wrong — redundant segment duplicates the class name
+app/User/User/Models/User.php         // namespace App\User\User\Models
+app/Program/Internship/Internship/Models/Internship.php
 ```
 
 ### Submodule Grouping Rules
@@ -475,7 +539,7 @@ protected $attributes = [
 ## 9. Policies
 
 - Extend `BasePolicy` (provides `AuthorizesRoles` and `AuthorizesOwnership` traits).
-- Auto-discovered from `app/Module/*/Policies/` by `AppServiceProvider`. Convention:
+- Auto-discovered from `app/*/Policies/` by `AppServiceProvider`. Convention:
   `{Model}Policy` in the same module as `{Model}`.
 - Cross-module policies (where a policy gates a model from another module) must be
   registered manually in `AppServiceProvider::boot()`.
@@ -511,21 +575,22 @@ class AcademicYearPolicy extends BasePolicy
 - Components delegate all writes to Command Actions.
 - Components delegate complex queries to Read Actions.
 - Computed properties use the `#[Computed]` attribute.
-- Submodule-specific components live in the submodule's Livewire directory:
-  `app/Module/{Module}/{SubModule}/Livewire/`
-- Cross-submodule components (dashboards, global widgets) live in the module root:
-  `app/Module/{Module}/Livewire/`
-- Views live in `resources/views/{module}/{submodule}/{component-name}.blade.php`
-  for submodule-specific views, or `resources/views/{module}/{component-name}.blade.php`
-  for cross-submodule views.
+- Submodule-specific components: `app/{Module}/{SubModule}/Livewire/{Name}.php`
+- Cross-submodule components: `app/{Module}/Livewire/{Name}.php`
+- Shared cross-module components: `app/Livewire/{Name}.php`
+- Views mirror the app structure:
+  - Submodule view: `resources/views/{module}/{submodule}/{component-name}.blade.php`
+  - Cross-submodule view: `resources/views/{module}/{component-name}.blade.php`
+  - Shared view: `resources/views/livewire/{component-name}.blade.php`
 - Component alias (submodule): `{kebab-module}.{kebab-submodule}.{kebab-name}` —
   e.g., `admin.user.user-manager`
-- Component alias (root): `{kebab-module}.{kebab-name}` —
+- Component alias (cross-submodule): `{kebab-module}.{kebab-name}` —
   e.g., `user.profile-editor`
+- Component alias (shared): `{kebab-component-name}` — e.g., `livewire.lang-switcher`
 
 ### Form Objects
 
-Complex forms MUST be extracted into `app/Module/{Module}/Livewire/Forms/{Name}Form.php`:
+Complex forms MUST be extracted into `app/{Module}/Livewire/Forms/{Name}Form.php`:
 
 ```php
 class AcademicYearForm extends Form
@@ -567,9 +632,9 @@ class AcademicYearForm extends Form
 ## 11. Data / DTOs
 
 DTOs are optional but recommended for Action inputs that have stabilized (3+ parameters
-or multiple callers). They live in `app/Module/{Module}/Data/`.
+or multiple callers). They live in `app/{Module}/Data/`.
 
-- Extend `App\Core\Data\Data`.
+- Extend `App\Core\Data\BaseData`.
 - `final readonly` class with typed constructor parameters.
 - Use `Data::fromArray()` during migration for backward compatibility.
 
@@ -771,7 +836,7 @@ resources/views/{module}/
 ```
 
 - Submodule-specific views: `resources/views/{module}/{submodule}/{component-name}.blade.php`
-  — mirrors the Livewire component path `app/Module/{Module}/{SubModule}/Livewire/`.
+  — mirrors the Livewire component path `app/{Module}/{SubModule}/Livewire/`.
 - Cross-submodule views: `resources/views/{module}/{component-name}.blade.php`
   — for dashboards and components that span multiple submodules.
 - Anonymous components: `x-core::layouts.*`, `x-core::ui.*`, `x-core::widgets.*`.
@@ -852,7 +917,7 @@ class InternshipFactory extends Factory
 
 ## 18. Cache Keys
 
-- Every cache key MUST be declared as a constant in `App\Core\Support\CacheKeys`.
+- Every cache key MUST be declared as a constant in `App\Support\CacheKeys`.
 - Naming: `{module}.{purpose}[.{qualifier}]`.
 - TTL is documented in a comment next to the constant.
 - Invalidation trigger is documented in a comment.
@@ -904,13 +969,22 @@ imports for everything else.
 
 ### File Structure
 
-Tests mirror the submodule-based source structure:
+Tests mirror the source structure exactly:
 
 ```
-tests/Feature/{Module}/{SubModule}/{Name}Test.php  → Integration tests (Actions, Livewire)
-tests/Unit/{Module}/{SubModule}/{Name}Test.php     → Pure unit tests (Entities, Enums)
+tests/Feature/{Module}/{SubModule}/{Name}Test.php  → Module integration tests (Actions, Livewire)
+tests/Unit/{Module}/{SubModule}/{Name}Test.php     → Module pure unit tests (Entities, Enums)
 tests/Unit/{Module}/Types/{Name}Test.php           → Value objects, flat enums, rules
+tests/{Feature,Unit}/{Component}/{Name}Test.php    → Shared component tests (Data, Enums, Exceptions, Livewire)
 ```
+
+**Examples:**
+- `tests/Feature/User/Profile/UpdateProfileActionTest.php`
+  → mirrors `app/User/Profile/Actions/UpdateProfileAction.php`
+- `tests/Unit/Enums/AuditCategoryTest.php`
+  → mirrors `app/Enums/AuditCategory.php`
+- `tests/Feature/Core/Livewire/LivewireComponentsTest.php`
+  → mirrors `app/Livewire/LangSwitcher.php` and `app/Livewire/ThemeSwitcher.php`
 
 ### Scope Isolation (CRITICAL)
 

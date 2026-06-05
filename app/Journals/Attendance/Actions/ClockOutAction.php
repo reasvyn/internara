@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Journals\Attendance\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Exceptions\RejectedException;
+use App\Exceptions\RejectedException;
 use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;
 use Carbon\Carbon;

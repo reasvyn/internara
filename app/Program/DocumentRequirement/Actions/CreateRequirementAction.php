@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Program\DocumentRequirement\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Exceptions\RejectedException;
+use App\Exceptions\RejectedException;
 use App\Program\Internship\Models\InternshipDocumentRequirement;
 
 final class CreateRequirementAction extends BaseAction

@@ -6,7 +6,7 @@ namespace Database\Factories;
 
 use App\Assessment\Rubric\Models\Competency;
 use App\Assessment\Rubric\Models\Rubric;
-use App\Evaluation\Evaluation\Enums\EvaluatorRole;
+use App\Evaluation\Core\Enums\EvaluatorRole;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CompetencyFactory extends Factory

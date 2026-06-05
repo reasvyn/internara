@@ -16,10 +16,10 @@ Built for schools that manage mandatory on-site industry placements for their st
 
 ## Architecture
 
-Internara follows a **Module-first, Action-based MVC** architecture. Business logic is organized by module, not by technical layer.
+Internara follows an **Action-based MVC** architecture. Business logic is organized by module, not by technical layer.
 
 ```
-app/Domain/
+app/
 ├── Core/           Base classes, contracts, cross-module utilities
 ├── User/           Identity, authentication, profiles, notifications
 ├── SysAdmin/       Setup, settings, announcements, audit, health
@@ -38,7 +38,7 @@ app/Domain/
 └── Document/       Official document templates, PDF rendering
 ```
 
-Each module is self-contained with its own Models, Actions, Livewire components, Policies, Enums, Entities, and optional Http/Notifications/Events layers — all colocated for high cohesion and low coupling.
+Each module is self-contained with its own Models, Actions, Livewire components, Policies, Enums, Entities, and optional Http/Notifications/Events layers — all colocated for high cohesion and low coupling. Under each module, code is organized into submodules (e.g., `app/User/Profile/`, `app/User/Notification/`).
 
 ## Quick Start
 
@@ -78,7 +78,7 @@ Follow the setup wizard to configure your institution and admin account. Access 
 
 ### Product
 - [Product Definition](docs/product-definition.md)
-- [Architecture](docs/architecture.md)
+- [Action-based MVC Architecture](docs/architecture.md)
 - [Coding Conventions](docs/conventions.md)
 
 ### Setup & Operation
@@ -106,22 +106,22 @@ Follow the setup wizard to configure your institution and admin account. Access 
 - [Known Issues](docs/known-issues.md)
 
 ### Module Reference
-- [Core](docs/domain/core.md)
-- [User](docs/domain/user.md)
-- [SysAdmin](docs/domain/sysadmin.md)
-- [Academics](docs/domain/academics.md)
-- [Program](docs/domain/program.md)
-- [Enrollment](docs/domain/enrollment.md)
-- [Assessment](docs/domain/assessment.md)
-- [Evaluation](docs/domain/evaluation.md)
-- [Assignment](docs/domain/assignment.md)
-- [Journals](docs/domain/journals.md)
-- [Guidance](docs/domain/guidance.md)
-- [Incident](docs/domain/incident.md)
-- [Partners](docs/domain/partners.md)
-- [Certification](docs/domain/certification.md)
-- [Reports](docs/domain/reports.md)
-- [Document](docs/domain/document.md)
+- [Core](docs/modules/core.md)
+- [User](docs/modules/user.md)
+- [SysAdmin](docs/modules/sysadmin.md)
+- [Academics](docs/modules/academics.md)
+- [Program](docs/modules/program.md)
+- [Enrollment](docs/modules/enrollment.md)
+- [Assessment](docs/modules/assessment.md)
+- [Evaluation](docs/modules/evaluation.md)
+- [Assignment](docs/modules/assignment.md)
+- [Journals](docs/modules/journals.md)
+- [Guidance](docs/modules/guidance.md)
+- [Incident](docs/modules/incident.md)
+- [Partners](docs/modules/partners.md)
+- [Certification](docs/modules/certification.md)
+- [Reports](docs/modules/reports.md)
+- [Document](docs/modules/document.md)
 
 ## License
 

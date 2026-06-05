@@ -1,4 +1,4 @@
-# Architecture
+# Action-based MVC Architecture
 > Last updated: 2026-06-04
 > Changes: rename Admin→SysAdmin, merge Settings→SysAdmin, extract Document from Certification, add Document module
 > **Context:** ✅ All 16 modules defined in the [module index](modules/module-index.md).
@@ -26,7 +26,7 @@ The module directories are vertical slices that cross all layers below Layer 11.
   Layer 12 ┌──────────────────────────────────────────────────────────┐
    Business│  16 Modules: User, Academics, Program, Enrollment...     │
    Modules │  Each module is a vertical slice of layers 1–11          │
-   (Module)│  app/Module/{Module}/                                    │
+   (Module)│  app/{Module}/                                    │
            │  ├── {SubModule}/  ← colocated Actions, Models, Policies │
            │  ├── Types/        ← shared enums, value objects         │
            │  └── (root files)  ← cross-submodule Http, Console, ...  │
@@ -60,7 +60,7 @@ The module directories are vertical slices that cross all layers below Layer 11.
   Business│  Command Actions — mutations  (transaction + log)        │
   Ops     │  Read Actions     — queries   (lightweight, no tx)      │
           │  Process Actions  — multi-step orchestration             │
-          │  app/Module/*/Actions/  →  1 class = 1 use case         │
+          │  app/*/Actions/  →  1 class = 1 use case         │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
    Layer 6 ┌──────────────────────────────────────────────────────────┐
@@ -68,14 +68,14 @@ The module directories are vertical slices that cross all layers below Layer 11.
   Rules   │  Entities (27, final readonly, framework deps allowed)  │
            │  State entities (via BaseEntity) │
           │  Data DTOs (AuditCheck, AuditReport)                    │
-          │  app/Module/*/Enums/  Entities/  Data/                  │
+          │  app/*/Enums/  Entities/  Data/                  │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 5 ┌──────────────────────────────────────────────────────────┐
   Module  │  Eloquent Models (50)  →  extend BaseModel              │
   Models  │  UUID primary keys (HasUuids), HasFactory               │
           │  Relationships, Scopes, Accessors, Mutators             │
-          │  app/Module/*/Models/  +  factories + seeders           │
+          │  app/*/Models/  +  factories + seeders           │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
    Layer 4 ┌──────────────────────────────────────────────────────────┐
@@ -120,14 +120,14 @@ The module directories are vertical slices that cross all layers below Layer 11.
 
 ### How Module Directories Map to Layers
 
-A module directory `app/Module/{Module}/` combines multiple layers. Within each module,
+A module directory `app/{Module}/` combines multiple layers. Within each module,
 code is further organized by **Submodule** — a cluster of module objects treated
 as a single unit. Each submodule directory is itself a vertical slice containing its own
 Actions, Models, Policies, and optionally Livewire, Entities, Enums, and Notifications.
 
 | Layer | Directory within Module | Example |
 |---|---|---|---|
-| 12 | `app/Module/{Module}/` | The module itself |
+| 12 | `app/{Module}/` | The module itself |
 | 11 | `resources/views/{module}/{submodule}/` | Blade views (per submodule) |
 | 10 | `routes/web/{module}.php` | Route definitions |
 | 9 | `{SubModule}/Listeners/`, `{SubModule}/Notifications/`, `Console/` | Communication |
@@ -143,7 +143,7 @@ Actions, Models, Policies, and optionally Livewire, Entities, Enums, and Notific
 The mapping above uses `{SubModule}/` as a placeholder for each submodule directory
 (e.g., `Program/Actions/`, `Enrollment/Policies/`). Cross-submodule files
 (shared Actions, Http, Console) live at the module root, directly under
-`app/Module/{Module}/` without an submodule subdirectory.
+`app/{Module}/` without an submodule subdirectory.
 
 ---
 
@@ -151,7 +151,7 @@ The mapping above uses `{SubModule}/` as a placeholder for each submodule direct
 
 This is the most important architectural decision in Internara. Actions are not monolithic — they split into three distinct categories, each with a specific base class and contract.
 
-All three live under `app/Module/{Module}/{SubModule}/Actions/` (or root `Actions/` for cross-submodule actions) and follow the single `execute()` method convention.
+All three live under `app/{Module}/{SubModule}/Actions/` (or root `Actions/` for cross-submodule actions) and follow the single `execute()` method convention.
 
 ### 1. Command Actions (Mutations)
 
@@ -351,11 +351,11 @@ Events decouple side effects from core business logic. A Command Action's respon
 
 Every module follows this directory layout. Within each module, code is organized by
 **Submodule** — a cluster of module objects treated as a single unit. Each submodule
-has its own technical-layer subdirectories for high cohesion. Files that span multiple
+has its own technical-layer component directories for high cohesion. Files that span multiple
 submodules (dashboards, shared utilities, console commands) live at the module root.
 
 ```
-app/Module/{Module}/
+app/{Module}/
 ├── {SubModule}/                    → One directory per submodule root
 │   ├── Actions/                    → Business operations (Command, Read, Process)
 │   ├── Models/                     → Eloquent models belonging to this submodule
@@ -381,6 +381,30 @@ app/Module/{Module}/
 ├── Support/                        → Shared module utilities (optional)
 └── Services/                       → Infrastructure services (optional)
 ```
+
+All submodule code follows the pattern `app/{Module}/{Submodule}/{Component}/{ClassName}.php`.
+Shared (cross-module) code follows `app/{Component}/{ClassName}.php`.
+
+**No redundant namespace segments.** The class name must never be repeated in the path.
+- ✅ `app/User/Models/User.php` (namespace `App\User\Models`)
+- ❌ `app/User/User/Models/User.php` — `User` is repeated
+- ✅ `app/Program/Internship/Models/Internship.php` (namespace `App\Program\Internship\Models`)
+- ❌ `app/Program/Internship/Internship/Models/Internship.php`
+
+**Path convention:**
+
+| Scope | Pattern | Example |
+|---|---|---|
+| Module-specific | `app/{Module}/{Submodule}/{Component}/{ClassName}.php` | `app/User/Profile/Actions/UpdateProfileAction.php` |
+| Shared (cross-module) | `app/{Component}/{ClassName}.php` | `app/Data/AuditCheck.php` |
+| Module views | `resources/views/{module}/{submodule}/{component-name}.blade.php` | `resources/views/user/profile/profile-editor.blade.php` |
+| Shared views | `resources/views/{component}/{component-name}.blade.php` | `resources/views/livewire/lang-switcher.blade.php` |
+| Module tests | `tests/{Feature,Unit}/{Module}/{Submodule}/{Name}Test.php` | `tests/Feature/User/Profile/UpdateProfileActionTest.php` |
+| Shared tests | `tests/{Feature,Unit}/{Component}/{Name}Test.php` | `tests/Unit/Data/AuditDtoTest.php` |
+
+Not every module needs every directory. `Incidents` might only have `IncidentReport/` submodule.
+`Certification` adds `Http/` when downloads are needed. Tools and simple value objects
+too small for their own submodule live in `Types/`.
 
 Not every module needs every directory. `Incidents` might only have `IncidentReport/` submodule.
 `Certification` adds `Http/` when downloads are needed. Tools and simple value objects
@@ -424,10 +448,21 @@ resources/views/{module}/
 ```
 
 Cross-submodule views (dashboards, global components) live directly in the module
-view directory without an submodule subdirectory. The Livewire component alias follows
+view directory without a submodule subdirectory. For shared cross-module components
+(those directly under `app/{Component}/`), views live directly under
+`resources/views/{component}/`:
+
+```
+resources/views/livewire/
+├── lang-switcher.blade.php          → app/Livewire/LangSwitcher.php
+└── theme-switcher.blade.php         → app/Livewire/ThemeSwitcher.php
+```
+
+The Livewire component alias follows
 `{kebab-module}.{kebab-submodule}.{kebab-component-name}` for submodule-specific
 components, and `{kebab-module}.{kebab-component-name}` for cross-submodule
-components.
+components. For shared (root-level) components, the alias is
+`{kebab-component-name}` (e.g., `livewire.lang-switcher`).
 
 ---
 
@@ -503,7 +538,7 @@ A single `routes/web.php` with 200+ lines creates merge conflicts and makes it h
 
 ### Why DTOs are optional (but recommended)?
 
-During rapid development, `execute(array $data)` is faster to write and refactor. DTOs (via `App\Core\Data\Data`) add type safety, autocomplete, and documentation at the cost of boilerplate. The recommended approach is:
+During rapid development, `execute(array $data)` is faster to write and refactor. DTOs (via `App\Core\Data\BaseData`) add type safety, autocomplete, and documentation at the cost of boilerplate. The recommended approach is:
 
 1. Start with `array $data` for speed
 2. Migrate to typed DTOs when an Action's input stabilizes or grows beyond 3 parameters
@@ -628,7 +663,7 @@ Validation happens at the **outermost layer** possible. Livewire is the primary 
 ### Livewire Form Objects (Primary)
 
 Complex forms MUST extract validation into Form Objects under
-`app/Module/{Module}/{SubModule}/Livewire/Forms/{Name}Form.php` (or root
+`app/{Module}/{SubModule}/Livewire/Forms/{Name}Form.php` (or root
 `Livewire/Forms/` for cross-submodule forms):
 
 ```php
@@ -684,7 +719,7 @@ For the rare HTTP controller-based routes, `App\Core\Http\Requests\FormRequest` 
 
 ### Centralized Key Registry
 
-Every cache key across the codebase MUST be defined in `App\Core\Support\CacheKeys` as a constant. This prevents key collisions and makes cache dependencies discoverable.
+Every cache key across the codebase MUST be defined in `App\Support\CacheKeys` as a constant. This prevents key collisions and makes cache dependencies discoverable.
 
 ```php
 final readonly class CacheKeys
@@ -751,12 +786,13 @@ Command Action → event({Entity}Updated) → CacheInvalidationListener → Cach
 
 ## Testing Strategy
 
-Tests mirror the submodule-based source structure:
+Tests mirror the source structure exactly:
 
 ```
-tests/Feature/{Module}/{SubModule}/{Name}Test.php  → Integration tests
-tests/Unit/{Module}/{SubModule}/{Name}Test.php     → Pure unit tests
+tests/Feature/{Module}/{SubModule}/{Name}Test.php  → Module integration tests
+tests/Unit/{Module}/{SubModule}/{Name}Test.php     → Module pure unit tests
 tests/Unit/{Module}/Types/{Name}Test.php           → Value objects, flat enums, rules
+tests/{Feature,Unit}/{Component}/{Name}Test.php    → Shared component tests (e.g. tests/Unit/Data/AuditDtoTest.php)
 ```
 
 ### Feature Tests

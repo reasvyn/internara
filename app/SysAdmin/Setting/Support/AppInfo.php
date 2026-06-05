@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Setting\Support;
 
-use App\Core\Support\CacheKeys;
-use App\Core\Support\Integrity;
+use App\Support\CacheKeys;
+use App\Support\Integrity;
 use App\Core\Support\SmartLogger;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;

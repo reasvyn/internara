@@ -11,7 +11,7 @@ use App\Academics\AcademicYear\Actions\DeleteAcademicYearAction;
 use App\Academics\AcademicYear\Actions\UpdateAcademicYearAction;
 use App\Academics\AcademicYear\Livewire\Forms\AcademicYearForm;
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Core\Exceptions\RejectedException;
+use App\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Program\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;

@@ -29,31 +29,52 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 ## Architecture (IMPORTANT)
 
-This project uses a **Module-first, Action-based MVC** architecture:
+This project uses an **Action-based MVC** architecture. Code follows a strict path convention:
 
 ```
-    app/Domain/{Domain}/
-    ├── {Aggregate}/  Aggregate-rooted modules (Actions, Models, Policies, Livewire)
-    ├── Types/           Shared value objects, flat enums, rules
-    ├── Http/            Cross-submodule controllers, middleware
-    ├── Console/         Cross-submodule artisan commands
-    ├── Livewire/        Cross-submodule UI (dashboards, global components)
-    ├── Support/         Shared module utilities
-    └── Services/        Infrastructure services
+# Module-specific (submodule-rooted)
+app/{Module}/{Submodule}/{Component}/{ClassName}.php
+
+# Shared (cross-module)
+app/{Component}/{ClassName}.php
+
+# Views mirror app structure
+resources/views/{module}/{submodule}/{component-name}.blade.php
+resources/views/{component}/{component-name}.blade.php  (shared, e.g. views/livewire/)
+
+# Tests mirror app structure
+tests/{Feature,Unit}/{Module}/{Submodule}/{Name}Test.php
+tests/{Feature,Unit}/{Component}/{Name}Test.php          (shared)
 ```
 
-- Backend: `app/Domain/{Domain}/{Aggregate}/` — aggregate-rooted modules with colocated layers
-- Views: `resources/views/{domain}/{aggregate}/{component}.blade.php` — Blade views mirror submodule structure
-- Routes: `routes/web/{domain}.php` — routes split by module, master `routes/web.php` requires all
-- Tests: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php` — tests organized by module and aggregate
+**Examples:**
+- `app/User/Profile/Actions/UpdateProfileAction.php` → module submodule component
+- `app/Data/AuditCheck.php` → shared component directly under `app/`
+- `resources/views/user/profile/profile-editor.blade.php`
+- `resources/views/livewire/lang-switcher.blade.php`
+- `tests/Feature/User/Profile/UpdateProfileActionTest.php`
 
-### Directory Convention
+### Module Directory Layout
 
-All submodule code lives under `app/Domain/{Domain}/{AggregateName}/`.
-Cross-submodule files (shared Actions, Http, Console, Livewire, Support, Services) stay at the module root.
+```
+app/{Module}/
+├── {Submodule}/  Submodule-rooted components (Actions, Models, Policies, Livewire)
+├── Types/           Shared value objects, flat enums, rules
+├── Http/            Cross-submodule controllers, middleware
+├── Console/         Cross-submodule artisan commands
+├── Livewire/        Cross-submodule UI (dashboards, global components)
+├── Support/         Shared module utilities
+└── Services/        Infrastructure services
+```
 
-**Example:** Auth module has submodules under `app/Domain/Auth/Password/`, `app/Domain/Auth/Login/`, etc.
-User module will have `app/User/Profile/`, `app/User/Notification/`.
+All submodule code lives under `app/{Module}/{Submodule}/{Component}/{ClassName}.php`.
+Shared (cross-module) code lives under `app/{Component}/{ClassName}.php`.
+
+**No redundant namespace segments.** The class name must never be repeated in the path.
+- ✅ `app/User/Models/User.php` (namespace `App\User\Models`)
+- ❌ `app/User/User/Models/User.php` — `User` is repeated in the path
+- ✅ `app/Program/Internship/Models/Internship.php` (namespace `App\Program\Internship\Models`)
+- ❌ `app/Program/Internship/Internship/Models/Internship.php`
 
 Views mirror the submodule name but without `` in the path:
 `resources/views/auth/password/`, `resources/views/user/profile/`.
@@ -71,7 +92,7 @@ The Core module provides base classes for every layer. You MUST use them:
 | Livewire CRUD | `BaseRecordManager` | `app/Core/Livewire/BaseRecordManager.php` |
 | Controller | `BaseController` | `app/Core/Http/Controllers/BaseController.php` |
 | Form Request | `FormRequest` (Core's, not Laravel's) | `app/Core/Http/Requests/FormRequest.php` |
-| DTO | `Data` | `app/Core/Data/Data.php` |
+| DTO | `BaseData` | `app/Core/Data/BaseData.php` |
 | Exception | `AppException` or `DomainException` | `app/Core/Exceptions/` |
 | Enum | Must implement `LabelEnum` | `app/Core/Contracts/LabelEnum.php` |
 | Logging | Use `SmartLogger` | `app/Core/Support/SmartLogger.php` |
@@ -80,7 +101,7 @@ Do NOT create custom patterns. These rules are enforced through code review.
 
 ## Skills Activation
 
-This project has domain-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
+This project has module-specific skills available in `**/skills/**`. You MUST activate the relevant skill whenever you work in that module—don't wait until you're stuck.
 
 ## Conventions
 
@@ -103,7 +124,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 ## Documentation
 
 - Comprehensive docs are available at `docs/`. Always refer to them before making changes.
-- Domain-specific docs at `docs/domain/{domain}.md`.
+- Module-specific docs at `docs/modules/{module}.md`.
 - Architecture and conventions at `docs/architecture.md` and `docs/conventions.md`.
 
 ## Replies
@@ -189,7 +210,8 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test --compact` with a specific filename or filter.
-- Tests follow module-first, submodule-based structure: `tests/{Feature,Unit}/{Domain}/{Aggregate}/{Name}Test.php`.
+- Tests follow module-first, submodule-based structure: `tests/{Feature,Unit}/{Module}/{Submodule}/{Name}Test.php`.
+- Shared component tests: `tests/{Feature,Unit}/{Component}/{Name}Test.php` (e.g., `tests/Unit/Data/AuditDtoTest.php`).
 - Code review and static analysis (PHPStan) enforce structural rules.
 
 === laravel/core rules ===
@@ -199,7 +221,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Use `php artisan make:` commands to create new files (i.e. migrations, controllers, models, etc.). You can list available Artisan commands using `php artisan list` and check their parameters with `php artisan [command] --help`.
 - If you're creating a generic PHP class, use `php artisan make:class`.
 - Pass `--no-interaction` to all Artisan commands to ensure they work without user input. You should also pass the correct `--options` to ensure correct behavior.
-- Always place new models inside `app/Domain/{Domain}/Models/`, not the root `app/Models/`.
+- Always place new models inside `app/{Module}/Models/`, not the root `app/Models/`.
 
 ### Model Creation
 
@@ -230,11 +252,13 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - Livewire allows building dynamic, reactive interfaces in PHP without writing JavaScript.
 - You can use Alpine.js for client-side interactions instead of JavaScript frameworks.
 - Keep state server-side so the UI reflects it. Validate and authorize in actions as you would in HTTP requests.
-- Livewire components are auto-discovered by AppServiceProvider from `app/Domain/*/*/Livewire/` and `app/Domain/*/Livewire/`.
-- Component alias pattern (aggregate): `{kebab-domain}.{kebab-aggregate}.{kebab-name}` (e.g., `admin.user.user-manager`)
-- Component alias pattern (root): `{kebab-domain}.{kebab-name}` (e.g., `user.profile-editor`)
-- Views for submodule components: `resources/views/{domain}/{aggregate}/{component-name}.blade.php`
-- Views for root components: `resources/views/{domain}/{component-name}.blade.php`
+- Livewire components are auto-discovered by AppServiceProvider from `app/*/*/Livewire/` and `app/*/Livewire/`.
+- Component alias pattern (submodule): `{kebab-module}.{kebab-submodule}.{kebab-name}` (e.g., `admin.user.user-manager`)
+- Component alias pattern (root): `{kebab-module}.{kebab-name}` (e.g., `user.profile-editor`)
+- Component alias pattern (shared): `{kebab-component-name}` (e.g., `livewire.lang-switcher`)
+- Views for submodule components: `resources/views/{module}/{submodule}/{component-name}.blade.php`
+- Views for root components: `resources/views/{module}/{component-name}.blade.php`
+- Views for shared components: `resources/views/{component}/{component-name}.blade.php` (e.g., `resources/views/livewire/lang-switcher.blade.php`)
 - CRUD table components extend `BaseRecordManager`.
 
 === pint/core rules ===
@@ -252,7 +276,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 - The `{name}` argument should not include the test suite directory. Use `php artisan make:test --pest SomeFeatureTest` instead of `php artisan make:test --pest Feature/SomeFeatureTest`.
 - Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
 - Do NOT delete tests without approval.
-- Structure tests by module and submodule: `tests/Feature/{Domain}/{Aggregate}/{Name}Test.php` and `tests/Unit/{Domain}/{Aggregate}/{Name}Test.php`.
+- Structure tests by module and submodule: `tests/Feature/{Module}/{Submodule}/{Name}Test.php` and `tests/Unit/{Module}/{Submodule}/{Name}Test.php`.
 
 === spatie/laravel-medialibrary rules ===
 
@@ -260,6 +284,6 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - `spatie/laravel-medialibrary` associates files with Eloquent models, with support for collections, conversions, and responsive images.
 - Always activate the `medialibrary-development` skill when working with media uploads, conversions, collections, responsive images, or any code that uses the `HasMedia` interface or `InteractsWithMedia` trait.
-- Media collections are defined in the domain's Models. Storage is handled through the media library's integration with Laravel filesystem.
+- Media collections are defined in the module's Models. Storage is handled through the media library's integration with Laravel filesystem.
 
 </laravel-boost-guidelines>

@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-The module-first architecture (ADR-002) organizes code into 16 modules, each owning
+The Action-based MVC architecture (ADR-002) organizes code into 16 modules, each owning
 its complete vertical slice. Business processes naturally span multiple modules — a student
 registration involves the Registration, Placement, Mentee, and Internship modules. Closing
 a program involves the Internship, Assessment, Certificate, and User modules.

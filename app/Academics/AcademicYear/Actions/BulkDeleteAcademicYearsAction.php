@@ -6,7 +6,7 @@ namespace App\Academics\AcademicYear\Actions;
 
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Actions\BaseAction;
-use App\Core\Exceptions\RejectedException;
+use App\Exceptions\RejectedException;
 
 final class BulkDeleteAcademicYearsAction extends BaseAction
 {

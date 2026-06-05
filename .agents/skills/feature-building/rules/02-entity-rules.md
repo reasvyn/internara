@@ -2,7 +2,7 @@
 
 ## What It Enforces
 
-Business rules are encapsulated in pure PHP Entity classes — `final readonly` classes extending `BaseEntity` with zero framework dependencies. Entities live in `app/Domain/{Domain}/Entities/` and are instantiated through a `fromModel(Model): static` factory method.
+Business rules are encapsulated in pure PHP Entity classes — `final readonly` classes extending `BaseEntity` with zero framework dependencies. Entities live in `app/{Module}/Entities/` and are instantiated through a `fromModel(Model): static` factory method.
 
 ## Why It Matters
 

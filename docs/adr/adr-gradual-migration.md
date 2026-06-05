@@ -151,7 +151,7 @@ stabilizes.
 
 ## References
 
-- `app/Core/Data/Data.php` — DTO base class with `fromArray()` support
+- `app/Core/Data/BaseData.php` — DTO base class with `fromArray()` support
 - `docs/architecture.md` — Migration Paths section
 - `docs/architecture.md` — Action Triad section
 - `docs/architecture.md` — Validation Strategy section

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Assignment\Assignment\Livewire\AssignmentManager as AdminAssignmentManager;
+use App\Assignment\Core\Livewire\AssignmentManager as AdminAssignmentManager;
 use App\Assignment\Submission\Livewire\SubmissionGrading;
 use App\Assignment\Submission\Livewire\SubmitAssignment;
 

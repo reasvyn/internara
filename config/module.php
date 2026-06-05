@@ -40,7 +40,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Base paths for module code. Override if your directory structure differs
-    | from the standard app/Domain/{Domain}/ layout.
+    | from the standard app/{Module}/ layout.
     |
     */
 
@@ -55,9 +55,9 @@ return [
     | Livewire Components
     |--------------------------------------------------------------------------
     |
-    | Auto-discover Livewire components from each domain's Livewire/
+    | Auto-discover Livewire components from each module's Livewire/
     | directory. Components are registered with the alias pattern:
-    | {kebab-domain}.{kebab-class-name}.
+    | {kebab-module}.{kebab-class-name}.
     |
     */
 
@@ -75,7 +75,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Auto-discover authorization policies. Convention: {Model}Policy in
-    | a domain's Policies/ directory gates {Model} in the same domain's
+    | a module's Policies/ directory gates {Model} in the same module's
     | Models/ directory. Cross-module policies are registered manually
     | in AppServiceProvider.
     |
@@ -88,7 +88,7 @@ return [
 
         'exclude_paths' => ['Concerns', 'Traits'],
 
-        'model_namespace' => 'App\\Domain\\{domain}\\Models\\{model}',
+        'model_namespace' => 'App\\{domain}\\Models\\{model}',
     ],
 
     /*
@@ -116,8 +116,8 @@ return [
     | Blade View Namespaces
     |--------------------------------------------------------------------------
     |
-    | Register each domain's view directory as an anonymous component
-    | namespace (x-{domain}::). Excludes directories that are not modules
+    | Register each module's view directory as an anonymous component
+    | namespace (x-{module}::). Excludes directories that are not modules
     | (layouts, components, emails, errors, etc.).
     |
     */

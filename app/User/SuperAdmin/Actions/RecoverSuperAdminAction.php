@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\User\SuperAdmin\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Exceptions\RejectedException;
-use App\Core\Support\CacheKeys;
+use App\Exceptions\RejectedException;
+use App\Support\CacheKeys;
 use App\Core\Support\SmartLogger;
 use App\User\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\SuperAdmin\Notifications\SuperAdminRecoveredNotification;

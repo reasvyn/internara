@@ -9,14 +9,14 @@
     {{-- Theme Switcher --}}
     @if($showTheme)
         <div class="hidden md:flex items-center gap-1 bg-base-200/50 p-1 rounded-xl border border-base-content/5">
-            <livewire:core.theme-switcher />
+            <livewire:livewire.theme-switcher />
         </div>
     @endif
 
     {{-- Language Switcher --}}
     @if($showLanguage)
         <div class="hidden md:block">
-            <livewire:core.lang-switcher />
+            <livewire:livewire.lang-switcher />
         </div>
     @endif
 

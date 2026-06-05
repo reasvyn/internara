@@ -2,7 +2,7 @@
 
 ## What It Enforces
 
-All business logic is encapsulated in Action classes with a single `execute()` method. Actions live in `app/Domain/{Domain}/Actions/{Verb}{Noun}Action.php` and extend `BaseAction`. They are the sole orchestrators of validation, persistence, and side effects.
+All business logic is encapsulated in Action classes with a single `execute()` method. Actions live in `app/{Module}/Actions/{Verb}{Noun}Action.php` and extend `BaseAction`. They are the sole orchestrators of validation, persistence, and side effects.
 
 ## Why It Matters
 

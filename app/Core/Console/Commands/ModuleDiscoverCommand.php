@@ -39,14 +39,14 @@ class ModuleDiscoverCommand extends Command
 
             SmartLogger::info(__('setup.cli.tasks.discover_complete'))
                 ->module('setup')
-                ->event('domain.discover.completed')
+                ->event('module.discover.completed')
                 ->save();
 
             return self::SUCCESS;
         } catch (\Throwable $e) {
             SmartLogger::error('Module discovery failed')
                 ->module('setup')
-                ->event('domain.discover.failed')
+                ->event('module.discover.failed')
                 ->withPayload(['error' => $e->getMessage()])
                 ->save();
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Setting\Support;
 
-use App\Core\Support\CacheKeys;
+use App\Support\CacheKeys;
 use App\Core\Support\SmartLogger;
-use App\Core\Support\Theme;
+use App\Support\Theme;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Throwable;

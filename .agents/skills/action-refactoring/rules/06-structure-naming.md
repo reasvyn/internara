@@ -2,11 +2,11 @@
 
 ## What It Enforces
 
-Actions follow a strict naming convention: `{Verb}{Noun}Action.php` in `app/Domain/{Domain}/Actions/`. The verb describes the operation (Create, Update, Delete, Activate, Finalize, Verify, etc.) and the noun describes the subject. All Actions extend `BaseAction` (which provides `transaction()`, `log()`, and `withErrorHandling()`).
+Actions follow a strict naming convention: `{Verb}{Noun}Action.php` in `app/{Module}/Actions/`. The verb describes the operation (Create, Update, Delete, Activate, Finalize, Verify, etc.) and the noun describes the subject. All Actions extend `BaseAction` (which provides `transaction()`, `log()`, and `withErrorHandling()`).
 
 ## Why It Matters
 
-Consistent naming makes Actions discoverable by name alone. When you need to find "the thing that deletes an academic year," you know it's `DeleteAcademicYearAction` in `app/Domain/School/Actions/`. This predictability reduces search time and makes the codebase navigable without documentation.
+Consistent naming makes Actions discoverable by name alone. When you need to find "the thing that deletes an academic year," you know it's `DeleteAcademicYearAction` in `app/Academics/Actions/`. This predictability reduces search time and makes the codebase navigable without documentation.
 
 The convention also prevents ambiguity. `AcademicYearAction` (without a verb) could contain multiple methods — and that violates single responsibility. `DeleteAcademicYearAction` is unambiguous about its purpose.
 

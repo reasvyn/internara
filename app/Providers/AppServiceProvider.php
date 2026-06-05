@@ -9,7 +9,7 @@ use App\Academics\Listeners\LogSetupFinalized;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Contracts\SettingsStore;
 use App\Core\Policies\BasePolicy;
-use App\Core\Support\CacheKeys;
+use App\Support\CacheKeys;
 use App\Core\Support\LangChecker;
 use App\SysAdmin\Setting\Support\Settings;
 use App\User\Notification\Actions\SendNotificationAction;

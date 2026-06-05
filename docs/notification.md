@@ -335,10 +335,10 @@ Created (via Action/Event)
 ## Where to Find It
 
 - `app/Core/Channels/CustomDatabaseChannel.php` — custom database channel
-- `app/Module/*/Notifications/` — notification classes organized by module
+- `app/*/Notifications/` — notification classes organized by module
 - `app/User/Actions/SendNotificationAction.php` — notification dispatch action
 - `app/Core/Contracts/SendsNotifications.php` — notification contract
-- `app/Module/Administration/Console/Commands/PruneNotificationsCommand.php` — notification pruning
+- `app/Administration/Console/Commands/PruneNotificationsCommand.php` — notification pruning
 - `config/mail.php` — mail driver and SMTP configuration
 - `config/flasher.php` — flash message styling and timeout
 - `docs/infrastructure.md` — tier-based infrastructure design

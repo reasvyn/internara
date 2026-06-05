@@ -6,7 +6,7 @@ namespace App\SysAdmin\Setting\Livewire;
 
 use App\Academics\AcademicYear\Actions\ActivateAcademicYearAction;
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Core\Support\Theme;
+use App\Support\Theme;
 use App\SysAdmin\Setting\Actions\GetAcademicYearsAction;
 use App\SysAdmin\Setting\Actions\SaveSystemSettingsAction;
 use App\SysAdmin\Setting\Actions\TestMailSettingsAction;

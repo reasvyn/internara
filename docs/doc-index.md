@@ -13,7 +13,7 @@ Complete catalog of all documentation files in the `docs/` directory.
 |---|---|
 | [Product Definition](product-definition.md) | What Internara is, core principles, user personas, scope, deployment model, localization, licensing |
 | [Key Features](key-features.md) | Complete feature inventory across all 16 modules, organized by program lifecycle |
-| [Architecture](architecture.md) | 12-layer architecture, Action Triad (Command/Read/Process), cross-module rules, exception hierarchy, caching, validation, testing strategy |
+| [Action-based MVC Architecture](architecture.md) | 12-layer architecture, Action Triad (Command/Read/Process), cross-module rules, exception hierarchy, caching, validation, testing strategy |
 | [Coding Conventions](conventions.md) | Mandatory base classes, naming conventions, file structure, PHP rules, policy/enum conventions |
 
 ---
@@ -107,7 +107,7 @@ See the [Module Index](modules/module-index.md) for more details on operational 
 | Record | Decision |
 |---|---|
 | [UUID Primary Keys](adr/adr-uuid-primary-keys.md) | UUID primary keys over auto-increment |
-| [Module-First Architecture](adr/adr-module-first-architecture.md) | Module-first over flat layering |
+| [Action-based MVC Architecture](adr/adr-action-based-mvc-architecture.md) | Action-based MVC over flat layering |
 | [Action Pattern over Services](adr/adr-action-pattern-over-services.md) | Action pattern with Command/Read/Process triad |
 | [Entity-Model Separation](adr/adr-entity-model-separation.md) | Entity/Model separation for business rules |
 

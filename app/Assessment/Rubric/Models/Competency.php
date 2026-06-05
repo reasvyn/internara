@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Assessment\Rubric\Models;
 
 use App\Core\Models\BaseModel;
-use App\Evaluation\Evaluation\Enums\EvaluatorRole;
+use App\Evaluation\Core\Enums\EvaluatorRole;
 use Database\Factories\CompetencyFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

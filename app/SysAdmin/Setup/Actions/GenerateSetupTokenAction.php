@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Setup\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Support\CacheKeys;
+use App\Support\CacheKeys;
 use App\SysAdmin\Setup\Models\Setup;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Assignment\Submission\Actions;
 
-use App\Assignment\Assignment\Models\Assignment;
+use App\Assignment\Core\Models\Assignment;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseAction;
-use App\Core\Exceptions\RejectedException;
+use App\Exceptions\RejectedException;
 use App\Guidance\Mentee\Models\Mentee;
 use App\User\Models\User;
 

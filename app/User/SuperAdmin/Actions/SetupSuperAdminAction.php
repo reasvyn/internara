@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\User\SuperAdmin\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Exceptions\RejectedException;
-use App\Core\Support\PasswordRules;
+use App\Exceptions\RejectedException;
+use App\Support\PasswordRules;
 use App\User\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Enums\AccountStatus;
 use App\User\Enums\Role as RoleEnum;

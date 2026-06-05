@@ -53,8 +53,8 @@
 
         {{-- Mobile Switchers --}}
         <div class="md:hidden border-t border-base-content/10 p-3 flex items-center justify-between">
-            <livewire:core.theme-switcher />
-            <livewire:core.lang-switcher />
+            <livewire:livewire.theme-switcher />
+            <livewire:livewire.lang-switcher />
         </div>
     </aside>
 </div>

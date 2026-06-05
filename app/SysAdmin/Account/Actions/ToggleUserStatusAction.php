@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Account\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Exceptions\RejectedException;
+use App\Exceptions\RejectedException;
 use App\User\AccountStatus\Notifications\AccountStatusNotification;
 use App\User\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Enums\AccountStatus;

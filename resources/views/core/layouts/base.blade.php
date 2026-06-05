@@ -10,7 +10,7 @@
         
         {{-- Dynamic Branding Colors --}}
         @php
-            use App\Core\Support\Theme;
+            use App\Support\Theme;
             $themeVars = Theme::cssVariables();
         @endphp
         <style>
