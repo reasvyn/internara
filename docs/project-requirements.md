@@ -235,3 +235,30 @@ This verifier endpoint yields the authentic digital record, exposing any offline
 
 * **Recovery Point Objective (RPO)**: Maximum 4 hours of data loss. Database backups (SQLite files or MySQL dumps) must be scheduled via system cron tasks every 4 hours and mirrored to an off-site S3-compatible cloud storage bucket.
 * **Recovery Time Objective (RTO)**: Under 1 hour to spin up a replacement Docker VM instance and restore the latest database state.
+
+---
+
+## 9. Dual Mentor Fallback & Optionality Protocol
+
+To prevent operational bottlenecks caused by industry supervisors failing to access the system regularly, Internara implements a **Dual Mentor Fallback Protocol**. This mechanism ensures that while corporate supervisors are invited to collaborate, the academic timeline is never blocked by industry inactivity.
+
+### 9.1 Attendance & Daily Journal Verification Fallbacks
+* **Optionality**: Daily clock-in/out and reflective logbooks do not require immediate supervisor sign-off to advance through the academic checks.
+* **Bypass Window**: If a journal entry remains in the `SUBMITTED` state for more than a configurable period (default: 48 hours) without action from the corporate supervisor, the system raises an auto-escalation flag.
+* **Teacher Sign-off Override**: The assigned `Teacher` is equipped with bypass permissions to directly transition journals from `SUBMITTED` to `FINALIZED`. When this bypass occurs:
+  * The system records the action as `verified_by_fallback` in the journal model.
+  * A log entry is appended to the audit trail identifying the teacher who authorized the bypass.
+  * The supervisor's queue for that specific entry is automatically cleared.
+
+### 9.2 End-of-Placement Competency Evaluation Fallbacks
+At the completion of a student's placement, a rubric-based industry evaluation is required.
+* **Dual Grading Paths**:
+  1. **Standard Path**: The Industry Supervisor fills out the on-site evaluation form (weight: 40%). The Teacher fills out the school evaluation (20%) and report/exam score (40%).
+  2. **Bypass Path (Proxy Entry)**: If the supervisor is unresponsive, the `Teacher` can activate a "Proxy Evaluation" toggle. This enables the teacher to enter scores on behalf of the supervisor based on physical evaluation sheets or verbal feedback.
+  3. **Bypass Path (Weight Redistribution)**: Alternatively, the administrator can configure the program to recalculate weights dynamically if no supervisor score is submitted:
+     * *Supervisor Weight (40%)* is redistributed: 20% is added to the Teacher's evaluation weight, and 20% to the Report/Exam weight. The new formula becomes:
+       ```
+       Grade = (Teacher Score × 40%) + (Report/Thesis Exam × 60%)
+       ```
+* **Verification Security**: Any certificate compiled using fallback weights or proxy scores is stamped with a metadata indicator tag to maintain transparent audit compliance.
+
