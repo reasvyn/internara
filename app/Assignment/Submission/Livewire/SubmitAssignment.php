@@ -6,6 +6,7 @@ namespace App\Assignment\Submission\Livewire;
 
 use App\Assignment\Core\Models\Assignment;
 use App\Assignment\Submission\Actions\SubmitAssignmentAction;
+use App\Assignment\Submission\Models\Submission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -73,7 +74,7 @@ class SubmitAssignment extends Component
         $registration = Auth::user()->getActiveRegistration();
 
         if (! $registration) {
-            return view('assignment.submission', [
+            return view('assignment.submission.submit-assignment', [
                 'assignments' => collect(),
                 'submissions' => collect(),
             ]);
@@ -88,7 +89,7 @@ class SubmitAssignment extends Component
             ->with('assignment')
             ->get();
 
-        return view('assignment.submission', [
+        return view('assignment.submission.submit-assignment', [
             'assignments' => $assignments,
             'submissions' => $submissions,
         ]);

@@ -35,7 +35,7 @@ Shared resides outside individual business modules at the root level of the `app
 
 - Shared classes must not reference or import classes from business modules (e.g., `App\User` or `App\Partners`). They must remain strictly domain-agnostic.
 - Any helper utility that performs write operations must be placed in a business module or implemented as a Command Action within a module; Shared only contains static helpers and stateless utilities.
-- Concrete exceptions representing common validation, permission, or resource errors must extend `AppException` or `DomainException` from the Core module.
+- Concrete exceptions representing common validation, permission, or resource errors must extend `AppException` or `ModuleException` from the Core module.
 - All global cache keys must be defined as constants in the Shared `CacheKeys` class rather than hardcoded in individual modules.
 
 ---

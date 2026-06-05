@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Console\Commands;
 
-use App\SysAdmin\Setting\Support\AppInfo;
-use App\User\SuperAdmin\Actions\InitializeSuperAdminAction;
+use App\SysAdmin\Settings\Support\AppInfo;
 use App\User\Models\User;
+use App\User\SuperAdmin\Actions\InitializeSuperAdminAction;
 use Illuminate\Console\Command;
 
 use function Laravel\Prompts\password;

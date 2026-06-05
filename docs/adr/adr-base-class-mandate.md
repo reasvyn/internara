@@ -45,7 +45,7 @@ Every architectural layer has exactly one base class from Core. There is no alte
 | Form Request | `FormRequest` (Core's, not Laravel's) | Consistent `ValidationFailedException` | extends check |
 | Enum | Implements `LabelEnum` | `label(): string` method | implements check |
 | Status Enum | Implements `StatusEnum` (+ LabelEnum) | `canTransitionTo()`, `validTransitions()`, `isTerminal()` | implements check |
-| Exception | Extends `AppException` or `DomainException` | `HasExceptionContext` trait | extends check |
+| Exception | Extends `AppException` or `ModuleException` | `HasExceptionContext` trait | extends check |
 | Cache key | `CacheKeys` constant | Centralized key registry, collision prevention | constant reference |
 
 ### Exceptions
@@ -65,7 +65,7 @@ Architecture tests that previously enforced these rules were removed due to a
 - `PolicyLayerArchTest` — policies extend BasePolicy
 - `EntityLayerArchTest` — entities extend BaseEntity
 - `EnumLayerArchTest` — enums implement LabelEnum
-- `ExceptionLayerArchTest` — exceptions extend AppException or DomainException
+- `ExceptionLayerArchTest` — exceptions extend AppException or ModuleException
 
 Until these tests are restored, PHPStan custom rules and code review serve as the enforcement
 mechanism. Violations are considered blocking in code review.

@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
-use App\Core\Exceptions\DomainException;
+use App\Core\Exceptions\ModuleException;
 
-class RejectedException extends DomainException {}
+class RejectedException extends ModuleException {}

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Academics\Http\Middleware;
 
 use App\Core\Support\SmartLogger;
-use App\SysAdmin\Setup\Actions\ValidateSetupTokenAction;
-use App\SysAdmin\Setup\Entities\SetupState;
-use App\SysAdmin\Setup\Models\Setup;
+use App\Setup\Actions\ValidateSetupTokenAction;
+use App\Setup\Entities\SetupState;
+use App\Setup\Models\Setup;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -112,7 +112,7 @@ class ProtectSetupRouteMiddleware
                 );
             }
 
-            return response()->view('sysadmin.setup.enter-code', [
+            return response()->view('setup.enter-code', [
                 'error' => __('setup.rate_limited', ['seconds' => $seconds]),
                 'errors' => session()->get('errors') ?? new ViewErrorBag,
             ], Response::HTTP_TOO_MANY_REQUESTS);
@@ -128,7 +128,7 @@ class ProtectSetupRouteMiddleware
             return $this->rejectToken($request, __('setup.invalid_token'));
         }
 
-        return response()->view('sysadmin.setup.enter-code', [
+        return response()->view('setup.enter-code', [
             'errors' => session()->get('errors') ?? new ViewErrorBag,
         ]);
     }

@@ -99,6 +99,6 @@ class RequirementManager extends Component
 
     public function render(): View
     {
-        return view('internship.requirement-manager');
+        return view('program.document-requirement.requirement-manager');
     }
 }

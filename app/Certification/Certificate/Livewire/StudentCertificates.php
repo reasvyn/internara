@@ -27,7 +27,7 @@ class StudentCertificates extends Component
             ->orderByDesc('issued_at')
             ->get();
 
-        return view('certificate.student-certificates', [
+        return view('certification.certificate.student-certificates', [
             'certificates' => $certificates,
         ]);
     }

@@ -7,9 +7,9 @@ namespace App\SysAdmin\Account\Actions;
 use App\Core\Actions\BaseAction;
 use App\Exceptions\RejectedException;
 use App\User\AccountStatus\Notifications\AccountStatusNotification;
-use App\User\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
+use App\User\SuperAdmin\Entities\SuperAdminIntegrityRules;
 
 final class SetUserStatusAction extends BaseAction
 {

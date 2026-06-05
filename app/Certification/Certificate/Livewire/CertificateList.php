@@ -140,7 +140,7 @@ class CertificateList extends BaseRecordManager
     #[Layout('core::layouts.app')]
     public function render(): View
     {
-        return view('certificate.certificate-list', [
+        return view('certification.certificate.certificate-list', [
             'statusOptions' => CertificateStatus::cases(),
         ]);
     }

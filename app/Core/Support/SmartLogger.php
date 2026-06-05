@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Support;
 
+use App\Core\Events\BaseEvent;
 use App\Support\PiiMasker;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
@@ -46,7 +47,7 @@ final class SmartLogger
 
     private ?string $module = null;
 
-    private ?string $event = null;
+    private string|BaseEvent|null $event = null;
 
     private ?string $channel = null;
 
@@ -111,7 +112,7 @@ final class SmartLogger
         return $this;
     }
 
-    public function event(string $event): self
+    public function event(string|BaseEvent $event): self
     {
         $this->event = $event;
 
@@ -158,19 +159,26 @@ final class SmartLogger
 
     public function save(): void
     {
+        $eventName = $this->resolveEventName();
+
+        if ($this->event instanceof BaseEvent) {
+            event($this->event);
+            $this->payload = array_merge($this->event->toPayload(), $this->payload);
+        }
+
         if ($this->maskPii) {
             $this->payload = PiiMasker::maskArray($this->payload);
         }
 
-        if ($this->event !== null) {
+        if ($eventName !== null) {
             $locale = App::getLocale();
-            $description = __('log.'.$this->event, [], $locale);
-            if ($description !== 'log.'.$this->event) {
+            $description = __('log.'.$eventName, [], $locale);
+            if ($description !== 'log.'.$eventName) {
                 $this->context['event_description'] = $description;
             }
             $altLocale = $locale === 'id' ? 'en' : 'id';
-            $altDescription = __('log.'.$this->event, [], $altLocale);
-            if ($altDescription !== 'log.'.$this->event) {
+            $altDescription = __('log.'.$eventName, [], $altLocale);
+            if ($altDescription !== 'log.'.$eventName) {
                 $this->context['event_description_'.$altLocale] = $altDescription;
             }
         }
@@ -184,8 +192,17 @@ final class SmartLogger
         $canLogActivity = $causer !== null || ($this->toActivity && ! $this->toSystem);
 
         if ($this->toActivity && $canLogActivity) {
-            $this->writeActivityLog($causer);
+            $this->writeActivityLog($causer, $eventName);
         }
+    }
+
+    private function resolveEventName(): ?string
+    {
+        if ($this->event instanceof BaseEvent) {
+            return $this->event->eventName();
+        }
+
+        return $this->event;
     }
 
     private function writeSystemLog(?Model $causer): void
@@ -213,7 +230,7 @@ final class SmartLogger
         LogFacade::{$level}($this->message, $context);
     }
 
-    private function writeActivityLog(?Model $causer = null): void
+    private function writeActivityLog(?Model $causer = null, ?string $eventName = null): void
     {
         try {
             $activity = activity();
@@ -231,7 +248,7 @@ final class SmartLogger
             }
 
             $activity
-                ->event($this->event ?? $this->face)
+                ->event($eventName ?? $this->face)
                 ->withProperties(array_filter([
                     'payload' => $this->payload !== [] ? $this->payload : null,
                     'ip_address' => $ip,

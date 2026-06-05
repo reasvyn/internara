@@ -10,8 +10,8 @@
                     </a>
 
                     <div class="flex items-center gap-3">
-                        <x-core::ui.theme-switcher />
-                        <x-core::ui.lang-switcher />
+                        <livewire:livewire.theme-switcher />
+                        <livewire:livewire.lang-switcher />
                     </div>
                 </div>
             </div>

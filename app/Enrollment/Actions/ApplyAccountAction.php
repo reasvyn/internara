@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Enrollment\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Exceptions\RejectedException;
 use App\Enrollment\Models\AccountApplication;
+use App\Exceptions\RejectedException;
 
 final class ApplyAccountAction extends BaseAction
 {

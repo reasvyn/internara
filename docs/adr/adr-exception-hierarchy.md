@@ -1,4 +1,4 @@
-# Exception Hierarchy — AppException vs DomainException
+# Exception Hierarchy — AppException vs ModuleException
 > Last updated: 2026-05-27
 > Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
@@ -25,8 +25,8 @@ Two alternatives were considered:
    the same root. Catch blocks cannot distinguish intent.
 
 2. **Parallel exception trees**: Separate `AppException` (for framework/infrastructure layer)
-   from `DomainException` (for business rule violations). Catch blocks can target either tree
-   independently. A controller can catch `DomainException` for user-facing messages without
+   from `ModuleException` (for business rule violations). Catch blocks can target either tree
+   independently. A controller can catch `ModuleException` for user-facing messages without
    catching infrastructure errors.
 
 ## Decision
@@ -54,7 +54,7 @@ RuntimeException
 │       ├── NotFoundException — resource not found
 │       └── UnauthorizedException — access denied
 │
-└── DomainException (abstract)
+└── ModuleException (abstract)
     │  Business rule violations. Things a user or admin should understand.
     │  Deliberately NOT a child of AppException.
     │
@@ -63,11 +63,11 @@ RuntimeException
 
 ### Why Two Roots?
 
-`DomainException` is intentionally NOT a child of `AppException`. This means:
+`ModuleException` is intentionally NOT a child of `AppException`. This means:
 
 ```php
 // A controller can catch module violations specifically
-catch (DomainException $e) {
+catch (ModuleException $e) {
     flash()->error($e->getMessage());
     return; // Never catches infrastructure errors
 }
@@ -80,7 +80,7 @@ catch (InfrastructureException $e) {
 }
 ```
 
-If `DomainException` extended `AppException`, a `catch (AppException)` block would catch both
+If `ModuleException` extended `AppException`, a `catch (AppException)` block would catch both
 module violations and infrastructure errors, forcing every handler to inspect the class
 hierarchy to distinguish them.
 
@@ -106,14 +106,14 @@ Both trees use the `HasExceptionContext` trait, providing a consistent API:
 | Resource not found | `NotFoundException` | AppException → PresentationException |
 | External API timeout | `InfrastructureException` | AppException → InfrastructureException |
 | Rate limit exceeded | `RateLimitException` | AppException → InfrastructureException |
-| Invalid state transition | `RejectedException` | DomainException |
-| Module invariant violated | `RejectedException` | DomainException |
-| General business rule failure | `RejectedException` | DomainException |
+| Invalid state transition | `RejectedException` | ModuleException |
+| Module invariant violated | `RejectedException` | ModuleException |
+| General business rule failure | `RejectedException` | ModuleException |
 
 ## Consequences
 
 - **Positive**: Catch blocks can target module failures or framework failures independently.
-  A controller can catch `DomainException` for user-facing error messages without worrying
+  A controller can catch `ModuleException` for user-facing error messages without worrying
   about catching infrastructure errors.
 - **Positive**: Exception class communicates intent — `RejectedException` means "business rule
   rejected this operation," not "database connection failed."
@@ -125,14 +125,14 @@ Both trees use the `HasExceptionContext` trait, providing a consistent API:
   Misclassification (throwing `AppException` for a module failure) is possible and requires
   code review to catch.
 - **Negative**: HTTP error handlers must branch for both trees — separate `render()` paths
-  for `AppException` and `DomainException`.
+  for `AppException` and `ModuleException`.
 - **Negative**: Adding a new exception type requires deciding which tree it belongs to —
   an extra decision point during development.
 
 ## References
 
 - `app/Core/Exceptions/AppException.php` — abstract root for framework exceptions
-- `app/Core/Exceptions/DomainException.php` — abstract root for module exceptions
+- `app/Core/Exceptions/ModuleException.php` — abstract root for module exceptions
 - `app/Core/Exceptions/Concerns/HasExceptionContext.php` — shared trait
 - `app/Core/Exceptions/RejectedException.php` — most commonly used module exception
 - `docs/architecture.md` — Exception Hierarchy section

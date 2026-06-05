@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Support\Theme;
-use App\SysAdmin\Setting\Casts\SettingValueCast;
-use App\SysAdmin\Setting\Models\Setting;
-use App\SysAdmin\Setting\Support\AppInfo;
+use App\SysAdmin\Settings\Casts\SettingValueCast;
+use App\SysAdmin\Settings\Models\Setting;
+use App\SysAdmin\Settings\Support\AppInfo;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 

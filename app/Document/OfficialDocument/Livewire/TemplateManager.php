@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Document\OfficialDocument\Livewire;
 
-use App\Document\OfficialDocument\Actions\SaveDocumentTemplateAction;
 use App\Document\Models\Document;
+use App\Document\OfficialDocument\Actions\SaveDocumentTemplateAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
@@ -83,7 +83,7 @@ class TemplateManager extends Component
 
     public function render(): View
     {
-        return view('document.template-manager', [
+        return view('document.official-document.template-manager', [
             'templates' => $this->templates(),
             'headers' => $this->headers(),
         ]);

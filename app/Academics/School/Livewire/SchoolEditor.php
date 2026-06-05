@@ -103,6 +103,6 @@ class SchoolEditor extends Component
     #[Layout('core::layouts.app')]
     public function render(): View
     {
-        return view('school.school-editor');
+        return view('academics.school.school-editor');
     }
 }

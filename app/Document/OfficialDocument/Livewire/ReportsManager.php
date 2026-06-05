@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Document\OfficialDocument\Livewire;
 
+use App\Document\Models\Document;
 use App\Document\OfficialDocument\Actions\DeleteReportAction;
 use App\Document\OfficialDocument\Actions\GenerateReportAction;
-use App\Document\Models\Document;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -47,7 +47,7 @@ class ReportsManager extends Component
             ->latest()
             ->paginate(10);
 
-        return view('document.reports-manager', [
+        return view('document.official-document.reports-manager', [
             'reports' => $reports,
             'types' => $this->reportTypes,
         ]);

@@ -86,7 +86,7 @@ The module directories are vertical slices that cross all layers below Layer 11.
   Layer 3 ┌──────────────────────────────────────────────────────────┐
   Core    │  Contracts: LabelEnum, StatusEnum, ColorableEnum         │
   Contracts│  SendsNotifications                                     │
-          │  Exception: AppException + DomainException (dual tree) │
+          │  Exception: AppException + ModuleException (dual tree) │
           │  app/Core/{Contracts,Exceptions}                 │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
@@ -630,12 +630,12 @@ AppException (abstract)
     └── UnauthorizedException — access denied
 ```
 
-### DomainException hierarchy (separate tree)
+### ModuleException hierarchy (separate tree)
 
-`DomainException` is deliberately **not** a child of `AppException`. This keeps module catch blocks isolated from layered framework concerns:
+`ModuleException` is deliberately **not** a child of `AppException`. This keeps module catch blocks isolated from layered framework concerns:
 
 ```
-DomainException (abstract, extends RuntimeException)
+ModuleException (abstract, extends RuntimeException)
 └── RejectedException — module invariant violated (e.g., invalid state transition)
 ```
 
@@ -648,8 +648,8 @@ DomainException (abstract, extends RuntimeException)
 | Permission denied (Layer 8) | `UnauthorizedException` | AppException |
 | Resource not found | `NotFoundException` | AppException |
 | External API timeout | `InfrastructureException` or `RateLimitException` | AppException |
-| Invalid state transition | `RejectedException` | DomainException |
-| Module invariant violated | `RejectedException` | DomainException |
+| Invalid state transition | `RejectedException` | ModuleException |
+| Module invariant violated | `RejectedException` | ModuleException |
 
 ---
 

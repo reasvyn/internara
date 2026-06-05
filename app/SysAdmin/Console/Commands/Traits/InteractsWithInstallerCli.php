@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Console\Commands\Traits;
 
-use App\SysAdmin\Setting\Support\AppInfo;
-use App\SysAdmin\Setup\Models\Setup;
+use App\Setup\Models\Setup;
+use App\SysAdmin\Settings\Support\AppInfo;
 
 trait InteractsWithInstallerCli
 {

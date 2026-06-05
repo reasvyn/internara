@@ -138,6 +138,6 @@ class SupervisorManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('sysadmin.supervisor-manager');
+        return view('sysadmin.account.supervisor-manager');
     }
 }

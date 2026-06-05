@@ -9,9 +9,9 @@ use App\Academics\Listeners\LogSetupFinalized;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Contracts\SettingsStore;
 use App\Core\Policies\BasePolicy;
-use App\Support\CacheKeys;
 use App\Core\Support\LangChecker;
-use App\SysAdmin\Setting\Support\Settings;
+use App\Support\CacheKeys;
+use App\SysAdmin\Settings\Support\Settings;
 use App\User\Notification\Actions\SendNotificationAction;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -110,6 +110,10 @@ class AppServiceProvider extends ServiceProvider
 
                 $relativePath = str_replace($moduleDir.'/', '', $filePath);
                 $parts = explode('/', $relativePath);
+
+                if (($parts[0] ?? '') === $directory) {
+                    continue;
+                }
 
                 // If structure: Module/Submodule/Livewire/Class.php
                 // index: 0=Module, 1=Submodule, 2=Livewire, 3=Class.php (or index 1 is Livewire)

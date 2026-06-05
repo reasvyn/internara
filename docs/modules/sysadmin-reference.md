@@ -1,7 +1,7 @@
 # SysAdmin — Technical Reference
 
-> Last updated: 2026-06-04
-> Changes: Added system:* commands (system:health, system:cleanup, system:cache-warm) moved from Core; updated file tree with all 11 console commands
+> Last updated: 2026-06-05
+> Changes: Removed Setup submodule, policies, console commands, and directories following Setup module extraction
 
 Detailed structural and implementation reference for the **SysAdmin** module.
 
@@ -9,21 +9,20 @@ Detailed structural and implementation reference for the **SysAdmin** module.
 
 ## Overview
 
-Handles system setup, configuration, account administration, announcements, system health monitoring, audit logging, and GDPR compliance
+Handles user administration, announcements, system health monitoring, audit logging, and GDPR compliance
 
 ### Module Statistics
-- **Actions**: 27 business logic operations
-- **Models**: 4 data entities
-- **Livewire Components**: 14 UI components
-- **Policies**: 3 authorization rules
-- **Submodules**: 5 module submodules
+- **Actions**: 20 business logic operations
+- **Models**: 3 data entities
+- **Livewire Components**: 13 UI components
+- **Policies**: 2 authorization rules
+- **Submodules**: 4 module submodules
 
 ### Submodules
 - `Account`
 - `Announcement`
 - `GdprDeletionLog`
 - `Setting`
-- `Setup`
 
 ---
 
@@ -66,12 +65,6 @@ This module depends on:
 | `Setting/Actions/SetSettingAction.php` | `SetSettingAction` | `BaseAction` |
 | `Setting/Actions/TestMailSettingsAction.php` | `TestMailSettingsAction` | `BaseAction` |
 | `Setting/Actions/UploadBrandAssetAction.php` | `UploadBrandAssetAction` | `BaseAction` |
-| `Setup/Actions/FinalizeSetupAction.php` | `FinalizeSetupAction` | `BaseAction` |
-| `Setup/Actions/GenerateSetupTokenAction.php` | `GenerateSetupTokenAction` | `BaseAction` |
-| `Setup/Actions/InstallSystemAction.php` | `InstallSystemAction` | `BaseAction` |
-| `Setup/Actions/SetupDepartmentAction.php` | `SetupDepartmentAction` | `BaseAction` |
-| `Setup/Actions/SetupSchoolAction.php` | `SetupSchoolAction` | `BaseAction` |
-| `Setup/Actions/ValidateSetupTokenAction.php` | `ValidateSetupTokenAction` | `BaseAction` |
 
 ---
 
@@ -82,7 +75,6 @@ This module depends on:
 | `Announcement/Models/Announcement.php` | `Announcement` |
 | `GdprDeletionLog/Models/GdprDeletionLog.php` | `GdprDeletionLog` |
 | `Setting/Models/Setting.php` | `Setting` |
-| `Setup/Models/Setup.php` | `Setup` |
 
 ---
 
@@ -98,7 +90,6 @@ This module depends on:
 | `Announcement/Livewire/AnnouncementManager.php` | `AnnouncementManager` | `Component` |
 | `GdprDeletionLog/Livewire/GdprDeletionLogs.php` | `GdprDeletionLogs` | `Component` |
 | `Setting/Livewire/SystemSetting.php` | `SystemSetting` | `Component` |
-| `Setup/Livewire/SetupWizard.php` | `SetupWizard` | `Component` |
 | `Livewire/AccountCloneDetector.php` | `AccountCloneDetector` | `Component` |
 | `Livewire/ApplicationReview.php` | `ApplicationReview` | `Component` |
 | `Livewire/AuditLogManager.php` | `AuditLogManager` | `Component` |
@@ -121,7 +112,6 @@ This module depends on:
 |---|---|
 | `GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` |
 | `Setting/Policies/SettingPolicy.php` | `SettingPolicy` |
-| `Setup/Policies/SetupPolicy.php` | `SetupPolicy` |
 
 ---
 
@@ -132,8 +122,6 @@ This module depends on:
 | `system:health` | `SystemHealthCommand` | Comprehensive system health check with JSON output support. |
 | `system:cleanup` | `SystemCleanupCommand` | Routine maintenance: prune resets, cache tags, failed jobs, activity logs, media, and old log files. |
 | `system:cache-warm` | `SystemCacheWarmCommand` | Pre-warms application caches (config, views, events, settings, brand). |
-| `setup:install` | `SetupInstallCommand` | Provisions the system, seeds Roles and AcademicYear via `SetupSeeder`, and generates a setup token. |
-| `setup:reset-token` | `SetupResetTokenCommand` | Generates a new setup token (usable only if installation is incomplete). |
 | `admin:create` | `CreateAdminCommand` | Creates the initial superadmin account when none exists. |
 | `admin:recover` | `RecoverAdminCommand` | Interactive command to reset a superadmin's password or re-create it. |
 | `admin:recovery-show` | `ShowRecoveryKeyCommand` | Displays the current recovery key after confirmation. |
@@ -170,26 +158,17 @@ app/SysAdmin/
 │   │   ├── Livewire/
 │   │   ├── Models/
 │   │   └── Policies/
-│   ├── Setting/
-│   │   ├── Actions/
-│   │   ├── Casts/
-│   │   ├── Enums/
-│   │   ├── Http/
-│   │   │   └── Middleware/
-│   │   ├── Livewire/
-│   │   │   └── Forms/
-│   │   ├── Models/
-│   │   ├── Policies/
-│   │   ├── Rules/
-│   │   └── Support/
-│   └── Setup/
+│   └── Setting/
 │       ├── Actions/
-│       ├── Entities/
+│       ├── Casts/
+│       ├── Enums/
+│       ├── Http/
+│       │   └── Middleware/
 │       ├── Livewire/
-│       │   └── Forms/
-│       ├── Models/
-│       ├── Policies/
-│       ├── Services/
+│       │   │   └── Forms/
+│       │   └── Models/
+│       │   └── Policies/
+│       │   └── Rules/
 │       └── Support/
 ├── Actions/              ← Cross-submodule actions
 ├── Console/              ← Cross-submodule artisan commands
@@ -197,8 +176,6 @@ app/SysAdmin/
 │       ├── SystemHealthCommand.php         ← system:health
 │       ├── SystemCleanupCommand.php        ← system:cleanup
 │       ├── SystemCacheWarmCommand.php      ← system:cache-warm
-│       ├── SetupInstallCommand.php         ← setup:install
-│       ├── SetupResetTokenCommand.php      ← setup:reset-token
 │       ├── CreateAdminCommand.php          ← admin:create
 │       ├── RecoverAdminCommand.php         ← admin:recover
 │       ├── ShowRecoveryKeyCommand.php      ← admin:recovery-show

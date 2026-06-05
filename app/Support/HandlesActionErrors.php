@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Support;
 
 use App\Core\Exceptions\AppException;
-use App\Core\Exceptions\DomainException;
+use App\Core\Exceptions\ModuleException;
 use App\Core\Support\SmartLogger;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -37,7 +37,7 @@ trait HandlesActionErrors
     {
         try {
             return $callback();
-        } catch (RuntimeException|AppException|DomainException|ValidationException|AuthorizationException|ModelNotFoundException|NotFoundHttpException $e) {
+        } catch (RuntimeException|AppException|ModuleException|ValidationException|AuthorizationException|ModelNotFoundException|NotFoundHttpException $e) {
             throw $e;
         } catch (\Throwable $e) {
             SmartLogger::error($context)

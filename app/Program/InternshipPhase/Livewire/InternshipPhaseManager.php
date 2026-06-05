@@ -127,6 +127,6 @@ class InternshipPhaseManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('internship.internship-phase-manager');
+        return view('program.internship-phase.internship-phase-manager');
     }
 }

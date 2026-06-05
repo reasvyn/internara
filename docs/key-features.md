@@ -47,7 +47,7 @@ Base classes, contracts, infrastructure, and cross-module utilities used by ever
 | FormRequest | Validation exception handling without redirect |
 | Data (DTO) | Abstract readonly data transfer objects with `fromArray()` / `toArray()` |
 | SmartLogger | Dual-channel fluent logger (system + activity) with PII masking |
-| Exception Hierarchy | AppException (action/infrastructure/presentation) + DomainException (separate tree) |
+| Exception Hierarchy | AppException (action/infrastructure/presentation) + ModuleException (separate tree) |
 | StatusEnum Contract | State machine via `canTransitionTo()`, `isTerminal()`, `validTransitions()` |
 | ColorableEnum Contract | Status enums with CSS color variant support |
 | LabelEnum Contract | All enums implement `label(): string` for UI display |

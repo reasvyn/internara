@@ -332,14 +332,14 @@ address) from persisting in session storage longer than necessary.
 
 | Class | Location | Purpose |
 |---|---|---|
-| `SetupWizard` | `app/SysAdmin/Setup/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
-| `SetupState` | `app/SysAdmin/Setup/Entities/SetupState.php` | Read-only value object for setup status |
-| `Setup` | `app/SysAdmin/Setup/Models/Setup.php` | Eloquent model (single-row, singleton) |
-| `FinalizeSetupAction` | `app/SysAdmin/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
-| `SetupSchoolAction` | `app/SysAdmin/Setup/Actions/SetupSchoolAction.php` | Creates/updates School record |
-| `SetupDepartmentAction` | `app/SysAdmin/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
+| `SetupWizard` | `app/Setup/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
+| `SetupState` | `app/Setup/Entities/SetupState.php` | Read-only value object for setup status |
+| `Setup` | `app/Setup/Models/Setup.php` | Eloquent model (single-row, singleton) |
+| `FinalizeSetupAction` | `app/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
+| `SetupSchoolAction` | `app/Setup/Actions/SetupSchoolAction.php` | Creates/updates School record |
+| `SetupDepartmentAction` | `app/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
 | `SetupSuperAdminAction` | `app/User/SuperAdmin/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
-| `EnvironmentAuditor` | `app/SysAdmin/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
+| `EnvironmentAuditor` | `app/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
 | `RequireSetupAccessMiddleware` | `app/Academics/Http/Middleware/RequireSetupAccessMiddleware.php` | Global: redirects to /setup if not installed |
 | `ProtectSetupRouteMiddleware` | `app/Academics/Http/Middleware/ProtectSetupRouteMiddleware.php` | Route: validates token, rate-limits, self-destructs |
 

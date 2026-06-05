@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Academics\Http\Middleware;
 
+use App\Setup\Models\Setup;
 use App\Support\CacheKeys;
-use App\SysAdmin\Setup\Models\Setup;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;

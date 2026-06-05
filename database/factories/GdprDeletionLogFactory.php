@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\SysAdmin\GdprDeletionLog\Models\GdprDeletionLog;
+use App\SysAdmin\Observability\GdprDeletionLog\Models\GdprDeletionLog;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class GdprDeletionLogFactory extends Factory
