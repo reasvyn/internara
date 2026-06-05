@@ -2,10 +2,12 @@
     <x-mary-header :title="__('dashboard.title')" :subtitle="__('dashboard.subtitle', ['name' => auth()->user()->name])" separator />
 
     {{-- Stats --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
         <x-core::widgets.stat-card :title="__('dashboard.stats.active_interns')" :value="$activeInterns" icon="o-users" color="text-primary" />
         <x-core::widgets.stat-card :title="__('dashboard.stats.pending_evaluations')" :value="$pendingEvaluations" icon="o-star" color="text-warning" />
         <x-core::widgets.stat-card :title="__('dashboard.stats.verified_journals')" :value="$verifiedJournals" icon="o-check-badge" color="text-success" />
+        <x-core::widgets.stat-card :title="__('Pending Journals')" :value="$pendingJournals" icon="o-book-open" color="text-error" />
+        <x-core::widgets.stat-card :title="__('Pending Attendance')" :value="$pendingAttendance" icon="o-clock" color="text-error" />
     </div>
 
     {{-- Main + Sidebar --}}
@@ -21,7 +23,10 @@
                 <x-core::widgets.empty-state icon="o-clipboard-document-check" :title="__('dashboard.supervisor.no_verifications')" />
             </x-mary-card>
 
-            <x-core::widgets.action-button :label="__('dashboard.read_docs')" icon="o-book-open" link="https://github.com/reasvyn/internara" color="btn-ghost bg-base-200/50" />
+            <div class="grid grid-cols-2 gap-4">
+                <x-core::widgets.action-button :label="__('Verify Logbooks')" icon="o-pencil-square" link="{{ route('sysadmin.logbook') }}" color="btn-primary" />
+                <x-core::widgets.action-button :label="__('Submit Evaluation')" icon="o-star" link="{{ route('mentor.evaluate') }}" color="btn-secondary" />
+            </div>
         </div>
 
         <div class="space-y-4">

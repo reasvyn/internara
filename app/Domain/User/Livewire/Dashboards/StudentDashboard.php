@@ -22,6 +22,16 @@ class StudentDashboard extends UserDashboard
 
     public int $verifiedJournals = 0;
 
+    public float $attendancePercent = 100.0;
+
+    public int $assignmentSubmittedCount = 0;
+
+    public int $assignmentTotalCount = 0;
+
+    public int $handbookReadCount = 0;
+
+    public int $handbookTotalCount = 0;
+
     public function mount(GetStudentDashboardDataAction $action): void
     {
         $user = auth()->user();
@@ -31,6 +41,11 @@ class StudentDashboard extends UserDashboard
         $this->registration = $data['registration'];
         $this->totalJournals = $data['totalJournals'];
         $this->verifiedJournals = $data['verifiedJournals'];
+        $this->attendancePercent = $data['attendancePercent'];
+        $this->assignmentSubmittedCount = $data['assignmentSubmittedCount'];
+        $this->assignmentTotalCount = $data['assignmentTotalCount'];
+        $this->handbookReadCount = $data['handbookReadCount'];
+        $this->handbookTotalCount = $data['handbookTotalCount'];
     }
 
     public function render(): View

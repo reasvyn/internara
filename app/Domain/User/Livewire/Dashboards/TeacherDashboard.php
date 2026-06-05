@@ -16,6 +16,12 @@ class TeacherDashboard extends UserDashboard
 
     public int $activeCompanies = 0;
 
+    public int $ungradedSubmissions = 0;
+
+    public int $supervisionLogsCount = 0;
+
+    public int $unresolvedIncidents = 0;
+
     public function boot(): void
     {
         abort_unless(auth()->user()?->hasRole('teacher'), 403);
@@ -28,6 +34,9 @@ class TeacherDashboard extends UserDashboard
         $this->supervisedStudents = $stats['supervisedStudents'];
         $this->pendingJournals = $stats['pendingJournals'];
         $this->activeCompanies = $stats['activeCompanies'];
+        $this->ungradedSubmissions = $stats['ungradedSubmissions'];
+        $this->supervisionLogsCount = $stats['supervisionLogsCount'];
+        $this->unresolvedIncidents = $stats['unresolvedIncidents'];
     }
 
     public function render(): View
