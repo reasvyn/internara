@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Livewire\Dashboards;
+namespace App\Domain\User\Aggregates\Dashboard\Livewire;
 
 use App\Domain\Enrollment\Models\Registration;
-use App\Domain\User\Actions\GetStudentDashboardDataAction;
-use App\Domain\User\Livewire\UserDashboard;
+use App\Domain\User\Aggregates\Dashboard\Actions\GetStudentDashboardDataAction;
 use Illuminate\View\View;
 
 class StudentDashboard extends UserDashboard
@@ -50,6 +49,6 @@ class StudentDashboard extends UserDashboard
 
     public function render(): View
     {
-        return view('user.dashboards.student');
+        return view('user.dashboard.student');
     }
 }

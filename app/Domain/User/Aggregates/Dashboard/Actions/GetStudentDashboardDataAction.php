@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\User\Actions;
+namespace App\Domain\User\Aggregates\Dashboard\Actions;
 
 use App\Domain\Assignment\Aggregates\Assignment\Enums\AssignmentStatus;
 use App\Domain\Assignment\Aggregates\Assignment\Models\Assignment;

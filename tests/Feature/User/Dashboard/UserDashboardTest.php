@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Domain\User\Aggregates\Dashboard\Livewire\StudentDashboard;
+use App\Domain\User\Aggregates\Dashboard\Livewire\SupervisorDashboard;
+use App\Domain\User\Aggregates\Dashboard\Livewire\TeacherDashboard;
 use App\Domain\User\Enums\Role as RoleEnum;
-use App\Domain\User\Livewire\Dashboards\StudentDashboard;
-use App\Domain\User\Livewire\Dashboards\SupervisorDashboard;
-use App\Domain\User\Livewire\Dashboards\TeacherDashboard;
 use App\Domain\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;

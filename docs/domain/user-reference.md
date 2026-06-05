@@ -54,9 +54,9 @@ This domain depends on:
 | `Aggregates/AccountRecovery/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction` | `BaseAction` |
 | `Actions/GetActivityLogsAction.php` | `GetActivityLogsAction` | `BaseAction` |
 | `Aggregates/Profile/Actions/GetProfileFormDataAction.php` | `GetProfileFormDataAction` | `BaseAction` |
-| `Actions/GetStudentDashboardDataAction.php` | `GetStudentDashboardDataAction` | `BaseAction` |
-| `Actions/GetSupervisorDashboardStatsAction.php` | `GetSupervisorDashboardStatsAction` | `BaseAction` |
-| `Actions/GetTeacherDashboardStatsAction.php` | `GetTeacherDashboardStatsAction` | `BaseAction` |
+| `Aggregates/Dashboard/Actions/GetStudentDashboardDataAction.php` | `GetStudentDashboardDataAction` | `BaseAction` |
+| `Aggregates/Dashboard/Actions/GetSupervisorDashboardStatsAction.php` | `GetSupervisorDashboardStatsAction` | `BaseAction` |
+| `Aggregates/Dashboard/Actions/GetTeacherDashboardStatsAction.php` | `GetTeacherDashboardStatsAction` | `BaseAction` |
 | `Aggregates/SuperAdmin/Actions/InitializeSuperAdminAction.php` | `InitializeSuperAdminAction` | `BaseAction` |
 | `Aggregates/AccountStatus/Actions/LockUserAccountAction.php` | `LockUserAccountAction` | `BaseAction` |
 | `Aggregates/Login/Actions/LoginAction.php` | `LoginAction` | `BaseAction` |
@@ -106,7 +106,11 @@ This domain depends on:
 | `Aggregates/AccountRecovery/Livewire/RecoveryCode.php` | `RecoveryCode` | `Component` |
 | `Aggregates/AccountRecovery/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `Component` |
 | `Aggregates/Password/Livewire/ResetPassword.php` | `ResetPassword` | `Component` |
-| `Livewire/UserDashboard.php` | `UserDashboard` | `Component` |
+| `Aggregates/Dashboard/Livewire/UserDashboard.php` | `UserDashboard` | `Component` |
+| `Aggregates/Dashboard/Livewire/AdminDashboard.php` | `AdminDashboard` | `UserDashboard` |
+| `Aggregates/Dashboard/Livewire/StudentDashboard.php` | `StudentDashboard` | `UserDashboard` |
+| `Aggregates/Dashboard/Livewire/SupervisorDashboard.php` | `SupervisorDashboard` | `UserDashboard` |
+| `Aggregates/Dashboard/Livewire/TeacherDashboard.php` | `TeacherDashboard` | `UserDashboard` |
 
 ---
 

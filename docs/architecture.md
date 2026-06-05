@@ -393,7 +393,7 @@ Each domain contains the following aggregates:
 | Domain | Aggregates | Cross-Aggregate Root Files |
 |---|---|---|---|
 | **Core** | — | (infrastructure + cross-domain utilities) |
-| **User** | `Login/`, `Password/`, `ActivationToken/`, `AccountRecovery/`, `AccountStatus/`, `Profile/`, `Notification/` | Http, Livewire (login, recovery, dashboards, editors) |
+| **User** | `Login/`, `Password/`, `ActivationToken/`, `AccountRecovery/`, `AccountStatus/`, `Profile/`, `Notification/`, `Dashboard/` | Http, Livewire (login, recovery, dashboards, editors) |
 | **Academics** | `School/`, `Department/`, `AcademicYear/`, `Setup/` | Console, Events, Listeners, Http, Livewire (wizard), Services, Support |
 | **Partners** | `Company/`, `Partnership/` | — |
 | **Program** | `Internship/`, `InternshipPhase/`, `InternshipGroup/`, `DocumentRequirement/` | Http, Events, Listeners, Notifications, Rules |
