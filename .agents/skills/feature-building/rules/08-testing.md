@@ -2,7 +2,7 @@
 
 ## What It Enforces
 
-Tests follow module-first structure: `tests/{Suite}/{Domain}/{Name}Test.php`. Entity tests need no database. Action and Livewire tests use `RefreshDatabase` or `LazilyRefreshDatabase`. All tests use Pest v4.
+Tests follow module-first structure: `tests/{Suite}/{Module}/{Name}Test.php`. Entity tests need no database. Action and Livewire tests use `RefreshDatabase` or `LazilyRefreshDatabase`. All tests use Pest v4.
 
 ## Why It Matters
 

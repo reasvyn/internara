@@ -15,7 +15,7 @@ Every Blade view uses:
 - daisyUI utility classes for styling (btn, card, modal, table)
 - Tabler icons with `o-` prefix
 - PHPFlasher for flash messages (never maryUI Toast)
-- `__('domain.key')` for all user-facing strings
+- `__('module.key')` for all user-facing strings
 - Layout defined via `#[Layout('layouts::app')]` attribute on the Livewire component
 
 Shared UI components live in `resources/views/components/ui/` and are referenced as `<x-ui::name>`.

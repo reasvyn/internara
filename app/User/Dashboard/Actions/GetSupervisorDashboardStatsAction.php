@@ -6,7 +6,7 @@ namespace App\User\Dashboard\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Enrollment\Models\Registration;
-use App\Evaluation\Evaluation\Models\Evaluation;
+use App\Evaluation\Core\Models\Evaluation;
 use App\Journals\Attendance\Models\Attendance;
 use App\Journals\Logbook\Models\Logbook;
 use Illuminate\Support\Facades\Auth;

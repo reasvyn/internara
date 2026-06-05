@@ -97,7 +97,7 @@ All routes use `<prefix>.<resource>.<action>` naming. Prefixes match URL structu
 
 ## Livewire Auto-Discovery
 
-Livewire components are NOT registered in route files. The `AppServiceProvider` scans `app/Module/{Module}/Livewire/` at boot, automatically registering each component with alias `{kebab-module}.{kebab-class-name}`.
+Livewire components are NOT registered in route files. The `AppServiceProvider` scans `app/{Module}/Livewire/` at boot, automatically registering each component with alias `{kebab-module}.{kebab-class-name}`.
 
 This means a new Livewire component works immediately without any registration step — just create the class and its Blade view. The route file only needs `Route::livewire('/path', Component::class)`.
 
@@ -142,6 +142,6 @@ php artisan route:cache
 - `routes/channels.php` — broadcasting channel definitions
 - `routes/ai.php` — AI integration routes
 - `app/Core/Http/Middleware/` — global middleware classes
-- `app/Module/Auth/Http/Middleware/` — auth middleware (CheckRole, AuthThrottle)
+- `app/Auth/Http/Middleware/` — auth middleware (CheckRole, AuthThrottle)
 - `config/menu.php` — sidebar navigation mapping routes to menu items
 - `docs/infrastructure.md` — tier-based infrastructure design

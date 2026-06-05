@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Guidance\Mentor\Livewire;
 
-use App\Evaluation\Evaluation\Actions\EvaluateMentorAction;
+use App\Evaluation\Core\Actions\EvaluateMentorAction;
 use App\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;

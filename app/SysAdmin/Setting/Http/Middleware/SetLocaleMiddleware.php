@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Setting\Http\Middleware;
 
-use App\Core\Support\Locale;
+use App\Support\Locale;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;

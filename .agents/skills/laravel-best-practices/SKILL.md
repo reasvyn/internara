@@ -6,11 +6,11 @@ Apply this skill whenever writing, reviewing, or refactoring any Laravel PHP cod
 
 ## Core Principles
 
-The primary architectural rule: all code lives under `app/Domain/{Domain}/` instead of the default `app/Models/`, `app/Http/Controllers/`, etc. This module-first structure keeps every concept self-contained. Views mirror at `resources/views/{domain}/`, routes are split into `routes/web/{domain}.php`.
+The primary architectural rule: all code lives under `app/{Module}/` instead of the default `app/Models/`, `app/Http/Controllers/`, etc. This module-first structure keeps every concept self-contained. Views mirror at `resources/views/{domain}/`, routes are split into `routes/web/{module}.php`.
 
 ### Key Overrides vs Standard Laravel
 
-Models are in `app/Domain/{Domain}/Models/` not `app/Models/`. Business logic lives in Action classes, not in Models or Controllers. Livewire components are in `app/Domain/{Domain}/Livewire/` (auto-discovered). Policies are in `app/Domain/{Domain}/Policies/`. Enums live in their domain's Enums directory and implement `LabelEnum` or `StatusEnum`.
+Models are in `app/{Module}/Models/` not `app/Models/`. Business logic lives in Action classes, not in Models or Controllers. Livewire components are in `app/{Module}/Livewire/` (auto-discovered). Policies are in `app/{Module}/Policies/`. Enums live in their domain's Enums directory and implement `LabelEnum` or `StatusEnum`.
 
 ### Action-Oriented MVC
 

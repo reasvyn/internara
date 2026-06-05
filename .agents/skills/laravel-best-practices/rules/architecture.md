@@ -2,11 +2,11 @@
 
 ## What It Enforces
 
-All code lives under `app/Domain/{Domain}/` — no top-level `app/Models/`, `app/Http/Controllers/`, etc. Views mirror in `resources/views/{domain}/`. Every business operation is an Action class with a single `execute()` method. Dependencies are injected via constructor promotion. Interfaces define system boundaries.
+All code lives under `app/{Module}/` — no top-level `app/Models/`, `app/Http/Controllers/`, etc. Views mirror in `resources/views/{domain}/`. Every business operation is an Action class with a single `execute()` method. Dependencies are injected via constructor promotion. Interfaces define system boundaries.
 
 ## Why It Matters
 
-Module-first grouping keeps every concept self-contained. When working on "Academic Year," all its code — Model, Action, Entity, Livewire, Policy, Enum — is in `app/Domain/School/` (or whichever module owns it). This is faster to navigate than Laravel's default layer-first structure where related code is scattered across `app/Models/`, `app/Http/Controllers/`, etc.
+Module-first grouping keeps every concept self-contained. When working on "Academic Year," all its code — Model, Action, Entity, Livewire, Policy, Enum — is in `app/Academics/` (or whichever module owns it). This is faster to navigate than Laravel's default layer-first structure where related code is scattered across `app/Models/`, `app/Http/Controllers/`, etc.
 
 Constructor injection over `app()` or `resolve()` makes dependencies explicit and testable. Interfaces at system boundaries (PaymentGateway, NotificationService) allow swapping implementations without changing business logic.
 

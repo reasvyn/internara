@@ -16,7 +16,7 @@ use App\Assessment\Rubric\Actions\UpdateRubricAction;
 use App\Assessment\Rubric\Models\Competency;
 use App\Assessment\Rubric\Models\Indicator;
 use App\Assessment\Rubric\Models\Rubric;
-use App\Evaluation\Evaluation\Enums\EvaluatorRole;
+use App\Evaluation\Core\Enums\EvaluatorRole;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;

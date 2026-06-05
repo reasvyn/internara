@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Assignment\Submission\Livewire;
 
-use App\Assignment\Assignment\Models\Assignment;
+use App\Assignment\Core\Models\Assignment;
 use App\Assignment\Submission\Actions\SubmitAssignmentAction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;

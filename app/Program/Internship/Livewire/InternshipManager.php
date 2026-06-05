@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Program\Internship\Livewire;
 
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Core\Enums\CsvRowResult;
-use App\Core\Exceptions\RejectedException;
+use App\Enums\CsvRowResult;
+use App\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
-use App\Core\Support\CsvHandler;
+use App\Support\CsvHandler;
 use App\Enrollment\Models\Placement;
 use App\Enrollment\Models\Registration;
 use App\Program\Internship\Actions\BatchUpdateInternshipStatusAction;

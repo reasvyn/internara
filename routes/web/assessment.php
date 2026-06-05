@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Assessment\Assessment\Livewire\AssessmentGrading;
-use App\Assessment\Assessment\Livewire\AssessmentView;
+use App\Assessment\Core\Livewire\AssessmentGrading;
+use App\Assessment\Core\Livewire\AssessmentView;
 use App\Assessment\Presentation\Livewire\PresentationSchedule;
 use App\Assessment\Rubric\Livewire\RubricManager;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Program\Internship\Actions;
 
-use App\Assessment\Assessment\Models\Assessment;
+use App\Assessment\Core\Models\Assessment;
 use App\Assignment\Submission\Models\Submission;
 use App\Certification\Certificate\Enums\CertificateStatus;
 use App\Certification\Certificate\Models\Certificate;

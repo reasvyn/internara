@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Profile\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Exceptions\RejectedException;
+use App\Exceptions\RejectedException;
 use App\Core\Support\SmartLogger;
 use App\User\Profile\Models\Profile;
 use App\User\SuperAdmin\Entities\SuperAdminIntegrityRules;

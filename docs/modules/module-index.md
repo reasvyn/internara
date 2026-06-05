@@ -18,12 +18,22 @@ Each module has two files:
 ## Core Modules
 
 ### 1. Core — Foundation & Infrastructure
-**Purpose:** Foundational utilities, base classes, and application-wide contracts
+**Purpose:** Foundational base classes, interfaces, abstract exception structures, and request-level middleware
 
 - Overview: [core.md](core.md)
 - Reference: [core-reference.md](core-reference.md)
 
-**Key Concepts:** BaseModel, BaseAction, BasePolicy, Contracts, Exceptions
+**Key Concepts:** BaseModel, BaseAction, BasePolicy, BaseRecordManager, SmartLogger
+
+---
+
+### 1b. Shared — Cross-Cutting Components
+**Purpose:** Reusable helper utilities, concrete exceptions, common DTOs, enums, global UI components, and helper traits
+
+- Overview: [shared.md](shared.md)
+- Reference: [shared-reference.md](shared-reference.md)
+
+**Key Concepts:** CacheKeys, CsvHandler, concrete Exceptions, global enums, LangSwitcher, ThemeSwitcher
 
 ---
 
@@ -267,7 +277,7 @@ Each module has two files:
 1. Identify which module(s) own the feature
 2. Review `{module}.md` for business rules
 3. Check `{module}-reference.md` for API structure
-4. Follow submodule-based organization under `app/Module/{Module}/`
+4. Follow submodule-based organization under `app/{Module}/`
 5. Create Action, Model, Policy, and tests
 
 ### Extending Modules

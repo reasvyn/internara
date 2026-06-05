@@ -26,13 +26,13 @@ The refactoring pattern is always: identify misplaced code → extract to the co
 Scan for `Model::create/update/delete`, `DB::transaction()`, `Validator::make()`, `Mail::send()`, `Notification::send()` in the component. These all belong in Actions.
 
 ### Step 2: Extract to Action
-Move the operation to `app/Domain/{Domain}/Actions/{Verb}{Subject}Action.php`. The Action extends BaseAction, has a single `execute()` method, validates input, wraps persistence in `$this->transaction()`, and emits side effects. The component receives the Action via method injection.
+Move the operation to `app/{Module}/Actions/{Verb}{Subject}Action.php`. The Action extends BaseAction, has a single `execute()` method, validates input, wraps persistence in `$this->transaction()`, and emits side effects. The component receives the Action via method injection.
 
 ### Step 3: Identify Inline Business Rules
 Scan for `if ($model->status === 'x')`, date comparisons, or multi-field conditionals. These belong in Entities as named boolean methods.
 
 ### Step 4: Extract to Entity
-Create `app/Domain/{Domain}/Entities/{Name}State.php` as a `final readonly` class extending BaseEntity. Add a `fromModel()` factory and a named accessor on the Model. Call the Entity method from the Action or component.
+Create `app/{Module}/Entities/{Name}State.php` as a `final readonly` class extending BaseEntity. Add a `fromModel()` factory and a named accessor on the Model. Call the Entity method from the Action or component.
 
 ### Step 5: Extract Repeated UI
 Extract confirm dialogs into a shared `<x-ui::confirm>` component. Use BaseRecordManager for table patterns. Move selection and sorting logic into traits.

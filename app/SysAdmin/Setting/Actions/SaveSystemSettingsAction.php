@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Setting\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Support\Locale;
+use App\Support\Locale;
 use App\Core\Support\SmartLogger;
 use Illuminate\Http\UploadedFile;
 

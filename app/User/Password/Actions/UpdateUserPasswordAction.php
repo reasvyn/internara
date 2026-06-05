@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Password\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Support\PasswordRules;
+use App\Support\PasswordRules;
 use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Support\Facades\DB;

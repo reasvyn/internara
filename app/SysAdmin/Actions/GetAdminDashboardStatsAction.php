@@ -7,7 +7,7 @@ namespace App\SysAdmin\Actions;
 use App\Academics\Department\Models\Department;
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Actions\BaseAction;
-use App\Core\Support\CacheKeys;
+use App\Support\CacheKeys;
 use App\Enrollment\Models\Placement;
 use App\Enrollment\Models\Registration;
 use App\Guidance\Mentor\Models\Mentor;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Core\Livewire;
 
-use App\Core\Livewire\Concerns\WithRecordSelection;
-use App\Core\Livewire\Concerns\WithSorting;
+use App\Livewire\Concerns\WithRecordSelection;
+use App\Livewire\Concerns\WithSorting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;

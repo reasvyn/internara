@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Program\Internship\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Exceptions\RejectedException;
+use App\Exceptions\RejectedException;
 use App\Program\Internship\Models\Internship;
 
 final class DeleteInternshipAction extends BaseAction

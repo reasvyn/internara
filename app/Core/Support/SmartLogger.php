@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Support;
 
+use App\Support\PiiMasker;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;

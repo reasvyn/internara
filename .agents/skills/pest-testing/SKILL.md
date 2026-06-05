@@ -6,9 +6,9 @@ Apply this skill whenever writing, editing, or fixing tests for this project. Ac
 
 ## Core Principles
 
-### Domain-First Test Structure
+### Module-First Test Structure
 
-Tests mirror the application's aggregate-based module structure: `tests/Feature/{Domain}/{Aggregate}/{Name}Test.php` for integration tests and `tests/Unit/{Domain}/{Aggregate}/{Name}Test.php` for unit tests. Small value objects and flat enums go in `tests/Unit/{Domain}/Types/{Name}Test.php`. Tests are created with `php artisan make:test --pest {Name}Test` (without `Feature/` or `Unit/` prefix in the name argument).
+Tests mirror the application's submodule-based structure: `tests/Feature/{Module}/{Submodule}/{Name}Test.php` for integration tests and `tests/Unit/{Module}/{Submodule}/{Name}Test.php` for unit tests. Small value objects and flat enums go in `tests/Unit/{Module}/Types/{Name}Test.php`. Tests are created with `php artisan make:test --pest {Name}Test` (without `Feature/` or `Unit/` prefix in the name argument).
 
 ### Testing Level Separation
 
@@ -27,7 +27,7 @@ Structural rules (all Entities are `final readonly` and extend BaseEntity, all A
 
 ## Verification Before Finalizing
 
-- Are tests in the correct directory (Feature vs Unit, right Domain, right Aggregate)?
+- Are tests in the correct directory (Feature vs Unit, right Module, right Submodule)?
 - Do Entity tests avoid RefreshDatabase entirely?
 - Are Action tests using LazilyRefreshDatabase?
 - Is `assertModelExists()` preferred over `assertDatabaseHas()`?

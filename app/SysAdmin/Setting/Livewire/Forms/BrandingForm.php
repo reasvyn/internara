@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Setting\Livewire\Forms;
 
 use App\Core\Support\SmartLogger;
-use App\Core\Support\Theme;
+use App\Support\Theme;
 use Livewire\Form;
 
 class BrandingForm extends Form

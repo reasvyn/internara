@@ -216,7 +216,7 @@ collisions and path traversal.
 - `config/filesystems.php` — disk definitions (local, public, s3)
 - `config/media-library.php` — media library configuration
 - `config/dompdf.php` — DomPDF configuration for certificate/report rendering
-- `app/Module/*/Models/*.php` — `registerMediaCollections()` and
+- `app/*/Models/*.php` — `registerMediaCollections()` and
   `registerMediaConversions()` methods
 - `app/Certification/Support/CertificateRenderer.php` — certificate PDF generation
 - `database/migrations/` — media table migration

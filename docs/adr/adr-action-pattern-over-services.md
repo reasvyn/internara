@@ -37,7 +37,7 @@ overhead and forces mutations to skip orchestration boundaries.
 ## Decision
 
 Business operations are organized into three distinct action types, all living under
-`app/Module/{Module}/Actions/` and following the single `execute()` method convention.
+`app/{Module}/Actions/` and following the single `execute()` method convention.
 
 ### 1. Command Actions (Mutations)
 

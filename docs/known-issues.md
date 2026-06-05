@@ -10,7 +10,7 @@
 
 - **A30 — DownloadsAccountSlips Livewire concern undocumented (✅ Resolved):** Now listed under the Livewire Concerns section in `sysadmin-reference.md`.
 - **Overview mentions bulk creation** but no dedicated Action exists — CSV import lives inside `UserManager` Livewire component.
-- **C11 — AnnouncementStatus missing StatusEnum interface:** `app/Module/Administration/Enums/AnnouncementStatus.php` defines state transitions (`DRAFT → SCHEDULED → PUBLISHED`) with `canTransitionTo()` but does not `implements StatusEnum`. Missing `isTerminal()` and `validTransitions()`.
+- **C11 — AnnouncementStatus missing StatusEnum interface:** `app/Administration/Enums/AnnouncementStatus.php` defines state transitions (`DRAFT → SCHEDULED → PUBLISHED`) with `canTransitionTo()` but does not `implements StatusEnum`. Missing `isTerminal()` and `validTransitions()`.
 - **A46 — MentorManager not implemented:** No Livewire component exists for managing mentor records despite being listed in key-features.md.
 - **A47 — MenteeManager not implemented:** No Livewire component exists for managing mentee records despite being listed in key-features.md.
 
@@ -196,10 +196,10 @@ The Action Triad (docs/architecture.md) mandates that Read Actions should NOT ex
 
 | File | Location | Issue |
 |------|----------|-------|
-| `GetAdminDashboardStatsAction.php` | `app/Module/Administration/Actions/` | Read-only query, unnecessarily extends BaseAction |
-| `GetUserManagerStatsAction.php` | `app/Module/Administration/Actions/` | Same — returns cached counts |
-| `ReadRecoveryKeyAction.php` | `app/Module/Administration/Actions/` | Pure file read operation |
-| `DetectUserAccountCloneAction.php` | `app/Module/Auth/Actions/` | Read-only duplicate email detection |
+| `GetAdminDashboardStatsAction.php` | `app/Administration/Actions/` | Read-only query, unnecessarily extends BaseAction |
+| `GetUserManagerStatsAction.php` | `app/Administration/Actions/` | Same — returns cached counts |
+| `ReadRecoveryKeyAction.php` | `app/Administration/Actions/` | Pure file read operation |
+| `DetectUserAccountCloneAction.php` | `app/Auth/Actions/` | Read-only duplicate email detection |
 | `GetTeacherDashboardStatsAction.php` | `app/User/Actions/` | Pure READ query |
 | `GetSupervisorDashboardStatsAction.php` | `app/User/Actions/` | Same |
 | `GetStudentDashboardDataAction.php` | `app/User/Actions/` | Same |
@@ -212,8 +212,8 @@ All actions must expose a single `execute()` method per the documented pattern.
 
 | File | Location | Issue |
 |------|----------|-------|
-| `GenerateAccountSlipAction.php` | `app/Module/Administration/Actions/` | Has `download()`/`downloadBatch()` but no `execute()` |
-| `CompileLogbookReportAction.php` | `app/Module/Logbook/Actions/` | Has `download()` but no `execute()` |
+| `GenerateAccountSlipAction.php` | `app/Administration/Actions/` | Has `download()`/`downloadBatch()` but no `execute()` |
+| `CompileLogbookReportAction.php` | `app/Logbook/Actions/` | Has `download()` but no `execute()` |
 
 #### C4. Livewire CRUD Components Not Extending BaseRecordManager (5 files) 🟠
 
@@ -221,9 +221,9 @@ These CRUD management components should extend `BaseRecordManager` to inherit se
 
 | File | Location | Current Base |
 |------|----------|-------------|
-| `AnnouncementManager.php` | `app/Module/Administration/Livewire/` | `extends Component` |
+| `AnnouncementManager.php` | `app/Administration/Livewire/` | `extends Component` |
 | `RubricManager.php` | `app/Assessment/Livewire/` | `extends Component` |
-| `AttendanceManager.php` | `app/Module/Attendance/Livewire/` | `extends Component` (with `WithPagination`) |
+| `AttendanceManager.php` | `app/Attendance/Livewire/` | `extends Component` (with `WithPagination`) |
 | `RequirementManager.php` | `app/Program/Livewire/` | `extends Component` |
 | `TemplateManager.php` | `app/Certification/Livewire/` | `extends Component` (with `WithPagination`) |
 

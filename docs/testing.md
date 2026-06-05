@@ -48,7 +48,7 @@ php artisan make:test --pest CreateInternshipActionTest
 # 2. Confirm it fails
 php artisan test --compact --filter=CreateInternshipAction
 
-# 3. Write the implementation in app/Module/{Module}/Actions/
+# 3. Write the implementation in app/{Module}/Actions/
 
 # 4. Confirm it passes
 php artisan test --compact --filter=CreateInternshipAction

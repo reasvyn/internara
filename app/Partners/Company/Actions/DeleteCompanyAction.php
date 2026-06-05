@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Partners\Company\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Exceptions\RejectedException;
+use App\Exceptions\RejectedException;
 use App\Partners\Company\Models\Company;
 
 final class DeleteCompanyAction extends BaseAction

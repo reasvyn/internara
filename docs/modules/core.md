@@ -23,9 +23,9 @@ For complete technical reference including API, models, actions, and components,
 
 Core is the foundation layer (Layers 3–4 in the 12-layer architecture). Every module depends on it. Core itself depends on nothing except Laravel/Spatie/PHP. It provides:
 
-- **Layer 3 (Contracts)**: Enum contracts, exception hierarchy, notification contract
+- **Layer 3 (Contracts)**: Enum contracts, base exception hierarchy, notification contracts
 - **Layer 4 (Base Classes)**: BaseModel, BaseAction, BasePolicy, BaseEntity, BaseRecordManager, BaseController, BaseFormRequest, BaseData DTO
-- **Cross-module utilities**: SmartLogger, CacheKeys, theme system, locale management, CSV handler, environment detection, security middleware
+- **Cross-module foundation**: SmartLogger, security headers and request tracing middleware, system discovery commands
 
 ---
 
@@ -37,7 +37,7 @@ Core is the foundation layer (Layers 3–4 in the 12-layer architecture). Every 
 - State machine enums **must** implement `StatusEnum` with `canTransitionTo()`, `isTerminal()`, and `validTransitions()`.
 - All enums **must** implement `LabelEnum` (provides `label(): string` for UI display).
 - Form Requests **must** extend Core's `BaseFormRequest` (throws `ValidationFailedException` instead of redirecting).
-- Cache keys **must** be defined as constants in `CacheKeys`, not hardcoded as strings.
+- Cache keys **must** be defined as constants in the Shared `CacheKeys` class, not hardcoded as strings.
 - Cross-module communication uses four patterns: direct imports, core contracts, module events, and action delegation.
 
 ---
@@ -46,17 +46,16 @@ Core is the foundation layer (Layers 3–4 in the 12-layer architecture). Every 
 
 Core has no submodules — it provides infrastructure, not business entities. Code is organized by function:
 
-- **Actions/**: `BaseAction` + `HandlesActionErrors` trait
+- **Actions/**: `BaseAction`
 - **Models/**: `BaseModel`, `ActivityLog` (Spatie)
 - **Policies/**: `BasePolicy`
 - **Entities/**: `BaseEntity` (final readonly base)
-- **Livewire/**: `BaseRecordManager`, `LangSwitcher`, `ThemeSwitcher`
+- **Livewire/**: `BaseRecordManager`
 - **Http/**: `BaseController`, `BaseFormRequest`, `SecurityHeaders`, `LogContext` middleware
 - **Contracts/**: `LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`, `SettingsStore`
-- **Exceptions/**: `AppException` + `DomainException` dual hierarchy
-- **Support/**: `SmartLogger`, `PiiMasker`, `CacheKeys`, `Environment`, `CsvHandler`, `Theme`, `Color`, `Locale`, `LangChecker`, `HandlesActionErrors`, `PasswordRules`, `Integrity`
-- **Data/**: `BaseData` (abstract readonly DTO base), `AuditCheck`, `AuditReport`
-- **Enums/**: `CsvRowResult`, `AuditCategory`, `AuditStatus`
+- **Exceptions/**: `AppException` and `DomainException` dual hierarchies, plus abstract exceptions (`ActionException`, `InfrastructureException`, `PresentationException`) and concerns (`HasExceptionContext`)
+- **Support/**: `SmartLogger`, `LangChecker`
+- **Data/**: `BaseData` (abstract readonly DTO base)
 
 ---
 
@@ -80,8 +79,8 @@ Core has no submodules — it provides infrastructure, not business entities. Co
 - BaseModel enforces UUID PKs, HasFactory, and soft-delete support across all module models
 
 ### User Interface
-- **3** Livewire components for real-time interaction
-- Views in `resources/views/core/`
+- **1** Livewire base component for CRUD tables (`BaseRecordManager`)
+- Layouts and base Blade templates in `resources/views/core/`
 
 ### Authorization
 - **1** authorization policy (`BasePolicy`)

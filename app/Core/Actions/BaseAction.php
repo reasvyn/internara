@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Actions;
 
-use App\Core\Support\HandlesActionErrors;
+use App\Support\HandlesActionErrors;
 use App\Core\Support\SmartLogger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -36,14 +36,10 @@ abstract class BaseAction
 
     protected function moduleName(): string
     {
+        // Namespace structure: App\{Module}\...
+        // parts[0] = 'App', parts[1] = '{Module}'
         $parts = explode('\\', static::class);
 
-        $domainIndex = array_search('Domain', $parts, true);
-
-        if ($domainIndex !== false && isset($parts[$domainIndex + 1])) {
-            return $parts[$domainIndex + 1];
-        }
-
-        return 'Unknown';
+        return $parts[1] ?? 'Unknown';
     }
 }

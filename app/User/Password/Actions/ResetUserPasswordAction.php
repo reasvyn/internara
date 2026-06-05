@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Password\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Exceptions\RejectedException;
+use App\Exceptions\RejectedException;
 use App\User\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;

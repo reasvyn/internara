@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Dashboard\Livewire;
 
-use App\Core\Support\CacheKeys;
+use App\Support\CacheKeys;
 use App\SysAdmin\Actions\GetAdminDashboardStatsAction;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;

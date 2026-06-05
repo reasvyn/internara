@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Profile\Livewire\Forms;
 
-use App\Core\Support\PasswordRules;
+use App\Support\PasswordRules;
 use Livewire\Form;
 
 class PasswordForm extends Form

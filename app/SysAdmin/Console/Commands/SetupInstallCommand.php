@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Console\Commands;
 
-use App\Core\Data\AuditReport;
-use App\Core\Enums\AuditCategory;
-use App\Core\Enums\AuditStatus;
+use App\Data\AuditReport;
+use App\Enums\AuditStatus;
 use App\Core\Support\SmartLogger;
+use App\Enums\AuditCategory;
+use App\Providers\AppServiceProvider;
+use App\SysAdmin\Console\Commands\Traits\InteractsWithInstallerCli;
 use App\SysAdmin\Setup\Actions\GenerateSetupTokenAction;
 use App\SysAdmin\Setup\Actions\InstallSystemAction;
 use App\SysAdmin\Setup\Services\EnvironmentAuditor;
 use App\SysAdmin\Setup\Support\SystemProvisioner;
-use App\SysAdmin\Console\Commands\Traits\InteractsWithInstallerCli;
-use App\Providers\AppServiceProvider;
 use Illuminate\Console\Command;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;

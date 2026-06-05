@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Academics\AcademicYear\Models;
 
 use App\Academics\AcademicYear\Entities\AcademicYearState;
-use App\Assessment\Assessment\Models\Assessment;
+use App\Assessment\Core\Models\Assessment;
 use App\Core\Models\BaseModel;
 use App\Program\Internship\Models\Internship;
 use Database\Factories\AcademicYearFactory;

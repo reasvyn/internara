@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Setup\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Data\AuditReport;
+use App\Data\AuditReport;
 use App\SysAdmin\Setup\Services\EnvironmentAuditor;
 use App\SysAdmin\Setup\Support\SystemProvisioner;
 use Illuminate\Support\Carbon;

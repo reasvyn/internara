@@ -6,7 +6,7 @@ namespace App\SysAdmin\Setup\Actions;
 
 use App\Academics\Events\SetupFinalized;
 use App\Core\Actions\BaseAction;
-use App\Core\Support\CacheKeys;
+use App\Support\CacheKeys;
 use App\Core\Support\SmartLogger;
 use App\Program\Internship\Actions\CreateInternshipAction;
 use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;

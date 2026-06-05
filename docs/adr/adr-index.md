@@ -11,7 +11,7 @@
 | Record | Status |
 |---|---|
 | [UUID Primary Keys](adr-uuid-primary-keys.md) | ✅ Accepted |
-| [Module-First Architecture](adr-module-first-architecture.md) | ✅ Accepted |
+| [Action-based MVC Architecture](adr-action-based-mvc-architecture.md) | ✅ Accepted |
 | [Action Pattern over Services](adr-action-pattern-over-services.md) | ✅ Accepted |
 | [Entity-Model Separation](adr-entity-model-separation.md) | ✅ Accepted |
 

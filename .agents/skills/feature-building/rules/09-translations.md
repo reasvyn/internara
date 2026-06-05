@@ -2,7 +2,7 @@
 
 ## What It Enforces
 
-Every user-facing string must have translations in both English (`lang/en/{domain}.php`) and Indonesian (`lang/id/{domain}.php`). Translation keys use dot notation with `snake_case` and are referenced via `__('domain.key')`.
+Every user-facing string must have translations in both English (`lang/en/{module}.php`) and Indonesian (`lang/id/{module}.php`). Translation keys use dot notation with `snake_case` and are referenced via `__('module.key')`.
 
 ## Why It Matters
 
@@ -11,9 +11,9 @@ Bilingual support is a hard requirement — every user-facing string must be ava
 ## When It Applies
 
 Every new feature with user-facing strings must:
-- Create or update `lang/en/{domain}.php` with English translations
-- Create or update `lang/id/{domain}.php` with Indonesian translations
-- Use `__('domain.key')` in all PHP and Blade contexts
+- Create or update `lang/en/{module}.php` with English translations
+- Create or update `lang/id/{module}.php` with Indonesian translations
+- Use `__('module.key')` in all PHP and Blade contexts
 - Use `snake_case` for multi-word keys
 - Group related keys: `fields.name`, `actions.create`, `messages.created`
 

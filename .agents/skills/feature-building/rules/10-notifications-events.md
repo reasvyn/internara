@@ -21,8 +21,8 @@ Every event should:
 - Use `ShouldDispatchAfterCommit` when inside a transaction to prevent listeners from reading uncommitted data
 
 Flash messages:
-- `flash()->success(__('domain.created'))` for success
-- `flash()->error(__('domain.cannot_delete'))` for errors
+- `flash()->success(__('module.created'))` for success
+- `flash()->error(__('module.cannot_delete'))` for errors
 - `flash()->warning(__('common.no_records_selected'))` for warnings
 
 Exceptions: None. These are universal conventions.

@@ -20,7 +20,7 @@ The `Pulse::filter()` callback can exclude entries from recording. This is usefu
 
 ## Custom Card Development
 
-Custom Pulse cards are Livewire components extending `Laravel\Pulse\Livewire\Card`. They live in `app/Domain/{Domain}/Livewire/Pulse/`. Data is recorded using `Pulse::record()` with key-value aggregation (sum, count, max, min, avg). Card views are at `resources/views/{domain}/pulse/{card-name}.blade.php`.
+Custom Pulse cards are Livewire components extending `Laravel\Pulse\Livewire\Card`. They live in `app/{Module}/Livewire/Pulse/`. Data is recorded using `Pulse::record()` with key-value aggregation (sum, count, max, min, avg). Card views are at `resources/views/{domain}/pulse/{card-name}.blade.php`.
 
 Custom recorders are plain classes with a `$listen` array of events. They call `Pulse::record()` in their `record()` method and are registered in `config/pulse.php`.
 

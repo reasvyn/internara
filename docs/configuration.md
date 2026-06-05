@@ -209,8 +209,8 @@ defaults. See [Branding](branding.md) for details.
 
 - All configuration files: `config/`
 - Environment template: `.env.example`
-- Settings model: `app/Module/Settings/Models/Setting.php`
-- Settings resolver: `app/Module/Settings/Support/Settings.php`
-- Brand resolver: `app/Module/Settings/Support/AppMetadata.php`
-- App info (composer.json): `app/Module/Settings/Support/AppInfo.php`
+- Settings model: `app/Settings/Models/Setting.php`
+- Settings resolver: `app/Settings/Support/Settings.php`
+- Brand resolver: `app/Settings/Support/AppMetadata.php`
+- App info (composer.json): `app/Settings/Support/AppInfo.php`
 - Infrastructure tiers: [Infrastructure](infrastructure.md)
