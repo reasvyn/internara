@@ -7,7 +7,7 @@ It describes *when* and *how* to scale Internara from a single-user dev setup
 to production serving 1500-2000 concurrent users.
 
 The philosophy is **start simple, scale by measured need** — codified in
-[ADR: Gradual Migration](adr/adr-gradual-migration.md).
+[ADR: Gradual Migration](../adr/adr-gradual-migration.md).
 
 ---
 
@@ -487,6 +487,6 @@ Examples:
 | [Observability](observability.md) | Pulse, logging, health checks |
 | [Queue](queue.md) | Queue drivers, Supervisor, job lifecycle |
 | [Cache](cache.md) | Cache strategy, Redis, OpCache |
-| [ADR: Self-Hosted Single-Tenant](adr/adr-self-hosted-single-tenant.md) | Why MVP-first |
-| [ADR: Gradual Migration](adr/adr-gradual-migration.md) | Governing principle for scaling |
-| [ADR: Performance Optimization](adr/adr-performance-optimization.md) | Performance tiers, deferred optimizations |
+| [ADR: Self-Hosted Single-Tenant](../adr/adr-self-hosted-single-tenant.md) | Why MVP-first |
+| [ADR: Gradual Migration](../adr/adr-gradual-migration.md) | Governing principle for scaling |
+| [ADR: Performance Optimization](../adr/adr-performance-optimization.md) | Performance tiers, deferred optimizations |

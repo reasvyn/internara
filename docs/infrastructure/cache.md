@@ -267,4 +267,4 @@ the cache for first requests after deployment.
 - `app/SysAdmin/Setting/Support/Settings.php` — settings caching layer
 - `app/Core/Console/Commands/CacheWarmCommand.php` — cache warming
 - `database/migrations/` — cache and cache_locks table migrations
-- `docs/infrastructure.md` — tier-based infrastructure design
+- `docs/infrastructure/infrastructure.md` — tier-based infrastructure design

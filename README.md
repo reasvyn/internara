@@ -104,22 +104,22 @@ Explore the complete system guides under `docs/`:
 
 ### Deployment & Operation
 - [Getting Started Guide](docs/getting-started.md)
-- [Installation Reference](docs/installation.md)
-- [Deployment Options](docs/deployment.md)
-- [Configuration Settings](docs/configuration.md)
+- [Installation Reference](docs/infrastructure/installation.md)
+- [Deployment Options](docs/infrastructure/deployment.md)
+- [Configuration Settings](docs/infrastructure/configuration.md)
 - [Post-Setup Administative Tasks](docs/post-setup.md)
 - [Setup Wizard Walkthrough](docs/setup-wizard.md)
-- [Infrastructure Operations](docs/infrastructure.md)
-- [Scaling Guide](docs/scaling.md)
+- [Infrastructure Operations](docs/infrastructure/infrastructure.md)
+- [Scaling Guide](docs/infrastructure/scaling.md)
 
 ### Systems & Security
 - [Role-Based Access Control (RBAC)](docs/rbac.md)
-- [Observability & Monitoring](docs/observability.md)
+- [Observability & Monitoring](docs/infrastructure/observability.md)
 - [Account Recovery Flows](docs/account-recovery.md)
-- [Backup & Disaster Recovery](docs/backup-recovery.md)
-- [Database Schema & Engine Rules](docs/database.md)
-- [Cache Strategy & Invalidation](docs/cache.md)
-- [Filesystem & Media Storage](docs/filesystem.md)
+- [Backup & Disaster Recovery](docs/infrastructure/backup-recovery.md)
+- [Database Schema & Engine Rules](docs/infrastructure/database.md)
+- [Cache Strategy & Invalidation](docs/infrastructure/cache.md)
+- [Filesystem & Media Storage](docs/infrastructure/filesystem.md)
 
 ### Module References
 - [Core Foundations Reference](docs/modules/core.md)

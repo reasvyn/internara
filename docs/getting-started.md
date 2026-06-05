@@ -112,7 +112,7 @@ composer run dev
 
 **Production** requires Supervisor (or systemd) for queue workers, the
 scheduler cron entry, and optionally Reverb for WebSocket support.
-See [Installation](installation.md#required-background-processes).
+See [Installation](infrastructure/installation.md#required-background-processes).
 
 ---
 
@@ -154,11 +154,11 @@ php artisan serve
 
 | Document | What It Covers |
 |---|---|
-| [Installation](installation.md) | Detailed deployment options, server config, troubleshooting |
+| [Installation](infrastructure/installation.md) | Detailed deployment options, server config, troubleshooting |
 | [Setup Wizard](setup-wizard.md) | Complete walkthrough of all 7 wizard steps |
 | [Post-Setup](post-setup.md) | First actions after the wizard completes |
 | [Architecture](architecture.md) | System design, modules, layers |
-| [Infrastructure](infrastructure.md) | Deployment options, background processes, storage |
+| [Infrastructure](infrastructure/infrastructure.md) | Deployment options, background processes, storage |
 
 ## Command Reference
 

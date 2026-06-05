@@ -236,7 +236,7 @@ php artisan test --filter=testName
 - `phpunit.coverage.xml` — coverage-specific configuration
 - `composer.json` — test scripts in `scripts` section
 - `docs/conventions.md` — Section 19 (Testing conventions)
-- `docs/infrastructure.md` — tier-based infrastructure design
+- `docs/infrastructure/infrastructure.md` — tier-based infrastructure design
 
 ## Code Coverage
 

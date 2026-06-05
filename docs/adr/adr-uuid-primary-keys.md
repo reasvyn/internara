@@ -78,4 +78,4 @@ This is enforced by code review — no mixed key types are permitted.
 - `app/Core/Models/BaseModel.php` — base class with HasUuids trait
 - `app/User/Models/User.php` — exception pattern (Authenticatable + manual UUID)
 - `docs/conventions.md` — Section 4 (Models)
-- `docs/database.md` — UUID Primary Keys section
+- `docs/infrastructure/database.md` — UUID Primary Keys section

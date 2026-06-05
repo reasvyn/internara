@@ -167,5 +167,5 @@ Failed jobs older than 7 days are automatically pruned by the scheduler.
 - `config/queue.php` — queue connection configuration
 - `config/database.php` — Redis connection settings (future use)
 - `database/migrations/` — jobs and failed_jobs table migrations (future use)
-- `docs/deployment.md` — Supervisor configuration (future enterprise)
-- `docs/infrastructure.md` — tier-based infrastructure design
+- `docs/infrastructure/deployment.md` — Supervisor configuration (future enterprise)
+- `docs/infrastructure/infrastructure.md` — tier-based infrastructure design

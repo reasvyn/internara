@@ -220,5 +220,5 @@ collisions and path traversal.
   `registerMediaConversions()` methods
 - `app/Certification/Support/CertificateRenderer.php` — certificate PDF generation
 - `database/migrations/` — media table migration
-- `docs/infrastructure.md` — tier-based infrastructure design
-- `docs/media-library.md` — detailed media library documentation
+- `docs/infrastructure/infrastructure.md` — tier-based infrastructure design
+- `docs/infrastructure/media-library.md` — detailed media library documentation

@@ -4,7 +4,7 @@
 
 
 Detailed deployment reference for production and development environments.
-For a quick end-to-end walkthrough, see [Getting Started](getting-started.md).
+For a quick end-to-end walkthrough, see [Getting Started](../getting-started.md).
 
 ## Prerequisites
 
@@ -505,7 +505,7 @@ php artisan system:health
 
 | Document | Contents |
 |---|---|
-| [Getting Started](getting-started.md) | End-to-end walkthrough from clone to wizard |
+| [Getting Started](../getting-started.md) | End-to-end walkthrough from clone to wizard |
 | [Infrastructure](infrastructure.md) | Deployment overview, storage, HA considerations |
 | [Configuration](configuration.md) | Environment setup, localization, security settings |
 | [Database](database.md) | Database design, engine comparison, index strategy |

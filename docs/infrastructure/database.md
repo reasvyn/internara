@@ -1,6 +1,6 @@
 # Database
 > Last updated: 2026-05-31
-> **Context:** ✅ Database schema is fully implemented across all modules — verified in [reference docs](modules/module-index.md).
+> **Context:** ✅ Database schema is fully implemented across all modules — verified in [reference docs](../modules/module-index.md).
 
 
 ## Design Philosophy
