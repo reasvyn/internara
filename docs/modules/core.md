@@ -19,6 +19,35 @@ For complete technical reference including API, models, actions, and components,
 
 ---
 
+## Ideal Core & Infrastructure Design Specification
+
+The ideal Core/Infrastructure design of Internara is divided into 5 architectural mechanisms:
+
+### 1. Unified Transaction and Logging Boundary (`BaseAction`)
+Every business mutation uses the Action pattern. To prevent data corruption, `BaseAction` implements a standardized atomic transaction wrapping and logging wrapper:
+* **Atomic Transactions**: All mutations automatically wrap database updates inside database transactions. If any segment fails, changes are completely rolled back.
+* **Auto-audit Logging**: Every completed mutation dispatches metadata directly to `SmartLogger`, logging user context, changes, and resource targets.
+
+### 2. Dual-channel Structured Logging (`SmartLogger` + `PiiMasker`)
+To satisfy security audits while maintaining verbose debug logs:
+* **System Channel**: Detailed system errors and stacks for debugging.
+* **Audit Channel**: Immutable database records documenting who modified what (e.g., grading changes, role escalation). Lacks sensitive user PII (names, phone numbers, and IDs are programmatically redacted).
+
+### 3. Dynamic Module & Service Discovery (`module:discover`)
+Instead of hardcoding route configuration or class listings:
+* **Discovery Engine**: The Core module executes a discovery scanning command. This command identifies policies, models, Livewire components, and route directories across the 16 business modules.
+* **Dynamic Registration**: Registries are cached automatically inside the Shared `CacheKeys` storage to maintain high boot performance.
+
+### 4. Resilient Double-tree Exception Hierarchy
+To isolate system exceptions from client-facing application issues:
+* **`AppException` Tree**: Handled presentation, action, or infrastructure failures (e.g., Redis down, duplicate unique keys).
+* **`DomainException` Tree**: Catches strictly business invariant rejections (e.g., state machine bypasses, invalid grading ranges). Enables custom presentation views and clean logs.
+
+### 5. Decoupled Asynchronous Comm (Cross-Module Event Bus)
+Modules communicate via events. For example, when an enrollment completes, it fires a `PlacementCompleted` event. Listeners in the `Certification` and `Evaluation` modules handle the follow-up asynchronously. This prevents circular coupling between packages.
+
+---
+
 ## Context Boundary
 
 Core is the foundation layer (Layers 3–4 in the 12-layer architecture). Every module depends on it. Core itself depends on nothing except Laravel/Spatie/PHP. It provides:
