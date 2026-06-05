@@ -28,7 +28,7 @@ final class UpdateProfileAction extends BaseAction
      *
      * @throws RuntimeException when update fails
      */
-    public function execute(User $user, array $data, ?string $name = null, ?string $email = null, ?UploadedFile $avatar = null): Profile
+    public function execute(User $user, array $data, ?string $name = null, ?string $email = null, ?UploadedFile $avatar = null, ?string $username = null): Profile
     {
         $integrity = SuperAdminIntegrityRules::fromModel($user);
 
@@ -36,19 +36,35 @@ final class UpdateProfileAction extends BaseAction
             throw new RejectedException('Cannot change super admin name.');
         }
 
+        if ($username !== null && ! $integrity->canChangeUsername()) {
+            throw new RejectedException('Cannot change super admin username.');
+        }
+
+        $userRules = [];
+        $userData = [];
+        if ($name !== null) {
+            $userRules['name'] = ['required', 'string', 'max:255'];
+            $userData['name'] = $name;
+        }
+        if ($email !== null) {
+            $userRules['email'] = ['required', 'email', 'unique:users,email,'.$user->id];
+            $userData['email'] = $email;
+        }
+        if ($username !== null) {
+            $userRules['username'] = ['required', 'string', 'alpha_num', 'lowercase', 'max:50', 'unique:users,username,'.$user->id];
+            $userData['username'] = $username;
+        }
+
+        if ($userRules !== []) {
+            Validator::make($userData, $userRules)->validate();
+        }
+
         $this->validate($data);
 
         $data = array_filter($data, fn ($v) => $v !== null);
 
-        return DB::transaction(function () use ($user, $data, $name, $email, $avatar) {
-            if ($name !== null || $email !== null) {
-                $userData = [];
-                if ($name !== null) {
-                    $userData['name'] = $name;
-                }
-                if ($email !== null) {
-                    $userData['email'] = $email;
-                }
+        return DB::transaction(function () use ($user, $data, $userData, $avatar) {
+            if ($userData !== []) {
                 $user->update($userData);
             }
 

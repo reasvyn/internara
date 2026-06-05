@@ -28,13 +28,18 @@
                                 :value="$user->name"
                                 icon="o-shield-check"
                             />
+                        @else
+                            <x-mary-input :label="__('setup.wizard.full_name')" wire:model="profileForm.name" :placeholder="__('profile.name_placeholder')" icon="o-user" />
+                        @endif
+
+                        @if(!$canChangeUsername)
                             <x-core::ui.display-field
                                 :label="__('profile.sidebar.username')"
                                 :value="$user->username"
                                 icon="o-at-symbol"
                             />
                         @else
-                            <x-mary-input :label="__('setup.wizard.full_name')" wire:model="profileForm.name" :placeholder="__('profile.name_placeholder')" icon="o-user" />
+                            <x-mary-input :label="__('profile.sidebar.username')" wire:model="profileForm.username" :placeholder="__('profile.sidebar.username')" icon="o-at-symbol" />
                         @endif
                         <x-mary-input :label="__('profile.sidebar.email')" wire:model="profileForm.email" type="email" :placeholder="__('profile.email_placeholder')" icon="o-envelope" />
                         <x-mary-input :label="__('profile.sidebar.phone')" wire:model="profileForm.phone" :placeholder="__('profile.phone_placeholder')" icon="o-phone" />
@@ -164,5 +169,5 @@
         </div>
     </div>
 
-    @include('user.components.profile-guide')
+    @include('user.profile.components.profile-guide')
 </div>
