@@ -1,134 +1,131 @@
-# Product Definition
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+# Product Definition & System Boundary
 
+> Last updated: 2026-06-05
+> Changes: Aligned terminology with developer-friendly paradigms and Action-based MVC modular structure
 
-## What Is Internara?
-
-Internara is a **self-hosted, single-tenant web application** for managing compulsory industrial fieldwork programs — the structured work placement that students in vocational upper-secondary education must complete before graduation. It replaces paper-based logs, scattered spreadsheets, and manual coordination with a unified digital system that covers the full program lifecycle: registration, placement, daily attendance, reflective journaling, assignments, competency assessment, final reporting, and certification.
-
-Designed for schools and educational institutions that run mandatory work-experience programs — particularly vocational high schools — Internara is installed on the school's own infrastructure and operated by its own staff. It is not a SaaS platform, not multi-tenant, and not centrally managed.
+This document defines the core product scope, design principles, tenant topology, user personas, and localization parameters of the **Internara** system.
 
 ---
 
-## Core Principles
+## 1. Executive Summary
 
-### Self-Hosted, Single-Tenant
+**Internara** is an open-source, self-hosted, single-tenant web application engineered specifically to manage compulsory industrial fieldwork programs (PKL - *Praktik Kerja Lapangan* / *industrial placement*) for vocational upper-secondary schools and technical education institutions. 
 
-Every school runs its own instance on its own hardware. There is no shared infrastructure, no central database, no vendor-managed hosting. This means:
+Internara digitizes and orchestrates the complete fieldwork lifecycle:
+- **Intake & Readiness**: Student registration, administrative phase management, and document prerequisites verification.
+- **Placement & Quotas**: Slot allocations at partner companies, agreement registration, and approval workflows.
+- **Operations & Journals**: Daily geotagged clock-in/out attendance logging, reflective journals, and review queues.
+- **Academic Assessment**: Multi-rubric grading, assignment evaluation, presentation exams, and final thesis/report workflows.
+- **Issuance**: Signed certificate template compilation, automated grade sheets generation, and verifier check QR codes.
 
-- **Data sovereignty** — Student records, company partnerships, and assessment data never leave the school's control.
-- **Offline-capable** — The system works on a local network without internet connectivity. Core operations (attendance, logbooks, grading) continue regardless of external connectivity.
-- **Simple infrastructure** — SQLite is the default database (zero configuration, one file). MySQL, MariaDB, and PostgreSQL are supported for larger deployments but never required.
-- **No vendor lock-in** — The school's data is its own. Backup is a file copy. Migration between database engines is a configuration change.
-
-### Designed for Vocational Education
-
-Internara is purpose-built for structured industry placement programs — not general work-experience programs, not university co-op, not corporate apprenticeship management. This shapes every feature:
-
-- **Dual supervision** — Every student has two mentors: a school-based teacher and a company-based supervisor. Both have distinct roles, permissions, and evaluation responsibilities.
-- **Multi-component assessment** — A student's final grade is a weighted composite of attendance records, daily journal quality, supervisor evaluation, assignment submissions, written report, and (where applicable) a presentation exam.
-- **Competency alignment** — Programs are tied to specific skill areas. Rubrics, assignments, and evaluations map to the competencies students are expected to develop.
-- **Regulatory readiness** — The system produces the documentation required for program compliance: attendance summaries, signed journal logs, evaluation forms, and completion certificates.
-
-### Globally Usable, Locally Rooted
-
-Internara uses international terminology and supports multiple languages (Indonesian and English shipped, more via community translation). The data model uses generic identifiers — `national_id` rather than a country-specific field. The module-driven architecture allows workflows to be adapted per installation through configuration, not code changes.
-
-The primary design reference is the Indonesian vocational upper-secondary school system, where mandatory industry placement is a graduation requirement. However, the system is structured to accommodate placement programs in other educational systems by localizing terminology, adjusting academic calendars, and configuring assessment weights.
+Unlike typical SaaS platforms, Internara is distributed as a self-packaged codebase designed to run entirely on school-owned private virtual servers or bare-metal setups, guaranteeing data sovereignty and offline robustness.
 
 ---
 
-## Who It Serves
+## 2. Core Architectural Pillars
 
-### School Administrators
+### 2.1 Private Tenancy & Data Sovereignty
+* **Single-Tenant Infrastructure**: Each educational institution runs its own isolated instance. There is no shared database or shared compute across schools.
+* **Database Agnosticism**: Internara uses SQLite by default for zero-configuration, single-file setups. Larger schools can switch seamlessly to MySQL, MariaDB, or PostgreSQL via standard environment configurations.
+* **Offline-Ready Design**: Designed to work reliably over local school LANs without active internet connectivity. Attendance, logging, and evaluation services run locally; internet connectivity is only required for external email/SMS notifications or remote supervisor access.
 
-The people who configure and operate the system: create user accounts, manage academic calendars, register partner companies, define program requirements, oversee placements, and monitor completion. They have full access to all operational features but do not need technical infrastructure skills — the system is configured through a web interface and a CLI installer.
+### 2.2 Dual Supervision Model
+Internara separates the supervisory roles to match educational regulations:
+* **School Mentors (Teachers)**: Assigned to student cohorts to guide curriculum alignment, verify reflective journals, grade assignments, and compile composite scores.
+* **Company Mentors (Supervisors)**: On-site industry staff verifying daily student presence, logging progress remarks, and grading student work performance according to the host company's rubrics.
 
-### Teachers (School Mentors)
-
-Teachers who supervise students during their placement. Each teacher is assigned a group of students and is responsible for monitoring attendance, reviewing logbook entries, grading assignments and reports, conducting site visits, and submitting assessment scores. A teacher may supervise students across multiple companies simultaneously.
-
-### Students
-
-Students enrolled in a placement program. They use Internara daily to clock attendance, write reflective journal entries, submit assignments and reports, view grades, send placement change requests, and download their completion certificate. Each student sees only their own data.
-
-### Industry Supervisors (Company Mentors)
-
-Personnel at the host organization who supervise the student on-site. They verify attendance records, review journal entries, provide informal feedback through the logbook, and submit a formal end-of-placement evaluation. Their access is limited to students placed at their organization.
-
----
-
-## Scope
-
-### In Scope
-
-- Management of work placement programs (academic years, phases, document requirements)
-- Student registration and enrollment into programs
-- Company and partnership management (profiles, agreements, contact records)
-- Slot-based placement with quota tracking and change requests
-- Daily attendance tracking (clock-in/clock-out) with absence management
-- Reflective journaling with mentor review workflow
-- Task and assignment management with submission and grading
-- Rubric-based competency assessment and presentation exams
-- Multi-type evaluation (program quality, company quality, mentor effectiveness, overall satisfaction)
-- Final report management with revision workflow
-- Certificate issuance with template management and revocation
-- Incident reporting and investigation tracking
-- Handbook/document management with acknowledgement tracking
-- Schedule and event management
-- Role-based access control (five user roles with distinct permissions)
-- Activity audit log
-- Bilingual interface (Indonesian and English)
-
-### Out of Scope
-
-- Multi-tenant / SaaS deployment model
-- Centralized user management across schools
-- Automated sync with government education databases
-- Recruitment or job placement after program completion
-- General HR or talent management functionality
-- Corporate work placement or apprenticeship program management
-- Real-time chat or instant messaging
-- Payment, invoicing, or financial management
-- Alumni tracking or career services
+### 2.3 Composite Multi-Component Evaluation
+The grading engine calculates composite student outcomes based on configurable weights:
+```
+Final Score = (Attendance × WA) + (Journals × WJ) + (Assignments × WT) + (Supervisor Evaluation × WS) + (Report & Exam × WR)
+```
+*Where W represents the configurable weight for each category.*
 
 ---
 
-## Deployment Model
+## 3. User Persona Matrix
 
-Internara is designed to be installed on the school's own infrastructure. Three deployment paths are supported:
+Internara serves five primary operational roles:
 
-| Path | Typical Use Case |
-|---|---|
-| **Bare-metal / VM** | School with its own server or a dedicated VM. Nginx/Apache + PHP-FPM + MySQL/PostgreSQL + Redis. Supervisor manages queue worker, scheduler, and optional WebSocket server. |
-| **Docker** | School using containerized infrastructure. Docker Compose stack with application, queue worker, scheduler, WebSocket server, nginx, database, and Redis. |
-| **Shared hosting** | School with budget constraints. Uses SQLite or shared MySQL. Queue runs in `sync` mode. Cron replaced by web-callable scheduler endpoint. No WebSockets. |
-
-The default installation uses SQLite, the `database` queue driver, and the `file` cache driver. No external services are required.
-
----
-
-## Language and Localization
-
-Internara ships with two language packs:
-
-- **English** — The default interface language and the language of all code, documentation, and identifier naming.
-- **Indonesian** — Primary localized interface for the Indonesian market, including all user-facing labels, messages, and validation text.
-
-Additional languages can be added via Laravel's standard JSON translation files. Community contributions are welcome.
-
-Terminology throughout the codebase and data model follows international conventions:
-
-| Concept | Field Name | Notes |
+| Role | Operational Scope | Core System Actions |
 |---|---|---|
-| Student identifier | `national_id_number` | Not specific to any country's system |
-| School code | `institutional_code` | Not tied to a specific national registry |
-| Department/Program | `department` | Represents a field of study or competency area |
-| Class/cohort | `class_name` | Represents the graduating cohort or class group |
+| **System Administrator** | Complete system configuration, settings management, infrastructure monitoring. | Setup school profile, NPSN, departments, academic years, user accounts, system backup, and audit logs. |
+| **School Mentor (Teacher)** | Local academic tracking, journal review, grading, company site visits. | View assigned student lists, grade journal entries, score final reports, evaluate presentation exams. |
+| **Industry Supervisor** | On-site company tracking, daily logging, final fieldwork evaluation. | Verify check-in/out logs, approve daily journal entries, submit the end-of-placement supervisor evaluation. |
+| **Student** | Active placement participation, daily logbook entry, task submissions. | Clock-in/out, write daily reflective journals, submit assignments and final reports, view grades and certificates. |
+| **Guest / Public** | Certificate authenticity validation. | Scan certificate QR codes to verify authenticity against the signed database. |
 
 ---
 
-## Licensing
+## 4. Functional Boundary (Scope Matrix)
 
-Internara is open-source software released under the MIT License. Schools are free to install, use, modify, and distribute the software without restriction. There are no paid tiers, no feature gates, and no licensing fees.
+### 4.1 In-Scope Features
+* **Academic Calendar & Phase Progression**: Support for academic cycles, enrollment phases, and progression rules.
+* **Partnership Management**: Host company profile directory, quota tracking, slot availability, and active MoU tracking.
+* **Geofenced/Time-bound Attendance**: Daily clock-in/out logging with lat/long tracking, absence requests, and status logs.
+* **Reflective Logbook Workflow**: Daily student entries with a multi-step review/revision loop for supervisors and teachers.
+* **Rubric-Based Assessments**: Dynamic scoring rubrics mapped to educational competencies and skills.
+* **Incident Management**: Workflow for reporting, investigating, and resolving student incidents at host companies.
+* **Secure Document Generator**: Template builder for completion certificates, attendance sheets, and grade records with cryptographic verification QR codes.
+
+### 4.2 Out-of-Scope Features (System Limitations)
+* **Multi-Tenant SaaS Host**: No built-in billing, tenant routing, or centralized database partitions.
+* **General HR/ATS**: No job-board recruitment tools, payroll processing, or post-graduation job tracking.
+* **Real-time Messaging**: No embedded chat rooms or instant messaging. Comm is handled via asynchronous system notifications, emails, and alerts.
+* **Government Database Sync**: No real-time synchronization with government education networks (e.g., Dapodik in Indonesia). Data is imported/exported via CSV templates.
+
+---
+
+## 5. System Topology & Deployment Paths
+
+Internara is a lightweight application designed to scale efficiently across various hardware constraints:
+
+```
+                  +-----------------------------------+
+                  |        Client Browser             |
+                  +-----------------------------------+
+                                    |
+                                    v (HTTP / WebSockets)
+                  +-----------------------------------+
+                  |        Reverse Proxy (Nginx)      |
+                  +-----------------------------------+
+                                    |
+                                    v
+                  +-----------------------------------+
+                  |        PHP 8.4-FPM / Reverb       |
+                  +-----------------------------------+
+                   /                |                \
+                  /                 |                 \
+                 v                  v                  v
+       +---------------+    +---------------+    +---------------+
+       | SQLite / DB   |    | Redis Cache   |    | Local Disk /  |
+       |  Persistence  |    |  & Queue      |    | S3 Media      |
+       +---------------+    +---------------+    +---------------+
+```
+
+### Supported Deployment Models:
+1. **VPS / VM Setup**: PHP 8.4-FPM, Nginx, Redis for caching/queues, and a local SQLite file (or external MySQL database).
+2. **Containerized Setup**: Standard Docker Compose stack containing application, queue workers, cron scheduler, Redis, and a database container.
+3. **Shared Hosting**: For resource-constrained deployments, running SQLite/MySQL with `sync` queue processing and web-triggered cron endpoints.
+
+---
+
+## 6. Language & Terminology Alignment
+
+To support local regulations while maintaining global codebase standards, the system abstracts localized concepts into standard identifiers:
+
+| Base Terminology | Indonesian Translation | Data Model Field | Description |
+|---|---|---|---|
+| **Student National ID** | NISN (*Nomor Induk Siswa Nasional*) | `national_id_number` | Unique national identification code for the student. |
+| **School Institutional Code** | NPSN (*Nomor Pokok Sekolah Nasional*) | `institutional_code` | Registration code of the educational institution. |
+| **Department** | Jurusan / Kompetensi Keahlian | `department` | Broad study concentration or skill area. |
+| **Class** | Kelas / Rombel | `class_name` | Grade level and cohort group. |
+| **Supervisor** | Pembimbing Lapangan | `supervisor` | Company-assigned mentor on-site. |
+| **School Mentor** | Guru Pembimbing | `teacher` | School-assigned academic guide. |
+| **Fieldwork Program** | PKL (*Praktik Kerja Lapangan*) | `internship` | The compulsory work placement course. |
+
+---
+
+## 7. Compliance & License
+
+Internara is open-source software distributed under the **MIT License**. Schools are granted full rights to modify code, customize themes, and host their instances indefinitely without licensing fees or operational limits.

@@ -82,6 +82,7 @@ See the [Module Index](modules/module-index.md) for more details on operational 
 | # | Module | Overview | Reference |
 |---|---|---|---|---|
 | 1 | **Core** | [Overview](modules/core.md) | [Reference](modules/core-reference.md) |
+| 1b | **Shared** | [Overview](modules/shared.md) | [Reference](modules/shared-reference.md) |
 | 2 | **User** | [Overview](modules/user.md) | [Reference](modules/user-reference.md) |
 | 3 | **SysAdmin** | [Overview](modules/sysadmin.md) | [Reference](modules/sysadmin-reference.md) |
 | 4 | **Academics** | [Overview](modules/academics.md) | [Reference](modules/academics-reference.md) |
