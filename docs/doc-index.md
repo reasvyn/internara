@@ -12,6 +12,7 @@ Complete catalog of all documentation files in the `docs/` directory.
 | Document | Description |
 |---|---|
 | [Product Definition](product-definition.md) | What Internara is, core principles, user personas, scope, deployment model, localization, licensing |
+| [Project Requirements](project-requirements.md) | Real-world Indonesian SMA/SMK PKL requirements, scalability metrics (500–1000 users), and global standards compliance |
 | [Key Features](key-features.md) | Complete feature inventory across all 16 modules, organized by program lifecycle |
 | [Action-based MVC Architecture](architecture.md) | 12-layer architecture, Action Triad (Command/Read/Process), cross-module rules, exception hierarchy, caching, validation, testing strategy |
 | [Coding Conventions](conventions.md) | Mandatory base classes, naming conventions, file structure, PHP rules, policy/enum conventions |
