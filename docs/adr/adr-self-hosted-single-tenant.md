@@ -107,5 +107,5 @@ Each school's data resides entirely on their own infrastructure:
 - `config/database.php` — SQLite as default connection
 - `.env.example` — defaults optimized for single-server deployment
 - `docs/product-definition.md` — product vision, self-hosting principles
-- `docs/deployment.md` — three deployment paths
-- `docs/installation.md` — CLI installer, prerequisites
+- `docs/infrastructure/deployment.md` — three deployment paths
+- `docs/infrastructure/installation.md` — CLI installer, prerequisites

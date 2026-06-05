@@ -29,7 +29,7 @@ Three realities drive this ADR:
    easy in a 10-line Livewire component but painful in a 200-line monster. These are
    *no-regret moves* — cheap now, expensive later.
 
-The codebase already supports three deployment tiers (documented in `docs/infrastructure.md`):
+The codebase already supports three deployment tiers (documented in `docs/infrastructure/infrastructure.md`):
 
 | Tier | Target Users | Database | Queue | Cache | Session | Storage |
 |------|-------------|----------|-------|-------|---------|---------|
@@ -159,7 +159,7 @@ proves otherwise.
 - **Deferred optimizations are explicitly listed.** No ambiguity about whether "we should
   add Octane" is a good idea — the answer is "not until we measure a real bottleneck."
 
-- **Documentation exists before the need arises.** The scaling guide (`docs/scaling.md`)
+- **Documentation exists before the need arises.** The scaling guide (`docs/infrastructure/scaling.md`)
   describes the exact steps for each tier transition, reducing panic-driven decisions
   when performance issues emerge during a live PKL period.
 
@@ -173,7 +173,7 @@ proves otherwise.
 - **Default configuration is not production-optimal.** `.env.example` ships with
   `QUEUE_CONNECTION=sync` and `CACHE_STORE=file`. A deployer who blindly copies
   `.env.example` to production will get suboptimal performance. Mitigation: deployment
-  checklist in `docs/deployment.md` documents exactly which values to override.
+  checklist in `docs/infrastructure/deployment.md` documents exactly which values to override.
 
 - **Tier 3 assumes Redis is available.** Schools without Redis experience may struggle
   with configuration. Mitigation: documented Redis setup guide, Docker Compose stack
@@ -185,11 +185,11 @@ proves otherwise.
 
 ## References
 
-- `docs/infrastructure.md` — Three deployment tiers, component sizing, scaling guide
-- `docs/deployment.md` — Deployment steps, Supervisor config, checklist
-- `docs/cache.md` — Cache driver configuration, OpCache, warm-up procedures
-- `docs/queue.md` — Queue infrastructure, worker management
-- `docs/configuration.md` — Environment variable reference
+- `docs/infrastructure/infrastructure.md` — Three deployment tiers, component sizing, scaling guide
+- `docs/infrastructure/deployment.md` — Deployment steps, Supervisor config, checklist
+- `docs/infrastructure/cache.md` — Cache driver configuration, OpCache, warm-up procedures
+- `docs/infrastructure/queue.md` — Queue infrastructure, worker management
+- `docs/infrastructure/configuration.md` — Environment variable reference
 - `docs/adr/adr-self-hosted-single-tenant.md` — Foundation decision for simple defaults
 - `docs/adr/adr-gradual-migration.md` — Governing principle: "good enough today > perfect next week"
 - `docs/known-issues.md` — C1-C13 infrastructure audit findings

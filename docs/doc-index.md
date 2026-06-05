@@ -24,12 +24,12 @@ Complete catalog of all documentation files in the `docs/` directory.
 | Document | Description |
 |---|---|
 | [Getting Started](getting-started.md) | End-to-end walkthrough from cloning to completing the setup wizard |
-| [Installation](installation.md) | Detailed deployment reference: prerequisites, VPS/Docker/shared hosting, PHP-FPM, Supervisor, database config, troubleshooting |
-| [Deployment](deployment.md) | Three deployment paths (VPS, Docker, shared hosting), production checklist, background processes |
-| [Configuration](configuration.md) | Three-tier config system, environment variables, dev vs production, security settings, localization setup |
+| [Installation](infrastructure/installation.md) | Detailed deployment reference: prerequisites, VPS/Docker/shared hosting, PHP-FPM, Supervisor, database config, troubleshooting |
+| [Deployment](infrastructure/deployment.md) | Three deployment paths (VPS, Docker, shared hosting), production checklist, background processes |
+| [Configuration](infrastructure/configuration.md) | Three-tier config system, environment variables, dev vs production, security settings, localization setup |
 | [Post-Setup](post-setup.md) | First actions as administrator: foundation, people, program setup, placements, going live checklist |
 | [Setup Wizard](setup-wizard.md) | Detailed walkthrough of all wizard steps |
-| [Infrastructure](infrastructure.md) | Deployment options overview, background processes, database and storage considerations |
+| [Infrastructure](infrastructure/infrastructure.md) | Deployment options overview, background processes, database and storage considerations |
 
 ---
 
@@ -38,7 +38,7 @@ Complete catalog of all documentation files in the `docs/` directory.
 | Document | Description |
 |---|---|
 | [RBAC](rbac.md) | Authentication flow, flat role hierarchy, functional roles, permission model, Gate::before bypass, CheckRoleMiddleware |
-| [Observability](observability.md) | Monitoring categories, Laravel Pulse, SmartLogger dual-channel, log channels, health checks |
+| [Observability](infrastructure/observability.md) | Monitoring categories, Laravel Pulse, SmartLogger dual-channel, log channels, health checks |
 | [Account Recovery](account-recovery.md) | Account recovery flow, recovery codes, administrative recovery slip |
 
 ---
@@ -56,19 +56,19 @@ Complete catalog of all documentation files in the `docs/` directory.
 
 | Document | Description |
 |---|---|
-| [Database](database.md) | Database design philosophy, UUID PKs, SQLite default, engine comparison, index strategy, schema organization |
-| [Cache](cache.md) | Caching strategy, invalidation, key naming, Redis configuration, OpCache, optimization commands |
-| [Filesystem](filesystem.md) | Storage architecture, media library integration, file locations, image conversions, S3-compatible cloud storage |
-| [Media Library](media-library.md) | Spatie Media Library: collections, conversions, file size limits, queue integration, S3 providers |
-| [Routes](routes.md) | Route structure, module-split organization, middleware groups |
-| [Session](session.md) | Session configuration, drivers, security considerations |
-| [Notifications](notification.md) | Multi-channel notification system, CustomDatabaseChannel, mail deliverability, SPF/DKIM/DMARC, broadcast |
-| [Queue](queue.md) | Queue drivers, worker management, Supervisor, job lifecycle, retry/backoff, scaling |
-| [Testing](testing.md) | Testing philosophy, feature vs unit test distinction, LazilyRefreshDatabase, entity testing, code coverage |
-| [Scaling Guide](scaling.md) | When and how to scale from MVP to 2000 users, tier transitions, load testing, monitoring thresholds |
-| [Known Issues](known-issues.md) | Known limitations, caveats, and workarounds |
-| [Backup & Recovery](backup-recovery.md) | Backup strategies, database dumps, file backup, restoration steps, point-in-time recovery, monitoring |
-| [Localization](localization.md) | Supported languages, translation structure, locale resolution, community contribution guide for adding new languages |
+| [Database](infrastructure/database.md) | Database design philosophy, UUID PKs, SQLite default, engine comparison, index strategy, schema organization |
+| [Cache](infrastructure/cache.md) | Caching strategy, invalidation, key naming, Redis configuration, OpCache, optimization commands |
+| [Filesystem](infrastructure/filesystem.md) | Storage architecture, media library integration, file locations, image conversions, S3-compatible cloud storage |
+| [Media Library](infrastructure/media-library.md) | Spatie Media Library: collections, conversions, file size limits, queue integration, S3 providers |
+| [Routes](infrastructure/routes.md) | Route structure, module-split organization, middleware groups |
+| [Session](infrastructure/session.md) | Session configuration, drivers, security considerations |
+| [Notifications](infrastructure/notification.md) | Multi-channel notification system, CustomDatabaseChannel, mail deliverability, SPF/DKIM/DMARC, broadcast |
+| [Queue](infrastructure/queue.md) | Queue drivers, worker management, Supervisor, job lifecycle, retry/backoff, scaling |
+| [Testing](infrastructure/testing.md) | Testing philosophy, feature vs unit test distinction, LazilyRefreshDatabase, entity testing, code coverage |
+| [Scaling Guide](infrastructure/scaling.md) | When and how to scale from MVP to 2000 users, tier transitions, load testing, monitoring thresholds |
+| [Known Issues](infrastructure/known-issues.md) | Known limitations, caveats, and workarounds |
+| [Backup & Recovery](infrastructure/backup-recovery.md) | Backup strategies, database dumps, file backup, restoration steps, point-in-time recovery, monitoring |
+| [Localization](infrastructure/localization.md) | Supported languages, translation structure, locale resolution, community contribution guide for adding new languages |
 
 ---
 
@@ -159,11 +159,11 @@ modules/{module}.md          → Specific module I'm working on
 For deployment:
 
 ```
-deployment.md               → Choose your path
+infrastructure/deployment.md      → Choose your path
   ↓
-installation.md             → Detailed setup
+infrastructure/installation.md    → Detailed setup
   ↓
-configuration.md            → Configure environment
+infrastructure/configuration.md   → Configure environment
   ↓
-backup-recovery.md          → Protect your data
+infrastructure/backup-recovery.md → Protect your data
 ```

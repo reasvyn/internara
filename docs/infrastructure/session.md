@@ -166,4 +166,4 @@ restarts.
 - `app/Settings/Http/Middleware/SetLocaleMiddleware.php` — locale persistence
 - `routes/web/auth.php` — password confirmation routes (`/user/confirm-password`)
 - `bootstrap/app.php` — middleware configuration
-- `docs/infrastructure.md` — tier-based infrastructure design
+- `docs/infrastructure/infrastructure.md` — tier-based infrastructure design

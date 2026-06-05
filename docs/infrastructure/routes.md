@@ -63,7 +63,7 @@ These middleware are applied per-route or per-group:
 | `auth.throttle` | `AuthThrottleMiddleware` | All auth routes (login, register, forgot/reset password, confirm password) | Global rate limit (30 requests/min/IP) across all auth endpoints |
 | `role:{roles}` | `CheckRoleMiddleware` | Admin, teacher, supervisor routes | Aborts 403 if user lacks required role |
 
-See [Setup Wizard → Middleware System](setup-wizard.md#middleware-system) for the complete
+See [Setup Wizard → Middleware System](../setup-wizard.md#middleware-system) for the complete
 documentation of both middleware classes.
 
 The `setup.protected` middleware flow:
@@ -144,4 +144,4 @@ php artisan route:cache
 - `app/Core/Http/Middleware/` — global middleware classes
 - `app/Auth/Http/Middleware/` — auth middleware (CheckRole, AuthThrottle)
 - `config/menu.php` — sidebar navigation mapping routes to menu items
-- `docs/infrastructure.md` — tier-based infrastructure design
+- `docs/infrastructure/infrastructure.md` — tier-based infrastructure design

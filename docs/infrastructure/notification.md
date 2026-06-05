@@ -341,4 +341,4 @@ Created (via Action/Event)
 - `app/Administration/Console/Commands/PruneNotificationsCommand.php` — notification pruning
 - `config/mail.php` — mail driver and SMTP configuration
 - `config/flasher.php` — flash message styling and timeout
-- `docs/infrastructure.md` — tier-based infrastructure design
+- `docs/infrastructure/infrastructure.md` — tier-based infrastructure design

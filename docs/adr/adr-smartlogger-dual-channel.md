@@ -210,4 +210,4 @@ the application has a storage problem that should surface immediately.
 - `app/Core/Models/ActivityLog.php` — activity log model with query scopes
 - `config/logging.php` — log channel configuration (daily, 14-day retention)
 - `config/activitylog.php` — Spatie Activitylog config (365-day retention)
-- `docs/observability.md` — observability overview (Pulse, health checks, logging)
+- `docs/infrastructure/observability.md` — observability overview (Pulse, health checks, logging)

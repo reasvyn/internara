@@ -248,5 +248,5 @@ Global: AuthThrottleMiddleware (30 req/min/IP)
 | [User API Reference](modules/user-reference.md) | Complete class listing |
 | [Setup Wizard](setup-wizard.md) | Installation, recovery key generation |
 | [Post-Setup](post-setup.md) | First admin actions |
-| [Database](database.md) | Database design, UUID PKs, schema organization |
+| [Database](infrastructure/database.md) | Database design, UUID PKs, schema organization |
 | [RBAC](rbac.md) | Role and permission system |
