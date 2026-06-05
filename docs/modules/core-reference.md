@@ -31,6 +31,25 @@ Provides foundational infrastructure, base classes, contracts, and request lifec
 
 ---
 
+## Core Infrastructure Implementation Mechanics
+
+### 1. The Transaction & Logging Engine (`BaseAction.php`)
+Every Command and Process Action extends `BaseAction`. When `execute()` is called, it triggers the inherited `transaction()` and `log()` logic:
+- **`transaction(Closure $callback)`**: Uses Laravel's DB transaction manager. If any query throws a Throwable, the transaction catches it, rolls back all database modifications, processes it through `HandlesActionErrors`, and rethrows it as an `AppException` or `DomainException`.
+- **`log(string $event, Model $model, array $context = [])`**: Relies on `SmartLogger` to record mutations into Spatie's activity log tables. The context stores metadata like before/after states, omitting masked PII attributes.
+
+### 2. Dual-channel Output Stream (`SmartLogger.php`)
+`SmartLogger` wraps Laravel's native logger to write structured, JSON-formatted output to two separate pipelines:
+- **Application Channel (`storage/logs/laravel.log`)**: Detailed traces, stack traces, and database query executions for local troubleshooting.
+- **Audit Channel (`activity_log` DB table)**: Immutable entries documenting administrative action records (e.g. grading updates, placement reassignments). Before logging, `PiiMasker` uses regular expressions to redact personal IDs and contact numbers.
+
+### 3. Dynamic Scan Engine (`DomainDiscoverCommand.php`)
+Instead of manual registry mappings, `module:discover` automates service discovery:
+- **File Scanner**: Traverses `app/` using regex directory matching to discover controllers, Livewire component classes, route files, and policy registrations.
+- **Boot Registries**: Dynamic mappings are compiled into single array payloads and written directly to Shared Cache storage using `CacheKeys::MODULE_LIVEWIRE` and `CacheKeys::MODULE_POLICIES` to avoid runtime directory traversal costs.
+
+---
+
 ## Contracts (Layer 3)
 
 Located in `app/Core/Contracts/`:
