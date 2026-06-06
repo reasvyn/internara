@@ -12,7 +12,7 @@ use App\Settings\Support\Settings;
 use App\Setup\Events\SetupFinalized;
 use App\Setup\Listeners\LogSetupFinalized;
 use App\Support\CacheKeys;
-use App\User\Notification\Actions\SendNotificationAction;
+use App\User\Notifications\Actions\SendNotificationAction;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;

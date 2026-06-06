@@ -1,7 +1,7 @@
 # User — Technical Reference
 
-> Last updated: 2026-06-03
-> Changes: Converted Status metadata to Changes format
+> Last updated: 2026-06-06
+> Changes: refactor: use activation_tokens for recovery codes; rename Notification/ to Notifications/
 
 Detailed structural and implementation reference for the **User** module.
 
@@ -24,7 +24,7 @@ Handles authentication, user profiles, notifications, and account recovery
 - `ActivationToken`
 - `Dashboard`
 - `Login`
-- `Notification`
+- `Notifications`
 - `Password`
 - `Profile`
 - `SuperAdmin`
@@ -50,7 +50,7 @@ This module depends on:
 | File | Class | Extends |
 |---|---|---|
 | `Password/Actions/ConfirmPasswordAction.php` | `ConfirmPasswordAction` | `BaseAction` |
-| `Notification/Actions/DeleteNotificationAction.php` | `DeleteNotificationAction` | `BaseAction` |
+| `Notifications/Actions/DeleteNotificationAction.php` | `DeleteNotificationAction` | `BaseAction` |
 | `AccountStatus/Actions/DetectUserAccountCloneAction.php` | `DetectUserAccountCloneAction` | `BaseAction` |
 | `AccountRecovery/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction` | `BaseAction` |
 | `Actions/GetActivityLogsAction.php` | `GetActivityLogsAction` | `BaseAction` |
@@ -61,14 +61,14 @@ This module depends on:
 | `SuperAdmin/Actions/InitializeSuperAdminAction.php` | `InitializeSuperAdminAction` | `BaseAction` |
 | `AccountStatus/Actions/LockUserAccountAction.php` | `LockUserAccountAction` | `BaseAction` |
 | `Login/Actions/LoginAction.php` | `LoginAction` | `BaseAction` |
-| `Notification/Actions/MarkAllAsReadAction.php` | `MarkAllAsReadAction` | `BaseAction` |
-| `Notification/Actions/MarkAsReadAction.php` | `MarkAsReadAction` | `BaseAction` |
-| `Notification/Actions/MarkBatchAsReadAction.php` | `MarkBatchAsReadAction` | `BaseAction` |
+| `Notifications/Actions/MarkAllAsReadAction.php` | `MarkAllAsReadAction` | `BaseAction` |
+| `Notifications/Actions/MarkAsReadAction.php` | `MarkAsReadAction` | `BaseAction` |
+| `Notifications/Actions/MarkBatchAsReadAction.php` | `MarkBatchAsReadAction` | `BaseAction` |
 | `SuperAdmin/Actions/RecoverSuperAdminAction.php` | `RecoverSuperAdminAction` | `BaseAction` |
 | `AccountRecovery/Actions/RedeemRecoverySlipAction.php` | `RedeemRecoverySlipAction` | `BaseAction` |
 | `Password/Actions/ResetPasswordAction.php` | `ResetPasswordAction` | `BaseAction` |
 | `Password/Actions/ResetUserPasswordAction.php` | `ResetUserPasswordAction` | `BaseAction` |
-| `Notification/Actions/SendNotificationAction.php` | `SendNotificationAction` | `BaseAction` |
+| `Notifications/Actions/SendNotificationAction.php` | `SendNotificationAction` | `BaseAction` |
 | `Password/Actions/SendPasswordResetLinkAction.php` | `SendPasswordResetLinkAction` | `BaseAction` |
 | `SuperAdmin/Actions/SetupSuperAdminAction.php` | `SetupSuperAdminAction` | `BaseAction` |
 | `AccountStatus/Actions/UnlockUserAccountAction.php` | `UnlockUserAccountAction` | `BaseAction` |
@@ -83,7 +83,7 @@ This module depends on:
 |---|---|
 | `AccountRecovery/Models/AccountRecoveryCode.php` | `AccountRecoveryCode` |
 | `ActivationToken/Models/ActivationToken.php` | `ActivationToken` |
-| `Notification/Models/Notification.php` | `Notification` |
+| `Notifications/Models/Notification.php` | `Notification` |
 | `Profile/Models/Profile.php` | `Profile` |
 | `Models/User.php` | `User` |
 
@@ -100,8 +100,8 @@ This module depends on:
 | `Password/Livewire/ConfirmPassword.php` | `ConfirmPassword` | `Component` |
 | `Password/Livewire/ForgotPassword.php` | `ForgotPassword` | `Component` |
 | `Login/Livewire/Login.php` | `Login` | `Component` |
-| `Notification/Livewire/NotificationBell.php` | `NotificationBell` | `Component` |
-| `Notification/Livewire/NotificationCenter.php` | `NotificationCenter` | `BaseRecordManager` |
+| `Notifications/Livewire/NotificationBell.php` | `NotificationBell` | `Component` |
+| `Notifications/Livewire/NotificationCenter.php` | `NotificationCenter` | `BaseRecordManager` |
 | `Profile/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` |
 | `Livewire/RecentActivityList.php` | `RecentActivityList` | `Component` |
 | `AccountRecovery/Livewire/RecoveryCode.php` | `RecoveryCode` | `Component` |
@@ -119,7 +119,7 @@ This module depends on:
 
 | File | Policy |
 |---|---|
-| `Notification/Policies/NotificationPolicy.php` | `NotificationPolicy` |
+| `Notifications/Policies/NotificationPolicy.php` | `NotificationPolicy` |
 | `Profile/Policies/ProfilePolicy.php` | `ProfilePolicy` |
 | `Policies/UserPolicy.php` | `UserPolicy` |
 

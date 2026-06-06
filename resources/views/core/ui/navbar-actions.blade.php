@@ -24,7 +24,7 @@
         {{-- Notification Bell --}}
         @if($showNotifications)
             <div class="relative">
-                <livewire:user.notification-bell />
+                <livewire:user.notifications.notification-bell />
             </div>
         @endif
 

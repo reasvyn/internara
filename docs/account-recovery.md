@@ -1,6 +1,6 @@
 # Account Recovery
-> Last updated: 2026-05-26
-> Changes: docs: update docs for non-expiring recovery codes and profile redesign
+> Last updated: 2026-06-06
+> Changes: refactor: move recovery codes to activation_tokens table per ERD
 
 
 ## Purpose
@@ -110,31 +110,31 @@ User → /recover-account
 
 | Class | Location | Purpose |
 |---|---|---|
-| `RecoverySlipManager` | `Auth/Livewire/RecoverySlipManager.php` | Admin UI for generating slips |
-| `RecoveryCode` | `Auth/Livewire/RecoveryCode.php` | User profile: view/download codes |
-| `AccountRecovery` | `Auth/Livewire/AccountRecovery.php` | User-facing code redemption form |
-| `AccountRecoveryForm` | `Auth/Livewire/Forms/AccountRecoveryForm.php` | Username, code, password fields |
-| `GenerateRecoverySlipAction` | `Auth/Actions/GenerateRecoverySlipAction.php` | Generates 10 codes, stores hashed |
-| `RedeemRecoverySlipAction` | `Auth/Actions/RedeemRecoverySlipAction.php` | Validates and redeems a code |
-| `AccountRecoveryCode` | `Auth/Models/AccountRecoveryCode.php` | Eloquent model for recovery codes |
-| `RecoveryCodeState` | `Auth/Entities/RecoveryCodeState.php` | Value object for code validity |
+| `RecoverySlipManager` | `User/AccountRecovery/Livewire/RecoverySlipManager.php` | Admin UI for generating slips |
+| `RecoveryCode` | `User/AccountRecovery/Livewire/RecoveryCode.php` | User profile: view/download codes |
+| `AccountRecovery` | `User/AccountRecovery/Livewire/AccountRecovery.php` | User-facing code redemption form |
+| `AccountRecoveryForm` | `User/AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` | Username, code, password fields |
+| `GenerateRecoverySlipAction` | `User/AccountRecovery/Actions/GenerateRecoverySlipAction.php` | Generates 10 codes, stores hashed |
+| `RedeemRecoverySlipAction` | `User/AccountRecovery/Actions/RedeemRecoverySlipAction.php` | Validates and redeems a code |
+| `AccountRecoveryCode` | `User/AccountRecovery/Models/AccountRecoveryCode.php` | Eloquent model (uses `activation_tokens` table) |
+| `RecoveryCodeState` | `User/AccountRecovery/Entities/RecoveryCodeState.php` | Value object for code validity |
 
 ### Database
 
-**Table:** `account_recovery_codes`
+**Table:** `activation_tokens` (with `token_type = 'account_recovery'`)
 
 | Column | Type | Purpose |
 |---|---|---|
 | `user_id` | FK → users(id) | Code owner |
-| `code_hash` | varchar(255) | Bcrypt hash of the plaintext code |
-| `generated_at` | timestamp | When the batch was generated |
-| `used_at` | timestamp | Null = unused; set on redemption |
-| `expires_at` | timestamp | Nullable. Null = never expires; set value = invalid after this time |
+| `token` | varchar(255) | Bcrypt hash of the plaintext code |
+| `token_type` | varchar(20) | Always `'account_recovery'` |
+| `expires_at` | datetime | Non-expiring codes use far-future date |
+| `last_attempt_at` | datetime | Null = unused; set on redemption |
 
 Each code is single-use. Multiple codes per user (10 per batch). Codes are
 validated via `RecoveryCodeState::isValid()` which checks:
-- `used_at === null` (not yet redeemed)
-- `expires_at === null || now < expires_at` (not expired, or no expiry)
+- `last_attempt_at === null` (not yet redeemed)
+- `expires_at > now` (not expired)
 
 ---
 

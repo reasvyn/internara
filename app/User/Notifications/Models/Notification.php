@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\User\Notification\Models;
+namespace App\User\Notifications\Models;
 
 use App\Core\Models\BaseModel;
 use Database\Factories\NotificationFactory;

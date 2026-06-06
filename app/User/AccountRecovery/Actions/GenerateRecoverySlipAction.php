@@ -13,7 +13,7 @@ class GenerateRecoverySlipAction extends BaseAction
 {
     public const int CODE_COUNT = 10;
 
-    /** @return array{code: AccountRecoveryCode, plaintext: array<int, string>, expires_at: string} */
+    /** @return array{code: AccountRecoveryCode, plaintext: array<int, string>, expires_at: null} */
     public function execute(User $user): array
     {
         $codes = [];
@@ -24,9 +24,11 @@ class GenerateRecoverySlipAction extends BaseAction
 
             $recoveryCode = AccountRecoveryCode::create([
                 'user_id' => $user->id,
-                'code_hash' => Hash::make($plaintext),
-                'generated_at' => now(),
-                'expires_at' => null,
+                'token' => Hash::make($plaintext),
+                'token_type' => 'account_recovery',
+                'expires_at' => now()->addYears(100),
+                'attempts' => 0,
+                'last_attempt_at' => null,
             ]);
 
             if ($i === 0) {

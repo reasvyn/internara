@@ -15,7 +15,7 @@ use App\User\Dashboard\Livewire\UserDashboard;
 use App\User\Http\Controllers\DashboardController;
 use App\User\Http\Controllers\HomeController;
 use App\User\Login\Livewire\Login;
-use App\User\Notification\Livewire\NotificationCenter;
+use App\User\Notifications\Livewire\NotificationCenter;
 use App\User\Password\Livewire\ConfirmPassword;
 use App\User\Password\Livewire\ForgotPassword;
 use App\User\Password\Livewire\ResetPassword;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Contracts\SettingsStore;
-use App\User\Notification\Actions\SendNotificationAction;
+use App\User\Notifications\Actions\SendNotificationAction;
 use Illuminate\Support\Facades\RateLimiter;
 
 test('registers sends notifications binding', function () {

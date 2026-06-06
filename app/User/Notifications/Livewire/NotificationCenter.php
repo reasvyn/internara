@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\User\Notification\Livewire;
+namespace App\User\Notifications\Livewire;
 
 use App\Core\Livewire\BaseRecordManager;
-use App\User\Notification\Actions\DeleteNotificationAction;
-use App\User\Notification\Actions\MarkAllAsReadAction;
-use App\User\Notification\Actions\MarkAsReadAction;
-use App\User\Notification\Actions\MarkBatchAsReadAction;
-use App\User\Notification\Models\Notification;
+use App\User\Notifications\Actions\DeleteNotificationAction;
+use App\User\Notifications\Actions\MarkAllAsReadAction;
+use App\User\Notifications\Actions\MarkAsReadAction;
+use App\User\Notifications\Actions\MarkBatchAsReadAction;
+use App\User\Notifications\Models\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -143,6 +143,6 @@ class NotificationCenter extends BaseRecordManager
 
     public function render(): View
     {
-        return view('user.notification.notification-center');
+        return view('user.notifications.notification-center');
     }
 }
