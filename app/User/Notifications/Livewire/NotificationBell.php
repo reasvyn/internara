@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\User\Notification\Livewire;
+namespace App\User\Notifications\Livewire;
 
 use App\Support\CacheKeys;
-use App\User\Notification\Models\Notification;
+use App\User\Notifications\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
@@ -51,6 +51,6 @@ class NotificationBell extends Component
 
     public function render(): View
     {
-        return view('user.notification.notification-bell');
+        return view('user.notifications.notification-bell');
     }
 }

@@ -18,7 +18,7 @@ final readonly class RecoveryCodeState extends BaseEntity
     public static function fromModel(Model $model): static
     {
         return new self(
-            usedAt: $model->used_at,
+            usedAt: $model->last_attempt_at,
             expiresAt: $model->expires_at,
         );
     }

@@ -154,5 +154,5 @@
         </x-slot:actions>
     </x-mary-modal>
 
-    @include('user.notification.components.notification-guide')
+    @include('user.notifications.components.notification-guide')
 </div>

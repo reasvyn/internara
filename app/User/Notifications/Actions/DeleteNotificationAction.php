@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\User\Notification\Actions;
+namespace App\User\Notifications\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Support\CacheKeys;
-use App\User\Notification\Models\Notification;
+use App\User\Notifications\Models\Notification;
 use Illuminate\Support\Facades\Cache;
 
 /**

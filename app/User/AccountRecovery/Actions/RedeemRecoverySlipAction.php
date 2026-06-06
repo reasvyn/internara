@@ -22,7 +22,8 @@ class RedeemRecoverySlipAction extends BaseAction
             }
 
             $recoveryCodes = AccountRecoveryCode::where('user_id', $user->id)
-                ->whereNull('used_at')
+                ->where('token_type', 'account_recovery')
+                ->whereNull('last_attempt_at')
                 ->where(function ($q) {
                     $q->whereNull('expires_at')
                         ->orWhere('expires_at', '>', now());
@@ -31,7 +32,7 @@ class RedeemRecoverySlipAction extends BaseAction
 
             $matchedCode = null;
             foreach ($recoveryCodes as $rc) {
-                if ($rc->asRecoveryCodeState()->isValid() && Hash::check(strtoupper($code), $rc->code_hash)) {
+                if ($rc->asRecoveryCodeState()->isValid() && Hash::check(strtoupper($code), $rc->token)) {
                     $matchedCode = $rc;
                     break;
                 }
@@ -44,7 +45,7 @@ class RedeemRecoverySlipAction extends BaseAction
             }
 
             $user->update(['password' => Hash::make($newPassword)]);
-            $matchedCode->update(['used_at' => now()]);
+            $matchedCode->update(['last_attempt_at' => now()]);
 
             $this->log('recovery_slip_redeemed', $user);
 

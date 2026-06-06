@@ -6,24 +6,17 @@ namespace App\User\AccountRecovery\Models;
 
 use App\Core\Models\BaseModel;
 use App\User\AccountRecovery\Entities\RecoveryCodeState;
-use Database\Factories\AccountRecoveryCodeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-#[Fillable(['user_id', 'code_hash', 'generated_at', 'used_at', 'expires_at'])]
+#[Fillable(['user_id', 'token', 'token_type', 'expires_at', 'attempts', 'last_attempt_at'])]
 class AccountRecoveryCode extends BaseModel
 {
-    use HasFactory;
-
-    protected static function newFactory(): AccountRecoveryCodeFactory
-    {
-        return AccountRecoveryCodeFactory::new();
-    }
+    protected $table = 'activation_tokens';
 
     protected $casts = [
-        'generated_at' => 'datetime',
-        'used_at' => 'datetime',
         'expires_at' => 'datetime',
+        'last_attempt_at' => 'datetime',
+        'attempts' => 'integer',
     ];
 
     public function asRecoveryCodeState(): RecoveryCodeState
