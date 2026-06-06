@@ -9,11 +9,10 @@ use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Support\SmartLogger;
 use App\Program\Internship\Actions\CreateInternshipAction;
-use App\Setup\Models\Setup;
-use App\Support\CacheKeys;
+use App\Setup\Entities\SetupState;
 use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
+use App\SysAdmin\Settings\Support\Settings;
 use App\User\SuperAdmin\Actions\SetupSuperAdminAction;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -38,29 +37,30 @@ final class FinalizeSetupAction extends BaseAction
         ?array $internshipData = null,
         array $stepsToComplete = ['account', 'school', 'department'],
     ): string {
-        $existing = Setup::latest('created_at')->first();
+        $state = SetupState::fromSettings();
 
-        if ($existing && $existing->is_installed) {
+        if ($state->isInstalled()) {
             throw new RuntimeException('System is already installed.');
         }
 
         $plaintext = $this->transaction(function () use ($schoolData, $departmentData, $adminData, $internshipData, $stepsToComplete) {
-            $setup = Setup::lockForUpdate()->latest('created_at')->first() ?? new Setup;
+            $state = SetupState::fromSettings();
 
-            if ($setup->exists && $setup->is_installed) {
+            if ($state->isInstalled()) {
                 throw new RuntimeException('System is already installed.');
             }
 
-            $school = $this->setupSchool->execute($schoolData);
+            $this->setupSchool->execute($schoolData);
 
-            $department = $this->setupDept->execute($school->id, $departmentData);
+            $department = $this->setupDept->execute($departmentData);
 
             $admin = $this->setupAdmin->execute($adminData['email'], $adminData['password']);
 
             if ($internshipData !== null) {
                 $this->createInternship->execute($internshipData);
             }
-            $completedSteps = $setup->completed_steps ?? [];
+
+            $completedSteps = $state->completedSteps();
 
             foreach ($stepsToComplete as $step) {
                 if (! in_array($step, $completedSteps)) {
@@ -72,20 +72,17 @@ final class FinalizeSetupAction extends BaseAction
             $plaintext = Str::random($keyLength);
             $hashed = Hash::make($plaintext);
 
-            $setup->fill([
-                'is_installed' => true,
-                'completed_steps' => $completedSteps,
-                'setup_token' => null,
-                'token_expires_at' => null,
-                'recovery_key' => $hashed,
-                'school_id' => $school->id,
-                'department_id' => $department->id,
-            ])->save();
-
-            Cache::forget(CacheKeys::SETUP_INSTALLED);
+            Settings::set([
+                'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
+                'setup.completed_steps' => ['value' => $completedSteps, 'group' => 'setup', 'type' => 'json'],
+                'setup.install_token' => ['value' => null, 'group' => 'setup', 'type' => 'string'],
+                'setup.token_expires_at' => ['value' => null, 'group' => 'setup', 'type' => 'datetime'],
+                'setup.install_recovery_key' => ['value' => $hashed, 'group' => 'setup', 'type' => 'string'],
+                'setup.updated_at' => ['value' => now()->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
+            ]);
 
             Event::dispatch(new SetupFinalized(
-                schoolId: $setup->school_id,
+                departmentId: $department->id,
                 installedAt: now()->toDateTimeImmutable(),
             ));
 

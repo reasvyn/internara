@@ -17,8 +17,8 @@ final class GetUserManagerStatsAction extends BaseAction
         return [
             'total' => User::count(),
             'admins' => User::role(['super_admin', 'admin'])->count(),
-            'active' => User::whereHas('statuses', fn ($q) => $q->where('name', 'verified')->latest('id'))->count(),
-            'pending' => User::whereHas('statuses', fn ($q) => $q->where('name', 'provisioned')->latest('id'))->count(),
+            'active' => User::where('status', 'verified')->count(),
+            'pending' => User::where('status', 'provisioned')->count(),
         ];
     }
 }

@@ -15,11 +15,10 @@
                 <x-mary-textarea :label="__('registration.account_application.address')" wire:model="form.address" class="md:col-span-2" />
 
                 <div class="md:col-span-2 mt-4">
-                    <h2 class="text-lg font-semibold">{{ __('registration.account_application.school_info') }}</h2>
+                    <h2 class="text-lg font-semibold">{{ __('registration.account_application.student_info') }}</h2>
                     <hr class="my-2" />
                 </div>
 
-                <x-mary-select :label="__('registration.account_application.school')" wire:model.live="form.school_id" :options="$this->schools" :placeholder="__('registration.account_application.select_school')" />
                 <x-mary-input :label="__('registration.account_application.national_id')" wire:model="form.national_id_number" placeholder="National ID Number" />
                 <x-mary-input :label="__('registration.account_application.student_id')" wire:model="form.student_id_number" placeholder="Student ID Number" />
                 <x-mary-input :label="__('registration.account_application.class')" wire:model="form.class_name" placeholder="e.g. XII-RPL-1" />

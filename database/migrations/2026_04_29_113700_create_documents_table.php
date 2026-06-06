@@ -12,22 +12,18 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name')->index();
+            $table->string('type')->default('template')->index(); // template | policy | guideline
             $table->string('slug')->unique();
-            $table->string('category')->index();
-            $table->text('description')->nullable();
-            $table->longText('content')->nullable();
+            $table->string('title');
+            $table->text('content')->nullable();
+            $table->string('file_path')->nullable();
+            $table->integer('version')->default(1);
             $table->boolean('is_active')->default(true)->index();
-
-            $table->unsignedInteger('template_version')->default(1)->after('is_active');
-            $table
-                ->foreignUuid('template_id')
-                ->nullable()
-                ->constrained('documents')
-                ->nullOnDelete();
-
+            $table->json('metadata')->nullable();
+            $table->foreignUuid('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
-            $table->index(['category', 'is_active']);
+
+            $table->index(['type', 'is_active']);
         });
     }
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Livewire;
 
+use App\Document\Models\Document;
 use App\Enrollment\Actions\UploadRegistrationDocumentAction;
 use App\Enrollment\Models\Registration;
 use App\Enrollment\Models\RegistrationDocument;
-use App\Program\Internship\Models\InternshipDocumentRequirement;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\UploadedFile;
@@ -44,13 +44,12 @@ class RegistrationDocumentUpload extends Component
             return;
         }
 
-        $requirements = InternshipDocumentRequirement::where('internship_id', $this->registration->internship_id)
-            ->with('document')
-            ->get();
+        $documentIds = $this->registration->internship->required_document_ids ?? [];
+        $documents = Document::whereIn('id', $documentIds)->get();
 
         $rules = [];
-        foreach ($requirements as $req) {
-            $rules["uploads.{$req->id}"] = $req->is_mandatory ? 'required|file|mimes:pdf,jpg,jpeg,png|max:5120' : 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
+        foreach ($documents as $doc) {
+            $rules["uploads.{$doc->id}"] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
         }
 
         $this->validate($rules);
@@ -63,18 +62,17 @@ class RegistrationDocumentUpload extends Component
 
     public function render(): View
     {
-        $requirements = collect();
+        $documents = collect();
 
         if ($this->registration) {
-            $requirements = InternshipDocumentRequirement::where('internship_id', $this->registration->internship_id)
-                ->with('document')
-                ->get();
+            $documentIds = $this->registration->internship->required_document_ids ?? [];
+            $documents = Document::whereIn('id', $documentIds)->get();
         }
 
         return view('enrollment.registration-document-upload', [
-            'requirements' => $requirements,
+            'documents' => $documents,
             'existingDocs' => $this->registration
-                ? RegistrationDocument::where('registration_id', $this->registration->id)->with('requirement.document')->get()
+                ? RegistrationDocument::where('registration_id', $this->registration->id)->with('document')->get()
                 : collect(),
         ]);
     }

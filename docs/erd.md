@@ -59,6 +59,8 @@ erDiagram
         string key PK
         string group
         text value
+        string type
+        text description
     }
     
     users {
@@ -425,7 +427,9 @@ erDiagram
 Global configuration registry. Replaces `setups` and `schools`.
 * `key` (varchar 255, PK) — E.g., `school.name`, `school.institutional_code`, `setup.is_installed`, `setup.completed_steps`.
 * `group` (varchar 100, indexed) — E.g., `school`, `setup`, `grading`, `theme`.
-* `value` (text, nullable) — Value casted dynamically by Laravel at runtime.
+* `value` (text, nullable) — Stored as string; casted dynamically via `SettingValueCast`.
+* `type` (varchar 20, default 'string') — `string` | `integer` | `float` | `boolean` | `json` | `encrypted` | `null`.
+* `description` (text, nullable) — Human-readable explanation of the setting's purpose.
 * `created_at`, `updated_at` (timestamps)
 
 #### `activation_tokens`
@@ -752,9 +756,9 @@ Student uploads for assignments.
 * `created_at`, `updated_at` (timestamps)
 
 #### `reports`
-Final Student Grade Card (*Rapor PKL*). Stores the aggregated marks and locks grade records upon final sign-off.
+Final Student Grade Card (*Rapor PKL*). Stores the aggregated marks and locks grade records upon final sign-off. Can function as a standalone record even if linked models are deleted.
 * `id` (uuid, PK)
-* `registration_id` (uuid, FK -> `registrations`, cascade delete, UNIQUE) — 1:1 Link with registration.
+* `registration_id` (uuid, FK -> `registrations`, set null on delete, UNIQUE, nullable) — 1:1 Link with registration.
 * `supervisor_score` (float) — Weighted/raw score from the industry supervisor.
 * `teacher_score` (float) — Weighted/raw score from the school teacher/supervisor.
 * `exam_score` (float) — Weighted/raw score from the final exam/presentation.
@@ -764,7 +768,17 @@ Final Student Grade Card (*Rapor PKL*). Stores the aggregated marks and locks gr
 * `status` (varchar 20, default 'draft') — `draft` | `finalized`.
 * `finalized_by` (uuid, FK -> `users`, nullable)
 * `finalized_at` (timestamp, nullable)
+* `student_name` (varchar, nullable) — Snapshot of the student's name.
+* `student_number` (varchar, nullable) — Snapshot of NIM/NISN student ID number.
+* `student_email` (varchar, nullable) — Snapshot of the student's email.
+* `internship_name` (varchar, nullable) — Snapshot of the internship program name.
+* `company_name` (varchar, nullable) — Snapshot of the hosting company name.
+* `department_name` (varchar, nullable) — Snapshot of the academic department name.
+* `supervisor_name` (varchar, nullable) — Snapshot of the industry supervisor name.
+* `teacher_name` (varchar, nullable) — Snapshot of the school teacher supervisor name.
+* `archived_data` (json, nullable) — Additional snapshot metadata (address, phone, academic year, timestamps).
 * `created_at`, `updated_at` (timestamps)
+
 
 #### `certificates`
 Cryptographically signed completion credentials.

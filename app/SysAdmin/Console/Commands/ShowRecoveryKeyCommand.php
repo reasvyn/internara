@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Console\Commands;
 
 use App\Core\Support\SmartLogger;
-use App\Setup\Models\Setup;
+use App\SysAdmin\Settings\Support\Settings;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
@@ -25,9 +25,9 @@ class ShowRecoveryKeyCommand extends Command
             return self::FAILURE;
         }
 
-        $setup = Setup::latest('created_at')->first();
+        $recoveryKey = Settings::get('setup.install_recovery_key');
 
-        if (! $setup || ! $setup->recovery_key) {
+        if (! $recoveryKey) {
             $this->components->warn(__('sysadmin.recovery_show.no_setup'));
 
             return self::FAILURE;

@@ -10,20 +10,20 @@ use Illuminate\Support\Facades\Validator;
 
 final class SetupDepartmentAction extends BaseAction
 {
-    public function execute(string $schoolId, array $data): Department
+    public function execute(array $data): Department
     {
         Validator::validate($data, [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
         ]);
 
-        return $this->transaction(function () use ($schoolId, $data) {
+        return $this->transaction(function () use ($data) {
             $department = Department::updateOrCreate(
-                ['school_id' => $schoolId, 'name' => $data['name']],
-                [...$data, 'school_id' => $schoolId],
+                ['name' => $data['name']],
+                $data,
             );
 
-            $this->log('department_setup_completed', $department, array_merge($data, ['school_id' => $schoolId]));
+            $this->log('department_setup_completed', $department, $data);
 
             return $department;
         });

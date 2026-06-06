@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['internship_id', 'name', 'description', 'is_active', 'created_by'])]
+#[Fillable(['internship_id', 'name', 'structure', 'created_by'])]
 class Rubric extends BaseModel
 {
     use HasFactory;
@@ -20,7 +20,7 @@ class Rubric extends BaseModel
     protected function casts(): array
     {
         return [
-            'is_active' => 'boolean',
+            'structure' => 'json',
         ];
     }
 
@@ -29,14 +29,9 @@ class Rubric extends BaseModel
         return $this->belongsTo(Internship::class);
     }
 
-    public function creator(): BelongsTo
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function competencies(): HasMany
-    {
-        return $this->hasMany(Competency::class)->orderBy('order');
     }
 
     public function assessments(): HasMany

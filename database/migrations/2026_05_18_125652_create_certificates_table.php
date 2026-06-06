@@ -13,17 +13,15 @@ return new class extends Migration
         Schema::create('certificates', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('registration_id')->constrained('registrations')->cascadeOnDelete();
-            $table->index('registration_id');
             $table->string('certificate_number')->unique();
-            $table->foreignUuid('template_id')->constrained('certificate_templates')->nullOnDelete();
-            $table->index('template_id');
+            $table->string('qr_hash')->unique();
             $table->string('status')->default('issued')->index();
+            $table->text('template_content')->nullable();
             $table->foreignUuid('issued_by')->constrained('users')->cascadeOnDelete();
             $table->dateTime('issued_at');
-            $table->json('metadata')->nullable();
-            $table->foreignUuid('revoked_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->dateTime('revoked_at')->nullable();
             $table->timestamps();
+
+            $table->index('registration_id');
         });
     }
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Setup\Actions;
 
 use App\Setup\Actions\ValidateSetupTokenAction;
-use App\Setup\Models\Setup;
+use App\SysAdmin\Settings\Support\Settings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Crypt;
 use RuntimeException;
@@ -13,35 +13,29 @@ use RuntimeException;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Setup::truncate();
+    Settings::set([
+        'setup.install_token' => ['value' => null, 'group' => 'setup', 'type' => 'string'],
+        'setup.token_expires_at' => ['value' => null, 'group' => 'setup', 'type' => 'datetime'],
+        'setup.is_installed' => ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
+        'setup.token_version' => ['value' => 0, 'group' => 'setup', 'type' => 'integer'],
+    ]);
 });
 
 test('validate setup token action validates and clears valid token', function () {
     $token = 'secure-setup-token';
-    $setup = Setup::factory()->create([
-        'setup_token' => Crypt::encryptString($token),
-        'token_expires_at' => now()->addMinutes(30),
+    Settings::set([
+        'setup.install_token' => ['value' => Crypt::encryptString($token), 'group' => 'setup', 'type' => 'string'],
+        'setup.token_expires_at' => ['value' => now()->addMinutes(30)->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
     ]);
 
     $action = new ValidateSetupTokenAction;
     $action->execute($token);
 
-    $setup->refresh();
-    expect($setup->setup_token)->toBeNull();
-    expect($setup->token_expires_at)->toBeNull();
-});
-
-test('validate setup token action throws exception if no setup record', function () {
-    $action = new ValidateSetupTokenAction;
-
-    expect(fn () => $action->execute('token'))->toThrow(RuntimeException::class, 'No setup configuration found');
+    expect(Settings::get('setup.install_token'))->toBeNull();
+    expect(Settings::get('setup.token_expires_at'))->toBeNull();
 });
 
 test('validate setup token action throws exception if token is missing', function () {
-    Setup::factory()->create([
-        'setup_token' => null,
-    ]);
-
     $action = new ValidateSetupTokenAction;
 
     expect(fn () => $action->execute('token'))->toThrow(RuntimeException::class, 'Setup token is missing');
@@ -49,9 +43,9 @@ test('validate setup token action throws exception if token is missing', functio
 
 test('validate setup token action throws exception if token is expired', function () {
     $token = 'expired-token';
-    Setup::factory()->create([
-        'setup_token' => Crypt::encryptString($token),
-        'token_expires_at' => now()->subMinutes(5),
+    Settings::set([
+        'setup.install_token' => ['value' => Crypt::encryptString($token), 'group' => 'setup', 'type' => 'string'],
+        'setup.token_expires_at' => ['value' => now()->subMinutes(5)->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
     ]);
 
     $action = new ValidateSetupTokenAction;
@@ -60,9 +54,9 @@ test('validate setup token action throws exception if token is expired', functio
 });
 
 test('validate setup token action throws exception if token is malformed', function () {
-    Setup::factory()->create([
-        'setup_token' => 'invalid-not-encrypted-string',
-        'token_expires_at' => now()->addMinutes(30),
+    Settings::set([
+        'setup.install_token' => ['value' => 'invalid-not-encrypted-string', 'group' => 'setup', 'type' => 'string'],
+        'setup.token_expires_at' => ['value' => now()->addMinutes(30)->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
     ]);
 
     $action = new ValidateSetupTokenAction;
@@ -71,9 +65,9 @@ test('validate setup token action throws exception if token is malformed', funct
 });
 
 test('validate setup token action throws exception if token mismatch', function () {
-    Setup::factory()->create([
-        'setup_token' => Crypt::encryptString('secret-token'),
-        'token_expires_at' => now()->addMinutes(30),
+    Settings::set([
+        'setup.install_token' => ['value' => Crypt::encryptString('secret-token'), 'group' => 'setup', 'type' => 'string'],
+        'setup.token_expires_at' => ['value' => now()->addMinutes(30)->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
     ]);
 
     $action = new ValidateSetupTokenAction;

@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Assignment\Models\Assignment;
-use App\Assignment\Models\AssignmentType;
+use App\Document\Models\Document;
 use App\Program\Internship\Models\Internship;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,17 +20,14 @@ class AssignmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->faker->uuid(),
-            'assignment_type_id' => AssignmentType::factory(),
             'internship_id' => Internship::factory(),
-            'academic_year' => $this->faker->year(),
+            'document_id' => Document::factory(),
+            'assignment_type' => $this->faker->randomElement(['project', 'report', 'essay']),
             'title' => $this->faker->sentence(3),
-            'group' => $this->faker->randomElement(['academic', 'practical']),
             'description' => $this->faker->paragraph(),
-            'is_mandatory' => $this->faker->boolean(30),
             'due_date' => $this->faker->dateTimeBetween('+1 week', '+2 months'),
-            'config' => ['allow_file_upload' => true],
             'status' => 'draft',
+            'created_by' => User::factory(),
         ];
     }
 

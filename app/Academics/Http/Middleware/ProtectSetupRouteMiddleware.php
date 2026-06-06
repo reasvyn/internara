@@ -7,7 +7,6 @@ namespace App\Academics\Http\Middleware;
 use App\Core\Support\SmartLogger;
 use App\Setup\Actions\ValidateSetupTokenAction;
 use App\Setup\Entities\SetupState;
-use App\Setup\Models\Setup;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -25,7 +24,7 @@ class ProtectSetupRouteMiddleware
     {
         view()->share('errors', session()->get('errors') ?? new ViewErrorBag);
 
-        $state = Setup::readonlyState();
+        $state = SetupState::fromSettings();
 
         if ($state->isInstalled()) {
             return $this->handleInstalled($request, $next, $state);

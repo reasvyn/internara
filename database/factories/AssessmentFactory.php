@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Assessment\Models\Assessment;
 use App\Enrollment\Models\Registration;
 use App\User\Models\User;
@@ -21,11 +20,10 @@ class AssessmentFactory extends Factory
     {
         return [
             'registration_id' => Registration::factory(),
-            'academic_year_id' => AcademicYear::factory(),
             'evaluator_id' => User::factory(),
-            'type' => $this->faker->randomElement(['midterm', 'final', 'periodic']),
+            'assessment_type' => $this->faker->randomElement(['midterm', 'final', 'periodic', 'industry']),
             'score' => $this->faker->randomFloat(2, 0, 100),
-            'content' => [
+            'scores_data' => [
                 ['criterion' => 'Technical Skills', 'score' => $this->faker->randomFloat(2, 0, 40)],
                 ['criterion' => 'Soft Skills', 'score' => $this->faker->randomFloat(2, 0, 30)],
                 ['criterion' => 'Attendance', 'score' => $this->faker->randomFloat(2, 0, 30)],

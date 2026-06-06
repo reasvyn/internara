@@ -11,21 +11,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('gdpr_deletion_logs', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('user_id')->nullable()->index(); // Nullable after deletion
-            $table->string('user_email')->index();
-            $table
-                ->enum('deletion_type', ['anonymization', 'permanent_deletion'])
-                ->default('anonymization');
-            $table->string('reason');
-            $table->foreignUuid('deleted_by')->constrained('users')->onDelete('cascade');
-            $table->json('metadata')->nullable(); // User data snapshot for audit
-            $table->dateTime('deleted_at');
-            $table->timestamps();
-
-            // Index for deletion audit queries
-            $table->index(['deleted_at', 'deletion_type']);
-            $table->index('deleted_by');
+            $table->uuid('id')->primary();
+            $table->uuid('user_id')->nullable()->index(); // Orphaned UUID reference of deleted user
+            $table->json('metadata_snapshot')->nullable();
+            $table->timestamp('created_at')->nullable();
         });
     }
 

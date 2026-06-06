@@ -37,6 +37,10 @@ class SettingValueCast implements CastsAttributes
         $targetType = $attributes['type'] ?? null;
 
         if ($targetType === 'encrypted') {
+            if ($value === null) {
+                return ['value' => null, 'type' => 'null'];
+            }
+
             return [
                 'value' => $this->encrypt((string) $value, $model, $key),
                 'type' => 'encrypted',

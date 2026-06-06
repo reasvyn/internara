@@ -18,7 +18,7 @@ final class GetSupervisorDashboardStatsAction extends BaseAction
     {
         $userId = Auth::id();
 
-        $activeInterns = Registration::whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+        $activeInterns = Registration::where('status', 'active')
             ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId))
             ->count();
 
@@ -26,21 +26,21 @@ final class GetSupervisorDashboardStatsAction extends BaseAction
 
         $verifiedJournals = Logbook::where('is_verified', true)
             ->whereHas('registration', fn ($q) => $q
-                ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+                ->where('status', 'active')
                 ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)))
             ->count();
 
         // Pending (Unverified) Journals of active interns
         $pendingJournals = Logbook::where('is_verified', false)
             ->whereHas('registration', fn ($q) => $q
-                ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+                ->where('status', 'active')
                 ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)))
             ->count();
 
         // Pending (Unverified) Attendance approvals of active interns
         $pendingAttendance = Attendance::where('is_verified', false)
             ->whereHas('registration', fn ($q) => $q
-                ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+                ->where('status', 'active')
                 ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)))
             ->count();
 

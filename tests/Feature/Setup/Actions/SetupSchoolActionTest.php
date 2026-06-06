@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup\Actions;
 
-use App\Academics\School\Models\School;
 use App\Setup\Actions\SetupSchoolAction;
+use App\SysAdmin\Settings\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 
 uses(RefreshDatabase::class);
 
-test('setup school action successfully creates school and logs it', function () {
+test('setup school action successfully stores school data in settings', function () {
     $action = new SetupSchoolAction;
 
     $data = [
@@ -24,12 +24,12 @@ test('setup school action successfully creates school and logs it', function () 
         'principal_name' => 'Dr. John Doe',
     ];
 
-    $school = $action->execute($data);
+    $action->execute($data);
 
-    expect($school)->toBeInstanceOf(School::class);
-    expect($school->name)->toBe('State Vocational School 1');
-    expect($school->institutional_code)->toBe('SCH-1002');
-    expect(School::count())->toBe(1);
+    expect(Setting::where('key', 'school.name')->value('value'))->toBe('State Vocational School 1');
+    expect(Setting::where('key', 'school.institutional_code')->value('value'))->toBe('SCH-1002');
+    expect(Setting::where('key', 'school.email')->value('value'))->toBe('smk1@sch.id');
+    expect(Setting::where('key', 'school.principal_name')->value('value'))->toBe('Dr. John Doe');
 });
 
 test('setup school action throws validation exception on invalid website', function () {

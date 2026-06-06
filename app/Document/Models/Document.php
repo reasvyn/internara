@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Document\Models;
 
 use App\Core\Models\BaseModel;
-use App\Document\Enums\DocumentCategory;
-use App\Program\Internship\Models\InternshipDocumentRequirement;
+use App\User\Models\User;
 use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-#[Fillable(['name', 'slug', 'category', 'description', 'content', 'file_path', 'is_active', 'template_version', 'template_id'])]
+#[Fillable(['type', 'slug', 'title', 'content', 'file_path', 'version', 'is_active', 'metadata', 'created_by'])]
 class Document extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
@@ -29,20 +28,25 @@ class Document extends BaseModel implements HasMedia
     protected function casts(): array
     {
         return [
-            'category' => DocumentCategory::class,
             'is_active' => 'boolean',
-            'template_version' => 'integer',
+            'version' => 'integer',
+            'metadata' => 'json',
         ];
     }
 
-    public function template(): BelongsTo
+    public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(self::class, 'template_id');
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function acknowledgements(): HasMany
+    {
+        return $this->hasMany(DocumentAcknowledgement::class);
     }
 
     public function getDownloadNameAttribute(): string
     {
-        return $this->original_name ?? $this->name.'.pdf';
+        return $this->original_name ?? $this->title.'.pdf';
     }
 
     public function registerMediaCollections(): void
@@ -55,13 +59,8 @@ class Document extends BaseModel implements HasMedia
         return $query->where('is_active', true);
     }
 
-    public function scopeOfCategory(Builder $query, string $category): Builder
+    public function scopeOfType(Builder $query, string $type): Builder
     {
-        return $query->where('category', $category);
-    }
-
-    public function internshipRequirements(): HasMany
-    {
-        return $this->hasMany(InternshipDocumentRequirement::class);
+        return $query->where('type', $type);
     }
 }

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\SysAdmin\Console\Commands;
 
 use App\Core\Support\SmartLogger;
-use App\Setup\Models\Setup;
 use App\SysAdmin\Account\Actions\ReadRecoveryKeyAction;
 use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
 use App\SysAdmin\Settings\Support\AppInfo;
+use App\SysAdmin\Settings\Support\Settings;
 use App\User\Models\User;
 use App\User\SuperAdmin\Actions\RecoverSuperAdminAction;
 use Illuminate\Console\Command;
@@ -171,8 +171,7 @@ class RecoverAdminCommand extends Command
             return false;
         }
 
-        $storedSetup = Setup::latest('created_at')->first();
-        $storedHash = $storedSetup?->recovery_key;
+        $storedHash = Settings::get('setup.install_recovery_key');
         $keyValid = $storedHash !== null && Hash::check($key, $storedHash);
 
         if (! $keyValid) {

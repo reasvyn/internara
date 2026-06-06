@@ -11,28 +11,21 @@ use Database\Factories\AssessmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['registration_id', 'academic_year_id', 'rubric_id', 'evaluator_id', 'type', 'score', 'content', 'feedback', 'finalized_at'])]
+#[Fillable(['registration_id', 'rubric_id', 'evaluator_id', 'assessment_type', 'score', 'scores_data', 'feedback', 'finalized_at'])]
 class Assessment extends BaseModel
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $casts = [
-        'content' => 'array',
+        'scores_data' => 'array',
         'score' => 'float',
         'finalized_at' => 'datetime',
-        'deleted_at' => 'datetime',
     ];
 
     public function registration(): BelongsTo
     {
         return $this->belongsTo(Registration::class, 'registration_id');
-    }
-
-    public function academicYear(): BelongsTo
-    {
-        return $this->belongsTo(AcademicYear::class);
     }
 
     public function rubric(): BelongsTo

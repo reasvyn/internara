@@ -7,7 +7,7 @@ namespace App\Academics\Events;
 final readonly class SetupFinalized
 {
     public function __construct(
-        public ?string $schoolId,
+        public ?string $departmentId,
         public \DateTimeImmutable $installedAt,
     ) {}
 }

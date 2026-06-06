@@ -21,17 +21,17 @@ final class GetTeacherDashboardStatsAction extends BaseAction
     {
         $userId = Auth::id();
 
-        $supervisedStudents = Registration::whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+        $supervisedStudents = Registration::where('status', 'active')
             ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId))
             ->count();
 
         $pendingJournals = Logbook::where('status', 'submitted')
             ->whereHas('registration', fn ($q) => $q
-                ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+                ->where('status', 'active')
                 ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)))
             ->count();
 
-        $activeCompanies = Registration::whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+        $activeCompanies = Registration::where('status', 'active')
             ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId))
             ->whereHas('placement.company')
             ->get()
@@ -42,7 +42,7 @@ final class GetTeacherDashboardStatsAction extends BaseAction
         // Ungraded Submissions
         $ungradedSubmissions = Submission::where('status', SubmissionStatus::SUBMITTED->value)
             ->whereHas('registration', fn ($q) => $q
-                ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+                ->where('status', 'active')
                 ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)))
             ->count();
 
@@ -55,7 +55,7 @@ final class GetTeacherDashboardStatsAction extends BaseAction
             IncidentStatus::INVESTIGATING->value,
         ])
             ->whereHas('registration', fn ($q) => $q
-                ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+                ->where('status', 'active')
                 ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)))
             ->count();
 

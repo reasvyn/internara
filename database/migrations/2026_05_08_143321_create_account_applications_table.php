@@ -12,35 +12,18 @@ return new class extends Migration
     {
         Schema::create('account_applications', function (Blueprint $table) {
             $table->uuid('id')->primary();
-
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('phone')->nullable();
-            $table->text('address')->nullable();
-
-            $table->string('national_id_number', 50)->nullable();
-            $table->string('student_id_number', 50)->nullable();
-            $table->foreignUuid('school_id')->nullable()->constrained('schools')->onDelete('set null');
-            $table->index('school_id');
-            $table->foreignUuid('department_id')->nullable()->constrained('departments')->onDelete('set null');
-            $table->index('department_id');
-            $table->string('class_name')->nullable();
-            $table->integer('entry_year')->nullable();
-
-            $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
-            $table->index('internship_id');
-            $table->foreignUuid('placement_id')->nullable()->constrained('placements')->onDelete('set null');
-            $table->index('placement_id');
-            $table->string('academic_year')->nullable();
-            $table->string('proposed_company_name')->nullable();
-            $table->text('proposed_company_address')->nullable();
-
-            $table->string('status')->default('pending')->index();
+            $table->string('student_id_number', 50); // Target NISN
+            $table->foreignUuid('department_id')->constrained('departments')->onDelete('cascade');
+            $table->json('form_data');
+            $table->string('status', 20)->default('pending')->index();
+            $table->string('rejection_reason')->nullable();
             $table->foreignUuid('processed_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('processed_at')->nullable();
-            $table->text('rejection_reason')->nullable();
-
             $table->timestamps();
+
+            $table->index('department_id');
         });
     }
 

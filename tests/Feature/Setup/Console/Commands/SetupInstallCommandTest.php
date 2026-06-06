@@ -4,20 +4,27 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup\Console\Commands;
 
-use App\Setup\Models\Setup;
 use App\Setup\Support\SystemProvisioner;
+use App\SysAdmin\Settings\Support\Settings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Setup::truncate();
+    Settings::set([
+        'setup.is_installed' => ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
+        'setup.install_token' => ['value' => null, 'group' => 'setup', 'type' => 'string'],
+        'setup.token_expires_at' => ['value' => null, 'group' => 'setup', 'type' => 'datetime'],
+    ]);
     Cache::flush();
 });
 
 test('fails when system is already installed', function () {
-    Setup::factory()->installed()->create();
+    Settings::set([
+        'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
+    ]);
+    Cache::flush();
 
     $this->artisan('setup:install')
         ->assertExitCode(1)
@@ -25,7 +32,9 @@ test('fails when system is already installed', function () {
 });
 
 test('fails when system is installed and force is used in restricted environment', function () {
-    Setup::factory()->installed()->create();
+    Settings::set([
+        'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
+    ]);
     config(['setup.force_allowed_environments' => ['local', 'dev']]);
 
     $this->artisan('setup:install', ['--force' => true])
@@ -54,7 +63,9 @@ test('aborts when confirmation is declined', function () {
 });
 
 test('force reinstall succeeds in testing environment and outputs token', function () {
-    Setup::factory()->installed()->create();
+    Settings::set([
+        'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
+    ]);
 
     $this->partialMock(SystemProvisioner::class, function ($mock) {
         $mock->shouldReceive('getTasks')->andReturn([]);
