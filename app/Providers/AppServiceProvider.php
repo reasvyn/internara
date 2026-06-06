@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Auth\Permissions\Policies\UserPolicy;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Contracts\SettingsStore;
 use App\Core\Policies\BasePolicy;
@@ -12,6 +13,7 @@ use App\Settings\Support\Settings;
 use App\Setup\Events\SetupFinalized;
 use App\Setup\Listeners\LogSetupFinalized;
 use App\Support\CacheKeys;
+use App\User\Models\User;
 use App\User\Notifications\Actions\SendNotificationAction;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -59,6 +61,8 @@ class AppServiceProvider extends ServiceProvider
         if (config('module.policies.enabled', true)) {
             $this->discoverPolicies();
         }
+
+        Gate::policy(User::class, UserPolicy::class);
 
         if (config('module.livewire.enabled', true)) {
             $this->discoverLivewireComponents();

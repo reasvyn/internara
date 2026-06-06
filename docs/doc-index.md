@@ -84,23 +84,24 @@ See the [Module Index](modules/module-index.md) for more details on operational 
 |---|---|---|---|---|
 | 1 | **Core** | [Overview](modules/core.md) | [Reference](modules/core-reference.md) |
 | 1b | **Shared** | [Overview](modules/shared.md) | [Reference](modules/shared-reference.md) |
-| 2 | **User** | [Overview](modules/user.md) | [Reference](modules/user-reference.md) |
-| 3 | **SysAdmin** | [Overview](modules/sysadmin.md) | [Reference](modules/sysadmin-reference.md) |
-| 3b | **Setup** | [Overview](modules/setup.md) | [Reference](modules/setup-reference.md) |
-| 3c | **Settings** | [Overview](modules/settings.md) | [Reference](modules/settings-reference.md) |
-| 4 | **Academics** | [Overview](modules/academics.md) | [Reference](modules/academics-reference.md) |
-| 5 | **Program** | [Overview](modules/program.md) | [Reference](modules/program-reference.md) |
-| 6 | **Enrollment** | [Overview](modules/enrollment.md) | [Reference](modules/enrollment-reference.md) |
-| 7 | **Assessment** | [Overview](modules/assessment.md) | [Reference](modules/assessment-reference.md) |
-| 8 | **Evaluation** | [Overview](modules/evaluation.md) | [Reference](modules/evaluation-reference.md) |
-| 9 | **Assignment** | [Overview](modules/assignment.md) | [Reference](modules/assignment-reference.md) |
-| 10 | **Journals** | [Overview](modules/journals.md) | [Reference](modules/journals-reference.md) |
-| 11 | **Guidance** | [Overview](modules/guidance.md) | [Reference](modules/guidance-reference.md) |
-| 12 | **Incident** | [Overview](modules/incident.md) | [Reference](modules/incident-reference.md) |
-| 13 | **Partners** | [Overview](modules/partners.md) | [Reference](modules/partners-reference.md) |
-| 14 | **Certification** | [Overview](modules/certification.md) | [Reference](modules/certification-reference.md) |
-| 15 | **Reports** | [Overview](modules/reports.md) | [Reference](modules/reports-reference.md) |
-| 16 | **Document** | [Overview](modules/document.md) | [Reference](modules/document-reference.md) |
+| 2 | **Auth** | [Overview](modules/auth.md) | [Reference](modules/auth-reference.md) |
+| 3 | **User** | [Overview](modules/user.md) | [Reference](modules/user-reference.md) |
+| 4 | **SysAdmin** | [Overview](modules/sysadmin.md) | [Reference](modules/sysadmin-reference.md) |
+| 4b | **Setup** | [Overview](modules/setup.md) | [Reference](modules/setup-reference.md) |
+| 4c | **Settings** | [Overview](modules/settings.md) | [Reference](modules/settings-reference.md) |
+| 5 | **Academics** | [Overview](modules/academics.md) | [Reference](modules/academics-reference.md) |
+| 6 | **Program** | [Overview](modules/program.md) | [Reference](modules/program-reference.md) |
+| 7 | **Enrollment** | [Overview](modules/enrollment.md) | [Reference](modules/enrollment-reference.md) |
+| 8 | **Assessment** | [Overview](modules/assessment.md) | [Reference](modules/assessment-reference.md) |
+| 9 | **Evaluation** | [Overview](modules/evaluation.md) | [Reference](modules/evaluation-reference.md) |
+| 10 | **Assignment** | [Overview](modules/assignment.md) | [Reference](modules/assignment-reference.md) |
+| 11 | **Journals** | [Overview](modules/journals.md) | [Reference](modules/journals-reference.md) |
+| 12 | **Guidance** | [Overview](modules/guidance.md) | [Reference](modules/guidance-reference.md) |
+| 13 | **Incident** | [Overview](modules/incident.md) | [Reference](modules/incident-reference.md) |
+| 14 | **Partners** | [Overview](modules/partners.md) | [Reference](modules/partners-reference.md) |
+| 15 | **Certification** | [Overview](modules/certification.md) | [Reference](modules/certification-reference.md) |
+| 16 | **Reports** | [Overview](modules/reports.md) | [Reference](modules/reports-reference.md) |
+| 17 | **Document** | [Overview](modules/document.md) | [Reference](modules/document-reference.md) |
 
 ---
 

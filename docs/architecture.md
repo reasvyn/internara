@@ -418,7 +418,8 @@ Each module contains the following submodules:
 |---|---|---|---|
 | **Core** | — | (infrastructure + cross-module utilities) |
 | **Shared** | — | Traits, DTOs, concrete exceptions, global UI elements |
-| **User** | `Login/`, `Password/`, `ActivationToken/`, `AccountRecovery/`, `AccountStatus/`, `Profile/`, `Notification/`, `Dashboard/` | Http, Livewire (login, recovery, dashboards, editors) |
+| **User** | `AccountStatus/`, `Profile/`, `Notification/`, `Dashboard/` | Http, Livewire (dashboards, editors) |
+| **Auth** | `Permissions/`, `SuperAdmin/`, `Login/`, `ActivationToken/`, `AccountRecovery/`, `Password/` | Http/Middleware, Livewire (login, recovery, activation, password) |
 | **Setup** | — | Actions, Console, Entities, Events, Http, Listeners, Livewire, Policies, Support |
 | **Settings** | — | Actions, Casts, Enums, Http/Middleware, Livewire/Forms, Models, Policies, Rules, Support |
 | **Academics** | `Department/`, `AcademicYear/` | Console, Http, Livewire, Services, Support |

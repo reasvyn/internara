@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Account\Actions;
 
+use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Actions\BaseAction;
 use App\Core\Support\SmartLogger;
 use App\Exceptions\RejectedException;
 use App\User\Models\User;
 use App\User\Rules\ReservedAuthoritativeName;
 use App\User\Rules\SystemUsername;
-use App\User\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RuntimeException;

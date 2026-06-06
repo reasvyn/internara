@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 // cron.php → merged into sysadmin.php
 require __DIR__.'/web/setup.php';
+require __DIR__.'/web/auth.php';
 require __DIR__.'/web/user.php';
 require __DIR__.'/web/certification.php';
 require __DIR__.'/web/sysadmin.php';

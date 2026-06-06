@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Account\Livewire;
 
+use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Core\Livewire\BaseRecordManager;
 use App\SysAdmin\Account\Actions\CreateUserAction;
 use App\SysAdmin\Account\Actions\DeleteUserAction;
 use App\SysAdmin\Account\Actions\UpdateUserAction;
 use App\SysAdmin\Account\Livewire\Concerns\DownloadsAccountSlips;
 use App\SysAdmin\Account\Livewire\Forms\TeacherForm;
-use App\User\Enums\Role as RoleEnum;
 use App\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Account\Livewire;
 
 use App\Academics\Department\Models\Department;
+use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Core\Livewire\BaseRecordManager;
 use App\Support\CsvHandler;
 use App\SysAdmin\Account\Actions\ArchiveStudentAccountsAction;
@@ -13,7 +14,6 @@ use App\SysAdmin\Account\Actions\DeleteUserAction;
 use App\SysAdmin\Account\Actions\UpdateUserAction;
 use App\SysAdmin\Account\Livewire\Concerns\DownloadsAccountSlips;
 use App\SysAdmin\Account\Livewire\Forms\StudentForm;
-use App\User\Enums\Role as RoleEnum;
 use App\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;

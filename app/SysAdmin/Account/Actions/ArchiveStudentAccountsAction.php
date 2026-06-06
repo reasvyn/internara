@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Account\Actions;
 
+use App\Auth\Permissions\Enums\Role;
 use App\Core\Actions\BaseAction;
-use App\User\Enums\Role;
 use Illuminate\Database\Eloquent\Builder;
 
 final class ArchiveStudentAccountsAction extends BaseAction

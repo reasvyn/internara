@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Account\Actions;
 
+use App\Auth\ActivationToken\Models\ActivationToken;
 use App\Core\Actions\BaseAction;
-use App\User\ActivationToken\Models\ActivationToken;
 use App\User\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;

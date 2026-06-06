@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Setup\Actions;
 
+use App\Auth\SuperAdmin\Actions\SetupSuperAdminAction;
 use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Support\SmartLogger;
@@ -12,7 +13,6 @@ use App\Settings\Support\Settings;
 use App\Setup\Entities\SetupState;
 use App\Setup\Events\SetupFinalized;
 use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
-use App\User\SuperAdmin\Actions\SetupSuperAdminAction;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;

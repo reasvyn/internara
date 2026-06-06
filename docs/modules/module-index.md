@@ -37,19 +37,31 @@ Each module has two files:
 
 ---
 
-### 2. User — Authentication & Identity
-**Purpose:** User management, authentication, profiles, notifications, and account recovery
+### 2. Auth — Authentication & Authorization
+**Purpose:** Login, password management, account activation, recovery, RBAC, and super admin integrity
+
+- Overview: [auth.md](auth.md)
+- Reference: [auth-reference.md](auth-reference.md)
+
+**Key Concepts:** Login, Password Reset, Account Activation, Recovery Codes, RBAC, Super Admin
+
+**Dependencies:** Core, User
+
+---
+
+### 3. User — Identity & Profiles
+**Purpose:** User profiles, notifications, account status, and dashboards
 
 - Overview: [user.md](user.md)
 - Reference: [user-reference.md](user-reference.md)
 
-**Key Concepts:** Login, Recovery Codes, Profiles, Notifications, Activation
+**Key Concepts:** Profiles, Notifications, Account Status, Dashboards
 
 **Dependencies:** Core, SysAdmin
 
 ---
 
-### 3. SysAdmin — System Administration
+### 4. SysAdmin — System Administration
 **Purpose:** User administration, announcements, compliance, audit logging, and health monitoring
 
 - Overview: [sysadmin.md](sysadmin.md)
@@ -61,7 +73,7 @@ Each module has two files:
 
 ---
 
-### 3b. Setup — Installation & Provisioning
+### 4b. Setup — Installation & Provisioning
 **Purpose:** One-time technical installation, environment check, database provisioning, and setup token lifecycle management
 
 - Overview: [setup.md](setup.md)
@@ -75,7 +87,7 @@ Each module has two files:
 
 ---
 
-### 3c. Settings — System Configuration & Branding
+### 4c. Settings — System Configuration & Branding
 **Purpose:** System-wide configuration management — brand identity, color schemes, localization, mail services, and global feature toggles
 
 - Overview: [settings.md](settings.md)
@@ -91,7 +103,7 @@ Each module has two files:
 
 ## Academic Modules
 
-### 4. Academics — Educational Structure
+### 5. Academics — Educational Structure
 **Purpose:** Departments and academic calendar management
 
 - Overview: [academics.md](academics.md)
@@ -105,7 +117,7 @@ Each module has two files:
 
 ---
 
-### 5. Program — Internship Programs
+### 6. Program — Internship Programs
 **Purpose:** Internship/practicum programs, timelines, and cohort student groupings (groups)
 
 - Overview: [program.md](program.md)
@@ -119,7 +131,7 @@ Each module has two files:
 
 ---
 
-### 6. Enrollment — Student Placement
+### 7. Enrollment — Student Placement
 **Purpose:** Student registration, placement slot assignment, and change requests
 
 - Overview: [enrollment.md](enrollment.md)
@@ -135,7 +147,7 @@ Each module has two files:
 
 ## Evaluation & Assessment Modules
 
-### 7. Assessment — Evaluation Framework
+### 8. Assessment — Evaluation Framework
 **Purpose:** Rubrics, assessments, and scoring frameworks
 
 - Overview: [assessment.md](assessment.md)
@@ -149,7 +161,7 @@ Each module has two files:
 
 ---
 
-### 8. Evaluation — Performance Feedback
+### 9. Evaluation — Performance Feedback
 **Purpose:** Supervisor and teacher evaluations of students
 
 - Overview: [evaluation.md](evaluation.md)
@@ -163,7 +175,7 @@ Each module has two files:
 
 ---
 
-### 9. Assignment — Course Work
+### 10. Assignment — Course Work
 **Purpose:** Assignment management and submission tracking
 
 - Overview: [assignment.md](assignment.md)
@@ -177,7 +189,7 @@ Each module has two files:
 
 ## Tracking & Activity Modules
 
-### 10. Journals — Student Activity Tracking
+### 11. Journals — Student Activity Tracking
 **Purpose:** Logbooks, attendance, schedules, and industry assessments
 
 - Overview: [journals.md](journals.md)
@@ -191,7 +203,7 @@ Each module has two files:
 
 ---
 
-### 11. Guidance — Mentoring & Supervision
+### 12. Guidance — Mentoring & Supervision
 **Purpose:** Mentor relationships coordination and private field supervision logs
 
 - Overview: [guidance.md](guidance.md)
@@ -203,7 +215,7 @@ Each module has two files:
 
 ---
 
-### 12. Incident — Issue Tracking
+### 13. Incident — Issue Tracking
 **Purpose:** Incident reports and workplace concern documentation
 
 - Overview: [incident.md](incident.md)
@@ -217,7 +229,7 @@ Each module has two files:
 
 ## Supporting Modules
 
-### 13. Partners — Industrial Partners
+### 14. Partners — Industrial Partners
 **Purpose:** Company management and partnership agreements
 
 - Overview: [partners.md](partners.md)
@@ -231,7 +243,7 @@ Each module has two files:
 
 ---
 
-### 14. Certification — Credentials
+### 15. Certification — Credentials
 **Purpose:** Certificate generation and credential management
 
 - Overview: [certification.md](certification.md)
@@ -243,7 +255,7 @@ Each module has two files:
 
 ---
 
-### 15. Reports — Student Grade Card (Rapor PKL)
+### 16. Reports — Student Grade Card (Rapor PKL)
 **Purpose:** Final student grade compilation, score aggregation, and coordinator sign-off
 
 - Overview: [reports.md](reports.md)
@@ -255,7 +267,7 @@ Each module has two files:
 
 ---
 
-### 16. Document — Templates & Handbooks
+### 17. Document — Templates & Handbooks
 **Purpose:** Official document templates, correspondence generation (surat menyurat), policy handbooks, and compliance acknowledgements
 
 - Overview: [document.md](document.md)

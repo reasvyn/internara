@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Observability\Services;
 
-use App\User\Enums\Role;
+use App\Auth\Permissions\Enums\Role;
 use App\User\Models\User;
 
 /**
