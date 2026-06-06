@@ -1,8 +1,8 @@
-# Entity Relationship Diagram — Internara (Balanced Design)
+# Entity Relationship Diagram — Internara (Optimized Design)
 
-> **Target: 52 tables** (34 Domain Tables + 18 System/Package Tables).  
-> **Reduction:** Balanced ~25% reduction in table count (from 69/62 tables down to 52).  
-> **Goal:** Balance Separation of Concerns (SoC) with database efficiency, preventing monolithic tables while enforcing strict module context boundaries.
+> **Target: 49 tables** (31 Domain Tables + 18 System/Package Tables).  
+> **Reduction:** Further ~6% consolidation (from 52 tables down to 49).  
+> **Goal:** Maximize schema efficiency by eliminating redundant pivot tables, consolidating closely related entities, and reducing over-indexing — all while preserving Separation of Concerns.
 
 ---
 
@@ -29,25 +29,30 @@ This design maintains a pragmatic middle ground between **strict normalization**
 
 * **Eliminated `mentors` and `mentees` tables:** Student notes and supervisor types fit naturally into the `profiles` table. Deleting these tables eliminates redundant 1:1:1 query chains (`users` ➔ `profiles` ➔ `mentees`).
 * **Eliminated `schools` and `setups` tables:** Internara is single-tenant (one school per instance). All setup wizard logs and school-wide metadata (NPSN, address, principal name) are stored as configuration values under namespaces in the `settings` table.
-* **Merged `handbooks` into `documents`:** Handbooks and guidelines are unified under the `documents` table with `type = 'policy'`, using `document_acknowledgements` for compliance tracking.
+* **Merged `handbooks` into `documents`:** Handbooks and guidelines are unified under the `documents` table with `type = 'policy'`, using activity logging for compliance tracking.
 * **Inlined Rubric Metrics (`competencies` and `indicators`):** Rather than using a complex 3-table join for static evaluation sheets, the rubric structure is stored as a JSON column in `rubrics`. This preserves historical grading integrity if templates are edited later.
 * **Inlined Internship Phases & Requirements:** Stored as JSON arrays inside `internships` for simple program setup.
+* **Eliminated `registration_mentor` pivot:** Mentor assignments are now handled by `internship_group_members`, which already supports dual-mentor roles (`school_teacher` / `industry_supervisor`) with `registration_id`, `mentor_id`, and `role`. The `internship_group_id` is nullable to allow direct mentor assignments without requiring a cohort group.
+* **Merged `absence_requests` into `attendances`:** Leave request fields (`absence_type`, `absence_reason`, `absence_status`, etc.) are now inlined into the `attendances` table. This eliminates a separate table with overlapping lifecycle while keeping the approval workflow intact.
+* **Moved policy acknowledgements to `activity_log`:** The `document_acknowledgements` table is removed. Student sign-offs for school handbooks are now tracked as `activity_log` entries with event `acknowledged`, reducing table count without losing compliance audit capability.
+* **Consolidated `reports` snapshot columns:** Nine individual snapshot string columns (`student_name`, `student_number`, etc.) were replaced by a single `archived_data` JSON column, reducing table width and simplifying maintenance.
+* **Reduced over-indexing:** Removed low-selectivity indexes (boolean `is_verified`, standalone FK indexes covered by composites) on `attendances` and `logbooks` tables to improve write performance.
 
 ---
 
 ## 2. Before vs. After Schema Summary
 
-| Original Area | Original Tables | Balanced Table | Strategy & Justification |
+| Original Area | Original Tables | Optimized Table | Strategy & Justification |
 |---|---|---|---|
 | **Framework & Package** | 18 | **18** | Retained for framework completeness. Note that transient tables (`sessions`, `cache`, `jobs`, `pulse_*`) can be offloaded to memory cache drivers (e.g. Redis) in production. |
 | **Core Setup & Config** | 2 | **1** (`settings`) | Merge `setups` wizard state and `schools` single-tenant profile into the key-value `settings` table. |
 | **Identity & Access** | 6 | **4** (`users`, `profiles`, `activation_tokens`, `gdpr_deletion_logs`) | Merge `profiles` is retained 1:1 with `users`. Role-specific metadata is merged into `profiles`, eliminating `mentors` and `mentees` tables. |
-| **Academic & Documents**| 8 | **5** (`departments`, `academic_years`, `documents`, `document_acknowledgements`, `account_applications`) | Merge `handbooks` and `handbook_acknowledgements` into unified `documents` and `document_acknowledgements` by introducing a document `type` column. |
-| **Program & Enrollment**| 10 | **6** (`companies`, `partnerships`, `internships`, `placements`, `registrations`, `registration_mentor`) | Keep `partnerships` separate from `companies`. Merge `internship_phases` and requirements pivots into `internships` (as JSON columns). Keep group pivot and `registration_mentor` pivot. |
-| **Daily Operations** | 6 | **6** (`attendances`, `absence_requests`, `schedules`, `logbooks`, `supervision_logs`, `registration_documents`) | Keep daily operations separate: daily attendance, leave requests, logs, student journals, and teacher supervision logs. |
-| **Grading & Certification**| 11 | **9** (`rubrics`, `assessments`, `evaluations`, `assignments`, `submissions`, `reports`, `certificates`, `incident_reports`, `placement_change_requests`) | Merge `competencies` and `indicators` into `rubrics` structure JSON. Keep assessments, evaluations, reports, certificates, incidents, and change requests separate. Redefine `reports` as the final Grade Card (*Rapor PKL*) and delegate the report document drafts to `assignments`. Delete `presentations`. |
-| **Communication & Cohorts**| 1 | **3** (`announcements`, `internship_groups`, `internship_group_members`) | Retain announcements and group/cohort management tables. |
-| **Total Tables** | **69 / 62** | **52** | **Pragmatic ~25% Reduction** (34 Domain Tables + 18 Package/Framework Tables) |
+| **Academic & Documents**| 8 | **4** (`departments`, `academic_years`, `documents`, `account_applications`) | Merge `handbooks` and `handbook_acknowledgements` into `documents`. Acknowledgements tracked via `activity_log`. `document_acknowledgements` table removed. |
+| **Program & Enrollment**| 10 | **5** (`companies`, `partnerships`, `internships`, `placements`, `registrations`) | Keep `partnerships` separate from `companies`. Merge `internship_phases` and requirements pivots into `internships` (as JSON columns). `registration_mentor` pivot eliminated — mentor mapping now lives in `internship_group_members` with nullable `internship_group_id`. |
+| **Daily Operations** | 6 | **5** (`attendances`, `schedules`, `logbooks`, `supervision_logs`, `registration_documents`) | `attendance` inlines absence request fields. `absence_requests` table removed. |
+| **Grading & Certification**| 11 | **9** (`rubrics`, `assessments`, `evaluations`, `assignments`, `submissions`, `reports`, `certificates`, `incident_reports`, `placement_change_requests`) | Merge `competencies` and `indicators` into `rubrics` structure JSON. Reports snapshot columns consolidated into `archived_data` JSON. Keep assessments, evaluations, reports, certificates, incidents, and change requests separate. |
+| **Communication & Cohorts**| 1 | **3** (`announcements`, `internship_groups`, `internship_group_members`) | Retain announcements and group/cohort management tables. `internship_group_members` now also serves as the sole mentor assignment pivot. |
+| **Total Tables** | **69 / 62** | **49** | **~29% Total Reduction** (31 Domain Tables + 18 Package/Framework Tables) |
 
 ---
 
@@ -129,14 +134,6 @@ erDiagram
         uuid created_by FK
     }
 
-    document_acknowledgements {
-        uuid id PK
-        uuid user_id FK
-        uuid document_id FK
-        timestamp acknowledged_at
-        string ip_address
-    }
-
     companies {
         uuid id PK
         string name
@@ -192,12 +189,6 @@ erDiagram
         json proposed_company_details
     }
 
-    registration_mentor {
-        uuid registration_id FK
-        uuid user_id FK "users.id (mentor/supervisor)"
-        string role "school_teacher | industry_supervisor"
-    }
-
     registration_documents {
         uuid id PK
         uuid registration_id FK
@@ -215,20 +206,12 @@ erDiagram
         time clock_in
         time clock_out
         string status "present | late | early_out | absent"
+        string absence_type "sick | permission | other | null"
+        text absence_reason
+        string absence_attachment
+        string absence_status "pending | approved | rejected | null"
+        uuid absence_processed_by FK
         json verification_details "signatures, GPS tags, photo paths"
-    }
-
-    absence_requests {
-        uuid id PK
-        uuid user_id FK
-        uuid registration_id FK
-        date start_date
-        date end_date
-        string reason_type "sick | permission | other"
-        text reason_description
-        string attachment_path
-        string status
-        uuid processed_by FK
     }
 
     logbooks {
@@ -328,6 +311,7 @@ erDiagram
         string status "draft | finalized"
         uuid finalized_by FK "users.id"
         timestamp finalized_at
+        json archived_data "snapshot of student, company, program info"
     }
 
     certificates {
@@ -381,10 +365,10 @@ erDiagram
 
     internship_group_members {
         uuid id PK
-        uuid internship_group_id FK
+        uuid internship_group_id FK "nullable for direct mentor assignments"
         uuid registration_id FK
-        uuid user_id FK "mentor/supervisor user"
-        string role
+        uuid mentor_id FK "users.id"
+        string role "member | team_leader | school_teacher | industry_supervisor"
         timestamp joined_at
     }
 
@@ -392,17 +376,12 @@ erDiagram
     profiles ||--o| departments : "belongs to"
     profiles ||--o| companies : "belongs to (for supervisors)"
     users ||--oN activation_tokens : "has"
-    users ||--oN document_acknowledgements : "acknowledges"
-    documents ||--oN document_acknowledgements : "is acknowledged in"
     companies ||--oN partnerships : "has"
     internships ||--oN placements : "has"
     placements ||--oN registrations : "receives"
-    registrations ||--oN registration_mentor : "assigned to"
-    users ||--oN registration_mentor : "acts as mentor in"
     registrations ||--oN registration_documents : "requires"
     documents ||--oN registration_documents : "uploaded for"
     registrations ||--oN attendances : "clocks"
-    registrations ||--oN absence_requests : "requests leave for"
     registrations ||--oN logbooks : "records daily log"
     registrations ||--oN supervision_logs : "supervised in"
     rubrics ||--oN assessments : "defines criteria for"
@@ -415,6 +394,7 @@ erDiagram
     registrations ||--oN placement_change_requests : "requests change"
     internships ||--oN internship_groups : "defines cohorts in"
     internship_groups ||--oN internship_group_members : "has members"
+    internship_group_members ||--o| registrations : "mentor assignment (nullable group)"
 ```
 
 ---
@@ -499,7 +479,7 @@ Prospective student pre-registration portal.
 
 ---
 
-### 4.3 Academic & Document Structure (4 Tables)
+### 4.3 Academic & Document Structure (3 Tables)
 
 #### `departments`
 Academic majors inside the school.
@@ -530,18 +510,10 @@ Document templates, forms, and policy handbooks. Replaces `handbooks`.
 * `created_by` (uuid, FK -> `users`)
 * `created_at`, `updated_at` (timestamps)
 
-#### `document_acknowledgements`
-Tracks policy/handbook agreement compliance audits. Replaces `handbook_acknowledgements`.
-* `id` (uuid, PK)
-* `user_id` (uuid, FK -> `users`, cascade delete)
-* `document_id` (uuid, FK -> `documents`, cascade delete)
-* `acknowledged_at` (timestamp)
-* `ip_address` (varchar 45, nullable)
-* `UNIQUE` (user_id, document_id)
 
 ---
 
-### 4.4 Program & Placements (6 Tables)
+### 4.4 Program & Placements (5 Tables)
 
 #### `companies`
 Vocational partner host company registry.
@@ -597,16 +569,10 @@ Student PKL enrollments.
 * `proposed_company_details` (json, nullable) — For custom student placements.
 * `created_at`, `updated_at` (timestamps)
 
-#### `registration_mentor`
-Dual-mentor pivot mappings.
-* `registration_id` (uuid, FK -> `registrations`, cascade delete)
-* `user_id` (uuid, FK -> `users`, cascade delete) — Mentor/supervisor.
-* `role` (varchar 30) — `school_teacher` | `industry_supervisor`.
-* `PRIMARY KEY` (registration_id, user_id, role)
 
 ---
 
-### 4.5 Daily Operations (6 Tables)
+### 4.5 Daily Operations (5 Tables)
 
 #### `registration_documents`
 Tracks students' required document uploads.
@@ -622,7 +588,7 @@ Tracks students' required document uploads.
 * `created_at`, `updated_at` (timestamps)
 
 #### `attendances`
-Daily location-tagged check-ins.
+Daily location-tagged check-ins with integrated absence request management.
 * `id` (uuid, PK)
 * `user_id` (uuid, FK -> `users`, cascade delete)
 * `registration_id` (uuid, FK -> `registrations`, cascade delete)
@@ -632,24 +598,18 @@ Daily location-tagged check-ins.
 * `clock_in_lat`, `clock_in_lng` (decimal 10, 8, nullable)
 * `clock_out_lat`, `clock_out_lng` (decimal 10, 8, nullable)
 * `status` (varchar 20) — `present` | `late` | `early_out` | `absent`.
-* `verification_details` (json, nullable) — photo paths, signatures, spoof-detection flags.
+* `absence_type` (varchar 20, nullable) — `sick` | `permission` | `other`. Present when status=absent.
+* `absence_reason` (text, nullable) — Student's explanation for absence.
+* `absence_attachment` (varchar 255, nullable) — Supporting file path.
+* `absence_status` (varchar 20, nullable) — `pending` | `approved` | `rejected`. Approval workflow.
+* `absence_processed_by` (uuid, FK -> `users`, nullable) — Admin who processed the request.
+* `absence_processed_at` (timestamp, nullable)
+* `absence_admin_notes` (text, nullable)
+* `is_verified` (boolean, default false)
+* `verified_by` (uuid, FK -> `users`, nullable)
+* `verified_at` (timestamp, nullable)
 * `notes` (varchar 255, nullable)
 * `UNIQUE` (user_id, date)
-* `created_at`, `updated_at` (timestamps)
-
-#### `absence_requests`
-Student leave requests.
-* `id` (uuid, PK)
-* `user_id` (uuid, FK -> `users`, cascade delete)
-* `registration_id` (uuid, FK -> `registrations`, cascade delete)
-* `start_date`, `end_date` (date)
-* `reason_type` (varchar 20) — `sick` | `permission` | `other`.
-* `reason_description` (text)
-* `attachment_path` (varchar 255, nullable)
-* `status` (varchar 20, default 'pending')
-* `processed_by` (uuid, FK -> `users`, nullable)
-* `processed_at` (timestamp, nullable)
-* `admin_notes` (varchar 255, nullable)
 * `created_at`, `updated_at` (timestamps)
 
 #### `logbooks`
@@ -768,15 +728,7 @@ Final Student Grade Card (*Rapor PKL*). Stores the aggregated marks and locks gr
 * `status` (varchar 20, default 'draft') — `draft` | `finalized`.
 * `finalized_by` (uuid, FK -> `users`, nullable)
 * `finalized_at` (timestamp, nullable)
-* `student_name` (varchar, nullable) — Snapshot of the student's name.
-* `student_number` (varchar, nullable) — Snapshot of NIM/NISN student ID number.
-* `student_email` (varchar, nullable) — Snapshot of the student's email.
-* `internship_name` (varchar, nullable) — Snapshot of the internship program name.
-* `company_name` (varchar, nullable) — Snapshot of the hosting company name.
-* `department_name` (varchar, nullable) — Snapshot of the academic department name.
-* `supervisor_name` (varchar, nullable) — Snapshot of the industry supervisor name.
-* `teacher_name` (varchar, nullable) — Snapshot of the school teacher supervisor name.
-* `archived_data` (json, nullable) — Additional snapshot metadata (address, phone, academic year, timestamps).
+* `archived_data` (json, nullable) — Consolidated snapshot of student, company, program, and supervisor info for data retention.
 * `created_at`, `updated_at` (timestamps)
 
 
@@ -850,12 +802,12 @@ Cohorts/teams within an internship program.
 * `created_at`, `updated_at` (timestamps)
 
 #### `internship_group_members`
-Pivot mapping members/supervisors to cohorts.
+Pivot mapping members/supervisors to cohorts. Also serves as the sole mentor assignment pivot (replaces `registration_mentor`).
 * `id` (uuid, PK)
-* `internship_group_id` (uuid, FK -> `internship_groups`, cascade delete)
-* `registration_id` (uuid, FK -> `registrations`, cascade delete, nullable) — Null for supervisor assignment.
-* `user_id` (uuid, FK -> `users`, cascade delete, nullable) — Null for student assignment (student is identified via registration).
-* `role` (varchar 50) — E.g., `member`, `team_leader`, `group_supervisor`.
+* `internship_group_id` (uuid, FK -> `internship_groups`, cascade delete, nullable) — Nullable to allow direct mentor assignments without a cohort group.
+* `registration_id` (uuid, FK -> `registrations`, null on delete, nullable) — Null for supervisor-only assignment.
+* `mentor_id` (uuid, FK -> `users`, null on delete, nullable) — Mentor user. Null for student assignment.
+* `role` (varchar 50) — `member` | `team_leader` | `school_teacher` | `industry_supervisor`.
 * `joined_at` (timestamp)
 * `created_at`, `updated_at` (timestamps)
 
@@ -897,6 +849,8 @@ This balanced schema preserves and strengthens the **3S Governing Doctrine** of 
 ### S2 — Sustain
 * **Separation of Concerns:** Independent lifecycles like student assignments, grade reports, and certificate issues remain decoupled, ensuring the codebase is easy to understand, test, and adapt.
 * **Rubric Flexibility:** Nesting rubric indicators as JSON inside the `rubrics` table simplifies database structures and prevents database locks or breaking schema modifications.
+* **Consolidated Absence Management:** Absence request workflow is now inlined into `attendances`, eliminating a separate table while preserving the approval lifecycle.
+* **Activity Log as Audit Trail:** Policy acknowledgements and compliance sign-offs are tracked in `activity_log`, removing a dedicated table without losing audit capability.
 
 ### S3 — Scalable
 * **No Tenant Overhead:** Strictly single-tenant self-hosted design patterns are enforced, removing unnecessary `school_id` foreign key on every entity.

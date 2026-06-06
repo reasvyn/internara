@@ -28,19 +28,10 @@ return new class extends Migration
             $table->index(['start_date', 'end_date']);
         });
 
-        Schema::create('registration_mentor', function (Blueprint $table) {
-            $table->foreignUuid('registration_id')->constrained('registrations')->onDelete('cascade');
-            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('role')->nullable();
-            $table->timestamps();
-
-            $table->primary(['registration_id', 'user_id']);
-        });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('registration_mentor');
         Schema::dropIfExists('registrations');
     }
 };

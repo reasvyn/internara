@@ -47,8 +47,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['user_id', 'date']);
-            $table->index('registration_id');
-            $table->index('status');
             $table->index(['registration_id', 'is_verified']);
             $table->index(['user_id', 'status']);
         });

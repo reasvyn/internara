@@ -1,7 +1,7 @@
 # Document — Technical Reference
 
 > Last updated: 2026-06-06  
-> Changes: Added handbook policies and document acknowledgements models, actions, and UI references.
+> Changes: Removed `DocumentAcknowledgement` model. Policy acknowledgements are now tracked via `activity_log` (event: `acknowledged`). Reduced models from 2 to 1, components from 3 to 2, policies from 2 to 1.
 
 Detailed structural and implementation reference for the **Document** module.
 
@@ -12,15 +12,15 @@ Detailed structural and implementation reference for the **Document** module.
 Manages correspondence templates, policy handbooks, and compliance acknowledgements.
 
 ### Module Statistics
-- **Actions**: 6 business logic operations
-- **Models**: 2 data entities (`Document`, `DocumentAcknowledgement`)
-- **Livewire Components**: 3 UI components
-- **Policies**: 2 authorization rules
+- **Actions**: 4 business logic operations
+- **Models**: 1 data entity (`Document`)
+- **Livewire Components**: 2 UI components
+- **Policies**: 1 authorization rule
 - **Submodules**: 2 module submodules
 
 ### Submodules
 - `OfficialDocument`: File templates and PDF compiler endpoints.
-- `Handbook`: Policy guides and user acknowledgements tracking.
+- `Handbook`: Policy guides and acknowledgement tracking via `activity_log`.
 
 ---
 
@@ -29,6 +29,7 @@ Manages correspondence templates, policy handbooks, and compliance acknowledgeme
 This module depends on:
 - **Core** (base classes and DomPDF wrapper)
 - **User** (recipient user records)
+- **SysAdmin** (activity_log for compliance tracking)
 
 ---
 
@@ -40,8 +41,8 @@ This module depends on:
 | `OfficialDocument/Actions/RenderDocumentAction.php` | `RenderDocumentAction` | `BaseAction` |
 | `OfficialDocument/Actions/GenerateReportAction.php` | `GenerateReportAction` | `BaseAction` |
 | `OfficialDocument/Actions/DeleteReportAction.php` | `DeleteReportAction` | `BaseAction` |
-| `Handbook/Actions/AcknowledgeDocumentAction.php` | `AcknowledgeDocumentAction` | `BaseAction` |
-| `Handbook/Actions/PruneAcknowledgementsAction.php` | `PruneAcknowledgementsAction` | `BaseAction` |
+
+> **Note:** `Handbook/Actions/AcknowledgeDocumentAction.php` and `PruneAcknowledgementsAction.php` are planned but not yet implemented. Acknowledgements are currently handled inline via `activity()` helper.
 
 ---
 
@@ -50,7 +51,8 @@ This module depends on:
 | File | Class | Extends |
 |---|---|---|
 | `Models/Document.php` | `Document` | `BaseModel` |
-| `Handbook/Models/DocumentAcknowledgement.php` | `DocumentAcknowledgement` | `BaseModel` |
+
+> **Note:** `DocumentAcknowledgement` model removed. Compliance tracking uses `activity_log` with `event = 'acknowledged'`.
 
 ---
 
@@ -60,7 +62,8 @@ This module depends on:
 |---|---|---|
 | `OfficialDocument/Livewire/TemplateManager.php` | `TemplateManager` | `Component` |
 | `OfficialDocument/Livewire/ReportsManager.php` | `ReportsManager` | `Component` |
-| `Handbook/Livewire/DocumentAcknowledgementTracker.php` | `DocumentAcknowledgementTracker` | `Component` |
+
+> **Note:** `Handbook/Livewire/DocumentAcknowledgementTracker.php` is planned but not yet implemented.
 
 ---
 
@@ -69,7 +72,8 @@ This module depends on:
 | File | Policy | Extends |
 |---|---|---|
 | `Policies/DocumentPolicy.php` | `DocumentPolicy` | `BasePolicy` |
-| `Handbook/Policies/DocumentAcknowledgementPolicy.php` | `DocumentAcknowledgementPolicy` | `BasePolicy` |
+
+> **Note:** `Handbook/Policies/DocumentAcknowledgementPolicy.php` is planned but not yet implemented.
 
 ---
 
@@ -93,10 +97,8 @@ app/Document/
 │   │   │   └── Requests/
 │   │   └── Livewire/
 │   └── Handbook/
-│       ├── Actions/
-│       ├── Models/
-│       ├── Policies/
-│       └── Livewire/
+│       ├── Actions/        ← Planned
+│       └── Livewire/       ← Planned
 ├── Enums/                ← DocumentCategory enum
 ├── Models/               ← Document model
 ├── Policies/             ← DocumentPolicy

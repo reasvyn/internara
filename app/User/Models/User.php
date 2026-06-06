@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\User\Models;
 
-use App\Document\Models\DocumentAcknowledgement;
 use App\Enrollment\Models\Registration;
 use App\User\Entities\Apprentice;
 use App\User\Enums\AccountStatus;
@@ -195,11 +194,6 @@ class User extends Authenticatable implements HasMedia
     public function registrations(): HasMany
     {
         return $this->hasMany(Registration::class, 'student_id');
-    }
-
-    public function documentAcknowledgements(): HasMany
-    {
-        return $this->hasMany(DocumentAcknowledgement::class);
     }
 
     public function registerMediaCollections(): void
