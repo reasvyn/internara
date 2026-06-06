@@ -1,7 +1,7 @@
 # Setup — Technical Reference
 
 > Last updated: 2026-06-06  
-> Changes: Removed the separate Setup model and setups table. The installation wizard progress and setup tokens are now stored inside the `settings` table. Fixed Console ownership to Setup module, updated Setting model reference to Settings module.
+> Changes: Refactored the Setup module into two submodules: `Installation` and `SetupWizard`. Replaced old namespaces, directories, and registered command paths.
 
 Detailed structural and implementation reference for the **Setup** module.
 
@@ -12,10 +12,10 @@ Detailed structural and implementation reference for the **Setup** module.
 Handles technical installation, environment check, database provisioning, and one-time initialization wizard.
 
 ### Module Statistics
-- **Actions**: 6 business logic operations
+- **Actions**: 6 business logic operations (split across submodules)
 - **Models**: 0 data entities (persists wizard progress and tokens in the `settings` table)
 - **Livewire Components**: 1 UI wizard (with 4 Form Objects)
-- **Policies**: 1 authorization rule
+- **Submodules**: 2 submodules (`Installation`, `SetupWizard`)
 
 ---
 
@@ -23,41 +23,60 @@ Handles technical installation, environment check, database provisioning, and on
 
 ```
 app/Setup/
-├── Actions/
-│   ├── FinalizeSetupAction.php
-│   ├── GenerateSetupTokenAction.php
-│   ├── InstallSystemAction.php
-│   ├── SetupDepartmentAction.php
-│   ├── SetupSchoolAction.php
-│   └── ValidateSetupTokenAction.php
-├── Console/              ← Artisan commands (setup:install, setup:reset-token)
-├── Entities/
-│   └── SetupState.php
-├── Livewire/
-│   ├── Forms/
-│   │   ├── AdminForm.php
-│   │   ├── InternshipForm.php
-│   │   ├── SetupDepartmentForm.php
-│   │   └── SetupSchoolForm.php
-│   └── SetupWizard.php
-├── Policies/
-│   └── SetupPolicy.php
-├── Support/
-    └── SystemProvisioner.php
+├── Installation/           ← Submodule handling CLI commands & setup tokens
+│   ├── Actions/
+│   │   ├── GenerateSetupTokenAction.php
+│   │   ├── InstallSystemAction.php
+│   │   └── ValidateSetupTokenAction.php
+│   ├── Console/            ← Artisan commands (setup:install, setup:reset-token)
+│   │   └── Commands/
+│   │       ├── SetupInstallCommand.php
+│   │       ├── SetupResetTokenCommand.php
+│   │       └── Traits/
+│   │           └── InteractsWithInstallerCli.php
+│   ├── Http/
+│   │   └── Middleware/
+│   │       ├── ProtectSetupRouteMiddleware.php
+│   │       └── RequireSetupAccessMiddleware.php
+│   └── Support/
+│       └── SystemProvisioner.php
+├── SetupWizard/            ← Submodule handling the multi-step web wizard UI
+    ├── Actions/
+    │   ├── SetupSchoolAction.php
+    │   ├── SetupDepartmentAction.php
+    │   └── FinalizeSetupAction.php
+    ├── Entities/
+    │   └── SetupState.php
+    ├── Events/
+    │   └── SetupFinalized.php
+    ├── Listeners/
+    │   └── LogSetupFinalized.php
+    └── Livewire/
+        ├── Forms/
+        │   ├── AdminForm.php
+        │   ├── InternshipForm.php
+        │   ├── SetupDepartmentForm.php
+        │   └── SetupSchoolForm.php
+        └── SetupWizard.php
 ```
 
 ---
 
 ## Actions
 
+### Installation Submodule
 | File | Class | Extends |
 |---|---|---|
-| `Actions/GenerateSetupTokenAction.php` | `GenerateSetupTokenAction` | `BaseAction` |
-| `Actions/InstallSystemAction.php` | `InstallSystemAction` | `BaseAction` |
-| `Actions/SetupSchoolAction.php` | `SetupSchoolAction` | `BaseAction` |
-| `Actions/SetupDepartmentAction.php` | `SetupDepartmentAction` | `BaseAction` |
-| `Actions/FinalizeSetupAction.php` | `FinalizeSetupAction` | `BaseAction` |
-| `Actions/ValidateSetupTokenAction.php` | `ValidateSetupTokenAction` | `BaseAction` |
+| `Installation/Actions/GenerateSetupTokenAction.php` | `GenerateSetupTokenAction` | `BaseAction` |
+| `Installation/Actions/InstallSystemAction.php` | `InstallSystemAction` | `BaseAction` |
+| `Installation/Actions/ValidateSetupTokenAction.php` | `ValidateSetupTokenAction` | `BaseAction` |
+
+### SetupWizard Submodule
+| File | Class | Extends |
+|---|---|---|
+| `SetupWizard/Actions/SetupSchoolAction.php` | `SetupSchoolAction` | `BaseAction` |
+| `SetupWizard/Actions/SetupDepartmentAction.php` | `SetupDepartmentAction` | `BaseAction` |
+| `SetupWizard/Actions/FinalizeSetupAction.php` | `FinalizeSetupAction` | `BaseAction` |
 
 ---
 
@@ -71,13 +90,14 @@ Setup does not own any separate Eloquent model. The wizard status, Single-Use To
 
 | File | Component | Extends |
 |---|---|---|
-| `Livewire/SetupWizard.php` | `SetupWizard` | `Component` |
+| `SetupWizard/Livewire/SetupWizard.php` | `SetupWizard` | `Component` |
 
 ---
 
-## Authorization
+## Middleware
 
-- **`SetupPolicy`**: Asserts permissions for installation, setup tokens, and system provisioning.
+- **`ProtectSetupRouteMiddleware`**: Restricts access to setup routes depending on installation state and valid token.
+- **`RequireSetupAccessMiddleware`**: Ensures that clients without setup access are handled appropriately based on whether the system is installed.
 
 ---
 

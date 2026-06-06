@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Setup\Livewire\SetupWizard;
+use App\Setup\SetupWizard\Livewire\SetupWizard;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 

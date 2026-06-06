@@ -1,6 +1,6 @@
 # Action-based MVC Architecture
 > Last updated: 2026-06-06
-> Changes: Added Settings and Setup modules to module list and table, updated route file count, removed Settings from SysAdmin submodule mapping
+> Changes: Added Settings and Setup modules to module list and table, updated route file count, removed Settings from SysAdmin submodule mapping, split Setup module into Installation and SetupWizard submodules
 > **Context:** ✅ All 19 modules defined in the [module index](modules/module-index.md).
 
 
@@ -420,7 +420,7 @@ Each module contains the following submodules:
 | **Shared** | — | Traits, DTOs, concrete exceptions, global UI elements |
 | **User** | `AccountStatus/`, `Profile/`, `Notification/`, `Dashboard/` | Http, Livewire (dashboards, editors) |
 | **Auth** | `Permissions/`, `SuperAdmin/`, `Login/`, `ActivationToken/`, `AccountRecovery/`, `Password/` | Http/Middleware, Livewire (login, recovery, activation, password) |
-| **Setup** | — | Actions, Console, Entities, Events, Http, Listeners, Livewire, Policies, Support |
+| **Setup** | `Installation/`, `SetupWizard/` | — |
 | **Settings** | — | Actions, Casts, Enums, Http/Middleware, Livewire/Forms, Models, Policies, Rules, Support |
 | **Academics** | `Department/`, `AcademicYear/` | Console, Http, Livewire, Services, Support |
 | **Partners** | `Company/`, `Partnership/` | — |

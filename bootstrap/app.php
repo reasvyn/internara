@@ -12,8 +12,8 @@ use App\Exceptions\RateLimitException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationFailedException;
 use App\Settings\Http\Middleware\SetLocaleMiddleware;
-use App\Setup\Http\Middleware\ProtectSetupRouteMiddleware;
-use App\Setup\Http\Middleware\RequireSetupAccessMiddleware;
+use App\Setup\Installation\Http\Middleware\ProtectSetupRouteMiddleware;
+use App\Setup\Installation\Http\Middleware\RequireSetupAccessMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withCommands([
         __DIR__.'/../app/Core/Console/Commands',
-        __DIR__.'/../app/Setup/Console/Commands',
+        __DIR__.'/../app/Setup/Installation/Console/Commands',
         __DIR__.'/../app/SysAdmin/Console/Commands',
         __DIR__.'/../app/User/Console/Commands',
     ])
