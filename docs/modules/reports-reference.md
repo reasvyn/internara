@@ -86,4 +86,15 @@ app/Reports/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Report`
+- **Business Logic (`app/`)**: Located in [app/Reports/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Reports/)
+- **Routing (`routes/`)**: [routes/web/reports.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/reports.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/reports/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/reports/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Reports/`, Unit `tests/Unit/Reports/`
+
+
 *For overview and business context, see [reports.md](reports.md)*

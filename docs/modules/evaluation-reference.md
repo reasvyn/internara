@@ -82,4 +82,15 @@ app/Evaluation/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Evaluation`
+- **Business Logic (`app/`)**: Located in [app/Evaluation/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Evaluation/)
+- **Routing (`routes/`)**: [routes/web/evaluation.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/evaluation.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/evaluation/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/evaluation/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Evaluation/`, Unit `tests/Unit/Evaluation/`
+
+
 *For overview and business context, see [evaluation.md](evaluation.md)*

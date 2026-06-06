@@ -172,4 +172,15 @@ app/SysAdmin/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Account`, `Announcement`, `Observability`
+- **Business Logic (`app/`)**: Located in [app/SysAdmin/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/SysAdmin/)
+- **Routing (`routes/`)**: [routes/web/sysadmin.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/sysadmin.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/sysadmin/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/sysadmin/)
+- **Testing (`tests/`)**: Feature `tests/Feature/SysAdmin/`, Unit `tests/Unit/SysAdmin/`
+
+
 *For overview and business context, see [sysadmin.md](sysadmin.md)*

@@ -107,4 +107,15 @@ app/Document/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `OfficialDocument`, `Handbook`
+- **Business Logic (`app/`)**: Located in [app/Document/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Document/)
+- **Routing (`routes/`)**: [routes/web/document.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/document.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/document/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/document/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Document/`, Unit `tests/Unit/Document/`
+
+
 *For overview and business context, see [document.md](document.md)*

@@ -86,4 +86,15 @@ app/Certification/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Certificate`
+- **Business Logic (`app/`)**: Located in [app/Certification/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Certification/)
+- **Routing (`routes/`)**: [routes/web/certification.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/certification.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/certification/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/certification/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Certification/`, Unit `tests/Unit/Certification/`
+
+
 *For overview and business context, see [certification.md](certification.md)*

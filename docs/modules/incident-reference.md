@@ -86,4 +86,15 @@ app/Incident/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `IncidentReport`
+- **Business Logic (`app/`)**: Located in [app/Incident/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Incident/)
+- **Routing (`routes/`)**: [routes/web/incident.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/incident.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/incident/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/incident/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Incident/`, Unit `tests/Unit/Incident/`
+
+
 *For overview and business context, see [incident.md](incident.md)*

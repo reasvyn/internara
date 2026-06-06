@@ -108,4 +108,15 @@ app/Assignment/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Assignment`, `Submission`
+- **Business Logic (`app/`)**: Located in [app/Assignment/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Assignment/)
+- **Routing (`routes/`)**: [routes/web/assignment.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/assignment.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/assignment/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/assignment/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Assignment/`, Unit `tests/Unit/Assignment/`
+
+
 *For overview and business context, see [assignment.md](assignment.md)*

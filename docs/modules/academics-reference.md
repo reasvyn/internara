@@ -99,4 +99,15 @@ app/Academics/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `AcademicYear`, `Department`
+- **Business Logic (`app/`)**: Located in [app/Academics/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Academics/)
+- **Routing (`routes/`)**: [routes/web/academics.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/academics.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/academics/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/academics/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Academics/`, Unit `tests/Unit/Academics/`
+
+
 *For overview and business context, see [academics.md](academics.md)*

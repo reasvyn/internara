@@ -117,4 +117,15 @@ app/Journals/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Attendance`, `AbsenceRequest`, `Logbook`, `IndustryAssessment`, `Schedule`
+- **Business Logic (`app/`)**: Located in [app/Journals/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Journals/)
+- **Routing (`routes/`)**: [routes/web/journals.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/journals.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/journals/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/journals/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Journals/`, Unit `tests/Unit/Journals/`
+
+
 *For overview and business context, see [journals.md](journals.md)*

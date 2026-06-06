@@ -96,4 +96,15 @@ app/Assessment/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Assessment`, `Rubric`
+- **Business Logic (`app/`)**: Located in [app/Assessment/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Assessment/)
+- **Routing (`routes/`)**: [routes/web/assessment.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/assessment.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/assessment/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/assessment/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Assessment/`, Unit `tests/Unit/Assessment/`
+
+
 *For overview and business context, see [assessment.md](assessment.md)*

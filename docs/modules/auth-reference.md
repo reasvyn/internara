@@ -124,4 +124,15 @@ app/Auth/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Permissions`, `SuperAdmin`, `Login`, `ActivationToken`, `AccountRecovery`, `Password`
+- **Business Logic (`app/`)**: Located in [app/Auth/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Auth/)
+- **Routing (`routes/`)**: [routes/web/auth.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/auth.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/auth/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/auth/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Auth/`, Unit `tests/Unit/Auth/`
+
+
 *For overview and business context, see [auth.md](auth.md)*

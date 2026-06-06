@@ -117,4 +117,15 @@ app/User/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `AccountStatus`, `Profile`, `Notification`, `Dashboard`
+- **Business Logic (`app/`)**: Located in [app/User/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/User/)
+- **Routing (`routes/`)**: [routes/web/user.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/user.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/user/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/user/)
+- **Testing (`tests/`)**: Feature `tests/Feature/User/`, Unit `tests/Unit/User/`
+
+
 *For overview and business context, see [user.md](user.md)*
