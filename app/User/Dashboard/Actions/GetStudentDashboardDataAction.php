@@ -10,7 +10,6 @@ use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseAction;
 use App\Document\Models\Document;
-use App\Document\Models\DocumentAcknowledgement;
 use App\Enrollment\Models\Registration;
 use App\Journals\Attendance\Enums\AttendanceStatus;
 use App\Journals\Attendance\Models\Attendance;
@@ -76,10 +75,12 @@ final class GetStudentDashboardDataAction extends BaseAction
                 ->count();
         }
 
-        // Handbook (Policy Document) reading statistics
         $handbookTotalCount = Document::where('type', 'policy')->where('is_active', true)->count();
-        $handbookReadCount = DocumentAcknowledgement::where('user_id', $userId)
-            ->whereHas('document', fn ($q) => $q->where('type', 'policy'))
+        $handbookReadCount = activity()
+            ->causedBy($user)
+            ->where('log_name', 'document')
+            ->where('event', 'acknowledged')
+            ->whereHas('subject', fn ($q) => $q->where('type', 'policy'))
             ->count();
 
         return [

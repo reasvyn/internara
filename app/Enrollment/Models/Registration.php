@@ -18,7 +18,6 @@ use Database\Factories\RegistrationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -70,13 +69,6 @@ class Registration extends BaseModel
     public function placement(): BelongsTo
     {
         return $this->belongsTo(Placement::class, 'placement_id');
-    }
-
-    public function mentors(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'registration_mentor', 'registration_id', 'user_id')
-            ->withPivot('role')
-            ->withTimestamps();
     }
 
     public function logbooks(): HasMany

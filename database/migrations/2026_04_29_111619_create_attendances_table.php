@@ -30,8 +30,15 @@ return new class extends Migration
             $table->decimal('clock_out_latitude', 10, 8)->nullable();
             $table->decimal('clock_out_longitude', 11, 8)->nullable();
 
-            $table->string('status')->default('present')->index(); // present, late, early_out, absent, etc.
-            $table->boolean('is_verified')->default(false)->index();
+            $table->string('status')->default('present')->index();
+            $table->string('absence_type')->nullable()->comment('sick, permission, other');
+            $table->text('absence_reason')->nullable();
+            $table->string('absence_attachment')->nullable();
+            $table->string('absence_status')->nullable()->comment('pending, approved, rejected');
+            $table->foreignUuid('absence_processed_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamp('absence_processed_at')->nullable();
+            $table->text('absence_admin_notes')->nullable();
+            $table->boolean('is_verified')->default(false);
             $table->foreignUuid('verified_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('verified_at')->nullable();
 
@@ -39,7 +46,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['user_id', 'date']);
-            $table->index('registration_id');
             $table->index(['registration_id', 'date', 'status']);
         });
     }

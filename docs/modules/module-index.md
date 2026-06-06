@@ -249,7 +249,7 @@ Each module has two files:
 - Overview: [document.md](document.md)
 - Reference: [document-reference.md](document-reference.md)
 
-**Key Concepts:** OfficialDocument, Handbook, DocumentAcknowledgement, DocumentRenderer
+**Key Concepts:** OfficialDocument, Handbook, DocumentRenderer
 
 **Dependencies:** Core, User
 

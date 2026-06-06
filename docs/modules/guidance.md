@@ -1,7 +1,7 @@
 # Guidance — Documentation Overview
 
 > Last updated: 2026-06-06  
-> Changes: Removed references to the eliminated `mentors` and `mentees` tables (now inlined in `profiles`) and handbooks (now unified under `documents` in the Document module).
+> Changes: Removed references to the eliminated `mentors` and `mentees` tables (now inlined in `profiles`). Mentor assignments now use `internship_group_members` instead of the removed `registration_mentor` pivot.
 
 Mentoring relationships coordination and teacher supervision field logging.
 
@@ -11,7 +11,7 @@ For complete technical reference including API, models, actions, and components,
 
 ## Key Principles
 
-- **Dual-Mentor supervision** — Establishes relationships between the student's registration, the assigned *Guru Pembimbing* (School Teacher), and *Pembimbing Lapangan* (Industry Supervisor). These assignments are tracked in the `registration_mentor` pivot table.
+- **Dual-Mentor supervision** — Establishes relationships between the student's registration, the assigned *Guru Pembimbing* (School Teacher), and *Pembimbing Lapangan* (Industry Supervisor). These assignments are tracked in the `internship_group_members` table with roles `school_teacher` and `industry_supervisor`.
 - **Private Supervision Logs** — Teachers write visitation, virtual meetings, or call logs to monitor student progress. These logs are private to school mentors and administrators, keeping supervision notes separate from student-facing daily logbooks.
 - **Immutable Log Auditing** — Supervision logs are immutable records once written, producing an audit trail for school inspection requirements.
 

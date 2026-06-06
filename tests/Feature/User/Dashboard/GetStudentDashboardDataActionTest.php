@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Document\Models\Document;
-use App\Document\Models\DocumentAcknowledgement;
 use App\Enrollment\Models\Registration;
 use App\User\Dashboard\Actions\GetStudentDashboardDataAction;
 use App\User\Models\User;
@@ -18,15 +17,15 @@ test('get student dashboard data action returns statistics correctly', function 
         'status' => 'active',
     ]);
 
-    // Create policy documents
     $policy1 = Document::factory()->create(['type' => 'policy', 'is_active' => true]);
     $policy2 = Document::factory()->create(['type' => 'policy', 'is_active' => true]);
 
-    // Acknowledge one policy document
-    DocumentAcknowledgement::factory()->create([
-        'user_id' => $student->id,
-        'document_id' => $policy1->id,
-    ]);
+    activity()
+        ->performedOn($policy1)
+        ->causedBy($student)
+        ->withProperties(['ip_address' => '127.0.0.1'])
+        ->event('acknowledged')
+        ->log('acknowledged');
 
     $action = new GetStudentDashboardDataAction;
     $data = $action->execute($student->id);

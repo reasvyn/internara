@@ -23,15 +23,6 @@ return new class extends Migration
             $table->foreignUuid('finalized_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('finalized_at')->nullable();
 
-            // Archived snapshot columns for standalone data retention
-            $table->string('student_name')->nullable();
-            $table->string('student_number')->nullable();
-            $table->string('student_email')->nullable();
-            $table->string('internship_name')->nullable();
-            $table->string('company_name')->nullable();
-            $table->string('department_name')->nullable();
-            $table->string('supervisor_name')->nullable();
-            $table->string('teacher_name')->nullable();
             $table->json('archived_data')->nullable();
 
             $table->timestamps();
