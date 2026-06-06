@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Document\Enums\DocumentCategory;
 use App\Document\Models\Document;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class DocumentFactory extends Factory
@@ -15,12 +15,18 @@ class DocumentFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->words(3, true),
+            'type' => fake()->randomElement(['template', 'policy', 'guideline']),
             'slug' => fake()->unique()->slug(3),
-            'category' => fake()->randomElement(DocumentCategory::cases()),
-            'description' => fake()->sentence(),
+            'title' => fake()->unique()->words(3, true),
             'content' => fake()->optional()->paragraphs(3, true),
+            'file_path' => null,
+            'version' => 1,
             'is_active' => true,
+            'metadata' => [
+                'department' => fake()->word(),
+                'tags' => [fake()->word(), fake()->word()],
+            ],
+            'created_by' => User::factory(),
         ];
     }
 

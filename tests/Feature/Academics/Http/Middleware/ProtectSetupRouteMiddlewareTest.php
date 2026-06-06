@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Setup\Models\Setup;
+use App\SysAdmin\Settings\Support\Settings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +17,9 @@ beforeEach(function () {
 });
 
 test('blocks access without token when system is installed', function () {
-    Setup::create(['is_installed' => true]);
+    Settings::set([
+        'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
+    ]);
     Cache::flush();
 
     $response = $this->get('/_test_setup_protect');
@@ -26,7 +28,10 @@ test('blocks access without token when system is installed', function () {
 });
 
 test('allows access when session has completed flag', function () {
-    Setup::create(['is_installed' => true]);
+    Settings::set([
+        'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
+        'setup.updated_at' => ['value' => now()->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
+    ]);
     Cache::flush();
     Session::put('setup.completed', true);
 
@@ -36,7 +41,9 @@ test('allows access when session has completed flag', function () {
 });
 
 test('shows token entry form when system is not installed and no token', function () {
-    Setup::truncate();
+    Settings::set([
+        'setup.is_installed' => ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
+    ]);
     Cache::flush();
 
     $response = $this->get('/_test_setup_protect');

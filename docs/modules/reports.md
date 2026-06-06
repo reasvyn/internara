@@ -16,13 +16,14 @@ For complete technical reference including API, models, actions, and components,
 - **Immutable Results** — Once the report card is marked as `finalized`, it is signed off by the coordinator and locked. Further grade changes are blocked to preserve academic integrity.
 - **Certificate Trigger** — A finalized Rapor PKL record is the strict prerequisite that unlocks eligibility for certificate generation.
 - **Qualitative Feedback Registry** — Captures overall testimonial/notes from host companies to be printed on the back page of the final report sheet.
+- **Standalone Archiving** — The grade card is designed to persist for historical archiving even if the student's user account, department, or active registration is deleted. A full snapshot of student identity, internship metadata, hosting company, department, and supervisor names is captured on save.
 
 ---
 
 ## Context Boundary
 
 The **Reports** module consumes:
-- **Enrollment (`registrations`):** Links 1:1 with the student's active enrollment record.
+- **Enrollment (`registrations`):** Links 1:1 with the student's active enrollment record. When the registration is deleted, the foreign key `registration_id` is set to null, keeping the report intact using its snapshotted fields.
 - **Assessment (`assessments`):** Gathers scores submitted by school mentors and industry supervisors.
 - **Assignment (`submissions`):** Final report document submission is treated as a regular coursework assignment (rather than being managed in this module), and its grade is pulled from the assignment's graded submission.
 

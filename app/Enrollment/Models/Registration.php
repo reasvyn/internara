@@ -8,13 +8,12 @@ use App\Assessment\Models\Assessment;
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Models\BaseModel;
 use App\Enrollment\Entities\RegistrationState;
-use App\Guidance\Mentee\Models\Mentee;
-use App\Guidance\Mentor\Models\Mentor;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\Journals\Attendance\Models\Attendance;
 use App\Journals\Logbook\Models\Logbook;
 use App\Program\Internship\Models\Internship;
 use App\Reports\Report\Models\Report;
+use App\User\Models\User;
 use Database\Factories\RegistrationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,14 +21,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Spatie\ModelStatus\HasStatuses;
 
-#[Fillable(['mentee_id', 'internship_id', 'placement_id', 'academic_year', 'start_date', 'end_date', 'proposed_company_name', 'proposed_company_address', 'status'])]
+#[Fillable(['student_id', 'internship_id', 'placement_id', 'start_date', 'end_date', 'status', 'proposed_company_details'])]
 class Registration extends BaseModel
 {
     protected $table = 'registrations';
 
-    use HasFactory, HasStatuses;
+    use HasFactory;
 
     protected static function newFactory(): RegistrationFactory
     {
@@ -39,16 +37,29 @@ class Registration extends BaseModel
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'proposed_company_details' => 'json',
     ];
+
+    public function setStatus(string $status, ?string $reason = null): static
+    {
+        $this->update(['status' => $status]);
+
+        return $this;
+    }
+
+    public function latestStatus()
+    {
+        return (object) ['name' => $this->status];
+    }
 
     public function asRegistrationState(): RegistrationState
     {
         return RegistrationState::fromModel($this);
     }
 
-    public function mentee(): BelongsTo
+    public function student(): BelongsTo
     {
-        return $this->belongsTo(Mentee::class, 'mentee_id');
+        return $this->belongsTo(User::class, 'student_id');
     }
 
     public function internship(): BelongsTo
@@ -63,7 +74,7 @@ class Registration extends BaseModel
 
     public function mentors(): BelongsToMany
     {
-        return $this->belongsToMany(Mentor::class, 'registration_mentor', 'registration_id', 'mentor_id')
+        return $this->belongsToMany(User::class, 'registration_mentor', 'registration_id', 'user_id')
             ->withPivot('role')
             ->withTimestamps();
     }

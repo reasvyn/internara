@@ -21,25 +21,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * S1 - Secure: Validates submission requirements.
  * S2 - Sustain: Rich model with business rules.
  */
-#[Fillable(['assignment_type_id', 'internship_id', 'academic_year', 'title', 'group', 'description', 'is_mandatory', 'due_date', 'config', 'status', 'created_by', 'document_id'])]
+#[Fillable(['internship_id', 'document_id', 'assignment_type', 'title', 'description', 'due_date', 'status', 'created_by'])]
 class Assignment extends BaseModel
 {
     use HasFactory;
 
     protected $casts = [
-        'is_mandatory' => 'boolean',
         'due_date' => 'datetime',
-        'config' => 'array',
         'status' => AssignmentStatus::class,
     ];
-
-    /**
-     * Get the assignment type.
-     */
-    public function type(): BelongsTo
-    {
-        return $this->belongsTo(AssignmentType::class, 'assignment_type_id');
-    }
 
     /**
      * Get the internship program.

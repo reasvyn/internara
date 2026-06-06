@@ -23,8 +23,6 @@ class AccountApplicationForm extends Form
 
     public string $student_id_number = '';
 
-    public ?string $school_id = null;
-
     public ?string $department_id = null;
 
     public string $class_name = '';
@@ -71,7 +69,6 @@ class AccountApplicationForm extends Form
             'address' => $this->address,
             'national_id_number' => $this->national_id_number,
             'student_id_number' => $this->student_id_number,
-            'school_id' => $this->school_id ?: null,
             'department_id' => $this->department_id ?: null,
             'class_name' => $this->class_name,
             'entry_year' => $this->entry_year ? (int) $this->entry_year : null,

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Setup\Actions;
 
-use App\Academics\School\Models\School;
 use App\Core\Actions\BaseAction;
+use App\SysAdmin\Settings\Support\Settings;
 use Illuminate\Support\Facades\Validator;
 
 final class SetupSchoolAction extends BaseAction
 {
-    public function execute(array $data): School
+    public function execute(array $data): void
     {
         Validator::validate($data, [
             'name' => 'required|string|max:255',
@@ -22,18 +22,21 @@ final class SetupSchoolAction extends BaseAction
             'principal_name' => 'nullable|string|max:255',
         ]);
 
-        return $this->transaction(function () use ($data) {
-            $school = School::updateOrCreate(
-                [],
-                $data,
-            );
+        $this->transaction(function () use ($data) {
+            Settings::set([
+                'school.name' => ['value' => $data['name'], 'group' => 'school', 'type' => 'string'],
+                'school.institutional_code' => ['value' => $data['institutional_code'], 'group' => 'school', 'type' => 'string'],
+                'school.email' => ['value' => $data['email'], 'group' => 'school', 'type' => 'string'],
+                'school.address' => ['value' => $data['address'] ?? '', 'group' => 'school', 'type' => 'string'],
+                'school.phone' => ['value' => $data['phone'] ?? '', 'group' => 'school', 'type' => 'string'],
+                'school.website' => ['value' => $data['website'] ?? '', 'group' => 'school', 'type' => 'string'],
+                'school.principal_name' => ['value' => $data['principal_name'] ?? '', 'group' => 'school', 'type' => 'string'],
+            ]);
 
-            $this->log('school_setup_completed', $school, [
+            $this->log('school_setup_completed', null, [
                 'name' => $data['name'],
                 'code' => $data['institutional_code'],
             ]);
-
-            return $school;
         });
     }
 }

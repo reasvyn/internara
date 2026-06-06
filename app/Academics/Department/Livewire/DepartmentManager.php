@@ -9,7 +9,6 @@ use App\Academics\Department\Actions\DeleteDepartmentAction;
 use App\Academics\Department\Actions\UpdateDepartmentAction;
 use App\Academics\Department\Livewire\Forms\DepartmentForm;
 use App\Academics\Department\Models\Department;
-use App\Academics\School\Models\School;
 use App\Core\Livewire\BaseRecordManager;
 use App\Enums\CsvRowResult;
 use App\Exceptions\RejectedException;
@@ -92,8 +91,7 @@ class DepartmentManager extends BaseRecordManager
             $update->execute($department, $this->form->toArray());
             flash()->success(__('department.save_success_updated'));
         } else {
-            $school = School::firstOrFail();
-            $create->execute(array_merge($this->form->toArray(), ['school_id' => $school->id]));
+            $create->execute($this->form->toArray());
             flash()->success(__('department.save_success_created'));
         }
 
@@ -221,7 +219,6 @@ class DepartmentManager extends BaseRecordManager
             $create->execute([
                 'name' => $name,
                 'description' => trim($row[1] ?? '') ?: null,
-                'school_id' => School::firstOrFail()->id,
             ]);
 
             return CsvRowResult::CREATED;

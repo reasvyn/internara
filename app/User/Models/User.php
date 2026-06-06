@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\User\Models;
 
+use App\Document\Models\DocumentAcknowledgement;
 use App\Enrollment\Models\Registration;
-use App\Guidance\HandbookAcknowledgement\Models\HandbookAcknowledgement;
-use App\Guidance\Mentee\Models\Mentee;
-use App\Guidance\Mentor\Models\Mentor;
 use App\User\Entities\Apprentice;
+use App\User\Enums\AccountStatus;
 use App\User\Profile\Models\Profile;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -17,7 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -25,14 +23,13 @@ use RuntimeException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Spatie\ModelStatus\HasStatuses;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'username', 'password', 'setup_required', 'locked_at', 'locked_reason'])]
+#[Fillable(['name', 'email', 'username', 'password', 'setup_required', 'locked_at', 'locked_reason', 'status', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, HasStatuses, HasUuids, InteractsWithMedia, Notifiable;
+    use HasFactory, HasUuids, InteractsWithMedia, Notifiable;
     use HasRoles {
         hasRole as parentHasRole;
         hasAnyRole as parentHasAnyRole;
@@ -163,7 +160,22 @@ class User extends Authenticatable implements HasMedia
             'locked_at' => 'datetime',
             'password' => 'hashed',
             'setup_required' => 'boolean',
+            'status' => AccountStatus::class,
+            'is_active' => 'boolean',
         ];
+    }
+
+    public function setStatus(string|AccountStatus $status, ?string $reason = null): static
+    {
+        $value = $status instanceof AccountStatus ? $status->value : $status;
+        $this->update(['status' => $value]);
+
+        return $this;
+    }
+
+    public function latestStatus()
+    {
+        return (object) ['name' => $this->status instanceof AccountStatus ? $this->status->value : $this->status];
     }
 
     protected static function booted(): void
@@ -180,24 +192,14 @@ class User extends Authenticatable implements HasMedia
         return $this->hasOne(Profile::class);
     }
 
-    public function mentees(): HasMany
+    public function registrations(): HasMany
     {
-        return $this->hasMany(Mentee::class);
+        return $this->hasMany(Registration::class, 'student_id');
     }
 
-    public function mentors(): HasMany
+    public function documentAcknowledgements(): HasMany
     {
-        return $this->hasMany(Mentor::class);
-    }
-
-    public function registrations(): HasManyThrough
-    {
-        return $this->hasManyThrough(Registration::class, Mentee::class, 'user_id', 'mentee_id');
-    }
-
-    public function handbookAcknowledgements(): HasMany
-    {
-        return $this->hasMany(HandbookAcknowledgement::class);
+        return $this->hasMany(DocumentAcknowledgement::class);
     }
 
     public function registerMediaCollections(): void
@@ -245,7 +247,7 @@ class User extends Authenticatable implements HasMedia
     public function getActiveRegistration(): ?Registration
     {
         return $this->registrations()
-            ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+            ->where('status', 'active')
             ->first();
     }
 

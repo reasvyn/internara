@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Livewire;
 
-use App\Academics\School\Models\School;
 use App\Enrollment\Actions\ApplyAccountAction;
 use App\Enrollment\Livewire\Forms\AccountApplicationForm;
 use App\Enrollment\Models\Placement;
@@ -42,12 +41,6 @@ class ApplyPage extends Component
             ->with('company')
             ->get()
             ->filter(fn ($p) => ! $p->asPlacementCapacity()->isFull());
-    }
-
-    #[Computed]
-    public function schools(): Collection
-    {
-        return School::all();
     }
 
     public function submit(ApplyAccountAction $action): void

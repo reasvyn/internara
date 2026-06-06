@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Enrollment\Models;
 
 use App\Core\Models\BaseModel;
+use App\Document\Models\Document;
 use App\Enrollment\Enums\RegistrationDocumentStatus;
 use App\User\Models\User;
 use Database\Factories\RegistrationDocumentFactory;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-#[Fillable(['registration_id', 'internship_document_requirement_id', 'status', 'admin_notes', 'verified_by', 'verified_at'])]
+#[Fillable(['registration_id', 'document_id', 'status', 'admin_notes', 'verified_by', 'verified_at'])]
 class RegistrationDocument extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
@@ -34,9 +35,9 @@ class RegistrationDocument extends BaseModel implements HasMedia
         return $this->belongsTo(Registration::class, 'registration_id');
     }
 
-    public function requirement(): BelongsTo
+    public function document(): BelongsTo
     {
-        return $this->belongsTo(InternshipDocumentRequirement::class, 'internship_document_requirement_id');
+        return $this->belongsTo(Document::class, 'document_id');
     }
 
     public function verifiedBy(): BelongsTo

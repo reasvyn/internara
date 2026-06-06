@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\User\Profile\Models;
 
 use App\Academics\Department\Models\Department;
-use App\Academics\School\Models\School;
 use App\Core\Models\BaseModel;
 use App\Partners\Company\Models\Company;
 use App\User\Enums\BloodType;
-use App\User\Enums\EmploymentStatus;
 use App\User\Enums\Gender;
 use Database\Factories\ProfileFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -24,19 +22,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'blood_type',
     'pob',
     'dob',
-    'emergency_contact_name',
-    'emergency_contact_phone',
-    'emergency_contact_address',
-    'bio',
-    'national_id_number',
+    'emergency_contact',
     'student_id_number',
-    'school_id',
-    'department_id',
-    'employment_status',
     'employee_id_number',
-    'educator_id_number',
-    'competence_field',
-    'job_title',
+    'mentor_type',
+    'internal_notes',
+    'department_id',
     'company_id',
 ])]
 
@@ -54,19 +45,14 @@ class Profile extends BaseModel
         return [
             'gender' => Gender::class,
             'blood_type' => BloodType::class,
-            'employment_status' => EmploymentStatus::class,
             'dob' => 'date',
+            'emergency_contact' => 'json',
         ];
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function school(): BelongsTo
-    {
-        return $this->belongsTo(School::class);
     }
 
     public function department(): BelongsTo

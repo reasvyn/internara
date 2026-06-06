@@ -44,7 +44,9 @@ class SetupInstallCommand extends Command
         $this->displayBanner();
 
         try {
-            if ($earlyExit = $this->handlePreFlight()) {
+            $earlyExit = $this->handlePreFlight();
+
+            if ($earlyExit !== null) {
                 return $earlyExit;
             }
 

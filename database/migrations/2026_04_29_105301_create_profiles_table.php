@@ -25,33 +25,20 @@ return new class extends Migration
             $table->string('pob')->nullable()->comment('Place of Birth');
             $table->date('dob')->nullable()->comment('Date of Birth');
 
-            $table->string('emergency_contact_name')->nullable();
-            $table->string('emergency_contact_phone')->nullable();
-            $table->text('emergency_contact_address')->nullable();
+            $table->json('emergency_contact')->nullable();
 
-            $table->text('bio')->nullable();
+            $table->string('student_id_number', 50)->nullable()->unique();
+            $table->string('employee_id_number', 30)->nullable()->unique();
+            $table->string('mentor_type')->nullable(); // school_teacher | industry_supervisor | null
+            $table->text('internal_notes')->nullable();
 
-            // Identity identifiers
-            $table->string('national_id_number', 50)->nullable();
-            $table->string('student_id_number', 50)->nullable();
-
-            $table->foreignUuid('school_id')->nullable()->constrained()->onDelete('set null');
-            $table->index('school_id');
             $table->foreignUuid('department_id')->nullable()->constrained()->onDelete('set null');
             $table->index('department_id');
-
-            $table->string('employment_status')->nullable();
-            $table->string('employee_id_number', 30)->nullable()->unique();
-            $table->string('educator_id_number', 30)->nullable()->unique();
-            $table->string('competence_field')->nullable();
-            $table->string('job_title')->nullable();
 
             $table->foreignUuid('company_id')->nullable()->constrained()->onDelete('set null');
             $table->index('company_id');
 
             $table->timestamps();
-
-            $table->index(['national_id_number', 'student_id_number']);
         });
     }
 

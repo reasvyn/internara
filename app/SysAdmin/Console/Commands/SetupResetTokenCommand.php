@@ -6,7 +6,7 @@ namespace App\SysAdmin\Console\Commands;
 
 use App\Core\Support\SmartLogger;
 use App\Setup\Actions\GenerateSetupTokenAction;
-use App\Setup\Models\Setup;
+use App\Setup\Entities\SetupState;
 use App\SysAdmin\Console\Commands\Traits\InteractsWithInstallerCli;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
@@ -28,14 +28,14 @@ class SetupResetTokenCommand extends Command
     {
         $this->displayBanner();
 
-        if (! Schema::hasTable('setups')) {
+        if (! Schema::hasTable('settings')) {
             $this->displayError(__('setup.reset_token.table_missing'));
             $this->line('  '.__('setup.reset_token.table_missing_hint'));
 
             return self::FAILURE;
         }
 
-        if (Setup::state()->isInstalled()) {
+        if (SetupState::fromSettings()->isInstalled()) {
             $this->displayError(__('setup.reset_token.protected'));
             $this->line('  '.__('setup.cli.try_health_check'));
 

@@ -7,17 +7,17 @@ namespace Tests\Feature\Academics\Events;
 use App\Academics\Events\SetupFinalized;
 use Illuminate\Support\Facades\Event;
 
-test('setup finalized event can be dispatched and contains school id and installed at', function () {
+test('setup finalized event can be dispatched and contains department id and installed at', function () {
     Event::fake();
 
     $installedAt = new \DateTimeImmutable('2026-06-05 12:00:00');
     Event::dispatch(new SetupFinalized(
-        schoolId: 'uuid-school-123',
+        departmentId: 'uuid-dept-456',
         installedAt: $installedAt,
     ));
 
     Event::assertDispatched(SetupFinalized::class, function (SetupFinalized $event) {
-        return $event->schoolId === 'uuid-school-123'
+        return $event->departmentId === 'uuid-dept-456'
             && $event->installedAt instanceof \DateTimeImmutable;
     });
 });

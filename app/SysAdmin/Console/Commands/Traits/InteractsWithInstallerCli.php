@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Console\Commands\Traits;
 
-use App\Setup\Models\Setup;
+use App\Setup\Entities\SetupState;
 use App\SysAdmin\Settings\Support\AppInfo;
 
 trait InteractsWithInstallerCli
@@ -42,6 +42,6 @@ trait InteractsWithInstallerCli
 
     protected function isInstalled(): bool
     {
-        return Setup::state()->isInstalled();
+        return SetupState::fromSettings()->isInstalled();
     }
 }

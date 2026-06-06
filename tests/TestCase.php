@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use App\Setup\Models\Setup;
+use App\SysAdmin\Settings\Support\Settings;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Gate;
 use Throwable;
@@ -19,12 +19,9 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         try {
-            $setup = Setup::first();
-            if ($setup === null) {
-                $setup = new Setup;
-            }
-            $setup->is_installed = true;
-            $setup->save();
+            Settings::set([
+                'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
+            ]);
         } catch (Throwable) {
             // Database table may not exist yet
         }

@@ -9,7 +9,6 @@ use App\Enrollment\Enums\AccountApplicationStatus;
 use App\Enrollment\Models\AccountApplication;
 use App\Enrollment\Models\Registration;
 use App\Exceptions\RejectedException;
-use App\Guidance\Mentee\Models\Mentee;
 use App\User\Models\User;
 use App\User\Profile\Models\Profile;
 
@@ -40,29 +39,26 @@ final class ApproveAccountApplicationAction extends BaseAction
 
             $user->assignRole('student');
 
+            $formData = $application->form_data;
+
             Profile::create([
                 'user_id' => $user->id,
-                'phone' => $application->phone,
-                'address' => $application->address,
-                'national_id_number' => $application->national_id_number,
+                'phone' => $formData['phone'] ?? null,
+                'address' => $formData['address'] ?? null,
                 'student_id_number' => $application->student_id_number,
-                'school_id' => $application->school_id,
                 'department_id' => $application->department_id,
             ]);
 
-            $mentee = Mentee::create([
-                'user_id' => $user->id,
-            ]);
-
             $registration = Registration::create([
-                'mentee_id' => $mentee->id,
-                'internship_id' => $application->internship_id,
-                'placement_id' => $application->placement_id,
-                'academic_year' => $application->academic_year,
-                'proposed_company_name' => $application->proposed_company_name,
-                'proposed_company_address' => $application->proposed_company_address,
-                'start_date' => $application->placement?->internship->start_date ?? $application->internship->start_date,
-                'end_date' => $application->placement?->internship->end_date ?? $application->internship->end_date,
+                'student_id' => $user->id,
+                'internship_id' => $formData['internship_id'] ?? null,
+                'placement_id' => $formData['placement_id'] ?? null,
+                'proposed_company_details' => [
+                    'company_name' => $formData['proposed_company_name'] ?? null,
+                    'address' => $formData['proposed_company_address'] ?? null,
+                ],
+                'start_date' => $formData['start_date'] ?? null,
+                'end_date' => $formData['end_date'] ?? null,
             ]);
 
             $registration->setStatus('active', 'Account application approved by administrator.');

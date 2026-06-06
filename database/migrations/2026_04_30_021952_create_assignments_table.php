@@ -12,33 +12,18 @@ return new class extends Migration
     {
         Schema::create('assignments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('assignment_type_id');
-            $table->uuid('internship_id');
-            $table->string('academic_year', 9)->nullable();
+            $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
+            $table->foreignUuid('document_id')->nullable()->constrained('documents')->nullOnDelete();
+            $table->string('assignment_type')->default('project'); // report | essay | project
             $table->string('title');
-            $table->string('group')->nullable();
             $table->text('description')->nullable();
-            $table->boolean('is_mandatory')->default(false);
-            $table->timestamp('due_date')->nullable();
-            $table->json('config')->nullable();
+            $table->dateTime('due_date')->nullable();
             $table->string('status', 20)->default('draft');
             $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignUuid('document_id')->nullable()->constrained('documents')->nullOnDelete();
-            $table->index('document_id');
             $table->timestamps();
 
-            $table
-                ->foreign('assignment_type_id')
-                ->references('id')
-                ->on('assignment_types')
-                ->onDelete('cascade');
-            $table
-                ->foreign('internship_id')
-                ->references('id')
-                ->on('internships')
-                ->onDelete('cascade');
-            $table->index('assignment_type_id');
             $table->index(['internship_id', 'status']);
+            $table->index('document_id');
         });
     }
 

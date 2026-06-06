@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Enrollment\Models;
 
 use App\Academics\Department\Models\Department;
-use App\Academics\School\Models\School;
 use App\Core\Models\BaseModel;
 use App\Enrollment\Enums\AccountApplicationStatus;
-use App\Program\Internship\Models\Internship;
 use App\User\Models\User;
 use Database\Factories\AccountApplicationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -18,19 +16,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable([
     'name',
     'email',
-    'phone',
-    'address',
-    'national_id_number',
     'student_id_number',
-    'school_id',
     'department_id',
-    'class_name',
-    'entry_year',
-    'internship_id',
-    'placement_id',
-    'academic_year',
-    'proposed_company_name',
-    'proposed_company_address',
+    'form_data',
     'status',
     'processed_by',
     'processed_at',
@@ -43,25 +31,10 @@ class AccountApplication extends BaseModel
     protected function casts(): array
     {
         return [
-            'entry_year' => 'integer',
+            'form_data' => 'json',
             'processed_at' => 'datetime',
             'status' => AccountApplicationStatus::class,
         ];
-    }
-
-    public function internship(): BelongsTo
-    {
-        return $this->belongsTo(Internship::class);
-    }
-
-    public function placement(): BelongsTo
-    {
-        return $this->belongsTo(Placement::class, 'placement_id');
-    }
-
-    public function school(): BelongsTo
-    {
-        return $this->belongsTo(School::class);
     }
 
     public function department(): BelongsTo

@@ -10,32 +10,26 @@ use App\Core\Contracts\StatusEnum;
 enum ReportStatus: string implements LabelEnum, StatusEnum
 {
     case DRAFT = 'draft';
-    case SUBMITTED = 'submitted';
-    case REVISION_REQUIRED = 'revision_required';
-    case APPROVED = 'approved';
+    case FINALIZED = 'finalized';
 
     public function label(): string
     {
         return match ($this) {
             self::DRAFT => __('Draft'),
-            self::SUBMITTED => __('Submitted'),
-            self::REVISION_REQUIRED => __('Revision Required'),
-            self::APPROVED => __('Approved'),
+            self::FINALIZED => __('Finalized'),
         };
     }
 
     public function isTerminal(): bool
     {
-        return $this === self::APPROVED;
+        return $this === self::FINALIZED;
     }
 
     public function validTransitions(): array
     {
         return match ($this) {
-            self::DRAFT => [self::SUBMITTED],
-            self::SUBMITTED => [self::APPROVED, self::REVISION_REQUIRED],
-            self::REVISION_REQUIRED => [self::DRAFT],
-            self::APPROVED => [],
+            self::DRAFT => [self::FINALIZED],
+            self::FINALIZED => [],
         };
     }
 

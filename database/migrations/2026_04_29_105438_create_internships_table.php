@@ -19,13 +19,11 @@ return new class extends Migration
             $table->string('name');
             $table->date('start_date');
             $table->date('end_date');
-            $table->date('registration_start_date')->nullable();
-            $table->date('registration_end_date')->nullable();
             $table->text('description')->nullable();
             $table->string('status')->default('draft');
-            $table->boolean('requires_presentation')->default(false)->after('status');
-            $table->integer('presentation_weight')->default(50)->after('requires_presentation');
-            $table->integer('report_weight')->default(50)->after('presentation_weight');
+            $table->json('phases')->nullable();
+            $table->json('required_document_ids')->nullable();
+            $table->json('grading_weights')->nullable();
             $table->timestamps();
 
             $table->index(['academic_year_id', 'status']);

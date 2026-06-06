@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup\Actions;
 
-use App\Academics\School\Models\School;
+use App\Academics\Department\Models\Department;
 use App\Core\Contracts\SendsNotifications;
 use App\Program\Internship\Actions\CreateInternshipAction;
 use App\Setup\Actions\FinalizeSetupAction;
 use App\Setup\Actions\SetupDepartmentAction;
 use App\Setup\Actions\SetupSchoolAction;
-use App\Setup\Models\Setup;
+use App\Setup\Entities\SetupState;
 use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
+use App\SysAdmin\Settings\Support\Settings;
 use App\User\SuperAdmin\Actions\SetupSuperAdminAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
@@ -21,21 +22,25 @@ use Spatie\Permission\Models\Role;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Setup::truncate();
+    Settings::set([
+        'setup.is_installed' => ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
+        'setup.install_token' => ['value' => null, 'group' => 'setup', 'type' => 'string'],
+        'setup.token_expires_at' => ['value' => null, 'group' => 'setup', 'type' => 'datetime'],
+        'setup.completed_steps' => ['value' => [], 'group' => 'setup', 'type' => 'json'],
+        'setup.install_recovery_key' => ['value' => null, 'group' => 'setup', 'type' => 'string'],
+        'setup.token_version' => ['value' => 0, 'group' => 'setup', 'type' => 'integer'],
+    ]);
 });
 
 test('finalize setup action successfully sets up school, department, admin, and saves recovery key', function () {
-    // 1. Setup DB dependencies
     Role::create(['name' => 'superadmin']);
 
-    // 2. Mock recovery key saving and notifications to isolate logic
     $saveRecoveryKeyMock = Mockery::mock(SaveRecoveryKeyAction::class);
     $saveRecoveryKeyMock->shouldReceive('execute')->once()->andReturn('/path/to/key');
 
     $sendNotificationMock = Mockery::mock(SendsNotifications::class);
     $sendNotificationMock->shouldReceive('execute')->once();
 
-    // 3. Instantiate other actions (we can use real instances for school, dept, and superadmin)
     $setupSchool = app(SetupSchoolAction::class);
     $setupDept = app(SetupDepartmentAction::class);
 
@@ -69,18 +74,16 @@ test('finalize setup action successfully sets up school, department, admin, and 
     $recoveryKey = $finalizeAction->execute($schoolData, $departmentData, $adminData);
 
     expect($recoveryKey)->not->toBeEmpty();
-    expect(Setup::count())->toBe(1);
 
-    $setup = Setup::latest('created_at')->first();
-    expect($setup->is_installed)->toBeTrue();
-    expect($setup->school_id)->not->toBeNull();
-    expect($setup->department_id)->not->toBeNull();
+    $state = SetupState::fromSettings();
+    expect($state->isInstalled())->toBeTrue();
+
+    expect(Department::where('name', 'Computer Science')->exists())->toBeTrue();
 });
 
 test('finalize setup action throws exception if system is already installed', function () {
-    // Create an already installed setup configuration
-    Setup::factory()->create([
-        'is_installed' => true,
+    Settings::set([
+        'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
     ]);
 
     $finalizeAction = app(FinalizeSetupAction::class);

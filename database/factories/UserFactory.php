@@ -26,6 +26,8 @@ class UserFactory extends Factory
             'setup_required' => false,
             'locked_at' => null,
             'locked_reason' => null,
+            'status' => 'activated',
+            'is_active' => true,
         ];
     }
 

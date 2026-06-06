@@ -12,7 +12,7 @@ final readonly class AssessmentResult extends BaseEntity
 {
     public function __construct(
         private ?Carbon $finalizedAt,
-        private array|float $content,
+        private array|float $scoresData,
         private float $score,
     ) {}
 
@@ -20,7 +20,7 @@ final readonly class AssessmentResult extends BaseEntity
     {
         return new self(
             finalizedAt: $model->finalized_at,
-            content: $model->content ?? [],
+            scoresData: $model->scores_data ?? [],
             score: (float) $model->score,
         );
     }
@@ -32,12 +32,12 @@ final readonly class AssessmentResult extends BaseEntity
 
     public function calculateTotalScore(): float
     {
-        if (! is_array($this->content)) {
+        if (! is_array($this->scoresData)) {
             return $this->score;
         }
 
         $total = 0.0;
-        $competencies = $this->content['competencies'] ?? [];
+        $competencies = $this->scoresData['competencies'] ?? [];
         foreach ($competencies as $competency) {
             $indicators = $competency['indicators'] ?? [];
             foreach ($indicators as $score) {

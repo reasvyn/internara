@@ -24,6 +24,8 @@ return new class extends Migration
             $table->boolean('setup_required')->default(false);
             $table->timestamp('locked_at')->nullable();
             $table->string('locked_reason')->nullable();
+            $table->string('status')->default('provisioned')->index();
+            $table->boolean('is_active')->default(true)->index();
             $table->timestamps();
 
             $table->index('locked_at');

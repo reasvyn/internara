@@ -19,6 +19,12 @@ class Setting extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
+    protected $primaryKey = 'key';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     public const COLLECTION_LOGO = 'brand_logo';
 
     public const COLLECTION_FAVICON = 'brand_favicon';

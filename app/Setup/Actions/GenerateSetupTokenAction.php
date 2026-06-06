@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Setup\Models\Setup;
-use App\Support\CacheKeys;
+use App\SysAdmin\Settings\Support\Settings;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
@@ -27,16 +26,14 @@ final class GenerateSetupTokenAction extends BaseAction
                 $plaintext = Str::random($length);
                 $encrypted = Crypt::encryptString($plaintext);
                 $expiresAt = now()->addMinutes($expiryMinutes);
+                $version = (int) Settings::get('setup.token_version', 0) + 1;
 
-                $setup = Setup::firstOrCreate([]);
-                $setup->fill([
-                    'setup_token' => $encrypted,
-                    'token_expires_at' => $expiresAt,
-                ])->save();
-
-                $setup->increment('token_version');
-
-                Cache::forget(CacheKeys::SETUP_INSTALLED);
+                Settings::set([
+                    'setup.install_token' => ['value' => $encrypted, 'group' => 'setup', 'type' => 'string'],
+                    'setup.token_expires_at' => ['value' => $expiresAt->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
+                    'setup.token_version' => ['value' => $version, 'group' => 'setup', 'type' => 'integer'],
+                    'setup.updated_at' => ['value' => now()->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
+                ]);
 
                 return [
                     'plaintext' => $plaintext,

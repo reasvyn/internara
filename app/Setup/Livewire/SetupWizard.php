@@ -6,11 +6,11 @@ namespace App\Setup\Livewire;
 
 use App\Core\Support\SmartLogger;
 use App\Setup\Actions\FinalizeSetupAction;
+use App\Setup\Entities\SetupState;
 use App\Setup\Livewire\Forms\AdminForm;
 use App\Setup\Livewire\Forms\InternshipForm;
 use App\Setup\Livewire\Forms\SetupDepartmentForm;
 use App\Setup\Livewire\Forms\SetupSchoolForm;
-use App\Setup\Models\Setup;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use App\SysAdmin\Settings\Support\AppInfo;
 use Illuminate\Contracts\View\View;
@@ -27,8 +27,6 @@ class SetupWizard extends Component
     public bool $auditPassed = false;
 
     public SetupSchoolForm $schoolForm;
-
-    public ?string $schoolId = null;
 
     public SetupDepartmentForm $departmentForm;
 
@@ -47,7 +45,7 @@ class SetupWizard extends Component
     public function mount(): void
     {
         try {
-            $state = Setup::state();
+            $state = SetupState::fromSettings();
         } catch (\Throwable $e) {
             SmartLogger::error('Setup wizard mount failed')
                 ->module('Setup')
@@ -228,7 +226,7 @@ class SetupWizard extends Component
 
         $targetStep = $stepIndex + 1;
 
-        if ($targetStep < $this->currentStep || Setup::state()->isStepCompleted($stepKey)) {
+        if ($targetStep < $this->currentStep || SetupState::fromSettings()->isStepCompleted($stepKey)) {
             $this->currentStep = $targetStep;
         }
     }

@@ -9,9 +9,9 @@ use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseAction;
+use App\Document\Models\Document;
+use App\Document\Models\DocumentAcknowledgement;
 use App\Enrollment\Models\Registration;
-use App\Guidance\Handbook\Models\Handbook;
-use App\Guidance\HandbookAcknowledgement\Models\HandbookAcknowledgement;
 use App\Journals\Attendance\Enums\AttendanceStatus;
 use App\Journals\Attendance\Models\Attendance;
 use App\Journals\Logbook\Models\Logbook;
@@ -76,9 +76,11 @@ final class GetStudentDashboardDataAction extends BaseAction
                 ->count();
         }
 
-        // Handbook reading statistics
-        $handbookTotalCount = Handbook::where('is_active', true)->count();
-        $handbookReadCount = HandbookAcknowledgement::where('user_id', $userId)->count();
+        // Handbook (Policy Document) reading statistics
+        $handbookTotalCount = Document::where('type', 'policy')->where('is_active', true)->count();
+        $handbookReadCount = DocumentAcknowledgement::where('user_id', $userId)
+            ->whereHas('document', fn ($q) => $q->where('type', 'policy'))
+            ->count();
 
         return [
             'registration' => $registration,

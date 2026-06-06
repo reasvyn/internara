@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['registration_id', 'certificate_number', 'template_id', 'status', 'issued_by', 'issued_at', 'metadata', 'revoked_by', 'revoked_at'])]
+#[Fillable(['registration_id', 'certificate_number', 'qr_hash', 'status', 'template_content', 'issued_by', 'issued_at'])]
 class Certificate extends BaseModel
 {
     use HasFactory;
@@ -27,8 +27,6 @@ class Certificate extends BaseModel
         return [
             'status' => CertificateStatus::class,
             'issued_at' => 'datetime',
-            'revoked_at' => 'datetime',
-            'metadata' => 'array',
         ];
     }
 
@@ -37,19 +35,9 @@ class Certificate extends BaseModel
         return $this->belongsTo(Registration::class, 'registration_id');
     }
 
-    public function template(): BelongsTo
-    {
-        return $this->belongsTo(CertificateTemplate::class, 'template_id');
-    }
-
     public function issuer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'issued_by');
-    }
-
-    public function revoker(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'revoked_by');
     }
 
     protected static function newFactory(): CertificateFactory

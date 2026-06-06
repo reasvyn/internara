@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Setup\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Setup\Models\Setup;
+use App\Setup\Entities\SetupState;
+use App\SysAdmin\Settings\Support\Settings;
 use Illuminate\Support\Facades\Crypt;
 use RuntimeException;
 
@@ -14,13 +15,7 @@ final class ValidateSetupTokenAction extends BaseAction
     public function execute(string $token): void
     {
         $this->transaction(function () use ($token) {
-            $setup = Setup::lockForUpdate()->latest('created_at')->first();
-
-            if (! $setup) {
-                throw new RuntimeException('No setup configuration found. Run php artisan setup:install first.');
-            }
-
-            $state = $setup->asSetupState();
+            $state = SetupState::fromSettings();
 
             if (! $state->hasStoredToken()) {
                 throw new RuntimeException('Setup token is missing from the system.');
@@ -30,8 +25,14 @@ final class ValidateSetupTokenAction extends BaseAction
                 throw new RuntimeException('Setup token has expired.');
             }
 
+            $storedToken = Settings::get('setup.install_token');
+
+            if ($storedToken === null) {
+                throw new RuntimeException('Setup token is missing from the system.');
+            }
+
             try {
-                $decrypted = Crypt::decryptString($setup->setup_token);
+                $decrypted = Crypt::decryptString($storedToken);
             } catch (\Throwable) {
                 throw new RuntimeException('Setup token is malformed or corrupted.');
             }
@@ -40,10 +41,11 @@ final class ValidateSetupTokenAction extends BaseAction
                 throw new RuntimeException('The provided setup token does not match.');
             }
 
-            $setup->fill([
-                'setup_token' => null,
-                'token_expires_at' => null,
-            ])->save();
+            Settings::set([
+                'setup.install_token' => ['value' => null, 'group' => 'setup', 'type' => 'string'],
+                'setup.token_expires_at' => ['value' => null, 'group' => 'setup', 'type' => 'datetime'],
+                'setup.updated_at' => ['value' => now()->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
+            ]);
         });
     }
 }
