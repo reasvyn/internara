@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\SysAdmin\Settings\Support\AppInfo;
-use App\SysAdmin\Settings\Support\AppMetadata;
-use App\SysAdmin\Settings\Support\Settings;
+use App\Settings\Support\AppInfo;
+use App\Settings\Support\AppMetadata;
+use App\Settings\Support\Settings;
 
 if (! function_exists('setting')) {
     /**
@@ -29,11 +29,7 @@ if (! function_exists('setting')) {
             return app(Settings::class);
         }
 
-        if (is_string($key)) {
-            return Settings::get($key, $default, $skipCache);
-        }
-
-        return $default;
+        return Settings::get($key, $default, $skipCache);
     }
 }
 

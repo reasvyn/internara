@@ -52,7 +52,7 @@ final class RecoverSuperAdminAction extends BaseAction
                     'name' => config('setup.defaults.admin_name', 'Administrator'),
                     'email' => $email,
                     'password' => Hash::make($password),
-                    'username' => $this->generateUsername(),
+                    'username' => config('setup.defaults.admin_username', 'superadmin'),
                 ]);
                 $user->profile()->create();
                 $user->setStatus(AccountStatus::PROTECTED);

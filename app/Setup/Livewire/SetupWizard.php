@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\Livewire;
 
 use App\Core\Support\SmartLogger;
+use App\Settings\Support\AppInfo;
 use App\Setup\Actions\FinalizeSetupAction;
 use App\Setup\Entities\SetupState;
 use App\Setup\Livewire\Forms\AdminForm;
@@ -12,7 +13,6 @@ use App\Setup\Livewire\Forms\InternshipForm;
 use App\Setup\Livewire\Forms\SetupDepartmentForm;
 use App\Setup\Livewire\Forms\SetupSchoolForm;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
-use App\SysAdmin\Settings\Support\AppInfo;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;

@@ -1,7 +1,7 @@
 # Documentation Index
 
-> Last updated: 2026-06-03
-> Changes: Aligned module tables with the restructured 16-module model
+> Last updated: 2026-06-06
+> Changes: Added Settings module to module table
 
 Complete catalog of all documentation files in the `docs/` directory.
 
@@ -13,7 +13,7 @@ Complete catalog of all documentation files in the `docs/` directory.
 |---|---|
 | [Product Definition](product-definition.md) | What Internara is, core principles, user personas, scope, deployment model, localization, licensing |
 | [Project Requirements](project-requirements.md) | Real-world Indonesian SMA/SMK PKL requirements, scalability metrics (500–1000 users), and global standards compliance |
-| [Key Features](key-features.md) | Complete feature inventory across all 16 modules, organized by program lifecycle |
+| [Key Features](key-features.md) | Complete feature inventory across all 19 modules, organized by program lifecycle |
 | [Action-based MVC Architecture](architecture.md) | 12-layer architecture, Action Triad (Command/Read/Process), cross-module rules, exception hierarchy, caching, validation, testing strategy |
 | [Coding Conventions](conventions.md) | Mandatory base classes, naming conventions, file structure, PHP rules, policy/enum conventions |
 
@@ -86,6 +86,8 @@ See the [Module Index](modules/module-index.md) for more details on operational 
 | 1b | **Shared** | [Overview](modules/shared.md) | [Reference](modules/shared-reference.md) |
 | 2 | **User** | [Overview](modules/user.md) | [Reference](modules/user-reference.md) |
 | 3 | **SysAdmin** | [Overview](modules/sysadmin.md) | [Reference](modules/sysadmin-reference.md) |
+| 3b | **Setup** | [Overview](modules/setup.md) | [Reference](modules/setup-reference.md) |
+| 3c | **Settings** | [Overview](modules/settings.md) | [Reference](modules/settings-reference.md) |
 | 4 | **Academics** | [Overview](modules/academics.md) | [Reference](modules/academics-reference.md) |
 | 5 | **Program** | [Overview](modules/program.md) | [Reference](modules/program-reference.md) |
 | 6 | **Enrollment** | [Overview](modules/enrollment.md) | [Reference](modules/enrollment-reference.md) |

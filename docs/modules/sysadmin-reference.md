@@ -1,7 +1,7 @@
 # SysAdmin — Technical Reference
 
-> Last updated: 2026-06-05
-> Changes: Removed Setup submodule, policies, console commands, and directories following Setup module extraction
+> Last updated: 2026-06-06
+> Changes: Removed Settings submodule, actions, model, policy, Livewire component, and directories following Settings module extraction
 
 Detailed structural and implementation reference for the **SysAdmin** module.
 
@@ -12,17 +12,18 @@ Detailed structural and implementation reference for the **SysAdmin** module.
 Handles user administration, announcements, system health monitoring, audit logging, and GDPR compliance
 
 ### Module Statistics
-- **Actions**: 20 business logic operations
-- **Models**: 3 data entities
-- **Livewire Components**: 13 UI components
-- **Policies**: 2 authorization rules
-- **Submodules**: 4 module submodules
+- **Actions**: 14 business logic operations
+- **Models**: 2 data entities
+- **Livewire Components**: 12 UI components
+- **Policies**: 1 authorization rule
+- **Submodules**: 3 module submodules
 
 ### Submodules
 - `Account`
 - `Announcement`
 - `Observability` (contains `GdprDeletionLog`, `Recorders`, `Services`)
-- `Settings`
+
+> **Note**: The `Settings` submodule has been extracted into its own standalone module. See [settings-reference.md](settings-reference.md).
 
 ---
 
@@ -59,12 +60,6 @@ This module depends on:
 | `Account/Actions/ToggleUserStatusAction.php` | `ToggleUserStatusAction` | `BaseAction` |
 | `Account/Actions/UpdateUserAction.php` | `UpdateUserAction` | `BaseAction` |
 | `Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | `BaseAction` |
-| `Settings/Actions/BatchSetSettingAction.php` | `BatchSetSettingAction` | `BaseAction` |
-| `Settings/Actions/GetAcademicYearsAction.php` | `GetAcademicYearsAction` | `Base` |
-| `Settings/Actions/SaveSystemSettingsAction.php` | `SaveSystemSettingsAction` | `BaseAction` |
-| `Settings/Actions/SetSettingAction.php` | `SetSettingAction` | `BaseAction` |
-| `Settings/Actions/TestMailSettingsAction.php` | `TestMailSettingsAction` | `BaseAction` |
-| `Settings/Actions/UploadBrandAssetAction.php` | `UploadBrandAssetAction` | `BaseAction` |
 
 ---
 
@@ -74,7 +69,6 @@ This module depends on:
 |---|---|
 | `Announcement/Models/Announcement.php` | `Announcement` |
 | `Observability/GdprDeletionLog/Models/GdprDeletionLog.php` | `GdprDeletionLog` |
-| `Settings/Models/Setting.php` | `Setting` |
 
 ---
 
@@ -89,7 +83,6 @@ This module depends on:
 | `Account/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` |
 | `Announcement/Livewire/AnnouncementManager.php` | `AnnouncementManager` | `Component` |
 | `Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` | `GdprDeletionLogs` | `Component` |
-| `Settings/Livewire/SystemSetting.php` | `SystemSetting` | `Component` |
 | `Livewire/AccountCloneDetector.php` | `AccountCloneDetector` | `Component` |
 | `Livewire/ApplicationReview.php` | `ApplicationReview` | `Component` |
 | `Livewire/AuditLogManager.php` | `AuditLogManager` | `Component` |
@@ -111,7 +104,6 @@ This module depends on:
 | File | Policy |
 |---|---|
 | `Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` |
-| `Settings/Policies/SettingPolicy.php` | `SettingPolicy` |
 
 ---
 
@@ -126,13 +118,12 @@ This module depends on:
 | `admin:recover` | `RecoverAdminCommand` | Interactive command to reset a superadmin's password or re-create it. |
 | `admin:recovery-show` | `ShowRecoveryKeyCommand` | Displays the current recovery key after confirmation. |
 | `admin:recovery-path` | `ShowRecoveryPathCommand` | Displays the absolute file path of the recovery key. |
-| `setup:install` | `SetupInstallCommand` | Kicks off the setup wizard and generates a signed access URL. |
-| `setup:reset-token` | `SetupResetTokenCommand` | Resets or generates a new setup token for the installation wizard. |
 | `notifications:prune` | `PruneNotificationsCommand` | Prunes old notification records. |
 
 > [!NOTE]
 > - `admin:promote` has been removed — role mappings and promotions are handled directly by functional/standard roles logic or user-management interfaces.
 - `system:health`, `system:cleanup`, and `system:cache-warm` are planned but not yet implemented.
+> **Note**: `setup:install` and `setup:reset-token` have been moved to the Setup module. See [setup-reference.md](setup-reference.md).
 
 ---
 
@@ -165,26 +156,12 @@ app/SysAdmin/
 │   │   │   └── Policies/
 │   │   ├── Recorders/
 │   │   └── Services/
-│   └── Settings/
-│       ├── Actions/
-│       ├── Casts/
-│       ├── Enums/
-│       ├── Http/
-│       │   └── Middleware/
-│       ├── Livewire/
-│       │   └── Forms/
-│       ├── Models/
-│       ├── Policies/
-│       ├── Rules/
-│       └── Support/
 ├── Actions/              ← Cross-submodule actions
 ├── Console/              ← Cross-submodule artisan commands
 │   └── Commands/
 │       ├── CreateAdminCommand.php          ← admin:create
 │       ├── PruneNotificationsCommand.php   ← notifications:prune
 │       ├── RecoverAdminCommand.php         ← admin:recover
-│       ├── SetupInstallCommand.php         ← setup:install
-│       ├── SetupResetTokenCommand.php      ← setup:reset-token
 │       ├── ShowRecoveryKeyCommand.php      ← admin:recovery-show
 │       └── ShowRecoveryPathCommand.php     ← admin:recovery-path
 ├── Livewire/             ← Cross-submodule UI (audit, pulse)

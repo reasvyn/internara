@@ -170,7 +170,12 @@ final class SmartLogger
             return false;
         }
 
-        return $causer !== null || $this->activityOnly();
+        return $causer !== null || $this->isActivityOnly();
+    }
+
+    private function isActivityOnly(): bool
+    {
+        return $this->toActivity && ! $this->toSystem;
     }
 
     private function dispatchEvent(): void
@@ -218,6 +223,10 @@ final class SmartLogger
     private function buildSystemContext(?Model $causer, ?string $eventName): array
     {
         $context = $this->context;
+
+        if ($eventName !== null) {
+            $context['event'] = $eventName;
+        }
 
         if ($this->payload !== []) {
             $context['payload'] = $this->payload;

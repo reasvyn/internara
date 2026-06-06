@@ -1,6 +1,6 @@
 # ADR-002: Action-based MVC Architecture
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
+> Last updated: 2026-06-06
+> Changes: Updated cross-module import policy to match architecture.md (sibling imports allowed), fixed module names in known violations table
 
 
 ## Status
@@ -8,14 +8,15 @@ Accepted
 
 ## Context
 
-The application manages a complex business module — vocational fieldwork management — with 18 distinct modules, each owning its complete vertical slice under `app/{Module}/`. The 18 modules are:
+The application manages a complex business module — vocational fieldwork management — with 19 distinct modules, each owning its complete vertical slice under `app/{Module}/`. The 19 modules are:
 
 | Module | Boundary | Key Concept |
 |---|---|---|
 | **Core** | Base classes and core interfaces everything depends on | `BaseModel`, `BaseAction`, `BaseEntity`, `BasePolicy`, `SmartLogger` |
 | **Shared** | Cross-cutting helper traits, utilities, and global UI components | `CacheKeys`, `CsvHandler`, concrete exceptions, theme switcher |
 | **User** | Identity, authentication, and profiles | Login, passwords, profile details (NISN/NIP), recovery |
-| **SysAdmin** | System configuration and administration | Key-value settings, announcements, GDPR audit logs |
+| **SysAdmin** | System administration and user management | Announcements, GDPR audit logs, account lifecycle |
+| **Settings** | System-wide configuration and branding | Key-value store, dynamic branding, color presets, mail config |
 | **Setup** | First-run wizard and environment provisioning | SetupState, installation checks, database seeder triggers |
 | **Academics** | Academic calendar and department mapping | Departments, academic years |
 | **Partners** | Industrial relationship directories | Companies, partnership agreement contracts |
@@ -94,25 +95,26 @@ and event listeners are registered manually in `AppServiceProvider`.
 
 ### Cross-Module Communication Rules
 
-No module may import another module's Models, Actions, or Livewire components directly.
-Allowed communication paths:
+Cross-module imports are **allowed**. Modules may import each other's Models, Actions, or Livewire
+components directly. The following patterns provide guidance, not enforcement:
 
-1. **Core contracts** (Layer 3) — shared interfaces like `SendsNotifications`, `LabelEnum`,
+1. **Direct import** (simplest) — straightforward cross-module access when no decoupling is needed.
+2. **Core contracts** (Layer 3) — shared interfaces like `SendsNotifications`, `LabelEnum`,
    `StatusEnum`. Any module implements them, any module consumes them through the container.
-2. **Module events** (Layer 9) — a Command Action dispatches an event; listeners in any module
+3. **Module events** (Layer 9) — a Command Action dispatches an event; listeners in any module
    react. Preferred for fire-and-forget side effects.
-3. **Action delegation** — a Process Action may call another module's Action via its public
+4. **Action delegation** — a Process Action may call another module's Action via its public
    `execute()` method. The called Action must accept primitives or DTOs, never Models.
 
-### Known Violations
+### Known Cross-Module Patterns
 
-The following cross-module imports exist in the current codebase and need remediation:
+The following cross-module imports exist in the current codebase:
 
-| Violation | Correct Approach |
+| Pattern | Description |
 |---|---|
-| `Internship\Models\Internship` imports `School\Models\AcademicYear` | Use Core contract or query in School module |
-| `Internship\Policies\CompanyPolicy` gates `Partnership\Models\Company` | Move policy to `Partnership\Policies` |
-| `Internship\Policies\InternshipRegistrationPolicy` gates `Registration\Models\Registration` | Move policy to `Registration\Policies` |
+| `Program\Models\Internship` imports `Academics\Models\AcademicYear` | Direct cross-module model access (allowed) |
+| `Program\Policies\CompanyPolicy` gates `Partners\Models\Company` | Cross-module policy gating a model in another module (allowed) |
+| `Program\Policies\InternshipRegistrationPolicy` gates `Enrollment\Models\Registration` | Cross-module policy gating a model in another module (allowed) |
 
 ### Enforcement Gap
 
@@ -138,7 +140,7 @@ Until they are restored, boundary enforcement relies on code review and PHPStan 
 
 ## References
 
-- `app/` (23 module directories; the former Shared module was merged into Core)
+- `app/` (19 business module directories + infrastructure directories)
 - `app/Core/` (base classes, contracts, exceptions, infrastructure)
 - `app/Providers/AppServiceProvider.php` (auto-discovery, manual registrations)
 - `docs/architecture.md` — 12-layer architecture, dependency rules, cross-module communication

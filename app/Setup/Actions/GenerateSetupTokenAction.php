@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\SysAdmin\Settings\Support\Settings;
+use App\Settings\Support\Settings;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;

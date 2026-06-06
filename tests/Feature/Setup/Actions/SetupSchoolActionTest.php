@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup\Actions;
 
+use App\Settings\Models\Setting;
 use App\Setup\Actions\SetupSchoolAction;
-use App\SysAdmin\Settings\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
 

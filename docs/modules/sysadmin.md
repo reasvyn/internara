@@ -1,9 +1,9 @@
 # SysAdmin — Documentation Overview
 
-> Last updated: 2026-06-05
-> Changes: Removed Setup submodule overview, wizard, and related metrics following Setup module extraction
+> Last updated: 2026-06-06
+> Changes: Removed Settings submodule following Settings module extraction
 
-Handles user administration, announcements, system health monitoring, audit logging, GDPR compliance, and system-wide configuration
+Handles user administration, announcements, system health monitoring, audit logging, and GDPR compliance.
 
 For complete technical reference including API, models, actions, and components, see [sysadmin-reference.md](sysadmin-reference.md).
 
@@ -14,7 +14,6 @@ For complete technical reference including API, models, actions, and components,
 - Account management controls user lifecycle
 - Announcements broadcast system-wide messages
 - GDPR deletion logs ensure compliance
-- Settings provide system-wide configuration, cached for performance
 - Audit logging tracks all administrative changes
 - Pulse monitoring provides system health visibility
 
@@ -22,7 +21,7 @@ For complete technical reference including API, models, actions, and components,
 
 ## Context Boundary
 
-Manages user account lifecycle, announcements, runtime configuration, GDPR compliance, and system health monitoring. Works with User module for authentication and Core for base services. Provides configuration to all modules via the Setting submodule.
+Manages user account lifecycle, announcements, GDPR compliance, and system health monitoring. Works with User module for authentication and Core for base services. System-wide configuration is handled by the [Settings](settings.md) module.
 
 ---
 
@@ -35,10 +34,6 @@ Manages user account lifecycle, announcements, runtime configuration, GDPR compl
   *   **Status**: The superadmin account must maintain the `PROTECTED` account lifecycle status.
 - **Account Suspension**: Suspension preserves account data but blocks active user login sessions.
 - **Auditing**: All account changes, status toggles, and recovery attempts are fully audit-logged via `SmartLogger`.
-- **Settings Access**: Only admin can modify settings.
-- **Settings Propagation**: Setting changes propagate system-wide.
-- **Sensitive Settings**: Sensitive settings require confirmation before modification.
-- **Settings Audit**: Audit log records all setting changes.
 
 ---
 
@@ -47,7 +42,8 @@ Manages user account lifecycle, announcements, runtime configuration, GDPR compl
 - **Account**: User account management — CRUD, status toggles, archiving, recovery keys
 - **Announcement**: System-wide message broadcasting and scheduling
 - **GdprDeletionLog**: GDPR-compliant deletion logging and compliance tracking
-- **Setting**: System-wide configuration — branding, mail, localization, academic years
+
+> **Note**: The **Settings** submodule has been extracted into its own standalone module. See [Settings](settings.md).
 
 ---
 
@@ -70,7 +66,6 @@ Manages user account lifecycle, announcements, runtime configuration, GDPR compl
 ## Error Handling & Failure Modes
 
 - **Super admin integrity violation**: Any attempt to delete, rename, or duplicate the superadmin account throws a `RuntimeException`. Account status is locked to `PROTECTED`.
-- **Sensitive setting modification**: Changing sensitive settings requires explicit confirmation. Unconfirmed changes are rejected with a `ValidationFailedException`.
 - **Account suspension on active user**: Suspending an account with active sessions logs out the user immediately. Failed suspension due to integrity constraints returns a `RejectedException`.
 - **GDPR deletion compliance**: Deletion logs are append-only. Attempts to modify or delete a GDPR log entry are blocked at the policy layer (403).
 
@@ -79,20 +74,20 @@ Manages user account lifecycle, announcements, runtime configuration, GDPR compl
 ## Quick References
 
 ### Actions & Business Logic
-- **20** actions across all submodules
-- Account lifecycle management, announcement CRUD + scheduling, GDPR deletion logging, settings CRUD + cache invalidation, health checks
+- **14** actions across all submodules
+- Account lifecycle management, announcement CRUD + scheduling, GDPR deletion logging, health checks
 
 ### Data & Persistence
-- **3** models: `Announcement`, `GdprDeletionLog`, `Setting`
-- UUID PKs, `HasFactory`. Settings use key-value store with type enforcement (boolean, text, numeric, JSON, image, color)
+- **2** models: `Announcement`, `GdprDeletionLog`
+- UUID PKs, `HasFactory`
 
 ### User Interface
-- **13** Livewire components
-- User manager, admin manager, announcement manager, audit log viewer, settings editor, pulse dashboard
+- **12** Livewire components
+- User manager, admin manager, announcement manager, audit log viewer, pulse dashboard
 
 ### Authorization
-- **2** policies
-- Superadmin has unrestricted access. Admin has most management access. Settings modification is superadmin-only
+- **1** policy (plus BasePolicy inheritance)
+- Superadmin has unrestricted access. Admin has most management access
 
 ---
 

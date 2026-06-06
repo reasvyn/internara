@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Academics\Http\Middleware\ProtectSetupRouteMiddleware;
-use App\Academics\Http\Middleware\RequireSetupAccessMiddleware;
 use App\Core\Exceptions\AppException;
 use App\Core\Http\Middleware\LogContext;
 use App\Core\Http\Middleware\SecurityHeaders;
@@ -11,7 +9,9 @@ use App\Exceptions\NotFoundException;
 use App\Exceptions\RateLimitException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationFailedException;
-use App\SysAdmin\Settings\Http\Middleware\SetLocaleMiddleware;
+use App\Settings\Http\Middleware\SetLocaleMiddleware;
+use App\Setup\Http\Middleware\ProtectSetupRouteMiddleware;
+use App\Setup\Http\Middleware\RequireSetupAccessMiddleware;
 use App\User\Http\Middleware\AuthThrottleMiddleware;
 use App\User\Http\Middleware\CheckRoleMiddleware;
 use Illuminate\Foundation\Application;
@@ -28,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withCommands([
         __DIR__.'/../app/Core/Console/Commands',
+        __DIR__.'/../app/Setup/Console/Commands',
         __DIR__.'/../app/SysAdmin/Console/Commands',
         __DIR__.'/../app/User/Console/Commands',
     ])

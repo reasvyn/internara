@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\User\Models\User;
+use App\User\Support\UserIdentifierGenerator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,10 +18,12 @@ class UserFactory extends Factory
 
     public function definition(): array
     {
+        $email = $this->faker->unique()->safeEmail();
+
         return [
             'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'username' => 'u'.$this->faker->unique()->numerify('########'),
+            'email' => $email,
+            'username' => UserIdentifierGenerator::generateUsername($email),
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
             'setup_required' => false,

@@ -1,7 +1,7 @@
 # Module Documentation Index
 
-> Last updated: 2026-06-05
-> Changes: Added Setup module to module index; updated total module count to 18; synchronized with SysAdmin restructuring
+> Last updated: 2026-06-06
+> Changes: Added Settings module to module index; updated total module count to 19
 
 Complete index of module documentation for the Internara internship management system. Each module manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire components.
 
@@ -50,16 +50,14 @@ Each module has two files:
 ---
 
 ### 3. SysAdmin — System Administration
-**Purpose:** User administration, announcements, compliance, system configuration, audit logging, and health monitoring
+**Purpose:** User administration, announcements, compliance, audit logging, and health monitoring
 
 - Overview: [sysadmin.md](sysadmin.md)
 - Reference: [sysadmin-reference.md](sysadmin-reference.md)
 
-**Key Concepts:** Account Lifecycle, GDPR Compliance, Announcements, Settings, Pulse Monitoring
+**Key Concepts:** Account Lifecycle, GDPR Compliance, Announcements, Pulse Monitoring
 
 **Dependencies:** User, Academics, Core
-
-**Used By:** All modules (via Settings)
 
 ---
 
@@ -74,6 +72,20 @@ Each module has two files:
 **Dependencies:** Core, Academics
 
 **Used By:** None (one-time initialization)
+
+---
+
+### 3c. Settings — System Configuration & Branding
+**Purpose:** System-wide configuration management — brand identity, color schemes, localization, mail services, and global feature toggles
+
+- Overview: [settings.md](settings.md)
+- Reference: [settings-reference.md](settings-reference.md)
+
+**Key Concepts:** Setting key-value store, dynamic branding, color presets, cached resolution chain
+
+**Dependencies:** Core, Academics
+
+**Used By:** All modules (via `setting()`, `brand()`, `app_info()` helpers)
 
 ---
 
@@ -310,7 +322,7 @@ Each module has two files:
 
 ## Architecture Overview
 
-All 18 modules are vertical slices cross-cutting the 12-layer architecture defined in [architecture.md](../architecture.md):
+All 19 modules are vertical slices cross-cutting the 12-layer architecture defined in [architecture.md](../architecture.md):
 
 | Layer | Name | Description |
 |---|---|---|

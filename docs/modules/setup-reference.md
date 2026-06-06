@@ -1,7 +1,7 @@
 # Setup — Technical Reference
 
 > Last updated: 2026-06-06  
-> Changes: Removed the separate Setup model and setups table. The installation wizard progress and setup tokens are now stored inside the `settings` table.
+> Changes: Removed the separate Setup model and setups table. The installation wizard progress and setup tokens are now stored inside the `settings` table. Fixed Console ownership to Setup module, updated Setting model reference to Settings module.
 
 Detailed structural and implementation reference for the **Setup** module.
 
@@ -30,7 +30,7 @@ app/Setup/
 │   ├── SetupDepartmentAction.php
 │   ├── SetupSchoolAction.php
 │   └── ValidateSetupTokenAction.php
-├── Console/              ← (belongs to SysAdmin module)
+├── Console/              ← Artisan commands (setup:install, setup:reset-token)
 ├── Entities/
 │   └── SetupState.php
 ├── Livewire/
@@ -63,7 +63,7 @@ app/Setup/
 
 ## Models
 
-Setup does not own any separate Eloquent model. The wizard status, Single-Use Token block, and configuration payloads are saved under the `setup.*` namespace inside the global `Setting` model (SysAdmin module).
+Setup does not own any separate Eloquent model. The wizard status, Single-Use Token block, and configuration payloads are saved under the `setup.*` namespace inside the global `Setting` model (Settings module).
 
 ---
 

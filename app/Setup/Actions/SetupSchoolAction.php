@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\SysAdmin\Settings\Support\Settings;
+use App\Settings\Support\Settings;
 use Illuminate\Support\Facades\Validator;
 
 final class SetupSchoolAction extends BaseAction

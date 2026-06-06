@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Setup\Actions;
 
-use App\Academics\Events\SetupFinalized;
 use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Support\SmartLogger;
 use App\Program\Internship\Actions\CreateInternshipAction;
+use App\Settings\Support\Settings;
 use App\Setup\Entities\SetupState;
+use App\Setup\Events\SetupFinalized;
 use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
-use App\SysAdmin\Settings\Support\Settings;
 use App\User\SuperAdmin\Actions\SetupSuperAdminAction;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;

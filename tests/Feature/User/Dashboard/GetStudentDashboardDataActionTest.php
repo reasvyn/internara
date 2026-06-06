@@ -23,6 +23,7 @@ test('get student dashboard data action returns statistics correctly', function 
     activity()
         ->performedOn($policy1)
         ->causedBy($student)
+        ->inLog('document')
         ->withProperties(['ip_address' => '127.0.0.1'])
         ->event('acknowledged')
         ->log('acknowledged');

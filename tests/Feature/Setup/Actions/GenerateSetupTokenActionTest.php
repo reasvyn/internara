@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup;
 
+use App\Settings\Support\Settings;
 use App\Setup\Actions\GenerateSetupTokenAction;
-use App\SysAdmin\Settings\Support\Settings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Crypt;
 

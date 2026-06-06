@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Setup\Models;
 
+use App\Settings\Support\Settings;
 use App\Setup\Entities\SetupState;
-use App\SysAdmin\Settings\Support\Settings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
