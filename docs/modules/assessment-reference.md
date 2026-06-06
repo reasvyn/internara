@@ -1,7 +1,7 @@
 # Assessment — Technical Reference
 
-> Last updated: 2026-06-03
-> Changes: Converted Status metadata to Changes format
+> Last updated: 2026-06-06  
+> Changes: Removed competencies, indicators, and presentations tables and references.
 
 Detailed structural and implementation reference for the **Assessment** module.
 
@@ -9,32 +9,27 @@ Detailed structural and implementation reference for the **Assessment** module.
 
 ## Overview
 
-Manages assessments, rubrics, and presentation evaluation frameworks
+Manages assessments and JSON-based rubric evaluation templates.
 
 ### Module Statistics
-- **Actions**: 17 business logic operations
-- **Models**: 6 data entities
-- **Livewire Components**: 4 UI components
+- **Actions**: 9 business logic operations
+- **Models**: 2 data entities (`Assessment`, `Rubric`)
+- **Livewire Components**: 3 UI components
 - **Policies**: 1 authorization rules
-- **Submodules**: 3 module submodules
+- **Submodules**: 2 module submodules
 
 ### Submodules
-- `Assessment`
-- `Presentation`
-- `Rubric`
+- **Rubric**: Evaluation templates with competency criteria schemas stored as JSON.
+- **Assessment**: Evaluator grading records scoring students against rubrics.
 
 ---
 
 ## Dependency Graph
 
 This module depends on:
-- **Assignment**
-- **Core**
-- **Enrollment**
-- **Evaluation**
-- **Guidance**
-- **Reports**
-- **User**
+- **Core** (base classes)
+- **Enrollment** (registration records)
+- **User** (evaluators and students)
 
 ---
 
@@ -42,23 +37,13 @@ This module depends on:
 
 | File | Class | Extends |
 |---|---|---|
-| `Assessment/Actions/AutoCalculateAssessmentAction.php` | `AutoCalculateAssessmentAction` | `BaseAction` |
-| `Presentation/Actions/CompletePresentationAction.php` | `CompletePresentationAction` | `BaseAction` |
-| `Rubric/Actions/CreateCompetencyAction.php` | `CreateCompetencyAction` | `BaseAction` |
-| `Rubric/Actions/CreateIndicatorAction.php` | `CreateIndicatorAction` | `BaseAction` |
+| `Actions/InitializeAssessmentAction.php` | `InitializeAssessmentAction` | `BaseAction` |
+| `Actions/AutoCalculateAssessmentAction.php` | `AutoCalculateAssessmentAction` | `BaseAction` |
+| `Actions/UpdateAssessmentScoresAction.php` | `UpdateAssessmentScoresAction` | `BaseAction` |
+| `Actions/FinalizeAssessmentAction.php` | `FinalizeAssessmentAction` | `BaseAction` |
 | `Rubric/Actions/CreateRubricAction.php` | `CreateRubricAction` | `BaseAction` |
-| `Rubric/Actions/DeleteCompetencyAction.php` | `DeleteCompetencyAction` | `BaseAction` |
-| `Rubric/Actions/DeleteIndicatorAction.php` | `DeleteIndicatorAction` | `BaseAction` |
-| `Rubric/Actions/DeleteRubricAction.php` | `DeleteRubricAction` | `BaseAction` |
-| `Assessment/Actions/FinalizeAssessmentAction.php` | `FinalizeAssessmentAction` | `BaseAction` |
-| `Assessment/Actions/InitializeAssessmentAction.php` | `InitializeAssessmentAction` | `BaseAction` |
-| `Presentation/Actions/SchedulePresentationAction.php` | `SchedulePresentationAction` | `BaseAction` |
-| `Assessment/Actions/ScoreIndicatorAction.php` | `ScoreIndicatorAction` | `BaseAction` |
-| `Presentation/Actions/ScorePresentationAction.php` | `ScorePresentationAction` | `BaseAction` |
-| `Assessment/Actions/UpdateAssessmentScoresAction.php` | `UpdateAssessmentScoresAction` | `BaseAction` |
-| `Rubric/Actions/UpdateCompetencyAction.php` | `UpdateCompetencyAction` | `BaseAction` |
-| `Rubric/Actions/UpdateIndicatorAction.php` | `UpdateIndicatorAction` | `BaseAction` |
 | `Rubric/Actions/UpdateRubricAction.php` | `UpdateRubricAction` | `BaseAction` |
+| `Rubric/Actions/DeleteRubricAction.php` | `DeleteRubricAction` | `BaseAction` |
 
 ---
 
@@ -66,11 +51,7 @@ This module depends on:
 
 | File | Class |
 |---|---|
-| `Assessment/Models/Assessment.php` | `Assessment` |
-| `Rubric/Models/Competency.php` | `Competency` |
-| `Rubric/Models/Indicator.php` | `Indicator` |
-| `Presentation/Models/Presentation.php` | `Presentation` |
-| `Presentation/Models/PresentationExaminer.php` | `PresentationExaminer` |
+| `Models/Assessment.php` | `Assessment` |
 | `Rubric/Models/Rubric.php` | `Rubric` |
 
 ---
@@ -79,9 +60,8 @@ This module depends on:
 
 | File | Component | Extends |
 |---|---|---|
-| `Assessment/Livewire/AssessmentGrading.php` | `AssessmentGrading` | `Component` |
-| `Assessment/Livewire/AssessmentView.php` | `AssessmentView` | `Component` |
-| `Presentation/Livewire/PresentationSchedule.php` | `PresentationSchedule` | `BaseRecordManager` |
+| `Livewire/AssessmentGrading.php` | `AssessmentGrading` | `Component` |
+| `Livewire/AssessmentView.php` | `AssessmentView` | `Component` |
 | `Rubric/Livewire/RubricManager.php` | `RubricManager` | `Component` |
 
 ---
@@ -90,7 +70,7 @@ This module depends on:
 
 | File | Policy |
 |---|---|
-| `Assessment/Policies/AssessmentPolicy.php` | `AssessmentPolicy` |
+| `Policies/AssessmentPolicy.php` | `AssessmentPolicy` | `BasePolicy` |
 
 ---
 
@@ -98,12 +78,15 @@ This module depends on:
 
 ```
 app/Assessment/
-├──            ← Submodule roots
-│   └── {SubModule}/
-│       ├── Actions/
-│       ├── Models/
-│       ├── Policies/
-│       └── Livewire/
+├── Actions/              ← Cross-submodule / flat actions
+├── Entities/
+├── Livewire/
+├── Models/
+├── Policies/
+├── Rubric/               ← Rubric submodule
+│   ├── Actions/
+│   ├── Livewire/
+│   └── Models/
 ├── Http/
 ├── Livewire/
 ├── Types/

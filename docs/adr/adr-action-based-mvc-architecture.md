@@ -8,35 +8,28 @@ Accepted
 
 ## Context
 
-The application manages a complex business module — vocational fieldwork management — with 23 distinct
-
-`app/{Module}/` and owns its complete vertical slice. The 23 modules are:
+The application manages a complex business module — vocational fieldwork management — with 18 distinct modules, each owning its complete vertical slice under `app/{Module}/`. The 18 modules are:
 
 | Module | Boundary | Key Concept |
 |---|---|---|
-| **Core** | Base classes, infrastructure, and cross-module utilities everything depends on | `BaseModel`, `BaseEntity`, `BaseAction`, `AppException`, `Integrity`, `Theme`, `CsvHandler`, `Environment`, `Locale` |
-| **Auth** | Identity & access control | Login, passwords, account lifecycle, recovery |
-| **User** | User profile & identity | Profile editing, dashboard routing |
-| **School** | Institution configuration | Departments, academic years |
-| **Settings** | Runtime configuration | Key-value store, branding, localization |
-| **Setup** | First-run installation | Wizard, environment audit, provisioning |
-| **Admin** | System administration | User CRUD, announcements, GDPR |
-| **Partnership** | External relationships | Companies, partnership agreements |
-| **Placement** | Slot management | Capacity, direct assignments, change requests |
-| **Registration** | Student enrollment | Applications, wizard, document upload |
-| **Internship** | Program execution | Reports, requirements, closure |
-| **Mentor** | Mentoring & supervision | Logs, teacher/supervisor portals |
-| **Mentee** | Student role | Dashboard, program participation |
-| **Attendance** | Presence tracking | Clock-in/out, absence requests |
-| **Logbook** | Daily journals | Student diary entries |
-| **Schedule** | Event planning | Calendar management |
-| **Guidance** | Handbooks | Versioned documents, acknowledgements |
-| **Incident** | Issue reporting | Report, investigation, resolution |
-| **Assignment** | Tasks & submissions | Creation, grading workflow |
-| **Assessment** | Competency evaluation | Rubrics, scoring, presentations |
-| **Evaluation** | Program & mentor quality | Multi-type feedback collection |
-| **Document** | Template management | Rendering, report generation |
-| **Certificate** | Credentialing | Issuance, templates, revocation |
+| **Core** | Base classes and core interfaces everything depends on | `BaseModel`, `BaseAction`, `BaseEntity`, `BasePolicy`, `SmartLogger` |
+| **Shared** | Cross-cutting helper traits, utilities, and global UI components | `CacheKeys`, `CsvHandler`, concrete exceptions, theme switcher |
+| **User** | Identity, authentication, and profiles | Login, passwords, profile details (NISN/NIP), recovery |
+| **SysAdmin** | System configuration and administration | Key-value settings, announcements, GDPR audit logs |
+| **Setup** | First-run wizard and environment provisioning | SetupState, installation checks, database seeder triggers |
+| **Academics** | Academic calendar and department mapping | Departments, academic years |
+| **Partners** | Industrial relationship directories | Companies, partnership agreement contracts |
+| **Program** | Internship program configurations | Program timelines, phase timelines (JSON), required templates lists (JSON) |
+| **Enrollment** | Student registration and placement slots | Registrations, placements, application wizard |
+| **Guidance** | Mentoring relationships and handbooks | Handbooks, handbook acknowledgements, supervision logs |
+| **Journals** | Daily activity and attendance tracking | Presences, absence requests, schedules, logbooks |
+| **Assignment** | Coursework tasks and submissions | Task creation, student submissions (including report document drafts) |
+| **Assessment** | Competency grading templates | Rubrics (JSON structures), student assessments |
+| **Evaluation** | Mentor feedback collection | Supervisor evaluations, feedback forms |
+| **Reports** | Final student grade cards | Composite score aggregation (*Rapor PKL*), grade locking |
+| **Certification** | Credential issuance | Digital certificates, serial numbers, QR hashes |
+| **Incident** | Safety and disciplinary logging | Incident reports, severity, investigation workflows |
+| **Document** | Official correspondence rendering | Permit letters, templates, PDF compiler driver |
 
 ### Layer Structure
 

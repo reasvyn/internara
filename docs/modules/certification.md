@@ -1,9 +1,9 @@
 # Certification — Documentation Overview
 
-> Last updated: 2026-06-05
-> Changes: Added Error Handling & Failure Modes section
+> Last updated: 2026-06-06  
+> Changes: Aligned with the removal of the separate `certificate_templates` table (now inlined as HTML layouts) and added dependency on Rapor PKL finalization.
 
-Manages certificate generation and credential tracking
+Manages certificate generation, digital QR signatures, and credential tracking.
 
 For complete technical reference including API, models, actions, and components, see [certification-reference.md](certification-reference.md).
 
@@ -11,60 +11,59 @@ For complete technical reference including API, models, actions, and components,
 
 ## Key Principles
 
-- Certificates awarded upon completion
-- Templates enable scalable certificate generation
-- Digital signatures ensure authenticity
+- **Certificates Awarded Upon Rapor Finalization** — Certificates are issued only after the student's final grade card (*Rapor PKL*) in the Reports module is finalized and locked.
+- **Embedded Layouts** — Certificate layouts ( portrait/landscape, background seals, text placeholders) are rendered dynamically and saved as frozen, immutable HTML snapshots within the certificate record. This ensures permanent, tamper-proof compliance.
+- **QR Cryptographic Verification** — Printed certificates display a secure QR code referencing a verification URL. The system verifies the cryptographically signed hash (`qr_hash`) to expose offline forgery.
 
 ---
 
 ## Context Boundary
 
-Owns certificate models. Program determines eligibility. SysAdmin manages templates. User owns certificate recipients.
+The **Certification** module:
+- Consumes **Reports (`reports`)** to verify that a student's final Rapor PKL is finalized before allowing certificate issuance.
+- Consumes **User (`users`)** to identify the recipient student and the administrator who signed off.
+- Generates validation metadata exposed for public certificate validation requests.
 
 ---
 
 ## Module Rules
 
-- Certificates only issued after program completion
-- Template must be approved before use
-- All certificates digitally signed and trackable
-- Revocation records preserved for compliance
+- **Rapor PKL Prerequisite:** A certificate cannot be issued unless the registration has a corresponding `finalized` Report card record.
+- **Revocation is Terminal:** Once revoked, a certificate's status is permanently updated to `revoked`, and its serial number is retired. Double revocation is idempotent.
+- **Hash Integrity:** The verification hash is generated using a secure SHA-256 function of the student ID, institutional code, final score, and issuer's private key.
 
 ---
 
 ## Submodules
 
-- **Certificate**: Core business entity for certificate management
+- **Certificate:** Handles certificate generation, serial numbering, PDF rendering, QR code signing, and revocation logs.
 
 ---
 
 ## Error Handling & Failure Modes
 
-- **Certificate issuance without completion**: Issuing a certificate for a student whose program is not in COMPLETED status is blocked with a `RejectedException`.
-- **Template not approved**: Using an unapproved template for certificate generation throws a `ValidationFailedException`.
-- **Duplicate certificate**: Attempting to issue a duplicate certificate for the same student and program returns a `ConflictException`.
-- **Revocation of already-revoked certificate**: Double revocation is idempotent — returns success without side effects rather than an error.
-- **Digital signature failure**: If the signing service is unavailable, certificate generation fails with a `ServiceUnavailableException` and the batch is rolled back.
+- **Issuance Without Final Grade:** Issuing a certificate for a student whose Rapor PKL is pending or uncompiled is blocked with a `RejectedException`.
+- **Duplicate Issuance:** Re-issuing an active certificate for the same student registration returns a `ConflictException`.
+- **Signature Integrity Failure:** If the rendering service or system signature fails, certificate creation is rolled back.
 
 ---
 
 ## Quick References
 
 ### Actions & Business Logic
-- **4** actions across all submodules
-- Business logic operations for certification module
+- **3** actions across the module:
+  - `IssueCertificateAction` — Generates and signs a single certificate.
+  - `BatchIssueCertificateAction` — Non-blocking cohort batch generator.
+  - `RevokeCertificateAction` — Revokes a credential with an audit trail.
 
 ### Data & Persistence
-- **2** models managing core data
-- Eloquent relationships and queries
+- **1** model: `Certificate`.
+- UUID PKs, index on `registration_id`.
 
 ### User Interface
-- **3** Livewire components for real-time interaction
-- Views in `resources/views/certification/`
-
-### Authorization
-- **2** authorization policies
-- Role-based access control per resource
+- **2** Livewire components:
+  - `CertificateList` — Coordinator manager for tracking and revoking certificates.
+  - `StudentCertificates` — Student list to view and download PDF credentials.
 
 ---
 

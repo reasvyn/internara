@@ -91,7 +91,7 @@ The Core module provides base classes for every layer. You MUST use them:
 | Policy | `BasePolicy` | `app/Core/Policies/BasePolicy.php` |
 | Livewire CRUD | `BaseRecordManager` | `app/Core/Livewire/BaseRecordManager.php` |
 | Controller | `BaseController` | `app/Core/Http/Controllers/BaseController.php` |
-| Form Request | `FormRequest` (Core's, not Laravel's) | `app/Core/Http/Requests/FormRequest.php` |
+| Form Request | `BaseFormRequest` (Core's, not Laravel's) | `app/Core/Http/Requests/BaseFormRequest.php` |
 | DTO | `BaseData` | `app/Core/Data/BaseData.php` |
 | Exception | `AppException` or `ModuleException` | `app/Core/Exceptions/` |
 | Enum | Must implement `LabelEnum` | `app/Core/Contracts/LabelEnum.php` |

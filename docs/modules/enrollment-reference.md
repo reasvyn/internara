@@ -16,14 +16,10 @@ Manages student registration and placement phase progression
 - **Models**: 5 data entities
 - **Livewire Components**: 9 UI components
 - **Policies**: 5 authorization rules
-- **Submodules**: 5 module submodules
+- **Submodules**: None (flat)
 
 ### Submodules
-- **Registration**
-- **AccountApplication**
-- **RegistrationDocument**
-- **Placement**
-- **PlacementChangeRequest**
+- None — codebase uses flat organization (no submodule subdirectories)
 
 ---
 

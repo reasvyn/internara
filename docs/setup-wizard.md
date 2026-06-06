@@ -143,7 +143,7 @@ DB Transaction                      Outside Transaction
 │ ├── Pre-check is_installed  │     │ (try-catch, never        │
 │ │   (with lockForUpdate)    │     │  rolls back DB)          │
 │ ├── SetupSchoolAction       │     └──────────────────────────┘
-│ │   └── School::updateOrCreate                    │
+│ │   └── settings table update                     │
 │ ├── SetupDepartmentAction   │                     ▼
 │ │   └── Department::create  │              Return plaintext
 │ ├── SetupSuperAdminAction   │
@@ -159,7 +159,7 @@ DB Transaction                      Outside Transaction
 ```
 
 The DB operations are wrapped in a transaction with `lockForUpdate()`
-on the setups table to prevent race conditions under concurrent requests.
+on the settings table (using a specific setup lock key) to prevent race conditions under concurrent requests.
 If the pre-check detects an already-installed system, it throws
 `RuntimeException` before any writes occur.
 
@@ -334,9 +334,8 @@ address) from persisting in session storage longer than necessary.
 |---|---|---|
 | `SetupWizard` | `app/Setup/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
 | `SetupState` | `app/Setup/Entities/SetupState.php` | Read-only value object for setup status |
-| `Setup` | `app/Setup/Models/Setup.php` | Eloquent model (single-row, singleton) |
 | `FinalizeSetupAction` | `app/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
-| `SetupSchoolAction` | `app/Setup/Actions/SetupSchoolAction.php` | Creates/updates School record |
+| `SetupSchoolAction` | `app/Setup/Actions/SetupSchoolAction.php` | Saves school details in the settings table |
 | `SetupDepartmentAction` | `app/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
 | `SetupSuperAdminAction` | `app/User/SuperAdmin/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
 | `EnvironmentAuditor` | `app/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |

@@ -11,10 +11,9 @@ This exists because a single `routes/web.php` with 200+ lines creates merge conf
 
 ## Architecture
 
-The master file `routes/web.php` `require`s 22 module route files (Core has no routes). Load order matters: if two files register the same route name, the later one wins.
+The master file `routes/web.php` `require`s 16 module route files (Core and Shared have no routes). Load order matters: if two files register the same route name, the later one wins.
 
-Additional route files exist outside `web/`: `console.php` (Artisan commands),  
-`channels.php` (broadcasting), and `ai.php` (model/AI interactions).
+Additional route files exist outside `web/`: `console.php` (Artisan commands) and `ai.php` (model/AI interactions). `channels.php` (broadcasting) is referenced in `bootstrap/app.php` but not yet implemented.
 
 Route files contain:
 - `declare(strict_types=1)`
@@ -34,10 +33,10 @@ The following middleware runs on every web request, in order:
 1. `web` (Laravel core) — session, CSRF, encryption, cookies
 2. `SecurityHeaders` — Content-Security-Policy, X-Frame-Options, Permissions-Policy
 3. `LogContext` — request tracing (request ID, session ID)
-4. **`RequireSetupAccessMiddleware`** — redirects unauthenticated visitors to `/setup` when the
+4. **`RequireSetupAccessMiddleware`** (`app/Academics/Http/Middleware/RequireSetupAccessMiddleware.php`) — redirects unauthenticated visitors to `/setup` when the
    system has not been installed yet. Allows bypass for Livewire subrequests and the `/setup`
    route itself.
-5. `SetLocaleMiddleware` — language preference from session/database
+5. `SetLocaleMiddleware` (`app/SysAdmin/Settings/Http/Middleware/SetLocaleMiddleware.php`) — language preference from session/database
 6. Route handler — Livewire or Controller routes
 
 Global middleware is registered in `bootstrap/app.php`:
@@ -137,11 +136,11 @@ php artisan route:cache
 ## Where to Find It
 
 - `routes/web.php` — master file with requires in dependency order
-- `routes/web/` — 22 module route files
+- `routes/web/` — 16 module route files
 - `routes/console.php` — Artisan command registrations
-- `routes/channels.php` — broadcasting channel definitions
+- `routes/channels.php` — broadcasting channel definitions (not implemented)
 - `routes/ai.php` — AI integration routes
 - `app/Core/Http/Middleware/` — global middleware classes
-- `app/Auth/Http/Middleware/` — auth middleware (CheckRole, AuthThrottle)
+- `app/User/Http/Middleware/` — auth middleware (CheckRole, AuthThrottle)
 - `config/menu.php` — sidebar navigation mapping routes to menu items
 - `docs/infrastructure/infrastructure.md` — tier-based infrastructure design

@@ -1,7 +1,7 @@
 # Certification — Technical Reference
 
-> Last updated: 2026-06-04
-> Changes: Converted Status metadata to Changes format
+> Last updated: 2026-06-06  
+> Changes: Removed references to the separate certificate templates table, actions, and policies.
 
 Detailed structural and implementation reference for the **Certification** module.
 
@@ -9,27 +9,27 @@ Detailed structural and implementation reference for the **Certification** modul
 
 ## Overview
 
-Manages certificate generation and credential tracking
+Manages certificate generation and credential tracking.
 
 ### Module Statistics
-- **Actions**: 4 business logic operations
-- **Models**: 2 data entities
-- **Livewire Components**: 3 UI components
-- **Policies**: 2 authorization rules
-- **Submodules**: 1 module submodule
+- **Actions**: 3 business logic operations
+- **Models**: 1 data entity (`Certificate`)
+- **Livewire Components**: 2 UI components
+- **Policies**: 1 authorization rules
+- **Submodules**: 1 module submodules
 
 ### Submodules
-- `Certificate`
+- **Certificate**: Digital certificates generation, PDF rendering, QR signing, and revocation.
 
 ---
 
 ## Dependency Graph
 
 This module depends on:
-- **Core**
-- **Enrollment**
-- **Program**
-- **User**
+- **Core** (base classes)
+- **Enrollment** (registration records)
+- **Reports** (Rapor PKL finalization check)
+- **User** (recipient and issuer details)
 
 ---
 
@@ -37,9 +37,8 @@ This module depends on:
 
 | File | Class | Extends |
 |---|---|---|
-| `Certificate/Actions/BatchIssueCertificateAction.php` | `BatchIssueCertificateAction` | `BaseAction` |
-| `Certificate/Actions/CreateCertificateTemplateAction.php` | `CreateCertificateTemplateAction` | `BaseAction` |
 | `Certificate/Actions/IssueCertificateAction.php` | `IssueCertificateAction` | `BaseAction` |
+| `Certificate/Actions/BatchIssueCertificateAction.php` | `BatchIssueCertificateAction` | `BaseAction` |
 | `Certificate/Actions/RevokeCertificateAction.php` | `RevokeCertificateAction` | `BaseAction` |
 
 ---
@@ -49,7 +48,6 @@ This module depends on:
 | File | Class |
 |---|---|
 | `Certificate/Models/Certificate.php` | `Certificate` |
-| `Certificate/Models/CertificateTemplate.php` | `CertificateTemplate` |
 
 ---
 
@@ -58,7 +56,6 @@ This module depends on:
 | File | Component | Extends |
 |---|---|---|
 | `Certificate/Livewire/CertificateList.php` | `CertificateList` | `BaseRecordManager` |
-| `Certificate/Livewire/CertificateTemplateManager.php` | `CertificateTemplateManager` | `BaseRecordManager` |
 | `Certificate/Livewire/StudentCertificates.php` | `StudentCertificates` | `Component` |
 
 ---
@@ -67,8 +64,7 @@ This module depends on:
 
 | File | Policy |
 |---|---|
-| `Certificate/Policies/CertificatePolicy.php` | `CertificatePolicy` |
-| `Certificate/Policies/CertificateTemplatePolicy.php` | `CertificateTemplatePolicy` |
+| `Certificate/Policies/CertificatePolicy.php` | `CertificatePolicy` | `BasePolicy` |
 
 ---
 

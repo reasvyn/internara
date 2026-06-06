@@ -72,11 +72,11 @@ channels:
 | `syslog` | System syslog integration | System-managed |
 | `null` | Discard (testing) | N/A |
 
-The default log stack uses the `daily` channel in production:
+The default log stack uses the `single` channel in development:
 
 ```env
 LOG_CHANNEL=stack
-LOG_STACK=daily
+LOG_STACK=single
 LOG_LEVEL=debug
 ```
 
@@ -111,10 +111,10 @@ for integration with external monitoring systems.
 ## Where to Find It
 
 The SmartLogger is at `app/Core/Support/SmartLogger.php`. The PII
-masker is at `app/Core/Support/PiiMasker.php`. The log context
+masker is at `app/Support/PiiMasker.php`. The log context
 middleware is at `app/Core/Http/Middleware/LogContext.php`. The health
-command is at `app/Core/Console/Commands/HealthCommand.php`. The
+command is at `app/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php`. The
 cleanup command is at
-`app/Core/Console/Commands/CleanupCommand.php`. Pulse configuration
-is in `config/pulse.php`. Activity log configuration is in
+`app/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php`. The cache warm command is at `app/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php`.
+Pulse configuration is in `config/pulse.php`. Activity log configuration is in
 `config/activitylog.php`. Logging configuration is in `config/logging.php`.

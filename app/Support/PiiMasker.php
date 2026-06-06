@@ -23,6 +23,19 @@ final class PiiMasker
         'cvv',
         'ssn',
         'national_id',
+        'birth_date',
+        'dob',
+        'address',
+        'passport',
+        'driver_license',
+        'drivers_license',
+        'security_question',
+        'security_answer',
+        'bank_account',
+        'account_number',
+        'routing_number',
+        'health_insurance',
+        'medical_record',
     ];
 
     private const PARTIAL_MASK_KEYS = [
@@ -125,7 +138,13 @@ final class PiiMasker
 
     private static function maskName(string $value): string
     {
-        $parts = explode(' ', trim($value));
+        $value = trim($value);
+
+        if ($value === '') {
+            return '***';
+        }
+
+        $parts = explode(' ', $value);
 
         if (count($parts) === 1) {
             return substr($value, 0, 1).str_repeat('*', max(0, strlen($value) - 1));

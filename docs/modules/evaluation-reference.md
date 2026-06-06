@@ -13,13 +13,10 @@ Manages supervisor and teacher evaluations of students
 
 ### Module Statistics
 - **Actions**: 3 business logic operations
-- **Models**: 1 data entities
-- **Livewire Components**: 1 UI components
-- **Policies**: 1 authorization rules
-- **Submodules**: 1 module submodules
-
-### Submodules
-- `Evaluation`
+- **Models**: 1 data entity
+- **Livewire Components**: 1 UI component
+- **Policies**: 1 authorization rule
+- **Submodules**: None (flat)
 
 ---
 
@@ -36,9 +33,9 @@ This module depends on:
 
 | File | Class | Extends |
 |---|---|---|
-| `Evaluation/Actions/DeleteEvaluationAction.php` | `DeleteEvaluationAction` | `BaseAction` |
-| `Evaluation/Actions/EvaluateMentorAction.php` | `EvaluateMentorAction` | `BaseAction` |
-| `Evaluation/Actions/SubmitEvaluationAction.php` | `SubmitEvaluationAction` | `BaseAction` |
+| `Actions/DeleteEvaluationAction.php` | `DeleteEvaluationAction` | `BaseAction` |
+| `Actions/EvaluateMentorAction.php` | `EvaluateMentorAction` | `BaseAction` |
+| `Actions/SubmitEvaluationAction.php` | `SubmitEvaluationAction` | `BaseAction` |
 
 ---
 
@@ -46,7 +43,7 @@ This module depends on:
 
 | File | Class |
 |---|---|
-| `Evaluation/Models/Evaluation.php` | `Evaluation` |
+| `Models/Evaluation.php` | `Evaluation` |
 
 ---
 
@@ -54,7 +51,7 @@ This module depends on:
 
 | File | Component | Extends |
 |---|---|---|
-| `Evaluation/Livewire/MentorEvaluationManager.php` | `MentorEvaluationManager` | `Component` |
+| `Livewire/MentorEvaluationManager.php` | `MentorEvaluationManager` | `Component` |
 
 ---
 
@@ -62,7 +59,7 @@ This module depends on:
 
 | File | Policy |
 |---|---|
-| `Evaluation/Policies/EvaluationPolicy.php` | `EvaluationPolicy` |
+| `Policies/EvaluationPolicy.php` | `EvaluationPolicy` |
 
 ---
 
@@ -70,12 +67,12 @@ This module depends on:
 
 ```
 app/Evaluation/
-├──            ← Submodule roots
-│   └── {SubModule}/
-│       ├── Actions/
-│       ├── Models/
-│       ├── Policies/
-│       └── Livewire/
+├── Actions/
+├── Entities/
+├── Enums/
+├── Livewire/
+├── Models/
+├── Policies/
 ├── Http/
 ├── Livewire/
 ├── Types/

@@ -1,7 +1,7 @@
 # Program — Technical Reference
 
-> Last updated: 2026-06-03
-> Changes: Converted Status metadata to Changes format
+> Last updated: 2026-06-06  
+> Changes: Removed references to the separate document requirements and internship phase tables.
 
 Detailed structural and implementation reference for the **Program** module.
 
@@ -9,35 +9,28 @@ Detailed structural and implementation reference for the **Program** module.
 
 ## Overview
 
-Manages internship and practicum programs, phases, and requirements
+Manages internship programs and cohort student groupings.
 
 ### Module Statistics
-- **Actions**: 16 business logic operations
-- **Models**: 5 data entities
-- **Livewire Components**: 4 UI components
-- **Policies**: 3 authorization rules
-- **Submodules**: 4 module submodules
+- **Actions**: 10 business logic operations
+- **Models**: 3 data entities (`Internship`, `InternshipGroup`, `InternshipGroupMember`)
+- **Livewire Components**: 2 UI components
+- **Policies**: 2 authorization rules
+- **Submodules**: 2 module submodules
 
 ### Submodules
-- `DocumentRequirement`
 - `Internship`
 - `InternshipGroup`
-- `InternshipPhase`
 
 ---
 
 ## Dependency Graph
 
 This module depends on:
-- **Academics**
-- **Assessment**
-- **Assignment**
-- **Certification**
-- **Core**
-- **Enrollment**
-- **Guidance**
-- **Journals**
-- **User**
+- **Academics** (calendar years)
+- **Core** (base classes)
+- **Enrollment** (student placements)
+- **User** (students and mentors)
 
 ---
 
@@ -45,22 +38,16 @@ This module depends on:
 
 | File | Class | Extends |
 |---|---|---|
-| `InternshipGroup/Actions/AddMemberToGroupAction.php` | `AddMemberToGroupAction` | `BaseAction` |
+| `Internship/Actions/CreateInternshipAction.php` | `CreateInternshipAction` | `BaseAction` |
+| `Internship/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseAction` |
+| `Internship/Actions/DeleteInternshipAction.php` | `DeleteInternshipAction` | `BaseAction` |
 | `Internship/Actions/BatchUpdateInternshipStatusAction.php` | `BatchUpdateInternshipStatusAction` | `BaseAction` |
 | `Internship/Actions/CheckCloseReadinessAction.php` | `CheckCloseReadinessAction` | `BaseAction` |
-| `Internship/Actions/CreateInternshipAction.php` | `CreateInternshipAction` | `BaseAction` |
 | `InternshipGroup/Actions/CreateInternshipGroupAction.php` | `CreateInternshipGroupAction` | `BaseAction` |
-| `InternshipPhase/Actions/CreateInternshipPhaseAction.php` | `CreateInternshipPhaseAction` | `BaseAction` |
-| `DocumentRequirement/Actions/CreateRequirementAction.php` | `CreateRequirementAction` | `BaseAction` |
-| `Internship/Actions/DeleteInternshipAction.php` | `DeleteInternshipAction` | `BaseAction` |
-| `InternshipGroup/Actions/DeleteInternshipGroupAction.php` | `DeleteInternshipGroupAction` | `BaseAction` |
-| `InternshipPhase/Actions/DeleteInternshipPhaseAction.php` | `DeleteInternshipPhaseAction` | `BaseAction` |
-| `DocumentRequirement/Actions/DeleteRequirementAction.php` | `DeleteRequirementAction` | `BaseAction` |
-| `InternshipGroup/Actions/RemoveMemberFromGroupAction.php` | `RemoveMemberFromGroupAction` | `BaseAction` |
-| `Internship/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseAction` |
 | `InternshipGroup/Actions/UpdateInternshipGroupAction.php` | `UpdateInternshipGroupAction` | `BaseAction` |
-| `InternshipPhase/Actions/UpdateInternshipPhaseAction.php` | `UpdateInternshipPhaseAction` | `BaseAction` |
-| `DocumentRequirement/Actions/UpdateRequirementAction.php` | `UpdateRequirementAction` | `BaseAction` |
+| `InternshipGroup/Actions/DeleteInternshipGroupAction.php` | `DeleteInternshipGroupAction` | `BaseAction` |
+| `InternshipGroup/Actions/AddMemberToGroupAction.php` | `AddMemberToGroupAction` | `BaseAction` |
+| `InternshipGroup/Actions/RemoveMemberFromGroupAction.php` | `RemoveMemberFromGroupAction` | `BaseAction` |
 
 ---
 
@@ -69,10 +56,8 @@ This module depends on:
 | File | Class |
 |---|---|
 | `Internship/Models/Internship.php` | `Internship` |
-| `DocumentRequirement/Models/InternshipDocumentRequirement.php` | `InternshipDocumentRequirement` |
 | `InternshipGroup/Models/InternshipGroup.php` | `InternshipGroup` |
 | `InternshipGroup/Models/InternshipGroupMember.php` | `InternshipGroupMember` |
-| `InternshipPhase/Models/InternshipPhase.php` | `InternshipPhase` |
 
 ---
 
@@ -80,10 +65,8 @@ This module depends on:
 
 | File | Component | Extends |
 |---|---|---|
-| `InternshipGroup/Livewire/InternshipGroupManager.php` | `InternshipGroupManager` | `BaseRecordManager` |
 | `Internship/Livewire/InternshipManager.php` | `InternshipManager` | `BaseRecordManager` |
-| `InternshipPhase/Livewire/InternshipPhaseManager.php` | `InternshipPhaseManager` | `BaseRecordManager` |
-| `DocumentRequirement/Livewire/RequirementManager.php` | `RequirementManager` | `Component` |
+| `InternshipGroup/Livewire/InternshipGroupManager.php` | `InternshipGroupManager` | `BaseRecordManager` |
 
 ---
 
@@ -91,9 +74,8 @@ This module depends on:
 
 | File | Policy |
 |---|---|
-| `InternshipGroup/Policies/InternshipGroupPolicy.php` | `InternshipGroupPolicy` |
-| `InternshipPhase/Policies/InternshipPhasePolicy.php` | `InternshipPhasePolicy` |
-| `Internship/Policies/InternshipPolicy.php` | `InternshipPolicy` |
+| `Internship/Policies/InternshipPolicy.php` | `InternshipPolicy` | `BasePolicy` |
+| `InternshipGroup/Policies/InternshipGroupPolicy.php` | `InternshipGroupPolicy` | `BasePolicy` |
 
 ---
 
@@ -102,7 +84,12 @@ This module depends on:
 ```
 app/Program/
 ├──            ← Submodule roots
-│   └── {SubModule}/
+│   ├── Internship/
+│   │   ├── Actions/
+│   │   ├── Models/
+│   │   ├── Policies/
+│   │   └── Livewire/
+│   └── InternshipGroup/
 │       ├── Actions/
 │       ├── Models/
 │       ├── Policies/

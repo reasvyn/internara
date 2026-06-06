@@ -15,7 +15,7 @@ Internara digitizes and orchestrates the complete fieldwork lifecycle:
 - **Intake & Readiness**: Student registration, administrative phase management, and document prerequisites verification.
 - **Placement & Quotas**: Slot allocations at partner companies, agreement registration, and approval workflows.
 - **Operations & Journals**: Daily geotagged clock-in/out attendance logging, reflective journals, and review queues.
-- **Academic Assessment**: Multi-rubric grading, assignment evaluation, presentation exams, and final thesis/report workflows.
+- **Academic Assessment**: Multi-rubric grading, student assignment evaluation, and final grade compilation workflows.
 - **Issuance**: Signed certificate template compilation, automated grade sheets generation, and verifier check QR codes.
 
 Unlike typical SaaS platforms, Internara is distributed as a self-packaged codebase designed to run entirely on school-owned private virtual servers or bare-metal setups, guaranteeing data sovereignty and offline robustness.
@@ -50,7 +50,7 @@ Internara serves five primary operational roles:
 | Role | Operational Scope | Core System Actions |
 |---|---|---|
 | **System Administrator** | Complete system configuration, settings management, infrastructure monitoring. | Setup school profile, NPSN, departments, academic years, user accounts, system backup, and audit logs. |
-| **School Mentor (Teacher)** | Local academic tracking, journal review, grading, company site visits. | View assigned student lists, grade journal entries, score final reports, evaluate presentation exams. |
+| **School Mentor (Teacher)** | Local academic tracking, journal review, grading, company site visits. | View assigned student lists, grade journal entries, score final reports, and compile final grade cards. |
 | **Industry Supervisor** | On-site company tracking, daily logging, final fieldwork evaluation. | Verify check-in/out logs, approve daily journal entries, submit the end-of-placement supervisor evaluation. |
 | **Student** | Active placement participation, daily logbook entry, task submissions. | Clock-in/out, write daily reflective journals, submit assignments and final reports, view grades and certificates. |
 | **Guest / Public** | Certificate authenticity validation. | Scan certificate QR codes to verify authenticity against the signed database. |

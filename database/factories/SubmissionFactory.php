@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Assignment\Core\Models\Assignment;
+use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Models\Submission;
 use App\Enrollment\Models\Registration;
 use App\User\Models\User;

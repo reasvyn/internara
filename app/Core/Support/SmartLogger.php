@@ -12,18 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log as LogFacade;
 use Illuminate\Support\Facades\Request;
 
-/**
- * Smart dual-channel logger for system and user activity logs.
- *
- * Fluent entry points by message face: success, info, warning, error.
- * Developers can target system logs, activity logs, or both.
- *
- * Usage:
- *   SmartLogger::success('User registered')->for($user)->save();
- *   SmartLogger::warning('Disk space low')->systemOnly()->save();
- *   SmartLogger::info('Profile updated')->for($user)->about($profile)->save();
- *   SmartLogger::error('Payment failed', ['txn' => 'abc'])->activityOnly()->save();
- */
 final class SmartLogger
 {
     private const FACE_MAP = [
@@ -161,38 +149,60 @@ final class SmartLogger
     {
         $eventName = $this->resolveEventName();
 
-        if ($this->event instanceof BaseEvent) {
-            event($this->event);
-            $this->payload = array_merge($this->event->toPayload(), $this->payload);
-        }
-
-        if ($this->maskPii) {
-            $this->payload = PiiMasker::maskArray($this->payload);
-        }
-
-        if ($eventName !== null) {
-            $locale = App::getLocale();
-            $description = __('log.'.$eventName, [], $locale);
-            if ($description !== 'log.'.$eventName) {
-                $this->context['event_description'] = $description;
-            }
-            $altLocale = $locale === 'id' ? 'en' : 'id';
-            $altDescription = __('log.'.$eventName, [], $altLocale);
-            if ($altDescription !== 'log.'.$eventName) {
-                $this->context['event_description_'.$altLocale] = $altDescription;
-            }
-        }
+        $this->dispatchEvent();
+        $this->applyPiiMasking();
+        $this->resolveTranslations($eventName);
 
         $causer = $this->causer ?? Auth::user();
 
         if ($this->toSystem) {
-            $this->writeSystemLog($causer);
+            $this->writeSystemLog($causer, $eventName);
         }
 
-        $canLogActivity = $causer !== null || ($this->toActivity && ! $this->toSystem);
-
-        if ($this->toActivity && $canLogActivity) {
+        if ($this->shouldWriteActivityLog($causer)) {
             $this->writeActivityLog($causer, $eventName);
+        }
+    }
+
+    private function shouldWriteActivityLog(?Model $causer): bool
+    {
+        if (! $this->toActivity) {
+            return false;
+        }
+
+        return $causer !== null || $this->activityOnly();
+    }
+
+    private function dispatchEvent(): void
+    {
+        if ($this->event instanceof BaseEvent) {
+            event($this->event);
+            $this->payload = array_merge($this->event->toPayload(), $this->payload);
+        }
+    }
+
+    private function applyPiiMasking(): void
+    {
+        if ($this->maskPii) {
+            $this->payload = PiiMasker::maskArray($this->payload);
+        }
+    }
+
+    private function resolveTranslations(?string $eventName): void
+    {
+        if ($eventName === null) {
+            return;
+        }
+
+        $locale = App::getLocale();
+        $description = __('log.'.$eventName, [], $locale);
+        if ($description !== 'log.'.$eventName) {
+            $this->context['event_description'] = $description;
+        }
+        $altLocale = $locale === 'id' ? 'en' : 'id';
+        $altDescription = __('log.'.$eventName, [], $altLocale);
+        if ($altDescription !== 'log.'.$eventName) {
+            $this->context['event_description_'.$altLocale] = $altDescription;
         }
     }
 
@@ -205,10 +215,8 @@ final class SmartLogger
         return $this->event;
     }
 
-    private function writeSystemLog(?Model $causer): void
+    private function buildSystemContext(?Model $causer, ?string $eventName): array
     {
-        $level = self::FACE_MAP[$this->face] ?? 'info';
-
         $context = $this->context;
 
         if ($this->payload !== []) {
@@ -227,7 +235,14 @@ final class SmartLogger
             $context['user_id'] = $causer->getKey();
         }
 
-        LogFacade::{$level}($this->message, $context);
+        return $context;
+    }
+
+    private function writeSystemLog(?Model $causer, ?string $eventName = null): void
+    {
+        $level = self::FACE_MAP[$this->face] ?? 'info';
+
+        LogFacade::{$level}($this->message, $this->buildSystemContext($causer, $eventName));
     }
 
     private function writeActivityLog(?Model $causer = null, ?string $eventName = null): void
@@ -268,7 +283,10 @@ final class SmartLogger
             LogFacade::error('Failed to write activity log', [
                 'face' => $this->face,
                 'message' => $this->message,
+                'module' => $this->module,
+                'event' => $eventName,
                 'error' => $e->getMessage(),
+                'error_class' => get_class($e),
             ]);
         }
     }

@@ -49,28 +49,15 @@ changing only the environment variable.
 
 ## Key Table Categories
 
-Core tables are the foundation: users, profiles, schools, departments, and
-academic years. These define who the participants are and what organizational
-structure they belong to.
+Core tables are the foundation: `users`, `profiles`, `departments`, and `academic_years`. These define who the participants are and what organizational structure they belong to. Single-tenant school-wide profiles are stored directly in configuration settings.
 
-Operational tables track the primary workflows: internships, placements,
-registrations, attendances, logbooks, assignments, and submissions. These
-tables record what happens during the internship lifecycle.
+Operational tables track the primary workflows: `internships`, `placements`, `registrations`, `attendances`, `logbooks`, `supervision_logs`, `assignments`, and `submissions`. These tables record what happens during the internship lifecycle.
 
-Assessment tables handle evaluation: rubrics, competencies, indicators,
-assessments, evaluations, presentations, and reports. These are separated
-because evaluation has its own data lifecycle and access patterns distinct
-from operational tracking.
+Assessment, Grading & Certification tables handle evaluation and credentials: `rubrics`, `assessments`, `evaluations`, `reports` (Final Student Grade Cards / Rapor PKL), and `certificates`. These are separated because evaluation and certification have their own data lifecycles and access patterns distinct from daily operational tracking.
 
-Security tables manage access and auditing: roles, permissions,
-activity_log, login_history, sessions, and account status history. Every
-mutating action is logged immutably, producing an audit trail that can be
-traced back to a specific user and request.
+Security and Audit tables manage access control and auditing: `roles`, `permissions`, `model_has_roles`, `model_has_permissions`, `role_has_permissions`, `activity_log`, and `gdpr_deletion_logs`. Every mutating action is logged immutably, producing an audit trail.
 
-Supporting tables enable the application to function: settings (key-value
-configuration), media (file attachments), notifications, and setups
-(installation state). These are consumed by the framework and infrastructure
-rather than by business workflows directly.
+Supporting tables enable the application to function: `settings` (key-value configuration and setup wizard state), `media` (file attachments), `notifications`, `absence_requests`, `announcements`, `incident_reports`, and `placement_change_requests`.
 
 ## Schema Organization Principles
 
@@ -104,10 +91,10 @@ Database configuration is in `config/database.php`, overridable via `.env`.
 
 ## Full Table Reference
 
-The database schema covers 75+ tables organized into lifecycle groups:
-Identity & Access, Institutional Setup, Partnerships, Internship Program,
-Registration, Daily Operations (attendance, logbook), Mentoring, Assignments,
-Assessment, Reports, Guidance & Incidents, Evaluations, Admin & Audit, and
+The database schema covers 52 tables (34 Custom Domain Tables + 18 Framework/Package Tables) organized into lifecycle groups:
+Identity & Access, Configuration, Partnerships, Internship Program,
+Enrollment & Placements, Daily Operations (attendance, logbooks, supervision), Assignments,
+Assessment, Reports (Rapor PKL), Certification, Incidents & Change Requests, and
 Infrastructure (cache, queue, sessions, media, notifications, activity log).
 
 Refer to individual module documentation for table details and relationships.

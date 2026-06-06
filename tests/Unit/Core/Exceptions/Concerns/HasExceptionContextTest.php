@@ -74,3 +74,67 @@ test('to cli output encodes non scalar context', function () {
 
     expect($output)->toContain('items: '.json_encode(['a', 'b', 'c']));
 });
+
+test('to cli output sanitizes sensitive context', function () {
+    $e = (new ContextTestException('Error'))
+        ->withContext([
+            'email' => 'john@example.com',
+            'password' => 'secret123',
+            'user_id' => 42,
+        ]);
+
+    $output = $e->toCliOutput();
+
+    expect($output)->toContain('email: jo***@example.com');
+    expect($output)->toContain('password: ***');
+    expect($output)->toContain('user_id: 42');
+});
+
+test('to cli output handles empty context', function () {
+    $e = new ContextTestException('Just a message');
+
+    $output = $e->toCliOutput();
+
+    expect($output)->toBe('Just a message');
+});
+
+test('to cli output handles null hint', function () {
+    $e = new ContextTestException('Test');
+    $e->withHint(null);
+
+    $output = $e->toCliOutput();
+
+    expect($output)->toBe('Test');
+});
+
+test('to cli output handles special characters in context values', function () {
+    $e = (new ContextTestException('Error'))
+        ->withContext(['path' => '/var/www/html']);
+
+    $output = $e->toCliOutput();
+
+    expect($output)->toContain('path: /var/www/html');
+});
+
+test('getSanitizedContext masks sensitive data', function () {
+    $e = (new ContextTestException('Error'))
+        ->withContext([
+            'email' => 'user@example.com',
+            'token' => 'abc123',
+            'name' => 'John Doe',
+            'safe_key' => 'visible',
+        ]);
+
+    $sanitized = $e->getSanitizedContext();
+
+    expect($sanitized['email'])->toBe('us***@example.com');
+    expect($sanitized['token'])->toBe('***');
+    expect($sanitized['name'])->toBe('J. Doe');
+    expect($sanitized['safe_key'])->toBe('visible');
+});
+
+test('getSanitizedContext returns empty array for no context', function () {
+    $e = new ContextTestException('Error');
+
+    expect($e->getSanitizedContext())->toBe([]);
+});

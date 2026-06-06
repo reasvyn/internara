@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Models;
 
-use App\Assessment\Core\Models\Assessment;
+use App\Assessment\Models\Assessment;
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Models\BaseModel;
 use App\Enrollment\Entities\RegistrationState;

@@ -1,7 +1,7 @@
 # Setup — Technical Reference
 
-> Last updated: 2026-06-05
-> Changes: Created top-level Setup technical reference detailing directory tree, actions, and models.
+> Last updated: 2026-06-06  
+> Changes: Removed the separate Setup model and setups table. The installation wizard progress and setup tokens are now stored inside the `settings` table.
 
 Detailed structural and implementation reference for the **Setup** module.
 
@@ -13,8 +13,8 @@ Handles technical installation, environment check, database provisioning, and on
 
 ### Module Statistics
 - **Actions**: 6 business logic operations
-- **Models**: 1 data entity
-- **Livewire Components**: 1 UI wizard
+- **Models**: 0 data entities (persists wizard progress and tokens in the `settings` table)
+- **Livewire Components**: 1 UI wizard (with 4 Form Objects)
 - **Policies**: 1 authorization rule
 
 ---
@@ -30,12 +30,7 @@ app/Setup/
 │   ├── SetupDepartmentAction.php
 │   ├── SetupSchoolAction.php
 │   └── ValidateSetupTokenAction.php
-├── Console/
-│   └── Commands/
-│       ├── SetupInstallCommand.php
-│       ├── SetupResetTokenCommand.php
-│       └── Traits/
-│           └── InteractsWithInstallerCli.php
+├── Console/              ← (belongs to SysAdmin module)
 ├── Entities/
 │   └── SetupState.php
 ├── Livewire/
@@ -45,13 +40,9 @@ app/Setup/
 │   │   ├── SetupDepartmentForm.php
 │   │   └── SetupSchoolForm.php
 │   └── SetupWizard.php
-├── Models/
-│   └── Setup.php
 ├── Policies/
 │   └── SetupPolicy.php
-├── Services/
-│   └── EnvironmentAuditor.php
-└── Support/
+├── Support/
     └── SystemProvisioner.php
 ```
 
@@ -72,9 +63,7 @@ app/Setup/
 
 ## Models
 
-| File | Class | Extends |
-|---|---|---|
-| `Models/Setup.php` | `Setup` | `BaseModel` |
+Setup does not own any separate Eloquent model. The wizard status, Single-Use Token block, and configuration payloads are saved under the `setup.*` namespace inside the global `Setting` model (SysAdmin module).
 
 ---
 
@@ -89,3 +78,7 @@ app/Setup/
 ## Authorization
 
 - **`SetupPolicy`**: Asserts permissions for installation, setup tokens, and system provisioning.
+
+---
+
+*For overview and business context, see [setup.md](setup.md)*

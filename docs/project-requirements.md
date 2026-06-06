@@ -57,9 +57,9 @@ To comply with the Indonesian Ministry of Education (Kemendikbudristek) regulati
 * **Competency Rubric Matrix**: Mapping evaluation forms to specific educational competency standards (*Elemen Kompetensi*).
 * **Multi-Weighted Grades**: Automatic calculation of composite scores:
   ```
-  Grade = (Supervisor Score × 40%) + (Teacher Score × 20%) + (Report/Thesis Exam × 40%)
+  Grade = (Supervisor Score × 40%) + (Teacher Score × 20%) + (Exam Score × 40%)
   ```
-* **Presentation Examination**: Logbook for scheduled exams, including assessors, slide files, and revision requirements.
+* **Presentation Examination**: Student exam/presentation scheduling is managed offline by each school; only the final exam score is recorded in the system for final grade card compilation.
 
 ### 3.5 Certification & Issuance
 * **Certificate Generator**: Dynamically compiled PDF certificates containing grades and signed seals.

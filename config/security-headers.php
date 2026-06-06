@@ -43,4 +43,21 @@ return [
     */
     'csp_enabled' => (bool) env('CSP_ENABLED', true),
 
+    /*
+    |--------------------------------------------------------------------------
+    | HTTP Strict Transport Security (HSTS)
+    |--------------------------------------------------------------------------
+    |
+    | HSTS tells browsers to only connect via HTTPS for a specified period.
+    | Only enable in production when you have a valid SSL certificate.
+    |
+    */
+    'hsts_enabled' => (bool) env('HSTS_ENABLED', false),
+
+    'hsts_max_age' => (int) env('HSTS_MAX_AGE', 31536000),
+
+    'hsts_include_subdomains' => (bool) env('HSTS_INCLUDE_SUBDOMAINS', true),
+
+    'hsts_preload' => (bool) env('HSTS_PRELOAD', false),
+
 ];
