@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Auth\SuperAdmin\Actions;
+namespace App\Setup\SetupWizard\Actions;
 
 use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;

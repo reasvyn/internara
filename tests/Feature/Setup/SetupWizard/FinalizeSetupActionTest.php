@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\Feature\Setup\SetupWizard\Actions;
 
 use App\Academics\Department\Models\Department;
-use App\Auth\SuperAdmin\Actions\SetupSuperAdminAction;
 use App\Core\Contracts\SendsNotifications;
-use App\Program\Internship\Actions\CreateInternshipAction;
 use App\Settings\Support\Settings;
 use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
 use App\Setup\SetupWizard\Actions\SetupDepartmentAction;
+use App\Setup\SetupWizard\Actions\SetupInternshipAction;
 use App\Setup\SetupWizard\Actions\SetupSchoolAction;
+use App\Setup\SetupWizard\Actions\SetupSuperAdminAction;
 use App\Setup\SetupWizard\Entities\SetupState;
 use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -45,13 +45,13 @@ test('finalize setup action successfully sets up school, department, admin, and 
     $setupDept = app(SetupDepartmentAction::class);
 
     $setupAdmin = app(SetupSuperAdminAction::class);
-    $createInternship = app(CreateInternshipAction::class);
+    $setupInternship = app(SetupInternshipAction::class);
 
     $finalizeAction = new FinalizeSetupAction(
         $setupSchool,
         $setupDept,
         $setupAdmin,
-        $createInternship,
+        $setupInternship,
         $sendNotificationMock,
         $saveRecoveryKeyMock
     );

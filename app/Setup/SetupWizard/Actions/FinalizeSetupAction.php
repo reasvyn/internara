@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace App\Setup\SetupWizard\Actions;
 
-use App\Auth\SuperAdmin\Actions\SetupSuperAdminAction;
 use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Support\SmartLogger;
-use App\Program\Internship\Actions\CreateInternshipAction;
 use App\Settings\Support\Settings;
 use App\Setup\SetupWizard\Entities\SetupState;
 use App\Setup\SetupWizard\Events\SetupFinalized;
@@ -25,7 +23,7 @@ final class FinalizeSetupAction extends BaseAction
         protected readonly SetupSchoolAction $setupSchool,
         protected readonly SetupDepartmentAction $setupDept,
         protected readonly SetupSuperAdminAction $setupAdmin,
-        protected readonly CreateInternshipAction $createInternship,
+        protected readonly SetupInternshipAction $setupInternship,
         protected readonly SendsNotifications $sendNotification,
         protected readonly SaveRecoveryKeyAction $saveRecoveryKey,
     ) {}
@@ -57,7 +55,7 @@ final class FinalizeSetupAction extends BaseAction
             $admin = $this->setupAdmin->execute($adminData['email'], $adminData['password']);
 
             if ($internshipData !== null) {
-                $this->createInternship->execute($internshipData);
+                $this->setupInternship->execute($internshipData);
             }
 
             $completedSteps = $state->completedSteps();

@@ -148,7 +148,7 @@ DB Transaction                      Outside Transaction
 │ │   └── Department::create  │              Return plaintext
 │ ├── SetupSuperAdminAction   │
 │ │   └── User::create + role │
-│ ├── CreateInternshipAction  │
+│ ├── SetupInternshipAction   │
 │ │   (if data provided)      │
 │ ├── Mark is_installed=true  │
 │ │   + recovery key (hashed) │
@@ -332,15 +332,16 @@ address) from persisting in session storage longer than necessary.
 
 | Class | Location | Purpose |
 |---|---|---|
-| `SetupWizard` | `app/Setup/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
-| `SetupState` | `app/Setup/Entities/SetupState.php` | Read-only value object for setup status |
-| `FinalizeSetupAction` | `app/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
-| `SetupSchoolAction` | `app/Setup/Actions/SetupSchoolAction.php` | Saves school details in the settings table |
-| `SetupDepartmentAction` | `app/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
-| `SetupSuperAdminAction` | `app/Auth/SuperAdmin/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
-| `EnvironmentAuditor` | `app/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
-| `RequireSetupAccessMiddleware` | `app/Academics/Http/Middleware/RequireSetupAccessMiddleware.php` | Global: redirects to /setup if not installed |
-| `ProtectSetupRouteMiddleware` | `app/Academics/Http/Middleware/ProtectSetupRouteMiddleware.php` | Route: validates token, rate-limits, self-destructs |
+| `SetupWizard` | `app/Setup/SetupWizard/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
+| `SetupState` | `app/Setup/SetupWizard/Entities/SetupState.php` | Read-only value object for setup status |
+| `FinalizeSetupAction` | `app/Setup/SetupWizard/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
+| `SetupSchoolAction` | `app/Setup/SetupWizard/Actions/SetupSchoolAction.php` | Saves school details in the settings table |
+| `SetupDepartmentAction` | `app/Setup/SetupWizard/Actions/SetupDepartmentAction.php` | Creates first Department |
+| `SetupSuperAdminAction` | `app/Setup/SetupWizard/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
+| `SetupInternshipAction` | `app/Setup/SetupWizard/Actions/SetupInternshipAction.php` | Creates first Internship Program |
+| `EnvironmentAuditor` | `app/SysAdmin/Observability/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
+| `RequireSetupAccessMiddleware` | `app/Setup/Installation/Http/Middleware/RequireSetupAccessMiddleware.php` | Global: redirects to /setup if not installed |
+| `ProtectSetupRouteMiddleware` | `app/Setup/Installation/Http/Middleware/ProtectSetupRouteMiddleware.php` | Route: validates token, rate-limits, self-destructs |
 
 ### End-to-End Flow
 

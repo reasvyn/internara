@@ -8,10 +8,10 @@ use App\Core\Support\SmartLogger;
 use App\Settings\Support\AppInfo;
 use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
 use App\Setup\SetupWizard\Entities\SetupState;
-use App\Setup\SetupWizard\Livewire\Forms\AdminForm;
+use App\Setup\SetupWizard\Livewire\Forms\DepartmentForm;
 use App\Setup\SetupWizard\Livewire\Forms\InternshipForm;
-use App\Setup\SetupWizard\Livewire\Forms\SetupDepartmentForm;
-use App\Setup\SetupWizard\Livewire\Forms\SetupSchoolForm;
+use App\Setup\SetupWizard\Livewire\Forms\SchoolForm;
+use App\Setup\SetupWizard\Livewire\Forms\SuperAdminForm;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
@@ -26,11 +26,11 @@ class SetupWizard extends Component
 
     public bool $auditPassed = false;
 
-    public SetupSchoolForm $schoolForm;
+    public SchoolForm $schoolForm;
 
-    public SetupDepartmentForm $departmentForm;
+    public DepartmentForm $departmentForm;
 
-    public AdminForm $adminForm;
+    public SuperAdminForm $superAdminForm;
 
     public InternshipForm $internshipForm;
 
@@ -90,15 +90,15 @@ class SetupWizard extends Component
 
     protected function initDefaults(): void
     {
-        $this->adminForm->name = config('setup.defaults.admin_name', 'Administrator');
-        $this->adminForm->username = config('setup.defaults.admin_username', 'superadmin');
+        $this->superAdminForm->name = config('setup.defaults.admin_name', 'Administrator');
+        $this->superAdminForm->username = config('setup.defaults.admin_username', 'superadmin');
     }
 
     public function updated(string $property): void
     {
         if (str_starts_with($property, 'schoolForm.')
             || str_starts_with($property, 'departmentForm.')
-            || str_starts_with($property, 'adminForm.')
+            || str_starts_with($property, 'superAdminForm.')
             || str_starts_with($property, 'internshipForm.')
         ) {
             $this->saveState();
@@ -110,7 +110,7 @@ class SetupWizard extends Component
         session()->put('setup.form_data', [
             'school' => $this->schoolForm->all(),
             'department' => $this->departmentForm->all(),
-            'admin' => $this->adminForm->only(['name', 'username', 'email']),
+            'admin' => $this->superAdminForm->only(['name', 'username', 'email']),
             'internship' => $this->internshipForm->all(),
         ]);
     }
@@ -129,8 +129,8 @@ class SetupWizard extends Component
 
         if (isset($data['admin'])) {
             foreach ($data['admin'] as $key => $value) {
-                if (property_exists($this->adminForm, $key)) {
-                    $this->adminForm->{$key} = $value;
+                if (property_exists($this->superAdminForm, $key)) {
+                    $this->superAdminForm->{$key} = $value;
                 }
             }
         }
@@ -190,7 +190,7 @@ class SetupWizard extends Component
         }
 
         if ($this->currentStep === 2) {
-            $this->adminForm->validate();
+            $this->superAdminForm->validate();
         }
 
         if ($this->currentStep === 3) {
@@ -263,8 +263,8 @@ class SetupWizard extends Component
                     'description' => $this->departmentForm->description,
                 ],
                 adminData: [
-                    'email' => $this->adminForm->email,
-                    'password' => $this->adminForm->password,
+                    'email' => $this->superAdminForm->email,
+                    'password' => $this->superAdminForm->password,
                 ],
                 internshipData: $internshipData,
             );
@@ -306,7 +306,7 @@ class SetupWizard extends Component
     {
         $stepKeys = config('setup.wizard.step_keys', ['welcome', 'account', 'school', 'department', 'internship', 'finalize', 'complete']);
 
-        return view('setup.setup-wizard', [
+        return view('setup.setup-wizard.setup-wizard', [
             'appName' => AppInfo::get('name', config('app.name')),
             'appVersion' => AppInfo::version(),
             'stepKeys' => $stepKeys,

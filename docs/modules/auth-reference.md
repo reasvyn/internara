@@ -48,7 +48,6 @@ This module depends on:
 | `Password/Actions/ResetPasswordAction.php` | `ResetPasswordAction` | `BaseAction` |
 | `Password/Actions/ResetUserPasswordAction.php` | `ResetUserPasswordAction` | `BaseAction` |
 | `Password/Actions/SendPasswordResetLinkAction.php` | `SendPasswordResetLinkAction` | `BaseAction` |
-| `SuperAdmin/Actions/SetupSuperAdminAction.php` | `SetupSuperAdminAction` | `BaseAction` |
 | `Password/Actions/UpdateUserPasswordAction.php` | `UpdateUserPasswordAction` | `BaseAction` |
 | `Password/Actions/ConfirmPasswordAction.php` | `ConfirmPasswordAction` | `BaseAction` |
 

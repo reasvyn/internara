@@ -7,7 +7,7 @@ namespace App\Setup\SetupWizard\Livewire\Forms;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Form;
 
-class AdminForm extends Form
+class SuperAdminForm extends Form
 {
     public string $name = '';
 
