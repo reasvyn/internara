@@ -101,4 +101,15 @@ Setup does not own any separate Eloquent model. The wizard status, Single-Use To
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Installation`, `SetupWizard`
+- **Business Logic (`app/`)**: Located in [app/Setup/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Setup/)
+- **Routing (`routes/`)**: [routes/web/setup.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/setup.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/setup/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/setup/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Setup/`, Unit `tests/Unit/Setup/`
+
+
 *For overview and business context, see [setup.md](setup.md)*

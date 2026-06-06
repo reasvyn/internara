@@ -126,4 +126,15 @@ app/Enrollment/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Registration`, `AccountApplication`, `RegistrationDocument`, `Placement`, `PlacementChangeRequest`
+- **Business Logic (`app/`)**: Located in [app/Enrollment/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Enrollment/)
+- **Routing (`routes/`)**: [routes/web/enrollment.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/enrollment.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/enrollment/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/enrollment/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Enrollment/`, Unit `tests/Unit/Enrollment/`
+
+
 *For overview and business context, see [enrollment.md](enrollment.md)*

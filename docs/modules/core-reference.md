@@ -216,4 +216,15 @@ app/Core/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: None (infrastructure foundation)
+- **Business Logic (`app/`)**: Located in [app/Core/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Core/)
+- **Routing (`routes/`)**: None (uses system health check path `/up` defined in `bootstrap/app.php`)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/core/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/core/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Core/`, Unit `tests/Unit/Core/`
+
+
 *For overview and business context, see [core.md](core.md)*

@@ -297,4 +297,15 @@ All defined in `app/Support/helpers.php`:
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: None (system-wide key-value store module)
+- **Business Logic (`app/`)**: Located in [app/Settings/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Settings/)
+- **Routing (`routes/`)**: [routes/web/settings.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/settings.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/settings/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/settings/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Settings/`, Unit `tests/Unit/Settings/`
+
+
 *For overview and business context, see [settings.md](settings.md)*

@@ -96,4 +96,15 @@ app/Partners/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Company`, `Partnership`
+- **Business Logic (`app/`)**: Located in [app/Partners/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Partners/)
+- **Routing (`routes/`)**: [routes/web/partners.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/partners.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/partners/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/partners/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Partners/`, Unit `tests/Unit/Partners/`
+
+
 *For overview and business context, see [partners.md](partners.md)*

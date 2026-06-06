@@ -87,4 +87,15 @@ app/Guidance/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `SupervisionLog`
+- **Business Logic (`app/`)**: Located in [app/Guidance/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Guidance/)
+- **Routing (`routes/`)**: [routes/web/guidance.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/guidance.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/guidance/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/guidance/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Guidance/`, Unit `tests/Unit/Guidance/`
+
+
 *For overview and business context, see [guidance.md](guidance.md)*

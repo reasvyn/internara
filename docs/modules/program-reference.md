@@ -103,4 +103,15 @@ app/Program/
 
 ---
 
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: `Internship`, `InternshipGroup`
+- **Business Logic (`app/`)**: Located in [app/Program/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Program/)
+- **Routing (`routes/`)**: [routes/web/program.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/program.php)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/program/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/program/)
+- **Testing (`tests/`)**: Feature `tests/Feature/Program/`, Unit `tests/Unit/Program/`
+
+
 *For overview and business context, see [program.md](program.md)*

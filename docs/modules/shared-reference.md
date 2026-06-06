@@ -160,3 +160,14 @@ For example, imports such as:
 - `App\Core\Livewire\LangSwitcher` -> migrated to `App\Livewire\LangSwitcher`
 
 This ensures that the `App\Core` namespace contains strictly only abstract base classes, system contracts, and foundation middleware/commands.
+
+## Architectural Integration
+
+This module integrates with the system across the following directories and resources:
+
+- **Submodules**: None (cross-cutting utilities and UI components)
+- **Business Logic (`app/`)**: Located in [app/Support/, app/Exceptions/, app/Livewire/ (cross-cutting)](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Support/, app/Exceptions/, app/Livewire/ (cross-cutting))
+- **Routing (`routes/`)**: None (shared across all routing tables)
+- **Views (`views/`)**: Blade templates and layouts are in [resources/views/livewire/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/livewire/)
+- **Testing (`tests/`)**: Unit `tests/Unit/Support/`, Unit `tests/Unit/Policies/`, Feature `tests/Feature/Exceptions/`
+
