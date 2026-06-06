@@ -1,7 +1,7 @@
 # Setup — Documentation Overview
 
-> Last updated: 2026-06-05
-> Changes: Created top-level Setup module overview documenting system installation, provisioning, and one-time setup wizard.
+> Last updated: 2026-06-06
+> Changes: Refactored Setup module to divide technical components into Installation and SetupWizard submodules.
 
 Handles one-time technical installation, system environment auditing, initial database seed provisioning (Roles, Academic Years), and the setup token lifecycle.
 
