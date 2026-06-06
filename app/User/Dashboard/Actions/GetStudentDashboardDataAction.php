@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\User\Dashboard\Actions;
 
-use App\Assignment\Core\Enums\AssignmentStatus;
-use App\Assignment\Core\Models\Assignment;
+use App\Assignment\Enums\AssignmentStatus;
+use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseAction;

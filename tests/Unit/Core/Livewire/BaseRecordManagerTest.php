@@ -7,6 +7,7 @@ namespace Tests\Unit\Core\Livewire;
 use App\Core\Livewire\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Mockery;
 
 class MockRecordManager extends BaseRecordManager
@@ -45,6 +46,31 @@ class MockRecordManager extends BaseRecordManager
     public function callPerPageOptions(): array
     {
         return $this->perPageOptions();
+    }
+
+    public function callPerformBulkAction(string $name, callable $callback, bool $transactional = true): void
+    {
+        $this->performBulkAction($name, $callback, $transactional);
+    }
+
+    public function callPerformMassAction(string $name, callable $callback): void
+    {
+        $this->performMassAction($name, $callback);
+    }
+
+    public function callApplySearch(Builder $query): Builder
+    {
+        return $this->applySearch($query);
+    }
+
+    public function callApplyFilters(Builder $query): Builder
+    {
+        return $this->applyFilters($query);
+    }
+
+    public function setWith(array $relations): void
+    {
+        $this->with = $relations;
     }
 }
 
@@ -130,4 +156,112 @@ test('it resets invalid per page to default', function () {
     $manager->rows();
 
     expect($manager->perPage)->toBe(10);
+});
+
+test('it loads eager relations in rows when with is set', function () {
+    $paginator = Mockery::mock(LengthAwarePaginator::class);
+    $builder = Mockery::mock(Builder::class);
+
+    $manager = Mockery::mock(MockRecordManager::class)->makePartial();
+    $manager->setWith(['relation1', 'relation2']);
+    $manager->shouldAllowMockingProtectedMethods();
+    $manager->shouldReceive('query')->once()->andReturn($builder);
+    $manager->shouldReceive('applySearch')->never();
+    $manager->shouldReceive('applyFilters')->once()->with($builder)->andReturn($builder);
+    $manager->shouldReceive('applySorting')->once()->with($builder)->andReturn($builder);
+
+    $builder->shouldReceive('with')
+        ->once()
+        ->with(['relation1', 'relation2'])
+        ->andReturnSelf();
+
+    $builder->shouldReceive('paginate')
+        ->once()
+        ->with(10)
+        ->andReturn($paginator);
+
+    $manager->rows();
+});
+
+test('perform bulk action warns when no records selected', function () {
+    $this->manager->selectedIds = [];
+
+    $this->manager->callPerformBulkAction('delete', fn ($id) => null);
+
+    expect($this->manager->selectedIds)->toBe([]);
+});
+
+test('perform bulk action executes callback for each selected id', function () {
+    $this->manager->selectedIds = [1, 2, 3];
+    $processed = [];
+
+    DB::shouldReceive('transaction')
+        ->once()
+        ->with(Mockery::on(fn ($callback) => true))
+        ->andReturnUsing(fn ($callback) => $callback());
+
+    $this->manager->callPerformBulkAction('delete', function ($id) use (&$processed) {
+        $processed[] = $id;
+    });
+
+    expect($processed)->toBe([1, 2, 3]);
+    expect($this->manager->selectedIds)->toBe([]);
+});
+
+test('perform bulk action works without transaction', function () {
+    $this->manager->selectedIds = [1, 2];
+    $processed = [];
+
+    $this->manager->callPerformBulkAction('delete', function ($id) use (&$processed) {
+        $processed[] = $id;
+    }, false);
+
+    expect($processed)->toBe([1, 2]);
+});
+
+test('perform mass action warns when no records match', function () {
+    $builder = Mockery::mock(Builder::class);
+    $this->manager->setMockBuilder($builder);
+
+    $builder->shouldReceive('count')->once()->andReturn(0);
+
+    $this->manager->callPerformMassAction('delete', fn ($q) => null);
+});
+
+test('perform mass action executes callback on query', function () {
+    $builder = Mockery::mock(Builder::class);
+    $this->manager->setMockBuilder($builder);
+
+    $builder->shouldReceive('count')->once()->andReturn(5);
+
+    $called = false;
+    $this->manager->callPerformMassAction('delete', function ($query) use (&$called) {
+        $called = true;
+    });
+
+    expect($called)->toBeTrue();
+});
+
+test('perform mass action loads with relations on query', function () {
+    $builder = Mockery::mock(Builder::class);
+    $this->manager->setMockBuilder($builder);
+    $this->manager->setWith(['relation']);
+
+    $builder->shouldReceive('with')
+        ->once()
+        ->with(['relation'])
+        ->andReturnSelf();
+    $builder->shouldReceive('count')->once()->andReturn(5);
+
+    $this->manager->callPerformMassAction('delete', fn ($q) => null);
+});
+
+test('apply search and apply filters return query unchanged by default', function () {
+    $builder = Mockery::mock(Builder::class);
+
+    $result1 = $this->manager->callApplySearch($builder);
+    $result2 = $this->manager->callApplyFilters($builder);
+
+    expect($result1)->toBe($builder);
+    expect($result2)->toBe($builder);
 });

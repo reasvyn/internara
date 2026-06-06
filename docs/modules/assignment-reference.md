@@ -19,8 +19,7 @@ Manages coursework assignments and submission tracking
 - **Submodules**: 2 module submodules
 
 ### Submodules
-- `Assignment`
-- `Submission`
+- `Submission` (flat: Actions, Entities, Enums, Livewire, Models, Policies, Notifications langsung di `app/Assignment/`)
 
 ---
 
@@ -38,12 +37,12 @@ This module depends on:
 
 | File | Class | Extends |
 |---|---|---|
-| `Assignment/Actions/CreateAssignmentAction.php` | `CreateAssignmentAction` | `BaseAction` |
-| `Assignment/Actions/DeleteAssignmentAction.php` | `DeleteAssignmentAction` | `BaseAction` |
+| `Actions/CreateAssignmentAction.php` | `CreateAssignmentAction` | `BaseAction` |
+| `Actions/DeleteAssignmentAction.php` | `DeleteAssignmentAction` | `BaseAction` |
 | `Submission/Actions/GradeSubmissionAction.php` | `GradeSubmissionAction` | `BaseAction` |
-| `Assignment/Actions/PublishAssignmentAction.php` | `PublishAssignmentAction` | `BaseAction` |
+| `Actions/PublishAssignmentAction.php` | `PublishAssignmentAction` | `BaseAction` |
 | `Submission/Actions/SubmitAssignmentAction.php` | `SubmitAssignmentAction` | `BaseAction` |
-| `Assignment/Actions/UpdateAssignmentAction.php` | `UpdateAssignmentAction` | `BaseAction` |
+| `Actions/UpdateAssignmentAction.php` | `UpdateAssignmentAction` | `BaseAction` |
 | `Submission/Actions/VerifySubmissionAction.php` | `VerifySubmissionAction` | `BaseAction` |
 
 ---
@@ -52,8 +51,8 @@ This module depends on:
 
 | File | Class |
 |---|---|
-| `Assignment/Models/Assignment.php` | `Assignment` |
-| `Assignment/Models/AssignmentType.php` | `AssignmentType` |
+| `Models/Assignment.php` | `Assignment` |
+| `Models/AssignmentType.php` | `AssignmentType` |
 | `Submission/Models/Submission.php` | `Submission` |
 
 ---
@@ -62,7 +61,7 @@ This module depends on:
 
 | File | Component | Extends |
 |---|---|---|
-| `Assignment/Livewire/AssignmentManager.php` | `AssignmentManager` | `BaseRecordManager` |
+| `Livewire/AssignmentManager.php` | `AssignmentManager` | `BaseRecordManager` |
 | `Submission/Livewire/SubmissionGrading.php` | `SubmissionGrading` | `Component` |
 | `Submission/Livewire/SubmitAssignment.php` | `SubmitAssignment` | `Component` |
 
@@ -72,7 +71,7 @@ This module depends on:
 
 | File | Policy |
 |---|---|
-| `Assignment/Policies/AssignmentPolicy.php` | `AssignmentPolicy` |
+| `Policies/AssignmentPolicy.php` | `AssignmentPolicy` |
 | `Submission/Policies/SubmissionPolicy.php` | `SubmissionPolicy` |
 
 ---
@@ -81,12 +80,25 @@ This module depends on:
 
 ```
 app/Assignment/
-├──            ← Submodule roots
-│   └── {SubModule}/
-│       ├── Actions/
-│       ├── Models/
-│       ├── Policies/
-│       └── Livewire/
+├── Actions/              ← Cross-submodule / flat actions
+├── Entities/
+├── Enums/
+├── Http/
+│   └── Requests/
+├── Livewire/
+├── Models/
+├── Notifications/
+├── Policies/
+├── Submission/           ← Submission submodule
+│   ├── Actions/
+│   ├── Entities/
+│   ├── Enums/
+│   ├── Http/
+│   │   └── Requests/
+│   ├── Livewire/
+│   ├── Models/
+│   ├── Notifications/
+│   └── Policies/
 ├── Http/
 ├── Livewire/
 ├── Types/

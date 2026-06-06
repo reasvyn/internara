@@ -80,12 +80,12 @@ Each module has two files:
 ## Academic Modules
 
 ### 4. Academics — Educational Structure
-**Purpose:** Schools, departments, and academic calendar management
+**Purpose:** Departments and academic calendar management
 
 - Overview: [academics.md](academics.md)
 - Reference: [academics-reference.md](academics-reference.md)
 
-**Key Concepts:** School, Department, AcademicYear
+**Key Concepts:** Department, AcademicYear
 
 **Dependencies:** Core
 
@@ -94,12 +94,12 @@ Each module has two files:
 ---
 
 ### 5. Program — Internship Programs
-**Purpose:** Internship/practicum programs, phases, groups, and schedules
+**Purpose:** Internship/practicum programs, timelines, and cohort student groupings (groups)
 
 - Overview: [program.md](program.md)
 - Reference: [program-reference.md](program-reference.md)
 
-**Key Concepts:** Internship, Phase, InternshipGroup, Schedule, DocumentRequirement
+**Key Concepts:** Internship, InternshipGroup
 
 **Dependencies:** Academics, Partners, Core
 
@@ -108,12 +108,12 @@ Each module has two files:
 ---
 
 ### 6. Enrollment — Student Placement
-**Purpose:** Student registration and phase progression tracking
+**Purpose:** Student registration, placement slot assignment, and change requests
 
 - Overview: [enrollment.md](enrollment.md)
 - Reference: [enrollment-reference.md](enrollment-reference.md)
 
-**Key Concepts:** Registration, Placement, Phase Progression
+**Key Concepts:** Registration, Placement, AccountApplication, PlacementChangeRequest
 
 **Dependencies:** User, Program, Academics, Core
 
@@ -129,7 +129,7 @@ Each module has two files:
 - Overview: [assessment.md](assessment.md)
 - Reference: [assessment-reference.md](assessment-reference.md)
 
-**Key Concepts:** Rubric, Assessment, Presentation
+**Key Concepts:** Rubric, Assessment
 
 **Dependencies:** Core
 
@@ -180,12 +180,12 @@ Each module has two files:
 ---
 
 ### 11. Guidance — Mentoring & Supervision
-**Purpose:** Mentor relationships, guidance, handbooks, and supervision logs
+**Purpose:** Mentor relationships coordination and private field supervision logs
 
 - Overview: [guidance.md](guidance.md)
 - Reference: [guidance-reference.md](guidance-reference.md)
 
-**Key Concepts:** Mentor, Supervisor, Handbook, SupervisionLog
+**Key Concepts:** SupervisionLog, Mentoring Assignments
 
 **Dependencies:** User, Program, Core
 
@@ -231,25 +231,25 @@ Each module has two files:
 
 ---
 
-### 15. Reports — Business Intelligence
-**Purpose:** Report generation and data export
+### 15. Reports — Student Grade Card (Rapor PKL)
+**Purpose:** Final student grade compilation, score aggregation, and coordinator sign-off
 
 - Overview: [reports.md](reports.md)
 - Reference: [reports-reference.md](reports-reference.md)
 
-**Key Concepts:** Report, Export, Analytics
+**Key Concepts:** Grade Card, Rapor PKL, Score Aggregation
 
-**Dependencies:** User, Program, Evaluation, Enrollment, Core
+**Dependencies:** User, Program, Assessment, Enrollment, Core
 
 ---
 
-### 16. Document — Official Correspondence
-**Purpose:** Official document templates and generation for institutional correspondence (surat menyurat)
+### 16. Document — Templates & Handbooks
+**Purpose:** Official document templates, correspondence generation (surat menyurat), policy handbooks, and compliance acknowledgements
 
 - Overview: [document.md](document.md)
 - Reference: [document-reference.md](document-reference.md)
 
-**Key Concepts:** OfficialDocument, DocumentCategory, DocumentRenderer
+**Key Concepts:** OfficialDocument, Handbook, DocumentAcknowledgement, DocumentRenderer
 
 **Dependencies:** Core, User
 
@@ -315,7 +315,7 @@ All 18 modules are vertical slices cross-cutting the 12-layer architecture defin
 | Layer | Name | Description |
 |---|---|---|
 | 1 | Infrastructure | PHP 8.4, Laravel 13, Composer/Spatie packages, npm assets |
-| 2 | Persistence | Database (SQLite/MySQL), config, media library, cache, queue |
+| 2 | Persistence | Database (SQLite/MySQL), 60 migrations, config, media library, cache, queue |
 | 3 | Core Contracts | LabelEnum, StatusEnum, ColorableEnum, exception hierarchy |
 | 4 | Core Base Classes | BaseModel, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, FormRequest, Data, SmartLogger |
 | 5 | Module Models | Eloquent models (50+), UUID PKs, factories, seeders |

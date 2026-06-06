@@ -21,8 +21,8 @@ Handles user administration, announcements, system health monitoring, audit logg
 ### Submodules
 - `Account`
 - `Announcement`
-- `GdprDeletionLog`
-- `Setting`
+- `Observability` (contains `GdprDeletionLog`, `Recorders`, `Services`)
+- `Settings`
 
 ---
 
@@ -59,12 +59,12 @@ This module depends on:
 | `Account/Actions/ToggleUserStatusAction.php` | `ToggleUserStatusAction` | `BaseAction` |
 | `Account/Actions/UpdateUserAction.php` | `UpdateUserAction` | `BaseAction` |
 | `Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | `BaseAction` |
-| `Setting/Actions/BatchSetSettingAction.php` | `BatchSetSettingAction` | `BaseAction` |
-| `Setting/Actions/GetAcademicYearsAction.php` | `GetAcademicYearsAction` | `Base` |
-| `Setting/Actions/SaveSystemSettingsAction.php` | `SaveSystemSettingsAction` | `BaseAction` |
-| `Setting/Actions/SetSettingAction.php` | `SetSettingAction` | `BaseAction` |
-| `Setting/Actions/TestMailSettingsAction.php` | `TestMailSettingsAction` | `BaseAction` |
-| `Setting/Actions/UploadBrandAssetAction.php` | `UploadBrandAssetAction` | `BaseAction` |
+| `Settings/Actions/BatchSetSettingAction.php` | `BatchSetSettingAction` | `BaseAction` |
+| `Settings/Actions/GetAcademicYearsAction.php` | `GetAcademicYearsAction` | `Base` |
+| `Settings/Actions/SaveSystemSettingsAction.php` | `SaveSystemSettingsAction` | `BaseAction` |
+| `Settings/Actions/SetSettingAction.php` | `SetSettingAction` | `BaseAction` |
+| `Settings/Actions/TestMailSettingsAction.php` | `TestMailSettingsAction` | `BaseAction` |
+| `Settings/Actions/UploadBrandAssetAction.php` | `UploadBrandAssetAction` | `BaseAction` |
 
 ---
 
@@ -73,8 +73,8 @@ This module depends on:
 | File | Class |
 |---|---|
 | `Announcement/Models/Announcement.php` | `Announcement` |
-| `GdprDeletionLog/Models/GdprDeletionLog.php` | `GdprDeletionLog` |
-| `Setting/Models/Setting.php` | `Setting` |
+| `Observability/GdprDeletionLog/Models/GdprDeletionLog.php` | `GdprDeletionLog` |
+| `Settings/Models/Setting.php` | `Setting` |
 
 ---
 
@@ -88,8 +88,8 @@ This module depends on:
 | `Account/Livewire/TeacherManager.php` | `TeacherManager` | `BaseRecordManager` |
 | `Account/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` |
 | `Announcement/Livewire/AnnouncementManager.php` | `AnnouncementManager` | `Component` |
-| `GdprDeletionLog/Livewire/GdprDeletionLogs.php` | `GdprDeletionLogs` | `Component` |
-| `Setting/Livewire/SystemSetting.php` | `SystemSetting` | `Component` |
+| `Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` | `GdprDeletionLogs` | `Component` |
+| `Settings/Livewire/SystemSetting.php` | `SystemSetting` | `Component` |
 | `Livewire/AccountCloneDetector.php` | `AccountCloneDetector` | `Component` |
 | `Livewire/ApplicationReview.php` | `ApplicationReview` | `Component` |
 | `Livewire/AuditLogManager.php` | `AuditLogManager` | `Component` |
@@ -110,8 +110,8 @@ This module depends on:
 
 | File | Policy |
 |---|---|
-| `GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` |
-| `Setting/Policies/SettingPolicy.php` | `SettingPolicy` |
+| `Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` |
+| `Settings/Policies/SettingPolicy.php` | `SettingPolicy` |
 
 ---
 
@@ -119,18 +119,20 @@ This module depends on:
 
 | Command Signature | Class | Description |
 |---|---|---|
-| `system:health` | `SystemHealthCommand` | Comprehensive system health check with JSON output support. |
-| `system:cleanup` | `SystemCleanupCommand` | Routine maintenance: prune resets, cache tags, failed jobs, activity logs, media, and old log files. |
-| `system:cache-warm` | `SystemCacheWarmCommand` | Pre-warms application caches (config, views, events, settings, brand). |
+| `system:health` | `SystemHealthCommand` | Comprehensive system health check with JSON output support. (not implemented) |
+| `system:cleanup` | `SystemCleanupCommand` | Routine maintenance: prune resets, cache tags, failed jobs, activity logs, media, and old log files. (not implemented) |
+| `system:cache-warm` | `SystemCacheWarmCommand` | Pre-warms application caches (config, views, events, settings, brand). (not implemented) |
 | `admin:create` | `CreateAdminCommand` | Creates the initial superadmin account when none exists. |
 | `admin:recover` | `RecoverAdminCommand` | Interactive command to reset a superadmin's password or re-create it. |
 | `admin:recovery-show` | `ShowRecoveryKeyCommand` | Displays the current recovery key after confirmation. |
 | `admin:recovery-path` | `ShowRecoveryPathCommand` | Displays the absolute file path of the recovery key. |
+| `setup:install` | `SetupInstallCommand` | Kicks off the setup wizard and generates a signed access URL. |
+| `setup:reset-token` | `SetupResetTokenCommand` | Resets or generates a new setup token for the installation wizard. |
 | `notifications:prune` | `PruneNotificationsCommand` | Prunes old notification records. |
-| `pulse:record-snapshots` | `PulseRecordSnapshotsCommand` | Records Pulse monitoring snapshots. |
 
 > [!NOTE]
-> The legacy `admin:promote` command has been removed because role mappings and promotions are handled directly by functional/standard roles logic or user-management interfaces.
+> - `admin:promote` has been removed — role mappings and promotions are handled directly by functional/standard roles logic or user-management interfaces.
+- `system:health`, `system:cleanup`, and `system:cache-warm` are planned but not yet implemented.
 
 ---
 
@@ -154,37 +156,40 @@ app/SysAdmin/
 │   │   │   └── Forms/
 │   │   ├── Models/
 │   │   └── Notifications/
-│   ├── GdprDeletionLog/
-│   │   ├── Livewire/
-│   │   ├── Models/
-│   │   └── Policies/
-│   └── Setting/
+│   ├── Observability/
+│   │   ├── Console/
+│   │   │   └── Commands/
+│   │   ├── GdprDeletionLog/
+│   │   │   ├── Livewire/
+│   │   │   ├── Models/
+│   │   │   └── Policies/
+│   │   ├── Recorders/
+│   │   └── Services/
+│   └── Settings/
 │       ├── Actions/
 │       ├── Casts/
 │       ├── Enums/
 │       ├── Http/
 │       │   └── Middleware/
 │       ├── Livewire/
-│       │   │   └── Forms/
-│       │   └── Models/
-│       │   └── Policies/
-│       │   └── Rules/
+│       │   └── Forms/
+│       ├── Models/
+│       ├── Policies/
+│       ├── Rules/
 │       └── Support/
 ├── Actions/              ← Cross-submodule actions
 ├── Console/              ← Cross-submodule artisan commands
 │   └── Commands/
-│       ├── SystemHealthCommand.php         ← system:health
-│       ├── SystemCleanupCommand.php        ← system:cleanup
-│       ├── SystemCacheWarmCommand.php      ← system:cache-warm
 │       ├── CreateAdminCommand.php          ← admin:create
-│       ├── RecoverAdminCommand.php         ← admin:recover
-│       ├── ShowRecoveryKeyCommand.php      ← admin:recovery-show
-│       ├── ShowRecoveryPathCommand.php     ← admin:recovery-path
 │       ├── PruneNotificationsCommand.php   ← notifications:prune
-│       └── PulseRecordSnapshotsCommand.php ← pulse:record-snapshots
+│       ├── RecoverAdminCommand.php         ← admin:recover
+│       ├── SetupInstallCommand.php         ← setup:install
+│       ├── SetupResetTokenCommand.php      ← setup:reset-token
+│       ├── ShowRecoveryKeyCommand.php      ← admin:recovery-show
+│       └── ShowRecoveryPathCommand.php     ← admin:recovery-path
 ├── Livewire/             ← Cross-submodule UI (audit, pulse)
 │   └── Pulse/
-├── Recorders/            ← Pulse recorders
+├── Observability/        ← Observability submodule (Console/Commands, GdprDeletionLog, Recorders, Services)
 └── Services/             ← Infrastructure services
 ```
 

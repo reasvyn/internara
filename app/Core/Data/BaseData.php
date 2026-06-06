@@ -8,10 +8,6 @@ use Illuminate\Support\Str;
 
 abstract readonly class BaseData
 {
-    /**
-     * Convert the DTO to an array.
-     * By default, extracts all public properties recursively.
-     */
     public function toArray(): array
     {
         $result = [];
@@ -23,10 +19,6 @@ abstract readonly class BaseData
         return $result;
     }
 
-    /**
-     * Create a new instance from an array of data.
-     * Uses named constructor pattern — override in subclasses for custom hydration.
-     */
     public static function fromArray(array $data): static
     {
         $constructorParams = [];
@@ -56,14 +48,14 @@ abstract readonly class BaseData
         return new static(...$constructorParams);
     }
 
-    /**
-     * Create a Data DTO from the current object.
-     * Override in subclasses for custom transformation logic.
-     */
     public static function from(mixed $source): static
     {
         if (is_array($source)) {
             return static::fromArray($source);
+        }
+
+        if (is_object($source) && method_exists($source, 'toArray')) {
+            return static::fromArray($source->toArray());
         }
 
         throw new \InvalidArgumentException('Unsupported source type: '.get_debug_type($source));

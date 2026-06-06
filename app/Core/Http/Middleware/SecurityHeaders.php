@@ -19,13 +19,41 @@ class SecurityHeaders
             $response->headers->set($key, $value);
         }
 
-        if (config('security-headers.csp_enabled', true)) {
-            $csp = config('security-headers.csp', "default-src 'self'");
-            $csp = $this->injectViteDevUrl($csp);
-            $response->headers->set('Content-Security-Policy', (string) $csp);
-        }
+        $this->applyCsp($response);
+        $this->applyHsts($response);
 
         return $response;
+    }
+
+    private function applyCsp(Response $response): void
+    {
+        if (! config('security-headers.csp_enabled', true)) {
+            return;
+        }
+
+        $csp = config('security-headers.csp', "default-src 'self'");
+        $csp = $this->injectViteDevUrl($csp);
+        $response->headers->set('Content-Security-Policy', (string) $csp);
+    }
+
+    private function applyHsts(Response $response): void
+    {
+        if (! config('security-headers.hsts_enabled', false)) {
+            return;
+        }
+
+        $maxAge = config('security-headers.hsts_max_age', 31536000);
+        $value = "max-age={$maxAge}";
+
+        if (config('security-headers.hsts_include_subdomains', true)) {
+            $value .= '; includeSubDomains';
+        }
+
+        if (config('security-headers.hsts_preload', false)) {
+            $value .= '; preload';
+        }
+
+        $response->headers->set('Strict-Transport-Security', $value);
     }
 
     private function injectViteDevUrl(string $csp): string

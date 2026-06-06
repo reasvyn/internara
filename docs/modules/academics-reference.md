@@ -1,7 +1,7 @@
 # Academics — Technical Reference
 
-> Last updated: 2026-06-03
-> Changes: Converted Status metadata to Changes format
+> Last updated: 2026-06-06  
+> Changes: Removed the separate School submodule, models, actions, and policies. School metadata is managed via SysAdmin settings.
 
 Detailed structural and implementation reference for the **Academics** module.
 
@@ -9,30 +9,27 @@ Detailed structural and implementation reference for the **Academics** module.
 
 ## Overview
 
-Manages educational institutions, departments, and academic calendar periods
+Manages academic majors (departments) and calendar years.
 
 ### Module Statistics
-- **Actions**: 9 business logic operations
-- **Models**: 3 data entities
-- **Livewire Components**: 3 UI components
-- **Policies**: 3 authorization rules
-- **Submodules**: 3 module submodules
+- **Actions**: 8 business logic operations
+- **Models**: 2 data entities (`Department`, `AcademicYear`)
+- **Livewire Components**: 2 UI components
+- **Policies**: 2 authorization rules
+- **Submodules**: 2 module submodules
 
 ### Submodules
 - `AcademicYear`
 - `Department`
-- `School`
 
 ---
 
 ## Dependency Graph
 
 This module depends on:
-- **SysAdmin**
-- **Assessment**
-- **Core**
-- **Program**
-- **User**
+- **Core** (base classes)
+- **User** (teachers/students department assignments)
+- **SysAdmin** (settings configs)
 
 ---
 
@@ -40,15 +37,14 @@ This module depends on:
 
 | File | Class | Extends |
 |---|---|---|
+| `AcademicYear/Actions/CreateAcademicYearAction.php` | `CreateAcademicYearAction` | `BaseAction` |
+| `AcademicYear/Actions/UpdateAcademicYearAction.php` | `UpdateAcademicYearAction` | `BaseAction` |
+| `AcademicYear/Actions/DeleteAcademicYearAction.php` | `DeleteAcademicYearAction` | `BaseAction` |
 | `AcademicYear/Actions/ActivateAcademicYearAction.php` | `ActivateAcademicYearAction` | `BaseAction` |
 | `AcademicYear/Actions/BulkDeleteAcademicYearsAction.php` | `BulkDeleteAcademicYearsAction` | `BaseAction` |
-| `AcademicYear/Actions/CreateAcademicYearAction.php` | `CreateAcademicYearAction` | `BaseAction` |
 | `Department/Actions/CreateDepartmentAction.php` | `CreateDepartmentAction` | `BaseAction` |
-| `AcademicYear/Actions/DeleteAcademicYearAction.php` | `DeleteAcademicYearAction` | `BaseAction` |
-| `Department/Actions/DeleteDepartmentAction.php` | `DeleteDepartmentAction` | `BaseAction` |
-| `AcademicYear/Actions/UpdateAcademicYearAction.php` | `UpdateAcademicYearAction` | `BaseAction` |
 | `Department/Actions/UpdateDepartmentAction.php` | `UpdateDepartmentAction` | `BaseAction` |
-| `School/Actions/UpdateSchoolAction.php` | `UpdateSchoolAction` | `BaseAction` |
+| `Department/Actions/DeleteDepartmentAction.php` | `DeleteDepartmentAction` | `BaseAction` |
 
 ---
 
@@ -58,7 +54,6 @@ This module depends on:
 |---|---|
 | `AcademicYear/Models/AcademicYear.php` | `AcademicYear` |
 | `Department/Models/Department.php` | `Department` |
-| `School/Models/School.php` | `School` |
 
 ---
 
@@ -68,7 +63,6 @@ This module depends on:
 |---|---|---|
 | `AcademicYear/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` |
 | `Department/Livewire/DepartmentManager.php` | `DepartmentManager` | `BaseRecordManager` |
-| `School/Livewire/SchoolEditor.php` | `SchoolEditor` | `Component` |
 
 ---
 
@@ -76,9 +70,8 @@ This module depends on:
 
 | File | Policy |
 |---|---|
-| `AcademicYear/Policies/AcademicYearPolicy.php` | `AcademicYearPolicy` |
-| `Department/Policies/DepartmentPolicy.php` | `DepartmentPolicy` |
-| `School/Policies/SchoolPolicy.php` | `SchoolPolicy` |
+| `AcademicYear/Policies/AcademicYearPolicy.php` | `AcademicYearPolicy` | `BasePolicy` |
+| `Department/Policies/DepartmentPolicy.php` | `DepartmentPolicy` | `BasePolicy` |
 
 ---
 
@@ -87,7 +80,12 @@ This module depends on:
 ```
 app/Academics/
 ├──            ← Submodule roots
-│   └── {SubModule}/
+│   ├── AcademicYear/
+│   │   ├── Actions/
+│   │   ├── Models/
+│   │   ├── Policies/
+│   │   └── Livewire/
+│   └── Department/
 │       ├── Actions/
 │       ├── Models/
 │       ├── Policies/

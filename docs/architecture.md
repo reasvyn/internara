@@ -20,12 +20,15 @@ Every architectural decision below serves three goals:
 ## Layered Architecture
 
 The system is built in **12 layers**, bottom to top. Each layer depends only on layers below it.
-The module directories are vertical slices that cross all layers below Layer 11.
+The 18 module directories are vertical slices that cross all layers below Layer 11.
 
 ```
   Layer 12 ┌──────────────────────────────────────────────────────────┐
-   Business│  16 Modules: User, Academics, Program, Enrollment...     │
-   Modules │  Each module is a vertical slice of layers 1–11          │
+   Business│  18 Modules: Core, Shared, User, SysAdmin, Setup,        │
+   Modules │  Academics, Program, Enrollment, Assessment, Evaluation,  │
+   (Module)│  Assignment, Journals, Guidance, Incident, Partners,      │
+           │  Certification, Reports, Document                         │
+           │  Each module is a vertical slice of layers 1–11           │
    (Module)│  app/{Module}/                                           │
            │  ├── {SubModule}/  ← colocated Actions, Models, Policies │
            │  ├── Types/        ← shared enums, value objects         │
@@ -91,7 +94,7 @@ The module directories are vertical slices that cross all layers below Layer 11.
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
   Layer 2 ┌──────────────────────────────────────────────────────────┐
-  Persist.│  Database: SQLite/MySQL, 63 migrations                  │
+  Persist.│  Database: SQLite/MySQL, 60 migrations                  │
           │  Config: .env, config/*.php, Runtime settings table     │
           │  Files: Spatie Media Library (polymorphic attachments)  │
           │  Cache: Laravel cache + queue (jobs) + session          │
@@ -414,21 +417,23 @@ Each module contains the following submodules:
 | Module | Submodules | Cross-Submodule Root Files |
 |---|---|---|---|
 | **Core** | — | (infrastructure + cross-module utilities) |
+| **Shared** | — | Traits, DTOs, concrete exceptions, global UI elements |
 | **User** | `Login/`, `Password/`, `ActivationToken/`, `AccountRecovery/`, `AccountStatus/`, `Profile/`, `Notification/`, `Dashboard/` | Http, Livewire (login, recovery, dashboards, editors) |
-| **Academics** | `School/`, `Department/`, `AcademicYear/`, `Setup/` | Console, Events, Listeners, Http, Livewire (wizard), Services, Support |
+| **Setup** | — | Actions, Entities, Livewire, Policies, Support |
+| **Academics** | `Department/`, `AcademicYear/` | Console, Http, Livewire, Services, Support |
 | **Partners** | `Company/`, `Partnership/` | — |
-| **Program** | `Internship/`, `InternshipPhase/`, `InternshipGroup/`, `DocumentRequirement/` | Http, Events, Listeners, Notifications, Rules |
+| **Program** | `Internship/`, `InternshipGroup/` | Http, Events, Listeners, Notifications, Rules |
 | **Enrollment** | `Registration/`, `AccountApplication/`, `RegistrationDocument/`, `Placement/`, `PlacementChangeRequest/` | — |
-| **Guidance** | `Mentee/`, `Mentor/`, `SupervisionLog/`, `Handbook/`, `HandbookAcknowledgement/` | Http |
+| **Guidance** | `SupervisionLog/` | Http |
 | **Journals** | `Attendance/`, `AbsenceRequest/`, `Logbook/`, `IndustryAssessment/`, `Schedule/` | Http |
 | **Assignments** | `Assignment/`, `Submission/` | Http, Notifications |
-| **Reports** | `Report/` | Http |
-| **Assessment** | `Assessment/`, `Rubric/`, `Competency/`, `Indicator/`, `Presentation/` | — |
+| **Reports** | `Report/` | Http, Livewire |
+| **Assessment** | `Assessment/`, `Rubric/` | — |
 | **Evaluation** | `Evaluation/` | — |
 | **Certification** | `Certificate/` | Http, Support |
 | **Incidents** | `IncidentReport/` | — |
-| **Document** | `OfficialDocument/` | Models, Enums, Policies, Support |
-| **SysAdmin** | `Account/`, `Announcement/`, `GdprDeletionLog/`, `Setting/`, `Setup/` | Actions, Console, Livewire (audit, pulse), Recorders, Services |
+| **Document** | `OfficialDocument/`, `Handbook/` | Models, Enums, Policies, Support |
+| **SysAdmin** | `Account/`, `Announcement/`, `Observability/`, `Settings/` | Actions, Console, Livewire (audit, pulse), Recorders, Services |
 
 ### Views Structure
 
@@ -463,7 +468,7 @@ components. For shared (root-level) components, the alias is
 
 ---
 
-## 16 Modules at a Glance
+## 18 Modules at a Glance
 
 | Module | Boundary | Key Concept |
 |--------|----------|-------------|
@@ -476,8 +481,8 @@ components. For shared (root-level) components, the alias is
 | **Guidance** | Mentoring & supervision | Student role activation, supervision logs, handbooks, acknowledgements |
 | **Journals** | Daily activities | Daily logbook, attendance, absence requests, scheduling |
 | **Assignments** | Tasks & submissions | Task creation, grading workflow, revision loop |
-| **Reports** | Student final reports | Report writing, revisions, supervisor review |
-| **Assessment** | Competency evaluation | Rubrics, scoring, presentations |
+| **Reports** | Student final grade card | Aggregated scores, Rapor PKL compilation, final sign-off |
+| **Assessment** | Competency evaluation | Rubrics (JSON structures), assessment grading |
 | **Evaluation** | Program evaluation & feedback | Mentor evaluation, program feedback, user satisfaction |
 | **Certification** | Credentialing | Certificate issuance, templates, credential tracking |
 | **Incidents** | Issue reporting | Report, investigation, resolution workflow |
@@ -772,7 +777,7 @@ Command Action → event({Entity}Updated) → CacheInvalidationListener → Cach
 |---|---|---|
 | **Downward only** | Layer N may only use layers < N | A Controller (10) importing from another module's Livewire (11) |
 | **Core independence** | Core (Layers 3–4) must not import any business module | Core importing an Academics model |
-| **No sibling imports** | Modules at Layer 12 must not import each other | `Academics` importing `Program` models |
+| **Sibling imports allowed** | Modules at Layer 12 may import each other | `Academics` importing `Program` models |
 | **Submodule encapsulation** | Submodule directories MUST NOT import sibling submodules. Cross-submodule access goes through the module root | `Profile/Actions/UpdateProfileAction.php` importing `Notification/Models/Notification.php` |
 | **Root for cross-cutting** | Cross-submodule code lives at the module root, not in any single submodule | A dashboard action in `User/Actions/` that queries both Profile and Notification |
 | **Persistence isolation** | Entities (Layer 6) never import Models (Layer 5) | An Entity calling `User::find()` |

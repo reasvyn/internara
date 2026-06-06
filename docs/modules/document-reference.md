@@ -1,7 +1,7 @@
 # Document — Technical Reference
 
-> Last updated: 2026-06-04
-> Changes: Converted Status metadata to Changes format
+> Last updated: 2026-06-06  
+> Changes: Added handbook policies and document acknowledgements models, actions, and UI references.
 
 Detailed structural and implementation reference for the **Document** module.
 
@@ -9,25 +9,26 @@ Detailed structural and implementation reference for the **Document** module.
 
 ## Overview
 
-Manages official document templates and generation for institutional correspondence — permits, letters, certificates of completion, applications, and reports (surat menyurat)
+Manages correspondence templates, policy handbooks, and compliance acknowledgements.
 
 ### Module Statistics
-- **Actions**: 4 business logic operations
-- **Models**: 1 data entity
-- **Livewire Components**: 2 UI components
-- **Policies**: 1 authorization rule
-- **Submodules**: 1 module submodule
+- **Actions**: 6 business logic operations
+- **Models**: 2 data entities (`Document`, `DocumentAcknowledgement`)
+- **Livewire Components**: 3 UI components
+- **Policies**: 2 authorization rules
+- **Submodules**: 2 module submodules
 
 ### Submodules
-- `OfficialDocument`
+- `OfficialDocument`: File templates and PDF compiler endpoints.
+- `Handbook`: Policy guides and user acknowledgements tracking.
 
 ---
 
 ## Dependency Graph
 
 This module depends on:
-- **Core**
-- **User**
+- **Core** (base classes and DomPDF wrapper)
+- **User** (recipient user records)
 
 ---
 
@@ -35,18 +36,21 @@ This module depends on:
 
 | File | Class | Extends |
 |---|---|---|
-| `OfficialDocument/Actions/DeleteReportAction.php` | `DeleteReportAction` | `BaseAction` |
-| `OfficialDocument/Actions/GenerateReportAction.php` | `GenerateReportAction` | `BaseAction` |
-| `OfficialDocument/Actions/RenderDocumentAction.php` | `RenderDocumentAction` | `BaseAction` |
 | `OfficialDocument/Actions/SaveDocumentTemplateAction.php` | `SaveDocumentTemplateAction` | `BaseAction` |
+| `OfficialDocument/Actions/RenderDocumentAction.php` | `RenderDocumentAction` | `BaseAction` |
+| `OfficialDocument/Actions/GenerateReportAction.php` | `GenerateReportAction` | `BaseAction` |
+| `OfficialDocument/Actions/DeleteReportAction.php` | `DeleteReportAction` | `BaseAction` |
+| `Handbook/Actions/AcknowledgeDocumentAction.php` | `AcknowledgeDocumentAction` | `BaseAction` |
+| `Handbook/Actions/PruneAcknowledgementsAction.php` | `PruneAcknowledgementsAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-| File | Class |
-|---|---|
-| `Models/Document.php` | `Document` |
+| File | Class | Extends |
+|---|---|---|
+| `Models/Document.php` | `Document` | `BaseModel` |
+| `Handbook/Models/DocumentAcknowledgement.php` | `DocumentAcknowledgement` | `BaseModel` |
 
 ---
 
@@ -54,24 +58,26 @@ This module depends on:
 
 | File | Component | Extends |
 |---|---|---|
-| `OfficialDocument/Livewire/ReportsManager.php` | `ReportsManager` | `Component` |
 | `OfficialDocument/Livewire/TemplateManager.php` | `TemplateManager` | `Component` |
+| `OfficialDocument/Livewire/ReportsManager.php` | `ReportsManager` | `Component` |
+| `Handbook/Livewire/DocumentAcknowledgementTracker.php` | `DocumentAcknowledgementTracker` | `Component` |
 
 ---
 
 ## Authorization Policies
 
-| File | Policy |
-|---|---|
-| `Policies/DocumentPolicy.php` | `DocumentPolicy` |
+| File | Policy | Extends |
+|---|---|---|
+| `Policies/DocumentPolicy.php` | `DocumentPolicy` | `BasePolicy` |
+| `Handbook/Policies/DocumentAcknowledgementPolicy.php` | `DocumentAcknowledgementPolicy` | `BasePolicy` |
 
 ---
 
 ## HTTP Controllers
 
-| File | Controller |
-|---|---|
-| `OfficialDocument/Http/Controllers/DocumentRenderController.php` | `DocumentRenderController` |
+| File | Controller | Extends |
+|---|---|---|
+| `OfficialDocument/Http/Controllers/DocumentRenderController.php` | `DocumentRenderController` | `BaseController` |
 
 ---
 
@@ -80,16 +86,21 @@ This module depends on:
 ```
 app/Document/
 ├──            ← Submodule roots
-│   └── OfficialDocument/
+│   ├── OfficialDocument/
+│   │   ├── Actions/
+│   │   ├── Http/
+│   │   │   ├── Controllers/
+│   │   │   └── Requests/
+│   │   └── Livewire/
+│   └── Handbook/
 │       ├── Actions/
-│       ├── Http/
-│       │   ├── Controllers/
-│       │   └── Requests/
+│       ├── Models/
+│       ├── Policies/
 │       └── Livewire/
-├── Enums/                ← Document category enum
-├── Models/               ← Cross-submodule model
-├── Policies/             ← Cross-submodule policy
-└── Support/              ← DocumentRenderer (DomPDF)
+├── Enums/                ← DocumentCategory enum
+├── Models/               ← Document model
+├── Policies/             ← DocumentPolicy
+└── Support/              ← DocumentRenderer (DomPDF wrapper)
 ```
 
 ---

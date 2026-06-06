@@ -181,9 +181,9 @@ Student registration, placement slot assignment, and change requests.
 | Registration Wizard | Multi-step: select program, choose placement, review, submit | Student |
 | Document Upload | Upload required documents per program requirements | Student |
 | Registration Verification | Admin review pending registrations, assign placement and mentors, activate | Admin |
-| Application Review | Admin approves guest applications (auto-creates User+Mentee+Registration) or rejects | Admin |
+| Application Review | Admin approves guest applications (auto-creates User+Registration) or rejects | Admin |
 | Placement Index | CRUD slots per company per program with quota tracking | Admin |
-| Direct Placement | Assign student directly to slot (auto-creates Mentee+Registration) | Admin |
+| Direct Placement | Assign student directly to slot (auto-creates Registration) | Admin |
 | Placement Change Request | Student requests slot change with reason | Student |
 | Change Request Management | Admin reviews, approves, or rejects placement changes | Admin |
 | Capacity Enforcement | Atomic quota increment/decrement, never exceeds limit | System |
@@ -192,15 +192,12 @@ Student registration, placement slot assignment, and change requests.
 
 ## 7. Assessment — Competency Evaluation
 
-Rubric-based competency evaluation framework with presentations.
+Rubric-based competency evaluation framework with criteria structures stored as JSON.
 
 | Feature | Description | Access |
 |---|---|---|
-| Rubric Manager | CRUD weighted criteria, performance levels, descriptive anchors | Admin |
-| Competency Manager | Manage competencies and indicators within rubrics | Admin |
-| Assessment Grading | Score against rubric, auto-calculate weighted total | Teacher |
-| Presentation Schedule | Panel-based evaluation scheduling | Admin |
-| Presentation Lifecycle | SCHEDULED → COMPLETED / CANCELLED | Admin |
+| Rubric Manager | CRUD weighted evaluation sheets with nested structures (competencies and indicators) stored as dynamic JSON schemas | Admin |
+| Assessment Grading | Score against rubric indicators, auto-calculate weighted total | Teacher / Supervisor |
 | Finalization | Finalized assessments immutable — corrections require new round | System |
 | Dual Mentor Fallback | Proxy evaluation entry or dynamic weight redistribution if supervisor is inactive | Teacher / Admin |
 
@@ -261,21 +258,15 @@ Daily activity tracking: logbook entries, attendance with clock-in/out, absence 
 
 ---
 
-## 11. Guidance — Mentoring & Handbooks
+## 11. Guidance — Mentoring & Supervision
 
-Mentoring relationships, supervision logs, handbooks, and acknowledgement tracking.
+Mentoring relationships assignments and private field supervision logs.
 
 | Feature | Description | Access |
 |---|---|---|
-| Supervision Logs | Private notes: observations, concerns, action items | Mentor |
+| Supervision Logs | Private notes: site visits, online video meetings, or phone supervisions | Mentor |
 | Supervision Log Manager | Manage logs with search and filter | Mentor |
-| Report Review | View mentee submitted reports | Mentor |
-| Assess Student Performance | Evaluate student against program competencies | Teacher |
-| Submissions Grading | Grade student submissions | Teacher |
-| Handbook Manager | CRUD handbooks: title, slug, content (Markdown), version, active/inactive | Admin |
-| Student Handbook View | Browse and read handbooks by role | Student/Teacher/Supervisor |
-| Acknowledgement System | Immutable acknowledgement with user, timestamp, IP | User |
-| Target Audience | Role-filtered: all, student, teacher, supervisor | System |
+| Mentoring Assignments | Mappings assigning school teachers and industry supervisors to student registrations | Admin |
 
 ---
 
@@ -324,25 +315,29 @@ Certificate templates, issuance, revocation, and verification.
 
 ---
 
-## 15. Reports — Student Final Reports
+## 15. Reports — Student Grade Card (Rapor PKL)
 
-Student-authored final reports with revision workflow and supervisor review.
+Student final grade compilation, score aggregation, and coordinator sign-off.
 
 | Feature | Description | Access |
 |---|---|---|
-| Report Writer | Student writes and submits final internship reports | Student |
-| Report Review | Admin/teacher review submitted reports with revision workflow | Admin |
-| Supervisor Notes | Supervisor adds notes to student reports | Supervisor |
+| Grade Aggregation | Auto-calculates composite score based on program weights (supervisor, teacher, exam) | System |
+| Grade Card Management | Teacher/Coordinator reviews, overrides, and finalizes the student report card (*Rapor PKL*) | Teacher / Admin |
+| Grade Card Lock | Once finalized, grades and company feedback are locked and immutable, unlocking certificate generation | System |
 
 ---
 
-## 16. Document — Templates & Rendering
+## 16. Document — Templates & Handbooks
 
-Rendering engine for official documents, PDF generation, and template management.
+Rendering engine for official documents, PDF generation, school policies (handbooks), and compliance tracking.
 
 | Feature | Description | Access |
 |---|---|---|
 | Template Manager | Upload and manage document templates (Blade, CSS, XLSX) | Admin |
+| Handbook Manager | CRUD policy handbooks: title, slug, content (Markdown), version, active/inactive | Admin |
+| Student Handbook View | Browse and read handbooks by role | Student/Teacher/Supervisor |
+| Acknowledgement System | Immutable acknowledgement log with user, timestamp, IP, and browser details | User |
+| Target Audience | Role-filtered policy visibility: all, student, teacher, supervisor | System |
 | Rendering Pipeline | 6-step: resolve template → discover renderer → gather data → inject → invoke driver → store | System |
 | Reports Manager | Generate, view, and download reports | Admin |
 | Download Endpoints | Authorized PDF and document downloads | Auth |
@@ -355,10 +350,10 @@ Rendering engine for official documents, PDF generation, and template management
 | Role | Module Access |
 |---|---|
 | **SUPER_ADMIN** | Unrestricted — bypasses all permission checks |
-| **ADMIN** | Academics, SysAdmin, Partners, Program, Enrollment, Assessment, Certificate, Document, Journals (read), Incident, Guidance, User management, Evaluation (admin view) |
-| **TEACHER** | Guidance (supervision), Assignment (grading), Assessment (grading), Journals (logbook review, attendance approve), Evaluation (admin view) |
-| **SUPERVISOR** | Guidance (supervision), Reports (notes), Journals (logbook review, attendance approve) |
-| **STUDENT** | User (dashboard), Enrollment (registration, placement request), Journals (logbook, attendance), Assignment (submit), Assessment (view), Evaluation (submit), Incident (report), Certification (download), Guidance (view) |
+| **ADMIN** | Academics, SysAdmin, Partners, Program, Enrollment, Assessment, Certificate, Document, Journals (read), Incident, Guidance, User management, Evaluation (admin view), Reports (sign-off) |
+| **TEACHER** | Guidance (supervision), Assignment (grading), Assessment (grading), Journals (logbook review, attendance approve), Reports (final grade card compilation), Evaluation (admin view) |
+| **SUPERVISOR** | Guidance (supervision), Assessment (grading), Journals (logbook review, attendance approve) |
+| **STUDENT** | User (dashboard), Enrollment (registration, placement request), Journals (logbook, attendance), Assignment (submit), Assessment (view), Evaluation (submit), Incident (report), Certification (download), Guidance (view), Reports (view) |
 | **GUEST** | SysAdmin (setup wizard), Enrollment (apply), User (login, forgot/reset password) |
 
 ---

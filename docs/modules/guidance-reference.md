@@ -1,7 +1,7 @@
 # Guidance — Technical Reference
 
-> Last updated: 2026-06-03
-> Changes: Converted Status metadata to Changes format
+> Last updated: 2026-06-06  
+> Changes: Removed references to the eliminated mentor, mentee, and handbook models and tables.
 
 Detailed structural and implementation reference for the **Guidance** module.
 
@@ -9,32 +9,26 @@ Detailed structural and implementation reference for the **Guidance** module.
 
 ## Overview
 
-Manages mentoring relationships, student guidance, and supervision logs
+Manages teacher field supervision logs and mentoring relations coordinates.
 
 ### Module Statistics
-- **Actions**: 15 business logic operations
-- **Models**: 5 data entities
-- **Livewire Components**: 9 UI components
-- **Policies**: 4 authorization rules
-- **Submodules**: 5 module submodules
+- **Actions**: 4 business logic operations
+- **Models**: 1 data entity (`SupervisionLog`)
+- **Livewire Components**: 2 UI components
+- **Policies**: 1 authorization rules
+- **Submodules**: 1 module submodules
 
 ### Submodules
-- `Handbook`
-- `HandbookAcknowledgement`
-- `Mentee`
-- `Mentor`
-- `SupervisionLog`
+- **SupervisionLog**: Private field visitation, virtual meeting, or phone log tracking.
 
 ---
 
 ## Dependency Graph
 
 This module depends on:
-- **Core**
-- **Enrollment**
-- **Evaluation**
-- **Reports**
-- **User**
+- **Core** (base classes)
+- **Enrollment** (registration records)
+- **User** (students, teachers, and profiles)
 
 ---
 
@@ -42,21 +36,10 @@ This module depends on:
 
 | File | Class | Extends |
 |---|---|---|
-| `HandbookAcknowledgement/Actions/AcknowledgeHandbookAction.php` | `AcknowledgeHandbookAction` | `BaseAction` |
-| `Handbook/Actions/CreateHandbookAction.php` | `CreateHandbookAction` | `BaseAction` |
-| `Mentee/Actions/CreateMenteeAction.php` | `CreateMenteeAction` | `BaseAction` |
-| `Mentor/Actions/CreateMentorAction.php` | `CreateMentorAction` | `BaseAction` |
-| `Mentor/Actions/CreateMentorProfileAction.php` | `CreateMentorProfileAction` | `BaseAction` |
 | `SupervisionLog/Actions/CreateSupervisionLogAction.php` | `CreateSupervisionLogAction` | `BaseAction` |
-| `Handbook/Actions/DeleteHandbookAction.php` | `DeleteHandbookAction` | `BaseAction` |
-| `Mentee/Actions/DeleteMenteeAction.php` | `DeleteMenteeAction` | `BaseAction` |
-| `Mentor/Actions/DeleteMentorAction.php` | `DeleteMentorAction` | `BaseAction` |
-| `Mentor/Actions/ToggleMentorActiveAction.php` | `ToggleMentorActiveAction` | `BaseAction` |
-| `Handbook/Actions/UpdateHandbookAction.php` | `UpdateHandbookAction` | `BaseAction` |
-| `Mentee/Actions/UpdateMenteeAction.php` | `UpdateMenteeAction` | `BaseAction` |
-| `Mentor/Actions/UpdateMentorAction.php` | `UpdateMentorAction` | `BaseAction` |
-| `Mentor/Actions/UpdateMentorProfileAction.php` | `UpdateMentorProfileAction` | `BaseAction` |
 | `SupervisionLog/Actions/VerifySupervisionLogAction.php` | `VerifySupervisionLogAction` | `BaseAction` |
+| `Actions/AssignMentorAction.php` | `AssignMentorAction` | `BaseAction` |
+| `Actions/RemoveMentorAction.php` | `RemoveMentorAction` | `BaseAction` |
 
 ---
 
@@ -64,10 +47,6 @@ This module depends on:
 
 | File | Class |
 |---|---|
-| `Handbook/Models/Handbook.php` | `Handbook` |
-| `HandbookAcknowledgement/Models/HandbookAcknowledgement.php` | `HandbookAcknowledgement` |
-| `Mentee/Models/Mentee.php` | `Mentee` |
-| `Mentor/Models/Mentor.php` | `Mentor` |
 | `SupervisionLog/Models/SupervisionLog.php` | `SupervisionLog` |
 
 ---
@@ -76,15 +55,8 @@ This module depends on:
 
 | File | Component | Extends |
 |---|---|---|
-| `Mentor/Livewire/AssessInternship.php` | `AssessInternship` | `Component` |
-| `Mentor/Livewire/EvaluateMentor.php` | `EvaluateMentor` | `Component` |
-| `Handbook/Livewire/HandbookIndex.php` | `HandbookIndex` | `Component` |
-| `Handbook/Livewire/HandbookManager.php` | `HandbookManager` | `BaseRecordManager` |
-| `Mentor/Livewire/MentorProfileManager.php` | `MentorProfileManager` | `Component` |
-| `Mentor/Livewire/ReportNotes.php` | `ReportNotes` | `Component` |
-| `Mentor/Livewire/ReportReview.php` | `ReportReview` | `BaseRecordManager` |
-| `SupervisionLog/Livewire/SupervisionManager.php` | `SupervisionManager` | `Component` |
-| `SupervisionLog/Livewire/SupervisorLogManager.php` | `SupervisorLogManager` | `Component` |
+| `SupervisionLog/Livewire/SupervisionLogManager.php` | `SupervisionLogManager` | `BaseRecordManager` |
+| `Livewire/MenteeViewer.php` | `MenteeViewer` | `Component` |
 
 ---
 
@@ -92,10 +64,7 @@ This module depends on:
 
 | File | Policy |
 |---|---|
-| `Handbook/Policies/HandbookPolicy.php` | `HandbookPolicy` |
-| `Mentee/Policies/MenteePolicy.php` | `MenteePolicy` |
-| `Mentor/Policies/MentorPolicy.php` | `MentorPolicy` |
-| `SupervisionLog/Policies/SupervisionLogPolicy.php` | `SupervisionLogPolicy` |
+| `SupervisionLog/Policies/SupervisionLogPolicy.php` | `SupervisionLogPolicy` | `BasePolicy` |
 
 ---
 
@@ -103,12 +72,12 @@ This module depends on:
 
 ```
 app/Guidance/
-├──            ← Submodule roots
-│   └── {SubModule}/
-│       ├── Actions/
-│       ├── Models/
-│       ├── Policies/
-│       └── Livewire/
+├── SupervisionLog/          ← Submodule root
+│   ├── Actions/
+│   ├── Models/
+│   ├── Policies/
+│   └── Livewire/
+├── Actions/                  ← Cross-submodule relations actions
 ├── Http/
 ├── Livewire/
 ├── Types/

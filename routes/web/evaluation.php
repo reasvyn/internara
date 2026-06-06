@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Evaluation\Core\Livewire\MentorEvaluationManager;
+use App\Evaluation\Livewire\MentorEvaluationManager;
 
 Route::livewire('/evaluate', MentorEvaluationManager::class)
     ->name('mentor.evaluate')

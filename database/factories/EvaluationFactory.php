@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Evaluation\Core\Enums\EvaluationCategory;
-use App\Evaluation\Core\Models\Evaluation;
+use App\Evaluation\Enums\EvaluationCategory;
+use App\Evaluation\Models\Evaluation;
 use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

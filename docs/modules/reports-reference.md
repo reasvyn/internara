@@ -1,7 +1,7 @@
 # Reports — Technical Reference
 
-> Last updated: 2026-06-05
-> Changes: Fixed overview description to match actual code (student reports, not BI)
+> Last updated: 2026-06-06  
+> Changes: Redefined to reference Final Grade Card (Rapor PKL) models, actions, and Livewire components.
 
 Detailed structural and implementation reference for the **Reports** module.
 
@@ -9,27 +9,27 @@ Detailed structural and implementation reference for the **Reports** module.
 
 ## Overview
 
-Student final report writing, revision workflow, and supervisor review
+Student Final Grade Card (*Rapor PKL*) aggregation, feedback compilation, and coordinator sign-off.
 
 ### Module Statistics
-- **Actions**: 5 business logic operations
-- **Models**: 2 data entities
-- **Livewire Components**: 1 UI components
-- **Policies**: 0 authorization rules
+- **Actions**: 3 business logic operations
+- **Models**: 1 data entity (`Report`)
+- **Livewire Components**: 2 UI components
+- **Policies**: 1 authorization rules
 - **Submodules**: 1 module submodules
 
 ### Submodules
-- **Report**: Student-authored internship report with status workflow (DRAFT → SUBMITTED → VERIFIED), scoring, and supervisor revision support
+- **Report**: Represents the student's Grade Card (*Rapor PKL*) containing the aggregated scores, grades, company feedback, and finalization workflow.
 
 ---
 
 ## Dependency Graph
 
 This module depends on:
-- **Certification**
-- **Core**
-- **Enrollment**
-- **User**
+- **Core** (base classes and DTOs)
+- **Enrollment** (registration records)
+- **User** (evaluators and students)
+- **Assessment** (rubric scores)
 
 ---
 
@@ -37,11 +37,9 @@ This module depends on:
 
 | File | Class | Extends |
 |---|---|---|
-| `Report/Actions/AddSupervisorReportNotesAction.php` | `AddSupervisorReportNotesAction` | `BaseAction` |
-| `Report/Actions/ApproveReportAction.php` | `ApproveReportAction` | `BaseAction` |
-| `Report/Actions/CreateReportAction.php` | `CreateReportAction` | `BaseAction` |
-| `Report/Actions/RequestReportRevisionAction.php` | `RequestReportRevisionAction` | `BaseAction` |
-| `Report/Actions/SubmitReportAction.php` | `SubmitReportAction` | `BaseAction` |
+| `Report/Actions/CalculateFinalGradeAction.php` | `CalculateFinalGradeAction` | `BaseAction` |
+| `Report/Actions/FinalizeReportCardAction.php` | `FinalizeReportCardAction` | `BaseAction` |
+| `Report/Actions/UpdateReportCardAction.php` | `UpdateReportCardAction` | `BaseAction` |
 
 ---
 
@@ -50,7 +48,6 @@ This module depends on:
 | File | Class |
 |---|---|
 | `Report/Models/Report.php` | `Report` |
-| `Report/Models/ReportRevision.php` | `ReportRevision` |
 
 ---
 
@@ -58,7 +55,16 @@ This module depends on:
 
 | File | Component | Extends |
 |---|---|---|
-| `Report/Livewire/ReportWriter.php` | `ReportWriter` | `Component` |
+| `Report/Livewire/ReportCardViewer.php` | `ReportCardViewer` | `Component` |
+| `Report/Livewire/ReportCardManager.php` | `ReportCardManager` | `BaseRecordManager` |
+
+---
+
+## Authorization Policies
+
+| File | Policy |
+|---|---|
+| `Report/Policies/ReportCardPolicy.php` | `ReportCardPolicy` | `BasePolicy` |
 
 ---
 
@@ -66,12 +72,11 @@ This module depends on:
 
 ```
 app/Reports/
-├──            ← Submodule roots
-│   └── {SubModule}/
-│       ├── Actions/
-│       ├── Models/
-│       ├── Policies/
-│       └── Livewire/
+├── Report/                  ← Submodule root
+│   ├── Actions/
+│   ├── Models/
+│   ├── Policies/
+│   └── Livewire/
 ├── Http/
 ├── Livewire/
 ├── Types/

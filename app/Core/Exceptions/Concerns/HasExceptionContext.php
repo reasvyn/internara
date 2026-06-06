@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Core\Exceptions\Concerns;
 
+use App\Support\PiiMasker;
+
 trait HasExceptionContext
 {
     protected ?string $hint = null;
@@ -50,7 +52,9 @@ trait HasExceptionContext
         }
 
         if ($this->context !== []) {
-            foreach ($this->context as $key => $value) {
+            $sanitized = PiiMasker::maskArray($this->context);
+
+            foreach ($sanitized as $key => $value) {
                 if (is_scalar($value)) {
                     $output .= "\n  {$key}: {$value}";
                 } else {
@@ -60,6 +64,11 @@ trait HasExceptionContext
         }
 
         return $output;
+    }
+
+    public function getSanitizedContext(): array
+    {
+        return PiiMasker::maskArray($this->context);
     }
 
     public function isUserFacing(): bool

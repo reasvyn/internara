@@ -1,9 +1,9 @@
 # Reports — Documentation Overview
 
-> Last updated: 2026-06-05
-> Changes: Fixed model name (ReportNote → ReportRevision) to match actual code
+> Last updated: 2026-06-06  
+> Changes: Redefined module scope from document writing to Final Student Grade Cards (Rapor PKL), aggregating supervisor, teacher, and exam grades.
 
-Student final report writing, revision workflow, and supervisor review.
+This module manages the student's Final Grade Card (*Rapor PKL*), which aggregates all assessment metrics at the end of the internship period and locks the student's final marks before certificate issuance.
 
 For complete technical reference including API, models, actions, and components, see [reports-reference.md](reports-reference.md).
 
@@ -11,61 +11,64 @@ For complete technical reference including API, models, actions, and components,
 
 ## Key Principles
 
-- **Reports are student-authored** — each student writes a final report summarizing their internship experience. Reports are written incrementally with a draft workflow.
-- **Revision workflow mirrors logbook** — reports follow DRAFT → SUBMITTED → VERIFIED flow. Supervisors can request revisions (REVISION_REQUIRED → DRAFT).
-- **Supervisors add notes** — company supervisors can attach notes to student reports. These are visible to the student and the mentor.
-- **Reports are part of program closure** — all reports must be in VERIFIED status before a program can proceed to closure and archival.
+- **Grade Aggregation** — The grade card automatically compiles the final composite score based on the program's defined weights. The standard formula evaluates:
+  $$\text{Final Grade} = (\text{Industry Supervisor Score} \times 40\%) + (\text{School Teacher Score} \times 20\%) + (\text{Exam/Presentation Score} \times 40\%)$$
+- **Immutable Results** — Once the report card is marked as `finalized`, it is signed off by the coordinator and locked. Further grade changes are blocked to preserve academic integrity.
+- **Certificate Trigger** — A finalized Rapor PKL record is the strict prerequisite that unlocks eligibility for certificate generation.
+- **Qualitative Feedback Registry** — Captures overall testimonial/notes from host companies to be printed on the back page of the final report sheet.
 
 ---
 
 ## Context Boundary
 
-Consumes enrollment context (which student is in which program). Program provides the report requirements (format, word count, structure). Guidance provides the supervisor who reviews the report. SysAdmin controls visibility settings.
+The **Reports** module consumes:
+- **Enrollment (`registrations`):** Links 1:1 with the student's active enrollment record.
+- **Assessment (`assessments`):** Gathers scores submitted by school mentors and industry supervisors.
+- **Assignment (`submissions`):** Final report document submission is treated as a regular coursework assignment (rather than being managed in this module), and its grade is pulled from the assignment's graded submission.
+
+The **Reports** module provides data to:
+- **Certification (`certificates`):** Exposes finalized grades and validation details.
 
 ---
 
 ## Module Rules
 
-- **One report per student per program.** Attempting to create a second report throws a `ConflictException`.
-- **Report workflow**: DRAFT → SUBMITTED → VERIFIED. Supervisor can return SUBMITTED to DRAFT via REVISION_REQUIRED. VERIFIED is terminal (immutable).
-- **Supervisor notes are append-only**: notes are added, not edited or deleted. Full audit trail.
-- **All reports must be verified** before the program can be closed/archived. The closure readiness check validates this.
-- **Scoring**: reports receive a numeric score and written feedback from the reviewer. Scores contribute to final grade aggregation.
+- **Strict 1:1 Registration Link:** One report card per student enrollment. Attempting to create a second record throws a `ConflictException`.
+- **Finalization Constraint:** A report card cannot be finalized if any required grading component (supervisor score, teacher score, exam score) is missing, unless the teacher has activated the *Dual Mentor Fallback/Proxy* bypass in the Assessment module.
+- **Finalized is Terminal:** Once a Rapor PKL is `finalized`, its scores are locked and immutable. Any corrections require administrative override privileges.
 
 ---
 
 ## Submodules
 
-- **Report**: Student-authored document — title, content, attachments, status. Tracks submission date, verification date, score, and feedback. Version history preserved.
+- **Report (Grade Card):** Core business entity tracking the student's registration ID, component scores (supervisor, teacher, exam), composite score, qualitative feedback, and finalization status.
 
 ---
 
 ## Error Handling & Failure Modes
 
-- **Duplicate report**: Blocked with "A report already exists for this program." Student sees a link to their existing draft.
-- **Submission without content**: The system validates minimum content length before allowing SUBMITTED status. Short or empty reports are rejected.
-- **Verification without score**: The system requires a numeric score and written feedback before marking a report as VERIFIED.
-- **Missing supervisor note permission**: If a supervisor is not assigned to the student's placement, they cannot add notes. The system returns a 403.
+- **Finalizing Incomplete Grades:** Attempting to finalize a report card with missing scores returns a `RejectedException` unless a fallback bypass is logged.
+- **Post-Finalization Edit Attempt:** Any write command targeting a finalized record is rejected with a `RejectedException`.
+- **Missing Enrollment Context:** Attempting to compile a grade card for an inactive or pending registration throws a `NotFoundException`.
 
 ---
 
 ## Quick References
 
 ### Actions & Business Logic
-- **5** actions across all submodules
-- Report CRUD, submit, verify/score, revision request, supervisor notes
+- **3** actions across the submodule:
+  - `CalculateFinalGradeAction` — Aggregates and calculates composite grades.
+  - `FinalizeReportCardAction` — Locks report card and flags certificate eligibility.
+  - `UpdateReportCardAction` — Admin-only adjustments.
 
 ### Data & Persistence
-- **2** models: `Report`, `ReportRevision`
-- UUID PKs, `HasFactory`. Report has unique constraint on (student_id, program_id). Version history stored as JSON
+- **1** model: `Report` (stores scores, letter grade, and supervisor qualitative feedback).
+- UUID PKs, unique constraint on `registration_id`.
 
 ### User Interface
-- **1** Livewire component
-- Report editor with preview, submission button, revision history viewer, supervisor notes panel
-
-### Authorization
-- **0** policies (authorization handled by calling layer)
-- Students manage own reports, mentors verify, supervisors add notes
+- **2** Livewire components:
+  - `ReportCardViewer` — Student view of grade details.
+  - `ReportCardManager` — Coordinator panel to verify, adjust, and sign off grade cards.
 
 ---
 

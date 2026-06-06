@@ -196,14 +196,14 @@ The Action Triad (docs/architecture.md) mandates that Read Actions should NOT ex
 
 | File | Location | Issue |
 |------|----------|-------|
-| `GetAdminDashboardStatsAction.php` | `app/Administration/Actions/` | Read-only query, unnecessarily extends BaseAction |
-| `GetUserManagerStatsAction.php` | `app/Administration/Actions/` | Same — returns cached counts |
-| `ReadRecoveryKeyAction.php` | `app/Administration/Actions/` | Pure file read operation |
-| `DetectUserAccountCloneAction.php` | `app/Auth/Actions/` | Read-only duplicate email detection |
-| `GetTeacherDashboardStatsAction.php` | `app/User/Actions/` | Pure READ query |
-| `GetSupervisorDashboardStatsAction.php` | `app/User/Actions/` | Same |
-| `GetStudentDashboardDataAction.php` | `app/User/Actions/` | Same |
-| `GetProfileFormDataAction.php` | `app/User/Actions/` | Returns static field config |
+| `GetAdminDashboardStatsAction.php` | `app/SysAdmin/Actions/` | Read-only query, unnecessarily extends BaseAction |
+| `GetUserManagerStatsAction.php` | `app/SysAdmin/Account/Actions/` | Same — returns cached counts |
+| `ReadRecoveryKeyAction.php` | `app/SysAdmin/Account/Actions/` | Pure file read operation |
+| `DetectUserAccountCloneAction.php` | `app/User/AccountStatus/Actions/` | Read-only duplicate email detection |
+| `GetTeacherDashboardStatsAction.php` | `app/User/Dashboard/Actions/` | Pure READ query |
+| `GetSupervisorDashboardStatsAction.php` | `app/User/Dashboard/Actions/` | Same |
+| `GetStudentDashboardDataAction.php` | `app/User/Dashboard/Actions/` | Same |
+| `GetProfileFormDataAction.php` | `app/User/Profile/Actions/` | Returns static field config |
 | `GetActivityLogsAction.php` | `app/User/Actions/` | Read-only paginated query |
 
 #### C2. Actions Missing execute() Method (2 files) 🔴

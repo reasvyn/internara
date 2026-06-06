@@ -6,7 +6,7 @@ namespace App\Assessment\Rubric\Actions;
 
 use App\Assessment\Rubric\Models\Competency;
 use App\Core\Actions\BaseAction;
-use App\Evaluation\Core\Enums\EvaluatorRole;
+use App\Evaluation\Enums\EvaluatorRole;
 
 final class UpdateCompetencyAction extends BaseAction
 {

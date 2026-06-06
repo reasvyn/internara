@@ -1,9 +1,9 @@
 # Academics — Documentation Overview
 
-> Last updated: 2026-06-04
-> Changes: Rewrote overview with developer-friendly content, added error handling, failure modes, and CLI commands
+> Last updated: 2026-06-06  
+> Changes: Removed the separate School submodule and policy. The school's profile (NPSN code, name, contact) is now stored inside the global config `settings` table as namespaces (`school.*`), since the application is single-tenant.
 
-Institutional structure: schools, departments, and academic calendar management.
+Institutional structure: departments and academic calendar management.
 
 For complete technical reference including API, models, actions, and components, see [academics-reference.md](academics-reference.md).
 
@@ -11,34 +11,33 @@ For complete technical reference including API, models, actions, and components,
 
 ## Key Principles
 
-- **School is the root entity** — every student, teacher, and program belongs to a school. The system supports a single school (self-hosted, single-tenant).
-- **Departments organize academic divisions** — teachers and students are assigned to departments. Programs belong to departments.
-- **Academic years define the calendar** — only one academic year can be active at a time. Switching activates the new year and deactivates all others.
-- **Setup wizard drives initial creation** — the first-run wizard creates the school, a default department, and optionally the first academic year.
+- **Single School Context (Single-Tenant)** — The system is designed to run once per school. All school-wide attributes (legal name, NPSN, principal name) are managed as global configurations inside `settings`.
+- **Departments Organize Academic Divisions** — Teachers and students are assigned to departments. Internship programs are scoped by department.
+- **Academic Years Define the Calendar** — Only one academic year can be active at a time. Activating a new year deactivates all others.
 
 ---
 
 ## Context Boundary
 
-Owns `School`, `Department`, and `AcademicYear` models. Serves as reference data for Program (programs belong to departments) and Enrollment (registrations are scoped by academic year). SysAdmin reads school/department data for system configuration.
+The **Academics** module owns:
+- **`Department`** and **`AcademicYear`** models.
+- Provides reference calendars for **Program** (internship programs belong to an academic year) and **Enrollment** (registrations are scoped by calendars).
+- Serves department and calendar references used by **User** and **SysAdmin** profiles.
 
 ---
 
 ## Module Rules
 
-- **Exactly one active academic year** at any time. Activating a new year automatically deactivates the previous one via a single-active constraint.
-- **Department deletion is guarded** — a department cannot be deleted if it has active programs, users, or placements. The guard returns a clear error message identifying the blocking records.
-- **School details** can only be updated through the admin interface (not directly in the database).
-- **Dates must be chronologically valid**: `start_date` must precede `end_date`, academic years cannot overlap, and program dates must fall within the parent academic year.
-- **Bulk delete** of inactive academic years is supported with result summaries.
+- **Exactly One Active Academic Year** at any time. Activating a new year automatically deactivates others.
+- **Department Deletion is Guarded** — A department cannot be deleted if it has active programs, users, or placements.
+- **Chronological Calendar Limits** — Academic years cannot overlap, and `start_date` must precede `end_date`.
 
 ---
 
 ## Submodules
 
-- **School**: Single school profile — legal name, code, address, contact details, logo. Created during setup, editable by admin.
-- **Department**: CRUD-managed academic divisions. Guarded deletion prevents data loss. Bulk operations supported.
-- **AcademicYear**: Calendar periods with single-active constraint. Bulk deletion of inactive years. Supports `start_date` / `end_date` validation.
+- **Department**: CRUD-managed academic majors (divisions). Guarded deletion prevents orphan database records.
+- **AcademicYear**: School calendar periods with single-active constraints and start/end dates.
 
 ---
 
@@ -52,29 +51,30 @@ Owns `School`, `Department`, and `AcademicYear` models. Serves as reference data
 
 ## Error Handling & Failure Modes
 
-- **Deleting a referenced department**: Throws a `ConflictException` listing the active programs or users blocking deletion. The UI shows this error in a flash message.
-- **Activating overlapping years**: The single-active constraint prevents this. Trying to set two active years throws a `RejectedException`.
-- **Missing academic year**: If no academic year exists (after setup), programs cannot be created. The setup wizard creates the first year.
+- **Deleting a Referenced Department:** Throws a `ConflictException` listing active programs or users blocking deletion.
+- **Activating Overlapping Years:** Throws a `RejectedException` if the dates overlap or if more than one active year constraint is violated.
 
 ---
 
 ## Quick References
 
 ### Actions & Business Logic
-- **9** actions across all submodules
-- School CRUD, department management (with deletion guard), academic year activation/deactivation, bulk year deletion
+- **8** actions across submodules:
+  - Department CRUD (create, update, delete)
+  - Academic year CRUD (create, update, delete, activate, deactivate)
 
 ### Data & Persistence
-- **3** models: `School`, `Department`, `AcademicYear`
-- UUID PKs, `HasFactory`, `AcademicYear` has `is_active` boolean with single-active scope
+- **2** models: `Department`, `AcademicYear`.
+- UUID PKs. `AcademicYear` has `is_active` boolean check scopes.
 
 ### User Interface
-- **3** Livewire components
-- School editor, department manager (table with search/sort/paginate/bulk), academic year manager with activation toggle
+- **2** Livewire components:
+  - `DepartmentManager` — Major CRUD table.
+  - `AcademicYearManager` — Calendar management table.
 
 ### Authorization
-- **3** policies: `SchoolPolicy`, `DepartmentPolicy`, `AcademicYearPolicy`
-- All restricted to admin/superadmin. No student or teacher can modify academic structure
+- **2** policies: `DepartmentPolicy`, `AcademicYearPolicy`.
+- Restricted to admin/superadmin. No students or teachers can modify academics structure.
 
 ---
 

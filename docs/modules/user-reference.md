@@ -16,12 +16,13 @@ Handles authentication, user profiles, notifications, and account recovery
 - **Models**: 5 data entities
 - **Livewire Components**: 15 UI components
 - **Policies**: 3 authorization rules
-- **Submodules**: 8 module submodules
+- **Submodules**: 9 module submodules
 
 ### Submodules
 - `AccountRecovery`
 - `AccountStatus`
 - `ActivationToken`
+- `Dashboard`
 - `Login`
 - `Notification`
 - `Password`
