@@ -6,7 +6,7 @@ namespace App\Setup\SetupWizard\Livewire\Forms;
 
 use Livewire\Form;
 
-class SetupDepartmentForm extends Form
+class DepartmentForm extends Form
 {
     public string $name = '';
 

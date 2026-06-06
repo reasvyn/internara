@@ -35,7 +35,7 @@
             </div>
             <div class="flex justify-between">
                 <dt class="text-base-content/50">{{ __('setup.wizard.full_name') }}</dt>
-                <dd class="font-medium text-right">{{ $adminForm->name }}</dd>
+                <dd class="font-medium text-right">{{ $superAdminForm->name }}</dd>
             </div>
             <div class="flex justify-between">
                 <dt class="text-base-content/50">{{ __('setup.wizard.program_name') }}</dt>

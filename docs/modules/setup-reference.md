@@ -53,10 +53,10 @@ app/Setup/
     │   └── LogSetupFinalized.php
     └── Livewire/
         ├── Forms/
-        │   ├── AdminForm.php
+        │   ├── SuperAdminForm.php
         │   ├── InternshipForm.php
-        │   ├── SetupDepartmentForm.php
-        │   └── SetupSchoolForm.php
+        │   ├── DepartmentForm.php
+        │   └── SchoolForm.php
         └── SetupWizard.php
 ```
 
@@ -76,6 +76,8 @@ app/Setup/
 |---|---|---|
 | `SetupWizard/Actions/SetupSchoolAction.php` | `SetupSchoolAction` | `BaseAction` |
 | `SetupWizard/Actions/SetupDepartmentAction.php` | `SetupDepartmentAction` | `BaseAction` |
+| `SetupWizard/Actions/SetupSuperAdminAction.php` | `SetupSuperAdminAction` | `BaseAction` |
+| `SetupWizard/Actions/SetupInternshipAction.php` | `SetupInternshipAction` | `BaseAction` |
 | `SetupWizard/Actions/FinalizeSetupAction.php` | `FinalizeSetupAction` | `BaseAction` |
 
 ---

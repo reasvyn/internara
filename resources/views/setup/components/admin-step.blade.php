@@ -7,11 +7,11 @@
     <div class="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg border border-base-content/10 bg-base-200/30 px-5 py-4 mb-3">
         <div class="flex items-center gap-2 text-sm">
             <span class="text-base-content/50">{{ __('setup.wizard.full_name') }}:</span>
-            <span class="font-semibold">{{ $adminForm->name }}</span>
+            <span class="font-semibold">{{ $superAdminForm->name }}</span>
         </div>
         <div class="flex items-center gap-2 text-sm">
             <span class="text-base-content/50">{{ __('setup.wizard.username') }}:</span>
-            <code class="font-mono font-semibold text-primary bg-primary/5 px-2 py-0.5 rounded">{{ $adminForm->username }}</code>
+            <code class="font-mono font-semibold text-primary bg-primary/5 px-2 py-0.5 rounded">{{ $superAdminForm->username }}</code>
         </div>
     </div>
     <p class="text-xs text-base-content/50 leading-relaxed mb-8">{{ __('setup.wizard.username_notice') }}</p>
@@ -20,7 +20,7 @@
         <x-mary-input
             label="{{ __('setup.wizard.email_address') }}"
             type="email"
-            wire:model.live.debounce.500ms="adminForm.email"
+            wire:model.live.debounce.500ms="superAdminForm.email"
             icon="o-envelope"
         />
 
@@ -28,14 +28,14 @@
             <x-mary-input
                 label="{{ __('setup.wizard.password') }}"
                 type="password"
-                wire:model.live.debounce.500ms="adminForm.password"
+                wire:model.live.debounce.500ms="superAdminForm.password"
                 icon="o-key"
             />
 
             <x-mary-input
                 label="{{ __('setup.wizard.confirm_password') }}"
                 type="password"
-                wire:model.live.debounce.500ms="adminForm.password_confirmation"
+                wire:model.live.debounce.500ms="superAdminForm.password_confirmation"
                 icon="o-key"
             />
         </div>
