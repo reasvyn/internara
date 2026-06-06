@@ -16,6 +16,7 @@ use App\Journals\Attendance\Models\Attendance;
 use App\Journals\Logbook\Models\Logbook;
 use App\User\Models\User;
 use RuntimeException;
+use Spatie\Activitylog\Models\Activity;
 
 final class GetStudentDashboardDataAction extends BaseAction
 {
@@ -76,10 +77,9 @@ final class GetStudentDashboardDataAction extends BaseAction
         }
 
         $handbookTotalCount = Document::where('type', 'policy')->where('is_active', true)->count();
-        $handbookReadCount = activity()
-            ->causedBy($user)
-            ->where('log_name', 'document')
-            ->where('event', 'acknowledged')
+        $handbookReadCount = Activity::causedBy($user)
+            ->inLog('document')
+            ->forEvent('acknowledged')
             ->whereHas('subject', fn ($q) => $q->where('type', 'policy'))
             ->count();
 

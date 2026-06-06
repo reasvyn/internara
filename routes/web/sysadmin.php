@@ -13,7 +13,6 @@ use App\SysAdmin\Livewire\ApplicationReview;
 use App\SysAdmin\Observability\GdprDeletionLog\Livewire\GdprDeletionLogs;
 use App\SysAdmin\Observability\Livewire\AccountCloneDetector;
 use App\SysAdmin\Observability\Livewire\AuditLogManager;
-use App\SysAdmin\Settings\Livewire\SystemSetting;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Pulse\Pulse;
@@ -53,10 +52,6 @@ Route::get('/admin/applications', ApplicationReview::class)
 Route::get('/admin/announcements', AnnouncementManager::class)
     ->name('sysadmin.announcements')
     ->middleware(['auth', 'role:super_admin|admin']);
-
-Route::livewire('/admin/settings', SystemSetting::class)
-    ->name('admin.settings')
-    ->middleware(['auth', 'role:super_admin']);
 
 // ──────────────────────────────────────────────
 // Cron / system

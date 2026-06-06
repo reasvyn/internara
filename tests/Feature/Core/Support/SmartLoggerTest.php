@@ -222,6 +222,28 @@ test('smart logger dispatches base event and writes activity log', function () {
     expect($log->description)->toBe('User created');
 });
 
+test('smart logger default mode without causer does not write activity log', function () {
+    SmartLogger::info('No causer default')
+        ->module('TestModule')
+        ->save();
+
+    $activityLog = ActivityLog::latest()->first();
+    expect($activityLog)->toBeNull();
+});
+
+test('smart logger default mode with causer writes activity log', function () {
+    $user = User::factory()->create();
+
+    SmartLogger::info('With causer default')
+        ->for($user)
+        ->module('TestModule')
+        ->save();
+
+    $activityLog = ActivityLog::latest()->first();
+    expect($activityLog)->not->toBeNull();
+    expect($activityLog->causer_id)->toBe((string) $user->getKey());
+});
+
 test('smart logger with base event and explicit payload merges correctly', function () {
     $logSpy = Log::spy();
 

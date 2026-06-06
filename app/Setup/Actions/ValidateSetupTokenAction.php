@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Setup\Actions;
 
 use App\Core\Actions\BaseAction;
+use App\Settings\Support\Settings;
 use App\Setup\Entities\SetupState;
-use App\SysAdmin\Settings\Support\Settings;
 use Illuminate\Support\Facades\Crypt;
 use RuntimeException;
 

@@ -9,20 +9,20 @@ use App\User\Enums\AccountStatus;
 use App\User\Enums\Role;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 final class InitializeSuperAdminAction extends BaseAction
 {
-    public function execute(string $email, string $password, ?string $name = null, ?string $username = null): User
+    public function execute(string $email, string $password): User
     {
-        return $this->transaction(function () use ($email, $password, $name, $username) {
-            $name ??= config('setup.defaults.admin_name', 'Administrator');
+        return $this->transaction(function () use ($email, $password) {
+            $adminName = config('setup.defaults.admin_name', 'Administrator');
+            $username = config('setup.defaults.admin_username', 'superadmin');
 
             $user = User::create([
-                'name' => $name,
+                'name' => $adminName,
                 'email' => $email,
                 'password' => Hash::make($password),
-                'username' => $username ?? $this->generateUsername($name),
+                'username' => $username,
             ]);
 
             $user->profile()->create();
@@ -37,13 +37,5 @@ final class InitializeSuperAdminAction extends BaseAction
 
             return $user;
         });
-    }
-
-    private function generateUsername(string $name): string
-    {
-        $base = Str::slug($name, '');
-        $maxLength = (int) config('setup.defaults.username_max_length', 20);
-
-        return Str::limit($base, $maxLength, '');
     }
 }

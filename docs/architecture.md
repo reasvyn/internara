@@ -1,7 +1,7 @@
 # Action-based MVC Architecture
-> Last updated: 2026-06-04
-> Changes: rename Admin→SysAdmin, merge Settings→SysAdmin, extract Document from Certification, add Document module
-> **Context:** ✅ All 16 modules defined in the [module index](modules/module-index.md).
+> Last updated: 2026-06-06
+> Changes: Added Settings and Setup modules to module list and table, updated route file count, removed Settings from SysAdmin submodule mapping
+> **Context:** ✅ All 19 modules defined in the [module index](modules/module-index.md).
 
 
 ## Philosophy
@@ -12,7 +12,7 @@ This approach exists because flat layering (`app/Models/`, `app/Livewire/`, `app
 
 Every architectural decision below serves three goals:
 - **S1 - Secure**: Protect data integrity, enforce authorization, prevent leakage
-- **S2 - Sustain**: Keep the codebase maintainable as it grows across 16 modules
+- **S2 - Sustain**: Keep the codebase maintainable as it grows across 19 modules
 - **S3 - Scalable**: Design for team expansion and feature accretion without rewrites
 
 ---
@@ -20,15 +20,15 @@ Every architectural decision below serves three goals:
 ## Layered Architecture
 
 The system is built in **12 layers**, bottom to top. Each layer depends only on layers below it.
-The 18 module directories are vertical slices that cross all layers below Layer 11.
+The 19 module directories are vertical slices that cross all layers below Layer 11.
 
 ```
   Layer 12 ┌──────────────────────────────────────────────────────────┐
-   Business│  18 Modules: Core, Shared, User, SysAdmin, Setup,        │
-   Modules │  Academics, Program, Enrollment, Assessment, Evaluation,  │
-   (Module)│  Assignment, Journals, Guidance, Incident, Partners,      │
-           │  Certification, Reports, Document                         │
-           │  Each module is a vertical slice of layers 1–11           │
+   Business│  19 Modules: Core, Shared, User, SysAdmin, Setup,        │
+   Modules │  Settings, Academics, Program, Enrollment, Assessment,    │
+            │  Evaluation, Assignment, Journals, Guidance, Incident,   │
+            │  Partners, Certification, Reports, Document              │
+            │  Each module is a vertical slice of layers 1–11          │
    (Module)│  app/{Module}/                                           │
            │  ├── {SubModule}/  ← colocated Actions, Models, Policies │
            │  ├── Types/        ← shared enums, value objects         │
@@ -43,7 +43,7 @@ The 18 module directories are vertical slices that cross all layers below Layer 
                                          ▲ depends on
   Layer 10 ┌──────────────────────────────────────────────────────────┐
   HTTP    │  Controllers / Middleware / Routes                       │
-  Layer   │  16 module route files → routes/web/{module}.php        │
+  Layer   │  17 module route files → routes/web/{module}.php        │
           │  SecurityHeaders, LogContext, CheckRole, SetLocale       │
           └──────────────────────────────────────────────────────────┘
                                          ▲ depends on
@@ -419,7 +419,8 @@ Each module contains the following submodules:
 | **Core** | — | (infrastructure + cross-module utilities) |
 | **Shared** | — | Traits, DTOs, concrete exceptions, global UI elements |
 | **User** | `Login/`, `Password/`, `ActivationToken/`, `AccountRecovery/`, `AccountStatus/`, `Profile/`, `Notification/`, `Dashboard/` | Http, Livewire (login, recovery, dashboards, editors) |
-| **Setup** | — | Actions, Entities, Livewire, Policies, Support |
+| **Setup** | — | Actions, Console, Entities, Events, Http, Listeners, Livewire, Policies, Support |
+| **Settings** | — | Actions, Casts, Enums, Http/Middleware, Livewire/Forms, Models, Policies, Rules, Support |
 | **Academics** | `Department/`, `AcademicYear/` | Console, Http, Livewire, Services, Support |
 | **Partners** | `Company/`, `Partnership/` | — |
 | **Program** | `Internship/`, `InternshipGroup/` | Http, Events, Listeners, Notifications, Rules |
@@ -433,7 +434,7 @@ Each module contains the following submodules:
 | **Certification** | `Certificate/` | Http, Support |
 | **Incidents** | `IncidentReport/` | — |
 | **Document** | `OfficialDocument/`, `Handbook/` | Models, Enums, Policies, Support |
-| **SysAdmin** | `Account/`, `Announcement/`, `Observability/`, `Settings/` | Actions, Console, Livewire (audit, pulse), Recorders, Services |
+| **SysAdmin** | `Account/`, `Announcement/`, `Observability/` | Actions, Console, Livewire (audit, pulse), Recorders, Services |
 
 ### Views Structure
 
@@ -468,12 +469,16 @@ components. For shared (root-level) components, the alias is
 
 ---
 
-## 18 Modules at a Glance
+## 19 Modules at a Glance
 
 | Module | Boundary | Key Concept |
 |--------|----------|-------------|
-| **Core** | Base classes, infrastructure, and cross-module utilities everything depends on | Base model, base action, base entity, contracts, logging, exceptions, theme, CSV handler, environment detection, locale management |
+| **Core** | Base classes, infrastructure, and cross-module utilities everything depends on | Base model, base action, base entity, contracts, logging, exceptions, CSV handler, environment detection |
+| **Shared** | Cross-cutting helper traits, utilities, and global UI components | CacheKeys, CsvHandler, concrete exceptions, theme switcher, language switcher |
 | **User** | Identity, access, and profiles | Login, passwords, account lifecycle, recovery, RBAC, profile editing, notifications |
+| **SysAdmin** | System administration & user management | User CRUD, announcements, GDPR compliance, audit logs, Pulse monitoring |
+| **Setup** | One-time installation & provisioning | Installation wizard, setup token, environment check, system provisioning |
+| **Settings** | System-wide configuration & branding | Key-value store, dynamic branding, color presets, mail config, cached resolution chain |
 | **Academics** | Institution setup & configuration | School profile, departments, academic years, first-run wizard |
 | **Partners** | External relationships | Companies, partnership agreements, MoU |
 | **Program** | PKL program lifecycle | Program lifecycle, phases, groups, document requirements |
@@ -487,8 +492,6 @@ components. For shared (root-level) components, the alias is
 | **Certification** | Credentialing | Certificate issuance, templates, credential tracking |
 | **Incidents** | Issue reporting | Report, investigation, resolution workflow |
 | **Document** | Official correspondence | Document templates, PDF rendering, permits, letters (surat menyurat) |
-| **SysAdmin** | System administration & configuration | User CRUD, announcements, GDPR compliance, audit logs, settings, Pulse monitoring |
-
 ---
 
 ## Base Class Mandate

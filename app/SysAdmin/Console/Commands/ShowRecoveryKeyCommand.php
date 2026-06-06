@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Console\Commands;
 
 use App\Core\Support\SmartLogger;
-use App\SysAdmin\Settings\Support\Settings;
+use App\Settings\Support\Settings;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 

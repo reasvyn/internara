@@ -1,8 +1,8 @@
 # Key Features
-> Last updated: 2026-06-04
-> Changes: Restructured all feature sections from 25 old-module groups into 16 current modules; pruned non-existent features (Mentor/Mentee Manager, Company/Overall/Program Quality Evaluation, Evaluation Aggregation, closure pipeline beyond readiness check); corrected User dashboard features (Journal Progress, Dashboard Quick Actions)
+> Last updated: 2026-06-06
+> Changes: Extracted Setup (3b) and Settings (3c) from SysAdmin section into standalone sections
 
-> Every feature in Internara belongs to one of **16 modules**. Each module owns its
+> Every feature in Internara belongs to one of **19 modules**. Each module owns its
 > complete vertical slice: persistence, business rules, UI components, authorization, and HTTP
 > interface.
 >
@@ -15,6 +15,8 @@
 - [1. Core — Foundation & Infrastructure](#1-core--foundation--infrastructure)
 - [2. User — Identity, Auth & Profiles](#2-user--identity-auth--profiles)
 - [3. SysAdmin — System Administration](#3-sysadmin--system-administration)
+- [3b. Setup — Installation & Provisioning](#3b-setup--installation--provisioning)
+- [3c. Settings — System Configuration & Branding](#3c-settings--system-configuration--branding)
 - [4. Academics — School & Departments](#4-academics--school--departments)
 - [5. Program — Internship Lifecycle](#5-program--internship-lifecycle)
 - [6. Enrollment — Registration & Placement](#6-enrollment--registration--placement)
@@ -58,8 +60,6 @@ Base classes, contracts, infrastructure, and cross-module utilities used by ever
 | Activity Logging | Spatie Activity Log with query scopes |
 | HandlesActionErrors Trait | Consistent try-catch-log-rethrow pattern |
 | Environment Detection | Centralized environment checks (debug, development, production) |
-| Locale Management | Bilingual English/Indonesian with session preference |
-| Theme System | Color resolution from settings into CSS custom properties (light/dark) |
 | CSV Handler | Export, import, and template download with optional header validation |
 | Language Switcher | Livewire bilingual toggle |
 | Theme Switcher | Livewire light/dark/system theme toggle |
@@ -105,24 +105,10 @@ Authentication, user profiles, role-based dashboards, notifications, account lif
 
 ## 3. SysAdmin — System Administration
 
-Setup wizard, runtime configuration, user CRUD, announcements, audit logging, health monitoring, and GDPR compliance.
+User CRUD, announcements, audit logging, health monitoring, and GDPR compliance.
 
 | Feature | Description | Access |
 |---|---|---|
-| 7-Step Setup Wizard | Guided: Environment Check, School, Department, Admin Account, Program (optional), Finalize, Complete | Guest (token) |
-| Environment Audit | PHP version, extensions, directory permissions, database, terminal | Installer |
-| Setup Token | Encrypted random token gates wizard access | System |
-| School Initialization | Create first school profile | Installer |
-| Super Admin Creation | Create first super_admin account (name always "Administrator", username "superadmin") | Installer |
-| Recovery Key Generation | 64-char random key (shown once, hashed in storage) | Installer |
-| CLI Install | `php artisan setup:install` with `--check-only` and `--force` flags | CLI |
-| Super Admin Recovery | Emergency CLI recovery when all super admins are lost | CLI |
-| System Setting Manager | Key-value store with type enforcement (boolean, text, numeric, JSON, image, color) | Super Admin |
-| Branding Configuration | App name, logo, favicon, colors (primary/secondary/accent), custom CSS | Super Admin |
-| Feature Flags | Enable/disable features at runtime | Super Admin |
-| Mail Configuration | SMTP settings with test email verification | Super Admin |
-| Cache Invalidation | Every setting change immediately invalidates cache | System |
-| Settings Audit Trail | Every change logged with before/after values, user, timestamp | System |
 | User Manager | CRUD all roles: create, update, lock/unlock, mark as alumni | Admin |
 | Admin Manager | Manage admin accounts | Super Admin |
 | Student Manager | Manage student accounts; bulk archive completed students | Admin |
@@ -136,6 +122,40 @@ Setup wizard, runtime configuration, user CRUD, announcements, audit logging, he
 | Application Review | Review guest applications, approve (auto-create user) or reject | Admin |
 | Bulk Operations | Mass user creation with result summaries | Admin |
 | Archived Record Access | Read-only access to data from closed/archived programs | Admin |
+
+---
+
+## 3b. Setup — Installation & Provisioning
+
+Guided first-run wizard, environment validation, school provisioning, and super admin creation.
+
+| Feature | Description | Access |
+|---|---|---|
+| 7-Step Setup Wizard | Guided: Environment Check, School, Department, Admin Account, Program (optional), Finalize, Complete | Guest (token) |
+| Environment Audit | PHP version, extensions, directory permissions, database, terminal | Installer |
+| Setup Token | Encrypted random token gates wizard access | System |
+| School Initialization | Create first school profile | Installer |
+| Super Admin Creation | Create first super_admin account (name always "Administrator", username "superadmin") | Installer |
+| Recovery Key Generation | 64-char random key (shown once, hashed in storage) | Installer |
+| CLI Install | `php artisan setup:install` with `--check-only` and `--force` flags | CLI |
+| Super Admin Recovery | Emergency CLI recovery when all super admins are lost | CLI |
+
+---
+
+## 3c. Settings — System Configuration & Branding
+
+System-wide configuration management — key-value store, dynamic branding, mail configuration, and feature flags.
+
+| Feature | Description | Access |
+|---|---|---|
+| System Setting Manager | Key-value store with type enforcement (boolean, text, numeric, JSON, image, color) | Super Admin |
+| Branding Configuration | App name, logo, favicon, colors (primary/secondary/accent), custom CSS | Super Admin |
+| Feature Flags | Enable/disable features at runtime | Super Admin |
+| Mail Configuration | SMTP settings with test email verification | Super Admin |
+| Cache Invalidation | Every setting change immediately invalidates cache | System |
+| Settings Audit Trail | Every change logged with before/after values, user, timestamp | System |
+| Locale Management | Bilingual English/Indonesian with session preference, resolved from stored setting | System |
+| Theme System | Color resolution from settings into CSS custom properties (light/dark) | System |
 
 ---
 
@@ -354,12 +374,12 @@ Rendering engine for official documents, PDF generation, school policies (handbo
 | **TEACHER** | Guidance (supervision), Assignment (grading), Assessment (grading), Journals (logbook review, attendance approve), Reports (final grade card compilation), Evaluation (admin view) |
 | **SUPERVISOR** | Guidance (supervision), Assessment (grading), Journals (logbook review, attendance approve) |
 | **STUDENT** | User (dashboard), Enrollment (registration, placement request), Journals (logbook, attendance), Assignment (submit), Assessment (view), Evaluation (submit), Incident (report), Certification (download), Guidance (view), Reports (view) |
-| **GUEST** | SysAdmin (setup wizard), Enrollment (apply), User (login, forgot/reset password) |
+| **GUEST** | Setup (wizard), Enrollment (apply), User (login, forgot/reset password) |
 
 ---
 
-> **Total: 16 modules with 150+ features covering the complete program lifecycle:**
-> Foundation → Identity → System Administration → Institution → Partnerships → Program Setup
+> **Total: 19 modules with 150+ features covering the complete program lifecycle:**
+> Foundation → Identity → SysAdmin → Setup → Settings → Institution → Partnerships → Program Setup
 > → Enrollment → Daily Operations → Assessment → Evaluation → Certification → **Closure**
 >
 > See [Architecture](architecture.md) for the module structure and [Product Definition](product-definition.md)

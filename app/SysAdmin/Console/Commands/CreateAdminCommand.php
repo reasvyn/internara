@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Console\Commands;
 
-use App\SysAdmin\Settings\Support\AppInfo;
+use App\Settings\Support\AppInfo;
 use App\User\Models\User;
 use App\User\SuperAdmin\Actions\InitializeSuperAdminAction;
 use Illuminate\Console\Command;
@@ -53,8 +53,6 @@ class CreateAdminCommand extends Command
             $user = $this->action->execute(
                 email: $email,
                 password: $password,
-                name: config('setup.defaults.admin_name', 'Administrator'),
-                username: 'superadmin',
             );
 
             $this->displayResult($user);

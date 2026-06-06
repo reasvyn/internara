@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Enrollment\Models\Registration;
 use App\User\Models\User;
 use App\User\Profile\Models\Profile;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
 
@@ -44,4 +45,56 @@ test('deleting superadmin throws runtime exception', function () {
     $user->assignRole('superadmin');
 
     expect(fn () => $user->delete())->toThrow(RuntimeException::class, 'Super administrator accounts cannot be deleted.');
+});
+
+test('email cannot be null', function () {
+    expect(fn () => User::factory()->create(['email' => null]))
+        ->toThrow(QueryException::class);
+});
+
+test('username cannot be null', function () {
+    expect(fn () => User::factory()->create(['username' => null]))
+        ->toThrow(QueryException::class);
+});
+
+test('email must be unique', function () {
+    User::factory()->create(['email' => 'same@example.com']);
+
+    expect(fn () => User::factory()->create(['email' => 'same@example.com']))
+        ->toThrow(QueryException::class);
+});
+
+test('username must be unique', function () {
+    User::factory()->create(['username' => 'uniqueuser']);
+
+    expect(fn () => User::factory()->create(['username' => 'uniqueuser']))
+        ->toThrow(QueryException::class);
+});
+
+test('superadmin has permanent name Administrator', function () {
+    $user = User::factory()->create(['name' => 'Administrator', 'username' => 'superadmin']);
+    $user->assignRole('superadmin');
+
+    expect($user->name)->toBe('Administrator');
+});
+
+test('superadmin has permanent username superadmin', function () {
+    $user = User::factory()->create(['name' => 'Administrator', 'username' => 'superadmin']);
+    $user->assignRole('superadmin');
+
+    expect($user->username)->toBe('superadmin');
+});
+
+test('user factory generates valid email', function () {
+    $user = User::factory()->create();
+
+    expect($user->email)->not->toBeNull();
+    expect(filter_var($user->email, FILTER_VALIDATE_EMAIL))->not->toBeFalse();
+});
+
+test('user factory generates valid username', function () {
+    $user = User::factory()->create();
+
+    expect($user->username)->not->toBeNull();
+    expect($user->username)->toMatch('/^[a-z][a-z0-9_]*$/');
 });

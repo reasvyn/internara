@@ -1,6 +1,6 @@
 # Cross-Module Communication Discipline
-> Last updated: 2026-06-01
-> Changes: feat: relaxed cross-module import restrictions for development speed
+> Last updated: 2026-06-06
+> Changes: Fixed example module namespace from Admin to SysAdmin
 
 
 ## Status
@@ -8,7 +8,7 @@ Accepted
 
 ## Context
 
-The Action-based MVC architecture (ADR-002) organizes code into 16 modules, each owning
+The Action-based MVC architecture (ADR-002) organizes code into 19 modules, each owning
 its complete vertical slice. Business processes naturally span multiple modules — a student
 registration involves the Registration, Placement, Mentee, and Internship modules. Closing
 a program involves the Internship, Assessment, Certificate, and User modules.
@@ -53,7 +53,7 @@ listeners in the same or different module react.
 Internship\Actions\CreateInternshipAction
   → event(new InternshipCreated(...))
     → Internship\Listeners\NotifyAdminsInternshipCreated (same module)
-    → Admin\Listeners\InvalidateDashboardCache (different module)
+    → SysAdmin\Listeners\InvalidateDashboardCache (different module)
 ```
 
 **Guidelines:**

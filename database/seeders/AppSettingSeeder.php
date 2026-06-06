@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Support\Theme;
-use App\SysAdmin\Settings\Casts\SettingValueCast;
-use App\SysAdmin\Settings\Models\Setting;
-use App\SysAdmin\Settings\Support\AppInfo;
+use App\Settings\Casts\SettingValueCast;
+use App\Settings\Models\Setting;
+use App\Settings\Support\AppInfo;
+use App\Settings\Support\Theme;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 /**
  * Seeds the database with default system settings.
@@ -231,13 +230,10 @@ class AppSettingSeeder extends Seeder
                 'type' => $setting['type'] ?? 'string',
             ]);
 
-            $settingsToUpsert[] = [
-                'id' => (string) Str::uuid(),
-                ...array_merge($setting, [
-                    'value' => $processed['value'],
-                    'type' => $processed['type'],
-                ]),
-            ];
+            $settingsToUpsert[] = array_merge($setting, [
+                'value' => $processed['value'],
+                'type' => $processed['type'],
+            ]);
         }
 
         Setting::upsert($settingsToUpsert, ['key'], ['value', 'type', 'description', 'group']);

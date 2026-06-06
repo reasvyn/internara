@@ -3,7 +3,7 @@
 > Changes: Converted Status metadata to Changes format
 
 
-> 13 records documenting the key architectural decisions behind Internara.
+> 13 records documenting the key architectural decisions behind Internara. (14 files including performance optimization ADR.)
 > Each ADR follows the format: Context → Decision → Consequences → References.
 
 ## Foundation

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Academics\Events\SetupFinalized;
-use App\Academics\Listeners\LogSetupFinalized;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Contracts\SettingsStore;
 use App\Core\Policies\BasePolicy;
 use App\Core\Support\LangChecker;
+use App\Settings\Support\Settings;
+use App\Setup\Events\SetupFinalized;
+use App\Setup\Listeners\LogSetupFinalized;
 use App\Support\CacheKeys;
-use App\SysAdmin\Settings\Support\Settings;
 use App\User\Notification\Actions\SendNotificationAction;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
