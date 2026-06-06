@@ -337,7 +337,7 @@ address) from persisting in session storage longer than necessary.
 | `FinalizeSetupAction` | `app/Setup/Actions/FinalizeSetupAction.php` | Orchestrates all finalization sub-actions |
 | `SetupSchoolAction` | `app/Setup/Actions/SetupSchoolAction.php` | Saves school details in the settings table |
 | `SetupDepartmentAction` | `app/Setup/Actions/SetupDepartmentAction.php` | Creates first Department |
-| `SetupSuperAdminAction` | `app/User/SuperAdmin/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
+| `SetupSuperAdminAction` | `app/Auth/SuperAdmin/Actions/SetupSuperAdminAction.php` | Creates User + assigns super_admin role |
 | `EnvironmentAuditor` | `app/Setup/Services/EnvironmentAuditor.php` | Runs pre-installation system checks |
 | `RequireSetupAccessMiddleware` | `app/Academics/Http/Middleware/RequireSetupAccessMiddleware.php` | Global: redirects to /setup if not installed |
 | `ProtectSetupRouteMiddleware` | `app/Academics/Http/Middleware/ProtectSetupRouteMiddleware.php` | Route: validates token, rate-limits, self-destructs |

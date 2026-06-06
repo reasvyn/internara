@@ -51,12 +51,12 @@ User clicks "Forgot Password" on login page
 
 | Class | Location | Purpose |
 |---|---|---|
-| `ForgotPassword` | `Auth/Livewire/ForgotPassword.php` | Email input form with rate limiting |
-| `ResetPassword` | `Auth/Livewire/ResetPassword.php` | New password form with token validation |
-| `ForgotPasswordForm` | `Auth/Livewire/Forms/ForgotPasswordForm.php` | Email field with validation |
-| `ResetPasswordForm` | `Auth/Livewire/Forms/ResetPasswordForm.php` | Token, email, password fields |
-| `SendPasswordResetLinkAction` | `Auth/Actions/SendPasswordResetLinkAction.php` | Sends reset link via Laravel broker |
-| `ResetPasswordAction` | `Auth/Actions/ResetPasswordAction.php` | Resets password via Laravel broker |
+| `ForgotPassword` | `Auth/Password/Livewire/ForgotPassword.php` | Email input form with rate limiting |
+| `ResetPassword` | `Auth/Password/Livewire/ResetPassword.php` | New password form with token validation |
+| `ForgotPasswordForm` | `Auth/Password/Livewire/Forms/ForgotPasswordForm.php` | Email field with validation |
+| `ResetPasswordForm` | `Auth/Password/Livewire/Forms/ResetPasswordForm.php` | Token, email, password fields |
+| `SendPasswordResetLinkAction` | `Auth/Password/Actions/SendPasswordResetLinkAction.php` | Sends reset link via Laravel broker |
+| `ResetPasswordAction` | `Auth/Password/Actions/ResetPasswordAction.php` | Resets password via Laravel broker |
 
 ---
 
@@ -110,14 +110,14 @@ User → /recover-account
 
 | Class | Location | Purpose |
 |---|---|---|
-| `RecoverySlipManager` | `User/AccountRecovery/Livewire/RecoverySlipManager.php` | Admin UI for generating slips |
-| `RecoveryCode` | `User/AccountRecovery/Livewire/RecoveryCode.php` | User profile: view/download codes |
-| `AccountRecovery` | `User/AccountRecovery/Livewire/AccountRecovery.php` | User-facing code redemption form |
-| `AccountRecoveryForm` | `User/AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` | Username, code, password fields |
-| `GenerateRecoverySlipAction` | `User/AccountRecovery/Actions/GenerateRecoverySlipAction.php` | Generates 10 codes, stores hashed |
-| `RedeemRecoverySlipAction` | `User/AccountRecovery/Actions/RedeemRecoverySlipAction.php` | Validates and redeems a code |
-| `AccountRecoveryCode` | `User/AccountRecovery/Models/AccountRecoveryCode.php` | Eloquent model (uses `activation_tokens` table) |
-| `RecoveryCodeState` | `User/AccountRecovery/Entities/RecoveryCodeState.php` | Value object for code validity |
+| `RecoverySlipManager` | `Auth/AccountRecovery/Livewire/RecoverySlipManager.php` | Admin UI for generating slips |
+| `RecoveryCode` | `Auth/AccountRecovery/Livewire/RecoveryCode.php` | User profile: view/download codes |
+| `AccountRecovery` | `Auth/AccountRecovery/Livewire/AccountRecovery.php` | User-facing code redemption form |
+| `AccountRecoveryForm` | `Auth/AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` | Username, code, password fields |
+| `GenerateRecoverySlipAction` | `Auth/AccountRecovery/Actions/GenerateRecoverySlipAction.php` | Generates 10 codes, stores hashed |
+| `RedeemRecoverySlipAction` | `Auth/AccountRecovery/Actions/RedeemRecoverySlipAction.php` | Validates and redeems a code |
+| `AccountRecoveryCode` | `Auth/AccountRecovery/Models/AccountRecoveryCode.php` | Eloquent model (uses `activation_tokens` table) |
+| `RecoveryCodeState` | `Auth/AccountRecovery/Entities/RecoveryCodeState.php` | Value object for code validity |
 
 ### Database
 
@@ -207,13 +207,13 @@ Server admin SSH into the machine
 
 | Class | Location | Purpose |
 |---|---|---|
-| `RecoverAdminCommand` | `Admin/Console/Commands/RecoverAdminCommand.php` | CLI interactive recovery |
-| `ShowRecoveryPathCommand` | `Admin/Console/Commands/ShowRecoveryPathCommand.php` | Display key file path |
-| `ShowRecoveryKeyCommand` | `Admin/Console/Commands/ShowRecoveryKeyCommand.php` | Display key (with confirmation) |
-| `RecoverSuperAdminAction` | `User/SuperAdmin/Actions/RecoverSuperAdminAction.php` | Creates/resets super admin |
-| `SaveRecoveryKeyAction` | `Admin/Actions/SaveRecoveryKeyAction.php` | Saves key to storage file |
-| `ReadRecoveryKeyAction` | `Admin/Actions/ReadRecoveryKeyAction.php` | Reads key from storage file |
-| `SuperAdminIntegrityRules` | `User/SuperAdmin/Entities/SuperAdminIntegrityRules.php` | Enforces superadmin integrity constraints |
+| `RecoverAdminCommand` | `SysAdmin/Console/Commands/RecoverAdminCommand.php` | CLI interactive recovery |
+| `ShowRecoveryPathCommand` | `SysAdmin/Console/Commands/ShowRecoveryPathCommand.php` | Display key file path |
+| `ShowRecoveryKeyCommand` | `SysAdmin/Console/Commands/ShowRecoveryKeyCommand.php` | Display key (with confirmation) |
+| `RecoverSuperAdminAction` | `Auth/SuperAdmin/Actions/RecoverSuperAdminAction.php` | Creates/resets super admin |
+| `SaveRecoveryKeyAction` | `SysAdmin/Account/Actions/SaveRecoveryKeyAction.php` | Saves key to storage file |
+| `ReadRecoveryKeyAction` | `SysAdmin/Account/Actions/ReadRecoveryKeyAction.php` | Reads key from storage file |
+| `SuperAdminIntegrityRules` | `Auth/SuperAdmin/Entities/SuperAdminIntegrityRules.php` | Enforces superadmin integrity constraints |
 
 ### Super Admin Integrity Constraints
 
@@ -244,8 +244,8 @@ Global: AuthThrottleMiddleware (30 req/min/IP)
 
 | Document | Contents |
 |---|---|---|
-| [User Module](modules/user.md) | Authentication, RBAC, account lifecycle |
-| [User API Reference](modules/user-reference.md) | Complete class listing |
+| [Auth Module](modules/auth.md) | Authentication, RBAC, account lifecycle |
+| [Auth API Reference](modules/auth-reference.md) | Complete class listing |
 | [Setup Wizard](setup-wizard.md) | Installation, recovery key generation |
 | [Post-Setup](post-setup.md) | First admin actions |
 | [Database](infrastructure/database.md) | Database design, UUID PKs, schema organization |

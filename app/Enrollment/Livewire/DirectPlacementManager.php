@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Livewire;
 
+use App\Auth\Permissions\Enums\Role;
 use App\Enrollment\Actions\DirectPlacementAction;
 use App\Enrollment\Livewire\Forms\DirectPlacementForm;
 use App\Enrollment\Models\Placement;
 use App\Enrollment\Models\Registration;
 use App\Guidance\Mentor\Models\Mentor;
-use App\User\Enums\Role;
 use App\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;

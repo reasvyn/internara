@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Announcement\Livewire;
 
+use App\Auth\Permissions\Enums\Role;
 use App\SysAdmin\Announcement\Actions\SendAnnouncementAction;
 use App\SysAdmin\Announcement\Enums\AnnouncementStatus;
 use App\SysAdmin\Announcement\Livewire\Forms\AnnouncementForm;
 use App\SysAdmin\Announcement\Models\Announcement;
-use App\User\Enums\Role;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;

@@ -17,6 +17,7 @@ return [
 
     'list' => [
         'Core',
+        'Auth',
         'User',
         'Academics',
         'Partners',

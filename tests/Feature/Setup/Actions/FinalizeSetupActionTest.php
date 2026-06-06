@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Setup\Actions;
 
 use App\Academics\Department\Models\Department;
+use App\Auth\SuperAdmin\Actions\SetupSuperAdminAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Program\Internship\Actions\CreateInternshipAction;
 use App\Settings\Support\Settings;
@@ -13,7 +14,6 @@ use App\Setup\Actions\SetupDepartmentAction;
 use App\Setup\Actions\SetupSchoolAction;
 use App\Setup\Entities\SetupState;
 use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
-use App\User\SuperAdmin\Actions\SetupSuperAdminAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use RuntimeException;

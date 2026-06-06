@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-use App\User\AccountRecovery\Livewire\AccountRecovery;
-use App\User\AccountRecovery\Livewire\RecoveryCode;
-use App\User\AccountRecovery\Livewire\RecoverySlipManager;
+use App\Auth\AccountRecovery\Livewire\AccountRecovery;
+use App\Auth\AccountRecovery\Livewire\RecoveryCode;
+use App\Auth\AccountRecovery\Livewire\RecoverySlipManager;
+use App\Auth\Password\Livewire\ConfirmPassword;
+use App\Auth\Password\Livewire\ForgotPassword;
+use App\Auth\Password\Livewire\ResetPassword;
 use App\User\AccountStatus\Livewire\AccountLifecycleManager;
-use App\User\ActivationToken\Livewire\ActivateAccount;
 use App\User\Dashboard\Livewire\AdminDashboard;
 use App\User\Dashboard\Livewire\StudentDashboard;
 use App\User\Dashboard\Livewire\SupervisorDashboard;
@@ -14,11 +16,7 @@ use App\User\Dashboard\Livewire\TeacherDashboard;
 use App\User\Dashboard\Livewire\UserDashboard;
 use App\User\Http\Controllers\DashboardController;
 use App\User\Http\Controllers\HomeController;
-use App\User\Login\Livewire\Login;
 use App\User\Notifications\Livewire\NotificationCenter;
-use App\User\Password\Livewire\ConfirmPassword;
-use App\User\Password\Livewire\ForgotPassword;
-use App\User\Password\Livewire\ResetPassword;
 use App\User\Profile\Livewire\ProfileEditor;
 
 Route::get('/', HomeController::class)->name('home');
@@ -68,8 +66,6 @@ Route::prefix('supervisor')
     });
 
 Route::middleware(['guest', 'auth.throttle'])->group(function () {
-    Route::get('/login', Login::class)->name('login');
-    Route::get('/activate', ActivateAccount::class)->name('activate');
     Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
     Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
     Route::get('/recover-account', AccountRecovery::class)->name('recover.account');

@@ -141,6 +141,7 @@ php artisan route:cache
 - `routes/channels.php` — broadcasting channel definitions (not implemented)
 - `routes/ai.php` — AI integration routes
 - `app/Core/Http/Middleware/` — global middleware classes
-- `app/User/Http/Middleware/` — auth middleware (CheckRole, AuthThrottle)
+- `app/Auth/Permissions/Http/Middleware/` — role-check middleware (CheckRole)
+- `app/Auth/Login/Http/Middleware/` — auth throttle middleware (AuthThrottle)
 - `config/menu.php` — sidebar navigation mapping routes to menu items
 - `docs/infrastructure/infrastructure.md` — tier-based infrastructure design

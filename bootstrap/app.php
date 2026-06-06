@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Auth\Login\Http\Middleware\AuthThrottleMiddleware;
+use App\Auth\Permissions\Http\Middleware\CheckRoleMiddleware;
 use App\Core\Exceptions\AppException;
 use App\Core\Http\Middleware\LogContext;
 use App\Core\Http\Middleware\SecurityHeaders;
@@ -12,8 +14,6 @@ use App\Exceptions\ValidationFailedException;
 use App\Settings\Http\Middleware\SetLocaleMiddleware;
 use App\Setup\Http\Middleware\ProtectSetupRouteMiddleware;
 use App\Setup\Http\Middleware\RequireSetupAccessMiddleware;
-use App\User\Http\Middleware\AuthThrottleMiddleware;
-use App\User\Http\Middleware\CheckRoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;

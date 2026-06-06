@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Account\Livewire\Concerns;
 
+use App\Auth\ActivationToken\Models\ActivationToken;
 use App\SysAdmin\Account\Notifications\ActivationCodeNotification;
-use App\User\ActivationToken\Models\ActivationToken;
 use App\User\Models\User;
 
 trait DownloadsAccountSlips

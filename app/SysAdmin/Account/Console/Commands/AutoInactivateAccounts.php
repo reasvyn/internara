@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Account\Console\Commands;
 
+use App\Auth\Permissions\Enums\Role;
 use App\Core\Support\SmartLogger;
 use App\User\Enums\AccountStatus;
-use App\User\Enums\Role;
 use App\User\Models\User;
 use Illuminate\Console\Command;
 

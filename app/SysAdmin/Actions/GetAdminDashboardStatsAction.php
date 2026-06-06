@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Actions;
 
 use App\Academics\Department\Models\Department;
+use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Actions\BaseAction;
 use App\Enrollment\Models\Placement;
@@ -16,7 +17,6 @@ use App\Partners\Company\Models\Company;
 use App\Partners\Partnership\Models\Partnership;
 use App\Program\Internship\Models\Internship;
 use App\Support\CacheKeys;
-use App\User\Enums\Role as RoleEnum;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Cache;
 
