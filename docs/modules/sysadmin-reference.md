@@ -14,7 +14,7 @@ compliance
 
 ### Module Statistics
 
-- **Actions**: 15 business logic operations
+- **Actions**: 14 business logic operations
 - **Models**: 2 data entities
 - **Livewire Components**: 12 UI components
 - **Policies**: 1 authorization rule
@@ -175,9 +175,7 @@ app/SysAdmin/
 │       ├── RecoverAdminCommand.php         ← admin:recover
 │       ├── ShowRecoveryKeyCommand.php      ← admin:recovery-show
 │       └── ShowRecoveryPathCommand.php     ← admin:recovery-path
-├── Livewire/             ← Cross-submodule UI
-├── Observability/        ← Observability submodule (Console/Commands, GdprDeletionLog, Livewire (audit, pulse, clone detector), Recorders, Services)
-└── Services/             ← Infrastructure services
+└── Livewire/             ← Cross-submodule UI (ApplicationReview)
 ```
 
 ---

@@ -18,7 +18,7 @@ initialization wizard.
 
 ### Module Statistics
 
-- **Actions**: 6 business logic operations (split across submodules)
+- **Actions**: 8 business logic operations (split across submodules)
 - **Models**: 0 data entities (persists wizard progress and tokens in the `settings` table)
 - **Livewire Components**: 1 UI wizard (with 4 Form Objects)
 - **Submodules**: 2 submodules (`Installation`, `SetupWizard`)

@@ -1,3 +1,7 @@
+---
+name: tailwindcss-development
+---
+
 # Tailwind CSS Development Skill
 
 ## When to Activate

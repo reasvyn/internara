@@ -29,7 +29,7 @@ distinct modules, each owning its complete vertical slice under `app/{Module}/`.
 | **Assignment**    | Coursework tasks and submissions                       | Task creation, student submissions (including report document drafts)      |
 | **Assessment**    | Competency grading templates                           | Rubrics (JSON structures), student assessments                             |
 | **Evaluation**    | Mentor feedback collection                             | Supervisor evaluations, feedback forms                                     |
-| **Reports**       | Final student grade cards                              | Composite score aggregation (_Rapor PKL_), grade locking                   |
+| **Reports**       | Final student grade cards                              | Composite score aggregation, grade locking                                 |
 | **Certification** | Credential issuance                                    | Digital certificates, serial numbers, QR hashes                            |
 | **Incident**      | Safety and disciplinary logging                        | Incident reports, severity, investigation workflows                        |
 | **Document**      | Official correspondence rendering                      | Permit letters, templates, PDF compiler driver                             |

@@ -1,8 +1,7 @@
 # Reports — Technical Reference
 
 > Last updated: 2026-06-06  
-> Changes: Redefined to reference Final Grade Card (Rapor PKL) models, actions, and Livewire
-> components.
+> Changes: Redefined to reference Final Grade Card models, actions, and Livewire components.
 
 Detailed structural and implementation reference for the **Reports** module.
 
@@ -10,19 +9,19 @@ Detailed structural and implementation reference for the **Reports** module.
 
 ## Overview
 
-Student Final Grade Card (_Rapor PKL_) aggregation, feedback compilation, and coordinator sign-off.
+Student Final Grade Card aggregation, feedback compilation, and coordinator sign-off.
 
 ### Module Statistics
 
-- **Actions**: 3 business logic operations
-- **Models**: 1 data entity (`Report`)
-- **Livewire Components**: 2 UI components
-- **Policies**: 1 authorization rules
-- **Submodules**: 1 module submodules
+- **Actions**: 5 business logic operations
+- **Models**: 2 data entities (`Report`, `ReportRevision`)
+- **Livewire Components**: 1 UI component
+- **Policies**: 0 authorization rules
+- **Submodules**: 1 module submodule
 
 ### Submodules
 
-- **Report**: Represents the student's Grade Card (_Rapor PKL_) containing the aggregated scores,
+- **Report**: Represents the student's Final Grade Card containing the aggregated scores,
   grades, company feedback, and finalization workflow.
 
 ---
@@ -42,34 +41,50 @@ This module depends on:
 
 | File                                           | Class                       | Extends      |
 | ---------------------------------------------- | --------------------------- | ------------ |
-| `Report/Actions/CalculateFinalGradeAction.php` | `CalculateFinalGradeAction` | `BaseAction` |
-| `Report/Actions/FinalizeReportCardAction.php`  | `FinalizeReportCardAction`  | `BaseAction` |
-| `Report/Actions/UpdateReportCardAction.php`    | `UpdateReportCardAction`    | `BaseAction` |
+| `Report/Actions/CreateReportAction.php`              | `CreateReportAction`              | `BaseAction` |
+| `Report/Actions/SubmitReportAction.php`              | `SubmitReportAction`              | `BaseAction` |
+| `Report/Actions/ApproveReportAction.php`             | `ApproveReportAction`             | `BaseAction` |
+| `Report/Actions/RequestReportRevisionAction.php`     | `RequestReportRevisionAction`     | `BaseAction` |
+| `Report/Actions/AddSupervisorReportNotesAction.php`  | `AddSupervisorReportNotesAction`  | `BaseAction` |
 
 ---
 
 ## Models
 
-| File                       | Class    |
-| -------------------------- | -------- |
-| `Report/Models/Report.php` | `Report` |
+| File                              | Class            |
+| --------------------------------- | ---------------- |
+| `Report/Models/Report.php`        | `Report`         |
+| `Report/Models/ReportRevision.php`| `ReportRevision` |
+
+---
+
+## Enums
+
+| File                               | Class          | Type                       |
+| ---------------------------------- | -------------- | -------------------------- |
+| `Report/Enums/ReportStatus.php`    | `ReportStatus` | String-backed, `LabelEnum` |
 
 ---
 
 ## Livewire Components
 
-| File                                    | Component           | Extends             |
-| --------------------------------------- | ------------------- | ------------------- |
-| `Report/Livewire/ReportCardViewer.php`  | `ReportCardViewer`  | `Component`         |
-| `Report/Livewire/ReportCardManager.php` | `ReportCardManager` | `BaseRecordManager` |
+| File                                    | Component      | Extends     |
+| --------------------------------------- | -------------- | ----------- |
+| `Report/Livewire/ReportWriter.php`      | `ReportWriter` | `Component` |
+
+---
+
+## HTTP Controllers
+
+| File                                                      | Controller         | Extends          |
+| --------------------------------------------------------- | ------------------ | ---------------- |
+| `Report/Http/Controllers/ReportController.php`            | `ReportController` | `BaseController` |
 
 ---
 
 ## Authorization Policies
 
-| File                                   | Policy             |
-| -------------------------------------- | ------------------ | ------------ |
-| `Report/Policies/ReportCardPolicy.php` | `ReportCardPolicy` | `BasePolicy` |
+None. Grade card authorization is handled through the Enrollment module's policy layer.
 
 ---
 
@@ -77,16 +92,13 @@ This module depends on:
 
 ```
 app/Reports/
-├── Report/                  ← Submodule root
-│   ├── Actions/
-│   ├── Models/
-│   ├── Policies/
-│   └── Livewire/
-├── Http/
-├── Livewire/
-├── Types/
-├── Services/
-└── Support/
+└── Report/                  ← Submodule root
+    ├── Actions/
+    ├── Enums/
+    ├── Http/
+    │   └── Controllers/
+    ├── Livewire/
+    └── Models/
 ```
 
 ---

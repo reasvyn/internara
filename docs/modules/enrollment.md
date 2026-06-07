@@ -14,7 +14,7 @@ For complete technical reference including API, models, actions, and components,
 ## Key Principles
 
 - **Registration is the gateway** — Students must register for a program before accessing any
-  program features (logbook, attendance, assignments). Registration activates the student's program
+  program features (journals, assignments). Registration activates the student's program
   access.
 - **Placement bridges company slots to students** — Each placement consumes one slot quota from a
   company. Capacity enforcement is atomic (increment/decrement never exceeds limit).

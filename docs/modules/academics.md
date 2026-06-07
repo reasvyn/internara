@@ -1,9 +1,9 @@
 # Academics — Documentation Overview
 
 > Last updated: 2026-06-06  
-> Changes: Removed the separate School submodule and policy. The school's profile (NPSN code, name,
-> contact) is now stored inside the global config `settings` table as namespaces (`school.*`), since
-> the application is single-tenant.
+> Changes: Reduced School submodule to Entity + Livewire editor (no standalone model, actions, or
+> policies). School profile (NPSN, name, contact) is stored in the `settings` table as `school.*`
+> namespaces, since the application is single-tenant.
 
 Institutional structure: departments and academic calendar management.
 
@@ -48,6 +48,7 @@ The **Academics** module owns:
 
 ## Submodules
 
+- **School**: School profile editor (Entity + Livewire only — metadata stored in `settings` table).
 - **Department**: CRUD-managed academic majors (divisions). Guarded deletion prevents orphan
   database records.
 - **AcademicYear**: School calendar periods with single-active constraints and start/end dates.

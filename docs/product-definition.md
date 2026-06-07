@@ -158,15 +158,15 @@ constraints:
 To support local regulations while maintaining global codebase standards, the system abstracts
 localized concepts into standard identifiers:
 
-| Base Terminology              | Indonesian Translation                | Data Model Field     | Description                                          |
+| Base Terminology              | Acronym / Short Form                  | Data Model Field     | Description                                          |
 | ----------------------------- | ------------------------------------- | -------------------- | ---------------------------------------------------- |
-| **Student National ID**       | NISN (_Nomor Induk Siswa Nasional_)   | `national_id_number` | Unique national identification code for the student. |
-| **School Institutional Code** | NPSN (_Nomor Pokok Sekolah Nasional_) | `institutional_code` | Registration code of the educational institution.    |
-| **Department**                | Jurusan / Kompetensi Keahlian         | `department`         | Broad study concentration or skill area.             |
-| **Class**                     | Kelas / Rombel                        | `class_name`         | Grade level and cohort group.                        |
-| **Supervisor**                | Pembimbing Lapangan                   | `supervisor`         | Company-assigned mentor on-site.                     |
-| **School Mentor**             | Guru Pembimbing                       | `teacher`            | School-assigned academic guide.                      |
-| **Fieldwork Program**         | PKL (_Praktik Kerja Lapangan_)        | `internship`         | The compulsory work placement course.                |
+| **Student National ID**       | NISN                                  | `national_id_number` | Unique national identification code for the student. |
+| **School Institutional Code** | NPSN                                  | `institutional_code` | Registration code of the educational institution.    |
+| **Department**                | —                                     | `department`         | Broad study concentration or skill area.             |
+| **Class**                     | —                                     | `class_name`         | Grade level and cohort group.                        |
+| **Supervisor**                | —                                     | `supervisor`         | Company-assigned mentor on-site.                     |
+| **School Mentor**             | —                                     | `teacher`            | School-assigned academic guide.                      |
+| **Fieldwork Program**         | PKL                                   | `internship`         | The compulsory work placement course.                |
 
 ---
 

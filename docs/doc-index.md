@@ -79,8 +79,6 @@ Each module has two documents under `docs/modules/`:
 - **Reference** (`docs/modules/{module}-reference.md`) — Actions, Models, Enums, Entities, Policies,
   Livewire components, Routes, Views, Tests, Factories, and Migrations
 
-See the [Module Index](modules/module-index.md) for more details on operational flow.
-
 | #   | Module            | Overview                             | Reference                                       |
 | --- | ----------------- | ------------------------------------ | ----------------------------------------------- |
 | 1   | **Core**          | [Overview](modules/core.md)          | [Reference](modules/core-reference.md)          |

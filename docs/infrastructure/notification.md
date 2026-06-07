@@ -332,9 +332,9 @@ Created (via Action/Event)
 
 - `app/Core/Channels/CustomDatabaseChannel.php` — custom database channel
 - `app/*/Notifications/` — notification classes organized by module
-- `app/User/Actions/SendNotificationAction.php` — notification dispatch action
+- `app/User/Notifications/Actions/SendNotificationAction.php` — notification dispatch action
 - `app/Core/Contracts/SendsNotifications.php` — notification contract
-- `app/Administration/Console/Commands/PruneNotificationsCommand.php` — notification pruning
+- `app/SysAdmin/Console/Commands/PruneNotificationsCommand.php` — notification pruning
 - `config/mail.php` — mail driver and SMTP configuration
 - `config/flasher.php` — flash message styling and timeout
 - `docs/infrastructure/infrastructure.md` — tier-based infrastructure design

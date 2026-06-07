@@ -1,3 +1,7 @@
+---
+name: laravel-best-practices
+---
+
 # Laravel Best Practices Skill
 
 ## When to Activate

@@ -28,7 +28,7 @@ For complete technical reference including API, models, actions, and components,
 
 The **Program** module:
 
-- Owns `Internship`, `InternshipGroup`, and `InternshipGroupMember` models.
+- Owns `Internship`, `InternshipGroup`, `InternshipGroupMember`, and `InternshipPhase` models.
 - Consumed by **Enrollment** for registration scopes and placement groupings.
 - Links with **Partners** for company details and **Academics** for calendar scoping.
 
@@ -51,6 +51,8 @@ The **Program** module:
   grading weights configuration, phases JSON, and required document templates checklist JSON.
 - **InternshipGroup**: Cohort student/mentor group management. Handles group details and member
   mapping.
+- **InternshipPhase**: Program phase templates defining standard phase names, order, and duration
+  defaults.
 
 ---
 
@@ -69,24 +71,26 @@ The **Program** module:
 
 ### Actions & Business Logic
 
-- **10** actions across all submodules (down from 16):
+- **13** actions across all submodules:
     - Internship CRUD and status adjustments (including `CheckCloseReadinessAction`).
     - InternshipGroup CRUD and member management (add/remove member).
+    - InternshipPhase CRUD (create, update, delete).
 
 ### Data & Persistence
 
-- **3** models: `Internship`, `InternshipGroup`, `InternshipGroupMember`.
+- **4** models: `Internship`, `InternshipGroup`, `InternshipGroupMember`, `InternshipPhase`.
 - UUID PKs. `phases` and `required_document_ids` stored as JSON on `internships`.
 
 ### User Interface
 
-- **2** Livewire components:
+- **3** Livewire components:
     - `InternshipManager` — Program settings and JSON checklist editors.
     - `InternshipGroupManager` — Cohort group assignment tables.
+    - `InternshipPhaseManager` — Phase template management.
 
 ### Authorization
 
-- **2** policies: `InternshipPolicy`, `InternshipGroupPolicy`.
+- **3** policies: `InternshipPolicy`, `InternshipGroupPolicy`, `InternshipPhasePolicy`.
 - Restricted to admin/superadmin.
 
 ---

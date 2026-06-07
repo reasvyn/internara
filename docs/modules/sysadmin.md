@@ -48,7 +48,7 @@ by the [Settings](settings.md) module.
 
 - **Account**: User account management — CRUD, status toggles, archiving, recovery keys
 - **Announcement**: System-wide message broadcasting and scheduling
-- **GdprDeletionLog**: GDPR-compliant deletion logging and compliance tracking
+- **Observability**: System health monitoring, Pulse metrics, audit logging, GDPR deletion compliance tracking, and environment auditing (contains `GdprDeletionLog`) 
 
 > **Note**: The **Settings** submodule has been extracted into its own standalone module. See
 > [Settings](settings.md).

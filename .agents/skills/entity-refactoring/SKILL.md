@@ -1,3 +1,7 @@
+---
+name: entity-refactoring
+---
+
 # Entity Refactoring Skill
 
 ## When to Activate

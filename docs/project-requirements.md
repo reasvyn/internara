@@ -37,15 +37,15 @@ _Kurikulum Merdeka_ and _K-13_ PKL guidelines), the system must support:
 
 ### 2.1 Regulatory Workflows & Personas
 
-- **Dua-Mentor Supervision**: Explicit division of duties between the _Guru Pembimbing_ (School
-  Mentor) and _Pembimbing Lapangan_ (Industry Supervisor).
-- **NPSN & NISN Integration**: Data models must store the School's National NPSN (_Nomor Pokok
-  Sekolah Nasional_) and the student's unique NISN (_Nomor Induk Siswa Nasional_).
+- **Dual-Mentor Supervision**: Explicit division of duties between the School Teacher and Industry
+  Supervisor.
+- **NPSN & NISN Integration**: Data models must store the School's National NPSN and the student's
+  unique NISN.
 - **Official Document Templates**: Automated rendering of standard compliance paperwork:
-    - _Surat Pengantar PKL_ (Placement Introduction Letter)
-    - _Surat Persetujuan Orang Tua_ (Parental Consent Form)
-    - _Daftar Hadir & Jurnal Kegiatan_ (Attendance & Activity Logs)
-    - _Sertifikat PKL_ (Completion Certificate with competency score sheets)
+    - Placement Introduction Letter
+    - Parental Consent Form
+    - Attendance & Activity Logs
+    - Completion Certificate with competency score sheets
 
 ### 2.2 Local Technical Constraints
 
@@ -164,7 +164,7 @@ Daily journals compiled by students require dual-mentor verification.
  /       +-------------+
 v        | SUPERVISOR  | (Visible in Teacher queue for final signoff)
 +-----+  |  APPROVED   |
-| RECV|  +-------------+
+| REVISION_REQUIRED |  +-------------+
 +-----+     /       \
            /         \ Teacher Approves
           / Rejected  v
@@ -176,7 +176,7 @@ v        | SUPERVISOR  | (Visible in Teacher queue for final signoff)
 - **Transition Constraints**:
     - Once a journal transitions to `FINALIZED`, the content becomes read-only for students,
       supervisors, and teachers.
-    - If the Supervisor or Teacher rejects the entry (`RECV` - _Revision Required_), the status
+    - If the Supervisor or Teacher rejects the entry (`REVISION_REQUIRED` - _Revision Required_), the status
       reverts, unlocking edit access for the student, and requires a mandatory feedback string.
 
 ---

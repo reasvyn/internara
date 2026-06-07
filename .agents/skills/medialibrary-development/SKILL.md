@@ -1,3 +1,7 @@
+---
+name: medialibrary-development
+---
+
 # Media Library Development Skill
 
 ## When to Activate

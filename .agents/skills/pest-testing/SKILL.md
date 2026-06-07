@@ -1,3 +1,7 @@
+---
+name: pest-testing
+---
+
 # Pest Testing Skill
 
 ## When to Activate

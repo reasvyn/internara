@@ -13,16 +13,17 @@ Manages internship programs and cohort student groupings.
 
 ### Module Statistics
 
-- **Actions**: 10 business logic operations
-- **Models**: 3 data entities (`Internship`, `InternshipGroup`, `InternshipGroupMember`)
-- **Livewire Components**: 2 UI components
-- **Policies**: 2 authorization rules
-- **Submodules**: 2 module submodules
+- **Actions**: 13 business logic operations
+- **Models**: 4 data entities (`Internship`, `InternshipGroup`, `InternshipGroupMember`, `InternshipPhase`)
+- **Livewire Components**: 3 UI components
+- **Policies**: 3 authorization rules
+- **Submodules**: 3 module submodules
 
 ### Submodules
 
 - `Internship`
 - `InternshipGroup`
+- `InternshipPhase`
 
 ---
 
@@ -50,7 +51,10 @@ This module depends on:
 | `InternshipGroup/Actions/UpdateInternshipGroupAction.php`  | `UpdateInternshipGroupAction`       | `BaseAction` |
 | `InternshipGroup/Actions/DeleteInternshipGroupAction.php`  | `DeleteInternshipGroupAction`       | `BaseAction` |
 | `InternshipGroup/Actions/AddMemberToGroupAction.php`       | `AddMemberToGroupAction`            | `BaseAction` |
-| `InternshipGroup/Actions/RemoveMemberFromGroupAction.php`  | `RemoveMemberFromGroupAction`       | `BaseAction` |
+| `InternshipGroup/Actions/RemoveMemberFromGroupAction.php`  | `RemoveMemberFromGroupAction`  | `BaseAction` |
+| `InternshipPhase/Actions/CreateInternshipPhaseAction.php`  | `CreateInternshipPhaseAction`  | `BaseAction` |
+| `InternshipPhase/Actions/UpdateInternshipPhaseAction.php`  | `UpdateInternshipPhaseAction`  | `BaseAction` |
+| `InternshipPhase/Actions/DeleteInternshipPhaseAction.php`  | `DeleteInternshipPhaseAction`  | `BaseAction` |
 
 ---
 
@@ -61,6 +65,7 @@ This module depends on:
 | `Internship/Models/Internship.php`                 | `Internship`            |
 | `InternshipGroup/Models/InternshipGroup.php`       | `InternshipGroup`       |
 | `InternshipGroup/Models/InternshipGroupMember.php` | `InternshipGroupMember` |
+| `InternshipPhase/Models/InternshipPhase.php`       | `InternshipPhase`       |
 
 ---
 
@@ -70,6 +75,7 @@ This module depends on:
 | ----------------------------------------------------- | ------------------------ | ------------------- |
 | `Internship/Livewire/InternshipManager.php`           | `InternshipManager`      | `BaseRecordManager` |
 | `InternshipGroup/Livewire/InternshipGroupManager.php` | `InternshipGroupManager` | `BaseRecordManager` |
+| `InternshipPhase/Livewire/InternshipPhaseManager.php` | `InternshipPhaseManager` | `BaseRecordManager` |
 
 ---
 
@@ -79,6 +85,7 @@ This module depends on:
 | ---------------------------------------------------- | ----------------------- | ------------ |
 | `Internship/Policies/InternshipPolicy.php`           | `InternshipPolicy`      | `BasePolicy` |
 | `InternshipGroup/Policies/InternshipGroupPolicy.php` | `InternshipGroupPolicy` | `BasePolicy` |
+| `InternshipPhase/Policies/InternshipPhasePolicy.php` | `InternshipPhasePolicy` | `BasePolicy` |
 
 ---
 
@@ -92,7 +99,12 @@ app/Program/
 │   │   ├── Models/
 │   │   ├── Policies/
 │   │   └── Livewire/
-│   └── InternshipGroup/
+│   ├── InternshipGroup/
+│   │   ├── Actions/
+│   │   ├── Models/
+│   │   ├── Policies/
+│   │   └── Livewire/
+│   └── InternshipPhase/
 │       ├── Actions/
 │       ├── Models/
 │       ├── Policies/
@@ -110,7 +122,7 @@ app/Program/
 
 This module integrates with the system across the following directories and resources:
 
-- **Submodules**: `Internship`, `InternshipGroup`
+- **Submodules**: `Internship`, `InternshipGroup`, `InternshipPhase`
 - **Business Logic (`app/`)**: Located in
   [app/Program/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Program/)
 - **Routing (`routes/`)**:

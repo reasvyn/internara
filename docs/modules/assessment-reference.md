@@ -1,7 +1,7 @@
 # Assessment — Technical Reference
 
 > Last updated: 2026-06-06  
-> Changes: Removed competencies, indicators, and presentations tables and references.
+> Changes: Refactored to flat Assessment model and Rubric submodule with JSON-based competency/indicator structures.
 
 Detailed structural and implementation reference for the **Assessment** module.
 
@@ -13,10 +13,10 @@ Manages assessments and JSON-based rubric evaluation templates.
 
 ### Module Statistics
 
-- **Actions**: 9 business logic operations
+- **Actions**: 14 business logic operations
 - **Models**: 2 data entities (`Assessment`, `Rubric`)
 - **Livewire Components**: 3 UI components
-- **Policies**: 1 authorization rules
+- **Policies**: 1 authorization rule
 - **Submodules**: 2 module submodules
 
 ### Submodules
@@ -44,9 +44,16 @@ This module depends on:
 | `Actions/AutoCalculateAssessmentAction.php` | `AutoCalculateAssessmentAction` | `BaseAction` |
 | `Actions/UpdateAssessmentScoresAction.php`  | `UpdateAssessmentScoresAction`  | `BaseAction` |
 | `Actions/FinalizeAssessmentAction.php`      | `FinalizeAssessmentAction`      | `BaseAction` |
+| `Actions/ScoreIndicatorAction.php`          | `ScoreIndicatorAction`          | `BaseAction` |
 | `Rubric/Actions/CreateRubricAction.php`     | `CreateRubricAction`            | `BaseAction` |
 | `Rubric/Actions/UpdateRubricAction.php`     | `UpdateRubricAction`            | `BaseAction` |
 | `Rubric/Actions/DeleteRubricAction.php`     | `DeleteRubricAction`            | `BaseAction` |
+| `Rubric/Actions/CreateCompetencyAction.php` | `CreateCompetencyAction`        | `BaseAction` |
+| `Rubric/Actions/UpdateCompetencyAction.php` | `UpdateCompetencyAction`        | `BaseAction` |
+| `Rubric/Actions/DeleteCompetencyAction.php` | `DeleteCompetencyAction`        | `BaseAction` |
+| `Rubric/Actions/CreateIndicatorAction.php`  | `CreateIndicatorAction`         | `BaseAction` |
+| `Rubric/Actions/UpdateIndicatorAction.php`  | `UpdateIndicatorAction`         | `BaseAction` |
+| `Rubric/Actions/DeleteIndicatorAction.php`  | `DeleteIndicatorAction`         | `BaseAction` |
 
 ---
 
@@ -86,15 +93,10 @@ app/Assessment/
 ├── Livewire/
 ├── Models/
 ├── Policies/
-├── Rubric/               ← Rubric submodule
-│   ├── Actions/
-│   ├── Livewire/
-│   └── Models/
-├── Http/
-├── Livewire/
-├── Types/
-├── Services/
-└── Support/
+└── Rubric/               ← Rubric submodule
+    ├── Actions/
+    ├── Livewire/
+    └── Models/
 ```
 
 ---
@@ -103,7 +105,7 @@ app/Assessment/
 
 This module integrates with the system across the following directories and resources:
 
-- **Submodules**: `Assessment`, `Rubric`
+- **Submodules**: `Rubric`
 - **Business Logic (`app/`)**: Located in
   [app/Assessment/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Assessment/)
 - **Routing (`routes/`)**:

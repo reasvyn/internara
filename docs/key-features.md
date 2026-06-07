@@ -338,14 +338,14 @@ Certificate templates, issuance, revocation, and verification.
 
 ---
 
-## 15. Reports — Student Grade Card (Rapor PKL)
+## 15. Reports — Student Final Grade Card
 
 Student final grade compilation, score aggregation, and coordinator sign-off.
 
 | Feature               | Description                                                                                            | Access          |
 | --------------------- | ------------------------------------------------------------------------------------------------------ | --------------- |
 | Grade Aggregation     | Auto-calculates composite score based on program weights (supervisor, teacher, exam)                   | System          |
-| Grade Card Management | Teacher/Coordinator reviews, overrides, and finalizes the student report card (_Rapor PKL_)            | Teacher / Admin |
+| Grade Card Management | Teacher/Coordinator reviews, overrides, and finalizes the student final grade card            | Teacher / Admin |
 | Grade Card Lock       | Once finalized, grades and company feedback are locked and immutable, unlocking certificate generation | System          |
 
 ---

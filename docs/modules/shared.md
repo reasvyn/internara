@@ -72,7 +72,8 @@ Shared has no submodules. It is organized into directories directly under `app/`
   `WithRecordSelection`)
 - **Policies/**: Concerns (`AuthorizesRoles`, `AuthorizesOwnership`)
 - **Support/**: `CacheKeys`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`,
-  `HasModelStatuses`, `Locale`, `PasswordRules`, `PiiMasker`, `Theme`, `Integrity`
+  `HasModelStatuses`, `PasswordRules`, `PiiMasker`, `Integrity`
+- **Settings/Support/** (cross-reference): `Locale`, `Theme` — localization & dynamic theming
 
 ---
 

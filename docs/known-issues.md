@@ -8,14 +8,14 @@
 
 ## Issues by Module
 
-### Admin
+### SysAdmin
 
 - **A30 — DownloadsAccountSlips Livewire concern undocumented (✅ Resolved):** Now listed under the
   Livewire Concerns section in `sysadmin-reference.md`.
 - **Overview mentions bulk creation** but no dedicated Action exists — CSV import lives inside
   `UserManager` Livewire component.
 - **C11 — AnnouncementStatus missing StatusEnum interface:**
-  `app/Administration/Enums/AnnouncementStatus.php` defines state transitions
+  `app/SysAdmin/Announcement/Enums/AnnouncementStatus.php` defines state transitions
   (`DRAFT → SCHEDULED → PUBLISHED`) with `canTransitionTo()` but does not `implements StatusEnum`.
   Missing `isTerminal()` and `validTransitions()`.
 - **A46 — MentorManager not implemented:** No Livewire component exists for managing mentor records
@@ -44,7 +44,7 @@
   the file on disk is `resources/views/assignment/submit-assignment.blade.php` — either rename the
   view or fix the render call.
 
-### Attendance
+### Journals (Attendance)
 
 - **StudentClockIn / AbsenceRequestForm cross-module routing:** Routed in `routes/web/mentee.php`,
   not in `routes/web/attendance.php`.
@@ -104,13 +104,22 @@
   — not implemented.
 - **Acknowledgement history (⏳ planned):** Overview mentions "personal acknowledgment history" — no
   dedicated component exists.
+- **A8 — SupervisionManager described as "manages" but is read-only (🟠):** `SupervisionManager`
+  description says "Manages supervision visit logs" but component is student-facing read-only —
+  lists logs, does not create or manage them.
+- **A11 — Dependency graph missing Internship and Evaluation:** `ReportNotes` and `ReportReview`
+  import `Internship\Models\Report` and related Actions; `EvaluateMentor` imports
+  `Evaluation\Actions\EvaluateMentorAction`.
+- **CreateSupervisionLogAction description misleading:** Says "Creates a supervision visit log" —
+  the word "visit" is misleading; creates general supervision logs.
+- **Cross-module routing:** `SupervisionManager` routed in `routes/web/mentee.php`.
 
 ### Incident
 
 - **Action descriptions omit significant validation/detail** for `ResolveIncidentAction` and
   `ReportIncidentAction`.
 
-### Internship
+### Program (Internship)
 
 - **CheckCloseReadinessAction / overview mismatch:** Description checks `is_verified`, not
   signature, but overview says "signed".
@@ -124,7 +133,7 @@
   for browsing archived programs.
 - **A45 — Archive restoration not implemented:** No action exists to un-archive a program.
 
-### Logbook
+### Journals (Logbook)
 
 - **A13 — Dependency graph claims Mentor:** Zero Mentor module files imported directly.
 - **A26 — Overview features not implemented:** digital signature, auto-save, compliance
@@ -139,23 +148,11 @@
   in mentoring, and no logbook compilation for PKL report materials. Design proposal in
   `docs/modules/logbook.md` (Planned Enhancements).
 
-### Mentee
+### User (Mentee concept)
 
 - **A27 — Dependency graph claims Internship:** No direct import exists.
 
-### Mentor
-
-- **A8 — SupervisionManager described as "manages" but is read-only (🟠):** `SupervisionManager`
-  description says "Manages supervision visit logs" but component is student-facing read-only —
-  lists logs, does not create or manage them.
-- **A11 — Dependency graph missing Internship and Evaluation:** `ReportNotes` and `ReportReview`
-  import `Internship\Models\Report` and related Actions; `EvaluateMentor` imports
-  `Evaluation\Actions\EvaluateMentorAction`.
-- **CreateSupervisionLogAction description misleading:** Says "Creates a supervision visit log" —
-  the word "visit" is misleading; creates general supervision logs.
-- **Cross-module routing:** `SupervisionManager` routed in `routes/web/mentee.php`.
-
-### Partnership
+### Partners
 
 - **A12 — Dependency graph missing Placement and CsvHandler:** `PartnershipManager` imports
   `Placement\Models\Placement`; both `CompanyManager` and `PartnershipManager` import
@@ -164,25 +161,25 @@
   omit `{deleted, blocked}` return type docs.
 - **CSV import/export/template download features not documented** in reference doc.
 
-### Placement
+### Enrollment (Placement)
 
 - **StudentPlacementChangeRequest cross-module routing:** Routed in `routes/web/mentee.php`.
 - **CreatePlacementAction sets `filled_quota = 0`** — not mentioned in reference doc.
 
-### Registration
+### Enrollment (Registration)
 
 - **A9 — RegistrationWizardForm not documented at all (✅ Resolved):** Now documented under the
   Livewire Forms section in `enrollment-reference.md`.
 - **Livewire component count off by 1:** Counts Form object as Component.
 - **Cross-module routing:** `ApplicationReview` (Admin) routed in `routes/web/registration.php`.
 
-### Schedule
+### Journals (Schedule)
 
 - **ScheduleStatus description imprecise:** Entity tracks time-based state (`isOngoing`,
   `isUpcoming`), not explicit status.
 - **"Where to Find It" incomplete:** Missing Entities, Policies, Livewire, routes, views, config.
 
-### School
+### Academics
 
 - **Logo upload not in form:** Overview mentions school logo upload with preview — correctly
   implemented but `SchoolForm` has no logo field (handled in component).
@@ -294,7 +291,7 @@ All actions must expose a single `execute()` method per the documented pattern.
 
 | File                             | Location                      | Issue                                                 |
 | -------------------------------- | ----------------------------- | ----------------------------------------------------- |
-| `GenerateAccountSlipAction.php`  | `app/Administration/Actions/` | Has `download()`/`downloadBatch()` but no `execute()` |
+| `GenerateAccountSlipAction.php`  | `app/SysAdmin/Account/Actions/` | Has `download()`/`downloadBatch()` but no `execute()` |
 | `CompileLogbookReportAction.php` | `app/Logbook/Actions/`        | Has `download()` but no `execute()`                   |
 
 #### C4. Livewire CRUD Components Not Extending BaseRecordManager (5 files) 🟠
@@ -304,7 +301,7 @@ pagination, and bulk-action functionality.
 
 | File                      | Location                       | Current Base                                |
 | ------------------------- | ------------------------------ | ------------------------------------------- |
-| `AnnouncementManager.php` | `app/Administration/Livewire/` | `extends Component`                         |
+| `AnnouncementManager.php` | `app/SysAdmin/Announcement/Livewire/` | `extends Component`                         |
 | `RubricManager.php`       | `app/Assessment/Livewire/`     | `extends Component`                         |
 | `AttendanceManager.php`   | `app/Attendance/Livewire/`     | `extends Component` (with `WithPagination`) |
 | `RequirementManager.php`  | `app/Program/Livewire/`        | `extends Component`                         |

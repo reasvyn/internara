@@ -1,3 +1,7 @@
+---
+name: pulse-development
+---
+
 # Laravel Pulse Development Skill
 
 ## When to Activate

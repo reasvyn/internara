@@ -2,7 +2,7 @@
 
 > Last updated: 2026-06-06  
 > Changes: Aligned with the removal of the separate `certificate_templates` table (now inlined as
-> HTML layouts) and added dependency on Rapor PKL finalization.
+> HTML layouts) and added dependency on Final Grade Card finalization.
 
 Manages certificate generation, digital QR signatures, and credential tracking.
 
@@ -13,8 +13,8 @@ For complete technical reference including API, models, actions, and components,
 
 ## Key Principles
 
-- **Certificates Awarded Upon Rapor Finalization** — Certificates are issued only after the
-  student's final grade card (_Rapor PKL_) in the Reports module is finalized and locked.
+- **Certificates Awarded Upon Final Grade Finalization** — Certificates are issued only after the
+  student's final grade card in the Reports module is finalized and locked.
 - **Embedded Layouts** — Certificate layouts ( portrait/landscape, background seals, text
   placeholders) are rendered dynamically and saved as frozen, immutable HTML snapshots within the
   certificate record. This ensures permanent, tamper-proof compliance.
@@ -28,7 +28,7 @@ For complete technical reference including API, models, actions, and components,
 
 The **Certification** module:
 
-- Consumes **Reports (`reports`)** to verify that a student's final Rapor PKL is finalized before
+- Consumes **Reports (`reports`)** to verify that a student's final Final Grade Card is finalized before
   allowing certificate issuance.
 - Consumes **User (`users`)** to identify the recipient student and the administrator who signed
   off.
@@ -38,7 +38,7 @@ The **Certification** module:
 
 ## Module Rules
 
-- **Rapor PKL Prerequisite:** A certificate cannot be issued unless the registration has a
+- **Final Grade Card Prerequisite:** A certificate cannot be issued unless the registration has a
   corresponding `finalized` Report card record.
 - **Revocation is Terminal:** Once revoked, a certificate's status is permanently updated to
   `revoked`, and its serial number is retired. Double revocation is idempotent.
@@ -56,7 +56,7 @@ The **Certification** module:
 
 ## Error Handling & Failure Modes
 
-- **Issuance Without Final Grade:** Issuing a certificate for a student whose Rapor PKL is pending
+- **Issuance Without Final Grade:** Issuing a certificate for a student whose Final Grade Card is pending
   or uncompiled is blocked with a `RejectedException`.
 - **Duplicate Issuance:** Re-issuing an active certificate for the same student registration returns
   a `ConflictException`.

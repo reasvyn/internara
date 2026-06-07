@@ -13,11 +13,11 @@ Manages certificate generation and credential tracking.
 
 ### Module Statistics
 
-- **Actions**: 3 business logic operations
+- **Actions**: 4 business logic operations
 - **Models**: 1 data entity (`Certificate`)
-- **Livewire Components**: 2 UI components
-- **Policies**: 1 authorization rules
-- **Submodules**: 1 module submodules
+- **Livewire Components**: 3 UI components
+- **Policies**: 1 authorization rule
+- **Submodules**: 1 module submodule
 
 ### Submodules
 
@@ -31,7 +31,7 @@ This module depends on:
 
 - **Core** (base classes)
 - **Enrollment** (registration records)
-- **Reports** (Rapor PKL finalization check)
+- **Reports** (Final Grade Card finalization check)
 - **User** (recipient and issuer details)
 
 ---
@@ -43,6 +43,7 @@ This module depends on:
 | `Certificate/Actions/IssueCertificateAction.php`      | `IssueCertificateAction`      | `BaseAction` |
 | `Certificate/Actions/BatchIssueCertificateAction.php` | `BatchIssueCertificateAction` | `BaseAction` |
 | `Certificate/Actions/RevokeCertificateAction.php`     | `RevokeCertificateAction`     | `BaseAction` |
+| `Certificate/Actions/CreateCertificateTemplateAction.php` | `CreateCertificateTemplateAction` | `BaseAction` |
 
 ---
 
@@ -59,15 +60,16 @@ This module depends on:
 | File                                           | Component             | Extends             |
 | ---------------------------------------------- | --------------------- | ------------------- |
 | `Certificate/Livewire/CertificateList.php`     | `CertificateList`     | `BaseRecordManager` |
-| `Certificate/Livewire/StudentCertificates.php` | `StudentCertificates` | `Component`         |
+| `Certificate/Livewire/StudentCertificates.php`      | `StudentCertificates`      | `Component`         |
+| `Certificate/Livewire/CertificateTemplateManager.php` | `CertificateTemplateManager` | `Component`         |
 
 ---
 
 ## Authorization Policies
 
 | File                                         | Policy              |
-| -------------------------------------------- | ------------------- | ------------ |
-| `Certificate/Policies/CertificatePolicy.php` | `CertificatePolicy` | `BasePolicy` |
+| -------------------------------------------- | ------------------- |
+| `Certificate/Policies/CertificatePolicy.php` | `CertificatePolicy` |
 
 ---
 

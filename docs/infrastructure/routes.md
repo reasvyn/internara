@@ -1,7 +1,7 @@
 # Routes
 
-> Last updated: 2026-06-06 Changes: Updated middleware paths for Setup extraction, route file count
-> to 17
+> Last updated: 2026-06-07 Changes: Updated middleware paths for Setup extraction, route file count
+> to 18
 
 ## Philosophy
 
@@ -14,7 +14,7 @@ which module owns which route. Splitting by module means you find a registration
 
 ## Architecture
 
-The master file `routes/web.php` `require`s 17 module route files (Core and Shared have no routes).
+The master file `routes/web.php` `require`s 18 module route files (Core and Shared have no routes).
 Load order matters: if two files register the same route name, the later one wins.
 
 Additional route files exist outside `web/`: `console.php` (Artisan commands) and `ai.php` (model/AI
@@ -42,7 +42,7 @@ The following middleware runs on every web request, in order:
 1. `web` (Laravel core) — session, CSRF, encryption, cookies
 2. `SecurityHeaders` — Content-Security-Policy, X-Frame-Options, Permissions-Policy
 3. `LogContext` — request tracing (request ID, session ID)
-4. **`RequireSetupAccessMiddleware`** (`app/Setup/Http/Middleware/RequireSetupAccessMiddleware.php`)
+4. **`RequireSetupAccessMiddleware`** (`app/Setup/Installation/Http/Middleware/RequireSetupAccessMiddleware.php`)
    — redirects unauthenticated visitors to `/setup` when the system has not been installed yet.
    Allows bypass for Livewire subrequests and the `/setup` route itself.
 5. `SetLocaleMiddleware` (`app/Settings/Http/Middleware/SetLocaleMiddleware.php`) — language
@@ -68,7 +68,7 @@ These middleware are applied per-route or per-group:
 
 | Alias             | Class                                                                                       | Applied To                                                                 | Purpose                                                                             |
 | ----------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `setup.protected` | `ProtectSetupRouteMiddleware` (`app/Setup/Http/Middleware/ProtectSetupRouteMiddleware.php`) | Routes in `routes/web/setup.php`                                           | Token-gates the setup wizard, rate-limits access, self-destructs after installation |
+| `setup.protected` | `ProtectSetupRouteMiddleware` (`app/Setup/Installation/Http/Middleware/ProtectSetupRouteMiddleware.php`) | Routes in `routes/web/setup.php`                                           | Token-gates the setup wizard, rate-limits access, self-destructs after installation |
 | `guest`           | Laravel core                                                                                | Login, register, forgot-password                                           | Blocks authenticated users                                                          |
 | `auth`            | Laravel core                                                                                | Most application routes                                                    | Requires authenticated session                                                      |
 | `auth.throttle`   | `AuthThrottleMiddleware`                                                                    | All auth routes (login, register, forgot/reset password, confirm password) | Global rate limit (30 requests/min/IP) across all auth endpoints                    |

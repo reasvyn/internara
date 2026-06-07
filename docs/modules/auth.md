@@ -61,7 +61,7 @@ auth-specific data (activation tokens, recovery codes) within its own models.
 
 ### Actions & Business Logic
 
-- **13** actions across all submodules
+- **10** actions across all submodules
 - Login validation, password reset, account recovery, super admin management
 
 ### Data & Persistence
@@ -71,7 +71,7 @@ auth-specific data (activation tokens, recovery codes) within its own models.
 
 ### User Interface
 
-- **7** Livewire components
+- **8** Livewire components
 - Login page, activation form, password forms, recovery slip UI
 
 ### Authorization
