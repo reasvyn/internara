@@ -92,3 +92,16 @@ test('wizard proceeds through all steps and completes setup', function () {
 
     expect(strlen($test->get('recoveryKey')))->toBe(64);
 });
+
+test('goToStep does nothing for unknown step key', function () {
+    Livewire::test(SetupWizard::class)
+        ->call('goToStep', 'nonexistent')
+        ->assertSet('currentStep', 1);
+});
+
+test('goToStep allows moving to completed step', function () {
+    Livewire::test(SetupWizard::class)
+        ->assertSet('currentStep', 1)
+        ->call('goToStep', 'welcome')
+        ->assertSet('currentStep', 1);
+});

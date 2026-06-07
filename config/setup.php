@@ -77,8 +77,6 @@ return [
 
     'defaults' => [
         'admin_name' => 'Administrator',
-        'super_admin_default_name' => 'Administrator',
-        'recovery_admin_name' => 'Administrator',
         'admin_username' => 'superadmin',
         'username_max_length' => 20,
     ],
@@ -93,7 +91,6 @@ return [
         'rate_limit_attempts' => 20,
         'rate_limit_decay_seconds' => 60,
         'finalization_window_seconds' => 30,
-        'finalization_window_minutes' => 0.5,
     ],
 
     /*

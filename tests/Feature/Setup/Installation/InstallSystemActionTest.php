@@ -69,3 +69,26 @@ test('install system action throws runtime exception if audit fails', function (
         'System audit check failed',
     );
 });
+
+test('install system action accepts pre-built report and skips auditor', function () {
+    $passingCheck = new AuditCheck(
+        category: AuditCategory::REQUIREMENTS,
+        nameKey: 'php_version',
+        status: AuditStatus::PASS,
+        messageKey: 'php_version_pass',
+    );
+    $report = new AuditReport([$passingCheck]);
+
+    $auditorMock = Mockery::mock(EnvironmentAuditor::class);
+    $auditorMock->shouldNotReceive('audit');
+
+    $provisionerMock = Mockery::mock(SystemProvisioner::class);
+    $provisionerMock->shouldReceive('executeAll')->once()->with(false);
+
+    $generateTokenAction = app(GenerateSetupTokenAction::class);
+
+    $action = new InstallSystemAction($auditorMock, $provisionerMock, $generateTokenAction);
+    $result = $action->execute(report: $report);
+
+    expect($result)->toBeInstanceOf(SetupTokenData::class);
+});

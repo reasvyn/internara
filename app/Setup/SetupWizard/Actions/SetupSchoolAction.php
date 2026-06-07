@@ -10,6 +10,16 @@ use Illuminate\Support\Facades\Validator;
 
 final class SetupSchoolAction extends BaseAction
 {
+    private const array SCHOOL_FIELDS = [
+        'name' => 'school.name',
+        'institutional_code' => 'school.institutional_code',
+        'email' => 'school.email',
+        'address' => 'school.address',
+        'phone' => 'school.phone',
+        'website' => 'school.website',
+        'principal_name' => 'school.principal_name',
+    ];
+
     public function execute(array $data): void
     {
         Validator::validate($data, [
@@ -23,43 +33,17 @@ final class SetupSchoolAction extends BaseAction
         ]);
 
         $this->transaction(function () use ($data) {
-            Settings::set([
-                'school.name' => [
-                    'value' => $data['name'],
+            $payload = [];
+
+            foreach (self::SCHOOL_FIELDS as $field => $key) {
+                $payload[$key] = [
+                    'value' => $data[$field] ?? '',
                     'group' => 'school',
                     'type' => 'string',
-                ],
-                'school.institutional_code' => [
-                    'value' => $data['institutional_code'],
-                    'group' => 'school',
-                    'type' => 'string',
-                ],
-                'school.email' => [
-                    'value' => $data['email'],
-                    'group' => 'school',
-                    'type' => 'string',
-                ],
-                'school.address' => [
-                    'value' => $data['address'] ?? '',
-                    'group' => 'school',
-                    'type' => 'string',
-                ],
-                'school.phone' => [
-                    'value' => $data['phone'] ?? '',
-                    'group' => 'school',
-                    'type' => 'string',
-                ],
-                'school.website' => [
-                    'value' => $data['website'] ?? '',
-                    'group' => 'school',
-                    'type' => 'string',
-                ],
-                'school.principal_name' => [
-                    'value' => $data['principal_name'] ?? '',
-                    'group' => 'school',
-                    'type' => 'string',
-                ],
-            ]);
+                ];
+            }
+
+            Settings::set($payload);
 
             $this->log('school_setup_completed', null, [
                 'name' => $data['name'],

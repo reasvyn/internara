@@ -1,8 +1,11 @@
 # Setup — Technical Reference
 
-> Last updated: 2026-06-06  
-> Changes: Refactored the Setup module into two submodules: `Installation` and `SetupWizard`.
-> Replaced old namespaces, directories, and registered command paths.
+> Last updated: 2026-06-07  
+> Changes: TYPE_MAP constant in SetupEntity::update(), Wizard STEP_KEYS constant, extracted
+> handleUrlOption()/validateCurrentStep() in SetupInstallCommand, inline isCriticalCategory(),
+> removed redundant null check in ValidateSetupTokenAction, mapped Settings::set in
+> SetupSchoolAction, removed dead config keys (super_admin_default_name, recovery_admin_name,
+> finalization_window_minutes). Added SetupInternshipActionTest and SetupEntityUpdateTypeTest.
 
 Detailed structural and implementation reference for the **Setup** module.
 
@@ -49,6 +52,8 @@ app/Setup/
     ├── Actions/
     │   ├── SetupSchoolAction.php
     │   ├── SetupDepartmentAction.php
+    │   ├── SetupSuperAdminAction.php
+    │   ├── SetupInternshipAction.php
     │   └── FinalizeSetupAction.php
     ├── Events/
     │   └── SetupFinalized.php

@@ -11,6 +11,16 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class SetupEntity extends BaseEntity
 {
+    private const array TYPE_MAP = [
+        'is_installed' => 'boolean',
+        'completed_steps' => 'json',
+        'install_token' => 'string',
+        'token_expires_at' => 'datetime',
+        'install_recovery_key' => 'string',
+        'token_version' => 'integer',
+        'updated_at' => 'datetime',
+    ];
+
     public function __construct(
         private bool $dbInstalled,
         private ?string $setupToken,
@@ -58,22 +68,10 @@ final readonly class SetupEntity extends BaseEntity
         $payload = [];
 
         foreach ($attributes as $key => $value) {
-            $type = match ($key) {
-                'is_installed' => 'boolean',
-                'completed_steps' => 'json',
-                'install_token' => 'string',
-                'token_expires_at' => 'datetime',
-                'install_recovery_key' => 'string',
-                'token_version' => 'integer',
-                'updated_at' => 'datetime',
-                default => is_bool($value)
-                    ? 'boolean'
-                    : (is_array($value)
-                        ? 'json'
-                        : (is_int($value)
-                            ? 'integer'
-                            : 'string')),
-            };
+            $type = self::TYPE_MAP[$key]
+                ?? (is_bool($value) ? 'boolean'
+                    : (is_array($value) ? 'json'
+                        : (is_int($value) ? 'integer' : 'string')));
 
             $payload["setup.{$key}"] = [
                 'value' => $value,

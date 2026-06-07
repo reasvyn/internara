@@ -20,6 +20,16 @@ use Livewire\Component;
 #[Layout('setup.layouts.setup')]
 class SetupWizard extends Component
 {
+    private const array STEP_KEYS = [
+        'welcome',
+        'account',
+        'school',
+        'department',
+        'internship',
+        'finalize',
+        'complete',
+    ];
+
     public int $currentStep = 1;
 
     public array $audit = [];
@@ -190,23 +200,27 @@ class SetupWizard extends Component
             return;
         }
 
-        if ($this->currentStep === 2) {
-            $this->superAdminForm->validate();
-        }
-
-        if ($this->currentStep === 3) {
-            $this->schoolForm->validate();
-        }
-
-        if ($this->currentStep === 4) {
-            $this->departmentForm->validate();
-        }
-
-        if ($this->currentStep === 5 && $this->internshipForm->isFilled()) {
-            $this->internshipForm->validate();
-        }
+        $this->validateCurrentStep();
 
         $this->currentStep++;
+    }
+
+    private function validateCurrentStep(): void
+    {
+        match ($this->currentStep) {
+            2 => $this->superAdminForm->validate(),
+            3 => $this->schoolForm->validate(),
+            4 => $this->departmentForm->validate(),
+            5 => $this->validateInternshipStep(),
+            default => null,
+        };
+    }
+
+    private function validateInternshipStep(): void
+    {
+        if ($this->internshipForm->isFilled()) {
+            $this->internshipForm->validate();
+        }
     }
 
     public function prevStep(): void
@@ -218,16 +232,7 @@ class SetupWizard extends Component
 
     public function goToStep(string $stepKey): void
     {
-        $stepKeys = config('setup.wizard.step_keys', [
-            'welcome',
-            'account',
-            'school',
-            'department',
-            'internship',
-            'finalize',
-            'complete',
-        ]);
-        $stepIndex = array_search($stepKey, $stepKeys, true);
+        $stepIndex = array_search($stepKey, self::STEP_KEYS, true);
 
         if ($stepIndex === false) {
             return;
@@ -315,20 +320,10 @@ class SetupWizard extends Component
 
     public function render(): View
     {
-        $stepKeys = config('setup.wizard.step_keys', [
-            'welcome',
-            'account',
-            'school',
-            'department',
-            'internship',
-            'finalize',
-            'complete',
-        ]);
-
         return view('setup.setup-wizard.setup-wizard', [
             'appName' => AppInfo::get('name', config('app.name')),
             'appVersion' => AppInfo::version(),
-            'stepKeys' => $stepKeys,
+            'stepKeys' => self::STEP_KEYS,
         ]);
     }
 }

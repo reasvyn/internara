@@ -11,7 +11,7 @@ use App\Setup\Installation\Console\Commands\Traits\InteractsWithInstallerCli;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 
-class SetupResetTokenCommand extends Command
+final class SetupResetTokenCommand extends Command
 {
     use InteractsWithInstallerCli;
 
