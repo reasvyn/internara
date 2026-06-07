@@ -1,7 +1,7 @@
 # Shared — Technical Reference
 
-> Last updated: 2026-06-05 Changes: Created shared module reference containing detailed class
-> mappings, namespaces, and namespaces migration out of Core
+> Last updated: 2026-06-07 Changes: Added comprehensive test coverage for Data, Enums, Livewire, and
+> Support classes; updated test statistics and added new test file listing
 
 Detailed structural and implementation reference for the **Shared** (cross-module) components.
 
@@ -21,12 +21,14 @@ across multiple business modules.
 - **Livewire Components**: 2 + 2 concerns (`LangSwitcher`, `ThemeSwitcher`, `WithSorting`,
   `WithRecordSelection`)
 - **Policies Concerns**: 2 (`AuthorizesRoles`, `AuthorizesOwnership`)
-- **Support Classes**: 9 (`CacheKeys`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`,
-  `HasModelStatuses`, `PasswordRules`, `PiiMasker`, `Integrity`)
+- **Support Classes**: 9 + 1 helpers file:
+  - Classes: `CacheKeys`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`,
+    `HasModelStatuses`, `PasswordRules`, `PiiMasker`, `Integrity`
+  - Helpers: `helpers.php` (`setting()`, `brand()`, `app_info()`)`
 - **Settings/Support/** (cross-reference): `Locale`, `Theme` — localization & dynamic theming
 - **Views**: 2 (`resources/views/livewire/lang-switcher.blade.php`,
   `resources/views/livewire/theme-switcher.blade.php`)
-- **Tests**: 11 unit/feature tests under `tests/{Feature,Unit}/{Component}/`
+- **Tests**: 25 unit/feature tests under `tests/{Feature,Unit}/{Component}/`
 
 ---
 
@@ -149,16 +151,17 @@ app/
 │   └── Concerns/
 │       ├── AuthorizesOwnership.php
 │       └── AuthorizesRoles.php
-└── Support/
-    ├── CacheKeys.php
-    ├── Color.php
-    ├── CsvHandler.php
-    ├── Environment.php
-    ├── HandlesActionErrors.php
-    ├── HasModelStatuses.php
-    ├── Integrity.php
-    ├── PasswordRules.php
-    └── PiiMasker.php
+    └── Support/
+        ├── CacheKeys.php
+        ├── Color.php
+        ├── CsvHandler.php
+        ├── Environment.php
+        ├── HandlesActionErrors.php
+        ├── HasModelStatuses.php
+        ├── Integrity.php
+        ├── PasswordRules.php
+        ├── PiiMasker.php
+        └── helpers.php
 ```
 
 ---
@@ -189,5 +192,6 @@ This module integrates with the system across the following directories and reso
 - **Routing (`routes/`)**: None (shared across all routing tables)
 - **Views (`views/`)**: Blade templates and layouts are in
   [resources/views/livewire/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/livewire/)
-- **Testing (`tests/`)**: Unit `tests/Unit/Support/`, Unit `tests/Unit/Policies/`, Feature
-  `tests/Feature/Exceptions/`
+- **Testing (`tests/`)**: Unit `tests/Unit/Data/`, Unit `tests/Unit/Enums/`, Unit
+  `tests/Unit/Support/`, Unit `tests/Unit/Livewire/`, Unit `tests/Unit/Livewire/Concerns/`, Unit
+  `tests/Unit/Policies/`, Feature `tests/Feature/Exceptions/`
