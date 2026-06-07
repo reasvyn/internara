@@ -1,24 +1,30 @@
 # Module Documentation Index
 
-> Last updated: 2026-06-06
-> Changes: Added Settings module to module index; updated total module count to 19
+> Last updated: 2026-06-06 Changes: Added Settings module to module index; updated total module
+> count to 19
 
-Complete index of module documentation for the Internara internship management system. Each module manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire components.
+Complete index of module documentation for the Internara internship management system. Each module
+manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire
+components.
 
 ---
 
 ## Documentation Structure
 
 Each module has two files:
+
 - **`{module}.md`** — Business overview, principles, context, and rules
-- **`{module}-reference.md`** — Technical API reference, file organization, and implementation details
+- **`{module}-reference.md`** — Technical API reference, file organization, and implementation
+  details
 
 ---
 
 ## Core Modules
 
 ### 1. Core — Foundation & Infrastructure
-**Purpose:** Foundational base classes, interfaces, abstract exception structures, and request-level middleware
+
+**Purpose:** Foundational base classes, interfaces, abstract exception structures, and request-level
+middleware
 
 - Overview: [core.md](core.md)
 - Reference: [core-reference.md](core-reference.md)
@@ -28,17 +34,22 @@ Each module has two files:
 ---
 
 ### 1b. Shared — Cross-Cutting Components
-**Purpose:** Reusable helper utilities, concrete exceptions, common DTOs, enums, global UI components, and helper traits
+
+**Purpose:** Reusable helper utilities, concrete exceptions, common DTOs, enums, global UI
+components, and helper traits
 
 - Overview: [shared.md](shared.md)
 - Reference: [shared-reference.md](shared-reference.md)
 
-**Key Concepts:** CacheKeys, CsvHandler, concrete Exceptions, global enums, LangSwitcher, ThemeSwitcher
+**Key Concepts:** CacheKeys, CsvHandler, concrete Exceptions, global enums, LangSwitcher,
+ThemeSwitcher
 
 ---
 
 ### 2. Auth — Authentication & Authorization
-**Purpose:** Login, password management, account activation, recovery, RBAC, and super admin integrity
+
+**Purpose:** Login, password management, account activation, recovery, RBAC, and super admin
+integrity
 
 - Overview: [auth.md](auth.md)
 - Reference: [auth-reference.md](auth-reference.md)
@@ -50,6 +61,7 @@ Each module has two files:
 ---
 
 ### 3. User — Identity & Profiles
+
 **Purpose:** User profiles, notifications, account status, and dashboards
 
 - Overview: [user.md](user.md)
@@ -62,6 +74,7 @@ Each module has two files:
 ---
 
 ### 4. SysAdmin — System Administration
+
 **Purpose:** User administration, announcements, compliance, audit logging, and health monitoring
 
 - Overview: [sysadmin.md](sysadmin.md)
@@ -74,12 +87,14 @@ Each module has two files:
 ---
 
 ### 4b. Setup — Installation & Provisioning
-**Purpose:** One-time technical installation, environment check, database provisioning, and setup token lifecycle management
+
+**Purpose:** One-time technical installation, environment check, database provisioning, and setup
+token lifecycle management
 
 - Overview: [setup.md](setup.md)
 - Reference: [setup-reference.md](setup-reference.md)
 
-**Key Concepts:** SetupWizard, SetupState, EnvironmentAuditor, SystemProvisioner
+**Key Concepts:** SetupWizard, SetupEntity, EnvironmentAuditor, SystemProvisioner
 
 **Dependencies:** Core, Academics
 
@@ -88,7 +103,9 @@ Each module has two files:
 ---
 
 ### 4c. Settings — System Configuration & Branding
-**Purpose:** System-wide configuration management — brand identity, color schemes, localization, mail services, and global feature toggles
+
+**Purpose:** System-wide configuration management — brand identity, color schemes, localization,
+mail services, and global feature toggles
 
 - Overview: [settings.md](settings.md)
 - Reference: [settings-reference.md](settings-reference.md)
@@ -104,6 +121,7 @@ Each module has two files:
 ## Academic Modules
 
 ### 5. Academics — Educational Structure
+
 **Purpose:** Departments and academic calendar management
 
 - Overview: [academics.md](academics.md)
@@ -118,6 +136,7 @@ Each module has two files:
 ---
 
 ### 6. Program — Internship Programs
+
 **Purpose:** Internship/practicum programs, timelines, and cohort student groupings (groups)
 
 - Overview: [program.md](program.md)
@@ -132,6 +151,7 @@ Each module has two files:
 ---
 
 ### 7. Enrollment — Student Placement
+
 **Purpose:** Student registration, placement slot assignment, and change requests
 
 - Overview: [enrollment.md](enrollment.md)
@@ -148,6 +168,7 @@ Each module has two files:
 ## Evaluation & Assessment Modules
 
 ### 8. Assessment — Evaluation Framework
+
 **Purpose:** Rubrics, assessments, and scoring frameworks
 
 - Overview: [assessment.md](assessment.md)
@@ -162,6 +183,7 @@ Each module has two files:
 ---
 
 ### 9. Evaluation — Performance Feedback
+
 **Purpose:** Supervisor and teacher evaluations of students
 
 - Overview: [evaluation.md](evaluation.md)
@@ -176,6 +198,7 @@ Each module has two files:
 ---
 
 ### 10. Assignment — Course Work
+
 **Purpose:** Assignment management and submission tracking
 
 - Overview: [assignment.md](assignment.md)
@@ -190,6 +213,7 @@ Each module has two files:
 ## Tracking & Activity Modules
 
 ### 11. Journals — Student Activity Tracking
+
 **Purpose:** Logbooks, attendance, schedules, and industry assessments
 
 - Overview: [journals.md](journals.md)
@@ -204,6 +228,7 @@ Each module has two files:
 ---
 
 ### 12. Guidance — Mentoring & Supervision
+
 **Purpose:** Mentor relationships coordination and private field supervision logs
 
 - Overview: [guidance.md](guidance.md)
@@ -216,6 +241,7 @@ Each module has two files:
 ---
 
 ### 13. Incident — Issue Tracking
+
 **Purpose:** Incident reports and workplace concern documentation
 
 - Overview: [incident.md](incident.md)
@@ -230,6 +256,7 @@ Each module has two files:
 ## Supporting Modules
 
 ### 14. Partners — Industrial Partners
+
 **Purpose:** Company management and partnership agreements
 
 - Overview: [partners.md](partners.md)
@@ -244,6 +271,7 @@ Each module has two files:
 ---
 
 ### 15. Certification — Credentials
+
 **Purpose:** Certificate generation and credential management
 
 - Overview: [certification.md](certification.md)
@@ -256,6 +284,7 @@ Each module has two files:
 ---
 
 ### 16. Reports — Student Grade Card (Rapor PKL)
+
 **Purpose:** Final student grade compilation, score aggregation, and coordinator sign-off
 
 - Overview: [reports.md](reports.md)
@@ -268,7 +297,9 @@ Each module has two files:
 ---
 
 ### 17. Document — Templates & Handbooks
-**Purpose:** Official document templates, correspondence generation (surat menyurat), policy handbooks, and compliance acknowledgements
+
+**Purpose:** Official document templates, correspondence generation (surat menyurat), policy
+handbooks, and compliance acknowledgements
 
 - Overview: [document.md](document.md)
 - Reference: [document-reference.md](document-reference.md)
@@ -285,11 +316,14 @@ Each module has two files:
 
 **User Management**: [user.md](user.md) → [sysadmin.md](sysadmin.md)
 
-**Academic Setup**: [academics.md](academics.md) → [program.md](program.md) → [enrollment.md](enrollment.md)
+**Academic Setup**: [academics.md](academics.md) → [program.md](program.md) →
+[enrollment.md](enrollment.md)
 
-**Evaluation**: [assignment.md](assignment.md) → [assessment.md](assessment.md) → [evaluation.md](evaluation.md) → [certification.md](certification.md)
+**Evaluation**: [assignment.md](assignment.md) → [assessment.md](assessment.md) →
+[evaluation.md](evaluation.md) → [certification.md](certification.md)
 
-**Activity Tracking**: [enrollment.md](enrollment.md) → [journals.md](journals.md) → [guidance.md](guidance.md)
+**Activity Tracking**: [enrollment.md](enrollment.md) → [journals.md](journals.md) →
+[guidance.md](guidance.md)
 
 **Reporting**: [reports.md](reports.md)
 
@@ -299,19 +333,23 @@ Each module has two files:
 
 **Super Admin**: [sysadmin.md](sysadmin.md), [user.md](user.md)
 
-**Academics**: [academics.md](academics.md), [program.md](program.md), [assignment.md](assignment.md)
+**Academics**: [academics.md](academics.md), [program.md](program.md),
+[assignment.md](assignment.md)
 
-**Supervisor**: [program.md](program.md), [enrollment.md](enrollment.md), [journals.md](journals.md), [guidance.md](guidance.md)
+**Supervisor**: [program.md](program.md), [enrollment.md](enrollment.md),
+[journals.md](journals.md), [guidance.md](guidance.md)
 
 **Teacher**: [user.md](user.md), [evaluation.md](evaluation.md), [incident.md](incident.md)
 
-**Student**: [enrollment.md](enrollment.md), [journals.md](journals.md), [assignment.md](assignment.md), [guidance.md](guidance.md)
+**Student**: [enrollment.md](enrollment.md), [journals.md](journals.md),
+[assignment.md](assignment.md), [guidance.md](guidance.md)
 
 ---
 
 ## Implementation Guidelines
 
 ### Creating New Features
+
 1. Identify which module(s) own the feature
 2. Review `{module}.md` for business rules
 3. Check `{module}-reference.md` for API structure
@@ -319,12 +357,14 @@ Each module has two files:
 5. Create Action, Model, Policy, and tests
 
 ### Extending Modules
+
 1. Understand current submodule boundaries
 2. Add features to existing submodules when possible
 3. Create new submodules only for distinct business concepts
 4. Update documentation after changes
 
 ### Cross-Module Communication
+
 1. One module depends on another
 2. Use dependency injection in Actions
 3. Emit events for loose coupling
@@ -334,25 +374,26 @@ Each module has two files:
 
 ## Architecture Overview
 
-All 19 modules are vertical slices cross-cutting the 12-layer architecture defined in [architecture.md](../architecture.md):
+All 19 modules are vertical slices cross-cutting the 12-layer architecture defined in
+[architecture.md](../architecture.md):
 
-| Layer | Name | Description |
-|---|---|---|
-| 1 | Infrastructure | PHP 8.4, Laravel 13, Composer/Spatie packages, npm assets |
-| 2 | Persistence | Database (SQLite/MySQL), 60 migrations, config, media library, cache, queue |
-| 3 | Core Contracts | LabelEnum, StatusEnum, ColorableEnum, exception hierarchy |
-| 4 | Core Base Classes | BaseModel, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, FormRequest, Data, SmartLogger |
-| 5 | Module Models | Eloquent models (50+), UUID PKs, factories, seeders |
-| 6 | Module Rules | Enums, Entities (final readonly), Data DTOs |
-| 7 | Business Ops | Command Actions (mutations), Read Actions (queries), Process Actions (orchestration) |
-| 8 | Authorization | Policies (36), RBAC (5 roles + 2 functional), spatie/permission |
-| 9 | Communication | Events, Listeners, Notifications, Console Commands |
-| 10 | HTTP Layer | Controllers, Middleware, 18 module route files |
-| 11 | UI / Presentation | Livewire 4 components, Blade templates, maryUI + DaisyUI + Tailwind CSS v4 |
-| 12 | Business Modules | Each module is a vertical slice of layers 1–11 |
+| Layer | Name              | Description                                                                                      |
+| ----- | ----------------- | ------------------------------------------------------------------------------------------------ |
+| 1     | Infrastructure    | PHP 8.4, Laravel 13, Composer/Spatie packages, npm assets                                        |
+| 2     | Persistence       | Database (SQLite/MySQL), 41 migrations, config, media library, cache, queue                      |
+| 3     | Core Contracts    | LabelEnum, StatusEnum, ColorableEnum, exception hierarchy                                        |
+| 4     | Core Base Classes | BaseModel, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, FormRequest, Data, SmartLogger |
+| 5     | Module Models     | Eloquent models (38+), UUID PKs, factories, seeders                                              |
+| 6     | Module Rules      | Enums, Entities (final readonly), Data DTOs                                                      |
+| 7     | Business Ops      | Command Actions (mutations), Read Actions (queries), Process Actions (orchestration)             |
+| 8     | Authorization     | Policies (30), RBAC (5 roles + 2 functional), spatie/permission                                  |
+| 9     | Communication     | Events, Listeners, Notifications, Console Commands                                               |
+| 10    | HTTP Layer        | Controllers, Middleware, 18 module route files                                                   |
+| 11    | UI / Presentation | Livewire 4 components, Blade templates, maryUI + DaisyUI + Tailwind CSS v4                       |
+| 12    | Business Modules  | Each module is a vertical slice of layers 1–11                                                   |
 
 Each module is a vertical slice cross-cutting all layers.
 
 ---
 
-*Last synchronized with architecture at 2026-06-05*
+_Last synchronized with architecture at 2026-06-05_
