@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\File;
 
-class SetupInstallCommand extends Command
+final class SetupInstallCommand extends Command
 {
     use InteractsWithInstallerCli;
 
@@ -158,7 +158,7 @@ class SetupInstallCommand extends Command
         $failed = array_values(
             array_filter(
                 $report->checks,
-                fn ($check) => $this->isCriticalCategory($check->category) &&
+                fn ($check) => $check->category->isCritical() &&
                     $check->status === AuditStatus::FAIL,
             ),
         );
@@ -180,13 +180,7 @@ class SetupInstallCommand extends Command
             return self::SUCCESS;
         }
 
-        if ($url = $this->option('url')) {
-            $this->setAppUrl($url);
-            $this->line('  <fg=green>'.__('setup.cli.app_url_set', ['url' => $url]).'</>');
-        } elseif ($this->isLocalhostUrl()) {
-            $this->components->warn(__('setup.cli.app_url_warning'));
-            $this->line('  '.__('setup.cli.app_url_hint'));
-        }
+        $this->handleUrlOption();
 
         if (! $this->option('force') && ! $this->confirmProceed()) {
             $this->line('  <fg=red>'.__('setup.cli.aborted').'</>');
@@ -220,7 +214,7 @@ class SetupInstallCommand extends Command
             foreach ($categoryChecks as $check) {
                 $this->components->twoColumnDetail(
                     __("setup.checks.{$check->nameKey}", $check->nameParams),
-                    $this->formatStatusWithMessage(
+                    self::formatStatusWithMessage(
                         $check->status,
                         __("setup.checks.{$check->messageKey}", $check->messageParams),
                     ),
@@ -231,7 +225,7 @@ class SetupInstallCommand extends Command
         $this->newLine();
     }
 
-    private function formatStatusWithMessage(AuditStatus $status, string $message): string
+    private static function formatStatusWithMessage(AuditStatus $status, string $message): string
     {
         $color = match ($status) {
             AuditStatus::PASS => 'green',
@@ -242,14 +236,20 @@ class SetupInstallCommand extends Command
         return "<fg={$color}>{$message}</>";
     }
 
-    private function isCriticalCategory(AuditCategory $category): bool
-    {
-        return $category->isCritical();
-    }
-
     protected function confirmProceed(): bool
     {
         return $this->confirm(__('setup.cli.proceed_confirm'), true);
+    }
+
+    private function handleUrlOption(): void
+    {
+        if ($url = $this->option('url')) {
+            $this->setAppUrl($url);
+            $this->line('  <fg=green>'.__('setup.cli.app_url_set', ['url' => $url]).'</>');
+        } elseif ($this->isLocalhostUrl()) {
+            $this->components->warn(__('setup.cli.app_url_warning'));
+            $this->line('  '.__('setup.cli.app_url_hint'));
+        }
     }
 
     protected function displaySuccess(string $token, Carbon $expiresAt): void

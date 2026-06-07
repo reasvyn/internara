@@ -1,7 +1,11 @@
 # Setup — Documentation Overview
 
-> Last updated: 2026-06-06 Changes: Refactored Setup module to divide technical components into
-> Installation and SetupWizard submodules.
+> Last updated: 2026-06-07
+> Changes: Comprehensive refactoring: SetupEntity TYPE_MAP for type resolution, Wizard STEP_KEYS
+> constant, extracted `handleUrlOption()` & `validateCurrentStep()`, removed redundant null check in
+> ValidateSetupTokenAction, mapped SetupSchoolAction Settings::set, removed dead config keys, added
+> SetupInternshipAction + SetupEntityUpdateType tests. SystemProvisionerTest/InstallSystemActionTest
+> already existed.
 
 Handles one-time technical installation, system environment auditing, initial database seed
 provisioning (Roles, Academic Years), and the setup token lifecycle.

@@ -46,13 +46,8 @@ final class FinalizeSetupAction extends BaseAction
             $adminData,
             $internshipData,
             $stepsToComplete,
+            $state,
         ) {
-            $state = SetupEntity::get();
-
-            if ($state->isInstalled()) {
-                throw new RuntimeException('System is already installed.');
-            }
-
             $this->setupSchool->execute($schoolData);
 
             $department = $this->setupDept->execute($departmentData);

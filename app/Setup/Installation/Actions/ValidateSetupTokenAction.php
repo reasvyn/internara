@@ -24,14 +24,8 @@ final class ValidateSetupTokenAction extends BaseAction
                 throw new RuntimeException('Setup token has expired.');
             }
 
-            $storedToken = $state->setupToken();
-
-            if ($storedToken === null) {
-                throw new RuntimeException('Setup token is missing from the system.');
-            }
-
             try {
-                $decrypted = Crypt::decryptString($storedToken);
+                $decrypted = Crypt::decryptString($state->setupToken());
             } catch (\Throwable) {
                 throw new RuntimeException('Setup token is malformed or corrupted.');
             }
