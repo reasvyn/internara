@@ -1,7 +1,8 @@
 # Shared — Documentation Overview
 
-> Last updated: 2026-06-05 Changes: Created shared module overview to separate cross-cutting
-> utilities, DTOs, enums, exceptions, and global UI components from Core
+> Last updated: 2026-06-07 Changes: Comprehensive test coverage for all shared components; updated
+> test counts and quick reference sections; documented new test files for Data, Enums, Livewire, and
+> Support classes
 
 Cross-cutting utility classes, concrete exceptions, common DTOs, global UI components, and helper
 traits that are shared across all business modules but do not belong to core infrastructure or base
@@ -104,8 +105,11 @@ Shared has no submodules. It is organized into directories directly under `app/`
 
 ### Support & Helpers
 
-- **11** static support utilities managing formatting, locale selection, masking, and environment
-  configuration.
+- **9** static support utilities and traits managing formatting, caching, masking, CSV processing,
+  and environment configuration (`CacheKeys`, `Color`, `CsvHandler`, `Environment`,
+  `HandlesActionErrors`, `HasModelStatuses`, `PasswordRules`, `PiiMasker`, `Integrity`).
+- **1** helpers file (`helpers.php`) providing `setting()`, `brand()`, and `app_info()` global
+  functions.
 
 ---
 
