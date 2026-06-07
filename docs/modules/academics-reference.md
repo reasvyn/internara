@@ -1,8 +1,8 @@
 # Academics — Technical Reference
 
 > Last updated: 2026-06-06  
-> Changes: Removed the separate School submodule, models, actions, and policies. School metadata is
-> managed via SysAdmin settings.
+> Changes: Reduced School submodule to Entity + Livewire editor (no standalone model, actions, or
+> policies). School metadata is managed via the `settings` table.
 
 Detailed structural and implementation reference for the **Academics** module.
 
@@ -16,12 +16,13 @@ Manages academic majors (departments) and calendar years.
 
 - **Actions**: 8 business logic operations
 - **Models**: 2 data entities (`Department`, `AcademicYear`)
-- **Livewire Components**: 2 UI components
+- **Livewire Components**: 3 UI components
 - **Policies**: 2 authorization rules
-- **Submodules**: 2 module submodules
+- **Submodules**: 3 module submodules
 
 ### Submodules
 
+- `School`
 - `AcademicYear`
 - `Department`
 
@@ -65,6 +66,7 @@ This module depends on:
 
 | File                                            | Component             | Extends             |
 | ----------------------------------------------- | --------------------- | ------------------- |
+| `School/Livewire/SchoolEditor.php`              | `SchoolEditor`        | `Component`         |
 | `AcademicYear/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` |
 | `Department/Livewire/DepartmentManager.php`     | `DepartmentManager`   | `BaseRecordManager` |
 
@@ -84,6 +86,9 @@ This module depends on:
 ```
 app/Academics/
 ├──            ← Submodule roots
+│   ├── School/
+│   │   ├── Entities/
+│   │   └── Livewire/
 │   ├── AcademicYear/
 │   │   ├── Actions/
 │   │   ├── Models/
@@ -107,7 +112,7 @@ app/Academics/
 
 This module integrates with the system across the following directories and resources:
 
-- **Submodules**: `AcademicYear`, `Department`
+- **Submodules**: `School`, `AcademicYear`, `Department`
 - **Business Logic (`app/`)**: Located in
   [app/Academics/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Academics/)
 - **Routing (`routes/`)**:

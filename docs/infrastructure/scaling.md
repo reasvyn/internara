@@ -201,14 +201,13 @@ server {
 
 #### Phase E: Rate Limiting
 
-Update `config/rate-limiting.php` to use user-based limits (keyed by `user_id` instead of IP):
+Update the `RateLimiter::for()` calls in `app/Providers/AppServiceProvider.php` to use user-based limits (keyed by `user_id` instead of IP):
 
 ```php
-// config/rate-limiting.php
-'global' => [
-    'limit' => 500,
-    'key' => fn () => auth()->id() ?: request()->ip(),
-],
+// app/Providers/AppServiceProvider.php
+RateLimiter::for('global', function (Request $request) {
+    return Limit::perMinute(500)->by($request->user()?->id ?: $request->ip());
+});
 ```
 
 ---
@@ -419,27 +418,11 @@ Before scaling to a new tier, validate with load testing:
 
 ```bash
 # Install k6 (https://k6.io)
-# Run a basic smoke test
-k6 run --vus 10 --duration 30s tests/Load/BasicSmoke.js
+# Create a smoke test file (e.g. tests/Load/BasicSmoke.js) and run it:
+k6 run --vus 10 --duration 30s path/to/BasicSmoke.js
 
 # For Tier 3 validation:
-k6 run --vus 200 --duration 5m tests/Load/Tier3Validation.js
-```
-
-Create `tests/Load/BasicSmoke.js`:
-
-```javascript
-import http from 'k6/http'
-import { check, sleep } from 'k6'
-
-export default function () {
-    const res = http.get('https://your-module.com/login')
-    check(res, {
-        'login page loads': (r) => r.status === 200,
-        'load time < 500ms': (r) => r.timings.duration < 500,
-    })
-    sleep(1)
-}
+k6 run --vus 200 --duration 5m path/to/Tier3Validation.js
 ```
 
 ### Key Metrics to Track During Load Test

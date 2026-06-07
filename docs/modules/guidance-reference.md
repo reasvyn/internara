@@ -13,11 +13,11 @@ Manages teacher field supervision logs and mentoring relations coordinates.
 
 ### Module Statistics
 
-- **Actions**: 4 business logic operations
+- **Actions**: 2 business logic operations
 - **Models**: 1 data entity (`SupervisionLog`)
 - **Livewire Components**: 2 UI components
-- **Policies**: 1 authorization rules
-- **Submodules**: 1 module submodules
+- **Policies**: 1 authorization rule
+- **Submodules**: 1 module submodule
 
 ### Submodules
 
@@ -41,8 +41,6 @@ This module depends on:
 | ------------------------------------------------------- | ---------------------------- | ------------ |
 | `SupervisionLog/Actions/CreateSupervisionLogAction.php` | `CreateSupervisionLogAction` | `BaseAction` |
 | `SupervisionLog/Actions/VerifySupervisionLogAction.php` | `VerifySupervisionLogAction` | `BaseAction` |
-| `Actions/AssignMentorAction.php`                        | `AssignMentorAction`         | `BaseAction` |
-| `Actions/RemoveMentorAction.php`                        | `RemoveMentorAction`         | `BaseAction` |
 
 ---
 
@@ -58,8 +56,8 @@ This module depends on:
 
 | File                                                | Component               | Extends             |
 | --------------------------------------------------- | ----------------------- | ------------------- |
-| `SupervisionLog/Livewire/SupervisionLogManager.php` | `SupervisionLogManager` | `BaseRecordManager` |
-| `Livewire/MenteeViewer.php`                         | `MenteeViewer`          | `Component`         |
+| `SupervisionLog/Livewire/SupervisorLogManager.php` | `SupervisorLogManager` | `BaseRecordManager` |
+| `SupervisionLog/Livewire/SupervisionManager.php`   | `SupervisionManager`   | `Component`         |
 
 ---
 
@@ -75,17 +73,11 @@ This module depends on:
 
 ```
 app/Guidance/
-├── SupervisionLog/          ← Submodule root
-│   ├── Actions/
-│   ├── Models/
-│   ├── Policies/
-│   └── Livewire/
-├── Actions/                  ← Cross-submodule relations actions
-├── Http/
-├── Livewire/
-├── Types/
-├── Services/
-└── Support/
+└── SupervisionLog/          ← Submodule root
+    ├── Actions/
+    ├── Livewire/
+    ├── Models/
+    └── Policies/
 ```
 
 ---

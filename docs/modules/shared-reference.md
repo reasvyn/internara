@@ -21,8 +21,9 @@ across multiple business modules.
 - **Livewire Components**: 2 + 2 concerns (`LangSwitcher`, `ThemeSwitcher`, `WithSorting`,
   `WithRecordSelection`)
 - **Policies Concerns**: 2 (`AuthorizesRoles`, `AuthorizesOwnership`)
-- **Support Classes**: 11 (`CacheKeys`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`,
-  `HasModelStatuses`, `Locale`, `PasswordRules`, `PiiMasker`, `Theme`, `Integrity`)
+- **Support Classes**: 9 (`CacheKeys`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`,
+  `HasModelStatuses`, `PasswordRules`, `PiiMasker`, `Integrity`)
+- **Settings/Support/** (cross-reference): `Locale`, `Theme` — localization & dynamic theming
 - **Views**: 2 (`resources/views/livewire/lang-switcher.blade.php`,
   `resources/views/livewire/theme-switcher.blade.php`)
 - **Tests**: 11 unit/feature tests under `tests/{Feature,Unit}/{Component}/`
@@ -112,11 +113,11 @@ Located in `app/Support/`:
 | `Environment`         | Helper detecting if the system is running in staging, production, or developer environment.   |
 | `HandlesActionErrors` | Trait providing generic `try-catch-log-rethrow` for command action operations.                |
 | `HasModelStatuses`    | Utility managing statuses for historical columns.                                             |
-| `Locale`              | Helper managing localization codes, browser-detecting locale, and fallback settings.          |
 | `PasswordRules`       | Common password strength validation options.                                                  |
 | `PiiMasker`           | RegEx-based utility to redact sensitive student personal info from log outputs.               |
-| `Theme`               | Resolves database values to dynamic CSS properties for the custom brand colors.               |
 | `Integrity`           | Helper assessing composer config and security.                                                |
+
+> **Note:** `Locale` and `Theme` are located in `app/Settings/Support/` (Settings module), not in `app/Support/`.
 
 ---
 
@@ -156,10 +157,8 @@ app/
     ├── HandlesActionErrors.php
     ├── HasModelStatuses.php
     ├── Integrity.php
-    ├── Locale.php
     ├── PasswordRules.php
-    ├── PiiMasker.php
-    └── Theme.php
+    └── PiiMasker.php
 ```
 
 ---

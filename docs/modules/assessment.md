@@ -31,7 +31,7 @@ The **Assessment** module owns rubric definitions and student assessment records
 - Consumes **Enrollment (`registrations`)** to identify students and placements.
 - Consumes **User (`users`)** to verify teacher and supervisor evaluators.
 - Provides graded component scores to **Reports (`reports`)** to compile the Final Student Grade
-  Card (_Rapor PKL_).
+  Card.
 
 ---
 
@@ -59,10 +59,10 @@ The **Assessment** module owns rubric definitions and student assessment records
   indicators, weights, and maximum scores:
     ```json
     [
-        {
-            "competency": "Sikap Kerja",
-            "weight": 40,
-            "indicators": [{ "id": "ind_1", "name": "Disiplin", "max_score": 100, "weight": 50 }]
+{
+    "competency": "Work Attitude",
+    "weight": 40,
+    "indicators": [{ "id": "ind_1", "name": "Discipline", "max_score": 100, "weight": 50 }]
         }
     ]
     ```

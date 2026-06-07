@@ -1,3 +1,7 @@
+---
+name: feature-building
+---
+
 # Feature Building Skill
 
 ## When to Activate

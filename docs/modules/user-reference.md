@@ -13,9 +13,9 @@ Handles user profiles, notifications, account status management, and dashboards
 
 ### Module Statistics
 
-- **Actions**: 10 business logic operations
+- **Actions**: 14 business logic operations
 - **Models**: 3 data entities
-- **Livewire Components**: 9 UI components
+- **Livewire Components**: 11 UI components
 - **Policies**: 2 authorization rules
 - **Submodules**: 4 module submodules
 
@@ -124,7 +124,7 @@ app/User/
 
 This module integrates with the system across the following directories and resources:
 
-- **Submodules**: `AccountStatus`, `Profile`, `Notification`, `Dashboard`
+- **Submodules**: `AccountStatus`, `Profile`, `Notifications`, `Dashboard`
 - **Business Logic (`app/`)**: Located in
   [app/User/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/User/)
 - **Routing (`routes/`)**:

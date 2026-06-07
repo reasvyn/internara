@@ -85,7 +85,7 @@ values:
 ```php
 $value = setting('app_name', 'Internara'); // with default fallback
 $value = setting('primary_color'); // returns null if missing
-setting(['app_name' => 'Internara Baru'], $cacheTtl); // write (optional TTL override)
+setting(['app_name' => 'My School'], $cacheTtl); // write (optional TTL override)
 ```
 
 | Feature | Behavior                                                      |

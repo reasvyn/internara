@@ -8,7 +8,7 @@ Detailed structural and implementation reference for the **Evaluation** module.
 
 ## Overview
 
-Manages supervisor and teacher evaluations of students
+Manages student evaluations of mentors, companies, and program quality
 
 ### Module Statistics
 
@@ -73,12 +73,7 @@ app/Evaluation/
 ├── Enums/
 ├── Livewire/
 ├── Models/
-├── Policies/
-├── Http/
-├── Livewire/
-├── Types/
-├── Services/
-└── Support/
+└── Policies/
 ```
 
 ---
@@ -87,7 +82,7 @@ app/Evaluation/
 
 This module integrates with the system across the following directories and resources:
 
-- **Submodules**: `Evaluation`
+- **Submodules**: None (flat)
 - **Business Logic (`app/`)**: Located in
   [app/Evaluation/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Evaluation/)
 - **Routing (`routes/`)**:

@@ -19,8 +19,8 @@ every other module depends on.
   BaseController, BaseFormRequest, BaseData, BaseEvent)
 - **Exceptions**: 6 files (base hierarchy: AppException tree + ModuleException tree, plus abstract
   layers and HasExceptionContext trait)
-- **Middleware**: 2 (SecurityHeaders, LogContext) — RequireSetupAccess is in Academics, SetLocale is
-  in SysAdmin
+- **Middleware**: 2 (SecurityHeaders, LogContext) — RequireSetupAccess is in Setup, SetLocale is
+  in Settings
 - **Support Classes**: 2 (SmartLogger, LangChecker)
 - **Models**: 2 (ActivityLog, BaseModel is abstract)
 - **Enums**: 0 (all system-wide concrete enums moved to Shared)
@@ -84,6 +84,7 @@ Located in `app/Core/Contracts/`:
 | `StatusEnum`         | State machine: `canTransitionTo()`, `isTerminal()`, `validTransitions()` | State machine enums (e.g., ProgramStatus, AccountStatus) |
 | `ColorableEnum`      | Provides CSS color variant (`color(): string`)                           | Enums with visual state representation                   |
 | `SendsNotifications` | Binds notification dispatch to `SendNotificationAction`                  | Notification-sending infrastructure                      |
+| `SettingsStore`      | Key-value store for runtime configuration                                | Settings module's `Setting` model                        |
 
 ---
 

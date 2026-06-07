@@ -14,10 +14,10 @@ admin integrity
 
 ### Module Statistics
 
-- **Actions**: 13 business logic operations
+- **Actions**: 10 business logic operations
 - **Models**: 2 data entities
-- **Livewire Components**: 7 UI components
-- **Policies**: 1 authorization rules
+- **Livewire Components**: 8 UI components
+- **Policies**: 1 authorization rule
 - **Submodules**: 6 module submodules
 
 ### Submodules

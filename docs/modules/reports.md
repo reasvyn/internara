@@ -1,10 +1,10 @@
 # Reports — Documentation Overview
 
 > Last updated: 2026-06-06  
-> Changes: Redefined module scope from document writing to Final Student Grade Cards (Rapor PKL),
+> Changes: Redefined module scope from document writing to Final Student Grade Cards (Final Grade Card),
 > aggregating supervisor, teacher, and exam grades.
 
-This module manages the student's Final Grade Card (_Rapor PKL_), which aggregates all assessment
+This module manages the student's Final Grade Card (_Final Grade Card_), which aggregates all assessment
 metrics at the end of the internship period and locks the student's final marks before certificate
 issuance.
 
@@ -20,7 +20,7 @@ For complete technical reference including API, models, actions, and components,
   $$\text{Final Grade} = (\text{Industry Supervisor Score} \times 40\%) + (\text{School Teacher Score} \times 20\%) + (\text{Exam/Presentation Score} \times 40\%)$$
 - **Immutable Results** — Once the report card is marked as `finalized`, it is signed off by the
   coordinator and locked. Further grade changes are blocked to preserve academic integrity.
-- **Certificate Trigger** — A finalized Rapor PKL record is the strict prerequisite that unlocks
+- **Certificate Trigger** — A finalized Final Grade Card record is the strict prerequisite that unlocks
   eligibility for certificate generation.
 - **Qualitative Feedback Registry** — Captures overall testimonial/notes from host companies to be
   printed on the back page of the final report sheet.
@@ -57,7 +57,7 @@ The **Reports** module provides data to:
 - **Finalization Constraint:** A report card cannot be finalized if any required grading component
   (supervisor score, teacher score, exam score) is missing, unless the teacher has activated the
   _Dual Mentor Fallback/Proxy_ bypass in the Assessment module.
-- **Finalized is Terminal:** Once a Rapor PKL is `finalized`, its scores are locked and immutable.
+- **Finalized is Terminal:** Once a Final Grade Card is `finalized`, its scores are locked and immutable.
   Any corrections require administrative override privileges.
 
 ---

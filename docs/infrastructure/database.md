@@ -52,7 +52,7 @@ Operational tables track the primary workflows: `internships`, `placements`, `re
 what happens during the internship lifecycle.
 
 Assessment, Grading & Certification tables handle evaluation and credentials: `rubrics`,
-`assessments`, `evaluations`, `reports` (Final Student Grade Cards / Rapor PKL), and `certificates`.
+`assessments`, `evaluations`, `reports` (Final Student Grade Cards), and `certificates`.
 These are separated because evaluation and certification have their own data lifecycles and access
 patterns distinct from daily operational tracking.
 
@@ -96,7 +96,7 @@ All migrations live in `database/migrations/` with chronological prefixes. Facto
 The database schema covers 52 tables (34 Custom Domain Tables + 18 Framework/Package Tables)
 organized into lifecycle groups: Identity & Access, Configuration, Partnerships, Internship Program,
 Enrollment & Placements, Daily Operations (attendance, logbooks, supervision), Assignments,
-Assessment, Reports (Rapor PKL), Certification, Incidents & Change Requests, and Infrastructure
+Assessment, Reports (Final Grade Cards), Certification, Incidents & Change Requests, and Infrastructure
 (cache, queue, sessions, media, notifications, activity log).
 
 Refer to individual module documentation for table details and relationships.

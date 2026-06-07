@@ -1,3 +1,7 @@
+---
+name: action-refactoring
+---
+
 # Action Refactoring Skill
 
 ## When to Activate

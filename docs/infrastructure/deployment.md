@@ -15,8 +15,8 @@ three supported deployment paths and the operational requirements for each.
 | Node.js        | 20+                 | 20+ (build only)                          |
 | NPM            | 10+                 | 10+ (build only)                          |
 | Database       | SQLite (built-in)   | MySQL 8+ / MariaDB 10.6+ / PostgreSQL 14+ |
-| Queue driver   | `database`          | `redis` (recommended)                     |
-| Cache driver   | `database`          | `redis` (recommended)                     |
+| Queue driver   | `sync`              | `redis` (recommended)                     |
+| Cache driver   | `file`              | `redis` (recommended)                     |
 | Session driver | `database`          | `redis` (recommended)                     |
 | Web server     | `php artisan serve` | Nginx or Apache                           |
 

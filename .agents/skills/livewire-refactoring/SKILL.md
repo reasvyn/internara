@@ -1,3 +1,7 @@
+---
+name: livewire-refactoring
+---
+
 # Livewire Refactoring Skill
 
 ## When to Activate

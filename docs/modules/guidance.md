@@ -15,7 +15,7 @@ For complete technical reference including API, models, actions, and components,
 ## Key Principles
 
 - **Dual-Mentor supervision** — Establishes relationships between the student's registration, the
-  assigned _Guru Pembimbing_ (School Teacher), and _Pembimbing Lapangan_ (Industry Supervisor).
+  assigned School Teacher (_Guru Pembimbing_), and Industry Supervisor (_Pembimbing Lapangan_).
   These assignments are tracked in the `internship_group_members` table with roles `school_teacher`
   and `industry_supervisor`.
 - **Private Supervision Logs** — Teachers write visitation, virtual meetings, or call logs to

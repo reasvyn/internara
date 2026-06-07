@@ -210,13 +210,10 @@ Phase 5 — Live
 | Document                                | What It Covers                                |
 | --------------------------------------- | --------------------------------------------- |
 | [RBAC](rbac.md)                         | Role hierarchy, permissions, policies         |
-| [Module Index](modules/module-index.md) | All module documentation                      |
 | [Academics](modules/academics.md)       | Managing schools, departments, academic years |
 | [Partners](modules/partners.md)         | Company and MoU management                    |
-| [Enrollment](modules/enrollment.md)     | Student registration and verification         |
-| [Enrollment](modules/enrollment.md)     | Student placement and change requests         |
+| [Enrollment](modules/enrollment.md)     | Registration, verification, placement, and change requests |
 | [Program](modules/program.md)           | Periods, document requirements                |
 | [Guidance](modules/guidance.md)         | Mentor assignment and supervision logs        |
-| [Journals](modules/journals.md)         | Clock-in/out, absence requests                |
+| [Journals](modules/journals.md)         | Clock-in/out, absence requests, and daily activity journal |
 | [Assignment](modules/assignment.md)     | Assignments, submissions, grading             |
-| [Journals](modules/journals.md)         | Daily activity journal                        |

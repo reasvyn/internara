@@ -1,3 +1,7 @@
+---
+name: livewire-development
+---
+
 # Livewire Development Skill
 
 ## When to Activate

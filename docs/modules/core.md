@@ -70,8 +70,8 @@ To isolate system exceptions from client-facing application issues:
 
 ### 5. Decoupled Asynchronous Comm (Cross-Module Event Bus)
 
-Modules communicate via events. For example, when an enrollment completes, it fires a
-`PlacementCompleted` event. Listeners in the `Certification` and `Evaluation` modules handle the
+Modules communicate via events. For example, when an enrollment completes, it fires an
+`EnrollmentCompleted` event. Listeners in the `Certification` and `Evaluation` modules handle the
 follow-up asynchronously. This prevents circular coupling between packages.
 
 ---

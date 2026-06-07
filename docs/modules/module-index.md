@@ -283,14 +283,14 @@ mail services, and global feature toggles
 
 ---
 
-### 16. Reports — Student Grade Card (Rapor PKL)
+### 16. Reports — Student Final Grade Card
 
 **Purpose:** Final student grade compilation, score aggregation, and coordinator sign-off
 
 - Overview: [reports.md](reports.md)
 - Reference: [reports-reference.md](reports-reference.md)
 
-**Key Concepts:** Grade Card, Rapor PKL, Score Aggregation
+**Key Concepts:** Grade Card, Final Grade Card, Score Aggregation
 
 **Dependencies:** User, Program, Assessment, Enrollment, Core
 
@@ -298,7 +298,7 @@ mail services, and global feature toggles
 
 ### 17. Document — Templates & Handbooks
 
-**Purpose:** Official document templates, correspondence generation (surat menyurat), policy
+**Purpose:** Official document templates, correspondence generation, policy
 handbooks, and compliance acknowledgements
 
 - Overview: [document.md](document.md)

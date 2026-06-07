@@ -36,7 +36,7 @@ files — a model can have multiple collections, each with its own rules.
 | `Document`             | `file`         | Single   | Uploaded document template         |
 | `Submission`           | `file`         | Multiple | Assignment submission files        |
 | `RegistrationDocument` | `file`         | Single   | Identity or requirement document   |
-| `Logbook`              | `photos`       | Multiple | Daily activity photo documentation |
+| `Journals/Logbook`     | `photos`       | Multiple | Daily activity photo documentation |
 | `Partnership`          | `mou_document` | Single   | Signed MoU agreement               |
 | `Certificate`          | `output`       | Single   | Generated certificate PDF          |
 

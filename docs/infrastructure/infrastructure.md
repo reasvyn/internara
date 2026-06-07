@@ -89,7 +89,7 @@ codebase runs across all tiers — only configuration differs.
 | Feature               | Tier 1       | Tier 2       | Tier 3         |
 | --------------------- | ------------ | ------------ | -------------- |
 | Authentication & RBAC | ✅           | ✅           | ✅             |
-| Attendance, Logbook   | ✅           | ✅           | ✅             |
+| Journals (Attendance, Logbook) | ✅     | ✅           | ✅             |
 | Assignments, Grading  | ✅           | ✅           | ✅             |
 | Reports, Certificates | ✅           | ✅           | ✅             |
 | Email notifications   | ✅ (sync)    | ✅ (async)   | ✅ (async)     |

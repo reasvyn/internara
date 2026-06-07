@@ -20,8 +20,8 @@ Manages coursework assignments and submission tracking
 
 ### Submodules
 
-- `Submission` (flat: Actions, Entities, Enums, Livewire, Models, Policies, Notifications langsung
-  di `app/Assignment/`)
+- `Submission` (flat: Actions, Entities, Enums, Livewire, Models, Policies, Notifications directly
+  in `app/Assignment/`)
 
 ---
 

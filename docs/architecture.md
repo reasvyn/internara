@@ -1,9 +1,9 @@
 # Action-based MVC Architecture
 
-> Last updated: 2026-06-06 Changes: Added Settings and Setup modules to module list and table,
+> Last updated: 2026-06-06
+> Changes: Added Settings and Setup modules to module list and table,
 > updated route file count, removed Settings from SysAdmin submodule mapping, split Setup module
-> into Installation and SetupWizard submodules **Context:** ✅ All 19 modules defined in the
-> [module index](modules/module-index.md).
+> into Installation and SetupWizard submodules **Context:** ✅ All 19 modules are defined.
 
 ## Philosophy
 
@@ -441,7 +441,6 @@ Each module contains the following submodules:
 | Module            | Submodules                                                                                               | Cross-Submodule Root Files                                                               |
 | ----------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | **Core**          | —                                                                                                        | (infrastructure + cross-module utilities)                                                |
-| **Shared**        | —                                                                                                        | Traits, DTOs, concrete exceptions, global UI elements                                    |
 | **User**          | `AccountStatus/`, `Profile/`, `Notification/`, `Dashboard/`                                              | Http, Livewire (dashboards, editors)                                                     |
 | **Auth**          | `Permissions/`, `SuperAdmin/`, `Login/`, `ActivationToken/`, `AccountRecovery/`, `Password/`             | Http/Middleware, Livewire (login, recovery, activation, password)                        |
 | **Setup**         | `Installation/`, `SetupWizard/`                                                                          | —                                                                                        |
@@ -497,7 +496,7 @@ components. For shared (root-level) components, the alias is `{kebab-component-n
 | Module            | Boundary                                                                       | Key Concept                                                                                              |
 | ----------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
 | **Core**          | Base classes, infrastructure, and cross-module utilities everything depends on | Base model, base action, base entity, contracts, logging, exceptions, CSV handler, environment detection |
-| **Shared**        | Cross-cutting helper traits, utilities, and global UI components               | CacheKeys, CsvHandler, concrete exceptions, theme switcher, language switcher                            |
+| **Auth**          | Authentication, authorization, and access control                               | Login, password management, account activation, recovery, RBAC, super admin integrity                    |
 | **User**          | Identity, access, and profiles                                                 | Login, passwords, account lifecycle, recovery, RBAC, profile editing, notifications                      |
 | **SysAdmin**      | System administration & user management                                        | User CRUD, announcements, GDPR compliance, audit logs, Pulse monitoring                                  |
 | **Setup**         | One-time installation & provisioning                                           | Installation wizard, setup token, environment check, system provisioning                                 |
@@ -508,13 +507,13 @@ components. For shared (root-level) components, the alias is `{kebab-component-n
 | **Enrollment**    | Student registration & placement                                               | Applications, wizard, document upload, verification, slot management, change requests                    |
 | **Guidance**      | Mentoring & supervision                                                        | Student role activation, supervision logs, handbooks, acknowledgements                                   |
 | **Journals**      | Daily activities                                                               | Daily logbook, attendance, absence requests, scheduling                                                  |
-| **Assignments**   | Tasks & submissions                                                            | Task creation, grading workflow, revision loop                                                           |
-| **Reports**       | Student final grade card                                                       | Aggregated scores, Rapor PKL compilation, final sign-off                                                 |
+| **Assignment**    | Tasks & submissions                                                            | Task creation, grading workflow, revision loop                                                           |
+| **Reports**       | Student final grade card                                                       | Aggregated scores, Final Grade Card compilation, final sign-off                                         |
 | **Assessment**    | Competency evaluation                                                          | Rubrics (JSON structures), assessment grading                                                            |
 | **Evaluation**    | Program evaluation & feedback                                                  | Mentor evaluation, program feedback, user satisfaction                                                   |
 | **Certification** | Credentialing                                                                  | Certificate issuance, templates, credential tracking                                                     |
-| **Incidents**     | Issue reporting                                                                | Report, investigation, resolution workflow                                                               |
-| **Document**      | Official correspondence                                                        | Document templates, PDF rendering, permits, letters (surat menyurat)                                     |
+| **Incident**      | Issue reporting                                                                | Report, investigation, resolution workflow                                                               |
+| **Document**      | Official correspondence                                                        | Document templates, PDF rendering, permits, letters                                                     |
 
 ---
 

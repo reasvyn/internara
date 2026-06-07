@@ -174,7 +174,7 @@ The final screen displays your **recovery key** — a 64-character random string
 ║   a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3   ║
 ║                                                      ║
 ║   ⚠  Save this key somewhere safe and offline.      ║
-║   It will NOT be shown again after this screen.     ║
+║   It will NOT be shown again after this screen.      ║
 ╚══════════════════════════════════════════════════════╝
 ```
 
@@ -234,10 +234,10 @@ operations.
 ```
 Route: GET /setup
 Middleware: setup.protected (ProtectSetupRouteMiddleware)
-Component: App\Admin\Submodules\Setup\Livewire\SetupWizard
-Layout: resources/views/administration/setup/layouts/setup.blade.php
-View: resources/views/administration/setup/setup-wizard.blade.php
-       └── includes step components from administration/setup/components/
+Component: App\Setup\SetupWizard\Livewire\SetupWizard
+Layout: resources/views/setup/layouts/setup.blade.php
+View: resources/views/setup/setup-wizard/setup-wizard.blade.php
+       └── includes step components from setup/components/
                ├── welcome-step.blade.php
                ├── school-step.blade.php
                ├── department-step.blade.php
@@ -306,7 +306,7 @@ Token validation uses `ValidateSetupTokenAction` inside `lockForUpdate()` transa
 successful validation, the token is immediately nullified in the database — it cannot be replayed.
 Valid tokens also clear the rate limiter for the IP.
 
-The code entry form (`views/administration/setup/enter-code.blade.php`) allows administrators to
+The code entry form (`views/setup/enter-code.blade.php`) allows administrators to
 enter the setup token manually without exposing it in a URL — mitigating server log and browser
 history leakage.
 

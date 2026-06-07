@@ -47,7 +47,7 @@ Every feature or fix follows the same three-step cycle:
 
 ```bash
 # 1. Write a failing test
-php artisan make:test --pest CreateInternshipActionTest
+php artisan make:test --pest CreateInternshipActionTest  # Feature test at tests/Feature/Program/Internship/
 
 # Edit the test file with the expected behavior
 
@@ -115,7 +115,7 @@ Each layer of the architecture has a natural TDD progression:
 Tests use descriptive `it()` statements that read like specifications:
 
 ```php
-describe('CreateInternshipAction', function () {
+describe('CreateInternshipAction', function () {  // app/Program/Internship/Actions/CreateInternshipAction.php
     it('creates an internship with active academic year', function () { ... });
     it('rejects creation when academic year is missing', function () { ... });
     it('assigns default status of draft', function () { ... });
@@ -148,7 +148,7 @@ php artisan test --compact --filter=CreateInternshipAction
 # Single test method
 php artisan test --compact --filter='it creates an internship'
 
-# All tests for a module
+# All tests for a submodule
 php artisan test --compact --filter=Internship
 
 # Full suite before committing
@@ -223,7 +223,7 @@ php artisan test
 php artisan test --parallel
 composer run coverage
 
-# Single module
+# Single submodule
 php artisan test --filter=Internship
 
 # Single test

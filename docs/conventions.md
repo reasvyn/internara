@@ -2,7 +2,7 @@
 
 > Last updated: 2026-06-05 Changes: Add BaseEvent to base-classes table, update section 12 events to
 > require BaseEvent, add SmartLogger integration subsection **Context:** ✅ All conventions are
-> enforced — see [module index](modules/module-index.md) for implementation status.
+> enforced.
 
 This document describes conventions for writing code in the Internara codebase. These rules exist to
 produce consistent, predictable code that any team member can read without context-switching.

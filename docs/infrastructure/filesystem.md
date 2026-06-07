@@ -215,7 +215,7 @@ traversal.
 - `config/media-library.php` — media library configuration
 - `config/dompdf.php` — DomPDF configuration for certificate/report rendering
 - `app/*/Models/*.php` — `registerMediaCollections()` and `registerMediaConversions()` methods
-- `app/Certification/Support/CertificateRenderer.php` — certificate PDF generation
+- `app/Certification/Certificate/Support/CertificateRenderer.php` — certificate PDF generation
 - `database/migrations/` — media table migration
 - `docs/infrastructure/infrastructure.md` — tier-based infrastructure design
 - `docs/infrastructure/media-library.md` — detailed media library documentation

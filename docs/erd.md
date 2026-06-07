@@ -18,12 +18,12 @@ controls, or workflows, while pruning redundant tables that do not justify their
 - **Elimination of `presentations` Table:** Presentation exam schedules and examiner panels are
   determined manually by individual school administrations. Removing this operational concern
   eliminates the `presentations` table entirely.
-- **Redefinition of `reports` to "Final Grade / Report Card" (_Rapor PKL_):**
+- **Redefinition of `reports` to "Final Grade / Report Card" — Final Grade / Report Card:**
     - **Document Drafts are Assignments:** The student's final report document draft is treated as a
       regular coursework submission. The teacher creates an assignment for it in the
       **`assignments`** table, and the student submits the document in the **`submissions`** table.
     - **`reports` as the Final Grade Card:** The `reports` table is redefined to act as the final
-      student report card (_Rapor PKL_). It aggregates all grading components (supervisor score,
+      student report card. It aggregates all grading components (supervisor score,
       teacher score, exam score), calculates the final composite score based on the program's
       weights, stores overall industry feedback, and locks the student's grade records upon final
       sign-off.
@@ -601,7 +601,7 @@ Separate tracking for company-school formal agreements.
 
 #### `internships`
 
-PKL program definitions. Replaces `internship_phases` and requirements pivots.
+Internship program definitions. Replaces `internship_phases` and requirements pivots.
 
 - `id` (uuid, PK)
 - `academic_year_id` (uuid, FK -> `academic_years`, cascade delete)
@@ -628,7 +628,7 @@ Company slots allocated for the internship program.
 
 #### `registrations`
 
-Student PKL enrollments.
+Student internship enrollments.
 
 - `id` (uuid, PK)
 - `student_id` (uuid, FK -> `users`, cascade delete)
@@ -708,7 +708,7 @@ Teacher visitation and virtual supervision records.
 
 - `id` (uuid, PK)
 - `registration_id` (uuid, FK -> `registrations`, cascade delete)
-- `supervisor_id` (uuid, FK -> `users`, cascade delete) — Guru Pembimbing.
+- `supervisor_id` (uuid, FK -> `users`, cascade delete) — School Teacher.
 - `date` (date)
 - `supervision_type` (varchar 20) — `site_visit` | `online` | `phone`.
 - `notes` (text)
@@ -809,7 +809,7 @@ Student uploads for assignments.
 
 #### `reports`
 
-Final Student Grade Card (_Rapor PKL_). Stores the aggregated marks and locks grade records upon
+Final Student Grade Card (Internship Report Card). Stores the aggregated marks and locks grade records upon
 final sign-off. Can function as a standalone record even if linked models are deleted.
 
 - `id` (uuid, PK)

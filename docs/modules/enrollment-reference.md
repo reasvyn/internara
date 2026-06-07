@@ -125,8 +125,7 @@ app/Enrollment/
 ├── Livewire/
 ├── Models/
 ├── Notifications/
-├── Policies/
-├── Support/
+└── Policies/
 ```
 
 ---

@@ -75,12 +75,12 @@ The **Document** module:
 
 ### Actions & Business Logic
 
-- **6** actions:
+- **4** implemented actions (2 planned):
     - `SaveDocumentTemplateAction` — Creates or updates templates/policies.
     - `RenderDocumentAction` — Compiles documents to PDF.
-    - `AcknowledgeDocumentAction` — Records policy sign-off via `activity_log`.
-    - `GenerateReportAction` / `DeleteReportAction` — Correspondence logs.
-    - `PruneAcknowledgementsAction` — Maintenance pruning of stale activity entries.
+    - `GenerateReportAction` — Correspondence logs.
+    - `DeleteReportAction` — Correspondence logs.
+    > **Note:** `AcknowledgeDocumentAction` and `PruneAcknowledgementsAction` are planned but not yet implemented. Acknowledgements are currently handled inline via `activity()` helper.
 
 ### Data & Persistence
 
