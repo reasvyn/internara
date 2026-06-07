@@ -2,15 +2,20 @@
 
 ## What It Enforces
 
-Blade views follow a consistent tech stack: Tailwind CSS v4 (CSS-first via `@import "tailwindcss"`), daisyUI component classes, maryUI Livewire components (`x-mary-*`), and Blade Tabler Icons (`o-*` prefix). Views live in `resources/views/{domain}/{component-name}.blade.php`.
+Blade views follow a consistent tech stack: Tailwind CSS v4 (CSS-first via `@import "tailwindcss"`),
+daisyUI component classes, maryUI Livewire components (`x-mary-*`), and Blade Tabler Icons (`o-*`
+prefix). Views live in `resources/views/{domain}/{component-name}.blade.php`.
 
 ## Why It Matters
 
-A consistent UI stack ensures every view looks and works the same way. Developers know which components to reach for, how to style them, and where to find them. Translation keys replace hardcoded strings, making the application localizable.
+A consistent UI stack ensures every view looks and works the same way. Developers know which
+components to reach for, how to style them, and where to find them. Translation keys replace
+hardcoded strings, making the application localizable.
 
 ## When It Applies
 
 Every Blade view uses:
+
 - maryUI components for forms, tables, modals, buttons, inputs
 - daisyUI utility classes for styling (btn, card, modal, table)
 - Tabler icons with `o-` prefix

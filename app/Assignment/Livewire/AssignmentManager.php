@@ -52,7 +52,10 @@ class AssignmentManager extends BaseRecordManager
         return $query->where(function ($q) {
             $q->where('title', 'like', "%{$this->search}%")
                 ->orWhereHas('type', fn ($t) => $t->where('name', 'like', "%{$this->search}%"))
-                ->orWhereHas('internship', fn ($i) => $i->where('name', 'like', "%{$this->search}%"));
+                ->orWhereHas(
+                    'internship',
+                    fn ($i) => $i->where('name', 'like', "%{$this->search}%"),
+                );
         });
     }
 
@@ -60,8 +63,14 @@ class AssignmentManager extends BaseRecordManager
     {
         return $query
             ->when($this->filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
-            ->when($this->filters['type_id'] ?? null, fn ($q, $v) => $q->where('assignment_type_id', $v))
-            ->when($this->filters['is_mandatory'] ?? null, fn ($q, $v) => $q->where('is_mandatory', $v === 'yes'));
+            ->when(
+                $this->filters['type_id'] ?? null,
+                fn ($q, $v) => $q->where('assignment_type_id', $v),
+            )
+            ->when(
+                $this->filters['is_mandatory'] ?? null,
+                fn ($q, $v) => $q->where('is_mandatory', $v === 'yes'),
+            );
     }
 
     #[Computed]

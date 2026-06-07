@@ -22,24 +22,21 @@ class SystemHealthCommand extends Command
     public function handle(): int
     {
         try {
-            $results = array_merge(
-                $this->environmentChecks(),
-                [
-                    [__('setup.system.php_version'), ...$this->checkPhpVersion()],
-                    [__('setup.system.extensions'), ...$this->checkExtensions()],
-                    [__('setup.system.recommended_extensions'), ...$this->checkRecommendedExtensions()],
-                    [__('setup.system.php_memory'), ...$this->checkMemory()],
-                    [__('setup.system.database'), ...$this->checkDatabase()],
-                    [__('setup.system.migration_status'), ...$this->checkMigrations()],
-                    [__('setup.system.storage'), ...$this->checkStorage()],
-                    [__('setup.system.disk_space'), ...$this->checkDiskSpace()],
-                    [__('setup.system.queue'), ...$this->checkQueue()],
-                    [__('setup.system.cache'), ...$this->checkCache()],
-                    [__('setup.system.app_key'), ...$this->checkAppKey()],
-                    [__('setup.system.storage_link'), ...$this->checkStorageLink()],
-                    [__('setup.system.maintenance_mode'), ...$this->checkMaintenanceMode()],
-                ],
-            );
+            $results = array_merge($this->environmentChecks(), [
+                [__('setup.system.php_version'), ...$this->checkPhpVersion()],
+                [__('setup.system.extensions'), ...$this->checkExtensions()],
+                [__('setup.system.recommended_extensions'), ...$this->checkRecommendedExtensions()],
+                [__('setup.system.php_memory'), ...$this->checkMemory()],
+                [__('setup.system.database'), ...$this->checkDatabase()],
+                [__('setup.system.migration_status'), ...$this->checkMigrations()],
+                [__('setup.system.storage'), ...$this->checkStorage()],
+                [__('setup.system.disk_space'), ...$this->checkDiskSpace()],
+                [__('setup.system.queue'), ...$this->checkQueue()],
+                [__('setup.system.cache'), ...$this->checkCache()],
+                [__('setup.system.app_key'), ...$this->checkAppKey()],
+                [__('setup.system.storage_link'), ...$this->checkStorageLink()],
+                [__('setup.system.maintenance_mode'), ...$this->checkMaintenanceMode()],
+            ]);
 
             if ($this->option('json')) {
                 $this->line(json_encode($results, JSON_PRETTY_PRINT));
@@ -48,7 +45,10 @@ class SystemHealthCommand extends Command
             }
 
             $this->healthHeader();
-            $this->table([__('setup.system.service'), __('setup.system.status'), __('setup.system.details')], $results);
+            $this->table(
+                [__('setup.system.service'), __('setup.system.status'), __('setup.system.details')],
+                $results,
+            );
 
             $hasFailures = collect($results)->contains(fn ($r) => $r[1] === 'FAIL');
 
@@ -88,7 +88,9 @@ class SystemHealthCommand extends Command
     protected function healthHeader(): void
     {
         $this->newLine();
-        $this->line('  <fg=white;options=bold;bg=green> '.__('setup.system.health_header').' </>');
+        $this->line(
+            '  <fg=white;options=bold;bg=green> '.__('setup.system.health_header').' </>',
+        );
         $this->newLine();
         $this->components->twoColumnDetail(__('setup.system.time'), now()->toDateTimeString());
         $this->components->twoColumnDetail(__('setup.system.environment'), app()->environment());
@@ -105,14 +107,10 @@ class SystemHealthCommand extends Command
     protected function checkSetupStatus(): array
     {
         try {
-            $installed = DB::table('setups')
-                ->where('is_installed', true)
-                ->exists();
+            $installed = DB::table('setups')->where('is_installed', true)->exists();
 
             if ($installed) {
-                $setup = DB::table('setups')
-                    ->where('is_installed', true)
-                    ->first();
+                $setup = DB::table('setups')->where('is_installed', true)->first();
 
                 $completed = isset($setup->completed_steps)
                     ? count(json_decode($setup->completed_steps, true) ?? [])
@@ -142,8 +140,18 @@ class SystemHealthCommand extends Command
     protected function checkExtensions(): array
     {
         $required = config('setup.requirements.extensions', [
-            'bcmath', 'ctype', 'fileinfo', 'mbstring', 'openssl',
-            'pdo', 'tokenizer', 'xml', 'curl', 'gd', 'intl', 'zip',
+            'bcmath',
+            'ctype',
+            'fileinfo',
+            'mbstring',
+            'openssl',
+            'pdo',
+            'tokenizer',
+            'xml',
+            'curl',
+            'gd',
+            'intl',
+            'zip',
         ]);
 
         $missing = array_filter($required, fn ($ext) => ! extension_loaded($ext));
@@ -158,7 +166,9 @@ class SystemHealthCommand extends Command
     protected function checkRecommendedExtensions(): array
     {
         $recommended = config('setup.requirements.recommended_extensions', [
-            'redis', 'pcntl', 'posix',
+            'redis',
+            'pcntl',
+            'posix',
         ]);
 
         $missing = array_filter($recommended, fn ($ext) => ! extension_loaded($ext));
@@ -254,11 +264,21 @@ class SystemHealthCommand extends Command
         $usedPercent = 100 - round(($free / $total) * 100);
 
         if ($usedPercent >= 95) {
-            return ['FAIL', "Disk {$usedPercent}% full ({$this->formatBytes($free)} free of {$this->formatBytes($total)})"];
+            return [
+                'FAIL',
+                "Disk {$usedPercent}% full ({$this->formatBytes($free)} free of {$this->formatBytes(
+                    $total,
+                )})",
+            ];
         }
 
         if ($usedPercent >= 85) {
-            return ['WARN', "Disk {$usedPercent}% full ({$this->formatBytes($free)} free of {$this->formatBytes($total)})"];
+            return [
+                'WARN',
+                "Disk {$usedPercent}% full ({$this->formatBytes($free)} free of {$this->formatBytes(
+                    $total,
+                )})",
+            ];
         }
 
         return ['OK', "{$usedPercent}% used — {$this->formatBytes($free)} free"];
@@ -314,7 +334,10 @@ class SystemHealthCommand extends Command
         $link = public_path('storage');
         $exists = is_link($link);
 
-        return [$exists ? 'OK' : 'FAIL', $exists ? 'public/storage link exists' : 'public/storage link is missing'];
+        return [
+            $exists ? 'OK' : 'FAIL',
+            $exists ? 'public/storage link exists' : 'public/storage link is missing',
+        ];
     }
 
     protected function checkMaintenanceMode(): array

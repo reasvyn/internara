@@ -21,7 +21,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-#[Fillable(['student_id', 'internship_id', 'placement_id', 'start_date', 'end_date', 'status', 'proposed_company_details'])]
+#[
+    Fillable([
+        'student_id',
+        'internship_id',
+        'placement_id',
+        'start_date',
+        'end_date',
+        'status',
+        'proposed_company_details',
+    ]),
+]
 class Registration extends BaseModel
 {
     protected $table = 'registrations';

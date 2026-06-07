@@ -31,8 +31,16 @@ class PlacementChangeManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'created_at', 'label' => __('placement_change.requested_at'), 'sortable' => true],
-            ['key' => 'requester.name', 'label' => __('placement_change.student'), 'sortable' => true],
+            [
+                'key' => 'created_at',
+                'label' => __('placement_change.requested_at'),
+                'sortable' => true,
+            ],
+            [
+                'key' => 'requester.name',
+                'label' => __('placement_change.student'),
+                'sortable' => true,
+            ],
             ['key' => 'fromPlacement.company.name', 'label' => __('placement_change.from_company')],
             ['key' => 'toPlacement.company.name', 'label' => __('placement_change.to_company')],
             ['key' => 'status', 'label' => __('placement_change.status'), 'sortable' => true],
@@ -42,13 +50,12 @@ class PlacementChangeManager extends BaseRecordManager
 
     protected function query(): Builder
     {
-        return PlacementChangeRequest::query()
-            ->with([
-                'requester',
-                'fromPlacement.company',
-                'toPlacement.company',
-                'registration.mentee.user',
-            ]);
+        return PlacementChangeRequest::query()->with([
+            'requester',
+            'fromPlacement.company',
+            'toPlacement.company',
+            'registration.mentee.user',
+        ]);
     }
 
     public function approve(string $id, ApprovePlacementChangeAction $action): void

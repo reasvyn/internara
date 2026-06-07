@@ -74,9 +74,18 @@ class CompanyManager extends BaseRecordManager
     protected function applyFilters(Builder $query): Builder
     {
         return $query
-            ->when($this->filters['industry_sector'] ?? null, fn ($q, $v) => $q->where('industry_sector', 'like', "%{$v}%"))
-            ->when($this->filters['phone'] ?? null, fn ($q, $v) => $q->where('phone', 'like', "%{$v}%"))
-            ->when($this->filters['has_placements'] ?? null, fn ($q, $v) => $v === 'yes' ? $q->has('placements') : $q->doesntHave('placements'));
+            ->when(
+                $this->filters['industry_sector'] ?? null,
+                fn ($q, $v) => $q->where('industry_sector', 'like', "%{$v}%"),
+            )
+            ->when(
+                $this->filters['phone'] ?? null,
+                fn ($q, $v) => $q->where('phone', 'like', "%{$v}%"),
+            )
+            ->when(
+                $this->filters['has_placements'] ?? null,
+                fn ($q, $v) => $v === 'yes' ? $q->has('placements') : $q->doesntHave('placements'),
+            );
     }
 
     #[Computed]
@@ -84,8 +93,13 @@ class CompanyManager extends BaseRecordManager
     {
         return [
             'total' => Company::count(),
-            'with_placements' => Company::whereHas('placements')->orWhereHas('partnerships')->count(),
-            'active_partnerships' => Company::whereHas('partnerships', fn ($q) => $q->where('status', 'active'))->count(),
+            'with_placements' => Company::whereHas('placements')
+                ->orWhereHas('partnerships')
+                ->count(),
+            'active_partnerships' => Company::whereHas(
+                'partnerships',
+                fn ($q) => $q->where('status', 'active'),
+            )->count(),
             'available_slots' => Placement::query()
                 ->selectRaw('SUM(quota - filled_quota) as available')
                 ->value('available') ?? 0,
@@ -152,12 +166,16 @@ class CompanyManager extends BaseRecordManager
         }
 
         $this->confirmType = 'delete_selected';
-        $this->confirmMessage = __('company.delete_selected_confirm', ['count' => count($this->selectedIds)]);
+        $this->confirmMessage = __('company.delete_selected_confirm', [
+            'count' => count($this->selectedIds),
+        ]);
         $this->showConfirm = true;
     }
 
-    public function confirmAction(DeleteCompanyAction $deleteAction, BatchDeleteCompanyAction $batchDelete): void
-    {
+    public function confirmAction(
+        DeleteCompanyAction $deleteAction,
+        BatchDeleteCompanyAction $batchDelete,
+    ): void {
         if ($this->confirmTarget === null && $this->confirmType !== 'delete_selected') {
             return;
         }
@@ -189,10 +207,12 @@ class CompanyManager extends BaseRecordManager
         $result = $action->execute($this->selectedIds);
 
         if ($result['deleted'] > 0) {
-            flash()->success(__('common.actions.bulk_action_done', [
-                'count' => $result['deleted'],
-                'action' => __('common.actions.delete'),
-            ]));
+            flash()->success(
+                __('common.actions.bulk_action_done', [
+                    'count' => $result['deleted'],
+                    'action' => __('common.actions.delete'),
+                ]),
+            );
         }
 
         if ($result['blocked'] > 0) {
@@ -217,7 +237,9 @@ class CompanyManager extends BaseRecordManager
             'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
         ]);
 
-        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use ($create) {
+        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use (
+            $create,
+        ) {
             $name = trim($row[0] ?? '');
 
             if ($name === '') {
@@ -249,10 +271,12 @@ class CompanyManager extends BaseRecordManager
             return;
         }
 
-        flash()->success(__('common.actions.import_summary', [
-            'created' => $result['created'],
-            'skipped' => $result['skipped'],
-        ]));
+        flash()->success(
+            __('common.actions.import_summary', [
+                'created' => $result['created'],
+                'skipped' => $result['skipped'],
+            ]),
+        );
     }
 
     public function export(CsvHandler $csv): StreamedResponse
@@ -264,8 +288,24 @@ class CompanyManager extends BaseRecordManager
 
         return $csv->export(
             $companies,
-            [__('common.name'), __('common.address'), __('common.phone'), __('common.email'), __('common.website'), __('common.description'), __('company.industry_sector')],
-            fn ($c) => [$c->name, $c->address ?? '', $c->phone ?? '', $c->email ?? '', $c->website ?? '', $c->description ?? '', $c->industry_sector ?? ''],
+            [
+                __('common.name'),
+                __('common.address'),
+                __('common.phone'),
+                __('common.email'),
+                __('common.website'),
+                __('common.description'),
+                __('company.industry_sector'),
+            ],
+            fn ($c) => [
+                $c->name,
+                $c->address ?? '',
+                $c->phone ?? '',
+                $c->email ?? '',
+                $c->website ?? '',
+                $c->description ?? '',
+                $c->industry_sector ?? '',
+            ],
             'companies.csv',
         );
     }
@@ -282,8 +322,24 @@ class CompanyManager extends BaseRecordManager
 
         return $csv->export(
             $companies,
-            [__('common.name'), __('common.address'), __('common.phone'), __('common.email'), __('common.website'), __('common.description'), __('company.industry_sector')],
-            fn ($c) => [$c->name, $c->address ?? '', $c->phone ?? '', $c->email ?? '', $c->website ?? '', $c->description ?? '', $c->industry_sector ?? ''],
+            [
+                __('common.name'),
+                __('common.address'),
+                __('common.phone'),
+                __('common.email'),
+                __('common.website'),
+                __('common.description'),
+                __('company.industry_sector'),
+            ],
+            fn ($c) => [
+                $c->name,
+                $c->address ?? '',
+                $c->phone ?? '',
+                $c->email ?? '',
+                $c->website ?? '',
+                $c->description ?? '',
+                $c->industry_sector ?? '',
+            ],
             'companies-selected.csv',
         );
     }
@@ -291,8 +347,24 @@ class CompanyManager extends BaseRecordManager
     public function downloadTemplate(CsvHandler $csv): StreamedResponse
     {
         return $csv->downloadTemplate(
-            [__('common.name'), __('common.address'), __('common.phone'), __('common.email'), __('common.website'), __('common.description'), __('company.industry_sector')],
-            [__('company.name_placeholder'), __('company.address_placeholder'), __('company.phone_placeholder'), __('company.email_placeholder'), __('company.website_placeholder'), '', __('company.industry_sector_placeholder')],
+            [
+                __('common.name'),
+                __('common.address'),
+                __('common.phone'),
+                __('common.email'),
+                __('common.website'),
+                __('common.description'),
+                __('company.industry_sector'),
+            ],
+            [
+                __('company.name_placeholder'),
+                __('company.address_placeholder'),
+                __('company.phone_placeholder'),
+                __('company.email_placeholder'),
+                __('company.website_placeholder'),
+                '',
+                __('company.industry_sector_placeholder'),
+            ],
             'companies-template.csv',
         );
     }

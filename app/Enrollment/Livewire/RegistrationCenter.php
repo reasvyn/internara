@@ -27,12 +27,18 @@ class RegistrationCenter extends Component
         return Internship::query()
             ->whereIn('status', ['published', 'active'])
             ->where(function ($q) {
-                $q->whereNull('registration_start_date')
-                    ->orWhere('registration_start_date', '<=', now()->toDateString());
+                $q->whereNull('registration_start_date')->orWhere(
+                    'registration_start_date',
+                    '<=',
+                    now()->toDateString(),
+                );
             })
             ->where(function ($q) {
-                $q->whereNull('registration_end_date')
-                    ->orWhere('registration_end_date', '>=', now()->toDateString());
+                $q->whereNull('registration_end_date')->orWhere(
+                    'registration_end_date',
+                    '>=',
+                    now()->toDateString(),
+                );
             })
             ->orderBy('registration_end_date')
             ->get();

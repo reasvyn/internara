@@ -16,7 +16,10 @@ class EnvironmentAuditor
         return new AuditReport([
             ...$this->checkPhpVersion(),
             ...$this->checkExtensions(config('setup.requirements.extensions'), critical: true),
-            ...$this->checkExtensions(config('setup.requirements.recommended_extensions'), critical: false),
+            ...$this->checkExtensions(
+                config('setup.requirements.recommended_extensions'),
+                critical: false,
+            ),
             ...$this->checkPermissions(),
             ...$this->checkDatabaseConnection(),
             ...$this->checkTerminalSupport(),
@@ -30,14 +33,16 @@ class EnvironmentAuditor
         $required = config('setup.requirements.php_version');
         $pass = version_compare(PHP_VERSION, $required, '>=');
 
-        return [new AuditCheck(
-            category: AuditCategory::REQUIREMENTS,
-            nameKey: 'php_version',
-            status: $pass ? AuditStatus::PASS : AuditStatus::FAIL,
-            messageKey: $pass ? 'php_version_pass' : 'php_version_fail',
-            nameParams: ['required' => $required],
-            messageParams: ['current' => PHP_VERSION, 'required' => $required],
-        )];
+        return [
+            new AuditCheck(
+                category: AuditCategory::REQUIREMENTS,
+                nameKey: 'php_version',
+                status: $pass ? AuditStatus::PASS : AuditStatus::FAIL,
+                messageKey: $pass ? 'php_version_pass' : 'php_version_fail',
+                nameParams: ['required' => $required],
+                messageParams: ['current' => PHP_VERSION, 'required' => $required],
+            ),
+        ];
     }
 
     /** @return AuditCheck[] */
@@ -53,7 +58,13 @@ class EnvironmentAuditor
                 category: $critical ? AuditCategory::REQUIREMENTS : AuditCategory::RECOMMENDATIONS,
                 nameKey: $critical ? 'extension' : 'recommended_extension',
                 status: $loaded ? AuditStatus::PASS : $failStatus,
-                messageKey: $loaded ? ($critical ? 'extension_pass' : 'recommended_pass') : ($critical ? 'extension_fail' : 'recommended_fail'),
+                messageKey: $loaded
+                    ? ($critical
+                        ? 'extension_pass'
+                        : 'recommended_pass')
+                    : ($critical
+                        ? 'extension_fail'
+                        : 'recommended_fail'),
                 nameParams: ['extension' => $extension],
                 messageParams: ['extension' => $extension],
             );
@@ -88,14 +99,16 @@ class EnvironmentAuditor
         $driver = config('database.default', 'mysql');
         $connected = $this->testDatabaseConnection($driver);
 
-        return [new AuditCheck(
-            category: AuditCategory::DATABASE,
-            nameKey: 'db_connection',
-            status: $connected ? AuditStatus::PASS : AuditStatus::FAIL,
-            messageKey: $connected ? 'db_pass' : 'db_fail',
-            nameParams: ['driver' => $driver],
-            messageParams: ['driver' => $driver],
-        )];
+        return [
+            new AuditCheck(
+                category: AuditCategory::DATABASE,
+                nameKey: 'db_connection',
+                status: $connected ? AuditStatus::PASS : AuditStatus::FAIL,
+                messageKey: $connected ? 'db_pass' : 'db_fail',
+                nameParams: ['driver' => $driver],
+                messageParams: ['driver' => $driver],
+            ),
+        ];
     }
 
     /** @return AuditCheck[] */
@@ -135,7 +148,9 @@ class EnvironmentAuditor
                 category: AuditCategory::TERMINAL,
                 nameKey: 'terminal_animations',
                 status: function_exists('pcntl_fork') ? AuditStatus::PASS : AuditStatus::WARN,
-                messageKey: function_exists('pcntl_fork') ? 'terminal_animations_pass' : 'terminal_animations_fail',
+                messageKey: function_exists('pcntl_fork')
+                    ? 'terminal_animations_pass'
+                    : 'terminal_animations_fail',
                 nameParams: [],
                 messageParams: [],
             ),
@@ -143,7 +158,9 @@ class EnvironmentAuditor
                 category: AuditCategory::TERMINAL,
                 nameKey: 'terminal_interactive',
                 status: function_exists('posix_isatty') ? AuditStatus::PASS : AuditStatus::WARN,
-                messageKey: function_exists('posix_isatty') ? 'terminal_interactive_pass' : 'terminal_interactive_fail',
+                messageKey: function_exists('posix_isatty')
+                    ? 'terminal_interactive_pass'
+                    : 'terminal_interactive_fail',
                 nameParams: [],
                 messageParams: [],
             ),
@@ -156,13 +173,15 @@ class EnvironmentAuditor
         $manifestPath = public_path('build/manifest.json');
         $built = file_exists($manifestPath);
 
-        return [new AuditCheck(
-            category: AuditCategory::RECOMMENDATIONS,
-            nameKey: 'frontend_assets',
-            status: $built ? AuditStatus::PASS : AuditStatus::WARN,
-            messageKey: $built ? 'frontend_assets_pass' : 'frontend_assets_fail',
-            nameParams: [],
-            messageParams: [],
-        )];
+        return [
+            new AuditCheck(
+                category: AuditCategory::RECOMMENDATIONS,
+                nameKey: 'frontend_assets',
+                status: $built ? AuditStatus::PASS : AuditStatus::WARN,
+                messageKey: $built ? 'frontend_assets_pass' : 'frontend_assets_fail',
+                nameParams: [],
+                messageParams: [],
+            ),
+        ];
     }
 }

@@ -47,10 +47,13 @@ class UpdateUserPasswordAction extends BaseAction
 
     protected function validateNewPassword(string $newPassword): void
     {
-        Validator::make([
-            'password' => $newPassword,
-        ], [
-            'password' => PasswordRules::default(),
-        ])->validate();
+        Validator::make(
+            [
+                'password' => $newPassword,
+            ],
+            [
+                'password' => PasswordRules::default(),
+            ],
+        )->validate();
     }
 }

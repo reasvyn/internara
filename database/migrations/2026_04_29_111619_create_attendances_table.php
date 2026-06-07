@@ -16,7 +16,10 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
-            $table->foreignUuid('registration_id')->constrained('registrations')->onDelete('cascade');
+            $table
+                ->foreignUuid('registration_id')
+                ->constrained('registrations')
+                ->onDelete('cascade');
 
             $table->date('date')->index();
             $table->time('clock_in')->nullable();
@@ -35,11 +38,19 @@ return new class extends Migration
             $table->text('absence_reason')->nullable();
             $table->string('absence_attachment')->nullable();
             $table->string('absence_status')->nullable()->comment('pending, approved, rejected');
-            $table->foreignUuid('absence_processed_by')->nullable()->constrained('users')->onDelete('set null');
+            $table
+                ->foreignUuid('absence_processed_by')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
             $table->timestamp('absence_processed_at')->nullable();
             $table->text('absence_admin_notes')->nullable();
             $table->boolean('is_verified')->default(false);
-            $table->foreignUuid('verified_by')->nullable()->constrained('users')->onDelete('set null');
+            $table
+                ->foreignUuid('verified_by')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
             $table->timestamp('verified_at')->nullable();
 
             $table->text('notes')->nullable();

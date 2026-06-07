@@ -27,10 +27,7 @@ class ReportController extends BaseController
         }
 
         if ($document->file_path && Storage::disk('local')->exists($document->file_path)) {
-            return Storage::disk('local')->download(
-                $document->file_path,
-                $document->download_name,
-            );
+            return Storage::disk('local')->download($document->file_path, $document->download_name);
         }
 
         if ($document->file_path) {
@@ -39,8 +36,6 @@ class ReportController extends BaseController
                 ->with('error', 'Report file not found on disk.');
         }
 
-        return redirect()
-            ->route('sysadmin.reports.index')
-            ->with('error', 'Report file not found.');
+        return redirect()->route('sysadmin.reports.index')->with('error', 'Report file not found.');
     }
 }

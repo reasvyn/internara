@@ -10,8 +10,11 @@ use App\Exceptions\RejectedException;
 
 final class GradeSubmissionAction extends BaseAction
 {
-    public function execute(Submission $submission, int $score, ?string $feedback = null): Submission
-    {
+    public function execute(
+        Submission $submission,
+        int $score,
+        ?string $feedback = null,
+    ): Submission {
         if ($score < 0 || $score > 100) {
             throw new RejectedException('Score must be between 0 and 100.');
         }

@@ -33,6 +33,5 @@ test('set setting action creates or updates settings and detects type', function
 test('set setting action validates key format', function () {
     $action = new SetSettingAction;
 
-    expect(fn () => $action->execute('INVALID KEY', 'value'))
-        ->toThrow(ValidationException::class);
+    expect(fn () => $action->execute('INVALID KEY', 'value'))->toThrow(ValidationException::class);
 });

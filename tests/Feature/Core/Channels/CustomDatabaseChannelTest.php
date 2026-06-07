@@ -38,9 +38,17 @@ class MockNotificationMissingKeys extends Notification
 
 test('it sends notifications via custom database channel', function () {
     $senderMock = Mockery::mock(SendsNotifications::class);
-    $senderMock->shouldReceive('execute')
+    $senderMock
+        ->shouldReceive('execute')
         ->once()
-        ->with('123', 'test_notif', 'Test Notification', 'Notification content', ['foo' => 'bar'], '/test-link');
+        ->with(
+            '123',
+            'test_notif',
+            'Test Notification',
+            'Notification content',
+            ['foo' => 'bar'],
+            '/test-link',
+        );
 
     $notifiable = Mockery::mock(User::class);
     $notifiable->shouldReceive('getKey')->andReturn('123');
@@ -96,7 +104,8 @@ test('it skips notification when notifiable id is empty string', function () {
 
 test('it uses defaults for missing type and title keys', function () {
     $senderMock = Mockery::mock(SendsNotifications::class);
-    $senderMock->shouldReceive('execute')
+    $senderMock
+        ->shouldReceive('execute')
         ->once()
         ->with('123', 'general', 'Notification', 'No type or title', null, null);
 
@@ -112,9 +121,17 @@ test('it uses defaults for missing type and title keys', function () {
 
 test('it sends to plain object notifiable with id property', function () {
     $senderMock = Mockery::mock(SendsNotifications::class);
-    $senderMock->shouldReceive('execute')
+    $senderMock
+        ->shouldReceive('execute')
         ->once()
-        ->with('42', 'test_notif', 'Test Notification', 'Notification content', ['foo' => 'bar'], '/test-link');
+        ->with(
+            '42',
+            'test_notif',
+            'Test Notification',
+            'Notification content',
+            ['foo' => 'bar'],
+            '/test-link',
+        );
 
     $notifiable = (object) ['id' => '42'];
 

@@ -45,10 +45,9 @@ final class SubmitEvaluationAction extends BaseAction
                 return $existing;
             }
 
-            $evaluation = Evaluation::create(array_merge(
-                $payload,
-                ['evaluator_id' => $evaluator->id],
-            ));
+            $evaluation = Evaluation::create(
+                array_merge($payload, ['evaluator_id' => $evaluator->id]),
+            );
 
             $this->log("evaluation_{$type->value}_created", $evaluation);
 

@@ -49,7 +49,10 @@ final class CreateSupervisionLogAction extends BaseAction
                 ]);
             }
 
-            $this->log('supervision_log_created', $log, ['type' => $log->type, 'topic' => $log->topic]);
+            $this->log('supervision_log_created', $log, [
+                'type' => $log->type,
+                'topic' => $log->topic,
+            ]);
 
             return $log;
         });

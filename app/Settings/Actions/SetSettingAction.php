@@ -19,9 +19,12 @@ class SetSettingAction extends BaseAction
         ?string $description = null,
         ?string $type = null,
     ): Setting {
-        Validator::validate(['key' => $key], [
-            'key' => ['required', new ValidSettingKey],
-        ]);
+        Validator::validate(
+            ['key' => $key],
+            [
+                'key' => ['required', new ValidSettingKey],
+            ],
+        );
 
         $detectedType = $type ?? $this->detectType($value);
 

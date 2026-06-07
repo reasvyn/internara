@@ -23,8 +23,11 @@ final class AppMetadata
         }
     }
 
-    private static function withFallback(callable $resolver, mixed $fallback, string $context): mixed
-    {
+    private static function withFallback(
+        callable $resolver,
+        mixed $fallback,
+        string $context,
+    ): mixed {
         try {
             return $resolver();
         } catch (Throwable $e) {
@@ -42,8 +45,11 @@ final class AppMetadata
             ->save();
     }
 
-    private static function resolveString(string $settingKey, string $fallback, string $context): string
-    {
+    private static function resolveString(
+        string $settingKey,
+        string $fallback,
+        string $context,
+    ): string {
         if (! self::isInstalled()) {
             return $fallback;
         }
@@ -64,7 +70,11 @@ final class AppMetadata
 
     public static function brandName(): string
     {
-        return self::resolveString('brand_name', self::appName(), 'Failed to get brand name from settings');
+        return self::resolveString(
+            'brand_name',
+            self::appName(),
+            'Failed to get brand name from settings',
+        );
     }
 
     public static function siteTitle(): string
@@ -73,7 +83,11 @@ final class AppMetadata
             return __('setup.wizard.page_title', ['app_name' => self::appName()]);
         }
 
-        return self::resolveString('site_title', self::brandName(), 'Failed to get site title from settings');
+        return self::resolveString(
+            'site_title',
+            self::brandName(),
+            'Failed to get site title from settings',
+        );
     }
 
     public static function appLogo(): string
@@ -89,7 +103,11 @@ final class AppMetadata
             return $default;
         }
 
-        $logo = self::withFallback(fn () => Settings::get('brand_logo'), null, 'Failed to get brand logo from settings');
+        $logo = self::withFallback(
+            fn () => Settings::get('brand_logo'),
+            null,
+            'Failed to get brand logo from settings',
+        );
 
         return is_string($logo) && $logo !== '' ? $logo : $default;
     }
@@ -102,22 +120,30 @@ final class AppMetadata
             return $default;
         }
 
-        return self::withFallback(function () use ($default): string {
-            $favicon = Settings::get('site_favicon');
+        return self::withFallback(
+            function () use ($default): string {
+                $favicon = Settings::get('site_favicon');
 
-            if (is_string($favicon) && $favicon !== '') {
-                return $favicon;
-            }
+                if (is_string($favicon) && $favicon !== '') {
+                    return $favicon;
+                }
 
-            $logo = Settings::get('brand_logo');
+                $logo = Settings::get('brand_logo');
 
-            return is_string($logo) && $logo !== '' ? $logo : $default;
-        }, $default, 'Failed to get favicon from settings');
+                return is_string($logo) && $logo !== '' ? $logo : $default;
+            },
+            $default,
+            'Failed to get favicon from settings',
+        );
     }
 
     public static function colors(): array
     {
-        return self::withFallback(fn () => Theme::all(), Theme::defaults(), 'Failed to get branding colors from settings');
+        return self::withFallback(
+            fn () => Theme::all(),
+            Theme::defaults(),
+            'Failed to get branding colors from settings',
+        );
     }
 
     public static function version(): string

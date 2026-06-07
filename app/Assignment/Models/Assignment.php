@@ -21,7 +21,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * S1 - Secure: Validates submission requirements.
  * S2 - Sustain: Rich model with business rules.
  */
-#[Fillable(['internship_id', 'document_id', 'assignment_type', 'title', 'description', 'due_date', 'status', 'created_by'])]
+#[
+    Fillable([
+        'internship_id',
+        'document_id',
+        'assignment_type',
+        'title',
+        'description',
+        'due_date',
+        'status',
+        'created_by',
+    ]),
+]
 class Assignment extends BaseModel
 {
     use HasFactory;

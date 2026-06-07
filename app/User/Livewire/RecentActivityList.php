@@ -14,10 +14,7 @@ class RecentActivityList extends Component
     #[Computed]
     public function activities()
     {
-        return ActivityLog::causedBy(auth()->user())
-            ->latest()
-            ->take(10)
-            ->get();
+        return ActivityLog::causedBy(auth()->user())->latest()->take(10)->get();
     }
 
     public function render(): View

@@ -11,6 +11,12 @@ Route::prefix('admin')
     ->group(function () {
         Route::livewire('/reports', ReportsManager::class)->name('reports.index');
 
-        Route::get('/documents/{document}/render/{registration}', [DocumentRenderController::class, 'show'])->name('documents.render');
-        Route::get('/documents/{document}/render/{registration}/save', [DocumentRenderController::class, 'store'])->name('documents.render.store');
+        Route::get('/documents/{document}/render/{registration}', [
+            DocumentRenderController::class,
+            'show',
+        ])->name('documents.render');
+        Route::get('/documents/{document}/render/{registration}/save', [
+            DocumentRenderController::class,
+            'store',
+        ])->name('documents.render.store');
     });

@@ -47,8 +47,7 @@ test('should report defaults to true', function () {
 });
 
 test('to cli output includes message and hint', function () {
-    $e = (new ContextTestException('Something broke'))
-        ->withHint('Check your config');
+    $e = new ContextTestException('Something broke')->withHint('Check your config');
 
     $output = $e->toCliOutput();
 
@@ -57,8 +56,7 @@ test('to cli output includes message and hint', function () {
 });
 
 test('to cli output includes scalar context', function () {
-    $e = (new ContextTestException('Error'))
-        ->withContext(['user_id' => 42, 'role' => 'admin']);
+    $e = new ContextTestException('Error')->withContext(['user_id' => 42, 'role' => 'admin']);
 
     $output = $e->toCliOutput();
 
@@ -67,8 +65,7 @@ test('to cli output includes scalar context', function () {
 });
 
 test('to cli output encodes non scalar context', function () {
-    $e = (new ContextTestException('Error'))
-        ->withContext(['items' => ['a', 'b', 'c']]);
+    $e = new ContextTestException('Error')->withContext(['items' => ['a', 'b', 'c']]);
 
     $output = $e->toCliOutput();
 
@@ -76,12 +73,11 @@ test('to cli output encodes non scalar context', function () {
 });
 
 test('to cli output sanitizes sensitive context', function () {
-    $e = (new ContextTestException('Error'))
-        ->withContext([
-            'email' => 'john@example.com',
-            'password' => 'secret123',
-            'user_id' => 42,
-        ]);
+    $e = new ContextTestException('Error')->withContext([
+        'email' => 'john@example.com',
+        'password' => 'secret123',
+        'user_id' => 42,
+    ]);
 
     $output = $e->toCliOutput();
 
@@ -108,8 +104,7 @@ test('to cli output handles null hint', function () {
 });
 
 test('to cli output handles special characters in context values', function () {
-    $e = (new ContextTestException('Error'))
-        ->withContext(['path' => '/var/www/html']);
+    $e = new ContextTestException('Error')->withContext(['path' => '/var/www/html']);
 
     $output = $e->toCliOutput();
 
@@ -117,13 +112,12 @@ test('to cli output handles special characters in context values', function () {
 });
 
 test('getSanitizedContext masks sensitive data', function () {
-    $e = (new ContextTestException('Error'))
-        ->withContext([
-            'email' => 'user@example.com',
-            'token' => 'abc123',
-            'name' => 'John Doe',
-            'safe_key' => 'visible',
-        ]);
+    $e = new ContextTestException('Error')->withContext([
+        'email' => 'user@example.com',
+        'token' => 'abc123',
+        'name' => 'John Doe',
+        'safe_key' => 'visible',
+    ]);
 
     $sanitized = $e->getSanitizedContext();
 

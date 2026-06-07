@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Setup\Installation\Console\Commands;
 
 use App\Core\Support\SmartLogger;
+use App\Setup\Entities\SetupEntity;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
 use App\Setup\Installation\Console\Commands\Traits\InteractsWithInstallerCli;
-use App\Setup\SetupWizard\Entities\SetupState;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 
@@ -17,9 +17,8 @@ class SetupResetTokenCommand extends Command
 
     protected $signature = 'setup:reset-token';
 
-    public function __construct(
-        private GenerateSetupTokenAction $generateToken,
-    ) {
+    public function __construct(private GenerateSetupTokenAction $generateToken)
+    {
         parent::__construct();
         $this->description = __('setup.reset_token.description');
     }
@@ -35,7 +34,7 @@ class SetupResetTokenCommand extends Command
             return self::FAILURE;
         }
 
-        if (SetupState::fromSettings()->isInstalled()) {
+        if (SetupEntity::get()->isInstalled()) {
             $this->displayError(__('setup.reset_token.protected'));
             $this->line('  '.__('setup.cli.try_health_check'));
 
@@ -48,7 +47,7 @@ class SetupResetTokenCommand extends Command
         }
 
         $result = $this->generateToken->execute();
-        $signedUrl = route('setup', ['setup_token' => $result['plaintext']]);
+        $signedUrl = route('setup', ['setup_token' => $result->plaintext]);
 
         $this->displaySection(__('setup.reset_token.new_token_generated'));
         $this->newLine();
@@ -58,12 +57,26 @@ class SetupResetTokenCommand extends Command
 
         $this->newLine();
         $this->line('<fg=white;options=bold>  '.__('setup.cli.manual_entry').'</>');
-        $this->line('  '.__('setup.cli.visit_url_alt').': <fg=white;options=bold>'.route('setup').'</>');
-        $this->line('  '.__('setup.cli.enter_code').": <fg=white;options=bold>{$result['plaintext']}</>");
+        $this->line(
+            '  '.
+                __('setup.cli.visit_url_alt').
+                ': <fg=white;options=bold>'.
+                route('setup').
+                '</>',
+        );
+        $this->line(
+            '  '.__('setup.cli.enter_code').": <fg=white;options=bold>{$result->plaintext}</>",
+        );
 
         $this->newLine();
-        $remainingMinutes = max(1, $result['expires_at']->diffInUTCMinutes(now()));
-        $this->line('  '.__('setup.cli.token_expires').": <fg=yellow>{$result['expires_at']->format('H:i:s T')} (".__('setup.cli.expires_in_minutes', ['count' => $remainingMinutes]).')</>');
+        $remainingMinutes = max(1, $result->expiresAt->diffInUTCMinutes(now()));
+        $this->line(
+            '  '.
+                __('setup.cli.token_expires').
+                ": <fg=yellow>{$result->expiresAt->format('H:i:s T')} (".
+                __('setup.cli.expires_in_minutes', ['count' => $remainingMinutes]).
+                ')</>',
+        );
 
         SmartLogger::info(__('setup.reset_token.success'))
             ->module('setup')

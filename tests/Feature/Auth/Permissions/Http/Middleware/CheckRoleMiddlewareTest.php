@@ -71,5 +71,7 @@ test('denies role mismatch and returns json for json request', function () {
     $response = $this->actingAs($user)->getJson('/_test_role_json');
 
     $response->assertStatus(403);
-    $response->assertJson(['message' => 'Security Access Denied. Your identity profile does not have the required clearance level.']);
+    $response->assertJson([
+        'message' => 'Security Access Denied. Your identity profile does not have the required clearance level.',
+    ]);
 });

@@ -28,15 +28,9 @@ test('system provisioner tasks list is complete', function () {
 });
 
 test('ensure_env copies env.example if env does not exist', function () {
-    File::shouldReceive('exists')
-        ->with(base_path('.env'))
-        ->once()
-        ->andReturn(false);
+    File::shouldReceive('exists')->with(base_path('.env'))->once()->andReturn(false);
 
-    File::shouldReceive('exists')
-        ->with(base_path('.env.example'))
-        ->once()
-        ->andReturn(true);
+    File::shouldReceive('exists')->with(base_path('.env.example'))->once()->andReturn(true);
 
     File::shouldReceive('copy')
         ->with(base_path('.env.example'), base_path('.env'))
@@ -48,10 +42,7 @@ test('ensure_env copies env.example if env does not exist', function () {
 });
 
 test('ensure_env does nothing if env already exists', function () {
-    File::shouldReceive('exists')
-        ->with(base_path('.env'))
-        ->once()
-        ->andReturn(true);
+    File::shouldReceive('exists')->with(base_path('.env'))->once()->andReturn(true);
 
     $provisioner = new SystemProvisioner;
     $provisioner->executeTask('ensure_env');
@@ -60,15 +51,9 @@ test('ensure_env does nothing if env already exists', function () {
 });
 
 test('generate_key calls key:generate if APP_KEY is empty', function () {
-    File::shouldReceive('get')
-        ->with(base_path('.env'))
-        ->once()
-        ->andReturn('DB_CONNECTION=sqlite'); // Env content without APP_KEY
+    File::shouldReceive('get')->with(base_path('.env'))->once()->andReturn('DB_CONNECTION=sqlite'); // Env content without APP_KEY
 
-    Artisan::shouldReceive('call')
-        ->with('key:generate')
-        ->once()
-        ->andReturn(0);
+    Artisan::shouldReceive('call')->with('key:generate')->once()->andReturn(0);
 
     $provisioner = new SystemProvisioner;
     $provisioner->executeTask('generate_key');
@@ -107,10 +92,7 @@ test('run_seeders executes SetupSeeder', function () {
 test('storage_link calls storage:link if public/storage does not exist', function () {
     // If public_path('storage') does not exist
     if (! file_exists(public_path('storage'))) {
-        Artisan::shouldReceive('call')
-            ->with('storage:link')
-            ->once()
-            ->andReturn(0);
+        Artisan::shouldReceive('call')->with('storage:link')->once()->andReturn(0);
     } else {
         // If it already exists, storage:link is not called
         Artisan::shouldReceive('call')->with('storage:link')->never();

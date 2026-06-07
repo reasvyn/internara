@@ -11,10 +11,7 @@ use Illuminate\Notifications\Notification;
 
 class ActivationCodeNotification extends Notification
 {
-    public function __construct(
-        public readonly User $user,
-        public readonly string $code,
-    ) {}
+    public function __construct(public readonly User $user, public readonly string $code) {}
 
     public function via(object $notifiable): array
     {
@@ -23,7 +20,7 @@ class ActivationCodeNotification extends Notification
 
     public function toMail(object $notifiable): object
     {
-        return (new MailMessage)
+        return new MailMessage()
             ->subject(__('user.activation.email_subject'))
             ->greeting(__('user.activation.email_greeting', ['name' => $this->user->name]))
             ->line(__('user.activation.email_intro'))

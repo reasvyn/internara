@@ -88,8 +88,11 @@ abstract class BaseRecordManager extends Component
         return $query;
     }
 
-    protected function performBulkAction(string $name, callable $callback, bool $transactional = true): void
-    {
+    protected function performBulkAction(
+        string $name,
+        callable $callback,
+        bool $transactional = true,
+    ): void {
         if (empty($this->selectedIds)) {
             flash()->warning(__('common.actions.no_records_selected'));
 
@@ -109,7 +112,10 @@ abstract class BaseRecordManager extends Component
         }
 
         flash()->success(
-            __('common.actions.bulk_action_done', ['count' => count($this->selectedIds), 'action' => $name]),
+            __('common.actions.bulk_action_done', [
+                'count' => count($this->selectedIds),
+                'action' => $name,
+            ]),
         );
         $this->clearSelection();
     }

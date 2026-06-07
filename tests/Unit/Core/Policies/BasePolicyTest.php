@@ -20,13 +20,20 @@ class MockPolicy extends BasePolicy
         return $this->isOwner($user, $model, $foreignKey);
     }
 
-    public function callIsOwnerOrAdmin(Model $user, Model $model, string $foreignKey = 'user_id'): bool
-    {
+    public function callIsOwnerOrAdmin(
+        Model $user,
+        Model $model,
+        string $foreignKey = 'user_id',
+    ): bool {
         return $this->isOwnerOrAdmin($user, $model, $foreignKey);
     }
 
-    public function callIsRelatedThrough(Model $user, Model $model, string $relation, string $foreignKey = 'id'): bool
-    {
+    public function callIsRelatedThrough(
+        Model $user,
+        Model $model,
+        string $relation,
+        string $foreignKey = 'id',
+    ): bool {
         return $this->isRelatedThrough($user, $model, $relation, $foreignKey);
     }
 }
@@ -42,7 +49,8 @@ test('base policy imports authorizes ownership and roles traits', function () {
 
 test('base policy is admin delegates to user has any role', function () {
     $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasAnyRole')
+    $user
+        ->shouldReceive('hasAnyRole')
         ->with(['super_admin', 'admin'])
         ->once()
         ->andReturnTrue();
@@ -63,7 +71,8 @@ test('base policy is owner checks foreign key match', function () {
 test('base policy is owner or admin returns true when user is admin', function () {
     $user = Mockery::mock(Model::class);
     $user->shouldReceive('getAttribute')->with('id')->andReturn(42);
-    $user->shouldReceive('hasAnyRole')
+    $user
+        ->shouldReceive('hasAnyRole')
         ->with(['super_admin', 'admin'])
         ->once()
         ->andReturnTrue();
@@ -82,9 +91,7 @@ test('base policy is related through checks relation ownership', function () {
     $related->shouldReceive('getAttribute')->with('id')->andReturn(42);
 
     $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getAttribute')
-        ->with('department')
-        ->andReturn($related);
+    $model->shouldReceive('getAttribute')->with('department')->andReturn($related);
 
     expect($this->policy->callIsRelatedThrough($user, $model, 'department'))->toBeTrue();
 });

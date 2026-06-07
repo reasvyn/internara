@@ -31,7 +31,10 @@ final class CreatePartnershipAction extends BaseAction
         return $this->transaction(function () use ($validated) {
             $partnership = Partnership::create($validated);
 
-            $this->log('partnership_created', $partnership, ['agreement_number' => $partnership->agreement_number, 'company_id' => $partnership->company_id]);
+            $this->log('partnership_created', $partnership, [
+                'agreement_number' => $partnership->agreement_number,
+                'company_id' => $partnership->company_id,
+            ]);
 
             return $partnership;
         });

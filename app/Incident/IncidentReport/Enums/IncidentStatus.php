@@ -40,7 +40,7 @@ enum IncidentStatus: string implements StatusEnum
 
     public function canTransitionTo(StatusEnum $target): bool
     {
-        if (! $target instanceof self) {
+        if (! ($target instanceof self)) {
             return false;
         }
 

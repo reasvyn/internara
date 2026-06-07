@@ -86,8 +86,11 @@ class NotificationCenter extends BaseRecordManager
     protected function applySearch(Builder $query): Builder
     {
         return $query->where(function ($q) {
-            $q->where('title', 'like', "%{$this->search}%")
-                ->orWhere('message', 'like', "%{$this->search}%");
+            $q->where('title', 'like', "%{$this->search}%")->orWhere(
+                'message',
+                'like',
+                "%{$this->search}%",
+            );
         });
     }
 
@@ -133,7 +136,9 @@ class NotificationCenter extends BaseRecordManager
 
     public function deleteSelected(DeleteNotificationAction $action): void
     {
-        $this->performBulkAction(__('notifications.ui.delete_selected'), function ($id) use ($action) {
+        $this->performBulkAction(__('notifications.ui.delete_selected'), function ($id) use (
+            $action,
+        ) {
             $notification = Notification::where('user_id', Auth::id())->where('id', $id)->first();
             if ($notification) {
                 $action->execute($notification);

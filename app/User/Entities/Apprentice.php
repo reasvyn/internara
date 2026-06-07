@@ -18,11 +18,13 @@ final readonly class Apprentice extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
-        $latestName = $model->status instanceof AccountStatus
-            ? $model->status->value
-            : ($model->status ?? ($model->relationLoaded('statuses')
-                ? $model->statuses->last()?->name
-                : $model->latestStatus()?->name));
+        $latestName =
+            $model->status instanceof AccountStatus
+                ? $model->status->value
+                : $model->status ??
+                    ($model->relationLoaded('statuses')
+                        ? $model->statuses->last()?->name
+                        : $model->latestStatus()?->name);
 
         return new self(
             status: AccountStatus::tryFrom((string) $latestName) ?? AccountStatus::PROVISIONED,

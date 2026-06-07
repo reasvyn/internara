@@ -36,9 +36,11 @@ class PartnershipFactory extends Factory
 
     public function expired(): static
     {
-        return $this->state(fn () => [
-            'status' => 'expired',
-            'end_date' => fake()->pastDay()->format('Y-m-d'),
-        ]);
+        return $this->state(
+            fn () => [
+                'status' => 'expired',
+                'end_date' => fake()->pastDay()->format('Y-m-d'),
+            ],
+        );
     }
 }

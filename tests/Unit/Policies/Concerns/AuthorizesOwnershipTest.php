@@ -14,13 +14,20 @@ class OwnershipPolicy
         return $this->isOwner($user, $model, $foreignKey);
     }
 
-    public function callIsRelatedThrough(Model $user, Model $model, string $relation, string $foreignKey = 'id'): bool
-    {
+    public function callIsRelatedThrough(
+        Model $user,
+        Model $model,
+        string $relation,
+        string $foreignKey = 'id',
+    ): bool {
         return $this->isRelatedThrough($user, $model, $relation, $foreignKey);
     }
 
-    public function callIsOwnerOrAdmin(Model $user, Model $model, string $foreignKey = 'user_id'): bool
-    {
+    public function callIsOwnerOrAdmin(
+        Model $user,
+        Model $model,
+        string $foreignKey = 'user_id',
+    ): bool {
         return $this->isOwnerOrAdmin($user, $model, $foreignKey);
     }
 
@@ -72,9 +79,7 @@ test('is related through checks relation ownership', function () {
     $related->shouldReceive('getAttribute')->with('id')->andReturn(42);
 
     $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getAttribute')
-        ->with('department')
-        ->andReturn($related);
+    $model->shouldReceive('getAttribute')->with('department')->andReturn($related);
 
     expect($this->policy->callIsRelatedThrough($user, $model, 'department'))->toBeTrue();
 });
@@ -84,9 +89,7 @@ test('is related through returns false when relation is null', function () {
     $user->shouldReceive('getAttribute')->with('id')->andReturn(42);
 
     $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getAttribute')
-        ->with('department')
-        ->andReturnNull();
+    $model->shouldReceive('getAttribute')->with('department')->andReturnNull();
 
     expect($this->policy->callIsRelatedThrough($user, $model, 'department'))->toBeFalse();
 });
@@ -104,7 +107,8 @@ test('is owner or admin returns true when user is owner', function () {
 test('is owner or admin returns true when user is admin', function () {
     $user = Mockery::mock(Model::class);
     $user->shouldReceive('getAttribute')->with('id')->andReturn(42);
-    $user->shouldReceive('hasAnyRole')
+    $user
+        ->shouldReceive('hasAnyRole')
         ->with(['super_admin', 'admin'])
         ->once()
         ->andReturnTrue();

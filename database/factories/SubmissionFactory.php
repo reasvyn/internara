@@ -33,13 +33,15 @@ class SubmissionFactory extends Factory
 
     public function graded(?float $score = null): static
     {
-        return $this->state(fn (array $attributes) => [
-            'status' => 'verified',
-            'score' => $score ?? $this->faker->randomFloat(1, 70, 100),
-            'feedback' => $this->faker->sentence(),
-            'graded_by' => User::factory(),
-            'graded_at' => now(),
-        ]);
+        return $this->state(
+            fn (array $attributes) => [
+                'status' => 'verified',
+                'score' => $score ?? $this->faker->randomFloat(1, 70, 100),
+                'feedback' => $this->faker->sentence(),
+                'graded_by' => User::factory(),
+                'graded_at' => now(),
+            ],
+        );
     }
 
     public function verified(): static

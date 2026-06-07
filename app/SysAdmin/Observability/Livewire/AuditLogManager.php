@@ -35,8 +35,7 @@ class AuditLogManager extends Component
         $query = Activity::query()->with('causer');
 
         if ($this->filterUser) {
-            $query->where('causer_id', $this->filterUser)
-                ->where('causer_type', User::class);
+            $query->where('causer_id', $this->filterUser)->where('causer_type', User::class);
         }
 
         if ($this->filterModule) {

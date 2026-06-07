@@ -15,8 +15,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DocumentRenderController extends BaseController
 {
-    public function show(Document $document, Registration $registration): StreamedResponse|RedirectResponse
-    {
+    public function show(
+        Document $document,
+        Registration $registration,
+    ): StreamedResponse|RedirectResponse {
         $target = $registration->loadMissing([
             'mentee.user.profile',
             'internship',
@@ -30,11 +32,15 @@ class DocumentRenderController extends BaseController
             ->download($document->slug.'-'.$registration->id.'.pdf');
     }
 
-    public function store(Document $document, Registration $registration, RenderDocumentAction $action): RedirectResponse
-    {
+    public function store(
+        Document $document,
+        Registration $registration,
+        RenderDocumentAction $action,
+    ): RedirectResponse {
         $rendered = $action->execute($document, $registration);
 
-        return redirect()->route('sysadmin.reports.index')
+        return redirect()
+            ->route('sysadmin.reports.index')
             ->with('success', 'Document generated successfully.');
     }
 }

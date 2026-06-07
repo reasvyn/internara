@@ -34,10 +34,13 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         if ($this->app->hasDebugModeEnabled()) {
-            $this->app->extend('translator', fn ($translator) => tap(
-                new LangChecker($translator->getLoader(), $translator->getLocale()),
-                fn (LangChecker $checker) => $checker->setFallback($translator->getFallback()),
-            ));
+            $this->app->extend(
+                'translator',
+                fn ($translator) => tap(
+                    new LangChecker($translator->getLoader(), $translator->getLocale()),
+                    fn (LangChecker $checker) => $checker->setFallback($translator->getFallback()),
+                ),
+            );
         }
 
         $this->app->bind(SendsNotifications::class, SendNotificationAction::class);
@@ -56,7 +59,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiter::for('admin', fn () => Limit::perMinute(60));
-        RateLimiter::for('global', fn (Request $request) => Limit::perMinute(120)->by($request->ip()));
+        RateLimiter::for(
+            'global',
+            fn (Request $request) => Limit::perMinute(120)->by($request->ip()),
+        );
 
         if (config('module.policies.enabled', true)) {
             $this->discoverPolicies();
@@ -72,10 +78,7 @@ class AppServiceProvider extends ServiceProvider
             $this->registerBladeNamespaces();
         }
 
-        Event::listen(
-            SetupFinalized::class,
-            [LogSetupFinalized::class, 'handle'],
-        );
+        Event::listen(SetupFinalized::class, [LogSetupFinalized::class, 'handle']);
     }
 
     public function discoverLivewireComponents(): void
@@ -122,10 +125,14 @@ class AppServiceProvider extends ServiceProvider
                 // If structure: Module/Submodule/Livewire/Class.php
                 // index: 0=Module, 1=Submodule, 2=Livewire, 3=Class.php (or index 1 is Livewire)
                 $module = $parts[0] ?? '';
-                $submodule = ($parts[1] !== $directory) ? ($parts[1] ?? '') : '';
+                $submodule = $parts[1] !== $directory ? $parts[1] ?? '' : '';
 
                 $alias = $submodule
-                    ? Str::kebab($module).'.'.Str::kebab($submodule).'.'.Str::kebab($className)
+                    ? Str::kebab($module).
+                        '.'.
+                        Str::kebab($submodule).
+                        '.'.
+                        Str::kebab($className)
                     : Str::kebab($module).'.'.Str::kebab($className);
 
                 $result[$alias] = $fqcn;
@@ -179,7 +186,7 @@ class AppServiceProvider extends ServiceProvider
                 $relativePath = str_replace($moduleDir.'/', '', $filePath);
                 $parts = explode('/', $relativePath);
                 $module = $parts[0] ?? '';
-                $submodule = ($parts[1] !== $directory) ? ($parts[1] ?? '') : '';
+                $submodule = $parts[1] !== $directory ? $parts[1] ?? '' : '';
 
                 $modelName = preg_replace('/Policy$/', '', $className);
                 $modelClass = $submodule
@@ -205,13 +212,20 @@ class AppServiceProvider extends ServiceProvider
     {
         $namespaces = Cache::remember(CacheKeys::MODULE_VIEWS, 86400, function () {
             $result = [];
-            $viewsDir = realpath(config('module.paths.views', self::MODULE_PATH.'/../resources/views'));
+            $viewsDir = realpath(
+                config('module.paths.views', self::MODULE_PATH.'/../resources/views'),
+            );
             if ($viewsDir === false) {
                 return $result;
             }
 
             $excluded = config('module.views.exclude_directories', [
-                'components', 'emails', 'errors', 'mcp', 'pdf', 'vendor',
+                'components',
+                'emails',
+                'errors',
+                'mcp',
+                'pdf',
+                'vendor',
             ]);
 
             $moduleDirs = glob($viewsDir.'/*', GLOB_ONLYDIR);

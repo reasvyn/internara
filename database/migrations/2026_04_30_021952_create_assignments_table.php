@@ -13,7 +13,11 @@ return new class extends Migration
         Schema::create('assignments', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
-            $table->foreignUuid('document_id')->nullable()->constrained('documents')->nullOnDelete();
+            $table
+                ->foreignUuid('document_id')
+                ->nullable()
+                ->constrained('documents')
+                ->nullOnDelete();
             $table->string('assignment_type')->default('project'); // report | essay | project
             $table->string('title');
             $table->text('description')->nullable();

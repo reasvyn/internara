@@ -26,9 +26,7 @@ return Configuration::from([
     'public_path' => '',
 
     // Stylesheet files
-    'styles' => [
-        '/vendor/flasher/flasher.min.css',
-    ],
+    'styles' => ['/vendor/flasher/flasher.min.css'],
 
     // Global notification options
     'options' => [

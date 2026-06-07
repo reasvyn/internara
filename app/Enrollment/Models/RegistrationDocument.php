@@ -15,7 +15,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-#[Fillable(['registration_id', 'document_id', 'status', 'admin_notes', 'verified_by', 'verified_at'])]
+#[
+    Fillable([
+        'registration_id',
+        'document_id',
+        'status',
+        'admin_notes',
+        'verified_by',
+        'verified_at',
+    ]),
+]
 class RegistrationDocument extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;

@@ -9,13 +9,14 @@ use App\Setup\SetupWizard\Listeners\LogSetupFinalized;
 use Illuminate\Support\Facades\Log;
 
 test('log setup finalized listener logs setup event via smart logger', function () {
-    Log::shouldReceive('info')
-        ->once()
-        ->with('setup_finalized', \Mockery::on(function (array $context): bool {
-            return isset($context['payload']['department_id'])
-                && isset($context['payload']['installed_at'])
-                && ($context['module'] ?? null) === 'SysAdmin';
-        }));
+    Log::shouldReceive('info')->once()->with(
+        'setup_finalized',
+        \Mockery::on(function (array $context): bool {
+            return isset($context['payload']['department_id']) &&
+                isset($context['payload']['installed_at']) &&
+                ($context['module'] ?? null) === 'SysAdmin';
+        }),
+    );
 
     $listener = new LogSetupFinalized;
     $event = new SetupFinalized(

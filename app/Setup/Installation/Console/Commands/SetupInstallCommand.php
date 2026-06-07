@@ -76,11 +76,20 @@ class SetupInstallCommand extends Command
 
             $this->newLine();
             $provider = app()->getProvider(AppServiceProvider::class);
-            $this->components->task(__('setup.cli.tasks.discover_livewire'), fn () => $provider->discoverLivewireComponents());
-            $this->components->task(__('setup.cli.tasks.discover_policies'), fn () => $provider->discoverPolicies());
-            $this->components->task(__('setup.cli.tasks.discover_views'), fn () => $provider->registerBladeNamespaces());
+            $this->components->task(
+                __('setup.cli.tasks.discover_livewire'),
+                fn () => $provider->discoverLivewireComponents(),
+            );
+            $this->components->task(
+                __('setup.cli.tasks.discover_policies'),
+                fn () => $provider->discoverPolicies(),
+            );
+            $this->components->task(
+                __('setup.cli.tasks.discover_views'),
+                fn () => $provider->registerBladeNamespaces(),
+            );
 
-            $this->displaySuccess($tokenData['plaintext'], $tokenData['expires_at']);
+            $this->displaySuccess($tokenData->plaintext, $tokenData->expiresAt);
 
             $this->warnTemplateEnvValues();
 
@@ -119,7 +128,12 @@ class SetupInstallCommand extends Command
         }
 
         if ($this->option('force')) {
-            $allowed = config('setup.force_allowed_environments', ['local', 'dev', 'development', 'testing']);
+            $allowed = config('setup.force_allowed_environments', [
+                'local',
+                'dev',
+                'development',
+                'testing',
+            ]);
 
             if (! in_array(app()->environment(), $allowed, true)) {
                 $this->displayError(__('setup.cli.force_restricted'));
@@ -129,8 +143,11 @@ class SetupInstallCommand extends Command
 
             if (app()->resolved('session.store')) {
                 session()->forget([
-                    'setup.authorized', 'setup.token', 'setup.token_input',
-                    'setup.form_data', 'setup.completed',
+                    'setup.authorized',
+                    'setup.token',
+                    'setup.token_input',
+                    'setup.form_data',
+                    'setup.completed',
                 ]);
             }
         }
@@ -138,10 +155,13 @@ class SetupInstallCommand extends Command
         $report = $this->auditor->audit();
         $this->displayAuditResults($report);
 
-        $failed = array_values(array_filter(
-            $report->checks,
-            fn ($check) => $this->isCriticalCategory($check->category) && $check->status === AuditStatus::FAIL,
-        ));
+        $failed = array_values(
+            array_filter(
+                $report->checks,
+                fn ($check) => $this->isCriticalCategory($check->category) &&
+                    $check->status === AuditStatus::FAIL,
+            ),
+        );
 
         if ($failed !== []) {
             SmartLogger::error(__('setup.cli.audit_failed'))
@@ -200,7 +220,10 @@ class SetupInstallCommand extends Command
             foreach ($categoryChecks as $check) {
                 $this->components->twoColumnDetail(
                     __("setup.checks.{$check->nameKey}", $check->nameParams),
-                    $this->formatStatusWithMessage($check->status, __("setup.checks.{$check->messageKey}", $check->messageParams)),
+                    $this->formatStatusWithMessage(
+                        $check->status,
+                        __("setup.checks.{$check->messageKey}", $check->messageParams),
+                    ),
                 );
             }
         }
@@ -242,12 +265,24 @@ class SetupInstallCommand extends Command
 
         $this->newLine();
         $this->line('<fg=white;options=bold>  '.__('setup.cli.manual_entry').'</>');
-        $this->line('  '.__('setup.cli.visit_url_alt').': <fg=white;options=bold>'.route('setup').'</>');
+        $this->line(
+            '  '.
+                __('setup.cli.visit_url_alt').
+                ': <fg=white;options=bold>'.
+                route('setup').
+                '</>',
+        );
         $this->line('  '.__('setup.cli.enter_code').": <fg=white;options=bold>{$token}</>");
 
         $this->newLine();
         $remainingMinutes = max(1, $expiresAt->diffInUTCMinutes(now()));
-        $this->line('  '.__('setup.cli.token_expires').": <fg=yellow>{$expiresAt->format('H:i:s T')} (".__('setup.cli.expires_in_minutes', ['count' => $remainingMinutes]).')</>');
+        $this->line(
+            '  '.
+                __('setup.cli.token_expires').
+                ": <fg=yellow>{$expiresAt->format('H:i:s T')} (".
+                __('setup.cli.expires_in_minutes', ['count' => $remainingMinutes]).
+                ')</>',
+        );
     }
 
     protected function handleError(\Throwable $e): void
@@ -315,9 +350,9 @@ class SetupInstallCommand extends Command
     {
         $url = config('app.url', 'http://localhost');
 
-        return str_contains($url, 'localhost')
-            || str_contains($url, '127.0.0.1')
-            || str_contains($url, 'your-domain.com');
+        return str_contains($url, 'localhost') ||
+            str_contains($url, '127.0.0.1') ||
+            str_contains($url, 'your-domain.com');
     }
 
     private function setAppUrl(string $url): void

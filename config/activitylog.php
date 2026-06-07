@@ -4,7 +4,6 @@ declare(strict_types=1);
 use App\Core\Models\ActivityLog;
 
 return [
-
     /*
      * If set to false, no activities will be saved to the database.
      */

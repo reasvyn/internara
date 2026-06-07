@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
-> Last updated: 2026-06-05
-> Changes: Added BaseEvent base class, events statistics, and Events section
+> Last updated: 2026-06-07 Changes: Refactored Core base classes and SmartLogger, updated test
+> and view counts
 
 Detailed structural and implementation reference for the **Core** module.
 
@@ -9,13 +9,18 @@ Detailed structural and implementation reference for the **Core** module.
 
 ## Overview
 
-Provides foundational infrastructure, base classes, contracts, and request lifecycle utilities that every other module depends on.
+Provides foundational infrastructure, base classes, contracts, and request lifecycle utilities that
+every other module depends on.
 
 ### Module Statistics
+
 - **Contracts**: 5 (LabelEnum, StatusEnum, ColorableEnum, SendsNotifications, SettingsStore)
-- **Base Classes**: 9 (BaseModel, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, BaseController, BaseFormRequest, BaseData, BaseEvent)
-- **Exceptions**: 6 files (base hierarchy: AppException tree + ModuleException tree, plus abstract layers and HasExceptionContext trait)
-- **Middleware**: 2 (SecurityHeaders, LogContext) — RequireSetupAccess is in Academics, SetLocale is in SysAdmin
+- **Base Classes**: 9 (BaseModel, BaseAction, BaseEntity, BasePolicy, BaseRecordManager,
+  BaseController, BaseFormRequest, BaseData, BaseEvent)
+- **Exceptions**: 6 files (base hierarchy: AppException tree + ModuleException tree, plus abstract
+  layers and HasExceptionContext trait)
+- **Middleware**: 2 (SecurityHeaders, LogContext) — RequireSetupAccess is in Academics, SetLocale is
+  in SysAdmin
 - **Support Classes**: 2 (SmartLogger, LangChecker)
 - **Models**: 2 (ActivityLog, BaseModel is abstract)
 - **Enums**: 0 (all system-wide concrete enums moved to Shared)
@@ -25,8 +30,8 @@ Provides foundational infrastructure, base classes, contracts, and request lifec
 - **Data/DTOs**: 1 (BaseData DTO base, concrete DTOs moved to Shared)
 - **Channels**: 1 (CustomDatabaseChannel)
 - **Console Commands**: 1 (module:discover)
-- **Views**: 27 (7 layouts, 13 UI components, 5 widgets, 2 top-level)
-- **Tests**: 11 (8 Feature + 3 Unit)
+- **Views**: 25 (7 layouts, 13 UI, 5 widgets)
+- **Tests**: 29 (6 Feature + 23 Unit)
 - **Submodules**: 0 (Core has no submodules — it provides infrastructure)
 - **Routes**: 0 (Core has no dedicated route file)
 
@@ -35,19 +40,37 @@ Provides foundational infrastructure, base classes, contracts, and request lifec
 ## Core Infrastructure Implementation Mechanics
 
 ### 1. The Transaction & Logging Engine (`BaseAction.php`)
-Every Command and Process Action extends `BaseAction`. When `execute()` is called, it triggers the inherited `transaction()` and `log()` logic:
-- **`transaction(Closure $callback)`**: Uses Laravel's DB transaction manager. If any query throws a Throwable, the transaction catches it, rolls back all database modifications, processes it through `HandlesActionErrors`, and rethrows it as an `AppException` or `ModuleException`.
-- **`log(string $event, Model $model, array $context = [])`**: Relies on `SmartLogger` to record mutations into Spatie's activity log tables. The context stores metadata like before/after states, omitting masked PII attributes.
+
+Every Command and Process Action extends `BaseAction`. When `execute()` is called, it triggers the
+inherited `transaction()` and `log()` logic:
+
+- **`transaction(Closure $callback)`**: Uses Laravel's DB transaction manager. If any query throws a
+  Throwable, the transaction catches it, rolls back all database modifications, processes it through
+  `HandlesActionErrors`, and rethrows it as an `AppException` or `ModuleException`.
+- **`log(string $event, Model $model, array $context = [])`**: Relies on `SmartLogger` to record
+  mutations into Spatie's activity log tables. The context stores metadata like before/after states,
+  omitting masked PII attributes.
 
 ### 2. Dual-channel Output Stream (`SmartLogger.php`)
-`SmartLogger` wraps Laravel's native logger to write structured, JSON-formatted output to two separate pipelines:
-- **Application Channel (`storage/logs/laravel.log`)**: Detailed traces, stack traces, and database query executions for local troubleshooting.
-- **Audit Channel (`activity_log` DB table)**: Immutable entries documenting administrative action records (e.g. grading updates, placement reassignments). Before logging, `PiiMasker` uses regular expressions to redact personal IDs and contact numbers.
 
-### 3. Dynamic Scan Engine (`DomainDiscoverCommand.php`)
+`SmartLogger` wraps Laravel's native logger to write structured, JSON-formatted output to two
+separate pipelines:
+
+- **Application Channel (`storage/logs/laravel.log`)**: Detailed traces, stack traces, and database
+  query executions for local troubleshooting.
+- **Audit Channel (`activity_log` DB table)**: Immutable entries documenting administrative action
+  records (e.g. grading updates, placement reassignments). Before logging, `PiiMasker` uses regular
+  expressions to redact personal IDs and contact numbers.
+
+### 3. Dynamic Scan Engine (`ModuleDiscoverCommand.php`)
+
 Instead of manual registry mappings, `module:discover` automates service discovery:
-- **File Scanner**: Traverses `app/` using regex directory matching to discover controllers, Livewire component classes, route files, and policy registrations.
-- **Boot Registries**: Dynamic mappings are compiled into single array payloads and written directly to Shared Cache storage using `CacheKeys::MODULE_LIVEWIRE` and `CacheKeys::MODULE_POLICIES` to avoid runtime directory traversal costs.
+
+- **File Scanner**: Traverses `app/` using regex directory matching to discover controllers,
+  Livewire component classes, route files, and policy registrations.
+- **Boot Registries**: Dynamic mappings are compiled into single array payloads and written directly
+  to Shared Cache storage using `CacheKeys::MODULE_LIVEWIRE` and `CacheKeys::MODULE_POLICIES` to
+  avoid runtime directory traversal costs.
 
 ---
 
@@ -55,12 +78,12 @@ Instead of manual registry mappings, `module:discover` automates service discove
 
 Located in `app/Core/Contracts/`:
 
-| Contract | Purpose | Implemented By |
-|---|---|---|
-| `LabelEnum` | Provides `label(): string` for UI display | All enums across all modules |
-| `StatusEnum` | State machine: `canTransitionTo()`, `isTerminal()`, `validTransitions()` | State machine enums (e.g., ProgramStatus, AccountStatus) |
-| `ColorableEnum` | Provides CSS color variant (`color(): string`) | Enums with visual state representation |
-| `SendsNotifications` | Binds notification dispatch to `SendNotificationAction` | Notification-sending infrastructure |
+| Contract             | Purpose                                                                  | Implemented By                                           |
+| -------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------- |
+| `LabelEnum`          | Provides `label(): string` for UI display                                | All enums across all modules                             |
+| `StatusEnum`         | State machine: `canTransitionTo()`, `isTerminal()`, `validTransitions()` | State machine enums (e.g., ProgramStatus, AccountStatus) |
+| `ColorableEnum`      | Provides CSS color variant (`color(): string`)                           | Enums with visual state representation                   |
+| `SendsNotifications` | Binds notification dispatch to `SendNotificationAction`                  | Notification-sending infrastructure                      |
 
 ---
 
@@ -89,17 +112,17 @@ ModuleException (abstract, extends RuntimeException)
 
 Located in `app/Core/`:
 
-| Class | File | Purpose | Mandatory For |
-|---|---|---|---|
-| `BaseModel` | `Models/BaseModel.php` | UUID PKs, HasFactory, soft-delete support, global scopes | All models (except User which extends `Authenticatable`) |
-| `BaseAction` | `Actions/BaseAction.php` | Transaction management, activity logging, `HandlesActionErrors` | All Command and Process Actions |
-| `BaseEntity` | `Entities/BaseEntity.php` | `final readonly` business rules, zero framework dependencies | All entities |
-| `BasePolicy` | `Policies/BasePolicy.php` | Superadmin `before()` bypass, role checks, ownership checks | All policies |
-| `BaseRecordManager` | `Livewire/BaseRecordManager.php` | CRUD table: search, sort, filter, paginate, bulk actions, row selection | All CRUD list Livewire components |
-| `BaseController` | `Http/Controllers/BaseController.php` | Common controller utilities | All HTTP controllers |
-| `BaseFormRequest` | `Http/Requests/BaseFormRequest.php` | Validation without redirect (throws `ValidationFailedException`) | All form requests |
-| `BaseData` | `Data/BaseData.php` | Abstract readonly DTO with `fromArray()` and `toArray()` | All data transfer objects |
-| `BaseEvent` | `Events/BaseEvent.php` | Abstract base event with `Dispatchable`, `eventName()`, `toPayload()` auto-extracts public properties for logging | All module events |
+| Class               | File                                  | Purpose                                                                                                           | Mandatory For                                            |
+| ------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `BaseModel`         | `Models/BaseModel.php`                | UUID PKs, HasFactory, soft-delete support, global scopes                                                          | All models (except User which extends `Authenticatable`) |
+| `BaseAction`        | `Actions/BaseAction.php`              | Transaction management, activity logging, `HandlesActionErrors`                                                   | All Command and Process Actions                          |
+| `BaseEntity`        | `Entities/BaseEntity.php`             | `final readonly` business rules, zero framework dependencies                                                      | All entities                                             |
+| `BasePolicy`        | `Policies/BasePolicy.php`             | Superadmin `before()` bypass, role checks, ownership checks                                                       | All policies                                             |
+| `BaseRecordManager` | `Livewire/BaseRecordManager.php`      | CRUD table: search, sort, filter, paginate, bulk actions, row selection                                           | All CRUD list Livewire components                        |
+| `BaseController`    | `Http/Controllers/BaseController.php` | Common controller utilities                                                                                       | All HTTP controllers                                     |
+| `BaseFormRequest`   | `Http/Requests/BaseFormRequest.php`   | Validation without redirect (throws `ValidationFailedException`)                                                  | All form requests                                        |
+| `BaseData`          | `Data/BaseData.php`                   | Abstract readonly DTO with `fromArray()` and `toArray()`                                                          | All data transfer objects                                |
+| `BaseEvent`         | `Events/BaseEvent.php`                | Abstract base event with `Dispatchable`, `eventName()`, `toPayload()` auto-extracts public properties for logging | All module events                                        |
 
 ---
 
@@ -107,42 +130,42 @@ Located in `app/Core/`:
 
 Core provides 2 middleware in `app/Core/Http/Middleware/`:
 
-| Middleware | File | Purpose |
-|---|---|---|
+| Middleware        | File                             | Purpose                                                   |
+| ----------------- | -------------------------------- | --------------------------------------------------------- |
 | `SecurityHeaders` | `Middleware/SecurityHeaders.php` | CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy |
-| `LogContext` | `Middleware/LogContext.php` | Request tracing: request_id, method, URL, IP, user_id |
+| `LogContext`      | `Middleware/LogContext.php`      | Request tracing: request_id, method, URL, IP, user_id     |
 
 ---
 
 ## Actions
 
-| File | Class | Extends | Purpose |
-|---|---|---|---|
+| File                     | Class        | Extends    | Purpose                                                                    |
+| ------------------------ | ------------ | ---------- | -------------------------------------------------------------------------- |
 | `Actions/BaseAction.php` | `BaseAction` | (abstract) | Base for all Command and Process Actions: transaction, log, error handling |
 
 ---
 
 ## Events
 
-| File | Class | Extends | Purpose |
-|---|---|---|---|
+| File                   | Class       | Extends    | Purpose                                                                                                     |
+| ---------------------- | ----------- | ---------- | ----------------------------------------------------------------------------------------------------------- |
 | `Events/BaseEvent.php` | `BaseEvent` | (abstract) | Base for all module events — Dispatchable, eventName() for log integration, toPayload() for logging payload |
 
 ---
 
 ## Models
 
-| File | Class | Extends | Purpose |
-|---|---|---|---|
-| `Models/BaseModel.php` | `BaseModel` | `Model` (abstract) | Base for all module models — UUID PKs, HasFactory, soft-delete |
-| `Models/ActivityLog.php` | `ActivityLog` | `BaseModel` | Spatie Activity Log model with query scopes |
+| File                     | Class         | Extends            | Purpose                                                        |
+| ------------------------ | ------------- | ------------------ | -------------------------------------------------------------- |
+| `Models/BaseModel.php`   | `BaseModel`   | `Model` (abstract) | Base for all module models — UUID PKs, HasFactory, soft-delete |
+| `Models/ActivityLog.php` | `ActivityLog` | `BaseModel`        | Spatie Activity Log model with query scopes                    |
 
 ---
 
 ## Livewire Components
 
-| File | Component | Extends | Purpose |
-|---|---|---|---|
+| File                             | Component           | Extends     | Purpose                                               |
+| -------------------------------- | ------------------- | ----------- | ----------------------------------------------------- |
 | `Livewire/BaseRecordManager.php` | `BaseRecordManager` | `Component` | Base CRUD table: search, sort, filter, paginate, bulk |
 
 ---
@@ -151,17 +174,17 @@ Core provides 2 middleware in `app/Core/Http/Middleware/`:
 
 Located in `app/Core/Support/`:
 
-| Class | File | Purpose |
-|---|---|---|
+| Class         | File                      | Purpose                                                         |
+| ------------- | ------------------------- | --------------------------------------------------------------- |
 | `SmartLogger` | `Support/SmartLogger.php` | Fluent dual-channel logger: system + activity, with PII masking |
-| `LangChecker` | `Support/LangChecker.php` | Dev helper: logs warnings for missing translation keys |
+| `LangChecker` | `Support/LangChecker.php` | Dev helper: logs warnings for missing translation keys          |
 
 ---
 
 ## Authorization Policies
 
-| File | Policy | Purpose |
-|---|---|---|
+| File                      | Policy       | Purpose                                                                  |
+| ------------------------- | ------------ | ------------------------------------------------------------------------ |
 | `Policies/BasePolicy.php` | `BasePolicy` | Base for all policies — superadmin bypass, role checks, ownership checks |
 
 ---
@@ -176,7 +199,7 @@ app/Core/
 │   └── CustomDatabaseChannel.php          ← Custom DB notification channel
 ├── Console/
 │   └── Commands/
-│       └── DomainDiscoverCommand.php      ← module:discover
+│       └── ModuleDiscoverCommand.php      ← module:discover
 ├── Contracts/
 │   ├── ColorableEnum.php                  ← CSS color variant contract
 │   ├── LabelEnum.php                      ← Enum label contract
@@ -221,10 +244,11 @@ app/Core/
 This module integrates with the system across the following directories and resources:
 
 - **Submodules**: None (infrastructure foundation)
-- **Business Logic (`app/`)**: Located in [app/Core/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Core/)
+- **Business Logic (`app/`)**: Located in
+  [app/Core/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Core/)
 - **Routing (`routes/`)**: None (uses system health check path `/up` defined in `bootstrap/app.php`)
-- **Views (`views/`)**: Blade templates and layouts are in [resources/views/core/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/core/)
+- **Views (`views/`)**: Blade templates and layouts are in
+  [resources/views/core/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/core/)
 - **Testing (`tests/`)**: Feature `tests/Feature/Core/`, Unit `tests/Unit/Core/`
 
-
-*For overview and business context, see [core.md](core.md)*
+_For overview and business context, see [core.md](core.md)_

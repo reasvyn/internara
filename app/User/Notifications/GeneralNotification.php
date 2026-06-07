@@ -20,7 +20,7 @@ class GeneralNotification extends Notification implements ShouldQueue
         public string $message,
         public ?string $link = null,
         public ?array $data = null,
-        public bool $sendEmail = true
+        public bool $sendEmail = true,
     ) {}
 
     public function via($notifiable): array
@@ -36,10 +36,16 @@ class GeneralNotification extends Notification implements ShouldQueue
 
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        return new MailMessage()
             ->subject($this->title)
             ->line($this->message)
-            ->when($this->link, fn ($m) => $m->action(__('notifications.ui.view_details', [], 'id'), url($this->link)));
+            ->when(
+                $this->link,
+                fn ($m) => $m->action(
+                    __('notifications.ui.view_details', [], 'id'),
+                    url($this->link),
+                ),
+            );
     }
 
     public function toCustomDatabase($notifiable): array

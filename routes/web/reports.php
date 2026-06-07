@@ -16,5 +16,7 @@ Route::prefix('admin')
     ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
-        Route::get('/reports/{report}/download', [ReportController::class, 'download'])->name('reports.download');
+        Route::get('/reports/{report}/download', [ReportController::class, 'download'])->name(
+            'reports.download',
+        );
     });

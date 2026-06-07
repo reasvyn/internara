@@ -37,11 +37,13 @@ abstract readonly class BaseData
             } elseif ($param->isDefaultValueAvailable()) {
                 $constructorParams[$name] = $param->getDefaultValue();
             } else {
-                throw new \InvalidArgumentException(sprintf(
-                    'Missing required constructor parameter "%s" for %s',
-                    $name,
-                    static::class,
-                ));
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'Missing required constructor parameter "%s" for %s',
+                        $name,
+                        static::class,
+                    ),
+                );
             }
         }
 

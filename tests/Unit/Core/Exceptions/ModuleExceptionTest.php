@@ -9,8 +9,7 @@ use App\Core\Exceptions\ModuleException;
 class MockModuleException extends ModuleException {}
 
 test('module exception holds hint and context and is user facing by default', function () {
-    $e = (new MockModuleException('Business rule broken'))
-        ->withHint('Contact supervisor');
+    $e = new MockModuleException('Business rule broken')->withHint('Contact supervisor');
 
     expect($e->getMessage())->toBe('Business rule broken');
     expect($e->getHint())->toBe('Contact supervisor');
@@ -18,8 +17,7 @@ test('module exception holds hint and context and is user facing by default', fu
 });
 
 test('module exception stores context', function () {
-    $e = (new MockModuleException('Error'))
-        ->withContext(['step' => 'validation']);
+    $e = new MockModuleException('Error')->withContext(['step' => 'validation']);
 
     expect($e->getContext())->toBe(['step' => 'validation']);
 });
@@ -31,7 +29,7 @@ test('module exception should report by default', function () {
 });
 
 test('module exception outputs cli format', function () {
-    $e = (new MockModuleException('Module failed'))
+    $e = new MockModuleException('Module failed')
         ->withHint('Restart the service')
         ->withContext(['code' => 500]);
 

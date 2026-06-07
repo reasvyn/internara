@@ -7,10 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MockLogEvent extends BaseEvent
 {
-    public function __construct(
-        public readonly string $name,
-        public readonly int $count,
-    ) {}
+    public function __construct(public readonly string $name, public readonly int $count) {}
 
     public function eventName(): string
     {
@@ -47,10 +44,7 @@ class MockEventWithObjectToArray extends BaseEvent
 
 class MockMetadata
 {
-    public function __construct(
-        public string $fileName,
-        public int $size,
-    ) {}
+    public function __construct(public string $fileName, public int $size) {}
 
     public function toArray(): array
     {

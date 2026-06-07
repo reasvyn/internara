@@ -99,8 +99,10 @@ class InternshipGroupManager extends BaseRecordManager
         $this->showModal = true;
     }
 
-    public function save(CreateInternshipGroupAction $create, UpdateInternshipGroupAction $update): void
-    {
+    public function save(
+        CreateInternshipGroupAction $create,
+        UpdateInternshipGroupAction $update,
+    ): void {
         $this->form->validate();
 
         if ($this->editingId) {
@@ -167,8 +169,16 @@ class InternshipGroupManager extends BaseRecordManager
 
         $this->validate([
             'memberFormData.role' => ['required', "in:{$allowedRoles}"],
-            'memberFormData.registration_id' => ['required_if:memberFormData.role,student', 'nullable', 'exists:registrations,id'],
-            'memberFormData.mentor_id' => ['required_if:memberFormData.role,school_teacher,industry_supervisor', 'nullable', 'exists:mentors,id'],
+            'memberFormData.registration_id' => [
+                'required_if:memberFormData.role,student',
+                'nullable',
+                'exists:registrations,id',
+            ],
+            'memberFormData.mentor_id' => [
+                'required_if:memberFormData.role,school_teacher,industry_supervisor',
+                'nullable',
+                'exists:mentors,id',
+            ],
         ]);
 
         $group = InternshipGroup::findOrFail($this->memberFormData['group_id']);

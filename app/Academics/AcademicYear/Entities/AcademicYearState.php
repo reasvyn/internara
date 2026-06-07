@@ -9,10 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class AcademicYearState extends BaseEntity
 {
-    public function __construct(
-        private bool $isActive,
-        private bool $hasRelatedRecords = false,
-    ) {}
+    public function __construct(private bool $isActive, private bool $hasRelatedRecords = false) {}
 
     public static function fromModel(Model $model): static
     {

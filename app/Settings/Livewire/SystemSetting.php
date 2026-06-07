@@ -60,7 +60,10 @@ class SystemSetting extends Component
         );
 
         $this->brandingForm->primary_color = Settings::get('primary_color', $defaults['primary']);
-        $this->brandingForm->secondary_color = Settings::get('secondary_color', $defaults['secondary']);
+        $this->brandingForm->secondary_color = Settings::get(
+            'secondary_color',
+            $defaults['secondary'],
+        );
         $this->brandingForm->accent_color = Settings::get('accent_color', $defaults['accent']);
         $this->brandingForm->base_color = Settings::get('base_color', $defaults['base']);
         $this->brandingForm->selected_preset = $this->brandingForm->detectPreset();
@@ -84,10 +87,14 @@ class SystemSetting extends Component
     #[Computed]
     public function academicYearOptions(): array
     {
-        return $this->academicYears->map(fn ($year) => [
-            'id' => $year->name,
-            'name' => $year->name,
-        ])->toArray();
+        return $this->academicYears
+            ->map(
+                fn ($year) => [
+                    'id' => $year->name,
+                    'name' => $year->name,
+                ],
+            )
+            ->toArray();
     }
 
     public function applyPreset(string $key): void
@@ -227,10 +234,7 @@ class SystemSetting extends Component
             'mail_from_address' => 'required|email',
         ]);
 
-        $sent = $action->execute(
-            auth()->user()->email,
-            $this->mailSettingsForm->toMailConfig(),
-        );
+        $sent = $action->execute(auth()->user()->email, $this->mailSettingsForm->toMailConfig());
 
         if ($sent) {
             flash()->success(__('setting.messages.test_email_sent'));

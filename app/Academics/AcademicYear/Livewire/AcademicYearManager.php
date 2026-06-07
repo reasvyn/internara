@@ -66,8 +66,7 @@ class AcademicYearManager extends BaseRecordManager
         $direction = $this->sortBy['direction'] ?? 'asc';
 
         if ($column === 'is_active') {
-            return $query->orderBy('is_active', 'desc')
-                ->orderBy('name', $direction);
+            return $query->orderBy('is_active', 'desc')->orderBy('name', $direction);
         }
 
         return $query->orderBy($column, $direction);

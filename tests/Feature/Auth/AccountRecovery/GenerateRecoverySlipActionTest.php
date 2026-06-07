@@ -19,9 +19,10 @@ test('generates 10 recovery codes for user', function () {
 
     expect($result['code'])->toBeInstanceOf(AccountRecoveryCode::class);
     expect($result['plaintext'])->toHaveCount(10);
-    expect(AccountRecoveryCode::where('user_id', $this->user->id)
-        ->where('token_type', 'account_recovery')
-        ->count()
+    expect(
+        AccountRecoveryCode::where('user_id', $this->user->id)
+            ->where('token_type', 'account_recovery')
+            ->count(),
     )->toBe(10);
 });
 

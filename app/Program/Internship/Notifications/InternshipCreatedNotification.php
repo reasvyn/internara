@@ -37,12 +37,14 @@ class InternshipCreatedNotification extends Notification implements ShouldQueue
 
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        return new MailMessage()
             ->subject(__('notifications.internship_created.mail_subject'))
             ->greeting(__('notifications.welcome.mail_greeting', ['name' => $notifiable->name]))
-            ->line(__('notifications.internship_created.mail_line1', [
-                'name' => $this->internshipName,
-            ]))
+            ->line(
+                __('notifications.internship_created.mail_line1', [
+                    'name' => $this->internshipName,
+                ]),
+            )
             ->action(__('notifications.internship_created.mail_action'), url('/admin/internships'));
     }
 

@@ -30,7 +30,9 @@ final class UpdatePartnershipAction extends BaseAction
         return $this->transaction(function () use ($partnership, $validated) {
             $partnership->update($validated);
 
-            $this->log('partnership_updated', $partnership, ['agreement_number' => $partnership->agreement_number]);
+            $this->log('partnership_updated', $partnership, [
+                'agreement_number' => $partnership->agreement_number,
+            ]);
 
             return $partnership->fresh();
         });

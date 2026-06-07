@@ -26,9 +26,12 @@ final class GetTeacherDashboardStatsAction extends BaseAction
             ->count();
 
         $pendingJournals = Logbook::where('status', 'submitted')
-            ->whereHas('registration', fn ($q) => $q
-                ->where('status', 'active')
-                ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)))
+            ->whereHas(
+                'registration',
+                fn ($q) => $q
+                    ->where('status', 'active')
+                    ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)),
+            )
             ->count();
 
         $activeCompanies = Registration::where('status', 'active')
@@ -41,9 +44,12 @@ final class GetTeacherDashboardStatsAction extends BaseAction
 
         // Ungraded Submissions
         $ungradedSubmissions = Submission::where('status', SubmissionStatus::SUBMITTED->value)
-            ->whereHas('registration', fn ($q) => $q
-                ->where('status', 'active')
-                ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)))
+            ->whereHas(
+                'registration',
+                fn ($q) => $q
+                    ->where('status', 'active')
+                    ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)),
+            )
             ->count();
 
         // Supervision Logs count for the teacher
@@ -54,9 +60,12 @@ final class GetTeacherDashboardStatsAction extends BaseAction
             IncidentStatus::REPORTED->value,
             IncidentStatus::INVESTIGATING->value,
         ])
-            ->whereHas('registration', fn ($q) => $q
-                ->where('status', 'active')
-                ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)))
+            ->whereHas(
+                'registration',
+                fn ($q) => $q
+                    ->where('status', 'active')
+                    ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId)),
+            )
             ->count();
 
         return [

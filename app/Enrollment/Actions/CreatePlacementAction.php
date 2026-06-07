@@ -15,7 +15,10 @@ final class CreatePlacementAction extends BaseAction
             $data['filled_quota'] = 0;
             $placement = Placement::create($data);
 
-            $this->log('placement_created', $placement, ['name' => $placement->name, 'quota' => $placement->quota]);
+            $this->log('placement_created', $placement, [
+                'name' => $placement->name,
+                'quota' => $placement->quota,
+            ]);
 
             return $placement;
         });

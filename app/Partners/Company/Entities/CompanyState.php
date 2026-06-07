@@ -9,10 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class CompanyState extends BaseEntity
 {
-    public function __construct(
-        private int $placementCount,
-        private int $partnershipCount,
-    ) {}
+    public function __construct(private int $placementCount, private int $partnershipCount) {}
 
     public static function fromModel(Model $model): static
     {

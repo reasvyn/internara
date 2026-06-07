@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Security Headers
@@ -30,7 +29,10 @@ return [
     | and maryUI. Override in your .env or config for stricter protection.
     |
     */
-    'csp' => env('CSP_POLICY', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' ws: wss:;"),
+    'csp' => env(
+        'CSP_POLICY',
+        "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' ws: wss:;",
+    ),
 
     /*
     |--------------------------------------------------------------------------
@@ -59,5 +61,4 @@ return [
     'hsts_include_subdomains' => (bool) env('HSTS_INCLUDE_SUBDOMAINS', true),
 
     'hsts_preload' => (bool) env('HSTS_PRELOAD', false),
-
 ];

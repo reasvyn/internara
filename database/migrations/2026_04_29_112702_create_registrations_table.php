@@ -14,7 +14,11 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('student_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
-            $table->foreignUuid('placement_id')->nullable()->constrained('placements')->onDelete('set null');
+            $table
+                ->foreignUuid('placement_id')
+                ->nullable()
+                ->constrained('placements')
+                ->onDelete('set null');
             $table->index('placement_id');
 
             $table->date('start_date')->nullable();
@@ -27,7 +31,6 @@ return new class extends Migration
             $table->index(['student_id', 'internship_id']);
             $table->index(['start_date', 'end_date']);
         });
-
     }
 
     public function down(): void

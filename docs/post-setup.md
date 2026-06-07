@@ -1,18 +1,17 @@
 # Post-Setup: First Actions as Administrator
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
+> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
+> conventions overhaul
 
-Congratulations — the setup wizard is complete and Internara is running.
-This guide walks through the essential first steps to prepare the system
-for daily use by students, teachers, and supervisors.
+Congratulations — the setup wizard is complete and Internara is running. This guide walks through
+the essential first steps to prepare the system for daily use by students, teachers, and
+supervisors.
 
 ---
 
 ## Phase 1: Foundation (Day 1)
 
-These steps configure the core institutional data that everything else
-depends on.
+These steps configure the core institutional data that everything else depends on.
 
 ### 1. Configure System Settings
 
@@ -27,32 +26,31 @@ depends on.
 
 **School → Academic Years** — add the current and upcoming school years.
 
-| Field | Example |
-|---|---|
-| Name | "2025/2026" |
-| Start Date | July 14, 2025 |
-| End Date | June 26, 2026 |
-| Active | Yes (only one year can be active at a time) |
+| Field      | Example                                     |
+| ---------- | ------------------------------------------- |
+| Name       | "2025/2026"                                 |
+| Start Date | July 14, 2025                               |
+| End Date   | June 26, 2026                               |
+| Active     | Yes (only one year can be active at a time) |
 
 ### 3. Complete Departments
 
 **School → Departments** — add all study programs your school offers.
 
-The wizard created one department. Add the rest here, each with a name
-and optional description (e.g., "Software Engineering", "Network
-Administration", "Accounting").
+The wizard created one department. Add the rest here, each with a name and optional description
+(e.g., "Software Engineering", "Network Administration", "Accounting").
 
 ### 4. Register Partner Companies
 
 **Partnership → Companies** — add every company that hosts interns.
 
-| Field | Example |
-|---|---|
-| Name | "PT Teknologi Maju" |
-| Address | Company street address |
-| Email | Contact email |
-| Phone | Contact phone number |
-| PIC | Person in charge name |
+| Field     | Example                |
+| --------- | ---------------------- |
+| Name      | "PT Teknologi Maju"    |
+| Address   | Company street address |
+| Email     | Contact email          |
+| Phone     | Contact phone number   |
+| PIC       | Person in charge name  |
 | PIC Phone | Person in charge phone |
 
 ### 5. Create Partnerships (MoU)
@@ -74,16 +72,15 @@ Only companies with an active partnership can host students.
 
 **Admin → User Management** — create accounts for:
 
-| Role | Description | Created By |
-|---|---|---|
-| **Teacher** | School-based mentor who supervises students and grades assignments | Admin |
-| **Supervisor** | Company-based mentor who supervises daily work at the internship site | Admin |
-| **Student** | Internship participant | Admin or via Registration |
+| Role           | Description                                                           | Created By                |
+| -------------- | --------------------------------------------------------------------- | ------------------------- |
+| **Teacher**    | School-based mentor who supervises students and grades assignments    | Admin                     |
+| **Supervisor** | Company-based mentor who supervises daily work at the internship site | Admin                     |
+| **Student**    | Internship participant                                                | Admin or via Registration |
 
 Each account needs: name, email, username, and an initial password.
 
-> See [RBAC](rbac.md) for
-> the full role hierarchy and permission model.
+> See [RBAC](rbac.md) for the full role hierarchy and permission model.
 
 ### 7. Assign Mentors
 
@@ -92,8 +89,7 @@ Each account needs: name, email, username, and an initial password.
 - **Teacher mentors** — school-side mentors who visit students at companies
 - **Supervisor mentors** — company-side mentors who guide daily work
 
-Toggle the `Is Mentor` flag on each user. Active mentors appear in
-placement and supervision flows.
+Toggle the `Is Mentor` flag on each user. Active mentors appear in placement and supervision flows.
 
 ---
 
@@ -101,15 +97,14 @@ placement and supervision flows.
 
 ### 8. Create Internship Periods
 
-**Internship** — add one or more internship periods if not already done
-in the wizard:
+**Internship** — add one or more internship periods if not already done in the wizard:
 
-| Field | Example |
-|---|---|
-| Name | "Work Placement 2025/2026" |
+| Field       | Example                                      |
+| ----------- | -------------------------------------------- |
+| Name        | "Work Placement 2025/2026"                   |
 | Description | "Industrial practice for grade XII students" |
-| Start Date | August 1, 2025 |
-| End Date | December 19, 2025 |
+| Start Date  | August 1, 2025                               |
+| End Date    | December 19, 2025                            |
 
 ### 9. Configure Document Requirements
 
@@ -120,8 +115,7 @@ in the wizard:
 - Parental consent form
 - Health certificate
 
-Attach file templates if available. Requirements can be mandatory or
-optional.
+Attach file templates if available. Requirements can be mandatory or optional.
 
 ### 10. Open Student Registration
 
@@ -138,9 +132,8 @@ optional.
 
 ### 12. Review & Verify Registrations
 
-**Registration → Review** — approve or reject student applications.
-Verify uploaded documents. Each approved student becomes eligible for
-placement.
+**Registration → Review** — approve or reject student applications. Verify uploaded documents. Each
+approved student becomes eligible for placement.
 
 ### 13. Place Students at Companies
 
@@ -152,9 +145,8 @@ placement.
 
 ### 14. Handle Placement Changes
 
-If a student needs to change companies mid-program, use the
-**Placement Change Request** flow. The request goes through approval
-before the change takes effect.
+If a student needs to change companies mid-program, use the **Placement Change Request** flow. The
+request goes through approval before the change takes effect.
 
 ---
 
@@ -164,18 +156,17 @@ before the change takes effect.
 
 Before the first day of the placement program, confirm these workflows work:
 
-| Workflow | How To Verify |
-|---|---|
-| Attendance | Student clocks in → attendance record created |
-| Logbook | Student creates entry → mentor can view and comment |
+| Workflow   | How To Verify                                                 |
+| ---------- | ------------------------------------------------------------- |
+| Attendance | Student clocks in → attendance record created                 |
+| Logbook    | Student creates entry → mentor can view and comment           |
 | Assignment | Teacher creates assignment → student submits → teacher grades |
-| Absence | Student submits absence request → mentor approves/rejects |
+| Absence    | Student submits absence request → mentor approves/rejects     |
 
 ### 16. Configure Notifications
 
-Notifications are delivered via the in-app notification center (bell icon).
-If email or WebSocket (Reverb) is configured, users receive real-time
-alerts and/or email delivery.
+Notifications are delivered via the in-app notification center (bell icon). If email or WebSocket
+(Reverb) is configured, users receive real-time alerts and/or email delivery.
 
 ---
 
@@ -216,16 +207,16 @@ Phase 5 — Live
 
 ## References
 
-| Document | What It Covers |
-|---|---|
-| [RBAC](rbac.md) | Role hierarchy, permissions, policies |
-| [Module Index](modules/module-index.md) | All module documentation |
-| [Academics](modules/academics.md) | Managing schools, departments, academic years |
-| [Partners](modules/partners.md) | Company and MoU management |
-| [Enrollment](modules/enrollment.md) | Student registration and verification |
-| [Enrollment](modules/enrollment.md) | Student placement and change requests |
-| [Program](modules/program.md) | Periods, document requirements |
-| [Guidance](modules/guidance.md) | Mentor assignment and supervision logs |
-| [Journals](modules/journals.md) | Clock-in/out, absence requests |
-| [Assignment](modules/assignment.md) | Assignments, submissions, grading |
-| [Journals](modules/journals.md) | Daily activity journal |
+| Document                                | What It Covers                                |
+| --------------------------------------- | --------------------------------------------- |
+| [RBAC](rbac.md)                         | Role hierarchy, permissions, policies         |
+| [Module Index](modules/module-index.md) | All module documentation                      |
+| [Academics](modules/academics.md)       | Managing schools, departments, academic years |
+| [Partners](modules/partners.md)         | Company and MoU management                    |
+| [Enrollment](modules/enrollment.md)     | Student registration and verification         |
+| [Enrollment](modules/enrollment.md)     | Student placement and change requests         |
+| [Program](modules/program.md)           | Periods, document requirements                |
+| [Guidance](modules/guidance.md)         | Mentor assignment and supervision logs        |
+| [Journals](modules/journals.md)         | Clock-in/out, absence requests                |
+| [Assignment](modules/assignment.md)     | Assignments, submissions, grading             |
+| [Journals](modules/journals.md)         | Daily activity journal                        |

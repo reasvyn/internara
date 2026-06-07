@@ -32,8 +32,14 @@ class GdprDeletionLogs extends Component
     public function logs()
     {
         return GdprDeletionLog::query()
-            ->when($this->search, fn (Builder $q) => $q->where('user_email', 'like', "%{$this->search}%"))
-            ->when($this->filterType, fn (Builder $q) => $q->where('deletion_type', $this->filterType))
+            ->when(
+                $this->search,
+                fn (Builder $q) => $q->where('user_email', 'like', "%{$this->search}%"),
+            )
+            ->when(
+                $this->filterType,
+                fn (Builder $q) => $q->where('deletion_type', $this->filterType),
+            )
             ->latest('deleted_at')
             ->paginate(20);
     }

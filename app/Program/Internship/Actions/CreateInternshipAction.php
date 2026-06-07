@@ -25,7 +25,10 @@ final class CreateInternshipAction extends BaseAction
         return $this->transaction(function () use ($data) {
             $internship = Internship::create($data);
 
-            $this->log('internship_created', $internship, ['name' => $internship->name, 'academic_year_id' => $internship->academic_year_id]);
+            $this->log('internship_created', $internship, [
+                'name' => $internship->name,
+                'academic_year_id' => $internship->academic_year_id,
+            ]);
 
             event(new InternshipCreated($internship, auth()->user()));
 

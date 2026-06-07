@@ -6,6 +6,7 @@ namespace Tests\Feature\Setup\Installation;
 
 use App\Settings\Support\Settings;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
+use App\Setup\Installation\Data\SetupTokenData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Crypt;
 
@@ -16,11 +17,12 @@ test('generate setup token action creates token and increments version', functio
 
     $result = $action->execute();
 
-    expect($result['plaintext'])->not->toBeEmpty();
-    expect($result['expires_at'])->not->toBeNull();
+    expect($result)->toBeInstanceOf(SetupTokenData::class);
+    expect($result->plaintext)->not->toBeEmpty();
+    expect($result->expiresAt)->not->toBeNull();
 
     $token = Settings::get('setup.install_token');
     expect($token)->not->toBeNull();
-    expect(Crypt::decryptString($token))->toBe($result['plaintext']);
+    expect(Crypt::decryptString($token))->toBe($result->plaintext);
     expect(Settings::get('setup.token_version'))->toBe(1);
 });

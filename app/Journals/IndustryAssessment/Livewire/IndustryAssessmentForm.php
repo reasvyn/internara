@@ -42,7 +42,12 @@ class IndustryAssessmentForm extends Component
         $user = auth()->user();
 
         $registrations = Registration::query()
-            ->whereHas('mentors', fn ($q) => $q->where('user_id', $user->id)->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR))
+            ->whereHas(
+                'mentors',
+                fn ($q) => $q
+                    ->where('user_id', $user->id)
+                    ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR),
+            )
             ->where('status', 'active')
             ->get();
 
@@ -123,7 +128,12 @@ class IndustryAssessmentForm extends Component
 
         $registrations = Registration::query()
             ->with('mentee.user')
-            ->whereHas('mentors', fn ($q) => $q->where('user_id', $user->id)->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR))
+            ->whereHas(
+                'mentors',
+                fn ($q) => $q
+                    ->where('user_id', $user->id)
+                    ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR),
+            )
             ->where('status', 'active')
             ->get();
 

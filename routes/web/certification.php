@@ -8,8 +8,9 @@ use App\Certification\Certificate\Livewire\CertificateTemplateManager;
 use App\Certification\Certificate\Livewire\StudentCertificates;
 
 Route::middleware('auth')->group(function () {
-    Route::get('/certificates/{certificate}/download', CertificateDownloadController::class)
-        ->name('certificates.download');
+    Route::get('/certificates/{certificate}/download', CertificateDownloadController::class)->name(
+        'certificates.download',
+    );
 });
 
 Route::prefix('student')
@@ -23,6 +24,8 @@ Route::prefix('admin')
     ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
-        Route::livewire('/certificates/templates', CertificateTemplateManager::class)->name('certificates.templates');
+        Route::livewire('/certificates/templates', CertificateTemplateManager::class)->name(
+            'certificates.templates',
+        );
         Route::livewire('/certificates', CertificateList::class)->name('certificates');
     });

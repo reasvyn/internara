@@ -6,8 +6,8 @@ namespace App\Setup\SetupWizard\Livewire;
 
 use App\Core\Support\SmartLogger;
 use App\Settings\Support\AppInfo;
+use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
-use App\Setup\SetupWizard\Entities\SetupState;
 use App\Setup\SetupWizard\Livewire\Forms\DepartmentForm;
 use App\Setup\SetupWizard\Livewire\Forms\InternshipForm;
 use App\Setup\SetupWizard\Livewire\Forms\SchoolForm;
@@ -45,7 +45,7 @@ class SetupWizard extends Component
     public function mount(): void
     {
         try {
-            $state = SetupState::fromSettings();
+            $state = SetupEntity::get();
         } catch (\Throwable $e) {
             SmartLogger::error('Setup wizard mount failed')
                 ->module('Setup')
@@ -96,10 +96,11 @@ class SetupWizard extends Component
 
     public function updated(string $property): void
     {
-        if (str_starts_with($property, 'schoolForm.')
-            || str_starts_with($property, 'departmentForm.')
-            || str_starts_with($property, 'superAdminForm.')
-            || str_starts_with($property, 'internshipForm.')
+        if (
+            str_starts_with($property, 'schoolForm.') ||
+            str_starts_with($property, 'departmentForm.') ||
+            str_starts_with($property, 'superAdminForm.') ||
+            str_starts_with($property, 'internshipForm.')
         ) {
             $this->saveState();
         }
@@ -217,7 +218,15 @@ class SetupWizard extends Component
 
     public function goToStep(string $stepKey): void
     {
-        $stepKeys = config('setup.wizard.step_keys', ['welcome', 'account', 'school', 'department', 'internship', 'finalize', 'complete']);
+        $stepKeys = config('setup.wizard.step_keys', [
+            'welcome',
+            'account',
+            'school',
+            'department',
+            'internship',
+            'finalize',
+            'complete',
+        ]);
         $stepIndex = array_search($stepKey, $stepKeys, true);
 
         if ($stepIndex === false) {
@@ -226,7 +235,7 @@ class SetupWizard extends Component
 
         $targetStep = $stepIndex + 1;
 
-        if ($targetStep < $this->currentStep || SetupState::fromSettings()->isStepCompleted($stepKey)) {
+        if ($targetStep < $this->currentStep || SetupEntity::get()->isStepCompleted($stepKey)) {
             $this->currentStep = $targetStep;
         }
     }
@@ -299,12 +308,22 @@ class SetupWizard extends Component
 
     public function title(): string
     {
-        return __('setup.wizard.page_title', ['app_name' => AppInfo::get('name', config('app.name'))]);
+        return __('setup.wizard.page_title', [
+            'app_name' => AppInfo::get('name', config('app.name')),
+        ]);
     }
 
     public function render(): View
     {
-        $stepKeys = config('setup.wizard.step_keys', ['welcome', 'account', 'school', 'department', 'internship', 'finalize', 'complete']);
+        $stepKeys = config('setup.wizard.step_keys', [
+            'welcome',
+            'account',
+            'school',
+            'department',
+            'internship',
+            'finalize',
+            'complete',
+        ]);
 
         return view('setup.setup-wizard.setup-wizard', [
             'appName' => AppInfo::get('name', config('app.name')),

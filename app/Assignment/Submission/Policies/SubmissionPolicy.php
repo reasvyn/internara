@@ -15,11 +15,7 @@ class SubmissionPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin',
-            'admin',
-            'teacher',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
     }
 
     public function view(User $user, Submission $submission): bool
@@ -49,11 +45,7 @@ class SubmissionPolicy extends BasePolicy
 
     public function verify(User $user, Submission $submission): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin',
-            'admin',
-            'teacher',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
     }
 
     public function delete(User $user, Submission $submission): bool

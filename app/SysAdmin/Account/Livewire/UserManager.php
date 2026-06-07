@@ -85,8 +85,14 @@ class UserManager extends BaseRecordManager
             ->when($this->filters['status'] ?? null, function ($q, $status) {
                 $q->whereHas('statuses', fn ($qs) => $qs->where('name', $status)->latest('id'));
             })
-            ->when($this->filters['created_from'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
-            ->when($this->filters['created_to'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '<=', $v));
+            ->when(
+                $this->filters['created_from'] ?? null,
+                fn ($q, $v) => $q->whereDate('created_at', '>=', $v),
+            )
+            ->when(
+                $this->filters['created_to'] ?? null,
+                fn ($q, $v) => $q->whereDate('created_at', '<=', $v),
+            );
     }
 
     #[Computed]
@@ -172,7 +178,11 @@ class UserManager extends BaseRecordManager
             );
             flash()->success(__('user.manager.success_updated'));
         } else {
-            $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], [], $this->form->roles);
+            $user = $createAction->execute(
+                ['name' => $this->form->name, 'email' => $this->form->email],
+                [],
+                $this->form->roles,
+            );
             $this->userModal = false;
             $this->redirect(route('sysadmin.users.account-slip', $user));
 
@@ -213,10 +223,12 @@ class UserManager extends BaseRecordManager
         $result = $batchDelete->execute($this->selectedIds);
 
         if ($result['deleted'] > 0) {
-            flash()->success(__('common.actions.bulk_action_done', [
-                'count' => $result['deleted'],
-                'action' => __('common.actions.delete'),
-            ]));
+            flash()->success(
+                __('common.actions.bulk_action_done', [
+                    'count' => $result['deleted'],
+                    'action' => __('common.actions.delete'),
+                ]),
+            );
         }
 
         $this->clearSelection();
@@ -224,7 +236,9 @@ class UserManager extends BaseRecordManager
 
     public function lockSelected(SetUserStatusAction $setStatus): void
     {
-        $this->performBulkAction(__('common.actions.lock'), function (string $id) use ($setStatus): void {
+        $this->performBulkAction(__('common.actions.lock'), function (string $id) use (
+            $setStatus,
+        ): void {
             $user = User::findOrFail($id);
             $setStatus->execute($user, AccountStatus::SUSPENDED, 'Batch lock by administrator');
         });
@@ -232,7 +246,9 @@ class UserManager extends BaseRecordManager
 
     public function unlockSelected(SetUserStatusAction $setStatus): void
     {
-        $this->performBulkAction(__('common.actions.unlock'), function (string $id) use ($setStatus): void {
+        $this->performBulkAction(__('common.actions.unlock'), function (string $id) use (
+            $setStatus,
+        ): void {
             $user = User::findOrFail($id);
             $setStatus->execute($user, AccountStatus::ACTIVATED);
         });
@@ -253,7 +269,9 @@ class UserManager extends BaseRecordManager
             'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
         ]);
 
-        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use ($create) {
+        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use (
+            $create,
+        ) {
             $name = trim($row[0] ?? '');
 
             if ($name === '') {
@@ -264,12 +282,16 @@ class UserManager extends BaseRecordManager
                 return CsvRowResult::SKIPPED;
             }
 
-            $create->execute([
-                'name' => $name,
-                'email' => trim($row[1] ?? ''),
-            ], [
-                'phone' => trim($row[2] ?? '') ?: null,
-            ], []);
+            $create->execute(
+                [
+                    'name' => $name,
+                    'email' => trim($row[1] ?? ''),
+                ],
+                [
+                    'phone' => trim($row[2] ?? '') ?: null,
+                ],
+                [],
+            );
 
             return CsvRowResult::CREATED;
         });
@@ -282,10 +304,12 @@ class UserManager extends BaseRecordManager
             return;
         }
 
-        flash()->success(__('common.actions.import_summary', [
-            'created' => $result['created'],
-            'skipped' => $result['skipped'],
-        ]));
+        flash()->success(
+            __('common.actions.import_summary', [
+                'created' => $result['created'],
+                'skipped' => $result['skipped'],
+            ]),
+        );
     }
 
     public function export(CsvHandler $csv): StreamedResponse
@@ -298,8 +322,20 @@ class UserManager extends BaseRecordManager
 
         return $csv->export(
             $users,
-            [__('user.fields.full_name'), __('user.fields.email'), __('user.fields.username'), __('user.fields.phone'), __('user.fields.address')],
-            fn ($u) => [$u->name, $u->email, $u->username, $u->profile?->phone ?? '', $u->profile?->address ?? ''],
+            [
+                __('user.fields.full_name'),
+                __('user.fields.email'),
+                __('user.fields.username'),
+                __('user.fields.phone'),
+                __('user.fields.address'),
+            ],
+            fn ($u) => [
+                $u->name,
+                $u->email,
+                $u->username,
+                $u->profile?->phone ?? '',
+                $u->profile?->address ?? '',
+            ],
             'users.csv',
         );
     }
@@ -316,8 +352,20 @@ class UserManager extends BaseRecordManager
 
         return $csv->export(
             $users,
-            [__('user.fields.full_name'), __('user.fields.email'), __('user.fields.username'), __('user.fields.phone'), __('user.fields.address')],
-            fn ($u) => [$u->name, $u->email, $u->username, $u->profile?->phone ?? '', $u->profile?->address ?? ''],
+            [
+                __('user.fields.full_name'),
+                __('user.fields.email'),
+                __('user.fields.username'),
+                __('user.fields.phone'),
+                __('user.fields.address'),
+            ],
+            fn ($u) => [
+                $u->name,
+                $u->email,
+                $u->username,
+                $u->profile?->phone ?? '',
+                $u->profile?->address ?? '',
+            ],
             'users-selected.csv',
         );
     }
@@ -326,7 +374,11 @@ class UserManager extends BaseRecordManager
     {
         return $csv->downloadTemplate(
             [__('user.fields.full_name'), __('user.fields.email'), __('user.fields.phone')],
-            [__('user.manager.name_placeholder'), __('user.manager.email_placeholder'), __('user.fields.phone')],
+            [
+                __('user.manager.name_placeholder'),
+                __('user.manager.email_placeholder'),
+                __('user.fields.phone'),
+            ],
             'users-template.csv',
         );
     }

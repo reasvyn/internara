@@ -14,8 +14,17 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('evaluator_id')->constrained('users')->onDelete('cascade')->index();
             $table->string('evaluation_type', 50)->default('mentor')->index();
-            $table->foreignUuid('mentor_id')->nullable()->constrained('users')->onDelete('set null')->index();
-            $table->foreignUuid('registration_id')->nullable()->constrained('registrations')->onDelete('set null');
+            $table
+                ->foreignUuid('mentor_id')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null')
+                ->index();
+            $table
+                ->foreignUuid('registration_id')
+                ->nullable()
+                ->constrained('registrations')
+                ->onDelete('set null');
             $table->index('registration_id');
             $table->string('target_type', 50)->nullable();
             $table->string('target_id', 36)->nullable();

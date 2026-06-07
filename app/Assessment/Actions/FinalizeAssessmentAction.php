@@ -62,9 +62,10 @@ final class FinalizeAssessmentAction extends BaseAction
             $totalWeightedScore = 0.0;
 
             foreach ($scoredCompetencies as $competency) {
-                $effectiveWeight = $originalTotalWeight > 0
-                    ? ($competency->weight / $scoredTotalWeight) * $originalTotalWeight
-                    : $competency->weight;
+                $effectiveWeight =
+                    $originalTotalWeight > 0
+                        ? ($competency->weight / $scoredTotalWeight) * $originalTotalWeight
+                        : $competency->weight;
 
                 $indicatorsData = $competencyScores[$competency->id]['indicators'] ?? [];
                 $competencyScore = 0.0;

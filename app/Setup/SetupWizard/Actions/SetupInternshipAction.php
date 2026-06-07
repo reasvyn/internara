@@ -10,9 +10,7 @@ use App\Program\Internship\Models\Internship;
 
 final class SetupInternshipAction extends BaseAction
 {
-    public function __construct(
-        protected readonly CreateInternshipAction $createInternship,
-    ) {}
+    public function __construct(protected readonly CreateInternshipAction $createInternship) {}
 
     public function execute(array $data): Internship
     {

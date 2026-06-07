@@ -59,7 +59,7 @@ class RecoveryCode extends Component
         ]);
 
         return response()->streamDownload(
-            fn () => print ($pdf->output()),
+            fn () => print $pdf->output(),
             'recovery-codes-'.$username.'.pdf',
         );
     }

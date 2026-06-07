@@ -27,11 +27,7 @@ final class CreateAcademicYearAction extends BaseAction
                 'is_active' => $validated['is_active'] ?? false,
             ]);
 
-            $this->log(
-                'academic_year_created',
-                $year,
-                $validated,
-            );
+            $this->log('academic_year_created', $year, $validated);
 
             return $year;
         });

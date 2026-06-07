@@ -16,12 +16,7 @@ class SupervisionLogPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin',
-            'admin',
-            'teacher',
-            'supervisor',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher', 'supervisor']);
     }
 
     public function view(User $user, SupervisionLog $log): bool
@@ -36,11 +31,27 @@ class SupervisionLogPolicy extends BasePolicy
 
         $registration = $log->registration;
 
-        if ($this->isTeacher($user) && $registration && $registration->mentors()->where('user_id', $user->id)->where('type', Mentor::TYPE_SCHOOL_TEACHER)->exists()) {
+        if (
+            $this->isTeacher($user) &&
+            $registration &&
+            $registration
+                ->mentors()
+                ->where('user_id', $user->id)
+                ->where('type', Mentor::TYPE_SCHOOL_TEACHER)
+                ->exists()
+        ) {
             return true;
         }
 
-        if ($this->isSupervisor($user) && $registration && $registration->mentors()->where('user_id', $user->id)->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)->exists()) {
+        if (
+            $this->isSupervisor($user) &&
+            $registration &&
+            $registration
+                ->mentors()
+                ->where('user_id', $user->id)
+                ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)
+                ->exists()
+        ) {
             return true;
         }
 
@@ -49,10 +60,7 @@ class SupervisionLogPolicy extends BasePolicy
 
     public function create(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'teacher',
-            'supervisor',
-        ]);
+        return $this->hasAnyOfRoles($user, ['teacher', 'supervisor']);
     }
 
     public function update(User $user, SupervisionLog $log): bool
@@ -66,11 +74,7 @@ class SupervisionLogPolicy extends BasePolicy
 
     public function verify(User $user, SupervisionLog $log): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin',
-            'admin',
-            'teacher',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
     }
 
     public function delete(User $user, SupervisionLog $log): bool

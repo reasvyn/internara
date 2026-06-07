@@ -13,7 +13,9 @@ final class DeleteInternshipAction extends BaseAction
     public function execute(Internship $internship): void
     {
         if (! $internship->asInternshipState()->canBeDeleted()) {
-            throw new RejectedException('Cannot delete internship with active placements or registrations.');
+            throw new RejectedException(
+                'Cannot delete internship with active placements or registrations.',
+            );
         }
 
         $this->transaction(function () use ($internship) {

@@ -20,11 +20,11 @@ class MockFormRequest extends BaseFormRequest
 
 test('base form request throws validation failed exception', function () {
     $validator = Mockery::mock(Validator::class);
-    $validator->shouldReceive('errors')
-        ->andReturn(new MessageBag(['email' => ['Invalid email']]));
+    $validator->shouldReceive('errors')->andReturn(new MessageBag(['email' => ['Invalid email']]));
 
     $request = new MockFormRequest;
 
-    expect(fn () => $request->triggerFailedValidation($validator))
-        ->toThrow(ValidationFailedException::class);
+    expect(fn () => $request->triggerFailedValidation($validator))->toThrow(
+        ValidationFailedException::class,
+    );
 });

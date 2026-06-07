@@ -22,7 +22,9 @@ class UnlockUserAccountAction extends BaseAction
                 ->systemOnly()
                 ->save();
 
-            throw new RuntimeException('Super administrator accounts cannot be unlocked — they cannot be locked.');
+            throw new RuntimeException(
+                'Super administrator accounts cannot be unlocked — they cannot be locked.',
+            );
         }
 
         if ($user->locked_at === null) {

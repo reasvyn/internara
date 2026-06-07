@@ -35,7 +35,7 @@ enum ReportStatus: string implements LabelEnum, StatusEnum
 
     public function canTransitionTo(StatusEnum $target): bool
     {
-        if (! $target instanceof self) {
+        if (! ($target instanceof self)) {
             return false;
         }
 

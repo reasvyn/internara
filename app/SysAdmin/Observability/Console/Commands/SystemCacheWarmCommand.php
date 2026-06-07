@@ -49,63 +49,48 @@ class SystemCacheWarmCommand extends Command
 
     protected function warmSettings(): void
     {
-        $this->components->task(
-            __('setup.system.cache_warm_settings'),
-            function () {
-                setting('app_name', skipCache: false);
-                setting('primary_color', skipCache: false);
+        $this->components->task(__('setup.system.cache_warm_settings'), function () {
+            setting('app_name', skipCache: false);
+            setting('primary_color', skipCache: false);
 
-                return true;
-            },
-        );
+            return true;
+        });
     }
 
     protected function warmBrand(): void
     {
-        $this->components->task(
-            __('setup.system.cache_warm_brand'),
-            function () {
-                brand('name');
-                brand('colors');
+        $this->components->task(__('setup.system.cache_warm_brand'), function () {
+            brand('name');
+            brand('colors');
 
-                return true;
-            },
-        );
+            return true;
+        });
     }
 
     protected function warmConfig(): void
     {
-        $this->components->task(
-            __('setup.system.cache_warm_config'),
-            function () {
-                Artisan::call('config:cache');
+        $this->components->task(__('setup.system.cache_warm_config'), function () {
+            Artisan::call('config:cache');
 
-                return true;
-            },
-        );
+            return true;
+        });
     }
 
     protected function warmViews(): void
     {
-        $this->components->task(
-            __('setup.system.cache_warm_views'),
-            function () {
-                Artisan::call('view:cache');
+        $this->components->task(__('setup.system.cache_warm_views'), function () {
+            Artisan::call('view:cache');
 
-                return true;
-            },
-        );
+            return true;
+        });
     }
 
     protected function warmEvents(): void
     {
-        $this->components->task(
-            __('setup.system.cache_warm_events'),
-            function () {
-                Artisan::call('event:cache');
+        $this->components->task(__('setup.system.cache_warm_events'), function () {
+            Artisan::call('event:cache');
 
-                return true;
-            },
-        );
+            return true;
+        });
     }
 }

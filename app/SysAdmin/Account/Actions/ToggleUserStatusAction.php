@@ -28,13 +28,16 @@ final class ToggleUserStatusAction extends BaseAction
         }
 
         $currentStatus = $user->latestStatus()?->name;
-        $newStatus = $currentStatus === AccountStatus::VERIFIED->value
-            ? AccountStatus::SUSPENDED->value
-            : AccountStatus::VERIFIED->value;
+        $newStatus =
+            $currentStatus === AccountStatus::VERIFIED->value
+                ? AccountStatus::SUSPENDED->value
+                : AccountStatus::VERIFIED->value;
 
         $user->setStatus($newStatus, $reason ?? 'Toggled via User Manager');
 
-        $user->notify(new AccountStatusNotification($newStatus, $reason ?? 'Updated by Administrator'));
+        $user->notify(
+            new AccountStatusNotification($newStatus, $reason ?? 'Updated by Administrator'),
+        );
 
         return $user;
     }

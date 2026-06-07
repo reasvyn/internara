@@ -10,6 +10,7 @@ use App\Enums\AuditCategory;
 use App\Enums\AuditStatus;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
 use App\Setup\Installation\Actions\InstallSystemAction;
+use App\Setup\Installation\Data\SetupTokenData;
 use App\Setup\Installation\Support\SystemProvisioner;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -39,9 +40,9 @@ test('install system action successfully runs audits, provisions, and returns to
     $action = new InstallSystemAction($auditorMock, $provisionerMock, $generateTokenAction);
     $result = $action->execute();
 
-    expect($result)->toHaveKeys(['plaintext', 'expires_at']);
-    expect($result['plaintext'])->not->toBeEmpty();
-    expect($result['expires_at'])->toBeInstanceOf(Carbon::class);
+    expect($result)->toBeInstanceOf(SetupTokenData::class);
+    expect($result->plaintext)->not->toBeEmpty();
+    expect($result->expiresAt)->toBeInstanceOf(Carbon::class);
 });
 
 test('install system action throws runtime exception if audit fails', function () {
@@ -63,5 +64,8 @@ test('install system action throws runtime exception if audit fails', function (
 
     $action = new InstallSystemAction($auditorMock, $provisionerMock, $generateTokenAction);
 
-    expect(fn () => $action->execute())->toThrow(RuntimeException::class, 'System audit check failed');
+    expect(fn () => $action->execute())->toThrow(
+        RuntimeException::class,
+        'System audit check failed',
+    );
 });

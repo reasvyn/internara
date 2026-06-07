@@ -14,7 +14,21 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'registration_id', 'start_date', 'end_date', 'reason_type', 'reason_description', 'attachment_path', 'status', 'processed_by', 'processed_at', 'admin_notes'])]
+#[
+    Fillable([
+        'user_id',
+        'registration_id',
+        'start_date',
+        'end_date',
+        'reason_type',
+        'reason_description',
+        'attachment_path',
+        'status',
+        'processed_by',
+        'processed_at',
+        'admin_notes',
+    ]),
+]
 class AbsenceRequest extends BaseModel
 {
     use HasFactory;

@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Illuminate\Support\Str;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Session Driver
@@ -129,10 +128,7 @@ return [
     |
     */
 
-    'cookie' => env(
-        'SESSION_COOKIE',
-        Str::snake((string) env('APP_NAME', 'laravel')).'_session'
-    ),
+    'cookie' => env('SESSION_COOKIE', Str::snake((string) env('APP_NAME', 'laravel')).'_session'),
 
     /*
     |--------------------------------------------------------------------------
@@ -215,5 +211,4 @@ return [
     */
 
     'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
-
 ];

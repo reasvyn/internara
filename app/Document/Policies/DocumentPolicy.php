@@ -12,9 +12,7 @@ class DocumentPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin', 'admin', 'teacher', 'student',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher', 'student']);
     }
 
     public function view(User $user, Document $document): bool

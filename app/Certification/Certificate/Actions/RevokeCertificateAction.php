@@ -23,7 +23,9 @@ final class RevokeCertificateAction extends BaseAction
                 'revoked_at' => now(),
             ]);
 
-            $this->log('certificate_revoked', $certificate, ['certificate_number' => $certificate->certificate_number]);
+            $this->log('certificate_revoked', $certificate, [
+                'certificate_number' => $certificate->certificate_number,
+            ]);
 
             return $certificate->fresh();
         });

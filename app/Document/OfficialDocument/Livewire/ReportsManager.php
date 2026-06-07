@@ -42,10 +42,7 @@ class ReportsManager extends Component
     #[Layout('core::layouts.app')]
     public function render(): View
     {
-        $reports = Document::query()
-            ->where('category', 'report')
-            ->latest()
-            ->paginate(10);
+        $reports = Document::query()->where('category', 'report')->latest()->paginate(10);
 
         return view('document.official-document.reports-manager', [
             'reports' => $reports,

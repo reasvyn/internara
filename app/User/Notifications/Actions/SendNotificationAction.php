@@ -28,15 +28,18 @@ final class SendNotificationAction extends BaseAction implements SendsNotificati
         ?array $data = null,
         ?string $link = null,
     ): Notification {
-        Validator::make([
-            'userId' => $userId,
-            'type' => $type,
-            'title' => $title,
-        ], [
-            'userId' => 'required|string',
-            'type' => 'required|string|max:50',
-            'title' => 'required|string|max:255',
-        ])->validate();
+        Validator::make(
+            [
+                'userId' => $userId,
+                'type' => $type,
+                'title' => $title,
+            ],
+            [
+                'userId' => 'required|string',
+                'type' => 'required|string|max:50',
+                'title' => 'required|string|max:255',
+            ],
+        )->validate();
 
         $user = User::findOrFail($userId);
 

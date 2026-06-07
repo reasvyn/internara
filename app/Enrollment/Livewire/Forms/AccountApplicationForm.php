@@ -45,7 +45,13 @@ class AccountApplicationForm extends Form
     {
         $rules = [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:account_applications,email', 'unique:users,email'],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                'unique:account_applications,email',
+                'unique:users,email',
+            ],
             'internship_id' => ['required', 'exists:internships,id', new OpenForRegistration],
             'academic_year' => ['required', 'string', 'max:20'],
         ];
@@ -76,7 +82,9 @@ class AccountApplicationForm extends Form
             'placement_id' => $this->use_placement ? $this->placement_id : null,
             'academic_year' => $this->academic_year,
             'proposed_company_name' => $this->use_placement ? null : $this->proposed_company_name,
-            'proposed_company_address' => $this->use_placement ? null : $this->proposed_company_address,
+            'proposed_company_address' => $this->use_placement
+                ? null
+                : $this->proposed_company_address,
         ];
     }
 }

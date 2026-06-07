@@ -30,9 +30,13 @@ class ReportWriter extends Component
 
     public function mount(): void
     {
-        $report = Report::whereHas('registration', fn (Builder $q) => $q
-            ->whereHas('mentee', fn (Builder $q) => $q->where('user_id', auth()->id())))
-            ->first();
+        $report = Report::whereHas(
+            'registration',
+            fn (Builder $q) => $q->whereHas(
+                'mentee',
+                fn (Builder $q) => $q->where('user_id', auth()->id()),
+            ),
+        )->first();
 
         if ($report) {
             $this->reportId = $report->id;

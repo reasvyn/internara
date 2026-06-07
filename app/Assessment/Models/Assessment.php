@@ -12,7 +12,18 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['registration_id', 'rubric_id', 'evaluator_id', 'assessment_type', 'score', 'scores_data', 'feedback', 'finalized_at'])]
+#[
+    Fillable([
+        'registration_id',
+        'rubric_id',
+        'evaluator_id',
+        'assessment_type',
+        'score',
+        'scores_data',
+        'feedback',
+        'finalized_at',
+    ]),
+]
 class Assessment extends BaseModel
 {
     use HasFactory;

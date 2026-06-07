@@ -18,7 +18,9 @@ class ResetUserPasswordAction extends BaseAction
         $integrity = SuperAdminIntegrityRules::fromModel($user);
 
         if ($integrity->isImmutable()) {
-            throw new RejectedException('Cannot reset super admin password through this interface. Use recovery flow instead.');
+            throw new RejectedException(
+                'Cannot reset super admin password through this interface. Use recovery flow instead.',
+            );
         }
 
         $newPassword = Str::password(12);

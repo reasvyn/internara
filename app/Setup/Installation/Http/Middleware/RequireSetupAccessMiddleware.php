@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Setup\Installation\Http\Middleware;
 
-use App\Setup\SetupWizard\Entities\SetupState;
+use App\Setup\Entities\SetupEntity;
 use App\Support\CacheKeys;
 use Closure;
 use Illuminate\Http\Request;
@@ -22,7 +22,11 @@ class RequireSetupAccessMiddleware
         $decoded = urldecode($request->path());
         $resolved = realpath(public_path($decoded));
 
-        if ($resolved !== false && str_starts_with($resolved, public_path()) && ! is_dir($resolved)) {
+        if (
+            $resolved !== false &&
+            str_starts_with($resolved, public_path()) &&
+            ! is_dir($resolved)
+        ) {
             return $next($request);
         }
 
@@ -36,7 +40,7 @@ class RequireSetupAccessMiddleware
     private function isInstalledCached(): bool
     {
         return (bool) Cache::remember(CacheKeys::SETUP_INSTALLED, 3600, function () {
-            return SetupState::fromSettings()->isInstalled();
+            return SetupEntity::get()->isInstalled();
         });
     }
 }

@@ -18,10 +18,13 @@ final class SetupSuperAdminAction extends BaseAction
 {
     public function execute(string $email, string $password): User
     {
-        Validator::make(['email' => $email, 'password' => $password], [
-            'email' => ['required', 'email'],
-            'password' => PasswordRules::defaultAsArray(),
-        ])->validate();
+        Validator::make(
+            ['email' => $email, 'password' => $password],
+            [
+                'email' => ['required', 'email'],
+                'password' => PasswordRules::defaultAsArray(),
+            ],
+        )->validate();
 
         return $this->transaction(function () use ($email, $password) {
             $username = config('setup.defaults.admin_username', 'superadmin');
@@ -33,7 +36,9 @@ final class SetupSuperAdminAction extends BaseAction
                 $integrity = SuperAdminIntegrityRules::fromModel($existing);
 
                 if ($integrity->isImmutable()) {
-                    throw new RejectedException('Super admin already exists and cannot be re-initialized.');
+                    throw new RejectedException(
+                        'Super admin already exists and cannot be re-initialized.',
+                    );
                 }
             }
 

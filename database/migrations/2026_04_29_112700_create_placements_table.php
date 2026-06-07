@@ -15,10 +15,7 @@ return new class extends Migration
     {
         Schema::create('placements', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table
-                ->foreignUuid('company_id')
-                ->constrained('companies')
-                ->onDelete('cascade');
+            $table->foreignUuid('company_id')->constrained('companies')->onDelete('cascade');
             $table->index('company_id');
             $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
             $table->index('internship_id');

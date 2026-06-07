@@ -35,7 +35,9 @@ class AbsenceRequestForm extends Component
     {
         $this->validate();
 
-        $registration = auth()->user()->registrations()
+        $registration = auth()
+            ->user()
+            ->registrations()
             ->get()
             ->first(fn ($reg) => $reg->hasStatus('active'));
 

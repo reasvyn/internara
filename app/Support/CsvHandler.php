@@ -10,8 +10,12 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class CsvHandler
 {
-    public function export(Collection $items, array $headers, callable $rowMapper, string $filename = 'export.csv'): StreamedResponse
-    {
+    public function export(
+        Collection $items,
+        array $headers,
+        callable $rowMapper,
+        string $filename = 'export.csv',
+    ): StreamedResponse {
         $callback = function () use ($items, $headers, $rowMapper) {
             $handle = fopen('php://output', 'w');
             fputcsv($handle, $headers, escape: '');
@@ -29,8 +33,11 @@ final class CsvHandler
         ]);
     }
 
-    public function downloadTemplate(array $headers, array $exampleRow, string $filename = 'template.csv'): StreamedResponse
-    {
+    public function downloadTemplate(
+        array $headers,
+        array $exampleRow,
+        string $filename = 'template.csv',
+    ): StreamedResponse {
         $callback = function () use ($headers, $exampleRow) {
             $handle = fopen('php://output', 'w');
             fputcsv($handle, $headers, escape: '');
@@ -44,8 +51,11 @@ final class CsvHandler
         ]);
     }
 
-    public function import(string $filePath, callable $rowProcessor, ?array $expectedHeaders = null): array
-    {
+    public function import(
+        string $filePath,
+        callable $rowProcessor,
+        ?array $expectedHeaders = null,
+    ): array {
         $handle = fopen($filePath, 'r');
         $header = fgetcsv($handle, escape: '');
 

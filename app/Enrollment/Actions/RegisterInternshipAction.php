@@ -25,7 +25,9 @@ final class RegisterInternshipAction extends BaseAction
             ->isNotEmpty();
 
         if ($hasExisting) {
-            throw new RejectedException('Student already has an active or pending internship registration.');
+            throw new RejectedException(
+                'Student already has an active or pending internship registration.',
+            );
         }
 
         return $this->transaction(function () use ($student, $data) {
@@ -34,7 +36,9 @@ final class RegisterInternshipAction extends BaseAction
             $registration = Registration::create([
                 'mentee_id' => $mentee->id,
                 'internship_id' => $data['internship_id'],
-                'placement_id' => filled($data['placement_id'] ?? null) ? $data['placement_id'] : null,
+                'placement_id' => filled($data['placement_id'] ?? null)
+                    ? $data['placement_id']
+                    : null,
                 'academic_year' => $data['academic_year'] ?? null,
                 'start_date' => $data['start_date'] ?? null,
                 'end_date' => $data['end_date'] ?? null,

@@ -22,7 +22,10 @@ class ConfirmPasswordAction extends BaseAction
                 ->activityOnly()
                 ->save();
 
-            throw new RuntimeException(__('auth.password_confirmation_failed') ?? 'The provided password does not match your current password.');
+            throw new RuntimeException(
+                __('auth.password_confirmation_failed') ??
+                    'The provided password does not match your current password.',
+            );
         }
 
         session(['auth.password_confirmed_at' => time()]);

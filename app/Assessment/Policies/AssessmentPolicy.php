@@ -15,11 +15,7 @@ class AssessmentPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin',
-            'admin',
-            'teacher',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
     }
 
     public function view(User $user, Assessment $assessment): bool
@@ -39,11 +35,7 @@ class AssessmentPolicy extends BasePolicy
 
     public function create(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin',
-            'admin',
-            'teacher',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
     }
 
     public function update(User $user, Assessment $assessment): bool
@@ -52,16 +44,13 @@ class AssessmentPolicy extends BasePolicy
             return true;
         }
 
-        return $assessment->evaluator_id === $user->id && ! $assessment->asAssessmentResult()->isFinalized();
+        return $assessment->evaluator_id === $user->id &&
+            ! $assessment->asAssessmentResult()->isFinalized();
     }
 
     public function finalize(User $user, Assessment $assessment): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin',
-            'admin',
-            'teacher',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
     }
 
     public function delete(User $user, Assessment $assessment): bool

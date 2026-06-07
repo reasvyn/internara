@@ -36,7 +36,11 @@ class CertificateList extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'certificate_number', 'label' => __('certificate.number'), 'sortable' => true],
+            [
+                'key' => 'certificate_number',
+                'label' => __('certificate.number'),
+                'sortable' => true,
+            ],
             ['key' => 'student_name', 'label' => __('certificate.student'), 'sortable' => true],
             ['key' => 'status', 'label' => __('certificate.status'), 'sortable' => true],
             ['key' => 'issued_at', 'label' => __('certificate.issued_at'), 'sortable' => true],
@@ -55,17 +59,21 @@ class CertificateList extends BaseRecordManager
 
     protected function applySearch(Builder $query): Builder
     {
-        return $query
-            ->where(function (Builder $q) {
-                $q->where('certificates.certificate_number', 'like', "%{$this->search}%")
-                    ->orWhere('users.name', 'like', "%{$this->search}%");
-            });
+        return $query->where(function (Builder $q) {
+            $q->where('certificates.certificate_number', 'like', "%{$this->search}%")->orWhere(
+                'users.name',
+                'like',
+                "%{$this->search}%",
+            );
+        });
     }
 
     #[Computed]
     public function templates(): array
     {
-        return CertificateTemplate::where('is_active', true)->get(['id', 'name'])->toArray();
+        return CertificateTemplate::where('is_active', true)
+            ->get(['id', 'name'])
+            ->toArray();
     }
 
     #[Computed]
@@ -75,7 +83,12 @@ class CertificateList extends BaseRecordManager
             ->where('status', 'active')
             ->with('mentee.user', 'internship')
             ->get()
-            ->map(fn ($r) => ['id' => $r->id, 'name' => ($r->mentee?->user?->name ?? '?').' - '.($r->internship?->name ?? '?')])
+            ->map(
+                fn ($r) => [
+                    'id' => $r->id,
+                    'name' => ($r->mentee?->user?->name ?? '?').' - '.($r->internship?->name ?? '?'),
+                ],
+            )
             ->toArray();
     }
 
@@ -125,10 +138,12 @@ class CertificateList extends BaseRecordManager
         $results = $batchAction->executeFiltered($query, $template);
 
         $this->batchResults = $results;
-        flash()->success(__('certificate.batch_issued', [
-            'success' => $results['success'],
-            'failed' => $results['failed'],
-        ]));
+        flash()->success(
+            __('certificate.batch_issued', [
+                'success' => $results['success'],
+                'failed' => $results['failed'],
+            ]),
+        );
     }
 
     public function revoke(Certificate $certificate, RevokeCertificateAction $revokeAction): void

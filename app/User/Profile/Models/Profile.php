@@ -14,23 +14,24 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable([
-    'user_id',
-    'phone',
-    'address',
-    'gender',
-    'blood_type',
-    'pob',
-    'dob',
-    'emergency_contact',
-    'student_id_number',
-    'employee_id_number',
-    'mentor_type',
-    'internal_notes',
-    'department_id',
-    'company_id',
-])]
-
+#[
+    Fillable([
+        'user_id',
+        'phone',
+        'address',
+        'gender',
+        'blood_type',
+        'pob',
+        'dob',
+        'emergency_contact',
+        'student_id_number',
+        'employee_id_number',
+        'mentor_type',
+        'internal_notes',
+        'department_id',
+        'company_id',
+    ]),
+]
 class Profile extends BaseModel
 {
     use HasFactory;

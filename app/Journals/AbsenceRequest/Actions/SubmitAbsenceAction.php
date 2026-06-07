@@ -24,7 +24,9 @@ final class SubmitAbsenceAction extends BaseAction
                 'status' => AbsenceRequestStatus::PENDING,
             ]);
 
-            $this->log('absence_request_submitted', $request, ['reason_type' => $request->reason_type?->value]);
+            $this->log('absence_request_submitted', $request, [
+                'reason_type' => $request->reason_type?->value,
+            ]);
 
             return $request;
         });

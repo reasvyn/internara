@@ -97,13 +97,17 @@ class AssessmentGrading extends Component
 
     private function isAssignedAsMentor(string $evaluatorRole): bool
     {
-        $type = $evaluatorRole === 'teacher'
-            ? Mentor::TYPE_SCHOOL_TEACHER
-            : Mentor::TYPE_INDUSTRY_SUPERVISOR;
+        $type =
+            $evaluatorRole === 'teacher'
+                ? Mentor::TYPE_SCHOOL_TEACHER
+                : Mentor::TYPE_INDUSTRY_SUPERVISOR;
 
         return Mentor::where('user_id', auth()->id())
             ->where('type', $type)
-            ->whereHas('registrations', fn ($q) => $q->where('registration_id', $this->registrationId))
+            ->whereHas(
+                'registrations',
+                fn ($q) => $q->where('registration_id', $this->registrationId),
+            )
             ->exists();
     }
 
@@ -123,9 +127,9 @@ class AssessmentGrading extends Component
                     return true;
                 }
 
-                return ! $user->hasRole($competency->evaluator_role->value)
-                    && ! $user->hasRole('super_admin')
-                    && ! $user->hasRole('admin');
+                return ! $user->hasRole($competency->evaluator_role->value) &&
+                    ! $user->hasRole('super_admin') &&
+                    ! $user->hasRole('admin');
             })
             ->values();
     }

@@ -1,7 +1,7 @@
 # Docker Environments
-> Last updated: 2026-05-24
-> Changes: feat: restructure institutional data, add staff/group/phase features, remove arch tests
 
+> Last updated: 2026-05-24 Changes: feat: restructure institutional data, add staff/group/phase
+> features, remove arch tests
 
 Internara provides three Docker environments for different use cases.
 
@@ -23,8 +23,8 @@ docker compose -f docker-compose.dev.yml exec laravel.test php artisan migrate -
 docker compose -f docker-compose.dev.yml exec laravel.test npm run dev
 ```
 
-**Includes:** Queue worker, Reverb WebSocket, PHP 8.4, SQLite, Composer, Node.js
-**URL:** http://localhost
+**Includes:** Queue worker, Reverb WebSocket, PHP 8.4, SQLite, Composer, Node.js **URL:**
+http://localhost
 
 ## 2. Production (Docker Compose)
 
@@ -34,8 +34,8 @@ Multi-service production environment with MySQL, Redis, Nginx, and Supervisor.
 docker compose up -d
 ```
 
-See `docker-compose.yml` for service definitions.
-See `docs/installation.md` for production setup guide.
+See `docker-compose.yml` for service definitions. See `docs/installation.md` for production setup
+guide.
 
 ## 3. Shared Hosting Simulation
 
@@ -48,6 +48,7 @@ docker compose up -d
 ```
 
 **Constraints:**
+
 - Apache (not Nginx)
 - MariaDB database (simulates shared hosting MySQL)
 - No Composer at runtime
@@ -57,5 +58,5 @@ docker compose up -d
 - No WebSocket / Reverb
 - File-based cache and sessions
 
-Use this for testing how the application behaves under shared hosting
-limitations before deploying to an actual shared hosting provider.
+Use this for testing how the application behaves under shared hosting limitations before deploying
+to an actual shared hosting provider.

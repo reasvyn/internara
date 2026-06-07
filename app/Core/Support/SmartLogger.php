@@ -14,16 +14,16 @@ use Illuminate\Support\Facades\Request;
 
 final class SmartLogger
 {
-    private const FACE_MAP = [
+    private const LEVEL_MAP = [
         'success' => 'info',
         'info' => 'info',
         'warning' => 'warning',
         'error' => 'error',
     ];
 
-    private string $face;
+    private readonly string $face;
 
-    private string $message;
+    private readonly string $message;
 
     private array $context;
 
@@ -147,13 +147,12 @@ final class SmartLogger
 
     public function save(): void
     {
+        $this->mergeEventPayload();
+        $this->maskSensitiveData();
+        $this->resolveTranslations();
+
+        $causer = $this->resolveCauser();
         $eventName = $this->resolveEventName();
-
-        $this->dispatchEvent();
-        $this->applyPiiMasking();
-        $this->resolveTranslations($eventName);
-
-        $causer = $this->causer ?? Auth::user();
 
         if ($this->toSystem) {
             $this->writeSystemLog($causer, $eventName);
@@ -164,48 +163,54 @@ final class SmartLogger
         }
     }
 
+    private function resolveCauser(): ?Model
+    {
+        return $this->causer ?? Auth::user();
+    }
+
     private function shouldWriteActivityLog(?Model $causer): bool
     {
         if (! $this->toActivity) {
             return false;
         }
 
-        return $causer !== null || $this->isActivityOnly();
+        return $causer !== null || ($this->toActivity && ! $this->toSystem);
     }
 
-    private function isActivityOnly(): bool
-    {
-        return $this->toActivity && ! $this->toSystem;
-    }
-
-    private function dispatchEvent(): void
+    private function mergeEventPayload(): void
     {
         if ($this->event instanceof BaseEvent) {
             event($this->event);
-            $this->payload = array_merge($this->event->toPayload(), $this->payload);
+            $eventPayload = $this->event->toPayload();
+            $this->payload = array_merge($eventPayload, $this->payload);
         }
     }
 
-    private function applyPiiMasking(): void
+    private function maskSensitiveData(): void
     {
         if ($this->maskPii) {
             $this->payload = PiiMasker::maskArray($this->payload);
         }
     }
 
-    private function resolveTranslations(?string $eventName): void
+    private function resolveTranslations(): void
     {
+        $eventName = $this->resolveEventName();
+
         if ($eventName === null) {
             return;
         }
 
         $locale = App::getLocale();
         $description = __('log.'.$eventName, [], $locale);
+
         if ($description !== 'log.'.$eventName) {
             $this->context['event_description'] = $description;
         }
+
         $altLocale = $locale === 'id' ? 'en' : 'id';
         $altDescription = __('log.'.$eventName, [], $altLocale);
+
         if ($altDescription !== 'log.'.$eventName) {
             $this->context['event_description_'.$altLocale] = $altDescription;
         }
@@ -249,7 +254,7 @@ final class SmartLogger
 
     private function writeSystemLog(?Model $causer, ?string $eventName = null): void
     {
-        $level = self::FACE_MAP[$this->face] ?? 'info';
+        $level = self::LEVEL_MAP[$this->face] ?? 'info';
 
         LogFacade::{$level}($this->message, $this->buildSystemContext($causer, $eventName));
     }
@@ -263,13 +268,7 @@ final class SmartLogger
                 $activity->causedBy($causer);
             }
 
-            $ip = Request::ip();
-            $ua = Request::userAgent();
-
-            if ($this->maskPii) {
-                $ip = $ip !== null ? PiiMasker::maskIp($ip) : null;
-                $ua = $ua !== null ? PiiMasker::maskUserAgent($ua) : null;
-            }
+            [$ip, $ua] = $this->resolveRequestMetadata();
 
             $activity
                 ->event($eventName ?? $this->face)
@@ -298,5 +297,21 @@ final class SmartLogger
                 'error_class' => get_class($e),
             ]);
         }
+    }
+
+    /** @return array{0: string|null, 1: string|null} */
+    private function resolveRequestMetadata(): array
+    {
+        $ip = Request::ip();
+        $ua = Request::userAgent();
+
+        if (! $this->maskPii) {
+            return [$ip, $ua];
+        }
+
+        return [
+            $ip !== null ? PiiMasker::maskIp($ip) : null,
+            $ua !== null ? PiiMasker::maskUserAgent($ua) : null,
+        ];
     }
 }

@@ -7,12 +7,12 @@ namespace Tests\Feature\Setup\SetupWizard\Actions;
 use App\Academics\Department\Models\Department;
 use App\Core\Contracts\SendsNotifications;
 use App\Settings\Support\Settings;
+use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
 use App\Setup\SetupWizard\Actions\SetupDepartmentAction;
 use App\Setup\SetupWizard\Actions\SetupInternshipAction;
 use App\Setup\SetupWizard\Actions\SetupSchoolAction;
 use App\Setup\SetupWizard\Actions\SetupSuperAdminAction;
-use App\Setup\SetupWizard\Entities\SetupState;
 use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
@@ -32,54 +32,57 @@ beforeEach(function () {
     ]);
 });
 
-test('finalize setup action successfully sets up school, department, admin, and saves recovery key', function () {
-    Role::create(['name' => 'superadmin']);
+test(
+    'finalize setup action successfully sets up school, department, admin, and saves recovery key',
+    function () {
+        Role::create(['name' => 'superadmin']);
 
-    $saveRecoveryKeyMock = Mockery::mock(SaveRecoveryKeyAction::class);
-    $saveRecoveryKeyMock->shouldReceive('execute')->once()->andReturn('/path/to/key');
+        $saveRecoveryKeyMock = Mockery::mock(SaveRecoveryKeyAction::class);
+        $saveRecoveryKeyMock->shouldReceive('execute')->once()->andReturn('/path/to/key');
 
-    $sendNotificationMock = Mockery::mock(SendsNotifications::class);
-    $sendNotificationMock->shouldReceive('execute')->once();
+        $sendNotificationMock = Mockery::mock(SendsNotifications::class);
+        $sendNotificationMock->shouldReceive('execute')->once();
 
-    $setupSchool = app(SetupSchoolAction::class);
-    $setupDept = app(SetupDepartmentAction::class);
+        $setupSchool = app(SetupSchoolAction::class);
+        $setupDept = app(SetupDepartmentAction::class);
 
-    $setupAdmin = app(SetupSuperAdminAction::class);
-    $setupInternship = app(SetupInternshipAction::class);
+        $setupAdmin = app(SetupSuperAdminAction::class);
+        $setupInternship = app(SetupInternshipAction::class);
 
-    $finalizeAction = new FinalizeSetupAction(
-        $setupSchool,
-        $setupDept,
-        $setupAdmin,
-        $setupInternship,
-        $sendNotificationMock,
-        $saveRecoveryKeyMock
-    );
+        $finalizeAction = new FinalizeSetupAction(
+            $setupSchool,
+            $setupDept,
+            $setupAdmin,
+            $setupInternship,
+            $sendNotificationMock,
+            $saveRecoveryKeyMock,
+        );
 
-    $schoolData = [
-        'name' => 'Test School',
-        'institutional_code' => 'SCH-TEST',
-        'email' => 'school@test.com',
-    ];
+        $schoolData = [
+            'name' => 'Test School',
+            'institutional_code' => 'SCH-TEST',
+            'email' => 'school@test.com',
+        ];
 
-    $departmentData = [
-        'name' => 'Computer Science',
-    ];
+        $departmentData = [
+            'name' => 'Computer Science',
+        ];
 
-    $adminData = [
-        'email' => 'admin@internara.dev',
-        'password' => 'Securepwd123',
-    ];
+        $adminData = [
+            'email' => 'admin@internara.dev',
+            'password' => 'Securepwd123',
+        ];
 
-    $recoveryKey = $finalizeAction->execute($schoolData, $departmentData, $adminData);
+        $recoveryKey = $finalizeAction->execute($schoolData, $departmentData, $adminData);
 
-    expect($recoveryKey)->not->toBeEmpty();
+        expect($recoveryKey)->not->toBeEmpty();
 
-    $state = SetupState::fromSettings();
-    expect($state->isInstalled())->toBeTrue();
+        $state = SetupEntity::get();
+        expect($state->isInstalled())->toBeTrue();
 
-    expect(Department::where('name', 'Computer Science')->exists())->toBeTrue();
-});
+        expect(Department::where('name', 'Computer Science')->exists())->toBeTrue();
+    },
+);
 
 test('finalize setup action throws exception if system is already installed', function () {
     Settings::set([
@@ -88,5 +91,8 @@ test('finalize setup action throws exception if system is already installed', fu
 
     $finalizeAction = app(FinalizeSetupAction::class);
 
-    expect(fn () => $finalizeAction->execute([], [], []))->toThrow(RuntimeException::class, 'System is already installed');
+    expect(fn () => $finalizeAction->execute([], [], []))->toThrow(
+        RuntimeException::class,
+        'System is already installed',
+    );
 });

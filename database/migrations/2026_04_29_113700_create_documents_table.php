@@ -20,7 +20,11 @@ return new class extends Migration
             $table->integer('version')->default(1);
             $table->boolean('is_active')->default(true)->index();
             $table->json('metadata')->nullable();
-            $table->foreignUuid('created_by')->nullable()->constrained('users')->onDelete('set null');
+            $table
+                ->foreignUuid('created_by')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
             $table->timestamps();
 
             $table->index(['type', 'is_active']);

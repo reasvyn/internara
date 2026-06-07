@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Hash Driver
@@ -66,5 +65,4 @@ return [
     */
 
     'rehash_on_login' => true,
-
 ];

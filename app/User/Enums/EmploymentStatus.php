@@ -28,9 +28,12 @@ enum EmploymentStatus: string implements LabelEnum
     /** @return list<array{id: string, name: string}> */
     public static function options(): array
     {
-        return array_map(fn (self $case) => [
-            'id' => $case->value,
-            'name' => $case->label(),
-        ], self::cases());
+        return array_map(
+            fn (self $case) => [
+                'id' => $case->value,
+                'name' => $case->label(),
+            ],
+            self::cases(),
+        );
     }
 }

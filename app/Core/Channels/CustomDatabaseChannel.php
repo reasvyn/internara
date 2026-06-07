@@ -9,39 +9,23 @@ use App\Core\Support\SmartLogger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notification;
 
-/**
- * Custom Database Channel for application notifications.
- *
- * S2 - Sustain: Leverages SendNotificationAction for consistency.
- * S3 - Scalable: Decouples notification storage from Laravel's default table.
- */
 class CustomDatabaseChannel
 {
-    public function __construct(
-        protected SendsNotifications $sendNotification
-    ) {}
+    public function __construct(protected readonly SendsNotifications $sendNotification) {}
 
-    /**
-     * Send the given notification.
-     */
     public function send(mixed $notifiable, Notification $notification): void
     {
         if (! method_exists($notification, 'toCustomDatabase')) {
             return;
         }
 
-        $userId = $notifiable instanceof Model
-            ? $notifiable->getKey()
-            : ($notifiable->id ?? null);
+        $userId = $notifiable instanceof Model ? $notifiable->getKey() : ($notifiable->id ?? null);
 
         if ($userId === null || $userId === '') {
             return;
         }
 
         $data = $notification->toCustomDatabase($notifiable);
-
-        $type = $data['type'] ?? 'general';
-        $title = $data['title'] ?? 'Notification';
 
         if (! isset($data['type'])) {
             SmartLogger::warning('Notification missing type key')
@@ -59,11 +43,11 @@ class CustomDatabaseChannel
 
         $this->sendNotification->execute(
             userId: (string) $userId,
-            type: $type,
-            title: $title,
+            type: $data['type'] ?? 'general',
+            title: $data['title'] ?? 'Notification',
             message: $data['message'] ?? null,
             data: $data['data'] ?? null,
-            link: $data['link'] ?? null
+            link: $data['link'] ?? null,
         );
     }
 }

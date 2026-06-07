@@ -12,17 +12,22 @@ use App\Enrollment\Models\Registration;
 
 final class IssueCertificateAction extends BaseAction
 {
-    public function __construct(
-        protected readonly CertificateRenderer $renderer,
-    ) {}
+    public function __construct(protected readonly CertificateRenderer $renderer) {}
 
     public function execute(Registration $registration, CertificateTemplate $template): Certificate
     {
         return $this->transaction(function () use ($registration, $template) {
-            $prefix = strtoupper(substr(preg_replace('/[^A-Z0-9]/', '', $registration->internship?->name ?? 'PKL'), 0, 6));
+            $prefix = strtoupper(
+                substr(
+                    preg_replace('/[^A-Z0-9]/', '', $registration->internship?->name ?? 'PKL'),
+                    0,
+                    6,
+                ),
+            );
 
             $count = Certificate::whereYear('created_at', now()->year)->count() + 1;
-            $certificateNumber = "{$prefix}/".now()->year.'/'.str_pad((string) $count, 4, '0', STR_PAD_LEFT);
+            $certificateNumber =
+                "{$prefix}/".now()->year.'/'.str_pad((string) $count, 4, '0', STR_PAD_LEFT);
 
             $report = $registration->report;
 
@@ -48,7 +53,10 @@ final class IssueCertificateAction extends BaseAction
 
             $certificate->update(['metadata' => array_merge($metadata, ['pdf_path' => $pdfPath])]);
 
-            $this->log('certificate_issued', $certificate, ['certificate_number' => $certificateNumber, 'registration_id' => $registration->id]);
+            $this->log('certificate_issued', $certificate, [
+                'certificate_number' => $certificateNumber,
+                'registration_id' => $registration->id,
+            ]);
 
             return $certificate->fresh();
         });

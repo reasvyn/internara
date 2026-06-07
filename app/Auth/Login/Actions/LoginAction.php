@@ -28,7 +28,10 @@ final class LoginAction extends BaseAction
             $lockoutTime = Carbon::parse($lockoutUntil);
             if (now()->lt($lockoutTime)) {
                 $seconds = (int) ceil(now()->diffInSeconds($lockoutTime));
-                throw new RuntimeException(__('auth.throttle', ['seconds' => $seconds]) ?: "Too many login attempts. Please try again in {$seconds} seconds.");
+                throw new RuntimeException(
+                    __('auth.throttle', ['seconds' => $seconds]) ?:
+                    "Too many login attempts. Please try again in {$seconds} seconds.",
+                );
             }
         }
 
@@ -124,13 +127,21 @@ final class LoginAction extends BaseAction
         Cache::put($attemptsKey, $attempts, now()->addHours(24));
 
         if ($attempts >= 10) {
-            $durationSeconds = 10 * (2 ** ($attempts - 10));
-            Cache::put($lockoutKey, now()->addSeconds($durationSeconds), now()->addSeconds($durationSeconds));
+            $durationSeconds = 10 * 2 ** ($attempts - 10);
+            Cache::put(
+                $lockoutKey,
+                now()->addSeconds($durationSeconds),
+                now()->addSeconds($durationSeconds),
+            );
 
             SmartLogger::info('login_throttle_triggered')
                 ->event('login_throttle_triggered')
                 ->module('Auth')
-                ->withPayload(['identifier' => $identifier, 'attempts' => $attempts, 'duration_seconds' => $durationSeconds])
+                ->withPayload([
+                    'identifier' => $identifier,
+                    'attempts' => $attempts,
+                    'duration_seconds' => $durationSeconds,
+                ])
                 ->activityOnly()
                 ->save();
         }

@@ -45,9 +45,7 @@ test('sends notification without optional fields', function () {
 });
 
 test('throws exception for non-existent user', function () {
-    expect(fn () => $this->action->execute(
-        userId: 'non-existent-id',
-        type: 'test',
-        title: 'Test',
-    ))->toThrow(ModelNotFoundException::class);
+    expect(
+        fn () => $this->action->execute(userId: 'non-existent-id', type: 'test', title: 'Test'),
+    )->toThrow(ModelNotFoundException::class);
 });

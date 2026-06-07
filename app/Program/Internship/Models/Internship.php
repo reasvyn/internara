@@ -17,7 +17,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['academic_year_id', 'name', 'start_date', 'end_date', 'description', 'status', 'phases', 'required_document_ids', 'grading_weights'])]
+#[
+    Fillable([
+        'academic_year_id',
+        'name',
+        'start_date',
+        'end_date',
+        'description',
+        'status',
+        'phases',
+        'required_document_ids',
+        'grading_weights',
+    ]),
+]
 class Internship extends BaseModel
 {
     use HasFactory;

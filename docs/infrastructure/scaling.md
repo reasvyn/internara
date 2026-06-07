@@ -1,10 +1,11 @@
 # Scaling Guide
-> Last updated: 2026-06-01
-> Changes: feat: infrastructure optimization — scaling guide, composite indexes, N+1 in AttendanceManager
 
-This document is the operational companion to [Infrastructure](infrastructure.md).
-It describes *when* and *how* to scale Internara from a single-user dev setup
-to production serving 1500-2000 concurrent users.
+> Last updated: 2026-06-01 Changes: feat: infrastructure optimization — scaling guide, composite
+> indexes, N+1 in AttendanceManager
+
+This document is the operational companion to [Infrastructure](infrastructure.md). It describes
+_when_ and _how_ to scale Internara from a single-user dev setup to production serving 1500-2000
+concurrent users.
 
 The philosophy is **start simple, scale by measured need** — codified in
 [ADR: Gradual Migration](../adr/adr-gradual-migration.md).
@@ -15,19 +16,20 @@ The philosophy is **start simple, scale by measured need** — codified in
 
 Do NOT scale preemptively. Scale when you observe these symptoms:
 
-| Symptom | Probable Cause | Action | Tier Trigger |
-|---|---|---|---|
-| SQLite "database is locked" errors | Concurrent writes exceed SQLite capacity | Switch to MySQL/PostgreSQL | MVP → Tier 2 |
-| Page load > 500ms (50th percentile) | Missing cache or slow queries | Enable Redis cache, warm caches | MVP → Tier 2 |
-| Queue backlog > 100 jobs for > 5 min | Sync queue blocking HTTP | Switch to Redis queue, start worker(s) | MVP → Tier 2 |
-| PHP-FPM max children reached (502 errors) | Insufficient workers | Increase `pm.max_children`, add RAM | Tier 2 → Tier 3 |
-| Disk > 85% full | Media accumulation | Prune, archive, or migrate to S3 | Any tier |
-| Database CPU > 80% for > 10 min | Query bottleneck | Add indexes, then add read replica | Tier 2 → Tier 3 |
-| Rate limiter blocking legitimate users at NAT | IP-only throttle | Switch to user-based rate limiting | Tier 3 |
-| Session cache hit rate < 90% | File/database session too slow | Switch to Redis session | MVP → Tier 2 |
-| 5xx errors during peak hours | Resource exhaustion | Profile, then vertical → horizontal scale | Any tier |
+| Symptom                                       | Probable Cause                           | Action                                    | Tier Trigger    |
+| --------------------------------------------- | ---------------------------------------- | ----------------------------------------- | --------------- |
+| SQLite "database is locked" errors            | Concurrent writes exceed SQLite capacity | Switch to MySQL/PostgreSQL                | MVP → Tier 2    |
+| Page load > 500ms (50th percentile)           | Missing cache or slow queries            | Enable Redis cache, warm caches           | MVP → Tier 2    |
+| Queue backlog > 100 jobs for > 5 min          | Sync queue blocking HTTP                 | Switch to Redis queue, start worker(s)    | MVP → Tier 2    |
+| PHP-FPM max children reached (502 errors)     | Insufficient workers                     | Increase `pm.max_children`, add RAM       | Tier 2 → Tier 3 |
+| Disk > 85% full                               | Media accumulation                       | Prune, archive, or migrate to S3          | Any tier        |
+| Database CPU > 80% for > 10 min               | Query bottleneck                         | Add indexes, then add read replica        | Tier 2 → Tier 3 |
+| Rate limiter blocking legitimate users at NAT | IP-only throttle                         | Switch to user-based rate limiting        | Tier 3          |
+| Session cache hit rate < 90%                  | File/database session too slow           | Switch to Redis session                   | MVP → Tier 2    |
+| 5xx errors during peak hours                  | Resource exhaustion                      | Profile, then vertical → horizontal scale | Any tier        |
 
 ### Do NOT optimize until:
+
 - You have **measured** the bottleneck (Pulse, Blackfire, or similar)
 - You have **confirmed** the bottleneck is in production (not dev)
 - The feature causing the load is **stable** (not about to be rewritten)
@@ -41,22 +43,23 @@ Do NOT scale preemptively. Scale when you observe these symptoms:
 
 **What changes:**
 
-| Concern | MVP (default) | Tier 2 |
-|---|---|---|
-| Database engine | SQLite (auto) | MySQL 8+ / MariaDB / PostgreSQL |
-| Cache driver | `file` | `redis` |
-| Session driver | `database` | `redis` |
-| Queue driver | `sync` | `redis` |
-| Queue workers | none (inline) | Supervisor (numprocs=4) |
-| Cron | webhook fallback | system cron |
-| Media storage | `public` disk (local) | local + backup to S3 |
-| Monitoring | log files only | Pulse + SmartLogger |
-| PHP-FPM children | 10 | 25 |
+| Concern          | MVP (default)         | Tier 2                          |
+| ---------------- | --------------------- | ------------------------------- |
+| Database engine  | SQLite (auto)         | MySQL 8+ / MariaDB / PostgreSQL |
+| Cache driver     | `file`                | `redis`                         |
+| Session driver   | `database`            | `redis`                         |
+| Queue driver     | `sync`                | `redis`                         |
+| Queue workers    | none (inline)         | Supervisor (numprocs=4)         |
+| Cron             | webhook fallback      | system cron                     |
+| Media storage    | `public` disk (local) | local + backup to S3            |
+| Monitoring       | log files only        | Pulse + SmartLogger             |
+| PHP-FPM children | 10                    | 25                              |
 
 **Steps:**
 
 1. Provision a VPS (2 CPU, 4 GB RAM, 50 GB SSD)
-2. Install PHP 8.4 + extensions (bcmath, curl, gd, intl, mbstring, openssl, pdo_mysql, xml, zip, opcache, redis)
+2. Install PHP 8.4 + extensions (bcmath, curl, gd, intl, mbstring, openssl, pdo_mysql, xml, zip,
+   opcache, redis)
 3. Install MySQL 8+ or PostgreSQL 14+
 4. Install Redis 7+
 5. Clone codebase and run `composer install --optimize-autoloader --no-dev`
@@ -111,17 +114,17 @@ stopwaitsecs=3600
 
 **What changes:**
 
-| Concern | Tier 2 | Tier 3 |
-|---|---|---|
-| App servers | 1 | 2+ (Nginx load-balanced) |
-| Database | single (read/write) | primary + read replica(s) |
-| Redis | single instance | cluster (3 nodes min) |
-| Queue workers | 4 per server | 8-16 per server |
-| Session | Redis single | Redis cluster |
-| Cache | Redis single | Redis cluster |
-| Media storage | local + backup | S3 primary |
-| Rate limiting | IP-based | user-based |
-| Monitoring | Pulse | Pulse + APM (Blackfire) |
+| Concern       | Tier 2              | Tier 3                    |
+| ------------- | ------------------- | ------------------------- |
+| App servers   | 1                   | 2+ (Nginx load-balanced)  |
+| Database      | single (read/write) | primary + read replica(s) |
+| Redis         | single instance     | cluster (3 nodes min)     |
+| Queue workers | 4 per server        | 8-16 per server           |
+| Session       | Redis single        | Redis cluster             |
+| Cache         | Redis single        | Redis cluster             |
+| Media storage | local + backup      | S3 primary                |
+| Rate limiting | IP-based            | user-based                |
+| Monitoring    | Pulse               | Pulse + APM (Blackfire)   |
 
 **Steps (in order):**
 
@@ -212,8 +215,8 @@ Update `config/rate-limiting.php` to use user-based limits (keyed by `user_id` i
 
 ## 3. Configuration Changes Summary (.env)
 
-All scaling transitions are achieved purely through `.env` changes — no code changes
-needed. This is guaranteed by the [Infrastructure Architecture](infrastructure.md).
+All scaling transitions are achieved purely through `.env` changes — no code changes needed. This is
+guaranteed by the [Infrastructure Architecture](infrastructure.md).
 
 ### From MVP to Tier 2
 
@@ -257,25 +260,25 @@ FILESYSTEM_DISK=s3
 
 Estimate queue throughput:
 
-| Job Type | Peak per user/day | 200 users | 1500 users |
-|---|---|---|---|
-| Email notification | 3 | 600 | 4500 |
-| Media conversion | 1 | 200 | 1500 |
-| Report generation | 0.2 | 40 | 300 |
-| Certificate PDF | 0.1 | 20 | 150 |
-| **Daily total** | **4.3** | **860** | **6450** |
+| Job Type           | Peak per user/day | 200 users | 1500 users |
+| ------------------ | ----------------- | --------- | ---------- |
+| Email notification | 3                 | 600       | 4500       |
+| Media conversion   | 1                 | 200       | 1500       |
+| Report generation  | 0.2               | 40        | 300        |
+| Certificate PDF    | 0.1               | 20        | 150        |
+| **Daily total**    | **4.3**           | **860**   | **6450**   |
 
 At 8 hours peak: 860/8 = 108 jobs/hour for 200 users, 6450/8 = 806 jobs/hour for 1500 users.
 
 Worker throughput: ~50-100 jobs/min per worker process. Recommendation:
 
-| Users | `numprocs` | Notes |
-|---|---|---|
-| < 50 | sync (inline) | No separate worker needed |
-| 50-200 | 4 | Redis queue, Supervisor |
-| 200-500 | 8 | Increase RAM per server |
-| 500-1000 | 12 | 2 app servers × 6 workers each |
-| 1000-2000 | 16 | 2 app servers × 8 workers each |
+| Users     | `numprocs`    | Notes                          |
+| --------- | ------------- | ------------------------------ |
+| < 50      | sync (inline) | No separate worker needed      |
+| 50-200    | 4             | Redis queue, Supervisor        |
+| 200-500   | 8             | Increase RAM per server        |
+| 500-1000  | 12            | 2 app servers × 6 workers each |
+| 1000-2000 | 16            | 2 app servers × 8 workers each |
 
 ---
 
@@ -283,29 +286,29 @@ Worker throughput: ~50-100 jobs/min per worker process. Recommendation:
 
 Configure these alerts in Pulse or external monitoring:
 
-| Metric | Warning | Critical | Action |
-|---|---|---|---|
-| Queue backlog | > 50 jobs | > 100 jobs for 5 min | Add workers, check for stuck job |
-| DB query time (P95) | > 50ms | > 100ms | Check slow query log, add index |
-| PHP-FPM active children | > 60% | > 80% | Increase max_children or add server |
-| Disk usage | > 75% | > 85% | Prune, archive, or expand |
-| CPU average (5 min) | > 50% | > 70% | Check for runaway process, scale |
-| Redis memory | > 60% | > 80% | Increase maxmemory, enable eviction |
-| Session cache hit rate | < 95% | < 90% | Check Redis, fallback driver health |
-| Failed jobs (24h) | > 5 | > 20 | Investigate failing job class |
-| Backup age | > 26h | > 48h | Check cron/backup script |
-| SSL cert expiry | < 30 days | < 7 days | Renew certificate |
+| Metric                  | Warning   | Critical             | Action                              |
+| ----------------------- | --------- | -------------------- | ----------------------------------- |
+| Queue backlog           | > 50 jobs | > 100 jobs for 5 min | Add workers, check for stuck job    |
+| DB query time (P95)     | > 50ms    | > 100ms              | Check slow query log, add index     |
+| PHP-FPM active children | > 60%     | > 80%                | Increase max_children or add server |
+| Disk usage              | > 75%     | > 85%                | Prune, archive, or expand           |
+| CPU average (5 min)     | > 50%     | > 70%                | Check for runaway process, scale    |
+| Redis memory            | > 60%     | > 80%                | Increase maxmemory, enable eviction |
+| Session cache hit rate  | < 95%     | < 90%                | Check Redis, fallback driver health |
+| Failed jobs (24h)       | > 5       | > 20                 | Investigate failing job class       |
+| Backup age              | > 26h     | > 48h                | Check cron/backup script            |
+| SSL cert expiry         | < 30 days | < 7 days             | Renew certificate                   |
 
 ### Recommended Monitoring Stack
 
-| Tool | What | Cost |
-|---|---|---|
-| Laravel Pulse (built-in) | Request, query, queue, exception metrics | Free |
-| SmartLogger (built-in) | Business audit trail | Free |
-| Uptime Kuma (self-hosted) | HTTP/S uptime + SSL expiry | Free |
-| Netdata (self-hosted) | System metrics (CPU, RAM, disk, network) | Free |
-| Sentry (or GlitchTip) | Error tracking (optional) | Free-$26/mo |
-| Blackfire.io | Profiling (optional, Tier 3+) | €59/mo |
+| Tool                      | What                                     | Cost        |
+| ------------------------- | ---------------------------------------- | ----------- |
+| Laravel Pulse (built-in)  | Request, query, queue, exception metrics | Free        |
+| SmartLogger (built-in)    | Business audit trail                     | Free        |
+| Uptime Kuma (self-hosted) | HTTP/S uptime + SSL expiry               | Free        |
+| Netdata (self-hosted)     | System metrics (CPU, RAM, disk, network) | Free        |
+| Sentry (or GlitchTip)     | Error tracking (optional)                | Free-$26/mo |
+| Blackfire.io              | Profiling (optional, Tier 3+)            | €59/mo      |
 
 ---
 
@@ -313,11 +316,11 @@ Configure these alerts in Pulse or external monitoring:
 
 As data grows, backup strategy must evolve:
 
-| Tier | Database | Files | RPO | Procedure |
-|---|---|---|---|---|
-| MVP | SQLite file copy | rsync to second disk | 24h | Manual cron script |
-| Tier 2 | mysqldump (compressed) | rsync to S3 nightly | 24h | Automated cron, 30-day retention |
-| Tier 3 | Percona XtraBackup (hot) | S3 versioning + replication | 1h | Hourly incremental, daily full |
+| Tier   | Database                 | Files                       | RPO | Procedure                        |
+| ------ | ------------------------ | --------------------------- | --- | -------------------------------- |
+| MVP    | SQLite file copy         | rsync to second disk        | 24h | Manual cron script               |
+| Tier 2 | mysqldump (compressed)   | rsync to S3 nightly         | 24h | Automated cron, 30-day retention |
+| Tier 3 | Percona XtraBackup (hot) | S3 versioning + replication | 1h  | Hourly incremental, daily full   |
 
 ### S3 Migration for Media
 
@@ -355,17 +358,17 @@ php artisan system:health
 
 ## 7. Common Pitfalls
 
-| Pitfall | Why | Prevention |
-|---|---|---|
-| Switching to Redis without testing | Missing `ext-redis` causes crash | Run `php artisan system:health` first |
-| Using `sync` queue past 50 users | HTTP requests block on media conversions | Switch to Redis at Tier 2 |
-| Forgetting `php artisan optimize` | Routes/config not cached, 2-3× slower | Include in deployment script |
-| Not warming cache after deploy | First 100 requests are slow | Add `php artisan optimize` to deploy |
-| Using IP-based rate limiting at NAT | 100+ students behind 1 IP get blocked | Switch to user-based limiting |
-| SQLite in production with >10 concurrent users | "database is locked" errors | Switch to MySQL at Tier 2 |
-| File cache on multi-server | Each server has different cache state | Use Redis at Tier 2+ |
-| Not monitoring replica lag | Read queries return stale data | Add replica lag alert |
-| S3 permissions misconfigured | 403 errors on media URLs | Test S3 access before switching |
+| Pitfall                                        | Why                                      | Prevention                            |
+| ---------------------------------------------- | ---------------------------------------- | ------------------------------------- |
+| Switching to Redis without testing             | Missing `ext-redis` causes crash         | Run `php artisan system:health` first |
+| Using `sync` queue past 50 users               | HTTP requests block on media conversions | Switch to Redis at Tier 2             |
+| Forgetting `php artisan optimize`              | Routes/config not cached, 2-3× slower    | Include in deployment script          |
+| Not warming cache after deploy                 | First 100 requests are slow              | Add `php artisan optimize` to deploy  |
+| Using IP-based rate limiting at NAT            | 100+ students behind 1 IP get blocked    | Switch to user-based limiting         |
+| SQLite in production with >10 concurrent users | "database is locked" errors              | Switch to MySQL at Tier 2             |
+| File cache on multi-server                     | Each server has different cache state    | Use Redis at Tier 2+                  |
+| Not monitoring replica lag                     | Read queries return stale data           | Add replica lag alert                 |
+| S3 permissions misconfigured                   | 403 errors on media URLs                 | Test S3 access before switching       |
 
 ---
 
@@ -426,29 +429,29 @@ k6 run --vus 200 --duration 5m tests/Load/Tier3Validation.js
 Create `tests/Load/BasicSmoke.js`:
 
 ```javascript
-import http from 'k6/http';
-import { check, sleep } from 'k6';
+import http from 'k6/http'
+import { check, sleep } from 'k6'
 
 export default function () {
-    const res = http.get('https://your-module.com/login');
+    const res = http.get('https://your-module.com/login')
     check(res, {
         'login page loads': (r) => r.status === 200,
         'load time < 500ms': (r) => r.timings.duration < 500,
-    });
-    sleep(1);
+    })
+    sleep(1)
 }
 ```
 
 ### Key Metrics to Track During Load Test
 
-| Metric | Target | Notes |
-|---|---|---|
-| P95 response time | < 500ms | Track per-route |
-| Error rate | < 0.1% | 5xx errors |
-| PHP-FPM active children | < 80% of max | Increase workers if exceeded |
-| Database CPU | < 60% | Add replica if exceeded |
-| Queue backlog | < 10 | Workers must keep up |
-| Redis hit rate | > 95% | Cache warming needed if below |
+| Metric                  | Target       | Notes                         |
+| ----------------------- | ------------ | ----------------------------- |
+| P95 response time       | < 500ms      | Track per-route               |
+| Error rate              | < 0.1%       | 5xx errors                    |
+| PHP-FPM active children | < 80% of max | Increase workers if exceeded  |
+| Database CPU            | < 60%        | Add replica if exceeded       |
+| Queue backlog           | < 10         | Workers must keep up          |
+| Redis hit rate          | > 95%        | Cache warming needed if below |
 
 ---
 
@@ -479,14 +482,14 @@ Examples:
 
 ## References
 
-| Document | Contents |
-|---|---|
-| [Infrastructure](infrastructure.md) | Deployment tiers, target architecture, service layout |
-| [Installation](installation.md) | Detailed setup for VPS, Docker, shared hosting |
-| [Configuration](configuration.md) | .env reference, all config options |
-| [Observability](observability.md) | Pulse, logging, health checks |
-| [Queue](queue.md) | Queue drivers, Supervisor, job lifecycle |
-| [Cache](cache.md) | Cache strategy, Redis, OpCache |
-| [ADR: Self-Hosted Single-Tenant](../adr/adr-self-hosted-single-tenant.md) | Why MVP-first |
-| [ADR: Gradual Migration](../adr/adr-gradual-migration.md) | Governing principle for scaling |
-| [ADR: Performance Optimization](../adr/adr-performance-optimization.md) | Performance tiers, deferred optimizations |
+| Document                                                                  | Contents                                              |
+| ------------------------------------------------------------------------- | ----------------------------------------------------- |
+| [Infrastructure](infrastructure.md)                                       | Deployment tiers, target architecture, service layout |
+| [Installation](installation.md)                                           | Detailed setup for VPS, Docker, shared hosting        |
+| [Configuration](configuration.md)                                         | .env reference, all config options                    |
+| [Observability](observability.md)                                         | Pulse, logging, health checks                         |
+| [Queue](queue.md)                                                         | Queue drivers, Supervisor, job lifecycle              |
+| [Cache](cache.md)                                                         | Cache strategy, Redis, OpCache                        |
+| [ADR: Self-Hosted Single-Tenant](../adr/adr-self-hosted-single-tenant.md) | Why MVP-first                                         |
+| [ADR: Gradual Migration](../adr/adr-gradual-migration.md)                 | Governing principle for scaling                       |
+| [ADR: Performance Optimization](../adr/adr-performance-optimization.md)   | Performance tiers, deferred optimizations             |

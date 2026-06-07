@@ -12,7 +12,11 @@ return new class extends Migration
     {
         Schema::create('rubrics', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('internship_id')->nullable()->constrained('internships')->cascadeOnDelete();
+            $table
+                ->foreignUuid('internship_id')
+                ->nullable()
+                ->constrained('internships')
+                ->cascadeOnDelete();
             $table->index('internship_id');
             $table->string('name');
             $table->json('structure')->nullable();

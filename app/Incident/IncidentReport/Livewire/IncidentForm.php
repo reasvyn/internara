@@ -38,17 +38,17 @@ class IncidentForm extends Component
         $this->validate([
             'formData.registration_id' => ['required', 'exists:registrations,id'],
             'formData.incident_date' => ['required', 'date'],
-            'formData.type' => ['required', 'in:accident,safety_violation,harassment,disciplinary,other'],
+            'formData.type' => [
+                'required',
+                'in:accident,safety_violation,harassment,disciplinary,other',
+            ],
             'formData.severity' => ['required', 'in:low,medium,high,critical'],
             'formData.description' => ['required', 'string', 'min:20', 'max:5000'],
             'formData.location' => ['nullable', 'string', 'max:255'],
             'formData.action_taken' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        $action->execute([
-            ...$this->formData,
-            'reported_by' => auth()->id(),
-        ]);
+        $action->execute([...$this->formData, 'reported_by' => auth()->id()]);
 
         flash()->success(__('incident.report_success'));
 

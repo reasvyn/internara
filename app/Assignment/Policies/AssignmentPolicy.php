@@ -37,29 +37,17 @@ class AssignmentPolicy extends BasePolicy
 
     public function create(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin',
-            'admin',
-            'teacher',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
     }
 
     public function update(User $user, Assignment $assignment): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin',
-            'admin',
-            'teacher',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
     }
 
     public function publish(User $user, Assignment $assignment): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin',
-            'admin',
-            'teacher',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
     }
 
     public function delete(User $user, Assignment $assignment): bool

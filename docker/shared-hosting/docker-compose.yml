@@ -1,45 +1,45 @@
 services:
-  app:
-    build:
-      context: ../..
-      dockerfile: docker/shared-hosting/Dockerfile
-    ports:
-      - "${SHARED_HOSTING_PORT:-8080}:80"
-    volumes:
-      - ../../storage:/var/www/html/storage
-      - ../../.env.example:/var/www/html/.env
-    environment:
-      APP_URL: "http://localhost:${SHARED_HOSTING_PORT:-8080}"
-      DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: internara
-      DB_USERNAME: internara
-      DB_PASSWORD: secret
-      CRON_SECRET: "${CRON_SECRET:-dev-cron-secret}"
-    depends_on:
-      db:
-        condition: service_healthy
+    app:
+        build:
+            context: ../..
+            dockerfile: docker/shared-hosting/Dockerfile
+        ports:
+            - '${SHARED_HOSTING_PORT:-8080}:80'
+        volumes:
+            - ../../storage:/var/www/html/storage
+            - ../../.env.example:/var/www/html/.env
+        environment:
+            APP_URL: 'http://localhost:${SHARED_HOSTING_PORT:-8080}'
+            DB_CONNECTION: mysql
+            DB_HOST: db
+            DB_PORT: 3306
+            DB_DATABASE: internara
+            DB_USERNAME: internara
+            DB_PASSWORD: secret
+            CRON_SECRET: '${CRON_SECRET:-dev-cron-secret}'
+        depends_on:
+            db:
+                condition: service_healthy
 
-  db:
-    image: mariadb:10.6
-    environment:
-      MARIADB_DATABASE: internara
-      MARIADB_USER: internara
-      MARIADB_PASSWORD: secret
-      MARIADB_RANDOM_ROOT_PASSWORD: yes
-    ports:
-      - "${DB_PORT:-3307}:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      timeout: 10s
-      retries: 10
+    db:
+        image: mariadb:10.6
+        environment:
+            MARIADB_DATABASE: internara
+            MARIADB_USER: internara
+            MARIADB_PASSWORD: secret
+            MARIADB_RANDOM_ROOT_PASSWORD: yes
+        ports:
+            - '${DB_PORT:-3307}:3306'
+        volumes:
+            - db_data:/var/lib/mysql
+        healthcheck:
+            test: ['CMD', 'healthcheck.sh', '--connect', '--innodb_initialized']
+            timeout: 10s
+            retries: 10
 
-  # No queue worker — shared hosting simulation (sync driver)
-  # No Reverb — shared hosting simulation (no WebSocket)
-  # No Redis — shared hosting simulation
+    # No queue worker — shared hosting simulation (sync driver)
+    # No Reverb — shared hosting simulation (no WebSocket)
+    # No Redis — shared hosting simulation
 
 volumes:
-  db_data:
+    db_data:

@@ -16,11 +16,8 @@ class SaveSystemSettingsAction extends BaseAction
         protected readonly UploadBrandAssetAction $uploadBrand,
     ) {}
 
-    public function execute(
-        array $general,
-        array $branding,
-        array $mail,
-    ): void {
+    public function execute(array $general, array $branding, array $mail): void
+    {
         $settings = [
             'brand_name' => $general['brand_name'] ?? '',
             'site_title' => $general['site_title'] ?? '',

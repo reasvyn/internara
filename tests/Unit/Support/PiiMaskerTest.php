@@ -107,10 +107,7 @@ describe('maskArray', function () {
     });
 
     it('handles integer keys', function () {
-        $result = PiiMasker::maskArray([
-            'password',
-            'email' => 'test@example.com',
-        ]);
+        $result = PiiMasker::maskArray(['password', 'email' => 'test@example.com']);
 
         expect($result[0])->toBe('password');
         expect($result['email'])->toBe('te***@example.com');

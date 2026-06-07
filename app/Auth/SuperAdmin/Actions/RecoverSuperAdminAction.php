@@ -39,7 +39,9 @@ final class RecoverSuperAdminAction extends BaseAction
                 $integrity = SuperAdminIntegrityRules::fromModel($user);
 
                 if ($user->hasRole(Role::SUPER_ADMIN->value) && ! $integrity->hasProtectedStatus()) {
-                    throw new RejectedException('Super admin account integrity violation: expected PROTECTED status.');
+                    throw new RejectedException(
+                        'Super admin account integrity violation: expected PROTECTED status.',
+                    );
                 }
 
                 $user->update([
@@ -86,10 +88,13 @@ final class RecoverSuperAdminAction extends BaseAction
                 return;
             }
 
-            Notification::send($existingAdmins, new SuperAdminRecoveredNotification(
-                recoveredEmail: $recoveredUser->email,
-                mode: $isReset ? 'reset' : 'create',
-            ));
+            Notification::send(
+                $existingAdmins,
+                new SuperAdminRecoveredNotification(
+                    recoveredEmail: $recoveredUser->email,
+                    mode: $isReset ? 'reset' : 'create',
+                ),
+            );
         } catch (\Throwable $e) {
             SmartLogger::error('Failed to notify existing super admins about recovery')
                 ->withPayload([

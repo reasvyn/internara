@@ -16,7 +16,11 @@ return new class extends Migration
             $table->index('registration_id');
             $table->foreignUuid('from_placement_id')->constrained('placements')->cascadeOnDelete();
             $table->index('from_placement_id');
-            $table->foreignUuid('to_placement_id')->nullable()->constrained('placements')->nullOnDelete();
+            $table
+                ->foreignUuid('to_placement_id')
+                ->nullable()
+                ->constrained('placements')
+                ->nullOnDelete();
             $table->index('to_placement_id');
             $table->text('reason');
             $table->foreignUuid('requested_by')->constrained('users')->cascadeOnDelete();

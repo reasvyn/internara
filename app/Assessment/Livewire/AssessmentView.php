@@ -19,7 +19,11 @@ class AssessmentView extends Component
         /** @var User $user */
         $user = auth()->user();
 
-        return Assessment::with(['registration.mentee.user', 'rubric.competencies.indicators', 'registration.internship'])
+        return Assessment::with([
+            'registration.mentee.user',
+            'rubric.competencies.indicators',
+            'registration.internship',
+        ])
             ->whereHas('registration.mentee.user', fn ($q) => $q->where('id', $user->id))
             ->whereNotNull('finalized_at')
             ->latest()

@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\User\Models\User;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -123,5 +122,4 @@ return [
         'login_decay_seconds' => env('AUTH_LOGIN_DECAY', 60),
         'auto_lock_threshold' => env('AUTH_AUTO_LOCK_THRESHOLD', 10),
     ],
-
 ];

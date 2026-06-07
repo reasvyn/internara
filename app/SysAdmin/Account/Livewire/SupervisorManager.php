@@ -64,8 +64,14 @@ class SupervisorManager extends BaseRecordManager
     protected function applyFilters(Builder $query): Builder
     {
         return $query
-            ->when($this->filters['created_from'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
-            ->when($this->filters['created_to'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '<=', $v));
+            ->when(
+                $this->filters['created_from'] ?? null,
+                fn ($q, $v) => $q->whereDate('created_at', '>=', $v),
+            )
+            ->when(
+                $this->filters['created_to'] ?? null,
+                fn ($q, $v) => $q->whereDate('created_at', '<=', $v),
+            );
     }
 
     // --- Record Actions ---
@@ -103,10 +109,19 @@ class SupervisorManager extends BaseRecordManager
 
         if ($this->form->id) {
             $user = User::findOrFail($this->form->id);
-            $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email], $profileData);
+            $updateAction->execute(
+                $user,
+                ['name' => $this->form->name, 'email' => $this->form->email],
+                $profileData,
+            );
             flash()->success(__('user.supervisor.success_updated'));
         } else {
-            $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], $profileData, [RoleEnum::SUPERVISOR->value], false);
+            $user = $createAction->execute(
+                ['name' => $this->form->name, 'email' => $this->form->email],
+                $profileData,
+                [RoleEnum::SUPERVISOR->value],
+                false,
+            );
             $this->userModal = false;
             $this->redirect(route('sysadmin.users.account-slip', $user));
 

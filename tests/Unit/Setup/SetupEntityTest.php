@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Setup\Entities;
 
-use App\Setup\SetupWizard\Entities\SetupState;
+use App\Setup\Entities\SetupEntity;
 use Carbon\Carbon;
 
 test('hasStoredToken returns true when setup token is set', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: 'encrypted-token',
         tokenExpiresAt: null,
@@ -20,7 +20,7 @@ test('hasStoredToken returns true when setup token is set', function () {
 });
 
 test('hasStoredToken returns false when setup token is null', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -32,7 +32,7 @@ test('hasStoredToken returns false when setup token is null', function () {
 });
 
 test('isTokenExpired returns true when tokenExpiresAt is null', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: 'token',
         tokenExpiresAt: null,
@@ -44,7 +44,7 @@ test('isTokenExpired returns true when tokenExpiresAt is null', function () {
 });
 
 test('isTokenExpired returns true when token is past expiration', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: 'token',
         tokenExpiresAt: Carbon::now()->subMinutes(5),
@@ -56,7 +56,7 @@ test('isTokenExpired returns true when token is past expiration', function () {
 });
 
 test('isTokenExpired returns false when token is not yet expired', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: 'token',
         tokenExpiresAt: Carbon::now()->addMinutes(30),
@@ -71,7 +71,7 @@ test('isTokenExpired accepts custom now timestamp', function () {
     $expiresAt = Carbon::parse('2026-06-01 12:00:00');
     $now = Carbon::parse('2026-06-01 12:30:00');
 
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: 'token',
         tokenExpiresAt: $expiresAt,
@@ -84,7 +84,7 @@ test('isTokenExpired accepts custom now timestamp', function () {
 });
 
 test('validateToken returns false when token is expired', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: 'token',
         tokenExpiresAt: Carbon::now()->subMinutes(5),
@@ -96,7 +96,7 @@ test('validateToken returns false when token is expired', function () {
 });
 
 test('validateToken returns true when decrypted token matches input', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: 'token',
         tokenExpiresAt: Carbon::now()->addMinutes(30),
@@ -108,7 +108,7 @@ test('validateToken returns true when decrypted token matches input', function (
 });
 
 test('validateToken returns false when decrypted token does not match input', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: 'token',
         tokenExpiresAt: Carbon::now()->addMinutes(30),
@@ -120,7 +120,7 @@ test('validateToken returns false when decrypted token does not match input', fu
 });
 
 test('isStepCompleted returns true for completed steps', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -134,7 +134,7 @@ test('isStepCompleted returns true for completed steps', function () {
 });
 
 test('isStepCompleted returns false for incomplete steps', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -147,13 +147,29 @@ test('isStepCompleted returns false for incomplete steps', function () {
 });
 
 test('allStepsCompleted returns true when all expected wizard steps are completed', function () {
-    config()->set('setup.wizard.step_keys', ['welcome', 'account', 'school', 'department', 'internship', 'finalize', 'complete']);
+    config()->set('setup.wizard.step_keys', [
+        'welcome',
+        'account',
+        'school',
+        'department',
+        'internship',
+        'finalize',
+        'complete',
+    ]);
 
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: true,
         setupToken: null,
         tokenExpiresAt: null,
-        completedSteps: ['welcome', 'account', 'school', 'department', 'internship', 'finalize', 'complete'],
+        completedSteps: [
+            'welcome',
+            'account',
+            'school',
+            'department',
+            'internship',
+            'finalize',
+            'complete',
+        ],
         recoveryKey: null,
     );
 
@@ -161,9 +177,17 @@ test('allStepsCompleted returns true when all expected wizard steps are complete
 });
 
 test('allStepsCompleted returns false when some wizard steps are missing', function () {
-    config()->set('setup.wizard.step_keys', ['welcome', 'account', 'school', 'department', 'internship', 'finalize', 'complete']);
+    config()->set('setup.wizard.step_keys', [
+        'welcome',
+        'account',
+        'school',
+        'department',
+        'internship',
+        'finalize',
+        'complete',
+    ]);
 
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -177,7 +201,7 @@ test('allStepsCompleted returns false when some wizard steps are missing', funct
 test('allStepsCompleted returns true when no config but steps exist', function () {
     config()->set('setup.wizard.step_keys', []);
 
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -189,7 +213,7 @@ test('allStepsCompleted returns true when no config but steps exist', function (
 });
 
 test('isWithinFinalizationWindow returns false when updatedAt is null', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -203,7 +227,7 @@ test('isWithinFinalizationWindow returns false when updatedAt is null', function
 test('isWithinFinalizationWindow returns true when within configured window', function () {
     Carbon::setTestNow(Carbon::parse('2026-06-05 12:00:00'));
 
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: true,
         setupToken: null,
         tokenExpiresAt: null,
@@ -220,7 +244,7 @@ test('isWithinFinalizationWindow returns true when within configured window', fu
 test('isWithinFinalizationWindow returns false when outside configured window', function () {
     Carbon::setTestNow(Carbon::parse('2026-06-05 12:10:00'));
 
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: true,
         setupToken: null,
         tokenExpiresAt: null,
@@ -235,7 +259,7 @@ test('isWithinFinalizationWindow returns false when outside configured window', 
 });
 
 test('isWithinFinalizationWindowSeconds returns false when updatedAt is null', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -249,7 +273,7 @@ test('isWithinFinalizationWindowSeconds returns false when updatedAt is null', f
 test('isWithinFinalizationWindowSeconds returns true when within configured seconds', function () {
     Carbon::setTestNow(Carbon::parse('2026-06-05 12:00:15'));
 
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: true,
         setupToken: null,
         tokenExpiresAt: null,
@@ -263,25 +287,28 @@ test('isWithinFinalizationWindowSeconds returns true when within configured seco
     Carbon::setTestNow();
 });
 
-test('isWithinFinalizationWindowSeconds returns false when outside configured seconds', function () {
-    Carbon::setTestNow(Carbon::parse('2026-06-05 12:01:00'));
+test(
+    'isWithinFinalizationWindowSeconds returns false when outside configured seconds',
+    function () {
+        Carbon::setTestNow(Carbon::parse('2026-06-05 12:01:00'));
 
-    $state = new SetupState(
-        dbInstalled: true,
-        setupToken: null,
-        tokenExpiresAt: null,
-        completedSteps: [],
-        recoveryKey: null,
-        updatedAt: Carbon::parse('2026-06-05 12:00:00'),
-    );
+        $state = new SetupEntity(
+            dbInstalled: true,
+            setupToken: null,
+            tokenExpiresAt: null,
+            completedSteps: [],
+            recoveryKey: null,
+            updatedAt: Carbon::parse('2026-06-05 12:00:00'),
+        );
 
-    expect($state->isWithinFinalizationWindowSeconds(30))->toBeFalse();
+        expect($state->isWithinFinalizationWindowSeconds(30))->toBeFalse();
 
-    Carbon::setTestNow();
-});
+        Carbon::setTestNow();
+    },
+);
 
 test('hasRecoveryKey returns true when recovery key is set', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -293,7 +320,7 @@ test('hasRecoveryKey returns true when recovery key is set', function () {
 });
 
 test('hasRecoveryKey returns false when recovery key is null', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -305,7 +332,7 @@ test('hasRecoveryKey returns false when recovery key is null', function () {
 });
 
 test('tokenVersion returns the stored version', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -319,7 +346,7 @@ test('tokenVersion returns the stored version', function () {
 });
 
 test('tokenVersion defaults to zero', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -331,7 +358,7 @@ test('tokenVersion defaults to zero', function () {
 });
 
 test('isInstalled returns true when dbInstalled is true', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: true,
         setupToken: null,
         tokenExpiresAt: null,
@@ -343,7 +370,7 @@ test('isInstalled returns true when dbInstalled is true', function () {
 });
 
 test('isInstalled returns false when dbInstalled is false', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,
@@ -357,7 +384,7 @@ test('isInstalled returns false when dbInstalled is false', function () {
 test('updatedAt returns the stored carbon instance', function () {
     $now = Carbon::parse('2026-06-05 12:30:00');
 
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: true,
         setupToken: null,
         tokenExpiresAt: null,
@@ -370,7 +397,7 @@ test('updatedAt returns the stored carbon instance', function () {
 });
 
 test('updatedAt returns null when not set', function () {
-    $state = new SetupState(
+    $state = new SetupEntity(
         dbInstalled: false,
         setupToken: null,
         tokenExpiresAt: null,

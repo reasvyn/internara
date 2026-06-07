@@ -47,7 +47,9 @@ final class UserIdentifierGenerator
             $attempts++;
 
             if ($attempts >= self::MAX_ATTEMPTS) {
-                throw new \RuntimeException('Unable to generate unique username after '.self::MAX_ATTEMPTS.' attempts.');
+                throw new \RuntimeException(
+                    'Unable to generate unique username after '.self::MAX_ATTEMPTS.' attempts.',
+                );
             }
         }
 

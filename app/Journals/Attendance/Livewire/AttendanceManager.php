@@ -47,7 +47,10 @@ class AttendanceManager extends Component
     public function pendingAbsences()
     {
         return AbsenceRequest::with(['user', 'registration.placement.company'])
-            ->whereHas('registration', fn ($q) => $q->whereHas('mentors', fn ($q) => $q->where('user_id', auth()->id())))
+            ->whereHas(
+                'registration',
+                fn ($q) => $q->whereHas('mentors', fn ($q) => $q->where('user_id', auth()->id())),
+            )
             ->where('status', AbsenceRequestStatus::PENDING)
             ->latest()
             ->paginate(20);

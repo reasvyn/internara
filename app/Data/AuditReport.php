@@ -11,9 +11,7 @@ use App\Enums\AuditStatus;
 final readonly class AuditReport extends BaseData
 {
     /** @param AuditCheck[] $checks */
-    public function __construct(
-        public array $checks = [],
-    ) {}
+    public function __construct(public array $checks = []) {}
 
     public function passed(): bool
     {
@@ -30,10 +28,7 @@ final readonly class AuditReport extends BaseData
     public function forCategory(AuditCategory $category): array
     {
         return array_values(
-            array_filter(
-                $this->checks,
-                fn (AuditCheck $check) => $check->category === $category,
-            ),
+            array_filter($this->checks, fn (AuditCheck $check) => $check->category === $category),
         );
     }
 }

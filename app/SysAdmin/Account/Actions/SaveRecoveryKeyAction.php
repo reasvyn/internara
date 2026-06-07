@@ -21,12 +21,19 @@ class SaveRecoveryKeyAction extends BaseAction
 
             $path = "{$dir}/.recovery-key";
 
-            $header = '# INTERNARA RECOVERY KEY'.PHP_EOL
-                .'# This key grants super admin access. Keep it secret, keep it safe.'.PHP_EOL
-                .'# Only the server owner can read this file.'.PHP_EOL
-                .'# Generated: '.now()->toIso8601String().PHP_EOL
-                .PHP_EOL
-                .$plaintext.PHP_EOL;
+            $header =
+                '# INTERNARA RECOVERY KEY'.
+                PHP_EOL.
+                '# This key grants super admin access. Keep it secret, keep it safe.'.
+                PHP_EOL.
+                '# Only the server owner can read this file.'.
+                PHP_EOL.
+                '# Generated: '.
+                now()->toIso8601String().
+                PHP_EOL.
+                PHP_EOL.
+                $plaintext.
+                PHP_EOL;
 
             if (File::put($path, $header) === false) {
                 throw new RuntimeException(sprintf('Failed to write recovery key to [%s]', $path));

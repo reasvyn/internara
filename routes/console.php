@@ -30,10 +30,6 @@ Schedule::command('system:cache-warm')
     ->hourly()
     ->description('Pre-warm settings, brand, config, and view caches');
 
-Schedule::command('pulse:check')
-    ->everyMinute()
-    ->description('Record Pulse performance metrics');
+Schedule::command('pulse:check')->everyMinute()->description('Record Pulse performance metrics');
 
-Schedule::command('queue:prune-failed')
-    ->daily()
-    ->description('Remove stale failed job records');
+Schedule::command('queue:prune-failed')->daily()->description('Remove stale failed job records');

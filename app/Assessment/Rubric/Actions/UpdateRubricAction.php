@@ -9,8 +9,12 @@ use App\Core\Actions\BaseAction;
 
 final class UpdateRubricAction extends BaseAction
 {
-    public function execute(Rubric $rubric, string $name, ?string $description = null, bool $isActive = true): Rubric
-    {
+    public function execute(
+        Rubric $rubric,
+        string $name,
+        ?string $description = null,
+        bool $isActive = true,
+    ): Rubric {
         $rubric->update([
             'name' => $name,
             'description' => $description,

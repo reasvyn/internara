@@ -28,9 +28,7 @@ final class BulkDeleteAcademicYearsAction extends BaseAction
             if (! $state->canBeDeleted()) {
                 $key = $state->isActive() ? 'cannot_delete_active' : 'cannot_delete_has_data';
 
-                throw new RejectedException(
-                    __("academic_year.{$key}", ['name' => $year->name]),
-                );
+                throw new RejectedException(__("academic_year.{$key}", ['name' => $year->name]));
             }
         }
 
@@ -43,11 +41,7 @@ final class BulkDeleteAcademicYearsAction extends BaseAction
 
                 $year->delete();
 
-                $this->log(
-                    'academic_year_deleted',
-                    $year,
-                    ['name' => $yearName],
-                );
+                $this->log('academic_year_deleted', $year, ['name' => $yearName]);
 
                 $count++;
             }

@@ -19,7 +19,9 @@ final class TerminatePartnershipAction extends BaseAction
         return $this->transaction(function () use ($partnership) {
             $partnership->update(['status' => 'terminated']);
 
-            $this->log('partnership_terminated', $partnership, ['agreement_number' => $partnership->agreement_number]);
+            $this->log('partnership_terminated', $partnership, [
+                'agreement_number' => $partnership->agreement_number,
+            ]);
 
             return $partnership->fresh();
         });

@@ -16,7 +16,7 @@ class TestMailNotification extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        return new MailMessage()
             ->subject(__('setting.test_mail.subject'))
             ->greeting(__('setting.test_mail.greeting'))
             ->line(__('setting.test_mail.line1'))

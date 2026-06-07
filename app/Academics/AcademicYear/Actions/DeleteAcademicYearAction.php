@@ -24,10 +24,14 @@ final class DeleteAcademicYearAction extends BaseAction
 
         if (! $state->canBeDeleted()) {
             if ($state->isActive()) {
-                throw new RejectedException(__('academic_year.cannot_delete_active', ['name' => $year->name]));
+                throw new RejectedException(
+                    __('academic_year.cannot_delete_active', ['name' => $year->name]),
+                );
             }
 
-            throw new RejectedException(__('academic_year.cannot_delete_has_data', ['name' => $year->name]));
+            throw new RejectedException(
+                __('academic_year.cannot_delete_has_data', ['name' => $year->name]),
+            );
         }
 
         $this->transaction(function () use ($year) {

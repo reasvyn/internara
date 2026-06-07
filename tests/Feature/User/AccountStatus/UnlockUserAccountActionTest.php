@@ -33,6 +33,8 @@ test('cannot unlock superadmin', function () {
     Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
     $this->user->assignRole('superadmin');
 
-    expect(fn () => $this->action->execute($this->user))
-        ->toThrow(RuntimeException::class, 'Super administrator accounts cannot be unlocked');
+    expect(fn () => $this->action->execute($this->user))->toThrow(
+        RuntimeException::class,
+        'Super administrator accounts cannot be unlocked',
+    );
 });

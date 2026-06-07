@@ -12,14 +12,20 @@ return new class extends Migration
     {
         Schema::create('assessments', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('registration_id')->constrained('registrations')->onDelete('cascade');
+            $table
+                ->foreignUuid('registration_id')
+                ->constrained('registrations')
+                ->onDelete('cascade');
             $table->foreignUuid('evaluator_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('rubric_id')->nullable()->constrained('rubrics')->nullOnDelete();
             $table->index('rubric_id');
 
             $table->string('assessment_type', 30)->default('final'); // midterm | final | periodic | industry
             $table->float('score')->nullable();
-            $table->json('scores_data')->nullable()->comment('Detailed scores per criteria/competency');
+            $table
+                ->json('scores_data')
+                ->nullable()
+                ->comment('Detailed scores per criteria/competency');
             $table->text('feedback')->nullable();
 
             $table->timestamp('finalized_at')->nullable();

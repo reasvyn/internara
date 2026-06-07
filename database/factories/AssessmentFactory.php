@@ -21,7 +21,12 @@ class AssessmentFactory extends Factory
         return [
             'registration_id' => Registration::factory(),
             'evaluator_id' => User::factory(),
-            'assessment_type' => $this->faker->randomElement(['midterm', 'final', 'periodic', 'industry']),
+            'assessment_type' => $this->faker->randomElement([
+                'midterm',
+                'final',
+                'periodic',
+                'industry',
+            ]),
             'score' => $this->faker->randomFloat(2, 0, 100),
             'scores_data' => [
                 ['criterion' => 'Technical Skills', 'score' => $this->faker->randomFloat(2, 0, 40)],

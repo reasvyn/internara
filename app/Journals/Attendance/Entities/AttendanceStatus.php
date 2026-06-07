@@ -11,17 +11,11 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class AttendanceStatus extends BaseEntity
 {
-    public function __construct(
-        private ?AttendanceStatusEnum $status,
-        private ?Carbon $clockOut,
-    ) {}
+    public function __construct(private ?AttendanceStatusEnum $status, private ?Carbon $clockOut) {}
 
     public static function fromModel(Model $model): static
     {
-        return new self(
-            status: $model->status,
-            clockOut: $model->clock_out,
-        );
+        return new self(status: $model->status, clockOut: $model->clock_out);
     }
 
     public function hasClockOut(): bool

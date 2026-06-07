@@ -13,7 +13,11 @@ class EvaluationPolicy extends BasePolicy
     public function viewAny(User $user): bool
     {
         return $this->hasAnyOfRoles($user, [
-            'super_admin', 'admin', 'teacher', 'supervisor', 'student',
+            'super_admin',
+            'admin',
+            'teacher',
+            'supervisor',
+            'student',
         ]);
     }
 
@@ -23,14 +27,17 @@ class EvaluationPolicy extends BasePolicy
             return true;
         }
 
-        return $evaluation->evaluator_id === $user->id
-            || $evaluation->mentor_id === $user->id;
+        return $evaluation->evaluator_id === $user->id || $evaluation->mentor_id === $user->id;
     }
 
     public function create(User $user): bool
     {
         return $this->hasAnyOfRoles($user, [
-            'super_admin', 'admin', 'teacher', 'supervisor', 'student',
+            'super_admin',
+            'admin',
+            'teacher',
+            'supervisor',
+            'student',
         ]);
     }
 

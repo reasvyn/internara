@@ -44,11 +44,15 @@ class RecoverAdminCommand extends Command
 
         $this->displayGuide();
 
-        $email = $this->argument('email') ?? text(
-            label: __('sysadmin.field_email'),
-            required: true,
-            validate: fn (string $value) => ! filter_var($value, FILTER_VALIDATE_EMAIL) ? __('sysadmin.recover.invalid_email') : null,
-        );
+        $email =
+            $this->argument('email') ??
+            text(
+                label: __('sysadmin.field_email'),
+                required: true,
+                validate: fn (string $value) => ! filter_var($value, FILTER_VALIDATE_EMAIL)
+                    ? __('sysadmin.recover.invalid_email')
+                    : null,
+            );
 
         $isReset = $this->option('reset');
         $userExists = User::where('email', $email)->exists();
@@ -84,13 +88,12 @@ class RecoverAdminCommand extends Command
         $password = password(
             label: $isReset ? __('sysadmin.field_new_password') : __('sysadmin.field_password'),
             required: true,
-            validate: fn (string $value) => strlen($value) < 8 ? __('sysadmin.recover.password_min') : null,
+            validate: fn (string $value) => strlen($value) < 8
+                ? __('sysadmin.recover.password_min')
+                : null,
         );
 
-        $confirmPassword = password(
-            label: __('sysadmin.field_confirm_password'),
-            required: true,
-        );
+        $confirmPassword = password(label: __('sysadmin.field_confirm_password'), required: true);
 
         if ($password !== $confirmPassword) {
             $this->displayError(__('sysadmin.recover.password_mismatch'));
@@ -130,7 +133,9 @@ class RecoverAdminCommand extends Command
                 ->systemOnly()
                 ->save();
 
-            $this->displayError(__('setup.cli.installation_failed', ['message' => $e->getMessage()]));
+            $this->displayError(
+                __('setup.cli.installation_failed', ['message' => $e->getMessage()]),
+            );
 
             return self::FAILURE;
         }
@@ -140,7 +145,13 @@ class RecoverAdminCommand extends Command
     {
         $this->newLine();
         $this->line('  <fg=white;options=bold;bg=blue> '.__('sysadmin.title').' </>');
-        $this->line('  <fg=blue>'.__('sysadmin.recover.subtitle').'</> <fg=gray>'.__('sysadmin.version', ['version' => AppInfo::version()]).'</>');
+        $this->line(
+            '  <fg=blue>'.
+                __('sysadmin.recover.subtitle').
+                '</> <fg=gray>'.
+                __('sysadmin.version', ['version' => AppInfo::version()]).
+                '</>',
+        );
         $this->newLine();
     }
 
@@ -201,12 +212,11 @@ class RecoverAdminCommand extends Command
             : __('sysadmin.recover.confirm_mode_create');
 
         $this->newLine();
-        $this->components->warn(__('sysadmin.recover.confirm_warning', ['mode' => $mode, 'email' => $email]));
-
-        $confirmation = text(
-            label: __('sysadmin.recover.confirm_prompt'),
-            required: true,
+        $this->components->warn(
+            __('sysadmin.recover.confirm_warning', ['mode' => $mode, 'email' => $email]),
         );
+
+        $confirmation = text(label: __('sysadmin.recover.confirm_prompt'), required: true);
 
         if ($confirmation !== $email) {
             $this->displayError(__('sysadmin.recover.aborted'));
@@ -220,11 +230,25 @@ class RecoverAdminCommand extends Command
     private function displayResult(User $user, bool $isReset): void
     {
         $this->newLine();
-        $message = $isReset ? __('sysadmin.recover.success_reset') : __('sysadmin.recover.success_create');
+        $message = $isReset
+            ? __('sysadmin.recover.success_reset')
+            : __('sysadmin.recover.success_create');
         $this->components->info($message);
         $this->newLine();
-        $this->line('  <fg=yellow>'.__('sysadmin.field_email_result').'</>  <fg=cyan>'.$user->email.'</>');
-        $this->line('  <fg=yellow>'.__('sysadmin.field_username').'</> <fg=cyan>'.$user->username.'</>');
+        $this->line(
+            '  <fg=yellow>'.
+                __('sysadmin.field_email_result').
+                '</>  <fg=cyan>'.
+                $user->email.
+                '</>',
+        );
+        $this->line(
+            '  <fg=yellow>'.
+                __('sysadmin.field_username').
+                '</> <fg=cyan>'.
+                $user->username.
+                '</>',
+        );
         $this->newLine();
         $this->components->warn(__('sysadmin.recover.change_password'));
     }

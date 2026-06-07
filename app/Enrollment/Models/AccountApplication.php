@@ -13,17 +13,19 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable([
-    'name',
-    'email',
-    'student_id_number',
-    'department_id',
-    'form_data',
-    'status',
-    'processed_by',
-    'processed_at',
-    'rejection_reason',
-])]
+#[
+    Fillable([
+        'name',
+        'email',
+        'student_id_number',
+        'department_id',
+        'form_data',
+        'status',
+        'processed_by',
+        'processed_at',
+        'rejection_reason',
+    ]),
+]
 class AccountApplication extends BaseModel
 {
     use HasFactory;

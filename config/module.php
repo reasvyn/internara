@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Module List
@@ -127,7 +126,13 @@ return [
         'enabled' => true,
 
         'exclude_directories' => [
-            'components', 'emails', 'errors', 'layouts', 'mcp', 'pdf', 'vendor',
+            'components',
+            'emails',
+            'errors',
+            'layouts',
+            'mcp',
+            'pdf',
+            'vendor',
         ],
     ],
 ];

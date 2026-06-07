@@ -30,7 +30,9 @@ class PruneNotificationsCommand extends Command
             ->where('created_at', '<', $cutoff)
             ->delete();
 
-        $this->components->info(__('sysadmin.prune_notifications.completed', ['count' => $deleted, 'days' => $days]));
+        $this->components->info(
+            __('sysadmin.prune_notifications.completed', ['count' => $deleted, 'days' => $days]),
+        );
 
         return self::SUCCESS;
     }

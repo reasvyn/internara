@@ -47,19 +47,30 @@ class IncidentManager extends BaseRecordManager
 
     protected function applySearch(Builder $query): Builder
     {
-        return $query
-            ->where(function (Builder $q) {
-                $q->where('users.name', 'like', "%{$this->search}%")
-                    ->orWhere('incident_reports.description', 'like', "%{$this->search}%");
-            });
+        return $query->where(function (Builder $q) {
+            $q->where('users.name', 'like', "%{$this->search}%")->orWhere(
+                'incident_reports.description',
+                'like',
+                "%{$this->search}%",
+            );
+        });
     }
 
     protected function applyFilters(Builder $query): Builder
     {
         return $query
-            ->when($this->filters['type'] ?? null, fn ($q, $v) => $q->where('incident_reports.type', $v))
-            ->when($this->filters['severity'] ?? null, fn ($q, $v) => $q->where('incident_reports.severity', $v))
-            ->when($this->filters['status'] ?? null, fn ($q, $v) => $q->where('incident_reports.status', $v));
+            ->when(
+                $this->filters['type'] ?? null,
+                fn ($q, $v) => $q->where('incident_reports.type', $v),
+            )
+            ->when(
+                $this->filters['severity'] ?? null,
+                fn ($q, $v) => $q->where('incident_reports.severity', $v),
+            )
+            ->when(
+                $this->filters['status'] ?? null,
+                fn ($q, $v) => $q->where('incident_reports.status', $v),
+            );
     }
 
     public function resolve(IncidentReport $incident): void

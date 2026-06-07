@@ -33,8 +33,9 @@ final readonly class CertificateRenderer
             '{start_date}' => $registration->start_date?->format('d F Y') ?? '—',
             '{end_date}' => $registration->end_date?->format('d F Y') ?? '—',
             '{duration}' => $registration->start_date && $registration->end_date
-                ? (int) ceil($registration->start_date->diffInMonths($registration->end_date)).' months'
-                : '—',
+                    ? (int) ceil($registration->start_date->diffInMonths($registration->end_date)).
+                        ' months'
+                    : '—',
             '{score}' => $assessment?->score ?? '—',
             '{score_letter}' => $assessment?->score
                 ? match (true) {
@@ -48,9 +49,8 @@ final readonly class CertificateRenderer
             '{certificate_number}' => $certificate->certificate_number,
             '{issued_date}' => $certificate->issued_at?->format('d F Y') ?? now()->format('d F Y'),
             '{principal_name}' => '',
-            '{supervisor_name}' => $registration->mentors()
-                ->wherePivot('role', 'supervisor')
-                ->first()?->user?->name ?? '—',
+            '{supervisor_name}' => $registration->mentors()->wherePivot('role', 'supervisor')->first()?->user?->name ??
+                '—',
         ];
     }
 
@@ -59,11 +59,7 @@ final readonly class CertificateRenderer
         $placeholders = $this->resolvePlaceholders($registration, $certificate);
         $template = $certificate->template?->content_template ?? '<p>Certificate</p>';
 
-        $html = str_replace(
-            array_keys($placeholders),
-            array_values($placeholders),
-            $template,
-        );
+        $html = str_replace(array_keys($placeholders), array_values($placeholders), $template);
 
         return Blade::render(
             string: $html,
@@ -78,9 +74,7 @@ final readonly class CertificateRenderer
 
         $layout = $certificate->template?->layout ?? 'portrait';
 
-        return Pdf::loadHTML($html)
-            ->setPaper('A4', $layout)
-            ->output();
+        return Pdf::loadHTML($html)->setPaper('A4', $layout)->output();
     }
 
     public function storePdf(Registration $registration, Certificate $certificate): string

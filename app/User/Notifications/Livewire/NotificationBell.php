@@ -34,9 +34,7 @@ class NotificationBell extends Component
             CacheKeys::NOTIFICATION_UNREAD.$userId,
             60,
             function () use ($userId) {
-                return Notification::where('user_id', $userId)
-                    ->where('is_read', false)
-                    ->count();
+                return Notification::where('user_id', $userId)->where('is_read', false)->count();
             },
         );
     }

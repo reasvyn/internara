@@ -28,9 +28,7 @@ test('uses locale from cookie when supported', function () {
 });
 
 test('falls back to default locale for unsupported locale cookie', function () {
-    Cookie::shouldReceive('get')
-        ->with('locale', config('app.locale'))
-        ->andReturn('fr');
+    Cookie::shouldReceive('get')->with('locale', config('app.locale'))->andReturn('fr');
 
     $this->get('/_test_locale');
 

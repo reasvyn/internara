@@ -12,13 +12,12 @@ class UploadBrandAssetAction extends BaseAction
 {
     public function execute(UploadedFile $file, string $type = 'logo'): string
     {
-        $collection = $type === 'favicon'
-            ? Setting::COLLECTION_FAVICON
-            : Setting::COLLECTION_LOGO;
+        $collection = $type === 'favicon' ? Setting::COLLECTION_FAVICON : Setting::COLLECTION_LOGO;
 
         $setting = Setting::firstOrCreate(['key' => $collection.'_ref']);
 
-        $setting->addMedia($file)
+        $setting
+            ->addMedia($file)
             ->withCustomProperties(['type' => $type])
             ->toMediaCollection($collection);
 

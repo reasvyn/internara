@@ -60,8 +60,16 @@ class AdminManager extends BaseRecordManager
     protected function applyFilters(Builder $query): Builder
     {
         return $query
-            ->when($this->filters['setup_required'] ?? null, fn ($q, $v) => $q->where('setup_required', $v === 'yes'))
-            ->when($this->filters['locked'] ?? null, fn ($q, $v) => $v === 'yes' ? $q->whereNotNull('locked_at') : $q->whereNull('locked_at'));
+            ->when(
+                $this->filters['setup_required'] ?? null,
+                fn ($q, $v) => $q->where('setup_required', $v === 'yes'),
+            )
+            ->when(
+                $this->filters['locked'] ?? null,
+                fn ($q, $v) => $v === 'yes'
+                    ? $q->whereNotNull('locked_at')
+                    : $q->whereNull('locked_at'),
+            );
     }
 
     // --- Record Actions ---
@@ -103,11 +111,18 @@ class AdminManager extends BaseRecordManager
         if ($this->form->id) {
             $user = User::findOrFail($this->form->id);
             $this->authorize('update', $user);
-            $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email]);
+            $updateAction->execute($user, [
+                'name' => $this->form->name,
+                'email' => $this->form->email,
+            ]);
             flash()->success(__('user.admin.success_updated'));
         } else {
             $this->authorize('create', User::class);
-            $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], [], $this->form->roles);
+            $createAction->execute(
+                ['name' => $this->form->name, 'email' => $this->form->email],
+                [],
+                $this->form->roles,
+            );
             flash()->success(__('user.admin.success_created'));
         }
 

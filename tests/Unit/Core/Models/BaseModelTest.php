@@ -41,8 +41,8 @@ test('base model uses has uuids trait', function () {
 });
 
 test('base model generates unique ids across multiple instances', function () {
-    $id1 = (new MockModel)->newUniqueId();
-    $id2 = (new MockModel)->newUniqueId();
+    $id1 = new MockModel()->newUniqueId();
+    $id2 = new MockModel()->newUniqueId();
 
     expect($id1)->not->toBe($id2);
 });

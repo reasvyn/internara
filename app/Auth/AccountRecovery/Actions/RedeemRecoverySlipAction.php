@@ -25,14 +25,16 @@ class RedeemRecoverySlipAction extends BaseAction
                 ->where('token_type', 'account_recovery')
                 ->whereNull('last_attempt_at')
                 ->where(function ($q) {
-                    $q->whereNull('expires_at')
-                        ->orWhere('expires_at', '>', now());
+                    $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
                 })
                 ->get();
 
             $matchedCode = null;
             foreach ($recoveryCodes as $rc) {
-                if ($rc->asRecoveryCodeState()->isValid() && Hash::check(strtoupper($code), $rc->token)) {
+                if (
+                    $rc->asRecoveryCodeState()->isValid() &&
+                    Hash::check(strtoupper($code), $rc->token)
+                ) {
                     $matchedCode = $rc;
                     break;
                 }

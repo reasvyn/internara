@@ -9,15 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class InternshipGroupState extends BaseEntity
 {
-    public function __construct(
-        private int $memberCount,
-        private bool $isActive,
-    ) {}
+    public function __construct(private int $memberCount, private bool $isActive) {}
 
     public static function fromModel(Model $model): static
     {
         return new self(
-            memberCount: (int) ($model->relationLoaded('members') ? $model->members->count() : $model->members()->count()),
+            memberCount: (int) ($model->relationLoaded('members')
+                ? $model->members->count()
+                : $model->members()->count()),
             isActive: (bool) ($model->is_active ?? false),
         );
     }
