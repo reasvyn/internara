@@ -24,21 +24,26 @@ class IncidentReportedNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
-            ->subject(__('notifications.incident_reported.subject', [
-                'severity' => $this->incident->severity->label(),
-            ]))
-            ->greeting(__('notifications.incident_reported.greeting', ['name' => $notifiable->name]))
-            ->line(__('notifications.incident_reported.description', [
-                'description' => $this->incident->description,
-            ]))
-            ->line(__('notifications.incident_reported.severity', [
-                'severity' => $this->incident->severity->label(),
-            ]))
-            ->action(
-                __('notifications.incident_reported.action'),
-                route('sysadmin.incidents'),
-            );
+        return new MailMessage()
+            ->subject(
+                __('notifications.incident_reported.subject', [
+                    'severity' => $this->incident->severity->label(),
+                ]),
+            )
+            ->greeting(
+                __('notifications.incident_reported.greeting', ['name' => $notifiable->name]),
+            )
+            ->line(
+                __('notifications.incident_reported.description', [
+                    'description' => $this->incident->description,
+                ]),
+            )
+            ->line(
+                __('notifications.incident_reported.severity', [
+                    'severity' => $this->incident->severity->label(),
+                ]),
+            )
+            ->action(__('notifications.incident_reported.action'), route('sysadmin.incidents'));
     }
 
     public function toBroadcast(object $notifiable): array

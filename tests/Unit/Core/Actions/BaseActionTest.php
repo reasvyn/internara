@@ -27,7 +27,7 @@ class MockAction extends BaseAction
         return $this->transaction($callback, $attempts);
     }
 
-    public function executeLog(string $action, ?array $payload = null): void
+    public function executeLog(string $action, array $payload = []): void
     {
         $this->log($action, null, $payload);
     }
@@ -51,9 +51,7 @@ test('it can execute transaction callbacks', function () {
 });
 
 test('it skips outer transaction when already nested', function () {
-    DB::shouldReceive('transactionLevel')
-        ->once()
-        ->andReturn(1);
+    DB::shouldReceive('transactionLevel')->once()->andReturn(1);
 
     $action = new MockAction;
     $result = $action->executeTransaction(fn () => 'nested');
@@ -72,9 +70,7 @@ test('it logs actions using smart logger', function () {
     $action = new MockAction;
     $action->executeLog('Test Action', ['key' => 'value']);
 
-    $log->shouldHaveReceived('info')
-        ->once()
-        ->with('Test Action', Mockery::type('array'));
+    $log->shouldHaveReceived('info')->once()->with('Test Action', Mockery::type('array'));
 });
 
 test('with error handling returns callback result on success', function () {
@@ -87,65 +83,76 @@ test('with error handling returns callback result on success', function () {
 test('with error handling passes through app exception', function () {
     $action = new MockAction;
 
-    expect(fn () => $action->executeWithErrorHandling(
-        fn () => throw new ConcreteAppException('Domain error'),
-        'Testing',
-    ))->toThrow(ConcreteAppException::class, 'Domain error');
+    expect(
+        fn () => $action->executeWithErrorHandling(
+            fn () => throw new ConcreteAppException('Domain error'),
+            'Testing',
+        ),
+    )->toThrow(ConcreteAppException::class, 'Domain error');
 });
 
 test('with error handling passes through module exception', function () {
     $action = new MockAction;
 
-    expect(fn () => $action->executeWithErrorHandling(
-        fn () => throw new ConcreteModuleException('Module error'),
-        'Testing',
-    ))->toThrow(ConcreteModuleException::class, 'Module error');
+    expect(
+        fn () => $action->executeWithErrorHandling(
+            fn () => throw new ConcreteModuleException('Module error'),
+            'Testing',
+        ),
+    )->toThrow(ConcreteModuleException::class, 'Module error');
 });
 
 test('with error handling passes through validation exception', function () {
     $action = new MockAction;
     $e = ValidationException::withMessages(['field' => 'Required']);
 
-    expect(fn () => $action->executeWithErrorHandling(
-        fn () => throw $e,
-        'Testing',
-    ))->toThrow(ValidationException::class);
+    expect(fn () => $action->executeWithErrorHandling(fn () => throw $e, 'Testing'))->toThrow(
+        ValidationException::class,
+    );
 });
 
 test('with error handling passes through authorization exception', function () {
     $action = new MockAction;
 
-    expect(fn () => $action->executeWithErrorHandling(
-        fn () => throw new AuthorizationException('Not allowed'),
-        'Testing',
-    ))->toThrow(AuthorizationException::class, 'Not allowed');
+    expect(
+        fn () => $action->executeWithErrorHandling(
+            fn () => throw new AuthorizationException('Not allowed'),
+            'Testing',
+        ),
+    )->toThrow(AuthorizationException::class, 'Not allowed');
 });
 
 test('with error handling passes through model not found exception', function () {
     $action = new MockAction;
 
-    expect(fn () => $action->executeWithErrorHandling(
-        fn () => throw new ModelNotFoundException('Not found'),
-        'Testing',
-    ))->toThrow(ModelNotFoundException::class, 'Not found');
+    expect(
+        fn () => $action->executeWithErrorHandling(
+            fn () => throw new ModelNotFoundException('Not found'),
+            'Testing',
+        ),
+    )->toThrow(ModelNotFoundException::class, 'Not found');
 });
 
 test('with error handling passes through not found http exception', function () {
     $action = new MockAction;
 
-    expect(fn () => $action->executeWithErrorHandling(
-        fn () => throw new NotFoundHttpException('Missing'),
-        'Testing',
-    ))->toThrow(NotFoundHttpException::class, 'Missing');
+    expect(
+        fn () => $action->executeWithErrorHandling(
+            fn () => throw new NotFoundHttpException('Missing'),
+            'Testing',
+        ),
+    )->toThrow(NotFoundHttpException::class, 'Missing');
 });
 
 test('with error handling wraps generic throwable as runtime exception', function () {
     $action = new MockAction;
 
-    expect(fn () => $action->executeWithErrorHandling(
-        fn () => throw new \InvalidArgumentException('Bad arg'),
-        'Processing data',
-    ))->toThrow(RuntimeException::class, 'Processing data.');
+    expect(
+        fn () => $action->executeWithErrorHandling(
+            fn () => throw new \InvalidArgumentException('Bad arg'),
+            'Processing data',
+        ),
+    )->toThrow(RuntimeException::class, 'Processing data.');
 });
 
 test('with error handling logs wrapped throwable', function () {
@@ -163,13 +170,14 @@ test('with error handling logs wrapped throwable', function () {
 
     $log->shouldHaveReceived('error')
         ->once()
-        ->with(Mockery::on(fn ($msg) => str_contains($msg, 'Processing data')), Mockery::type('array'));
+        ->with(
+            Mockery::on(fn ($msg) => str_contains($msg, 'Processing data')),
+            Mockery::type('array'),
+        );
 });
 
 test('transaction uses configured attempts parameter', function () {
-    DB::shouldReceive('transactionLevel')
-        ->once()
-        ->andReturn(0);
+    DB::shouldReceive('transactionLevel')->once()->andReturn(0);
     DB::shouldReceive('transaction')
         ->once()
         ->with(Mockery::type('callable'), 5)
@@ -179,4 +187,13 @@ test('transaction uses configured attempts parameter', function () {
     $result = $action->executeTransaction(fn () => 'ignored', 5);
 
     expect($result)->toBe('result');
+});
+
+test('it logs with empty payload by default', function () {
+    $log = Log::spy();
+
+    $action = new MockAction;
+    $action->executeLog('Test Action');
+
+    $log->shouldHaveReceived('info')->once()->with('Test Action', Mockery::type('array'));
 });

@@ -27,9 +27,7 @@ beforeEach(function () {
 });
 
 test('wizard mounts and executes audit successfully', function () {
-    Livewire::test(SetupWizard::class)
-        ->assertSet('currentStep', 1)
-        ->assertSet('auditPassed', true);
+    Livewire::test(SetupWizard::class)->assertSet('currentStep', 1)->assertSet('auditPassed', true);
 });
 
 test('wizard step 1 requires audit to pass before proceeding', function () {

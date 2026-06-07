@@ -9,9 +9,7 @@ use App\Partners\Company\Models\Company;
 
 final class BatchDeleteCompanyAction extends BaseAction
 {
-    public function __construct(
-        protected readonly DeleteCompanyAction $deleteAction,
-    ) {}
+    public function __construct(protected readonly DeleteCompanyAction $deleteAction) {}
 
     /**
      * @param string[] $ids

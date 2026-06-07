@@ -25,16 +25,22 @@ final class Settings
         'app_license' => 'license',
     ];
 
-    protected static function logQueryError(string $message, QueryException $e, array $context = []): void
-    {
+    protected static function logQueryError(
+        string $message,
+        QueryException $e,
+        array $context = [],
+    ): void {
         SmartLogger::error($message)
             ->withPayload(array_merge($context, ['error' => $e->getMessage()]))
             ->systemOnly()
             ->save();
     }
 
-    protected static function logQueryWarning(string $message, QueryException $e, array $context = []): void
-    {
+    protected static function logQueryWarning(
+        string $message,
+        QueryException $e,
+        array $context = [],
+    ): void {
         SmartLogger::warning($message)
             ->withPayload(array_merge($context, ['error' => $e->getMessage()]))
             ->systemOnly()
@@ -117,10 +123,13 @@ final class Settings
         $updated = 0;
 
         foreach ($settings as $key => $attributes) {
-            Validator::validate(['key' => $key], [
-                'key' => ['required', new ValidSettingKey],
-            ]);
-            $value = is_array($attributes) ? ($attributes['value'] ?? null) : $attributes;
+            Validator::validate(
+                ['key' => $key],
+                [
+                    'key' => ['required', new ValidSettingKey],
+                ],
+            );
+            $value = is_array($attributes) ? $attributes['value'] ?? null : $attributes;
             $extra = is_array($attributes) ? array_diff_key($attributes, ['value' => null]) : [];
 
             $model = Setting::updateOrCreate(
@@ -266,7 +275,9 @@ final class Settings
         }
 
         try {
-            $dbValue = Cache::rememberForever(CacheKeys::SETTINGS_KEY.$key, function () use ($key) {
+            $dbValue = Cache::rememberForever(CacheKeys::SETTINGS_KEY.$key, function () use (
+                $key,
+            ) {
                 $setting = Setting::where('key', $key)->first();
 
                 return $setting?->value;

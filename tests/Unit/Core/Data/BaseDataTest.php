@@ -17,24 +17,17 @@ readonly class MockData extends BaseData
 
 readonly class NestedMockData extends BaseData
 {
-    public function __construct(
-        public string $label,
-        public MockData $child,
-    ) {}
+    public function __construct(public string $label, public MockData $child) {}
 }
 
 readonly class MockDataWithValue extends BaseData
 {
-    public function __construct(
-        public string $value,
-    ) {}
+    public function __construct(public string $value) {}
 }
 
 readonly class MockDtoWithToArray
 {
-    public function __construct(
-        public string $value,
-    ) {}
+    public function __construct(public string $value) {}
 
     public function toArray(): array
     {
@@ -67,9 +60,11 @@ test('it can hydrate from array with snake_case keys', function () {
 });
 
 test('it throws exception on missing required params', function () {
-    expect(fn () => MockData::fromArray([
-        'name' => 'John',
-    ]))->toThrow(\InvalidArgumentException::class);
+    expect(
+        fn () => MockData::fromArray([
+            'name' => 'John',
+        ]),
+    )->toThrow(\InvalidArgumentException::class);
 });
 
 test('it uses default values when available', function () {
@@ -127,13 +122,17 @@ test('from method accepts object with to array method', function () {
 });
 
 test('from method throws on unsupported source type', function () {
-    expect(fn () => MockData::from(42))
-        ->toThrow(\InvalidArgumentException::class, 'Unsupported source type');
+    expect(fn () => MockData::from(42))->toThrow(
+        \InvalidArgumentException::class,
+        'Unsupported source type',
+    );
 });
 
 test('from method throws on null source', function () {
-    expect(fn () => MockData::from(null))
-        ->toThrow(\InvalidArgumentException::class, 'Unsupported source type');
+    expect(fn () => MockData::from(null))->toThrow(
+        \InvalidArgumentException::class,
+        'Unsupported source type',
+    );
 });
 
 test('to array preserves null values', function () {

@@ -12,9 +12,12 @@ final class AddSupervisorReportNotesAction extends BaseAction
 {
     public function execute(Report $report, string $notes): Report
     {
-        Validator::validate(['notes' => $notes], [
-            'notes' => 'required|string|max:5000',
-        ]);
+        Validator::validate(
+            ['notes' => $notes],
+            [
+                'notes' => 'required|string|max:5000',
+            ],
+        );
 
         return $this->transaction(function () use ($report, $notes) {
             $report->update(['supervisor_notes' => $notes]);

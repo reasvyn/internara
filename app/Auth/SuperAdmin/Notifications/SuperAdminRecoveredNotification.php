@@ -14,10 +14,7 @@ class SuperAdminRecoveredNotification extends Notification implements ShouldQueu
 {
     use Queueable;
 
-    public function __construct(
-        public string $recoveredEmail,
-        public string $mode,
-    ) {}
+    public function __construct(public string $recoveredEmail, public string $mode) {}
 
     public function via($notifiable): array
     {
@@ -38,15 +35,23 @@ class SuperAdminRecoveredNotification extends Notification implements ShouldQueu
 
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        return new MailMessage()
             ->subject(__('notifications.super_admin_recovered.mail_subject'))
-            ->greeting(__('notifications.super_admin_recovered.mail_greeting', ['name' => $notifiable->name]))
-            ->line(__('notifications.super_admin_recovered.mail_line1', [
-                'email' => $this->recoveredEmail,
-            ]))
-            ->line(__('notifications.super_admin_recovered.mail_line2', [
-                'mode' => $this->mode,
-            ]))
+            ->greeting(
+                __('notifications.super_admin_recovered.mail_greeting', [
+                    'name' => $notifiable->name,
+                ]),
+            )
+            ->line(
+                __('notifications.super_admin_recovered.mail_line1', [
+                    'email' => $this->recoveredEmail,
+                ]),
+            )
+            ->line(
+                __('notifications.super_admin_recovered.mail_line2', [
+                    'mode' => $this->mode,
+                ]),
+            )
             ->line(__('notifications.super_admin_recovered.mail_line3'))
             ->action(__('notifications.super_admin_recovered.mail_action'), url('/admin/users'));
     }

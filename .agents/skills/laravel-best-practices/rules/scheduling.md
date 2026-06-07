@@ -2,11 +2,18 @@
 
 ## What It Enforces
 
-Scheduled tasks use `withoutOverlapping()` on variable-duration operations. `onOneServer()` prevents duplicate execution on multi-server deployments. `runInBackground()` enables concurrent task execution. `environments()` restricts tasks to specific environments. Schedule groups share common configuration.
+Scheduled tasks use `withoutOverlapping()` on variable-duration operations. `onOneServer()` prevents
+duplicate execution on multi-server deployments. `runInBackground()` enables concurrent task
+execution. `environments()` restricts tasks to specific environments. Schedule groups share common
+configuration.
 
 ## Why It Matters
 
-`withoutOverlapping()` prevents a long-running task from starting a second instance while the first is still running — common for data imports, report generation, and batch processing. `onOneServer()` ensures that on a multi-server deployment, only one server executes the task (requires shared cache). `runInBackground()` allows tasks scheduled at the same time to run concurrently rather than sequentially.
+`withoutOverlapping()` prevents a long-running task from starting a second instance while the first
+is still running — common for data imports, report generation, and batch processing. `onOneServer()`
+ensures that on a multi-server deployment, only one server executes the task (requires shared
+cache). `runInBackground()` allows tasks scheduled at the same time to run concurrently rather than
+sequentially.
 
 ## When It Applies
 

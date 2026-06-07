@@ -29,7 +29,9 @@ test('environment auditor returns audit report with all checks', function () {
     expect($phpVersionCheck->status)->toBeIn([AuditStatus::PASS, AuditStatus::FAIL]);
 
     // Verify extension checks exist
-    $pdoCheck = collect($checks)->first(fn ($c) => $c->nameKey === 'extension' && $c->nameParams['extension'] === 'pdo');
+    $pdoCheck = collect($checks)->first(
+        fn ($c) => $c->nameKey === 'extension' && $c->nameParams['extension'] === 'pdo',
+    );
     expect($pdoCheck)->not->toBeNull();
     expect($pdoCheck->status)->toBe(AuditStatus::PASS); // pdo is loaded by phpunit anyway
 });

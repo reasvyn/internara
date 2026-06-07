@@ -26,7 +26,8 @@ final class BatchIssueCertificateAction extends BaseAction
                     $results['success']++;
                 } catch (\Exception $e) {
                     $results['failed']++;
-                    $results['errors'][] = 'Registration '.$registration->id.': '.$e->getMessage();
+                    $results['errors'][] =
+                        'Registration '.$registration->id.': '.$e->getMessage();
                 }
             });
         }

@@ -15,9 +15,7 @@ class ActivityFeedManager extends Component
 
     public function render(): View
     {
-        $activities = app(GetActivityLogsAction::class)->execute(
-            userId: auth()->id(),
-        );
+        $activities = app(GetActivityLogsAction::class)->execute(userId: auth()->id());
 
         return view('user.activity-feed', [
             'activities' => $activities,

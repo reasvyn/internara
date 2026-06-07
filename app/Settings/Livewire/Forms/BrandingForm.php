@@ -64,10 +64,12 @@ class BrandingForm extends Form
         foreach (Theme::presets() as $key => $preset) {
             $presetColors = $preset['colors'];
 
-            if ($presetColors['primary'] === $current['primary']
-                && $presetColors['secondary'] === $current['secondary']
-                && $presetColors['accent'] === $current['accent']
-                && $presetColors['base'] === $current['base']) {
+            if (
+                $presetColors['primary'] === $current['primary'] &&
+                $presetColors['secondary'] === $current['secondary'] &&
+                $presetColors['accent'] === $current['accent'] &&
+                $presetColors['base'] === $current['base']
+            ) {
                 return $key;
             }
         }

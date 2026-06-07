@@ -11,8 +11,12 @@ use App\User\Models\User;
 
 final class EvaluateMentorAction extends BaseAction
 {
-    public function execute(User $evaluator, User $mentor, array $data, ?Evaluation $existing = null): Evaluation
-    {
+    public function execute(
+        User $evaluator,
+        User $mentor,
+        array $data,
+        ?Evaluation $existing = null,
+    ): Evaluation {
         return $this->transaction(function () use ($evaluator, $mentor, $data, $existing) {
             if ($existing) {
                 $existing->update([

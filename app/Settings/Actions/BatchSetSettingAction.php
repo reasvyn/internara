@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class BatchSetSettingAction extends BaseAction
 {
-    public function __construct(
-        protected readonly SetSettingAction $setSettingAction,
-    ) {}
+    public function __construct(protected readonly SetSettingAction $setSettingAction) {}
 
     public function execute(array $settings): Collection
     {
@@ -33,7 +31,13 @@ class BatchSetSettingAction extends BaseAction
                     $type = null;
                 }
 
-                $setting = $this->setSettingAction->execute($key, $value, $group, $description, $type);
+                $setting = $this->setSettingAction->execute(
+                    $key,
+                    $value,
+                    $group,
+                    $description,
+                    $type,
+                );
                 $results->push($setting);
             }
 

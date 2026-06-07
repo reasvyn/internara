@@ -19,7 +19,11 @@ return new class extends Migration
             $table->json('form_data');
             $table->string('status', 20)->default('pending')->index();
             $table->string('rejection_reason')->nullable();
-            $table->foreignUuid('processed_by')->nullable()->constrained('users')->onDelete('set null');
+            $table
+                ->foreignUuid('processed_by')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
             $table->timestamp('processed_at')->nullable();
             $table->timestamps();
 

@@ -28,19 +28,19 @@ final readonly class DocumentRenderer
     {
         $html = $this->renderHtml($document, $target);
 
-        return Pdf::loadHTML($html)
-            ->setPaper('A4', 'portrait')
-            ->output();
+        return Pdf::loadHTML($html)->setPaper('A4', 'portrait')->output();
     }
 
     public function storePdf(Document $document, object $target, ?string $suffix = null): string
     {
         $pdf = $this->renderPdf($document, $target);
 
-        $fileName = str_replace('/', '-', $document->slug)
-            .($suffix ? "-{$suffix}" : '')
-            .'-'.now()->timestamp
-            .'.pdf';
+        $fileName =
+            str_replace('/', '-', $document->slug).
+            ($suffix ? "-{$suffix}" : '').
+            '-'.
+            now()->timestamp.
+            '.pdf';
 
         $path = self::STORAGE_PATH.'/'.$fileName;
 

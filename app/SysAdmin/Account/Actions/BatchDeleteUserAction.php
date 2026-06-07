@@ -9,9 +9,7 @@ use App\User\Models\User;
 
 final class BatchDeleteUserAction extends BaseAction
 {
-    public function __construct(
-        protected readonly DeleteUserAction $deleteAction,
-    ) {}
+    public function __construct(protected readonly DeleteUserAction $deleteAction) {}
 
     /**
      * @param string[] $ids

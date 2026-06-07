@@ -43,7 +43,9 @@ final class ApprovePlacementChangeAction extends BaseAction
                 'processed_at' => now(),
             ]);
 
-            $this->log('placement_change_approved', $request, ['registration_id' => $registration->id]);
+            $this->log('placement_change_approved', $request, [
+                'registration_id' => $registration->id,
+            ]);
         });
     }
 }

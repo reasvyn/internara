@@ -6,9 +6,7 @@ use App\Core\Contracts\SendsNotifications;
 
 class MockNotificationSender implements SendsNotifications
 {
-    public function __construct(
-        public mixed $lastResult = null,
-    ) {}
+    public function __construct(public mixed $lastResult = null) {}
 
     public function execute(
         string $userId,
@@ -87,11 +85,7 @@ test('sends notifications execute accepts all parameters', function () {
 test('sends notifications execute handles null optional parameters', function () {
     $sender = new MockNotificationSender;
 
-    $result = $sender->execute(
-        userId: 'user-1',
-        type: 'warning',
-        title: 'Warning!',
-    );
+    $result = $sender->execute(userId: 'user-1', type: 'warning', title: 'Warning!');
 
     expect($result)->toBeTrue();
 });

@@ -12,27 +12,29 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable([
-    'registration_id',
-    'supervisor_score',
-    'teacher_score',
-    'exam_score',
-    'final_score',
-    'grade_letter',
-    'industry_feedback',
-    'status',
-    'finalized_by',
-    'finalized_at',
-    'student_name',
-    'student_number',
-    'student_email',
-    'internship_name',
-    'company_name',
-    'department_name',
-    'supervisor_name',
-    'teacher_name',
-    'archived_data',
-])]
+#[
+    Fillable([
+        'registration_id',
+        'supervisor_score',
+        'teacher_score',
+        'exam_score',
+        'final_score',
+        'grade_letter',
+        'industry_feedback',
+        'status',
+        'finalized_by',
+        'finalized_at',
+        'student_name',
+        'student_number',
+        'student_email',
+        'internship_name',
+        'company_name',
+        'department_name',
+        'supervisor_name',
+        'teacher_name',
+        'archived_data',
+    ]),
+]
 class Report extends BaseModel
 {
     use HasFactory;
@@ -69,21 +71,22 @@ class Report extends BaseModel
             if ($company) {
                 $this->company_name = $company->name;
             } elseif ($registration->proposed_company_details) {
-                $this->company_name = $registration->proposed_company_details['company_name'] ?? null;
+                $this->company_name =
+                    $registration->proposed_company_details['company_name'] ?? null;
             }
             if ($department) {
                 $this->department_name = $department->name;
             }
 
             $supervisor = $registration->mentors->first(
-                fn ($m) => $m->pivot?->role === 'supervisor' || $m->pivot?->role === 'mentor'
+                fn ($m) => $m->pivot?->role === 'supervisor' || $m->pivot?->role === 'mentor',
             );
             if ($supervisor) {
                 $this->supervisor_name = $supervisor->name;
             }
 
             $teacher = $registration->mentors->first(
-                fn ($m) => $m->pivot?->role === 'teacher' || $m->pivot?->role === 'advisor'
+                fn ($m) => $m->pivot?->role === 'teacher' || $m->pivot?->role === 'advisor',
             );
             if ($teacher) {
                 $this->teacher_name = $teacher->name;
@@ -92,7 +95,8 @@ class Report extends BaseModel
             $this->archived_data = array_merge($this->archived_data ?? [], [
                 'captured_at' => now()->toIso8601String(),
                 'student_phone' => $profile?->phone,
-                'company_address' => $company?->address ?? ($registration->proposed_company_details['address'] ?? null),
+                'company_address' => $company?->address ??
+                    ($registration->proposed_company_details['address'] ?? null),
                 'academic_year' => $internship?->academicYear?->name,
             ]);
         }

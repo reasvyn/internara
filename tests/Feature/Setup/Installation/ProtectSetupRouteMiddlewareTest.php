@@ -30,7 +30,11 @@ test('blocks access without token when system is installed', function () {
 test('allows access when session has completed flag', function () {
     Settings::set([
         'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
-        'setup.updated_at' => ['value' => now()->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
+        'setup.updated_at' => [
+            'value' => now()->toIso8601String(),
+            'group' => 'setup',
+            'type' => 'datetime',
+        ],
     ]);
     Cache::flush();
     Session::put('setup.completed', true);

@@ -12,9 +12,7 @@ class AccountApplicationPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin', 'admin',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin']);
     }
 
     public function view(User $user, AccountApplication $application): bool

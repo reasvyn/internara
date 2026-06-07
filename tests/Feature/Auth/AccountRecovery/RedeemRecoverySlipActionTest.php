@@ -36,14 +36,16 @@ test('marks code as used after redemption', function () {
 });
 
 test('fails with invalid code', function () {
-    expect(fn () => $this->redeemAction->execute('testuser', 'INVALIDCODE', 'NewPass123!'))
-        ->toThrow(RuntimeException::class);
+    expect(fn () => $this->redeemAction->execute('testuser', 'INVALIDCODE', 'NewPass123!'))->toThrow(
+        RuntimeException::class,
+    );
 });
 
 test('fails with non-existent username', function () {
     $slip = $this->generateAction->execute($this->user);
     $plaintextCode = $slip['plaintext'][0];
 
-    expect(fn () => $this->redeemAction->execute('nonexistent', $plaintextCode, 'NewPass123!'))
-        ->toThrow(RuntimeException::class);
+    expect(
+        fn () => $this->redeemAction->execute('nonexistent', $plaintextCode, 'NewPass123!'),
+    )->toThrow(RuntimeException::class);
 });

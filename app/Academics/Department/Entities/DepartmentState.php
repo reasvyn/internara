@@ -9,10 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class DepartmentState extends BaseEntity
 {
-    public function __construct(
-        private int $profileCount,
-        private bool $hasProfiles,
-    ) {}
+    public function __construct(private int $profileCount, private bool $hasProfiles) {}
 
     public static function fromModel(Model $model): static
     {

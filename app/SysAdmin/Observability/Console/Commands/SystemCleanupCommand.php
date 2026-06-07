@@ -99,10 +99,7 @@ class SystemCleanupCommand extends Command
                 fn () => true,
             );
         } else {
-            $this->components->task(
-                __('setup.system.cleanup_no_logs'),
-                fn () => true,
-            );
+            $this->components->task(__('setup.system.cleanup_no_logs'), fn () => true);
         }
     }
 }

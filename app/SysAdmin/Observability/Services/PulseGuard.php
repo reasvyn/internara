@@ -25,9 +25,6 @@ final class PulseGuard
             return false;
         }
 
-        return $user->hasAnyRole([
-            Role::SUPER_ADMIN->value,
-            Role::ADMIN->value,
-        ]);
+        return $user->hasAnyRole([Role::SUPER_ADMIN->value, Role::ADMIN->value]);
     }
 }

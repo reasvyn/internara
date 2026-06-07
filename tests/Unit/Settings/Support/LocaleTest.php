@@ -24,17 +24,13 @@ test('default locale is en', function () {
 });
 
 test('current returns cookie value when supported', function () {
-    Cookie::shouldReceive('get')
-        ->with('locale', config('app.locale'))
-        ->andReturn('id');
+    Cookie::shouldReceive('get')->with('locale', config('app.locale'))->andReturn('id');
 
     expect(Locale::current())->toBe('id');
 });
 
 test('current falls back to app locale when cookie is unsupported', function () {
-    Cookie::shouldReceive('get')
-        ->with('locale', config('app.locale'))
-        ->andReturn('fr');
+    Cookie::shouldReceive('get')->with('locale', config('app.locale'))->andReturn('fr');
 
     expect(Locale::current())->toBe(config('app.locale'));
 });

@@ -13,21 +13,21 @@
  * @see https://github.com/barryvdh/laravel-ide-helper
  */
 
-namespace  {
-
+namespace {
     /**
      * @template TCollection of static
      * @template TModel of static
      * @template TValue of static
      * @template TValue of static
      */
-    class Eloquent extends \Illuminate\Database\Eloquent\Model {        /**
+    class Eloquent extends \Illuminate\Database\Eloquent\Model /**
          * Create and return an un-saved model instance.
          *
          * @param array $attributes
          * @return TModel
          * @static
          */
+    {
         public static function make($attributes = [])
         {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
@@ -151,8 +151,12 @@ namespace  {
          * @return TModel|null
          * @static
          */
-        public static function firstWhere($column, $operator = null, $value = null, $boolean = 'and')
-        {
+        public static function firstWhere(
+            $column,
+            $operator = null,
+            $value = null,
+            $boolean = 'and',
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->firstWhere($column, $operator, $value, $boolean);
         }
@@ -468,8 +472,13 @@ namespace  {
          * @return TModel
          * @static
          */
-        public static function incrementOrCreate($attributes, $column = 'count', $default = 1, $step = 1, $extra = [])
-        {
+        public static function incrementOrCreate(
+            $attributes,
+            $column = 'count',
+            $default = 1,
+            $step = 1,
+            $extra = [],
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->incrementOrCreate($attributes, $column, $default, $step, $extra);
         }
@@ -663,8 +672,13 @@ namespace  {
          * @throws \InvalidArgumentException
          * @static
          */
-        public static function paginate($perPage = null, $columns = [], $pageName = 'page', $page = null, $total = null)
-        {
+        public static function paginate(
+            $perPage = null,
+            $columns = [],
+            $pageName = 'page',
+            $page = null,
+            $total = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->paginate($perPage, $columns, $pageName, $page, $total);
         }
@@ -679,8 +693,12 @@ namespace  {
          * @return \Illuminate\Contracts\Pagination\Paginator
          * @static
          */
-        public static function simplePaginate($perPage = null, $columns = [], $pageName = 'page', $page = null)
-        {
+        public static function simplePaginate(
+            $perPage = null,
+            $columns = [],
+            $pageName = 'page',
+            $page = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->simplePaginate($perPage, $columns, $pageName, $page);
         }
@@ -695,8 +713,12 @@ namespace  {
          * @return \Illuminate\Contracts\Pagination\CursorPaginator
          * @static
          */
-        public static function cursorPaginate($perPage = null, $columns = [], $cursorName = 'cursor', $cursor = null)
-        {
+        public static function cursorPaginate(
+            $perPage = null,
+            $columns = [],
+            $cursorName = 'cursor',
+            $cursor = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->cursorPaginate($perPage, $columns, $cursorName, $cursor);
         }
@@ -1217,8 +1239,13 @@ namespace  {
          * @throws \RuntimeException
          * @static
          */
-        public static function orderedChunkById($count, $callback, $column = null, $alias = null, $descending = false)
-        {
+        public static function orderedChunkById(
+            $count,
+            $callback,
+            $column = null,
+            $alias = null,
+            $descending = false,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->orderedChunkById($count, $callback, $column, $alias, $descending);
         }
@@ -1387,8 +1414,13 @@ namespace  {
          * @throws \RuntimeException
          * @static
          */
-        public static function has($relation, $operator = '>=', $count = 1, $boolean = 'and', $callback = null)
-        {
+        public static function has(
+            $relation,
+            $operator = '>=',
+            $count = 1,
+            $boolean = 'and',
+            $callback = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->has($relation, $operator, $count, $boolean, $callback);
         }
@@ -1466,8 +1498,12 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function withWhereHas($relation, $callback = null, $operator = '>=', $count = 1)
-        {
+        public static function withWhereHas(
+            $relation,
+            $callback = null,
+            $operator = '>=',
+            $count = 1,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->withWhereHas($relation, $callback, $operator, $count);
         }
@@ -1532,8 +1568,14 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function hasMorph($relation, $types, $operator = '>=', $count = 1, $boolean = 'and', $callback = null)
-        {
+        public static function hasMorph(
+            $relation,
+            $types,
+            $operator = '>=',
+            $count = 1,
+            $boolean = 'and',
+            $callback = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->hasMorph($relation, $types, $operator, $count, $boolean, $callback);
         }
@@ -1565,8 +1607,12 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function doesntHaveMorph($relation, $types, $boolean = 'and', $callback = null)
-        {
+        public static function doesntHaveMorph(
+            $relation,
+            $types,
+            $boolean = 'and',
+            $callback = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->doesntHaveMorph($relation, $types, $boolean, $callback);
         }
@@ -1597,8 +1643,13 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function whereHasMorph($relation, $types, $callback = null, $operator = '>=', $count = 1)
-        {
+        public static function whereHasMorph(
+            $relation,
+            $types,
+            $callback = null,
+            $operator = '>=',
+            $count = 1,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->whereHasMorph($relation, $types, $callback, $operator, $count);
         }
@@ -1615,8 +1666,13 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function orWhereHasMorph($relation, $types, $callback = null, $operator = '>=', $count = 1)
-        {
+        public static function orWhereHasMorph(
+            $relation,
+            $types,
+            $callback = null,
+            $operator = '>=',
+            $count = 1,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->orWhereHasMorph($relation, $types, $callback, $operator, $count);
         }
@@ -1680,8 +1736,12 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function withWhereRelation($relation, $column, $operator = null, $value = null)
-        {
+        public static function withWhereRelation(
+            $relation,
+            $column,
+            $operator = null,
+            $value = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->withWhereRelation($relation, $column, $operator, $value);
         }
@@ -1714,8 +1774,12 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function whereDoesntHaveRelation($relation, $column, $operator = null, $value = null)
-        {
+        public static function whereDoesntHaveRelation(
+            $relation,
+            $column,
+            $operator = null,
+            $value = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->whereDoesntHaveRelation($relation, $column, $operator, $value);
         }
@@ -1731,8 +1795,12 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function orWhereDoesntHaveRelation($relation, $column, $operator = null, $value = null)
-        {
+        public static function orWhereDoesntHaveRelation(
+            $relation,
+            $column,
+            $operator = null,
+            $value = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->orWhereDoesntHaveRelation($relation, $column, $operator, $value);
         }
@@ -1749,8 +1817,13 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function whereMorphRelation($relation, $types, $column, $operator = null, $value = null)
-        {
+        public static function whereMorphRelation(
+            $relation,
+            $types,
+            $column,
+            $operator = null,
+            $value = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->whereMorphRelation($relation, $types, $column, $operator, $value);
         }
@@ -1767,8 +1840,13 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function orWhereMorphRelation($relation, $types, $column, $operator = null, $value = null)
-        {
+        public static function orWhereMorphRelation(
+            $relation,
+            $types,
+            $column,
+            $operator = null,
+            $value = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->orWhereMorphRelation($relation, $types, $column, $operator, $value);
         }
@@ -1785,10 +1863,21 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function whereMorphDoesntHaveRelation($relation, $types, $column, $operator = null, $value = null)
-        {
+        public static function whereMorphDoesntHaveRelation(
+            $relation,
+            $types,
+            $column,
+            $operator = null,
+            $value = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
-            return $instance->whereMorphDoesntHaveRelation($relation, $types, $column, $operator, $value);
+            return $instance->whereMorphDoesntHaveRelation(
+                $relation,
+                $types,
+                $column,
+                $operator,
+                $value,
+            );
         }
 
         /**
@@ -1803,10 +1892,21 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function orWhereMorphDoesntHaveRelation($relation, $types, $column, $operator = null, $value = null)
-        {
+        public static function orWhereMorphDoesntHaveRelation(
+            $relation,
+            $types,
+            $column,
+            $operator = null,
+            $value = null,
+        ) {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
-            return $instance->orWhereMorphDoesntHaveRelation($relation, $types, $column, $operator, $value);
+            return $instance->orWhereMorphDoesntHaveRelation(
+                $relation,
+                $types,
+                $column,
+                $operator,
+                $value,
+            );
         }
 
         /**
@@ -2229,8 +2329,14 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function join($table, $first, $operator = null, $second = null, $type = 'inner', $where = false)
-        {
+        public static function join(
+            $table,
+            $first,
+            $operator = null,
+            $second = null,
+            $type = 'inner',
+            $where = false,
+        ) {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->join($table, $first, $operator, $second, $type, $where);
         }
@@ -2266,8 +2372,15 @@ namespace  {
          * @throws \InvalidArgumentException
          * @static
          */
-        public static function joinSub($query, $as, $first, $operator = null, $second = null, $type = 'inner', $where = false)
-        {
+        public static function joinSub(
+            $query,
+            $as,
+            $first,
+            $operator = null,
+            $second = null,
+            $type = 'inner',
+            $where = false,
+        ) {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->joinSub($query, $as, $first, $operator, $second, $type, $where);
         }
@@ -2469,8 +2582,13 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function straightJoinSub($query, $as, $first, $operator = null, $second = null)
-        {
+        public static function straightJoinSub(
+            $query,
+            $as,
+            $first,
+            $operator = null,
+            $second = null,
+        ) {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->straightJoinSub($query, $as, $first, $operator, $second);
         }
@@ -2515,8 +2633,12 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function whereColumn($first, $operator = null, $second = null, $boolean = 'and')
-        {
+        public static function whereColumn(
+            $first,
+            $operator = null,
+            $second = null,
+            $boolean = 'and',
+        ) {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->whereColumn($first, $operator, $second, $boolean);
         }
@@ -2546,8 +2668,12 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function whereVectorSimilarTo($column, $vector, $minSimilarity = 0.6, $order = true)
-        {
+        public static function whereVectorSimilarTo(
+            $column,
+            $vector,
+            $minSimilarity = 0.6,
+            $order = true,
+        ) {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->whereVectorSimilarTo($column, $vector, $minSimilarity, $order);
         }
@@ -2562,8 +2688,12 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function whereVectorDistanceLessThan($column, $vector, $maxDistance, $boolean = 'and')
-        {
+        public static function whereVectorDistanceLessThan(
+            $column,
+            $vector,
+            $maxDistance,
+            $boolean = 'and',
+        ) {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->whereVectorDistanceLessThan($column, $vector, $maxDistance, $boolean);
         }
@@ -2623,8 +2753,13 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function whereLike($column, $value, $caseSensitive = false, $boolean = 'and', $not = false)
-        {
+        public static function whereLike(
+            $column,
+            $value,
+            $caseSensitive = false,
+            $boolean = 'and',
+            $not = false,
+        ) {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->whereLike($column, $value, $caseSensitive, $boolean, $not);
         }
@@ -2654,8 +2789,12 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function whereNotLike($column, $value, $caseSensitive = false, $boolean = 'and')
-        {
+        public static function whereNotLike(
+            $column,
+            $value,
+            $caseSensitive = false,
+            $boolean = 'and',
+        ) {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->whereNotLike($column, $value, $caseSensitive, $boolean);
         }
@@ -3662,8 +3801,12 @@ namespace  {
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
-        public static function whereNone($columns, $operator = null, $value = null, $boolean = 'and')
-        {
+        public static function whereNone(
+            $columns,
+            $operator = null,
+            $value = null,
+            $boolean = 'and',
+        ) {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->whereNone($columns, $operator, $value, $boolean);
         }
@@ -5110,11 +5253,5 @@ namespace  {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->macroCall($method, $parameters);
         }
-
+    }
 }
-}
-
-
-
-
-

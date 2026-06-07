@@ -59,15 +59,11 @@ class SupervisorLogManager extends Component
             'notes' => 'required|string',
         ]);
 
-        $createAction->execute(
-            auth()->user(),
-            $this->registrationId,
-            [
-                'date' => $this->date,
-                'topic' => $this->topic,
-                'notes' => $this->notes,
-            ],
-        );
+        $createAction->execute(auth()->user(), $this->registrationId, [
+            'date' => $this->date,
+            'topic' => $this->topic,
+            'notes' => $this->notes,
+        ]);
 
         $this->showModal = false;
         flash()->success('Supervision log recorded successfully.');

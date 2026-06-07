@@ -12,8 +12,12 @@ final class UpdateAssessmentScoresAction extends BaseAction
     /**
      * Update the score for a specific indicator within an assessment.
      */
-    public function execute(Assessment $assessment, string $competencyId, string $indicatorId, ?float $score): Assessment
-    {
+    public function execute(
+        Assessment $assessment,
+        string $competencyId,
+        string $indicatorId,
+        ?float $score,
+    ): Assessment {
         $content = $assessment->content ?? [];
         $content['competencies'][$competencyId]['evaluator_id'] = auth()->id();
         $content['competencies'][$competencyId]['evaluated_at'] = now()->toIso8601String();

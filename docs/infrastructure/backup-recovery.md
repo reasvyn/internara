@@ -1,21 +1,21 @@
 # Backup & Recovery
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
+> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
+> conventions overhaul
 
-Regular backups protect your school's data against hardware failure, accidental
-deletion, and security incidents. This guide covers what to back up, how to
-automate it, and how to restore when needed.
+Regular backups protect your school's data against hardware failure, accidental deletion, and
+security incidents. This guide covers what to back up, how to automate it, and how to restore when
+needed.
 
 ## What to Back Up
 
-| Asset | Location | Frequency | Retention |
-|---|---|---|---|
-| **Database** | SQLite file or MySQL/PG dump | Daily | 30 days |
-| **User uploads** | `storage/app/` (local) or S3 bucket | Daily | 30 days |
-| **Generated files** | `storage/app/public/` | Daily | 30 days |
+| Asset                  | Location                             | Frequency      | Retention |
+| ---------------------- | ------------------------------------ | -------------- | --------- |
+| **Database**           | SQLite file or MySQL/PG dump         | Daily          | 30 days   |
+| **User uploads**       | `storage/app/` (local) or S3 bucket  | Daily          | 30 days   |
+| **Generated files**    | `storage/app/public/`                | Daily          | 30 days   |
 | **Environment config** | `.env` (store securely, not in repo) | Per deployment | Permanent |
-| **Application code** | Git repository | Per commit | Permanent |
+| **Application code**   | Git repository                       | Per commit     | Permanent |
 
 ## Database Backup
 
@@ -33,8 +33,7 @@ mysqldump --single-transaction --routines --triggers \
     | gzip > backups/db_$(date +%Y%m%d).sql.gz
 ```
 
-The `--single-transaction` flag creates a consistent snapshot without locking
-tables for reads.
+The `--single-transaction` flag creates a consistent snapshot without locking tables for reads.
 
 ### PostgreSQL (Production)
 
@@ -82,8 +81,8 @@ tar -czf backups/storage_$(date +%Y%m%d).tar.gz \
 
 ### S3-Compatible Storage
 
-If using S3 natively for file storage, enable versioning on the bucket for
-point-in-time recovery. The provider handles durability automatically.
+If using S3 natively for file storage, enable versioning on the bucket for point-in-time recovery.
+The provider handles durability automatically.
 
 ## Full Restoration
 
@@ -141,25 +140,24 @@ mysqlbinlog --stop-datetime="2026-01-01 12:00:00" \
 
 ## Monitoring
 
-| Check | Command | Alert If |
-|---|---|---|
-| Backup age | `find backups/ -mtime +1` | No backup in 24 hours |
-| Disk space | `df -h /` | Usage exceeds 90% |
-| Database connectivity | `php artisan system:health` | Health check fails |
-| Storage writable | `touch storage/test && rm storage/test` | Write failure |
+| Check                 | Command                                 | Alert If              |
+| --------------------- | --------------------------------------- | --------------------- |
+| Backup age            | `find backups/ -mtime +1`               | No backup in 24 hours |
+| Disk space            | `df -h /`                               | Usage exceeds 90%     |
+| Database connectivity | `php artisan system:health`             | Health check fails    |
+| Storage writable      | `touch storage/test && rm storage/test` | Write failure         |
 
 ## Recovery Scenarios
 
 ### Lost Database
 
-Restore from the most recent database dump. Files remain intact. Data loss
-is limited to the interval between the last backup and the failure.
+Restore from the most recent database dump. Files remain intact. Data loss is limited to the
+interval between the last backup and the failure.
 
 ### Lost Files (Local Storage)
 
-Restore files from the most recent file backup. Database records referencing
-those files remain consistent because media library entries are tied to
-model UUIDs, not file paths.
+Restore files from the most recent file backup. Database records referencing those files remain
+consistent because media library entries are tied to model UUIDs, not file paths.
 
 ### Lost Everything (Server Failure)
 
@@ -173,11 +171,10 @@ model UUIDs, not file paths.
 
 ### Accidental Data Deletion
 
-If data was deleted through the application (not a database-level drop),
-check the audit log (`activity_log` table) to identify what was changed
-and by whom. The application does not hard-delete most records — they
-are typically soft-deleted or status-transitioned. If the deletion was
-recent, restore the affected records from the previous backup.
+If data was deleted through the application (not a database-level drop), check the audit log
+(`activity_log` table) to identify what was changed and by whom. The application does not
+hard-delete most records — they are typically soft-deleted or status-transitioned. If the deletion
+was recent, restore the affected records from the previous backup.
 
 ## References
 

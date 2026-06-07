@@ -47,8 +47,7 @@ final class SubmitLogbookAction extends BaseAction
 
             if (! empty($data['photos'])) {
                 foreach ($data['photos'] as $photo) {
-                    $journal->addMedia($photo)
-                        ->toMediaCollection('photos');
+                    $journal->addMedia($photo)->toMediaCollection('photos');
                 }
             }
 

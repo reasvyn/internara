@@ -10,17 +10,11 @@ use Mockery;
 
 readonly class MockEntity extends BaseEntity
 {
-    public function __construct(
-        public mixed $id,
-        public string $name = 'default',
-    ) {}
+    public function __construct(public mixed $id, public string $name = 'default') {}
 
     public static function fromModel(Model $model): static
     {
-        return new static(
-            id: $model->getKey(),
-            name: $model->name ?? 'unknown',
-        );
+        return new static(id: $model->getKey(), name: $model->name ?? 'unknown');
     }
 }
 

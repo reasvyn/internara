@@ -68,10 +68,14 @@ class RubricManager extends Component
     #[Computed]
     public function evaluatorRoles(): array
     {
-        return collect(EvaluatorRole::cases())->map(fn ($role) => [
-            'id' => $role->value,
-            'name' => $role->label(),
-        ])->toArray();
+        return collect(EvaluatorRole::cases())
+            ->map(
+                fn ($role) => [
+                    'id' => $role->value,
+                    'name' => $role->label(),
+                ],
+            )
+            ->toArray();
     }
 
     public function addRubric(): void
@@ -93,8 +97,10 @@ class RubricManager extends Component
         $this->rubricModal = true;
     }
 
-    public function saveRubric(CreateRubricAction $createAction, UpdateRubricAction $updateAction): void
-    {
+    public function saveRubric(
+        CreateRubricAction $createAction,
+        UpdateRubricAction $updateAction,
+    ): void {
         $this->validate([
             'rubricForm.name' => 'required|string|max:255',
             'rubricForm.description' => 'nullable|string|max:5000',
@@ -132,7 +138,14 @@ class RubricManager extends Component
     {
         $this->resetErrorBag();
         $this->selectedRubricId = $rubricId;
-        $this->competencyForm = ['id' => null, 'name' => '', 'description' => '', 'weight' => 0, 'evaluator_role' => '', 'order' => 0];
+        $this->competencyForm = [
+            'id' => null,
+            'name' => '',
+            'description' => '',
+            'weight' => 0,
+            'evaluator_role' => '',
+            'order' => 0,
+        ];
         $this->competencyModal = true;
     }
 
@@ -151,8 +164,10 @@ class RubricManager extends Component
         $this->competencyModal = true;
     }
 
-    public function saveCompetency(CreateCompetencyAction $createAction, UpdateCompetencyAction $updateAction): void
-    {
+    public function saveCompetency(
+        CreateCompetencyAction $createAction,
+        UpdateCompetencyAction $updateAction,
+    ): void {
         $this->validate([
             'competencyForm.name' => 'required|string|max:255',
             'competencyForm.description' => 'nullable|string|max:5000',
@@ -161,7 +176,9 @@ class RubricManager extends Component
             'competencyForm.order' => 'required|integer|min:0',
         ]);
 
-        $evaluatorRole = EvaluatorRole::tryFrom($this->competencyForm['evaluator_role']) ?? EvaluatorRole::TEACHER;
+        $evaluatorRole =
+            EvaluatorRole::tryFrom($this->competencyForm['evaluator_role']) ??
+            EvaluatorRole::TEACHER;
 
         if ($this->competencyForm['id']) {
             $competency = Competency::findOrFail($this->competencyForm['id']);
@@ -199,7 +216,14 @@ class RubricManager extends Component
     {
         $this->resetErrorBag();
         $this->selectedCompetencyId = $competencyId;
-        $this->indicatorForm = ['id' => null, 'name' => '', 'description' => '', 'max_score' => 100, 'weight' => 0, 'order' => 0];
+        $this->indicatorForm = [
+            'id' => null,
+            'name' => '',
+            'description' => '',
+            'max_score' => 100,
+            'weight' => 0,
+            'order' => 0,
+        ];
         $this->indicatorModal = true;
     }
 
@@ -218,8 +242,10 @@ class RubricManager extends Component
         $this->indicatorModal = true;
     }
 
-    public function saveIndicator(CreateIndicatorAction $createAction, UpdateIndicatorAction $updateAction): void
-    {
+    public function saveIndicator(
+        CreateIndicatorAction $createAction,
+        UpdateIndicatorAction $updateAction,
+    ): void {
         $this->validate([
             'indicatorForm.name' => 'required|string|max:255',
             'indicatorForm.description' => 'nullable|string|max:5000',

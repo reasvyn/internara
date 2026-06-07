@@ -40,7 +40,10 @@ class StudentPlacementChangeRequest extends Component
 
         if ($registration) {
             $this->registrationId = $registration->id;
-            $this->pendingRequest = PlacementChangeRequest::where('registration_id', $registration->id)
+            $this->pendingRequest = PlacementChangeRequest::where(
+                'registration_id',
+                $registration->id,
+            )
                 ->where('status', 'pending')
                 ->first();
         }
@@ -69,7 +72,9 @@ class StudentPlacementChangeRequest extends Component
     public function render(): View
     {
         $registration = $this->registrationId
-            ? Registration::with('placement.company', 'internship.placements.company')->find($this->registrationId)
+            ? Registration::with('placement.company', 'internship.placements.company')->find(
+                $this->registrationId,
+            )
             : null;
 
         $availablePlacements = collect();

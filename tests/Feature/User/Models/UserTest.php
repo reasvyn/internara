@@ -44,31 +44,34 @@ test('deleting superadmin throws runtime exception', function () {
     $user = User::factory()->create();
     $user->assignRole('superadmin');
 
-    expect(fn () => $user->delete())->toThrow(RuntimeException::class, 'Super administrator accounts cannot be deleted.');
+    expect(fn () => $user->delete())->toThrow(
+        RuntimeException::class,
+        'Super administrator accounts cannot be deleted.',
+    );
 });
 
 test('email cannot be null', function () {
-    expect(fn () => User::factory()->create(['email' => null]))
-        ->toThrow(QueryException::class);
+    expect(fn () => User::factory()->create(['email' => null]))->toThrow(QueryException::class);
 });
 
 test('username cannot be null', function () {
-    expect(fn () => User::factory()->create(['username' => null]))
-        ->toThrow(QueryException::class);
+    expect(fn () => User::factory()->create(['username' => null]))->toThrow(QueryException::class);
 });
 
 test('email must be unique', function () {
     User::factory()->create(['email' => 'same@example.com']);
 
-    expect(fn () => User::factory()->create(['email' => 'same@example.com']))
-        ->toThrow(QueryException::class);
+    expect(fn () => User::factory()->create(['email' => 'same@example.com']))->toThrow(
+        QueryException::class,
+    );
 });
 
 test('username must be unique', function () {
     User::factory()->create(['username' => 'uniqueuser']);
 
-    expect(fn () => User::factory()->create(['username' => 'uniqueuser']))
-        ->toThrow(QueryException::class);
+    expect(fn () => User::factory()->create(['username' => 'uniqueuser']))->toThrow(
+        QueryException::class,
+    );
 });
 
 test('superadmin has permanent name Administrator', function () {

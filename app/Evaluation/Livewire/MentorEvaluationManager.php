@@ -76,7 +76,10 @@ class MentorEvaluationManager extends Component
         $data = [
             'overall_score' => $this->overallScore,
             'feedback' => $this->feedback,
-            'criteria_scores' => array_filter($this->criteriaScores, fn ($v) => is_numeric($v) && $v > 0),
+            'criteria_scores' => array_filter(
+                $this->criteriaScores,
+                fn ($v) => is_numeric($v) && $v > 0,
+            ),
         ];
 
         if ($this->evaluationType === 'mentor') {
@@ -129,7 +132,10 @@ class MentorEvaluationManager extends Component
         $data = [
             'overall_score' => $this->overallScore,
             'feedback' => $this->feedback,
-            'criteria_scores' => array_filter($this->criteriaScores, fn ($v) => is_numeric($v) && $v > 0),
+            'criteria_scores' => array_filter(
+                $this->criteriaScores,
+                fn ($v) => is_numeric($v) && $v > 0,
+            ),
         ];
 
         if ($this->evaluationType === 'mentor') {

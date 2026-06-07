@@ -71,9 +71,21 @@ class StudentManager extends BaseRecordManager
     protected function applyFilters(Builder $query): Builder
     {
         return $query
-            ->when($this->filters['department_id'] ?? null, fn ($q, $deptId) => $q->whereHas('profile', fn ($qp) => $qp->where('department_id', $deptId)))
-            ->when($this->filters['created_from'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
-            ->when($this->filters['created_to'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '<=', $v));
+            ->when(
+                $this->filters['department_id'] ?? null,
+                fn ($q, $deptId) => $q->whereHas(
+                    'profile',
+                    fn ($qp) => $qp->where('department_id', $deptId),
+                ),
+            )
+            ->when(
+                $this->filters['created_from'] ?? null,
+                fn ($q, $v) => $q->whereDate('created_at', '>=', $v),
+            )
+            ->when(
+                $this->filters['created_to'] ?? null,
+                fn ($q, $v) => $q->whereDate('created_at', '<=', $v),
+            );
     }
 
     #[Computed]
@@ -117,10 +129,19 @@ class StudentManager extends BaseRecordManager
 
         if ($this->form->id) {
             $user = User::findOrFail($this->form->id);
-            $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email], $profileData);
+            $updateAction->execute(
+                $user,
+                ['name' => $this->form->name, 'email' => $this->form->email],
+                $profileData,
+            );
             flash()->success(__('user.student.success_updated'));
         } else {
-            $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], $profileData, [RoleEnum::STUDENT->value], false);
+            $user = $createAction->execute(
+                ['name' => $this->form->name, 'email' => $this->form->email],
+                $profileData,
+                [RoleEnum::STUDENT->value],
+                false,
+            );
             $this->userModal = false;
             $this->redirect(route('sysadmin.users.account-slip', $user));
 
@@ -166,8 +187,18 @@ class StudentManager extends BaseRecordManager
 
         return $csv->export(
             $users,
-            [__('user.fields.full_name'), __('user.fields.email'), __('user.student.nisn'), __('user.student.nis')],
-            fn ($u) => [$u->name, $u->email, $u->profile?->national_id_number ?? '', $u->profile?->student_id_number ?? ''],
+            [
+                __('user.fields.full_name'),
+                __('user.fields.email'),
+                __('user.student.nisn'),
+                __('user.student.nis'),
+            ],
+            fn ($u) => [
+                $u->name,
+                $u->email,
+                $u->profile?->national_id_number ?? '',
+                $u->profile?->student_id_number ?? '',
+            ],
             'students.csv',
         );
     }

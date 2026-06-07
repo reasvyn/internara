@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Setup\Installation\Http\Middleware;
 
 use App\Core\Support\SmartLogger;
+use App\Setup\Entities\SetupEntity;
 use App\Setup\Installation\Actions\ValidateSetupTokenAction;
-use App\Setup\SetupWizard\Entities\SetupState;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -16,15 +16,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProtectSetupRouteMiddleware
 {
-    public function __construct(
-        private ValidateSetupTokenAction $validateToken,
-    ) {}
+    public function __construct(private ValidateSetupTokenAction $validateToken) {}
 
     public function handle(Request $request, Closure $next): Response
     {
         view()->share('errors', session()->get('errors') ?? new ViewErrorBag);
 
-        $state = SetupState::fromSettings();
+        $state = SetupEntity::get();
 
         if ($state->isInstalled()) {
             return $this->handleInstalled($request, $next, $state);
@@ -86,21 +84,35 @@ class ProtectSetupRouteMiddleware
         return $this->throttleOrReject($request, $key, $rateAttempts, $rateDecay, false);
     }
 
-    private function handleInstalled(Request $request, Closure $next, SetupState $state): Response
+    private function handleInstalled(Request $request, Closure $next, SetupEntity $state): Response
     {
         $windowSeconds = (int) config('setup.security.finalization_window_seconds', 30);
 
-        if (Session::get('setup.completed', false) && $state->isWithinFinalizationWindowSeconds($windowSeconds)) {
+        if (
+            Session::get('setup.completed', false) &&
+            $state->isWithinFinalizationWindowSeconds($windowSeconds)
+        ) {
             return $next($request);
         }
 
-        Session::forget(['setup.authorized', 'setup.token', 'setup.token_input', 'setup.form_data', 'setup.completed']);
+        Session::forget([
+            'setup.authorized',
+            'setup.token',
+            'setup.token_input',
+            'setup.form_data',
+            'setup.completed',
+        ]);
 
         abort(Response::HTTP_NOT_FOUND);
     }
 
-    private function throttleOrReject(Request $request, string $key, int $maxAttempts, int $decaySeconds, bool $hasInvalidToken = true): Response
-    {
+    private function throttleOrReject(
+        Request $request,
+        string $key,
+        int $maxAttempts,
+        int $decaySeconds,
+        bool $hasInvalidToken = true,
+    ): Response {
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
             $seconds = RateLimiter::availableIn($key);
 
@@ -111,10 +123,14 @@ class ProtectSetupRouteMiddleware
                 );
             }
 
-            return response()->view('setup.enter-code', [
-                'error' => __('setup.rate_limited', ['seconds' => $seconds]),
-                'errors' => session()->get('errors') ?? new ViewErrorBag,
-            ], Response::HTTP_TOO_MANY_REQUESTS);
+            return response()->view(
+                'setup.enter-code',
+                [
+                    'error' => __('setup.rate_limited', ['seconds' => $seconds]),
+                    'errors' => session()->get('errors') ?? new ViewErrorBag,
+                ],
+                Response::HTTP_TOO_MANY_REQUESTS,
+            );
         }
 
         RateLimiter::hit($key, $decaySeconds);
@@ -135,10 +151,13 @@ class ProtectSetupRouteMiddleware
     private function rejectToken(Request $request, string $message): Response
     {
         if ($request->hasHeader('X-Livewire')) {
-            return response()->json([
-                'message' => $message,
-                'redirect' => route('login'),
-            ], 403);
+            return response()->json(
+                [
+                    'message' => $message,
+                    'redirect' => route('login'),
+                ],
+                403,
+            );
         }
 
         abort(Response::HTTP_FORBIDDEN, $message);

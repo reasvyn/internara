@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Console Commands
@@ -45,9 +44,7 @@ return [
     |
     */
 
-    'dont_alias' => [
-        'App\Nova',
-    ],
+    'dont_alias' => ['App\Nova'],
 
     /*
     |--------------------------------------------------------------------------
@@ -61,5 +58,4 @@ return [
     */
 
     'trust_project' => env('TINKER_TRUST_PROJECT', 'always'),
-
 ];

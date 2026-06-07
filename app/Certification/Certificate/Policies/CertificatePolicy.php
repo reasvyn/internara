@@ -12,9 +12,7 @@ class CertificatePolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin', 'admin', 'student',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'student']);
     }
 
     public function view(User $user, Certificate $certificate): bool

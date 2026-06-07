@@ -42,7 +42,9 @@ class ProfileEditor extends Component
 
     public function mount(GetProfileFormDataAction $action): void
     {
-        $this->user = auth()->user()->load(['profile', 'roles']);
+        $this->user = auth()
+            ->user()
+            ->load(['profile', 'roles']);
 
         $formData = $action->execute($this->user);
 
@@ -60,11 +62,7 @@ class ProfileEditor extends Component
     {
         $this->validate(['avatar' => ['nullable', 'image', 'max:2048']]);
 
-        app(UpdateProfileAction::class)->execute(
-            $this->user,
-            [],
-            avatar: $this->avatar,
-        );
+        app(UpdateProfileAction::class)->execute($this->user, [], avatar: $this->avatar);
 
         flash()->success(__('profile.avatar_saved'));
     }
@@ -91,7 +89,9 @@ class ProfileEditor extends Component
         }
 
         if ($this->canChangeUsername) {
-            $rules['profileForm.username'] = 'required|string|alpha_num|lowercase|max:50|unique:users,username,'.$this->user->id;
+            $rules['profileForm.username'] =
+                'required|string|alpha_num|lowercase|max:50|unique:users,username,'.
+                $this->user->id;
         }
 
         if ($this->isStaff) {
@@ -146,7 +146,10 @@ class ProfileEditor extends Component
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
-            $this->addError('passwordForm.current_password', __('auth.throttle', ['seconds' => $seconds]));
+            $this->addError(
+                'passwordForm.current_password',
+                __('auth.throttle', ['seconds' => $seconds]),
+            );
 
             return;
         }
@@ -161,9 +164,7 @@ class ProfileEditor extends Component
 
     protected function passwordThrottleKey(): string
     {
-        return Str::transliterate(
-            'change-password|'.$this->user->id.'|'.request()->ip(),
-        );
+        return Str::transliterate('change-password|'.$this->user->id.'|'.request()->ip());
     }
 
     public function avatarPreviewUrl(): ?string

@@ -25,18 +25,15 @@ final class AutoCalculateAssessmentAction extends BaseAction
             ->whereNotNull('score')
             ->avg('score');
 
-        $totalLogbooks = DB::table('logbooks')
-            ->where('registration_id', $registrationId)
-            ->count();
+        $totalLogbooks = DB::table('logbooks')->where('registration_id', $registrationId)->count();
 
         $submittedLogbooks = DB::table('logbooks')
             ->where('registration_id', $registrationId)
             ->whereIn('status', ['submitted', 'verified'])
             ->count();
 
-        $logbookCompleteness = $totalLogbooks > 0
-            ? round(($submittedLogbooks / $totalLogbooks) * 100, 1)
-            : 0;
+        $logbookCompleteness =
+            $totalLogbooks > 0 ? round(($submittedLogbooks / $totalLogbooks) * 100, 1) : 0;
 
         $report = Report::where('registration_id', $registrationId)
             ->where('status', 'approved')
@@ -44,7 +41,9 @@ final class AutoCalculateAssessmentAction extends BaseAction
 
         $content = $assessment->content ?? [];
         $content['auto'] = [
-            'avg_submission_score' => $avgSubmissionScore ? round((float) $avgSubmissionScore, 1) : null,
+            'avg_submission_score' => $avgSubmissionScore
+                ? round((float) $avgSubmissionScore, 1)
+                : null,
             'logbook_completeness' => $logbookCompleteness,
             'report_score' => $report?->score,
         ];

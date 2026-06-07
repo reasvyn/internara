@@ -18,8 +18,10 @@ final class CompileLogbookReportAction extends BaseAction
      *
      * @param bool $includeSupervisorNotes Whether to include supervisor notes in the report
      */
-    public function download(Registration $registration, bool $includeSupervisorNotes = true): Response
-    {
+    public function download(
+        Registration $registration,
+        bool $includeSupervisorNotes = true,
+    ): Response {
         $entries = Logbook::query()
             ->with(['user', 'supervisor', 'media'])
             ->where('registration_id', $registration->id)
@@ -39,10 +41,13 @@ final class CompileLogbookReportAction extends BaseAction
             deleteCachedView: true,
         );
 
-        $filename = 'logbook-report-'.$registration->mentee->user->name.'-'.now()->format('Ymd').'.pdf';
+        $filename =
+            'logbook-report-'.
+            $registration->mentee->user->name.
+            '-'.
+            now()->format('Ymd').
+            '.pdf';
 
-        return Pdf::loadHTML($html)
-            ->setPaper('a4')
-            ->stream($filename);
+        return Pdf::loadHTML($html)->setPaper('a4')->stream($filename);
     }
 }

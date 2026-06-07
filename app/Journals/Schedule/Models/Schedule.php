@@ -18,7 +18,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * S2 - Sustain: Centralized schedule management for all internship activities.
  */
-#[Fillable(['title', 'description', 'start_at', 'end_at', 'type', 'location', 'internship_id', 'created_by'])]
+#[
+    Fillable([
+        'title',
+        'description',
+        'start_at',
+        'end_at',
+        'type',
+        'location',
+        'internship_id',
+        'created_by',
+    ]),
+]
 class Schedule extends BaseModel
 {
     use HasFactory;

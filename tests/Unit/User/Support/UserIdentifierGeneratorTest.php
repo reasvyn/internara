@@ -63,6 +63,8 @@ test('throws runtime exception after maximum attempts', function () {
         User::factory()->create(['username' => 'user'.($i === 0 ? '' : $i)]);
     }
 
-    expect(fn () => UserIdentifierGenerator::generateUsername('@test.com'))
-        ->toThrow(RuntimeException::class, 'Unable to generate unique username');
+    expect(fn () => UserIdentifierGenerator::generateUsername('@test.com'))->toThrow(
+        RuntimeException::class,
+        'Unable to generate unique username',
+    );
 });

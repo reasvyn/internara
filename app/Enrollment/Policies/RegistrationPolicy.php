@@ -64,7 +64,8 @@ class RegistrationPolicy extends BasePolicy
 
     private function isAssignedMentor(User $user, Registration $registration): bool
     {
-        return $user->mentors()
+        return $user
+            ->mentors()
             ->whereHas('registrations', fn ($q) => $q->where('registration_id', $registration->id))
             ->exists();
     }

@@ -13,11 +13,14 @@ final class GenerateReportAction extends BaseAction
     public function execute(array $data): Document
     {
         $slug = $data['type'].'-'.now()->timestamp;
-        $content = json_encode([
-            'type' => $data['type'],
-            'generated_at' => now()->toIso8601String(),
-            'parameters' => $data['parameters'] ?? [],
-        ], JSON_PRETTY_PRINT);
+        $content = json_encode(
+            [
+                'type' => $data['type'],
+                'generated_at' => now()->toIso8601String(),
+                'parameters' => $data['parameters'] ?? [],
+            ],
+            JSON_PRETTY_PRINT,
+        );
 
         $fileName = $slug.'.json';
         Storage::disk('local')->put("reports/{$fileName}", $content);

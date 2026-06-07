@@ -30,9 +30,18 @@ final class ReportIncidentAction extends BaseAction
         return $this->transaction(function () use ($validated) {
             $incident = IncidentReport::create($validated);
 
-            $this->log('incident_reported', $incident, ['type' => $incident->type->value, 'severity' => $incident->severity->value]);
+            $this->log('incident_reported', $incident, [
+                'type' => $incident->type->value,
+                'severity' => $incident->severity->value,
+            ]);
 
-            if (in_array($incident->severity, [IncidentSeverity::HIGH, IncidentSeverity::CRITICAL], true)) {
+            if (
+                in_array(
+                    $incident->severity,
+                    [IncidentSeverity::HIGH, IncidentSeverity::CRITICAL],
+                    true,
+                )
+            ) {
                 try {
                     $admins = User::role(['super_admin', 'admin'])->get();
                     $teacher = $incident->registration?->mentee?->user;
@@ -45,7 +54,6 @@ final class ReportIncidentAction extends BaseAction
                         $teacher->notify(new IncidentReportedNotification($incident));
                     }
                 } catch (RoleDoesNotExist) {
-
                 }
             }
 

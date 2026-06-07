@@ -45,7 +45,7 @@ trait HasExceptionContext
 
     public function toCliOutput(): string
     {
-        $output = parent::getMessage();
+        $output = $this->getMessage();
 
         if ($this->hint !== null) {
             $output .= "\n  Hint: {$this->hint}";
@@ -58,7 +58,7 @@ trait HasExceptionContext
                 if (is_scalar($value)) {
                     $output .= "\n  {$key}: {$value}";
                 } else {
-                    $output .= "\n  {$key}: ".json_encode($value);
+                    $output .= "\n  {$key}: ".json_encode($value, JSON_THROW_ON_ERROR);
                 }
             }
         }

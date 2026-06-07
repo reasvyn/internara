@@ -1,22 +1,21 @@
 # Filesystem
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
+> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
+> conventions overhaul
 
 ## Storage Architecture
 
-The application uses Laravel's filesystem abstraction, providing a unified API over
-multiple storage backends. The same `Storage::disk('public')->put()` call works whether the
-underlying disk is a local directory or an S3 bucket — switching requires only a
-configuration change.
+The application uses Laravel's filesystem abstraction, providing a unified API over multiple storage
+backends. The same `Storage::disk('public')->put()` call works whether the underlying disk is a
+local directory or an S3 bucket — switching requires only a configuration change.
 
 ### Disk Definitions
 
-| Disk | Driver | Default Root | Purpose | Web-Accessible |
-|---|---|---|---|---|
-| `local` | Local | `storage/app/private` | Internal files, temporary uploads, exports | ❌ |
-| `public` | Local | `storage/app/public` | User-facing files (avatars, documents, certificates) | ✅ (via symlink) |
-| `s3` | S3 | Bucket root | Production cloud storage | ✅ (via CDN) |
+| Disk     | Driver | Default Root          | Purpose                                              | Web-Accessible   |
+| -------- | ------ | --------------------- | ---------------------------------------------------- | ---------------- |
+| `local`  | Local  | `storage/app/private` | Internal files, temporary uploads, exports           | ❌               |
+| `public` | Local  | `storage/app/public`  | User-facing files (avatars, documents, certificates) | ✅ (via symlink) |
+| `s3`     | S3     | Bucket root           | Production cloud storage                             | ✅ (via CDN)     |
 
 ### Storage by Deployment Tier
 
@@ -49,36 +48,35 @@ Without this symlink, media URLs return 404.
 
 ## What Gets Stored Where
 
-| Data | Storage | Backend | Accessibility |
-|---|---|---|---|
-| User avatars | Media library → `public` disk | Local or S3 | Public URL |
-| Uploaded documents | Media library → `public` disk | Local or S3 | Public URL (with auth guard) |
-| Certificate PDFs | Direct → `public/certificates/` | Local or S3 | Public URL (with auth guard) |
-| Brand assets | Direct → `public/brand/` | Local or S3 | Public URL |
-| Generated reports | Direct → `local` disk (private) | Local only | Download via controller |
-| Livewire temp uploads | Livewire temp → `local` disk | Local only | Temporary, auto-cleaned |
-| Internal exports | Direct → `local` disk (private) | Local only | Download via controller |
+| Data                  | Storage                         | Backend     | Accessibility                |
+| --------------------- | ------------------------------- | ----------- | ---------------------------- |
+| User avatars          | Media library → `public` disk   | Local or S3 | Public URL                   |
+| Uploaded documents    | Media library → `public` disk   | Local or S3 | Public URL (with auth guard) |
+| Certificate PDFs      | Direct → `public/certificates/` | Local or S3 | Public URL (with auth guard) |
+| Brand assets          | Direct → `public/brand/`        | Local or S3 | Public URL                   |
+| Generated reports     | Direct → `local` disk (private) | Local only  | Download via controller      |
+| Livewire temp uploads | Livewire temp → `local` disk    | Local only  | Temporary, auto-cleaned      |
+| Internal exports      | Direct → `local` disk (private) | Local only  | Download via controller      |
 
 ---
 
 ## Media Library Integration
 
-Files attached to Eloquent models are managed by `spatie/laravel-medialibrary`.
-It provides media collections, automatic file naming, image conversions, and queue-based
-processing.
+Files attached to Eloquent models are managed by `spatie/laravel-medialibrary`. It provides media
+collections, automatic file naming, image conversions, and queue-based processing.
 
 ### Collections
 
-| Model | Collection | Files | Purpose |
-|---|---|---|---|
-| `User` | `avatar` | Single | Profile picture |
-| `School` | `logo` | Single | Institution logo |
-| `Document` | `file` | Single | Uploaded document template |
-| `Submission` | `file` | Multiple | Assignment submission files |
-| `RegistrationDocument` | `file` | Single | Identity or requirement document |
-| `Logbook` | `photos` | Multiple | Daily activity photo documentation |
-| `Partnership` | `mou_document` | Single | Signed MoU agreement |
-| `Certificate` | `output` | Single | Generated certificate PDF |
+| Model                  | Collection     | Files    | Purpose                            |
+| ---------------------- | -------------- | -------- | ---------------------------------- |
+| `User`                 | `avatar`       | Single   | Profile picture                    |
+| `School`               | `logo`         | Single   | Institution logo                   |
+| `Document`             | `file`         | Single   | Uploaded document template         |
+| `Submission`           | `file`         | Multiple | Assignment submission files        |
+| `RegistrationDocument` | `file`         | Single   | Identity or requirement document   |
+| `Logbook`              | `photos`       | Multiple | Daily activity photo documentation |
+| `Partnership`          | `mou_document` | Single   | Signed MoU agreement               |
+| `Certificate`          | `output`       | Single   | Generated certificate PDF          |
 
 ### Adding a New Collection
 
@@ -102,10 +100,10 @@ class YourModel extends BaseModel implements HasMedia
 ### Retrieving Files
 
 ```php
-$url = $user->getFirstMediaUrl('avatar');           // URL of first file
-$url = $user->getFirstMediaUrl('avatar', 'thumb');  // URL of thumbnail conversion
-$media = $user->getFirstMedia('avatar');             // Full media object
-$files = $model->getMedia('documents');              // All files in collection
+$url = $user->getFirstMediaUrl('avatar'); // URL of first file
+$url = $user->getFirstMediaUrl('avatar', 'thumb'); // URL of thumbnail conversion
+$media = $user->getFirstMedia('avatar'); // Full media object
+$files = $model->getMedia('documents'); // All files in collection
 ```
 
 ---
@@ -114,16 +112,16 @@ $files = $model->getMedia('documents');              // All files in collection
 
 When images are uploaded, the media library generates resized versions automatically.
 
-| Conversion | Width | Format | Queued | Purpose |
-|---|---|---|---|---|
-| `thumb` | 400px | WebP | Yes | Avatars, thumbnails in tables |
+| Conversion | Width | Format | Queued | Purpose                       |
+| ---------- | ----- | ------ | ------ | ----------------------------- |
+| `thumb`    | 400px | WebP   | Yes    | Avatars, thumbnails in tables |
 
 ### Driver
 
-| Driver | Quality | Setup |
-|---|---|---|
-| `gd` (default) | Good | Built into PHP, no setup |
-| `imagick` | Better | Requires `ext-imagick`, higher compression quality |
+| Driver         | Quality | Setup                                              |
+| -------------- | ------- | -------------------------------------------------- |
+| `gd` (default) | Good    | Built into PHP, no setup                           |
+| `imagick`      | Better  | Requires `ext-imagick`, higher compression quality |
 
 ```env
 IMAGE_DRIVER=imagick
@@ -147,11 +145,11 @@ $this->addMediaConversion('thumb')->nonQueued();
 
 ## File Size Limits
 
-| Scope | Limit | Configuration File | Directive |
-|---|---|---|---|
-| Uploaded file | 10 MB | `config/media-library.php` | `max_file_size` |
-| Livewire temp | PHP config | `php.ini` | `upload_max_filesize` |
-| HTTP request body | PHP config | `php.ini` | `post_max_size` |
+| Scope             | Limit      | Configuration File         | Directive             |
+| ----------------- | ---------- | -------------------------- | --------------------- |
+| Uploaded file     | 10 MB      | `config/media-library.php` | `max_file_size`       |
+| Livewire temp     | PHP config | `php.ini`                  | `upload_max_filesize` |
+| HTTP request body | PHP config | `php.ini`                  | `post_max_size`       |
 
 ---
 
@@ -171,12 +169,12 @@ AWS_USE_PATH_STYLE_ENDPOINT=false
 
 ### Supported Providers
 
-| Provider | Endpoint | Notes |
-|---|---|---|
-| **AWS S3** | `s3.amazonaws.com` | Native S3, no special config needed |
-| **MinIO** (self-hosted) | `http://minio:9000` | Set `AWS_USE_PATH_STYLE_ENDPOINT=true` |
-| **DigitalOcean Spaces** | `{region}.digitaloceanspaces.com` | S3-compatible API, flat pricing |
-| **Cloudflare R2** | `{account}.r2.cloudflarestorage.com` | No egress fees, global CDN |
+| Provider                | Endpoint                             | Notes                                  |
+| ----------------------- | ------------------------------------ | -------------------------------------- |
+| **AWS S3**              | `s3.amazonaws.com`                   | Native S3, no special config needed    |
+| **MinIO** (self-hosted) | `http://minio:9000`                  | Set `AWS_USE_PATH_STYLE_ENDPOINT=true` |
+| **DigitalOcean Spaces** | `{region}.digitaloceanspaces.com`    | S3-compatible API, flat pricing        |
+| **Cloudflare R2**       | `{account}.r2.cloudflarestorage.com` | No egress fees, global CDN             |
 
 ### Hybrid Local + S3 (Tier 2)
 
@@ -205,9 +203,9 @@ User upload → Livewire temp (local disk)
           File accessible via getFirstMediaUrl()
 ```
 
-Files are validated before upload: MIME type, file size, and extension checks run on the
-server side. The media library stores files with UUID-based filenames to prevent name
-collisions and path traversal.
+Files are validated before upload: MIME type, file size, and extension checks run on the server
+side. The media library stores files with UUID-based filenames to prevent name collisions and path
+traversal.
 
 ---
 
@@ -216,8 +214,7 @@ collisions and path traversal.
 - `config/filesystems.php` — disk definitions (local, public, s3)
 - `config/media-library.php` — media library configuration
 - `config/dompdf.php` — DomPDF configuration for certificate/report rendering
-- `app/*/Models/*.php` — `registerMediaCollections()` and
-  `registerMediaConversions()` methods
+- `app/*/Models/*.php` — `registerMediaCollections()` and `registerMediaConversions()` methods
 - `app/Certification/Support/CertificateRenderer.php` — certificate PDF generation
 - `database/migrations/` — media table migration
 - `docs/infrastructure/infrastructure.md` — tier-based infrastructure design

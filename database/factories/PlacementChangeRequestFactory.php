@@ -22,8 +22,11 @@ class PlacementChangeRequestFactory extends Factory
 
         return [
             'registration_id' => $registration->id,
-            'from_placement_id' => Placement::factory()->create(['internship_id' => $internship->id])->id,
-            'to_placement_id' => Placement::factory()->create(['internship_id' => $internship->id])->id,
+            'from_placement_id' => Placement::factory()->create([
+                'internship_id' => $internship->id,
+            ])->id,
+            'to_placement_id' => Placement::factory()->create(['internship_id' => $internship->id])
+                ->id,
             'reason' => fake()->paragraph(),
             'requested_by' => User::factory(),
         ];

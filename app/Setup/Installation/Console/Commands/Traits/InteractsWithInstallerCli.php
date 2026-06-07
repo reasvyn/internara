@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\Installation\Console\Commands\Traits;
 
 use App\Settings\Support\AppInfo;
-use App\Setup\SetupWizard\Entities\SetupState;
+use App\Setup\Entities\SetupEntity;
 
 trait InteractsWithInstallerCli
 {
@@ -13,7 +13,13 @@ trait InteractsWithInstallerCli
     {
         $this->newLine();
         $this->line('  <fg=white;options=bold;bg=blue> '.__('setup.cli.banner_title').' </>');
-        $this->line('  <fg=blue>'.__('setup.cli.banner_subtitle').'</> <fg=gray>v'.AppInfo::version().'</>');
+        $this->line(
+            '  <fg=blue>'.
+                __('setup.cli.banner_subtitle').
+                '</> <fg=gray>v'.
+                AppInfo::version().
+                '</>',
+        );
         $this->newLine();
 
         $this->components->twoColumnDetail(__('setup.cli.php_version'), PHP_VERSION);
@@ -42,6 +48,6 @@ trait InteractsWithInstallerCli
 
     protected function isInstalled(): bool
     {
-        return SetupState::fromSettings()->isInstalled();
+        return SetupEntity::get()->isInstalled();
     }
 }

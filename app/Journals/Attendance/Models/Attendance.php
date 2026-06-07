@@ -14,7 +14,26 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'registration_id', 'date', 'clock_in', 'clock_out', 'clock_in_ip', 'clock_out_ip', 'clock_in_latitude', 'clock_in_longitude', 'clock_out_latitude', 'clock_out_longitude', 'status', 'is_verified', 'verified_by', 'verified_at', 'notes'])]
+#[
+    Fillable([
+        'user_id',
+        'registration_id',
+        'date',
+        'clock_in',
+        'clock_out',
+        'clock_in_ip',
+        'clock_out_ip',
+        'clock_in_latitude',
+        'clock_in_longitude',
+        'clock_out_latitude',
+        'clock_out_longitude',
+        'status',
+        'is_verified',
+        'verified_by',
+        'verified_at',
+        'notes',
+    ]),
+]
 class Attendance extends BaseModel
 {
     use HasFactory;

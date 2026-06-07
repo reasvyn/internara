@@ -75,7 +75,7 @@ enum AccountStatus: string implements ColorableEnum, StatusEnum
 
     public function canTransitionTo(StatusEnum $target): bool
     {
-        if (! $target instanceof self) {
+        if (! ($target instanceof self)) {
             return false;
         }
         if ($this->isTerminal()) {

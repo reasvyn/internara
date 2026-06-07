@@ -34,7 +34,8 @@ class AttendancePolicy extends BasePolicy
         if (
             $this->isTeacher($user) &&
             $log->registration &&
-            $log->registration->mentors()
+            $log->registration
+                ->mentors()
                 ->where('user_id', $user->id)
                 ->where('type', Mentor::TYPE_SCHOOL_TEACHER)
                 ->exists()
@@ -45,7 +46,8 @@ class AttendancePolicy extends BasePolicy
         if (
             $this->isSupervisor($user) &&
             $log->registration &&
-            $log->registration->mentors()
+            $log->registration
+                ->mentors()
                 ->where('user_id', $user->id)
                 ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)
                 ->exists()
@@ -63,11 +65,7 @@ class AttendancePolicy extends BasePolicy
 
     public function verify(User $user, Attendance $log): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin',
-            'admin',
-            'teacher',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
     }
 
     public function update(User $user, Attendance $log): bool

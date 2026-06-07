@@ -13,7 +13,10 @@ return new class extends Migration
         Schema::create('submissions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('assignment_id')->constrained('assignments')->onDelete('cascade');
-            $table->foreignUuid('registration_id')->constrained('registrations')->onDelete('cascade');
+            $table
+                ->foreignUuid('registration_id')
+                ->constrained('registrations')
+                ->onDelete('cascade');
             $table->foreignUuid('student_id')->constrained('users')->onDelete('cascade');
 
             $table->text('content')->nullable();
@@ -23,10 +26,18 @@ return new class extends Migration
 
             $table->float('score')->nullable();
             $table->text('feedback')->nullable();
-            $table->foreignUuid('graded_by')->nullable()->constrained('users')->onDelete('set null');
+            $table
+                ->foreignUuid('graded_by')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
             $table->timestamp('graded_at')->nullable();
 
-            $table->foreignUuid('verified_by')->nullable()->constrained('users')->onDelete('set null');
+            $table
+                ->foreignUuid('verified_by')
+                ->nullable()
+                ->constrained('users')
+                ->onDelete('set null');
             $table->timestamp('verified_at')->nullable();
 
             $table->timestamps();

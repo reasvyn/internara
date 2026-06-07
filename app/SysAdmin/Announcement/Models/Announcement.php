@@ -13,7 +13,18 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['title', 'message', 'type', 'status', 'scheduled_at', 'link', 'target_roles', 'created_by'])]
+#[
+    Fillable([
+        'title',
+        'message',
+        'type',
+        'status',
+        'scheduled_at',
+        'link',
+        'target_roles',
+        'created_by',
+    ]),
+]
 class Announcement extends BaseModel
 {
     use HasFactory;
@@ -49,7 +60,8 @@ class Announcement extends BaseModel
 
     public function scopePendingPublish(Builder $query): Builder
     {
-        return $query->where('status', AnnouncementStatus::SCHEDULED)
+        return $query
+            ->where('status', AnnouncementStatus::SCHEDULED)
             ->where('scheduled_at', '<=', now());
     }
 

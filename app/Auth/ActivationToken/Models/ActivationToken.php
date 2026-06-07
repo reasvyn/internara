@@ -55,8 +55,6 @@ class ActivationToken extends BaseModel
 
     public static function revokeFor(User $user): void
     {
-        self::where('user_id', $user->id)
-            ->where('token_type', 'activation')
-            ->delete();
+        self::where('user_id', $user->id)->where('token_type', 'activation')->delete();
     }
 }

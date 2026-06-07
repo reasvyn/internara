@@ -14,7 +14,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-#[Fillable(['type', 'slug', 'title', 'content', 'file_path', 'version', 'is_active', 'metadata', 'created_by'])]
+#[
+    Fillable([
+        'type',
+        'slug',
+        'title',
+        'content',
+        'file_path',
+        'version',
+        'is_active',
+        'metadata',
+        'created_by',
+    ]),
+]
 class Document extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;

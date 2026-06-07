@@ -18,10 +18,7 @@ final class SetupDepartmentAction extends BaseAction
         ]);
 
         return $this->transaction(function () use ($data) {
-            $department = Department::updateOrCreate(
-                ['name' => $data['name']],
-                $data,
-            );
+            $department = Department::updateOrCreate(['name' => $data['name']], $data);
 
             $this->log('department_setup_completed', $department, $data);
 

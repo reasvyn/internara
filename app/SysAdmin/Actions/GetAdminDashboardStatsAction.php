@@ -68,12 +68,15 @@ final class GetAdminDashboardStatsAction extends BaseAction
                 'certificatesTotal' => Certificate::count(),
 
                 // ─── Companies ───────────────────────────────────────
-                'companiesActive' => Company::whereHas('placements', fn ($q) => $q->where('filled_quota', '>', 0))->count(),
+                'companiesActive' => Company::whereHas(
+                    'placements',
+                    fn ($q) => $q->where('filled_quota', '>', 0),
+                )->count(),
 
                 // ─── Throughput (percentage) ─────────────────────────
                 'placementRate' => $registered > 0
-                    ? round((Placement::sum('filled_quota') / max($registered, 1)) * 100)
-                    : 0,
+                        ? round((Placement::sum('filled_quota') / max($registered, 1)) * 100)
+                        : 0,
             ];
         });
     }

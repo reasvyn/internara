@@ -2,15 +2,23 @@
 
 ## When to Activate
 
-Apply this skill when building any new feature, modifying existing code, or adding a new module concept. This skill encodes the full feature lifecycle — from understanding module context through testing and quality checks.
+Apply this skill when building any new feature, modifying existing code, or adding a new module
+concept. This skill encodes the full feature lifecycle — from understanding module context through
+testing and quality checks.
 
 ## Core Principles
 
 Every feature follows a layered architecture where each layer has a distinct responsibility:
 
-Livewire Components handle UI state (form bindings, modal visibility) and delegate to Actions. Actions handle validation, orchestrate persistence in transactions, and dispatch side effects. Models handle data access (queries, relationships, scopes). Entities handle pure business rules without framework dependencies. Enums define labeled constants and state machines with transition validation.
+Livewire Components handle UI state (form bindings, modal visibility) and delegate to Actions.
+Actions handle validation, orchestrate persistence in transactions, and dispatch side effects.
+Models handle data access (queries, relationships, scopes). Entities handle pure business rules
+without framework dependencies. Enums define labeled constants and state machines with transition
+validation.
 
-Data flows unidirectionally: User input enters through a Livewire component, which calls an Action, which reads/writes through a Model, checks business rules through an Entity, and emits audit/event side effects.
+Data flows unidirectionally: User input enters through a Livewire component, which calls an Action,
+which reads/writes through a Model, checks business rules through an Entity, and emits audit/event
+side effects.
 
 ## Feature Workflow
 
@@ -29,7 +37,9 @@ Data flows unidirectionally: User input enters through a Livewire component, whi
 
 ## Layer Reference
 
-Every layer has a canonical directory: Actions, Models, Entities, Enums, Livewire, Policies, Views, Routes, Tests, Support, Data, Contracts — all under `app/{Module}/`. Views mirror under `resources/views/{domain}/`. Routes are per-domain in `routes/web/{module}.php`.
+Every layer has a canonical directory: Actions, Models, Entities, Enums, Livewire, Policies, Views,
+Routes, Tests, Support, Data, Contracts — all under `app/{Module}/`. Views mirror under
+`resources/views/{domain}/`. Routes are per-domain in `routes/web/{module}.php`.
 
 ## Verification Before Finalizing
 

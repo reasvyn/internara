@@ -10,15 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class AbsenceRequestStatus extends BaseEntity
 {
-    public function __construct(
-        private ?AbsenceRequestStatusEnum $status,
-    ) {}
+    public function __construct(private ?AbsenceRequestStatusEnum $status) {}
 
     public static function fromModel(Model $model): static
     {
-        return new self(
-            status: $model->status,
-        );
+        return new self(status: $model->status);
     }
 
     public function isPending(): bool

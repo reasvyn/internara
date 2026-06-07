@@ -134,10 +134,8 @@ class PlacementIndex extends BaseRecordManager
         $this->showModal = false;
     }
 
-    public function delete(
-        string $id,
-        DeletePlacementAction $deleteAction,
-    ): void {
+    public function delete(string $id, DeletePlacementAction $deleteAction): void
+    {
         $placement = Placement::findOrFail($id);
 
         if (! $placement->asPlacementState()->canBeDeleted()) {

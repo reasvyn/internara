@@ -27,7 +27,9 @@ final class RequestPlacementChangeAction extends BaseAction
                 ->exists();
 
             if ($exists) {
-                throw new RejectedException('A pending change request already exists for this registration.');
+                throw new RejectedException(
+                    'A pending change request already exists for this registration.',
+                );
             }
 
             $targetPlacement = Placement::findOrFail($validated['to_placement_id']);
@@ -40,7 +42,10 @@ final class RequestPlacementChangeAction extends BaseAction
                 'requested_by' => $validated['requested_by'],
             ]);
 
-            $this->log('placement_change_requested', $request, ['from_placement' => $registration->placement_id, 'to_placement' => $targetPlacement->id]);
+            $this->log('placement_change_requested', $request, [
+                'from_placement' => $registration->placement_id,
+                'to_placement' => $targetPlacement->id,
+            ]);
 
             return $request;
         });

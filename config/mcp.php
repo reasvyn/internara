@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Redirect Modules
@@ -48,5 +47,4 @@ return [
     */
 
     'authorization_server' => null,
-
 ];

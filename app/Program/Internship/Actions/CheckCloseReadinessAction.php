@@ -46,8 +46,8 @@ final class CheckCloseReadinessAction extends BaseAction
             'total' => $total,
             'pending' => $pending,
             'message' => $pending === 0
-                ? 'All assessments finalized.'
-                : "{$pending} assessment(s) not yet finalized.",
+                    ? 'All assessments finalized.'
+                    : "{$pending} assessment(s) not yet finalized.",
         ];
     }
 
@@ -63,8 +63,8 @@ final class CheckCloseReadinessAction extends BaseAction
             'total' => $total,
             'pending' => $pending,
             'message' => $pending === 0
-                ? 'All submissions graded or verified.'
-                : "{$pending} submission(s) pending grading.",
+                    ? 'All submissions graded or verified.'
+                    : "{$pending} submission(s) pending grading.",
         ];
     }
 
@@ -80,8 +80,8 @@ final class CheckCloseReadinessAction extends BaseAction
             'total' => $total,
             'pending' => $pending,
             'message' => $pending === 0
-                ? 'All supervision logs verified.'
-                : "{$pending} supervision log(s) not yet verified.",
+                    ? 'All supervision logs verified.'
+                    : "{$pending} supervision log(s) not yet verified.",
         ];
     }
 
@@ -97,8 +97,8 @@ final class CheckCloseReadinessAction extends BaseAction
             'total' => $total,
             'pending' => $pending,
             'message' => $pending === 0
-                ? 'All attendance records verified.'
-                : "{$pending} attendance record(s) not yet verified.",
+                    ? 'All attendance records verified.'
+                    : "{$pending} attendance record(s) not yet verified.",
         ];
     }
 

@@ -1,24 +1,30 @@
 # Testing
-> Last updated: 2026-06-03
-> Changes: add TDD methodology, update test paths to submodule-based structure
 
+> Last updated: 2026-06-03 Changes: add TDD methodology, update test paths to submodule-based
+> structure
 
 ## Testing Philosophy
 
 The test suite is organized by module and by test type. Every change to the codebase must be
 accompanied by tests that verify the change works correctly and does not break existing behavior.
+
 ## Scope Isolation
 
-To maintain strict modularity, high code quality, and predictable testing boundaries, this project enforces **Scope Isolation** in all test files:
+To maintain strict modularity, high code quality, and predictable testing boundaries, this project
+enforces **Scope Isolation** in all test files:
 
-*   **One File, One Scope**: Do NOT combine multiple distinct testing scopes into a single test file. For example, do not group different console commands (e.g. `system:health` and `system:cleanup`) or different actions/components under a single test file.
-*   **Dedicated Test Files**: Every console command, action, and Livewire component must have its own dedicated test file (e.g. `SystemHealthCommandTest.php` and `SystemCleanupCommandTest.php`).
-*   **Comprehensive Coverage**: A test suite should not be measured by lines of code, but by depth. Each dedicated test file must thoroughly cover the target scope from multiple angles:
-    *   Happy path scenarios.
-    *   Validation constraints and failure modes.
-    *   Edge cases and boundary inputs.
-    *   Error handling (graceful failures, logging).
-    *   Mocking dependencies/actions and verifying the entire execution chain.
+- **One File, One Scope**: Do NOT combine multiple distinct testing scopes into a single test file.
+  For example, do not group different console commands (e.g. `system:health` and `system:cleanup`)
+  or different actions/components under a single test file.
+- **Dedicated Test Files**: Every console command, action, and Livewire component must have its own
+  dedicated test file (e.g. `SystemHealthCommandTest.php` and `SystemCleanupCommandTest.php`).
+- **Comprehensive Coverage**: A test suite should not be measured by lines of code, but by depth.
+  Each dedicated test file must thoroughly cover the target scope from multiple angles:
+    - Happy path scenarios.
+    - Validation constraints and failure modes.
+    - Edge cases and boundary inputs.
+    - Error handling (graceful failures, logging).
+    - Mocking dependencies/actions and verifying the entire execution chain.
 
 ## TDD Approach
 
@@ -61,16 +67,16 @@ php artisan test --compact --filter=CreateInternshipAction
 
 Each layer of the architecture has a natural TDD progression:
 
-| Layer | TDD Entry Point | What You Test First |
-|---|---|---|
-| **Entity** | Unit test | Construct with test data, assert business rule methods |
-| **Enum** | Unit test | Assert `label()`, transition rules, terminal states |
-| **Command Action** | Feature test | Factory + execute → assert database state changed |
-| **Read Action** | Feature test | Set up data → call method → assert returned structure |
-| **Process Action** | Feature test | Complete workflow + partial failure scenarios |
-| **Livewire** | Feature test | Render → interact → assert component state / redirect |
-| **Policy** | Unit test | Mock user/model → assert boolean gate methods |
-| **Console Command** | Feature test | Call command → assert exit code / output |
+| Layer               | TDD Entry Point | What You Test First                                    |
+| ------------------- | --------------- | ------------------------------------------------------ |
+| **Entity**          | Unit test       | Construct with test data, assert business rule methods |
+| **Enum**            | Unit test       | Assert `label()`, transition rules, terminal states    |
+| **Command Action**  | Feature test    | Factory + execute → assert database state changed      |
+| **Read Action**     | Feature test    | Set up data → call method → assert returned structure  |
+| **Process Action**  | Feature test    | Complete workflow + partial failure scenarios          |
+| **Livewire**        | Feature test    | Render → interact → assert component state / redirect  |
+| **Policy**          | Unit test       | Mock user/model → assert boolean gate methods          |
+| **Console Command** | Feature test    | Call command → assert exit code / output               |
 
 ### TDD by Development Scenario
 
@@ -83,16 +89,15 @@ Each layer of the architecture has a natural TDD progression:
 
 #### New Command Action
 
-1. Write a feature test that creates records via factory, calls the Action, and asserts
-   database state or return value
+1. Write a feature test that creates records via factory, calls the Action, and asserts database
+   state or return value
 2. Confirm test fails (Action does not exist yet)
 3. Create the Action class with the `execute()` method
 4. Confirm test passes
 
 #### New Livewire Component
 
-1. Write a feature test that renders the component via `Livewire::test()` and asserts
-   initial state
+1. Write a feature test that renders the component via `Livewire::test()` and asserts initial state
 2. Confirm test fails
 3. Scaffold the component
 4. Add tests for each interaction (create, update, delete, filter, search)
@@ -125,12 +130,12 @@ academic year**". This makes test output read as executable documentation.
 
 The three Action types map to distinct TDD approaches:
 
-- **Command Action** → Test that the mutation happened (database row created, status changed,
-  log recorded). Use `LazilyRefreshDatabase` + factory + `assertDatabaseHas()`.
-- **Read Action** → Test that the correct data is returned given a known state.
-  No database mutation expected — assert return values only.
-- **Process Action** → Test the orchestration: that each sub-action was called with the
-  correct arguments. Use Mockery to mock child Actions and assert they received the right input.
+- **Command Action** → Test that the mutation happened (database row created, status changed, log
+  recorded). Use `LazilyRefreshDatabase` + factory + `assertDatabaseHas()`.
+- **Read Action** → Test that the correct data is returned given a known state. No database mutation
+  expected — assert return values only.
+- **Process Action** → Test the orchestration: that each sub-action was called with the correct
+  arguments. Use Mockery to mock child Actions and assert they received the right input.
 
 ### Running TDD Cycle Efficiently
 
@@ -158,8 +163,8 @@ TDD is **recommended for all new code**, but not strictly mandatory in these cas
 - **Trivial changes** — renaming, simple config changes, static text without logic
 - **Migration-only changes** — schema changes without new business logic
 
-Any code merged to a shared branch must still have tests. TDD is the preferred path, but the
-gate is passing tests, not the process that produced them.
+Any code merged to a shared branch must still have tests. TDD is the preferred path, but the gate is
+passing tests, not the process that produced them.
 
 ## Feature vs Unit Test Distinction
 
@@ -180,8 +185,8 @@ transition is allowed, an Action that computes a score, a Support class that for
 database needed, no HTTP needed.
 
 Use a feature test for a user-visible workflow: registering a user, submitting an assignment,
-approving a placement. The test creates any necessary records, performs the action, and verifies
-the outcome in the database, response, and session.
+approving a placement. The test creates any necessary records, performs the action, and verifies the
+outcome in the database, response, and session.
 
 ## What LazilyRefreshDatabase Does
 
@@ -271,26 +276,38 @@ The `composer run coverage` script handles this automatically.
 
 ## Testing the Dual Mentor Fallback Protocol
 
-Testing the **Dual Mentor Fallback & Optionality Protocol** requires verifying both the standard supervisor-led paths and the teacher-led fallback/bypass paths.
+Testing the **Dual Mentor Fallback & Optionality Protocol** requires verifying both the standard
+supervisor-led paths and the teacher-led fallback/bypass paths.
 
 ### 1. Attendance & Daily Journal Override Tests
+
 Feature tests for journals and attendance must verify:
-- **Auto-escalation flag**: Assert that logbooks or attendance records in the `SUBMITTED` state for longer than the bypass window (default: 48 hours) correctly trigger the auto-escalation flag.
+
+- **Auto-escalation flag**: Assert that logbooks or attendance records in the `SUBMITTED` state for
+  longer than the bypass window (default: 48 hours) correctly trigger the auto-escalation flag.
 - **Teacher override bypass action**:
-  - Mock/authenticate as a `Teacher` user and call the verification action (e.g. `BypassSupervisorVerificationAction` or a general verification action with a fallback override parameter).
-  - Assert that the record transitions successfully to `FINALIZED` / `VERIFIED`.
-  - Assert that `verified_by_fallback` is set to `true` (or the corresponding fallback verifier fields are stamped).
-  - Verify that an audit trail log is appended detailing the override.
-  - Verify that the record is removed from the corporate supervisor's queue.
+    - Mock/authenticate as a `Teacher` user and call the verification action (e.g.
+      `BypassSupervisorVerificationAction` or a general verification action with a fallback override
+      parameter).
+    - Assert that the record transitions successfully to `FINALIZED` / `VERIFIED`.
+    - Assert that `verified_by_fallback` is set to `true` (or the corresponding fallback verifier
+      fields are stamped).
+    - Verify that an audit trail log is appended detailing the override.
+    - Verify that the record is removed from the corporate supervisor's queue.
 
 ### 2. Competency Evaluation & Grading Tests
+
 Tests for end-of-placement grading must cover the three evaluation paths:
-- **Standard path**: Verify that the calculated grade correctly combines supervisor score (40%), teacher score (20%), and exam score (40%).
+
+- **Standard path**: Verify that the calculated grade correctly combines supervisor score (40%),
+  teacher score (20%), and exam score (40%).
 - **Proxy path**:
-  - Verify that a `Teacher` can submit scores on behalf of the supervisor (proxy toggle = active).
-  - Verify that the compiled output/certificate is stamped with the `proxy_scores` metadata tag.
+    - Verify that a `Teacher` can submit scores on behalf of the supervisor (proxy toggle = active).
+    - Verify that the compiled output/certificate is stamped with the `proxy_scores` metadata tag.
 - **Weight redistribution path**:
-  - Set up a placement with no supervisor score submitted.
-  - Call the final grading action and assert that it correctly redistributes the 40% supervisor weight: 20% added to the teacher's evaluation (now 40%) and 20% to the exam (now 60%), using the formula:
-    `Grade = (Teacher × 40%) + (Exam × 60%)`
-  - Assert that the compiled output/certificate is stamped with the `fallback_weights` metadata tag.
+    - Set up a placement with no supervisor score submitted.
+    - Call the final grading action and assert that it correctly redistributes the 40% supervisor
+      weight: 20% added to the teacher's evaluation (now 40%) and 20% to the exam (now 60%), using
+      the formula: `Grade = (Teacher × 40%) + (Exam × 60%)`
+    - Assert that the compiled output/certificate is stamped with the `fallback_weights` metadata
+      tag.

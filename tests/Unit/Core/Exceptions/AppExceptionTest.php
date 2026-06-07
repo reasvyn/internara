@@ -9,7 +9,7 @@ use App\Core\Exceptions\AppException;
 class MockAppException extends AppException {}
 
 test('app exception holds hints and custom context', function () {
-    $e = (new MockAppException('Main message'))
+    $e = new MockAppException('Main message')
         ->withHint('Fix your settings')
         ->withContext(['key' => 'value']);
 
@@ -19,7 +19,7 @@ test('app exception holds hints and custom context', function () {
 });
 
 test('app exception formats cli output correctly', function () {
-    $e = (new MockAppException('Main message'))
+    $e = new MockAppException('Main message')
         ->withHint('Run migration')
         ->withContext(['step' => 'migration']);
 

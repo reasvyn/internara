@@ -42,13 +42,16 @@ class SubmissionGrading extends Component
 
     public function viewSubmission(string $submissionId): void
     {
-        $submission = Submission::with(['student', 'assignment.type', 'registration'])->findOrFail($submissionId);
+        $submission = Submission::with(['student', 'assignment.type', 'registration'])->findOrFail(
+            $submissionId,
+        );
 
         $this->selectedSubmissionId = $submission->id;
         $this->selectedSubmission = $submission;
         $this->score = $submission->score ?? 0;
         $this->feedback = $submission->feedback ?? '';
-        $this->gradeStatus = $submission->status->value === 'revision_required' ? 'revision_required' : 'verified';
+        $this->gradeStatus =
+            $submission->status->value === 'revision_required' ? 'revision_required' : 'verified';
     }
 
     public function back(): void
@@ -101,14 +104,33 @@ class SubmissionGrading extends Component
 
         $user = Auth::user();
         if ($user->hasRole('teacher')) {
-            $query->whereHas('registration', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_SCHOOL_TEACHER)));
+            $query->whereHas(
+                'registration',
+                fn ($q) => $q->whereHas(
+                    'mentors',
+                    fn ($mq) => $mq
+                        ->where('user_id', $user->id)
+                        ->where('type', Mentor::TYPE_SCHOOL_TEACHER),
+                ),
+            );
         } elseif ($user->hasRole('supervisor')) {
-            $query->whereHas('registration', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)));
+            $query->whereHas(
+                'registration',
+                fn ($q) => $q->whereHas(
+                    'mentors',
+                    fn ($mq) => $mq
+                        ->where('user_id', $user->id)
+                        ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR),
+                ),
+            );
         }
 
         return view('assignment.submission.submission-grading', [
             'submissions' => $query->latest()->paginate(10),
-            'assignments' => Assignment::whereHas('submissions', fn ($q) => $q->whereIn('status', ['submitted', 'revision_required']))->get(),
+            'assignments' => Assignment::whereHas(
+                'submissions',
+                fn ($q) => $q->whereIn('status', ['submitted', 'revision_required']),
+            )->get(),
         ]);
     }
 }

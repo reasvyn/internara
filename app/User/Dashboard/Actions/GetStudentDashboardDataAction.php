@@ -59,9 +59,15 @@ final class GetStudentDashboardDataAction extends BaseAction
             // Attendance calculation
             $totalAttendanceDays = Attendance::where('registration_id', $registration->id)->count();
             $presentDays = Attendance::where('registration_id', $registration->id)
-                ->whereIn('status', [AttendanceStatus::PRESENT->value, AttendanceStatus::LATE->value])
+                ->whereIn('status', [
+                    AttendanceStatus::PRESENT->value,
+                    AttendanceStatus::LATE->value,
+                ])
                 ->count();
-            $attendancePercent = $totalAttendanceDays > 0 ? round(($presentDays / $totalAttendanceDays) * 100, 1) : 100.0;
+            $attendancePercent =
+                $totalAttendanceDays > 0
+                    ? round(($presentDays / $totalAttendanceDays) * 100, 1)
+                    : 100.0;
 
             // Assignments calculation
             $assignmentTotalCount = Assignment::where('internship_id', $registration->internship_id)

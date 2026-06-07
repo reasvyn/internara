@@ -51,7 +51,8 @@ beforeEach(function () {
 
 test('is admin checks super admin or admin role', function () {
     $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasAnyRole')
+    $user
+        ->shouldReceive('hasAnyRole')
         ->with(['super_admin', 'admin'])
         ->once()
         ->andReturnTrue();
@@ -61,7 +62,8 @@ test('is admin checks super admin or admin role', function () {
 
 test('is admin returns false for non admin', function () {
     $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasAnyRole')
+    $user
+        ->shouldReceive('hasAnyRole')
         ->with(['super_admin', 'admin'])
         ->once()
         ->andReturnFalse();
@@ -71,37 +73,29 @@ test('is admin returns false for non admin', function () {
 
 test('is teacher checks teacher role', function () {
     $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasRole')
-        ->with('teacher')
-        ->once()
-        ->andReturnTrue();
+    $user->shouldReceive('hasRole')->with('teacher')->once()->andReturnTrue();
 
     expect($this->policy->callIsTeacher($user))->toBeTrue();
 });
 
 test('is student checks student role', function () {
     $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasRole')
-        ->with('student')
-        ->once()
-        ->andReturnTrue();
+    $user->shouldReceive('hasRole')->with('student')->once()->andReturnTrue();
 
     expect($this->policy->callIsStudent($user))->toBeTrue();
 });
 
 test('is supervisor checks supervisor role', function () {
     $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasRole')
-        ->with('supervisor')
-        ->once()
-        ->andReturnTrue();
+    $user->shouldReceive('hasRole')->with('supervisor')->once()->andReturnTrue();
 
     expect($this->policy->callIsSupervisor($user))->toBeTrue();
 });
 
 test('is admin or teacher checks admin and teacher roles', function () {
     $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasAnyRole')
+    $user
+        ->shouldReceive('hasAnyRole')
         ->with(['super_admin', 'admin', 'teacher'])
         ->once()
         ->andReturnTrue();
@@ -111,7 +105,8 @@ test('is admin or teacher checks admin and teacher roles', function () {
 
 test('can manage any role delegates to is admin', function () {
     $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasAnyRole')
+    $user
+        ->shouldReceive('hasAnyRole')
         ->with(['super_admin', 'admin'])
         ->once()
         ->andReturnTrue();
@@ -121,7 +116,8 @@ test('can manage any role delegates to is admin', function () {
 
 test('has any of roles delegates to user', function () {
     $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasAnyRole')
+    $user
+        ->shouldReceive('hasAnyRole')
         ->with(['editor', 'moderator'])
         ->once()
         ->andReturnTrue();

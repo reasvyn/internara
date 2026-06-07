@@ -48,7 +48,11 @@ class PartnershipManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'agreement_number', 'label' => __('partnership.agreement_number'), 'sortable' => true],
+            [
+                'key' => 'agreement_number',
+                'label' => __('partnership.agreement_number'),
+                'sortable' => true,
+            ],
             ['key' => 'company_name', 'label' => __('partnership.company'), 'sortable' => true],
             ['key' => 'title', 'label' => __('partnership.title_field'), 'sortable' => true],
             ['key' => 'start_date', 'label' => __('partnership.start_date'), 'sortable' => true],
@@ -67,19 +71,24 @@ class PartnershipManager extends BaseRecordManager
 
     protected function applySearch(Builder $query): Builder
     {
-        return $query
-            ->where(function (Builder $q) {
-                $q->where('partnerships.agreement_number', 'like', "%{$this->search}%")
-                    ->orWhere('partnerships.title', 'like', "%{$this->search}%")
-                    ->orWhere('companies.name', 'like', "%{$this->search}%");
-            });
+        return $query->where(function (Builder $q) {
+            $q->where('partnerships.agreement_number', 'like', "%{$this->search}%")
+                ->orWhere('partnerships.title', 'like', "%{$this->search}%")
+                ->orWhere('companies.name', 'like', "%{$this->search}%");
+        });
     }
 
     protected function applyFilters(Builder $query): Builder
     {
         return $query
-            ->when($this->filters['status'] ?? null, fn ($q, $v) => $q->where('partnerships.status', $v))
-            ->when($this->filters['company_id'] ?? null, fn ($q, $v) => $q->where('partnerships.company_id', $v));
+            ->when(
+                $this->filters['status'] ?? null,
+                fn ($q, $v) => $q->where('partnerships.status', $v),
+            )
+            ->when(
+                $this->filters['company_id'] ?? null,
+                fn ($q, $v) => $q->where('partnerships.company_id', $v),
+            );
     }
 
     #[Computed]
@@ -254,14 +263,18 @@ class PartnershipManager extends BaseRecordManager
         $result = $action->execute($this->selectedIds);
 
         if ($result['deleted'] > 0) {
-            flash()->success(__('common.actions.bulk_action_done', [
-                'count' => $result['deleted'],
-                'action' => __('common.actions.delete'),
-            ]));
+            flash()->success(
+                __('common.actions.bulk_action_done', [
+                    'count' => $result['deleted'],
+                    'action' => __('common.actions.delete'),
+                ]),
+            );
         }
 
         if ($result['blocked'] > 0) {
-            flash()->warning(__('partnership.delete_blocked_bulk', ['count' => $result['blocked']]));
+            flash()->warning(
+                __('partnership.delete_blocked_bulk', ['count' => $result['blocked']]),
+            );
         }
 
         $this->clearSelection();
@@ -270,7 +283,8 @@ class PartnershipManager extends BaseRecordManager
     private function uploadMouDocument(Partnership $partnership): void
     {
         if ($this->mouDocument) {
-            $partnership->addMedia($this->mouDocument->getRealPath())
+            $partnership
+                ->addMedia($this->mouDocument->getRealPath())
                 ->usingFileName($this->mouDocument->getClientOriginalName())
                 ->toMediaCollection(Partnership::COLLECTION_MOU);
             $this->mouDocument = null;

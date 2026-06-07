@@ -7,7 +7,6 @@ use Laravel\Pulse\Pulse;
 use Laravel\Pulse\Recorders;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Pulse Domain
@@ -122,10 +121,7 @@ return [
     |
     */
 
-    'middleware' => [
-        'web',
-        Authorize::class,
-    ],
+    'middleware' => ['web', Authorize::class],
 
     /*
     |--------------------------------------------------------------------------
@@ -142,9 +138,7 @@ return [
         Recorders\CacheInteractions::class => [
             'enabled' => env('PULSE_CACHE_INTERACTIONS_ENABLED', true),
             'sample_rate' => env('PULSE_CACHE_INTERACTIONS_SAMPLE_RATE', 1),
-            'ignore' => [
-                ...Pulse::defaultVendorCacheKeys(),
-            ],
+            'ignore' => [...Pulse::defaultVendorCacheKeys()],
             'groups' => [
                 '/^job-exceptions:.*/' => 'job-exceptions:*',
                 // '/:\d+/' => ':*',

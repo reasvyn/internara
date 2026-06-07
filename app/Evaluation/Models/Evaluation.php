@@ -14,11 +14,19 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable([
-    'evaluator_id', 'evaluation_type', 'mentor_id',
-    'registration_id', 'target_type', 'target_id',
-    'overall_score', 'feedback', 'criteria_scores',
-])]
+#[
+    Fillable([
+        'evaluator_id',
+        'evaluation_type',
+        'mentor_id',
+        'registration_id',
+        'target_type',
+        'target_id',
+        'overall_score',
+        'feedback',
+        'criteria_scores',
+    ]),
+]
 class Evaluation extends BaseModel
 {
     use HasFactory;

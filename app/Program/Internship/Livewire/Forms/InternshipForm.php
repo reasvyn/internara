@@ -32,12 +32,21 @@ class InternshipForm extends Form
         $validStatuses = collect(InternshipStatus::cases())->map(fn ($s) => $s->value)->implode(',');
 
         return [
-            'name' => ['required', 'string', 'max:255', 'unique:internships,name,'.($this->id ?? 'NULL')],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:internships,name,'.($this->id ?? 'NULL'),
+            ],
             'academic_year_id' => ['nullable', 'string'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after:start_date'],
             'registration_start_date' => ['nullable', 'date'],
-            'registration_end_date' => ['nullable', 'date', 'after_or_equal:registration_start_date'],
+            'registration_end_date' => [
+                'nullable',
+                'date',
+                'after_or_equal:registration_start_date',
+            ],
             'description' => ['nullable', 'string'],
             'status' => ['required', 'string', 'in:'.$validStatuses],
         ];

@@ -30,20 +30,36 @@ final class CreateUserAction extends BaseAction
      *
      * @throws RuntimeException when user creation fails
      */
-    public function execute(array $userData, array $profileData = [], array $roles = [], bool $sendNotification = true): User
-    {
+    public function execute(
+        array $userData,
+        array $profileData = [],
+        array $roles = [],
+        bool $sendNotification = true,
+    ): User {
         $userData['username'] =
-            $userData['username'] ?? UserIdentifierGenerator::generateUsername($userData['email'] ?? '');
+            $userData['username'] ??
+            UserIdentifierGenerator::generateUsername($userData['email'] ?? '');
         $plainPassword = $userData['password'] ?? str()->random(12);
         $shouldSendWelcome = $sendNotification && ! isset($userData['password']);
 
         Validator::make($userData, [
             'name' => ['required', 'string', 'max:255', new ReservedAuthoritativeName],
-            'username' => ['required', 'string', 'unique:users,username', new SystemUsername, new ReservedAuthoritativeName],
+            'username' => [
+                'required',
+                'string',
+                'unique:users,username',
+                new SystemUsername,
+                new ReservedAuthoritativeName,
+            ],
             'email' => ['required', 'email', 'unique:users,email'],
         ])->validate();
 
-        $user = $this->transaction(function () use ($userData, $profileData, $roles, $plainPassword) {
+        $user = $this->transaction(function () use (
+            $userData,
+            $profileData,
+            $roles,
+            $plainPassword,
+        ) {
             $user = User::create([
                 'name' => $userData['name'],
                 'email' => $userData['email'],

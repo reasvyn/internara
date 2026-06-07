@@ -10,17 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class RecoveryCodeState extends BaseEntity
 {
-    public function __construct(
-        private ?Carbon $usedAt,
-        private ?Carbon $expiresAt,
-    ) {}
+    public function __construct(private ?Carbon $usedAt, private ?Carbon $expiresAt) {}
 
     public static function fromModel(Model $model): static
     {
-        return new self(
-            usedAt: $model->last_attempt_at,
-            expiresAt: $model->expires_at,
-        );
+        return new self(usedAt: $model->last_attempt_at, expiresAt: $model->expires_at);
     }
 
     public function isValid(?Carbon $now = null): bool

@@ -9,8 +9,11 @@ use App\Core\Actions\BaseAction;
 
 final class CreateRubricAction extends BaseAction
 {
-    public function execute(string $name, ?string $description = null, bool $isActive = true): Rubric
-    {
+    public function execute(
+        string $name,
+        ?string $description = null,
+        bool $isActive = true,
+    ): Rubric {
         return Rubric::create([
             'name' => $name,
             'description' => $description,

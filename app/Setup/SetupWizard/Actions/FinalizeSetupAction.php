@@ -7,8 +7,7 @@ namespace App\Setup\SetupWizard\Actions;
 use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Support\SmartLogger;
-use App\Settings\Support\Settings;
-use App\Setup\SetupWizard\Entities\SetupState;
+use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
 use Illuminate\Support\Facades\Event;
@@ -35,14 +34,20 @@ final class FinalizeSetupAction extends BaseAction
         ?array $internshipData = null,
         array $stepsToComplete = ['account', 'school', 'department'],
     ): string {
-        $state = SetupState::fromSettings();
+        $state = SetupEntity::get();
 
         if ($state->isInstalled()) {
             throw new RuntimeException('System is already installed.');
         }
 
-        $plaintext = $this->transaction(function () use ($schoolData, $departmentData, $adminData, $internshipData, $stepsToComplete) {
-            $state = SetupState::fromSettings();
+        $plaintext = $this->transaction(function () use (
+            $schoolData,
+            $departmentData,
+            $adminData,
+            $internshipData,
+            $stepsToComplete,
+        ) {
+            $state = SetupEntity::get();
 
             if ($state->isInstalled()) {
                 throw new RuntimeException('System is already installed.');
@@ -70,19 +75,21 @@ final class FinalizeSetupAction extends BaseAction
             $plaintext = Str::random($keyLength);
             $hashed = Hash::make($plaintext);
 
-            Settings::set([
-                'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
-                'setup.completed_steps' => ['value' => $completedSteps, 'group' => 'setup', 'type' => 'json'],
-                'setup.install_token' => ['value' => null, 'group' => 'setup', 'type' => 'string'],
-                'setup.token_expires_at' => ['value' => null, 'group' => 'setup', 'type' => 'datetime'],
-                'setup.install_recovery_key' => ['value' => $hashed, 'group' => 'setup', 'type' => 'string'],
-                'setup.updated_at' => ['value' => now()->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
+            SetupEntity::update([
+                'is_installed' => true,
+                'completed_steps' => $completedSteps,
+                'install_token' => null,
+                'token_expires_at' => null,
+                'install_recovery_key' => $hashed,
+                'updated_at' => now()->toIso8601String(),
             ]);
 
-            Event::dispatch(new SetupFinalized(
-                departmentId: $department->id,
-                installedAt: now()->toDateTimeImmutable(),
-            ));
+            Event::dispatch(
+                new SetupFinalized(
+                    departmentId: $department->id,
+                    installedAt: now()->toDateTimeImmutable(),
+                ),
+            );
 
             $this->sendNotification->execute(
                 userId: $admin->id,
@@ -92,7 +99,12 @@ final class FinalizeSetupAction extends BaseAction
                 link: route('sysadmin.dashboard'),
             );
 
-            Session::forget(['setup.authorized', 'setup.token', 'setup.token_input', 'setup.form_data']);
+            Session::forget([
+                'setup.authorized',
+                'setup.token',
+                'setup.token_input',
+                'setup.form_data',
+            ]);
 
             return $plaintext;
         });

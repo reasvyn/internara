@@ -2,13 +2,20 @@
 
 ## What It Enforces
 
-`Cache::remember()` replaces manual get/put patterns. `Cache::flexible()` provides stale-while-revalidate for high-traffic keys. `Cache::add()` handles atomic conditional writes. Cache tags enable grouped invalidation. Read operations are cached; write operations invalidate affected caches.
+`Cache::remember()` replaces manual get/put patterns. `Cache::flexible()` provides
+stale-while-revalidate for high-traffic keys. `Cache::add()` handles atomic conditional writes.
+Cache tags enable grouped invalidation. Read operations are cached; write operations invalidate
+affected caches.
 
 ## Why It Matters
 
-Manual get/put patterns have a race condition: two requests can both miss the cache and simultaneously recompute the value. `Cache::remember()` atomically checks, computes, and stores. `Cache::flexible()` goes further by serving stale data while a background process refreshes the cache — preventing the thundering herd problem where every concurrent user hits a cold cache.
+Manual get/put patterns have a race condition: two requests can both miss the cache and
+simultaneously recompute the value. `Cache::remember()` atomically checks, computes, and stores.
+`Cache::flexible()` goes further by serving stale data while a background process refreshes the
+cache — preventing the thundering herd problem where every concurrent user hits a cold cache.
 
-`Cache::add()` atomically checks and sets — preventing race conditions in mutex-like scenarios. `Cache::memo()` deduplicates within a single request, reducing cache store round trips.
+`Cache::add()` atomically checks and sets — preventing race conditions in mutex-like scenarios.
+`Cache::memo()` deduplicates within a single request, reducing cache store round trips.
 
 ## When It Applies
 

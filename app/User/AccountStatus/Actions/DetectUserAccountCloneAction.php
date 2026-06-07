@@ -21,11 +21,13 @@ class DetectUserAccountCloneAction extends BaseAction
                 ->groupBy('email')
                 ->havingRaw('count > 1')
                 ->get()
-                ->map(fn ($row) => [
-                    'type' => 'duplicate_email',
-                    'identifier' => $row->email,
-                    'user_ids' => explode(',', $row->user_ids),
-                ]);
+                ->map(
+                    fn ($row) => [
+                        'type' => 'duplicate_email',
+                        'identifier' => $row->email,
+                        'user_ids' => explode(',', $row->user_ids),
+                    ],
+                );
         } catch (\Throwable $e) {
             SmartLogger::error('Failed to detect cloned accounts')
                 ->withPayload(['error' => $e->getMessage()])

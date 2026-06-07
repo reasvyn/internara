@@ -9,17 +9,11 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class PlacementCapacity extends BaseEntity
 {
-    public function __construct(
-        private int $quota,
-        private int $filledQuota,
-    ) {}
+    public function __construct(private int $quota, private int $filledQuota) {}
 
     public static function fromModel(Model $model): static
     {
-        return new self(
-            quota: $model->quota,
-            filledQuota: $model->filled_quota,
-        );
+        return new self(quota: $model->quota, filledQuota: $model->filled_quota);
     }
 
     public function isFull(): bool

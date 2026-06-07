@@ -40,7 +40,12 @@ class PartnershipForm extends Form
     {
         return [
             'company_id' => ['required', 'exists:companies,id'],
-            'agreement_number' => ['required', 'string', 'max:100', 'unique:partnerships,agreement_number,'.($this->id ?? 'NULL')],
+            'agreement_number' => [
+                'required',
+                'string',
+                'max:100',
+                'unique:partnerships,agreement_number,'.($this->id ?? 'NULL'),
+            ],
             'title' => ['required', 'string', 'max:255'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after_or_equal:start_date'],

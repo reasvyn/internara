@@ -37,12 +37,18 @@ class Setting extends BaseModel implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumb')
-            ->width(200)
-            ->format('webp');
+        $this->addMediaConversion('thumb')->width(200)->format('webp');
     }
 
-    public const VALID_TYPES = ['string', 'integer', 'float', 'boolean', 'json', 'encrypted', 'null'];
+    public const VALID_TYPES = [
+        'string',
+        'integer',
+        'float',
+        'boolean',
+        'json',
+        'encrypted',
+        'null',
+    ];
 
     protected $casts = [
         'value' => SettingValueCast::class,
@@ -76,8 +82,7 @@ class Setting extends BaseModel implements HasMedia
     public function scopeSearchable(Builder $query, string $term): Builder
     {
         return $query->where(function (Builder $q) use ($term) {
-            $q->where('key', 'like', "%{$term}%")
-                ->orWhere('description', 'like', "%{$term}%");
+            $q->where('key', 'like', "%{$term}%")->orWhere('description', 'like', "%{$term}%");
         });
     }
 }

@@ -15,11 +15,22 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable([
-    'registration_id', 'reported_by', 'incident_date', 'type', 'severity',
-    'description', 'location', 'action_taken', 'status',
-    'resolved_by', 'resolved_at', 'resolution_notes',
-])]
+#[
+    Fillable([
+        'registration_id',
+        'reported_by',
+        'incident_date',
+        'type',
+        'severity',
+        'description',
+        'location',
+        'action_taken',
+        'status',
+        'resolved_by',
+        'resolved_at',
+        'resolution_notes',
+    ]),
+]
 class IncidentReport extends BaseModel
 {
     use HasFactory;

@@ -31,17 +31,14 @@ test('save recovery key action creates directory and writes key file', function 
 
 test('save recovery key action throws exception on write failure', function () {
     $dir = storage_path('app/private');
-    File::shouldReceive('exists')
-        ->with($dir)
-        ->once()
-        ->andReturnTrue();
+    File::shouldReceive('exists')->with($dir)->once()->andReturnTrue();
 
-    File::shouldReceive('put')
-        ->once()
-        ->andReturnFalse();
+    File::shouldReceive('put')->once()->andReturnFalse();
 
     $action = app(SaveRecoveryKeyAction::class);
 
-    expect(fn () => $action->execute('test-key'))
-        ->toThrow(RuntimeException::class, 'Failed to write recovery key');
+    expect(fn () => $action->execute('test-key'))->toThrow(
+        RuntimeException::class,
+        'Failed to write recovery key',
+    );
 });

@@ -12,8 +12,12 @@ use App\User\Models\User;
 
 final class ProcessAbsenceAction extends BaseAction
 {
-    public function execute(AbsenceRequest $absence, User $processor, AbsenceRequestStatus $status, ?string $notes = null): AbsenceRequest
-    {
+    public function execute(
+        AbsenceRequest $absence,
+        User $processor,
+        AbsenceRequestStatus $status,
+        ?string $notes = null,
+    ): AbsenceRequest {
         if ($absence->status->isProcessed()) {
             throw new RejectedException('This absence request has already been processed.');
         }

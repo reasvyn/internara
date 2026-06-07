@@ -1,22 +1,22 @@
 # Infrastructure
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
+> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
+> conventions overhaul
 
-This document describes the ideal infrastructure design for Internara — what the system
-looks like at each deployment tier and how components relate. It serves as a reference for
-provisioning, scaling, and maintenance.
+This document describes the ideal infrastructure design for Internara — what the system looks like
+at each deployment tier and how components relate. It serves as a reference for provisioning,
+scaling, and maintenance.
 
-> This is the **target architecture**, not necessarily what is currently implemented.
-> The codebase supports all tiers simultaneously through configuration.
+> This is the **target architecture**, not necessarily what is currently implemented. The codebase
+> supports all tiers simultaneously through configuration.
 
 ---
 
 ## 1. Three Deployment Tiers
 
 Internara is a self-hosted, single-tenant application. Schools install it on their own
-infrastructure, ranging from budget shared hosting to dedicated multi-server setups.
-The same codebase runs across all tiers — only configuration differs.
+infrastructure, ranging from budget shared hosting to dedicated multi-server setups. The same
+codebase runs across all tiers — only configuration differs.
 
 ### Tier 1: Entry (Shared Hosting)
 
@@ -86,17 +86,17 @@ The same codebase runs across all tiers — only configuration differs.
 
 ### Feature Availability by Tier
 
-| Feature | Tier 1 | Tier 2 | Tier 3 |
-|---|---|---|---|
-| Authentication & RBAC | ✅ | ✅ | ✅ |
-| Attendance, Logbook | ✅ | ✅ | ✅ |
-| Assignments, Grading | ✅ | ✅ | ✅ |
-| Reports, Certificates | ✅ | ✅ | ✅ |
-| Email notifications | ✅ (sync) | ✅ (async) | ✅ (async) |
-| Media conversions | ✅ (sync) | ✅ (async) | ✅ (async) |
-| In-app notifications | ✅ (pull) | ✅ (pull) | ✅ (real-time) |
-| Pulse monitoring | ✅ (request) | ✅ (request) | ✅ (request) |
-| Concurrent users | < 50 | 50-200 | 200-1000+ |
+| Feature               | Tier 1       | Tier 2       | Tier 3         |
+| --------------------- | ------------ | ------------ | -------------- |
+| Authentication & RBAC | ✅           | ✅           | ✅             |
+| Attendance, Logbook   | ✅           | ✅           | ✅             |
+| Assignments, Grading  | ✅           | ✅           | ✅             |
+| Reports, Certificates | ✅           | ✅           | ✅             |
+| Email notifications   | ✅ (sync)    | ✅ (async)   | ✅ (async)     |
+| Media conversions     | ✅ (sync)    | ✅ (async)   | ✅ (async)     |
+| In-app notifications  | ✅ (pull)    | ✅ (pull)    | ✅ (real-time) |
+| Pulse monitoring      | ✅ (request) | ✅ (request) | ✅ (request)   |
+| Concurrent users      | < 50         | 50-200       | 200-1000+      |
 
 ---
 
@@ -136,22 +136,24 @@ Internet
 
 ## 3. Process Management
 
-Three background processes must be running in production (Tier 2+). In Tier 1,
-queue runs synchronously, and the scheduler is triggered via HTTP webhook.
+Three background processes must be running in production (Tier 2+). In Tier 1, queue runs
+synchronously, and the scheduler is triggered via HTTP webhook.
 
-| Process | Command | Tier 1 | Tier 2+ | Purpose |
-|---|---|---|---|---|
-| **Queue Worker** | `queue:work --sleep=3 --tries=3` | sync (inline) | Supervisor | Notifications, media conversions, mail |
-| **Scheduler** | `schedule:run` | `/cron/{secret}` | system cron | Daily cleanup, cache warm, Pulse recording |
-
+| Process          | Command                          | Tier 1           | Tier 2+     | Purpose                                    |
+| ---------------- | -------------------------------- | ---------------- | ----------- | ------------------------------------------ |
+| **Queue Worker** | `queue:work --sleep=3 --tries=3` | sync (inline)    | Supervisor  | Notifications, media conversions, mail     |
+| **Scheduler**    | `schedule:run`                   | `/cron/{secret}` | system cron | Daily cleanup, cache warm, Pulse recording |
 
 ### Supervisor Configuration (Tier 2+)
 
-To handle concurrent notifications and heavy document compilation at scale, separate queue pipelines must be run:
-* **`default` queue**: Processes emails, alerts, and general events.
-* **`documents` queue**: Dedicated exclusively to compiling PDF certificates and reports.
+To handle concurrent notifications and heavy document compilation at scale, separate queue pipelines
+must be run:
+
+- **`default` queue**: Processes emails, alerts, and general events.
+- **`documents` queue**: Dedicated exclusively to compiling PDF certificates and reports.
 
 `/etc/supervisor/conf.d/internara-worker.conf`:
+
 ```ini
 [program:internara-default-worker]
 process_name=%(program_name)s_%(process_num)02d
@@ -184,8 +186,7 @@ stopwaitsecs=3600
 
 ### Web Cron Fallback (Tier 1)
 
-For shared hosting without minute-level cron, a web-accessible endpoint
-triggers the scheduler:
+For shared hosting without minute-level cron, a web-accessible endpoint triggers the scheduler:
 
 ```cron
 * * * * * curl -s https://your-module.com/cron/your-cron-secret-here
@@ -199,18 +200,18 @@ Generate the secret: `php -r "echo bin2hex(random_bytes(16));"`
 
 ### Default by Tier
 
-| Tier | Engine | Configuration |
-|---|---|---|
-| Development | SQLite (file) | Zero config, single file |
-| Testing | SQLite (in-memory) | Fast, auto-discarded |
-| Tier 1 | MySQL / MariaDB | Shared hosting MySQL (limited connections) |
-| Tier 2+ | MySQL 8 / PostgreSQL 14+ | Dedicated, tuned |
+| Tier        | Engine                   | Configuration                              |
+| ----------- | ------------------------ | ------------------------------------------ |
+| Development | SQLite (file)            | Zero config, single file                   |
+| Testing     | SQLite (in-memory)       | Fast, auto-discarded                       |
+| Tier 1      | MySQL / MariaDB          | Shared hosting MySQL (limited connections) |
+| Tier 2+     | MySQL 8 / PostgreSQL 14+ | Dedicated, tuned                           |
 
 ### Connection Pooling
 
-| Engine | Tool | When |
-|---|---|---|
-| MySQL | ProxySQL | > 500 concurrent connections |
+| Engine     | Tool      | When                         |
+| ---------- | --------- | ---------------------------- |
+| MySQL      | ProxySQL  | > 500 concurrent connections |
 | PostgreSQL | PgBouncer | > 200 concurrent connections |
 
 ### Read/Write Separation (Tier 3)
@@ -246,11 +247,11 @@ php artisan migrate
 
 ### Disk Definitions
 
-| Disk | Driver | Default | Purpose | Web-Accessible |
-|---|---|---|---|---|
-| `local` | Local | `storage/app/private` | Internal files, exports | ❌ |
-| `public` | Local | `storage/app/public` | User-facing files | ✅ (via symlink) |
-| `s3` | S3 | Bucket root | Production cloud storage | ✅ (via CDN) |
+| Disk     | Driver | Default               | Purpose                  | Web-Accessible   |
+| -------- | ------ | --------------------- | ------------------------ | ---------------- |
+| `local`  | Local  | `storage/app/private` | Internal files, exports  | ❌               |
+| `public` | Local  | `storage/app/public`  | User-facing files        | ✅ (via symlink) |
+| `s3`     | S3     | Bucket root           | Production cloud storage | ✅ (via CDN)     |
 
 ### Storage by Tier
 
@@ -272,13 +273,13 @@ Tier 3:
 
 ### What Gets Stored Where
 
-| Data | Tier 1-2 | Tier 3 | Via |
-|---|---|---|---|
-| User avatars | `public` disk / media library | S3 / media library | `$user->getFirstMediaUrl('avatar')` |
-| Uploaded documents | `public` disk / media library | S3 / media library | `$doc->getFirstMediaUrl('file')` |
-| Certificate PDFs | `public/certificates/` directory | S3 `certificates/` | Direct file path |
-| Brand assets | `public/brand/` directory | S3 `brand/` | `brand('logo')` helper |
-| Temporary uploads | `local` disk (Livewire temp) | `local` disk | Auto-cleaned |
+| Data               | Tier 1-2                         | Tier 3             | Via                                 |
+| ------------------ | -------------------------------- | ------------------ | ----------------------------------- |
+| User avatars       | `public` disk / media library    | S3 / media library | `$user->getFirstMediaUrl('avatar')` |
+| Uploaded documents | `public` disk / media library    | S3 / media library | `$doc->getFirstMediaUrl('file')`    |
+| Certificate PDFs   | `public/certificates/` directory | S3 `certificates/` | Direct file path                    |
+| Brand assets       | `public/brand/` directory        | S3 `brand/`        | `brand('logo')` helper              |
+| Temporary uploads  | `local` disk (Livewire temp)     | `local` disk       | Auto-cleaned                        |
 
 ### Storage Link
 
@@ -293,16 +294,15 @@ php artisan storage:link
 
 ### Driver by Tier
 
-| Service | Tier 1 | Tier 2 | Tier 3 |
-|---|---|---|---|
-| Cache | `file` / `database` | `redis` | `redis` (cluster) |
+| Service | Tier 1              | Tier 2  | Tier 3            |
+| ------- | ------------------- | ------- | ----------------- |
+| Cache   | `file` / `database` | `redis` | `redis` (cluster) |
 | Session | `file` / `database` | `redis` | `redis` (cluster) |
-| Queue | `sync` | `redis` | `redis` (cluster) |
+| Queue   | `sync`              | `redis` | `redis` (cluster) |
 
 ### Redis Database Separation
 
-A single Redis instance can serve all three services by using separate database
-numbers:
+A single Redis instance can serve all three services by using separate database numbers:
 
 ```env
 REDIS_DB=0        # Cache
@@ -313,13 +313,13 @@ REDIS_QUEUE_DB=2  # Queue
 
 ### Cache vs Session (Critical Distinction)
 
-| Aspect | Cache | Session |
-|---|---|---|
-| Purpose | Performance optimization | Authentication + ephemeral state |
-| Security | No restrictions | Encrypted, HTTP-only, SameSite |
-| Data loss | Acceptable (recomputable) | Critical (user logged out) |
-| TTL | Per-key (seconds to forever) | Single global lifetime (120 min) |
-| Backend | Swappable independently | Tied to security assumptions |
+| Aspect    | Cache                        | Session                          |
+| --------- | ---------------------------- | -------------------------------- |
+| Purpose   | Performance optimization     | Authentication + ephemeral state |
+| Security  | No restrictions              | Encrypted, HTTP-only, SameSite   |
+| Data loss | Acceptable (recomputable)    | Critical (user logged out)       |
+| TTL       | Per-key (seconds to forever) | Single global lifetime (120 min) |
+| Backend   | Swappable independently      | Tied to security assumptions     |
 
 ---
 
@@ -340,12 +340,12 @@ REDIS_QUEUE_DB=2  # Queue
 
 ### Retention
 
-| Data Source | Retention | Pruning |
-|---|---|---|
-| Pulse records | 7 days | Automatic by scheduler |
-| Activity log | 365 days | `php artisan activitylog:clean` via scheduler |
-| System logs | 14 days | `daily` log driver rotation |
-| Failed jobs | 7 days | `queue:prune-failed` via scheduler |
+| Data Source   | Retention | Pruning                                       |
+| ------------- | --------- | --------------------------------------------- |
+| Pulse records | 7 days    | Automatic by scheduler                        |
+| Activity log  | 365 days  | `php artisan activitylog:clean` via scheduler |
+| System logs   | 14 days   | `daily` log driver rotation                   |
+| Failed jobs   | 7 days    | `queue:prune-failed` via scheduler            |
 
 ---
 
@@ -353,10 +353,10 @@ REDIS_QUEUE_DB=2  # Queue
 
 ### Recovery Objectives
 
-| Metric | Tier 1 | Tier 2 | Tier 3 |
-|---|---|---|---|
-| RPO (data loss tolerance) | 24 hours | 24 hours | 1 hour |
-| RTO (restoration time) | 4 hours | 2 hours | 30 minutes |
+| Metric                    | Tier 1   | Tier 2   | Tier 3     |
+| ------------------------- | -------- | -------- | ---------- |
+| RPO (data loss tolerance) | 24 hours | 24 hours | 1 hour     |
+| RTO (restoration time)    | 4 hours  | 2 hours  | 30 minutes |
 
 ### Backup Schedule
 
@@ -368,12 +368,12 @@ REDIS_QUEUE_DB=2  # Queue
 
 ### Retention Policy
 
-| Frequency | Retention |
-|---|---|
-| Daily | 30 days |
-| Weekly | 12 weeks |
-| Monthly | 12 months |
-| Yearly | Permanent (regulatory) |
+| Frequency | Retention              |
+| --------- | ---------------------- |
+| Daily     | 30 days                |
+| Weekly    | 12 weeks               |
+| Monthly   | 12 months              |
+| Yearly    | Permanent (regulatory) |
 
 ### What to Restore (in order)
 
@@ -388,23 +388,23 @@ REDIS_QUEUE_DB=2  # Queue
 
 ### When to Scale What
 
-| Symptom | Scale | Action |
-|---|---|---|
-| PHP-FPM max children reached | Vertical (app) | Increase RAM, raise `pm.max_children` |
-| Database CPU > 80% | Vertical (DB) | Larger DB server, add read replica |
-| SQLite "database is locked" | Engine | Switch to MySQL / PostgreSQL |
-| Queue backlog growing | Worker | Add Supervisor `numprocs`, switch to Redis |
-| Disk > 85% full | Storage | Add storage, enable S3, prune old data |
+| Symptom                      | Scale          | Action                                     |
+| ---------------------------- | -------------- | ------------------------------------------ |
+| PHP-FPM max children reached | Vertical (app) | Increase RAM, raise `pm.max_children`      |
+| Database CPU > 80%           | Vertical (DB)  | Larger DB server, add read replica         |
+| SQLite "database is locked"  | Engine         | Switch to MySQL / PostgreSQL               |
+| Queue backlog growing        | Worker         | Add Supervisor `numprocs`, switch to Redis |
+| Disk > 85% full              | Storage        | Add storage, enable S3, prune old data     |
 
 | Page load > 500ms | Cache | Enable Redis, warm caches, add OpCache |
 
 ### Vertical vs Horizontal
 
-| Tier | Vertical (bigger server) | Horizontal (more servers) |
-|---|---|---|
-| 1→2 | ✅ Sufficient for < 200 users | ❌ Not needed |
-| 2→3 | ❌ Diminishing returns | ✅ Required for redundancy |
-| 3+ | ✅ Database only | ✅ App + queue |
+| Tier | Vertical (bigger server)      | Horizontal (more servers)  |
+| ---- | ----------------------------- | -------------------------- |
+| 1→2  | ✅ Sufficient for < 200 users | ❌ Not needed              |
+| 2→3  | ❌ Diminishing returns        | ✅ Required for redundancy |
+| 3+   | ✅ Database only              | ✅ App + queue             |
 
 ---
 
@@ -435,15 +435,15 @@ REDIS_QUEUE_DB=2  # Queue
 
 ## 11. Component Sizing Reference
 
-| Component | Tier 1 | Tier 2 | Tier 3 |
-|---|---|---|---|
-| **CPU** | 1-2 shared | 2-4 dedicated | 2-4 per app server, 4-8 DB |
-| **RAM** | 256 MB - 512 MB | 4 GB | 4 GB per app, 16 GB DB |
-| **Storage** | 5-10 GB | 50 GB SSD | 100 GB SSD + S3 |
-| **PHP-FPM children** | 5-10 | 25 | 25-50 per server |
-| **Database buffer** | Shared host limit | 2 GB (MySQL) | 8 GB (MySQL) |
-| **Redis memory** | N/A | 512 MB | 2 GB (cluster) |
-| **Bandwidth** | 1 TB/mo | 2 TB/mo | 5 TB/mo |
+| Component            | Tier 1            | Tier 2        | Tier 3                     |
+| -------------------- | ----------------- | ------------- | -------------------------- |
+| **CPU**              | 1-2 shared        | 2-4 dedicated | 2-4 per app server, 4-8 DB |
+| **RAM**              | 256 MB - 512 MB   | 4 GB          | 4 GB per app, 16 GB DB     |
+| **Storage**          | 5-10 GB           | 50 GB SSD     | 100 GB SSD + S3            |
+| **PHP-FPM children** | 5-10              | 25            | 25-50 per server           |
+| **Database buffer**  | Shared host limit | 2 GB (MySQL)  | 8 GB (MySQL)               |
+| **Redis memory**     | N/A               | 512 MB        | 2 GB (cluster)             |
+| **Bandwidth**        | 1 TB/mo           | 2 TB/mo       | 5 TB/mo                    |
 
 ---
 
@@ -469,13 +469,13 @@ REDIS_QUEUE_DB=2  # Queue
 
 ## Where to Find It
 
-| Concern | Document |
-|---|---|
-| Deployment steps (VPS, Docker, shared) | [Deployment](deployment.md) |
-| Environment configuration | [Configuration](configuration.md) |
-| Backup & restore procedures | [Backup & Recovery](backup-recovery.md) |
-| Performance monitoring, Pulse, logging | [Observability](observability.md) |
-| File storage, S3, media library | [Filesystem](filesystem.md) |
-| Queue infrastructure, worker management | [Queue](queue.md) |
-| Cache management, OpCache | [Cache](cache.md) |
-| Session configuration, security | [Session](session.md) |
+| Concern                                 | Document                                |
+| --------------------------------------- | --------------------------------------- |
+| Deployment steps (VPS, Docker, shared)  | [Deployment](deployment.md)             |
+| Environment configuration               | [Configuration](configuration.md)       |
+| Backup & restore procedures             | [Backup & Recovery](backup-recovery.md) |
+| Performance monitoring, Pulse, logging  | [Observability](observability.md)       |
+| File storage, S3, media library         | [Filesystem](filesystem.md)             |
+| Queue infrastructure, worker management | [Queue](queue.md)                       |
+| Cache management, OpCache               | [Cache](cache.md)                       |
+| Session configuration, security         | [Session](session.md)                   |

@@ -15,8 +15,9 @@ final class VerifyRegistrationAction extends BaseAction
     public function execute(string $registrationId, array $data): Registration
     {
         return $this->transaction(function () use ($registrationId, $data) {
-            $registration = Registration::with('mentee.user', 'internship')
-                ->findOrFail($registrationId);
+            $registration = Registration::with('mentee.user', 'internship')->findOrFail(
+                $registrationId,
+            );
 
             if (! $registration->hasStatus('pending')) {
                 throw new RejectedException('Registration is not in pending status.');
@@ -34,7 +35,10 @@ final class VerifyRegistrationAction extends BaseAction
                 'end_date' => $data['end_date'] ?? $placement->internship->end_date,
             ]);
 
-            $registration->setStatus('active', 'Registration verified and placed by administrator.');
+            $registration->setStatus(
+                'active',
+                'Registration verified and placed by administrator.',
+            );
 
             $placement->increment('filled_quota');
 

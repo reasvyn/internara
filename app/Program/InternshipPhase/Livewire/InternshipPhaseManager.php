@@ -81,8 +81,10 @@ class InternshipPhaseManager extends BaseRecordManager
         $this->showModal = true;
     }
 
-    public function save(CreateInternshipPhaseAction $create, UpdateInternshipPhaseAction $update): void
-    {
+    public function save(
+        CreateInternshipPhaseAction $create,
+        UpdateInternshipPhaseAction $update,
+    ): void {
         $this->form->validate();
 
         if ($this->confirmTarget) {

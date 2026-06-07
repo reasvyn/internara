@@ -12,7 +12,11 @@ return new class extends Migration
     {
         Schema::create('internship_group_members', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('internship_group_id')->nullable()->constrained('internship_groups')->cascadeOnDelete();
+            $table
+                ->foreignUuid('internship_group_id')
+                ->nullable()
+                ->constrained('internship_groups')
+                ->cascadeOnDelete();
             $table->index('internship_group_id');
             $table->foreignUuid('registration_id')->nullable()->constrained()->nullOnDelete();
             $table->index('registration_id');

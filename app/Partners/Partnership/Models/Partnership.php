@@ -15,12 +15,24 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-#[Fillable([
-    'company_id', 'agreement_number', 'title', 'start_date', 'end_date',
-    'status', 'scope', 'contact_person_name', 'contact_person_phone',
-    'contact_person_email', 'signed_by_school', 'signed_by_company',
-    'signed_at', 'notes',
-])]
+#[
+    Fillable([
+        'company_id',
+        'agreement_number',
+        'title',
+        'start_date',
+        'end_date',
+        'status',
+        'scope',
+        'contact_person_name',
+        'contact_person_phone',
+        'contact_person_email',
+        'signed_by_school',
+        'signed_by_company',
+        'signed_at',
+        'notes',
+    ]),
+]
 class Partnership extends BaseModel implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
@@ -48,10 +60,7 @@ class Partnership extends BaseModel implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumb')
-            ->width(400)
-            ->format('webp')
-            ->nonQueued();
+        $this->addMediaConversion('thumb')->width(400)->format('webp')->nonQueued();
     }
 
     public function company(): BelongsTo

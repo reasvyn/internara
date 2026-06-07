@@ -46,8 +46,10 @@ test('cannot change superadmin name', function () {
     $this->user->assignRole('superadmin');
     $this->user->update(['name' => 'Administrator', 'username' => 'superadmin']);
 
-    expect(fn () => $this->action->execute($this->user, [], name: 'New Admin'))
-        ->toThrow(RejectedException::class, 'Cannot change super admin name.');
+    expect(fn () => $this->action->execute($this->user, [], name: 'New Admin'))->toThrow(
+        RejectedException::class,
+        'Cannot change super admin name.',
+    );
 });
 
 test('cannot change superadmin username', function () {
@@ -55,8 +57,10 @@ test('cannot change superadmin username', function () {
     $this->user->assignRole('superadmin');
     $this->user->update(['name' => 'Administrator', 'username' => 'superadmin']);
 
-    expect(fn () => $this->action->execute($this->user, [], username: 'newadmin'))
-        ->toThrow(RejectedException::class, 'Cannot change super admin username.');
+    expect(fn () => $this->action->execute($this->user, [], username: 'newadmin'))->toThrow(
+        RejectedException::class,
+        'Cannot change super admin username.',
+    );
 });
 
 test('creates profile if none exists', function () {
@@ -80,6 +84,7 @@ test('updates existing profile', function () {
 });
 
 test('validates profile data', function () {
-    expect(fn () => $this->action->execute($this->user, ['phone' => str_repeat('1', 21)]))
-        ->toThrow(ValidationException::class);
+    expect(fn () => $this->action->execute($this->user, ['phone' => str_repeat('1', 21)]))->toThrow(
+        ValidationException::class,
+    );
 });

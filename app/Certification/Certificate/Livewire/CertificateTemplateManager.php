@@ -41,7 +41,13 @@ class CertificateTemplateManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->formData = ['id' => null, 'name' => '', 'layout' => 'portrait', 'content_template' => '', 'is_active' => true];
+        $this->formData = [
+            'id' => null,
+            'name' => '',
+            'layout' => 'portrait',
+            'content_template' => '',
+            'is_active' => true,
+        ];
         $this->showModal = true;
     }
 

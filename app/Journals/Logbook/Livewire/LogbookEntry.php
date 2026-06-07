@@ -89,9 +89,7 @@ class LogbookEntry extends Component
     #[Layout('core::layouts.app')]
     public function render(): View
     {
-        $journals = Logbook::where('user_id', auth()->id())
-            ->latest('date')
-            ->paginate(10);
+        $journals = Logbook::where('user_id', auth()->id())->latest('date')->paginate(10);
 
         return view('journals.logbook.logbook-entry', [
             'journals' => $journals,

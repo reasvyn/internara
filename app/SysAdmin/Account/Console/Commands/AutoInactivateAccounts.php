@@ -18,8 +18,8 @@ class AutoInactivateAccounts extends Command
 
     protected $description = 'Transition VERIFIED accounts to INACTIVE after extended inactivity';
 
-    public function __construct(
-    ) {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -31,14 +31,16 @@ class AutoInactivateAccounts extends Command
         $users = User::query()
             ->whereDoesntHave('roles', fn ($q) => $q->where('name', Role::SUPER_ADMIN->value))
             ->whereHas('statuses', fn ($q) => $q->where('name', AccountStatus::VERIFIED->value))
-            ->whereDoesntHave('statuses', fn ($q) => $q->whereIn('name', [
-                AccountStatus::INACTIVE->value,
-                AccountStatus::ARCHIVED->value,
-                AccountStatus::PROTECTED->value,
-            ]))
+            ->whereDoesntHave(
+                'statuses',
+                fn ($q) => $q->whereIn('name', [
+                    AccountStatus::INACTIVE->value,
+                    AccountStatus::ARCHIVED->value,
+                    AccountStatus::PROTECTED->value,
+                ]),
+            )
             ->where(function ($q) use ($threshold) {
-                $q->whereNull('last_activity_at')
-                    ->orWhere('last_activity_at', '<', $threshold);
+                $q->whereNull('last_activity_at')->orWhere('last_activity_at', '<', $threshold);
             })
             ->get();
 
@@ -48,11 +50,22 @@ class AutoInactivateAccounts extends Command
             return self::SUCCESS;
         }
 
-        $this->components->info(__('sysadmin.auto_inactivate.found', ['count' => $users->count(), 'days' => $this->option('days')]));
+        $this->components->info(
+            __('sysadmin.auto_inactivate.found', [
+                'count' => $users->count(),
+                'days' => $this->option('days'),
+            ]),
+        );
 
         if ($dryRun) {
             foreach ($users as $user) {
-                $this->line('  [DRY-RUN] '.__('sysadmin.auto_inactivate.dry_run', ['email' => $user->email, 'name' => $user->name]));
+                $this->line(
+                    '  [DRY-RUN] '.
+                        __('sysadmin.auto_inactivate.dry_run', [
+                            'email' => $user->email,
+                            'name' => $user->name,
+                        ]),
+                );
             }
 
             return self::SUCCESS;
@@ -76,7 +89,9 @@ class AutoInactivateAccounts extends Command
 
         $bar->finish();
         $this->newLine();
-        $this->components->info(__('sysadmin.auto_inactivate.completed', ['count' => $users->count()]));
+        $this->components->info(
+            __('sysadmin.auto_inactivate.completed', ['count' => $users->count()]),
+        );
 
         return self::SUCCESS;
     }

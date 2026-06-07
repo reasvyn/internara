@@ -14,7 +14,10 @@ final class UpdatePlacementAction extends BaseAction
         return $this->transaction(function () use ($placement, $data) {
             $placement->update($data);
 
-            $this->log('placement_updated', $placement, ['name' => $placement->name, 'quota' => $placement->quota]);
+            $this->log('placement_updated', $placement, [
+                'name' => $placement->name,
+                'quota' => $placement->quota,
+            ]);
 
             return $placement;
         });

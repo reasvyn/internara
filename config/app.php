@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -41,7 +40,10 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', env('APP_ENV', 'production') !== 'production' && env('APP_ENV', 'production') !== 'testing'),
+    'debug' => (bool) env(
+        'APP_DEBUG',
+        env('APP_ENV', 'production') !== 'production' && env('APP_ENV', 'production') !== 'testing',
+    ),
 
     /*
     |--------------------------------------------------------------------------
@@ -101,11 +103,7 @@ return [
 
     'key' => env('APP_KEY'),
 
-    'previous_keys' => [
-        ...array_filter(
-            explode(',', env('APP_PREVIOUS_KEYS', ''))
-        ),
-    ],
+    'previous_keys' => [...array_filter(explode(',', env('APP_PREVIOUS_KEYS', '')))],
 
     /*
     |--------------------------------------------------------------------------
@@ -137,5 +135,4 @@ return [
     */
 
     'cron_secret' => env('CRON_SECRET'),
-
 ];

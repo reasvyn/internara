@@ -40,9 +40,11 @@ class ResetPasswordAction extends BaseAction
 
         $status = Password::reset($credentials, function (User $user, string $password) {
             DB::transaction(function () use ($user, $password) {
-                $user->fill([
-                    'password' => Hash::make($password),
-                ])->save();
+                $user
+                    ->fill([
+                        'password' => Hash::make($password),
+                    ])
+                    ->save();
 
                 SmartLogger::info('password_reset_success')
                     ->event('password_reset_success')

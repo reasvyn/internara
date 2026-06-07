@@ -1,54 +1,55 @@
 # Deployment
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
+> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
+> conventions overhaul
 
-Internara is designed to be installed on the school's own infrastructure. This guide covers the three supported deployment paths and the operational requirements for each.
+Internara is designed to be installed on the school's own infrastructure. This guide covers the
+three supported deployment paths and the operational requirements for each.
 
 ## Prerequisites
 
-| Requirement | Development | Production |
-|---|---|---|
-| PHP | 8.4.0+ | 8.4.0+ |
-| Composer | 2.5+ | 2.5+ |
-| Node.js | 20+ | 20+ (build only) |
-| NPM | 10+ | 10+ (build only) |
-| Database | SQLite (built-in) | MySQL 8+ / MariaDB 10.6+ / PostgreSQL 14+ |
-| Queue driver | `database` | `redis` (recommended) |
-| Cache driver | `database` | `redis` (recommended) |
-| Session driver | `database` | `redis` (recommended) |
-| Web server | `php artisan serve` | Nginx or Apache |
+| Requirement    | Development         | Production                                |
+| -------------- | ------------------- | ----------------------------------------- |
+| PHP            | 8.4.0+              | 8.4.0+                                    |
+| Composer       | 2.5+                | 2.5+                                      |
+| Node.js        | 20+                 | 20+ (build only)                          |
+| NPM            | 10+                 | 10+ (build only)                          |
+| Database       | SQLite (built-in)   | MySQL 8+ / MariaDB 10.6+ / PostgreSQL 14+ |
+| Queue driver   | `database`          | `redis` (recommended)                     |
+| Cache driver   | `database`          | `redis` (recommended)                     |
+| Session driver | `database`          | `redis` (recommended)                     |
+| Web server     | `php artisan serve` | Nginx or Apache                           |
 
 ### Required PHP Extensions
 
-| Extension | Purpose |
-|---|---|
-| `ext-bcmath` | Grade and score calculations |
-| `ext-ctype` | Character validation |
-| `ext-curl` | Remote media downloads, API calls |
-| `ext-fileinfo` | MIME type detection for uploads |
-| `ext-gd` | Image processing (thumbnails, WebP) |
-| `ext-intl` | Internationalization and localization |
-| `ext-mbstring` | Multibyte string operations |
-| `ext-openssl` | Encryption, HTTPS, signed URLs |
-| `ext-pdo` | Database abstraction |
-| `ext-tokenizer` | Blade template engine |
-| `ext-xml` | XML parsing, feed generation |
-| `ext-zip` | File compression |
+| Extension       | Purpose                               |
+| --------------- | ------------------------------------- |
+| `ext-bcmath`    | Grade and score calculations          |
+| `ext-ctype`     | Character validation                  |
+| `ext-curl`      | Remote media downloads, API calls     |
+| `ext-fileinfo`  | MIME type detection for uploads       |
+| `ext-gd`        | Image processing (thumbnails, WebP)   |
+| `ext-intl`      | Internationalization and localization |
+| `ext-mbstring`  | Multibyte string operations           |
+| `ext-openssl`   | Encryption, HTTPS, signed URLs        |
+| `ext-pdo`       | Database abstraction                  |
+| `ext-tokenizer` | Blade template engine                 |
+| `ext-xml`       | XML parsing, feed generation          |
+| `ext-zip`       | File compression                      |
 
-Database-specific driver (pick one matching your engine):
-`ext-pdo_sqlite`, `ext-pdo_mysql`, or `ext-pdo_pgsql`.
+Database-specific driver (pick one matching your engine): `ext-pdo_sqlite`, `ext-pdo_mysql`, or
+`ext-pdo_pgsql`.
 
 ### Recommended PHP Extensions
 
-| Extension | Benefit |
-|---|---|
+| Extension     | Benefit                                               |
+| ------------- | ----------------------------------------------------- |
 | `ext-opcache` | Bytecode cache — essential for production performance |
-| `ext-redis` | High-performance cache, session, and queue backend |
-| `ext-sockets` | Required by Laravel Reverb WebSocket server |
-| `ext-pcntl` | Process control for queue worker signals |
-| `ext-posix` | POSIX system calls for process management |
-| `ext-imagick` | Higher quality image conversions than GD |
+| `ext-redis`   | High-performance cache, session, and queue backend    |
+| `ext-sockets` | Required by Laravel Reverb WebSocket server           |
+| `ext-pcntl`   | Process control for queue worker signals              |
+| `ext-posix`   | POSIX system calls for process management             |
+| `ext-imagick` | Higher quality image conversions than GD              |
 
 ### Verification
 
@@ -56,8 +57,8 @@ Database-specific driver (pick one matching your engine):
 php artisan system:health
 ```
 
-This validates all requirements and identifies common misconfigurations. Use
-`--json` for machine-readable output.
+This validates all requirements and identifies common misconfigurations. Use `--json` for
+machine-readable output.
 
 ---
 
@@ -99,8 +100,7 @@ server {
 }
 ```
 
-For Apache, ensure `mod_rewrite` is enabled — the included `public/.htaccess`
-handles URL rewriting.
+For Apache, ensure `mod_rewrite` is enabled — the included `public/.htaccess` handles URL rewriting.
 
 ### 2. PHP-FPM Tuning
 
@@ -114,8 +114,7 @@ pm.max_spare_servers = 15
 pm.max_requests = 500
 ```
 
-Each PHP-FPM process uses approximately 40–60 MB. With 50 children, reserve
-at least 3 GB of RAM.
+Each PHP-FPM process uses approximately 40–60 MB. With 50 children, reserve at least 3 GB of RAM.
 
 ### 3. Database Setup
 
@@ -170,11 +169,14 @@ random_page_cost = 1.1
 
 ### 4. Background Processes with Supervisor
 
-To handle concurrent notifications and heavy document compilation at scale, separate queue pipelines must be run:
-* **`default` queue**: Processes emails, alerts, and general events.
-* **`documents` queue**: Dedicated exclusively to compiling PDF certificates and reports.
+To handle concurrent notifications and heavy document compilation at scale, separate queue pipelines
+must be run:
+
+- **`default` queue**: Processes emails, alerts, and general events.
+- **`documents` queue**: Dedicated exclusively to compiling PDF certificates and reports.
 
 `/etc/supervisor/conf.d/internara-worker.conf`:
+
 ```ini
 [program:internara-default-worker]
 process_name=%(program_name)s_%(process_num)02d
@@ -204,6 +206,7 @@ stopwaitsecs=3600
 ```
 
 `/etc/supervisor/conf.d/internara-scheduler.conf`:
+
 ```ini
 [program:internara-scheduler]
 command=php /path/to/app/artisan schedule:work
@@ -228,8 +231,8 @@ Create the public storage symlink:
 php artisan storage:link
 ```
 
-For multi-server deployments, replace local storage with S3-compatible
-object storage. See [Media Library](media-library.md#s3-compatible-cloud-storage).
+For multi-server deployments, replace local storage with S3-compatible object storage. See
+[Media Library](media-library.md#s3-compatible-cloud-storage).
 
 ---
 
@@ -237,17 +240,16 @@ object storage. See [Media Library](media-library.md#s3-compatible-cloud-storage
 
 ### Docker Compose Services
 
-The project includes a production `docker-compose.yml` with all required
-services:
+The project includes a production `docker-compose.yml` with all required services:
 
-| Service | Image | Purpose | Depends On |
-|---|---|---|---|
-| `app` | Custom (Dockerfile) | PHP-FPM application server | db, redis |
-| `queue` | Custom (Dockerfile) | Laravel queue worker | db, redis |
-| `scheduler` | Custom (Dockerfile) | Scheduler daemon | db |
-| `web` | nginx:alpine | Reverse proxy | app |
-| `db` | mysql:8 | Database | — |
-| `redis` | redis:7-alpine | Cache, queue, session | — |
+| Service     | Image               | Purpose                    | Depends On |
+| ----------- | ------------------- | -------------------------- | ---------- |
+| `app`       | Custom (Dockerfile) | PHP-FPM application server | db, redis  |
+| `queue`     | Custom (Dockerfile) | Laravel queue worker       | db, redis  |
+| `scheduler` | Custom (Dockerfile) | Scheduler daemon           | db         |
+| `web`       | nginx:alpine        | Reverse proxy              | app        |
+| `db`        | mysql:8             | Database                   | —          |
+| `redis`     | redis:7-alpine      | Cache, queue, session      | —          |
 
 ### Start the Stack
 
@@ -255,9 +257,9 @@ services:
 docker compose up -d
 ```
 
-The application is served on port 80 (configurable via `NGINX_PORT`).
-Run `php artisan setup:install` inside the `app` container to generate
-the signed setup URL, then open it in your browser.
+The application is served on port 80 (configurable via `NGINX_PORT`). Run
+`php artisan setup:install` inside the `app` container to generate the signed setup URL, then open
+it in your browser.
 
 ### Development with Laravel Sail
 
@@ -275,18 +277,17 @@ the signed setup URL, then open it in your browser.
 
 ### Limitations
 
-| Feature | Why It Doesn't Work | Alternative |
-|---|---|---|
+| Feature      | Why It Doesn't Work       | Alternative                                                |
+| ------------ | ------------------------- | ---------------------------------------------------------- |
 | Queue worker | No long-running processes | Set `QUEUE_CONNECTION=sync` — jobs run during HTTP request |
 
-| Redis / Memcached | Not installed | Use `file` or `database` driver |
-| Minute-level cron | Min interval often 5–15 min | Hit `/cron/{secret}` web endpoint |
+| Redis / Memcached | Not installed | Use `file` or `database` driver | | Minute-level cron | Min
+interval often 5–15 min | Hit `/cron/{secret}` web endpoint |
 
 ### What Still Works
 
-All core features: authentication, registration, attendance, logbook,
-assignments, assessments, reports, certificates, mentoring, email
-notifications.
+All core features: authentication, registration, attendance, logbook, assignments, assessments,
+reports, certificates, mentoring, email notifications.
 
 ### Deployment Steps
 
@@ -298,8 +299,8 @@ npm install && npm run build
 rm -rf node_modules/
 ```
 
-**2. Upload files** to your host's document root. The document root must
-point to the `public/` directory.
+**2. Upload files** to your host's document root. The document root must point to the `public/`
+directory.
 
 **3. Configure environment:**
 
@@ -307,9 +308,9 @@ point to the `public/` directory.
 cp .env.example .env
 ```
 
-Key settings to customize: `APP_URL`, `APP_ENV=production`, `APP_DEBUG=false`,
-`DB_*` (your host's MySQL/MariaDB credentials), `MAIL_*` (SMTP settings),
-`CRON_SECRET` (run `php -r "echo bin2hex(random_bytes(16));"`).
+Key settings to customize: `APP_URL`, `APP_ENV=production`, `APP_DEBUG=false`, `DB_*` (your host's
+MySQL/MariaDB credentials), `MAIL_*` (SMTP settings), `CRON_SECRET` (run
+`php -r "echo bin2hex(random_bytes(16));"`).
 
 **4. Run migrations:**
 

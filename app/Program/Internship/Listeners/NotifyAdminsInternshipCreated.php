@@ -21,9 +21,12 @@ class NotifyAdminsInternshipCreated implements ShouldQueue
             return;
         }
 
-        Notification::send($admins, new InternshipCreatedNotification(
-            internshipName: $event->internship->name,
-            createdByName: $event->createdBy?->name,
-        ));
+        Notification::send(
+            $admins,
+            new InternshipCreatedNotification(
+                internshipName: $event->internship->name,
+                createdByName: $event->createdBy?->name,
+            ),
+        );
     }
 }

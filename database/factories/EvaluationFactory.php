@@ -32,21 +32,25 @@ class EvaluationFactory extends Factory
 
     public function mentor(): static
     {
-        return $this->state(fn () => [
-            'evaluation_type' => EvaluationCategory::MENTOR,
-        ]);
+        return $this->state(
+            fn () => [
+                'evaluation_type' => EvaluationCategory::MENTOR,
+            ],
+        );
     }
 
     public function program(): static
     {
-        return $this->state(fn () => [
-            'evaluation_type' => EvaluationCategory::PROGRAM,
-            'mentor_id' => null,
-            'criteria_scores' => [
-                'curriculum_relevance' => $this->faker->randomFloat(1, 50, 100),
-                'administration' => $this->faker->randomFloat(1, 50, 100),
-                'facility_support' => $this->faker->randomFloat(1, 50, 100),
+        return $this->state(
+            fn () => [
+                'evaluation_type' => EvaluationCategory::PROGRAM,
+                'mentor_id' => null,
+                'criteria_scores' => [
+                    'curriculum_relevance' => $this->faker->randomFloat(1, 50, 100),
+                    'administration' => $this->faker->randomFloat(1, 50, 100),
+                    'facility_support' => $this->faker->randomFloat(1, 50, 100),
+                ],
             ],
-        ]);
+        );
     }
 }

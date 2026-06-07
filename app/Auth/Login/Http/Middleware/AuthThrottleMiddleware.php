@@ -27,19 +27,24 @@ class AuthThrottleMiddleware
         $key = 'auth-throttle:'.$request->ip();
 
         if ($isLogin) {
-            $key = 'login:'.$request->ip().':'.md5((string) $request->input('identifier', ''));
+            $key =
+                'login:'.$request->ip().':'.md5((string) $request->input('identifier', ''));
         }
 
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
             $seconds = RateLimiter::availableIn($key);
 
             if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => __('auth.throttle', ['seconds' => $seconds]),
-                ], Response::HTTP_TOO_MANY_REQUESTS);
+                return response()->json(
+                    [
+                        'message' => __('auth.throttle', ['seconds' => $seconds]),
+                    ],
+                    Response::HTTP_TOO_MANY_REQUESTS,
+                );
             }
 
-            return redirect()->route('login')
+            return redirect()
+                ->route('login')
                 ->with('error', __('auth.throttle', ['seconds' => $seconds]));
         }
 

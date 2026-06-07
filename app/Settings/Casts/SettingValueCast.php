@@ -143,7 +143,10 @@ class SettingValueCast implements CastsAttributes
                 ->systemOnly()
                 ->save();
 
-            throw new RuntimeException('Failed to encode setting value as JSON.', previous: new RuntimeException(json_last_error_msg()));
+            throw new RuntimeException(
+                'Failed to encode setting value as JSON.',
+                previous: new RuntimeException(json_last_error_msg()),
+            );
         }
 
         return $encoded;

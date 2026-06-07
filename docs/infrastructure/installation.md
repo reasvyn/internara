@@ -1,57 +1,57 @@
 # Installation
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
+> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
+> conventions overhaul
 
-Detailed deployment reference for production and development environments.
-For a quick end-to-end walkthrough, see [Getting Started](../getting-started.md).
+Detailed deployment reference for production and development environments. For a quick end-to-end
+walkthrough, see [Getting Started](../getting-started.md).
 
 ## Prerequisites
 
-| Requirement | Development | Production |
-|---|---|---|
-| PHP | 8.4.0+ | 8.4.0+ |
-| Composer | 2.5+ | 2.5+ |
-| Node.js | 20+ | 20+ (build only) |
-| NPM | 10+ | 10+ (build only) |
-| Database | SQLite (built-in) | MySQL 8+ / MariaDB 10.6+ / PostgreSQL 14+ |
-| Queue driver | `database` | `redis` (recommended) |
-| Cache driver | `database` | `redis` (recommended) |
-| Session driver | `database` | `redis` (recommended) |
-| Web server | `php artisan serve` | Nginx or Apache |
+| Requirement    | Development         | Production                                |
+| -------------- | ------------------- | ----------------------------------------- |
+| PHP            | 8.4.0+              | 8.4.0+                                    |
+| Composer       | 2.5+                | 2.5+                                      |
+| Node.js        | 20+                 | 20+ (build only)                          |
+| NPM            | 10+                 | 10+ (build only)                          |
+| Database       | SQLite (built-in)   | MySQL 8+ / MariaDB 10.6+ / PostgreSQL 14+ |
+| Queue driver   | `database`          | `redis` (recommended)                     |
+| Cache driver   | `database`          | `redis` (recommended)                     |
+| Session driver | `database`          | `redis` (recommended)                     |
+| Web server     | `php artisan serve` | Nginx or Apache                           |
 
 ### Required PHP Extensions
 
 Checked by `php artisan system:health` and the `setup:install` audit:
 
-| Extension | Purpose |
-|---|---|
-| `ext-bcmath` | Grade and score calculations |
-| `ext-ctype` | Character validation |
-| `ext-curl` | Remote media downloads, API calls |
-| `ext-fileinfo` | MIME type detection for uploads |
-| `ext-gd` | Image processing (thumbnails, WebP) |
-| `ext-intl` | Internationalization and localization |
-| `ext-mbstring` | Multibyte string operations |
-| `ext-openssl` | Encryption, HTTPS, signed URLs |
-| `ext-pdo` | Database abstraction |
-| `ext-tokenizer` | Blade template engine |
-| `ext-xml` | XML parsing, feed generation |
-| `ext-zip` | File compression |
+| Extension       | Purpose                               |
+| --------------- | ------------------------------------- |
+| `ext-bcmath`    | Grade and score calculations          |
+| `ext-ctype`     | Character validation                  |
+| `ext-curl`      | Remote media downloads, API calls     |
+| `ext-fileinfo`  | MIME type detection for uploads       |
+| `ext-gd`        | Image processing (thumbnails, WebP)   |
+| `ext-intl`      | Internationalization and localization |
+| `ext-mbstring`  | Multibyte string operations           |
+| `ext-openssl`   | Encryption, HTTPS, signed URLs        |
+| `ext-pdo`       | Database abstraction                  |
+| `ext-tokenizer` | Blade template engine                 |
+| `ext-xml`       | XML parsing, feed generation          |
+| `ext-zip`       | File compression                      |
 
-Database-specific driver (pick one matching your engine):
-`ext-pdo_sqlite`, `ext-pdo_mysql`, or `ext-pdo_pgsql`.
+Database-specific driver (pick one matching your engine): `ext-pdo_sqlite`, `ext-pdo_mysql`, or
+`ext-pdo_pgsql`.
 
 ### Recommended PHP Extensions
 
-| Extension | Benefit |
-|---|---|
+| Extension     | Benefit                                               |
+| ------------- | ----------------------------------------------------- |
 | `ext-opcache` | Bytecode cache — essential for production performance |
-| `ext-redis` | High-performance cache, session, and queue backend |
-| `ext-sockets` | Required by Laravel Reverb WebSocket server |
-| `ext-pcntl` | Process control for queue worker signals |
-| `ext-posix` | POSIX system calls for process management |
-| `ext-imagick` | Higher quality image conversions than GD |
+| `ext-redis`   | High-performance cache, session, and queue backend    |
+| `ext-sockets` | Required by Laravel Reverb WebSocket server           |
+| `ext-pcntl`   | Process control for queue worker signals              |
+| `ext-posix`   | POSIX system calls for process management             |
+| `ext-imagick` | Higher quality image conversions than GD              |
 
 ---
 
@@ -93,8 +93,7 @@ server {
 }
 ```
 
-For Apache, ensure `mod_rewrite` is enabled — the included `public/.htaccess`
-handles URL rewriting.
+For Apache, ensure `mod_rewrite` is enabled — the included `public/.htaccess` handles URL rewriting.
 
 ### 2. PHP-FPM Tuning
 
@@ -162,9 +161,9 @@ maintenance_work_mem = 128MB
 random_page_cost = 1.1
 ```
 
-Connection pooling (ProxySQL for MySQL, PgBouncer for PostgreSQL) is recommended
-for high-traffic deployments. Laravel also supports read/write separation for
-database replicas in `config/database.php`.
+Connection pooling (ProxySQL for MySQL, PgBouncer for PostgreSQL) is recommended for high-traffic
+deployments. Laravel also supports read/write separation for database replicas in
+`config/database.php`.
 
 ### 4. Background Processes with Supervisor
 
@@ -207,9 +206,9 @@ Alternatively, use a cron entry for the scheduler:
 
 ### 5. Storage Persistence
 
-For multi-server deployments, replace local storage with S3-compatible
-object storage (`config/filesystems.php`). Supported providers include
-AWS S3, MinIO, DigitalOcean Spaces, and Cloudflare R2.
+For multi-server deployments, replace local storage with S3-compatible object storage
+(`config/filesystems.php`). Supported providers include AWS S3, MinIO, DigitalOcean Spaces, and
+Cloudflare R2.
 
 ---
 
@@ -217,17 +216,16 @@ AWS S3, MinIO, DigitalOcean Spaces, and Cloudflare R2.
 
 ### Docker Compose Services
 
-The project includes a production `docker-compose.yml` with all required
-services:
+The project includes a production `docker-compose.yml` with all required services:
 
-| Service | Image | Purpose | Depends On |
-|---|---|---|---|
-| `app` | Custom (Dockerfile) | PHP-FPM application server | db, redis |
-| `queue` | Custom (Dockerfile) | Laravel queue worker | db, redis |
-| `scheduler` | Custom (Dockerfile) | Scheduler daemon | db |
-| `web` | nginx:alpine | Reverse proxy | app |
-| `db` | mysql:8 | Database | — |
-| `redis` | redis:7-alpine | Cache, queue, session | — |
+| Service     | Image               | Purpose                    | Depends On |
+| ----------- | ------------------- | -------------------------- | ---------- |
+| `app`       | Custom (Dockerfile) | PHP-FPM application server | db, redis  |
+| `queue`     | Custom (Dockerfile) | Laravel queue worker       | db, redis  |
+| `scheduler` | Custom (Dockerfile) | Scheduler daemon           | db         |
+| `web`       | nginx:alpine        | Reverse proxy              | app        |
+| `db`        | mysql:8             | Database                   | —          |
+| `redis`     | redis:7-alpine      | Cache, queue, session      | —          |
 
 Environment variables are configured in `.env`. At minimum, set:
 
@@ -242,9 +240,9 @@ DB_PASSWORD=<strong-password>
 docker compose up -d
 ```
 
-The application is served on port 80 (configurable via `NGINX_PORT`).
-Run `php artisan setup:install` inside the `app` container to generate
-the signed setup URL, then open it in your browser.
+The application is served on port 80 (configurable via `NGINX_PORT`). Run
+`php artisan setup:install` inside the `app` container to generate the signed setup URL, then open
+it in your browser.
 
 ### Development with Laravel Sail
 
@@ -264,18 +262,17 @@ See `docker-compose.dev.yml` for the Sail configuration.
 
 ### What Does NOT Work
 
-| Feature | Alternative |
-|---|---|
-| Queue worker (no long-running processes) | Set `QUEUE_CONNECTION=sync` — jobs run during HTTP request |
-| Reverb WebSocket (no custom servers) | Page refresh shows new notifications |
-| Redis / Memcached (not installed) | Use `file` or `database` driver |
-| Minute-level cron (min interval 5–15 min) | Hit `/cron/{secret}` web endpoint |
+| Feature                                   | Alternative                                                |
+| ----------------------------------------- | ---------------------------------------------------------- |
+| Queue worker (no long-running processes)  | Set `QUEUE_CONNECTION=sync` — jobs run during HTTP request |
+| Reverb WebSocket (no custom servers)      | Page refresh shows new notifications                       |
+| Redis / Memcached (not installed)         | Use `file` or `database` driver                            |
+| Minute-level cron (min interval 5–15 min) | Hit `/cron/{secret}` web endpoint                          |
 
 ### What Still Works
 
-All core features: authentication, registration, attendance, logbook,
-assignments, assessments, reports, certificates, mentoring, email
-notifications.
+All core features: authentication, registration, attendance, logbook, assignments, assessments,
+reports, certificates, mentoring, email notifications.
 
 ### Deployment Steps
 
@@ -287,8 +284,8 @@ npm install && npm run build
 rm -rf node_modules/
 ```
 
-**2. Upload files** to your host's document root. The document root must
-point to the `public/` directory.
+**2. Upload files** to your host's document root. The document root must point to the `public/`
+directory.
 
 **3. Configure environment:**
 
@@ -296,10 +293,9 @@ point to the `public/` directory.
 cp .env.example .env
 ```
 
-The `.env.example` defaults are already optimized for shared hosting
-(`QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, etc.). Key settings to
-customize: `APP_URL`, `APP_ENV=production`, `APP_DEBUG=false`,
-`DB_*` (your host's MySQL/MariaDB credentials), `MAIL_*` (SMTP settings),
+The `.env.example` defaults are already optimized for shared hosting (`QUEUE_CONNECTION=sync`,
+`CACHE_STORE=file`, etc.). Key settings to customize: `APP_URL`, `APP_ENV=production`,
+`APP_DEBUG=false`, `DB_*` (your host's MySQL/MariaDB credentials), `MAIL_*` (SMTP settings),
 `CRON_SECRET` (run `php -r "echo bin2hex(random_bytes(16));"`).
 
 **4. Run migrations:**
@@ -314,8 +310,7 @@ php artisan migrate --force
 php artisan setup:install
 ```
 
-Copy the signed URL from the output and open it in your browser to
-complete the setup wizard.
+Copy the signed URL from the output and open it in your browser to complete the setup wizard.
 
 **6. Set up cron** in cPanel to hit the scheduler endpoint:
 
@@ -329,8 +324,7 @@ complete the setup wizard.
 public/storage → storage/app/public
 ```
 
-For institutions that outgrow shared hosting, see the VPS section above
-for the upgrade path.
+For institutions that outgrow shared hosting, see the VPS section above for the upgrade path.
 
 ---
 
@@ -358,12 +352,12 @@ SESSION_DRIVER=redis
 
 ### What to Back Up
 
-| Asset | Location | Frequency | Retention |
-|---|---|---|---|
-| **Database** | SQLite file or MySQL/PG dump | Daily | 30 days |
-| **User uploads** | `storage/app/` (local) or S3 bucket | Daily | 30 days |
+| Asset                  | Location                             | Frequency      | Retention |
+| ---------------------- | ------------------------------------ | -------------- | --------- |
+| **Database**           | SQLite file or MySQL/PG dump         | Daily          | 30 days   |
+| **User uploads**       | `storage/app/` (local) or S3 bucket  | Daily          | 30 days   |
 | **Environment config** | `.env` (store securely, not in repo) | Per deployment | Permanent |
-| **Application code** | Git repository | Per commit | Permanent |
+| **Application code**   | Git repository                       | Per commit     | Permanent |
 
 ### SQLite Backup (Development)
 
@@ -385,6 +379,7 @@ pg_dump -U internara -h localhost internara \
 ```
 
 Automate with cron:
+
 ```cron
 0 2 * * * /path/to/backup-script.sh
 ```
@@ -410,10 +405,10 @@ php artisan system:health
 
 ### Monitoring
 
-| Check | Command | Alert If |
-|---|---|---|
-| Backup age | `find backups/ -mtime +1` | No backup in 24h |
-| Disk space | `df -h /` | Usage > 90% |
+| Check                 | Command                     | Alert If           |
+| --------------------- | --------------------------- | ------------------ |
+| Backup age            | `find backups/ -mtime +1`   | No backup in 24h   |
+| Disk space            | `df -h /`                   | Usage > 90%        |
 | Database connectivity | `php artisan system:health` | Health check fails |
 
 ---
@@ -457,36 +452,36 @@ php artisan queue:monitor database:default --max=100
 
 ## Command Reference
 
-| Command | Purpose |
-|---|---|
-| `php artisan setup:install` | Audit, provision, generate signed setup URL |
-| `php artisan setup:install --check-only` | Run environment audit without provisioning |
-| `php artisan setup:install --force` | **Hard reset.** Runs `migrate:fresh`, clears all setup session data, regenerates token. Only available in non-production environments by default. The ONLY way to reset a locked system. |
-| `php artisan setup:reset-token` | Regenerate setup token (only when `is_installed = false`) |
-| `php artisan admin:recover` | Recover super admin access (auto-detects key from storage file) |
-| `php artisan admin:recover --key=<key>` | Recover super admin access (manual key override) |
-| `php artisan admin:recover --regenerate-file` | Re-write the recovery key file from a provided --key |
-| `php artisan admin:recovery-path` | Show the recovery key file location |
-| `php artisan admin:recovery-show` | Display the stored recovery key (with confirmation) |
-| `php artisan system:health` | Comprehensive health check |
-| `php artisan queue:work` | Start queue worker |
-| `php artisan storage:link` | Create public storage symlink |
+| Command                                       | Purpose                                                                                                                                                                                  |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `php artisan setup:install`                   | Audit, provision, generate signed setup URL                                                                                                                                              |
+| `php artisan setup:install --check-only`      | Run environment audit without provisioning                                                                                                                                               |
+| `php artisan setup:install --force`           | **Hard reset.** Runs `migrate:fresh`, clears all setup session data, regenerates token. Only available in non-production environments by default. The ONLY way to reset a locked system. |
+| `php artisan setup:reset-token`               | Regenerate setup token (only when `is_installed = false`)                                                                                                                                |
+| `php artisan admin:recover`                   | Recover super admin access (auto-detects key from storage file)                                                                                                                          |
+| `php artisan admin:recover --key=<key>`       | Recover super admin access (manual key override)                                                                                                                                         |
+| `php artisan admin:recover --regenerate-file` | Re-write the recovery key file from a provided --key                                                                                                                                     |
+| `php artisan admin:recovery-path`             | Show the recovery key file location                                                                                                                                                      |
+| `php artisan admin:recovery-show`             | Display the stored recovery key (with confirmation)                                                                                                                                      |
+| `php artisan system:health`                   | Comprehensive health check                                                                                                                                                               |
+| `php artisan queue:work`                      | Start queue worker                                                                                                                                                                       |
+| `php artisan storage:link`                    | Create public storage symlink                                                                                                                                                            |
 
 ## Troubleshooting
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| Blank page | Storage not writable | `chmod -R 775 storage bootstrap/cache` |
-| 404 on media URLs | Storage link missing | `php artisan storage:link` |
-| Vite manifest error | Assets not built | `npm run build` |
-| Jobs not processing | Queue worker not running | Start worker or check Supervisor |
-| "Database is locked" | SQLite concurrent writes | Switch to MySQL/PG in production |
-| 503 Service Unavailable | Maintenance mode on | `php artisan up` |
-| Class "Redis" not found | Missing `ext-redis` | Install PHP Redis extension |
-| Setup token expired | Token older than 60 min | Run `php artisan setup:reset-token` (pre-install) or `setup:install` |
-| Setup wizard 403 | Invalid or missing token, or token already consumed | Use the signed URL from `setup:install` — tokens are single-use |
-| Setup wizard 404 | System already installed | System is locked. Use `php artisan setup:install --force` to hard-reset |
-| Token consumed before use | Token validated in another browser tab | Generate a new one with `setup:reset-token` (pre-install) |
+| Symptom                   | Cause                                               | Fix                                                                     |
+| ------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------- |
+| Blank page                | Storage not writable                                | `chmod -R 775 storage bootstrap/cache`                                  |
+| 404 on media URLs         | Storage link missing                                | `php artisan storage:link`                                              |
+| Vite manifest error       | Assets not built                                    | `npm run build`                                                         |
+| Jobs not processing       | Queue worker not running                            | Start worker or check Supervisor                                        |
+| "Database is locked"      | SQLite concurrent writes                            | Switch to MySQL/PG in production                                        |
+| 503 Service Unavailable   | Maintenance mode on                                 | `php artisan up`                                                        |
+| Class "Redis" not found   | Missing `ext-redis`                                 | Install PHP Redis extension                                             |
+| Setup token expired       | Token older than 60 min                             | Run `php artisan setup:reset-token` (pre-install) or `setup:install`    |
+| Setup wizard 403          | Invalid or missing token, or token already consumed | Use the signed URL from `setup:install` — tokens are single-use         |
+| Setup wizard 404          | System already installed                            | System is locked. Use `php artisan setup:install --force` to hard-reset |
+| Token consumed before use | Token validated in another browser tab              | Generate a new one with `setup:reset-token` (pre-install)               |
 
 ### Verification
 
@@ -503,9 +498,9 @@ php artisan system:health
 
 ## References
 
-| Document | Contents |
-|---|---|
-| [Getting Started](../getting-started.md) | End-to-end walkthrough from clone to wizard |
-| [Infrastructure](infrastructure.md) | Deployment overview, storage, HA considerations |
-| [Configuration](configuration.md) | Environment setup, localization, security settings |
-| [Database](database.md) | Database design, engine comparison, index strategy |
+| Document                                 | Contents                                           |
+| ---------------------------------------- | -------------------------------------------------- |
+| [Getting Started](../getting-started.md) | End-to-end walkthrough from clone to wizard        |
+| [Infrastructure](infrastructure.md)      | Deployment overview, storage, HA considerations    |
+| [Configuration](configuration.md)        | Environment setup, localization, security settings |
+| [Database](database.md)                  | Database design, engine comparison, index strategy |

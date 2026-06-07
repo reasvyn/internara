@@ -4,7 +4,6 @@ declare(strict_types=1);
 use App\Enums\AuditCategory;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | System Requirements
@@ -13,7 +12,20 @@ return [
 
     'requirements' => [
         'php_version' => '8.4.0',
-        'extensions' => ['bcmath', 'ctype', 'fileinfo', 'mbstring', 'openssl', 'pdo', 'tokenizer', 'xml', 'curl', 'gd', 'intl', 'zip'],
+        'extensions' => [
+            'bcmath',
+            'ctype',
+            'fileinfo',
+            'mbstring',
+            'openssl',
+            'pdo',
+            'tokenizer',
+            'xml',
+            'curl',
+            'gd',
+            'intl',
+            'zip',
+        ],
         'recommended_extensions' => ['redis', 'pcntl', 'posix'],
     ],
 
@@ -45,7 +57,15 @@ return [
     */
 
     'wizard' => [
-        'step_keys' => ['welcome', 'account', 'school', 'department', 'internship', 'finalize', 'complete'],
+        'step_keys' => [
+            'welcome',
+            'account',
+            'school',
+            'department',
+            'internship',
+            'finalize',
+            'complete',
+        ],
         'finalize_steps' => ['account', 'school', 'department'],
     ],
 
@@ -111,5 +131,4 @@ return [
     */
 
     'force_allowed_environments' => ['local', 'dev', 'development', 'testing'],
-
 ];

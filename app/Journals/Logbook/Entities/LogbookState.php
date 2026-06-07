@@ -10,15 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class LogbookState extends BaseEntity
 {
-    public function __construct(
-        private LogbookStatus $status,
-    ) {}
+    public function __construct(private LogbookStatus $status) {}
 
     public static function fromModel(Model $model): static
     {
-        return new self(
-            status: $model->status,
-        );
+        return new self(status: $model->status);
     }
 
     public function isVerified(): bool

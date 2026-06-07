@@ -31,27 +31,37 @@ class AdminDashboard extends UserDashboard
             'database' => [
                 'label' => __('dashboard.readiness.database'),
                 'passed' => $dbOk,
-                'status' => $dbOk ? __('dashboard.readiness.connected') : __('dashboard.readiness.disconnected'),
+                'status' => $dbOk
+                    ? __('dashboard.readiness.connected')
+                    : __('dashboard.readiness.disconnected'),
             ],
             'mail' => [
                 'label' => __('dashboard.readiness.mail'),
                 'passed' => $mailOk,
-                'status' => $mailOk ? __('dashboard.readiness.configured') : __('dashboard.readiness.not_configured'),
+                'status' => $mailOk
+                    ? __('dashboard.readiness.configured')
+                    : __('dashboard.readiness.not_configured'),
             ],
             'cache' => [
                 'label' => __('dashboard.readiness.cache'),
                 'passed' => $cacheOk,
-                'status' => $cacheOk ? __('dashboard.readiness.responding') : __('dashboard.readiness.not_responding'),
+                'status' => $cacheOk
+                    ? __('dashboard.readiness.responding')
+                    : __('dashboard.readiness.not_responding'),
             ],
             'queue' => [
                 'label' => __('dashboard.readiness.queue'),
                 'passed' => $queueOk,
-                'status' => $queueOk ? __('dashboard.readiness.ready') : __('dashboard.readiness.unavailable'),
+                'status' => $queueOk
+                    ? __('dashboard.readiness.ready')
+                    : __('dashboard.readiness.unavailable'),
             ],
             'storage' => [
                 'label' => __('dashboard.readiness.storage'),
                 'passed' => $storageOk,
-                'status' => $storageOk ? __('dashboard.readiness.linked') : __('dashboard.readiness.missing'),
+                'status' => $storageOk
+                    ? __('dashboard.readiness.linked')
+                    : __('dashboard.readiness.missing'),
             ],
         ];
     }
@@ -119,8 +129,8 @@ class AdminDashboard extends UserDashboard
 
     private function checkStorage(): bool
     {
-        return is_link(public_path('storage'))
-            && File::isWritable(storage_path('logs'))
-            && File::isWritable(storage_path('framework/cache'));
+        return is_link(public_path('storage')) &&
+            File::isWritable(storage_path('logs')) &&
+            File::isWritable(storage_path('framework/cache'));
     }
 }

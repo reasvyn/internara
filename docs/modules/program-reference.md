@@ -12,6 +12,7 @@ Detailed structural and implementation reference for the **Program** module.
 Manages internship programs and cohort student groupings.
 
 ### Module Statistics
+
 - **Actions**: 10 business logic operations
 - **Models**: 3 data entities (`Internship`, `InternshipGroup`, `InternshipGroupMember`)
 - **Livewire Components**: 2 UI components
@@ -19,6 +20,7 @@ Manages internship programs and cohort student groupings.
 - **Submodules**: 2 module submodules
 
 ### Submodules
+
 - `Internship`
 - `InternshipGroup`
 
@@ -27,6 +29,7 @@ Manages internship programs and cohort student groupings.
 ## Dependency Graph
 
 This module depends on:
+
 - **Academics** (calendar years)
 - **Core** (base classes)
 - **Enrollment** (student placements)
@@ -36,45 +39,45 @@ This module depends on:
 
 ## Actions
 
-| File | Class | Extends |
-|---|---|---|
-| `Internship/Actions/CreateInternshipAction.php` | `CreateInternshipAction` | `BaseAction` |
-| `Internship/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseAction` |
-| `Internship/Actions/DeleteInternshipAction.php` | `DeleteInternshipAction` | `BaseAction` |
+| File                                                       | Class                               | Extends      |
+| ---------------------------------------------------------- | ----------------------------------- | ------------ |
+| `Internship/Actions/CreateInternshipAction.php`            | `CreateInternshipAction`            | `BaseAction` |
+| `Internship/Actions/UpdateInternshipAction.php`            | `UpdateInternshipAction`            | `BaseAction` |
+| `Internship/Actions/DeleteInternshipAction.php`            | `DeleteInternshipAction`            | `BaseAction` |
 | `Internship/Actions/BatchUpdateInternshipStatusAction.php` | `BatchUpdateInternshipStatusAction` | `BaseAction` |
-| `Internship/Actions/CheckCloseReadinessAction.php` | `CheckCloseReadinessAction` | `BaseAction` |
-| `InternshipGroup/Actions/CreateInternshipGroupAction.php` | `CreateInternshipGroupAction` | `BaseAction` |
-| `InternshipGroup/Actions/UpdateInternshipGroupAction.php` | `UpdateInternshipGroupAction` | `BaseAction` |
-| `InternshipGroup/Actions/DeleteInternshipGroupAction.php` | `DeleteInternshipGroupAction` | `BaseAction` |
-| `InternshipGroup/Actions/AddMemberToGroupAction.php` | `AddMemberToGroupAction` | `BaseAction` |
-| `InternshipGroup/Actions/RemoveMemberFromGroupAction.php` | `RemoveMemberFromGroupAction` | `BaseAction` |
+| `Internship/Actions/CheckCloseReadinessAction.php`         | `CheckCloseReadinessAction`         | `BaseAction` |
+| `InternshipGroup/Actions/CreateInternshipGroupAction.php`  | `CreateInternshipGroupAction`       | `BaseAction` |
+| `InternshipGroup/Actions/UpdateInternshipGroupAction.php`  | `UpdateInternshipGroupAction`       | `BaseAction` |
+| `InternshipGroup/Actions/DeleteInternshipGroupAction.php`  | `DeleteInternshipGroupAction`       | `BaseAction` |
+| `InternshipGroup/Actions/AddMemberToGroupAction.php`       | `AddMemberToGroupAction`            | `BaseAction` |
+| `InternshipGroup/Actions/RemoveMemberFromGroupAction.php`  | `RemoveMemberFromGroupAction`       | `BaseAction` |
 
 ---
 
 ## Models
 
-| File | Class |
-|---|---|
-| `Internship/Models/Internship.php` | `Internship` |
-| `InternshipGroup/Models/InternshipGroup.php` | `InternshipGroup` |
+| File                                               | Class                   |
+| -------------------------------------------------- | ----------------------- |
+| `Internship/Models/Internship.php`                 | `Internship`            |
+| `InternshipGroup/Models/InternshipGroup.php`       | `InternshipGroup`       |
 | `InternshipGroup/Models/InternshipGroupMember.php` | `InternshipGroupMember` |
 
 ---
 
 ## Livewire Components
 
-| File | Component | Extends |
-|---|---|---|
-| `Internship/Livewire/InternshipManager.php` | `InternshipManager` | `BaseRecordManager` |
+| File                                                  | Component                | Extends             |
+| ----------------------------------------------------- | ------------------------ | ------------------- |
+| `Internship/Livewire/InternshipManager.php`           | `InternshipManager`      | `BaseRecordManager` |
 | `InternshipGroup/Livewire/InternshipGroupManager.php` | `InternshipGroupManager` | `BaseRecordManager` |
 
 ---
 
 ## Authorization Policies
 
-| File | Policy |
-|---|---|
-| `Internship/Policies/InternshipPolicy.php` | `InternshipPolicy` | `BasePolicy` |
+| File                                                 | Policy                  |
+| ---------------------------------------------------- | ----------------------- | ------------ |
+| `Internship/Policies/InternshipPolicy.php`           | `InternshipPolicy`      | `BasePolicy` |
 | `InternshipGroup/Policies/InternshipGroupPolicy.php` | `InternshipGroupPolicy` | `BasePolicy` |
 
 ---
@@ -108,10 +111,12 @@ app/Program/
 This module integrates with the system across the following directories and resources:
 
 - **Submodules**: `Internship`, `InternshipGroup`
-- **Business Logic (`app/`)**: Located in [app/Program/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Program/)
-- **Routing (`routes/`)**: [routes/web/program.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/program.php)
-- **Views (`views/`)**: Blade templates and layouts are in [resources/views/program/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/program/)
+- **Business Logic (`app/`)**: Located in
+  [app/Program/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Program/)
+- **Routing (`routes/`)**:
+  [routes/web/program.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/program.php)
+- **Views (`views/`)**: Blade templates and layouts are in
+  [resources/views/program/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/program/)
 - **Testing (`tests/`)**: Feature `tests/Feature/Program/`, Unit `tests/Unit/Program/`
 
-
-*For overview and business context, see [program.md](program.md)*
+_For overview and business context, see [program.md](program.md)_

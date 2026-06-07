@@ -18,19 +18,25 @@ Route::prefix('admin')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/assignments', AdminAssignmentManager::class)->name('assignments');
-        Route::livewire('/submissions/grading', SubmissionGrading::class)->name('submissions.grading');
+        Route::livewire('/submissions/grading', SubmissionGrading::class)->name(
+            'submissions.grading',
+        );
     });
 
 Route::prefix('supervision')
     ->name('supervision.')
     ->middleware(['auth', 'role:teacher|supervisor'])
     ->group(function () {
-        Route::livewire('/submissions/grading', SubmissionGrading::class)->name('submissions.grading');
+        Route::livewire('/submissions/grading', SubmissionGrading::class)->name(
+            'submissions.grading',
+        );
     });
 
 Route::prefix('teacher')
     ->name('teacher.')
     ->middleware(['auth', 'role:teacher'])
     ->group(function () {
-        Route::livewire('/submissions/grading', SubmissionGrading::class)->name('submissions.grading');
+        Route::livewire('/submissions/grading', SubmissionGrading::class)->name(
+            'submissions.grading',
+        );
     });

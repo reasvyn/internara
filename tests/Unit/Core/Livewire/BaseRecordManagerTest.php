@@ -48,8 +48,11 @@ class MockRecordManager extends BaseRecordManager
         return $this->perPageOptions();
     }
 
-    public function callPerformBulkAction(string $name, callable $callback, bool $transactional = true): void
-    {
+    public function callPerformBulkAction(
+        string $name,
+        callable $callback,
+        bool $transactional = true,
+    ): void {
         $this->performBulkAction($name, $callback, $transactional);
     }
 
@@ -125,10 +128,7 @@ test('it returns paginated rows from query', function () {
     $manager->shouldReceive('applyFilters')->once()->with($builder)->andReturn($builder);
     $manager->shouldReceive('applySorting')->once()->with($builder)->andReturn($builder);
 
-    $builder->shouldReceive('paginate')
-        ->once()
-        ->with(10)
-        ->andReturn($paginator);
+    $builder->shouldReceive('paginate')->once()->with(10)->andReturn($paginator);
 
     $result = $manager->rows();
 
@@ -148,10 +148,7 @@ test('it resets invalid per page to default', function () {
     $manager->shouldReceive('applyFilters')->once()->with($builder)->andReturn($builder);
     $manager->shouldReceive('applySorting')->once()->with($builder)->andReturn($builder);
 
-    $builder->shouldReceive('paginate')
-        ->once()
-        ->with(10)
-        ->andReturn($paginator);
+    $builder->shouldReceive('paginate')->once()->with(10)->andReturn($paginator);
 
     $manager->rows();
 
@@ -170,15 +167,13 @@ test('it loads eager relations in rows when with is set', function () {
     $manager->shouldReceive('applyFilters')->once()->with($builder)->andReturn($builder);
     $manager->shouldReceive('applySorting')->once()->with($builder)->andReturn($builder);
 
-    $builder->shouldReceive('with')
+    $builder
+        ->shouldReceive('with')
         ->once()
         ->with(['relation1', 'relation2'])
         ->andReturnSelf();
 
-    $builder->shouldReceive('paginate')
-        ->once()
-        ->with(10)
-        ->andReturn($paginator);
+    $builder->shouldReceive('paginate')->once()->with(10)->andReturn($paginator);
 
     $manager->rows();
 });
@@ -212,9 +207,13 @@ test('perform bulk action works without transaction', function () {
     $this->manager->selectedIds = [1, 2];
     $processed = [];
 
-    $this->manager->callPerformBulkAction('delete', function ($id) use (&$processed) {
-        $processed[] = $id;
-    }, false);
+    $this->manager->callPerformBulkAction(
+        'delete',
+        function ($id) use (&$processed) {
+            $processed[] = $id;
+        },
+        false,
+    );
 
     expect($processed)->toBe([1, 2]);
 });
@@ -247,7 +246,8 @@ test('perform mass action loads with relations on query', function () {
     $this->manager->setMockBuilder($builder);
     $this->manager->setWith(['relation']);
 
-    $builder->shouldReceive('with')
+    $builder
+        ->shouldReceive('with')
         ->once()
         ->with(['relation'])
         ->andReturnSelf();

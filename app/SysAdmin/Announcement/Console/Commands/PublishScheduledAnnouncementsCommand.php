@@ -29,11 +29,16 @@ class PublishScheduledAnnouncementsCommand extends Command
 
         foreach ($due as $announcement) {
             $action->publish($announcement);
-            $this->components->task(__('sysadmin.publish_announcements.published', ['title' => $announcement->title]), fn () => true);
+            $this->components->task(
+                __('sysadmin.publish_announcements.published', ['title' => $announcement->title]),
+                fn () => true,
+            );
         }
 
         $this->newLine();
-        $this->components->info(__('sysadmin.publish_announcements.completed', ['count' => $due->count()]));
+        $this->components->info(
+            __('sysadmin.publish_announcements.completed', ['count' => $due->count()]),
+        );
 
         return self::SUCCESS;
     }

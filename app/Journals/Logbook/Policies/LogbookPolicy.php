@@ -35,7 +35,8 @@ class LogbookPolicy extends BasePolicy
         if (
             $this->isTeacher($user) &&
             $entry->registration &&
-            $entry->registration->mentors()
+            $entry->registration
+                ->mentors()
                 ->where('user_id', $user->id)
                 ->where('type', Mentor::TYPE_SCHOOL_TEACHER)
                 ->exists()
@@ -46,7 +47,8 @@ class LogbookPolicy extends BasePolicy
         if (
             $this->isSupervisor($user) &&
             $entry->registration &&
-            $entry->registration->mentors()
+            $entry->registration
+                ->mentors()
                 ->where('user_id', $user->id)
                 ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)
                 ->exists()
@@ -64,7 +66,8 @@ class LogbookPolicy extends BasePolicy
         }
 
         return $entry->registration &&
-            $entry->registration->mentors()
+            $entry->registration
+                ->mentors()
                 ->where('user_id', $user->id)
                 ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)
                 ->exists();

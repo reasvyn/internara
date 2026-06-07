@@ -5,20 +5,24 @@ declare(strict_types=1);
 namespace Tests\Unit\Setup\Models;
 
 use App\Settings\Support\Settings;
-use App\Setup\SetupWizard\Entities\SetupState;
+use App\Setup\Entities\SetupEntity;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('setup state from settings returns SetupState entity', function () {
+test('setup entity from settings returns SetupEntity', function () {
     Settings::set([
         'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
-        'setup.completed_steps' => ['value' => ['step1', 'step2'], 'group' => 'setup', 'type' => 'json'],
+        'setup.completed_steps' => [
+            'value' => ['step1', 'step2'],
+            'group' => 'setup',
+            'type' => 'json',
+        ],
     ]);
 
-    $state = SetupState::fromSettings();
+    $state = SetupEntity::get();
 
-    expect($state)->toBeInstanceOf(SetupState::class);
+    expect($state)->toBeInstanceOf(SetupEntity::class);
     expect($state->isInstalled())->toBeTrue();
     expect($state->isStepCompleted('step1'))->toBeTrue();
     expect($state->isStepCompleted('step2'))->toBeTrue();

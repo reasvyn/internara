@@ -69,13 +69,28 @@ class LogbookManager extends BaseRecordManager
     {
         $user = auth()->user();
 
-        $query = Logbook::query()
-            ->with(['user', 'registration', 'verifier', 'supervisor']);
+        $query = Logbook::query()->with(['user', 'registration', 'verifier', 'supervisor']);
 
         if ($user->hasRole('teacher')) {
-            $query->whereHas('registration', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_SCHOOL_TEACHER)));
+            $query->whereHas(
+                'registration',
+                fn ($q) => $q->whereHas(
+                    'mentors',
+                    fn ($mq) => $mq
+                        ->where('user_id', $user->id)
+                        ->where('type', Mentor::TYPE_SCHOOL_TEACHER),
+                ),
+            );
         } elseif ($user->hasRole('supervisor')) {
-            $query->whereHas('registration', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)));
+            $query->whereHas(
+                'registration',
+                fn ($q) => $q->whereHas(
+                    'mentors',
+                    fn ($mq) => $mq
+                        ->where('user_id', $user->id)
+                        ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR),
+                ),
+            );
         }
 
         return $query;
@@ -84,8 +99,10 @@ class LogbookManager extends BaseRecordManager
     protected function applySearch(Builder $query): Builder
     {
         return $query->where(function ($q) {
-            $q->where('content', 'like', "%{$this->search}%")
-                ->orWhereHas('user', fn ($uq) => $uq->where('name', 'like', "%{$this->search}%"));
+            $q->where('content', 'like', "%{$this->search}%")->orWhereHas(
+                'user',
+                fn ($uq) => $uq->where('name', 'like', "%{$this->search}%"),
+            );
         });
     }
 
@@ -93,7 +110,10 @@ class LogbookManager extends BaseRecordManager
     {
         return $query
             ->when($this->filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
-            ->when($this->filters['is_verified'] ?? null, fn ($q, $v) => $q->where('is_verified', $v === 'yes'));
+            ->when(
+                $this->filters['is_verified'] ?? null,
+                fn ($q, $v) => $q->where('is_verified', $v === 'yes'),
+            );
     }
 
     #[Computed]
@@ -103,12 +123,29 @@ class LogbookManager extends BaseRecordManager
 
         $user = auth()->user();
         if ($user->hasRole('teacher')) {
-            $query->whereHas('registrations', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_SCHOOL_TEACHER)));
+            $query->whereHas(
+                'registrations',
+                fn ($q) => $q->whereHas(
+                    'mentors',
+                    fn ($mq) => $mq
+                        ->where('user_id', $user->id)
+                        ->where('type', Mentor::TYPE_SCHOOL_TEACHER),
+                ),
+            );
         } elseif ($user->hasRole('supervisor')) {
-            $query->whereHas('registrations', fn ($q) => $q->whereHas('mentors', fn ($mq) => $mq->where('user_id', $user->id)->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)));
+            $query->whereHas(
+                'registrations',
+                fn ($q) => $q->whereHas(
+                    'mentors',
+                    fn ($mq) => $mq
+                        ->where('user_id', $user->id)
+                        ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR),
+                ),
+            );
         }
 
-        return $query->orderBy('name')
+        return $query
+            ->orderBy('name')
             ->get(['id', 'name', 'email'])
             ->map(fn ($s) => ['id' => $s->id, 'name' => "{$s->name} ({$s->email})"])
             ->toArray();

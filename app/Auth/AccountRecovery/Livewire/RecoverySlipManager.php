@@ -66,7 +66,10 @@ class RecoverySlipManager extends Component
                 $q->where('name', 'like', "%{$this->search}%")
                     ->orWhere('username', 'like', "%{$this->search}%")
                     ->orWhere('email', 'like', "%{$this->search}%");
-            })->orderBy('name')->limit(10)->get();
+            })
+                ->orderBy('name')
+                ->limit(10)
+                ->get();
         }
 
         return view('auth.account-recovery.recovery-slip-manager', [

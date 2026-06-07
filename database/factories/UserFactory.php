@@ -41,10 +41,12 @@ class UserFactory extends Factory
 
     public function locked(string $reason = 'too_many_failed_attempts'): static
     {
-        return $this->state(fn () => [
-            'locked_at' => now(),
-            'locked_reason' => $reason,
-        ]);
+        return $this->state(
+            fn () => [
+                'locked_at' => now(),
+                'locked_reason' => $reason,
+            ],
+        );
     }
 
     public function unverified(): static

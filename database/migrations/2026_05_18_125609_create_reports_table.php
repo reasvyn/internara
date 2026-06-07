@@ -12,7 +12,12 @@ return new class extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('registration_id')->nullable()->unique()->constrained('registrations')->nullOnDelete();
+            $table
+                ->foreignUuid('registration_id')
+                ->nullable()
+                ->unique()
+                ->constrained('registrations')
+                ->nullOnDelete();
             $table->float('supervisor_score')->nullable();
             $table->float('teacher_score')->nullable();
             $table->float('exam_score')->nullable();

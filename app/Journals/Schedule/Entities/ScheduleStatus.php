@@ -10,17 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class ScheduleStatus extends BaseEntity
 {
-    public function __construct(
-        private Carbon $startAt,
-        private ?Carbon $endAt,
-    ) {}
+    public function __construct(private Carbon $startAt, private ?Carbon $endAt) {}
 
     public static function fromModel(Model $model): static
     {
-        return new self(
-            startAt: $model->start_at,
-            endAt: $model->end_at,
-        );
+        return new self(startAt: $model->start_at, endAt: $model->end_at);
     }
 
     public function isOngoing(?Carbon $now = null): bool

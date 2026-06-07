@@ -17,7 +17,9 @@ final class DeletePartnershipAction extends BaseAction
         }
 
         $this->transaction(function () use ($partnership) {
-            $this->log('partnership_deleted', $partnership, ['agreement_number' => $partnership->agreement_number]);
+            $this->log('partnership_deleted', $partnership, [
+                'agreement_number' => $partnership->agreement_number,
+            ]);
 
             $partnership->delete();
         });

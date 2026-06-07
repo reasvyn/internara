@@ -1,13 +1,13 @@
 # Notification System
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
+> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
+> conventions overhaul
 
 ## Channel Architecture
 
-Internara delivers notifications through multiple channels, each serving a different purpose.
-A single notification can be sent through several channels simultaneously — e.g., a welcome
-message is delivered as email (external reach) and in-app notification (persistent record).
+Internara delivers notifications through multiple channels, each serving a different purpose. A
+single notification can be sent through several channels simultaneously — e.g., a welcome message is
+delivered as email (external reach) and in-app notification (persistent record).
 
 ```
 Notification sent
@@ -19,19 +19,18 @@ Notification sent
 
 ### Channel Selection by Tier
 
-| Channel | Tier 1 | Tier 2 | Tier 3 |
-|---|---|---|---|---|
-| In-app (database) | ✅ | ✅ | ✅ |
-| Mail | ✅ (sync) | ✅ (async via queue) | ✅ (async via queue) |
-| Flash messages | ✅ | ✅ | ✅ |
+| Channel           | Tier 1    | Tier 2               | Tier 3               |
+| ----------------- | --------- | -------------------- | -------------------- |
+| In-app (database) | ✅        | ✅                   | ✅                   |
+| Mail              | ✅ (sync) | ✅ (async via queue) | ✅ (async via queue) |
+| Flash messages    | ✅        | ✅                   | ✅                   |
 
 ---
 
 ## CustomDatabaseChannel (Primary In-App)
 
-The in-app channel stores notifications in a custom `notifications` table. This is the
-**canonical record** of all notifications a user has received. It is always used for every
-notification.
+The in-app channel stores notifications in a custom `notifications` table. This is the **canonical
+record** of all notifications a user has received. It is always used for every notification.
 
 ### Table Schema
 
@@ -51,8 +50,8 @@ notifications
 
 ### Notification Class Contract
 
-Each notification class must implement `toCustomDatabase($notifiable)` returning the
-structured data array:
+Each notification class must implement `toCustomDatabase($notifiable)` returning the structured data
+array:
 
 ```php
 public function toCustomDatabase($notifiable): array
@@ -74,10 +73,7 @@ public function toCustomDatabase($notifiable): array
 
 ```php
 // All unread notifications for the current user
-$notifications = Notification::forUser(auth()->id())
-    ->unread()
-    ->latest()
-    ->get();
+$notifications = Notification::forUser(auth()->id())->unread()->latest()->get();
 
 // Mark as read
 $notification->markAsRead();
@@ -87,29 +83,29 @@ $notification->markAsRead();
 
 ## Mail Channel
 
-Used for communications that must reach the user outside the application. Mail is always
-queued (Tier 2+) or sent synchronously (Tier 1).
+Used for communications that must reach the user outside the application. Mail is always queued
+(Tier 2+) or sent synchronously (Tier 1).
 
-| Notification Type | When | Priority |
-|---|---|---|
-| Welcome email | Account created | High |
-| Account locked | 10 failed login attempts | High |
-| Password reset | Self-service request | High |
-| Recovery code | Admin generates recovery slip | High |
-| High-severity incident | CRITICAL severity reported | High |
-| Certificate issued | Student receives certificate | Medium |
-| Announcement | Admin publishes announcement | Low |
+| Notification Type      | When                          | Priority |
+| ---------------------- | ----------------------------- | -------- |
+| Welcome email          | Account created               | High     |
+| Account locked         | 10 failed login attempts      | High     |
+| Password reset         | Self-service request          | High     |
+| Recovery code          | Admin generates recovery slip | High     |
+| High-severity incident | CRITICAL severity reported    | High     |
+| Certificate issued     | Student receives certificate  | Medium   |
+| Announcement           | Admin publishes announcement  | Low      |
 
 ### Driver Matrix
 
-| Driver | Tier 1 | Tier 2 | Tier 3 | Setup Required |
-|---|---|---|---|---|
-| `log` | ✅ Dev | ❌ | ❌ | None |
-| `smtp` | ✅ | ✅ | ✅ | SMTP server credentials |
-| `ses` | ❌ | ✅ | ✅ | AWS account, SES verified module |
-| `mailgun` | ❌ | ✅ | ✅ | Mailgun account, module verification |
-| `postmark` | ❌ | ✅ | ✅ | Postmark account, server token |
-| `sendmail` | ⚠️ Unreliable | ❌ | ❌ | `sendmail` binary on server |
+| Driver     | Tier 1        | Tier 2 | Tier 3 | Setup Required                       |
+| ---------- | ------------- | ------ | ------ | ------------------------------------ |
+| `log`      | ✅ Dev        | ❌     | ❌     | None                                 |
+| `smtp`     | ✅            | ✅     | ✅     | SMTP server credentials              |
+| `ses`      | ❌            | ✅     | ✅     | AWS account, SES verified module     |
+| `mailgun`  | ❌            | ✅     | ✅     | Mailgun account, module verification |
+| `postmark` | ❌            | ✅     | ✅     | Postmark account, server token       |
+| `sendmail` | ⚠️ Unreliable | ❌     | ❌     | `sendmail` binary on server          |
 
 ### SMTP Configuration (Tier 1-2)
 
@@ -127,12 +123,12 @@ MAIL_FROM_NAME="${APP_NAME}"
 
 **Common SMTP providers for Indonesian schools:**
 
-| Provider | Host | Port | Encryption | Notes |
-|---|---|---|---|---|
-| Google Workspace | `smtp.gmail.com` | 587 | TLS | Requires app password |
-| Microsoft 365 | `smtp.office365.com` | 587 | TLS | |
-| Local ISP SMTP | Provider-specific | 465 | SSL | Ask your ISP |
-| SendGrid | `smtp.sendgrid.net` | 587 | TLS | Free tier: 100 emails/day |
+| Provider         | Host                 | Port | Encryption | Notes                     |
+| ---------------- | -------------------- | ---- | ---------- | ------------------------- |
+| Google Workspace | `smtp.gmail.com`     | 587  | TLS        | Requires app password     |
+| Microsoft 365    | `smtp.office365.com` | 587  | TLS        |                           |
+| Local ISP SMTP   | Provider-specific    | 465  | SSL        | Ask your ISP              |
+| SendGrid         | `smtp.sendgrid.net`  | 587  | TLS        | Free tier: 100 emails/day |
 
 ### SES Configuration (Tier 3)
 
@@ -143,8 +139,8 @@ AWS_SECRET_ACCESS_KEY=your-secret
 AWS_DEFAULT_REGION=ap-southeast-1
 ```
 
-SES requires module verification and may start in sandbox mode (verified emails only).
-Request production access for sending to unverified recipients.
+SES requires module verification and may start in sandbox mode (verified emails only). Request
+production access for sending to unverified recipients.
 
 ### Development Configuration
 
@@ -169,12 +165,12 @@ DMARC     TXT     v=DMARC1; p=quarantine; rua=mailto:dmarc@your-module
 MX        MX      (your email provider's MX record)
 ```
 
-| Record | Purpose | Risk if Missing |
-|---|---|---|
-| **SPF** | Authorizes which servers can send from your module | Email marked as spam or rejected |
-| **DKIM** | Cryptographic signature verifying email integrity | Email fails authentication checks |
-| **DMARC** | Policy for how receivers handle unauthenticated email | Spoofers can impersonate your module |
-| **Reverse DNS (PTR)** | Maps your mail server IP back to your module | Some receivers reject unauthenticated IPs |
+| Record                | Purpose                                               | Risk if Missing                           |
+| --------------------- | ----------------------------------------------------- | ----------------------------------------- |
+| **SPF**               | Authorizes which servers can send from your module    | Email marked as spam or rejected          |
+| **DKIM**              | Cryptographic signature verifying email integrity     | Email fails authentication checks         |
+| **DMARC**             | Policy for how receivers handle unauthenticated email | Spoofers can impersonate your module      |
+| **Reverse DNS (PTR)** | Maps your mail server IP back to your module          | Some receivers reject unauthenticated IPs |
 
 ### Queue Integration
 
@@ -188,19 +184,19 @@ class WelcomeNotification extends Notification implements ShouldQueue
 }
 ```
 
-In Tier 2+, the queue worker processes mail delivery. In Tier 1 (`QUEUE_CONNECTION=sync`),
-mail is sent synchronously during the HTTP request.
+In Tier 2+, the queue worker processes mail delivery. In Tier 1 (`QUEUE_CONNECTION=sync`), mail is
+sent synchronously during the HTTP request.
 
 ### Rate Limiting
 
 Most providers impose sending limits:
 
-| Provider | Daily Limit | Per-Second Limit |
-|---|---|---|
-| Gmail SMTP | 2,000 | ~5 |
-| Microsoft 365 | 10,000 | ~30 |
-| SES (production) | 50,000+ | 14/sec (can increase) |
-| SendGrid (free) | 100 | ~10 |
+| Provider         | Daily Limit | Per-Second Limit      |
+| ---------------- | ----------- | --------------------- |
+| Gmail SMTP       | 2,000       | ~5                    |
+| Microsoft 365    | 10,000      | ~30                   |
+| SES (production) | 50,000+     | 14/sec (can increase) |
+| SendGrid (free)  | 100         | ~10                   |
 
 To comply with rate limits, use queued notifications with proper backoff:
 
@@ -219,23 +215,22 @@ To comply with rate limits, use queued notifications with proper backoff:
 
 ### Troubleshooting
 
-| Symptom | Cause | Fix |
-|---|---|---|
-| Emails not sent | Queue worker not running | Start worker or check Supervisor |
-| Emails sent but not received | SPF/DKIM/DMARC not configured | Add DNS records (see above) |
-| SMTP authentication failed | Wrong credentials or app password | Generate app-specific password |
-| Port blocked | ISP blocks SMTP ports | Use port 587 (TLS) instead of 465 (SSL) |
-| Rate limited | Too many emails in short time | Reduce batch size, increase queue delay |
-| Emails going to spam | Missing DKIM signature | Configure DKIM on your email provider |
-| Connection timeout | SMTP host unreachable | Check firewall, try different port |
+| Symptom                      | Cause                             | Fix                                     |
+| ---------------------------- | --------------------------------- | --------------------------------------- |
+| Emails not sent              | Queue worker not running          | Start worker or check Supervisor        |
+| Emails sent but not received | SPF/DKIM/DMARC not configured     | Add DNS records (see above)             |
+| SMTP authentication failed   | Wrong credentials or app password | Generate app-specific password          |
+| Port blocked                 | ISP blocks SMTP ports             | Use port 587 (TLS) instead of 465 (SSL) |
+| Rate limited                 | Too many emails in short time     | Reduce batch size, increase queue delay |
+| Emails going to spam         | Missing DKIM signature            | Configure DKIM on your email provider   |
+| Connection timeout           | SMTP host unreachable             | Check firewall, try different port      |
 
 ---
 
 ## Flash Messages
 
-Flash messages provide **instant action feedback** — "Profile updated successfully" or
-"Settings saved." They are displayed as toast notifications and disappear after a few
-seconds.
+Flash messages provide **instant action feedback** — "Profile updated successfully" or "Settings
+saved." They are displayed as toast notifications and disappear after a few seconds.
 
 ```php
 flash()->success(__('profile.updated'));
@@ -243,12 +238,12 @@ flash()->error(__('settings.save_failed'));
 flash()->warning(__('disk_space_low'));
 ```
 
-| Feature | Flash | In-App Notification |
-|---|---|---|
-| Persistence | Single request | Until read/pruned |
-| Display | Toast, auto-dismiss | Notification center |
-| Use case | Action feedback | Event notification |
-| Channels | Session only | Database + mail |
+| Feature     | Flash               | In-App Notification |
+| ----------- | ------------------- | ------------------- |
+| Persistence | Single request      | Until read/pruned   |
+| Display     | Toast, auto-dismiss | Notification center |
+| Use case    | Action feedback     | Event notification  |
+| Channels    | Session only        | Database + mail     |
 
 ---
 
@@ -256,20 +251,20 @@ flash()->warning(__('disk_space_low'));
 
 Notifications are **always queued** (Tier 2+) or **synchronous** (Tier 1 `QUEUE_CONNECTION=sync`).
 
-| Channel | Tier 1 | Tier 2+ |
-|---|---|---|---|
+| Channel               | Tier 1        | Tier 2+       |
+| --------------------- | ------------- | ------------- |
 | CustomDatabaseChannel | Sync (inline) | Async (queue) |
-| Mail | Sync (inline) | Async (queue) |
+| Mail                  | Sync (inline) | Async (queue) |
 
-Failed notifications are automatically retried (default: 3 attempts). After max retries,
-they are stored in `failed_jobs` for manual inspection.
+Failed notifications are automatically retried (default: 3 attempts). After max retries, they are
+stored in `failed_jobs` for manual inspection.
 
 ---
 
 ## Sending Notifications from Actions
 
-Notifications are sent from Command Actions or listener classes, never directly from
-Livewire components.
+Notifications are sent from Command Actions or listener classes, never directly from Livewire
+components.
 
 ```php
 class NotifyAdminsInternshipCreated implements ShouldQueue
@@ -278,15 +273,16 @@ class NotifyAdminsInternshipCreated implements ShouldQueue
     {
         $admins = User::role(['super_admin', 'admin'])->get();
 
-        Notification::send($admins, new InternshipCreatedNotification(
-            internshipName: $event->internship->name,
-        ));
+        Notification::send(
+            $admins,
+            new InternshipCreatedNotification(internshipName: $event->internship->name),
+        );
     }
 }
 ```
 
-For notifications triggered by user action (not event listeners), use the
-`SendNotificationAction` which implements the `SendsNotifications` contract:
+For notifications triggered by user action (not event listeners), use the `SendNotificationAction`
+which implements the `SendsNotifications` contract:
 
 ```php
 public function __construct(
@@ -325,10 +321,10 @@ Created (via Action/Event)
 
 ### Retention
 
-| Channel | Retention | Pruning |
-|---|---|---|
+| Channel           | Retention               | Pruning                             |
+| ----------------- | ----------------------- | ----------------------------------- |
 | In-app (database) | 365 days (configurable) | `notifications:prune` via scheduler |
-| Mail | N/A (recipient manages) | N/A |
+| Mail              | N/A (recipient manages) | N/A                                 |
 
 ---
 

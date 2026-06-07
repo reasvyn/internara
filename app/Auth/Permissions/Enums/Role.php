@@ -19,41 +19,22 @@ enum Role: string implements LabelEnum
 
     public static function userRoles(): array
     {
-        return [
-            self::SUPER_ADMIN,
-            self::ADMIN,
-            self::TEACHER,
-            self::STUDENT,
-            self::SUPERVISOR,
-        ];
+        return [self::SUPER_ADMIN, self::ADMIN, self::TEACHER, self::STUDENT, self::SUPERVISOR];
     }
 
     public static function excludeSuperAdmin(): array
     {
-        return [
-            self::ADMIN,
-            self::TEACHER,
-            self::STUDENT,
-            self::SUPERVISOR,
-        ];
+        return [self::ADMIN, self::TEACHER, self::STUDENT, self::SUPERVISOR];
     }
 
     public static function excludeAdmin(): array
     {
-        return [
-            self::TEACHER,
-            self::STUDENT,
-            self::SUPERVISOR,
-        ];
+        return [self::TEACHER, self::STUDENT, self::SUPERVISOR];
     }
 
     public static function functionalRoles(): array
     {
-        return [
-            self::ADMIN,
-            self::MENTOR,
-            self::MENTEE,
-        ];
+        return [self::ADMIN, self::MENTOR, self::MENTEE];
     }
 
     public function isUserRole(): bool

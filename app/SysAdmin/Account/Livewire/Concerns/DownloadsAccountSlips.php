@@ -60,6 +60,10 @@ trait DownloadsAccountSlips
             return;
         }
 
-        $this->redirect(route('sysadmin.users.account-slips.batch', ['ids' => implode(',', $this->selectedIds)]));
+        $this->redirect(
+            route('sysadmin.users.account-slips.batch', [
+                'ids' => implode(',', $this->selectedIds),
+            ]),
+        );
     }
 }

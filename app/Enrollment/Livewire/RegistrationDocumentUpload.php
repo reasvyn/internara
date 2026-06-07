@@ -30,10 +30,9 @@ class RegistrationDocumentUpload extends Component
 
     public function mount(): void
     {
-        $this->registration = auth()->user()->getActiveRegistration()
-            ?? auth()->user()->registrations()
-                ->get()
-                ->first(fn ($reg) => $reg->hasStatus('pending'));
+        $this->registration =
+            auth()->user()->getActiveRegistration() ??
+            auth()->user()->registrations()->get()->first(fn ($reg) => $reg->hasStatus('pending'));
     }
 
     public function upload(UploadRegistrationDocumentAction $action): void
@@ -72,7 +71,9 @@ class RegistrationDocumentUpload extends Component
         return view('enrollment.registration-document-upload', [
             'documents' => $documents,
             'existingDocs' => $this->registration
-                ? RegistrationDocument::where('registration_id', $this->registration->id)->with('document')->get()
+                ? RegistrationDocument::where('registration_id', $this->registration->id)
+                    ->with('document')
+                    ->get()
                 : collect(),
         ]);
     }

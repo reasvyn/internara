@@ -1,17 +1,17 @@
 # Queue
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
+> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
+> conventions overhaul
 
 ## Purpose
 
 The queue layer enables asynchronous job processing. For the current deployment model (Tier 1,
-shared hosting / single-server), all jobs run **synchronously** via `QUEUE_CONNECTION=sync` —
-no worker process needed.
+shared hosting / single-server), all jobs run **synchronously** via `QUEUE_CONNECTION=sync` — no
+worker process needed.
 
-For future enterprise-scale deployments (Tier 2+), a queue worker can be introduced to move
-heavy operations (email, media conversions, certificate generation) off the HTTP request cycle
-and into background processing.
+For future enterprise-scale deployments (Tier 2+), a queue worker can be introduced to move heavy
+operations (email, media conversions, certificate generation) off the HTTP request cycle and into
+background processing.
 
 ---
 
@@ -21,26 +21,26 @@ and into background processing.
 QUEUE_CONNECTION=sync
 ```
 
-In sync mode, every job executes immediately during the HTTP request. The user waits for the
-result, but no background process is needed. This is the correct default for the target
-deployment — schools typically have fewer than 50 concurrent users, and the added complexity
-of a queue worker is unnecessary.
+In sync mode, every job executes immediately during the HTTP request. The user waits for the result,
+but no background process is needed. This is the correct default for the target deployment — schools
+typically have fewer than 50 concurrent users, and the added complexity of a queue worker is
+unnecessary.
 
 ### What Still Works in Sync Mode
 
-| Operation | Behavior | User Experience |
-|---|---|---|
-| Email delivery | Sent during request (~1-3s) | Slight delay on form submission |
-| Media conversions | Processed during upload (~0.5-2s) | Slight delay on file upload |
-| Certificate PDF generation | Generated during request (~2-5s) | Slight delay on download |
-| Notification dispatch | Stored immediately | Instant (database write) |
+| Operation                  | Behavior                          | User Experience                 |
+| -------------------------- | --------------------------------- | ------------------------------- |
+| Email delivery             | Sent during request (~1-3s)       | Slight delay on form submission |
+| Media conversions          | Processed during upload (~0.5-2s) | Slight delay on file upload     |
+| Certificate PDF generation | Generated during request (~2-5s)  | Slight delay on download        |
+| Notification dispatch      | Stored immediately                | Instant (database write)        |
 
 ---
 
 ## Future Enterprise: Worker-Based Queue (Tier 2+)
 
-When the school grows beyond ~50 concurrent users, or when the synchronous delays become
-noticeable, switch to a worker-based queue:
+When the school grows beyond ~50 concurrent users, or when the synchronous delays become noticeable,
+switch to a worker-based queue:
 
 ```env
 QUEUE_CONNECTION=redis
@@ -50,26 +50,27 @@ REDIS_PORT=6379
 
 ### What a Worker Enables
 
-| Before (sync) | After (async worker) |
-|---|---|
-| HTTP response waits for email to send | Email sent in background, instant response |
-| Image conversion blocks page load | Conversion processed by worker, upload returns immediately |
-| Certificate generation takes 2-5s | Generation queued, user notified when ready |
-| No retry on failure | Automatic retry with exponential backoff (3 attempts) |
+| Before (sync)                         | After (async worker)                                       |
+| ------------------------------------- | ---------------------------------------------------------- |
+| HTTP response waits for email to send | Email sent in background, instant response                 |
+| Image conversion blocks page load     | Conversion processed by worker, upload returns immediately |
+| Certificate generation takes 2-5s     | Generation queued, user notified when ready                |
+| No retry on failure                   | Automatic retry with exponential backoff (3 attempts)      |
 
 ### Driver Strategy
 
-| Aspect | Current (Tier 1) | Future Enterprise (Tier 2+) |
-|---|---|---|
-| **Driver** | `sync` | `redis` |
-| **Worker** | None | Supervisor-managed |
-| **Retries** | N/A (inline, no retry) | 3 attempts with backoff |
-| **Failed jobs** | N/A | `failed_jobs` table for inspection |
-| **Throughput** | N/A | ~1,000+ jobs/min |
+| Aspect          | Current (Tier 1)       | Future Enterprise (Tier 2+)        |
+| --------------- | ---------------------- | ---------------------------------- |
+| **Driver**      | `sync`                 | `redis`                            |
+| **Worker**      | None                   | Supervisor-managed                 |
+| **Retries**     | N/A (inline, no retry) | 3 attempts with backoff            |
+| **Failed jobs** | N/A                    | `failed_jobs` table for inspection |
+| **Throughput**  | N/A                    | ~1,000+ jobs/min                   |
 
 ### Supervisor Configuration (Future)
 
-When deploying with a queue worker, Supervisor manages separate process groups for general notifications and document compilation:
+When deploying with a queue worker, Supervisor manages separate process groups for general
+notifications and document compilation:
 
 ```ini
 [program:internara-default-worker]
@@ -105,8 +106,8 @@ php artisan queue:work --queue=documents --sleep=3 --tries=3
 
 ## Job Design
 
-Jobs are written the same way regardless of driver — the same code works in sync mode today
-and async mode tomorrow:
+Jobs are written the same way regardless of driver — the same code works in sync mode today and
+async mode tomorrow:
 
 ```php
 class ProcessMediaConversion implements ShouldQueue
@@ -117,9 +118,7 @@ class ProcessMediaConversion implements ShouldQueue
     public $backoff = [2, 10, 30];
 
     // Accept IDs, not whole models — the entity may change before the job runs
-    public function __construct(
-        public string $mediaId,
-    ) {}
+    public function __construct(public string $mediaId) {}
 
     public function handle(): void
     {
@@ -138,13 +137,13 @@ class ProcessMediaConversion implements ShouldQueue
 
 ### Guidelines
 
-| Rule | Rationale |
-|---|---|
-| Accept IDs, not models | The model may change between dispatch and execution |
-| Make jobs idempotent | Running twice should not duplicate results |
-| Handle missing entities gracefully | Entity may have been deleted before job runs |
-| Set `$tries` and `$backoff` | Prevent infinite retries on permanent failures |
-| Implement `failed()` for critical jobs | Surface permanent failures to operations |
+| Rule                                   | Rationale                                           |
+| -------------------------------------- | --------------------------------------------------- |
+| Accept IDs, not models                 | The model may change between dispatch and execution |
+| Make jobs idempotent                   | Running twice should not duplicate results          |
+| Handle missing entities gracefully     | Entity may have been deleted before job runs        |
+| Set `$tries` and `$backoff`            | Prevent infinite retries on permanent failures      |
+| Implement `failed()` for critical jobs | Surface permanent failures to operations            |
 
 ---
 

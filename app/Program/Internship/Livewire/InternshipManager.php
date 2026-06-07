@@ -80,19 +80,30 @@ class InternshipManager extends BaseRecordManager
     {
         return $query
             ->when($this->filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
-            ->when($this->filters['academic_year_id'] ?? null, fn ($q, $v) => $q->where('academic_year_id', $v))
-            ->when($this->filters['date_from'] ?? null, fn ($q, $v) => $q->whereDate('start_date', '>=', $v))
-            ->when($this->filters['date_to'] ?? null, fn ($q, $v) => $q->whereDate('end_date', '<=', $v));
+            ->when(
+                $this->filters['academic_year_id'] ?? null,
+                fn ($q, $v) => $q->where('academic_year_id', $v),
+            )
+            ->when(
+                $this->filters['date_from'] ?? null,
+                fn ($q, $v) => $q->whereDate('start_date', '>=', $v),
+            )
+            ->when(
+                $this->filters['date_to'] ?? null,
+                fn ($q, $v) => $q->whereDate('end_date', '<=', $v),
+            );
     }
 
     #[Computed]
     public function statusOptions(): array
     {
         return collect(InternshipStatus::cases())
-            ->map(fn ($s) => [
-                'id' => $s->value,
-                'name' => __("internship.statuses.{$s->value}"),
-            ])
+            ->map(
+                fn ($s) => [
+                    'id' => $s->value,
+                    'name' => __("internship.statuses.{$s->value}"),
+                ],
+            )
             ->toArray();
     }
 
@@ -101,10 +112,12 @@ class InternshipManager extends BaseRecordManager
     {
         return AcademicYear::orderByDesc('start_date')
             ->get()
-            ->map(fn ($y) => [
-                'id' => $y->id,
-                'name' => $y->name,
-            ])
+            ->map(
+                fn ($y) => [
+                    'id' => $y->id,
+                    'name' => $y->name,
+                ],
+            )
             ->prepend(['id' => '', 'name' => __('internship.select_academic_year')])
             ->toArray();
     }
@@ -202,7 +215,9 @@ class InternshipManager extends BaseRecordManager
 
         $this->confirmTarget = null;
         $this->confirmType = 'delete_selected';
-        $this->confirmMessage = __('internship.confirm_delete_selected', ['count' => count($this->selectedIds)]);
+        $this->confirmMessage = __('internship.confirm_delete_selected', [
+            'count' => count($this->selectedIds),
+        ]);
         $this->showConfirm = true;
     }
 
@@ -218,7 +233,11 @@ class InternshipManager extends BaseRecordManager
         DeleteInternshipAction $deleteAction,
         BatchUpdateInternshipStatusAction $batchAction,
     ): void {
-        if ($this->confirmTarget === null && $this->confirmType !== 'close_filtered' && $this->confirmType !== 'delete_selected') {
+        if (
+            $this->confirmTarget === null &&
+            $this->confirmType !== 'close_filtered' &&
+            $this->confirmType !== 'delete_selected'
+        ) {
             return;
         }
 
@@ -286,7 +305,10 @@ class InternshipManager extends BaseRecordManager
 
         $activeYear = AcademicYear::where('is_active', true)->first();
 
-        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use ($activeYear, $create) {
+        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use (
+            $activeYear,
+            $create,
+        ) {
             $name = trim($row[0] ?? '');
 
             if ($name === '') {
@@ -317,10 +339,12 @@ class InternshipManager extends BaseRecordManager
             return;
         }
 
-        flash()->success(__('internship.import_summary', [
-            'created' => $result['created'],
-            'skipped' => $result['skipped'],
-        ]));
+        flash()->success(
+            __('internship.import_summary', [
+                'created' => $result['created'],
+                'skipped' => $result['skipped'],
+            ]),
+        );
     }
 
     public function export(CsvHandler $csv): StreamedResponse
@@ -330,8 +354,16 @@ class InternshipManager extends BaseRecordManager
             ->orderBy('name')
             ->get();
 
-        return $csv->export($internships, ['name', 'description', 'status', 'start_date', 'end_date'],
-            fn ($i) => [$i->name, $i->description ?? '', $i->status->value, $i->start_date->format('Y-m-d'), $i->end_date->format('Y-m-d')],
+        return $csv->export(
+            $internships,
+            ['name', 'description', 'status', 'start_date', 'end_date'],
+            fn ($i) => [
+                $i->name,
+                $i->description ?? '',
+                $i->status->value,
+                $i->start_date->format('Y-m-d'),
+                $i->end_date->format('Y-m-d'),
+            ],
             'internships.csv',
         );
     }
@@ -349,8 +381,16 @@ class InternshipManager extends BaseRecordManager
             ->orderBy('name')
             ->get();
 
-        return $csv->export($internships, ['name', 'description', 'status', 'start_date', 'end_date'],
-            fn ($i) => [$i->name, $i->description ?? '', $i->status->value, $i->start_date->format('Y-m-d'), $i->end_date->format('Y-m-d')],
+        return $csv->export(
+            $internships,
+            ['name', 'description', 'status', 'start_date', 'end_date'],
+            fn ($i) => [
+                $i->name,
+                $i->description ?? '',
+                $i->status->value,
+                $i->start_date->format('Y-m-d'),
+                $i->end_date->format('Y-m-d'),
+            ],
             'internships-selected.csv',
         );
     }
@@ -359,7 +399,13 @@ class InternshipManager extends BaseRecordManager
     {
         return $csv->downloadTemplate(
             ['name', 'description', 'status', 'start_date', 'end_date'],
-            [__('internship.template_example_name'), __('internship.template_example_description'), 'draft', now()->format('Y-m-d'), now()->addYear()->format('Y-m-d')],
+            [
+                __('internship.template_example_name'),
+                __('internship.template_example_description'),
+                'draft',
+                now()->format('Y-m-d'),
+                now()->addYear()->format('Y-m-d'),
+            ],
             'internships-template.csv',
         );
     }

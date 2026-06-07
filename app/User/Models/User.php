@@ -24,7 +24,19 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'username', 'password', 'setup_required', 'locked_at', 'locked_reason', 'status', 'is_active'])]
+#[
+    Fillable([
+        'name',
+        'email',
+        'username',
+        'password',
+        'setup_required',
+        'locked_at',
+        'locked_reason',
+        'status',
+        'is_active',
+    ]),
+]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements HasMedia
 {
@@ -56,7 +68,10 @@ class User extends Authenticatable implements HasMedia
         $normalized = [];
         foreach ($roles as $role) {
             if (is_array($role)) {
-                $normalized = array_merge($normalized, array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role));
+                $normalized = array_merge(
+                    $normalized,
+                    array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role),
+                );
             } else {
                 $normalized[] = $role === 'super_admin' ? 'superadmin' : $role;
             }
@@ -70,7 +85,10 @@ class User extends Authenticatable implements HasMedia
         $normalized = [];
         foreach ($roles as $role) {
             if (is_array($role)) {
-                $normalized = array_merge($normalized, array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role));
+                $normalized = array_merge(
+                    $normalized,
+                    array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role),
+                );
             } else {
                 $normalized[] = $role === 'super_admin' ? 'superadmin' : $role;
             }
@@ -84,7 +102,10 @@ class User extends Authenticatable implements HasMedia
         $normalized = [];
         foreach ($roles as $role) {
             if (is_array($role)) {
-                $normalized = array_merge($normalized, array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role));
+                $normalized = array_merge(
+                    $normalized,
+                    array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role),
+                );
             } else {
                 $normalized[] = $role === 'super_admin' ? 'superadmin' : $role;
             }
@@ -107,7 +128,10 @@ class User extends Authenticatable implements HasMedia
         $normalized = [];
         foreach ($roles as $role) {
             if (is_array($role)) {
-                $normalized = array_merge($normalized, array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role));
+                $normalized = array_merge(
+                    $normalized,
+                    array_map(fn ($r) => $r === 'super_admin' ? 'superadmin' : $r, $role),
+                );
             } else {
                 $normalized[] = $role === 'super_admin' ? 'superadmin' : $role;
             }
@@ -174,7 +198,9 @@ class User extends Authenticatable implements HasMedia
 
     public function latestStatus()
     {
-        return (object) ['name' => $this->status instanceof AccountStatus ? $this->status->value : $this->status];
+        return (object) [
+            'name' => $this->status instanceof AccountStatus ? $this->status->value : $this->status,
+        ];
     }
 
     protected static function booted(): void
@@ -203,11 +229,7 @@ class User extends Authenticatable implements HasMedia
 
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('thumb')
-            ->width(200)
-            ->height(200)
-            ->format('webp')
-            ->nonQueued();
+        $this->addMediaConversion('thumb')->width(200)->height(200)->format('webp')->nonQueued();
     }
 
     public function initials(): string
@@ -215,9 +237,7 @@ class User extends Authenticatable implements HasMedia
         $words = explode(' ', trim($this->name));
 
         if (count($words) >= 2) {
-            return strtoupper(
-                substr($words[0], 0, 1).substr(end($words), 0, 1)
-            );
+            return strtoupper(substr($words[0], 0, 1).substr(end($words), 0, 1));
         }
 
         return strtoupper(substr($this->name, 0, 2));
@@ -240,9 +260,7 @@ class User extends Authenticatable implements HasMedia
 
     public function getActiveRegistration(): ?Registration
     {
-        return $this->registrations()
-            ->where('status', 'active')
-            ->first();
+        return $this->registrations()->where('status', 'active')->first();
     }
 
     public function scopeActive(Builder $query): Builder

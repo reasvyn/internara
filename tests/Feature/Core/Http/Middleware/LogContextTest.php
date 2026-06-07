@@ -14,21 +14,20 @@ use Mockery;
 uses(RefreshDatabase::class);
 
 test('log context middleware pushes context parameters', function () {
-    Log::shouldReceive('withContext')
-        ->twice()
-        ->with(Mockery::on(function ($context) {
+    Log::shouldReceive('withContext')->twice()->with(
+        Mockery::on(function ($context) {
             if (isset($context['request_id'])) {
-                return $context['method'] === 'GET'
-                    && str_contains($context['url'], '/_test_log_context')
-                    && $context['ip'] === '127.0.0.1';
+                return $context['method'] === 'GET' &&
+                    str_contains($context['url'], '/_test_log_context') &&
+                    $context['ip'] === '127.0.0.1';
             }
             if (isset($context['status'])) {
-                return $context['status'] === 200
-                    && isset($context['duration_ms']);
+                return $context['status'] === 200 && isset($context['duration_ms']);
             }
 
             return false;
-        }));
+        }),
+    );
 
     Route::get('/_test_log_context', function () {
         return 'ok';
@@ -38,15 +37,15 @@ test('log context middleware pushes context parameters', function () {
 });
 
 test('log context includes authenticated user context', function () {
-    Log::shouldReceive('withContext')
-        ->twice()
-        ->with(Mockery::on(function ($context) {
+    Log::shouldReceive('withContext')->twice()->with(
+        Mockery::on(function ($context) {
             if (isset($context['request_id'])) {
                 return isset($context['user_id']);
             }
 
             return true;
-        }));
+        }),
+    );
 
     $user = User::factory()->create();
 
@@ -58,15 +57,18 @@ test('log context includes authenticated user context', function () {
 });
 
 test('log context request id is a valid uuid', function () {
-    Log::shouldReceive('withContext')
-        ->twice()
-        ->with(Mockery::on(function ($context) {
+    Log::shouldReceive('withContext')->twice()->with(
+        Mockery::on(function ($context) {
             if (isset($context['request_id'])) {
-                return preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/', $context['request_id']) === 1;
+                return preg_match(
+                    '/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/',
+                    $context['request_id'],
+                ) === 1;
             }
 
             return true;
-        }));
+        }),
+    );
 
     Route::get('/_test_uuid_log_context', function () {
         return 'ok';
@@ -76,16 +78,15 @@ test('log context request id is a valid uuid', function () {
 });
 
 test('log context duration ms is numeric', function () {
-    Log::shouldReceive('withContext')
-        ->twice()
-        ->with(Mockery::on(function ($context) {
+    Log::shouldReceive('withContext')->twice()->with(
+        Mockery::on(function ($context) {
             if (isset($context['duration_ms'])) {
-                return is_numeric($context['duration_ms'])
-                    && $context['duration_ms'] > 0;
+                return is_numeric($context['duration_ms']) && $context['duration_ms'] > 0;
             }
 
             return true;
-        }));
+        }),
+    );
 
     Route::get('/_test_duration_log_context', function () {
         return 'ok';
@@ -95,15 +96,15 @@ test('log context duration ms is numeric', function () {
 });
 
 test('log context records response status', function () {
-    Log::shouldReceive('withContext')
-        ->twice()
-        ->with(Mockery::on(function ($context) {
+    Log::shouldReceive('withContext')->twice()->with(
+        Mockery::on(function ($context) {
             if (isset($context['status'])) {
                 return $context['status'] === 404;
             }
 
             return true;
-        }));
+        }),
+    );
 
     Route::get('/_test_404_log_context', function () {
         abort(404);

@@ -9,13 +9,21 @@ use Illuminate\Http\JsonResponse;
 
 class MockController extends BaseController
 {
-    public function respondSuccess(mixed $data = null, string $message = 'Success', int $code = 200, array $extra = []): JsonResponse
-    {
+    public function respondSuccess(
+        mixed $data = null,
+        string $message = 'Success',
+        int $code = 200,
+        array $extra = [],
+    ): JsonResponse {
         return $this->jsonSuccess($data, $message, $code, $extra);
     }
 
-    public function respondError(string $message = 'Error', int $code = 400, mixed $errors = null, array $extra = []): JsonResponse
-    {
+    public function respondError(
+        string $message = 'Error',
+        int $code = 400,
+        mixed $errors = null,
+        array $extra = [],
+    ): JsonResponse {
         return $this->jsonError($message, $code, $errors, $extra);
     }
 }
@@ -52,7 +60,9 @@ test('json success returns default values', function () {
 
 test('json success merges extra data', function () {
     $controller = new MockController;
-    $response = $controller->respondSuccess(['id' => 1], 'Success', 200, ['meta' => ['count' => 1]]);
+    $response = $controller->respondSuccess(['id' => 1], 'Success', 200, [
+        'meta' => ['count' => 1],
+    ]);
 
     expect($response->getData(true))->toEqual([
         'success' => true,
@@ -106,4 +116,34 @@ test('json error with null errors omits key', function () {
     expect($data)->not->toHaveKey('errors');
     expect($data['success'])->toBeFalse();
     expect($data['message'])->toBe('Server Error');
+});
+
+test('json success extra cannot override reserved keys', function () {
+    $controller = new MockController;
+    $response = $controller->respondSuccess(['id' => 1], 'Custom', 200, [
+        'success' => false,
+        'message' => 'Overridden',
+        'data' => 'hacked',
+    ]);
+
+    $data = $response->getData(true);
+
+    expect($data['success'])->toBeTrue();
+    expect($data['message'])->toBe('Custom');
+    expect($data['data'])->toBe(['id' => 1]);
+});
+
+test('json error extra cannot override reserved keys', function () {
+    $controller = new MockController;
+    $response = $controller->respondError('Original', 400, ['field' => 'error'], [
+        'success' => true,
+        'message' => 'Overridden',
+        'errors' => 'hacked',
+    ]);
+
+    $data = $response->getData(true);
+
+    expect($data['success'])->toBeFalse();
+    expect($data['message'])->toBe('Original');
+    expect($data['errors'])->toBe(['field' => 'error']);
 });

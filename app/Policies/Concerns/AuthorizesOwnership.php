@@ -19,15 +19,22 @@ trait AuthorizesOwnership
         return $model->{$foreignKey} === $user->id;
     }
 
-    protected function isRelatedThrough(Model $user, Model $model, string $relation, string $foreignKey = 'id'): bool
-    {
+    protected function isRelatedThrough(
+        Model $user,
+        Model $model,
+        string $relation,
+        string $foreignKey = 'id',
+    ): bool {
         $related = $model->{$relation};
 
         return $related !== null && $related->{$foreignKey} === $user->id;
     }
 
-    protected function isOwnerOrAdmin(Model $user, Model $model, string $foreignKey = 'user_id'): bool
-    {
+    protected function isOwnerOrAdmin(
+        Model $user,
+        Model $model,
+        string $foreignKey = 'user_id',
+    ): bool {
         if ($this->isOwner($user, $model, $foreignKey)) {
             return true;
         }

@@ -50,7 +50,7 @@ final class AppInfo
                     }
 
                     return [
-                        'name' => $data['display_name'] ?? $data['name'] ?? 'Laravel',
+                        'name' => $data['display_name'] ?? ($data['name'] ?? 'Laravel'),
                         'version' => $data['version'] ?? '1.0.0',
                         'description' => $data['description'] ?? '',
                         'license' => $data['license'] ?? '',

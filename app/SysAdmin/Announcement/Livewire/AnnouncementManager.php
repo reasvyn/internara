@@ -102,10 +102,12 @@ class AnnouncementManager extends Component
     {
         return view('sysadmin.announcement.announcement-manager', [
             'announcements' => Announcement::latest()->take(50)->get(),
-            'roles' => collect(Role::excludeSuperAdmin())->map(fn (Role $role) => [
-                'id' => $role->value,
-                'name' => $role->label(),
-            ]),
+            'roles' => collect(Role::excludeSuperAdmin())->map(
+                fn (Role $role) => [
+                    'id' => $role->value,
+                    'name' => $role->label(),
+                ],
+            ),
         ]);
     }
 }

@@ -60,7 +60,7 @@ final class Theme
         $colors = self::all();
         $defaults = self::defaults();
 
-        return $colors[$key] ?? $defaults[$key] ?? '#000000';
+        return $colors[$key] ?? ($defaults[$key] ?? '#000000');
     }
 
     public static function base(): string

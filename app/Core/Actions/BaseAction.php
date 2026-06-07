@@ -22,13 +22,13 @@ abstract class BaseAction
         return DB::transaction($callback, $attempts);
     }
 
-    protected function log(string $action, ?Model $subject = null, ?array $payload = null): void
+    protected function log(string $action, ?Model $subject = null, array $payload = []): void
     {
         SmartLogger::info($action)
             ->event($action)
             ->module($this->moduleName())
             ->about($subject)
-            ->withPayload($payload ?? [])
+            ->withPayload($payload)
             ->withPiiMasking()
             ->both()
             ->save();
@@ -36,10 +36,12 @@ abstract class BaseAction
 
     protected function moduleName(): string
     {
-        // Namespace structure: App\{Module}\...
-        // parts[0] = 'App', parts[1] = '{Module}'
         $parts = explode('\\', static::class);
 
-        return $parts[1] ?? 'Unknown';
+        if (! isset($parts[1])) {
+            return 'Unknown';
+        }
+
+        return $parts[1];
     }
 }

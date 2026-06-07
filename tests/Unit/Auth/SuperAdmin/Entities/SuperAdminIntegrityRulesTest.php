@@ -94,7 +94,11 @@ test('superadmin cannot change username', function () {
 });
 
 test('superadmin must have protected status', function () {
-    $user = User::factory()->create(['name' => 'Administrator', 'username' => 'superadmin', 'status' => 'protected']);
+    $user = User::factory()->create([
+        'name' => 'Administrator',
+        'username' => 'superadmin',
+        'status' => 'protected',
+    ]);
     $user->assignRole('superadmin');
 
     $rules = SuperAdminIntegrityRules::fromModel($user);
@@ -103,7 +107,11 @@ test('superadmin must have protected status', function () {
 });
 
 test('superadmin without protected status is detected', function () {
-    $user = User::factory()->create(['name' => 'Administrator', 'username' => 'superadmin', 'status' => 'activated']);
+    $user = User::factory()->create([
+        'name' => 'Administrator',
+        'username' => 'superadmin',
+        'status' => 'activated',
+    ]);
     $user->assignRole('superadmin');
 
     $rules = SuperAdminIntegrityRules::fromModel($user);
@@ -112,7 +120,11 @@ test('superadmin without protected status is detected', function () {
 });
 
 test('superadmin with protected status is immutable', function () {
-    $user = User::factory()->create(['name' => 'Administrator', 'username' => 'superadmin', 'status' => 'protected']);
+    $user = User::factory()->create([
+        'name' => 'Administrator',
+        'username' => 'superadmin',
+        'status' => 'protected',
+    ]);
     $user->assignRole('superadmin');
 
     $rules = SuperAdminIntegrityRules::fromModel($user);
@@ -121,7 +133,11 @@ test('superadmin with protected status is immutable', function () {
 });
 
 test('superadmin without protected status is not immutable', function () {
-    $user = User::factory()->create(['name' => 'Administrator', 'username' => 'superadmin', 'status' => 'activated']);
+    $user = User::factory()->create([
+        'name' => 'Administrator',
+        'username' => 'superadmin',
+        'status' => 'activated',
+    ]);
     $user->assignRole('superadmin');
 
     $rules = SuperAdminIntegrityRules::fromModel($user);

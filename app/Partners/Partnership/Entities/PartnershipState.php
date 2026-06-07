@@ -11,17 +11,11 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class PartnershipState extends BaseEntity
 {
-    public function __construct(
-        private PartnershipStatus $status,
-        private ?string $endDate,
-    ) {}
+    public function __construct(private PartnershipStatus $status, private ?string $endDate) {}
 
     public static function fromModel(Model $model): static
     {
-        return new self(
-            status: $model->status,
-            endDate: $model->end_date?->format('Y-m-d'),
-        );
+        return new self(status: $model->status, endDate: $model->end_date?->format('Y-m-d'));
     }
 
     public function isActive(): bool

@@ -44,27 +44,35 @@ class ProfileFactory extends Factory
 
     public function forStudent(Department|int|null $department = null): static
     {
-        return $this->state(fn () => [
-            'student_id_number' => $this->faker->unique()->numerify('STD-#####'),
-            'department_id' => $department instanceof Department ? $department->id : $department ?? Department::factory(),
-        ]);
+        return $this->state(
+            fn () => [
+                'student_id_number' => $this->faker->unique()->numerify('STD-#####'),
+                'department_id' => $department instanceof Department
+                        ? $department->id
+                        : $department ?? Department::factory(),
+            ],
+        );
     }
 
     public function forTeacher(): static
     {
-        return $this->state(fn () => [
-            'employee_id_number' => $this->faker->unique()->numerify('NIP-##########'),
-            'mentor_type' => 'school_teacher',
-        ]);
+        return $this->state(
+            fn () => [
+                'employee_id_number' => $this->faker->unique()->numerify('NIP-##########'),
+                'mentor_type' => 'school_teacher',
+            ],
+        );
     }
 
     public function forSupervisor(): static
     {
-        return $this->state(fn () => [
-            'employee_id_number' => $this->faker->unique()->numerify('SUP-##########'),
-            'mentor_type' => 'industry_supervisor',
-            'department_id' => null,
-        ]);
+        return $this->state(
+            fn () => [
+                'employee_id_number' => $this->faker->unique()->numerify('SUP-##########'),
+                'mentor_type' => 'industry_supervisor',
+                'department_id' => null,
+            ],
+        );
     }
 
     public function male(): static

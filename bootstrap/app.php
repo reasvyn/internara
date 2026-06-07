@@ -41,16 +41,16 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->trustProxies(at: '*');
 
-        $middleware->validateCsrfTokens(except: [
-            'setup',
-        ]);
+        $middleware->validateCsrfTokens(except: ['setup']);
 
-        $middleware->web(append: [
-            SecurityHeaders::class,
-            LogContext::class,
-            RequireSetupAccessMiddleware::class,
-            SetLocaleMiddleware::class,
-        ]);
+        $middleware->web(
+            append: [
+                SecurityHeaders::class,
+                LogContext::class,
+                RequireSetupAccessMiddleware::class,
+                SetLocaleMiddleware::class,
+            ],
+        );
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->dontFlash(['password', 'password_confirmation', 'current_password']);

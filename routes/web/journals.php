@@ -18,7 +18,9 @@ Route::prefix('student')
     ->group(function () {
         Route::livewire('/logbook', LogbookEntry::class)->name('logbook');
         Route::livewire('/attendance', StudentClockIn::class)->name('attendance');
-        Route::livewire('/attendance/absence', AbsenceRequestForm::class)->name('attendance.absence');
+        Route::livewire('/attendance/absence', AbsenceRequestForm::class)->name(
+            'attendance.absence',
+        );
     });
 
 Route::prefix('admin')

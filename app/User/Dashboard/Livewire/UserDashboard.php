@@ -21,10 +21,7 @@ class UserDashboard extends Component
 
     public function getRecentActivities(): Collection
     {
-        return ActivityLog::causedBy(auth()->user())
-            ->latest()
-            ->take(5)
-            ->get();
+        return ActivityLog::causedBy(auth()->user())->latest()->take(5)->get();
     }
 
     public function render(): View

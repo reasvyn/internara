@@ -2,11 +2,15 @@
 
 ## What It Enforces
 
-`env()` is called only inside `config/*.php` files. Application code uses `config()` helper. Environment checks use `App::environment()` or `app()->isProduction()`. Class constants or Enums replace magic strings. Config validation at boot catches misconfiguration early.
+`env()` is called only inside `config/*.php` files. Application code uses `config()` helper.
+Environment checks use `App::environment()` or `app()->isProduction()`. Class constants or Enums
+replace magic strings. Config validation at boot catches misconfiguration early.
 
 ## Why It Matters
 
-When config is cached (`php artisan config:cache`), `env()` calls return `null` because the `.env` file is no longer loaded. All `env()` calls must be in config files so that config caching works correctly. `App::environment()` is a helper that reads from config, making it cache-safe.
+When config is cached (`php artisan config:cache`), `env()` calls return `null` because the `.env`
+file is no longer loaded. All `env()` calls must be in config files so that config caching works
+correctly. `App::environment()` is a helper that reads from config, making it cache-safe.
 
 ## When It Applies
 

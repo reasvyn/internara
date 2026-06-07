@@ -18,7 +18,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Represents a specific location/quota within a company for an internship.
  */
-#[Fillable(['company_id', 'internship_id', 'name', 'address', 'quota', 'filled_quota', 'description'])]
+#[
+    Fillable([
+        'company_id',
+        'internship_id',
+        'name',
+        'address',
+        'quota',
+        'filled_quota',
+        'description',
+    ]),
+]
 class Placement extends BaseModel
 {
     use HasFactory;

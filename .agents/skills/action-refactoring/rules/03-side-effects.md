@@ -4,13 +4,13 @@ All side effects belong in the Action — never in the Livewire component.
 
 ## Side Effect Types
 
-| Side Effect | Tool | Method |
-|---|---|---|
-| Audit logging | `$this->log()` on `BaseAction` | `$this->log('user_created', $user, [...])` |
-| Module events | `Event::dispatch()` | `event(new UserCreated($user))` |
-| Notifications | `Notification::send()` | `$user->notify(new WelcomeNotification(...))` |
-| Cache invalidation | `Cache::forget()` | `Cache::forget('settings.all')` |
-| Flash messages | ❌ NOT here | Belongs in the Livewire component |
+| Side Effect        | Tool                           | Method                                        |
+| ------------------ | ------------------------------ | --------------------------------------------- |
+| Audit logging      | `$this->log()` on `BaseAction` | `$this->log('user_created', $user, [...])`    |
+| Module events      | `Event::dispatch()`            | `event(new UserCreated($user))`               |
+| Notifications      | `Notification::send()`         | `$user->notify(new WelcomeNotification(...))` |
+| Cache invalidation | `Cache::forget()`              | `Cache::forget('settings.all')`               |
+| Flash messages     | ❌ NOT here                    | Belongs in the Livewire component             |
 
 ## Transaction Boundary
 
@@ -82,7 +82,8 @@ class CreateUserAction extends BaseAction
 
 ## Flash Messages
 
-Flash messages belong in the Livewire component, not in the Action. The Action returns a result; the component decides what message to show.
+Flash messages belong in the Livewire component, not in the Action. The Action returns a result; the
+component decides what message to show.
 
 ```php
 // ✅ CORRECT: Component decides the message

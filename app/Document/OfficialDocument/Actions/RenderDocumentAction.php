@@ -12,9 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 final class RenderDocumentAction extends BaseAction
 {
-    public function __construct(
-        private readonly DocumentRenderer $renderer,
-    ) {}
+    public function __construct(private readonly DocumentRenderer $renderer) {}
 
     public function execute(Document $document, Registration $registration): Document
     {

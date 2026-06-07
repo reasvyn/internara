@@ -72,9 +72,7 @@ class ConfirmPassword extends Component
 
     protected function throttleKey(): string
     {
-        return Str::transliterate(
-            'confirm-password|'.request()->ip(),
-        );
+        return Str::transliterate('confirm-password|'.request()->ip());
     }
 
     #[Layout('user::layouts.auth', ['title' => 'Confirm Password'])]

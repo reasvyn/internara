@@ -10,11 +10,7 @@ final class Color
     {
         $hex = ltrim($hex, '#');
 
-        return [
-            hexdec(substr($hex, 0, 2)),
-            hexdec(substr($hex, 2, 2)),
-            hexdec(substr($hex, 4, 2)),
-        ];
+        return [hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2))];
     }
 
     public static function relativeLuminance(string $hex): float
@@ -34,7 +30,7 @@ final class Color
         $rgb = self::hexToRgb($hex);
 
         foreach ($rgb as &$channel) {
-            $channel = min(255, $channel + (int) round((255 - $channel) * $percent / 100));
+            $channel = min(255, $channel + (int) round(((255 - $channel) * $percent) / 100));
         }
 
         return sprintf('#%02x%02x%02x', $rgb[0], $rgb[1], $rgb[2]);
@@ -45,7 +41,7 @@ final class Color
         $rgb = self::hexToRgb($hex);
 
         foreach ($rgb as &$channel) {
-            $channel = max(0, $channel - (int) round($channel * $percent / 100));
+            $channel = max(0, $channel - (int) round(($channel * $percent) / 100));
         }
 
         return sprintf('#%02x%02x%02x', $rgb[0], $rgb[1], $rgb[2]);

@@ -29,28 +29,34 @@ test('resets password with valid token', function () {
 });
 
 test('fails with mismatched password confirmation', function () {
-    expect(fn () => $this->action->execute(
-        $this->user->email,
-        $this->token,
-        'NewPass123!',
-        'DifferentPass456!',
-    ))->toThrow(RuntimeException::class, trans('validation.custom.password.confirmed'));
+    expect(
+        fn () => $this->action->execute(
+            $this->user->email,
+            $this->token,
+            'NewPass123!',
+            'DifferentPass456!',
+        ),
+    )->toThrow(RuntimeException::class, trans('validation.custom.password.confirmed'));
 });
 
 test('fails with invalid token', function () {
-    expect(fn () => $this->action->execute(
-        $this->user->email,
-        'invalid-token',
-        'NewSecurePass123!',
-        'NewSecurePass123!',
-    ))->toThrow(RuntimeException::class, trans('passwords.token'));
+    expect(
+        fn () => $this->action->execute(
+            $this->user->email,
+            'invalid-token',
+            'NewSecurePass123!',
+            'NewSecurePass123!',
+        ),
+    )->toThrow(RuntimeException::class, trans('passwords.token'));
 });
 
 test('fails with non-existent email', function () {
-    expect(fn () => $this->action->execute(
-        'nonexistent@test.com',
-        $this->token,
-        'NewSecurePass123!',
-        'NewSecurePass123!',
-    ))->toThrow(RuntimeException::class, trans('passwords.user'));
+    expect(
+        fn () => $this->action->execute(
+            'nonexistent@test.com',
+            $this->token,
+            'NewSecurePass123!',
+            'NewSecurePass123!',
+        ),
+    )->toThrow(RuntimeException::class, trans('passwords.user'));
 });

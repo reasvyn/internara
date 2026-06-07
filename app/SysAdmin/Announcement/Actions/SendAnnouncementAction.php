@@ -91,10 +91,13 @@ final class SendAnnouncementAction extends BaseAction
                 ->whereHas('roles', fn ($q) => $q->whereIn('name', $config['target_roles']));
         }
 
-        Notification::send($users->get(), new AnnouncementNotification(
-            title: $announcement->title,
-            message: $announcement->message,
-            link: $announcement->link,
-        ));
+        Notification::send(
+            $users->get(),
+            new AnnouncementNotification(
+                title: $announcement->title,
+                message: $announcement->message,
+                link: $announcement->link,
+            ),
+        );
     }
 }

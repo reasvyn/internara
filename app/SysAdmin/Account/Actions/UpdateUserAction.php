@@ -58,8 +58,12 @@ final class UpdateUserAction extends BaseAction
                         ? Hash::make($userData['password'])
                         : null,
                     'setup_required' => $userData['setup_required'] ?? null,
-                    'locked_at' => array_key_exists('locked_at', $userData) ? $userData['locked_at'] : null,
-                    'locked_reason' => array_key_exists('locked_reason', $userData) ? $userData['locked_reason'] : null,
+                    'locked_at' => array_key_exists('locked_at', $userData)
+                        ? $userData['locked_at']
+                        : null,
+                    'locked_reason' => array_key_exists('locked_reason', $userData)
+                        ? $userData['locked_reason']
+                        : null,
                 ],
                 fn ($v) => $v !== null,
             );

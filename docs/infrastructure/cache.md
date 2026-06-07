@@ -1,25 +1,25 @@
 # Cache
-> Last updated: 2026-05-27
-> Changes: docs: comprehensive infrastructure, architecture, and conventions overhaul
 
+> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
+> conventions overhaul
 
 ## Purpose
 
 The cache layer reduces database load and response latency by storing computed or frequently
-accessed data in a fast retrieval store. It is a **performance optimization**, not a
-persistence mechanism. Data cached today may not be cached tomorrow, and the application must
-function correctly on cache miss.
+accessed data in a fast retrieval store. It is a **performance optimization**, not a persistence
+mechanism. Data cached today may not be cached tomorrow, and the application must function correctly
+on cache miss.
 
 ---
 
 ## Driver Strategy by Tier
 
-| Aspect | Tier 1 (Entry) | Tier 2 (Standard) | Tier 3 (HA) |
-|---|---|---|---|
-| **Driver** | `file` or `database` | `redis` | `redis` (cluster) |
-| **Setup** | Zero config | Redis server required | Redis cluster |
-| **Performance** | Moderate | High (in-memory) | High (distributed) |
-| **Persistence** | File-based | Memory + persistence | Memory + replication |
+| Aspect          | Tier 1 (Entry)       | Tier 2 (Standard)     | Tier 3 (HA)          |
+| --------------- | -------------------- | --------------------- | -------------------- |
+| **Driver**      | `file` or `database` | `redis`               | `redis` (cluster)    |
+| **Setup**       | Zero config          | Redis server required | Redis cluster        |
+| **Performance** | Moderate             | High (in-memory)      | High (distributed)   |
+| **Persistence** | File-based           | Memory + persistence  | Memory + replication |
 
 Default for new installations: `file` driver. Zero external services required.
 
@@ -39,27 +39,27 @@ REDIS_PORT=6379
 
 ### Data Layer Caching
 
-| Data | Key Pattern | TTL | Driver | Invalidation |
-|---|---|---|---|---|
-| Settings | `settings.{key}` | forever | Primary cache | Explicit on write |
-| Brand colors | `theme.css_variables` | forever | Primary cache | Explicit on color change |
-| Permissions | Spatie internal | 24 hours | Primary cache | Auto on role/permission change |
-| Dashboard stats | `admin.dashboard.stats` | 5 min | Primary cache | Periodic refresh |
-| Unread notifications | `notification.unread:{userId}` | 5 min | Primary cache | On read / new notification |
+| Data                 | Key Pattern                    | TTL      | Driver        | Invalidation                   |
+| -------------------- | ------------------------------ | -------- | ------------- | ------------------------------ |
+| Settings             | `settings.{key}`               | forever  | Primary cache | Explicit on write              |
+| Brand colors         | `theme.css_variables`          | forever  | Primary cache | Explicit on color change       |
+| Permissions          | Spatie internal                | 24 hours | Primary cache | Auto on role/permission change |
+| Dashboard stats      | `admin.dashboard.stats`        | 5 min    | Primary cache | Periodic refresh               |
+| Unread notifications | `notification.unread:{userId}` | 5 min    | Primary cache | On read / new notification     |
 
 ### Application Layer Caching
 
-| Data | Command | When |
-|---|---|---|
-| Config files | `php artisan config:cache` | Every deployment |
-| Routes | `php artisan route:cache` | Every deployment (no Closure routes) |
-| Blade views | `php artisan view:cache` | Every deployment |
-| Events | `php artisan event:cache` | Every deployment (high-traffic only) |
+| Data         | Command                    | When                                 |
+| ------------ | -------------------------- | ------------------------------------ |
+| Config files | `php artisan config:cache` | Every deployment                     |
+| Routes       | `php artisan route:cache`  | Every deployment (no Closure routes) |
+| Blade views  | `php artisan view:cache`   | Every deployment                     |
+| Events       | `php artisan event:cache`  | Every deployment (high-traffic only) |
 
 ### OpCache (Bytecode Cache)
 
-PHP OpCache caches compiled PHP bytecode in shared memory — essential for production
-performance. Without it, PHP re-parses and compiles every PHP file on every request.
+PHP OpCache caches compiled PHP bytecode in shared memory — essential for production performance.
+Without it, PHP re-parses and compiles every PHP file on every request.
 
 ```ini
 ; /etc/php/8.4/cli/conf.d/opcache.ini
@@ -71,8 +71,7 @@ opcache.revalidate_freq=2               ; Not used when validate=0
 opcache.max_wasted_percentage=10        ; Auto-restart when wasted too much
 ```
 
-For **development**, disable OpCache or set `validate_timestamps=1` to avoid stale
-bytecode:
+For **development**, disable OpCache or set `validate_timestamps=1` to avoid stale bytecode:
 
 ```ini
 opcache.enable=1
@@ -88,10 +87,9 @@ opcache.revalidate_freq=0               ; Check every request
 
 1. **If you update a value, invalidate its cache entry.** This is the fundamental rule.
 2. Prefer **targeted invalidation** — clear only the keys that changed, not everything.
-3. Use **event-driven invalidation** for cross-module cache keys — the Command Action
-   dispatches an event, a listener flushes the affected keys.
-4. Full cache flushes (`php artisan cache:clear`) are for maintenance only, not normal
-   operations.
+3. Use **event-driven invalidation** for cross-module cache keys — the Command Action dispatches an
+   event, a listener flushes the affected keys.
+4. Full cache flushes (`php artisan cache:clear`) are for maintenance only, not normal operations.
 
 ### Invalidation Flow
 
@@ -128,8 +126,8 @@ Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
 
 ### Centralized Registry
 
-Every cache key MUST be declared as a constant in `App\Support\CacheKeys`.
-This prevents collisions, makes dependencies discoverable, and enables systematic flushing.
+Every cache key MUST be declared as a constant in `App\Support\CacheKeys`. This prevents collisions,
+makes dependencies discoverable, and enables systematic flushing.
 
 ```php
 final readonly class CacheKeys
@@ -162,12 +160,12 @@ Examples:
 
 ### TTL Legend
 
-| TTL | Meaning | Examples |
-|---|---|---|
-| **short** | < 5 min | Dashboard stats, notification counts |
-| **medium** | 5 min - 1 hour | Aggregated reports |
-| **long** | 1 hour - 24h | Slowly changing reference data |
-| **forever** | Until explicit invalidation | Settings, branding, permissions |
+| TTL         | Meaning                     | Examples                             |
+| ----------- | --------------------------- | ------------------------------------ |
+| **short**   | < 5 min                     | Dashboard stats, notification counts |
+| **medium**  | 5 min - 1 hour              | Aggregated reports                   |
+| **long**    | 1 hour - 24h                | Slowly changing reference data       |
+| **forever** | Until explicit invalidation | Settings, branding, permissions      |
 
 ---
 
@@ -221,13 +219,13 @@ REDIS_PASSWORD=cluster-password
 
 ## Cache vs Session
 
-| | Cache | Session |
-|---|---|---|
-| **Purpose** | Performance optimization | Auth state + user ephemeral data |
-| **Security** | No restrictions — any code reads any key | Encrypted, HTTP-only, SameSite |
-| **Data loss** | Acceptable — recomputed on miss | Critical — user gets logged out |
-| **TTL** | Per-key (independent lifetimes) | Single global lifetime (120 min) |
-| **Backend** | `file` / `database` / `redis` | `file` / `database` / `redis` |
+|               | Cache                                    | Session                          |
+| ------------- | ---------------------------------------- | -------------------------------- |
+| **Purpose**   | Performance optimization                 | Auth state + user ephemeral data |
+| **Security**  | No restrictions — any code reads any key | Encrypted, HTTP-only, SameSite   |
+| **Data loss** | Acceptable — recomputed on miss          | Critical — user gets logged out  |
+| **TTL**       | Per-key (independent lifetimes)          | Single global lifetime (120 min) |
+| **Backend**   | `file` / `database` / `redis`            | `file` / `database` / `redis`    |
 
 ---
 
@@ -254,8 +252,8 @@ php artisan optimize:clear    # Clear ALL caches (config, route, view, events, c
 php artisan system:cache-warm
 ```
 
-This pre-warms settings, brand values, compiles config/views/events, and prepares
-the cache for first requests after deployment.
+This pre-warms settings, brand values, compiles config/views/events, and prepares the cache for
+first requests after deployment.
 
 ---
 

@@ -11,8 +11,7 @@ use Mockery;
 
 test('lang checker logs warning on missing translation key', function () {
     $loader = Mockery::mock(Loader::class);
-    $loader->shouldReceive('load')
-        ->andReturn([]);
+    $loader->shouldReceive('load')->andReturn([]);
 
     $log = Log::spy();
 
@@ -27,8 +26,7 @@ test('lang checker logs warning on missing translation key', function () {
 
 test('lang checker returns translation when key exists', function () {
     $loader = Mockery::mock(Loader::class);
-    $loader->shouldReceive('load')
-        ->andReturn(['existing' => 'Terjemahan']);
+    $loader->shouldReceive('load')->andReturn(['existing' => 'Terjemahan']);
 
     $log = Log::spy();
 
@@ -41,8 +39,7 @@ test('lang checker returns translation when key exists', function () {
 
 test('lang checker handles empty string key', function () {
     $loader = Mockery::mock(Loader::class);
-    $loader->shouldReceive('load')
-        ->andReturn([]);
+    $loader->shouldReceive('load')->andReturn([]);
 
     $log = Log::spy();
 
@@ -57,7 +54,8 @@ test('lang checker handles empty string key', function () {
 
 test('lang checker uses specified locale', function () {
     $loader = Mockery::mock(Loader::class);
-    $loader->shouldReceive('load')
+    $loader
+        ->shouldReceive('load')
         ->with('id', '*', '*')
         ->andReturn(['greeting' => 'Halo']);
 
@@ -69,8 +67,7 @@ test('lang checker uses specified locale', function () {
 
 test('lang checker falls back to default locale', function () {
     $loader = Mockery::mock(Loader::class);
-    $loader->shouldReceive('load')
-        ->andReturn(['fallback' => 'Fallback value']);
+    $loader->shouldReceive('load')->andReturn(['fallback' => 'Fallback value']);
 
     $checker = new LangChecker($loader, 'en');
     $result = $checker->get('fallback', [], 'es');
@@ -80,8 +77,7 @@ test('lang checker falls back to default locale', function () {
 
 test('lang checker replaces placeholders', function () {
     $loader = Mockery::mock(Loader::class);
-    $loader->shouldReceive('load')
-        ->andReturn(['welcome' => 'Hello :name']);
+    $loader->shouldReceive('load')->andReturn(['welcome' => 'Hello :name']);
 
     $checker = new LangChecker($loader, 'en');
     $result = $checker->get('welcome', ['name' => 'John']);

@@ -25,7 +25,8 @@ final class SubmitAssignmentAction extends BaseAction
 
         return $this->transaction(function () use ($student, $assignment, $data) {
             $mentee = Mentee::where('user_id', $student->id)->first();
-            $registration = $mentee?->registrations()
+            $registration = $mentee
+                ?->registrations()
                 ->where('internship_id', $assignment->internship_id)
                 ->whereIn('status', ['active', 'placed'])
                 ->first();

@@ -13,7 +13,9 @@ final class DeleteCompanyAction extends BaseAction
     public function execute(Company $company): void
     {
         if ($company->placements()->count() > 0 || $company->partnerships()->count() > 0) {
-            throw new RejectedException('Cannot delete company with existing placements or partnerships.');
+            throw new RejectedException(
+                'Cannot delete company with existing placements or partnerships.',
+            );
         }
 
         $this->transaction(function () use ($company) {

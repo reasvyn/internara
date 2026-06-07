@@ -28,8 +28,14 @@ final class UpdateProfileAction extends BaseAction
      *
      * @throws RuntimeException when update fails
      */
-    public function execute(User $user, array $data, ?string $name = null, ?string $email = null, ?UploadedFile $avatar = null, ?string $username = null): Profile
-    {
+    public function execute(
+        User $user,
+        array $data,
+        ?string $name = null,
+        ?string $email = null,
+        ?UploadedFile $avatar = null,
+        ?string $username = null,
+    ): Profile {
         $integrity = SuperAdminIntegrityRules::fromModel($user);
 
         if ($name !== null && ! $integrity->canChangeName()) {
@@ -51,7 +57,14 @@ final class UpdateProfileAction extends BaseAction
             $userData['email'] = $email;
         }
         if ($username !== null) {
-            $userRules['username'] = ['required', 'string', 'alpha_num', 'lowercase', 'max:50', 'unique:users,username,'.$user->id];
+            $userRules['username'] = [
+                'required',
+                'string',
+                'alpha_num',
+                'lowercase',
+                'max:50',
+                'unique:users,username,'.$user->id,
+            ];
             $userData['username'] = $username;
         }
 
@@ -76,10 +89,7 @@ final class UpdateProfileAction extends BaseAction
                 return $user->profile ?? $user->profile()->create([]);
             }
 
-            $profile = $user->profile()->updateOrCreate(
-                ['user_id' => $user->id],
-                $data,
-            );
+            $profile = $user->profile()->updateOrCreate(['user_id' => $user->id], $data);
 
             SmartLogger::info('profile_updated')
                 ->event('profile_updated')

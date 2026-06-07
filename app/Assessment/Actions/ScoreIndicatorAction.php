@@ -13,8 +13,12 @@ use App\User\Models\User;
 
 final class ScoreIndicatorAction extends BaseAction
 {
-    public function execute(Assessment $assessment, string $indicatorId, float $score, User $evaluator): Assessment
-    {
+    public function execute(
+        Assessment $assessment,
+        string $indicatorId,
+        float $score,
+        User $evaluator,
+    ): Assessment {
         if ($assessment->finalized_at !== null) {
             throw new RejectedException('Cannot modify a finalized assessment.');
         }
@@ -39,8 +43,11 @@ final class ScoreIndicatorAction extends BaseAction
         return $assessment->fresh();
     }
 
-    private function ensureAuthorized(Assessment $assessment, Indicator $indicator, User $evaluator): void
-    {
+    private function ensureAuthorized(
+        Assessment $assessment,
+        Indicator $indicator,
+        User $evaluator,
+    ): void {
         if ($evaluator->hasRole('super_admin') || $evaluator->hasRole('admin')) {
             return;
         }
@@ -51,13 +58,17 @@ final class ScoreIndicatorAction extends BaseAction
             throw new RejectedException('You are not authorized to score this competency.');
         }
 
-        $mentorType = $allowedRole === 'teacher'
-            ? Mentor::TYPE_SCHOOL_TEACHER
-            : Mentor::TYPE_INDUSTRY_SUPERVISOR;
+        $mentorType =
+            $allowedRole === 'teacher'
+                ? Mentor::TYPE_SCHOOL_TEACHER
+                : Mentor::TYPE_INDUSTRY_SUPERVISOR;
 
         $isAssignedToRegistration = Mentor::where('user_id', $evaluator->id)
             ->where('type', $mentorType)
-            ->whereHas('registrations', fn ($q) => $q->where('registration_id', $assessment->registration_id))
+            ->whereHas(
+                'registrations',
+                fn ($q) => $q->where('registration_id', $assessment->registration_id),
+            )
             ->exists();
 
         if (! $isAssignedToRegistration) {

@@ -12,9 +12,7 @@ class IncidentReportPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, [
-            'super_admin', 'admin', 'teacher', 'supervisor',
-        ]);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher', 'supervisor']);
     }
 
     public function view(User $user, IncidentReport $report): bool

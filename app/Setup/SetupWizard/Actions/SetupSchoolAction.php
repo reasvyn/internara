@@ -24,13 +24,41 @@ final class SetupSchoolAction extends BaseAction
 
         $this->transaction(function () use ($data) {
             Settings::set([
-                'school.name' => ['value' => $data['name'], 'group' => 'school', 'type' => 'string'],
-                'school.institutional_code' => ['value' => $data['institutional_code'], 'group' => 'school', 'type' => 'string'],
-                'school.email' => ['value' => $data['email'], 'group' => 'school', 'type' => 'string'],
-                'school.address' => ['value' => $data['address'] ?? '', 'group' => 'school', 'type' => 'string'],
-                'school.phone' => ['value' => $data['phone'] ?? '', 'group' => 'school', 'type' => 'string'],
-                'school.website' => ['value' => $data['website'] ?? '', 'group' => 'school', 'type' => 'string'],
-                'school.principal_name' => ['value' => $data['principal_name'] ?? '', 'group' => 'school', 'type' => 'string'],
+                'school.name' => [
+                    'value' => $data['name'],
+                    'group' => 'school',
+                    'type' => 'string',
+                ],
+                'school.institutional_code' => [
+                    'value' => $data['institutional_code'],
+                    'group' => 'school',
+                    'type' => 'string',
+                ],
+                'school.email' => [
+                    'value' => $data['email'],
+                    'group' => 'school',
+                    'type' => 'string',
+                ],
+                'school.address' => [
+                    'value' => $data['address'] ?? '',
+                    'group' => 'school',
+                    'type' => 'string',
+                ],
+                'school.phone' => [
+                    'value' => $data['phone'] ?? '',
+                    'group' => 'school',
+                    'type' => 'string',
+                ],
+                'school.website' => [
+                    'value' => $data['website'] ?? '',
+                    'group' => 'school',
+                    'type' => 'string',
+                ],
+                'school.principal_name' => [
+                    'value' => $data['principal_name'] ?? '',
+                    'group' => 'school',
+                    'type' => 'string',
+                ],
             ]);
 
             $this->log('school_setup_completed', null, [

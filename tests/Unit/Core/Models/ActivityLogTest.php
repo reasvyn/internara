@@ -16,25 +16,20 @@ beforeEach(function () {
 });
 
 test('scope for user applies causer where constraint', function () {
-    $this->builder->shouldReceive('where')
-        ->once()
-        ->with('causer_id', '123')
-        ->andReturnSelf();
+    $this->builder->shouldReceive('where')->once()->with('causer_id', '123')->andReturnSelf();
 
     $this->log->scopeForUser($this->builder, '123');
 });
 
 test('scope for user accepts integer id', function () {
-    $this->builder->shouldReceive('where')
-        ->once()
-        ->with('causer_id', 42)
-        ->andReturnSelf();
+    $this->builder->shouldReceive('where')->once()->with('causer_id', 42)->andReturnSelf();
 
     $this->log->scopeForUser($this->builder, 42);
 });
 
 test('scope where subject with type only', function () {
-    $this->builder->shouldReceive('where')
+    $this->builder
+        ->shouldReceive('where')
         ->once()
         ->with('subject_type', 'App\Models\User')
         ->andReturnSelf();
@@ -43,20 +38,19 @@ test('scope where subject with type only', function () {
 });
 
 test('scope where subject with type and id', function () {
-    $this->builder->shouldReceive('where')
+    $this->builder
+        ->shouldReceive('where')
         ->once()
         ->with('subject_type', 'App\Models\User')
         ->andReturnSelf();
-    $this->builder->shouldReceive('where')
-        ->once()
-        ->with('subject_id', '42')
-        ->andReturnSelf();
+    $this->builder->shouldReceive('where')->once()->with('subject_id', '42')->andReturnSelf();
 
     $this->log->scopeWhereSubject($this->builder, 'App\Models\User', '42');
 });
 
 test('scope where subject with null id skips id filter', function () {
-    $this->builder->shouldReceive('where')
+    $this->builder
+        ->shouldReceive('where')
         ->once()
         ->with('subject_type', 'App\Models\User')
         ->andReturnSelf();
@@ -65,16 +59,14 @@ test('scope where subject with null id skips id filter', function () {
 });
 
 test('scope of action applies event where constraint', function () {
-    $this->builder->shouldReceive('where')
-        ->once()
-        ->with('event', 'create')
-        ->andReturnSelf();
+    $this->builder->shouldReceive('where')->once()->with('event', 'create')->andReturnSelf();
 
     $this->log->scopeOfAction($this->builder, 'create');
 });
 
 test('scope in log applies whereIn constraint', function () {
-    $this->builder->shouldReceive('whereIn')
+    $this->builder
+        ->shouldReceive('whereIn')
         ->once()
         ->with('log_name', ['audit', 'system'])
         ->andReturnSelf();
@@ -83,7 +75,8 @@ test('scope in log applies whereIn constraint', function () {
 });
 
 test('scope in log accepts single variadic argument', function () {
-    $this->builder->shouldReceive('whereIn')
+    $this->builder
+        ->shouldReceive('whereIn')
         ->once()
         ->with('log_name', ['audit'])
         ->andReturnSelf();
@@ -92,31 +85,22 @@ test('scope in log accepts single variadic argument', function () {
 });
 
 test('scope recent applies latest and limit', function () {
-    $this->builder->shouldReceive('latest')
-        ->once()
-        ->andReturnSelf();
-    $this->builder->shouldReceive('limit')
-        ->once()
-        ->with(10)
-        ->andReturnSelf();
+    $this->builder->shouldReceive('latest')->once()->andReturnSelf();
+    $this->builder->shouldReceive('limit')->once()->with(10)->andReturnSelf();
 
     $this->log->scopeRecent($this->builder, 10);
 });
 
 test('scope recent uses default limit of 50', function () {
-    $this->builder->shouldReceive('latest')
-        ->once()
-        ->andReturnSelf();
-    $this->builder->shouldReceive('limit')
-        ->once()
-        ->with(50)
-        ->andReturnSelf();
+    $this->builder->shouldReceive('latest')->once()->andReturnSelf();
+    $this->builder->shouldReceive('limit')->once()->with(50)->andReturnSelf();
 
     $this->log->scopeRecent($this->builder);
 });
 
 test('scope last days filters by date', function () {
-    $this->builder->shouldReceive('where')
+    $this->builder
+        ->shouldReceive('where')
         ->once()
         ->with('created_at', '>=', Mockery::type(Carbon::class))
         ->andReturnSelf();
@@ -125,7 +109,8 @@ test('scope last days filters by date', function () {
 });
 
 test('scope last days with zero days returns all records', function () {
-    $this->builder->shouldReceive('where')
+    $this->builder
+        ->shouldReceive('where')
         ->once()
         ->with('created_at', '>=', Mockery::type(Carbon::class))
         ->andReturnSelf();
@@ -134,7 +119,8 @@ test('scope last days with zero days returns all records', function () {
 });
 
 test('scope for module filters by subject namespace or log name', function () {
-    $this->builder->shouldReceive('where')
+    $this->builder
+        ->shouldReceive('where')
         ->once()
         ->with(Mockery::on(fn ($closure) => is_callable($closure)))
         ->andReturnSelf();
@@ -143,7 +129,8 @@ test('scope for module filters by subject namespace or log name', function () {
 });
 
 test('scope for module with lowercase module name', function () {
-    $this->builder->shouldReceive('where')
+    $this->builder
+        ->shouldReceive('where')
         ->once()
         ->with(Mockery::on(fn ($closure) => is_callable($closure)))
         ->andReturnSelf();
@@ -155,26 +142,16 @@ test('get grouped by day returns collection', function () {
     $log = Mockery::mock(ActivityLog::class)->makePartial();
     $builder = Mockery::mock(Builder::class);
 
-    $log->shouldReceive('lastDays')
-        ->with(30)
-        ->once()
-        ->andReturn($builder);
+    $log->shouldReceive('lastDays')->with(30)->once()->andReturn($builder);
 
-    $builder->shouldReceive('selectRaw')
+    $builder
+        ->shouldReceive('selectRaw')
         ->with('DATE(created_at) as date, COUNT(*) as count')
         ->once()
         ->andReturnSelf();
-    $builder->shouldReceive('groupBy')
-        ->with('date')
-        ->once()
-        ->andReturnSelf();
-    $builder->shouldReceive('orderBy')
-        ->with('date')
-        ->once()
-        ->andReturnSelf();
-    $builder->shouldReceive('get')
-        ->once()
-        ->andReturn(collect());
+    $builder->shouldReceive('groupBy')->with('date')->once()->andReturnSelf();
+    $builder->shouldReceive('orderBy')->with('date')->once()->andReturnSelf();
+    $builder->shouldReceive('get')->once()->andReturn(collect());
 
     expect($log->getGroupedByDay())->toBeInstanceOf(Collection::class);
 });
@@ -183,26 +160,16 @@ test('get grouped by day uses custom day parameter', function () {
     $log = Mockery::mock(ActivityLog::class)->makePartial();
     $builder = Mockery::mock(Builder::class);
 
-    $log->shouldReceive('lastDays')
-        ->with(7)
-        ->once()
-        ->andReturn($builder);
+    $log->shouldReceive('lastDays')->with(7)->once()->andReturn($builder);
 
-    $builder->shouldReceive('selectRaw')
+    $builder
+        ->shouldReceive('selectRaw')
         ->with('DATE(created_at) as date, COUNT(*) as count')
         ->once()
         ->andReturnSelf();
-    $builder->shouldReceive('groupBy')
-        ->with('date')
-        ->once()
-        ->andReturnSelf();
-    $builder->shouldReceive('orderBy')
-        ->with('date')
-        ->once()
-        ->andReturnSelf();
-    $builder->shouldReceive('get')
-        ->once()
-        ->andReturn(collect());
+    $builder->shouldReceive('groupBy')->with('date')->once()->andReturnSelf();
+    $builder->shouldReceive('orderBy')->with('date')->once()->andReturnSelf();
+    $builder->shouldReceive('get')->once()->andReturn(collect());
 
     expect($log->getGroupedByDay(7))->toBeInstanceOf(Collection::class);
 });

@@ -2,15 +2,20 @@
 
 ## What It Enforces
 
-After extracting Actions and Entities, the Livewire component should contain only: UI state properties, form validation, the confirm dialog pattern, read-only queries for render, and authorization in `boot()`. Nothing else.
+After extracting Actions and Entities, the Livewire component should contain only: UI state
+properties, form validation, the confirm dialog pattern, read-only queries for render, and
+authorization in `boot()`. Nothing else.
 
 ## Why It Matters
 
-A well-structured component is easy to audit for security (auth in `boot()`), easy to test (all logic is in injectable Actions), and easy to understand (public properties describe the complete UI state). The component becomes a thin coordination layer between the browser and the module.
+A well-structured component is easy to audit for security (auth in `boot()`), easy to test (all
+logic is in injectable Actions), and easy to understand (public properties describe the complete UI
+state). The component becomes a thin coordination layer between the browser and the module.
 
 ## When It Applies
 
 ### Allowed in Components
+
 - UI state: public properties for form data, modal visibility, search, selection
 - Form validation: `$this->validate()` for UX only (Action re-validates)
 - Confirm dialog: `askAction()` sets target → `confirmAction()` calls injected Action
@@ -19,6 +24,7 @@ A well-structured component is easy to audit for security (auth in `boot()`), ea
 - Flash messages via PHPFlasher (`flash()->success()`, not maryUI Toast)
 
 ### NOT Allowed
+
 - Inline DB mutations (`DB::transaction()`, `Model::create()`)
 - Inline business rules (`if ($year->is_active)`)
 - Side effects (`Log::info()`, `event(new ...)`)
@@ -26,4 +32,5 @@ A well-structured component is easy to audit for security (auth in `boot()`), ea
 - Bare `wire:confirm` for destructive actions (use the two-step pattern)
 - maryUI Toast methods (`$this->success()`, `$this->error()`)
 
-Exceptions: The render query is an exception to the "no business logic" rule because it's presentation logic — fetching data to display.
+Exceptions: The render query is an exception to the "no business logic" rule because it's
+presentation logic — fetching data to display.

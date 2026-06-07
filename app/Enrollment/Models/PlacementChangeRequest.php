@@ -12,7 +12,19 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['registration_id', 'from_placement_id', 'to_placement_id', 'reason', 'requested_by', 'status', 'processed_by', 'processed_at', 'rejection_reason'])]
+#[
+    Fillable([
+        'registration_id',
+        'from_placement_id',
+        'to_placement_id',
+        'reason',
+        'requested_by',
+        'status',
+        'processed_by',
+        'processed_at',
+        'rejection_reason',
+    ]),
+]
 class PlacementChangeRequest extends BaseModel
 {
     use HasFactory;

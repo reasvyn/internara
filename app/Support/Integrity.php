@@ -43,7 +43,9 @@ final class Integrity
         $info = json_decode($content, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new RuntimeException('Core system metadata file contains invalid JSON: '.json_last_error_msg());
+            throw new RuntimeException(
+                'Core system metadata file contains invalid JSON: '.json_last_error_msg(),
+            );
         }
 
         $info = is_array($info) ? $info : [];
@@ -52,7 +54,7 @@ final class Integrity
         if (! hash_equals(self::AUTHOR_NAME, $authorName)) {
             throw new RuntimeException(
                 'Attribution Error: Unauthorized author modification detected. '.
-                'This system requires attribution to the original author.'
+                    'This system requires attribution to the original author.',
             );
         }
     }

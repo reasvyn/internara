@@ -39,7 +39,10 @@ class TeacherManager extends BaseRecordManager
                 'class' => 'font-mono text-xs',
             ],
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
-            ['key' => 'profile.employee_id_number', 'label' => __('user.teacher.employee_id_number')],
+            [
+                'key' => 'profile.employee_id_number',
+                'label' => __('user.teacher.employee_id_number'),
+            ],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
@@ -64,8 +67,14 @@ class TeacherManager extends BaseRecordManager
     protected function applyFilters(Builder $query): Builder
     {
         return $query
-            ->when($this->filters['created_from'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '>=', $v))
-            ->when($this->filters['created_to'] ?? null, fn ($q, $v) => $q->whereDate('created_at', '<=', $v));
+            ->when(
+                $this->filters['created_from'] ?? null,
+                fn ($q, $v) => $q->whereDate('created_at', '>=', $v),
+            )
+            ->when(
+                $this->filters['created_to'] ?? null,
+                fn ($q, $v) => $q->whereDate('created_at', '<=', $v),
+            );
     }
 
     // --- Record Actions ---
@@ -101,10 +110,19 @@ class TeacherManager extends BaseRecordManager
 
         if ($this->form->id) {
             $user = User::findOrFail($this->form->id);
-            $updateAction->execute($user, ['name' => $this->form->name, 'email' => $this->form->email], $profileData);
+            $updateAction->execute(
+                $user,
+                ['name' => $this->form->name, 'email' => $this->form->email],
+                $profileData,
+            );
             flash()->success(__('user.teacher.success_updated'));
         } else {
-            $user = $createAction->execute(['name' => $this->form->name, 'email' => $this->form->email], $profileData, [RoleEnum::TEACHER->value], false);
+            $user = $createAction->execute(
+                ['name' => $this->form->name, 'email' => $this->form->email],
+                $profileData,
+                [RoleEnum::TEACHER->value],
+                false,
+            );
             $this->userModal = false;
             $this->redirect(route('sysadmin.users.account-slip', $user));
 

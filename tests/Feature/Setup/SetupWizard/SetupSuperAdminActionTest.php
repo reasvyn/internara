@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Setup\SetupWizard\Actions\SetupSuperAdminAction;
 use App\Exceptions\RejectedException;
+use App\Setup\SetupWizard\Actions\SetupSuperAdminAction;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
@@ -45,8 +45,10 @@ test('prevents creating duplicate superadmin', function () {
     $action = app(SetupSuperAdminAction::class);
     $action->execute('admin@internara.test', 'SecurePass123!');
 
-    expect(fn () => $action->execute('another@internara.test', 'SecurePass456!'))
-        ->toThrow(RejectedException::class, 'Super admin already exists');
+    expect(fn () => $action->execute('another@internara.test', 'SecurePass456!'))->toThrow(
+        RejectedException::class,
+        'Super admin already exists',
+    );
 });
 
 test('updates email on existing superadmin if mutable', function () {

@@ -148,7 +148,9 @@ class DepartmentManager extends BaseRecordManager
         $department = Department::findOrFail($id);
 
         if (! $department->asDepartmentState()->canBeDeleted()) {
-            flash()->error(__('department.delete_blocked', ['count' => $department->profiles()->count()]));
+            flash()->error(
+                __('department.delete_blocked', ['count' => $department->profiles()->count()]),
+            );
 
             return;
         }
@@ -181,10 +183,14 @@ class DepartmentManager extends BaseRecordManager
         }
 
         if ($deleted > 0) {
-            flash()->success(trans_choice('department.delete_success_bulk', $deleted, ['count' => $deleted]));
+            flash()->success(
+                trans_choice('department.delete_success_bulk', $deleted, ['count' => $deleted]),
+            );
         }
         if ($blocked > 0) {
-            flash()->error(trans_choice('department.delete_blocked_bulk', $blocked, ['count' => $blocked]));
+            flash()->error(
+                trans_choice('department.delete_blocked_bulk', $blocked, ['count' => $blocked]),
+            );
         }
 
         $this->clearSelection();
@@ -205,7 +211,9 @@ class DepartmentManager extends BaseRecordManager
             'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
         ]);
 
-        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use ($create) {
+        $result = $csv->import($this->importFile->getRealPath(), function (array $row) use (
+            $create,
+        ) {
             $name = trim($row[0] ?? '');
 
             if ($name === '') {
@@ -232,10 +240,12 @@ class DepartmentManager extends BaseRecordManager
             return;
         }
 
-        flash()->success(__('department.import_summary', [
-            'created' => $result['created'],
-            'skipped' => $result['skipped'],
-        ]));
+        flash()->success(
+            __('department.import_summary', [
+                'created' => $result['created'],
+                'skipped' => $result['skipped'],
+            ]),
+        );
     }
 
     public function export(CsvHandler $csv): StreamedResponse
@@ -245,7 +255,9 @@ class DepartmentManager extends BaseRecordManager
             ->orderBy('name')
             ->get();
 
-        return $csv->export($departments, ['name', 'description'],
+        return $csv->export(
+            $departments,
+            ['name', 'description'],
             fn ($d) => [$d->name, $d->description ?? ''],
             'departments.csv',
         );
@@ -261,7 +273,9 @@ class DepartmentManager extends BaseRecordManager
 
         $departments = Department::whereIn('id', $this->selectedIds)->orderBy('name')->get();
 
-        return $csv->export($departments, ['name', 'description'],
+        return $csv->export(
+            $departments,
+            ['name', 'description'],
             fn ($d) => [$d->name, $d->description ?? ''],
             'departments-selected.csv',
         );
