@@ -1,15 +1,14 @@
 # Coding Conventions
-> Last updated: 2026-06-05
-> Changes: Add BaseEvent to base-classes table, update section 12 events to require BaseEvent, add SmartLogger integration subsection
-> **Context:** ✅ All conventions are enforced — see [module index](modules/module-index.md) for implementation status.
 
+> Last updated: 2026-06-05 Changes: Add BaseEvent to base-classes table, update section 12 events to
+> require BaseEvent, add SmartLogger integration subsection **Context:** ✅ All conventions are
+> enforced — see [module index](modules/module-index.md) for implementation status.
 
-This document describes conventions for writing code in the Internara codebase. These rules
-exist to produce consistent, predictable code that any team member can read without
-context-switching.
+This document describes conventions for writing code in the Internara codebase. These rules exist to
+produce consistent, predictable code that any team member can read without context-switching.
 
-Conventions are organized from foundational (base classes, structure) to specific
-(commands, tests, cache keys). Each section includes a rationale and examples.
+Conventions are organized from foundational (base classes, structure) to specific (commands, tests,
+cache keys). Each section includes a rationale and examples.
 
 ---
 
@@ -17,23 +16,23 @@ Conventions are organized from foundational (base classes, structure) to specifi
 
 ### Documentation as Single Source of Truth
 
-Documentation is the **authoritative reference** for the system. It defines what the system
-does, how it is structured, and why decisions were made. Code implements what documentation
-describes — not the other way around. When documentation and implementation disagree,
-documentation is the SSOT and implementation must be corrected.
+Documentation is the **authoritative reference** for the system. It defines what the system does,
+how it is structured, and why decisions were made. Code implements what documentation describes —
+not the other way around. When documentation and implementation disagree, documentation is the SSOT
+and implementation must be corrected.
 
 ### Document First, Then Implement
 
-Every change — feature, refactor, bug fix — begins with documentation. Before writing a
-single line of code, the relevant docs must be updated to describe the intended outcome.
-This applies at all scales:
+Every change — feature, refactor, bug fix — begins with documentation. Before writing a single line
+of code, the relevant docs must be updated to describe the intended outcome. This applies at all
+scales:
 
-- **New feature** → document the feature in `key-features.md`, update the module's
-  conceptual doc (`{module}.md`) and API reference (`{module}-reference.md`)
+- **New feature** → document the feature in `key-features.md`, update the module's conceptual doc
+  (`{module}.md`) and API reference (`{module}-reference.md`)
 - **Architecture change** → update `architecture.md` and any affected ADRs
 - **Bug fix** → if the fix changes behavior, update the affected docs
-- **Refactor** → if the refactor moves code between modules, update both modules' docs
-  and `module-index.md`
+- **Refactor** → if the refactor moves code between modules, update both modules' docs and
+  `module-index.md`
 
 Implementation follows documentation. The docs describe the target state; code catches up.
 
@@ -41,49 +40,52 @@ Implementation follows documentation. The docs describe the target state; code c
 
 Each module has two documents serving different audiences:
 
-| Document | Audience | Content |
-|---|---|---|
-| `docs/modules/{module}.md` | Architects, developers, stakeholders | Purpose, design principles, module boundary — pure conceptual design, no implementation details |
-| `docs/modules/{module}-reference.md` | Developers, reviewers | Full API reference — file paths, class names, table schemas, dependency graphs |
+| Document                             | Audience                             | Content                                                                                         |
+| ------------------------------------ | ------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `docs/modules/{module}.md`           | Architects, developers, stakeholders | Purpose, design principles, module boundary — pure conceptual design, no implementation details |
+| `docs/modules/{module}-reference.md` | Developers, reviewers                | Full API reference — file paths, class names, table schemas, dependency graphs                  |
 
-When describing a module's behavior, write the conceptual doc. When listing files or
-classes, write the reference doc. Never mix implementation details into conceptual docs.
+When describing a module's behavior, write the conceptual doc. When listing files or classes, write
+the reference doc. Never mix implementation details into conceptual docs.
 
 ### Documentation Updates as Part of Definition of Done
 
-A change is not complete until the relevant documentation is updated. This is enforced
-through code review — a PR that changes code without corresponding doc updates is
-incomplete and must not be merged.
+A change is not complete until the relevant documentation is updated. This is enforced through code
+review — a PR that changes code without corresponding doc updates is incomplete and must not be
+merged.
 
 ---
 
 ## 1. Base Classes
 
-Core provides base classes for every layer. Use them when they add value — skip them when they don't.
+Core provides base classes for every layer. Use them when they add value — skip them when they
+don't.
 
-| Layer | Base Class | Provides |
-|---|---|---|
-| Model | `BaseModel` | UUID PK (`HasUuids`), non-incrementing, string key type |
-| Action (Command / Process) | `BaseAction` | `transaction()`, `log()`, `HandlesActionErrors` |
-| Action (Read) | None required | Read operations don't need transaction or logging |
-| Entity | `BaseEntity` | `final readonly`, `fromModel(Model): static` contract |
-| State entity | `BaseEntity` | State-machine helpers defined per entity |
-| Policy | `BasePolicy` | `AuthorizesRoles`, `AuthorizesOwnership` traits |
-| Livewire CRUD | `BaseRecordManager` | Search, filter, sort, pagination, bulk actions |
-| Controller | `BaseController` (optional) | Marker for controllers, can extend Laravel's `Controller` directly |
-| Form Request | `BaseFormRequest` | Consistent `ValidationFailedException` on failure (located in `app/Core/Http/Requests/BaseFormRequest.php`) |
-| Enum | Implements `LabelEnum` | `label(): string` |
-| Status enum | Implements `StatusEnum` (+ LabelEnum) | `canTransitionTo()`, `validTransitions()`, `isTerminal()` |
-| Exception | Extends `AppException` or `ModuleException` | `HasExceptionContext` trait |
-| Cache key | `CacheKeys` constant | Centralized key registry, prevents collisions |
-| DTO | `BaseData` | `app/Core/Data/BaseData.php` |
-| Event | `BaseEvent` | `Dispatchable`, `eventName()` for log translation, `toPayload()` for logging payload |
+| Layer                      | Base Class                                  | Provides                                                                                                    |
+| -------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Model                      | `BaseModel`                                 | UUID PK (`HasUuids`), non-incrementing, string key type                                                     |
+| Action (Command / Process) | `BaseAction`                                | `transaction()`, `log()`, `HandlesActionErrors`                                                             |
+| Action (Read)              | None required                               | Read operations don't need transaction or logging                                                           |
+| Entity                     | `BaseEntity`                                | `final readonly`, `fromModel(Model): static` contract                                                       |
+| State entity               | `BaseEntity`                                | State-machine helpers defined per entity                                                                    |
+| Policy                     | `BasePolicy`                                | `AuthorizesRoles`, `AuthorizesOwnership` traits                                                             |
+| Livewire CRUD              | `BaseRecordManager`                         | Search, filter, sort, pagination, bulk actions                                                              |
+| Controller                 | `BaseController` (optional)                 | Marker for controllers, can extend Laravel's `Controller` directly                                          |
+| Form Request               | `BaseFormRequest`                           | Consistent `ValidationFailedException` on failure (located in `app/Core/Http/Requests/BaseFormRequest.php`) |
+| Enum                       | Implements `LabelEnum`                      | `label(): string`                                                                                           |
+| Status enum                | Implements `StatusEnum` (+ LabelEnum)       | `canTransitionTo()`, `validTransitions()`, `isTerminal()`                                                   |
+| Exception                  | Extends `AppException` or `ModuleException` | `HasExceptionContext` trait                                                                                 |
+| Cache key                  | `CacheKeys` constant                        | Centralized key registry, prevents collisions                                                               |
+| DTO                        | `BaseData`                                  | `app/Core/Data/BaseData.php`                                                                                |
+| Event                      | `BaseEvent`                                 | `Dispatchable`, `eventName()` for log translation, `toPayload()` for logging payload                        |
 
 ### Notes
 
-- **User model**: Extends `Illuminate\Foundation\Auth\User` directly. Apply `HasUuids` trait manually for UUID consistency.
+- **User model**: Extends `Illuminate\Foundation\Auth\User` directly. Apply `HasUuids` trait
+  manually for UUID consistency.
 - **Notifications**: Extend `Illuminate\Notifications\Notification` directly.
-- **Base classes are helpers, not mandates.** If a base class adds no value for your use case, use the framework class directly.
+- **Base classes are helpers, not mandates.** If a base class adds no value for your use case, use
+  the framework class directly.
 
 ---
 
@@ -93,19 +95,19 @@ Core provides base classes for every layer. Use them when they add value — ski
 
 All code follows a strict two-tier path convention:
 
-| Scope | Pattern | Example |
-|---|---|---|
-| Module-specific | `app/{Module}/{Submodule}/{Component}/{ClassName}.php` | `app/User/Profile/Actions/UpdateProfileAction.php` |
-| Shared (cross-module) | `app/{Component}/{ClassName}.php` | `app/Data/AuditCheck.php` |
+| Scope                 | Pattern                                                | Example                                            |
+| --------------------- | ------------------------------------------------------ | -------------------------------------------------- |
+| Module-specific       | `app/{Module}/{Submodule}/{Component}/{ClassName}.php` | `app/User/Profile/Actions/UpdateProfileAction.php` |
+| Shared (cross-module) | `app/{Component}/{ClassName}.php`                      | `app/Data/AuditCheck.php`                          |
 
-Where `{Component}` is the technical layer (Actions, Models, Policies, Livewire, etc.)
-and `{ClassName}` is the PascalCase filename matching the class.
+Where `{Component}` is the technical layer (Actions, Models, Policies, Livewire, etc.) and
+`{ClassName}` is the PascalCase filename matching the class.
 
 ### Module Structure — Submodule-Based
 
-Code is organized by module, then by **Submodule** within each module. Each submodule
-directory is a self-contained vertical slice with its own technical component layers.
-Files that span multiple submodules live at the module root.
+Code is organized by module, then by **Submodule** within each module. Each submodule directory is a
+self-contained vertical slice with its own technical component layers. Files that span multiple
+submodules live at the module root.
 
 ```
 app/{Module}/
@@ -137,8 +139,8 @@ app/{Module}/
 
 ### Shared (Cross-Module) Structure
 
-Code that is shared across multiple modules lives directly under `app/`, not inside any
-module directory:
+Code that is shared across multiple modules lives directly under `app/`, not inside any module
+directory:
 
 ```
 app/
@@ -193,8 +195,8 @@ app/Program/Internship/Internship/Models/Internship.php
   `Internship/`, `Placement/`, etc.)
 - **`Types/`** — value objects, simple enums, and validation rules too small for their own
   submodule. Examples: `Gender.php`, `BloodType.php`, `SystemUsername.php`.
-- **Root `Actions/`** — cross-submodule orchestration (dashboard stats, multi-submodule
-  queries, services that span submodules).
+- **Root `Actions/`** — cross-submodule orchestration (dashboard stats, multi-submodule queries,
+  services that span submodules).
 - **Root `Http/`** — cross-submodule controllers (dashboards, home page).
 - **Root `Console/`** — module-wide artisan commands (not specific to one submodule).
 - **Root `Livewire/`** — cross-submodule UI components (dashboards, global widgets).
@@ -202,30 +204,30 @@ app/Program/Internship/Internship/Models/Internship.php
 
 ### Submodule Encapsulation Rules
 
-1. Files inside an submodule directory MUST NOT import from sibling submodule directories
-   within the same module. Cross-submodule access goes through the module root.
-2. Root module files (`Actions/`, `Http/`, `Console/`, `Livewire/`) MAY import from any
-   submodule within the same module — they are the coordination layer.
+1. Files inside an submodule directory MUST NOT import from sibling submodule directories within the
+   same module. Cross-submodule access goes through the module root.
+2. Root module files (`Actions/`, `Http/`, `Console/`, `Livewire/`) MAY import from any submodule
+   within the same module — they are the coordination layer.
 3. An submodule MAY import from other modules (respecting cross-module rules in
    [architecture.md](architecture.md)).
 
 ### Services vs Support
 
-| Directory | Purpose | Example |
-|---|---|---|
-| `Support/` | Pure utility classes, no Eloquent, no framework dependencies | `Theme`, `CsvHandler`, `PiiMasker` |
-| `Services/` | Framework-aware infrastructure code | `EnvironmentAuditor`, `PulseGuard` |
+| Directory   | Purpose                                                      | Example                            |
+| ----------- | ------------------------------------------------------------ | ---------------------------------- |
+| `Support/`  | Pure utility classes, no Eloquent, no framework dependencies | `Theme`, `CsvHandler`, `PiiMasker` |
+| `Services/` | Framework-aware infrastructure code                          | `EnvironmentAuditor`, `PulseGuard` |
 
-Prefer `Support/` for stateless utilities. Use `Services/` only when the class depends on
-framework services (container, config, facades) and does not fit the Action pattern.
+Prefer `Support/` for stateless utilities. Use `Services/` only when the class depends on framework
+services (container, config, facades) and does not fit the Action pattern.
 
 ---
 
 ## 3. General PHP
 
 - `declare(strict_types=1)` in every file except migrations and config.
-- Constructor property promotion: `public function __construct(protected readonly X $x) {}`.
-  Do not leave empty zero-parameter constructors unless private.
+- Constructor property promotion: `public function __construct(protected readonly X $x) {}`. Do not
+  leave empty zero-parameter constructors unless private.
 - Explicit return types on every method: `function isAccessible(User $user): bool`.
 - Type hints on all parameters: `function find(string $id): ?Model`.
 - `===` over `==` unless loose comparison is intentional.
@@ -241,43 +243,43 @@ framework services (container, config, facades) and does not fit the Action patt
 
 ## 4. Naming Conventions
 
-| Element | Convention | Example |
-|---|---|---|
-| Submodule directory | Singular `{Name}` (submodule root concept) | `User`, `Profile`, `Internship`, `Placement` |
-| Types directory | `Types/` for small value objects | `Types/Gender.php`, `Types/BloodType.php` |
-| Model | Singular `{Name}` | `User`, `AcademicYear`, `Internship` |
-| Command Action | `{Verb}{Entity}Action` | `CreateUserAction`, `ApproveRegistrationAction` |
-| Read Action | `{Context}Reader`, `Get{Dashboard}Data`, `{Entity}Query` | `InternshipDashboardReader`, `GetStudentStatsData` |
-| Process Action | `{Verb}{Entity}Process` | `RegisterStudentProcess`, `CloseInternshipProcess` |
-| Entity | `{Name}` | `Apprentice`, `InternshipPeriod`, `RegistrationState` |
-| Data / DTO | `{Verb}{Entity}Data` or `{Entity}Data` (extending `BaseData`) | `CreateInternshipData`, `ApproveReportData` |
-| Livewire | `{Name}` — suffixed with Manager, Editor, Center | `UserManager`, `ProfileEditor`, `RegistrationCenter` |
-| Livewire alias (submodule) | `{kebab-module}.{kebab-submodule}.{kebab-name}` | `admin.user.user-manager` |
-| Livewire alias (root) | `{kebab-module}.{kebab-name}` | `user.profile-editor` |
-| Livewire Form | `{Entity}Form` (extending `Livewire\Form`) | `AcademicYearForm`, `SchoolForm` |
-| Policy | `{Name}Policy` | `UserPolicy`, `InternshipPolicy` |
-| Exception | `{Name}Exception` | `ConflictException`, `ValidationFailedException` |
-| Controller | `{Name}Controller` | `DashboardController`, `ReportController` |
-| Middleware | `{Name}Middleware` | `CheckRoleMiddleware`, `SetLocaleMiddleware` |
-| Event | `{Entity}{Actioned}` — past tense | `InternshipCreated`, `ReportApproved`, `StudentRegistered` |
-| Listener | `{Verb}{Entity}` or react to event name | `NotifyAdminsInternshipCreated`, `LogSetupFinalized` |
-| Notification | `{Entity}{NotificationType}Notification` | `InternshipCreatedNotification`, `WelcomeNotification` |
-| Console command | `{module}:{action}` | `system:health`, `admin:recover`, `notifications:prune` |
-| Route name | `{prefix}.{resource}.{action}` | `admin.users.index`, `internship.reports.show` |
-| Config key | `snake_case` with `{file}.{key}` | `app.name`, `database.default` |
-| Column / table | `snake_case` | `user_id`, `academic_year_id`, `academic_years` |
-| Boolean method | `is`/`has`/`can`/`should` prefix | `isActive()`, `allowsLogin()`, `canTransitionTo()` |
-| Test method | Pest `it()` with descriptive string | `it('creates a user with valid data')` |
-| Test file | `{Name}Test.php` | `CreateUserActionTest.php`, `UserManagerTest.php` |
-| Factory | `{Name}Factory` | `UserFactory`, `InternshipFactory` |
-| Migration | `YYYY_MM_DD_HHMMSS_create_{table}_table.php` | `2026_04_29_092750_create_users_table.php` |
+| Element                    | Convention                                                    | Example                                                               |
+| -------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Submodule directory        | Singular `{Name}` (submodule root concept)                    | `User`, `Profile`, `Internship`, `Placement`                          |
+| Types directory            | `Types/` for small value objects                              | `Types/Gender.php`, `Types/BloodType.php`                             |
+| Model                      | Singular `{Name}`                                             | `User`, `AcademicYear`, `Internship`                                  |
+| Command Action             | `{Verb}{Entity}Action`                                        | `CreateUserAction`, `ApproveRegistrationAction`                       |
+| Read Action                | `{Context}Reader`, `Get{Dashboard}Data`, `{Entity}Query`      | `InternshipDashboardReader`, `GetStudentStatsData`                    |
+| Process Action             | `{Verb}{Entity}Process`                                       | `RegisterStudentProcess`, `CloseInternshipProcess`                    |
+| Entity                     | `{Name}`                                                      | `Apprentice`, `InternshipPeriod`, `RegistrationState`, `SchoolEntity` |
+| Data / DTO                 | `{Verb}{Entity}Data` or `{Entity}Data` (extending `BaseData`) | `SetupTokenData`, `AuditCheck`                                        |
+| Livewire                   | `{Name}` — suffixed with Manager, Editor, Center              | `UserManager`, `ProfileEditor`, `RegistrationCenter`                  |
+| Livewire alias (submodule) | `{kebab-module}.{kebab-submodule}.{kebab-name}`               | `admin.user.user-manager`                                             |
+| Livewire alias (root)      | `{kebab-module}.{kebab-name}`                                 | `user.profile-editor`                                                 |
+| Livewire Form              | `{Entity}Form` (extending `Livewire\Form`)                    | `AcademicYearForm`, `SchoolForm`                                      |
+| Policy                     | `{Name}Policy`                                                | `UserPolicy`, `InternshipPolicy`                                      |
+| Exception                  | `{Name}Exception`                                             | `ConflictException`, `ValidationFailedException`                      |
+| Controller                 | `{Name}Controller`                                            | `DashboardController`, `ReportController`                             |
+| Middleware                 | `{Name}Middleware`                                            | `CheckRoleMiddleware`, `SetLocaleMiddleware`                          |
+| Event                      | `{Entity}{Actioned}` — past tense                             | `InternshipCreated`, `ReportApproved`, `StudentRegistered`            |
+| Listener                   | `{Verb}{Entity}` or react to event name                       | `NotifyAdminsInternshipCreated`, `LogSetupFinalized`                  |
+| Notification               | `{Entity}{NotificationType}Notification`                      | `InternshipCreatedNotification`, `WelcomeNotification`                |
+| Console command            | `{module}:{action}`                                           | `system:health`, `admin:recover`, `notifications:prune`               |
+| Route name                 | `{prefix}.{resource}.{action}`                                | `admin.users.index`, `internship.reports.show`                        |
+| Config key                 | `snake_case` with `{file}.{key}`                              | `app.name`, `database.default`                                        |
+| Column / table             | `snake_case`                                                  | `user_id`, `academic_year_id`, `academic_years`                       |
+| Boolean method             | `is`/`has`/`can`/`should` prefix                              | `isActive()`, `allowsLogin()`, `canTransitionTo()`                    |
+| Test method                | Pest `it()` with descriptive string                           | `it('creates a user with valid data')`                                |
+| Test file                  | `{Name}Test.php`                                              | `CreateUserActionTest.php`, `UserManagerTest.php`                     |
+| Factory                    | `{Name}Factory`                                               | `UserFactory`, `InternshipFactory`                                    |
+| Migration                  | `YYYY_MM_DD_HHMMSS_create_{table}_table.php`                  | `2026_04_29_092750_create_users_table.php`                            |
 
 ---
 
 ## 5. Models
 
-- Extend `BaseModel` (UUID PK, `HasUuids`, non-incrementing, string key type).
-  Exception: `User` extends `Authenticatable` with manual `HasUuids`.
+- Extend `BaseModel` (UUID PK, `HasUuids`, non-incrementing, string key type). Exception: `User`
+  extends `Authenticatable` with manual `HasUuids`.
 - Use `#[Fillable([...])]` attribute for mass assignment, never `$fillable` property.
 - Use `HasFactory` trait on every model.
 - Use `#[Appends([...])]` for computed accessors.
@@ -285,12 +287,12 @@ framework services (container, config, facades) and does not fit the Action patt
 
 ### Relationships
 
-| Type | Method Name | Example |
-|---|---|---|
-| `BelongsTo` / `HasOne` | Singular | `user()`, `academicYear()` |
-| `HasMany` / `BelongsToMany` | Plural | `users()`, `registrations()` |
-| `MorphTo` | Singular | `verifiable()` |
-| `MorphMany` | Plural | `comments()` |
+| Type                        | Method Name | Example                      |
+| --------------------------- | ----------- | ---------------------------- |
+| `BelongsTo` / `HasOne`      | Singular    | `user()`, `academicYear()`   |
+| `HasMany` / `BelongsToMany` | Plural      | `users()`, `registrations()` |
+| `MorphTo`                   | Singular    | `verifiable()`               |
+| `MorphMany`                 | Plural      | `comments()`                 |
 
 Always define the inverse relationship. Use `->foreignUuid()->constrained()` in migrations.
 
@@ -320,8 +322,8 @@ protected static function newFactory(): InternshipFactory
 
 ## 6. Actions: Command, Read, Process
 
-Actions are the single entry point for business operations. There are three types, each
-with a distinct contract.
+Actions are the single entry point for business operations. There are three types, each with a
+distinct contract.
 
 ### 5a. Command Actions (Mutations)
 
@@ -330,6 +332,7 @@ with a distinct contract.
 **Base class:** `BaseAction` (provides `transaction()`, `log()`, `HandlesActionErrors`).
 
 **Contract:**
+
 - Single public `execute()` method. Never add a second public method.
 - MUST wrap all database operations in `$this->transaction()`.
 - MUST call `$this->log()` after successful mutation.
@@ -340,12 +343,11 @@ with a distinct contract.
 **Naming:** `{Verb}{Entity}Action` — `CreateUserAction`, `ApproveRegistrationAction`.
 
 **Example:**
+
 ```php
 class SubmitLogbookAction extends BaseAction
 {
-    public function __construct(
-        protected readonly NotifyMentorAction $notifyMentor,
-    ) {}
+    public function __construct(protected readonly NotifyMentorAction $notifyMentor) {}
 
     public function execute(Logbook $entry, array $data): Logbook
     {
@@ -366,13 +368,14 @@ class SubmitLogbookAction extends BaseAction
 
 ### 5b. Read Actions (Queries)
 
-**Purpose:** Complex read operations — aggregation, filtering, cross-module data assembly.
-Not for simple `Model::find()` or `Model::where()` — those stay in Livewire.
+**Purpose:** Complex read operations — aggregation, filtering, cross-module data assembly. Not for
+simple `Model::find()` or `Model::where()` — those stay in Livewire.
 
 **Base class:** None required. A plain class with constructor injection. May use
 `HandlesActionErrors` from `BaseAction` but MUST NOT call `transaction()` or `log()`.
 
 **Contract:**
+
 - MUST NOT mutate any database state.
 - MUST NOT call `transaction()` or `log()`.
 - SHOULD return typed objects or collections, never raw arrays.
@@ -381,24 +384,21 @@ Not for simple `Model::find()` or `Model::where()` — those stay in Livewire.
 **Naming:** `{Context}Reader`, `Get{Dashboard}Data`, `{Entity}Query`.
 
 **Example:**
+
 ```php
 class InternshipProgressReader
 {
-    public function __construct(
-        protected readonly Internship $model,
-    ) {}
+    public function __construct(protected readonly Internship $model) {}
 
     public function completionStats(Internship $program): array
     {
         $total = $this->model->registrations()->count();
-        $completed = $this->model->registrations()
-            ->whereHas('certificates')
-            ->count();
+        $completed = $this->model->registrations()->whereHas('certificates')->count();
 
         return [
             'total' => $total,
             'completed' => $completed,
-            'completion_rate' => $total > 0 ? round($completed / $total * 100, 1) : 0,
+            'completion_rate' => $total > 0 ? round(($completed / $total) * 100, 1) : 0,
         ];
     }
 }
@@ -411,6 +411,7 @@ class InternshipProgressReader
 **Base class:** `BaseAction` (same as Command — transaction + logging at the process level).
 
 **Contract:**
+
 - MUST compose other Actions via constructor injection.
 - MUST handle partial failure — what happens to steps 1–2 if step 3 fails?
 - SHOULD emit a single module event representing the completed process.
@@ -419,6 +420,7 @@ class InternshipProgressReader
 **Naming:** `{Verb}{Entity}Process` — `RegisterStudentProcess`, `CloseInternshipProcess`.
 
 **Example:**
+
 ```php
 class RegisterStudentProcess extends BaseAction
 {
@@ -446,51 +448,87 @@ class RegisterStudentProcess extends BaseAction
 
 ### Action Decision Reference
 
-| Scenario | Pattern | Base Class | Transaction | Logging | Event |
-|---|---|---|---|---|---|
-| Create/update/delete | Command | `BaseAction` | ✅ Required | ✅ Required | ✅ Recommended |
-| State transition | Command | `BaseAction` | ✅ Required | ✅ Required | ✅ Required |
-| Send notification | Command | `BaseAction` | ✅ Required | ✅ Required | ❌ |
-| Simple list query | Inline in Livewire | None | ❌ | ❌ | ❌ |
-| Complex aggregated query | Read Action | None | ❌ | ❌ | ❌ |
-| Dashboard statistics | Read Action | None | ❌ | ❌ | ❌ |
-| Multi-step orchestration | Process | `BaseAction` | ✅ Required | ✅ Required | ✅ Required |
+| Scenario                 | Pattern            | Base Class   | Transaction | Logging     | Event          |
+| ------------------------ | ------------------ | ------------ | ----------- | ----------- | -------------- |
+| Create/update/delete     | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Recommended |
+| State transition         | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Required    |
+| Send notification        | Command            | `BaseAction` | ✅ Required | ✅ Required | ❌             |
+| Simple list query        | Inline in Livewire | None         | ❌          | ❌          | ❌             |
+| Complex aggregated query | Read Action        | None         | ❌          | ❌          | ❌             |
+| Dashboard statistics     | Read Action        | None         | ❌          | ❌          | ❌             |
+| Multi-step orchestration | Process            | `BaseAction` | ✅ Required | ✅ Required | ✅ Required    |
 
 ---
 
 ## 7. Entities
 
-- `final readonly` class extending `BaseEntity`.
-- All state injected via constructor.
+- `final readonly` class extending `BaseEntity` (from `app/Core/Entities/BaseEntity.php`).
+- All state via constructor with `private` properties (never `public`). Expose via getter methods.
 - Bridge from persistence via `fromModel(Model): static`.
 - Named accessors on models: `asRegistrationState()`, `asInternshipPeriod()`.
 - Business logic methods only — no persistence, no HTTP, no I/O.
-- State machine entities extend `BaseEntity` directly.
+- May use static factory methods (e.g., `get()`) for entities backed by settings instead of a model.
+- Framework dependencies (Carbon, Eloquent) allowed when practical.
 
 ```php
-final readonly class RegistrationState extends BaseEntity
+final readonly class SchoolEntity extends BaseEntity
 {
     public function __construct(
-        public string $status,
-        public ?string $placementId,
+        private string $name,
+        private string $institutionalCode,
+        private string $email,
+        private string $address = '',
+        private string $phone = '',
+        private string $website = '',
+        private string $principalName = '',
     ) {}
 
     public static function fromModel(Model $model): static
     {
+        return self::get();
+    }
+
+    public static function get(): self
+    {
+        $values = Settings::get([
+            'school.name',
+            'school.institutional_code',
+            'school.email',
+            'school.address',
+            'school.phone',
+            'school.website',
+            'school.principal_name',
+        ]);
+
         return new self(
-            status: $model->status,
-            placementId: $model->placement_id,
+            name: (string) ($values['school.name'] ?? ''),
+            institutionalCode: (string) ($values['school.institutional_code'] ?? ''),
+            email: (string) ($values['school.email'] ?? ''),
+            address: (string) ($values['school.address'] ?? ''),
+            phone: (string) ($values['school.phone'] ?? ''),
+            website: (string) ($values['school.website'] ?? ''),
+            principalName: (string) ($values['school.principal_name'] ?? ''),
         );
     }
 
-    public function canBeApproved(): bool
+    public function name(): string
     {
-        return $this->status === 'pending' && $this->placementId !== null;
+        return $this->name;
     }
+    public function email(): string
+    {
+        return $this->email;
+    }
+    public function phone(): string
+    {
+        return $this->phone;
+    }
+    // ...
 }
 ```
 
-**Rationale:** Entities keep business logic testable and isolated from raw Eloquent access patterns. Framework dependencies (Eloquent, Carbon) are allowed when practical.
+**Rationale:** Entities keep business logic testable and isolated from raw Eloquent access patterns.
+Framework dependencies (Eloquent, Carbon) are allowed when practical.
 
 ---
 
@@ -539,10 +577,10 @@ protected $attributes = [
 ## 9. Policies
 
 - Extend `BasePolicy` (provides `AuthorizesRoles` and `AuthorizesOwnership` traits).
-- Auto-discovered from `app/*/Policies/` by `AppServiceProvider`. Convention:
-  `{Model}Policy` in the same module as `{Model}`.
-- Cross-module policies (where a policy gates a model from another module) must be
-  registered manually in `AppServiceProvider::boot()`.
+- Auto-discovered from `app/*/Policies/` by `AppServiceProvider`. Convention: `{Model}Policy` in the
+  same module as `{Model}`.
+- Cross-module policies (where a policy gates a model from another module) must be registered
+  manually in `AppServiceProvider::boot()`.
 - `super_admin` bypasses all gates via `Gate::before()`.
 
 ```php
@@ -569,8 +607,8 @@ class AcademicYearPolicy extends BasePolicy
 
 ## 10. Livewire Components
 
-- CRUD table components extend `BaseRecordManager` (provides search, filter, sort,
-  pagination, selection, bulk actions).
+- CRUD table components extend `BaseRecordManager` (provides search, filter, sort, pagination,
+  selection, bulk actions).
 - Simple page components extend `Component`.
 - Components delegate all writes to Command Actions.
 - Components delegate complex queries to Read Actions.
@@ -579,13 +617,12 @@ class AcademicYearPolicy extends BasePolicy
 - Cross-submodule components: `app/{Module}/Livewire/{Name}.php`
 - Shared cross-module components: `app/Livewire/{Name}.php`
 - Views mirror the app structure:
-  - Submodule view: `resources/views/{module}/{submodule}/{component-name}.blade.php`
-  - Cross-submodule view: `resources/views/{module}/{component-name}.blade.php`
-  - Shared view: `resources/views/livewire/{component-name}.blade.php`
-- Component alias (submodule): `{kebab-module}.{kebab-submodule}.{kebab-name}` —
-  e.g., `admin.user.user-manager`
-- Component alias (cross-submodule): `{kebab-module}.{kebab-name}` —
-  e.g., `user.profile-editor`
+    - Submodule view: `resources/views/{module}/{submodule}/{component-name}.blade.php`
+    - Cross-submodule view: `resources/views/{module}/{component-name}.blade.php`
+    - Shared view: `resources/views/livewire/{component-name}.blade.php`
+- Component alias (submodule): `{kebab-module}.{kebab-submodule}.{kebab-name}` — e.g.,
+  `admin.user.user-manager`
+- Component alias (cross-submodule): `{kebab-module}.{kebab-name}` — e.g., `user.profile-editor`
 - Component alias (shared): `{kebab-component-name}` — e.g., `livewire.lang-switcher`
 
 ### Form Objects
@@ -620,38 +657,35 @@ class AcademicYearForm extends Form
 ```
 
 **Rules:**
+
 - Form Objects extend `Livewire\Form`, not `BaseAction`.
 - Naming: `{Entity}Form` — `UserForm`, `InternshipForm`.
 - All form state, validation rules, and `toArray()` logic live inside the Form Object.
 - Form Objects validate via explicit `$form->validate()` in the parent component.
-- Form Objects must NOT call Actions directly — they prepare data for the component
-  to dispatch.
+- Form Objects must NOT call Actions directly — they prepare data for the component to dispatch.
 
 ---
 
 ## 11. Data / DTOs
 
-DTOs are optional but recommended for Action inputs that have stabilized (3+ parameters
-or multiple callers). They live in `app/{Module}/Data/`.
+DTOs are optional but recommended for Action inputs that have stabilized (3+ parameters or multiple
+callers). They live in `app/{Module}/Data/` or `app/Data/` for shared DTOs.
 
-- Extend `App\Core\Data\BaseData`.
-- `final readonly` class with typed constructor parameters.
+- Extend `App\Core\Data\BaseData` (from `app/Core/Data/BaseData.php`).
+- `final readonly` class with typed `public` constructor parameters (contrast with Entities which
+  use `private` properties).
+- Supports `toArray()`, `fromArray()`, and `from()` for polymorphic construction.
 - Use `BaseData::fromArray()` during migration for backward compatibility.
 
 ```php
-final readonly class CreateInternshipData extends BaseData
+final readonly class SetupTokenData extends BaseData
 {
-    public function __construct(
-        public string $name,
-        public string $startDate,
-        public string $endDate,
-        public InternshipStatus $status = InternshipStatus::DRAFT,
-        public ?string $academicYearId = null,
-    ) {}
+    public function __construct(public string $plaintext, public Carbon $expiresAt) {}
 }
 ```
 
 **Migration path:**
+
 ```
 Phase 1 — execute(array $data)            → rapid development
 Phase 2 — execute(Data|array $data)       → accepts both (union type)
@@ -662,13 +696,14 @@ Phase 3 — execute(Data $data)             → DTO only (final)
 
 ## 12. Events & Listeners
 
-Events decouple side effects from core business logic. They are optional but encouraged
-when a Command Action triggers multiple downstream reactions.
+Events decouple side effects from core business logic. They are optional but encouraged when a
+Command Action triggers multiple downstream reactions.
 
 ### Event Conventions
 
 - All new events MUST extend `BaseEvent` (`app/Core/Events/BaseEvent.php`).
-- `BaseEvent` provides the `Dispatchable` trait and the `eventName(): string` contract — used by SmartLogger for log description translation.
+- `BaseEvent` provides the `Dispatchable` trait and the `eventName(): string` contract — used by
+  SmartLogger for log description translation.
 - Events are lightweight classes with public typed properties.
 - Events belong to the module that emits them.
 - Event naming: `{Entity}{PastTenseAction}` — `InternshipCreated`, `ReportApproved`.
@@ -701,9 +736,10 @@ class NotifyAdminsInternshipCreated implements ShouldQueue
     public function handle(InternshipCreated $event): void
     {
         $admins = User::role(['super_admin', 'admin'])->get();
-        Notification::send($admins, new InternshipCreatedNotification(
-            internshipName: $event->internship->name,
-        ));
+        Notification::send(
+            $admins,
+            new InternshipCreatedNotification(internshipName: $event->internship->name),
+        );
     }
 }
 ```
@@ -711,31 +747,30 @@ class NotifyAdminsInternshipCreated implements ShouldQueue
 ### Registration
 
 Listeners are registered in `AppServiceProvider::boot()`:
+
 ```php
-Event::listen(
-    SetupFinalized::class,
-    [LogSetupFinalized::class, 'handle'],
-);
+Event::listen(SetupFinalized::class, [LogSetupFinalized::class, 'handle']);
 ```
 
 ### SmartLogger Integration
 
-Events extending `BaseEvent` integrate automatically with SmartLogger. Pass the event object to `event()` instead of a string key:
+Events extending `BaseEvent` integrate automatically with SmartLogger. Pass the event object to
+`event()` instead of a string key:
 
 ```php
-SmartLogger::success('User registered')
-    ->event(new UserRegistered($user))
-    ->for($admin)
-    ->save();
+SmartLogger::success('User registered')->event(new UserRegistered($user))->for($admin)->save();
 ```
 
 When a `BaseEvent` is passed:
 
 1. **Dispatch**: `event($baseEvent)` is called automatically inside `save()`.
-2. **Event name**: `$baseEvent->eventName()` provides the log translation key (replaces the string argument).
-3. **Payload merging**: `$baseEvent->toPayload()` (public properties) is merged first, then explicit `withPayload()` overrides.
+2. **Event name**: `$baseEvent->eventName()` provides the log translation key (replaces the string
+   argument).
+3. **Payload merging**: `$baseEvent->toPayload()` (public properties) is merged first, then explicit
+   `withPayload()` overrides.
 
-This pattern ensures every event is both dispatched and logged with a single fluent call, keeping the audit trail consistent with the event structure.
+This pattern ensures every event is both dispatched and logged with a single fluent call, keeping
+the audit trail consistent with the event structure.
 
 ---
 
@@ -752,9 +787,7 @@ class InternshipCreatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(
-        public string $internshipName,
-    ) {}
+    public function __construct(public string $internshipName) {}
 
     public function via($notifiable): array
     {
@@ -763,11 +796,13 @@ class InternshipCreatedNotification extends Notification implements ShouldQueue
 
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
+        return new MailMessage()
             ->subject(__('notifications.internship_created.mail_subject'))
-            ->line(__('notifications.internship_created.mail_line1', [
-                'name' => $this->internshipName,
-            ]));
+            ->line(
+                __('notifications.internship_created.mail_line1', [
+                    'name' => $this->internshipName,
+                ]),
+            );
     }
 
     public function toCustomDatabase($notifiable): array
@@ -858,10 +893,10 @@ resources/views/{module}/
 └── partials/                       → Reusable partials (cross-cutting)
 ```
 
-- Submodule-specific views: `resources/views/{module}/{submodule}/{component-name}.blade.php`
-  — mirrors the Livewire component path `app/{Module}/{SubModule}/Livewire/`.
-- Cross-submodule views: `resources/views/{module}/{component-name}.blade.php`
-  — for dashboards and components that span multiple submodules.
+- Submodule-specific views: `resources/views/{module}/{submodule}/{component-name}.blade.php` —
+  mirrors the Livewire component path `app/{Module}/{SubModule}/Livewire/`.
+- Cross-submodule views: `resources/views/{module}/{component-name}.blade.php` — for dashboards and
+  components that span multiple submodules.
 - Anonymous components: `x-core::layouts.*`, `x-core::ui.*`, `x-core::widgets.*`.
 - `@props()` declaration at the top of every component template.
 - maryUI components prefixed with `x-mary-`.
@@ -877,9 +912,9 @@ resources/views/{module}/
 - Naming: `YYYY_MM_DD_HHMMSS_create_{table}_table.php`.
 - All foreign keys use `foreignUuid()->constrained('{table}')`.
 - Follow UUID FK with explicit `onDelete()` / `onUpdate()` behavior:
-  - `cascadeOnDelete()` — child cannot exist without parent
-  - `onDelete('set null')` — relationship is optional
-  - `onDelete('restrict')` — deletion should be prevented
+    - `cascadeOnDelete()` — child cannot exist without parent
+    - `onDelete('set null')` — relationship is optional
+    - `onDelete('restrict')` — deletion should be prevented
 - Composite indexes for common query patterns: `->index(['user_id', 'date'])`.
 - Each migration file handles one table or one logical change.
 - Indices are created explicitly, not relying on FK auto-indexing.
@@ -923,9 +958,11 @@ class InternshipFactory extends Factory
 
     public function published(): static
     {
-        return $this->state(fn (array $attrs) => [
-            'status' => InternshipStatus::PUBLISHED->value,
-        ]);
+        return $this->state(
+            fn(array $attrs) => [
+                'status' => InternshipStatus::PUBLISHED->value,
+            ],
+        );
     }
 }
 ```
@@ -966,8 +1003,8 @@ final readonly class CacheKeys
 
 ## 19. Cross-Module Communication
 
-Cross-module imports are **allowed** — import Models, Actions, Policies, or other classes
-from sibling modules directly when needed.
+Cross-module imports are **allowed** — import Models, Actions, Policies, or other classes from
+sibling modules directly when needed.
 
 ```php
 // ✅ Direct import — perfectly fine
@@ -983,58 +1020,75 @@ $activeYear = AcademicYear::where('is_active', true)->first();
 3. **Action delegation** (fine for cross-module Action calls)
 4. **Core contracts** (useful for abstractions used broadly across modules)
 
-Use events when you want to add new reactions without modifying the caller. Use direct
-imports for everything else.
+Use events when you want to add new reactions without modifying the caller. Use direct imports for
+everything else.
 
 ---
 
 ## 20. Exception Hierarchy & Handling
 
-Two separate exception hierarchies exist. Both use the `HasExceptionContext` trait for consistent CLI-friendly output and error hinting:
+Two separate exception hierarchies exist. Both use the `HasExceptionContext` trait for consistent
+CLI-friendly output and error hinting:
 
 1. **`AppException` Hierarchy** (abstract base: `app/Core/Exceptions/AppException.php`):
-   - Derives from standard PHP `RuntimeException`.
-   - Used for application-level, HTTP-level, or infrastructure-level failures.
-   - Core concrete exceptions (located under `app/Exceptions/`) include:
-     - `ConflictException` (conflict state / duplicate records)
-     - `NotFoundException` (HTTP 404 / resource missing)
-     - `UnauthorizedException` (HTTP 403 / permission denied)
-     - `ValidationFailedException` (HTTP 422 / request validation error)
-     - `RateLimitException` (HTTP 429 / request rate limit exceeded)
+    - Derives from standard PHP `RuntimeException`.
+    - Used for application-level, HTTP-level, or infrastructure-level failures.
+    - Core concrete exceptions (located under `app/Exceptions/`) include:
+        - `ConflictException` (conflict state / duplicate records)
+        - `NotFoundException` (HTTP 404 / resource missing)
+        - `UnauthorizedException` (HTTP 403 / permission denied)
+        - `ValidationFailedException` (HTTP 422 / request validation error)
+        - `RateLimitException` (HTTP 429 / request rate limit exceeded)
 
 2. **`ModuleException` Hierarchy** (abstract base: `app/Core/Exceptions/ModuleException.php`):
-   - Derives from standard PHP `RuntimeException` (does *not* extend `AppException` to isolate domain invariant checks from framework catch blocks).
-   - Used for violations of business rules or invalid model transitions.
-   - Core concrete exceptions (located under `app/Exceptions/`) include:
-     - `RejectedException` (thrown when a domain rule or invariant is violated)
+    - Derives from standard PHP `RuntimeException` (does _not_ extend `AppException` to isolate
+      domain invariant checks from framework catch blocks).
+    - Used for violations of business rules or invalid model transitions.
+    - Core concrete exceptions (located under `app/Exceptions/`) include:
+        - `RejectedException` (thrown when a domain rule or invariant is violated)
 
 ### Rules & Conventions
+
 - All abstract base exceptions live in `app/Core/Exceptions/`.
 - All concrete exceptions (concrete class implementations) live in `app/Exceptions/`.
-- Actions must throw specific concrete exceptions with a clear error message, optional hint, and relevant metadata context.
+- Actions must throw specific concrete exceptions with a clear error message, optional hint, and
+  relevant metadata context.
 
 ---
 
 ## 21. Dual Mentor Fallback Protocol
 
-Internara implements a **Dual Mentor Fallback & Optionality Protocol** to ensure that academic progress and student workflows are never blocked by industry supervisor inactivity. 
+Internara implements a **Dual Mentor Fallback & Optionality Protocol** to ensure that academic
+progress and student workflows are never blocked by industry supervisor inactivity.
 
 ### Coding & Architectural Conventions
+
 1. **Actions & Parameters Optionality**:
-   - Any Action that performs verification or sign-off (e.g., `VerifyAttendanceAction`, `FinalizeLogbookAction`, `SubmitEvaluationAction`) must accept nullable parameters or have fallback paths if the industry supervisor is unavailable.
+    - Any Action that performs verification or sign-off (e.g., `VerifyAttendanceAction`,
+      `FinalizeLogbookAction`, `SubmitEvaluationAction`) must accept nullable parameters or have
+      fallback paths if the industry supervisor is unavailable.
 2. **Bypass Window (Journals/Attendance)**:
-   - Reflective logbooks and attendances support a Teacher override. If a logbook remains in the `SUBMITTED` state for more than the bypass window (default: 48 hours), the assigned `Teacher` can bypass the supervisor.
-   - The corresponding Command Action (e.g. `BypassSupervisorVerificationAction` or equivalent) must:
-     - Transition the logbook/attendance to `FINALIZED` / `VERIFIED`.
-     - Record `verified_by_fallback = true` or set the fallback verifier fields.
-     - Append an audit trail log using `SmartLogger` detailing the teacher who authorized the override.
-     - Clear the supervisor's pending verification queue.
+    - Reflective logbooks and attendances support a Teacher override. If a logbook remains in the
+      `SUBMITTED` state for more than the bypass window (default: 48 hours), the assigned `Teacher`
+      can bypass the supervisor.
+    - The corresponding Command Action (e.g. `BypassSupervisorVerificationAction` or equivalent)
+      must:
+        - Transition the logbook/attendance to `FINALIZED` / `VERIFIED`.
+        - Record `verified_by_fallback = true` or set the fallback verifier fields.
+        - Append an audit trail log using `SmartLogger` detailing the teacher who authorized the
+          override.
+        - Clear the supervisor's pending verification queue.
 3. **Grading & Rubric Fallback**:
-   - End-of-placement competency evaluations support:
-     - **Proxy Entry**: Enabling the `Teacher` to enter scores on behalf of the supervisor (controlled via a proxy toggle).
-     - **Weight Redistribution**: Dynamically redistributing the supervisor's weight (40%) to the Teacher (new weight: 40%) and Report/Exam (new weight: 60%) if no supervisor scores are submitted.
+    - End-of-placement competency evaluations support:
+        - **Proxy Entry**: Enabling the `Teacher` to enter scores on behalf of the supervisor
+          (controlled via a proxy toggle).
+        - **Weight Redistribution**: Dynamically redistributing the supervisor's weight (40%) to the
+          Teacher (new weight: 40%) and Report/Exam (new weight: 60%) if no supervisor scores are
+          submitted.
 4. **Transparent Compliance Stamping**:
-   - Any document or certificate compiled using fallback weights or proxy scores must be stamped with a metadata tag (`fallback_weights` or `proxy_scores`) to maintain transparent compliance audits.
+    - Any document or certificate compiled using fallback weights or proxy scores must be stamped
+      with a metadata tag (`fallback_weights` or `proxy_scores`) to maintain transparent compliance
+      audits.
 
 ---
 
@@ -1052,21 +1106,22 @@ tests/{Feature,Unit}/{Component}/{Name}Test.php    → Shared component tests (D
 ```
 
 **Examples:**
-- `tests/Feature/User/Profile/UpdateProfileActionTest.php`
-  → mirrors `app/User/Profile/Actions/UpdateProfileAction.php`
-- `tests/Unit/Enums/AuditCategoryTest.php`
-  → mirrors `app/Enums/AuditCategory.php`
-- `tests/Feature/Livewire/LangSwitcherTest.php`
-  → mirrors `app/Livewire/LangSwitcher.php`
-- `tests/Feature/Livewire/ThemeSwitcherTest.php`
-  → mirrors `app/Livewire/ThemeSwitcher.php`
+
+- `tests/Feature/User/Profile/UpdateProfileActionTest.php` → mirrors
+  `app/User/Profile/Actions/UpdateProfileAction.php`
+- `tests/Unit/Enums/AuditCategoryTest.php` → mirrors `app/Enums/AuditCategory.php`
+- `tests/Feature/Livewire/LangSwitcherTest.php` → mirrors `app/Livewire/LangSwitcher.php`
+- `tests/Feature/Livewire/ThemeSwitcherTest.php` → mirrors `app/Livewire/ThemeSwitcher.php`
 
 ### Scope Isolation (CRITICAL)
 
-- **Do NOT combine multiple distinct testing scopes into a single test file** (e.g., do not group multiple separate console commands or actions into a single `ConsoleCommandsTest` or `SetupTest`).
-- Each command, action, and component must have its own **dedicated test file** to ensure single-responsibility and comprehensive test coverage from all angles.
+- **Do NOT combine multiple distinct testing scopes into a single test file** (e.g., do not group
+  multiple separate console commands or actions into a single `ConsoleCommandsTest` or `SetupTest`).
+- Each command, action, and component must have its own **dedicated test file** to ensure
+  single-responsibility and comprehensive test coverage from all angles.
 - If a test file becomes too fat or too thin, it should be split or deepened appropriately.
-- Ensure you test each component thoroughly from multiple angles (happy path, validation failures, edge cases, error handling, mock assertions) including its entire chain of dependencies.
+- Ensure you test each component thoroughly from multiple angles (happy path, validation failures,
+  edge cases, error handling, mock assertions) including its entire chain of dependencies.
 
 ### Naming
 
@@ -1110,12 +1165,12 @@ describe('AccountStatus', function () {
 
 ## 23. Code Quality Enforcement
 
-| Tool | What It Enforces | How |
-|---|---|---|
-| **Laravel Pint** | PHP code style (PSR-12 + Laravel conventions) | `vendor/bin/pint` before finalizing changes |
-| **PHPStan** | Static analysis (type safety, dead code, boundary violations) | `vendor/bin/phpstan analyse` |
-| **Prettier** | Markdown, JSON, YAML, Blade formatting | `npm run format` |
-| **Code Review** | Architecture conventions, pattern compliance | Manual review of every PR |
+| Tool             | What It Enforces                                              | How                                         |
+| ---------------- | ------------------------------------------------------------- | ------------------------------------------- |
+| **Laravel Pint** | PHP code style (PSR-12 + Laravel conventions)                 | `vendor/bin/pint` before finalizing changes |
+| **PHPStan**      | Static analysis (type safety, dead code, boundary violations) | `vendor/bin/phpstan analyse`                |
+| **Prettier**     | Markdown, JSON, YAML, Blade formatting                        | `npm run format`                            |
+| **Code Review**  | Architecture conventions, pattern compliance                  | Manual review of every PR                   |
 
 ### Pre-commit Checklist
 
