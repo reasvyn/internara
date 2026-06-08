@@ -17,7 +17,7 @@ final class ApplyAccountAction extends BaseAction
             ->exists();
 
         if ($existing) {
-            throw new RejectedException('An application with this email already exists.');
+            throw new RejectedException(__('registration.application_exists'));
         }
 
         return $this->transaction(function () use ($data) {

@@ -8,6 +8,12 @@ use App\Academics\AcademicYear\Events\AcademicYearActivated;
 use App\Academics\AcademicYear\Events\AcademicYearCreated;
 use App\Academics\Department\Events\DepartmentCreated;
 use App\Academics\Department\Events\DepartmentDeleted;
+use App\Enrollment\Registration\Events\StudentRegistered;
+use App\Enrollment\Registration\Listeners\ClearDashboardOnRegistration;
+use App\Partners\Company\Events\CompanyCreated;
+use App\Partners\Company\Listeners\ClearDashboardOnCompanyChange;
+use App\Program\Internship\Events\InternshipCreated;
+use App\Program\Internship\Listeners\NotifyAdminsInternshipCreated;
 use App\User\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange;
 use App\User\Dashboard\Listeners\ClearDashboardCacheOnYearChange;
 use App\User\Notifications\Events\NotificationRead;
@@ -52,6 +58,18 @@ class EventServiceProvider extends ServiceProvider
 
         NotificationRead::class => [
             ClearUnreadNotificationCache::class,
+        ],
+
+        CompanyCreated::class => [
+            ClearDashboardOnCompanyChange::class,
+        ],
+
+        InternshipCreated::class => [
+            NotifyAdminsInternshipCreated::class,
+        ],
+
+        StudentRegistered::class => [
+            ClearDashboardOnRegistration::class,
         ],
     ];
 
