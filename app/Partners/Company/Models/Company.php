@@ -7,6 +7,7 @@ namespace App\Partners\Company\Models;
 use App\Core\Models\BaseModel;
 use App\Enrollment\Models\Placement;
 use App\Partners\Company\Entities\CompanyState;
+use App\Partners\Partnership\Models\Partnership;
 use Database\Factories\CompanyFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
