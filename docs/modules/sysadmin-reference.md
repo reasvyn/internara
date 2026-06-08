@@ -14,7 +14,6 @@ Handles user administration, announcements, super admin recovery, system health 
 
 - `Account` — User account lifecycle
 - `Announcement` — System announcements
-- `SuperAdmin` — Super admin initialization and recovery
 - `Observability` — Health monitoring, Pulse, audit logs, GDPR
 
 ---
@@ -37,8 +36,6 @@ Handles user administration, announcements, super admin recovery, system health 
 | `Account/Actions/ArchiveStudentAccountsAction.php` | `ArchiveStudentAccountsAction` | `BaseAction` |
 | `Account/Actions/GetUserManagerStatsAction.php` | `GetUserManagerStatsAction` | Read |
 | `Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | Process `BaseAction` |
-| `SuperAdmin/Actions/InitializeSuperAdminAction.php` | `InitializeSuperAdminAction` | `BaseAction` |
-| `SuperAdmin/Actions/RecoverSuperAdminAction.php` | `RecoverSuperAdminAction` | `BaseAction` |
 
 ---
 
@@ -58,12 +55,6 @@ Handles user administration, announcements, super admin recovery, system health 
 | `Announcement/Enums/AnnouncementStatus.php` | `AnnouncementStatus` | `LabelEnum`, `StatusEnum` | draft, scheduled, published, archived |
 
 ---
-
-## Entities
-
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `SuperAdmin/Entities/SuperAdminIntegrityRules.php` | `SuperAdminIntegrityRules` | `BaseEntity` |
 
 ---
 
@@ -115,7 +106,6 @@ Handles user administration, announcements, super admin recovery, system health 
 | ---- | ------------ |
 | `Account/Notifications/ActivationCodeNotification.php` | `ActivationCodeNotification` |
 | `Announcement/Notifications/AnnouncementNotification.php` | `AnnouncementNotification` |
-| `SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` | `SuperAdminRecoveredNotification` |
 
 ## Console Commands
 
@@ -211,19 +201,13 @@ app/SysAdmin/
 │   └── Services/
 │       ├── EnvironmentAuditor.php
 │       └── PulseGuard.php
-└── SuperAdmin/
-    ├── Actions/
-    │   ├── InitializeSuperAdminAction.php
-    │   └── RecoverSuperAdminAction.php
-    ├── Entities/SuperAdminIntegrityRules.php
-    └── Notifications/SuperAdminRecoveredNotification.php
 ```
 
 ---
 
 ## Architectural Integration
 
-- **Submodules**: `Account`, `Announcement`, `SuperAdmin`, `Observability`
+- **Submodules**: `Account`, `Announcement`, `Observability`
 - **Business Logic**: `app/SysAdmin/`
 - **Routing**: `routes/web/sysadmin.php`
 - **Views**: `resources/views/sysadmin/`

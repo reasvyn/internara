@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\SysAdmin\SuperAdmin\Actions;
+namespace App\Auth\SuperAdmin\Actions;
 
 use App\Auth\Permissions\Enums\Role;
 use App\Core\Actions\BaseAction;

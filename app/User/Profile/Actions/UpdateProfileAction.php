@@ -7,7 +7,7 @@ namespace App\User\Profile\Actions;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Support\SmartLogger;
-use App\SysAdmin\SuperAdmin\Entities\SuperAdminIntegrityRules;
+use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Models\User;
 use App\User\Profile\Models\Profile;
 use Illuminate\Http\UploadedFile;

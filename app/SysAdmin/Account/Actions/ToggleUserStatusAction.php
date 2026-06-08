@@ -6,7 +6,7 @@ namespace App\SysAdmin\Account\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
-use App\SysAdmin\SuperAdmin\Entities\SuperAdminIntegrityRules;
+use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\AccountStatus\Notifications\AccountStatusNotification;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;

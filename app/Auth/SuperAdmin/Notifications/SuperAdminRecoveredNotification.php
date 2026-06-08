@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\SysAdmin\SuperAdmin\Notifications;
+namespace App\Auth\SuperAdmin\Notifications;
 
 use App\Core\Channels\CustomDatabaseChannel;
 use Illuminate\Bus\Queueable;
