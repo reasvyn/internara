@@ -6,6 +6,7 @@ namespace App\Academics\AcademicYear\Entities;
 
 use App\Core\Entities\BaseEntity;
 use Illuminate\Database\Eloquent\Model;
+use Throwable;
 
 final readonly class AcademicYearState extends BaseEntity
 {
@@ -13,13 +14,21 @@ final readonly class AcademicYearState extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
-        $hasInternships = $model->relationLoaded('internships')
-            ? $model->internships->isNotEmpty()
-            : $model->internships()->exists();
+        try {
+            $hasInternships = $model->relationLoaded('internships')
+                ? $model->internships->isNotEmpty()
+                : $model->internships()->exists();
+        } catch (Throwable) {
+            $hasInternships = false;
+        }
 
-        $hasAssessments = $model->relationLoaded('assessments')
-            ? $model->assessments->isNotEmpty()
-            : $model->assessments()->exists();
+        try {
+            $hasAssessments = $model->relationLoaded('assessments')
+                ? $model->assessments->isNotEmpty()
+                : $model->assessments()->exists();
+        } catch (Throwable) {
+            $hasAssessments = false;
+        }
 
         return new self(
             isActive: (bool) ($model->is_active ?? false),
