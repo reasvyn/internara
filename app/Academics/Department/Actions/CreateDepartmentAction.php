@@ -6,19 +6,21 @@ namespace App\Academics\Department\Actions;
 
 use App\Academics\Department\Models\Department;
 use App\Core\Actions\BaseAction;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 
-/**
- * Action to create a new department.
- */
 final class CreateDepartmentAction extends BaseAction
 {
     public function execute(array $data): Department
     {
-        return $this->transaction(function () use ($data) {
-            $department = Department::create(Arr::except($data, ['id']));
+        $validated = Validator::validate($data, [
+            'name' => ['required', 'string', 'max:100', 'unique:departments,name'],
+            'description' => ['nullable', 'string', 'max:500'],
+        ]);
 
-            $this->log('department_created', $department, $data);
+        return $this->transaction(function () use ($validated) {
+            $department = Department::create($validated);
+
+            $this->log('department_created', $department, $validated);
 
             return $department;
         });
