@@ -51,6 +51,26 @@ Manages industrial partner companies and partnership agreements for internship p
 
 ---
 
+## Data / DTOs
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Company/Data/CompanyData.php` | `CompanyData` | `BaseData` |
+| `Partnership/Data/PartnershipData.php` | `PartnershipData` | `BaseData` |
+
+## Events
+
+| File | Class | Dispatched By |
+| ---- | ----- | ------------- |
+| `Company/Events/CompanyCreated.php` | `CompanyCreated` | `CreateCompanyAction` |
+| `Partnership/Events/PartnershipCreated.php` | `PartnershipCreated` | `CreatePartnershipAction` |
+
+## Listeners
+
+| File | Class | Listens To |
+| ---- | ----- | ---------- |
+| `Company/Listeners/ClearDashboardOnCompanyChange.php` | `ClearDashboardOnCompanyChange` | `CompanyCreated` |
+
 ## Entities
 
 | File | Class | Extends |
