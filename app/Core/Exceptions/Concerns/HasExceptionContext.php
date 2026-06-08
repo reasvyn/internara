@@ -58,7 +58,13 @@ trait HasExceptionContext
                 if (is_scalar($value)) {
                     $output .= "\n  {$key}: {$value}";
                 } else {
-                    $output .= "\n  {$key}: ".json_encode($value, JSON_THROW_ON_ERROR);
+                    $encoded = json_encode($value, JSON_THROW_ON_ERROR | JSON_INVALID_UTF8_SUBSTITUTE);
+
+                    if ($encoded === false) {
+                        $encoded = json_encode(['error' => 'Context value is not JSON-serializable']);
+                    }
+
+                    $output .= "\n  {$key}: {$encoded}";
                 }
             }
         }

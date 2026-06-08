@@ -57,40 +57,41 @@ final class CsvHandler
         ?array $expectedHeaders = null,
     ): array {
         $handle = fopen($filePath, 'r');
-        $header = fgetcsv($handle, escape: '');
 
-        if ($expectedHeaders !== null) {
-            foreach ($expectedHeaders as $i => $expected) {
-                $actual = trim($header[$i] ?? '');
-                if (strtolower($actual) !== strtolower($expected)) {
-                    fclose($handle);
+        try {
+            $header = fgetcsv($handle, escape: '');
 
-                    return ['created' => 0, 'skipped' => 0, 'invalid' => true];
+            if ($expectedHeaders !== null) {
+                foreach ($expectedHeaders as $i => $expected) {
+                    $actual = trim($header[$i] ?? '');
+                    if (strtolower($actual) !== strtolower($expected)) {
+                        return ['created' => 0, 'skipped' => 0, 'invalid' => true];
+                    }
                 }
             }
-        }
 
-        $created = 0;
-        $skipped = 0;
+            $created = 0;
+            $skipped = 0;
 
-        while (($row = fgetcsv($handle, escape: '')) !== false) {
-            $result = $rowProcessor($row);
+            while (($row = fgetcsv($handle, escape: '')) !== false) {
+                $result = $rowProcessor($row);
 
-            if ($result === null) {
-                continue;
+                if ($result === null) {
+                    continue;
+                }
+
+                if ($result === CsvRowResult::SKIPPED) {
+                    $skipped++;
+
+                    continue;
+                }
+
+                $created++;
             }
 
-            if ($result === CsvRowResult::SKIPPED) {
-                $skipped++;
-
-                continue;
-            }
-
-            $created++;
+            return ['created' => $created, 'skipped' => $skipped, 'invalid' => false];
+        } finally {
+            fclose($handle);
         }
-
-        fclose($handle);
-
-        return ['created' => $created, 'skipped' => $skipped, 'invalid' => false];
     }
 }

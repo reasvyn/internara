@@ -52,6 +52,19 @@ class AdminUser extends Model
     }
 }
 
+class LimitedOwnershipPolicy
+{
+    use AuthorizesOwnership;
+
+    public function callIsOwnerOrAdmin(
+        Model $user,
+        Model $model,
+        string $foreignKey = 'user_id',
+    ): bool {
+        return $this->isOwnerOrAdmin($user, $model, $foreignKey);
+    }
+}
+
 class TestUser extends Model {}
 
 beforeEach(function () {
@@ -129,4 +142,26 @@ test('is owner or admin returns true when user is admin', function () {
     $model->setAttribute('user_id', 99);
 
     expect($this->policy->callIsOwnerOrAdmin($user, $model))->toBeTrue();
+});
+
+test('is owner or admin falls back to ownership check without isAdmin method', function () {
+    $policy = new LimitedOwnershipPolicy;
+    $user = new TestUser;
+    $user->setAttribute('id', 42);
+
+    $ownerModel = new TestUser;
+    $ownerModel->setAttribute('user_id', 42);
+
+    expect($policy->callIsOwnerOrAdmin($user, $ownerModel))->toBeTrue();
+});
+
+test('is owner or admin returns false without isAdmin when not owner', function () {
+    $policy = new LimitedOwnershipPolicy;
+    $user = new TestUser;
+    $user->setAttribute('id', 42);
+
+    $otherModel = new TestUser;
+    $otherModel->setAttribute('user_id', 99);
+
+    expect($policy->callIsOwnerOrAdmin($user, $otherModel))->toBeFalse();
 });

@@ -8,12 +8,14 @@ use App\Core\Contracts\StatusEnum;
 
 /**
  * @deprecated Use plain StatusEnum columns instead.
+ *   Scheduled for removal in v2.0.
+ *
  * Migration path:
  *   1. Add `status` string column casting to StatusEnum on the model
  *   2. Replace `setStatusEnum($x)` with `$model->status = $x`
  *   3. Replace `hasStatusEnum($x)` with `$model->status === $x`
  *   4. Replace `currentStatus()` with `$model->status`
- *   5. Remove the HasStatuses import and the trait usage
+ *   5. Remove the HasModelStatuses import and the trait usage
  */
 trait HasModelStatuses
 {

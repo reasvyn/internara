@@ -14,6 +14,8 @@ return [
     'module_livewire' => 'module.discovered_livewire',
     'module_policies' => 'module.discovered_policies',
     'module_views' => 'module.discovered_views',
+    'auth_login_lockout' => 'login:lockout:',
+    'auth_login_attempts' => 'login:attempts:',
     'auth_login_failures' => 'auth.login-failures:',
     'health_check' => 'health_check',
     'recover_admin_attempts' => 'recover_admin_attempts_',

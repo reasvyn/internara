@@ -126,6 +126,30 @@ test('import returns invalid when headers do not match', function () {
     unlink($path);
 });
 
+test('import closes file handle when row processor throws', function () {
+    $handler = new CsvHandler;
+    $path = tempnam(sys_get_temp_dir(), 'csv_test_');
+    $handle = fopen($path, 'w');
+    fputcsv($handle, ['Name'], escape: '');
+    fputcsv($handle, ['John'], escape: '');
+    fputcsv($handle, ['Jane'], escape: '');
+    fclose($handle);
+
+    $caught = false;
+    try {
+        $handler->import(
+            filePath: $path,
+            rowProcessor: fn ($row) => throw new \RuntimeException('Processing failed'),
+        );
+    } catch (\RuntimeException $e) {
+        $caught = true;
+        expect($e->getMessage())->toBe('Processing failed');
+    }
+
+    expect($caught)->toBeTrue();
+    unlink($path);
+});
+
 test('import header validation is case insensitive', function () {
     $handler = new CsvHandler;
     $path = tempnam(sys_get_temp_dir(), 'csv_test_');

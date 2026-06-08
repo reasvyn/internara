@@ -36,12 +36,8 @@ abstract class BaseAction
 
     protected function moduleName(): string
     {
-        $parts = explode('\\', static::class);
+        $namespaceParts = explode('\\', static::class);
 
-        if (! isset($parts[1])) {
-            return 'Unknown';
-        }
-
-        return $parts[1];
+        return $namespaceParts[1] ?? 'Unknown';
     }
 }
