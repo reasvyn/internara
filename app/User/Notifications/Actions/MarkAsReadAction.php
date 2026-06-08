@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\User\Notifications\Actions;
 
 use App\Core\Actions\BaseAction;
+use App\User\Notifications\Events\NotificationRead;
 use App\User\Notifications\Models\Notification;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Event;
 
 /**
  * Stateless Action to mark notification as read.
@@ -25,7 +26,7 @@ final class MarkAsReadAction extends BaseAction
             ]);
         }
 
-        Cache::forget(config('cache-keys.notification_unread').$notification->user_id);
+        Event::dispatch(new NotificationRead($notification));
 
         return $notification->fresh();
     }

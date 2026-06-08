@@ -10,6 +10,9 @@ use App\Academics\Department\Events\DepartmentCreated;
 use App\Academics\Department\Events\DepartmentDeleted;
 use App\User\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange;
 use App\User\Dashboard\Listeners\ClearDashboardCacheOnYearChange;
+use App\User\Notifications\Events\NotificationRead;
+use App\User\Notifications\Events\NotificationSent;
+use App\User\Notifications\Listeners\ClearUnreadNotificationCache;
 use App\Settings\Events\SettingUpdated;
 use App\Settings\Listeners\InvalidateSettingsCache;
 use App\Setup\SetupWizard\Events\SetupFinalized;
@@ -41,6 +44,14 @@ class EventServiceProvider extends ServiceProvider
 
         DepartmentDeleted::class => [
             ClearDashboardCacheOnDepartmentChange::class,
+        ],
+
+        NotificationSent::class => [
+            ClearUnreadNotificationCache::class,
+        ],
+
+        NotificationRead::class => [
+            ClearUnreadNotificationCache::class,
         ],
     ];
 

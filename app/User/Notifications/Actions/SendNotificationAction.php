@@ -7,8 +7,10 @@ namespace App\User\Notifications\Actions;
 use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
 use App\User\Models\User;
+use App\User\Notifications\Data\NotificationData;
+use App\User\Notifications\Events\NotificationSent;
 use App\User\Notifications\Models\Notification;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -27,11 +29,20 @@ final class SendNotificationAction extends BaseAction implements SendsNotificati
         ?array $data = null,
         ?string $link = null,
     ): Notification {
+        $notificationData = NotificationData::from([
+            'userId' => $userId,
+            'type' => $type,
+            'title' => $title,
+            'message' => $message,
+            'data' => $data,
+            'link' => $link,
+        ]);
+
         Validator::make(
             [
-                'userId' => $userId,
-                'type' => $type,
-                'title' => $title,
+                'userId' => $notificationData->userId,
+                'type' => $notificationData->type,
+                'title' => $notificationData->title,
             ],
             [
                 'userId' => 'required|string',
@@ -40,19 +51,19 @@ final class SendNotificationAction extends BaseAction implements SendsNotificati
             ],
         )->validate();
 
-        $user = User::findOrFail($userId);
+        $user = User::findOrFail($notificationData->userId);
 
         $notification = Notification::create([
             'user_id' => $user->id,
-            'type' => $type,
-            'title' => $title,
-            'message' => $message,
-            'data' => $data,
-            'link' => $link,
+            'type' => $notificationData->type,
+            'title' => $notificationData->title,
+            'message' => $notificationData->message,
+            'data' => $notificationData->data,
+            'link' => $notificationData->link,
             'is_read' => false,
         ]);
 
-        Cache::forget(config('cache-keys.notification_unread').$user->id);
+        Event::dispatch(new NotificationSent($notification));
 
         return $notification;
     }

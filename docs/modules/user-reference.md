@@ -79,6 +79,14 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 ---
 
+## Listeners
+
+| File | Class | Listens To |
+| ---- | ----- | ---------- |
+| `Dashboard/Listeners/ClearDashboardCacheOnYearChange.php` | `ClearDashboardCacheOnYearChange` | `AcademicYearCreated`, `AcademicYearActivated` |
+| `Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` | `ClearDashboardCacheOnDepartmentChange` | `DepartmentCreated`, `DepartmentDeleted` |
+| `Notifications/Listeners/ClearUnreadNotificationCache.php` | `ClearUnreadNotificationCache` | `NotificationSent`, `NotificationRead` |
+
 ## Livewire Components
 
 | File | Component | Extends |
@@ -102,7 +110,20 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Profile/Livewire/Forms/ProfileForm.php` | `ProfileForm` |
 | `Profile/Livewire/Forms/PasswordForm.php` | `PasswordForm` |
 
-## Notifications
+## Data / DTOs
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Notifications/Data/NotificationData.php` | `NotificationData` | `BaseData` |
+
+## Events
+
+| File | Class | Dispatched By | Consumed By |
+| ---- | ----- | ------------- | ----------- |
+| `Notifications/Events/NotificationSent.php` | `NotificationSent` | `SendNotificationAction` | `ClearUnreadNotificationCache` |
+| `Notifications/Events/NotificationRead.php` | `NotificationRead` | `MarkAsReadAction` | `ClearUnreadNotificationCache` |
+
+## Notifications (Mail)
 
 | File | Notification |
 | ---- | ------------ |
@@ -185,6 +206,11 @@ app/User/
 │   │   ├── MarkAsReadAction.php
 │   │   ├── MarkBatchAsReadAction.php
 │   │   └── SendNotificationAction.php
+│   ├── Data/NotificationData.php
+│   ├── Events/
+│   │   ├── NotificationRead.php
+│   │   └── NotificationSent.php
+│   ├── Listeners/ClearUnreadNotificationCache.php
 │   ├── Livewire/
 │   │   ├── NotificationBell.php
 │   │   └── NotificationCenter.php
