@@ -140,7 +140,7 @@ Explore the complete system guides under `docs/`:
 ### Module References
 
 - [Core Foundations Reference](docs/modules/core.md)
-- [Shared Utilities Reference](docs/modules/shared.md)
+- [Core Foundations & Shared Utilities Reference](docs/modules/core.md)
 - [User Auth Reference](docs/modules/user.md)
 - [SysAdmin Panel Reference](docs/modules/sysadmin.md)
 - [Academic Structure Reference](docs/modules/academics.md)

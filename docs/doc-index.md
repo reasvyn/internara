@@ -79,30 +79,29 @@ Each module has two documents under `docs/modules/`:
 - **Overview** (`docs/modules/{module}.md`) — purpose, boundary, features, design principles
 - **Reference** (`docs/modules/{module}-reference.md`) — complete API reference: Actions, Models, Enums, Entities, Policies, Livewire components, Routes, Views, Tests, Factories, Migrations
 
-Internara consists of **19 business modules** plus **2 infrastructure modules** (Core, Shared), organized by program lifecycle:
+Internara consists of **19 business modules** plus **1 infrastructure module** (Core), organized by program lifecycle:
 
 | #  | Module            | Overview                             | Reference                                       |
 | -- | ----------------- | ------------------------------------ | ----------------------------------------------- |
 | 1  | **Core**          | [Overview](modules/core.md)          | [Reference](modules/core-reference.md)          |
-| 2  | **Shared**        | [Overview](modules/shared.md)        | [Reference](modules/shared-reference.md)        |
-| 3  | **Auth**          | [Overview](modules/auth.md)          | [Reference](modules/auth-reference.md)          |
-| 4  | **User**          | [Overview](modules/user.md)          | [Reference](modules/user-reference.md)          |
-| 5  | **SysAdmin**      | [Overview](modules/sysadmin.md)      | [Reference](modules/sysadmin-reference.md)      |
-| 6  | **Setup**         | [Overview](modules/setup.md)         | [Reference](modules/setup-reference.md)         |
-| 7  | **Settings**      | [Overview](modules/settings.md)      | [Reference](modules/settings-reference.md)      |
-| 8  | **Academics**     | [Overview](modules/academics.md)     | [Reference](modules/academics-reference.md)     |
-| 9  | **Program**       | [Overview](modules/program.md)       | [Reference](modules/program-reference.md)       |
-| 10 | **Enrollment**    | [Overview](modules/enrollment.md)    | [Reference](modules/enrollment-reference.md)    |
-| 11 | **Assessment**    | [Overview](modules/assessment.md)    | [Reference](modules/assessment-reference.md)    |
-| 12 | **Evaluation**    | [Overview](modules/evaluation.md)    | [Reference](modules/evaluation-reference.md)    |
-| 13 | **Assignment**    | [Overview](modules/assignment.md)    | [Reference](modules/assignment-reference.md)    |
-| 14 | **Journals**      | [Overview](modules/journals.md)      | [Reference](modules/journals-reference.md)      |
-| 15 | **Guidance**      | [Overview](modules/guidance.md)      | [Reference](modules/guidance-reference.md)      |
-| 16 | **Incident**      | [Overview](modules/incident.md)      | [Reference](modules/incident-reference.md)      |
-| 17 | **Partners**      | [Overview](modules/partners.md)      | [Reference](modules/partners-reference.md)      |
-| 18 | **Certification** | [Overview](modules/certification.md) | [Reference](modules/certification-reference.md) |
-| 19 | **Reports**       | [Overview](modules/reports.md)       | [Reference](modules/reports-reference.md)       |
-| 20 | **Document**      | [Overview](modules/document.md)      | [Reference](modules/document-reference.md)      |
+| 2  | **Auth**          | [Overview](modules/auth.md)          | [Reference](modules/auth-reference.md)          |
+| 3  | **User**          | [Overview](modules/user.md)          | [Reference](modules/user-reference.md)          |
+| 4  | **SysAdmin**      | [Overview](modules/sysadmin.md)      | [Reference](modules/sysadmin-reference.md)      |
+| 5  | **Setup**         | [Overview](modules/setup.md)         | [Reference](modules/setup-reference.md)         |
+| 6  | **Settings**      | [Overview](modules/settings.md)      | [Reference](modules/settings-reference.md)      |
+| 7  | **Academics**     | [Overview](modules/academics.md)     | [Reference](modules/academics-reference.md)     |
+| 8  | **Program**       | [Overview](modules/program.md)       | [Reference](modules/program-reference.md)       |
+| 9  | **Enrollment**    | [Overview](modules/enrollment.md)    | [Reference](modules/enrollment-reference.md)    |
+| 10 | **Assessment**    | [Overview](modules/assessment.md)    | [Reference](modules/assessment-reference.md)    |
+| 11 | **Evaluation**    | [Overview](modules/evaluation.md)    | [Reference](modules/evaluation-reference.md)    |
+| 12 | **Assignment**    | [Overview](modules/assignment.md)    | [Reference](modules/assignment-reference.md)    |
+| 13 | **Journals**      | [Overview](modules/journals.md)      | [Reference](modules/journals-reference.md)      |
+| 14 | **Guidance**      | [Overview](modules/guidance.md)      | [Reference](modules/guidance-reference.md)      |
+| 15 | **Incident**      | [Overview](modules/incident.md)      | [Reference](modules/incident-reference.md)      |
+| 16 | **Partners**      | [Overview](modules/partners.md)      | [Reference](modules/partners-reference.md)      |
+| 17 | **Certification** | [Overview](modules/certification.md) | [Reference](modules/certification-reference.md) |
+| 18 | **Reports**       | [Overview](modules/reports.md)       | [Reference](modules/reports-reference.md)       |
+| 19 | **Document**      | [Overview](modules/document.md)      | [Reference](modules/document-reference.md)      |
 
 ---
 
