@@ -9,7 +9,7 @@ use App\Core\Contracts\SendsNotifications;
 use App\Core\Support\SmartLogger;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Events\SetupFinalized;
-use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
+use App\SysAdmin\UserManagement\Actions\SaveRecoveryKeyAction;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
