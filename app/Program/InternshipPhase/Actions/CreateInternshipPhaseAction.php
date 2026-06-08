@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Program\InternshipPhase\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Program\Internship\Models\InternshipPhase;
+use App\Program\InternshipPhase\Models\InternshipPhase;
 
 final class CreateInternshipPhaseAction extends BaseAction
 {
