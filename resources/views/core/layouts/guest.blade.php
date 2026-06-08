@@ -1,8 +1,10 @@
-@props(['title' => null, 'header' => null, 'footer' => null])
+@props (['title' => null, 'header' => null, 'footer' => null])
 
 <x-core::layouts.base :$title>
     <div class="min-h-screen flex flex-col bg-base-200">
-        <header class="bg-base-100/80 backdrop-blur-sm border-b border-base-content/10 sticky top-0 z-50">
+        <header
+            class="bg-base-100/80 backdrop-blur-sm border-b border-base-content/10 sticky top-0 z-50"
+        >
             <div class="container mx-auto px-6 lg:px-12">
                 <div class="flex items-center justify-between h-16">
                     <a wire:navigate href="/" class="flex items-center gap-3">
@@ -10,20 +12,18 @@
                     </a>
 
                     <div class="flex items-center gap-3">
-                        <livewire:livewire.theme-switcher />
-                        <livewire:livewire.lang-switcher />
+                        <livewire:settings.theme-switcher />
+                        <livewire:settings.lang-switcher />
                     </div>
                 </div>
             </div>
         </header>
 
-        <main id="main-content" class="flex-1 flex flex-col">
-            {{ $slot }}
-        </main>
+        <main id="main-content" class="flex-1 flex flex-col">{{ $slot }}</main>
 
         <footer class="border-t border-base-content/10 py-8 mt-auto">
             <div class="container mx-auto px-6 text-center">
-                @isset($footer)
+                @isset ($footer)
                     {{ $footer }}
                 @else
                     <x-core::ui.credits />

@@ -1,79 +1,48 @@
-# Settings — Documentation Overview
+# Settings
 
-> Last updated: 2026-06-06 Changes: Extracted from SysAdmin into standalone module; created
-> dedicated documentation.
+> **Last updated:** 2026-06-08
 
-Manages system-wide configuration including brand identity, color schemes, localization preferences,
-SMTP mail services, and global feature toggles. Acts as the single source of truth for all runtime
-settings consumed across every module.
+System-wide configuration management: key-value store with type enforcement, brand identity (colors, logo, favicon, site title), localization preferences, SMTP mail configuration, and global feature toggles.
 
-For complete technical reference including API, models, actions, and components, see
-[settings-reference.md](settings-reference.md).
+## Purpose & Boundary
 
----
+Settings is the single source of truth for all runtime configuration consumed across every module. It provides the `settings` database table, the `Settings` static facade, caching infrastructure, type casting, brand asset management via Spatie Media Library, and the global helper functions (`setting()`, `brand()`, `app_info()`).
 
-## Key Principles
+Out of scope: environment-specific config (`.env`), user preferences (User profile), feature-specific logic.
 
-- **Centralized Configuration**: All system settings are stored as key-value pairs with type
-  enforcement, cached forever for performance.
-- **Multiple Resolution Layers**: Values resolve through a chain — runtime overrides → AppInfo
-  (composer.json) → DB (cached) → config fallback → default.
-- **Automatic Cache Invalidation**: Setting changes invalidate relevant cache keys immediately,
-  ensuring next reads are fresh.
-- **Type Safety**: Every setting has an explicit type (`string`, `integer`, `float`, `boolean`,
-  `json`, `encrypted`, `null`) enforced at the cast layer.
-- **Encrypted Secrets**: Sensitive values (e.g., SMTP passwords) are stored encrypted via Laravel's
-  `Crypt` facade.
-- **Superadmin-Only Mutations**: Only superadmin users can create, update, or delete settings. All
-  admin users can view them.
-- **Dynamic Branding**: Brand colors, logo, favicon, and site title are configurable at runtime
-  without redeployment.
+## Submodules
 
----
+### SettingStore
+Core key-value store with explicit type enforcement (`string`, `integer`, `float`, `boolean`, `json`, `encrypted`, `null`). Values cached forever via `rememberForever` with automatic invalidation on write. Sensitive values (SMTP passwords, API keys) stored encrypted via Laravel's `Crypt` facade.
 
-## Context Boundary
+### Branding
+Dynamic brand identity management: site title, tagline, primary/secondary/accent colors (validated 6-digit hex), logo upload (max 1 MB, PNG/JPEG/WebP), favicon upload (max 512 KB, PNG/JPEG/WebP/ICO). All assets render immediately without redeployment.
 
-Owns the `settings` database table and all supporting infrastructure (caching, casting, validation).
-Provides the `Settings` static facade and `AppMetadata` / `AppInfo` helpers consumed globally via
-`setting()`, `brand()`, and `app_info()` helper functions. Handles brand asset uploads
-(logo/favicon) through Spatie Media Library.
+### AppMetadata
+Read-only system metadata derived from `composer.json` and environment: application name, version, description, environment name, debug mode status, and installation state. Accessed via `app_info()` helper.
 
-**Dependencies**: Core (base classes, SmartLogger), Academics (academic year data), User
-(notifications for mail tests) **Used By**: Every module (via `Settings::get()` / `setting()` /
-`brand()` / `app_info()`)
+### MailConfiguration
+SMTP mail driver configuration stored as encrypted settings. Consumed by the notification system for transactional email delivery. Includes host, port, encryption, username, password, from address, and from name.
 
----
+## Key Concepts
 
-## Module Rules
+### Resolution Chain
 
-- **Key Format**: Setting keys must match `/^[a-z][a-z0-9_.]*$/` — lowercase alphanumeric with
-  underscores or dots.
-- **Superadmin Mutations**: Only users with the `super_admin` role may create, update, or delete
-  settings.
-- **Cached Forever**: All setting reads are cached forever; cache is manually flushed on every
-  write/update.
-- **Encrypted Storage**: SMTP passwords and other secrets are stored with `type=encrypted` using
-  Laravel Crypt.
-- **Brand Asset Limits**: Logo upload max 1 MB, favicon upload max 512 KB. Supported formats: PNG,
-  JPEG, WebP, ICO.
-- **Color Validation**: All color values must be valid 6-digit hex codes (e.g., `#059669`).
-- **Fallback Chain**: resolution order: runtime overrides → AppInfo metadata → DB cache → config →
-  provided default.
+Setting values resolve through a multi-layer fallback: runtime overrides → `AppInfo` (composer.json) → database (cached) → config file fallback → provided default. This enables environment-specific overrides while maintaining a consistent API.
 
----
+### Cache Strategy
 
-## Error Handling & Failure Modes
+All setting reads are cached forever. Cache invalidation happens synchronously on every write operation. This eliminates cache stampede risk while ensuring stale data is never served longer than one request cycle.
 
-- **Database Unavailable**: All `Settings` methods gracefully fall back to empty defaults and log
-  warnings via `SmartLogger`.
-- **Cache Stampede**: Cache keys use `rememberForever`, so concurrent writes only cause redundant DB
-  fetches, not data corruption.
-- **Invalid Key Format**: `SetSettingAction` throws `ValidationException` on malformed keys.
-- **Encryption Failure**: `SettingValueCast` throws `RuntimeException` if encryption fails during
-  write, gracefully returns raw value on decryption failure.
-- **Missing Migration Before Setup**: `AppMetadata::isInstalled()` guards all DB reads until the
-  system is fully installed.
+### Superadmin-Only Mutations
 
----
+Only users with `super_admin` role can create, update, or delete settings. All admin users have read access. This prevents accidental or unauthorized configuration changes.
 
-For complete technical reference, see [settings-reference.md](settings-reference.md).
+## Dependencies
+
+- Core (base classes, SmartLogger)
+- Academics (academic year reference data)
+
+## Used By
+
+Every module (via `setting()`, `brand()`, `app_info()` helpers).

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Exceptions\RejectedException;
+use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use App\User\Profile\Actions\UpdateProfileAction;
 use App\User\Profile\Models\Profile;

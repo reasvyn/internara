@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Notifications\Livewire;
 
-use App\Support\CacheKeys;
+use App\Core\Support\CacheKeys;
 use App\User\Notifications\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;

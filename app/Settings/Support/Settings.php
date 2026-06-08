@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Settings\Support;
 
+use App\Core\Support\CacheKeys;
 use App\Core\Support\SmartLogger;
 use App\Settings\Models\Setting;
 use App\Settings\Rules\ValidSettingKey;
-use App\Support\CacheKeys;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -250,7 +250,22 @@ final class Settings
 
         Cache::forget(CacheKeys::SETTINGS_KEY.'all');
 
-        if (str_contains($key, 'color') || str_contains($key, 'brand')) {
+        if (
+            in_array(
+                $key,
+                [
+                    'primary_color',
+                    'secondary_color',
+                    'accent_color',
+                    'base_color',
+                    'brand_logo',
+                    'brand_logo_ref',
+                    'site_favicon',
+                    'brand_favicon_ref',
+                ],
+                true,
+            )
+        ) {
             Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
         }
     }

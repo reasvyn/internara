@@ -1,8 +1,8 @@
 # Coding Conventions
 
-> Last updated: 2026-06-05 Changes: Add BaseEvent to base-classes table, update section 12 events to
-> require BaseEvent, add SmartLogger integration subsection **Context:** ✅ All conventions are
-> enforced.
+> **Last updated:** 2026-06-08
+> **Changes:** Synchronized with codebase audit — updated module count to 20 (incl. Shared), added SmartLogger channel routing modes, updated Enum names, fixed cross-module communication patterns, added pre-commit checklist
+> **Context:** ✅ All conventions are enforced through code review.
 
 This document describes conventions for writing code in the Internara codebase. These rules exist to
 produce consistent, predictable code that any team member can read without context-switching.
@@ -108,6 +108,9 @@ Where `{Component}` is the technical layer (Actions, Models, Policies, Livewire,
 Code is organized by module, then by **Submodule** within each module. Each submodule directory is a
 self-contained vertical slice with its own technical component layers. Files that span multiple
 submodules live at the module root.
+
+> [!NOTE]
+> For cross-cutting or system-wide modules/submodules (such as Settings, Enrollment, or Assessment), a **flat structure** directly under the module root is permitted to place component directories (e.g. `Actions/`, `Models/`, `Policies/`, etc.) without a submodule grouping layer, avoiding redundant namespace segments.
 
 ```
 app/{Module}/

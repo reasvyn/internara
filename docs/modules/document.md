@@ -1,103 +1,49 @@
-# Document — Documentation Overview
+# Document
 
-> Last updated: 2026-06-06  
-> Changes: Integrated school policy handbooks under the Document module's scope (unifying
-> `handbooks` and `documents` tables). Policy acknowledgements are now tracked via `activity_log`
-> instead of a dedicated `document_acknowledgements` table.
+> **Last updated:** 2026-06-08
 
-Manages official correspondence templates, PDF letter rendering, policy handbooks, and compliance
-acknowledgement tracking.
+Official correspondence template management, PDF letter rendering, policy handbook storage, and compliance acknowledgement tracking.
 
-For complete technical reference including API, models, actions, and components, see
-[document-reference.md](document-reference.md).
+## Purpose & Boundary
 
----
+Document manages the school's official document repository. It stores correspondence templates (permits, parent consent letters) rendered via Blade + DomPDF, and policy handbooks requiring mandatory student acknowledgement. Templates and handbooks share a unified table structure distinguished by type (`template`, `policy`, `guideline`). Policy acknowledgements are recorded in the `activity_log` table for compliance audit.
 
-## Key Principles
-
-- **Unified Document Repository** — Holds both downloadable PDF letter templates (permits, parent
-  consent letters) and text-based guidebooks/policies (handbooks) under a single table structure
-  distinguished by `type` (`template` | `policy` | `guideline`).
-- **PDF Generation Pipeline** — Renders templates dynamically using Blade and DomPDF
-  (`DocumentRenderer`) for official correspondence.
-- **Compliance Tracking via Activity Log** — Policies (handbooks) require mandatory user sign-offs.
-  Acknowledgement events are recorded in the `activity_log` table with event `acknowledged`,
-  capturing the user ID, timestamp, and IP address for compliance audits.
-
----
-
-## Context Boundary
-
-The **Document** module:
-
-- Owns the `Document` model.
-- Provides required file templates (e.g. parent consent forms) consumed by **Enrollment** and
-  **Program**.
-- Tracks policy acknowledgements (handbooks) through activity logging — students must sign policies
-  before starting operations in **Journals**.
-
----
-
-## Module Rules
-
-- **Access Restrictions:** Only admins can create or edit templates and policies. Students can read
-  active policies and download assigned templates.
-- **Handbook Acknowledgement:** A student can only acknowledge each policy version once. Updates to
-  a handbook template increment its version, requiring a new acknowledgement entry in
-  `activity_log`.
-- **IP Auditing:** All policy acknowledgement events must record the user's IP address in the
-  activity log properties.
-
----
+Out of scope: certificate generation (Certification), final grade card (Reports), daily logbook entries (Journals).
 
 ## Submodules
 
-- **OfficialDocument**: Correspondence template management, PDF generation, and download endpoints
-  (letters, permits).
-- **Handbook**: Text-based school policies requiring role-targeted visibility filters (`student` |
-  `mentor` | `all`) and version-controlled acknowledgements.
+### OfficialDocument
+Correspondence template management: create, edit, and render templates using Blade syntax with DomPDF compilation. Supports variable substitution for student name, program details, dates, and school information. Generated PDFs can be downloaded individually. Templates are versioned — updates create new versions while preserving old ones for historical accuracy.
 
----
+### Handbook
+Text-based school policies and guidelines with role-targeted visibility filters (`student`, `mentor`, `all`). Handbooks are version-controlled — each update increments the version number. Students must acknowledge each policy version once before accessing certain features (e.g., starting logbook entries in Journals). Acknowledgements are recorded in `activity_log` with event `acknowledged`, capturing user ID, timestamp, IP address, and document version.
 
-## Error Handling & Failure Modes
+## Key Concepts
 
-- **Deleting Active Templates:** Deleting templates referenced by active program requirements is
-  blocked with a `RejectedException`.
-- **PDF Compilation Failure:** Missing assets or incorrect syntax throws a `RenderException`, which
-  is logged via `SmartLogger`.
-- **Duplicate Sign-Offs:** Attempting to record a duplicate acknowledgement for the same document
-  version is handled by application logic; the `activity_log` table is append-only so duplicates are
-  filtered at the query level.
+### Unified Document Table
 
----
+Templates and handbooks share a single `documents` table distinguished by a `type` discriminator (`template`, `policy`, `guideline`). This prevents table sprawl while enabling document type-specific behavior (rendering for templates, acknowledgement for policies). Each document stores metadata as JSON.
 
-## Quick References
+### PDF Rendering Pipeline
 
-### Actions & Business Logic
+Templates are rendered using Laravel Blade with DomPDF (`DocumentRenderer`). The pipeline: load template → substitute variables → compile Blade → render PDF. Variables resolve from the registration context (student name, program, dates) and system settings (school name, principal name). Rendering failures throw a `RenderException` logged via SmartLogger.
 
-- **4** implemented actions (2 planned):
-    - `SaveDocumentTemplateAction` — Creates or updates templates/policies.
-    - `RenderDocumentAction` — Compiles documents to PDF.
-    - `GenerateReportAction` — Correspondence logs.
-    - `DeleteReportAction` — Correspondence logs.
-    > **Note:** `AcknowledgeDocumentAction` and `PruneAcknowledgementsAction` are planned but not yet implemented. Acknowledgements are currently handled inline via `activity()` helper.
+### Policy Acknowledgement Tracking
 
-### Data & Persistence
+Compliance-driven mandatory read-and-sign workflow for school policies. Key rules:
+- Each policy version can be acknowledged once per user.
+- Handbook updates increment the version, requiring a new acknowledgement.
+- Acknowledgements are recorded in `activity_log` (append-only), not a separate table.
+- IP address is captured for compliance audit.
 
-- **1** model: `Document`.
-- UUID PKs. `Document` uses JSON metadata. Policy acknowledgements stored in `activity_log` with
-  `event = 'acknowledged'`.
+## Dependencies
 
-### User Interface
+- Core (base classes, SmartLogger)
+- Settings (school metadata for variable substitution)
+- Enrollment (student context for personalized documents)
 
-- **2** Livewire components:
-    - `TemplateManager` — Manage templates and policy guides.
-    - `ReportsManager` — Manage generated letters.
+## Used By
 
-### Authorization
-
-- **1** policy: `DocumentPolicy`.
-
----
-
-For complete technical reference, see [document-reference.md](document-reference.md).
+- Program (required document template references)
+- Enrollment (document upload verification references)
+- Journals (handbook acknowledgement gate)

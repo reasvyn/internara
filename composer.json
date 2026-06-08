@@ -56,7 +56,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Support/helpers.php"
+            "app/Core/Support/helpers.php"
         ],
         "exclude-from-classmap": [
             ".temp"

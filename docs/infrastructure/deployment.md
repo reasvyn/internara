@@ -1,64 +1,10 @@
 # Deployment
 
-> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
-> conventions overhaul
+> Last updated: 2026-06-08
 
-Internara is designed to be installed on the school's own infrastructure. This guide covers the
-three supported deployment paths and the operational requirements for each.
+Internara is designed to be installed on the school's own infrastructure. This guide covers the three supported deployment paths and the operational requirements for each.
 
-## Prerequisites
-
-| Requirement    | Development         | Production                                |
-| -------------- | ------------------- | ----------------------------------------- |
-| PHP            | 8.4.0+              | 8.4.0+                                    |
-| Composer       | 2.5+                | 2.5+                                      |
-| Node.js        | 20+                 | 20+ (build only)                          |
-| NPM            | 10+                 | 10+ (build only)                          |
-| Database       | SQLite (built-in)   | MySQL 8+ / MariaDB 10.6+ / PostgreSQL 14+ |
-| Queue driver   | `sync`              | `redis` (recommended)                     |
-| Cache driver   | `file`              | `redis` (recommended)                     |
-| Session driver | `database`          | `redis` (recommended)                     |
-| Web server     | `php artisan serve` | Nginx or Apache                           |
-
-### Required PHP Extensions
-
-| Extension       | Purpose                               |
-| --------------- | ------------------------------------- |
-| `ext-bcmath`    | Grade and score calculations          |
-| `ext-ctype`     | Character validation                  |
-| `ext-curl`      | Remote media downloads, API calls     |
-| `ext-fileinfo`  | MIME type detection for uploads       |
-| `ext-gd`        | Image processing (thumbnails, WebP)   |
-| `ext-intl`      | Internationalization and localization |
-| `ext-mbstring`  | Multibyte string operations           |
-| `ext-openssl`   | Encryption, HTTPS, signed URLs        |
-| `ext-pdo`       | Database abstraction                  |
-| `ext-tokenizer` | Blade template engine                 |
-| `ext-xml`       | XML parsing, feed generation          |
-| `ext-zip`       | File compression                      |
-
-Database-specific driver (pick one matching your engine): `ext-pdo_sqlite`, `ext-pdo_mysql`, or
-`ext-pdo_pgsql`.
-
-### Recommended PHP Extensions
-
-| Extension     | Benefit                                               |
-| ------------- | ----------------------------------------------------- |
-| `ext-opcache` | Bytecode cache — essential for production performance |
-| `ext-redis`   | High-performance cache, session, and queue backend    |
-| `ext-sockets` | Required by Laravel Reverb WebSocket server           |
-| `ext-pcntl`   | Process control for queue worker signals              |
-| `ext-posix`   | POSIX system calls for process management             |
-| `ext-imagick` | Higher quality image conversions than GD              |
-
-### Verification
-
-```bash
-php artisan system:health
-```
-
-This validates all requirements and identifies common misconfigurations. Use `--json` for
-machine-readable output.
+For prerequisites and PHP extension requirements, see [Installation](installation.md#prerequisites). For application installation steps (migrations, setup wizard, build), see [Installation](installation.md#application-installation-steps).
 
 ---
 
@@ -114,7 +60,7 @@ pm.max_spare_servers = 15
 pm.max_requests = 500
 ```
 
-Each PHP-FPM process uses approximately 40–60 MB. With 50 children, reserve at least 3 GB of RAM.
+Each PHP-FPM process uses ~40–60 MB. With 50 children, reserve at least 3 GB RAM.
 
 ### 3. Database Setup
 
@@ -167,10 +113,9 @@ maintenance_work_mem = 128MB
 random_page_cost = 1.1
 ```
 
-### 4. Background Processes with Supervisor
+### 4. Dual Pipeline Supervisor Configuration
 
-To handle concurrent notifications and heavy document compilation at scale, separate queue pipelines
-must be run:
+Two separate queue pipelines prevent document compilation from blocking notification delivery:
 
 - **`default` queue**: Processes emails, alerts, and general events.
 - **`documents` queue**: Dedicated exclusively to compiling PDF certificates and reports.
@@ -231,8 +176,11 @@ Create the public storage symlink:
 php artisan storage:link
 ```
 
-For multi-server deployments, replace local storage with S3-compatible object storage. See
-[Media Library](media-library.md#s3-compatible-cloud-storage).
+For multi-server deployments, replace local storage with S3-compatible object storage. See [Media Library](media-library.md#s3-compatible-cloud-storage).
+
+### 6. Complete the Installation
+
+Follow the application installation steps in [Installation](installation.md#application-installation-steps) — build assets, run the setup wizard, enable caches, and verify with `php artisan system:health`.
 
 ---
 
@@ -257,9 +205,7 @@ The project includes a production `docker-compose.yml` with all required service
 docker compose up -d
 ```
 
-The application is served on port 80 (configurable via `NGINX_PORT`). Run
-`php artisan setup:install` inside the `app` container to generate the signed setup URL, then open
-it in your browser.
+The application is served on port 80 (configurable via `NGINX_PORT`). Run `php artisan setup:install` inside the `app` container to generate the signed setup URL, then open it in your browser.
 
 ### Development with Laravel Sail
 
@@ -271,23 +217,24 @@ it in your browser.
 ./vendor/bin/sail up -d -s mysql
 ```
 
+See `docker-compose.dev.yml` for the Sail configuration.
+
 ---
 
 ## Deployment Path C: Shared Hosting
 
 ### Limitations
 
-| Feature      | Why It Doesn't Work       | Alternative                                                |
-| ------------ | ------------------------- | ---------------------------------------------------------- |
-| Queue worker | No long-running processes | Set `QUEUE_CONNECTION=sync` — jobs run during HTTP request |
-
-| Redis / Memcached | Not installed | Use `file` or `database` driver | | Minute-level cron | Min
-interval often 5–15 min | Hit `/cron/{secret}` web endpoint |
+| Feature                                   | Alternative                                                |
+| ----------------------------------------- | ---------------------------------------------------------- |
+| Queue worker (no long-running processes)  | Set `QUEUE_CONNECTION=sync` — jobs run during HTTP request |
+| Reverb WebSocket (no custom servers)      | Page refresh shows new notifications                       |
+| Redis / Memcached (not installed)         | Use `file` or `database` driver                            |
+| Minute-level cron (min interval 5–15 min) | Hit `/cron/{secret}` web endpoint                          |
 
 ### What Still Works
 
-All core features: authentication, registration, attendance, logbook, assignments, assessments,
-reports, certificates, mentoring, email notifications.
+All core features: authentication, registration, attendance, logbook, assignments, assessments, reports, certificates, mentoring, email notifications.
 
 ### Deployment Steps
 
@@ -299,8 +246,7 @@ npm install && npm run build
 rm -rf node_modules/
 ```
 
-**2. Upload files** to your host's document root. The document root must point to the `public/`
-directory.
+**2. Upload files** to your host's document root. The document root must point to the `public/` directory.
 
 **3. Configure environment:**
 
@@ -308,9 +254,7 @@ directory.
 cp .env.example .env
 ```
 
-Key settings to customize: `APP_URL`, `APP_ENV=production`, `APP_DEBUG=false`, `DB_*` (your host's
-MySQL/MariaDB credentials), `MAIL_*` (SMTP settings), `CRON_SECRET` (run
-`php -r "echo bin2hex(random_bytes(16));"`).
+The `.env.example` defaults are already optimized for shared hosting (`QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, etc.). Key settings to customize: `APP_URL`, `APP_ENV=production`, `APP_DEBUG=false`, `DB_*` (your host's MySQL/MariaDB credentials), `MAIL_*` (SMTP settings), `CRON_SECRET`.
 
 **4. Run migrations:**
 
@@ -324,12 +268,12 @@ php artisan migrate --force
 php artisan setup:install
 ```
 
-Copy the signed URL from the output and open it in your browser.
+Copy the signed URL from the output and open it in your browser to complete the setup wizard.
 
 **6. Set up cron** in cPanel to hit the scheduler endpoint:
 
 ```cron
-* * * * * curl -s https://your-module.com/cron/your-cron-secret-here
+* * * * * curl -s https://your-school.sch.id/cron/your-cron-secret-here
 ```
 
 **7. Storage link** — create manually if SSH is not available:
@@ -343,7 +287,7 @@ public/storage → storage/app/public
 When the institution outgrows shared hosting:
 
 1. Set up a VPS with PHP 8.4, Redis, Supervisor
-2. Install the same codebase
+2. Install the same codebase following [Installation](installation.md)
 3. Change `.env`:
 
 ```env
@@ -352,9 +296,9 @@ CACHE_STORE=redis
 SESSION_DRIVER=redis
 ```
 
-4. Configure Supervisor for queue worker + scheduler
+4. Configure Supervisor with dual pipeline workers
 5. Set up minute-level cron
-6. All features become available automatically
+6. All features become available automatically, including async queue processing
 
 ---
 
@@ -364,7 +308,7 @@ SESSION_DRIVER=redis
 - [ ] `APP_KEY` set to a random 32-character base64 string
 - [ ] Database migrated: `php artisan migrate --force`
 - [ ] Public storage link exists: `php artisan storage:link`
-- [ ] Queue worker running (Supervisor or systemd)
+- [ ] Queue workers running (Supervisor with dual pipelines: default + documents)
 - [ ] Scheduler cron entry configured
 - [ ] OpCache enabled and configured
 - [ ] All caches warmed: `php artisan optimize`
@@ -378,8 +322,9 @@ SESSION_DRIVER=redis
 
 ## References
 
-- [Configuration](configuration.md) — environment variables and runtime settings
+- [Installation](installation.md) — prerequisites, command reference, troubleshooting
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design, scaling, sizing
+- [Configuration](configuration.md) — environment variables and runtime settings
 - [Queue](queue.md) — worker management, job lifecycle, enterprise scaling
 - [Media Library](media-library.md) — file uploads, S3 storage, image conversions
 - [Backup & Recovery](backup-recovery.md) — database dumps, restoration

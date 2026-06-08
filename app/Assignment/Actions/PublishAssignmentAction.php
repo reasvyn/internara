@@ -6,7 +6,7 @@ namespace App\Assignment\Actions;
 
 use App\Assignment\Models\Assignment;
 use App\Core\Actions\BaseAction;
-use App\Exceptions\RejectedException;
+use App\Core\Exceptions\RejectedException;
 
 final class PublishAssignmentAction extends BaseAction
 {

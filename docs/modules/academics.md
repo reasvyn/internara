@@ -1,101 +1,43 @@
-# Academics — Documentation Overview
+# Academics
 
-> Last updated: 2026-06-06  
-> Changes: Reduced School submodule to Entity + Livewire editor (no standalone model, actions, or
-> policies). School profile (NPSN, name, contact) is stored in the `settings` table as `school.*`
-> namespaces, since the application is single-tenant.
+> **Last updated:** 2026-06-08
 
-Institutional structure: departments and academic calendar management.
+Institutional structure: school profile, academic departments (majors), and academic calendar management.
 
-For complete technical reference including API, models, actions, and components, see
-[academics-reference.md](academics-reference.md).
+## Purpose & Boundary
 
----
+Academics defines the school's organizational and calendar structure. It manages departments (academic divisions), academic years (calendar periods), and the school profile entity. Departments scope teacher and student assignments. Academic years scope internship programs and enrollment periods. The school profile is stored in Settings as `school.*` keys.
 
-## Key Principles
-
-- **Single School Context (Single-Tenant)** — The system is designed to run once per school. All
-  school-wide attributes (legal name, NPSN, principal name) are managed as global configurations
-  inside `settings`.
-- **Departments Organize Academic Divisions** — Teachers and students are assigned to departments.
-  Internship programs are scoped by department.
-- **Academic Years Define the Calendar** — Only one academic year can be active at a time.
-  Activating a new year deactivates all others.
-
----
-
-## Context Boundary
-
-The **Academics** module owns:
-
-- **`Department`** and **`AcademicYear`** models.
-- Provides reference calendars for **Program** (internship programs belong to an academic year) and
-  **Enrollment** (registrations are scoped by calendars).
-- Serves department and calendar references used by **User** and **SysAdmin** profiles.
-
----
-
-## Module Rules
-
-- **Exactly One Active Academic Year** at any time. Activating a new year automatically deactivates
-  others.
-- **Department Deletion is Guarded** — A department cannot be deleted if it has active programs,
-  users, or placements.
-- **Chronological Calendar Limits** — Academic years cannot overlap, and `start_date` must precede
-  `end_date`.
-
----
+Out of scope: internship program definitions (Program), student enrollment (Enrollment), class scheduling (Journals).
 
 ## Submodules
 
-- **School**: School profile editor (Entity + Livewire only — metadata stored in `settings` table).
-- **Department**: CRUD-managed academic majors (divisions). Guarded deletion prevents orphan
-  database records.
-- **AcademicYear**: School calendar periods with single-active constraints and start/end dates.
+### School
+School profile entity (Entity + Livewire editor only — no standalone model). Managed as `school.*` settings keys (school name, NPSN, principal name, address, phone, email). Single-tenant assumption: one school per installation.
 
----
+### Department
+Academic majors/divisions with CRUD management. Departments organize teachers, students, and internship programs. Guarded deletion: cannot delete a department with active programs, assigned users, or active placements. Returns a `ConflictException` listing blocking records.
 
-## CLI Commands
+### AcademicYear
+School calendar periods with start/end dates and a single-active constraint. Activating a new year automatically deactivates all others. Years cannot overlap. Start date must precede end date. CLI command `academics:activate-year {year}` for programmatic activation.
 
-| Command                                      | Purpose                           |
-| -------------------------------------------- | --------------------------------- |
-| `php artisan academics:activate-year {year}` | Activate a specific academic year |
+## Key Concepts
 
----
+### Single-Tenant School Context
 
-## Error Handling & Failure Modes
+The application runs once per school. All school-wide attributes (legal name, NPSN, principal name, address) are stored in the Settings key-value store under the `school.*` namespace, not as a dedicated database table. This eliminates table sprawl for a fundamentally single-instance concept.
 
-- **Deleting a Referenced Department:** Throws a `ConflictException` listing active programs or
-  users blocking deletion.
-- **Activating Overlapping Years:** Throws a `RejectedException` if the dates overlap or if more
-  than one active year constraint is violated.
+### Active Year Singleton
 
----
+Exactly one academic year can be active at any time. This invariant is enforced at the model level (deactivating others on activation) and at the database level (unique constraint on active flag). All time-scoped features — programs, enrollments, reports — reference the active year by default.
 
-## Quick References
+## Dependencies
 
-### Actions & Business Logic
+- Core (base classes, SmartLogger)
+- Settings (school profile storage)
 
-- **8** actions across submodules:
-    - Department CRUD (create, update, delete)
-    - Academic year CRUD (create, update, delete, activate, deactivate)
+## Used By
 
-### Data & Persistence
-
-- **2** models: `Department`, `AcademicYear`.
-- UUID PKs. `AcademicYear` has `is_active` boolean check scopes.
-
-### User Interface
-
-- **2** Livewire components:
-    - `DepartmentManager` — Major CRUD table.
-    - `AcademicYearManager` — Calendar management table.
-
-### Authorization
-
-- **2** policies: `DepartmentPolicy`, `AcademicYearPolicy`.
-- Restricted to admin/superadmin. No students or teachers can modify academics structure.
-
----
-
-For complete technical reference, see [academics-reference.md](academics-reference.md).
+- Program (internship scoping by academic year)
+- Enrollment (registration scoping by academic year)
+- User (department assignment for teachers and students)

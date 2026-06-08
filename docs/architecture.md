@@ -1,173 +1,174 @@
 # Action-based MVC Architecture
 
-> Last updated: 2026-06-06
-> Changes: Added Settings and Setup modules to module list and table,
-> updated route file count, removed Settings from SysAdmin submodule mapping, split Setup module
-> into Installation and SetupWizard submodules **Context:** ✅ All 19 modules are defined.
+> **Last updated:** 2026-06-08
+>
+> Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad pattern, data flow, cross-module communication, exception handling, validation, caching, testing strategy, and invariant rules. Every decision here serves three goals:
+>
+> - **S1 — Secure**: Protect data integrity, enforce authorization, prevent leakage
+> - **S2 — Sustain**: Keep the codebase maintainable as it grows across 19 modules
+> - **S3 — Scalable**: Design for team expansion and feature accretion without rewrites
+
+---
+
+## Table of Contents
+
+1. [Philosophy](#philosophy)
+2. [Layered Architecture](#layered-architecture)
+3. [Action Triad: Command, Read, Process](#action-triad-command-read-process)
+4. [Data Flow](#data-flow)
+5. [Module Structure](#module-structure)
+6. [20 Modules at a Glance](#20-modules-at-a-glance)
+7. [Base Class Mandate](#base-class-mandate)
+8. [Architectural Decisions](#architectural-decisions)
+9. [Cross-Module Communication](#cross-module-communication)
+10. [Exceptions](#exceptions)
+11. [Validation Strategy](#validation-strategy)
+12. [Caching Strategy](#caching-strategy)
+13. [Dependency Rules](#dependency-rules)
+14. [Testing Strategy](#testing-strategy)
+15. [Migration Paths](#migration-paths)
+16. [Module Invariants (Do Not Violate)](#module-invariants-do-not-violate)
+
+---
 
 ## Philosophy
 
-Internara organizes code by **business module**, not by technical layer. Each business concept —
-User, Academics, Program, Assessment — owns its complete vertical slice: persistence, business
-rules, UI components, authorization, and HTTP interface.
+Internara organizes code by **business module**, not by technical layer. Each business concept — User, Academics, Program, Assessment — owns its complete vertical slice: persistence, business rules, UI components, authorization, and HTTP interface.
 
-This approach exists because flat layering (`app/Models/`, `app/Livewire/`, `app/Actions/`) scatters
-a single feature across 8+ directories, making it hard to reason about boundaries, impossible to
-enforce encapsulation, and expensive to refactor. Module colocation solves this by ensuring
-everything related to "Enrollment" lives under `app/Enrollment/`.
+Flat layering (`app/Models/`, `app/Livewire/`, `app/Actions/`) scatters a single feature across eight or more directories, making it hard to reason about boundaries, impossible to enforce encapsulation, and expensive to refactor. Module colocation solves this by ensuring everything related to "Enrollment" lives under `app/Enrollment/`.
 
-Every architectural decision below serves three goals:
-
-- **S1 - Secure**: Protect data integrity, enforce authorization, prevent leakage
-- **S2 - Sustain**: Keep the codebase maintainable as it grows across 19 modules
-- **S3 - Scalable**: Design for team expansion and feature accretion without rewrites
+The architecture draws inspiration from Domain-Driven Design (strategic design, bounded contexts) and CQRS (command/query separation) without the operational overhead of separate databases or event sourcing. Actions replace traditional Service classes to enforce single responsibility by construction.
 
 ---
 
 ## Layered Architecture
 
-The system is built in **12 layers**, bottom to top. Each layer depends only on layers below it. The
-19 module directories are vertical slices that cross all layers below Layer 11.
+The system is built in **12 layers** from infrastructure at the bottom to business modules at the top. Each layer depends only on layers below it. The 20 module directories are vertical slices that cross all layers below Layer 11.
 
 ```
-  Layer 12 ┌──────────────────────────────────────────────────────────┐
-   Business│  19 Modules: Core, Auth, User, SysAdmin, Setup,            │
-    Modules │  Settings, Academics, Program, Enrollment, Assessment,    │
-             │  Evaluation, Assignment, Journals, Guidance, Incident,   │
-             │  Partners, Certification, Reports, Document              │
-            │  Each module is a vertical slice of layers 1–11          │
-   (Module)│  app/{Module}/                                           │
-           │  ├── {SubModule}/  ← colocated Actions, Models, Policies │
-           │  ├── Types/        ← shared enums, value objects         │
-           │  └── (root files)  ← cross-submodule Http, Console, ...  │
-           └──────────────────────────────────────────────────────────┘
-                                         ▲ depends on
-  Layer 11 ┌──────────────────────────────────────────────────────────┐
-  UI /    │  Livewire 4 components (75)    Blade templates           │
-  Present.│  maryUI  +  DaisyUI  +  Alpine.js  +  Tailwind CSS v4   │
-          │  resources/views/{module}/     static assets             │
-          └──────────────────────────────────────────────────────────┘
-                                         ▲ depends on
-  Layer 10 ┌──────────────────────────────────────────────────────────┐
-  HTTP    │  Controllers / Middleware / Routes                       │
-  Layer   │  18 module route files → routes/web/{module}.php        │
-          │  SecurityHeaders, LogContext, CheckRole, SetLocale       │
-          └──────────────────────────────────────────────────────────┘
-                                         ▲ depends on
-  Layer 9 ┌──────────────────────────────────────────────────────────┐
-  Comm.   │  Events + Listeners + Notifications + Console Commands  │
-          │  Cross-module communication via events                  │
-          │  system:health, system:cleanup, system:cache-warm        │
-          └──────────────────────────────────────────────────────────┘
-                                         ▲ depends on
-  Layer 8 ┌──────────────────────────────────────────────────────────┐
-  Author. │     Policies (30)  RBAC (5 roles)  Functional roles        │
-          │  BasePolicy → AuthorizesRoles + AuthorizesOwnership    │
-          │  spatie/laravel-permission auto-registers Gate::before  │
-          └──────────────────────────────────────────────────────────┘
-                                         ▲ depends on
-  Layer 7 ┌──────────────────────────────────────────────────────────┐
-  Business│  Command Actions — mutations  (transaction + log)        │
-  Ops     │  Read Actions     — queries   (lightweight, no tx)      │
-  Utilites│  Process Actions  — multi-step orchestration             │
-          │  app/*/Actions/  →  1 class = 1 use case         │
-          └──────────────────────────────────────────────────────────┘
-                                         ▲ depends on
-   Layer 6 ┌──────────────────────────────────────────────────────────┐
-   Shared /│  Shared Components (app/Support/, app/Exceptions/, etc.) │
-   Domain  │  Cross-module enums, exceptions, global Livewire,        │
-   Rules   │     Entities (24), Data DTOs (AuditCheck, AuditReport, SetupTokenData)      │
-           └──────────────────────────────────────────────────────────┘
-                                         ▲ depends on
-  Layer 5 ┌──────────────────────────────────────────────────────────┐
-  Module  │  Eloquent Models (38)  →  extend BaseModel              │
-  Models  │  UUID primary keys (HasUuids), HasFactory               │
-          │  Relationships, Scopes, Accessors, Mutators             │
-          │  app/*/Models/  +  factories + seeders           │
-          └──────────────────────────────────────────────────────────┘
-                                         ▲ depends on
-   Layer 4 ┌──────────────────────────────────────────────────────────┐
-    Core   │  BaseAction  BaseEntity  BasePolicy                      │
-    Base   │  BaseRecordManager  BaseController  BaseFormRequest      │
-   Classes │  BaseData (DTO)                                          │
-           │  app/Core/                                               │
-           └──────────────────────────────────────────────────────────┘
-                                         ▲ depends on
-  Layer 3 ┌──────────────────────────────────────────────────────────┐
-  Core    │  Contracts: LabelEnum, StatusEnum, ColorableEnum         │
-  Contracts│  SendsNotifications                                     │
-          │  Exception: AppException + ModuleException (dual tree) │
-          │  app/Core/{Contracts,Exceptions}                 │
-          └──────────────────────────────────────────────────────────┘
-                                         ▲ depends on
-  Layer 2 ┌──────────────────────────────────────────────────────────┐
-  Persist.│  Database: SQLite/MySQL, 41 migrations                  │
-          │  Config: .env, config/*.php, Runtime settings table     │
-          │  Files: Spatie Media Library (polymorphic attachments)  │
-          │  Cache: Laravel cache + queue (jobs) + session          │
-          │  database/migrations/  config/  storage/                │
-          └──────────────────────────────────────────────────────────┘
-                                         ▲ depends on
-  Layer 1 ┌──────────────────────────────────────────────────────────┐
-  Infra   │  PHP 8.4  +  Laravel 13  +  Composer packages           │
-          │  Spatie: activitylog v5, medialibrary v11, permission   │
-          │  v8, model-status v1                                     │
-          │  Livewire 4  +  Tailwind CSS 4  +  Alpine.js            │
-          │  npm packages: Vite 8, flatpickr, marked                │
-          └──────────────────────────────────────────────────────────┘
+Layer 12 ┌──────────────────────────────────────────────────────────────┐
+ Business│  20 Modules: Core, Shared, Auth, User, SysAdmin, Setup,      │
+ Modules │  Settings, Academics, Program, Enrollment, Assessment,       │
+         │  Evaluation, Assignment, Journals, Guidance, Incident,       │
+         │  Partners, Certification, Reports, Document                  │
+         │  Each module is a vertical slice through layers 1–11         │
+         │  app/{Module}/                                               │
+         │  ├── {SubModule}/  ← colocated Actions, Models, Policies    │
+         │  ├── Types/        ← shared enums, value objects            │
+         │  └── (root files)  ← cross-submodule Http, Console, Livewire│
+         └──────────────────────────────────────────────────────────────┘
+                                              ▲ depends on
+Layer 11 ┌──────────────────────────────────────────────────────────────┐
+ UI /    │  Livewire 4 components (80+)    Blade templates              │
+ Present.│  maryUI + DaisyUI + Alpine.js + Tailwind CSS v4             │
+         │  resources/views/{module}/     static assets                 │
+         └──────────────────────────────────────────────────────────────┘
+                                              ▲ depends on
+Layer 10 ┌──────────────────────────────────────────────────────────────┐
+ HTTP    │  Controllers / Middleware / Routes                           │
+ Layer   │  18 module route files → routes/web/{module}.php            │
+         │  SecurityHeaders, LogContext, CheckRole, SetLocale           │
+         └──────────────────────────────────────────────────────────────┘
+                                              ▲ depends on
+Layer 9 ┌──────────────────────────────────────────────────────────────┐
+ Comm.   │  Events + Listeners + Notifications + Console Commands      │
+         │  Cross-module communication via events                      │
+         │  system:health, system:cleanup, system:cache-warm, pulse:*  │
+         └──────────────────────────────────────────────────────────────┘
+                                              ▲ depends on
+Layer 8 ┌──────────────────────────────────────────────────────────────┐
+ Author. │  Policies (30+)  RBAC (5 roles)  Functional roles (2)       │
+         │  BasePolicy → AuthorizesRoles + AuthorizesOwnership         │
+         │  spatie/laravel-permission auto-registers Gate::before      │
+         └──────────────────────────────────────────────────────────────┘
+                                              ▲ depends on
+Layer 7 ┌──────────────────────────────────────────────────────────────┐
+ Business│  Command Actions — mutations  (transaction + log)           │
+ Ops    │  Read Actions     — queries   (lightweight, no transaction)  │
+ Utility│  Process Actions  — multi-step orchestration                │
+         │  app/{Module}/**/Actions/  →  1 class = 1 use case         │
+         └──────────────────────────────────────────────────────────────┘
+                                              ▲ depends on
+Layer 6 ┌──────────────────────────────────────────────────────────────┐
+ Domain  │  Entities (final readonly)  DTOs (BaseData)  Custom Enums   │
+ Rules   │  app/{Module}/**/Entities/  app/{Module}/**/Enums/         │
+         │  app/Core/Data/             app/Exceptions/                 │
+         └──────────────────────────────────────────────────────────────┘
+                                              ▲ depends on
+Layer 5 ┌──────────────────────────────────────────────────────────────┐
+ Module  │  Eloquent Models (50+)  →  extend BaseModel                 │
+ Models  │  UUID primary keys (HasUuids)  HasFactory                   │
+         │  Relationships, Scopes, Accessors, Mutators                 │
+         │  app/{Module}/**/Models/  + factories + seeders            │
+         └──────────────────────────────────────────────────────────────┘
+                                              ▲ depends on
+Layer 4 ┌──────────────────────────────────────────────────────────────┐
+ Core    │  BaseAction  BaseEntity  BasePolicy  BaseRecordManager      │
+ Base    │  BaseController  BaseFormRequest  BaseData  BaseEvent       │
+ Classes │  app/Core/  (Actions, Entities, Policies, Livewire,         │
+         │            Http/Requests, Data, Events)                     │
+         └──────────────────────────────────────────────────────────────┘
+                                              ▲ depends on
+Layer 3 ┌──────────────────────────────────────────────────────────────┐
+ Core    │  Contracts: LabelEnum, StatusEnum, ColorableEnum            │
+ Contracts│  SendsNotifications, SettingsStore                          │
+         │  Exceptions: AppException + ModuleException (dual hierarchy)│
+         │  app/Core/Contracts/   app/Core/Exceptions/                │
+         └──────────────────────────────────────────────────────────────┘
+                                              ▲ depends on
+Layer 2 ┌──────────────────────────────────────────────────────────────┐
+ Persist.│  Database: SQLite (default) / MySQL / PostgreSQL            │
+         │  Config: .env, config/*.php, Runtime settings table        │
+         │  Files: Spatie Media Library (polymorphic attachments)     │
+         │  Cache: Laravel cache + queue (jobs) + session             │
+         │  database/migrations/ (50 tables)  config/  storage/       │
+         └──────────────────────────────────────────────────────────────┘
+                                              ▲ depends on
+Layer 1 ┌──────────────────────────────────────────────────────────────┐
+ Infra   │  PHP 8.4 + Laravel 13 + Composer packages                   │
+         │  Spatie: activitylog v5, medialibrary v11, permission v8,  │
+         │  model-status v1                                            │
+         │  Livewire 4 + Tailwind CSS v4 + Alpine.js                  │
+         │  npm packages: Vite, flatpickr, marked                     │
+         └──────────────────────────────────────────────────────────────┘
 ```
 
 ### Layer Dependency Rules
 
-1. A layer may only depend on layers **below** it. Layer 12 depends on 1–11, Layer 7 depends on 1–6.
-2. **Core** (layers 3–4) depends on nothing except Laravel/Spatie. No business module imports Core.
-3. **Sibling imports allowed.** `Academics` module may import `Program` module directly. Prefer
-   events for loose coupling when side effects are involved, but direct imports are fine for
-   straightforward cross-module access.
-4. **Persistence isolation.** Actions never call Eloquent directly — they delegate to Models.
-5. **UI isolation.** Livewire components should not import other modules' Livewire components
-   directly. Use events or redirects for UI communication.
+1. **Downward only**: A layer may only depend on layers **below** it. Layer 12 depends on 1–11, Layer 7 depends on 1–6, and so forth.
+2. **Core independence**: Core (layers 3–4) depends on nothing except Laravel and Spatie packages. No business module may be imported by Core.
+3. **Sibling imports allowed**: A business module at Layer 12 may import another module directly. Prefer events when side effects are involved, but direct imports are perfectly acceptable for straightforward access.
+4. **Persistence isolation**: Actions never call Eloquent directly — they delegate to Models via the Action's injected dependencies.
+5. **UI isolation**: Livewire components should not import other modules' Livewire components directly. Use events or redirects for cross-module UI communication.
 
 ### How Module Directories Map to Layers
 
-A module directory `app/{Module}/` combines multiple layers. Within each module, code is further
-organized by **Submodule** — a cluster of module objects treated as a single unit. Each submodule
-directory is itself a vertical slice containing its own Actions, Models, Policies, and optionally
-Livewire, Entities, Enums, and Notifications.
+| Layer | Directory within Module                                              | Example                       |
+| ----- | -------------------------------------------------------------------- | ----------------------------- |
+| 12    | `app/{Module}/`                                                      | The module itself             |
+| 11    | `resources/views/{module}/{submodule}/`                              | Blade views (per submodule)   |
+| 10    | `routes/web/{module}.php`                                            | Route definitions             |
+| 9     | `{SubModule}/Listeners/`, `{SubModule}/Notifications/`, `Console/`   | Communication                 |
+| 8     | `{SubModule}/Policies/`                                              | Authorization                 |
+| 7     | `{SubModule}/Actions/`                                               | Business operations           |
+| 6     | `{SubModule}/Entities/`, `{SubModule}/Enums/`, `Types/`              | Domain rules                  |
+| 5     | `{SubModule}/Models/`                                                | Persistence                   |
+| 4     | Uses Core's base classes: `app/Core/{Actions,Models,Policies,...}`   | Base classes                  |
+| 3     | Uses Core's contracts and exceptions                                 | Contracts                     |
+| 2     | Uses database, config, filesystem                                    | Persistence infrastructure    |
+| 1     | Uses PHP, Laravel, Composer packages                                 | Foundation                    |
 
-| Layer | Directory within Module                                              | Example                     |
-| ----- | -------------------------------------------------------------------- | --------------------------- |
-| 12    | `app/{Module}/`                                                      | The module itself           |
-| 11    | `resources/views/{module}/{submodule}/`                              | Blade views (per submodule) |
-| 10    | `routes/web/{module}.php`                                            | Route definitions           |
-| 9     | `{SubModule}/Listeners/`, `{SubModule}/Notifications/`, `Console/`   | Communication               |
-| 8     | `{SubModule}/Policies/`                                              | Authorization               |
-| 7     | `{SubModule}/Actions/`                                               | Business operations         |
-| 6     | `{SubModule}/Entities/`, `{SubModule}/Enums/`, `Types/`              | Module rules                |
-| 5     | `{SubModule}/Models/`                                                | Persistence                 |
-| 4     | (uses Core's base classes: `app/Core/{Actions,Models,Policies,...}`) |                             |
-| 3     | (uses Core's contracts)                                              |                             |
-| 2     | (uses database/config)                                               |                             |
-| 1     | (uses PHP/Laravel)                                                   |                             |
-
-The mapping above uses `{SubModule}/` as a placeholder for each submodule directory (e.g.,
-`Program/Actions/`, `Enrollment/Policies/`). Cross-submodule files (shared Actions, Http, Console)
-live at the module root, directly under `app/{Module}/` without an submodule subdirectory.
+Cross-submodule files (shared Actions, Http, Console) live at the module root, directly under `app/{Module}/` without a submodule subdirectory.
 
 ---
 
 ## Action Triad: Command, Read, Process
 
-This is the most important architectural decision in Internara. Actions are not monolithic — they
-split into three distinct categories, each with a specific base class and contract.
-
-All three live under `app/{Module}/{SubModule}/Actions/` (or root `Actions/` for cross-submodule
-actions) and follow the single `execute()` method convention.
+This is the single most important architectural decision in Internara. Actions are not monolithic — they split into three distinct categories, each with a specific contract. All three live under `app/{Module}/{SubModule}/Actions/` (or root `Actions/` for cross-submodule actions) and follow the single `execute()` method convention.
 
 ### 1. Command Actions (Mutations)
 
-**Purpose:** Every write to the system. Create, update, delete, transition state, send
-notifications, upload files.
+**Purpose:** Every write to the system. Create, update, delete, transition state, send notifications, upload files.
 
 **Base class:** `BaseAction` (provides `transaction()`, `log()`, `HandlesActionErrors`)
 
@@ -178,12 +179,17 @@ notifications, upload files.
 - MUST dispatch module events for significant state changes
 - MUST be preceded by a policy check in the calling layer (Livewire/Controller)
 - MUST NOT return the model directly when a DTO or entity is more appropriate
+- Single public `execute()` method — never add a second public method
 
-**Example:**
+**Naming:** `{Verb}{Entity}Action` — `CreateUserAction`, `ApproveRegistrationAction`
 
 ```php
 class ApproveReportAction extends BaseAction
 {
+    public function __construct(
+        protected readonly NotifyMentorAction $notifyMentor,
+    ) {}
+
     public function execute(Report $report, ApproveReportData $data): Report
     {
         return $this->transaction(function () use ($report, $data) {
@@ -195,9 +201,7 @@ class ApproveReportAction extends BaseAction
                 'graded_at' => now(),
             ]);
 
-            $this->log('report_approved', $report, [
-                'score' => $data->score,
-            ]);
+            $this->log('report_approved', $report, ['score' => $data->score]);
 
             event(new ReportApproved($report, auth()->user()));
 
@@ -209,13 +213,9 @@ class ApproveReportAction extends BaseAction
 
 ### 2. Read Actions (Queries)
 
-**Purpose:** Complex read operations that involve aggregation, filtering, authorization, or
-cross-module data assembly. Not for simple `Model::find()` or `Model::where()` — those stay in
-Livewire.
+**Purpose:** Complex read operations that involve aggregation, filtering, authorization, or cross-module data assembly. Not for simple `Model::find()` or `Model::where()` — those stay in Livewire.
 
-**Base class:** None required. A simple non-abstract class with constructor injection is sufficient.
-May extend `BaseAction` only if it benefits from `HandlesActionErrors` (but does NOT call
-`transaction()` or `log()`).
+**Base class:** None required. A plain class with constructor injection. May use `HandlesActionErrors` from `BaseAction` but MUST NOT call `transaction()` or `log()`.
 
 **Contract:**
 
@@ -225,8 +225,6 @@ May extend `BaseAction` only if it benefits from `HandlesActionErrors` (but does
 - MUST pass through authorization (unless the calling layer already authorized)
 
 **Naming:** `{Context}Reader`, `Get{Dashboard}Data`, `{Entity}Query`
-
-**Example:**
 
 ```php
 class InternshipDashboardReader
@@ -255,11 +253,9 @@ class InternshipDashboardReader
 
 ### 3. Process Actions (Orchestration)
 
-**Purpose:** Multi-step workflows that coordinate multiple Command and Read Actions. The "how" of
-complex business processes. Process Actions exist when a single use case requires multiple
-mutations, conditional branching, or external service calls.
+**Purpose:** Multi-step workflows that coordinate multiple Command and Read Actions. The "how" of complex business processes.
 
-**Base class:** `BaseAction` (same as Command, with transaction + logging at the process level).
+**Base class:** `BaseAction` (same as Command — transaction + logging at the process level).
 
 **Contract:**
 
@@ -269,8 +265,6 @@ mutations, conditional branching, or external service calls.
 - MUST NOT duplicate business logic that already exists in Command Actions
 
 **Naming:** `{Verb}{Entity}Process` — `RegisterStudentProcess`, `CloseInternshipProcess`
-
-**Example:**
 
 ```php
 class RegisterStudentProcess extends BaseAction
@@ -300,18 +294,17 @@ class RegisterStudentProcess extends BaseAction
 
 ### Action Category Decision Table
 
-| Scenario                   | Pattern            | Base Class   | Transaction | Logging     | Event          |
-| -------------------------- | ------------------ | ------------ | ----------- | ----------- | -------------- |
-| Create a record            | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Recommended |
-| Update a record            | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Recommended |
-| Delete a record            | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Recommended |
-| State transition           | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Required    |
-| Send notification          | Command            | `BaseAction` | ✅ Required | ✅ Required | ❌             |
-| Simple list query          | Inline in Livewire | None         | ❌          | ❌          | ❌             |
-| Complex aggregated query   | Read Action        | None         | ❌          | ❌          | ❌             |
-| Dashboard statistics       | Read Action        | None         | ❌          | ❌          | ❌             |
-| Multi-step registration    | Process            | `BaseAction` | ✅ Required | ✅ Required | ✅ Required    |
-| Internship close readiness | Process            | `BaseAction` | ✅ Required | ✅ Required | ✅ Required    |
+| Scenario                 | Pattern            | Base Class   | Transaction | Logging     | Event          |
+| ------------------------ | ------------------ | ------------ | ----------- | ----------- | -------------- |
+| Create a record          | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Recommended |
+| Update a record          | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Recommended |
+| Delete a record          | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Recommended |
+| State transition         | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Required    |
+| Send notification        | Command            | `BaseAction` | ✅ Required | ✅ Required | ❌             |
+| Simple list query        | Inline in Livewire | None         | ❌          | ❌          | ❌             |
+| Complex aggregated query | Read Action        | None         | ❌          | ❌          | ❌             |
+| Dashboard statistics     | Read Action        | None         | ❌          | ❌          | ❌             |
+| Multi-step orchestration | Process            | `BaseAction` | ✅ Required | ✅ Required | ✅ Required    |
 
 ---
 
@@ -322,12 +315,12 @@ class RegisterStudentProcess extends BaseAction
 Every write follows the same path through the layers:
 
 ```
-Layer 10/11          Layer 7           Layer 5/6          Layer 2
+Layer 10/11          Layer 7            Layer 5/6           Layer 2
 Input → Livewire/Controller → Command Action → Model/Entity → Database
                                   │
                                   ├─ Policy check (Layer 8)
                                   ├─ Transaction wrap
-                                  ├─ Log mutation
+                                  ├─ Log mutation (SmartLogger)
                                   └─ Dispatch event (Layer 9)
                                      ↓
                                   Listener(s)
@@ -336,8 +329,7 @@ Input → Livewire/Controller → Command Action → Model/Entity → Database
                                   └─ Write audit trail
 ```
 
-Command Actions (Layer 7) are the **only** entry point for mutations. Livewire components (Layer 11)
-never call `Model::create()` directly. This is enforced through code review and PHPStan.
+Command Actions (Layer 7) are the **only** entry point for mutations. Livewire components (Layer 11) never call `Model::create()` directly.
 
 ### Read Flow (Queries)
 
@@ -350,11 +342,11 @@ Livewire → Model::query() → Database
 Complex query:
 Livewire → Read Action → Model::query() → Database
            │              │
-           ├─ Policy check └─ Submodule/filter/transform
+           ├─ Policy check └─ Filter/transform/aggregate
            └─ Return typed result
 ```
 
-Reads may skip Layers 6–7 for simple queries, but must still pass through authorization (Layer 8).
+Reads may skip Layer 7 for simple queries but must still pass through authorization (Layer 8).
 
 ### Event Flow
 
@@ -368,18 +360,16 @@ execute() ──────────► dispatch() ──────► ┌
   │                                       └─────────────────┘
 ```
 
-Events decouple side effects from core business logic. A Command Action's responsibility ends when
-it dispatches the event. Everything that happens next — notifications, cache invalidation, audit
-trails — belongs in listeners.
+Events decouple side effects from core business logic. A Command Action's responsibility ends when it dispatches the event.
 
 ---
 
 ## Module Structure
 
-Every module follows this directory layout. Within each module, code is organized by **Submodule** —
-a cluster of module objects treated as a single unit. Each submodule has its own technical-layer
-component directories for high cohesion. Files that span multiple submodules (dashboards, shared
-utilities, console commands) live at the module root.
+Every module follows a consistent directory layout. Within each module, code is organized by **submodule** — a cluster of module objects treated as a single unit.
+
+> [!NOTE]
+> For cross-cutting or system-wide modules (such as Settings, Enrollment, or Assessment), a **flat structure** directly under the module root is permitted. This places component directories (e.g. `Actions/`, `Models/`, `Policies/`) without a submodule grouping layer, avoiding redundant namespace segments.
 
 ```
 app/{Module}/
@@ -393,7 +383,11 @@ app/{Module}/
 │   ├── Enums/                      → Enum specific to this submodule (optional)
 │   ├── Events/                     → Module events (optional)
 │   ├── Listeners/                  → Event subscribers (optional)
-│   └── Notifications/              → Multi-channel alerts (optional)
+│   ├── Notifications/              → Multi-channel alerts (optional)
+│   └── Http/                       → HTTP layer (optional)
+│       ├── Controllers/
+│       ├── Middleware/
+│       └── Requests/
 ├── Types/                          → Shared value objects, flat enums, rules (optional)
 ├── Actions/                        → Cross-submodule orchestration (optional)
 ├── Http/                           → Cross-submodule controllers & middleware (optional)
@@ -409,17 +403,7 @@ app/{Module}/
 └── Services/                       → Infrastructure services (optional)
 ```
 
-All submodule code follows the pattern `app/{Module}/{Submodule}/{Component}/{ClassName}.php`.
-Shared (cross-module) code follows `app/{Component}/{ClassName}.php`.
-
-**No redundant namespace segments.** The class name must never be repeated in the path.
-
-- ✅ `app/User/Models/User.php` (namespace `App\User\Models`)
-- ❌ `app/User/User/Models/User.php` — `User` is repeated
-- ✅ `app/Program/Internship/Models/Internship.php` (namespace `App\Program\Internship\Models`)
-- ❌ `app/Program/Internship/Internship/Models/Internship.php`
-
-**Path convention:**
+### Path Convention
 
 | Scope                 | Pattern                                                           | Example                                                  |
 | --------------------- | ----------------------------------------------------------------- | -------------------------------------------------------- |
@@ -430,53 +414,51 @@ Shared (cross-module) code follows `app/{Component}/{ClassName}.php`.
 | Module tests          | `tests/{Feature,Unit}/{Module}/{Submodule}/{Name}Test.php`        | `tests/Feature/User/Profile/UpdateProfileActionTest.php` |
 | Shared tests          | `tests/{Feature,Unit}/{Component}/{Name}Test.php`                 | `tests/Unit/Data/AuditDtoTest.php`                       |
 
-Not every module needs every directory. `Incidents` might only have `IncidentReport/` submodule.
-`Certification` adds `Http/` when downloads are needed. Tools and simple value objects too small for
-their own submodule live in `Types/`.
+**No redundant namespace segments.** The class name must never be repeated in the path.
+
+- ✅ `app/User/Models/User.php` (namespace `App\User\Models`)
+- ❌ `app/User/User/Models/User.php` — `User` is repeated
+- ✅ `app/Program/Internship/Models/Internship.php` (namespace `App\Program\Internship\Models`)
+- ❌ `app/Program/Internship/Internship/Models/Internship.php`
 
 ### Submodule Mapping
 
-Each module contains the following submodules:
-
 | Module            | Submodules                                                                                               | Cross-Submodule Root Files                                                               |
 | ----------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| **Core**          | —                                                                                                        | (infrastructure + cross-module utilities)                                                |
-| **User**          | `AccountStatus/`, `Profile/`, `Notification/`, `Dashboard/`                                              | Http, Livewire (dashboards, editors)                                                     |
+| **Core**          | —                                                                                                        | Infrastructure + cross-module utilities                                                  |
+| **Shared**        | —                                                                                                        | Data, Enums, Exceptions, Livewire, Policies/Concerns, Support                            |
 | **Auth**          | `Permissions/`, `SuperAdmin/`, `Login/`, `ActivationToken/`, `AccountRecovery/`, `Password/`             | Http/Middleware, Livewire (login, recovery, activation, password)                        |
-| **Setup**         | `Installation/`, `SetupWizard/`                                                                          | —                                                                                        |
-| **Settings**      | —                                                                                                        | Actions, Casts, Enums, Http/Middleware, Livewire/Forms, Models, Policies, Rules, Support |
-| **Academics**     | `Department/`, `AcademicYear/`                                                                           | Console, Http, Livewire, Services, Support                                               |
-| **Partners**      | `Company/`, `Partnership/`                                                                               | —                                                                                        |
-| **Program**       | `Internship/`, `InternshipGroup/`                                                                        | Http, Events, Listeners, Notifications, Rules                                            |
-| **Enrollment**    | `Registration/`, `AccountApplication/`, `RegistrationDocument/`, `Placement/`, `PlacementChangeRequest/` | —                                                                                        |
-| **Guidance**      | `SupervisionLog/`                                                                                        | Http                                                                                     |
-| **Journals**      | `Attendance/`, `AbsenceRequest/`, `Logbook/`, `IndustryAssessment/`, `Schedule/`                         | Http                                                                                     |
-| **Assignments**   | `Assignment/`, `Submission/`                                                                             | Http, Notifications                                                                      |
-| **Reports**       | `Report/`                                                                                                | Http, Livewire                                                                           |
+| **User**          | `AccountStatus/`, `Profile/`, `Notifications/`, `Dashboard/`                                             | Http, Livewire (dashboards, editors), Actions, Enums, Entities, Rules, Support, Services |
+| **SysAdmin**      | `Account/`, `Announcement/`, `SuperAdmin/`, `Observability/`                                             | Actions, Console, Livewire (audit, pulse), Recorders, Services                           |
+| **Setup**         | `Installation/`, `SetupWizard/`                                                                          | Entities                                                                                 |
+| **Settings**      | — (flat structure)                                                                                       | Actions, Casts, Enums, Http/Middleware, Livewire/Forms, Models, Policies, Rules, Support |
+| **Academics**     | `Department/`, `AcademicYear/`, `School/`                                                                | Console, Http, Livewire, Services, Support                                               |
+| **Program**       | `Internship/`, `InternshipGroup/`, `InternshipPhase/`                                                    | Http, Events, Listeners, Notifications, Rules                                            |
+| **Enrollment**    | — (flat structure)                                                                                       | Actions, Enums, Entities, Livewire, Models, Policies, Notifications                      |
 | **Assessment**    | `Assessment/`, `Rubric/`                                                                                 | —                                                                                        |
-| **Evaluation**    | `Evaluation/`                                                                                            | —                                                                                        |
+| **Evaluation**    | — (flat structure)                                                                                       | Actions, Enums, Entities, Livewire, Models, Policies                                     |
+| **Assignment**    | `Assignment/`, `Submission/`                                                                             | Http, Notifications                                                                      |
+| **Journals**      | `Logbook/`, `Attendance/`, `AbsenceRequest/`, `Schedule/`, `IndustryAssessment/`                         | Http                                                                                     |
+| **Guidance**      | `SupervisionLog/`                                                                                        | Http                                                                                     |
+| **Incident**      | `IncidentReport/`                                                                                        | —                                                                                        |
+| **Partners**      | `Company/`, `Partnership/`                                                                               | —                                                                                        |
 | **Certification** | `Certificate/`                                                                                           | Http, Support                                                                            |
-| **Incidents**     | `IncidentReport/`                                                                                        | —                                                                                        |
-| **Document**      | `OfficialDocument/`, `Handbook/`                                                                         | Models, Enums, Policies, Support                                                         |
-| **SysAdmin**      | `Account/`, `Announcement/`, `Observability/`                                                            | Actions, Console, Livewire (audit, pulse), Recorders, Services                           |
+| **Reports**       | `Report/`                                                                                                | Http, Livewire                                                                           |
+| **Document**      | `OfficialDocument/`                                                                                      | Models, Enums, Policies, Support                                                         |
 
 ### Views Structure
-
-Blade views mirror both the module and submodule structure:
 
 ```
 resources/views/{module}/
 ├── {submodule}/                    → Views for a specific submodule
 │   ├── {component-name}.blade.php  → Livewire component view
 │   └── components/                 → Sub-views (optional)
-├── layouts/                        → Module-specific layouts (optional, cross-cutting)
-├── components/                     → Shared sub-views (optional, cross-cutting)
-└── partials/                       → Reusable partials (optional, cross-cutting)
+├── layouts/                        → Module-specific layouts (optional)
+├── components/                     → Shared sub-views (optional)
+└── partials/                       → Reusable partials (optional)
 ```
 
-Cross-submodule views (dashboards, global components) live directly in the module view directory
-without a submodule subdirectory. For shared cross-module components (those directly under
-`app/{Component}/`), views live directly under `resources/views/{component}/`:
+Shared cross-module views live directly under `resources/views/{component}/`:
 
 ```
 resources/views/livewire/
@@ -484,36 +466,40 @@ resources/views/livewire/
 └── theme-switcher.blade.php         → app/Livewire/ThemeSwitcher.php
 ```
 
-The Livewire component alias follows `{kebab-module}.{kebab-submodule}.{kebab-component-name}` for
-submodule-specific components, and `{kebab-module}.{kebab-component-name}` for cross-submodule
-components. For shared (root-level) components, the alias is `{kebab-component-name}` (e.g.,
-`livewire.lang-switcher`).
+### Livewire Component Alias Conventions
+
+| Scope             | Pattern                                               | Example                             |
+| ----------------- | ----------------------------------------------------- | ----------------------------------- |
+| Submodule         | `{kebab-module}.{kebab-submodule}.{kebab-name}`       | `admin.user.user-manager`           |
+| Cross-submodule   | `{kebab-module}.{kebab-name}`                         | `user.profile-editor`               |
+| Shared            | `{kebab-component-name}`                              | `livewire.lang-switcher`            |
 
 ---
 
-## 19 Modules at a Glance
+## 20 Modules at a Glance
 
-| Module            | Boundary                                                                       | Key Concept                                                                                              |
-| ----------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| **Core**          | Base classes, infrastructure, and cross-module utilities everything depends on | Base model, base action, base entity, contracts, logging, exceptions, CSV handler, environment detection |
-| **Auth**          | Authentication, authorization, and access control                               | Login, password management, account activation, recovery, RBAC, super admin integrity                    |
-| **User**          | Identity, access, and profiles                                                 | Login, passwords, account lifecycle, recovery, RBAC, profile editing, notifications                      |
-| **SysAdmin**      | System administration & user management                                        | User CRUD, announcements, GDPR compliance, audit logs, Pulse monitoring                                  |
-| **Setup**         | One-time installation & provisioning                                           | Installation wizard, setup token, environment check, system provisioning                                 |
-| **Settings**      | System-wide configuration & branding                                           | Key-value store, dynamic branding, color presets, mail config, cached resolution chain                   |
-| **Academics**     | Institution setup & configuration                                              | School profile, departments, academic years, first-run wizard                                            |
-| **Partners**      | External relationships                                                         | Companies, partnership agreements, MoU                                                                   |
-| **Program**       | PKL program lifecycle                                                          | Program lifecycle, phases, groups, document requirements                                                 |
-| **Enrollment**    | Student registration & placement                                               | Applications, wizard, document upload, verification, slot management, change requests                    |
-| **Guidance**      | Mentoring & supervision                                                        | Student role activation, supervision logs, handbooks, acknowledgements                                   |
-| **Journals**      | Daily activities                                                               | Daily logbook, attendance, absence requests, scheduling                                                  |
-| **Assignment**    | Tasks & submissions                                                            | Task creation, grading workflow, revision loop                                                           |
-| **Reports**       | Student final grade card                                                       | Aggregated scores, Final Grade Card compilation, final sign-off                                         |
-| **Assessment**    | Competency evaluation                                                          | Rubrics (JSON structures), assessment grading                                                            |
-| **Evaluation**    | Program evaluation & feedback                                                  | Mentor evaluation, program feedback, user satisfaction                                                   |
-| **Certification** | Credentialing                                                                  | Certificate issuance, templates, credential tracking                                                     |
-| **Incident**      | Issue reporting                                                                | Report, investigation, resolution workflow                                                               |
-| **Document**      | Official correspondence                                                        | Document templates, PDF rendering, permits, letters                                                     |
+| #  | Module            | Boundary                                                                       | Key Concept                                                                                              |
+| -- | ----------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| 1  | **Core**          | Base classes, infrastructure, and cross-module utilities                       | BaseModel, BaseAction, BaseEntity, contracts, SmartLogger, exception hierarchy, CSV handler              |
+| 2  | **Shared**        | Reusable utilities, concrete exceptions, DTOs, global enums, UI components     | CacheKeys, CsvHandler, concrete exceptions, LangSwitcher, ThemeSwitcher                                 |
+| 3  | **Auth**          | Authentication, authorization, and access control                              | Login, password management, account activation, recovery, RBAC, super admin integrity                    |
+| 4  | **User**          | Identity, profiles, and personal dashboards                                    | Profile editing, avatar upload, role-based dashboards, notification center, activity feed                |
+| 5  | **SysAdmin**      | System administration and user management                                      | User CRUD, announcements, audit logs, Pulse monitoring, account clone detection, GDPR compliance        |
+| 6  | **Setup**         | One-time installation and provisioning                                         | 7-step wizard, environment audit, setup token, super admin creation, CLI recovery                        |
+| 7  | **Settings**      | System-wide configuration and branding                                         | Key-value store, dynamic branding, color presets, mail config, feature flags, cached resolution chain    |
+| 8  | **Academics**     | Institution structure and academic foundation                                  | School profile, departments, academic years, first-run wizard                                           |
+| 9  | **Program**       | Internship program lifecycle                                                   | Program lifecycle, phases, groups, document requirements, closure readiness                             |
+| 10 | **Enrollment**    | Student registration and placement                                             | Applications, registration wizard, document upload, slot management, placement change requests           |
+| 11 | **Assessment**    | Competency evaluation framework                                                | Rubrics (JSON structures), assessment grading, finalization, dual mentor fallback                        |
+| 12 | **Evaluation**    | Program evaluation and feedback                                                | Mentor evaluation, score bands, admin oversight, trend analysis                                          |
+| 13 | **Assignment**    | Tasks and submissions                                                          | Task creation, grading workflow, revision loop, deadline management, version history                     |
+| 14 | **Journals**      | Daily activity tracking                                                        | Logbook entries, attendance with clock-in/out, absence requests, scheduling, calendar views              |
+| 15 | **Guidance**      | Mentoring and supervision                                                      | Supervision logs, mentoring assignments, student role activation, handbook acknowledgements              |
+| 16 | **Incident**      | Issue reporting and resolution                                                 | Incident forms, severity classification, investigation workflow, immutable timeline, resolution outcomes |
+| 17 | **Partners**      | External relationships management                                              | Company profiles, partnership agreements, MoU documents, expiry detection                                |
+| 18 | **Certification** | Credentialing and certificate management                                       | Certificate templates, single/batch issuance, revocation, serial number management, QR verification      |
+| 19 | **Reports**       | Student final grade card                                                       | Grade aggregation, grade card review, coordinator sign-off, immutable lock                              |
+| 20 | **Document**      | Official correspondence and template rendering                                 | Document templates, PDF rendering, handbooks, acknowledgement system, template versioning                |
 
 ---
 
@@ -525,433 +511,109 @@ Every layer has exactly one base class from Core. There is no alternative.
 | -------------------------------- | -------------------------------------- | ----------------------------------------------- |
 | A database table                 | `extends BaseModel`                    | `extends Model`                                 |
 | A business operation (mutation)  | `extends BaseAction`                   | A custom service with multiple methods          |
-| A read operation (complex query) | A plain class                          | A service with mixed read/write methods         |
-| A multi-step process             | `extends BaseAction` (Process pattern) | Inline orchestration in Livewire                |
-| Business rules                   | `extends BaseEntity` (final readonly)  | A trait, a helper class, or inline in the model |
-| State machine                    | `implements StatusEnum`                | Custom status columns with if/else              |
-| Authorization                    | `extends BasePolicy`                   | `Gate::define()` with inline closures           |
-| A CRUD list page                 | `extends BaseRecordManager`            | A Livewire component from scratch               |
-| A HTTP form request              | `extends FormRequest` (Core's)         | `extends Request` or inline validation          |
-| An enum                          | `implements LabelEnum`                 | A plain PHP enum or class constants             |
-| Logging                          | `SmartLogger`                          | `Log::` facade or `activity()` helper           |
-| Cache key registry               | `CacheKeys` constants                  | Hardcoded strings everywhere                    |
+| A business operation (query)     | A plain class                          | `extends BaseAction`                            |
+| A pure business rule             | `extends BaseEntity` (final readonly)  | Inline in a model or controller                 |
+| An authorization gate            | `extends BasePolicy`                   | A custom closure or array of strings            |
+| A CRUD table UI (Livewire)       | `extends BaseRecordManager`            | A bespoke Livewire component with inline search |
+| An HTTP controller               | `extends BaseController` (or Laravel's)| A custom router closure                        |
+| A form request                   | `extends BaseFormRequest`              | `extends FormRequest` (Laravel's)              |
+| A value object / DTO             | `extends BaseData` (final readonly)    | An array passed around                         |
+| An event                         | `extends BaseEvent`                    | Implements `ShouldDispatch` manually           |
+| An enum                          | `implements LabelEnum`                 | A plain PHP enum                               |
+| A state machine enum             | `implements StatusEnum` (+ LabelEnum)  | A boolean field on the model                   |
+| An exception                     | `extends AppException` or `ModuleException` | `extends \Exception`                      |
 
-These rules are enforced through code review and static analysis (PHPStan).
+**Notes:**
 
----
-
-## Architectural Decisions
-
-### Why Actions instead of Service classes?
-
-Services accumulate unrelated methods over time (a `UserService` grows `createUser`,
-`sendWelcomeEmail`, `validateUsername`, etc.). Actions enforce **single responsibility by
-construction** — one class per use case. This makes them testable in isolation, discoverable by
-name, and composable.
-
-### Why split Actions into Command, Read, and Process?
-
-- **Commands** and **Reads** have fundamentally different contracts: commands need transactions +
-  logging, reads do not. Mixing them in a single base class either forces overhead on reads or skips
-  guarantees on writes.
-- **Processes** solve the coordination problem. Without them, orchestration logic ends up in
-  Livewire components (where it doesn't belong) or in a single Action that violates single
-  responsibility.
-- The split mirrors CQRS without the infrastructure cost. Same models, same database — different
-  class contracts.
-
-### Why Entities separate from Models?
-
-Models couple business logic to the database. When `User::isSuspended()` calls `$this->status` and
-`$this->locked_at`, tests require a database, migrations, and factory state. Entities remove this
-coupling. `Apprentice::isSuspended()` receives its data via constructor — testable in one line, no
-database needed.
-
-Entities like `SchoolEntity` (`app/Academics/School/Entities/SchoolEntity.php`) demonstrate the
-pattern: they use `private` constructor properties exposed via getter methods, bridge from
-persistence via `fromModel()` (or static `get()` for settings-backed entities), and encapsulate
-business rules only.
-
-### Why UUID primary keys?
-
-Auto-incrementing IDs leak information (user count, growth rate) and create merge conflicts in
-distributed workflows. UUIDs are globally unique, require no coordination, and work across SQLite,
-MySQL, and PostgreSQL identically.
-
-### Why module-split routes?
-
-A single `routes/web.php` with 200+ lines creates merge conflicts and makes it hard to find routes
-for a feature. Splitting by module means each team member owns their module's route file without
-touching others.
-
-### Why DTOs are optional (but recommended)?
-
-During rapid development, `execute(array $data)` is faster to write and refactor. DTOs (via
-`App\Core\Data\BaseData`) add type safety, autocomplete, and documentation at the cost of
-boilerplate. The recommended approach is:
-
-1. Start with `array $data` for speed
-2. Migrate to typed DTOs when an Action's input stabilizes or grows beyond 3 parameters
-3. Use `Data::fromArray()` for backward compatibility during migration
-
-### Why events are optional (but encouraged)?
-
-Every Command Action _can_ dispatch events, but not every command _must_. The rule of thumb:
-
-- If side effects exist (notifications, cache invalidation, audit beyond SmartLogger) → dispatch an
-  event
-- If the action only mutates database state and logs → no event needed
-- If cross-module coordination is needed → event is required
-
-Events can be introduced incrementally. Start without them, add them when a second listener needs to
-react to the same occurrence.
+- `User` model is the sole exception — extends `Authenticatable` directly but applies `HasUuids` manually for UUID consistency.
+- Notifications extend `Illuminate\Notifications\Notification` directly (no shortcut provided).
+- Cache keys go into `CacheKeys` class as constants, not inline strings.
 
 ---
 
 ## Cross-Module Communication
 
-Cross-module imports are **allowed** — import Models, Actions, Policies, or Livewire components from
-other modules directly when needed. The following patterns provide guidance, not enforcement:
+Cross-module imports are **allowed** — import Models, Actions, Policies, or other classes from sibling modules directly when needed. Four patterns are available, used as guidance not enforcement:
 
-### 1. Direct Import (simplest)
+| Pattern            | When to Use                                                                 | Example                                      |
+| ------------------ | --------------------------------------------------------------------------- | -------------------------------------------- |
+| **Direct import**  | Straightforward access with no side effects                                 | `use App\Academics\Models\AcademicYear;`     |
+| **Action call**    | Cross-module business operation                                             | `$this->createUser->execute($data);`         |
+| **Module event**   | Fire-and-forget side effects (notifications, cache invalidation)            | `event(new InternshipCreated($internship));` |
+| **Core contract**  | Abstraction used broadly across modules                                      | `LabelEnum`, `SendsNotifications`            |
 
-```php
-use App\Academics\Models\AcademicYear;
-
-$year = AcademicYear::where('is_active', true)->first();
-```
-
-Use when straightforward access to another module's data or logic is needed.
-
-### 2. Core Contracts (Layer 3)
-
-Shared interfaces in `App\Core\Contracts\` for abstractions used across many modules:
-
-- `LabelEnum`, `StatusEnum`, `ColorableEnum` — enum contracts
-- `SendsNotifications` — notification dispatch (bound to `SendNotificationAction`)
-
-### 3. Module Events (Layer 9)
-
-Events decouple side effects from core business logic. Use events when the same occurrence triggers
-multiple downstream reactions, especially cross-module:
-
-```php
-// Emitting module
-event(new InternshipCreated($internship, auth()->user()));
-
-// Reacting module
-class NotifyAdminsInternshipCreated implements ShouldQueue
-{
-    public function handle(InternshipCreated $event): void
-    {
-        Notification::send(
-            $admins,
-            new InternshipCreatedNotification(internshipName: $event->internship->name),
-        );
-    }
-}
-```
-
-### 4. Action Delegation
-
-Any Action may call another module's Action:
-
-```php
-class CloseInternshipAction extends BaseAction
-{
-    public function __construct(
-        protected readonly \App\Assessment\Actions\FinalizeAssessmentsAction $finalizeAssessments,
-    ) {}
-}
-```
-
-**Guideline:** Prefer direct imports for simplicity. Use events when the same event triggers 2+
-independent side effects, or when you want to add new reactions without modifying existing code.
+Use events when you want to add new reactions without modifying the caller. Use direct imports for everything else.
 
 ---
 
 ## Exceptions
 
-Two separate exception hierarchies exist. Both use the `HasExceptionContext` trait for consistent
-hint, context, and CLI-friendly output.
-
-### AppException hierarchy
-
-`AppException` extends `RuntimeException`. All derive from it:
+Two separate exception hierarchies exist, both using `HasExceptionContext` trait:
 
 ```
-AppException (abstract)
-├── ActionException (abstract) — business operation failed
-│   ├── ConflictException — duplicate or conflicting state
-│   └── ValidationFailedException — input validation failure
-├── InfrastructureException (abstract) — external system failure
-│   └── RateLimitException — rate limit exceeded
-└── PresentationException (abstract) — HTTP-layer failure
-    ├── NotFoundException — resource not found
-    └── UnauthorizedException — access denied
+RuntimeException
+├── AppException (abstract)           ← Framework & infrastructure failures
+│   ├── ActionException
+│   │   ├── ValidationFailedException  ← HTTP 422 / validation errors
+│   │   └── ConflictException          ← Duplicate / conflict state
+│   ├── InfrastructureException
+│   │   └── RateLimitException         ← HTTP 429 / rate limited
+│   └── PresentationException
+│       ├── NotFoundException          ← HTTP 404 / resource missing
+│       └── UnauthorizedException      ← HTTP 403 / permission denied
+│
+└── ModuleException (abstract)        ← Business rule violations
+    └── RejectedException             ← Domain invariant violated
 ```
 
-### ModuleException hierarchy (separate tree)
+`ModuleException` is deliberately NOT a child of `AppException`. This allows catch blocks to target module failures independently from infrastructure failures:
 
-`ModuleException` is deliberately **not** a child of `AppException`. This keeps module catch blocks
-isolated from layered framework concerns:
-
-```
-ModuleException (abstract, extends RuntimeException)
-└── RejectedException — module invariant violated (e.g., invalid state transition)
-```
-
-### When to use which
-
-| Scenario                    | Exception                                         | Hierarchy       |
-| --------------------------- | ------------------------------------------------- | --------------- |
-| Input validation failed     | `ValidationFailedException`                       | AppException    |
-| Duplicate record            | `ConflictException`                               | AppException    |
-| Permission denied (Layer 8) | `UnauthorizedException`                           | AppException    |
-| Resource not found          | `NotFoundException`                               | AppException    |
-| External API timeout        | `InfrastructureException` or `RateLimitException` | AppException    |
-| Invalid state transition    | `RejectedException`                               | ModuleException |
-| Module invariant violated   | `RejectedException`                               | ModuleException |
+- `catch (ModuleException $e)` → user-facing error messages
+- `catch (InfrastructureException $e)` → operations/technical errors
 
 ---
 
 ## Validation Strategy
 
-Validation happens at the **outermost layer** possible. Livewire is the primary UI, so Form Objects
-are the primary validation mechanism.
+| Layer       | Mechanism                | Purpose                        |
+| ----------- | ------------------------ | ------------------------------ |
+| Livewire    | `$this->validate()`      | Form-level validation          |
+| Form Object | `rules()` method         | Complex form field validation  |
+| Form Request| `rules()` method         | Controller request validation  |
+| Action      | `Validator::make()`      | Business rule pre-conditions   |
+| Entity      | `rules()` static methods | Shared domain validation rules |
 
-### Livewire Form Objects (Primary)
-
-Complex forms MUST extract validation into Form Objects under
-`app/{Module}/{SubModule}/Livewire/Forms/{Name}Form.php` (or root `Livewire/Forms/` for
-cross-submodule forms):
-
-```php
-class AcademicYearForm extends Form
-{
-    public string $name = '';
-    public string $start_date = '';
-    public string $end_date = '';
-
-    public function rules(?string $excludeId = null): array
-    {
-        return [
-            'name' => [
-                'required',
-                'string',
-                'max:50',
-                'unique:academic_years,name,' . ($excludeId ?? 'NULL'),
-            ],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date', 'after:start_date'],
-        ];
-    }
-}
-```
-
-**Rules:**
-
-- Form Objects extend `Livewire\Form`
-- All form state, validation rules, and `toArray()` logic live inside the Form Object
-- Form Objects validate via explicit `$form->validate()` in the parent component
-- Form Objects must NOT call Actions directly — they prepare data for the component to dispatch
-
-### Shared Validation Rules (Gradual Adoption)
-
-For consistency across Form Objects and Form Requests, validation rules can be centralized in
-Entities or DTOs:
-
-```php
-// In CreateInternshipData or Internship entity
-public static function rules(?string $excludeId = null): array
-{
-    return [
-        'name' => ['required', 'string', 'max:255'],
-        'start_date' => ['required', 'date'],
-        'end_date' => ['required', 'date', 'after:start_date'],
-        'status' => ['required', Rule::enum(InternshipStatus::class)],
-    ];
-}
-```
-
-Both Form Objects and Form Requests can reference the same rules.
-
-### Form Requests (Secondary)
-
-For the rare HTTP controller-based routes, `App\Core\Http\Requests\FormRequest` provides
-`ValidationFailedException` on failure instead of Laravel's default redirect.
+Actions call form requests/Form Objects for input validation before executing business logic. Entities expose reusable `rules()` for validation logic shared across forms.
 
 ---
 
 ## Caching Strategy
 
-### Centralized Key Registry
-
-Every cache key across the codebase MUST be defined in `App\Support\CacheKeys` as a constant. This
-prevents key collisions and makes cache dependencies discoverable.
-
-```php
-final readonly class CacheKeys
-{
-    public const string SETUP_INSTALLED = 'setup.is_installed';
-    public const string ADMIN_DASHBOARD_STATS = 'sysadmin.dashboard.stats';
-    public const string NOTIFICATION_UNREAD = 'notification.unread:';
-    // ...
-}
-```
-
-### Cache Invalidation
-
-Cache invalidation follows the event-driven pattern. When data changes, the Command Action
-dispatches an event, and a listener flushes the affected cache keys.
-
-```
-Command Action → event({Entity}Updated) → CacheInvalidationListener → Cache::forget('key')
-```
-
-**Rules:**
-
-- Every cached value has a documented invalidation trigger in `CacheKeys` (as a comment)
-- Invalidation SHOULD happen in an event listener, not inline in the Action
-- For frequently invalidated keys, prefer short TTLs over eager caching
-- The `system:cache-warm` command pre-warms known cache keys after deployment
-
-### What to cache
-
-| Data                      | Cache Key                             | TTL     | Invalidated By                                    |
-| ------------------------- | ------------------------------------- | ------- | ------------------------------------------------- |
-| Setup status              | `setup.is_installed`                  | forever | FinalizeSetupAction, GenerateSetupTokenAction     |
-| Admin dashboard stats     | `sysadmin.dashboard.stats`            | medium  | User/Department/Internship CRUD actions           |
-| Theme CSS variables       | `theme.css_variables`                 | long    | Settings update (color change)                    |
-| Unread notification count | `notification.unread:{userId}`        | medium  | MarkAsRead/MarkAllAsRead/SendNotification actions |
-| Core integrity            | `core.integrity_verified`             | forever | composer.json changes (manual flush)              |
-| Core app name             | `core.app_name`                       | forever | composer.json changes (manual flush)              |
-| App metadata              | `appinfo.metadata`                    | forever | composer.json changes                             |
-| Livewire component map    | `module.discovered_livewire`          | static  | Structural component changes                      |
-| Policy map                | `module.discovered_policies`          | static  | Structural policy changes                         |
-| View namespaces           | `module.discovered_views`             | static  | Structural view directory changes                 |
-| Login failure count       | `auth.login-failures:{userId}`        | medium  | Successful login                                  |
-| Health check              | `health_check`                        | short   | Each health check run                             |
-| Recovery attempts         | `recover_admin_attempts_{md5(email)}` | medium  | Successful recovery                               |
-| All settings              | `settings.all`                        | forever | Settings::set(), Settings::forget()               |
-| Setting group             | `settings.group.{name}`               | forever | Settings::set(), Settings::forget()               |
-| Setting keys              | `settings.keys`                       | forever | Settings::set(), Settings::forget()               |
-| Individual setting        | `settings.{key}`                      | forever | Settings::set(), Settings::forget()               |
-
----
-
-## Dependency Rules
-
-| Rule                        | Explanation                                                                                                   | Violation Example                                                                          |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| **Downward only**           | Layer N may only use layers < N                                                                               | A Controller (10) importing from another module's Livewire (11)                            |
-| **Core independence**       | Core (Layers 3–4) must not import any business module                                                         | Core importing an Academics model                                                          |
-| **Sibling imports allowed** | Modules at Layer 12 may import each other                                                                     | `Academics` importing `Program` models                                                     |
-| **Submodule encapsulation** | Submodule directories MUST NOT import sibling submodules. Cross-submodule access goes through the module root | `Profile/Actions/UpdateProfileAction.php` importing `Notification/Models/Notification.php` |
-| **Root for cross-cutting**  | Cross-submodule code lives at the module root, not in any single submodule                                    | A dashboard action in `User/Actions/` that queries both Profile and Notification           |
-| **Persistence isolation**   | Entities (Layer 6) never import Models (Layer 5)                                                              | An Entity calling `User::find()`                                                           |
-| **Action gate**             | All mutations go through Command Actions (Layer 7). No `Model::save()` outside Actions                        | A Livewire component calling `$user->save()`                                               |
-| **Authorize first**         | Every Action must be preceded by a policy check (Layer 8)                                                     | An Action that modifies data without calling `$this->authorize()`                          |
+- **Centralized key registry**: Every cache key declared as a constant in `App\Support\CacheKeys`
+- **Naming**: `{module}.{purpose}[.{qualifier}]` — e.g. `setup.is_installed`, `theme.css_variables`
+- **Invalidation**: Command Action dispatches event → Listener → `Cache::forget(key)`
+- **TTL classes**: Short (<5min), Medium (5min-1h), Long (1h-24h), Forever
+- **Cache drivers**: `file` or `database` (Tier 1), `redis` (Tier 2+)
 
 ---
 
 ## Testing Strategy
 
-Tests mirror the source structure exactly:
-
-```
-tests/Feature/{Module}/{SubModule}/{Name}Test.php  → Module integration tests
-tests/Unit/{Module}/{SubModule}/{Name}Test.php     → Module pure unit tests
-tests/Unit/{Module}/Types/{Name}Test.php           → Value objects, flat enums, rules
-tests/{Feature,Unit}/{Component}/{Name}Test.php    → Shared component tests (e.g. tests/Unit/Exceptions/ConflictExceptionTest.php)
-```
-
-### Feature Tests
-
-- Test Command Actions in isolation: factory → action execute → assert database/state
-- Test Read Actions: setup data → reader method → assert returned structure
-- Test Process Actions: test the complete workflow and partial failure scenarios
-- Test Livewire components: render → interact → assert state/redirect
-- Use `LazilyRefreshDatabase` for test isolation
-- Do NOT test Eloquent relationships or model scopes directly — test through Actions
-
-### Unit Tests
-
-- Entities: construct with test data → assert business rule methods
-- Enums: assert label(), transition rules, terminal states
-- Data DTOs: construct via constructor or `fromArray()` → assert `toArray()`
-- Policies: instantiate with mock user/model → assert boolean gate methods
-
-### What NOT to test
-
-- Eloquent model relationships (they are framework behavior, test through feature tests)
-- Simple getters/setters on models
-- Configuration loading
-- Framework-provided functionality (UUID generation, pagination, etc.)
+- **Feature tests**: Test Command/Process Actions end-to-end with database
+- **Unit tests**: Test Entities (no DB), Enums, DTOs, Policies in isolation
+- **Every Action has its own test file** — scope isolation is critical
+- **LazilyRefreshDatabase** preferred over `RefreshDatabase` for test speed
+- **Entities testable without database** — `final readonly` with zero framework dependencies
+- **TDD workflow**: Entity → Enum → Command Action → Read Action → Process Action → Livewire → Policy → Console Command
+- Tests mirror source structure: `tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php`
 
 ---
 
-## Migration Paths
-
-These patterns were introduced to address specific architectural gaps. Each has a clear migration
-strategy from the current simpler approach.
-
-### Array to DTO Migration
-
-```php
-// Step 1 — current: raw array
-public function execute(array $data): Report
-
-// Step 2 — DTO created alongside, Action accepts both
-public function execute(SubmitReportData|array $data): Report
-
-// Step 3 — DTO only
-public function execute(SubmitReportData $data): Report
-```
-
-### Inline Event to Listener Migration
-
-```php
-// Step 1 — current: side effects in Action
-$admin->notify(new InternshipCreatedNotification(...));
-
-// Step 2 — event dispatched
-event(new InternshipCreated($internship, auth()->user()));
-
-// Step 3 — listener created, side effects moved
-class NotifyAdminsInternshipCreated implements ShouldQueue { ... }
-```
-
-### Inline Cache to Event-Driven Invalidation
-
-```php
-// Step 1 — current: manual forget in Action
-Cache::forget(CacheKeys::ADMIN_DASHBOARD_STATS);
-
-// Step 2 — event dispatched, listener flushes
-class InvalidateDashboardCache
-{
-    public function handle(object $event): void
-    {
-        Cache::forget(CacheKeys::ADMIN_DASHBOARD_STATS);
-    }
-}
-```
-
----
-
-## Module Invariants (DO NOT VIOLATE)
+## Module Invariants (Do Not Violate)
 
 - **Super Admin name is ALWAYS `Administrator`** (from config `setup.defaults.admin_name`).
 - **Super Admin username is ALWAYS `superadmin`** (from config `setup.defaults.admin_username`).
-- These are canonical, non-customizable credentials enforced by `SetupSuperAdminAction` which only
-  accepts `(string $email, string $password)` — no name/username parameters.
+- These are canonical, non-customizable credentials enforced by `SetupSuperAdminAction` which only accepts `(string $email, string $password)` — no name/username parameters.
 - Any code that calls `SetupSuperAdminAction::execute()` must NOT pass name or username.
-- The `InitializeSuperAdminAction` (CLI recovery) must also use config defaults, NOT caller-provided
-  values.
+- The `InitializeSuperAdminAction` (CLI recovery) must also use config defaults, NOT caller-provided values.
 - `FinalizeSetupAction` must only extract `email` and `password` from `adminData` array.
-- UUID primary keys on all models (via BaseModel/HasUuids). Foreign keys use
-  `foreignUuid()->constrained()`.
-- All enums are string-backed and implement `LabelEnum`. State machine enums also implement
-  `StatusEnum`.
-- All files must begin with `declare(strict_types=1)`.

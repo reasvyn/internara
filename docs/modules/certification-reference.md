@@ -1,7 +1,6 @@
 # Certification — Technical Reference
 
-> Last updated: 2026-06-06  
-> Changes: Removed references to the separate certificate templates table, actions, and policies.
+> Last updated: 2026-06-08
 
 Detailed structural and implementation reference for the **Certification** module.
 
@@ -9,67 +8,76 @@ Detailed structural and implementation reference for the **Certification** modul
 
 ## Overview
 
-Manages certificate generation and credential tracking.
-
-### Module Statistics
-
-- **Actions**: 4 business logic operations
-- **Models**: 1 data entity (`Certificate`)
-- **Livewire Components**: 3 UI components
-- **Policies**: 1 authorization rule
-- **Submodules**: 1 module submodule
+Manages certificate generation, template management, and credential issuance for completed internships.
 
 ### Submodules
 
-- **Certificate**: Digital certificates generation, PDF rendering, QR signing, and revocation.
-
----
-
-## Dependency Graph
-
-This module depends on:
-
-- **Core** (base classes)
-- **Enrollment** (registration records)
-- **Reports** (Final Grade Card finalization check)
-- **User** (recipient and issuer details)
+- `Certificate` — Certificate lifecycle, templates, and rendering
 
 ---
 
 ## Actions
 
-| File                                                  | Class                         | Extends      |
-| ----------------------------------------------------- | ----------------------------- | ------------ |
-| `Certificate/Actions/IssueCertificateAction.php`      | `IssueCertificateAction`      | `BaseAction` |
-| `Certificate/Actions/BatchIssueCertificateAction.php` | `BatchIssueCertificateAction` | `BaseAction` |
-| `Certificate/Actions/RevokeCertificateAction.php`     | `RevokeCertificateAction`     | `BaseAction` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
 | `Certificate/Actions/CreateCertificateTemplateAction.php` | `CreateCertificateTemplateAction` | `BaseAction` |
+| `Certificate/Actions/IssueCertificateAction.php` | `IssueCertificateAction` | `BaseAction` |
+| `Certificate/Actions/RevokeCertificateAction.php` | `RevokeCertificateAction` | `BaseAction` |
+| `Certificate/Actions/BatchIssueCertificateAction.php` | `BatchIssueCertificateAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-| File                                 | Class         |
-| ------------------------------------ | ------------- |
-| `Certificate/Models/Certificate.php` | `Certificate` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Certificate/Models/Certificate.php` | `Certificate` | `BaseModel` |
 
 ---
+
+## Enums
+
+| File | Enum | Implements | Values |
+| ---- | ---- | ---------- | ------ |
+| `Certificate/Enums/CertificateStatus.php` | `CertificateStatus` | `LabelEnum`, `StatusEnum` | draft, issued, revoked, expired |
+
+---
+
+## Policies
+
+| File | Policy | Extends |
+| ---- | ------ | ------- |
+| `Certificate/Policies/CertificatePolicy.php` | `CertificatePolicy` | `BasePolicy` |
+| `Certificate/Policies/CertificateTemplatePolicy.php` | `CertificateTemplatePolicy` | `BasePolicy` |
+
+---
+
+## HTTP Controllers
+
+| File | Controller | Extends |
+| ---- | ---------- | ------- |
+| `Certificate/Http/Controllers/CertificateDownloadController.php` | `CertificateDownloadController` | `BaseController` |
 
 ## Livewire Components
 
-| File                                           | Component             | Extends             |
-| ---------------------------------------------- | --------------------- | ------------------- |
-| `Certificate/Livewire/CertificateList.php`     | `CertificateList`     | `BaseRecordManager` |
-| `Certificate/Livewire/StudentCertificates.php`      | `StudentCertificates`      | `Component`         |
-| `Certificate/Livewire/CertificateTemplateManager.php` | `CertificateTemplateManager` | `Component`         |
+| File | Component | Extends |
+| ---- | --------- | ------- |
+| `Certificate/Livewire/CertificateList.php` | `CertificateList` | `BaseRecordManager` |
+| `Certificate/Livewire/StudentCertificates.php` | `StudentCertificates` | `Component` |
+| `Certificate/Livewire/CertificateTemplateManager.php` | `CertificateTemplateManager` | `Component` |
+
+## Support
+
+| File | Class | Purpose |
+| ---- | ----- | ------- |
+| `Certificate/Support/CertificateRenderer.php` | `CertificateRenderer` | Renders certificate PDFs |
 
 ---
 
-## Authorization Policies
+## Routes
 
-| File                                         | Policy              |
-| -------------------------------------------- | ------------------- |
-| `Certificate/Policies/CertificatePolicy.php` | `CertificatePolicy` |
+File: `routes/web/certification.php`
+Naming pattern: `certification.{resource}.{action}`
 
 ---
 
@@ -77,31 +85,34 @@ This module depends on:
 
 ```
 app/Certification/
-├──            ← Submodule roots
-│   └── Certificate/
-│       ├── Actions/
-│       ├── Enums/
-│       ├── Http/
-│       │   └── Controllers/
-│       ├── Livewire/
-│       ├── Models/
-│       ├── Policies/
-│       └── Support/
+└── Certificate/
+    ├── Actions/
+    │   ├── BatchIssueCertificateAction.php
+    │   ├── CreateCertificateTemplateAction.php
+    │   ├── IssueCertificateAction.php
+    │   └── RevokeCertificateAction.php
+    ├── Enums/CertificateStatus.php
+    ├── Http/Controllers/CertificateDownloadController.php
+    ├── Livewire/
+    │   ├── CertificateList.php
+    │   ├── CertificateTemplateManager.php
+    │   └── StudentCertificates.php
+    ├── Models/Certificate.php
+    ├── Policies/
+    │   ├── CertificatePolicy.php
+    │   └── CertificateTemplatePolicy.php
+    └── Support/CertificateRenderer.php
 ```
 
 ---
 
 ## Architectural Integration
 
-This module integrates with the system across the following directories and resources:
-
 - **Submodules**: `Certificate`
-- **Business Logic (`app/`)**: Located in
-  [app/Certification/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Certification/)
-- **Routing (`routes/`)**:
-  [routes/web/certification.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/certification.php)
-- **Views (`views/`)**: Blade templates and layouts are in
-  [resources/views/certification/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/certification/)
-- **Testing (`tests/`)**: Feature `tests/Feature/Certification/`, Unit `tests/Unit/Certification/`
+- **Business Logic**: `app/Certification/`
+- **Routing**: `routes/web/certification.php`
+- **Views**: `resources/views/certification/`
+- **Testing**: `tests/Feature/Certification/`, `tests/Unit/Certification/`
+- **Dependencies**: User, Evaluation, Program, Core
 
-_For overview and business context, see [certification.md](certification.md)_
+*For overview and business context, see [certification.md](certification.md).*

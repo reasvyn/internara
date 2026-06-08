@@ -1,21 +1,22 @@
 # Backup & Recovery
 
-> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
-> conventions overhaul
+> Last updated: 2026-06-08
 
-Regular backups protect your school's data against hardware failure, accidental deletion, and
-security incidents. This guide covers what to back up, how to automate it, and how to restore when
-needed.
+Regular backups protect your school's data against hardware failure, accidental deletion, and security incidents. This guide covers what to back up, how to automate it, and how to restore when needed.
+
+---
 
 ## What to Back Up
 
 | Asset                  | Location                             | Frequency      | Retention |
 | ---------------------- | ------------------------------------ | -------------- | --------- |
-| **Database**           | SQLite file or MySQL/PG dump         | Daily          | 30 days   |
+| **Database**           | SQLite file or MySQL/PostgreSQL dump | Daily          | 30 days   |
 | **User uploads**       | `storage/app/` (local) or S3 bucket  | Daily          | 30 days   |
 | **Generated files**    | `storage/app/public/`                | Daily          | 30 days   |
 | **Environment config** | `.env` (store securely, not in repo) | Per deployment | Permanent |
 | **Application code**   | Git repository                       | Per commit     | Permanent |
+
+---
 
 ## Database Backup
 
@@ -70,6 +71,8 @@ find "$BACKUP_DIR" -name "db_*.sql.gz" -mtime +30 -delete
 find "$BACKUP_DIR" -name "storage_*.tar.gz" -mtime +30 -delete
 ```
 
+---
+
 ## File Backup
 
 ### Local Storage
@@ -81,8 +84,9 @@ tar -czf backups/storage_$(date +%Y%m%d).tar.gz \
 
 ### S3-Compatible Storage
 
-If using S3 natively for file storage, enable versioning on the bucket for point-in-time recovery.
-The provider handles durability automatically.
+If using S3 natively for file storage, enable versioning on the bucket for point-in-time recovery. The provider handles durability automatically.
+
+---
 
 ## Full Restoration
 
@@ -105,7 +109,11 @@ cp backups/20260101_020000.sqlite database/database.sqlite
 tar -xzf backups/storage_20260101.tar.gz -C /path/to/app/storage
 ```
 
-### Step 3: Rebuild Caches
+### Step 3: Restore Environment
+
+Restore `.env` from secure storage (password manager, encrypted bucket, or offline storage).
+
+### Step 4: Rebuild Caches
 
 ```bash
 php artisan optimize:clear
@@ -114,11 +122,13 @@ php artisan route:cache
 php artisan view:cache
 ```
 
-### Step 4: Verify
+### Step 5: Verify
 
 ```bash
 php artisan system:health
 ```
+
+---
 
 ## Point-in-Time Recovery
 
@@ -138,6 +148,8 @@ mysqlbinlog --stop-datetime="2026-01-01 12:00:00" \
     /var/log/mysql/mysql-bin.000001 | mysql -u internara -p internara
 ```
 
+---
+
 ## Monitoring
 
 | Check                 | Command                                 | Alert If              |
@@ -147,17 +159,17 @@ mysqlbinlog --stop-datetime="2026-01-01 12:00:00" \
 | Database connectivity | `php artisan system:health`             | Health check fails    |
 | Storage writable      | `touch storage/test && rm storage/test` | Write failure         |
 
+---
+
 ## Recovery Scenarios
 
 ### Lost Database
 
-Restore from the most recent database dump. Files remain intact. Data loss is limited to the
-interval between the last backup and the failure.
+Restore from the most recent database dump. Files remain intact. Data loss is limited to the interval between the last backup and the failure.
 
 ### Lost Files (Local Storage)
 
-Restore files from the most recent file backup. Database records referencing those files remain
-consistent because media library entries are tied to model UUIDs, not file paths.
+Restore files from the most recent file backup. Database records referencing those files remain consistent because media library entries are tied to model UUIDs, not file paths.
 
 ### Lost Everything (Server Failure)
 
@@ -171,13 +183,13 @@ consistent because media library entries are tied to model UUIDs, not file paths
 
 ### Accidental Data Deletion
 
-If data was deleted through the application (not a database-level drop), check the audit log
-(`activity_log` table) to identify what was changed and by whom. The application does not
-hard-delete most records — they are typically soft-deleted or status-transitioned. If the deletion
-was recent, restore the affected records from the previous backup.
+If data was deleted through the application (not a database-level drop), check the audit log (`activity_log` table) to identify what was changed and by whom. Most records are soft-deleted or status-transitioned rather than hard-deleted. If the deletion was recent, restore the affected records from the previous backup.
+
+---
 
 ## References
 
 - [Deployment](deployment.md) — installation and server setup
 - [Observability](observability.md) — monitoring and health checks
 - [Installation](installation.md) — command reference
+- [Infrastructure](infrastructure.md) — recovery objectives by tier

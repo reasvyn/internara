@@ -1,0 +1,14 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Settings\Actions\GetAcademicYearsAction;
+use Illuminate\Support\Collection;
+
+test('get academic years action returns collection', function () {
+    $action = new GetAcademicYearsAction;
+
+    $result = $action->execute();
+
+    expect($result)->toBeInstanceOf(Collection::class);
+});

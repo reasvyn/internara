@@ -1,55 +1,106 @@
 ---
 name: pest-testing
+description: Apply this skill whenever writing, editing, or fixing tests for this project. Activates for all testing tasks — feature tests, unit tests, architecture tests, and Livewire component tests using Pest.
 ---
 
 # Pest Testing Skill
 
 ## When to Activate
 
-Apply this skill whenever writing, editing, or fixing tests for this project. Activate for all
-testing tasks — feature tests, unit tests, architecture tests, and Livewire component tests. Do not
-use for factories, seeders, migrations, or non-test PHP code.
+Apply this skill whenever writing, editing, or fixing tests. Activates for all testing tasks — feature tests, unit tests, and Livewire component tests using Pest.
 
-## Core Principles
+## Key References
 
-### Module-First Test Structure
+- **Architecture (testing strategy)**: `docs/architecture.md#testing-strategy`
+- **Conventions (testing)**: `docs/conventions.md#22-testing`
+- **BaseEntity**: `app/Core/Entities/BaseEntity.php`
+- **BaseAction**: `app/Core/Actions/BaseAction.php`
 
-Tests mirror the application's submodule-based structure:
-`tests/Feature/{Module}/{Submodule}/{Name}Test.php` for integration tests and
-`tests/Unit/{Module}/{Submodule}/{Name}Test.php` for unit tests. Small value objects and flat enums
-go in `tests/Unit/{Module}/Types/{Name}Test.php`. Tests are created with
-`php artisan make:test --pest {Name}Test` (without `Feature/` or `Unit/` prefix in the name
-argument).
+## Module-First Test Structure
 
-### Testing Level Separation
+Tests mirror source structure exactly:
 
-Each layer has a distinct testing strategy:
+```
+tests/Feature/{Module}/{SubModule}/{Name}Test.php   → Actions, Livewire (integration)
+tests/Unit/{Module}/{SubModule}/{Name}Test.php      → Entities, Enums (pure unit)
+tests/{Feature,Unit}/{Component}/{Name}Test.php     → Shared components (Data, Enums, Livewire)
+```
 
-- Entity tests instantiate pure PHP objects directly — no database needed, no RefreshDatabase trait.
-  They test business rules in isolation.
-- Action tests resolve the Action from the container, call execute(), and assert on returned models
-  or exceptions. They use `LazilyRefreshDatabase` and `assertModelExists()`.
-- Livewire tests use `Livewire::test()` to simulate component interactions. They assert state
-  changes, validation errors, and dispatched events.
+Create tests: `php artisan make:test --pest {Name}Test` (omit `Feature/` or `Unit/` prefix).
 
-### Performance Preferences
+## Scope Isolation (Critical)
 
-`LazilyRefreshDatabase` over `RefreshDatabase` (skips migration replay if schema is current).
-`assertModelExists()` over `assertDatabaseHas()` (clearer intent). Factory states and sequences over
-manual model creation. Fakes after factory setup (not before — UUID generation events must not be
-silenced).
+**Each Action, command, and component gets its own dedicated test file.** Do not combine multiple scopes into a single file (e.g., `ConsoleCommandsTest` grouping separate commands).
 
-## Architecture Tests
+## Layer Testing Strategy
 
-Structural rules (all Entities are `final readonly` and extend BaseEntity, all Actions have an
-`execute()` method, all Models extend BaseModel) are enforced through code review and PHPStan
-analysis.
+| Layer | Test Type | Database | Base Class |
+|-------|-----------|----------|------------|
+| Entity | Unit | No | Instantiate directly: `new Entity(...)` |
+| Enum | Unit | No | Assert `label()`, transitions, terminals |
+| DTO/Data | Unit | No | Constructor → `toArray()` |
+| Policy | Unit | No | Mock user/model → assert gates |
+| Command Action | Feature | Yes (`LazilyRefreshDatabase`) | Resolve from container, call `execute()` |
+| Read Action | Feature | Yes | Resolve, call method, assert result |
+| Process Action | Feature | Yes | Full workflow + partial failure scenarios |
+| Livewire | Feature | Yes | `Livewire::test()` → interact → assert |
 
-## Verification Before Finalizing
+### Entity Tests (No Database)
 
-- Are tests in the correct directory (Feature vs Unit, right Module, right Submodule)?
-- Do Entity tests avoid RefreshDatabase entirely?
-- Are Action tests using LazilyRefreshDatabase?
-- Is `assertModelExists()` preferred over `assertDatabaseHas()`?
-- Are `Event::fake()` and `Http::fake()` positioned correctly (after factory setup)?
-- Are `Mail::assertQueued()` used instead of `assertSent()`?
+```php
+describe('Apprentice', function () {
+    it('prevents login when locked', function () {
+        $entity = new Apprentice(status: 'active', emailVerifiedAt: now(), setupRequired: false, lockedAt: now()->toDateTimeString());
+
+        expect($entity->allowsLogin())->toBeFalse();
+    });
+});
+```
+
+### Action Tests (With Database)
+
+```php
+describe('CreateInternshipAction', function () {
+    it('creates an internship with valid data', function () {
+        $action = app(CreateInternshipAction::class);
+        $data = new CreateInternshipData(name: 'Summer Program', ...);
+
+        $internship = $action->execute($data);
+
+        assertModelExists($internship);
+        expect($internship->name)->toBe('Summer Program');
+    });
+});
+```
+
+## Performance Preferences
+
+| Preference | Over |
+|------------|------|
+| `LazilyRefreshDatabase` | `RefreshDatabase` (skips replay if schema current) |
+| `assertModelExists()` | `assertDatabaseHas()` (clearer intent) |
+| Factory states and sequences | Manual model creation |
+| Fakes **after** factory setup | Fakes before (UUID events must not be silenced) |
+
+## TDD Workflow
+
+Follow the architecture's bottom-up dependency order:
+
+1. **Enum** — define state machine, transitions (unit test)
+2. **Entity** — define business rules (unit test, no DB)
+3. **Command Action** — persistence, transactions (feature test)
+4. **Read Action** — complex queries (feature test)
+5. **Process Action** — multi-step orchestration (feature test)
+6. **Livewire** — UI interactions (feature test)
+7. **Policy** — authorization gates (unit test)
+8. **Console Command** — CLI interactions (feature test)
+
+## Verification
+
+- Tests in correct directory (Feature vs Unit, right Module/SubModule)?
+- Entity tests avoid `RefreshDatabase` entirely?
+- Action tests use `LazilyRefreshDatabase`?
+- `assertModelExists()` preferred over `assertDatabaseHas()`?
+- `Event::fake()` and `Http::fake()` positioned **after** factory setup?
+- Each Action/component has its own dedicated test file?
+- Action triad type correct (Command, Read, Process)?

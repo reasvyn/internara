@@ -1,7 +1,6 @@
 # Assessment — Technical Reference
 
-> Last updated: 2026-06-06  
-> Changes: Refactored to flat Assessment model and Rubric submodule with JSON-based competency/indicator structures.
+> Last updated: 2026-06-08
 
 Detailed structural and implementation reference for the **Assessment** module.
 
@@ -9,78 +8,74 @@ Detailed structural and implementation reference for the **Assessment** module.
 
 ## Overview
 
-Manages assessments and JSON-based rubric evaluation templates.
-
-### Module Statistics
-
-- **Actions**: 14 business logic operations
-- **Models**: 2 data entities (`Assessment`, `Rubric`)
-- **Livewire Components**: 3 UI components
-- **Policies**: 1 authorization rule
-- **Submodules**: 2 module submodules
+Manages competency rubrics, assessment scoring frameworks, and student evaluation scorecards.
 
 ### Submodules
 
-- **Rubric**: Evaluation templates with competency criteria schemas stored as JSON.
-- **Assessment**: Evaluator grading records scoring students against rubrics.
-
----
-
-## Dependency Graph
-
-This module depends on:
-
-- **Core** (base classes)
-- **Enrollment** (registration records)
-- **User** (evaluators and students)
+- `Rubric` — Competency rubric definitions, indicators, and scoring criteria
 
 ---
 
 ## Actions
 
-| File                                        | Class                           | Extends      |
-| ------------------------------------------- | ------------------------------- | ------------ |
-| `Actions/InitializeAssessmentAction.php`    | `InitializeAssessmentAction`    | `BaseAction` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Actions/InitializeAssessmentAction.php` | `InitializeAssessmentAction` | `BaseAction` |
+| `Actions/ScoreIndicatorAction.php` | `ScoreIndicatorAction` | `BaseAction` |
+| `Actions/UpdateAssessmentScoresAction.php` | `UpdateAssessmentScoresAction` | `BaseAction` |
+| `Actions/FinalizeAssessmentAction.php` | `FinalizeAssessmentAction` | `BaseAction` |
 | `Actions/AutoCalculateAssessmentAction.php` | `AutoCalculateAssessmentAction` | `BaseAction` |
-| `Actions/UpdateAssessmentScoresAction.php`  | `UpdateAssessmentScoresAction`  | `BaseAction` |
-| `Actions/FinalizeAssessmentAction.php`      | `FinalizeAssessmentAction`      | `BaseAction` |
-| `Actions/ScoreIndicatorAction.php`          | `ScoreIndicatorAction`          | `BaseAction` |
-| `Rubric/Actions/CreateRubricAction.php`     | `CreateRubricAction`            | `BaseAction` |
-| `Rubric/Actions/UpdateRubricAction.php`     | `UpdateRubricAction`            | `BaseAction` |
-| `Rubric/Actions/DeleteRubricAction.php`     | `DeleteRubricAction`            | `BaseAction` |
-| `Rubric/Actions/CreateCompetencyAction.php` | `CreateCompetencyAction`        | `BaseAction` |
-| `Rubric/Actions/UpdateCompetencyAction.php` | `UpdateCompetencyAction`        | `BaseAction` |
-| `Rubric/Actions/DeleteCompetencyAction.php` | `DeleteCompetencyAction`        | `BaseAction` |
-| `Rubric/Actions/CreateIndicatorAction.php`  | `CreateIndicatorAction`         | `BaseAction` |
-| `Rubric/Actions/UpdateIndicatorAction.php`  | `UpdateIndicatorAction`         | `BaseAction` |
-| `Rubric/Actions/DeleteIndicatorAction.php`  | `DeleteIndicatorAction`         | `BaseAction` |
+| `Rubric/Actions/CreateRubricAction.php` | `CreateRubricAction` | `BaseAction` |
+| `Rubric/Actions/UpdateRubricAction.php` | `UpdateRubricAction` | `BaseAction` |
+| `Rubric/Actions/DeleteRubricAction.php` | `DeleteRubricAction` | `BaseAction` |
+| `Rubric/Actions/CreateCompetencyAction.php` | `CreateCompetencyAction` | `BaseAction` |
+| `Rubric/Actions/UpdateCompetencyAction.php` | `UpdateCompetencyAction` | `BaseAction` |
+| `Rubric/Actions/DeleteCompetencyAction.php` | `DeleteCompetencyAction` | `BaseAction` |
+| `Rubric/Actions/CreateIndicatorAction.php` | `CreateIndicatorAction` | `BaseAction` |
+| `Rubric/Actions/UpdateIndicatorAction.php` | `UpdateIndicatorAction` | `BaseAction` |
+| `Rubric/Actions/DeleteIndicatorAction.php` | `DeleteIndicatorAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-| File                       | Class        |
-| -------------------------- | ------------ |
-| `Models/Assessment.php`    | `Assessment` |
-| `Rubric/Models/Rubric.php` | `Rubric`     |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Models/Assessment.php` | `Assessment` | `BaseModel` |
+| `Rubric/Models/Rubric.php` | `Rubric` | `BaseModel` |
+
+---
+
+## Entities
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Entities/AssessmentResult.php` | `AssessmentResult` | `BaseEntity` |
+
+---
+
+## Policies
+
+| File | Policy | Extends |
+| ---- | ------ | ------- |
+| `Policies/AssessmentPolicy.php` | `AssessmentPolicy` | `BasePolicy` |
 
 ---
 
 ## Livewire Components
 
-| File                                | Component           | Extends     |
-| ----------------------------------- | ------------------- | ----------- |
-| `Livewire/AssessmentGrading.php`    | `AssessmentGrading` | `Component` |
-| `Livewire/AssessmentView.php`       | `AssessmentView`    | `Component` |
-| `Rubric/Livewire/RubricManager.php` | `RubricManager`     | `Component` |
+| File | Component | Extends |
+| ---- | --------- | ------- |
+| `Livewire/AssessmentGrading.php` | `AssessmentGrading` | `Component` |
+| `Livewire/AssessmentView.php` | `AssessmentView` | `Component` |
+| `Rubric/Livewire/RubricManager.php` | `RubricManager` | `Component` |
 
 ---
 
-## Authorization Policies
+## Routes
 
-| File                            | Policy             |
-| ------------------------------- | ------------------ | ------------ |
-| `Policies/AssessmentPolicy.php` | `AssessmentPolicy` | `BasePolicy` |
+File: `routes/web/assessment.php`
+Naming pattern: `assessment.{resource}.{action}`
 
 ---
 
@@ -88,30 +83,43 @@ This module depends on:
 
 ```
 app/Assessment/
-├── Actions/              ← Cross-submodule / flat actions
-├── Entities/
+├── Actions/
+│   ├── AutoCalculateAssessmentAction.php
+│   ├── FinalizeAssessmentAction.php
+│   ├── InitializeAssessmentAction.php
+│   ├── ScoreIndicatorAction.php
+│   └── UpdateAssessmentScoresAction.php
+├── Entities/AssessmentResult.php
 ├── Livewire/
-├── Models/
-├── Policies/
-└── Rubric/               ← Rubric submodule
+│   ├── AssessmentGrading.php
+│   └── AssessmentView.php
+├── Models/Assessment.php
+├── Policies/AssessmentPolicy.php
+└── Rubric/
     ├── Actions/
-    ├── Livewire/
-    └── Models/
+    │   ├── CreateCompetencyAction.php
+    │   ├── CreateIndicatorAction.php
+    │   ├── CreateRubricAction.php
+    │   ├── DeleteCompetencyAction.php
+    │   ├── DeleteIndicatorAction.php
+    │   ├── DeleteRubricAction.php
+    │   ├── UpdateCompetencyAction.php
+    │   ├── UpdateIndicatorAction.php
+    │   └── UpdateRubricAction.php
+    ├── Livewire/RubricManager.php
+    └── Models/Rubric.php
 ```
 
 ---
 
 ## Architectural Integration
 
-This module integrates with the system across the following directories and resources:
-
 - **Submodules**: `Rubric`
-- **Business Logic (`app/`)**: Located in
-  [app/Assessment/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Assessment/)
-- **Routing (`routes/`)**:
-  [routes/web/assessment.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/assessment.php)
-- **Views (`views/`)**: Blade templates and layouts are in
-  [resources/views/assessment/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/assessment/)
-- **Testing (`tests/`)**: Feature `tests/Feature/Assessment/`, Unit `tests/Unit/Assessment/`
+- **Business Logic**: `app/Assessment/`
+- **Routing**: `routes/web/assessment.php`
+- **Views**: `resources/views/assessment/`
+- **Testing**: `tests/Feature/Assessment/`, `tests/Unit/Assessment/`
+- **Dependencies**: Core
+- **Used By**: Evaluation
 
-_For overview and business context, see [assessment.md](assessment.md)_
+*For overview and business context, see [assessment.md](assessment.md).*

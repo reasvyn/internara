@@ -1,9 +1,6 @@
 ---
 name: medialibrary-development
-description:
-    Build and work with spatie/laravel-medialibrary features including associating files with
-    Eloquent models, defining media collections and conversions, generating responsive images, and
-    retrieving media URLs and paths.
+description: Build and work with spatie/laravel-medialibrary features including associating files with Eloquent models, defining media collections and conversions, generating responsive images, and retrieving media URLs and paths.
 license: MIT
 metadata:
     author: Spatie

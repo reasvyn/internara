@@ -1,9 +1,6 @@
 # Document — Technical Reference
 
-> Last updated: 2026-06-06  
-> Changes: Removed `DocumentAcknowledgement` model. Policy acknowledgements are now tracked via
-> `activity_log` (event: `acknowledged`). Reduced models from 2 to 1, components from 3 to 2,
-> policies from 2 to 1.
+> Last updated: 2026-06-08
 
 Detailed structural and implementation reference for the **Document** module.
 
@@ -11,87 +8,80 @@ Detailed structural and implementation reference for the **Document** module.
 
 ## Overview
 
-Manages correspondence templates, policy handbooks, and compliance acknowledgements.
-
-### Module Statistics
-
-- **Actions**: 4 business logic operations
-- **Models**: 1 data entity (`Document`)
-- **Livewire Components**: 2 UI components
-- **Policies**: 1 authorization rule
-- **Submodules**: 2 module submodules
+Manages official document templates, correspondence generation (MoU, agreements), report generation, and compliance acknowledgements.
 
 ### Submodules
 
-- `OfficialDocument`: File templates and PDF compiler endpoints.
-- `Handbook`: Policy guides and acknowledgement tracking via `activity_log`.
-
----
-
-## Dependency Graph
-
-This module depends on:
-
-- **Core** (base classes and DomPDF wrapper)
-- **User** (recipient user records)
-- **SysAdmin** (activity_log for compliance tracking)
+- `OfficialDocument` — Official document templates and rendering
 
 ---
 
 ## Actions
 
-| File                                                      | Class                        | Extends      |
-| --------------------------------------------------------- | ---------------------------- | ------------ |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `OfficialDocument/Actions/GenerateReportAction.php` | `GenerateReportAction` | `BaseAction` |
+| `OfficialDocument/Actions/RenderDocumentAction.php` | `RenderDocumentAction` | `BaseAction` |
 | `OfficialDocument/Actions/SaveDocumentTemplateAction.php` | `SaveDocumentTemplateAction` | `BaseAction` |
-| `OfficialDocument/Actions/RenderDocumentAction.php`       | `RenderDocumentAction`       | `BaseAction` |
-| `OfficialDocument/Actions/GenerateReportAction.php`       | `GenerateReportAction`       | `BaseAction` |
-| `OfficialDocument/Actions/DeleteReportAction.php`         | `DeleteReportAction`         | `BaseAction` |
-
-> **Note:** `Handbook/Actions/AcknowledgeDocumentAction.php` and `PruneAcknowledgementsAction.php`
-> are planned but not yet implemented. Acknowledgements are currently handled inline via
-> `activity()` helper.
+| `OfficialDocument/Actions/DeleteReportAction.php` | `DeleteReportAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-| File                  | Class      | Extends     |
-| --------------------- | ---------- | ----------- |
+| File | Class | Extends |
+| ---- | ----- | ------- |
 | `Models/Document.php` | `Document` | `BaseModel` |
 
-> **Note:** `DocumentAcknowledgement` model removed. Compliance tracking uses `activity_log` with
-> `event = 'acknowledged'`.
+---
+
+## Enums
+
+| File | Enum | Implements | Values |
+| ---- | ---- | ---------- | ------ |
+| `Enums/DocumentCategory.php` | `DocumentCategory` | `LabelEnum` | mou, agreement, report, handbook, letter, form |
 
 ---
 
-## Livewire Components
+## Policies
 
-| File                                            | Component         | Extends     |
-| ----------------------------------------------- | ----------------- | ----------- |
-| `OfficialDocument/Livewire/TemplateManager.php` | `TemplateManager` | `Component` |
-| `OfficialDocument/Livewire/ReportsManager.php`  | `ReportsManager`  | `Component` |
-
-> **Note:** `Handbook/Livewire/DocumentAcknowledgementTracker.php` is planned but not yet
-> implemented.
-
----
-
-## Authorization Policies
-
-| File                          | Policy           | Extends      |
-| ----------------------------- | ---------------- | ------------ |
+| File | Policy | Extends |
+| ---- | ------ | ------- |
 | `Policies/DocumentPolicy.php` | `DocumentPolicy` | `BasePolicy` |
-
-> **Note:** `Handbook/Policies/DocumentAcknowledgementPolicy.php` is planned but not yet
-> implemented.
 
 ---
 
 ## HTTP Controllers
 
-| File                                                             | Controller                 | Extends          |
-| ---------------------------------------------------------------- | -------------------------- | ---------------- |
+| File | Controller | Extends |
+| ---- | ---------- | ------- |
 | `OfficialDocument/Http/Controllers/DocumentRenderController.php` | `DocumentRenderController` | `BaseController` |
+
+## Form Requests
+
+| File | Request | Purpose |
+| ---- | ------- | ------- |
+| `OfficialDocument/Http/Requests/GenerateReportRequest.php` | `GenerateReportRequest` | Report generation validation |
+
+## Livewire Components
+
+| File | Component | Extends |
+| ---- | --------- | ------- |
+| `OfficialDocument/Livewire/TemplateManager.php` | `TemplateManager` | `Component` |
+| `OfficialDocument/Livewire/ReportsManager.php` | `ReportsManager` | `Component` |
+
+## Support
+
+| File | Class | Purpose |
+| ---- | ----- | ------- |
+| `Support/DocumentRenderer.php` | `DocumentRenderer` | Renders document templates to PDF/HTML |
+
+---
+
+## Routes
+
+File: `routes/web/document.php`
+Naming pattern: `document.{resource}.{action}`
 
 ---
 
@@ -99,35 +89,34 @@ This module depends on:
 
 ```
 app/Document/
-├──            ← Submodule roots
-│   ├── OfficialDocument/
-│   │   ├── Actions/
-│   │   ├── Http/
-│   │   │   ├── Controllers/
-│   │   │   └── Requests/
-│   │   └── Livewire/
-│   └── Handbook/
-│       ├── Actions/        ← Planned
-│       └── Livewire/       ← Planned
-├── Enums/                ← DocumentCategory enum
-├── Models/               ← Document model
-├── Policies/             ← DocumentPolicy
-└── Support/              ← DocumentRenderer (DomPDF wrapper)
+├── Enums/DocumentCategory.php
+├── Models/Document.php
+├── OfficialDocument/
+│   ├── Actions/
+│   │   ├── DeleteReportAction.php
+│   │   ├── GenerateReportAction.php
+│   │   ├── RenderDocumentAction.php
+│   │   └── SaveDocumentTemplateAction.php
+│   ├── Http/
+│   │   ├── Controllers/DocumentRenderController.php
+│   │   └── Requests/GenerateReportRequest.php
+│   ├── Livewire/
+│   │   ├── ReportsManager.php
+│   │   └── TemplateManager.php
+│   └── Support/
+├── Policies/DocumentPolicy.php
+└── Support/DocumentRenderer.php
 ```
 
 ---
 
 ## Architectural Integration
 
-This module integrates with the system across the following directories and resources:
+- **Submodules**: `OfficialDocument`
+- **Business Logic**: `app/Document/`
+- **Routing**: `routes/web/document.php`
+- **Views**: `resources/views/document/`
+- **Testing**: `tests/Feature/Document/`, `tests/Unit/Document/`
+- **Dependencies**: Core, User
 
-- **Submodules**: `OfficialDocument`, `Handbook`
-- **Business Logic (`app/`)**: Located in
-  [app/Document/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Document/)
-- **Routing (`routes/`)**:
-  [routes/web/document.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/document.php)
-- **Views (`views/`)**: Blade templates and layouts are in
-  [resources/views/document/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/document/)
-- **Testing (`tests/`)**: Feature `tests/Feature/Document/`, Unit `tests/Unit/Document/`
-
-_For overview and business context, see [document.md](document.md)_
+*For overview and business context, see [document.md](document.md).*

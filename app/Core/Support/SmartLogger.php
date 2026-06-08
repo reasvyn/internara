@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Core\Support;
 
 use App\Core\Events\BaseEvent;
-use App\Support\PiiMasker;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -270,13 +269,13 @@ final class SmartLogger
 
             [$ip, $ua] = $this->resolveRequestMetadata();
 
-            $activity
-                ->event($eventName ?? $this->face)
-                ->withProperties(array_filter([
+            $activity->event($eventName ?? $this->face)->withProperties(
+                array_filter([
                     'payload' => $this->payload !== [] ? $this->payload : null,
                     'ip_address' => $ip,
                     'user_agent' => $ua,
-                ]));
+                ]),
+            );
 
             if ($this->module !== null) {
                 $activity->useLog($this->module);

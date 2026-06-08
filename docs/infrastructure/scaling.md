@@ -1,14 +1,10 @@
 # Scaling Guide
 
-> Last updated: 2026-06-01 Changes: feat: infrastructure optimization — scaling guide, composite
-> indexes, N+1 in AttendanceManager
+> Last updated: 2026-06-08
 
-This document is the operational companion to [Infrastructure](infrastructure.md). It describes
-_when_ and _how_ to scale Internara from a single-user dev setup to production serving 1500-2000
-concurrent users.
+This document is the operational companion to [Infrastructure](infrastructure.md). It describes _when_ and _how_ to scale Internara from a single-user dev setup to production serving 1500–2000 concurrent users.
 
-The philosophy is **start simple, scale by measured need** — codified in
-[ADR: Gradual Migration](../adr/adr-gradual-migration.md).
+The philosophy is **start simple, scale by measured need** — codified in [ADR: Gradual Migration](../adr/adr-gradual-migration.md).
 
 ---
 
@@ -20,7 +16,7 @@ Do NOT scale preemptively. Scale when you observe these symptoms:
 | --------------------------------------------- | ---------------------------------------- | ----------------------------------------- | --------------- |
 | SQLite "database is locked" errors            | Concurrent writes exceed SQLite capacity | Switch to MySQL/PostgreSQL                | MVP → Tier 2    |
 | Page load > 500ms (50th percentile)           | Missing cache or slow queries            | Enable Redis cache, warm caches           | MVP → Tier 2    |
-| Queue backlog > 100 jobs for > 5 min          | Sync queue blocking HTTP                 | Switch to Redis queue, start worker(s)    | MVP → Tier 2    |
+| Queue backlog > 100 jobs for > 5 min          | Sync queue blocking HTTP                 | Switch to Redis queue, start workers      | MVP → Tier 2    |
 | PHP-FPM max children reached (502 errors)     | Insufficient workers                     | Increase `pm.max_children`, add RAM       | Tier 2 → Tier 3 |
 | Disk > 85% full                               | Media accumulation                       | Prune, archive, or migrate to S3          | Any tier        |
 | Database CPU > 80% for > 10 min               | Query bottleneck                         | Add indexes, then add read replica        | Tier 2 → Tier 3 |
@@ -39,7 +35,7 @@ Do NOT scale preemptively. Scale when you observe these symptoms:
 
 ## 2. Tier Transitions
 
-### MVP → Tier 2 (<50 → 50-200 users)
+### MVP → Tier 2 (<50 → 50–200 users)
 
 **What changes:**
 
@@ -49,7 +45,7 @@ Do NOT scale preemptively. Scale when you observe these symptoms:
 | Cache driver     | `file`                | `redis`                         |
 | Session driver   | `database`            | `redis`                         |
 | Queue driver     | `sync`                | `redis`                         |
-| Queue workers    | none (inline)         | Supervisor (numprocs=4)         |
+| Queue workers    | none (inline)         | Supervisor (dual pipelines)     |
 | Cron             | webhook fallback      | system cron                     |
 | Media storage    | `public` disk (local) | local + backup to S3            |
 | Monitoring       | log files only        | Pulse + SmartLogger             |
@@ -58,17 +54,16 @@ Do NOT scale preemptively. Scale when you observe these symptoms:
 **Steps:**
 
 1. Provision a VPS (2 CPU, 4 GB RAM, 50 GB SSD)
-2. Install PHP 8.4 + extensions (bcmath, curl, gd, intl, mbstring, openssl, pdo_mysql, xml, zip,
-   opcache, redis)
+2. Install PHP 8.4 + extensions (bcmath, curl, gd, intl, mbstring, openssl, pdo_mysql, xml, zip, opcache, redis)
 3. Install MySQL 8+ or PostgreSQL 14+
 4. Install Redis 7+
 5. Clone codebase and run `composer install --optimize-autoloader --no-dev`
-6. Copy `.env.example` to `.env` and update:
+6. Configure `.env` for production:
 
 ```env
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://your-module.com
+APP_URL=https://your-school.sch.id
 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -89,19 +84,34 @@ REDIS_PORT=6379
 7. Run `php artisan migrate --force`
 8. Run `php artisan storage:link`
 9. Run `npm install && npm run build`
-10. Configure Nginx (see [Installation](installation.md))
-11. Configure Supervisor with `numprocs=4`:
+10. Configure Nginx (see [Deployment](deployment.md))
+11. Configure Supervisor with dual pipeline workers:
 
 ```ini
-[program:internara-worker]
+[program:internara-default-worker]
 process_name=%(program_name)s_%(process_num)02d
-command=php /path/to/app/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+command=php /path/to/app/artisan queue:work --queue=default --sleep=3 --tries=3 --max-time=3600
 autostart=true
 autorestart=true
+stopasgroup=true
+killasgroup=true
 user=www-data
-numprocs=4
+numprocs=2
 redirect_stderr=true
-stdout_logfile=/path/to/app/storage/logs/worker.log
+stdout_logfile=/path/to/app/storage/logs/default-worker.log
+stopwaitsecs=3600
+
+[program:internara-documents-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /path/to/app/artisan queue:work --queue=documents --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/path/to/app/storage/logs/documents-worker.log
 stopwaitsecs=3600
 ```
 
@@ -110,7 +120,7 @@ stopwaitsecs=3600
 14. Run `php artisan setup:install` and complete the wizard
 15. Verify: `php artisan system:health` — all checks pass
 
-### Tier 2 → Tier 3 (50-200 → 200-1500+ users)
+### Tier 2 → Tier 3 (50–200 → 200–1500+ users)
 
 **What changes:**
 
@@ -119,7 +129,7 @@ stopwaitsecs=3600
 | App servers   | 1                   | 2+ (Nginx load-balanced)  |
 | Database      | single (read/write) | primary + read replica(s) |
 | Redis         | single instance     | cluster (3 nodes min)     |
-| Queue workers | 4 per server        | 8-16 per server           |
+| Queue workers | 2 per pipeline      | 4–8 per pipeline          |
 | Session       | Redis single        | Redis cluster             |
 | Cache         | Redis single        | Redis cluster             |
 | Media storage | local + backup      | S3 primary                |
@@ -128,21 +138,21 @@ stopwaitsecs=3600
 
 **Steps (in order):**
 
-#### Phase A: Database (highest impact first)
+#### Phase A: Database
 
 1. Provision read replica(s) from your MySQL provider
-2. Configure read/write separation in `.env` (Laravel handles this via `config/database.php`):
+2. Configure read/write separation:
 
 ```env
 DB_READ_HOST=replica1.host,replica2.host
 DB_WRITE_HOST=primary.host
 ```
 
-3. Ensure replica lag is monitored (Pulse custom recorder)
+3. Monitor replica lag (Pulse custom recorder)
 
 #### Phase B: Redis Cluster
 
-1. Provision 3+ Redis nodes (or use a managed service like ElastiCache)
+1. Provision 3+ Redis nodes (or use managed ElastiCache)
 2. Update `.env`:
 
 ```env
@@ -161,23 +171,27 @@ AWS_ACCESS_KEY_ID=your-key
 AWS_SECRET_ACCESS_KEY=your-secret
 AWS_DEFAULT_REGION=us-east-1
 AWS_BUCKET=internara-production
-AWS_URL=https://cdn.your-module.com
+AWS_URL=https://cdn.your-school.sch.id
 ```
 
-3. Migrate existing files:
+3. Migrate existing files to S3:
 
 ```bash
+# Sync files to S3 bucket
+aws s3 sync storage/app/public s3://internara-production/ --storage-class STANDARD_IA
+
+# Run the migration command to update media library paths
 php artisan media:migrate-to-s3
 ```
 
 #### Phase D: App Server Scaling
 
-1. Provision additional app servers (same spec: 2-4 CPU, 4 GB RAM)
-2. Configure Nginx as load balancer:
+1. Provision additional app servers (same spec: 2–4 CPU, 4 GB RAM)
+2. Configure Nginx as load balancer with `least_conn`:
 
 ```nginx
 upstream internara {
-    least_conn;               # send to least busy server
+    least_conn;
     server app1.internal:80;
     server app2.internal:80;
     server app3.internal:80;
@@ -185,7 +199,7 @@ upstream internara {
 
 server {
     listen 443 ssl;
-    server_name your-module.com;
+    server_name your-school.sch.id;
 
     location / {
         proxy_pass http://internara;
@@ -197,14 +211,13 @@ server {
 }
 ```
 
-3. Configure Supervisor on each app server (numprocs=8-16 depending on RAM)
+3. Configure Supervisor on each app server (4–8 workers per pipeline depending on RAM)
 
 #### Phase E: Rate Limiting
 
-Update the `RateLimiter::for()` calls in `app/Providers/AppServiceProvider.php` to use user-based limits (keyed by `user_id` instead of IP):
+Update `RateLimiter::for()` calls to use user-based limits:
 
 ```php
-// app/Providers/AppServiceProvider.php
 RateLimiter::for('global', function (Request $request) {
     return Limit::perMinute(500)->by($request->user()?->id ?: $request->ip());
 });
@@ -214,8 +227,7 @@ RateLimiter::for('global', function (Request $request) {
 
 ## 3. Configuration Changes Summary (.env)
 
-All scaling transitions are achieved purely through `.env` changes — no code changes needed. This is
-guaranteed by the [Infrastructure Architecture](infrastructure.md).
+All scaling transitions are achieved purely through `.env` changes — no code changes needed.
 
 ### From MVP to Tier 2
 
@@ -257,8 +269,6 @@ FILESYSTEM_DISK=s3
 
 ## 4. Queue Worker Sizing
 
-Estimate queue throughput:
-
 | Job Type           | Peak per user/day | 200 users | 1500 users |
 | ------------------ | ----------------- | --------- | ---------- |
 | Email notification | 3                 | 600       | 4500       |
@@ -267,23 +277,19 @@ Estimate queue throughput:
 | Certificate PDF    | 0.1               | 20        | 150        |
 | **Daily total**    | **4.3**           | **860**   | **6450**   |
 
-At 8 hours peak: 860/8 = 108 jobs/hour for 200 users, 6450/8 = 806 jobs/hour for 1500 users.
+Worker throughput: ~50–100 jobs/min per worker process.
 
-Worker throughput: ~50-100 jobs/min per worker process. Recommendation:
-
-| Users     | `numprocs`    | Notes                          |
-| --------- | ------------- | ------------------------------ |
-| < 50      | sync (inline) | No separate worker needed      |
-| 50-200    | 4             | Redis queue, Supervisor        |
-| 200-500   | 8             | Increase RAM per server        |
-| 500-1000  | 12            | 2 app servers × 6 workers each |
-| 1000-2000 | 16            | 2 app servers × 8 workers each |
+| Users     | Workers per pipeline | Notes                          |
+| --------- | -------------------- | ------------------------------ |
+| < 50      | sync (inline)        | No separate worker needed      |
+| 50–200    | 2                    | Redis queue, Supervisor        |
+| 200–500   | 4                    | Increase RAM per server        |
+| 500–1000  | 6                    | 2 app servers × 3 each         |
+| 1000–2000 | 8                    | 2 app servers × 4 each         |
 
 ---
 
 ## 5. Monitoring Thresholds & Actions
-
-Configure these alerts in Pulse or external monitoring:
 
 | Metric                  | Warning   | Critical             | Action                              |
 | ----------------------- | --------- | -------------------- | ----------------------------------- |
@@ -306,51 +312,32 @@ Configure these alerts in Pulse or external monitoring:
 | SmartLogger (built-in)    | Business audit trail                     | Free        |
 | Uptime Kuma (self-hosted) | HTTP/S uptime + SSL expiry               | Free        |
 | Netdata (self-hosted)     | System metrics (CPU, RAM, disk, network) | Free        |
-| Sentry (or GlitchTip)     | Error tracking (optional)                | Free-$26/mo |
+| Sentry (or GlitchTip)     | Error tracking (optional)                | Free–$26/mo |
 | Blackfire.io              | Profiling (optional, Tier 3+)            | €59/mo      |
 
 ---
 
-## 6. Backup Scaling
+## 6. PHP-FPM Scaling Formula
 
-As data grows, backup strategy must evolve:
+```
+Total RAM needed = (pm.max_children × memory_per_process) + OS overhead
 
-| Tier   | Database                 | Files                       | RPO | Procedure                        |
-| ------ | ------------------------ | --------------------------- | --- | -------------------------------- |
-| MVP    | SQLite file copy         | rsync to second disk        | 24h | Manual cron script               |
-| Tier 2 | mysqldump (compressed)   | rsync to S3 nightly         | 24h | Automated cron, 30-day retention |
-| Tier 3 | Percona XtraBackup (hot) | S3 versioning + replication | 1h  | Hourly incremental, daily full   |
+Where:
+  memory_per_process ≈ 40–60 MB (Internara typical)
 
-### S3 Migration for Media
-
-When migrating from local disk to S3:
-
-```bash
-# Install AWS CLI
-# Sync existing files
-aws s3 sync storage/app/public s3://internara-media/ --storage-class STANDARD_IA
-
-# Set S3 as primary disk
-# Run the migration command (if available):
-php artisan media:transfer-s3
+Examples:
+  50 children × 50 MB + 512 MB OS = 3.0 GB  (Tier 2)
+  100 children × 50 MB + 1 GB OS = 6.0 GB    (Tier 3 per server)
 ```
 
-### Database Migration Path
+### Connection Pool Size Estimate
 
-```bash
-# From SQLite to MySQL (Tier MVP → Tier 2)
-# 1. Dump SQLite
-sqlite3 database/database.sqlite .dump > dump.sql
+```
+Pool size = (peak_concurrent_users × 1.5) + buffer
 
-# 2. Convert to MySQL-compatible format
-sed -i 's/AUTOINCREMENT/AUTO_INCREMENT/g' dump.sql
-
-# 3. Import to MySQL
-mysql -u internara -p internara < dump.sql
-
-# 4. Update .env and verify
-php artisan migrate --force
-php artisan system:health
+Examples:
+  200 users × 1.5 + 50 = 350  →  pm.max_children = 50
+  1500 users × 1.5 + 100 = 2350 →  pm.max_children = 100 per server, 3 servers
 ```
 
 ---
@@ -361,7 +348,7 @@ php artisan system:health
 | ---------------------------------------------- | ---------------------------------------- | ------------------------------------- |
 | Switching to Redis without testing             | Missing `ext-redis` causes crash         | Run `php artisan system:health` first |
 | Using `sync` queue past 50 users               | HTTP requests block on media conversions | Switch to Redis at Tier 2             |
-| Forgetting `php artisan optimize`              | Routes/config not cached, 2-3× slower    | Include in deployment script          |
+| Forgetting `php artisan optimize`              | Routes/config not cached, 2–3× slower    | Include in deployment script          |
 | Not warming cache after deploy                 | First 100 requests are slow              | Add `php artisan optimize` to deploy  |
 | Using IP-based rate limiting at NAT            | 100+ students behind 1 IP get blocked    | Switch to user-based limiting         |
 | SQLite in production with >10 concurrent users | "database is locked" errors              | Switch to MySQL at Tier 2             |
@@ -384,7 +371,7 @@ php artisan system:health
 - [ ] `php artisan migrate --force` succeeds
 - [ ] `php artisan storage:link` created
 - [ ] Frontend built: `npm run build`
-- [ ] Supervisor configured (4 workers)
+- [ ] Supervisor configured (dual pipelines, numprocs=2 each)
 - [ ] System cron configured for scheduler
 - [ ] `php artisan optimize` run
 - [ ] `php artisan system:health` — all checks pass
@@ -399,11 +386,10 @@ php artisan system:health
 - [ ] Redis cluster provisioned (3+ nodes)
 - [ ] S3 bucket created and permissions verified
 - [ ] `FILESYSTEM_DISK=s3` configured in `.env`
-- [ ] Existing media migrated to S3
+- [ ] Existing media migrated via `php artisan media:migrate-to-s3`
 - [ ] 2+ app servers provisioned and load-balanced
-- [ ] Supervisor configured per app server (8-16 workers)
+- [ ] Supervisor configured per app server (dual pipelines)
 - [ ] Rate limiting switched to user-based
-- [ ] User-aware rate limiter tested with concurrent users
 - [ ] Session/cache verified on Redis cluster
 - [ ] APM (Blackfire/Sentry) configured
 - [ ] Backup strategy updated (hourly incremental)
@@ -418,7 +404,7 @@ Before scaling to a new tier, validate with load testing:
 
 ```bash
 # Install k6 (https://k6.io)
-# Create a smoke test file (e.g. tests/Load/BasicSmoke.js) and run it:
+# Create a smoke test file (e.g., tests/Load/BasicSmoke.js) and run:
 k6 run --vus 10 --duration 30s path/to/BasicSmoke.js
 
 # For Tier 3 validation:
@@ -438,37 +424,13 @@ k6 run --vus 200 --duration 5m path/to/Tier3Validation.js
 
 ---
 
-## 10. PHP-FPM Scaling Formula
-
-```
-Total RAM needed = (pm.max_children × memory_per_process) + OS overhead
-
-Where:
-  memory_per_process ≈ 40-60 MB (Internara typical)
-
-Examples:
-  50 children × 50 MB + 512 MB OS = 3.0 GB  (Tier 2)
-  100 children × 50 MB + 1 GB OS = 6.0 GB    (Tier 3 per server)
-```
-
-### Connection Pool Size Estimate
-
-```
-Pool size = (peak_concurrent_users × 1.5) + buffer
-
-Examples:
-  200 users × 1.5 + 50 = 350  →  pm.max_children = 50
-  1500 users × 1.5 + 100 = 2350 →  pm.max_children = 100 per server, 3 servers
-```
-
----
-
 ## References
 
 | Document                                                                  | Contents                                              |
 | ------------------------------------------------------------------------- | ----------------------------------------------------- |
 | [Infrastructure](infrastructure.md)                                       | Deployment tiers, target architecture, service layout |
-| [Installation](installation.md)                                           | Detailed setup for VPS, Docker, shared hosting        |
+| [Installation](installation.md)                                           | Prerequisites, command reference, troubleshooting     |
+| [Deployment](deployment.md)                                               | Server config, Supervisor, Docker, shared hosting     |
 | [Configuration](configuration.md)                                         | .env reference, all config options                    |
 | [Observability](observability.md)                                         | Pulse, logging, health checks                         |
 | [Queue](queue.md)                                                         | Queue drivers, Supervisor, job lifecycle              |

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Journals\Logbook\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Exceptions\RejectedException;
+use App\Core\Exceptions\RejectedException;
 use App\Journals\Logbook\Models\Logbook;
 use App\User\Models\User;
 use Carbon\Carbon;

@@ -1,82 +1,49 @@
-# Cross-Module Communication Discipline
+# ADR-011: Cross-Module Communication Discipline
 
-> Last updated: 2026-06-06 Changes: Fixed example module namespace from Admin to SysAdmin
-
-## Status
-
-Accepted
+> **Status:** Accepted
+> **Last updated:** 2026-06-08
 
 ## Context
 
-The Action-based MVC architecture (ADR-002) organizes code into 19 modules, each owning its complete
-vertical slice. Business processes naturally span multiple modules — a student registration involves
-the Registration, Placement, Mentee, and Internship modules. Closing a program involves the
-Internship, Assessment, Certificate, and User modules.
+The Action-based MVC architecture organizes code into 20 modules, each owning a complete vertical slice. Business processes naturally span multiple modules — student registration involves Enrollment, Program, and User modules. Closing a program involves Assessment, Certification, and Reports modules.
 
-Multiple communication patterns exist:
+Four communication patterns exist with different coupling trade-offs:
 
-1. **Direct import** — straightforward, pragmatic
+1. **Direct import** — straightforward, pragmatic, tight coupling
 2. **Events** — loose coupling, fire-and-forget
 3. **Shared contracts** — moderate coupling, interface-based
-4. **Action delegation** — explicit dependency
+4. **Action delegation** — explicit dependency, moderate coupling
 
 ## Decision
 
-Cross-module imports are **allowed**. The goal is developer velocity, not architectural purity. Use
-the simplest pattern that works for your use case. The following hierarchy serves as guidance, not
-enforcement.
+Cross-module imports are **allowed**. The goal is developer velocity, not architectural purity. Use the simplest pattern that works. The following hierarchy serves as guidance, not enforcement.
 
 ### 1. Core Contracts (Layer 3)
 
-Shared interfaces defined in `App\Core\Contracts\`. Any module can implement a Core contract, and
-any module can consume it through Laravel's service container.
-
-```
-App\Core\Contracts\SendsNotifications
-    ↑ implements                   ↑ calls via DI
-App\User\Actions\        App\Program\Actions\
-SendNotificationAction           CreateInternshipAction
-```
-
-**Currently defined:**
-
-- `LabelEnum` — human-readable labels for all enums
-- `StatusEnum` — lifecycle management (transitions, terminal states)
-- `ColorableEnum` — badge/color variants for statuses
-- `SendsNotifications` — notification dispatch abstraction
+Shared interfaces in `App\Core\Contracts\`. Any module implements them, any module consumes them through the container. Currently defined: `LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`.
 
 ### 2. Module Events (Layer 9)
 
-Events decouple side effects from core business logic. A Command Action dispatches an event;
-listeners in the same or different module react.
+Events decouple side effects from core business logic. A Command Action dispatches an event; listeners in any module react. Event classes are concrete, lightweight DTOs with public readonly properties. Events belong to the emitting module. Listeners should implement `ShouldQueue` for non-critical side effects.
 
 ```
 Internship\Actions\CreateInternshipAction
   → event(new InternshipCreated(...))
-    → Internship\Listeners\NotifyAdminsInternshipCreated (same module)
-    → SysAdmin\Listeners\InvalidateDashboardCache (different module)
+    → Internship\Listeners\NotifyAdmins (same module)
+    → SysAdmin\Listeners\InvalidateCache (different module)
 ```
-
-**Guidelines:**
-
-- Event classes are concrete, lightweight DTOs with public readonly properties
-- Events belong to the module that emits them
-- Listeners can live in any module
-- Listeners SHOULD implement `ShouldQueue` for non-critical side effects
 
 ### 3. Action Delegation
 
-A module may call another module's Action through its public `execute()` method.
+A module calls another module's Action through its public `execute()` method. Any Action type may delegate to other modules' Actions. Prefer events over delegation when side effects are fire-and-forget.
 
 ```php
 class CloseInternshipAction extends BaseAction
 {
     public function __construct(
         protected readonly FinalizeAssessmentsAction $finalizeAssessments, // Assessment module
-        protected readonly IssueCertificatesAction $issueCertificates,
-    ) {
-        // Certificate module
-    }
+        protected readonly IssueCertificatesAction $issueCertificates,    // Certification module
+    ) {}
 
     public function execute(Internship $program): void
     {
@@ -86,24 +53,20 @@ class CloseInternshipAction extends BaseAction
 }
 ```
 
-**Guidelines:**
+### 4. Direct Import
 
-- Any Action type may delegate to other modules' Actions
-- Prefer events over delegation when side effects are fire-and-forget
+Straightforward cross-module access when no decoupling is needed. This is the default choice — only reach for events or contracts when you need loose coupling.
 
 ## Consequences
 
-- **Positive**: Direct imports are allowed, removing the biggest friction point in daily
-  development.
+- **Positive**: Direct imports are allowed, removing the biggest friction point in daily development.
 - **Positive**: Events remain available for decoupling when side effects accumulate.
-- **Positive**: No architecture test maintenance burden.
-- **Negative**: Direct imports create tighter coupling between modules — a change in one module's
-  model can break another module. Mitigated by existing test coverage.
+- **Positive**: No architecture test maintenance burden for cross-module rules.
+- **Negative**: Direct imports create tighter coupling — a change in one module's model can break another module. Mitigated by test coverage and code review.
 
 ## References
 
-- `app/Core/Contracts/` — shared contracts
-- `app/Program/Events/InternshipCreated.php` — event example
-- `app/Providers/AppServiceProvider.php` — contract bindings, listener registration
+- `app/Core/Contracts/` — Shared contracts
+- `app/Program/Events/InternshipCreated.php` — Event example
+- `app/Providers/AppServiceProvider.php` — Contract bindings, listener registration
 - `docs/architecture.md` — Cross-Module Communication section
-- `docs/architecture.md` — Dependency Rules table

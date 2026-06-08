@@ -1,105 +1,50 @@
-# Assessment — Documentation Overview
+# Assessment
 
-> Last updated: 2026-06-06  
-> Changes: Removed the presentations table and examiner panels (offline school concern); simplified
-> rubric competencies/indicators into a single JSON rubric structure.
+> **Last updated:** 2026-06-08
 
-Rubric-based competency evaluation: rubrics with weighted criteria structures stored as JSON, and
-student assessment grading.
+Rubric-based competency evaluation: rubric templates with structured criteria stored as JSON, and student assessment grading with dual mentor fallback.
 
-For complete technical reference including API, models, actions, and components, see
-[assessment-reference.md](assessment-reference.md).
+## Purpose & Boundary
 
----
+Assessment defines the scoring framework for evaluating student performance during internships. Rubrics are reusable evaluation templates containing weighted competencies and indicators stored as JSON. Assessments record actual grades submitted by evaluators against rubric indicators, with support for finalization immutability and dual mentor fallback when industry supervisors are unavailable.
 
-## Key Principles
-
-- **Rubrics Define the Scoring Framework** — Each rubric represents an evaluation template. Its
-  competencies and indicators are stored directly as a structured JSON column inside the rubric
-  record, ensuring historical grades do not break if templates are edited later.
-- **Assessments are Grade Submissions** — Assessments record the student's grades against specific
-  rubric indicators.
-- **Immutable Grades** — Once finalized, an assessment record is immutable. Corrections require a
-  new assessment round to preserve grade integrity.
-
----
-
-## Context Boundary
-
-The **Assessment** module owns rubric definitions and student assessment records.
-
-- Consumes **Enrollment (`registrations`)** to identify students and placements.
-- Consumes **User (`users`)** to verify teacher and supervisor evaluators.
-- Provides graded component scores to **Reports (`reports`)** to compile the Final Student Grade
-  Card.
-
----
-
-## Module Rules
-
-- **Assessment Finalization is Irreversible:** Once finalized, scores cannot be modified.
-  Corrections require launching a new assessment round.
-- **Rubric Structure Immutability:** Rubrics can be reused. If a template is changed, existing
-  finalized assessments are unaffected because they reference the indicator keys or score snapshots.
-- **Dual Mentor Grading Fallbacks:** Supervisor evaluations are optional. If the corporate
-  supervisor is inactive, the teacher can activate:
-    - **Proxy Evaluation:** Inputs scores on behalf of the supervisor based on physical paperwork.
-    - **Weight Redistribution:** Shifts the supervisor's weight directly to the teacher and exam
-      component weights in the Reports module.
-- **Grader Authorization:** Only assigned school teachers and industry supervisors can grade
-  students. Students have read-only access to their assessments.
-
----
+Out of scope: program-level grade aggregation (Reports), evaluation feedback collection (Evaluation), task-specific grading (Assignment).
 
 ## Submodules
 
-- **Assessment:** Records the actual grades submitted by an evaluator for a student's registration
-  using a rubric. Tracks scores per indicator, overall comments, and finalization status.
-- **Rubric:** The evaluation template containing a JSON `structure` that defines the competencies,
-  indicators, weights, and maximum scores:
-    ```json
-    [
-{
-    "competency": "Work Attitude",
-    "weight": 40,
-    "indicators": [{ "id": "ind_1", "name": "Discipline", "max_score": 100, "weight": 50 }]
-        }
-    ]
-    ```
+### Rubric
+Evaluation template containing a JSON `structure` array of competencies, each with weighted indicators bearing `id`, `name`, `max_score`, and `weight`. Rubrics can be reused across multiple programs and assessment rounds. Template changes do not affect finalized assessments because scores reference indicator keys, not live template data.
 
----
+### Assessment
+Records actual grades submitted by an evaluator (school teacher or industry supervisor) for a student's registration using a specific rubric. Tracks scores per indicator, overall comments, grader identity, and finalization status. Once finalized, an assessment is immutable — corrections require a new assessment round.
 
-## Error Handling & Failure Modes
+## Key Concepts
 
-- **Modifying a Finalized Assessment:** System blocks edits and throws a `RejectedException`.
-- **Incomplete Grading Sheet:** Submitting an assessment with missing indicator marks throws a
-  `ValidationFailedException`.
-- **Unauthorized Evaluator:** An evaluator trying to grade a student who is not assigned to them
-  (via placement or registration) is blocked with a `403 Forbidden` response.
+### JSON Rubric Structure
 
----
+Competencies and indicators are stored as a structured JSON column rather than normalized tables. This prevents schema drift between rubrics, enables free-form rubric design, and ensures historical grades remain readable even if the rubric template is later modified. Example structure:
 
-## Quick References
+```json
+[{"competency": "Work Attitude", "weight": 40, "indicators": [{"id": "ind_1", "name": "Discipline", "max_score": 100, "weight": 50}]}]
+```
 
-### Actions & Business Logic
+### Assessment Finalization
 
-- **9** actions across submodules (reduced from 17 by moving competencies/indicators to JSON and
-  deleting presentations):
-    - Rubric CRUD (create, update, delete)
-    - Assessment grading (initialize, calculate, update, finalize)
+Once an assessment record is finalized, all scores become immutable. This preserves grade integrity for audit purposes. Correcting a finalized assessment requires creating a new assessment round, which preserves the original as a historical record.
 
-### Data & Persistence
+### Dual Mentor Grading Fallback
 
-- **2** models: `Assessment`, `Rubric` (stores the criteria structure JSON).
-- UUID PKs, index on foreign keys.
+Industry supervisor evaluations are optional to prevent blocking student workflows. When a supervisor is inactive:
+- **Proxy Evaluation**: The school teacher inputs scores on behalf of the supervisor based on physical paperwork or verbal report.
+- **Weight Redistribution**: The supervisor's grading weight is shifted to the teacher and exam components in the Reports module.
 
-### User Interface
+## Dependencies
 
-- **3** Livewire components:
-    - `RubricManager` — Rubric builder with JSON structure editor.
-    - `AssessmentGrading` — Evaluator grading sheet.
-    - `AssessmentView` — Student grade viewer.
+- Core (base classes)
+- Enrollment (registrations for student context)
+- User (evaluator identity)
 
----
+## Used By
 
-For complete technical reference, see [assessment-reference.md](assessment-reference.md).
+- Reports (grade card score aggregation)
+- Evaluation (grading context)

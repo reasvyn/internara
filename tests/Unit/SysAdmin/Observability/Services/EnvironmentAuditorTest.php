@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\SysAdmin\Observability\Services;
 
-use App\Data\AuditReport;
-use App\Enums\AuditStatus;
+use App\Core\Data\AuditReport;
+use App\Core\Enums\AuditStatus;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use Illuminate\Support\Facades\Config;
 

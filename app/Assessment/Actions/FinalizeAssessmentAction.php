@@ -6,7 +6,7 @@ namespace App\Assessment\Actions;
 
 use App\Assessment\Models\Assessment;
 use App\Core\Actions\BaseAction;
-use App\Exceptions\RejectedException;
+use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 
 final class FinalizeAssessmentAction extends BaseAction

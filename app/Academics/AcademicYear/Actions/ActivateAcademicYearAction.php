@@ -6,7 +6,7 @@ namespace App\Academics\AcademicYear\Actions;
 
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Actions\BaseAction;
-use App\Exceptions\RejectedException;
+use App\Core\Exceptions\RejectedException;
 
 /**
  * Activates a new academic year and deactivates the current one.

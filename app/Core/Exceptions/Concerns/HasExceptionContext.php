@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Exceptions\Concerns;
 
-use App\Support\PiiMasker;
+use App\Core\Support\PiiMasker;
 
 trait HasExceptionContext
 {

@@ -1,7 +1,6 @@
 # SysAdmin — Technical Reference
 
-> Last updated: 2026-06-06 Changes: Removed Settings submodule, actions, model, policy, Livewire
-> component, and directories following Settings module extraction
+> Last updated: 2026-06-08
 
 Detailed structural and implementation reference for the **SysAdmin** module.
 
@@ -9,132 +8,151 @@ Detailed structural and implementation reference for the **SysAdmin** module.
 
 ## Overview
 
-Handles user administration, announcements, system health monitoring, audit logging, and GDPR
-compliance
-
-### Module Statistics
-
-- **Actions**: 14 business logic operations
-- **Models**: 2 data entities
-- **Livewire Components**: 12 UI components
-- **Policies**: 1 authorization rule
-- **Submodules**: 3 module submodules
+Handles user administration, announcements, super admin recovery, system health monitoring, audit logging, Pulse observability, and GDPR compliance.
 
 ### Submodules
 
-- `Account`
-- `Announcement`
-- `Observability` (contains `GdprDeletionLog`, `Recorders`, `Services`)
-
-> **Note**: The `Settings` submodule has been extracted into its own standalone module. See
-> [settings-reference.md](settings-reference.md).
-
----
-
-## Dependency Graph
-
-This module depends on:
-
-- **Academics**
-- **Certification**
-- **Core**
-- **Enrollment**
-- **Guidance**
-- **Journals**
-- **Partners**
-- **Program**
-- **User**
+- `Account` — User account lifecycle
+- `Announcement` — System announcements
+- `SuperAdmin` — Super admin initialization and recovery
+- `Observability` — Health monitoring, Pulse, audit logs, GDPR
 
 ---
 
 ## Actions
 
-| File                                                   | Class                              | Extends      |
-| ------------------------------------------------------ | ---------------------------------- | ------------ |
-| `Actions/GetAdminDashboardStatsAction.php`             | `GetAdminDashboardStatsAction`     | `BaseAction` |
-| `Account/Actions/ArchiveStudentAccountsAction.php`     | `ArchiveStudentAccountsAction`     | `BaseAction` |
-| `Account/Actions/BatchDeleteUserAction.php`            | `BatchDeleteUserAction`            | `BaseAction` |
-| `Account/Actions/CreateUserAction.php`                 | `CreateUserAction`                 | `BaseAction` |
-| `Account/Actions/DeleteUserAction.php`                 | `DeleteUserAction`                 | `BaseAction` |
-| `Account/Actions/GenerateAccountSlipAction.php`        | `GenerateAccountSlipAction`        | `BaseAction` |
-| `Account/Actions/GetUserManagerStatsAction.php`        | `GetUserManagerStatsAction`        | `BaseAction` |
-| `Account/Actions/ReadRecoveryKeyAction.php`            | `ReadRecoveryKeyAction`            | `BaseAction` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Actions/GetAdminDashboardStatsAction.php` | `GetAdminDashboardStatsAction` | `BaseAction` |
+| `Account/Actions/CreateUserAction.php` | `CreateUserAction` | `BaseAction` |
+| `Account/Actions/UpdateUserAction.php` | `UpdateUserAction` | `BaseAction` |
+| `Account/Actions/DeleteUserAction.php` | `DeleteUserAction` | `BaseAction` |
+| `Account/Actions/BatchDeleteUserAction.php` | `BatchDeleteUserAction` | `BaseAction` |
+| `Account/Actions/SetUserStatusAction.php` | `SetUserStatusAction` | `BaseAction` |
+| `Account/Actions/ToggleUserStatusAction.php` | `ToggleUserStatusAction` | `BaseAction` |
+| `Account/Actions/GenerateAccountSlipAction.php` | `GenerateAccountSlipAction` | `BaseAction` |
+| `Account/Actions/SaveRecoveryKeyAction.php` | `SaveRecoveryKeyAction` | `BaseAction` |
+| `Account/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | `BaseAction` |
 | `Account/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseAction` |
-| `Account/Actions/SaveRecoveryKeyAction.php`            | `SaveRecoveryKeyAction`            | `BaseAction` |
-| `Account/Actions/SetUserStatusAction.php`              | `SetUserStatusAction`              | `BaseAction` |
-| `Account/Actions/ToggleUserStatusAction.php`           | `ToggleUserStatusAction`           | `BaseAction` |
-| `Account/Actions/UpdateUserAction.php`                 | `UpdateUserAction`                 | `BaseAction` |
-| `Announcement/Actions/SendAnnouncementAction.php`      | `SendAnnouncementAction`           | `BaseAction` |
+| `Account/Actions/ArchiveStudentAccountsAction.php` | `ArchiveStudentAccountsAction` | `BaseAction` |
+| `Account/Actions/GetUserManagerStatsAction.php` | `GetUserManagerStatsAction` | Read |
+| `Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | Process `BaseAction` |
+| `SuperAdmin/Actions/InitializeSuperAdminAction.php` | `InitializeSuperAdminAction` | `BaseAction` |
+| `SuperAdmin/Actions/RecoverSuperAdminAction.php` | `RecoverSuperAdminAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-| File                                                       | Class             |
-| ---------------------------------------------------------- | ----------------- |
-| `Announcement/Models/Announcement.php`                     | `Announcement`    |
-| `Observability/GdprDeletionLog/Models/GdprDeletionLog.php` | `GdprDeletionLog` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Announcement/Models/Announcement.php` | `Announcement` | `BaseModel` |
+| `Observability/GdprDeletionLog/Models/GdprDeletionLog.php` | `GdprDeletionLog` | `BaseModel` |
+
+---
+
+## Enums
+
+| File | Enum | Implements | Values |
+| ---- | ---- | ---------- | ------ |
+| `Announcement/Enums/AnnouncementStatus.php` | `AnnouncementStatus` | `LabelEnum`, `StatusEnum` | draft, scheduled, published, archived |
+
+---
+
+## Entities
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `SuperAdmin/Entities/SuperAdminIntegrityRules.php` | `SuperAdminIntegrityRules` | `BaseEntity` |
+
+---
+
+## Policies
+
+| File | Policy | Extends |
+| ---- | ------ | ------- |
+| `Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` | `BasePolicy` |
 
 ---
 
 ## Livewire Components
 
-| File                                                          | Component              | Extends             |
-| ------------------------------------------------------------- | ---------------------- | ------------------- |
-| `Account/Livewire/AdminManager.php`                           | `AdminManager`         | `BaseRecordManager` |
-| `Account/Livewire/StudentManager.php`                         | `StudentManager`       | `BaseRecordManager` |
-| `Account/Livewire/SupervisorManager.php`                      | `SupervisorManager`    | `BaseRecordManager` |
-| `Account/Livewire/TeacherManager.php`                         | `TeacherManager`       | `BaseRecordManager` |
-| `Account/Livewire/UserManager.php`                            | `UserManager`          | `BaseRecordManager` |
-| `Announcement/Livewire/AnnouncementManager.php`               | `AnnouncementManager`  | `Component`         |
-| `Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` | `GdprDeletionLogs`     | `Component`         |
-| `Observability/Livewire/AccountCloneDetector.php`             | `AccountCloneDetector` | `Component`         |
-| `Livewire/ApplicationReview.php`                              | `ApplicationReview`    | `Component`         |
-| `Observability/Livewire/AuditLogManager.php`                  | `AuditLogManager`      | `Component`         |
-| `Observability/Livewire/Pulse/RegistrationsCard.php`          | `RegistrationsCard`    | `Component`         |
-| `Observability/Livewire/Pulse/SystemCard.php`                 | `SystemCard`           | `Component`         |
-
----
+| File | Component | Extends |
+| ---- | --------- | ------- |
+| `Account/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` |
+| `Account/Livewire/StudentManager.php` | `StudentManager` | `BaseRecordManager` |
+| `Account/Livewire/TeacherManager.php` | `TeacherManager` | `BaseRecordManager` |
+| `Account/Livewire/SupervisorManager.php` | `SupervisorManager` | `BaseRecordManager` |
+| `Account/Livewire/AdminManager.php` | `AdminManager` | `BaseRecordManager` |
+| `Announcement/Livewire/AnnouncementManager.php` | `AnnouncementManager` | `Component` |
+| `Livewire/ApplicationReview.php` | `ApplicationReview` | `Component` |
+| `Observability/Livewire/AuditLogManager.php` | `AuditLogManager` | `Component` |
+| `Observability/Livewire/AccountCloneDetector.php` | `AccountCloneDetector` | `Component` |
+| `Observability/GdprDeletionLog/Livewire/GdprDeletionLogs.php` | `GdprDeletionLogs` | `Component` |
+| `Observability/Livewire/Pulse/SystemCard.php` | `SystemCard` | `Component` |
+| `Observability/Livewire/Pulse/RegistrationsCard.php` | `RegistrationsCard` | `Component` |
 
 ## Livewire Concerns
 
-| File                                                  | Concern / Trait         | Description                                                                                     |
-| ----------------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------- |
-| `Account/Livewire/Concerns/DownloadsAccountSlips.php` | `DownloadsAccountSlips` | Shared concern for downloading PDF account slips and access credentials for newly created users |
+| File | Trait | Purpose |
+| ---- | ----- | ------- |
+| `Account/Livewire/Concerns/DownloadsAccountSlips.php` | `DownloadsAccountSlips` | PDF account slip download utility |
 
----
+## Livewire Forms
 
-## Authorization Policies
+| File | Form |
+| ---- | ---- |
+| `Account/Livewire/Forms/UserForm.php` | `UserForm` |
+| `Account/Livewire/Forms/StudentForm.php` | `StudentForm` |
+| `Account/Livewire/Forms/TeacherForm.php` | `TeacherForm` |
+| `Account/Livewire/Forms/SupervisorForm.php` | `SupervisorForm` |
+| `Account/Livewire/Forms/AdminUserForm.php` | `AdminUserForm` |
+| `Announcement/Livewire/Forms/AnnouncementForm.php` | `AnnouncementForm` |
 
-| File                                                               | Policy                  |
-| ------------------------------------------------------------------ | ----------------------- |
-| `Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` |
+## Notifications
 
----
+| File | Notification |
+| ---- | ------------ |
+| `Account/Notifications/ActivationCodeNotification.php` | `ActivationCodeNotification` |
+| `Announcement/Notifications/AnnouncementNotification.php` | `AnnouncementNotification` |
+| `SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` | `SuperAdminRecoveredNotification` |
 
 ## Console Commands
 
-| Command Signature          | Class                                  | Description                                                                                          |
-| -------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `system:health`            | `SystemHealthCommand`                  | Comprehensive system health check with JSON output support.                                          |
-| `system:cleanup`           | `SystemCleanupCommand`                 | Routine maintenance: prune resets, cache tags, failed jobs, activity logs, media, and old log files. |
-| `system:cache-warm`        | `SystemCacheWarmCommand`               | Pre-warms application caches (config, views, events, settings, brand).                               |
-| `pulse:record-snapshots`   | `PulseRecordSnapshotsCommand`          | Records snapshot of Pulse metrics for historical tracking.                                           |
-| `announcements:publish`    | `PublishScheduledAnnouncementsCommand` | Publishes scheduled announcements that are due.                                                      |
-| `accounts:auto-inactivate` | `AutoInactivateAccounts`               | Automatically inactivates student accounts that have been deactivated for a period.                  |
-| `admin:create`             | `CreateAdminCommand`                   | Creates the initial superadmin account when none exists.                                             |
-| `admin:recover`            | `RecoverAdminCommand`                  | Interactive command to reset a superadmin's password or re-create it.                                |
-| `admin:recovery-show`      | `ShowRecoveryKeyCommand`               | Displays the current recovery key after confirmation.                                                |
-| `admin:recovery-path`      | `ShowRecoveryPathCommand`              | Displays the absolute file path of the recovery key.                                                 |
-| `notifications:prune`      | `PruneNotificationsCommand`            | Prunes old notification records.                                                                     |
+| Command Signature | Class | Description |
+| ----------------- | ----- | ----------- |
+| `system:health` | `SystemHealthCommand` | Comprehensive system health check with JSON output |
+| `system:cleanup` | `SystemCleanupCommand` | Routine maintenance (prune resets, cache, logs) |
+| `system:cache-warm` | `SystemCacheWarmCommand` | Pre-warms config, views, events, settings, brand caches |
+| `pulse:record-snapshots` | `PulseRecordSnapshotsCommand` | Records Pulse metric snapshots |
+| `announcements:publish` | `PublishScheduledAnnouncementsCommand` | Publishes scheduled announcements |
+| `accounts:auto-inactivate` | `AutoInactivateAccounts` | Inactivates accounts inactive 90+ days |
+| `admin:create` | `CreateAdminCommand` | Creates initial superadmin |
+| `admin:recover` | `RecoverAdminCommand` | Interactive superadmin password reset |
+| `admin:recovery-show` | `ShowRecoveryKeyCommand` | Displays current recovery key |
+| `admin:recovery-path` | `ShowRecoveryPathCommand` | Shows recovery key file path |
+| `notifications:prune` | `PruneNotificationsCommand` | Prunes old notifications |
 
-> [!NOTE]
->
-> - `admin:promote` has been removed — role mappings and promotions are handled directly by
->   functional/standard roles logic or user-management interfaces.
+## Pulse Recorders
 
-> **Note**: `setup:install` and `setup:reset-token` have been moved to the Setup module. See
-> [setup-reference.md](setup-reference.md).
+| File | Recorder | Purpose |
+| ---- | -------- | ------- |
+| `Observability/Recorders/SystemRecorder.php` | `SystemRecorder` | System health Pulse recording |
+| `Observability/Recorders/RegistrationRecorder.php` | `RegistrationRecorder` | Registration metrics Pulse recording |
+
+## Services
+
+| File | Service | Purpose |
+| ---- | ------- | ------- |
+| `Observability/Services/EnvironmentAuditor.php` | `EnvironmentAuditor` | Environment health assessment |
+| `Observability/Services/PulseGuard.php` | `PulseGuard` | Pulse monitoring guard |
+
+---
+
+## Routes
+
+File: `routes/web/sysadmin.php`
+Naming pattern: `sysadmin.{resource}.{action}`
 
 ---
 
@@ -142,55 +160,74 @@ This module depends on:
 
 ```
 app/SysAdmin/
-├──            ← Submodule roots
-│   ├── Account/
-│   │   ├── Actions/
-│   │   ├── Console/
-│   │   ├── Livewire/
-│   │   │   ├── Concerns/
-│   │   │   └── Forms/
-│   │   └── Notifications/
-│   ├── Announcement/
-│   │   ├── Actions/
-│   │   ├── Console/
-│   │   ├── Enums/
-│   │   ├── Livewire/
-│   │   │   └── Forms/
-│   │   ├── Models/
-│   │   └── Notifications/
-│   ├── Observability/
-│   │   ├── Console/
-│   │   │   └── Commands/
-│   │   ├── GdprDeletionLog/
-│   │   │   ├── Livewire/
-│   │   │   ├── Models/
-│   │   │   └── Policies/
-│   │   ├── Recorders/
-│   │   └── Services/
-├── Actions/              ← Cross-submodule actions
-├── Console/              ← Cross-submodule artisan commands
-│   └── Commands/
-│       ├── CreateAdminCommand.php          ← admin:create
-│       ├── PruneNotificationsCommand.php   ← notifications:prune
-│       ├── RecoverAdminCommand.php         ← admin:recover
-│       ├── ShowRecoveryKeyCommand.php      ← admin:recovery-show
-│       └── ShowRecoveryPathCommand.php     ← admin:recovery-path
-└── Livewire/             ← Cross-submodule UI (ApplicationReview)
+├── Actions/GetAdminDashboardStatsAction.php
+├── Account/
+│   ├── Actions/ (12 actions)
+│   ├── Console/Commands/AutoInactivateAccounts.php
+│   ├── Livewire/
+│   │   ├── Concerns/DownloadsAccountSlips.php
+│   │   ├── Forms/ (UserForm, StudentForm, TeacherForm, SupervisorForm, AdminUserForm)
+│   │   ├── UserManager.php
+│   │   ├── StudentManager.php
+│   │   ├── TeacherManager.php
+│   │   ├── SupervisorManager.php
+│   │   └── AdminManager.php
+│   └── Notifications/ActivationCodeNotification.php
+├── Announcement/
+│   ├── Actions/SendAnnouncementAction.php
+│   ├── Console/Commands/PublishScheduledAnnouncementsCommand.php
+│   ├── Enums/AnnouncementStatus.php
+│   ├── Livewire/
+│   │   ├── Forms/AnnouncementForm.php
+│   │   └── AnnouncementManager.php
+│   ├── Models/Announcement.php
+│   └── Notifications/AnnouncementNotification.php
+├── Console/Commands/
+│   ├── CreateAdminCommand.php
+│   ├── PruneNotificationsCommand.php
+│   ├── RecoverAdminCommand.php
+│   ├── ShowRecoveryKeyCommand.php
+│   └── ShowRecoveryPathCommand.php
+├── Livewire/ApplicationReview.php
+├── Observability/
+│   ├── Console/Commands/
+│   │   ├── PulseRecordSnapshotsCommand.php
+│   │   ├── SystemCacheWarmCommand.php
+│   │   ├── SystemCleanupCommand.php
+│   │   └── SystemHealthCommand.php
+│   ├── GdprDeletionLog/
+│   │   ├── Livewire/GdprDeletionLogs.php
+│   │   ├── Models/GdprDeletionLog.php
+│   │   └── Policies/GdprDeletionLogPolicy.php
+│   ├── Livewire/
+│   │   ├── Pulse/
+│   │   │   ├── RegistrationsCard.php
+│   │   │   └── SystemCard.php
+│   │   ├── AccountCloneDetector.php
+│   │   └── AuditLogManager.php
+│   ├── Recorders/
+│   │   ├── RegistrationRecorder.php
+│   │   └── SystemRecorder.php
+│   └── Services/
+│       ├── EnvironmentAuditor.php
+│       └── PulseGuard.php
+└── SuperAdmin/
+    ├── Actions/
+    │   ├── InitializeSuperAdminAction.php
+    │   └── RecoverSuperAdminAction.php
+    ├── Entities/SuperAdminIntegrityRules.php
+    └── Notifications/SuperAdminRecoveredNotification.php
 ```
 
 ---
 
 ## Architectural Integration
 
-This module integrates with the system across the following directories and resources:
+- **Submodules**: `Account`, `Announcement`, `SuperAdmin`, `Observability`
+- **Business Logic**: `app/SysAdmin/`
+- **Routing**: `routes/web/sysadmin.php`
+- **Views**: `resources/views/sysadmin/`
+- **Testing**: `tests/Feature/SysAdmin/`, `tests/Unit/SysAdmin/`
+- **Dependencies**: User, Academics, Core
 
-- **Submodules**: `Account`, `Announcement`, `Observability`
-- **Business Logic (`app/`)**: Located in
-  [app/SysAdmin/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/SysAdmin/)
-- **Routing (`routes/`)**:
-  [routes/web/sysadmin.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/sysadmin.php)
-- **Views (`views/`)**: Blade templates and layouts are in
-  [resources/views/sysadmin/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/sysadmin/)
-- **Testing (`tests/`)**: Feature `tests/Feature/SysAdmin/`, Unit `tests/Unit/SysAdmin/`
-
-_For overview and business context, see [sysadmin.md](sysadmin.md)_
+*For overview and business context, see [sysadmin.md](sysadmin.md).*

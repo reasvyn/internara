@@ -1,116 +1,45 @@
-# Shared — Documentation Overview
+# Shared
 
-> Last updated: 2026-06-07 Changes: Comprehensive test coverage for all shared components; updated
-> test counts and quick reference sections; documented new test files for Data, Enums, Livewire, and
-> Support classes
+> **Last updated:** 2026-06-08
 
-Cross-cutting utility classes, concrete exceptions, common DTOs, global UI components, and helper
-traits that are shared across all business modules but do not belong to core infrastructure or base
-classes.
+Cross-cutting concrete implementations, concrete exceptions, common DTOs, global UI components, support utilities, and helper traits used across all business modules but not belonging to Core infrastructure.
 
-For complete technical reference including API, files, and namespace details, see
-[shared-reference.md](shared-reference.md).
+## Purpose & Boundary
 
----
+Shared fills the gap between Core's abstract base classes and each module's domain-specific code. It contains concrete utilities, reusable exceptions, and global UI elements that any module may import. Shared must remain strictly domain-agnostic — it must never reference business module classes or contain business rules.
 
-## Key Principles
-
-- **Separation from Core** — The Core module only contains abstract base classes (like `BaseModel`,
-  `BaseAction`, `BasePolicy`), contracts (like `LabelEnum`, `StatusEnum`), and foundational
-  infrastructure (like `SmartLogger`, security middleware). Shared contains concrete cross-module
-  implementations, static utilities, and global UI helpers.
-- **Zero Business Domain Rules** — Shared components must not contain business logic specific to any
-  domain module (e.g., user profiles or placement quotas). They provide generic structures (like CSV
-  processing, audit data types, or rate limiting exceptions) that any module can use.
-- **Global UI Reusability** — Common, interactive UI elements (like the language switcher and theme
-  switcher) are located in the Shared directory to be easily embedded across layout templates.
-- **Centralized Registry** — All application-wide cache keys, static settings, and utility rule
-  presets (like password rules) are centralized in Shared to prevent duplication and naming
-  collisions.
-
----
-
-## Context Boundary
-
-Shared resides outside individual business modules at the root level of the `app/` directory (Layers
-5–11 in the 12-layer architecture). Every business module may import Shared classes. Shared depends
-on Core base classes, contracts, and Laravel/Spatie packages. It is divided into:
-
-- **app/Data/**: Common DTOs that represent cross-module data structures (e.g., system audit
-  results).
-- **app/Enums/**: Cross-module enums that represent system-wide values (e.g., row-processing
-  results, audit category/status).
-- **app/Exceptions/**: Concrete exceptions thrown by actions, controllers, or services.
-- **app/Livewire/**: Global, reusable UI components and Livewire traits.
-- **app/Policies/**: Reusable authorization helper traits.
-- **app/Support/**: General helper classes, static utilities, and domain-agnostic tools.
-
----
-
-## Module Rules
-
-- Shared classes must not reference or import classes from business modules (e.g., `App\User` or
-  `App\Partners`). They must remain strictly domain-agnostic.
-- Any helper utility that performs write operations must be placed in a business module or
-  implemented as a Command Action within a module; Shared only contains static helpers and stateless
-  utilities.
-- Concrete exceptions representing common validation, permission, or resource errors must extend
-  `AppException` or `ModuleException` from the Core module.
-- All global cache keys must be defined as constants in the Shared `CacheKeys` class rather than
-  hardcoded in individual modules.
-
----
+Out of scope: domain-specific logic, module enums, module models, feature-specific anything.
 
 ## Submodules
 
-Shared has no submodules. It is organized into directories directly under `app/`:
+Shared has no submodules. Organized by directory directly under `app/`:
 
-- **Data/**: `AuditCheck`, `AuditReport`
-- **Enums/**: `CsvRowResult`, `AuditCategory`, `AuditStatus`
-- **Exceptions/**: `ConflictException`, `NotFoundException`, `RateLimitException`,
-  `RejectedException`, `UnauthorizedException`, `ValidationFailedException`
-- **Livewire/**: `LangSwitcher`, `ThemeSwitcher`, and concerns (`WithSorting`,
-  `WithRecordSelection`)
-- **Policies/**: Concerns (`AuthorizesRoles`, `AuthorizesOwnership`)
-- **Support/**: `CacheKeys`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`,
-  `HasModelStatuses`, `PasswordRules`, `PiiMasker`, `Integrity`
-- **Settings/Support/** (cross-reference): `Locale`, `Theme` — localization & dynamic theming
+- **Data/** — Cross-module DTOs: `AuditCheck`, `AuditReport`. Used for health monitoring and compliance reporting.
+- **Enums/** — System-wide enums: `CsvRowResult`, `AuditCategory`, `AuditStatus`.
+- **Exceptions/** — Concrete exceptions covering common HTTP error scenarios: `ConflictException` (409), `NotFoundException` (404), `RateLimitException` (429), `RejectedException` (422), `UnauthorizedException` (401), `ValidationFailedException` (422). All extend Core's exception hierarchy.
+- **Livewire/** — Global reusable components: `LangSwitcher` (locale toggle), `ThemeSwitcher` (dark/light mode). Concerns: `WithSorting`, `WithRecordSelection`.
+- **Policies/Concerns/** — Reusable authorization traits: `AuthorizesRoles`, `AuthorizesOwnership`. Used by all module policies.
+- **Support/** — Static utilities: `CacheKeys` (centralized cache key registry), `Color` (hex manipulation), `CsvHandler` (CSV parsing/generation), `Environment` (system environment detection), `HandlesActionErrors` (error normalization), `HasModelStatuses` (status enum integration), `PasswordRules` (password policy presets), `PiiMasker` (PII redaction for logs), `Integrity` (data integrity checks).
+- **helpers.php** — Global helper functions: `setting()`, `brand()`, `app_info()`.
 
----
+## Key Concepts
 
-## Error Handling & Failure Modes
+### Separation from Core
 
-- **Circular Dependencies**: Importing business module code inside a Shared helper creates a
-  circular dependency, leading to coupling that breaks modularity. Enforced by static analysis.
-- **Cache Key Collisions**: Hardcoding cache strings directly in actions rather than using
-  `CacheKeys` constants can lead to accidental overwrites. Developers must always add new keys to
-  the central registry.
-- **Bypassing Typed Exceptions**: Throwing raw PHP exceptions (`RuntimeException`) instead of the
-  concrete exceptions in `app/Exceptions/` prevents the presentation layer from returning structured
-  API responses (like 404 or 422 JSON errors) or tracking them cleanly in logs.
+Core provides abstract contracts and base classes. Shared provides concrete implementations. The distinction prevents framework-level abstractions from being polluted with application-specific defaults.
 
----
+### Centralized Registry
 
-## Quick References
+`CacheKeys` is the single source of truth for all cache key strings. Every module must register its cache keys here rather than hardcoding them. This prevents key collisions and enables centralized cache management.
 
-### Data & Persistence
+### Global Helpers
 
-- **2** common DTOs (`AuditCheck`, `AuditReport`)
-- Centralized structures for health monitoring and compliance checks.
+The three helper functions (`setting()`, `brand()`, `app_info()`) are the primary way any code — Blade templates, Livewire components, Actions — accesses runtime configuration. They resolve through the Settings fallback chain (override → cache → config → default).
 
-### User Interface
+## Dependencies
 
-- **2** global Livewire components (`LangSwitcher`, `ThemeSwitcher`)
-- Used in the base layout to manage localization and dark/light mode toggle.
+- Core (base classes, contracts)
 
-### Support & Helpers
+## Used By
 
-- **9** static support utilities and traits managing formatting, caching, masking, CSV processing,
-  and environment configuration (`CacheKeys`, `Color`, `CsvHandler`, `Environment`,
-  `HandlesActionErrors`, `HasModelStatuses`, `PasswordRules`, `PiiMasker`, `Integrity`).
-- **1** helpers file (`helpers.php`) providing `setting()`, `brand()`, and `app_info()` global
-  functions.
-
----
-
-For complete technical reference, see [shared-reference.md](shared-reference.md).
+Every business module.

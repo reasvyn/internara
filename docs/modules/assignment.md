@@ -1,101 +1,47 @@
-# Assignment — Documentation Overview
+# Assignment
 
-> Last updated: 2026-06-04 Changes: Rewrote overview with developer-friendly content, added error
-> handling, failure modes, and CLI commands
+> **Last updated:** 2026-06-08
 
-Task management and submission tracking: assignments with deadlines, student submissions, grading,
-and revision workflow.
+Task management and submission tracking: assignments with deadlines, student submissions with draft workflow, grading with feedback, and revision loops.
 
-For complete technical reference including API, models, actions, and components, see
-[assignment-reference.md](assignment-reference.md).
+## Purpose & Boundary
 
----
+Assignment manages the full lifecycle of coursework tasks within internship programs. Teachers create assignments with descriptions, due dates, point values, and optional rubric references and file attachments. Students submit work through a draft-submit workflow with version history. Teachers grade submissions with numeric scores and written feedback, and can request revisions that restart the submission cycle.
 
-## Key Principles
-
-- **Assignments define tasks** — teachers create assignments with title, description, due dates,
-  point value, rubric references, and optional resources (file attachments).
-- **Submissions have a draft workflow** — students write and save drafts before final submission.
-  DRAFT → SUBMITTED → VERIFIED → GRADED. Teachers can request REVISION_REQUIRED which returns to
-  DRAFT.
-- **Grading includes numeric score and feedback** — teachers assign a numeric score and written
-  feedback. Rubric-referenced grading is optional.
-- **Version history is preserved** — every save and submit is versioned. Teachers and students can
-  view the submission history for audit purposes.
-
----
-
-## Context Boundary
-
-Owns assignment and submission models. Teachers manage assignments; students submit work. Program
-provides the context (which program the assignment belongs to). Assessment may reference rubric
-standards.
-
----
-
-## Module Rules
-
-- **Deadlines cannot be in the past** when creating/editing an assignment. Late submissions are
-  flagged but not blocked (configurable).
-- **Submissions follow a lifecycle**: DRAFT → SUBMITTED → VERIFIED → GRADED. SUBMITTED can return to
-  DRAFT via REVISION_REQUIRED. GRADED is terminal.
-- **Grading feedback is required** before marking a submission as GRADED. Numeric score must be
-  within the assignment's point range.
-- **Late submissions** are automatically flagged. The original deadline is recorded alongside the
-  submission timestamp.
-- **Extensions** can be granted by the teacher on a per-student basis, adjusting the deadline for
-  specific individuals.
-- **Version history**: each status transition creates a version snapshot. Immutable after creation.
-
----
+Out of scope: daily logbook entries (Journals), rubric-based competency assessment (Assessment), final grade aggregation (Reports).
 
 ## Submodules
 
-- **Assignment**: Task definition — title, description, due dates, points, rubric reference,
-  resources. Teachers CRUD. Extensions per student.
-- **Submission**: Student work — content, file uploads, status, score, feedback, grader identity.
-  Draft workflow with version history. Late flagging.
+### Assignment
+Task definition entity: title, description, due dates, point value, optional rubric reference, and resource file attachments (via Spatie Media Library). Teachers CRUD assignments scoped to a program. Per-student extensions adjust individual deadlines. Deadlines cannot be set in the past.
 
----
+### Submission
+Student work entity: content, file uploads, status lifecycle, score, grader feedback, and grader identity. Status progression: `draft` → `submitted` → `verified` → `graded`. Teachers can return `submitted` to `draft` via `revision_required`. `graded` is terminal. Late submissions are flagged but accepted (configurable to block). Version history is preserved as immutable snapshots on every status transition.
 
-## Error Handling & Failure Modes
+## Key Concepts
 
-- **Submission after deadline (no extension)**: The submission is accepted but flagged as `LATE`.
-  The teacher sees the late flag in the grading UI. Configurable: can block late submissions
-  entirely.
-- **Grading without score**: The system requires a numeric score within the assignment's point
-  range. `ValidationFailedException` if missing or out of range.
-- **Modifying a GRADED submission**: The system blocks edits with a `RejectedException`. The UI
-  shows read-only mode for graded submissions.
-- **Version history corruption**: Version snapshots are append-only and immutable. If a version
-  fails to save, the entire submission operation is rolled back.
+### Draft→Submit→Grade Workflow
 
----
+Submissions follow a controlled lifecycle:
+1. **DRAFT**: Student writes and saves incrementally. Multiple saves create version snapshots.
+2. **SUBMITTED**: Student finalizes submission. Teachers can return to DRAFT with revision request.
+3. **VERIFIED**: Teacher acknowledges receipt (optional step depending on program config).
+4. **GRADED**: Teacher assigns numeric score and written feedback. Terminal state — no further edits.
 
-## Quick References
+### Version History
 
-### Actions & Business Logic
+Every save, submit, and revision creates an immutable version snapshot capturing the full submission state, timestamp, and actor. Students and teachers can browse the version timeline for audit purposes. Version data is append-only and stored as JSON snapshots.
 
-- **7** actions across all submodules
-- Assignment CRUD, submission draft/save/submit, grading, extension management, late flagging
+### Late Submission Handling
 
-### Data & Persistence
+Submissions received after the assignment deadline are automatically flagged as `late`. The original deadline is preserved alongside the submission timestamp. The system can be configured to either accept late submissions with a flag or block them entirely. Teachers can grant per-student extensions that adjust the deadline for specific individuals.
 
-- **3** models: `Assignment`, `Submission`, `SubmissionVersion`
-- UUID PKs, `HasFactory`. Submission has unique constraint preventing duplicates per student per
-  assignment. Version history as JSON snapshots
+## Dependencies
 
-### User Interface
+- Core (base classes)
+- Program (program context for assignment scoping)
+- Enrollment (registration context for student access)
 
-- **3** Livewire components for real-time interaction
-- Assignment list/manager (teacher), submission form with draft autosave (student), grading panel
-  (teacher)
+## Used By
 
-### Authorization
-
-- **2** authorization policies
-- Teachers manage assignments and grade, students submit own work, admins oversee all
-
----
-
-For complete technical reference, see [assignment-reference.md](assignment-reference.md).
+- Reports (assignment grades feed into final grade card)

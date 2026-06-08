@@ -1,63 +1,109 @@
 ---
 name: pulse-development
+description: Apply this skill when setting up Laravel Pulse, configuring the dashboard or authorization gate, defining recorders and filters, building custom Pulse cards, or optimizing with Redis ingest. Activates when the task involves /pulse, pulse:check, pulse:work, Pulse::record(), or application monitoring.
 ---
 
 # Laravel Pulse Development Skill
 
 ## When to Activate
 
-Apply this skill when setting up Laravel Pulse, configuring the dashboard or authorization gate,
-defining recorders and filters, building custom Pulse cards, or optimizing with Redis ingest.
-Activate when the task involves `/pulse`, `pulse:check`, `pulse:work`, `Pulse::record()`, or
-application monitoring.
+Apply this skill when setting up Laravel Pulse, configuring the dashboard or authorization gate, defining recorders and filters, building custom Pulse cards, or optimizing with Redis ingest. Activates for `/pulse`, `pulse:check`, `pulse:work`, `Pulse::record()`, or application monitoring.
 
-## Core Principles
+## Key References
 
-### Dashboard Authorization
+- **Pulse config**: `config/pulse.php` — recorder configuration, storage, ingest, caching
+- **SystemCard**: `app/SysAdmin/Observability/Livewire/Pulse/SystemCard.php` — custom card (users, unread notifications)
+- **RegistrationsCard**: `app/SysAdmin/Observability/Livewire/Pulse/RegistrationsCard.php` — custom card (registration stats)
+- **Architecture**: `docs/architecture.md#layered-architecture` (Layer 9 — Communications)
 
-The `/pulse` dashboard is accessible by default only in local environments. For production access, a
-`viewPulse` Gate must be defined — typically restricted to `super_admin` role. Without this gate,
-the dashboard remains invisible in non-local environments.
+## Dashboard Authorization
 
-### Recorders
+The `/pulse` dashboard requires a `viewPulse` Gate for production access:
 
-Pulse ships with recorders for cache interactions, exceptions, queues, slow jobs, slow outgoing
-requests, slow queries, slow requests, servers, user jobs, and user requests. Each recorder has
-configurable sample rates, thresholds, and ignore patterns. Per-route thresholds allow different
-latency tolerances for different endpoints.
+```php
+Gate::define('viewPulse', function (User $user) {
+    return $user->hasRole('super_admin');
+});
+```
 
-### Data Filtering
+Without this gate, the dashboard is only visible in local environments.
 
-The `Pulse::filter()` callback can exclude entries from recording. This is useful for filtering out
-internal traffic, health checks, or bot requests. The filter runs before storage, so it reduces
-database volume as well.
+## Configured Recorders (6 active)
 
-## Custom Card Development
+Pulse is configured via `config/pulse.php` with the following recorders:
 
-Custom Pulse cards are Livewire components extending `Laravel\Pulse\Livewire\Card`. They live in
-`app/{Module}/Livewire/Pulse/`. Data is recorded using `Pulse::record()` with key-value aggregation
-(sum, count, max, min, avg). Card views are at
-`resources/views/{domain}/pulse/{card-name}.blade.php`.
+| Recorder | Config Key | Threshold | Notes |
+|----------|-----------|-----------|-------|
+| `CacheInteractions` | `PULSE_CACHE_INTERACTIONS_ENABLED` | — | Ignores vendor cache keys |
+| `Exceptions` | `PULSE_EXCEPTIONS_ENABLED` | — | Location tracking enabled |
+| `Queues` | `PULSE_QUEUES_ENABLED` | — | — |
+| `Servers` | — | — | Requires `pulse:check` daemon |
+| `SlowJobs` | `PULSE_SLOW_JOBS_ENABLED` | 1000ms | Configurable threshold |
+| `SlowOutgoingRequests` | `PULSE_SLOW_OUTGOING_REQUESTS_ENABLED` | 1000ms | Grouping patterns available |
+| `SlowQueries` | `PULSE_SLOW_QUERIES_ENABLED` | 1000ms | Max query length configurable |
+| `SlowRequests` | `PULSE_SLOW_REQUESTS_ENABLED` | 1000ms | Ignores Pulse dashboard path |
+| `UserJobs` | `PULSE_USER_JOBS_ENABLED` | — | Per-user job tracking |
+| `UserRequests` | `PULSE_USER_REQUESTS_ENABLED` | — | Per-user request tracking |
 
-Custom recorders are plain classes with a `$listen` array of events. They call `Pulse::record()` in
-their `record()` method and are registered in `config/pulse.php`.
+Recorders can be toggled independently via environment variables. Sample rates and thresholds are also configurable per environment.
 
-### Dashboard Blade
+## Custom Cards
 
-The Pulse dashboard view can be overridden at `resources/views/vendor/pulse/dashboard.blade.php` to
-arrange cards in a grid layout using `cols` and `rows` attributes.
+Custom Pulse cards extend `Laravel\Pulse\Livewire\Card` and live in `app/{Module}/Livewire/Pulse/`:
+
+```php
+#[Lazy]
+class SystemCard extends Card
+{
+    public function render(): View
+    {
+        return view('sysadmin.observability.pulse.system-card', [
+            'users' => User::count(),
+            'unreadNotifications' => Notification::where('is_read', false)->count(),
+        ]);
+    }
+}
+```
+
+Card views live at `resources/views/{module}/pulse/{card-name}.blade.php`. Custom recorders use `Pulse::record()` with key-value aggregation and are registered in `config/pulse.php`.
 
 ## Operational Requirements
 
-`pulse:check` must run as a persistent daemon (via Supervisor) for the Servers card to work. If
-using Redis ingest (`PULSE_INGEST_DRIVER=redis`), `pulse:work` must also run to drain the Redis
-stream. `pulse:restart` triggers graceful restarts on deploy. All require a working cache driver.
+| Command | Purpose | Requires |
+|---------|---------|----------|
+| `pulse:check` | Daemon for Servers card | Supervisor config |
+| `pulse:work` | Drain Redis stream | `PULSE_INGEST_DRIVER=redis` |
+| `pulse:restart` | Graceful restart on deploy | — |
+| `pulse:clear` | Clear stored data | — |
 
-## Verification Before Finalizing
+## Data Filtering
 
-- Has the Pulse migration run?
-- Is a `viewPulse` Gate defined for production?
-- Is `pulse:check` configured as a Supervisor daemon?
-- Is `pulse:work` running if Redis ingest is configured?
-- Are custom cards registered and visible on the dashboard?
-- Are recorders configured with appropriate thresholds and sample rates?
+```php
+Pulse::filter(function ($entry) {
+    return !str_contains($entry->request?->url() ?? '', '/health-check');
+});
+```
+
+Filters reduce both storage volume and dashboard noise. Apply in `AppServiceProvider::boot()`.
+
+## Custom Dashboard View
+
+Override `resources/views/vendor/pulse/dashboard.blade.php` to arrange cards:
+
+```blade
+<x-pulse>
+    <livewire:pulse.servers cols="full" />
+    <livewire:sysadmin.observability.system-card cols="2" />
+    <livewire:sysadmin.observability.registrations-card cols="2" />
+    <livewire:pulse.slow-queries cols="4" />
+</x-pulse>
+```
+
+## Verification
+
+- Pulse migration has run?
+- `viewPulse` Gate defined for production?
+- `pulse:check` configured as Supervisor daemon?
+- `pulse:work` running if Redis ingest configured?
+- Custom cards registered and visible on dashboard?
+- Recorders configured with appropriate thresholds and sample rates?

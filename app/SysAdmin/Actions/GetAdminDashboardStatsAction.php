@@ -8,6 +8,7 @@ use App\Academics\Department\Models\Department;
 use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Actions\BaseAction;
+use App\Core\Support\CacheKeys;
 use App\Enrollment\Models\Placement;
 use App\Enrollment\Models\Registration;
 use App\Guidance\Mentor\Models\Mentor;
@@ -16,7 +17,6 @@ use App\Journals\Logbook\Models\Logbook;
 use App\Partners\Company\Models\Company;
 use App\Partners\Partnership\Models\Partnership;
 use App\Program\Internship\Models\Internship;
-use App\Support\CacheKeys;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Cache;
 

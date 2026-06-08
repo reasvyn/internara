@@ -1,6 +1,6 @@
 # Incident — Technical Reference
 
-> Last updated: 2026-06-03 Changes: Converted Status metadata to Changes format
+> Last updated: 2026-06-08
 
 Detailed structural and implementation reference for the **Incident** module.
 
@@ -8,64 +8,69 @@ Detailed structural and implementation reference for the **Incident** module.
 
 ## Overview
 
-Tracks incident reports and workplace concerns requiring intervention
-
-### Module Statistics
-
-- **Actions**: 3 business logic operations
-- **Models**: 1 data entities
-- **Livewire Components**: 2 UI components
-- **Policies**: 1 authorization rules
-- **Submodules**: 1 module submodules
+Manages workplace incident reports, severity classification, and resolution tracking.
 
 ### Submodules
 
-- `IncidentReport`
-
----
-
-## Dependency Graph
-
-This module depends on:
-
-- **Core**
-- **Enrollment**
-- **User**
+- `IncidentReport` — Incident documentation and management
 
 ---
 
 ## Actions
 
-| File                                               | Class                   | Extends      |
-| -------------------------------------------------- | ----------------------- | ------------ |
-| `IncidentReport/Actions/ReportIncidentAction.php`  | `ReportIncidentAction`  | `BaseAction` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `IncidentReport/Actions/ReportIncidentAction.php` | `ReportIncidentAction` | `BaseAction` |
+| `IncidentReport/Actions/UpdateIncidentAction.php` | `UpdateIncidentAction` | `BaseAction` |
 | `IncidentReport/Actions/ResolveIncidentAction.php` | `ResolveIncidentAction` | `BaseAction` |
-| `IncidentReport/Actions/UpdateIncidentAction.php`  | `UpdateIncidentAction`  | `BaseAction` |
 
 ---
 
 ## Models
 
-| File                                       | Class            |
-| ------------------------------------------ | ---------------- |
-| `IncidentReport/Models/IncidentReport.php` | `IncidentReport` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `IncidentReport/Models/IncidentReport.php` | `IncidentReport` | `BaseModel` |
 
 ---
+
+## Enums
+
+| File | Enum | Implements | Values |
+| ---- | ---- | ---------- | ------ |
+| `IncidentReport/Enums/IncidentSeverity.php` | `IncidentSeverity` | `LabelEnum` | low, medium, high, critical |
+| `IncidentReport/Enums/IncidentStatus.php` | `IncidentStatus` | `LabelEnum`, `StatusEnum` | reported, investigating, resolved, closed |
+| `IncidentReport/Enums/IncidentType.php` | `IncidentType` | `LabelEnum` | accident, harassment, safety, misconduct, other |
+
+---
+
+## Policies
+
+| File | Policy | Extends |
+| ---- | ------ | ------- |
+| `IncidentReport/Policies/IncidentReportPolicy.php` | `IncidentReportPolicy` | `BasePolicy` |
+
+---
+
+## Notifications
+
+| File | Notification |
+| ---- | ------------ |
+| `IncidentReport/Notifications/IncidentReportedNotification.php` | `IncidentReportedNotification` |
 
 ## Livewire Components
 
-| File                                          | Component         | Extends             |
-| --------------------------------------------- | ----------------- | ------------------- |
-| `IncidentReport/Livewire/IncidentForm.php`    | `IncidentForm`    | `Component`         |
+| File | Component | Extends |
+| ---- | --------- | ------- |
 | `IncidentReport/Livewire/IncidentManager.php` | `IncidentManager` | `BaseRecordManager` |
+| `IncidentReport/Livewire/IncidentForm.php` | `IncidentForm` | `Component` |
 
 ---
 
-## Authorization Policies
+## Routes
 
-| File                                               | Policy                 |
-| -------------------------------------------------- | ---------------------- |
-| `IncidentReport/Policies/IncidentReportPolicy.php` | `IncidentReportPolicy` |
+File: `routes/web/incident.php`
+Naming pattern: `incident.{resource}.{action}`
 
 ---
 
@@ -73,32 +78,32 @@ This module depends on:
 
 ```
 app/Incident/
-├──            ← Submodule roots
-│   └── {SubModule}/
-│       ├── Actions/
-│       ├── Models/
-│       ├── Policies/
-│       └── Livewire/
-├── Http/
-├── Livewire/
-├── Types/
-├── Services/
-└── Support/
+└── IncidentReport/
+    ├── Actions/
+    │   ├── ReportIncidentAction.php
+    │   ├── ResolveIncidentAction.php
+    │   └── UpdateIncidentAction.php
+    ├── Enums/
+    │   ├── IncidentSeverity.php
+    │   ├── IncidentStatus.php
+    │   └── IncidentType.php
+    ├── Livewire/
+    │   ├── IncidentForm.php
+    │   └── IncidentManager.php
+    ├── Models/IncidentReport.php
+    ├── Notifications/IncidentReportedNotification.php
+    └── Policies/IncidentReportPolicy.php
 ```
 
 ---
 
 ## Architectural Integration
 
-This module integrates with the system across the following directories and resources:
-
 - **Submodules**: `IncidentReport`
-- **Business Logic (`app/`)**: Located in
-  [app/Incident/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Incident/)
-- **Routing (`routes/`)**:
-  [routes/web/incident.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/incident.php)
-- **Views (`views/`)**: Blade templates and layouts are in
-  [resources/views/incident/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/incident/)
-- **Testing (`tests/`)**: Feature `tests/Feature/Incident/`, Unit `tests/Unit/Incident/`
+- **Business Logic**: `app/Incident/`
+- **Routing**: `routes/web/incident.php`
+- **Views**: `resources/views/incident/`
+- **Testing**: `tests/Feature/Incident/`, `tests/Unit/Incident/`
+- **Dependencies**: User, Program, Core
 
-_For overview and business context, see [incident.md](incident.md)_
+*For overview and business context, see [incident.md](incident.md).*

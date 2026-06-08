@@ -1,84 +1,51 @@
-# Auth — Documentation Overview
+# Auth
 
-> Last updated: 2026-06-06 Changes: refactor: extract Auth from User module into standalone Auth
-> module
+> **Last updated:** 2026-06-08
 
-Authentication, authorization, account lifecycle, and recovery.
+Authentication, authorization (RBAC), account lifecycle, login throttling, password management, account activation, and recovery.
 
-For complete technical reference including API, models, actions, and components, see
-[auth-reference.md](auth-reference.md).
+## Purpose & Boundary
 
----
+Auth owns all authentication and authorization concerns. It manages session-based login with rate limiting, role-based access control via Spatie, account activation via email tokens, password policies and reset, and account recovery via single-use recovery codes. It enforces super admin integrity constraints (immutable identity, non-deletable).
 
-## Key Principles
-
-- **Session-based auth** — Laravel's session driver with rate-limited login (5 attempts per 60s). No
-  API tokens or JWT.
-- **RBAC via Spatie** — Flat role hierarchy with `spatie/laravel-permission`. 5 system roles:
-  superadmin, admin, teacher, student, supervisor.
-- **Super Admin is immutable** — Name always "Administrator", username always "superadmin". Cannot
-  be deleted, locked, or modified.
-- **Accounts activate via token** — New users receive an activation code to set their initial
-  password.
-- **Recovery codes for lockout** — 10 single-use, cryptographically random codes. Admin generates,
-  user redeems offline.
-
----
-
-## Context Boundary
-
-Auth owns all authentication-related concerns: login, password management, account activation,
-recovery, RBAC, and super admin integrity. It depends on User for the `User` model but manages all
-auth-specific data (activation tokens, recovery codes) within its own models.
-
----
-
-## Module Rules
-
-- **Login throttling**: 5 attempts per 60s per IP+identifier. Auto-lock after 10 failures.
-- **Password reset**: 60-minute token expiry, single-use. Rate limited to 3 req/3600s.
-- **Account recovery**: 3 attempts per 300s per username+IP.
-- **Recovery codes**: Bcrypt hashed in storage, displayed once on generation, single-use.
-- **Super admin**: Exactly one instance, immutable name/username, cannot be deleted.
-- **Role mapping**: `super_admin` → `superadmin` transparently via `User` model overrides.
-
----
+Out of scope: user profiles (User), account CRUD (SysAdmin), system configuration (Settings).
 
 ## Submodules
 
-- **Permissions**: RBAC — `Role` enum, `CheckRoleMiddleware`, `UserPolicy`, `RoleRequest`.
-- **SuperAdmin**: Integrity constraints — enforces single-instance, immutable name/username,
-  prohibits deletion.
-- **Login**: Email/username authentication with 4-step sequential validation.
-- **ActivationToken**: Email verification tokens for new accounts.
-- **AccountRecovery**: Recovery slip generation (admin), recovery code redemption, self-service
-  unlock + password reset.
-- **Password**: Hashing, validation, reset tokens (60 min expiry, single-use).
+### Permissions
+RBAC implementation using `spatie/laravel-permission`. Defines the `Role` string enum with 5 flat roles: `super_admin`, `admin`, `teacher`, `student`, `supervisor`. Provides `CheckRoleMiddleware` for route-level role enforcement and `UserPolicy` for model-level authorization. The `User` model transparently maps `super_admin` to Spatie's `superadmin` guard name.
 
----
+### SuperAdmin
+Integrity constraints enforcing exactly one super admin instance. Name is locked to `Administrator` (from config), username to `superadmin`. The account cannot be deleted, renamed, or duplicated. Status is permanently `PROTECTED`.
 
-## Quick References
+### Login
+Email/username authentication with a 4-step sequential validation pipeline: identifier format, existence, account status, password hash. Rate-limited to 5 attempts per 60 seconds per IP+identifier combination. Auto-lock after 10 failures.
 
-### Actions & Business Logic
+### ActivationToken
+Email-based verification for newly provisioned accounts. Tokens are single-use with configurable expiry. On successful activation, the user sets their initial password and the account transitions from `provisioned` to `activated`.
 
-- **10** actions across all submodules
-- Login validation, password reset, account recovery, super admin management
+### AccountRecovery
+Self-service unlock and password reset mechanism. Admin generates 10 single-use, cryptographically random recovery codes (Bcrypt hashed in storage, displayed once). Users redeem codes to unlock accounts and reset passwords without email dependency. Rate-limited to 3 attempts per 300 seconds per username+IP.
 
-### Data & Persistence
+### Password
+Password hashing and validation against configurable policy (minimum length, complexity rules). Reset tokens with 60-minute expiry, single-use. Rate-limited to 3 requests per 3600 seconds.
 
-- **2** models: `ActivationToken`, `AccountRecoveryCode`
-- UUID primary keys, `HasFactory` on all models
+## Key Concepts
 
-### User Interface
+### Flat Role Hierarchy
 
-- **8** Livewire components
-- Login page, activation form, password forms, recovery slip UI
+Unlike hierarchical RBAC, Internara uses 5 flat roles with explicit permission checks. Super admin has unrestricted access via `BasePolicy::before()`. All other roles are checked by policy methods and middleware. Composite roles (mentor, mentee) are derived from group membership, not assigned via Spatie.
 
-### Authorization
+### Super Admin Immutability
 
-- **1** policy: `UserPolicy`
-- Role-based middleware via `CheckRoleMiddleware`
+The super admin is a system-level invariant. It cannot be deleted, have its name/username changed, or have its `PROTECTED` status altered. Enforcement happens at both the Action layer (`SetupSuperAdminAction` only accepts email+password) and the Model layer (blocking `deleting` events).
 
----
+## Dependencies
 
-For complete technical reference, see [auth-reference.md](auth-reference.md).
+- Core (base classes, contracts)
+- User (User model for authentication identity)
+
+## Used By
+
+- SysAdmin (account lifecycle management)
+- Every module that requires authorization checks

@@ -1,79 +1,46 @@
-# Setup — Documentation Overview
+# Setup
 
-> Last updated: 2026-06-07
-> Changes: Comprehensive refactoring: SetupEntity TYPE_MAP for type resolution, Wizard STEP_KEYS
-> constant, extracted `handleUrlOption()` & `validateCurrentStep()`, removed redundant null check in
-> ValidateSetupTokenAction, mapped SetupSchoolAction Settings::set, removed dead config keys, added
-> SetupInternshipAction + SetupEntityUpdateType tests. SystemProvisionerTest/InstallSystemActionTest
-> already existed.
+> **Last updated:** 2026-06-08
 
-Handles one-time technical installation, system environment auditing, initial database seed
-provisioning (Roles, Academic Years), and the setup token lifecycle.
+One-time system installation wizard, environment auditing, initial database provisioning (roles, academic years, super admin), and setup token lifecycle management.
 
-For complete technical reference including API, models, actions, and components, see
-[setup-reference.md](setup-reference.md).
+## Purpose & Boundary
 
----
+Setup handles the system's first boot experience. It runs exactly once per installation lifetime, performing environment readiness checks, seeding foundational database records, collecting school and admin information through a multi-step wizard, and finalizing the system for production use. After finalization, all setup routes and actions are permanently disabled.
 
-## Key Principles
+Out of scope: runtime system administration (SysAdmin), ongoing configuration (Settings), daily operations.
 
-- **Single Execution**: The setup wizard and installation command run exactly once per system
-  lifetime.
-- **Secure Tokenization**: Exposes a cryptographically secured setup token block to restrict setup
-  access before system finalization.
-- **Transactional Seeding**: Seeds the database with critical initial records (Academic Years,
-  Roles, Admin placeholders) in single atomic transactions.
-- **Modularity & Decoupling**: Fully isolated from runtime system administration to prevent security
-  bypasses.
+## Submodules
 
----
+### Installer
+Core installation orchestration via `php artisan setup:install`. Provisions the database schema (migrations), seeds base roles (`super_admin`, `admin`, `teacher`, `student`, `supervisor` via Spatie), creates the initial academic year, generates a cryptographically secure setup token, and marks the system as installed.
 
-## Context Boundary
+### Wizard
+Multi-step browser-based setup wizard with steps: environment audit (PHP version, database connectivity, file permissions, extension checks) → school profile (name, NPSN, address) → department creation → super admin generation (email + password) → finalization. Each step validates before proceeding.
 
-Provides one-time system initialization. Works with Core for base logging/exception handling, and
-seeds base roles and structural records consumed by other modules.
+### SetupToken
+Single-use, time-limited (default 60 minutes), cryptographically random token stored encrypted in the database. Required to access any setup route. Can be regenerated via `php artisan setup:reset-token` only if installation is not yet finalized.
 
----
+### SystemProvisioner
+Handles the atomic seeding of initial records: Spatie roles, default academic year, and admin user placeholder. All seeding occurs within a single database transaction. Failure rolls back the entire provisioning.
 
-## Module Rules
+## Key Concepts
 
-- **Execution Prevention**: Running setup actions or installer console commands after the system is
-  flagged as `installed` is strictly prohibited.
-- **Setup Token Lifecycle**:
-    - Tokens expire after a configurable timeframe (default 60 minutes).
-    - Tokens are stored encrypted in the database.
-    - Resetting tokens is allowed only if installation is not yet finalized.
-- **Finalization Window**: Finalizing setup requires a valid token and must occur within a brief
-  time window of environment setup.
+### Single Execution Guarantee
 
----
+The `is_installed` flag in settings permanently disables all setup actions and routes once finalization completes. Running `php artisan setup:install` on an installed system throws a `ModuleException`. This is the primary security boundary between setup and runtime.
 
-## Technical Elements
+### Setup Token Security
 
-- **Wizard**: A multi-step setup wizard facilitating environment audit, school creation, department
-  creation, admin generation, and finalization.
-- **Environment Auditor**: Performs system readiness checks (database, PHP version, file
-  permissions).
-- **System Provisioner**: Seeds default roles and configurations.
+The setup token follows a strict lifecycle: generated encrypted → stored in database → one-time redeem during finalization → invalidated on completion. The token file (`.setup-token`) is created during CLI installation for headless environments and must be secured appropriately.
 
----
+## Dependencies
 
-## CLI Commands
+- Core (base classes, SmartLogger)
+- Auth (role seeding, super admin creation)
+- Academics (initial academic year)
+- Settings (school profile storage as `school.*` keys)
 
-| Command                         | Purpose                                                                               |
-| ------------------------------- | ------------------------------------------------------------------------------------- |
-| `php artisan setup:install`     | Provisions the system, seeds base roles and AcademicYear, and generates a setup token |
-| `php artisan setup:reset-token` | Generates a new setup token (usable only if installation is incomplete)               |
+## Used By
 
----
-
-## Error Handling & Failure Modes
-
-- **Setup re-execution**: Any action execution when `is_installed` is true throws a
-  `ModuleException`.
-- **Invalid token**: Attempts to finalize setup or proceed without a valid token throw a
-  `ModuleException` or redirect to token entry.
-
----
-
-For complete technical reference, see [setup-reference.md](setup-reference.md).
+- SysAdmin (recovery commands reference setup token)

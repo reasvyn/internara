@@ -1,6 +1,6 @@
 # Evaluation — Technical Reference
 
-> Last updated: 2026-06-03 Changes: Converted Status metadata to Changes format
+> Last updated: 2026-06-08
 
 Detailed structural and implementation reference for the **Evaluation** module.
 
@@ -8,59 +8,69 @@ Detailed structural and implementation reference for the **Evaluation** module.
 
 ## Overview
 
-Manages student evaluations of mentors, companies, and program quality
+Manages supervisor and teacher evaluations of students, mentor evaluations, and feedback collection.
 
-### Module Statistics
+### Submodules
 
-- **Actions**: 3 business logic operations
-- **Models**: 1 data entity
-- **Livewire Components**: 1 UI component
-- **Policies**: 1 authorization rule
-- **Submodules**: None (flat)
-
----
-
-## Dependency Graph
-
-This module depends on:
-
-- **Core**
-- **Enrollment**
-- **User**
+None — all components are directly under `app/Evaluation/`.
 
 ---
 
 ## Actions
 
-| File                                 | Class                    | Extends      |
-| ------------------------------------ | ------------------------ | ------------ |
-| `Actions/DeleteEvaluationAction.php` | `DeleteEvaluationAction` | `BaseAction` |
-| `Actions/EvaluateMentorAction.php`   | `EvaluateMentorAction`   | `BaseAction` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
 | `Actions/SubmitEvaluationAction.php` | `SubmitEvaluationAction` | `BaseAction` |
+| `Actions/EvaluateMentorAction.php` | `EvaluateMentorAction` | `BaseAction` |
+| `Actions/DeleteEvaluationAction.php` | `DeleteEvaluationAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-| File                    | Class        |
-| ----------------------- | ------------ |
-| `Models/Evaluation.php` | `Evaluation` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Models/Evaluation.php` | `Evaluation` | `BaseModel` |
+
+---
+
+## Enums
+
+| File | Enum | Implements | Values |
+| ---- | ---- | ---------- | ------ |
+| `Enums/EvaluationCategory.php` | `EvaluationCategory` | `LabelEnum` | performance, attitude, skill, attendance |
+| `Enums/EvaluatorRole.php` | `EvaluatorRole` | `LabelEnum` | supervisor, teacher, mentor |
+
+---
+
+## Entities
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Entities/EvaluationResult.php` | `EvaluationResult` | `BaseEntity` |
+
+---
+
+## Policies
+
+| File | Policy | Extends |
+| ---- | ------ | ------- |
+| `Policies/EvaluationPolicy.php` | `EvaluationPolicy` | `BasePolicy` |
 
 ---
 
 ## Livewire Components
 
-| File                                   | Component                 | Extends     |
-| -------------------------------------- | ------------------------- | ----------- |
+| File | Component | Extends |
+| ---- | --------- | ------- |
 | `Livewire/MentorEvaluationManager.php` | `MentorEvaluationManager` | `Component` |
 
 ---
 
-## Authorization Policies
+## Routes
 
-| File                            | Policy             |
-| ------------------------------- | ------------------ |
-| `Policies/EvaluationPolicy.php` | `EvaluationPolicy` |
+File: `routes/web/evaluation.php`
+Naming pattern: `evaluation.{resource}.{action}`
 
 ---
 
@@ -69,26 +79,28 @@ This module depends on:
 ```
 app/Evaluation/
 ├── Actions/
-├── Entities/
+│   ├── DeleteEvaluationAction.php
+│   ├── EvaluateMentorAction.php
+│   └── SubmitEvaluationAction.php
+├── Entities/EvaluationResult.php
 ├── Enums/
-├── Livewire/
-├── Models/
-└── Policies/
+│   ├── EvaluationCategory.php
+│   └── EvaluatorRole.php
+├── Livewire/MentorEvaluationManager.php
+├── Models/Evaluation.php
+└── Policies/EvaluationPolicy.php
 ```
 
 ---
 
 ## Architectural Integration
 
-This module integrates with the system across the following directories and resources:
+- **Submodules**: None
+- **Business Logic**: `app/Evaluation/`
+- **Routing**: `routes/web/evaluation.php`
+- **Views**: `resources/views/evaluation/`
+- **Testing**: `tests/Feature/Evaluation/`, `tests/Unit/Evaluation/`
+- **Dependencies**: User, Assessment, Program, Core
+- **Used By**: Certification
 
-- **Submodules**: None (flat)
-- **Business Logic (`app/`)**: Located in
-  [app/Evaluation/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Evaluation/)
-- **Routing (`routes/`)**:
-  [routes/web/evaluation.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/evaluation.php)
-- **Views (`views/`)**: Blade templates and layouts are in
-  [resources/views/evaluation/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/evaluation/)
-- **Testing (`tests/`)**: Feature `tests/Feature/Evaluation/`, Unit `tests/Unit/Evaluation/`
-
-_For overview and business context, see [evaluation.md](evaluation.md)_
+*For overview and business context, see [evaluation.md](evaluation.md).*

@@ -7,7 +7,7 @@ namespace App\Assessment\Actions;
 use App\Assessment\Models\Assessment;
 use App\Assessment\Rubric\Models\Indicator;
 use App\Core\Actions\BaseAction;
-use App\Exceptions\RejectedException;
+use App\Core\Exceptions\RejectedException;
 use App\Guidance\Mentor\Models\Mentor;
 use App\User\Models\User;
 

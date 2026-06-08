@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\User\Profile\Actions;
 
-use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
 use App\Core\Support\SmartLogger;
-use App\Exceptions\RejectedException;
+use App\SysAdmin\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Models\User;
 use App\User\Profile\Models\Profile;
 use Illuminate\Http\UploadedFile;

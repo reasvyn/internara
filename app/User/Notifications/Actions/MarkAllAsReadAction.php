@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Notifications\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Support\CacheKeys;
+use App\Core\Support\CacheKeys;
 use App\User\Notifications\Models\Notification;
 use Illuminate\Support\Facades\Cache;
 

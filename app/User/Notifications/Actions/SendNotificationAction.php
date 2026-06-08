@@ -6,7 +6,7 @@ namespace App\User\Notifications\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
-use App\Support\CacheKeys;
+use App\Core\Support\CacheKeys;
 use App\User\Models\User;
 use App\User\Notifications\Models\Notification;
 use Illuminate\Support\Facades\Cache;

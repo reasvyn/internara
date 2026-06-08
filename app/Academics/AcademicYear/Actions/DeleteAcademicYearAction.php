@@ -6,7 +6,7 @@ namespace App\Academics\AcademicYear\Actions;
 
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Actions\BaseAction;
-use App\Exceptions\RejectedException;
+use App\Core\Exceptions\RejectedException;
 
 /**
  * Deletes an academic year.

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Enrollment\Actions;
 
 use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Entities\PlacementCapacity;
 use App\Enrollment\Models\Placement;
 use App\Enrollment\Models\PlacementChangeRequest;
 use App\Enrollment\Models\Registration;
-use App\Exceptions\RejectedException;
 
 final class ApprovePlacementChangeAction extends BaseAction
 {

@@ -1,76 +1,72 @@
 # Queue
 
-> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
-> conventions overhaul
+> Last updated: 2026-06-08
 
 ## Purpose
 
-The queue layer enables asynchronous job processing. For the current deployment model (Tier 1,
-shared hosting / single-server), all jobs run **synchronously** via `QUEUE_CONNECTION=sync` — no
-worker process needed.
-
-For future enterprise-scale deployments (Tier 2+), a queue worker can be introduced to move heavy
-operations (email, media conversions, certificate generation) off the HTTP request cycle and into
-background processing.
+The queue layer enables asynchronous job processing. In Tier 1 (shared hosting), all jobs run **synchronously** via `QUEUE_CONNECTION=sync` — no worker process needed. In Tier 2+, Supervisor manages dual pipeline workers to move heavy operations off the HTTP request cycle.
 
 ---
 
-## Current Default: Sync (No Worker Required)
+## Driver Strategy by Tier
+
+| Aspect          | Tier 1 (Entry)      | Tier 2+ (Standard / HA)      |
+| --------------- | ------------------- | ---------------------------- |
+| **Driver**      | `sync`              | `redis`                      |
+| **Worker**      | None (inline)       | Supervisor-managed           |
+| **Pipelines**   | N/A                 | `default` + `documents`      |
+| **Retries**     | N/A (inline)        | 3 attempts with backoff      |
+| **Failed jobs** | N/A                 | `failed_jobs` table          |
+| **Throughput**  | N/A                 | ~1,000+ jobs/min             |
 
 ```env
+# Tier 1 (default) — no worker needed
 QUEUE_CONNECTION=sync
-```
 
-In sync mode, every job executes immediately during the HTTP request. The user waits for the result,
-but no background process is needed. This is the correct default for the target deployment — schools
-typically have fewer than 50 concurrent users, and the added complexity of a queue worker is
-unnecessary.
-
-### What Still Works in Sync Mode
-
-| Operation                  | Behavior                          | User Experience                 |
-| -------------------------- | --------------------------------- | ------------------------------- |
-| Email delivery             | Sent during request (~1-3s)       | Slight delay on form submission |
-| Media conversions          | Processed during upload (~0.5-2s) | Slight delay on file upload     |
-| Certificate PDF generation | Generated during request (~2-5s)  | Slight delay on download        |
-| Notification dispatch      | Stored immediately                | Instant (database write)        |
-
----
-
-## Future Enterprise: Worker-Based Queue (Tier 2+)
-
-When the school grows beyond ~50 concurrent users, or when the synchronous delays become noticeable,
-switch to a worker-based queue:
-
-```env
+# Tier 2+
 QUEUE_CONNECTION=redis
 REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 ```
 
-### What a Worker Enables
+---
 
-| Before (sync)                         | After (async worker)                                       |
-| ------------------------------------- | ---------------------------------------------------------- |
-| HTTP response waits for email to send | Email sent in background, instant response                 |
-| Image conversion blocks page load     | Conversion processed by worker, upload returns immediately |
-| Certificate generation takes 2-5s     | Generation queued, user notified when ready                |
-| No retry on failure                   | Automatic retry with exponential backoff (3 attempts)      |
+## Dual Pipeline Architecture
 
-### Driver Strategy
+Two separate queue pipelines prevent document compilation from blocking notification delivery:
 
-| Aspect          | Current (Tier 1)       | Future Enterprise (Tier 2+)        |
-| --------------- | ---------------------- | ---------------------------------- |
-| **Driver**      | `sync`                 | `redis`                            |
-| **Worker**      | None                   | Supervisor-managed                 |
-| **Retries**     | N/A (inline, no retry) | 3 attempts with backoff            |
-| **Failed jobs** | N/A                    | `failed_jobs` table for inspection |
-| **Throughput**  | N/A                    | ~1,000+ jobs/min                   |
+```mermaid
+flowchart LR
+    subgraph Application
+        A[HTTP Request] -->|Dispatch| B{Queue Driver}
+    end
 
-### Supervisor Configuration (Future)
+    B -->|sync| C[Inline Execution]
 
-When deploying with a queue worker, Supervisor manages separate process groups for general
-notifications and document compilation:
+    B -->|redis| D[default Queue]
+    B -->|redis| E[documents Queue]
+
+    subgraph Supervisor Workers
+        D --> F[default-worker<br/>numprocs=2]
+        E --> G[documents-worker<br/>numprocs=2]
+    end
+
+    F --> H[Emails, Alerts,<br/>Notifications, Media]
+    G --> I[PDF Certificates,<br/>Reports]
+```
+
+### Pipeline Responsibilities
+
+| Queue        | Jobs Processed                                  | Priority |
+| ------------ | ----------------------------------------------- | -------- |
+| `default`    | Email delivery, in-app notifications, alerts    | High     |
+| `default`    | Media conversions (image thumbnails, WebP)      | Medium   |
+| `documents`  | Certificate PDF generation                      | Low      |
+| `documents`  | Report compilation (final grade cards, etc.)    | Low      |
+
+### Supervisor Configuration (Tier 2+)
+
+`/etc/supervisor/conf.d/internara-worker.conf`:
 
 ```ini
 [program:internara-default-worker]
@@ -78,6 +74,8 @@ process_name=%(program_name)s_%(process_num)02d
 command=php /path/to/app/artisan queue:work --queue=default --sleep=3 --tries=3 --max-time=3600
 autostart=true
 autorestart=true
+stopasgroup=true
+killasgroup=true
 user=www-data
 numprocs=2
 redirect_stderr=true
@@ -89,6 +87,8 @@ process_name=%(program_name)s_%(process_num)02d
 command=php /path/to/app/artisan queue:work --queue=documents --sleep=3 --tries=3 --max-time=3600
 autostart=true
 autorestart=true
+stopasgroup=true
+killasgroup=true
 user=www-data
 numprocs=2
 redirect_stderr=true
@@ -97,17 +97,19 @@ stopwaitsecs=3600
 ```
 
 ```bash
-# Start workers (development only)
+# Start workers manually (development only)
 php artisan queue:work --queue=default --sleep=3 --tries=3
 php artisan queue:work --queue=documents --sleep=3 --tries=3
+
+# Check worker status
+php artisan queue:monitor default:default,documents:documents --max=100
 ```
 
 ---
 
 ## Job Design
 
-Jobs are written the same way regardless of driver — the same code works in sync mode today and
-async mode tomorrow:
+Jobs are written the same way regardless of driver — the same code works in sync mode today and async mode tomorrow:
 
 ```php
 class ProcessMediaConversion implements ShouldQueue
@@ -147,7 +149,20 @@ class ProcessMediaConversion implements ShouldQueue
 
 ---
 
-## Failed Jobs (Future Enterprise)
+## Queueing in Sync Mode (Tier 1)
+
+With `QUEUE_CONNECTION=sync`, every job executes immediately during the HTTP request. This is the correct default for schools with fewer than 50 concurrent users.
+
+| Operation                  | Behavior                          | User Experience                 |
+| -------------------------- | --------------------------------- | ------------------------------- |
+| Email delivery             | Sent during request (~1–3s)       | Slight delay on form submission |
+| Media conversions          | Processed during upload (~0.5–2s) | Slight delay on file upload     |
+| Certificate PDF generation | Generated during request (~2–5s)  | Slight delay on download        |
+| Notification dispatch      | Stored immediately                | Instant (database write)        |
+
+---
+
+## Failed Jobs (Tier 2+)
 
 When a worker is active, failed jobs are stored in the `failed_jobs` table for inspection:
 
@@ -157,14 +172,16 @@ php artisan queue:retry all           # Retry all failed
 php artisan queue:prune-failed        # Prune old failed jobs (scheduled weekly)
 ```
 
-Failed jobs older than 7 days are automatically pruned by the scheduler.
+Failed jobs older than 7 days are automatically pruned by the scheduler via `queue:prune-failed`.
 
 ---
 
 ## Where to Find It
 
 - `config/queue.php` — queue connection configuration
-- `config/database.php` — Redis connection settings (future use)
-- `database/migrations/` — jobs and failed_jobs table migrations (future use)
-- `docs/infrastructure/deployment.md` — Supervisor configuration (future enterprise)
-- `docs/infrastructure/infrastructure.md` — tier-based infrastructure design
+- `config/database.php` — Redis connection settings
+- `database/migrations/` — jobs and failed_jobs table migrations
+- `app/Core/Contracts/SendsNotifications.php` — notification contract
+- [Deployment](deployment.md) — Supervisor configuration (dual pipelines)
+- [Infrastructure](infrastructure.md) — tier-based infrastructure design
+- [Notification](notification.md) — notification channels and delivery

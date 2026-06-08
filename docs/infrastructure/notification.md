@@ -1,20 +1,17 @@
 # Notification System
 
-> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
-> conventions overhaul
+> Last updated: 2026-06-08
 
 ## Channel Architecture
 
-Internara delivers notifications through multiple channels, each serving a different purpose. A
-single notification can be sent through several channels simultaneously — e.g., a welcome message is
-delivered as email (external reach) and in-app notification (persistent record).
+Internara delivers notifications through multiple channels, each serving a different purpose. A single notification can be sent through several channels simultaneously — for example, a welcome message is delivered as email (external reach) and in-app notification (persistent record).
 
 ```
 Notification sent
     │
-    ├── CustomDatabaseChannel ─────► notifications table ──► in-app center
-    ├── MailChannel ───────────────► SMTP / SES / Mailgun  ──► email inbox
-    └── (future) WebhookChannel ──► external URL ──────────► webhook receiver
+    ├── CustomDatabaseChannel ────► notifications table ──► in-app center
+    ├── MailChannel ──────────────► SMTP / SES / Mailgun ─► email inbox
+    └── (future) WebhookChannel ─► external URL ──────────► webhook receiver
 ```
 
 ### Channel Selection by Tier
@@ -29,8 +26,7 @@ Notification sent
 
 ## CustomDatabaseChannel (Primary In-App)
 
-The in-app channel stores notifications in a custom `notifications` table. This is the **canonical
-record** of all notifications a user has received. It is always used for every notification.
+The in-app channel stores notifications in a custom `notifications` table. This is the **canonical record** of all notifications a user has received. It is always used for every notification.
 
 ### Table Schema
 
@@ -50,8 +46,7 @@ notifications
 
 ### Notification Class Contract
 
-Each notification class must implement `toCustomDatabase($notifiable)` returning the structured data
-array:
+Each notification class must implement `toCustomDatabase($notifiable)` returning the structured data array:
 
 ```php
 public function toCustomDatabase($notifiable): array
@@ -83,8 +78,7 @@ $notification->markAsRead();
 
 ## Mail Channel
 
-Used for communications that must reach the user outside the application. Mail is always queued
-(Tier 2+) or sent synchronously (Tier 1).
+Used for communications that must reach the user outside the application. Mail is always queued (Tier 2+) or sent synchronously (Tier 1).
 
 | Notification Type      | When                          | Priority |
 | ---------------------- | ----------------------------- | -------- |
@@ -102,12 +96,12 @@ Used for communications that must reach the user outside the application. Mail i
 | ---------- | ------------- | ------ | ------ | ------------------------------------ |
 | `log`      | ✅ Dev        | ❌     | ❌     | None                                 |
 | `smtp`     | ✅            | ✅     | ✅     | SMTP server credentials              |
-| `ses`      | ❌            | ✅     | ✅     | AWS account, SES verified module     |
-| `mailgun`  | ❌            | ✅     | ✅     | Mailgun account, module verification |
+| `ses`      | ❌            | ✅     | ✅     | AWS account, SES verified domain     |
+| `mailgun`  | ❌            | ✅     | ✅     | Mailgun account, domain verification |
 | `postmark` | ❌            | ✅     | ✅     | Postmark account, server token       |
 | `sendmail` | ⚠️ Unreliable | ❌     | ❌     | `sendmail` binary on server          |
 
-### SMTP Configuration (Tier 1-2)
+### SMTP Configuration (Tier 1–2)
 
 ```env
 MAIL_MAILER=smtp
@@ -139,38 +133,34 @@ AWS_SECRET_ACCESS_KEY=your-secret
 AWS_DEFAULT_REGION=ap-southeast-1
 ```
 
-SES requires module verification and may start in sandbox mode (verified emails only). Request
-production access for sending to unverified recipients.
+SES requires domain verification and may start in sandbox mode (verified emails only). Request production access for sending to unverified recipients.
 
 ### Development Configuration
 
 ```env
 # Logs to storage/logs/laravel.log — no email sent
 MAIL_MAILER=log
-
-# Optional: preview in browser instead of sending
-MAIL_MAILER=preview  # requires mail-preview package
 ```
 
 ### Deliverability Setup
 
-To ensure emails reach recipients (not spam), configure these DNS records for your module:
+To ensure emails reach recipients (not spam), configure these DNS records for your domain:
 
 ```
 Record    Type    Value
 ──────────────────────────────────────
 SPF       TXT     v=spf1 include:_spf.google.com ~all
 DKIM      TXT     (provided by your email provider)
-DMARC     TXT     v=DMARC1; p=quarantine; rua=mailto:dmarc@your-module
+DMARC     TXT     v=DMARC1; p=quarantine; rua=mailto:dmarc@your-domain
 MX        MX      (your email provider's MX record)
 ```
 
 | Record                | Purpose                                               | Risk if Missing                           |
 | --------------------- | ----------------------------------------------------- | ----------------------------------------- |
-| **SPF**               | Authorizes which servers can send from your module    | Email marked as spam or rejected          |
+| **SPF**               | Authorizes which servers can send from your domain    | Email marked as spam or rejected          |
 | **DKIM**              | Cryptographic signature verifying email integrity     | Email fails authentication checks         |
-| **DMARC**             | Policy for how receivers handle unauthenticated email | Spoofers can impersonate your module      |
-| **Reverse DNS (PTR)** | Maps your mail server IP back to your module          | Some receivers reject unauthenticated IPs |
+| **DMARC**             | Policy for how receivers handle unauthenticated email | Spoofers can impersonate your domain      |
+| **Reverse DNS (PTR)** | Maps your mail server IP back to your domain          | Some receivers reject unauthenticated IPs |
 
 ### Queue Integration
 
@@ -180,12 +170,10 @@ All mail notifications implement `ShouldQueue` for asynchronous delivery:
 class WelcomeNotification extends Notification implements ShouldQueue
 {
     use Queueable;
-    // ...
 }
 ```
 
-In Tier 2+, the queue worker processes mail delivery. In Tier 1 (`QUEUE_CONNECTION=sync`), mail is
-sent synchronously during the HTTP request.
+In Tier 2+, the `default` queue worker processes mail delivery. In Tier 1 (`QUEUE_CONNECTION=sync`), mail is sent synchronously during the HTTP request.
 
 ### Rate Limiting
 
@@ -197,21 +185,6 @@ Most providers impose sending limits:
 | Microsoft 365    | 10,000      | ~30                   |
 | SES (production) | 50,000+     | 14/sec (can increase) |
 | SendGrid (free)  | 100         | ~10                   |
-
-To comply with rate limits, use queued notifications with proper backoff:
-
-```php
-// config/queue.php
-'connections' => [
-    'redis' => [
-        'driver' => 'redis',
-        'queue' => '{default}',
-        'retry_after' => 90,
-        'block_for' => null,
-        'after_commit' => true,
-    ],
-],
-```
 
 ### Troubleshooting
 
@@ -229,8 +202,7 @@ To comply with rate limits, use queued notifications with proper backoff:
 
 ## Flash Messages
 
-Flash messages provide **instant action feedback** — "Profile updated successfully" or "Settings
-saved." They are displayed as toast notifications and disappear after a few seconds.
+Flash messages provide **instant action feedback** — "Profile updated successfully" or "Settings saved." They are displayed as toast notifications and disappear after a few seconds.
 
 ```php
 flash()->success(__('profile.updated'));
@@ -247,24 +219,9 @@ flash()->warning(__('disk_space_low'));
 
 ---
 
-## Queue Integration
-
-Notifications are **always queued** (Tier 2+) or **synchronous** (Tier 1 `QUEUE_CONNECTION=sync`).
-
-| Channel               | Tier 1        | Tier 2+       |
-| --------------------- | ------------- | ------------- |
-| CustomDatabaseChannel | Sync (inline) | Async (queue) |
-| Mail                  | Sync (inline) | Async (queue) |
-
-Failed notifications are automatically retried (default: 3 attempts). After max retries, they are
-stored in `failed_jobs` for manual inspection.
-
----
-
 ## Sending Notifications from Actions
 
-Notifications are sent from Command Actions or listener classes, never directly from Livewire
-components.
+Notifications are sent from Command Actions or listener classes, never directly from Livewire components.
 
 ```php
 class NotifyAdminsInternshipCreated implements ShouldQueue
@@ -281,8 +238,7 @@ class NotifyAdminsInternshipCreated implements ShouldQueue
 }
 ```
 
-For notifications triggered by user action (not event listeners), use the `SendNotificationAction`
-which implements the `SendsNotifications` contract:
+For notifications triggered by user action (not event listeners), use `SendNotificationAction`:
 
 ```php
 public function __construct(
@@ -313,7 +269,7 @@ Created (via Action/Event)
     │     └── mail: queued, sent asynchronously
     │
     ├── delivered → read by user
-    │     └── marked as read (updated_at set)
+    │     └── marked as read (read_at set)
     │
     └── old → pruned by scheduler
           └── system:cleanup prunes notifications older than retention period
@@ -337,4 +293,5 @@ Created (via Action/Event)
 - `app/SysAdmin/Console/Commands/PruneNotificationsCommand.php` — notification pruning
 - `config/mail.php` — mail driver and SMTP configuration
 - `config/flasher.php` — flash message styling and timeout
-- `docs/infrastructure/infrastructure.md` — tier-based infrastructure design
+- [Infrastructure](infrastructure.md) — tier-based infrastructure design
+[Queue](queue.md) — queue infrastructure and worker management

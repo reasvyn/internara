@@ -1,8 +1,6 @@
 # Academics — Technical Reference
 
-> Last updated: 2026-06-06  
-> Changes: Reduced School submodule to Entity + Livewire editor (no standalone model, actions, or
-> policies). School metadata is managed via the `settings` table.
+> Last updated: 2026-06-08
 
 Detailed structural and implementation reference for the **Academics** module.
 
@@ -10,74 +8,80 @@ Detailed structural and implementation reference for the **Academics** module.
 
 ## Overview
 
-Manages academic majors (departments) and calendar years.
-
-### Module Statistics
-
-- **Actions**: 8 business logic operations
-- **Models**: 2 data entities (`Department`, `AcademicYear`)
-- **Livewire Components**: 3 UI components
-- **Policies**: 2 authorization rules
-- **Submodules**: 3 module submodules
+Manages educational structure: academic years, departments (jurusan), and school information.
 
 ### Submodules
 
-- `School`
-- `AcademicYear`
-- `Department`
-
----
-
-## Dependency Graph
-
-This module depends on:
-
-- **Core** (base classes)
-- **User** (teachers/students department assignments)
-- **SysAdmin** (settings configs)
+- `AcademicYear` — Academic calendar periods
+- `Department` — Study programs / jurusan
+- `School` — School identity information
 
 ---
 
 ## Actions
 
-| File                                                     | Class                           | Extends      |
-| -------------------------------------------------------- | ------------------------------- | ------------ |
-| `AcademicYear/Actions/CreateAcademicYearAction.php`      | `CreateAcademicYearAction`      | `BaseAction` |
-| `AcademicYear/Actions/UpdateAcademicYearAction.php`      | `UpdateAcademicYearAction`      | `BaseAction` |
-| `AcademicYear/Actions/DeleteAcademicYearAction.php`      | `DeleteAcademicYearAction`      | `BaseAction` |
-| `AcademicYear/Actions/ActivateAcademicYearAction.php`    | `ActivateAcademicYearAction`    | `BaseAction` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `AcademicYear/Actions/CreateAcademicYearAction.php` | `CreateAcademicYearAction` | `BaseAction` |
+| `AcademicYear/Actions/UpdateAcademicYearAction.php` | `UpdateAcademicYearAction` | `BaseAction` |
+| `AcademicYear/Actions/DeleteAcademicYearAction.php` | `DeleteAcademicYearAction` | `BaseAction` |
 | `AcademicYear/Actions/BulkDeleteAcademicYearsAction.php` | `BulkDeleteAcademicYearsAction` | `BaseAction` |
-| `Department/Actions/CreateDepartmentAction.php`          | `CreateDepartmentAction`        | `BaseAction` |
-| `Department/Actions/UpdateDepartmentAction.php`          | `UpdateDepartmentAction`        | `BaseAction` |
-| `Department/Actions/DeleteDepartmentAction.php`          | `DeleteDepartmentAction`        | `BaseAction` |
+| `AcademicYear/Actions/ActivateAcademicYearAction.php` | `ActivateAcademicYearAction` | `BaseAction` |
+| `Department/Actions/CreateDepartmentAction.php` | `CreateDepartmentAction` | `BaseAction` |
+| `Department/Actions/UpdateDepartmentAction.php` | `UpdateDepartmentAction` | `BaseAction` |
+| `Department/Actions/DeleteDepartmentAction.php` | `DeleteDepartmentAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-| File                                   | Class          |
-| -------------------------------------- | -------------- |
-| `AcademicYear/Models/AcademicYear.php` | `AcademicYear` |
-| `Department/Models/Department.php`     | `Department`   |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `AcademicYear/Models/AcademicYear.php` | `AcademicYear` | `BaseModel` |
+| `Department/Models/Department.php` | `Department` | `BaseModel` |
+
+---
+
+## Entities
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `AcademicYear/Entities/AcademicYearState.php` | `AcademicYearState` | `BaseEntity` |
+| `Department/Entities/DepartmentState.php` | `DepartmentState` | `BaseEntity` |
+| `School/Entities/SchoolEntity.php` | `SchoolEntity` | `BaseEntity` |
+
+---
+
+## Policies
+
+| File | Policy | Extends |
+| ---- | ------ | ------- |
+| `AcademicYear/Policies/AcademicYearPolicy.php` | `AcademicYearPolicy` | `BasePolicy` |
+| `Department/Policies/DepartmentPolicy.php` | `DepartmentPolicy` | `BasePolicy` |
 
 ---
 
 ## Livewire Components
 
-| File                                            | Component             | Extends             |
-| ----------------------------------------------- | --------------------- | ------------------- |
-| `School/Livewire/SchoolEditor.php`              | `SchoolEditor`        | `Component`         |
+| File | Component | Extends |
+| ---- | --------- | ------- |
 | `AcademicYear/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` |
-| `Department/Livewire/DepartmentManager.php`     | `DepartmentManager`   | `BaseRecordManager` |
+| `Department/Livewire/DepartmentManager.php` | `DepartmentManager` | `BaseRecordManager` |
+| `School/Livewire/SchoolEditor.php` | `SchoolEditor` | `Component` |
+
+## Livewire Forms
+
+| File | Form |
+| ---- | ---- |
+| `AcademicYear/Livewire/Forms/AcademicYearForm.php` | `AcademicYearForm` |
+| `Department/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` |
 
 ---
 
-## Authorization Policies
+## Routes
 
-| File                                           | Policy               |
-| ---------------------------------------------- | -------------------- | ------------ |
-| `AcademicYear/Policies/AcademicYearPolicy.php` | `AcademicYearPolicy` | `BasePolicy` |
-| `Department/Policies/DepartmentPolicy.php`     | `DepartmentPolicy`   | `BasePolicy` |
+File: `routes/web/academics.php`
+Naming pattern: `academics.{resource}.{action}`
 
 ---
 
@@ -85,40 +89,45 @@ This module depends on:
 
 ```
 app/Academics/
-├──            ← Submodule roots
-│   ├── School/
-│   │   ├── Entities/
-│   │   └── Livewire/
-│   ├── AcademicYear/
-│   │   ├── Actions/
-│   │   ├── Models/
-│   │   ├── Policies/
-│   │   └── Livewire/
-│   └── Department/
-│       ├── Actions/
-│       ├── Models/
-│       ├── Policies/
-│       └── Livewire/
-├── Http/
-├── Livewire/
-├── Types/
-├── Services/
-└── Support/
+├── AcademicYear/
+│   ├── Actions/
+│   │   ├── ActivateAcademicYearAction.php
+│   │   ├── BulkDeleteAcademicYearsAction.php
+│   │   ├── CreateAcademicYearAction.php
+│   │   ├── DeleteAcademicYearAction.php
+│   │   └── UpdateAcademicYearAction.php
+│   ├── Entities/AcademicYearState.php
+│   ├── Livewire/
+│   │   ├── Forms/AcademicYearForm.php
+│   │   └── AcademicYearManager.php
+│   ├── Models/AcademicYear.php
+│   └── Policies/AcademicYearPolicy.php
+├── Department/
+│   ├── Actions/
+│   │   ├── CreateDepartmentAction.php
+│   │   ├── DeleteDepartmentAction.php
+│   │   └── UpdateDepartmentAction.php
+│   ├── Entities/DepartmentState.php
+│   ├── Livewire/
+│   │   ├── Forms/DepartmentForm.php
+│   │   └── DepartmentManager.php
+│   ├── Models/Department.php
+│   └── Policies/DepartmentPolicy.php
+└── School/
+    ├── Entities/SchoolEntity.php
+    └── Livewire/SchoolEditor.php
 ```
 
 ---
 
 ## Architectural Integration
 
-This module integrates with the system across the following directories and resources:
+- **Submodules**: `AcademicYear`, `Department`, `School`
+- **Business Logic**: `app/Academics/`
+- **Routing**: `routes/web/academics.php`
+- **Views**: `resources/views/academics/`
+- **Testing**: `tests/Feature/Academics/`, `tests/Unit/Academics/`
+- **Dependencies**: Core
+- **Used By**: Program, Enrollment, Assessment
 
-- **Submodules**: `School`, `AcademicYear`, `Department`
-- **Business Logic (`app/`)**: Located in
-  [app/Academics/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Academics/)
-- **Routing (`routes/`)**:
-  [routes/web/academics.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/academics.php)
-- **Views (`views/`)**: Blade templates and layouts are in
-  [resources/views/academics/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/academics/)
-- **Testing (`tests/`)**: Feature `tests/Feature/Academics/`, Unit `tests/Unit/Academics/`
-
-_For overview and business context, see [academics.md](academics.md)_
+*For overview and business context, see [academics.md](academics.md).*
