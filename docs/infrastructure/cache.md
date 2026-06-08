@@ -245,6 +245,7 @@ This pre-warms settings, brand values, compiles config/views/events, and prepare
 - `config/cache.php` — cache store definitions, per-store configuration
 - `config/database.php` — Redis connection settings under the `redis` key
 - `config/cache-keys.php` — centralized cache key registry
+- `config/event.php` — event → listener mappings for cache invalidation
 - `config/settings.php` — theme cache invalidation keys
 - `app/Settings/Support/Settings.php` — settings caching layer
 - `app/Settings/Support/Brand.php` — brand value caching with auto-invalidation

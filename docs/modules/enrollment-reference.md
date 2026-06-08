@@ -1,6 +1,6 @@
 # Enrollment — Technical Reference
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-08
 
 Detailed structural and implementation reference for the **Enrollment** module.
 
@@ -12,7 +12,9 @@ Manages student registration, placement slot assignment, placement change reques
 
 ### Submodules
 
-None — all components are directly under `app/Enrollment/`.
+- `Registration` — Student internship registration, document upload, verification
+- `Placement` — Placement slot allocation, change requests
+- `AccountApplication` — Guest account applications
 
 ---
 
@@ -20,19 +22,19 @@ None — all components are directly under `app/Enrollment/`.
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Actions/RegisterInternshipAction.php` | `RegisterInternshipAction` | Process `BaseAction` |
-| `Actions/VerifyRegistrationAction.php` | `VerifyRegistrationAction` | `BaseAction` |
-| `Actions/CreatePlacementAction.php` | `CreatePlacementAction` | `BaseAction` |
-| `Actions/UpdatePlacementAction.php` | `UpdatePlacementAction` | `BaseAction` |
-| `Actions/DeletePlacementAction.php` | `DeletePlacementAction` | `BaseAction` |
-| `Actions/DirectPlacementAction.php` | `DirectPlacementAction` | `BaseAction` |
-| `Actions/RequestPlacementChangeAction.php` | `RequestPlacementChangeAction` | `BaseAction` |
-| `Actions/ApprovePlacementChangeAction.php` | `ApprovePlacementChangeAction` | `BaseAction` |
-| `Actions/RejectPlacementChangeAction.php` | `RejectPlacementChangeAction` | `BaseAction` |
-| `Actions/ApplyAccountAction.php` | `ApplyAccountAction` | `BaseAction` |
-| `Actions/ApproveAccountApplicationAction.php` | `ApproveAccountApplicationAction` | `BaseAction` |
-| `Actions/RejectAccountApplicationAction.php` | `RejectAccountApplicationAction` | `BaseAction` |
-| `Actions/UploadRegistrationDocumentAction.php` | `UploadRegistrationDocumentAction` | `BaseAction` |
+| `Registration/Actions/RegisterInternshipAction.php` | `RegisterInternshipAction` | Process `BaseAction` |
+| `Registration/Actions/VerifyRegistrationAction.php` | `VerifyRegistrationAction` | `BaseAction` |
+| `Registration/Actions/UploadRegistrationDocumentAction.php` | `UploadRegistrationDocumentAction` | `BaseAction` |
+| `Placement/Actions/CreatePlacementAction.php` | `CreatePlacementAction` | `BaseAction` |
+| `Placement/Actions/UpdatePlacementAction.php` | `UpdatePlacementAction` | `BaseAction` |
+| `Placement/Actions/DeletePlacementAction.php` | `DeletePlacementAction` | `BaseAction` |
+| `Placement/Actions/DirectPlacementAction.php` | `DirectPlacementAction` | `BaseAction` |
+| `Placement/Actions/RequestPlacementChangeAction.php` | `RequestPlacementChangeAction` | `BaseAction` |
+| `Placement/Actions/ApprovePlacementChangeAction.php` | `ApprovePlacementChangeAction` | `BaseAction` |
+| `Placement/Actions/RejectPlacementChangeAction.php` | `RejectPlacementChangeAction` | `BaseAction` |
+| `AccountApplication/Actions/ApplyAccountAction.php` | `ApplyAccountAction` | `BaseAction` |
+| `AccountApplication/Actions/ApproveAccountApplicationAction.php` | `ApproveAccountApplicationAction` | `BaseAction` |
+| `AccountApplication/Actions/RejectAccountApplicationAction.php` | `RejectAccountApplicationAction` | `BaseAction` |
 
 ---
 
@@ -40,69 +42,57 @@ None — all components are directly under `app/Enrollment/`.
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Models/Registration.php` | `Registration` | `BaseModel` |
-| `Models/RegistrationDocument.php` | `RegistrationDocument` | `BaseModel` |
-| `Models/Placement.php` | `Placement` | `BaseModel` |
-| `Models/PlacementChangeRequest.php` | `PlacementChangeRequest` | `BaseModel` |
-| `Models/AccountApplication.php` | `AccountApplication` | `BaseModel` |
+| `Registration/Models/Registration.php` | `Registration` | `BaseModel` |
+| `Registration/Models/RegistrationDocument.php` | `RegistrationDocument` | `BaseModel` |
+| `Placement/Models/Placement.php` | `Placement` | `BaseModel` |
+| `Placement/Models/PlacementChangeRequest.php` | `PlacementChangeRequest` | `BaseModel` |
+| `AccountApplication/Models/AccountApplication.php` | `AccountApplication` | `BaseModel` |
 
 ---
 
-## Enums
+## Data / DTOs
 
-| File | Enum | Implements | Values |
-| ---- | ---- | ---------- | ------ |
-| `Enums/AccountApplicationStatus.php` | `AccountApplicationStatus` | `LabelEnum`, `StatusEnum` | pending, approved, rejected |
-| `Enums/PlacementChangeStatus.php` | `PlacementChangeStatus` | `LabelEnum`, `StatusEnum` | pending, approved, rejected |
-| `Enums/RegistrationDocumentStatus.php` | `RegistrationDocumentStatus` | `LabelEnum`, `StatusEnum` | pending, verified, rejected |
-
----
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Registration/Data/RegistrationData.php` | `RegistrationData` | `BaseData` |
 
 ## Entities
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Entities/PlacementCapacity.php` | `PlacementCapacity` | `BaseEntity` |
-| `Entities/PlacementState.php` | `PlacementState` | `BaseEntity` |
-| `Entities/RegistrationState.php` | `RegistrationState` | `BaseEntity` |
+| `Registration/Entities/RegistrationState.php` | `RegistrationState` | `BaseEntity` |
+| `Placement/Entities/PlacementState.php` | `PlacementState` | `BaseEntity` |
+| `Placement/Entities/PlacementCapacity.php` | `PlacementCapacity` | `BaseEntity` |
 
----
+## Enums
+
+| File | Enum | Implements | Values |
+| ---- | ---- | ---------- | ------ |
+| `Registration/Enums/RegistrationDocumentStatus.php` | `RegistrationDocumentStatus` | `LabelEnum`, `StatusEnum` | pending, verified, rejected |
+| `Placement/Enums/PlacementChangeStatus.php` | `PlacementChangeStatus` | `LabelEnum`, `StatusEnum` | pending, approved, rejected |
+| `AccountApplication/Enums/AccountApplicationStatus.php` | `AccountApplicationStatus` | `LabelEnum`, `StatusEnum` | pending, approved, rejected |
+
+## Events
+
+| File | Class | Dispatched By |
+| ---- | ----- | ------------- |
+| `Registration/Events/StudentRegistered.php` | `StudentRegistered` | `RegisterInternshipAction` |
+
+## Listeners
+
+| File | Class | Listens To |
+| ---- | ----- | ---------- |
+| `Registration/Listeners/ClearDashboardOnRegistration.php` | `ClearDashboardOnRegistration` | `StudentRegistered` |
 
 ## Policies
 
 | File | Policy | Extends |
 | ---- | ------ | ------- |
-| `Policies/RegistrationPolicy.php` | `RegistrationPolicy` | `BasePolicy` |
-| `Policies/RegistrationDocumentPolicy.php` | `RegistrationDocumentPolicy` | `BasePolicy` |
-| `Policies/PlacementPolicy.php` | `PlacementPolicy` | `BasePolicy` |
-| `Policies/PlacementChangeRequestPolicy.php` | `PlacementChangeRequestPolicy` | `BasePolicy` |
-| `Policies/AccountApplicationPolicy.php` | `AccountApplicationPolicy` | `BasePolicy` |
-
----
-
-## Livewire Components
-
-| File | Component | Extends |
-| ---- | --------- | ------- |
-| `Livewire/RegistrationCenter.php` | `RegistrationCenter` | `Component` |
-| `Livewire/RegistrationWizard.php` | `RegistrationWizard` | `Component` |
-| `Livewire/RegistrationVerification.php` | `RegistrationVerification` | `Component` |
-| `Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload` | `Component` |
-| `Livewire/PlacementIndex.php` | `PlacementIndex` | `BaseRecordManager` |
-| `Livewire/PlacementChangeManager.php` | `PlacementChangeManager` | `Component` |
-| `Livewire/DirectPlacementManager.php` | `DirectPlacementManager` | `Component` |
-| `Livewire/ApplyPage.php` | `ApplyPage` | `Component` |
-| `Livewire/StudentPlacementChangeRequest.php` | `StudentPlacementChangeRequest` | `Component` |
-
-## Livewire Forms
-
-| File | Form |
-| ---- | ---- |
-| `Livewire/Forms/RegistrationWizardForm.php` | `RegistrationWizardForm` |
-| `Livewire/Forms/PlacementForm.php` | `PlacementForm` |
-| `Livewire/Forms/DirectPlacementForm.php` | `DirectPlacementForm` |
-| `Livewire/Forms/PlacementChangeForm.php` | `PlacementChangeForm` |
-| `Livewire/Forms/AccountApplicationForm.php` | `AccountApplicationForm` |
+| `Registration/Policies/RegistrationPolicy.php` | `RegistrationPolicy` | `BasePolicy` |
+| `Registration/Policies/RegistrationDocumentPolicy.php` | `RegistrationDocumentPolicy` | `BasePolicy` |
+| `Placement/Policies/PlacementPolicy.php` | `PlacementPolicy` | `BasePolicy` |
+| `Placement/Policies/PlacementChangeRequestPolicy.php` | `PlacementChangeRequestPolicy` | `BasePolicy` |
+| `AccountApplication/Policies/AccountApplicationPolicy.php` | `AccountApplicationPolicy` | `BasePolicy` |
 
 ---
 
@@ -117,68 +107,72 @@ Naming pattern: `enrollment.{resource}.{action}`
 
 ```
 app/Enrollment/
-├── Actions/
-│   ├── ApplyAccountAction.php
-│   ├── ApproveAccountApplicationAction.php
-│   ├── ApprovePlacementChangeAction.php
-│   ├── CreatePlacementAction.php
-│   ├── DeletePlacementAction.php
-│   ├── DirectPlacementAction.php
-│   ├── RegisterInternshipAction.php
-│   ├── RejectAccountApplicationAction.php
-│   ├── RejectPlacementChangeAction.php
-│   ├── RequestPlacementChangeAction.php
-│   ├── UpdatePlacementAction.php
-│   ├── UploadRegistrationDocumentAction.php
-│   └── VerifyRegistrationAction.php
-├── Entities/
-│   ├── PlacementCapacity.php
-│   ├── PlacementState.php
-│   └── RegistrationState.php
-├── Enums/
-│   ├── AccountApplicationStatus.php
-│   ├── PlacementChangeStatus.php
-│   └── RegistrationDocumentStatus.php
-├── Livewire/
-│   ├── Forms/
-│   │   ├── AccountApplicationForm.php
-│   │   ├── DirectPlacementForm.php
-│   │   ├── PlacementChangeForm.php
-│   │   ├── PlacementForm.php
-│   │   └── RegistrationWizardForm.php
-│   ├── ApplyPage.php
-│   ├── DirectPlacementManager.php
-│   ├── PlacementChangeManager.php
-│   ├── PlacementIndex.php
-│   ├── RegistrationCenter.php
-│   ├── RegistrationDocumentUpload.php
-│   ├── RegistrationVerification.php
-│   ├── RegistrationWizard.php
-│   └── StudentPlacementChangeRequest.php
-├── Models/
-│   ├── AccountApplication.php
-│   ├── Placement.php
-│   ├── PlacementChangeRequest.php
-│   ├── Registration.php
-│   └── RegistrationDocument.php
-└── Policies/
-    ├── AccountApplicationPolicy.php
-    ├── PlacementChangeRequestPolicy.php
-    ├── PlacementPolicy.php
-    ├── RegistrationDocumentPolicy.php
-    └── RegistrationPolicy.php
+├── AccountApplication/
+│   ├── Actions/
+│   │   ├── ApplyAccountAction.php
+│   │   ├── ApproveAccountApplicationAction.php
+│   │   └── RejectAccountApplicationAction.php
+│   ├── Enums/AccountApplicationStatus.php
+│   ├── Livewire/
+│   │   ├── Forms/AccountApplicationForm.php
+│   │   └── ApplyPage.php
+│   ├── Models/AccountApplication.php
+│   └── Policies/AccountApplicationPolicy.php
+├── Placement/
+│   ├── Actions/ (7 actions)
+│   ├── Entities/
+│   │   ├── PlacementCapacity.php
+│   │   └── PlacementState.php
+│   ├── Enums/PlacementChangeStatus.php
+│   ├── Livewire/
+│   │   ├── Forms/
+│   │   │   ├── DirectPlacementForm.php
+│   │   │   ├── PlacementChangeForm.php
+│   │   │   └── PlacementForm.php
+│   │   ├── DirectPlacementManager.php
+│   │   ├── PlacementChangeManager.php
+│   │   ├── PlacementIndex.php
+│   │   └── StudentPlacementChangeRequest.php
+│   ├── Models/
+│   │   ├── Placement.php
+│   │   └── PlacementChangeRequest.php
+│   └── Policies/
+│       ├── PlacementChangeRequestPolicy.php
+│       └── PlacementPolicy.php
+└── Registration/
+    ├── Actions/
+    │   ├── RegisterInternshipAction.php
+    │   ├── UploadRegistrationDocumentAction.php
+    │   └── VerifyRegistrationAction.php
+    ├── Data/RegistrationData.php
+    ├── Entities/RegistrationState.php
+    ├── Enums/RegistrationDocumentStatus.php
+    ├── Events/StudentRegistered.php
+    ├── Listeners/ClearDashboardOnRegistration.php
+    ├── Livewire/
+    │   ├── Forms/RegistrationWizardForm.php
+    │   ├── RegistrationCenter.php
+    │   ├── RegistrationDocumentUpload.php
+    │   ├── RegistrationVerification.php
+    │   └── RegistrationWizard.php
+    ├── Models/
+    │   ├── Registration.php
+    │   └── RegistrationDocument.php
+    └── Policies/
+        ├── RegistrationDocumentPolicy.php
+        └── RegistrationPolicy.php
 ```
 
 ---
 
 ## Architectural Integration
 
-- **Submodules**: None
+- **Submodules**: `Registration`, `Placement`, `AccountApplication`
 - **Business Logic**: `app/Enrollment/`
 - **Routing**: `routes/web/enrollment.php`
 - **Views**: `resources/views/enrollment/`
 - **Testing**: `tests/Feature/Enrollment/`, `tests/Unit/Enrollment/`
-- **Dependencies**: User, Program, Academics, Core
-- **Used By**: Journals, Assessment, Evaluation
+- **Dependencies**: Core, Program, Partners, User
+- **Events Consumed By**: `User/Dashboard` (cache invalidation)
 
 *For overview and business context, see [enrollment.md](enrollment.md).*

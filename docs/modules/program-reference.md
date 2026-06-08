@@ -78,6 +78,13 @@ Manages internship programs (lowongan PKL), program timelines, phases, and stude
 
 ---
 
+## Data / DTOs
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Internship/Data/InternshipData.php` | `InternshipData` | `BaseData` |
+| `InternshipGroup/Data/InternshipGroupData.php` | `InternshipGroupData` | `BaseData` |
+
 ## Events
 
 | File | Event | Extends |
