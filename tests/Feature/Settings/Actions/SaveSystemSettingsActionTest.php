@@ -62,5 +62,5 @@ test('save system settings encrypts mail password', function () {
 
     expect($passwordSetting)->not->toBeNull();
     expect($passwordSetting->type)->toBe('encrypted');
-    expect($passwordSetting->value)->toContain('eyJpdiI'); // encrypted payload prefix
+    expect($passwordSetting->getRawOriginal('value'))->toContain('eyJpdiI'); // encrypted payload prefix
 });

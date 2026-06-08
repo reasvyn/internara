@@ -124,8 +124,7 @@ final readonly class SuperAdminIntegrityRules extends BaseEntity
             return false;
         }
 
-        // Super admin is always immutable
-        return true;
+        return $this->hasProtectedStatus();
     }
 
     /**

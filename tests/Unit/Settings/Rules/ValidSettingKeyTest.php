@@ -20,7 +20,7 @@ test('valid setting keys pass validation', function (string $key) {
 ]);
 
 test('invalid setting keys fail validation', function (string $key) {
-    $validator = Validator::make(['key' => $key], ['key' => new ValidSettingKey]);
+    $validator = Validator::make(['key' => $key], ['key' => ['required', new ValidSettingKey]]);
 
     expect($validator->fails())->toBeTrue();
 })->with([
