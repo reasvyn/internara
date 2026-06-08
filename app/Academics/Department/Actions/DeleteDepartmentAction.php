@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Academics\Department\Actions;
 
+use App\Academics\Department\Events\DepartmentDeleted;
 use App\Academics\Department\Models\Department;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
+use Illuminate\Support\Facades\Event;
 
 /**
  * Action to delete a department.
@@ -20,9 +22,13 @@ final class DeleteDepartmentAction extends BaseAction
         }
 
         $this->transaction(function () use ($department) {
-            $this->log('department_deleted', $department, ['name' => $department->name]);
+            $name = $department->name;
 
             $department->delete();
+
+            Event::dispatch(new DepartmentDeleted($department));
+
+            $this->log('department_deleted', $department, ['name' => $name]);
         });
     }
 }

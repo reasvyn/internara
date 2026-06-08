@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Academics\AcademicYear\Actions;
 
+use App\Academics\AcademicYear\Events\AcademicYearActivated;
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
+use Illuminate\Support\Facades\Event;
 
 /**
  * Activates a new academic year and deactivates the current one.
@@ -26,6 +28,8 @@ final class ActivateAcademicYearAction extends BaseAction
 
             $year->is_active = true;
             $year->save();
+
+            Event::dispatch(new AcademicYearActivated($year));
 
             $this->log('academic_year_activated', $year, [
                 'name' => $year->name,
