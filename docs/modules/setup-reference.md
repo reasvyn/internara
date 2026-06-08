@@ -27,7 +27,6 @@ Handles one-time technical installation, environment checks, database provisioni
 | `SetupWizard/Actions/SetupSuperAdminAction.php` | `SetupSuperAdminAction` | `BaseAction` |
 | `SetupWizard/Actions/SetupSchoolAction.php` | `SetupSchoolAction` | `BaseAction` |
 | `SetupWizard/Actions/SetupDepartmentAction.php` | `SetupDepartmentAction` | `BaseAction` |
-| `SetupWizard/Actions/SetupInternshipAction.php` | `SetupInternshipAction` | `BaseAction` |
 | `SetupWizard/Actions/FinalizeSetupAction.php` | `FinalizeSetupAction` | Process `BaseAction` |
 
 ---
@@ -42,6 +41,8 @@ Handles one-time technical installation, environment checks, database provisioni
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
+| `Data/AdminData.php` | `AdminData` | `BaseData` |
+| `Data/SchoolData.php` | `SchoolData` | `BaseData` |
 | `Installation/Data/SetupTokenData.php` | `SetupTokenData` | `BaseData` |
 
 ---
@@ -73,7 +74,6 @@ Handles one-time technical installation, environment checks, database provisioni
 | `SetupWizard/Livewire/Forms/SuperAdminForm.php` | `SuperAdminForm` |
 | `SetupWizard/Livewire/Forms/SchoolForm.php` | `SchoolForm` |
 | `SetupWizard/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` |
-| `SetupWizard/Livewire/Forms/InternshipForm.php` | `InternshipForm` |
 
 ## Middleware
 
@@ -114,6 +114,9 @@ Naming pattern: `setup.{resource}.{action}`
 
 ```
 app/Setup/
+├── Data/
+│   ├── AdminData.php
+│   └── SchoolData.php
 ├── Entities/SetupEntity.php
 ├── Installation/
 │   ├── Actions/
@@ -133,7 +136,6 @@ app/Setup/
     ├── Actions/
     │   ├── FinalizeSetupAction.php
     │   ├── SetupDepartmentAction.php
-    │   ├── SetupInternshipAction.php
     │   ├── SetupSchoolAction.php
     │   └── SetupSuperAdminAction.php
     ├── Events/SetupFinalized.php
@@ -141,7 +143,6 @@ app/Setup/
     └── Livewire/
         ├── Forms/
         │   ├── DepartmentForm.php
-        │   ├── InternshipForm.php
         │   ├── SchoolForm.php
         │   └── SuperAdminForm.php
         └── SetupWizard.php

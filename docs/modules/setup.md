@@ -16,7 +16,7 @@ Out of scope: runtime system administration (SysAdmin), ongoing configuration (S
 Core installation orchestration via `php artisan setup:install`. Provisions the database schema (migrations), seeds base roles (`super_admin`, `admin`, `teacher`, `student`, `supervisor` via Spatie), creates the initial academic year, generates a cryptographically secure setup token, and marks the system as installed.
 
 ### Wizard
-Multi-step browser-based setup wizard with steps: environment audit (PHP version, database connectivity, file permissions, extension checks) → school profile (name, NPSN, address) → department creation → super admin generation (email + password) → finalization. Each step validates before proceeding.
+6-step browser-based setup wizard: environment audit → super admin account (email + password) → school profile (name, NPSN, address) → department (name, description) → finalization & recovery key → complete. Each step validates before proceeding.
 
 ### SetupToken
 Single-use, time-limited (default 60 minutes), cryptographically random token stored encrypted in the database. Required to access any setup route. Can be regenerated via `php artisan setup:reset-token` only if installation is not yet finalized.
