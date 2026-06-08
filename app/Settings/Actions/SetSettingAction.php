@@ -28,15 +28,12 @@ class SetSettingAction extends BaseAction
 
         $detectedType = $type ?? $this->detectType($value);
 
-        $setting = Setting::updateOrCreate(
-            ['key' => $key],
-            [
-                'value' => $value,
-                'type' => $detectedType,
-                'group' => $group,
-                'description' => $description,
-            ],
-        );
+        $setting = Setting::updateOrCreate(['key' => $key]);
+        $setting->type = $detectedType;
+        $setting->value = $value;
+        $setting->group = $group;
+        $setting->description = $description;
+        $setting->save();
 
         Settings::forget($key, $setting->group);
 
