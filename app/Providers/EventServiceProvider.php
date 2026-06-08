@@ -6,10 +6,10 @@ namespace App\Providers;
 
 use App\Academics\AcademicYear\Events\AcademicYearActivated;
 use App\Academics\AcademicYear\Events\AcademicYearCreated;
-use App\Academics\AcademicYear\Listeners\ClearDashboardCacheOnYearChange;
 use App\Academics\Department\Events\DepartmentCreated;
 use App\Academics\Department\Events\DepartmentDeleted;
-use App\Academics\Department\Listeners\ClearDashboardCacheOnDepartmentChange;
+use App\User\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange;
+use App\User\Dashboard\Listeners\ClearDashboardCacheOnYearChange;
 use App\Settings\Events\SettingUpdated;
 use App\Settings\Listeners\InvalidateSettingsCache;
 use App\Setup\SetupWizard\Events\SetupFinalized;
