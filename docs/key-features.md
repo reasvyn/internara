@@ -42,7 +42,7 @@ Reusable utilities used across modules.
 |---------|-------------|
 | config/cache-keys.php | Centralized cache key configuration |
 | CsvHandler | CSV processing utilities |
-| Global Enums | Shared enum definitions (CacheKey, etc.) |
+| Global Enums | Shared enum definitions (AccountStatus, etc.) |
 | UI Components | Blade UI components and widgets |
 
 ### Setup — Installation & Provisioning

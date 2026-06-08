@@ -23,18 +23,18 @@ Handles user administration, announcements, super admin recovery, system health 
 | File | Class | Extends |
 | ---- | ----- | ------- |
 | `Actions/GetAdminDashboardStatsAction.php` | `GetAdminDashboardStatsAction` | `BaseAction` |
-| `Account/Actions/CreateUserAction.php` | `CreateUserAction` | `BaseAction` |
-| `Account/Actions/UpdateUserAction.php` | `UpdateUserAction` | `BaseAction` |
-| `Account/Actions/DeleteUserAction.php` | `DeleteUserAction` | `BaseAction` |
-| `Account/Actions/BatchDeleteUserAction.php` | `BatchDeleteUserAction` | `BaseAction` |
-| `Account/Actions/SetUserStatusAction.php` | `SetUserStatusAction` | `BaseAction` |
-| `Account/Actions/ToggleUserStatusAction.php` | `ToggleUserStatusAction` | `BaseAction` |
-| `Account/Actions/GenerateAccountSlipAction.php` | `GenerateAccountSlipAction` | `BaseAction` |
-| `Account/Actions/SaveRecoveryKeyAction.php` | `SaveRecoveryKeyAction` | `BaseAction` |
-| `Account/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | `BaseAction` |
-| `Account/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseAction` |
-| `Account/Actions/ArchiveStudentAccountsAction.php` | `ArchiveStudentAccountsAction` | `BaseAction` |
-| `Account/Actions/GetUserManagerStatsAction.php` | `GetUserManagerStatsAction` | Read |
+| `UserManagement/Actions/CreateUserAction.php` | `CreateUserAction` | `BaseAction` |
+| `UserManagement/Actions/UpdateUserAction.php` | `UpdateUserAction` | `BaseAction` |
+| `UserManagement/Actions/DeleteUserAction.php` | `DeleteUserAction` | `BaseAction` |
+| `UserManagement/Actions/BatchDeleteUserAction.php` | `BatchDeleteUserAction` | `BaseAction` |
+| `UserManagement/Actions/SetUserStatusAction.php` | `SetUserStatusAction` | `BaseAction` |
+| `UserManagement/Actions/ToggleUserStatusAction.php` | `ToggleUserStatusAction` | `BaseAction` |
+| `UserManagement/Actions/GenerateAccountSlipAction.php` | `GenerateAccountSlipAction` | `BaseAction` |
+| `UserManagement/Actions/SaveRecoveryKeyAction.php` | `SaveRecoveryKeyAction` | `BaseAction` |
+| `UserManagement/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | `BaseAction` |
+| `UserManagement/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseAction` |
+| `UserManagement/Actions/ArchiveStudentAccountsAction.php` | `ArchiveStudentAccountsAction` | `BaseAction` |
+| `UserManagement/Actions/GetUserManagerStatsAction.php` | `GetUserManagerStatsAction` | Read |
 | `Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | Process `BaseAction` |
 
 ---
@@ -70,11 +70,11 @@ Handles user administration, announcements, super admin recovery, system health 
 
 | File | Component | Extends |
 | ---- | --------- | ------- |
-| `Account/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` |
-| `Account/Livewire/StudentManager.php` | `StudentManager` | `BaseRecordManager` |
-| `Account/Livewire/TeacherManager.php` | `TeacherManager` | `BaseRecordManager` |
-| `Account/Livewire/SupervisorManager.php` | `SupervisorManager` | `BaseRecordManager` |
-| `Account/Livewire/AdminManager.php` | `AdminManager` | `BaseRecordManager` |
+| `UserManagement/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` |
+| `UserManagement/Livewire/StudentManager.php` | `StudentManager` | `BaseRecordManager` |
+| `UserManagement/Livewire/TeacherManager.php` | `TeacherManager` | `BaseRecordManager` |
+| `UserManagement/Livewire/SupervisorManager.php` | `SupervisorManager` | `BaseRecordManager` |
+| `UserManagement/Livewire/AdminManager.php` | `AdminManager` | `BaseRecordManager` |
 | `Announcement/Livewire/AnnouncementManager.php` | `AnnouncementManager` | `Component` |
 | `Livewire/ApplicationReview.php` | `ApplicationReview` | `Component` |
 | `Observability/Livewire/AuditLogManager.php` | `AuditLogManager` | `Component` |
@@ -87,24 +87,24 @@ Handles user administration, announcements, super admin recovery, system health 
 
 | File | Trait | Purpose |
 | ---- | ----- | ------- |
-| `Account/Livewire/Concerns/DownloadsAccountSlips.php` | `DownloadsAccountSlips` | PDF account slip download utility |
+| `UserManagement/Livewire/Concerns/DownloadsAccountSlips.php` | `DownloadsAccountSlips` | PDF account slip download utility |
 
 ## Livewire Forms
 
 | File | Form |
 | ---- | ---- |
-| `Account/Livewire/Forms/UserForm.php` | `UserForm` |
-| `Account/Livewire/Forms/StudentForm.php` | `StudentForm` |
-| `Account/Livewire/Forms/TeacherForm.php` | `TeacherForm` |
-| `Account/Livewire/Forms/SupervisorForm.php` | `SupervisorForm` |
-| `Account/Livewire/Forms/AdminUserForm.php` | `AdminUserForm` |
+| `UserManagement/Livewire/Forms/UserForm.php` | `UserForm` |
+| `UserManagement/Livewire/Forms/StudentForm.php` | `StudentForm` |
+| `UserManagement/Livewire/Forms/TeacherForm.php` | `TeacherForm` |
+| `UserManagement/Livewire/Forms/SupervisorForm.php` | `SupervisorForm` |
+| `UserManagement/Livewire/Forms/AdminUserForm.php` | `AdminUserForm` |
 | `Announcement/Livewire/Forms/AnnouncementForm.php` | `AnnouncementForm` |
 
 ## Notifications
 
 | File | Notification |
 | ---- | ------------ |
-| `Account/Notifications/ActivationCodeNotification.php` | `ActivationCodeNotification` |
+| `UserManagement/Notifications/ActivationCodeNotification.php` | `ActivationCodeNotification` |
 | `Announcement/Notifications/AnnouncementNotification.php` | `AnnouncementNotification` |
 
 ## Console Commands
@@ -151,7 +151,7 @@ Naming pattern: `sysadmin.{resource}.{action}`
 ```
 app/SysAdmin/
 ├── Actions/GetAdminDashboardStatsAction.php
-├── Account/
+├── UserManagement/
 │   ├── Actions/ (12 actions)
 │   ├── Console/Commands/AutoInactivateAccounts.php
 │   ├── Livewire/

@@ -202,6 +202,6 @@ Global: AuthThrottleMiddleware (30 req/min/IP)
 | ShowRecoveryPathCommand | `SysAdmin/Console/Commands/ShowRecoveryPathCommand.php` |
 | ShowRecoveryKeyCommand | `SysAdmin/Console/Commands/ShowRecoveryKeyCommand.php` |
 | RecoverSuperAdminAction | `Auth/SuperAdmin/Actions/RecoverSuperAdminAction.php` |
-| SaveRecoveryKeyAction | `SysAdmin/Account/Actions/SaveRecoveryKeyAction.php` |
-| ReadRecoveryKeyAction | `SysAdmin/Account/Actions/ReadRecoveryKeyAction.php` |
+| SaveRecoveryKeyAction | `SysAdmin/UserManagement/Actions/SaveRecoveryKeyAction.php` |
+| ReadRecoveryKeyAction | `SysAdmin/UserManagement/Actions/ReadRecoveryKeyAction.php` |
 | SuperAdminIntegrityRules | `Auth/SuperAdmin/Entities/SuperAdminIntegrityRules.php` |
