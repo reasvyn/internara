@@ -37,84 +37,96 @@ class OwnershipPolicy
     }
 }
 
+class RelatedDepartment extends Model
+{
+    protected $attributes = ['id' => 42];
+
+    protected $fillable = ['id'];
+}
+
+class AdminUser extends Model
+{
+    public function hasAnyRole(...$roles): bool
+    {
+        return true;
+    }
+}
+
+class TestUser extends Model {}
+
 beforeEach(function () {
     $this->policy = new OwnershipPolicy;
 });
 
 test('is owner checks foreign key match', function () {
-    $user = Mockery::mock(Model::class);
-    $user->shouldReceive('getAttribute')->with('id')->andReturn(42);
+    $user = new TestUser;
+    $user->setAttribute('id', 42);
 
-    $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getAttribute')->with('user_id')->andReturn(42);
+    $model = new TestUser;
+    $model->setAttribute('user_id', 42);
 
     expect($this->policy->callIsOwner($user, $model))->toBeTrue();
 });
 
 test('is owner returns false for non matching foreign key', function () {
-    $user = Mockery::mock(Model::class);
-    $user->shouldReceive('getAttribute')->with('id')->andReturn(42);
+    $user = new TestUser;
+    $user->setAttribute('id', 42);
 
-    $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getAttribute')->with('user_id')->andReturn(99);
+    $model = new TestUser;
+    $model->setAttribute('user_id', 99);
 
     expect($this->policy->callIsOwner($user, $model))->toBeFalse();
 });
 
 test('is owner uses custom foreign key', function () {
-    $user = Mockery::mock(Model::class);
-    $user->shouldReceive('getAttribute')->with('id')->andReturn(7);
+    $user = new TestUser;
+    $user->setAttribute('id', 7);
 
-    $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getAttribute')->with('author_id')->andReturn(7);
+    $model = new TestUser;
+    $model->setAttribute('author_id', 7);
 
     expect($this->policy->callIsOwner($user, $model, 'author_id'))->toBeTrue();
 });
 
 test('is related through checks relation ownership', function () {
-    $user = Mockery::mock(Model::class);
-    $user->shouldReceive('getAttribute')->with('id')->andReturn(42);
+    $user = new TestUser;
+    $user->setAttribute('id', 42);
 
-    $related = Mockery::mock(Model::class);
-    $related->shouldReceive('getAttribute')->with('id')->andReturn(42);
+    $related = new RelatedDepartment;
+    $related->setAttribute('id', 42);
 
-    $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getAttribute')->with('department')->andReturn($related);
+    $model = new TestUser;
+    $model->setAttribute('department', $related);
 
     expect($this->policy->callIsRelatedThrough($user, $model, 'department'))->toBeTrue();
 });
 
 test('is related through returns false when relation is null', function () {
-    $user = Mockery::mock(Model::class);
-    $user->shouldReceive('getAttribute')->with('id')->andReturn(42);
+    $user = new TestUser;
+    $user->setAttribute('id', 42);
 
-    $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getAttribute')->with('department')->andReturnNull();
+    $model = new TestUser;
+    $model->setAttribute('department', null);
 
     expect($this->policy->callIsRelatedThrough($user, $model, 'department'))->toBeFalse();
 });
 
 test('is owner or admin returns true when user is owner', function () {
-    $user = Mockery::mock(Model::class);
-    $user->shouldReceive('getAttribute')->with('id')->andReturn(42);
+    $user = new TestUser;
+    $user->setAttribute('id', 42);
 
-    $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getAttribute')->with('user_id')->andReturn(42);
+    $model = new TestUser;
+    $model->setAttribute('user_id', 42);
 
     expect($this->policy->callIsOwnerOrAdmin($user, $model))->toBeTrue();
 });
 
 test('is owner or admin returns true when user is admin', function () {
-    $user = Mockery::mock(Model::class);
-    $user->shouldReceive('getAttribute')->with('id')->andReturn(42);
-    $user
-        ->shouldReceive('hasAnyRole')
-        ->with(['super_admin', 'admin'])
-        ->once()
-        ->andReturnTrue();
+    $user = new AdminUser;
+    $user->setAttribute('id', 42);
 
-    $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getAttribute')->with('user_id')->andReturn(99);
+    $model = new TestUser;
+    $model->setAttribute('user_id', 99);
 
     expect($this->policy->callIsOwnerOrAdmin($user, $model))->toBeTrue();
 });

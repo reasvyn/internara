@@ -3,19 +3,27 @@
 declare(strict_types=1);
 
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | Valid Setting Types
-    |--------------------------------------------------------------------------
-    */
 
     'valid_types' => ['string', 'integer', 'float', 'boolean', 'json', 'encrypted', 'null'],
 
     /*
     |--------------------------------------------------------------------------
-    | Brand Color Defaults
+    | Theme / Brand Cache Invalidation Keys
     |--------------------------------------------------------------------------
+    | When these setting keys are updated, the theme CSS variable cache
+    | and brand cache will be automatically invalidated.
     */
+    'theme_cache_keys' => [
+        'primary_color',
+        'secondary_color',
+        'accent_color',
+        'base_color',
+        'content_color',
+        'logo',
+        'favicon',
+        'name',
+        'title',
+    ],
 
     'colors' => [
         'defaults' => [

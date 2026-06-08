@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\User\Dashboard\Livewire;
 
-use App\Core\Support\CacheKeys;
 use App\SysAdmin\Actions\GetAdminDashboardStatsAction;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -101,8 +100,8 @@ class AdminDashboard extends UserDashboard
     private function checkCache(): bool
     {
         try {
-            Cache::store()->put(CacheKeys::HEALTH_CHECK, true, 1);
-            $val = Cache::store()->get(CacheKeys::HEALTH_CHECK);
+            Cache::store()->put(config('cache-keys.health_check'), true, 1);
+            $val = Cache::store()->get(config('cache-keys.health_check'));
 
             return $val === true;
         } catch (\Throwable) {

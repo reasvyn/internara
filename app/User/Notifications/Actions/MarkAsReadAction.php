@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\User\Notifications\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Support\CacheKeys;
 use App\User\Notifications\Models\Notification;
 use Illuminate\Support\Facades\Cache;
 
@@ -26,7 +25,7 @@ final class MarkAsReadAction extends BaseAction
             ]);
         }
 
-        Cache::forget(CacheKeys::NOTIFICATION_UNREAD.$notification->user_id);
+        Cache::forget(config('cache-keys.notification_unread').$notification->user_id);
 
         return $notification->fresh();
     }

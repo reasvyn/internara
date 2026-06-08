@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Settings\Support;
 
-use App\Core\Support\CacheKeys;
+use App\Core\Support\AppInfo;
 use App\Core\Support\SmartLogger;
 use App\Settings\Models\Setting;
 use App\Settings\Rules\ValidSettingKey;
@@ -17,31 +17,19 @@ final class Settings
 {
     protected static array $overrides = [];
 
-    protected static array $appInfoMap = [
+    protected static array $appInfoKeys = ['name', 'version', 'support', 'license'];
+
+    protected static array $appInfoAliases = [
         'app_name' => 'name',
         'app_version' => 'version',
-        'app_author' => 'author.name',
         'app_support' => 'support',
         'app_license' => 'license',
+        'author' => 'author.name',
     ];
 
-    protected static function logQueryError(
-        string $message,
-        QueryException $e,
-        array $context = [],
-    ): void {
-        SmartLogger::error($message)
-            ->withPayload(array_merge($context, ['error' => $e->getMessage()]))
-            ->systemOnly()
-            ->save();
-    }
-
-    protected static function logQueryWarning(
-        string $message,
-        QueryException $e,
-        array $context = [],
-    ): void {
-        SmartLogger::warning($message)
+    private static function logQuery(string $level, string $message, QueryException $e, array $context = []): void
+    {
+        SmartLogger::{$level}($message)
             ->withPayload(array_merge($context, ['error' => $e->getMessage()]))
             ->systemOnly()
             ->save();
@@ -68,16 +56,16 @@ final class Settings
     public static function all(bool $skipCache = false): Collection
     {
         if ($skipCache) {
-            Cache::forget(CacheKeys::SETTINGS_ALL);
+            Cache::forget(config('cache-keys.settings_all'));
         }
 
         try {
             return Cache::rememberForever(
-                CacheKeys::SETTINGS_ALL,
+                config('cache-keys.settings_all'),
                 fn () => Setting::all()->pluck('value', 'key'),
             );
         } catch (QueryException $e) {
-            self::logQueryError('Failed to fetch all settings from database', $e);
+            self::logQuery('error', 'Failed to fetch all settings from database', $e);
 
             return collect();
         }
@@ -91,16 +79,16 @@ final class Settings
     public static function group(string $name, bool $skipCache = false): Collection
     {
         if ($skipCache) {
-            Cache::forget(CacheKeys::SETTINGS_GROUP.$name);
+            Cache::forget(config('cache-keys.settings_group').$name);
         }
 
         try {
             return Cache::rememberForever(
-                CacheKeys::SETTINGS_GROUP.$name,
+                config('cache-keys.settings_group').$name,
                 fn () => Setting::group($name)->get(),
             );
         } catch (QueryException $e) {
-            self::logQueryError('Failed to fetch settings group from database', $e, [
+            self::logQuery('error', 'Failed to fetch settings group from database', $e, [
                 'group' => $name,
             ]);
 
@@ -139,6 +127,7 @@ final class Settings
 
             if ($model->wasRecentlyCreated || $model->wasChanged()) {
                 self::forget($key, $model->group);
+                self::invalidateBrandCache($key);
 
                 $updated++;
             }
@@ -147,12 +136,19 @@ final class Settings
         return $updated;
     }
 
+    private static function invalidateBrandCache(string $key): void
+    {
+        if (in_array($key, config('settings.theme_cache_keys', []), true)) {
+            Brand::clearCache();
+        }
+    }
+
     public static function hasGroup(string $name): bool
     {
         try {
             return Setting::group($name)->exists();
         } catch (QueryException $e) {
-            self::logQueryWarning('Failed to check settings group existence', $e, [
+            self::logQuery('warning', 'Failed to check settings group existence', $e, [
                 'group' => $name,
             ]);
 
@@ -162,18 +158,18 @@ final class Settings
 
     public static function forgetGroup(string $name): void
     {
-        Cache::forget(CacheKeys::SETTINGS_GROUP.$name);
-        Cache::forget(CacheKeys::SETTINGS_ALL);
-        Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
+        Cache::forget(config('cache-keys.settings_group').$name);
+        Cache::forget(config('cache-keys.settings_all'));
+        Cache::forget(config('cache-keys.theme_css_variables'));
 
         try {
             $keys = Setting::group($name)->pluck('key');
 
             foreach ($keys as $key) {
-                Cache::forget(CacheKeys::SETTINGS_KEY.$key);
+                Cache::forget(config('cache-keys.settings_key').$key);
             }
         } catch (QueryException $e) {
-            self::logQueryWarning('Failed to forget group cache keys', $e, [
+            self::logQuery('warning', 'Failed to forget group cache keys', $e, [
                 'group' => $name,
             ]);
         }
@@ -182,16 +178,16 @@ final class Settings
     public static function keys(bool $skipCache = false): Collection
     {
         if ($skipCache) {
-            Cache::forget(CacheKeys::SETTINGS_KEYS);
+            Cache::forget(config('cache-keys.settings_keys'));
         }
 
         try {
             return Cache::rememberForever(
-                CacheKeys::SETTINGS_KEYS,
+                config('cache-keys.settings_keys'),
                 fn () => Setting::query()->orderBy('key')->pluck('key'),
             );
         } catch (QueryException $e) {
-            self::logQueryError('Failed to fetch setting keys', $e);
+            self::logQuery('error', 'Failed to fetch setting keys', $e);
 
             return collect();
         }
@@ -206,7 +202,7 @@ final class Settings
                 ->groupBy('group')
                 ->pluck('count', 'group');
         } catch (QueryException $e) {
-            self::logQueryError('Failed to count settings by group', $e);
+            self::logQuery('error', 'Failed to count settings by group', $e);
 
             return collect();
         }
@@ -222,7 +218,7 @@ final class Settings
                 ->orderBy('group')
                 ->pluck('group');
         } catch (QueryException $e) {
-            self::logQueryWarning('Failed to fetch setting groups', $e);
+            self::logQuery('warning', 'Failed to fetch setting groups', $e);
 
             return collect();
         }
@@ -230,43 +226,28 @@ final class Settings
 
     public static function forget(string $key, ?string $group = null): void
     {
-        Cache::forget(CacheKeys::SETTINGS_KEY.$key);
+        Cache::forget(config('cache-keys.settings_key').$key);
 
         if ($group !== null) {
-            Cache::forget(CacheKeys::SETTINGS_GROUP.$group);
+            Cache::forget(config('cache-keys.settings_group').$group);
         } else {
             try {
                 $setting = Setting::where('key', $key)->first();
 
                 if ($setting?->group) {
-                    Cache::forget(CacheKeys::SETTINGS_GROUP.$setting->group);
+                    Cache::forget(config('cache-keys.settings_group').$setting->group);
                 }
             } catch (QueryException $e) {
-                self::logQueryWarning('Failed to invalidate setting group cache', $e, [
+                self::logQuery('warning', 'Failed to invalidate setting group cache', $e, [
                     'key' => $key,
                 ]);
             }
         }
 
-        Cache::forget(CacheKeys::SETTINGS_KEY.'all');
+        Cache::forget(config('cache-keys.settings_key').'all');
 
-        if (
-            in_array(
-                $key,
-                [
-                    'primary_color',
-                    'secondary_color',
-                    'accent_color',
-                    'base_color',
-                    'brand_logo',
-                    'brand_logo_ref',
-                    'site_favicon',
-                    'brand_favicon_ref',
-                ],
-                true,
-            )
-        ) {
-            Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
+        if (in_array($key, config('settings.theme_cache_keys', []), true)) {
+            Cache::forget(config('cache-keys.theme_css_variables'));
         }
     }
 
@@ -286,11 +267,11 @@ final class Settings
         }
 
         if ($skipCache) {
-            Cache::forget(CacheKeys::SETTINGS_KEY.$key);
+            Cache::forget(config('cache-keys.settings_key').$key);
         }
 
         try {
-            $dbValue = Cache::rememberForever(CacheKeys::SETTINGS_KEY.$key, function () use (
+            $dbValue = Cache::rememberForever(config('cache-keys.settings_key').$key, function () use (
                 $key,
             ) {
                 $setting = Setting::where('key', $key)->first();
@@ -298,7 +279,7 @@ final class Settings
                 return $setting?->value;
             });
         } catch (QueryException $e) {
-            self::logQueryWarning('Failed to resolve setting from database', $e, [
+            self::logQuery('warning', 'Failed to resolve setting from database', $e, [
                 'key' => $key,
             ]);
 
@@ -318,10 +299,14 @@ final class Settings
 
     protected static function resolveAppInfoValue(string $key): mixed
     {
-        if (! isset(self::$appInfoMap[$key])) {
-            return null;
+        if (isset(self::$appInfoAliases[$key])) {
+            return AppInfo::get(self::$appInfoAliases[$key]);
         }
 
-        return AppInfo::get(self::$appInfoMap[$key]);
+        if (in_array($key, self::$appInfoKeys, true)) {
+            return AppInfo::get($key);
+        }
+
+        return null;
     }
 }

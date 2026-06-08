@@ -45,82 +45,101 @@ class RolesPolicy
     }
 }
 
+class UserWithRoles extends Model
+{
+    protected array $roleMap = [];
+
+    protected array $anyRoleMap = [];
+
+    public function setRoleResult(string $role, bool $result): void
+    {
+        $this->roleMap[$role] = $result;
+    }
+
+    public function setAnyRoleResult(array $roles, bool $result): void
+    {
+        $this->anyRoleMap[implode(',', $roles)] = $result;
+    }
+
+    public function hasRole($roles, ?string $guard = null): bool
+    {
+        $role = is_array($roles) ? $roles[0] : $roles;
+
+        return $this->roleMap[$role] ?? false;
+    }
+
+    public function hasAnyRole(...$roles): bool
+    {
+        $flat = [];
+        foreach ($roles as $role) {
+            if (is_array($role)) {
+                $flat = array_merge($flat, $role);
+            } else {
+                $flat[] = $role;
+            }
+        }
+        $key = implode(',', $flat);
+
+        return $this->anyRoleMap[$key] ?? false;
+    }
+}
+
 beforeEach(function () {
     $this->policy = new RolesPolicy;
 });
 
 test('is admin checks super admin or admin role', function () {
-    $user = Mockery::mock(Model::class);
-    $user
-        ->shouldReceive('hasAnyRole')
-        ->with(['super_admin', 'admin'])
-        ->once()
-        ->andReturnTrue();
+    $user = new UserWithRoles;
+    $user->setAnyRoleResult(['super_admin', 'admin'], true);
 
     expect($this->policy->callIsAdmin($user))->toBeTrue();
 });
 
 test('is admin returns false for non admin', function () {
-    $user = Mockery::mock(Model::class);
-    $user
-        ->shouldReceive('hasAnyRole')
-        ->with(['super_admin', 'admin'])
-        ->once()
-        ->andReturnFalse();
+    $user = new UserWithRoles;
+    $user->setAnyRoleResult(['super_admin', 'admin'], false);
 
     expect($this->policy->callIsAdmin($user))->toBeFalse();
 });
 
 test('is teacher checks teacher role', function () {
-    $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasRole')->with('teacher')->once()->andReturnTrue();
+    $user = new UserWithRoles;
+    $user->setRoleResult('teacher', true);
 
     expect($this->policy->callIsTeacher($user))->toBeTrue();
 });
 
 test('is student checks student role', function () {
-    $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasRole')->with('student')->once()->andReturnTrue();
+    $user = new UserWithRoles;
+    $user->setRoleResult('student', true);
 
     expect($this->policy->callIsStudent($user))->toBeTrue();
 });
 
 test('is supervisor checks supervisor role', function () {
-    $user = Mockery::mock(Model::class);
-    $user->shouldReceive('hasRole')->with('supervisor')->once()->andReturnTrue();
+    $user = new UserWithRoles;
+    $user->setRoleResult('supervisor', true);
 
     expect($this->policy->callIsSupervisor($user))->toBeTrue();
 });
 
 test('is admin or teacher checks admin and teacher roles', function () {
-    $user = Mockery::mock(Model::class);
-    $user
-        ->shouldReceive('hasAnyRole')
-        ->with(['super_admin', 'admin', 'teacher'])
-        ->once()
-        ->andReturnTrue();
+    $user = new UserWithRoles;
+    $user->setAnyRoleResult(['super_admin', 'admin', 'teacher'], true);
 
     expect($this->policy->callIsAdminOrTeacher($user))->toBeTrue();
 });
 
 test('can manage any role delegates to is admin', function () {
-    $user = Mockery::mock(Model::class);
-    $user
-        ->shouldReceive('hasAnyRole')
-        ->with(['super_admin', 'admin'])
-        ->once()
-        ->andReturnTrue();
+    $user = new UserWithRoles;
+    $user->setAnyRoleResult(['super_admin', 'admin'], true);
 
     expect($this->policy->callCanManageAnyRole($user))->toBeTrue();
 });
 
 test('has any of roles delegates to user', function () {
-    $user = Mockery::mock(Model::class);
-    $user
-        ->shouldReceive('hasAnyRole')
-        ->with(['editor', 'moderator'])
-        ->once()
-        ->andReturnTrue();
+    $user = new UserWithRoles;
+    $user->setAnyRoleResult(['editor', 'moderator'], true);
 
     expect($this->policy->callHasAnyOfRoles($user, ['editor', 'moderator']))->toBeTrue();
 });

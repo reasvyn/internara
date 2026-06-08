@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 use App\Core\Livewire\Concerns\WithSorting;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
+
+class SortableModel extends Model
+{
+    protected $table = 'sortable';
+}
 
 beforeEach(function () {
     $this->component = new class extends Component
@@ -40,8 +46,7 @@ test('with sorting defaults to id ascending', function () {
 });
 
 test('with sorting applies valid column and direction', function () {
-    $query = Mockery::mock(Builder::class);
-    $query->shouldReceive('orderBy')->once()->with('name', 'desc')->andReturnSelf();
+    $query = SortableModel::query()->orderBy('name', 'desc');
 
     $this->component->setSortBy(['column' => 'name', 'direction' => 'desc']);
     $result = $this->component->callApplySorting($query);
@@ -50,35 +55,55 @@ test('with sorting applies valid column and direction', function () {
 });
 
 test('with sorting falls back to id for invalid column', function () {
-    $query = Mockery::mock(Builder::class);
-    $query->shouldReceive('orderBy')->once()->with('id', 'asc')->andReturnSelf();
+    $query = SortableModel::query();
 
     $this->component->setSortBy(['column' => 'invalid_column', 'direction' => 'asc']);
-    $this->component->callApplySorting($query);
+    $result = $this->component->callApplySorting($query);
+
+    expect($result->getQuery()->orders)->toHaveCount(1);
+    expect($result->getQuery()->orders[0])->toMatchArray([
+        'column' => 'id',
+        'direction' => 'asc',
+    ]);
 });
 
 test('with sorting falls back to asc for invalid direction', function () {
-    $query = Mockery::mock(Builder::class);
-    $query->shouldReceive('orderBy')->once()->with('name', 'asc')->andReturnSelf();
+    $query = SortableModel::query();
 
     $this->component->setSortBy(['column' => 'name', 'direction' => 'invalid']);
-    $this->component->callApplySorting($query);
+    $result = $this->component->callApplySorting($query);
+
+    expect($result->getQuery()->orders)->toHaveCount(1);
+    expect($result->getQuery()->orders[0])->toMatchArray([
+        'column' => 'name',
+        'direction' => 'asc',
+    ]);
 });
 
 test('with sorting uses default column when sort by is empty', function () {
-    $query = Mockery::mock(Builder::class);
-    $query->shouldReceive('orderBy')->once()->with('id', 'asc')->andReturnSelf();
+    $query = SortableModel::query();
 
     $this->component->setSortBy([]);
-    $this->component->callApplySorting($query);
+    $result = $this->component->callApplySorting($query);
+
+    expect($result->getQuery()->orders)->toHaveCount(1);
+    expect($result->getQuery()->orders[0])->toMatchArray([
+        'column' => 'id',
+        'direction' => 'asc',
+    ]);
 });
 
 test('with sorting respects custom sortable columns', function () {
     $this->component->setSortableColumns(['email', 'status']);
 
-    $query = Mockery::mock(Builder::class);
-    $query->shouldReceive('orderBy')->once()->with('email', 'asc')->andReturnSelf();
+    $query = SortableModel::query();
 
     $this->component->setSortBy(['column' => 'email', 'direction' => 'asc']);
-    $this->component->callApplySorting($query);
+    $result = $this->component->callApplySorting($query);
+
+    expect($result->getQuery()->orders)->toHaveCount(1);
+    expect($result->getQuery()->orders[0])->toMatchArray([
+        'column' => 'email',
+        'direction' => 'asc',
+    ]);
 });

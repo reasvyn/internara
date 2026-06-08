@@ -8,7 +8,6 @@ use App\Academics\Department\Models\Department;
 use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Actions\BaseAction;
-use App\Core\Support\CacheKeys;
 use App\Enrollment\Models\Placement;
 use App\Enrollment\Models\Registration;
 use App\Guidance\Mentor\Models\Mentor;
@@ -24,7 +23,7 @@ final class GetAdminDashboardStatsAction extends BaseAction
 {
     public function execute(): array
     {
-        return Cache::remember(CacheKeys::ADMIN_DASHBOARD_STATS, 300, function () {
+        return Cache::remember(config('cache-keys.admin_dashboard_stats'), 300, function () {
             $students = User::role(RoleEnum::STUDENT->value)->count();
             $registered = Registration::count();
 

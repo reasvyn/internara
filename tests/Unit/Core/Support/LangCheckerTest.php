@@ -5,82 +5,95 @@ declare(strict_types=1);
 namespace Tests\Unit\Core\Support;
 
 use App\Core\Support\LangChecker;
-use Illuminate\Contracts\Translation\Loader;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Mockery;
 
-test('lang checker logs warning on missing translation key', function () {
-    $loader = Mockery::mock(Loader::class);
-    $loader->shouldReceive('load')->andReturn([]);
+describe('LangChecker with real translations', function () {
+    it('returns real translation from lang files', function () {
+        $result = App::make('translator')->get('log.login_success', [], 'en');
 
-    $log = Log::spy();
+        expect($result)->toBe('User has successfully authenticated into the system.');
+    });
 
-    $checker = new LangChecker($loader, 'en');
-    $result = $checker->get('missing.key');
+    it('returns translated value in Indonesian', function () {
+        $result = App::make('translator')->get('log.login_success', [], 'id');
 
-    expect($result)->toBe('missing.key');
-    $log->shouldHaveReceived('warning')
-        ->once()
-        ->with('Missing translation key: missing.key', Mockery::type('array'));
-});
+        expect($result)->toBeString();
+        expect($result)->not->toBe('log.login_success');
+    });
 
-test('lang checker returns translation when key exists', function () {
-    $loader = Mockery::mock(Loader::class);
-    $loader->shouldReceive('load')->andReturn(['existing' => 'Terjemahan']);
+    it('returns key when translation missing', function () {
+        $result = App::make('translator')->get('log.nonexistent_key', [], 'en');
 
-    $log = Log::spy();
+        expect($result)->toBe('log.nonexistent_key');
+    });
 
-    $checker = new LangChecker($loader, 'id');
-    $result = $checker->get('existing');
+    it('detects missing keys', function () {
+        $log = Log::spy();
 
-    expect($result)->toBe('Terjemahan');
-    $log->shouldNotHaveReceived('warning');
-});
+        $checker = new LangChecker(App::make('translation.loader'), 'en');
+        $result = $checker->get('log.nonexistent_key', [], 'en');
 
-test('lang checker handles empty string key', function () {
-    $loader = Mockery::mock(Loader::class);
-    $loader->shouldReceive('load')->andReturn([]);
+        expect($result)->toBe('log.nonexistent_key');
+        $log->shouldHaveReceived('warning')
+            ->once()
+            ->with('Missing translation key: log.nonexistent_key', Mockery::type('array'));
+    });
 
-    $log = Log::spy();
+    it('does not warn for existing keys', function () {
+        $log = Log::spy();
 
-    $checker = new LangChecker($loader, 'en');
-    $result = $checker->get('');
+        $checker = new LangChecker(App::make('translation.loader'), 'en');
+        $result = $checker->get('log.login_success', [], 'en');
 
-    expect($result)->toBe('');
-    $log->shouldHaveReceived('warning')
-        ->once()
-        ->with('Missing translation key: ', Mockery::type('array'));
-});
+        expect($result)->toBe('User has successfully authenticated into the system.');
+        $log->shouldNotHaveReceived('warning');
+    });
 
-test('lang checker uses specified locale', function () {
-    $loader = Mockery::mock(Loader::class);
-    $loader
-        ->shouldReceive('load')
-        ->with('id', '*', '*')
-        ->andReturn(['greeting' => 'Halo']);
+    it('handles missing key with empty string', function () {
+        $log = Log::spy();
 
-    $checker = new LangChecker($loader, 'id');
-    $result = $checker->get('greeting', [], 'id');
+        $checker = new LangChecker(App::make('translation.loader'), 'en');
+        $result = $checker->get('', [], 'en');
 
-    expect($result)->toBe('Halo');
-});
+        expect($result)->toBe('');
+        $log->shouldHaveReceived('warning')
+            ->once()
+            ->with('Missing translation key: ', Mockery::type('array'));
+    });
 
-test('lang checker falls back to default locale', function () {
-    $loader = Mockery::mock(Loader::class);
-    $loader->shouldReceive('load')->andReturn(['fallback' => 'Fallback value']);
+    it('uses specified locale', function () {
+        $checker = new LangChecker(App::make('translation.loader'), 'id');
+        $result = $checker->get('log.login_success', [], 'id');
 
-    $checker = new LangChecker($loader, 'en');
-    $result = $checker->get('fallback', [], 'es');
+        expect($result)->toBeString();
+        expect($result)->not->toBe('log.login_success');
+    });
 
-    expect($result)->toBe('Fallback value');
-});
+    it('falls back to default locale', function () {
+        $checker = new LangChecker(App::make('translation.loader'), 'en');
+        $result = $checker->get('log.login_success', [], 'es');
 
-test('lang checker replaces placeholders', function () {
-    $loader = Mockery::mock(Loader::class);
-    $loader->shouldReceive('load')->andReturn(['welcome' => 'Hello :name']);
+        expect($result)->toBeString();
+        expect($result)->toBe('log.login_success');
+    });
 
-    $checker = new LangChecker($loader, 'en');
-    $result = $checker->get('welcome', ['name' => 'John']);
+    it('replaces placeholders', function () {
+        $result = App::make('translator')->get('setup.wizard.page_title', ['app_name' => 'Internara'], 'en');
 
-    expect($result)->toBe('Hello John');
+        expect($result)->toBeString();
+        expect($result)->toContain('Internara');
+    });
+
+    it('caller detection works', function () {
+        $log = Log::spy();
+
+        $checker = new LangChecker(App::make('translation.loader'), 'en');
+        $checker->get('log.another_missing_key', [], 'en');
+
+        $log->shouldHaveReceived('warning')
+            ->once()
+            ->with('Missing translation key: log.another_missing_key', Mockery::type('array'));
+    });
 });

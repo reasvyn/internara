@@ -1,6 +1,6 @@
 # Core — Technical Reference
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-08
 
 Detailed structural and implementation reference for the **Core** module, including both abstract infrastructure and concrete shared components.
 
@@ -18,7 +18,7 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 - **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
 - **Concrete Exceptions**: 6 (`ConflictException`, `NotFoundException`, `RateLimitException`, `RejectedException`, `UnauthorizedException`, `ValidationFailedException`)
 - **Middleware**: 2 (`SecurityHeaders`, `LogContext`)
-- **Support Classes**: 11 (`SmartLogger`, `LangChecker`, `CacheKeys`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `HasModelStatuses`, `Integrity`, `PasswordRules`, `PiiMasker`)
+- **Support Classes**: 11 (`SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `HasModelStatuses`, `PasswordRules`, `PiiMasker`)
 - **Models**: 2 (`ActivityLog` — `BaseModel` is abstract)
 - **Events**: 1 (`BaseEvent`, abstract)
 - **Livewire Components**: 1 (`BaseRecordManager`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
@@ -26,8 +26,9 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 - **Data/DTOs**: 1 abstract (`BaseData`) + 2 concrete
 - **Channels**: 1 (`CustomDatabaseChannel`)
 - **Console Commands**: 1 (`module:discover`)
-- **Global Helpers**: 1 (`helpers.php`: `setting()`, `brand()`, `app_info()`)
-- **Tests**: 52 (7 Feature + 45 Unit)
+- **Global Helpers**: 1 (`app_info()` in `helpers.php`)
+- **Config Files**: 1 (`config/cache-keys.php` — centralized cache key registry)
+- **Tests**: 55 (10 Feature + 45 Unit)
 - **Routes**: 0 (health check at `/up` in `bootstrap/app.php`)
 
 ---
@@ -143,16 +144,18 @@ ModuleException (abstract, extends RuntimeException)
 | ----- | ---- | ------- |
 | `SmartLogger` | `Support/SmartLogger.php` | Dual-channel logger: system + activity, PII masking |
 | `LangChecker` | `Support/LangChecker.php` | Dev helper: warns on missing translation keys |
-| `CacheKeys` | `Support/CacheKeys.php` | Central registry of all cache key constants |
+| `AppInfo` | `Support/AppInfo.php` | Static metadata from composer.json + config |
+| `AppIntegrity` | `Support/AppIntegrity.php` | Author verification (Reas Vyn) |
 | `Color` | `Support/Color.php` | Hex-to-RGB, HSL conversion, color manipulation |
 | `CsvHandler` | `Support/CsvHandler.php` | CSV parsing, heading validation, export generation |
 | `Environment` | `Support/Environment.php` | Environment detection (staging, production, dev) |
 | `HandlesActionErrors` | `Support/HandlesActionErrors.php` | Generic try-catch-log-rethrow for actions |
 | `HasModelStatuses` | `Support/HasModelStatuses.php` | Historical status column utilities |
-| `Integrity` | `Support/Integrity.php` | Composer config and security assessment |
 | `PasswordRules` | `Support/PasswordRules.php` | Common password strength validation rules |
 | `PiiMasker` | `Support/PiiMasker.php` | Regex-based PII redaction (IDs, phone numbers) |
-| `helpers.php` | `Support/helpers.php` | `setting()`, `brand()`, `app_info()` helper functions |
+| `helpers.php` | `Support/helpers.php` | `app_info()` helper function |
+
+The helpers `setting()` and `brand()` are defined in `app/Settings/Support/helpers.php`.
 
 ---
 
@@ -216,13 +219,13 @@ app/Core/
 │   │   └── AuthorizesRoles.php
 │   └── BasePolicy.php
 └── Support/
-    ├── CacheKeys.php
+    ├── AppInfo.php
+    ├── AppIntegrity.php
     ├── Color.php
     ├── CsvHandler.php
     ├── Environment.php
     ├── HandlesActionErrors.php
     ├── HasModelStatuses.php
-    ├── Integrity.php
     ├── LangChecker.php
     ├── PasswordRules.php
     ├── PiiMasker.php
@@ -238,5 +241,6 @@ app/Core/
 - **Routing**: None (health check `/up` in `bootstrap/app.php`)
 - **Views**: `resources/views/core/`
 - **Testing**: `tests/Feature/Core/`, `tests/Unit/Core/`
+- **Cache Config**: `config/cache-keys.php`
 
 *For overview and business context, see [core.md](core.md).*

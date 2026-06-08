@@ -75,7 +75,7 @@ don't.
 | Enum                       | Implements `LabelEnum`                      | `label(): string`                                                                                           |
 | Status enum                | Implements `StatusEnum` (+ LabelEnum)       | `canTransitionTo()`, `validTransitions()`, `isTerminal()`                                                   |
 | Exception                  | Extends `AppException` or `ModuleException` | `HasExceptionContext` trait                                                                                 |
-| Cache key                  | `CacheKeys` constant                        | Centralized key registry, prevents collisions                                                               |
+| Cache key                  | `config('cache-keys')` constant                        | Centralized key registry, prevents collisions                                                               |
 | DTO                        | `BaseData`                                  | `app/Core/Data/BaseData.php`                                                                                |
 | Event                      | `BaseEvent`                                 | `Dispatchable`, `eventName()` for log translation, `toPayload()` for logging payload                        |
 
@@ -154,7 +154,7 @@ app/
 │   └── Concerns/      → Livewire traits (WithRecordSelection, WithSorting)
 ├── Policies/
 │   └── Concerns/      → Policy traits (AuthorizesOwnership, AuthorizesRoles)
-└── Support/           → Static utilities (CacheKeys, Locale, Theme, PiiMasker)
+└── Support/           → Static utilities (config('cache-keys'), Locale, Theme, PiiMasker)
 ```
 
 ### Views & Tests Mirror Structure
@@ -980,13 +980,13 @@ class InternshipFactory extends Factory
 
 ## 18. Cache Keys
 
-- Every cache key MUST be declared as a constant in `App\Support\CacheKeys`.
+- Every cache key MUST be declared as a constant in `App\Support\config('cache-keys')`.
 - Naming: `{module}.{purpose}[.{qualifier}]`.
 - TTL is documented in a comment next to the constant.
 - Invalidation trigger is documented in a comment.
 
 ```php
-final readonly class CacheKeys
+final readonly class config('cache-keys')
 {
     /** Invalidation: SetupFinalized event */
     public const string SETUP_INSTALLED = 'setup.is_installed';
@@ -1181,6 +1181,6 @@ describe('AccountStatus', function () {
 - [ ] No `dd()`, `dump()`, `var_dump()`, `ray()` left in code
 - [ ] All user-facing strings use `__()` helper
 - [ ] Action follows the correct triad pattern (Command/Read/Process)
-- [ ] Cache keys registered in `CacheKeys` constants
+- [ ] Cache keys registered in `config('cache-keys')` constants
 - [ ] Tests pass: `php artisan test --compact`
 - [ ] Pint clean: `vendor/bin/pint --dirty --format agent`

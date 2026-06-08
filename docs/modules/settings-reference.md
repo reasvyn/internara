@@ -1,6 +1,6 @@
 # Settings — Technical Reference
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-08
 
 Detailed structural and implementation reference for the **Settings** module.
 
@@ -88,9 +88,10 @@ Manages system-wide configuration: key-value settings store, brand identity (log
 
 | File | Class | Purpose |
 | ---- | ----- | ------- |
-| `Support/Settings.php` | `Settings` | Runtime settings manager |
-| `Support/AppInfo.php` | `AppInfo` | Application metadata |
-| `Support/AppMetadata.php` | `AppMetadata` | Extended app metadata |
+| `Support/Settings.php` | `Settings` | Runtime settings manager with cached reads |
+| `Support/Brand.php` | `Brand` | Dynamic branding values from database |
+| `Support/AppInfo.php` | `AppInfo` | Delegates to `Core\AppInfo` |
+| `Support/helpers.php` | — | `setting()`, `brand()` global helpers |
 | `Locale/Support/Locale.php` | `Locale` | Locale management |
 | `Theme/Support/Theme.php` | `Theme` | Theme engine (CSS variables) |
 
@@ -140,8 +141,9 @@ app/Settings/
 ├── Rules/ValidSettingKey.php
 ├── Support/
 │   ├── AppInfo.php
-│   ├── AppMetadata.php
-│   └── Settings.php
+│   ├── Brand.php
+│   ├── Settings.php
+│   └── helpers.php
 └── Theme/
     └── Support/Theme.php
 ```
@@ -156,6 +158,6 @@ app/Settings/
 - **Views**: `resources/views/settings/`
 - **Testing**: `tests/Feature/Settings/`, `tests/Unit/Settings/`
 - **Dependencies**: Core, Academics
-- **Used By**: All modules (via `setting()`, `brand()`, `app_info()` helpers)
+- **Used By**: All modules (via `setting()` and `brand()` helpers)
 
 *For overview and business context, see [settings.md](settings.md).*

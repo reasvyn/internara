@@ -8,7 +8,6 @@ use App\Auth\Permissions\Policies\UserPolicy;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Contracts\SettingsStore;
 use App\Core\Policies\BasePolicy;
-use App\Core\Support\CacheKeys;
 use App\Core\Support\LangChecker;
 use App\Settings\Support\Settings;
 use App\Setup\SetupWizard\Events\SetupFinalized;
@@ -83,7 +82,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function discoverLivewireComponents(): void
     {
-        $components = Cache::remember(CacheKeys::MODULE_LIVEWIRE, 86400, function () {
+        $components = Cache::remember(config('cache-keys.module_livewire'), 86400, function () {
             $result = [];
             $moduleDir = realpath(self::MODULE_PATH);
             if ($moduleDir === false) {
@@ -148,7 +147,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function discoverPolicies(): void
     {
-        $policies = Cache::remember(CacheKeys::MODULE_POLICIES, 86400, function () {
+        $policies = Cache::remember(config('cache-keys.module_policies'), 86400, function () {
             $result = [];
             $moduleDir = realpath(self::MODULE_PATH);
             if ($moduleDir === false) {
@@ -210,7 +209,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function registerBladeNamespaces(): void
     {
-        $namespaces = Cache::remember(CacheKeys::MODULE_VIEWS, 86400, function () {
+        $namespaces = Cache::remember(config('cache-keys.module_views'), 86400, function () {
             $result = [];
             $viewsDir = realpath(
                 config('module.paths.views', self::MODULE_PATH.'/../resources/views'),
