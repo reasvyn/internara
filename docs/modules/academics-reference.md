@@ -42,6 +42,13 @@ Manages educational structure: academic years, departments (jurusan), and school
 
 ---
 
+## Data / DTOs
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `AcademicYear/Data/AcademicYearData.php` | `AcademicYearData` | `BaseData` |
+| `Department/Data/DepartmentData.php` | `DepartmentData` | `BaseData` |
+
 ## Entities
 
 | File | Class | Extends |
@@ -49,6 +56,15 @@ Manages educational structure: academic years, departments (jurusan), and school
 | `AcademicYear/Entities/AcademicYearState.php` | `AcademicYearState` | `BaseEntity` |
 | `Department/Entities/DepartmentState.php` | `DepartmentState` | `BaseEntity` |
 | `School/Entities/SchoolEntity.php` | `SchoolEntity` | `BaseEntity` |
+
+## Events
+
+| File | Class | Dispatched By |
+| ---- | ----- | ------------- |
+| `AcademicYear/Events/AcademicYearCreated.php` | `AcademicYearCreated` | `CreateAcademicYearAction` |
+| `AcademicYear/Events/AcademicYearActivated.php` | `AcademicYearActivated` | `ActivateAcademicYearAction` |
+| `Department/Events/DepartmentCreated.php` | `DepartmentCreated` | `CreateDepartmentAction` |
+| `Department/Events/DepartmentDeleted.php` | `DepartmentDeleted` | `DeleteDepartmentAction` |
 
 ---
 
@@ -96,7 +112,11 @@ app/Academics/
 │   │   ├── CreateAcademicYearAction.php
 │   │   ├── DeleteAcademicYearAction.php
 │   │   └── UpdateAcademicYearAction.php
+│   ├── Data/AcademicYearData.php
 │   ├── Entities/AcademicYearState.php
+│   ├── Events/
+│   │   ├── AcademicYearActivated.php
+│   │   └── AcademicYearCreated.php
 │   ├── Livewire/
 │   │   ├── Forms/AcademicYearForm.php
 │   │   └── AcademicYearManager.php
@@ -107,7 +127,11 @@ app/Academics/
 │   │   ├── CreateDepartmentAction.php
 │   │   ├── DeleteDepartmentAction.php
 │   │   └── UpdateDepartmentAction.php
+│   ├── Data/DepartmentData.php
 │   ├── Entities/DepartmentState.php
+│   ├── Events/
+│   │   ├── DepartmentCreated.php
+│   │   └── DepartmentDeleted.php
 │   ├── Livewire/
 │   │   ├── Forms/DepartmentForm.php
 │   │   └── DepartmentManager.php
@@ -127,7 +151,8 @@ app/Academics/
 - **Routing**: `routes/web/academics.php`
 - **Views**: `resources/views/academics/`
 - **Testing**: `tests/Feature/Academics/`, `tests/Unit/Academics/`
-- **Dependencies**: Core
-- **Used By**: Program, Enrollment, Assessment
+- **Dependencies**: Core (BaseModel, BaseAction, BaseEntity, BaseData, BasePolicy)
+- **Events Consumed By**: `User/Dashboard` (cache invalidation listeners)
+- **Used By**: Program, Enrollment, Assessment, User/Dashboard
 
 *For overview and business context, see [academics.md](academics.md).*

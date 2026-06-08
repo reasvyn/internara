@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Academics\Department\Listeners;
+namespace App\User\Dashboard\Listeners;
 
 use App\Academics\Department\Events\DepartmentCreated;
 use App\Academics\Department\Events\DepartmentDeleted;

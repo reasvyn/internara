@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Academics\AcademicYear\Listeners;
+namespace App\User\Dashboard\Listeners;
 
 use App\Academics\AcademicYear\Events\AcademicYearActivated;
 use App\Academics\AcademicYear\Events\AcademicYearCreated;
