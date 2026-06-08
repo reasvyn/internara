@@ -20,7 +20,7 @@ final class DirectPlacementAction extends BaseAction
             $placement = Placement::findOrFail($data['placement_id']);
 
             if ($placement->asPlacementCapacity()->isFull()) {
-                throw new RejectedException('Placement quota is already full.');
+                throw new RejectedException(__('placement.quota_full'));
             }
 
             /** @var Mentee $mentee */

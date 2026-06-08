@@ -13,7 +13,7 @@ final class DeletePlacementAction extends BaseAction
     public function execute(Placement $placement): void
     {
         if (! $placement->asPlacementState()->canBeDeleted()) {
-            throw new RejectedException('Cannot delete placement with active registrations.');
+            throw new RejectedException(__('placement.has_active_registrations'));
         }
 
         $this->transaction(function () use ($placement) {

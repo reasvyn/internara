@@ -20,13 +20,13 @@ final class VerifyRegistrationAction extends BaseAction
             );
 
             if (! $registration->hasStatus('pending')) {
-                throw new RejectedException('Registration is not in pending status.');
+                throw new RejectedException(__('registration.not_pending'));
             }
 
             $placement = Placement::findOrFail($data['placement_id']);
 
             if ($placement->asPlacementCapacity()->isFull()) {
-                throw new RejectedException('Placement quota is already full.');
+                throw new RejectedException(__('placement.quota_full'));
             }
 
             $registration->update([

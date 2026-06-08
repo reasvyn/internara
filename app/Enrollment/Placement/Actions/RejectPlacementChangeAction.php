@@ -13,7 +13,7 @@ final class RejectPlacementChangeAction extends BaseAction
     public function execute(PlacementChangeRequest $request, string $reason): void
     {
         if ($request->status->isTerminal()) {
-            throw new RejectedException('This request has already been processed.');
+            throw new RejectedException(__('placement.already_processed'));
         }
 
         $this->transaction(function () use ($request, $reason) {

@@ -19,7 +19,7 @@ final class ApproveAccountApplicationAction extends BaseAction
         $application = AccountApplication::findOrFail($applicationId);
 
         if ($application->status !== AccountApplicationStatus::PENDING) {
-            throw new RejectedException('Application is not in pending status.');
+            throw new RejectedException(__('registration.application_not_pending'));
         }
 
         return $this->transaction(function () use ($application, $admin) {

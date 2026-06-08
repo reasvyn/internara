@@ -16,7 +16,7 @@ final class ApprovePlacementChangeAction extends BaseAction
     public function execute(PlacementChangeRequest $request): void
     {
         if ($request->status->isTerminal()) {
-            throw new RejectedException('This request has already been processed.');
+            throw new RejectedException(__('placement.already_processed'));
         }
 
         $this->transaction(function () use ($request) {
@@ -25,7 +25,7 @@ final class ApprovePlacementChangeAction extends BaseAction
             $newPlacement = Placement::findOrFail($request->to_placement_id);
 
             if (! PlacementCapacity::fromModel($newPlacement)->hasAvailableSlots()) {
-                throw new RejectedException('Target placement is full.');
+                throw new RejectedException(__('placement.target_full'));
             }
 
             $oldPlacement->decrement('filled_quota');
