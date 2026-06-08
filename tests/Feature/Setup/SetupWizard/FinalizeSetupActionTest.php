@@ -10,7 +10,6 @@ use App\Settings\Support\Settings;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
 use App\Setup\SetupWizard\Actions\SetupDepartmentAction;
-use App\Setup\SetupWizard\Actions\SetupInternshipAction;
 use App\Setup\SetupWizard\Actions\SetupSchoolAction;
 use App\Setup\SetupWizard\Actions\SetupSuperAdminAction;
 use App\SysAdmin\UserManagement\Actions\SaveRecoveryKeyAction;
@@ -45,15 +44,12 @@ test(
 
         $setupSchool = app(SetupSchoolAction::class);
         $setupDept = app(SetupDepartmentAction::class);
-
         $setupAdmin = app(SetupSuperAdminAction::class);
-        $setupInternship = app(SetupInternshipAction::class);
 
         $finalizeAction = new FinalizeSetupAction(
             $setupSchool,
             $setupDept,
             $setupAdmin,
-            $setupInternship,
             $sendNotificationMock,
             $saveRecoveryKeyMock,
         );

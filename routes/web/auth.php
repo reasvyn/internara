@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Auth\ActivationToken\Livewire\ActivateAccount;
+use App\Auth\Account\Livewire\ActivateAccount;
 use App\Auth\Login\Livewire\Login;
 
 Route::middleware(['guest', 'auth.throttle'])->group(function () {

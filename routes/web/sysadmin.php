@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-use App\SysAdmin\Account\Actions\GenerateAccountSlipAction;
-use App\SysAdmin\Account\Livewire\AdminManager;
-use App\SysAdmin\Account\Livewire\StudentManager;
-use App\SysAdmin\Account\Livewire\SupervisorManager;
-use App\SysAdmin\Account\Livewire\TeacherManager;
-use App\SysAdmin\Account\Livewire\UserManager;
+use App\SysAdmin\UserManagement\Actions\GenerateAccountSlipAction;
+use App\SysAdmin\UserManagement\Livewire\AdminManager;
+use App\SysAdmin\UserManagement\Livewire\StudentManager;
+use App\SysAdmin\UserManagement\Livewire\SupervisorManager;
+use App\SysAdmin\UserManagement\Livewire\TeacherManager;
+use App\SysAdmin\UserManagement\Livewire\UserManager;
 use App\SysAdmin\Announcement\Livewire\AnnouncementManager;
 use App\SysAdmin\Livewire\ApplicationReview;
 use App\SysAdmin\Observability\GdprDeletionLog\Livewire\GdprDeletionLogs;

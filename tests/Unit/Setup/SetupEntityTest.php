@@ -143,7 +143,7 @@ test('isStepCompleted returns false for incomplete steps', function () {
     );
 
     expect($state->isStepCompleted('school'))->toBeFalse();
-    expect($state->isStepCompleted('internship'))->toBeFalse();
+    expect($state->isStepCompleted('finalize'))->toBeFalse();
 });
 
 test('allStepsCompleted returns true when all expected wizard steps are completed', function () {
@@ -152,7 +152,6 @@ test('allStepsCompleted returns true when all expected wizard steps are complete
         'account',
         'school',
         'department',
-        'internship',
         'finalize',
         'complete',
     ]);
@@ -166,7 +165,6 @@ test('allStepsCompleted returns true when all expected wizard steps are complete
             'account',
             'school',
             'department',
-            'internship',
             'finalize',
             'complete',
         ],
@@ -182,7 +180,6 @@ test('allStepsCompleted returns false when some wizard steps are missing', funct
         'account',
         'school',
         'department',
-        'internship',
         'finalize',
         'complete',
     ]);

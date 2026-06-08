@@ -9,7 +9,6 @@ use App\Settings\Support\AppInfo;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
 use App\Setup\SetupWizard\Livewire\Forms\DepartmentForm;
-use App\Setup\SetupWizard\Livewire\Forms\InternshipForm;
 use App\Setup\SetupWizard\Livewire\Forms\SchoolForm;
 use App\Setup\SetupWizard\Livewire\Forms\SuperAdminForm;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
@@ -25,7 +24,6 @@ class SetupWizard extends Component
         'account',
         'school',
         'department',
-        'internship',
         'finalize',
         'complete',
     ];
@@ -41,8 +39,6 @@ class SetupWizard extends Component
     public DepartmentForm $departmentForm;
 
     public SuperAdminForm $superAdminForm;
-
-    public InternshipForm $internshipForm;
 
     public bool $showGuide = false;
 
@@ -70,7 +66,7 @@ class SetupWizard extends Component
 
         if ($state->isInstalled()) {
             if (session()->get('setup.completed', false)) {
-                $this->currentStep = 7;
+                $this->currentStep = 6;
 
                 return;
             }
@@ -109,8 +105,7 @@ class SetupWizard extends Component
         if (
             str_starts_with($property, 'schoolForm.') ||
             str_starts_with($property, 'departmentForm.') ||
-            str_starts_with($property, 'superAdminForm.') ||
-            str_starts_with($property, 'internshipForm.')
+            str_starts_with($property, 'superAdminForm.')
         ) {
             $this->saveState();
         }
@@ -122,7 +117,6 @@ class SetupWizard extends Component
             'school' => $this->schoolForm->all(),
             'department' => $this->departmentForm->all(),
             'admin' => $this->superAdminForm->only(['name', 'username', 'email']),
-            'internship' => $this->internshipForm->all(),
         ]);
     }
 
@@ -146,9 +140,6 @@ class SetupWizard extends Component
             }
         }
 
-        if (isset($data['internship'])) {
-            $this->internshipForm->fill($data['internship']);
-        }
     }
 
     public function runAudit(EnvironmentAuditor $auditor): void
@@ -211,16 +202,8 @@ class SetupWizard extends Component
             2 => $this->superAdminForm->validate(),
             3 => $this->schoolForm->validate(),
             4 => $this->departmentForm->validate(),
-            5 => $this->validateInternshipStep(),
             default => null,
         };
-    }
-
-    private function validateInternshipStep(): void
-    {
-        if ($this->internshipForm->isFilled()) {
-            $this->internshipForm->validate();
-        }
     }
 
     public function prevStep(): void
@@ -253,15 +236,6 @@ class SetupWizard extends Component
         ]);
 
         try {
-            $internshipData = $this->internshipForm->name
-                ? [
-                    'name' => $this->internshipForm->name,
-                    'description' => $this->internshipForm->description ?: null,
-                    'start_date' => $this->internshipForm->start_date,
-                    'end_date' => $this->internshipForm->end_date,
-                ]
-                : null;
-
             $this->recoveryKey = $finalizeSetup->execute(
                 schoolData: [
                     'name' => $this->schoolForm->name,
@@ -280,10 +254,9 @@ class SetupWizard extends Component
                     'email' => $this->superAdminForm->email,
                     'password' => $this->superAdminForm->password,
                 ],
-                internshipData: $internshipData,
             );
 
-            $this->currentStep = 7;
+            $this->currentStep = 6;
             session()->put('setup.completed', true);
             flash()->success(__('setup.wizard.setup_complete'));
         } catch (\RuntimeException $e) {

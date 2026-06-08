@@ -62,7 +62,6 @@ return [
             'account',
             'school',
             'department',
-            'internship',
             'finalize',
             'complete',
         ],
