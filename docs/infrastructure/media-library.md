@@ -1,16 +1,14 @@
 # Media Library
 
-> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
-> conventions overhaul
+> Last updated: 2026-06-08
 
-Internara uses [spatie/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) to
-associate files with Eloquent models. This package handles uploads, storage, image conversions, and
-file retrieval — replacing the need to manually manage file paths, validation, and processing for
-each model.
+Internara uses [spatie/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) to associate files with Eloquent models. This package handles uploads, storage, image conversions, and file retrieval — replacing the need to manually manage file paths, validation, and processing for each model.
+
+---
 
 ## Storage Architecture
 
-The media library stores files on Laravel filesystem disks. Two local disks are defined:
+The media library stores files on Laravel filesystem disks:
 
 | Disk     | Driver | Default Root          | Purpose                                |
 | -------- | ------ | --------------------- | -------------------------------------- |
@@ -18,16 +16,18 @@ The media library stores files on Laravel filesystem disks. Two local disks are 
 | `public` | Local  | `storage/app/public`  | User-facing files (avatars, documents) |
 | `s3`     | S3     | Bucket root           | Production cloud storage               |
 
-The `public` disk must be symlinked from `public/storage` to `storage/app/public`:
+The `public` disk requires a symlink:
 
 ```bash
 php artisan storage:link
+# Creates: public/storage → storage/app/public
 ```
+
+---
 
 ## Media Collections
 
-Each model that implements `HasMedia` registers named collections. A collection is a named group of
-files — a model can have multiple collections, each with its own rules.
+Each model that implements `HasMedia` registers named collections. A collection is a named group of files — a model can have multiple collections, each with its own rules.
 
 | Model                  | Collection     | Files    | Purpose                            |
 | ---------------------- | -------------- | -------- | ---------------------------------- |
@@ -36,7 +36,7 @@ files — a model can have multiple collections, each with its own rules.
 | `Document`             | `file`         | Single   | Uploaded document template         |
 | `Submission`           | `file`         | Multiple | Assignment submission files        |
 | `RegistrationDocument` | `file`         | Single   | Identity or requirement document   |
-| `Journals/Logbook`     | `photos`       | Multiple | Daily activity photo documentation |
+| `Logbook`              | `photos`       | Multiple | Daily activity photo documentation |
 | `Partnership`          | `mou_document` | Single   | Signed MoU agreement               |
 | `Certificate`          | `output`       | Single   | Generated certificate PDF          |
 
@@ -64,23 +64,17 @@ class YourModel extends BaseModel implements HasMedia
 ### Retrieving Files
 
 ```php
-// Get the URL of the first file in a collection
-$url = $model->getFirstMediaUrl('avatar');
-
-// Get the full media object
-$media = $model->getFirstMedia('avatar');
-
-// Get all files in a collection
-$files = $model->getMedia('documents');
-
-// Get a thumbnail URL (if conversions are defined)
-$thumb = $model->getFirstMediaUrl('avatar', 'thumb');
+$url = $model->getFirstMediaUrl('avatar');           // URL of first file
+$media = $model->getFirstMedia('avatar');            // Full media object
+$files = $model->getMedia('documents');              // All files in collection
+$thumb = $model->getFirstMediaUrl('avatar', 'thumb'); // Thumbnail conversion
 ```
+
+---
 
 ## Image Conversions
 
-When images are uploaded, the media library can generate resized versions automatically. Conversions
-are defined in the model:
+When images are uploaded, the media library can generate resized versions automatically. Conversions are defined in the model:
 
 ```php
 public function registerMediaConversions(?Media $media = null): void
@@ -96,8 +90,7 @@ public function registerMediaConversions(?Media $media = null): void
 | ---------- | ----- | ------ | ------------- |
 | `thumb`    | 400px | WebP   | Yes (default) |
 
-The image driver defaults to `gd` (built into PHP). For higher quality conversions, switch to
-`imagick` in production:
+The image driver defaults to `gd` (built into PHP). For higher quality conversions, switch to `imagick`:
 
 ```env
 IMAGE_DRIVER=imagick
@@ -105,15 +98,15 @@ IMAGE_DRIVER=imagick
 
 ### Queue Integration
 
-Conversions are queued by default (`queue_conversions_by_default: true` in
-`config/media-library.php`). The queue connection is inherited from `QUEUE_CONNECTION`. In
-production with Redis, conversions process asynchronously without slowing down HTTP responses.
+Conversions are queued by default (`queue_conversions_by_default: true` in `config/media-library.php`). In production with Redis, conversions process asynchronously via the `default` queue pipeline.
 
-If a conversion must be available immediately (synchronous), mark it as non-queued:
+If a conversion must be available immediately (synchronous):
 
 ```php
 $this->addMediaConversion('thumb')->nonQueued();
 ```
+
+---
 
 ## File Size Limits
 
@@ -122,6 +115,8 @@ $this->addMediaConversion('thumb')->nonQueued();
 | Uploaded file             | 10 MB                     | `config/media-library.php` → `max_file_size` |
 | Livewire temporary upload | PHP `upload_max_filesize` | `php.ini`                                    |
 | HTTP request body         | PHP `post_max_size`       | `php.ini`                                    |
+
+---
 
 ## S3-Compatible Cloud Storage
 
@@ -146,6 +141,20 @@ AWS_USE_PATH_STYLE_ENDPOINT=false
 | **DigitalOcean Spaces** | `{region}.digitaloceanspaces.com`    | S3-compatible API                      |
 | **Cloudflare R2**       | `{account}.r2.cloudflarestorage.com` | No egress fees                         |
 
+### Migrating from Local to S3
+
+When moving from local disk to S3 as the primary storage backend:
+
+```bash
+# Sync existing files to S3
+aws s3 sync storage/app/public s3://internara-media/ --storage-class STANDARD_IA
+
+# Then run the migration command to update media library paths
+php artisan media:migrate-to-s3
+```
+
+---
+
 ## File Upload Flow
 
 ```
@@ -156,14 +165,15 @@ User uploads file → Livewire temporary upload → media library attaches to mo
                                             File accessible via getFirstMediaUrl()
 ```
 
-Files are validated before upload: MIME type, file size, and extension checks run on the server
-side. The media library stores files with UUID-based filenames to prevent name collisions and path
-traversal.
+Files are validated before upload: MIME type, file size, and extension checks run on the server side. The media library stores files with UUID-based filenames to prevent name collisions and path traversal.
+
+---
 
 ## Where to Find It
 
 - `config/media-library.php` — global media library configuration
 - `config/filesystems.php` — disk definitions (local, public, s3)
-- `app/*/Models/*.php` — `registerMediaCollections()` and `registerMediaConversions()` methods on
-  each model
+- `app/*/Models/*.php` — `registerMediaCollections()` and `registerMediaConversions()` methods on each model
 - `database/migrations/` — the `media` table migration
+- [Filesystem](filesystem.md) — storage architecture and disk definitions
+- [Infrastructure](infrastructure.md) — tier-based infrastructure design

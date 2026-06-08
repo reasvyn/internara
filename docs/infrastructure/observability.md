@@ -1,18 +1,16 @@
 # Observability
 
-> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
-> conventions overhaul
+> Last updated: 2026-06-08
 
 ## What Is Monitored and Why
 
-The application monitors three categories of information: technical operations (errors, warnings,
-performance metrics), business audit trail (who did what, when, and to whom), and system health
-(disk space, PHP extensions, database connectivity, queue availability).
+The application monitors three categories of information:
 
-Technical monitoring answers: is the application working? Are requests slow? Are jobs failing? Are
-there exceptions? Business audit answers: who approved this internship? Who changed this user's
-role? When was this setting modified? System health answers: will the application keep working? Is
-disk space running low? Are all required services running?
+- **Technical operations**: errors, warnings, performance metrics — is the application working?
+- **Business audit trail**: who did what, when, and to whom — who approved this internship?
+- **System health**: disk space, PHP extensions, database connectivity — will the app keep working?
+
+---
 
 ## Laravel Pulse for Performance
 
@@ -27,33 +25,59 @@ Laravel Pulse provides a real-time performance dashboard with configurable recor
 | Cache         | Cache hit/miss ratio                 | Always    |
 | Queues        | Queue throughput                     | Always    |
 
-The dashboard is accessible at `/pulse` and restricted to authorized users. Pulse records are
-ingested synchronously by default (on every request) or asynchronously via Redis for high-traffic
-deployments. Data retention is configurable — old records are automatically pruned by the scheduler.
+The dashboard is accessible at `/pulse` and restricted to authorized users. Pulse records are ingested synchronously by default (on every request) or asynchronously via Redis for high-traffic deployments. Old records are automatically pruned by the scheduler.
+
+---
 
 ## SmartLogger Dual-Channel Approach
 
-The SmartLogger is the single entry point for all application logging. It dispatches to two channels
-simultaneously: the system log (files in `storage/logs/`) and the activity log (the `activity_log`
-database table).
+SmartLogger is the single entry point for all application logging. It dispatches to two channels simultaneously:
 
-The system log captures technical details — error messages, stack traces, debug information,
-infrastructure warnings. This is what an operator reads to diagnose problems.
+- **System log** — files in `storage/logs/`. Technical details: error messages, stack traces, debug information, infrastructure warnings. What an operator reads to diagnose problems.
+- **Activity log** — the `activity_log` database table. Business audit events: user registered, internship approved, role assigned, setting changed. Immutable records pruned by scheduled command after retention period.
 
-The activity log captures business-module audit events — user registered, internship approved, role
-assigned, setting changed. This is what an auditor reads to verify compliance. The activity log is
-immutable: records are never updated or deleted through the application. Old records are pruned by a
-scheduled command after the retention period.
+### Three Logging Modes
 
-SmartLogger supports three modes: log to both channels (general purpose), log to system only
-(technical operations like middleware and CLI commands), and log to activity only (business audit
-via Actions). The fluent API attaches a causer (who), a subject (what was acted upon), a payload
-(context data), a module name, and an event name. Personally identifiable information can be
-automatically masked before logging.
+SmartLogger supports three modes via its fluent API:
+
+| Mode                           | System Log | Activity Log | Usage                                        |
+| ------------------------------ | ---------- | ------------ | -------------------------------------------- |
+| `both()` (default)             | ✅         | ✅           | General purpose logging in Actions           |
+| `systemOnly()`                 | ✅         | ❌           | Technical operations (middleware, CLI)       |
+| `activityOnly()`               | ❌         | ✅           | Business audit via Actions                   |
+
+### PII Masking
+
+SmartLogger integrates with `PiiMasker` to automatically obfuscate sensitive data before logging:
+
+| Data Type       | Masking Strategy                 | Example                              |
+| --------------- | -------------------------------- | ------------------------------------ |
+| `password`      | Full mask                        | `********`                           |
+| `token`         | Full mask                        | `********`                           |
+| `secret`        | Full mask                        | `********`                           |
+| `credit_card`   | Full mask                        | `********`                           |
+| `email`         | Partial (first 2 chars + domain) | `jo***@example.com`                  |
+| `phone`         | Partial (last 4 digits shown)    | `********1234`                       |
+| `name`          | Partial (first char only)        | `J***`                               |
+| `ip`            | First two octets only            | `192.168.xxx.xxx`                    |
+
+### Fluent API
+
+```php
+SmartLogger::info('internship_created')
+    ->by(auth()->user())              // causer
+    ->on($internship)                 // subject
+    ->withPayload(['key' => 'val'])   // context
+    ->inModule('program')
+    ->activityOnly()                  // or systemOnly(), both()
+    ->save();
+```
+
+---
 
 ## Log Channels
 
-Logging is configured in `config/logging.php` with the following available channels:
+Logging is configured in `config/logging.php`:
 
 | Channel  | Use Case                                      | Rotation       |
 | -------- | --------------------------------------------- | -------------- |
@@ -64,7 +88,7 @@ Logging is configured in `config/logging.php` with the following available chann
 | `syslog` | System syslog integration                     | System-managed |
 | `null`   | Discard (testing)                             | N/A            |
 
-The default log stack uses the `single` channel in development:
+Default configuration:
 
 ```env
 LOG_CHANNEL=stack
@@ -72,38 +96,71 @@ LOG_STACK=single
 LOG_LEVEL=debug
 ```
 
-Activity log retention is configured in `config/activitylog.php` and pruned by the `system:cleanup`
-command (default 365 days).
+Activity log retention is configured in `config/activitylog.php` and pruned by the `system:cleanup` command (default 365 days).
+
+---
 
 ## Log Context Enrichment
 
-Every log entry from an HTTP request is automatically enriched with request-scoped metadata: a
-unique request ID, HTTP method and URL, client IP address, authenticated user ID and role, response
-duration in milliseconds, and HTTP status code. This is added by global middleware and requires no
-per-action configuration.
+Every log entry from an HTTP request is automatically enriched by the `LogContext` middleware with:
 
-This enrichment makes log analysis significantly more useful — a slow query can be correlated with
-the specific request and user that triggered it.
+- Unique request ID
+- HTTP method and URL
+- Client IP address
+- Authenticated user ID and role
+- Response duration in milliseconds
+- HTTP status code
 
-## Health Command Capabilities
+This enrichment makes log analysis significantly more useful — a slow query can be correlated with the specific request and user that triggered it.
 
-The health check command performs a 15-point system verification: checks environment setup, setup
-status, PHP version is 8.4+, required extensions are loaded, recommended extensions are present, PHP
-memory limit is adequate, database connection works, migration status is up-to-date, storage
-directories are writable, disk usage is below thresholds, queue table is accessible, cache store
-responds to read and write, application key is set and valid, storage symlink exists, and the
-application is not in maintenance mode.
+---
 
-The command outputs a table with pass/fail/warning for each check, or JSON for integration with
-external monitoring systems.
+## System Health Command
+
+The `php artisan system:health` command performs a 15-point system verification:
+
+1. Environment setup check
+2. Setup status verification
+3. PHP version is 8.4+
+4. Required extensions are loaded
+5. Recommended extensions are present
+6. PHP memory limit is adequate
+7. Database connection works
+8. Migration status is up-to-date
+9. Storage directories are writable
+10. Disk usage is below thresholds
+11. Queue table is accessible
+12. Cache store responds to read and write
+13. Application key is set and valid
+14. Storage symlink exists
+15. Application is not in maintenance mode
+
+The command outputs a table with pass/fail/warning for each check, or JSON for integration with external monitoring systems (`--json`).
+
+---
+
+## System Cleanup Command
+
+The `php artisan system:cleanup` command runs nightly via the scheduler and prunes:
+
+| Data Source   | Retention | Configuration              |
+| ------------- | --------- | -------------------------- |
+| Pulse records | 7 days    | `config/pulse.php`         |
+| Activity log  | 365 days  | `config/activitylog.php`   |
+| Failed jobs   | 7 days    | `config/queue.php`         |
+| Notifications | 365 days  | Configurable via settings  |
+
+---
 
 ## Where to Find It
 
-The SmartLogger is at `app/Core/Support/SmartLogger.php`. The PII masker is at
-`app/Support/PiiMasker.php`. The log context middleware is at
-`app/Core/Http/Middleware/LogContext.php`. The health command is at
-`app/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php`. The cleanup command is at
-`app/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php`. The cache warm command is at
-`app/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php`. Pulse configuration is in
-`config/pulse.php`. Activity log configuration is in `config/activitylog.php`. Logging configuration
-is in `config/logging.php`.
+- `app/Core/Support/SmartLogger.php` — SmartLogger implementation
+- `app/Support/PiiMasker.php` — PII masking logic
+- `app/Core/Http/Middleware/LogContext.php` — log context enrichment
+- `app/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php` — health command
+- `app/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php` — cleanup command
+- `app/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — cache warming
+- `config/pulse.php` — Pulse configuration
+- `config/activitylog.php` — activity log configuration
+- `config/logging.php` — logging channel configuration
+- [Infrastructure](infrastructure.md) — tier-based infrastructure design

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Settings\Support\Locale;
+use App\Settings\Locale\Support\Locale;
 use Illuminate\Support\Facades\Cookie;
 
 test('supported locales are configured', function () {

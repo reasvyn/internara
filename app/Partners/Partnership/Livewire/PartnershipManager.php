@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Partners\Partnership\Livewire;
 
+use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
-use App\Exceptions\RejectedException;
 use App\Partners\Company\Models\Company;
 use App\Partners\Partnership\Actions\CreatePartnershipAction;
 use App\Partners\Partnership\Actions\DeletePartnershipAction;

@@ -1,54 +1,126 @@
 ---
 name: feature-building
+description: Apply this skill when building any new feature, modifying existing code, or adding a new module concept. It encodes the full feature lifecycle from understanding module context through testing and quality checks.
 ---
 
 # Feature Building Skill
 
 ## When to Activate
 
-Apply this skill when building any new feature, modifying existing code, or adding a new module
-concept. This skill encodes the full feature lifecycle — from understanding module context through
-testing and quality checks.
+Apply this skill when building any new feature, modifying existing code, or adding a new module concept. This skill encodes the full feature lifecycle — from understanding module context through testing and quality checks.
 
-## Core Principles
+## Data Flow
 
-Every feature follows a layered architecture where each layer has a distinct responsibility:
+User input → Livewire/Controller → Action → Model/Entity → Database
 
-Livewire Components handle UI state (form bindings, modal visibility) and delegate to Actions.
-Actions handle validation, orchestrate persistence in transactions, and dispatch side effects.
-Models handle data access (queries, relationships, scopes). Entities handle pure business rules
-without framework dependencies. Enums define labeled constants and state machines with transition
-validation.
+Reads: Controller/Livewire → Read Action → Model → Database (simple queries skip the Action layer).
 
-Data flows unidirectionally: User input enters through a Livewire component, which calls an Action,
-which reads/writes through a Model, checks business rules through an Entity, and emits audit/event
-side effects.
+## Key References
+
+- **Architecture**: `docs/architecture.md` — 12-layer architecture, Action Triad, data flow
+- **Conventions**: `docs/conventions.md` — base classes, naming, file structure, testing
+- **Module docs**: `docs/modules/{module}.md` — module-specific lifecycle context
+- **Module references**: `docs/modules/{module}-reference.md` — API reference, file paths, schemas
 
 ## Feature Workflow
 
-1. Understand the module: read `docs/modules/{module}.md` for lifecycle context
-2. Create migration and Model (UUID PK, BaseModel, Fillable attribute, HasFactory)
-3. Create Entity if business rules exist (final readonly, BaseEntity, fromModel bridge)
-4. Create Enum if state machine (string-backed, LabelEnum/StatusEnum)
-5. Create Action (BaseAction, single execute, validation, transaction, entity delegation)
-6. Create Policy if authorization needed (BasePolicy, role/ownership gates)
-7. Create Livewire component (thin, delegates to Actions, BaseRecordManager for CRUD tables)
-8. Create Blade view (maryUI, Tailwind, translation keys)
-9. Register routes in `routes/web/{module}.php`
-10. Add translations in `lang/en/{module}.php` and `lang/id/{module}.php`
-11. Write tests: Entity tests (no DB), Feature tests (Action/Livewire with DB)
-12. Quality: run Pint, build assets, run test suite
+### Step 1 — Understand the Module
 
-## Layer Reference
+Read `docs/modules/{module}.md` for the module's purpose, boundary, and lifecycle. Check `docs/modules/{module}-reference.md` for existing files, table schemas, and dependencies.
 
-Every layer has a canonical directory: Actions, Models, Entities, Enums, Livewire, Policies, Views,
-Routes, Tests, Support, Data, Contracts — all under `app/{Module}/`. Views mirror under
-`resources/views/{domain}/`. Routes are per-domain in `routes/web/{module}.php`.
+### Step 2 — Migration & Model
 
-## Verification Before Finalizing
+```bash
+php artisan make:migration create_{table}_table
+```
 
-- Does the feature follow the data flow: Component → Action → Model/Entity?
-- Are there no inline DB mutations, business rules, or side effects in Livewire?
-- Are translations provided in both English and Indonesian?
-- Are tests written at the appropriate level (Entity unit vs Action feature)?
-- Has Pint formatting been applied and the test suite run?
+- Model extends `BaseModel` (UUID PK via `HasUuids`)
+- Model uses `#[Fillable]` attribute (not `$fillable` property)
+- Model uses `HasFactory` trait
+- Migration uses `$table->uuid('id')->primary()` and `foreignUuid()->constrained()`
+
+### Step 3 — Entity (if business rules exist)
+
+- `final readonly` extending `BaseEntity`
+- `fromModel(Model): static` factory
+- Named accessor on Model (`as{Name}(): EntityType`)
+- Business rule methods only — no persistence
+
+### Step 4 — Enum (if state machine)
+
+- `string`-backed, implements `LabelEnum`
+- State machine enums additionally implement `StatusEnum` (`canTransitionTo()`, `isTerminal()`, `validTransitions()`)
+- Cases use `UPPER_SNAKE`, value is lowercase
+
+### Step 5 — Action
+
+- Command/Process: extends `BaseAction`, single `execute()`, `transaction()`, `log()`
+- Read: plain class, no base class required
+- Delegate business rule checks to Entity methods
+
+### Step 6 — Policy (if authorization needed)
+
+- Extends `BasePolicy` (provides `AuthorizesRoles`, `AuthorizesOwnership` traits)
+- Auto-discovered from `app/*/Policies/` by convention
+- `super_admin` bypasses all gates via `Gate::before()`
+
+### Step 7 — Livewire Component
+
+- CRUD tables extend `BaseRecordManager` (pagination, search, sort, selection, bulk actions)
+- Thin — delegates all writes to Actions, all complex queries to Read Actions
+- Form state in Form Objects (extending `Livewire\Form`) for complex forms
+
+### Step 8 — Blade View
+
+- Uses maryUI components (`x-mary-table`, `x-mary-modal`, `x-mary-button`)
+- Tailwind CSS v4 with `@import "tailwindcss"` + `@theme` directives
+- All user-facing strings use `__()` translation helpers
+
+### Step 9 — Routes
+
+- Route file: `routes/web/{module}.php`
+- Named routes: `{prefix}.{resource}.{action}`
+- Imported in `routes/web.php` in dependency order
+
+### Step 10 — Translations
+
+- English: `lang/en/{module}.php`
+- Indonesian: `lang/id/{module}.php`
+- Every user-facing string must be translated
+
+### Step 11 — Tests
+
+- **Unit tests** (no DB): Entities, Enums, Data DTOs
+- **Feature tests** (with DB): Actions, Livewire components
+- `LazilyRefreshDatabase` over `RefreshDatabase`
+- `assertModelExists()` over `assertDatabaseHas()`
+
+### Step 12 — Quality
+
+```bash
+vendor/bin/pint --format agent
+php artisan test --compact
+```
+
+## Layer Directory Mapping
+
+| Layer | Directory |
+|-------|-----------|
+| Model | `app/{Module}/{SubModule}/Models/` |
+| Entity | `app/{Module}/{SubModule}/Entities/` |
+| Enum | `app/{Module}/{SubModule}/Enums/` or `app/{Module}/Types/` |
+| Action | `app/{Module}/{SubModule}/Actions/` |
+| Policy | `app/{Module}/{SubModule}/Policies/` |
+| Livewire | `app/{Module}/{SubModule}/Livewire/` |
+| View | `resources/views/{module}/{submodule}/` |
+| Test | `tests/{Feature,Unit}/{Module}/{SubModule}/` |
+
+Cross-submodule code lives at the module root (e.g., `app/{Module}/Actions/`, `app/{Module}/Livewire/`). Shared cross-module code lives directly under `app/` (e.g., `app/Livewire/`, `app/Data/`).
+
+## Verification
+
+- Data flow: Component → Action → Model/Entity?
+- No inline DB mutations or business rules in Livewire?
+- Translations in both English and Indonesian?
+- Tests at the appropriate level (unit vs feature)?
+- Pint formatted and test suite passing?

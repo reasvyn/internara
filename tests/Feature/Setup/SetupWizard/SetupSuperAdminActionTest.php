@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Exceptions\RejectedException;
+use App\Core\Exceptions\RejectedException;
 use App\Setup\SetupWizard\Actions\SetupSuperAdminAction;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -1,106 +1,54 @@
-# Reports — Documentation Overview
+# Reports
 
-> Last updated: 2026-06-06  
-> Changes: Redefined module scope from document writing to Final Student Grade Cards (Final Grade Card),
-> aggregating supervisor, teacher, and exam grades.
+> **Last updated:** 2026-06-08
 
-This module manages the student's Final Grade Card (_Final Grade Card_), which aggregates all assessment
-metrics at the end of the internship period and locks the student's final marks before certificate
-issuance.
+Final student grade card (Nilai Raport PKL): grade aggregation from multiple assessment sources, composite score calculation, coordinator sign-off, and certificate eligibility trigger.
 
-For complete technical reference including API, models, actions, and components, see
-[reports-reference.md](reports-reference.md).
+## Purpose & Boundary
 
----
+Reports compiles the student's final internship grade card by aggregating scores from industry supervisors, school teachers, and exam assessments according to the program-defined weight distribution. The grade card is locked on finalization (coordinator sign-off) and serves as the prerequisite for certificate issuance. A full identity and metadata snapshot is captured at finalization to ensure the grade card persists even if source records are later deleted.
 
-## Key Principles
-
-- **Grade Aggregation** — The grade card automatically compiles the final composite score based on
-  the program's defined weights. The standard formula evaluates:
-  $$\text{Final Grade} = (\text{Industry Supervisor Score} \times 40\%) + (\text{School Teacher Score} \times 20\%) + (\text{Exam/Presentation Score} \times 40\%)$$
-- **Immutable Results** — Once the report card is marked as `finalized`, it is signed off by the
-  coordinator and locked. Further grade changes are blocked to preserve academic integrity.
-- **Certificate Trigger** — A finalized Final Grade Card record is the strict prerequisite that unlocks
-  eligibility for certificate generation.
-- **Qualitative Feedback Registry** — Captures overall testimonial/notes from host companies to be
-  printed on the back page of the final report sheet.
-- **Standalone Archiving** — The grade card is designed to persist for historical archiving even if
-  the student's user account, department, or active registration is deleted. A full snapshot of
-  student identity, internship metadata, hosting company, department, and supervisor names is
-  captured on save.
-
----
-
-## Context Boundary
-
-The **Reports** module consumes:
-
-- **Enrollment (`registrations`):** Links 1:1 with the student's active enrollment record. When the
-  registration is deleted, the foreign key `registration_id` is set to null, keeping the report
-  intact using its snapshotted fields.
-- **Assessment (`assessments`):** Gathers scores submitted by school mentors and industry
-  supervisors.
-- **Assignment (`submissions`):** Final report document submission is treated as a regular
-  coursework assignment (rather than being managed in this module), and its grade is pulled from the
-  assignment's graded submission.
-
-The **Reports** module provides data to:
-
-- **Certification (`certificates`):** Exposes finalized grades and validation details.
-
----
-
-## Module Rules
-
-- **Strict 1:1 Registration Link:** One report card per student enrollment. Attempting to create a
-  second record throws a `ConflictException`.
-- **Finalization Constraint:** A report card cannot be finalized if any required grading component
-  (supervisor score, teacher score, exam score) is missing, unless the teacher has activated the
-  _Dual Mentor Fallback/Proxy_ bypass in the Assessment module.
-- **Finalized is Terminal:** Once a Final Grade Card is `finalized`, its scores are locked and immutable.
-  Any corrections require administrative override privileges.
-
----
+Out of scope: individual assessment grading (Assessment), assignment grading (Assignment), evaluation feedback (Evaluation), certificate generation (Certification).
 
 ## Submodules
 
-- **Report (Grade Card):** Core business entity tracking the student's registration ID, component
-  scores (supervisor, teacher, exam), composite score, qualitative feedback, and finalization
-  status.
+### Report (Grade Card)
+Core entity with 1:1 relationship to Registration. Stores: industry supervisor score, school teacher score, exam score, computed composite score, qualitative feedback from host company, letter grade, and finalization status. On finalization, snapshots student identity, internship metadata, host company details, department, and supervisor names for standalone archival persistence.
 
----
+## Key Concepts
 
-## Error Handling & Failure Modes
+### Grade Aggregation Formula
 
-- **Finalizing Incomplete Grades:** Attempting to finalize a report card with missing scores returns
-  a `RejectedException` unless a fallback bypass is logged.
-- **Post-Finalization Edit Attempt:** Any write command targeting a finalized record is rejected
-  with a `RejectedException`.
-- **Missing Enrollment Context:** Attempting to compile a grade card for an inactive or pending
-  registration throws a `NotFoundException`.
+The composite final grade is calculated using program-defined weights. The standard formula:
 
----
+```
+Final Grade = (Industry Supervisor × 40%) + (School Teacher × 20%) + (Exam × 40%)
+```
 
-## Quick References
+Weights are configurable per internship program in the Program module. The `CalculateFinalGradeAction` reads weights from the program and computes the composite score.
 
-### Actions & Business Logic
+### Finalization Immutability
 
-- **3** actions across the submodule:
-    - `CalculateFinalGradeAction` — Aggregates and calculates composite grades.
-    - `FinalizeReportCardAction` — Locks report card and flags certificate eligibility.
-    - `UpdateReportCardAction` — Admin-only adjustments.
+Once a grade card is marked `finalized` by the coordinator, all scores are locked. No further changes are permitted without administrative override (special permission in `UpdateReportCardAction`). Finalization triggers:
+1. Immutable snapshot capture of all related identity and metadata.
+2. Certificate eligibility flag on the registration.
 
-### Data & Persistence
+### Standalone Archiving
 
-- **1** model: `Report` (stores scores, letter grade, and supervisor qualitative feedback).
-- UUID PKs, unique constraint on `registration_id`.
+The grade card captures a full snapshot at finalization time: student NISN, name, and class; host company name and address; department name; school teacher name; industry supervisor name; all component scores and composite score. This ensures the grade card remains readable and valid even if the student's account, the company, or the program is later deleted.
 
-### User Interface
+### Dual Mentor Fallback
 
-- **2** Livewire components:
-    - `ReportCardViewer` — Student view of grade details.
-    - `ReportCardManager` — Coordinator panel to verify, adjust, and sign off grade cards.
+If the Assessment module's dual mentor fallback/proxy bypass is active (industry supervisor unavailable), the grade aggregation adjusts: the supervisor weight may be redistributed to teacher and exam components. The grade card records the fallback status for audit transparency.
 
----
+## Dependencies
 
-For complete technical reference, see [reports-reference.md](reports-reference.md).
+- Core (base classes)
+- Enrollment (registration context)
+- Assessment (supervisor, teacher, exam scores)
+- Program (grading weight configuration)
+- User (student, coordinator identity)
+
+## Used By
+
+- Certification (finalized grade card as prerequisite)

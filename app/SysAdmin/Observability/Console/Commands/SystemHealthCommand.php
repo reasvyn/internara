@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Observability\Console\Commands;
 
+use App\Core\Support\CacheKeys;
 use App\Core\Support\SmartLogger;
-use App\Support\CacheKeys;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;

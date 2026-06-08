@@ -1,6 +1,6 @@
 # Assignment — Technical Reference
 
-> Last updated: 2026-06-03 Changes: Converted Status metadata to Changes format
+> Last updated: 2026-06-08
 
 Detailed structural and implementation reference for the **Assignment** module.
 
@@ -8,74 +8,92 @@ Detailed structural and implementation reference for the **Assignment** module.
 
 ## Overview
 
-Manages coursework assignments and submission tracking
-
-### Module Statistics
-
-- **Actions**: 7 business logic operations
-- **Models**: 3 data entities
-- **Livewire Components**: 3 UI components
-- **Policies**: 2 authorization rules
-- **Submodules**: 2 module submodules
+Manages course assignments and submission tracking with grading workflows.
 
 ### Submodules
 
-- `Submission` (flat: Actions, Entities, Enums, Livewire, Models, Policies, Notifications directly
-  in `app/Assignment/`)
-
----
-
-## Dependency Graph
-
-This module depends on:
-
-- **Core**
-- **Guidance**
-- **Program**
-- **User**
+- `Submission` — Assignment submission, grading, and feedback
 
 ---
 
 ## Actions
 
-| File                                            | Class                     | Extends      |
-| ----------------------------------------------- | ------------------------- | ------------ |
-| `Actions/CreateAssignmentAction.php`            | `CreateAssignmentAction`  | `BaseAction` |
-| `Actions/DeleteAssignmentAction.php`            | `DeleteAssignmentAction`  | `BaseAction` |
-| `Submission/Actions/GradeSubmissionAction.php`  | `GradeSubmissionAction`   | `BaseAction` |
-| `Actions/PublishAssignmentAction.php`           | `PublishAssignmentAction` | `BaseAction` |
-| `Submission/Actions/SubmitAssignmentAction.php` | `SubmitAssignmentAction`  | `BaseAction` |
-| `Actions/UpdateAssignmentAction.php`            | `UpdateAssignmentAction`  | `BaseAction` |
-| `Submission/Actions/VerifySubmissionAction.php` | `VerifySubmissionAction`  | `BaseAction` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Actions/CreateAssignmentAction.php` | `CreateAssignmentAction` | `BaseAction` |
+| `Actions/UpdateAssignmentAction.php` | `UpdateAssignmentAction` | `BaseAction` |
+| `Actions/DeleteAssignmentAction.php` | `DeleteAssignmentAction` | `BaseAction` |
+| `Actions/PublishAssignmentAction.php` | `PublishAssignmentAction` | `BaseAction` |
+| `Submission/Actions/SubmitAssignmentAction.php` | `SubmitAssignmentAction` | `BaseAction` |
+| `Submission/Actions/GradeSubmissionAction.php` | `GradeSubmissionAction` | `BaseAction` |
+| `Submission/Actions/VerifySubmissionAction.php` | `VerifySubmissionAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-| File                               | Class            |
-| ---------------------------------- | ---------------- |
-| `Models/Assignment.php`            | `Assignment`     |
-| `Models/AssignmentType.php`        | `AssignmentType` |
-| `Submission/Models/Submission.php` | `Submission`     |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Models/Assignment.php` | `Assignment` | `BaseModel` |
+| `Submission/Models/Submission.php` | `Submission` | `BaseModel` |
 
 ---
+
+## Enums
+
+| File | Enum | Implements | Values |
+| ---- | ---- | ---------- | ------ |
+| `Enums/AssignmentStatus.php` | `AssignmentStatus` | `LabelEnum`, `StatusEnum` | draft, published, closed, archived |
+| `Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, graded, returned |
+
+---
+
+## Entities
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Entities/AssignmentRules.php` | `AssignmentRules` | `BaseEntity` |
+| `Submission/Entities/SubmissionState.php` | `SubmissionState` | `BaseEntity` |
+
+---
+
+## Policies
+
+| File | Policy | Extends |
+| ---- | ------ | ------- |
+| `Policies/AssignmentPolicy.php` | `AssignmentPolicy` | `BasePolicy` |
+| `Submission/Policies/SubmissionPolicy.php` | `SubmissionPolicy` | `BasePolicy` |
+
+---
+
+## Notifications
+
+| File | Notification |
+| ---- | ------------ |
+| `Notifications/AssignmentNotification.php` | `AssignmentNotification` |
+| `Submission/Notifications/SubmissionFeedbackNotification.php` | `SubmissionFeedbackNotification` |
 
 ## Livewire Components
 
-| File                                        | Component           | Extends             |
-| ------------------------------------------- | ------------------- | ------------------- |
-| `Livewire/AssignmentManager.php`            | `AssignmentManager` | `BaseRecordManager` |
-| `Submission/Livewire/SubmissionGrading.php` | `SubmissionGrading` | `Component`         |
-| `Submission/Livewire/SubmitAssignment.php`  | `SubmitAssignment`  | `Component`         |
+| File | Component | Extends |
+| ---- | --------- | ------- |
+| `Livewire/AssignmentManager.php` | `AssignmentManager` | `BaseRecordManager` |
+| `Submission/Livewire/SubmitAssignment.php` | `SubmitAssignment` | `Component` |
+| `Submission/Livewire/SubmissionGrading.php` | `SubmissionGrading` | `Component` |
+
+## Form Requests
+
+| File | Request | Purpose |
+| ---- | ------- | ------- |
+| `Http/Requests/CreateAssignmentRequest.php` | `CreateAssignmentRequest` | Assignment creation validation |
+| `Submission/Http/Requests/SubmitAssignmentRequest.php` | `SubmitAssignmentRequest` | Submission validation |
 
 ---
 
-## Authorization Policies
+## Routes
 
-| File                                       | Policy             |
-| ------------------------------------------ | ------------------ |
-| `Policies/AssignmentPolicy.php`            | `AssignmentPolicy` |
-| `Submission/Policies/SubmissionPolicy.php` | `SubmissionPolicy` |
+File: `routes/web/assignment.php`
+Naming pattern: `assignment.{resource}.{action}`
 
 ---
 
@@ -83,45 +101,43 @@ This module depends on:
 
 ```
 app/Assignment/
-├── Actions/              ← Cross-submodule / flat actions
-├── Entities/
-├── Enums/
-├── Http/
-│   └── Requests/
-├── Livewire/
-├── Models/
-├── Notifications/
-├── Policies/
-├── Submission/           ← Submission submodule
-│   ├── Actions/
-│   ├── Entities/
-│   ├── Enums/
-│   ├── Http/
-│   │   └── Requests/
-│   ├── Livewire/
-│   ├── Models/
-│   ├── Notifications/
-│   └── Policies/
-├── Http/
-├── Livewire/
-├── Types/
-├── Services/
-└── Support/
+├── Actions/
+│   ├── CreateAssignmentAction.php
+│   ├── DeleteAssignmentAction.php
+│   ├── PublishAssignmentAction.php
+│   └── UpdateAssignmentAction.php
+├── Entities/AssignmentRules.php
+├── Enums/AssignmentStatus.php
+├── Http/Requests/CreateAssignmentRequest.php
+├── Livewire/AssignmentManager.php
+├── Models/Assignment.php
+├── Notifications/AssignmentNotification.php
+├── Policies/AssignmentPolicy.php
+└── Submission/
+    ├── Actions/
+    │   ├── GradeSubmissionAction.php
+    │   ├── SubmitAssignmentAction.php
+    │   └── VerifySubmissionAction.php
+    ├── Entities/SubmissionState.php
+    ├── Enums/SubmissionStatus.php
+    ├── Http/Requests/SubmitAssignmentRequest.php
+    ├── Livewire/
+    │   ├── SubmissionGrading.php
+    │   └── SubmitAssignment.php
+    ├── Models/Submission.php
+    ├── Notifications/SubmissionFeedbackNotification.php
+    └── Policies/SubmissionPolicy.php
 ```
 
 ---
 
 ## Architectural Integration
 
-This module integrates with the system across the following directories and resources:
+- **Submodules**: `Submission`
+- **Business Logic**: `app/Assignment/`
+- **Routing**: `routes/web/assignment.php`
+- **Views**: `resources/views/assignment/`
+- **Testing**: `tests/Feature/Assignment/`, `tests/Unit/Assignment/`
+- **Dependencies**: User, Program, Core
 
-- **Submodules**: `Assignment`, `Submission`
-- **Business Logic (`app/`)**: Located in
-  [app/Assignment/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Assignment/)
-- **Routing (`routes/`)**:
-  [routes/web/assignment.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/assignment.php)
-- **Views (`views/`)**: Blade templates and layouts are in
-  [resources/views/assignment/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/assignment/)
-- **Testing (`tests/`)**: Feature `tests/Feature/Assignment/`, Unit `tests/Unit/Assignment/`
-
-_For overview and business context, see [assignment.md](assignment.md)_
+*For overview and business context, see [assignment.md](assignment.md).*

@@ -1,90 +1,45 @@
-# Certification — Documentation Overview
+# Certification
 
-> Last updated: 2026-06-06  
-> Changes: Aligned with the removal of the separate `certificate_templates` table (now inlined as
-> HTML layouts) and added dependency on Final Grade Card finalization.
+> **Last updated:** 2026-06-08
 
-Manages certificate generation, digital QR signatures, and credential tracking.
+Certificate generation, serial numbering, digital QR signature, public verification, and credential revocation.
 
-For complete technical reference including API, models, actions, and components, see
-[certification-reference.md](certification-reference.md).
+## Purpose & Boundary
 
----
+Certification manages the issuance of internship completion certificates. Certificates are awarded after a student's final grade card is finalized and locked in the Reports module. Each certificate includes a cryptographically signed QR code for offline forgery detection. Certificates can be revoked with an audit trail, and revocation is terminal — serial numbers are permanently retired.
 
-## Key Principles
-
-- **Certificates Awarded Upon Final Grade Finalization** — Certificates are issued only after the
-  student's final grade card in the Reports module is finalized and locked.
-- **Embedded Layouts** — Certificate layouts ( portrait/landscape, background seals, text
-  placeholders) are rendered dynamically and saved as frozen, immutable HTML snapshots within the
-  certificate record. This ensures permanent, tamper-proof compliance.
-- **QR Cryptographic Verification** — Printed certificates display a secure QR code referencing a
-  verification URL. The system verifies the cryptographically signed hash (`qr_hash`) to expose
-  offline forgery.
-
----
-
-## Context Boundary
-
-The **Certification** module:
-
-- Consumes **Reports (`reports`)** to verify that a student's final Final Grade Card is finalized before
-  allowing certificate issuance.
-- Consumes **User (`users`)** to identify the recipient student and the administrator who signed
-  off.
-- Generates validation metadata exposed for public certificate validation requests.
-
----
-
-## Module Rules
-
-- **Final Grade Card Prerequisite:** A certificate cannot be issued unless the registration has a
-  corresponding `finalized` Report card record.
-- **Revocation is Terminal:** Once revoked, a certificate's status is permanently updated to
-  `revoked`, and its serial number is retired. Double revocation is idempotent.
-- **Hash Integrity:** The verification hash is generated using a secure SHA-256 function of the
-  student ID, institutional code, final score, and issuer's private key.
-
----
+Out of scope: grade calculation (Reports), document templates (Document), evaluation feedback (Evaluation).
 
 ## Submodules
 
-- **Certificate:** Handles certificate generation, serial numbering, PDF rendering, QR code signing,
-  and revocation logs.
+### Certificate
+Core entity: serial number (auto-generated), recipient name, program details, issue date, embedded HTML layout snapshot (frozen at issuance for tamper-proof rendering), QR code hash, and status (`active` | `revoked`). Linked to the Registration record and the admin who authorized issuance. Batch issuance for entire cohorts via non-blocking job dispatch.
 
----
+## Key Concepts
 
-## Error Handling & Failure Modes
+### QR Cryptographic Verification
 
-- **Issuance Without Final Grade:** Issuing a certificate for a student whose Final Grade Card is pending
-  or uncompiled is blocked with a `RejectedException`.
-- **Duplicate Issuance:** Re-issuing an active certificate for the same student registration returns
-  a `ConflictException`.
-- **Signature Integrity Failure:** If the rendering service or system signature fails, certificate
-  creation is rolled back.
+Each printed certificate displays a QR code encoding a verification URL with a cryptographic hash. The hash is generated using SHA-256 over student ID, institutional code, final score, and issuer private key. Public verification endpoints accept the hash and return the certificate's authenticity status. This enables offline forgery detection without requiring database access at the verification point.
 
----
+### Final Grade Prerequisite
 
-## Quick References
+Certificates cannot be issued unless the student's registration has a corresponding finalized Report card record. This enforcement is at the Action layer — `IssueCertificateAction` checks for a finalized report before proceeding. If missing, a `RejectedException` informs the operator which students are ineligible.
 
-### Actions & Business Logic
+### Revocation is Terminal
 
-- **3** actions across the module:
-    - `IssueCertificateAction` — Generates and signs a single certificate.
-    - `BatchIssueCertificateAction` — Non-blocking cohort batch generator.
-    - `RevokeCertificateAction` — Revokes a credential with an audit trail.
+Once a certificate is revoked, its status is permanently set to `revoked` and its serial number is retired. Double revocation is idempotent — attempting to revoke an already-revoked certificate is a no-op. Re-issuance requires a new serial number and a new certificate record.
 
-### Data & Persistence
+### Embedded Layout Snapshots
 
-- **1** model: `Certificate`.
-- UUID PKs, index on `registration_id`.
+Certificate layouts (portrait/landscape orientation, background seals, text placeholders) are rendered dynamically at issuance time and frozen as immutable HTML snapshots within the certificate record. This ensures certificates always render exactly as they were at issuance, even if templates change later.
 
-### User Interface
+## Dependencies
 
-- **2** Livewire components:
-    - `CertificateList` — Coordinator manager for tracking and revoking certificates.
-    - `StudentCertificates` — Student list to view and download PDF credentials.
+- Core (base classes, SmartLogger)
+- Reports (finalized grade card prerequisite)
+- Enrollment (registration context)
+- User (recipient and issuer identity)
 
----
+## Used By
 
-For complete technical reference, see [certification-reference.md](certification-reference.md).
+- Public verification endpoints (no module dependency)

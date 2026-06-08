@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Observability\Services;
 
-use App\Data\AuditCheck;
-use App\Data\AuditReport;
-use App\Enums\AuditCategory;
-use App\Enums\AuditStatus;
+use App\Core\Data\AuditCheck;
+use App\Core\Data\AuditReport;
+use App\Core\Enums\AuditCategory;
+use App\Core\Enums\AuditStatus;
 
 class EnvironmentAuditor
 {

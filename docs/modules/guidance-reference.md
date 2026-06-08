@@ -1,7 +1,6 @@
 # Guidance — Technical Reference
 
-> Last updated: 2026-06-06  
-> Changes: Removed references to the eliminated mentor, mentee, and handbook models and tables.
+> Last updated: 2026-06-08
 
 Detailed structural and implementation reference for the **Guidance** module.
 
@@ -9,36 +8,18 @@ Detailed structural and implementation reference for the **Guidance** module.
 
 ## Overview
 
-Manages teacher field supervision logs and mentoring relations coordinates.
-
-### Module Statistics
-
-- **Actions**: 2 business logic operations
-- **Models**: 1 data entity (`SupervisionLog`)
-- **Livewire Components**: 2 UI components
-- **Policies**: 1 authorization rule
-- **Submodules**: 1 module submodule
+Manages mentor-student supervision logs, field supervision visits, and mentoring relationship coordination.
 
 ### Submodules
 
-- **SupervisionLog**: Private field visitation, virtual meeting, or phone log tracking.
-
----
-
-## Dependency Graph
-
-This module depends on:
-
-- **Core** (base classes)
-- **Enrollment** (registration records)
-- **User** (students, teachers, and profiles)
+- `SupervisionLog` — Field supervision visit logs
 
 ---
 
 ## Actions
 
-| File                                                    | Class                        | Extends      |
-| ------------------------------------------------------- | ---------------------------- | ------------ |
+| File | Class | Extends |
+| ---- | ----- | ------- |
 | `SupervisionLog/Actions/CreateSupervisionLogAction.php` | `CreateSupervisionLogAction` | `BaseAction` |
 | `SupervisionLog/Actions/VerifySupervisionLogAction.php` | `VerifySupervisionLogAction` | `BaseAction` |
 
@@ -46,26 +27,50 @@ This module depends on:
 
 ## Models
 
-| File                                       | Class            |
-| ------------------------------------------ | ---------------- |
-| `SupervisionLog/Models/SupervisionLog.php` | `SupervisionLog` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `SupervisionLog/Models/SupervisionLog.php` | `SupervisionLog` | `BaseModel` |
+
+---
+
+## Enums
+
+| File | Enum | Implements | Values |
+| ---- | ---- | ---------- | ------ |
+| `SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, verified |
+| `SupervisionLog/Enums/SupervisionType.php` | `SupervisionType` | `LabelEnum` | onsite, remote, scheduled, emergency |
+
+---
+
+## Entities
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `SupervisionLog/Entities/SupervisionStatus.php` | `SupervisionStatus` | `BaseEntity` |
+
+---
+
+## Policies
+
+| File | Policy | Extends |
+| ---- | ------ | ------- |
+| `SupervisionLog/Policies/SupervisionLogPolicy.php` | `SupervisionLogPolicy` | `BasePolicy` |
 
 ---
 
 ## Livewire Components
 
-| File                                                | Component               | Extends             |
-| --------------------------------------------------- | ----------------------- | ------------------- |
-| `SupervisionLog/Livewire/SupervisorLogManager.php` | `SupervisorLogManager` | `BaseRecordManager` |
-| `SupervisionLog/Livewire/SupervisionManager.php`   | `SupervisionManager`   | `Component`         |
+| File | Component | Extends |
+| ---- | --------- | ------- |
+| `SupervisionLog/Livewire/SupervisionManager.php` | `SupervisionManager` | `BaseRecordManager` |
+| `SupervisionLog/Livewire/SupervisorLogManager.php` | `SupervisorLogManager` | `Component` |
 
 ---
 
-## Authorization Policies
+## Routes
 
-| File                                               | Policy                 |
-| -------------------------------------------------- | ---------------------- | ------------ |
-| `SupervisionLog/Policies/SupervisionLogPolicy.php` | `SupervisionLogPolicy` | `BasePolicy` |
+File: `routes/web/guidance.php`
+Naming pattern: `guidance.{resource}.{action}`
 
 ---
 
@@ -73,26 +78,30 @@ This module depends on:
 
 ```
 app/Guidance/
-└── SupervisionLog/          ← Submodule root
+└── SupervisionLog/
     ├── Actions/
+    │   ├── CreateSupervisionLogAction.php
+    │   └── VerifySupervisionLogAction.php
+    ├── Entities/SupervisionStatus.php
+    ├── Enums/
+    │   ├── SupervisionLogStatus.php
+    │   └── SupervisionType.php
     ├── Livewire/
-    ├── Models/
-    └── Policies/
+    │   ├── SupervisionManager.php
+    │   └── SupervisorLogManager.php
+    ├── Models/SupervisionLog.php
+    └── Policies/SupervisionLogPolicy.php
 ```
 
 ---
 
 ## Architectural Integration
 
-This module integrates with the system across the following directories and resources:
-
 - **Submodules**: `SupervisionLog`
-- **Business Logic (`app/`)**: Located in
-  [app/Guidance/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/Guidance/)
-- **Routing (`routes/`)**:
-  [routes/web/guidance.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/guidance.php)
-- **Views (`views/`)**: Blade templates and layouts are in
-  [resources/views/guidance/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/guidance/)
-- **Testing (`tests/`)**: Feature `tests/Feature/Guidance/`, Unit `tests/Unit/Guidance/`
+- **Business Logic**: `app/Guidance/`
+- **Routing**: `routes/web/guidance.php`
+- **Views**: `resources/views/guidance/`
+- **Testing**: `tests/Feature/Guidance/`, `tests/Unit/Guidance/`
+- **Dependencies**: User, Program, Core
 
-_For overview and business context, see [guidance.md](guidance.md)_
+*For overview and business context, see [guidance.md](guidance.md).*

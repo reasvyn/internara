@@ -1,173 +1,63 @@
-# Core — Documentation Overview
+# Core
 
-> Last updated: 2026-06-06 Changes: Removed Locale Management and Theme System from Core features
-> (moved to Settings module)
+> **Last updated:** 2026-06-08
 
-Foundational infrastructure, base classes, contracts, and cross-module utilities that every other
-module depends on.
+Foundational infrastructure, abstract base classes, contracts, cross-module utilities, and architectural mechanisms that every other module depends on.
 
-For complete technical reference including API, models, actions, and components, see
-[core-reference.md](core-reference.md).
+## Purpose & Boundary
 
----
+Core provides the non-negotiable foundation for the entire application. It defines the architectural patterns (Action Triad, Entity separation, exception hierarchy) and enforces them through PHPStan rules and code review. Core has **zero dependencies** on any business module — it depends only on Laravel, Spatie packages, and PHP 8.4.
 
-## Key Principles
-
-- **Base classes are mandatory** — every Model, Action, Policy, Entity, Controller, FormRequest,
-  Enum, and Livewire CRUD component must extend the corresponding Core base class. No exceptions.
-- **Contracts over implementations** — enums implement `LabelEnum`, state machines implement
-  `StatusEnum`. Consistency across all 19 modules.
-- **SmartLogger dual-channel** — all logging goes through `SmartLogger`, which simultaneously writes
-  to system and activity channels with automatic PII masking.
-- **Exceptions are typed** — use `AppException` for layered framework failures
-  (action/infrastructure/presentation) and `ModuleException` for module invariant violations.
-- **Core has zero business module dependencies** — it depends only on Laravel, Spatie packages, and
-  PHP. No business module ever imports Core (Core imports nothing from business modules).
-
----
-
-## Ideal Core & Infrastructure Design Specification
-
-The ideal Core/Infrastructure design of Internara is divided into 5 architectural mechanisms:
-
-### 1. Unified Transaction and Logging Boundary (`BaseAction`)
-
-Every business mutation uses the Action pattern. To prevent data corruption, `BaseAction` implements
-a standardized atomic transaction wrapping and logging wrapper:
-
-- **Atomic Transactions**: All mutations automatically wrap database updates inside database
-  transactions. If any segment fails, changes are completely rolled back.
-- **Auto-audit Logging**: Every completed mutation dispatches metadata directly to `SmartLogger`,
-  logging user context, changes, and resource targets.
-
-### 2. Dual-channel Structured Logging (`SmartLogger` + `PiiMasker`)
-
-To satisfy security audits while maintaining verbose debug logs:
-
-- **System Channel**: Detailed system errors and stacks for debugging.
-- **Audit Channel**: Immutable database records documenting who modified what (e.g., grading
-  changes, role escalation). Lacks sensitive user PII (names, phone numbers, and IDs are
-  programmatically redacted).
-
-### 3. Dynamic Module & Service Discovery (`module:discover`)
-
-Instead of hardcoding route configuration or class listings:
-
-- **Discovery Engine**: The Core module executes a discovery scanning command. This command
-  identifies policies, models, Livewire components, and route directories across the 16 business
-  modules.
-- **Dynamic Registration**: Registries are cached automatically inside the Shared `CacheKeys`
-  storage to maintain high boot performance.
-
-### 4. Resilient Double-tree Exception Hierarchy
-
-To isolate system exceptions from client-facing application issues:
-
-- **`AppException` Tree**: Handled presentation, action, or infrastructure failures (e.g., Redis
-  down, duplicate unique keys).
-- **`ModuleException` Tree**: Catches strictly business invariant rejections (e.g., state machine
-  bypasses, invalid grading ranges). Enables custom presentation views and clean logs.
-
-### 5. Decoupled Asynchronous Comm (Cross-Module Event Bus)
-
-Modules communicate via events. For example, when an enrollment completes, it fires an
-`EnrollmentCompleted` event. Listeners in the `Certification` and `Evaluation` modules handle the
-follow-up asynchronously. This prevents circular coupling between packages.
-
----
-
-## Context Boundary
-
-Core is the foundation layer (Layers 3–4 in the 12-layer architecture). Every module depends on it.
-Core itself depends on nothing except Laravel/Spatie/PHP. It provides:
-
-- **Layer 3 (Contracts)**: Enum contracts, base exception hierarchy, notification contracts
-- **Layer 4 (Base Classes)**: BaseModel, BaseAction, BasePolicy, BaseEntity, BaseRecordManager,
-  BaseController, BaseFormRequest, BaseData DTO
-- **Cross-module foundation**: SmartLogger, security headers and request tracing middleware, system
-  discovery commands
-
----
-
-## Module Rules
-
-- All models **must** extend `BaseModel` (or `Authenticatable` for User). UUID primary keys via
-  `HasUuids` trait are enforced at the base level.
-- All business mutations **must** go through `BaseAction::execute()`, which wraps in
-  `$this->transaction()` and logs via `$this->log()`. Livewire components must never call
-  `Model::save()` directly.
-- All authorization **must** go through `BasePolicy`. Inline `Gate::define()` with closures is
-  forbidden.
-- State machine enums **must** implement `StatusEnum` with `canTransitionTo()`, `isTerminal()`, and
-  `validTransitions()`.
-- All enums **must** implement `LabelEnum` (provides `label(): string` for UI display).
-- Form Requests **must** extend Core's `BaseFormRequest` (throws `ValidationFailedException` instead
-  of redirecting).
-- Cache keys **must** be defined as constants in the Shared `CacheKeys` class, not hardcoded as
-  strings.
-- Cross-module communication uses four patterns: direct imports, core contracts, module events, and
-  action delegation.
-
----
+Out of scope: concrete business logic, domain enums, application settings, user-facing features.
 
 ## Submodules
 
-Core has no submodules — it provides infrastructure, not business entities. Code is organized by
-function:
+Core has no submodules. Code is organized by architectural layer:
 
-- **Actions/**: `BaseAction`
-- **Models/**: `BaseModel`, `ActivityLog` (Spatie)
-- **Policies/**: `BasePolicy`
-- **Entities/**: `BaseEntity` (final readonly base)
-- **Livewire/**: `BaseRecordManager`
-- **Http/**: `BaseController`, `BaseFormRequest`, `SecurityHeaders`, `LogContext` middleware
-- **Contracts/**: `LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`, `SettingsStore`
-- **Exceptions/**: `AppException` and `ModuleException` dual hierarchies, plus abstract exceptions
-  (`ActionException`, `InfrastructureException`, `PresentationException`) and concerns
-  (`HasExceptionContext`)
-- **Support/**: `SmartLogger`, `LangChecker`
-- **Data/**: `BaseData` (abstract readonly DTO base)
+- **Actions/BaseAction.php** — Abstract foundation for Command and Process Action types. Provides atomic `$this->transaction()` wrapping, auto-audit logging via SmartLogger, and consistent error handling.
+- **Models/BaseModel.php** — Abstract model base enforcing UUID v7 primary keys (via `HasUuids` trait), `HasFactory`, soft deletes, and consistent timestamp behavior. `Authenticatable` variant for the User model.
+- **Entities/BaseEntity.php** — `final readonly` base for domain entities. Framework dependencies allowed. Entities expose `fromModel()` static factories and `toArray()` for serialization.
+- **Policies/BasePolicy.php** — Abstract policy providing `before()` superadmin gate bypass, role checks via `AuthorizesRoles`, and ownership checks via `AuthorizesOwnership`.
+- **Livewire/BaseRecordManager.php** — Abstract CRUD table component with built-in sorting, filtering, pagination, bulk actions, and record selection.
+- **Http/Controllers/BaseController.php** — Abstract controller providing consistent JSON error responses and request context injection.
+- **Http/Requests/BaseFormRequest.php** — Abstract form request that throws `ValidationFailedException` on failure (no redirects), compatible with API and Livewire subrequests.
+- **Contracts/** — `LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`, `SettingsStore`.
+- **Exceptions/** — Dual hierarchy: `AppException` for infrastructure/presentation/action failures, `ModuleException` for business rule violations. Both implement `HasExceptionContext`.
+- **Support/SmartLogger.php** — Fluent dual-channel logger writing to system (debug) and activity (immutable audit) channels with automatic PII masking via `PiiMasker`.
+- **Data/BaseData.php** — Abstract readonly DTO base for type-safe data transfer objects.
 
----
+## Key Concepts
 
-## Error Handling & Failure Modes
+### Action Triad
 
-- **Missing base class extension**: PHPStan enforces that every Model/Action/Policy/Entity extends
-  the correct Core base class. CI will fail with a static analysis error.
-- **Skipping BaseAction**: If a mutation bypasses `BaseAction` and calls `Model::save()` directly
-  from a Livewire component, it violates the Action Gate rule. Enforced through code review.
-- **Bypassing FormRequest**: Using `extends Request` (Laravel's base) instead of Core's
-  `BaseFormRequest` means validation failures will redirect instead of returning JSON. API clients
-  and Livewire subrequests will break.
-- **Missing StatusEnum**: State machine enums without `canTransitionTo()` allow invalid transitions
-  silently. The system will not prevent a `REVOKED` certificate from being re-issued.
+All business logic follows the Triad pattern:
+- **Command Action** (extends `BaseAction`): Mutations wrapped in database transactions with automatic SmartLogger audit. Returns `ActionResponse`.
+- **Read Action** (plain class, no BaseAction): Queries only, no transactions or audit logging.
+- **Process Action** (extends `BaseAction`): Orchestrates multiple Command Actions in a single transaction, coordinating cross-submodule workflows.
 
----
+### Dual Exception Hierarchy
 
-## Quick References
+- **AppException** tree: `InfrastructureException` → `ActionException` → `PresentationException`. Used for system-level failures (Redis down, DB constraint violations).
+- **ModuleException** tree: Per-module exceptions extending `ModuleException`. Used for business invariant violations (invalid state transitions, capacity exceeded).
 
-### Actions & Business Logic
+### Cross-Module Communication
 
-- **1** action (`BaseAction`)
-- Provides transaction management, activity logging, and error handling for all command/process
-  actions
+Four patterns, in order of preference:
+1. **Direct import** — For shared entities, enums, and contracts.
+2. **Core contracts** — Interfaces defined in Core implemented by any module.
+3. **Module events** — Decoupled async communication via event bus (e.g., `EnrollmentCompleted` triggers Certification).
+4. **Action delegation** — One module's Action calls another module's Action directly (acceptable for tight coupling within the same bounded context).
 
-### Data & Persistence
+### Dynamic Discovery
 
-- **2** models (`BaseModel`, `ActivityLog`)
-- BaseModel enforces UUID PKs, HasFactory, and soft-delete support across all module models
+The `module:discover` command scans all business modules and registers policies, Livewire components, route directories, and cache keys dynamically. Results are cached in `CacheKeys` for boot performance.
 
-### User Interface
+## Dependencies
 
-- **1** Livewire base component for CRUD tables (`BaseRecordManager`)
-- Layouts and base Blade templates in `resources/views/core/`
+- Laravel 13 framework
+- `spatie/laravel-permission` — Role-based access control integration
+- PHP 8.4
 
-### Authorization
+## Used By
 
-- **1** authorization policy (`BasePolicy`)
-- Provides `before()` gate bypass for superadmin, role checks with `AuthorizesRoles`, ownership
-  checks with `AuthorizesOwnership`
-
----
-
-For complete technical reference, see [core-reference.md](core-reference.md).
+Every module in the application.

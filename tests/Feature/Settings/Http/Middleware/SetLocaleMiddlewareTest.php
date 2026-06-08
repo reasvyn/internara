@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Settings\Http\Middleware\SetLocaleMiddleware;
+use App\Settings\Locale\Http\Middleware\SetLocaleMiddleware;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;

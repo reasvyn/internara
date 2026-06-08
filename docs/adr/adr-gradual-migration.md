@@ -1,157 +1,83 @@
-# Gradual Migration / Optional Complexity
+# ADR-012: Gradual Migration / Optional Complexity
 
-> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
-> conventions overhaul
-
-## Status
-
-Accepted
+> **Status:** Accepted
+> **Last updated:** 2026-06-08
 
 ## Context
 
-The Internara codebase aspires to several architectural ideals — typed DTOs for all Action inputs,
-module events for every significant state change, event-driven cache invalidation, shared validation
-rules in Entities, and architecture tests enforcing boundaries.
+The codebase aspires to several architectural ideals — typed DTOs for all Action inputs, module events for state changes, event-driven cache invalidation, shared validation rules in Entities, and architecture tests enforcing boundaries.
 
-However, imposing all ideals from day one creates friction that slows development:
+However, imposing all ideals from day one creates friction:
 
-- **Typed DTOs** require defining a class (with constructor, properties, `fromArray()`) for every
-  Action input — significant boilerplate before any business logic is written.
-- **Module events** require defining an event class, a listener class, registering the listener, and
-  deciding whether to queue it — overhead that discourages creating events for genuinely important
-  state changes.
-- **Event-driven cache invalidation** requires a dedicated listener class for every cache key —
-  before cache invalidation is even needed.
-- **Architecture tests** that fail on every build slow down iteration when boundaries are still
-  being explored.
+- **Typed DTOs** require a class with constructor, properties, and `fromArray()` for every Action input — significant boilerplate before any business logic.
+- **Module events** require an event class, listener class, registration, and queuing decision — overhead that discourages creating events.
+- **Event-driven cache invalidation** requires a listener class for every cache key before invalidation is even needed.
+- **Architecture tests** that fail on every build slow iteration during boundary exploration.
 
-The alternative — never adopting these patterns — leads to the problems the ideals solve: untyped
-Action inputs that are hard to reason about, side effects scattered across Actions instead of in
-listeners, and cache stale bugs.
-
-The solution is not "all ideals now" or "no ideals ever." The solution is a **gradual migration
-path** where each pattern can be adopted incrementally as the codebase matures and as specific pain
-points emerge.
+The solution is not "all ideals now" or "no ideals ever." It is a **gradual migration path** where each pattern can be adopted incrementally.
 
 ## Decision
 
-The following patterns are OPTIONAL during initial development and EARLY stages of a feature. They
-become RECOMMENDED as the feature stabilizes, and eventually REQUIRED for all new code.
+Each pattern follows a three-phase migration: Start, Stabilize, Final. Every developer should ship features first and migrate patterns later.
 
-### Pattern: Typed DTOs for Action Inputs
+### DTOs for Action Inputs
 
-| Phase         | Convention             | When                                                    |
-| ------------- | ---------------------- | ------------------------------------------------------- | ------------------------------------------------ |
-| **Start**     | `execute(array $data)` | First iteration while the input shape is still changing |
-| **Stabilize** | `execute(Data          | array $data)`                                           | Action accepts both DTO and array via union type |
-| **Final**     | `execute(Data $data)`  | Input shape is settled, DTO is the only contract        |
+| Phase | Convention | When |
+|---|---|---|
+| Start | `execute(array $data)` | First iteration — input shape still changing |
+| Stabilize | `execute(Data\|array $data)` | Action accepts both via union type |
+| Final | `execute(Data $data)` | Input shape settled, DTO is the only contract |
 
-The `Data` base class supports `Data::fromArray()` so that consumers passing arrays continue to work
-during migration:
+BaseData supports `fromArray()` so consumers passing arrays continue to work during migration.
 
-```php
-// Phase 2 — both work
-public function execute(CreateInternshipData|array $data): Internship
-{
-    if (is_array($data)) {
-        $data = CreateInternshipData::from($data);
-    }
-    // ... use $data->name, $data->startDate instead of $data['name']
-}
-```
+### Module Events for Side Effects
 
-**When to migrate:** When an Action's input grows beyond 3 parameters, or when the Action is called
-from multiple places and the input contract needs to be enforced.
+| Phase | Convention | When |
+|---|---|---|
+| Start | Side effects inline in Action | First implementation |
+| Stabilize | Event dispatched, listener created | Second side effect or second listener needed |
+| Final | All side effects in listeners | Action test needs to verify state without triggering side effects |
 
-### Pattern: Module Events for Side Effects
+### Event-Driven Cache Invalidation
 
-| Phase         | Convention                                               | When                                                                                                   |
-| ------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **Start**     | Side effects inline in the Action                        | First implementation — notification, log, cache flush all in one method                                |
-| **Stabilize** | Event dispatched, listener created                       | When a second side effect needs to be added, or when another listener needs to react to the same event |
-| **Final**     | All side effects in listeners, Action only mutates state | When the Action's test needs to verify state changes without triggering side effects                   |
+| Phase | Convention | When |
+|---|---|---|
+| Start | `Cache::forget()` inline in Action | Quick — "just make it work" |
+| Stabilize | Event dispatched, listener flushes keys | Multiple events affect same key |
+| Final | CacheKeys registry, listener-driven | Full cross-module invalidation |
 
-```php
-// Phase 1 — side effects inline
-public function execute(array $data): Internship
-{
-    return $this->transaction(function () use ($data) {
-        $internship = Internship::create($data);
-        $this->log('internship_created', $internship);
-        Notification::send($admins, ...); // inline side effect
-        return $internship;
-    });
-}
+### Shared Validation Rules in Entities
 
-// Phase 3 — Action dispatches event, listeners handle side effects
-public function execute(CreateInternshipData $data): Internship
-{
-    return $this->transaction(function () use ($data) {
-        $internship = Internship::create($data->toArray());
-        $this->log('internship_created', $internship);
-        event(new InternshipCreated($internship));
-        return $internship;
-    });
-}
-```
+| Phase | Convention | When |
+|---|---|---|
+| Start | Rules in Form Object only | Quick — co-located with UI |
+| Stabilize | Entity::rules() referenced by both | Same entity edited from two forms |
+| Final | All module rules centralized in Entities | Full DRY across all UI layers |
 
-**When to migrate:** When the Action grows beyond one side effect, or when a second listener needs
-to react to the same event.
+### Architecture Tests
 
-### Pattern: Event-Driven Cache Invalidation
+| Phase | Convention | When |
+|---|---|---|
+| Start | No tests — code review enforcement | Rapid exploration |
+| Stabilize | Critical boundary tests restored | Module structure stabilizes |
+| Final | Full test suite (naming, conventions, deps) | v1.0 release |
 
-| Phase         | Convention                                                      | When                                                                                            |
-| ------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **Start**     | `Cache::forget()` inline in the Action                          | Quick — "just make it work"                                                                     |
-| **Stabilize** | Event dispatched, `CacheInvalidationListener` flushes keys      | When multiple events affect the same cache key, or when cache keys become shared across modules |
-| **Final**     | Cache keys registered in `CacheKeys`, invalidated via listeners | Full event-driven invalidation across all modules                                               |
+Note: Architecture tests were removed due to a `pest-plugin-arch` compatibility bug. Restoration planned when the plugin stabilizes.
 
-### Pattern: Shared Validation Rules in Entities
+### Governing Principle
 
-| Phase         | Convention                                                                       | When                                                    |
-| ------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| **Start**     | Validation rules in the Form Object only                                         | Quick — rules are co-located with the UI                |
-| **Stabilize** | `Entity::rules()` static method, referenced by both Form Object and Form Request | When the same entity is edited from two different forms |
-| **Final**     | All module validation rules centralized in Entities                              | Full DRY validation across all UI layers                |
-
-### Pattern: Architecture Tests
-
-| Phase         | Convention                                                             | When                                     |
-| ------------- | ---------------------------------------------------------------------- | ---------------------------------------- |
-| **Start**     | No architecture tests — boundaries enforced by code review             | During rapid exploration and prototyping |
-| **Stabilize** | Critical boundary tests restored (module boundaries, layer separation) | When the module structure stabilizes     |
-| **Final**     | Full architecture test suite (naming, conventions, dependency rules)   | When the codebase reaches v1.0           |
-
-Note: Architecture tests were previously implemented via `pest-plugin-arch` but removed due to a
-compatibility bug. Restoration is planned when the plugin stabilizes.
-
-## Governing Principle
-
-**Good enough today is better than perfect next week.** Every pattern has a clear migration path. No
-developer should hesitate to write an Action because they need to define a DTO first. Write the
-array-based version, ship the feature, and migrate when the input stabilizes.
+**Good enough today is better than perfect next week.** Every pattern has a clear migration path. No developer should hesitate to write an Action because they need to define a DTO first. Write the array-based version, ship the feature, and migrate when the input stabilizes.
 
 ## Consequences
 
-- **Positive**: Development velocity is not blocked by architectural ceremony. A developer can write
-  `execute(array $data)`, ship, and migrate to a DTO later.
-- **Positive**: Each pattern has a clear, documented migration path — no ambiguity about when or how
-  to adopt it.
-- **Positive**: Early-stage code is simple and pragmatic. Architectural patterns surface only when
-  they provide tangible value (duplicated validation, multiple listeners, etc.).
-- **Positive**: The migration paths are backward-compatible — Phase 2 code (union types, dual paths)
-  works without breaking existing callers.
-- **Negative**: Codebase will have a mix of "phases" during migration — some Actions use DTOs, some
-  use arrays. This is expected and temporary.
-- **Negative**: Developers must know which phase a given area of the codebase is in before extending
-  it. Inconsistent patterns can be confusing without clear conventions.
-- **Negative**: Without strict enforcement, some areas may never migrate past Phase 1. Periodic
-  architecture reviews are needed to identify stagnated patterns.
+- **Positive**: Development velocity is not blocked by architectural ceremony. Ship first, migrate later.
+- **Positive**: Each pattern has a clear, documented migration path — no ambiguity about when or how to adopt it.
+- **Positive**: Early-stage code is simple and pragmatic. Patterns surface only when they provide tangible value.
+- **Positive**: Migration paths are backward-compatible — Phase 2 code (union types) works without breaking existing callers.
+- **Negative**: Codebase has a mix of phases during migration — some Actions use DTOs, some use arrays. Expected and temporary.
+- **Negative**: Without strict enforcement, some areas may never migrate past Phase 1. Periodic architecture reviews are needed.
 
 ## References
 
-- `app/Core/Data/BaseData.php` — DTO base class with `fromArray()` support
-- `docs/architecture.md` — Migration Paths section
-- `docs/architecture.md` — Action Triad section
-- `docs/architecture.md` — Validation Strategy section
-- `docs/architecture.md` — Caching Strategy section
+- `app/Core/Data/BaseData.php` — DTO base class with fromArray() support
+- `docs/architecture.md` — Migration Paths, Action Triad, Validation, Caching sections

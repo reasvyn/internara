@@ -1,7 +1,6 @@
 # User — Technical Reference
 
-> Last updated: 2026-06-06 Changes: refactor: move Auth submodules (AccountRecovery,
-> ActivationToken, Login, Password, SuperAdmin, Permissions) to new Auth module
+> Last updated: 2026-06-08
 
 Detailed structural and implementation reference for the **User** module.
 
@@ -9,95 +8,136 @@ Detailed structural and implementation reference for the **User** module.
 
 ## Overview
 
-Handles user profiles, notifications, account status management, and dashboards
-
-### Module Statistics
-
-- **Actions**: 14 business logic operations
-- **Models**: 3 data entities
-- **Livewire Components**: 11 UI components
-- **Policies**: 2 authorization rules
-- **Submodules**: 4 module submodules
+Handles user identity, profiles, notifications, account status, dashboards, and activity feeds.
 
 ### Submodules
 
-- `AccountStatus`
-- `Dashboard`
-- `Notifications`
 - `Profile`
-
----
-
-## Dependency Graph
-
-This module depends on:
-
-- **Academics**
-- **SysAdmin**
-- **Core**
-- **Enrollment**
-- **Evaluation**
-- **Guidance**
-- **Journals**
-- **Partners**
+- `Notifications`
+- `Dashboard`
+- `AccountStatus`
 
 ---
 
 ## Actions
 
-| File                                                      | Class                               | Extends      |
-| --------------------------------------------------------- | ----------------------------------- | ------------ |
-| `Notifications/Actions/DeleteNotificationAction.php`      | `DeleteNotificationAction`          | `BaseAction` |
-| `AccountStatus/Actions/DetectUserAccountCloneAction.php`  | `DetectUserAccountCloneAction`      | `BaseAction` |
-| `Actions/GetActivityLogsAction.php`                       | `GetActivityLogsAction`             | `BaseAction` |
-| `Profile/Actions/GetProfileFormDataAction.php`            | `GetProfileFormDataAction`          | `BaseAction` |
-| `Dashboard/Actions/GetStudentDashboardDataAction.php`     | `GetStudentDashboardDataAction`     | `BaseAction` |
-| `Dashboard/Actions/GetSupervisorDashboardStatsAction.php` | `GetSupervisorDashboardStatsAction` | `BaseAction` |
-| `Dashboard/Actions/GetTeacherDashboardStatsAction.php`    | `GetTeacherDashboardStatsAction`    | `BaseAction` |
-| `AccountStatus/Actions/LockUserAccountAction.php`         | `LockUserAccountAction`             | `BaseAction` |
-| `Notifications/Actions/MarkAllAsReadAction.php`           | `MarkAllAsReadAction`               | `BaseAction` |
-| `Notifications/Actions/MarkAsReadAction.php`              | `MarkAsReadAction`                  | `BaseAction` |
-| `Notifications/Actions/MarkBatchAsReadAction.php`         | `MarkBatchAsReadAction`             | `BaseAction` |
-| `Notifications/Actions/SendNotificationAction.php`        | `SendNotificationAction`            | `BaseAction` |
-| `AccountStatus/Actions/UnlockUserAccountAction.php`       | `UnlockUserAccountAction`           | `BaseAction` |
-| `Profile/Actions/UpdateProfileAction.php`                 | `UpdateProfileAction`               | `BaseAction` |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Actions/GetActivityLogsAction.php` | `GetActivityLogsAction` | Read |
+| `Profile/Actions/GetProfileFormDataAction.php` | `GetProfileFormDataAction` | Read |
+| `Profile/Actions/UpdateProfileAction.php` | `UpdateProfileAction` | `BaseAction` |
+| `Notifications/Actions/DeleteNotificationAction.php` | `DeleteNotificationAction` | `BaseAction` |
+| `Notifications/Actions/MarkAllAsReadAction.php` | `MarkAllAsReadAction` | `BaseAction` |
+| `Notifications/Actions/MarkAsReadAction.php` | `MarkAsReadAction` | `BaseAction` |
+| `Notifications/Actions/MarkBatchAsReadAction.php` | `MarkBatchAsReadAction` | `BaseAction` |
+| `Notifications/Actions/SendNotificationAction.php` | `SendNotificationAction` | Process `BaseAction` |
+| `Dashboard/Actions/GetStudentDashboardDataAction.php` | `GetStudentDashboardDataAction` | Read |
+| `Dashboard/Actions/GetSupervisorDashboardStatsAction.php` | `GetSupervisorDashboardStatsAction` | Read |
+| `Dashboard/Actions/GetTeacherDashboardStatsAction.php` | `GetTeacherDashboardStatsAction` | Read |
+| `AccountStatus/Actions/DetectUserAccountCloneAction.php` | `DetectUserAccountCloneAction` | `BaseAction` |
+| `AccountStatus/Actions/LockUserAccountAction.php` | `LockUserAccountAction` | `BaseAction` |
+| `AccountStatus/Actions/UnlockUserAccountAction.php` | `UnlockUserAccountAction` | `BaseAction` |
 
 ---
 
 ## Models
 
-| File                                    | Class          |
-| --------------------------------------- | -------------- |
-| `Notifications/Models/Notification.php` | `Notification` |
-| `Profile/Models/Profile.php`            | `Profile`      |
-| `Models/User.php`                       | `User`         |
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Models/User.php` | `User` | `Authenticatable` (with manual HasUuids) |
+| `Profile/Models/Profile.php` | `Profile` | `BaseModel` |
+| `Notifications/Models/Notification.php` | `Notification` | `BaseModel` |
+
+---
+
+## Enums
+
+| File | Enum | Implements | Values |
+| ---- | ---- | ---------- | ------ |
+| `Enums/AccountStatus.php` | `AccountStatus` | `LabelEnum`, `StatusEnum` | active, inactive, locked, suspended |
+| `Enums/BloodType.php` | `BloodType` | `LabelEnum` | A, B, AB, O |
+| `Enums/EmploymentStatus.php` | `EmploymentStatus` | `LabelEnum` | active, resigned, retired |
+| `Enums/Gender.php` | `Gender` | `LabelEnum` | male, female |
+| `Enums/StructuralPosition.php` | `StructuralPosition` | `LabelEnum` | principal, vice_principal, head_department, teacher, staff |
+
+---
+
+## Entities
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Entities/Apprentice.php` | `Apprentice` | `BaseEntity` |
+
+---
+
+## Policies
+
+| File | Policy | Extends |
+| ---- | ------ | ------- |
+| `Profile/Policies/ProfilePolicy.php` | `ProfilePolicy` | `BasePolicy` |
+| `Notifications/Policies/NotificationPolicy.php` | `NotificationPolicy` | `BasePolicy` |
 
 ---
 
 ## Livewire Components
 
-| File                                                 | Component                 | Extends             |
-| ---------------------------------------------------- | ------------------------- | ------------------- |
-| `AccountStatus/Livewire/AccountLifecycleManager.php` | `AccountLifecycleManager` | `Component`         |
-| `Livewire/ActivityFeedManager.php`                   | `ActivityFeedManager`     | `Component`         |
-| `Notifications/Livewire/NotificationBell.php`        | `NotificationBell`        | `Component`         |
-| `Notifications/Livewire/NotificationCenter.php`      | `NotificationCenter`      | `BaseRecordManager` |
-| `Profile/Livewire/ProfileEditor.php`                 | `ProfileEditor`           | `Component`         |
-| `Livewire/RecentActivityList.php`                    | `RecentActivityList`      | `Component`         |
-| `Dashboard/Livewire/UserDashboard.php`               | `UserDashboard`           | `Component`         |
-| `Dashboard/Livewire/AdminDashboard.php`              | `AdminDashboard`          | `UserDashboard`     |
-| `Dashboard/Livewire/StudentDashboard.php`            | `StudentDashboard`        | `UserDashboard`     |
-| `Dashboard/Livewire/SupervisorDashboard.php`         | `SupervisorDashboard`     | `UserDashboard`     |
-| `Dashboard/Livewire/TeacherDashboard.php`            | `TeacherDashboard`        | `UserDashboard`     |
+| File | Component | Extends |
+| ---- | --------- | ------- |
+| `Profile/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` |
+| `Notifications/Livewire/NotificationBell.php` | `NotificationBell` | `Component` |
+| `Notifications/Livewire/NotificationCenter.php` | `NotificationCenter` | `Component` |
+| `Livewire/ActivityFeedManager.php` | `ActivityFeedManager` | `Component` |
+| `Livewire/RecentActivityList.php` | `RecentActivityList` | `Component` |
+| `Dashboard/Livewire/UserDashboard.php` | `UserDashboard` | `Component` |
+| `Dashboard/Livewire/AdminDashboard.php` | `AdminDashboard` | `Component` |
+| `Dashboard/Livewire/StudentDashboard.php` | `StudentDashboard` | `Component` |
+| `Dashboard/Livewire/TeacherDashboard.php` | `TeacherDashboard` | `Component` |
+| `Dashboard/Livewire/SupervisorDashboard.php` | `SupervisorDashboard` | `Component` |
+| `AccountStatus/Livewire/AccountLifecycleManager.php` | `AccountLifecycleManager` | `Component` |
+
+## Livewire Forms
+
+| File | Form |
+| ---- | ---- |
+| `Profile/Livewire/Forms/ProfileForm.php` | `ProfileForm` |
+| `Profile/Livewire/Forms/PasswordForm.php` | `PasswordForm` |
+
+## Notifications
+
+| File | Notification |
+| ---- | ------------ |
+| `Notifications/GeneralNotification.php` | `GeneralNotification` |
+| `Notifications/WelcomeNotification.php` | `WelcomeNotification` |
+| `Notifications/TestMailNotification.php` | `TestMailNotification` |
+| `AccountStatus/Notifications/AccountStatusNotification.php` | `AccountStatusNotification` |
+
+## Support
+
+| File | Class | Purpose |
+| ---- | ----- | ------- |
+| `Support/UserIdentifierGenerator.php` | `UserIdentifierGenerator` | Generates usernames and identifiers |
+| `Services/DashboardService.php` | `DashboardService` | Dashboard data aggregation |
+
+## Rules
+
+| File | Rule | Purpose |
+| ---- | ---- | ------- |
+| `Rules/ReservedAuthoritativeName.php` | `ReservedAuthoritativeName` | Validates reserved names |
+| `Rules/SystemUsername.php` | `SystemUsername` | Validates system username format |
+
+## HTTP Controllers
+
+| File | Controller | Extends |
+| ---- | ---------- | ------- |
+| `Http/Controllers/DashboardController.php` | `DashboardController` | `BaseController` |
+| `Http/Controllers/HomeController.php` | `HomeController` | `BaseController` |
 
 ---
 
-## Authorization Policies
+## Routes
 
-| File                                            | Policy               |
-| ----------------------------------------------- | -------------------- |
-| `Notifications/Policies/NotificationPolicy.php` | `NotificationPolicy` |
-| `Profile/Policies/ProfilePolicy.php`            | `ProfilePolicy`      |
+File: `routes/web/user.php`
+Naming pattern: `user.{resource}.{action}`
 
 ---
 
@@ -105,32 +145,81 @@ This module depends on:
 
 ```
 app/User/
-├──            ← Submodule roots
-│   └── {SubModule}/
-│       ├── Actions/
-│       ├── Models/
-│       ├── Policies/
-│       └── Livewire/
-├── Http/
+├── Actions/GetActivityLogsAction.php
+├── AccountStatus/
+│   ├── Actions/
+│   │   ├── DetectUserAccountCloneAction.php
+│   │   ├── LockUserAccountAction.php
+│   │   └── UnlockUserAccountAction.php
+│   ├── Livewire/AccountLifecycleManager.php
+│   └── Notifications/AccountStatusNotification.php
+├── Dashboard/
+│   ├── Actions/
+│   │   ├── GetStudentDashboardDataAction.php
+│   │   ├── GetSupervisorDashboardStatsAction.php
+│   │   └── GetTeacherDashboardStatsAction.php
+│   └── Livewire/
+│       ├── AdminDashboard.php
+│       ├── StudentDashboard.php
+│       ├── SupervisorDashboard.php
+│       ├── TeacherDashboard.php
+│       └── UserDashboard.php
+├── Entities/Apprentice.php
+├── Enums/
+│   ├── AccountStatus.php
+│   ├── BloodType.php
+│   ├── EmploymentStatus.php
+│   ├── Gender.php
+│   └── StructuralPosition.php
+├── Http/Controllers/
+│   ├── DashboardController.php
+│   └── HomeController.php
 ├── Livewire/
-├── Types/
-├── Services/
-└── Support/
+│   ├── ActivityFeedManager.php
+│   └── RecentActivityList.php
+├── Models/User.php
+├── Notifications/
+│   ├── Actions/
+│   │   ├── DeleteNotificationAction.php
+│   │   ├── MarkAllAsReadAction.php
+│   │   ├── MarkAsReadAction.php
+│   │   ├── MarkBatchAsReadAction.php
+│   │   └── SendNotificationAction.php
+│   ├── Livewire/
+│   │   ├── NotificationBell.php
+│   │   └── NotificationCenter.php
+│   ├── Models/Notification.php
+│   ├── Policies/NotificationPolicy.php
+│   ├── GeneralNotification.php
+│   ├── TestMailNotification.php
+│   └── WelcomeNotification.php
+├── Profile/
+│   ├── Actions/
+│   │   ├── GetProfileFormDataAction.php
+│   │   └── UpdateProfileAction.php
+│   ├── Livewire/
+│   │   ├── Forms/
+│   │   │   ├── PasswordForm.php
+│   │   │   └── ProfileForm.php
+│   │   └── ProfileEditor.php
+│   ├── Models/Profile.php
+│   └── Policies/ProfilePolicy.php
+├── Rules/
+│   ├── ReservedAuthoritativeName.php
+│   └── SystemUsername.php
+├── Services/DashboardService.php
+└── Support/UserIdentifierGenerator.php
 ```
 
 ---
 
 ## Architectural Integration
 
-This module integrates with the system across the following directories and resources:
+- **Submodules**: `Profile`, `Notifications`, `Dashboard`, `AccountStatus`
+- **Business Logic**: `app/User/`
+- **Routing**: `routes/web/user.php`
+- **Views**: `resources/views/user/`
+- **Testing**: `tests/Feature/User/`, `tests/Unit/User/`
+- **Dependencies**: Core, SysAdmin
 
-- **Submodules**: `AccountStatus`, `Profile`, `Notifications`, `Dashboard`
-- **Business Logic (`app/`)**: Located in
-  [app/User/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/app/User/)
-- **Routing (`routes/`)**:
-  [routes/web/user.php](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/routes/web/user.php)
-- **Views (`views/`)**: Blade templates and layouts are in
-  [resources/views/user/](file:///home/reasnovynt/Projects/Dev/reasvyn/internara/resources/views/user/)
-- **Testing (`tests/`)**: Feature `tests/Feature/User/`, Unit `tests/Unit/User/`
-
-_For overview and business context, see [user.md](user.md)_
+*For overview and business context, see [user.md](user.md).*

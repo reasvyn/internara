@@ -1,75 +1,101 @@
 ---
 name: livewire-refactoring
+description: Apply this skill when refactoring Livewire components that have grown too large, when extracting business logic from components into proper layers, or when enforcing the Action-Oriented MVC pattern on existing code. Activates when you see inline DB calls, business rule conditionals, static helpers, or repeated UI patterns inside Livewire components.
 ---
 
 # Livewire Refactoring Skill
 
 ## When to Activate
 
-Apply this skill when refactoring Livewire components that have grown too large, when extracting
-business logic from components into proper layers, or when enforcing the Action-Oriented MVC pattern
-on existing code. Activate when you see inline DB calls, business rule conditionals, static helpers,
-or repeated UI patterns inside Livewire components.
+Apply this skill when refactoring Livewire components that have grown too large, when extracting business logic into proper layers, or when enforcing the Action-Oriented MVC pattern. Activate on seeing inline DB calls, business rule conditionals, static helpers, or repeated UI patterns inside components.
 
-## Core Principles
-
-### The Problem Space
+## The Problem Space
 
 Livewire components naturally accumulate four categories of misplaced code:
 
-- Business logic (DB writes, validation) that belongs in Actions
-- Business rules (canX checks, state transitions) that belong in Entities
-- Static utilities (formatting, generation, parsing) that belong in Support
-- Repeated UI patterns (confirm dialogs, modals) that belong in shared components
+| Category | Symptom | Belongs In |
+|----------|---------|------------|
+| Business logic | `Model::create()`, `DB::transaction()` | Action |
+| Business rules | `if ($status === 'x')`, date comparisons | Entity |
+| Static utilities | Formatting, generation, parsing | Support class |
+| Repeated UI patterns | Confirm dialogs, modals | Shared component or trait |
 
-### Layer Separation
+## Key References
 
-Every Livewire component must be thin by design. The component owns UI state (form data, modal
-visibility, search input, selection). Actions own validation, persistence, and side effects.
-Entities own business rule answers. Support owns static helpers.
-
-The refactoring pattern is always: identify misplaced code → extract to the correct layer → inject
-as a dependency → call from the component.
+- **Actions**: `app/Core/Actions/BaseAction.php` — `transaction()`, `log()`, `HandlesActionErrors`
+- **Entities**: `app/Core/Entities/BaseEntity.php` — `final readonly`, `fromModel()` bridge
+- **BaseRecordManager**: `app/Core/Livewire/BaseRecordManager.php` — CRUD base class
+- **Conventions**: `docs/conventions.md#10-livewire-components`, `docs/conventions.md#6-actions`
 
 ## Refactoring Workflow
 
-### Step 1: Identify Inline Business Logic
+### Step 1 — Extract Business Logic to Action
 
-Scan for `Model::create/update/delete`, `DB::transaction()`, `Validator::make()`, `Mail::send()`,
-`Notification::send()` in the component. These all belong in Actions.
+Scan for `Model::create/update/delete`, `DB::transaction()`, `Validator::make()`, `Mail::send()`, `Notification::send()`.
 
-### Step 2: Extract to Action
+1. Create `app/{Module}/{SubModule}/Actions/{Verb}{Subject}Action.php`
+2. Extend `BaseAction`, single `execute()` method
+3. Move validation to Action input
+4. Wrap persistence in `$this->transaction()`
+5. Add `$this->log()` and event dispatch
+6. Inject via method parameter in the component
 
-Move the operation to `app/{Module}/Actions/{Verb}{Subject}Action.php`. The Action extends
-BaseAction, has a single `execute()` method, validates input, wraps persistence in
-`$this->transaction()`, and emits side effects. The component receives the Action via method
-injection.
+```php
+// Before — in Livewire
+public function save(): void
+{
+    $this->validate();
+    $report = Report::create(['user_id' => auth()->id(), ...]);
+    Log::info('report_created', ['id' => $report->id]);
+    flash()->success(__('reports.created'));
+}
 
-### Step 3: Identify Inline Business Rules
+// After — delegated to Action
+public function save(CreateReportAction $action): void
+{
+    $this->validate();
+    try {
+        $action->execute($this->form->toArray());
+        flash()->success(__('reports.created'));
+    } catch (RejectedException $e) {
+        flash()->error($e->getMessage());
+    }
+}
+```
 
-Scan for `if ($model->status === 'x')`, date comparisons, or multi-field conditionals. These belong
-in Entities as named boolean methods.
+### Step 2 — Extract Business Rules to Entity
 
-### Step 4: Extract to Entity
+Scan for `if ($model->status === 'x')`, date comparisons, multi-field conditionals.
 
-Create `app/{Module}/Entities/{Name}State.php` as a `final readonly` class extending BaseEntity. Add
-a `fromModel()` factory and a named accessor on the Model. Call the Entity method from the Action or
-component.
+1. Create `app/{Module}/{SubModule}/Entities/{Name}.php` — `final readonly`, extends `BaseEntity`
+2. Extract state via `fromModel()` factory
+3. Add boolean methods (`isActive()`, `allowsLogin()`, `isExpired()`)
+4. Add named accessor on Model (`asApprentice(): Apprentice`)
+5. Replace inline checks with `$model->asEntity()->method()`
 
-### Step 5: Extract Repeated UI
+### Step 3 — Extract Repeated UI Patterns
 
-Extract confirm dialogs into a shared `<x-ui::confirm>` component. Use BaseRecordManager for table
-patterns. Move selection and sorting logic into traits.
+- Confirm dialogs → shared `<x-ui::confirm>` component
+- CRUD tables → `BaseRecordManager`
+- Selection/sorting → reuse existing traits from `app/Core/Livewire/Concerns/`
 
-## Verification Before Finalizing
+### Step 4 — Extract Complex Forms
 
-- Are there zero `Model::create/update/delete` calls in the component?
-- Are there zero `DB::` calls in the component?
-- Are there zero inline business rule conditionals?
-- Are there zero `Mail`/`Notification` dispatches?
-- Do all Actions have a single `execute()` with typed parameters?
-- Do Actions throw `RejectedException` (not `RuntimeException`)?
-- Does the component catch `RejectedException` and flash a message?
-- Are confirm dialogs using the `askAction` → `confirmAction` pattern?
-- Are Entities `final readonly` with zero framework imports?
-- Are static helpers moved to Support?
+Forms with 5+ fields or conditional validation → `app/{Module}/Livewire/Forms/{Name}Form.php` extending `Livewire\Form`.
+
+### Step 5 — Extract Static Utilities
+
+`Support/` classes for formatting, parsing, generation. No Eloquent, no framework dependencies (use `Services/` when framework deps are needed).
+
+## Verification
+
+- Zero `Model::create/update/delete` in the component?
+- Zero `DB::` calls in the component?
+- Zero inline business rule conditionals?
+- Zero `Mail`/`Notification` dispatches?
+- All Actions have single `execute()` with typed parameters?
+- Actions throw `RejectedException` (not `RuntimeException`)?
+- Component catches `RejectedException` and flashes message?
+- Confirm dialogs use `askAction` → `confirmAction` pattern?
+- Entities are `final readonly` with `fromModel()`?
+- Static helpers moved to `Support/`?

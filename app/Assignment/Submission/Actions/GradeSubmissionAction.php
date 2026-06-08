@@ -6,7 +6,7 @@ namespace App\Assignment\Submission\Actions;
 
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseAction;
-use App\Exceptions\RejectedException;
+use App\Core\Exceptions\RejectedException;
 
 final class GradeSubmissionAction extends BaseAction
 {

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Setup\Installation\Console\Commands;
 
+use App\Core\Data\AuditReport;
+use App\Core\Enums\AuditCategory;
+use App\Core\Enums\AuditStatus;
 use App\Core\Support\SmartLogger;
-use App\Data\AuditReport;
-use App\Enums\AuditCategory;
-use App\Enums\AuditStatus;
 use App\Providers\AppServiceProvider;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
 use App\Setup\Installation\Console\Commands\Traits\InteractsWithInstallerCli;

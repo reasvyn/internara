@@ -1,110 +1,57 @@
-# Enrollment — Documentation Overview
+# Enrollment
 
-> Last updated: 2026-06-06  
-> Changes: Removed references to the eliminated `Mentee` record/role, linking registrations directly
-> to student user accounts.
+> **Last updated:** 2026-06-08
 
-Student registration into programs, placement slot assignment, and placement change requests.
+Student registration into internship programs, placement slot assignment, document upload verification, guest applications, and placement change requests.
 
-For complete technical reference including API, models, actions, and components, see
-[enrollment-reference.md](enrollment-reference.md).
+## Purpose & Boundary
 
----
+Enrollment manages the complete student onboarding pipeline: from guest application (unauthenticated intent-to-register), through admin review and user provisioning, to active registration with company slot placement. It also handles mid-program placement changes when workplace conflicts arise.
 
-## Key Principles
-
-- **Registration is the gateway** — Students must register for a program before accessing any
-  program features (journals, assignments). Registration activates the student's program
-  access.
-- **Placement bridges company slots to students** — Each placement consumes one slot quota from a
-  company. Capacity enforcement is atomic (increment/decrement never exceeds limit).
-- **Guest applications feed into registration** — Unauthenticated users can submit an
-  intent-to-register form. Admin reviews and approves, which auto-creates User and Registration
-  records.
-
----
-
-## Context Boundary
-
-Depends on **User** (for student identity), **Program** (for internship specs and weights), and
-**Academics** (for department calendar context). **Journals** tracks student operation activity.
-**Assessment** and **Reports** compile grades from registrations.
-
----
-
-## Module Rules
-
-- **Enrollment status drives dashboard access:** Active students see program features; archived or
-  pending students see read-only or restricted screens.
-- **Placement capacity is atomic:** Slot quota uses database-level locking, ensuring placements
-  never oversell a company slot.
-- **Direct placement (admin):** Admins can assign a student to a slot directly, which creates the
-  Registration in a single transaction.
-- **Placement change requests:** Students can request slot changes. Admins review, approve, or
-  reject. Approved changes atomically decrement the old slot quota and increment the new slot quota.
-- **Guest applications:** Create an `AccountApplication` record. Admin approval triggers the student
-  registration process to create User and Registration atomically.
-
----
+Out of scope: internship program definitions (Program), daily activity tracking (Journals), grade assessment (Assessment).
 
 ## Submodules
 
-- **Registration**: Core enrollment record linking a student user to a Program. Tracks start/end
-  dates, placements, cohort group assignments, and overall enrollment state.
-- **AccountApplication**: Guest application form. Admin review and approval provisions user
-  credentials.
-- **RegistrationDocument**: Verifies documents uploaded against program requirements.
-- **Placement**: Company slot assignment linking a student to a specific company slot within a
-  program.
-- **PlacementChangeRequest**: Student-initiated request to change placement due to workplace
-  conflicts.
+### Registration
+Core enrollment record linking a student user to an Internship program. Tracks program start/end dates, placement assignments, cohort group membership, document compliance status, and overall enrollment state. Status drives dashboard access: active students see program features; archived/pending students see restricted views.
 
----
+### AccountApplication
+Guest application form for unauthenticated prospective students. Captures full name, email, phone, chosen program, and department. Admin review triggers atomic provisioning: creates User account with activation token, generates Registration record, and assigns initial placement. Duplicate pending applications from the same email are blocked.
 
-## CLI Commands
+### RegistrationDocument
+Document submission verification against program-required document templates. Students upload required files; admin verifies compliance. Each document is linked to a program requirement and tracked with upload status and verification timestamp.
 
-| Command                                 | Purpose                                               |
-| --------------------------------------- | ----------------------------------------------------- |
-| `php artisan enrollment:check-progress` | Verify placement integrity for all active enrollments |
+### Placement
+Company slot assignment linking a student to a specific company within a program. Each placement consumes one slot quota from a company's partnership capacity. Slot quota uses database-level locking for atomic capacity enforcement. Direct placement by admin creates registration + placement in a single transaction.
 
----
+### PlacementChangeRequest
+Student-initiated workflow for requesting a company slot change due to workplace conflicts, distance, or other reasons. Admin reviews and approves/rejects. Approved changes atomically decrement old slot quota and increment new slot quota.
 
-## Error Handling & Failure Modes
+## Key Concepts
 
-- **Capacity exceeded**: Placements attempted on fully booked slots throw a `RejectedException`
-  ("Slot is full").
-- **Guest application duplicate**: Existing pending applications from the same email block new
-  submissions with a `ConflictException`.
-- **Registration for inactive program**: Programs must be in `ACTIVE` status to accept
-  registrations. Attempts on `DRAFT` or `CLOSED` programs are rejected.
+### Capacity Atomicity
 
----
+Placement slot quotas are enforced at the database level using pessimistic locking. This ensures two concurrent requests cannot oversell a company slot. Capacity checks happen within the same transaction as the placement creation.
 
-## Quick References
+### Guest-to-Student Pipeline
 
-### Actions & Business Logic
+Unauthenticated users submit an AccountApplication. On admin approval, the system auto-creates a User (with activation token), Registration, and initial Placement in a single atomic transaction. The applicant receives an activation email to set their password.
 
-- **13** actions across the module:
-    - Registration create/verify, placement assign/change/approve, guest application approve/reject,
-      slot capacity management.
+### Enrollment-Driven Access
 
-### Data & Persistence
+A student's enrollment status determines their feature access within a program. Active enrollments unlock journals, assignments, and assessments. Archived or pending enrollments present read-only or restricted views.
 
-- **5** models: `Registration`, `AccountApplication`, `RegistrationDocument`, `Placement`,
-  `PlacementChangeRequest`.
-- UUID PKs. `Placement` has database-level quota counter locks.
+## Dependencies
 
-### User Interface
+- Core (base classes)
+- User (student identity)
+- Program (internship specifications)
+- Academics (department and calendar context)
+- Partners (company slots)
 
-- **9** Livewire components:
-    - Registration wizard, application review page, placement manager, registration verification
-      dashboard, change request management tables.
+## Used By
 
-### Authorization
-
-- **5** policies: `RegistrationPolicy`, `AccountApplicationPolicy`, `RegistrationDocumentPolicy`,
-  `PlacementPolicy`, `PlacementChangeRequestPolicy`.
-
----
-
-For complete technical reference, see [enrollment-reference.md](enrollment-reference.md).
+- Journals (activity context per registration)
+- Assessment (grading per registration)
+- Reports (grade card per registration)
+- Guidance (supervision per registration)

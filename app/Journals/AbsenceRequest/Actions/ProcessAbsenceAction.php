@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Journals\AbsenceRequest\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Exceptions\RejectedException;
+use App\Core\Exceptions\RejectedException;
 use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\Journals\AbsenceRequest\Models\AbsenceRequest;
 use App\User\Models\User;

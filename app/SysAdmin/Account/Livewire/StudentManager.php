@@ -7,7 +7,7 @@ namespace App\SysAdmin\Account\Livewire;
 use App\Academics\Department\Models\Department;
 use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Core\Livewire\BaseRecordManager;
-use App\Support\CsvHandler;
+use App\Core\Support\CsvHandler;
 use App\SysAdmin\Account\Actions\ArchiveStudentAccountsAction;
 use App\SysAdmin\Account\Actions\CreateUserAction;
 use App\SysAdmin\Account\Actions\DeleteUserAction;

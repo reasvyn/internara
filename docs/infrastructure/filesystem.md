@@ -1,13 +1,10 @@
 # Filesystem
 
-> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
-> conventions overhaul
+> Last updated: 2026-06-08
 
 ## Storage Architecture
 
-The application uses Laravel's filesystem abstraction, providing a unified API over multiple storage
-backends. The same `Storage::disk('public')->put()` call works whether the underlying disk is a
-local directory or an S3 bucket — switching requires only a configuration change.
+The application uses Laravel's filesystem abstraction, providing a unified API over multiple storage backends. The same `Storage::disk('public')->put()` call works whether the underlying disk is a local directory or an S3 bucket — switching requires only a configuration change.
 
 ### Disk Definitions
 
@@ -22,7 +19,6 @@ local directory or an S3 bucket — switching requires only a configuration chan
 ```
 Tier 1 (Shared Hosting):
   └─ Local disk → storage/app/public → symlinked to public/storage/
-  └─ No S3 needed
 
 Tier 2 (VPS):
   ├─ Local disk for active files
@@ -54,16 +50,15 @@ Without this symlink, media URLs return 404.
 | Uploaded documents    | Media library → `public` disk   | Local or S3 | Public URL (with auth guard) |
 | Certificate PDFs      | Direct → `public/certificates/` | Local or S3 | Public URL (with auth guard) |
 | Brand assets          | Direct → `public/brand/`        | Local or S3 | Public URL                   |
-| Generated reports     | Direct → `local` disk (private) | Local only  | Download via controller      |
+| Generated reports     | Direct → `local` disk           | Local only  | Download via controller      |
 | Livewire temp uploads | Livewire temp → `local` disk    | Local only  | Temporary, auto-cleaned      |
-| Internal exports      | Direct → `local` disk (private) | Local only  | Download via controller      |
+| Internal exports      | Direct → `local` disk           | Local only  | Download via controller      |
 
 ---
 
 ## Media Library Integration
 
-Files attached to Eloquent models are managed by `spatie/laravel-medialibrary`. It provides media
-collections, automatic file naming, image conversions, and queue-based processing.
+Files attached to Eloquent models are managed by `spatie/laravel-medialibrary`. It provides media collections, automatic file naming, image conversions, and queue-based processing.
 
 ### Collections
 
@@ -78,32 +73,13 @@ collections, automatic file naming, image conversions, and queue-based processin
 | `Partnership`          | `mou_document` | Single   | Signed MoU agreement               |
 | `Certificate`          | `output`       | Single   | Generated certificate PDF          |
 
-### Adding a New Collection
-
-```php
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-
-class YourModel extends BaseModel implements HasMedia
-{
-    use InteractsWithMedia;
-
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('documents')
-            ->acceptsMimeTypes(['application/pdf', 'image/jpeg'])
-            ->maxFileSize(10 * 1024 * 1024); // 10 MB
-    }
-}
-```
-
 ### Retrieving Files
 
 ```php
-$url = $user->getFirstMediaUrl('avatar'); // URL of first file
-$url = $user->getFirstMediaUrl('avatar', 'thumb'); // URL of thumbnail conversion
-$media = $user->getFirstMedia('avatar'); // Full media object
-$files = $model->getMedia('documents'); // All files in collection
+$url = $user->getFirstMediaUrl('avatar');           // URL of first file
+$url = $user->getFirstMediaUrl('avatar', 'thumb');  // URL of thumbnail conversion
+$media = $user->getFirstMedia('avatar');            // Full media object
+$files = $model->getMedia('documents');             // All files in collection
 ```
 
 ---
@@ -129,11 +105,10 @@ IMAGE_DRIVER=imagick
 
 ### Queue Integration
 
-Conversions are queued by default (`queue_conversions_by_default: true` in
-`config/media-library.php`). The queue connection is inherited from `QUEUE_CONNECTION`:
+Conversions are queued by default (`queue_conversions_by_default: true` in `config/media-library.php`). The queue connection is inherited from `QUEUE_CONNECTION`:
 
 - **Tier 1** (sync): conversions run inline, uploads take longer
-- **Tier 2+** (Redis): conversions run asynchronously via queue worker
+- **Tier 2+** (Redis, dual pipeline): conversions run asynchronously via the `default` queue worker
 
 To make a conversion synchronous (available immediately):
 
@@ -182,7 +157,6 @@ For schools that need local storage with S3 backup:
 
 ```env
 FILESYSTEM_DISK=local
-# Backup to S3 via cron script or s3cmd
 ```
 
 ```bash
@@ -203,9 +177,7 @@ User upload → Livewire temp (local disk)
           File accessible via getFirstMediaUrl()
 ```
 
-Files are validated before upload: MIME type, file size, and extension checks run on the server
-side. The media library stores files with UUID-based filenames to prevent name collisions and path
-traversal.
+Files are validated before upload: MIME type, file size, and extension checks run on the server side. The media library stores files with UUID-based filenames to prevent name collisions and path traversal.
 
 ---
 
@@ -217,5 +189,5 @@ traversal.
 - `app/*/Models/*.php` — `registerMediaCollections()` and `registerMediaConversions()` methods
 - `app/Certification/Certificate/Support/CertificateRenderer.php` — certificate PDF generation
 - `database/migrations/` — media table migration
-- `docs/infrastructure/infrastructure.md` — tier-based infrastructure design
-- `docs/infrastructure/media-library.md` — detailed media library documentation
+- [Infrastructure](infrastructure.md) — tier-based infrastructure design
+- [Media Library](media-library.md) — detailed media library documentation

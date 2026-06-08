@@ -1,55 +1,113 @@
 ---
 name: medialibrary-development
+description: Apply this skill when implementing file uploads, managing media collections and conversions, generating responsive images, or retrieving media URLs and paths. Activates whenever a Model needs file attachments or when working with spatie/laravel-medialibrary.
 ---
 
 # Media Library Development Skill
 
 ## When to Activate
 
-Apply this skill when implementing file uploads, managing media collections and conversions,
-generating responsive images, or retrieving media URLs and paths. Activate whenever a Model needs to
-accept file attachments or when working with spatie/laravel-medialibrary in any form.
+Apply this skill when implementing file uploads, managing media collections and conversions, generating responsive images, or retrieving media URLs and paths. Activates whenever a Model needs file attachments.
 
-## Core Principles
+## Key References
 
-### Model Integration
+- **User model (avatar)**: `app/User/Models/User.php` — `avatar` collection (single-file, thumb 200×200 WebP)
+- **Settings model (branding)**: `app/Settings/Models/Setting.php` — branding images
+- **Partnership model (MoU)**: `app/Partners/Partnership/Models/Partnership.php` — partnership documents
+- **Document model**: `app/Document/Models/Document.php` — official documents
+- **Logbook model**: `app/Journals/Logbook/Models/Logbook.php` — logbook attachments
+- **RegistrationDocument model**: `app/Enrollment/Models/RegistrationDocument.php` — enrollment documents
+- **Submission model**: `app/Assignment/Submission/Models/Submission.php` — assignment submissions
+- **Spatie docs**: `docs/modules/medialibrary.md` (if available)
 
-Models that accept file uploads must implement the `HasMedia` interface and use the
-`InteractsWithMedia` trait. Media collections and conversions are defined directly on the Model in
-`registerMediaCollections()` and `registerMediaConversions()`. Collections can be single-file
-(replacing on re-upload) or multi-file. Conversions generate derived image sizes and formats.
+## Models with Media Collections (8 total)
 
-### Separation of Concerns
+| Model | Collection(s) | Type | Conversion |
+|-------|---------------|------|------------|
+| `User` | `avatar` | Single-file, replaceable | `thumb`: 200×200 WebP, non-queued |
+| `Setting` | Branding images | Single/multi | Configurable, queued |
+| `Partnership` | MoU documents | Single/multi | PDF thumbnail (if applicable) |
+| `Document` | Official documents | Multi-file | Configurable |
+| `Logbook` | Attachments | Multi-file | — |
+| `RegistrationDocument` | Enrollment files | Multi-file | — |
+| `Submission` | Assignment files | Multi-file | — |
 
-File upload flows follow the Action pattern: the Livewire component handles the file input using
-`WithFileUploads` and validates type/size. The Action handles the actual upload via
-`$model->addMedia($file)->toMediaCollection($collection)` within a transaction. The Action also logs
-the upload as a side effect.
+## Model Integration
 
-This separation ensures that upload validation is defense-in-depth (Livewire for UX, Action for
-authority) and that uploads are atomic with other mutations.
+```php
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-## Media Lifecycle
+class User extends Model implements HasMedia
+{
+    use InteractsWithMedia;
 
-Collections are defined at the Model level with `registerMediaCollections()`. Each collection can
-restrict MIME types, limit count, designate a storage disk, and set fallback URLs. Conversions are
-defined at the Model level with `registerMediaConversions()` and can be queued or synchronous,
-scoped to specific collections, and configured with fit/crop/resize parameters.
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')->singleFile();
+    }
 
-Responsive images generate multiple sizes from a single source for optimal loading. They can be
-enabled per-file, per-conversion, or per-collection.
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(200)
+            ->height(200)
+            ->format('webp')
+            ->nonQueued();
+    }
+}
+```
 
-## Retrieval and Display
+### Rules
 
-Media URLs and paths are retrieved through the Model: `getFirstMediaUrl('collection')`,
-`getFirstMediaUrl('collection', 'conversion')`. Blade templates use these methods directly in img
-tags. Fallback URLs handle missing media gracefully. Temporary URLs support S3 with expiry.
+- Models must implement `HasMedia` and use `InteractsWithMedia`
+- Collections defined in `registerMediaCollections()`
+- Conversions defined in `registerMediaConversions(?Media $media = null)`
+- `singleFile()` enables replacement on re-upload
+- Conversions can be queued (`->queued()`) or immediate (`->nonQueued()`)
 
-## Verification Before Finalizing
+## Upload Flow
 
-- Does the Model implement `HasMedia` AND use `InteractsWithMedia`?
-- Are collections and conversions defined in the dedicated register methods?
-- Is `registerMediaConversions` parameter typed as `?Media $media = null`?
-- Is every `addMedia()` followed by `toMediaCollection()`?
-- Are collection names using constants or config (not hardcoded strings)?
-- Has the media migration been run?
+File uploads follow the Action pattern — Livewire handles the file input, the Action performs the actual upload:
+
+```php
+public function execute(User $user, UploadAvatarData $data): User
+{
+    return $this->transaction(function () use ($user, $data) {
+        $user->addMedia($data->avatar)->toMediaCollection('avatar');
+        $this->log('avatar_uploaded', $user);
+        return $user;
+    });
+}
+```
+
+## Limits & Storage
+
+| Setting | Value |
+|---------|-------|
+| Max file size | 10 MB (validated in Livewire and Action) |
+| Allowed MIME types | Defined per-collection via `acceptsMimeTypes()` |
+| Storage disk | Configurable (default: `public`, S3 for production) |
+| Temporary URLs | `$model->getFirstTemporaryUrl(...)` for S3 with expiry |
+
+## Retrieval
+
+```blade
+<img
+    src="{{ $user->getFirstMediaUrl('avatar', 'thumb') }}"
+    alt="{{ $user->name }}"
+/>
+```
+
+- `getFirstMediaUrl('collection', 'conversion')` for URLs
+- `getFirstMedia('collection')` for the Media model instance
+- Fallback URLs for missing media: check `hasMedia('collection')` first
+
+## Verification
+
+- Model implements `HasMedia` and uses `InteractsWithMedia`?
+- Collections in `registerMediaCollections()`?
+- Conversions in `registerMediaConversions(?Media $media = null)`?
+- `addMedia()` followed by `toMediaCollection()`?
+- File size validated (Livewire for UX, Action for authority)?
+- Media migration run (`php artisan migrate`)?

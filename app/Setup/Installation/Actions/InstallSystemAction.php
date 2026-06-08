@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\Installation\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Data\AuditReport;
+use App\Core\Data\AuditReport;
 use App\Setup\Installation\Data\SetupTokenData;
 use App\Setup\Installation\Support\SystemProvisioner;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;

@@ -1,15 +1,6 @@
 ---
 name: pest-testing
-description:
-    'Use this skill for Pest PHP testing in Laravel projects only. Trigger whenever any test is
-    being written, edited, fixed, or refactored — including fixing tests that broke after a code
-    change, adding assertions, converting PHPUnit to Pest, adding datasets, and TDD workflows.
-    Always activate when the user asks how to write something in Pest, mentions test files or
-    directories (tests/Feature, tests/Unit, tests/Browser), or needs browser testing, smoke testing
-    multiple pages for JS errors, or architecture tests. Covers: test()/it()/expect() syntax,
-    datasets, mocking, browser testing (visit/click/fill), smoke testing, arch(), Livewire component
-    tests, RefreshDatabase, and all Pest 4 features. Do not use for factories, seeders, migrations,
-    controllers, models, or non-test PHP code.'
+description: "Use this skill for Pest PHP testing in Laravel projects only. Trigger whenever any test is being written, edited, fixed, or refactored — including fixing tests that broke after a code change, adding assertions, converting PHPUnit to Pest, adding datasets, and TDD workflows. Always activate when the user asks how to write something in Pest, mentions test files or directories (tests/Feature, tests/Unit, tests/Browser), or needs browser testing, smoke testing multiple pages for JS errors, or architecture tests. Covers: test()/it()/expect() syntax, datasets, mocking, browser testing (visit/click/fill), smoke testing, arch(), Livewire component tests, RefreshDatabase, and all Pest 4 features. Do not use for factories, seeders, migrations, controllers, models, or non-test PHP code."
 license: MIT
 metadata:
     author: laravel

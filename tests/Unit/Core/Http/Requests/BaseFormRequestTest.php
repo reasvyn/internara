@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Core\Http\Requests;
 
+use App\Core\Exceptions\ValidationFailedException;
 use App\Core\Http\Requests\BaseFormRequest;
-use App\Exceptions\ValidationFailedException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\MessageBag;
 use Mockery;

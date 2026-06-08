@@ -1,98 +1,49 @@
-# Program — Documentation Overview
+# Program
 
-> Last updated: 2026-06-06  
-> Changes: Inlined internship phases and document requirements as JSON structures inside the
-> Internship model, reducing submodule and table count.
+> **Last updated:** 2026-06-08
 
-Manages internship programs, timelines, and cohort student groupings (groups).
+Internship program definition, timeline phases, grading weight configuration, cohort group management, and closure readiness checking.
 
-For complete technical reference including API, models, actions, and components, see
-[program-reference.md](program-reference.md).
+## Purpose & Boundary
 
----
+Program defines the structure and lifecycle of internship programs. Each program specifies duration, dates, grading weights, sequential phases (stored as JSON), required document templates, and capacity limits. Cohort groups organize students placed at the same company slot with assigned supervisors. The module also provides closure readiness checks to prevent premature program archiving.
 
-## Key Principles
-
-- **Internship Programs Define Specifications** — Every program defines the duration, dates, and
-  grading weights for specific student cohorts.
-- **JSON Timelines & Requirements** — Program phases (e.g. Observation, Practice, Reporting) and
-  required document checklists are saved directly as JSON columns inside the `internships` table,
-  preventing table sprawl and keeping configurations cohesive.
-- **Groups Organize Student Cohorts** — Cohorts of students placed at the same company slot are
-  organized under `internship_groups` with assigned supervisors for bulk coordination and
-  monitoring.
-
----
-
-## Context Boundary
-
-The **Program** module:
-
-- Owns `Internship`, `InternshipGroup`, `InternshipGroupMember`, and `InternshipPhase` models.
-- Consumed by **Enrollment** for registration scopes and placement groupings.
-- Links with **Partners** for company details and **Academics** for calendar scoping.
-
----
-
-## Module Rules
-
-- **Program Date Bounds:** Program timelines must fall within the active academic year's date
-  limits.
-- **Phase Timeline Structure:** Program phases stored inside the `phases` JSON array must be
-  chronologically ordered and contiguous (no overlapping dates or gaps).
-- **Group Capacity Constraint:** Assigning students to a group must not violate the designated
-  company slot capacity.
-
----
+Out of scope: student enrollment (Enrollment), daily activity tracking (Journals), grade compilation (Reports).
 
 ## Submodules
 
-- **Internship**: Core program definition. Houses dates, status (`draft` | `active` | `closed`),
-  grading weights configuration, phases JSON, and required document templates checklist JSON.
-- **InternshipGroup**: Cohort student/mentor group management. Handles group details and member
-  mapping.
-- **InternshipPhase**: Program phase templates defining standard phase names, order, and duration
-  defaults.
+### Internship
+Core program entity with status lifecycle (`draft` → `active` → `closed`). Houses grading weight configuration (supervisor, teacher, exam percentages), phases JSON array (chronologically ordered, non-overlapping), required document template checklist, date bounds constrained by the active academic year, and capacity limits.
 
----
+### InternshipGroup
+Cohort management for students placed at the same company slot. Each group has an assigned school teacher and industry supervisor. Members are tracked via `InternshipGroupMember` with role classification (`school_teacher`, `industry_supervisor`, `student`). Group capacity is constrained by the company slot quota.
 
-## Error Handling & Failure Modes
+### InternshipPhase
+Phase template definitions providing standard phase names (Observation, Practice, Reporting), suggested order, and default durations. These templates can be applied when creating new internship programs to pre-populate the phases JSON.
 
-- **Modifying Active Programs:** Changing weights, credit hours, or timeline limits on a published
-  or active program throws a `RejectedException` to protect data integrity.
-- **Invalid JSON Timelines:** Creating non-consecutive phase dates or overlapping ranges in the JSON
-  payload returns a `ValidationFailedException`.
-- **Group Quota Exceeded:** Attempting to assign students to a cohort group beyond the company
-  placement slot quota returns a `ConflictException`.
+## Key Concepts
 
----
+### JSON-Inlined Configuration
 
-## Quick References
+Instead of separate tables for phases and document requirements, these are stored as structured JSON columns on the `internships` table. This prevents table sprawl while keeping configuration cohesive. Phases must be chronologically ordered and contiguous (no gaps or overlaps).
 
-### Actions & Business Logic
+### Grading Weights
 
-- **13** actions across all submodules:
-    - Internship CRUD and status adjustments (including `CheckCloseReadinessAction`).
-    - InternshipGroup CRUD and member management (add/remove member).
-    - InternshipPhase CRUD (create, update, delete).
+Each internship program defines the weight distribution between evaluation sources: industry supervisor score, school teacher score, and exam/presentation score. These weights are consumed by the Reports module when calculating final grade cards.
 
-### Data & Persistence
+### Closure Readiness
 
-- **4** models: `Internship`, `InternshipGroup`, `InternshipGroupMember`, `InternshipPhase`.
-- UUID PKs. `phases` and `required_document_ids` stored as JSON on `internships`.
+Before a program can transition to `closed`, the system validates: all enrolled students have finalized grade cards, all required evaluations are collected, no pending incidents at HIGH/CRITICAL severity, and all logbook compliance checks pass. The readiness check returns a detailed report of blocking items.
 
-### User Interface
+## Dependencies
 
-- **3** Livewire components:
-    - `InternshipManager` — Program settings and JSON checklist editors.
-    - `InternshipGroupManager` — Cohort group assignment tables.
-    - `InternshipPhaseManager` — Phase template management.
+- Core (base classes)
+- Academics (academic year for date scoping)
+- Partners (company slots for placement)
 
-### Authorization
+## Used By
 
-- **3** policies: `InternshipPolicy`, `InternshipGroupPolicy`, `InternshipPhasePolicy`.
-- Restricted to admin/superadmin.
-
----
-
-For complete technical reference, see [program-reference.md](program-reference.md).
+- Enrollment (registration scope)
+- Journals (activity context)
+- Assessment (grading context)
+- Reports (grade compilation)

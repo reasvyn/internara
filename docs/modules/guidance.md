@@ -1,93 +1,43 @@
-# Guidance — Documentation Overview
+# Guidance
 
-> Last updated: 2026-06-06  
-> Changes: Removed references to the eliminated `mentors` and `mentees` tables (now inlined in
-> `profiles`). Mentor assignments now use `internship_group_members` instead of the removed
-> `registration_mentor` pivot.
+> **Last updated:** 2026-06-08
 
-Mentoring relationships coordination and teacher supervision field logging.
+Mentoring relationship coordination and teacher supervision field logging: dual-mentor assignments and immutable supervision visit records.
 
-For complete technical reference including API, models, actions, and components, see
-[guidance-reference.md](guidance-reference.md).
+## Purpose & Boundary
 
----
+Guidance manages the mentoring relationships between students and their assigned school teachers (Guru Pembimbing) and industry supervisors (Pembimbing Lapangan). It also provides teachers with a private supervision log system for recording site visits, virtual meetings, and phone supervisions. These logs are immutable and private to school mentors and administrators — students cannot read them.
 
-## Key Principles
-
-- **Dual-Mentor supervision** — Establishes relationships between the student's registration, the
-  assigned School Teacher (_Guru Pembimbing_), and Industry Supervisor (_Pembimbing Lapangan_).
-  These assignments are tracked in the `internship_group_members` table with roles `school_teacher`
-  and `industry_supervisor`.
-- **Private Supervision Logs** — Teachers write visitation, virtual meetings, or call logs to
-  monitor student progress. These logs are private to school mentors and administrators, keeping
-  supervision notes separate from student-facing daily logbooks.
-- **Immutable Log Auditing** — Supervision logs are immutable records once written, producing an
-  audit trail for school inspection requirements.
-
----
-
-## Context Boundary
-
-The **Guidance** module:
-
-- Owns the **`SupervisionLog`** model.
-- Consumes **Enrollment (`registrations`)** to identify active placements and student records.
-- Consumes **User (`users` / `profiles`)** to identify students and verify assigned mentors.
-
----
-
-## Module Rules
-
-- **Access Controls:** Supervision logs are private. Students cannot read supervision notes written
-  by their teachers.
-- **Immutability:** Once submitted, a supervision log cannot be edited. Corrections require a new
-  entry.
-- **Guidance Assignment:** Teachers are assigned to students during enrollment verification.
-
----
+Out of scope: student-facing daily logbooks (Journals), rubric-based assessment (Assessment), user profiles (User).
 
 ## Submodules
 
-- **SupervisionLog**: Tracks site visits, online video meetings, or phone supervisions conducted by
-  school teachers, storing dates, types, and private notes.
+### SupervisionLog
+Immutable record of teacher supervision activities: date of visit/meeting, supervision type (site_visit, virtual_meeting, phone_call), location, duration, private notes, and follow-up actions. Linked to a specific registration. Once submitted, logs cannot be edited — corrections require a new entry. Students have no read access to these logs.
 
----
+### MentorAssignment
+Tracks the mapping of school teachers and industry supervisors to students via `internship_group_members` with role classification. Teachers are assigned during enrollment verification. Supervisors are assigned when a placement is confirmed. The `AssignMentorAction` and `RemoveMentorAction` handle these mappings.
 
-## Error Handling & Failure Modes
+## Key Concepts
 
-- **Unauthorized Logging:** Attempting to write a supervision log for a student who is not assigned
-  to the teacher (via the registration mentor mappings) throws a `403 Forbidden` response.
-- **Editing Supervision Logs:** Patching or updating a finalized supervision log throws a
-  `RejectedException`.
+### Dual-Mentor Model
 
----
+Every student has two mentors:
+- **School Teacher** (Guru Pembimbing): Responsible for academic guidance, supervision visits, and logbook fallback verification. Assigned at enrollment time.
+- **Industry Supervisor** (Pembimbing Lapangan): Responsible for workplace mentoring, daily logbook verification, and industry-specific guidance. Assigned at placement time.
 
-## Quick References
+Both mentor roles are tracked in the `internship_group_members` table rather than a separate mentors table, keeping the schema lean.
 
-### Actions & Business Logic
+### Private Supervision Logs
 
-- **4** actions:
-    - `CreateSupervisionLogAction` — Creates an immutable log.
-    - `VerifySupervisionLogAction` — Finalizes verification of a log.
-    - `AssignMentorAction` — Map school/company supervisors.
-    - `RemoveMentorAction` — Revoke supervisor mappings.
+Unlike daily logbooks (which are student-facing), supervision logs are private to the teacher and administrators. Students cannot view notes written about them. This encourages candid documentation of student progress, issues, and follow-up actions. Each log is immutable once submitted, creating a reliable audit trail for school accreditation and parental reporting.
 
-### Data & Persistence
+## Dependencies
 
-- **1** model: `SupervisionLog`.
-- UUID PKs, index on `registration_id`.
+- Core (base classes)
+- Enrollment (registration context)
+- User (student, teacher, supervisor identity)
 
-### User Interface
+## Used By
 
-- **2** Livewire components:
-    - `SupervisionLogManager` — Dashboard for teachers to track visitations.
-    - `MenteeViewer` — Student/Mentee overview board for supervisors.
-
-### Authorization
-
-- **1** policy: `SupervisionLogPolicy`.
-- Teachers write and manage own logs; students have no read access.
-
----
-
-For complete technical reference, see [guidance-reference.md](guidance-reference.md).
+- Reports (supervision compliance data for grade card)

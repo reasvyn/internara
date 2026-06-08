@@ -1,21 +1,17 @@
 # Configuration
 
-> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
-> conventions overhaul
+> Last updated: 2026-06-08
 
 ## Config File Organization
 
-Configuration files live in the `config/` directory, one file per subsystem. Each file returns a PHP
-array of default values. Environment variables (`.env`) override these defaults at runtime without
-modifying the files.
+Configuration files live in the `config/` directory, one file per subsystem. Each file returns a PHP array of default values. Environment variables (`.env`) override these defaults at runtime without modifying the files.
 
-Configuration files are organized into three tiers matching the infrastructure design (see
-[Infrastructure](infrastructure.md)):
+Configuration is organized into three tiers:
 
 | Tier                 | Storage                               | Precedence              | Changed By             | Effect                          |
 | -------------------- | ------------------------------------- | ----------------------- | ---------------------- | ------------------------------- |
 | **Environment**      | `.env` + `config/*.php` `env()` calls | Highest                 | Operations, deployment | Requires `config:cache` rebuild |
-| **Code defaults**    | `config/*.php` hardcoded fallbacks    | Medium                  | Developers, deployment | Deployment required             |
+| **Code defaults**    | `config/*.php` hardcoded fallbacks    | Medium                  | Developers             | Deployment required             |
 | **Runtime settings** | Database `settings` table             | Lowest (overrides code) | Admins via web UI      | Immediate (cache invalidated)   |
 
 ---
@@ -37,7 +33,7 @@ Variables follow a naming convention that makes their origin clear:
 | `AWS_*`       | Cloud storage | `AWS_ACCESS_KEY_ID`, `AWS_BUCKET`                        |
 | `LOG_*`       | Logging       | `LOG_CHANNEL`, `LOG_LEVEL`, `LOG_STACK`                  |
 | `PULSE_*`     | Monitoring    | `PULSE_ENABLED`                                          |
-| `VITE_*`      | Frontend      | various Vite env vars                                    |
+| `VITE_*`      | Frontend      | Various Vite env vars                                    |
 
 ---
 
@@ -45,8 +41,7 @@ Variables follow a naming convention that makes their origin clear:
 
 ### 1. Environment Tier (`.env` + `config/*.php`)
 
-The `.env` file is the highest-priority configuration. It stores environment-specific values that
-MUST NOT be committed to version control:
+The `.env` file is the highest-priority configuration. It stores environment-specific values that MUST NOT be committed to version control:
 
 ```env
 # .env — DO NOT COMMIT
@@ -62,9 +57,7 @@ Configuration files read environment variables via `env()`:
 'default' => env('DB_CONNECTION', 'sqlite'),
 ```
 
-Values from `config/*.php` are cached by `php artisan config:cache`, which merges all config files
-into a single cached file. After caching, `env()` calls inside config files become inert — only the
-cached values are used. This means `.env` changes require `php artisan config:cache` to take effect.
+Values from `config/*.php` are cached by `php artisan config:cache`, which merges all config files into a single cached file. After caching, `env()` calls inside config files become inert — only the cached values are used. Changes to `.env` require `php artisan config:cache` to take effect.
 
 ### 2. Code Defaults Tier (`config/*.php` fallbacks)
 
@@ -74,13 +67,11 @@ The second argument to `env()` provides a hardcoded default:
 'default' => env('DB_CONNECTION', 'sqlite'),  // sqlite is the code default
 ```
 
-These defaults are version-controlled and change only with deployments. They ensure the application
-works with zero configuration in a fresh installation.
+These defaults are version-controlled and change only with deployments. They ensure the application works with zero configuration in a fresh installation.
 
 ### 3. Runtime Settings Tier (Database `settings` table)
 
-The `setting()` helper reads from the `settings` database table, which stores runtime- configurable
-values:
+The `setting()` helper reads from the `settings` database table, which stores runtime-configurable values:
 
 ```php
 $value = setting('app_name', 'Internara'); // with default fallback
@@ -106,16 +97,13 @@ Settings take effect immediately — no deployment, no cache clear, no server re
 | ------------------ | ------------------- | -------------------------------- | -------------------- |
 | **Database**       | SQLite (file)       | MySQL / MariaDB                  | MySQL / PostgreSQL   |
 | **Cache driver**   | `file`              | `file` or `database`             | `redis`              |
-| **Queue driver**   | `sync`              | `sync`                           | `redis`              |
-| **Session driver** | `file`              | `database`                       | `redis`              |
+| **Queue driver**   | `sync`              | `sync`                           | `redis` (dual pipeline) |
+| **Session driver** | `database`          | `database`                       | `redis`              |
 | **Mail driver**    | `log`               | SMTP                             | SES / SMTP           |
 | **Debug mode**     | `APP_DEBUG=true`    | `false`                          | `false`              |
 | **OpCache**        | Disabled            | Enabled                          | Enabled              |
 | **Composer**       | Full install        | `--optimize-autoloader --no-dev` | Same                 |
 | **Asset build**    | `npm run dev` (HMR) | `npm run build`                  | `npm run build`      |
-
-See [Infrastructure → Three Deployment Tiers](infrastructure.md#1-three-deployment-tiers) for the
-complete tier breakdown.
 
 ---
 
@@ -191,17 +179,15 @@ See [Localization](localization.md) for adding new languages.
 
 ## The `brand()` Helper
 
-The companion `brand()` helper reads brand-specific settings (colors, logo, favicon) and returns
-structured data for use in Blade templates:
+The companion `brand()` helper reads brand-specific settings (colors, logo, favicon) and returns structured data for use in Blade templates:
 
 ```php
-brand('name'); // Application name from settings
-brand('logo'); // Logo URL (uploaded or default)
-brand('colors'); // Array of primary, secondary, accent, base
+brand('name');    // Application name from settings
+brand('logo');    // Logo URL (uploaded or default)
+brand('colors');  // Array of primary, secondary, accent, base
 ```
 
-Values resolve through a fallback chain: runtime settings → config defaults → hardcoded defaults.
-See [Branding](../branding.md) for details.
+Values resolve through a fallback chain: runtime settings → config defaults → hardcoded defaults. See [Branding](../foundation/branding.md) for details.
 
 ---
 

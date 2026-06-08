@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup\Installation\Actions;
 
-use App\Data\AuditCheck;
-use App\Data\AuditReport;
-use App\Enums\AuditCategory;
-use App\Enums\AuditStatus;
+use App\Core\Data\AuditCheck;
+use App\Core\Data\AuditReport;
+use App\Core\Enums\AuditCategory;
+use App\Core\Enums\AuditStatus;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
 use App\Setup\Installation\Actions\InstallSystemAction;
 use App\Setup\Installation\Data\SetupTokenData;

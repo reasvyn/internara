@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Setup\Installation\Http\Middleware;
 
+use App\Core\Support\CacheKeys;
 use App\Setup\Entities\SetupEntity;
-use App\Support\CacheKeys;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;

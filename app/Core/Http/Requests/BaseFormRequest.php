@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Http\Requests;
 
-use App\Exceptions\ValidationFailedException;
+use App\Core\Exceptions\ValidationFailedException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest as LaravelFormRequest;
 

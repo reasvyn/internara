@@ -1,112 +1,62 @@
-# Self-Hosted Single-Tenant Architecture
+# ADR-010: Self-Hosted Single-Tenant Architecture
 
-> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
-> conventions overhaul
-
-## Status
-
-Accepted
+> **Status:** Accepted
+> **Last updated:** 2026-06-08
 
 ## Context
 
-Internara targets vocational upper-secondary schools that operate their own IT infrastructure.
-Unlike SaaS products where a single codebase serves thousands of tenants, Internara is designed to
-be installed once per school — on the school's own server or shared hosting plan.
+Internara targets vocational upper-secondary schools that operate their own IT infrastructure. Unlike SaaS products serving thousands of tenants, Internara is installed once per school on the school's own server or shared hosting.
 
-This deployment model fundamentally shapes architectural decisions:
+This deployment model shapes every architectural decision:
 
-- **No tenant isolation needed** — there is never more than one "school" per instance. No
-  multi-tenant middleware, no tenant-scoped model queries, no per-tenant configuration.
-- **No centralized auth** — each school manages its own users, roles, and accounts. No SSO, no OAuth
-  provider, no cross-instance user management.
-- **No billing or quotas** — no usage limits, no subscription tiers, no feature gating. Everything
-  is available from day one.
-- **Offline tolerance** — schools may have unreliable internet. The system must work on a local
-  network without external connectivity.
-- **Minimal IT staff** — most schools do not have a dedicated sysadmin. Installation must be
-  wizard-driven, maintenance must be minimal, and backup must be simple.
+- **No tenant isolation needed** — never more than one "school" per instance
+- **No centralized auth** — each school manages its own users, roles, and accounts
+- **No billing or quotas** — everything is available from day one
+- **Offline tolerance** — schools may have unreliable internet; the system must work on a local network
+- **Minimal IT staff** — installation must be wizard-driven, maintenance minimal, backup simple
 
-Two deployment approaches were considered:
+Two approaches were evaluated:
 
-1. **Multi-tenant SaaS**: A single hosted instance serving many schools. Tenant isolation via
-   database-per-tenant or `tenant_id` scoping. Centralized billing, updates, and maintenance. This
-   adds significant infrastructure complexity for the development team and creates vendor lock-in
-   for schools.
-
-2. **Self-hosted single-tenant**: Each school runs their own instance. No tenant infrastructure. The
-   school owns their data. Updates are manual (git pull + artisan commands). Backup is a file copy.
+1. **Multi-tenant SaaS** — single hosted instance serving many schools. Adds significant infrastructure complexity and creates vendor lock-in.
+2. **Self-hosted single-tenant** — each school runs their own instance. No tenant infrastructure. The school owns their data. Updates are manual (git pull + artisan commands). Backup is a file copy.
 
 ## Decision
 
-Internara is a self-hosted, single-tenant application. Every architectural decision below follows
-from this:
+Internara is a **self-hosted, single-tenant** application. Every architectural decision follows from this:
 
-### Technical Implications
+| Concern | Decision | Rationale |
+|---|---|---|
+| Database | SQLite default, MySQL/PG optional | No database server needed. One file = one database. |
+| Queue | sync driver default, Redis optional | No background daemon required. |
+| Cache | file/database default, Redis optional | No external service. Zero-config file cache. |
+| Session | database default, Redis optional | Auto-created by migration. |
+| Broadcasting | Log driver default (disabled) | WebSocket (Reverb) optional. |
+| File storage | Local disk default, S3 optional | Single-server: local works. |
+| Auth | Local database, bcrypt passwords | No external auth provider. |
+| Installation | CLI wizard + web wizard | Single command provisions the system. |
+| Backup | File copy of SQLite + storage | No dump scripts needed. |
 
-| Concern          | Decision                                            | Rationale                                                                                      |
-| ---------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| **Database**     | SQLite default, MySQL/PG optional                   | No database server needed for basic operation. One file = one database. Backup is a file copy. |
-| **Queue**        | `sync` driver default, Redis optional               | No background daemon required for basic operation. Jobs run inline during the HTTP request.    |
-| **Cache**        | `file` or `database` driver default, Redis optional | No external service required. File cache is zero-config.                                       |
-| **Session**      | `database` driver default, Redis optional           | No external service required. Session table auto-created by migration.                         |
-| **Broadcasting** | Log driver default (effectively disabled)           | WebSocket server (Reverb) is optional. Notifications degrade to pull-based (page refresh).     |
-| **File storage** | Local disk default, S3 optional                     | Single-server: local storage works. Multi-server: optional S3.                                 |
-| **Auth**         | Local database, bcrypt passwords                    | No external auth provider. Each school manages its own users.                                  |
-| **Installation** | CLI wizard (`setup:install`) + web wizard           | No devops skills needed. Single command provisions the system.                                 |
-| **Backup**       | File copy of SQLite + storage directory             | No dump scripts needed for basic backup.                                                       |
+### Feature Availability
 
-### Feature Availability Matrix
-
-| Feature               | Default (SQLite + sync) | With Redis + Queue Worker | With Reverb        |
-| --------------------- | ----------------------- | ------------------------- | ------------------ |
-| Authentication        | ✅                      | ✅                        | ✅                 |
-| RBAC                  | ✅                      | ✅                        | ✅                 |
-| Attendance, Logbook   | ✅                      | ✅                        | ✅                 |
-| Assignments, Grading  | ✅                      | ✅                        | ✅                 |
-| Reports, Certificates | ✅                      | ✅                        | ✅                 |
-| Email notifications   | ✅ (sync)               | ✅ (async)                | ✅ (async)         |
-| Media conversions     | ✅ (sync)               | ✅ (async)                | ✅ (async)         |
-| In-app notifications  | ✅ (pull/refresh)       | ✅ (pull/refresh)         | ✅ (real-time)     |
-| Pulse monitoring      | ✅ (request-based)      | ✅ (request-based)        | ✅ (request-based) |
-
-No feature is _disabled_ in the default configuration — some are _synchronous_ instead of
-_asynchronous_, and real-time updates require a page refresh. Feature parity is maintained across
-all deployment tiers.
+Every feature works in the default configuration. Some are synchronous instead of asynchronous — email notifications and media conversions block the response but function correctly. Real-time updates require page refresh without Reverb. No feature is disabled in any tier.
 
 ### Data Sovereignty
 
-Each school's data resides entirely on their own infrastructure:
-
-- Student records, assessment data, company partnerships, and configuration never leave the school's
-  server
-- No telemetry, no usage reporting, no external API calls for core functionality
-- Backup is under the school's control — file copy, S3 sync, or any standard tool
+Student records, assessment data, company partnerships, and configuration never leave the school's server. No telemetry, no usage reporting, no external API calls for core functionality. Backup is under the school's control.
 
 ## Consequences
 
-- **Positive**: No multi-tenant infrastructure to build or maintain. No tenant middleware, no
-  tenant-scoped queries, no per-tenant configuration.
-- **Positive**: Default configuration requires zero external services — SQLite + file cache
-    - sync queue. A school can run the application on a $5/month shared hosting plan.
-- **Positive**: Data sovereignty is absolute. The school owns their data, their backups, and their
-  infrastructure. No vendor lock-in beyond the open-source codebase.
-- **Positive**: Performance isolation — one school's load never affects another school. Each
-  instance has dedicated resources.
-- **Positive**: Simple deployment model — install once, configure, run. No multi-tenant
-  orchestration, no tenant provisioning, no billing integration.
-- **Negative**: No centralized management — there is no "super admin" view across schools. Each
-  school's admin manages their instance independently.
-- **Negative**: Updates require manual intervention on each instance — no centralized rollout. The
-  school's admin must pull, run migrations, and rebuild assets.
-- **Negative**: Hardware resource isolation means each school must provision their own server —
-  there is no economy of scale from shared infrastructure.
-- **Negative**: SQLite concurrency limits mean schools with more than ~50 concurrent users must
-  switch to MySQL or PostgreSQL. This requires a configuration change and migration.
+- **Positive**: No multi-tenant infrastructure to build or maintain. No tenant middleware, scoped queries, or per-tenant configuration.
+- **Positive**: Default configuration requires zero external services — SQLite + file cache + sync queue. Runs on a $5/month shared hosting plan.
+- **Positive**: Data sovereignty is absolute. The school owns their data, backups, and infrastructure.
+- **Positive**: Performance isolation — one school's load never affects another.
+- **Negative**: No centralized management or "super admin" view across all schools. Each admin manages independently.
+- **Negative**: Updates require manual intervention on each instance — pull, migrate, rebuild assets.
+- **Negative**: SQLite concurrency limits (~50 concurrent users) require a switch to MySQL for larger schools.
 
 ## References
 
 - `config/database.php` — SQLite as default connection
-- `.env.example` — defaults optimized for single-server deployment
-- `docs/product-definition.md` — product vision, self-hosting principles
-- `docs/infrastructure/deployment.md` — three deployment paths
-- `docs/infrastructure/installation.md` — CLI installer, prerequisites
+- `.env.example` — Defaults optimized for single-server deployment
+- `docs/infrastructure/deployment.md` — Three deployment paths
+- `docs/infrastructure/installation.md` — CLI installer prerequisites

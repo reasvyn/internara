@@ -1,14 +1,10 @@
 # Cache
 
-> Last updated: 2026-05-27 Changes: docs: comprehensive infrastructure, architecture, and
-> conventions overhaul
+> Last updated: 2026-06-08
 
 ## Purpose
 
-The cache layer reduces database load and response latency by storing computed or frequently
-accessed data in a fast retrieval store. It is a **performance optimization**, not a persistence
-mechanism. Data cached today may not be cached tomorrow, and the application must function correctly
-on cache miss.
+The cache layer reduces database load and response latency by storing computed or frequently accessed data in a fast retrieval store. It is a **performance optimization**, not a persistence mechanism. Data cached today may not be cached tomorrow, and the application must function correctly on cache miss.
 
 ---
 
@@ -58,8 +54,7 @@ REDIS_PORT=6379
 
 ### OpCache (Bytecode Cache)
 
-PHP OpCache caches compiled PHP bytecode in shared memory — essential for production performance.
-Without it, PHP re-parses and compiles every PHP file on every request.
+PHP OpCache caches compiled PHP bytecode in shared memory — essential for production performance. Without it, PHP re-parses and compiles every PHP file on every request.
 
 ```ini
 ; /etc/php/8.4/cli/conf.d/opcache.ini
@@ -71,7 +66,7 @@ opcache.revalidate_freq=2               ; Not used when validate=0
 opcache.max_wasted_percentage=10        ; Auto-restart when wasted too much
 ```
 
-For **development**, disable OpCache or set `validate_timestamps=1` to avoid stale bytecode:
+For **development**, disable OpCache or set `validate_timestamps=1`:
 
 ```ini
 opcache.enable=1
@@ -87,8 +82,7 @@ opcache.revalidate_freq=0               ; Check every request
 
 1. **If you update a value, invalidate its cache entry.** This is the fundamental rule.
 2. Prefer **targeted invalidation** — clear only the keys that changed, not everything.
-3. Use **event-driven invalidation** for cross-module cache keys — the Command Action dispatches an
-   event, a listener flushes the affected keys.
+3. Use **event-driven invalidation** for cross-module cache keys — the Command Action dispatches an event, a listener flushes the affected keys.
 4. Full cache flushes (`php artisan cache:clear`) are for maintenance only, not normal operations.
 
 ### Invalidation Flow
@@ -116,7 +110,6 @@ class InvalidateDashboardCache
 ### Direct Invalidation (Inline, for simple cases)
 
 ```php
-// Inside a Command Action
 Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
 ```
 
@@ -126,8 +119,7 @@ Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
 
 ### Centralized Registry
 
-Every cache key MUST be declared as a constant in `App\Support\CacheKeys`. This prevents collisions,
-makes dependencies discoverable, and enables systematic flushing.
+Every cache key MUST be declared as a constant in `App\Support\CacheKeys`. This prevents collisions, makes dependencies discoverable, and enables systematic flushing.
 
 ```php
 final readonly class CacheKeys
@@ -163,8 +155,8 @@ Examples:
 | TTL         | Meaning                     | Examples                             |
 | ----------- | --------------------------- | ------------------------------------ |
 | **short**   | < 5 min                     | Dashboard stats, notification counts |
-| **medium**  | 5 min - 1 hour              | Aggregated reports                   |
-| **long**    | 1 hour - 24h                | Slowly changing reference data       |
+| **medium**  | 5 min – 1 hour              | Aggregated reports                   |
+| **long**    | 1 hour – 24h                | Slowly changing reference data       |
 | **forever** | Until explicit invalidation | Settings, branding, permissions      |
 
 ---
@@ -173,7 +165,7 @@ Examples:
 
 ### Single Instance for Multiple Services
 
-A single Redis instance can serve cache, session, and queue by using separate databases:
+A single Redis instance can serve cache, session, and queue by using separate databases. Session and queue use their own dedicated drivers (not the cache store).
 
 ```env
 CACHE_STORE=redis
@@ -184,9 +176,6 @@ REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 REDIS_PASSWORD=null
 REDIS_CLIENT=phpredis
-
-REDIS_DB=0        # Cache
-REDIS_CACHE_DB=1  # Cache fallback (not used when CACHE_STORE=redis)
 ```
 
 ### Connection Settings
@@ -225,7 +214,7 @@ REDIS_PASSWORD=cluster-password
 | **Security**  | No restrictions — any code reads any key | Encrypted, HTTP-only, SameSite   |
 | **Data loss** | Acceptable — recomputed on miss          | Critical — user gets logged out  |
 | **TTL**       | Per-key (independent lifetimes)          | Single global lifetime (120 min) |
-| **Backend**   | `file` / `database` / `redis`            | `file` / `database` / `redis`    |
+| **Backend**   | `file` / `database` / `redis`            | `database` / `redis`             |
 
 ---
 
@@ -235,13 +224,13 @@ REDIS_PASSWORD=cluster-password
 # Enable all application caches at once (recommended after deployment)
 php artisan optimize
 
-# Individual caches (useful when only one changed)
-php artisan config:cache      # Merge config files into cached version
+# Individual caches
+php artisan config:cache      # Merge config files
 php artisan route:cache       # Cache route registration (no Closure routes)
 php artisan view:cache        # Compile all Blade templates
 php artisan event:cache       # Cache event discovery
 
-# Maintenence
+# Maintenance
 php artisan cache:clear       # Flush only the cache store (not config/route/view)
 php artisan optimize:clear    # Clear ALL caches (config, route, view, events, cache store)
 ```
@@ -252,8 +241,7 @@ php artisan optimize:clear    # Clear ALL caches (config, route, view, events, c
 php artisan system:cache-warm
 ```
 
-This pre-warms settings, brand values, compiles config/views/events, and prepares the cache for
-first requests after deployment.
+This pre-warms settings, brand values, compiles config/views/events, and prepares the cache for first requests after deployment.
 
 ---
 
@@ -262,7 +250,7 @@ first requests after deployment.
 - `config/cache.php` — cache store definitions, per-store configuration
 - `config/database.php` — Redis connection settings under the `redis` key
 - `app/Support/CacheKeys.php` — centralized cache key registry
-- `app/SysAdmin/Setting/Support/Settings.php` — settings caching layer
+- `app/Settings/Support/Settings.php` — settings caching layer
 - `app/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — cache warming
 - `database/migrations/` — cache and cache_locks table migrations
-- `docs/infrastructure/infrastructure.md` — tier-based infrastructure design
+- [Infrastructure](infrastructure.md) — tier-based infrastructure design
