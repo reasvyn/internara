@@ -14,7 +14,8 @@ Handles authentication: login, password management, account activation, account 
 
 - `Login`
 - `Password`
-- `ActivationToken`
+- `Account` (user account activation, migrated from `ActivationToken`)
+- `ApiTokens` (general token management, `api_tokens` table)
 - `AccountRecovery`
 - `Permissions`
 - `SuperAdmin`
@@ -42,8 +43,7 @@ Handles authentication: login, password management, account activation, account 
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `ActivationToken/Models/ActivationToken.php` | `ActivationToken` | `BaseModel` |
-| `AccountRecovery/Models/AccountRecoveryCode.php` | `AccountRecoveryCode` | `BaseModel` |
+| `ApiTokens/Models/ApiToken.php` | `ApiToken` | `BaseModel` |
 
 ---
 
@@ -59,8 +59,10 @@ Handles authentication: login, password management, account activation, account 
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
+| `Account/Entities/AccountActivation.php` | `AccountActivation` | `BaseEntity` |
 | `AccountRecovery/Entities/RecoveryCodeState.php` | `RecoveryCodeState` | `BaseEntity` |
 | `SuperAdmin/Entities/SuperAdminIntegrityRules.php` | `SuperAdminIntegrityRules` | `BaseEntity` |
+| `ApiTokens/Entities/ActivationToken.php` | `ActivationToken` | `BaseEntity` |
 
 ---
 
@@ -72,6 +74,20 @@ Handles authentication: login, password management, account activation, account 
 
 ---
 
+## Data / DTOs
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Login/Data/LoginData.php` | `LoginData` | `BaseData` |
+| `AccountRecovery/Data/RecoveryCodeData.php` | `RecoveryCodeData` | `BaseData` |
+
+## Events
+
+| File | Class | Dispatched By |
+| ---- | ----- | ------------- |
+| `Login/Events/LoginSucceeded.php` | `LoginSucceeded` | `LoginAction` |
+| `Login/Events/LoginFailed.php` | `LoginFailed` | `LoginAction` |
+
 ## Livewire Components
 
 | File | Component | Extends |
@@ -80,7 +96,7 @@ Handles authentication: login, password management, account activation, account 
 | `Password/Livewire/ForgotPassword.php` | `ForgotPassword` | `Component` |
 | `Password/Livewire/ResetPassword.php` | `ResetPassword` | `Component` |
 | `Password/Livewire/ConfirmPassword.php` | `ConfirmPassword` | `Component` |
-| `ActivationToken/Livewire/ActivateAccount.php` | `ActivateAccount` | `Component` |
+| `Account/Livewire/ActivateAccount.php` | `ActivateAccount` | `Component` |
 | `AccountRecovery/Livewire/AccountRecovery.php` | `AccountRecovery` | `Component` |
 | `AccountRecovery/Livewire/RecoveryCode.php` | `RecoveryCode` | `Component` |
 | `AccountRecovery/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `Component` |
@@ -127,8 +143,29 @@ Naming pattern: `auth.{resource}.{action}`
 
 ```
 app/Auth/
+├── Account/
+│   ├── Entities/AccountActivation.php
+│   └── Livewire/ActivateAccount.php
+├── AccountRecovery/
+│   ├── Actions/
+│   │   ├── GenerateRecoverySlipAction.php
+│   │   └── RedeemRecoverySlipAction.php
+│   ├── Data/RecoveryCodeData.php
+│   ├── Entities/RecoveryCodeState.php
+│   └── Livewire/
+│       ├── Forms/AccountRecoveryForm.php
+│       ├── AccountRecovery.php
+│       ├── RecoveryCode.php
+│       └── RecoverySlipManager.php
+├── ApiTokens/
+│   ├── Entities/ActivationToken.php
+│   └── Models/ApiToken.php
 ├── Login/
 │   ├── Actions/LoginAction.php
+│   ├── Data/LoginData.php
+│   ├── Events/
+│   │   ├── LoginFailed.php
+│   │   └── LoginSucceeded.php
 │   ├── Http/Middleware/AuthThrottleMiddleware.php
 │   └── Livewire/
 │       ├── Forms/LoginForm.php
@@ -148,20 +185,6 @@ app/Auth/
 │       ├── ConfirmPassword.php
 │       ├── ForgotPassword.php
 │       └── ResetPassword.php
-├── ActivationToken/
-│   ├── Livewire/ActivateAccount.php
-│   └── Models/ActivationToken.php
-├── AccountRecovery/
-│   ├── Actions/
-│   │   ├── GenerateRecoverySlipAction.php
-│   │   └── RedeemRecoverySlipAction.php
-│   ├── Entities/RecoveryCodeState.php
-│   ├── Livewire/
-│   │   ├── Forms/AccountRecoveryForm.php
-│   │   ├── AccountRecovery.php
-│   │   ├── RecoveryCode.php
-│   │   └── RecoverySlipManager.php
-│   └── Models/AccountRecoveryCode.php
 ├── Permissions/
 │   ├── Enums/Role.php
 │   ├── Http/
@@ -180,7 +203,7 @@ app/Auth/
 
 ## Architectural Integration
 
-- **Submodules**: `Login`, `Password`, `ActivationToken`, `AccountRecovery`, `Permissions`, `SuperAdmin`
+- **Submodules**: `Login`, `Password`, `Account`, `ApiTokens`, `AccountRecovery`, `Permissions`, `SuperAdmin`
 - **Business Logic**: `app/Auth/`
 - **Routing**: `routes/web/auth.php`
 - **Views**: `resources/views/auth/`
