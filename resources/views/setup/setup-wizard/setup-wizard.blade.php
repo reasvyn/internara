@@ -74,14 +74,10 @@
         @endif
 
         @if($currentStep === 5)
-            @include('setup.components.internship-step')
-        @endif
-
-        @if($currentStep === 6)
             @include('setup.components.finalize-step')
         @endif
 
-        @if($currentStep === 7)
+        @if($currentStep === 6)
             @include('setup.components.complete-step')
         @endif
     </div>

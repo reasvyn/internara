@@ -10,6 +10,7 @@ use App\Core\Support\SmartLogger;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\SysAdmin\UserManagement\Actions\SaveRecoveryKeyAction;
+use App\User\Notifications\Data\NotificationData;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -22,7 +23,6 @@ final class FinalizeSetupAction extends BaseAction
         protected readonly SetupSchoolAction $setupSchool,
         protected readonly SetupDepartmentAction $setupDept,
         protected readonly SetupSuperAdminAction $setupAdmin,
-        protected readonly SetupInternshipAction $setupInternship,
         protected readonly SendsNotifications $sendNotification,
         protected readonly SaveRecoveryKeyAction $saveRecoveryKey,
     ) {}
@@ -31,7 +31,6 @@ final class FinalizeSetupAction extends BaseAction
         array $schoolData,
         array $departmentData,
         array $adminData,
-        ?array $internshipData = null,
         array $stepsToComplete = ['account', 'school', 'department'],
     ): string {
         $state = SetupEntity::get();
@@ -44,7 +43,6 @@ final class FinalizeSetupAction extends BaseAction
             $schoolData,
             $departmentData,
             $adminData,
-            $internshipData,
             $stepsToComplete,
             $state,
         ) {
@@ -53,10 +51,6 @@ final class FinalizeSetupAction extends BaseAction
             $department = $this->setupDept->execute($departmentData);
 
             $admin = $this->setupAdmin->execute($adminData['email'], $adminData['password']);
-
-            if ($internshipData !== null) {
-                $this->setupInternship->execute($internshipData);
-            }
 
             $completedSteps = $state->completedSteps();
 
