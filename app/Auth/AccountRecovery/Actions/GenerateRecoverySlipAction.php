@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Auth\AccountRecovery\Actions;
 
-use App\Auth\AccountRecovery\Models\AccountRecoveryCode;
+use App\Auth\AccountRecovery\Data\RecoveryCodeData;
+use App\Auth\ApiTokens\Models\ApiToken;
 use App\Core\Actions\BaseAction;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -13,7 +14,7 @@ class GenerateRecoverySlipAction extends BaseAction
 {
     public const int CODE_COUNT = 10;
 
-    /** @return array{code: AccountRecoveryCode, plaintext: array<int, string>, expires_at: null} */
+    /** @return array{code: RecoveryCodeData, plaintext: array<int, string>, expires_at: null} */
     public function execute(User $user): array
     {
         $codes = [];
@@ -21,14 +22,20 @@ class GenerateRecoverySlipAction extends BaseAction
 
         for ($i = 0; $i < self::CODE_COUNT; $i++) {
             $plaintext = strtoupper(str()->random(12));
+            $hashed = Hash::make($plaintext);
 
-            $recoveryCode = AccountRecoveryCode::create([
+            $recoveryCode = RecoveryCodeData::from([
+                'plainText' => $plaintext,
+                'hashedToken' => $hashed,
+                'expiresAt' => now()->addYears(100)->toDateTimeString(),
+            ]);
+
+            ApiToken::create([
                 'user_id' => $user->id,
-                'token' => Hash::make($plaintext),
+                'token' => $hashed,
                 'token_type' => 'account_recovery',
                 'expires_at' => now()->addYears(100),
                 'attempts' => 0,
-                'last_attempt_at' => null,
             ]);
 
             if ($i === 0) {

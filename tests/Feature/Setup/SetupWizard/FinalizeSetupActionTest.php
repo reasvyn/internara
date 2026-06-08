@@ -13,7 +13,7 @@ use App\Setup\SetupWizard\Actions\SetupDepartmentAction;
 use App\Setup\SetupWizard\Actions\SetupInternshipAction;
 use App\Setup\SetupWizard\Actions\SetupSchoolAction;
 use App\Setup\SetupWizard\Actions\SetupSuperAdminAction;
-use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
+use App\SysAdmin\UserManagement\Actions\SaveRecoveryKeyAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use RuntimeException;

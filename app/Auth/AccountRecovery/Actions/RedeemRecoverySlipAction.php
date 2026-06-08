@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth\AccountRecovery\Actions;
 
-use App\Auth\AccountRecovery\Models\AccountRecoveryCode;
+use App\Auth\ApiTokens\Models\ApiToken;
 use App\Core\Actions\BaseAction;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -21,9 +21,10 @@ class RedeemRecoverySlipAction extends BaseAction
                 throw new RuntimeException(__('auth.failed'));
             }
 
-            $recoveryCodes = AccountRecoveryCode::where('user_id', $user->id)
+            $recoveryCodes = ApiToken::where('user_id', $user->id)
                 ->where('token_type', 'account_recovery')
-                ->whereNull('last_attempt_at')
+                ->whereNull('revoked_at')
+                ->whereNull('last_used_at')
                 ->where(function ($q) {
                     $q->whereNull('expires_at')->orWhere('expires_at', '>', now());
                 })
@@ -32,7 +33,7 @@ class RedeemRecoverySlipAction extends BaseAction
             $matchedCode = null;
             foreach ($recoveryCodes as $rc) {
                 if (
-                    $rc->asRecoveryCodeState()->isValid() &&
+                    $rc->isValid() &&
                     Hash::check(strtoupper($code), $rc->token)
                 ) {
                     $matchedCode = $rc;
@@ -47,7 +48,7 @@ class RedeemRecoverySlipAction extends BaseAction
             }
 
             $user->update(['password' => Hash::make($newPassword)]);
-            $matchedCode->update(['last_attempt_at' => now()]);
+            $matchedCode->update(['last_used_at' => now()]);
 
             $this->log('recovery_slip_redeemed', $user);
 
