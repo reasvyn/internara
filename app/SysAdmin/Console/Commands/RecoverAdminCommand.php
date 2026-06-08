@@ -9,7 +9,7 @@ use App\Settings\Support\AppInfo;
 use App\Settings\Support\Settings;
 use App\SysAdmin\Account\Actions\ReadRecoveryKeyAction;
 use App\SysAdmin\Account\Actions\SaveRecoveryKeyAction;
-use App\SysAdmin\SuperAdmin\Actions\RecoverSuperAdminAction;
+use App\Auth\SuperAdmin\Actions\RecoverSuperAdminAction;
 use App\User\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;

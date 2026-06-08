@@ -8,7 +8,7 @@ use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Support\PasswordRules;
-use App\SysAdmin\SuperAdmin\Entities\SuperAdminIntegrityRules;
+use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;

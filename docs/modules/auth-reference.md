@@ -17,6 +17,7 @@ Handles authentication: login, password management, account activation, account 
 - `ActivationToken`
 - `AccountRecovery`
 - `Permissions`
+- `SuperAdmin`
 
 ---
 
@@ -32,6 +33,8 @@ Handles authentication: login, password management, account activation, account 
 | `Password/Actions/UpdateUserPasswordAction.php` | `UpdateUserPasswordAction` | `BaseAction` |
 | `AccountRecovery/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction` | `BaseAction` |
 | `AccountRecovery/Actions/RedeemRecoverySlipAction.php` | `RedeemRecoverySlipAction` | `BaseAction` |
+| `SuperAdmin/Actions/InitializeSuperAdminAction.php` | `InitializeSuperAdminAction` | `BaseAction` |
+| `SuperAdmin/Actions/RecoverSuperAdminAction.php` | `RecoverSuperAdminAction` | `BaseAction` |
 
 ---
 
@@ -57,6 +60,7 @@ Handles authentication: login, password management, account activation, account 
 | File | Class | Extends |
 | ---- | ----- | ------- |
 | `AccountRecovery/Entities/RecoveryCodeState.php` | `RecoveryCodeState` | `BaseEntity` |
+| `SuperAdmin/Entities/SuperAdminIntegrityRules.php` | `SuperAdminIntegrityRules` | `BaseEntity` |
 
 ---
 
@@ -80,6 +84,12 @@ Handles authentication: login, password management, account activation, account 
 | `AccountRecovery/Livewire/AccountRecovery.php` | `AccountRecovery` | `Component` |
 | `AccountRecovery/Livewire/RecoveryCode.php` | `RecoveryCode` | `Component` |
 | `AccountRecovery/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `Component` |
+
+## Notifications
+
+| File | Class | Purpose |
+| ---- | ----- | ------- |
+| `SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` | `SuperAdminRecoveredNotification` | Notifies admins on recovery |
 
 ## Livewire Forms
 
@@ -152,19 +162,25 @@ app/Auth/
 │   │   ├── RecoveryCode.php
 │   │   └── RecoverySlipManager.php
 │   └── Models/AccountRecoveryCode.php
-└── Permissions/
-    ├── Enums/Role.php
-    ├── Http/
-    │   ├── Middleware/CheckRoleMiddleware.php
-    │   └── Requests/RoleRequest.php
-    └── Policies/UserPolicy.php
+├── Permissions/
+│   ├── Enums/Role.php
+│   ├── Http/
+│   │   ├── Middleware/CheckRoleMiddleware.php
+│   │   └── Requests/RoleRequest.php
+│   └── Policies/UserPolicy.php
+└── SuperAdmin/
+    ├── Actions/
+    │   ├── InitializeSuperAdminAction.php
+    │   └── RecoverSuperAdminAction.php
+    ├── Entities/SuperAdminIntegrityRules.php
+    └── Notifications/SuperAdminRecoveredNotification.php
 ```
 
 ---
 
 ## Architectural Integration
 
-- **Submodules**: `Login`, `Password`, `ActivationToken`, `AccountRecovery`, `Permissions`
+- **Submodules**: `Login`, `Password`, `ActivationToken`, `AccountRecovery`, `Permissions`, `SuperAdmin`
 - **Business Logic**: `app/Auth/`
 - **Routing**: `routes/web/auth.php`
 - **Views**: `resources/views/auth/`

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Console\Commands;
 
 use App\Settings\Support\AppInfo;
-use App\SysAdmin\SuperAdmin\Actions\InitializeSuperAdminAction;
+use App\Auth\SuperAdmin\Actions\InitializeSuperAdminAction;
 use App\User\Models\User;
 use Illuminate\Console\Command;
 
