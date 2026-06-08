@@ -13,6 +13,7 @@ use App\Core\Http\Middleware\LogContext;
 use App\Core\Http\Middleware\SecurityHeaders;
 use App\Settings\Locale\Http\Middleware\SetLocaleMiddleware;
 use App\Setup\Installation\Http\Middleware\ProtectSetupRouteMiddleware;
+use App\Providers\EventServiceProvider;
 use App\Setup\Installation\Http\Middleware\RequireSetupAccessMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -20,6 +21,9 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
+    ->withProviders([
+        EventServiceProvider::class,
+    ])
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',

@@ -6,11 +6,14 @@ namespace App\Settings\Support;
 
 use App\Core\Support\AppInfo;
 use App\Core\Support\SmartLogger;
+use App\Settings\Data\SettingData;
+use App\Settings\Events\SettingUpdated;
 use App\Settings\Models\Setting;
 use App\Settings\Rules\ValidSettingKey;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
 
 final class Settings
@@ -126,21 +129,21 @@ final class Settings
             );
 
             if ($model->wasRecentlyCreated || $model->wasChanged()) {
-                self::forget($key, $model->group);
-                self::invalidateBrandCache($key);
+                Event::dispatch(new SettingUpdated(
+                    setting: new SettingData(
+                        key: $key,
+                        value: $value,
+                        type: $model->type,
+                        group: $model->group,
+                    ),
+                    wasRecentlyCreated: $model->wasRecentlyCreated,
+                ));
 
                 $updated++;
             }
         }
 
         return $updated;
-    }
-
-    private static function invalidateBrandCache(string $key): void
-    {
-        if (in_array($key, config('settings.theme_cache_keys', []), true)) {
-            Brand::clearCache();
-        }
     }
 
     public static function hasGroup(string $name): bool

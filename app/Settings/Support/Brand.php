@@ -6,6 +6,7 @@ namespace App\Settings\Support;
 
 use App\Core\Support\AppInfo;
 use App\Core\Support\SmartLogger;
+use App\Settings\Branding\Data\BrandData;
 use App\Settings\Models\Setting as SettingModel;
 use App\Settings\Theme\Support\Theme;
 use Illuminate\Support\Facades\Cache;
@@ -140,26 +141,25 @@ final class Brand
         return AppInfo::gitUrl();
     }
 
+    public static function resolve(): BrandData
+    {
+        return new BrandData(
+            name: self::name(),
+            title: self::title(),
+            logo: self::logo(),
+            favicon: self::favicon(),
+            colors: self::colors(),
+            version: self::version(),
+            authorName: self::authorName(),
+            authorEmail: self::authorEmail(),
+            description: self::description(),
+            license: self::license(),
+            gitUrl: self::gitUrl(),
+        );
+    }
+
     public static function get(string $key, mixed $default = null): mixed
     {
-        $mapping = [
-            'name' => fn () => self::name(),
-            'title' => fn () => self::title(),
-            'logo' => fn () => self::logo(),
-            'favicon' => fn () => self::favicon(),
-            'colors' => fn () => self::colors(),
-            'version' => fn () => self::version(),
-            'author_name' => fn () => self::authorName(),
-            'author_email' => fn () => self::authorEmail(),
-            'description' => fn () => self::description(),
-            'license' => fn () => self::license(),
-            'gitUrl' => fn () => self::gitUrl(),
-        ];
-
-        if (array_key_exists($key, $mapping)) {
-            return $mapping[$key]();
-        }
-
-        return AppInfo::get($key, $default);
+        return self::resolve()->get($key, $default);
     }
 }

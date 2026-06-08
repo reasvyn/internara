@@ -10,15 +10,12 @@ use App\Core\Contracts\SettingsStore;
 use App\Core\Policies\BasePolicy;
 use App\Core\Support\LangChecker;
 use App\Settings\Support\Settings;
-use App\Setup\SetupWizard\Events\SetupFinalized;
-use App\Setup\SetupWizard\Listeners\LogSetupFinalized;
 use App\User\Models\User;
 use App\User\Notifications\Actions\SendNotificationAction;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\View;
@@ -76,8 +73,6 @@ class AppServiceProvider extends ServiceProvider
         if (config('module.views.enabled', true)) {
             $this->registerBladeNamespaces();
         }
-
-        Event::listen(SetupFinalized::class, [LogSetupFinalized::class, 'handle']);
     }
 
     public function discoverLivewireComponents(): void
