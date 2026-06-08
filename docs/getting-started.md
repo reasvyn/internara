@@ -45,7 +45,7 @@ php artisan serve
 php artisan queue:work
 ```
 
-Open the signed URL from step 4 in your browser to complete the 7-step setup wizard.
+Open the signed URL from step 4 in your browser to complete the 6-step setup wizard.
 
 ---
 
@@ -120,16 +120,16 @@ composer run dev
 
 ### Step 6: Complete the Setup Wizard
 
-Open the signed URL from Step 4 in your browser. The URL includes a `setup_token` parameter that authorizes access. The 7-step wizard guides you through:
+Open the signed URL from Step 4 in your browser. The URL includes a `setup_token` parameter that authorizes access. The 6-step wizard guides you through:
 
 | Step | What You Configure                          |
 | ---- | ------------------------------------------- |
 | 1    | Environment audit review                    |
-| 2    | School details (name, NPSN, address, email) |
-| 3    | First department / study program            |
-| 4    | Super admin account                         |
-| 5    | Internship period (optional)                |
-| 6    | Final review and confirm                    |
+| 2    | Super admin account (email + password)      |
+| 3    | School details (name, NPSN, address, email) |
+| 4    | First department / study program            |
+| 5    | Final review and confirm                    |
+| 6    | Setup complete                              |
 | 7    | Recovery key — **save this securely**       |
 
 Follow the [Setup Wizard](foundation/setup-wizard.md) guide for a detailed walkthrough.

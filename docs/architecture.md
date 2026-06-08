@@ -485,7 +485,7 @@ resources/views/livewire/
 | 3  | **Auth**          | Authentication, authorization, and access control                              | Login, password management, account activation, recovery, RBAC, super admin integrity                    |
 | 4  | **User**          | Identity, profiles, and personal dashboards                                    | Profile editing, avatar upload, role-based dashboards, notification center, activity feed                |
 | 5  | **SysAdmin**      | System administration and user management                                      | User CRUD, announcements, audit logs, Pulse monitoring, account clone detection, GDPR compliance        |
-| 6  | **Setup**         | One-time installation and provisioning                                         | 7-step wizard, environment audit, setup token, super admin creation, CLI recovery                        |
+| 6  | **Setup**         | One-time installation and provisioning                                         | 6-step wizard, environment audit, setup token, super admin creation, CLI recovery                        |
 | 7  | **Settings**      | System-wide configuration and branding                                         | Key-value store, dynamic branding, color presets, mail config, feature flags, cached resolution chain    |
 | 8  | **Academics**     | Institution structure and academic foundation                                  | School profile, departments, academic years, first-run wizard                                           |
 | 9  | **Program**       | Internship program lifecycle                                                   | Program lifecycle, phases, groups, document requirements, closure readiness                             |

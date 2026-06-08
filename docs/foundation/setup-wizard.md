@@ -2,7 +2,7 @@
 
 > **Last updated:** 2026-06-08
 
-Detailed walkthrough of the 7-step guided setup wizard.
+Detailed walkthrough of the 6-step guided setup wizard.
 
 ---
 
@@ -25,7 +25,7 @@ authorizes access. The token expires in **60 minutes**.
 > If the token expires, run `php artisan setup:reset-token` to generate a new one (only works
 > before the wizard is completed).
 
-The wizard has **7 steps**, displayed as a progress bar. Data is persisted to the session so you
+The wizard has **6 steps**, displayed as a progress bar. Data is persisted to the session so you
 can navigate forward and backward without losing input. Form data (except passwords) is saved to
 session on every field change. After completion, all session data is cleared.
 
@@ -94,22 +94,7 @@ Additional departments can be added later from **School → Departments**.
 
 ---
 
-## Step 5: Internship Period (Optional)
-
-Configure the first internship period:
-
-| Field | Required | Rules |
-|-------|----------|-------|
-| Internship Name | No | String, max 255 |
-| Description | No | String |
-| Start Date | No | Valid date |
-| End Date | No | Valid date, must be after start |
-
-Optional. Create internship periods later from the Internship management page.
-
----
-
-## Step 6: Finalize & Confirm
+## Step 5: Finalize & Confirm
 
 Review all entered data. Requires:
 
@@ -129,7 +114,6 @@ DB Transaction (lockForUpdate on settings)
 │ │   └── Department::create          │
 │ ├── SetupSuperAdminAction           │
 │ │   └── User::create + role assign  │
-│ ├── SetupInternshipAction (if data) │
 │ ├── Mark is_installed = true        │
 │ │   + recovery key (hashed) in DB   │
 │ ├── Dispatch SetupFinalized event   │
@@ -145,7 +129,7 @@ is logged and setup completes. The key remains available on screen.
 
 ---
 
-## Step 7: Complete — Recovery Key
+## Step 6: Complete — Recovery Key
 
 Final screen displays your **64-character recovery key**:
 
@@ -205,7 +189,7 @@ View: resources/views/setup/setup-wizard/setup-wizard.blade.php
                ├── school-step.blade.php
                ├── department-step.blade.php
                ├── admin-step.blade.php
-               ├── internship-step.blade.php
+
                ├── finalize-step.blade.php
                └── complete-step.blade.php
 ```
@@ -224,13 +208,8 @@ finalization window.
 
 | Class | Location | Purpose |
 |-------|----------|---------|
-| `SetupWizard` | `app/Setup/SetupWizard/Livewire/SetupWizard.php` | Livewire component, 7-step state machine |
+| `SetupWizard` | `app/Setup/SetupWizard/Livewire/SetupWizard.php` | Livewire component, 6-step state machine |
 | `SetupEntity` | `app/Setup/Entities/SetupEntity.php` | Setup status entity |
-| `FinalizeSetupAction` | `app/Setup/SetupWizard/Actions/FinalizeSetupAction.php` | Orchestrates finalization |
-| `SetupSchoolAction` | `app/Setup/SetupWizard/Actions/SetupSchoolAction.php` | Saves school in settings |
-| `SetupDepartmentAction` | `app/Setup/SetupWizard/Actions/SetupDepartmentAction.php` | Creates first department |
-| `SetupSuperAdminAction` | `app/Setup/SetupWizard/Actions/SetupSuperAdminAction.php` | Creates user + super_admin role |
-| `SetupInternshipAction` | `app/Setup/SetupWizard/Actions/SetupInternshipAction.php` | Creates first internship |
 | `EnvironmentAuditor` | `app/SysAdmin/Observability/Services/EnvironmentAuditor.php` | System checks |
 | `RequireSetupAccessMiddleware` | `app/Setup/Installation/Http/Middleware/RequireSetupAccessMiddleware.php` | Global redirect |
 | `ProtectSetupRouteMiddleware` | `app/Setup/Installation/Http/Middleware/ProtectSetupRouteMiddleware.php` | Token + rate limit |
