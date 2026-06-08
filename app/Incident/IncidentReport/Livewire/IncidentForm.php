@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Incident\IncidentReport\Livewire;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Incident\IncidentReport\Actions\ReportIncidentAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;

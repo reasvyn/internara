@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Certification\Certificate\Support;
 
 use App\Certification\Certificate\Models\Certificate;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Storage;

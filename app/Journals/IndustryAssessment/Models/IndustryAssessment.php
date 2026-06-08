@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Journals\IndustryAssessment\Models;
 
 use App\Core\Models\BaseModel;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

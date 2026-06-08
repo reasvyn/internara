@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Journals\IndustryAssessment\Livewire;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\Mentor\Models\Mentor;
 use App\Journals\IndustryAssessment\Actions\SubmitIndustryAssessmentAction;
 use App\Journals\IndustryAssessment\Models\IndustryAssessment;

@@ -9,7 +9,7 @@ use App\Assignment\Submission\Models\Submission;
 use App\Certification\Certificate\Enums\CertificateStatus;
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Actions\BaseAction;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\Journals\Attendance\Models\Attendance;
 use App\Program\Internship\Models\Internship;

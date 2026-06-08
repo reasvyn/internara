@@ -7,7 +7,7 @@ namespace App\Assignment\Submission\Models;
 use App\Assignment\Submission\Entities\SubmissionState;
 use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Core\Models\BaseModel;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use Database\Factories\SubmissionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

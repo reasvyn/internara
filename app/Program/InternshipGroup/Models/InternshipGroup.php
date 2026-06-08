@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Program\InternshipGroup\Models;
 
 use App\Core\Models\BaseModel;
-use App\Enrollment\Models\Placement;
+use App\Enrollment\Placement\Models\Placement;
 use App\Program\InternshipGroup\Entities\InternshipGroupState;
 use Database\Factories\InternshipGroupFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

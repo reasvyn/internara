@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Observability\Recorders;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use Laravel\Pulse\Facades\Pulse;
 
 /**

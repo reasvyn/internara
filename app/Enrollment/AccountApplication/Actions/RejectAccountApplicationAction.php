@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Enrollment\AccountApplication\Actions;
+
+use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
+use App\Enrollment\AccountApplication\Enums\AccountApplicationStatus;
+use App\Enrollment\AccountApplication\Models\AccountApplication;
+use App\User\Models\User;
+
+final class RejectAccountApplicationAction extends BaseAction
+{
+    public function execute(string $applicationId, User $admin, string $reason): void
+    {
+        $application = AccountApplication::findOrFail($applicationId);
+
+        if ($application->status !== AccountApplicationStatus::PENDING) {
+            throw new RejectedException('Application is not in pending status.');
+        }
+
+        $application->update([
+            'status' => 'rejected',
+            'processed_by' => $admin->id,
+            'processed_at' => now(),
+            'rejection_reason' => $reason,
+        ]);
+
+        $this->log('account_application_rejected', $application, ['reason' => $reason]);
+    }
+}

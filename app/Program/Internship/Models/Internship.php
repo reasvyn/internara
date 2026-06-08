@@ -6,8 +6,8 @@ namespace App\Program\Internship\Models;
 
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Models\BaseModel;
-use App\Enrollment\Models\Placement;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Placement\Models\Placement;
+use App\Enrollment\Registration\Models\Registration;
 use App\Program\Internship\Entities\InternshipPeriod;
 use App\Program\Internship\Entities\InternshipState;
 use App\Program\Internship\Enums\InternshipStatus;

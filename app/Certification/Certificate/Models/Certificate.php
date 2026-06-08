@@ -6,7 +6,7 @@ namespace App\Certification\Certificate\Models;
 
 use App\Certification\Certificate\Enums\CertificateStatus;
 use App\Core\Models\BaseModel;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use Database\Factories\CertificateFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

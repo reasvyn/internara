@@ -8,7 +8,7 @@ use App\Core\Enums\CsvRowResult;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Core\Support\CsvHandler;
-use App\Enrollment\Models\Placement;
+use App\Enrollment\Placement\Models\Placement;
 use App\Partners\Company\Actions\BatchDeleteCompanyAction;
 use App\Partners\Company\Actions\CreateCompanyAction;
 use App\Partners\Company\Actions\DeleteCompanyAction;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Dashboard\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Evaluation\Models\Evaluation;
 use App\Journals\Attendance\Models\Attendance;
 use App\Journals\Logbook\Models\Logbook;

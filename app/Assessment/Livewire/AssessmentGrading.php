@@ -10,7 +10,7 @@ use App\Assessment\Actions\InitializeAssessmentAction;
 use App\Assessment\Actions\UpdateAssessmentScoresAction;
 use App\Assessment\Models\Assessment;
 use App\Assessment\Rubric\Models\Competency;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\Mentor\Models\Mentor;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;

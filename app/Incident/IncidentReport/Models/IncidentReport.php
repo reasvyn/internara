@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Incident\IncidentReport\Models;
 
 use App\Core\Models\BaseModel;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Incident\IncidentReport\Enums\IncidentSeverity;
 use App\Incident\IncidentReport\Enums\IncidentStatus;
 use App\Incident\IncidentReport\Enums\IncidentType;

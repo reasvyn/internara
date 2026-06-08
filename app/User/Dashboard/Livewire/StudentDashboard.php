@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Dashboard\Livewire;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Dashboard\Actions\GetStudentDashboardDataAction;
 use Illuminate\View\View;
 

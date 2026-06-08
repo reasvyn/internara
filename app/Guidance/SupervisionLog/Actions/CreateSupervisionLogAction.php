@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Guidance\SupervisionLog\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\Mentor\Models\Mentor;
 use App\Guidance\SupervisionLog\Enums\SupervisionLogStatus;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
