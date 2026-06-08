@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Models;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Entities\Apprentice;
 use App\User\Enums\AccountStatus;
 use App\User\Profile\Models\Profile;

@@ -8,7 +8,7 @@ use App\Certification\Certificate\Models\Certificate;
 use App\Certification\Certificate\Models\CertificateTemplate;
 use App\Certification\Certificate\Support\CertificateRenderer;
 use App\Core\Actions\BaseAction;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 
 final class IssueCertificateAction extends BaseAction
 {

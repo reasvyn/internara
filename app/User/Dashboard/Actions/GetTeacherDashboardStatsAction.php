@@ -7,7 +7,7 @@ namespace App\User\Dashboard\Actions;
 use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseAction;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\Incident\IncidentReport\Enums\IncidentStatus;
 use App\Incident\IncidentReport\Models\IncidentReport;

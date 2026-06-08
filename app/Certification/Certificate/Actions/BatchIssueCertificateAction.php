@@ -6,7 +6,7 @@ namespace App\Certification\Certificate\Actions;
 
 use App\Certification\Certificate\Models\CertificateTemplate;
 use App\Core\Actions\BaseAction;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 

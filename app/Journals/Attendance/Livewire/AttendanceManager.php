@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Journals\Attendance\Livewire;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Journals\AbsenceRequest\Actions\ProcessAbsenceAction;
 use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\Journals\AbsenceRequest\Models\AbsenceRequest;

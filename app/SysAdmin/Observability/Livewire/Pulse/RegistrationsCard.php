@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Observability\Livewire\Pulse;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use Illuminate\View\View;
 use Laravel\Pulse\Livewire\Card;
 use Livewire\Attributes\Lazy;

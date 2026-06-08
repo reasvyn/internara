@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Guidance\SupervisionLog\Livewire;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;

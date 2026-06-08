@@ -7,7 +7,7 @@ namespace App\Assessment\Actions;
 use App\Assessment\Models\Assessment;
 use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Actions\BaseAction;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 
 final class InitializeAssessmentAction extends BaseAction
 {

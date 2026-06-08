@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Reports\Report\Livewire;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Reports\Report\Actions\CreateReportAction;
 use App\Reports\Report\Actions\SubmitReportAction;
 use App\Reports\Report\Models\Report;

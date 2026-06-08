@@ -7,7 +7,7 @@ namespace App\Document\OfficialDocument\Actions;
 use App\Core\Actions\BaseAction;
 use App\Document\Models\Document;
 use App\Document\Support\DocumentRenderer;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use Illuminate\Support\Facades\Storage;
 
 final class RenderDocumentAction extends BaseAction

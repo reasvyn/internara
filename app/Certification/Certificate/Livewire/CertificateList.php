@@ -11,7 +11,7 @@ use App\Certification\Certificate\Enums\CertificateStatus;
 use App\Certification\Certificate\Models\Certificate;
 use App\Certification\Certificate\Models\CertificateTemplate;
 use App\Core\Livewire\BaseRecordManager;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;

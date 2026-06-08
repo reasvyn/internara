@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Evaluation\Models;
 
 use App\Core\Models\BaseModel;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Evaluation\Enums\EvaluationCategory;
 use App\User\Models\User;
 use Database\Factories\EvaluationFactory;

@@ -8,7 +8,7 @@ use App\Core\Http\Controllers\BaseController;
 use App\Document\Models\Document;
 use App\Document\OfficialDocument\Actions\RenderDocumentAction;
 use App\Document\Support\DocumentRenderer;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;

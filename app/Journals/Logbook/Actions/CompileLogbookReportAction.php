@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Journals\Logbook\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Journals\Logbook\Models\Logbook;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;

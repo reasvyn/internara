@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Journals\Logbook\Models;
 
 use App\Core\Models\BaseModel;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Journals\Logbook\Entities\LogbookState;
 use App\Journals\Logbook\Enums\LogbookStatus;
 use App\User\Models\User;

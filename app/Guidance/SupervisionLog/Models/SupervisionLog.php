@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Guidance\SupervisionLog\Models;
 
 use App\Core\Models\BaseModel;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\SupervisionLog\Entities\SupervisionStatus;
 use App\Guidance\SupervisionLog\Enums\SupervisionLogStatus;
 use App\Guidance\SupervisionLog\Enums\SupervisionType;

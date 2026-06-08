@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Journals\IndustryAssessment\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Journals\IndustryAssessment\Models\IndustryAssessment;
 use App\User\Models\User;
 

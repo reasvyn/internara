@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Livewire;
 
-use App\Enrollment\Models\AccountApplication;
+use App\Enrollment\AccountApplication\Models\AccountApplication;
 use App\Program\Actions\ApproveAccountApplicationAction;
 use App\Program\Actions\RejectAccountApplicationAction;
 use Illuminate\Database\Eloquent\Collection;
