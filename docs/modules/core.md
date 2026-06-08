@@ -1,6 +1,6 @@
 # Core
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-08 (refactored: removed duplicate Integrity class, synchronised docs with actual implementation)
 
 Foundational infrastructure, abstract base classes, contracts, cross-module utilities, concrete implementations, and architectural mechanisms that every other module depends on.
 
@@ -38,8 +38,8 @@ Core has no submodules. Code is organized by architectural layer:
 - **Support/SmartLogger.php** — Fluent dual-channel logger writing to system (debug) and activity (immutable audit) channels with automatic PII masking.
 - **Support/LangChecker.php** — Dev helper that warns on missing translation keys.
 - **Support/AppInfo.php** — Static application metadata from `composer.json` with config fallback (name, version, author, license, gitUrl).
-- **Support/AppIntegrity.php** — Composer author verification, enforcing that the author name must be "Reas Vyn".
-- **Support/** — Concrete utilities: `Color` (hex manipulation), `CsvHandler` (CSV parsing/generation), `Environment` (system environment detection), `HandlesActionErrors` (generic try-catch-log-rethrow), `HasModelStatuses` (status enum integration), `PasswordRules` (password policy presets), `PiiMasker` (PII redaction).
+- **Support/AppIntegrity.php** — Composer author verification, enforcing that the author name must be "Reas Vyn". A duplicate `Integrity` class was removed during refactoring (v1.0).
+- **Support/** — Concrete utilities: `Color` (hex manipulation), `CsvHandler` (CSV parsing/generation with safe file handle management), `Environment` (system environment detection), `HandlesActionErrors` (generic try-catch-log-rethrow), `HasModelStatuses` (status enum integration — scheduled for removal in v2.0), `PasswordRules` (password policy presets), `PiiMasker` (PII redaction).
 - **helpers.php** — Global helper function: `app_info()` for static metadata access.
 
 The helpers `setting()` and `brand()` are defined in the Settings module at `app/Settings/Support/helpers.php`.

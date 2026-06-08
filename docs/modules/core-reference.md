@@ -1,6 +1,6 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-08 (refactored: removed duplicate Integrity class, updated test count)
 
 Detailed structural and implementation reference for the **Core** module, including both abstract infrastructure and concrete shared components.
 
@@ -18,7 +18,7 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 - **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
 - **Concrete Exceptions**: 6 (`ConflictException`, `NotFoundException`, `RateLimitException`, `RejectedException`, `UnauthorizedException`, `ValidationFailedException`)
 - **Middleware**: 2 (`SecurityHeaders`, `LogContext`)
-- **Support Classes**: 11 (`SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `HasModelStatuses`, `PasswordRules`, `PiiMasker`)
+- **Support Classes**: 10 (`SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `HasModelStatuses`, `PasswordRules`, `PiiMasker`)
 - **Models**: 2 (`ActivityLog` — `BaseModel` is abstract)
 - **Events**: 1 (`BaseEvent`, abstract)
 - **Livewire Components**: 1 (`BaseRecordManager`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
@@ -28,7 +28,7 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 - **Console Commands**: 1 (`module:discover`)
 - **Global Helpers**: 1 (`app_info()` in `helpers.php`)
 - **Config Files**: 1 (`config/cache-keys.php` — centralized cache key registry)
-- **Tests**: 55 (10 Feature + 45 Unit)
+- **Tests**: 56 (11 Feature + 45 Unit)
 - **Routes**: 0 (health check at `/up` in `bootstrap/app.php`)
 
 ---
@@ -145,7 +145,7 @@ ModuleException (abstract, extends RuntimeException)
 | `SmartLogger` | `Support/SmartLogger.php` | Dual-channel logger: system + activity, PII masking |
 | `LangChecker` | `Support/LangChecker.php` | Dev helper: warns on missing translation keys |
 | `AppInfo` | `Support/AppInfo.php` | Static metadata from composer.json + config |
-| `AppIntegrity` | `Support/AppIntegrity.php` | Author verification (Reas Vyn) |
+| `AppIntegrity` | `Support/AppIntegrity.php` | Author verification (Reas Vyn). Duplicate `Integrity` class removed in refactor. |
 | `Color` | `Support/Color.php` | Hex-to-RGB, HSL conversion, color manipulation |
 | `CsvHandler` | `Support/CsvHandler.php` | CSV parsing, heading validation, export generation |
 | `Environment` | `Support/Environment.php` | Environment detection (staging, production, dev) |
@@ -229,8 +229,8 @@ app/Core/
     ├── LangChecker.php
     ├── PasswordRules.php
     ├── PiiMasker.php
-    ├── helpers.php
-    └── SmartLogger.php
+    ├── SmartLogger.php
+    └── helpers.php
 ```
 
 ---

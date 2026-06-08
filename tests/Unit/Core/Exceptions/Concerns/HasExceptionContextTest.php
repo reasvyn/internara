@@ -132,3 +132,10 @@ test('getSanitizedContext returns empty array for no context', function () {
 
     expect($e->getSanitizedContext())->toBe([]);
 });
+
+test('to cli output handles binary data gracefully', function () {
+    $e = new ContextTestException('Error')->withContext(['binary' => "\x00\x01\x02"]);
+    $output = $e->toCliOutput();
+
+    expect($output)->toContain('binary:');
+});

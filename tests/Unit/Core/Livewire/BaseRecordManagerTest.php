@@ -357,3 +357,30 @@ test('apply search and apply filters return query unchanged when no filters set'
     expect($result1)->toBe($query);
     expect($result2)->toBe($query);
 });
+
+test('resets invalid perPage value to 10 during rows call', function () {
+    $this->manager->populateRecordCount(3);
+    $this->manager->perPage = 7;
+
+    $this->manager->rows();
+
+    expect($this->manager->perPage)->toBe(10);
+});
+
+test('with relations are applied when set', function () {
+    $this->manager->populateRecordCount(3);
+    $this->manager->setWith(['relationOne', 'relationTwo']);
+
+    $result = $this->manager->rows();
+
+    expect($result->total())->toBe(3);
+});
+
+test('rows applies sorting', function () {
+    $this->manager->populateRecordCount(5);
+    $this->manager->sortBy = ['column' => 'name', 'direction' => 'desc'];
+
+    $result = $this->manager->rows();
+
+    expect($result->total())->toBe(5);
+});

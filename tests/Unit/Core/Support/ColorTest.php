@@ -110,4 +110,19 @@ describe('computeDarkShades', function () {
         expect($shades['base100'])->not->toBe('#ffffff');
         expect($shades['content'])->toBe('#e5e5e5');
     });
+
+    it('uses dark input as base when luminance is low', function () {
+        $shades = Color::computeDarkShades('#333333');
+
+        expect($shades['base100'])->toBe('#333333');
+        expect($shades['content'])->toBe('#e5e5e5');
+    });
+
+    it('produces darker shades for each level', function () {
+        $shades = Color::computeDarkShades('#888888');
+
+        expect($shades['base100'])->toBeString();
+        expect($shades['base200'])->toBeString();
+        expect($shades['base300'])->toBeString();
+    });
 });
