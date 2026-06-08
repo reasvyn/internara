@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\User\Notifications\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Support\CacheKeys;
 use App\User\Notifications\Models\Notification;
 use Illuminate\Support\Facades\Cache;
 
@@ -22,6 +21,6 @@ final class DeleteNotificationAction extends BaseAction
         $userId = $notification->user_id;
         $notification->delete();
 
-        Cache::forget(CacheKeys::NOTIFICATION_UNREAD.$userId);
+        Cache::forget(config('cache-keys.notification_unread').$userId);
     }
 }

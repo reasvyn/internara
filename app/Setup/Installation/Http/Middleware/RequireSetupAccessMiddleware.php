@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Setup\Installation\Http\Middleware;
 
-use App\Core\Support\CacheKeys;
 use App\Setup\Entities\SetupEntity;
 use Closure;
 use Illuminate\Http\Request;
@@ -39,7 +38,7 @@ class RequireSetupAccessMiddleware
 
     private function isInstalledCached(): bool
     {
-        return (bool) Cache::remember(CacheKeys::SETUP_INSTALLED, 3600, function () {
+        return (bool) Cache::remember(config('cache-keys.setup_installed'), 3600, function () {
             return SetupEntity::get()->isInstalled();
         });
     }

@@ -481,7 +481,7 @@ resources/views/livewire/
 | #  | Module            | Boundary                                                                       | Key Concept                                                                                              |
 | -- | ----------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
 | 1  | **Core**          | Base classes, infrastructure, and cross-module utilities                       | BaseModel, BaseAction, BaseEntity, contracts, SmartLogger, exception hierarchy, CSV handler              |
-| 2  | **Shared**        | Reusable utilities, concrete exceptions, DTOs, global enums, UI components     | CacheKeys, CsvHandler, concrete exceptions, LangSwitcher, ThemeSwitcher                                 |
+| 2  | **Shared**        | Reusable utilities, concrete exceptions, DTOs, global enums, UI components     | config('cache-keys'), CsvHandler, concrete exceptions, LangSwitcher, ThemeSwitcher                                 |
 | 3  | **Auth**          | Authentication, authorization, and access control                              | Login, password management, account activation, recovery, RBAC, super admin integrity                    |
 | 4  | **User**          | Identity, profiles, and personal dashboards                                    | Profile editing, avatar upload, role-based dashboards, notification center, activity feed                |
 | 5  | **SysAdmin**      | System administration and user management                                      | User CRUD, announcements, audit logs, Pulse monitoring, account clone detection, GDPR compliance        |
@@ -527,7 +527,7 @@ Every layer has exactly one base class from Core. There is no alternative.
 
 - `User` model is the sole exception — extends `Authenticatable` directly but applies `HasUuids` manually for UUID consistency.
 - Notifications extend `Illuminate\Notifications\Notification` directly (no shortcut provided).
-- Cache keys go into `CacheKeys` class as constants, not inline strings.
+- Cache keys go into `config('cache-keys')` class as constants, not inline strings.
 
 ---
 
@@ -589,7 +589,7 @@ Actions call form requests/Form Objects for input validation before executing bu
 
 ## Caching Strategy
 
-- **Centralized key registry**: Every cache key declared as a constant in `App\Support\CacheKeys`
+- **Centralized key registry**: Every cache key declared as a constant in `App\Support\config('cache-keys')`
 - **Naming**: `{module}.{purpose}[.{qualifier}]` — e.g. `setup.is_installed`, `theme.css_variables`
 - **Invalidation**: Command Action dispatches event → Listener → `Cache::forget(key)`
 - **TTL classes**: Short (<5min), Medium (5min-1h), Long (1h-24h), Forever

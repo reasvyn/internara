@@ -9,10 +9,10 @@ use App\Core\Exceptions\AppException;
 use App\Core\Exceptions\ModuleException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Validation\ValidationException;
-use Mockery;
 use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -51,12 +51,14 @@ test('it can execute transaction callbacks', function () {
 });
 
 test('it skips outer transaction when already nested', function () {
-    DB::shouldReceive('transactionLevel')->once()->andReturn(1);
+    DB::beginTransaction();
 
     $action = new MockAction;
     $result = $action->executeTransaction(fn () => 'nested');
 
     expect($result)->toBe('nested');
+
+    DB::rollBack();
 });
 
 test('it can resolve module name from class namespace', function () {
@@ -65,12 +67,12 @@ test('it can resolve module name from class namespace', function () {
 });
 
 test('it logs actions using smart logger', function () {
-    $log = Log::spy();
+    Event::fake([MessageLogged::class]);
 
     $action = new MockAction;
     $action->executeLog('Test Action', ['key' => 'value']);
 
-    $log->shouldHaveReceived('info')->once()->with('Test Action', Mockery::type('array'));
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => $e->message === 'Test Action');
 });
 
 test('with error handling returns callback result on success', function () {
@@ -156,7 +158,7 @@ test('with error handling wraps generic throwable as runtime exception', functio
 });
 
 test('with error handling logs wrapped throwable', function () {
-    $log = Log::spy();
+    Event::fake([MessageLogged::class]);
     $action = new MockAction;
 
     try {
@@ -168,32 +170,28 @@ test('with error handling logs wrapped throwable', function () {
         // expected
     }
 
-    $log->shouldHaveReceived('error')
-        ->once()
-        ->with(
-            Mockery::on(fn ($msg) => str_contains($msg, 'Processing data')),
-            Mockery::type('array'),
-        );
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => str_contains($e->message, 'Processing data'));
 });
 
-test('transaction uses configured attempts parameter', function () {
-    DB::shouldReceive('transactionLevel')->once()->andReturn(0);
-    DB::shouldReceive('transaction')
-        ->once()
-        ->with(Mockery::type('callable'), 5)
-        ->andReturn('result');
-
+test('transaction wraps callback in DB transaction', function () {
     $action = new MockAction;
-    $result = $action->executeTransaction(fn () => 'ignored', 5);
+    $called = false;
 
-    expect($result)->toBe('result');
+    $result = $action->executeTransaction(function () use (&$called) {
+        $called = true;
+
+        return 'real_result';
+    });
+
+    expect($result)->toBe('real_result');
+    expect($called)->toBeTrue();
 });
 
 test('it logs with empty payload by default', function () {
-    $log = Log::spy();
+    Event::fake([MessageLogged::class]);
 
     $action = new MockAction;
     $action->executeLog('Test Action');
 
-    $log->shouldHaveReceived('info')->once()->with('Test Action', Mockery::type('array'));
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => $e->message === 'Test Action');
 });

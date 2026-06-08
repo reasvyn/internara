@@ -26,7 +26,7 @@ Every architectural layer has exactly one base class from Core. There is no alte
 | Enum | Implements LabelEnum | label(): string method | implements check |
 | Status Enum | Implements StatusEnum + LabelEnum | canTransitionTo(), isTerminal() | implements check |
 | Exception | AppException or ModuleException | HasExceptionContext trait | extends check |
-| Cache key | CacheKeys constant | Centralized key registry | constant reference |
+| Cache key | config('cache-keys') constant | Centralized key registry | constant reference |
 
 ### Exception
 
@@ -55,5 +55,5 @@ Until architecture tests are restored (planned when `pest-plugin-arch` stabilize
 - `app/Core/Http/Requests/BaseFormRequest.php` — Base form request
 - `app/Core/Contracts/LabelEnum.php` — Enum contract
 - `app/Core/Contracts/StatusEnum.php` — Status enum contract
-- `app/Core/Support/CacheKeys.php` — Cache key registry
+- `app/Core/Support/config('cache-keys').php` — Cache key registry
 - `docs/architecture.md` — Base Class Mandate section

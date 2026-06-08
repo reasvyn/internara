@@ -116,7 +116,7 @@ Instrument Sans finishes loading.
 | Component | Path |
 |-----------|------|
 | `brand()` / `app_info()` helpers | `app/Support/helpers.php` |
-| AppMetadata resolver | `app/Settings/Support/AppMetadata.php` |
+| Brand resolver | `app/Settings/Support/Brand.php` |
 | Theme (color computation) | `app/Settings/Support/Theme.php` |
 | Color utility | `app/Settings/Support/Color.php` |
 | Admin branding form | `app/Settings/Livewire/SystemSetting.php` |

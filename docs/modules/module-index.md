@@ -30,7 +30,7 @@ support utilities, global helpers, policy concerns, Livewire concerns)
 - Overview: [core.md](core.md)
 - Reference: [core-reference.md](core-reference.md)
 
-**Key Concepts:** BaseModel, BaseAction, BasePolicy, BaseRecordManager, SmartLogger, CacheKeys,
+**Key Concepts:** BaseModel, BaseAction, BasePolicy, BaseRecordManager, SmartLogger, AppIntegrity,
 CsvHandler, concrete Exceptions, global enums
 
 ---

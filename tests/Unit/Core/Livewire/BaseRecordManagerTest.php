@@ -6,31 +6,70 @@ namespace Tests\Unit\Core\Livewire;
 
 use App\Core\Livewire\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
-use Mockery;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
-class MockRecordManager extends BaseRecordManager
+// ─── Test Model ───────────────────────────────────────────────────────────────────────────────
+
+class TestRecord extends Model
+{
+    public $table = 'test_records';
+
+    protected $guarded = [];
+
+    public $timestamps = false;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
+    protected static function booted(): void
+    {
+        static::creating(function (TestRecord $record) {
+            if (empty($record->{$record->getKeyName()})) {
+                $record->{$record->getKeyName()} = (string) Str::uuid();
+            }
+        });
+    }
+}
+
+// ─── Test Livewire Component ──────────────────────────────────────────────────────────────────
+
+class TestRecordManager extends BaseRecordManager
 {
     public bool $pageWasReset = false;
 
     public array $selectedIds = [];
 
-    private ?Builder $mockBuilder = null;
-
     public function headers(): array
     {
-        return ['ID'];
-    }
-
-    public function setMockBuilder(Builder $builder): void
-    {
-        $this->mockBuilder = $builder;
+        return ['ID', 'Name', 'Status'];
     }
 
     protected function query(): Builder
     {
-        return $this->mockBuilder ?? Mockery::mock(Builder::class);
+        return TestRecord::query();
+    }
+
+    protected function applySearch(Builder $query): Builder
+    {
+        if ($this->search) {
+            $query->where('name', 'like', "%{$this->search}%");
+        }
+
+        return $query;
+    }
+
+    protected function applyFilters(Builder $query): Builder
+    {
+        if (! empty($this->filters['status'])) {
+            $query->where('status', $this->filters['status']);
+        }
+
+        return $query;
     }
 
     public function resetPage($pageName = 'page'): void
@@ -75,11 +114,34 @@ class MockRecordManager extends BaseRecordManager
     {
         $this->with = $relations;
     }
+
+    public function populateRecordCount(int $count): void
+    {
+        TestRecord::truncate();
+        for ($i = 1; $i <= $count; $i++) {
+            TestRecord::create([
+                'name' => "Record {$i}",
+                'status' => $i <= $count / 2 ? 'active' : 'inactive',
+            ]);
+        }
+    }
 }
 
+// ─── Test Setup ───────────────────────────────────────────────────────────────────────────────
+
+uses(RefreshDatabase::class);
+
 beforeEach(function () {
-    $this->manager = new MockRecordManager;
+    Schema::create('test_records', function (Blueprint $table) {
+        $table->uuid('id')->primary();
+        $table->string('name');
+        $table->string('status')->default('active');
+    });
+
+    $this->manager = new TestRecordManager;
 });
+
+// ─── Pagination & Search Properties ──────────────────────────────────────────────────────────
 
 test('it resets pagination page when search is updated', function () {
     $this->manager->search = 'test';
@@ -116,67 +178,72 @@ test('it returns per page options', function () {
     expect($options)->toBe([10, 25, 50, 100]);
 });
 
+// ─── Rows / Pagination ───────────────────────────────────────────────────────────────────────
+
 test('it returns paginated rows from query', function () {
-    $paginator = Mockery::mock(LengthAwarePaginator::class);
-    $builder = Mockery::mock(Builder::class);
+    $this->manager->populateRecordCount(5);
 
-    $manager = Mockery::mock(MockRecordManager::class)->makePartial();
-    $manager->search = 'test';
-    $manager->shouldAllowMockingProtectedMethods();
-    $manager->shouldReceive('query')->once()->andReturn($builder);
-    $manager->shouldReceive('applySearch')->once()->with($builder)->andReturn($builder);
-    $manager->shouldReceive('applyFilters')->once()->with($builder)->andReturn($builder);
-    $manager->shouldReceive('applySorting')->once()->with($builder)->andReturn($builder);
+    $result = $this->manager->rows();
 
-    $builder->shouldReceive('paginate')->once()->with(10)->andReturn($paginator);
+    expect($result->total())->toBe(5);
+    expect($result->perPage())->toBe(10);
+    expect($result->items())->toHaveCount(5);
+});
 
-    $result = $manager->rows();
+test('it paginates correctly when records exceed per page', function () {
+    $this->manager->populateRecordCount(25);
 
-    expect($result)->toBe($paginator);
+    $result = $this->manager->rows();
+
+    expect($result->total())->toBe(25);
+    expect($result->perPage())->toBe(10);
+    expect($result->items())->toHaveCount(10);
 });
 
 test('it resets invalid per page to default', function () {
-    $paginator = Mockery::mock(LengthAwarePaginator::class);
-    $builder = Mockery::mock(Builder::class);
+    $this->manager->populateRecordCount(5);
+    $this->manager->perPage = 7;
 
-    $manager = Mockery::mock(MockRecordManager::class)->makePartial();
-    $manager->perPage = 7;
-    $manager->search = 'test';
-    $manager->shouldAllowMockingProtectedMethods();
-    $manager->shouldReceive('query')->once()->andReturn($builder);
-    $manager->shouldReceive('applySearch')->once()->with($builder)->andReturn($builder);
-    $manager->shouldReceive('applyFilters')->once()->with($builder)->andReturn($builder);
-    $manager->shouldReceive('applySorting')->once()->with($builder)->andReturn($builder);
+    $this->manager->rows();
 
-    $builder->shouldReceive('paginate')->once()->with(10)->andReturn($paginator);
-
-    $manager->rows();
-
-    expect($manager->perPage)->toBe(10);
+    expect($this->manager->perPage)->toBe(10);
 });
 
-test('it loads eager relations in rows when with is set', function () {
-    $paginator = Mockery::mock(LengthAwarePaginator::class);
-    $builder = Mockery::mock(Builder::class);
+test('it applies search filter when search is set', function () {
+    $this->manager->populateRecordCount(10);
+    TestRecord::create(['name' => 'Special Item', 'status' => 'active']);
 
-    $manager = Mockery::mock(MockRecordManager::class)->makePartial();
-    $manager->setWith(['relation1', 'relation2']);
-    $manager->shouldAllowMockingProtectedMethods();
-    $manager->shouldReceive('query')->once()->andReturn($builder);
-    $manager->shouldReceive('applySearch')->never();
-    $manager->shouldReceive('applyFilters')->once()->with($builder)->andReturn($builder);
-    $manager->shouldReceive('applySorting')->once()->with($builder)->andReturn($builder);
+    $this->manager->search = 'Special';
+    $result = $this->manager->rows();
 
-    $builder
-        ->shouldReceive('with')
-        ->once()
-        ->with(['relation1', 'relation2'])
-        ->andReturnSelf();
-
-    $builder->shouldReceive('paginate')->once()->with(10)->andReturn($paginator);
-
-    $manager->rows();
+    expect($result->total())->toBe(1);
+    expect($result->items()[0]->name)->toBe('Special Item');
 });
+
+test('it applies status filter when filter is set', function () {
+    $this->manager->populateRecordCount(10);
+    TestRecord::create(['name' => 'Extra', 'status' => 'pending']);
+
+    $this->manager->filters = ['status' => 'pending'];
+    $result = $this->manager->rows();
+
+    expect($result->total())->toBe(1);
+});
+
+test('it applies both search and filters together', function () {
+    $this->manager->populateRecordCount(10);
+    TestRecord::create(['name' => 'Target', 'status' => 'active']);
+    TestRecord::create(['name' => 'Target', 'status' => 'inactive']);
+
+    $this->manager->search = 'Target';
+    $this->manager->filters = ['status' => 'active'];
+    $result = $this->manager->rows();
+
+    expect($result->total())->toBe(1);
+    expect($result->items()[0]->status)->toBe('active');
+});
+
+// ─── Bulk Actions ────────────────────────────────────────────────────────────────────────────
 
 test('perform bulk action warns when no records selected', function () {
     $this->manager->selectedIds = [];
@@ -187,24 +254,34 @@ test('perform bulk action warns when no records selected', function () {
 });
 
 test('perform bulk action executes callback for each selected id', function () {
-    $this->manager->selectedIds = [1, 2, 3];
+    $this->manager->populateRecordCount(3);
+    $ids = TestRecord::pluck('id')->toArray();
+    $this->manager->selectedIds = $ids;
     $processed = [];
-
-    DB::shouldReceive('transaction')
-        ->once()
-        ->with(Mockery::on(fn ($callback) => true))
-        ->andReturnUsing(fn ($callback) => $callback());
 
     $this->manager->callPerformBulkAction('delete', function ($id) use (&$processed) {
         $processed[] = $id;
     });
 
-    expect($processed)->toBe([1, 2, 3]);
+    expect($processed)->toBe($ids);
     expect($this->manager->selectedIds)->toBe([]);
 });
 
+test('perform bulk action wraps in DB transaction by default', function () {
+    $this->manager->populateRecordCount(2);
+    $this->manager->selectedIds = TestRecord::pluck('id')->toArray();
+    $processed = [];
+
+    $this->manager->callPerformBulkAction('delete', function ($id) use (&$processed) {
+        $processed[] = TestRecord::find($id)?->name;
+    });
+
+    expect($processed)->toHaveCount(2);
+});
+
 test('perform bulk action works without transaction', function () {
-    $this->manager->selectedIds = [1, 2];
+    $this->manager->populateRecordCount(2);
+    $this->manager->selectedIds = TestRecord::pluck('id')->toArray();
     $processed = [];
 
     $this->manager->callPerformBulkAction(
@@ -215,23 +292,25 @@ test('perform bulk action works without transaction', function () {
         false,
     );
 
-    expect($processed)->toBe([1, 2]);
+    expect($processed)->toHaveCount(2);
+    expect($this->manager->selectedIds)->toBe([]);
 });
 
+// ─── Mass Actions ────────────────────────────────────────────────────────────────────────────
+
 test('perform mass action warns when no records match', function () {
-    $builder = Mockery::mock(Builder::class);
-    $this->manager->setMockBuilder($builder);
+    $this->manager->populateRecordCount(0);
 
-    $builder->shouldReceive('count')->once()->andReturn(0);
+    $called = false;
+    $this->manager->callPerformMassAction('delete', function ($q) use (&$called) {
+        $called = true;
+    });
 
-    $this->manager->callPerformMassAction('delete', fn ($q) => null);
+    expect($called)->toBeFalse();
 });
 
 test('perform mass action executes callback on query', function () {
-    $builder = Mockery::mock(Builder::class);
-    $this->manager->setMockBuilder($builder);
-
-    $builder->shouldReceive('count')->once()->andReturn(5);
+    $this->manager->populateRecordCount(5);
 
     $called = false;
     $this->manager->callPerformMassAction('delete', function ($query) use (&$called) {
@@ -241,27 +320,40 @@ test('perform mass action executes callback on query', function () {
     expect($called)->toBeTrue();
 });
 
-test('perform mass action loads with relations on query', function () {
-    $builder = Mockery::mock(Builder::class);
-    $this->manager->setMockBuilder($builder);
-    $this->manager->setWith(['relation']);
+test('perform mass action passes query with correct count', function () {
+    $this->manager->populateRecordCount(3);
 
-    $builder
-        ->shouldReceive('with')
-        ->once()
-        ->with(['relation'])
-        ->andReturnSelf();
-    $builder->shouldReceive('count')->once()->andReturn(5);
+    $queryCount = null;
+    $this->manager->callPerformMassAction('delete', function ($query) use (&$queryCount) {
+        $queryCount = $query->count();
+    });
 
-    $this->manager->callPerformMassAction('delete', fn ($q) => null);
+    expect($queryCount)->toBe(3);
 });
 
-test('apply search and apply filters return query unchanged by default', function () {
-    $builder = Mockery::mock(Builder::class);
+test('perform mass action respects search filter', function () {
+    $this->manager->populateRecordCount(10);
+    TestRecord::create(['name' => 'Target One', 'status' => 'active']);
+    TestRecord::create(['name' => 'Target Two', 'status' => 'active']);
 
-    $result1 = $this->manager->callApplySearch($builder);
-    $result2 = $this->manager->callApplyFilters($builder);
+    $this->manager->search = 'Target';
 
-    expect($result1)->toBe($builder);
-    expect($result2)->toBe($builder);
+    $queryCount = null;
+    $this->manager->callPerformMassAction('delete', function ($query) use (&$queryCount) {
+        $queryCount = $query->count();
+    });
+
+    expect($queryCount)->toBe(2);
+});
+
+// ─── Apply Methods ───────────────────────────────────────────────────────────────────────────
+
+test('apply search and apply filters return query unchanged when no filters set', function () {
+    $query = TestRecord::query();
+
+    $result1 = $this->manager->callApplySearch($query);
+    $result2 = $this->manager->callApplyFilters($query);
+
+    expect($result1)->toBe($query);
+    expect($result2)->toBe($query);
 });

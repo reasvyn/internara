@@ -7,8 +7,28 @@ namespace Tests\Feature\Core\Channels;
 use App\Core\Channels\CustomDatabaseChannel;
 use App\Core\Contracts\SendsNotifications;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\Notification;
-use Mockery;
+
+// ─── Test Doubles ────────────────────────────────────────────────────────────────────────────
+
+class RecordingNotificationSender implements SendsNotifications
+{
+    public array $calls = [];
+
+    public function execute(
+        string $userId,
+        string $type,
+        string $title,
+        ?string $message = null,
+        ?array $data = null,
+        ?string $link = null,
+    ): mixed {
+        $this->calls[] = compact('userId', 'type', 'title', 'message', 'data', 'link');
+
+        return null;
+    }
+}
 
 class MockNotification extends Notification
 {
@@ -36,108 +56,92 @@ class MockNotificationMissingKeys extends Notification
     }
 }
 
+// ─── Tests ───────────────────────────────────────────────────────────────────────────────────
+
+uses(RefreshDatabase::class);
+
 test('it sends notifications via custom database channel', function () {
-    $senderMock = Mockery::mock(SendsNotifications::class);
-    $senderMock
-        ->shouldReceive('execute')
-        ->once()
-        ->with(
-            '123',
-            'test_notif',
-            'Test Notification',
-            'Notification content',
-            ['foo' => 'bar'],
-            '/test-link',
-        );
-
-    $notifiable = Mockery::mock(User::class);
-    $notifiable->shouldReceive('getKey')->andReturn('123');
-
-    $channel = new CustomDatabaseChannel($senderMock);
+    $sender = new RecordingNotificationSender;
+    $user = User::factory()->create();
+    $channel = new CustomDatabaseChannel($sender);
     $notification = new MockNotification;
 
-    $channel->send($notifiable, $notification);
-    expect(true)->toBeTrue();
+    $channel->send($user, $notification);
+
+    expect($sender->calls)->toHaveCount(1);
+    expect($sender->calls[0])->toMatchArray([
+        'userId' => $user->id,
+        'type' => 'test_notif',
+        'title' => 'Test Notification',
+        'message' => 'Notification content',
+        'data' => ['foo' => 'bar'],
+        'link' => '/test-link',
+    ]);
 });
 
 test('it skips notification without to custom database method', function () {
-    $senderMock = Mockery::mock(SendsNotifications::class);
-    $senderMock->shouldNotReceive('execute');
-
-    $notifiable = Mockery::mock(User::class);
-    $notifiable->shouldReceive('getKey')->andReturn('123');
-
-    $channel = new CustomDatabaseChannel($senderMock);
+    $sender = new RecordingNotificationSender;
+    $user = User::factory()->create();
+    $channel = new CustomDatabaseChannel($sender);
     $notification = new MockNotificationNoToCustomDb;
 
-    $channel->send($notifiable, $notification);
-    expect(true)->toBeTrue();
+    $channel->send($user, $notification);
+
+    expect($sender->calls)->toBeEmpty();
 });
 
 test('it skips notification when notifiable has no id', function () {
-    $senderMock = Mockery::mock(SendsNotifications::class);
-    $senderMock->shouldNotReceive('execute');
-
-    $notifiable = Mockery::mock(User::class);
-    $notifiable->shouldReceive('getKey')->andReturn(null);
-
-    $channel = new CustomDatabaseChannel($senderMock);
+    $sender = new RecordingNotificationSender;
+    $user = User::factory()->make();
+    $user->setAttribute('id', null);
+    $channel = new CustomDatabaseChannel($sender);
     $notification = new MockNotification;
 
-    $channel->send($notifiable, $notification);
-    expect(true)->toBeTrue();
+    $channel->send($user, $notification);
+
+    expect($sender->calls)->toBeEmpty();
 });
 
 test('it skips notification when notifiable id is empty string', function () {
-    $senderMock = Mockery::mock(SendsNotifications::class);
-    $senderMock->shouldNotReceive('execute');
-
-    $notifiable = Mockery::mock(User::class);
-    $notifiable->shouldReceive('getKey')->andReturn('');
-
-    $channel = new CustomDatabaseChannel($senderMock);
+    $sender = new RecordingNotificationSender;
+    $user = User::factory()->make();
+    $user->setAttribute('id', '');
+    $channel = new CustomDatabaseChannel($sender);
     $notification = new MockNotification;
 
-    $channel->send($notifiable, $notification);
-    expect(true)->toBeTrue();
+    $channel->send($user, $notification);
+
+    expect($sender->calls)->toBeEmpty();
 });
 
 test('it uses defaults for missing type and title keys', function () {
-    $senderMock = Mockery::mock(SendsNotifications::class);
-    $senderMock
-        ->shouldReceive('execute')
-        ->once()
-        ->with('123', 'general', 'Notification', 'No type or title', null, null);
-
-    $notifiable = Mockery::mock(User::class);
-    $notifiable->shouldReceive('getKey')->andReturn('123');
-
-    $channel = new CustomDatabaseChannel($senderMock);
+    $sender = new RecordingNotificationSender;
+    $user = User::factory()->create();
+    $channel = new CustomDatabaseChannel($sender);
     $notification = new MockNotificationMissingKeys;
 
-    $channel->send($notifiable, $notification);
-    expect(true)->toBeTrue();
+    $channel->send($user, $notification);
+
+    expect($sender->calls)->toHaveCount(1);
+    expect($sender->calls[0])->toMatchArray([
+        'userId' => $user->id,
+        'type' => 'general',
+        'title' => 'Notification',
+        'message' => 'No type or title',
+        'data' => null,
+        'link' => null,
+    ]);
 });
 
 test('it sends to plain object notifiable with id property', function () {
-    $senderMock = Mockery::mock(SendsNotifications::class);
-    $senderMock
-        ->shouldReceive('execute')
-        ->once()
-        ->with(
-            '42',
-            'test_notif',
-            'Test Notification',
-            'Notification content',
-            ['foo' => 'bar'],
-            '/test-link',
-        );
-
+    $sender = new RecordingNotificationSender;
+    $channel = new CustomDatabaseChannel($sender);
+    $notification = new MockNotification;
     $notifiable = (object) ['id' => '42'];
 
-    $channel = new CustomDatabaseChannel($senderMock);
-    $notification = new MockNotification;
-
     $channel->send($notifiable, $notification);
-    expect(true)->toBeTrue();
+
+    expect($sender->calls)->toHaveCount(1);
+    expect($sender->calls[0]['userId'])->toBe('42');
+    expect($sender->calls[0]['type'])->toBe('test_notif');
 });

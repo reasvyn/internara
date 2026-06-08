@@ -9,9 +9,8 @@ use App\Core\Models\ActivityLog;
 use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Log;
-use Mockery;
 
 class TestUserCreatedEvent extends BaseEvent
 {
@@ -26,15 +25,11 @@ class TestUserCreatedEvent extends BaseEvent
 uses(RefreshDatabase::class);
 
 test('smart logger can write system log', function () {
-    $log = Log::spy();
+    Event::fake([MessageLogged::class]);
 
     SmartLogger::info('Hello System')->module('TestModule')->systemOnly()->save();
 
-    $log->shouldHaveReceived('info')->once()->with(
-        'Hello System',
-        Mockery::on(function ($context) {
-            return ($context['module'] ?? '') === 'TestModule';
-        }),
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => $e->message === 'Hello System' && ($e->context['module'] ?? '') === 'TestModule'
     );
 });
 
@@ -54,58 +49,55 @@ test('smart logger can write database activity log', function () {
 });
 
 test('smart logger warning face logs at warning level', function () {
-    $log = Log::spy();
+    Event::fake([MessageLogged::class]);
 
     SmartLogger::warning('Warning message')->systemOnly()->save();
 
-    $log->shouldHaveReceived('warning')->once()->with('Warning message', Mockery::type('array'));
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => $e->message === 'Warning message');
 });
 
 test('smart logger error face logs at error level', function () {
-    $log = Log::spy();
+    Event::fake([MessageLogged::class]);
 
     SmartLogger::error('Error message')->systemOnly()->save();
 
-    $log->shouldHaveReceived('error')->once()->with('Error message', Mockery::type('array'));
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => $e->message === 'Error message');
 });
 
 test('smart logger for method adds causer context to system log', function () {
     $user = User::factory()->create();
-    $log = Log::spy();
+    Event::fake([MessageLogged::class]);
 
     SmartLogger::info('User action')->for($user)->systemOnly()->save();
 
-    $log->shouldHaveReceived('info')
-        ->once()
-        ->with('User action', Mockery::on(fn ($c) => ($c['user_id'] ?? null) === $user->getKey()));
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => $e->message === 'User action' && ($e->context['user_id'] ?? null) === $user->getKey()
+    );
 });
 
 test('smart logger with payload adds payload to context', function () {
-    $log = Log::spy();
+    Event::fake([MessageLogged::class]);
 
     SmartLogger::info('With payload')
         ->withPayload(['key' => 'value'])
         ->systemOnly()
         ->save();
 
-    $log->shouldHaveReceived('info')
-        ->once()
-        ->with('With payload', Mockery::on(fn ($c) => ($c['payload'] ?? []) === ['key' => 'value']));
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => ($e->context['payload'] ?? []) === ['key' => 'value']
+    );
 });
 
 test('smart logger channel adds channel to context', function () {
-    $log = Log::spy();
+    Event::fake([MessageLogged::class]);
 
     SmartLogger::info('Channeled')->channel('slack')->systemOnly()->save();
 
-    $log->shouldHaveReceived('info')
-        ->once()
-        ->with('Channeled', Mockery::on(fn ($c) => ($c['channel'] ?? '') === 'slack'));
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => ($e->context['channel'] ?? '') === 'slack'
+    );
 });
 
 test('smart logger both writes to system and activity logs', function () {
     $user = User::factory()->create();
-    $log = Log::spy();
+    Event::fake([MessageLogged::class]);
 
     SmartLogger::info('Both channels')
         ->for($user)
@@ -114,7 +106,7 @@ test('smart logger both writes to system and activity logs', function () {
         ->both()
         ->save();
 
-    $log->shouldHaveReceived('info')->once();
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => $e->message === 'Both channels');
 
     $activityLog = ActivityLog::latest()->first();
     expect($activityLog)->not->toBeNull();
@@ -123,7 +115,7 @@ test('smart logger both writes to system and activity logs', function () {
 });
 
 test('smart logger with pii masking masks sensitive payload', function () {
-    $log = Log::spy();
+    Event::fake([MessageLogged::class]);
 
     SmartLogger::info('Masked action')
         ->withPayload([
@@ -136,14 +128,10 @@ test('smart logger with pii masking masks sensitive payload', function () {
         ->systemOnly()
         ->save();
 
-    $log->shouldHaveReceived('info')->once()->with(
-        'Masked action',
-        Mockery::on(function ($context) {
-            return ($context['payload']['password'] ?? '') === '***' &&
-                ($context['payload']['email'] ?? '') === 'jo***@example.com' &&
-                ($context['payload']['name'] ?? '') === 'J. Doe' &&
-                ($context['payload']['safe_key'] ?? '') === 'visible';
-        }),
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => ($e->context['payload']['password'] ?? '') === '***' &&
+        ($e->context['payload']['email'] ?? '') === 'jo***@example.com' &&
+        ($e->context['payload']['name'] ?? '') === 'J. Doe' &&
+        ($e->context['payload']['safe_key'] ?? '') === 'visible'
     );
 });
 
@@ -180,14 +168,12 @@ test('smart logger for method sets causer in activity log', function () {
 });
 
 test('smart logger adds event description translation when available', function () {
-    Log::shouldReceive('info')->once()->with(
-        'Login action',
-        Mockery::on(function ($context) {
-            return isset($context['event_description']);
-        }),
-    );
+    Event::fake([MessageLogged::class]);
 
     SmartLogger::info('Login action')->event('login_success')->systemOnly()->save();
+
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => isset($e->context['event_description'])
+    );
 });
 
 test('smart logger dispatches base event and writes activity log', function () {
@@ -223,7 +209,7 @@ test('smart logger default mode with causer writes activity log', function () {
 });
 
 test('smart logger with base event and explicit payload merges correctly', function () {
-    $logSpy = Log::spy();
+    Event::fake([MessageLogged::class]);
 
     $event = new TestUserCreatedEvent('uuid-123', 'test@example.com');
 
@@ -233,12 +219,8 @@ test('smart logger with base event and explicit payload merges correctly', funct
         ->systemOnly()
         ->save();
 
-    $logSpy->shouldHaveReceived('info')->once()->with(
-        'User created',
-        Mockery::on(function ($context) {
-            return ($context['payload']['userId'] ?? '') === 'uuid-123' &&
-                ($context['payload']['email'] ?? '') === 'test@example.com' &&
-                ($context['payload']['source'] ?? '') === 'admin';
-        }),
+    Event::assertDispatched(MessageLogged::class, fn (MessageLogged $e) => ($e->context['payload']['userId'] ?? '') === 'uuid-123' &&
+        ($e->context['payload']['email'] ?? '') === 'test@example.com' &&
+        ($e->context['payload']['source'] ?? '') === 'admin'
     );
 });

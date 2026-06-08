@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Support\Integrity;
+use App\Core\Support\AppIntegrity;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 
@@ -17,7 +17,7 @@ if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php'))
 require __DIR__.'/../vendor/autoload.php';
 
 // System Integrity Check
-Integrity::verify();
+AppIntegrity::verify();
 
 // Bootstrap Laravel and handle the request...
 /** @var Application $app */

@@ -1,6 +1,6 @@
 # Cache
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-08
 
 ## Purpose
 
@@ -39,6 +39,7 @@ REDIS_PORT=6379
 | -------------------- | ------------------------------ | -------- | ------------- | ------------------------------ |
 | Settings             | `settings.{key}`               | forever  | Primary cache | Explicit on write              |
 | Brand colors         | `theme.css_variables`          | forever  | Primary cache | Explicit on color change       |
+| Brand values         | `brand.colors`                 | 24 hours | Primary cache | Explicit on brand key change   |
 | Permissions          | Spatie internal                | 24 hours | Primary cache | Auto on role/permission change |
 | Dashboard stats      | `admin.dashboard.stats`        | 5 min    | Primary cache | Periodic refresh               |
 | Unread notifications | `notification.unread:{userId}` | 5 min    | Primary cache | On read / new notification     |
@@ -102,7 +103,7 @@ class InvalidateDashboardCache
 {
     public function handle(InternshipCreated $event): void
     {
-        Cache::forget(CacheKeys::ADMIN_DASHBOARD_STATS);
+        Cache::forget(config('cache-keys.admin_dashboard_stats'));
     }
 }
 ```
@@ -110,7 +111,7 @@ class InvalidateDashboardCache
 ### Direct Invalidation (Inline, for simple cases)
 
 ```php
-Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
+Cache::forget(config('cache-keys.theme_css_variables'));
 ```
 
 ---
@@ -119,23 +120,17 @@ Cache::forget(CacheKeys::THEME_CSS_VARIABLES);
 
 ### Centralized Registry
 
-Every cache key MUST be declared as a constant in `App\Support\CacheKeys`. This prevents collisions, makes dependencies discoverable, and enables systematic flushing.
+Every cache key MUST be declared in `config/cache-keys.php`. This prevents collisions, makes dependencies discoverable, and enables systematic flushing.
 
 ```php
-final readonly class CacheKeys
-{
-    /** TTL: forever. Invalidation: SetupFinalized event */
-    public const string SETUP_INSTALLED = 'setup.is_installed';
-
-    /** TTL: 5 min. Invalidation: manual flush */
-    public const string ADMIN_DASHBOARD_STATS = 'admin.dashboard.stats';
-
-    /** TTL: forever. Invalidation: Settings update */
-    public const string THEME_CSS_VARIABLES = 'theme.css_variables';
-
-    /** Key pattern: notification.unread:{userId} */
-    public const string NOTIFICATION_UNREAD = 'notification.unread:';
-}
+// config/cache-keys.php
+return [
+    'setup_installed' => 'setup.is_installed',
+    'admin_dashboard_stats' => 'admin.dashboard.stats',
+    'theme_css_variables' => 'theme.css_variables',
+    'brand_colors' => 'brand.colors',
+    'notification_unread' => 'notification.unread:',
+];
 ```
 
 ### Naming Convention
@@ -249,8 +244,10 @@ This pre-warms settings, brand values, compiles config/views/events, and prepare
 
 - `config/cache.php` — cache store definitions, per-store configuration
 - `config/database.php` — Redis connection settings under the `redis` key
-- `app/Support/CacheKeys.php` — centralized cache key registry
+- `config/cache-keys.php` — centralized cache key registry
+- `config/settings.php` — theme cache invalidation keys
 - `app/Settings/Support/Settings.php` — settings caching layer
+- `app/Settings/Support/Brand.php` — brand value caching with auto-invalidation
 - `app/SysAdmin/Observability/Console/Commands/SystemCacheWarmCommand.php` — cache warming
 - `database/migrations/` — cache and cache_locks table migrations
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design

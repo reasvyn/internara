@@ -6,7 +6,6 @@ namespace App\User\Notifications\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
-use App\Core\Support\CacheKeys;
 use App\User\Models\User;
 use App\User\Notifications\Models\Notification;
 use Illuminate\Support\Facades\Cache;
@@ -53,7 +52,7 @@ final class SendNotificationAction extends BaseAction implements SendsNotificati
             'is_read' => false,
         ]);
 
-        Cache::forget(CacheKeys::NOTIFICATION_UNREAD.$user->id);
+        Cache::forget(config('cache-keys.notification_unread').$user->id);
 
         return $notification;
     }

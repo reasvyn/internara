@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Observability\Console\Commands;
 
-use App\Core\Support\CacheKeys;
 use App\Core\Support\SmartLogger;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
@@ -305,8 +304,8 @@ class SystemHealthCommand extends Command
     protected function checkCache(): array
     {
         try {
-            Cache::store()->put(CacheKeys::HEALTH_CHECK, true, 10);
-            $val = Cache::store()->get(CacheKeys::HEALTH_CHECK);
+            Cache::store()->put(config('cache-keys.health_check'), true, 10);
+            $val = Cache::store()->get(config('cache-keys.health_check'));
 
             return [$val ? 'OK' : 'FAIL', 'Cache driver responding'];
         } catch (\Throwable $e) {

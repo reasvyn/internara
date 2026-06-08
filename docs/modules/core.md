@@ -37,8 +37,12 @@ Core has no submodules. Code is organized by architectural layer:
 - **Enums/** — System-wide enums: `CsvRowResult` (row import status), `AuditCategory` (health categories), `AuditStatus` (pass/fail/warn). All implement `LabelEnum`.
 - **Support/SmartLogger.php** — Fluent dual-channel logger writing to system (debug) and activity (immutable audit) channels with automatic PII masking.
 - **Support/LangChecker.php** — Dev helper that warns on missing translation keys.
-- **Support/** — Concrete utilities: `CacheKeys` (centralized cache key registry), `Color` (hex manipulation), `CsvHandler` (CSV parsing/generation), `Environment` (system environment detection), `HandlesActionErrors` (generic try-catch-log-rethrow), `HasModelStatuses` (status enum integration), `Integrity` (composer/security assessment), `PasswordRules` (password policy presets), `PiiMasker` (PII redaction).
-- **helpers.php** — Global helper functions: `setting()`, `brand()`, `app_info()`.
+- **Support/AppInfo.php** — Static application metadata from `composer.json` with config fallback (name, version, author, license, gitUrl).
+- **Support/AppIntegrity.php** — Composer author verification, enforcing that the author name must be "Reas Vyn".
+- **Support/** — Concrete utilities: `Color` (hex manipulation), `CsvHandler` (CSV parsing/generation), `Environment` (system environment detection), `HandlesActionErrors` (generic try-catch-log-rethrow), `HasModelStatuses` (status enum integration), `PasswordRules` (password policy presets), `PiiMasker` (PII redaction).
+- **helpers.php** — Global helper function: `app_info()` for static metadata access.
+
+The helpers `setting()` and `brand()` are defined in the Settings module at `app/Settings/Support/helpers.php`.
 
 ## Key Concepts
 
@@ -60,11 +64,14 @@ All business logic follows the Triad pattern:
 
 ### Centralized Cache Registry
 
-`CacheKeys` is the single source of truth for all cache key strings. Every module must register its cache keys here rather than hardcoding them. This prevents key collisions and enables centralized cache management.
+Cache keys are defined in `config/cache-keys.php` — the single source of truth for all cache key strings. Every module must register its cache keys here rather than hardcoding them. This prevents key collisions and enables centralized cache management.
 
 ### Global Helpers
 
-The three helper functions (`setting()`, `brand()`, `app_info()`) are the primary way any code — Blade templates, Livewire components, Actions — accesses runtime configuration. They resolve through the Settings fallback chain (override → cache → config → default).
+The three helper functions are split across two files:
+- `app_info()` in `app/Core/Support/helpers.php` — static metadata from config/composer.json
+- `setting()` in `app/Settings/Support/helpers.php` — runtime key-value settings
+- `brand()` in `app/Settings/Support/helpers.php` — dynamic branding values from database with config fallback
 
 ### Cross-Module Communication
 
@@ -76,7 +83,7 @@ Four patterns, in order of preference:
 
 ### Dynamic Discovery
 
-The `module:discover` command scans all business modules and registers policies, Livewire components, route directories, and cache keys dynamically. Results are cached in `CacheKeys` for boot performance.
+The `module:discover` command scans all business modules and registers policies, Livewire components, route directories, and cache keys dynamically. Results are cached in `config('cache-keys.module_*')` for boot performance.
 
 ## Dependencies
 
