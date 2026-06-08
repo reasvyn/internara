@@ -23,26 +23,15 @@ Each module has two files:
 
 ### 1. Core — Foundation & Infrastructure
 
-**Purpose:** Foundational base classes, interfaces, abstract exception structures, and request-level
-middleware
+**Purpose:** Foundational base classes, interfaces, contracts, abstract exception structures,
+request-level middleware, plus cross-cutting concrete implementations (DTOs, enums, exceptions,
+support utilities, global helpers, policy concerns, Livewire concerns)
 
 - Overview: [core.md](core.md)
 - Reference: [core-reference.md](core-reference.md)
 
-**Key Concepts:** BaseModel, BaseAction, BasePolicy, BaseRecordManager, SmartLogger
-
----
-
-### 1b. Shared — Cross-Cutting Components
-
-**Purpose:** Reusable helper utilities, concrete exceptions, common DTOs, enums, global UI
-components, and helper traits
-
-- Overview: [shared.md](shared.md)
-- Reference: [shared-reference.md](shared-reference.md)
-
-**Key Concepts:** CacheKeys, CsvHandler, concrete Exceptions, global enums, LangSwitcher,
-ThemeSwitcher
+**Key Concepts:** BaseModel, BaseAction, BasePolicy, BaseRecordManager, SmartLogger, CacheKeys,
+CsvHandler, concrete Exceptions, global enums
 
 ---
 
@@ -86,7 +75,7 @@ integrity
 
 ---
 
-### 4b. Setup — Installation & Provisioning
+### 5. Setup — Installation & Provisioning
 
 **Purpose:** One-time technical installation, environment check, database provisioning, and setup
 token lifecycle management
@@ -102,7 +91,7 @@ token lifecycle management
 
 ---
 
-### 4c. Settings — System Configuration & Branding
+### 6. Settings — System Configuration & Branding
 
 **Purpose:** System-wide configuration management — brand identity, color schemes, localization,
 mail services, and global feature toggles
@@ -120,7 +109,7 @@ mail services, and global feature toggles
 
 ## Academic Modules
 
-### 5. Academics — Educational Structure
+### 7. Academics — Educational Structure
 
 **Purpose:** Departments and academic calendar management
 
@@ -135,7 +124,7 @@ mail services, and global feature toggles
 
 ---
 
-### 6. Program — Internship Programs
+### 8. Program — Internship Programs
 
 **Purpose:** Internship/practicum programs, timelines, and cohort student groupings (groups)
 
@@ -150,7 +139,7 @@ mail services, and global feature toggles
 
 ---
 
-### 7. Enrollment — Student Placement
+### 9. Enrollment — Student Placement
 
 **Purpose:** Student registration, placement slot assignment, and change requests
 
@@ -167,7 +156,7 @@ mail services, and global feature toggles
 
 ## Evaluation & Assessment Modules
 
-### 8. Assessment — Evaluation Framework
+### 10. Assessment — Evaluation Framework
 
 **Purpose:** Rubrics, assessments, and scoring frameworks
 
@@ -182,7 +171,7 @@ mail services, and global feature toggles
 
 ---
 
-### 9. Evaluation — Performance Feedback
+### 11. Evaluation — Performance Feedback
 
 **Purpose:** Supervisor and teacher evaluations of students
 
@@ -197,7 +186,7 @@ mail services, and global feature toggles
 
 ---
 
-### 10. Assignment — Course Work
+### 12. Assignment — Course Work
 
 **Purpose:** Assignment management and submission tracking
 
@@ -212,7 +201,7 @@ mail services, and global feature toggles
 
 ## Tracking & Activity Modules
 
-### 11. Journals — Student Activity Tracking
+### 13. Journals — Student Activity Tracking
 
 **Purpose:** Logbooks, attendance, schedules, and industry assessments
 
@@ -227,7 +216,7 @@ mail services, and global feature toggles
 
 ---
 
-### 12. Guidance — Mentoring & Supervision
+### 14. Guidance — Mentoring & Supervision
 
 **Purpose:** Mentor relationships coordination and private field supervision logs
 
@@ -240,7 +229,7 @@ mail services, and global feature toggles
 
 ---
 
-### 13. Incident — Issue Tracking
+### 15. Incident — Issue Tracking
 
 **Purpose:** Incident reports and workplace concern documentation
 
@@ -255,7 +244,7 @@ mail services, and global feature toggles
 
 ## Supporting Modules
 
-### 14. Partners — Industrial Partners
+### 16. Partners — Industrial Partners
 
 **Purpose:** Company management and partnership agreements
 
@@ -270,7 +259,7 @@ mail services, and global feature toggles
 
 ---
 
-### 15. Certification — Credentials
+### 17. Certification — Credentials
 
 **Purpose:** Certificate generation and credential management
 
@@ -283,7 +272,7 @@ mail services, and global feature toggles
 
 ---
 
-### 16. Reports — Student Final Grade Card
+### 18. Reports — Student Final Grade Card
 
 **Purpose:** Final student grade compilation, score aggregation, and coordinator sign-off
 
@@ -296,7 +285,7 @@ mail services, and global feature toggles
 
 ---
 
-### 17. Document — Templates & Handbooks
+### 19. Document — Templates & Handbooks
 
 **Purpose:** Official document templates, correspondence generation, policy
 handbooks, and compliance acknowledgements

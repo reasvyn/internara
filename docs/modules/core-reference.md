@@ -2,30 +2,32 @@
 
 > Last updated: 2026-06-08
 
-Detailed structural and implementation reference for the **Core** module.
+Detailed structural and implementation reference for the **Core** module, including both abstract infrastructure and concrete shared components.
 
 ---
 
 ## Overview
 
-Provides foundational infrastructure, base classes, contracts, exception hierarchy, middleware, and request lifecycle utilities that every other module depends on.
+Provides foundational infrastructure, base classes, contracts, exception hierarchy, middleware, request lifecycle utilities, and cross-module concrete implementations that every other module depends on.
 
 ### Module Statistics
 
 - **Contracts**: 5 (`LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`, `SettingsStore`)
 - **Base Classes**: 9 (`BaseModel`, `BaseAction`, `BaseEntity`, `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`)
-- **Exceptions**: 12 files (abstract hierarchy + concrete in Shared)
+- **Concrete DTOs**: 2 (`AuditCheck`, `AuditReport`)
+- **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
+- **Concrete Exceptions**: 6 (`ConflictException`, `NotFoundException`, `RateLimitException`, `RejectedException`, `UnauthorizedException`, `ValidationFailedException`)
 - **Middleware**: 2 (`SecurityHeaders`, `LogContext`)
-- **Support**: 12 classes (`SmartLogger`, `LangChecker`, `CacheKeys`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `HasModelStatuses`, `Integrity`, `PasswordRules`, `PiiMasker`, `helpers.php`)
+- **Support Classes**: 11 (`SmartLogger`, `LangChecker`, `CacheKeys`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `HasModelStatuses`, `Integrity`, `PasswordRules`, `PiiMasker`)
 - **Models**: 2 (`ActivityLog` — `BaseModel` is abstract)
 - **Events**: 1 (`BaseEvent`, abstract)
-- **Livewire Components**: 1 (`BaseRecordManager`)
-- **Policies**: 1 (`BasePolicy`) + 2 concern traits
-- **Data/DTOs**: 1 (`BaseData`) + 2 concrete in Shared
+- **Livewire Components**: 1 (`BaseRecordManager`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
+- **Policies**: 1 (`BasePolicy`) + 2 concern traits (`AuthorizesRoles`, `AuthorizesOwnership`)
+- **Data/DTOs**: 1 abstract (`BaseData`) + 2 concrete
 - **Channels**: 1 (`CustomDatabaseChannel`)
 - **Console Commands**: 1 (`module:discover`)
-- **Views**: 25 (7 layouts, 13 UI, 5 widgets)
-- **Tests**: 29 (6 Feature + 23 Unit)
+- **Global Helpers**: 1 (`helpers.php`: `setting()`, `brand()`, `app_info()`)
+- **Tests**: 52 (7 Feature + 45 Unit)
 - **Routes**: 0 (health check at `/up` in `bootstrap/app.php`)
 
 ---
@@ -62,9 +64,33 @@ Located in `app/Core/`:
 
 ---
 
+## Data & DTOs
+
+Located in `app/Core/Data/`:
+
+| Class | Extends | Purpose |
+| ----- | ------- | ------- |
+| `BaseData` | — | Abstract readonly DTO base |
+| `AuditCheck` | `BaseData` | Single health audit check (status, category, label, message) |
+| `AuditReport` | `BaseData` | Collection of `AuditCheck` entries with pass/fail aggregates |
+
+---
+
+## Enums
+
+Located in `app/Core/Enums/`. All implement `LabelEnum`:
+
+| Enum | Purpose |
+| ---- | ------- |
+| `CsvRowResult` | Row import status: SUCCESS, ERROR, SKIPPED |
+| `AuditCategory` | System health categories: DATABASE, SYSTEM, ENVIRONMENT, SECURITY, HEALTH |
+| `AuditStatus` | Audit check results: PASS, FAIL, WARN |
+
+---
+
 ## Exception Hierarchy
 
-Base hierarchy in `app/Core/Exceptions/`, concrete implementations in `app/Exceptions/` (Shared):
+Full hierarchy in `app/Core/Exceptions/`. All use `HasExceptionContext` trait (hint, context, CLI format):
 
 ```
 AppException (abstract, extends RuntimeException)
@@ -81,8 +107,6 @@ ModuleException (abstract, extends RuntimeException)
 └── RejectedException (400) — domain invariant violation
 ```
 
-All use `HasExceptionContext` trait (hint, context, CLI format).
-
 ---
 
 ## Middleware
@@ -94,15 +118,41 @@ All use `HasExceptionContext` trait (hint, context, CLI format).
 
 ---
 
+## Livewire Components & Concerns
+
+| Component / Trait | Path | Purpose |
+| ----------------- | ---- | ------- |
+| `BaseRecordManager` | `Livewire/BaseRecordManager.php` | Abstract CRUD table with search, sort, paginate, bulk actions |
+| `WithSorting` | `Livewire/Concerns/WithSorting.php` | Column sorting state management |
+| `WithRecordSelection` | `Livewire/Concerns/WithRecordSelection.php` | Checkbox row selection for bulk actions |
+
+---
+
+## Policy Concerns
+
+| Trait | Path | Purpose |
+| ----- | ---- | ------- |
+| `AuthorizesRoles` | `Policies/Concerns/AuthorizesRoles.php` | Quick role-based authorization by role string |
+| `AuthorizesOwnership` | `Policies/Concerns/AuthorizesOwnership.php` | Ownership check comparing primary/foreign keys |
+
+---
+
 ## Support Classes
 
 | Class | Path | Purpose |
 | ----- | ---- | ------- |
-| `SmartLogger` | `Core/Support/SmartLogger.php` | Dual-channel logger: system + activity, PII masking |
-| `LangChecker` | `Core/Support/LangChecker.php` | Dev helper: warns on missing translation keys |
-
-Cross-referenced from Shared (see [shared-reference.md](shared-reference.md)):
-`CacheKeys`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `HasModelStatuses`, `Integrity`, `PasswordRules`, `PiiMasker`, `helpers.php`
+| `SmartLogger` | `Support/SmartLogger.php` | Dual-channel logger: system + activity, PII masking |
+| `LangChecker` | `Support/LangChecker.php` | Dev helper: warns on missing translation keys |
+| `CacheKeys` | `Support/CacheKeys.php` | Central registry of all cache key constants |
+| `Color` | `Support/Color.php` | Hex-to-RGB, HSL conversion, color manipulation |
+| `CsvHandler` | `Support/CsvHandler.php` | CSV parsing, heading validation, export generation |
+| `Environment` | `Support/Environment.php` | Environment detection (staging, production, dev) |
+| `HandlesActionErrors` | `Support/HandlesActionErrors.php` | Generic try-catch-log-rethrow for actions |
+| `HasModelStatuses` | `Support/HasModelStatuses.php` | Historical status column utilities |
+| `Integrity` | `Support/Integrity.php` | Composer config and security assessment |
+| `PasswordRules` | `Support/PasswordRules.php` | Common password strength validation rules |
+| `PiiMasker` | `Support/PiiMasker.php` | Regex-based PII redaction (IDs, phone numbers) |
+| `helpers.php` | `Support/helpers.php` | `setting()`, `brand()`, `app_info()` helper functions |
 
 ---
 
@@ -123,36 +173,61 @@ app/Core/
 │   ├── SettingsStore.php
 │   └── StatusEnum.php
 ├── Data/
+│   ├── AuditCheck.php
+│   ├── AuditReport.php
 │   └── BaseData.php
 ├── Entities/
 │   └── BaseEntity.php
+├── Enums/
+│   ├── AuditCategory.php
+│   ├── AuditStatus.php
+│   └── CsvRowResult.php
 ├── Events/
 │   └── BaseEvent.php
 ├── Exceptions/
 │   ├── Concerns/HasExceptionContext.php
 │   ├── ActionException.php
 │   ├── AppException.php
+│   ├── ConflictException.php
 │   ├── InfrastructureException.php
 │   ├── ModuleException.php
-│   └── PresentationException.php
+│   ├── NotFoundException.php
+│   ├── PresentationException.php
+│   ├── RateLimitException.php
+│   ├── RejectedException.php
+│   ├── UnauthorizedException.php
+│   └── ValidationFailedException.php
 ├── Http/
 │   ├── Controllers/BaseController.php
 │   ├── Middleware/LogContext.php
 │   ├── Middleware/SecurityHeaders.php
 │   └── Requests/BaseFormRequest.php
 ├── Livewire/
+│   ├── Concerns/
+│   │   ├── WithRecordSelection.php
+│   │   └── WithSorting.php
 │   └── BaseRecordManager.php
 ├── Models/
 │   ├── ActivityLog.php
 │   └── BaseModel.php
 ├── Policies/
-│   ├── BasePolicy.php
-│   └── Concerns/
-│       ├── AuthorizesOwnership.php
-│       └── AuthorizesRoles.php
+│   ├── Concerns/
+│   │   ├── AuthorizesOwnership.php
+│   │   └── AuthorizesRoles.php
+│   └── BasePolicy.php
 └── Support/
-    ├── SmartLogger.php
-    └── LangChecker.php
+    ├── CacheKeys.php
+    ├── Color.php
+    ├── CsvHandler.php
+    ├── Environment.php
+    ├── HandlesActionErrors.php
+    ├── HasModelStatuses.php
+    ├── Integrity.php
+    ├── LangChecker.php
+    ├── PasswordRules.php
+    ├── PiiMasker.php
+    ├── helpers.php
+    └── SmartLogger.php
 ```
 
 ---
