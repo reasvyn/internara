@@ -1,6 +1,7 @@
 # Action-based MVC Architecture
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — fix policy count (30+→30) in Layer 8
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad pattern, data flow, cross-module communication, exception handling, validation, caching, testing strategy, and invariant rules. Every decision here serves three goals:
 >
@@ -88,7 +89,7 @@ Layer 9 ┌───────────────────────
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
 Layer 8 ┌──────────────────────────────────────────────────────────────┐
- Author. │  Policies (30+)  RBAC (5 roles)  Functional roles (2)       │
+ Author. │  Policies (30)   RBAC (5 roles)  Functional roles (2)       │
          │  BasePolicy → AuthorizesRoles + AuthorizesOwnership         │
          │  spatie/laravel-permission auto-registers Gate::before      │
          └──────────────────────────────────────────────────────────────┘

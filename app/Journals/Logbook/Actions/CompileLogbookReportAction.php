@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Journals\Logbook\Actions;
 
-use App\Core\Actions\BaseAction;
 use App\Enrollment\Registration\Models\Registration;
 use App\Journals\Logbook\Models\Logbook;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Blade;
 
-final class CompileLogbookReportAction extends BaseAction
+final class CompileLogbookReportAction
 {
     /**
      * Generate a PDF report of verified logbook entries for a registration.

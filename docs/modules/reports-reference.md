@@ -1,6 +1,7 @@
 # Reports — Technical Reference
 
 > Last updated: 2026-06-10
+> Changes: sync — add SaveReportDraftAction to action table and file tree
 
 Detailed structural and implementation reference for the **Reports** module.
 
@@ -25,6 +26,7 @@ Manages final student grade compilation, score aggregation, coordinator sign-off
 | `Report/Actions/ApproveReportAction.php` | `ApproveReportAction` | `BaseAction` |
 | `Report/Actions/RequestReportRevisionAction.php` | `RequestReportRevisionAction` | `BaseAction` |
 | `Report/Actions/AddSupervisorReportNotesAction.php` | `AddSupervisorReportNotesAction` | `BaseAction` |
+| `Report/Actions/SaveReportDraftAction.php` | `SaveReportDraftAction` | `BaseAction` |
 
 ---
 
@@ -96,6 +98,7 @@ app/Reports/
     │   ├── ApproveReportAction.php
     │   ├── CreateReportAction.php
     │   ├── RequestReportRevisionAction.php
+    │   ├── SaveReportDraftAction.php
     │   └── SubmitReportAction.php
     ├── Enums/ReportStatus.php
     ├── Http/Controllers/ReportController.php

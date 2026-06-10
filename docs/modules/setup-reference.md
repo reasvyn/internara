@@ -1,6 +1,7 @@
 # Setup — Technical Reference
 
 > Last updated: 2026-06-10
+> Changes: sync — ValidateSetupTokenAction extends BaseAction (not Read)
 
 Detailed structural and implementation reference for the **Setup** module.
 
@@ -22,7 +23,7 @@ Handles one-time technical installation, environment checks, database provisioni
 | File | Class | Extends |
 | ---- | ----- | ------- |
 | `Installation/Actions/GenerateSetupTokenAction.php` | `GenerateSetupTokenAction` | `BaseAction` |
-| `Installation/Actions/ValidateSetupTokenAction.php` | `ValidateSetupTokenAction` | Read |
+| `Installation/Actions/ValidateSetupTokenAction.php` | `ValidateSetupTokenAction` | `BaseAction` |
 | `Installation/Actions/InstallSystemAction.php` | `InstallSystemAction` | Process `BaseAction` |
 | `SetupWizard/Actions/SetupSuperAdminAction.php` | `SetupSuperAdminAction` | `BaseAction` |
 | `SetupWizard/Actions/SetupSchoolAction.php` | `SetupSchoolAction` | `BaseAction` |

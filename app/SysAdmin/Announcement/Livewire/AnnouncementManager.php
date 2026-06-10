@@ -70,11 +70,9 @@ class AnnouncementManager extends Component
             return;
         }
 
-        $action = app(SendAnnouncementAction::class);
-
         if ($this->confirmActionType === 'delete') {
             $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
-            $action->delete($announcement);
+            app(DeleteAnnouncementAction::class)->execute($announcement);
             flash()->success(__('announcement.deleted'));
         } elseif ($this->confirmActionType === 'publish') {
             $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
@@ -85,7 +83,7 @@ class AnnouncementManager extends Component
                 return;
             }
 
-            $action->publish($announcement);
+            app(PublishAnnouncementAction::class)->execute($announcement);
             flash()->success(__('announcement.published'));
         }
 
