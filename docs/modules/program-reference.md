@@ -8,13 +8,12 @@ Detailed structural and implementation reference for the **Program** module.
 
 ## Overview
 
-Manages internship programs (lowongan PKL), program timelines, phases, and student cohort groupings.
+Manages internship programs (lowongan PKL), program timelines, and student cohort groupings.
 
 ### Submodules
 
 - `Internship` — Internship program definitions
 - `InternshipGroup` — Student cohort groupings
-- `InternshipPhase` — Program phase/timeline management
 
 ---
 
@@ -32,9 +31,6 @@ Manages internship programs (lowongan PKL), program timelines, phases, and stude
 | `InternshipGroup/Actions/DeleteInternshipGroupAction.php` | `DeleteInternshipGroupAction` | `BaseAction` |
 | `InternshipGroup/Actions/AddMemberToGroupAction.php` | `AddMemberToGroupAction` | `BaseAction` |
 | `InternshipGroup/Actions/RemoveMemberFromGroupAction.php` | `RemoveMemberFromGroupAction` | `BaseAction` |
-| `InternshipPhase/Actions/CreateInternshipPhaseAction.php` | `CreateInternshipPhaseAction` | `BaseAction` |
-| `InternshipPhase/Actions/UpdateInternshipPhaseAction.php` | `UpdateInternshipPhaseAction` | `BaseAction` |
-| `InternshipPhase/Actions/DeleteInternshipPhaseAction.php` | `DeleteInternshipPhaseAction` | `BaseAction` |
 
 ---
 
@@ -45,7 +41,6 @@ Manages internship programs (lowongan PKL), program timelines, phases, and stude
 | `Internship/Models/Internship.php` | `Internship` | `BaseModel` |
 | `InternshipGroup/Models/InternshipGroup.php` | `InternshipGroup` | `BaseModel` |
 | `InternshipGroup/Models/InternshipGroupMember.php` | `InternshipGroupMember` | `BaseModel` |
-| `InternshipPhase/Models/InternshipPhase.php` | `InternshipPhase` | `BaseModel` |
 
 ---
 
@@ -74,7 +69,6 @@ Manages internship programs (lowongan PKL), program timelines, phases, and stude
 | ---- | ------ | ------- |
 | `Internship/Policies/InternshipPolicy.php` | `InternshipPolicy` | `BasePolicy` |
 | `InternshipGroup/Policies/InternshipGroupPolicy.php` | `InternshipGroupPolicy` | `BasePolicy` |
-| `InternshipPhase/Policies/InternshipPhasePolicy.php` | `InternshipPhasePolicy` | `BasePolicy` |
 
 ---
 
@@ -110,7 +104,6 @@ Manages internship programs (lowongan PKL), program timelines, phases, and stude
 | ---- | --------- | ------- |
 | `Internship/Livewire/InternshipManager.php` | `InternshipManager` | `BaseRecordManager` |
 | `InternshipGroup/Livewire/InternshipGroupManager.php` | `InternshipGroupManager` | `BaseRecordManager` |
-| `InternshipPhase/Livewire/InternshipPhaseManager.php` | `InternshipPhaseManager` | `BaseRecordManager` |
 
 ## Livewire Forms
 
@@ -118,7 +111,6 @@ Manages internship programs (lowongan PKL), program timelines, phases, and stude
 | ---- | ---- |
 | `Internship/Livewire/Forms/InternshipForm.php` | `InternshipForm` |
 | `InternshipGroup/Livewire/Forms/InternshipGroupForm.php` | `InternshipGroupForm` |
-| `InternshipPhase/Livewire/Forms/InternshipPhaseForm.php` | `InternshipPhaseForm` |
 
 ## Rules
 
@@ -209,16 +201,6 @@ app/Program/
 │   │   ├── InternshipGroup.php
 │   │   └── InternshipGroupMember.php
 │   └── Policies/InternshipGroupPolicy.php
-├── InternshipPhase/
-│   ├── Actions/
-│   │   ├── CreateInternshipPhaseAction.php
-│   │   ├── DeleteInternshipPhaseAction.php
-│   │   └── UpdateInternshipPhaseAction.php
-│   ├── Livewire/
-│   │   ├── Forms/InternshipPhaseForm.php
-│   │   └── InternshipPhaseManager.php
-│   ├── Models/InternshipPhase.php
-│   └── Policies/InternshipPhasePolicy.php
 └── Notifications/RegistrationNotification.php
 ```
 
@@ -226,7 +208,7 @@ app/Program/
 
 ## Architectural Integration
 
-- **Submodules**: `Internship`, `InternshipGroup`, `InternshipPhase`
+- **Submodules**: `Internship`, `InternshipGroup`
 - **Business Logic**: `app/Program/`
 - **Routing**: `routes/web/program.php`
 - **Views**: `resources/views/program/`

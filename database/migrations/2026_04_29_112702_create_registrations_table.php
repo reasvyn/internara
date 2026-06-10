@@ -25,6 +25,7 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->string('status')->default('pending')->index();
             $table->json('proposed_company_details')->nullable();
+            $table->unsignedTinyInteger('current_phase_index')->nullable();
 
             $table->timestamps();
 

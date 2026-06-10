@@ -7,6 +7,7 @@ namespace App\Enrollment\Registration\Models;
 use App\Assessment\Models\Assessment;
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Models\BaseModel;
+use App\Enrollment\Placement\Models\Placement;
 use App\Enrollment\Registration\Entities\RegistrationState;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\Journals\Attendance\Models\Attendance;
@@ -30,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
         'end_date',
         'status',
         'proposed_company_details',
+        'current_phase_index',
     ]),
 ]
 class Registration extends BaseModel
@@ -47,6 +49,7 @@ class Registration extends BaseModel
         'start_date' => 'date',
         'end_date' => 'date',
         'proposed_company_details' => 'json',
+        'current_phase_index' => 'integer',
     ];
 
     public function setStatus(string $status, ?string $reason = null): static

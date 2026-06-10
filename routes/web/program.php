@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\Program\DocumentRequirement\Livewire\RequirementManager;
 use App\Program\Internship\Livewire\InternshipManager;
 use App\Program\InternshipGroup\Livewire\InternshipGroupManager;
-use App\Program\InternshipPhase\Livewire\InternshipPhaseManager;
 
 Route::prefix('admin')
     ->name('sysadmin.')
@@ -17,8 +16,5 @@ Route::prefix('admin')
         );
         Route::livewire('/internships/groups', InternshipGroupManager::class)->name(
             'internships.groups',
-        );
-        Route::livewire('/internships/phases', InternshipPhaseManager::class)->name(
-            'internships.phases',
         );
     });
