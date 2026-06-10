@@ -55,7 +55,7 @@ class ReportWriter extends Component
 
         if ($this->reportId) {
             $report = Report::findOrFail($this->reportId);
-            $report->update(['content' => json_decode($this->chapterContent, true) ?? []]);
+            $createAction->saveDraft($report, json_decode($this->chapterContent, true) ?? []);
             flash()->success(__('report.saved'));
         } else {
             $report = $createAction->execute([

@@ -32,54 +32,32 @@ final class SendAnnouncementAction extends BaseAction
             : AnnouncementStatus::default();
 
         return $this->transaction(function () use ($validated, $status) {
-            return $this->transaction(function () use ($validated, $status) {
-                $announcement = Announcement::create([
-                    'title' => $validated['title'],
-                    'message' => $validated['message'],
-                    'type' => $validated['type'],
-                    'status' => $status,
-                    'scheduled_at' => $validated['scheduled_at'] ?? null,
-                    'link' => $validated['link'] ?? null,
-                    'target_roles' => $validated['target_roles'] ?? null,
-                    'created_by' => auth()->id(),
-                ]);
+            $announcement = Announcement::create([
+                'title' => $validated['title'],
+                'message' => $validated['message'],
+                'type' => $validated['type'],
+                'status' => $status,
+                'scheduled_at' => $validated['scheduled_at'] ?? null,
+                'link' => $validated['link'] ?? null,
+                'target_roles' => $validated['target_roles'] ?? null,
+                'created_by' => auth()->id(),
+            ]);
 
-                if ($status === AnnouncementStatus::PUBLISHED) {
-                    $this->sendNotifications($announcement, $validated);
-                }
+            if ($status === AnnouncementStatus::PUBLISHED) {
+                $this->sendNotifications($announcement, $validated);
+            }
 
-                $this->log('announcement_sent', $announcement, [
-                    'title' => $validated['title'],
-                    'status' => $status->value,
-                    'target_roles' => $validated['target_roles'] ?? 'all',
-                ]);
+            $this->log('announcement_sent', $announcement, [
+                'title' => $validated['title'],
+                'status' => $status->value,
+                'target_roles' => $validated['target_roles'] ?? 'all',
+            ]);
 
-                return $announcement;
-            });
+            return $announcement;
         });
     }
 
-    public function publish(Announcement $announcement): void
-    {
-        $announcement->update([
-            'status' => AnnouncementStatus::PUBLISHED,
-            'scheduled_at' => null,
-        ]);
-
-        $this->sendNotifications($announcement, [
-            'title' => $announcement->title,
-            'message' => $announcement->message,
-            'link' => $announcement->link,
-            'target_roles' => $announcement->target_roles,
-        ]);
-
-        $this->log('announcement_published', $announcement, [
-            'title' => $announcement->title,
-            'id' => $announcement->id,
-        ]);
-    }
-
-    private function sendNotifications(Announcement $announcement, array $config): void
+    public function sendNotifications(Announcement $announcement, array $config): void
     {
         $users = User::query();
 

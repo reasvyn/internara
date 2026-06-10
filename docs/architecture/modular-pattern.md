@@ -834,15 +834,20 @@ rule methods -> Add named accessor on Model -> Update callers -> Write unit test
 
 | Document | Focus |
 |----------|-------|
-| [Action Pattern](action-pattern.md) | Action Triad deep dive, transaction safety, ActionResponse |
-| [Entity Pattern](entity-pattern.md) | Entity-Model bridge, immutability, entity extraction |
-| [Enum Pattern](enum-pattern.md) | State machine enums, LabelEnum/StatusEnum contracts |
-| [Livewire Pattern](livewire-pattern.md) | Thin components, Form Objects, BaseRecordManager |
-| [Exception Pattern](exception-pattern.md) | Dual hierarchy, HasExceptionContext, error handling |
-| [Policy Pattern](policy-pattern.md) | Flat RBAC, authorization layers, Gate::before |
-| [Logging Pattern](logging-pattern.md) | SmartLogger fluent API, PII masking |
-| [Cache Pattern](cache-pattern.md) | Key registry, invalidation, driver tiers |
-| [Testing Pattern](testing-pattern.md) | Testing conventions, scope isolation, layer strategies |
+| [Action](action-pattern.md) | Action Triad deep dive, transaction safety, ActionResponse |
+| [Entity](entity-pattern.md) | Entity bridge, immutability, entity extraction workflow |
+| [Model (Active Record)](model-pattern.md) | Eloquent models, UUID PKs, scopes, relationships, casts |
+| [Data (DTO)](data-pattern.md) | BaseData DTOs, fromArray/toArray, ActionResponse, migration path |
+| [Event & Notification](event-pattern.md) | BaseEvent, dispatch patterns, listeners, multi-channel notifications |
+| [Enum](enum-pattern.md) | State machine enums, LabelEnum/StatusEnum contracts, 35-enum inventory |
+| [Livewire](livewire-pattern.md) | Thin components, Form Objects, BaseRecordManager, confirmation dialogs |
+| [Exception](exception-pattern.md) | Dual hierarchy, HasExceptionContext, HandlesActionErrors |
+| [Policy](policy-pattern.md) | Flat RBAC, three-layer auth, Gate::before, 29-policy inventory |
+| [Logging](logging-pattern.md) | SmartLogger fluent API, PII masking (39+ keys) |
+| [Cache](cache-pattern.md) | Key registry, invalidation strategies, driver tiers |
+| [Service](service-pattern.md) | When to use Services vs Actions, existing inventory, migration path |
+| [Repository](repository-pattern.md) | Why no Repository layer, Eloquent as Repository, query tiers |
+| [Testing](testing-pattern.md) | Testing conventions, scope isolation, layer strategies, performance |
 
 ---
 
