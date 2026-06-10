@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\User\Models;
 
+use App\Auth\Account\Entities\AccountActivation;
+use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Models\BaseAuthenticatable;
 use App\Enrollment\Registration\Models\Registration;
 use App\User\Entities\Apprentice;
@@ -246,6 +248,16 @@ class User extends BaseAuthenticatable implements HasMedia
         return Apprentice::fromModel($this);
     }
 
+    public function asAccountActivation(): AccountActivation
+    {
+        return AccountActivation::fromModel($this);
+    }
+
+    public function asSuperAdminIntegrityRules(): SuperAdminIntegrityRules
+    {
+        return SuperAdminIntegrityRules::fromModel($this);
+    }
+
     public function scopeLocked(Builder $query): Builder
     {
         return $query->whereNotNull('locked_at');
@@ -258,7 +270,7 @@ class User extends BaseAuthenticatable implements HasMedia
 
     public function getActiveRegistration(): ?Registration
     {
-        return $this->registrations()->where('status', 'active')->first();
+        return $this->registrations->first(fn (Registration $r) => $r->asRegistrationState()->isActive());
     }
 
     public function scopeActive(Builder $query): Builder

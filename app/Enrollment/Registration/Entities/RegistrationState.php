@@ -15,6 +15,7 @@ final readonly class RegistrationState extends BaseEntity
         private ?Carbon $startDate,
         private ?Carbon $endDate,
         private bool $hasPlacement,
+        private array $phases = [],
     ) {}
 
     public static function fromModel(Model $model): static
@@ -25,6 +26,11 @@ final readonly class RegistrationState extends BaseEntity
             endDate: $model->end_date,
             hasPlacement: $model->placement_id !== null,
         );
+    }
+
+    public function withPhases(array $phases): static
+    {
+        return $this->with('phases', $phases);
     }
 
     public function isActive(): bool
@@ -82,5 +88,55 @@ final readonly class RegistrationState extends BaseEntity
         }
 
         return (int) $this->startDate->diffInDays($this->endDate);
+    }
+
+    /**
+     * @return array<int, array{name: string, order: int, weight: int}>
+     */
+    public function phases(): array
+    {
+        return $this->phases;
+    }
+
+    public function currentPhaseIndex(?Carbon $now = null): ?int
+    {
+        if ($this->phases === [] || ! $this->startDate || ! $this->endDate) {
+            return null;
+        }
+
+        $now ??= new Carbon;
+        $totalDays = $this->startDate->diffInDays($this->endDate);
+
+        if ($totalDays <= 0) {
+            return null;
+        }
+
+        $elapsedDays = $this->startDate->diffInDays($now, false);
+        $elapsedPercent = ($elapsedDays / $totalDays) * 100;
+
+        if ($elapsedPercent <= 0) {
+            return 0;
+        }
+
+        $cumulative = 0;
+        foreach ($this->phases as $index => $phase) {
+            $cumulative += $phase['weight'];
+            if ($elapsedPercent <= $cumulative) {
+                return $index;
+            }
+        }
+
+        return count($this->phases) - 1;
+    }
+
+    public function currentPhase(?Carbon $now = null): ?string
+    {
+        $index = $this->currentPhaseIndex($now);
+
+        if ($index === null) {
+            return null;
+        }
+
+        return $this->phases[$index]['name'] ?? null;
     }
 }

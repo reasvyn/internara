@@ -6,6 +6,7 @@ namespace App\Evaluation\Models;
 
 use App\Core\Models\BaseModel;
 use App\Enrollment\Registration\Models\Registration;
+use App\Evaluation\Entities\EvaluationResult;
 use App\Evaluation\Enums\EvaluationCategory;
 use App\User\Models\User;
 use Database\Factories\EvaluationFactory;
@@ -70,5 +71,10 @@ class Evaluation extends BaseModel
     public function scopeHighScore(Builder $query, float $threshold = 80): Builder
     {
         return $query->where('overall_score', '>=', $threshold);
+    }
+
+    public function asEvaluationResult(): EvaluationResult
+    {
+        return EvaluationResult::fromModel($this);
     }
 }

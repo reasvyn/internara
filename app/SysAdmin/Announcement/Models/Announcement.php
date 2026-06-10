@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Announcement\Models;
 
 use App\Core\Models\BaseModel;
+use App\SysAdmin\Announcement\Entities\AnnouncementState;
 use App\SysAdmin\Announcement\Enums\AnnouncementStatus;
 use App\User\Models\User;
 use Database\Factories\AnnouncementFactory;
@@ -65,19 +66,9 @@ class Announcement extends BaseModel
             ->where('scheduled_at', '<=', now());
     }
 
-    public function isPublished(): bool
+    public function asAnnouncementState(): AnnouncementState
     {
-        return $this->status === AnnouncementStatus::PUBLISHED;
-    }
-
-    public function isDraft(): bool
-    {
-        return $this->status === AnnouncementStatus::DRAFT;
-    }
-
-    public function isScheduled(): bool
-    {
-        return $this->status === AnnouncementStatus::SCHEDULED;
+        return AnnouncementState::fromModel($this);
     }
 
     protected static function newFactory(): AnnouncementFactory
