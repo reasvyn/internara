@@ -1,6 +1,9 @@
 # Testing
 
 > **Last updated:** 2026-06-10
+>
+> For the complete catalog of testing patterns, conventions, and practices, see
+> [Testing Pattern Reference](../architecture/testing-pattern.md).
 
 ## Testing Philosophy
 

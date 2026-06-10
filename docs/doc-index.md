@@ -16,6 +16,7 @@
 | [Project Philosophy](philosophy.md)                    | Guiding principles, values, and vision that shape the project — beyond architecture and code                            |
 | [Action-based MVC Architecture](architecture.md)       | 12-layer architecture, Action Triad (Command/Read/Process), cross-module communication, exception hierarchy, validation |
 | [Modular Pattern Reference](architecture/modular-pattern.md) | Comprehensive catalog of all design patterns, conventions, workflow patterns, and architectural rules                   |
+| [Testing Pattern Reference](architecture/testing-pattern.md) | Comprehensive catalog of all testing patterns, conventions, and practices                                               |
 | [Coding Conventions](conventions.md)                   | Mandatory base classes, file structure conventions, PHP rules, naming, policy/enum conventions, testing standards       |
 
 ---
@@ -177,5 +178,5 @@ flowchart LR
 | Developer    | `architecture.md` → `conventions.md` → `{module}.md`  |
 | DevOps       | `infrastructure/infrastructure.md` → `deployment.md`  |
 | Product      | `product-definition.md` → `philosophy.md` → `key-features.md` |
-| QA/Tester    | `infrastructure/testing.md` → `{module}-reference.md` |
+| QA/Tester    | `infrastructure/testing.md` → `architecture/testing-pattern.md` → `{module}-reference.md` |
 | New Hire     | `getting-started.md` → `architecture.md` → lab module |

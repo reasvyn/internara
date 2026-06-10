@@ -1107,6 +1107,9 @@ progress and student workflows are never blocked by industry supervisor inactivi
 
 ## 22. Testing
 
+For the complete catalog of testing patterns, conventions, and practices, see
+[Testing Pattern Reference](architecture/testing-pattern.md).
+
 ### File Structure
 
 Tests mirror the source structure exactly:

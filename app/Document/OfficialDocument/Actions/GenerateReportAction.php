@@ -7,17 +7,25 @@ namespace App\Document\OfficialDocument\Actions;
 use App\Core\Actions\BaseAction;
 use App\Document\Models\Document;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 final class GenerateReportAction extends BaseAction
 {
     public function execute(array $data): Document
     {
-        $slug = $data['type'].'-'.now()->timestamp;
+        $validated = Validator::validate($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'string', 'max:100'],
+            'description' => ['nullable', 'string', 'max:500'],
+            'parameters' => ['nullable', 'array'],
+        ]);
+
+        $slug = $validated['type'].'-'.now()->timestamp;
         $content = json_encode(
             [
-                'type' => $data['type'],
+                'type' => $validated['type'],
                 'generated_at' => now()->toIso8601String(),
-                'parameters' => $data['parameters'] ?? [],
+                'parameters' => $validated['parameters'] ?? [],
             ],
             JSON_PRETTY_PRINT,
         );
@@ -25,14 +33,22 @@ final class GenerateReportAction extends BaseAction
         $fileName = $slug.'.json';
         Storage::disk('local')->put("reports/{$fileName}", $content);
 
-        return Document::create([
-            'name' => $data['name'],
-            'slug' => $slug,
-            'category' => 'report',
-            'description' => $data['description'] ?? 'Auto-generated report',
-            'content' => $content,
-            'file_path' => "reports/{$fileName}",
-            'is_active' => true,
-        ]);
+        return $this->transaction(function () use ($validated, $slug, $content, $fileName) {
+            $document = Document::create([
+                'name' => $validated['name'],
+                'slug' => $slug,
+                'category' => 'report',
+                'description' => $validated['description'] ?? 'Auto-generated report',
+                'content' => $content,
+                'file_path' => "reports/{$fileName}",
+                'is_active' => true,
+            ]);
+
+            $this->log('report_generated', $document, [
+                'type' => $validated['type'],
+            ]);
+
+            return $document;
+        });
     }
 }

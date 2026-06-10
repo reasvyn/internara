@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Assignment\Submission\Actions;
 
+use App\Assignment\Enums\AssignmentStatus;
 use App\Assignment\Models\Assignment;
+use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
@@ -15,7 +17,7 @@ final class SubmitAssignmentAction extends BaseAction
 {
     public function execute(User $student, Assignment $assignment, array $data): Submission
     {
-        if ($assignment->status->value !== 'published') {
+        if ($assignment->status !== AssignmentStatus::PUBLISHED) {
             throw new RejectedException('Cannot submit to unpublished assignment.');
         }
 
@@ -37,7 +39,11 @@ final class SubmitAssignmentAction extends BaseAction
 
             $existing = Submission::where('student_id', $student->id)
                 ->where('assignment_id', $assignment->id)
-                ->whereIn('status', ['draft', 'submitted', 'verified'])
+                ->whereIn('status', [
+                    SubmissionStatus::DRAFT->value,
+                    SubmissionStatus::SUBMITTED->value,
+                    SubmissionStatus::VERIFIED->value,
+                ])
                 ->first();
 
             if ($existing) {
@@ -49,7 +55,7 @@ final class SubmitAssignmentAction extends BaseAction
                 'registration_id' => $registration->id,
                 'assignment_id' => $assignment->id,
                 'content' => $data['content'],
-                'status' => 'submitted',
+                'status' => SubmissionStatus::SUBMITTED->value,
                 'submitted_at' => now(),
             ]);
 
