@@ -1,11 +1,11 @@
 # ADR-007: Exception Hierarchy — AppException vs ModuleException
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 ## Context
 
-A 20-module codebase needs a consistent way to signal failures across layers. A `NotFoundException` thrown from an Action and a `RejectedException` thrown from a FormRequest should be distinguishable by their purpose, not just their class name. A controller should be able to catch module violations without accidentally catching infrastructure errors.
+A 19-module codebase needs a consistent way to signal failures across layers. A `NotFoundException` thrown from an Action and a `RejectedException` thrown from a FormRequest should be distinguishable by their purpose, not just their class name. A controller should be able to catch module violations without accidentally catching infrastructure errors.
 
 Two alternatives were considered:
 

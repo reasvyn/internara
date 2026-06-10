@@ -1,8 +1,8 @@
 # Key Features
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
-Complete feature inventory across all 20 modules, organized by program lifecycle phase.
+Complete feature inventory across all 19 modules, organized by program lifecycle phase.
 
 ---
 
@@ -34,24 +34,13 @@ Base classes, contracts, middleware, and cross-module utilities.
 | Language Switcher | Livewire bilingual toggle (en/id) |
 | Theme Switcher | Livewire light/dark/system theme toggle |
 
-### Shared — Cross-Cutting Components
-
-Reusable utilities used across modules.
-
-| Feature | Description |
-|---------|-------------|
-| config/cache-keys.php | Centralized cache key configuration |
-| CsvHandler | CSV processing utilities |
-| Global Enums | Shared enum definitions (AccountStatus, etc.) |
-| UI Components | Blade UI components and widgets |
-
 ### Setup — Installation & Provisioning
 
 One-time guided installation.
 
 | Feature | Description | Access |
 |---------|-------------|--------|
-| 7-Step Setup Wizard | Environment Check, School, Department, Admin, Program (optional), Finalize, Complete | Guest (token) |
+| 6-Step Setup Wizard | Environment Audit, Super Admin, School, Department, Finalize, Complete | Guest (token) |
 | Environment Audit | PHP version, extensions, directory permissions, database, terminal | Installer |
 | Setup Token | Encrypted random token gates wizard access, single-use | System |
 | School Initialization | Create first school profile in settings | Installer |
@@ -324,6 +313,6 @@ Rendering engine for official documents and policy handbooks.
 
 ## Summary
 
-**20 modules with 150+ features** covering the complete program lifecycle: Foundation → User
+**19 modules with 150+ features** covering the complete program lifecycle: Foundation → User
 Management → Academic Setup → Program Management → Enrollment → Daily Operations → Assessment →
 Evaluation → Certification → Reporting → Closure.

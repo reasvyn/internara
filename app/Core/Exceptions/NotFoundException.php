@@ -15,4 +15,9 @@ class NotFoundException extends PresentationException
         $this->withHint($hint ?? 'The requested resource does not exist or has been removed.');
         $this->withContext($context);
     }
+
+    public function statusCode(): int
+    {
+        return 404;
+    }
 }

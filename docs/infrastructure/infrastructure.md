@@ -1,6 +1,6 @@
 # Infrastructure
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-10
 
 This document describes the infrastructure design for Internara — what the system looks like at each deployment tier and how components relate. It serves as a reference for provisioning, scaling, and maintenance.
 
@@ -432,7 +432,7 @@ See [Backup & Recovery](backup-recovery.md) for detailed restoration procedures.
 | Performance monitoring, Pulse, logging  | [Observability](observability.md)       |
 | File storage, S3, media library         | [Filesystem](filesystem.md)             |
 | Queue infrastructure, worker management | [Queue](queue.md)                       |
-| Notification channels & delivery        | [Notification](notification.md)         |
+| Notification channels & delivery        | [Notifications](notification.md)         |
 | Routing & middleware                    | [Routes](routes.md)                     |
 | Localization & i18n                     | [Localization](localization.md)         |
 | Testing & CI/CD                         | [Testing](testing.md)                   |

@@ -146,8 +146,8 @@ final class SmartLogger
 
     public function save(): void
     {
-        $this->mergeEventPayload();
-        $this->maskSensitiveData();
+        $this->processEventPayload();
+        $this->applyPiiMasking();
         $this->resolveTranslations();
 
         $causer = $this->resolveCauser();
@@ -176,16 +176,15 @@ final class SmartLogger
         return $causer !== null || ($this->toActivity && ! $this->toSystem);
     }
 
-    private function mergeEventPayload(): void
+    private function processEventPayload(): void
     {
         if ($this->event instanceof BaseEvent) {
             event($this->event);
-            $eventPayload = $this->event->toPayload();
-            $this->payload = array_merge($eventPayload, $this->payload);
+            $this->payload = array_merge($this->event->toPayload(), $this->payload);
         }
     }
 
-    private function maskSensitiveData(): void
+    private function applyPiiMasking(): void
     {
         if ($this->maskPii) {
             $this->payload = PiiMasker::maskArray($this->payload);
@@ -298,7 +297,6 @@ final class SmartLogger
         }
     }
 
-    /** @return array{0: string|null, 1: string|null} */
     private function resolveRequestMetadata(): array
     {
         $ip = Request::ip();
@@ -312,5 +310,12 @@ final class SmartLogger
             $ip !== null ? PiiMasker::maskIp($ip) : null,
             $ua !== null ? PiiMasker::maskUserAgent($ua) : null,
         ];
+    }
+
+    public function withContext(array $context): self
+    {
+        $this->context = array_merge($this->context, $context);
+
+        return $this;
     }
 }

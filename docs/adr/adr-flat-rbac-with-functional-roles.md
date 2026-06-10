@@ -1,7 +1,7 @@
 # ADR-008: Flat RBAC with Functional Roles
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 ## Context
 

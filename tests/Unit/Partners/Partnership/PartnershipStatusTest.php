@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Core\Contracts\StatusEnum;
 use App\Partners\Partnership\Enums\PartnershipStatus;
 
 describe('isTerminal', function () {
@@ -36,11 +37,27 @@ describe('transitions', function () {
     });
 
     it('rejects non-self type', function () {
-        $mock = new class implements \App\Core\Contracts\StatusEnum {
-            public function label(): string { return 'mock'; }
-            public function isTerminal(): bool { return false; }
-            public function canTransitionTo(\App\Core\Contracts\StatusEnum $target): bool { return false; }
-            public function validTransitions(): array { return []; }
+        $mock = new class implements StatusEnum
+        {
+            public function label(): string
+            {
+                return 'mock';
+            }
+
+            public function isTerminal(): bool
+            {
+                return false;
+            }
+
+            public function canTransitionTo(StatusEnum $target): bool
+            {
+                return false;
+            }
+
+            public function validTransitions(): array
+            {
+                return [];
+            }
         };
 
         expect(PartnershipStatus::ACTIVE->canTransitionTo($mock))->toBeFalse();

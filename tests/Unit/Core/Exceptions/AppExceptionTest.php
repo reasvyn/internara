@@ -6,7 +6,13 @@ namespace Tests\Unit\Core\Exceptions;
 
 use App\Core\Exceptions\AppException;
 
-class MockAppException extends AppException {}
+class MockAppException extends AppException
+{
+    public function statusCode(): int
+    {
+        return 400;
+    }
+}
 
 test('app exception holds hints and custom context', function () {
     $e = new MockAppException('Main message')

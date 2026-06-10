@@ -1,6 +1,6 @@
 # Installation
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-10
 
 This document covers the prerequisites, command reference, performance tuning, and troubleshooting for installing Internara. For server environment setup (Nginx, Supervisor, Docker, shared hosting), see [Deployment](deployment.md).
 

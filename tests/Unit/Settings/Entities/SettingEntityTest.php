@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 use App\Settings\Entities\SettingEntity;
 use App\Settings\Models\Setting;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('setting entity can be created from model', function () {
     $setting = Setting::create(['key' => 'site.name', 'value' => 'Internara', 'group' => 'general']);

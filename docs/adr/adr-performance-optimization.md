@@ -1,7 +1,7 @@
 # ADR-009: Performance & Optimization Strategy
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 ## Context
 
@@ -25,7 +25,7 @@ These optimizations cost nothing during development but prevent regressions at a
 - **Composite indexes on foreign keys** — prevents full table scans on JOIN-heavy queries
 - **Eager loading convention** — N+1 queries are the single biggest Livewire performance risk
 - **Activity log composite indexes** — prevents full scans at 1M+ rows
-- **Cache key registry** (config('cache-keys')) — prevents key collisions, makes invalidation discoverable
+- **Cache key registry** (`config/cache-keys.php`) — prevents key collisions, makes invalidation discoverable
 - **Action triad separation** — Read Actions avoid transaction overhead
 
 ### Tier 1 — MVP Defaults (Current)

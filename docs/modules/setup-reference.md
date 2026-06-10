@@ -1,6 +1,6 @@
 # Setup — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Setup** module.
 
@@ -107,6 +107,22 @@ Handles one-time technical installation, environment checks, database provisioni
 
 File: `routes/web/setup.php`
 Naming pattern: `setup.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/setup/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Setup/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+None.
+
+## Migrations
+
+None.
 
 ---
 

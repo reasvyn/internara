@@ -1,6 +1,6 @@
 # Project Requirements
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Functional and non-functional requirements for the Internara PKL management system, tailored to
 Indonesian SMA/SMK vocational school regulations.
@@ -31,30 +31,29 @@ middleware.
 
 ---
 
-## 3. Module Overview (20 Modules)
+## 3. Module Overview (19 Modules)
 
 | # | Module | Purpose |
 |---|--------|---------|
 | 1 | Core | Base classes, contracts, middleware, infrastructure |
-| 2 | Shared | Cross-module utilities, DTOs, enums, UI components |
-| 3 | Auth | Authentication, password management, recovery, RBAC |
-| 4 | User | Identity, profiles, notifications, dashboards, account status |
-| 5 | SysAdmin | User management, announcements, audit logs, health monitoring |
-| 6 | Setup | Installation wizard, environment audit, super admin creation |
-| 7 | Settings | System configuration, branding, feature flags, mail |
-| 8 | Academics | School profile, departments, academic years |
-| 9 | Program | Internship lifecycle, phases, requirements, groups |
-| 10 | Enrollment | Registration, placement slots, change requests |
-| 11 | Assessment | Rubric management, competency evaluation, grading |
-| 12 | Evaluation | Mentor feedback, company satisfaction, program quality |
-| 13 | Assignment | Task management, submission, grading workflow |
-| 14 | Journals | Logbook entries, attendance, schedules |
-| 15 | Guidance | Supervision logs, mentoring assignments |
-| 16 | Incident | Issue reporting, investigation, resolution |
-| 17 | Partners | Company profiles, partnership agreements |
-| 18 | Certification | Certificate templates, batch issuance, revocation |
-| 19 | Reports | Final grade cards, score aggregation, sign-off |
-| 20 | Document | Document templates, handbooks, rendering pipeline |
+| 2 | Auth | Authentication, password management, recovery, RBAC |
+| 3 | User | Identity, profiles, notifications, dashboards, account status |
+| 4 | SysAdmin | User management, announcements, audit logs, health monitoring |
+| 5 | Setup | Installation wizard, environment audit, super admin creation |
+| 6 | Settings | System configuration, branding, feature flags, mail |
+| 7 | Academics | School profile, departments, academic years |
+| 8 | Program | Internship lifecycle, phases, requirements, groups |
+| 9 | Enrollment | Registration, placement slots, change requests |
+| 10 | Assessment | Rubric management, competency evaluation, grading |
+| 11 | Evaluation | Mentor feedback, company satisfaction, program quality |
+| 12 | Assignment | Task management, submission, grading workflow |
+| 13 | Journals | Logbook entries, attendance, schedules |
+| 14 | Guidance | Supervision logs, mentoring assignments |
+| 15 | Incident | Issue reporting, investigation, resolution |
+| 16 | Partners | Company profiles, partnership agreements |
+| 17 | Certification | Certificate templates, batch issuance, revocation |
+| 18 | Reports | Final grade cards, score aggregation, sign-off |
+| 19 | Document | Document templates, handbooks, rendering pipeline |
 
 ---
 

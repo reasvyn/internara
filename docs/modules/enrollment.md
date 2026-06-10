@@ -1,6 +1,6 @@
 # Enrollment
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Student registration into internship programs, placement slot assignment, document upload verification, guest applications, and placement change requests.
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Settings\Casts;
 
 use App\Core\Support\SmartLogger;
+use App\Settings\Enums\SettingType;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
@@ -19,55 +20,48 @@ class SettingValueCast implements CastsAttributes
             return null;
         }
 
-        $type = $attributes['type'] ?? 'string';
+        $type = SettingType::tryFrom($attributes['type'] ?? 'string') ?? SettingType::STRING;
 
         return match ($type) {
-            'json', 'array' => $this->decodeJson($value, $model, $key),
-            'boolean' => (bool) $value,
-            'integer' => (int) $value,
-            'float' => (float) $value,
-            'encrypted' => $this->decrypt($value, $model, $key),
-            'null' => null,
+            SettingType::JSON => $this->decodeJson($value, $model, $key),
+            SettingType::BOOLEAN => (bool) $value,
+            SettingType::INTEGER => (int) $value,
+            SettingType::FLOAT => (float) $value,
+            SettingType::ENCRYPTED => $this->decrypt($value, $model, $key),
+            SettingType::NULL => null,
             default => $value,
         };
     }
 
     public function set(Model $model, string $key, mixed $value, array $attributes): array
     {
-        $targetType = $attributes['type'] ?? null;
+        $targetType = isset($attributes['type'])
+            ? SettingType::tryFrom($attributes['type'])
+            : null;
 
-        if ($targetType === 'encrypted') {
+        if ($targetType === SettingType::ENCRYPTED) {
             if ($value === null) {
-                return ['value' => null, 'type' => 'null'];
+                return ['value' => null, 'type' => SettingType::NULL->value];
             }
 
             return [
                 'value' => $this->encrypt((string) $value, $model, $key),
-                'type' => 'encrypted',
+                'type' => SettingType::ENCRYPTED->value,
             ];
         }
 
-        $phpType = gettype($value);
+        $detectedType = SettingType::detect($value);
 
-        $dbType = match ($phpType) {
-            'array', 'object' => 'json',
-            'boolean' => 'boolean',
-            'integer' => 'integer',
-            'double' => 'float',
-            'NULL' => 'null',
-            default => 'string',
-        };
-
-        $storableValue = match ($dbType) {
-            'json' => $this->encodeJson($value, $model, $key),
-            'boolean' => (int) $value,
-            'null' => null,
+        $storableValue = match ($detectedType) {
+            SettingType::JSON => $this->encodeJson($value, $model, $key),
+            SettingType::BOOLEAN => (int) $value,
+            SettingType::NULL => null,
             default => (string) $value,
         };
 
         return [
             'value' => $storableValue,
-            'type' => $dbType,
+            'type' => $detectedType->value,
         ];
     }
 

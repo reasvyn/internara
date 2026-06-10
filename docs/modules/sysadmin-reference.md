@@ -1,6 +1,6 @@
 # SysAdmin — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **SysAdmin** module.
 
@@ -143,6 +143,28 @@ Handles user administration, announcements, super admin recovery, system health 
 
 File: `routes/web/sysadmin.php`
 Naming pattern: `sysadmin.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/sysadmin/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/SysAdmin/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `AnnouncementFactory` | `Announcement` |
+| `GdprDeletionLogFactory` | `GdprDeletionLog` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_announcements_table` | `announcements` |
+| `create_gdpr_deletion_logs_table` | `gdpr_deletion_logs` |
 
 ---
 

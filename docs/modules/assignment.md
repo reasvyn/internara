@@ -1,6 +1,6 @@
 # Assignment
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Task management and submission tracking: assignments with deadlines, student submissions with draft workflow, grading with feedback, and revision loops.
 

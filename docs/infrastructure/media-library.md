@@ -1,6 +1,6 @@
 # Media Library
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-10
 
 Internara uses [spatie/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) to associate files with Eloquent models. This package handles uploads, storage, image conversions, and file retrieval — replacing the need to manually manage file paths, validation, and processing for each model.
 

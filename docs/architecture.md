@@ -1,6 +1,6 @@
 # Action-based MVC Architecture
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad pattern, data flow, cross-module communication, exception handling, validation, caching, testing strategy, and invariant rules. Every decision here serves three goals:
 >
@@ -17,7 +17,7 @@
 3. [Action Triad: Command, Read, Process](#action-triad-command-read-process)
 4. [Data Flow](#data-flow)
 5. [Module Structure](#module-structure)
-6. [20 Modules at a Glance](#20-modules-at-a-glance)
+6. [19 Modules at a Glance](#19-modules-at-a-glance)
 7. [Base Class Mandate](#base-class-mandate)
 8. [Architectural Decisions](#architectural-decisions)
 9. [Cross-Module Communication](#cross-module-communication)
@@ -43,14 +43,14 @@ The architecture draws inspiration from Domain-Driven Design (strategic design, 
 
 ## Layered Architecture
 
-The system is built in **12 layers** from infrastructure at the bottom to business modules at the top. Each layer depends only on layers below it. The 20 module directories are vertical slices that cross all layers below Layer 11.
+The system is built in **12 layers** from infrastructure at the bottom to business modules at the top. Each layer depends only on layers below it. The 19 module directories are vertical slices that cross all layers below Layer 11.
 
 ```
 Layer 12 ┌──────────────────────────────────────────────────────────────┐
- Business│  20 Modules: Core, Shared, Auth, User, SysAdmin, Setup,      │
- Modules │  Settings, Academics, Program, Enrollment, Assessment,       │
-         │  Evaluation, Assignment, Journals, Guidance, Incident,       │
-         │  Partners, Certification, Reports, Document                  │
+  Business│  19 Modules: Core, Auth, User, SysAdmin, Setup,              │
+  Modules │  Settings, Academics, Program, Enrollment, Assessment,       │
+          │  Evaluation, Assignment, Journals, Guidance, Incident,       │
+          │  Partners, Certification, Reports, Document                  │
          │  Each module is a vertical slice through layers 1–11         │
          │  app/{Module}/                                               │
          │  ├── {SubModule}/  ← colocated Actions, Models, Policies    │
@@ -92,7 +92,7 @@ Layer 7 ┌───────────────────────
 Layer 6 ┌──────────────────────────────────────────────────────────────┐
  Domain  │  Entities (final readonly)  DTOs (BaseData)  Custom Enums   │
  Rules   │  app/{Module}/**/Entities/  app/{Module}/**/Enums/         │
-         │  app/Core/Data/             app/Exceptions/                 │
+          │  app/Core/Data/             app/Core/Exceptions/            │
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
 Layer 5 ┌──────────────────────────────────────────────────────────────┐
@@ -426,25 +426,24 @@ app/{Module}/
 | Module            | Submodules                                                                                               | Cross-Submodule Root Files                                                               |
 | ----------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | **Core**          | —                                                                                                        | Infrastructure + cross-module utilities                                                  |
-| **Shared**        | —                                                                                                        | Data, Enums, Exceptions, Livewire, Policies/Concerns, Support                            |
-| **Auth**          | `Permissions/`, `SuperAdmin/`, `Login/`, `Account/`, `ApiTokens/`, `AccountRecovery/`, `Password/`       | Http/Middleware, Livewire (login, recovery, activation, password)                        |
+| **Auth**          | `Permissions/`, `SuperAdmin/`, `Login/`, `Account/`, `ApiTokens/`, `AccountRecovery/`, `Password/`       | Enums, Http/Middleware, Livewire (login, recovery, activation, password)                 |
 | **User**          | `AccountStatus/`, `Profile/`, `Notifications/`, `Dashboard/`                                             | Http, Livewire (dashboards, editors), Actions, Enums, Entities, Rules, Support, Services |
-| **SysAdmin**      | `Account/`, `Announcement/`, `SuperAdmin/`, `Observability/`                                             | Actions, Console, Livewire (audit, pulse), Recorders, Services                           |
-| **Setup**         | `Installation/`, `SetupWizard/`                                                                          | Entities                                                                                 |
-| **Settings**      | — (flat structure)                                                                                       | Actions, Casts, Enums, Http/Middleware, Livewire/Forms, Models, Policies, Rules, Support |
-| **Academics**     | `Department/`, `AcademicYear/`, `School/`                                                                | Console, Http, Livewire, Services, Support                                               |
+| **SysAdmin**      | `Announcement/`, `Observability/`                                                                        | Actions, Console, Livewire (audit, pulse), Recorders, Services                           |
+| **Setup**         | `Installation/`, `SetupWizard/`                                                                          | Entities, Data                                                                            |
+| **Settings**      | `Branding/`, `Theme/`, `Locale/`                                                                         | Actions, Casts, Data, Enums, Events, Http/Middleware, Listeners, Livewire, Models, Policies, Rules, Support |
+| **Academics**     | `Department/`, `AcademicYear/`, `School/`                                                                | Actions, Console, Http, Livewire, Services, Support                                      |
 | **Program**       | `Internship/`, `InternshipGroup/`, `InternshipPhase/`                                                    | Http, Events, Listeners, Notifications, Rules                                            |
-| **Enrollment**    | — (flat structure)                                                                                       | Actions, Enums, Entities, Livewire, Models, Policies, Notifications                      |
-| **Assessment**    | `Assessment/`, `Rubric/`                                                                                 | —                                                                                        |
-| **Evaluation**    | — (flat structure)                                                                                       | Actions, Enums, Entities, Livewire, Models, Policies                                     |
-| **Assignment**    | `Assignment/`, `Submission/`                                                                             | Http, Notifications                                                                      |
+| **Enrollment**    | `AccountApplication/`, `Placement/`, `Registration/`                                                     | Http, Notifications                                                                      |
+| **Assessment**    | `Assessment/`, `Rubric/`                                                                                 | Actions, Entities, Enums, Livewire, Models, Policies                                     |
+| **Evaluation**    | — (flat structure)                                                                                       | Actions, Entities, Enums, Livewire, Models, Policies                                     |
+| **Assignment**    | `Assignment/`, `Submission/`                                                                             | Actions, Entities, Enums, Http, Livewire, Models, Notifications, Policies                |
 | **Journals**      | `Logbook/`, `Attendance/`, `AbsenceRequest/`, `Schedule/`, `IndustryAssessment/`                         | Http                                                                                     |
-| **Guidance**      | `SupervisionLog/`                                                                                        | Http                                                                                     |
-| **Incident**      | `IncidentReport/`                                                                                        | —                                                                                        |
-| **Partners**      | `Company/`, `Partnership/`                                                                               | —                                                                                        |
-| **Certification** | `Certificate/`                                                                                           | Http, Support                                                                            |
-| **Reports**       | `Report/`                                                                                                | Http, Livewire                                                                           |
-| **Document**      | `OfficialDocument/`                                                                                      | Models, Enums, Policies, Support                                                         |
+| **Guidance**      | `SupervisionLog/`                                                                                        | Actions, Entities, Enums, Livewire, Models, Policies                                     |
+| **Incident**      | `IncidentReport/`                                                                                        | Actions, Entities, Enums, Livewire, Models, Policies                                     |
+| **Partners**      | `Company/`, `Partnership/`                                                                               | Actions, Data, Entities, Enums, Livewire, Models, Policies                               |
+| **Certification** | `Certificate/`                                                                                           | Actions, Entities, Enums, Livewire, Models, Policies, Support                            |
+| **Reports**       | `Report/`                                                                                                | Actions, Entities, Livewire, Models, Policies                                            |
+| **Document**      | `OfficialDocument/`                                                                                      | Actions, Enums, Models, Policies, Support                                                |
 
 ### Views Structure
 
@@ -476,30 +475,29 @@ resources/views/livewire/
 
 ---
 
-## 20 Modules at a Glance
+## 19 Modules at a Glance
 
 | #  | Module            | Boundary                                                                       | Key Concept                                                                                              |
 | -- | ----------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| 1  | **Core**          | Base classes, infrastructure, and cross-module utilities                       | BaseModel, BaseAction, BaseEntity, contracts, SmartLogger, exception hierarchy, CSV handler              |
-| 2  | **Shared**        | Reusable utilities, concrete exceptions, DTOs, global enums, UI components     | config('cache-keys'), CsvHandler, concrete exceptions, LangSwitcher, ThemeSwitcher                                 |
-| 3  | **Auth**          | Authentication, authorization, and access control                              | Login, password management, account activation, recovery, RBAC, super admin integrity                    |
-| 4  | **User**          | Identity, profiles, and personal dashboards                                    | Profile editing, avatar upload, role-based dashboards, notification center, activity feed                |
-| 5  | **SysAdmin**      | System administration and user management                                      | User CRUD, announcements, audit logs, Pulse monitoring, account clone detection, GDPR compliance        |
-| 6  | **Setup**         | One-time installation and provisioning                                         | 6-step wizard, environment audit, setup token, super admin creation, CLI recovery                        |
-| 7  | **Settings**      | System-wide configuration and branding                                         | Key-value store, dynamic branding, color presets, mail config, feature flags, cached resolution chain    |
-| 8  | **Academics**     | Institution structure and academic foundation                                  | School profile, departments, academic years, first-run wizard                                           |
-| 9  | **Program**       | Internship program lifecycle                                                   | Program lifecycle, phases, groups, document requirements, closure readiness                             |
-| 10 | **Enrollment**    | Student registration and placement                                             | Applications, registration wizard, document upload, slot management, placement change requests           |
-| 11 | **Assessment**    | Competency evaluation framework                                                | Rubrics (JSON structures), assessment grading, finalization, dual mentor fallback                        |
-| 12 | **Evaluation**    | Program evaluation and feedback                                                | Mentor evaluation, score bands, admin oversight, trend analysis                                          |
-| 13 | **Assignment**    | Tasks and submissions                                                          | Task creation, grading workflow, revision loop, deadline management, version history                     |
-| 14 | **Journals**      | Daily activity tracking                                                        | Logbook entries, attendance with clock-in/out, absence requests, scheduling, calendar views              |
-| 15 | **Guidance**      | Mentoring and supervision                                                      | Supervision logs, mentoring assignments, student role activation, handbook acknowledgements              |
-| 16 | **Incident**      | Issue reporting and resolution                                                 | Incident forms, severity classification, investigation workflow, immutable timeline, resolution outcomes |
-| 17 | **Partners**      | External relationships management                                              | Company profiles, partnership agreements, MoU documents, expiry detection                                |
-| 18 | **Certification** | Credentialing and certificate management                                       | Certificate templates, single/batch issuance, revocation, serial number management, QR verification      |
-| 19 | **Reports**       | Student final grade card                                                       | Grade aggregation, grade card review, coordinator sign-off, immutable lock                              |
-| 20 | **Document**      | Official correspondence and template rendering                                 | Document templates, PDF rendering, handbooks, acknowledgement system, template versioning                |
+| 1  | **Core**          | Base classes, contracts, infrastructure, and cross-module utilities            | BaseModel, BaseAction, BaseEntity, SmartLogger, exception hierarchy, contracts, CSV handler              |
+| 2  | **Auth**          | Authentication, authorization, and access control                              | Login, password management, account activation, recovery, RBAC, super admin integrity                    |
+| 3  | **User**          | Identity, profiles, and personal dashboards                                    | Profile editing, avatar upload, role-based dashboards, notification center, account state machine        |
+| 4  | **SysAdmin**      | System administration and user management                                      | User CRUD, announcements, audit logs, Pulse monitoring, account clone detection, GDPR compliance        |
+| 5  | **Setup**         | One-time installation and provisioning                                         | 6-step wizard, environment audit, setup token, super admin creation, CLI recovery                        |
+| 6  | **Settings**      | System-wide configuration and branding                                         | Key-value store, dynamic branding, color presets, mail config, feature flags, cached resolution chain    |
+| 7  | **Academics**     | Institution structure and academic foundation                                  | School profile, departments, academic years                                                              |
+| 8  | **Program**       | Internship program lifecycle                                                   | Program lifecycle, phases, groups, document requirements, closure readiness                             |
+| 9  | **Enrollment**    | Student registration and placement                                             | Applications, registration wizard, document upload, slot management, placement change requests           |
+| 10 | **Assessment**    | Competency evaluation framework                                                | Rubrics (JSON structures), assessment grading, finalization, dual mentor fallback                        |
+| 11 | **Evaluation**    | Program evaluation and feedback                                                | Mentor evaluation, score bands, admin oversight, trend analysis                                          |
+| 12 | **Assignment**    | Tasks and submissions                                                          | Task creation, grading workflow, revision loop, deadline management, version history                     |
+| 13 | **Journals**      | Daily activity tracking                                                        | Logbook entries, attendance with clock-in/out, absence requests, scheduling, calendar views              |
+| 14 | **Guidance**      | Mentoring and supervision                                                      | Supervision logs, mentoring assignments, handbook acknowledgements                                      |
+| 15 | **Incident**      | Issue reporting and resolution                                                 | Incident forms, severity classification, investigation workflow, resolution outcomes                     |
+| 16 | **Partners**      | External relationships management                                              | Company profiles, partnership agreements, MoU documents, expiry detection                                |
+| 17 | **Certification** | Credentialing and certificate management                                       | Certificate templates, single/batch issuance, revocation, serial number management, QR verification      |
+| 18 | **Reports**       | Student final grade card                                                       | Grade aggregation, grade card review, coordinator sign-off, immutable lock                              |
+| 19 | **Document**      | Official correspondence and template rendering                                 | Document templates, PDF rendering, handbooks, acknowledgement system, template versioning                |
 
 ---
 
@@ -527,7 +525,7 @@ Every layer has exactly one base class from Core. There is no alternative.
 
 - `User` model is the sole exception — extends `Authenticatable` directly but applies `HasUuids` manually for UUID consistency.
 - Notifications extend `Illuminate\Notifications\Notification` directly (no shortcut provided).
-- Cache keys go into `config('cache-keys')` class as constants, not inline strings.
+- Cache keys go into `config/cache-keys.php`, not inline strings.
 
 ---
 
@@ -589,7 +587,7 @@ Actions call form requests/Form Objects for input validation before executing bu
 
 ## Caching Strategy
 
-- **Centralized key registry**: Every cache key declared as a constant in `App\Support\config('cache-keys')`
+- **Centralized key registry**: Every cache key declared in `config/cache-keys.php`
 - **Naming**: `{module}.{purpose}[.{qualifier}]` — e.g. `setup.is_installed`, `theme.css_variables`
 - **Invalidation**: Command Action dispatches event → Listener → `Cache::forget(key)`
 - **TTL classes**: Short (<5min), Medium (5min-1h), Long (1h-24h), Forever

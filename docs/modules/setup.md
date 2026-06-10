@@ -1,6 +1,6 @@
 # Setup
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 One-time system installation wizard, environment auditing, initial database provisioning (roles, academic years, super admin), and setup token lifecycle management.
 

@@ -1,6 +1,6 @@
 # Assignment — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Assignment** module.
 
@@ -94,6 +94,28 @@ Manages course assignments and submission tracking with grading workflows.
 
 File: `routes/web/assignment.php`
 Naming pattern: `assignment.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/assignment/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Assignment/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `AssignmentFactory` | `Assignment` |
+| `SubmissionFactory` | `Submission` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_assignments_table` | `assignments` |
+| `create_submissions_table` | `submissions` |
 
 ---
 

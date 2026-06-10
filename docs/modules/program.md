@@ -1,6 +1,6 @@
 # Program
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Internship program definition, timeline phases, grading weight configuration, cohort group management, and closure readiness checking.
 

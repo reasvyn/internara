@@ -38,7 +38,13 @@ test('rethrows runtime exception', function () {
 test('rethrows app exception', function () {
     $this->expectException(AppException::class);
 
-    $this->trait->run(fn () => throw new class extends AppException {});
+    $this->trait->run(fn () => throw new class extends AppException
+    {
+        public function statusCode(): int
+        {
+            return 400;
+        }
+    });
 
     // Cleanup: satisfy Pest no future expectations
     expect(true)->toBeTrue();
@@ -47,7 +53,13 @@ test('rethrows app exception', function () {
 test('rethrows module exception', function () {
     $this->expectException(ModuleException::class);
 
-    $this->trait->run(fn () => throw new class extends ModuleException {});
+    $this->trait->run(fn () => throw new class extends ModuleException
+    {
+        public function statusCode(): int
+        {
+            return 400;
+        }
+    });
 
     expect(true)->toBeTrue();
 });

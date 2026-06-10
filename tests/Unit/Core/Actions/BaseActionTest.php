@@ -16,9 +16,21 @@ use Illuminate\Validation\ValidationException;
 use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ConcreteAppException extends AppException {}
+class ConcreteAppException extends AppException
+{
+    public function statusCode(): int
+    {
+        return 400;
+    }
+}
 
-class ConcreteModuleException extends ModuleException {}
+class ConcreteModuleException extends ModuleException
+{
+    public function statusCode(): int
+    {
+        return 400;
+    }
+}
 
 class MockAction extends BaseAction
 {

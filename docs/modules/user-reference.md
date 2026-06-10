@@ -1,6 +1,6 @@
 # User — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **User** module.
 
@@ -159,6 +159,30 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 File: `routes/web/user.php`
 Naming pattern: `user.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/user/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/User/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `UserFactory` | `User` |
+| `ProfileFactory` | `Profile` |
+| `NotificationFactory` | `Notification` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_users_table` | `users` |
+| `create_profiles_table` | `profiles` |
+| `create_notifications_table` | `notifications` |
 
 ---
 

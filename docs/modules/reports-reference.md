@@ -1,6 +1,6 @@
 # Reports — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Reports** module.
 
@@ -63,6 +63,26 @@ Manages final student grade compilation, score aggregation, coordinator sign-off
 
 File: `routes/web/reports.php`
 Naming pattern: `reports.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/reports/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Reports/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `ReportFactory` | `Report` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_reports_table` | `reports` |
 
 ---
 

@@ -247,7 +247,7 @@ final class Settings
             }
         }
 
-        Cache::forget(config('cache-keys.settings_key').'all');
+        Cache::forget(config('cache-keys.settings_all'));
 
         if (in_array($key, config('settings.theme_cache_keys', []), true)) {
             Cache::forget(config('cache-keys.theme_css_variables'));

@@ -1,6 +1,6 @@
 # Auth
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Authentication, authorization (RBAC), account lifecycle, login throttling, password management, account activation, and recovery.
 

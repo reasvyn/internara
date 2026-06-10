@@ -1,6 +1,6 @@
 # Program — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Program** module.
 
@@ -139,6 +139,30 @@ Manages internship programs (lowongan PKL), program timelines, phases, and stude
 
 File: `routes/web/program.php`
 Naming pattern: `program.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/program/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Program/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `InternshipFactory` | `Internship` |
+| `InternshipGroupFactory` | `InternshipGroup` |
+| `InternshipGroupMemberFactory` | `InternshipGroupMember` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_internships_table` | `internships` |
+| `create_internship_groups_table` | `internship_groups` |
+| `create_internship_group_members_table` | `internship_group_members` |
 
 ---
 

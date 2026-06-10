@@ -5,8 +5,9 @@ declare(strict_types=1);
 use App\Academics\AcademicYear\Actions\ActivateAcademicYearAction;
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Exceptions\RejectedException;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('activates inactive academic year', function () {
     $year = AcademicYear::factory()->create(['is_active' => false]);

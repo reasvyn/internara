@@ -1,7 +1,7 @@
 # ADR-012: Gradual Migration / Optional Complexity
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 ## Context
 
@@ -44,7 +44,7 @@ BaseData supports `fromArray()` so consumers passing arrays continue to work dur
 |---|---|---|
 | Start | `Cache::forget()` inline in Action | Quick — "just make it work" |
 | Stabilize | Event dispatched, listener flushes keys | Multiple events affect same key |
-| Final | config('cache-keys') registry, listener-driven | Full cross-module invalidation |
+| Final | `config/cache-keys.php` registry, listener-driven | Full cross-module invalidation |
 
 ### Shared Validation Rules in Entities
 

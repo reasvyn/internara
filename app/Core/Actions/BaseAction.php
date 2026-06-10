@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Actions;
 
+use App\Core\Events\BaseEvent;
 use App\Core\Support\HandlesActionErrors;
 use App\Core\Support\SmartLogger;
 use Illuminate\Database\Eloquent\Model;
@@ -13,13 +14,48 @@ abstract class BaseAction
 {
     use HandlesActionErrors;
 
+    private array $pendingEvents = [];
+
     protected function transaction(callable $callback, int $attempts = 3): mixed
     {
+        $this->beforeExecute();
+
         if (DB::transactionLevel() > 0) {
-            return $callback();
+            $result = $callback();
+            $this->dispatchPendingEvents();
+            $this->afterExecute($result);
+
+            return $result;
         }
 
-        return DB::transaction($callback, $attempts);
+        $result = DB::transaction(function () use ($callback) {
+            $result = $callback();
+            $this->dispatchPendingEvents();
+
+            return $result;
+        }, $attempts);
+
+        $this->afterExecute($result);
+
+        return $result;
+    }
+
+    protected function beforeExecute(): void {}
+
+    protected function afterExecute(mixed $result): void {}
+
+    protected function dispatchEvent(BaseEvent $event): void
+    {
+        $this->pendingEvents[] = $event;
+    }
+
+    private function dispatchPendingEvents(): void
+    {
+        foreach ($this->pendingEvents as $event) {
+            event($event);
+        }
+
+        $this->pendingEvents = [];
     }
 
     protected function log(string $action, ?Model $subject = null, array $payload = []): void

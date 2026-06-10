@@ -6,21 +6,41 @@ namespace App\Core\Policies;
 
 use App\Core\Policies\Concerns\AuthorizesOwnership;
 use App\Core\Policies\Concerns\AuthorizesRoles;
+use Illuminate\Auth\Access\Response;
+use Illuminate\Database\Eloquent\Model;
 
-/**
- * Base class for all module policies.
- *
- * Provides shared role-based and ownership authorization methods to eliminate
- * duplicated hasAnyRole and owner-check patterns across policies.
- *
- * Usage:
- * class CompanyPolicy extends BasePolicy { ... }
- *
- * Or use traits directly for existing policies:
- * class ExistingPolicy { use AuthorizesRoles, AuthorizesOwnership; }
- */
 abstract class BasePolicy
 {
     use AuthorizesOwnership;
     use AuthorizesRoles;
+
+    public function before(Model $user): ?Response
+    {
+        if ($user->hasRole('super_admin')) {
+            return Response::allow();
+        }
+
+        return null;
+    }
+
+    protected function allowIfAdmin(Model $user): Response
+    {
+        return $this->isAdmin($user)
+            ? Response::allow()
+            : Response::deny(__('policies.admin_only'));
+    }
+
+    protected function allowIfAdminOrTeacher(Model $user): Response
+    {
+        return $this->isAdminOrTeacher($user)
+            ? Response::allow()
+            : Response::deny(__('policies.admin_or_teacher_only'));
+    }
+
+    protected function allowIfOwner(Model $user, Model $model, string $foreignKey = 'user_id'): Response
+    {
+        return $this->isOwner($user, $model, $foreignKey)
+            ? Response::allow()
+            : Response::deny(__('policies.owner_only'));
+    }
 }

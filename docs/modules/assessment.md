@@ -1,6 +1,6 @@
 # Assessment
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Rubric-based competency evaluation: rubric templates with structured criteria stored as JSON, and student assessment grading with dual mentor fallback.
 

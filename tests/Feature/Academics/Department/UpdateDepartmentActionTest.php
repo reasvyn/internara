@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 use App\Academics\Department\Actions\UpdateDepartmentAction;
 use App\Academics\Department\Models\Department;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Validation\ValidationException;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('updates department name', function () {
     $department = Department::factory()->create(['name' => 'Old Name']);
@@ -31,7 +33,7 @@ test('rejects duplicate name on update', function () {
     $action = app(UpdateDepartmentAction::class);
 
     expect(fn () => $action->execute($department, ['name' => 'Existing']))
-        ->toThrow(\Illuminate\Validation\ValidationException::class);
+        ->toThrow(ValidationException::class);
 });
 
 test('allows same name on update', function () {

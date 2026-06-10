@@ -1,11 +1,11 @@
 # ADR-006: Base Class Mandate
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 ## Context
 
-In a 20-module codebase with 12 architectural layers and 160+ Actions across 50+ models, consistency is not optional. Without enforcement, drift accumulates silently: a model without UUID keys breaks foreign key assumptions, a policy without role checks allows unauthorized access, and an action without transaction wrapping leaves partial database writes on failure.
+In a 19-module codebase with 12 architectural layers and 160+ Actions across 50+ models, consistency is not optional. Without enforcement, drift accumulates silently: a model without UUID keys breaks foreign key assumptions, a policy without role checks allows unauthorized access, and an action without transaction wrapping leaves partial database writes on failure.
 
 Architecture tests previously caught these violations but were removed due to a `pest-plugin-arch` compatibility bug. Until restored, enforcement relies on PHPStan custom rules and code review.
 
@@ -26,7 +26,7 @@ Every architectural layer has exactly one base class from Core. There is no alte
 | Enum | Implements LabelEnum | label(): string method | implements check |
 | Status Enum | Implements StatusEnum + LabelEnum | canTransitionTo(), isTerminal() | implements check |
 | Exception | AppException or ModuleException | HasExceptionContext trait | extends check |
-| Cache key | config('cache-keys') constant | Centralized key registry | constant reference |
+| Cache key | `config/cache-keys.php` | Centralized key registry | config array |
 
 ### Exception
 
@@ -55,5 +55,5 @@ Until architecture tests are restored (planned when `pest-plugin-arch` stabilize
 - `app/Core/Http/Requests/BaseFormRequest.php` — Base form request
 - `app/Core/Contracts/LabelEnum.php` — Enum contract
 - `app/Core/Contracts/StatusEnum.php` — Status enum contract
-- `app/Core/Support/config('cache-keys').php` — Cache key registry
+- `config/cache-keys.php` — Cache key registry
 - `docs/architecture.md` — Base Class Mandate section

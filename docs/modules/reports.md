@@ -1,6 +1,6 @@
 # Reports
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Final student grade card (Nilai Raport PKL): grade aggregation from multiple assessment sources, composite score calculation, coordinator sign-off, and certificate eligibility trigger.
 

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 use App\Partners\Company\Actions\UpdateCompanyAction;
 use App\Partners\Company\Models\Company;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('updates company name', function () {
     $company = Company::factory()->create(['name' => 'Old Name']);

@@ -15,42 +15,6 @@ use Throwable;
 
 final class Brand
 {
-    private static function withFallback(
-        callable $resolver,
-        mixed $fallback,
-        string $context,
-    ): mixed {
-        try {
-            return $resolver();
-        } catch (Throwable $e) {
-            self::logSettingsWarning($context, $e);
-
-            return $fallback;
-        }
-    }
-
-    private static function logSettingsWarning(string $context, Throwable $e): void
-    {
-        SmartLogger::warning($context)
-            ->withPayload(['error' => $e->getMessage()])
-            ->systemOnly()
-            ->save();
-    }
-
-    private static function resolveString(
-        string $settingKey,
-        string $fallback,
-        string $context,
-    ): string {
-        $value = self::withFallback(
-            fn () => SettingModel::where('key', $settingKey)->value('value'),
-            null,
-            $context,
-        );
-
-        return is_string($value) && $value !== '' ? $value : $fallback;
-    }
-
     public static function clearCache(): void
     {
         Cache::forget(config('cache-keys.brand_colors'));
@@ -58,56 +22,32 @@ final class Brand
 
     public static function name(): string
     {
-        return self::resolveString(
-            'name',
-            AppInfo::name(),
-            'Failed to get name from settings',
-        );
+        return self::resolveValue('name', AppInfo::name());
     }
 
     public static function title(): string
     {
-        return self::resolveString(
-            'title',
-            self::name(),
-            'Failed to get site title from settings',
-        );
+        return self::resolveValue('title', self::name());
     }
 
     public static function logo(): string
     {
         $default = Config::get('app.logo', asset('/logo.png'));
 
-        $logo = self::withFallback(
-            fn () => SettingModel::where('key', 'logo')->value('value'),
-            null,
-            'Failed to get logo from settings',
-        );
-
-        return is_string($logo) && $logo !== '' ? $logo : $default;
+        return self::resolveValue('logo', $default);
     }
 
     public static function favicon(): string
     {
         $default = Config::get('app.favicon', asset('/favicon.ico'));
 
-        $favicon = self::withFallback(
-            fn () => SettingModel::where('key', 'favicon')->value('value'),
-            null,
-            'Failed to get favicon from settings',
-        );
-
-        return is_string($favicon) && $favicon !== '' ? $favicon : $default;
+        return self::resolveValue('favicon', $default);
     }
 
     public static function colors(): array
     {
         return Cache::remember(config('cache-keys.brand_colors'), 86400, function () {
-            return self::withFallback(
-                fn () => Theme::all(),
-                Theme::defaults(),
-                'Failed to get branding colors from settings',
-            );
+            return self::safe(fn () => Theme::all(), Theme::defaults());
         });
     }
 
@@ -161,5 +101,33 @@ final class Brand
     public static function get(string $key, mixed $default = null): mixed
     {
         return self::resolve()->get($key, $default);
+    }
+
+    private static function resolveValue(string $key, string $fallback): string
+    {
+        $value = self::safe(
+            fn () => SettingModel::where('key', $key)->value('value'),
+            null,
+        );
+
+        return is_string($value) && $value !== '' ? $value : $fallback;
+    }
+
+    private static function safe(callable $resolver, mixed $fallback = null): mixed
+    {
+        try {
+            return $resolver();
+        } catch (Throwable $e) {
+            SmartLogger::warning('Brand resolution failed')
+                ->withPayload([
+                    'error' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ])
+                ->systemOnly()
+                ->save();
+
+            return $fallback;
+        }
     }
 }

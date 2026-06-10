@@ -1,6 +1,6 @@
 # Assessment — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Assessment** module.
 
@@ -76,6 +76,28 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 
 File: `routes/web/assessment.php`
 Naming pattern: `assessment.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/assessment/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Assessment/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `AssessmentFactory` | `Assessment` |
+| `RubricFactory` | `Rubric` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_assessments_table` | `assessments` |
+| `create_rubrics_table` | `rubrics` |
 
 ---
 

@@ -1,7 +1,6 @@
 # Module Documentation Index
 
-> Last updated: 2026-06-06 Changes: Added Settings module to module index; updated total module
-> count to 19
+> Last updated: 2026-06-10
 
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire

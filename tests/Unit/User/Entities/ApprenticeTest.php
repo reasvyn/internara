@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\User\Enums\AccountStatus;
 use App\User\Entities\Apprentice;
+use App\User\Enums\AccountStatus;
 
 test('apprentice returns correct status', function () {
     $entity = new Apprentice(status: AccountStatus::ACTIVATED, isLocked: false, setupRequired: false);

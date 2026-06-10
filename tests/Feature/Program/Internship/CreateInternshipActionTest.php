@@ -5,8 +5,9 @@ declare(strict_types=1);
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Program\Internship\Actions\CreateInternshipAction;
 use App\Program\Internship\Models\Internship;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('creates internship with valid data', function () {
     $year = AcademicYear::factory()->create();

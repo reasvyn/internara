@@ -5,8 +5,9 @@ declare(strict_types=1);
 use App\Academics\AcademicYear\Actions\BulkDeleteAcademicYearsAction;
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Exceptions\RejectedException;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('bulk deletes multiple inactive years', function () {
     $years = AcademicYear::factory(3)->create(['is_active' => false]);
@@ -17,7 +18,7 @@ test('bulk deletes multiple inactive years', function () {
 
     expect($count)->toBe(3);
     foreach ($years as $year) {
-        $this->assertDatabaseMissing("academic_years", ["id" => $year->id]);
+        $this->assertDatabaseMissing('academic_years', ['id' => $year->id]);
     }
 });
 
@@ -35,5 +36,5 @@ test('bulk delete throws if any year is active', function () {
 
     expect(fn () => $action->execute([$year->id]))->toThrow(RejectedException::class);
 
-    $this->assertDatabaseHas("academic_years", ["id" => $year->id]);
+    $this->assertDatabaseHas('academic_years', ['id' => $year->id]);
 });

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 use App\Academics\AcademicYear\Actions\CreateAcademicYearAction;
 use App\Academics\AcademicYear\Models\AcademicYear;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Validation\ValidationException;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('creates academic year with valid data', function () {
     $action = app(CreateAcademicYearAction::class);
@@ -44,7 +46,7 @@ test('rejects duplicate name', function () {
         'name' => '2025/2026',
         'start_date' => '2025-07-01',
         'end_date' => '2026-06-30',
-    ]))->toThrow(\Illuminate\Validation\ValidationException::class);
+    ]))->toThrow(ValidationException::class);
 });
 
 test('rejects end date before start date', function () {
@@ -54,5 +56,5 @@ test('rejects end date before start date', function () {
         'name' => 'Invalid',
         'start_date' => '2026-01-01',
         'end_date' => '2025-12-31',
-    ]))->toThrow(\Illuminate\Validation\ValidationException::class);
+    ]))->toThrow(ValidationException::class);
 });

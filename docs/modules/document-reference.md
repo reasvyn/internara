@@ -1,6 +1,6 @@
 # Document — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Document** module.
 
@@ -82,6 +82,26 @@ Manages official document templates, correspondence generation (MoU, agreements)
 
 File: `routes/web/document.php`
 Naming pattern: `document.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/document/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Document/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `DocumentFactory` | `Document` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_documents_table` | `documents` |
 
 ---
 

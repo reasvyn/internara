@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Console\Commands;
 
 use App\Core\Support\SmartLogger;
-use App\Settings\Support\AppInfo;
+use App\Core\Support\AppInfo;
 use App\Settings\Support\Settings;
 use App\SysAdmin\UserManagement\Actions\ReadRecoveryKeyAction;
 use App\SysAdmin\UserManagement\Actions\SaveRecoveryKeyAction;

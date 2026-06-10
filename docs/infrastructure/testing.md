@@ -1,6 +1,6 @@
 # Testing
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-10
 
 ## Testing Philosophy
 
@@ -187,5 +187,5 @@ The `composer run coverage` script handles this automatically.
 - `phpunit.xml` — PHPUnit configuration
 - `phpunit.coverage.xml` — coverage-specific configuration
 - `composer.json` — test scripts in `scripts` section
-- `docs/conventions.md` — Section 19 (Testing conventions)
+- `docs/conventions.md` — Section 22 (Testing)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design

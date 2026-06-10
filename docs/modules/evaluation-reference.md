@@ -1,6 +1,6 @@
 # Evaluation — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Evaluation** module.
 
@@ -71,6 +71,26 @@ None — all components are directly under `app/Evaluation/`.
 
 File: `routes/web/evaluation.php`
 Naming pattern: `evaluation.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/evaluation/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Evaluation/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `EvaluationFactory` | `Evaluation` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_evaluations_table` | `evaluations` |
 
 ---
 

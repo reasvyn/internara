@@ -5,16 +5,19 @@ declare(strict_types=1);
 use App\Auth\Login\Actions\LoginAction;
 use App\Auth\Login\Events\LoginFailed;
 use App\Auth\Login\Events\LoginSucceeded;
+use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Spatie\Permission\Models\Role;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
-    \Spatie\Permission\Models\Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
+    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
 });
 
 test('login succeeded event is dispatched on successful login', function () {
-    $user = \App\User\Models\User::factory()->create([
+    $user = User::factory()->create([
         'email' => 'test@example.com',
         'password' => bcrypt('password'),
     ]);
@@ -34,7 +37,7 @@ test('login failed event is dispatched on invalid credentials', function () {
 
     try {
         app(LoginAction::class)->execute('nonexistent@test.com', 'wrong');
-    } catch (\RuntimeException) {
+    } catch (RuntimeException) {
         // expected
     }
 

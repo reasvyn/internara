@@ -5,8 +5,9 @@ declare(strict_types=1);
 use App\Academics\AcademicYear\Actions\DeleteAcademicYearAction;
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Exceptions\RejectedException;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('deletes inactive academic year without related records', function () {
     $year = AcademicYear::factory()->create(['is_active' => false]);
@@ -14,7 +15,7 @@ test('deletes inactive academic year without related records', function () {
 
     $action->execute($year);
 
-    $this->assertDatabaseMissing("academic_years", ["id" => $year->id]);
+    $this->assertDatabaseMissing('academic_years', ['id' => $year->id]);
 });
 
 test('cannot delete active academic year', function () {
@@ -23,5 +24,5 @@ test('cannot delete active academic year', function () {
 
     expect(fn () => $action->execute($year))->toThrow(RejectedException::class);
 
-    $this->assertDatabaseHas("academic_years", ["id" => $year->id]);
+    $this->assertDatabaseHas('academic_years', ['id' => $year->id]);
 });

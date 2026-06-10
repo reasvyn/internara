@@ -2,22 +2,26 @@
 
 declare(strict_types=1);
 
+use App\User\Models\User;
 use App\User\Notifications\Actions\MarkAsReadAction;
 use App\User\Notifications\Actions\SendNotificationAction;
 use App\User\Notifications\Events\NotificationRead;
 use App\User\Notifications\Events\NotificationSent;
+use App\User\Notifications\Models\Notification;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
+use Spatie\Permission\Models\Role;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Cache::flush();
-    \Spatie\Permission\Models\Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
+    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
 });
 
 test('send notification dispatches event and invalidates cache', function () {
-    $user = \App\User\Models\User::factory()->create();
+    $user = User::factory()->create();
 
     Event::fake([NotificationSent::class]);
 
@@ -32,8 +36,8 @@ test('send notification dispatches event and invalidates cache', function () {
 });
 
 test('mark as read dispatches event', function () {
-    $user = \App\User\Models\User::factory()->create();
-    $notification = \App\User\Notifications\Models\Notification::factory()->create([
+    $user = User::factory()->create();
+    $notification = Notification::factory()->create([
         'user_id' => $user->id,
         'is_read' => false,
     ]);

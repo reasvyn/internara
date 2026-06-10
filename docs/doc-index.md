@@ -1,6 +1,6 @@
 # Documentation Index
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 >
 > Complete catalog of all documentation in the `docs/` directory. This index is the single entry point for navigating Internara's documentation. Every file listed here is part of the authoritative system documentation and must be kept in sync with the implementation.
 

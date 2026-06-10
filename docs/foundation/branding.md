@@ -1,6 +1,6 @@
 # Branding & Theming
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 ---
 
@@ -115,7 +115,7 @@ Instrument Sans finishes loading.
 
 | Component | Path |
 |-----------|------|
-| `brand()` / `app_info()` helpers | `app/Support/helpers.php` |
+| `brand()` / `app_info()` helpers | `app/Settings/Support/helpers.php` |
 | Brand resolver | `app/Settings/Support/Brand.php` |
 | Theme (color computation) | `app/Settings/Support/Theme.php` |
 | Color utility | `app/Settings/Support/Color.php` |

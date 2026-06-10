@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 use App\Academics\Department\Actions\CreateDepartmentAction;
 use App\Academics\Department\Models\Department;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Validation\ValidationException;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('creates department with valid data', function () {
     $action = app(CreateDepartmentAction::class);
@@ -15,7 +17,7 @@ test('creates department with valid data', function () {
     ]);
 
     expect($department)->toBeInstanceOf(Department::class);
-    $this->assertDatabaseHas("departments", ["id" => $department->id]);
+    $this->assertDatabaseHas('departments', ['id' => $department->id]);
     expect($department->name)->toBe('Rekayasa Perangkat Lunak');
 });
 
@@ -35,12 +37,12 @@ test('rejects duplicate department name', function () {
     $action = app(CreateDepartmentAction::class);
 
     expect(fn () => $action->execute(['name' => 'RPL']))
-        ->toThrow(\Illuminate\Validation\ValidationException::class);
+        ->toThrow(ValidationException::class);
 });
 
 test('rejects empty name', function () {
     $action = app(CreateDepartmentAction::class);
 
     expect(fn () => $action->execute(['name' => '']))
-        ->toThrow(\Illuminate\Validation\ValidationException::class);
+        ->toThrow(ValidationException::class);
 });

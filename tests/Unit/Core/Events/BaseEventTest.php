@@ -55,6 +55,26 @@ class MockMetadata
     }
 }
 
+function createTestModel(string $key = 'uuid-123'): Model
+{
+    return new class($key) extends Model
+    {
+        public string $modelKey;
+
+        public function __construct(string $key = 'uuid-123')
+        {
+            $this->modelKey = $key;
+
+            parent::__construct();
+        }
+
+        public function getKey(): mixed
+        {
+            return $this->modelKey;
+        }
+    };
+}
+
 test('base event returns event name', function () {
     $event = new MockLogEvent('Test', 5);
 
@@ -75,9 +95,7 @@ test('base event is dispatchable', function () {
 });
 
 test('base event to payload extracts model as id', function () {
-    $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getKey')->andReturn('uuid-123');
-
+    $model = createTestModel('uuid-123');
     $event = new MockEventWithModel('update', $model);
 
     $payload = $event->toPayload();
@@ -105,13 +123,49 @@ test('base event to payload extracts object with to array', function () {
 });
 
 test('base event to payload includes extra array properties', function () {
-    $model = Mockery::mock(Model::class);
-    $model->shouldReceive('getKey')->andReturn('abc');
-
+    $model = createTestModel('abc');
     $event = new MockEventWithModel('update', $model, ['reason' => 'test']);
 
     $payload = $event->toPayload();
 
     expect($payload)->toHaveKey('extra');
     expect($payload['extra'])->toBe(['reason' => 'test']);
+});
+
+test('base event to payload skips socket property', function () {
+    $event = new MockLogEvent('Test', 1);
+
+    $payload = $event->toPayload();
+
+    expect($payload)->not->toHaveKey('socket');
+});
+
+test('base event broadcast on returns empty array', function () {
+    $event = new MockLogEvent('Test', 1);
+
+    expect($event->broadcastOn())->toBe([]);
+});
+
+test('base event broadcast as returns event name', function () {
+    $event = new MockLogEvent('Test', 1);
+
+    expect($event->broadcastAs())->toBe('internship_created');
+});
+
+test('base event should broadcast returns false', function () {
+    $event = new MockLogEvent('Test', 1);
+
+    expect($event->shouldBroadcast())->toBeFalse();
+});
+
+test('base event should queue returns false', function () {
+    $event = new MockLogEvent('Test', 1);
+
+    expect($event->shouldQueue())->toBeFalse();
+});
+
+test('base event queue returns default', function () {
+    $event = new MockLogEvent('Test', 1);
+
+    expect($event->queue())->toBe('default');
 });

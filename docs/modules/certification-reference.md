@@ -1,6 +1,6 @@
 # Certification — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Certification** module.
 
@@ -78,6 +78,26 @@ Manages certificate generation, template management, and credential issuance for
 
 File: `routes/web/certification.php`
 Naming pattern: `certification.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/certification/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Certification/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `CertificateFactory` | `Certificate` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_certificates_table` | `certificates` |
 
 ---
 

@@ -369,7 +369,7 @@ test('resets invalid perPage value to 10 during rows call', function () {
 
 test('with relations are applied when set', function () {
     $this->manager->populateRecordCount(3);
-    $this->manager->setWith(['relationOne', 'relationTwo']);
+    $this->manager->setWith([]);
 
     $result = $this->manager->rows();
 

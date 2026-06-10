@@ -1,6 +1,6 @@
 # Entity Relationship Diagram
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 >
 > **Total: 49 tables** (31 Domain Tables + 18 System/Package Tables)
 

@@ -1,6 +1,6 @@
 # Journals — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Journals** module.
 
@@ -115,6 +115,31 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), sc
 
 File: `routes/web/journals.php`
 Naming pattern: `journals.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/journals/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Journals/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `LogbookFactory` | `Logbook` |
+| `AttendanceFactory` | `Attendance` |
+| `ScheduleFactory` | `Schedule` |
+| `AbsenceRequestFactory` | `AbsenceRequest` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_logbooks_table` | `logbooks` |
+| `create_attendances_table` | `attendances` |
+| `create_schedules_table` | `schedules` |
 
 ---
 
