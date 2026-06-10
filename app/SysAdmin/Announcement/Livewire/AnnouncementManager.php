@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\SysAdmin\Announcement\Livewire;
 
 use App\Auth\Permissions\Enums\Role;
+use App\SysAdmin\Announcement\Actions\DeleteAnnouncementAction;
+use App\SysAdmin\Announcement\Actions\PublishAnnouncementAction;
 use App\SysAdmin\Announcement\Actions\SendAnnouncementAction;
 use App\SysAdmin\Announcement\Enums\AnnouncementStatus;
 use App\SysAdmin\Announcement\Livewire\Forms\AnnouncementForm;
@@ -72,7 +74,7 @@ class AnnouncementManager extends Component
 
         if ($this->confirmActionType === 'delete') {
             $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);
-            $announcement->delete();
+            $action->delete($announcement);
             flash()->success(__('announcement.deleted'));
         } elseif ($this->confirmActionType === 'publish') {
             $announcement = Announcement::where('created_by', Auth::id())->findOrFail($id);

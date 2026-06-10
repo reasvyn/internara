@@ -12,10 +12,12 @@
 > codebase, see [Modular Pattern Reference](architecture/modular-pattern.md).
 > For focused deep-dives into specific pattern domains, see:
 > [Action](architecture/action-pattern.md) · [Entity](architecture/entity-pattern.md) ·
-> [Enum](architecture/enum-pattern.md) · [Livewire](architecture/livewire-pattern.md) ·
-> [Exception](architecture/exception-pattern.md) · [Policy](architecture/policy-pattern.md) ·
-> [Logging](architecture/logging-pattern.md) · [Cache](architecture/cache-pattern.md) ·
-> [Testing](architecture/testing-pattern.md)
+> [Model](architecture/model-pattern.md) · [Data](architecture/data-pattern.md) ·
+> [Event](architecture/event-pattern.md) · [Enum](architecture/enum-pattern.md) ·
+> [Livewire](architecture/livewire-pattern.md) · [Exception](architecture/exception-pattern.md) ·
+> [Policy](architecture/policy-pattern.md) · [Logging](architecture/logging-pattern.md) ·
+> [Cache](architecture/cache-pattern.md) · [Service](architecture/service-pattern.md) ·
+> [Repository](architecture/repository-pattern.md) · [Testing](architecture/testing-pattern.md)
 
 ---
 
