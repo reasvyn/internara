@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
+use App\SysAdmin\Announcement\Livewire\AnnouncementManager;
+use App\SysAdmin\Livewire\ApplicationReview;
+use App\SysAdmin\Observability\GdprDeletionLog\Livewire\GdprDeletionLogs;
+use App\SysAdmin\Observability\Livewire\AccountCloneDetector;
+use App\SysAdmin\Observability\Livewire\AuditLogManager;
 use App\SysAdmin\UserManagement\Actions\GenerateAccountSlipAction;
 use App\SysAdmin\UserManagement\Livewire\AdminManager;
 use App\SysAdmin\UserManagement\Livewire\StudentManager;
 use App\SysAdmin\UserManagement\Livewire\SupervisorManager;
 use App\SysAdmin\UserManagement\Livewire\TeacherManager;
 use App\SysAdmin\UserManagement\Livewire\UserManager;
-use App\SysAdmin\Announcement\Livewire\AnnouncementManager;
-use App\SysAdmin\Livewire\ApplicationReview;
-use App\SysAdmin\Observability\GdprDeletionLog\Livewire\GdprDeletionLogs;
-use App\SysAdmin\Observability\Livewire\AccountCloneDetector;
-use App\SysAdmin\Observability\Livewire\AuditLogManager;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Laravel\Pulse\Pulse;

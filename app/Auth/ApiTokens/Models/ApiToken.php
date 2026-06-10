@@ -7,14 +7,14 @@ namespace App\Auth\ApiTokens\Models;
 use App\Auth\ApiTokens\Entities\ActivationToken;
 use App\Core\Models\BaseModel;
 use App\User\Models\User;
+use Database\Factories\ApiTokenFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Hash;
 
-class ApiToken extends BaseModel
-{
-    protected $table = 'api_tokens';
-
-    protected $fillable = [
+#[
+    Fillable([
         'user_id',
         'token',
         'token_type',
@@ -25,7 +25,13 @@ class ApiToken extends BaseModel
         'last_attempt_at',
         'last_used_at',
         'revoked_at',
-    ];
+    ]),
+]
+class ApiToken extends BaseModel
+{
+    use HasFactory;
+
+    protected $table = 'api_tokens';
 
     protected $casts = [
         'expires_at' => 'datetime',
@@ -35,6 +41,11 @@ class ApiToken extends BaseModel
         'attempts' => 'integer',
         'scopes' => 'array',
     ];
+
+    protected static function newFactory(): ApiTokenFactory
+    {
+        return ApiTokenFactory::new();
+    }
 
     public function user(): BelongsTo
     {

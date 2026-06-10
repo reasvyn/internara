@@ -24,6 +24,7 @@ function createTestModel(mixed $key = 456, ?string $name = null): Model
         protected $table = 'test';
 
         public mixed $testKey;
+
         public ?string $testName = null;
 
         public function getKey(): mixed

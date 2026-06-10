@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Guidance\SupervisionLog\Enums\SupervisionLogStatus;
 use App\Guidance\SupervisionLog\Entities\SupervisionStatus;
+use App\Guidance\SupervisionLog\Enums\SupervisionLogStatus;
 
 test('supervision status can be created with terminal status', function () {
     $entity = new SupervisionStatus(SupervisionLogStatus::COMPLETED);

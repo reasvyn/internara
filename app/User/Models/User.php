@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Models;
 
+use App\Core\Models\BaseAuthenticatable;
 use App\Enrollment\Registration\Models\Registration;
 use App\User\Entities\Apprentice;
 use App\User\Enums\AccountStatus;
@@ -16,7 +17,6 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use RuntimeException;
 use Spatie\MediaLibrary\HasMedia;
@@ -38,7 +38,7 @@ use Spatie\Permission\Traits\HasRoles;
     ]),
 ]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements HasMedia
+class User extends BaseAuthenticatable implements HasMedia
 {
     use HasFactory, HasUuids, InteractsWithMedia, Notifiable;
     use HasRoles {

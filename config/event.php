@@ -1,51 +1,70 @@
 <?php
 
 declare(strict_types=1);
+use App\Academics\AcademicYear\Events\AcademicYearActivated;
+use App\Academics\AcademicYear\Events\AcademicYearCreated;
+use App\Academics\Department\Events\DepartmentCreated;
+use App\Academics\Department\Events\DepartmentDeleted;
+use App\Enrollment\Registration\Events\StudentRegistered;
+use App\Enrollment\Registration\Listeners\ClearDashboardOnRegistration;
+use App\Partners\Company\Events\CompanyCreated;
+use App\Partners\Company\Listeners\ClearDashboardOnCompanyChange;
+use App\Program\Internship\Events\InternshipCreated;
+use App\Program\Internship\Listeners\NotifyAdminsInternshipCreated;
+use App\Settings\Events\SettingUpdated;
+use App\Settings\Listeners\InvalidateSettingsCache;
+use App\Setup\SetupWizard\Events\SetupFinalized;
+use App\Setup\SetupWizard\Listeners\LogSetupFinalized;
+use App\User\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange;
+use App\User\Dashboard\Listeners\ClearDashboardCacheOnYearChange;
+use App\User\Notifications\Events\NotificationRead;
+use App\User\Notifications\Events\NotificationSent;
+use App\User\Notifications\Listeners\ClearUnreadNotificationCache;
 
 return [
     'listen' => [
-        App\Setup\SetupWizard\Events\SetupFinalized::class => [
-            App\Setup\SetupWizard\Listeners\LogSetupFinalized::class,
+        SetupFinalized::class => [
+            LogSetupFinalized::class,
         ],
 
-        App\Settings\Events\SettingUpdated::class => [
-            App\Settings\Listeners\InvalidateSettingsCache::class,
+        SettingUpdated::class => [
+            InvalidateSettingsCache::class,
         ],
 
-        App\Academics\AcademicYear\Events\AcademicYearCreated::class => [
-            App\User\Dashboard\Listeners\ClearDashboardCacheOnYearChange::class,
+        AcademicYearCreated::class => [
+            ClearDashboardCacheOnYearChange::class,
         ],
 
-        App\Academics\AcademicYear\Events\AcademicYearActivated::class => [
-            App\User\Dashboard\Listeners\ClearDashboardCacheOnYearChange::class,
+        AcademicYearActivated::class => [
+            ClearDashboardCacheOnYearChange::class,
         ],
 
-        App\Academics\Department\Events\DepartmentCreated::class => [
-            App\User\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange::class,
+        DepartmentCreated::class => [
+            ClearDashboardCacheOnDepartmentChange::class,
         ],
 
-        App\Academics\Department\Events\DepartmentDeleted::class => [
-            App\User\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange::class,
+        DepartmentDeleted::class => [
+            ClearDashboardCacheOnDepartmentChange::class,
         ],
 
-        App\User\Notifications\Events\NotificationSent::class => [
-            App\User\Notifications\Listeners\ClearUnreadNotificationCache::class,
+        NotificationSent::class => [
+            ClearUnreadNotificationCache::class,
         ],
 
-        App\User\Notifications\Events\NotificationRead::class => [
-            App\User\Notifications\Listeners\ClearUnreadNotificationCache::class,
+        NotificationRead::class => [
+            ClearUnreadNotificationCache::class,
         ],
 
-        App\Partners\Company\Events\CompanyCreated::class => [
-            App\Partners\Company\Listeners\ClearDashboardOnCompanyChange::class,
+        CompanyCreated::class => [
+            ClearDashboardOnCompanyChange::class,
         ],
 
-        App\Program\Internship\Events\InternshipCreated::class => [
-            App\Program\Internship\Listeners\NotifyAdminsInternshipCreated::class,
+        InternshipCreated::class => [
+            NotifyAdminsInternshipCreated::class,
         ],
 
-        App\Enrollment\Registration\Events\StudentRegistered::class => [
-            App\Enrollment\Registration\Listeners\ClearDashboardOnRegistration::class,
+        StudentRegistered::class => [
+            ClearDashboardOnRegistration::class,
         ],
     ],
 ];

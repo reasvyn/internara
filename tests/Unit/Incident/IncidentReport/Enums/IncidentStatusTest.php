@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Core\Contracts\StatusEnum;
 use App\Incident\IncidentReport\Enums\IncidentStatus;
 
 test('incident status has all expected cases', function () {
@@ -73,10 +74,26 @@ test('cannot transition to self', function () {
 });
 
 test('returns false for non-status enum target', function () {
-    expect(IncidentStatus::REPORTED->canTransitionTo(new class implements \App\Core\Contracts\StatusEnum {
-        public function label(): string { return 'fake'; }
-        public function isTerminal(): bool { return false; }
-        public function validTransitions(): array { return []; }
-        public function canTransitionTo(\App\Core\Contracts\StatusEnum $target): bool { return false; }
+    expect(IncidentStatus::REPORTED->canTransitionTo(new class implements StatusEnum
+    {
+        public function label(): string
+        {
+            return 'fake';
+        }
+
+        public function isTerminal(): bool
+        {
+            return false;
+        }
+
+        public function validTransitions(): array
+        {
+            return [];
+        }
+
+        public function canTransitionTo(StatusEnum $target): bool
+        {
+            return false;
+        }
     }))->toBeFalse();
 });

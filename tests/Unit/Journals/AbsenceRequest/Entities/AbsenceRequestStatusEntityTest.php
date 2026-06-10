@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\Journals\AbsenceRequest\Entities\AbsenceRequestStatus as AbsenceRequestStatusEntity;
+use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
 
 test('absence request status entity detects pending', function () {
     $entity = new AbsenceRequestStatusEntity(AbsenceRequestStatus::PENDING);

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Evaluation\Enums\EvaluationCategory;
 use App\Evaluation\Entities\EvaluationResult;
+use App\Evaluation\Enums\EvaluationCategory;
 
 test('evaluation result can be created with valid data', function () {
     $result = new EvaluationResult(

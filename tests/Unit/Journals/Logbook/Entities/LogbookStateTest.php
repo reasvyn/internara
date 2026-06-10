@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Journals\Logbook\Enums\LogbookStatus;
 use App\Journals\Logbook\Entities\LogbookState;
+use App\Journals\Logbook\Enums\LogbookStatus;
 
 test('logbook state detects verified', function () {
     $verified = new LogbookState(LogbookStatus::VERIFIED);
