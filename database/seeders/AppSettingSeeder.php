@@ -217,6 +217,20 @@ class AppSettingSeeder extends Seeder
                 'description' => 'Time after which a student is marked as late.',
                 'group' => 'operational',
             ],
+
+            // Internship phase definitions
+            [
+                'key' => 'internship_phases',
+                'value' => [
+                    ['name' => 'Pendaftaran & Seleksi', 'order' => 1, 'weight' => 5],
+                    ['name' => 'Pembekalan', 'order' => 2, 'weight' => 5],
+                    ['name' => 'Pelaksanaan PKL', 'order' => 3, 'weight' => 75],
+                    ['name' => 'Pelaporan & Ujian', 'order' => 4, 'weight' => 15],
+                ],
+                'type' => 'json',
+                'description' => 'Default PKL phase definitions (name, order, weight%)',
+                'group' => 'operational',
+            ],
         ];
 
         // Process values through the cast to ensure proper type storage
