@@ -208,7 +208,7 @@ mail services, and global feature toggles
 - Overview: [journals.md](journals.md)
 - Reference: [journals-reference.md](journals-reference.md)
 
-**Key Concepts:** Logbook, Attendance, Schedule, IndustryAssessment
+**Key Concepts:** Logbook, Attendance, Schedule
 
 **Dependencies:** Enrollment, Program, Core
 

@@ -8,7 +8,7 @@ Detailed structural and implementation reference for the **Journals** module.
 
 ## Overview
 
-Manages daily student activity tracking: logbooks, attendance (clock in/out), schedules, absence requests, and industry assessments.
+Manages daily student activity tracking: logbooks, attendance (clock in/out), schedules, and absence requests.
 
 ### Submodules
 
@@ -16,7 +16,6 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), sc
 - `Attendance` — Clock in/out and attendance tracking
 - `Schedule` — Student work schedules
 - `AbsenceRequest` — Absence submissions and approvals
-- `IndustryAssessment` — Industry mentor assessments
 
 ---
 
@@ -40,7 +39,6 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), sc
 | `Schedule/Actions/DeleteScheduleAction.php` | `DeleteScheduleAction` | `BaseAction` |
 | `AbsenceRequest/Actions/SubmitAbsenceAction.php` | `SubmitAbsenceAction` | `BaseAction` |
 | `AbsenceRequest/Actions/ProcessAbsenceAction.php` | `ProcessAbsenceAction` | `BaseAction` |
-| `IndustryAssessment/Actions/SubmitIndustryAssessmentAction.php` | `SubmitIndustryAssessmentAction` | `BaseAction` |
 
 ---
 
@@ -52,7 +50,6 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), sc
 | `Attendance/Models/Attendance.php` | `Attendance` | `BaseModel` |
 | `Schedule/Models/Schedule.php` | `Schedule` | `BaseModel` |
 | `AbsenceRequest/Models/AbsenceRequest.php` | `AbsenceRequest` | `BaseModel` |
-| `IndustryAssessment/Models/IndustryAssessment.php` | `IndustryAssessment` | `BaseModel` |
 
 ---
 
@@ -98,7 +95,6 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), sc
 | `Attendance/Livewire/StudentClockIn.php` | `StudentClockIn` | `Component` |
 | `Schedule/Livewire/ScheduleIndex.php` | `ScheduleIndex` | `Component` |
 | `AbsenceRequest/Livewire/AbsenceRequestForm.php` | `AbsenceRequestForm` | `Component` |
-| `IndustryAssessment/Livewire/IndustryAssessmentForm.php` | `IndustryAssessmentForm` | `Component` |
 
 ## Form Requests
 
@@ -176,10 +172,6 @@ app/Journals/
 │   │   └── StudentClockIn.php
 │   ├── Models/Attendance.php
 │   └── Policies/AttendancePolicy.php
-├── IndustryAssessment/
-│   ├── Actions/SubmitIndustryAssessmentAction.php
-│   ├── Livewire/IndustryAssessmentForm.php
-│   └── Models/IndustryAssessment.php
 ├── Logbook/
 │   ├── Actions/
 │   │   ├── CompileLogbookReportAction.php
@@ -210,7 +202,7 @@ app/Journals/
 
 ## Architectural Integration
 
-- **Submodules**: `Logbook`, `Attendance`, `Schedule`, `AbsenceRequest`, `IndustryAssessment`
+- **Submodules**: `Logbook`, `Attendance`, `Schedule`, `AbsenceRequest`
 - **Business Logic**: `app/Journals/`
 - **Routing**: `routes/web/journals.php`
 - **Views**: `resources/views/journals/`

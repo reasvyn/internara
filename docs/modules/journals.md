@@ -2,11 +2,11 @@
 
 > **Last updated:** 2026-06-10
 
-Daily activity tracking: logbook entries with mentor verification, attendance with clock-in/out, absence requests with approval workflow, schedule management, and industry supervisor assessment.
+Daily activity tracking: logbook entries with mentor verification, attendance with clock-in/out, absence requests with approval workflow, and schedule management.
 
 ## Purpose & Boundary
 
-Journals is the operational hub for daily internship activities. Students record daily logbook entries (one per calendar day), clock attendance in and out, request absences with justification, and view their work schedules. Industry supervisors review and verify logbook entries. Teachers have fallback verification capability when supervisors are inactive. The module also tracks industry supervisor assessments of student performance.
+Journals is the operational hub for daily internship activities. Students record daily logbook entries (one per calendar day), clock attendance in and out, request absences with justification, and view their work schedules. Industry supervisors review and verify logbook entries. Teachers have fallback verification capability when supervisors are inactive.
 
 Out of scope: rubric-based competency assessment (Assessment), task assignments (Assignment), final grade compilation (Reports).
 
@@ -23,9 +23,6 @@ Planned or unplanned absence submission with reason, optional supporting documen
 
 ### Schedule
 Program event management: title, description, start/end times, location, category. Supports recurring events (daily, weekly, biweekly, monthly). Conflict detection warns on overlapping events but does not block creation. Past events are immutable — corrections require cancellation and recreation.
-
-### IndustryAssessment
-Industry supervisor's assessment of student performance during the internship (separate from the Assessment module's rubric-based evaluations). Captures an overall score, work quality rating, and free-text feedback per student per program.
 
 ## Key Concepts
 
