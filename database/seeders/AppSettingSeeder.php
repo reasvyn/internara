@@ -224,8 +224,9 @@ class AppSettingSeeder extends Seeder
                 'value' => [
                     ['name' => 'Pendaftaran & Seleksi', 'order' => 1, 'weight' => 5],
                     ['name' => 'Pembekalan', 'order' => 2, 'weight' => 5],
-                    ['name' => 'Pelaksanaan PKL', 'order' => 3, 'weight' => 75],
-                    ['name' => 'Pelaporan & Ujian', 'order' => 4, 'weight' => 15],
+                    ['name' => 'Pelaksanaan PKL', 'order' => 3, 'weight' => 70],
+                    ['name' => 'Pelaporan & Ujian', 'order' => 4, 'weight' => 12],
+                    ['name' => 'Evaluasi', 'order' => 5, 'weight' => 8],
                 ],
                 'type' => 'json',
                 'description' => 'Default PKL phase definitions (name, order, weight%)',
