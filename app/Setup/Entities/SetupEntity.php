@@ -11,6 +11,16 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class SetupEntity extends BaseEntity
 {
+    private const array KEYS = [
+        'is_installed' => 'setup.is_installed',
+        'install_token' => 'setup.install_token',
+        'token_expires_at' => 'setup.token_expires_at',
+        'completed_steps' => 'setup.completed_steps',
+        'install_recovery_key' => 'setup.install_recovery_key',
+        'token_version' => 'setup.token_version',
+        'updated_at' => 'setup.updated_at',
+    ];
+
     private const array TYPE_MAP = [
         'is_installed' => 'boolean',
         'completed_steps' => 'json',
@@ -31,6 +41,11 @@ final readonly class SetupEntity extends BaseEntity
         private int $tokenVersion = 0,
     ) {}
 
+    public static function keys(): array
+    {
+        return self::KEYS;
+    }
+
     public static function fromModel(Model $model): static
     {
         return self::get();
@@ -38,15 +53,7 @@ final readonly class SetupEntity extends BaseEntity
 
     public static function get(): static
     {
-        $values = Settings::get([
-            'setup.is_installed',
-            'setup.install_token',
-            'setup.token_expires_at',
-            'setup.completed_steps',
-            'setup.install_recovery_key',
-            'setup.token_version',
-            'setup.updated_at',
-        ]);
+        $values = Settings::get(array_values(self::KEYS));
 
         return new self(
             dbInstalled: (bool) ($values['setup.is_installed'] ?? false),
