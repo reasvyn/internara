@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Enrollment\Placement\Livewire;
 
 use App\Auth\Permissions\Enums\Role;
+use App\Enrollment\Placement;
 use App\Enrollment\Placement\Actions\DirectPlacementAction;
 use App\Enrollment\Placement\Livewire\Forms\DirectPlacementForm;
-use App\Enrollment\Placement;
 use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\Mentor\Models\Mentor;
 use App\User\Models\User;

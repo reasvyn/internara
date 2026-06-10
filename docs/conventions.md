@@ -10,6 +10,9 @@ produce consistent, predictable code that any team member can read without conte
 Conventions are organized from foundational (base classes, structure) to specific (commands, tests,
 cache keys). Each section includes a rationale and examples.
 
+For a comprehensive catalog of all design patterns, architectural rules, and workflow patterns
+used across the codebase, see [Modular Pattern Reference](architecture/modular-pattern.md).
+
 ---
 
 ## 0. Documentation-First

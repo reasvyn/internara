@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Registration\Livewire;
 
+use App\Enrollment\Placement;
 use App\Enrollment\Registration\Actions\RegisterInternshipAction;
 use App\Enrollment\Registration\Livewire\Forms\RegistrationWizardForm;
-use App\Enrollment\Placement;
 use App\Enrollment\Registration\Models\Registration;
 use App\Program\Internship\Enums\InternshipStatus;
 use App\Program\Internship\Models\Internship;

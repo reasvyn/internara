@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Enrollment\Placement\Livewire;
 
 use App\Core\Livewire\BaseRecordManager;
+use App\Enrollment\Placement;
 use App\Enrollment\Placement\Actions\CreatePlacementAction;
 use App\Enrollment\Placement\Actions\DeletePlacementAction;
 use App\Enrollment\Placement\Actions\UpdatePlacementAction;
 use App\Enrollment\Placement\Livewire\Forms\PlacementForm;
-use App\Enrollment\Placement;
 use App\Partners\Company\Models\Company;
 use App\Program\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;

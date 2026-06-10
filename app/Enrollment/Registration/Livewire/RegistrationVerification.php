@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Registration\Livewire;
 
-use App\Enrollment\Registration\Actions\VerifyRegistrationAction;
 use App\Enrollment\Placement;
+use App\Enrollment\Registration\Actions\VerifyRegistrationAction;
 use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\Mentor\Models\Mentor;
 use Illuminate\Contracts\View\View;

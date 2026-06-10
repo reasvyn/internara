@@ -6,8 +6,8 @@ namespace App\Enrollment\Placement\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
-use App\Enrollment\Placement\Entities\PlacementCapacity;
 use App\Enrollment\Placement;
+use App\Enrollment\Placement\Entities\PlacementCapacity;
 use App\Enrollment\Placement\Models\PlacementChangeRequest;
 use App\Enrollment\Registration\Models\Registration;
 

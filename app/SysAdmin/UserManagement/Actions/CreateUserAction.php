@@ -12,7 +12,6 @@ use App\User\Rules\SystemUsername;
 use App\User\Support\UserIdentifierGenerator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use RuntimeException;
 
 final class CreateUserAction extends BaseAction
 {
