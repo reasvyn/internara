@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Core\Contracts\StatusEnum;
 use App\User\Enums\AccountStatus;
 
 describe('allowsLogin', function () {
@@ -88,12 +89,27 @@ describe('transitions', function () {
     });
 
     it('returns false for wrong enum type', function () {
-        $mock = new class implements \App\Core\Contracts\StatusEnum
+        $mock = new class implements StatusEnum
         {
-            public function label(): string { return 'mock'; }
-            public function isTerminal(): bool { return false; }
-            public function canTransitionTo(\App\Core\Contracts\StatusEnum $target): bool { return false; }
-            public function validTransitions(): array { return []; }
+            public function label(): string
+            {
+                return 'mock';
+            }
+
+            public function isTerminal(): bool
+            {
+                return false;
+            }
+
+            public function canTransitionTo(StatusEnum $target): bool
+            {
+                return false;
+            }
+
+            public function validTransitions(): array
+            {
+                return [];
+            }
         };
 
         expect(AccountStatus::ACTIVATED->canTransitionTo($mock))->toBeFalse();

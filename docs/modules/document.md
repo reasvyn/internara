@@ -1,6 +1,6 @@
 # Document
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Official correspondence template management, PDF letter rendering, policy handbook storage, and compliance acknowledgement tracking.
 

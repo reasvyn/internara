@@ -1,7 +1,7 @@
 # Coding Conventions
 
-> **Last updated:** 2026-06-08
-> **Changes:** Synchronized with codebase audit — updated module count to 20 (incl. Shared), added SmartLogger channel routing modes, updated Enum names, fixed cross-module communication patterns, added pre-commit checklist
+> **Last updated:** 2026-06-10
+> **Changes:** Synchronized with codebase audit — updated module count, added SmartLogger channel routing modes, updated Enum names, fixed cross-module communication patterns, added pre-commit checklist
 > **Context:** ✅ All conventions are enforced through code review.
 
 This document describes conventions for writing code in the Internara codebase. These rules exist to
@@ -75,7 +75,7 @@ don't.
 | Enum                       | Implements `LabelEnum`                      | `label(): string`                                                                                           |
 | Status enum                | Implements `StatusEnum` (+ LabelEnum)       | `canTransitionTo()`, `validTransitions()`, `isTerminal()`                                                   |
 | Exception                  | Extends `AppException` or `ModuleException` | `HasExceptionContext` trait                                                                                 |
-| Cache key                  | `config('cache-keys')` constant                        | Centralized key registry, prevents collisions                                                               |
+| Cache key                  | `config/cache-keys.php`                                | Centralized key registry, prevents collisions                                                               |
 | DTO                        | `BaseData`                                  | `app/Core/Data/BaseData.php`                                                                                |
 | Event                      | `BaseEvent`                                 | `Dispatchable`, `eventName()` for log translation, `toPayload()` for logging payload                        |
 
@@ -154,7 +154,7 @@ app/
 │   └── Concerns/      → Livewire traits (WithRecordSelection, WithSorting)
 ├── Policies/
 │   └── Concerns/      → Policy traits (AuthorizesOwnership, AuthorizesRoles)
-└── Support/           → Static utilities (config('cache-keys'), Locale, Theme, PiiMasker)
+└── Support/           → Static utilities (Locale, Theme, PiiMasker, etc.)
 ```
 
 ### Views & Tests Mirror Structure
@@ -980,26 +980,33 @@ class InternshipFactory extends Factory
 
 ## 18. Cache Keys
 
-- Every cache key MUST be declared as a constant in `App\Support\config('cache-keys')`.
+- Every cache key MUST be declared in `config/cache-keys.php`.
 - Naming: `{module}.{purpose}[.{qualifier}]`.
-- TTL is documented in a comment next to the constant.
-- Invalidation trigger is documented in a comment.
+- TTL and invalidation trigger are documented in comments.
+- Access via `config('cache-keys.{key_name}')`.
 
 ```php
-final readonly class config('cache-keys')
-{
+// config/cache-keys.php
+return [
     /** Invalidation: SetupFinalized event */
-    public const string SETUP_INSTALLED = 'setup.is_installed';
+    'setup_installed' => 'setup.is_installed',
 
     /** TTL: 5 minutes. Invalidation: manual flush */
-    public const string ADMIN_DASHBOARD_STATS = 'admin.dashboard.stats';
+    'admin_dashboard_stats' => 'admin.dashboard.stats',
 
     /** TTL: forever. Invalidation: Settings update */
-    public const string THEME_CSS_VARIABLES = 'theme.css_variables';
+    'theme_css_variables' => 'theme.css_variables',
 
     /** Key pattern: notification.unread:{userId} */
-    public const string NOTIFICATION_UNREAD = 'notification.unread:';
-}
+    'notification_unread' => 'notification.unread:',
+];
+```
+
+Usage in code:
+
+```php
+Cache::forget(config('cache-keys.admin_dashboard_stats'));
+Cache::remember(config('cache-keys.setup_installed'), ...);
 ```
 
 ---
@@ -1036,7 +1043,7 @@ CLI-friendly output and error hinting:
 1. **`AppException` Hierarchy** (abstract base: `app/Core/Exceptions/AppException.php`):
     - Derives from standard PHP `RuntimeException`.
     - Used for application-level, HTTP-level, or infrastructure-level failures.
-    - Core concrete exceptions (located under `app/Exceptions/`) include:
+    - Concrete exceptions include:
         - `ConflictException` (conflict state / duplicate records)
         - `NotFoundException` (HTTP 404 / resource missing)
         - `UnauthorizedException` (HTTP 403 / permission denied)
@@ -1047,13 +1054,13 @@ CLI-friendly output and error hinting:
     - Derives from standard PHP `RuntimeException` (does _not_ extend `AppException` to isolate
       domain invariant checks from framework catch blocks).
     - Used for violations of business rules or invalid model transitions.
-    - Core concrete exceptions (located under `app/Exceptions/`) include:
+    - Concrete exceptions include:
         - `RejectedException` (thrown when a domain rule or invariant is violated)
 
 ### Rules & Conventions
 
 - All abstract base exceptions live in `app/Core/Exceptions/`.
-- All concrete exceptions (concrete class implementations) live in `app/Exceptions/`.
+- All concrete exceptions live alongside their abstract bases in `app/Core/Exceptions/`.
 - Actions must throw specific concrete exceptions with a clear error message, optional hint, and
   relevant metadata context.
 
@@ -1181,6 +1188,6 @@ describe('AccountStatus', function () {
 - [ ] No `dd()`, `dump()`, `var_dump()`, `ray()` left in code
 - [ ] All user-facing strings use `__()` helper
 - [ ] Action follows the correct triad pattern (Command/Read/Process)
-- [ ] Cache keys registered in `config('cache-keys')` constants
+- [ ] Cache keys registered in `config/cache-keys.php`
 - [ ] Tests pass: `php artisan test --compact`
 - [ ] Pint clean: `vendor/bin/pint --dirty --format agent`

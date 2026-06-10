@@ -1,6 +1,6 @@
 # Product Definition & System Boundary
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 This document defines the core product scope, design principles, user personas, system boundary,
 deployment model, localization parameters, and licensing for the Internara system.
@@ -39,7 +39,7 @@ The architecture follows the **3S Governing Doctrine**:
 | Principle | Definition |
 |-----------|------------|
 | **S1 — Secure** | Protect data integrity, enforce authorization at every layer, prevent leakage. Credentials and PII are separated into distinct tables. |
-| **S2 — Sustain** | Module colocation ensures the codebase remains maintainable across 20 modules. Actions enforce single responsibility by construction. |
+| **S2 — Sustain** | Module colocation ensures the codebase remains maintainable across 19 modules. Actions enforce single responsibility by construction. |
 | **S3 — Scalable** | Single-tenant design eliminates tenant-ID overhead. CQRS-inspired Action triad (Command/Read/Process) keeps queries and mutations decoupled. |
 
 ---

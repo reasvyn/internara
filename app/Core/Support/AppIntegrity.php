@@ -12,10 +12,8 @@ final class AppIntegrity
 
     public static function verify(): void
     {
-        $path = dirname(__DIR__, 4).'/composer.json';
-
         try {
-            self::verifyComposerFile($path);
+            self::verifyComposerMetadata();
         } catch (RuntimeException $e) {
             if (app()->environment('local', 'testing')) {
                 SmartLogger::warning($e->getMessage())->systemOnly()->save();
@@ -23,12 +21,14 @@ final class AppIntegrity
                 return;
             }
 
-            self::fatal($e->getMessage());
+            throw $e;
         }
     }
 
-    private static function verifyComposerFile(string $path): void
+    private static function verifyComposerMetadata(): void
     {
+        $path = base_path('composer.json');
+
         if (! file_exists($path)) {
             throw new RuntimeException('Core system metadata (composer.json) is missing.');
         }
@@ -56,10 +56,5 @@ final class AppIntegrity
                     'This system requires attribution to the original author.',
             );
         }
-    }
-
-    private static function fatal(string $message): never
-    {
-        throw new RuntimeException($message);
     }
 }

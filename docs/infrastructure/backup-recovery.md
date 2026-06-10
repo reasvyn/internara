@@ -1,6 +1,6 @@
 # Backup & Recovery
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-10
 
 Regular backups protect your school's data against hardware failure, accidental deletion, and security incidents. This guide covers what to back up, how to automate it, and how to restore when needed.
 

@@ -5,8 +5,9 @@ declare(strict_types=1);
 use App\Partners\Company\Models\Company;
 use App\Partners\Partnership\Actions\CreatePartnershipAction;
 use App\Partners\Partnership\Models\Partnership;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('creates partnership for company', function () {
     $company = Company::factory()->create();

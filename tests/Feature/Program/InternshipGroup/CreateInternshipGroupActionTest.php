@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Partners\Company\Models\Company;
-use App\Partners\Partnership\Models\Partnership;
 use App\Program\Internship\Models\Internship;
 use App\Program\InternshipGroup\Actions\CreateInternshipGroupAction;
 use App\Program\InternshipGroup\Models\InternshipGroup;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('creates internship group', function () {
     $company = Company::factory()->create();

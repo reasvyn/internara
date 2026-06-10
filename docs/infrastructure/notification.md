@@ -1,6 +1,6 @@
 # Notification System
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-10
 
 ## Channel Architecture
 
@@ -294,4 +294,4 @@ Created (via Action/Event)
 - `config/mail.php` — mail driver and SMTP configuration
 - `config/flasher.php` — flash message styling and timeout
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
-[Queue](queue.md) — queue infrastructure and worker management
+- [Queue](queue.md) — queue infrastructure and worker management

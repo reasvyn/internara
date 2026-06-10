@@ -1,6 +1,6 @@
 # Role-Based Access Control
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 >
 > RBAC is fully implemented. See [Auth Module](../modules/auth-reference.md) and
 > [Core Module](../modules/core-reference.md) reference docs.

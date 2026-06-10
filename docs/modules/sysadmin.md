@@ -1,6 +1,6 @@
 # SysAdmin
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 User account administration, system-wide announcements, observability and health monitoring, audit logging, and GDPR compliance tracking.
 

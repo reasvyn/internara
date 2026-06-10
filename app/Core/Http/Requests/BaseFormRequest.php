@@ -18,4 +18,14 @@ abstract class BaseFormRequest extends LaravelFormRequest
             context: ['errors' => $validator->errors()->toArray()],
         );
     }
+
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [];
+    }
 }

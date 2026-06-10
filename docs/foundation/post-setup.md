@@ -1,6 +1,6 @@
 # Post-Setup: First Actions as Administrator
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 The setup wizard is complete. This guide walks through essential first steps to prepare Internara
 for daily use by students, teachers, and supervisors.
@@ -161,15 +161,9 @@ Phase 4 — Go-Live
 |----------|---------------|
 | [RBAC](rbac.md) | Role hierarchy, permissions, policies |
 | [Academics](../modules/academics.md) | Schools, departments, academic years |
-
-  | [Partners](../modules/partners.md) | Company and MoU management |
-
-  | [Enrollment](../modules/enrollment.md) | Registration, placement, change requests |
-
-  | [Program](../modules/program.md) | Internship periods, requirements |
-
-  | [Guidance](../modules/guidance.md) | Mentor assignment, supervision logs |
-
-  | [Journals](../modules/journals.md) | Attendance, logbook, absence |
-
-  | [Assignment](../modules/assignment.md) | Tasks, submissions, grading |
+| [Partners](../modules/partners.md) | Company and MoU management |
+| [Enrollment](../modules/enrollment.md) | Registration, placement, change requests |
+| [Program](../modules/program.md) | Internship periods, requirements |
+| [Guidance](../modules/guidance.md) | Mentor assignment, supervision logs |
+| [Journals](../modules/journals.md) | Attendance, logbook, absence |
+| [Assignment](../modules/assignment.md) | Tasks, submissions, grading |

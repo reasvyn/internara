@@ -1,6 +1,6 @@
 # Certification
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Certificate generation, serial numbering, digital QR signature, public verification, and credential revocation.
 

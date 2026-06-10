@@ -1,6 +1,6 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-06-08 (refactored: removed duplicate Integrity class, updated test count)
+> **Last updated:** 2026-06-10
 
 Detailed structural and implementation reference for the **Core** module, including both abstract infrastructure and concrete shared components.
 
@@ -13,22 +13,22 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 ### Module Statistics
 
 - **Contracts**: 5 (`LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`, `SettingsStore`)
-- **Base Classes**: 9 (`BaseModel`, `BaseAction`, `BaseEntity`, `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`)
-- **Concrete DTOs**: 2 (`AuditCheck`, `AuditReport`)
+- **Base Classes**: 9 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`, `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`)
+- **Concrete DTOs**: 3 (`ActionResponse`, `AuditCheck`, `AuditReport`)
 - **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
 - **Concrete Exceptions**: 6 (`ConflictException`, `NotFoundException`, `RateLimitException`, `RejectedException`, `UnauthorizedException`, `ValidationFailedException`)
 - **Middleware**: 2 (`SecurityHeaders`, `LogContext`)
-- **Support Classes**: 10 (`SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `HasModelStatuses`, `PasswordRules`, `PiiMasker`)
-- **Models**: 2 (`ActivityLog` — `BaseModel` is abstract)
+- **Support Classes**: 11 (`SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `HasModelStatuses`, `PasswordRules`, `PiiMasker`)
+- **Models**: 2 concrete (`ActivityLog`, `BaseAuthenticatable`) + 1 abstract (`BaseModel`)
 - **Events**: 1 (`BaseEvent`, abstract)
 - **Livewire Components**: 1 (`BaseRecordManager`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
 - **Policies**: 1 (`BasePolicy`) + 2 concern traits (`AuthorizesRoles`, `AuthorizesOwnership`)
-- **Data/DTOs**: 1 abstract (`BaseData`) + 2 concrete
+- **Data/DTOs**: 1 abstract (`BaseData`) + 3 concrete
 - **Channels**: 1 (`CustomDatabaseChannel`)
 - **Console Commands**: 1 (`module:discover`)
 - **Global Helpers**: 1 (`app_info()` in `helpers.php`)
 - **Config Files**: 1 (`config/cache-keys.php` — centralized cache key registry)
-- **Tests**: 56 (11 Feature + 45 Unit)
+- **Tests**: ~463 across Unit and Feature suites
 - **Routes**: 0 (health check at `/up` in `bootstrap/app.php`)
 
 ---
@@ -72,6 +72,7 @@ Located in `app/Core/Data/`:
 | Class | Extends | Purpose |
 | ----- | ------- | ------- |
 | `BaseData` | — | Abstract readonly DTO base |
+| `ActionResponse` | — | Standardized action result: `ok()`, `created()`, `updated()`, `deleted()`, `error()`, `withRedirect()`, JSON serialization |
 | `AuditCheck` | `BaseData` | Single health audit check (status, category, label, message) |
 | `AuditReport` | `BaseData` | Collection of `AuditCheck` entries with pass/fail aggregates |
 
@@ -129,7 +130,7 @@ ModuleException (abstract, extends RuntimeException)
 
 ---
 
-## Policy Concerns
+## Policies
 
 | Trait | Path | Purpose |
 | ----- | ---- | ------- |
@@ -176,6 +177,7 @@ app/Core/
 │   ├── SettingsStore.php
 │   └── StatusEnum.php
 ├── Data/
+│   ├── ActionResponse.php
 │   ├── AuditCheck.php
 │   ├── AuditReport.php
 │   └── BaseData.php
@@ -212,6 +214,7 @@ app/Core/
 │   └── BaseRecordManager.php
 ├── Models/
 │   ├── ActivityLog.php
+│   ├── BaseAuthenticatable.php
 │   └── BaseModel.php
 ├── Policies/
 │   ├── Concerns/
@@ -232,6 +235,34 @@ app/Core/
     ├── SmartLogger.php
     └── helpers.php
 ```
+
+## Routes
+
+Routes are defined in `routes/web/core.php`. See [Routes](../infrastructure/routes.md) for the routing architecture.
+
+## Views
+
+Views are located in `resources/views/core/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Core/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+None - Core provides base classes only.
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_activity_log_table` | `activity_log` |
+| `create_cache_table` | `cache` |
+| `create_jobs_table` | `jobs` |
+| `create_failed_jobs_table` | `failed_jobs` |
+| `create_job_batches_table` | `job_batches` |
+| `create_media_table` | `media` |
+| `create_pulse_tables` | `pulse_*` |
 
 ---
 

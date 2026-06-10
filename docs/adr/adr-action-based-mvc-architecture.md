@@ -1,18 +1,18 @@
 # ADR-002: Action-based MVC Architecture
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 ## Context
 
-Internara manages vocational fieldwork across 20 modules, each owning a complete business vertical. Traditional flat layering (`app/Models/`, `app/Controllers/`, `app/Livewire/`) scatters a single feature across many directories, making boundaries unclear, encapsulation impossible to enforce, and refactoring expensive.
+Internara manages vocational fieldwork across 19 modules, each owning a complete business vertical. Traditional flat layering (`app/Models/`, `app/Controllers/`, `app/Livewire/`) scatters a single feature across many directories, making boundaries unclear, encapsulation impossible to enforce, and refactoring expensive.
 
 An alternative — module colocation — ensures everything related to "Enrollment" lives under `app/Enrollment/`. Each module is a vertical slice through 12 architectural layers, from infrastructure at the bottom to business logic at the top.
 
 The 12 layers are:
 
 ```
-Layer 12 — Business Modules (20 modules, each a vertical slice)
+Layer 12 — Business Modules (19 modules, each a vertical slice)
 Layer 11 — UI / Presentation (Livewire, Blade, Tailwind)
 Layer 10 — HTTP Layer (Controllers, Middleware, Routes)
 Layer  9 — Communication (Events, Listeners, Notifications, Console)
@@ -73,7 +73,7 @@ Architecture tests that previously enforced module boundaries were removed due t
 
 ## References
 
-- `app/` — 20 business module directories
+- `app/` — 19 business module directories
 - `app/Core/` — Base classes, contracts, exceptions
 - `app/Providers/AppServiceProvider.php` — Auto-discovery and manual registrations
 - `docs/architecture.md` — 12-layer architecture, dependency rules

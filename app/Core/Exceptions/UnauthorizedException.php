@@ -15,4 +15,9 @@ class UnauthorizedException extends PresentationException
         $this->withHint($hint ?? 'You do not have permission to perform this action.');
         $this->withContext($context);
     }
+
+    public function statusCode(): int
+    {
+        return 403;
+    }
 }

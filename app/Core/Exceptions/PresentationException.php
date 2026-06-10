@@ -6,10 +6,11 @@ namespace App\Core\Exceptions;
 
 abstract class PresentationException extends AppException
 {
-    /**
-     * Presentation exceptions occur at the UI/routing level.
-     * Often related to missing parameters or invalid states not caught by validation.
-     */
+    public function statusCode(): int
+    {
+        return 400;
+    }
+
     public function isUserFacing(): bool
     {
         return true;

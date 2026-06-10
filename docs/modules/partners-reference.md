@@ -1,6 +1,6 @@
 # Partners — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Partners** module.
 
@@ -109,6 +109,28 @@ Manages industrial partner companies and partnership agreements for internship p
 
 File: `routes/web/partners.php`
 Naming pattern: `partners.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/partners/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Partners/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `CompanyFactory` | `Company` |
+| `PartnershipFactory` | `Partnership` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_companies_table` | `companies` |
+| `create_partnerships_table` | `partnerships` |
 
 ---
 

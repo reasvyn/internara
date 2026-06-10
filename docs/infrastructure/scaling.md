@@ -1,6 +1,6 @@
 # Scaling Guide
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-10
 
 This document is the operational companion to [Infrastructure](infrastructure.md). It describes _when_ and _how_ to scale Internara from a single-user dev setup to production serving 1500–2000 concurrent users.
 

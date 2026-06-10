@@ -15,76 +15,10 @@ final class AppInfo
     public static function all(): array
     {
         if (self::$metadata === null) {
-            self::$metadata = Cache::remember(config('cache-keys.appinfo_metadata'), 86400, function () {
-                $path = base_path('composer.json');
-
-                if (! File::exists($path)) {
-                    return self::defaults();
-                }
-
-                try {
-                    $rawContent = File::get($path);
-                    $data = json_decode($rawContent, true);
-
-                    if (json_last_error() !== JSON_ERROR_NONE) {
-                        SmartLogger::error('Failed to parse composer.json metadata')
-                            ->withPayload([
-                                'file' => $path,
-                                'json_error' => json_last_error_msg(),
-                            ])
-                            ->systemOnly()
-                            ->save();
-
-                        return self::defaults();
-                    }
-
-                    $data = is_array($data) ? $data : [];
-                    $author = $data['authors'][0] ?? [];
-
-                    if (isset($author['homepage']) && ! isset($author['github'])) {
-                        $author['github'] = $author['homepage'];
-                    }
-
-                    $authorHomepage = $author['homepage'] ?? '';
-                    $authorGithub = $author['github'] ?? $authorHomepage;
-
-                    return [
-                        'name' => $data['display_name'] ?? ($data['name'] ?? 'Laravel'),
-                        'version' => $data['version'] ?? '1.0.0',
-                        'description' => $data['description'] ?? '',
-                        'license' => $data['license'] ?? '',
-                        'author' => $author,
-                        'support' => $data['support'] ?? [],
-                        'gitUrl' => $authorGithub,
-                    ];
-                } catch (\Throwable $e) {
-                    SmartLogger::error('Failed to read composer.json metadata')
-                        ->withPayload([
-                            'file' => $path,
-                            'error' => $e->getMessage(),
-                        ])
-                        ->systemOnly()
-                        ->save();
-
-                    return self::defaults();
-                }
-            });
+            self::$metadata = self::load();
         }
 
         return self::$metadata;
-    }
-
-    private static function defaults(): array
-    {
-        return [
-            'name' => 'Laravel',
-            'version' => '1.0.0',
-            'description' => '',
-            'license' => '',
-            'author' => ['name' => 'Reas Vyn'],
-            'support' => [],
-            'gitUrl' => 'https://github.com/reasvyn/internara',
-        ];
     }
 
     public static function get(string $key, mixed $default = null): mixed
@@ -144,6 +78,101 @@ final class AppInfo
     public static function clearCache(): void
     {
         self::$metadata = null;
-        Cache::forget(config('cache-keys.appinfo_metadata'));
+        Cache::forget(self::cacheKey());
+    }
+
+    private static function cacheKey(): string
+    {
+        return config('cache-keys.appinfo_metadata');
+    }
+
+    private static function load(): array
+    {
+        return Cache::remember(self::cacheKey(), 86400, function () {
+            return self::readFromComposer();
+        });
+    }
+
+    private static function readFromComposer(): array
+    {
+        $path = base_path('composer.json');
+
+        if (! File::exists($path)) {
+            return self::defaults();
+        }
+
+        try {
+            $rawContent = File::get($path);
+            $data = json_decode($rawContent, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                self::logJsonError($path);
+
+                return self::defaults();
+            }
+
+            return self::extractMetadata(is_array($data) ? $data : []);
+        } catch (\Throwable $e) {
+            self::logReadError($path, $e);
+
+            return self::defaults();
+        }
+    }
+
+    private static function extractMetadata(array $data): array
+    {
+        $author = $data['authors'][0] ?? [];
+
+        if (isset($author['homepage']) && ! isset($author['github'])) {
+            $author['github'] = $author['homepage'];
+        }
+
+        $authorHomepage = $author['homepage'] ?? '';
+        $authorGithub = $author['github'] ?? $authorHomepage;
+
+        return [
+            'name' => $data['display_name'] ?? ($data['name'] ?? 'Laravel'),
+            'version' => $data['version'] ?? '1.0.0',
+            'description' => $data['description'] ?? '',
+            'license' => $data['license'] ?? '',
+            'author' => $author,
+            'support' => $data['support'] ?? [],
+            'gitUrl' => $authorGithub,
+        ];
+    }
+
+    private static function defaults(): array
+    {
+        return [
+            'name' => 'Laravel',
+            'version' => '1.0.0',
+            'description' => '',
+            'license' => '',
+            'author' => ['name' => 'Reas Vyn'],
+            'support' => [],
+            'gitUrl' => 'https://github.com/reasvyn/internara',
+        ];
+    }
+
+    private static function logJsonError(string $path): void
+    {
+        SmartLogger::error('Failed to parse composer.json metadata')
+            ->withPayload([
+                'file' => $path,
+                'json_error' => json_last_error_msg(),
+            ])
+            ->systemOnly()
+            ->save();
+    }
+
+    private static function logReadError(string $path, \Throwable $e): void
+    {
+        SmartLogger::error('Failed to read composer.json metadata')
+            ->withPayload([
+                'file' => $path,
+                'error' => $e->getMessage(),
+            ])
+            ->systemOnly()
+            ->save();
     }
 }

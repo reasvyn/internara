@@ -1,6 +1,6 @@
 # Academics
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Institutional structure: school profile, academic departments (majors), and academic calendar management.
 

@@ -15,4 +15,9 @@ class ConflictException extends ActionException
         $this->withHint($hint ?? 'The request conflicts with the current state of the resource.');
         $this->withContext($context);
     }
+
+    public function statusCode(): int
+    {
+        return 409;
+    }
 }

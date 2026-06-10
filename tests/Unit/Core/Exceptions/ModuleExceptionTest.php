@@ -6,7 +6,13 @@ namespace Tests\Unit\Core\Exceptions;
 
 use App\Core\Exceptions\ModuleException;
 
-class MockModuleException extends ModuleException {}
+class MockModuleException extends ModuleException
+{
+    public function statusCode(): int
+    {
+        return 400;
+    }
+}
 
 test('module exception holds hint and context and is user facing by default', function () {
     $e = new MockModuleException('Business rule broken')->withHint('Contact supervisor');

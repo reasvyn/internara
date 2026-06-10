@@ -1,6 +1,6 @@
 # Guidance
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Mentoring relationship coordination and teacher supervision field logging: dual-mentor assignments and immutable supervision visit records.
 

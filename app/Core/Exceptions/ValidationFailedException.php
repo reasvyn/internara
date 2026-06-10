@@ -15,4 +15,9 @@ class ValidationFailedException extends ActionException
         $this->withHint($hint ?? 'Please check your input and try again.');
         $this->withContext($context);
     }
+
+    public function statusCode(): int
+    {
+        return 422;
+    }
 }

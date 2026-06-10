@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 use App\Academics\AcademicYear\Actions\UpdateAcademicYearAction;
 use App\Academics\AcademicYear\Models\AcademicYear;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('updates academic year name', function () {
     $year = AcademicYear::factory()->create(['name' => 'Old Name']);

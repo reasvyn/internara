@@ -1,6 +1,6 @@
 # Project Philosophy
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 >
 > The guiding principles, values, and vision that shape Internara — beyond architecture, beyond code.
 

@@ -1,6 +1,6 @@
 # Settings
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 System-wide configuration management: key-value store with type enforcement, brand identity (colors, logo, favicon, site title), localization preferences, SMTP mail configuration, and global feature toggles.
 

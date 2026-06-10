@@ -73,8 +73,8 @@ test('audit report serializes to array', function () {
 
     expect($array)->toHaveKey('checks');
     expect($array['checks'])->toHaveCount(1);
-    expect($array['checks'][0])->toBeInstanceOf(AuditCheck::class);
-    expect($array['checks'][0]->nameKey)->toBe('db');
+    expect($array['checks'][0])->toBeArray();
+    expect($array['checks'][0]['nameKey'])->toBe('db');
 });
 
 test('audit report extends base data', function () {

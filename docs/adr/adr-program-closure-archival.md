@@ -1,7 +1,7 @@
 # ADR-013: Program Closure & Archival
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 ## Context
 

@@ -1,6 +1,6 @@
 # Partners
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 External relationship management: company profiles, partnership agreements (MoU), placement slot capacity, and agreement lifecycle.
 

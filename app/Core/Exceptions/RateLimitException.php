@@ -15,4 +15,9 @@ class RateLimitException extends InfrastructureException
         $this->withHint($hint ?? 'Please wait before making another request.');
         $this->withContext($context);
     }
+
+    public function statusCode(): int
+    {
+        return 429;
+    }
 }

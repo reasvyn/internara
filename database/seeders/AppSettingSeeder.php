@@ -6,7 +6,7 @@ namespace Database\Seeders;
 
 use App\Settings\Casts\SettingValueCast;
 use App\Settings\Models\Setting;
-use App\Settings\Support\AppInfo;
+use App\Core\Support\AppInfo;
 use App\Settings\Theme\Support\Theme;
 use Illuminate\Database\Seeder;
 

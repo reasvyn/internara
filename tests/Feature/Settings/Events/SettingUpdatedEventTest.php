@@ -6,10 +6,12 @@ use App\Settings\Data\SettingData;
 use App\Settings\Events\SettingUpdated;
 use App\Settings\Listeners\InvalidateSettingsCache;
 use App\Settings\Models\Setting;
+use App\Settings\Support\Settings;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Cache::flush();
@@ -18,7 +20,7 @@ beforeEach(function () {
 test('event is dispatched when setting is created via Settings::set()', function () {
     Event::fake([SettingUpdated::class]);
 
-    \App\Settings\Support\Settings::set([
+    Settings::set([
         'test.event_key' => ['value' => 'test', 'group' => 'test', 'type' => 'string'],
     ]);
 

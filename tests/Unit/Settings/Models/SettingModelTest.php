@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Settings\Enums\MediaCollection;
 use App\Settings\Enums\SettingGroup;
+use App\Settings\Enums\SettingType;
 use App\Settings\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -65,7 +67,7 @@ test('scope ofType filters by type', function () {
     Setting::create(['key' => 'a', 'value' => '1', 'type' => 'string']);
     Setting::create(['key' => 'b', 'value' => '42', 'type' => 'integer']);
 
-    $result = Setting::ofType('integer')->get();
+    $result = Setting::ofType(SettingType::INTEGER)->get();
 
     expect($result)->toHaveCount(1);
     expect($result->first()->key)->toBe('b');
@@ -84,13 +86,13 @@ test('scope searchable filters by key or description', function () {
     expect($byDesc->first()->key)->toBe('site_title');
 });
 
-test('setting has valid types constant', function () {
-    expect(Setting::VALID_TYPES)->toBe([
+test('setting type enum has all valid types', function () {
+    expect(SettingType::values())->toBe([
         'string', 'integer', 'float', 'boolean', 'json', 'encrypted', 'null',
     ]);
 });
 
-test('setting has media collection constants', function () {
-    expect(Setting::COLLECTION_LOGO)->toBe('brand_logo');
-    expect(Setting::COLLECTION_FAVICON)->toBe('brand_favicon');
+test('media collection enum has correct values', function () {
+    expect(MediaCollection::LOGO->value)->toBe('brand_logo');
+    expect(MediaCollection::FAVICON->value)->toBe('brand_favicon');
 });

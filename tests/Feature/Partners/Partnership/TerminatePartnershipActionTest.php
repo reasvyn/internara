@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 use App\Partners\Company\Models\Company;
 use App\Partners\Partnership\Actions\TerminatePartnershipAction;
-use App\Partners\Partnership\Enums\PartnershipStatus;
 use App\Partners\Partnership\Models\Partnership;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('terminates active partnership', function () {
     $company = Company::factory()->create();
@@ -30,5 +30,5 @@ test('cannot terminate already terminated partnership', function () {
     ]);
     $action = app(TerminatePartnershipAction::class);
 
-    expect(fn () => $action->execute($partnership))->toThrow(\RuntimeException::class);
+    expect(fn () => $action->execute($partnership))->toThrow(RuntimeException::class);
 });

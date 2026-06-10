@@ -6,8 +6,9 @@ use App\Academics\Department\Actions\DeleteDepartmentAction;
 use App\Academics\Department\Models\Department;
 use App\Core\Exceptions\RejectedException;
 use App\User\Profile\Models\Profile;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('deletes department without profiles', function () {
     $department = Department::factory()->create();
@@ -15,7 +16,7 @@ test('deletes department without profiles', function () {
 
     $action->execute($department);
 
-    $this->assertDatabaseMissing("departments", ["id" => $department->id]);
+    $this->assertDatabaseMissing('departments', ['id' => $department->id]);
 });
 
 test('cannot delete department with profiles', function () {
@@ -25,5 +26,5 @@ test('cannot delete department with profiles', function () {
 
     expect(fn () => $action->execute($department))->toThrow(RejectedException::class);
 
-    $this->assertDatabaseHas("departments", ["id" => $department->id]);
+    $this->assertDatabaseHas('departments', ['id' => $department->id]);
 });

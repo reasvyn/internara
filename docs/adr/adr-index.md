@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 > **Records:** 13 ADRs documenting the key architectural decisions behind Internara.
 
 Each ADR follows the standard template: **Context** — the forces and trade-offs that drove the decision,

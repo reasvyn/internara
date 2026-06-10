@@ -5,19 +5,67 @@ declare(strict_types=1);
 namespace App\Core\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use JsonSerializable;
 
-/**
- * Base class for module entities.
- *
- * Entities are immutable business rule objects. Framework dependencies
- * (Eloquent, Carbon) are allowed when practical.
- *
- * @template TModel of Model
- */
-abstract readonly class BaseEntity
+abstract readonly class BaseEntity implements JsonSerializable
 {
-    /**
-     * @param TModel $model
-     */
     abstract public static function fromModel(Model $model): static;
+
+    public static function fromArray(array $data): static
+    {
+        $constructorParams = [];
+
+        $ref = new \ReflectionClass(static::class);
+        $constructor = $ref->getConstructor();
+        $params = $constructor?->getParameters() ?? [];
+
+        foreach ($params as $param) {
+            $name = $param->getName();
+
+            if (array_key_exists($name, $data)) {
+                $constructorParams[$name] = $data[$name];
+            } elseif ($param->isDefaultValueAvailable()) {
+                $constructorParams[$name] = $param->getDefaultValue();
+            }
+        }
+
+        return new static(...$constructorParams);
+    }
+
+    public function toArray(): array
+    {
+        $data = [];
+
+        foreach (get_object_vars($this) as $key => $value) {
+            $data[$key] = match (true) {
+                $value instanceof self => $value->toArray(),
+                $value instanceof JsonSerializable => $value->jsonSerialize(),
+                is_array($value) => array_map(
+                    fn (mixed $item) => $item instanceof self ? $item->toArray() : $item,
+                    $value,
+                ),
+                default => $value,
+            };
+        }
+
+        return $data;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
+
+    public function equals(self $other): bool
+    {
+        return $this === $other || $this->toArray() === $other->toArray();
+    }
+
+    public function with(string $property, mixed $value): static
+    {
+        $data = $this->toArray();
+        $data[$property] = $value;
+
+        return static::fromArray($data);
+    }
 }

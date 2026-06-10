@@ -1,6 +1,6 @@
 # Getting Started
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 >
 > End-to-end walkthrough from cloning the repository to completing the setup wizard. Everything you need to get Internara running on your server.
 
@@ -129,8 +129,7 @@ Open the signed URL from Step 4 in your browser. The URL includes a `setup_token
 | 3    | School details (name, NPSN, address, email) |
 | 4    | First department / study program            |
 | 5    | Final review and confirm                    |
-| 6    | Setup complete                              |
-| 7    | Recovery key — **save this securely**       |
+| 6    | Setup complete with recovery key            |
 
 Follow the [Setup Wizard](foundation/setup-wizard.md) guide for a detailed walkthrough.
 
@@ -155,7 +154,7 @@ Follow the [Setup Wizard](foundation/setup-wizard.md) guide for a detailed walkt
 | Document                                           | What It Covers                                              |
 | -------------------------------------------------- | ----------------------------------------------------------- |
 | [Installation](infrastructure/installation.md)     | Detailed deployment options, server config, troubleshooting |
-| [Setup Wizard](foundation/setup-wizard.md)                    | Complete walkthrough of all 7 wizard steps                  |
+| [Setup Wizard](foundation/setup-wizard.md)                    | Complete walkthrough of all 6 wizard steps                  |
 | [Post-Setup](foundation/post-setup.md)                        | First actions after the wizard completes                    |
 | [Architecture](architecture.md)                    | System design, modules, layers                              |
 | [Infrastructure](infrastructure/infrastructure.md) | Deployment options, background processes, storage           |

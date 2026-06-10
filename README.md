@@ -18,23 +18,25 @@ guarantees high domain cohesion and clean component encapsulation.
 
 ```
 app/
-├── Core/           Abstract base classes, interfaces, and request infrastructure
-├── Shared/         Cross-cutting utilities, DTOs, enums, global UI switchers
-├── User/           Identity, profile management, and account recovery
-├── SysAdmin/       System installation, global settings, pulse metrics, audit logs
-├── Academics/      School records, department lists, academic cohorts
-├── Program/        Internship cycles, phases, document requirements
-├── Enrollment/     Student registrations, active placements, and slot quotas
-├── Assessment/     Competency rubrics, student evaluations, presentation exams
-├── Evaluation/     Mentor effectiveness and company quality feedback loops
-├── Assignment/     Tasks management, student submissions, and grading workflow
-├── Journals/       Geotagged attendance, absence logging, daily logbooks
-├── Guidance/       Supervision records and training handbooks
-├── Incident/       On-site student issue reporting and investigations
-├── Partners/       Corporate contacts, agreement agreements, and MoUs
-├── Certification/  Cryptographic certificate compilation and QR-verification
-├── Reports/        Student final reports compilation and advisor review
-└── Document/       Official PDF templates compilation
+├── Core/           Abstract base classes, contracts, middleware, and cross-module utilities
+├── Auth/           Authentication, password management, account recovery, RBAC
+├── User/           Identity, profiles, notifications, dashboards, account status
+├── SysAdmin/       User management, announcements, audit logs, pulse monitoring
+├── Setup/          One-time installation wizard, environment audit, super admin creation
+├── Settings/       System configuration, dynamic branding, feature flags, locale
+├── Academics/      School profile, departments, academic years
+├── Program/        Internship lifecycle, phases, groups, document requirements
+├── Enrollment/     Student registration, placement slots, change requests
+├── Assessment/     Competency rubrics, evaluation, presentation scheduling
+├── Evaluation/     Mentor feedback, program quality surveys
+├── Assignment/     Task management, student submissions, grading workflow
+├── Journals/       Logbook entries, attendance, absence requests, scheduling
+├── Guidance/       Supervision logs, mentoring assignments
+├── Incident/       Issue reporting, investigation, resolution
+├── Partners/       Company profiles, partnership agreements
+├── Certification/  Certificate templates, batch issuance, QR verification
+├── Reports/        Final grade cards, score aggregation, coordinator sign-off
+└── Document/       Document templates, handbooks, rendering pipeline
 ```
 
 Each business module colocates its domain models, single-use actions (`BaseAction`), policies
@@ -111,41 +113,64 @@ Explore the complete system guides under `docs/`:
 
 ### Vision & Concepts
 
-- [Product Definition & Scope](docs/product-definition.md)
+- [Product Definition & Scope](docs/foundation/product-definition.md)
 - [Key Feature Catalog](docs/key-features.md)
+- [Project Philosophy](docs/philosophy.md)
 - [Action-based MVC Architecture](docs/architecture.md)
 - [Coding Conventions](docs/conventions.md)
 
-### Deployment & Operation
+### Setup & Operation
 
 - [Getting Started Guide](docs/getting-started.md)
+- [Setup Wizard Walkthrough](docs/foundation/setup-wizard.md)
+- [Post-Setup Administrative Tasks](docs/foundation/post-setup.md)
+- [Infrastructure Overview](docs/infrastructure/infrastructure.md)
 - [Installation Reference](docs/infrastructure/installation.md)
 - [Deployment Options](docs/infrastructure/deployment.md)
 - [Configuration Settings](docs/infrastructure/configuration.md)
-- [Post-Setup Administative Tasks](docs/post-setup.md)
-- [Setup Wizard Walkthrough](docs/setup-wizard.md)
-- [Infrastructure Operations](docs/infrastructure/infrastructure.md)
-- [Scaling Guide](docs/infrastructure/scaling.md)
 
-### Systems & Security
+### Security & Access
 
-- [Role-Based Access Control (RBAC)](docs/rbac.md)
+- [Role-Based Access Control](docs/foundation/rbac.md)
+- [Account Recovery Flows](docs/foundation/account-recovery.md)
 - [Observability & Monitoring](docs/infrastructure/observability.md)
-- [Account Recovery Flows](docs/account-recovery.md)
 - [Backup & Disaster Recovery](docs/infrastructure/backup-recovery.md)
-- [Database Schema & Engine Rules](docs/infrastructure/database.md)
+
+### Technical Reference
+
+- [Database Schema](docs/infrastructure/database.md)
 - [Cache Strategy & Invalidation](docs/infrastructure/cache.md)
 - [Filesystem & Media Storage](docs/infrastructure/filesystem.md)
+- [Media Library](docs/infrastructure/media-library.md)
+- [Routes & Middleware](docs/infrastructure/routes.md)
+- [Session Configuration](docs/infrastructure/session.md)
+- [Notifications](docs/infrastructure/notification.md)
+- [Queue & Workers](docs/infrastructure/queue.md)
+- [Testing Guide](docs/infrastructure/testing.md)
+- [Scaling Guide](docs/infrastructure/scaling.md)
+- [Localization](docs/infrastructure/localization.md)
 
 ### Module References
 
-- [Core Foundations Reference](docs/modules/core.md)
-- [Core Foundations & Shared Utilities Reference](docs/modules/core.md)
-- [User Auth Reference](docs/modules/user.md)
-- [SysAdmin Panel Reference](docs/modules/sysadmin.md)
-- [Academic Structure Reference](docs/modules/academics.md)
-- [Internship Programs Reference](docs/modules/program.md)
-- [Student Placements Reference](docs/modules/enrollment.md)
+- [Core](docs/modules/core.md) / [Reference](docs/modules/core-reference.md)
+- [Auth](docs/modules/auth.md) / [Reference](docs/modules/auth-reference.md)
+- [User](docs/modules/user.md) / [Reference](docs/modules/user-reference.md)
+- [SysAdmin](docs/modules/sysadmin.md) / [Reference](docs/modules/sysadmin-reference.md)
+- [Setup](docs/modules/setup.md) / [Reference](docs/modules/setup-reference.md)
+- [Settings](docs/modules/settings.md) / [Reference](docs/modules/settings-reference.md)
+- [Academics](docs/modules/academics.md) / [Reference](docs/modules/academics-reference.md)
+- [Program](docs/modules/program.md) / [Reference](docs/modules/program-reference.md)
+- [Enrollment](docs/modules/enrollment.md) / [Reference](docs/modules/enrollment-reference.md)
+- [Assessment](docs/modules/assessment.md) / [Reference](docs/modules/assessment-reference.md)
+- [Evaluation](docs/modules/evaluation.md) / [Reference](docs/modules/evaluation-reference.md)
+- [Assignment](docs/modules/assignment.md) / [Reference](docs/modules/assignment-reference.md)
+- [Journals](docs/modules/journals.md) / [Reference](docs/modules/journals-reference.md)
+- [Guidance](docs/modules/guidance.md) / [Reference](docs/modules/guidance-reference.md)
+- [Incident](docs/modules/incident.md) / [Reference](docs/modules/incident-reference.md)
+- [Partners](docs/modules/partners.md) / [Reference](docs/modules/partners-reference.md)
+- [Certification](docs/modules/certification.md) / [Reference](docs/modules/certification-reference.md)
+- [Reports](docs/modules/reports.md) / [Reference](docs/modules/reports-reference.md)
+- [Document](docs/modules/document.md) / [Reference](docs/modules/document-reference.md)
 
 ---
 

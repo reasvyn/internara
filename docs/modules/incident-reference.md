@@ -1,6 +1,6 @@
 # Incident — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Incident** module.
 
@@ -71,6 +71,26 @@ Manages workplace incident reports, severity classification, and resolution trac
 
 File: `routes/web/incident.php`
 Naming pattern: `incident.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/incident/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Incident/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `IncidentReportFactory` | `IncidentReport` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_incident_reports_table` | `incident_reports` |
 
 ---
 

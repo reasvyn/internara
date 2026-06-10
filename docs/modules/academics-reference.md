@@ -1,6 +1,6 @@
 # Academics — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Academics** module.
 
@@ -98,6 +98,28 @@ Manages educational structure: academic years, departments (jurusan), and school
 
 File: `routes/web/academics.php`
 Naming pattern: `academics.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/academics/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Academics/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `AcademicYearFactory` | `AcademicYear` |
+| `DepartmentFactory` | `Department` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_academic_years_table` | `academic_years` |
+| `create_departments_table` | `departments` |
 
 ---
 

@@ -6,10 +6,11 @@ namespace App\Core\Exceptions;
 
 abstract class InfrastructureException extends AppException
 {
-    /**
-     * Infrastructure exceptions occur when external services fail (e.g. database, 3rd party APIs).
-     * These should typically not be exposed to the end user in production to prevent data leakage.
-     */
+    public function statusCode(): int
+    {
+        return 500;
+    }
+
     public function isUserFacing(): bool
     {
         return false;

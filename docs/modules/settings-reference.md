@@ -1,6 +1,6 @@
 # Settings — Technical Reference
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Detailed structural and implementation reference for the **Settings** module.
 
@@ -107,6 +107,26 @@ Manages system-wide configuration: key-value settings store, brand identity (log
 
 File: `routes/web/settings.php`
 Naming pattern: `settings.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/settings/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Settings/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `SettingFactory` | `Setting` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_settings_table` | `settings` |
 
 ---
 

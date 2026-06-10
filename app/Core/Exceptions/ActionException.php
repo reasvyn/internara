@@ -6,10 +6,11 @@ namespace App\Core\Exceptions;
 
 abstract class ActionException extends AppException
 {
-    /**
-     * Action exceptions occur during the orchestration of module logic.
-     * They are typically safe for users to see.
-     */
+    public function statusCode(): int
+    {
+        return 400;
+    }
+
     public function isUserFacing(): bool
     {
         return true;

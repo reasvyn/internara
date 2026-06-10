@@ -1,6 +1,6 @@
 # Routes
 
-> Last updated: 2026-06-08
+> **Last updated:** 2026-06-10
 
 ## Philosophy
 
@@ -12,7 +12,7 @@ This approach avoids merge conflicts on a monolithic file and makes it obvious w
 
 ## Architecture
 
-The master file `routes/web.php` `require`s 18 module route files. Load order matters: if two files register the same route name, the later one wins.
+The master file `routes/web.php` `require`s 18 module route files in dependency order. If two files register the same route name, the later one wins.
 
 ```mermaid
 flowchart LR
@@ -29,44 +29,44 @@ flowchart LR
 
     subgraph routes/web/
         direction TB
-        auth[auth.php]
         setup[setup.php]
+        auth[auth.php]
         user[user.php]
-        admin[admin.php]
-        school[school.php]
+        sysadmin[sysadmin.php]
+        document[document.php]
+        academics[academics.php]
+        partners[partners.php]
         program[program.php]
-        internship[internship.php]
-        registration[registration.php]
-        placement[placement.php]
-        journal[journal.php]
+        enrollment[enrollment.php]
         assignment[assignment.php]
         assessment[assessment.php]
         evaluation[evaluation.php]
-        certification[certification.php]
-        partnership[partnership.php]
-        settings[settings.php]
-        report[report.php]
+        guidance[guidance.php]
+        journals[journals.php]
         incident[incident.php]
+        certification[certification.php]
+        reports[reports.php]
+        settings[settings.php]
     end
 
-    web --> auth
     web --> setup
+    web --> auth
     web --> user
-    web --> admin
-    web --> school
+    web --> sysadmin
+    web --> document
+    web --> academics
+    web --> partners
     web --> program
-    web --> internship
-    web --> registration
-    web --> placement
-    web --> journal
+    web --> enrollment
     web --> assignment
     web --> assessment
     web --> evaluation
-    web --> certification
-    web --> partnership
-    web --> settings
-    web --> report
+    web --> guidance
+    web --> journals
     web --> incident
+    web --> certification
+    web --> reports
+    web --> settings
 ```
 
 Route files contain:
@@ -204,7 +204,7 @@ php artisan route:cache
 - `routes/ai.php` — AI integration routes
 - `bootstrap/app.php` — global middleware registration
 - `app/Core/Http/Middleware/` — global middleware classes
-- `app/Auth/Permissions/Http/Middleware/` — role-check middleware (CheckRole)
+- `app/Auth/Http/Middleware/` — role-check middleware (CheckRole)
 - `app/Auth/Login/Http/Middleware/` — auth throttle middleware (AuthThrottle)
 - `app/Setup/Installation/Http/Middleware/` — setup middleware classes
 - `config/menu.php` — sidebar navigation mapping routes to menu items

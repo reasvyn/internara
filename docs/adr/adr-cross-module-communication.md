@@ -1,11 +1,11 @@
 # ADR-011: Cross-Module Communication Discipline
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 ## Context
 
-The Action-based MVC architecture organizes code into 20 modules, each owning a complete vertical slice. Business processes naturally span multiple modules — student registration involves Enrollment, Program, and User modules. Closing a program involves Assessment, Certification, and Reports modules.
+The Action-based MVC architecture organizes code into 19 modules, each owning a complete vertical slice. Business processes naturally span multiple modules — student registration involves Enrollment, Program, and User modules. Closing a program involves Assessment, Certification, and Reports modules.
 
 Four communication patterns exist with different coupling trade-offs:
 

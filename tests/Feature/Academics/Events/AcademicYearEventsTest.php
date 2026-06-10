@@ -2,15 +2,21 @@
 
 declare(strict_types=1);
 
+use App\Academics\AcademicYear\Actions\ActivateAcademicYearAction;
+use App\Academics\AcademicYear\Actions\CreateAcademicYearAction;
 use App\Academics\AcademicYear\Events\AcademicYearActivated;
 use App\Academics\AcademicYear\Events\AcademicYearCreated;
+use App\Academics\AcademicYear\Models\AcademicYear;
+use App\Academics\Department\Actions\CreateDepartmentAction;
+use App\Academics\Department\Actions\DeleteDepartmentAction;
 use App\Academics\Department\Events\DepartmentCreated;
 use App\Academics\Department\Events\DepartmentDeleted;
+use App\Academics\Department\Models\Department;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Queue;
 
-uses(\Illuminate\Foundation\Testing\LazilyRefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Cache::flush();
@@ -19,7 +25,7 @@ beforeEach(function () {
 test('academic year created event is dispatched via action', function () {
     Event::fake([AcademicYearCreated::class]);
 
-    app(\App\Academics\AcademicYear\Actions\CreateAcademicYearAction::class)->execute([
+    app(CreateAcademicYearAction::class)->execute([
         'name' => '2025/2026',
         'start_date' => '2025-07-01',
         'end_date' => '2026-06-30',
@@ -29,11 +35,11 @@ test('academic year created event is dispatched via action', function () {
 });
 
 test('academic year activated event is dispatched', function () {
-    $year = \App\Academics\AcademicYear\Models\AcademicYear::factory()->create();
+    $year = AcademicYear::factory()->create();
 
     Event::fake([AcademicYearActivated::class]);
 
-    app(\App\Academics\AcademicYear\Actions\ActivateAcademicYearAction::class)->execute($year);
+    app(ActivateAcademicYearAction::class)->execute($year);
 
     Event::assertDispatched(AcademicYearActivated::class);
 });
@@ -41,7 +47,7 @@ test('academic year activated event is dispatched', function () {
 test('department created event is dispatched via action', function () {
     Event::fake([DepartmentCreated::class]);
 
-    app(\App\Academics\Department\Actions\CreateDepartmentAction::class)->execute([
+    app(CreateDepartmentAction::class)->execute([
         'name' => 'RPL',
     ]);
 
@@ -49,11 +55,11 @@ test('department created event is dispatched via action', function () {
 });
 
 test('department deleted event is dispatched via action', function () {
-    $department = \App\Academics\Department\Models\Department::factory()->create();
+    $department = Department::factory()->create();
 
     Event::fake([DepartmentDeleted::class]);
 
-    app(\App\Academics\Department\Actions\DeleteDepartmentAction::class)->execute($department);
+    app(DeleteDepartmentAction::class)->execute($department);
 
     Event::assertDispatched(DepartmentDeleted::class);
 });

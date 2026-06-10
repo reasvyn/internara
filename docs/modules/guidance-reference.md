@@ -1,6 +1,6 @@
 # Guidance — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Guidance** module.
 
@@ -71,6 +71,26 @@ Manages mentor-student supervision logs, field supervision visits, and mentoring
 
 File: `routes/web/guidance.php`
 Naming pattern: `guidance.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/guidance/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Guidance/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `SupervisionLogFactory` | `SupervisionLog` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_supervision_logs_table` | `supervision_logs` |
 
 ---
 

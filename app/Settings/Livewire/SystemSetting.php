@@ -8,6 +8,7 @@ use App\Academics\AcademicYear\Actions\ActivateAcademicYearAction;
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Settings\Actions\GetAcademicYearsAction;
 use App\Settings\Actions\SaveSystemSettingsAction;
+use App\Settings\Enums\MediaCollection;
 use App\Settings\Actions\TestMailSettingsAction;
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
 use App\Settings\Branding\Livewire\Forms\BrandingForm;
@@ -129,7 +130,7 @@ class SystemSetting extends Component
     {
         $setting = Setting::firstOrCreate(['key' => 'brand_logo_ref']);
 
-        $logos = $setting->getMedia(Setting::COLLECTION_LOGO);
+        $logos = $setting->getMedia(MediaCollection::LOGO->value);
         foreach ($logos as $media) {
             $properties = $media->getCustomProperties();
             if (($properties['type'] ?? '') === 'logo') {
@@ -148,7 +149,7 @@ class SystemSetting extends Component
     {
         $setting = Setting::firstOrCreate(['key' => 'brand_favicon_ref']);
 
-        $favicons = $setting->getMedia(Setting::COLLECTION_FAVICON);
+        $favicons = $setting->getMedia(MediaCollection::FAVICON->value);
         foreach ($favicons as $media) {
             $media->delete();
         }

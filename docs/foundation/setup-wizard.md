@@ -1,6 +1,6 @@
 # Setup Wizard
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Detailed walkthrough of the 6-step guided setup wizard.
 

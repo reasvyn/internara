@@ -1,6 +1,6 @@
 # Auth — Technical Reference
 
-> Last updated: 2026-06-08
+> Last updated: 2026-06-10
 
 Detailed structural and implementation reference for the **Auth** module.
 
@@ -136,6 +136,25 @@ Handles authentication: login, password management, account activation, account 
 
 File: `routes/web/auth.php`
 Naming pattern: `auth.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/auth/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Auth/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+None.
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_api_tokens_table` | `api_tokens` |
+| `create_permission_tables` | `permissions` |
 
 ---
 

@@ -6,6 +6,9 @@ namespace App\Settings\Models;
 
 use App\Core\Models\BaseModel;
 use App\Settings\Casts\SettingValueCast;
+use App\Settings\Entities\SettingEntity;
+use App\Settings\Enums\MediaCollection;
+use App\Settings\Enums\SettingType;
 use Database\Factories\SettingFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,14 +28,14 @@ class Setting extends BaseModel implements HasMedia
 
     protected $keyType = 'string';
 
-    public const COLLECTION_LOGO = 'brand_logo';
-
-    public const COLLECTION_FAVICON = 'brand_favicon';
+    protected $casts = [
+        'value' => SettingValueCast::class,
+    ];
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection(self::COLLECTION_LOGO)->singleFile();
-        $this->addMediaCollection(self::COLLECTION_FAVICON)->singleFile();
+        $this->addMediaCollection(MediaCollection::LOGO->value)->singleFile();
+        $this->addMediaCollection(MediaCollection::FAVICON->value)->singleFile();
     }
 
     public function registerMediaConversions(?Media $media = null): void
@@ -40,23 +43,14 @@ class Setting extends BaseModel implements HasMedia
         $this->addMediaConversion('thumb')->width(200)->format('webp');
     }
 
-    public const VALID_TYPES = [
-        'string',
-        'integer',
-        'float',
-        'boolean',
-        'json',
-        'encrypted',
-        'null',
-    ];
-
-    protected $casts = [
-        'value' => SettingValueCast::class,
-    ];
-
     protected static function newFactory(): SettingFactory
     {
         return SettingFactory::new();
+    }
+
+    public function asSetting(): SettingEntity
+    {
+        return SettingEntity::fromModel($this);
     }
 
     public function scopeGroup(Builder $query, string $name): Builder
@@ -74,9 +68,11 @@ class Setting extends BaseModel implements HasMedia
         return $query->whereIn('group', $groups);
     }
 
-    public function scopeOfType(Builder $query, string $type): Builder
+    public function scopeOfType(Builder $query, SettingType|string $type): Builder
     {
-        return $query->where('type', $type);
+        $value = $type instanceof SettingType ? $type->value : $type;
+
+        return $query->where('type', $value);
     }
 
     public function scopeSearchable(Builder $query, string $term): Builder

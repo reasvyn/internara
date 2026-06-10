@@ -1,6 +1,6 @@
 # Known Issues & Limitations
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 This document catalogs known issues, caveats, and workarounds for the Internara system. Items are
 organized by module and cross-cutting concern.
@@ -173,12 +173,12 @@ These Livewire components are routed in a different module's route file:
 
 | Component | Module | Routed In |
 |-----------|--------|-----------|
-| `AssessmentView` | Assessment | `routes/web/mentee.php` |
-| `SubmitAssignment` | Assignment | `routes/web/mentee.php` |
-| `StudentClockIn`, `AbsenceRequestForm` | Attendance | `routes/web/mentee.php` |
-| `LogbookEntry` | Logbook | `routes/web/mentee.php` |
-| `SupervisionManager` | Guidance | `routes/web/mentee.php` |
-| `StudentPlacementChangeRequest` | Placement | `routes/web/mentee.php` |
+| `AssessmentView` | Assessment | Student route group |
+| `SubmitAssignment` | Assignment | Student route group |
+| `StudentClockIn`, `AbsenceRequestForm` | Attendance | Student route group |
+| `LogbookEntry` | Logbook | Student route group |
+| `SupervisionManager` | Guidance | Student route group |
+| `StudentPlacementChangeRequest` | Placement | Student route group |
 
 ---
 

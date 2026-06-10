@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Partners\Partnership\Enums\PartnershipStatus;
 use App\Partners\Partnership\Entities\PartnershipState;
+use App\Partners\Partnership\Enums\PartnershipStatus;
 
 test('is active returns true for active status', function () {
     $entity = new PartnershipState(status: PartnershipStatus::ACTIVE, endDate: null);

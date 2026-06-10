@@ -1,6 +1,6 @@
 # Core
 
-> **Last updated:** 2026-06-08 (refactored: removed duplicate Integrity class, synchronised docs with actual implementation)
+> **Last updated:** 2026-06-10
 
 Foundational infrastructure, abstract base classes, contracts, cross-module utilities, concrete implementations, and architectural mechanisms that every other module depends on.
 
@@ -11,7 +11,7 @@ Core provides the non-negotiable foundation for the entire application. It defin
 The module is split into two conceptual layers:
 
 - **Infrastructure (abstract):** Base classes, contracts, abstract exceptions, middleware — the framework every module builds on.
-- **Shared (concrete):** DTOs, enums, concrete exceptions, global UI components, policy concerns, support utilities, helper functions — reusable implementations that any module may import.
+- **Concrete layer:** DTOs, enums, concrete exceptions, global UI components, policy concerns, support utilities, helper functions — reusable implementations that any module may import.
 
 Out of scope: domain-specific logic, domain enums, application settings, user-facing features.
 
@@ -33,13 +33,13 @@ Core has no submodules. Code is organized by architectural layer:
 - **Contracts/** — Interfaces: `LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`, `SettingsStore`.
 - **Exceptions/** — Dual hierarchy: `AppException` for infrastructure/presentation/action failures, `ModuleException` for business rule violations. Concrete subclasses: `ConflictException` (409), `NotFoundException` (404), `RateLimitException` (429), `RejectedException` (400), `UnauthorizedException` (403), `ValidationFailedException` (422). All implement `HasExceptionContext`.
 - **Events/BaseEvent.php** — Abstract base for event objects with `Dispatchable`, `eventName()`, and `toPayload()`.
-- **Data/BaseData.php** — Abstract readonly DTO base for type-safe data transfer objects. Concrete DTOs: `AuditCheck`, `AuditReport`.
+- **Data/BaseData.php** — Abstract readonly DTO base for type-safe data transfer objects with `fromArray()`, `toArray()`, `only()`, `except()`, `merge()`. Concrete DTOs: `ActionResponse` (standardized action result), `AuditCheck` (single audit check), `AuditReport` (aggregated audit results).
 - **Enums/** — System-wide enums: `CsvRowResult` (row import status), `AuditCategory` (health categories), `AuditStatus` (pass/fail/warn). All implement `LabelEnum`.
-- **Support/SmartLogger.php** — Fluent dual-channel logger writing to system (debug) and activity (immutable audit) channels with automatic PII masking.
-- **Support/LangChecker.php** — Dev helper that warns on missing translation keys.
-- **Support/AppInfo.php** — Static application metadata from `composer.json` with config fallback (name, version, author, license, gitUrl).
-- **Support/AppIntegrity.php** — Composer author verification, enforcing that the author name must be "Reas Vyn". A duplicate `Integrity` class was removed during refactoring (v1.0).
-- **Support/** — Concrete utilities: `Color` (hex manipulation), `CsvHandler` (CSV parsing/generation with safe file handle management), `Environment` (system environment detection), `HandlesActionErrors` (generic try-catch-log-rethrow), `HasModelStatuses` (status enum integration — scheduled for removal in v2.0), `PasswordRules` (password policy presets), `PiiMasker` (PII redaction).
+- **Support/SmartLogger.php** — Fluent dual-channel logger writing to system (debug) and activity (immutable audit) channels with automatic PII masking, event dispatching, and translation resolution.
+- **Support/LangChecker.php** — Dev helper that warns on missing translation keys via SmartLogger.
+- **Support/AppInfo.php** — Static application metadata from `composer.json` with config fallback (name, version, author, license, gitUrl). Powers `app_info()` global helper.
+- **Support/AppIntegrity.php** — Composer author verification, enforcing that the author name must be "Reas Vyn".
+- **Support/** — Concrete utilities: `Color` (hex manipulation, luminance, contrast, shade computation), `CsvHandler` (CSV parsing/generation with safe file handle management), `Environment` (system environment detection), `HandlesActionErrors` (generic try-catch-log-rethrow trait), `PasswordRules` (password policy presets), `PiiMasker` (PII redaction for emails, phones, names, IPs, user agents).
 - **helpers.php** — Global helper function: `app_info()` for static metadata access.
 
 The helpers `setting()` and `brand()` are defined in the Settings module at `app/Settings/Support/helpers.php`.
@@ -48,7 +48,7 @@ The helpers `setting()` and `brand()` are defined in the Settings module at `app
 
 ### Separation of Abstract and Concrete
 
-Core provides abstract contracts and base classes. Shared provides concrete implementations. The distinction prevents framework-level abstractions from being polluted with application-specific defaults. All shared components live under `app/Core/` but are conceptually separated: `Data/`, `Enums/`, `Exceptions/`, `Livewire/`, `Policies/Concerns/`, and `Support/` contain concrete classes, while `Contracts/`, `Actions/BaseAction.php`, `Models/BaseModel.php`, `Entities/BaseEntity.php`, etc. contain abstract infrastructure.
+Core provides abstract contracts and base classes alongside concrete implementations under the same `app/Core/` namespace. The distinction prevents framework-level abstractions from being polluted with application-specific defaults. `Data/`, `Enums/`, `Exceptions/`, `Livewire/`, `Policies/Concerns/`, and `Support/` contain concrete classes, while `Contracts/`, `Actions/BaseAction.php`, `Models/BaseModel.php`, `Entities/BaseEntity.php`, etc. contain abstract infrastructure.
 
 ### Action Triad
 

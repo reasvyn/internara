@@ -139,9 +139,9 @@ test('import closes file handle when row processor throws', function () {
     try {
         $handler->import(
             filePath: $path,
-            rowProcessor: fn ($row) => throw new \RuntimeException('Processing failed'),
+            rowProcessor: fn ($row) => throw new RuntimeException('Processing failed'),
         );
-    } catch (\RuntimeException $e) {
+    } catch (RuntimeException $e) {
         $caught = true;
         expect($e->getMessage())->toBe('Processing failed');
     }

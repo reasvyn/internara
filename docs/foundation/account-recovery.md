@@ -1,6 +1,6 @@
 # Account Recovery
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Internara provides three account recovery mechanisms, each designed for a different loss scenario:
 

@@ -142,3 +142,47 @@ test('to array preserves null values', function () {
     expect($arr['name'])->toBe('Null Value');
     expect($arr['age'])->toBe(0);
 });
+
+test('base data implements json serialize', function () {
+    $dto = new MockData('Bob', 50, true);
+
+    $serialized = json_decode(json_encode($dto), true);
+
+    expect($serialized)->toBe(['name' => 'Bob', 'age' => 50, 'isAdmin' => true]);
+});
+
+test('only extracts specified keys', function () {
+    $dto = new MockData('Alice', 30, true);
+
+    $result = $dto->only('name', 'isAdmin');
+
+    expect($result)->toBe(['name' => 'Alice', 'isAdmin' => true]);
+});
+
+test('only ignores missing keys', function () {
+    $dto = new MockData('Alice', 30);
+
+    $result = $dto->only('name', 'nonexistent');
+
+    expect($result)->toHaveKey('name');
+    expect($result)->not->toHaveKey('nonexistent');
+});
+
+test('except removes specified keys', function () {
+    $dto = new MockData('Bob', 25);
+
+    $result = $dto->except('age');
+
+    expect($result)->toHaveKey('name');
+    expect($result)->not->toHaveKey('age');
+});
+
+test('merge creates new instance with overrides', function () {
+    $original = new MockData('Original', 10);
+    $merged = $original->merge(['name' => 'Updated', 'isAdmin' => true]);
+
+    expect($original->name)->toBe('Original');
+    expect($merged->name)->toBe('Updated');
+    expect($merged->age)->toBe(10);
+    expect($merged->isAdmin)->toBeTrue();
+});

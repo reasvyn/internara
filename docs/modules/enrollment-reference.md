@@ -1,6 +1,6 @@
 # Enrollment — Technical Reference
 
-> **Last updated:** 2026-06-08
+> **Last updated:** 2026-06-10
 
 Detailed structural and implementation reference for the **Enrollment** module.
 
@@ -100,6 +100,34 @@ Manages student registration, placement slot assignment, placement change reques
 
 File: `routes/web/enrollment.php`
 Naming pattern: `enrollment.{resource}.{action}`
+
+## Views
+
+Views are located in `resources/views/enrollment/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+
+## Tests
+
+Tests are located in `tests/{Feature,Unit}/Enrollment/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+
+## Factories
+
+| Factory | Model |
+| ------- | ----- |
+| `RegistrationFactory` | `Registration` |
+| `RegistrationDocumentFactory` | `RegistrationDocument` |
+| `PlacementFactory` | `Placement` |
+| `PlacementChangeRequestFactory` | `PlacementChangeRequest` |
+| `AccountApplicationFactory` | `AccountApplication` |
+
+## Migrations
+
+| Migration | Table |
+| --------- | ----- |
+| `create_registrations_table` | `registrations` |
+| `create_registration_documents_table` | `registration_documents` |
+| `create_placements_table` | `placements` |
+| `create_placement_change_requests_table` | `placement_change_requests` |
+| `create_account_applications_table` | `account_applications` |
 
 ---
 
