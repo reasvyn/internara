@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Auth\ApiTokens\Models;
 
+use App\Auth\AccountRecovery\Entities\RecoveryCodeState;
 use App\Auth\ApiTokens\Entities\ActivationToken;
+use App\Auth\ApiTokens\Entities\ApiTokenState;
 use App\Core\Models\BaseModel;
 use App\User\Models\User;
 use Database\Factories\ApiTokenFactory;
@@ -55,6 +57,16 @@ class ApiToken extends BaseModel
     public function asActivationToken(): ActivationToken
     {
         return ActivationToken::fromModel($this);
+    }
+
+    public function asApiTokenState(): ApiTokenState
+    {
+        return ApiTokenState::fromModel($this);
+    }
+
+    public function asRecoveryCodeState(): RecoveryCodeState
+    {
+        return RecoveryCodeState::fromModel($this);
     }
 
     public static function generateFor(User $user, string $type, array $options = []): array

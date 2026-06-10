@@ -65,7 +65,17 @@ class Registration extends BaseModel
 
     public function asRegistrationState(): RegistrationState
     {
-        return RegistrationState::fromModel($this);
+        return RegistrationState::fromModel($this)->withPhases($this->resolvePhases());
+    }
+
+    public function currentPhaseIndex(): ?int
+    {
+        return $this->asRegistrationState()->currentPhaseIndex();
+    }
+
+    public function currentPhase(): ?string
+    {
+        return $this->asRegistrationState()->currentPhase();
     }
 
     public function student(): BelongsTo
@@ -118,12 +128,6 @@ class Registration extends BaseModel
         return $this->hasOne(Report::class, 'registration_id');
     }
 
-    /**
-     * Resolve the phase definitions for this registration.
-     * Uses the internship's custom phases JSON, or falls back to global defaults.
-     *
-     * @return array<int, array{name: string, order: int, weight: int}>
-     */
     public function resolvePhases(): array
     {
         $phases = $this->internship?->phases;
@@ -135,59 +139,5 @@ class Registration extends BaseModel
         $defaults = Setting::where('key', 'internship_phases')->value('value');
 
         return is_array($defaults) ? $defaults : [];
-    }
-
-    /**
-     * Compute the current phase index based on the program date range and today's date.
-     * Returns null if phases or program dates are not configured.
-     */
-    public function currentPhaseIndex(): ?int
-    {
-        $phases = $this->resolvePhases();
-        $internship = $this->internship;
-
-        if ($phases === [] || ! $internship?->start_date || ! $internship?->end_date) {
-            return null;
-        }
-
-        $now = Carbon::today();
-        $start = Carbon::parse($internship->start_date);
-        $end = Carbon::parse($internship->end_date);
-        $totalDays = $start->diffInDays($end);
-
-        if ($totalDays <= 0) {
-            return null;
-        }
-
-        $elapsedDays = $start->diffInDays($now, false);
-        $elapsedPercent = ($elapsedDays / $totalDays) * 100;
-
-        if ($elapsedPercent <= 0) {
-            return 0;
-        }
-
-        $cumulative = 0;
-        foreach ($phases as $index => $phase) {
-            $cumulative += $phase['weight'];
-            if ($elapsedPercent <= $cumulative) {
-                return $index;
-            }
-        }
-
-        return count($phases) - 1;
-    }
-
-    /**
-     * Get the current phase name, or null if not in a phase.
-     */
-    public function currentPhase(): ?string
-    {
-        $index = $this->currentPhaseIndex();
-
-        if ($index === null) {
-            return null;
-        }
-
-        return $this->resolvePhases()[$index]['name'] ?? null;
     }
 }
