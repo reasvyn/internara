@@ -6,28 +6,15 @@ namespace App\User\Profile\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
-use App\Core\Support\SmartLogger;
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Models\User;
+use App\User\Profile\Events\ProfileUpdated;
 use App\User\Profile\Models\Profile;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use RuntimeException;
 
-/**
- * S1 - Secure: Atomic profile updates with auditing and validation.
- * S2 - Sustain: Proper error handling and logging.
- */
 final class UpdateProfileAction extends BaseAction
 {
-    /**
-     * Execute the profile update.
-     *
-     * @param array<string, mixed> $data
-     *
-     * @throws RuntimeException when update fails
-     */
     public function execute(
         User $user,
         array $data,
@@ -76,7 +63,7 @@ final class UpdateProfileAction extends BaseAction
 
         $data = array_filter($data, fn ($v) => $v !== null);
 
-        return DB::transaction(function () use ($user, $data, $userData, $avatar) {
+        return $this->transaction(function () use ($user, $data, $userData, $avatar) {
             if ($userData !== []) {
                 $user->update($userData);
             }
@@ -85,29 +72,16 @@ final class UpdateProfileAction extends BaseAction
                 $user->addMedia($avatar)->toMediaCollection('avatar');
             }
 
-            if ($data === []) {
-                return $user->profile ?? $user->profile()->create([]);
-            }
-
             $profile = $user->profile()->updateOrCreate(['user_id' => $user->id], $data);
 
-            SmartLogger::info('profile_updated')
-                ->event('profile_updated')
-                ->module('Profile')
-                ->about($profile)
-                ->withPayload(array_keys($data))
-                ->activityOnly()
-                ->save();
+            $this->dispatchEvent(new ProfileUpdated($profile));
+
+            $this->log('profile_updated', $profile, array_keys($data));
 
             return $profile;
         });
     }
 
-    /**
-     * Validate profile data.
-     *
-     * @param array<string, mixed> $data
-     */
     protected function validate(array $data): void
     {
         Validator::make($data, [

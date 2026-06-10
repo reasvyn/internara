@@ -196,11 +196,9 @@ class User extends Authenticatable implements HasMedia
         return $this;
     }
 
-    public function latestStatus()
+    public function latestStatus(): ?string
     {
-        return (object) [
-            'name' => $this->status instanceof AccountStatus ? $this->status->value : $this->status,
-        ];
+        return $this->status instanceof AccountStatus ? $this->status->value : $this->status;
     }
 
     protected static function booted(): void
