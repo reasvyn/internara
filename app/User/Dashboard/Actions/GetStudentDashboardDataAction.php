@@ -9,7 +9,6 @@ use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Document\Models\Document;
-use App\Enrollment\Registration\Models\Registration;
 use App\Journals\Attendance\Enums\AttendanceStatus;
 use App\Journals\Attendance\Models\Attendance;
 use App\Journals\Logbook\Models\Logbook;
