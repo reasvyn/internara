@@ -11,11 +11,31 @@ use Illuminate\Database\Eloquent\Model;
 final readonly class SettingEntity extends BaseEntity
 {
     public function __construct(
-        public string $key,
-        public mixed $value,
-        public ?string $type,
-        public ?string $group,
+        private string $key,
+        private mixed $value,
+        private ?string $type,
+        private ?string $group,
     ) {}
+
+    public function key(): string
+    {
+        return $this->key;
+    }
+
+    public function value(): mixed
+    {
+        return $this->value;
+    }
+
+    public function type(): ?string
+    {
+        return $this->type;
+    }
+
+    public function group(): ?string
+    {
+        return $this->group;
+    }
 
     public static function fromModel(Model $model): static
     {
@@ -92,9 +112,9 @@ final readonly class SettingEntity extends BaseEntity
         return $this->value === null || $this->value === '';
     }
 
-    public function isThemeColor(): bool
+    public function isThemeColor(array $themeCacheKeys = []): bool
     {
-        return in_array($this->key, config('settings.theme_cache_keys', []), true);
+        return in_array($this->key, $themeCacheKeys, true);
     }
 
     public function belongsToGroup(string $group): bool

@@ -13,9 +13,9 @@ test('setting entity can be created from model', function () {
 
     $entity = SettingEntity::fromModel($setting);
 
-    expect($entity->key)->toBe('site.name');
-    expect($entity->value)->toBe('Internara');
-    expect($entity->group)->toBe('general');
+    expect($entity->key())->toBe('site.name');
+    expect($entity->value())->toBe('Internara');
+    expect($entity->group())->toBe('general');
 });
 
 test('setting entity identifies boolean type', function () {

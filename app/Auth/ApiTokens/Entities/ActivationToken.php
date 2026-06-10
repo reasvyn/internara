@@ -14,10 +14,25 @@ use Illuminate\Support\Facades\Hash;
 final readonly class ActivationToken extends BaseEntity
 {
     public function __construct(
-        public string $plainText,
-        public string $tokenId,
-        public Carbon $expiresAt,
+        private string $plainText,
+        private string $tokenId,
+        private Carbon $expiresAt,
     ) {}
+
+    public function plainText(): string
+    {
+        return $this->plainText;
+    }
+
+    public function tokenId(): string
+    {
+        return $this->tokenId;
+    }
+
+    public function expiresAt(): Carbon
+    {
+        return $this->expiresAt;
+    }
 
     public static function fromModel(Model $model): static
     {
