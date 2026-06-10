@@ -15,6 +15,7 @@
 | [Key Features](key-features.md)                        | Complete feature inventory across all 19 modules, organized by program lifecycle from foundation through program closure |
 | [Project Philosophy](philosophy.md)                    | Guiding principles, values, and vision that shape the project — beyond architecture and code                            |
 | [Action-based MVC Architecture](architecture.md)       | 12-layer architecture, Action Triad (Command/Read/Process), cross-module communication, exception hierarchy, validation |
+| [Modular Pattern Reference](architecture/modular-pattern.md) | Comprehensive catalog of all design patterns, conventions, workflow patterns, and architectural rules                   |
 | [Coding Conventions](conventions.md)                   | Mandatory base classes, file structure conventions, PHP rules, naming, policy/enum conventions, testing standards       |
 
 ---
@@ -152,9 +153,10 @@ flowchart LR
     B --> C[philosophy.md]
     C --> D[getting-started.md]
     D --> E[architecture.md]
-    E --> F[conventions.md]
-    F --> G[modules/{module}.md]
-    G --> H[modules/{module}-reference.md]
+    E --> F[architecture/modular-pattern.md]
+    F --> G[conventions.md]
+    G --> H[modules/{module}.md]
+    H --> I[modules/{module}-reference.md]
 ```
 
 ### For Operations / DevOps

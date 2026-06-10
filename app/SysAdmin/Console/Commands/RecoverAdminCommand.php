@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Console\Commands;
 
-use App\Core\Support\SmartLogger;
+use App\Auth\SuperAdmin\Actions\RecoverSuperAdminAction;
 use App\Core\Support\AppInfo;
+use App\Core\Support\SmartLogger;
 use App\Settings\Support\Settings;
 use App\SysAdmin\UserManagement\Actions\ReadRecoveryKeyAction;
 use App\SysAdmin\UserManagement\Actions\SaveRecoveryKeyAction;
-use App\Auth\SuperAdmin\Actions\RecoverSuperAdminAction;
 use App\User\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;

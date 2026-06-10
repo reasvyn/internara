@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Setup\SetupWizard\Actions;
 
 use App\Auth\Permissions\Enums\Role as RoleEnum;
+use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Support\PasswordRules;
-use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;

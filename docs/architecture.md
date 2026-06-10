@@ -7,6 +7,9 @@
 > - **S1 — Secure**: Protect data integrity, enforce authorization, prevent leakage
 > - **S2 — Sustain**: Keep the codebase maintainable as it grows across 19 modules
 > - **S3 — Scalable**: Design for team expansion and feature accretion without rewrites
+>
+> For a complete catalog of all design patterns, conventions, and workflow patterns used across the
+> codebase, see [Modular Pattern Reference](architecture/modular-pattern.md).
 
 ---
 

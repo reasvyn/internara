@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Setup\SetupWizard\Livewire;
 
-use App\Core\Support\SmartLogger;
 use App\Core\Support\AppInfo;
+use App\Core\Support\SmartLogger;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
 use App\Setup\SetupWizard\Livewire\Forms\DepartmentForm;

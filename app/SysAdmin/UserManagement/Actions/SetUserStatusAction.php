@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\UserManagement\Actions;
 
+use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
-use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\AccountStatus\Notifications\AccountStatusNotification;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;

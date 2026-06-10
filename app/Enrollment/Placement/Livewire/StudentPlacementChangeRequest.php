@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Placement\Livewire;
 
+use App\Enrollment\Placement;
 use App\Enrollment\Placement\Actions\RequestPlacementChangeAction;
 use App\Enrollment\Placement\Livewire\Forms\PlacementChangeForm;
-use App\Enrollment\Placement;
 use App\Enrollment\Placement\Models\PlacementChangeRequest;
 use App\Enrollment\Registration\Models\Registration;
 use Illuminate\Contracts\View\View;
