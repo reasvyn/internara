@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\UserManagement\Actions;
 
-use App\Core\Actions\BaseAction;
 use App\User\Models\User;
 
-final class GetUserManagerStatsAction extends BaseAction
+final class GetUserManagerStatsAction
 {
-    /**
-     * @return array{total: int, admins: int, active: int, pending: int}
-     */
     public function execute(): array
     {
         return [

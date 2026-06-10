@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\SysAdmin\UserManagement\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use App\User\Notifications\WelcomeNotification;
 use App\User\Rules\ReservedAuthoritativeName;
@@ -15,21 +14,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use RuntimeException;
 
-/**
- * S1 - Secure: Atomic user creation with profile and role assignment.
- * S2 - Sustain: Proper error handling and logging.
- */
 final class CreateUserAction extends BaseAction
 {
-    /**
-     * Create a new user with associated profile and roles.
-     *
-     * @param array{name?: string, email?: string, username?: string, password?: string, setup_required?: bool} $userData
-     * @param array<string, mixed> $profileData
-     * @param list<string> $roles
-     *
-     * @throws RuntimeException when user creation fails
-     */
     public function execute(
         array $userData,
         array $profileData = [],
@@ -76,16 +62,10 @@ final class CreateUserAction extends BaseAction
                 $user->syncRoles($roles);
             }
 
-            SmartLogger::info('user_created')
-                ->event('user_created')
-                ->module('Auth')
-                ->about($user)
-                ->withPayload([
-                    'email' => $user->email,
-                    'roles' => $roles,
-                ])
-                ->activityOnly()
-                ->save();
+            $this->log('user_created', $user, [
+                'email' => $user->email,
+                'roles' => $roles,
+            ]);
 
             return $user;
         });
@@ -93,15 +73,11 @@ final class CreateUserAction extends BaseAction
         if ($shouldSendWelcome && $user->email) {
             try {
                 $user->notify(new WelcomeNotification($plainPassword));
-            } catch (\Throwable $e) {
-                SmartLogger::warning('Failed to send welcome notification')
-                    ->withPayload([
-                        'user_id' => $user->id,
-                        'email' => $user->email,
-                        'error' => $e->getMessage(),
-                    ])
-                    ->systemOnly()
-                    ->save();
+            } catch (\Throwable) {
+                $this->log('welcome_notification_failed', $user, [
+                    'user_id' => $user->id,
+                    'email' => $user->email,
+                ]);
             }
         }
 

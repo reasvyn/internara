@@ -6,7 +6,6 @@ namespace App\SysAdmin\UserManagement\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
-use App\Core\Support\SmartLogger;
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Models\User;
 use App\User\Rules\ReservedAuthoritativeName;
@@ -80,16 +79,10 @@ final class UpdateUserAction extends BaseAction
                 $user->syncRoles($roles);
             }
 
-            SmartLogger::info('user_updated')
-                ->event('user_updated')
-                ->module('Auth')
-                ->about($user)
-                ->withPayload([
-                    'email' => $user->email,
-                    'roles' => $roles,
-                ])
-                ->activityOnly()
-                ->save();
+            $this->log('user_updated', $user, [
+                'email' => $user->email,
+                'roles' => $roles,
+            ]);
 
             return $user;
         });

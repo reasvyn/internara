@@ -4,22 +4,19 @@ declare(strict_types=1);
 
 namespace App\Program\Internship\Events;
 
+use App\Core\Events\BaseEvent;
 use App\Program\Internship\Models\Internship;
 use App\User\Models\User;
-use Illuminate\Foundation\Events\Dispatchable;
 
-/**
- * Event fired when a new internship is created.
- *
- * S3 - Scalable: Decouples side effects from core business logic.
- * Use when multiple things need to happen after an internship is created.
- */
-class InternshipCreated
+final class InternshipCreated extends BaseEvent
 {
-    use Dispatchable;
-
     public function __construct(
-        public readonly Internship $internship,
-        public readonly ?User $createdBy = null,
+        public Internship $internship,
+        public ?User $createdBy = null,
     ) {}
+
+    public function eventName(): string
+    {
+        return 'internship.created';
+    }
 }

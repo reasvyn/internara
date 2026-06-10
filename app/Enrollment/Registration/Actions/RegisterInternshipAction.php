@@ -13,7 +13,6 @@ use App\Guidance\Mentee\Models\Mentee;
 use App\Program\Internship\Models\Internship;
 use App\Program\Notifications\RegistrationNotification;
 use App\User\Models\User;
-use Illuminate\Support\Facades\Event;
 
 final class RegisterInternshipAction extends BaseAction
 {
@@ -50,7 +49,7 @@ final class RegisterInternshipAction extends BaseAction
             $internship = Internship::find($data->internshipId);
             $student->notify(new RegistrationNotification($internship->name, 'pending'));
 
-            Event::dispatch(new StudentRegistered($registration));
+            $this->dispatchEvent(new StudentRegistered($registration));
 
             $this->log('internship_registered', $registration, $data->toArray());
 

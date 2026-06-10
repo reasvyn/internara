@@ -8,7 +8,6 @@ use App\Core\Actions\BaseAction;
 use App\Partners\Company\Data\CompanyData;
 use App\Partners\Company\Events\CompanyCreated;
 use App\Partners\Company\Models\Company;
-use Illuminate\Support\Facades\Event;
 
 final class CreateCompanyAction extends BaseAction
 {
@@ -25,7 +24,7 @@ final class CreateCompanyAction extends BaseAction
                 'industry_sector' => $data->industrySector,
             ]);
 
-            Event::dispatch(new CompanyCreated($company));
+            $this->dispatchEvent(new CompanyCreated($company));
 
             $this->log('company_created', $company, ['name' => $company->name]);
 
