@@ -2,11 +2,11 @@
 
 > **Last updated:** 2026-06-10
 
-Daily activity tracking: logbook entries with mentor verification, attendance with clock-in/out, absence requests with approval workflow, and schedule management.
+Daily activity tracking: logbook entries with mentor verification, attendance with clock-in/out, and absence requests with approval workflow.
 
 ## Purpose & Boundary
 
-Journals is the operational hub for daily internship activities. Students record daily logbook entries (one per calendar day), clock attendance in and out, request absences with justification, and view their work schedules. Industry supervisors review and verify logbook entries. Teachers have fallback verification capability when supervisors are inactive.
+Journals is the operational hub for daily internship activities. Students record daily logbook entries (one per calendar day), clock attendance in and out, and request absences with justification. Industry supervisors review and verify logbook entries. Teachers have fallback verification capability when supervisors are inactive.
 
 Out of scope: rubric-based competency assessment (Assessment), task assignments (Assignment), final grade compilation (Reports).
 
@@ -20,9 +20,6 @@ Clock-in/clock-out records with auto-computed duration and optional GPS metadata
 
 ### AbsenceRequest
 Planned or unplanned absence submission with reason, optional supporting documents, and date range. Single-day absences approved by mentor. Extended absences (configurable threshold, default 3+ days) require secondary approval from coordinator. Unapproved absences auto-escalate after program grace period.
-
-### Schedule
-Program event management: title, description, start/end times, location, category. Supports recurring events (daily, weekly, biweekly, monthly). Conflict detection warns on overlapping events but does not block creation. Past events are immutable — corrections require cancellation and recreation.
 
 ## Key Concepts
 

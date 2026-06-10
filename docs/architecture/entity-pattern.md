@@ -900,7 +900,6 @@ Examples: `SupervisionStatus`, `LogbookState`.
 | `AssignmentRules` | Assignment | `Entities/AssignmentRules.php` | `Assignment::asAssignmentRules()` | `isMandatory: bool`, `dueDate: ?Carbon` |
 | `SubmissionState` | Assignment/Submission | `Entities/SubmissionState.php` | `Submission::asSubmissionState()` | `status: SubmissionStatus` |
 | `LogbookState` | Journals/Logbook | `Entities/LogbookState.php` | `Logbook::asLogbookState()` | `status: LogbookStatus` |
-| `ScheduleStatus` | Journals/Schedule | *(entity name may differ)* | `Schedule::asScheduleStatus()` | — |
 | `AbsenceRequestStatusEntity` | Journals/AbsenceRequest | *(entity name may differ)* | `AbsenceRequest::asAbsenceRequestStatus()` | — |
 | `AttendanceStatusEntity` | Journals/Attendance | *(entity name may differ)* | `Attendance::asAttendanceStatus()` | — |
 | `SupervisionStatus` | Guidance/SupervisionLog | `Entities/SupervisionStatus.php` | `SupervisionLog::asSupervisionStatus()` | `status: ?SupervisionLogStatus` |

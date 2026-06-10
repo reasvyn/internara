@@ -2,7 +2,7 @@
 
 > **Last updated:** 2026-06-10
 >
-> **Total: 49 tables** (31 Domain Tables + 18 System/Package Tables)
+> **Total: 48 tables** (30 Domain Tables + 18 System/Package Tables)
 
 ---
 
@@ -64,7 +64,7 @@ that do not justify their own existence are eliminated.
 | `placements` | Company slot allocations | `company_id` FK, `internship_id` FK, `quota`, `filled_quota` |
 | `registrations` | Student enrollment records | `student_id` FK, `internship_id` FK, `placement_id` FK, `status`, `proposed_company_details` JSON |
 
-### Daily Operations (5)
+### Daily Operations (4)
 
 | Table | Description | Key Columns |
 |-------|-------------|-------------|
@@ -72,7 +72,6 @@ that do not justify their own existence are eliminated.
 | `attendances` | Clock-in/out with GPS and integrated absence management | `user_id` FK, `registration_id` FK, `date` UNIQUE per user, `clock_in`, `clock_out`, `status`, `absence_type`, `absence_status` |
 | `logbooks` | Student daily journal entries | `registration_id` FK, `author_id` FK, `date` UNIQUE per registration, `content`, `status`, `verification_details` JSON |
 | `supervision_logs` | Teacher site visit and virtual supervision records | `registration_id` FK, `supervisor_id` FK, `supervision_type`, `notes` |
-| `schedules` | Calendar events, workshops, orientations, examinations | `internship_id` FK, `title`, `start_at`, `end_at`, `type`, `location` |
 
 ### Grading & Certification (9)
 

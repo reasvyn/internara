@@ -9,7 +9,6 @@ use App\Journals\Attendance\Livewire\StudentClockIn;
 use App\Journals\Logbook\Actions\CompileLogbookReportAction;
 use App\Journals\Logbook\Livewire\LogbookEntry;
 use App\Journals\Logbook\Livewire\LogbookManager;
-use App\Journals\Schedule\Livewire\ScheduleIndex;
 
 Route::prefix('student')
     ->name('student.')
@@ -27,7 +26,6 @@ Route::prefix('admin')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/attendance', AttendanceManager::class)->name('attendance');
-        Route::livewire('/schedules', ScheduleIndex::class)->name('schedules.index');
     });
 
 Route::livewire('/admin/logbook', LogbookManager::class)
