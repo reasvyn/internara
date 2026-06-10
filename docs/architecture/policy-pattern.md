@@ -399,14 +399,14 @@ actions as super admin users automatically bypass all policy checks.
 | 5 | `AcademicYearPolicy` | Academics | AcademicYear | AcademicYear | viewAny, view, create, update, activate, delete | all | admin | admin | super_admin only | Activate: super_admin only |
 | 6 | `DepartmentPolicy` | Academics | Department | Department | viewAny, view, create, update, delete, forceDelete | all | admin | admin | admin (if canBeDeleted) | Business rule via `DepartmentState::canBeDeleted()` |
 | 7 | `InternshipPolicy` | Program | Internship | Internship | viewAny, view, create, update, delete, forceDelete | all | admin | admin | admin (no placements/registrations) | Super admin can forceDelete |
-| 8 | `InternshipPhasePolicy` | Program | InternshipPhase | InternshipPhase | viewAny, view, create, update, delete | all | admin | admin | super_admin only | |
-| 9 | `InternshipGroupPolicy` | Program | InternshipGroup | InternshipGroup | viewAny, view, create, update, delete | all | admin | admin | admin | |
-| 10 | `RegistrationPolicy` | Enrollment | Registration | Registration | viewAny, view, create, update, approve, delete | all | student | admin & owner (if pending) | admin & owner (if pending) | `approve`: admin only |
-| 11 | `RegistrationDocumentPolicy` | Enrollment | Registration | RegistrationDocument | viewAny, view, create, update, delete | admin | student | admin | admin | |
-| 12 | `PlacementPolicy` | Enrollment | Placement | Placement | viewAny, view, create, update, delete | admin | admin | admin | admin (no directPlacements) | |
-| 13 | `PlacementChangeRequestPolicy` | Enrollment | Placement | PlacementChangeRequest | viewAny, view, create, update, delete | admin, teacher, student | student | admin | admin | |
-| 14 | `AccountApplicationPolicy` | Enrollment | AccountApplication | AccountApplication | viewAny, view, create, update, delete | admin | all (unauthenticated) | admin | admin | `create`: truly public |
-| 15 | `CompanyPolicy` | Partners | Company | Company | viewAny, view, create, update, delete, forceDelete | all | admin | admin | admin (no placements) | Super admin forceDelete |
+
+| 8 | `InternshipGroupPolicy` | Program | InternshipGroup | InternshipGroup | viewAny, view, create, update, delete | all | admin | admin | admin | |
+| 9 | `RegistrationPolicy` | Enrollment | Registration | Registration | viewAny, view, create, update, approve, delete | all | student | admin & owner (if pending) | admin & owner (if pending) | `approve`: admin only |
+| 10 | `RegistrationDocumentPolicy` | Enrollment | Registration | RegistrationDocument | viewAny, view, create, update, delete | admin | student | admin | admin | |
+| 11 | `PlacementPolicy` | Enrollment | Placement | Placement | viewAny, view, create, update, delete | admin | admin | admin | admin (no directPlacements) | |
+| 12 | `PlacementChangeRequestPolicy` | Enrollment | Placement | PlacementChangeRequest | viewAny, view, create, update, delete | admin, teacher, student | student | admin | admin | |
+| 13 | `AccountApplicationPolicy` | Enrollment | AccountApplication | AccountApplication | viewAny, view, create, update, delete | admin | all (unauthenticated) | admin | admin | `create`: truly public |
+| 14 | `CompanyPolicy` | Partners | Company | Company | viewAny, view, create, update, delete, forceDelete | all | admin | admin | admin (no placements) | Super admin forceDelete |
 | 16 | `PartnershipPolicy` | Partners | Partnership | Partnership | viewAny, view, create, update, delete | admin & teacher | admin | admin | admin | |
 | 17 | `EvaluationPolicy` | Evaluation | — | Evaluation | viewAny, view, create, update, delete | all | all | admin & evaluator | admin | |
 | 18 | `AssessmentPolicy` | Assessment | — | Assessment | viewAny, view, create, update, finalize, delete | admin & teacher | admin & teacher | evaluator (not finalized) | admin (not finalized) | Students see own via registration |

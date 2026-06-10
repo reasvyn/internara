@@ -18,8 +18,7 @@ Core program entity with status lifecycle (`draft` → `active` → `closed`). H
 ### InternshipGroup
 Cohort management for students placed at the same company slot. Each group has an assigned school teacher and industry supervisor. Members are tracked via `InternshipGroupMember` with role classification (`school_teacher`, `industry_supervisor`, `student`). Group capacity is constrained by the company slot quota.
 
-### InternshipPhase
-Phase template definitions providing standard phase names (Observation, Practice, Reporting), suggested order, and default durations. These templates can be applied when creating new internship programs to pre-populate the phases JSON.
+Internship phases are defined per program via the `internships.phases` JSON column. Schools define their own phase names and dates dynamically. Each registration tracks the current phase via `current_phase_index`.
 
 ## Key Concepts
 
