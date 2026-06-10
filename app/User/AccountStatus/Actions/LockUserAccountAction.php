@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\User\AccountStatus\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use RuntimeException;
 
@@ -14,13 +13,7 @@ final class LockUserAccountAction extends BaseAction
     public function execute(User $user, string $reason = 'too_many_failed_attempts'): void
     {
         if ($user->hasRole('super_admin')) {
-            SmartLogger::warning('super_admin_lock_blocked')
-                ->event('super_admin.lock_blocked')
-                ->module('Auth')
-                ->about($user)
-                ->withPayload(['reason' => $reason])
-                ->systemOnly()
-                ->save();
+            $this->log('super_admin_lock_blocked', $user, ['reason' => $reason]);
 
             throw new RuntimeException('Super administrator accounts cannot be locked.');
         }
@@ -29,17 +22,13 @@ final class LockUserAccountAction extends BaseAction
             return;
         }
 
-        $user->update([
-            'locked_at' => now(),
-            'locked_reason' => $reason,
-        ]);
+        $this->transaction(function () use ($user, $reason) {
+            $user->update([
+                'locked_at' => now(),
+                'locked_reason' => $reason,
+            ]);
 
-        SmartLogger::info('user_account_locked')
-            ->event('user_account_locked')
-            ->module('Auth')
-            ->about($user)
-            ->withPayload(['reason' => $reason])
-            ->activityOnly()
-            ->save();
+            $this->log('user_account_locked', $user, ['reason' => $reason]);
+        });
     }
 }

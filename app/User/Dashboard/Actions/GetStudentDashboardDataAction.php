@@ -8,31 +8,28 @@ use App\Assignment\Enums\AssignmentStatus;
 use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
-use App\Core\Actions\BaseAction;
 use App\Document\Models\Document;
 use App\Enrollment\Registration\Models\Registration;
 use App\Journals\Attendance\Enums\AttendanceStatus;
 use App\Journals\Attendance\Models\Attendance;
 use App\Journals\Logbook\Models\Logbook;
 use App\User\Models\User;
+use Illuminate\Support\Facades\Cache;
 use RuntimeException;
 use Spatie\Activitylog\Models\Activity;
 
-final class GetStudentDashboardDataAction extends BaseAction
+final class GetStudentDashboardDataAction
 {
-    /**
-     * @return array{
-     *     registration: ?Registration,
-     *     totalJournals: int,
-     *     verifiedJournals: int,
-     *     attendancePercent: float,
-     *     assignmentSubmittedCount: int,
-     *     assignmentTotalCount: int,
-     *     handbookReadCount: int,
-     *     handbookTotalCount: int
-     * }
-     */
     public function execute(string $userId): array
+    {
+        return Cache::remember(
+            'dashboard.student.'.$userId,
+            300,
+            fn () => $this->computeData($userId),
+        );
+    }
+
+    private function computeData(string $userId): array
     {
         $user = User::find($userId);
 
@@ -56,7 +53,6 @@ final class GetStudentDashboardDataAction extends BaseAction
                 ->where('is_verified', true)
                 ->count();
 
-            // Attendance calculation
             $totalAttendanceDays = Attendance::where('registration_id', $registration->id)->count();
             $presentDays = Attendance::where('registration_id', $registration->id)
                 ->whereIn('status', [
@@ -69,7 +65,6 @@ final class GetStudentDashboardDataAction extends BaseAction
                     ? round(($presentDays / $totalAttendanceDays) * 100, 1)
                     : 100.0;
 
-            // Assignments calculation
             $assignmentTotalCount = Assignment::where('internship_id', $registration->internship_id)
                 ->where('status', AssignmentStatus::PUBLISHED->value)
                 ->count();
