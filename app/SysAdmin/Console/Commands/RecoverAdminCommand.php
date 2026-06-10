@@ -7,7 +7,7 @@ namespace App\SysAdmin\Console\Commands;
 use App\Auth\SuperAdmin\Actions\RecoverSuperAdminAction;
 use App\Core\Support\AppInfo;
 use App\Core\Support\SmartLogger;
-use App\Settings\Support\Settings;
+use App\Setup\Entities\SetupEntity;
 use App\SysAdmin\UserManagement\Actions\ReadRecoveryKeyAction;
 use App\SysAdmin\UserManagement\Actions\SaveRecoveryKeyAction;
 use App\User\Models\User;
@@ -182,7 +182,7 @@ class RecoverAdminCommand extends Command
             return false;
         }
 
-        $storedHash = Settings::get('setup.install_recovery_key');
+        $storedHash = SetupEntity::get()->recoveryKey();
         $keyValid = $storedHash !== null && Hash::check($key, $storedHash);
 
         if (! $keyValid) {
