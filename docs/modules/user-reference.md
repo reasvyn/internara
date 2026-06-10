@@ -168,6 +168,23 @@ Views are located in `resources/views/user/`. See [UI/UX](../foundation/ui-ux.md
 
 Tests are located in `tests/{Feature,Unit}/User/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
 
+| File | What It Tests |
+| ---- | ------------- |
+| `Unit/User/Enums/AccountStatusTest.php` | AccountStatus: allowsLogin, isTerminal, transitions, color |
+| `Unit/User/Enums/UserEnumsTest.php` | BloodType, Gender, EmploymentStatus, StructuralPosition cases and labels |
+| `Unit/User/Entities/ApprenticeTest.php` | Apprentice: status, locked, setup required, transitions |
+| `Unit/User/Rules/ReservedAuthoritativeNameTest.php` | Reserved name validation |
+| `Unit/User/Rules/SystemUsernameTest.php` | Username format validation |
+| `Unit/User/Services/DashboardServiceTest.php` | Dashboard routing by role |
+| `Unit/User/Support/UserIdentifierGeneratorTest.php` | Username generation from email, collision handling |
+| `Unit/User/Notifications/Data/NotificationDataTest.php` | NotificationData DTO |
+| `Feature/User/Profile/ProfileModelTest.php` | Profile model: relationships, fields, cascade delete |
+| `Feature/User/Profile/UpdateProfileActionTest.php` | UpdateProfileAction |
+| `Feature/User/Dashboard/*Test.php` | Dashboard data actions |
+| `Feature/User/AccountStatus/*Test.php` | Lock/Unlock account actions |
+| `Feature/User/Notifications/*Test.php` | Send, mark read, notification events |
+| `Feature/User/Models/UserTest.php` | User model: roles, UUID, scopes |
+
 ## Factories
 
 | Factory | Model |

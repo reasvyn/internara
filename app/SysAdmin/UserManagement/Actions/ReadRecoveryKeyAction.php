@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\UserManagement\Actions;
 
-use App\Core\Actions\BaseAction;
 use Illuminate\Support\Facades\File;
 
-final class ReadRecoveryKeyAction extends BaseAction
+final class ReadRecoveryKeyAction
 {
     public function execute(): ?string
     {

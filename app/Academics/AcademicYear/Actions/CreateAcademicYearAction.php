@@ -7,7 +7,6 @@ namespace App\Academics\AcademicYear\Actions;
 use App\Academics\AcademicYear\Events\AcademicYearCreated;
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Actions\BaseAction;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
 
 final class CreateAcademicYearAction extends BaseAction
@@ -29,7 +28,7 @@ final class CreateAcademicYearAction extends BaseAction
                 'is_active' => $validated['is_active'] ?? false,
             ]);
 
-            Event::dispatch(new AcademicYearCreated($year));
+            $this->dispatchEvent(new AcademicYearCreated($year));
 
             $this->log('academic_year_created', $year, $validated);
 

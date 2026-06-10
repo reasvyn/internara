@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Auth\Password\Actions;
 
+use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
-use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;

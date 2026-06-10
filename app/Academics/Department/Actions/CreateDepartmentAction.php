@@ -7,7 +7,6 @@ namespace App\Academics\Department\Actions;
 use App\Academics\Department\Events\DepartmentCreated;
 use App\Academics\Department\Models\Department;
 use App\Core\Actions\BaseAction;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Validator;
 
 final class CreateDepartmentAction extends BaseAction
@@ -22,7 +21,7 @@ final class CreateDepartmentAction extends BaseAction
         return $this->transaction(function () use ($validated) {
             $department = Department::create($validated);
 
-            Event::dispatch(new DepartmentCreated($department));
+            $this->dispatchEvent(new DepartmentCreated($department));
 
             $this->log('department_created', $department, $validated);
 

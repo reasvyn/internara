@@ -6,12 +6,9 @@ namespace App\Setup\SetupWizard\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
-use App\Core\Support\SmartLogger;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\SysAdmin\UserManagement\Actions\SaveRecoveryKeyAction;
-use App\User\Notifications\Data\NotificationData;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
@@ -73,7 +70,7 @@ final class FinalizeSetupAction extends BaseAction
                 'updated_at' => now()->toIso8601String(),
             ]);
 
-            Event::dispatch(
+            $this->dispatchEvent(
                 new SetupFinalized(
                     departmentId: $department->id,
                     installedAt: now()->toDateTimeImmutable(),
@@ -101,10 +98,9 @@ final class FinalizeSetupAction extends BaseAction
         try {
             $this->saveRecoveryKey->execute($plaintext);
         } catch (\Throwable) {
-            SmartLogger::warning('Failed to save recovery key file')
-                ->module('setup')
-                ->event('recovery_key.file_save_failed')
-                ->save();
+            $this->log('recovery_key.file_save_failed', null, [
+                'error' => $e->getMessage(),
+            ]);
         }
 
         return $plaintext;
