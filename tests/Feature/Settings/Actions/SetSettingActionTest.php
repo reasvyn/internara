@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Settings;
+namespace Tests\Feature\Settings\Actions;
 
 use App\Settings\Actions\SetSettingAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
