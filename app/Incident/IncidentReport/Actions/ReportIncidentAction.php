@@ -53,7 +53,10 @@ final class ReportIncidentAction extends BaseAction
                     if ($teacher) {
                         $teacher->notify(new IncidentReportedNotification($incident));
                     }
-                } catch (RoleDoesNotExist) {
+                } catch (RoleDoesNotExist $e) {
+                    $this->log('incident_notification_roles_missing', $incident, [
+                        'error' => $e->getMessage(),
+                    ]);
                 }
             }
 

@@ -54,6 +54,21 @@
 
 ---
 
+## Pattern References
+
+| Document                                                         | Description                                                                                 |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| [Modular Architecture](architecture/modular-pattern.md)          | Complete catalog of all design patterns, conventions, and architectural rules               |
+| [Action Triad](architecture/action-pattern.md)                   | Command/Read/Process action patterns, transaction safety, ActionResponse contract           |
+| [Entity-Model Separation](architecture/entity-pattern.md)        | Entity bridge pattern, immutability, fromModel, entity extraction workflow                  |
+| [Enum & State Machine](architecture/enum-pattern.md)             | LabelEnum/StatusEnum/ColorableEnum contracts, state machine patterns, 35 enum inventory     |
+| [Livewire Components](architecture/livewire-pattern.md)          | Thin component rule, Form Objects, BaseRecordManager, auto-discovery, confirmation dialogs |
+| [Exception Hierarchy](architecture/exception-pattern.md)         | Dual AppException/ModuleException trees, HasExceptionContext, HandlesActionErrors           |
+| [Authorization](architecture/policy-pattern.md)                  | Flat RBAC, three-layer auth, Gate::before bypass, 29-policy inventory                       |
+| [Logging & PII](architecture/logging-pattern.md)                | SmartLogger dual-channel fluent API, PII masking (39+ keys), translation resolution         |
+| [Caching](architecture/cache-pattern.md)                         | Centralized key registry, TTL categories, event-driven invalidation, driver tiers           |
+| [Testing](architecture/testing-pattern.md)                       | All testing patterns, scope isolation, layer strategies, assertions, performance            |
+
 ## Technical Reference
 
 | Document                                                         | Description                                                                                 |
@@ -175,7 +190,7 @@ flowchart LR
 
 | Role         | Start Here                                             |
 | ------------ | ------------------------------------------------------ |
-| Developer    | `architecture.md` → `conventions.md` → `{module}.md`  |
+| Developer    | `architecture.md` → `architecture/{*}-pattern.md` → `conventions.md` → `{module}.md`  |
 | DevOps       | `infrastructure/infrastructure.md` → `deployment.md`  |
 | Product      | `product-definition.md` → `philosophy.md` → `key-features.md` |
 | QA/Tester    | `infrastructure/testing.md` → `architecture/testing-pattern.md` → `{module}-reference.md` |

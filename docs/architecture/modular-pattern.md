@@ -830,6 +830,22 @@ rule methods -> Add named accessor on Model -> Update callers -> Write unit test
 
 ---
 
+## Related Pattern References
+
+| Document | Focus |
+|----------|-------|
+| [Action Pattern](action-pattern.md) | Action Triad deep dive, transaction safety, ActionResponse |
+| [Entity Pattern](entity-pattern.md) | Entity-Model bridge, immutability, entity extraction |
+| [Enum Pattern](enum-pattern.md) | State machine enums, LabelEnum/StatusEnum contracts |
+| [Livewire Pattern](livewire-pattern.md) | Thin components, Form Objects, BaseRecordManager |
+| [Exception Pattern](exception-pattern.md) | Dual hierarchy, HasExceptionContext, error handling |
+| [Policy Pattern](policy-pattern.md) | Flat RBAC, authorization layers, Gate::before |
+| [Logging Pattern](logging-pattern.md) | SmartLogger fluent API, PII masking |
+| [Cache Pattern](cache-pattern.md) | Key registry, invalidation, driver tiers |
+| [Testing Pattern](testing-pattern.md) | Testing conventions, scope isolation, layer strategies |
+
+---
+
 *This document is auto-synchronized with the codebase. When the architecture evolves, update the
 relevant sections in `docs/architecture.md`, `docs/conventions.md`, or the ADRs, then reflect
 changes here. See `docs/doc-index.md` for the complete documentation catalog.*

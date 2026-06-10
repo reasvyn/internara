@@ -10,7 +10,12 @@
 >
 > For a complete catalog of all design patterns, conventions, and workflow patterns used across the
 > codebase, see [Modular Pattern Reference](architecture/modular-pattern.md).
-> For testing-specific patterns, see [Testing Pattern Reference](architecture/testing-pattern.md).
+> For focused deep-dives into specific pattern domains, see:
+> [Action](architecture/action-pattern.md) · [Entity](architecture/entity-pattern.md) ·
+> [Enum](architecture/enum-pattern.md) · [Livewire](architecture/livewire-pattern.md) ·
+> [Exception](architecture/exception-pattern.md) · [Policy](architecture/policy-pattern.md) ·
+> [Logging](architecture/logging-pattern.md) · [Cache](architecture/cache-pattern.md) ·
+> [Testing](architecture/testing-pattern.md)
 
 ---
 
