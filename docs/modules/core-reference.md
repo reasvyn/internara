@@ -1,6 +1,7 @@
 # Core — Technical Reference
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — fix base class count (9→10)
 
 Detailed structural and implementation reference for the **Core** module, including both abstract infrastructure and concrete shared components.
 
@@ -13,7 +14,7 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 ### Module Statistics
 
 - **Contracts**: 5 (`LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`, `SettingsStore`)
-- **Base Classes**: 9 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`, `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`)
+- **Base Classes**: 10 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`, `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`)
 - **Concrete DTOs**: 3 (`ActionResponse`, `AuditCheck`, `AuditReport`)
 - **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
 - **Concrete Exceptions**: 6 (`ConflictException`, `NotFoundException`, `RateLimitException`, `RejectedException`, `UnauthorizedException`, `ValidationFailedException`)

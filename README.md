@@ -39,8 +39,9 @@ app/
 └── Document/       Document templates, handbooks, rendering pipeline
 ```
 
-Each business module colocates its domain models, single-use actions (`BaseAction`), policies
-(`BasePolicy`), and Livewire components, keeping submodules isolated and highly maintainable.
+Each business module colocates its domain models, single-use Actions (Command/Process extend
+`BaseAction`; Read actions are plain classes), policies (`BasePolicy`), and Livewire components,
+keeping submodules isolated and highly maintainable.
 
 ---
 

@@ -6,6 +6,7 @@ namespace App\Reports\Report\Livewire;
 
 use App\Enrollment\Registration\Models\Registration;
 use App\Reports\Report\Actions\CreateReportAction;
+use App\Reports\Report\Actions\SaveReportDraftAction;
 use App\Reports\Report\Actions\SubmitReportAction;
 use App\Reports\Report\Models\Report;
 use Illuminate\Contracts\View\View;
@@ -46,7 +47,7 @@ class ReportWriter extends Component
         }
     }
 
-    public function saveDraft(CreateReportAction $createAction): void
+    public function saveDraft(CreateReportAction $createAction, SaveReportDraftAction $saveDraftAction): void
     {
         $this->validate([
             'title' => 'required|string|max:255',
@@ -55,7 +56,7 @@ class ReportWriter extends Component
 
         if ($this->reportId) {
             $report = Report::findOrFail($this->reportId);
-            $createAction->saveDraft($report, json_decode($this->chapterContent, true) ?? []);
+            $saveDraftAction->execute($report, json_decode($this->chapterContent, true) ?? []);
             flash()->success(__('report.saved'));
         } else {
             $report = $createAction->execute([

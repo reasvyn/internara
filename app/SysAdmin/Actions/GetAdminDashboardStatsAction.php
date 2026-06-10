@@ -7,7 +7,6 @@ namespace App\SysAdmin\Actions;
 use App\Academics\Department\Models\Department;
 use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Certification\Certificate\Models\Certificate;
-use App\Core\Actions\BaseAction;
 use App\Enrollment\Placement\Models\Placement;
 use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\Mentor\Models\Mentor;
@@ -19,7 +18,7 @@ use App\Program\Internship\Models\Internship;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Cache;
 
-final class GetAdminDashboardStatsAction extends BaseAction
+final class GetAdminDashboardStatsAction
 {
     public function execute(): array
     {

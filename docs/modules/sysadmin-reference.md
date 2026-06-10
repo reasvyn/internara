@@ -1,6 +1,7 @@
 # SysAdmin — Technical Reference
 
 > Last updated: 2026-06-10
+> Changes: sync — fix extends for GetAdminDashboardStatsAction, ReadRecoveryKeyAction; add DeleteAnnouncementAction, PublishAnnouncementAction
 
 Detailed structural and implementation reference for the **SysAdmin** module.
 
@@ -22,7 +23,7 @@ Handles user administration, announcements, super admin recovery, system health 
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Actions/GetAdminDashboardStatsAction.php` | `GetAdminDashboardStatsAction` | `BaseAction` |
+| `Actions/GetAdminDashboardStatsAction.php` | `GetAdminDashboardStatsAction` | Read |
 | `UserManagement/Actions/CreateUserAction.php` | `CreateUserAction` | `BaseAction` |
 | `UserManagement/Actions/UpdateUserAction.php` | `UpdateUserAction` | `BaseAction` |
 | `UserManagement/Actions/DeleteUserAction.php` | `DeleteUserAction` | `BaseAction` |
@@ -31,10 +32,13 @@ Handles user administration, announcements, super admin recovery, system health 
 | `UserManagement/Actions/ToggleUserStatusAction.php` | `ToggleUserStatusAction` | `BaseAction` |
 | `UserManagement/Actions/GenerateAccountSlipAction.php` | `GenerateAccountSlipAction` | `BaseAction` |
 | `UserManagement/Actions/SaveRecoveryKeyAction.php` | `SaveRecoveryKeyAction` | `BaseAction` |
-| `UserManagement/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | `BaseAction` |
+| `UserManagement/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | Read |
 | `UserManagement/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseAction` |
 | `UserManagement/Actions/ArchiveStudentAccountsAction.php` | `ArchiveStudentAccountsAction` | `BaseAction` |
 | `UserManagement/Actions/GetUserManagerStatsAction.php` | `GetUserManagerStatsAction` | Read |
+| `UserManagement/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | Read |
+| `Announcement/Actions/DeleteAnnouncementAction.php` | `DeleteAnnouncementAction` | `BaseAction` |
+| `Announcement/Actions/PublishAnnouncementAction.php` | `PublishAnnouncementAction` | Process `BaseAction` |
 | `Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | Process `BaseAction` |
 
 ---
@@ -186,7 +190,10 @@ app/SysAdmin/
 │   │   └── AdminManager.php
 │   └── Notifications/ActivationCodeNotification.php
 ├── Announcement/
-│   ├── Actions/SendAnnouncementAction.php
+│   ├── Actions/
+│   │   ├── DeleteAnnouncementAction.php
+│   │   ├── PublishAnnouncementAction.php
+│   │   └── SendAnnouncementAction.php
 │   ├── Console/Commands/PublishScheduledAnnouncementsCommand.php
 │   ├── Enums/AnnouncementStatus.php
 │   ├── Livewire/
