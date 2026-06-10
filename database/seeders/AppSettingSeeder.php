@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Core\Support\AppInfo;
 use App\Settings\Casts\SettingValueCast;
 use App\Settings\Models\Setting;
-use App\Core\Support\AppInfo;
 use App\Settings\Theme\Support\Theme;
 use Illuminate\Database\Seeder;
 
