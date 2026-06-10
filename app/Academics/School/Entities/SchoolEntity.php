@@ -10,6 +10,16 @@ use Illuminate\Database\Eloquent\Model;
 
 final readonly class SchoolEntity extends BaseEntity
 {
+    private const array KEYS = [
+        'name' => 'school.name',
+        'institutional_code' => 'school.institutional_code',
+        'email' => 'school.email',
+        'address' => 'school.address',
+        'phone' => 'school.phone',
+        'website' => 'school.website',
+        'principal_name' => 'school.principal_name',
+    ];
+
     public function __construct(
         private string $name,
         private string $institutionalCode,
@@ -20,6 +30,11 @@ final readonly class SchoolEntity extends BaseEntity
         private string $principalName = '',
     ) {}
 
+    public static function keys(): array
+    {
+        return self::KEYS;
+    }
+
     public static function fromModel(Model $model): static
     {
         return self::get();
@@ -27,15 +42,7 @@ final readonly class SchoolEntity extends BaseEntity
 
     public static function get(): self
     {
-        $values = Settings::get([
-            'school.name',
-            'school.institutional_code',
-            'school.email',
-            'school.address',
-            'school.phone',
-            'school.website',
-            'school.principal_name',
-        ]);
+        $values = Settings::get(array_values(self::KEYS));
 
         return new self(
             name: (string) ($values['school.name'] ?? ''),

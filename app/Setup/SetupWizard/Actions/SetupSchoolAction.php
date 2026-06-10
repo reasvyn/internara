@@ -4,22 +4,13 @@ declare(strict_types=1);
 
 namespace App\Setup\SetupWizard\Actions;
 
+use App\Academics\School\Entities\SchoolEntity;
 use App\Core\Actions\BaseAction;
 use App\Settings\Support\Settings;
 use Illuminate\Support\Facades\Validator;
 
 final class SetupSchoolAction extends BaseAction
 {
-    private const array SCHOOL_FIELDS = [
-        'name' => 'school.name',
-        'institutional_code' => 'school.institutional_code',
-        'email' => 'school.email',
-        'address' => 'school.address',
-        'phone' => 'school.phone',
-        'website' => 'school.website',
-        'principal_name' => 'school.principal_name',
-    ];
-
     public function execute(array $data): void
     {
         Validator::validate($data, [
@@ -35,7 +26,7 @@ final class SetupSchoolAction extends BaseAction
         $this->transaction(function () use ($data) {
             $payload = [];
 
-            foreach (self::SCHOOL_FIELDS as $field => $key) {
+            foreach (SchoolEntity::keys() as $field => $key) {
                 $payload[$key] = [
                     'value' => $data[$field] ?? '',
                     'group' => 'school',
