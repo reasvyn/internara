@@ -25,23 +25,27 @@ final class RenderDocumentAction extends BaseAction
 
         $path = $this->renderer->storePdf($document, $target, $registration->id);
 
-        $rendered = Document::create([
-            'name' => $document->name.' - '.($target->mentee->user->name ?? ''),
-            'slug' => $document->slug.'-'.$registration->id.'-'.now()->timestamp,
-            'category' => 'report',
-            'description' => 'Rendered from template: '.$document->name,
-            'content' => $document->content,
-            'file_path' => $path,
-            'is_active' => true,
-            'template_version' => $document->template_version,
-            'template_id' => $document->id,
-        ]);
+        $rendered = $this->transaction(function () use ($document, $target, $registration, $path) {
+            $doc = Document::create([
+                'name' => $document->name.' - '.($target->mentee->user->name ?? ''),
+                'slug' => $document->slug.'-'.$registration->id.'-'.now()->timestamp,
+                'category' => 'report',
+                'description' => 'Rendered from template: '.$document->name,
+                'content' => $document->content,
+                'file_path' => $path,
+                'is_active' => true,
+                'template_version' => $document->template_version,
+                'template_id' => $document->id,
+            ]);
 
-        $this->log('document_rendered', $rendered, [
-            'template' => $document->name,
-            'registration' => $registration->id,
-            'student' => $target->mentee->user->name,
-        ]);
+            $this->log('document_rendered', $doc, [
+                'template' => $document->name,
+                'registration' => $registration->id,
+                'student' => $target->mentee->user->name,
+            ]);
+
+            return $doc;
+        });
 
         return $rendered;
     }

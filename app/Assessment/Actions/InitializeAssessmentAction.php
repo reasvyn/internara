@@ -11,11 +11,6 @@ use App\Enrollment\Registration\Models\Registration;
 
 final class InitializeAssessmentAction extends BaseAction
 {
-    /**
-     * Find or create an assessment for a registration.
-     *
-     * @return array{assessment: Assessment, rubric: ?Rubric}
-     */
     public function execute(string $registrationId): array
     {
         $registration = Registration::with('internship')->findOrFail($registrationId);
@@ -29,13 +24,12 @@ final class InitializeAssessmentAction extends BaseAction
             return ['assessment' => null, 'rubric' => null];
         }
 
-        $assessment = Assessment::firstOrCreate(
-            ['registration_id' => $registrationId],
-            [
-                'rubric_id' => $rubric->id,
-                'type' => 'final',
-            ],
-        );
+        $assessment = $this->transaction(function () use ($registrationId, $rubric) {
+            return Assessment::firstOrCreate(
+                ['registration_id' => $registrationId],
+                ['rubric_id' => $rubric->id],
+            );
+        });
 
         return ['assessment' => $assessment, 'rubric' => $rubric];
     }

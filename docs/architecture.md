@@ -10,6 +10,7 @@
 >
 > For a complete catalog of all design patterns, conventions, and workflow patterns used across the
 > codebase, see [Modular Pattern Reference](architecture/modular-pattern.md).
+> For testing-specific patterns, see [Testing Pattern Reference](architecture/testing-pattern.md).
 
 ---
 

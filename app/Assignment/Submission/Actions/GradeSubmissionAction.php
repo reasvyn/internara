@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Assignment\Submission\Actions;
 
+use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
@@ -23,14 +24,13 @@ final class GradeSubmissionAction extends BaseAction
             $submission->update([
                 'score' => $score,
                 'feedback' => $feedback,
-                'status' => 'graded',
+                'status' => SubmissionStatus::GRADED->value,
                 'graded_by' => auth()->id(),
                 'graded_at' => now(),
             ]);
 
             $this->log('submission_graded', $submission, [
                 'score' => $score,
-                'assignment_title' => $submission->assignment?->title,
             ]);
 
             return $submission;
