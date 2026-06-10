@@ -197,9 +197,6 @@ Daily activity tracking.
 | Absence Request | Submit planned/unplanned absence with reason | Student |
 | Absence Approval | Mentor approves single-day, extended requires admin | Mentor + Admin |
 | Attendance Manager | CRUD records, filter, sort, reports | Admin |
-| Schedule Index | CRUD events: title, description, times, location, category | Admin |
-| Calendar Views | Day, week, month, agenda | Student + Mentor + Admin |
-| Conflict Detection | Detect overlapping events with warning | System |
 
 ### Guidance — Mentoring & Supervision
 

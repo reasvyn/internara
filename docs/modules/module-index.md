@@ -203,12 +203,12 @@ mail services, and global feature toggles
 
 ### 13. Journals — Student Activity Tracking
 
-**Purpose:** Logbooks, attendance, schedules, and industry assessments
+**Purpose:** Logbooks, attendance, and absence requests
 
 - Overview: [journals.md](journals.md)
 - Reference: [journals-reference.md](journals-reference.md)
 
-**Key Concepts:** Logbook, Attendance, Schedule
+**Key Concepts:** Logbook, Attendance, AbsenceRequest
 
 **Dependencies:** Enrollment, Program, Core
 
@@ -369,7 +369,7 @@ All 19 modules are vertical slices cross-cutting the 12-layer architecture defin
 | Layer | Name              | Description                                                                                      |
 | ----- | ----------------- | ------------------------------------------------------------------------------------------------ |
 | 1     | Infrastructure    | PHP 8.4, Laravel 13, Composer/Spatie packages, npm assets                                        |
-| 2     | Persistence       | Database (SQLite/MySQL), 40 migrations, config, media library, cache, queue                      |
+| 2     | Persistence       | Database (SQLite/MySQL), 39 migrations, config, media library, cache, queue                      |
 | 3     | Core Contracts    | LabelEnum, StatusEnum, ColorableEnum, exception hierarchy                                        |
 | 4     | Core Base Classes | BaseModel, BaseAuthenticatable, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, BaseController, BaseFormRequest, BaseData, BaseEvent |
 | 5     | Module Models     | Eloquent models (37), UUID PKs, factories, seeders                                                |

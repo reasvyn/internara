@@ -20,7 +20,7 @@ The system digitizes the complete fieldwork lifecycle:
 - **Partnerships:** Company registry, MoU management, slot quota tracking
 - **Program Management:** Internship periods, phases, document requirements, cohort groups
 - **Enrollment:** Student application, registration wizard, placement assignment, change requests
-- **Daily Operations:** Geotagged attendance, reflective logbook, absence requests, schedule management
+- **Daily Operations:** Geotagged attendance, reflective logbook, absence requests
 - **Assessment:** Competency rubrics, multi-evaluator grading, score aggregation
 - **Evaluation:** Mentor feedback, company satisfaction, program quality surveys
 - **Certification:** Certificate templates, batch issuance, QR-code verification

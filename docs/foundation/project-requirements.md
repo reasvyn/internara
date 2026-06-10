@@ -47,7 +47,7 @@ middleware.
 | 10 | Assessment | Rubric management, competency evaluation, grading |
 | 11 | Evaluation | Mentor feedback, company satisfaction, program quality |
 | 12 | Assignment | Task management, submission, grading workflow |
-| 13 | Journals | Logbook entries, attendance, schedules |
+| 13 | Journals | Logbook entries, attendance, absence requests |
 | 14 | Guidance | Supervision logs, mentoring assignments |
 | 15 | Incident | Issue reporting, investigation, resolution |
 | 16 | Partners | Company profiles, partnership agreements |

@@ -391,7 +391,6 @@ Complete list of entity accessors in the codebase:
 | `Assignment`                       | `asAssignmentRules()`               | `AssignmentRules`                  |
 | `SupervisionLog`                   | `asSupervisionStatus()`             | `SupervisionStatus`                |
 | `Logbook`                          | `asLogbookState()`                  | `LogbookState`                     |
-| `Schedule`                         | `asScheduleStatus()`                | `ScheduleStatus`                   |
 | `Attendance`                       | `asAttendanceStatus()`              | `AttendanceStatusEntity`           |
 | `AbsenceRequest`                   | `asAbsenceRequestStatus()`          | `AbsenceRequestStatusEntity`       |
 

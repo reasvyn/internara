@@ -413,8 +413,7 @@ actions as super admin users automatically bypass all policy checks.
 | 19 | `AssignmentPolicy` | Assignment | — | Assignment | viewAny, view, create, update, publish, delete | all | admin & teacher | admin & teacher | admin (no submissions) | |
 | 20 | `SubmissionPolicy` | Assignment | Submission | Submission | viewAny, view, create, update, verify, delete | admin & teacher | student | owner (if submitted) | admin | `verify`: admin & teacher |
 | 21 | `LogbookPolicy` | Journals | Logbook | Logbook | viewAny, view, addSupervisorNote, create, update, delete | all | student | admin & owner (not submitted) | admin & owner (not submitted) | Mentor-scoped view |
-| 22 | `SchedulePolicy` | Journals | Schedule | Schedule | viewAny, view, create, update, delete | all (viewAny: admin, teacher, supervisor) | admin & teacher | admin & creator | admin | |
-| 23 | `AttendancePolicy` | Journals | Attendance | Attendance | viewAny, view, create, verify, update, delete | all | student | admin | admin | Mentor-scoped view |
+| 22 | `AttendancePolicy` | Journals | Attendance | Attendance | viewAny, view, create, verify, update, delete | all | student | admin | admin | Mentor-scoped view |
 | 24 | `SupervisionLogPolicy` | Guidance | SupervisionLog | SupervisionLog | viewAny, view, create, update, verify, delete | admin, teacher, supervisor | teacher & supervisor | admin & supervisor (not verified) | admin & supervisor (not verified) | `verify`: admin & teacher |
 | 25 | `IncidentReportPolicy` | Incident | IncidentReport | IncidentReport | viewAny, view, create, update, delete | admin, teacher, supervisor | all (unauthenticated) | admin | admin | Anyone can report |
 | 26 | `DocumentPolicy` | Document | — | Document | viewAny, view, create, update, delete | admin, teacher, student | admin | admin | admin | Active documents visible to all |

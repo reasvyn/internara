@@ -8,13 +8,12 @@ Detailed structural and implementation reference for the **Journals** module.
 
 ## Overview
 
-Manages daily student activity tracking: logbooks, attendance (clock in/out), schedules, and absence requests.
+Manages daily student activity tracking: logbooks, attendance (clock in/out), and absence requests.
 
 ### Submodules
 
 - `Logbook` — Daily activity log entries
 - `Attendance` — Clock in/out and attendance tracking
-- `Schedule` — Student work schedules
 - `AbsenceRequest` — Absence submissions and approvals
 
 ---
@@ -34,9 +33,6 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), sc
 | `Attendance/Actions/ClockInAction.php` | `ClockInAction` | `BaseAction` |
 | `Attendance/Actions/ClockOutAction.php` | `ClockOutAction` | `BaseAction` |
 | `Attendance/Actions/VerifyAttendanceAction.php` | `VerifyAttendanceAction` | `BaseAction` |
-| `Schedule/Actions/CreateScheduleAction.php` | `CreateScheduleAction` | `BaseAction` |
-| `Schedule/Actions/UpdateScheduleAction.php` | `UpdateScheduleAction` | `BaseAction` |
-| `Schedule/Actions/DeleteScheduleAction.php` | `DeleteScheduleAction` | `BaseAction` |
 | `AbsenceRequest/Actions/SubmitAbsenceAction.php` | `SubmitAbsenceAction` | `BaseAction` |
 | `AbsenceRequest/Actions/ProcessAbsenceAction.php` | `ProcessAbsenceAction` | `BaseAction` |
 
@@ -81,8 +77,6 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), sc
 | ---- | ------ | ------- |
 | `Logbook/Policies/LogbookPolicy.php` | `LogbookPolicy` | `BasePolicy` |
 | `Attendance/Policies/AttendancePolicy.php` | `AttendancePolicy` | `BasePolicy` |
-| `Schedule/Policies/SchedulePolicy.php` | `SchedulePolicy` | `BasePolicy` |
-
 ---
 
 ## Livewire Components
@@ -93,7 +87,6 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), sc
 | `Logbook/Livewire/LogbookEntry.php` | `LogbookEntry` | `Component` |
 | `Attendance/Livewire/AttendanceManager.php` | `AttendanceManager` | `BaseRecordManager` |
 | `Attendance/Livewire/StudentClockIn.php` | `StudentClockIn` | `Component` |
-| `Schedule/Livewire/ScheduleIndex.php` | `ScheduleIndex` | `Component` |
 | `AbsenceRequest/Livewire/AbsenceRequestForm.php` | `AbsenceRequestForm` | `Component` |
 
 ## Form Requests
@@ -126,7 +119,6 @@ Tests are located in `tests/{Feature,Unit}/Journals/`. See [Testing](../infrastr
 | ------- | ----- |
 | `LogbookFactory` | `Logbook` |
 | `AttendanceFactory` | `Attendance` |
-| `ScheduleFactory` | `Schedule` |
 | `AbsenceRequestFactory` | `AbsenceRequest` |
 
 ## Migrations
@@ -135,7 +127,6 @@ Tests are located in `tests/{Feature,Unit}/Journals/`. See [Testing](../infrastr
 | --------- | ----- |
 | `create_logbooks_table` | `logbooks` |
 | `create_attendances_table` | `attendances` |
-| `create_schedules_table` | `schedules` |
 
 ---
 
@@ -170,8 +161,8 @@ app/Journals/
 │   ├── Livewire/
 │   │   ├── AttendanceManager.php
 │   │   └── StudentClockIn.php
-│   ├── Models/Attendance.php
-│   └── Policies/AttendancePolicy.php
+    │   ├── Models/Attendance.php
+    │   └── Policies/AttendancePolicy.php
 ├── Logbook/
 │   ├── Actions/
 │   │   ├── CompileLogbookReportAction.php
@@ -185,24 +176,15 @@ app/Journals/
 │   ├── Livewire/
 │   │   ├── LogbookEntry.php
 │   │   └── LogbookManager.php
-│   ├── Models/Logbook.php
-│   └── Policies/LogbookPolicy.php
-└── Schedule/
-    ├── Actions/
-    │   ├── CreateScheduleAction.php
-    │   ├── DeleteScheduleAction.php
-    │   └── UpdateScheduleAction.php
-    ├── Entities/ScheduleStatus.php
-    ├── Livewire/ScheduleIndex.php
-    ├── Models/Schedule.php
-    └── Policies/SchedulePolicy.php
+    │   ├── Models/Logbook.php
+    │   └── Policies/LogbookPolicy.php
 ```
 
 ---
 
 ## Architectural Integration
 
-- **Submodules**: `Logbook`, `Attendance`, `Schedule`, `AbsenceRequest`
+- **Submodules**: `Logbook`, `Attendance`, `AbsenceRequest`
 - **Business Logic**: `app/Journals/`
 - **Routing**: `routes/web/journals.php`
 - **Views**: `resources/views/journals/`
