@@ -186,6 +186,6 @@ class AssessmentGrading extends Component
 
     public function render(): View
     {
-        return view('assessment.core.assessment-grading');
+        return view('assessment.assessment-grading');
     }
 }

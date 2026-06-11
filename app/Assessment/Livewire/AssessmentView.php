@@ -32,6 +32,6 @@ class AssessmentView extends Component
 
     public function render(): View
     {
-        return view('assessment.core.assessment-view');
+        return view('assessment.assessment-view');
     }
 }

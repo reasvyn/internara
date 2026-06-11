@@ -87,7 +87,7 @@ Archived data is retained indefinitely. No automatic deletion. Schools that need
 ## References
 
 - `app/Program/Actions/CheckCloseReadinessAction.php` — Readiness verification
-- `app/SysAdmin/Account/Actions/ArchiveStudentAccountsAction.php` — Student archive
+- `app/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — Student archive
 - `app/Auth/Enums/AccountStatus.php` — ARCHIVED status
 - `app/Program/Enums/InternshipStatus.php` — Program lifecycle enum
 - `docs/architecture.md` — Action Triad (Process Actions) section

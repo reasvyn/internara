@@ -22,9 +22,4 @@ return [
     'recovery_slips_generated' => 'Slip Pemulihan Dibuat',
     'profile_updated' => 'Profil Diperbarui',
     'settings_updated' => 'Pengaturan Diperbarui',
-    'title' => 'Log Aktivitas',
-    'subtitle' => 'Pelacakan aktivitas pengguna',
-    'filter_user' => 'Semua pengguna',
-    'filter_module' => 'Semua modul',
-    'filter_action' => 'Semua aksi',
 ];

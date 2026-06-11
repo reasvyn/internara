@@ -1,5 +1,5 @@
 <div class="p-8">
-    <x-mary-header :title="__('activity.title')" :subtitle="__('activity.subtitle')" separator progress-indicator />
+    <x-mary-header :title="__('sysadmin.activity_title')" :subtitle="__('sysadmin.activity_subtitle')" separator progress-indicator />
 
     <x-mary-card shadow class="bg-base-100 border border-base-200 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -9,7 +9,7 @@
                 :options="$users->map(fn ($u) => ['id' => $u->id, 'name' => $u->name])"
                 option-value="id"
                 option-label="name"
-                :placeholder="__('activity.filter_user')"
+                :placeholder="__('sysadmin.activity_filter_user')"
                 clearable
             />
 
@@ -19,7 +19,7 @@
                 :options="$modules->map(fn ($m) => ['id' => $m, 'name' => ucfirst($m)])"
                 option-value="id"
                 option-label="name"
-                :placeholder="__('activity.filter_module')"
+                :placeholder="__('sysadmin.activity_filter_module')"
                 clearable
             />
 
@@ -29,7 +29,7 @@
                 :options="$actions->map(fn ($a) => ['id' => $a, 'name' => ucfirst($a)])"
                 option-value="id"
                 option-label="name"
-                :placeholder="__('activity.filter_action')"
+                :placeholder="__('sysadmin.activity_filter_action')"
                 clearable
             />
         </div>

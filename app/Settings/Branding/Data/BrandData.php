@@ -24,9 +24,11 @@ final readonly class BrandData extends BaseData
 
     public function get(string $key, mixed $default = null): mixed
     {
-        return match ($key) {
+        $normalized = str_replace('.', '_', $key);
+
+        return match ($normalized) {
             'name' => $this->name,
-            'title' => $this->title,
+            'title', 'site_title' => $this->title,
             'logo' => $this->logo,
             'favicon' => $this->favicon,
             'colors' => $this->colors,
@@ -36,6 +38,7 @@ final readonly class BrandData extends BaseData
             'description' => $this->description,
             'license' => $this->license,
             'gitUrl' => $this->gitUrl,
+            'tagline' => __('common.app_tagline'),
             default => $default,
         };
     }

@@ -7,7 +7,7 @@ namespace Tests\Feature\Setup\SetupWizard;
 use App\Core\Contracts\SendsNotifications;
 use App\Settings\Support\Settings;
 use App\Setup\SetupWizard\Livewire\SetupWizard;
-use App\SysAdmin\UserManagement\Actions\SaveRecoveryKeyAction;
+use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Mockery;

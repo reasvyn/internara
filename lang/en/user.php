@@ -213,4 +213,14 @@ return [
         'roles_title' => 'Roles & Access',
         'roles_desc' => 'Each user can have multiple roles. Roles determine which features and pages are accessible. Super admin has full access.',
     ],
+
+    'user_management' => [
+        'auto_inactivate' => [
+            'none_found' => 'No inactive accounts found.',
+            'found' => 'Found :count accounts inactive for more than :days days.',
+            'dry_run' => 'Would inactivate: :email (:name)',
+            'completed' => 'Inactivated :count accounts.',
+            'reason' => 'Auto-inactivated due to inactivity.',
+        ],
+    ],
 ];

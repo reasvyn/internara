@@ -91,7 +91,13 @@ return [
     ],
 
     'document_upload' => [
-        'no_registration' => 'No active or pending registration found.',
-        'success' => 'Documents uploaded successfully.',
+        'title' => 'Upload Documents',
+        'uploaded' => 'Uploaded',
+        'required' => 'Document requirements not met.',
     ],
+
+    'doc_upload_title' => 'Upload Required Documents',
+    'doc_uploaded' => 'Uploaded',
+    'doc_no_requirements' => 'No document requirements for this internship.',
+    'doc_no_registration' => 'You have no active or pending registration.',
 ];

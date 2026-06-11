@@ -1,26 +1,26 @@
 <x-core::ui.record-manager
-    :title="__('handbooks.title')"
-    :subtitle="__('handbooks.subtitle')"
+    :title="__('guidance.title')"
+    :subtitle="__('guidance.subtitle')"
 >
     <x-slot:headerActions>
-        <x-mary-button :label="__('handbooks.create')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-mary-button :label="__('guidance.create')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
     </x-slot:headerActions>
 
     <x-slot:filters>
-        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('handbooks.target_audience') }}</label>
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('guidance.target_audience') }}</label>
         <select wire:model.live="filters.target_audience" class="select select-bordered select-sm w-full text-sm">
             <option value="">{{ __('common.actions.all') }}</option>
-            <option value="all">{{ __('handbooks.audience_all') }}</option>
-            <option value="student">{{ __('handbooks.audience_student') }}</option>
-            <option value="teacher">{{ __('handbooks.audience_teacher') }}</option>
-            <option value="supervisor">{{ __('handbooks.audience_supervisor') }}</option>
+            <option value="all">{{ __('guidance.audience_all') }}</option>
+            <option value="student">{{ __('guidance.audience_student') }}</option>
+            <option value="teacher">{{ __('guidance.audience_teacher') }}</option>
+            <option value="supervisor">{{ __('guidance.audience_supervisor') }}</option>
         </select>
 
-        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('handbooks.status') }}</label>
+        <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('guidance.status') }}</label>
         <select wire:model.live="filters.is_active" class="select select-bordered select-sm w-full text-sm">
             <option value="">{{ __('common.actions.all') }}</option>
-            <option value="1">{{ __('handbooks.active') }}</option>
-            <option value="0">{{ __('handbooks.inactive') }}</option>
+            <option value="1">{{ __('guidance.active') }}</option>
+            <option value="0">{{ __('guidance.inactive') }}</option>
         </select>
     </x-slot:filters>
 
@@ -37,7 +37,7 @@
             @endscope
 
             @scope('cell_is_active', $handbook)
-                <x-mary-badge :value="$handbook->is_active ? __('handbooks.active') : __('handbooks.inactive')"
+                <x-mary-badge :value="$handbook->is_active ? __('guidance.active') : __('guidance.inactive')"
                     :class="$handbook->is_active ? 'badge-success' : 'badge-ghost'" />
             @endscope
 
@@ -54,24 +54,24 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showModal" :title="$form->id ? __('handbooks.edit') : __('handbooks.create')" separator class="backdrop-blur-sm">
+        <x-mary-modal wire:model="showModal" :title="$form->id ? __('guidance.edit') : __('guidance.create')" separator class="backdrop-blur-sm">
             <x-mary-form wire:submit="store" class="space-y-4">
                 <div class="space-y-4">
-                    <x-mary-input :label="__('handbooks.title_field')" wire:model="form.title" />
-                    <x-mary-textarea :label="__('handbooks.content_field')" wire:model="form.content" rows="8" />
-                    <x-mary-input :label="__('handbooks.version_field')" type="number" wire:model="form.version" />
-                    <x-mary-select :label="__('handbooks.target_audience')" wire:model="form.target_audience"
+                    <x-mary-input :label="__('guidance.title_field')" wire:model="form.title" />
+                    <x-mary-textarea :label="__('guidance.content_field')" wire:model="form.content" rows="8" />
+                    <x-mary-input :label="__('guidance.version_field')" type="number" wire:model="form.version" />
+                    <x-mary-select :label="__('guidance.target_audience')" wire:model="form.target_audience"
                         :options="[
-                            ['id' => 'all', 'name' => __('handbooks.audience_all')],
-                            ['id' => 'student', 'name' => __('handbooks.audience_student')],
-                            ['id' => 'teacher', 'name' => __('handbooks.audience_teacher')],
-                            ['id' => 'supervisor', 'name' => __('handbooks.audience_supervisor')],
+                            ['id' => 'all', 'name' => __('guidance.audience_all')],
+                            ['id' => 'student', 'name' => __('guidance.audience_student')],
+                            ['id' => 'teacher', 'name' => __('guidance.audience_teacher')],
+                            ['id' => 'supervisor', 'name' => __('guidance.audience_supervisor')],
                         ]" />
-                    <x-mary-file wire:model="file" :label="__('handbooks.file')" accept="application/pdf" />
+                    <x-mary-file wire:model="file" :label="__('guidance.file')" accept="application/pdf" />
                     @if($form->id)
-                        <x-mary-toggle :label="__('handbooks.remove_file')" wire:model="removeFile" />
+                        <x-mary-toggle :label="__('guidance.remove_file')" wire:model="removeFile" />
                     @endif
-                    <x-mary-toggle :label="__('handbooks.active')" wire:model="form.is_active" />
+                    <x-mary-toggle :label="__('guidance.active')" wire:model="form.is_active" />
                 </div>
 
                 <x-slot:actions>

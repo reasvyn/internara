@@ -10,7 +10,6 @@ use App\Auth\SuperAdmin\Notifications\SuperAdminRecoveredNotification;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Support\SmartLogger;
-use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +19,7 @@ use RuntimeException;
 
 final class RecoverSuperAdminAction extends BaseAction
 {
-    public function execute(string $email, string $password, bool $isReset = false): User
+    public function execute(string $email, string $password): User
     {
         $cacheKey = config('cache-keys.recover_admin_attempts').md5($email);
         $attempts = (int) Cache::get($cacheKey, 0);
@@ -31,44 +30,33 @@ final class RecoverSuperAdminAction extends BaseAction
 
         Cache::put($cacheKey, $attempts + 1, 900);
 
-        return $this->transaction(function () use ($email, $password, $isReset, $cacheKey) {
-            if ($isReset) {
-                $user = User::where('email', $email)->firstOrFail();
+        return $this->transaction(function () use ($email, $password, $cacheKey) {
+            $user = User::where('email', $email)->firstOrFail();
 
-                $integrity = SuperAdminIntegrityRules::fromModel($user);
+            $integrity = SuperAdminIntegrityRules::fromModel($user);
 
-                if ($user->hasRole(Role::SUPER_ADMIN->value) && ! $integrity->hasProtectedStatus()) {
-                    throw new RejectedException(
-                        'Super admin account integrity violation: expected PROTECTED status.',
-                    );
-                }
-
-                $user->update([
-                    'password' => Hash::make($password),
-                    'locked_at' => null,
-                    'locked_reason' => null,
-                ]);
-            } else {
-                $user = User::create([
-                    'name' => config('setup.defaults.admin_name', 'Administrator'),
-                    'email' => $email,
-                    'password' => Hash::make($password),
-                    'username' => config('setup.defaults.admin_username', 'superadmin'),
-                ]);
-                $user->profile()->create();
-                $user->setStatus(AccountStatus::PROTECTED);
+            if ($user->hasRole(Role::SUPER_ADMIN->value) && ! $integrity->hasProtectedStatus()) {
+                throw new RejectedException(
+                    'Super admin account integrity violation: expected PROTECTED status.',
+                );
             }
+
+            $user->update([
+                'password' => Hash::make($password),
+                'locked_at' => null,
+                'locked_reason' => null,
+            ]);
 
             $user->syncRoles([Role::SUPER_ADMIN->value]);
 
             $user->forceFill(['remember_token' => Str::random(60)])->save();
 
             $this->log('super_admin_recovered', $user, [
-                'type' => $isReset ? 'reset' : 'create',
+                'type' => 'reset',
                 'email' => $email,
             ]);
 
-            $this->notifyExistingSuperAdmins($user, $isReset);
+            $this->notifyExistingSuperAdmins($user);
 
             Cache::forget($cacheKey);
 
@@ -76,7 +64,7 @@ final class RecoverSuperAdminAction extends BaseAction
         });
     }
 
-    private function notifyExistingSuperAdmins(User $recoveredUser, bool $isReset): void
+    private function notifyExistingSuperAdmins(User $recoveredUser): void
     {
         try {
             $existingAdmins = User::role('super_admin')
@@ -91,7 +79,6 @@ final class RecoverSuperAdminAction extends BaseAction
                 $existingAdmins,
                 new SuperAdminRecoveredNotification(
                     recoveredEmail: $recoveredUser->email,
-                    mode: $isReset ? 'reset' : 'create',
                 ),
             );
         } catch (\Throwable $e) {
@@ -103,10 +90,5 @@ final class RecoverSuperAdminAction extends BaseAction
                 ->systemOnly()
                 ->save();
         }
-    }
-
-    private function generateUsername(): string
-    {
-        return 'admin_'.Str::random(16);
     }
 }

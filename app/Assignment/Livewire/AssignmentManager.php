@@ -179,6 +179,6 @@ class AssignmentManager extends BaseRecordManager
 
     public function render(): View
     {
-        return view('assignment.core.assignment-manager');
+        return view('assignment.assignment-manager');
     }
 }

@@ -27,7 +27,7 @@ final class AppIntegrity
 
     private static function verifyComposerMetadata(): void
     {
-        $path = base_path('composer.json');
+        $path = dirname(__DIR__, 3).'/composer.json';
 
         if (! file_exists($path)) {
             throw new RuntimeException('Core system metadata (composer.json) is missing.');

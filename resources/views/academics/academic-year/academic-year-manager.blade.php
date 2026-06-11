@@ -166,5 +166,5 @@
         </x-slot:actions>
     </x-mary-modal>
 
-    @include('school.components.academic-year-guide')
+    @include('setup.components.academic-year-guide')
 </div>

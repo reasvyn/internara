@@ -94,4 +94,9 @@ return [
         'no_registration' => 'Tidak ditemukan pendaftaran aktif atau tertunda.',
         'success' => 'Dokumen berhasil diunggah.',
     ],
+
+    'doc_upload_title' => 'Unggah Dokumen yang Diperlukan',
+    'doc_uploaded' => 'Terunggah',
+    'doc_no_requirements' => 'Tidak ada persyaratan dokumen untuk magang ini.',
+    'doc_no_registration' => 'Anda tidak memiliki pendaftaran aktif atau tertunda.',
 ];

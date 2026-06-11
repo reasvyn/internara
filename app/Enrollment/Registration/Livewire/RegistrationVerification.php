@@ -111,6 +111,6 @@ class RegistrationVerification extends Component
 
     public function render(): View
     {
-        return view('enrollment.registration-verification');
+        return view('enrollment.registration.registration-verification');
     }
 }

@@ -69,6 +69,6 @@ class Login extends Component
     #[Layout('user::layouts.auth', ['title' => 'Login'])]
     public function render(): View
     {
-        return view('auth.login.login');
+        return view('auth.login');
     }
 }

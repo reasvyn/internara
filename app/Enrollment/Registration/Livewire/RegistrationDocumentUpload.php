@@ -68,7 +68,7 @@ class RegistrationDocumentUpload extends Component
             $documents = Document::whereIn('id', $documentIds)->get();
         }
 
-        return view('enrollment.registration-document-upload', [
+        return view('enrollment.registration.registration-document-upload', [
             'documents' => $documents,
             'existingDocs' => $this->registration
                 ? RegistrationDocument::where('registration_id', $this->registration->id)

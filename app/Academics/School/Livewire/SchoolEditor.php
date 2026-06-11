@@ -11,6 +11,6 @@ class SchoolEditor extends Component
 {
     public function render(): View
     {
-        return view('sysadmin.school.school-editor');
+        return view('academics.school.school-editor');
     }
 }

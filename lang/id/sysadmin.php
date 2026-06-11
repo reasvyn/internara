@@ -15,43 +15,35 @@ return [
     'field_new_password' => 'Kata Sandi Baru',
     'field_confirm_password' => 'Konfirmasi Kata Sandi',
 
-    'create' => [
-        'description' => 'Buat akun super administrator',
-        'subtitle' => 'Buat Super Administrator',
-        'guide' => 'Super administrator memiliki akses penuh ke seluruh sistem, termasuk mengelola sekolah, jurusan, pengguna, dan konfigurasi lainnya. Akun ini akan menjadi akun utama yang digunakan untuk mengatur dan mengawasi jalannya sistem. Silakan siapkan alamat email dan kata sandi untuk akun super administrator baru.',
-        'already_exists' => 'Super administrator sudah ada.',
-        'invalid_email' => 'Alamat email tidak valid.',
-        'password_min' => 'Kata sandi minimal 8 karakter.',
-        'success' => 'Akun super administrator berhasil dibuat.',
-        'change_password' => 'Harap ganti kata sandi setelah login pertama.',
-    ],
-
     'recover' => [
         'description' => 'Pulihkan akses super administrator',
         'subtitle' => 'Pulihkan Akses Super Administrator',
-        'guide' => 'Akses super administrator yang hilang dapat dipulihkan melalui perintah ini. Jika akun dengan email yang dimasukkan sudah ada, gunakan opsi --reset untuk mereset kata sandinya. Jika belum ada, akun baru akan dibuat.',
-        'section_reset' => 'Reset Kata Sandi',
-        'section_set_password' => 'Atur Kata Sandi',
+        'guide' => 'Perintah ini memulihkan akses ke akun super administrator saat kata sandi hilang atau akun terkunci.',
         'invalid_email' => 'Alamat email tidak valid.',
         'password_min' => 'Kata sandi minimal 8 karakter.',
         'password_mismatch' => 'Kata sandi tidak cocok.',
-        'already_exists' => "Pengguna dengan email ':email' sudah ada. Gunakan --reset untuk mereset kata sandi.",
         'not_found' => "Pengguna dengan email ':email' tidak ditemukan.",
         'key_required' => 'Kunci pemulihan diperlukan. Berikan --key atau pastikan storage/app/private/.recovery-key ada.',
         'key_invalid' => 'Kunci pemulihan tidak valid.',
         'key_detected' => 'Kunci pemulihan terdeteksi dari file penyimpanan. Melanjutkan pemulihan.',
         'file_regenerated' => 'File kunci pemulihan ditulis ulang ke: :path',
         'confirm_prompt' => 'Ketik email di atas untuk konfirmasi:',
-        'confirm_mode_create' => 'BUAT BARU',
-        'confirm_mode_reset' => 'RESET KATA SANDI',
-        'confirm_warning' => 'Anda akan :mode untuk: :email',
+        'confirm_warning' => 'Anda akan mereset kata sandi untuk: :email',
         'aborted' => 'Pemulihan dibatalkan.',
-        'success_create' => 'Akun super administrator berhasil dibuat.',
         'success_reset' => 'Kata sandi berhasil direset.',
         'change_password' => 'Harap ganti kata sandi setelah login pertama.',
+        'recovery_key_title' => 'Kunci Pemulihan Baru',
+        'recovery_key_desc' => 'Kunci pemulihan telah dibuat ulang. Simpan kunci ini di tempat yang aman.',
+        'file_regenerated_failed' => 'Gagal menyimpan kunci pemulihan ke file.',
+        'otp_sent' => 'Kode sekali pakai telah dikirim ke email super admin.',
+        'otp_prompt' => 'Masukkan kode sekali pakai dari email',
+        'otp_invalid' => 'Kode sekali pakai tidak valid.',
+        'otp_expired' => 'Kode sekali pakai telah kedaluwarsa. Silakan mulai ulang proses pemulihan.',
+        'otp_send_failed' => 'Gagal mengirim kode sekali pakai. Periksa konfigurasi email.',
     ],
 
     'recovery_path' => [
+        'description' => 'Tampilkan lokasi file penyimpanan kunci pemulihan',
         'info' => 'Lokasi file kunci pemulihan:',
         'status' => 'Status file',
         'exists' => 'File tersedia',
@@ -65,13 +57,6 @@ return [
         'super_admin_exists' => 'Super admin sudah ada. Hanya satu akun super admin yang diizinkan.',
         'already_has_role' => "Pengguna :name sudah memiliki peran ':role'.",
         'success' => 'Berhasil menaikkan pangkat :name (:email) menjadi :role.',
-    ],
-
-    'auto_inactivate' => [
-        'none_found' => 'Tidak ada akun yang tidak aktif.',
-        'found' => 'Ditemukan :count akun yang tidak aktif selama lebih dari :days hari.',
-        'dry_run' => 'Akan menonaktifkan: :email (:name)',
-        'completed' => 'Menonaktifkan :count akun.',
     ],
 
     'prune_notifications' => [
@@ -111,10 +96,18 @@ return [
         'subtitle' => 'Akun duplikat yang mencurigakan',
     ],
 
+    'activity_title' => 'Log Aktivitas',
+    'activity_subtitle' => 'Pelacakan aktivitas pengguna',
+    'activity_filter_user' => 'Semua pengguna',
+    'activity_filter_module' => 'Semua modul',
+    'activity_filter_action' => 'Semua aksi',
+
     'recovery_show' => [
+        'description' => 'Tampilkan kunci pemulihan dari file penyimpanan',
         'warning' => 'Kunci pemulihan memberikan akses super admin. Hanya bagikan dengan administrator server tepercaya.',
         'confirm' => 'Anda yakin ingin menampilkan kunci pemulihan?',
         'aborted' => 'Tampilan dibatalkan.',
         'no_setup' => 'Sistem tampaknya belum terinstal.',
+        'key_label' => 'Kunci Pemulihan',
     ],
 ];
