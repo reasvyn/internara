@@ -158,7 +158,7 @@ Layer 1 ┌───────────────────────
 | Layer | Directory within Module                                              | Example                       |
 | ----- | -------------------------------------------------------------------- | ----------------------------- |
 | 12    | `app/{Module}/`                                                      | The module itself             |
-| 11    | `resources/views/{module}/{submodule}/`                              | Blade views (per submodule)   |
+| 11    | `resources/views/{module}/{submodule}/` or `resources/views/{module}/` | Blade views (per submodule or module-root) |
 | 10    | `routes/web/{module}.php`                                            | Route definitions             |
 | 9     | `{SubModule}/Listeners/`, `{SubModule}/Notifications/`, `Console/`   | Communication                 |
 | 8     | `{SubModule}/Policies/`                                              | Authorization                 |
@@ -426,12 +426,15 @@ app/{Module}/
 | Module tests          | `tests/{Feature,Unit}/{Module}/{Submodule}/{Name}Test.php`        | `tests/Feature/User/Profile/UpdateProfileActionTest.php` |
 | Shared tests          | `tests/{Feature,Unit}/{Component}/{Name}Test.php`                 | `tests/Unit/Data/AuditDtoTest.php`                       |
 
-**No redundant namespace segments.** The class name must never be repeated in the path.
+**No redundant namespace segments.** The class name must never be repeated in the path. This applies to both PHP classes and view files.
 
 - ✅ `app/User/Models/User.php` (namespace `App\User\Models`)
 - ❌ `app/User/User/Models/User.php` — `User` is repeated
 - ✅ `app/Program/Internship/Models/Internship.php` (namespace `App\Program\Internship\Models`)
 - ❌ `app/Program/Internship/Internship/Models/Internship.php`
+- ✅ `resources/views/auth/login.blade.php` → `view('auth.login')`
+- ❌ `resources/views/auth/login/login/login.blade.php` → `view('auth.login.login.login')` — triple nested
+- ❌ `resources/views/auth/login/login.blade.php` → `view('auth.login.login')` — submodule name repeated as filename
 
 ### Submodule Mapping
 
@@ -459,15 +462,55 @@ app/{Module}/
 
 ### Views Structure
 
+The view directory must exactly mirror the `app/` module structure. Every submodule directory under
+`app/{Module}/{SubModule}/` has a corresponding `resources/views/{module}/{submodule}/` directory.
+No spurious view directories may exist without a matching `app/` submodule.
+
 ```
 resources/views/{module}/
-├── {submodule}/                    → Views for a specific submodule
+├── {submodule}/                    → Matches app/{Module}/{SubModule}/
 │   ├── {component-name}.blade.php  → Livewire component view
-│   └── components/                 → Sub-views (optional)
+│   └── components/                 → Sub-views / partials (optional)
+├── {component-name}.blade.php      → Cross-submodule component view
 ├── layouts/                        → Module-specific layouts (optional)
 ├── components/                     → Shared sub-views (optional)
+├── livewire/                       → Module-root Livewire views (optional)
 └── partials/                       → Reusable partials (optional)
 ```
+
+**View naming rules:**
+
+1. **Mirror app/ structure** — Each `app/{Module}/{SubModule}/` has a corresponding
+   `resources/views/{module}/{submodule}/`. Views at the module root (no submodule) go into
+   `resources/views/{module}/` directly.
+
+2. **Avoid redundant name nesting** — If a submodule's primary view filename matches the submodule
+   name, flatten to `{module}.{submodule}` instead of `{module}.{submodule}.{submodule}`.
+   - ✅ `resources/views/auth/login.blade.php` → `view('auth.login')`
+   - ❌ `resources/views/auth/login/login.blade.php` → `view('auth.login.login')`
+   - ✅ `resources/views/auth/password/confirm-password.blade.php` → `view('auth.password.confirm-password')`
+
+3. **View reference uses dot notation** — `{module}.{submodule}.{component-name}` maps directly to
+   `resources/views/{module}/{submodule}/{component-name}.blade.php`. For module-root views:
+   `{module}.{component-name}` → `resources/views/{module}/{component-name}.blade.php`.
+
+4. **No orphan directories** — View subdirectories that do not correspond to an `app/` submodule
+   must not exist. For example, `assessment/core/` and `evaluation/core/` are invalid because
+   there is no `app/Assessment/Core/` or `app/Evaluation/Core/`.
+
+5. **Include references** — `@include()` directives must use the full dot notation path matching
+   the file location, the same as `view()` calls.
+
+**Examples:**
+
+| app path | view path | view() call |
+|---|---|---|
+| `app/Auth/Login/Livewire/Login.php` | `resources/views/auth/login.blade.php` | `view('auth.login')` |
+| `app/Auth/AccountRecovery/Livewire/AccountRecovery.php` | `resources/views/auth/account-recovery/account-recovery.blade.php` | `view('auth.account-recovery.account-recovery')` |
+| `app/User/Profile/Livewire/ProfileEditor.php` | `resources/views/user/profile/profile-editor.blade.php` | `view('user.profile.profile-editor')` |
+| `app/Enrollment/Placement/Livewire/PlacementIndex.php` | `resources/views/enrollment/placement/placement-index.blade.php` | `view('enrollment.placement.placement-index')` |
+| `app/User/UserManagement/Livewire/UserManager.php` | `resources/views/user/user-management/user-manager.blade.php` | `view('user.user-management.user-manager')` |
+| `app/Assessment/Livewire/AssessmentGrading.php` | `resources/views/assessment/assessment-grading.blade.php` | `view('assessment.assessment-grading')` |
 
 Shared cross-module views live directly under `resources/views/{component}/`:
 

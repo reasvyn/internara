@@ -47,7 +47,8 @@ becomes a thin coordination layer between the browser and the module.
 
 ## 2. Component Directory Structure
 
-Components follow the same two-tier path convention as all code:
+Components follow the same two-tier path convention as all code. The view directory **must exactly
+mirror** the `app/` module structure (see `docs/architecture.md` §Views Structure).
 
 ### Submodule-Specific Components
 
@@ -67,7 +68,26 @@ app/{Module}/Livewire/{Name}.php
 resources/views/{module}/{component-name}.blade.php
 ```
 
-**Example:** `app/Enrollment/Livewire/EnrollmentDashboard.php`.
+**Example:** `app/Assessment/Livewire/AssessmentGrading.php` with view at
+`resources/views/assessment/assessment-grading.blade.php`.
+
+### View Name Resolution
+
+The `render()` method must return a `view()` call with the full dot notation. The component's
+namespace determines the view path:
+
+| Component namespace | `view()` call | File path |
+|---|---|---|
+| `App\Auth\Login\Livewire\Login` | `view('auth.login')` | `resources/views/auth/login.blade.php` |
+| `App\Academics\AcademicYear\Livewire\AcademicYearManager` | `view('academics.academic-year.academic-year-manager')` | `resources/views/academics/academic-year/academic-year-manager.blade.php` |
+| `App\Assessment\Livewire\AssessmentGrading` | `view('assessment.assessment-grading')` | `resources/views/assessment/assessment-grading.blade.php` |
+| `App\User\UserManagement\Livewire\UserManager` | `view('user.user-management.user-manager')` | `resources/views/user/user-management/user-manager.blade.php` |
+
+**Rules:**
+1. Submodule components: `view('{module}.{submodule}.{component-name}')` — maps to `resources/views/{module}/{submodule}/{component-name}.blade.php`.
+2. Module-root components: `view('{module}.{component-name}')` — maps to `resources/views/{module}/{component-name}.blade.php`.
+3. Avoid redundant nesting: when the component name matches the submodule name, flatten to `{module}.{submodule}` (e.g., `auth.login` not `auth.login.login`).
+4. The `view()` call must match the actual file location. Any mismatch between the view reference and the file path is a bug.
 
 ### Shared Cross-Module Components
 
@@ -104,10 +124,10 @@ scans all PHP files under `app/` in any `Livewire/` directory (excluding `Concer
 ### How the Alias Is Computed
 
 ```php
-// Given: app/SysAdmin/UserManagement/Livewire/UserManager.php
+// Given: app/User/UserManagement/Livewire/UserManager.php
 // parts = ['app', 'SysAdmin', 'UserManagement', 'Livewire', 'UserManager.php']
 // module = 'SysAdmin', submodule = 'UserManagement', className = 'UserManager'
-// alias = 'sysadmin.user-management.user-manager'
+// alias = 'user.user-management.user-manager'
 
 $module = $parts[0];
 $submodule = $parts[1] !== $directory ? $parts[1] ?? '' : '';

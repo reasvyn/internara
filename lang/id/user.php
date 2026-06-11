@@ -213,4 +213,14 @@ return [
         'roles_title' => 'Peran & Akses',
         'roles_desc' => 'Setiap pengguna dapat memiliki beberapa peran. Peran menentukan fitur dan halaman yang dapat diakses. Super admin memiliki akses penuh.',
     ],
+
+    'user_management' => [
+        'auto_inactivate' => [
+            'none_found' => 'Tidak ada akun yang tidak aktif.',
+            'found' => 'Ditemukan :count akun yang tidak aktif selama lebih dari :days hari.',
+            'dry_run' => 'Akan menonaktifkan: :email (:name)',
+            'completed' => 'Menonaktifkan :count akun.',
+            'reason' => 'Dinonaktifkan otomatis karena tidak aktif.',
+        ],
+    ],
 ];

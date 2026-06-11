@@ -10,14 +10,20 @@ class ShowRecoveryPathCommand extends Command
 {
     protected $signature = 'admin:recovery-path';
 
-    protected $description = 'Show the file path where the recovery key is stored';
+    public function __construct()
+    {
+        parent::__construct();
+        $this->description = __('sysadmin.recovery_path.description');
+    }
 
     public function handle(): int
     {
         $path = storage_path('app/private/.recovery-key');
 
         $this->components->info(__('sysadmin.recovery_path.info'));
+        $pathLabel = __('sysadmin.recovery_path.info');
         $this->line("  <fg=cyan>{$path}</>");
+        $this->newLine();
 
         if (file_exists($path)) {
             $this->components->twoColumnDetail(

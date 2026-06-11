@@ -1,7 +1,7 @@
 <div>
     <div class="mb-6">
         <h2 class="text-xl font-bold">{{ __('dashboard.title') }}</h2>
-        <p class="text-sm text-base-content/50">{{ __('handbooks.student_subtitle') }}</p>
+        <p class="text-sm text-base-content/50">{{ __('guidance.student_subtitle') }}</p>
     </div>
 
     <div class="space-y-4">
@@ -11,7 +11,7 @@
                     <div class="flex-1 min-w-0">
                         <h3 class="font-semibold truncate">{{ $handbook->title }}</h3>
                         <p class="text-xs text-base-content/50 mt-1">
-                            {{ __('handbooks.version') }} {{ $handbook->version }} &middot;
+                            {{ __('guidance.version') }} {{ $handbook->version }} &middot;
                             {{ $handbook->published_at?->format('d M Y') ?? '-' }}
                         </p>
                         @if($handbook->content)
@@ -21,7 +21,7 @@
                         @endif
                         @if($handbook->getFirstMediaUrl('file'))
                             <div class="mt-2">
-                                <x-mary-button icon="o-document" :label="__('handbooks.download')" class="btn-ghost btn-xs"
+                                <x-mary-button icon="o-document" :label="__('guidance.download')" class="btn-ghost btn-xs"
                                     :href="$handbook->getFirstMediaUrl('file')" external />
                             </div>
                         @endif
@@ -31,11 +31,11 @@
                             $acknowledged = $handbook->acknowledgements->isNotEmpty();
                         @endphp
                         @if($acknowledged)
-                            <x-mary-badge :value="__('handbooks.acknowledged')" class="badge-success" />
+                            <x-mary-badge :value="__('guidance.acknowledged')" class="badge-success" />
                         @else
                             <x-mary-button
                                 wire:click="acknowledge('{{ $handbook->id }}')"
-                                :label="__('handbooks.acknowledge')"
+                                :label="__('guidance.acknowledge')"
                                 class="btn-primary btn-sm"
                             />
                         @endif
@@ -45,7 +45,7 @@
         @empty
             <div class="flex flex-col items-center justify-center py-12 text-base-content/20">
                 <x-mary-icon name="o-book-open" class="size-12 mb-3" />
-                <span class="text-xs font-medium">{{ __('handbooks.no_handbooks') }}</span>
+                <span class="text-xs font-medium">{{ __('guidance.no_handbooks') }}</span>
             </div>
         @endforelse
     </div>

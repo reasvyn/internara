@@ -47,6 +47,8 @@ return [
     'health_failed' => 'Pemeriksaan kesehatan sistem mendeteksi masalah.',
     'setup_route_accessed_without_token' => 'Rute pengaturan diakses tanpa token pengaturan yang valid.',
     'setup_token_invalid_attempt' => 'Token pengaturan yang tidak valid diberikan.',
+    'token.missing' => 'Rute pengaturan diakses tanpa token pengaturan.',
+    'token.validation_failed' => 'Percobaan dengan token pengaturan yang tidak valid atau kedaluwarsa.',
     'unauthorized_role_access' => 'Percobaan akses berdasarkan peran yang tidak sah telah diblokir.',
     'recovery_key_viewed_cli' => 'Kunci pemulihan dilihat melalui antarmuka baris perintah.',
     'failed_to_save_recovery_key_file' => 'Gagal menyimpan kunci pemulihan ke sistem berkas.',

@@ -46,6 +46,6 @@ class RegistrationCenter extends Component
 
     public function render(): View
     {
-        return view('enrollment.registration-center');
+        return view('enrollment.registration.registration-center');
     }
 }

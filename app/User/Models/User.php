@@ -8,7 +8,11 @@ use App\Auth\Account\Entities\AccountActivation;
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Models\BaseAuthenticatable;
 use App\Enrollment\Registration\Models\Registration;
+use App\User\Entities\AdminEntity;
 use App\User\Entities\Apprentice;
+use App\User\Entities\StudentEntity;
+use App\User\Entities\SupervisorEntity;
+use App\User\Entities\TeacherEntity;
 use App\User\Enums\AccountStatus;
 use App\User\Profile\Models\Profile;
 use Database\Factories\UserFactory;
@@ -246,6 +250,26 @@ class User extends BaseAuthenticatable implements HasMedia
     public function asApprentice(): Apprentice
     {
         return Apprentice::fromModel($this);
+    }
+
+    public function asStudent(): StudentEntity
+    {
+        return StudentEntity::fromModel($this);
+    }
+
+    public function asTeacher(): TeacherEntity
+    {
+        return TeacherEntity::fromModel($this);
+    }
+
+    public function asSupervisor(): SupervisorEntity
+    {
+        return SupervisorEntity::fromModel($this);
+    }
+
+    public function asAdmin(): AdminEntity
+    {
+        return AdminEntity::fromModel($this);
     }
 
     public function asAccountActivation(): AccountActivation

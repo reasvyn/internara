@@ -74,6 +74,6 @@ class DirectPlacementManager extends Component
 
     public function render(): View
     {
-        return view('enrollment.direct-placement-manager');
+        return view('enrollment.placement.direct-placement-manager');
     }
 }

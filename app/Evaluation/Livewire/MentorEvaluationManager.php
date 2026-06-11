@@ -211,7 +211,7 @@ class MentorEvaluationManager extends Component
 
         $mentors = User::role('supervisor')->orderBy('name')->get();
 
-        return view('evaluation.core.mentor-evaluation-manager', [
+        return view('evaluation.mentor-evaluation-manager', [
             'evaluations' => $evaluations,
             'mentors' => $mentors,
         ]);

@@ -32,14 +32,14 @@ final class Brand
 
     public static function logo(): string
     {
-        $default = Config::get('app.logo', asset('/logo.png'));
+        $default = Config::get('app.logo', asset('/brand/logo.png'));
 
-        return self::resolveValue('logo', $default);
+        return self::resolveValue(['brand_logo', 'logo'], $default);
     }
 
     public static function favicon(): string
     {
-        $default = Config::get('app.favicon', asset('/favicon.ico'));
+        $default = Config::get('app.favicon', asset('/brand/favicon.ico'));
 
         return self::resolveValue('favicon', $default);
     }
@@ -103,12 +103,19 @@ final class Brand
         return self::resolve()->get($key, $default);
     }
 
-    private static function resolveValue(string $key, string $fallback): string
+    private static function resolveValue(string|array $key, string $fallback): string
     {
-        $value = self::safe(
-            fn () => SettingModel::where('key', $key)->value('value'),
-            null,
-        );
+        $value = self::safe(function () use ($key) {
+            $query = SettingModel::query();
+
+            if (is_array($key)) {
+                $query->whereIn('key', $key);
+            } else {
+                $query->where('key', $key);
+            }
+
+            return $query->value('value');
+        }, null);
 
         return is_string($value) && $value !== '' ? $value : $fallback;
     }

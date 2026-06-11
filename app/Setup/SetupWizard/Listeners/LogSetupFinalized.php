@@ -6,11 +6,14 @@ namespace App\Setup\SetupWizard\Listeners;
 
 use App\Core\Support\SmartLogger;
 use App\Setup\SetupWizard\Events\SetupFinalized;
+use Illuminate\Support\Facades\Cache;
 
 class LogSetupFinalized
 {
     public function handle(SetupFinalized $event): void
     {
+        Cache::forget(config('cache-keys.setup_installed'));
+
         SmartLogger::info('setup_finalized')
             ->event('setup_finalized')
             ->module('SysAdmin')

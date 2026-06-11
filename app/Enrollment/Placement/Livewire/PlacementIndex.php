@@ -163,6 +163,6 @@ class PlacementIndex extends BaseRecordManager
     #[Layout('core::layouts.app')]
     public function render(): View
     {
-        return view('enrollment.placement-index');
+        return view('enrollment.placement.placement-index');
     }
 }

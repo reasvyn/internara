@@ -169,5 +169,5 @@
         </div>
     </div>
 
-    @include('school.components.school-guide')
+    @include('setup.components.school-guide')
 </div>

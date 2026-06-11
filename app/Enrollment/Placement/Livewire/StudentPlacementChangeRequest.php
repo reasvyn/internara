@@ -88,7 +88,7 @@ class StudentPlacementChangeRequest extends Component
                 ->filter(fn (Placement $p) => $p->asPlacementCapacity()->hasAvailableSlots());
         }
 
-        return view('enrollment.student-placement-change-request', [
+        return view('enrollment.placement.student-placement-change-request', [
             'registration' => $registration,
             'availablePlacements' => $availablePlacements,
         ]);

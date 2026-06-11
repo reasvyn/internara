@@ -100,8 +100,8 @@ Read Actions should be plain invocable classes, not extend BaseAction:
 | File | Location |
 |------|----------|
 | `GetAdminDashboardStatsAction` | SysAdmin |
-| `GetUserManagerStatsAction` | SysAdmin/UserManagement |
-| `ReadRecoveryKeyAction` | SysAdmin/UserManagement |
+| `GetUserManagerStatsAction` | User/UserManagement |
+| `ReadRecoveryKeyAction` | User/UserManagement |
 | `DetectUserAccountCloneAction` | User/AccountStatus |
 | `GetTeacherDashboardStatsAction` | User/Dashboard |
 | `GetSupervisorDashboardStatsAction` | User/Dashboard |
@@ -113,7 +113,7 @@ Read Actions should be plain invocable classes, not extend BaseAction:
 
 | File | Location | Issue |
 |------|----------|-------|
-| `GenerateAccountSlipAction` | SysAdmin/UserManagement | Has `download()`/`downloadBatch()` but no `execute()` |
+| `GenerateAccountSlipAction` | User/UserManagement | Has `download()`/`downloadBatch()` but no `execute()` |
 | `CompileLogbookReportAction` | Logbook | Has `download()` but no `execute()` |
 
 ### C4 — Livewire CRUD Not Extending BaseRecordManager (5 files) — 🟠 High

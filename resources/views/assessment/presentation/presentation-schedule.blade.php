@@ -1,13 +1,13 @@
 <x-core::ui.record-manager
-    :title="__('presentation.title')"
-    :subtitle="__('presentation.subtitle')"
+    :title="__('assessment.presentation_title')"
+    :subtitle="__('assessment.presentation_subtitle')"
 >
     <x-slot:headerActions>
-        <x-mary-button :label="__('presentation.add')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-mary-button :label="__('assessment.presentation_add')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
     </x-slot:headerActions>
 
     <x-slot:filters>
-        <x-mary-select wire:model.live="filters.status" :placeholder="__('presentation.status')"
+        <x-mary-select wire:model.live="filters.status" :placeholder="__('assessment.presentation_status')"
             :options="collect($statusOptions)->mapWithKeys(fn($s) => [$s->value => $s->label()])->toArray()" />
     </x-slot:filters>
 
@@ -48,22 +48,22 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showScheduleModal" :title="__('presentation.schedule_title')" class="backdrop-blur-sm max-w-lg">
+        <x-mary-modal wire:model="showScheduleModal" :title="__('assessment.presentation_schedule_title')" class="backdrop-blur-sm max-w-lg">
             <x-mary-form wire:submit="saveSchedule">
                 <div class="space-y-5">
-                    <x-mary-select :label="__('presentation.registration')" wire:model="scheduleData.registration_id"
-                        :placeholder="__('presentation.registration_placeholder')"
+                    <x-mary-select :label="__('assessment.presentation_registration')" wire:model="scheduleData.registration_id"
+                        :placeholder="__('assessment.presentation_registration_placeholder')"
                         :options="$this->activeRegistrations ?? []"
                         option-label="name" option-value="id" />
-                    <x-mary-input :label="__('presentation.scheduled_at')" wire:model="scheduleData.scheduled_at" type="datetime-local" />
-                    <x-mary-input :label="__('presentation.location')" wire:model="scheduleData.location" />
-                    <x-mary-select :label="__('presentation.examiners')" wire:model="scheduleData.examiner_ids"
+                    <x-mary-input :label="__('assessment.presentation_scheduled_at')" wire:model="scheduleData.scheduled_at" type="datetime-local" />
+                    <x-mary-input :label="__('assessment.presentation_location')" wire:model="scheduleData.location" />
+                    <x-mary-select :label="__('assessment.presentation_examiners')" wire:model="scheduleData.examiner_ids"
                         :options="$this->teachers" option-label="name" option-value="id" multiple />
-                    <x-mary-textarea :label="__('presentation.notes')" wire:model="scheduleData.notes" rows="2" />
+                    <x-mary-textarea :label="__('assessment.presentation_notes')" wire:model="scheduleData.notes" rows="2" />
                 </div>
                 <x-slot:actions>
                     <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('showScheduleModal', false)" class="btn-ghost btn-sm" />
-                    <x-mary-button :label="__('presentation.schedule')" class="btn-primary btn-sm" type="submit" spinner="saveSchedule" />
+                    <x-mary-button :label="__('assessment.presentation_schedule')" class="btn-primary btn-sm" type="submit" spinner="saveSchedule" />
                 </x-slot:actions>
             </x-mary-form>
         </x-mary-modal>

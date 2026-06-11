@@ -85,6 +85,6 @@ class PlacementChangeManager extends BaseRecordManager
     #[Layout('core::layouts.app')]
     public function render(): View
     {
-        return view('enrollment.placement-change-manager');
+        return view('enrollment.placement.placement-change-manager');
     }
 }

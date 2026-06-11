@@ -9,7 +9,6 @@ use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Certification\Certificate\Models\Certificate;
 use App\Enrollment\Placement\Models\Placement;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\Mentor\Models\Mentor;
 use App\Journals\Attendance\Models\Attendance;
 use App\Journals\Logbook\Models\Logbook;
 use App\Partners\Company\Models\Company;
@@ -31,7 +30,7 @@ final class GetAdminDashboardStatsAction
                 'totalStudents' => $students,
                 'totalTeachers' => User::role(RoleEnum::TEACHER->value)->count(),
                 'totalSupervisors' => User::role(RoleEnum::SUPERVISOR->value)->count(),
-                'totalMentors' => Mentor::count(),
+                'totalMentors' => User::role([RoleEnum::TEACHER->value, RoleEnum::SUPERVISOR->value])->count(),
                 'totalCompanies' => Company::count(),
                 'totalPartnerships' => Partnership::count(),
                 'totalDepartments' => Department::count(),

@@ -8,7 +8,7 @@ use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Events\SetupFinalized;
-use App\SysAdmin\UserManagement\Actions\SaveRecoveryKeyAction;
+use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;

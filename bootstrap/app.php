@@ -31,10 +31,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withCommands([
+        __DIR__.'/../app/Auth/SuperAdmin/Console/Commands',
         __DIR__.'/../app/Core/Console/Commands',
         __DIR__.'/../app/Setup/Installation/Console/Commands',
         __DIR__.'/../app/SysAdmin/Console/Commands',
         __DIR__.'/../app/User/Console/Commands',
+        __DIR__.'/../app/User/UserManagement/Console/Commands',
     ])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([

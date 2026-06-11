@@ -103,5 +103,5 @@
     </x-slot:modal>
 </x-core::ui.record-manager>
 
-@include('school.components.department-guide')
+@include('setup.components.department-guide')
 </div>

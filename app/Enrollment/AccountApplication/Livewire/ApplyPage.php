@@ -55,6 +55,6 @@ class ApplyPage extends Component
 
     public function render(): View
     {
-        return view('enrollment.apply-page');
+        return view('enrollment.account-application.apply-page');
     }
 }

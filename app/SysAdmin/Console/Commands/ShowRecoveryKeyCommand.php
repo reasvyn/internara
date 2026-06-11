@@ -13,7 +13,11 @@ class ShowRecoveryKeyCommand extends Command
 {
     protected $signature = 'admin:recovery-show';
 
-    protected $description = 'Display the recovery key from the stored file';
+    public function __construct()
+    {
+        parent::__construct();
+        $this->description = __('sysadmin.recovery_show.description');
+    }
 
     public function handle(): int
     {
@@ -48,14 +52,16 @@ class ShowRecoveryKeyCommand extends Command
 
         $content = File::get($path);
 
-        SmartLogger::info('Recovery key viewed via CLI')
+        SmartLogger::info(__('log.recovery_key_viewed_cli'))
             ->module('admin')
             ->event('recovery_key.viewed')
             ->systemOnly()
             ->save();
 
         $this->newLine();
-        $this->line($content);
+        $this->line('  <fg=yellow>'.__('sysadmin.recovery_show.key_label').'</>');
+        $this->line('  <fg=white;bg=yellow> '.$recoveryKey.' </>');
+        $this->newLine();
 
         return self::SUCCESS;
     }

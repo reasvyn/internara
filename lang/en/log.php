@@ -47,6 +47,8 @@ return [
     'health_failed' => 'System health check detected issues.',
     'setup_route_accessed_without_token' => 'Setup route was accessed without a valid setup token.',
     'setup_token_invalid_attempt' => 'An invalid setup token was provided.',
+    'token.missing' => 'Setup route was accessed without a setup token.',
+    'token.validation_failed' => 'An attempt was made with an invalid or expired setup token.',
     'unauthorized_role_access' => 'An unauthorized role-based access attempt was blocked.',
     'recovery_key_viewed_cli' => 'Recovery key was viewed via command line interface.',
     'failed_to_save_recovery_key_file' => 'Failed to persist the recovery key to the filesystem.',

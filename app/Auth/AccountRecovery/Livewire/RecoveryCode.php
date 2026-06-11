@@ -51,7 +51,7 @@ class RecoveryCode extends Component
 
         $username = auth()->user()->username;
 
-        $pdf = Pdf::loadView('user.account-recovery.pdf.recovery-codes', [
+        $pdf = Pdf::loadView('auth.account-recovery.pdf.recovery-codes', [
             'codes' => $codes,
             'username' => $username,
             'generatedAt' => now()->format('d M Y H:i'),

@@ -22,9 +22,4 @@ return [
     'recovery_slips_generated' => 'Recovery Slips Generated',
     'profile_updated' => 'Profile Updated',
     'settings_updated' => 'Settings Updated',
-    'title' => 'Activity Log',
-    'subtitle' => 'User activity tracking',
-    'filter_user' => 'All users',
-    'filter_module' => 'All modules',
-    'filter_action' => 'All actions',
 ];
