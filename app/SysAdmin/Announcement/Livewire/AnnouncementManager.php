@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Announcement\Livewire;
 
 use App\Auth\Permissions\Enums\Role;
+use App\Core\Livewire\BaseRecordManager;
 use App\SysAdmin\Announcement\Actions\DeleteAnnouncementAction;
 use App\SysAdmin\Announcement\Actions\PublishAnnouncementAction;
 use App\SysAdmin\Announcement\Actions\SendAnnouncementAction;
@@ -12,11 +13,11 @@ use App\SysAdmin\Announcement\Enums\AnnouncementStatus;
 use App\SysAdmin\Announcement\Livewire\Forms\AnnouncementForm;
 use App\SysAdmin\Announcement\Models\Announcement;
 use App\User\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Livewire\Component;
 
-class AnnouncementManager extends Component
+class AnnouncementManager extends BaseRecordManager
 {
     public AnnouncementForm $form;
 
@@ -31,6 +32,27 @@ class AnnouncementManager extends Component
     public function boot(): void
     {
         $this->authorize('viewAny', User::class);
+    }
+
+    public function headers(): array
+    {
+        return [
+            ['key' => 'title', 'label' => __('announcement.fields.title'), 'sortable' => true],
+            ['key' => 'type', 'label' => __('announcement.fields.type')],
+            ['key' => 'status', 'label' => __('announcement.fields.status')],
+            ['key' => 'created_at', 'label' => __('common.created_at'), 'sortable' => true],
+            ['key' => 'actions', 'label' => '', 'sortable' => false],
+        ];
+    }
+
+    protected function query(): Builder
+    {
+        return Announcement::where('created_by', Auth::id());
+    }
+
+    protected function applySearch(Builder $query): Builder
+    {
+        return $query->where('title', 'like', "%{$this->search}%");
     }
 
     public function save(SendAnnouncementAction $action): void
@@ -101,7 +123,7 @@ class AnnouncementManager extends Component
     public function render(): View
     {
         return view('sysadmin.announcement.announcement-manager', [
-            'announcements' => Announcement::latest()->take(50)->get(),
+            'announcements' => $this->rows(),
             'roles' => collect(Role::excludeSuperAdmin())->map(
                 fn (Role $role) => [
                     'id' => $role->value,

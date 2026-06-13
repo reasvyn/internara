@@ -83,7 +83,7 @@
                     <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('user.student.academic_info') }}</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <x-mary-input :label="__('user.student.nisn')" wire:model="form.national_id_number" icon="o-identification" />
-                        <x-mary-input :label="__('user.student.nis')" wire:model="form.student_id_number" icon="o-document-text" />
+                        <x-mary-input :label="__('user.student.nis')" wire:model="form.id_number" icon="o-document-text" />
                     </div>
                     <x-mary-select :label="__('user.student.department')" wire:model="form.department_id" :options="$this->departments" icon="o-rectangle-group" class="mt-4" />
                 </div>

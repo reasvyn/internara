@@ -17,6 +17,11 @@ final class GenerateAccountSlipAction extends BaseAction
 
     private const int CARD_H = 156;
 
+    public function execute(User $user): Response
+    {
+        return $this->download($user);
+    }
+
     public function download(User $user): Response
     {
         $result = ApiToken::generateFor($user, 'activation', ['name' => 'Account Activation']);

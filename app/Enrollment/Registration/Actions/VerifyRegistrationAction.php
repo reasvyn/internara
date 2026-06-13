@@ -8,14 +8,14 @@ use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Placement;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\Mentor\Models\Mentor;
+use App\User\Models\User;
 
 final class VerifyRegistrationAction extends BaseAction
 {
     public function execute(string $registrationId, array $data): Registration
     {
         return $this->transaction(function () use ($registrationId, $data) {
-            $registration = Registration::with('mentee.user', 'internship')->findOrFail(
+            $registration = Registration::with('student', 'internship')->findOrFail(
                 $registrationId,
             );
 
@@ -43,10 +43,10 @@ final class VerifyRegistrationAction extends BaseAction
             $placement->increment('filled_quota');
 
             if (! empty($data['mentor_ids'])) {
-                $mentors = Mentor::whereIn('id', $data['mentor_ids'])->get();
+                $mentors = User::whereIn('id', $data['mentor_ids'])->get();
                 $attachData = [];
                 foreach ($mentors as $mentor) {
-                    $attachData[$mentor->id] = ['role' => $mentor->type];
+                    $attachData[$mentor->id] = ['role' => $mentor->hasRole('supervisor') ? 'supervisor' : 'teacher'];
                 }
                 $registration->mentors()->attach($attachData);
             }

@@ -24,14 +24,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
         'status',
         'finalized_by',
         'finalized_at',
-        'student_name',
-        'student_number',
-        'student_email',
-        'internship_name',
-        'company_name',
-        'department_name',
-        'supervisor_name',
-        'teacher_name',
         'archived_data',
     ]),
 ]
@@ -62,7 +54,7 @@ class Report extends BaseModel
                 $this->student_email = $student->email;
             }
             if ($profile) {
-                $this->student_number = $profile->student_id_number;
+                $this->student_number = $profile->id_number;
             }
 
             if ($internship) {

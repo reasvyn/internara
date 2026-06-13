@@ -5,6 +5,8 @@ use App\Academics\AcademicYear\Events\AcademicYearActivated;
 use App\Academics\AcademicYear\Events\AcademicYearCreated;
 use App\Academics\Department\Events\DepartmentCreated;
 use App\Academics\Department\Events\DepartmentDeleted;
+use App\Auth\Login\Events\LoginSucceeded;
+use App\Auth\Login\Listeners\SendSuperAdminWelcomeNotification;
 use App\Enrollment\Registration\Events\StudentRegistered;
 use App\Enrollment\Registration\Listeners\ClearDashboardOnRegistration;
 use App\Partners\Company\Events\CompanyCreated;
@@ -65,6 +67,10 @@ return [
 
         StudentRegistered::class => [
             ClearDashboardOnRegistration::class,
+        ],
+
+        LoginSucceeded::class => [
+            SendSuperAdminWelcomeNotification::class,
         ],
     ],
 ];

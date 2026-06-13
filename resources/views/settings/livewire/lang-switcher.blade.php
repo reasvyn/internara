@@ -1,7 +1,7 @@
 <x-mary-dropdown>
     <x-slot:trigger>
-        <button class="btn btn-ghost btn-sm btn-circle">
-            <span class="text-xs font-bold uppercase tracking-wider">{{ $locale }}</span>
+        <button class="btn btn-ghost btn-sm btn-circle" aria-label="{{ __('common.language.switch') }}">
+            <span class="text-xs font-bold uppercase tracking-wider" aria-hidden="true">{{ $locale }}</span>
         </button>
     </x-slot:trigger>
 

@@ -10,7 +10,7 @@ use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
-use App\Guidance\Mentee\Models\Mentee;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 
 final class SubmitAssignmentAction extends BaseAction
@@ -26,9 +26,7 @@ final class SubmitAssignmentAction extends BaseAction
         }
 
         return $this->transaction(function () use ($student, $assignment, $data) {
-            $mentee = Mentee::where('user_id', $student->id)->first();
-            $registration = $mentee
-                ?->registrations()
+            $registration = Registration::where('student_id', $student->id)
                 ->where('internship_id', $assignment->internship_id)
                 ->whereIn('status', ['active', 'placed'])
                 ->first();

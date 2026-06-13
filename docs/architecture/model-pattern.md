@@ -369,31 +369,6 @@ public function asSetting(): SettingEntity
 A model may expose multiple entity accessors when it contains data for multiple domain concepts
 (e.g., `Internship` exposes both `InternshipPeriod` and `InternshipState`).
 
-Complete list of entity accessors in the codebase:
-
-| Model                              | Accessor                            | Entity                             |
-| ---------------------------------- | ----------------------------------- | ---------------------------------- |
-| `Internship`                       | `asInternshipPeriod()`              | `InternshipPeriod`                 |
-| `Internship`                       | `asInternshipState()`               | `InternshipState`                  |
-| `Registration`                     | `asRegistrationState()`             | `RegistrationState`                |
-| `User`                             | `asApprentice()`                    | `Apprentice`                       |
-| `Setting`                          | `asSetting()`                       | `SettingEntity`                    |
-| `AcademicYear`                     | `asAcademicYearState()`             | `AcademicYearState`                |
-| `Department`                       | `asDepartmentState()`               | `DepartmentState`                  |
-| `Placement`                        | `asPlacementCapacity()`             | `PlacementCapacity`                |
-| `Placement`                        | `asPlacementState()`                | `PlacementState`                   |
-| `Company`                          | `asCompanyState()`                  | `CompanyState`                     |
-| `Partnership`                      | `asPartnershipState()`              | `PartnershipState`                 |
-| `InternshipGroup`                  | `asInternshipGroupState()`          | `InternshipGroupState`             |
-| `Assessment`                       | `asAssessmentResult()`              | `AssessmentResult`                 |
-| `ApiToken`                         | `asActivationToken()`               | `ActivationToken`                  |
-| `Submission`                       | `asSubmissionState()`               | `SubmissionState`                  |
-| `Assignment`                       | `asAssignmentRules()`               | `AssignmentRules`                  |
-| `SupervisionLog`                   | `asSupervisionStatus()`             | `SupervisionStatus`                |
-| `Logbook`                          | `asLogbookState()`                  | `LogbookState`                     |
-| `Attendance`                       | `asAttendanceStatus()`              | `AttendanceStatusEntity`           |
-| `AbsenceRequest`                   | `asAbsenceRequestStatus()`          | `AbsenceRequestStatusEntity`       |
-
 ---
 
 ## 9. Scope Pattern
@@ -434,14 +409,6 @@ $query->byKey('site.name')         // WHERE key = 'site.name'
 $query->inGroup(['general', 'seo']) // WHERE group IN (...)
 $query->ofType(SettingType::STRING) // WHERE type = 'string'
 $query->searchable('logo')          // WHERE key LIKE '%logo%' OR description LIKE '%logo%'
-```
-
-Scopes on `Evaluation`:
-
-```php
-$query->ofType(EvaluationCategory::MIDTERM)
-$query->byEvaluator($user)
-$query->highScore(80.0)
 ```
 
 Scopes on `Announcement`:

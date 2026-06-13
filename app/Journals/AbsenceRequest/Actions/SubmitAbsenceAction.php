@@ -6,29 +6,31 @@ namespace App\Journals\AbsenceRequest\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
-use App\Journals\AbsenceRequest\Models\AbsenceRequest;
+use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;
 
 final class SubmitAbsenceAction extends BaseAction
 {
-    public function execute(User $user, array $data): AbsenceRequest
+    public function execute(User $user, string $registrationId, array $data): Attendance
     {
-        return $this->transaction(function () use ($user, $data) {
-            $request = AbsenceRequest::create([
+        return $this->transaction(function () use ($user, $registrationId, $data) {
+            $attendance = Attendance::create([
                 'user_id' => $user->id,
-                'registration_id' => $data['registration_id'],
-                'start_date' => $data['start_date'],
-                'end_date' => $data['end_date'] ?? $data['start_date'],
-                'reason_type' => $data['reason_type'],
-                'reason_description' => $data['reason_description'] ?? null,
-                'status' => AbsenceRequestStatus::PENDING,
+                'registration_id' => $registrationId,
+                'date' => $data['start_date'] ?? now()->toDateString(),
+                'status' => 'absent',
+                'absence_type' => $data['reason_type'],
+                'absence_reason' => $data['reason_description'] ?? null,
+                'absence_attachment' => $data['attachment_path'] ?? null,
+                'absence_status' => AbsenceRequestStatus::PENDING->value,
             ]);
 
-            $this->log('absence_request_submitted', $request, [
-                'reason_type' => $request->reason_type?->value,
+            $this->log('absence_submitted', $attendance, [
+                'user_id' => $user->id,
+                'absence_type' => $data['reason_type'],
             ]);
 
-            return $request;
+            return $attendance;
         });
     }
 }

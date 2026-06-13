@@ -19,6 +19,7 @@ use Database\Factories\RegistrationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -125,6 +126,13 @@ class Registration extends BaseModel
     public function report(): HasOne
     {
         return $this->hasOne(Report::class, 'registration_id');
+    }
+
+    public function mentors(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'internship_group_members', 'registration_id', 'mentor_id')
+            ->withPivot('role', 'joined_at')
+            ->withTimestamps();
     }
 
     public function resolvePhases(): array

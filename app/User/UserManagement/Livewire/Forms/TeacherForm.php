@@ -14,7 +14,7 @@ class TeacherForm extends Form
 
     public string $email = '';
 
-    public string $employee_id_number = '';
+    public string $id_number = '';
 
     public function rules(): array
     {

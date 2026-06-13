@@ -24,24 +24,26 @@ final class FinalizeAssessmentAction extends BaseAction
                 throw new RejectedException('Assessment must have a rubric to finalize.');
             }
 
-            $competencies = $rubric->competencies()->with('indicators')->get();
-            $content = $assessment->content ?? [];
+            $structure = $rubric->structure ?? ['competencies' => []];
+            $competencies = $structure['competencies'] ?? [];
+            $content = $assessment->scores_data ?? [];
             $competencyScores = $content['competencies'] ?? [];
 
             $scoredCompetencies = [];
 
             foreach ($competencies as $competency) {
-                $indicatorsData = $competencyScores[$competency->id]['indicators'] ?? [];
+                $compId = $competency['id'] ?? '';
+                $indicatorsData = $competencyScores[$compId]['indicators'] ?? [];
                 $hasAnyScore = false;
 
-                foreach ($competency->indicators as $indicator) {
-                    if (($indicatorsData[$indicator->id] ?? null) !== null) {
+                foreach ($competency['indicators'] ?? [] as $indicator) {
+                    if (($indicatorsData[$indicator['id']] ?? null) !== null) {
                         $hasAnyScore = true;
                         break;
                     }
                 }
 
-                if (! $hasAnyScore && $competency->evaluator_role?->value === 'supervisor') {
+                if (! $hasAnyScore && ($competency['evaluator_role'] ?? 'teacher') === 'supervisor') {
                     continue;
                 }
 
@@ -52,7 +54,7 @@ final class FinalizeAssessmentAction extends BaseAction
                 throw new RejectedException('No competencies have been scored.');
             }
 
-            $originalTotalWeight = (int) $competencies->sum('weight');
+            $originalTotalWeight = (int) collect($competencies)->sum('weight');
             $scoredTotalWeight = (int) collect($scoredCompetencies)->sum('weight');
 
             if ($scoredTotalWeight === 0) {
@@ -64,19 +66,21 @@ final class FinalizeAssessmentAction extends BaseAction
             foreach ($scoredCompetencies as $competency) {
                 $effectiveWeight =
                     $originalTotalWeight > 0
-                        ? ($competency->weight / $scoredTotalWeight) * $originalTotalWeight
-                        : $competency->weight;
+                        ? ($competency['weight'] / $scoredTotalWeight) * $originalTotalWeight
+                        : ($competency['weight'] ?? 0);
 
-                $indicatorsData = $competencyScores[$competency->id]['indicators'] ?? [];
+                $compId = $competency['id'] ?? '';
+                $indicatorsData = $competencyScores[$compId]['indicators'] ?? [];
                 $competencyScore = 0.0;
                 $totalIndicatorWeight = 0;
 
-                foreach ($competency->indicators as $indicator) {
-                    $score = $indicatorsData[$indicator->id] ?? null;
+                foreach ($competency['indicators'] ?? [] as $indicator) {
+                    $score = $indicatorsData[$indicator['id']] ?? null;
                     if ($score !== null) {
-                        $normalized = ($score / $indicator->max_score) * 100;
-                        $competencyScore += $normalized * ($indicator->weight / 100);
-                        $totalIndicatorWeight += $indicator->weight;
+                        $maxScore = $indicator['max_score'] ?? 100;
+                        $normalized = ($score / $maxScore) * 100;
+                        $competencyScore += $normalized * (($indicator['weight'] ?? 0) / 100);
+                        $totalIndicatorWeight += $indicator['weight'] ?? 0;
                     }
                 }
 

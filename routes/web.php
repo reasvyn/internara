@@ -22,5 +22,4 @@ require __DIR__.'/web/reports.php';
 require __DIR__.'/web/journals.php';
 require __DIR__.'/web/incident.php';
 
-require __DIR__.'/web/evaluation.php';
 require __DIR__.'/web/settings.php';

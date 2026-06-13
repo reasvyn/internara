@@ -173,6 +173,7 @@ return [
                     'route' => 'sysadmin.evaluations',
                     'icon' => 'o-star',
                     'label' => 'common.sidebar.evaluations',
+                    'disabled' => true,
                 ],
             ],
         ],

@@ -23,7 +23,7 @@ class DirectPlacementForm extends Form
             'placement_id' => ['required', 'exists:placements,id'],
             'academic_year' => ['required'],
             'mentor_ids' => ['nullable', 'array'],
-            'mentor_ids.*' => ['exists:mentors,id'],
+            'mentor_ids.*' => ['exists:users,id'],
         ];
     }
 }

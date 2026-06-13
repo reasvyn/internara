@@ -8,8 +8,6 @@ use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Placement;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\Mentee\Models\Mentee;
-use App\Guidance\Mentor\Models\Mentor;
 use App\User\Models\User;
 
 final class DirectPlacementAction extends BaseAction
@@ -23,17 +21,11 @@ final class DirectPlacementAction extends BaseAction
                 throw new RejectedException(__('placement.quota_full'));
             }
 
-            /** @var Mentee $mentee */
-            $mentee = Mentee::create([
-                'user_id' => $student->id,
-            ]);
-
             /** @var Registration $registration */
             $registration = Registration::create([
-                'mentee_id' => $mentee->id,
+                'student_id' => $student->id,
                 'internship_id' => $placement->internship_id,
                 'placement_id' => $placement->id,
-                'academic_year' => $data['academic_year'] ?? null,
                 'start_date' => $data['start_date'] ?? $placement->internship->start_date,
                 'end_date' => $data['end_date'] ?? $placement->internship->end_date,
             ]);
@@ -43,10 +35,10 @@ final class DirectPlacementAction extends BaseAction
             $placement->increment('filled_quota');
 
             if (! empty($data['mentor_ids'])) {
-                $mentors = Mentor::whereIn('id', $data['mentor_ids'])->get();
+                $mentors = User::whereIn('id', $data['mentor_ids'])->get();
                 $attachData = [];
                 foreach ($mentors as $mentor) {
-                    $attachData[$mentor->id] = ['role' => $mentor->type];
+                    $attachData[$mentor->id] = ['role' => $mentor->hasRole('supervisor') ? 'supervisor' : 'teacher'];
                 }
                 $registration->mentors()->attach($attachData);
             }

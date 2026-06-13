@@ -730,92 +730,6 @@ public function defaultCriteria(): array
 
 ---
 
-## 10. Complete Enum Inventory
-
-### Legend
-
-| Column | Meaning |
-|--------|---------|
-| L | Implements `LabelEnum` |
-| S | Implements `StatusEnum` (state machine) |
-| C | Implements `ColorableEnum` (UI badges) |
-| States | Number of cases |
-| Terminals | Number of terminal states (if StatusEnum) |
-
-### Status Enums (State Machines — implement `StatusEnum`)
-
-| # | Enum | Module | Path | L | S | C | States | Terminals | Pattern |
-|---|------|--------|------|---|---|---|--------|-----------|---------|
-| 1 | `AccountStatus` | User | `app/User/Enums/AccountStatus.php` | ✓ | ✓ | ✓ | 8 | 2 (PROTECTED, ARCHIVED) | H — User lifecycle |
-| 2 | `SupervisionLogStatus` | Guidance | `app/Guidance/SupervisionLog/Enums/SupervisionLogStatus.php` | ✓ | ✓ | — | 6 | 3 (COMPLETED, CANCELLED, VERIFIED) | G — Supervision cycle |
-| 3 | `AttendanceStatus` | Journals | `app/Journals/Attendance/Enums/AttendanceStatus.php` | ✓ | ✓ | — | 6 | 6 (all) | F — All terminal |
-| 4 | `SubmissionStatus` | Assignment | `app/Assignment/Submission/Enums/SubmissionStatus.php` | ✓ | ✓ | — | 5 | 2 (VERIFIED, GRADED) | A — Revision loop v2 |
-| 5 | `InternshipStatus` | Program | `app/Program/Internship/Enums/InternshipStatus.php` | ✓ | ✓ | — | 5 | 2 (COMPLETED, CANCELLED) | C — Linear + cancel |
-| 6 | `IncidentStatus` | Incident | `app/Incident/IncidentReport/Enums/IncidentStatus.php` | ✓ | ✓ | — | 4 | 1 (CLOSED) | D — Incident cycle |
-| 7 | `LogbookStatus` | Journals | `app/Journals/Logbook/Enums/LogbookStatus.php` | ✓ | ✓ | — | 4 | 1 (VERIFIED) | A — Revision loop |
-| 8 | `AssignmentStatus` | Assignment | `app/Assignment/Enums/AssignmentStatus.php` | ✓ | ✓ | — | 3 | 1 (CLOSED) | C — Linear + cancel |
-| 9 | `AccountApplicationStatus` | Enrollment | `app/Enrollment/AccountApplication/Enums/AccountApplicationStatus.php` | ✓ | ✓ | — | 3 | 2 (APPROVED, REJECTED) | B — Approval |
-| 10 | `RegistrationDocumentStatus` | Enrollment | `app/Enrollment/Registration/Enums/RegistrationDocumentStatus.php` | ✓ | ✓ | — | 3 | 2 (VERIFIED, REJECTED) | B — Approval |
-| 11 | `PlacementChangeStatus` | Enrollment | `app/Enrollment/Placement/Enums/PlacementChangeStatus.php` | ✓ | ✓ | — | 3 | 2 (APPROVED, REJECTED) | B — Approval |
-| 12 | `AbsenceRequestStatus` | Journals | `app/Journals/AbsenceRequest/Enums/AbsenceRequestStatus.php` | ✓ | ✓ | — | 3 | 2 (APPROVED, REJECTED) | B — Approval |
-| 13 | `PartnershipStatus` | Partners | `app/Partners/Partnership/Enums/PartnershipStatus.php` | ✓ | ✓ | — | 3 | 2 (EXPIRED, TERMINATED) | C — Linear + cancel |
-| 14 | `CertificateStatus` | Certification | `app/Certification/Certificate/Enums/CertificateStatus.php` | ✓ | ✓ | — | 2 | 1 (REVOKED) | E — Binary |
-| 15 | `ReportStatus` | Reports | `app/Reports/Report/Enums/ReportStatus.php` | ✓ | ✓ | — | 2 | 1 (FINALIZED) | E — Binary |
-
-### Standalone Status (Custom transition logic, no StatusEnum)
-
-| # | Enum | Module | Path | L | S | C | States | Notes |
-|---|------|--------|------|---|---|---|--------|-------|
-| 16 | `AnnouncementStatus` | SysAdmin | `app/SysAdmin/Announcement/Enums/AnnouncementStatus.php` | ✓ | — | — | 3 | Own `canTransitionTo(self)`, no `isTerminal()`/`validTransitions()` |
-
-### Label Enums (implement `LabelEnum` only)
-
-| # | Enum | Module | Path | L | S | C | States | Notable Methods |
-|---|------|--------|------|---|---|---|--------|-----------------|
-| 17 | `Role` | Auth | `app/Auth/Permissions/Enums/Role.php` | ✓ | — | — | 7 | `userRoles()`, `functionalRoles()`, `resolvesTo()`, `is()` |
-| 18 | `SettingType` | Settings | `app/Settings/Enums/SettingType.php` | ✓ | — | — | 7 | `detect()`, `cast()`, `values()` |
-| 19 | `SettingGroup` | Settings | `app/Settings/Enums/SettingGroup.php` | ✓ | — | — | 7 | `default()` |
-| 20 | `StructuralPosition` | User | `app/User/Enums/StructuralPosition.php` | ✓ | — | — | 6 | — |
-| 21 | `EvaluationCategory` | Evaluation | `app/Evaluation/Enums/EvaluationCategory.php` | ✓ | — | — | 5 | `defaultCriteria()` |
-| 22 | `EmploymentStatus` | User | `app/User/Enums/EmploymentStatus.php` | ✓ | — | — | 5 | `options()` |
-| 23 | `DocumentCategory` | Document | `app/Document/Enums/DocumentCategory.php` | ✓ | — | — | 5 | — |
-| 24 | `IncidentType` | Incident | `app/Incident/IncidentReport/Enums/IncidentType.php` | ✓ | — | — | 5 | — |
-| 25 | `AuditCategory` | Core | `app/Core/Enums/AuditCategory.php` | ✓ | — | — | 5 | `isCritical()` |
-| 26 | `IncidentSeverity` | Incident | `app/Incident/IncidentReport/Enums/IncidentSeverity.php` | ✓ | — | — | 4 | — |
-| 27 | `EvaluatorRole` | Evaluation | `app/Evaluation/Enums/EvaluatorRole.php` | ✓ | — | — | 4 | — |
-| 28 | `AbsenceReasonType` | Journals | `app/Journals/AbsenceRequest/Enums/AbsenceReasonType.php` | ✓ | — | — | 4 | `requiresAttachment()` |
-| 29 | `BloodType` | User | `app/User/Enums/BloodType.php` | ✓ | — | — | 4 | `label()` returns raw value |
-| 30 | `AuditStatus` | Core | `app/Core/Enums/AuditStatus.php` | ✓ | — | — | 3 | `symbol()` |
-| 31 | `SupervisionType` | Guidance | `app/Guidance/SupervisionLog/Enums/SupervisionType.php` | ✓ | — | — | 3 | — |
-| 32 | `InternshipGroupRole` | Program | `app/Program/InternshipGroup/Enums/InternshipGroupRole.php` | ✓ | — | — | 3 | — |
-| 33 | `Gender` | User | `app/User/Enums/Gender.php` | ✓ | — | — | 2 | — |
-| 34 | `CsvRowResult` | Core | `app/Core/Enums/CsvRowResult.php` | ✓ | — | — | 2 | — |
-| 35 | `MediaCollection` | Settings | `app/Settings/Enums/MediaCollection.php` | — | — | — | 2 | No contracts — pure value store |
-
-### Module Distribution
-
-| Module | Status Enums | Label Enums | Total |
-|--------|-------------|-------------|-------|
-| Core | 0 | 3 | 3 |
-| Auth | 0 | 1 | 1 |
-| User | 1 | 4 | 5 |
-| Settings | 0 | 3 | 3 |
-| Journals | 3 | 1 | 4 |
-| Assignment | 2 | 0 | 2 |
-| Guidance | 1 | 1 | 2 |
-| Enrollment | 3 | 0 | 3 |
-| Program | 1 | 1 | 2 |
-| Partners | 1 | 0 | 1 |
-| Incident | 1 | 2 | 3 |
-| Evaluation | 0 | 2 | 2 |
-| Certification | 1 | 0 | 1 |
-| Reports | 1 | 0 | 1 |
-| Document | 0 | 1 | 1 |
-| SysAdmin | 1 | 0 | 1 |
-| **Total** | **16** | **19** | **35** |
-
----
-
 ## 11. Testing Enums
 
 ### Test File Location
@@ -928,26 +842,17 @@ test('color returns string for each status', function () {
 Simpler — just cases and labels:
 
 ```php
-test('evaluation category has all expected cases', function () {
-    expect(EvaluationCategory::cases())->toHaveCount(5);
-    expect(EvaluationCategory::MENTOR->value)->toBe('mentor');
+test('document category has all expected cases', function () {
+    expect(DocumentCategory::cases())->toHaveCount(6);
+    expect(DocumentCategory::POLICY->value)->toBe('policy');
 });
 
-test('evaluation category label returns non-empty string', function () {
-    foreach (EvaluationCategory::cases() as $category) {
+test('document category label returns non-empty string', function () {
+    foreach (DocumentCategory::cases() as $category) {
         expect($category->label())->toBeString()->not->toBeEmpty();
     }
 });
 ```
-
-Plus any business logic specific to the enum:
-
-```php
-test('default criteria returns array for each category', function () {
-    $criteria = EvaluationCategory::MENTOR->defaultCriteria();
-    expect($criteria)->toBeArray();
-    expect($criteria)->toHaveKey('communication');
-});
 ```
 
 ### Running Tests

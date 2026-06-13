@@ -69,7 +69,7 @@ class ResetPassword extends Component
         );
     }
 
-    #[Layout('user::layouts.auth', ['title' => 'Reset Password'])]
+    #[Layout('auth::layouts.auth', ['title' => 'Reset Password'])]
     public function render(): View
     {
         return view('auth.password.reset-password');

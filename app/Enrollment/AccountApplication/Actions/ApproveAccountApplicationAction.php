@@ -45,7 +45,7 @@ final class ApproveAccountApplicationAction extends BaseAction
                 'user_id' => $user->id,
                 'phone' => $formData['phone'] ?? null,
                 'address' => $formData['address'] ?? null,
-                'student_id_number' => $application->student_id_number,
+                'id_number' => $application->student_id_number,
                 'department_id' => $application->department_id,
             ]);
 

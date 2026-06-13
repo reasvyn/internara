@@ -450,7 +450,7 @@ app/{Module}/
 | **Program**       | `Internship/`, `InternshipGroup/`                                                                         | Http, Events, Listeners, Notifications, Rules                                            |
 | **Enrollment**    | `AccountApplication/`, `Placement/`, `Registration/`                                                     | Http, Notifications                                                                      |
 | **Assessment**    | `Assessment/`, `Rubric/`                                                                                 | Actions, Entities, Enums, Livewire, Models, Policies                                     |
-| **Evaluation**    | — (flat structure)                                                                                       | Actions, Entities, Enums, Livewire, Models, Policies                                     |
+| **Evaluation**    | — (flat structure, under construction)                                                                  | Enums, Models                                                                             |
 | **Assignment**    | `Assignment/`, `Submission/`                                                                             | Actions, Entities, Enums, Http, Livewire, Models, Notifications, Policies                |
 | **Journals**      | `Logbook/`, `Attendance/`, `AbsenceRequest/`                                                            | Http                                                                                     |
 | **Guidance**      | `SupervisionLog/`                                                                                        | Actions, Entities, Enums, Livewire, Models, Policies                                     |
@@ -544,7 +544,7 @@ resources/views/livewire/
 | 8  | **Program**       | Internship program lifecycle                                                   | Program lifecycle, phases, groups, document requirements, closure readiness                             |
 | 9  | **Enrollment**    | Student registration and placement                                             | Applications, registration wizard, document upload, slot management, placement change requests           |
 | 10 | **Assessment**    | Competency evaluation framework                                                | Rubrics (JSON structures), assessment grading, finalization, dual mentor fallback                        |
-| 11 | **Evaluation**    | Program evaluation and feedback                                                | Mentor evaluation, score bands, admin oversight, trend analysis                                          |
+| 11 | **Evaluation**    | Generic feedback collection                                                                             | Google Forms-like forms, sections, weighted questions, polymorphic targeting, auto-scored responses |
 | 12 | **Assignment**    | Tasks and submissions                                                          | Task creation, grading workflow, revision loop, deadline management, version history                     |
 | 13 | **Journals**      | Daily activity tracking                                                        | Logbook entries, attendance with clock-in/out, absence requests, scheduling, calendar views              |
 | 14 | **Guidance**      | Mentoring and supervision                                                      | Supervision logs, mentoring assignments, handbook acknowledgements                                      |

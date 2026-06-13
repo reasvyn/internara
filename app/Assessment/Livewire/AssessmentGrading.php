@@ -9,9 +9,7 @@ use App\Assessment\Actions\FinalizeAssessmentAction;
 use App\Assessment\Actions\InitializeAssessmentAction;
 use App\Assessment\Actions\UpdateAssessmentScoresAction;
 use App\Assessment\Models\Assessment;
-use App\Assessment\Rubric\Models\Competency;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\Mentor\Models\Mentor;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
@@ -41,7 +39,7 @@ class AssessmentGrading extends Component
         $this->assessmentId = $assessment->id;
         $this->isFinalized = $assessment->finalized_at !== null;
 
-        $content = $assessment->content ?? [];
+        $content = $assessment->scores_data ?? [];
         $competencies = $content['competencies'] ?? [];
         foreach ($competencies as $compId => $compData) {
             foreach ($compData['indicators'] ?? [] as $indId => $score) {
@@ -53,7 +51,7 @@ class AssessmentGrading extends Component
     #[Computed]
     public function registration(): Registration
     {
-        return Registration::with(['mentee.user', 'internship'])->findOrFail($this->registrationId);
+        return Registration::with(['student', 'internship'])->findOrFail($this->registrationId);
     }
 
     #[Computed]
@@ -63,7 +61,7 @@ class AssessmentGrading extends Component
             return null;
         }
 
-        return Assessment::with('rubric.competencies.indicators')->find($this->assessmentId);
+        return Assessment::with('rubric')->find($this->assessmentId);
     }
 
     #[Computed]
@@ -76,9 +74,13 @@ class AssessmentGrading extends Component
 
         $user = auth()->user();
 
-        return $assessment->rubric->competencies
-            ->filter(function (Competency $competency) use ($user) {
-                if ($competency->evaluator_role->value === 'system') {
+        $competencies = $assessment->rubric->structure['competencies'] ?? [];
+
+        return collect($competencies)
+            ->filter(function (array $competency) use ($user) {
+                $role = $competency['evaluator_role'] ?? 'teacher';
+
+                if ($role === 'system') {
                     return false;
                 }
 
@@ -86,28 +88,21 @@ class AssessmentGrading extends Component
                     return true;
                 }
 
-                if (! $user->hasRole($competency->evaluator_role->value)) {
+                if (! $user->hasRole($role)) {
                     return false;
                 }
 
-                return $this->isAssignedAsMentor($competency->evaluator_role->value);
+                return $this->isAssignedAsMentor($role);
             })
             ->values();
     }
 
     private function isAssignedAsMentor(string $evaluatorRole): bool
     {
-        $type =
-            $evaluatorRole === 'teacher'
-                ? Mentor::TYPE_SCHOOL_TEACHER
-                : Mentor::TYPE_INDUSTRY_SUPERVISOR;
-
-        return Mentor::where('user_id', auth()->id())
-            ->where('type', $type)
-            ->whereHas(
-                'registrations',
-                fn ($q) => $q->where('registration_id', $this->registrationId),
-            )
+        return $this->registration
+            ->mentors()
+            ->where('user_id', auth()->id())
+            ->where('internship_group_members.role', $evaluatorRole)
             ->exists();
     }
 
@@ -121,13 +116,17 @@ class AssessmentGrading extends Component
 
         $user = auth()->user();
 
-        return $assessment->rubric->competencies
-            ->filter(function (Competency $competency) use ($user) {
-                if ($competency->evaluator_role->value === 'system') {
+        $competencies = $assessment->rubric->structure['competencies'] ?? [];
+
+        return collect($competencies)
+            ->filter(function (array $competency) use ($user) {
+                $role = $competency['evaluator_role'] ?? 'teacher';
+
+                if ($role === 'system') {
                     return true;
                 }
 
-                return ! $user->hasRole($competency->evaluator_role->value) &&
+                return ! $user->hasRole($role) &&
                     ! $user->hasRole('super_admin') &&
                     ! $user->hasRole('admin');
             })

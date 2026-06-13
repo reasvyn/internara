@@ -16,7 +16,7 @@ class StudentForm extends Form
 
     public string $national_id_number = '';
 
-    public string $student_id_number = '';
+    public string $id_number = '';
 
     public string $department_id = '';
 

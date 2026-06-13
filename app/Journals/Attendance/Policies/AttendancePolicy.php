@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Journals\Attendance\Policies;
 
 use App\Core\Policies\BasePolicy;
-use App\Guidance\Mentor\Models\Mentor;
 use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;
 
@@ -37,7 +36,7 @@ class AttendancePolicy extends BasePolicy
             $log->registration
                 ->mentors()
                 ->where('user_id', $user->id)
-                ->where('type', Mentor::TYPE_SCHOOL_TEACHER)
+                ->where('internship_group_members.role', 'teacher')
                 ->exists()
         ) {
             return true;
@@ -49,7 +48,7 @@ class AttendancePolicy extends BasePolicy
             $log->registration
                 ->mentors()
                 ->where('user_id', $user->id)
-                ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)
+                ->where('internship_group_members.role', 'supervisor')
                 ->exists()
         ) {
             return true;

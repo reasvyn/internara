@@ -1,0 +1,74 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Auth\Password\Actions\ResetUserPasswordAction;
+use App\Core\Exceptions\RejectedException;
+use App\User\Enums\AccountStatus;
+use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
+
+uses(LazilyRefreshDatabase::class);
+
+beforeEach(function () {
+    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
+    Role::create(['name' => 'student', 'guard_name' => 'web']);
+
+    $this->action = app(ResetUserPasswordAction::class);
+});
+
+test('resets password for regular user', function () {
+    $user = User::factory()->create();
+    $user->assignRole('student');
+
+    $result = $this->action->execute($user);
+
+    expect($result)->toHaveKeys(['user', 'new_password']);
+    expect($result['user']->id)->toBe($user->id);
+    expect($result['new_password'])->toBeString();
+    expect(strlen($result['new_password']))->toBe(12);
+});
+
+test('new password is hashed correctly', function () {
+    $user = User::factory()->create();
+    $user->assignRole('student');
+
+    $result = $this->action->execute($user);
+
+    $user->refresh();
+    expect(Hash::check($result['new_password'], $user->password))->toBeTrue();
+});
+
+test('rejects reset for super admin', function () {
+    $user = User::factory()->create([
+        'name' => 'Administrator',
+        'username' => 'superadmin',
+    ]);
+    $user->assignRole('super_admin');
+    $user->setStatus(AccountStatus::PROTECTED);
+
+    expect(fn () => $this->action->execute($user))
+        ->toThrow(RejectedException::class, 'Cannot reset super admin password through this interface');
+});
+
+test('generates different passwords on each reset', function () {
+    $user = User::factory()->create();
+
+    $result1 = $this->action->execute($user);
+    $result2 = $this->action->execute($user);
+
+    expect($result1['new_password'])->not->toBe($result2['new_password']);
+});
+
+test('password reset changes actual password in database', function () {
+    $user = User::factory()->create(['password' => Hash::make('old-password')]);
+    $user->assignRole('student');
+
+    $oldHash = $user->password;
+    $this->action->execute($user);
+
+    $user->refresh();
+    expect($user->password)->not->toBe($oldHash);
+});

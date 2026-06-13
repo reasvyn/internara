@@ -1,49 +1,72 @@
 # Evaluation
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-12
 
-Multi-perspective structured feedback collection: student evaluates mentor and company, admin evaluates program quality, and overall satisfaction ratings.
+Generic feedback collection system with a Google Forms-like architecture: admins build reusable
+evaluation forms with weighted questions, sections, and answer scoring. Evaluations target
+any PKL aspect (mentor, program, company, overall satisfaction) via a polymorphic type system.
 
 ## Purpose & Boundary
 
-Evaluation collects structured feedback from multiple viewpoints using a shared scoring system. Students evaluate their industry mentor (communication, responsiveness, guidance) and host company (workplace safety, task relevance). Admins and teachers evaluate program quality at closure. Overall satisfaction ratings are collected independently. All evaluation types map to standardized score bands for cross-comparison.
+Evaluation provides a unified feedback pipeline across all PKL stakeholders. Unlike Assessment
+(rubric-based competency grading) and Assignment (task-level grading), Evaluation collects
+subjective feedback via configurable forms — mentor quality, program effectiveness, company
+satisfaction, and overall experience. Forms are fully customizable by admins without code changes.
 
-Out of scope: rubric-based competency grading (Assessment), task-level feedback (Assignment), daily logbook reflections (Journals).
+Out of scope: rubric-based competency scoring (Assessment), task-level feedback (Assignment),
+daily logbook reflections (Journals).
 
 ## Submodules
 
-### Evaluation
-Core entity with polymorphic type system (`mentor`, `company`, `satisfaction`, `program_quality`). Each evaluation records: type discriminator, numeric score, mapped score band, free-text feedback, submitter identity, and linkage to the relevant program and registration. Evaluations are immutable after submission — no edits or deletions. One evaluation per type per scope (e.g., one mentor evaluation per student per program).
+None — all components are directly under `app/Evaluation/`.
 
 ## Key Concepts
 
-### Score Bands
+### Evaluation Forms
 
-All evaluation types share a standardized five-band system:
-- **EXCELLENT** (85–100)
-- **GOOD** (70–84)
-- **SATISFACTORY** (55–69)
-- **NEEDS_IMPROVEMENT** (40–54)
-- **POOR** (0–39)
+Forms are the core entity (`evaluation_forms`). Each form targets a specific aspect
+(`target_type`: mentor, program, company, overall). Admins create forms via a form builder UI:
 
-This enables cross-evaluation comparison and consistent reporting regardless of evaluation type.
+```
+EvaluationForm
+├── EvaluationSections (optional groupings)
+│   └── EvaluationQuestions (weighted, typed)
+├── EvaluationQuestions (un-sectioned)
+└── EvaluationResponses (submitted instances)
+    └── EvaluationAnswers (per-question values + scores)
+```
 
-### Evaluation-Driven Closure
+### Question Types
 
-Program quality evaluations are triggered during the program closure workflow. The closure readiness check (`CheckCloseReadinessAction`) validates that all required evaluations are collected before a program can be archived. Missing evaluations are listed in the readiness report.
+| Type | Storage | Scoring |
+|------|---------|---------|
+| `rating_1_5` | Integer 1-5 | Normalized to percentage: `(value / 5) × 100` |
+| `rating_1_10` | Integer 1-10 | Normalized to percentage: `(value / 10) × 100` |
+| `yes_no` | Boolean | 100 or 0 |
+| `multiple_choice` | Selected option string | Configurable per-option score |
+| `agreement` | Likert 1-5 | Same as `rating_1_5` |
+| `text` | Free text | No score (qualitative only) |
+
+### Score Calculation
+
+Overall score is auto-calculated from weighted question scores:
+
+```
+overall_score = Σ(question_score × question_weight) / Σ(question_weight)
+```
 
 ### Immutable Submissions
 
-Once submitted, an evaluation cannot be modified or deleted. The audit trail preserves the original submission with timestamp, submitter, and all scores. This ensures feedback integrity for both school accreditation and partner company reporting.
+Once submitted, an evaluation response cannot be modified. The audit trail preserves the
+original submission with timestamp, evaluator, and all answers.
 
 ## Dependencies
 
 - Core (base classes)
-- Program (program context for closure workflow)
-- Enrollment (registration context for student evaluations)
-- User (evaluator and subject identity)
+- User (evaluator identity)
+- Enrollment (registration context)
 
 ## Used By
 
 - Reports (program quality data)
-- Certification (eligibility checks may reference evaluation outcomes)
+- Certification (eligibility checks)

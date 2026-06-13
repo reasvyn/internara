@@ -6,6 +6,8 @@
     </x-mary-header>
 
     @forelse($this->rubrics as $rubric)
+        @php $competencies = $rubric->structure['competencies'] ?? []; @endphp
+
         <x-mary-card class="mb-4">
             <div class="flex items-start justify-between mb-4">
                 <div>
@@ -29,37 +31,37 @@
 
             <div class="divider text-xs text-base-content/40 my-2">COMPETENCIES</div>
 
-            @forelse($rubric->competencies as $competency)
+            @forelse($competencies as $competency)
                 <div class="ml-4 mb-3 p-3 bg-base-200/50 rounded-xl border border-base-200">
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
                             <div class="flex items-center gap-2">
-                                <p class="font-medium">{{ $competency->name }}</p>
-                                <span class="badge badge-primary badge-sm">{{ $competency->weight }}%</span>
-                                <span class="badge badge-ghost badge-sm">{{ $competency->evaluator_role->label() }}</span>
+                                <p class="font-medium">{{ $competency['name'] }}</p>
+                                <span class="badge badge-primary badge-sm">{{ $competency['weight'] }}%</span>
+                                <span class="badge badge-ghost badge-sm">{{ \App\Evaluation\Enums\EvaluatorRole::tryFrom($competency['evaluator_role'])?->label() ?? $competency['evaluator_role'] }}</span>
                             </div>
-                            @if($competency->description)
-                                <p class="text-xs text-base-content/50 mt-1">{{ $competency->description }}</p>
+                            @if($competency['description'] ?? null)
+                                <p class="text-xs text-base-content/50 mt-1">{{ $competency['description'] }}</p>
                             @endif
                         </div>
                         <div class="flex gap-1">
-                            <x-mary-button icon="o-plus" wire:click="addIndicator('{{ $competency->id }}')" class="btn-xs btn-ghost" title="Add Indicator" />
-                            <x-mary-button icon="o-pencil" wire:click="editCompetency('{{ $competency->id }}')" class="btn-xs btn-ghost" />
-                            <x-mary-button icon="o-trash" wire:click="removeCompetency('{{ $competency->id }}')" wire:confirm="Remove this competency?" class="btn-xs btn-ghost text-error" />
+                            <x-mary-button icon="o-plus" wire:click="addIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}')" class="btn-xs btn-ghost" title="Add Indicator" />
+                            <x-mary-button icon="o-pencil" wire:click="editCompetency('{{ $rubric->id }}', '{{ $competency['id'] }}')" class="btn-xs btn-ghost" />
+                            <x-mary-button icon="o-trash" wire:click="removeCompetency('{{ $rubric->id }}', '{{ $competency['id'] }}')" wire:confirm="Remove this competency?" class="btn-xs btn-ghost text-error" />
                         </div>
                     </div>
 
-                    @if($competency->indicators->isNotEmpty())
+                    @if(!empty($competency['indicators']))
                         <div class="ml-4 mt-2 space-y-1">
-                            @foreach($competency->indicators as $indicator)
+                            @foreach($competency['indicators'] as $indicator)
                                 <div class="flex items-center justify-between py-1 px-2 bg-base-100 rounded-lg text-sm">
                                     <div class="flex items-center gap-2">
-                                        <span>{{ $indicator->name }}</span>
-                                        <span class="text-xs text-base-content/40">(max {{ $indicator->max_score }}, {{ $indicator->weight }}%)</span>
+                                        <span>{{ $indicator['name'] }}</span>
+                                        <span class="text-xs text-base-content/40">(max {{ $indicator['max_score'] }}, {{ $indicator['weight'] }}%)</span>
                                     </div>
                                     <div class="flex gap-1">
-                                        <x-mary-button icon="o-pencil" wire:click="editIndicator('{{ $indicator->id }}')" class="btn-xs btn-ghost" />
-                                        <x-mary-button icon="o-trash" wire:click="removeIndicator('{{ $indicator->id }}')" wire:confirm="Remove this indicator?" class="btn-xs btn-ghost text-error" />
+                                        <x-mary-button icon="o-pencil" wire:click="editIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}', '{{ $indicator['id'] }}')" class="btn-xs btn-ghost" />
+                                        <x-mary-button icon="o-trash" wire:click="removeIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}', '{{ $indicator['id'] }}')" wire:confirm="Remove this indicator?" class="btn-xs btn-ghost text-error" />
                                     </div>
                                 </div>
                             @endforeach
@@ -73,7 +75,7 @@
                 </div>
             @endforelse
 
-            @if($rubric->competencies->isNotEmpty())
+            @if(!empty($competencies))
                 <div class="mt-2">
                     <x-mary-button label="Add Competency" icon="o-plus" wire:click="addCompetency('{{ $rubric->id }}')" class="btn-sm btn-ghost" />
                 </div>

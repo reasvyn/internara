@@ -13,11 +13,10 @@
 1. [Why Actions, Not Services](#1-why-actions-not-services)
 2. [When Services Are Appropriate](#2-when-services-are-appropriate)
 3. [Services vs Support Convention](#3-services-vs-support-convention)
-4. [Existing Services Inventory](#4-existing-services-inventory)
-5. [Service Patterns](#5-service-patterns)
-6. [How Services Differ from Actions](#6-how-services-differ-from-actions)
-7. [Migration Path: Service to Action Extraction](#7-migration-path-service-to-action-extraction)
-8. [Anti-Patterns to Avoid](#8-anti-patterns-to-avoid)
+4. [Service Patterns](#4-service-patterns)
+5. [How Services Differ from Actions](#5-how-services-differ-from-actions)
+6. [Migration Path: Service to Action Extraction](#6-migration-path-service-to-action-extraction)
+7. [Anti-Patterns to Avoid](#7-anti-patterns-to-avoid)
 
 ---
 
@@ -115,43 +114,7 @@ If it needs `config()`, `app()`, or a framework service container, it belongs in
 
 ---
 
-## 4. Existing Services Inventory
-
-The codebase contains exactly three Service classes as of this writing:
-
-### `app/SysAdmin/Observability/Services/EnvironmentAuditor.php`
-
-| Property | Value |
-| --- | --- |
-| **Module** | SysAdmin — Observability |
-| **Responsibility** | Audits PHP version, extensions, directory permissions, database connection, terminal support, and frontend asset build status. Returns an `AuditReport` DTO. |
-| **Pattern** | Single public method `audit(): AuditReport` with multiple private check methods. |
-| **Framework deps** | `config()`, `base_path()`, `\PDO` |
-| **Why not an Action** | It is a read-only environment inspection with multiple independent checks. Making each check a separate Read Action would be over-engineering. It is infrastructure introspection, not business logic. |
-
-### `app/SysAdmin/Observability/Services/PulseGuard.php`
-
-| Property | Value |
-| --- | --- |
-| **Module** | SysAdmin — Observability |
-| **Responsibility** | Gates access to the Laravel Pulse dashboard. Single static method `viewPulse(?User): bool`. |
-| **Pattern** | Static utility with one public method. |
-| **Framework deps** | User model, Role enum |
-| **Why not a Policy** | Pulse uses its own authorization hook (a closure/callable), not Laravel's policy auto-resolution. This class provides that callable. It predates the policy convention and exists for Pulse integration specifically. |
-
-### `app/User/Services/DashboardService.php`
-
-| Property | Value |
-| --- | --- |
-| **Module** | User — cross-submodule |
-| **Responsibility** | Routes authenticated users to their role-specific dashboard. Two methods: `getDashboardForUser(User): string` and `getSharedStats(): array`. |
-| **Pattern** | Multiple public methods, stateless, returns primitives and arrays. |
-| **Framework deps** | `auth()`, `User` model |
-| **Why not an Action** | Dashboard routing is an infrastructure concern (redirect logic), not a business operation. The `getSharedStats()` method is a trivial read that does not warrant a Read Action. This class is a candidate for migration (see §7). |
-
----
-
-## 5. Service Patterns
+## 4. Service Patterns
 
 ### Constructor Injection
 
@@ -204,7 +167,7 @@ New Services should use instance methods with constructor injection.
 
 ---
 
-## 6. How Services Differ from Actions
+## 5. How Services Differ from Actions
 
 | Concern | Service | Command/Process Action | Read Action |
 | --- | --- | --- | --- |
@@ -232,7 +195,7 @@ If you need any of the above, you need an Action.
 
 ---
 
-## 7. Migration Path: Service to Action Extraction
+## 6. Migration Path: Service to Action Extraction
 
 When a Service method grows beyond its infrastructure scope, extract it into the appropriate Action
 type. The general process:
@@ -271,7 +234,7 @@ if it ever grows to include database queries, extract it as `GetDashboardSharedD
 
 ---
 
-## 8. Anti-Patterns to Avoid
+## 7. Anti-Patterns to Avoid
 
 ### Adding a New Service Without Review
 

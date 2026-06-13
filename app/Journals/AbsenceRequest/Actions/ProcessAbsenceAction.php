@@ -7,27 +7,28 @@ namespace App\Journals\AbsenceRequest\Actions;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
 use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
-use App\Journals\AbsenceRequest\Models\AbsenceRequest;
+use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;
 
 final class ProcessAbsenceAction extends BaseAction
 {
     public function execute(
-        AbsenceRequest $absence,
+        Attendance $absence,
         User $processor,
         AbsenceRequestStatus $status,
         ?string $notes = null,
-    ): AbsenceRequest {
-        if ($absence->status->isProcessed()) {
+    ): Attendance {
+        $currentStatus = AbsenceRequestStatus::tryFrom($absence->absence_status);
+        if ($currentStatus && $currentStatus->isProcessed()) {
             throw new RejectedException('This absence request has already been processed.');
         }
 
         return $this->transaction(function () use ($absence, $processor, $status, $notes) {
             $absence->update([
-                'status' => $status,
-                'processed_by' => $processor->id,
-                'processed_at' => now(),
-                'admin_notes' => $notes,
+                'absence_status' => $status,
+                'absence_processed_by' => $processor->id,
+                'absence_processed_at' => now(),
+                'absence_admin_notes' => $notes,
             ]);
 
             $this->log('absence_request_'.$status->value, $absence, [

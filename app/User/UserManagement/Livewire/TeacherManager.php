@@ -40,8 +40,8 @@ class TeacherManager extends BaseRecordManager
             ],
             ['key' => 'email', 'label' => __('user.fields.email'), 'sortable' => true],
             [
-                'key' => 'profile.employee_id_number',
-                'label' => __('user.teacher.employee_id_number'),
+                'key' => 'profile.id_number',
+                'label' => __('user.teacher.id_number'),
             ],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
@@ -95,7 +95,7 @@ class TeacherManager extends BaseRecordManager
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'employee_id_number' => $user->profile?->employee_id_number ?? '',
+            'id_number' => $user->profile?->id_number ?? '',
         ]);
         $this->userModal = true;
     }
@@ -105,7 +105,7 @@ class TeacherManager extends BaseRecordManager
         $this->form->validate();
 
         $profileData = [
-            'employee_id_number' => $this->form->employee_id_number,
+            'id_number' => $this->form->id_number,
         ];
 
         if ($this->form->id) {
@@ -150,6 +150,11 @@ class TeacherManager extends BaseRecordManager
                 $deleteAction->execute($user);
             }
         });
+    }
+
+    public function getIdNumberLabel(): string
+    {
+        return __('user.teacher.id_number');
     }
 
     public function render(): View

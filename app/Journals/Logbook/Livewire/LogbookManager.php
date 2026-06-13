@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Journals\Logbook\Livewire;
 
 use App\Core\Livewire\BaseRecordManager;
-use App\Guidance\Mentor\Models\Mentor;
 use App\Journals\Logbook\Actions\CreateLogbookAction;
 use App\Journals\Logbook\Actions\DeleteLogbookAction;
 use App\Journals\Logbook\Actions\UpdateLogbookAction;
@@ -78,7 +77,7 @@ class LogbookManager extends BaseRecordManager
                     'mentors',
                     fn ($mq) => $mq
                         ->where('user_id', $user->id)
-                        ->where('type', Mentor::TYPE_SCHOOL_TEACHER),
+                        ->where('internship_group_members.role', 'teacher'),
                 ),
             );
         } elseif ($user->hasRole('supervisor')) {
@@ -88,7 +87,7 @@ class LogbookManager extends BaseRecordManager
                     'mentors',
                     fn ($mq) => $mq
                         ->where('user_id', $user->id)
-                        ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR),
+                        ->where('internship_group_members.role', 'supervisor'),
                 ),
             );
         }
@@ -129,7 +128,7 @@ class LogbookManager extends BaseRecordManager
                     'mentors',
                     fn ($mq) => $mq
                         ->where('user_id', $user->id)
-                        ->where('type', Mentor::TYPE_SCHOOL_TEACHER),
+                        ->where('internship_group_members.role', 'teacher'),
                 ),
             );
         } elseif ($user->hasRole('supervisor')) {
@@ -139,7 +138,7 @@ class LogbookManager extends BaseRecordManager
                     'mentors',
                     fn ($mq) => $mq
                         ->where('user_id', $user->id)
-                        ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR),
+                        ->where('internship_group_members.role', 'supervisor'),
                 ),
             );
         }

@@ -103,7 +103,7 @@ keeping submodules isolated and highly maintainable.
     composer run dev
     ```
 
-5. **Complete Setup**: Open the signed setup URL in your browser to complete the 7-step setup
+5. **Complete Setup**: Open the signed setup URL in your browser to complete the 6-step setup
    wizard.
 
 ---

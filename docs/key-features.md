@@ -249,15 +249,17 @@ Task creation, submission, grading.
 
 ## Evaluation Phase
 
-### Evaluation — Feedback Collection
+### Evaluation — Generic Feedback Forms
 
-Mentor and program feedback.
+Google Forms-like feedback collection across all PKL aspects.
 
 | Feature | Description | Access |
 |---------|-------------|--------|
-| Mentor Evaluation | Student rates mentor communication, responsiveness, guidance | Student |
+| Evaluation Forms | Reusable form templates with weighted questions and sections | Admin |
+| Polymorphic Targeting | Forms target mentors, programs, companies, or overall satisfaction via `target_type` | System |
+| Question Types | Rating scales (1-5, 1-10), yes/no, multiple choice, agreement Likert, free text | Admin |
+| Weighted Scoring | Auto-calculated overall score from weighted question responses | System |
 | Score Bands | EXCELLENT (85-100), GOOD (70-84), SATISFACTORY (55-69), NEEDS_IMPROVEMENT (40-54), POOR (0-39) | System |
-| Admin View | Filter by type, submodule scores, trends | Admin |
 
 ---
 
@@ -296,12 +298,11 @@ Score aggregation and sign-off.
 
 ### Document — Templates & Handbooks
 
-Rendering engine for official documents and policy handbooks.
+Rendering engine for official documents and policy handbooks (unified in `documents` table with `type` discriminator).
 
 | Feature | Description | Access |
 |---------|-------------|--------|
-| Template Manager | Upload and manage document templates (Blade, CSS, XLSX) | Admin |
-| Handbook Manager | CRUD policy handbooks: title, slug, content (Markdown) | Admin |
+| Document Manager | Upload and manage document templates (Blade, CSS, XLSX) and policy handbooks (Markdown) | Admin |
 | Acknowledgement System | Immutable acknowledgement log (user, timestamp, IP, browser) | User |
 | Rendering Pipeline | 6-step: resolve template → discover renderer → gather data → inject → invoke driver → store | System |
 | Template Versioning | Every document records exact template version used | System |

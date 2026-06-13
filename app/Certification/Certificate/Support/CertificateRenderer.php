@@ -16,7 +16,7 @@ final readonly class CertificateRenderer
 
     public function resolvePlaceholders(Registration $registration, Certificate $certificate): array
     {
-        $user = $registration->mentee?->user;
+        $user = $registration->student;
         $profile = $user?->profile;
         $school = $registration->internship?->academicYear;
         $company = $registration->placement?->company;

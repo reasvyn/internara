@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace App\Assessment\Actions;
 
 use App\Assessment\Models\Assessment;
-use App\Assessment\Rubric\Models\Indicator;
+use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
-use App\Guidance\Mentor\Models\Mentor;
 use App\User\Models\User;
 
 final class ScoreIndicatorAction extends BaseAction
 {
     public function execute(
         Assessment $assessment,
+        Rubric $rubric,
+        string $competencyId,
         string $indicatorId,
         float $score,
         User $evaluator,
@@ -23,52 +24,82 @@ final class ScoreIndicatorAction extends BaseAction
             throw new RejectedException('Cannot modify a finalized assessment.');
         }
 
-        $indicator = Indicator::with('competency')->findOrFail($indicatorId);
+        $structure = $rubric->structure;
+        $competency = null;
+        $indicator = null;
 
-        $this->ensureAuthorized($assessment, $indicator, $evaluator);
-
-        if ($score < 0 || $score > $indicator->max_score) {
-            throw new RejectedException("Score must be between 0 and {$indicator->max_score}.");
+        foreach ($structure['competencies'] as $c) {
+            if ($c['id'] === $competencyId) {
+                $competency = $c;
+                foreach ($c['indicators'] as $i) {
+                    if ($i['id'] === $indicatorId) {
+                        $indicator = $i;
+                        break 2;
+                    }
+                }
+            }
         }
 
-        $content = $assessment->content ?? [];
-        $competencyId = $indicator->competency_id;
+        if ($competency === null || $indicator === null) {
+            throw new RejectedException('Competency or indicator not found.');
+        }
 
-        $content['competencies'][$competencyId]['evaluator_id'] = $evaluator->id;
-        $content['competencies'][$competencyId]['evaluated_at'] = now()->toIso8601String();
-        $content['competencies'][$competencyId]['indicators'][$indicatorId] = $score;
+        $this->ensureAuthorized($assessment, $competency, $evaluator);
 
-        $assessment->update(['content' => $content]);
+        if ($score < 0 || $score > $indicator['max_score']) {
+            throw new RejectedException("Score must be between 0 and {$indicator['max_score']}.");
+        }
+
+        $scoresData = $assessment->scores_data ?? [];
+        $scoresData['competencies'] ??= [];
+
+        $found = false;
+        foreach ($scoresData['competencies'] as &$compData) {
+            if (($compData['id'] ?? null) === $competencyId) {
+                $compData['indicators'][$indicatorId] = $score;
+                $compData['evaluator_id'] = $evaluator->id;
+                $compData['evaluated_at'] = now()->toIso8601String();
+                $found = true;
+                break;
+            }
+        }
+
+        if (! $found) {
+            $scoresData['competencies'][] = [
+                'id' => $competencyId,
+                'evaluator_id' => $evaluator->id,
+                'evaluated_at' => now()->toIso8601String(),
+                'indicators' => [
+                    $indicatorId => $score,
+                ],
+            ];
+        }
+
+        $assessment->update(['scores_data' => $scoresData]);
 
         return $assessment->fresh();
     }
 
     private function ensureAuthorized(
         Assessment $assessment,
-        Indicator $indicator,
+        array $competency,
         User $evaluator,
     ): void {
         if ($evaluator->hasRole('super_admin') || $evaluator->hasRole('admin')) {
             return;
         }
 
-        $allowedRole = $indicator->competency->evaluator_role->value;
+        $allowedRole = $competency['evaluator_role'];
 
         if (! $evaluator->hasRole($allowedRole)) {
             throw new RejectedException('You are not authorized to score this competency.');
         }
 
-        $mentorType =
-            $allowedRole === 'teacher'
-                ? Mentor::TYPE_SCHOOL_TEACHER
-                : Mentor::TYPE_INDUSTRY_SUPERVISOR;
-
-        $isAssignedToRegistration = Mentor::where('user_id', $evaluator->id)
-            ->where('type', $mentorType)
-            ->whereHas(
-                'registrations',
-                fn ($q) => $q->where('registration_id', $assessment->registration_id),
-            )
+        $isAssignedToRegistration = $assessment
+            ->registration
+            ->mentors()
+            ->where('user_id', $evaluator->id)
+            ->where('internship_group_members.role', $allowedRole)
             ->exists();
 
         if (! $isAssignedToRegistration) {

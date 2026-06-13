@@ -17,6 +17,11 @@ final class CompileLogbookReportAction
      *
      * @param bool $includeSupervisorNotes Whether to include supervisor notes in the report
      */
+    public function execute(Registration $registration, bool $includeSupervisorNotes = true): Response
+    {
+        return $this->download($registration, $includeSupervisorNotes);
+    }
+
     public function download(
         Registration $registration,
         bool $includeSupervisorNotes = true,

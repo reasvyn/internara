@@ -6,7 +6,6 @@ namespace App\Guidance\SupervisionLog\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\Mentor\Models\Mentor;
 use App\Guidance\SupervisionLog\Enums\SupervisionLogStatus;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\User\Models\User;
@@ -18,10 +17,7 @@ final class CreateSupervisionLogAction extends BaseAction
         return $this->transaction(function () use ($user, $registrationId, $data) {
             $registration = Registration::with('mentors')->findOrFail($registrationId);
 
-            $isTeacher = Mentor::where('user_id', $user->id)
-                ->where('type', Mentor::TYPE_SCHOOL_TEACHER)
-                ->whereHas('registrations', fn ($q) => $q->where('id', $registrationId))
-                ->exists();
+            $isTeacher = $user->hasRole('teacher');
 
             $type = $isTeacher ? 'guidance' : 'mentoring';
 

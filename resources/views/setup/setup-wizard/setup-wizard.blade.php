@@ -1,15 +1,22 @@
 <div>
     {{-- Progress Bar --}}
-    <div class="mb-10">
+    <div class="mb-10" role="group" aria-label="{{ __('setup.wizard.progress_label') }}">
         <div class="flex items-center justify-between mb-2">
             <h1 class="text-2xl font-bold tracking-tight">{{ __('setup.wizard.title') }}</h1>
-            <span class="text-xs font-medium text-base-content/50">
+            <span class="text-xs font-medium text-base-content/50" aria-live="polite">
                 {{ __('setup.wizard.step_of', ['current' => $currentStep]) }}
                 &middot; {{ $appName }} v{{ $appVersion }}
             </span>
         </div>
 
-        <div class="flex items-center gap-1">
+        <div
+            role="progressbar"
+            aria-valuenow="{{ $currentStep }}"
+            aria-valuemin="1"
+            aria-valuemax="{{ count($stepKeys) }}"
+            aria-label="{{ __('setup.wizard.progress_aria', ['current' => $currentStep, 'total' => count($stepKeys)]) }}"
+            class="flex items-center gap-1"
+        >
             @foreach($stepKeys as $index => $stepKey)
                 @php
                     $stepNum = $index + 1;
@@ -27,15 +34,16 @@
                         @if($isCurrent)
                             wire:key="step-indicator-{{ $stepNum }}"
                         @endif
+                        role="presentation"
                     ></div>
                     @if(!$loop->last)
-                        <div class="w-px h-2 mx-0.5 bg-base-content/10"></div>
+                        <div class="w-px h-2 mx-0.5 bg-base-content/10" aria-hidden="true"></div>
                     @endif
                 </div>
             @endforeach
         </div>
 
-        <div class="flex items-center justify-between mt-2">
+        <div class="flex items-center justify-between mt-2" aria-hidden="true">
             @foreach($stepKeys as $index => $stepKey)
                 @php
                     $stepNum = $index + 1;

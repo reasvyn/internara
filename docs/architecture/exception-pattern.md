@@ -620,24 +620,6 @@ class MockModuleException extends ModuleException
 }
 ```
 
-### Test File Inventory
-
-| Test File | Tests |
-|---|---|
-| `tests/Unit/Core/Exceptions/AppExceptionTest.php` | `AppException` base (via mock) |
-| `tests/Unit/Core/Exceptions/ModuleExceptionTest.php` | `ModuleException` base (via mock) |
-| `tests/Unit/Core/Exceptions/ActionExceptionTest.php` | `ActionException` base (via mock) |
-| `tests/Unit/Core/Exceptions/InfrastructureExceptionTest.php` | `InfrastructureException` base (via mock) |
-| `tests/Unit/Core/Exceptions/PresentationExceptionTest.php` | `PresentationException` base (via mock) |
-| `tests/Unit/Core/Exceptions/ValidationFailedExceptionTest.php` | Concrete exception |
-| `tests/Unit/Core/Exceptions/ConflictExceptionTest.php` | Concrete exception |
-| `tests/Unit/Core/Exceptions/NotFoundExceptionTest.php` | Concrete exception |
-| `tests/Unit/Core/Exceptions/UnauthorizedExceptionTest.php` | Concrete exception |
-| `tests/Unit/Core/Exceptions/RateLimitExceptionTest.php` | Concrete exception |
-| `tests/Unit/Core/Exceptions/RejectedExceptionTest.php` | Concrete exception |
-| `tests/Unit/Core/Exceptions/Concerns/HasExceptionContextTest.php` | `HasExceptionContext` trait |
-| `tests/Feature/Core/Exceptions/ExceptionHandlerTest.php` | HTTP handler integration |
-
 ---
 
 ## References

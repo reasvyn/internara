@@ -7,7 +7,7 @@ namespace App\Enrollment\Registration\Livewire;
 use App\Enrollment\Placement;
 use App\Enrollment\Registration\Actions\VerifyRegistrationAction;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\Mentor\Models\Mentor;
+use App\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -34,7 +34,7 @@ class RegistrationVerification extends Component
     #[Computed]
     public function pendingRegistrations(): Collection
     {
-        return Registration::with(['mentee.user', 'internship', 'documents'])
+        return Registration::with(['student', 'internship', 'documents'])
             ->where('placement_id', null)
             ->currentStatus('pending')
             ->latest()
@@ -69,7 +69,7 @@ class RegistrationVerification extends Component
     #[Computed]
     public function mentors(): Collection
     {
-        return Mentor::with('user')->where('is_active', true)->get();
+        return User::role(['teacher', 'supervisor'])->get();
     }
 
     public function process(string $id): void
@@ -90,7 +90,7 @@ class RegistrationVerification extends Component
         $this->validate([
             'placement_id' => 'required|exists:placements,id',
             'mentor_ids' => 'nullable|array',
-            'mentor_ids.*' => 'exists:mentors,id',
+            'mentor_ids.*' => ['exists:users,id'],
         ]);
 
         try {

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Dashboard\Actions;
 
 use App\Enrollment\Registration\Models\Registration;
-use App\Evaluation\Models\Evaluation;
+use App\Evaluation\Models\EvaluationResponse;
 use App\Journals\Attendance\Models\Attendance;
 use App\Journals\Logbook\Models\Logbook;
 use Illuminate\Support\Facades\Auth;
@@ -30,7 +30,9 @@ final class GetSupervisorDashboardStatsAction
             ->whereHas('mentors', fn ($q) => $q->where('user_id', $userId))
             ->count();
 
-        $pendingEvaluations = Evaluation::where('mentor_id', $userId)->count();
+        $pendingEvaluations = EvaluationResponse::where('target_type', 'mentor')
+            ->where('target_id', $userId)
+            ->count();
 
         $verifiedJournals = Logbook::where('is_verified', true)
             ->whereHas(

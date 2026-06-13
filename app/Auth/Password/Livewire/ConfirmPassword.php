@@ -75,7 +75,7 @@ class ConfirmPassword extends Component
         return Str::transliterate('confirm-password|'.request()->ip());
     }
 
-    #[Layout('user::layouts.auth', ['title' => 'Confirm Password'])]
+    #[Layout('auth::layouts.auth', ['title' => 'Confirm Password'])]
     public function render(): View
     {
         return view('auth.password.confirm-password');

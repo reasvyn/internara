@@ -67,7 +67,7 @@
 | [Enum & State Machine](architecture/enum-pattern.md)             | LabelEnum/StatusEnum/ColorableEnum contracts, state machine patterns, 35 enum inventory     |
 | [Livewire Components](architecture/livewire-pattern.md)          | Thin component rule, Form Objects, BaseRecordManager, auto-discovery, confirmation dialogs |
 | [Exception Hierarchy](architecture/exception-pattern.md)         | Dual AppException/ModuleException trees, HasExceptionContext, HandlesActionErrors           |
-| [Authorization](architecture/policy-pattern.md)                  | Flat RBAC, three-layer auth, Gate::before bypass, 29-policy inventory                       |
+| [Authorization](architecture/policy-pattern.md)                  | Flat RBAC, three-layer auth, Gate::before bypass, 28-policy inventory                       |
 | [Logging & PII](architecture/logging-pattern.md)                | SmartLogger dual-channel fluent API, PII masking (39+ keys), translation resolution         |
 | [Caching](architecture/cache-pattern.md)                         | Centralized key registry, TTL categories, event-driven invalidation, driver tiers           |
 | [Service Layer](architecture/service-pattern.md)                 | When to use Services vs Actions, existing services inventory, migration path                |

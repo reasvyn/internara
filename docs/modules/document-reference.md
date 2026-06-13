@@ -39,7 +39,7 @@ Manages official document templates, correspondence generation (MoU, agreements)
 
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
-| `Enums/DocumentCategory.php` | `DocumentCategory` | `LabelEnum` | mou, agreement, report, handbook, letter, form |
+| `Enums/DocumentCategory.php` | `DocumentCategory` | `LabelEnum` | application, permit, certificate, report, letter, policy |
 
 ---
 
