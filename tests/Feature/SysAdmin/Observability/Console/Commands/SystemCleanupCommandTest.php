@@ -9,19 +9,24 @@ use Illuminate\Support\Facades\File;
 uses(LazilyRefreshDatabase::class);
 
 test('runs cleanup tasks when confirmed', function () {
-    Artisan::shouldReceive('call')
+    Artisan::partialMock()
+        ->shouldReceive('call')
         ->with('auth:clear-resets')
         ->andReturn(0);
-    Artisan::shouldReceive('call')
+    Artisan::partialMock()
+        ->shouldReceive('call')
         ->with('cache:prune-stale-tags')
         ->andReturn(0);
-    Artisan::shouldReceive('call')
+    Artisan::partialMock()
+        ->shouldReceive('call')
         ->with('queue:prune-failed')
         ->andReturn(0);
-    Artisan::shouldReceive('call')
+    Artisan::partialMock()
+        ->shouldReceive('call')
         ->with('activitylog:clean')
         ->andReturn(0);
-    Artisan::shouldReceive('call')
+    Artisan::partialMock()
+        ->shouldReceive('call')
         ->with('media-library:clean')
         ->andReturn(0);
 
@@ -51,7 +56,8 @@ test('cleans up old log files', function () {
 });
 
 test('handles task failures gracefully', function () {
-    Artisan::shouldReceive('call')
+    Artisan::partialMock()
+        ->shouldReceive('call')
         ->with('auth:clear-resets')
         ->andThrow(new RuntimeException('Failed'));
 

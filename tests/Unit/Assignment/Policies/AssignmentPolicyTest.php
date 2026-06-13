@@ -5,8 +5,12 @@ declare(strict_types=1);
 use App\Assignment\Models\Assignment;
 use App\Assignment\Policies\AssignmentPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+
     $this->policy = app(AssignmentPolicy::class);
 });
 

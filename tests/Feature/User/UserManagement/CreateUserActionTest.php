@@ -13,7 +13,6 @@ uses(RefreshDatabase::class);
 
 test('create user action successfully creates user with profile and role', function () {
     // Setup role
-    Role::create(['name' => 'admin']);
 
     $action = new CreateUserAction;
 

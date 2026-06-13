@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
-use Spatie\Permission\Models\Role;
 
 uses(LazilyRefreshDatabase::class);
 
-beforeEach(function () {
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
-});
+beforeEach(function () {});
 
 test('creates super admin with email and password arguments', function () {
     $this->artisan('admin:create', [

@@ -1,6 +1,6 @@
 # Notification System
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
 ## Channel Architecture
 
@@ -16,11 +16,11 @@ Notification sent
 
 ### Channel Selection by Tier
 
-| Channel           | Tier 1    | Tier 2               | Tier 3               |
-| ----------------- | --------- | -------------------- | -------------------- |
-| In-app (database) | ✅        | ✅                   | ✅                   |
-| Mail              | ✅ (sync) | ✅ (async via queue) | ✅ (async via queue) |
-| Flash messages    | ✅        | ✅                   | ✅                   |
+| Channel           | Tier 1 (Shared) | Tier 2 (VPS)          | Tier 3 (HA)           |
+| ----------------- | --------------- | --------------------- | --------------------- |
+| In-app (database) | ✅              | ✅                    | ✅                    |
+| Mail              | ✅ (sync)       | ✅ (async via queue)  | ✅ (async via queue)  |
+| Flash messages    | ✅              | ✅                    | ✅                    |
 
 ---
 
@@ -92,14 +92,14 @@ Used for communications that must reach the user outside the application. Mail i
 
 ### Driver Matrix
 
-| Driver     | Tier 1        | Tier 2 | Tier 3 | Setup Required                       |
-| ---------- | ------------- | ------ | ------ | ------------------------------------ |
-| `log`      | ✅ Dev        | ❌     | ❌     | None                                 |
-| `smtp`     | ✅            | ✅     | ✅     | SMTP server credentials              |
-| `ses`      | ❌            | ✅     | ✅     | AWS account, SES verified domain     |
-| `mailgun`  | ❌            | ✅     | ✅     | Mailgun account, domain verification |
-| `postmark` | ❌            | ✅     | ✅     | Postmark account, server token       |
-| `sendmail` | ⚠️ Unreliable | ❌     | ❌     | `sendmail` binary on server          |
+| Driver     | Tier 1 (Shared) | Tier 2 (VPS) | Tier 3 (HA) | Setup Required                       |
+| ---------- | --------------- | ------------ | ----------- | ------------------------------------ |
+| `log`      | ✅ Dev          | ❌           | ❌          | None                                 |
+| `smtp`     | ✅              | ✅           | ✅          | SMTP server credentials              |
+| `ses`      | ❌              | ✅           | ✅          | AWS account, SES verified domain     |
+| `mailgun`  | ❌              | ✅           | ✅          | Mailgun account, domain verification |
+| `postmark` | ❌              | ✅           | ✅          | Postmark account, server token       |
+| `sendmail` | ⚠️ Unreliable  | ❌           | ❌          | `sendmail` binary on server          |
 
 ### SMTP Configuration (Tier 1–2)
 
@@ -173,7 +173,7 @@ class WelcomeNotification extends Notification implements ShouldQueue
 }
 ```
 
-In Tier 2+, the `default` queue worker processes mail delivery. In Tier 1 (`QUEUE_CONNECTION=sync`), mail is sent synchronously during the HTTP request.
+In Tier 2+, the `default` queue worker processes mail delivery. In Tier 1 (Shared Hosting — up to 500 registered users, `QUEUE_CONNECTION=sync`), mail is sent synchronously during the HTTP request.
 
 ### Rate Limiting
 

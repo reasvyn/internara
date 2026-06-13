@@ -1,6 +1,6 @@
 # Configuration
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
 ## Config File Organization
 
@@ -93,7 +93,7 @@ Settings take effect immediately — no deployment, no cache clear, no server re
 
 ## Development vs Production
 
-| Aspect             | Development         | Production (Tier 1)              | Production (Tier 2+) |
+| Aspect             | Development         | Production (Shared)              | Production (Tier 2+) |
 | ------------------ | ------------------- | -------------------------------- | -------------------- |
 | **Database**       | SQLite (file)       | MySQL / MariaDB                  | MySQL / PostgreSQL   |
 | **Cache driver**   | `file`              | `file` or `database`             | `redis`              |
@@ -109,7 +109,7 @@ Settings take effect immediately — no deployment, no cache clear, no server re
 
 ## Security Hardening
 
-| Setting                 | Tier 1                | Tier 2+      | Why                                     |
+| Setting                 | Shared Hosting        | Tier 2+      | Why                                     |
 | ----------------------- | --------------------- | ------------ | --------------------------------------- |
 | `APP_DEBUG`             | `false`               | `false`      | Never expose stack traces in production |
 | `APP_ENV`               | `production`          | `production` | Enables production-only behavior        |
@@ -118,7 +118,7 @@ Settings take effect immediately — no deployment, no cache clear, no server re
 | `SESSION_SAME_SITE`     | `lax`                 | `lax`        | CSRF prevention                         |
 | `SESSION_SECURE_COOKIE` | `true`                | `true`       | HTTPS only                              |
 | `CSP_ENABLED`           | `true`                | `true`       | Content Security Policy                 |
-| `HONEYPOT_ENABLED`      | `true`                | `true`       | Bot prevention                          |
+| ~~`HONEYPOT_ENABLED`~~  | —                     | —            | Not yet implemented                     |
 
 ```bash
 # Verify all security settings

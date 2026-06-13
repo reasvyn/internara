@@ -5,16 +5,22 @@ declare(strict_types=1);
 namespace App\Reports\Report\Models;
 
 use App\Core\Models\BaseModel;
+use App\Enrollment\Registration\Models\Registration;
 use App\Reports\Report\Enums\ReportStatus;
+use App\Reports\Report\Observers\ReportObserver;
 use App\User\Models\User;
 use Database\Factories\ReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[
     Fillable([
         'registration_id',
+        'title',
+        'content',
+        'chapter_structure',
         'supervisor_score',
         'teacher_score',
         'exam_score',
@@ -22,6 +28,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
         'grade_letter',
         'industry_feedback',
         'status',
+        'supervisor_notes',
+        'submitted_at',
+        'score',
+        'feedback',
+        'graded_by',
+        'graded_at',
         'finalized_by',
         'finalized_at',
         'archived_data',
@@ -33,9 +45,7 @@ class Report extends BaseModel
 
     protected static function booted(): void
     {
-        static::saving(function (Report $report) {
-            $report->captureSnapshot();
-        });
+        static::observe(ReportObserver::class);
     }
 
     public function captureSnapshot(): void
@@ -108,6 +118,11 @@ class Report extends BaseModel
             'final_score' => 'float',
             'finalized_at' => 'datetime',
             'archived_data' => 'json',
+            'content' => 'json',
+            'chapter_structure' => 'json',
+            'submitted_at' => 'datetime',
+            'graded_at' => 'datetime',
+            'score' => 'float',
         ];
     }
 
@@ -119,6 +134,11 @@ class Report extends BaseModel
     public function finalizedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'finalized_by');
+    }
+
+    public function revisions(): HasMany
+    {
+        return $this->hasMany(ReportRevision::class, 'report_id');
     }
 
     protected static function newFactory(): ReportFactory

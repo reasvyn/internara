@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Dashboard\Livewire;
 
-use App\User\Dashboard\Actions\GetTeacherDashboardStatsAction;
+use App\User\Dashboard\Actions\ReadTeacherDashboardAction;
 use Illuminate\View\View;
 
 class TeacherDashboard extends UserDashboard
@@ -26,7 +26,7 @@ class TeacherDashboard extends UserDashboard
         abort_unless(auth()->user()?->hasRole('teacher'), 403);
     }
 
-    public function mount(GetTeacherDashboardStatsAction $action): void
+    public function mount(ReadTeacherDashboardAction $action): void
     {
         $stats = $action->execute();
 

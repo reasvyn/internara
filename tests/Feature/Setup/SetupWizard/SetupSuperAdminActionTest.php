@@ -6,13 +6,10 @@ use App\Core\Exceptions\RejectedException;
 use App\Setup\SetupWizard\Actions\SetupSuperAdminAction;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
-});
+beforeEach(function () {});
 
 test('creates superadmin with permanent name and username from config', function () {
     $action = app(SetupSuperAdminAction::class);

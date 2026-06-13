@@ -18,8 +18,6 @@
 7. [BaseAction log() Shorthand](#7-baseaction-log-shorthand)
 8. [HandlesActionErrors Trait](#8-handlesactionerrors-trait)
 9. [Graceful Degradation](#9-graceful-degradation)
-10. [PiiMasker Reference](#10-piimasker-reference)
-11. [Testing SmartLogger](#11-testing-smartlogger)
 
 ---
 
@@ -36,33 +34,6 @@ Every `save()` call writes to **one or both** of these channels:
 | **System log** | `storage/logs/laravel.log` (daily rotation) | 14 days | Technical debugging for developers and operations |
 | **Activity log** | `activity_log` database table (via Spatie `laravel-activitylog` v5) | 365 days | Business audit trail, queryable by user/action/module/date |
 
-### Data Flow
-
-```
-Caller (Action / Livewire / Trait)
-        │
-        ▼
-  SmartLogger::info() / error() / warning() / success()
-        │
-        ▼
-  Chain: ->for()->about()->withPayload()->withPiiMasking()->event()
-        │
-        ▼
-  SmartLogger::save()
-        │
-    ┌───┴───────────────┐
-    ▼                   ▼
-  ┌────────┐    ┌──────────────┐
-  │ Laravel│    │ Spatie       │
-  │ Log    │    │ ActivityLog  │
-  │ Facade │    │ (DB table)   │
-  └────────┘    └──────────────┘
-```
-
-### Source
-
-`app/Core/Support/SmartLogger.php` — `final class SmartLogger`, 321 lines.
-
 ---
 
 ## 2. Fluent API
@@ -73,15 +44,14 @@ SmartLogger uses a builder pattern. Every method returns `$this` for chaining. T
 
 Four static constructors map to log severity:
 
-```php
-SmartLogger::success(string $message, array $context = []): self
-SmartLogger::info(string $message, array $context = []): self
-SmartLogger::warning(string $message, array $context = []): self
-SmartLogger::error(string $message, array $context = []): self
-```
+| Method | Purpose |
+|--------|---------|
+| `SmartLogger::success(string $message, array $context = [])` | Success events |
+| `SmartLogger::info(string $message, array $context = [])` | Informational events |
+| `SmartLogger::warning(string $message, array $context = [])` | Warning conditions |
+| `SmartLogger::error(string $message, array $context = [])` | Error conditions |
 
-The `$context` array feeds directly into the system log's structured context. The `$message`
-serves as both the system log message and the activity log description.
+The `$context` array feeds directly into the system log's structured context. The `$message` serves as both the system log message and the activity log description.
 
 ### Chaining Methods
 
@@ -101,10 +71,6 @@ serves as both the system log message and the activity log description.
 
 ### Terminal Method
 
-```php
-public function save(): void
-```
-
 `save()` executes in this order:
 
 1. **`processEventPayload()`** — If `$this->event` is a `BaseEvent`, dispatch it and merge `toPayload()` into `$this->payload`
@@ -113,36 +79,6 @@ public function save(): void
 4. **`resolveCauser()`** — Use `$this->causer` or fall back to `Auth::user()`
 5. **`writeSystemLog()`** — If `$this->toSystem` is true
 6. **`writeActivityLog()`** — If `$this->toActivity` is true and `shouldWriteActivityLog()` passes
-
-### Usage Examples
-
-```php
-// Minimal — info to both channels
-SmartLogger::info('login_success')->save();
-
-// With causer and subject
-SmartLogger::info('profile_updated')
-    ->for($user)
-    ->about($profile)
-    ->save();
-
-// Technical error — system only, with PII masking
-SmartLogger::error('Payment gateway timeout')
-    ->withPayload(['txn_id' => $txnId])
-    ->withPiiMasking()
-    ->systemOnly()
-    ->save();
-
-// Audit-only event
-SmartLogger::success('student_registered')
-    ->event('student_registered')
-    ->module('Enrollment')
-    ->for($staff)
-    ->about($registration)
-    ->withPayload(['program' => $program->name])
-    ->activityOnly()
-    ->save();
-```
 
 ---
 
@@ -158,47 +94,11 @@ Three routing modes control which channel(s) receive the log entry.
 
 ### Default Behavior
 
-The constructor sets both flags to `true`:
-
-```php
-private bool $toSystem = true;
-private bool $toActivity = true;
-```
-
-This means **both channels write by default** unless overridden.
+The constructor sets both flags to `true`, meaning **both channels write by default** unless overridden.
 
 ### shouldWriteActivityLog Gate
 
-The activity log has an additional guard in `shouldWriteActivityLog()`:
-
-```php
-private function shouldWriteActivityLog(?Model $causer): bool
-{
-    if (! $this->toActivity) {
-        return false;
-    }
-
-    return $causer !== null || ($this->toActivity && ! $this->toSystem);
-}
-```
-
-This means:
-- If `toActivity` is `false` → skip
-- If there IS a causer (resolved from `for()` or `Auth::user()`) → write
-- If there is NO causer but `activityOnly()` was called → still write (explicit opt-in)
-- If there is NO causer and both channels are enabled → skip (no anonymous audit entries)
-
-### System Log Example
-
-`HandlesActionErrors` routes unexpected exceptions to the system log only, keeping the audit trail clean:
-
-```php
-SmartLogger::error($context)
-    ->withPayload(['error' => $e->getMessage()])
-    ->withPiiMasking()
-    ->systemOnly()
-    ->save();
-```
+The activity log has an additional guard: if `toActivity` is `false` the activity log is skipped. If there is a causer (resolved from `for()` or `Auth::user()`), the activity log is written. If there is no causer but `activityOnly()` was called, it still writes (explicit opt-in). If there is no causer and both channels are enabled, the activity log is skipped to avoid anonymous audit entries.
 
 ---
 
@@ -224,34 +124,13 @@ Three keys are partially masked (the last visible characters are preserved):
 
 Applied inside `resolveRequestMetadata()` when `$this->maskPii` is true:
 
-- **IPv4**: `192.168.***.***` (preserves first two octets)
-- **IPv6**: `2001:db8::****` (preserves first segment)
+- **IPv4**: Preserves first two octets (e.g., `192.168.***.***`)
+- **IPv6**: Preserves first segment (e.g., `2001:db8::****`)
 - **User-Agent**: Truncated to first 50 characters with `...`
 
 ### Recursive Masking
 
-`maskArray()` handles nested arrays recursively:
-
-```php
-$data = [
-    'user' => [
-        'email' => 'john@example.com',
-        'credentials' => [
-            'password' => 'secret123',
-            'token' => 'abc',
-        ],
-    ],
-];
-
-// Result:
-// 'user' => [
-//     'email' => 'jo***@example.com',
-//     'credentials' => [
-//         'password' => '***',
-//         'token' => '***',
-//     ],
-// ],
-```
+`maskArray()` handles nested arrays recursively, applying full and partial masks at every nesting level.
 
 ---
 
@@ -259,7 +138,7 @@ $data = [
 
 SmartLogger automatically resolves bilingual event descriptions when an event name is set.
 
-### Resolution Logic (`resolveTranslations()`)
+### Resolution Logic
 
 1. Get the current locale via `App::getLocale()`
 2. Look up `__('log.'.$eventName)` for the current locale
@@ -267,24 +146,7 @@ SmartLogger automatically resolves bilingual event descriptions when an event na
 4. Look up the **alternative locale** (en ↔ id)
 5. If a translation exists, inject it as `context['event_description_'.$altLocale]`
 
-### Example
-
-Given `event('login_success')` with locale `id`:
-
-```php
-// context after resolution:
-'event_description' => 'Pengguna berhasil masuk ke dalam sistem.'
-'event_description_en' => 'User has successfully authenticated into the system.'
-```
-
-Both descriptions are embedded in the system log context, making every log entry self-documenting in both languages regardless of the request locale.
-
-If no translation key exists (i.e., `__('log.'.$eventName)` returns `'log.'.$eventName` unchanged), the context keys are simply not set — no error is thrown.
-
-### Translation Files
-
-- `lang/en/log.php` — 59 English event descriptions
-- `lang/id/log.php` — 59 Indonesian event descriptions
+Both descriptions are embedded in the system log context, making every log entry self-documenting in both languages regardless of the request locale. If no translation key exists, the context keys are simply not set — no error is thrown.
 
 ---
 
@@ -294,115 +156,29 @@ Events extending `BaseEvent` integrate with SmartLogger through the `event()` me
 
 ### Automatic Dispatch
 
-When a `BaseEvent` instance is passed to `event()`, `save()` dispatches it via Laravel's `event()` helper inside `processEventPayload()`:
-
-```php
-private function processEventPayload(): void
-{
-    if ($this->event instanceof BaseEvent) {
-        event($this->event);
-        $this->payload = array_merge($this->event->toPayload(), $this->payload);
-    }
-}
-```
+When a `BaseEvent` instance is passed to `event()`, `save()` dispatches it via Laravel's `event()` helper inside `processEventPayload()`.
 
 ### Payload Merging
 
 The event's `toPayload()` results are merged into `$this->payload` **before** any manually-set payload. This means manually-provided payload keys take precedence over event-derived ones.
 
-`toPayload()` extracts all public properties from the event:
-
-```php
-public function toPayload(): array
-{
-    foreach (get_object_vars($this) as $key => $value) {
-        if (str_starts_with($key, '__') || $key === 'socket') {
-            continue;
-        }
-
-        if ($value instanceof Model) {
-            $result[$key.'_id'] = $value->getKey();
-        } elseif (is_object($value) && method_exists($value, 'toArray')) {
-            $result[$key] = $value->toArray();
-        } elseif (! is_object($value)) {
-            $result[$key] = $value;
-        }
-    }
-}
-```
+`toPayload()` extracts all public properties from the event, excluding internal properties (those starting with `__` or named `socket`). Model properties are converted to `{property}_id`, objects with `toArray()` are converted via that method, and scalar values are kept as-is.
 
 ### Event Name Resolution
 
-`eventName()` on `BaseEvent` provides the translation key used for bilingual descriptions:
-
-```php
-// If $this->event is a BaseEvent:
-$this->event->eventName()  // e.g. 'login_success'
-
-// If $this->event is a string:
-$this->event  // used directly
-```
+If the event is a `BaseEvent`, `eventName()` provides the translation key. If the event is a string, it is used directly.
 
 ---
 
 ## 7. BaseAction log() Shorthand
 
-Every Command and Process Action extends `BaseAction`, which provides a convenience `log()` method:
+Every Command and Process Action extends `BaseAction`, which provides a convenience `log()` method. This method wraps `SmartLogger::info()` with:
 
-```php
-protected function log(string $action, ?Model $subject = null, array $payload = []): void
-{
-    SmartLogger::info($action)
-        ->event($action)
-        ->module($this->moduleName())
-        ->about($subject)
-        ->withPayload($payload)
-        ->withPiiMasking()
-        ->both()
-        ->save();
-}
-```
-
-This hard-codes:
-- **Level**: `info`
 - **Channel**: `both()` (system + activity)
 - **PII masking**: always on
-- **Module**: auto-derived from the Action's namespace (`$namespaceParts[1]`)
+- **Module**: auto-derived from the Action's namespace (takes the second namespace segment, e.g. `Auth` from `App\Auth\Login\Actions\LoginAction`)
 
-### Module Resolution
-
-```php
-protected function moduleName(): string
-{
-    $namespaceParts = explode('\\', static::class);
-    return $namespaceParts[1] ?? 'Unknown';
-}
-```
-
-`App\Auth\Login\Actions\LoginAction` → module `Auth`.
-`App\Enrollment\Registration\Actions\ApproveRegistrationAction` → module `Enrollment`.
-
-### Usage in Command Actions
-
-```php
-class ApproveReportAction extends BaseAction
-{
-    public function execute(Report $report, ApproveReportData $data): Report
-    {
-        return $this->transaction(function () use ($report, $data) {
-            // ... business logic ...
-
-            $this->log('report_approved', $report, ['score' => $data->score]);
-
-            return $report;
-        });
-    }
-}
-```
-
-This produces:
-- **System log**: `[info] report_approved {"event":"report_approved","payload":{"score":85},"module":"Reports","user_id":"..."}`
-- **Activity log**: Row in `activity_log` with `event=report_approved`, `subject_type=Report`, `subject_id=...`, properties including score
+This allows a one-line call for standard business action logging.
 
 ---
 
@@ -410,69 +186,13 @@ This produces:
 
 The `HandlesActionErrors` trait, used by `BaseAction`, provides a consistent pattern for catching unexpected exceptions and logging them before rethrowing.
 
-### Trait Source
-
-`app/Core/Support/HandlesActionErrors.php`
-
-```php
-trait HandlesActionErrors
-{
-    protected function withErrorHandling(callable $callback, string $context): mixed
-    {
-        try {
-            return $callback();
-        } catch (RuntimeException|AppException|ModuleException|ValidationException
-            |AuthorizationException|ModelNotFoundException|NotFoundHttpException $e) {
-            throw $e;
-        } catch (\Throwable $e) {
-            SmartLogger::error($context)
-                ->withPayload([
-                    'error' => $e->getMessage(),
-                    'original_file' => $e->getFile(),
-                    'original_line' => $e->getLine(),
-                ])
-                ->withPiiMasking()
-                ->systemOnly()
-                ->save();
-
-            throw new RuntimeException(rtrim($context, '.').'.', 0, $e);
-        }
-    }
-}
-```
-
 ### Catch Strategy
 
-| Exception Type | Handled | Behavior |
-|---------------|---------|----------|
-| `RuntimeException` | Re-thrown | Expected runtime failures pass through without logging |
-| `AppException` | Re-thrown | Application-level expected failures (validation, conflict, not found, unauthorized) |
-| `ModuleException` | Re-thrown | Domain rule violations pass through |
-| `ValidationException` | Re-thrown | Laravel validation passes through |
-| `AuthorizationException` | Re-thrown | Gate-denied passes through |
-| `ModelNotFoundException` | Re-thrown | Eloquent not-found passes through |
-| `NotFoundHttpException` | Re-thrown | 404 passes through |
-| **All other `\Throwable`** | **Caught** | Logged with PII masking to system channel, then re-thrown as `RuntimeException` |
+Known exception types (`RuntimeException`, `AppException`, `ModuleException`, `ValidationException`, `AuthorizationException`, `ModelNotFoundException`, `NotFoundHttpException`) are re-thrown immediately without logging. All other `\Throwable` instances are caught, logged with PII masking to the system channel only, and re-thrown as `RuntimeException` with the original exception preserved as the previous exception.
 
 ### Logged Payload
 
-When an unexpected exception is caught, the log includes:
-
-- `error` — `$e->getMessage()`
-- `original_file` — `$e->getFile()`
-- `original_line` — `$e->getLine()`
-
-The message is sent to the **system log only** (`systemOnly()`) with PII masking enabled.
-
-### Rethrow Behavior
-
-The caught exception is re-thrown as:
-
-```php
-throw new RuntimeException(rtrim($context, '.').'.', 0, $e);
-```
-
-This preserves the stack trace (`$e` as previous) while providing a clean, contextual message.
+When an unexpected exception is caught, the log includes the error message, the file, and the line where the exception originated.
 
 ---
 
@@ -482,162 +202,8 @@ The activity log channel can fail without breaking the application. The system l
 
 ### Activity Log Failure Handling
 
-In `writeActivityLog()`, the entire Spatie activity log call is wrapped in try-catch:
-
-```php
-private function writeActivityLog(...): void
-{
-    try {
-        // ... activity()->causedBy()->event()->withProperties()->log() ...
-    } catch (\Throwable $e) {
-        LogFacade::error('Failed to write activity log', [
-            'face' => $this->face,
-            'message' => $this->message,
-            'module' => $this->module,
-            'event' => $eventName,
-            'error' => $e->getMessage(),
-            'error_class' => get_class($e),
-        ]);
-    }
-}
-```
-
-If the database is unreachable, the Spatie activity log insert fails, but:
-1. An error is written to the system log with diagnostic context
-2. Execution continues without throwing
-3. The calling Action completes successfully
+In `writeActivityLog()`, the entire Spatie activity log call is wrapped in try-catch. If the database is unreachable, the insert fails gracefully: an error is written to the system log with diagnostic context, execution continues without throwing, and the calling Action completes successfully.
 
 ### System Log Failure
 
 The system log channel is **not** wrapped in try-catch. If `storage/logs/` is unwritable, the exception propagates — this is intentional, as a system that cannot log should surface the problem immediately.
-
----
-
-## 11. Testing SmartLogger
-
-### Strategy
-
-Test each channel independently. Use Laravel's `Log::spy()` for system log assertions and Spatie's `ActivitylogServiceProvider` test infrastructure for activity log assertions.
-
-### System Log Assertions
-
-```php
-use Illuminate\Support\Facades\Log;
-
-it('writes to system log on success', function () {
-    Log::spy();
-
-    SmartLogger::success('test_event')->save();
-
-    Log::shouldHaveReceived('info')
-        ->withArgs(fn ($message) => $message === 'test_event');
-});
-```
-
-### Activity Log Assertions
-
-```php
-use Spatie\Activitylog\Models\Activity;
-
-it('writes to activity log', function () {
-    $user = User::factory()->create();
-
-    SmartLogger::info('test_event')
-        ->for($user)
-        ->save();
-
-    $activity = Activity::where('description', 'test_event')->first();
-    expect($activity)->not->toBeNull()
-        ->and($activity->causer_id)->toBe((string) $user->id);
-});
-```
-
-### PII Masking Tests
-
-```php
-it('masks sensitive payload keys', function () {
-    $masked = PiiMasker::maskArray([
-        'email' => 'john@example.com',
-        'password' => 'secret123',
-        'name' => 'John Smith',
-    ]);
-
-    expect($masked['email'])->toMatch('/^\w+\*\*\*@/')
-        ->and($masked['password'])->toBe('***')
-        ->and($masked['name'])->toBe('J. Smith');
-});
-
-it('masks ipv4 preserving first two octets', function () {
-    expect(PiiMasker::maskIp('192.168.1.100'))->toBe('192.168.***.***');
-});
-```
-
-### Channel Routing Tests
-
-```php
-it('does not write activity log when systemOnly', function () {
-    Log::spy();
-
-    SmartLogger::info('system_event')
-        ->systemOnly()
-        ->save();
-
-    Log::shouldHaveReceived('info');
-    // No Activity record should exist
-    expect(Activity::count())->toBe(0);
-});
-```
-
-### Graceful Degradation Test
-
-```php
-it('does not throw when activity log fails', function () {
-    // Simulate DB failure by disconnecting
-    DB::disconnect('activitylog');
-
-    SmartLogger::info('test_event')
-        ->for(User::factory()->create())
-        ->save();
-
-    // Should complete without throwing
-    expect(true)->toBeTrue();
-
-    // Reconnect for other tests
-    DB::reconnect('activitylog');
-});
-```
-
-### Translation Resolution Test
-
-```php
-it('resolves bilingual descriptions', function () {
-    App::setLocale('id');
-
-    SmartLogger::info('login_success')
-        ->event('login_success')
-        ->systemOnly()
-        ->save();
-
-    Log::shouldHaveReceived('info')
-        ->withArgs(fn ($message, $context) =>
-            str_contains($context['event_description'], 'berhasil')
-            && str_contains($context['event_description_en'], 'authenticated')
-        );
-});
-```
-
----
-
-## References
-
-| File | Purpose |
-|------|---------|
-| `app/Core/Support/SmartLogger.php` | Dual-channel fluent logger |
-| `app/Core/Support/PiiMasker.php` | PII masking engine |
-| `app/Core/Support/HandlesActionErrors.php` | Error handling trait |
-| `app/Core/Actions/BaseAction.php` | Base class with `log()` shorthand |
-| `app/Core/Events/BaseEvent.php` | Abstract event with SmartLogger integration |
-| `docs/adr/adr-smartlogger-dual-channel.md` | ADR-005: Architecture Decision Record |
-| `lang/en/log.php` | English event descriptions |
-| `lang/id/log.php` | Indonesian event descriptions |
-| `app/Core/Exceptions/Concerns/HasExceptionContext.php` | PII masking in exceptions |

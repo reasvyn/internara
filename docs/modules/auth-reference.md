@@ -63,6 +63,7 @@ Handles authentication: login, password management, account activation, account 
 | `AccountRecovery/Entities/RecoveryCodeState.php` | `RecoveryCodeState` | `BaseEntity` |
 | `SuperAdmin/Entities/SuperAdminIntegrityRules.php` | `SuperAdminIntegrityRules` | `BaseEntity` |
 | `ApiTokens/Entities/ActivationToken.php` | `ActivationToken` | `BaseEntity` |
+| `ApiTokens/Entities/ApiTokenState.php` | `ApiTokenState` | `BaseEntity` |
 
 ---
 
@@ -87,6 +88,13 @@ Handles authentication: login, password management, account activation, account 
 | ---- | ----- | ------------- |
 | `Login/Events/LoginSucceeded.php` | `LoginSucceeded` | `LoginAction` |
 | `Login/Events/LoginFailed.php` | `LoginFailed` | `LoginAction` |
+| `Password/Events/PasswordUpdated.php` | `PasswordUpdated` | `UpdateUserPasswordAction` |
+
+## Listeners
+
+| File | Class | Listens To |
+| ---- | ----- | ---------- |
+| `Login/Listeners/SendSuperAdminWelcomeNotification.php` | `SendSuperAdminWelcomeNotification` | `LoginSucceeded` |
 
 ## Livewire Components
 
@@ -106,6 +114,7 @@ Handles authentication: login, password management, account activation, account 
 | File | Class | Purpose |
 | ---- | ----- | ------- |
 | `SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` | `SuperAdminRecoveredNotification` | Notifies admins on recovery |
+| `SuperAdmin/Notifications/RecoveryOtpNotification.php` | `RecoveryOtpNotification` | Notifies on recovery OTP |
 
 ## Livewire Forms
 

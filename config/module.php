@@ -16,8 +16,11 @@ return [
 
     'list' => [
         'Core',
+        'Setup',
+        'Settings',
         'Auth',
         'User',
+        'SysAdmin',
         'Academics',
         'Partners',
         'Program',
@@ -31,7 +34,6 @@ return [
         'Certification',
         'Incident',
         'Document',
-        'SysAdmin',
     ],
 
     /*

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Journals\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\Journals\AbsenceRequest\Models\AbsenceRequest;

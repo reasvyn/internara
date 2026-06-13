@@ -1,6 +1,6 @@
 # Media Library
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
 Internara uses [spatie/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) to associate files with Eloquent models. This package handles uploads, storage, image conversions, and file retrieval — replacing the need to manually manage file paths, validation, and processing for each model.
 
@@ -98,7 +98,10 @@ IMAGE_DRIVER=imagick
 
 ### Queue Integration
 
-Conversions are queued by default (`queue_conversions_by_default: true` in `config/media-library.php`). In production with Redis, conversions process asynchronously via the `default` queue pipeline.
+Conversions are queued by default (`queue_conversions_by_default: true` in `config/media-library.php`). The queue connection is inherited from `QUEUE_CONNECTION`:
+
+- **Tier 1 (Shared Hosting — up to 500 registered users):** conversions run synchronously during the upload request
+- **Tier 2+ (Redis, dual pipeline):** conversions process asynchronously via the `default` queue worker
 
 If a conversion must be available immediately (synchronous):
 

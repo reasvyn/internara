@@ -6,6 +6,7 @@ namespace App\Program\InternshipGroup\Models;
 
 use App\Core\Models\BaseModel;
 use App\Enrollment\Placement\Models\Placement;
+use App\Program\Internship\Models\Internship;
 use App\Program\InternshipGroup\Entities\InternshipGroupState;
 use Database\Factories\InternshipGroupFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

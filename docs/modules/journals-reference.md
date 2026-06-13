@@ -44,8 +44,7 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | ---- | ----- | ------- |
 | `Logbook/Models/Logbook.php` | `Logbook` | `BaseModel` |
 | `Attendance/Models/Attendance.php` | `Attendance` | `BaseModel` |
-| `Schedule/Models/Schedule.php` | `Schedule` | `BaseModel` |
-| `AbsenceRequest/Models/AbsenceRequest.php` | `AbsenceRequest` | `BaseModel` |
+| `AbsenceRequest/Models/AbsenceRequest.php` | `AbsenceRequest` | `BaseModel` (uses `attendances` table) |
 
 ---
 
@@ -66,7 +65,6 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | ---- | ----- | ------- |
 | `Logbook/Entities/LogbookState.php` | `LogbookState` | `BaseEntity` |
 | `Attendance/Entities/AttendanceStatus.php` | `AttendanceStatus` | `BaseEntity` |
-| `Schedule/Entities/ScheduleStatus.php` | `ScheduleStatus` | `BaseEntity` |
 | `AbsenceRequest/Entities/AbsenceRequestStatus.php` | `AbsenceRequestStatus` | `BaseEntity` |
 
 ---

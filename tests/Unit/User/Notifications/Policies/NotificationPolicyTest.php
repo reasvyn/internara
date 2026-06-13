@@ -5,6 +5,9 @@ declare(strict_types=1);
 use App\User\Models\User;
 use App\User\Notifications\Models\Notification;
 use App\User\Notifications\Policies\NotificationPolicy;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->policy = new NotificationPolicy;

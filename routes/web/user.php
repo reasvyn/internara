@@ -15,11 +15,11 @@ use App\User\Dashboard\Livewire\SupervisorDashboard;
 use App\User\Dashboard\Livewire\TeacherDashboard;
 use App\User\Dashboard\Livewire\UserDashboard;
 use App\User\Http\Controllers\DashboardController;
-use App\User\Http\Controllers\HomeController;
+use App\User\Livewire\HomePage;
 use App\User\Notifications\Livewire\NotificationCenter;
 use App\User\Profile\Livewire\ProfileEditor;
 
-Route::get('/', HomeController::class)->name('home');
+Route::livewire('/', HomePage::class)->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');

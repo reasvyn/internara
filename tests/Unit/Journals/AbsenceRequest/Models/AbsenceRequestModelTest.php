@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Enrollment\Registration\Models\Registration;
 use App\Journals\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\Journals\AbsenceRequest\Models\AbsenceRequest;
@@ -17,14 +16,13 @@ test('absence request factory creates valid model', function () {
 
     expect($request)->toBeInstanceOf(AbsenceRequest::class);
     expect($request->user_id)->not->toBeNull();
-    expect($request->registration_id)->not->toBeNull();
-    expect($request->start_date)->not->toBeNull();
+    expect($request->date)->not->toBeNull();
 });
 
 test('absence request defaults to pending status', function () {
     $request = AbsenceRequest::factory()->create();
 
-    expect($request->status)->toBe(AbsenceRequestStatus::PENDING);
+    expect($request->absence_status)->toBe(AbsenceRequestStatus::PENDING);
 });
 
 test('absence request belongs to user', function () {
@@ -35,83 +33,57 @@ test('absence request belongs to user', function () {
     expect($request->user->id)->toBe($user->id);
 });
 
-test('absence request belongs to registration', function () {
-    $registration = Registration::factory()->create();
-    $request = AbsenceRequest::factory()->create(['registration_id' => $registration->id]);
+test('absence request casts absence_type to enum', function () {
+    $request = AbsenceRequest::factory()->create(['absence_type' => AbsenceReasonType::SICK]);
 
-    expect($request->registration)->toBeInstanceOf(Registration::class);
-    expect($request->registration->id)->toBe($registration->id);
+    expect($request->absence_type)->toBeInstanceOf(AbsenceReasonType::class);
+    expect($request->absence_type)->toBe(AbsenceReasonType::SICK);
 });
 
-test('absence request casts status to enum', function () {
-    $request = AbsenceRequest::factory()->create(['status' => AbsenceRequestStatus::APPROVED]);
-
-    expect($request->status)->toBeInstanceOf(AbsenceRequestStatus::class);
-    expect($request->status)->toBe(AbsenceRequestStatus::APPROVED);
-});
-
-test('absence request casts reason_type to enum', function () {
-    $request = AbsenceRequest::factory()->create(['reason_type' => AbsenceReasonType::SICK]);
-
-    expect($request->reason_type)->toBeInstanceOf(AbsenceReasonType::class);
-    expect($request->reason_type)->toBe(AbsenceReasonType::SICK);
-});
-
-test('absence request casts dates to date instances', function () {
+test('absence request casts date to date instance', function () {
     $request = AbsenceRequest::factory()->create();
 
-    expect($request->start_date)->toBeInstanceOf(Carbon::class);
-    expect($request->end_date)->toBeInstanceOf(Carbon::class);
+    expect($request->date)->toBeInstanceOf(Carbon::class);
 });
 
 test('absence request processor belongs to user', function () {
     $processor = User::factory()->create();
     $request = AbsenceRequest::factory()->create([
-        'processed_by' => $processor->id,
-        'status' => AbsenceRequestStatus::APPROVED,
+        'absence_processed_by' => $processor->id,
+        'absence_status' => AbsenceRequestStatus::APPROVED,
     ]);
 
     expect($request->processor)->toBeInstanceOf(User::class);
     expect($request->processor->id)->toBe($processor->id);
 });
 
-test('absence request casts processed_at to datetime', function () {
+test('absence request casts absence_processed_at to datetime', function () {
     $request = AbsenceRequest::factory()->create([
-        'processed_at' => now(),
-        'status' => AbsenceRequestStatus::APPROVED,
+        'absence_processed_at' => now(),
+        'absence_status' => AbsenceRequestStatus::APPROVED,
     ]);
 
-    expect($request->processed_at)->toBeInstanceOf(Carbon::class);
-});
-
-test('absence request returns AbsenceRequestStatus entity', function () {
-    $request = AbsenceRequest::factory()->create();
-
-    $status = $request->asAbsenceRequestStatus();
-
-    expect($status)->toBeInstanceOf(App\Journals\AbsenceRequest\Entities\AbsenceRequestStatus::class);
+    expect($request->absence_processed_at)->toBeInstanceOf(Carbon::class);
 });
 
 test('absence request fillable attributes are mass assignable', function () {
     $user = User::factory()->create();
-    $registration = Registration::factory()->create();
 
     $request = AbsenceRequest::create([
         'user_id' => $user->id,
-        'registration_id' => $registration->id,
-        'start_date' => now()->toDateString(),
-        'end_date' => now()->addDays(2)->toDateString(),
-        'reason_type' => AbsenceReasonType::EMERGENCY->value,
-        'reason_description' => 'Family emergency.',
-        'status' => AbsenceRequestStatus::PENDING->value,
+        'registration_id' => null,
+        'date' => now()->toDateString(),
+        'absence_type' => AbsenceReasonType::SICK->value,
+        'absence_reason' => 'Family emergency.',
+        'absence_status' => AbsenceRequestStatus::PENDING->value,
     ]);
 
-    expect($request->reason_type)->toBe(AbsenceReasonType::EMERGENCY);
-    expect($request->reason_description)->toBe('Family emergency.');
+    expect($request->absence_type)->toBe(AbsenceReasonType::SICK);
+    expect($request->absence_reason)->toBe('Family emergency.');
 });
 
-test('absence request uses AbsenceRequestFactory', function () {
+test('absence request uses attendances table', function () {
     $request = AbsenceRequest::factory()->create();
 
-    expect($request)->toBeInstanceOf(AbsenceRequest::class);
+    expect($request->getTable())->toBe('attendances');
 });

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Dashboard\Livewire;
 
-use App\SysAdmin\Actions\GetAdminDashboardStatsAction;
+use App\SysAdmin\Actions\ReadAdminDashboardAction;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -16,7 +16,7 @@ class AdminDashboard extends UserDashboard
 
     public array $readiness = [];
 
-    public function mount(GetAdminDashboardStatsAction $statsAction): void
+    public function mount(ReadAdminDashboardAction $statsAction): void
     {
         $this->stats = $statsAction->execute();
 

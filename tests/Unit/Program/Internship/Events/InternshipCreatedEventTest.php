@@ -5,6 +5,9 @@ declare(strict_types=1);
 use App\Program\Internship\Events\InternshipCreated;
 use App\Program\Internship\Models\Internship;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 test('holds internship reference', function () {
     $internship = Internship::factory()->make();

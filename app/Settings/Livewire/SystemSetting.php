@@ -6,7 +6,7 @@ namespace App\Settings\Livewire;
 
 use App\Academics\AcademicYear\Actions\ActivateAcademicYearAction;
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Settings\Actions\GetAcademicYearsAction;
+use App\Settings\Actions\ReadAcademicYearAction;
 use App\Settings\Actions\SaveSystemSettingsAction;
 use App\Settings\Actions\TestMailSettingsAction;
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
@@ -81,7 +81,7 @@ class SystemSetting extends Component
     #[Computed]
     public function academicYears(): Collection
     {
-        return app(GetAcademicYearsAction::class)->execute();
+        return app(ReadAcademicYearAction::class)->execute();
     }
 
     #[Computed]

@@ -209,7 +209,7 @@ Before submitting, verify:
 - `config/app.php` — `locale`, `fallback_locale`, `available_locales`
 - `config/localization.php` — locale resolution configuration
 - `app/Settings/Http/Middleware/SetLocaleMiddleware.php` — locale detection
-- `app/Livewire/LangSwitcher.php` — UI language toggle
+- `app/Settings/Livewire/LangSwitcher.php` — UI language toggle
 - `lang/` — translation files
 - `app/Core/Contracts/LabelEnum.php` — enum label contract
 - `app/Core/Contracts/StatusEnum.php` — state machine enum contract

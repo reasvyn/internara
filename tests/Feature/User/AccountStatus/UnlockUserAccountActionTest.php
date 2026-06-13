@@ -5,7 +5,6 @@ declare(strict_types=1);
 use App\User\AccountStatus\Actions\UnlockUserAccountAction;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
@@ -30,7 +29,6 @@ test('does nothing when account is not locked', function () {
 });
 
 test('cannot unlock superadmin', function () {
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
     $this->user->assignRole('superadmin');
 
     expect(fn () => $this->action->execute($this->user))->toThrow(

@@ -23,17 +23,17 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Actions/GetActivityLogsAction.php` | `GetActivityLogsAction` | Read |
-| `Profile/Actions/GetProfileFormDataAction.php` | `GetProfileFormDataAction` | Read |
+| `Actions/ReadActivityLogAction.php` | `ReadActivityLogAction` | Read |
+| `Profile/Actions/ReadProfileFormAction.php` | `ReadProfileFormAction` | Read |
 | `Profile/Actions/UpdateProfileAction.php` | `UpdateProfileAction` | `BaseAction` |
 | `Notifications/Actions/DeleteNotificationAction.php` | `DeleteNotificationAction` | `BaseAction` |
 | `Notifications/Actions/MarkAllAsReadAction.php` | `MarkAllAsReadAction` | `BaseAction` |
 | `Notifications/Actions/MarkAsReadAction.php` | `MarkAsReadAction` | `BaseAction` |
 | `Notifications/Actions/MarkBatchAsReadAction.php` | `MarkBatchAsReadAction` | `BaseAction` |
 | `Notifications/Actions/SendNotificationAction.php` | `SendNotificationAction` | Process `BaseAction` |
-| `Dashboard/Actions/GetStudentDashboardDataAction.php` | `GetStudentDashboardDataAction` | Read |
-| `Dashboard/Actions/GetSupervisorDashboardStatsAction.php` | `GetSupervisorDashboardStatsAction` | Read |
-| `Dashboard/Actions/GetTeacherDashboardStatsAction.php` | `GetTeacherDashboardStatsAction` | Read |
+| `Dashboard/Actions/ReadStudentDashboardAction.php` | `ReadStudentDashboardAction` | Read |
+| `Dashboard/Actions/ReadSupervisorDashboardAction.php` | `ReadSupervisorDashboardAction` | Read |
+| `Dashboard/Actions/ReadTeacherDashboardAction.php` | `ReadTeacherDashboardAction` | Read |
 | `AccountStatus/Actions/DetectUserAccountCloneAction.php` | `DetectUserAccountCloneAction` | `BaseAction` |
 | `AccountStatus/Actions/LockUserAccountAction.php` | `LockUserAccountAction` | `BaseAction` |
 | `AccountStatus/Actions/UnlockUserAccountAction.php` | `UnlockUserAccountAction` | `BaseAction` |
@@ -54,7 +54,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
-| `Enums/AccountStatus.php` | `AccountStatus` | `LabelEnum`, `StatusEnum` | active, inactive, locked, suspended |
+| `Enums/AccountStatus.php` | `AccountStatus` | `LabelEnum`, `StatusEnum` | provisioned, activated, verified, protected, restricted, suspended, inactive, archived |
 | `Enums/BloodType.php` | `BloodType` | `LabelEnum` | A, B, AB, O |
 | `Enums/EmploymentStatus.php` | `EmploymentStatus` | `LabelEnum` | active, resigned, retired |
 | `Enums/Gender.php` | `Gender` | `LabelEnum` | male, female |
@@ -67,6 +67,10 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | File | Class | Extends |
 | ---- | ----- | ------- |
 | `Entities/Apprentice.php` | `Apprentice` | `BaseEntity` |
+| `Entities/AdminEntity.php` | `AdminEntity` | `BaseEntity` |
+| `Entities/StudentEntity.php` | `StudentEntity` | `BaseEntity` |
+| `Entities/SupervisorEntity.php` | `SupervisorEntity` | `BaseEntity` |
+| `Entities/TeacherEntity.php` | `TeacherEntity` | `BaseEntity` |
 
 ---
 
@@ -94,6 +98,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Profile/Livewire/ProfileEditor.php` | `ProfileEditor` | `Component` |
 | `Notifications/Livewire/NotificationBell.php` | `NotificationBell` | `Component` |
 | `Notifications/Livewire/NotificationCenter.php` | `NotificationCenter` | `Component` |
+| `Livewire/HomePage.php` | `HomePage` | `Component` |
 | `Livewire/ActivityFeedManager.php` | `ActivityFeedManager` | `Component` |
 | `Livewire/RecentActivityList.php` | `RecentActivityList` | `Component` |
 | `Dashboard/Livewire/UserDashboard.php` | `UserDashboard` | `Component` |
@@ -122,6 +127,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | ---- | ----- | ------------- | ----------- |
 | `Notifications/Events/NotificationSent.php` | `NotificationSent` | `SendNotificationAction` | `ClearUnreadNotificationCache` |
 | `Notifications/Events/NotificationRead.php` | `NotificationRead` | `MarkAsReadAction` | `ClearUnreadNotificationCache` |
+| `Profile/Events/ProfileUpdated.php` | `ProfileUpdated` | `UpdateProfileAction` | — |
 
 ## Notifications (Mail)
 
@@ -207,7 +213,7 @@ Tests are located in `tests/{Feature,Unit}/User/`. See [Testing](../infrastructu
 
 ```
 app/User/
-├── Actions/GetActivityLogsAction.php
+├── Actions/ReadActivityLogAction.php
 ├── AccountStatus/
 │   ├── Actions/
 │   │   ├── DetectUserAccountCloneAction.php
@@ -217,9 +223,9 @@ app/User/
 │   └── Notifications/AccountStatusNotification.php
 ├── Dashboard/
 │   ├── Actions/
-│   │   ├── GetStudentDashboardDataAction.php
-│   │   ├── GetSupervisorDashboardStatsAction.php
-│   │   └── GetTeacherDashboardStatsAction.php
+│   │   ├── ReadStudentDashboardAction.php
+│   │   ├── ReadSupervisorDashboardAction.php
+│   │   └── ReadTeacherDashboardAction.php
 │   └── Livewire/
 │       ├── AdminDashboard.php
 │       ├── StudentDashboard.php
@@ -262,7 +268,7 @@ app/User/
 │   └── WelcomeNotification.php
 ├── Profile/
 │   ├── Actions/
-│   │   ├── GetProfileFormDataAction.php
+│   │   ├── ReadProfileFormAction.php
 │   │   └── UpdateProfileAction.php
 │   ├── Livewire/
 │   │   ├── Forms/

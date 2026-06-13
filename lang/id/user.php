@@ -36,6 +36,7 @@ return [
         'status_invalid_transition' => 'Tidak dapat mengubah status dari :from ke :to.',
         'status_invalid' => 'Status yang dipilih tidak valid.',
         'status_updated_reason' => 'Status diperbarui oleh administrator.',
+        'status_archived_bulk' => 'Akun diarsipkan melalui operasi massal.',
         'account' => 'Akun',
         'name_placeholder' => 'Contoh: John Doe',
         'email_placeholder' => 'Contoh: john@example.com',
@@ -212,6 +213,25 @@ return [
         'import_desc' => 'Impor banyak pengguna sekaligus dari file CSV. Kolom pertama: nama, kolom kedua: email. Pengguna dengan email duplikat akan dilewati.',
         'roles_title' => 'Peran & Akses',
         'roles_desc' => 'Setiap pengguna dapat memiliki beberapa peran. Peran menentukan fitur dan halaman yang dapat diakses. Super admin memiliki akses penuh.',
+    ],
+
+    'home' => [
+        'page_title' => 'Beranda',
+        'registration_title' => 'Daftar PKL',
+        'registration_desc' => 'Daftarkan program PKL Anda langsung melalui sistem online kami. Cepat, mudah, dan terintegrasi penuh.',
+        'registration_open' => 'Pendaftaran dibuka',
+        'registration_period' => 'Periode pendaftaran: :start hingga :end',
+        'register_now' => 'Daftar Sekarang',
+        'registration_upcoming' => 'Pendaftaran akan segera dibuka',
+        'registration_upcoming_period' => 'Pendaftaran akan dibuka dari :start hingga :end',
+        'registration_not_open_yet' => 'Pendaftaran belum dibuka. Silakan kembali lagi saat periode pendaftaran dimulai.',
+        'registration_closed' => 'Pendaftaran ditutup',
+        'registration_closed_desc' => 'Pendaftaran untuk periode ini telah berakhir. Silakan hubungi administrator sekolah Anda untuk informasi lebih lanjut.',
+        'registration_unavailable' => 'Periode pendaftaran belum diatur',
+        'registration_unavailable_desc' => 'Periode pendaftaran belum dikonfigurasi. Silakan periksa kembali nanti.',
+        'login_title' => 'Sudah punya akun?',
+        'login_desc' => 'Masuk untuk mengakses dasbor, melacak kemajuan, dan mengelola kegiatan PKL Anda.',
+        'login_action' => 'Masuk',
     ],
 
     'user_management' => [

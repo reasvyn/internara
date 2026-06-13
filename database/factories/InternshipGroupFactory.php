@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Program\Internship\Models\Internship;
-use App\Program\Internship\Models\InternshipGroup;
+use App\Program\InternshipGroup\Models\InternshipGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class InternshipGroupFactory extends Factory

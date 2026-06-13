@@ -5,8 +5,12 @@ declare(strict_types=1);
 use App\Assignment\Submission\Models\Submission;
 use App\Assignment\Submission\Policies\SubmissionPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+
     $this->policy = app(SubmissionPolicy::class);
 });
 

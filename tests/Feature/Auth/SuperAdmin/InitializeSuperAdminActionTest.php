@@ -8,13 +8,10 @@ use App\User\Models\User;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role as SpatieRole;
 
 uses(LazilyRefreshDatabase::class);
 
-beforeEach(function () {
-    SpatieRole::create(['name' => 'superadmin', 'guard_name' => 'web']);
-});
+beforeEach(function () {});
 
 test('creates super admin user with given email and password', function () {
     $user = app(InitializeSuperAdminAction::class)->execute(

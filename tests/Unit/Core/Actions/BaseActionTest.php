@@ -73,9 +73,9 @@ test('it skips outer transaction when already nested', function () {
     DB::rollBack();
 });
 
-test('it can resolve module name from class namespace', function () {
+test('it resolves module name from App namespace', function () {
     $action = new MockAction;
-    expect($action->getModuleName())->toBe('Unit');
+    expect($action->getModuleName())->toBe('Unknown');
 });
 
 test('it logs actions using smart logger', function () {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Document\Models\Document;
-use App\Enrollment\Models\Registration;
-use App\Enrollment\Models\RegistrationDocument;
+use App\Enrollment\Registration\Models\Registration;
+use App\Enrollment\Registration\Models\RegistrationDocument;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class RegistrationDocumentFactory extends Factory

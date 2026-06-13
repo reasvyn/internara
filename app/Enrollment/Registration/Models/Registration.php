@@ -7,11 +7,13 @@ namespace App\Enrollment\Registration\Models;
 use App\Assessment\Models\Assessment;
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Models\BaseModel;
+use App\Enrollment\Placement\Models\Placement;
 use App\Enrollment\Registration\Entities\RegistrationState;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\Journals\Attendance\Models\Attendance;
 use App\Journals\Logbook\Models\Logbook;
 use App\Program\Internship\Models\Internship;
+use App\Program\InternshipGroup\Models\InternshipGroupMember;
 use App\Reports\Report\Models\Report;
 use App\Settings\Models\Setting;
 use App\User\Models\User;
@@ -50,6 +52,11 @@ class Registration extends BaseModel
         'end_date' => 'date',
         'proposed_company_details' => 'json',
     ];
+
+    public function hasStatus(string $status): bool
+    {
+        return $this->status === $status;
+    }
 
     public function setStatus(string $status, ?string $reason = null): static
     {
@@ -126,6 +133,12 @@ class Registration extends BaseModel
     public function report(): HasOne
     {
         return $this->hasOne(Report::class, 'registration_id');
+    }
+
+    public function mentee(): HasOne
+    {
+        return $this->hasOne(InternshipGroupMember::class, 'registration_id')
+            ->where('role', 'student');
     }
 
     public function mentors(): BelongsToMany

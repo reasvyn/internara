@@ -11,7 +11,6 @@ use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Mockery;
-use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
@@ -38,7 +37,6 @@ test('wizard step 1 requires audit to pass before proceeding', function () {
 });
 
 test('wizard proceeds through all steps and completes setup', function () {
-    Role::create(['name' => 'superadmin']);
 
     $saveRecoveryKeyMock = Mockery::mock(SaveRecoveryKeyAction::class);
     $saveRecoveryKeyMock->shouldReceive('execute')->once()->andReturn('mock_recovery_key_123');

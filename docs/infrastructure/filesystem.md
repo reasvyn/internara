@@ -1,6 +1,6 @@
 # Filesystem
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
 ## Storage Architecture
 
@@ -17,14 +17,14 @@ The application uses Laravel's filesystem abstraction, providing a unified API o
 ### Storage by Deployment Tier
 
 ```
-Tier 1 (Shared Hosting):
+Tier 1 (Shared Hosting) — up to 500 registered users:
   └─ Local disk → storage/app/public → symlinked to public/storage/
 
 Tier 2 (VPS):
   ├─ Local disk for active files
   └─ Periodic sync to S3 for backup
 
-Tier 3 (Multi-Server):
+Tier 3 (Multi-Server / HA):
   └─ S3 as primary storage
       ├─ AWS S3, MinIO, DigitalOcean Spaces, or Cloudflare R2
       ├─ No local storage dependency
@@ -107,8 +107,8 @@ IMAGE_DRIVER=imagick
 
 Conversions are queued by default (`queue_conversions_by_default: true` in `config/media-library.php`). The queue connection is inherited from `QUEUE_CONNECTION`:
 
-- **Tier 1** (sync): conversions run inline, uploads take longer
-- **Tier 2+** (Redis, dual pipeline): conversions run asynchronously via the `default` queue worker
+- **Tier 1 (Shared Hosting — up to 500 registered users):** conversions run synchronously, uploads take longer
+- **Tier 2+ (Redis, dual pipeline):** conversions run asynchronously via the `default` queue worker
 
 To make a conversion synchronous (available immediately):
 

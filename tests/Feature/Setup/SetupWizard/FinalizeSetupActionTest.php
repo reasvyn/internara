@@ -16,7 +16,6 @@ use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use RuntimeException;
-use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
@@ -34,7 +33,6 @@ beforeEach(function () {
 test(
     'finalize setup action successfully sets up school, department, admin, and saves recovery key',
     function () {
-        Role::create(['name' => 'superadmin']);
 
         $saveRecoveryKeyMock = Mockery::mock(SaveRecoveryKeyAction::class);
         $saveRecoveryKeyMock->shouldReceive('execute')->once()->andReturn('/path/to/key');

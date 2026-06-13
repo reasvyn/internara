@@ -6,14 +6,10 @@ use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\ArchiveStudentAccountsAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
-use Spatie\Permission\Models\Role;
 
 uses(LazilyRefreshDatabase::class);
 
-beforeEach(function () {
-    Role::create(['name' => 'super_admin']);
-    Role::create(['name' => 'student']);
-});
+beforeEach(function () {});
 
 test('archives student accounts from query', function () {
     $students = User::factory()->count(3)->create();

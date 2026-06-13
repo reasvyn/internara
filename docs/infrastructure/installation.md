@@ -1,6 +1,6 @@
 # Installation
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
 This document covers the prerequisites, command reference, performance tuning, and troubleshooting for installing Internara. For server environment setup (Nginx, Supervisor, Docker, shared hosting), see [Deployment](deployment.md).
 
@@ -10,17 +10,17 @@ For a quick end-to-end walkthrough, see [Getting Started](../getting-started.md)
 
 ## Prerequisites
 
-| Requirement    | Development         | Production                                |
-| -------------- | ------------------- | ----------------------------------------- |
-| PHP            | 8.4.0+              | 8.4.0+                                    |
-| Composer       | 2.5+                | 2.5+                                      |
-| Node.js        | 20+                 | 20+ (build only)                          |
-| NPM            | 10+                 | 10+ (build only)                          |
-| Database       | SQLite (built-in)   | MySQL 8+ / MariaDB 10.6+ / PostgreSQL 14+ |
-| Queue driver   | `sync`              | `redis` (recommended, dual pipelines)     |
-| Cache driver   | `file`              | `redis` (recommended)                     |
-| Session driver | `database`          | `redis` (recommended)                     |
-| Web server     | `php artisan serve` | Nginx or Apache                           |
+| Requirement    | Development         | Production (Shared → VPS/Dedicated) |
+| -------------- | ------------------- | ------------------------------------ |
+| PHP            | 8.4.0+              | 8.4.0+                               |
+| Composer       | 2.5+                | 2.5+                                 |
+| Node.js        | 20+                 | 20+ (build only)                     |
+| NPM            | 10+                 | 10+ (build only)                     |
+| Database       | SQLite (built-in)   | MySQL/MariaDB (shared) → PostgreSQL (VPS+) |
+| Queue driver   | `sync`              | `sync` (shared) → `redis` (VPS+)     |
+| Cache driver   | `file`              | `file`/`database` (shared) → `redis` (VPS+) |
+| Session driver | `database`          | `database` (shared) → `redis` (VPS+) |
+| Web server     | `php artisan serve` | Apache (shared) → Nginx (VPS+)       |
 
 ### Required PHP Extensions
 
@@ -153,7 +153,7 @@ For development, disable OpCache (`opcache.enable=0`) or set `validate_timestamp
 ### Cache Commands
 
 ```bash
-# Enable all caches at once (recommended after deployment)
+# Enable all caches at once (recommended after deployment ONLY)
 php artisan optimize
 
 # Individual caches
@@ -166,15 +166,22 @@ php artisan event:cache      # Cache event discovery
 php artisan system:cache-warm
 ```
 
+> **WARNING**: `php artisan optimize` and `config:cache` are **production-only** commands.
+> In development they make `env()` calls inert, so `.env` changes are ignored until
+> you run `php artisan optimize:clear`. Never run them during active development.
+> PHPUnit manages its own environment via `phpunit.xml` — do NOT cache config
+> while test environment overrides are active.
+
 ---
 
 ## Command Reference
 
 | Command                                         | Purpose                                                                                             |
 | ----------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `php artisan setup:install`                     | Audit, provision, generate signed setup URL                                                         |
+| `php artisan setup:install`                     | Audit, provision, generate signed setup URL                                                                 |
 | `php artisan setup:install --check-only`        | Run environment audit without provisioning                                                          |
 | `php artisan setup:install --force`             | Hard reset. Runs `migrate:fresh`, clears setup session data, regenerates token. Production-locked.  |
+| `php artisan setup:install --optimize`          | Same as above plus cache config, routes, views, and events. Use in production **only**.             |
 | `php artisan setup:reset-token`                 | Regenerate setup token (pre-install only)                                                           |
 | `php artisan admin:recover`                     | Recover super admin access (auto-detects key from storage file)                                     |
 | `php artisan admin:recover --key=<key>`         | Recover super admin access (manual key override)                                                    |
@@ -212,7 +219,7 @@ php artisan system:cache-warm
 
 ## Upgrading from SQLite to MySQL/PostgreSQL
 
-When outgrowing SQLite's concurrent write capacity:
+When the number of registered users exceeds 500 per PKL period:
 
 1. Provision a database server (MySQL 8+ or PostgreSQL 14+)
 2. Configure `.env` with the new connection credentials

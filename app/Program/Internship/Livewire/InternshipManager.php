@@ -12,9 +12,9 @@ use App\Core\Support\CsvHandler;
 use App\Enrollment\Placement\Models\Placement;
 use App\Enrollment\Registration\Models\Registration;
 use App\Program\Internship\Actions\BatchUpdateInternshipStatusAction;
-use App\Program\Internship\Actions\CheckCloseReadinessAction;
 use App\Program\Internship\Actions\CreateInternshipAction;
 use App\Program\Internship\Actions\DeleteInternshipAction;
+use App\Program\Internship\Actions\ReadCloseReadinessAction;
 use App\Program\Internship\Actions\UpdateInternshipAction;
 use App\Program\Internship\Enums\InternshipStatus;
 use App\Program\Internship\Livewire\Forms\InternshipForm;
@@ -412,7 +412,7 @@ class InternshipManager extends BaseRecordManager
 
     // --- Pre-Close Readiness ---
 
-    public function checkReadiness(string $internshipId, CheckCloseReadinessAction $action): void
+    public function checkReadiness(string $internshipId, ReadCloseReadinessAction $action): void
     {
         $internship = Internship::findOrFail($internshipId);
         $this->readinessResults = $action->execute($internship);

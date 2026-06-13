@@ -101,7 +101,6 @@ test('can update perPage property', function () {
         ->assertSet('perPage', 25);
 });
 
-
 test('can set filters', function () {
     Livewire::test(IntegrationRecordManager::class)
         ->set('filters.status', 'active')

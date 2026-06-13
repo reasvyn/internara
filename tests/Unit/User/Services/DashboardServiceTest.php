@@ -5,17 +5,10 @@ declare(strict_types=1);
 use App\User\Models\User;
 use App\User\Services\DashboardService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
-    Role::create(['name' => 'admin', 'guard_name' => 'web']);
-    Role::create(['name' => 'student', 'guard_name' => 'web']);
-    Role::create(['name' => 'teacher', 'guard_name' => 'web']);
-    Role::create(['name' => 'supervisor', 'guard_name' => 'web']);
-});
+beforeEach(function () {});
 
 test('admin and super admin get sysadmin dashboard', function () {
     $user = User::factory()->create();

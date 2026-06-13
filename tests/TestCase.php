@@ -7,6 +7,7 @@ namespace Tests;
 use App\Settings\Support\Settings;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Gate;
+use Spatie\Permission\Models\Role;
 use Throwable;
 
 abstract class TestCase extends BaseTestCase
@@ -26,8 +27,18 @@ abstract class TestCase extends BaseTestCase
             // Database table may not exist yet
         }
 
+        try {
+            Role::findOrCreate('superadmin', 'web');
+            Role::findOrCreate('admin', 'web');
+            Role::findOrCreate('student', 'web');
+            Role::findOrCreate('teacher', 'web');
+            Role::findOrCreate('supervisor', 'web');
+        } catch (Throwable) {
+            // Roles table may not exist yet
+        }
+
         Gate::before(function ($user, $ability) {
-            return $user->hasRole('super_admin') ? true : null;
+            return $user->hasRole('superadmin') ? true : null;
         });
     }
 }

@@ -30,6 +30,8 @@ Project skills are in `.agents/skills/`. Activate the relevant skill when workin
 - `pulse-development` — Laravel Pulse setup
 - `medialibrary-development` — file uploads, media collections
 - `tailwindcss-development` — styling, daisyUI, maryUI
+- `audit-protocol` — comprehensive multi-layer codebase audit against conventions, patterns, security, and industry standards
+- `sync-docs` — synchronize ALL markdown documentation with actual implementation
 
 ## Documentation (NOT Duplicated Here)
 

@@ -7,14 +7,10 @@ use App\User\Models\User;
 use App\User\Profile\Models\Profile;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
-    Role::create(['name' => 'student', 'guard_name' => 'web']);
-});
+beforeEach(function () {});
 
 test('user model has relationship with profile', function () {
     $user = User::factory()->create();

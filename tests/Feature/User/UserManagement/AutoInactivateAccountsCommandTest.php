@@ -5,14 +5,10 @@ declare(strict_types=1);
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
-use Spatie\Permission\Models\Role;
 
 uses(LazilyRefreshDatabase::class);
 
-beforeEach(function () {
-    Role::create(['name' => 'super_admin']);
-    Role::create(['name' => 'student']);
-});
+beforeEach(function () {});
 
 test('inactivates users with no recent activity', function () {
     $user = User::factory()->create([

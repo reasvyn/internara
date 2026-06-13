@@ -5,8 +5,12 @@ declare(strict_types=1);
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\Guidance\SupervisionLog\Policies\SupervisionLogPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+
     $this->policy = app(SupervisionLogPolicy::class);
 });
 

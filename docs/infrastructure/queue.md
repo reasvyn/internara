@@ -1,6 +1,6 @@
 # Queue
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
 ## Purpose
 
@@ -10,14 +10,14 @@ The queue layer enables asynchronous job processing. In Tier 1 (shared hosting),
 
 ## Driver Strategy by Tier
 
-| Aspect          | Tier 1 (Entry)      | Tier 2+ (Standard / HA)      |
-| --------------- | ------------------- | ---------------------------- |
-| **Driver**      | `sync`              | `redis`                      |
-| **Worker**      | None (inline)       | Supervisor-managed           |
-| **Pipelines**   | N/A                 | `default` + `documents`      |
-| **Retries**     | N/A (inline)        | 3 attempts with backoff      |
-| **Failed jobs** | N/A                 | `failed_jobs` table          |
-| **Throughput**  | N/A                 | ~1,000+ jobs/min             |
+| Aspect          | Tier 1 (Shared Hosting — up to 500 registered users) | Tier 2+ (Standard / HA)      |
+| --------------- | ---------------------------------------------------- | ---------------------------- |
+| **Driver**      | `sync`                                               | `redis`                      |
+| **Worker**      | None (inline)                                        | Supervisor-managed           |
+| **Pipelines**   | N/A                                                  | `default` + `documents`      |
+| **Retries**     | N/A (inline)                                         | 3 attempts with backoff      |
+| **Failed jobs** | N/A                                                  | `failed_jobs` table          |
+| **Throughput**  | N/A                                                  | ~1,000+ jobs/min             |
 
 ```env
 # Tier 1 (default) — no worker needed
@@ -149,9 +149,9 @@ class ProcessMediaConversion implements ShouldQueue
 
 ---
 
-## Queueing in Sync Mode (Tier 1)
+## Queueing in Sync Mode (Tier 1 — Shared Hosting)
 
-With `QUEUE_CONNECTION=sync`, every job executes immediately during the HTTP request. This is the correct default for schools with fewer than 50 concurrent users.
+With `QUEUE_CONNECTION=sync`, every job executes immediately during the HTTP request. This is the correct default for deployments with up to 500 registered users per PKL period.
 
 | Operation                  | Behavior                          | User Experience                 |
 | -------------------------- | --------------------------------- | ------------------------------- |

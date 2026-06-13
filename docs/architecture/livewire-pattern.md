@@ -18,13 +18,10 @@ side effects belong in lower layers.
 
 ### Allowed in Components
 
-- **UI state:** public properties for form bindings, modal visibility, search input, selection
-  state
-- **UX validation:** `$this->validate()` for inline feedback (the Action re-validates
-  authoritatively)
+- **UI state:** public properties for form bindings, modal visibility, search input, selection state
+- **UX validation:** `$this->validate()` for inline feedback (the Action re-validates authoritatively)
 - **Delegation:** calling Actions via method injection
-- **Read-only queries:** searchable, paginated, filtered queries in `render()` — these are
-  presentation logic
+- **Read-only queries:** searchable, paginated, filtered queries in `render()` — these are presentation logic
 - **Authorization:** role or Gate checks in `boot()`
 - **Flash messages:** `flash()->success()` / `flash()->error()` via PHPFlasher
 
@@ -39,16 +36,16 @@ side effects belong in lower layers.
 
 ### Why
 
-Thin components are easy to audit (auth in `boot()`), easy to test (logic is in injectable
-Actions), and easy to understand (public properties describe the complete UI state). The component
-becomes a thin coordination layer between the browser and the module.
+Thin components are easy to audit (auth in `boot()`), easy to test (logic is in injectable Actions),
+and easy to understand (public properties describe the complete UI state). The component becomes a
+thin coordination layer between the browser and the module.
 
 ---
 
 ## 2. Component Directory Structure
 
 Components follow the same two-tier path convention as all code. The view directory **must exactly
-mirror** the `app/` module structure (see `docs/architecture.md` §Views Structure).
+mirror** the `app/` module structure.
 
 ### Submodule-Specific Components
 
@@ -58,9 +55,6 @@ resources/views/{module}/{submodule}/{component-name}.blade.php
 tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
 ```
 
-**Example:** `app/Academics/AcademicYear/Livewire/AcademicYearManager.php` with view at
-`resources/views/academics/academic-year/academic-year-manager.blade.php`.
-
 ### Cross-Submodule Components (within a module)
 
 ```
@@ -68,26 +62,12 @@ app/{Module}/Livewire/{Name}.php
 resources/views/{module}/{component-name}.blade.php
 ```
 
-**Example:** `app/Assessment/Livewire/AssessmentGrading.php` with view at
-`resources/views/assessment/assessment-grading.blade.php`.
+### View Name Resolution Rules
 
-### View Name Resolution
-
-The `render()` method must return a `view()` call with the full dot notation. The component's
-namespace determines the view path:
-
-| Component namespace | `view()` call | File path |
-|---|---|---|
-| `App\Auth\Login\Livewire\Login` | `view('auth.login')` | `resources/views/auth/login.blade.php` |
-| `App\Academics\AcademicYear\Livewire\AcademicYearManager` | `view('academics.academic-year.academic-year-manager')` | `resources/views/academics/academic-year/academic-year-manager.blade.php` |
-| `App\Assessment\Livewire\AssessmentGrading` | `view('assessment.assessment-grading')` | `resources/views/assessment/assessment-grading.blade.php` |
-| `App\User\UserManagement\Livewire\UserManager` | `view('user.user-management.user-manager')` | `resources/views/user/user-management/user-manager.blade.php` |
-
-**Rules:**
 1. Submodule components: `view('{module}.{submodule}.{component-name}')` — maps to `resources/views/{module}/{submodule}/{component-name}.blade.php`.
 2. Module-root components: `view('{module}.{component-name}')` — maps to `resources/views/{module}/{component-name}.blade.php`.
-3. Avoid redundant nesting: when the component name matches the submodule name, flatten to `{module}.{submodule}` (e.g., `auth.login` not `auth.login.login`).
-4. The `view()` call must match the actual file location. Any mismatch between the view reference and the file path is a bug.
+3. Avoid redundant nesting: when the component name matches the submodule name, flatten to `{module}.{submodule}`.
+4. The `view()` call must match the actual file location. Any mismatch is a bug.
 
 ### Shared Cross-Module Components
 
@@ -95,9 +75,6 @@ namespace determines the view path:
 app/Livewire/{Name}.php
 resources/views/livewire/{component-name}.blade.php
 ```
-
-**Example:** `app/Settings/Livewire/ThemeSwitcher.php` with view at
-`resources/views/settings/livewire/theme-switcher.blade.php`.
 
 ### Form Objects
 
@@ -110,25 +87,20 @@ app/{Module}/Livewire/Forms/{Name}Form.php
 ## 3. Auto-Discovery & Alias Conventions
 
 Components are auto-discovered by `AppServiceProvider::discoverLivewireComponents()`. The method
-scans all PHP files under `app/` in any `Livewire/` directory (excluding `Concerns/` and
-`Traits/`), checks they subclass `Livewire\Component`, and registers them with a kebab-case alias.
+scans all PHP files under `app/` in any `Livewire/` directory (excluding `Concerns/` and `Traits/`),
+checks they subclass `Livewire\Component`, and registers them with a kebab-case alias.
 
 ### Alias Patterns
 
 | Scope | Pattern | Example |
 |-------|---------|---------|
-| Submodule | `{kebab-module}.{kebab-submodule}.{kebab-name}` | `admin.user.user-manager` |
-| Cross-submodule | `{kebab-module}.{kebab-name}` | `user.profile-editor` |
-| Shared | `{kebab-component-name}` | `livewire.lang-switcher` |
+| Submodule | `{kebab-module}.{kebab-submodule}.{kebab-name}` | `{module}.{submodule}.{name}` |
+| Cross-submodule | `{kebab-module}.{kebab-name}` | `{module}.{name}` |
+| Shared | `{kebab-component-name}` | `{component-name}` |
 
 ### How the Alias Is Computed
 
-```php
-// Given: app/User/UserManagement/Livewire/UserManager.php
-// parts = ['app', 'SysAdmin', 'UserManagement', 'Livewire', 'UserManager.php']
-// module = 'SysAdmin', submodule = 'UserManagement', className = 'UserManager'
-// alias = 'user.user-management.user-manager'
-
+```
 $module = $parts[0];
 $submodule = $parts[1] !== $directory ? $parts[1] ?? '' : '';
 $alias = $submodule
@@ -138,20 +110,18 @@ $alias = $submodule
 
 ### Caching
 
-The discovered component map is cached for 86,400 seconds (1 day) under
-`config('cache-keys.module_livewire')`. Clear the cache after adding a new component:
+The discovered component map is cached. Clear the cache after adding a new component:
 
 ```bash
-php artisan cache:forget module_livewire
+php artisan cache:forget {cache-key}
 ```
 
 ---
 
 ## 4. BaseRecordManager Pattern (CRUD Tables)
 
-All CRUD table components extend `BaseRecordManager` (at
-`app/Core/Livewire/BaseRecordManager.php`). This base class provides search, filter, sorting,
-pagination, selection, and bulk/mass actions out of the box.
+All CRUD table components extend `BaseRecordManager`. This base class provides search, filter,
+sorting, pagination, selection, and bulk/mass actions out of the box.
 
 ### Abstract Contract
 
@@ -160,42 +130,6 @@ Subclasses must implement two methods:
 ```php
 abstract public function headers(): array;
 abstract protected function query(): Builder;
-```
-
-### Example
-
-```php
-class StudentManager extends BaseRecordManager
-{
-    use AuthorizesRequests, WithFileUploads;
-
-    public bool $userModal = false;
-
-    public StudentForm $form;
-
-    public function boot(): void
-    {
-        $this->authorize('viewAny', User::class);
-    }
-
-    public function headers(): array
-    {
-        return [
-            ['key' => 'name', 'label' => __('user.student.name'), 'sortable' => true],
-            ['key' => 'username', 'label' => __('user.student.username')],
-            ['key' => 'profile.department.name', 'label' => __('user.student.department')],
-            ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
-            ['key' => 'actions', 'label' => '', 'sortable' => false],
-        ];
-    }
-
-    protected function query(): Builder
-    {
-        return User::query()
-            ->role(RoleEnum::STUDENT->value)
-            ->with(['profile.department']);
-    }
-}
 ```
 
 ### Built-in State & Methods
@@ -219,13 +153,6 @@ protected function applyFilters(Builder): Builder // Custom filter logic
 protected function applySorting(Builder): Builder // Custom sort logic (rare)
 ```
 
-### Concrete Subclasses (10 total)
-
-- `AcademicYearManager`, `DepartmentManager`
-- `PlacementIndex`, `PlacementChangeManager`
-- `CompanyManager`, `PartnershipManager`
-- `AdminManager`, `SupervisorManager`, `StudentManager`, `UserManager`
-
 ---
 
 ## 5. Action Injection via Method Parameters
@@ -236,39 +163,33 @@ the component body. Laravel's container resolves the Action from the method sign
 ### Create / Update Pattern
 
 ```php
-public function save(CreateUserAction $createAction, UpdateUserAction $updateAction): void
+public function save(Create{Entity}Action $createAction, Update{Entity}Action $updateAction): void
 {
     $this->form->validate();
 
     if ($this->form->id) {
-        $user = User::findOrFail($this->form->id);
-        $updateAction->execute($user, [...data...]);
-        flash()->success(__('user.manager.success_updated'));
+        $entity = {Entity}::findOrFail($this->form->id);
+        $updateAction->execute($entity, $this->form->toArray());
+        flash()->success(__('{module}.{entity}.success_updated'));
     } else {
-        $user = $createAction->execute([...data...]);
-        $this->redirect(route('sysadmin.users.account-slip', $user));
-        return;
+        $entity = $createAction->execute($this->form->toArray());
+        flash()->success(__('{module}.{entity}.success_created'));
     }
 
-    $this->userModal = false;
+    $this->modal = false;
 }
 ```
 
 ### Delete with Confirmation
 
 ```php
-public function deleteUser(string $id, DeleteUserAction $deleteAction): void
+public function delete{Entity}(string $id, Delete{Entity}Action $deleteAction): void
 {
-    $user = User::findOrFail($id);
-
-    if ($user->hasRole('super_admin')) {
-        flash()->error(__('user.manager.cannot_delete_super_admin'));
-        return;
-    }
+    $entity = {Entity}::findOrFail($id);
 
     try {
-        $deleteAction->execute($user);
-        flash()->success(__('user.manager.success_deleted'));
+        $deleteAction->execute($entity);
+        flash()->success(__('{module}.{entity}.success_deleted'));
     } catch (RejectedException $e) {
         flash()->error($e->getMessage());
     }
@@ -278,11 +199,11 @@ public function deleteUser(string $id, DeleteUserAction $deleteAction): void
 ### Bulk Action Pattern
 
 ```php
-public function lockSelected(SetUserStatusAction $setStatus): void
+public function {action}Selected(Set{Entity}StatusAction $action): void
 {
-    $this->performBulkAction(__('common.actions.lock'), function (string $id) use ($setStatus): void {
-        $user = User::findOrFail($id);
-        $setStatus->execute($user, AccountStatus::SUSPENDED, 'Batch lock by administrator');
+    $this->performBulkAction(__('common.actions.{action}'), function (string $id) use ($action): void {
+        $entity = {Entity}::findOrFail($id);
+        $action->execute($entity, ...);
     });
 }
 ```
@@ -311,26 +232,23 @@ Extends `Livewire\Form` (Laravel's built-in class, not a custom base).
 ### Structure
 
 ```php
-class AcademicYearForm extends Form
+class {Entity}Form extends Form
 {
     public string $name = '';
     public string $start_date = '';
-    public string $end_date = '';
 
     public function rules(?string $excludeId = null): array
     {
         return [
-            'name' => ['required', 'string', 'max:50',
-                'unique:academic_years,name,'.($excludeId ?? 'NULL')],
+            'name' => ['required', 'string', 'max:255'],
             'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date', 'after:start_date'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.unique' => __('validation.unique'),
+            'name.required' => __('validation.required'),
         ];
     }
 
@@ -339,33 +257,7 @@ class AcademicYearForm extends Form
         return [
             'name' => $this->name,
             'start_date' => $this->start_date,
-            'end_date' => $this->end_date,
-            'is_active' => false,
         ];
-    }
-}
-```
-
-### Usage in Component
-
-```php
-class AcademicYearManager extends BaseRecordManager
-{
-    public AcademicYearForm $form;
-
-    public function create(): void
-    {
-        $this->resetErrorBag();
-        $this->form->reset();
-        $this->userModal = true;
-    }
-
-    public function save(CreateAcademicYearAction $action): void
-    {
-        $this->form->validate();
-        $action->execute($this->form->toArray());
-        flash()->success(__('academics.academic_year.created'));
-        $this->userModal = false;
     }
 }
 ```
@@ -373,7 +265,7 @@ class AcademicYearManager extends BaseRecordManager
 ### Rules
 
 - Form Objects extend `Livewire\Form`, never `BaseAction`
-- Naming: `{Entity}Form` — `UserForm`, `InternshipForm`, `AcademicYearForm`
+- Naming: `{Entity}Form` — `{Entity}Form` for the corresponding entity
 - All form state, validation rules, and `toArray()` logic live inside the Form Object
 - The component calls `$this->form->validate()` before dispatching to an Action
 - Form Objects must NOT call Actions directly — they only prepare data
@@ -401,11 +293,11 @@ public function askAction(string $id): void
     $this->confirmingAction = true;
 }
 
-public function confirmAction(CreateUserAction $action): void
+public function confirmAction(Delete{Entity}Action $deleteAction): void
 {
     try {
-        $action->execute($this->actionTarget);
-        flash()->success(__('users.created'));
+        $deleteAction->execute($this->actionTarget);
+        flash()->success(__('{module}.{entity}.deleted'));
     } catch (RejectedException $e) {
         flash()->error($e->getMessage());
     }
@@ -413,19 +305,6 @@ public function confirmAction(CreateUserAction $action): void
     $this->confirmingAction = false;
     $this->actionTarget = null;
 }
-```
-
-### Blade
-
-```blade
-<x-ui::confirm
-    wire:model="confirmingAction"
-    title="{{ __('common.confirm_delete') }}"
-    message="{{ __('common.confirm_delete_message') }}"
-    confirmText="{{ __('common.delete') }}"
-    cancelText="{{ __('common.cancel') }}"
-    wire:click="confirmAction"
-/>
 ```
 
 ### Rules
@@ -438,13 +317,13 @@ public function confirmAction(CreateUserAction $action): void
 
 ## 8. Flash Message Pattern
 
-All user-facing feedback uses [PHPFlasher](https://php-flasher.io/) via the `flash()` helper.
-maryUI Toast methods (`$this->success()`, `$this->error()`) must NOT be used.
+All user-facing feedback uses PHPFlasher via the `flash()` helper. maryUI Toast methods
+(`$this->success()`, `$this->error()`) must NOT be used.
 
 ### Success
 
 ```php
-flash()->success(__('user.manager.success_updated'));
+flash()->success(__('{module}.{entity}.{action}_success'));
 ```
 
 ### Error
@@ -456,7 +335,7 @@ flash()->error($e->getMessage());
 ### Warning
 
 ```php
-flash()->warning(__('common.actions.no_records_selected'));
+flash()->warning(__('{module}.{context}.{warning_reason}'));
 ```
 
 ### Bulk Action Success
@@ -481,76 +360,27 @@ flash()->success(
 
 ## 9. Concerns (WithSorting, WithRecordSelection)
 
-### WithRecordSelection
-
-File: `app/Core/Livewire/Concerns/WithRecordSelection.php`
-
-```php
-trait WithRecordSelection
-{
-    public array $selectedIds = [];
-
-    public function clearSelection(): void
-    {
-        $this->selectedIds = [];
-    }
-
-    public function selectAll(array $ids): void
-    {
-        $this->selectedIds = $ids;
-    }
-
-    #[Computed]
-    public function selected_count(): int
-    {
-        return count($this->selectedIds);
-    }
-}
-```
-
-Used automatically by `BaseRecordManager`. Call `clearSelection()` after any bulk/mass action.
-
-### WithSorting
-
-File: `app/Core/Livewire/Concerns/WithSorting.php`
-
-```php
-trait WithSorting
-{
-    public array $sortBy = ['column' => 'id', 'direction' => 'asc'];
-
-    /** @var string[] */
-    protected array $sortableColumns = ['id', 'name', 'created_at', 'updated_at'];
-
-    protected function applySorting(Builder $query): Builder
-    {
-        $column = $this->sortBy['column'] ?? 'id';
-        if (! in_array($column, $this->sortableColumns, true)) {
-            $column = 'id';
-        }
-
-        $direction = $this->sortBy['direction'] ?? 'asc';
-        if (! in_array($direction, ['asc', 'desc'], true)) {
-            $direction = 'asc';
-        }
-
-        return $query->orderBy($column, $direction);
-    }
-}
-```
-
-Used automatically by `BaseRecordManager`. Override `$sortableColumns` in the subclass or
-configure per-column in the header array with `'sortable' => true`.
-
 Both concerns are applied automatically in `BaseRecordManager`:
 
 ```php
 abstract class BaseRecordManager extends Component
 {
     use WithPagination, WithRecordSelection, WithSorting;
-    // ...
 }
 ```
+
+### WithRecordSelection
+
+Provides `$selectedIds` array and methods `clearSelection()`, `selectAll(array $ids)`, and a
+`selected_count` computed property. Used automatically by `BaseRecordManager`. Call
+`clearSelection()` after any bulk/mass action.
+
+### WithSorting
+
+Provides `$sortBy` state (`['column' => 'id', 'direction' => 'asc']`), `$sortableColumns`
+whitelist, and `applySorting(Builder)` logic. Used automatically by `BaseRecordManager`.
+Override `$sortableColumns` in the subclass or configure per-column in the header array with
+`'sortable' => true`.
 
 ---
 
@@ -560,48 +390,6 @@ Test files mirror the component structure:
 
 ```
 tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
-```
-
-### Testing a BaseRecordManager Component
-
-```php
-it('renders the user manager with paginated results', function () {
-    User::factory()->count(5)->create();
-
-    Livewire::test(UserManager::class)
-        ->assertSet('perPage', 10)
-        ->assertCount('rows', 5)
-        ->assertSee(users()->first()->name);
-});
-```
-
-### Testing Action Injection
-
-```php
-it('deletes a user via the confirm dialog pattern', function () {
-    $user = User::factory()->create();
-
-    Livewire::test(UserManager::class)
-        ->call('askAction', $user->id)
-        ->assertSet('confirmingAction', true)
-        ->call('confirmAction')
-        ->assertSet('confirmingAction', false)
-        ->assertSet('actionTarget', null);
-
-    assertModelExists($user->fresh()->deleted_at);
-});
-```
-
-### Testing Flash Messages
-
-```php
-it('shows error when deleting super admin', function () {
-    $admin = User::factory()->superAdmin()->create();
-
-    Livewire::test(UserManager::class)
-        ->call('deleteUser', $admin->id)
-        ->assertDispatched('flash-message');
-});
 ```
 
 ### Key Practices
@@ -615,66 +403,14 @@ it('shows error when deleting super admin', function () {
 
 ---
 
-## 11. Common Pitfalls
+## 11. Common Pitfalls (Concepts)
 
-### Inline DB Calls
-
-❌ **Wrong:** `Model::create([...])` inside a component method.
-
-✅ **Right:** Extract to an Action and inject it: `public function save(CreateAction $a)`.
-
-### Bare `wire:confirm`
-
-❌ **Wrong:** `<button wire:click="delete" wire:confirm="Are you sure?">`.
-
-✅ **Right:** Use the two-step `askAction()` / `confirmAction()` pattern with a shared
-`<x-ui::confirm>` component, so failures display error messages.
-
-### maryUI Toast
-
-❌ **Wrong:** `$this->success(__('user.created'))`.
-
-✅ **Right:** `flash()->success(__('user.created'))`.
-
-### Forgetting `wire:key` in Loops
-
-Always add `wire:key="..."` on the outermost element inside `@foreach` loops:
-
-```blade
-@foreach ($rows as $row)
-    <tr wire:key="{{ $row->id }}">
-@endforeach
-```
-
-### Forgetting `updatedSearch` Page Reset
-
-If you modify search behavior, ensure the page resets. `BaseRecordManager` already handles this:
-
-```php
-public function updatedSearch(): void
-{
-    $this->resetPage();
-}
-```
-
-### Over-Relying on `Computed`
-
-Use `#[Computed]` for expensive or derived values that should be cached for the request. Do NOT
-use it for trivial getters or for values that change mid-request.
-
-### Business Rules in Components
-
-❌ **Wrong:** `if ($user->hasRole('super_admin'))` repeated across components.
-
-✅ **Right:** Extract to an Entity method: `$user->asUserEntity()->isProtected()`.
-
-### Skipping `RejectedException` Handling
-
-Always wrap Action calls in `try`/`catch`. A bare `$action->execute()` that throws an uncaught
-exception will show an ugly error page instead of a user-friendly flash message.
-
-### Manual Resolution
-
-❌ **Wrong:** `$action = app()->make(CreateAction::class)`.
-
-✅ **Right:** Inject via method parameter: `public function save(CreateAction $action)`.
+- **Inline DB calls** — extract to an Action and inject it
+- **Bare `wire:confirm`** — use two-step `askAction()` / `confirmAction()` pattern instead
+- **maryUI Toast** — use `flash()->success()` / `flash()->error()` instead
+- **Forgetting `wire:key` in loops** — always add `wire:key` on the outermost element inside `@foreach`
+- **Forgetting `updatedSearch` page reset** — `BaseRecordManager` already handles this
+- **Over-relying on `#[Computed]`** — use for expensive/derived values only, not trivial getters
+- **Business rules in components** — extract to Entity methods
+- **Skipping `RejectedException` handling** — always wrap Action calls in `try`/`catch`
+- **Manual resolution** — inject via method parameter, never `app()->make()`

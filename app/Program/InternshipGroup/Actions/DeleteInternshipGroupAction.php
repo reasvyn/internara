@@ -6,7 +6,7 @@ namespace App\Program\InternshipGroup\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
-use App\Program\Internship\Models\InternshipGroup;
+use App\Program\InternshipGroup\Models\InternshipGroup;
 
 final class DeleteInternshipGroupAction extends BaseAction
 {

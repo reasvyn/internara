@@ -5,13 +5,10 @@ declare(strict_types=1);
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
-use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
-    Role::create(['name' => 'admin', 'guard_name' => 'web']);
 
     Route::get('/_test_role', function () {
         return 'ok';

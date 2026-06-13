@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Reports\Report\Models\Report;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

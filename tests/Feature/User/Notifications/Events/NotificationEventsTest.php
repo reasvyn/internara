@@ -11,13 +11,11 @@ use App\User\Notifications\Models\Notification;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
-use Spatie\Permission\Models\Role;
 
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Cache::flush();
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
 });
 
 test('send notification dispatches event and invalidates cache', function () {

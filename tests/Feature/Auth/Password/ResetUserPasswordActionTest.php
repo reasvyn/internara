@@ -8,13 +8,10 @@ use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
-    Role::create(['name' => 'student', 'guard_name' => 'web']);
 
     $this->action = app(ResetUserPasswordAction::class);
 });

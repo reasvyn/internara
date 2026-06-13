@@ -130,5 +130,5 @@ Used for structural elements:
 | JS entry point | `resources/js/app.js` |
 | maryUI config | `config/mary.php` |
 | Sidebar menu | `config/menu.php` |
-| Theme switcher | `app/Core/Livewire/ThemeSwitcher.php` |
-| Language switcher | `app/Core/Livewire/LangSwitcher.php` |
+| Theme switcher | `app/Settings/Livewire/ThemeSwitcher.php` |
+| Language switcher | `app/Settings/Livewire/LangSwitcher.php` |

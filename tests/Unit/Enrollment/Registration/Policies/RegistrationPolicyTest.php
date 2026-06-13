@@ -5,8 +5,12 @@ declare(strict_types=1);
 use App\Enrollment\Registration\Models\Registration;
 use App\Enrollment\Registration\Policies\RegistrationPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+
     $this->policy = app(RegistrationPolicy::class);
 });
 

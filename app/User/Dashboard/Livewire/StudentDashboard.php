@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Dashboard\Livewire;
 
 use App\Enrollment\Registration\Models\Registration;
-use App\User\Dashboard\Actions\GetStudentDashboardDataAction;
+use App\User\Dashboard\Actions\ReadStudentDashboardAction;
 use Illuminate\View\View;
 
 class StudentDashboard extends UserDashboard
@@ -31,7 +31,7 @@ class StudentDashboard extends UserDashboard
 
     public int $handbookTotalCount = 0;
 
-    public function mount(GetStudentDashboardDataAction $action): void
+    public function mount(ReadStudentDashboardAction $action): void
     {
         $user = auth()->user();
 

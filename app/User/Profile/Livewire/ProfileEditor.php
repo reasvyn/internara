@@ -6,7 +6,7 @@ namespace App\User\Profile\Livewire;
 
 use App\Auth\Password\Actions\UpdateUserPasswordAction;
 use App\User\Models\User;
-use App\User\Profile\Actions\GetProfileFormDataAction;
+use App\User\Profile\Actions\ReadProfileFormAction;
 use App\User\Profile\Actions\UpdateProfileAction;
 use App\User\Profile\Livewire\Forms\PasswordForm;
 use App\User\Profile\Livewire\Forms\ProfileForm;
@@ -40,7 +40,7 @@ class ProfileEditor extends Component
     /** @var string[] */
     public array $staffFields = [];
 
-    public function mount(GetProfileFormDataAction $action): void
+    public function mount(ReadProfileFormAction $action): void
     {
         $this->user = auth()
             ->user()

@@ -2,21 +2,23 @@
 
 declare(strict_types=1);
 
-use App\Setup\Entities\SetupEntity;
+use App\Settings\Models\Setting;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\File;
 
-beforeEach(function () {
+uses(LazilyRefreshDatabase::class);
+
+test('displays recovery key when confirmed', function () {
+    Setting::factory()->create([
+        'key' => 'setup.install_recovery_key',
+        'value' => 'test-recovery-key-value',
+        'type' => 'string',
+        'group' => 'setup',
+    ]);
+
     File::shouldReceive('exists')
         ->with(storage_path('app/private/.recovery-key'))
         ->andReturn(true);
-});
-
-test('displays recovery key when confirmed', function () {
-    $recoveryKey = 'test-recovery-key-value';
-    $entity = Mockery::mock(SetupEntity::class);
-    $entity->shouldReceive('recoveryKey')->andReturn($recoveryKey);
-    SetupEntity::shouldReceive('get')->andReturn($entity);
-
     File::shouldReceive('get')
         ->with(storage_path('app/private/.recovery-key'))
         ->andReturn('stored-key');
@@ -24,10 +26,17 @@ test('displays recovery key when confirmed', function () {
     $this->artisan('admin:recovery-show')
         ->expectsConfirmation(__('sysadmin.recovery_show.confirm'), 'yes')
         ->assertExitCode(0)
-        ->expectsOutputToContain($recoveryKey);
+        ->expectsOutputToContain('test-recovery-key-value');
 });
 
 test('fails when recovery key file does not exist', function () {
+    Setting::factory()->create([
+        'key' => 'setup.install_recovery_key',
+        'value' => 'test-recovery-key-value',
+        'type' => 'string',
+        'group' => 'setup',
+    ]);
+
     File::shouldReceive('exists')
         ->with(storage_path('app/private/.recovery-key'))
         ->andReturn(false);
@@ -38,10 +47,16 @@ test('fails when recovery key file does not exist', function () {
 });
 
 test('aborts when confirmation is declined', function () {
-    $entity = Mockery::mock(SetupEntity::class);
-    $entity->shouldReceive('recoveryKey')->andReturn('some-key');
-    SetupEntity::shouldReceive('get')->andReturn($entity);
+    Setting::factory()->create([
+        'key' => 'setup.install_recovery_key',
+        'value' => 'some-key',
+        'type' => 'string',
+        'group' => 'setup',
+    ]);
 
+    File::shouldReceive('exists')
+        ->with(storage_path('app/private/.recovery-key'))
+        ->andReturn(true);
     File::shouldReceive('get')
         ->with(storage_path('app/private/.recovery-key'))
         ->andReturn('stored-key');
@@ -53,9 +68,12 @@ test('aborts when confirmation is declined', function () {
 });
 
 test('fails when setup has no recovery key', function () {
-    $entity = Mockery::mock(SetupEntity::class);
-    $entity->shouldReceive('recoveryKey')->andReturnNull();
-    SetupEntity::shouldReceive('get')->andReturn($entity);
+    File::shouldReceive('exists')
+        ->with(storage_path('app/private/.recovery-key'))
+        ->andReturn(true);
+    File::shouldReceive('get')
+        ->with(storage_path('app/private/.recovery-key'))
+        ->andReturn('stored-key');
 
     $this->artisan('admin:recovery-show')
         ->assertExitCode(1)

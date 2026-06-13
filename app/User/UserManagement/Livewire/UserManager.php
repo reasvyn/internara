@@ -12,7 +12,7 @@ use App\User\Models\User;
 use App\User\UserManagement\Actions\BatchDeleteUserAction;
 use App\User\UserManagement\Actions\CreateUserAction;
 use App\User\UserManagement\Actions\DeleteUserAction;
-use App\User\UserManagement\Actions\GetUserManagerStatsAction;
+use App\User\UserManagement\Actions\ReadUserManagerStatsAction;
 use App\User\UserManagement\Actions\RevokeUserActivationTokensAction;
 use App\User\UserManagement\Actions\SetUserStatusAction;
 use App\User\UserManagement\Actions\UpdateUserAction;
@@ -114,7 +114,7 @@ class UserManager extends BaseRecordManager
     #[Computed]
     public function stats(): array
     {
-        return app(GetUserManagerStatsAction::class)->execute();
+        return app(ReadUserManagerStatsAction::class)->execute();
     }
 
     public function createUser(): void

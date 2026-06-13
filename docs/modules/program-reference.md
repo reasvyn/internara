@@ -25,7 +25,7 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 | `Internship/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseAction` |
 | `Internship/Actions/DeleteInternshipAction.php` | `DeleteInternshipAction` | `BaseAction` |
 | `Internship/Actions/BatchUpdateInternshipStatusAction.php` | `BatchUpdateInternshipStatusAction` | `BaseAction` |
-| `Internship/Actions/CheckCloseReadinessAction.php` | `CheckCloseReadinessAction` | Read |
+| `Internship/Actions/ReadCloseReadinessAction.php` | `ReadCloseReadinessAction` | Read |
 | `InternshipGroup/Actions/CreateInternshipGroupAction.php` | `CreateInternshipGroupAction` | `BaseAction` |
 | `InternshipGroup/Actions/UpdateInternshipGroupAction.php` | `UpdateInternshipGroupAction` | `BaseAction` |
 | `InternshipGroup/Actions/DeleteInternshipGroupAction.php` | `DeleteInternshipGroupAction` | `BaseAction` |
@@ -48,7 +48,7 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
-| `Internship/Enums/InternshipStatus.php` | `InternshipStatus` | `LabelEnum`, `StatusEnum` | draft, open, ongoing, closed, cancelled |
+| `Internship/Enums/InternshipStatus.php` | `InternshipStatus` | `LabelEnum`, `StatusEnum` | draft, published, active, completed, cancelled |
 | `InternshipGroup/Enums/InternshipGroupRole.php` | `InternshipGroupRole` | `LabelEnum` | leader, member |
 
 ---
@@ -168,7 +168,7 @@ app/Program/
 ├── Internship/
 │   ├── Actions/
 │   │   ├── BatchUpdateInternshipStatusAction.php
-│   │   ├── CheckCloseReadinessAction.php
+│   │   ├── ReadCloseReadinessAction.php
 │   │   ├── CreateInternshipAction.php
 │   │   ├── DeleteInternshipAction.php
 │   │   └── UpdateInternshipAction.php

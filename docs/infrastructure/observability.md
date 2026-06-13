@@ -1,6 +1,6 @@
 # Observability
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
 ## What Is Monitored and Why
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\Journals\Attendance\Enums\AttendanceStatus;
 use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['internship_group_id', 'registration_id', 'mentor_id', 'role', 'joined_at'])]
+#[Fillable(['internship_group_id', 'registration_id', 'mentor_id', 'user_id', 'role', 'joined_at'])]
 class InternshipGroupMember extends BaseModel
 {
     use HasFactory;
@@ -39,5 +39,10 @@ class InternshipGroupMember extends BaseModel
     public function mentor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'mentor_id');
+    }
+
+    public function menteeUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

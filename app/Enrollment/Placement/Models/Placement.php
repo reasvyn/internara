@@ -7,6 +7,7 @@ namespace App\Enrollment\Placement\Models;
 use App\Core\Models\BaseModel;
 use App\Enrollment\Placement\Entities\PlacementCapacity;
 use App\Enrollment\Placement\Entities\PlacementState;
+use App\Enrollment\Registration\Models\Registration;
 use App\Partners\Company\Models\Company;
 use App\Program\Internship\Models\Internship;
 use Database\Factories\PlacementFactory;
