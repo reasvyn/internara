@@ -18,7 +18,7 @@ trait HandlesActionErrors
     {
         try {
             return $callback();
-        } catch (RuntimeException|AppException|ModuleException|ValidationException|AuthorizationException|ModelNotFoundException|NotFoundHttpException $e) {
+        } catch (AppException|ModuleException|ValidationException|AuthorizationException|ModelNotFoundException|NotFoundHttpException $e) {
             throw $e;
         } catch (\Throwable $e) {
             SmartLogger::error($context)

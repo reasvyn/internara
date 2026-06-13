@@ -37,4 +37,6 @@
             <x-core::layouts.base.footer />
         </div>
     </div>
+
+    <x-mary-spotlight />
 </x-core::layouts.base>

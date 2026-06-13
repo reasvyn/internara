@@ -7,6 +7,7 @@ namespace App\Core\Console\Commands;
 use App\Core\Support\SmartLogger;
 use App\Providers\AppServiceProvider;
 use Illuminate\Console\Command;
+use RuntimeException;
 
 class ModuleDiscoverCommand extends Command
 {
@@ -18,6 +19,10 @@ class ModuleDiscoverCommand extends Command
     {
         try {
             $provider = app()->getProvider(AppServiceProvider::class);
+
+            if ($provider === null) {
+                throw new RuntimeException('AppServiceProvider is not registered.');
+            }
 
             $this->components->task(
                 __('setup.cli.tasks.discover_livewire'),

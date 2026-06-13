@@ -72,8 +72,12 @@ abstract class BaseAction
 
     protected function moduleName(): string
     {
-        $namespaceParts = explode('\\', static::class);
+        $parts = explode('\\', static::class);
 
-        return $namespaceParts[1] ?? 'Unknown';
+        if (count($parts) >= 2 && $parts[0] === 'App') {
+            return $parts[1];
+        }
+
+        return 'Unknown';
     }
 }
