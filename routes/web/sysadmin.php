@@ -3,19 +3,17 @@
 declare(strict_types=1);
 
 use App\SysAdmin\Announcement\Livewire\AnnouncementManager;
+use App\SysAdmin\Http\Controllers\AccountSlipController;
+use App\SysAdmin\Http\Controllers\CronController;
 use App\SysAdmin\Livewire\ApplicationReview;
 use App\SysAdmin\Observability\GdprDeletionLog\Livewire\GdprDeletionLogs;
 use App\SysAdmin\Observability\Livewire\AccountCloneDetector;
 use App\SysAdmin\Observability\Livewire\AuditLogManager;
-use App\User\Models\User;
-use App\User\UserManagement\Actions\GenerateAccountSlipAction;
 use App\User\UserManagement\Livewire\AdminManager;
 use App\User\UserManagement\Livewire\StudentManager;
 use App\User\UserManagement\Livewire\SupervisorManager;
 use App\User\UserManagement\Livewire\TeacherManager;
 use App\User\UserManagement\Livewire\UserManager;
-use Illuminate\Support\Facades\Artisan;
-use Laravel\Pulse\Pulse;
 
 Route::prefix('admin')
     ->name('admin.')
@@ -30,16 +28,9 @@ Route::prefix('admin')
                 Route::get('/teachers', TeacherManager::class)->name('teachers');
                 Route::get('/supervisors', SupervisorManager::class)->name('supervisors');
 
-                Route::get('/{user}/account-slip', function (User $user) {
-                    return app(GenerateAccountSlipAction::class)->download($user);
-                })->name('account-slip');
+                Route::get('/{user}/account-slip', [AccountSlipController::class, 'download'])->name('account-slip');
 
-                Route::get('/account-slips/download', function () {
-                    $ids = explode(',', request()->string('ids', ''));
-                    $users = User::whereIn('id', $ids)->get();
-
-                    return app(GenerateAccountSlipAction::class)->downloadBatch($users->all());
-                })->name('account-slips.batch');
+                Route::get('/account-slips/download', [AccountSlipController::class, 'downloadBatch'])->name('account-slips.batch');
             });
 
         Route::get('/gdpr-logs', GdprDeletionLogs::class)->name('gdpr-logs');
@@ -59,24 +50,4 @@ Route::get('/admin/announcements', AnnouncementManager::class)
 // Cron / system
 // ──────────────────────────────────────────────
 
-Route::get('/cron/{secret}', function (string $secret) {
-    if ($secret !== config('app.cron_secret')) {
-        abort(403, 'Invalid cron secret.');
-    }
-
-    $output = [];
-
-    $exitCode = Artisan::call('schedule:run');
-    $output['schedule:run'] = $exitCode;
-
-    if (class_exists(Pulse::class)) {
-        $exitCode = Artisan::call('pulse:check');
-        $output['pulse:check'] = $exitCode;
-    }
-
-    return response()->json([
-        'status' => 'ok',
-        'timestamp' => now()->toIso8601String(),
-        'commands' => $output,
-    ]);
-})->name('cron');
+Route::get('/cron/{secret}', CronController::class)->name('cron');

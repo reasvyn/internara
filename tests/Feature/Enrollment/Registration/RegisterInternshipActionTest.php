@@ -14,10 +14,6 @@ use Illuminate\Support\Facades\Event;
 
 uses(LazilyRefreshDatabase::class);
 
-beforeEach(function () {
-    Event::fake();
-});
-
 test('registers student for internship successfully', function () {
     $user = User::factory()->create();
     $internship = Internship::factory()->create();
@@ -51,8 +47,10 @@ test('throws exception when student already has active or pending registration',
 test('dispatches student registered event', function () {
     $user = User::factory()->create();
     $internship = Internship::factory()->create();
-    $data = new RegistrationData(internshipId: $internship->id);
 
+    Event::fake([StudentRegistered::class]);
+
+    $data = new RegistrationData(internshipId: $internship->id);
     app(RegisterInternshipAction::class)->execute($user, $data);
 
     Event::assertDispatched(StudentRegistered::class);
