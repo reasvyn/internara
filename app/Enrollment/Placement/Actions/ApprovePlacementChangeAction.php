@@ -8,6 +8,7 @@ use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Placement;
 use App\Enrollment\Placement\Entities\PlacementCapacity;
+use App\Enrollment\Placement\Enums\PlacementChangeStatus;
 use App\Enrollment\Placement\Models\PlacementChangeRequest;
 use App\Enrollment\Registration\Models\Registration;
 
@@ -38,7 +39,7 @@ final class ApprovePlacementChangeAction extends BaseAction
             ]);
 
             $request->update([
-                'status' => 'approved',
+                'status' => PlacementChangeStatus::APPROVED->value,
                 'processed_by' => auth()->id(),
                 'processed_at' => now(),
             ]);

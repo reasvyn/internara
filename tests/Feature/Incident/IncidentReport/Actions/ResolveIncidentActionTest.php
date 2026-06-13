@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Core\Exceptions\RejectedException;
 use App\Incident\IncidentReport\Actions\ResolveIncidentAction;
 use App\Incident\IncidentReport\Models\IncidentReport;
 use App\User\Models\User;
-use App\Core\Exceptions\RejectedException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);

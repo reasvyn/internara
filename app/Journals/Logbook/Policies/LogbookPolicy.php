@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Journals\Logbook\Policies;
 
 use App\Core\Policies\BasePolicy;
+use App\Journals\Logbook\Enums\LogbookStatus;
 use App\Journals\Logbook\Models\Logbook;
 use App\User\Models\User;
 
@@ -83,7 +84,7 @@ class LogbookPolicy extends BasePolicy
             return true;
         }
 
-        return $entry->user_id === $user->id && $entry->status !== 'submitted';
+        return $entry->user_id === $user->id && $entry->status !== LogbookStatus::SUBMITTED;
     }
 
     public function delete(User $user, Logbook $entry): bool
@@ -92,6 +93,6 @@ class LogbookPolicy extends BasePolicy
             return true;
         }
 
-        return $entry->user_id === $user->id && $entry->status !== 'submitted';
+        return $entry->user_id === $user->id && $entry->status !== LogbookStatus::SUBMITTED;
     }
 }

@@ -6,6 +6,7 @@ namespace App\Partners\Partnership\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
+use App\Partners\Partnership\Enums\PartnershipStatus;
 use App\Partners\Partnership\Models\Partnership;
 
 final class RenewPartnershipAction extends BaseAction
@@ -21,7 +22,7 @@ final class RenewPartnershipAction extends BaseAction
         }
 
         return $this->transaction(function () use ($oldPartnership, $newData) {
-            $oldPartnership->update(['status' => 'expired']);
+            $oldPartnership->update(['status' => PartnershipStatus::EXPIRED->value]);
 
             $data = array_merge(
                 [

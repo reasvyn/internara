@@ -21,7 +21,7 @@ final class RejectAccountApplicationAction extends BaseAction
         }
 
         $application->update([
-            'status' => 'rejected',
+            'status' => AccountApplicationStatus::REJECTED->value,
             'processed_by' => $admin->id,
             'processed_at' => now(),
             'rejection_reason' => $reason,

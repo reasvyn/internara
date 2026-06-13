@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Program\Internship\Actions;
 
 use App\Assessment\Models\Assessment;
+use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Certification\Certificate\Enums\CertificateStatus;
 use App\Certification\Certificate\Models\Certificate;
@@ -52,7 +53,7 @@ final class ReadCloseReadinessAction extends BaseReadAction
     {
         $total = Submission::whereIn('registration_id', $registrationIds)->count();
         $pending = Submission::whereIn('registration_id', $registrationIds)
-            ->whereIn('status', ['draft', 'submitted', 'revision_required'])
+            ->whereIn('status', [SubmissionStatus::DRAFT->value, SubmissionStatus::SUBMITTED->value, SubmissionStatus::REVISION_REQUIRED->value])
             ->count();
 
         return [

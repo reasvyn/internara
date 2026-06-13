@@ -6,6 +6,7 @@ namespace App\Reports\Report\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
+use App\Reports\Report\Enums\ReportStatus;
 use App\Reports\Report\Models\Report;
 
 final class ApproveReportAction extends BaseAction
@@ -18,7 +19,7 @@ final class ApproveReportAction extends BaseAction
 
         return $this->transaction(function () use ($report, $data) {
             $report->update([
-                'status' => 'approved',
+                'status' => ReportStatus::APPROVED->value,
                 'score' => $data['score'] ?? null,
                 'feedback' => $data['feedback'] ?? null,
                 'graded_by' => auth()->id(),

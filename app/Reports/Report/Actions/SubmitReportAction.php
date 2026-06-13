@@ -6,6 +6,7 @@ namespace App\Reports\Report\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
+use App\Reports\Report\Enums\ReportStatus;
 use App\Reports\Report\Models\Report;
 
 final class SubmitReportAction extends BaseAction
@@ -19,7 +20,7 @@ final class SubmitReportAction extends BaseAction
         return $this->transaction(function () use ($report, $content) {
             $report->update([
                 'content' => $content,
-                'status' => 'submitted',
+                'status' => ReportStatus::SUBMITTED->value,
                 'submitted_at' => now(),
             ]);
 

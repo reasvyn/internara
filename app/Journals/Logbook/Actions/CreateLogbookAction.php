@@ -6,6 +6,7 @@ namespace App\Journals\Logbook\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
+use App\Journals\Logbook\Enums\LogbookStatus;
 use App\Journals\Logbook\Models\Logbook;
 use App\User\Models\User;
 
@@ -27,7 +28,7 @@ final class CreateLogbookAction extends BaseAction
                 'date' => $data['date'],
                 'content' => $data['content'],
                 'learning_outcomes' => $data['learning_outcomes'] ?? null,
-                'status' => $data['status'] ?? 'draft',
+                'status' => $data['status'] ?? LogbookStatus::DRAFT->value,
                 'is_verified' => $data['is_verified'] ?? false,
                 'verified_by' => isset($data['is_verified']) && $data['is_verified'] ? auth()->id() : null,
                 'verified_at' => isset($data['is_verified']) && $data['is_verified'] ? now() : null,

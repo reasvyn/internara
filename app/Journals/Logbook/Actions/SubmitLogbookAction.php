@@ -6,6 +6,7 @@ namespace App\Journals\Logbook\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
+use App\Journals\Logbook\Enums\LogbookStatus;
 use App\Journals\Logbook\Models\Logbook;
 use App\User\Models\User;
 use Carbon\Carbon;
@@ -25,7 +26,7 @@ final class SubmitLogbookAction extends BaseAction
 
             $existing = Logbook::where('user_id', $user->id)
                 ->whereDate('date', $date)
-                ->where('status', 'submitted')
+                ->where('status', LogbookStatus::SUBMITTED->value)
                 ->first();
 
             if ($existing) {
@@ -41,7 +42,7 @@ final class SubmitLogbookAction extends BaseAction
                     'registration_id' => $registration->id,
                     'content' => $data['content'],
                     'learning_outcomes' => $data['learning_outcomes'] ?? null,
-                    'status' => 'submitted',
+                    'status' => LogbookStatus::SUBMITTED->value,
                 ],
             );
 

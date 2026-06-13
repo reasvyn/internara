@@ -30,6 +30,7 @@ final class DirectPlacementAction extends BaseAction
                 'end_date' => $data['end_date'] ?? $placement->internship->end_date,
             ]);
 
+            // @todo Replace with enum value when RegistrationStatus enum exists
             $registration->setStatus('active', 'Directly placed by administrator.');
 
             $placement->increment('filled_quota');

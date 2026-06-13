@@ -6,6 +6,7 @@ namespace App\Enrollment\Placement\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
+use App\Enrollment\Placement\Enums\PlacementChangeStatus;
 use App\Enrollment\Placement\Models\PlacementChangeRequest;
 
 final class RejectPlacementChangeAction extends BaseAction
@@ -18,7 +19,7 @@ final class RejectPlacementChangeAction extends BaseAction
 
         $this->transaction(function () use ($request, $reason) {
             $request->update([
-                'status' => 'rejected',
+                'status' => PlacementChangeStatus::REJECTED->value,
                 'rejection_reason' => $reason,
                 'processed_by' => auth()->id(),
                 'processed_at' => now(),
