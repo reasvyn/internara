@@ -35,6 +35,7 @@ return [
         'status_invalid_transition' => 'Cannot change status from :from to :to.',
         'status_invalid' => 'Invalid status selected.',
         'status_updated_reason' => 'Status updated by administrator.',
+        'status_archived_bulk' => 'Account archived via bulk operation.',
         'account' => 'Account',
         'name_placeholder' => 'e.g. John Doe',
         'email_placeholder' => 'e.g. john@example.com',
@@ -212,6 +213,25 @@ return [
         'import_desc' => 'Import multiple users at once from a CSV file. First column: name, second column: email. Duplicate emails will be skipped.',
         'roles_title' => 'Roles & Access',
         'roles_desc' => 'Each user can have multiple roles. Roles determine which features and pages are accessible. Super admin has full access.',
+    ],
+
+    'home' => [
+        'page_title' => 'Home',
+        'registration_title' => 'Register for PKL',
+        'registration_desc' => 'Register your internship program directly through our online system. Fast, easy, and fully integrated.',
+        'registration_open' => 'Registration is open',
+        'registration_period' => 'Registration period: :start to :end',
+        'register_now' => 'Register Now',
+        'registration_upcoming' => 'Registration opening soon',
+        'registration_upcoming_period' => 'Registration will be open from :start to :end',
+        'registration_not_open_yet' => 'Registration is not open yet. Please check back when the registration period begins.',
+        'registration_closed' => 'Registration closed',
+        'registration_closed_desc' => 'Registration for this period has ended. Please contact your school administrator for more information.',
+        'registration_unavailable' => 'Registration period not set',
+        'registration_unavailable_desc' => 'The registration period has not been configured yet. Please check back later.',
+        'login_title' => 'Already have an account?',
+        'login_desc' => 'Sign in to access your dashboard, track progress, and manage your internship activities.',
+        'login_action' => 'Sign In',
     ],
 
     'user_management' => [

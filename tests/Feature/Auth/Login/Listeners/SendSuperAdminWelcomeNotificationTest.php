@@ -7,13 +7,10 @@ use App\Auth\Login\Listeners\SendSuperAdminWelcomeNotification;
 use App\Core\Contracts\SendsNotifications;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
-use Spatie\Permission\Models\Role;
 
 uses(LazilyRefreshDatabase::class);
 
-beforeEach(function () {
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
-});
+beforeEach(function () {});
 
 test('sends welcome notification on first super admin login', function () {
     $user = User::factory()->create([

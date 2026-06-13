@@ -5,8 +5,12 @@ declare(strict_types=1);
 use App\Certification\Certificate\Models\Certificate;
 use App\Certification\Certificate\Policies\CertificatePolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+
     $this->policy = app(CertificatePolicy::class);
 });
 

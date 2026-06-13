@@ -1,6 +1,6 @@
 # Session
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
 ## Purpose
 
@@ -10,12 +10,12 @@ The session layer manages user authentication state across HTTP requests. It rem
 
 ## Driver Strategy by Tier
 
-| Aspect           | Tier 1 (Entry)      | Tier 2 (Standard)     | Tier 3 (HA)        |
-| ---------------- | ------------------- | --------------------- | ------------------ |
-| **Driver**       | `database`          | `redis`               | `redis` (cluster)  |
-| **Setup**        | Auto-migrated table | Redis server required | Redis cluster      |
-| **Persistence**  | Durable (database)  | Memory + persistence  | Replicated         |
-| **Multi-server** | ✅ (shared DB)      | ✅ (shared Redis)     | ✅ (Redis cluster) |
+| Aspect           | Tier 1 (Shared Hosting / up to 500 registered users) | Tier 2 (Standard)     | Tier 3 (HA)        |
+| ---------------- | ---------------------------------------------------- | --------------------- | ------------------ |
+| **Driver**       | `database`                                           | `redis`               | `redis` (cluster)  |
+| **Setup**        | Auto-migrated table                                  | Redis server required | Redis cluster      |
+| **Persistence**  | Durable (database)                                   | Memory + persistence  | Replicated         |
+| **Multi-server** | ✅ (shared DB)                                       | ✅ (shared Redis)     | ✅ (Redis cluster) |
 
 Default for new installations: `database` driver. The sessions table is created by migration and requires no external service.
 

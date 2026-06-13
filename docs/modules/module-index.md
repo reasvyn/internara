@@ -1,7 +1,7 @@
 # Module Documentation Index
 
-> Last updated: 2026-06-10
-> Changes: sync — fix migrations (41→40), models (38+→37), add BaseAuthenticatable to base classes, policy count detail
+> Last updated: 2026-06-13
+> Changes: sync — fix migrations (40→48), models (37→42), policies (30→29), route files (18→17)
 
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire
@@ -369,15 +369,15 @@ All 19 modules are vertical slices cross-cutting the 12-layer architecture defin
 | Layer | Name              | Description                                                                                      |
 | ----- | ----------------- | ------------------------------------------------------------------------------------------------ |
 | 1     | Infrastructure    | PHP 8.4, Laravel 13, Composer/Spatie packages, npm assets                                        |
-| 2     | Persistence       | Database (SQLite/MySQL), 39 migrations, config, media library, cache, queue                      |
+| 2     | Persistence       | Database (SQLite/MySQL), 48 migrations, config, media library, cache, queue                      |
 | 3     | Core Contracts    | LabelEnum, StatusEnum, ColorableEnum, exception hierarchy                                        |
 | 4     | Core Base Classes | BaseModel, BaseAuthenticatable, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, BaseController, BaseFormRequest, BaseData, BaseEvent |
-| 5     | Module Models     | Eloquent models (37), UUID PKs, factories, seeders                                                |
+| 5     | Module Models     | Eloquent models (42), UUID PKs, factories, seeders                                                |
 | 6     | Module Rules      | Enums, Entities (final readonly), Data DTOs                                                      |
 | 7     | Business Ops      | Command Actions (mutations), Read Actions (queries), Process Actions (orchestration)             |
-| 8     | Authorization     | Policies (29 domain + 1 Base), RBAC (5 roles + 2 functional), spatie/permission                  |
+| 8     | Authorization     | Policies (26 domain + 3 base/traits), RBAC (5 roles + 2 functional), spatie/permission            |
 | 9     | Communication     | Events, Listeners, Notifications, Console Commands                                               |
-| 10    | HTTP Layer        | Controllers, Middleware, 18 module route files                                                   |
+| 10    | HTTP Layer        | Controllers, Middleware, 17 module route files (Evaluation pending)                              |
 | 11    | UI / Presentation | Livewire 4 components, Blade templates, maryUI + DaisyUI + Tailwind CSS v4                       |
 | 12    | Business Modules  | Each module is a vertical slice of layers 1–11                                                   |
 
@@ -385,4 +385,4 @@ Each module is a vertical slice cross-cutting all layers.
 
 ---
 
-_Last synchronized with architecture at 2026-06-10_
+_Last synchronized with architecture at 2026-06-13_

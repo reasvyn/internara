@@ -28,6 +28,7 @@ final class SetupInstallCommand extends Command
     protected $signature = 'setup:install
         {--force : Force installation even if already installed}
         {--check-only : Run environment audit without provisioning}
+        {--optimize : Cache config, routes, views, and events (production only)}
         {--url= : The application URL (e.g., https://internara.example.com)}';
 
     public function __construct(
@@ -69,10 +70,18 @@ final class SetupInstallCommand extends Command
             $tokenData = $this->generateToken->execute();
 
             $this->newLine();
-            $this->components->task(
-                __('setup.cli.tasks.optimize'),
-                fn () => $this->runOptimization(),
-            );
+
+            if ($this->option('optimize')) {
+                $this->components->task(
+                    __('setup.cli.tasks.optimize'),
+                    fn () => $this->runOptimization(),
+                );
+            } else {
+                $this->components->task(
+                    __('setup.cli.tasks.optimize_skip'),
+                    fn () => true,
+                );
+            }
 
             $this->newLine();
             $provider = app()->getProvider(AppServiceProvider::class);

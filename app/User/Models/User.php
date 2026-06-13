@@ -14,6 +14,7 @@ use App\User\Entities\StudentEntity;
 use App\User\Entities\SupervisorEntity;
 use App\User\Entities\TeacherEntity;
 use App\User\Enums\AccountStatus;
+use App\User\Observers\UserObserver;
 use App\User\Profile\Models\Profile;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -198,23 +199,21 @@ class User extends BaseAuthenticatable implements HasMedia
     public function setStatus(string|AccountStatus $status, ?string $reason = null): static
     {
         $value = $status instanceof AccountStatus ? $status->value : $status;
-        $this->update(['status' => $value]);
+        $this->forceFill(['status' => $value])->save();
 
         return $this;
     }
 
-    public function latestStatus(): ?string
+    public function latestStatus(): object
     {
-        return $this->status instanceof AccountStatus ? $this->status->value : $this->status;
+        $value = $this->status instanceof AccountStatus ? $this->status->value : $this->status;
+
+        return (object) ['name' => $value];
     }
 
     protected static function booted(): void
     {
-        static::deleting(function (User $user) {
-            if ($user->hasRole('superadmin')) {
-                throw new RuntimeException('Super administrator accounts cannot be deleted.');
-            }
-        });
+        static::observe(UserObserver::class);
     }
 
     public function profile(): HasOne

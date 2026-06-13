@@ -6,7 +6,10 @@ use App\Core\Channels\CustomDatabaseChannel;
 use App\SysAdmin\Announcement\Notifications\AnnouncementNotification;
 use App\User\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Notifications\Messages\MailMessage;
+
+uses(LazilyRefreshDatabase::class);
 
 test('implements should queue', function () {
     $notification = new AnnouncementNotification('Title', 'Message');

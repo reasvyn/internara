@@ -19,16 +19,16 @@
 7. [Notification Architecture](#7-notification-architecture)
 8. [Notification Naming](#8-notification-naming)
 9. [CustomDatabaseChannel](#9-customdatabasechannel)
-10. [SmartLogger Integration](#10-smartlogger-integration)
-11. [Event Flow Diagram](#11-event-flow-diagram)
+10. [SendsNotifications Contract](#10-sendsnotifications-contract)
+11. [SmartLogger Integration](#11-smartlogger-integration)
 12. [Testing Events and Listeners](#12-testing-events-and-listeners)
 
 ---
 
 ## 1. Event Architecture (BaseEvent Contract)
 
-All events **must** extend `App\Core\Events\BaseEvent`. The base class provides the foundational
-contract and a set of built-in capabilities:
+All events **must** extend `BaseEvent`. The base class provides the foundational contract and a set
+of built-in capabilities:
 
 | Trait / Method | Purpose |
 |---|---|
@@ -73,69 +73,36 @@ abstract class BaseEvent
 
 **Pattern:** `{Entity}{PastTenseAction}`
 
-The class name reads as a completed fact: `InternshipCreated`, `LoginFailed`, `StudentRegistered`.
+The class name reads as a completed fact: `{Entity}Created`, `{Login}Failed`, `{Student}Registered`.
 
 | Convention | Example |
 |---|---|
-| Entity + Created | `InternshipCreated`, `AcademicYearCreated` |
-| Entity + Activated | `AcademicYearActivated` |
-| Entity + Deleted | `DepartmentDeleted` |
-| Entity + Updated | `ProfileUpdated`, `PasswordUpdated`, `SettingUpdated` |
-| Entity + Succeeded | `LoginSucceeded` |
-| Entity + Failed | `LoginFailed` |
-| Entity + Finalized | `SetupFinalized` |
-| Entity + Read | `NotificationRead` |
-| Entity + Sent | `NotificationSent` |
+| Entity + Created | `{Entity}Created` |
+| Entity + Activated | `{Entity}Activated` |
+| Entity + Deleted | `{Entity}Deleted` |
+| Entity + Updated | `{Entity}Updated` |
+| Entity + Succeeded | `{Entity}Succeeded` |
+| Entity + Failed | `{Entity}Failed` |
+| Entity + Finalized | `{Entity}Finalized` |
+| Entity + Read | `{Entity}Read` |
+| Entity + Sent | `{Entity}Sent` |
 
-The `eventName()` method returns a **dot-notation key** (`internship.created`, `login.failed`)
-that doubles as the log translation key for SmartLogger.
+The `eventName()` method returns a **dot-notation key** (`{entity}.{action}`) that doubles as the
+log translation key for SmartLogger.
 
-### Examples
+### Generic Example
 
 ```php
-// app/Program/Internship/Events/InternshipCreated.php
-final class InternshipCreated extends BaseEvent
+final class {Entity}{Action} extends BaseEvent
 {
     public function __construct(
-        public Internship $internship,
-        public ?User $createdBy = null,
+        public Model $subject,
+        public ?Model $actor = null,
     ) {}
 
     public function eventName(): string
     {
-        return 'internship.created';
-    }
-}
-```
-
-```php
-// app/Auth/Login/Events/LoginFailed.php
-final class LoginFailed extends BaseEvent
-{
-    public function __construct(
-        public string $identifier,
-        public string $reason,
-    ) {}
-
-    public function eventName(): string
-    {
-        return 'login.failed';
-    }
-}
-```
-
-```php
-// app/Setup/SetupWizard/Events/SetupFinalized.php
-final class SetupFinalized extends BaseEvent
-{
-    public function __construct(
-        public ?string $departmentId,
-        public DateTimeImmutable $installedAt,
-    ) {}
-
-    public function eventName(): string
-    {
-        return 'setup.finalized';
+        return '{entity}.{action}';
     }
 }
 ```
@@ -155,44 +122,30 @@ applies three rules:
 
 Hidden properties: `socket` and any key starting with `__` are skipped.
 
-### Payload Conversion Example
+### Payload Conversion
 
 ```php
-$event = new InternshipCreated(
-    internship: $internship,       // Model → 'internship_id' => 'uuid-...'
-    createdBy: $user,              // Model → 'created_by_id' => 'uuid-...'
+$event = new {Entity}{Action}(
+    subject: $model,       // Model → 'subject_id' => 'uuid-...'
+    actor: $user,          // Model → 'actor_id' => 'uuid-...'
 );
 
 $event->toPayload();
 // [
-//   'internship_id' => '0195abc...',
-//   'created_by_id' => '0195def...',
+//   'subject_id' => '0195abc...',
+//   'actor_id' => '0195def...',
 // ]
 ```
 
-For events with only scalar properties (e.g. `SetupFinalized`), the payload is a direct 1:1 map:
-
-```php
-$event = new SetupFinalized(
-    departmentId: '0195abc...',
-    installedAt: new DateTimeImmutable('2026-06-10 12:00:00'),
-);
-
-$event->toPayload();
-// [
-//   'departmentId' => '0195abc...',
-//   'installedAt' => '2026-06-10 12:00:00',  // DateTimeImmutable has no toArray(), skipped
-// ]
-```
-
-> DateTimeImmutable has no `toArray()`, so it is silently skipped. If you need it in the payload,
-> pass it as a formatted string or override `toPayload()`.
+For events with only scalar properties, the payload is a direct 1:1 map. Objects that do not
+implement `toArray()` (e.g. `DateTimeImmutable`) are silently skipped. Override `toPayload()` if
+needed.
 
 ---
 
 ## 4. Event Dispatch Patterns
 
-There are three ways to dispatch events in the codebase:
+There are three ways to dispatch events:
 
 ### 4a. Static `Event::dispatch()` / `::dispatch()`
 
@@ -201,8 +154,8 @@ Use when dispatching from a non-Action context or when you need the event immedi
 ```php
 use Illuminate\Support\Facades\Event;
 
-Event::dispatch(new LoginSucceeded($user, $data->identifier));
-Event::dispatch(new LoginFailed($data->identifier, 'user_not_found'));
+Event::dispatch(new {Entity}{Action}($subject));
+{Entity}{Action}::dispatch($subject);
 ```
 
 ### 4b. `BaseAction::dispatchEvent()` (Deferred Dispatch)
@@ -211,15 +164,15 @@ Inside Command or Process Actions, use `$this->dispatchEvent()` to **defer** dis
 transaction commits. This prevents listeners from seeing uncommitted data:
 
 ```php
-class SubmitLogbookAction extends BaseAction
+class {Entity}Action extends BaseAction
 {
-    public function execute(Logbook $entry, array $data): Logbook
+    public function execute(Model $entry, array $data): Model
     {
         return $this->transaction(function () use ($entry, $data) {
-            $entry->update(['status' => LogbookStatus::SUBMITTED->value]);
+            $entry->update($data);
 
-            $this->log('logbook_submitted', $entry);
-            $this->dispatchEvent(new LogbookSubmitted($entry));
+            $this->log('{entity}_{action}', $entry);
+            $this->dispatchEvent(new {Entity}{Action}($entry));
 
             return $entry;
         });
@@ -239,21 +192,21 @@ When `SmartLogger::event()` receives a `BaseEvent` instance instead of a string,
 2. Merge `$event->toPayload()` into the log payload.
 
 ```php
-SmartLogger::success('User registered')
-    ->event(new UserRegistered($user))
-    ->for($admin)
+SmartLogger::success('{Entity} {Action}')
+    ->event(new {Entity}{Action}($subject))
+    ->for($user)
     ->save();
 ```
 
 This is equivalent to:
 
 ```php
-event(new UserRegistered($user));
+event(new {Entity}{Action}($subject));
 
-SmartLogger::success('User registered')
-    ->event('user_registered')
-    ->withPayload((new UserRegistered($user))->toPayload())
-    ->for($admin)
+SmartLogger::success('{Entity} {Action}')
+    ->event('{entity}_{action}')
+    ->withPayload((new {Entity}{Action}($subject))->toPayload())
+    ->for($user)
     ->save();
 ```
 
@@ -267,11 +220,9 @@ Listeners are named by what they **do**, not what event they handle:
 
 | Name | Event | Action |
 |---|---|---|
-| `NotifyAdminsInternshipCreated` | `InternshipCreated` | Sends notification to admin users |
-| `InvalidateSettingsCache` | `SettingUpdated` | Clears cached settings |
-| `ClearUnreadNotificationCache` | `NotificationSent` / `NotificationRead` | Clears per-user unread count |
-| `LogSetupFinalized` | `SetupFinalized` | Writes setup completion to activity log |
-| `ClearDashboardCacheOnYearChange` | `AcademicYearCreated` / `AcademicYearActivated` | Invalidates dashboard stats |
+| `{Action}{Entity}` | `{Entity}{Action}` | Sends notification, clears cache, logs activity, etc. |
+| `{Action}{Entity}` | `{Entity}{Action}` | Clears cached settings |
+| `{Action}{Entity}` | `{Entity}{Action}` | Invalidates per-user cache |
 
 ### Registration
 
@@ -281,20 +232,8 @@ Listeners are registered in `config/event.php` under the `listen` key:
 // config/event.php
 return [
     'listen' => [
-        App\Setup\SetupWizard\Events\SetupFinalized::class => [
-            App\Setup\SetupWizard\Listeners\LogSetupFinalized::class,
-        ],
-
-        App\Program\Internship\Events\InternshipCreated::class => [
-            App\Program\Internship\Listeners\NotifyAdminsInternshipCreated::class,
-        ],
-
-        // A single listener can handle multiple events:
-        App\User\Notifications\Events\NotificationSent::class => [
-            App\User\Notifications\Listeners\ClearUnreadNotificationCache::class,
-        ],
-        App\User\Notifications\Events\NotificationRead::class => [
-            App\User\Notifications\Listeners\ClearUnreadNotificationCache::class,
+        {Entity}{Action}::class => [
+            {Listener}::class,
         ],
     ],
 ];
@@ -333,46 +272,26 @@ Listeners performing I/O (email, cache clear, API calls) **must** implement `Sho
 pushes the listener onto the queue worker, keeping the Action response fast.
 
 ```php
-class NotifyAdminsInternshipCreated implements ShouldQueue
+class {Listener} implements ShouldQueue
 {
-    public function handle(InternshipCreated $event): void
+    public function handle({Entity}{Action} $event): void
     {
-        $admins = User::role(['super_admin', 'admin'])->get();
-
-        Notification::send(
-            $admins,
-            new InternshipCreatedNotification(
-                internshipName: $event->internship->name,
-                createdByName: $event->createdBy?->name,
-            ),
-        );
+        // I/O-bound work (email, API calls, cache warmup)
     }
 }
 ```
 
-### Listener ShouldQueue Inventory
-
-| Listener | Implements ShouldQueue | Reason |
-|---|---|---|
-| `NotifyAdminsInternshipCreated` | ✅ Yes | Sends email/broadcast to multiple users |
-| `InvalidateSettingsCache` | ❌ No | Synchronous cache forget (microseconds) |
-| `ClearUnreadNotificationCache` | ❌ No | Synchronous cache forget (microseconds) |
-| `ClearDashboardCacheOnYearChange` | ❌ No | Synchronous cache forget (microseconds) |
-| `ClearDashboardCacheOnDepartmentChange` | ❌ No | Synchronous cache forget (microseconds) |
-| `ClearDashboardOnRegistration` | ❌ No | Synchronous cache forget (microseconds) |
-| `ClearDashboardOnCompanyChange` | ❌ No | Synchronous cache forget (microseconds) |
-| `LogSetupFinalized` | ❌ No | Synchronous activity log write |
-
 Listeners should use union types in `handle()` when they respond to multiple event types:
 
 ```php
-public function handle(NotificationSent|NotificationRead $event): void
+public function handle({Entity}{Action}|{OtherEntity}{Action} $event): void
 {
-    Cache::forget(
-        config('cache-keys.notification_unread').$event->notification->user_id,
-    );
+    // Shared side effect
 }
 ```
+
+**Rule of thumb:** If the listener does anything slower than a cache `forget()`, it should be queued.
+Synchronous listeners are acceptable only for microsecond operations (cache forget, in-memory state).
 
 ---
 
@@ -401,13 +320,13 @@ public function via($notifiable): array
 ### Notification Structure
 
 ```php
-class InternshipCreatedNotification extends Notification implements ShouldQueue
+class {Entity}{Type}Notification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public function __construct(
-        public string $internshipName,
-        public ?string $createdByName = null,
+        public string $subjectName,
+        public ?string $actorName = null,
     ) {}
 
     public function via($notifiable): array
@@ -420,26 +339,26 @@ class InternshipCreatedNotification extends Notification implements ShouldQueue
     public function toBroadcast($notifiable): array
     {
         return [
-            'title' => __('notifications.internship_created.title'),
-            'message' => __('notifications.internship_created.broadcast', [
-                'name' => $this->internshipName,
+            'title' => __('notifications.{entity}_{type}.title'),
+            'message' => __('notifications.{entity}_{type}.broadcast', [
+                'name' => $this->subjectName,
             ]),
-            'link' => '/admin/internships',
+            'link' => '/{route}',
         ];
     }
 
     public function toCustomDatabase($notifiable): array
     {
         return [
-            'type' => 'internship_created',
-            'title' => __('notifications.internship_created.title'),
-            'message' => __('notifications.internship_created.database', [
-                'name' => $this->internshipName,
+            'type' => '{entity}_{type}',
+            'title' => __('notifications.{entity}_{type}.title'),
+            'message' => __('notifications.{entity}_{type}.database', [
+                'name' => $this->subjectName,
             ]),
-            'link' => '/admin/internships',
+            'link' => '/{route}',
             'data' => [
-                'internship_name' => $this->internshipName,
-                'created_by' => $this->createdByName,
+                'subject_name' => $this->subjectName,
+                'actor' => $this->actorName,
             ],
         ];
     }
@@ -452,10 +371,10 @@ Notifications are sent via `Notification::send()` or `$notifiable->notify()`:
 
 ```php
 Notification::send(
-    $admins,
-    new InternshipCreatedNotification(
-        internshipName: $event->internship->name,
-        createdByName: $event->createdBy?->name,
+    $recipients,
+    new {Entity}{Type}Notification(
+        subjectName: $event->subject->name,
+        actorName: $event->actor?->name,
     ),
 );
 ```
@@ -463,14 +382,7 @@ Notification::send(
 ### ShouldQueue for Notifications
 
 Every notification must implement `ShouldQueue` + `use Queueable` to deliver channels through the
-queue worker, except trivial synchronous notifications:
-
-```php
-class ActivationCodeNotification extends Notification  // No ShouldQueue
-{
-    // Email + database only, sent synchronously during activation
-}
-```
+queue worker, except trivial synchronous notifications.
 
 ---
 
@@ -480,49 +392,19 @@ class ActivationCodeNotification extends Notification  // No ShouldQueue
 
 The class name combines the subject entity with the notification type, suffixed with `Notification`:
 
-| Class | Entity | Type | Module |
-|---|---|---|---|
-| `InternshipCreatedNotification` | Internship | Created | Program |
-| `WelcomeNotification` | (none) | Welcome | User |
-| `AccountStatusNotification` | Account | Status | User |
-| `IncidentReportedNotification` | Incident | Reported | Incident |
-| `AssignmentNotification` | Assignment | General | Assignment |
-| `SubmissionFeedbackNotification` | Submission | Feedback | Assignment |
-| `RegistrationNotification` | Registration | General | Program |
-| `SuperAdminRecoveredNotification` | SuperAdmin | Recovered | Auth |
-| `AnnouncementNotification` | (none) | Announcement | SysAdmin |
-| `ActivationCodeNotification` | (none) | Activation | SysAdmin |
-| `GeneralNotification` | (none) | General | User |
+| Pattern | Entity | Type |
+|---|---|---|
+| `{Entity}CreatedNotification` | Entity | Created |
+| `{Entity}{Type}Notification` | Entity | Type |
+| `WelcomeNotification` | (none) | Welcome |
+| `{Entity}{Type}Notification` | Entity | Type |
 
 ---
 
 ## 9. CustomDatabaseChannel
 
 The `CustomDatabaseChannel` is the internal notification delivery mechanism. It writes to the
-`notifications` table via `SendsNotifications` (implemented by `SendNotificationAction`).
-
-### Flow
-
-```
-      Notification::send()
-              │
-              ▼
-    CustomDatabaseChannel::send()
-              │
-    ┌─────────┴─────────┐
-    ▼                   ▼
-  toCustomDatabase()   SmartLogger warning
-  exists?              if type/title missing
-    │
-    ▼
-  SendNotificationAction::execute()
-    │
-    ▼
-  Notification::create({user_id, type, title, message, data, link})
-    │
-    ▼
-  Event::dispatch(new NotificationSent($notification))
-```
+`notifications` table via `SendsNotifications`.
 
 ### toCustomDatabase Contract
 
@@ -530,30 +412,11 @@ Each notification must implement `toCustomDatabase($notifiable): array` returnin
 
 | Key | Required | Description |
 |---|---|---|
-| `type` | ✅ Yes | Machine-readable type string (e.g. `'internship_created'`) |
+| `type` | ✅ Yes | Machine-readable type string (e.g. `'{entity}_{action}'`) |
 | `title` | ✅ Yes | Human-readable title (use `__()`) |
 | `message` | ❌ No | Human-readable body text |
 | `link` | ❌ No | URL to navigate to |
 | `data` | ❌ No | Arbitrary metadata array |
-
-### SendsNotifications Contract
-
-```php
-interface SendsNotifications
-{
-    public function execute(
-        string $userId,
-        string $type,
-        string $title,
-        ?string $message = null,
-        ?array $data = null,
-        ?string $link = null,
-    ): mixed;
-}
-```
-
-`SendNotificationAction` implements this interface, validates the input, creates the `Notification`
-model record, and dispatches `NotificationSent`.
 
 ### Missing Key Warnings
 
@@ -571,11 +434,32 @@ if (! isset($data['type'])) {
 
 ---
 
-## 10. SmartLogger Integration
+## 10. SendsNotifications Contract
+
+```php
+interface SendsNotifications
+{
+    public function execute(
+        string $userId,
+        string $type,
+        string $title,
+        ?string $message = null,
+        ?array $data = null,
+        ?string $link = null,
+    ): mixed;
+}
+```
+
+An action implementing this interface validates the input, creates the `Notification` model record,
+and dispatches `{Entity}Sent`.
+
+---
+
+## 11. SmartLogger Integration
 
 Events extending `BaseEvent` integrate with SmartLogger in two ways.
 
-### 10a. BaseAction::log() — Event Name as Log Key
+### 11a. BaseAction::log() — Event Name as Log Key
 
 The `BaseAction::log()` method accepts a string action key that doubles as a log event name:
 
@@ -596,7 +480,7 @@ protected function log(string $action, ?Model $subject = null, array $payload = 
 This writes a system log and activity log entry with the action key as the event name. It does
 **not** dispatch a `BaseEvent` — use `dispatchEvent()` for that.
 
-### 10b. SmartLogger::event() with BaseEvent Instance
+### 11b. SmartLogger::event() with BaseEvent Instance
 
 When `SmartLogger::event()` receives a `BaseEvent` instance:
 
@@ -605,147 +489,67 @@ When `SmartLogger::event()` receives a `BaseEvent` instance:
 3. **Resolves** the event name from `$event->eventName()` for log translation.
 
 ```php
-SmartLogger::success('User created')
-    ->event(new TestUserCreatedEvent('uuid-123', 'test@example.com'))
-    ->module('TestModule')
+SmartLogger::success('{Entity} {Action}')
+    ->event(new {Entity}{Action}('uuid-123', 'example@test.com'))
+    ->module('{Module}')
     ->activityOnly()
     ->save();
 ```
 
-This produces:
-- A dispatched `TestUserCreatedEvent` caught by any registered listeners.
-- An activity log entry with `event = 'user_created'` and payload containing
-  `['userId' => 'uuid-123', 'email' => 'test@example.com']`.
-
 ---
 
-## 11. Event Flow Diagram
+## 12. Testing Events and Listeners
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      Command / Process Action                    │
-│                                                                  │
-│  public function execute(Data $data): Model                      │
-│  {                                                               │
-│      return $this->transaction(function () use ($data) {         │
-│          // 1. Persist                                           │
-│          $model = $this->repo->create($data);                    │
-│                                                                  │
-│          // 2. Log (SmartLogger writes to system + activity log) │
-│          $this->log('entity_action', $model);                    │
-│                                                                  │
-│          // 3. Defer event dispatch until transaction commits    │
-│          $this->dispatchEvent(new EntityActioned($model));       │
-│                                                                  │
-│          return $model;                                          │
-│      });                                                         │
-│  }                                                               │
-└───────────────────────┬─────────────────────────────────────────┘
-                        │
-                        ▼  (after transaction commits)
-              ┌───────────────────┐
-              │  event() global   │
-              │  helper fires     │
-              │  BaseEvent        │
-              └────────┬──────────┘
-                       │
-          ┌────────────┴──────────────┐
-          ▼                           ▼
-  ┌─────────────────┐       ┌───────────────────────┐
-  │  Listener #1     │       │  Listener #2           │
-  │  (sync)          │       │  (ShouldQueue)         │
-  │                  │       │                        │
-  │  e.g.            │       │  e.g.                  │
-  │  InvalidateCache │       │  NotifyAdmins...       │
-  └────────┬─────────┘       └───────────┬───────────┘
-           │                             │
-           ▼                             ▼
-  ┌──────────────────┐        ┌──────────────────────┐
-  │ Cache::forget()  │        │ Notification::send() │
-  └──────────────────┘        └──────────┬───────────┘
-                                         │
-                                         ▼
-                                ┌──────────────────┐
-                                │ mail              │
-                                │ broadcast         │
-                                │ CustomDatabase    │
-                                └───────┬──────────┘
-                                        │
-                                        ▼
-                               ┌──────────────────┐
-                               │ NotificationSent │
-                               │ event dispatched │
-                               └──────────────────┘
-```
-
----
-
-## 14. Testing Events and Listeners
-
-### 14a. Event Dispatch Tests
+### 12a. Event Dispatch Tests
 
 Use `Event::fake()` to capture dispatched events without running listeners:
 
 ```php
 use Illuminate\Support\Facades\Event;
 
-test('academic year created event is dispatched via action', function () {
-    Event::fake([AcademicYearCreated::class]);
+test('{entity} {action} event is dispatched via action', function () {
+    Event::fake([{Entity}{Action}::class]);
 
-    app(CreateAcademicYearAction::class)->execute([
-        'name' => '2025/2026',
-        'start_date' => '2025-07-01',
-        'end_date' => '2026-06-30',
-    ]);
+    // Execute the action that should dispatch the event
 
-    Event::assertDispatched(AcademicYearCreated::class);
+    Event::assertDispatched({Entity}{Action}::class);
 });
 ```
 
-### 14b. Payload Assertions
+### 12b. Payload Assertions
 
 Assert the event was dispatched with specific properties:
 
 ```php
-test('login succeeded event contains correct user data', function () {
-    $user = User::factory()->create();
+test('{entity} {action} event contains correct data', function () {
+    Event::fake([{Entity}{Action}::class]);
 
-    Event::fake([LoginSucceeded::class]);
+    // Execute the action
 
-    $this->post('/login', [
-        'username' => $user->username,
-        'password' => 'password',
-    ]);
-
-    Event::assertDispatched(LoginSucceeded::class, function (LoginSucceeded $event) use ($user) {
-        return $event->user->is($user) && $event->identifier === $user->username;
+    Event::assertDispatched({Entity}{Action}::class, function ({Entity}{Action} $event) {
+        return $event->property === 'expected_value';
     });
 });
 ```
 
-### 14c. Event Finalization Test
-
-Test the event class directly with `Event::dispatch()`:
+### 12c. Direct Event Dispatch Test
 
 ```php
-test('setup finalized event contains department id and installed at', function () {
+test('{entity} {action} event properties', function () {
     Event::fake();
 
     Event::dispatch(
-        new SetupFinalized(
-            departmentId: 'dept-123',
-            installedAt: new DateTimeImmutable('2026-01-01 00:00:00'),
-        ),
+        new {Entity}{Action}(property: 'value', other: 'value2'),
     );
 
-    Event::assertDispatched(SetupFinalized::class, function (SetupFinalized $event) {
-        return $event->departmentId === 'dept-123'
-            && $event->installedAt->format('Y-m-d') === '2026-01-01';
+    Event::assertDispatched({Entity}{Action}::class, function ({Entity}{Action} $event) {
+        return $event->property === 'value'
+            && $event->other === 'value2';
     });
 });
 ```
 
-### 14d. SmartLogger + BaseEvent Integration Test
+### 12d. SmartLogger + BaseEvent Integration Test
 
 Test that SmartLogger dispatches the `BaseEvent` and merges its payload:
 
@@ -753,31 +557,31 @@ Test that SmartLogger dispatches the `BaseEvent` and merges its payload:
 test('smart logger dispatches base event and writes activity log', function () {
     Event::fake();
 
-    $event = new TestUserCreatedEvent('uuid-123', 'test@example.com');
+    $event = new {Entity}{Action}('uuid-123', 'test@example.com');
 
-    SmartLogger::info('User created')
+    SmartLogger::info('{Entity} {Action}')
         ->event($event)
-        ->module('TestModule')
+        ->module('{Module}')
         ->activityOnly()
         ->save();
 
-    Event::assertDispatched(TestUserCreatedEvent::class);
+    Event::assertDispatched({Entity}{Action}::class);
 
     $log = ActivityLog::latest()->first();
     expect($log)->not->toBeNull();
-    expect($log->event)->toBe('user_created');
-    expect($log->description)->toBe('User created');
+    expect($log->event)->toBe('{entity}_{action}');
+    expect($log->description)->toBe('{Entity} {Action}');
 });
 ```
 
-### 14e. BaseEvent Unit Tests
+### 12e. BaseEvent Unit Tests
 
 The `BaseEvent` itself is tested for contract compliance:
 
 ```php
 test('base event to payload extracts model as id', function () {
     $model = createTestModel('uuid-123');
-    $event = new MockEventWithModel('update', $model);
+    $event = new {Event}('update', $model);
 
     $payload = $event->toPayload();
 
@@ -789,29 +593,21 @@ test('base event to payload extracts model as id', function () {
 });
 
 test('base event is dispatchable', function () {
-    expect(method_exists(MockLogEvent::class, 'dispatch'))->toBeTrue();
+    expect(method_exists({Event}::class, 'dispatch'))->toBeTrue();
 });
 ```
 
-### 14f. Listener Behaviour Test
+### 12f. Listener Behaviour Test
 
 To test listener behaviour end-to-end, allow the event to dispatch and assert the side effect:
 
 ```php
-test('notification sent invalidates unread cache', function () {
-    $user = User::factory()->create();
-    $notification = Notification::factory()->create(['user_id' => $user->id]);
+test('{side effect} occurs on {event}', function () {
+    // Set up preconditions
 
-    Cache::put(
-        config('cache-keys.notification_unread').$user->id,
-        5,
-    );
+    Event::dispatch(new {Entity}{Action}($subject));
 
-    Event::dispatch(new NotificationSent($notification));
-
-    expect(Cache::has(
-        config('cache-keys.notification_unread').$user->id,
-    ))->toBeFalse();
+    // Assert side effect (cache cleared, notification sent, etc.)
 });
 ```
 

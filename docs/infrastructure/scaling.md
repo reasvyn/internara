@@ -1,10 +1,12 @@
 # Scaling Guide
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
-This document is the operational companion to [Infrastructure](infrastructure.md). It describes _when_ and _how_ to scale Internara from a single-user dev setup to production serving 1500–2000 concurrent users.
+This document is the operational companion to [Infrastructure](infrastructure.md). It describes _when_ and _how_ to scale Internara from a shared hosting setup serving 500 registered users to a multi-server high-availability cluster serving 2000+.
 
-The philosophy is **start simple, scale by measured need** — codified in [ADR: Gradual Migration](../adr/adr-gradual-migration.md).
+User counts in this document refer to **total registered users per PKL period**, not concurrent users. For Internara's usage patterns, peak concurrency is typically 10-15% of registered users.
+
+The philosophy is **start simple, scale by measured need** -- codified in [ADR: Gradual Migration](../adr/adr-gradual-migration.md).
 
 ---
 
@@ -12,17 +14,19 @@ The philosophy is **start simple, scale by measured need** — codified in [ADR:
 
 Do NOT scale preemptively. Scale when you observe these symptoms:
 
-| Symptom                                       | Probable Cause                           | Action                                    | Tier Trigger    |
-| --------------------------------------------- | ---------------------------------------- | ----------------------------------------- | --------------- |
-| SQLite "database is locked" errors            | Concurrent writes exceed SQLite capacity | Switch to MySQL/PostgreSQL                | MVP → Tier 2    |
-| Page load > 500ms (50th percentile)           | Missing cache or slow queries            | Enable Redis cache, warm caches           | MVP → Tier 2    |
-| Queue backlog > 100 jobs for > 5 min          | Sync queue blocking HTTP                 | Switch to Redis queue, start workers      | MVP → Tier 2    |
-| PHP-FPM max children reached (502 errors)     | Insufficient workers                     | Increase `pm.max_children`, add RAM       | Tier 2 → Tier 3 |
-| Disk > 85% full                               | Media accumulation                       | Prune, archive, or migrate to S3          | Any tier        |
-| Database CPU > 80% for > 10 min               | Query bottleneck                         | Add indexes, then add read replica        | Tier 2 → Tier 3 |
-| Rate limiter blocking legitimate users at NAT | IP-only throttle                         | Switch to user-based rate limiting        | Tier 3          |
-| Session cache hit rate < 90%                  | File/database session too slow           | Switch to Redis session                   | MVP → Tier 2    |
-| 5xx errors during peak hours                  | Resource exhaustion                      | Profile, then vertical → horizontal scale | Any tier        |
+| Symptom                                       | Probable Cause                           | Action                                    | Tier Trigger      |
+| --------------------------------------------- | ---------------------------------------- | ----------------------------------------- | ----------------- |
+| Page load > 1s (50th percentile) on shared    | Missing cache or slow queries            | Enable OpCache, optimize queries          | Tier 1 (Shared)   |
+| MySQL connection limit errors                 | Too many concurrent PHP-FPM children     | Reduce `pm.max_children`, check provider  | Tier 1 (Shared)   |
+| Email sending blocks page response > 3s       | Sync queue delaying HTTP                 | Switch to Redis queue, start workers      | Tier 1 -> Tier 2  |
+| Media conversions make uploads feel sluggish  | Sync queue blocking                      | Switch to Redis, async conversions        | Tier 1 -> Tier 2  |
+| Queue backlog > 100 jobs for > 5 min          | Sync queue blocking HTTP                 | Switch to Redis queue, start workers      | Tier 1 -> Tier 2  |
+| PHP-FPM max children reached (502 errors)     | Insufficient workers                     | Increase `pm.max_children`, add RAM       | Tier 2 -> Tier 3  |
+| Disk > 85% full                               | Media accumulation                       | Prune, archive, or migrate to S3          | Any tier          |
+| Database CPU > 80% for > 10 min               | Query bottleneck                         | Add indexes, then add read replica        | Tier 2 -> Tier 3  |
+| Rate limiter blocking legitimate users at NAT | IP-only throttle                         | Switch to user-based rate limiting        | Tier 3            |
+| Session cache hit rate < 90%                  | File/database session too slow           | Switch to Redis session                   | Tier 1 -> Tier 2  |
+| 5xx errors during peak hours                  | Resource exhaustion                      | Profile, then vertical -> horizontal scale | Any tier          |
 
 ### Do NOT optimize until:
 
@@ -35,21 +39,23 @@ Do NOT scale preemptively. Scale when you observe these symptoms:
 
 ## 2. Tier Transitions
 
-### MVP → Tier 2 (<50 → 50–200 users)
+### Tier 1 (Shared) -> Tier 2 (VPS) [500 -> 500-2000 registered users]
 
 **What changes:**
 
-| Concern          | MVP (default)         | Tier 2                          |
-| ---------------- | --------------------- | ------------------------------- |
-| Database engine  | SQLite (auto)         | MySQL 8+ / MariaDB / PostgreSQL |
-| Cache driver     | `file`                | `redis`                         |
-| Session driver   | `database`            | `redis`                         |
-| Queue driver     | `sync`                | `redis`                         |
-| Queue workers    | none (inline)         | Supervisor (dual pipelines)     |
-| Cron             | webhook fallback      | system cron                     |
-| Media storage    | `public` disk (local) | local + backup to S3            |
-| Monitoring       | log files only        | Pulse + SmartLogger             |
-| PHP-FPM children | 10                    | 25                              |
+| Concern          | Tier 1 (Shared)     | Tier 2 (VPS)                     |
+| ---------------- | ------------------- | -------------------------------- |
+| Server           | Shared hosting      | VPS (2 CPU, 4 GB RAM, 50 GB SSD) |
+| Database engine  | MySQL / MariaDB     | MySQL 8+ / PostgreSQL (dedicated)|
+| Cache driver     | `file`              | `redis`                          |
+| Session driver   | `database`          | `redis`                          |
+| Queue driver     | `sync`              | `redis`                          |
+| Queue workers    | none (inline)       | Supervisor (dual pipelines)      |
+| Cron             | webhook fallback    | system cron                      |
+| Media storage    | `public` disk (local) | local + backup to S3           |
+| Monitoring       | log files only      | Pulse + SmartLogger              |
+| PHP-FPM children | 10                  | 25                               |
+| Web server       | Apache / Nginx      | Nginx + HTTPS (Let's Encrypt)    |
 
 **Steps:**
 
@@ -117,24 +123,24 @@ stopwaitsecs=3600
 
 12. Configure system cron: `* * * * * cd /path/to/app && php artisan schedule:run >> /dev/null 2>&1`
 13. Run `php artisan optimize`
-14. Run `php artisan setup:install` and complete the wizard
-15. Verify: `php artisan system:health` — all checks pass
+14. Run `php artisan setup:install` if not already completed
+15. Verify: `php artisan system:health` -- all checks pass
 
-### Tier 2 → Tier 3 (50–200 → 200–1500+ users)
+### Tier 2 -> Tier 3 (VPS -> HA) [500-2000 -> 2000+ registered users]
 
 **What changes:**
 
-| Concern       | Tier 2              | Tier 3                    |
-| ------------- | ------------------- | ------------------------- |
-| App servers   | 1                   | 2+ (Nginx load-balanced)  |
-| Database      | single (read/write) | primary + read replica(s) |
-| Redis         | single instance     | cluster (3 nodes min)     |
-| Queue workers | 2 per pipeline      | 4–8 per pipeline          |
-| Session       | Redis single        | Redis cluster             |
-| Cache         | Redis single        | Redis cluster             |
-| Media storage | local + backup      | S3 primary                |
-| Rate limiting | IP-based            | user-based                |
-| Monitoring    | Pulse               | Pulse + APM (Blackfire)   |
+| Concern       | Tier 2 (VPS)        | Tier 3 (HA)                  |
+| ------------- | ------------------- | ---------------------------- |
+| App servers   | 1                   | 2+ (Nginx load-balanced)     |
+| Database      | single (read/write) | primary + read replica(s)    |
+| Redis         | single instance     | cluster (3 nodes min)        |
+| Queue workers | 2 per pipeline      | 4-8 per pipeline             |
+| Session       | Redis single        | Redis cluster                |
+| Cache         | Redis single        | Redis cluster                |
+| Media storage | local + backup      | S3 primary                   |
+| Rate limiting | IP-based            | user-based                   |
+| Monitoring    | Pulse               | Pulse + APM (Blackfire)      |
 
 **Steps (in order):**
 
@@ -186,7 +192,7 @@ php artisan media:migrate-to-s3
 
 #### Phase D: App Server Scaling
 
-1. Provision additional app servers (same spec: 2–4 CPU, 4 GB RAM)
+1. Provision additional app servers (same spec: 2-4 CPU, 4 GB RAM)
 2. Configure Nginx as load balancer with `least_conn`:
 
 ```nginx
@@ -211,7 +217,7 @@ server {
 }
 ```
 
-3. Configure Supervisor on each app server (4–8 workers per pipeline depending on RAM)
+3. Configure Supervisor on each app server (4-8 workers per pipeline depending on RAM)
 
 #### Phase E: Rate Limiting
 
@@ -227,13 +233,13 @@ RateLimiter::for('global', function (Request $request) {
 
 ## 3. Configuration Changes Summary (.env)
 
-All scaling transitions are achieved purely through `.env` changes — no code changes needed.
+All scaling transitions are achieved purely through `.env` changes -- no code changes needed.
 
-### From MVP to Tier 2
+### From Tier 1 (Shared) to Tier 2 (VPS)
 
 ```env
-# Before (MVP defaults)
-DB_CONNECTION=sqlite
+# Before (Tier 1 defaults)
+DB_CONNECTION=mysql
 CACHE_STORE=file
 SESSION_DRIVER=database
 QUEUE_CONNECTION=sync
@@ -247,7 +253,7 @@ QUEUE_CONNECTION=redis
 FILESYSTEM_DISK=local     # S3 backup via cron
 ```
 
-### From Tier 2 to Tier 3
+### From Tier 2 (VPS) to Tier 3 (HA)
 
 ```env
 # Before (Tier 2)
@@ -269,23 +275,22 @@ FILESYSTEM_DISK=s3
 
 ## 4. Queue Worker Sizing
 
-| Job Type           | Peak per user/day | 200 users | 1500 users |
+| Job Type           | Peak per user/day | 500 users | 2000 users |
 | ------------------ | ----------------- | --------- | ---------- |
-| Email notification | 3                 | 600       | 4500       |
-| Media conversion   | 1                 | 200       | 1500       |
-| Report generation  | 0.2               | 40        | 300        |
-| Certificate PDF    | 0.1               | 20        | 150        |
-| **Daily total**    | **4.3**           | **860**   | **6450**   |
+| Email notification | 3                 | 1500      | 6000       |
+| Media conversion   | 1                 | 500       | 2000       |
+| Report generation  | 0.2               | 100       | 400        |
+| Certificate PDF    | 0.1               | 50        | 200        |
+| **Daily total**    | **4.3**           | **2150**  | **8600**   |
 
-Worker throughput: ~50–100 jobs/min per worker process.
+Worker throughput: ~50-100 jobs/min per worker process.
 
-| Users     | Workers per pipeline | Notes                          |
-| --------- | -------------------- | ------------------------------ |
-| < 50      | sync (inline)        | No separate worker needed      |
-| 50–200    | 2                    | Redis queue, Supervisor        |
-| 200–500   | 4                    | Increase RAM per server        |
-| 500–1000  | 6                    | 2 app servers × 3 each         |
-| 1000–2000 | 8                    | 2 app servers × 4 each         |
+| Registered users | Workers per pipeline | Driver | Notes                          |
+| --------------- | -------------------- | ------ | ------------------------------ |
+| <= 500          | sync (inline)        | `sync` | No separate worker needed      |
+| 500-1000        | 2                    | `redis`| Supervisor on single VPS       |
+| 1000-2000       | 4                    | `redis`| Increase RAM per server        |
+| 2000+           | 6-8                  | `redis`| 2+ app servers x 3-4 each      |
 
 ---
 
@@ -312,32 +317,34 @@ Worker throughput: ~50–100 jobs/min per worker process.
 | SmartLogger (built-in)    | Business audit trail                     | Free        |
 | Uptime Kuma (self-hosted) | HTTP/S uptime + SSL expiry               | Free        |
 | Netdata (self-hosted)     | System metrics (CPU, RAM, disk, network) | Free        |
-| Sentry (or GlitchTip)     | Error tracking (optional)                | Free–$26/mo |
-| Blackfire.io              | Profiling (optional, Tier 3+)            | €59/mo      |
+| Sentry (or GlitchTip)     | Error tracking (optional)                | Free-$26/mo |
+| Blackfire.io              | Profiling (optional, Tier 3+)            | EUR 59/mo   |
 
 ---
 
 ## 6. PHP-FPM Scaling Formula
 
 ```
-Total RAM needed = (pm.max_children × memory_per_process) + OS overhead
+Total RAM needed = (pm.max_children x memory_per_process) + OS overhead
 
 Where:
-  memory_per_process ≈ 40–60 MB (Internara typical)
+  memory_per_process ~ 40-60 MB (Internara typical)
 
 Examples:
-  50 children × 50 MB + 512 MB OS = 3.0 GB  (Tier 2)
-  100 children × 50 MB + 1 GB OS = 6.0 GB    (Tier 3 per server)
+  10 children x 50 MB + 256 MB OS = 756 MB   (Tier 1, Shared Hosting)
+  25 children x 50 MB + 512 MB OS = 1.8 GB    (Tier 2, VPS)
+  50 children x 50 MB + 1 GB OS = 3.5 GB      (Tier 3 per server)
 ```
 
 ### Connection Pool Size Estimate
 
 ```
-Pool size = (peak_concurrent_users × 1.5) + buffer
+Pool size = (peak_concurrent_users x 1.5) + buffer
 
 Examples:
-  200 users × 1.5 + 50 = 350  →  pm.max_children = 50
-  1500 users × 1.5 + 100 = 2350 →  pm.max_children = 100 per server, 3 servers
+  500 registered users (~75 concurrent) x 1.5 + 25 = 138  -> pm.max_children = 10-15 (Tier 1)
+  1000 registered users (~150 concurrent) x 1.5 + 50 = 275 -> pm.max_children = 25 (Tier 2)
+  2000 registered users (~300 concurrent) x 1.5 + 50 = 500 -> pm.max_children = 50 per server (Tier 3)
 ```
 
 ---
@@ -347,11 +354,11 @@ Examples:
 | Pitfall                                        | Why                                      | Prevention                            |
 | ---------------------------------------------- | ---------------------------------------- | ------------------------------------- |
 | Switching to Redis without testing             | Missing `ext-redis` causes crash         | Run `php artisan system:health` first |
-| Using `sync` queue past 50 users               | HTTP requests block on media conversions | Switch to Redis at Tier 2             |
-| Forgetting `php artisan optimize`              | Routes/config not cached, 2–3× slower    | Include in deployment script          |
+| Using `sync` queue past 500 registered users   | HTTP requests block on media conversions | Switch to Redis at Tier 2             |
+| Forgetting `php artisan optimize`              | Routes/config not cached, 2-3x slower    | Include in deployment script          |
 | Not warming cache after deploy                 | First 100 requests are slow              | Add `php artisan optimize` to deploy  |
 | Using IP-based rate limiting at NAT            | 100+ students behind 1 IP get blocked    | Switch to user-based limiting         |
-| SQLite in production with >10 concurrent users | "database is locked" errors              | Switch to MySQL at Tier 2             |
+| MySQL on shared hosting with too many children | Provider kills your MySQL connections    | Set pm.max_children appropriately     |
 | File cache on multi-server                     | Each server has different cache state    | Use Redis at Tier 2+                  |
 | Not monitoring replica lag                     | Read queries return stale data           | Add replica lag alert                 |
 | S3 permissions misconfigured                   | 403 errors on media URLs                 | Test S3 access before switching       |
@@ -360,7 +367,19 @@ Examples:
 
 ## 8. Scaling Checklists
 
-### MVP → Tier 2 Transition Checklist
+### Tier 1 (Shared) Performance Optimization Checklist
+
+- [ ] OpCache enabled and configured (`opcache.memory_consumption=256`)
+- [ ] `APP_DEBUG=false` and `APP_ENV=production`
+- [ ] `php artisan optimize` run (config, route, view cache)
+- [ ] MySQL slow query log enabled and reviewed
+- [ ] PHP-FPM `pm.max_children` tuned for provider limits
+- [ ] Media conversion set to thumbnail-only (reduced processing)
+- [ ] Backup automation configured
+- [ ] Pulse monitoring verified
+- [ ] `php artisan system:health` -- all checks pass
+
+### Tier 1 -> Tier 2 Transition Checklist
 
 - [ ] VPS provisioned (2 CPU, 4 GB RAM, 50 GB SSD)
 - [ ] PHP 8.4 + all extensions installed (`system:health` passes)
@@ -374,12 +393,12 @@ Examples:
 - [ ] Supervisor configured (dual pipelines, numprocs=2 each)
 - [ ] System cron configured for scheduler
 - [ ] `php artisan optimize` run
-- [ ] `php artisan system:health` — all checks pass
+- [ ] `php artisan system:health` -- all checks pass
 - [ ] Backup automation configured
 - [ ] Pulse monitoring verified
 - [ ] SSL certificate installed and auto-renewal configured
 
-### Tier 2 → Tier 3 Transition Checklist
+### Tier 2 -> Tier 3 Transition Checklist
 
 - [ ] Database read replica provisioned and lag monitored
 - [ ] Read/write separation configured in `config/database.php`
@@ -435,6 +454,6 @@ k6 run --vus 200 --duration 5m path/to/Tier3Validation.js
 | [Observability](observability.md)                                         | Pulse, logging, health checks                         |
 | [Queue](queue.md)                                                         | Queue drivers, Supervisor, job lifecycle              |
 | [Cache](cache.md)                                                         | Cache strategy, Redis, OpCache                        |
-| [ADR: Self-Hosted Single-Tenant](../adr/adr-self-hosted-single-tenant.md) | Why MVP-first                                         |
+| [ADR: Self-Hosted Single-Tenant](../adr/adr-self-hosted-single-tenant.md) | Why shared-hosting-first                              |
 | [ADR: Gradual Migration](../adr/adr-gradual-migration.md)                 | Governing principle for scaling                       |
 | [ADR: Performance Optimization](../adr/adr-performance-optimization.md)   | Performance tiers, deferred optimizations             |

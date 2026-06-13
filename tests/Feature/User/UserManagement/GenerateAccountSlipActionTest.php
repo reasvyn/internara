@@ -7,13 +7,10 @@ use App\User\Models\User;
 use App\User\UserManagement\Actions\GenerateAccountSlipAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\Response;
-use Spatie\Permission\Models\Role;
 
 uses(LazilyRefreshDatabase::class);
 
-beforeEach(function () {
-    Role::create(['name' => 'student']);
-});
+beforeEach(function () {});
 
 test('download generates PDF response for single user', function () {
     $user = User::factory()->create();

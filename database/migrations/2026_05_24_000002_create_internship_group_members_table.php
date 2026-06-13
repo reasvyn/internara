@@ -20,7 +20,7 @@ return new class extends Migration
             $table->index('internship_group_id');
             $table->foreignUuid('registration_id')->nullable()->constrained()->nullOnDelete();
             $table->index('registration_id');
-            $table->foreignUuid('mentor_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignUuid('mentor_id')->nullable()->constrained('users')->nullOnDelete();
             $table->index('mentor_id');
             $table->string('role');
             $table->dateTime('joined_at')->useCurrent();

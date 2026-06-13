@@ -5,8 +5,12 @@ declare(strict_types=1);
 use App\Document\Models\Document;
 use App\Document\Policies\DocumentPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+
     $this->policy = app(DocumentPolicy::class);
 });
 

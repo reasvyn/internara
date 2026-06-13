@@ -39,7 +39,7 @@ Manages certificate generation, template management, and credential issuance for
 
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
-| `Certificate/Enums/CertificateStatus.php` | `CertificateStatus` | `LabelEnum`, `StatusEnum` | draft, issued, revoked, expired |
+| `Certificate/Enums/CertificateStatus.php` | `CertificateStatus` | `LabelEnum`, `StatusEnum` | issued, revoked |
 
 ---
 

@@ -21,8 +21,12 @@ enum AnnouncementStatus: string implements StatusEnum
         };
     }
 
-    public function canTransitionTo(self $target): bool
+    public function canTransitionTo(StatusEnum $target): bool
     {
+        if (! $target instanceof self) {
+            return false;
+        }
+
         return match ($this) {
             self::DRAFT => in_array($target, [self::SCHEDULED, self::PUBLISHED], true),
             self::SCHEDULED => $target === self::PUBLISHED,

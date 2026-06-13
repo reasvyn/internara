@@ -5,6 +5,11 @@ declare(strict_types=1);
 use App\Journals\Logbook\Models\Logbook;
 use App\Journals\Logbook\Policies\LogbookPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
+
+beforeEach(function () {});
 
 function createLogbookPolicy(): LogbookPolicy
 {
@@ -15,7 +20,7 @@ test('viewAny allows all roles', function (string $role) {
     $user = User::factory()->create();
     $user->assignRole($role);
 
-    expect(createPolicy()->viewAny($user))->toBeTrue();
+    expect(createLogbookPolicy()->viewAny($user))->toBeTrue();
 })->with(['super_admin', 'admin', 'teacher', 'supervisor', 'student']);
 
 test('view allows admin', function () {
@@ -23,14 +28,14 @@ test('view allows admin', function () {
     $user->assignRole('admin');
     $entry = Logbook::factory()->make();
 
-    expect(createPolicy()->view($user, $entry))->toBeTrue();
+    expect(createLogbookPolicy()->view($user, $entry))->toBeTrue();
 });
 
 test('view allows owner', function () {
     $user = User::factory()->create();
     $entry = Logbook::factory()->make(['user_id' => $user->id]);
 
-    expect(createPolicy()->view($user, $entry))->toBeTrue();
+    expect(createLogbookPolicy()->view($user, $entry))->toBeTrue();
 });
 
 test('view denies non-owner without role', function () {
@@ -38,7 +43,7 @@ test('view denies non-owner without role', function () {
     $other = User::factory()->create();
     $entry = Logbook::factory()->make(['user_id' => $other->id]);
 
-    expect(createPolicy()->view($user, $entry))->toBeFalse();
+    expect(createLogbookPolicy()->view($user, $entry))->toBeFalse();
 });
 
 test('create only allows student', function () {
@@ -47,8 +52,8 @@ test('create only allows student', function () {
     $admin = User::factory()->create();
     $admin->assignRole('admin');
 
-    expect(createPolicy()->create($student))->toBeTrue();
-    expect(createPolicy()->create($admin))->toBeFalse();
+    expect(createLogbookPolicy()->create($student))->toBeTrue();
+    expect(createLogbookPolicy()->create($admin))->toBeFalse();
 });
 
 test('update allows admin', function () {
@@ -56,7 +61,7 @@ test('update allows admin', function () {
     $user->assignRole('admin');
     $entry = Logbook::factory()->make();
 
-    expect(createPolicy()->update($user, $entry))->toBeTrue();
+    expect(createLogbookPolicy()->update($user, $entry))->toBeTrue();
 });
 
 test('update allows owner when not submitted', function () {
@@ -66,7 +71,7 @@ test('update allows owner when not submitted', function () {
         'status' => 'draft',
     ]);
 
-    expect(createPolicy()->update($user, $entry))->toBeTrue();
+    expect(createLogbookPolicy()->update($user, $entry))->toBeTrue();
 });
 
 test('update denies owner when submitted', function () {
@@ -76,7 +81,7 @@ test('update denies owner when submitted', function () {
         'status' => 'submitted',
     ]);
 
-    expect(createPolicy()->update($user, $entry))->toBeFalse();
+    expect(createLogbookPolicy()->update($user, $entry))->toBeFalse();
 });
 
 test('update denies non-owner', function () {
@@ -84,7 +89,7 @@ test('update denies non-owner', function () {
     $other = User::factory()->create();
     $entry = Logbook::factory()->make(['user_id' => $other->id]);
 
-    expect(createPolicy()->update($user, $entry))->toBeFalse();
+    expect(createLogbookPolicy()->update($user, $entry))->toBeFalse();
 });
 
 test('delete allows admin', function () {
@@ -92,7 +97,7 @@ test('delete allows admin', function () {
     $user->assignRole('admin');
     $entry = Logbook::factory()->make();
 
-    expect(createPolicy()->delete($user, $entry))->toBeTrue();
+    expect(createLogbookPolicy()->delete($user, $entry))->toBeTrue();
 });
 
 test('delete allows owner when not submitted', function () {
@@ -102,7 +107,7 @@ test('delete allows owner when not submitted', function () {
         'status' => 'draft',
     ]);
 
-    expect(createPolicy()->delete($user, $entry))->toBeTrue();
+    expect(createLogbookPolicy()->delete($user, $entry))->toBeTrue();
 });
 
 test('delete denies owner when submitted', function () {
@@ -112,7 +117,7 @@ test('delete denies owner when submitted', function () {
         'status' => 'submitted',
     ]);
 
-    expect(createPolicy()->delete($user, $entry))->toBeFalse();
+    expect(createLogbookPolicy()->delete($user, $entry))->toBeFalse();
 });
 
 test('delete denies non-owner', function () {
@@ -120,7 +125,7 @@ test('delete denies non-owner', function () {
     $other = User::factory()->create();
     $entry = Logbook::factory()->make(['user_id' => $other->id]);
 
-    expect(createPolicy()->delete($user, $entry))->toBeFalse();
+    expect(createLogbookPolicy()->delete($user, $entry))->toBeFalse();
 });
 
 test('addSupervisorNote denies non-supervisor', function () {
@@ -128,7 +133,7 @@ test('addSupervisorNote denies non-supervisor', function () {
     $user->assignRole('student');
     $entry = Logbook::factory()->make();
 
-    expect(createPolicy()->addSupervisorNote($user, $entry))->toBeFalse();
+    expect(createLogbookPolicy()->addSupervisorNote($user, $entry))->toBeFalse();
 });
 
 test('addSupervisorNote denies supervisor without mentor relationship', function () {
@@ -136,5 +141,5 @@ test('addSupervisorNote denies supervisor without mentor relationship', function
     $user->assignRole('supervisor');
     $entry = Logbook::factory()->make();
 
-    expect(createPolicy()->addSupervisorNote($user, $entry))->toBeFalse();
+    expect(createLogbookPolicy()->addSupervisorNote($user, $entry))->toBeFalse();
 });

@@ -6,8 +6,6 @@ namespace App\Program\InternshipGroup\Livewire;
 
 use App\Core\Livewire\BaseRecordManager;
 use App\Program\Internship\Models\Internship;
-use App\Program\Internship\Models\InternshipGroup;
-use App\Program\Internship\Models\InternshipGroupMember;
 use App\Program\InternshipGroup\Actions\AddMemberToGroupAction;
 use App\Program\InternshipGroup\Actions\CreateInternshipGroupAction;
 use App\Program\InternshipGroup\Actions\DeleteInternshipGroupAction;
@@ -15,6 +13,8 @@ use App\Program\InternshipGroup\Actions\RemoveMemberFromGroupAction;
 use App\Program\InternshipGroup\Actions\UpdateInternshipGroupAction;
 use App\Program\InternshipGroup\Enums\InternshipGroupRole;
 use App\Program\InternshipGroup\Livewire\Forms\InternshipGroupForm;
+use App\Program\InternshipGroup\Models\InternshipGroup;
+use App\Program\InternshipGroup\Models\InternshipGroupMember;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

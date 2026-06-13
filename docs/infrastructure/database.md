@@ -1,6 +1,6 @@
 # Database
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
 ## Design Philosophy
 
@@ -20,9 +20,9 @@ All foreign key columns use UUIDs to match their parent primary keys, and every 
 
 ## SQLite as Default
 
-The default database driver is SQLite. It requires zero configuration — no server process, no credentials, no port management. For development and single-server deployments, this eliminates operational friction. Testing also uses SQLite (in-memory mode), which makes the test suite fast and self-contained.
+The default database driver is SQLite. It requires zero configuration — no server process, no credentials, no port management. For development and testing, this eliminates operational friction. Testing also uses SQLite (in-memory mode), which makes the test suite fast and self-contained.
 
-SQLite has limited concurrent write capacity. For production deployments with multiple concurrent users, MySQL 8+, MariaDB, or PostgreSQL 14+ is recommended. The application abstracts database access through Eloquent, so switching drivers requires changing only the environment variable.
+SQLite is intended for development and testing only. In shared hosting production, use MySQL or MariaDB provided by your hosting service. Scale to PostgreSQL when exceeding 500 registered users per PKL period. The application abstracts database access through Eloquent, so switching drivers requires changing only the environment variable.
 
 ---
 
@@ -112,11 +112,14 @@ php artisan migrate
 
 ## Infrastructure Context
 
-| Tier       | Engine                    | Connection Pooling              | Read Replicas  |
-| ---------- | ------------------------- | ------------------------------- | -------------- |
-| 1 (Shared) | MySQL / MariaDB (shared)  | Not needed                      | Not supported  |
-| 2 (VPS)    | MySQL 8+ / PostgreSQL 14+ | Optional (ProxySQL / PgBouncer) | Optional       |
-| 3 (HA)     | MySQL 8+ / PostgreSQL 14+ | ✅ Required                     | ✅ Recommended |
+| Tier           | Engine                    | Connection Pooling              | Read Replicas  |
+| -------------- | ------------------------- | ------------------------------- | -------------- |
+| 1 (Shared)     | MySQL / MariaDB (shared)  | Not needed                      | Not supported  |
+| ≤500 users     |                           |                                 |                |
+| 2 (VPS)        | MySQL 8+ / PostgreSQL 14+ | Optional (ProxySQL / PgBouncer) | Optional       |
+| 500–2000 users |                           |                                 |                |
+| 3 (HA)         | MySQL 8+ / PostgreSQL 14+ | ✅ Required                     | ✅ Recommended |
+| 2000+ users    |                           |                                 |                |
 
 ---
 

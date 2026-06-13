@@ -5,13 +5,10 @@ declare(strict_types=1);
 use App\User\Models\User;
 use App\User\UserManagement\Actions\DeleteUserAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
-use Spatie\Permission\Models\Role;
 
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
-    Role::create(['name' => 'super_admin']);
-    Role::create(['name' => 'student']);
     $this->action = app(DeleteUserAction::class);
 });
 

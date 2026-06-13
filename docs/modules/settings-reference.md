@@ -50,6 +50,12 @@ Manages system-wide configuration: key-value settings store, brand identity (log
 
 ---
 
+## Entities
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Entities/SettingEntity.php` | `SettingEntity` | `BaseEntity` |
+
 ## Policies
 
 | File | Policy | Extends |

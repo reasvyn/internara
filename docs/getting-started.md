@@ -1,6 +1,6 @@
 # Getting Started
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 >
 > End-to-end walkthrough from cloning the repository to completing the setup wizard. Everything you need to get Internara running on your server.
 
@@ -8,16 +8,16 @@
 
 ## Prerequisites
 
-| Requirement | Development         | Production                |
-| ----------- | ------------------- | ------------------------- |
-| PHP         | 8.4.0+              | 8.4.0+                    |
-| Composer    | 2.5+                | 2.5+                      |
-| Node.js     | 20+                 | 20+ (build only)          |
-| NPM         | 10+                 | 10+ (build only)          |
-| Database    | SQLite (built-in)   | MySQL 8+ / PostgreSQL 14+ |
-| Queue       | `database` driver   | Redis (recommended)       |
-| Cache       | `database` driver   | Redis (recommended)       |
-| Web server  | `php artisan serve` | Nginx / Apache            |
+| Requirement | Development         | Production                          |
+| ----------- | ------------------- | ----------------------------------- |
+| PHP         | 8.4.0+              | 8.4.0+                              |
+| Composer    | 2.5+                | 2.5+                                |
+| Node.js     | 20+                 | 20+ (build only)                    |
+| NPM         | 10+                 | 10+ (build only)                    |
+| Database    | SQLite (built-in)   | MySQL 8+ / MariaDB 10.6+ (shared)   |
+| Queue       | `database` driver   | `sync` (shared) / Redis (VPS+)      |
+| Cache       | `database` driver   | `file` (shared) / Redis (VPS+)      |
+| Web server  | `php artisan serve` | Apache / Nginx (shared hosting)     |
 
 **Required PHP extensions:** `bcmath`, `ctype`, `curl`, `fileinfo`, `gd`, `intl`, `mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `zip`, plus the database driver matching your chosen engine (`pdo_sqlite`, `pdo_mysql`, or `pdo_pgsql`).
 
@@ -116,7 +116,7 @@ Or use the all-in-one command:
 composer run dev
 ```
 
-**Production** requires Supervisor (or systemd) for queue workers, the scheduler cron entry, and optionally Reverb for WebSocket support. See [Installation](infrastructure/installation.md#required-background-processes).
+**Production on shared hosting** uses sync queue (no worker needed) and webhook-based cron. **Production on VPS** requires Supervisor (or systemd) for queue workers, system cron, and optionally Reverb for WebSocket support. See [Deployment](infrastructure/deployment.md).
 
 ### Step 6: Complete the Setup Wizard
 

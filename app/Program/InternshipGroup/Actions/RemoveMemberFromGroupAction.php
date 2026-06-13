@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Program\InternshipGroup\Actions;
 
 use App\Core\Actions\BaseAction;
-use App\Program\Internship\Models\InternshipGroupMember;
+use App\Program\InternshipGroup\Models\InternshipGroupMember;
 
 final class RemoveMemberFromGroupAction extends BaseAction
 {

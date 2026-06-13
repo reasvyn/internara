@@ -8,7 +8,6 @@ use App\User\Profile\Actions\UpdateProfileAction;
 use App\User\Profile\Models\Profile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Validation\ValidationException;
-use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
@@ -42,7 +41,6 @@ test('updates user email', function () {
 });
 
 test('cannot change superadmin name', function () {
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
     $this->user->assignRole('superadmin');
     $this->user->update(['name' => 'Administrator', 'username' => 'superadmin']);
 
@@ -53,7 +51,6 @@ test('cannot change superadmin name', function () {
 });
 
 test('cannot change superadmin username', function () {
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
     $this->user->assignRole('superadmin');
     $this->user->update(['name' => 'Administrator', 'username' => 'superadmin']);
 

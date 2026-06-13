@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Enrollment\Placement\Policies;
 
 use App\Core\Policies\BasePolicy;
-use App\Enrollment\Placement;
+use App\Enrollment\Placement\Models\Placement;
 use App\User\Models\User;
 
 class PlacementPolicy extends BasePolicy
@@ -32,6 +32,6 @@ class PlacementPolicy extends BasePolicy
 
     public function delete(User $user, Placement $placement): bool
     {
-        return $this->isAdmin($user) && $placement->directPlacements()->doesntExist();
+        return $this->isAdmin($user) && $placement->registrations()->doesntExist();
     }
 }

@@ -6,12 +6,10 @@ use App\Auth\Login\Actions\LoginAction;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
-use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    Role::create(['name' => 'student', 'guard_name' => 'web']);
     $this->user = User::factory()->create([
         'password' => Hash::make('correct-password'),
         'status' => 'activated',

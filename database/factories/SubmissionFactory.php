@@ -6,7 +6,7 @@ namespace Database\Factories;
 
 use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Models\Submission;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Dashboard\Livewire;
 
-use App\User\Dashboard\Actions\GetSupervisorDashboardStatsAction;
+use App\User\Dashboard\Actions\ReadSupervisorDashboardAction;
 use Illuminate\View\View;
 
 class SupervisorDashboard extends UserDashboard
@@ -24,7 +24,7 @@ class SupervisorDashboard extends UserDashboard
         abort_unless(auth()->user()?->hasRole('supervisor'), 403);
     }
 
-    public function mount(GetSupervisorDashboardStatsAction $action): void
+    public function mount(ReadSupervisorDashboardAction $action): void
     {
         $stats = $action->execute();
 

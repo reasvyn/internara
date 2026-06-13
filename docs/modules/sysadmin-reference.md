@@ -60,6 +60,14 @@ Handles user administration, announcements, super admin recovery, system health 
 
 ---
 
+## Entities
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Announcement/Entities/AnnouncementState.php` | `AnnouncementState` | `BaseEntity` |
+
+---
+
 ---
 
 ## Policies

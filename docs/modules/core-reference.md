@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-06-10
-> **Changes:** sync — fix base class count (9→10)
+> **Last updated:** 2026-06-13
+> **Changes:** sync — fix support class count (11→12, drop HasModelStatuses, add Spotlight)
 
 Detailed structural and implementation reference for the **Core** module, including both abstract infrastructure and concrete shared components.
 
@@ -19,7 +19,7 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 - **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
 - **Concrete Exceptions**: 6 (`ConflictException`, `NotFoundException`, `RateLimitException`, `RejectedException`, `UnauthorizedException`, `ValidationFailedException`)
 - **Middleware**: 2 (`SecurityHeaders`, `LogContext`)
-- **Support Classes**: 11 (`SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `HasModelStatuses`, `PasswordRules`, `PiiMasker`)
+- **Support Classes**: 12 (`SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `PasswordRules`, `PiiMasker`, `Spotlight`, `helpers.php`)
 - **Models**: 2 concrete (`ActivityLog`, `BaseAuthenticatable`) + 1 abstract (`BaseModel`)
 - **Events**: 1 (`BaseEvent`, abstract)
 - **Livewire Components**: 1 (`BaseRecordManager`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
@@ -152,9 +152,9 @@ ModuleException (abstract, extends RuntimeException)
 | `CsvHandler` | `Support/CsvHandler.php` | CSV parsing, heading validation, export generation |
 | `Environment` | `Support/Environment.php` | Environment detection (staging, production, dev) |
 | `HandlesActionErrors` | `Support/HandlesActionErrors.php` | Generic try-catch-log-rethrow for actions |
-| `HasModelStatuses` | `Support/HasModelStatuses.php` | Historical status column utilities |
 | `PasswordRules` | `Support/PasswordRules.php` | Common password strength validation rules |
 | `PiiMasker` | `Support/PiiMasker.php` | Regex-based PII redaction (IDs, phone numbers) |
+| `Spotlight` | `Support/Spotlight.php` | Debug/development helper utilities |
 | `helpers.php` | `Support/helpers.php` | `app_info()` helper function |
 
 The helpers `setting()` and `brand()` are defined in `app/Settings/Support/helpers.php`.
@@ -231,17 +231,17 @@ app/Core/
     ├── CsvHandler.php
     ├── Environment.php
     ├── HandlesActionErrors.php
-    ├── HasModelStatuses.php
     ├── LangChecker.php
     ├── PasswordRules.php
     ├── PiiMasker.php
     ├── SmartLogger.php
+    ├── Spotlight.php
     └── helpers.php
 ```
 
 ## Routes
 
-Routes are defined in `routes/web/core.php`. See [Routes](../infrastructure/routes.md) for the routing architecture.
+No dedicated route file. Health check endpoint `/up` is defined in `bootstrap/app.php`. See [Routes](../infrastructure/routes.md) for the routing architecture.
 
 ## Views
 

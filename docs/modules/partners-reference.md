@@ -47,7 +47,7 @@ Manages industrial partner companies and partnership agreements for internship p
 
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
-| `Partnership/Enums/PartnershipStatus.php` | `PartnershipStatus` | `LabelEnum`, `StatusEnum` | active, expired, terminated, suspended |
+| `Partnership/Enums/PartnershipStatus.php` | `PartnershipStatus` | `LabelEnum`, `StatusEnum` | active, expired, terminated |
 
 ---
 

@@ -1,7 +1,7 @@
 # ADR-010: Self-Hosted Single-Tenant Architecture
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
 ## Context
 
@@ -26,7 +26,7 @@ Internara is a **self-hosted, single-tenant** application. Every architectural d
 
 | Concern | Decision | Rationale |
 |---|---|---|
-| Database | SQLite default, MySQL/PG optional | No database server needed. One file = one database. |
+| Database | SQLite dev/testing, MySQL/MariaDB production | MySQL/MariaDB available on all shared hosting plans. SQLite for standalone development. |
 | Queue | sync driver default, Redis optional | No background daemon required. |
 | Cache | file/database default, Redis optional | No external service. Zero-config file cache. |
 | Session | database default, Redis optional | Auto-created by migration. |
@@ -47,12 +47,12 @@ Student records, assessment data, company partnerships, and configuration never 
 ## Consequences
 
 - **Positive**: No multi-tenant infrastructure to build or maintain. No tenant middleware, scoped queries, or per-tenant configuration.
-- **Positive**: Default configuration requires zero external services — SQLite + file cache + sync queue. Runs on a $5/month shared hosting plan.
+- **Positive**: Default configuration requires zero external services beyond MySQL/MariaDB — file cache + sync queue. Runs on a $3-15/month shared hosting plan.
 - **Positive**: Data sovereignty is absolute. The school owns their data, backups, and infrastructure.
 - **Positive**: Performance isolation — one school's load never affects another.
 - **Negative**: No centralized management or "super admin" view across all schools. Each admin manages independently.
 - **Negative**: Updates require manual intervention on each instance — pull, migrate, rebuild assets.
-- **Negative**: SQLite concurrency limits (~50 concurrent users) require a switch to MySQL for larger schools.
+- **Negative**: SQLite is unsuitable for production concurrency; shared hosting production requires MySQL/MariaDB.
 
 ## References
 

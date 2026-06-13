@@ -140,6 +140,7 @@ return [
             'system_settings' => 'Konfigurasi pengaturan awal sistem',
             'storage_link' => 'Memautkan direktori penyimpanan',
             'optimize' => 'Mengoptimalkan aplikasi',
+            'optimize_skip' => 'Melewati optimasi aplikasi (gunakan --optimize untuk produksi)',
             'discover_livewire' => 'Mendaftarkan komponen Livewire',
             'discover_policies' => 'Mendaftarkan kebijakan',
             'discover_views' => 'Mendaftarkan namespace tampilan',

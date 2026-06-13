@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Assignment\Submission\Models;
 
+use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Entities\SubmissionState;
 use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Core\Models\BaseModel;

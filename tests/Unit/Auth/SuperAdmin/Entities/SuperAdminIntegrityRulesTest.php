@@ -5,13 +5,10 @@ declare(strict_types=1);
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function () {
-    Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
-});
+beforeEach(function () {});
 
 test('superadmin integrity rules detect valid name', function () {
     $user = User::factory()->create(['name' => 'Administrator']);

@@ -7,14 +7,10 @@ use App\User\Models\User;
 use App\User\UserManagement\Actions\UpdateUserAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Validation\ValidationException;
-use Spatie\Permission\Models\Role;
 
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
-    Role::create(['name' => 'super_admin']);
-    Role::create(['name' => 'student']);
-    Role::create(['name' => 'admin']);
     $this->action = app(UpdateUserAction::class);
 });
 

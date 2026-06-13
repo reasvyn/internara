@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Program\InternshipGroup\Policies;
 
 use App\Core\Policies\BasePolicy;
-use App\Program\Internship\Models\InternshipGroup;
+use App\Program\InternshipGroup\Models\InternshipGroup;
 use App\User\Models\User;
 
 class InternshipGroupPolicy extends BasePolicy

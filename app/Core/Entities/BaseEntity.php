@@ -7,6 +7,7 @@ namespace App\Core\Entities;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use JsonSerializable;
+use ReflectionClass;
 
 abstract readonly class BaseEntity implements JsonSerializable
 {
@@ -16,7 +17,7 @@ abstract readonly class BaseEntity implements JsonSerializable
     {
         $constructorParams = [];
 
-        $ref = new \ReflectionClass(static::class);
+        $ref = new ReflectionClass(static::class);
         $constructor = $ref->getConstructor();
         $params = $constructor?->getParameters() ?? [];
 
@@ -44,8 +45,13 @@ abstract readonly class BaseEntity implements JsonSerializable
     public function toArray(): array
     {
         $data = [];
+        $ref = new ReflectionClass($this);
 
-        foreach (get_object_vars($this) as $key => $value) {
+        foreach ($ref->getProperties() as $prop) {
+            $prop->setAccessible(true);
+            $key = $prop->getName();
+            $value = $prop->getValue($this);
+
             $data[$key] = match (true) {
                 $value instanceof self => $value->toArray(),
                 $value instanceof JsonSerializable => $value->jsonSerialize(),

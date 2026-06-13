@@ -1,6 +1,6 @@
 # Cache
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
 
 ## Purpose
 
@@ -10,12 +10,12 @@ The cache layer reduces database load and response latency by storing computed o
 
 ## Driver Strategy by Tier
 
-| Aspect          | Tier 1 (Entry)       | Tier 2 (Standard)     | Tier 3 (HA)          |
-| --------------- | -------------------- | --------------------- | -------------------- |
-| **Driver**      | `file` or `database` | `redis`               | `redis` (cluster)    |
-| **Setup**       | Zero config          | Redis server required | Redis cluster        |
-| **Performance** | Moderate             | High (in-memory)      | High (distributed)   |
-| **Persistence** | File-based           | Memory + persistence  | Memory + replication |
+| Aspect          | Tier 1 (Shared Hosting / up to 500 registered users) | Tier 2 (Standard)     | Tier 3 (HA)          |
+| --------------- | ---------------------------------------------------- | --------------------- | -------------------- |
+| **Driver**      | `file` or `database`                                 | `redis`               | `redis` (cluster)    |
+| **Setup**       | Zero config                                          | Redis server required | Redis cluster        |
+| **Performance** | Moderate                                             | High (in-memory)      | High (distributed)   |
+| **Persistence** | File-based                                           | Memory + persistence  | Memory + replication |
 
 Default for new installations: `file` driver. Zero external services required.
 

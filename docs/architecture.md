@@ -1,7 +1,7 @@
 # Action-based MVC Architecture
 
-> **Last updated:** 2026-06-10
-> **Changes:** sync — fix policy count (30+→30) in Layer 8
+> **Last updated:** 2026-06-13
+> **Changes:** sync — fix model count (50+→42), policy count (30→29), Livewire count (80+→107), route files (18→17), migrations (50→48)
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad pattern, data flow, cross-module communication, exception handling, validation, caching, testing strategy, and invariant rules. Every decision here serves three goals:
 >
@@ -70,8 +70,8 @@ Layer 12 ┌──────────────────────�
          │  └── (root files)  ← cross-submodule Http, Console, Livewire│
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
-Layer 11 ┌──────────────────────────────────────────────────────────────┐
- UI /    │  Livewire 4 components (80+)    Blade templates              │
+  Layer 11 ┌──────────────────────────────────────────────────────────────┐
+   UI /    │  Livewire 4 components (107)   Blade templates              │
  Present.│  maryUI + DaisyUI + Alpine.js + Tailwind CSS v4             │
          │  resources/views/{module}/     static assets                 │
          └──────────────────────────────────────────────────────────────┘
@@ -88,8 +88,8 @@ Layer 9 ┌───────────────────────
          │  system:health, system:cleanup, system:cache-warm, pulse:*  │
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
-Layer 8 ┌──────────────────────────────────────────────────────────────┐
- Author. │  Policies (30)   RBAC (5 roles)  Functional roles (2)       │
+  Layer 8 ┌──────────────────────────────────────────────────────────────┐
+  Author. │  Policies (29)   RBAC (5 roles)  Functional roles (2)       │
          │  BasePolicy → AuthorizesRoles + AuthorizesOwnership         │
          │  spatie/laravel-permission auto-registers Gate::before      │
          └──────────────────────────────────────────────────────────────┘
@@ -107,8 +107,8 @@ Layer 6 ┌───────────────────────
           │  app/Core/Data/             app/Core/Exceptions/            │
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
-Layer 5 ┌──────────────────────────────────────────────────────────────┐
- Module  │  Eloquent Models (50+)  →  extend BaseModel                 │
+  Layer 5 ┌──────────────────────────────────────────────────────────────┐
+  Module  │  Eloquent Models (42)  →  extend BaseModel                  │
  Models  │  UUID primary keys (HasUuids)  HasFactory                   │
          │  Relationships, Scopes, Accessors, Mutators                 │
          │  app/{Module}/**/Models/  + factories + seeders            │
@@ -133,12 +133,12 @@ Layer 2 ┌───────────────────────
          │  Config: .env, config/*.php, Runtime settings table        │
          │  Files: Spatie Media Library (polymorphic attachments)     │
          │  Cache: Laravel cache + queue (jobs) + session             │
-         │  database/migrations/ (50 tables)  config/  storage/       │
+          │  database/migrations/ (48 files)  config/  storage/        │
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
 Layer 1 ┌──────────────────────────────────────────────────────────────┐
  Infra   │  PHP 8.4 + Laravel 13 + Composer packages                   │
-         │  Spatie: activitylog v5, medialibrary v11, permission v8,  │
+         │  Spatie: activitylog v5, medialibrary v11, permission v5,  │
          │  model-status v1                                            │
          │  Livewire 4 + Tailwind CSS v4 + Alpine.js                  │
          │  npm packages: Vite, flatpickr, marked                     │
@@ -159,7 +159,7 @@ Layer 1 ┌───────────────────────
 | ----- | -------------------------------------------------------------------- | ----------------------------- |
 | 12    | `app/{Module}/`                                                      | The module itself             |
 | 11    | `resources/views/{module}/{submodule}/` or `resources/views/{module}/` | Blade views (per submodule or module-root) |
-| 10    | `routes/web/{module}.php`                                            | Route definitions             |
+| 10    | `routes/web/{module}.php`                                            | Route definitions (17 files, no Core route file, Evaluation pending) |
 | 9     | `{SubModule}/Listeners/`, `{SubModule}/Notifications/`, `Console/`   | Communication                 |
 | 8     | `{SubModule}/Policies/`                                              | Authorization                 |
 | 7     | `{SubModule}/Actions/`                                               | Business operations           |
@@ -182,7 +182,7 @@ This is the single most important architectural decision in Internara. Actions a
 
 **Purpose:** Every write to the system. Create, update, delete, transition state, send notifications, upload files.
 
-**Base class:** `BaseAction` (provides `transaction()`, `log()`, `HandlesActionErrors`)
+**Base class:** `BaseCommandAction` (extends `BaseAction`, provides `transaction()`, `log()`, `HandlesActionErrors`)
 
 **Contract:**
 
@@ -196,7 +196,7 @@ This is the single most important architectural decision in Internara. Actions a
 **Naming:** `{Verb}{Entity}Action` — `CreateUserAction`, `ApproveRegistrationAction`
 
 ```php
-class ApproveReportAction extends BaseAction
+class ApproveReportAction extends BaseCommandAction
 {
     public function __construct(
         protected readonly NotifyMentorAction $notifyMentor,
@@ -227,38 +227,36 @@ class ApproveReportAction extends BaseAction
 
 **Purpose:** Complex read operations that involve aggregation, filtering, authorization, or cross-module data assembly. Not for simple `Model::find()` or `Model::where()` — those stay in Livewire.
 
-**Base class:** None required. A plain class with constructor injection. May use `HandlesActionErrors` from `BaseAction` but MUST NOT call `transaction()` or `log()`.
+**Base class:** `BaseReadAction` (plain class with `HandlesActionErrors` trait — NO `transaction()` or `log()`).
 
 **Contract:**
 
 - MUST NOT mutate any database state
-- MUST NOT call `transaction()` or `log()` from BaseAction
+- MUST NOT call `transaction()` or `log()`
 - SHOULD return typed objects or collections, never raw arrays
 - MUST pass through authorization (unless the calling layer already authorized)
 
-**Naming:** `{Context}Reader`, `Get{Dashboard}Data`, `{Entity}Query`
+**Naming:** `Read{Entity}Action` — `ReadTeacherDashboardAction`, `ReadActivityLogAction`
 
 ```php
-class InternshipDashboardReader
+class ReadTeacherDashboardAction extends BaseReadAction
 {
     public function __construct(protected readonly Internship $model) {}
 
-    public function activeCount(): int
+    public function execute(): array
     {
-        return $this->model
-            ->whereIn('status', [
-                InternshipStatus::PUBLISHED->value,
-                InternshipStatus::ACTIVE->value,
-            ])
-            ->count();
-    }
-
-    public function recentRegistrations(int $days = 7): Collection
-    {
-        return Registration::where('created_at', '>=', now()->subDays($days))
-            ->with('mentee.user', 'internship')
-            ->limit(20)
-            ->get();
+        return [
+            'activeCount' => $this->model
+                ->whereIn('status', [
+                    InternshipStatus::PUBLISHED->value,
+                    InternshipStatus::ACTIVE->value,
+                ])
+                ->count(),
+            'recentRegistrations' => Registration::where('created_at', '>=', now()->subDays(7))
+                ->with('mentee.user', 'internship')
+                ->limit(20)
+                ->get(),
+        ];
     }
 }
 ```
@@ -267,7 +265,7 @@ class InternshipDashboardReader
 
 **Purpose:** Multi-step workflows that coordinate multiple Command and Read Actions. The "how" of complex business processes.
 
-**Base class:** `BaseAction` (same as Command — transaction + logging at the process level).
+**Base class:** `BaseProcessAction` (extends `BaseAction` — transaction + logging at the process level).
 
 **Contract:**
 
@@ -276,15 +274,15 @@ class InternshipDashboardReader
 - SHOULD emit a single module event representing the completed process
 - MUST NOT duplicate business logic that already exists in Command Actions
 
-**Naming:** `{Verb}{Entity}Process` — `RegisterStudentProcess`, `CloseInternshipProcess`
+**Naming:** `Process{Entity}Action` — `ProcessRegistrationAction`, `ProcessReportFinalizationAction`
 
 ```php
-class RegisterStudentProcess extends BaseAction
+class ProcessRegistrationAction extends BaseProcessAction
 {
     public function __construct(
         protected readonly CreateRegistrationAction $createRegistration,
         protected readonly AssignPlacementAction $assignPlacement,
-        protected readonly NotifyMentorAction $notifyMentor,
+        protected readonly NotifyStudentAction $notifyStudent,
     ) {}
 
     public function execute(RegisterStudentData $data): Registration
@@ -292,10 +290,9 @@ class RegisterStudentProcess extends BaseAction
         return $this->transaction(function () use ($data) {
             $registration = $this->createRegistration->execute($data);
             $this->assignPlacement->execute($registration, $data->placementId);
-            $this->notifyMentor->execute($registration);
+            $this->notifyStudent->execute($registration);
 
             $this->log('student_registered', $registration);
-
             event(new StudentRegistered($registration));
 
             return $registration;
@@ -306,17 +303,17 @@ class RegisterStudentProcess extends BaseAction
 
 ### Action Category Decision Table
 
-| Scenario                 | Pattern            | Base Class   | Transaction | Logging     | Event          |
-| ------------------------ | ------------------ | ------------ | ----------- | ----------- | -------------- |
-| Create a record          | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Recommended |
-| Update a record          | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Recommended |
-| Delete a record          | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Recommended |
-| State transition         | Command            | `BaseAction` | ✅ Required | ✅ Required | ✅ Required    |
-| Send notification        | Command            | `BaseAction` | ✅ Required | ✅ Required | ❌             |
-| Simple list query        | Inline in Livewire | None         | ❌          | ❌          | ❌             |
-| Complex aggregated query | Read Action        | None         | ❌          | ❌          | ❌             |
-| Dashboard statistics     | Read Action        | None         | ❌          | ❌          | ❌             |
-| Multi-step orchestration | Process            | `BaseAction` | ✅ Required | ✅ Required | ✅ Required    |
+| Scenario                 | Pattern            | Base Class           | Transaction | Logging     | Event          |
+| ------------------------ | ------------------ | -------------------- | ----------- | ----------- | -------------- |
+| Create a record          | Command            | `BaseCommandAction`  | ✅ Required | ✅ Required | ✅ Recommended |
+| Update a record          | Command            | `BaseCommandAction`  | ✅ Required | ✅ Required | ✅ Recommended |
+| Delete a record          | Command            | `BaseCommandAction`  | ✅ Required | ✅ Required | ✅ Recommended |
+| State transition         | Command            | `BaseCommandAction`  | ✅ Required | ✅ Required | ✅ Required    |
+| Send notification        | Command            | `BaseCommandAction`  | ✅ Required | ✅ Required | ❌             |
+| Simple list query        | Inline in Livewire | None                 | ❌          | ❌          | ❌             |
+| Complex aggregated query | Read Action        | `BaseReadAction`     | ❌          | ❌          | ❌             |
+| Dashboard statistics     | Read Action        | `BaseReadAction`     | ❌          | ❌          | ❌             |
+| Multi-step orchestration | Process            | `BaseProcessAction`  | ✅ Required | ✅ Required | ✅ Required    |
 
 ---
 
@@ -516,8 +513,8 @@ Shared cross-module views live directly under `resources/views/{component}/`:
 
 ```
 resources/views/livewire/
-├── lang-switcher.blade.php          → app/Livewire/LangSwitcher.php
-└── theme-switcher.blade.php         → app/Livewire/ThemeSwitcher.php
+├── lang-switcher.blade.php          → app/Settings/Livewire/LangSwitcher.php
+└── theme-switcher.blade.php         → app/Settings/Livewire/ThemeSwitcher.php
 ```
 
 ### Livewire Component Alias Conventions
@@ -563,8 +560,9 @@ Every layer has exactly one base class from Core. There is no alternative.
 | You need...                      | Use this                               | Not this                                        |
 | -------------------------------- | -------------------------------------- | ----------------------------------------------- |
 | A database table                 | `extends BaseModel`                    | `extends Model`                                 |
-| A business operation (mutation)  | `extends BaseAction`                   | A custom service with multiple methods          |
-| A business operation (query)     | A plain class                          | `extends BaseAction`                            |
+| A business operation (mutation)  | `extends BaseCommandAction`            | A custom service with multiple methods          |
+| A business operation (query)     | `extends BaseReadAction`              | Using `transaction()` or `log()`               |
+| A multi-step orchestration       | `extends BaseProcessAction`           | Duplicating logic from Command Actions          |
 | A pure business rule             | `extends BaseEntity` (final readonly)  | Inline in a model or controller                 |
 | An authorization gate            | `extends BasePolicy`                   | A custom closure or array of strings            |
 | A CRUD table UI (Livewire)       | `extends BaseRecordManager`            | A bespoke Livewire component with inline search |

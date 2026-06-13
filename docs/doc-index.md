@@ -1,6 +1,7 @@
 # Documentation Index
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
+> **Changes:** sync — fix migration count (39→48), model count (37→42), policy count (29+1→26+3)
 >
 > Complete catalog of all documentation in the `docs/` directory. This index is the single entry point for navigating Internara's documentation. Every file listed here is part of the authoritative system documentation and must be kept in sync with the implementation.
 

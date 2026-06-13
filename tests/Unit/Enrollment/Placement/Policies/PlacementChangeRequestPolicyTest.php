@@ -5,8 +5,12 @@ declare(strict_types=1);
 use App\Enrollment\Placement\Models\PlacementChangeRequest;
 use App\Enrollment\Placement\Policies\PlacementChangeRequestPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+
     $this->policy = app(PlacementChangeRequestPolicy::class);
 });
 

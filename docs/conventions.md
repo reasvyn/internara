@@ -111,8 +111,8 @@ pattern doc rather than duplicating conventions here:
 | Types directory            | `Types/` for small value objects                              | `Types/Gender.php`, `Types/BloodType.php`                             |
 | Model                      | Singular `{Name}`                                             | `User`, `AcademicYear`, `Internship`                                  |
 | Command Action             | `{Verb}{Entity}Action`                                        | `CreateUserAction`, `ApproveRegistrationAction`                       |
-| Read Action                | `{Context}Reader`, `Get{Dashboard}Data`, `{Entity}Query`      | `InternshipDashboardReader`, `GetStudentStatsData`                    |
-| Process Action             | `{Verb}{Entity}Process`                                       | `RegisterStudentProcess`, `CloseInternshipProcess`                    |
+| Read Action                | `Read{Entity}Action`                                          | `ReadTeacherDashboardAction`, `ReadActivityLogAction`                 |
+| Process Action             | `Process{Entity}Action`                                       | `ProcessRegistrationAction`, `ProcessReportFinalizationAction`        |
 | Entity                     | `{Name}`                                                      | `Apprentice`, `InternshipPeriod`, `RegistrationState`, `SchoolEntity` |
 | Data / DTO                 | `{Verb}{Entity}Data` or `{Entity}Data` (extending `BaseData`) | `SetupTokenData`, `AuditCheck`                                        |
 | Livewire                   | `{Name}` — suffixed with Manager, Editor, Center              | `UserManager`, `ProfileEditor`, `RegistrationCenter`                  |

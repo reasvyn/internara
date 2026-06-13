@@ -5,8 +5,12 @@ declare(strict_types=1);
 use App\Enrollment\Placement\Models\Placement;
 use App\Enrollment\Placement\Policies\PlacementPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
+
     $this->policy = app(PlacementPolicy::class);
 });
 
