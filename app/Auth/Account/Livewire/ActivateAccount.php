@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Auth\Account\Livewire;
 
+use App\Auth\Account\Actions\ActivateAccountAction;
 use App\Auth\Account\Entities\AccountActivation;
 use App\Auth\ApiTokens\Models\ApiToken;
 use App\User\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -24,7 +24,7 @@ class ActivateAccount extends Component
 
     public string $password_confirmation = '';
 
-    public function activate(): void
+    public function activate(ActivateAccountAction $action): void
     {
         $this->validate([
             'email' => 'required|email|exists:users,email',
@@ -68,9 +68,7 @@ class ActivateAccount extends Component
 
         ApiToken::revokeFor($user, 'activation');
 
-        $user->update([
-            'password' => Hash::make($this->password),
-        ]);
+        $action->execute($user, $this->password);
 
         RateLimiter::clear($throttleKey);
 
