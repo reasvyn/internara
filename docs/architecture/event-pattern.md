@@ -1,9 +1,10 @@
 # Events, Listeners & Notifications Pattern
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
+> **Changes:** sync — fix broken link to architecture.md
 >
 > **Audience:** Developers working with event-driven side effects and multi-channel notifications.
-> **Prerequisites:** [12-Layer Architecture](architecture.md), [Action Pattern](action-pattern.md),
+> **Prerequisites:** [12-Layer Architecture](../architecture.md), [Action Pattern](action-pattern.md),
 > [Logging Pattern](logging-pattern.md).
 
 ---

@@ -1,6 +1,7 @@
 # Livewire Component Patterns
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
+> **Changes:** sync — fix shared component path (app/Livewire → app/Core/Livewire)
 >
 > **Audience:** Developers building or maintaining Livewire components in Internara.
 >
@@ -72,7 +73,7 @@ resources/views/{module}/{component-name}.blade.php
 ### Shared Cross-Module Components
 
 ```
-app/Livewire/{Name}.php
+app/Core/Livewire/{Name}.php
 resources/views/livewire/{component-name}.blade.php
 ```
 

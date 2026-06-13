@@ -1,6 +1,7 @@
 # Observability
 
 > **Last updated:** 2026-06-13
+> **Changes:** sync — fix PiiMasker path (app/Support → app/Core/Support)
 
 ## What Is Monitored and Why
 
@@ -155,7 +156,7 @@ The `php artisan system:cleanup` command runs nightly via the scheduler and prun
 ## Where to Find It
 
 - `app/Core/Support/SmartLogger.php` — SmartLogger implementation
-- `app/Support/PiiMasker.php` — PII masking logic
+- `app/Core/Support/PiiMasker.php` — PII masking logic
 - `app/Core/Http/Middleware/LogContext.php` — log context enrichment
 - `app/SysAdmin/Observability/Console/Commands/SystemHealthCommand.php` — health command
 - `app/SysAdmin/Observability/Console/Commands/SystemCleanupCommand.php` — cleanup command
