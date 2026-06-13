@@ -53,21 +53,11 @@ class Registration extends BaseModel
         'proposed_company_details' => 'json',
     ];
 
-    public function hasStatus(string $status): bool
-    {
-        return $this->status === $status;
-    }
-
     public function setStatus(string $status, ?string $reason = null): static
     {
         $this->update(['status' => $status]);
 
         return $this;
-    }
-
-    public function latestStatus()
-    {
-        return (object) ['name' => $this->status];
     }
 
     public function asRegistrationState(): RegistrationState

@@ -48,6 +48,10 @@ class Report extends BaseModel
         static::observe(ReportObserver::class);
     }
 
+    /**
+     * @todo Extract snapshot logic into a ReportSnapshot entity.
+     *       See C-13 in docs/known-issues.md.
+     */
     public function captureSnapshot(): void
     {
         if ($this->registration_id && $this->registration) {
