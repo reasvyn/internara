@@ -14,7 +14,7 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 ### Module Statistics
 
 - **Contracts**: 5 (`LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`, `SettingsStore`)
-- **Base Classes**: 10 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`, `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`)
+- **Base Classes**: 10 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`, `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`) + 3 concern traits (`HasCommonScopes`, `WithSorting`, `WithRecordSelection`)
 - **Concrete DTOs**: 3 (`ActionResponse`, `AuditCheck`, `AuditReport`)
 - **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
 - **Concrete Exceptions**: 6 (`ConflictException`, `NotFoundException`, `RateLimitException`, `RejectedException`, `UnauthorizedException`, `ValidationFailedException`)
@@ -214,6 +214,8 @@ app/Core/
 │   │   └── WithSorting.php
 │   └── BaseRecordManager.php
 ├── Models/
+│   ├── Concerns/
+│   │   └── HasCommonScopes.php
 │   ├── ActivityLog.php
 │   ├── BaseAuthenticatable.php
 │   └── BaseModel.php

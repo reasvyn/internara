@@ -69,6 +69,10 @@ trait HasExceptionContext
             }
         }
 
+        if ($this->getPrevious() !== null) {
+            $output .= "\n  Previous: ".$this->getPrevious()->getMessage();
+        }
+
         return $output;
     }
 

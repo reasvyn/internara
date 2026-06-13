@@ -20,7 +20,8 @@ Out of scope: domain-specific logic, domain enums, application settings, user-fa
 Core has no submodules. Code is organized by architectural layer:
 
 - **Actions/BaseAction.php** — Abstract foundation for Command and Process Action types. Provides atomic `$this->transaction()` wrapping, auto-audit logging via SmartLogger, and consistent error handling.
-- **Models/BaseModel.php** — Abstract model base enforcing UUID v7 primary keys (via `HasUuids` trait), `HasFactory`, soft deletes, and consistent timestamp behavior. `Authenticatable` variant for the User model.
+- **Models/BaseModel.php** — Abstract model base enforcing UUID v7 primary keys (via `HasUuids` trait), `HasFactory`, soft deletes, and consistent timestamp behavior. `Authenticatable` variant for the User model. Common scopes (`active`, `inactive`, `recent`, `createdAfter`, `createdBefore`, `ordered`) extracted into shared `HasCommonScopes` trait.
+- **Models/Concerns/HasCommonScopes.php** — Shared trait providing 6 common query scopes (`scopeActive`, `scopeInactive`, `scopeRecent`, `scopeCreatedAfter`, `scopeCreatedBefore`, `scopeOrdered`) used by both `BaseModel` and `BaseAuthenticatable`.
 - **Models/ActivityLog.php** — Concrete model for SmartLogger's dual-channel audit log persistence.
 - **Entities/BaseEntity.php** — `final readonly` base for domain entities. Zero framework dependencies. Entities expose `fromModel()` static factories and `toArray()` for serialization.
 - **Policies/BasePolicy.php** — Abstract policy providing `before()` superadmin gate bypass, role checks via `AuthorizesRoles`, and ownership checks via `AuthorizesOwnership`.

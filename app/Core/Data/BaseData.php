@@ -10,6 +10,8 @@ use JsonSerializable;
 
 abstract readonly class BaseData implements JsonSerializable
 {
+    private static array $paramCache = [];
+
     public function toArray(): array
     {
         $result = [];
@@ -111,17 +113,15 @@ abstract readonly class BaseData implements JsonSerializable
 
     private static function resolveConstructorParams(string $class): array
     {
-        static $cache = [];
-
-        if (isset($cache[$class])) {
-            return $cache[$class];
+        if (isset(self::$paramCache[$class])) {
+            return self::$paramCache[$class];
         }
 
         $ref = new \ReflectionClass($class);
         $constructor = $ref->getConstructor();
 
         if ($constructor === null) {
-            $cache[$class] = [];
+            self::$paramCache[$class] = [];
 
             return [];
         }
@@ -138,17 +138,13 @@ abstract readonly class BaseData implements JsonSerializable
             }
         }
 
-        $cache[$class] = $params;
+        self::$paramCache[$class] = $params;
 
         return $params;
     }
 
     public static function clearParamCache(): void
     {
-        \Closure::bind(function () {
-            $ref = new \ReflectionProperty(self::class, 'cache');
-            $ref->setAccessible(true);
-            $ref->setValue(null, []);
-        }, null, self::class)();
+        self::$paramCache = [];
     }
 }

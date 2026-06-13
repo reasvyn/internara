@@ -15,6 +15,7 @@ trait WithRecordSelection
         $this->selectedIds = [];
     }
 
+    /** @param array<string|int> $ids */
     public function selectAll(array $ids): void
     {
         $this->selectedIds = $ids;

@@ -23,7 +23,7 @@ class LogContext
 
         if ($request->user()) {
             $context['user_id'] = $request->user()->id;
-            $context['user_role'] = $request->user()->roles->pluck('name')->first();
+            $context['user_role'] = $request->user()->roles()->value('name');
         }
 
         Log::withContext($context);

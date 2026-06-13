@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 use JsonSerializable;
 
 abstract readonly class BaseEntity implements JsonSerializable
@@ -26,6 +27,14 @@ abstract readonly class BaseEntity implements JsonSerializable
                 $constructorParams[$name] = $data[$name];
             } elseif ($param->isDefaultValueAvailable()) {
                 $constructorParams[$name] = $param->getDefaultValue();
+            } else {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Missing required constructor parameter "%s" for %s',
+                        $name,
+                        static::class,
+                    ),
+                );
             }
         }
 
