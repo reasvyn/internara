@@ -53,6 +53,7 @@ final class LoginAction extends BaseAction
             ->event('login_success')
             ->module('Auth')
             ->about($user)
+            ->withPiiMasking()
             ->activityOnly()
             ->save();
 

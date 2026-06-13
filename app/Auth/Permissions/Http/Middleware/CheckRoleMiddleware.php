@@ -51,6 +51,7 @@ class CheckRoleMiddleware
                 'method' => $request->method(),
                 'ip' => $request->ip(),
             ])
+            ->withPiiMasking()
             ->systemOnly()
             ->save();
 

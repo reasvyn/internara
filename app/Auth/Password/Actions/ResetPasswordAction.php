@@ -25,6 +25,7 @@ class ResetPasswordAction extends BaseAction
                 ->event('password_reset_confirmation_mismatch')
                 ->module('Auth')
                 ->withPayload(['email' => $email])
+                ->withPiiMasking()
                 ->activityOnly()
                 ->save();
 
@@ -50,6 +51,7 @@ class ResetPasswordAction extends BaseAction
                     ->event('password_reset_success')
                     ->module('Auth')
                     ->about($user)
+                    ->withPiiMasking()
                     ->activityOnly()
                     ->save();
             });
@@ -60,6 +62,7 @@ class ResetPasswordAction extends BaseAction
                 ->event('password_reset_failed')
                 ->module('Auth')
                 ->withPayload(['email' => $email, 'status' => $status])
+                ->withPiiMasking()
                 ->activityOnly()
                 ->save();
 

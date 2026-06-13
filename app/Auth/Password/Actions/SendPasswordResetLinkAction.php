@@ -18,6 +18,7 @@ class SendPasswordResetLinkAction extends BaseAction
             ->event('password_reset_link_requested')
             ->module('Auth')
             ->withPayload(['email' => $email, 'status' => $status])
+            ->withPiiMasking()
             ->activityOnly()
             ->save();
 

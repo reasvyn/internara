@@ -87,6 +87,7 @@ final class RecoverSuperAdminAction extends BaseAction
                     'recovered_user_id' => $recoveredUser->id,
                     'error' => $e->getMessage(),
                 ])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
         }
