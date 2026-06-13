@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Enrollment\Models\Registration;
 use App\Journals\AbsenceRequest\Livewire\AbsenceRequestForm;
 use App\Journals\Attendance\Livewire\AttendanceManager;
 use App\Journals\Attendance\Livewire\StudentClockIn;
-use App\Journals\Logbook\Actions\CompileLogbookReportAction;
+use App\Journals\Http\Controllers\LogbookReportController;
 use App\Journals\Logbook\Livewire\LogbookEntry;
 use App\Journals\Logbook\Livewire\LogbookManager;
 
@@ -32,10 +31,6 @@ Route::livewire('/admin/logbook', LogbookManager::class)
     ->name('sysadmin.logbook')
     ->middleware(['auth', 'role:super_admin|admin|teacher|supervisor']);
 
-Route::get('/admin/logbook/report/{registration}', function (string $registrationId) {
-    $registration = Registration::findOrFail($registrationId);
-
-    return app(CompileLogbookReportAction::class)->download($registration);
-})
+Route::get('/admin/logbook/report/{registration}', LogbookReportController::class)
     ->name('sysadmin.logbook.report')
     ->middleware(['auth', 'role:super_admin|admin|teacher|supervisor']);

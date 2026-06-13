@@ -14,6 +14,7 @@ use App\User\Dashboard\Livewire\StudentDashboard;
 use App\User\Dashboard\Livewire\SupervisorDashboard;
 use App\User\Dashboard\Livewire\TeacherDashboard;
 use App\User\Dashboard\Livewire\UserDashboard;
+use App\User\Http\Controllers\AuthController;
 use App\User\Http\Controllers\DashboardController;
 use App\User\Livewire\HomePage;
 use App\User\Notifications\Livewire\NotificationCenter;
@@ -28,13 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/profile/recovery', RecoveryCode::class)->name('profile.recovery');
     Route::livewire('/notifications', NotificationCenter::class)->name('notifications');
 
-    Route::post('/logout', function () {
-        auth()->logout();
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
-
-        return redirect()->route('login');
-    })->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::prefix('admin')
