@@ -45,6 +45,8 @@ class SupervisorLogManager extends Component
 
     public function create(): void
     {
+        $this->authorize('create', SupervisionLog::class);
+
         $this->reset(['registrationId', 'topic', 'notes']);
         $this->date = now()->toDateString();
         $this->showModal = true;
@@ -52,6 +54,8 @@ class SupervisorLogManager extends Component
 
     public function save(CreateSupervisionLogAction $createAction): void
     {
+        $this->authorize('create', SupervisionLog::class);
+
         $this->validate([
             'registrationId' => 'required|exists:registrations,id',
             'date' => 'required|date',
@@ -71,6 +75,8 @@ class SupervisorLogManager extends Component
 
     public function verify(SupervisionLog $log, VerifySupervisionLogAction $verifyAction): void
     {
+        $this->authorize('update', $log);
+
         $verifyAction->execute($log, auth()->user());
         flash()->success('Log verified successfully.');
     }

@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
-use RuntimeException;
 
 final class RecoverSuperAdminAction extends BaseAction
 {
@@ -25,7 +24,7 @@ final class RecoverSuperAdminAction extends BaseAction
         $attempts = (int) Cache::get($cacheKey, 0);
 
         if ($attempts >= 3) {
-            throw new RuntimeException('Too many recovery attempts. Try again in 15 minutes.');
+            throw new RejectedException('Too many recovery attempts. Try again in 15 minutes.');
         }
 
         Cache::put($cacheKey, $attempts + 1, 900);

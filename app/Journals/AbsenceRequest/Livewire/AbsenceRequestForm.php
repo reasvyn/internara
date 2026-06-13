@@ -6,6 +6,7 @@ namespace App\Journals\AbsenceRequest\Livewire;
 
 use App\Journals\AbsenceRequest\Actions\SubmitAbsenceAction;
 use App\Journals\AbsenceRequest\Enums\AbsenceReasonType;
+use App\Journals\AbsenceRequest\Models\AbsenceRequest;
 use App\Journals\Attendance\Models\Attendance;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
@@ -30,6 +31,8 @@ class AbsenceRequestForm extends Component
 
     public function submit(SubmitAbsenceAction $action): void
     {
+        $this->authorize('create', AbsenceRequest::class);
+
         $this->validate();
 
         $registration = auth()

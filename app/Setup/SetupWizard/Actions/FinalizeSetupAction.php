@@ -6,13 +6,13 @@ namespace App\Setup\SetupWizard\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Contracts\SendsNotifications;
+use App\Core\Exceptions\RejectedException;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
-use RuntimeException;
 
 final class FinalizeSetupAction extends BaseAction
 {
@@ -33,7 +33,7 @@ final class FinalizeSetupAction extends BaseAction
         $state = SetupEntity::get();
 
         if ($state->isInstalled()) {
-            throw new RuntimeException('System is already installed.');
+            throw new RejectedException('System is already installed.');
         }
 
         $plaintext = $this->transaction(function () use (

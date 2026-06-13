@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Auth\Password\Actions;
 
 use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
 use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
-use RuntimeException;
 
 class ConfirmPasswordAction extends BaseAction
 {
@@ -23,7 +23,7 @@ class ConfirmPasswordAction extends BaseAction
                 ->activityOnly()
                 ->save();
 
-            throw new RuntimeException(
+            throw new RejectedException(
                 __('auth.password_confirmation_failed') ??
                     'The provided password does not match your current password.',
             );

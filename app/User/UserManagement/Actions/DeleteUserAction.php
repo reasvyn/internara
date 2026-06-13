@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace App\User\UserManagement\Actions;
 
 use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Auth;
-use RuntimeException;
 
 final class DeleteUserAction extends BaseAction
 {
     public function execute(User $user): void
     {
         if ($user->hasRole('super_admin')) {
-            throw new RuntimeException('Super administrator accounts cannot be deleted.');
+            throw new RejectedException('Super administrator accounts cannot be deleted.');
         }
 
         if (Auth::id() === $user->id) {
-            throw new RuntimeException('You cannot delete your own account.');
+            throw new RejectedException('You cannot delete your own account.');
         }
 
         $this->transaction(function () use ($user) {

@@ -6,6 +6,7 @@ namespace App\Incident\IncidentReport\Livewire;
 
 use App\Enrollment\Registration\Models\Registration;
 use App\Incident\IncidentReport\Actions\ReportIncidentAction;
+use App\Incident\IncidentReport\Models\IncidentReport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
@@ -35,6 +36,8 @@ class IncidentForm extends Component
 
     public function save(ReportIncidentAction $action): void
     {
+        $this->authorize('create', IncidentReport::class);
+
         $this->validate([
             'formData.registration_id' => ['required', 'exists:registrations,id'],
             'formData.incident_date' => ['required', 'date'],

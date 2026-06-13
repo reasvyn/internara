@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\User\AccountStatus\Actions;
 
 use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
-use RuntimeException;
 
 class UnlockUserAccountAction extends BaseAction
 {
@@ -15,7 +15,7 @@ class UnlockUserAccountAction extends BaseAction
         if ($user->hasRole('super_admin')) {
             $this->log('super_admin_unlock_blocked', $user);
 
-            throw new RuntimeException(
+            throw new RejectedException(
                 'Super administrator accounts cannot be unlocked — they cannot be locked.',
             );
         }
