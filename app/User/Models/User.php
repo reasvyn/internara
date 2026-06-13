@@ -6,6 +6,7 @@ namespace App\User\Models;
 
 use App\Auth\Account\Entities\AccountActivation;
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
+use App\Core\Exceptions\RejectedException;
 use App\Core\Models\BaseAuthenticatable;
 use App\Enrollment\Registration\Models\Registration;
 use App\User\Entities\AdminEntity;
@@ -25,7 +26,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
-use RuntimeException;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -171,8 +171,8 @@ class User extends BaseAuthenticatable implements HasMedia
 
     public function delete(): ?bool
     {
-        if ($this->hasRole('superadmin')) {
-            throw new RuntimeException('Super administrator accounts cannot be deleted.');
+        if (! $this->asSuperAdminIntegrityRules()->canBeDeleted()) {
+            throw new RejectedException('Super administrator accounts cannot be deleted.');
         }
 
         return parent::delete();

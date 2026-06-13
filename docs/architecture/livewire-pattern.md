@@ -1,7 +1,7 @@
 # Livewire Component Patterns
 
 > **Last updated:** 2026-06-13
-> **Changes:** sync — fix shared component path (app/Livewire → app/Core/Livewire)
+> **Changes:** sync — update confirmation dialog pattern to reference shared <x-core::ui.confirm> component
 >
 > **Audience:** Developers building or maintaining Livewire components in Internara.
 >
@@ -278,23 +278,39 @@ class {Entity}Form extends Form
 Destructive operations use a two-step confirmation dialog. Never use bare `wire:confirm` for
 destructive actions — it does not provide user feedback on failure.
 
+### Shared Component
+
+A reusable confirmation modal is available at `resources/views/core/ui/confirm.blade.php`, namespaced
+as `<x-core::ui.confirm />`. It accepts these props:
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | `__('common.actions.confirm_action')` | Modal heading |
+| `message` | `string` | `''` | Body text explaining what will happen |
+| `icon` | `string` | `o-exclamation-triangle` | maryUI icon name |
+| `confirmText` | `string` | `__('common.actions.confirm')` | Confirm button label |
+| `cancelText` | `string` | `__('common.actions.cancel')` | Cancel button label |
+| `confirmClass` | `string` | `btn-error` | Tailwind class for the confirm button |
+
+The component binds to `$showConfirm` via `wire:model` and calls `confirmAction` on confirmation.
+
 ### State
 
 ```php
+public bool $showConfirm = false;
 public ?string $actionTarget = null;
-public bool $confirmingAction = false;
 ```
 
 ### Methods
 
 ```php
-public function askAction(string $id): void
+public function askDelete(string $id): void
 {
     $this->actionTarget = $id;
-    $this->confirmingAction = true;
+    $this->showConfirm = true;
 }
 
-public function confirmAction(Delete{Entity}Action $deleteAction): void
+public function confirmDelete(Delete{Entity}Action $deleteAction): void
 {
     try {
         $deleteAction->execute($this->actionTarget);
@@ -303,16 +319,29 @@ public function confirmAction(Delete{Entity}Action $deleteAction): void
         flash()->error($e->getMessage());
     }
 
-    $this->confirmingAction = false;
+    $this->showConfirm = false;
     $this->actionTarget = null;
 }
 ```
 
+### Blade
+
+```blade
+<x-mary-button label="{{ __('common.delete') }}" wire:click="askDelete('{{ $row->id }}')" class="btn-error btn-sm" />
+
+<x-core::ui.confirm
+    :title="__('{module}.confirm_delete_title')"
+    :message="__('{module}.confirm_delete_message')"
+    confirmText="{{ __('common.delete') }}"
+/>
+```
+
 ### Rules
 
-- Always use `askAction()` → `confirmAction()` for destructive operations
+- Always use `ask{Action}()` → `confirm{Action}()` for destructive operations
 - Always catch `RejectedException` and display the error via flash
-- Always reset both `$confirmingAction` and `$actionTarget` in the confirm method
+- Always reset both `$showConfirm` and `$actionTarget` in the confirm method
+- Use the shared `<x-core::ui.confirm />` component instead of defining per-component modals
 
 ---
 

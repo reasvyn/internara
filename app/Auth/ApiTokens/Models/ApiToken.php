@@ -131,17 +131,17 @@ class ApiToken extends BaseModel
 
     public function isExpired(): bool
     {
-        return $this->expires_at !== null && $this->expires_at->isPast();
+        return $this->asApiTokenState()->isExpired();
     }
 
     public function isRevoked(): bool
     {
-        return $this->revoked_at !== null;
+        return $this->asApiTokenState()->isRevoked();
     }
 
     public function isValid(): bool
     {
-        return ! $this->isRevoked() && ! $this->isExpired();
+        return $this->asApiTokenState()->isValid();
     }
 
     public static function revokeAllExpired(): int
