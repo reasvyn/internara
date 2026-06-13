@@ -32,6 +32,7 @@ Project skills are in `.agents/skills/`. Activate the relevant skill when workin
 - `tailwindcss-development` — styling, daisyUI, maryUI
 - `audit-protocol` — comprehensive multi-layer codebase audit against conventions, patterns, security, and industry standards
 - `sync-docs` — synchronize ALL markdown documentation with actual implementation
+- `quality-assurance` — code review, testing verification, formatting, static analysis, and pre-commit quality gate
 
 ## Documentation (NOT Duplicated Here)
 
