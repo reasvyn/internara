@@ -53,8 +53,7 @@ class CertificateList extends BaseRecordManager
         return Certificate::query()
             ->select(['certificates.*', 'users.name as student_name'])
             ->join('registrations', 'certificates.registration_id', '=', 'registrations.id')
-            ->join('mentees', 'registrations.mentee_id', '=', 'mentees.id')
-            ->join('users', 'mentees.user_id', '=', 'users.id');
+            ->join('users', 'registrations.student_id', '=', 'users.id');
     }
 
     protected function applySearch(Builder $query): Builder
@@ -81,12 +80,12 @@ class CertificateList extends BaseRecordManager
     {
         return Registration::query()
             ->where('status', 'active')
-            ->with('mentee.user', 'internship')
+            ->with('student', 'internship')
             ->get()
             ->map(
                 fn ($r) => [
                     'id' => $r->id,
-                    'name' => ($r->mentee?->user?->name ?? '?').' - '.($r->internship?->name ?? '?'),
+                    'name' => ($r->student?->name ?? '?').' - '.($r->internship?->name ?? '?'),
                 ],
             )
             ->toArray();

@@ -2,7 +2,7 @@
 
 <div class="p-6 sm:p-8">
     <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center size-14 rounded-full bg-primary/10 text-primary mb-5">
+        <div class="inline-flex items-center justify-center size-14 rounded-full bg-primary/10 text-primary mb-5" aria-hidden="true">
             <x-mary-icon name="o-rocket-launch" class="size-7" />
         </div>
         <h2 class="text-xl font-bold mb-2">{{ __('setup.wizard.welcome') }}</h2>
@@ -12,27 +12,45 @@
     </div>
 
     @if(!empty($auditResults['categories']))
-        <div class="space-y-6 mb-8">
+        <section
+            aria-label="{{ __('setup.wizard.audit_results') }}"
+            aria-live="polite"
+            class="space-y-6 mb-8"
+        >
             @foreach($auditResults['categories'] as $key => $category)
                 <div>
                     <h3 class="text-xs font-semibold uppercase tracking-wider text-base-content/40 mb-3">
                         {{ $category['label'] }}
                     </h3>
 
-                    <div class="space-y-2">
+                    <div class="space-y-2" role="list">
                         @foreach($category['checks'] as $check)
-                            <div @class([
-                                'flex items-center gap-3 px-4 py-3 rounded-lg border text-sm transition-colors',
-                                'border-success/20 bg-success/5' => $check['status'] === 'pass',
-                                'border-error/20 bg-error/5' => $check['status'] === 'fail',
-                                'border-warning/20 bg-warning/5' => $check['status'] === 'warn',
-                            ])>
+                            <div
+                                role="listitem"
+                                @class([
+                                    'flex items-center gap-3 px-4 py-3 rounded-lg border text-sm transition-colors',
+                                    'border-success/20 bg-success/5' => $check['status'] === 'pass',
+                                    'border-error/20 bg-error/5' => $check['status'] === 'fail',
+                                    'border-warning/20 bg-warning/5' => $check['status'] === 'warn',
+                                ])
+                            >
+                                @php
+                                    $statusLabels = [
+                                        'pass' => __('setup.system.pass'),
+                                        'fail' => __('setup.system.fail'),
+                                        'warn' => __('setup.system.warn'),
+                                    ];
+                                    $statusLabel = $statusLabels[$check['status']] ?? $check['status'];
+                                @endphp
+
+                                <span class="sr-only">{{ $statusLabel }}</span>
+
                                 @if($check['status'] === 'pass')
-                                    <x-mary-icon name="o-check-circle" class="size-5 text-success shrink-0" />
+                                    <x-mary-icon name="o-check-circle" class="size-5 text-success shrink-0" aria-hidden="true" />
                                 @elseif($check['status'] === 'fail')
-                                    <x-mary-icon name="o-x-circle" class="size-5 text-error shrink-0" />
+                                    <x-mary-icon name="o-x-circle" class="size-5 text-error shrink-0" aria-hidden="true" />
                                 @else
-                                    <x-mary-icon name="o-exclamation-triangle" class="size-5 text-warning shrink-0" />
+                                    <x-mary-icon name="o-exclamation-triangle" class="size-5 text-warning shrink-0" aria-hidden="true" />
                                 @endif
 
                                 <div class="flex-1 min-w-0">
@@ -48,7 +66,7 @@
                     </div>
                 </div>
             @endforeach
-        </div>
+        </section>
     @endif
 
     <div class="flex items-center justify-end gap-3 pt-6 border-t border-base-content/10">
@@ -61,7 +79,7 @@
                 spinner="nextStep"
             />
         @else
-            <div class="flex items-center gap-3 w-full">
+            <div class="flex items-center gap-3 w-full" role="alert">
                 <div class="flex-1 bg-warning/5 border border-warning/20 rounded-lg px-4 py-3">
                     <p class="text-xs text-warning/80 font-medium">{{ __('setup.wizard.requirements_not_met') }}</p>
                     <p class="text-xs text-warning/60 mt-0.5">{{ __('setup.wizard.audit_must_pass') }}</p>

@@ -9,7 +9,6 @@ use App\Enrollment\Placement;
 use App\Enrollment\Placement\Actions\DirectPlacementAction;
 use App\Enrollment\Placement\Livewire\Forms\DirectPlacementForm;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\Mentor\Models\Mentor;
 use App\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
@@ -49,7 +48,7 @@ class DirectPlacementManager extends Component
     #[Computed]
     public function mentors(): Collection
     {
-        return Mentor::with('user')->where('is_active', true)->get();
+        return User::role(['teacher', 'supervisor'])->get();
     }
 
     public function submit(DirectPlacementAction $placementAction): void

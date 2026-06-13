@@ -23,11 +23,10 @@ class AbsenceRequestFactory extends Factory
         return [
             'user_id' => User::factory(),
             'registration_id' => Registration::factory(),
-            'start_date' => now()->toDateString(),
-            'end_date' => now()->addDay()->toDateString(),
-            'reason_type' => AbsenceReasonType::SICK,
-            'reason_description' => $this->faker->sentence(),
-            'status' => AbsenceRequestStatus::PENDING,
+            'date' => now()->toDateString(),
+            'absence_type' => AbsenceReasonType::SICK,
+            'absence_reason' => $this->faker->sentence(),
+            'absence_status' => AbsenceRequestStatus::PENDING,
         ];
     }
 }

@@ -19,6 +19,7 @@ return new class extends Migration
 
             $table->string('phone')->nullable();
             $table->text('address')->nullable();
+            $table->text('bio')->nullable()->after('address');
             $table->string('gender')->nullable();
             $table->string('blood_type')->nullable();
 
@@ -27,9 +28,12 @@ return new class extends Migration
 
             $table->json('emergency_contact')->nullable();
 
-            $table->string('student_id_number', 50)->nullable()->unique();
-            $table->string('employee_id_number', 30)->nullable()->unique();
-            $table->string('mentor_type')->nullable(); // school_teacher | industry_supervisor | null
+            $table->string('id_number', 50)->nullable()->comment('NISN for students, NIP for teachers/employees, industry registration number for supervisors');
+            $table->string('national_id_number', 20)->nullable()->comment('NISN — lifelong national student number');
+
+            $table->string('competence_field', 255)->nullable();
+            $table->string('employment_status', 30)->nullable();
+            $table->string('job_title', 255)->nullable();
             $table->text('internal_notes')->nullable();
 
             $table->foreignUuid('department_id')->nullable()->constrained()->onDelete('set null');

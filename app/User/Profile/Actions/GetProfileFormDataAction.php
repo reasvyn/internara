@@ -28,8 +28,7 @@ final class GetProfileFormDataAction
             $staffFields = [
                 'employment_status',
                 'job_title',
-                'employee_id_number',
-                'educator_id_number',
+                'id_number',
                 'competence_field',
             ];
         }

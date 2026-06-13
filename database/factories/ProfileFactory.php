@@ -33,9 +33,7 @@ class ProfileFactory extends Factory
                 'phone' => $this->faker->phoneNumber(),
                 'address' => $this->faker->address(),
             ],
-            'student_id_number' => null,
-            'employee_id_number' => null,
-            'mentor_type' => null,
+            'id_number' => null,
             'internal_notes' => $this->faker->sentence(),
             'department_id' => Department::factory(),
             'company_id' => null,
@@ -46,7 +44,7 @@ class ProfileFactory extends Factory
     {
         return $this->state(
             fn () => [
-                'student_id_number' => $this->faker->unique()->numerify('STD-#####'),
+                'id_number' => $this->faker->unique()->numerify('STD-#####'),
                 'department_id' => $department instanceof Department
                         ? $department->id
                         : $department ?? Department::factory(),
@@ -58,8 +56,7 @@ class ProfileFactory extends Factory
     {
         return $this->state(
             fn () => [
-                'employee_id_number' => $this->faker->unique()->numerify('NIP-##########'),
-                'mentor_type' => 'school_teacher',
+                'id_number' => $this->faker->unique()->numerify('NIP-##########'),
             ],
         );
     }
@@ -68,8 +65,7 @@ class ProfileFactory extends Factory
     {
         return $this->state(
             fn () => [
-                'employee_id_number' => $this->faker->unique()->numerify('SUP-##########'),
-                'mentor_type' => 'industry_supervisor',
+                'id_number' => $this->faker->unique()->numerify('SUP-##########'),
                 'department_id' => null,
             ],
         );

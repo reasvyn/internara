@@ -7,7 +7,6 @@ namespace App\Assignment\Submission\Livewire;
 use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Actions\GradeSubmissionAction;
 use App\Assignment\Submission\Models\Submission;
-use App\Guidance\Mentor\Models\Mentor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -110,7 +109,7 @@ class SubmissionGrading extends Component
                     'mentors',
                     fn ($mq) => $mq
                         ->where('user_id', $user->id)
-                        ->where('type', Mentor::TYPE_SCHOOL_TEACHER),
+                        ->where('internship_group_members.role', 'teacher'),
                 ),
             );
         } elseif ($user->hasRole('supervisor')) {
@@ -120,7 +119,7 @@ class SubmissionGrading extends Component
                     'mentors',
                     fn ($mq) => $mq
                         ->where('user_id', $user->id)
-                        ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR),
+                        ->where('internship_group_members.role', 'supervisor'),
                 ),
             );
         }

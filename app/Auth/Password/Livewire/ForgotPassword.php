@@ -48,7 +48,7 @@ class ForgotPassword extends Component
         );
     }
 
-    #[Layout('user::layouts.auth', ['title' => 'Forgot Password'])]
+    #[Layout('auth::layouts.auth', ['title' => 'Forgot Password'])]
     public function render(): View
     {
         return view('auth.password.forgot-password');

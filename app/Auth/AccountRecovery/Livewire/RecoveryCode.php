@@ -64,7 +64,7 @@ class RecoveryCode extends Component
         );
     }
 
-    #[Layout('shared::layouts.app')]
+    #[Layout('core::layouts.app')]
     public function render(): View
     {
         return view('auth.account-recovery.recovery-code');

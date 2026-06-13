@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Guidance\SupervisionLog\Policies;
 
 use App\Core\Policies\BasePolicy;
-use App\Guidance\Mentor\Models\Mentor;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\User\Models\User;
 
@@ -37,7 +36,7 @@ class SupervisionLogPolicy extends BasePolicy
             $registration
                 ->mentors()
                 ->where('user_id', $user->id)
-                ->where('type', Mentor::TYPE_SCHOOL_TEACHER)
+                ->where('internship_group_members.role', 'teacher')
                 ->exists()
         ) {
             return true;
@@ -49,7 +48,7 @@ class SupervisionLogPolicy extends BasePolicy
             $registration
                 ->mentors()
                 ->where('user_id', $user->id)
-                ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)
+                ->where('internship_group_members.role', 'supervisor')
                 ->exists()
         ) {
             return true;

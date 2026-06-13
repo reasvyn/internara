@@ -171,14 +171,14 @@ mail services, and global feature toggles
 
 ---
 
-### 11. Evaluation — Performance Feedback
+### 11. Evaluation — Generic Feedback Forms
 
-**Purpose:** Supervisor and teacher evaluations of students
+**Purpose:** Google Forms-like feedback collection across all PKL aspects (mentor, program, company, overall)
 
 - Overview: [evaluation.md](evaluation.md)
 - Reference: [evaluation-reference.md](evaluation-reference.md)
 
-**Key Concepts:** Evaluation, Scoring, Feedback
+**Key Concepts:** Evaluation Forms, Sections, Weighted Questions, Polymorphic Targeting, Auto-Scoring
 
 **Dependencies:** User, Assessment, Program, Core
 

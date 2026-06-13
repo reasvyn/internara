@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Journals\AbsenceRequest\Models;
 
 use App\Core\Models\BaseModel;
-use App\Journals\AbsenceRequest\Entities\AbsenceRequestStatus as AbsenceRequestStatusEntity;
 use App\Journals\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\User\Models\User;
 use Database\Factories\AbsenceRequestFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -18,20 +18,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     Fillable([
         'user_id',
         'registration_id',
-        'start_date',
-        'end_date',
-        'reason_type',
-        'reason_description',
-        'attachment_path',
-        'status',
-        'processed_by',
-        'processed_at',
-        'admin_notes',
+        'date',
+        'absence_type',
+        'absence_reason',
+        'absence_attachment',
+        'absence_status',
+        'absence_processed_by',
+        'absence_processed_at',
+        'absence_admin_notes',
     ]),
 ]
 class AbsenceRequest extends BaseModel
 {
     use HasFactory;
+
+    protected $table = 'attendances';
 
     protected static function newFactory(): AbsenceRequestFactory
     {
@@ -39,18 +40,24 @@ class AbsenceRequest extends BaseModel
     }
 
     protected $attributes = [
-        'status' => AbsenceRequestStatus::PENDING->value,
+        'absence_status' => AbsenceRequestStatus::PENDING->value,
     ];
 
     protected function casts(): array
     {
         return [
-            'start_date' => 'date',
-            'end_date' => 'date',
-            'status' => AbsenceRequestStatus::class,
-            'reason_type' => AbsenceReasonType::class,
-            'processed_at' => 'datetime',
+            'date' => 'date',
+            'absence_type' => AbsenceReasonType::class,
+            'absence_status' => AbsenceRequestStatus::class,
+            'absence_processed_at' => 'datetime',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('absence', function (Builder $query) {
+            $query->whereNotNull('absence_type');
+        });
     }
 
     public function user(): BelongsTo
@@ -58,18 +65,8 @@ class AbsenceRequest extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-    public function registration(): BelongsTo
-    {
-        return $this->belongsTo(Registration::class, 'registration_id');
-    }
-
     public function processor(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'processed_by');
-    }
-
-    public function asAbsenceRequestStatus(): AbsenceRequestStatusEntity
-    {
-        return AbsenceRequestStatusEntity::fromModel($this);
+        return $this->belongsTo(User::class, 'absence_processed_by');
     }
 }

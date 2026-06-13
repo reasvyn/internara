@@ -51,7 +51,7 @@ Handles authentication: login, password management, account activation, account 
 
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
-| `Permissions/Enums/Role.php` | `Role` | `LabelEnum` | super_admin, admin, teacher, supervisor, student |
+| `Permissions/Enums/Role.php` | `Role` | `LabelEnum` | super_admin, admin, teacher, supervisor, student, func_mentor, func_mentee |
 
 ---
 

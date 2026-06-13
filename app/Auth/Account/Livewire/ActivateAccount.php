@@ -86,7 +86,7 @@ class ActivateAccount extends Component
         return Str::transliterate('activate|'.$this->email.'|'.request()->ip());
     }
 
-    #[Layout('user::layouts.auth', ['title' => 'Activate Account'])]
+    #[Layout('auth::layouts.auth', ['title' => 'Activate Account'])]
     public function render(): View
     {
         return view('auth.activation-token.activate-account');

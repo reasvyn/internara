@@ -177,7 +177,7 @@ class InternshipGroupManager extends BaseRecordManager
             'memberFormData.mentor_id' => [
                 'required_if:memberFormData.role,school_teacher,industry_supervisor',
                 'nullable',
-                'exists:mentors,id',
+                'exists:users,id',
             ],
         ]);
 

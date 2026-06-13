@@ -21,9 +21,7 @@
 9. [CustomDatabaseChannel](#9-customdatabasechannel)
 10. [SmartLogger Integration](#10-smartlogger-integration)
 11. [Event Flow Diagram](#11-event-flow-diagram)
-12. [Complete Event Inventory](#12-complete-event-inventory)
-13. [Complete Notification Inventory](#13-complete-notification-inventory)
-14. [Testing Events and Listeners](#14-testing-events-and-listeners)
+12. [Testing Events and Listeners](#12-testing-events-and-listeners)
 
 ---
 
@@ -679,47 +677,6 @@ This produces:
                                │ event dispatched │
                                └──────────────────┘
 ```
-
----
-
-## 12. Complete Event Inventory
-
-| Event Class | Module | eventName() | Payload | Listeners |
-|---|---|---|---|---|
-| `AcademicYearCreated` | Academics | `academic_year.created` | `academic_year_id` | ClearDashboardCacheOnYearChange |
-| `AcademicYearActivated` | Academics | `academic_year.activated` | `academic_year_id`, `previous_active_id` | ClearDashboardCacheOnYearChange |
-| `DepartmentCreated` | Academics | `department.created` | `department_id` | ClearDashboardCacheOnDepartmentChange |
-| `DepartmentDeleted` | Academics | `department.deleted` | `department_id` | ClearDashboardCacheOnDepartmentChange |
-| `CompanyCreated` | Partners | `company.created` | `company_id` | ClearDashboardOnCompanyChange |
-| `PartnershipCreated` | Partners | `partnership.created` | `partnership_id` | (none) |
-| `InternshipCreated` | Program | `internship.created` | `internship_id`, `created_by_id` | NotifyAdminsInternshipCreated |
-| `StudentRegistered` | Enrollment | `student.registered` | `registration_id` | ClearDashboardOnRegistration |
-| `SetupFinalized` | Setup | `setup.finalized` | `departmentId`, `installedAt` | LogSetupFinalized |
-| `SettingUpdated` | Settings | `setting.created` or `setting.updated` | `setting`, `wasRecentlyCreated` | InvalidateSettingsCache |
-| `LoginSucceeded` | Auth | `login.succeeded` | `user_id`, `identifier` | (none) |
-| `LoginFailed` | Auth | `login.failed` | `identifier`, `reason` | (none) |
-| `PasswordUpdated` | Auth | `password.updated` | `user_id` | (none) |
-| `ProfileUpdated` | User | `profile.updated` | `profile_id` | (none) |
-| `NotificationSent` | User | `notification.sent` | `notification_id` | ClearUnreadNotificationCache |
-| `NotificationRead` | User | `notification.read` | `notification_id` | ClearUnreadNotificationCache |
-
----
-
-## 13. Complete Notification Inventory
-
-| Notification Class | Module | Channel | CustomDatabase `type` | ShouldQueue |
-|---|---|---|---|---|
-| `InternshipCreatedNotification` | Program | mail, broadcast, CustomDatabase | `internship_created` | ✅ Yes |
-| `IncidentReportedNotification` | Incident | mail, broadcast, CustomDatabase | `incident_reported` | ✅ Yes |
-| `AssignmentNotification` | Assignment | mail, broadcast, CustomDatabase | `assignment_published` | ✅ Yes |
-| `SubmissionFeedbackNotification` | Assignment | mail, broadcast, CustomDatabase | `submission_feedback` | ✅ Yes |
-| `RegistrationNotification` | Program | mail, broadcast, CustomDatabase | `internship_registration_update` | ✅ Yes |
-| `AccountStatusNotification` | User | mail, broadcast, CustomDatabase | `account_status_change` | ✅ Yes |
-| `WelcomeNotification` | User | mail, broadcast, CustomDatabase | `system_welcome` | ✅ Yes |
-| `GeneralNotification` | User | CustomDatabase, (opt-in mail) | (dynamic) | ✅ Yes |
-| `SuperAdminRecoveredNotification` | Auth | mail, broadcast, CustomDatabase | `super_admin_recovery` | ✅ Yes |
-| `AnnouncementNotification` | SysAdmin | mail, broadcast, CustomDatabase | `announcement` | ✅ Yes |
-| `ActivationCodeNotification` | SysAdmin | mail, CustomDatabase | `activation_code` | ❌ No |
 
 ---
 

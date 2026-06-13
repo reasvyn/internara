@@ -18,9 +18,8 @@
 7. [Cache Warming](#7-cache-warming)
 8. [Application Layer Caching](#8-application-layer-caching)
 9. [OpCache Configuration](#9-opcache-configuration)
-10. [Common Cache Key Inventory](#10-common-cache-key-inventory)
-11. [Testing Cache](#11-testing-cache)
-12. [Anti-Patterns](#12-anti-patterns)
+10. [Testing Cache](#10-testing-cache)
+11. [Anti-Patterns](#11-anti-patterns)
 
 ---
 
@@ -439,46 +438,6 @@ Or restart PHP-FPM:
 ```bash
 sudo systemctl reload php8.4-fpm
 ```
-
----
-
-## 10. Common Cache Key Inventory
-
-### Data Layer Keys
-
-| Config Constant             | Key Pattern                          | TTL        | Typical Consumer                          |
-| --------------------------- | ------------------------------------ | ---------- | ----------------------------------------- |
-| `setup_installed`           | `setup.is_installed`                 | 3600s      | `RequireSetupAccessMiddleware`            |
-| `admin_dashboard_stats`     | `sysadmin.dashboard.stats`           | 300s       | `GetAdminDashboardStatsAction`            |
-| `theme_css_variables`       | `theme.css_variables`                | forever    | Theme service (applied to `<head>`)       |
-| `brand_colors`              | `brand.colors`                       | 86400s     | `Brand::colors()`                         |
-| `notification_unread`       | `notification.unread:{userId}`       | 300s       | Notification badge in navigation          |
-| `core_integrity`            | `core.integrity_verified`            | forever    | Integrity check (cached once verified)    |
-| `core_app_name`             | `core.app_name`                      | forever    | Application name resolution               |
-| `appinfo_metadata`          | `appinfo.metadata`                   | forever    | Package metadata (version, author, etc.)  |
-| `module_livewire`           | `module.discovered_livewire`         | forever    | Livewire component auto-discovery         |
-| `module_policies`           | `module.discovered_policies`         | forever    | Policy auto-registration                  |
-| `module_views`              | `module.discovered_views`            | forever    | View namespace discovery                  |
-| `settings_all`              | `settings.all`                       | forever    | `Settings::all()`                         |
-| `settings_group`            | `settings.group.{groupName}`         | forever    | `Settings::group('mail')`                 |
-| `settings_keys`             | `settings.keys`                      | forever    | `Settings::keys()`                        |
-| `settings_key`              | `settings.{key}`                     | forever    | `Settings::get('app_name')`               |
-| `health_check`              | `health_check`                       | 10s        | `SystemHealthCommand` / admin dashboard   |
-| `auth_login_lockout`        | `login:lockout:{hash}`               | Variable   | Rate-limiter: `LoginAction`               |
-| `auth_login_attempts`       | `login:attempts:{hash}`              | 86400s     | Rate-limiter: `LoginAction`               |
-| `auth_login_failures`       | `auth.login-failures:{hash}`         | 86400s     | Rate-limiter: `LoginAction`               |
-| `recover_admin_attempts`    | `recover_admin_attempts_{hash}`      | 900s       | Rate-limiter: `RecoverSuperAdminAction`   |
-
-### Application Layer Keys (Not in Registry)
-
-| Cache             | Managed By                     | Stored In                          |
-| ----------------- | ------------------------------ | ---------------------------------- |
-| Config cache      | `php artisan config:cache`     | `bootstrap/cache/config.php`       |
-| Route cache       | `php artisan route:cache`      | `bootstrap/cache/routes-v7.php`    |
-| View cache        | `php artisan view:cache`       | `storage/framework/views/*.php`    |
-| Event cache       | `php artisan event:cache`      | `bootstrap/cache/events.php`       |
-| Compiled services | `php artisan optimize`         | `bootstrap/cache/services.php`     |
-| Packages manifest | `php artisan package:discover` | `bootstrap/cache/packages.php`     |
 
 ---
 

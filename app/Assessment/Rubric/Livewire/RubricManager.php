@@ -13,8 +13,6 @@ use App\Assessment\Rubric\Actions\DeleteRubricAction;
 use App\Assessment\Rubric\Actions\UpdateCompetencyAction;
 use App\Assessment\Rubric\Actions\UpdateIndicatorAction;
 use App\Assessment\Rubric\Actions\UpdateRubricAction;
-use App\Assessment\Rubric\Models\Competency;
-use App\Assessment\Rubric\Models\Indicator;
 use App\Assessment\Rubric\Models\Rubric;
 use App\Evaluation\Enums\EvaluatorRole;
 use Illuminate\Contracts\View\View;
@@ -62,7 +60,7 @@ class RubricManager extends Component
     #[Computed]
     public function rubrics(): Collection
     {
-        return Rubric::with('competencies.indicators')->latest()->get();
+        return Rubric::latest()->get();
     }
 
     #[Computed]
@@ -149,17 +147,22 @@ class RubricManager extends Component
         $this->competencyModal = true;
     }
 
-    public function editCompetency(Competency $competency): void
+    public function editCompetency(string $rubricId, string $competencyId): void
     {
         $this->resetErrorBag();
-        $this->selectedRubricId = $competency->rubric_id;
+        $this->selectedRubricId = $rubricId;
+
+        $rubric = Rubric::findOrFail($rubricId);
+        $structure = $rubric->structure ?? ['competencies' => []];
+        $competency = collect($structure['competencies'])->firstWhere('id', $competencyId);
+
         $this->competencyForm = [
-            'id' => $competency->id,
-            'name' => $competency->name,
-            'description' => $competency->description ?? '',
-            'weight' => $competency->weight,
-            'evaluator_role' => $competency->evaluator_role->value,
-            'order' => $competency->order,
+            'id' => $competency['id'],
+            'name' => $competency['name'],
+            'description' => $competency['description'] ?? '',
+            'weight' => $competency['weight'],
+            'evaluator_role' => $competency['evaluator_role'],
+            'order' => $competency['order'],
         ];
         $this->competencyModal = true;
     }
@@ -177,13 +180,15 @@ class RubricManager extends Component
         ]);
 
         $evaluatorRole =
-            EvaluatorRole::tryFrom($this->competencyForm['evaluator_role']) ??
-            EvaluatorRole::TEACHER;
+            EvaluatorRole::tryFrom($this->competencyForm['evaluator_role'])?->value ??
+            EvaluatorRole::TEACHER->value;
+
+        $rubric = Rubric::findOrFail($this->selectedRubricId);
 
         if ($this->competencyForm['id']) {
-            $competency = Competency::findOrFail($this->competencyForm['id']);
             $updateAction->execute(
-                competency: $competency,
+                rubric: $rubric,
+                competencyId: $this->competencyForm['id'],
                 name: $this->competencyForm['name'],
                 description: $this->competencyForm['description'],
                 weight: (int) $this->competencyForm['weight'],
@@ -193,7 +198,7 @@ class RubricManager extends Component
             flash()->success('Competency updated.');
         } else {
             $createAction->execute(
-                rubricId: $this->selectedRubricId,
+                rubric: $rubric,
                 name: $this->competencyForm['name'],
                 description: $this->competencyForm['description'],
                 weight: (int) $this->competencyForm['weight'],
@@ -206,15 +211,17 @@ class RubricManager extends Component
         $this->competencyModal = false;
     }
 
-    public function removeCompetency(Competency $competency, DeleteCompetencyAction $action): void
+    public function removeCompetency(string $rubricId, string $competencyId, DeleteCompetencyAction $action): void
     {
-        $action->execute($competency);
+        $rubric = Rubric::findOrFail($rubricId);
+        $action->execute($rubric, $competencyId);
         flash()->success('Competency removed.');
     }
 
-    public function addIndicator(string $competencyId): void
+    public function addIndicator(string $rubricId, string $competencyId): void
     {
         $this->resetErrorBag();
+        $this->selectedRubricId = $rubricId;
         $this->selectedCompetencyId = $competencyId;
         $this->indicatorForm = [
             'id' => null,
@@ -227,17 +234,24 @@ class RubricManager extends Component
         $this->indicatorModal = true;
     }
 
-    public function editIndicator(Indicator $indicator): void
+    public function editIndicator(string $rubricId, string $competencyId, string $indicatorId): void
     {
         $this->resetErrorBag();
-        $this->selectedCompetencyId = $indicator->competency_id;
+        $this->selectedRubricId = $rubricId;
+        $this->selectedCompetencyId = $competencyId;
+
+        $rubric = Rubric::findOrFail($rubricId);
+        $structure = $rubric->structure ?? ['competencies' => []];
+        $competency = collect($structure['competencies'])->firstWhere('id', $competencyId);
+        $indicator = collect($competency['indicators'] ?? [])->firstWhere('id', $indicatorId);
+
         $this->indicatorForm = [
-            'id' => $indicator->id,
-            'name' => $indicator->name,
-            'description' => $indicator->description ?? '',
-            'max_score' => $indicator->max_score,
-            'weight' => $indicator->weight,
-            'order' => $indicator->order,
+            'id' => $indicator['id'],
+            'name' => $indicator['name'],
+            'description' => $indicator['description'] ?? '',
+            'max_score' => $indicator['max_score'],
+            'weight' => $indicator['weight'],
+            'order' => $indicator['order'],
         ];
         $this->indicatorModal = true;
     }
@@ -254,10 +268,13 @@ class RubricManager extends Component
             'indicatorForm.order' => 'required|integer|min:0',
         ]);
 
+        $rubric = Rubric::findOrFail($this->selectedRubricId);
+
         if ($this->indicatorForm['id']) {
-            $indicator = Indicator::findOrFail($this->indicatorForm['id']);
             $updateAction->execute(
-                indicator: $indicator,
+                rubric: $rubric,
+                competencyId: $this->selectedCompetencyId,
+                indicatorId: $this->indicatorForm['id'],
                 name: $this->indicatorForm['name'],
                 description: $this->indicatorForm['description'],
                 maxScore: (int) $this->indicatorForm['max_score'],
@@ -267,6 +284,7 @@ class RubricManager extends Component
             flash()->success('Indicator updated.');
         } else {
             $createAction->execute(
+                rubric: $rubric,
                 competencyId: $this->selectedCompetencyId,
                 name: $this->indicatorForm['name'],
                 description: $this->indicatorForm['description'],
@@ -280,9 +298,10 @@ class RubricManager extends Component
         $this->indicatorModal = false;
     }
 
-    public function removeIndicator(Indicator $indicator, DeleteIndicatorAction $action): void
+    public function removeIndicator(string $rubricId, string $competencyId, string $indicatorId, DeleteIndicatorAction $action): void
     {
-        $action->execute($indicator);
+        $rubric = Rubric::findOrFail($rubricId);
+        $action->execute($rubric, $competencyId, $indicatorId);
         flash()->success('Indicator removed.');
     }
 

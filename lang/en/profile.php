@@ -41,10 +41,11 @@ return [
 
     'job_title_placeholder' => 'e.g., Head of Department',
     'bio' => 'Bio',
-    'employee_id_number' => 'Employee ID Number',
-    'employee_id_number_placeholder' => 'Employee ID number',
-    'educator_id_number' => 'Educator ID Number',
-    'educator_id_number_placeholder' => 'Educator registration number',
+    'id_number' => 'ID Number',
+    'id_number_placeholder' => 'ID number',
+    'id_number_student' => 'NISN',
+    'id_number_teacher' => 'NIP',
+    'id_number_supervisor' => 'Employee Number',
     'new_password' => 'New Password',
     'confirm_password' => 'Confirm Password',
 

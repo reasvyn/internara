@@ -48,14 +48,14 @@ test('profile can store address', function () {
     expect($profile->address)->toBe('Jl. Merdeka No. 1');
 });
 
-test('profile can store student id number', function () {
+test('profile can store id number', function () {
     $user = User::factory()->create();
     $profile = Profile::factory()->create([
         'user_id' => $user->id,
-        'student_id_number' => '1234567890',
+        'id_number' => '1234567890',
     ]);
 
-    expect($profile->student_id_number)->toBe('1234567890');
+    expect($profile->id_number)->toBe('1234567890');
 });
 
 test('profile can store emergency contact', function () {

@@ -6,7 +6,7 @@ namespace App\Journals\AbsenceRequest\Livewire;
 
 use App\Journals\AbsenceRequest\Actions\SubmitAbsenceAction;
 use App\Journals\AbsenceRequest\Enums\AbsenceReasonType;
-use App\Journals\AbsenceRequest\Models\AbsenceRequest;
+use App\Journals\Attendance\Models\Attendance;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -14,8 +14,6 @@ use Livewire\Component;
 class AbsenceRequestForm extends Component
 {
     public string $startDate = '';
-
-    public string $endDate = '';
 
     public string $reasonType = '';
 
@@ -25,7 +23,6 @@ class AbsenceRequestForm extends Component
     {
         return [
             'startDate' => 'required|date|after_or_equal:today',
-            'endDate' => 'required|date|after_or_equal:startDate',
             'reasonType' => 'required|string|in:sick,permission,emergency,other',
             'reasonDescription' => 'required|string|min:10|max:1000',
         ];
@@ -47,15 +44,13 @@ class AbsenceRequestForm extends Component
             return;
         }
 
-        $action->execute(auth()->user(), [
-            'registration_id' => $registration->id,
+        $action->execute(auth()->user(), $registration->id, [
             'start_date' => $this->startDate,
-            'end_date' => $this->endDate,
             'reason_type' => $this->reasonType,
             'reason_description' => $this->reasonDescription,
         ]);
 
-        $this->reset(['startDate', 'endDate', 'reasonType', 'reasonDescription']);
+        $this->reset(['startDate', 'reasonType', 'reasonDescription']);
         flash()->success('Absence request submitted successfully.');
     }
 
@@ -64,7 +59,8 @@ class AbsenceRequestForm extends Component
     {
         return view('journals.absence-request.absence-request-form', [
             'reasonTypes' => AbsenceReasonType::cases(),
-            'existingRequests' => AbsenceRequest::where('user_id', auth()->id())
+            'existingRequests' => Attendance::where('user_id', auth()->id())
+                ->whereNotNull('absence_type')
                 ->latest()
                 ->paginate(10),
         ]);

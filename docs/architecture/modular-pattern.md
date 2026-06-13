@@ -839,13 +839,13 @@ rule methods -> Add named accessor on Model -> Update callers -> Write unit test
 | [Model (Active Record)](model-pattern.md) | Eloquent models, UUID PKs, scopes, relationships, casts |
 | [Data (DTO)](data-pattern.md) | BaseData DTOs, fromArray/toArray, ActionResponse, migration path |
 | [Event & Notification](event-pattern.md) | BaseEvent, dispatch patterns, listeners, multi-channel notifications |
-| [Enum](enum-pattern.md) | State machine enums, LabelEnum/StatusEnum contracts, 35-enum inventory |
+| [Enum](enum-pattern.md) | State machine enums, LabelEnum/StatusEnum contracts, module-specific value objects |
 | [Livewire](livewire-pattern.md) | Thin components, Form Objects, BaseRecordManager, confirmation dialogs |
 | [Exception](exception-pattern.md) | Dual hierarchy, HasExceptionContext, HandlesActionErrors |
-| [Policy](policy-pattern.md) | Flat RBAC, three-layer auth, Gate::before, 29-policy inventory |
-| [Logging](logging-pattern.md) | SmartLogger fluent API, PII masking (39+ keys) |
+| [Policy](policy-pattern.md) | Flat RBAC, three-layer auth, Gate::before, policy conventions |
+| [Logging](logging-pattern.md) | SmartLogger fluent API, PII masking, dual-channel strategies |
 | [Cache](cache-pattern.md) | Key registry, invalidation strategies, driver tiers |
-| [Service](service-pattern.md) | When to use Services vs Actions, existing inventory, migration path |
+| [Service](service-pattern.md) | When to use Services vs Actions, migration strategies |
 | [Repository](repository-pattern.md) | Why no Repository layer, Eloquent as Repository, query tiers |
 | [Testing](testing-pattern.md) | Testing conventions, scope isolation, layer strategies, performance |
 

@@ -66,7 +66,7 @@ class Login extends Component
         return Str::transliterate(Str::lower($this->form->identifier).'|'.request()->ip());
     }
 
-    #[Layout('user::layouts.auth', ['title' => 'Login'])]
+    #[Layout('auth::layouts.auth', ['title' => 'Login'])]
     public function render(): View
     {
         return view('auth.login');

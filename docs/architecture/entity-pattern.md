@@ -853,18 +853,7 @@ Entity represents a generated token with validation logic.
 
 Examples: `ActivationToken`, `AccountActivation`.
 
-### 13.7 Evaluation Entity Pattern
-
-Entity holds computed scores and provides categorization.
-
-```php
-// Constructor: scores + feedback
-// Methods: averageCriterionScore(), scoreBand(), isValid()
-```
-
-Example: `EvaluationResult`.
-
-### 13.8 Delegation Entity Pattern
+### 13.7 Delegation Entity Pattern
 
 Entity is a thin wrapper that delegates to an enum's methods.
 
@@ -874,40 +863,6 @@ Entity is a thin wrapper that delegates to an enum's methods.
 ```
 
 Examples: `SupervisionStatus`, `LogbookState`.
-
-### 13.9 Complete Entity & Accessor Table
-
-| Entity | Module/Submodule | File | Model Accessor | Constructor State |
-|--------|-----------------|------|----------------|-------------------|
-| `AcademicYearState` | Academics/AcademicYear | `Entities/AcademicYearState.php` | `AcademicYear::asAcademicYearState()` | `isActive: bool`, `hasRelatedRecords: bool` |
-| `SchoolEntity` | Academics/School | `Entities/SchoolEntity.php` | Settings-backed (no model accessor) | `name`, `institutionalCode`, `email`, `address`, `phone`, `website`, `principalName` |
-| `DepartmentState` | Academics/Department | `Entities/DepartmentState.php` | `Department::asDepartmentState()` | (single-status) |
-| `EvaluationResult` | Evaluation | `Entities/EvaluationResult.php` | `Assessment::asAssessmentResult()` | `category: EvaluationCategory`, `overallScore: float`, `criteriaScores: array`, `feedback: ?string` |
-| `ActivationToken` | Auth/ApiTokens | `Entities/ActivationToken.php` | `ApiToken::asActivationToken()` | `plainText: string`, `tokenId: string`, `expiresAt: Carbon` |
-| `AccountActivation` | Auth/Account | `Entities/AccountActivation.php` | — (uses `forUser()`) | `isActivated: bool`, `tokenExpiresAt: ?Carbon`, `tokenIsValid: bool`, `attempts: int` |
-| `RecoveryCodeState` | Auth/AccountRecovery | `Entities/RecoveryCodeState.php` | — | — |
-| `SuperAdminIntegrityRules` | Auth/SuperAdmin | `Entities/SuperAdminIntegrityRules.php` | — | — |
-| `AssessmentResult` | Assessment | `Entities/AssessmentResult.php` | `Assessment::asAssessmentResult()` | — |
-| `RegistrationState` | Enrollment/Registration | `Entities/RegistrationState.php` | `Registration::asRegistrationState()` | `status: ?string`, `startDate: ?Carbon`, `endDate: ?Carbon`, `hasPlacement: bool` |
-| `PlacementCapacity` | Enrollment/Placement | `Entities/PlacementCapacity.php` | `Placement::asPlacementCapacity()` | `quota: int`, `filledQuota: int` |
-| `PlacementState` | Enrollment/Placement | `Entities/PlacementState.php` | `Placement::asPlacementState()` | — |
-| `CompanyState` | Partners/Company | `Entities/CompanyState.php` | `Company::asCompanyState()` | `placementCount: int`, `partnershipCount: int` |
-| `PartnershipState` | Partners/Partnership | `Entities/PartnershipState.php` | `Partnership::asPartnershipState()` | — |
-| `InternshipPeriod` | Program/Internship | `Entities/InternshipPeriod.php` | `Internship::asInternshipPeriod()` | `status: ?InternshipStatus`, `registrationStartDate: ?Carbon`, `registrationEndDate: ?Carbon`, `academicYearStart: ?Carbon`, `academicYearEnd: ?Carbon` |
-| `InternshipState` | Program/Internship | `Entities/InternshipState.php` | `Internship::asInternshipState()` | `placementCount: int`, `registrationCount: int` |
-| `InternshipGroupState` | Program/InternshipGroup | `Entities/InternshipGroupState.php` | `InternshipGroup::asInternshipGroupState()` | — |
-| `Apprentice` | User | `Entities/Apprentice.php` | `User::asApprentice()` | `status: AccountStatus`, `isLocked: bool`, `setupRequired: bool` |
-| `AssignmentRules` | Assignment | `Entities/AssignmentRules.php` | `Assignment::asAssignmentRules()` | `isMandatory: bool`, `dueDate: ?Carbon` |
-| `SubmissionState` | Assignment/Submission | `Entities/SubmissionState.php` | `Submission::asSubmissionState()` | `status: SubmissionStatus` |
-| `LogbookState` | Journals/Logbook | `Entities/LogbookState.php` | `Logbook::asLogbookState()` | `status: LogbookStatus` |
-| `AbsenceRequestStatusEntity` | Journals/AbsenceRequest | *(entity name may differ)* | `AbsenceRequest::asAbsenceRequestStatus()` | — |
-| `AttendanceStatusEntity` | Journals/Attendance | *(entity name may differ)* | `Attendance::asAttendanceStatus()` | — |
-| `SupervisionStatus` | Guidance/SupervisionLog | `Entities/SupervisionStatus.php` | `SupervisionLog::asSupervisionStatus()` | `status: ?SupervisionLogStatus` |
-| `SettingEntity` | Settings | `Entities/SettingEntity.php` | `Setting::asSetting()` | `key: string`, `value: mixed`, `type: ?string`, `group: ?string` |
-| `SetupEntity` | Setup | `Entities/SetupEntity.php` | Settings-backed | `dbInstalled: bool`, `setupToken: ?string`, `tokenExpiresAt: ?Carbon`, `completedSteps: array`, `recoveryKey: ?string`, `updatedAt: ?Carbon`, `tokenVersion: int` |
-
-> Note: Entities marked with `—` for constructor state were not inspected for this document; refer
-> to the source file for the exact constructor signature.
 
 ### 13.10 Verification Checklist
 

@@ -45,7 +45,7 @@ class StudentManager extends BaseRecordManager
                 'class' => 'font-mono text-xs',
             ],
             ['key' => 'profile.national_id_number', 'label' => __('user.student.nisn')],
-            ['key' => 'profile.student_id_number', 'label' => __('user.student.nis')],
+            ['key' => 'profile.id_number', 'label' => __('user.student.nis')],
             ['key' => 'profile.department.name', 'label' => __('user.student.department')],
             ['key' => 'created_at', 'label' => __('user.student.joined'), 'sortable' => true],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
@@ -111,7 +111,7 @@ class StudentManager extends BaseRecordManager
             'name' => $user->name,
             'email' => $user->email,
             'national_id_number' => $user->profile?->national_id_number ?? '',
-            'student_id_number' => $user->profile?->student_id_number ?? '',
+            'id_number' => $user->profile?->id_number ?? '',
             'department_id' => $user->profile?->department_id ?? '',
         ]);
         $this->userModal = true;
@@ -123,7 +123,7 @@ class StudentManager extends BaseRecordManager
 
         $profileData = [
             'national_id_number' => $this->form->national_id_number,
-            'student_id_number' => $this->form->student_id_number,
+            'id_number' => $this->form->id_number,
             'department_id' => $this->form->department_id,
         ];
 
@@ -197,10 +197,15 @@ class StudentManager extends BaseRecordManager
                 $u->name,
                 $u->email,
                 $u->profile?->national_id_number ?? '',
-                $u->profile?->student_id_number ?? '',
+                $u->profile?->id_number ?? '',
             ],
             'students.csv',
         );
+    }
+
+    public function getIdNumberLabel(): string
+    {
+        return __('user.student.nis');
     }
 
     public function render(): View

@@ -66,21 +66,7 @@ class NotificationCenter extends BaseRecordManager
 
     protected function query(): Builder
     {
-        $user = Auth::user();
-
-        $query = Notification::where('user_id', $user->id);
-
-        if ($user->hasRole('student')) {
-            $query->whereIn('type', ['student', 'everyone']);
-        } elseif ($user->hasRole('teacher')) {
-            $query->whereIn('type', ['teacher', 'everyone']);
-        } elseif ($user->hasRole('supervisor')) {
-            $query->whereIn('type', ['supervisor', 'everyone']);
-        } elseif ($user->hasRole(['super_admin', 'admin'])) {
-            $query->whereIn('type', ['admin', 'super_admin', 'superadmin', 'everyone']);
-        }
-
-        return $query;
+        return Notification::where('user_id', Auth::id());
     }
 
     protected function applySearch(Builder $query): Builder

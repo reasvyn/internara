@@ -41,10 +41,11 @@ return [
 
     'job_title_placeholder' => 'Contoh: Kepala Jurusan',
     'bio' => 'Biografi',
-    'employee_id_number' => 'NIP',
-    'employee_id_number_placeholder' => 'Nomor induk pegawai nasional',
-    'educator_id_number' => 'NUPTK',
-    'educator_id_number_placeholder' => 'Nomor registrasi guru',
+    'id_number' => 'Nomor Induk',
+    'id_number_placeholder' => 'Nomor induk',
+    'id_number_student' => 'NISN',
+    'id_number_teacher' => 'NIP',
+    'id_number_supervisor' => 'Nomor Pegawai',
     'new_password' => 'Kata Sandi Baru',
     'confirm_password' => 'Konfirmasi Kata Sandi',
 

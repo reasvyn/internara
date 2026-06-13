@@ -4,28 +4,44 @@ declare(strict_types=1);
 
 namespace App\Assessment\Rubric\Actions;
 
-use App\Assessment\Rubric\Models\Competency;
+use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Actions\BaseAction;
-use App\Evaluation\Enums\EvaluatorRole;
 
 final class UpdateCompetencyAction extends BaseAction
 {
     public function execute(
-        Competency $competency,
+        Rubric $rubric,
+        string $competencyId,
         string $name,
         ?string $description = null,
         int $weight = 0,
-        EvaluatorRole $evaluatorRole = EvaluatorRole::TEACHER,
+        string $evaluatorRole = 'teacher',
         int $order = 0,
-    ): Competency {
-        $competency->update([
-            'name' => $name,
-            'description' => $description,
-            'weight' => $weight,
-            'evaluator_role' => $evaluatorRole->value,
-            'order' => $order,
-        ]);
+    ): Rubric {
+        return $this->transaction(function () use ($rubric, $competencyId, $name, $description, $weight, $evaluatorRole, $order) {
+            $structure = $rubric->structure;
 
-        return $competency->fresh();
+            $competencies = &$structure['competencies'];
+            foreach ($competencies as &$competency) {
+                if ($competency['id'] === $competencyId) {
+                    $competency['name'] = $name;
+                    $competency['description'] = $description;
+                    $competency['weight'] = $weight;
+                    $competency['evaluator_role'] = $evaluatorRole;
+                    $competency['order'] = $order;
+                    break;
+                }
+            }
+
+            $rubric->update(['structure' => $structure]);
+
+            $this->log('competency_updated', $rubric, [
+                'rubric_id' => $rubric->id,
+                'competency_id' => $competencyId,
+                'competency_name' => $name,
+            ]);
+
+            return $rubric;
+        });
     }
 }

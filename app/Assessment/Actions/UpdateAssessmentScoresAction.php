@@ -18,17 +18,18 @@ final class UpdateAssessmentScoresAction extends BaseAction
         string $indicatorId,
         ?float $score,
     ): Assessment {
-        $content = $assessment->content ?? [];
-        $content['competencies'][$competencyId]['evaluator_id'] = auth()->id();
-        $content['competencies'][$competencyId]['evaluated_at'] = now()->toIso8601String();
+        $scoresData = $assessment->scores_data ?? [];
+        $scoresData['competencies'] ??= [];
+        $scoresData['competencies'][$competencyId]['evaluator_id'] = auth()->id();
+        $scoresData['competencies'][$competencyId]['evaluated_at'] = now()->toIso8601String();
 
         if ($score === null || $score < 0) {
-            unset($content['competencies'][$competencyId]['indicators'][$indicatorId]);
+            unset($scoresData['competencies'][$competencyId]['indicators'][$indicatorId]);
         } else {
-            $content['competencies'][$competencyId]['indicators'][$indicatorId] = $score;
+            $scoresData['competencies'][$competencyId]['indicators'][$indicatorId] = $score;
         }
 
-        $assessment->update(['content' => $content]);
+        $assessment->update(['scores_data' => $scoresData]);
 
         return $assessment->fresh();
     }

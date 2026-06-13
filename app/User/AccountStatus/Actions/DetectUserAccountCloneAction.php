@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\User\AccountStatus\Actions;
 
-use App\Core\Actions\BaseAction;
 use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Support\Collection;
 
-class DetectUserAccountCloneAction extends BaseAction
+class DetectUserAccountCloneAction
 {
     public function execute(): Collection
     {

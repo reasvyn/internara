@@ -94,7 +94,7 @@ return [
         'title' => 'Teacher Manager',
         'subtitle' => 'Manage all teachers',
         'name' => 'Name',
-        'employee_id_number' => 'Employee ID',
+        'id_number' => 'ID Number',
         'new' => 'New Teacher',
         'edit' => 'Edit Teacher',
         'save' => 'Save Teacher',

@@ -56,6 +56,25 @@ class ProfileEditor extends Component
         $this->profileForm->fillFromUser($this->user);
     }
 
+    public function getIdNumberLabel(): string
+    {
+        $user = $this->user;
+
+        if ($user->hasRole('student')) {
+            return __('profile.id_number_student');
+        }
+
+        if ($user->hasRole('teacher')) {
+            return __('profile.id_number_teacher');
+        }
+
+        if ($user->hasRole('supervisor')) {
+            return __('profile.id_number_supervisor');
+        }
+
+        return __('profile.id_number');
+    }
+
     public bool $showConfirm = false;
 
     public function updatedAvatar(): void
@@ -97,8 +116,7 @@ class ProfileEditor extends Component
         if ($this->isStaff) {
             $profileId = $this->user->profile?->id ?? 'NULL';
             $rules = array_merge($rules, [
-                'profileForm.employee_id_number' => "nullable|string|max:30|unique:profiles,employee_id_number,{$profileId}",
-                'profileForm.educator_id_number' => "nullable|string|max:30|unique:profiles,educator_id_number,{$profileId}",
+                'profileForm.id_number' => "nullable|string|max:30|unique:profiles,id_number,{$profileId}",
                 'profileForm.competence_field' => 'nullable|string|max:255',
             ]);
         }
@@ -114,8 +132,7 @@ class ProfileEditor extends Component
         if ($this->isStaff) {
             $data = array_merge($data, [
                 'employment_status' => $this->profileForm->employment_status,
-                'employee_id_number' => $this->profileForm->employee_id_number,
-                'educator_id_number' => $this->profileForm->educator_id_number,
+                'id_number' => $this->profileForm->id_number,
                 'competence_field' => $this->profileForm->competence_field,
                 'job_title' => $this->profileForm->job_title,
             ]);

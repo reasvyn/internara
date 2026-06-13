@@ -31,7 +31,7 @@ class RegistrationPolicy extends BasePolicy
             return true;
         }
 
-        return $registration->mentee?->user_id === $user->id;
+        return $registration->student_id === $user->id;
     }
 
     public function create(User $user): bool

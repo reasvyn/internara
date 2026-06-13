@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Journals\Logbook\Policies;
 
 use App\Core\Policies\BasePolicy;
-use App\Guidance\Mentor\Models\Mentor;
 use App\Journals\Logbook\Models\Logbook;
 use App\User\Models\User;
 
@@ -38,7 +37,7 @@ class LogbookPolicy extends BasePolicy
             $entry->registration
                 ->mentors()
                 ->where('user_id', $user->id)
-                ->where('type', Mentor::TYPE_SCHOOL_TEACHER)
+                ->where('internship_group_members.role', 'teacher')
                 ->exists()
         ) {
             return true;
@@ -50,7 +49,7 @@ class LogbookPolicy extends BasePolicy
             $entry->registration
                 ->mentors()
                 ->where('user_id', $user->id)
-                ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)
+                ->where('internship_group_members.role', 'supervisor')
                 ->exists()
         ) {
             return true;
@@ -69,7 +68,7 @@ class LogbookPolicy extends BasePolicy
             $entry->registration
                 ->mentors()
                 ->where('user_id', $user->id)
-                ->where('type', Mentor::TYPE_INDUSTRY_SUPERVISOR)
+                ->where('internship_group_members.role', 'supervisor')
                 ->exists();
     }
 

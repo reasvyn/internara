@@ -4,27 +4,40 @@ declare(strict_types=1);
 
 namespace App\Assessment\Rubric\Actions;
 
-use App\Assessment\Rubric\Models\Competency;
+use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Actions\BaseAction;
-use App\Evaluation\Enums\EvaluatorRole;
+use Illuminate\Support\Str;
 
 final class CreateCompetencyAction extends BaseAction
 {
     public function execute(
-        string $rubricId,
+        Rubric $rubric,
         string $name,
         ?string $description = null,
         int $weight = 0,
-        EvaluatorRole $evaluatorRole = EvaluatorRole::TEACHER,
+        string $evaluatorRole = 'teacher',
         int $order = 0,
-    ): Competency {
-        return Competency::create([
-            'rubric_id' => $rubricId,
-            'name' => $name,
-            'description' => $description,
-            'weight' => $weight,
-            'evaluator_role' => $evaluatorRole->value,
-            'order' => $order,
-        ]);
+    ): Rubric {
+        return $this->transaction(function () use ($rubric, $name, $description, $weight, $evaluatorRole, $order) {
+            $structure = $rubric->structure ?? ['competencies' => []];
+            $structure['competencies'][] = [
+                'id' => (string) Str::uuid(),
+                'name' => $name,
+                'description' => $description,
+                'weight' => $weight,
+                'evaluator_role' => $evaluatorRole,
+                'order' => $order,
+                'indicators' => [],
+            ];
+
+            $rubric->update(['structure' => $structure]);
+
+            $this->log('competency_created', $rubric, [
+                'rubric_id' => $rubric->id,
+                'competency_name' => $name,
+            ]);
+
+            return $rubric;
+        });
     }
 }

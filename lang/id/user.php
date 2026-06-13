@@ -128,7 +128,7 @@ return [
         'title' => 'Manajemen Guru',
         'subtitle' => 'Kelola anggota fakultas dan pembimbing sekolah',
         'name' => 'Nama Guru',
-        'employee_id_number' => 'NIP / Nomor Registrasi',
+        'id_number' => 'NIP / Nomor Registrasi',
         'new' => 'Tambah Guru',
         'edit' => 'Ubah Guru',
         'save' => 'Simpan Guru',

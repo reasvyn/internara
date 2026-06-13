@@ -187,6 +187,7 @@ class User extends BaseAuthenticatable implements HasMedia
         return [
             'email_verified_at' => 'datetime',
             'locked_at' => 'datetime',
+            'first_login_at' => 'datetime',
             'password' => 'hashed',
             'setup_required' => 'boolean',
             'status' => AccountStatus::class,

@@ -6,7 +6,7 @@ namespace App\Program\InternshipGroup\Models;
 
 use App\Core\Models\BaseModel;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\Mentor\Models\Mentor;
+use App\User\Models\User;
 use Database\Factories\InternshipGroupMemberFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -38,6 +38,6 @@ class InternshipGroupMember extends BaseModel
 
     public function mentor(): BelongsTo
     {
-        return $this->belongsTo(Mentor::class);
+        return $this->belongsTo(User::class, 'mentor_id');
     }
 }

@@ -39,8 +39,8 @@ final class AutoCalculateAssessmentAction extends BaseAction
             ->where('status', 'approved')
             ->first();
 
-        $content = $assessment->content ?? [];
-        $content['auto'] = [
+        $scoresData = $assessment->scores_data ?? [];
+        $scoresData['auto'] = [
             'avg_submission_score' => $avgSubmissionScore
                 ? round((float) $avgSubmissionScore, 1)
                 : null,
@@ -48,7 +48,7 @@ final class AutoCalculateAssessmentAction extends BaseAction
             'report_score' => $report?->score,
         ];
 
-        $assessment->update(['content' => $content]);
+        $assessment->update(['scores_data' => $scoresData]);
 
         return $assessment->fresh();
     }
