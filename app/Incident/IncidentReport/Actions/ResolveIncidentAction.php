@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace App\Incident\IncidentReport\Actions;
 
 use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
 use App\Incident\IncidentReport\Models\IncidentReport;
 use Illuminate\Support\Facades\Validator;
-use RuntimeException;
 
 final class ResolveIncidentAction extends BaseAction
 {
     public function execute(IncidentReport $incident, array $data): IncidentReport
     {
         if ($incident->status->isTerminal()) {
-            throw new RuntimeException('This incident is already closed.');
+            throw new RejectedException('This incident is already closed.');
         }
 
         $validated = Validator::validate($data, [

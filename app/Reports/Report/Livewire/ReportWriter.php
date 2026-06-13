@@ -49,6 +49,8 @@ class ReportWriter extends Component
 
     public function saveDraft(CreateReportAction $createAction, SaveReportDraftAction $saveDraftAction): void
     {
+        $this->authorize('create', Report::class);
+
         $this->validate([
             'title' => 'required|string|max:255',
             'registrationId' => 'required|exists:registrations,id',
@@ -70,6 +72,8 @@ class ReportWriter extends Component
 
     public function submit(SubmitReportAction $submitAction): void
     {
+        $this->authorize('create', Report::class);
+
         if (! $this->reportId) {
             flash()->error(__('report.save_first'));
 

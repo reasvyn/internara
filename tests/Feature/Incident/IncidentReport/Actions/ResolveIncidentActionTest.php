@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Incident\IncidentReport\Actions\ResolveIncidentAction;
 use App\Incident\IncidentReport\Models\IncidentReport;
 use App\User\Models\User;
+use App\Core\Exceptions\RejectedException;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
@@ -33,4 +34,4 @@ test('throws when resolving already closed incident', function () {
         'resolution_notes' => 'Already done',
         'status' => 'resolved',
     ]);
-})->throws(RuntimeException::class, 'This incident is already closed.');
+})->throws(RejectedException::class, 'This incident is already closed.');

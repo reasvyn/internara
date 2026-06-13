@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\User\AccountStatus\Actions;
 
 use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
-use RuntimeException;
 
 final class LockUserAccountAction extends BaseAction
 {
@@ -15,7 +15,7 @@ final class LockUserAccountAction extends BaseAction
         if ($user->hasRole('super_admin')) {
             $this->log('super_admin_lock_blocked', $user, ['reason' => $reason]);
 
-            throw new RuntimeException('Super administrator accounts cannot be locked.');
+            throw new RejectedException('Super administrator accounts cannot be locked.');
         }
 
         if ($user->locked_at !== null) {

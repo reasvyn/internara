@@ -41,6 +41,8 @@ class SubmitAssignment extends Component
 
     public function submit(SubmitAssignmentAction $action): void
     {
+        $this->authorize('create', Submission::class);
+
         $this->validate([
             'content' => 'required|string|min:20',
             'file' => 'nullable|file|mimes:pdf,doc,docx,zip,ppt,pptx|max:10240',

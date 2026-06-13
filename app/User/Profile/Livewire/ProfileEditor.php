@@ -96,6 +96,8 @@ class ProfileEditor extends Component
 
     public function save(UpdateProfileAction $updateProfile): void
     {
+        $this->authorize('update', $this->user);
+
         $rules = [
             'profileForm.email' => 'required|email|unique:users,email,'.$this->user->id,
             'profileForm.phone' => 'nullable|string|max:20',
@@ -157,6 +159,8 @@ class ProfileEditor extends Component
 
     public function updatePassword(UpdateUserPasswordAction $updatePassword): void
     {
+        $this->authorize('update', $this->user);
+
         $this->passwordForm->validate();
 
         $throttleKey = $this->passwordThrottleKey();

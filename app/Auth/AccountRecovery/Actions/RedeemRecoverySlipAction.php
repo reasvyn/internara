@@ -6,9 +6,9 @@ namespace App\Auth\AccountRecovery\Actions;
 
 use App\Auth\ApiTokens\Models\ApiToken;
 use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
-use RuntimeException;
 
 class RedeemRecoverySlipAction extends BaseAction
 {
@@ -18,7 +18,7 @@ class RedeemRecoverySlipAction extends BaseAction
             $user = User::where('username', $username)->first();
 
             if (! $user) {
-                throw new RuntimeException(__('auth.failed'));
+                throw new RejectedException(__('auth.failed'));
             }
 
             $recoveryCodes = ApiToken::where('user_id', $user->id)
@@ -44,7 +44,7 @@ class RedeemRecoverySlipAction extends BaseAction
             if (! $matchedCode) {
                 $this->log('recovery_slip_failed', $user);
 
-                throw new RuntimeException(__('passwords.token'));
+                throw new RejectedException(__('passwords.token'));
             }
 
             $user->update(['password' => Hash::make($newPassword)]);

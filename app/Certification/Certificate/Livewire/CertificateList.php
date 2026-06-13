@@ -101,6 +101,8 @@ class CertificateList extends BaseRecordManager
 
     public function saveIssue(IssueCertificateAction $issueAction): void
     {
+        $this->authorize('create', Certificate::class);
+
         $this->validate([
             'issueRegistrationId' => ['required', 'exists:registrations,id'],
             'issueTemplateId' => ['required', 'exists:certificate_templates,id'],
@@ -124,6 +126,8 @@ class CertificateList extends BaseRecordManager
 
     public function saveBatchIssue(BatchIssueCertificateAction $batchAction): void
     {
+        $this->authorize('create', Certificate::class);
+
         $this->validate([
             'batchIssueTemplateId' => ['required', 'exists:certificate_templates,id'],
         ]);
@@ -147,6 +151,8 @@ class CertificateList extends BaseRecordManager
 
     public function revoke(Certificate $certificate, RevokeCertificateAction $revokeAction): void
     {
+        $this->authorize('revoke', $certificate);
+
         $revokeAction->execute($certificate);
         flash()->success(__('certificate.revoked'));
     }

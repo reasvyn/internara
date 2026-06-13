@@ -59,6 +59,8 @@ class LogbookEntry extends Component
 
     public function save(SubmitLogbookAction $submitJournal): void
     {
+        $this->authorize('create', Logbook::class);
+
         $this->validate([
             'date' => 'required|date',
             'content' => 'required|min:10',

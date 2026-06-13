@@ -8,6 +8,7 @@ use App\Auth\Login\Data\LoginData;
 use App\Auth\Login\Events\LoginFailed;
 use App\Auth\Login\Events\LoginSucceeded;
 use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
 use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -15,7 +16,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
-use RuntimeException;
 
 final class LoginAction extends BaseAction
 {
@@ -35,7 +35,7 @@ final class LoginAction extends BaseAction
         if ($user === null) {
             $this->handleFailedAttempt($identifierHash, $data->identifier);
             Event::dispatch(new LoginFailed($data->identifier, 'user_not_found'));
-            throw new RuntimeException(__('auth.failed'));
+            throw new RejectedException(__('auth.failed'));
         }
 
         $this->checkAccountStatus($user, $data->identifier);
@@ -43,7 +43,7 @@ final class LoginAction extends BaseAction
         if (! Auth::attempt([$loginField => $data->identifier, 'password' => $data->password], $data->remember)) {
             $this->handleFailedAttempt($identifierHash, $data->identifier);
             Event::dispatch(new LoginFailed($data->identifier, 'invalid_password'));
-            throw new RuntimeException(__('auth.failed'));
+            throw new RejectedException(__('auth.failed'));
         }
 
         $this->clearFailedAttempts($identifierHash);
@@ -71,7 +71,7 @@ final class LoginAction extends BaseAction
             $lockoutTime = Carbon::parse($lockoutUntil);
             if (now()->lt($lockoutTime)) {
                 $seconds = (int) ceil(now()->diffInSeconds($lockoutTime));
-                throw new RuntimeException(
+                throw new RejectedException(
                     __('auth.throttle', ['seconds' => $seconds]) ?:
                     "Too many login attempts. Please try again in {$seconds} seconds.",
                 );
@@ -85,17 +85,17 @@ final class LoginAction extends BaseAction
 
         if ($apprentice->isLocked()) {
             Event::dispatch(new LoginFailed($identifier, 'locked'));
-            throw new RuntimeException(__('auth.blocked'));
+            throw new RejectedException(__('auth.blocked'));
         }
 
         if (! $apprentice->status()->allowsLogin()) {
             Event::dispatch(new LoginFailed($identifier, 'status_blocked'));
-            throw new RuntimeException(__('auth.blocked'));
+            throw new RejectedException(__('auth.blocked'));
         }
 
         if ($apprentice->requiresSetup()) {
             Event::dispatch(new LoginFailed($identifier, 'setup_required'));
-            throw new RuntimeException(__('auth.blocked'));
+            throw new RejectedException(__('auth.blocked'));
         }
     }
 

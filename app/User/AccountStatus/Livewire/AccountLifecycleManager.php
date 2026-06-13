@@ -21,6 +21,7 @@ class AccountLifecycleManager extends Component
 
     public function lock(User $user, LockUserAccountAction $action): void
     {
+        $this->authorize('update', $user);
         Gate::authorize('lockAccount', $user);
 
         $action->execute($user);
@@ -29,6 +30,7 @@ class AccountLifecycleManager extends Component
 
     public function unlock(User $user, UnlockUserAccountAction $action): void
     {
+        $this->authorize('update', $user);
         Gate::authorize('unlockAccount', $user);
 
         $action->execute($user);

@@ -6,14 +6,14 @@ namespace App\Certification\Certificate\Actions;
 
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Actions\BaseAction;
-use RuntimeException;
+use App\Core\Exceptions\RejectedException;
 
 final class RevokeCertificateAction extends BaseAction
 {
     public function execute(Certificate $certificate): Certificate
     {
         if ($certificate->status->isTerminal()) {
-            throw new RuntimeException('This certificate has already been revoked.');
+            throw new RejectedException('This certificate has already been revoked.');
         }
 
         return $this->transaction(function () use ($certificate) {

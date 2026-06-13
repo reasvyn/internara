@@ -6,6 +6,7 @@ namespace App\Enrollment\AccountApplication\Livewire;
 
 use App\Enrollment\AccountApplication\Actions\ApplyAccountAction;
 use App\Enrollment\AccountApplication\Livewire\Forms\AccountApplicationForm;
+use App\Enrollment\AccountApplication\Models\AccountApplication;
 use App\Enrollment\Placement;
 use App\Program\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
@@ -45,6 +46,8 @@ class ApplyPage extends Component
 
     public function submit(ApplyAccountAction $action): void
     {
+        $this->authorize('create', AccountApplication::class);
+
         $this->form->validate();
 
         $action->execute($this->form->toArray());

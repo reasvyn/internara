@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace App\Guidance\SupervisionLog\Actions;
 
 use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
 use App\Guidance\SupervisionLog\Enums\SupervisionLogStatus;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\User\Models\User;
 use Carbon\Carbon;
-use RuntimeException;
 
 final class VerifySupervisionLogAction extends BaseAction
 {
     public function execute(SupervisionLog $log, User $verifier): SupervisionLog
     {
         if ($log->status === SupervisionLogStatus::VERIFIED) {
-            throw new RuntimeException('This supervision log has already been verified.');
+            throw new RejectedException('This supervision log has already been verified.');
         }
 
         return $this->transaction(function () use ($log, $verifier) {
