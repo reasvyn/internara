@@ -6,6 +6,7 @@ namespace App\User\UserManagement\Actions;
 
 use App\Auth\Permissions\Enums\Role;
 use App\Core\Actions\BaseAction;
+use App\User\Enums\AccountStatus;
 use Illuminate\Database\Eloquent\Builder;
 
 final class ArchiveStudentAccountsAction extends BaseAction
@@ -20,7 +21,7 @@ final class ArchiveStudentAccountsAction extends BaseAction
                     continue;
                 }
 
-                $user->setStatus('archived', 'Mass archived via Student Manager');
+                $user->setStatus(AccountStatus::ARCHIVED->value, 'Mass archived via Student Manager');
                 $count++;
             }
         });

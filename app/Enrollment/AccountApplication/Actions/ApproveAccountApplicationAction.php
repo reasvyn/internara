@@ -24,7 +24,7 @@ final class ApproveAccountApplicationAction extends BaseAction
 
         return $this->transaction(function () use ($application, $admin) {
             $application->update([
-                'status' => 'approved',
+                'status' => AccountApplicationStatus::APPROVED->value,
                 'processed_by' => $admin->id,
                 'processed_at' => now(),
             ]);

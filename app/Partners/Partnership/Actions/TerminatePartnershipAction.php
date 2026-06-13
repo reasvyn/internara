@@ -6,6 +6,7 @@ namespace App\Partners\Partnership\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
+use App\Partners\Partnership\Enums\PartnershipStatus;
 use App\Partners\Partnership\Models\Partnership;
 
 final class TerminatePartnershipAction extends BaseAction
@@ -17,7 +18,7 @@ final class TerminatePartnershipAction extends BaseAction
         }
 
         return $this->transaction(function () use ($partnership) {
-            $partnership->update(['status' => 'terminated']);
+            $partnership->update(['status' => PartnershipStatus::TERMINATED->value]);
 
             $this->log('partnership_terminated', $partnership, [
                 'agreement_number' => $partnership->agreement_number,

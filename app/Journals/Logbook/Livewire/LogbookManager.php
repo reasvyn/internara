@@ -8,6 +8,7 @@ use App\Core\Livewire\BaseRecordManager;
 use App\Journals\Logbook\Actions\CreateLogbookAction;
 use App\Journals\Logbook\Actions\DeleteLogbookAction;
 use App\Journals\Logbook\Actions\UpdateLogbookAction;
+use App\Journals\Logbook\Enums\LogbookStatus;
 use App\Journals\Logbook\Models\Logbook;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,7 +27,7 @@ class LogbookManager extends BaseRecordManager
         'date' => '',
         'content' => '',
         'learning_outcomes' => '',
-        'status' => 'draft',
+        'status' => LogbookStatus::DRAFT->value,
         'mentor_feedback' => '',
     ];
 
@@ -161,7 +162,7 @@ class LogbookManager extends BaseRecordManager
             'date' => now()->toDateString(),
             'content' => '',
             'learning_outcomes' => '',
-            'status' => 'draft',
+            'status' => LogbookStatus::DRAFT->value,
             'mentor_feedback' => '',
         ];
         $this->showModal = true;

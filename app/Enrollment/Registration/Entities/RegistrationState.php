@@ -35,11 +35,13 @@ final readonly class RegistrationState extends BaseEntity
 
     public function isActive(): bool
     {
+        // @todo Replace with enum value when RegistrationStatus enum exists
         return $this->status === 'active';
     }
 
     public function isPending(): bool
     {
+        // @todo Replace with enum value when RegistrationStatus enum exists
         return $this->status === 'pending';
     }
 

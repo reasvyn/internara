@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Announcement\Livewire\Forms;
 
+use App\SysAdmin\Announcement\Enums\AnnouncementStatus;
 use Livewire\Form;
 
 class AnnouncementForm extends Form
@@ -14,7 +15,7 @@ class AnnouncementForm extends Form
 
     public string $type = 'info';
 
-    public string $status = 'draft';
+    public string $status = AnnouncementStatus::DRAFT->value;
 
     public ?string $scheduled_at = null;
 
@@ -46,7 +47,7 @@ class AnnouncementForm extends Form
             'message' => $this->message,
             'type' => $this->type,
             'status' => $this->status,
-            'scheduled_at' => $this->status === 'scheduled' ? $this->scheduled_at : null,
+            'scheduled_at' => $this->status === AnnouncementStatus::SCHEDULED->value ? $this->scheduled_at : null,
             'link' => $this->link ?: null,
             'target_roles' => $this->sendToAll ? null : $this->target_roles,
         ];

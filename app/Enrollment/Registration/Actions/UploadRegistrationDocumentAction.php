@@ -6,6 +6,7 @@ namespace App\Enrollment\Registration\Actions;
 
 use App\Core\Actions\BaseAction;
 use App\Document\Models\Document;
+use App\Enrollment\Registration\Enums\RegistrationDocumentStatus;
 use App\Enrollment\Registration\Models\Registration;
 use App\Enrollment\Registration\Models\RegistrationDocument;
 use Illuminate\Http\UploadedFile;
@@ -31,7 +32,7 @@ final class UploadRegistrationDocumentAction extends BaseAction
             $registrationDoc = RegistrationDocument::create([
                 'registration_id' => $registration->id,
                 'document_id' => $document->id,
-                'status' => 'pending',
+                'status' => RegistrationDocumentStatus::PENDING->value,
             ]);
 
             $registrationDoc->addMedia($uploads[$document->id])->toMediaCollection('file');
