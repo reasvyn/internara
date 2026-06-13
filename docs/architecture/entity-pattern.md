@@ -1,10 +1,11 @@
 # Entity-Model Separation Pattern
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
+> **Changes:** sync — fix broken link to architecture.md
 >
 > **Audience:** Architects and developers working with business logic in the Internara codebase.
 > **Prerequisites:** Familiarity with [ADR-004: Entity-Model Separation](../adr/adr-entity-model-separation.md)
-> and the [12-Layer Architecture](architecture.md).
+> and the [12-Layer Architecture](../architecture.md).
 
 ---
 

@@ -1,7 +1,7 @@
 # Action-based MVC Architecture
 
 > **Last updated:** 2026-06-13
-> **Changes:** sync — fix model count (50+→42), policy count (30→29), Livewire count (80+→107), route files (18→17), migrations (50→48)
+> **Changes:** sync — migrate exact counts to ranges (models 42→40+, Livewire 107→100+, policies 29→25+), fix route files (18→17), fix broken links, fix shared component paths
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad pattern, data flow, cross-module communication, exception handling, validation, caching, testing strategy, and invariant rules. Every decision here serves three goals:
 >
@@ -71,14 +71,14 @@ Layer 12 ┌──────────────────────�
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
   Layer 11 ┌──────────────────────────────────────────────────────────────┐
-   UI /    │  Livewire 4 components (107)   Blade templates              │
+   UI /    │  Livewire 4 components (100+)  Blade templates              │
  Present.│  maryUI + DaisyUI + Alpine.js + Tailwind CSS v4             │
          │  resources/views/{module}/     static assets                 │
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
 Layer 10 ┌──────────────────────────────────────────────────────────────┐
  HTTP    │  Controllers / Middleware / Routes                           │
- Layer   │  18 module route files → routes/web/{module}.php            │
+  Layer   │  17 module route files → routes/web/{module}.php            │
          │  SecurityHeaders, LogContext, CheckRole, SetLocale           │
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
@@ -89,7 +89,7 @@ Layer 9 ┌───────────────────────
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
   Layer 8 ┌──────────────────────────────────────────────────────────────┐
-  Author. │  Policies (29)   RBAC (5 roles)  Functional roles (2)       │
+  Author. │  Policies (25+)  RBAC (5 roles)  Functional roles (2)       │
          │  BasePolicy → AuthorizesRoles + AuthorizesOwnership         │
          │  spatie/laravel-permission auto-registers Gate::before      │
          └──────────────────────────────────────────────────────────────┘
@@ -108,10 +108,10 @@ Layer 6 ┌───────────────────────
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
   Layer 5 ┌──────────────────────────────────────────────────────────────┐
-  Module  │  Eloquent Models (42)  →  extend BaseModel                  │
+  Module  │  Eloquent Models (40+)  →  extend BaseModel                 │
  Models  │  UUID primary keys (HasUuids)  HasFactory                   │
          │  Relationships, Scopes, Accessors, Mutators                 │
-         │  app/{Module}/**/Models/  + factories + seeders            │
+          │  app/{Module}/**/Models/ (40+)  + factories + seeders      │
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
 Layer 4 ┌──────────────────────────────────────────────────────────────┐
@@ -417,7 +417,7 @@ app/{Module}/
 | Scope                 | Pattern                                                           | Example                                                  |
 | --------------------- | ----------------------------------------------------------------- | -------------------------------------------------------- |
 | Module-specific       | `app/{Module}/{Submodule}/{Component}/{ClassName}.php`            | `app/User/Profile/Actions/UpdateProfileAction.php`       |
-| Shared (cross-module) | `app/{Component}/{ClassName}.php`                                 | `app/Data/AuditCheck.php`                                |
+| Shared (cross-module) | `app/{Component}/{ClassName}.php`                                 | `app/Core/Data/AuditCheck.php`                           |
 | Module views          | `resources/views/{module}/{submodule}/{component-name}.blade.php` | `resources/views/user/profile/profile-editor.blade.php`  |
 | Shared views          | `resources/views/{component}/{component-name}.blade.php`          | `resources/views/livewire/lang-switcher.blade.php`       |
 | Module tests          | `tests/{Feature,Unit}/{Module}/{Submodule}/{Name}Test.php`        | `tests/Feature/User/Profile/UpdateProfileActionTest.php` |

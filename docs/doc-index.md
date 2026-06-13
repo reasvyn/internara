@@ -1,7 +1,7 @@
 # Documentation Index
 
 > **Last updated:** 2026-06-13
-> **Changes:** sync — fix migration count (39→48), model count (37→42), policy count (29+1→26+3)
+> **Changes:** sync — fix route count (18→17), wizard steps (7→6), fix broken links, fix shared paths
 >
 > Complete catalog of all documentation in the `docs/` directory. This index is the single entry point for navigating Internara's documentation. Every file listed here is part of the authoritative system documentation and must be kept in sync with the implementation.
 
@@ -31,7 +31,7 @@
 | [Deployment](infrastructure/deployment.md)                       | Three deployment paths (VPS, Docker, shared hosting), production checklist, background processes       |
 | [Configuration](infrastructure/configuration.md)                 | Three-tier configuration system, environment variables, dev vs production, security, localization      |
 | [Post-Setup](foundation/post-setup.md)                                      | First actions as administrator: foundation setup, people management, program configuration, go-live    |
-| [Setup Wizard](foundation/setup-wizard.md)                                  | Detailed walkthrough of all 7 setup wizard steps                                                       |
+| [Setup Wizard](foundation/setup-wizard.md)                                  | Detailed walkthrough of all 6 setup wizard steps                                                       |
 | [Infrastructure Overview](infrastructure/infrastructure.md)      | Deployment options, background process architecture, database and storage considerations               |
 
 ---
@@ -83,7 +83,7 @@
 | [Cache](infrastructure/cache.md)                                 | Caching strategy, centralized key registry, invalidation, Redis, OpCache                   |
 | [Filesystem](infrastructure/filesystem.md)                       | Storage architecture, Spatie Media Library integration, file locations, image conversions   |
 | [Media Library](infrastructure/media-library.md)                 | Collections, conversions, file size limits, queue integration, S3-compatible cloud storage  |
-| [Routes](infrastructure/routes.md)                               | Route structure, 18 module-split route files, middleware groups, naming conventions         |
+| [Routes](infrastructure/routes.md)                               | Route structure, 17 module-split route files, middleware groups, naming conventions         |
 | [Session](infrastructure/session.md)                             | Session configuration, drivers, security considerations                                    |
 | [Notifications](infrastructure/notification.md)                  | Multi-channel notification system, CustomDatabaseChannel, mail deliverability, SPF/DKIM    |
 | [Queue](infrastructure/queue.md)                                 | Queue drivers, worker management, Supervisor configuration, job lifecycle, retry/backoff   |

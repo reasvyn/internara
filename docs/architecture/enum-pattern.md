@@ -1,6 +1,7 @@
 # Enum Pattern Reference
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-13
+> **Changes:** sync — fix shared enum path (app/Enums → app/Core/Enums)
 >
 > **Scope:** Enum contracts, state machine patterns, case conventions, business logic methods, and
 > testing strategies used across all Internara modules.
@@ -41,7 +42,7 @@ implement `ColorableEnum`.
 
 - **Module-specific enum** → `app/{Module}/{SubModule}/Enums/{Name}.php`
 - **Cross-submodule enum** → `app/{Module}/Enums/{Name}.php` (inside a module's root `Enums/`)
-- **Shared enum** → `app/Enums/{Name}.php` (used by 2+ modules)
+- **Shared enum** → `app/Core/Enums/{Name}.php` (used by 2+ modules)
 - **Test** → `tests/Unit/{Module}/{SubModule}/Enums/{Name}Test.php`
 
 ---

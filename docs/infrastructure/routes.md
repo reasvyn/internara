@@ -1,6 +1,7 @@
 # Routes
 
 > **Last updated:** 2026-06-13
+> **Changes:** sync — fix route file count (18→17)
 
 ## Philosophy
 
@@ -12,7 +13,7 @@ This approach avoids merge conflicts on a monolithic file and makes it obvious w
 
 ## Architecture
 
-The master file `routes/web.php` `require`s 18 module route files in dependency order. If two files register the same route name, the later one wins.
+The master file `routes/web.php` `require`s 17 module route files in dependency order. If two files register the same route name, the later one wins.
 
 ```mermaid
 flowchart LR
@@ -198,7 +199,7 @@ php artisan route:cache
 ## Where to Find It
 
 - `routes/web.php` — master file with `require`s in dependency order
-- `routes/web/` — 18 module route files
+- `routes/web/` — 17 module route files
 - `routes/console.php` — Artisan command registrations
 - `routes/channels.php` — broadcasting channel definitions (not implemented)
 - `routes/ai.php` — AI integration routes

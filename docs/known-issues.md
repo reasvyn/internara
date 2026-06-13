@@ -1,7 +1,7 @@
 # Known Issues & Limitations
 
 > **Last updated:** 2026-06-13
-> **Changes:** add — full source code audit findings C-1 through C-15 (Action migration, security, code smells, views, routes, tests, config)
+> **Changes:** add — full source code audit findings C-1 through C-15 (Action migration, security, code smells, views, routes, tests, config); sync-docs — fix broken links, route count (18→17), wizard steps (7→6), shared paths, PiiMasker path
 
 This document catalogs known gaps between documented requirements and actual implementation, as well as code quality issues found during systematic audits.
 
