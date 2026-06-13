@@ -107,3 +107,57 @@ test('with sorting respects custom sortable columns', function () {
         'direction' => 'asc',
     ]);
 });
+
+test('with sorting handles null column gracefully', function () {
+    $query = SortableModel::query();
+
+    $this->component->setSortBy(['column' => null, 'direction' => 'asc']);
+    $result = $this->component->callApplySorting($query);
+
+    expect($result->getQuery()->orders)->toHaveCount(1);
+    expect($result->getQuery()->orders[0])->toMatchArray([
+        'column' => 'id',
+        'direction' => 'asc',
+    ]);
+});
+
+test('with sorting handles null direction gracefully', function () {
+    $query = SortableModel::query();
+
+    $this->component->setSortBy(['column' => 'name', 'direction' => null]);
+    $result = $this->component->callApplySorting($query);
+
+    expect($result->getQuery()->orders)->toHaveCount(1);
+    expect($result->getQuery()->orders[0])->toMatchArray([
+        'column' => 'name',
+        'direction' => 'asc',
+    ]);
+});
+
+test('with sorting without sortBy key falls back to defaults', function () {
+    $query = SortableModel::query();
+
+    $this->component->setSortBy(['columnx' => 'name']);
+    $result = $this->component->callApplySorting($query);
+
+    expect($result->getQuery()->orders)->toHaveCount(1);
+    expect($result->getQuery()->orders[0])->toMatchArray([
+        'column' => 'id',
+        'direction' => 'asc',
+    ]);
+});
+
+test('with sorting rejects column outside sortable columns', function () {
+    $this->component->setSortableColumns(['id']);
+
+    $query = SortableModel::query();
+
+    $this->component->setSortBy(['column' => 'name', 'direction' => 'desc']);
+    $result = $this->component->callApplySorting($query);
+
+    expect($result->getQuery()->orders)->toHaveCount(1);
+    expect($result->getQuery()->orders[0])->toMatchArray([
+        'column' => 'id',
+        'direction' => 'desc',
+    ]);
+});
