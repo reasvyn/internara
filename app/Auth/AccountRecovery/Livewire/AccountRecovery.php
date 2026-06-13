@@ -53,6 +53,7 @@ class AccountRecovery extends Component
                 ->event('account_recovery_error')
                 ->module('User')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
         }

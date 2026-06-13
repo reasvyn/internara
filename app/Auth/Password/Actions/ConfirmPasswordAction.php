@@ -19,6 +19,7 @@ class ConfirmPasswordAction extends BaseAction
                 ->event('password_confirmation_failed')
                 ->module('Auth')
                 ->about($user)
+                ->withPiiMasking()
                 ->activityOnly()
                 ->save();
 
@@ -34,6 +35,7 @@ class ConfirmPasswordAction extends BaseAction
             ->event('password_confirmed')
             ->module('Auth')
             ->about($user)
+            ->withPiiMasking()
             ->activityOnly()
             ->save();
     }

@@ -31,6 +31,7 @@ class TestMailSettingsAction extends BaseAction
                 ->event('smtp_test_failed')
                 ->module('Setting')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
 

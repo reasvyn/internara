@@ -51,6 +51,7 @@ class Login extends Component
                 ->module('Auth')
                 ->event('login.error')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
         }

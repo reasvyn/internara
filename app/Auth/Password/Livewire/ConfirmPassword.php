@@ -60,6 +60,7 @@ class ConfirmPassword extends Component
                     'user_id' => $user->id,
                     'error' => $e->getMessage(),
                 ])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
         }

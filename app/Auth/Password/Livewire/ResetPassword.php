@@ -57,6 +57,7 @@ class ResetPassword extends Component
                 ->event('password_reset_error')
                 ->module('Auth')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
         }
