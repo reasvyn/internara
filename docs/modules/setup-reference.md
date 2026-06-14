@@ -1,7 +1,7 @@
 # Setup — Technical Reference
 
-> Last updated: 2026-06-10
-> Changes: sync — ValidateSetupTokenAction extends BaseAction (not Read)
+> Last updated: 2026-06-14
+> Changes: sync — add SetupData DTO to Data section
 
 Detailed structural and implementation reference for the **Setup** module.
 
@@ -42,6 +42,7 @@ Handles one-time technical installation, environment checks, database provisioni
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
+| `Data/SetupData.php` | `SetupData` | `BaseData` |
 | `Data/AdminData.php` | `AdminData` | `BaseData` |
 | `Data/SchoolData.php` | `SchoolData` | `BaseData` |
 | `Installation/Data/SetupTokenData.php` | `SetupTokenData` | `BaseData` |
@@ -132,6 +133,7 @@ None.
 ```
 app/Setup/
 ├── Data/
+│   ├── SetupData.php
 │   ├── AdminData.php
 │   └── SchoolData.php
 ├── Entities/SetupEntity.php

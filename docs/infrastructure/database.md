@@ -1,12 +1,13 @@
 # Database
 
-> **Last updated:** 2026-06-13
+> **Last updated:** 2026-06-14
+> **Changes:** sync — fix migration file count (41→49)
 
 ## Design Philosophy
 
 The database is organized around the concept that every piece of persistent state belongs to a module. Tables are grouped into five conceptual categories: core, operational, assessment, security, and supporting. This structure makes it obvious where data lives and how it relates.
 
-The schema encompasses over 40 tables (from 41 migration files, including both domain-specific tables and framework/package tables such as cache, sessions, jobs, media, notifications, and activity logs).
+The schema encompasses over 40 tables (from 49 migration files, including both domain-specific tables and framework/package tables such as cache, sessions, jobs, media, notifications, and activity logs).
 
 ---
 

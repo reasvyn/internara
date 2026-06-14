@@ -1,7 +1,7 @@
 # Action-based MVC Architecture
 
 > **Last updated:** 2026-06-14
-> **Changes:** sync — migrate exact counts to ranges (models 42→40+, Livewire 107→100+, policies 29→25+), fix route files (18→17), fix broken links, fix shared component paths
+> **Changes:** sync — fix migrations (48→49), policies (25+→27); keep models 40+ range
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad pattern, data flow, cross-module communication, exception handling, validation, caching, testing strategy, and invariant rules. Every decision here serves three goals:
 >
@@ -89,7 +89,7 @@ Layer 9 ┌───────────────────────
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
   Layer 8 ┌──────────────────────────────────────────────────────────────┐
-  Author. │  Policies (25+)  RBAC (5 roles)  Functional roles (2)       │
+   Author. │  Policies (27)  RBAC (5 roles)  Functional roles (2)       │
          │  BasePolicy → AuthorizesRoles + AuthorizesOwnership         │
          │  spatie/laravel-permission auto-registers Gate::before      │
          └──────────────────────────────────────────────────────────────┘
@@ -133,7 +133,7 @@ Layer 2 ┌───────────────────────
          │  Config: .env, config/*.php, Runtime settings table        │
          │  Files: Spatie Media Library (polymorphic attachments)     │
          │  Cache: Laravel cache + queue (jobs) + session             │
-          │  database/migrations/ (48 files)  config/  storage/        │
+           │  database/migrations/ (49 files)  config/  storage/        │
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
 Layer 1 ┌──────────────────────────────────────────────────────────────┐
