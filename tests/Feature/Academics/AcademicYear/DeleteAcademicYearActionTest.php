@@ -24,5 +24,5 @@ test('cannot delete active academic year', function () {
 
     expect(fn () => $action->execute($year))->toThrow(RejectedException::class);
 
-    $this->assertDatabaseHas('academic_years', ['id' => $year->id]);
+    $this->assertModelExists($year);
 });

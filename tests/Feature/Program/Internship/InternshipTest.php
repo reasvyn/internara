@@ -18,7 +18,7 @@ test('can create internship using factory', function () {
     $internship = Internship::factory()->create();
 
     expect($internship)->toBeInstanceOf(Internship::class);
-    $this->assertDatabaseHas('internships', ['id' => $internship->id]);
+    $this->assertModelExists($internship);
 });
 
 test('belongs to academic year', function () {

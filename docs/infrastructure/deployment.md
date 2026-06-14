@@ -1,10 +1,10 @@
 # Deployment
 
-> **Last updated:** 2026-06-13
+> **Last updated:** 2026-06-14
 
 Internara is designed to be installed on the school's own infrastructure. This guide covers the three supported deployment paths and the operational requirements for each.
 
-For prerequisites and PHP extension requirements, see [Installation](installation.md#prerequisites). For application installation steps (migrations, setup wizard, build), see [Installation](installation.md#application-installation-steps).
+For prerequisites and PHP extension requirements, see [Installation](../guide/01-installation.md#prerequisites). For application installation steps (migrations, setup wizard, build), see [Installation](../guide/01-installation.md#application-installation-steps).
 
 ---
 
@@ -108,7 +108,7 @@ If response times degrade, upgrade to [Tier 2 (VPS)](#deployment-path-b-vps--ded
 When the institution outgrows shared hosting:
 
 1. Set up a VPS with PHP 8.4, Redis, Supervisor
-2. Install the same codebase following [Installation](installation.md)
+2. Install the same codebase following [Installation](../guide/01-installation.md)
 3. Change `.env`:
 
 ```env
@@ -295,7 +295,7 @@ For multi-server deployments, replace local storage with S3-compatible object st
 
 ### 6. Complete the Installation
 
-Follow the application installation steps in [Installation](installation.md#application-installation-steps) -- build assets, run the setup wizard, enable caches, and verify with `php artisan system:health`.
+Follow the application installation steps in [Installation](../guide/01-installation.md#application-installation-steps) -- build assets, run the setup wizard, enable caches, and verify with `php artisan system:health`.
 
 ---
 
@@ -356,7 +356,7 @@ See `docker-compose.dev.yml` for the Sail configuration.
 
 ## References
 
-- [Installation](installation.md) -- prerequisites, command reference, troubleshooting
+- [Installation](../guide/01-installation.md) -- prerequisites, command reference, troubleshooting
 - [Infrastructure](infrastructure.md) -- tier-based infrastructure design, scaling, sizing
 - [Configuration](configuration.md) -- environment variables and runtime settings
 - [Queue](queue.md) -- worker management, job lifecycle, enterprise scaling

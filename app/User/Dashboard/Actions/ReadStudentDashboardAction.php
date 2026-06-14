@@ -9,13 +9,13 @@ use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseReadAction;
+use App\Core\Exceptions\RejectedException;
 use App\Document\Models\Document;
 use App\Journals\Attendance\Enums\AttendanceStatus;
 use App\Journals\Attendance\Models\Attendance;
 use App\Journals\Logbook\Models\Logbook;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Cache;
-use RuntimeException;
 use Spatie\Activitylog\Models\Activity;
 
 final class ReadStudentDashboardAction extends BaseReadAction
@@ -33,7 +33,9 @@ final class ReadStudentDashboardAction extends BaseReadAction
     {
         $user = User::find($userId);
 
-        throw_unless($user, new RuntimeException('User not found.'));
+        if (! $user) {
+            throw new RejectedException('User not found.');
+        }
 
         $registration = $user->getActiveRegistration();
 

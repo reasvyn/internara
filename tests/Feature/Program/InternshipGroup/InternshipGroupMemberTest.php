@@ -14,7 +14,7 @@ test('can create group member using factory', function () {
     $member = InternshipGroupMember::factory()->create();
 
     expect($member)->toBeInstanceOf(InternshipGroupMember::class);
-    $this->assertDatabaseHas('internship_group_members', ['id' => $member->id]);
+    $this->assertModelExists($member);
 });
 
 test('belongs to group', function () {

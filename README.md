@@ -123,10 +123,10 @@ Explore the complete system guides under `docs/`:
 ### Setup & Operation
 
 - [Getting Started Guide](docs/getting-started.md)
-- [Setup Wizard Walkthrough](docs/foundation/setup-wizard.md)
-- [Post-Setup Administrative Tasks](docs/foundation/post-setup.md)
+- [Setup Wizard Walkthrough](docs/guide/02-setup-wizard.md)
+- [Post-Setup Administrative Tasks](docs/guide/03-post-setup.md)
 - [Infrastructure Overview](docs/infrastructure/infrastructure.md)
-- [Installation Reference](docs/infrastructure/installation.md)
+- [Installation Reference](docs/guide/01-installation.md)
 - [Deployment Options](docs/infrastructure/deployment.md)
 - [Configuration Settings](docs/infrastructure/configuration.md)
 

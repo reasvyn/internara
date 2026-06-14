@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\SysAdmin\Announcement\Livewire\AnnouncementManager;
+use App\SysAdmin\Backups\Livewire\BackupManager;
 use App\SysAdmin\Http\Controllers\AccountSlipController;
 use App\SysAdmin\Http\Controllers\CronController;
 use App\SysAdmin\Livewire\ApplicationReview;
@@ -36,6 +37,8 @@ Route::prefix('admin')
         Route::get('/gdpr-logs', GdprDeletionLogs::class)->name('gdpr-logs');
         Route::get('/audit-log', AuditLogManager::class)->name('audit-log');
         Route::get('/accounts/clones', AccountCloneDetector::class)->name('accounts.clones');
+
+        Route::get('/backups', BackupManager::class)->name('backups');
     });
 
 Route::get('/admin/applications', ApplicationReview::class)

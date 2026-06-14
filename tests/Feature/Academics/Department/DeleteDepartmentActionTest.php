@@ -26,5 +26,5 @@ test('cannot delete department with profiles', function () {
 
     expect(fn () => $action->execute($department))->toThrow(RejectedException::class);
 
-    $this->assertDatabaseHas('departments', ['id' => $department->id]);
+    $this->assertModelExists($department);
 });

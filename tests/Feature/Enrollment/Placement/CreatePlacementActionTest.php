@@ -24,7 +24,7 @@ test('creates placement with valid data', function () {
     ]);
 
     expect($placement)->toBeInstanceOf(Placement::class);
-    $this->assertDatabaseHas('placements', ['id' => $placement->id]);
+    $this->assertModelExists($placement);
     expect($placement->filled_quota)->toBe(0);
     expect($placement->name)->toBe('Backend Developer Intern');
 });

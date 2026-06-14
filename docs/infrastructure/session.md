@@ -126,7 +126,7 @@ In production with Redis (`SESSION_DRIVER=redis`), garbage collection is handled
 The user's language preference is stored in the session by `SetLocaleMiddleware`:
 
 ```php
-// app/Settings/Http/Middleware/SetLocaleMiddleware.php
+// app/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php
 $locale = session('locale', config('app.locale'));
 app()->setLocale($locale);
 ```
@@ -139,7 +139,7 @@ The preference is set by the `LanguageSwitcher` Livewire component and persists 
 
 - `config/session.php` — session driver, lifetime, cookie settings
 - `database/migrations/` — sessions table migration
-- `app/Settings/Http/Middleware/SetLocaleMiddleware.php` — locale persistence
+- `app/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — locale persistence
 - `routes/web/auth.php` — password confirmation routes (`/user/confirm-password`)
 - `bootstrap/app.php` — middleware configuration
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design

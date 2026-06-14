@@ -27,7 +27,7 @@ test('creates logbook entry with valid data', function () {
     ]);
 
     expect($entry)->toBeInstanceOf(Logbook::class);
-    $this->assertDatabaseHas('logbooks', ['id' => $entry->id]);
+    $this->assertModelExists($entry);
     expect($entry->content)->toBe('Worked on project tasks today.');
     expect($entry->learning_outcomes)->toBe('Learned Laravel testing.');
     expect($entry->status)->toBe(LogbookStatus::DRAFT);

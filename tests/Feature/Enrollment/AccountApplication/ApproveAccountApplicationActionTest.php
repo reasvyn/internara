@@ -23,7 +23,7 @@ test('approves pending application and creates user and registration', function 
     expect($application->fresh()->processed_by)->toBe($admin->id);
     expect($application->fresh()->processed_at)->not->toBeNull();
     $this->assertDatabaseHas('users', ['email' => $application->email]);
-    $this->assertDatabaseHas('registrations', ['id' => $registration->id]);
+    $this->assertModelExists($registration);
 });
 
 test('throws exception when application is not pending', function () {

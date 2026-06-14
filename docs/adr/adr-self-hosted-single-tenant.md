@@ -59,4 +59,4 @@ Student records, assessment data, company partnerships, and configuration never 
 - `config/database.php` — SQLite as default connection
 - `.env.example` — Defaults optimized for single-server deployment
 - `docs/infrastructure/deployment.md` — Three deployment paths
-- `docs/infrastructure/installation.md` — CLI installer prerequisites
+- `docs/guide/01-installation.md` — CLI installer prerequisites

@@ -19,7 +19,7 @@ test('creates academic year with valid data', function () {
     ]);
 
     expect($year)->toBeInstanceOf(AcademicYear::class);
-    $this->assertDatabaseHas('academic_years', ['id' => $year->id]);
+    $this->assertModelExists($year);
     expect($year->name)->toBe('2025/2026');
     expect($year->is_active)->toBeFalse();
 });

@@ -29,7 +29,7 @@ test('registers student for internship successfully', function () {
     $registration = app(RegisterInternshipAction::class)->execute($user, $data);
 
     expect($registration)->toBeInstanceOf(Registration::class);
-    $this->assertDatabaseHas('registrations', ['id' => $registration->id]);
+    $this->assertModelExists($registration);
     expect($registration->status)->toBe('pending');
 });
 

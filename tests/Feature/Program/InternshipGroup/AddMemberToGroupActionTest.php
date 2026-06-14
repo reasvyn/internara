@@ -25,7 +25,7 @@ test('adds student member to group', function () {
     expect((string) $member->registration_id)->toBe((string) $registration->id);
     expect($member->role)->toBe(InternshipGroupRole::STUDENT->value);
     expect($member->joined_at)->not->toBeNull();
-    $this->assertDatabaseHas('internship_group_members', ['id' => $member->id]);
+    $this->assertModelExists($member);
 });
 
 test('adds school teacher member to group', function () {

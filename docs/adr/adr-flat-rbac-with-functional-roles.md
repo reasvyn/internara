@@ -1,7 +1,8 @@
 # ADR-008: Flat RBAC with Functional Roles
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-14
+> > **Changes:** sync — fix Auth module paths (Enums/Role.php → Permissions/Enums/Role.php, Http/Middleware → Permissions/Http/Middleware)
 
 ## Context
 
@@ -65,10 +66,10 @@ This keeps route security simple (concrete roles only) while allowing Actions to
 
 ## References
 
-- `app/Auth/Enums/Role.php` — Role definitions with resolvesTo() mapping
+- `app/Auth/Permissions/Enums/Role.php` — Role definitions with resolvesTo() mapping
 - `app/Core/Policies/BasePolicy.php` — Base authorization class
 - `app/Core/Policies/Concerns/AuthorizesRoles.php` — Role check methods
 - `app/Core/Policies/Concerns/AuthorizesOwnership.php` — Ownership check methods
-- `app/Auth/Http/Middleware/CheckRoleMiddleware.php` — Route-level gating
+- `app/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` — Route-level gating
 - `docs/foundation/rbac.md` — Detailed RBAC documentation
 - `docs/architecture.md` — Authorization section

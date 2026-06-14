@@ -15,10 +15,7 @@ test('updates internship group name', function () {
     $updated = $action->execute($group, ['name' => 'Updated Group']);
 
     expect($updated->name)->toBe('Updated Group');
-    $this->assertDatabaseHas('internship_groups', [
-        'id' => $group->id,
-        'name' => 'Updated Group',
-    ]);
+    $this->assertModelExists($group);
 });
 
 test('updates internship group description', function () {

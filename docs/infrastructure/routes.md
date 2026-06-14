@@ -205,7 +205,7 @@ php artisan route:cache
 - `routes/ai.php` — AI integration routes
 - `bootstrap/app.php` — global middleware registration
 - `app/Core/Http/Middleware/` — global middleware classes
-- `app/Auth/Http/Middleware/` — role-check middleware (CheckRole)
+- `app/Auth/Permissions/Http/Middleware/` — role-check middleware (CheckRole)
 - `app/Auth/Login/Http/Middleware/` — auth throttle middleware (AuthThrottle)
 - `app/Setup/Installation/Http/Middleware/` — setup middleware classes
 - `config/menu.php` — sidebar navigation mapping routes to menu items

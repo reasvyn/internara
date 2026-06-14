@@ -36,5 +36,5 @@ test('bulk delete throws if any year is active', function () {
 
     expect(fn () => $action->execute([$year->id]))->toThrow(RejectedException::class);
 
-    $this->assertDatabaseHas('academic_years', ['id' => $year->id]);
+    $this->assertModelExists($year);
 });

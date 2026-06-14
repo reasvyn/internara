@@ -1,6 +1,6 @@
 # Infrastructure
 
-> **Last updated:** 2026-06-13
+> **Last updated:** 2026-06-14
 
 This document describes the infrastructure design for Internara — what the system looks like at each deployment tier and how components relate. It serves as a reference for provisioning, scaling, and maintenance.
 
@@ -433,7 +433,7 @@ See [Backup & Recovery](backup-recovery.md) for detailed restoration procedures.
 
 | Concern                                 | Document                                |
 | --------------------------------------- | --------------------------------------- |
-| Installation & prerequisites            | [Installation](installation.md)         |
+| Installation & prerequisites            | [Installation](../guide/01-installation.md)             |
 | Deployment steps (shared hosting, VPS, Docker) | [Deployment](deployment.md)       |
 | Environment configuration               | [Configuration](configuration.md)       |
 | Database design & engine comparison     | [Database](database.md)                 |

@@ -56,6 +56,11 @@ class Placement extends BaseModel
         return $this->hasMany(Registration::class, 'placement_id');
     }
 
+    public function availableSlots(): int
+    {
+        return $this->quota - $this->filled_quota;
+    }
+
     public function asPlacementCapacity(): PlacementCapacity
     {
         return PlacementCapacity::fromModel($this);

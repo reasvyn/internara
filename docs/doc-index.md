@@ -1,7 +1,7 @@
 # Documentation Index
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — fix route count (18→17), wizard steps (7→6), fix broken links, fix shared paths
+> **Last updated:** 2026-06-14
+> **Changes:** sync — fix policy count (28→27), enum count (35→34), remove orphan docs/ui-ux.md; add roadmap.md, guide index + 5 chapters, Backups submodule
 >
 > Complete catalog of all documentation in the `docs/` directory. This index is the single entry point for navigating Internara's documentation. Every file listed here is part of the authoritative system documentation and must be kept in sync with the implementation.
 
@@ -26,12 +26,13 @@
 
 | Document                                                         | Description                                                                                            |
 | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| [Setup Guide Index](guide/00-guide-index.md)                     | Step-by-step setup series: install, wizard, post-setup                                                 |
 | [Getting Started](getting-started.md)                            | End-to-end walkthrough from cloning the repository to completing the setup wizard                      |
-| [Installation](infrastructure/installation.md)                   | Deployment reference: prerequisites, VPS/Docker/shared hosting, PHP-FPM, Supervisor, database config   |
+| [Installation](guide/01-installation.md)                         | Prerequisites, CLI installer, database provisioning, performance tuning                                |
+| [Setup Wizard](guide/02-setup-wizard.md)                         | Detailed walkthrough of all 6 setup wizard steps                                                       |
+| [Post-Setup](guide/03-post-setup.md)                             | First actions as administrator: foundation setup, people management, program configuration, go-lite    |
 | [Deployment](infrastructure/deployment.md)                       | Three deployment paths (VPS, Docker, shared hosting), production checklist, background processes       |
 | [Configuration](infrastructure/configuration.md)                 | Three-tier configuration system, environment variables, dev vs production, security, localization      |
-| [Post-Setup](foundation/post-setup.md)                                      | First actions as administrator: foundation setup, people management, program configuration, go-live    |
-| [Setup Wizard](foundation/setup-wizard.md)                                  | Detailed walkthrough of all 6 setup wizard steps                                                       |
 | [Infrastructure Overview](infrastructure/infrastructure.md)      | Deployment options, background process architecture, database and storage considerations               |
 
 ---
@@ -65,10 +66,10 @@
 | [Model (Active Record)](architecture/model-pattern.md)           | Eloquent model patterns, UUID PKs, scopes, relationships, casts, factories                 |
 | [Data Transfer Objects](architecture/data-pattern.md)            | BaseData DTO patterns, fromArray/toArray, ActionResponse, DTO migration path               |
 | [Events & Notifications](architecture/event-pattern.md)          | BaseEvent contract, dispatch patterns, listeners, multi-channel notifications               |
-| [Enum & State Machine](architecture/enum-pattern.md)             | LabelEnum/StatusEnum/ColorableEnum contracts, state machine patterns, 35 enum inventory     |
+| [Enum & State Machine](architecture/enum-pattern.md)             | LabelEnum/StatusEnum/ColorableEnum contracts, state machine patterns, 34 enum inventory     |
 | [Livewire Components](architecture/livewire-pattern.md)          | Thin component rule, Form Objects, BaseRecordManager, auto-discovery, confirmation dialogs |
 | [Exception Hierarchy](architecture/exception-pattern.md)         | Dual AppException/ModuleException trees, HasExceptionContext, HandlesActionErrors           |
-| [Authorization](architecture/policy-pattern.md)                  | Flat RBAC, three-layer auth, Gate::before bypass, 28-policy inventory                       |
+| [Authorization](architecture/policy-pattern.md)                  | Flat RBAC, three-layer auth, Gate::before bypass, 27-policy inventory                       |
 | [Logging & PII](architecture/logging-pattern.md)                | SmartLogger dual-channel fluent API, PII masking (39+ keys), translation resolution         |
 | [Caching](architecture/cache-pattern.md)                         | Centralized key registry, TTL categories, event-driven invalidation, driver tiers           |
 | [Service Layer](architecture/service-pattern.md)                 | When to use Services vs Actions, existing services inventory, migration path                |
@@ -92,6 +93,7 @@
 | [Backup & Recovery](infrastructure/backup-recovery.md)           | Backup strategies, database dumps, file backup, restoration, point-in-time recovery         |
 | [Localization](infrastructure/localization.md)                   | Supported languages, translation structure, locale resolution, community contribution guide |
 | [Known Issues](known-issues.md)                                  | Known limitations, caveats, and workarounds                                                 |
+| [Roadmap](roadmap.md)                                            | Feature plans and implementation roadmap                                                     |
 
 ---
 
@@ -185,7 +187,7 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A[infrastructure/infrastructure.md] --> B[infrastructure/installation.md]
+    A[infrastructure/infrastructure.md] --> B[guide/01-installation.md]
     B --> C[infrastructure/deployment.md]
     C --> D[infrastructure/configuration.md]
     D --> E[infrastructure/backup-recovery.md]

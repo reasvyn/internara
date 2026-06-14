@@ -1,6 +1,6 @@
 # Backup & Recovery
 
-> **Last updated:** 2026-06-13
+> **Last updated:** 2026-06-14
 
 Regular backups protect your school's data against hardware failure, accidental deletion, and security incidents. This guide covers what to back up, how to automate it, and how to restore when needed.
 
@@ -191,5 +191,5 @@ If data was deleted through the application (not a database-level drop), check t
 
 - [Deployment](deployment.md) — installation and server setup
 - [Observability](observability.md) — monitoring and health checks
-- [Installation](installation.md) — command reference
+- [Installation](../guide/01-installation.md) — command reference
 - [Infrastructure](infrastructure.md) — recovery objectives by tier

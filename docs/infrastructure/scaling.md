@@ -1,6 +1,6 @@
 # Scaling Guide
 
-> **Last updated:** 2026-06-13
+> **Last updated:** 2026-06-14
 
 This document is the operational companion to [Infrastructure](infrastructure.md). It describes _when_ and _how_ to scale Internara from a shared hosting setup serving 500 registered users to a multi-server high-availability cluster serving 2000+.
 
@@ -448,7 +448,7 @@ k6 run --vus 200 --duration 5m path/to/Tier3Validation.js
 | Document                                                                  | Contents                                              |
 | ------------------------------------------------------------------------- | ----------------------------------------------------- |
 | [Infrastructure](infrastructure.md)                                       | Deployment tiers, target architecture, service layout |
-| [Installation](installation.md)                                           | Prerequisites, command reference, troubleshooting     |
+| [Installation](../guide/01-installation.md)                                | Prerequisites, command reference, troubleshooting     |
 | [Deployment](deployment.md)                                               | Server config, Supervisor, Docker, shared hosting     |
 | [Configuration](configuration.md)                                         | .env reference, all config options                    |
 | [Observability](observability.md)                                         | Pulse, logging, health checks                         |

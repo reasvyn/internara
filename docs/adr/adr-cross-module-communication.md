@@ -1,7 +1,8 @@
 # ADR-011: Cross-Module Communication Discipline
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-14
+> > **Changes:** sync — fix Program event path (Events/ → Internship/Events/)
 
 ## Context
 
@@ -67,6 +68,6 @@ Straightforward cross-module access when no decoupling is needed. This is the de
 ## References
 
 - `app/Core/Contracts/` — Shared contracts
-- `app/Program/Events/InternshipCreated.php` — Event example
+- `app/Program/Internship/Events/InternshipCreated.php` — Event example
 - `app/Providers/AppServiceProvider.php` — Contract bindings, listener registration
 - `docs/architecture.md` — Cross-Module Communication section

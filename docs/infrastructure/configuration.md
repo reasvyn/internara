@@ -198,5 +198,5 @@ Values resolve through a fallback chain: runtime settings â†’ config defaults â†
 - Settings model: `app/Settings/Models/Setting.php`
 - Settings resolver: `app/Settings/Support/Settings.php`
 - Brand resolver: `app/Settings/Support/Brand.php`
-- App info (composer.json): `app/Settings/Support/AppInfo.php`
+- App info (composer.json): `app/Core/Support/AppInfo.php`
 - Infrastructure tiers: [Infrastructure](infrastructure.md)
