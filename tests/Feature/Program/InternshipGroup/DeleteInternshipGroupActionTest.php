@@ -28,5 +28,5 @@ test('rejects deletion when group has members', function () {
 
     expect(fn () => $action->execute($group))->toThrow(RejectedException::class);
 
-    $this->assertDatabaseHas('internship_groups', ['id' => $group->id]);
+    $this->assertModelExists($group);
 });

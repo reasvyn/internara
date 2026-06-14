@@ -1,6 +1,6 @@
 # Action-based MVC Architecture
 
-> **Last updated:** 2026-06-13
+> **Last updated:** 2026-06-14
 > **Changes:** sync — migrate exact counts to ranges (models 42→40+, Livewire 107→100+, policies 29→25+), fix route files (18→17), fix broken links, fix shared component paths
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad pattern, data flow, cross-module communication, exception handling, validation, caching, testing strategy, and invariant rules. Every decision here serves three goals:
@@ -440,7 +440,7 @@ app/{Module}/
 | **Core**          | —                                                                                                        | Infrastructure + cross-module utilities                                                  |
 | **Auth**          | `Permissions/`, `SuperAdmin/`, `Login/`, `Account/`, `ApiTokens/`, `AccountRecovery/`, `Password/`       | Enums, Http/Middleware, Livewire (login, recovery, activation, password)                 |
 | **User**          | `AccountStatus/`, `Profile/`, `Notifications/`, `Dashboard/`                                             | Http, Livewire (dashboards, editors), Actions, Enums, Entities, Rules, Support, Services |
-| **SysAdmin**      | `Announcement/`, `Observability/`                                                                        | Actions, Console, Livewire (audit, pulse), Recorders, Services                           |
+| **SysAdmin**      | `Announcement/`, `Observability/`, `Backups/`                                                             | Actions, Console, Livewire (audit, pulse, backups), Recorders, Services                  |
 | **Setup**         | `Installation/`, `SetupWizard/`                                                                          | Entities, Data                                                                            |
 | **Settings**      | `Branding/`, `Theme/`, `Locale/`                                                                         | Actions, Casts, Data, Enums, Events, Http/Middleware, Listeners, Livewire, Models, Policies, Rules, Support |
 | **Academics**     | `Department/`, `AcademicYear/`, `School/`                                                                | Actions, Console, Http, Livewire, Services, Support                                      |

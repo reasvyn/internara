@@ -25,7 +25,7 @@ test('creates account application with valid data', function () {
     ]);
 
     expect($application)->toBeInstanceOf(AccountApplication::class);
-    $this->assertDatabaseHas('account_applications', ['id' => $application->id]);
+    $this->assertModelExists($application);
     expect($application->status->value)->toBe('pending');
 });
 

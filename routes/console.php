@@ -32,4 +32,8 @@ Schedule::command('system:cache-warm')
 
 Schedule::command('pulse:check')->everyMinute()->description('Record Pulse performance metrics');
 
+Schedule::command('system:backup')
+    ->daily()
+    ->description('Run scheduled system backup if enabled');
+
 Schedule::command('queue:prune-failed')->daily()->description('Remove stale failed job records');

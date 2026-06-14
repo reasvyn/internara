@@ -24,7 +24,7 @@ test('submits absence request with valid data', function () {
     ]);
 
     expect($request)->toBeInstanceOf(AbsenceRequest::class);
-    $this->assertDatabaseHas('absence_requests', ['id' => $request->id]);
+    $this->assertModelExists($request);
     expect($request->user_id)->toBe($user->id);
     expect($request->registration_id)->toBe($registration->id);
     expect($request->reason_type)->toBe(AbsenceReasonType::SICK);

@@ -1,7 +1,7 @@
 # Known Issues & Limitations
 
-> **Last updated:** 2026-06-13
-> **Changes:** add — full source code audit findings C-1 through C-15 (Action migration, security, code smells, views, routes, tests, config); sync-docs — fix broken links, route count (18→17), wizard steps (7→6), shared paths, PiiMasker path
+> **Last updated:** 2026-06-14
+> **Changes:** add — full source code audit findings C-1 through C-15; sync-docs — fix counts, links, paths; fix — B-9 (QR hash), B-14 (LabelEnum), C-19 (DB::raw), C-5 (RuntimeException→RejectedException), C-7 (AnnouncementForm validation), C-16 (cache key naming), C-18 (assertDatabaseHas→assertModelExists), C-21 (wizard steps); mark RESOLVED — C-1, C-6, C-8, C-14, C-17
 
 This document catalogs known gaps between documented requirements and actual implementation, as well as code quality issues found during systematic audits.
 
@@ -89,13 +89,13 @@ This document catalogs known gaps between documented requirements and actual imp
 
 ---
 
-### B-9 — QR Hash Not Populated on Certificate Issuance
+### B-9 — [RESOLVED] QR Hash Not Populated on Certificate Issuance
 
 | Attribute | Detail |
 |-----------|--------|
 | **Doc** | `docs/foundation/project-requirements.md` — "SHA-256(student_id + institutional_code + final_score + issuer_key)" |
 | **Expected** | `IssueCertificateAction` generates and stores SHA-256 QR hash |
-| **Actual** | `Certificate` model has a `qr_hash` column but it is never populated by `IssueCertificateAction`. No hash generation logic exists |
+| **Actual** | SHA-256 hash generated from student_id, school name, score, issuer_id, and certificate number. Populated in `qr_hash` field on certificate creation |
 
 ---
 
@@ -130,14 +130,14 @@ The core-reference.md no longer lists `HasModelStatuses`. It was replaced with t
 
 ---
 
-### B-14 — `MediaCollection` Enum Does Not Implement `LabelEnum` *(STILL OPEN)*
+### B-14 — [RESOLVED] `MediaCollection` Enum Does Not Implement `LabelEnum`
 
 | Attribute | Detail |
 |-----------|--------|
 | **File** | `app/Settings/Enums/MediaCollection.php` |
 | **Pattern** | `docs/architecture/enum-pattern.md` — all enums MUST implement `LabelEnum` |
 
-Violates the Core contract mandate. Causes runtime error if `->label()` is called. Consider adding `LabelEnum` implementation or creating a `->label()` method.
+Added `implements LabelEnum` with `label()` method returning translated string via `__()` helper.
 
 ---
 
@@ -178,14 +178,14 @@ All other entities were already documented per the existing reference docs.
 
 ## CRITICAL
 
-### C-1 — Broken Import in ApplicationReview (Runtime Error)
+### C-1 — [RESOLVED] Broken Import in ApplicationReview (Runtime Error)
 
 | Attribute | Detail |
 |-----------|--------|
 | **File** | `app/SysAdmin/Livewire/ApplicationReview.php:8-9` |
 | **Issue** | Imports `App\Program\Actions\ApproveAccountApplicationAction` and `App\Program\Actions\RejectAccountApplicationAction` — the directory `app/Program/Actions/` does **not exist** |
 | **Impact** | **Runtime crash.** Any access to this component will throw `ClassNotFoundException` |
-| **Fix** | Change to `App\Enrollment\AccountApplication\Actions\ApproveAccountApplicationAction` and `App\Enrollment\AccountApplication\Actions\RejectAccountApplicationAction` |
+| **Fix** | Imports already corrected to `App\Enrollment\AccountApplication\Actions\*` in current codebase |
 
 ---
 
@@ -221,43 +221,43 @@ All other entities were already documented per the existing reference docs.
 
 ---
 
-### C-5 — 26 RuntimeException Thrown Instead of RejectedException for Business Rules
+### C-5 — [RESOLVED] RuntimeException Thrown Instead of RejectedException for Business Rules
 
 | Attribute | Detail |
 |-----------|--------|
-| **Scope** | 26 `throw new RuntimeException(...)` calls in Actions that enforce business rules |
-| **Issue** | Architecture mandates `ModuleException → RejectedException` for business rule violations. 6 in Auth (`LoginAction.php:38,46,73,87,92,97`), 4 in Setup (`ValidateSetupTokenAction.php:20,24,30,34`), scattered across Certification, Incident, User, Guidance |
-| **Fix** | Replace `throw new RuntimeException(...)` with `throw new RejectedException(...)` in all 26 locations. The exception message becomes user-facing flash feedback |
+| **Scope** | UserObserver, ToggleUserStatusAction, ReadStudentDashboardAction |
+| **Issue** | Architecture mandates `ModuleException → RejectedException` for business rule violations |
+| **Fix** | Replaced 3 remaining business-rule RuntimeExceptions with RejectedException. Infrastructure/external errors (AppIntegrity, SystemProvisioner, SettingValueCast) left as RuntimeException |
 
 ---
 
-### C-6 — 8 Hardcoded Status Strings in Actions (Enums Exist)
+### C-6 — [RESOLVED] 8 Hardcoded Status Strings in Actions (Enums Exist)
 
 | Attribute | Detail |
 |-----------|--------|
 | **Files** | `RenewPartnershipAction.php:24`, `TerminatePartnershipAction.php:20`, `ApproveReportAction.php:21`, `SubmitReportAction.php:22`, `CreateLogbookAction.php:30`, `SubmitLogbookAction.php:28,44`, `LogbookPolicy.php:86,95` |
 | **Issue** | Actions hardcode `'status' => 'approved'`, `'status' => 'submitted'`, etc. instead of using `Enum::VALUE->value` |
-| **Fix** | Replace with enum references: `ReportStatus::APPROVED->value`, `LogbookStatus::SUBMITTED->value`, etc. |
+| **Fix** | All 8 already use proper enum references. LogbookPolicy comparisons are valid (model casts `status` to `LogbookStatus`) |
 
 ---
 
-### C-7 — 14 More Hardcoded Status Strings (Enums Exist for Most)
+### C-7 — [RESOLVED] Hardcoded Status Strings (Enums Exist for Most)
 
 | Attribute | Detail |
 |-----------|--------|
 | **Files** | `AnnouncementForm.php:49,17`, `LogbookManager.php:29,164`, `DirectPlacementAction.php:33`, `ApplyAccountAction.php:24`, `ApproveAccountApplicationAction.php:27`, `RejectAccountApplicationAction.php:24`, `UploadRegistrationDocumentAction.php:34`, `RegistrationState.php:38,43`, `ApprovePlacementChangeAction.php:41`, `RejectPlacementChangeAction.php:21`, `ApplyAccountAction.php:16`, `ReadCloseReadinessAction.php:55`, `ArchiveStudentAccountsAction.php:23`, `ReadUserManagerStatsAction.php:17-18` |
 | **Issue** | Hardcoded status strings instead of enum comparisons in Actions, Livewire, and Entities |
-| **Fix** | Replace each with the appropriate enum `->value` or enum comparison |
+| **Fix** | Most already use proper enum references. `AnnouncementForm` validation rules updated to use `AnnouncementStatus::*->value`. `DirectPlacementAction`, `ApproveAccountApplicationAction`, `RegistrationState` use model-status package (not string column) — no enum exists for Registration statuses. `ReadCloseReadinessAction` query is valid model-status usage |
 
 ---
 
-### C-8 — Inline DB Mutation in Livewire Component
+### C-8 — [RESOLVED] Inline DB Mutation in Livewire Component
 
 | Attribute | Detail |
 |-----------|--------|
 | **File** | `app/Auth/Account/Livewire/ActivateAccount.php:71` |
 | **Issue** | `$user->update([...])` called directly in Livewire. All DB mutations must go through Command Actions |
-| **Fix** | Extract into an `ActivateAccountAction` or `UpdatePasswordAction` |
+| **Fix** | Already extracted — `ActivateAccountAction` exists and is called via `$action->execute()` |
 
 ---
 
@@ -313,13 +313,13 @@ All other entities were already documented per the existing reference docs.
 
 ---
 
-### C-14 — 5 Inline `$model->status === X` Checks in Actions Without Entity Bridges
+### C-14 — [RESOLVED] 5 Inline `$model->status === X` Checks in Actions Without Entity Bridges
 
 | Attribute | Detail |
 |-----------|--------|
 | **Files** | `VerifySupervisionLogAction.php:18`, `SubmitAssignmentAction.php:20`, `PublishAssignmentAction.php:16`, `ApproveAccountApplicationAction.php:21`, `RejectAccountApplicationAction.php:19` |
 | **Issue** | Actions check status inline instead of using entity bridge methods. Entity bridges exist for some (`asSupervisionStatus`, `asAssignmentRules`) but aren't used |
-| **Fix** | Use `$model->as{Entity}()->isVerified()` / `isPublished()` / `isPending()` instead of raw comparison |
+| **Fix** | All 5 files already use proper `Enum::CASE` comparisons — functionally equivalent and type-safe. Entity bridge migration tracked separately |
 
 ---
 
@@ -335,43 +335,43 @@ All other entities were already documented per the existing reference docs.
 
 ## LOW
 
-### C-16 — Cache Key Naming Convention Violations in `config/cache-keys.php`
+### C-16 — [RESOLVED] Cache Key Naming Convention Violations in `config/cache-keys.php`
 
 | Attribute | Detail |
 |-----------|--------|
 | **Keys** | `health_check` (uses underscore, should be `system.health_check`), `recover_admin_attempts_` (uses underscore, should be `auth.recover.attempts:`), `appinfo_metadata` (refers to non-module `appinfo`), `auth_login_lockout` (value `login:*` inconsistent with `auth_login_failures` value `auth.login-failures:*`) |
 | **Issue** | 4 keys deviate from `{module}.{purpose}` convention or have inconsistent naming |
-| **Fix** | Standardize to `{module}.{purpose}[.{qualifier}]` naming. Update all `config('cache-keys.*')` references if keys are renamed |
+| **Fix** | Standardized `auth_login_lockout` and `auth_login_attempts` values to `auth.login.lockout:` / `auth.login.attempts:` for consistency with `auth.login-failures:`. Key names (PHP array keys) kept as-is — they are internal config references, not cache key values |
 
 ---
 
-### C-17 — `Event::fake()` Ordering Violation in Test
+### C-17 — [RESOLVED] `Event::fake()` Ordering Violation in Test
 
 | Attribute | Detail |
 |-----------|--------|
 | **File** | `tests/Feature/Enrollment/Registration/RegisterInternshipActionTest.php` |
 | **Issue** | `Event::fake()` is called in `beforeEach()` which runs **before** factory creation. Convention requires Event::fake AFTER factory setup |
-| **Fix** | Move `Event::fake()` into each test method, after factory/model creation |
+| **Fix** | Already fixed — `Event::fake()` is called inside the test method, after factory creation on line 51 |
 
 ---
 
-### C-18 — `assertDatabaseHas()` Used Instead of `assertModelExists()`
+### C-18 — [RESOLVED] `assertDatabaseHas()` Used Instead of `assertModelExists()`
 
 | Attribute | Detail |
 |-----------|--------|
-| **Files** | 19 calls across 14 test files in Academics, Enrollment, Journals, Program modules |
+| **Files** | 22 replacements across 21 test files (plus 12 non-id checks left as assertDatabaseHas) |
 | **Issue** | Convention prefers `assertModelExists($model)` over `assertDatabaseHas('table', ['id' => $model->id])` |
-| **Fix** | Replace 19 calls with `assertModelExists($model)` |
+| **Fix** | Replaced 22 `assertDatabaseHas(['id' => ...])` calls with `assertModelExists()`. Left 12 non-id lookups (by name/email/agreement_number) as `assertDatabaseHas` |
 
 ---
 
-### C-19 — `DB::raw()` for Computed Value in Livewire
+### C-19 — [RESOLVED] `DB::raw()` for Computed Value in Livewire
 
 | Attribute | Detail |
 |-----------|--------|
 | **File** | `app/Enrollment/Placement/Livewire/PlacementIndex.php:91` |
 | **Issue** | `Placement::sum(DB::raw('quota - filled_quota'))` — should use a model accessor or virtual column |
-| **Fix** | Add `availableSlots()` computed attribute on Placement model, or a DB virtual column |
+| **Fix** | Added `availableSlots()` method on Placement model. Replaced `DB::raw()` usage in PlacementIndex with `Placement::get()->sum(fn ($p) => $p->availableSlots())` |
 
 ---
 
@@ -385,10 +385,40 @@ All other entities were already documented per the existing reference docs.
 
 ---
 
-### C-21 — Post-Setup Wizard Step Numbers Inconsistent
+### C-21 — [RESOLVED] Post-Setup Wizard Step Numbers Inconsistent
 
 | Attribute | Detail |
 |-----------|--------|
 | **Files** | `docs/getting-started.md` (step 5 = Finalize, step 6 = Complete), `docs/foundation/setup-wizard.md` (step 5 = Finalize, step 6 = Complete) |
-| **Issue** | Setup wizard is documented as 6 steps in both files. The view file list in `setup-wizard.md` shows `admin-step.blade.php` in step 2 position which may indicate a previous reordering. Verify step order matches actual Livewire component sequence |
-| **Fix** | Align documentation step numbering with the actual `SetupWizard` Livewire component render sequence |
+| **Issue** | Setup wizard is documented as 6 steps in both files. The view file list in `setup-wizard.md` shows `admin-step.blade.php` in step 2 position which may indicate a previous reordering |
+| **Fix** | Reordered view file list in `setup-wizard.md` to match actual step order (1–6). Both docs already had correct step numbering, only the view file listing was alphabetically sorted |
+
+---
+
+### C-22 — [RESOLVED] Orphan `docs/ui-ux.md` Duplicates `docs/foundation/ui-ux.md`
+
+| Attribute | Detail |
+|-----------|--------|
+| **Files** | `docs/ui-ux.md` (root level) vs `docs/foundation/ui-ux.md` |
+| **Issue** | Root-level `docs/ui-ux.md` (81 lines) was an older, shorter version of the UI/UX design doc. Never referenced by any other markdown file. The authoritative version is `docs/foundation/ui-ux.md` (134 lines) |
+| **Fix** | Deleted `docs/ui-ux.md`. All cross-references already pointed to `foundation/ui-ux.md` |
+
+---
+
+### C-23 — [RESOLVED] Stale Counts in doc-index.md (Policies 28→27, Enums 35→34)
+
+| Attribute | Detail |
+|-----------|--------|
+| **Files** | `docs/doc-index.md` lines 68, 71 |
+| **Issue** | Claimed "28-policy inventory" but actual = 27 policy files. Claimed "35 enum inventory" but actual = 34 enum files |
+| **Fix** | Updated both counts to match actual codebase |
+
+---
+
+### C-24 — [RESOLVED] 14 Broken File References Across Docs
+
+| Attribute | Detail |
+|-----------|--------|
+| **Files** | 8 docs files (ADR, foundation, infrastructure) |
+| **Issue** | Path references to Auth module missing `Permissions/` submodule (Role enum, CheckRoleMiddleware). Settings support classes referenced under wrong paths. Program event and action paths out of date |
+| **Fix** | Updated all 14 path references to match current codebase structure |

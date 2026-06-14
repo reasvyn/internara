@@ -28,7 +28,7 @@ test('rejects deletion when internship has placements', function () {
 
     expect(fn () => $action->execute($internship))->toThrow(RejectedException::class);
 
-    $this->assertDatabaseHas('internships', ['id' => $internship->id]);
+    $this->assertModelExists($internship);
 });
 
 test('rejects deletion when internship has registrations', function () {
@@ -39,5 +39,5 @@ test('rejects deletion when internship has registrations', function () {
 
     expect(fn () => $action->execute($internship))->toThrow(RejectedException::class);
 
-    $this->assertDatabaseHas('internships', ['id' => $internship->id]);
+    $this->assertModelExists($internship);
 });

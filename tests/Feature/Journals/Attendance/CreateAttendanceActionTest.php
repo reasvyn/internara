@@ -21,7 +21,7 @@ test('creates attendance log with valid data', function () {
     ]);
 
     expect($log)->toBeInstanceOf(Attendance::class);
-    $this->assertDatabaseHas('attendances', ['id' => $log->id]);
+    $this->assertModelExists($log);
     expect($log->user_id)->toBe($user->id);
     expect($log->status)->toBe(AttendanceStatus::PRESENT);
     expect($log->is_verified)->toBeFalse();

@@ -40,12 +40,21 @@ final class IssueCertificateAction extends BaseAction
                 'score' => $report?->score,
             ];
 
+            $qrHash = hash('sha256', implode('|', [
+                $registration->mentee?->user?->id ?? '',
+                $registration->internship?->academicYear?->school?->name ?? '',
+                (string) ($report?->score ?? ''),
+                (string) auth()->id(),
+                $certificateNumber,
+            ]));
+
             $certificate = Certificate::create([
                 'registration_id' => $registration->id,
                 'certificate_number' => $certificateNumber,
                 'template_id' => $template->id,
                 'issued_by' => auth()->id(),
                 'issued_at' => now(),
+                'qr_hash' => $qrHash,
                 'metadata' => $metadata,
             ]);
 

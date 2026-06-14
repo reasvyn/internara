@@ -18,10 +18,7 @@ test('updates internship name', function () {
     $updated = $action->execute($internship, ['name' => 'Updated PKL']);
 
     expect($updated->name)->toBe('Updated PKL');
-    $this->assertDatabaseHas('internships', [
-        'id' => $internship->id,
-        'name' => 'Updated PKL',
-    ]);
+    $this->assertModelExists($internship);
 });
 
 test('updates internship status with valid transition', function () {

@@ -15,7 +15,6 @@ use App\Program\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 
@@ -88,7 +87,7 @@ class PlacementIndex extends BaseRecordManager
             'total' => Placement::count(),
             'total_quota' => Placement::sum('quota'),
             'filled' => Placement::sum('filled_quota'),
-            'available' => Placement::sum(DB::raw('quota - filled_quota')),
+            'available' => Placement::get()->sum(fn ($p) => $p->availableSlots()),
         ];
     }
 

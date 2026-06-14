@@ -36,6 +36,7 @@ return Application::configure(basePath: dirname(__DIR__))
         __DIR__.'/../app/Setup/Installation/Console/Commands',
         __DIR__.'/../app/SysAdmin/Console/Commands',
         __DIR__.'/../app/SysAdmin/Observability/Console/Commands',
+        __DIR__.'/../app/SysAdmin/Backups/Console/Commands',
         __DIR__.'/../app/User/Console/Commands',
         __DIR__.'/../app/User/UserManagement/Console/Commands',
     ])

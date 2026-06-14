@@ -56,7 +56,7 @@ resolved at runtime — never stored in the database, never used in route middle
 | `mentee` | `student` |
 
 Decouples the mentoring subsystem from specific user types. See `Role::resolvesTo()` in
-`app/Auth/Enums/Role.php`.
+`app/Auth/Permissions/Enums/Role.php`.
 
 ---
 
@@ -84,7 +84,7 @@ In tests, `Gate::before` is additionally registered in `tests/TestCase.php`.
 
 ### CheckRoleMiddleware
 
-Route-level role verification at `app/Auth/Http/Middleware/CheckRoleMiddleware.php`. After
+Route-level role verification at `app/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php`. After
 authentication, checks if the user has at least one required role. Pipe-delimited syntax:
 `role:super_admin|admin`. Returns 403 for unauthorized authenticated users, redirects to login
 for guests. Logs unauthorized access attempts.
@@ -110,9 +110,9 @@ All policies extend `app/Core/Policies/BasePolicy.php` and use:
 
 | Component | Path |
 |-----------|------|
-| Role Enum | `app/Auth/Enums/Role.php` |
-| CheckRoleMiddleware | `app/Auth/Http/Middleware/CheckRoleMiddleware.php` |
+| Role Enum | `app/Auth/Permissions/Enums/Role.php` |
+| CheckRoleMiddleware | `app/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` |
 | BasePolicy | `app/Core/Policies/BasePolicy.php` |
 | Gate::before config | `config/permission.php` |
 | RolePermissionSeeder | `database/seeders/RolePermissionSeeder.php` |
-| Policies directory | `app/*/Policies/` (30+ policy files) |
+| Policies directory | `app/*/Policies/` (27 policy files) |

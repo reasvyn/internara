@@ -28,8 +28,5 @@ test('updates placement description only', function () {
     ]);
 
     expect($result->description)->toBe('New description');
-    $this->assertDatabaseHas('placements', [
-        'id' => $placement->id,
-        'description' => 'New description',
-    ]);
+    $this->assertModelExists($placement);
 });

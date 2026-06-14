@@ -17,6 +17,8 @@ use App\Settings\Events\SettingUpdated;
 use App\Settings\Listeners\InvalidateSettingsCache;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\Setup\SetupWizard\Listeners\LogSetupFinalized;
+use App\SysAdmin\Backups\Events\BackupFailed;
+use App\SysAdmin\Backups\Listeners\SendBackupFailedNotification;
 use App\User\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange;
 use App\User\Dashboard\Listeners\ClearDashboardCacheOnYearChange;
 use App\User\Notifications\Events\NotificationRead;
@@ -71,6 +73,10 @@ return [
 
         LoginSucceeded::class => [
             SendSuperAdminWelcomeNotification::class,
+        ],
+
+        BackupFailed::class => [
+            SendBackupFailedNotification::class,
         ],
     ],
 ];

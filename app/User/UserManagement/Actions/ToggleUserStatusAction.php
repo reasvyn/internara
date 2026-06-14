@@ -16,7 +16,7 @@ final class ToggleUserStatusAction extends BaseAction
     public function execute(User $user, ?string $reason = null): User
     {
         if ($user->id === auth()->id()) {
-            throw new \RuntimeException('Cannot change your own status.');
+            throw new RejectedException('Cannot change your own status.');
         }
 
         $integrity = SuperAdminIntegrityRules::fromModel($user);

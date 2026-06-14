@@ -1,7 +1,8 @@
 # ADR-013: Program Closure & Archival
 
 > **Status:** Accepted
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-14
+> > **Changes:** sync — fix Action path (CheckCloseReadiness → ReadCloseReadiness), fix Auth→User and Program→Program/Internship enum paths
 
 ## Context
 
@@ -86,9 +87,9 @@ Archived data is retained indefinitely. No automatic deletion. Schools that need
 
 ## References
 
-- `app/Program/Actions/CheckCloseReadinessAction.php` — Readiness verification
+- `app/Program/Internship/Actions/ReadCloseReadinessAction.php` — Readiness verification
 - `app/User/UserManagement/Actions/ArchiveStudentAccountsAction.php` — Student archive
-- `app/Auth/Enums/AccountStatus.php` — ARCHIVED status
-- `app/Program/Enums/InternshipStatus.php` — Program lifecycle enum
+- `app/User/Enums/AccountStatus.php` — ARCHIVED status
+- `app/Program/Internship/Enums/InternshipStatus.php` — Program lifecycle enum
 - `docs/architecture.md` — Action Triad (Process Actions) section
 - `docs/key-features.md` — Program Closure & Archival section

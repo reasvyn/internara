@@ -17,7 +17,7 @@ test('creates department with valid data', function () {
     ]);
 
     expect($department)->toBeInstanceOf(Department::class);
-    $this->assertDatabaseHas('departments', ['id' => $department->id]);
+    $this->assertModelExists($department);
     expect($department->name)->toBe('Rekayasa Perangkat Lunak');
 });
 
