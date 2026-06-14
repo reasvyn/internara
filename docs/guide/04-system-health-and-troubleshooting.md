@@ -29,7 +29,7 @@ You'll see a table like this:
  │ Recommended Extensions       │ WARN     │ Missing: redis, pcntl, posix       │
  │ PHP Memory Limit             │ OK       │ 256M (minimum 128M met)            │
  │ Database                     │ OK       │ mysql — connected, 54 tables       │
- │ Migration Status             │ OK       │ All 48 migrations up to date       │
+ │ Migration Status             │ OK       │ All 49 migrations up to date       │
  │ Storage Permissions          │ OK       │ All storage directories writable   │
  │ Disk Space                   │ OK       │ Disk 23% full                      │
  │ Queue Driver                 │ WARN     │ sync (no worker needed)            │

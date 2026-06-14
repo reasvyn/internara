@@ -1,7 +1,7 @@
 # Documentation Index
 
 > **Last updated:** 2026-06-14
-> **Changes:** sync — fix policy count (28→27), enum count (35→34), remove orphan docs/ui-ux.md; add roadmap.md, guide index + 5 chapters, Backups submodule
+> **Changes:** cleanup — reference subdirectory indexes instead of listing contents (guide/, modules/, adr/)
 >
 > Complete catalog of all documentation in the `docs/` directory. This index is the single entry point for navigating Internara's documentation. Every file listed here is part of the authoritative system documentation and must be kept in sync with the implementation.
 
@@ -24,16 +24,20 @@
 
 ## Setup & Operation
 
-| Document                                                         | Description                                                                                            |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| [Setup Guide Index](guide/00-guide-index.md)                     | Step-by-step setup series: install, wizard, post-setup                                                 |
-| [Getting Started](getting-started.md)                            | End-to-end walkthrough from cloning the repository to completing the setup wizard                      |
-| [Installation](guide/01-installation.md)                         | Prerequisites, CLI installer, database provisioning, performance tuning                                |
-| [Setup Wizard](guide/02-setup-wizard.md)                         | Detailed walkthrough of all 6 setup wizard steps                                                       |
-| [Post-Setup](guide/03-post-setup.md)                             | First actions as administrator: foundation setup, people management, program configuration, go-lite    |
-| [Deployment](infrastructure/deployment.md)                       | Three deployment paths (VPS, Docker, shared hosting), production checklist, background processes       |
-| [Configuration](infrastructure/configuration.md)                 | Three-tier configuration system, environment variables, dev vs production, security, localization      |
-| [Infrastructure Overview](infrastructure/infrastructure.md)      | Deployment options, background process architecture, database and storage considerations               |
+| Document                                                    | Description                                                                     |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| [Getting Started](getting-started.md)                       | End-to-end walkthrough from cloning to completing the setup wizard              |
+| [Infrastructure Overview](infrastructure/infrastructure.md) | Deployment options, background process architecture, database and storage       |
+| [Deployment](infrastructure/deployment.md)                  | Three deployment paths (VPS, Docker, shared hosting), production checklist      |
+| [Configuration](infrastructure/configuration.md)            | Three-tier configuration system, environment variables, dev vs production       |
+
+---
+
+## User Manual
+
+| Document                                                    | Description                                                                     |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| [User Manual (6 chapters)](guide/00-guide-index.md)         | Step-by-step user guide: installation, wizard, post-setup, health, upgrades, admin recovery |
 
 ---
 
@@ -66,7 +70,7 @@
 | [Model (Active Record)](architecture/model-pattern.md)           | Eloquent model patterns, UUID PKs, scopes, relationships, casts, factories                 |
 | [Data Transfer Objects](architecture/data-pattern.md)            | BaseData DTO patterns, fromArray/toArray, ActionResponse, DTO migration path               |
 | [Events & Notifications](architecture/event-pattern.md)          | BaseEvent contract, dispatch patterns, listeners, multi-channel notifications               |
-| [Enum & State Machine](architecture/enum-pattern.md)             | LabelEnum/StatusEnum/ColorableEnum contracts, state machine patterns, 34 enum inventory     |
+| [Enum & State Machine](architecture/enum-pattern.md)             | LabelEnum/StatusEnum/ColorableEnum contracts, state machine patterns, 36 enum inventory     |
 | [Livewire Components](architecture/livewire-pattern.md)          | Thin component rule, Form Objects, BaseRecordManager, auto-discovery, confirmation dialogs |
 | [Exception Hierarchy](architecture/exception-pattern.md)         | Dual AppException/ModuleException trees, HasExceptionContext, HandlesActionErrors           |
 | [Authorization](architecture/policy-pattern.md)                  | Flat RBAC, three-layer auth, Gate::before bypass, 27-policy inventory                       |
@@ -97,73 +101,18 @@
 
 ---
 
-## Module Reference
+## Modules
 
-Each module has two documents under `docs/modules/`:
+Refer to the [Module Documentation Index](modules/module-index.md) for the complete listing of all 19 business modules plus Core. Each module has two documents:
 
 - **Overview** (`docs/modules/{module}.md`) — purpose, boundary, features, design principles
-- **Reference** (`docs/modules/{module}-reference.md`) — complete API reference: Actions, Models, Enums, Entities, Policies, Livewire components, Routes, Views, Tests, Factories, Migrations
-
-Internara consists of **19 business modules** plus **1 infrastructure module** (Core), organized by program lifecycle:
-
-| #  | Module            | Overview                             | Reference                                       |
-| -- | ----------------- | ------------------------------------ | ----------------------------------------------- |
-| 1  | **Core**          | [Overview](modules/core.md)          | [Reference](modules/core-reference.md)          |
-| 2  | **Auth**          | [Overview](modules/auth.md)          | [Reference](modules/auth-reference.md)          |
-| 3  | **User**          | [Overview](modules/user.md)          | [Reference](modules/user-reference.md)          |
-| 4  | **SysAdmin**      | [Overview](modules/sysadmin.md)      | [Reference](modules/sysadmin-reference.md)      |
-| 5  | **Setup**         | [Overview](modules/setup.md)         | [Reference](modules/setup-reference.md)         |
-| 6  | **Settings**      | [Overview](modules/settings.md)      | [Reference](modules/settings-reference.md)      |
-| 7  | **Academics**     | [Overview](modules/academics.md)     | [Reference](modules/academics-reference.md)     |
-| 8  | **Program**       | [Overview](modules/program.md)       | [Reference](modules/program-reference.md)       |
-| 9  | **Enrollment**    | [Overview](modules/enrollment.md)    | [Reference](modules/enrollment-reference.md)    |
-| 10 | **Assessment**    | [Overview](modules/assessment.md)    | [Reference](modules/assessment-reference.md)    |
-| 11 | **Evaluation**    | [Overview](modules/evaluation.md)    | [Reference](modules/evaluation-reference.md)    |
-| 12 | **Assignment**    | [Overview](modules/assignment.md)    | [Reference](modules/assignment-reference.md)    |
-| 13 | **Journals**      | [Overview](modules/journals.md)      | [Reference](modules/journals-reference.md)      |
-| 14 | **Guidance**      | [Overview](modules/guidance.md)      | [Reference](modules/guidance-reference.md)      |
-| 15 | **Incident**      | [Overview](modules/incident.md)      | [Reference](modules/incident-reference.md)      |
-| 16 | **Partners**      | [Overview](modules/partners.md)      | [Reference](modules/partners-reference.md)      |
-| 17 | **Certification** | [Overview](modules/certification.md) | [Reference](modules/certification-reference.md) |
-| 18 | **Reports**       | [Overview](modules/reports.md)       | [Reference](modules/reports-reference.md)       |
-| 19 | **Document**      | [Overview](modules/document.md)      | [Reference](modules/document-reference.md)      |
+- **Reference** (`docs/modules/{module}-reference.md`) — complete API reference
 
 ---
 
-## Architecture Decision Records (ADR)
+## Architecture Decision Records
 
-### Foundation Decisions
-
-| Record                                                                              | Decision                                                                   |
-| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| [UUID Primary Keys](adr/adr-uuid-primary-keys.md)                                   | UUID v7 primary keys over auto-increment IDs                               |
-| [Action-based MVC Architecture](adr/adr-action-based-mvc-architecture.md)           | Module-colocated Action-based MVC over flat layering                       |
-| [Action Pattern over Services](adr/adr-action-pattern-over-services.md)             | Single-responsibility Action pattern with Command/Read/Process triad       |
-| [Entity-Model Separation](adr/adr-entity-model-separation.md)                       | Business logic entities separated from Eloquent models                     |
-
-### Behavioral Decisions
-
-| Record                                                                  | Decision                                                   |
-| ----------------------------------------------------------------------- | ---------------------------------------------------------- |
-| [SmartLogger Dual-Channel](adr/adr-smartlogger-dual-channel.md)         | Fluent dual-channel logger with PII masking                |
-
-### Quality Decisions
-
-| Record                                                                                | Decision                                                          |
-| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| [Base Class Mandate](adr/adr-base-class-mandate.md)                                    | Mandatory base classes from the Core module                      |
-| [Exception Hierarchy](adr/adr-exception-hierarchy.md)                                  | Dual exception hierarchy (AppException + ModuleException)         |
-| [Flat RBAC with Functional Roles](adr/adr-flat-rbac-with-functional-roles.md)          | Flat RBAC with derived functional roles (mentor/mentee)           |
-| [Performance Optimization](adr/adr-performance-optimization.md)                        | Three-tier performance strategy with configuration-only upgrades  |
-
-### Governing Decisions
-
-| Record                                                                          | Decision                                                                                    |
-| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| [Self-Hosted Single-Tenant](adr/adr-self-hosted-single-tenant.md)               | Self-hosted, single-tenant deployment model with data sovereignty                           |
-| [Cross-Module Communication](adr/adr-cross-module-communication.md)             | Four-pattern communication discipline: direct imports, contracts, events, action delegation |
-| [Gradual Migration](adr/adr-gradual-migration.md)                               | Optional complexity with phased migration paths for DTOs, events, and caching               |
-| [Program Closure & Archival](adr/adr-program-closure-archival.md)               | Hard archive with immutable data snapshot after program closure                             |
+Refer to the [ADR Index](adr/adr-index.md) for the complete listing of all 13 records covering foundation, observability, quality, and strategic decisions.
 
 ---
 
@@ -179,15 +128,14 @@ flowchart LR
     D --> E[architecture.md]
     E --> F[architecture/modular-pattern.md]
     F --> G[conventions.md]
-    G --> H[modules/{module}.md]
-    H --> I[modules/{module}-reference.md]
+    G --> H[modules/module-index.md]
 ```
 
 ### For Operations / DevOps
 
 ```mermaid
 flowchart LR
-    A[infrastructure/infrastructure.md] --> B[guide/01-installation.md]
+    A[infrastructure/infrastructure.md] --> B[guide/00-guide-index.md]
     B --> C[infrastructure/deployment.md]
     C --> D[infrastructure/configuration.md]
     D --> E[infrastructure/backup-recovery.md]
@@ -198,8 +146,8 @@ flowchart LR
 
 | Role         | Start Here                                             |
 | ------------ | ------------------------------------------------------ |
-| Developer    | `architecture.md` → `architecture/{*}-pattern.md` → `conventions.md` → `{module}.md`  |
+| Developer    | `architecture.md` → `architecture/{*}-pattern.md` → `conventions.md` → `modules/module-index.md` |
 | DevOps       | `infrastructure/infrastructure.md` → `deployment.md`  |
 | Product      | `product-definition.md` → `philosophy.md` → `key-features.md` |
-| QA/Tester    | `infrastructure/testing.md` → `architecture/testing-pattern.md` → `{module}-reference.md` |
-| New Hire     | `getting-started.md` → `architecture.md` → lab module |
+| QA/Tester    | `infrastructure/testing.md` → `architecture/testing-pattern.md` → `modules/module-index.md` |
+| New Hire     | `getting-started.md` → `architecture.md` → `modules/module-index.md` |

@@ -1,7 +1,7 @@
 # Known Issues & Limitations
 
 > **Last updated:** 2026-06-14
-> **Changes:** add — full source code audit findings C-1 through C-15; sync-docs — fix counts, links, paths; fix — B-9 (QR hash), B-14 (LabelEnum), C-19 (DB::raw), C-5 (RuntimeException→RejectedException), C-7 (AnnouncementForm validation), C-16 (cache key naming), C-18 (assertDatabaseHas→assertModelExists), C-21 (wizard steps); mark RESOLVED — C-1, C-6, C-8, C-14, C-17
+> **Changes:** add — full source code audit findings C-1 through C-15; sync-docs — fix counts, links, paths; fix — B-9 (QR hash), B-14 (LabelEnum), C-19 (DB::raw), C-5 (RuntimeException→RejectedException), C-7 (AnnouncementForm validation), C-16 (cache key naming), C-18 (assertDatabaseHas→assertModelExists), C-21 (wizard steps); mark RESOLVED — C-1, C-6, C-8, C-14, C-17, C-24 (stale counts); add — Setup module audit findings S-1 through S-7
 
 This document catalogs known gaps between documented requirements and actual implementation, as well as code quality issues found during systematic audits.
 
@@ -422,3 +422,114 @@ All other entities were already documented per the existing reference docs.
 | **Files** | 8 docs files (ADR, foundation, infrastructure) |
 | **Issue** | Path references to Auth module missing `Permissions/` submodule (Role enum, CheckRoleMiddleware). Settings support classes referenced under wrong paths. Program event and action paths out of date |
 | **Fix** | Updated all 14 path references to match current codebase structure |
+
+---
+
+## Setup Module Audit — 2026-06-14
+
+### S-1 — HIGH: `InstallSystemAction` Missing Transaction Boundary
+
+| Attribute | Detail |
+|-----------|--------|
+| **Severity** | HIGH |
+| **File** | `app/Setup/Installation/Actions/InstallSystemAction.php:27-48` |
+| **Issue** | This orchestrator action calls `$this->provisioner->executeAll()` (migrations, seeders, cache clears) and `$this->generateToken->execute()` without wrapping them in `$this->transaction()`. If provisioning partially fails (e.g., migrations succeed but token generation fails), the system could be left in an inconsistent state. |
+| **Fix** | Wrap the entire execution path in `$this->transaction()`. If inner actions already handle their own transactions, the outer transaction creates safe savepoints. |
+| **Impact** | Data integrity — partial provisioning state on failure |
+
+---
+
+### S-2 — HIGH: Hardcoded Cache Key in `GenerateSetupTokenAction`
+
+| Attribute | Detail |
+|-----------|--------|
+| **Severity** | HIGH |
+| **File** | `app/Setup/Installation/Actions/GenerateSetupTokenAction.php:18` |
+| **Pattern** | `docs/infrastructure/cache.md` — every cache key MUST be declared in `config/cache-keys.php` |
+| **Issue** | `Cache::lock('setup.token.generation', 10)` uses a raw string literal `'setup.token.generation'` instead of `config('cache-keys.setup_token_generation')`. The key is not declared in `config/cache-keys.php`. |
+| **Fix** | Add `'setup_token_generation' => 'setup.token.generation'` to `config/cache-keys.php` and reference it via `config('cache-keys.setup_token_generation')`. |
+| **Impact** | Maintainability — cache keys scattered across code, hard to audit and invalidate |
+
+---
+
+### S-3 — MEDIUM: `SetupData` DTO Missing from Module Reference
+
+| Attribute | Detail |
+|-----------|--------|
+| **Severity** | MEDIUM |
+| **File** | `docs/modules/setup-reference.md` (Data section), `app/Setup/Data/SetupData.php` |
+| **Issue** | `SetupData` DTO exists at `app/Setup/Data/SetupData.php` (extends `BaseData`) but is not listed in the Data/DTOs section of `setup-reference.md`. Only `AdminData` and `SchoolData` are documented. |
+| **Fix** | Add `SetupData` entry to the Data/DTOs table in `setup-reference.md`. |
+| **Impact** | Documentation — incomplete module reference |
+
+---
+
+### S-4 — MEDIUM: `SetupController` Doesn't Extend BaseController
+
+| Attribute | Detail |
+|-----------|--------|
+| **Severity** | MEDIUM |
+| **File** | `app/Setup/Http/Controllers/SetupController.php` |
+| **Pattern** | `docs/architecture.md` — Base Class Mandate: controllers should extend `BaseController` (or Laravel's `Controller`) |
+| **Issue** | `SetupController` is a plain class with no `extends`. While it works because it only uses `redirect()` and `response()` facades, it violates the base class mandate. |
+| **Fix** | Add `extends BaseController` (or at minimum `extends \Illuminate\Routing\Controller`). |
+| **Impact** | Convention compliance — inconsistent with other controllers |
+
+---
+
+### S-5 — MEDIUM: Setup Actions Missing `$this->log()` After Successful Mutation
+
+| Attribute | Detail |
+|-----------|--------|
+| **Severity** | MEDIUM |
+| **Files** | `app/Setup/Installation/Actions/GenerateSetupTokenAction.php`, `app/Setup/Installation/Actions/ValidateSetupTokenAction.php` |
+| **Pattern** | `docs/architecture.md` — Command Actions MUST call `$this->log()` after successful mutation |
+| **Issue** | `GenerateSetupTokenAction` performs a state mutation (token creation, version increment) but does not call `$this->log()`. `ValidateSetupTokenAction` consumes the token (clears it) but does not log the validation event. |
+| **Fix** | Add `$this->log('setup_token_generated', ...)` to `GenerateSetupTokenAction` and `$this->log('setup_token_validated', ...)` to `ValidateSetupTokenAction` after successful mutations. |
+| **Impact** | Audit trail — token lifecycle events not recorded |
+
+---
+
+### S-6 — MEDIUM: `FinalizeSetupAction` Event and Side-Effects Inside Transaction
+
+| Attribute | Detail |
+|-----------|--------|
+| **Severity** | MEDIUM |
+| **File** | `app/Setup/SetupWizard/Actions/FinalizeSetupAction.php:73-93` |
+| **Pattern** | `docs/architecture.md` — dispatch events after transaction commit where possible |
+| **Issue** | `$this->dispatchEvent(new SetupFinalized(...))`, `$this->sendNotification->execute(...)`, and `Session::forget(...)` are all called inside the outer `$this->transaction()`. If any of these fail, the entire setup (school, department, admin) is rolled back. The recovery key file save is correctly outside the transaction (line 99), but the notification and event should be too. |
+| **Fix** | Move event dispatch, notification sending, and session clean-up outside the transaction block. If `BaseAction::dispatchEvent()` fires synchronously, listeners won't see committed data. Use `event(new SetupFinalized(...))` after the transaction commits, or use `DB::afterCommit()`. |
+| **Impact** | Side-effect rollback risk; listeners may not see committed data |
+
+---
+
+### S-7 — LOW: `SetupDepartmentAction` Passes Full `$data` to `updateOrCreate`
+
+| Attribute | Detail |
+|-----------|--------|
+| **Severity** | LOW |
+| **File** | `app/Setup/SetupWizard/Actions/SetupDepartmentAction.php:22` |
+| **Pattern** | `docs/conventions.md` — defense in depth: pass only expected attributes to mass-assignment |
+| **Issue** | `Department::updateOrCreate(['name' => $data['name']], $data)` passes the entire validated `$data` array as attributes. While currently safe (validation only allows `name` and `description`), any future changes to validation rules could silently pass unexpected fields to mass-assignment. |
+| **Fix** | Use `Arr::only($data, ['name', 'description'])` or construct the attributes array explicitly. |
+| **Impact** | Maintainability — fragile against validation rule changes |
+
+---
+
+## Audit Summary — Setup Module, 2026-06-14
+
+| Severity | Count |
+|----------|-------|
+| CRITICAL | 0 |
+| HIGH     | 2 |
+| MEDIUM   | 4 |
+| LOW      | 1 |
+| **Total** | **7** |
+
+### By Category
+- **Transaction/Data Integrity**: S-1, S-6
+- **Cache Convention**: S-2
+- **Documentation**: S-3
+- **Base Class Mandate**: S-4
+- **Audit Trail**: S-5
+- **Defense in Depth**: S-7
