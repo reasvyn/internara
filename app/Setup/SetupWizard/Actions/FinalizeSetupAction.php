@@ -36,7 +36,7 @@ final class FinalizeSetupAction extends BaseAction
             throw new RejectedException('System is already installed.');
         }
 
-        $plaintext = $this->transaction(function () use (
+        $result = $this->transaction(function () use (
             $schoolData,
             $departmentData,
             $adminData,
@@ -70,39 +70,43 @@ final class FinalizeSetupAction extends BaseAction
                 'updated_at' => now()->toIso8601String(),
             ]);
 
-            $this->dispatchEvent(
-                new SetupFinalized(
-                    departmentId: $department->id,
-                    installedAt: now()->toDateTimeImmutable(),
-                ),
-            );
-
-            $this->sendNotification->execute(
-                userId: $admin->id,
-                type: 'system',
-                title: __('notifications.system_installed.title'),
-                message: __('notifications.system_installed.message'),
-                link: route('sysadmin.dashboard'),
-            );
-
-            Session::forget([
-                'setup.authorized',
-                'setup.token',
-                'setup.token_input',
-                'setup.form_data',
-            ]);
-
-            return $plaintext;
+            return [
+                'plaintext' => $plaintext,
+                'departmentId' => $department->id,
+                'adminId' => $admin->id,
+            ];
         });
 
+        $this->dispatchEvent(
+            new SetupFinalized(
+                departmentId: $result['departmentId'],
+                installedAt: now()->toDateTimeImmutable(),
+            ),
+        );
+
+        $this->sendNotification->execute(
+            userId: $result['adminId'],
+            type: 'system',
+            title: __('notifications.system_installed.title'),
+            message: __('notifications.system_installed.message'),
+            link: route('sysadmin.dashboard'),
+        );
+
+        Session::forget([
+            'setup.authorized',
+            'setup.token',
+            'setup.token_input',
+            'setup.form_data',
+        ]);
+
         try {
-            $this->saveRecoveryKey->execute($plaintext);
+            $this->saveRecoveryKey->execute($result['plaintext']);
         } catch (\Throwable $e) {
             $this->log('recovery_key.file_save_failed', null, [
                 'error' => $e->getMessage(),
             ]);
         }
 
-        return $plaintext;
+        return $result['plaintext'];
     }
 }

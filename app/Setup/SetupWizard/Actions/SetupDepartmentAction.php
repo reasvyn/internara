@@ -6,6 +6,7 @@ namespace App\Setup\SetupWizard\Actions;
 
 use App\Academics\Department\Models\Department;
 use App\Core\Actions\BaseAction;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
 final class SetupDepartmentAction extends BaseAction
@@ -18,7 +19,10 @@ final class SetupDepartmentAction extends BaseAction
         ]);
 
         return $this->transaction(function () use ($data) {
-            $department = Department::updateOrCreate(['name' => $data['name']], $data);
+            $department = Department::updateOrCreate(
+                ['name' => $data['name']],
+                Arr::only($data, ['name', 'description']),
+            );
 
             $this->log('department_setup_completed', $department, $data);
 
