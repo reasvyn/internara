@@ -146,7 +146,7 @@ abstract readonly class BaseData implements JsonSerializable
 
     public static function clearParamCache(): void
     {
-        // Intentionally no-op: cache is local static and cannot be reset from outside.
-        // Previously used broken reflection approach. Cache clears on request cycle anyway.
+        self::$cache = [];
+        self::$generation++;
     }
 }
