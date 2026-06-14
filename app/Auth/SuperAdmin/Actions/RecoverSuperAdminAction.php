@@ -6,14 +6,12 @@ namespace App\Auth\SuperAdmin\Actions;
 
 use App\Auth\Permissions\Enums\Role;
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
-use App\Auth\SuperAdmin\Notifications\SuperAdminRecoveredNotification;
+use App\Auth\SuperAdmin\Events\SuperAdminRecovered;
 use App\Core\Actions\BaseAction;
 use App\Core\Exceptions\RejectedException;
-use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 final class RecoverSuperAdminAction extends BaseAction
@@ -55,40 +53,11 @@ final class RecoverSuperAdminAction extends BaseAction
                 'email' => $email,
             ]);
 
-            $this->notifyExistingSuperAdmins($user);
+            event(new SuperAdminRecovered($user, $email));
 
             Cache::forget($cacheKey);
 
             return $user;
         });
-    }
-
-    private function notifyExistingSuperAdmins(User $recoveredUser): void
-    {
-        try {
-            $existingAdmins = User::role('super_admin')
-                ->where('id', '!=', $recoveredUser->id)
-                ->get();
-
-            if ($existingAdmins->isEmpty()) {
-                return;
-            }
-
-            Notification::send(
-                $existingAdmins,
-                new SuperAdminRecoveredNotification(
-                    recoveredEmail: $recoveredUser->email,
-                ),
-            );
-        } catch (\Throwable $e) {
-            SmartLogger::error('Failed to notify existing super admins about recovery')
-                ->withPayload([
-                    'recovered_user_id' => $recoveredUser->id,
-                    'error' => $e->getMessage(),
-                ])
-                ->withPiiMasking()
-                ->systemOnly()
-                ->save();
-        }
     }
 }

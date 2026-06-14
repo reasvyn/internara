@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Auth\SuperAdmin\Actions\RecoverSuperAdminAction;
+use App\Core\Exceptions\RejectedException;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -56,4 +57,4 @@ test('rate limits after 3 failed attempts for non-existent email', function () {
         email: 'ghost@test.id',
         password: 'irrelevant',
     );
-})->throws(RuntimeException::class, 'Too many recovery attempts.');
+})->throws(RejectedException::class, 'Too many recovery attempts.');

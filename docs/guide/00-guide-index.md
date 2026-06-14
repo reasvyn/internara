@@ -27,6 +27,7 @@ Estimated total time: **1–2 hours** for installation and initial setup.
 | 03 | [Post-Setup](03-post-setup.md) | Configure settings, add users, create programs, go live | 30–60 min |
 | 04 | [System Health & Troubleshooting](04-system-health-and-troubleshooting.md) | Health checks, common problems, maintenance commands | 10–15 min |
 | 05 | [Upgrading Internara](05-upgrading-from-previous.md) | Upgrade procedure, rollback, version numbering | 15–20 min |
+| 06 | [Admin & Recovery](06-admin-create-and-recovery.md) | Create admin accounts, recover access, manage recovery keys | 10–15 min |
 
 ---
 
