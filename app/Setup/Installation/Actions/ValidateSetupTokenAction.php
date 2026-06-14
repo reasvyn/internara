@@ -39,6 +39,10 @@ final class ValidateSetupTokenAction extends BaseAction
                 'token_expires_at' => null,
                 'updated_at' => now()->toIso8601String(),
             ]);
+
+            $this->log('setup_token_validated', null, [
+                'token_version' => $state->tokenVersion(),
+            ]);
         });
     }
 }

@@ -24,7 +24,7 @@ final class InstallSystemAction extends BaseAction
     ) {}
 
     /**
-     * @throws RuntimeException If audit fails
+     * @throws RuntimeException If audit fails or provisioning fails
      */
     public function execute(bool $force = false, ?AuditReport $report = null): SetupTokenData
     {
@@ -36,14 +36,10 @@ final class InstallSystemAction extends BaseAction
             throw new RuntimeException('System audit check failed.');
         }
 
-        $this->withErrorHandling(
-            fn () => $this->provisioner->executeAll($force),
-            'System provisioning failed during installation',
-        );
+        return $this->transaction(function () use ($force) {
+            $this->provisioner->executeAll($force);
 
-        return $this->withErrorHandling(
-            fn () => $this->generateToken->execute(),
-            'Failed to generate setup token',
-        );
+            return $this->generateToken->execute();
+        });
     }
 }

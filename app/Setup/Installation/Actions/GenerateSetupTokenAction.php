@@ -8,6 +8,7 @@ use App\Core\Actions\BaseAction;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\Installation\Data\SetupTokenData;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
@@ -15,7 +16,9 @@ final class GenerateSetupTokenAction extends BaseAction
 {
     public function execute(): SetupTokenData
     {
-        return Cache::lock('setup.token.generation', 10)->block(15, function () {
+        $lockKey = Config::get('cache-keys.setup_token_generation', 'setup.token.generation');
+
+        return Cache::lock($lockKey, 10)->block(15, function () {
             return $this->transaction(function () {
                 $length = (int) config('setup.token.length', 64);
                 $expiryMinutes = (int) config('setup.token.expiry_minutes', 60);
@@ -32,6 +35,11 @@ final class GenerateSetupTokenAction extends BaseAction
                     'token_expires_at' => $expiresAt->toIso8601String(),
                     'token_version' => $version,
                     'updated_at' => now()->toIso8601String(),
+                ]);
+
+                $this->log('setup_token_generated', null, [
+                    'token_version' => $version,
+                    'expires_at' => $expiresAt->toIso8601String(),
                 ]);
 
                 return new SetupTokenData(plaintext: $plaintext, expiresAt: $expiresAt);

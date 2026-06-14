@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 return [
     'setup_installed' => 'setup.is_installed',
+    'setup_token_generation' => 'setup.token.generation',
     'admin_dashboard_stats' => 'sysadmin.dashboard.stats',
     'theme_css_variables' => 'theme.css_variables',
     'brand_colors' => 'brand.colors',

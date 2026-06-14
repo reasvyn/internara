@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Setup\Http\Controllers;
 
+use App\Core\Http\Controllers\BaseController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 
-final class SetupController
+final class SetupController extends BaseController
 {
     public function redirect(): RedirectResponse
     {
