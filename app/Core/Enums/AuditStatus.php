@@ -15,9 +15,9 @@ enum AuditStatus: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::PASS => __('Pass'),
-            self::FAIL => __('Fail'),
-            self::WARN => __('Warn'),
+            self::PASS => __('core.audit.status.pass'),
+            self::FAIL => __('core.audit.status.fail'),
+            self::WARN => __('core.audit.status.warn'),
         };
     }
 
