@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\User\UserManagement\Actions;
 
 use App\Core\Actions\BaseAction;
+use App\Core\Exceptions\RejectedException;
 use Illuminate\Support\Facades\File;
-use RuntimeException;
 
 class SaveRecoveryKeyAction extends BaseAction
 {
@@ -36,7 +36,7 @@ class SaveRecoveryKeyAction extends BaseAction
                 PHP_EOL;
 
             if (File::put($path, $header) === false) {
-                throw new RuntimeException(sprintf('Failed to write recovery key to [%s]', $path));
+                throw new RejectedException(sprintf('Failed to write recovery key to [%s]', $path));
             }
 
             File::chmod($path, 0600);

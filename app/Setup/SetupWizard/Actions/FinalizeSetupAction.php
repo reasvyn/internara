@@ -97,7 +97,7 @@ final class FinalizeSetupAction extends BaseAction
 
         try {
             $this->saveRecoveryKey->execute($plaintext);
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
             $this->log('recovery_key.file_save_failed', null, [
                 'error' => $e->getMessage(),
             ]);

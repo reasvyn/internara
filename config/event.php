@@ -7,6 +7,8 @@ use App\Academics\Department\Events\DepartmentCreated;
 use App\Academics\Department\Events\DepartmentDeleted;
 use App\Auth\Login\Events\LoginSucceeded;
 use App\Auth\Login\Listeners\SendSuperAdminWelcomeNotification;
+use App\Auth\SuperAdmin\Events\SuperAdminRecovered;
+use App\Auth\SuperAdmin\Listeners\NotifySuperAdminsOfRecovery;
 use App\Enrollment\Registration\Events\StudentRegistered;
 use App\Enrollment\Registration\Listeners\ClearDashboardOnRegistration;
 use App\Partners\Company\Events\CompanyCreated;
@@ -73,6 +75,10 @@ return [
 
         LoginSucceeded::class => [
             SendSuperAdminWelcomeNotification::class,
+        ],
+
+        SuperAdminRecovered::class => [
+            NotifySuperAdminsOfRecovery::class,
         ],
 
         BackupFailed::class => [

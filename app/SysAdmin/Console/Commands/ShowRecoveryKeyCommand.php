@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\SysAdmin\Console\Commands;
 
 use App\Core\Support\SmartLogger;
-use App\Setup\Entities\SetupEntity;
+use App\User\UserManagement\Actions\ReadRecoveryKeyAction;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
@@ -13,8 +13,9 @@ class ShowRecoveryKeyCommand extends Command
 {
     protected $signature = 'admin:recovery-show';
 
-    public function __construct()
-    {
+    public function __construct(
+        private readonly ReadRecoveryKeyAction $readRecoveryKey,
+    ) {
         parent::__construct();
         $this->description = __('sysadmin.recovery_show.description');
     }
@@ -29,9 +30,9 @@ class ShowRecoveryKeyCommand extends Command
             return self::FAILURE;
         }
 
-        $recoveryKey = SetupEntity::get()->recoveryKey();
+        $recoveryKeyPlaintext = $this->readRecoveryKey->execute();
 
-        if (! $recoveryKey) {
+        if (! $recoveryKeyPlaintext) {
             $this->components->warn(__('sysadmin.recovery_show.no_setup'));
 
             return self::FAILURE;
@@ -50,8 +51,6 @@ class ShowRecoveryKeyCommand extends Command
             return self::SUCCESS;
         }
 
-        $content = File::get($path);
-
         SmartLogger::info(__('log.recovery_key_viewed_cli'))
             ->module('admin')
             ->event('recovery_key.viewed')
@@ -60,7 +59,7 @@ class ShowRecoveryKeyCommand extends Command
 
         $this->newLine();
         $this->line('  <fg=yellow>'.__('sysadmin.recovery_show.key_label').'</>');
-        $this->line('  <fg=white;bg=yellow> '.$recoveryKey.' </>');
+        $this->line('  <fg=white;bg=yellow> '.$recoveryKeyPlaintext.' </>');
         $this->newLine();
 
         return self::SUCCESS;

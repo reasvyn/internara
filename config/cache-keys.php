@@ -19,6 +19,7 @@ return [
     'auth_login_failures' => 'auth.login-failures:',
     'health_check' => 'system.health_check',
     'recover_admin_attempts' => 'auth.recover.attempts:',
+    'recovery_otp' => 'auth.recover.otp:',
     'settings_all' => 'settings.all',
     'settings_group' => 'settings.group.',
     'settings_keys' => 'settings.keys',

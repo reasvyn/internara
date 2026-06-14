@@ -9,34 +9,20 @@ use Illuminate\Support\Facades\File;
 uses(LazilyRefreshDatabase::class);
 
 test('displays recovery key when confirmed', function () {
-    Setting::factory()->create([
-        'key' => 'setup.install_recovery_key',
-        'value' => 'test-recovery-key-value',
-        'type' => 'string',
-        'group' => 'setup',
-    ]);
-
     File::shouldReceive('exists')
         ->with(storage_path('app/private/.recovery-key'))
         ->andReturn(true);
     File::shouldReceive('get')
         ->with(storage_path('app/private/.recovery-key'))
-        ->andReturn('stored-key');
+        ->andReturn("# INTERNARA RECOVERY KEY\n\nstored-key");
 
     $this->artisan('admin:recovery-show')
         ->expectsConfirmation(__('sysadmin.recovery_show.confirm'), 'yes')
         ->assertExitCode(0)
-        ->expectsOutputToContain('test-recovery-key-value');
+        ->expectsOutputToContain('stored-key');
 });
 
 test('fails when recovery key file does not exist', function () {
-    Setting::factory()->create([
-        'key' => 'setup.install_recovery_key',
-        'value' => 'test-recovery-key-value',
-        'type' => 'string',
-        'group' => 'setup',
-    ]);
-
     File::shouldReceive('exists')
         ->with(storage_path('app/private/.recovery-key'))
         ->andReturn(false);
@@ -67,13 +53,13 @@ test('aborts when confirmation is declined', function () {
         ->expectsOutputToContain(__('sysadmin.recovery_show.aborted'));
 });
 
-test('fails when setup has no recovery key', function () {
+test('fails when recovery key file is empty', function () {
     File::shouldReceive('exists')
         ->with(storage_path('app/private/.recovery-key'))
         ->andReturn(true);
     File::shouldReceive('get')
         ->with(storage_path('app/private/.recovery-key'))
-        ->andReturn('stored-key');
+        ->andReturn('');
 
     $this->artisan('admin:recovery-show')
         ->assertExitCode(1)
