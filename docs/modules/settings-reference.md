@@ -1,6 +1,6 @@
 # Settings — Technical Reference
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-15
 
 Detailed structural and implementation reference for the **Settings** module.
 
@@ -22,13 +22,13 @@ Manages system-wide configuration: key-value settings store, brand identity (log
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Actions/SetSettingAction.php` | `SetSettingAction` | `BaseAction` |
-| `Actions/BatchSetSettingAction.php` | `BatchSetSettingAction` | `BaseAction` |
-| `Actions/DeleteSettingAction.php` | `DeleteSettingAction` | `BaseAction` |
-| `Actions/SaveSystemSettingsAction.php` | `SaveSystemSettingsAction` | `BaseAction` |
-| `Actions/GetAcademicYearsAction.php` | `GetAcademicYearsAction` | Read |
-| `Actions/TestMailSettingsAction.php` | `TestMailSettingsAction` | `BaseAction` |
-| `Branding/Actions/UploadBrandAssetAction.php` | `UploadBrandAssetAction` | `BaseAction` |
+| `Actions/SetSettingAction.php` | `SetSettingAction` | `BaseCommandAction` |
+| `Actions/BatchSetSettingAction.php` | `BatchSetSettingAction` | `BaseCommandAction` |
+| `Actions/DeleteSettingAction.php` | `DeleteSettingAction` | `BaseCommandAction` |
+| `Actions/SaveSystemSettingsAction.php` | `SaveSystemSettingsAction` | `BaseCommandAction` |
+| `Actions/ReadAcademicYearAction.php` | `ReadAcademicYearAction` | `BaseReadAction` |
+| `Actions/TestMailSettingsAction.php` | `TestMailSettingsAction` | `BaseCommandAction` |
+| `Branding/Actions/UploadBrandAssetAction.php` | `UploadBrandAssetAction` | `BaseCommandAction` |
 
 ---
 
@@ -44,9 +44,9 @@ Manages system-wide configuration: key-value settings store, brand identity (log
 
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
-| `Enums/SettingGroup.php` | `SettingGroup` | `LabelEnum` | general, branding, mail, locale, theme, system |
+| `Enums/SettingGroup.php` | `SettingGroup` | `LabelEnum` | general, mail, system, branding, features, localization, notifications |
 | `Enums/SettingType.php` | `SettingType` | `LabelEnum` | string, integer, float, boolean, json, encrypted, null |
-| `Enums/MediaCollection.php` | `MediaCollection` | — | brand_logo, brand_favicon |
+| `Enums/MediaCollection.php` | `MediaCollection` | `LabelEnum` | brand_logo, brand_favicon |
 
 ---
 
@@ -152,7 +152,7 @@ Tests are located in `tests/{Feature,Unit}/Settings/`. See [Testing](../infrastr
 | `Feature/Settings/Actions/BatchSetSettingActionTest.php` | BatchSetSettingAction, transactional, array config |
 | `Feature/Settings/Actions/DeleteSettingActionTest.php` | DeleteSettingAction, key deletion |
 | `Feature/Settings/Actions/SaveSystemSettingsActionTest.php` | SaveSystemSettingsAction, combined form save |
-| `Feature/Settings/Actions/GetAcademicYearsActionTest.php` | GetAcademicYearsAction |
+| `Feature/Settings/Actions/ReadAcademicYearActionTest.php` | `ReadAcademicYearAction` |
 | `Feature/Settings/Actions/TestMailSettingsActionTest.php` | TestMailSettingsAction SMTP test |
 | `Feature/Settings/Actions/UploadBrandAssetActionTest.php` | UploadBrandAssetAction, media upload |
 | `Feature/Settings/Events/SettingUpdatedEventTest.php` | SettingUpdated event dispatch and listener |
@@ -181,7 +181,7 @@ app/Settings/
 ├── Actions/
 │   ├── BatchSetSettingAction.php
 │   ├── DeleteSettingAction.php
-│   ├── GetAcademicYearsAction.php
+│   ├── ReadAcademicYearAction.php
 │   ├── SaveSystemSettingsAction.php
 │   ├── SetSettingAction.php
 │   └── TestMailSettingsAction.php
@@ -202,11 +202,13 @@ app/Settings/
 │   ├── LangSwitcher.php
 │   ├── SystemSetting.php
 │   └── ThemeSwitcher.php
+├── Data/
+│   ├── SettingData.php
+│   └── SettingGroupData.php
 ├── Models/Setting.php
 ├── Policies/SettingPolicy.php
 ├── Rules/ValidSettingKey.php
 ├── Support/
-│   ├── AppInfo.php
 │   ├── Brand.php
 │   ├── Settings.php
 │   └── helpers.php
