@@ -5,11 +5,11 @@
         </button>
     </x-slot:trigger>
 
-    <x-mary-menu-item title="Bahasa Indonesia"
+    <x-mary-menu-item :title="__('common.language.indonesian')"
         wire:click="setLocale('id')"
         :active="$locale === 'id'"
     />
-    <x-mary-menu-item title="English"
+    <x-mary-menu-item :title="__('common.language.english')"
         wire:click="setLocale('en')"
         :active="$locale === 'en'"
     />

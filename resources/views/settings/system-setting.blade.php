@@ -149,8 +149,8 @@
                         <div class="flex flex-col items-center">
                             <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-3">{{ __('setting.fields.brand_logo') }}</p>
                             <div class="relative group">
-                                <div class="cursor-pointer relative" onclick="document.getElementById('brand-logo-upload').click()">
-                                    <input id="brand-logo-upload" type="file" wire:model="brandingForm.brand_logo" accept="image/png,image/jpeg,image/webp" class="hidden" />
+                                <div class="cursor-pointer relative" x-data x-on:click="$refs.brandLogoInput.click()">
+                                    <input id="brand-logo-upload" x-ref="brandLogoInput" type="file" wire:model="brandingForm.brand_logo" accept="image/png,image/jpeg,image/webp" class="hidden" />
                                     @if($this->brandingForm->brandLogoPreviewUrl() ?? $brandingForm->current_logo_url)
                                         <img src="{{ $this->brandingForm->brandLogoPreviewUrl() ?? $brandingForm->current_logo_url }}"
                                              alt="Brand logo"
@@ -177,8 +177,8 @@
                         <div class="flex flex-col items-center">
                             <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-3">{{ __('setting.fields.site_favicon') }}</p>
                             <div class="relative group">
-                                <div class="cursor-pointer relative" onclick="document.getElementById('favicon-upload').click()">
-                                    <input id="favicon-upload" type="file" wire:model="brandingForm.site_favicon" accept="image/png,image/jpeg,image/x-icon" class="hidden" />
+                                <div class="cursor-pointer relative" x-data x-on:click="$refs.faviconInput.click()">
+                                    <input id="favicon-upload" x-ref="faviconInput" type="file" wire:model="brandingForm.site_favicon" accept="image/png,image/jpeg,image/x-icon" class="hidden" />
                                     @if($this->brandingForm->faviconPreviewUrl() ?? $brandingForm->current_favicon_url)
                                         <img src="{{ $this->brandingForm->faviconPreviewUrl() ?? $brandingForm->current_favicon_url }}"
                                              alt="Favicon"

@@ -1,13 +1,12 @@
 <?php
 
 declare(strict_types=1);
-
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
 use App\Settings\Models\Setting;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\UploadedFile;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('upload brand asset creates ref record and returns url', function () {
     $file = UploadedFile::fake()->image('logo.png', 200, 200);

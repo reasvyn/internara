@@ -112,12 +112,14 @@ class BackupRunner
         $user = config('database.connections.mysql.username');
         $pass = config('database.connections.mysql.password');
 
+        $configFile = tempnam(sys_get_temp_dir(), 'my_cnf_');
+        $configContent = "[client]\nuser={$user}\npassword={$pass}\nhost={$host}\nport={$port}\n";
+        file_put_contents($configFile, $configContent);
+        chmod($configFile, 0600);
+
         return sprintf(
-            'MYSQL_PWD=%s mysqldump --host=%s --port=%s --user=%s --single-transaction --routines --skip-lock-tables %s 2>/dev/null | gzip > %s',
-            escapeshellarg($pass),
-            escapeshellarg($host),
-            escapeshellarg($port),
-            escapeshellarg($user),
+            'mysqldump --defaults-extra-file=%s --single-transaction --routines --skip-lock-tables %s 2>/dev/null | gzip > %s',
+            escapeshellarg($configFile),
             escapeshellarg($db),
             escapeshellarg($path),
         );
@@ -129,10 +131,16 @@ class BackupRunner
         $port = config('database.connections.pgsql.port');
         $db = config('database.connections.pgsql.database');
         $user = config('database.connections.pgsql.username');
+        $pass = config('database.connections.pgsql.password');
+
+        $passFile = tempnam(sys_get_temp_dir(), 'pgpass_');
+        $passContent = "{$host}:{$port}:{$db}:{$user}:{$pass}\n";
+        file_put_contents($passFile, $passContent);
+        chmod($passFile, 0600);
 
         return sprintf(
-            'PGPASSWORD="%s" pg_dump --host=%s --port=%s --username=%s --no-password --format=c %s 2>/dev/null | gzip > %s',
-            escapeshellarg(config('database.connections.pgsql.password')),
+            'PGPASSFILE=%s pg_dump --host=%s --port=%s --username=%s --no-password --format=c %s 2>/dev/null | gzip > %s',
+            escapeshellarg($passFile),
             escapeshellarg($host),
             escapeshellarg($port),
             escapeshellarg($user),

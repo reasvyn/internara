@@ -5,9 +5,9 @@ declare(strict_types=1);
 use App\Settings\Actions\BatchSetSettingAction;
 use App\Settings\Actions\SetSettingAction;
 use App\Settings\Models\Setting;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('batch set creates multiple settings', function () {
     $action = new BatchSetSettingAction(new SetSettingAction);

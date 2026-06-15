@@ -1,15 +1,14 @@
 <?php
 
 declare(strict_types=1);
-
 use App\Settings\Actions\BatchSetSettingAction;
 use App\Settings\Actions\SaveSystemSettingsAction;
 use App\Settings\Actions\SetSettingAction;
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
 use App\Settings\Models\Setting;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('save system settings saves general branding and mail', function () {
     $action = new SaveSystemSettingsAction(

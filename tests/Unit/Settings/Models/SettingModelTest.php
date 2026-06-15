@@ -6,9 +6,9 @@ use App\Settings\Enums\MediaCollection;
 use App\Settings\Enums\SettingGroup;
 use App\Settings\Enums\SettingType;
 use App\Settings\Models\Setting;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('setting can be created with fillable attributes', function () {
     $setting = Setting::create([

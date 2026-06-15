@@ -7,7 +7,6 @@ namespace App\Settings\Actions;
 use App\Core\Actions\BaseCommandAction;
 use App\Settings\Enums\SettingGroup;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class BatchSetSettingAction extends BaseCommandAction
 {
@@ -15,7 +14,7 @@ class BatchSetSettingAction extends BaseCommandAction
 
     public function execute(array $settings): Collection
     {
-        return DB::transaction(function () use ($settings) {
+        return $this->transaction(function () use ($settings) {
             $results = collect();
 
             foreach ($settings as $key => $config) {
