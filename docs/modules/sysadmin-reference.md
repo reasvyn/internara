@@ -31,6 +31,7 @@ Handles user administration, announcements, super admin recovery, system health 
 | `Backups/Actions/DeleteBackupAction.php` | `DeleteBackupAction` | `BaseCommandAction` |
 | `Backups/Actions/CleanupBackupsAction.php` | `CleanupBackupsAction` | `BaseCommandAction` |
 | `Backups/Actions/ReadBackupHistoryAction.php` | `ReadBackupHistoryAction` | `BaseReadAction` |
+| `Backups/Actions/ReadBackupStatsAction.php` | `ReadBackupStatsAction` | `BaseReadAction` |
 
 ---
 
@@ -180,7 +181,8 @@ app/SysAdmin/
 │   │   ├── CleanupBackupsAction.php
 │   │   ├── CreateBackupAction.php
 │   │   ├── DeleteBackupAction.php
-│   │   └── ReadBackupHistoryAction.php
+│   │   ├── ReadBackupHistoryAction.php
+│   │   └── ReadBackupStatsAction.php
 │   ├── Enums/BackupStatus.php
 │   ├── Enums/BackupType.php
 │   ├── Entities/BackupState.php
