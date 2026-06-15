@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Notifications\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\User\Notifications\Events\NotificationRead;
 use App\User\Notifications\Models\Notification;
 use Illuminate\Support\Facades\Event;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Event;
  * S1 - Secure: Only notification owner can mark as read.
  * S2 - Sustain: Single-purpose action.
  */
-final class MarkAsReadAction extends BaseAction
+final class MarkAsReadAction extends BaseCommandAction
 {
     public function execute(Notification $notification): Notification
     {

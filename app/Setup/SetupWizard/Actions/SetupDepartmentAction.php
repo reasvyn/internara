@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Setup\SetupWizard\Actions;
 
 use App\Academics\Department\Models\Department;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
-final class SetupDepartmentAction extends BaseAction
+final class SetupDepartmentAction extends BaseCommandAction
 {
     public function execute(array $data): Department
     {

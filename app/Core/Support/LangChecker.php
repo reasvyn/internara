@@ -21,6 +21,7 @@ final class LangChecker extends Translator
                     'called_in' => $caller['file'] ?? 'unknown',
                     'called_at_line' => $caller['line'] ?? 0,
                 ])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
         }

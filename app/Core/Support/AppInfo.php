@@ -161,6 +161,7 @@ final class AppInfo
                 'file' => $path,
                 'json_error' => json_last_error_msg(),
             ])
+            ->withPiiMasking()
             ->systemOnly()
             ->save();
     }
@@ -172,6 +173,7 @@ final class AppInfo
                 'file' => $path,
                 'error' => $e->getMessage(),
             ])
+            ->withPiiMasking()
             ->systemOnly()
             ->save();
     }

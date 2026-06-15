@@ -6,10 +6,10 @@ namespace App\Assessment\Actions;
 
 use App\Assessment\Models\Assessment;
 use App\Assessment\Rubric\Models\Rubric;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Enrollment\Registration\Models\Registration;
 
-final class InitializeAssessmentAction extends BaseAction
+final class InitializeAssessmentAction extends BaseCommandAction
 {
     public function execute(string $registrationId): array
     {

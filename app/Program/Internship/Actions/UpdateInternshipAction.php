@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Program\Internship\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Program\Internship\Enums\InternshipStatus;
 use App\Program\Internship\Models\Internship;
 
-final class UpdateInternshipAction extends BaseAction
+final class UpdateInternshipAction extends BaseCommandAction
 {
     public function execute(Internship $internship, array $data): Internship
     {

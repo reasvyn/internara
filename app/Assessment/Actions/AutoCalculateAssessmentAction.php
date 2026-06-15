@@ -6,11 +6,11 @@ namespace App\Assessment\Actions;
 
 use App\Assessment\Models\Assessment;
 use App\Assignment\Submission\Models\Submission;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Reports\Report\Models\Report;
 use Illuminate\Support\Facades\DB;
 
-final class AutoCalculateAssessmentAction extends BaseAction
+final class AutoCalculateAssessmentAction extends BaseCommandAction
 {
     public function execute(Assessment $assessment): Assessment
     {

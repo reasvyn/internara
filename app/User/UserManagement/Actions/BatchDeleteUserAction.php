@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\User\Models\User;
 
-final class BatchDeleteUserAction extends BaseAction
+final class BatchDeleteUserAction extends BaseCommandAction
 {
     public function __construct(protected readonly DeleteUserAction $deleteAction) {}
 

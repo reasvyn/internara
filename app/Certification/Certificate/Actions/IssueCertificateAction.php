@@ -7,10 +7,10 @@ namespace App\Certification\Certificate\Actions;
 use App\Certification\Certificate\Models\Certificate;
 use App\Certification\Certificate\Models\CertificateTemplate;
 use App\Certification\Certificate\Support\CertificateRenderer;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Enrollment\Registration\Models\Registration;
 
-final class IssueCertificateAction extends BaseAction
+final class IssueCertificateAction extends BaseCommandAction
 {
     public function __construct(protected readonly CertificateRenderer $renderer) {}
 

@@ -41,8 +41,7 @@
                     :label="__('notifications.ui.delete_selected')"
                     icon="o-trash"
                     class="btn-sm btn-error text-white"
-                    :wire:confirm="__('notifications.ui.are_you_sure')"
-                    wire:click="deleteSelected"
+                    wire:click="askDeleteSelected"
                 />
             </div>
         </div>
@@ -155,4 +154,6 @@
     </x-mary-modal>
 
     @include('user.notifications.components.notification-guide')
+
+    <x-core::ui.confirm :message="__('notifications.ui.are_you_sure')" />
 </div>

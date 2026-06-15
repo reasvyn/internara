@@ -19,8 +19,7 @@
             :label="__('common.actions.delete_selected')"
             icon="o-trash"
             class="btn-sm btn-error text-white"
-            :wire:confirm="__('common.actions.confirm_action')"
-            wire:click="deleteSelected"
+            wire:click="askDeleteSelected"
         />
     </x-core::ui.selection-bar>
 
@@ -48,7 +47,7 @@
                 <div class="flex justify-end gap-1">
                     <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $user->id }}')" :aria-label="__('common.actions.edit')" />
                     <x-mary-button icon="o-key" class="btn-ghost btn-sm text-primary" wire:click="showSlip('{{ $user->id }}')" :aria-label="__('user.manager.account_slip')" />
-                    <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="delete('{{ $user->id }}')" :aria-label="__('common.actions.delete')" />
+                    <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:click="askDelete('{{ $user->id }}')" :aria-label="__('common.actions.delete')" />
                 </div>
             @endscope
         </x-mary-table>
@@ -72,4 +71,6 @@
         </x-mary-modal>
     </x-slot:modal>
     @include('user.user-management.components.account-slip-modal')
+
+    <x-core::ui.confirm :message="__('common.actions.confirm_action')" />
 </x-core::ui.record-manager>

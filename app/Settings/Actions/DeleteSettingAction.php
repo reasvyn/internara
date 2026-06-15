@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Settings\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Settings\Data\SettingData;
 use App\Settings\Events\SettingUpdated;
 use App\Settings\Models\Setting;
 
-class DeleteSettingAction extends BaseAction
+class DeleteSettingAction extends BaseCommandAction
 {
     public function execute(string|array $keys): int
     {

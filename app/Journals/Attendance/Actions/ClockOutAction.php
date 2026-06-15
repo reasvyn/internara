@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Journals\Attendance\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;
 use Carbon\Carbon;
 
-final class ClockOutAction extends BaseAction
+final class ClockOutAction extends BaseCommandAction
 {
     public function execute(User $user, array $data, ?string $requestIp = null): Attendance
     {

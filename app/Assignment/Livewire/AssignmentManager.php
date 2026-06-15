@@ -10,6 +10,7 @@ use App\Assignment\Actions\PublishAssignmentAction;
 use App\Assignment\Actions\UpdateAssignmentAction;
 use App\Assignment\Models\Assignment;
 use App\Assignment\Models\AssignmentType;
+use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Program\Internship\Models\Internship;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,6 +19,12 @@ use Livewire\Attributes\Computed;
 class AssignmentManager extends BaseRecordManager
 {
     public bool $assignmentModal = false;
+
+    public bool $showConfirm = false;
+
+    public string $confirmActionType = '';
+
+    public ?string $confirmTarget = null;
 
     public array $formData = [
         'id' => null,
@@ -160,21 +167,42 @@ class AssignmentManager extends BaseRecordManager
         flash()->success('Assignment published.');
     }
 
-    public function delete(Assignment $assignment, DeleteAssignmentAction $action): void
+    public function askDelete(string $id): void
     {
-        $this->authorize('delete', $assignment);
-        $action->execute($assignment);
-        flash()->success('Assignment deleted.');
+        $this->confirmActionType = 'delete';
+        $this->confirmTarget = $id;
+        $this->showConfirm = true;
     }
 
-    public function deleteSelected(DeleteAssignmentAction $action): void
+    public function askDeleteSelected(): void
     {
-        $this->performBulkAction('Delete', function ($id) use ($action) {
-            $assignment = Assignment::find($id);
-            if ($assignment && auth()->user()->can('delete', $assignment)) {
+        $this->confirmActionType = 'deleteSelected';
+        $this->showConfirm = true;
+    }
+
+    public function confirmAction(DeleteAssignmentAction $action): void
+    {
+        try {
+            if ($this->confirmActionType === 'delete') {
+                $assignment = Assignment::findOrFail($this->confirmTarget);
+                $this->authorize('delete', $assignment);
                 $action->execute($assignment);
+                flash()->success('Assignment deleted.');
+            } elseif ($this->confirmActionType === 'deleteSelected') {
+                $this->performBulkAction('Delete', function ($id) use ($action) {
+                    $assignment = Assignment::find($id);
+                    if ($assignment && auth()->user()->can('delete', $assignment)) {
+                        $action->execute($assignment);
+                    }
+                });
             }
-        });
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
+        $this->confirmActionType = '';
     }
 
     public function render(): View

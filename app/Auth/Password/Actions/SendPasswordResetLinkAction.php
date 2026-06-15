@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Auth\Password\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Support\SmartLogger;
 use Illuminate\Support\Facades\Password;
 
-class SendPasswordResetLinkAction extends BaseAction
+class SendPasswordResetLinkAction extends BaseCommandAction
 {
     public function execute(string $email): string
     {

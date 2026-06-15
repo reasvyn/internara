@@ -6,10 +6,10 @@ namespace App\Assignment\Submission\Actions;
 
 use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 
-final class GradeSubmissionAction extends BaseAction
+final class GradeSubmissionAction extends BaseCommandAction
 {
     public function execute(
         Submission $submission,

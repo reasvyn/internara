@@ -54,6 +54,7 @@ class ShowRecoveryKeyCommand extends Command
         SmartLogger::info(__('log.recovery_key_viewed_cli'))
             ->module('admin')
             ->event('recovery_key.viewed')
+            ->withPiiMasking()
             ->systemOnly()
             ->save();
 

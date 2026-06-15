@@ -6,7 +6,7 @@ namespace App\Setup\SetupWizard\Actions;
 
 use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Support\PasswordRules;
 use App\User\Enums\AccountStatus;
@@ -14,7 +14,7 @@ use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-final class SetupSuperAdminAction extends BaseAction
+final class SetupSuperAdminAction extends BaseCommandAction
 {
     public function execute(string $email, string $password): User
     {

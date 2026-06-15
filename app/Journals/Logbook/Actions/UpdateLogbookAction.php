@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Journals\Logbook\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Journals\Logbook\Models\Logbook;
 
-final class UpdateLogbookAction extends BaseAction
+final class UpdateLogbookAction extends BaseCommandAction
 {
     public function execute(Logbook $entry, array $data): Logbook
     {

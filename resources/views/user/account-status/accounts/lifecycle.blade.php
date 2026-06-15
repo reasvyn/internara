@@ -32,7 +32,7 @@
 
                 @scope('cell_status', $user)
                     @php
-                        $status = $user->latestStatus()?->name ?? 'unknown';
+                        $status = $user->status?->value ?? 'unknown';
                         $color = match ($status) {
                             'active' => 'badge-success',
                             'suspended' => 'badge-error',
@@ -59,29 +59,23 @@
                 @scope('cell_actions', $user)
                     <div class="flex gap-2">
                         @if ($user->locked_at)
-                            <form action="{{ route('sysadmin.accounts.unlock', $user) }}" method="POST">
-                                @csrf
-                                <x-mary-button
-                                    icon="o-lock-open"
-                                    type="submit"
-                                    class="btn-ghost btn-sm text-success"
-                                    wire:confirm="Unlock this account?"
-                                />
-                            </form>
+                            <x-mary-button
+                                icon="o-lock-open"
+                                class="btn-ghost btn-sm text-success"
+                                wire:click="askUnlock('{{ $user->id }}')"
+                            />
                         @else
-                            <form action="{{ route('sysadmin.accounts.lock', $user) }}" method="POST">
-                                @csrf
-                                <x-mary-button
-                                    icon="o-lock-closed"
-                                    type="submit"
-                                    class="btn-ghost btn-sm text-warning"
-                                    wire:confirm="Lock this account?"
-                                />
-                            </form>
+                            <x-mary-button
+                                icon="o-lock-closed"
+                                class="btn-ghost btn-sm text-warning"
+                                wire:click="askLock('{{ $user->id }}')"
+                            />
                         @endif
                     </div>
                 @endscope
             </x-mary-table>
         @endif
     </x-mary-card>
+
+    <x-core::ui.confirm :message="$confirmMessage" />
 </div>

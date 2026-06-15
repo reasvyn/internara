@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Auth\Password\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class ConfirmPasswordAction extends BaseAction
+class ConfirmPasswordAction extends BaseCommandAction
 {
     public function execute(User $user, string $password): void
     {

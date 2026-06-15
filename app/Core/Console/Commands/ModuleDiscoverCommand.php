@@ -45,6 +45,7 @@ class ModuleDiscoverCommand extends Command
             SmartLogger::info(__('setup.cli.tasks.discover_complete'))
                 ->module('setup')
                 ->event('module.discover.completed')
+                ->withPiiMasking()
                 ->save();
 
             return self::SUCCESS;
@@ -53,6 +54,7 @@ class ModuleDiscoverCommand extends Command
                 ->module('setup')
                 ->event('module.discover.failed')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->save();
 
             $this->error(__('setup.cli.tasks.discover_failed').': '.$e->getMessage());

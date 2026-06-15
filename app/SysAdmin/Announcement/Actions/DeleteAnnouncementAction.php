@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Announcement\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\SysAdmin\Announcement\Models\Announcement;
 
-final class DeleteAnnouncementAction extends BaseAction
+final class DeleteAnnouncementAction extends BaseCommandAction
 {
     public function execute(Announcement $announcement): void
     {

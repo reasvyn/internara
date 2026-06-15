@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Registration\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Placement;
 use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 
-final class VerifyRegistrationAction extends BaseAction
+final class VerifyRegistrationAction extends BaseCommandAction
 {
     public function execute(string $registrationId, array $data): Registration
     {

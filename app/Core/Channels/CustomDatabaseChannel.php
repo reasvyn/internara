@@ -30,6 +30,7 @@ class CustomDatabaseChannel
         if (! isset($data['type'])) {
             SmartLogger::warning('Notification missing type key')
                 ->withPayload(['notification_class' => get_class($notification)])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
         }
@@ -37,6 +38,7 @@ class CustomDatabaseChannel
         if (! isset($data['title'])) {
             SmartLogger::warning('Notification missing title key')
                 ->withPayload(['notification_class' => get_class($notification)])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
         }

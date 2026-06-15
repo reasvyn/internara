@@ -1,7 +1,7 @@
 # Action-based MVC Architecture
 
-> **Last updated:** 2026-06-14
-> **Changes:** sync — fix migrations (48→49), policies (25+→27); keep models 40+ range
+> **Last updated:** 2026-06-15
+> **Changes:** sync — fix model count (40+→38), update action count to reflect triad migration
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad pattern, data flow, cross-module communication, exception handling, validation, caching, testing strategy, and invariant rules. Every decision here serves three goals:
 >
@@ -108,10 +108,10 @@ Layer 6 ┌───────────────────────
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
   Layer 5 ┌──────────────────────────────────────────────────────────────┐
-  Module  │  Eloquent Models (40+)  →  extend BaseModel                 │
- Models  │  UUID primary keys (HasUuids)  HasFactory                   │
-         │  Relationships, Scopes, Accessors, Mutators                 │
-          │  app/{Module}/**/Models/ (40+)  + factories + seeders      │
+  Module  │  Eloquent Models (38)  →  extend BaseModel                  │
+  Models  │  UUID primary keys (HasUuids)  HasFactory                   │
+          │  Relationships, Scopes, Accessors, Mutators                 │
+           │  app/{Module}/**/Models/ (38)  + factories + seeders       │
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
 Layer 4 ┌──────────────────────────────────────────────────────────────┐

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Registration\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Document\Models\Document;
 use App\Enrollment\Registration\Enums\RegistrationDocumentStatus;
 use App\Enrollment\Registration\Models\Registration;
 use App\Enrollment\Registration\Models\RegistrationDocument;
 use Illuminate\Http\UploadedFile;
 
-final class UploadRegistrationDocumentAction extends BaseAction
+final class UploadRegistrationDocumentAction extends BaseCommandAction
 {
     /**
      * @param array<string, UploadedFile> $uploads document_id => UploadedFile

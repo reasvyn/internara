@@ -14,6 +14,7 @@ use App\Assessment\Rubric\Actions\UpdateCompetencyAction;
 use App\Assessment\Rubric\Actions\UpdateIndicatorAction;
 use App\Assessment\Rubric\Actions\UpdateRubricAction;
 use App\Assessment\Rubric\Models\Rubric;
+use App\Core\Exceptions\RejectedException;
 use App\Evaluation\Enums\EvaluatorRole;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
@@ -56,6 +57,18 @@ class RubricManager extends Component
         'weight' => 0,
         'order' => 0,
     ];
+
+    public bool $showConfirm = false;
+
+    public string $confirmActionType = '';
+
+    public string $confirmMessage = '';
+
+    public ?string $confirmTargetId = null;
+
+    public ?string $confirmCompetencyId = null;
+
+    public ?string $confirmIndicatorId = null;
 
     #[Computed]
     public function rubrics(): Collection
@@ -126,10 +139,67 @@ class RubricManager extends Component
         $this->rubricModal = false;
     }
 
-    public function removeRubric(Rubric $rubric, DeleteRubricAction $action): void
+    public function askRemoveRubric(string $id): void
     {
-        $action->execute($rubric);
-        flash()->success('Rubric removed.');
+        $this->confirmActionType = 'rubric';
+        $this->confirmTargetId = $id;
+        $this->confirmMessage = 'Remove this rubric?';
+        $this->showConfirm = true;
+    }
+
+    public function askRemoveCompetency(string $rubricId, string $competencyId): void
+    {
+        $this->confirmActionType = 'competency';
+        $this->confirmTargetId = $rubricId;
+        $this->confirmCompetencyId = $competencyId;
+        $this->confirmMessage = 'Remove this competency?';
+        $this->showConfirm = true;
+    }
+
+    public function askRemoveIndicator(string $rubricId, string $competencyId, string $indicatorId): void
+    {
+        $this->confirmActionType = 'indicator';
+        $this->confirmTargetId = $rubricId;
+        $this->confirmCompetencyId = $competencyId;
+        $this->confirmIndicatorId = $indicatorId;
+        $this->confirmMessage = 'Remove this indicator?';
+        $this->showConfirm = true;
+    }
+
+    public function confirmAction(
+        DeleteRubricAction $deleteRubric,
+        DeleteCompetencyAction $deleteCompetency,
+        DeleteIndicatorAction $deleteIndicator,
+    ): void {
+        try {
+            match ($this->confirmActionType) {
+                'rubric' => $deleteRubric->execute(Rubric::findOrFail($this->confirmTargetId)),
+                'competency' => $deleteCompetency->execute(
+                    Rubric::findOrFail($this->confirmTargetId),
+                    $this->confirmCompetencyId,
+                ),
+                'indicator' => $deleteIndicator->execute(
+                    Rubric::findOrFail($this->confirmTargetId),
+                    $this->confirmCompetencyId,
+                    $this->confirmIndicatorId,
+                ),
+            };
+
+            flash()->success(match ($this->confirmActionType) {
+                'rubric' => 'Rubric removed.',
+                'competency' => 'Competency removed.',
+                'indicator' => 'Indicator removed.',
+            });
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+
+        $this->showConfirm = false;
+        $this->confirmTargetId = null;
+        $this->confirmCompetencyId = null;
+        $this->confirmIndicatorId = null;
+        $this->confirmActionType = '';
+        $this->confirmMessage = '';
     }
 
     public function addCompetency(string $rubricId): void
@@ -211,13 +281,6 @@ class RubricManager extends Component
         $this->competencyModal = false;
     }
 
-    public function removeCompetency(string $rubricId, string $competencyId, DeleteCompetencyAction $action): void
-    {
-        $rubric = Rubric::findOrFail($rubricId);
-        $action->execute($rubric, $competencyId);
-        flash()->success('Competency removed.');
-    }
-
     public function addIndicator(string $rubricId, string $competencyId): void
     {
         $this->resetErrorBag();
@@ -296,13 +359,6 @@ class RubricManager extends Component
         }
 
         $this->indicatorModal = false;
-    }
-
-    public function removeIndicator(string $rubricId, string $competencyId, string $indicatorId, DeleteIndicatorAction $action): void
-    {
-        $rubric = Rubric::findOrFail($rubricId);
-        $action->execute($rubric, $competencyId, $indicatorId);
-        flash()->success('Indicator removed.');
     }
 
     public function render(): View

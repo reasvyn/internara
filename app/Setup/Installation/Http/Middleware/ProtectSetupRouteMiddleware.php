@@ -51,6 +51,7 @@ class ProtectSetupRouteMiddleware
                 ->module('Setup')
                 ->event('token.missing')
                 ->withPayload(['ip' => $request->ip()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
         }
@@ -74,6 +75,7 @@ class ProtectSetupRouteMiddleware
                     ->module('Setup')
                     ->event('token.validation_failed')
                     ->withPayload(['ip' => $request->ip(), 'error' => $e->getMessage()])
+                    ->withPiiMasking()
                     ->systemOnly()
                     ->save();
 

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Placement\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Placement;
 use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 
-final class DirectPlacementAction extends BaseAction
+final class DirectPlacementAction extends BaseCommandAction
 {
     public function execute(User $student, array $data): Registration
     {

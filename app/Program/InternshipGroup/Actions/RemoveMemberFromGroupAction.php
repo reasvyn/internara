@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Program\InternshipGroup\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Program\InternshipGroup\Models\InternshipGroupMember;
 
-final class RemoveMemberFromGroupAction extends BaseAction
+final class RemoveMemberFromGroupAction extends BaseCommandAction
 {
     public function execute(InternshipGroupMember $member): void
     {

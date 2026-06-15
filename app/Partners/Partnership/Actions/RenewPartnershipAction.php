@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Partners\Partnership\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Partners\Partnership\Enums\PartnershipStatus;
 use App\Partners\Partnership\Models\Partnership;
 
-final class RenewPartnershipAction extends BaseAction
+final class RenewPartnershipAction extends BaseCommandAction
 {
     public function __construct(protected readonly CreatePartnershipAction $createPartnership) {}
 

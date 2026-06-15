@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Academics\AcademicYear\Actions;
 
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 
 /**
  * Updates an existing academic year.
@@ -13,7 +13,7 @@ use App\Core\Actions\BaseAction;
  * S1 - Secure: Logged for audit trail.
  * S2 - Sustain: Atomic updates.
  */
-final class UpdateAcademicYearAction extends BaseAction
+final class UpdateAcademicYearAction extends BaseCommandAction
 {
     public function execute(AcademicYear $year, array $data): AcademicYear
     {

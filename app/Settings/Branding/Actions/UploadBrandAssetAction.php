@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Settings\Branding\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Settings\Enums\MediaCollection;
 use App\Settings\Models\Setting;
 use Illuminate\Http\UploadedFile;
 
-class UploadBrandAssetAction extends BaseAction
+class UploadBrandAssetAction extends BaseCommandAction
 {
     public function execute(UploadedFile $file, string $type = 'logo'): string
     {

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Enrollment\AccountApplication\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\AccountApplication\Enums\AccountApplicationStatus;
 use App\Enrollment\AccountApplication\Models\AccountApplication;
 
-final class ApplyAccountAction extends BaseAction
+final class ApplyAccountAction extends BaseCommandAction
 {
     public function execute(array $data): AccountApplication
     {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Setup\SetupWizard\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Exceptions\RejectedException;
 use App\Setup\Entities\SetupEntity;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 
-final class FinalizeSetupAction extends BaseAction
+final class FinalizeSetupAction extends BaseCommandAction
 {
     public function __construct(
         protected readonly SetupSchoolAction $setupSchool,

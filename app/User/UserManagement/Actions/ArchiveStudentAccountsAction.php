@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\User\UserManagement\Actions;
 
 use App\Auth\Permissions\Enums\Role;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\User\Enums\AccountStatus;
 use Illuminate\Database\Eloquent\Builder;
 
-final class ArchiveStudentAccountsAction extends BaseAction
+final class ArchiveStudentAccountsAction extends BaseCommandAction
 {
     public function execute(Builder $query): int
     {

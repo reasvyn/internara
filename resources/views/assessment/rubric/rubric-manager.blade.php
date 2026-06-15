@@ -25,7 +25,7 @@
                 </div>
                 <div class="flex gap-2">
                     <x-mary-button icon="o-pencil" wire:click="editRubric('{{ $rubric->id }}')" class="btn-sm btn-ghost" />
-                    <x-mary-button icon="o-trash" wire:click="removeRubric('{{ $rubric->id }}')" wire:confirm="Remove this rubric?" class="btn-sm btn-ghost text-error" />
+                    <x-mary-button icon="o-trash" wire:click="askRemoveRubric('{{ $rubric->id }}')" class="btn-sm btn-ghost text-error" />
                 </div>
             </div>
 
@@ -47,7 +47,7 @@
                         <div class="flex gap-1">
                             <x-mary-button icon="o-plus" wire:click="addIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}')" class="btn-xs btn-ghost" title="Add Indicator" />
                             <x-mary-button icon="o-pencil" wire:click="editCompetency('{{ $rubric->id }}', '{{ $competency['id'] }}')" class="btn-xs btn-ghost" />
-                            <x-mary-button icon="o-trash" wire:click="removeCompetency('{{ $rubric->id }}', '{{ $competency['id'] }}')" wire:confirm="Remove this competency?" class="btn-xs btn-ghost text-error" />
+                            <x-mary-button icon="o-trash" wire:click="askRemoveCompetency('{{ $rubric->id }}', '{{ $competency['id'] }}')" class="btn-xs btn-ghost text-error" />
                         </div>
                     </div>
 
@@ -61,7 +61,7 @@
                                     </div>
                                     <div class="flex gap-1">
                                         <x-mary-button icon="o-pencil" wire:click="editIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}', '{{ $indicator['id'] }}')" class="btn-xs btn-ghost" />
-                                        <x-mary-button icon="o-trash" wire:click="removeIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}', '{{ $indicator['id'] }}')" wire:confirm="Remove this indicator?" class="btn-xs btn-ghost text-error" />
+                                        <x-mary-button icon="o-trash" wire:click="askRemoveIndicator('{{ $rubric->id }}', '{{ $competency['id'] }}', '{{ $indicator['id'] }}')" class="btn-xs btn-ghost text-error" />
                                     </div>
                                 </div>
                             @endforeach
@@ -134,4 +134,6 @@
             </x-slot:actions>
         </x-mary-form>
     </x-mary-modal>
+
+    <x-core::ui.confirm :message="$confirmMessage" />
 </div>

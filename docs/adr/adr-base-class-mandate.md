@@ -5,7 +5,7 @@
 
 ## Context
 
-In a 19-module codebase with 12 architectural layers and 160+ Actions across 50+ models, consistency is not optional. Without enforcement, drift accumulates silently: a model without UUID keys breaks foreign key assumptions, a policy without role checks allows unauthorized access, and an action without transaction wrapping leaves partial database writes on failure.
+In a 19-module codebase with 12 architectural layers and 155+ Actions across 38 models, consistency is not optional. Without enforcement, drift accumulates silently: a model without UUID keys breaks foreign key assumptions, a policy without role checks allows unauthorized access, and an action without transaction wrapping leaves partial database writes on failure.
 
 Architecture tests previously caught these violations but were removed due to a `pest-plugin-arch` compatibility bug. Until restored, enforcement relies on PHPStan custom rules and code review.
 

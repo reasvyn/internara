@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Notifications\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Contracts\SendsNotifications;
 use App\User\Models\User;
 use App\User\Notifications\Data\NotificationData;
@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Validator;
  * S1 - Secure: Validates user exists.
  * S2 - Sustain: Single-purpose action.
  */
-final class SendNotificationAction extends BaseAction implements SendsNotifications
+final class SendNotificationAction extends BaseCommandAction implements SendsNotifications
 {
     public function execute(
         string $userId,

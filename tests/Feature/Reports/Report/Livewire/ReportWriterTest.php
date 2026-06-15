@@ -107,7 +107,7 @@ test('report writer saves draft for existing report', function () {
 
 test('report writer submit shows error when no report exists', function () {
     Livewire::test(ReportWriter::class)
-        ->call('submit')
+        ->call('askSubmit')
         ->assertSet('reportId', null);
 });
 
@@ -128,6 +128,8 @@ test('report writer submits a saved report', function () {
 
     Livewire::test(ReportWriter::class)
         ->set('chapterContent', json_encode(['Chapter 1' => 'Content'], JSON_PRETTY_PRINT))
-        ->call('submit')
+        ->call('askSubmit')
+        ->assertSet('showConfirm', true)
+        ->call('confirmAction')
         ->assertSet('reportId', fn ($id) => $id !== null);
 });

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Academics\AcademicYear\Actions;
 
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 
 /**
@@ -13,7 +13,7 @@ use App\Core\Exceptions\RejectedException;
  *
  * S1 - Secure: Logged for audit trail. Cannot delete active year.
  */
-final class DeleteAcademicYearAction extends BaseAction
+final class DeleteAcademicYearAction extends BaseCommandAction
 {
     /**
      * @throws RuntimeException when the year is active or has linked data

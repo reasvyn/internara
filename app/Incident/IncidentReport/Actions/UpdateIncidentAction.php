@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Incident\IncidentReport\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Incident\IncidentReport\Models\IncidentReport;
 use Illuminate\Support\Facades\Validator;
 
-final class UpdateIncidentAction extends BaseAction
+final class UpdateIncidentAction extends BaseCommandAction
 {
     public function execute(IncidentReport $incident, array $data): IncidentReport
     {

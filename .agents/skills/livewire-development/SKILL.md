@@ -27,8 +27,8 @@ They must **NOT** contain:
 - **BaseRecordManager**: `app/Core/Livewire/BaseRecordManager.php` — CRUD base class with pagination, search, sort, selection, bulk/mass actions
 - **WithRecordSelection**: `app/Core/Livewire/Concerns/WithRecordSelection.php`
 - **WithSorting**: `app/Core/Livewire/Concerns/WithSorting.php`
-- **Conventions**: `docs/conventions.md#10-livewire-components`
 - **Architecture**: `docs/architecture.md#data-flow`
+- **Livewire Pattern**: `docs/architecture/livewire-pattern.md`
 
 ## Component Location & Auto-Discovery
 

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Assessment\Rubric\Actions;
 
 use App\Assessment\Rubric\Models\Rubric;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 
-final class UpdateCompetencyAction extends BaseAction
+final class UpdateCompetencyAction extends BaseCommandAction
 {
     public function execute(
         Rubric $rubric,

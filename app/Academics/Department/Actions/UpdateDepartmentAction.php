@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Academics\Department\Actions;
 
 use App\Academics\Department\Models\Department;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use Illuminate\Support\Facades\Validator;
 
-final class UpdateDepartmentAction extends BaseAction
+final class UpdateDepartmentAction extends BaseCommandAction
 {
     public function execute(Department $department, array $data): Department
     {

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Journals\Logbook\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Journals\Logbook\Enums\LogbookStatus;
 use App\Journals\Logbook\Models\Logbook;
 use App\User\Models\User;
 
-final class CreateLogbookAction extends BaseAction
+final class CreateLogbookAction extends BaseCommandAction
 {
     public function execute(string $userId, array $data): Logbook
     {

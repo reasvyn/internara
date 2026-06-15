@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Document\OfficialDocument\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Document\Models\Document;
 use Illuminate\Support\Str;
 
-final class SaveDocumentTemplateAction extends BaseAction
+final class SaveDocumentTemplateAction extends BaseCommandAction
 {
     public function execute(array $data): Document
     {

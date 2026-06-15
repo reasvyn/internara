@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Reports\Report\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Reports\Report\Models\Report;
 use App\Reports\Report\Models\ReportRevision;
 
-final class RequestReportRevisionAction extends BaseAction
+final class RequestReportRevisionAction extends BaseCommandAction
 {
     public function execute(Report $report, string $feedback): Report
     {

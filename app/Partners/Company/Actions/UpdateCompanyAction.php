@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Partners\Company\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Partners\Company\Models\Company;
 
-final class UpdateCompanyAction extends BaseAction
+final class UpdateCompanyAction extends BaseCommandAction
 {
     public function execute(Company $company, array $data): Company
     {

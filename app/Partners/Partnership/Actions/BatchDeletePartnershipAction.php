@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Partners\Partnership\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Partners\Partnership\Models\Partnership;
 
-final class BatchDeletePartnershipAction extends BaseAction
+final class BatchDeletePartnershipAction extends BaseCommandAction
 {
     public function __construct(protected readonly DeletePartnershipAction $deleteAction) {}
 

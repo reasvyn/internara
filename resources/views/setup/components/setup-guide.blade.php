@@ -2,7 +2,7 @@
     <div class="space-y-5">
         <p class="text-sm text-base-content/60">{{ __('setup.guide.intro') }}</p>
 
-        @foreach(range(1, 7) as $step)
+        @foreach(range(1, 6) as $step)
             <div class="flex gap-4">
                 <div class="flex items-center justify-center size-8 rounded-full bg-primary/10 text-primary font-bold text-sm shrink-0 mt-0.5">
                     {{ $step }}

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Announcement\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\SysAdmin\Announcement\Enums\AnnouncementStatus;
 use App\SysAdmin\Announcement\Models\Announcement;
 use App\SysAdmin\Announcement\Notifications\AnnouncementNotification;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Notification;
 
-final class PublishAnnouncementAction extends BaseAction
+final class PublishAnnouncementAction extends BaseCommandAction
 {
     public function execute(Announcement $announcement): void
     {

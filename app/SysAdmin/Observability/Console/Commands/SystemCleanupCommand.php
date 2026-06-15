@@ -44,6 +44,7 @@ class SystemCleanupCommand extends Command
                 } catch (\Throwable $e) {
                     SmartLogger::warning("Cleanup task failed: {$command}")
                         ->withPayload(['error' => $e->getMessage()])
+                        ->withPiiMasking()
                         ->systemOnly()
                         ->save();
 
@@ -59,6 +60,7 @@ class SystemCleanupCommand extends Command
             SmartLogger::info(__('setup.system.cleanup_completed'))
                 ->module('system')
                 ->event('cleanup.completed')
+                ->withPiiMasking()
                 ->save();
 
             return Command::SUCCESS;
@@ -67,6 +69,7 @@ class SystemCleanupCommand extends Command
                 ->module('system')
                 ->event('cleanup.failed')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->save();
 
             $this->error(__('setup.system.cleanup_completed').': '.$e->getMessage());

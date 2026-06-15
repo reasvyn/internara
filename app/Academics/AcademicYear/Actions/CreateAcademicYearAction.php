@@ -6,10 +6,10 @@ namespace App\Academics\AcademicYear\Actions;
 
 use App\Academics\AcademicYear\Events\AcademicYearCreated;
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use Illuminate\Support\Facades\Validator;
 
-final class CreateAcademicYearAction extends BaseAction
+final class CreateAcademicYearAction extends BaseCommandAction
 {
     public function execute(array $data): AcademicYear
     {

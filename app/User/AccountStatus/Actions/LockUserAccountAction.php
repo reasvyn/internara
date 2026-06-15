@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\User\AccountStatus\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 
-final class LockUserAccountAction extends BaseAction
+final class LockUserAccountAction extends BaseCommandAction
 {
     public function execute(User $user, string $reason = 'too_many_failed_attempts'): void
     {

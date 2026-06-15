@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\AccountStatus\Livewire;
 
+use App\Core\Exceptions\RejectedException;
 use App\User\AccountStatus\Actions\DetectUserAccountCloneAction;
 use App\User\AccountStatus\Actions\LockUserAccountAction;
 use App\User\AccountStatus\Actions\UnlockUserAccountAction;
@@ -19,22 +20,55 @@ class AccountLifecycleManager extends Component
 
     public bool $showClones = false;
 
-    public function lock(User $user, LockUserAccountAction $action): void
-    {
-        $this->authorize('update', $user);
-        Gate::authorize('lockAccount', $user);
+    public bool $showConfirm = false;
 
-        $action->execute($user);
-        flash()->success(__('auth.account_locked'));
+    public string $confirmActionType = '';
+
+    public ?string $confirmTarget = null;
+
+    public string $confirmMessage = '';
+
+    public function askLock(string $id): void
+    {
+        $this->confirmActionType = 'lock';
+        $this->confirmTarget = $id;
+        $this->confirmMessage = __('Lock this account?');
+        $this->showConfirm = true;
     }
 
-    public function unlock(User $user, UnlockUserAccountAction $action): void
+    public function askUnlock(string $id): void
     {
-        $this->authorize('update', $user);
-        Gate::authorize('unlockAccount', $user);
+        $this->confirmActionType = 'unlock';
+        $this->confirmTarget = $id;
+        $this->confirmMessage = __('Unlock this account?');
+        $this->showConfirm = true;
+    }
 
-        $action->execute($user);
-        flash()->success(__('auth.account_unlocked'));
+    public function confirmAction(
+        LockUserAccountAction $lockAction,
+        UnlockUserAccountAction $unlockAction,
+    ): void {
+        try {
+            $user = User::findOrFail($this->confirmTarget);
+            $this->authorize('update', $user);
+
+            if ($this->confirmActionType === 'lock') {
+                Gate::authorize('lockAccount', $user);
+                $lockAction->execute($user);
+                flash()->success(__('auth.account_locked'));
+            } elseif ($this->confirmActionType === 'unlock') {
+                Gate::authorize('unlockAccount', $user);
+                $unlockAction->execute($user);
+                flash()->success(__('auth.account_unlocked'));
+            }
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
+        $this->confirmActionType = '';
+        $this->confirmMessage = '';
     }
 
     public function detectClones(DetectUserAccountCloneAction $action): array

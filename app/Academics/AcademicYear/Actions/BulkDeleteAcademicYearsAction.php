@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Academics\AcademicYear\Actions;
 
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 
-final class BulkDeleteAcademicYearsAction extends BaseAction
+final class BulkDeleteAcademicYearsAction extends BaseCommandAction
 {
     public function execute(array $ids): int
     {

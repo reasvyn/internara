@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use Illuminate\Support\Facades\File;
 
-class SaveRecoveryKeyAction extends BaseAction
+class SaveRecoveryKeyAction extends BaseCommandAction
 {
     public function execute(string $plaintext): string
     {

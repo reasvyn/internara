@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\User\Notifications\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\User\Notifications\Models\Notification;
 use Illuminate\Support\Facades\Cache;
 
-final class MarkBatchAsReadAction extends BaseAction
+final class MarkBatchAsReadAction extends BaseCommandAction
 {
     public function execute(string $userId, array $ids): int
     {

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Assignment\Submission\Actions;
 
 use App\Assignment\Submission\Models\Submission;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 
-final class VerifySubmissionAction extends BaseAction
+final class VerifySubmissionAction extends BaseCommandAction
 {
     public function execute(Submission $submission): Submission
     {

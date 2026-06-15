@@ -41,6 +41,7 @@ final class SetupResetTokenCommand extends Command
             SmartLogger::info(__('setup.reset_token.protected'))
                 ->module('setup')
                 ->event('reset.blocked')
+                ->withPiiMasking()
                 ->save();
 
             return self::FAILURE;
@@ -81,6 +82,7 @@ final class SetupResetTokenCommand extends Command
         SmartLogger::info(__('setup.reset_token.success'))
             ->module('setup')
             ->event('reset.completed')
+            ->withPiiMasking()
             ->save();
 
         return self::SUCCESS;

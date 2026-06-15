@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Settings\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Support\SmartLogger;
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
 use App\Settings\Locale\Support\Locale;
 use Illuminate\Http\UploadedFile;
 
-class SaveSystemSettingsAction extends BaseAction
+class SaveSystemSettingsAction extends BaseCommandAction
 {
     public function __construct(
         protected readonly BatchSetSettingAction $batchSetSetting,
@@ -59,6 +59,7 @@ class SaveSystemSettingsAction extends BaseAction
             ->event('settings_updated')
             ->module('Setting')
             ->withPayload(['keys' => array_keys($settings)])
+            ->withPiiMasking()
             ->activityOnly()
             ->save();
     }

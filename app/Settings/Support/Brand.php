@@ -131,6 +131,7 @@ final class Brand
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
                 ])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
 

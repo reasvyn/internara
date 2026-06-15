@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Assessment\Actions;
 
 use App\Assessment\Models\Assessment;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 
-final class FinalizeAssessmentAction extends BaseAction
+final class FinalizeAssessmentAction extends BaseCommandAction
 {
     public function execute(Assessment $assessment, User $finalizer): Assessment
     {

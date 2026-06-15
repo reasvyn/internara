@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Document\OfficialDocument\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Document\Models\Document;
 use App\Document\Support\DocumentRenderer;
 
-final class GenerateDocumentAction extends BaseAction
+final class GenerateDocumentAction extends BaseCommandAction
 {
     public function __construct(protected readonly DocumentRenderer $renderer) {}
 

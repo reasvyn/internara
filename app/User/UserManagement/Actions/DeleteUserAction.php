@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-final class DeleteUserAction extends BaseAction
+final class DeleteUserAction extends BaseCommandAction
 {
     public function execute(User $user): void
     {

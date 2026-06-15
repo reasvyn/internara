@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Document\OfficialDocument\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Document\Models\Document;
 use App\Document\Support\DocumentRenderer;
 use App\Enrollment\Registration\Models\Registration;
 use Illuminate\Support\Facades\Storage;
 
-final class RenderDocumentAction extends BaseAction
+final class RenderDocumentAction extends BaseCommandAction
 {
     public function __construct(private readonly DocumentRenderer $renderer) {}
 

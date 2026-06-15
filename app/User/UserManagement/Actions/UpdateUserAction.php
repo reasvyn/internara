@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\UserManagement\Actions;
 
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use App\User\Rules\ReservedAuthoritativeName;
@@ -18,7 +18,7 @@ use RuntimeException;
  * S1 - Secure: Atomic user update with profile and role sync.
  * S2 - Sustain: Proper error handling and logging.
  */
-final class UpdateUserAction extends BaseAction
+final class UpdateUserAction extends BaseCommandAction
 {
     /**
      * Update an existing user.

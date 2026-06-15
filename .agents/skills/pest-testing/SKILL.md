@@ -12,7 +12,7 @@ Apply this skill whenever writing, editing, or fixing tests. Activates for all t
 ## Key References
 
 - **Architecture (testing strategy)**: `docs/architecture.md#testing-strategy`
-- **Conventions (testing)**: `docs/conventions.md#22-testing`
+- **Testing Pattern**: `docs/architecture/testing-pattern.md`
 - **BaseEntity**: `app/Core/Entities/BaseEntity.php`
 - **BaseAction**: `app/Core/Actions/BaseAction.php`
 

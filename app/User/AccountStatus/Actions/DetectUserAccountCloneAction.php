@@ -30,6 +30,7 @@ class DetectUserAccountCloneAction
         } catch (\Throwable $e) {
             SmartLogger::error('Failed to detect cloned accounts')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
 

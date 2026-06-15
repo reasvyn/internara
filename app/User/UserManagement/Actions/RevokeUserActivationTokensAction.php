@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\User\UserManagement\Actions;
 
 use App\Auth\ApiTokens\Models\ApiToken;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\User\Models\User;
 
-final class RevokeUserActivationTokensAction extends BaseAction
+final class RevokeUserActivationTokensAction extends BaseCommandAction
 {
     public function execute(User $user): void
     {

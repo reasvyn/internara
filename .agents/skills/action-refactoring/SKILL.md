@@ -25,7 +25,7 @@ Actions split into three categories, all under `app/{Module}/{SubModule}/Actions
 - **HandlesActionErrors**: `app/Core/Support/HandlesActionErrors.php` — catches unexpected `Throwable`, logs via SmartLogger, re-throws as `RuntimeException`
 - **SmartLogger**: `app/Core/Support/SmartLogger.php` — structured logging with PII masking, bilingual descriptions, activity log integration
 - **Architecture docs**: `docs/architecture.md#action-triad-command-read-process`
-- **Conventions**: `docs/conventions.md#6-actions-command-read-process`
+- **Action Pattern**: `docs/architecture/action-pattern.md`
 
 ## Command Action Contract
 

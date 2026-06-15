@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Assessment\Rubric\Actions;
 
 use App\Assessment\Rubric\Models\Rubric;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use Illuminate\Support\Str;
 
-final class CreateIndicatorAction extends BaseAction
+final class CreateIndicatorAction extends BaseCommandAction
 {
     public function execute(
         Rubric $rubric,

@@ -204,13 +204,6 @@ class User extends BaseAuthenticatable implements HasMedia
         return $this;
     }
 
-    public function latestStatus(): object
-    {
-        $value = $this->status instanceof AccountStatus ? $this->status->value : $this->status;
-
-        return (object) ['name' => $value];
-    }
-
     protected static function booted(): void
     {
         static::observe(UserObserver::class);

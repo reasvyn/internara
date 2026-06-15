@@ -81,6 +81,7 @@ abstract class BaseProcessAction extends BaseAction
                 'progress' => $this->progress,
                 'steps' => $this->results,
             ]))
+            ->withPiiMasking()
             ->systemOnly()
             ->save();
     }

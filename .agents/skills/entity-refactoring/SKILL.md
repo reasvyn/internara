@@ -23,7 +23,7 @@ This exists because:
 - **BaseEntity**: `app/Core/Entities/BaseEntity.php` — `readonly abstract class` with `fromModel(Model): static` contract
 - **BaseModel**: `app/Core/Models/BaseModel.php` — UUID PK via `HasUuids`
 - **Architecture docs**: `docs/architecture.md#layered-architecture` (Layer 6 — Domain Rules)
-- **Conventions**: `docs/conventions.md#7-entities`
+- **Entity Pattern**: `docs/architecture/entity-pattern.md`
 
 ## Entity Contract
 

@@ -16,7 +16,7 @@ final class AppIntegrity
             self::verifyComposerMetadata();
         } catch (RuntimeException $e) {
             if (app()->environment('local', 'testing')) {
-                SmartLogger::warning($e->getMessage())->systemOnly()->save();
+                SmartLogger::warning($e->getMessage())->withPiiMasking()->systemOnly()->save();
 
                 return;
             }

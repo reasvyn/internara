@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Auth\Account\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-final class ActivateAccountAction extends BaseAction
+final class ActivateAccountAction extends BaseCommandAction
 {
     public function execute(User $user, string $password): User
     {

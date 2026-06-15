@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Guidance\SupervisionLog\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Guidance\SupervisionLog\Enums\SupervisionLogStatus;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\User\Models\User;
 use Carbon\Carbon;
 
-final class VerifySupervisionLogAction extends BaseAction
+final class VerifySupervisionLogAction extends BaseCommandAction
 {
     public function execute(SupervisionLog $log, User $verifier): SupervisionLog
     {

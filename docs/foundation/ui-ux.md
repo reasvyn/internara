@@ -120,7 +120,25 @@ Used for structural elements:
 
 ---
 
-## 8. Key Locations
+## 8. Guide Component Pattern
+
+Every page with a non-trivial workflow MUST include a floating guide button (bottom-right,
+question mark icon) that opens a modal with step-by-step instructions. See
+`docs/architecture/livewire-pattern.md` (§11) for the full implementation pattern.
+
+Implementation reference: `resources/views/setup/components/setup-guide.blade.php`
+
+### Requirements
+
+- **File:** `resources/views/{module}/components/{page-name}-guide.blade.php`
+- **Trigger:** Fixed floating button, bottom-right, `z-50`, primary color
+- **Modal:** `x-mary-modal` with numbered steps and a tip section
+- **Localization:** All strings in `__('{module}.guide.*')`
+- **Integration:** Parent component includes `@include('{module}.components.{page-name}-guide')` and exposes `$showGuide` boolean
+
+---
+
+## 9. Key Locations
 
 | Asset | Path |
 |-------|------|

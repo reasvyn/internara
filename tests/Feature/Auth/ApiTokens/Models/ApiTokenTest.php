@@ -101,7 +101,7 @@ test('is expired returns true for past expiry', function () {
         'expires_at' => now()->subDay(),
     ]);
 
-    expect($token->isExpired())->toBeTrue();
+    expect($token->asApiTokenState()->isExpired())->toBeTrue();
 });
 
 test('is expired returns false for future expiry', function () {
@@ -110,7 +110,7 @@ test('is expired returns false for future expiry', function () {
         'expires_at' => now()->addDays(30),
     ]);
 
-    expect($token->isExpired())->toBeFalse();
+    expect($token->asApiTokenState()->isExpired())->toBeFalse();
 });
 
 test('is expired returns false when expires at is null', function () {
@@ -119,7 +119,7 @@ test('is expired returns false when expires at is null', function () {
         'expires_at' => null,
     ]);
 
-    expect($token->isExpired())->toBeFalse();
+    expect($token->asApiTokenState()->isExpired())->toBeFalse();
 });
 
 test('is revoked returns true when revoked at is set', function () {
@@ -128,7 +128,7 @@ test('is revoked returns true when revoked at is set', function () {
         'revoked_at' => now(),
     ]);
 
-    expect($token->isRevoked())->toBeTrue();
+    expect($token->asApiTokenState()->isRevoked())->toBeTrue();
 });
 
 test('is valid returns true when not revoked and not expired', function () {
@@ -138,7 +138,7 @@ test('is valid returns true when not revoked and not expired', function () {
         'revoked_at' => null,
     ]);
 
-    expect($token->isValid())->toBeTrue();
+    expect($token->asApiTokenState()->isValid())->toBeTrue();
 });
 
 test('is valid returns false when revoked', function () {
@@ -148,7 +148,7 @@ test('is valid returns false when revoked', function () {
         'expires_at' => now()->addDays(30),
     ]);
 
-    expect($token->isValid())->toBeFalse();
+    expect($token->asApiTokenState()->isValid())->toBeFalse();
 });
 
 test('is valid returns false when expired', function () {
@@ -158,7 +158,7 @@ test('is valid returns false when expired', function () {
         'revoked_at' => null,
     ]);
 
-    expect($token->isValid())->toBeFalse();
+    expect($token->asApiTokenState()->isValid())->toBeFalse();
 });
 
 test('revoke for marks tokens as revoked', function () {

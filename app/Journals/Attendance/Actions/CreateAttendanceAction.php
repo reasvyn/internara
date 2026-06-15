@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Journals\Attendance\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;
 
-final class CreateAttendanceAction extends BaseAction
+final class CreateAttendanceAction extends BaseCommandAction
 {
     public function execute(User $user, array $data): Attendance
     {
