@@ -1,172 +1,114 @@
 ---
 name: sync-docs
-description: Synchronize ALL markdown documentation across the entire repository against actual code implementation. The core job is to verify that what docs SAY matches what the code ACTUALLY DOES — every claim about classes, methods, signatures, behaviors, patterns, and features must be grounded in real code. Structural checks (links, orphans) are secondary.
+description: Synchronize ALL markdown documentation against actual code implementation. Thin process layer — delegates all content rules to their authoritative source docs. Never hardcode rules that already exist in docs/.
 ---
 
 # Documentation Sync Skill
 
 ## When to Activate
 
-Apply this skill when asked to synchronize, update, refresh, or align documentation with implementation. Covers **every `.md` file in the repository**.
+Apply this skill when asked to synchronize, update, refresh, or align documentation with implementation. Covers **every `.md` file in the repository** (excl. `node_modules/`, `vendor/`, `.git/`, `storage/`).
 
 ## Core Principle
 
-Documentation that incorrectly describes the code is worse than no documentation — it actively misleads. The primary job is **truthfulness**: every claim in every `.md` file must accurately reflect what the codebase actually implements.
-
-## Scope: ALL `.md` Files
-
-Excluding `node_modules/`, `vendor/`, `.git/`, `storage/`:
-
-```
-docs/**/*.md         → main documentation tree
-README.md            → project root
-AGENTS.md            → agent instructions
-GEMINI.md            → Gemini configuration
-.agents/skills/**/*.md → skill files
-opencode.json        → (check for stale skill references)
-```
-
-**Do NOT trust derivative files (AGENTS.md, GEMINI.md).** They are frequently outdated copies from `docs/`. Always verify them against both `docs/` SSOT and actual code.
+**Every rule, convention, or pattern belongs in exactly one place: its authoritative doc in `docs/`.** This skill is a thin process layer — it references those docs but never duplicates them. If a rule needs updating, update the authoritative doc, not this skill.
 
 ## Workflow
 
-### Step 1 — Discover + Classify
+### Step 0 — Load Authoritative References
+
+Read these FIRST; they define what "correct" means:
+
+| # | Document | What it defines |
+|---|----------|-----------------|
+| 1 | `docs/architecture.md` | Action Triad, 12 layers, Base Class Mandate, exception hierarchy, validation strategy, caching strategy, module invariants |
+| 2 | `docs/conventions.md` | PHP rules, naming conventions, migration/factory/seeder rules, cross-cutting protocols |
+| 3 | `docs/architecture/action-pattern.md` | What a Command/Read/Process Action looks like, contract rules |
+| 4 | `docs/architecture/entity-pattern.md` | Entity purity, fromModel bridge, final readonly contract |
+| 5 | `docs/architecture/model-pattern.md` | Model conventions, UUID PKs, fillable, casts |
+| 6 | `docs/architecture/livewire-pattern.md` | Thin component rule, Form Objects, BaseRecordManager |
+| 7 | `docs/architecture/policy-pattern.md` | Flat RBAC, BasePolicy, three-layer auth |
+| 8 | `docs/architecture/enum-pattern.md` | LabelEnum/StatusEnum, state machine patterns |
+| 9 | `docs/architecture/event-pattern.md` | BaseEvent contract, dispatch patterns, logging integration |
+| 10 | `docs/architecture/testing-pattern.md` | Scope isolation, layer strategies, assertion preferences |
+| 11 | `docs/architecture/logging-pattern.md` | SmartLogger dual-channel, PII masking |
+| 12 | `docs/modules/module-index.md` | Module boundaries, dependencies, layer mapping |
+| 13 | `docs/foundation/product-definition.md` | Product scope, personas, system boundary |
+| 14 | `docs/foundation/rbac.md` | Role hierarchy, functional roles, permissions model |
+| 15 | `docs/infrastructure/testing.md` | TDD workflow, feature vs unit, LazilyRefreshDatabase |
+
+### Step 1 — Identify Files to Sync
 
 ```bash
 find . -name "*.md" -not -path "*/node_modules/*" -not -path "*/vendor/*" -not -path "*/.git/*" -not -path "*/storage/*" | sort
 ```
 
-Classify each file: **SSOT** (`docs/`) or **Derivative** (root-level files, `.agents/`).
+Group into:
 
-### Step 2 — Load Reference Context
+- **SSOT**: Everything under `docs/` — these define what's correct
+- **Derivative**: `README.md`, `AGENTS.md`, `GEMINI.md`, `.agents/skills/**/*.md` — these summarize/reference SSOT and must be verified against it
 
-Read FIRST:
-- `docs/architecture.md` — action triad, base classes, patterns
-- `docs/conventions.md` — naming, file structure, PHP rules
-- `docs/modules/module-index.md` — module boundaries and dependencies
-- `docs/doc-index.md` — document catalog
+### Step 2 — For Each File, Verify Against Authoritative Docs
 
-### Step 3 — Audit Against Code Implementation
+For every substantive claim in a `.md` file, trace it back to its authoritative document. If none exists, trace to actual code.
 
-This is the **primary** step. For every substantive claim in a `.md` file, verify against actual code.
+**General approach — do NOT hardcode checks; reference the authoritative doc instead:**
 
-#### 3.1 Class & Method Claim Verification
+| If the claim is about... | Verify against... |
+|--------------------------|-------------------|
+| Which base class something extends | `docs/architecture.md` §Base Class Mandate |
+| Action contract rules | `docs/architecture/action-pattern.md` |
+| Entity rules (purity, fromModel, readonly) | `docs/architecture/entity-pattern.md` |
+| Model conventions | `docs/architecture/model-pattern.md` |
+| Livewire component patterns | `docs/architecture/livewire-pattern.md` |
+| Authorization / policy patterns | `docs/architecture/policy-pattern.md` |
+| Enum / state machine patterns | `docs/architecture/enum-pattern.md` |
+| Event / notification patterns | `docs/architecture/event-pattern.md` |
+| Testing conventions | `docs/architecture/testing-pattern.md` |
+| Logging / PII masking | `docs/architecture/logging-pattern.md` |
+| Naming / file structure | `docs/conventions.md` |
+| Module dependencies | `docs/modules/module-index.md` |
+| Class path or file location | Actual file in `app/` or `resources/` |
+| Method signature or behavior | Actual method in code |
 
-When a doc mentions a specific class or method, verify:
+**Then cross-check against actual code** — does the code actually follow the rules in those docs? If yes, the doc is correct. If no, the doc or the code needs fixing (see Step 4).
 
-| Claim | How to verify |
-|-------|---------------|
-| **"`X extends Y`"** | `grep "class X" app/ -r | grep "extends"` |
-| **"`X::execute()` accepts params P, Q, R"** | Read the actual `execute()` method signature |
-| **"`X` is in namespace `App\Foo\Bar`"** | `grep "namespace" app/Foo/Bar/X.php` |
-| **"File lives at `app/Foo/Bar/X.php`"** | `ls app/Foo/Bar/X.php` |
-| **"Contract `LabelEnum` has method `label()`"** | `grep "function label" app/Core/Contracts/LabelEnum.php` |
-| **"`BaseAction` provides `transaction()`, `log()`"** | Read `app/Core/Actions/BaseAction.php` methods |
+### Step 3 — Derivative File Special Audit
 
-**For every doc that lists classes (module reference docs, architecture docs), spot-check at least 3 claims against actual code.**
+`AGENTS.md`, `GEMINI.md`, `README.md` must be checked against **both** the SSOT docs AND actual code. Common pitfalls:
 
-#### 3.2 Behavior & Business Rule Verification
+| Derivative file | Likely stale items | Verify against |
+|----------------|-------------------|----------------|
+| `AGENTS.md` | Stack versions, skill list, quick rules, invariants | `docs/architecture.md`, `docs/conventions.md`, `.agents/skills/` directory, `config/setup.php` |
+| `GEMINI.md` | Same as AGENTS | Same as AGENTS |
+| `README.md` | Module list, tech stack table, quick start commands | `app/` directories, `composer.json`, `package.json`, actual commands |
+| `.agents/skills/*/SKILL.md` | File paths, code examples, class references | Actual files and classes |
 
-When a doc describes what code DOES, verify:
-
-| Claim | How to verify |
-|-------|---------------|
-| **"Super Admin name is ALWAYS `Administrator`"** | Check `config/setup.php` + `SetupSuperAdminAction::execute()` |
-| **"Login locks after 5 failed attempts"** | Check `LoginAction` for rate limiter / throttle logic |
-| **"Recovery codes are 12-character uppercase"** | Check `GenerateRecoverySlipAction` for `str()->random(12)` |
-| **"Certificate QR contains verification URL"** | Check `CertificateRenderer` or `Certificate` model |
-| **"Entity is `final readonly`"** | Check actual entity class declaration |
-
-#### 3.3 Architecture Pattern Verification
-
-When a doc describes a pattern, verify it's actually followed:
-
-| Pattern claim | How to verify |
-|---------------|---------------|
-| **"All Command Actions extend `BaseCommandAction`"** | `grep -r "extends Base\|class.*Action" app/*/Actions/` — find outliers |
-| **"Entities have `fromModel()` and are `final readonly`"** | Check 2-3 random entity files |
-| **"Policies extend `BasePolicy`"** | Check 2-3 random policy files |
-| **"Livewire CRUD uses `BaseRecordManager`"** | Check 2-3 CRUD Livewire components |
-| **"Events extend `BaseEvent`"** | Check 2-3 random event files |
-| **"No `DB::` in Entities"** | `grep -r "DB::" app/*/Entities/` |
-
-#### 3.4 Derivative Document Verification
-
-**AGENTS.md** — Every claim must match `docs/` SSOT:
-- Stack version → `composer.json` + `docs/architecture.md`
-- Skill list → `ls -d .agents/skills/*/`
-- Module invariants → `config/setup.php` + `docs/architecture.md` §Module Invariants
-- Quick rules → `docs/conventions.md` §2, §5
-- PHP essentials → `docs/conventions.md` §2
-- Deployment essentials → `docs/infrastructure/deployment.md`
-- Testing essentials → `docs/infrastructure/testing.md`
-
-**GEMINI.md** — Same as AGENTS.md; must not contradict `docs/`.
-
-**README.md** — Quick start commands must work; module listing must match `app/` directories; tech stack versions must match `composer.json`/`package.json`.
-
-### Step 4 — Structural Checks (Secondary)
-
-Only after code verification:
-
-- **Broken links**: Every `[text](path)` resolves to an existing file
-- **Orphan files**: Every `.md` file appears in `doc-index.md` or `README.md`
-- **File paths**: Documented paths resolve to real files
-
-### Step 5 — Terminology Consistency (Secondary)
-
-Same concept uses same name everywhere:
-- `Action Triad` not "Action pattern" in one place and "Triad pattern" in another
-- Module names case-sensitive: `Auth` not `AUTH`
-- Role names consistent with actual enum values
-
-### Step 6 — Fix Pattern
+### Step 4 — Fix Pattern
 
 | Finding | Action |
 |---------|--------|
-| Doc says X, code does Y | Fix doc to match actual code |
-| Doc says X, code should do X but doesn't | Add to `docs/known-issues.md` as code gap |
-| Derivative doc contradicts SSOT | Fix derivative, SSOT wins |
+| Doc claim contradicts authoritative doc | Fix the claim to match the authoritative doc |
+| Authoritative doc claim contradicts actual code | Fix the claim in the authoritative doc; add code gap to `known-issues.md` if the code should change |
+| Derivative doc contradicts authoritative doc | Fix derivative, authoritative doc wins |
 | Broken link | Fix or remove |
-| Stale exact count | Replace with generic (e.g. "40+") |
-| Inconsistent terminology | Align to canonical term |
+| Stale exact count | Replace with generic (e.g. "40+") — counts are not the focus |
+| Missing documentation for implemented feature | Add documentation |
 
-### Step 7 — Update Metadata + Index
+### Step 5 — Wrap Up
 
-- Update `> **Last updated:**` on every edited file
-- Update `docs/doc-index.md` date + changes summary
-- Ensure all `.md` files appear in `doc-index.md`
-
-### Step 8 — Final Verification
-
-```bash
-vendor/bin/pint --format agent
-```
-
-### Step 9 — Known Issues
-
-Update `docs/known-issues.md` with new gaps found.
-
-## Priority Reference
-
-| Priority | Focus | Effort |
-|----------|-------|--------|
-| **P0** | Derivative docs match SSOT + actual code (AGENTS.md, GEMINI.md, README.md) | Quick per-file scan |
-| **P1** | Code implementation verification — class claims, behavior claims, pattern claims | Spot-check 3-5 per doc |
-| **P2** | Broken links, orphan files, file path accuracy | Automated |
-| **P3** | Terminology consistency | Cross-file grep |
-| **P4** | Stale counts → generify | Quick replace |
+1. Update `> **Last updated:**` on every edited file
+2. Update `docs/doc-index.md` date + changes summary
+3. Update `docs/known-issues.md` with new gaps found
+4. Run `vendor/bin/pint --format agent`
 
 ## Quality Checklist
 
-- [ ] AGENTS.md verified against `docs/` AND actual code — no contradictions
-- [ ] GEMINI.md verified against `docs/` AND actual code — no contradictions
-- [ ] README.md commands verified, module listing matches `app/`
-- [ ] Skill file paths verified against actual code files
-- [ ] At least 3 class/method claims spot-checked per doc
-- [ ] Architecture pattern claims verified against actual code
+- [ ] AGENTS.md verified against authoritative docs + code — no stale claims
+- [ ] GEMINI.md verified against authoritative docs + code — no stale claims
+- [ ] README.md commands work; module listing matches `app/`
+- [ ] Skill file paths and class references verified
 - [ ] No broken links in docs tree
-- [ ] No orphan `.md` files
 - [ ] `doc-index.md` up to date
-- [ ] `known-issues.md` updated with any gaps found
+- [ ] `known-issues.md` updated
 - [ ] `vendor/bin/pint --format agent` passes
