@@ -95,10 +95,11 @@
     {{-- Bottom Row --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div class="lg:col-span-2">
-            @include('user.dashboard._sidebar')
+            <x-core::widgets.profile-summary :showEdit="true" />
         </div>
 
         <div class="space-y-4">
+            <x-core::widgets.profile-summary :showEdit="true" />
             <x-mary-card :title="__('dashboard.quick_links')" separator>
                 <div class="space-y-1">
                     <x-core::widgets.quick-link :label="__('dashboard.edit_profile')" icon="o-user" link="{{ route('profile') }}" />

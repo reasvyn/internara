@@ -75,11 +75,11 @@ This document catalogs known gaps between documented requirements and actual imp
 
 ---
 
-### D-5 — [RESOLVED] Dashboard `_sidebar` View Unused by Role-Specific Dashboards
+### D-5 — [DELETED] — _sidebar dihapus, bukan di-reuse
 
 | Attribute | Detail |
 |-----------|--------|
-| **Resolved** | 2026-06-15 — Teacher, supervisor, student dashboards now `@include('user.dashboard._sidebar')` instead of inlining duplicate markup |
+| **Resolved** | 2026-06-15 — `_sidebar.blade.php` dihapus, konten inline dikembalikan ke masing-masing dashboard |
 
 ---
 
