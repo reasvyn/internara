@@ -1,21 +1,25 @@
 ---
 name: sync-docs
-description: Synchronize documentation against actual implementation across the entire codebase. Focuses on content accuracy, terminology consistency, structural integrity, and cross-document coherence — NOT on chasing easily-stale counts or lists.
+description: Synchronize ALL markdown documentation across the entire repository against actual implementation. Covers docs/, README.md, AGENTS.md, GEMINI.md, .agents/, and every other .md file. Focuses on content accuracy, terminology consistency, structural integrity, and cross-document coherence — NOT on chasing easily-stale counts or lists.
 ---
 
 # Documentation Sync Skill
 
 ## When to Activate
 
-Apply this skill when asked to synchronize, update, refresh, or align documentation with implementation. Covers every `.md` file in the repository.
+Apply this skill when asked to synchronize, update, refresh, or align documentation with implementation. Covers **every `.md` file in the entire repository** without exception.
 
 ## Core Principle
 
-Documentation IS the single source of truth (per `docs/conventions.md` §0). The goal is to make every `.md` file truthfully describe the current codebase with accurate, consistent, and coherent content.
+**`docs/` is the Single Source of Truth (SSOT).** All other markdown files (AGENTS.md, GEMINI.md, README.md, .agents/skills/) are **derivative documents** — they summarize, excerpt, or reference `docs/`. The sync must verify these derivatives against the SSOT, never the reverse.
 
-**DO NOT** chase easily-stale items: exact counts of models/actions/policies, enum case listings, file counts, or similar metadata that changes frequently. These add maintenance burden without proportional value.
+**Do NOT trust AGENTS.md, GEMINI.md, or similar quick-reference files.** These are frequently the most outdated files in the repository — they copy rules from `docs/` and are rarely updated when `docs/` changes. Treat them as suspect and verify everything they claim against `docs/` and actual code.
 
-**DO** focus on: broken links, terminology consistency, structural accuracy, conceptual correctness, and cross-document coherence.
+## What NOT to Do
+
+- ❌ Do NOT chase exact counts (models, actions, policies, migrations, enums — these change constantly)
+- ❌ Do NOT copy-paste a claim from AGENTS.md into another doc without verifying it against `docs/`
+- ❌ Do NOT assume AGENTS.md/GEMINI.md are correct just because they exist
 
 ## Workflow
 
@@ -25,77 +29,120 @@ Documentation IS the single source of truth (per `docs/conventions.md` §0). The
 find . -name "*.md" -not -path "./node_modules/*" -not -path "./vendor/*" -not -path "./.git/*" -not -path "./storage/*" | sort
 ```
 
+Group results into two categories:
+
+| Category | Scope | Example files |
+|----------|-------|---------------|
+| **SSOT** | `docs/` | `docs/architecture.md`, `docs/conventions.md`, `docs/modules/*.md` |
+| **Derivative** | Root + config | `README.md`, `AGENTS.md`, `GEMINI.md`, `.agents/skills/*/SKILL.md` |
+
 ### Step 2 — Load Reference Context
 
-Read these authoritative references FIRST:
+Read these authoritative SSOT references FIRST:
 - `docs/architecture.md` — architecture patterns, framework stack
 - `docs/conventions.md` — all conventions
 - `docs/modules/module-index.md` — module listing, dependency map
 - `docs/doc-index.md` — documentation catalog
-- `AGENTS.md` — invariants, quick rules
 
-### Step 3 — Content Quality Audit
+### Step 3 — Audit Derivative Documents Against SSOT
 
-For each markdown file, execute these checks in priority order:
+This is the **most important step**. Derivative documents (AGENTS.md, GEMINI.md, README.md) are the most likely to be stale.
 
-#### 3.1 Structural Integrity (HIGH)
+#### 3.1 AGENTS.md Audit
+
+For **every** claim in AGENTS.md, verify against `docs/`:
+
+| AGENTS.md claim | Verify against |
+|-----------------|----------------|
+| Stack version (PHP 8.4, Laravel v13, Livewire v4, Boost v2) | `composer.json` + `docs/architecture.md` Layer 1 |
+| Skill list (12 skills listed) | `ls .agents/skills/` — must match exactly |
+| Module invariants (super admin name/username) | `config/setup.php` + `docs/architecture.md` §Module Invariants |
+| Quick-reference rules (`declare(strict_types=1)`, `foreignUuid()->constrained()`, etc.) | `docs/conventions.md` §2 and §5 |
+| Boost tools listed | `boost.json` + actual Boost version |
+| PHP essentials | `docs/conventions.md` §2 General PHP |
+| Deployment essentials | `docs/infrastructure/deployment.md` |
+| Testing essentials | `docs/infrastructure/testing.md` |
+
+**If AGENTS.md and `docs/conventions.md` disagree, `docs/conventions.md` wins.** Update AGENTS.md to match.
+
+#### 3.2 GEMINI.md Audit
+
+Same as AGENTS.md — this is a Gemini-specific mirror. Verify:
+- Stack version, invariants, quick-reference rules, deployment essentials, testing essentials all match `docs/`
+- GEMINI.md must not contain rules that contradict AGENTS.md or `docs/`
+
+#### 3.3 README.md Audit
+
+| Claim | Verify against |
+|-------|----------------|
+| Project description | `docs/foundation/product-definition.md` |
+| Module listing (19 modules) | `ls -d app/*/` — must match actual directories |
+| Tech stack table | `composer.json` + `package.json` for actual versions |
+| Prerequisites | `docs/getting-started.md` §Prerequisites |
+| Quick start commands | Run each command mentally — `composer install`, `npm install`, `cp .env.example .env`, `php artisan key:generate`, `php artisan setup:install`, `composer run dev` |
+| Documentation links | Every `docs/` link must point to an existing file |
+
+#### 3.4 `.agents/skills/*/SKILL.md` Audit
+
+| Claim | Verify against |
+|-------|----------------|
+| All file paths referenced | Must resolve to real files |
+| Base class signatures | Must match actual `app/Core/` base classes |
+| Command examples | Must reference real Actions, Entities, or Components |
+| Workflow steps | Must be actionable with existing tools and skills |
+
+### Step 4 — Audit SSOT (`docs/`) for Content Quality
+
+#### 4.1 Structural Integrity (HIGH)
 
 | Check | What to verify |
 |-------|---------------|
-| **Broken links** | Every `[text](path)` and `<path>` reference must resolve to an existing file or valid URL |
+| **Broken links** | Every `[text](path)` must resolve to an existing file or valid URL |
 | **Orphan files** | Every `.md` file should be referenced somewhere in `doc-index.md` or `README.md` |
-| **File path accuracy** | Every documented file path (e.g. `app/User/Models/User.php`) must point to a real file |
+| **File path accuracy** | Every documented class/config/view path must point to a real file |
 
-#### 3.2 Terminology Consistency (HIGH)
+#### 4.2 Terminology Consistency (HIGH)
 
-- Same concept uses the same name everywhere throughout the entire doc tree
-- Verify these key terms are consistent (check at least the 3 most relevant docs + architecture.md):
-  - `Action Triad` (not "Action pattern" in one place and "Triad pattern" in another)
-  - `Command Action` / `Read Action` / `Process Action`
-  - `BaseEntity` / `Entity` / `final readonly`
-  - `Module` / `Submodule` — consistent nesting terminology
-  - Module names match directory names case-sensitively (Auth, not AUTH)
-  - Role names match enum values (super_admin, not superadmin — unless documented difference)
+Same concept must use the same name across **every** markdown file:
 
-#### 3.3 Conceptual Accuracy (HIGH)
+| Canonical term (from `docs/architecture.md`) | Watch out for |
+|----------------------------------------------|---------------|
+| `Action Triad` | Not "Action pattern" vs "Triad pattern" |
+| `Command Action` / `BaseCommandAction` | Not generic "action" |
+| `Read Action` / `BaseReadAction` | Not "query action" |
+| `Process Action` / `BaseProcessAction` | Not "orchestration action" |
+| `BaseEntity` (final readonly) | Not just "entity" when referring to the class |
+| Module names | Case-sensitive: `Auth` not `AUTH`, `SysAdmin` not `Sysadmin` |
+| Role names | `super_admin` in code, `superadmin` in Spatie — must explain the normalization |
 
-Spot-check these against actual code:
+#### 4.3 Conceptual Accuracy (HIGH)
 
-| Check | Method |
-|-------|--------|
-| **Architecture pattern described matches actual** | Pick 2-3 key patterns (Action Triad, Entity-Model separation, Base Class Mandate) and verify the doc description matches the actual base class signatures |
-| **Feature descriptions match implementation** | Pick 2-3 major features described in docs and verify the described behavior exists in code (not aspirational/planned) |
-| **Code examples compile** | Pick 2-3 inline code snippets and verify the classes/methods referenced actually exist with the documented signatures |
-| **Dependency claims** | If doc claims module A depends on module B, verify at least one class in A imports something from B |
+Spot-check key claims against actual code:
 
-#### 3.4 Cross-Document Consistency (MEDIUM)
+1. **Pick 2-3 key patterns** (Action Triad, Entity-Model separation, Base Class Mandate, Exception hierarchy) — verify the doc description matches the actual class signatures
+2. **Pick 2-3 feature descriptions** — verify the described behavior actually exists in code (not aspirational)
+3. **Pick 2-3 code snippets** — verify the classes/methods referenced actually exist with documented signatures
+4. **Module dependency claims** — if doc says A depends on B, verify at least one import from B in A
+
+#### 4.4 Cross-Document Consistency (MEDIUM)
 
 1. **Cross-references:** If `doc-a.md` links to `doc-b.md#section`, ensure that section header still exists
-2. **Shared descriptions:** Same feature described across multiple docs should not contradict each other
-3. **Terminology alignment:** All docs within a topic area use the same terms for the same concepts
+2. **Shared descriptions:** Same feature across multiple docs should not contradict each other
+3. **Derivative vs SSOT:** After fixing derivative docs (Step 3), ensure no contradictions remain
 
-#### 3.5 Stale Counts — Light Touch Only (LOW)
-
-If a count is obviously and significantly wrong (e.g. "50 models" when there are actually 38), update it to a **generic** description:
-- ❌ "42 models" → stale next week
-- ✅ "40+ models" → survives additions
-- ❌ "10 policies, 15 actions, 3 commands"
-- ✅ "dozens of actions across all modules"
-
-Use `git log --oneline -5` to quickly assess if the file is actively maintained or abandoned.
-
-### Step 4 — Fix Pattern
+### Step 5 — Fix Pattern
 
 | Scenario | Action |
 |----------|--------|
+| Derivative doc contradicts SSOT | Fix derivative doc to match SSOT |
 | Broken link | Update to correct path or remove |
-| Inconsistent terminology | Align to the canonical term (check `architecture.md` for authority) |
+| Inconsistent terminology | Align to canonical term from `docs/architecture.md` |
 | Conceptually wrong description | Update doc to match actual code behavior |
-| Stale count | Replace with generic description (e.g. "40+" instead of "42") |
-| Cross-document contradiction | Fix the less authoritative doc to match the more authoritative one |
+| Stale exact count | Replace with generic description (e.g. "40+" instead of "42") |
+| Cross-document contradiction | Fix less authoritative doc; SSOT wins |
 | Missing feature in code that doc claims exists | Add to `docs/known-issues.md` |
 
-### Step 5 — Update Metadata
+### Step 6 — Update Metadata
 
 Every edited file must have its metadata updated:
 
@@ -104,14 +151,14 @@ Every edited file must have its metadata updated:
 > **Changes:** {brief summary of what changed and why}
 ```
 
-### Step 6 — Update doc-index.md
+### Step 7 — Update doc-index.md
 
 After all edits:
 1. Ensure every `.md` file is listed in the appropriate section
 2. Ensure listed files actually exist (remove dead references)
-3. Update the "Last updated" date and changes summary
+3. Update date and changes summary
 
-### Step 7 — Final Verification
+### Step 8 — Final Verification
 
 ```bash
 # Verify no broken relative markdown links
@@ -129,31 +176,34 @@ done
 vendor/bin/pint --format agent
 ```
 
-### Step 8 — Known Issues
+### Step 9 — Known Issues
 
 Update `docs/known-issues.md`:
 1. Mark resolved documentation gaps as `[RESOLVED]` with date
 2. Add new content-quality gaps found during sync
 3. Update the change summary at the top
 
-## Specific Files Requiring Special Attention
+## Priority Reference
 
-| File | Focus |
-|------|-------|
-| `README.md` | Quick start commands actually work; feature list matches actual modules |
-| `AGENTS.md` | Module invariants match actual code; skill list matches `.agents/skills/` directory |
-| `docs/architecture.md` | Architectural patterns described match actual base classes and contracts |
-| `docs/conventions.md` | Rules are actually enforced by Pint/PHPStan configs |
-| `.agents/skills/*/SKILL.md` | All file paths referenced in skills exist |
+| Priority | What to check | Where |
+|----------|---------------|-------|
+| **P0** | Derivative docs match SSOT | AGENTS.md, GEMINI.md, README.md vs docs/ |
+| **P1** | Broken links + orphan files | All .md files |
+| **P1** | Terminology consistency | Cross-file |
+| **P2** | Conceptual accuracy (spot-check) | docs/ |
+| **P3** | Cross-document consistency | docs/ |
+| **P4** | Stale counts (generify only) | docs/ |
 
 ## Quality Checklist
 
+- [ ] AGENTS.md verified against `docs/` — no contradictions
+- [ ] GEMINI.md verified against `docs/` — no contradictions
+- [ ] README.md links and commands verified
+- [ ] Skill file paths verified against actual code
 - [ ] No broken links in docs tree
 - [ ] No orphan `.md` files
 - [ ] Terminology consistent across all checked docs
 - [ ] Key conceptual descriptions match actual code
-- [ ] Feature claims verified against implementation
 - [ ] `doc-index.md` up to date
 - [ ] `known-issues.md` updated with any gaps found
-- [ ] Last updated dates set on all edited files
 - [ ] `vendor/bin/pint --format agent` passes
