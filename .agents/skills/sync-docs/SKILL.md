@@ -1,144 +1,99 @@
 ---
 name: sync-docs
-description: Comprehensive synchronization of ALL markdown documentation against actual implementation across the entire codebase. Covers docs/, README.md, AGENTS.md, GEMINI.md, .agents/, and every other markdown file without exception. Fixes inconsistencies, updates stale counts, corrects examples, and ensures every file references files that exist.
+description: Synchronize documentation against actual implementation across the entire codebase. Focuses on content accuracy, terminology consistency, structural integrity, and cross-document coherence — NOT on chasing easily-stale counts or lists.
 ---
 
 # Documentation Sync Skill
 
 ## When to Activate
 
-Apply this skill when asked to synchronize, update, refresh, or align documentation with implementation. This covers every `.md` file in the entire repository without exception.
+Apply this skill when asked to synchronize, update, refresh, or align documentation with implementation. Covers every `.md` file in the repository.
 
 ## Core Principle
 
-Documentation IS the single source of truth (per `docs/conventions.md` §0). When documentation and implementation disagree, documentation describes the target state — but it must accurately describe the *actual* state, not an aspirational one. The goal is to make every `.md` file truthfully describe the current codebase.
+Documentation IS the single source of truth (per `docs/conventions.md` §0). The goal is to make every `.md` file truthfully describe the current codebase with accurate, consistent, and coherent content.
+
+**DO NOT** chase easily-stale items: exact counts of models/actions/policies, enum case listings, file counts, or similar metadata that changes frequently. These add maintenance burden without proportional value.
+
+**DO** focus on: broken links, terminology consistency, structural accuracy, conceptual correctness, and cross-document coherence.
 
 ## Workflow
 
-### Step 0 — Discover All Markdown Files
+### Step 1 — Discover All Markdown Files
 
 ```bash
-find . -name "*.md" -not -path "./node_modules/*" -not -path "./vendor/*" -not -path "./.git/*" -not -path "./storage/*" | sort > /tmp/all_markdown_files.txt
+find . -name "*.md" -not -path "./node_modules/*" -not -path "./vendor/*" -not -path "./.git/*" -not -path "./storage/*" | sort
 ```
 
-This gives a complete inventory. The list includes (but is not limited to):
-- `docs/**/*.md` — the main documentation tree
-- `README.md` — project root
-- `AGENTS.md` — agent instructions
-- `GEMINI.md` — Gemini configuration
-- `.agents/skills/**/*.md` — all skill files
-- `.github/**/*.md` — GitHub templates and workflows
-- `opencode.json` — opencode config (if markdown-like sections exist)
-- Any other `.md` files found
+### Step 2 — Load Reference Context
 
-### Step 1 — Load Reference Context
-
-Read these authoritative references FIRST (concurrent):
-- `docs/architecture.md` — architecture patterns, counts, framework stack
+Read these authoritative references FIRST:
+- `docs/architecture.md` — architecture patterns, framework stack
 - `docs/conventions.md` — all conventions
-- `docs/modules/module-index.md` — module listing, global counts
+- `docs/modules/module-index.md` — module listing, dependency map
 - `docs/doc-index.md` — documentation catalog
 - `AGENTS.md` — invariants, quick rules
 
-### Step 2 — Audit Against Actual Implementation
+### Step 3 — Content Quality Audit
 
-For each markdown file, execute these checks:
+For each markdown file, execute these checks in priority order:
 
-#### 2.1 Structural Verification
+#### 3.1 Structural Integrity (HIGH)
 
 | Check | What to verify |
 |-------|---------------|
-| **Directory exists** | Every `app/{Module}/` or `resources/views/{module}/` path mentioned in docs must actually exist |
-| **File exists** | Every class path, config path, or test path mentioned must be a real file |
 | **Broken links** | Every `[text](path)` and `<path>` reference must resolve to an existing file or valid URL |
 | **Orphan files** | Every `.md` file should be referenced somewhere in `doc-index.md` or `README.md` |
+| **File path accuracy** | Every documented file path (e.g. `app/User/Models/User.php`) must point to a real file |
 
-#### 2.2 Count Verification
+#### 3.2 Terminology Consistency (HIGH)
 
-For every number claim in docs (e.g., "50 models", "19 modules", "10 policies"), verify against actual:
+- Same concept uses the same name everywhere throughout the entire doc tree
+- Verify these key terms are consistent (check at least the 3 most relevant docs + architecture.md):
+  - `Action Triad` (not "Action pattern" in one place and "Triad pattern" in another)
+  - `Command Action` / `Read Action` / `Process Action`
+  - `BaseEntity` / `Entity` / `final readonly`
+  - `Module` / `Submodule` — consistent nesting terminology
+  - Module names match directory names case-sensitively (Auth, not AUTH)
+  - Role names match enum values (super_admin, not superadmin — unless documented difference)
 
-```bash
-# Count models (concrete classes extending BaseModel)
-grep -r "extends BaseModel" app/ --include="*.php" | grep -v "abstract class" | wc -l
+#### 3.3 Conceptual Accuracy (HIGH)
 
-# Count actions
-find app -path "*/Actions/*.php" -type f | wc -l
+Spot-check these against actual code:
 
-# Count policies
-find app -path "*/Policies/*.php" -type f | not matching Concerns/ | wc -l
+| Check | Method |
+|-------|--------|
+| **Architecture pattern described matches actual** | Pick 2-3 key patterns (Action Triad, Entity-Model separation, Base Class Mandate) and verify the doc description matches the actual base class signatures |
+| **Feature descriptions match implementation** | Pick 2-3 major features described in docs and verify the described behavior exists in code (not aspirational/planned) |
+| **Code examples compile** | Pick 2-3 inline code snippets and verify the classes/methods referenced actually exist with the documented signatures |
+| **Dependency claims** | If doc claims module A depends on module B, verify at least one class in A imports something from B |
 
-# Count Livewire components
-find app -path "*/Livewire/*.php" -type f | grep -v "Concerns\|BaseRecordManager" | wc -l
+#### 3.4 Cross-Document Consistency (MEDIUM)
 
-# Count routes files
-ls routes/web/*.php 2>/dev/null | wc -l
+1. **Cross-references:** If `doc-a.md` links to `doc-b.md#section`, ensure that section header still exists
+2. **Shared descriptions:** Same feature described across multiple docs should not contradict each other
+3. **Terminology alignment:** All docs within a topic area use the same terms for the same concepts
 
-# Count migrations
-ls database/migrations/*.php 2>/dev/null | wc -l
+#### 3.5 Stale Counts — Light Touch Only (LOW)
 
-# Count test files
-find tests -name "*Test.php" -type f | wc -l
-```
+If a count is obviously and significantly wrong (e.g. "50 models" when there are actually 38), update it to a **generic** description:
+- ❌ "42 models" → stale next week
+- ✅ "40+ models" → survives additions
+- ❌ "10 policies, 15 actions, 3 commands"
+- ✅ "dozens of actions across all modules"
 
-Update every discrepancy. Use generic descriptions where counts change frequently (e.g., "40+" instead of "42").
-
-#### 2.3 Enum Value Verification
-
-For every enum documented with specific values, check against actual:
-
-```bash
-# List all enum files with their cases
-grep -r "case " app/ --include="*.php" -l | while read f; do
-  echo "=== $f ==="
-  grep "case " "$f" | sed 's/^[[:space:]]*//'
-done
-```
-
-#### 2.4 File Path Verification
-
-For every file path mentioned in docs:
-1. Verify the file exists at that exact path
-2. Verify the namespace matches the path convention
-3. Verify the class name matches the file name
-
-#### 2.5 API/Interface Contract Verification
-
-For documented method signatures:
-1. Check the method exists on the class
-2. Check the parameter types match
-3. Check the return type matches
-
-### Step 3 — Cross-Document Consistency
-
-After fixing individual files, verify consistency ACROSS documents:
-
-1. **Cross-references:** If `doc-a.md` links to `doc-b.md#section`, ensure that section header still exists in doc-b.md after edits.
-2. **Shared claims:** If both `architecture.md` and `module-index.md` mention "50 models", both must be updated to the same number.
-3. **Dependency order:** Module dependency claims in module-index.md should match actual `use` imports across modules.
-4. **Terminology:** Same concept uses same name everywhere (e.g., "Action Triad" not "Action pattern" in one place and "Triad pattern" in another).
+Use `git log --oneline -5` to quickly assess if the file is actively maintained or abandoned.
 
 ### Step 4 — Fix Pattern
 
-For every discrepancy found:
-
-1. **If doc says X but code does Y:**
-   - If X is the target state and Y is legacy: Keep doc as X, note the gap in `docs/known-issues.md`
-   - If X is aspirational and Y is what actually works: Update doc to Y
-   - If X is just stale (outdated count, old name): Update doc to Y
-
-2. **If doc says X and code should do X but doesn't:**
-   - If it's a missing feature/pattern: Add to `docs/known-issues.md`
-   - If it's an unwritten rule: Keep doc, add enforcement note
-
-3. **If doc references a file that doesn't exist:**
-   - Remove the reference or update to the correct path
-
-4. **If doc lists enum values that don't match:**
-   - Update doc to match actual enum cases
-
-5. **If doc has stale counts (models, actions, policies):**
-   - Update to actual count from codebase
-   - Use ranges or approximate counts where exact numbers change frequently
+| Scenario | Action |
+|----------|--------|
+| Broken link | Update to correct path or remove |
+| Inconsistent terminology | Align to the canonical term (check `architecture.md` for authority) |
+| Conceptually wrong description | Update doc to match actual code behavior |
+| Stale count | Replace with generic description (e.g. "40+" instead of "42") |
+| Cross-document contradiction | Fix the less authoritative doc to match the more authoritative one |
+| Missing feature in code that doc claims exists | Add to `docs/known-issues.md` |
 
 ### Step 5 — Update Metadata
 
@@ -149,9 +104,9 @@ Every edited file must have its metadata updated:
 > **Changes:** {brief summary of what changed and why}
 ```
 
-### Step 6 — Document Index Consistency
+### Step 6 — Update doc-index.md
 
-After all edits, update `docs/doc-index.md`:
+After all edits:
 1. Ensure every `.md` file is listed in the appropriate section
 2. Ensure listed files actually exist (remove dead references)
 3. Update the "Last updated" date and changes summary
@@ -159,72 +114,46 @@ After all edits, update `docs/doc-index.md`:
 ### Step 7 — Final Verification
 
 ```bash
-# Verify no broken markdown links (relative paths)
-find docs -name "*.md" -exec grep -oP '\[.*?\]\(.*?\.md[^)]*\)' {} \; | sort -u | while read link; do
-  target=$(echo "$link" | grep -oP '\(.*?\.md[^)]*\)' | tr -d '()')
-  if [ ! -f "$target" ] && [ ! -f "docs/$target" ]; then
-    echo "BROKEN LINK: $link in some file"
+# Verify no broken relative markdown links
+find docs -name "*.md" -exec grep -oP '\[.*?\]\([^)]+\.md[^)]*\)' {} \; | sort -u | while IFS= read -r line; do
+  link_text=$(echo "$line" | grep -oP '\([^)]+\)' | tr -d '()' | sed 's/#.*$//' | sed 's|^\.\/||')
+  echo "$link_text"
+done | sort -u | while read target; do
+  if [ -n "$target" ] && ! echo "$target" | grep -qE '^https?://'; then
+    if [ ! -f "$target" ] && [ ! -f "docs/$target" ]; then
+      echo "BROKEN LINK TARGET: $target"
+    fi
   fi
 done
 
-# Verify all module directories exist
-grep -r "app/" docs/ --include="*.md" | grep -oP 'app/\w+' | sort -u | while read dir; do
-  if [ ! -d "$dir" ]; then
-    echo "NON-EXISTENT MODULE: $dir referenced in docs"
-  fi
-done
-
-# Run tests to ensure docs changes didn't break anything
-php artisan test --compact --filter=Documentation
 vendor/bin/pint --format agent
 ```
 
-### Step 8 — Known Issues Document
+### Step 8 — Known Issues
 
 Update `docs/known-issues.md`:
 1. Mark resolved documentation gaps as `[RESOLVED]` with date
-2. Add new documentation gaps found during sync as new entries
+2. Add new content-quality gaps found during sync
 3. Update the change summary at the top
 
 ## Specific Files Requiring Special Attention
 
-### `README.md`
-- Project description matches actual feature set
-- Badges (PHP version, Laravel version, license) match actual
-- Quick start commands work
-- Feature list matches `docs/key-features.md`
-
-### `AGENTS.md`
-- Module invariants match actual code
-- Skill list matches `.agents/skills/` directory
-- Quick-reference rules match `docs/conventions.md`
-- Boost commands match available tools
-- PHP essentials match actual language features used
-
-### `GEMINI.md`
-- Model context matches actual Gemini API version
-- Configuration matches actual `.env` values
-- Feature descriptions match implementation
-
-### `.agents/skills/*/SKILL.md`
-- All file paths referenced in skills exist
-- All command examples produce expected output
-- All workflow steps are actionable with current tools
-
-### `opencode.json` / `opencode.jsonc`
-- Agent configurations reference valid skill names
-- Permission rules match directory structure
-- Custom commands reference valid scripts
+| File | Focus |
+|------|-------|
+| `README.md` | Quick start commands actually work; feature list matches actual modules |
+| `AGENTS.md` | Module invariants match actual code; skill list matches `.agents/skills/` directory |
+| `docs/architecture.md` | Architectural patterns described match actual base classes and contracts |
+| `docs/conventions.md` | Rules are actually enforced by Pint/PHPStan configs |
+| `.agents/skills/*/SKILL.md` | All file paths referenced in skills exist |
 
 ## Quality Checklist
 
-- [ ] Every `.md` file inventoried
-- [ ] File existence verified for all documented paths
-- [ ] Counts updated to match actual implementation
-- [ ] Enum values match actual enum cases
-- [ ] Cross-references validated (no broken links)
-- [ ] `doc-index.md` updated
-- [ ] `known-issues.md` updated with new/resolved gaps
-- [ ] `AGENTS.md` invariants verified
+- [ ] No broken links in docs tree
+- [ ] No orphan `.md` files
+- [ ] Terminology consistent across all checked docs
+- [ ] Key conceptual descriptions match actual code
+- [ ] Feature claims verified against implementation
+- [ ] `doc-index.md` up to date
+- [ ] `known-issues.md` updated with any gaps found
 - [ ] Last updated dates set on all edited files
 - [ ] `vendor/bin/pint --format agent` passes
