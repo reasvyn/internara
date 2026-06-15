@@ -72,7 +72,11 @@ return [
     ],
     'welcome_to_dashboard' => [
         'title' => 'Selamat Datang di Dashboard!',
-        'message' => 'Anda sekarang login sebagai Super Administrator. Jelajahi sistem dan mulailah mengonfigurasi program magang Anda.',
+        'super_admin' => 'Anda sekarang login sebagai Super Administrator. Jelajahi sistem dan mulailah mengonfigurasi program magang Anda.',
+        'admin' => 'Selamat datang! Kelola pengguna, buat program, dan pantau progres magang dari dashboard ini.',
+        'student' => 'Selamat datang! Tulis jurnal, catat kehadiran, dan pantau tugas magang Anda.',
+        'teacher' => 'Selamat datang! Verifikasi logbook, nilai tugas, dan bimbing siswa yang ditugaskan.',
+        'supervisor' => 'Selamat datang! Tinjau jurnal, kirim evaluasi, dan pantau progres peserta magang.',
     ],
     'super_admin_recovered' => [
         'title' => 'Pemulihan Super Admin Dilakukan',

@@ -9,6 +9,14 @@ use App\Core\Contracts\SendsNotifications;
 
 class SendSuperAdminWelcomeNotification
 {
+    protected array $roleWelcomeMap = [
+        'superadmin' => 'notifications.welcome_to_dashboard.super_admin',
+        'admin' => 'notifications.welcome_to_dashboard.admin',
+        'student' => 'notifications.welcome_to_dashboard.student',
+        'teacher' => 'notifications.welcome_to_dashboard.teacher',
+        'supervisor' => 'notifications.welcome_to_dashboard.supervisor',
+    ];
+
     public function __construct(
         protected SendsNotifications $sendNotification,
     ) {}
@@ -17,7 +25,14 @@ class SendSuperAdminWelcomeNotification
     {
         $user = $event->user;
 
-        if (! $user->hasRole('superadmin') || $user->first_login_at !== null) {
+        if ($user->first_login_at !== null) {
+            return;
+        }
+
+        $role = collect(array_keys($this->roleWelcomeMap))
+            ->first(fn ($role) => $user->hasRole($role));
+
+        if ($role === null) {
             return;
         }
 
@@ -25,8 +40,8 @@ class SendSuperAdminWelcomeNotification
             userId: $user->id,
             type: 'welcome',
             title: __('notifications.welcome_to_dashboard.title'),
-            message: __('notifications.welcome_to_dashboard.message'),
-            link: route('sysadmin.dashboard'),
+            message: __($this->roleWelcomeMap[$role]),
+            link: route('user.dashboard'),
         );
 
         $user->update(['first_login_at' => now()]);

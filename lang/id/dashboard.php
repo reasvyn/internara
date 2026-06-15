@@ -116,6 +116,22 @@ return [
 
     'system_settings' => 'Pengaturan Sistem',
     'quick_actions' => 'Aksi Cepat',
+
+    'super_admin' => [
+        'audit_title' => 'Ringkasan Audit',
+        'total_audit_entries' => 'Total Entri Audit',
+        'failed_logins_7d' => 'Gagal Masuk (7h)',
+        'active_users_today' => 'Pengguna Aktif Hari Ini',
+        'system_title' => 'Info Sistem',
+        'php_version' => 'Versi PHP',
+        'laravel_version' => 'Versi Laravel',
+        'environment' => 'Lingkungan',
+        'storage_title' => 'Ikhtisar Platform',
+        'total_users' => 'Total Pengguna',
+        'total_companies' => 'Perusahaan',
+        'internships' => 'Program PKL',
+    ],
+
     'help_title' => 'Butuh Bantuan?',
     'help_desc' => 'Pelajari dokumentasi untuk menguasai fitur :app.',
     'read_docs' => 'Baca Dokumentasi',

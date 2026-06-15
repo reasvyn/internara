@@ -211,6 +211,81 @@
         </div>
     </x-mary-card>
 
+    {{-- Super Admin System Cards --}}
+    @php $isSuperAdmin = auth()->user()?->hasRole('super_admin'); @endphp
+    @if($isSuperAdmin)
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <x-mary-card class="bg-base-100 border border-base-content/10">
+                <x-slot:title>
+                    <div class="flex items-center gap-2">
+                        <div class="size-6 rounded-md bg-warning/10 text-warning flex items-center justify-center"><x-mary-icon name="o-document-text" class="size-3.5" /></div>
+                        <span class="font-semibold text-sm">{{ __('dashboard.super_admin.audit_title') }}</span>
+                    </div>
+                </x-slot:title>
+                <div class="space-y-3 mt-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-base-content/60">{{ __('dashboard.super_admin.total_audit_entries') }}</span>
+                        <span class="font-semibold">{{ number_format($stats['totalAuditEntries'] ?? 0) }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-base-content/60">{{ __('dashboard.super_admin.failed_logins_7d') }}</span>
+                        <span class="font-semibold {{ ($stats['failedLogins7d'] ?? 0) > 0 ? 'text-error' : '' }}">{{ $stats['failedLogins7d'] ?? 0 }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-base-content/60">{{ __('dashboard.super_admin.active_users_today') }}</span>
+                        <span class="font-semibold">{{ $stats['activeUsersToday'] ?? 0 }}</span>
+                    </div>
+                </div>
+            </x-mary-card>
+
+            <x-mary-card class="bg-base-100 border border-base-content/10">
+                <x-slot:title>
+                    <div class="flex items-center gap-2">
+                        <div class="size-6 rounded-md bg-info/10 text-info flex items-center justify-center"><x-mary-icon name="o-server" class="size-3.5" /></div>
+                        <span class="font-semibold text-sm">{{ __('dashboard.super_admin.system_title') }}</span>
+                    </div>
+                </x-slot:title>
+                <div class="space-y-3 mt-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-base-content/60">{{ __('dashboard.super_admin.php_version') }}</span>
+                        <span class="font-semibold">{{ PHP_VERSION }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-base-content/60">{{ __('dashboard.super_admin.laravel_version') }}</span>
+                        <span class="font-semibold">{{ app()->version() }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-base-content/60">{{ __('dashboard.super_admin.environment') }}</span>
+                        <span class="font-semibold uppercase">{{ app()->environment() }}</span>
+                    </div>
+                </div>
+            </x-mary-card>
+
+            <x-mary-card class="bg-base-100 border border-base-content/10">
+                <x-slot:title>
+                    <div class="flex items-center gap-2">
+                        <div class="size-6 rounded-md bg-secondary/10 text-secondary flex items-center justify-center"><x-mary-icon name="o-database" class="size-3.5" /></div>
+                        <span class="font-semibold text-sm">{{ __('dashboard.super_admin.storage_title') }}</span>
+                    </div>
+                </x-slot:title>
+                <div class="space-y-3 mt-2">
+                    <div class="flex justify-between text-xs">
+                        <span class="text-base-content/60">{{ __('dashboard.super_admin.total_users') }}</span>
+                        <span class="font-semibold">{{ number_format($stats['totalStudents'] + $stats['totalTeachers'] + $stats['totalSupervisors']) }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-base-content/60">{{ __('dashboard.super_admin.total_companies') }}</span>
+                        <span class="font-semibold">{{ number_format($stats['totalCompanies']) }}</span>
+                    </div>
+                    <div class="flex justify-between text-xs">
+                        <span class="text-base-content/60">{{ __('dashboard.super_admin.internships') }}</span>
+                        <span class="font-semibold">{{ number_format($stats['allInternships']) }}</span>
+                    </div>
+                </div>
+            </x-mary-card>
+        </div>
+    @endif
+
     {{-- Bottom Row: Activity & Quick Links --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <x-mary-card :title="__('dashboard.recent_activity')" separator class="md:col-span-2">
