@@ -25,7 +25,7 @@ Every `.md` file in the repo. Grouped into two categories:
 
 | Category | Examples | Role |
 |----------|----------|------|
-| **SSOT** | `docs/architecture.md`, `docs/conventions.md`, `docs/architecture/*.md`, `docs/modules/*.md`, `docs/infrastructure/*.md`, dll | Define what's correct |
+| **SSOT** | `docs/architecture.md`, `docs/conventions.md`, `docs/architecture/*.md`, `docs/modules/*.md`, `docs/infrastructure/*.md` | Define what's correct |
 | **Derivative** | `README.md`, `AGENTS.md`, `GEMINI.md`, `.agents/skills/*/SKILL.md` | Reference/summarize SSOT; must be verified against it |
 
 ---
@@ -63,7 +63,7 @@ As you read each doc, extract a list of **verifiable claims** — statements tha
 
 - "Command Actions extend `BaseCommandAction`" → verifiable claim
 - "Entities are `final readonly`" → verifiable claim
-- "19 business modules" → verifiable claim
+- "business modules listed in module-index.md" → verifiable claim
 - "Uses Livewire 4" → verifiable claim
 - "Every Action has its own test file" → verifiable claim
 
@@ -85,14 +85,14 @@ For each section, extract claims and verify:
 
 | Section in AGENTS.md | How to verify |
 |----------------------|---------------|
-| **Project Context**: "PHP 8.4, Laravel v13, Livewire v4, Boost v2" | Check `composer.json` require section, `docs/architecture.md` Layer 1 |
-| **Skills Activation**: list of 12 skills | `ls -d .agents/skills/*/` — every skill directory must be listed; no extra, no missing |
-| **Documentation (NOT Duplicated Here)**: table of 10 topic→location mappings | Each mapped file must actually exist and cover that topic |
-| **Module Invariants**: 5 specific invariants | Check each against actual code/config. Example: "Super Admin name is ALWAYS `Administrator`" → check `config/setup.php` key `defaults.admin_name` |
-| **Quick-Reference Rules**: 6 rules | Match each against `docs/conventions.md`. If rule exists in conventions.md, ensure AGENTS.md says the same thing. If rule changed in conventions.md, AGENTS.md is stale. |
-| **PHP Essentials**: 6 rules | Cross-check with `docs/conventions.md` §2 General PHP |
-| **Deployment Essentials**: 3 commands | Each `php artisan` command must exist or be a valid command name |
-| **Testing Essentials**: 3 rules | Match against `docs/infrastructure/testing.md` |
+| **Project Context**: stack versions | Check `composer.json` require section, `docs/architecture.md` Layer 1 |
+| **Skills Activation**: listed skills | `ls -d .agents/skills/*/` — every skill directory must be listed; no extra, no missing |
+| **Documentation (NOT Duplicated Here)**: topic→location mappings | Each mapped file must actually exist and cover that topic |
+| **Module Invariants**: listed invariants | Check each against actual code/config. Example: "Super Admin name is ALWAYS `Administrator`" → check `config/setup.php` key `defaults.admin_name` |
+| **Quick-Reference Rules**: listed rules | Match each against `docs/conventions.md`. If rule exists in conventions.md, ensure AGENTS.md says the same thing. If rule changed in conventions.md, AGENTS.md is stale. |
+| **PHP Essentials**: listed rules | Cross-check with `docs/conventions.md` §2 General PHP |
+| **Deployment Essentials**: listed commands | Each `php artisan` command must exist or be a valid command name |
+| **Testing Essentials**: listed rules | Match against `docs/infrastructure/testing.md` |
 
 **Fix**: If AGENTS.md and `docs/` disagree, `docs/` is authoritative. Update AGENTS.md.
 
@@ -104,11 +104,11 @@ Same structure as AGENTS.md. Run the same checks. GEMINI.md must not contain rul
 
 | Claim | How to verify |
 |-------|---------------|
-| **Project description**: "Self-hosted... vocational fieldwork management" | Compare with `docs/foundation/product-definition.md` |
-| **Module listing**: 19 directories listed under `app/` | `ls -d app/*/` — every listed module must exist; no extra |
-| **Tech stack table**: 8 rows | Each package/version claim: `composer show laravel/framework \| grep versions`, `composer show livewire/livewire \| grep versions`, etc. |
-| **Prerequisites**: PHP 8.4+, Node.js 20+ | Check `composer.json` require.php, `package.json` engines |
-| **Quick Start**: 5 steps | `php artisan list --raw \| grep setup:install` — command must exist; `composer run dev` — check `composer.json` scripts |
+| **Project description** | Compare with `docs/foundation/product-definition.md` |
+| **Module listing** (all directories under `app/`) | `ls -d app/*/` — every listed module must exist; no extra |
+| **Tech stack table** (every row) | Each package/version claim: `composer show laravel/framework \| grep versions`, `composer show livewire/livewire \| grep versions`, etc. |
+| **Prerequisites** (PHP/Node versions) | Check `composer.json` require.php, `package.json` engines |
+| **Quick Start** (every step) | `php artisan list --raw \| grep setup:install` — command must exist; `composer run dev` — check `composer.json` scripts |
 
 #### 3.4 `.agents/skills/*/SKILL.md`
 
