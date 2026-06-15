@@ -16,8 +16,6 @@ use RuntimeException;
 
 class AccountRecovery extends Component
 {
-    public string $step = 'code';
-
     public AccountRecoveryForm $form;
 
     public function redeem(RedeemRecoverySlipAction $action): void

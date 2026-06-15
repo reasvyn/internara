@@ -21,6 +21,7 @@ return [
         'back_to_login' => 'Back to login',
         'no_account' => 'Have an activation code?',
         'claim_account' => 'Activate your account',
+        'recover_account' => 'Recover your account',
     ],
     'forgot_password' => [
         'subtitle' => 'Enter your email to receive a reset link',

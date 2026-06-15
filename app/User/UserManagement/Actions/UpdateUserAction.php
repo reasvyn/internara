@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Actions;
 
-use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
@@ -35,7 +34,7 @@ final class UpdateUserAction extends BaseCommandAction
         ?array $profileData = null,
         ?array $roles = null,
     ): User {
-        $integrity = SuperAdminIntegrityRules::fromModel($user);
+        $integrity = $user->asSuperAdminIntegrityRules();
 
         if (isset($userData['name']) && ! $integrity->canChangeName()) {
             throw new RejectedException('Cannot change super admin name.');

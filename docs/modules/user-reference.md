@@ -1,6 +1,6 @@
 # User — Technical Reference
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-15
 
 Detailed structural and implementation reference for the **User** module.
 
@@ -35,7 +35,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Dashboard/Actions/ReadStudentDashboardAction.php` | `ReadStudentDashboardAction` | Read |
 | `Dashboard/Actions/ReadSupervisorDashboardAction.php` | `ReadSupervisorDashboardAction` | Read |
 | `Dashboard/Actions/ReadTeacherDashboardAction.php` | `ReadTeacherDashboardAction` | Read |
-| `AccountStatus/Actions/DetectUserAccountCloneAction.php` | `DetectUserAccountCloneAction` | `BaseAction` |
+| `AccountStatus/Actions/DetectUserAccountCloneAction.php` | `DetectUserAccountCloneAction` | Read |
 | `AccountStatus/Actions/LockUserAccountAction.php` | `LockUserAccountAction` | `BaseAction` |
 | `AccountStatus/Actions/UnlockUserAccountAction.php` | `UnlockUserAccountAction` | `BaseAction` |
 | `UserManagement/Actions/ArchiveStudentAccountsAction.php` | `ArchiveStudentAccountsAction` | `BaseAction` |

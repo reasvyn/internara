@@ -1,7 +1,7 @@
 # Documentation Index
 
-> **Last updated:** 2026-06-14
-> **Changes:** cleanup — reference subdirectory indexes instead of listing contents (guide/, modules/, adr/)
+> **Last updated:** 2026-06-15
+> **Changes:** sync — fix test count in core-reference (463→416), add missing ActivateAccountAction to auth-reference, fix sysadmin-reference action listing, correct DetectUserAccountCloneAction base class in user-reference
 >
 > Complete catalog of all documentation in the `docs/` directory. This index is the single entry point for navigating Internara's documentation. Every file listed here is part of the authoritative system documentation and must be kept in sync with the implementation.
 

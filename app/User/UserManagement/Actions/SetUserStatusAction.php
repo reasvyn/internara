@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Actions;
 
-use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\AccountStatus\Notifications\AccountStatusNotification;
@@ -19,7 +18,7 @@ final class SetUserStatusAction extends BaseCommandAction
             throw new RejectedException('Cannot change your own status.');
         }
 
-        $integrity = SuperAdminIntegrityRules::fromModel($user);
+        $integrity = $user->asSuperAdminIntegrityRules();
 
         if (! $integrity->canBeLocked()) {
             throw new RejectedException('Cannot change super admin account status.');

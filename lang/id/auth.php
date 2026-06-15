@@ -21,6 +21,7 @@ return [
         'back_to_login' => 'Kembali ke halaman masuk',
         'no_account' => 'Punya kode aktivasi?',
         'claim_account' => 'Aktivasi Akun di sini',
+        'recover_account' => 'Pulihkan akun Anda',
     ],
     'forgot_password' => [
         'subtitle' => 'Masukkan email Anda untuk menerima tautan atur ulang kata sandi',

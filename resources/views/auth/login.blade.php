@@ -21,16 +21,24 @@
                 right
             />
 
-            <div class="flex items-center justify-between">
-                <x-mary-checkbox
-                    wire:model="form.remember"
-                    :label="__('auth.login.remember')"
-                    class="checkbox-primary checkbox-sm rounded"
-                />
+            <div class="flex flex-col gap-2">
+                <div class="flex items-center justify-between">
+                    <x-mary-checkbox
+                        wire:model="form.remember"
+                        :label="__('auth.login.remember')"
+                        class="checkbox-primary checkbox-sm rounded"
+                    />
 
-                <a href="{{ route('password.request') }}" class="text-xs text-base-content/50 hover:text-primary transition-colors" wire:navigate>
-                    {{ __('auth.login.forgot_password') }}
-                </a>
+                    <a href="{{ route('password.request') }}" class="text-xs text-base-content/50 hover:text-primary transition-colors" wire:navigate>
+                        {{ __('auth.login.forgot_password') }}
+                    </a>
+                </div>
+
+                <div class="text-right">
+                    <a href="{{ route('recover.account') }}" class="text-xs text-base-content/50 hover:text-primary transition-colors" wire:navigate>
+                        {{ __('auth.login.recover_account') }}
+                    </a>
+                </div>
             </div>
 
             <div class="pt-5 border-t border-base-content/10">

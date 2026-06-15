@@ -76,10 +76,10 @@ access your email.
 2. Click **Generate**
 3. You will see **10 codes** displayed on screen
 
-Each code is a 12-character uppercase alphanumeric string. They look like this:
+Each code is a 12-character uppercase alphanumeric string (no hyphens). They look like this:
 
 ```
-A7K2-X9M4-Q3P8
+A7K2X9M4Q3P8
 ```
 
 ### 9.2.2 Downloading as PDF

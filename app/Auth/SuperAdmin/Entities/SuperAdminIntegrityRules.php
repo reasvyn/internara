@@ -8,7 +8,6 @@ use App\Auth\Permissions\Enums\Role;
 use App\Core\Entities\BaseEntity;
 use App\User\Enums\AccountStatus;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 final readonly class SuperAdminIntegrityRules extends BaseEntity
 {
@@ -31,19 +30,8 @@ final readonly class SuperAdminIntegrityRules extends BaseEntity
                 : ($model->status
                     ? AccountStatus::tryFrom((string) $model->status)
                     : null),
-            superAdminCount: (int) ($model->super_admin_count ?? self::countSuperAdmins()),
+            superAdminCount: (int) ($model->super_admin_count ?? 0),
         );
-    }
-
-    /**
-     * Count the number of superadmin accounts in the system.
-     */
-    private static function countSuperAdmins(): int
-    {
-        return (int) DB::table('model_has_roles')
-            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-            ->where('roles.name', Role::SUPER_ADMIN->value)
-            ->count();
     }
 
     public function isNameValid(): bool

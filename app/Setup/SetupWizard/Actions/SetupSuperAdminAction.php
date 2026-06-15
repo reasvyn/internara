@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Setup\SetupWizard\Actions;
 
 use App\Auth\Permissions\Enums\Role as RoleEnum;
-use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Support\PasswordRules;
@@ -33,7 +32,7 @@ final class SetupSuperAdminAction extends BaseCommandAction
             $existing = User::where('username', $username)->first();
 
             if ($existing !== null) {
-                $integrity = SuperAdminIntegrityRules::fromModel($existing);
+                $integrity = $existing->asSuperAdminIntegrityRules();
 
                 if ($integrity->isImmutable()) {
                     throw new RejectedException(
