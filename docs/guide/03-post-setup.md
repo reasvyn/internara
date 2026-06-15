@@ -223,4 +223,4 @@ Your school is now live on Internara. Here are some resources for ongoing use:
 ---
 
 **← Previous:** [Chapter 2: Setup Wizard](02-setup-wizard.md)
-**Next →** [Back to Manual Index](00-guide-index.md)
+**Next →** [Chapter 7: Login & Dashboard](07-login-and-dashboard.md)
