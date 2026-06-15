@@ -167,4 +167,4 @@ Your profile summary card appears on dashboards and throughout the system, showi
 ---
 
 **← Previous:** [Login & Dashboard](07-login-and-dashboard.md)
-**Next →** [Back to Manual Index](00-guide-index.md)
+**Next →** [System Settings & Backups](10-system-settings-and-backups.md)
