@@ -37,7 +37,7 @@
 
 | Document                                                    | Description                                                                     |
 | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| [User Manual (7 chapters)](guide/00-guide-index.md)         | Step-by-step user guide: installation, wizard, post-setup, login & dashboard, health, upgrades, admin recovery |
+| [User Manual (8 chapters)](guide/00-guide-index.md)         | Step-by-step user guide: installation, wizard, post-setup, login & dashboard, profile & recovery, health, upgrades, admin recovery |
 
 ---
 

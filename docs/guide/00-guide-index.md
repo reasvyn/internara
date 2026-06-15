@@ -29,6 +29,7 @@ Estimated total time: **1–2 hours** for installation and initial setup.
 | 05 | [Upgrading Internara](05-upgrading-from-previous.md) | Upgrade procedure, rollback, version numbering | 15–20 min |
 | 06 | [Admin & Recovery](06-admin-create-and-recovery.md) | Create admin accounts, recover access, manage recovery keys | 10–15 min |
 | 07 | [Login & Dashboard](07-login-and-dashboard.md) | Log in, navigate the dashboard, manage your profile | 10–15 min |
+| 09 | [User Profile & Recovery](09-user-profile-and-recovery.md) | Edit profile, manage recovery codes, use notifications | 10–15 min |
 
 ---
 
