@@ -72,7 +72,11 @@ return [
     ],
     'welcome_to_dashboard' => [
         'title' => 'Welcome to the Dashboard!',
-        'message' => 'You are now logged in as Super Administrator. Explore the system and start configuring your internship programs.',
+        'super_admin' => 'You are now logged in as Super Administrator. Explore the system and start configuring your internship programs.',
+        'admin' => 'Welcome! Manage users, create programs, and monitor internship progress from this dashboard.',
+        'student' => 'Welcome! Write journals, track attendance, and stay on top of your internship assignments.',
+        'teacher' => 'Welcome! Verify logbooks, grade submissions, and supervise your assigned students.',
+        'supervisor' => 'Welcome! Review journals, submit evaluations, and track your interns\' progress.',
     ],
     'super_admin_recovered' => [
         'title' => 'Super Admin Recovery Performed',

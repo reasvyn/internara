@@ -95,13 +95,10 @@
     {{-- Bottom Row --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
         <div class="lg:col-span-2">
-            <x-mary-card :title="__('dashboard.student.timeline')" separator>
-                <x-core::widgets.empty-state icon="o-queue-list" :title="__('dashboard.student.timeline_empty')" />
-            </x-mary-card>
+            @include('user.dashboard._sidebar')
         </div>
 
         <div class="space-y-4">
-            <x-core::widgets.profile-summary :showEdit="true" />
             <x-mary-card :title="__('dashboard.quick_links')" separator>
                 <div class="space-y-1">
                     <x-core::widgets.quick-link :label="__('dashboard.edit_profile')" icon="o-user" link="{{ route('profile') }}" />

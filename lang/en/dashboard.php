@@ -116,6 +116,22 @@ return [
 
     'system_settings' => 'System Settings',
     'quick_actions' => 'Quick Actions',
+
+    'super_admin' => [
+        'audit_title' => 'Audit Overview',
+        'total_audit_entries' => 'Total Audit Entries',
+        'failed_logins_7d' => 'Failed Logins (7d)',
+        'active_users_today' => 'Active Users Today',
+        'system_title' => 'System Info',
+        'php_version' => 'PHP Version',
+        'laravel_version' => 'Laravel Version',
+        'environment' => 'Environment',
+        'storage_title' => 'Platform Overview',
+        'total_users' => 'Total Users',
+        'total_companies' => 'Companies',
+        'internships' => 'Internships',
+    ],
+
     'help_title' => 'Need Help?',
     'help_desc' => 'Explore the documentation to master :app features.',
     'read_docs' => 'Read Documentation',

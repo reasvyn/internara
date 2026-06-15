@@ -30,14 +30,7 @@
         </div>
 
         <div class="space-y-4">
-            <x-core::widgets.profile-summary :showEdit="true" />
-            <x-mary-card :title="__('dashboard.quick_links')" separator>
-                <div class="space-y-1">
-                    <x-core::widgets.quick-link :label="__('dashboard.edit_profile')" icon="o-user" link="{{ route('profile') }}" />
-                    <x-core::widgets.quick-link :label="__('profile.recovery.title')" icon="o-key" link="{{ route('profile.recovery') }}" />
-                    <x-core::widgets.quick-link :label="__('dashboard.notifications')" icon="o-bell" link="{{ route('notifications') }}" />
-                </div>
-            </x-mary-card>
+            @include('user.dashboard._sidebar')
         </div>
     </div>
 

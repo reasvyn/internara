@@ -19,7 +19,7 @@
                 :label="__('auth.activate.code')"
                 :placeholder="__('auth.activate.code_placeholder')"
                 icon="o-hashtag"
-                maxlength="6"
+                maxlength="19"
             />
 
             <x-mary-password

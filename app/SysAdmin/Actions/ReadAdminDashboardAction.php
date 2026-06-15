@@ -8,6 +8,7 @@ use App\Academics\Department\Models\Department;
 use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Actions\BaseReadAction;
+use App\Core\Models\ActivityLog;
 use App\Enrollment\Placement\Models\Placement;
 use App\Enrollment\Registration\Models\Registration;
 use App\Journals\Attendance\Models\Attendance;
@@ -75,6 +76,15 @@ final class ReadAdminDashboardAction extends BaseReadAction
                 'placementRate' => $registered > 0
                         ? round((Placement::sum('filled_quota') / max($registered, 1)) * 100)
                         : 0,
+
+                // ─── Super Admin ──────────────────────────────────────
+                'totalAuditEntries' => ActivityLog::count(),
+                'failedLogins7d' => ActivityLog::where('description', 'login_failed')
+                    ->where('created_at', '>=', now()->subDays(7))
+                    ->count(),
+                'activeUsersToday' => ActivityLog::where('created_at', '>=', now()->startOfDay())
+                    ->distinct('causer_id')
+                    ->count('causer_id'),
             ];
         });
     }
