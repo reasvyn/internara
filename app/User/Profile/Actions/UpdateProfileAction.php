@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\User\Profile\Actions;
 
-use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
@@ -23,7 +22,7 @@ final class UpdateProfileAction extends BaseCommandAction
         ?UploadedFile $avatar = null,
         ?string $username = null,
     ): Profile {
-        $integrity = SuperAdminIntegrityRules::fromModel($user);
+        $integrity = $user->asSuperAdminIntegrityRules();
 
         if ($name !== null && ! $integrity->canChangeName()) {
             throw new RejectedException('Cannot change super admin name.');
@@ -59,7 +58,7 @@ final class UpdateProfileAction extends BaseCommandAction
             Validator::make($userData, $userRules)->validate();
         }
 
-        $this->validate($data);
+        $this->validateProfileData($data);
 
         $data = array_filter($data, fn ($v) => $v !== null);
 
@@ -82,7 +81,7 @@ final class UpdateProfileAction extends BaseCommandAction
         });
     }
 
-    protected function validate(array $data): void
+    protected function validateProfileData(array $data): void
     {
         Validator::make($data, [
             'phone' => ['nullable', 'string', 'max:20'],

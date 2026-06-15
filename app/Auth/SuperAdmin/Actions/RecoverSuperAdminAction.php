@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Auth\SuperAdmin\Actions;
 
 use App\Auth\Permissions\Enums\Role;
-use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Auth\SuperAdmin\Events\SuperAdminRecovered;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
@@ -30,7 +29,7 @@ final class RecoverSuperAdminAction extends BaseCommandAction
         return $this->transaction(function () use ($email, $password, $cacheKey) {
             $user = User::where('email', $email)->firstOrFail();
 
-            $integrity = SuperAdminIntegrityRules::fromModel($user);
+            $integrity = $user->asSuperAdminIntegrityRules();
 
             if ($user->hasRole(Role::SUPER_ADMIN->value) && ! $integrity->hasProtectedStatus()) {
                 throw new RejectedException(

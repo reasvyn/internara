@@ -1,7 +1,7 @@
 # SysAdmin — Technical Reference
 
-> Last updated: 2026-06-10
-> Changes: sync — fix extends for GetAdminDashboardStatsAction, ReadRecoveryKeyAction; add DeleteAnnouncementAction, PublishAnnouncementAction
+> Last updated: 2026-06-15
+> Changes: sync — remove stale UserManagement actions (belong to User module), fix action list with actual SysAdmin actions (ReadAdminDashboard, Backups)
 
 Detailed structural and implementation reference for the **SysAdmin** module.
 
@@ -13,8 +13,8 @@ Handles user administration, announcements, super admin recovery, system health 
 
 ### Submodules
 
-- `Account` — User account lifecycle
 - `Announcement` — System announcements
+- `Backups` — Database and storage backup management
 - `Observability` — Health monitoring, Pulse, audit logs, GDPR
 
 ---
@@ -23,23 +23,14 @@ Handles user administration, announcements, super admin recovery, system health 
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Actions/GetAdminDashboardStatsAction.php` | `GetAdminDashboardStatsAction` | Read |
-| `UserManagement/Actions/CreateUserAction.php` | `CreateUserAction` | `BaseAction` |
-| `UserManagement/Actions/UpdateUserAction.php` | `UpdateUserAction` | `BaseAction` |
-| `UserManagement/Actions/DeleteUserAction.php` | `DeleteUserAction` | `BaseAction` |
-| `UserManagement/Actions/BatchDeleteUserAction.php` | `BatchDeleteUserAction` | `BaseAction` |
-| `UserManagement/Actions/SetUserStatusAction.php` | `SetUserStatusAction` | `BaseAction` |
-| `UserManagement/Actions/ToggleUserStatusAction.php` | `ToggleUserStatusAction` | `BaseAction` |
-| `UserManagement/Actions/GenerateAccountSlipAction.php` | `GenerateAccountSlipAction` | `BaseAction` |
-| `UserManagement/Actions/SaveRecoveryKeyAction.php` | `SaveRecoveryKeyAction` | `BaseAction` |
-| `UserManagement/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | Read |
-| `UserManagement/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseAction` |
-| `UserManagement/Actions/ArchiveStudentAccountsAction.php` | `ArchiveStudentAccountsAction` | `BaseAction` |
-| `UserManagement/Actions/GetUserManagerStatsAction.php` | `GetUserManagerStatsAction` | Read |
-| `UserManagement/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | Read |
-| `Announcement/Actions/DeleteAnnouncementAction.php` | `DeleteAnnouncementAction` | `BaseAction` |
-| `Announcement/Actions/PublishAnnouncementAction.php` | `PublishAnnouncementAction` | Process `BaseAction` |
-| `Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | Process `BaseAction` |
+| `Actions/ReadAdminDashboardAction.php` | `ReadAdminDashboardAction` | `BaseReadAction` |
+| `Announcement/Actions/DeleteAnnouncementAction.php` | `DeleteAnnouncementAction` | `BaseCommandAction` |
+| `Announcement/Actions/PublishAnnouncementAction.php` | `PublishAnnouncementAction` | `BaseCommandAction` |
+| `Announcement/Actions/SendAnnouncementAction.php` | `SendAnnouncementAction` | `BaseCommandAction` |
+| `Backups/Actions/CreateBackupAction.php` | `CreateBackupAction` | `BaseCommandAction` |
+| `Backups/Actions/DeleteBackupAction.php` | `DeleteBackupAction` | `BaseCommandAction` |
+| `Backups/Actions/CleanupBackupsAction.php` | `CleanupBackupsAction` | `BaseCommandAction` |
+| `Backups/Actions/ReadBackupHistoryAction.php` | `ReadBackupHistoryAction` | `BaseReadAction` |
 
 ---
 
@@ -56,7 +47,9 @@ Handles user administration, announcements, super admin recovery, system health 
 
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
-| `Announcement/Enums/AnnouncementStatus.php` | `AnnouncementStatus` | `LabelEnum`, `StatusEnum` | draft, scheduled, published, archived |
+| `Announcement/Enums/AnnouncementStatus.php` | `AnnouncementStatus` | `LabelEnum`, `StatusEnum` | draft, scheduled, published |
+| `Backups/Enums/BackupStatus.php` | `BackupStatus` | `LabelEnum` | pending, running, completed, failed |
+| `Backups/Enums/BackupType.php` | `BackupType` | `LabelEnum` | database, storage, both |
 
 ---
 
@@ -65,8 +58,7 @@ Handles user administration, announcements, super admin recovery, system health 
 | File | Class | Extends |
 | ---- | ----- | ------- |
 | `Announcement/Entities/AnnouncementState.php` | `AnnouncementState` | `BaseEntity` |
-
----
+| `Backups/Entities/BackupState.php` | `BackupState` | `BaseEntity` |
 
 ---
 
@@ -74,6 +66,7 @@ Handles user administration, announcements, super admin recovery, system health 
 
 | File | Policy | Extends |
 | ---- | ------ | ------- |
+| `Backups/Policies/BackupPolicy.php` | `BackupPolicy` | `BasePolicy` |
 | `Observability/GdprDeletionLog/Policies/GdprDeletionLogPolicy.php` | `GdprDeletionLogPolicy` | `BasePolicy` |
 
 ---
@@ -82,12 +75,8 @@ Handles user administration, announcements, super admin recovery, system health 
 
 | File | Component | Extends |
 | ---- | --------- | ------- |
-| `UserManagement/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` |
-| `UserManagement/Livewire/StudentManager.php` | `StudentManager` | `BaseRecordManager` |
-| `UserManagement/Livewire/TeacherManager.php` | `TeacherManager` | `BaseRecordManager` |
-| `UserManagement/Livewire/SupervisorManager.php` | `SupervisorManager` | `BaseRecordManager` |
-| `UserManagement/Livewire/AdminManager.php` | `AdminManager` | `BaseRecordManager` |
 | `Announcement/Livewire/AnnouncementManager.php` | `AnnouncementManager` | `Component` |
+| `Backups/Livewire/BackupManager.php` | `BackupManager` | `Component` |
 | `Livewire/ApplicationReview.php` | `ApplicationReview` | `Component` |
 | `Observability/Livewire/AuditLogManager.php` | `AuditLogManager` | `Component` |
 | `Observability/Livewire/AccountCloneDetector.php` | `AccountCloneDetector` | `Component` |
@@ -95,28 +84,16 @@ Handles user administration, announcements, super admin recovery, system health 
 | `Observability/Livewire/Pulse/SystemCard.php` | `SystemCard` | `Component` |
 | `Observability/Livewire/Pulse/RegistrationsCard.php` | `RegistrationsCard` | `Component` |
 
-## Livewire Concerns
-
-| File | Trait | Purpose |
-| ---- | ----- | ------- |
-| `UserManagement/Livewire/Concerns/DownloadsAccountSlips.php` | `DownloadsAccountSlips` | PDF account slip download utility |
-
 ## Livewire Forms
 
 | File | Form |
 | ---- | ---- |
-| `UserManagement/Livewire/Forms/UserForm.php` | `UserForm` |
-| `UserManagement/Livewire/Forms/StudentForm.php` | `StudentForm` |
-| `UserManagement/Livewire/Forms/TeacherForm.php` | `TeacherForm` |
-| `UserManagement/Livewire/Forms/SupervisorForm.php` | `SupervisorForm` |
-| `UserManagement/Livewire/Forms/AdminUserForm.php` | `AdminUserForm` |
 | `Announcement/Livewire/Forms/AnnouncementForm.php` | `AnnouncementForm` |
 
 ## Notifications
 
 | File | Notification |
 | ---- | ------------ |
-| `UserManagement/Notifications/ActivationCodeNotification.php` | `ActivationCodeNotification` |
 | `Announcement/Notifications/AnnouncementNotification.php` | `AnnouncementNotification` |
 
 ## Console Commands
@@ -184,19 +161,7 @@ Tests are located in `tests/{Feature,Unit}/SysAdmin/`. See [Testing](../infrastr
 
 ```
 app/SysAdmin/
-├── Actions/GetAdminDashboardStatsAction.php
-├── UserManagement/
-│   ├── Actions/ (12 actions)
-│   ├── Console/Commands/AutoInactivateAccounts.php
-│   ├── Livewire/
-│   │   ├── Concerns/DownloadsAccountSlips.php
-│   │   ├── Forms/ (UserForm, StudentForm, TeacherForm, SupervisorForm, AdminUserForm)
-│   │   ├── UserManager.php
-│   │   ├── StudentManager.php
-│   │   ├── TeacherManager.php
-│   │   ├── SupervisorManager.php
-│   │   └── AdminManager.php
-│   └── Notifications/ActivationCodeNotification.php
+├── Actions/ReadAdminDashboardAction.php
 ├── Announcement/
 │   ├── Actions/
 │   │   ├── DeleteAnnouncementAction.php
@@ -204,11 +169,29 @@ app/SysAdmin/
 │   │   └── SendAnnouncementAction.php
 │   ├── Console/Commands/PublishScheduledAnnouncementsCommand.php
 │   ├── Enums/AnnouncementStatus.php
+│   ├── Entities/AnnouncementState.php
 │   ├── Livewire/
 │   │   ├── Forms/AnnouncementForm.php
 │   │   └── AnnouncementManager.php
 │   ├── Models/Announcement.php
 │   └── Notifications/AnnouncementNotification.php
+├── Backups/
+│   ├── Actions/
+│   │   ├── CleanupBackupsAction.php
+│   │   ├── CreateBackupAction.php
+│   │   ├── DeleteBackupAction.php
+│   │   └── ReadBackupHistoryAction.php
+│   ├── Enums/BackupStatus.php
+│   ├── Enums/BackupType.php
+│   ├── Entities/BackupState.php
+│   ├── Events/BackupCompleted.php
+│   ├── Events/BackupFailed.php
+│   ├── Listeners/
+│   ├── Livewire/BackupManager.php
+│   ├── Models/Backup.php
+│   ├── Notifications/
+│   ├── Policies/BackupPolicy.php
+│   └── Support/BackupRunner.php
 ├── Console/Commands/
 │   ├── CreateAdminCommand.php
 │   ├── PruneNotificationsCommand.php
@@ -244,7 +227,7 @@ app/SysAdmin/
 
 ## Architectural Integration
 
-- **Submodules**: `Account`, `Announcement`, `Observability`
+- **Submodules**: `Announcement`, `Backups`, `Observability`
 - **Business Logic**: `app/SysAdmin/`
 - **Routing**: `routes/web/sysadmin.php`
 - **Views**: `resources/views/sysadmin/`

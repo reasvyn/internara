@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — fix support class count (11→12, drop HasModelStatuses, add Spotlight)
+> **Last updated:** 2026-06-15
+> **Changes:** sync — fix test count (463→416), update metadata
 
 Detailed structural and implementation reference for the **Core** module, including both abstract infrastructure and concrete shared components.
 
@@ -29,7 +29,7 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 - **Console Commands**: 1 (`module:discover`)
 - **Global Helpers**: 1 (`app_info()` in `helpers.php`)
 - **Config Files**: 1 (`config/cache-keys.php` — centralized cache key registry)
-- **Tests**: ~463 across Unit and Feature suites
+- **Tests**: ~416 across Unit and Feature suites
 - **Routes**: 0 (health check at `/up` in `bootstrap/app.php`)
 
 ---

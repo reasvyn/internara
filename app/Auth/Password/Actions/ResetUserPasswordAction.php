@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Auth\Password\Actions;
 
-use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
@@ -15,7 +14,7 @@ class ResetUserPasswordAction extends BaseCommandAction
 {
     public function execute(User $user): array
     {
-        $integrity = SuperAdminIntegrityRules::fromModel($user);
+        $integrity = $user->asSuperAdminIntegrityRules();
 
         if ($integrity->isImmutable()) {
             throw new RejectedException(

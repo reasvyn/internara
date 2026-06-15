@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Auth\AccountRecovery\Actions;
 
 use App\Auth\AccountRecovery\Data\RecoveryCodeData;
+use App\Auth\AccountRecovery\Events\RecoverySlipGenerated;
 use App\Auth\ApiTokens\Models\ApiToken;
 use App\Core\Actions\BaseCommandAction;
 use App\User\Models\User;
@@ -17,6 +18,8 @@ class GenerateRecoverySlipAction extends BaseCommandAction
     /** @return array{code: RecoveryCodeData, plaintext: array<int, string>, expires_at: null} */
     public function execute(User $user): array
     {
+        ApiToken::revokeFor($user, 'account_recovery');
+
         $codes = [];
         $firstCode = null;
 
@@ -46,6 +49,7 @@ class GenerateRecoverySlipAction extends BaseCommandAction
         }
 
         $this->log('recovery_slips_generated', $user, ['count' => self::CODE_COUNT]);
+        $this->dispatchEvent(new RecoverySlipGenerated($user, self::CODE_COUNT));
 
         return [
             'code' => $firstCode,

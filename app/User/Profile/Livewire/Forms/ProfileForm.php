@@ -39,7 +39,7 @@ class ProfileForm extends Form
         $this->phone = $profile?->phone ?? '';
         $this->address = $profile?->address ?? '';
         $this->bio = $profile?->bio ?? '';
-        $this->employment_status = $profile?->employment_status?->value ?? null;
+        $this->employment_status = $profile?->employment_status ?? null;
         $this->id_number = $profile?->id_number ?? null;
         $this->competence_field = $profile?->competence_field ?? null;
         $this->job_title = $profile?->job_title ?? null;

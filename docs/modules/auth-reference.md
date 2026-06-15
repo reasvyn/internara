@@ -1,6 +1,6 @@
 # Auth — Technical Reference
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-15
 
 Detailed structural and implementation reference for the **Auth** module.
 
@@ -32,6 +32,7 @@ Handles authentication: login, password management, account activation, account 
 | `Password/Actions/ResetUserPasswordAction.php` | `ResetUserPasswordAction` | `BaseAction` |
 | `Password/Actions/SendPasswordResetLinkAction.php` | `SendPasswordResetLinkAction` | `BaseAction` |
 | `Password/Actions/UpdateUserPasswordAction.php` | `UpdateUserPasswordAction` | `BaseAction` |
+| `Account/Actions/ActivateAccountAction.php` | `ActivateAccountAction` | `BaseAction` |
 | `AccountRecovery/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction` | `BaseAction` |
 | `AccountRecovery/Actions/RedeemRecoverySlipAction.php` | `RedeemRecoverySlipAction` | `BaseAction` |
 | `SuperAdmin/Actions/InitializeSuperAdminAction.php` | `InitializeSuperAdminAction` | `BaseAction` |

@@ -272,6 +272,12 @@ class User extends BaseAuthenticatable implements HasMedia
 
     public function asSuperAdminIntegrityRules(): SuperAdminIntegrityRules
     {
+        if (! array_key_exists('super_admin_count', $this->attributes)) {
+            $this->loadCount([
+                'roles as super_admin_count' => fn ($q) => $q->where('name', 'superadmin'),
+            ]);
+        }
+
         return SuperAdminIntegrityRules::fromModel($this);
     }
 

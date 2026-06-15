@@ -385,4 +385,4 @@ Each module is a vertical slice cross-cutting all layers.
 
 ---
 
-_Last synchronized with architecture at 2026-06-13_
+_Last synchronized with architecture at 2026-06-15_
