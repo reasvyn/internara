@@ -1,6 +1,6 @@
 ---
 name: sync-docs
-description: Comprehensive markdown documentation sync against actual code implementation. Dynamically discovers patterns and rules from authoritative docs, then verifies them against code — never hardcodes rules that can go stale.
+description: Comprehensive markdown documentation sync against actual code implementation. Dynamically discovers patterns and rules from authoritative docs, then verifies them against code — never hardcodes rules that can go stale. Avoids brittle numbers, states, statuses, and enumerated lists in documentation.
 ---
 
 # Documentation Sync Skill
@@ -9,7 +9,9 @@ description: Comprehensive markdown documentation sync against actual code imple
 
 Apply this skill when asked to synchronize, update, refresh, or align documentation with implementation. Covers **every `.md` file in the repository** (excl. `node_modules/`, `vendor/`, `.git/`, `storage/`).
 
-## Core Principle
+## Core Principles
+
+### 1. Never Hardcode Rules
 
 This skill does **not** hardcode what "correct" looks like. Instead, it:
 
@@ -18,6 +20,27 @@ This skill does **not** hardcode what "correct" looks like. Instead, it:
 3. **Fixes** whichever side is wrong
 
 If a rule changes in `docs/conventions.md` next week, this skill still works — it reads the updated rule and checks against it. No maintenance needed.
+
+### 2. Avoid Brittle Content in Documentation
+
+Numbers, states, statuses, and enumerated lists are **brittle** — they become stale the moment code changes. The only exception is if the document is explicitly designed as a catalog, inventory, or registry (e.g. `docs/doc-index.md`, `docs/modules/module-index.md`, `docs/adr/adr-index.md`).
+
+**When writing or fixing documentation, prefer:**
+
+| Brittle (avoids) | Resilient (prefers) |
+|---|---|
+| "There are 42 models" | "Models extend `BaseModel`" (structural statement) |
+| "Currently in ALPHA stage" | Describe what is implemented (factual statement) |
+| "Auth module has 10 actions" | "Actions live under `app/Auth/*/Actions/`" (locational statement) |
+| "Status: 3 resolved, 2 open" | List known issues without promising total counts |
+| "PHP 8.4, Laravel 13, Livewire 4" (in derivative docs only) | Keep stack versions only in `composer.json` / `package.json` — derivative docs should reference those instead of duplicating |
+| "Tiers: Shared Hosting, VPS" (enumeration that may grow) | Describe the concept without promising an exhaustive list |
+
+**When you encounter brittle content during a sync:**
+
+1. If the doc is **not** a catalog (e.g. `docs/architecture.md`, guide chapters, pattern docs): rewrite the brittle statement into a structural/locational/factual form
+2. If the doc **is** a catalog (e.g. `docs/doc-index.md`, `docs/modules/module-index.md`): keep the listing but note that counts will drift — do not exhaustively correct them
+3. If the doc is **derivative** (AGENTS.md, GEMINI.md, README.md): remove duplicated version numbers and counts entirely; they should reference authoritative sources instead
 
 ## Scope
 

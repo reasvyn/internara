@@ -1,5 +1,6 @@
 <laravel-boost-guidelines>
 > **Last updated:** 2026-06-15
+> **Changes:** add Documentation Quality section — avoid brittle numbers, states, statuses, and lists
 >
 > **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
 > provides quick-reference essentials and project-specific rules that cannot wait for doc lookups.
@@ -71,6 +72,17 @@ agent level:
 - Foreign keys use `foreignUuid()->constrained()`.
 - Run `vendor/bin/pint --format agent` after modifying PHP files.
 - Run `php artisan test --compact --filter=TestName` for targeted tests.
+
+## Documentation Quality
+
+**Avoid brittle content.** Numbers, states, statuses, and enumerated lists become stale the moment code changes. The only exception is documents explicitly designed as catalogs (e.g. `docs/doc-index.md`, `docs/modules/module-index.md`).
+
+When writing or editing docs, prefer:
+- **Structural statements** over counts: "Models extend `BaseModel`" not "There are 42 models"
+- **Locational statements** over listings: "Actions live under `app/{Module}/*/Actions/`" not "Auth has 10 actions"
+- **Factual statements** over status: describe what actually exists, not what phase the project is in
+
+For derivative docs (this file, GEMINI.md, README.md), do NOT duplicate version numbers or counts — reference `composer.json`, `package.json`, or `docs/` instead.
 
 === boost ===
 
