@@ -32,10 +32,7 @@ class RedeemRecoverySlipAction extends BaseCommandAction
 
             $matchedCode = null;
             foreach ($recoveryCodes as $rc) {
-                if (
-                    $rc->isValid() &&
-                    Hash::check(strtoupper($code), $rc->token)
-                ) {
+                if (Hash::check(strtoupper($code), $rc->token)) {
                     $matchedCode = $rc;
                     break;
                 }

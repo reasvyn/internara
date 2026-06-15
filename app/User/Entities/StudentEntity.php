@@ -23,7 +23,7 @@ final readonly class StudentEntity extends BaseEntity
         $statusValue = $model->getAttribute('status');
 
         return new self(
-            status: AccountStatus::tryFrom((string) $statusValue) ?? AccountStatus::PROVISIONED,
+            status: $statusValue instanceof AccountStatus ? $statusValue : AccountStatus::tryFrom((string) $statusValue) ?? AccountStatus::PROVISIONED,
             isLocked: $model->getAttribute('locked_at') !== null,
             setupRequired: (bool) $model->getAttribute('setup_required'),
             hasActiveRegistration: $model->relationLoaded('registrations')
