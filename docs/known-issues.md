@@ -75,11 +75,11 @@ This document catalogs known gaps between documented requirements and actual imp
 
 ---
 
-### D-5 — [DELETED] — _sidebar dihapus, bukan di-reuse
+### D-5 — [RESOLVED] `_sidebar.blade.php` Removed
 
 | Attribute | Detail |
 |-----------|--------|
-| **Resolved** | 2026-06-15 — `_sidebar.blade.php` dihapus, konten inline dikembalikan ke masing-masing dashboard |
+| **Resolved** | 2026-06-15 — `_sidebar.blade.php` deleted; inline markup restored to each dashboard view directly |
 
 ---
 
