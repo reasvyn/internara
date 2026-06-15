@@ -1,6 +1,6 @@
 # User Manual — Getting Started with Internara
 
-> **Last updated:** 2026-06-14
+> **Last updated:** 2026-06-15
 
 Welcome to Internara — the vocational fieldwork management system for Indonesian schools.
 
@@ -28,6 +28,7 @@ Estimated total time: **1–2 hours** for installation and initial setup.
 | 04 | [System Health & Troubleshooting](04-system-health-and-troubleshooting.md) | Health checks, common problems, maintenance commands | 10–15 min |
 | 05 | [Upgrading Internara](05-upgrading-from-previous.md) | Upgrade procedure, rollback, version numbering | 15–20 min |
 | 06 | [Admin & Recovery](06-admin-create-and-recovery.md) | Create admin accounts, recover access, manage recovery keys | 10–15 min |
+| 07 | [Login & Dashboard](07-login-and-dashboard.md) | Log in, navigate the dashboard, manage your profile | 10–15 min |
 
 ---
 

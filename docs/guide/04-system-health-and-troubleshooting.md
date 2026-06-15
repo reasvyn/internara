@@ -246,5 +246,5 @@ For production installations, consider:
 
 ---
 
-**← Previous:** [Chapter 3: Post-Setup](03-post-setup.md)
+**← Previous:** [Chapter 7: Login & Dashboard](07-login-and-dashboard.md)
 **Next →** [Back to Manual Index](00-guide-index.md)
