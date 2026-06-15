@@ -30,6 +30,7 @@ Estimated total time: **1–2 hours** for installation and initial setup.
 | 06 | [Admin & Recovery](06-admin-create-and-recovery.md) | Create admin accounts, recover access, manage recovery keys | 10–15 min |
 | 07 | [Login & Dashboard](07-login-and-dashboard.md) | Log in, navigate the dashboard, manage your profile | 10–15 min |
 | 09 | [User Profile & Recovery](09-user-profile-and-recovery.md) | Edit profile, manage recovery codes, use notifications | 10–15 min |
+| 10 | [System Settings & Backups](10-system-settings-and-backups.md) | Configure branding, mail, locale; manage system backups | 10–15 min |
 
 ---
 
