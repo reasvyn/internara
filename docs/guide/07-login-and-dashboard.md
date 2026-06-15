@@ -307,4 +307,4 @@ Your dashboard is your home base in Internara. From here:
 ---
 
 **← Previous:** [Post-Setup](03-post-setup.md)
-**Next:** [System Health & Troubleshooting](04-system-health-and-troubleshooting.md)
+**Next:** [User Profile & Recovery](09-user-profile-and-recovery.md)
