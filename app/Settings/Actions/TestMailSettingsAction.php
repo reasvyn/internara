@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Settings\Actions;
 
 use App\Core\Actions\BaseCommandAction;
-use App\Core\Support\SmartLogger;
 use App\User\Notifications\TestMailNotification;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
@@ -25,15 +24,11 @@ class TestMailSettingsAction extends BaseCommandAction
 
             Notification::route('mail', $recipientEmail)->notify(new TestMailNotification);
 
+            $this->log('smtp_test_sent', null, ['recipient' => $recipientEmail]);
+
             return true;
         } catch (\Throwable $e) {
-            SmartLogger::error('smtp_test_failed')
-                ->event('smtp_test_failed')
-                ->module('Setting')
-                ->withPayload(['error' => $e->getMessage()])
-                ->withPiiMasking()
-                ->systemOnly()
-                ->save();
+            $this->log('smtp_test_failed', null, ['error' => $e->getMessage()]);
 
             return false;
         }

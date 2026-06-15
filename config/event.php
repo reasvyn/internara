@@ -84,5 +84,6 @@ return [
         BackupFailed::class => [
             SendBackupFailedNotification::class,
         ],
+        // BackupCompleted intentionally fire-and-forget — no listener needed yet.
     ],
 ];

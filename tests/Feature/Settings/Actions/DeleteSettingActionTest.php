@@ -1,12 +1,11 @@
 <?php
 
 declare(strict_types=1);
-
 use App\Settings\Actions\DeleteSettingAction;
 use App\Settings\Models\Setting;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('delete setting action deletes a single key', function () {
     Setting::create(['key' => 'test_key', 'value' => 'val', 'type' => 'string']);

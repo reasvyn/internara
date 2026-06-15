@@ -3,10 +3,7 @@
 declare(strict_types=1);
 
 use App\Settings\Support\Brand;
-use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
-
-uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Cache::flush();

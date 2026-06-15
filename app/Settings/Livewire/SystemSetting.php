@@ -104,6 +104,7 @@ class SystemSetting extends Component
 
     public function updatedBrandingFormBrandLogo(UploadBrandAssetAction $uploadBrand): void
     {
+        $this->authorize('update', Setting::class);
         $this->brandingForm->validate(['brand_logo' => 'nullable|image|max:1024']);
 
         if ($this->brandingForm->brand_logo instanceof UploadedFile) {
@@ -116,6 +117,7 @@ class SystemSetting extends Component
 
     public function updatedBrandingFormSiteFavicon(UploadBrandAssetAction $uploadBrand): void
     {
+        $this->authorize('update', Setting::class);
         $this->brandingForm->validate(['site_favicon' => 'nullable|image|max:512']);
 
         if ($this->brandingForm->site_favicon instanceof UploadedFile) {
@@ -128,6 +130,7 @@ class SystemSetting extends Component
 
     public function confirmRemoveBrandLogo(): void
     {
+        $this->authorize('update', Setting::class);
         $setting = Setting::firstOrCreate(['key' => 'brand_logo_ref']);
 
         $logos = $setting->getMedia(MediaCollection::LOGO->value);
@@ -147,6 +150,7 @@ class SystemSetting extends Component
 
     public function confirmRemoveFavicon(): void
     {
+        $this->authorize('update', Setting::class);
         $setting = Setting::firstOrCreate(['key' => 'brand_favicon_ref']);
 
         $favicons = $setting->getMedia(MediaCollection::FAVICON->value);

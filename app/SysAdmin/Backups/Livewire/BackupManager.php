@@ -7,6 +7,7 @@ namespace App\SysAdmin\Backups\Livewire;
 use App\Core\Livewire\BaseRecordManager;
 use App\SysAdmin\Backups\Actions\CreateBackupAction;
 use App\SysAdmin\Backups\Actions\DeleteBackupAction;
+use App\SysAdmin\Backups\Actions\ReadBackupStatsAction;
 use App\SysAdmin\Backups\Enums\BackupType;
 use App\SysAdmin\Backups\Models\Backup;
 use Illuminate\Contracts\View\View;
@@ -57,14 +58,9 @@ final class BackupManager extends BaseRecordManager
     }
 
     #[Computed]
-    public function stats(): array
+    public function stats(ReadBackupStatsAction $action): array
     {
-        return [
-            'total' => Backup::count(),
-            'completed' => Backup::where('status', 'completed')->count(),
-            'failed' => Backup::where('status', 'failed')->count(),
-            'latest' => Backup::where('status', 'completed')->latest()->first(),
-        ];
+        return $action->execute();
     }
 
     public function createBackup(string $type): void

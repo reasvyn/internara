@@ -25,6 +25,8 @@ class DeleteSettingAction extends BaseCommandAction
                 ));
             }
 
+            $this->log('settings_deleted', null, ['keys' => $keys]);
+
             return $deleted;
         });
     }

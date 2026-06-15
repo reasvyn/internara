@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Feature\Settings\Actions;
 
 use App\Settings\Actions\SetSettingAction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Validation\ValidationException;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('set setting action creates or updates settings and detects type', function () {
     $action = new SetSettingAction;

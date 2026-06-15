@@ -5,6 +5,8 @@ declare(strict_types=1);
 return [
     'language' => [
         'switch' => 'Ganti Bahasa',
+        'indonesian' => 'Bahasa Indonesia',
+        'english' => 'English',
     ],
     'theme' => [
         'switch' => 'Ganti Tema',

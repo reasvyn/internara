@@ -47,7 +47,7 @@ final class CreateBackupAction extends BaseCommandAction
                     'file_size' => $backup->file_size,
                 ]);
 
-                event(new BackupCompleted($backup));
+                $this->dispatchEvent(new BackupCompleted($backup));
 
                 return $backup;
             } catch (\Throwable $e) {
@@ -62,7 +62,7 @@ final class CreateBackupAction extends BaseCommandAction
                     'error' => $e->getMessage(),
                 ]);
 
-                event(new BackupFailed($backup));
+                $this->dispatchEvent(new BackupFailed($backup));
 
                 throw new RejectedException(__('backups.create_failed').': '.$e->getMessage());
             }
