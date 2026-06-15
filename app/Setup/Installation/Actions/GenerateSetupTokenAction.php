@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Setup\Installation\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\Installation\Data\SetupTokenData;
 use Illuminate\Support\Facades\Cache;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
-final class GenerateSetupTokenAction extends BaseAction
+final class GenerateSetupTokenAction extends BaseCommandAction
 {
     public function execute(): SetupTokenData
     {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\User\UserManagement\Livewire;
 
 use App\Auth\Permissions\Enums\Role as RoleEnum;
+use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\CreateUserAction;
@@ -21,6 +22,12 @@ class SupervisorManager extends BaseRecordManager
     use AuthorizesRequests, DownloadsAccountSlips;
 
     public bool $userModal = false;
+
+    public bool $showConfirm = false;
+
+    public string $confirmActionType = '';
+
+    public ?string $confirmTarget = null;
 
     public SupervisorForm $form;
 
@@ -131,24 +138,40 @@ class SupervisorManager extends BaseRecordManager
         $this->userModal = false;
     }
 
-    public function delete(string $id, DeleteUserAction $deleteAction): void
+    public function askDelete(string $id): void
     {
-        $user = User::findOrFail($id);
-
-        $deleteAction->execute($user);
-        flash()->success(__('user.supervisor.success_deleted'));
+        $this->confirmActionType = 'delete';
+        $this->confirmTarget = $id;
+        $this->showConfirm = true;
     }
 
-    // --- Bulk Actions ---
-
-    public function deleteSelected(DeleteUserAction $deleteAction): void
+    public function askDeleteSelected(): void
     {
-        $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
-            $user = User::find($id);
-            if ($user) {
-                $deleteAction->execute($user);
+        $this->confirmActionType = 'deleteSelected';
+        $this->showConfirm = true;
+    }
+
+    public function confirmAction(DeleteUserAction $deleteAction): void
+    {
+        try {
+            if ($this->confirmActionType === 'delete') {
+                $deleteAction->execute(User::findOrFail($this->confirmTarget));
+                flash()->success(__('user.supervisor.success_deleted'));
+            } elseif ($this->confirmActionType === 'deleteSelected') {
+                $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
+                    $user = User::find($id);
+                    if ($user) {
+                        $deleteAction->execute($user);
+                    }
+                });
             }
-        });
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
+        $this->confirmActionType = '';
     }
 
     public function render(): View

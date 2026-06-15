@@ -13,7 +13,7 @@ Apply this skill whenever styling Blade templates, building responsive layouts, 
 
 - **CSS entrypoint**: `resources/css/app.css` — Tailwind v4 config with `@import`, `@theme`, `@plugin`
 - **Architecture**: `docs/architecture.md#layered-architecture` (Layer 11 — UI/Presentation)
-- **Conventions**: `docs/conventions.md#16-blade-views`
+- **Livewire Pattern**: `docs/architecture/livewire-pattern.md`
 
 ## Tech Stack
 

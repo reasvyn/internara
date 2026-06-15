@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\User\UserManagement\Actions;
 
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\AccountStatus\Notifications\AccountStatusNotification;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 
-final class SetUserStatusAction extends BaseAction
+final class SetUserStatusAction extends BaseCommandAction
 {
     public function execute(User $user, AccountStatus $newStatus, ?string $reason = null, bool $skipAuthCheck = false): User
     {
@@ -25,7 +25,7 @@ final class SetUserStatusAction extends BaseAction
             throw new RejectedException('Cannot change super admin account status.');
         }
 
-        $currentStatusName = $user->latestStatus()?->name;
+        $currentStatusName = $user->status?->value;
 
         if ($currentStatusName !== null) {
             $currentStatus = AccountStatus::tryFrom($currentStatusName);

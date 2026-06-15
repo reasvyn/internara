@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\User\UserManagement\Actions;
 
 use App\Auth\ApiTokens\Models\ApiToken;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\User\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Blade;
 
-final class GenerateAccountSlipAction extends BaseAction
+final class GenerateAccountSlipAction extends BaseCommandAction
 {
     private const int CARD_W = 241;
 

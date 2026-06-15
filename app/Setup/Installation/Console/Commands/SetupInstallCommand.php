@@ -56,6 +56,7 @@ final class SetupInstallCommand extends Command
             SmartLogger::info(__('setup.cli.starting_installation'))
                 ->module('setup')
                 ->event('installation.started')
+                ->withPiiMasking()
                 ->save();
 
             $force = (bool) $this->option('force');
@@ -109,6 +110,7 @@ final class SetupInstallCommand extends Command
             SmartLogger::success(__('setup.cli.installation_completed'))
                 ->module('setup')
                 ->event('installation.completed')
+                ->withPiiMasking()
                 ->save();
 
             return self::SUCCESS;
@@ -117,6 +119,7 @@ final class SetupInstallCommand extends Command
                 ->module('setup')
                 ->event('installation.failed')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->save();
 
             $this->handleError($e);
@@ -176,6 +179,7 @@ final class SetupInstallCommand extends Command
             SmartLogger::error(__('setup.cli.audit_failed'))
                 ->module('setup')
                 ->event('audit.failed')
+                ->withPiiMasking()
                 ->save();
 
             $this->displayError(__('setup.cli.audit_failed'));

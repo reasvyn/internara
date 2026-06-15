@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Settings\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Settings\Enums\SettingGroup;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-class BatchSetSettingAction extends BaseAction
+class BatchSetSettingAction extends BaseCommandAction
 {
     public function __construct(protected readonly SetSettingAction $setSettingAction) {}
 

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Program\Internship\Actions;
 
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Program\Internship\Events\InternshipCreated;
 use App\Program\Internship\Models\Internship;
 
-final class CreateInternshipAction extends BaseAction
+final class CreateInternshipAction extends BaseCommandAction
 {
     public function execute(array $data): Internship
     {

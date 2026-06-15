@@ -20,16 +20,10 @@ final readonly class StudentEntity extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
-        $latestName =
-            $model->status instanceof AccountStatus
-                ? $model->status->value
-                : $model->status ??
-                    ($model->relationLoaded('statuses')
-                        ? $model->statuses->last()?->name
-                        : $model->latestStatus()?->name);
+        $statusValue = $model->getAttribute('status');
 
         return new self(
-            status: AccountStatus::tryFrom((string) $latestName) ?? AccountStatus::PROVISIONED,
+            status: AccountStatus::tryFrom((string) $statusValue) ?? AccountStatus::PROVISIONED,
             isLocked: $model->getAttribute('locked_at') !== null,
             setupRequired: (bool) $model->getAttribute('setup_required'),
             hasActiveRegistration: $model->relationLoaded('registrations')

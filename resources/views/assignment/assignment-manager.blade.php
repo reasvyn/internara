@@ -60,8 +60,7 @@
                         label="Delete Selected"
                         icon="o-trash"
                         class="btn-error text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6 shadow-lg shadow-error/20 hover:scale-105 transition-transform"
-                        wire:confirm="Are you sure?"
-                        wire:click="deleteSelected"
+                        wire:click="askDeleteSelected"
                     />
                 </div>
                 <div class="w-px h-8 bg-primary/20 mx-2"></div>
@@ -129,7 +128,7 @@
                             <x-mary-button icon="o-paper-airplane" class="btn-ghost btn-sm btn-circle text-success hover:bg-success/10 transition-colors" wire:click="publish('{{ $assignment->id }}')" tooltip="Publish" />
                         @endif
                         <x-mary-button icon="o-pencil" class="btn-ghost btn-sm btn-circle text-primary hover:bg-primary/10 transition-colors" wire:click="edit('{{ $assignment->id }}')" tooltip="Edit" />
-                        <x-mary-button icon="o-trash" class="btn-ghost btn-sm btn-circle text-error hover:bg-error/10 transition-colors" wire:confirm="Delete this assignment?" wire:click="delete('{{ $assignment->id }}')" tooltip="Delete" />
+                        <x-mary-button icon="o-trash" class="btn-ghost btn-sm btn-circle text-error hover:bg-error/10 transition-colors" wire:click="askDelete('{{ $assignment->id }}')" tooltip="Delete" />
                     </div>
                 @endscope
             </x-mary-table>
@@ -171,4 +170,6 @@
             </div>
         </x-slot:actions>
     </x-mary-modal>
+
+    <x-core::ui.confirm message="Are you sure?" />
 </div>

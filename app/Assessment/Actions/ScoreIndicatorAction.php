@@ -6,11 +6,11 @@ namespace App\Assessment\Actions;
 
 use App\Assessment\Models\Assessment;
 use App\Assessment\Rubric\Models\Rubric;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 
-final class ScoreIndicatorAction extends BaseAction
+final class ScoreIndicatorAction extends BaseCommandAction
 {
     public function execute(
         Assessment $assessment,

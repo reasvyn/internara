@@ -1,5 +1,5 @@
 <laravel-boost-guidelines>
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-15
 >
 > **Purpose:** Thin agentic instruction layer for Gemini. All authoritative docs live under `docs/`.
 > Do NOT duplicate content from `docs/` — refer to it instead.
@@ -23,6 +23,8 @@ Activate `.agents/skills/` when working in that domain:
 - `feature-building`, `laravel-best-practices`
 - `pest-testing`, `pulse-development`
 - `medialibrary-development`, `tailwindcss-development`
+- `audit-protocol` — comprehensive multi-layer codebase audit
+- `sync-docs` — synchronize ALL markdown documentation with actual implementation
 
 ## Documentation (NOT Duplicated Here)
 
@@ -32,10 +34,12 @@ See `AGENTS.md` for the complete list of topics covered in `docs/`. Key location
 |-------|----------|
 | Architecture & 12 layers | `docs/architecture.md` |
 | Action Triad | `docs/architecture.md` |
-| Base class mandate, Naming, Models | `docs/conventions.md` |
-| Livewire components | `docs/conventions.md` (#10) |
-| Events, Notifications | `docs/conventions.md` (#12-13) |
-| Testing | `docs/conventions.md` (#22), `docs/infrastructure/testing.md` |
+| Base class mandate | `docs/architecture.md` (Base Class Mandate §) |
+| Naming conventions | `docs/conventions.md` (§3 Naming Conventions) |
+| Models & Entities | `docs/architecture/entity-pattern.md`, `docs/architecture/model-pattern.md` |
+| Livewire components | `docs/architecture/livewire-pattern.md` |
+| Events & Notifications | `docs/architecture/event-pattern.md` |
+| Testing | `docs/architecture/testing-pattern.md`, `docs/infrastructure/testing.md` |
 
 ## Module Invariants (DO NOT VIOLATE)
 

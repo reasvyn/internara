@@ -34,6 +34,7 @@ final class Settings
     {
         SmartLogger::{$level}($message)
             ->withPayload(array_merge($context, ['error' => $e->getMessage()]))
+            ->withPiiMasking()
             ->systemOnly()
             ->save();
     }

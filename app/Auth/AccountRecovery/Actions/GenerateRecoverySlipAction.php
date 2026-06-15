@@ -6,11 +6,11 @@ namespace App\Auth\AccountRecovery\Actions;
 
 use App\Auth\AccountRecovery\Data\RecoveryCodeData;
 use App\Auth\ApiTokens\Models\ApiToken;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class GenerateRecoverySlipAction extends BaseAction
+class GenerateRecoverySlipAction extends BaseCommandAction
 {
     public const int CODE_COUNT = 10;
 

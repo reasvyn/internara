@@ -1,5 +1,5 @@
 <laravel-boost-guidelines>
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-15
 >
 > **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
 > provides quick-reference essentials and project-specific rules that cannot wait for doc lookups.
@@ -40,17 +40,17 @@ The following topics are fully covered in `docs/` and MUST NOT be duplicated her
 |-------|----------|
 | Architecture & 12 layers | `docs/architecture.md` |
 | Action Triad (Command/Read/Process) | `docs/architecture.md` |
-| Base class mandate | `docs/conventions.md` (#1) |
-| File structure conventions | `docs/conventions.md` (#2) |
-| PHP language rules | `docs/conventions.md` (#3) |
-| Naming conventions | `docs/conventions.md` (#4) |
-| Models & Entities | `docs/conventions.md` (#5-7) |
-| Enums (LabelEnum, StatusEnum) | `docs/conventions.md` (#8) |
-| Livewire components | `docs/conventions.md` (#10) |
-| Events & Notifications | `docs/conventions.md` (#12-13) |
-| Routes & Controllers | `docs/conventions.md` (#14) |
-| Migrations, Factories, Seeders | `docs/conventions.md` (#17) |
-| Testing conventions | `docs/conventions.md` (#22) |
+| Base class mandate | `docs/architecture.md` (Base Class Mandate §) |
+| File structure conventions | `docs/architecture/modular-pattern.md` |
+| PHP language rules | `docs/conventions.md` (§2 General PHP) |
+| Naming conventions | `docs/conventions.md` (§3 Naming Conventions) |
+| Models & Entities | `docs/architecture/entity-pattern.md`, `docs/architecture/model-pattern.md` |
+| Enums (LabelEnum, StatusEnum) | `docs/architecture/enum-pattern.md` |
+| Livewire components | `docs/architecture/livewire-pattern.md` |
+| Events & Notifications | `docs/architecture/event-pattern.md` |
+| Routes & Controllers | `docs/architecture/modular-pattern.md` |
+| Migrations, Factories, Seeders | `docs/conventions.md` (§5 Migrations, Factories & Seeders) |
+| Testing conventions | `docs/architecture/testing-pattern.md` |
 
 ## Module Invariants (DO NOT VIOLATE)
 

@@ -103,6 +103,7 @@ class BrandingForm extends Form
         } catch (\Exception $e) {
             SmartLogger::warning('Failed to generate brand logo preview')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
 
@@ -121,6 +122,7 @@ class BrandingForm extends Form
         } catch (\Exception $e) {
             SmartLogger::warning('Failed to generate favicon preview')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
 

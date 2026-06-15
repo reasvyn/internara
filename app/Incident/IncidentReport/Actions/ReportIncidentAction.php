@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Incident\IncidentReport\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Incident\IncidentReport\Enums\IncidentSeverity;
 use App\Incident\IncidentReport\Models\IncidentReport;
 use App\Incident\IncidentReport\Notifications\IncidentReportedNotification;
@@ -12,7 +12,7 @@ use App\User\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Exceptions\RoleDoesNotExist;
 
-final class ReportIncidentAction extends BaseAction
+final class ReportIncidentAction extends BaseCommandAction
 {
     public function execute(array $data): IncidentReport
     {

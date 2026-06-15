@@ -8,12 +8,12 @@ use App\Assignment\Enums\AssignmentStatus;
 use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 
-final class SubmitAssignmentAction extends BaseAction
+final class SubmitAssignmentAction extends BaseCommandAction
 {
     public function execute(User $student, Assignment $assignment, array $data): Submission
     {

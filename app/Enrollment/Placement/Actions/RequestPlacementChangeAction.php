@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Placement\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Placement;
 use App\Enrollment\Placement\Models\PlacementChangeRequest;
 use App\Enrollment\Registration\Models\Registration;
 use Illuminate\Support\Facades\Validator;
 
-final class RequestPlacementChangeAction extends BaseAction
+final class RequestPlacementChangeAction extends BaseCommandAction
 {
     public function execute(Registration $registration, array $data): PlacementChangeRequest
     {

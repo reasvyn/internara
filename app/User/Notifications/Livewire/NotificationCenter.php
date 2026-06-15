@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Notifications\Livewire;
 
+use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\User\Notifications\Actions\DeleteNotificationAction;
 use App\User\Notifications\Actions\MarkAllAsReadAction;
@@ -17,6 +18,8 @@ use Illuminate\View\View;
 class NotificationCenter extends BaseRecordManager
 {
     public bool $showViewer = false;
+
+    public bool $showConfirm = false;
 
     public ?string $viewingNotificationId = null;
 
@@ -120,16 +123,27 @@ class NotificationCenter extends BaseRecordManager
         flash()->success(__('notifications.ui.success_mark_selected'));
     }
 
-    public function deleteSelected(DeleteNotificationAction $action): void
+    public function askDeleteSelected(): void
     {
-        $this->performBulkAction(__('notifications.ui.delete_selected'), function ($id) use (
-            $action,
-        ) {
-            $notification = Notification::where('user_id', Auth::id())->where('id', $id)->first();
-            if ($notification) {
-                $action->execute($notification);
-            }
-        });
+        $this->showConfirm = true;
+    }
+
+    public function confirmAction(DeleteNotificationAction $action): void
+    {
+        try {
+            $this->performBulkAction(__('notifications.ui.delete_selected'), function ($id) use (
+                $action,
+            ) {
+                $notification = Notification::where('user_id', Auth::id())->where('id', $id)->first();
+                if ($notification) {
+                    $action->execute($notification);
+                }
+            });
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+
+        $this->showConfirm = false;
     }
 
     public function render(): View

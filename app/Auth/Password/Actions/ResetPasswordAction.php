@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth\Password\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Support\SmartLogger;
 use App\User\Models\User;
@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 
-class ResetPasswordAction extends BaseAction
+class ResetPasswordAction extends BaseCommandAction
 {
     public function execute(
         string $email,

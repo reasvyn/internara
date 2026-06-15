@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Settings\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Settings\Data\SettingData;
 use App\Settings\Events\SettingUpdated;
 use App\Settings\Models\Setting;
 use App\Settings\Rules\ValidSettingKey;
 use Illuminate\Support\Facades\Validator;
 
-class SetSettingAction extends BaseAction
+class SetSettingAction extends BaseCommandAction
 {
     public function execute(
         string $key,

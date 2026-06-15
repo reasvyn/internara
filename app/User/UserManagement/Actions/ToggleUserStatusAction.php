@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\User\UserManagement\Actions;
 
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\AccountStatus\Notifications\AccountStatusNotification;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 
-final class ToggleUserStatusAction extends BaseAction
+final class ToggleUserStatusAction extends BaseCommandAction
 {
     public function execute(User $user, ?string $reason = null): User
     {
@@ -25,7 +25,7 @@ final class ToggleUserStatusAction extends BaseAction
             throw new RejectedException('Cannot toggle super admin account status.');
         }
 
-        $currentStatus = $user->latestStatus()?->name;
+        $currentStatus = $user->status?->value;
         $newStatus =
             $currentStatus === AccountStatus::VERIFIED->value
                 ? AccountStatus::SUSPENDED->value

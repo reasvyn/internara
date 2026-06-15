@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Auth\Password\Actions;
 
 use App\Auth\Password\Events\PasswordUpdated;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Support\PasswordRules;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class UpdateUserPasswordAction extends BaseAction
+class UpdateUserPasswordAction extends BaseCommandAction
 {
     public function execute(User $user, string $newPassword): void
     {

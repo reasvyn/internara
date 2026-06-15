@@ -25,7 +25,8 @@ Livewire components naturally accumulate four categories of misplaced code:
 - **Actions**: `app/Core/Actions/BaseAction.php` — `transaction()`, `log()`, `HandlesActionErrors`
 - **Entities**: `app/Core/Entities/BaseEntity.php` — `final readonly`, `fromModel()` bridge
 - **BaseRecordManager**: `app/Core/Livewire/BaseRecordManager.php` — CRUD base class
-- **Conventions**: `docs/conventions.md#10-livewire-components`, `docs/conventions.md#6-actions`
+- **Livewire Pattern**: `docs/architecture/livewire-pattern.md`
+- **Action Pattern**: `docs/architecture/action-pattern.md`
 
 ## Refactoring Workflow
 

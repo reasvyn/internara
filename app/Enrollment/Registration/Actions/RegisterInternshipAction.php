@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Registration\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Registration\Data\RegistrationData;
 use App\Enrollment\Registration\Events\StudentRegistered;
@@ -13,7 +13,7 @@ use App\Program\Internship\Models\Internship;
 use App\Program\Notifications\RegistrationNotification;
 use App\User\Models\User;
 
-final class RegisterInternshipAction extends BaseAction
+final class RegisterInternshipAction extends BaseCommandAction
 {
     public function execute(User $student, RegistrationData $data): Registration
     {

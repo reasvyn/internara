@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Reports\Report\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Reports\Report\Models\Report;
 use Illuminate\Support\Facades\Validator;
 
-final class AddSupervisorReportNotesAction extends BaseAction
+final class AddSupervisorReportNotesAction extends BaseCommandAction
 {
     public function execute(Report $report, string $notes): Report
     {

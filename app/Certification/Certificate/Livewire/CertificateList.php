@@ -10,6 +10,7 @@ use App\Certification\Certificate\Actions\RevokeCertificateAction;
 use App\Certification\Certificate\Enums\CertificateStatus;
 use App\Certification\Certificate\Models\Certificate;
 use App\Certification\Certificate\Models\CertificateTemplate;
+use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Enrollment\Registration\Models\Registration;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,6 +21,10 @@ use Livewire\Attributes\Layout;
 class CertificateList extends BaseRecordManager
 {
     public bool $showIssueModal = false;
+
+    public bool $showConfirm = false;
+
+    public ?string $confirmTarget = null;
 
     public string $issueRegistrationId = '';
 
@@ -149,12 +154,25 @@ class CertificateList extends BaseRecordManager
         );
     }
 
-    public function revoke(Certificate $certificate, RevokeCertificateAction $revokeAction): void
+    public function askRevoke(string $id): void
     {
-        $this->authorize('revoke', $certificate);
+        $this->confirmTarget = $id;
+        $this->showConfirm = true;
+    }
 
-        $revokeAction->execute($certificate);
-        flash()->success(__('certificate.revoked'));
+    public function confirmAction(RevokeCertificateAction $revokeAction): void
+    {
+        try {
+            $certificate = Certificate::findOrFail($this->confirmTarget);
+            $this->authorize('revoke', $certificate);
+            $revokeAction->execute($certificate);
+            flash()->success(__('certificate.revoked'));
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
     }
 
     #[Layout('core::layouts.app')]

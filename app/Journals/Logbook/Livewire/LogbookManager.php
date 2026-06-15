@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Journals\Logbook\Livewire;
 
+use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Journals\Logbook\Actions\CreateLogbookAction;
 use App\Journals\Logbook\Actions\DeleteLogbookAction;
@@ -20,6 +21,12 @@ class LogbookManager extends BaseRecordManager
     public bool $showModal = false;
 
     public bool $showSupervisorNoteModal = false;
+
+    public bool $showConfirm = false;
+
+    public string $confirmActionType = '';
+
+    public ?string $confirmTarget = null;
 
     public array $formData = [
         'id' => null,
@@ -205,22 +212,40 @@ class LogbookManager extends BaseRecordManager
         $this->showModal = false;
     }
 
-    public function delete(Logbook $entry, DeleteLogbookAction $deleteAction): void
+    public function askDelete(string $id): void
     {
-        $deleteAction->execute($entry);
-        flash()->success(__('logbook.success_deleted'));
+        $this->confirmActionType = 'delete';
+        $this->confirmTarget = $id;
+        $this->showConfirm = true;
     }
 
-    // --- Bulk Actions ---
-
-    public function deleteSelected(DeleteLogbookAction $deleteAction): void
+    public function askDeleteSelected(): void
     {
-        $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
-            $entry = Logbook::find($id);
-            if ($entry) {
-                $deleteAction->execute($entry);
+        $this->confirmActionType = 'deleteSelected';
+        $this->showConfirm = true;
+    }
+
+    public function confirmAction(DeleteLogbookAction $deleteAction): void
+    {
+        try {
+            if ($this->confirmActionType === 'delete') {
+                $deleteAction->execute(Logbook::findOrFail($this->confirmTarget));
+                flash()->success(__('logbook.success_deleted'));
+            } elseif ($this->confirmActionType === 'deleteSelected') {
+                $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
+                    $entry = Logbook::find($id);
+                    if ($entry) {
+                        $deleteAction->execute($entry);
+                    }
+                });
             }
-        });
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
+        $this->confirmActionType = '';
     }
 
     // --- Verification ---

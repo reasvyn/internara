@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Reports\Report\Livewire;
 
+use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Registration\Models\Registration;
 use App\Reports\Report\Actions\CreateReportAction;
 use App\Reports\Report\Actions\SaveReportDraftAction;
@@ -17,6 +18,8 @@ use Livewire\Component;
 class ReportWriter extends Component
 {
     public ?string $reportId = null;
+
+    public bool $showConfirm = false;
 
     public string $title = '';
 
@@ -70,20 +73,31 @@ class ReportWriter extends Component
         }
     }
 
-    public function submit(SubmitReportAction $submitAction): void
+    public function askSubmit(): void
     {
-        $this->authorize('create', Report::class);
+        $this->showConfirm = true;
+    }
 
-        if (! $this->reportId) {
-            flash()->error(__('report.save_first'));
+    public function confirmAction(SubmitReportAction $submitAction): void
+    {
+        try {
+            $this->authorize('create', Report::class);
 
-            return;
+            if (! $this->reportId) {
+                flash()->error(__('report.save_first'));
+
+                return;
+            }
+
+            $report = Report::findOrFail($this->reportId);
+            $content = json_decode($this->chapterContent, true) ?? [];
+            $submitAction->execute($report, $content);
+            flash()->success(__('report.submitted'));
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
         }
 
-        $report = Report::findOrFail($this->reportId);
-        $content = json_decode($this->chapterContent, true) ?? [];
-        $submitAction->execute($report, $content);
-        flash()->success(__('report.submitted'));
+        $this->showConfirm = false;
     }
 
     #[Layout('core::layouts.app')]

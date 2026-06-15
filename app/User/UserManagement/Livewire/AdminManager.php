@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\User\UserManagement\Livewire;
 
 use App\Auth\Permissions\Enums\Role as RoleEnum;
+use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\CreateUserAction;
@@ -20,6 +21,12 @@ class AdminManager extends BaseRecordManager
     use AuthorizesRequests;
 
     public bool $userModal = false;
+
+    public bool $showConfirm = false;
+
+    public string $confirmActionType = '';
+
+    public ?string $confirmTarget = null;
 
     public AdminUserForm $form;
 
@@ -129,39 +136,57 @@ class AdminManager extends BaseRecordManager
         $this->userModal = false;
     }
 
-    public function delete(string $id, DeleteUserAction $deleteAction): void
+    public function askDelete(string $id): void
     {
-        $user = User::findOrFail($id);
-
-        if ($user->hasRole('super_admin')) {
-            flash()->error(__('user.admin.cannot_delete'));
-
-            return;
-        }
-
-        if ($user->id === auth()->id()) {
-            flash()->error(__('user.admin.cannot_delete_self'));
-
-            return;
-        }
-
-        $deleteAction->execute($user);
-        flash()->success(__('user.admin.success_deleted'));
+        $this->confirmActionType = 'delete';
+        $this->confirmTarget = $id;
+        $this->showConfirm = true;
     }
 
-    // --- Bulk Actions ---
-
-    public function deleteSelected(DeleteUserAction $deleteAction): void
+    public function askDeleteSelected(): void
     {
-        $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
-            if ($id === auth()->id()) {
-                return;
-            }
-            $user = User::find($id);
-            if ($user && ! $user->hasRole('super_admin')) {
+        $this->confirmActionType = 'deleteSelected';
+        $this->showConfirm = true;
+    }
+
+    public function confirmAction(DeleteUserAction $deleteAction): void
+    {
+        try {
+            if ($this->confirmActionType === 'delete') {
+                $user = User::findOrFail($this->confirmTarget);
+
+                if ($user->hasRole('super_admin')) {
+                    flash()->error(__('user.admin.cannot_delete'));
+
+                    return;
+                }
+
+                if ($user->id === auth()->id()) {
+                    flash()->error(__('user.admin.cannot_delete_self'));
+
+                    return;
+                }
+
                 $deleteAction->execute($user);
+                flash()->success(__('user.admin.success_deleted'));
+            } elseif ($this->confirmActionType === 'deleteSelected') {
+                $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
+                    if ($id === auth()->id()) {
+                        return;
+                    }
+                    $user = User::find($id);
+                    if ($user && ! $user->hasRole('super_admin')) {
+                        $deleteAction->execute($user);
+                    }
+                });
             }
-        });
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
+        $this->confirmActionType = '';
     }
 
     public function render(): View

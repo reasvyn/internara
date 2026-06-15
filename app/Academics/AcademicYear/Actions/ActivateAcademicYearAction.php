@@ -6,7 +6,7 @@ namespace App\Academics\AcademicYear\Actions;
 
 use App\Academics\AcademicYear\Events\AcademicYearActivated;
 use App\Academics\AcademicYear\Models\AcademicYear;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 
 /**
@@ -14,7 +14,7 @@ use App\Core\Exceptions\RejectedException;
  *
  * S1 - Secure: Only one academic year can be active at a time.
  */
-final class ActivateAcademicYearAction extends BaseAction
+final class ActivateAcademicYearAction extends BaseCommandAction
 {
     public function execute(AcademicYear $year): AcademicYear
     {

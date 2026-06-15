@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Placement\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Placement;
 
-final class DeletePlacementAction extends BaseAction
+final class DeletePlacementAction extends BaseCommandAction
 {
     public function execute(Placement $placement): void
     {

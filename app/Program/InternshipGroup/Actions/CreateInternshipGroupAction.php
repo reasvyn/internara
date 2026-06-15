@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Program\InternshipGroup\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Program\InternshipGroup\Models\InternshipGroup;
 
-final class CreateInternshipGroupAction extends BaseAction
+final class CreateInternshipGroupAction extends BaseCommandAction
 {
     public function execute(array $data): InternshipGroup
     {

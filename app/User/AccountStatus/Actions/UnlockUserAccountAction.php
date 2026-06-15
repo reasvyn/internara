@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\User\AccountStatus\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 
-class UnlockUserAccountAction extends BaseAction
+class UnlockUserAccountAction extends BaseCommandAction
 {
     public function execute(User $user): void
     {

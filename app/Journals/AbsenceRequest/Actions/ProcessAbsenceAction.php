@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Journals\AbsenceRequest\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;
 
-final class ProcessAbsenceAction extends BaseAction
+final class ProcessAbsenceAction extends BaseCommandAction
 {
     public function execute(
         Attendance $absence,

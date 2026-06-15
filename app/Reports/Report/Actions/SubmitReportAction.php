@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Reports\Report\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Reports\Report\Enums\ReportStatus;
 use App\Reports\Report\Models\Report;
 
-final class SubmitReportAction extends BaseAction
+final class SubmitReportAction extends BaseCommandAction
 {
     public function execute(Report $report, array $content): Report
     {

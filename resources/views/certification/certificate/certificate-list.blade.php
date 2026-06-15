@@ -32,14 +32,15 @@
                 <div class="flex justify-end gap-1">
                     @if($c->status->value === 'issued')
                         <x-mary-button icon="o-x-circle" class="btn-ghost btn-sm text-error"
-                            wire:confirm="{{ __('certificate.revoke_confirm') }}"
-                            wire:click="revoke('{{ $c->id }}')"
+                            wire:click="askRevoke('{{ $c->id }}')"
                             :aria-label="__('certificate.revoke')" />
                     @endif
                 </div>
             @endscope
         </x-mary-table>
     </div>
+
+    <x-core::ui.confirm :message="__('certificate.revoke_confirm')" />
 
     <x-slot:modal>
         <x-mary-modal wire:model="showIssueModal" :title="__('certificate.issue_title')" class="backdrop-blur-sm">

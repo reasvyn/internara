@@ -79,6 +79,8 @@ class ProfileEditor extends Component
 
     public function updatedAvatar(): void
     {
+        $this->authorize('update', $this->user);
+
         $this->validate(['avatar' => ['nullable', 'image', 'max:2048']]);
 
         app(UpdateProfileAction::class)->execute($this->user, [], avatar: $this->avatar);
@@ -88,6 +90,8 @@ class ProfileEditor extends Component
 
     public function confirmRemoveAvatar(): void
     {
+        $this->authorize('update', $this->user);
+
         $this->user->clearMediaCollection('avatar');
         $this->avatar = null;
 

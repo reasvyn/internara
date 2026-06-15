@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Guidance\SupervisionLog\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\SupervisionLog\Enums\SupervisionLogStatus;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\User\Models\User;
 
-final class CreateSupervisionLogAction extends BaseAction
+final class CreateSupervisionLogAction extends BaseCommandAction
 {
     public function execute(User $user, string $registrationId, array $data): SupervisionLog
     {

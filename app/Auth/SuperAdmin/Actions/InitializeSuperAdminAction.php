@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Auth\SuperAdmin\Actions;
 
 use App\Auth\Permissions\Enums\Role;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-final class InitializeSuperAdminAction extends BaseAction
+final class InitializeSuperAdminAction extends BaseCommandAction
 {
     public function execute(string $email, string $password): User
     {

@@ -21,6 +21,7 @@ class LogSetupFinalized
                 'department_id' => $event->departmentId,
                 'installed_at' => $event->installedAt->format('Y-m-d H:i:s'),
             ])
+            ->withPiiMasking()
             ->systemOnly()
             ->save();
     }

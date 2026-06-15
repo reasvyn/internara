@@ -65,6 +65,7 @@ class SystemHealthCommand extends Command
                 ->module('system')
                 ->event('health.check.failed')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->save();
 
             $this->error("\n".__('setup.system.health_failed').': '.$e->getMessage());

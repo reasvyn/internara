@@ -76,6 +76,7 @@ class SettingValueCast implements CastsAttributes
                     'key' => $key,
                     'setting_id' => $model->getKey(),
                 ])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
 
@@ -94,6 +95,7 @@ class SettingValueCast implements CastsAttributes
                     'key' => $key,
                     'setting_id' => $model->getKey(),
                 ])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
 
@@ -113,6 +115,7 @@ class SettingValueCast implements CastsAttributes
                     'setting_id' => $model->getKey(),
                     'json_error' => json_last_error_msg(),
                 ])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
 
@@ -134,6 +137,7 @@ class SettingValueCast implements CastsAttributes
                     'setting_id' => $model->getKey(),
                     'json_error' => json_last_error_msg(),
                 ])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
 

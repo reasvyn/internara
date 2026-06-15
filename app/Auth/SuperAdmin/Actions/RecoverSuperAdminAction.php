@@ -7,14 +7,14 @@ namespace App\Auth\SuperAdmin\Actions;
 use App\Auth\Permissions\Enums\Role;
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
 use App\Auth\SuperAdmin\Events\SuperAdminRecovered;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-final class RecoverSuperAdminAction extends BaseAction
+final class RecoverSuperAdminAction extends BaseCommandAction
 {
     public function execute(string $email, string $password): User
     {

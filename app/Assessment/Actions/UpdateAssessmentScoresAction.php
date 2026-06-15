@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Assessment\Actions;
 
 use App\Assessment\Models\Assessment;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 
-final class UpdateAssessmentScoresAction extends BaseAction
+final class UpdateAssessmentScoresAction extends BaseCommandAction
 {
     /**
      * Update the score for a specific indicator within an assessment.

@@ -54,8 +54,7 @@
                         :label="__('common.actions.delete_selected')" 
                         icon="o-trash" 
                         class="btn-sm btn-error text-white font-bold rounded-lg" 
-                        :wire:confirm="__('common.actions.confirm_action')"
-                        wire:click="deleteSelected" 
+                        wire:click="askDeleteSelected" 
                     />
                 </div>
                 <div class="divider divider-horizontal mx-1"></div>
@@ -132,8 +131,7 @@
                         <x-mary-button icon="o-pencil" class="btn-ghost btn-sm text-primary" wire:click="edit('{{ $entry->id }}')" tooltip="Edit" />
                         <x-mary-button icon="o-document-arrow-down" class="btn-ghost btn-sm text-secondary" :href="route('sysadmin.logbook.report', $entry->registration_id)" external tooltip="{{ __('logbook.download_report') }}" />
                         <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
-                            :wire:confirm="__('common.actions.confirm_action')"
-                            wire:click="delete('{{ $entry->id }}')" tooltip="Delete" />
+                            wire:click="askDelete('{{ $entry->id }}')" tooltip="Delete" />
                     </div>
                 @endscope
             </x-mary-table>
@@ -178,4 +176,6 @@
             <x-mary-button :label="__('logbook.save')" class="btn-primary rounded-xl font-bold uppercase tracking-widest" wire:click="save" spinner="save" />
         </x-slot:actions>
     </x-mary-modal>
+
+    <x-core::ui.confirm :message="__('common.actions.confirm_action')" />
 </div>

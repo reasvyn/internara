@@ -31,6 +31,7 @@ class SystemCacheWarmCommand extends Command
             SmartLogger::info(__('setup.system.cache_warm_completed'))
                 ->module('system')
                 ->event('cache.warm.completed')
+                ->withPiiMasking()
                 ->save();
 
             return Command::SUCCESS;
@@ -39,6 +40,7 @@ class SystemCacheWarmCommand extends Command
                 ->module('system')
                 ->event('cache.warm.failed')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->save();
 
             $this->error(__('setup.system.cache_warm_starting').': '.$e->getMessage());

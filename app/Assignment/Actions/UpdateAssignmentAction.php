@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Assignment\Actions;
 
 use App\Assignment\Models\Assignment;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 
 /**
  * Stateless Action to update an existing assignment.
@@ -13,7 +13,7 @@ use App\Core\Actions\BaseAction;
  * S1 - Secure: Validated updates with authorization check.
  * S2 - Sustain: Single-purpose action.
  */
-final class UpdateAssignmentAction extends BaseAction
+final class UpdateAssignmentAction extends BaseCommandAction
 {
     public function execute(
         Assignment $assignment,

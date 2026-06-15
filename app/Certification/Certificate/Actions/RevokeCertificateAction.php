@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Certification\Certificate\Actions;
 
 use App\Certification\Certificate\Models\Certificate;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 
-final class RevokeCertificateAction extends BaseAction
+final class RevokeCertificateAction extends BaseCommandAction
 {
     public function execute(Certificate $certificate): Certificate
     {

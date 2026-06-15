@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Partners\Partnership\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Partners\Partnership\Models\Partnership;
 use Illuminate\Support\Facades\Validator;
 
-final class UpdatePartnershipAction extends BaseAction
+final class UpdatePartnershipAction extends BaseCommandAction
 {
     public function execute(Partnership $partnership, array $data): Partnership
     {

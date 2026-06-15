@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Auth\AccountRecovery\Actions;
 
 use App\Auth\ApiTokens\Models\ApiToken;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class RedeemRecoverySlipAction extends BaseAction
+class RedeemRecoverySlipAction extends BaseCommandAction
 {
     public function execute(string $username, string $code, string $newPassword): User
     {

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Enrollment\AccountApplication\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\AccountApplication\Enums\AccountApplicationStatus;
 use App\Enrollment\AccountApplication\Models\AccountApplication;
 use App\User\Models\User;
 
-final class RejectAccountApplicationAction extends BaseAction
+final class RejectAccountApplicationAction extends BaseCommandAction
 {
     public function execute(string $applicationId, User $admin, string $reason): void
     {

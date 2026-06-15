@@ -1,7 +1,7 @@
 # Module Documentation Index
 
-> Last updated: 2026-06-14
-> Changes: sync — fix migrations (48→49), policies (25+→27)
+> Last updated: 2026-06-15
+> Changes: sync — fix model count (40+→38)
 
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire
@@ -372,7 +372,7 @@ All 19 modules are vertical slices cross-cutting the 12-layer architecture defin
 | 2     | Persistence       | Database (SQLite/MySQL), 49 migrations, config, media library, cache, queue                      |
 | 3     | Core Contracts    | LabelEnum, StatusEnum, ColorableEnum, exception hierarchy                                        |
 | 4     | Core Base Classes | BaseModel, BaseAuthenticatable, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, BaseController, BaseFormRequest, BaseData, BaseEvent |
-| 5     | Module Models     | Eloquent models (40+), UUID PKs, factories, seeders                                               |
+| 5     | Module Models     | Eloquent models (38), UUID PKs, factories, seeders                                                |
 | 6     | Module Rules      | Enums, Entities (final readonly), Data DTOs                                                      |
 | 7     | Business Ops      | Command Actions (mutations), Read Actions (queries), Process Actions (orchestration)             |
 | 8     | Authorization     | Policies (27), RBAC (5 roles + 2 functional), spatie/permission                                  |

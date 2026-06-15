@@ -25,6 +25,8 @@ class AssessmentGrading extends Component
 
     public bool $isFinalized = false;
 
+    public bool $showConfirm = false;
+
     public function mount(string $registrationId, InitializeAssessmentAction $action): void
     {
         $this->registrationId = $registrationId;
@@ -167,7 +169,12 @@ class AssessmentGrading extends Component
         flash()->success('Submission & logbook scores imported.');
     }
 
-    public function finalize(FinalizeAssessmentAction $action): void
+    public function askFinalize(): void
+    {
+        $this->showConfirm = true;
+    }
+
+    public function confirmAction(FinalizeAssessmentAction $action): void
     {
         $assessment = $this->assessment;
         if ($assessment === null || $this->isFinalized) {
@@ -181,6 +188,8 @@ class AssessmentGrading extends Component
         } catch (\Throwable $e) {
             flash()->error($e->getMessage());
         }
+
+        $this->showConfirm = false;
     }
 
     public function render(): View

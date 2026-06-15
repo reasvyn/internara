@@ -57,6 +57,7 @@ class SetupWizard extends Component
                 ->module('Setup')
                 ->event('wizard.mount_failed')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
             $this->redirect(route('login'));
@@ -85,6 +86,7 @@ class SetupWizard extends Component
                 ->module('Setup')
                 ->event('wizard.audit_failed')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
             $this->audit = ['categories' => []];
@@ -151,6 +153,7 @@ class SetupWizard extends Component
                 ->module('Setup')
                 ->event('wizard.audit_exception')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
             $this->audit = ['categories' => []];
@@ -264,6 +267,7 @@ class SetupWizard extends Component
                 ->module('Setup')
                 ->event('wizard.failed')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
             flash()->error(__('setup.wizard.install_failed_generic'));
@@ -272,6 +276,7 @@ class SetupWizard extends Component
                 ->module('Setup')
                 ->event('wizard.crashed')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
             flash()->error(__('setup.wizard.install_failed_generic'));

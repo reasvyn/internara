@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Partners\Company\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Partners\Company\Data\CompanyData;
 use App\Partners\Company\Events\CompanyCreated;
 use App\Partners\Company\Models\Company;
 
-final class CreateCompanyAction extends BaseAction
+final class CreateCompanyAction extends BaseCommandAction
 {
     public function execute(CompanyData $data): Company
     {

@@ -33,6 +33,8 @@ class ApplicationReview extends Component
 
     public function approve(string $id, ApproveAccountApplicationAction $action): void
     {
+        $this->authorize('update', AccountApplication::findOrFail($id));
+
         try {
             $action->execute($id, auth()->user());
             flash()->success(__('internship.applications.success_approved'));
@@ -51,6 +53,8 @@ class ApplicationReview extends Component
     public function reject(RejectAccountApplicationAction $action): void
     {
         $this->validate(['rejectionReason' => 'required|string|max:1000']);
+
+        $this->authorize('update', AccountApplication::findOrFail($this->rejectId));
 
         try {
             $action->execute($this->rejectId, auth()->user(), $this->rejectionReason);

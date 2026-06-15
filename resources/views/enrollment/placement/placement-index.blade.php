@@ -41,8 +41,7 @@
             </x-slot:trigger>
             <div class="p-1.5 w-48">
                 <x-mary-menu-item title="Delete Selected" icon="o-trash" class="text-error"
-                    wire:confirm="Delete selected placements? Only placements without students will be deleted."
-                    wire:click="deleteSelected" />
+                    wire:click="askDeleteSelected" />
             </div>
         </x-mary-dropdown>
     </x-core::ui.selection-bar>
@@ -72,8 +71,7 @@
                 <div class="flex justify-end gap-1">
                     <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $placement->id }}')" aria-label="Edit" />
                     <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
-                        wire:confirm="Delete this placement?"
-                        wire:click="delete('{{ $placement->id }}')"
+                        wire:click="askDelete('{{ $placement->id }}')"
                         aria-label="Delete" />
                 </div>
             @endscope
@@ -100,4 +98,6 @@
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
+
+    <x-core::ui.confirm message="Are you sure?" />
 </x-core::ui.record-manager>

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Setup\Installation\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Data\AuditReport;
 use App\Setup\Installation\Data\SetupTokenData;
 use App\Setup\Installation\Support\SystemProvisioner;
@@ -15,7 +15,7 @@ use RuntimeException;
  * Orchestrates the full technical installation:
  * audit -> provision -> generate token.
  */
-final class InstallSystemAction extends BaseAction
+final class InstallSystemAction extends BaseCommandAction
 {
     public function __construct(
         protected readonly EnvironmentAuditor $auditor,

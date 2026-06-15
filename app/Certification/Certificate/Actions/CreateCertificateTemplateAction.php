@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Certification\Certificate\Actions;
 
 use App\Certification\Certificate\Models\CertificateTemplate;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use Illuminate\Support\Facades\Validator;
 
-final class CreateCertificateTemplateAction extends BaseAction
+final class CreateCertificateTemplateAction extends BaseCommandAction
 {
     public function execute(array $data): CertificateTemplate
     {

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Document\OfficialDocument\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Document\Models\Document;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
-final class GenerateReportAction extends BaseAction
+final class GenerateReportAction extends BaseCommandAction
 {
     public function execute(array $data): Document
     {

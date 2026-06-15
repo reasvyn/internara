@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\User\Models\User;
 use App\User\Notifications\WelcomeNotification;
 use App\User\Rules\ReservedAuthoritativeName;
@@ -13,7 +13,7 @@ use App\User\Support\UserIdentifierGenerator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-final class CreateUserAction extends BaseAction
+final class CreateUserAction extends BaseCommandAction
 {
     public function execute(
         array $userData,

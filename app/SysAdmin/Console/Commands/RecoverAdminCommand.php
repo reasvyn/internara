@@ -125,6 +125,7 @@ class RecoverAdminCommand extends Command
                 ->module('setup')
                 ->event('super_admin.recovery.failed')
                 ->withPayload(['error' => $e->getMessage()])
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
 
@@ -247,6 +248,7 @@ class RecoverAdminCommand extends Command
             SmartLogger::warning('super_admin_recovery_invalid_key')
                 ->module('setup')
                 ->event('super_admin.recovery.invalid_key')
+                ->withPiiMasking()
                 ->systemOnly()
                 ->save();
 

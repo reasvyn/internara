@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Reports\Report\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Reports\Report\Models\Report;
 
-final class SaveReportDraftAction extends BaseAction
+final class SaveReportDraftAction extends BaseCommandAction
 {
     public function execute(Report $report, array $content): Report
     {

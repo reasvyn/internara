@@ -7,9 +7,9 @@ namespace App\Assignment\Actions;
 use App\Assignment\Enums\AssignmentStatus;
 use App\Assignment\Models\Assignment;
 use App\Assignment\Models\AssignmentType;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 
-final class CreateAssignmentAction extends BaseAction
+final class CreateAssignmentAction extends BaseCommandAction
 {
     public function execute(
         string $assignmentTypeId,

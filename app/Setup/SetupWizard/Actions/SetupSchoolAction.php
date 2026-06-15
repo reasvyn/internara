@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Setup\SetupWizard\Actions;
 
 use App\Academics\School\Entities\SchoolEntity;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Settings\Support\Settings;
 use Illuminate\Support\Facades\Validator;
 
-final class SetupSchoolAction extends BaseAction
+final class SetupSchoolAction extends BaseCommandAction
 {
     public function execute(array $data): void
     {

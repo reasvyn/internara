@@ -7,7 +7,7 @@ namespace App\Auth\Login\Actions;
 use App\Auth\Login\Data\LoginData;
 use App\Auth\Login\Events\LoginFailed;
 use App\Auth\Login\Events\LoginSucceeded;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Support\SmartLogger;
 use App\User\Models\User;
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 
-final class LoginAction extends BaseAction
+final class LoginAction extends BaseCommandAction
 {
     public function execute(
         string $identifier,

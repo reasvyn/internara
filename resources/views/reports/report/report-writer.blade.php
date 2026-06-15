@@ -19,10 +19,11 @@
 
                 <x-slot:actions>
                     <x-mary-button :label="__('report.save_draft')" class="btn-ghost" type="submit" spinner="saveDraft" />
-                    <x-mary-button :label="__('report.submit')" class="btn-primary" wire:click="submit"
-                        wire:confirm="{{ __('report.submit_confirm') }}" />
+                    <x-mary-button :label="__('report.submit')" class="btn-primary" wire:click="askSubmit" />
                 </x-slot:actions>
             </x-mary-card>
         </x-mary-form>
     </div>
+
+    <x-core::ui.confirm :message="__('report.submit_confirm')" />
 </div>

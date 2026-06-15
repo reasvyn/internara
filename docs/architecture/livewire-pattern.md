@@ -433,7 +433,55 @@ tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
 
 ---
 
-## 11. Common Pitfalls (Concepts)
+## 11. Guide Component Pattern (*-guide.blade.php)
+
+Every page with a non-trivial workflow MUST include a `*-guide.blade.php` component that serves
+as contextual help for the user. The pattern follows the setup wizard's guide component at
+`resources/views/setup/components/setup-guide.blade.php`.
+
+### Requirements
+
+1. **Placement:** `resources/views/{module}/components/{page-name}-guide.blade.php`
+2. **Trigger:** A fixed floating button (bottom-right, `z-50`) with a question mark icon
+3. **Modal:** Uses `<x-mary-modal>` with step-by-step instructions for the current page
+4. **Content:** Each guide must include:
+   - An introductory sentence explaining the page's purpose
+   - Numbered steps (1 through N) with a title and description per step
+   - A tip section (warning icon) for best practices or common pitfalls
+5. **Localization:** All strings use `__('{module}.guide.*')` translation keys
+
+### Integration in the Parent Component
+
+```blade
+{{-- Toggle state --}}
+public bool $showGuide = false;
+
+{{-- In the Blade view --}}
+@include('{module}.components.{page-name}-guide')
+```
+
+### Translation Keys
+
+```
+// resources/lang/{lang}/{module}.php
+'guide' => [
+    'title' => '...',
+    'intro' => '...',
+    'step1_title' => '...',
+    'step1_desc' => '...',
+    // ... through stepN
+    'tip_title' => '...',
+    'tip_desc' => '...',
+],
+```
+
+### Pattern Reference
+
+See `resources/views/setup/components/setup-guide.blade.php` for the canonical implementation.
+
+---
+
+## 12. Common Pitfalls (Concepts)
 
 - **Inline DB calls** — extract to an Action and inject it
 - **Bare `wire:confirm`** — use two-step `askAction()` / `confirmAction()` pattern instead

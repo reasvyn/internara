@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Settings\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Support\SmartLogger;
 use App\User\Notifications\TestMailNotification;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
 
-class TestMailSettingsAction extends BaseAction
+class TestMailSettingsAction extends BaseCommandAction
 {
     public function execute(string $recipientEmail, array $config): bool
     {

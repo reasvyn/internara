@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Placement\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Enrollment\Placement;
 
-final class CreatePlacementAction extends BaseAction
+final class CreatePlacementAction extends BaseCommandAction
 {
     public function execute(array $data): Placement
     {

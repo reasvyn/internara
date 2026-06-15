@@ -6,10 +6,10 @@ namespace App\Assignment\Actions;
 
 use App\Assignment\Enums\AssignmentStatus;
 use App\Assignment\Models\Assignment;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 
-final class PublishAssignmentAction extends BaseAction
+final class PublishAssignmentAction extends BaseCommandAction
 {
     public function execute(Assignment $assignment): Assignment
     {

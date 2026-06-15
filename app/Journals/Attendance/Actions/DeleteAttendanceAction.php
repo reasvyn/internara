@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Journals\Attendance\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Journals\Attendance\Models\Attendance;
 
-final class DeleteAttendanceAction extends BaseAction
+final class DeleteAttendanceAction extends BaseCommandAction
 {
     public function execute(Attendance $log): void
     {

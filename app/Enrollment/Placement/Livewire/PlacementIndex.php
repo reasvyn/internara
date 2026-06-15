@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Placement\Livewire;
 
+use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Enrollment\Placement;
 use App\Enrollment\Placement\Actions\CreatePlacementAction;
@@ -23,6 +24,12 @@ class PlacementIndex extends BaseRecordManager
     use AuthorizesRequests;
 
     public bool $showModal = false;
+
+    public bool $showConfirm = false;
+
+    public string $confirmActionType = '';
+
+    public ?string $confirmTarget = null;
 
     public PlacementForm $form;
 
@@ -133,30 +140,48 @@ class PlacementIndex extends BaseRecordManager
         $this->showModal = false;
     }
 
-    public function delete(string $id, DeletePlacementAction $deleteAction): void
+    public function askDelete(string $id): void
     {
-        $placement = Placement::findOrFail($id);
-
-        if (! $placement->asPlacementState()->canBeDeleted()) {
-            flash()->error(__('placement.delete_blocked'));
-
-            return;
-        }
-
-        $deleteAction->execute($placement);
-        flash()->success(__('placement.delete_success'));
+        $this->confirmActionType = 'delete';
+        $this->confirmTarget = $id;
+        $this->showConfirm = true;
     }
 
-    // --- Bulk Actions ---
-
-    public function deleteSelected(DeletePlacementAction $deleteAction): void
+    public function askDeleteSelected(): void
     {
-        $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
-            $placement = Placement::find($id);
-            if ($placement && $placement->asPlacementState()->canBeDeleted()) {
+        $this->confirmActionType = 'deleteSelected';
+        $this->showConfirm = true;
+    }
+
+    public function confirmAction(DeletePlacementAction $deleteAction): void
+    {
+        try {
+            if ($this->confirmActionType === 'delete') {
+                $placement = Placement::findOrFail($this->confirmTarget);
+
+                if (! $placement->asPlacementState()->canBeDeleted()) {
+                    flash()->error(__('placement.delete_blocked'));
+
+                    return;
+                }
+
                 $deleteAction->execute($placement);
+                flash()->success(__('placement.delete_success'));
+            } elseif ($this->confirmActionType === 'deleteSelected') {
+                $this->performBulkAction(__('common.actions.delete'), function ($id) use ($deleteAction) {
+                    $placement = Placement::find($id);
+                    if ($placement && $placement->asPlacementState()->canBeDeleted()) {
+                        $deleteAction->execute($placement);
+                    }
+                });
             }
-        });
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
+        $this->confirmActionType = '';
     }
 
     #[Layout('core::layouts.app')]

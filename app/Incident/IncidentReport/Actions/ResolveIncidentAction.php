@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Incident\IncidentReport\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Incident\IncidentReport\Models\IncidentReport;
 use Illuminate\Support\Facades\Validator;
 
-final class ResolveIncidentAction extends BaseAction
+final class ResolveIncidentAction extends BaseCommandAction
 {
     public function execute(IncidentReport $incident, array $data): IncidentReport
     {

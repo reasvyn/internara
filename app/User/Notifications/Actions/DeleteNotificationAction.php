@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\Notifications\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\User\Notifications\Models\Notification;
 use Illuminate\Support\Facades\Cache;
 
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Cache;
  * Ownership verification is the caller's responsibility.
  * S2 - Sustain: Clean removal.
  */
-final class DeleteNotificationAction extends BaseAction
+final class DeleteNotificationAction extends BaseCommandAction
 {
     public function execute(Notification $notification): void
     {

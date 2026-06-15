@@ -65,16 +65,6 @@ class Registration extends BaseModel
         return RegistrationState::fromModel($this)->withPhases($this->resolvePhases());
     }
 
-    public function currentPhaseIndex(): ?int
-    {
-        return $this->asRegistrationState()->currentPhaseIndex();
-    }
-
-    public function currentPhase(): ?string
-    {
-        return $this->asRegistrationState()->currentPhase();
-    }
-
     public function student(): BelongsTo
     {
         return $this->belongsTo(User::class, 'student_id');

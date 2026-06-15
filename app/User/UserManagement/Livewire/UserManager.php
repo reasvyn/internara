@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\User\UserManagement\Livewire;
 
 use App\Core\Enums\CsvRowResult;
+use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Core\Support\CsvHandler;
 use App\User\Enums\AccountStatus;
@@ -31,6 +32,12 @@ class UserManager extends BaseRecordManager
     use AuthorizesRequests, DownloadsAccountSlips, WithFileUploads;
 
     public bool $userModal = false;
+
+    public bool $showConfirm = false;
+
+    public string $confirmActionType = '';
+
+    public ?string $confirmTarget = null;
 
     public bool $showStatusModal = false;
 
@@ -200,38 +207,56 @@ class UserManager extends BaseRecordManager
         flash()->success(__('user.manager.password_reset'));
     }
 
-    public function deleteUser(string $id, DeleteUserAction $deleteAction): void
+    public function askDeleteUser(string $id): void
     {
-        $user = User::findOrFail($id);
-
-        if ($user->hasRole('super_admin')) {
-            flash()->error(__('user.manager.cannot_delete_super_admin'));
-
-            return;
-        }
-
-        try {
-            $deleteAction->execute($user);
-            flash()->success(__('user.manager.success_deleted'));
-        } catch (\RuntimeException $e) {
-            flash()->error($e->getMessage());
-        }
+        $this->confirmActionType = 'delete';
+        $this->confirmTarget = $id;
+        $this->showConfirm = true;
     }
 
-    public function deleteSelected(BatchDeleteUserAction $batchDelete): void
+    public function askDeleteSelected(): void
     {
-        $result = $batchDelete->execute($this->selectedIds);
+        $this->confirmActionType = 'deleteSelected';
+        $this->showConfirm = true;
+    }
 
-        if ($result['deleted'] > 0) {
-            flash()->success(
-                __('common.actions.bulk_action_done', [
-                    'count' => $result['deleted'],
-                    'action' => __('common.actions.delete'),
-                ]),
-            );
+    public function confirmAction(
+        DeleteUserAction $deleteAction,
+        BatchDeleteUserAction $batchDelete,
+    ): void {
+        try {
+            if ($this->confirmActionType === 'delete') {
+                $user = User::findOrFail($this->confirmTarget);
+
+                if ($user->hasRole('super_admin')) {
+                    flash()->error(__('user.manager.cannot_delete_super_admin'));
+
+                    return;
+                }
+
+                $deleteAction->execute($user);
+                flash()->success(__('user.manager.success_deleted'));
+            } elseif ($this->confirmActionType === 'deleteSelected') {
+                $result = $batchDelete->execute($this->selectedIds);
+
+                if ($result['deleted'] > 0) {
+                    flash()->success(
+                        __('common.actions.bulk_action_done', [
+                            'count' => $result['deleted'],
+                            'action' => __('common.actions.delete'),
+                        ]),
+                    );
+                }
+
+                $this->clearSelection();
+            }
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
         }
 
-        $this->clearSelection();
+        $this->showConfirm = false;
+        $this->confirmTarget = null;
+        $this->confirmActionType = '';
     }
 
     public function lockSelected(SetUserStatusAction $setStatus): void

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Journals\Attendance\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Journals\Attendance\Models\Attendance;
 
-final class UpdateAttendanceAction extends BaseAction
+final class UpdateAttendanceAction extends BaseCommandAction
 {
     public function execute(Attendance $log, array $data): Attendance
     {

@@ -59,7 +59,7 @@
                 <x-mary-menu-item :title="__('common.actions.export_selected')" icon="o-arrow-down-tray" wire:click="exportSelected" />
                 <hr class="border-base-content/10" />
                 <x-mary-menu-item :title="__('common.actions.delete_selected')" icon="o-trash" class="text-error"
-                    wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="deleteSelected" />
+                    wire:click="askDeleteSelected" />
             </div>
         </x-mary-dropdown>
     </x-core::ui.selection-bar>
@@ -109,7 +109,7 @@
 
             @scope('cell_status', $user)
                 @php
-                    $status = $user->latestStatus()?->name ?? 'unknown';
+                    $status = $user->status?->value ?? 'unknown';
                     $badgeClass = match($status) {
                         'verified' => 'badge-success',
                         'suspended' => 'badge-warning',
@@ -135,7 +135,7 @@
                         <x-mary-button icon="o-shield-check" class="btn-ghost btn-sm text-warning" wire:click="askChangeStatus('{{ $user->id }}')" :aria-label="__('user.manager.change_status')" />
                         <x-mary-button icon="o-key" class="btn-ghost btn-sm text-primary" wire:click="showSlip('{{ $user->id }}')" :aria-label="__('user.manager.account_slip')" />
                         @if($user->id !== auth()->id())
-                            <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:confirm="{{ __('common.actions.confirm_action') }}" wire:click="deleteUser('{{ $user->id }}')" :aria-label="__('common.actions.delete')" />
+                            <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:click="askDeleteUser('{{ $user->id }}')" :aria-label="__('common.actions.delete')" />
                         @endif
                     </div>
                 @endif
@@ -220,4 +220,6 @@
 
     @include('user.user-management.components.account-slip-modal')
     @include('user.user-management.components.user-guide')
+
+    <x-core::ui.confirm :message="__('common.actions.confirm_action')" />
 </x-core::ui.record-manager>

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Profile\Actions;
 
 use App\Auth\SuperAdmin\Entities\SuperAdminIntegrityRules;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use App\User\Profile\Events\ProfileUpdated;
@@ -13,7 +13,7 @@ use App\User\Profile\Models\Profile;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
 
-final class UpdateProfileAction extends BaseAction
+final class UpdateProfileAction extends BaseCommandAction
 {
     public function execute(
         User $user,

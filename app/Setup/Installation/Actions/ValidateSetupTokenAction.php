@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Setup\Installation\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Setup\Entities\SetupEntity;
 use Illuminate\Support\Facades\Crypt;
 
-final class ValidateSetupTokenAction extends BaseAction
+final class ValidateSetupTokenAction extends BaseCommandAction
 {
     public function execute(string $token): void
     {

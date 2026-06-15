@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Partners\Partnership\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Partners\Partnership\Models\Partnership;
 
-final class DeletePartnershipAction extends BaseAction
+final class DeletePartnershipAction extends BaseCommandAction
 {
     public function execute(Partnership $partnership): void
     {

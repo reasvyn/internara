@@ -129,21 +129,6 @@ class ApiToken extends BaseModel
             ->update(['revoked_at' => now()]);
     }
 
-    public function isExpired(): bool
-    {
-        return $this->asApiTokenState()->isExpired();
-    }
-
-    public function isRevoked(): bool
-    {
-        return $this->asApiTokenState()->isRevoked();
-    }
-
-    public function isValid(): bool
-    {
-        return $this->asApiTokenState()->isValid();
-    }
-
     public static function revokeAllExpired(): int
     {
         return self::whereNull('revoked_at')

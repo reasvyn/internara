@@ -16,6 +16,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 - `Notifications`
 - `Dashboard`
 - `AccountStatus`
+- `UserManagement`
 
 ---
 
@@ -37,6 +38,18 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `AccountStatus/Actions/DetectUserAccountCloneAction.php` | `DetectUserAccountCloneAction` | `BaseAction` |
 | `AccountStatus/Actions/LockUserAccountAction.php` | `LockUserAccountAction` | `BaseAction` |
 | `AccountStatus/Actions/UnlockUserAccountAction.php` | `UnlockUserAccountAction` | `BaseAction` |
+| `UserManagement/Actions/ArchiveStudentAccountsAction.php` | `ArchiveStudentAccountsAction` | `BaseAction` |
+| `UserManagement/Actions/BatchDeleteUserAction.php` | `BatchDeleteUserAction` | `BaseAction` |
+| `UserManagement/Actions/CreateUserAction.php` | `CreateUserAction` | `BaseAction` |
+| `UserManagement/Actions/DeleteUserAction.php` | `DeleteUserAction` | `BaseAction` |
+| `UserManagement/Actions/GenerateAccountSlipAction.php` | `GenerateAccountSlipAction` | `BaseAction` |
+| `UserManagement/Actions/ReadRecoveryKeyAction.php` | `ReadRecoveryKeyAction` | Read |
+| `UserManagement/Actions/ReadUserManagerStatsAction.php` | `ReadUserManagerStatsAction` | Read |
+| `UserManagement/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseAction` |
+| `UserManagement/Actions/SaveRecoveryKeyAction.php` | `SaveRecoveryKeyAction` | `BaseAction` |
+| `UserManagement/Actions/SetUserStatusAction.php` | `SetUserStatusAction` | `BaseAction` |
+| `UserManagement/Actions/ToggleUserStatusAction.php` | `ToggleUserStatusAction` | `BaseAction` |
+| `UserManagement/Actions/UpdateUserAction.php` | `UpdateUserAction` | `BaseAction` |
 
 ---
 
@@ -107,6 +120,11 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Dashboard/Livewire/TeacherDashboard.php` | `TeacherDashboard` | `Component` |
 | `Dashboard/Livewire/SupervisorDashboard.php` | `SupervisorDashboard` | `Component` |
 | `AccountStatus/Livewire/AccountLifecycleManager.php` | `AccountLifecycleManager` | `Component` |
+| `UserManagement/Livewire/AdminManager.php` | `AdminManager` | `BaseRecordManager` |
+| `UserManagement/Livewire/StudentManager.php` | `StudentManager` | `BaseRecordManager` |
+| `UserManagement/Livewire/SupervisorManager.php` | `SupervisorManager` | `BaseRecordManager` |
+| `UserManagement/Livewire/TeacherManager.php` | `TeacherManager` | `BaseRecordManager` |
+| `UserManagement/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` |
 
 ## Livewire Forms
 
@@ -114,6 +132,11 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | ---- | ---- |
 | `Profile/Livewire/Forms/ProfileForm.php` | `ProfileForm` |
 | `Profile/Livewire/Forms/PasswordForm.php` | `PasswordForm` |
+| `UserManagement/Livewire/Forms/AdminUserForm.php` | `AdminUserForm` |
+| `UserManagement/Livewire/Forms/StudentForm.php` | `StudentForm` |
+| `UserManagement/Livewire/Forms/SupervisorForm.php` | `SupervisorForm` |
+| `UserManagement/Livewire/Forms/TeacherForm.php` | `TeacherForm` |
+| `UserManagement/Livewire/Forms/UserForm.php` | `UserForm` |
 
 ## Data / DTOs
 
@@ -137,6 +160,13 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Notifications/WelcomeNotification.php` | `WelcomeNotification` |
 | `Notifications/TestMailNotification.php` | `TestMailNotification` |
 | `AccountStatus/Notifications/AccountStatusNotification.php` | `AccountStatusNotification` |
+| `UserManagement/Notifications/ActivationCodeNotification.php` | `ActivationCodeNotification` |
+
+## Commands
+
+| File | Command | Signature |
+| ---- | ------- | --------- |
+| `UserManagement/Console/Commands/AutoInactivateAccounts.php` | `AutoInactivateAccounts` | `accounts:auto-inactivate` |
 
 ## Support
 
@@ -190,6 +220,19 @@ Tests are located in `tests/{Feature,Unit}/User/`. See [Testing](../infrastructu
 | `Feature/User/AccountStatus/*Test.php` | Lock/Unlock account actions |
 | `Feature/User/Notifications/*Test.php` | Send, mark read, notification events |
 | `Feature/User/Models/UserTest.php` | User model: roles, UUID, scopes |
+| `Feature/User/UserManagement/CreateUserActionTest.php` | CreateUserAction |
+| `Feature/User/UserManagement/UpdateUserActionTest.php` | UpdateUserAction |
+| `Feature/User/UserManagement/DeleteUserActionTest.php` | DeleteUserAction |
+| `Feature/User/UserManagement/BatchDeleteUserActionTest.php` | BatchDeleteUserAction |
+| `Feature/User/UserManagement/ReadUserManagerStatsActionTest.php` | ReadUserManagerStatsAction |
+| `Feature/User/UserManagement/ArchiveStudentAccountsActionTest.php` | ArchiveStudentAccountsAction |
+| `Feature/User/UserManagement/ToggleUserStatusActionTest.php` | ToggleUserStatusAction |
+| `Feature/User/UserManagement/SetUserStatusActionTest.php` | SetUserStatusAction |
+| `Feature/User/UserManagement/RevokeUserActivationTokensActionTest.php` | RevokeUserActivationTokensAction |
+| `Feature/User/UserManagement/GenerateAccountSlipActionTest.php` | GenerateAccountSlipAction |
+| `Feature/User/UserManagement/Actions/SaveRecoveryKeyActionTest.php` | SaveRecoveryKeyAction |
+| `Feature/User/UserManagement/Actions/ReadRecoveryKeyActionTest.php` | ReadRecoveryKeyAction |
+| `Feature/User/UserManagement/AutoInactivateAccountsCommandTest.php` | AutoInactivateAccounts command |
 
 ## Factories
 
@@ -281,14 +324,47 @@ app/User/
 │   ├── ReservedAuthoritativeName.php
 │   └── SystemUsername.php
 ├── Services/DashboardService.php
-└── Support/UserIdentifierGenerator.php
+├── Support/UserIdentifierGenerator.php
+└── UserManagement/
+    ├── Actions/
+    │   ├── ArchiveStudentAccountsAction.php
+    │   ├── BatchDeleteUserAction.php
+    │   ├── CreateUserAction.php
+    │   ├── DeleteUserAction.php
+    │   ├── GenerateAccountSlipAction.php
+    │   ├── ReadRecoveryKeyAction.php
+    │   ├── ReadUserManagerStatsAction.php
+    │   ├── RevokeUserActivationTokensAction.php
+    │   ├── SaveRecoveryKeyAction.php
+    │   ├── SetUserStatusAction.php
+    │   ├── ToggleUserStatusAction.php
+    │   └── UpdateUserAction.php
+    ├── Console/
+    │   └── Commands/
+    │       └── AutoInactivateAccounts.php
+    ├── Livewire/
+    │   ├── AdminManager.php
+    │   ├── StudentManager.php
+    │   ├── SupervisorManager.php
+    │   ├── TeacherManager.php
+    │   ├── UserManager.php
+    │   ├── Concerns/
+    │   │   └── DownloadsAccountSlips.php
+    │   └── Forms/
+    │       ├── AdminUserForm.php
+    │       ├── StudentForm.php
+    │       ├── SupervisorForm.php
+    │       ├── TeacherForm.php
+    │       └── UserForm.php
+    └── Notifications/
+        └── ActivationCodeNotification.php
 ```
 
 ---
 
 ## Architectural Integration
 
-- **Submodules**: `Profile`, `Notifications`, `Dashboard`, `AccountStatus`
+- **Submodules**: `Profile`, `Notifications`, `Dashboard`, `AccountStatus`, `UserManagement`
 - **Business Logic**: `app/User/`
 - **Routing**: `routes/web/user.php`
 - **Views**: `resources/views/user/`

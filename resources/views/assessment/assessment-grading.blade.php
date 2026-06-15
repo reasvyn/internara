@@ -152,8 +152,10 @@
 
         @unless($this->isFinalized)
             <div class="mt-4 flex justify-end">
-                <x-mary-button label="Finalize Assessment" icon="o-lock" wire:click="finalize" class="btn-success" wire:confirm="Finalize this assessment? This action cannot be undone." />
+                <x-mary-button label="Finalize Assessment" icon="o-lock" wire:click="askFinalize" class="btn-success" />
             </div>
         @endunless
     @endif
+
+    <x-core::ui.confirm message="Finalize this assessment? This action cannot be undone." />
 </div>

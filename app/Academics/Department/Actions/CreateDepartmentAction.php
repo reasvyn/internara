@@ -6,10 +6,10 @@ namespace App\Academics\Department\Actions;
 
 use App\Academics\Department\Events\DepartmentCreated;
 use App\Academics\Department\Models\Department;
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use Illuminate\Support\Facades\Validator;
 
-final class CreateDepartmentAction extends BaseAction
+final class CreateDepartmentAction extends BaseCommandAction
 {
     public function execute(array $data): Department
     {

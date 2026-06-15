@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Announcement\Actions;
 
-use App\Core\Actions\BaseAction;
+use App\Core\Actions\BaseCommandAction;
 use App\SysAdmin\Announcement\Enums\AnnouncementStatus;
 use App\SysAdmin\Announcement\Models\Announcement;
 use App\SysAdmin\Announcement\Notifications\AnnouncementNotification;
@@ -12,7 +12,7 @@ use App\User\Models\User;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 
-final class SendAnnouncementAction extends BaseAction
+final class SendAnnouncementAction extends BaseCommandAction
 {
     public function execute(array $data): Announcement
     {
