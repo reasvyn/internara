@@ -38,16 +38,58 @@ If you cannot log in, contact your system administrator or use the **Forgot Pass
 
 ---
 
-## 7.2 Forgot Password
+## 7.2 Password Reset Flow
 
-If you've forgotten your password:
+If you've forgotten your password, Internara provides a two-step password reset process.
+
+### Step 1 — Request a Reset Link
 
 1. Click **Forgot Password** on the login page
-2. Enter your email address
-3. Check your email for a password reset link (may take a few minutes)
-4. Click the link and follow the instructions to set a new password
+2. Enter the email address associated with your account
+3. Click **Send Reset Link**
+4. Check your email inbox for the reset link (may take a few minutes)
 
-> **Rate limit:** 3 attempts per email per 60 minutes. If exceeded, wait before trying again.
+> **Rate limit:** 3 requests per email per 60 minutes. If you exceed this limit, wait before
+> trying again.
+
+### Step 2 — Reset Your Password
+
+1. Open the email and click the reset link. This takes you to `/reset-password/{token}`
+2. Enter your email address
+3. Enter your **new password** (minimum 8 characters)
+4. Confirm your new password by typing it again
+5. Click **Reset Password**
+
+### After a Successful Reset
+
+- You'll see a confirmation message: "Your password has been reset."
+- You can now log in with your new password
+- Old passwords cannot be reused
+
+> **Rate limit:** 5 reset attempts per 300 seconds per email/IP. If exceeded, wait 5 minutes.
+
+### Troubleshooting Password Reset
+
+| Issue | What to Do |
+|-------|------------|
+| **Email doesn't arrive** | Check your spam/junk folder. If still missing, try again after the rate limit resets. |
+| **Reset link expired** | Password reset links expire after 60 minutes. Request a new one from the login page. |
+| **"This password reset token is invalid"** | You may have already used this link, or the link was mistyped. Request a new one. |
+| **Rate limit exceeded** | Wait 60 minutes before requesting another reset link. |
+
+### Confirm Password (For Sensitive Actions)
+
+Some sensitive actions within Internara (such as changing your email or generating recovery keys)
+require you to re-enter your current password as an extra security check. This is the **Confirm
+Password** flow:
+
+1. You'll be taken to `/user/confirm-password`
+2. Enter your **current password**
+3. After confirmation, you can proceed with the sensitive action
+4. The confirmation is valid for the remainder of your session
+
+> **Rate limit:** 5 confirmation attempts per 300 seconds. Exceeding this temporarily locks the
+> feature.
 
 ---
 
