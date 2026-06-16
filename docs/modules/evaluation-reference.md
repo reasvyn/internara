@@ -84,11 +84,8 @@ None — all components are directly under `app/Evaluation/`.
 
 ## Enums
 
-| File | Enum | Implements | Values |
-| ---- | ---- | ---------- | ------ |
-| `Enums/EvaluatorRole.php` | `EvaluatorRole` | `LabelEnum` | admin, teacher, supervisor, system |
-
-> `EvaluatorRole` is used by the Assessment module for assignment scoring, not by Evaluation directly.
+None. The `EvaluatorRole` enum previously located here has been moved to `app/Assessment/Enums/`
+(see [Assessment reference](../modules/assessment-reference.md)).
 
 ---
 

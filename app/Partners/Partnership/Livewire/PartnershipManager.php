@@ -11,6 +11,7 @@ use App\Partners\Partnership\Actions\CreatePartnershipAction;
 use App\Partners\Partnership\Actions\DeletePartnershipAction;
 use App\Partners\Partnership\Actions\TerminatePartnershipAction;
 use App\Partners\Partnership\Actions\UpdatePartnershipAction;
+use App\Partners\Partnership\Data\PartnershipData;
 use App\Partners\Partnership\Enums\PartnershipStatus;
 use App\Partners\Partnership\Livewire\Forms\PartnershipForm;
 use App\Partners\Partnership\Models\Partnership;
@@ -132,6 +133,7 @@ class PartnershipManager extends BaseRecordManager
 
     public function create(): void
     {
+        $this->authorize('create', Partnership::class);
         $this->resetErrorBag();
         $this->form->reset();
         $this->form->id = null;
@@ -142,6 +144,7 @@ class PartnershipManager extends BaseRecordManager
     public function edit(string $id): void
     {
         $partnership = Partnership::findOrFail($id);
+        $this->authorize('update', $partnership);
 
         $this->resetErrorBag();
         $this->form->id = $partnership->id;
@@ -165,13 +168,17 @@ class PartnershipManager extends BaseRecordManager
     {
         $this->form->validate();
 
+        $data = PartnershipData::from($this->form->toArray());
+
         if ($this->form->id) {
             $partnership = Partnership::findOrFail($this->form->id);
-            $update->execute($partnership, $this->form->toArray());
+            $this->authorize('update', $partnership);
+            $update->execute($partnership, $data);
             $this->uploadMouDocument($partnership);
             flash()->success(__('partnership.update_success'));
         } else {
-            $partnership = $create->execute($this->form->toArray());
+            $this->authorize('create', Partnership::class);
+            $partnership = $create->execute($data);
             $this->uploadMouDocument($partnership);
             flash()->success(__('partnership.save_success'));
         }
@@ -184,6 +191,7 @@ class PartnershipManager extends BaseRecordManager
     public function terminate(string $id, TerminatePartnershipAction $terminateAction): void
     {
         $partnership = Partnership::findOrFail($id);
+        $this->authorize('update', $partnership);
         $terminateAction->execute($partnership);
         flash()->success(__('partnership.terminate_success'));
     }
@@ -247,6 +255,7 @@ class PartnershipManager extends BaseRecordManager
     private function executeDelete(string $id, DeletePartnershipAction $action): void
     {
         $partnership = Partnership::findOrFail($id);
+        $this->authorize('delete', $partnership);
         $action->execute($partnership);
         flash()->success(__('partnership.delete_success'));
     }

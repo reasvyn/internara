@@ -13,6 +13,7 @@ use App\Partners\Company\Actions\BatchDeleteCompanyAction;
 use App\Partners\Company\Actions\CreateCompanyAction;
 use App\Partners\Company\Actions\DeleteCompanyAction;
 use App\Partners\Company\Actions\UpdateCompanyAction;
+use App\Partners\Company\Data\CompanyData;
 use App\Partners\Company\Livewire\Forms\CompanyForm;
 use App\Partners\Company\Models\Company;
 use Illuminate\Contracts\View\View;
@@ -110,6 +111,7 @@ class CompanyManager extends BaseRecordManager
 
     public function create(): void
     {
+        $this->authorize('create', Company::class);
         $this->resetErrorBag();
         $this->form->reset();
         $this->form->id = null;
@@ -119,6 +121,7 @@ class CompanyManager extends BaseRecordManager
     public function edit(string $id): void
     {
         $company = Company::findOrFail($id);
+        $this->authorize('update', $company);
 
         $this->resetErrorBag();
         $this->form->id = $company->id;
@@ -136,12 +139,24 @@ class CompanyManager extends BaseRecordManager
     {
         $this->form->validate();
 
+        $dto = new CompanyData(
+            name: $this->form->name,
+            address: $this->form->address ?: null,
+            phone: $this->form->phone,
+            email: $this->form->email,
+            website: $this->form->website,
+            description: $this->form->description,
+            industrySector: $this->form->industry_sector,
+        );
+
         if ($this->form->id) {
             $company = Company::findOrFail($this->form->id);
-            $update->execute($company, $this->form->toArray());
+            $this->authorize('update', $company);
+            $update->execute($company, $dto);
             flash()->success(__('company.update_success'));
         } else {
-            $create->execute($this->form->toArray());
+            $this->authorize('create', Company::class);
+            $create->execute($dto);
             flash()->success(__('company.save_success'));
         }
 
@@ -198,6 +213,7 @@ class CompanyManager extends BaseRecordManager
     private function executeDelete(string $id, DeleteCompanyAction $action): void
     {
         $company = Company::findOrFail($id);
+        $this->authorize('delete', $company);
         $action->execute($company);
         flash()->success(__('company.delete_success'));
     }
@@ -250,7 +266,7 @@ class CompanyManager extends BaseRecordManager
                 return CsvRowResult::SKIPPED;
             }
 
-            $create->execute([
+            $create->execute(CompanyData::from([
                 'name' => $name,
                 'address' => trim($row[1] ?? '') ?: null,
                 'phone' => trim($row[2] ?? '') ?: null,
@@ -258,7 +274,7 @@ class CompanyManager extends BaseRecordManager
                 'website' => trim($row[4] ?? '') ?: null,
                 'description' => trim($row[5] ?? '') ?: null,
                 'industry_sector' => trim($row[6] ?? '') ?: null,
-            ]);
+            ]));
 
             return CsvRowResult::CREATED;
         });

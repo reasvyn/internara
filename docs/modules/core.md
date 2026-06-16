@@ -40,7 +40,8 @@ Core has no submodules. Code is organized by architectural layer:
 - **Support/LangChecker.php** — Dev helper that warns on missing translation keys via SmartLogger.
 - **Support/AppInfo.php** — Static application metadata from `composer.json` with config fallback (name, version, author, license, gitUrl). Powers `app_info()` global helper.
 - **Support/AppIntegrity.php** — Composer author verification, enforcing that the author name must be "Reas Vyn".
-- **Support/** — Concrete utilities: `Color` (hex manipulation, luminance, contrast, shade computation), `CsvHandler` (CSV parsing/generation with safe file handle management), `Environment` (system environment detection), `HandlesActionErrors` (generic try-catch-log-rethrow trait), `PasswordRules` (password policy presets), `PiiMasker` (PII redaction for emails, phones, names, IPs, user agents).
+- **Support/** — Concrete utilities: `Color` (hex manipulation, luminance, contrast, shade computation), `CsvHandler` (CSV parsing/generation with safe file handle management), `Environment` (system environment detection), `PasswordRules` (password policy presets), `PiiMasker` (PII redaction for emails, phones, names, IPs, user agents).
+- **Actions/Concerns/** — Action traits: `HandlesActionErrors` (generic try-catch-log-rethrow).
 - **helpers.php** — Global helper function: `app_info()` for static metadata access.
 
 The helpers `setting()` and `brand()` are defined in the Settings module at `app/Settings/Support/helpers.php`.

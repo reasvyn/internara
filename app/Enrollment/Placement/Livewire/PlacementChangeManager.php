@@ -61,6 +61,7 @@ class PlacementChangeManager extends BaseRecordManager
     public function approve(string $id, ApprovePlacementChangeAction $action): void
     {
         $request = PlacementChangeRequest::findOrFail($id);
+        $this->authorize('update', $request);
         $action->execute($request);
         flash()->success(__('placement_change.approve_success'));
     }
@@ -76,6 +77,7 @@ class PlacementChangeManager extends BaseRecordManager
     {
         $this->validate(['rejectionReason' => 'required|string|max:2000']);
         $request = PlacementChangeRequest::findOrFail($this->rejectingId);
+        $this->authorize('update', $request);
         $action->execute($request, $this->rejectionReason);
         flash()->success(__('placement_change.reject_success'));
         $this->showRejectModal = false;

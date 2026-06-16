@@ -6,6 +6,7 @@ namespace App\Enrollment\Placement\Models;
 
 use App\Core\Models\BaseModel;
 use App\Enrollment\Placement\Enums\PlacementChangeStatus;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use Database\Factories\PlacementChangeRequestFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

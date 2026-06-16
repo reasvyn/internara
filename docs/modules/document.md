@@ -1,12 +1,12 @@
 # Document
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-16
 
 Official correspondence template management, PDF letter rendering, policy handbook storage, and compliance acknowledgement tracking.
 
 ## Purpose & Boundary
 
-Document manages the school's official document repository. It stores correspondence templates (permits, parent consent letters) rendered via Blade + DomPDF, and policy handbooks requiring mandatory student acknowledgement. Templates and handbooks share a unified table structure distinguished by type (`template`, `policy`, `guideline`). Policy acknowledgements are recorded in the `activity_log` table for compliance audit.
+Document manages the school's official document repository — correspondence templates (permits, parent consent letters) rendered via Blade + DomPDF. Handbooks are managed by the Guidance/Handbook module and share the same unified `documents` table distinguished by `type = 'handbook'`. All acknowledgements are recorded in the `activity_log` table for compliance audit.
 
 Out of scope: certificate generation (Certification), final grade card (Reports), daily logbook entries (Journals).
 
@@ -15,14 +15,20 @@ Out of scope: certificate generation (Certification), final grade card (Reports)
 ### OfficialDocument
 Correspondence template management: create, edit, and render templates using Blade syntax with DomPDF compilation. Supports variable substitution for student name, program details, dates, and school information. Generated PDFs can be downloaded individually. Templates are versioned — updates create new versions while preserving old ones for historical accuracy.
 
-### Handbook
-Text-based school policies and guidelines with role-targeted visibility filters (`student`, `mentor`, `all`). Handbooks are version-controlled — each update increments the version number. Students must acknowledge each policy version once before accessing certain features (e.g., starting logbook entries in Journals). Acknowledgements are recorded in `activity_log` with event `acknowledged`, capturing user ID, timestamp, IP address, and document version.
+### Handbook (Moved to Guidance/Handbook)
+
+Handbooks are now managed by the **Guidance/Handbook** module (`app/Guidance/Handbook/`). They use the
+same `documents` table with `type = 'handbook'` and the same `activity_log` for acknowledgment
+tracking. See [Guidance module](guidance.md) for the full Handbook reference.
 
 ## Key Concepts
 
 ### Unified Document Table
 
-Templates and handbooks share a single `documents` table distinguished by a `type` discriminator (`template`, `policy`, `guideline`). This prevents table sprawl while enabling document type-specific behavior (rendering for templates, acknowledgement for policies). Each document stores metadata as JSON.
+Templates and handbooks share a single `documents` table distinguished by a `type` discriminator
+(`template`, `handbook`, `policy`, `guideline`). This prevents table sprawl while enabling document
+type-specific behavior (rendering for templates, acknowledgement for handbooks). Each document
+stores metadata as JSON.
 
 ### PDF Rendering Pipeline
 
@@ -46,4 +52,3 @@ Compliance-driven mandatory read-and-sign workflow for school policies. Key rule
 
 - Program (required document template references)
 - Enrollment (document upload verification references)
-- Journals (handbook acknowledgement gate)

@@ -17,6 +17,7 @@ enum DocumentCategory: string implements LabelEnum
     case REPORT = 'report';
     case LETTER = 'letter';
     case POLICY = 'policy';
+    case HANDBOOK = 'handbook';
 
     public function label(): string
     {
@@ -27,6 +28,7 @@ enum DocumentCategory: string implements LabelEnum
             self::REPORT => __('Report'),
             self::LETTER => __('Letter'),
             self::POLICY => __('Policy'),
+            self::HANDBOOK => __('Handbook'),
         };
     }
 }

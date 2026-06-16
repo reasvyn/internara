@@ -78,6 +78,8 @@ class InternshipGroupManager extends BaseRecordManager
 
     public function create(): void
     {
+        $this->authorize('create', InternshipGroup::class);
+
         $this->resetErrorBag();
         $this->form->reset();
         $this->editingId = null;
@@ -87,6 +89,7 @@ class InternshipGroupManager extends BaseRecordManager
     public function edit(string $id): void
     {
         $group = InternshipGroup::findOrFail($id);
+        $this->authorize('update', $group);
 
         $this->resetErrorBag();
         $this->editingId = $group->id;
@@ -107,9 +110,11 @@ class InternshipGroupManager extends BaseRecordManager
 
         if ($this->editingId) {
             $group = InternshipGroup::findOrFail($this->editingId);
+            $this->authorize('update', $group);
             $update->execute($group, $this->form->all());
             flash()->success(__('internship.group_updated'));
         } else {
+            $this->authorize('create', InternshipGroup::class);
             $create->execute($this->form->all());
             flash()->success(__('internship.group_created'));
         }
@@ -182,6 +187,7 @@ class InternshipGroupManager extends BaseRecordManager
         ]);
 
         $group = InternshipGroup::findOrFail($this->memberFormData['group_id']);
+        $this->authorize('update', $group);
 
         $action->execute($group, [
             'registration_id' => $this->memberFormData['registration_id'] ?: null,
@@ -202,6 +208,8 @@ class InternshipGroupManager extends BaseRecordManager
     public function removeMember(string $memberId, RemoveMemberFromGroupAction $action): void
     {
         $member = InternshipGroupMember::findOrFail($memberId);
+        $group = $member->group;
+        $this->authorize('update', $group);
         $action->execute($member);
 
         flash()->success(__('internship.member_removed'));

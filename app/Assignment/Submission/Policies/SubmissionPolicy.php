@@ -8,9 +8,6 @@ use App\Assignment\Submission\Models\Submission;
 use App\Core\Policies\BasePolicy;
 use App\User\Models\User;
 
-/**
- * S1 - Secure: Students can only view/submit their own submissions.
- */
 class SubmissionPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
@@ -45,7 +42,11 @@ class SubmissionPolicy extends BasePolicy
 
     public function verify(User $user, Submission $submission): bool
     {
-        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
+        if ($this->isAdmin($user)) {
+            return true;
+        }
+
+        return $this->mentorProxyFor($submission->registration, $user)?->canGradeSubmission($user) ?? false;
     }
 
     public function delete(User $user, Submission $submission): bool

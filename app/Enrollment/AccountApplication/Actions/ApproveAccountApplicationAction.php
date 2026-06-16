@@ -41,6 +41,12 @@ final class ApproveAccountApplicationAction extends BaseCommandAction
 
             $formData = $application->form_data;
 
+            if (empty($formData['internship_id'])) {
+                throw new RejectedException(
+                    __('registration.validation.missing_internship'),
+                );
+            }
+
             Profile::create([
                 'user_id' => $user->id,
                 'phone' => $formData['phone'] ?? null,

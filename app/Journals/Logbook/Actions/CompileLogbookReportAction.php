@@ -39,7 +39,7 @@ final class CompileLogbookReportAction
                 'registration' => $registration,
                 'entries' => $entries,
                 'includeSupervisorNotes' => $includeSupervisorNotes,
-                'student' => $registration->mentee->user,
+                'student' => $registration->mentee?->user,
                 'company' => $registration->placement?->company,
             ],
             deleteCachedView: true,
@@ -47,7 +47,7 @@ final class CompileLogbookReportAction
 
         $filename =
             'logbook-report-'.
-            $registration->mentee->user->name.
+            $registration->mentee?->user?->name ?? 'Unknown'.
             '-'.
             now()->format('Ymd').
             '.pdf';

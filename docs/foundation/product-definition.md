@@ -61,7 +61,7 @@ and system settings.
 
 Teachers serve as school-side mentors: they review journal entries, grade assignments, conduct
 site visits (supervision logs), evaluate final reports, and compile grade cards. Teachers can
-bypass inactive industry supervisors via the Dual Mentor Fallback Protocol.
+bypass inactive industry supervisors via the Cross-Role Proxy mechanism.
 
 ### Companies (Supervisors)
 

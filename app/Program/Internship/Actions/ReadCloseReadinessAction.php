@@ -20,7 +20,7 @@ final class ReadCloseReadinessAction extends BaseReadAction
     public function execute(Internship $internship): array
     {
         $registrations = Registration::where('internship_id', $internship->id)
-            ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+            ->where('status', 'active')
             ->pluck('id');
 
         return [

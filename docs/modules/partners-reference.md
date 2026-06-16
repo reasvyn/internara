@@ -14,16 +14,16 @@ Manages industrial partner companies and partnership agreements for internship p
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Company/Actions/CreateCompanyAction.php` | `CreateCompanyAction` | `BaseAction` |
-| `Company/Actions/UpdateCompanyAction.php` | `UpdateCompanyAction` | `BaseAction` |
-| `Company/Actions/DeleteCompanyAction.php` | `DeleteCompanyAction` | `BaseAction` |
-| `Company/Actions/BatchDeleteCompanyAction.php` | `BatchDeleteCompanyAction` | `BaseAction` |
-| `Partnership/Actions/CreatePartnershipAction.php` | `CreatePartnershipAction` | `BaseAction` |
-| `Partnership/Actions/UpdatePartnershipAction.php` | `UpdatePartnershipAction` | `BaseAction` |
-| `Partnership/Actions/DeletePartnershipAction.php` | `DeletePartnershipAction` | `BaseAction` |
-| `Partnership/Actions/RenewPartnershipAction.php` | `RenewPartnershipAction` | `BaseAction` |
-| `Partnership/Actions/TerminatePartnershipAction.php` | `TerminatePartnershipAction` | `BaseAction` |
-| `Partnership/Actions/BatchDeletePartnershipAction.php` | `BatchDeletePartnershipAction` | `BaseAction` |
+| `Company/Actions/CreateCompanyAction.php` | `CreateCompanyAction` | `BaseCommandAction` |
+| `Company/Actions/UpdateCompanyAction.php` | `UpdateCompanyAction` | `BaseCommandAction` |
+| `Company/Actions/DeleteCompanyAction.php` | `DeleteCompanyAction` | `BaseCommandAction` |
+| `Company/Actions/BatchDeleteCompanyAction.php` | `BatchDeleteCompanyAction` | `BaseCommandAction` |
+| `Partnership/Actions/CreatePartnershipAction.php` | `CreatePartnershipAction` | `BaseCommandAction` |
+| `Partnership/Actions/UpdatePartnershipAction.php` | `UpdatePartnershipAction` | `BaseCommandAction` |
+| `Partnership/Actions/DeletePartnershipAction.php` | `DeletePartnershipAction` | `BaseCommandAction` |
+| `Partnership/Actions/RenewPartnershipAction.php` | `RenewPartnershipAction` | `BaseCommandAction` |
+| `Partnership/Actions/TerminatePartnershipAction.php` | `TerminatePartnershipAction` | `BaseCommandAction` |
+| `Partnership/Actions/BatchDeletePartnershipAction.php` | `BatchDeletePartnershipAction` | `BaseCommandAction` |
 
 ---
 
@@ -56,7 +56,13 @@ Manages industrial partner companies and partnership agreements for internship p
 | File | Class | Dispatched By |
 | ---- | ----- | ------------- |
 | `Company/Events/CompanyCreated.php` | `CompanyCreated` | `CreateCompanyAction` |
+| `Company/Events/CompanyUpdated.php` | `CompanyUpdated` | `UpdateCompanyAction` |
+| `Company/Events/CompanyDeleted.php` | `CompanyDeleted` | `DeleteCompanyAction` |
 | `Partnership/Events/PartnershipCreated.php` | `PartnershipCreated` | `CreatePartnershipAction` |
+| `Partnership/Events/PartnershipUpdated.php` | `PartnershipUpdated` | `UpdatePartnershipAction` |
+| `Partnership/Events/PartnershipDeleted.php` | `PartnershipDeleted` | `DeletePartnershipAction` |
+| `Partnership/Events/PartnershipRenewed.php` | `PartnershipRenewed` | `RenewPartnershipAction` |
+| `Partnership/Events/PartnershipTerminated.php` | `PartnershipTerminated` | `TerminatePartnershipAction` |
 
 ## Listeners
 

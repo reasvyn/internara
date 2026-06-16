@@ -1,230 +1,260 @@
-# Roadmap — Auto-Backup System
+# Roadmap — Cross-Role Proxy Implementation
 
-> **Last updated:** 2026-06-14
-> **Changes:** initial — auto-backup system feature plan for SysAdmin/Backups module
+> **Last updated:** 2026-06-16
+> **Changes:** replace Guidance restructuring (deferred) with Cross-Role Proxy implementation plan
 
-> **Status:** Approved for implementation
-> **Target module:** `SysAdmin/Backups`
+> **Status:** Design approved — pending implementation
+> **Target:** Application-wide authorization layer
+> **Dependencies:** `MentorEntity` (existing), `BasePolicy`, all module policies and Livewire components
 
 ---
 
 ## 1. Overview
 
-Build an automated backup system for Internara that allows super administrators to:
+The Cross-Role Proxy ADR ([ADR-014](adr/adr-cross-role-proxy.md)) defines an application-layer
+delegation model: teachers can proxy as supervisors, and admins can proxy as both teachers and
+supervisors — without multi-role assignment.
 
-- Schedule automatic backups (database, storage files, or both)
-- Configure retention policy (how many backups to keep)
-- Run manual backups on demand
-- View backup history with status and file size
-- Download or restore from backup files (via CLI)
-- Receive notifications on backup failure
+The `MentorEntity` (`app/User/Mentor/Entities/MentorEntity.php`) is already fully designed with
+proxy-aware capability methods, and the `Registration` model exposes it via `asMentorEntity()`.
+**However, no consumer code calls it.** All policies and Livewire components still use inline
+`$user->hasRole()` checks that bypass the proxy layer entirely.
 
-All configuration is managed through system settings, accessible only to super administrators.
-
----
-
-## 2. Architecture
-
-### Module Placement
-
-```
-app/SysAdmin/Backups/          (flat structure — cross-cutting system feature)
-├── Actions/
-│   ├── CreateBackupAction.php       — Command: run backup, store record
-│   ├── DeleteBackupAction.php       — Command: remove backup file + record
-│   ├── CleanupBackupsAction.php     — Command: purge expired backups per retention
-│   └── ReadBackupHistoryAction.php  — Read: paginated backup history
-├── Console/Commands/
-│   └── SystemBackupCommand.php      — artisan system:backup
-├── Entities/
-│   └── BackupState.php              — status rules, file size formatting
-├── Enums/
-│   ├── BackupType.php               — database, storage, both
-│   └── BackupStatus.php             — pending, running, completed, failed
-├── Events/
-│   ├── BackupCompleted.php
-│   └── BackupFailed.php
-├── Livewire/
-│   └── BackupManager.php            — CRUD table: history, create, delete
-├── Models/
-│   └── Backup.php                   — Eloquent model
-├── Notifications/
-│   └── BackupFailedNotification.php — superadmin alert
-├── Policies/
-│   └── BackupPolicy.php             — superadmin only
-└── Support/
-    └── BackupRunner.php             — shell execution (mysqldump, zip, tar)
-```
-
-### Data Flow
-
-```
-Manual Trigger (CLI/Livewire)          Scheduled Trigger (Cron)
-              │                                  │
-              └──────────┬───────────────────────┘
-                         │
-              CreateBackupAction (Command)
-                         │
-              ┌──────────┼──────────────┐
-              │          │              │
-         BackupType   BackupRunner   Backup model
-         (enum)     (shell exec)   (persist record)
-              │          │              │
-              │          ▼              │
-              │    mysqldump|tar|zip    │
-              │          │              │
-              │          ▼              │
-              │    storage/app/backup/  │
-              │          │              │
-              └──────────┼──────────────┘
-                         │
-                    Event dispatched
-                    ├─ BackupCompleted → (future: download link)
-                    └─ BackupFailed → BackupFailedNotification
-                         │
-                    CleanupBackupsAction
-                    (retention enforcement)
-```
-
-### Database Schema
-
-```sql
-CREATE TABLE backups (
-    id           CHAR(36) PRIMARY KEY,          -- UUID v7
-    type         VARCHAR(20) NOT NULL,           -- 'database' | 'storage' | 'both'
-    file_path    VARCHAR(512),                   -- relative path in storage
-    file_size    BIGINT UNSIGNED DEFAULT 0,      -- bytes
-    status       VARCHAR(20) NOT NULL DEFAULT 'pending',  -- pending|running|completed|failed
-    metadata     JSON DEFAULT NULL,              -- {db_driver, db_size, file_count, ...}
-    error_output TEXT DEFAULT NULL,              -- stderr from failed backup
-    created_by   CHAR(36) NULL,                  -- user_id who triggered it
-    started_at   TIMESTAMP NULL,
-    completed_at TIMESTAMP NULL,
-    created_at   TIMESTAMP NULL,
-    updated_at   TIMESTAMP NULL
-);
-```
+This roadmap covers the phased integration of `MentorEntity` across all modules.
 
 ---
 
-## 3. Settings (System Key-Value Store)
+## 2. Current State (Gaps)
 
-| Setting Key | Type | Default | Description |
-|---|---|---|---|
-| `backup.enabled` | boolean | `false` | Enable auto-backup scheduling |
-| `backup.frequency` | string | `daily` | `daily`, `weekly`, `monthly` |
-| `backup.schedule_time` | string | `02:00` | Time of day for backup (HH:MM, 24h) |
-| `backup.retention_days` | integer | `30` | Delete backups older than N days |
-| `backup.include_database` | boolean | `true` | Include database dump |
-| `backup.include_storage` | boolean | `true` | Include uploaded files |
+### 2.1 Critical — Blocks Proxy Entirely
 
-Settings are managed via the existing `app/Settings/` key-value store and cached with
-event-driven invalidation.
+| # | File | Issue |
+|---|------|-------|
+| C1 | `app/User/Dashboard/Livewire/SupervisorDashboard.php:24` | `abort_ununless(hasRole('supervisor'), 403)` — hard 403 blocks teacher/admin proxy |
+| C2 | `app/User/Dashboard/Livewire/TeacherDashboard.php:26` | `abort_ununless(hasRole('teacher'), 403)` — hard 403 blocks admin proxy |
+| C3 | All 5 MentorEntity domain methods | `canVerifyLogbook()`, `canScoreCompetency()`, `canReviewSupervisionLog()`, `canGradeSubmission()`, `canVerifyAttendance()` are defined but **never called** from any consumer |
 
----
+### 2.2 High — Bypasses MentorEntity
 
-## 4. File Storage
+| # | File | Issue |
+|---|------|-------|
+| H1 | `app/Journals/Attendance/Policies/AttendancePolicy.php` | Inline mentor queries instead of `->asMentorEntity()->canVerifyAttendance()` |
+| H2 | `app/Journals/Logbook/Policies/LogbookPolicy.php` | Inline mentor queries instead of `->asMentorEntity()->canVerifyLogbook()` |
+| H3 | `app/Guidance/SupervisionLog/Policies/SupervisionLogPolicy.php` | Raw role check instead of `->asMentorEntity()->canReviewSupervisionLog()` |
+| H4 | `app/Assignment/Submission/Policies/SubmissionPolicy.php` | `isTeacher()` without MentorEntity proxy context |
+| H5 | `app/Assessment/Livewire/AssessmentGrading.php` | `isAssignedAsMentor()` duplicates MentorEntity logic |
+| H6 | `app/Assignment/Submission/Livewire/SubmissionGrading.php` | Query scope duplicating mentor filtering |
+| H7 | `app/Journals/Logbook/Livewire/LogbookManager.php` | Query scopes duplicating mentor filtering |
+| H8 | `app/Assessment/Policies/AssessmentPolicy.php` | Role checks that should allow proxy scoring |
 
-- Backup files stored at `storage/app/backup/`
-- Naming convention: `backup_{type}_{Y-m-d_His}.{ext}`
-  - `backup_database_2026-06-14_020000.sql.gz` — gzipped SQL dump
-  - `backup_storage_2026-06-14_020000.tar.gz` — compressed storage files
-  - `backup_both_2026-06-14_020000.tar.gz` — combined archive
-- Database dump uses `mysqldump`, `pg_dump`, or SQLite file copy (auto-detected from .env)
-- Storage backup uses `tar` + `gzip`
+### 2.3 Medium — BasePolicy Trait
 
----
-
-## 5. Console Commands
-
-| Command | Description |
-|---|---|
-| `php artisan system:backup` | Run backup now (respects settings) |
-| `php artisan system:backup --type=database` | Database only |
-| `php artisan system:backup --type=storage` | Storage files only |
-| `php artisan system:backup --type=both` | Both (default) |
-| `php artisan system:backup --force` | Skip checks (disk space, etc.) |
+| # | File | Issue |
+|---|------|-------|
+| M1 | `app/Core/Policies/Concerns/AuthorizesRoles.php` | `isTeacher()`, `isSupervisor()`, `isAdmin()` are raw `hasRole()` — every policy using them bypasses proxy |
 
 ---
 
-## 6. Authorization
+## 3. Implementation Phases
 
-- **All backup operations** require `super_admin` role
-- `BackupPolicy` enforces via `before()` (inherits from `BasePolicy`)
-- Route group middleware: `role:super_admin`
-- Livewire component calls `$this->authorize()` inline
+### Phase 1: Wire MentorEntity into Core (Priority: Critical)
 
----
+#### Task 1.1 — BasePolicy Proxy Integration
 
-## 7. Scheduled Tasks
-
-Added to `routes/console.php`:
+Add a `mentorProxyFor()` helper method to `BasePolicy` that provides a shortcut for MentorEntity
+delegation:
 
 ```php
-Schedule::command('system:backup')
-    ->daily()
-    ->description('Run scheduled system backup');
+// In BasePolicy or a new HasProxySupport trait:
+protected function mentorProxyFor(?Registration $registration, User $user): ?MentorEntity
+{
+    if ($registration === null) {
+        return null;
+    }
+
+    return $registration->asMentorEntity();
+}
 ```
 
-Frequency is determined at runtime by reading `backup.frequency` setting.
-The command exits early if `backup.enabled` is `false`.
+This ensures every policy can call `$this->mentorProxyFor($reg, $user)?->canVerifyLogbook()` etc.
+
+#### Task 1.2 — Fix Hard 403 Gates
+
+| File | Replacement |
+|------|-------------|
+| `SupervisorDashboard.php` | Change to redirect with flash if user has proxy capability instead of 403 |
+| `TeacherDashboard.php` | Same approach — check `$user->hasRole('admin')` for admin proxy |
+
+**Files:** `SupervisorDashboard.php`, `TeacherDashboard.php`
+**Pattern:** Replace `abort_unless(hasRole('X'), 403)` with redirect + flash for proxy users
+
+### Phase 2: Policy Integration (Priority: High)
+
+Migrate each module's policy to delegate authorization to `MentorEntity` instead of inline
+`hasRole()` checks.
+
+#### Task 2.1 — Journals/Logbook
+
+**Files:** `app/Journals/Logbook/Policies/LogbookPolicy.php`
+
+Current:
+```php
+public function view(User $user, Logbook $entry): bool
+{
+    if ($this->isAdmin($user)) return true;
+    if ($this->isTeacher($user) && $entry->registration?->mentors()...role teacher) return true;
+    if ($this->isSupervisor($user) && $entry->registration?->mentors()...role supervisor) return true;
+    return $entry->user_id === $user->id;
+}
+```
+
+Target:
+```php
+public function view(User $user, Logbook $entry): bool
+{
+    if ($this->isAdmin($user)) return true;
+    if ($entry->user_id === $user->id) return true;
+
+    return $this->mentorProxyFor($entry->registration, $user)?->canVerifyLogbook($user) ?? false;
+}
+```
+
+#### Task 2.2 — Journals/Attendance
+
+**Files:** `app/Journals/Attendance/Policies/AttendancePolicy.php`
+
+Same pattern: replace inline mentor queries with `mentorProxyFor()` + `canVerifyAttendance()`.
+
+#### Task 2.3 — Guidance/SupervisionLog
+
+**Files:** `app/Guidance/SupervisionLog/Policies/SupervisionLogPolicy.php`
+
+Replace inline `$log->supervisor_id === $user->id` + mentor query with
+`mentorProxyFor()` + `canReviewSupervisionLog()`.
+
+#### Task 2.4 — Assignment/Submission
+
+**Files:** `app/Assignment/Submission/Policies/SubmissionPolicy.php`
+
+Replace `isTeacher()` check with `mentorProxyFor()` + `canGradeSubmission()`.
+
+#### Task 2.5 — Assessment
+
+**Files:** `app/Assessment/Policies/AssessmentPolicy.php`, `app/Assessment/Livewire/AssessmentGrading.php`
+
+Replace `isAssignedAsMentor()` raw query with `mentorProxyFor()` + `canScoreCompetency()`.
+
+### Phase 3: Livewire Query Scope Integration (Priority: High)
+
+Livewire components that filter data by mentor assignment currently duplicate inline queries.
+
+#### Task 3.1 — LogbookManager
+
+**Files:** `app/Journals/Logbook/Livewire/LogbookManager.php`
+
+Replace inline `->whereHas('registration.mentors', role teacher/supervisor)` with:
+```php
+$registrations = Registration::whereHasMentor($user)->pluck('id');
+$query->whereIn('registration_id', $registrations);
+```
+
+Where `whereHasMentor()` is a new scope on Registration that uses `asMentorEntity()` logic.
+
+#### Task 3.2 — SubmissionGrading
+
+**Files:** `app/Assignment/Submission/Livewire/SubmissionGrading.php`
+
+Same pattern — add `Registration::whereHasMentor()` scope and use it.
+
+### Phase 4: AuthorizesRoles Trait Deprecation (Priority: Medium)
+
+**Files:** `app/Core/Policies/Concerns/AuthorizesRoles.php`
+
+The `isTeacher()`, `isSupervisor()`, and `isAdmin()` methods in the trait are used by every policy.
+They cannot be removed globally without breaking existing checks. Instead:
+
+1. Add deprecation notice `@deprecated Use mentorProxyFor()->canXxx() instead`
+2. Migrate all callers to MentorEntity (Phase 2 covers the module policies)
+3. After all callers migrate, remove the `isStudent()`, `isTeacher()`, `isSupervisor()` helpers
+
+`isAdmin()` stays — it gates admin-specific features not subject to proxy (settings, backups, etc.)
+
+### Phase 5: Dashboard Routing (Priority: Low)
+
+**Files:** `app/User/Services/DashboardService.php`
+
+Extend dashboard routing to show appropriate dashboard for proxy users:
+- Teacher proxying supervisor → show supervisor dashboard with "Proxy" banner
+- Admin proxying teacher/supervisor → show target dashboard with "Proxy" banner
 
 ---
 
-## 8. Notifications
+## 4. Testing Strategy
 
-| Event | Trigger | Notification | Channel |
-|---|---|---|---|
-| `BackupFailed` | Backup process returns non-zero exit | `BackupFailedNotification` | In-app (database) |
+| Test | Type | What It Verifies |
+|------|------|------------------|
+| `MentorEntityTest` | Unit | All 5 domain methods with teacher→supervisor proxy, admin→teacher proxy, direct role access |
+| `LogbookPolicyProxyTest` | Feature | Teacher can verify logbook for assigned student (proxy); admin can verify any |
+| `AttendancePolicyProxyTest` | Feature | Teacher can verify attendance via proxy; unrelated teacher cannot |
+| `SupervisionLogPolicyProxyTest` | Feature | Teacher can review supervision log via proxy |
+| `SubmissionPolicyProxyTest` | Feature | Teacher can grade submission via proxy |
+| `AssessmentGradingProxyTest` | Feature | Teacher can score supervisor competency via proxy |
+| `SupervisorDashboardAccessTest` | Feature | Teacher with proxy access sees dashboard (no 403) |
+| `TeacherDashboardAccessTest` | Feature | Admin sees teacher dashboard (no 403) |
 
----
+### Entity Test Example
 
-## 9. Security Considerations
+```php
+test('teacher can proxy as supervisor for assigned student', function () {
+    $teacher = User::factory()->make(['id' => 't-1']);
+    $teacher->assignRole('teacher');
 
-- Database dumps contain PII (student names, emails, etc.) — backup files inherit
-  the same storage permissions as the application
-- Backup files stored under `storage/app/backup/` — NOT in `public/` — never
-  directly accessible via web
-- Cleanup Action verifies file paths to prevent directory traversal
-- Only superadmin can trigger, view, or delete backups
+    $mentors = collect([
+        tap(new User, fn ($u) => $u->forceFill(['id' => 't-1']))
+            ->setRelation('pivot', (object) ['role' => 'teacher']),
+    ]);
 
----
+    $entity = new MentorEntity(
+        registrationId: 'reg-1',
+        mentors: $mentors,
+    );
 
-## 10. Implementation Order
-
-1. Migration (`create_backups_table`)
-2. Enums (`BackupType`, `BackupStatus`)
-3. Entity (`BackupState`)
-4. Model (`Backup`)
-5. Policy (`BackupPolicy`)
-6. Support (`BackupRunner`)
-7. Action: `CreateBackupAction` (Command)
-8. Action: `DeleteBackupAction` (Command)
-9. Action: `CleanupBackupsAction` (Command)
-10. Action: `ReadBackupHistoryAction` (Read)
-11. Events (`BackupCompleted`, `BackupFailed`)
-12. Notification (`BackupFailedNotification`)
-13. Console command (`system:backup`)
-14. Livewire component (`BackupManager`)
-15. Routes (sysadmin.php)
-16. Blade view
-17. Scheduler entry (console.php)
-18. Settings defaults (config)
-19. Command auto-discovery (bootstrap/app.php)
-20. Translations (lang/en, lang/id)
-21. Tests
-22. Update guide/05
+    expect($entity->canProxyAsSupervisor($teacher))->toBeTrue();
+    expect($entity->canVerifyLogbook($teacher))->toBeTrue();
+    expect($entity->canScoreCompetency($teacher, 'supervisor'))->toBeTrue();
+});
+```
 
 ---
 
-## 11. Testing Strategy
+## 5. Integration Order
 
-| Test | Type | Scope |
-|---|---|---|
-| `CreateBackupActionTest` | Feature | Database backup, storage backup, failure modes |
-| `DeleteBackupActionTest` | Feature | Delete record + file, not found, unauthorized |
-| `CleanupBackupsActionTest` | Feature | Retention enforcement, dry run |
-| `ReadBackupHistoryActionTest` | Feature | Pagination, filtering by type/status |
-| `BackupPolicyTest` | Unit | Super admin grants, other roles deny |
-| `BackupManagerTest` | Feature | Livewire: create, list, delete |
+| # | Phase | Task | Files | Depends On |
+|---|-------|------|-------|------------|
+| 1 | 1 | BasePolicy proxy helper | `BasePolicy.php` or new trait | — |
+| 2 | 1 | Fix SupervisorDashboard 403 | `SupervisorDashboard.php` | — |
+| 3 | 1 | Fix TeacherDashboard 403 | `TeacherDashboard.php` | — |
+| 4 | 2 | LogbookPolicy | `LogbookPolicy.php` | 1 |
+| 5 | 2 | AttendancePolicy | `AttendancePolicy.php` | 1 |
+| 6 | 2 | SupervisionLogPolicy | `SupervisionLogPolicy.php` | 1 |
+| 7 | 2 | SubmissionPolicy | `SubmissionPolicy.php` | 1 |
+| 8 | 2 | AssessmentPolicy + AssessmentGrading | `AssessmentPolicy.php`, `AssessmentGrading.php` | 1 |
+| 9 | 3 | LogbookManager query scope | `LogbookManager.php` | 1 |
+| 10 | 3 | SubmissionGrading query scope | `SubmissionGrading.php` | 1 |
+| 11 | 4 | AuthorizesRoles deprecation + migration | `AuthorizesRoles.php`, all policies | 2, 3 |
+| 12 | 5 | Dashboard routing | `DashboardService.php` | 2 |
+| 13 | — | Tests | All test files | 1–5 |
 
+---
+
+## 6. No-Change Zones
+
+The following are intentionally excluded from proxy:
+
+| Feature | Reason |
+|---------|--------|
+| `User/Mentor/Entities/MentorEntity.php` | This IS the proxy implementation — no changes needed |
+| `Enrollment/Registration/Models/Registration.php` | `asMentorEntity()` bridge already exists |
+| `AuthorizesRoles::isAdmin()` | Admin gates admin-specific features (settings, backups, Pulse) — no proxy needed |
+| Route middleware (`role:teacher`) | Proxy is checked at policy layer, not route layer — route stays role-based |
+| Super admin bypass (`BasePolicy::before()`) | Super admin already bypasses all checks — orthogonal to proxy |

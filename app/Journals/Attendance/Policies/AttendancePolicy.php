@@ -8,9 +8,6 @@ use App\Core\Policies\BasePolicy;
 use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;
 
-/**
- * S1 - Secure: Students can only view their own attendance logs.
- */
 class AttendancePolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
@@ -30,31 +27,11 @@ class AttendancePolicy extends BasePolicy
             return true;
         }
 
-        if (
-            $this->isTeacher($user) &&
-            $log->registration &&
-            $log->registration
-                ->mentors()
-                ->where('user_id', $user->id)
-                ->where('internship_group_members.role', 'teacher')
-                ->exists()
-        ) {
+        if ($log->user_id === $user->id) {
             return true;
         }
 
-        if (
-            $this->isSupervisor($user) &&
-            $log->registration &&
-            $log->registration
-                ->mentors()
-                ->where('user_id', $user->id)
-                ->where('internship_group_members.role', 'supervisor')
-                ->exists()
-        ) {
-            return true;
-        }
-
-        return $log->user_id === $user->id;
+        return $this->mentorProxyFor($log->registration, $user)?->canVerifyAttendance($user) ?? false;
     }
 
     public function create(User $user): bool
@@ -64,7 +41,11 @@ class AttendancePolicy extends BasePolicy
 
     public function verify(User $user, Attendance $log): bool
     {
-        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
+        if ($this->isAdmin($user)) {
+            return true;
+        }
+
+        return $this->mentorProxyFor($log->registration, $user)?->canVerifyAttendance($user) ?? false;
     }
 
     public function update(User $user, Attendance $log): bool

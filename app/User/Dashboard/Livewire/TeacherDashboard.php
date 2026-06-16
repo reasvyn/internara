@@ -23,7 +23,21 @@ class TeacherDashboard extends UserDashboard
 
     public function boot(): void
     {
-        abort_unless(auth()->user()?->hasRole('teacher'), 403);
+        $user = auth()->user();
+
+        if (! $user) {
+            abort(403);
+        }
+
+        if ($user->hasRole('teacher')) {
+            return;
+        }
+
+        if ($user->hasRole('admin')) {
+            return;
+        }
+
+        abort(403);
     }
 
     public function mount(ReadTeacherDashboardAction $action): void

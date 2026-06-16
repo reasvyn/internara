@@ -7,7 +7,7 @@ namespace App\Setup\Installation\Console\Commands;
 use App\Core\Support\SmartLogger;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
-use App\Setup\Installation\Console\Commands\Traits\InteractsWithInstallerCli;
+use App\Setup\Installation\Console\Commands\Concerns\InteractsWithInstallerCli;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 

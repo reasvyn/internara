@@ -19,7 +19,8 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 - **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
 - **Concrete Exceptions**: 6 (`ConflictException`, `NotFoundException`, `RateLimitException`, `RejectedException`, `UnauthorizedException`, `ValidationFailedException`)
 - **Middleware**: 2 (`SecurityHeaders`, `LogContext`)
-- **Support Classes**: 12 (`SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`, `Color`, `CsvHandler`, `Environment`, `HandlesActionErrors`, `PasswordRules`, `PiiMasker`, `Spotlight`, `helpers.php`)
+- **Support Classes**: 11 (`SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`, `Color`, `CsvHandler`, `Environment`, `PasswordRules`, `PiiMasker`, `Spotlight`, `helpers.php`)
+- **Action Traits**: 1 (`HandlesActionErrors`)
 - **Models**: 2 concrete (`ActivityLog`, `BaseAuthenticatable`) + 1 abstract (`BaseModel`)
 - **Events**: 1 (`BaseEvent`, abstract)
 - **Livewire Components**: 1 (`BaseRecordManager`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
@@ -151,7 +152,7 @@ ModuleException (abstract, extends RuntimeException)
 | `Color` | `Support/Color.php` | Hex-to-RGB, HSL conversion, color manipulation |
 | `CsvHandler` | `Support/CsvHandler.php` | CSV parsing, heading validation, export generation |
 | `Environment` | `Support/Environment.php` | Environment detection (staging, production, dev) |
-| `HandlesActionErrors` | `Support/HandlesActionErrors.php` | Generic try-catch-log-rethrow for actions |
+| `HandlesActionErrors` | `Actions/Concerns/HandlesActionErrors.php` | Generic try-catch-log-rethrow for actions |
 | `PasswordRules` | `Support/PasswordRules.php` | Common password strength validation rules |
 | `PiiMasker` | `Support/PiiMasker.php` | Regex-based PII redaction (IDs, phone numbers) |
 | `Spotlight` | `Support/Spotlight.php` | Debug/development helper utilities |

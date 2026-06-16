@@ -1,6 +1,6 @@
 # Entity Relationship Diagram
 
-> **Last updated:** 2026-06-12
+> **Last updated:** 2026-06-16
 >
 > **Total: 54 tables** (36 Domain Tables + 18 System/Package Tables)
 
@@ -18,7 +18,7 @@ that do not justify their own existence are eliminated.
 |----------|-----------|
 | `mentors`/`mentees` eliminated | Role-specific metadata fits in `profiles` with `mentor_type` column |
 | `schools` eliminated | Single-tenant — school metadata stored in `settings` key-value |
-| `handbooks` merged into `documents` | Unified document table with `type = 'policy'` |
+| `handbooks` merged into `documents` | Unified document table with `type = 'handbook'` |
 | Rubric metrics inlined | `competencies`/`indicators` stored as JSON in `rubrics.structure` |
 | `absence_requests` merged into `attendances` | Absence fields inlined; separate table eliminated |
 | `registration_mentor` eliminated | Mentor assignments via `internship_group_members` |
@@ -52,7 +52,7 @@ that do not justify their own existence are eliminated.
 |-------|-------------|-------------|
 | `departments` | Academic study programs (jurusan) | `name` UNIQUE, `description` |
 | `academic_years` | School calendars | `name` UNIQUE, `start_date`, `end_date`, `is_active` |
-| `documents` | Templates, policy handbooks, guidelines. Replaces `handbooks`. | `type`, `slug` UNIQUE, `title`, `content`, `file_path`, `version`, `is_active`, `created_by` FK |
+| `documents` | Templates, handbooks, guidelines. Replaces `handbooks`. | `type` (template, handbook, policy, guideline), `slug` UNIQUE, `title`, `content`, `file_path`, `version`, `is_active`, `created_by` FK |
 
 ### Program & Enrollment (5)
 

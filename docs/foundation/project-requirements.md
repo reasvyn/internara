@@ -75,8 +75,9 @@ Each student has two mentors:
 - **School Mentor (Teacher):** Academic supervision, journal verification, assignment grading
 - **Industry Supervisor:** Daily attendance verification, logbook review, competency evaluation
 
-The Dual Mentor Fallback Protocol ensures academic timelines are not blocked by industry
-inactivity. Teachers can bypass inactive supervisors after a configurable window (default 48h).
+The Cross-Role Proxy mechanism ensures academic timelines are not blocked by industry
+inactivity. Teachers can proxy for inactive supervisors after a configurable window (default 48h).
+See [ADR-014: Cross-Role Proxy](../adr/adr-cross-role-proxy.md).
 
 ### 4.3 Competency Assessment
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Assessment\Rubric\Livewire;
 
+use App\Assessment\Enums\EvaluatorRole;
 use App\Assessment\Rubric\Actions\CreateCompetencyAction;
 use App\Assessment\Rubric\Actions\CreateIndicatorAction;
 use App\Assessment\Rubric\Actions\CreateRubricAction;
@@ -15,7 +16,6 @@ use App\Assessment\Rubric\Actions\UpdateIndicatorAction;
 use App\Assessment\Rubric\Actions\UpdateRubricAction;
 use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Exceptions\RejectedException;
-use App\Evaluation\Enums\EvaluatorRole;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;

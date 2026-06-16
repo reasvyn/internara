@@ -6,6 +6,7 @@ namespace App\Partners\Partnership\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
+use App\Partners\Partnership\Events\PartnershipDeleted;
 use App\Partners\Partnership\Models\Partnership;
 
 final class DeletePartnershipAction extends BaseCommandAction
@@ -20,6 +21,8 @@ final class DeletePartnershipAction extends BaseCommandAction
             $this->log('partnership_deleted', $partnership, [
                 'agreement_number' => $partnership->agreement_number,
             ]);
+
+            event(new PartnershipDeleted($partnership));
 
             $partnership->delete();
         });

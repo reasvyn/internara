@@ -540,7 +540,7 @@ resources/views/livewire/
 | 7  | **Academics**     | Institution structure and academic foundation                                  | School profile, departments, academic years                                                              |
 | 8  | **Program**       | Internship program lifecycle                                                   | Program lifecycle, phases, groups, document requirements, closure readiness                             |
 | 9  | **Enrollment**    | Student registration and placement                                             | Applications, registration wizard, document upload, slot management, placement change requests           |
-| 10 | **Assessment**    | Competency evaluation framework                                                | Rubrics (JSON structures), assessment grading, finalization, dual mentor fallback                        |
+| 10 | **Assessment**    | Competency evaluation framework                                                | Rubrics (JSON structures), assessment grading, finalization, cross-role proxy                        |
 | 11 | **Evaluation**    | Generic feedback collection                                                                             | Google Forms-like forms, sections, weighted questions, polymorphic targeting, auto-scored responses |
 | 12 | **Assignment**    | Tasks and submissions                                                          | Task creation, grading workflow, revision loop, deadline management, version history                     |
 | 13 | **Journals**      | Daily activity tracking                                                        | Logbook entries, attendance with clock-in/out, absence requests, scheduling, calendar views              |

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Core\Actions;
 
+use App\Core\Actions\Concerns\HandlesActionErrors;
 use App\Core\Events\BaseEvent;
-use App\Core\Support\HandlesActionErrors;
 use App\Core\Support\SmartLogger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;

@@ -18,24 +18,30 @@ final class UploadRegistrationDocumentAction extends BaseCommandAction
      */
     public function execute(Registration $registration, array $uploads): void
     {
-        $documentIds = $registration->internship->required_document_ids ?? [];
+        $this->transaction(function () use ($registration, $uploads) {
+            $documentIds = $registration->internship->required_document_ids ?? [];
 
-        $documents = Document::whereIn('id', array_keys($uploads))
-            ->whereIn('id', $documentIds)
-            ->get();
+            $documents = Document::whereIn('id', array_keys($uploads))
+                ->whereIn('id', $documentIds)
+                ->get();
 
-        foreach ($documents as $document) {
-            if (! isset($uploads[$document->id])) {
-                continue;
+            foreach ($documents as $document) {
+                if (! isset($uploads[$document->id])) {
+                    continue;
+                }
+
+                $registrationDoc = RegistrationDocument::create([
+                    'registration_id' => $registration->id,
+                    'document_id' => $document->id,
+                    'status' => RegistrationDocumentStatus::PENDING->value,
+                ]);
+
+                $registrationDoc->addMedia($uploads[$document->id])->toMediaCollection('file');
             }
 
-            $registrationDoc = RegistrationDocument::create([
-                'registration_id' => $registration->id,
-                'document_id' => $document->id,
-                'status' => RegistrationDocumentStatus::PENDING->value,
+            $this->log('registration_documents_uploaded', $registration, [
+                'document_count' => $documents->count(),
             ]);
-
-            $registrationDoc->addMedia($uploads[$document->id])->toMediaCollection('file');
-        }
+        });
     }
 }

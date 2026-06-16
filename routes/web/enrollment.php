@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Enrollment\Livewire\ApplyPage;
-use App\Enrollment\Livewire\DirectPlacementManager;
-use App\Enrollment\Livewire\PlacementChangeManager;
-use App\Enrollment\Livewire\PlacementIndex;
-use App\Enrollment\Livewire\RegistrationCenter;
-use App\Enrollment\Livewire\RegistrationDocumentUpload;
-use App\Enrollment\Livewire\RegistrationVerification;
-use App\Enrollment\Livewire\RegistrationWizard;
-use App\Enrollment\Livewire\StudentPlacementChangeRequest;
+use App\Enrollment\AccountApplication\Livewire\ApplyPage;
+use App\Enrollment\Placement\Livewire\DirectPlacementManager;
+use App\Enrollment\Placement\Livewire\PlacementChangeManager;
+use App\Enrollment\Placement\Livewire\PlacementIndex;
+use App\Enrollment\Placement\Livewire\StudentPlacementChangeRequest;
+use App\Enrollment\Registration\Livewire\RegistrationCenter;
+use App\Enrollment\Registration\Livewire\RegistrationDocumentUpload;
+use App\Enrollment\Registration\Livewire\RegistrationVerification;
+use App\Enrollment\Registration\Livewire\RegistrationWizard;
 
 Route::middleware('guest')->group(function () {
     Route::livewire('/apply', ApplyPage::class)->name('apply');
@@ -35,19 +35,13 @@ Route::prefix('student')
     });
 
 Route::prefix('admin')
-    ->name('sysadmin.')
+    ->name('enrollment.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire(
             '/internships/registrations/pending',
             RegistrationVerification::class,
         )->name('internships.registrations.pending');
-    });
-
-Route::prefix('admin')
-    ->name('sysadmin.')
-    ->middleware(['auth', 'role:super_admin|admin'])
-    ->group(function () {
         Route::livewire('/internships/placements', PlacementIndex::class)->name(
             'internships.placements',
         );

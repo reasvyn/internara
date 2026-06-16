@@ -9,7 +9,7 @@ use App\Core\Livewire\BaseRecordManager;
 use App\Journals\Logbook\Actions\CreateLogbookAction;
 use App\Journals\Logbook\Actions\DeleteLogbookAction;
 use App\Journals\Logbook\Actions\UpdateLogbookAction;
-use App\Journals\Logbook\Enums\LogbookStatus;
+use App\Journals\Logbook\Livewire\Forms\LogbookForm;
 use App\Journals\Logbook\Models\Logbook;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,15 +28,7 @@ class LogbookManager extends BaseRecordManager
 
     public ?string $confirmTarget = null;
 
-    public array $formData = [
-        'id' => null,
-        'user_id' => '',
-        'date' => '',
-        'content' => '',
-        'learning_outcomes' => '',
-        'status' => LogbookStatus::DRAFT->value,
-        'mentor_feedback' => '',
-    ];
+    public LogbookForm $form;
 
     public ?string $supervisorNoteEntryId = null;
 
@@ -44,13 +36,7 @@ class LogbookManager extends BaseRecordManager
 
     public function boot(): void
     {
-        if (
-            ! auth()
-                ->user()
-                ?->hasAnyRole(['super_admin', 'admin', 'teacher', 'supervisor'])
-        ) {
-            abort(403, 'Unauthorized access.');
-        }
+        $this->authorize('viewAny', Logbook::class);
     }
 
     public function headers(): array
@@ -163,49 +149,40 @@ class LogbookManager extends BaseRecordManager
     public function create(): void
     {
         $this->resetErrorBag();
-        $this->formData = [
-            'id' => null,
-            'user_id' => '',
-            'date' => now()->toDateString(),
-            'content' => '',
-            'learning_outcomes' => '',
-            'status' => LogbookStatus::DRAFT->value,
-            'mentor_feedback' => '',
-        ];
+        $this->form->reset();
+        $this->form->date = now()->toDateString();
         $this->showModal = true;
     }
 
     public function edit(Logbook $entry): void
     {
         $this->resetErrorBag();
-        $this->formData = [
-            'id' => $entry->id,
-            'user_id' => $entry->user_id,
-            'date' => $entry->date->format('Y-m-d'),
-            'content' => $entry->content,
-            'learning_outcomes' => $entry->learning_outcomes ?? '',
-            'status' => $entry->status->value,
-            'mentor_feedback' => $entry->mentor_feedback ?? '',
-        ];
+        $this->form->id = $entry->id;
+        $this->form->userId = $entry->user_id;
+        $this->form->date = $entry->date->format('Y-m-d');
+        $this->form->content = $entry->content;
+        $this->form->learningOutcomes = $entry->learning_outcomes ?? '';
+        $this->form->status = $entry->status->value;
+        $this->form->mentorFeedback = $entry->mentor_feedback ?? '';
         $this->showModal = true;
     }
 
     public function save(CreateLogbookAction $create, UpdateLogbookAction $update): void
     {
         $this->validate([
-            'formData.date' => 'required|date',
-            'formData.content' => 'required|string|min:10',
-            'formData.status' => 'required|string',
+            'form.date' => 'required|date',
+            'form.content' => 'required|string|min:10',
+            'form.status' => 'required|string',
         ]);
 
-        if ($this->formData['id']) {
-            $entry = Logbook::findOrFail($this->formData['id']);
-            $update->execute($entry, $this->formData);
+        if ($this->form->id) {
+            $entry = Logbook::findOrFail($this->form->id);
+            $update->execute($entry, $this->form->toArray());
             flash()->success(__('logbook.success_updated'));
         } else {
-            $this->validate(['formData.user_id' => 'required|exists:users,id']);
+            $this->validate(['form.userId' => 'required|exists:users,id']);
 
-            $create->execute($this->formData['user_id'], $this->formData);
+            $create->execute($this->form->userId, $this->form->toArray());
             flash()->success(__('logbook.success_created'));
         }
 

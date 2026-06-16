@@ -1,5 +1,5 @@
 <div>
-    <x-mary-header title="My Assessment Results" subtitle="View your finalized internship grades" separator />
+    <x-mary-header :title="__('assessment.my_assessments')" :subtitle="__('assessment.my_assessments_subtitle')" separator />
 
     @forelse($this->assessments as $assessment)
         <x-mary-card class="mb-4">
@@ -10,12 +10,12 @@
                 </div>
                 <div class="text-right">
                     <p class="text-3xl font-bold text-primary">{{ number_format($assessment->score ?? 0, 1) }}</p>
-                    <p class="text-xs text-base-content/40">Final Score</p>
+                    <p class="text-xs text-base-content/40">{{ __('assessment.final_score') }}</p>
                 </div>
             </div>
 
             @if($assessment->rubric)
-                <div class="divider text-xs text-base-content/40 my-2">COMPETENCIES</div>
+                <div class="divider text-xs text-base-content/40 my-2">{{ __('assessment.competencies') }}</div>
 
                 @php
                     $content = $assessment->content ?? [];
@@ -54,7 +54,7 @@
 
                         @if($indicatorCount > 0)
                             <div class="text-right text-xs text-base-content/50 mt-1">
-                                Competency score: {{ number_format($compScore, 1) }} / 100
+                                {{ __('assessment.competency_score') }}: {{ number_format($compScore, 1) }} / 100
                             </div>
                         @endif
                     </div>
@@ -63,7 +63,7 @@
 
             @if($assessment->feedback)
                 <div class="mt-2 p-3 bg-base-100 rounded-xl">
-                    <p class="text-xs text-base-content/40 mb-1">Feedback</p>
+                    <p class="text-xs text-base-content/40 mb-1">{{ __('assessment.feedback') }}</p>
                     <p class="text-sm">{{ $assessment->feedback }}</p>
                 </div>
             @endif
@@ -72,8 +72,8 @@
         <x-mary-card>
             <div class="text-center py-12 text-base-content/40">
                 <x-mary-icon name="o-document-text" class="size-16 mx-auto mb-4 opacity-30" />
-                <p class="text-lg font-medium">No assessments yet</p>
-                <p class="text-sm">Your finalized assessment results will appear here.</p>
+                <p class="text-lg font-medium">{{ __('assessment.no_assessments_yet') }}</p>
+                <p class="text-sm">{{ __('assessment.no_assessments_desc') }}</p>
             </div>
         </x-mary-card>
     @endforelse

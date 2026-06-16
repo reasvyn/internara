@@ -6,7 +6,7 @@ namespace App\Journals\Attendance\Models;
 
 use App\Core\Models\BaseModel;
 use App\Enrollment\Registration\Models\Registration;
-use App\Journals\Attendance\Entities\AttendanceStatus as AttendanceStatusEntity;
+use App\Journals\Attendance\Entities\AttendanceState as AttendanceStateEntity;
 use App\Journals\Attendance\Enums\AttendanceStatus;
 use App\User\Models\User;
 use Database\Factories\AttendanceFactory;
@@ -75,8 +75,8 @@ class Attendance extends BaseModel
         return $this->belongsTo(User::class, 'verified_by');
     }
 
-    public function asAttendanceStatus(): AttendanceStatusEntity
+    public function asAttendanceState(): AttendanceStateEntity
     {
-        return AttendanceStatusEntity::fromModel($this);
+        return AttendanceStateEntity::fromModel($this);
     }
 }

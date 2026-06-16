@@ -6,6 +6,9 @@ namespace App\Core\Policies;
 
 use App\Core\Policies\Concerns\AuthorizesOwnership;
 use App\Core\Policies\Concerns\AuthorizesRoles;
+use App\Enrollment\Registration\Models\Registration;
+use App\User\Mentor\Entities\MentorEntity;
+use App\User\Models\User;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,6 +24,15 @@ abstract class BasePolicy
         }
 
         return null;
+    }
+
+    protected function mentorProxyFor(?Registration $registration, User $user): ?MentorEntity
+    {
+        if ($registration === null) {
+            return null;
+        }
+
+        return $registration->asMentorEntity();
     }
 
     protected function allowIfAdmin(Model $user): Response

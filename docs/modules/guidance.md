@@ -23,7 +23,7 @@ Tracks the mapping of school teachers and industry supervisors to students via `
 ### Dual-Mentor Model
 
 Every student has two mentors:
-- **School Teacher** (Guru Pembimbing): Responsible for academic guidance, supervision visits, and logbook fallback verification. Assigned at enrollment time.
+- **School Teacher** (Guru Pembimbing): Responsible for academic guidance, supervision visits, and logbook Cross-Role Proxy verification. Assigned at enrollment time.
 - **Industry Supervisor** (Pembimbing Lapangan): Responsible for workplace mentoring, daily logbook verification, and industry-specific guidance. Assigned at placement time.
 
 Both mentor roles are tracked in the `internship_group_members` table rather than a separate mentors table, keeping the schema lean.

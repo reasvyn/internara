@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Document\Models;
 
 use App\Core\Models\BaseModel;
+use App\Guidance\Handbook\Entities\HandbookEntity;
 use App\User\Models\User;
 use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -55,9 +56,15 @@ class Document extends BaseModel implements HasMedia
         return $this->original_name ?? $this->title.'.pdf';
     }
 
+    public function asHandbook(): HandbookEntity
+    {
+        return HandbookEntity::fromModel($this);
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('file')->singleFile();
+        $this->addMediaCollection('handbook_file')->singleFile();
     }
 
     public function scopeActive(Builder $query): Builder

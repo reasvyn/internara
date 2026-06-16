@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Partners\Company\Models\Company;
 use App\Partners\Partnership\Actions\UpdatePartnershipAction;
+use App\Partners\Partnership\Data\PartnershipData;
 use App\Partners\Partnership\Models\Partnership;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
@@ -14,12 +15,13 @@ test('updates partnership title', function () {
     $partnership = Partnership::factory()->create(['company_id' => $company->id, 'title' => 'Old Title']);
     $action = app(UpdatePartnershipAction::class);
 
-    $action->execute($partnership, [
+    $action->execute($partnership, PartnershipData::from([
+        'company_id' => $partnership->company_id,
         'agreement_number' => $partnership->agreement_number,
         'title' => 'New Title',
         'start_date' => $partnership->start_date->toDateString(),
         'end_date' => $partnership->end_date->toDateString(),
-    ]);
+    ]));
 
     expect($partnership->fresh()->title)->toBe('New Title');
 });

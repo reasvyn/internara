@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Model;
  *
  * Reduces duplication of hasAnyRole(['super_admin', 'admin']) patterns
  * across all policy classes.
+ *
+ * @deprecated Use mentorProxyFor()->canXxx() instead for mentor-scoped authorization.
+ *             Only isAdmin() should remain for admin-specific features (settings, backups).
  */
 trait AuthorizesRoles
 {

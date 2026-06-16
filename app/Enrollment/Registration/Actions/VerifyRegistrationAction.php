@@ -6,7 +6,7 @@ namespace App\Enrollment\Registration\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
-use App\Enrollment\Placement;
+use App\Enrollment\Placement\Models\Placement;
 use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 

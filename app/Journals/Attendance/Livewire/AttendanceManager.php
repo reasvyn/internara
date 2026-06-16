@@ -38,7 +38,7 @@ class AttendanceManager extends Component
     {
         return Registration::query()
             ->with(['mentee.user', 'placement.company'])
-            ->whereHas('statuses', fn ($q) => $q->where('name', 'active'))
+            ->where('status', 'active')
             ->whereHas('mentors', fn ($q) => $q->where('user_id', auth()->id()))
             ->get();
     }

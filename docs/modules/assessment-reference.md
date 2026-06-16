@@ -14,20 +14,20 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Actions/InitializeAssessmentAction.php` | `InitializeAssessmentAction` | `BaseAction` |
-| `Actions/ScoreIndicatorAction.php` | `ScoreIndicatorAction` | `BaseAction` |
-| `Actions/UpdateAssessmentScoresAction.php` | `UpdateAssessmentScoresAction` | `BaseAction` |
-| `Actions/FinalizeAssessmentAction.php` | `FinalizeAssessmentAction` | `BaseAction` |
-| `Actions/AutoCalculateAssessmentAction.php` | `AutoCalculateAssessmentAction` | `BaseAction` |
-| `Rubric/Actions/CreateRubricAction.php` | `CreateRubricAction` | `BaseAction` |
-| `Rubric/Actions/UpdateRubricAction.php` | `UpdateRubricAction` | `BaseAction` |
-| `Rubric/Actions/DeleteRubricAction.php` | `DeleteRubricAction` | `BaseAction` |
-| `Rubric/Actions/CreateCompetencyAction.php` | `CreateCompetencyAction` | `BaseAction` |
-| `Rubric/Actions/UpdateCompetencyAction.php` | `UpdateCompetencyAction` | `BaseAction` |
-| `Rubric/Actions/DeleteCompetencyAction.php` | `DeleteCompetencyAction` | `BaseAction` |
-| `Rubric/Actions/CreateIndicatorAction.php` | `CreateIndicatorAction` | `BaseAction` |
-| `Rubric/Actions/UpdateIndicatorAction.php` | `UpdateIndicatorAction` | `BaseAction` |
-| `Rubric/Actions/DeleteIndicatorAction.php` | `DeleteIndicatorAction` | `BaseAction` |
+| `Actions/InitializeAssessmentAction.php` | `InitializeAssessmentAction` | `BaseCommandAction` |
+| `Actions/ScoreIndicatorAction.php` | `ScoreIndicatorAction` | `BaseCommandAction` |
+| `Actions/UpdateAssessmentScoresAction.php` | `UpdateAssessmentScoresAction` | `BaseCommandAction` |
+| `Actions/FinalizeAssessmentAction.php` | `FinalizeAssessmentAction` | `BaseCommandAction` |
+| `Actions/AutoCalculateAssessmentAction.php` | `AutoCalculateAssessmentAction` | `BaseCommandAction` |
+| `Rubric/Actions/CreateRubricAction.php` | `CreateRubricAction` | `BaseCommandAction` |
+| `Rubric/Actions/UpdateRubricAction.php` | `UpdateRubricAction` | `BaseCommandAction` |
+| `Rubric/Actions/DeleteRubricAction.php` | `DeleteRubricAction` | `BaseCommandAction` |
+| `Rubric/Actions/CreateCompetencyAction.php` | `CreateCompetencyAction` | `BaseCommandAction` |
+| `Rubric/Actions/UpdateCompetencyAction.php` | `UpdateCompetencyAction` | `BaseCommandAction` |
+| `Rubric/Actions/DeleteCompetencyAction.php` | `DeleteCompetencyAction` | `BaseCommandAction` |
+| `Rubric/Actions/CreateIndicatorAction.php` | `CreateIndicatorAction` | `BaseCommandAction` |
+| `Rubric/Actions/UpdateIndicatorAction.php` | `UpdateIndicatorAction` | `BaseCommandAction` |
+| `Rubric/Actions/DeleteIndicatorAction.php` | `DeleteIndicatorAction` | `BaseCommandAction` |
 
 ---
 
@@ -53,6 +53,12 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 | File | Policy | Extends |
 | ---- | ------ | ------- |
 | `Policies/AssessmentPolicy.php` | `AssessmentPolicy` | `BasePolicy` |
+
+## Enums
+
+| File | Enum | Implements | Values |
+| ---- | ---- | ---------- | ------ |
+| `Enums/EvaluatorRole.php` | `EvaluatorRole` | `LabelEnum` | admin, teacher, supervisor, system |
 
 ---
 

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Partners\Company\Actions\UpdateCompanyAction;
+use App\Partners\Company\Data\CompanyData;
 use App\Partners\Company\Models\Company;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
@@ -12,7 +13,7 @@ test('updates company name', function () {
     $company = Company::factory()->create(['name' => 'Old Name']);
     $action = app(UpdateCompanyAction::class);
 
-    $action->execute($company, ['name' => 'New Name']);
+    $action->execute($company, CompanyData::from(['name' => 'New Name']));
 
     expect($company->fresh()->name)->toBe('New Name');
 });
@@ -21,7 +22,7 @@ test('updates company industry sector', function () {
     $company = Company::factory()->create();
     $action = app(UpdateCompanyAction::class);
 
-    $action->execute($company, ['industry_sector' => 'finance']);
+    $action->execute($company, CompanyData::from(['name' => $company->name, 'industry_sector' => 'finance']));
 
     expect($company->fresh()->industry_sector)->toBe('finance');
 });

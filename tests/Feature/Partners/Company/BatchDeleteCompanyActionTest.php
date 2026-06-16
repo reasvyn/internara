@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Placement\Models\Placement;
 use App\Partners\Company\Actions\BatchDeleteCompanyAction;
 use App\Partners\Company\Models\Company;
@@ -24,19 +23,25 @@ describe('BatchDeleteCompanyAction', function () {
         }
     });
 
-    it('throws when a company has placements', function () {
+    it('blocks companies with placements', function () {
         $company = Company::factory()->create();
         Placement::factory()->create(['company_id' => $company->id]);
 
-        app(BatchDeleteCompanyAction::class)->execute([$company->id]);
-    })->throws(RejectedException::class, 'Cannot delete company with existing placements or partnerships.');
+        $result = app(BatchDeleteCompanyAction::class)->execute([$company->id]);
 
-    it('throws when a company has partnerships', function () {
+        expect($result)->toMatchArray(['deleted' => 0, 'blocked' => 1]);
+        expect($company->fresh())->not->toBeNull();
+    });
+
+    it('blocks companies with partnerships', function () {
         $company = Company::factory()->create();
         Partnership::factory()->create(['company_id' => $company->id]);
 
-        app(BatchDeleteCompanyAction::class)->execute([$company->id]);
-    })->throws(RejectedException::class, 'Cannot delete company with existing placements or partnerships.');
+        $result = app(BatchDeleteCompanyAction::class)->execute([$company->id]);
+
+        expect($result)->toMatchArray(['deleted' => 0, 'blocked' => 1]);
+        expect($company->fresh())->not->toBeNull();
+    });
 
     it('skips non-existent company ids', function () {
         $result = app(BatchDeleteCompanyAction::class)->execute(['non-existent-id']);

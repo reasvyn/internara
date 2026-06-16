@@ -16,9 +16,11 @@ use App\Program\Internship\Models\Internship;
 use App\Program\InternshipGroup\Models\InternshipGroupMember;
 use App\Reports\Report\Models\Report;
 use App\Settings\Models\Setting;
+use App\User\Mentor\Entities\MentorEntity;
 use App\User\Models\User;
 use Database\Factories\RegistrationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -60,9 +62,24 @@ class Registration extends BaseModel
         return $this;
     }
 
+    public function hasStatus(string $status): bool
+    {
+        return $this->status === $status;
+    }
+
+    public function scopeCurrentStatus(Builder $query, string $status): Builder
+    {
+        return $query->where('status', $status);
+    }
+
     public function asRegistrationState(): RegistrationState
     {
         return RegistrationState::fromModel($this)->withPhases($this->resolvePhases());
+    }
+
+    public function asMentorEntity(): MentorEntity
+    {
+        return MentorEntity::fromModel($this);
     }
 
     public function student(): BelongsTo
@@ -126,6 +143,11 @@ class Registration extends BaseModel
         return $this->belongsToMany(User::class, 'internship_group_members', 'registration_id', 'mentor_id')
             ->withPivot('role', 'joined_at')
             ->withTimestamps();
+    }
+
+    public function scopeWhereHasMentor(Builder $query, User $user): Builder
+    {
+        return $query->whereHas('mentors', fn ($q) => $q->where('user_id', $user->id));
     }
 
     public function resolvePhases(): array

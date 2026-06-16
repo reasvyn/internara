@@ -9,7 +9,6 @@ use App\Assignment\Actions\DeleteAssignmentAction;
 use App\Assignment\Actions\PublishAssignmentAction;
 use App\Assignment\Actions\UpdateAssignmentAction;
 use App\Assignment\Models\Assignment;
-use App\Assignment\Models\AssignmentType;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Program\Internship\Models\Internship;
@@ -28,7 +27,7 @@ class AssignmentManager extends BaseRecordManager
 
     public array $formData = [
         'id' => null,
-        'assignment_type_id' => '',
+        'assignment_type' => '',
         'internship_id' => '',
         'title' => '',
         'description' => '',
@@ -40,7 +39,7 @@ class AssignmentManager extends BaseRecordManager
     {
         return [
             ['key' => 'title', 'label' => 'Title', 'sortable' => true],
-            ['key' => 'type.name', 'label' => 'Type'],
+            ['key' => 'assignment_type', 'label' => 'Type'],
             ['key' => 'internship.name', 'label' => 'Internship'],
             ['key' => 'is_mandatory', 'label' => 'Mandatory'],
             ['key' => 'status', 'label' => 'Status'],
@@ -51,14 +50,14 @@ class AssignmentManager extends BaseRecordManager
 
     protected function query(): Builder
     {
-        return Assignment::query()->with(['type', 'internship']);
+        return Assignment::query()->with(['internship']);
     }
 
     protected function applySearch(Builder $query): Builder
     {
         return $query->where(function ($q) {
             $q->where('title', 'like', "%{$this->search}%")
-                ->orWhereHas('type', fn ($t) => $t->where('name', 'like', "%{$this->search}%"))
+                ->orWhere('assignment_type', 'like', "%{$this->search}%")
                 ->orWhereHas(
                     'internship',
                     fn ($i) => $i->where('name', 'like', "%{$this->search}%"),
@@ -71,8 +70,8 @@ class AssignmentManager extends BaseRecordManager
         return $query
             ->when($this->filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
             ->when(
-                $this->filters['type_id'] ?? null,
-                fn ($q, $v) => $q->where('assignment_type_id', $v),
+                $this->filters['assignment_type'] ?? null,
+                fn ($q, $v) => $q->where('assignment_type', $v),
             )
             ->when(
                 $this->filters['is_mandatory'] ?? null,
@@ -81,9 +80,13 @@ class AssignmentManager extends BaseRecordManager
     }
 
     #[Computed]
-    public function assignmentTypes()
+    public function assignmentTypeOptions(): array
     {
-        return AssignmentType::all();
+        return [
+            ['id' => 'project', 'name' => 'Project'],
+            ['id' => 'report', 'name' => 'Report'],
+            ['id' => 'essay', 'name' => 'Essay'],
+        ];
     }
 
     #[Computed]
@@ -94,10 +97,11 @@ class AssignmentManager extends BaseRecordManager
 
     public function create(): void
     {
+        $this->authorize('create', Assignment::class);
         $this->resetErrorBag();
         $this->formData = [
             'id' => null,
-            'assignment_type_id' => '',
+            'assignment_type' => '',
             'internship_id' => '',
             'title' => '',
             'description' => '',
@@ -109,10 +113,11 @@ class AssignmentManager extends BaseRecordManager
 
     public function edit(Assignment $assignment): void
     {
+        $this->authorize('update', $assignment);
         $this->resetErrorBag();
         $this->formData = [
             'id' => $assignment->id,
-            'assignment_type_id' => $assignment->assignment_type_id,
+            'assignment_type' => $assignment->assignment_type,
             'internship_id' => $assignment->internship_id,
             'title' => $assignment->title,
             'description' => $assignment->description,
@@ -127,7 +132,7 @@ class AssignmentManager extends BaseRecordManager
         UpdateAssignmentAction $updateAction,
     ): void {
         $rules = [
-            'formData.assignment_type_id' => 'required|exists:assignment_types,id',
+            'formData.assignment_type' => 'required|string|in:project,report,essay',
             'formData.internship_id' => 'required|exists:internships,id',
             'formData.title' => 'required|string|max:255',
             'formData.due_date' => 'required|date',
@@ -137,8 +142,10 @@ class AssignmentManager extends BaseRecordManager
 
         if ($this->formData['id']) {
             $assignment = Assignment::findOrFail($this->formData['id']);
+            $this->authorize('update', $assignment);
             $updateAction->execute(
                 $assignment,
+                assignmentType: $this->formData['assignment_type'],
                 title: $this->formData['title'],
                 description: $this->formData['description'] ?: null,
                 isMandatory: $this->formData['is_mandatory'],
@@ -146,8 +153,9 @@ class AssignmentManager extends BaseRecordManager
             );
             flash()->success('Assignment updated.');
         } else {
+            $this->authorize('create', Assignment::class);
             $createAction->execute(
-                assignmentTypeId: $this->formData['assignment_type_id'],
+                assignmentType: $this->formData['assignment_type'],
                 internshipId: $this->formData['internship_id'],
                 title: $this->formData['title'],
                 description: $this->formData['description'] ?: null,

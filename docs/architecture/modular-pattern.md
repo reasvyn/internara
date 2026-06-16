@@ -153,9 +153,11 @@ Pint (PSR-12), PHPStan (type safety), Prettier (formatting), Code Review (archit
 
 ---
 
-## 20. Dual Mentor Fallback Protocol
+## 20. Cross-Role Proxy Protocol
 
-Actions accept nullable supervisor fields. Fallback: bypass window after inactivity, proxy entry by teacher, weight redistribution, compliance stamping. Transaction transitions to `FINALIZED`/`VERIFIED`, records `verified_by_fallback`, appends audit trail. See: `docs/conventions.md` §21.
+Teachers can proxy as supervisor; admins can proxy both teacher and supervisor. Implemented at
+the application layer — no multi-role assignment. See [ADR-014](../adr/adr-cross-role-proxy.md)
+and `docs/conventions.md` §21.
 
 ---
 

@@ -6,9 +6,8 @@ namespace App\Guidance\SupervisionLog\Models;
 
 use App\Core\Models\BaseModel;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\SupervisionLog\Entities\SupervisionStatus;
+use App\Guidance\SupervisionLog\Entities\SupervisionLogState;
 use App\Guidance\SupervisionLog\Enums\SupervisionLogStatus;
-use App\Guidance\SupervisionLog\Enums\SupervisionType;
 use App\User\Models\User;
 use Database\Factories\SupervisionLogFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -19,14 +18,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     Fillable([
         'registration_id',
         'supervisor_id',
-        'type',
         'date',
         'topic',
         'notes',
         'status',
-        'is_verified',
-        'verified_at',
-        'verified_by',
+        'supervisor_feedback',
+        'reviewed_by',
+        'reviewed_at',
     ]),
 ]
 class SupervisionLog extends BaseModel
@@ -34,16 +32,15 @@ class SupervisionLog extends BaseModel
     use HasFactory;
 
     protected $attributes = [
-        'status' => SupervisionLogStatus::PENDING->value,
+        'status' => SupervisionLogStatus::DRAFT->value,
     ];
 
     protected function casts(): array
     {
         return [
             'date' => 'date',
-            'type' => SupervisionType::class,
             'status' => SupervisionLogStatus::class,
-            'verified_at' => 'datetime',
+            'reviewed_at' => 'datetime',
         ];
     }
 
@@ -57,14 +54,14 @@ class SupervisionLog extends BaseModel
         return $this->belongsTo(User::class, 'supervisor_id');
     }
 
-    public function verifier(): BelongsTo
+    public function reviewer(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'verified_by');
+        return $this->belongsTo(User::class, 'reviewed_by');
     }
 
-    public function asSupervisionStatus(): SupervisionStatus
+    public function asSupervisionLogState(): SupervisionLogState
     {
-        return SupervisionStatus::fromModel($this);
+        return SupervisionLogState::fromModel($this);
     }
 
     protected static function newFactory(): SupervisionLogFactory

@@ -198,14 +198,17 @@ Daily activity tracking.
 | Absence Approval | Mentor approves single-day, extended requires admin | Mentor + Admin |
 | Attendance Manager | CRUD records, filter, sort, reports | Admin |
 
-### Guidance — Mentoring & Supervision
+### Guidance — Mentoring, Supervision & Handbooks
 
-Mentor relationships and supervision logs.
+Mentor relationships, supervision logs, and policy handbook management.
 
 | Feature | Description | Access |
 |---------|-------------|--------|
 | Supervision Logs | Private notes: site visits, online, phone supervision | Mentor |
 | Mentoring Assignments | Maps teachers and supervisors to student registrations | Admin |
+| Handbook Manager | Upload and manage PDF handbooks by target role | Admin |
+| Handbook List & Acknowledge | View, download, and acknowledge handbooks | Student / Teacher / Supervisor |
+| Role-Targeted Visibility | Handbooks scoped to student, teacher, supervisor, or all | System |
 
 ### Incident — Issue Reporting
 
@@ -231,7 +234,7 @@ Rubric-based evaluation framework.
 | Rubric Manager | CRUD weighted evaluation sheets with nested JSON structures | Admin |
 | Assessment Grading | Score against rubric indicators, auto-calculate weighted total | Teacher / Supervisor |
 | Finalization | Finalized assessments immutable | System |
-| Dual Mentor Fallback | Proxy evaluation or weight redistribution if supervisor inactive | Teacher / Admin |
+| Cross-Role Proxy | Teacher acts as proxy for supervisor; admin proxies both | Teacher / Admin |
 
 ### Assignment — Tasks & Submissions
 
@@ -298,11 +301,11 @@ Score aggregation and sign-off.
 
 ### Document — Templates & Handbooks
 
-Rendering engine for official documents and policy handbooks (unified in `documents` table with `type` discriminator).
+Rendering engine for official documents (unified in `documents` table with `type` discriminator). Handbooks managed by Guidance/Handbook module.
 
 | Feature | Description | Access |
 |---------|-------------|--------|
-| Document Manager | Upload and manage document templates (Blade, CSS, XLSX) and policy handbooks (Markdown) | Admin |
+| Document Manager | Upload and manage document templates (Blade, CSS, XLSX) | Admin |
 | Acknowledgement System | Immutable acknowledgement log (user, timestamp, IP, browser) | User |
 | Rendering Pipeline | 6-step: resolve template → discover renderer → gather data → inject → invoke driver → store | System |
 | Template Versioning | Every document records exact template version used | System |

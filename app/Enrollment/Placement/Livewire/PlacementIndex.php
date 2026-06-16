@@ -6,11 +6,11 @@ namespace App\Enrollment\Placement\Livewire;
 
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
-use App\Enrollment\Placement;
 use App\Enrollment\Placement\Actions\CreatePlacementAction;
 use App\Enrollment\Placement\Actions\DeletePlacementAction;
 use App\Enrollment\Placement\Actions\UpdatePlacementAction;
 use App\Enrollment\Placement\Livewire\Forms\PlacementForm;
+use App\Enrollment\Placement\Models\Placement;
 use App\Partners\Company\Models\Company;
 use App\Program\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
@@ -102,6 +102,8 @@ class PlacementIndex extends BaseRecordManager
 
     public function create(): void
     {
+        $this->authorize('create', Placement::class);
+
         $this->resetErrorBag();
         $this->form->reset();
         $this->showModal = true;
@@ -110,6 +112,7 @@ class PlacementIndex extends BaseRecordManager
     public function edit(string $id): void
     {
         $placement = Placement::findOrFail($id);
+        $this->authorize('update', $placement);
 
         $this->resetErrorBag();
         $this->form->fill([
@@ -130,9 +133,11 @@ class PlacementIndex extends BaseRecordManager
 
         if ($this->form->id) {
             $placement = Placement::findOrFail($this->form->id);
+            $this->authorize('update', $placement);
             $update->execute($placement, $this->form->all());
             flash()->success(__('placement.update_success'));
         } else {
+            $this->authorize('create', Placement::class);
             $create->execute($this->form->all());
             flash()->success(__('placement.save_success'));
         }
@@ -165,6 +170,7 @@ class PlacementIndex extends BaseRecordManager
                     return;
                 }
 
+                $this->authorize('delete', $placement);
                 $deleteAction->execute($placement);
                 flash()->success(__('placement.delete_success'));
             } elseif ($this->confirmActionType === 'deleteSelected') {

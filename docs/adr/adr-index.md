@@ -1,7 +1,7 @@
 # Architecture Decision Records
 
-> **Last updated:** 2026-06-10
-> **Records:** 13 ADRs documenting the key architectural decisions behind Internara.
+> **Last updated:** 2026-06-16
+> **Records:** 14 ADRs documenting the key architectural decisions behind Internara.
 
 Each ADR follows the standard template: **Context** — the forces and trade-offs that drove the decision,
 **Decision** — what was chosen and why, **Consequences** — the resulting benefits and drawbacks,
@@ -38,6 +38,14 @@ Decisions that enforce consistency, maintainability, and security.
 | [Exception Hierarchy](adr-exception-hierarchy.md) | ✅ Accepted |
 | [Flat RBAC with Functional Roles](adr-flat-rbac-with-functional-roles.md) | ✅ Accepted |
 
+## Proxy
+
+Decisions governing cross-role delegation and supervisory override mechanisms.
+
+| Record | Status |
+| ------ | ------ |
+| [Cross-Role Proxy](adr-cross-role-proxy.md) | ✅ Accepted |
+
 ## Strategy
 
 Broad architectural strategies that span the entire system.
@@ -54,3 +62,4 @@ Broad architectural strategies that span the entire system.
 
 - `docs/architecture.md` — high-level architecture overview and 12-layer model
 - `docs/conventions.md` — coding conventions derived from these ADRs
+- [ADR-014: Cross-Role Proxy](adr-cross-role-proxy.md) — Application-layer role delegation
