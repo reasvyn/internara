@@ -7,6 +7,7 @@ namespace App\User\UserManagement\Livewire;
 use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
+use App\Core\Support\CsvHandler;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\CreateUserAction;
 use App\User\UserManagement\Actions\DeleteUserAction;
@@ -16,6 +17,7 @@ use App\User\UserManagement\Livewire\Forms\TeacherForm;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TeacherManager extends BaseRecordManager
 {
@@ -178,6 +180,31 @@ class TeacherManager extends BaseRecordManager
     public function getIdNumberLabel(): string
     {
         return __('user.teacher.id_number');
+    }
+
+    public function export(CsvHandler $csv): StreamedResponse
+    {
+        $users = User::query()
+            ->role(RoleEnum::TEACHER->value)
+            ->with('profile')
+            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->orderBy('name')
+            ->get();
+
+        return $csv->export(
+            $users,
+            [
+                __('user.fields.full_name'),
+                __('user.fields.email'),
+                __('user.teacher.id_number'),
+            ],
+            fn ($u) => [
+                $u->name,
+                $u->email,
+                $u->profile?->id_number ?? '',
+            ],
+            'teachers.csv',
+        );
     }
 
     public function render(): View
