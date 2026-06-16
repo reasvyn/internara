@@ -1,6 +1,6 @@
 # Evaluation — Technical Reference
 
-> **Last updated:** 2026-06-12
+> **Last updated:** 2026-06-16
 
 Detailed structural and implementation reference for the **Evaluation** module.
 
@@ -135,19 +135,6 @@ No dedicated tests. Tests will be added with feature implementation.
 
 ---
 
-## File Organization
-
-```
-app/Evaluation/
-├── Enums/
-│   └── EvaluatorRole.php
-└── Models/
-    ├── EvaluationAnswer.php
-    ├── EvaluationForm.php
-    ├── EvaluationQuestion.php
-    ├── EvaluationResponse.php
-    └── EvaluationSection.php
-```
 
 No Actions, Entities, Policies, or Livewire components yet — these will be added with
 the form builder and response collection features.

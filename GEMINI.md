@@ -1,5 +1,6 @@
 <laravel-boost-guidelines>
-> **Last updated:** 2026-06-15
+> **Last updated:** 2026-06-16
+> **Changes:** sync — align with AGENTS.md: add Documentation Quality section, complete NOT Duplicated Here table, fix constrained/pint/print_r rules, add targeted test command
 >
 > **Purpose:** Thin agentic instruction layer for Gemini. All authoritative docs live under `docs/`.
 > Do NOT duplicate content from `docs/` — refer to it instead.
@@ -28,20 +29,27 @@ Activate `.agents/skills/` when working in that domain:
 
 ## Documentation (NOT Duplicated Here)
 
-See `AGENTS.md` for the complete list of topics covered in `docs/`. Key locations:
+The following topics are fully covered in `docs/` and MUST NOT be duplicated here:
 
 | Topic | Location |
 |-------|----------|
 | Architecture & 12 layers | `docs/architecture.md` |
-| Action Triad | `docs/architecture.md` |
+| Action Triad (Command/Read/Process) | `docs/architecture.md` |
 | Base class mandate | `docs/architecture.md` (Base Class Mandate §) |
+| File structure conventions | `docs/architecture/modular-pattern.md` |
+| PHP language rules | `docs/conventions.md` (§2 General PHP) |
 | Naming conventions | `docs/conventions.md` (§3 Naming Conventions) |
 | Models & Entities | `docs/architecture/entity-pattern.md`, `docs/architecture/model-pattern.md` |
+| Enums (LabelEnum, StatusEnum) | `docs/architecture/enum-pattern.md` |
 | Livewire components | `docs/architecture/livewire-pattern.md` |
 | Events & Notifications | `docs/architecture/event-pattern.md` |
-| Testing | `docs/architecture/testing-pattern.md`, `docs/infrastructure/testing.md` |
+| Routes & Controllers | `docs/architecture/modular-pattern.md` |
+| Migrations, Factories, Seeders | `docs/conventions.md` (§5 Migrations, Factories & Seeders) |
+| Testing conventions | `docs/architecture/testing-pattern.md` |
 
 ## Module Invariants (DO NOT VIOLATE)
+
+These are critical project-specific invariants that exist in the codebase but are enforced at the agent level:
 
 - **Super Admin name** is ALWAYS `Administrator` (config `setup.defaults.admin_name`).
 - **Super Admin username** is ALWAYS `superadmin` (config `setup.defaults.admin_username`).
@@ -49,13 +57,25 @@ See `AGENTS.md` for the complete list of topics covered in `docs/`. Key location
 - `InitializeSuperAdminAction` must use config defaults, not caller-provided values.
 - `FinalizeSetupAction` must extract only `email` and `password` from `adminData` array.
 
+## Documentation Quality
+
+**Avoid brittle content.** Numbers, states, statuses, and enumerated lists become stale the moment code changes. The only exception is documents explicitly designed as catalogs (e.g. `docs/doc-index.md`, `docs/modules/module-index.md`).
+
+When writing or editing docs, prefer:
+- **Structural statements** over counts: "Models extend `BaseModel`" not "There are 42 models"
+- **Locational statements** over listings: "Actions live under `app/{Module}/*/Actions/`" not "Auth has 10 actions"
+- **Factual statements** over status: describe what actually exists, not what phase the project is in
+
+For derivative docs (this file, AGENTS.md, README.md), do NOT duplicate version numbers or counts — reference `composer.json`, `package.json`, or `docs/` instead.
+
 ## Quick-Reference Rules
 
 - `declare(strict_types=1)` in all PHP files except migrations and config.
-- No `dd()`, `dump()`, `ray()`, `var_dump()`, `die()` in committed code.
+- No `dd()`, `dump()`, `ray()`, `var_dump()`, `print_r()`, `die()` in committed code.
 - All user-facing strings use `__()` helper.
-- Foreign keys use `foreignUuid()->constrained()`.
-- Run `vendor/bin/pint --format agent` after modifying PHP files.
+- Foreign keys use `foreignUuid()->constrained('{table}')`.
+- Run `vendor/bin/pint --dirty --format agent` after modifying PHP files.
+- Run `php artisan test --compact --filter=TestName` for targeted tests.
 
 === boost ===
 

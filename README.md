@@ -55,7 +55,7 @@ keeping submodules isolated and highly maintainable.
 | **Build System**        | Vite 8                                                      |
 | **Database Support**    | SQLite (default), MySQL 8+, MariaDB 10+, PostgreSQL 15+     |
 | **Background Services** | Redis / Database Queues, Scheduler Cron                     |
-| **WebSockets**          | Laravel Reverb                                              |
+| **WebSockets**          | Laravel Reverb (optional)                                         |
 | **Observability**       | Laravel Pulse, dual-channel SmartLogger                     |
 | **Quality & Styling**   | Laravel Pint, PHPStan, Pest 4                               |
 

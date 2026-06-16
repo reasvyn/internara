@@ -1,6 +1,6 @@
 # Program — Technical Reference
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-16
 
 Detailed structural and implementation reference for the **Program** module.
 
@@ -9,13 +9,6 @@ Detailed structural and implementation reference for the **Program** module.
 ## Overview
 
 Manages internship programs (lowongan PKL), program timelines, and student cohort groupings.
-
-### Submodules
-
-- `Internship` — Internship program definitions
-- `InternshipGroup` — Student cohort groupings
-
----
 
 ## Actions
 
@@ -158,51 +151,6 @@ Tests are located in `tests/{Feature,Unit}/Program/`. See [Testing](../infrastru
 
 ---
 
-## File Organization
-
-```
-app/Program/
-├── Http/Requests/
-│   ├── CreateInternshipRequest.php
-│   └── RegisterStudentRequest.php
-├── Internship/
-│   ├── Actions/
-│   │   ├── BatchUpdateInternshipStatusAction.php
-│   │   ├── ReadCloseReadinessAction.php
-│   │   ├── CreateInternshipAction.php
-│   │   ├── DeleteInternshipAction.php
-│   │   └── UpdateInternshipAction.php
-│   ├── Entities/
-│   │   ├── InternshipPeriod.php
-│   │   └── InternshipState.php
-│   ├── Enums/InternshipStatus.php
-│   ├── Events/InternshipCreated.php
-│   ├── Listeners/NotifyAdminsInternshipCreated.php
-│   ├── Livewire/
-│   │   ├── Forms/InternshipForm.php
-│   │   └── InternshipManager.php
-│   ├── Models/Internship.php
-│   ├── Notifications/InternshipCreatedNotification.php
-│   ├── Policies/InternshipPolicy.php
-│   └── Rules/OpenForRegistration.php
-├── InternshipGroup/
-│   ├── Actions/
-│   │   ├── AddMemberToGroupAction.php
-│   │   ├── CreateInternshipGroupAction.php
-│   │   ├── DeleteInternshipGroupAction.php
-│   │   ├── RemoveMemberFromGroupAction.php
-│   │   └── UpdateInternshipGroupAction.php
-│   ├── Entities/InternshipGroupState.php
-│   ├── Enums/InternshipGroupRole.php
-│   ├── Livewire/
-│   │   ├── Forms/InternshipGroupForm.php
-│   │   └── InternshipGroupManager.php
-│   ├── Models/
-│   │   ├── InternshipGroup.php
-│   │   └── InternshipGroupMember.php
-│   └── Policies/InternshipGroupPolicy.php
-└── Notifications/RegistrationNotification.php
-```
 
 ---
 

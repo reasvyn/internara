@@ -1,6 +1,6 @@
 # Assessment — Technical Reference
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-16
 
 Detailed structural and implementation reference for the **Assessment** module.
 
@@ -9,12 +9,6 @@ Detailed structural and implementation reference for the **Assessment** module.
 ## Overview
 
 Manages competency rubrics, assessment scoring frameworks, and student evaluation scorecards.
-
-### Submodules
-
-- `Rubric` — Competency rubric definitions, indicators, and scoring criteria
-
----
 
 ## Actions
 
@@ -101,36 +95,6 @@ Tests are located in `tests/{Feature,Unit}/Assessment/`. See [Testing](../infras
 
 ---
 
-## File Organization
-
-```
-app/Assessment/
-├── Actions/
-│   ├── AutoCalculateAssessmentAction.php
-│   ├── FinalizeAssessmentAction.php
-│   ├── InitializeAssessmentAction.php
-│   ├── ScoreIndicatorAction.php
-│   └── UpdateAssessmentScoresAction.php
-├── Entities/AssessmentResult.php
-├── Livewire/
-│   ├── AssessmentGrading.php
-│   └── AssessmentView.php
-├── Models/Assessment.php
-├── Policies/AssessmentPolicy.php
-└── Rubric/
-    ├── Actions/
-    │   ├── CreateCompetencyAction.php
-    │   ├── CreateIndicatorAction.php
-    │   ├── CreateRubricAction.php
-    │   ├── DeleteCompetencyAction.php
-    │   ├── DeleteIndicatorAction.php
-    │   ├── DeleteRubricAction.php
-    │   ├── UpdateCompetencyAction.php
-    │   ├── UpdateIndicatorAction.php
-    │   └── UpdateRubricAction.php
-    ├── Livewire/RubricManager.php
-    └── Models/Rubric.php
-```
 
 ---
 

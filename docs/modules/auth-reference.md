@@ -1,6 +1,7 @@
 # Auth — Technical Reference
 
-> Last updated: 2026-06-15
+> **Last updated:** 2026-06-16
+> **Changes:** sync — add Console Commands section (admin:create), add missing Events (SuperAdminRecovered, RecoverySlipGenerated), add missing Listeners (NotifySuperAdminsOfRecovery), update SuperAdmin file tree
 
 Detailed structural and implementation reference for the **Auth** module.
 
@@ -9,18 +10,6 @@ Detailed structural and implementation reference for the **Auth** module.
 ## Overview
 
 Handles authentication: login, password management, account activation, account recovery, and RBAC permissions.
-
-### Submodules
-
-- `Login`
-- `Password`
-- `Account` (user account activation, migrated from `ActivationToken`)
-- `ApiTokens` (general token management, `api_tokens` table)
-- `AccountRecovery`
-- `Permissions`
-- `SuperAdmin`
-
----
 
 ## Actions
 
@@ -89,13 +78,15 @@ Handles authentication: login, password management, account activation, account 
 | ---- | ----- | ------------- |
 | `Login/Events/LoginSucceeded.php` | `LoginSucceeded` | `LoginAction` |
 | `Login/Events/LoginFailed.php` | `LoginFailed` | `LoginAction` |
-| `Password/Events/PasswordUpdated.php` | `PasswordUpdated` | `UpdateUserPasswordAction` |
+| `AccountRecovery/Events/RecoverySlipGenerated.php` | `RecoverySlipGenerated` | `GenerateRecoverySlipAction` |
+| `SuperAdmin/Events/SuperAdminRecovered.php` | `SuperAdminRecovered` | `RecoverSuperAdminAction` |
 
 ## Listeners
 
 | File | Class | Listens To |
 | ---- | ----- | ---------- |
 | `Login/Listeners/SendSuperAdminWelcomeNotification.php` | `SendSuperAdminWelcomeNotification` | `LoginSucceeded` |
+| `SuperAdmin/Listeners/NotifySuperAdminsOfRecovery.php` | `NotifySuperAdminsOfRecovery` | `SuperAdminRecovered` |
 
 ## Livewire Components
 
@@ -159,6 +150,12 @@ Tests are located in `tests/{Feature,Unit}/Auth/`. See [Testing](../infrastructu
 
 None.
 
+## Console Commands
+
+| Command Signature | Class | Description |
+| ----------------- | ----- | ----------- |
+| `admin:create` | `CreateAdminCommand` | Creates initial superadmin |
+
 ## Migrations
 
 | Migration | Table |
@@ -168,65 +165,6 @@ None.
 
 ---
 
-## File Organization
-
-```
-app/Auth/
-├── Account/
-│   ├── Entities/AccountActivation.php
-│   └── Livewire/ActivateAccount.php
-├── AccountRecovery/
-│   ├── Actions/
-│   │   ├── GenerateRecoverySlipAction.php
-│   │   └── RedeemRecoverySlipAction.php
-│   ├── Data/RecoveryCodeData.php
-│   ├── Entities/RecoveryCodeState.php
-│   └── Livewire/
-│       ├── Forms/AccountRecoveryForm.php
-│       ├── AccountRecovery.php
-│       ├── RecoveryCode.php
-│       └── RecoverySlipManager.php
-├── ApiTokens/
-│   ├── Entities/ActivationToken.php
-│   └── Models/ApiToken.php
-├── Login/
-│   ├── Actions/LoginAction.php
-│   ├── Data/LoginData.php
-│   ├── Events/
-│   │   ├── LoginFailed.php
-│   │   └── LoginSucceeded.php
-│   ├── Http/Middleware/AuthThrottleMiddleware.php
-│   └── Livewire/
-│       ├── Forms/LoginForm.php
-│       └── Login.php
-├── Password/
-│   ├── Actions/
-│   │   ├── ConfirmPasswordAction.php
-│   │   ├── ResetPasswordAction.php
-│   │   ├── ResetUserPasswordAction.php
-│   │   ├── SendPasswordResetLinkAction.php
-│   │   └── UpdateUserPasswordAction.php
-│   └── Livewire/
-│       ├── Forms/
-│       │   ├── ConfirmPasswordForm.php
-│       │   ├── ForgotPasswordForm.php
-│       │   └── ResetPasswordForm.php
-│       ├── ConfirmPassword.php
-│       ├── ForgotPassword.php
-│       └── ResetPassword.php
-├── Permissions/
-│   ├── Enums/Role.php
-│   ├── Http/
-│   │   ├── Middleware/CheckRoleMiddleware.php
-│   │   └── Requests/RoleRequest.php
-│   └── Policies/UserPolicy.php
-└── SuperAdmin/
-    ├── Actions/
-    │   ├── InitializeSuperAdminAction.php
-    │   └── RecoverSuperAdminAction.php
-    ├── Entities/SuperAdminIntegrityRules.php
-    └── Notifications/SuperAdminRecoveredNotification.php
-```
 
 ---
 

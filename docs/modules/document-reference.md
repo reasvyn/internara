@@ -1,6 +1,6 @@
 # Document — Technical Reference
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-16
 
 Detailed structural and implementation reference for the **Document** module.
 
@@ -10,16 +10,11 @@ Detailed structural and implementation reference for the **Document** module.
 
 Manages official document templates, correspondence generation (MoU, agreements), report generation, and compliance acknowledgements.
 
-### Submodules
-
-- `OfficialDocument` — Official document templates and rendering
-
----
-
 ## Actions
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
+| `OfficialDocument/Actions/GenerateDocumentAction.php` | `GenerateDocumentAction` | `BaseAction` |
 | `OfficialDocument/Actions/GenerateReportAction.php` | `GenerateReportAction` | `BaseAction` |
 | `OfficialDocument/Actions/RenderDocumentAction.php` | `RenderDocumentAction` | `BaseAction` |
 | `OfficialDocument/Actions/SaveDocumentTemplateAction.php` | `SaveDocumentTemplateAction` | `BaseAction` |
@@ -105,28 +100,6 @@ Tests are located in `tests/{Feature,Unit}/Document/`. See [Testing](../infrastr
 
 ---
 
-## File Organization
-
-```
-app/Document/
-├── Enums/DocumentCategory.php
-├── Models/Document.php
-├── OfficialDocument/
-│   ├── Actions/
-│   │   ├── DeleteReportAction.php
-│   │   ├── GenerateReportAction.php
-│   │   ├── RenderDocumentAction.php
-│   │   └── SaveDocumentTemplateAction.php
-│   ├── Http/
-│   │   ├── Controllers/DocumentRenderController.php
-│   │   └── Requests/GenerateReportRequest.php
-│   ├── Livewire/
-│   │   ├── ReportsManager.php
-│   │   └── TemplateManager.php
-│   └── Support/
-├── Policies/DocumentPolicy.php
-└── Support/DocumentRenderer.php
-```
 
 ---
 

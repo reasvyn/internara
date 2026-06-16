@@ -119,8 +119,8 @@
                     <div class="relative mb-2 group">
                         <div class="cursor-pointer relative" onclick="document.getElementById('school-logo-upload').click()">
                             <input id="school-logo-upload" type="file" wire:model="logo_file" accept="image/png,image/jpeg,image/webp" class="hidden" />
-                            @if($this->logoPreviewUrl() ?? $school->getFirstMediaUrl('logo', 'thumb'))
-                                <img src="{{ $this->logoPreviewUrl() ?? $school->getFirstMediaUrl('logo', 'thumb') }}"
+                            @if($this->logoPreviewUrl())
+                                <img src="{{ $this->logoPreviewUrl() }}"
                                      alt="School logo"
                                      class="size-24 rounded-xl object-contain border border-base-content/10" />
                             @else
@@ -132,9 +132,10 @@
                                 <x-mary-icon name="o-camera" class="size-8 text-base-100" />
                             </div>
                         </div>
-                        @if($school->getFirstMediaUrl('logo', 'thumb'))
+                        @if($this->logoPreviewUrl())
                             <button type="button"
                                 wire:click="$set('showConfirm', true)"
+                                aria-label="{{ __('common.actions.remove') }}"
                                 class="absolute -top-2 -right-2 size-6 bg-error text-error-content rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-sm opacity-0 group-hover:opacity-100">
                                 <x-mary-icon name="o-x-mark" class="size-3" />
                             </button>

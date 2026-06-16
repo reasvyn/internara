@@ -1,13 +1,135 @@
 # Known Issues & Limitations
 
-> **Last updated:** 2026-06-15
-> **Changes:** fix all 23 Settings & Backups audit findings (S-1 through S-23)
+> **Last updated:** 2026-06-16
+> **Changes:** Academics audit fixes — A-1/A-2 (SchoolEditor rewritten with Form, Action, authorize), A-3 (3 new Events + dispatches in 4 Actions), A-4 (@throws fix), A-6 (authorize in all mutation methods), A-9 (#[Computed]), A-10 (aria-labels), A-11/A-12 (test fixes), A-13 (test name), A-16/A-17 (event assertions in tests)
 
 All known issues have been resolved. See below for the fix log.
 
 ---
 
+## Open Issues
+
+### A-5 — Events missing `readonly` (docs issue)
+
+| Attribute | Detail |
+|-----------|--------|
+| **Status** | Open — LOW |
+| **Detected** | 2026-06-16 (audit) |
+| **Description** | event-pattern.md §1 states events must be `final readonly` classes, but `BaseEvent` itself is not `readonly`. PHP 8.4 forbids a `readonly` class from extending a non-`readonly` class. Fix: either make `BaseEvent` `readonly` (requires all properties to be typed and no uninitialized state) or update event-pattern.md to remove the `readonly` requirement. |
+
+### A-8 — Entity `fromModel()` fallback queries
+
+| Attribute | Detail |
+|-----------|--------|
+| **Status** | Open — LOW |
+| **Detected** | 2026-06-16 (audit) |
+| **Description** | `AcademicYearState::fromModel()` and `DepartmentState::fromModel()` execute DB queries in fallback path when relations are not loaded. Technically violates zero-I/O purity. Fix: either accept as documented limitation (relations must be eager-loaded) or inject counts via constructor at call site. |
+
+### A-14 — Redundant `hasRole('super_admin')` in policies
+
+| Attribute | Detail |
+|-----------|--------|
+| **Status** | Open — LOW |
+| **Detected** | 2026-06-16 (audit) |
+| **Description** | `AcademicYearPolicy::activate()`, `AcademicYearPolicy::delete()`, `DepartmentPolicy::forceDelete()` have explicit `$user->hasRole('super_admin')` that is dead code — `BasePolicy::before()` already short-circuits all checks for super_admin. Simplify to `return $this->isAdmin($user);` or `return false;`. |
+
+### A-15 — Verbose docblocks in `DepartmentPolicy`
+
+| Attribute | Detail |
+|-----------|--------|
+| **Status** | Open — LOW |
+| **Detected** | 2026-06-16 (audit) |
+| **Description** | `DepartmentPolicy` has verbose per-method docblocks while `AcademicYearPolicy` uses concise single-line comments. Inconsistent. Pick one style. |
+
+### A-7 — Livewire components, Forms, Policies untested
+
+| Attribute | Detail |
+|-----------|--------|
+| **Status** | Open — MEDIUM |
+| **Detected** | 2026-06-16 (audit) |
+| **Description** | 3 Livewire components (AcademicYearManager, DepartmentManager, SchoolEditor), 2 Forms (AcademicYearForm, DepartmentForm), and 2 Policies (AcademicYearPolicy, DepartmentPolicy) have zero test coverage. Adding tests is deferred to avoid scope creep. |
+
+---
+
 ## Resolved Issues
+
+### A-1 — CRITICAL: SchoolEditor skeleton (missing properties/methods)
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Created `SaveSchoolProfileAction` (Command Action), `SchoolForm` (Livewire Form), rewrote `SchoolEditor` with `mount()`, `save()`, `removeLogo()`, `confirmAction()`, `logoPreviewUrl()` methods and `$form`, `$logo_file`, `$showConfirm`, `$logoPreviewUrl` properties. Added `authorize()` via `SettingPolicy`. |
+
+### A-2 — CRITICAL: SchoolEditor missing authorization
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Added `$this->authorize('update', Setting::class)` to `mount()`, `save()`, `removeLogo()` methods. |
+
+### A-3 — HIGH: 4 Actions missing event dispatch
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Created 3 new Event classes (`AcademicYearUpdated`, `AcademicYearDeleted`, `DepartmentUpdated`). Added `event(new ...)` calls to `BulkDeleteAcademicYearsAction`, `DeleteAcademicYearAction`, `UpdateAcademicYearAction`, `UpdateDepartmentAction`. |
+
+### A-4 — HIGH: DeleteAcademicYearAction wrong @throws docblock
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Changed `@throws RuntimeException` to `@throws RejectedException`. |
+
+### A-6 — HIGH: Missing granular `authorize()` in managers
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Added `authorize()` calls to `AcademicYearManager::create()`, `store()`, `edit()`, `update()`, `executeActivate()`, `executeDelete()`. Added to `DepartmentManager::create()`, `edit()`, `save()`, `executeDelete()`, `import()`, `export()`. |
+
+### A-9 — MEDIUM: DepartmentManager::stats() missing #[Computed]
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Added `#[Computed]` attribute to `DepartmentManager::stats()`. Updated `render()` to use `$this->stats` (property access). |
+
+### A-10 — MEDIUM: Icon buttons missing aria-label
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Added `:aria-label` to edit, activate, delete buttons in `academic-year-manager.blade.php` and remove-logo button in `school-editor.blade.php`. |
+
+### A-11 — MEDIUM: SchoolEntityTest uses RefreshDatabase
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Changed `RefreshDatabase` to `LazilyRefreshDatabase`. |
+
+### A-12 — MEDIUM: SchoolEntityTest has namespace
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Removed `namespace Tests\Unit\Academics\School\Entities` to match other test files. |
+
+### A-13 — MEDIUM: DepartmentStateTest misleading name
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Renamed test from `'has profiles returns true when profiles exist'` to `'can be deleted returns false when has many profiles'`. |
+
+### A-16 — LOW: UpdateAcademicYearActionTest missing error cases
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Added event assertion test (`AcademicYearUpdated` dispatched). |
+
+### A-17 — LOW: DeleteAcademicYearActionTest missing branch
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Added event assertion test (`AcademicYearDeleted` dispatched). |
+
+### D-1 — Module Reference Docs Undocumented Files & Brittle Trees
+
+| Attribute | Detail |
+|-----------|--------|
+| **Resolved** | 2026-06-16 — Added missing files to table sections across 9 module reference docs; removed brittle File Organization trees from all 19 reference docs |
 
 ### S-1 — CRITICAL: SystemSetting Livewire — Authorization Added to All Hook Methods
 

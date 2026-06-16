@@ -1,6 +1,6 @@
 # Enrollment — Technical Reference
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-16
 
 Detailed structural and implementation reference for the **Enrollment** module.
 
@@ -10,18 +10,11 @@ Detailed structural and implementation reference for the **Enrollment** module.
 
 Manages student registration, placement slot assignment, placement change requests, account applications, and registration document uploads.
 
-### Submodules
-
-- `Registration` — Student internship registration, document upload, verification
-- `Placement` — Placement slot allocation, change requests
-- `AccountApplication` — Guest account applications
-
----
-
 ## Actions
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
+| `Registration/Actions/ReadRegistrationAvailabilityAction.php` | `ReadRegistrationAvailabilityAction` | `BaseReadAction` |
 | `Registration/Actions/RegisterInternshipAction.php` | `RegisterInternshipAction` | Process `BaseAction` |
 | `Registration/Actions/VerifyRegistrationAction.php` | `VerifyRegistrationAction` | `BaseAction` |
 | `Registration/Actions/UploadRegistrationDocumentAction.php` | `UploadRegistrationDocumentAction` | `BaseAction` |
@@ -131,65 +124,6 @@ Tests are located in `tests/{Feature,Unit}/Enrollment/`. See [Testing](../infras
 
 ---
 
-## File Organization
-
-```
-app/Enrollment/
-├── AccountApplication/
-│   ├── Actions/
-│   │   ├── ApplyAccountAction.php
-│   │   ├── ApproveAccountApplicationAction.php
-│   │   └── RejectAccountApplicationAction.php
-│   ├── Enums/AccountApplicationStatus.php
-│   ├── Livewire/
-│   │   ├── Forms/AccountApplicationForm.php
-│   │   └── ApplyPage.php
-│   ├── Models/AccountApplication.php
-│   └── Policies/AccountApplicationPolicy.php
-├── Placement/
-│   ├── Actions/ (7 actions)
-│   ├── Entities/
-│   │   ├── PlacementCapacity.php
-│   │   └── PlacementState.php
-│   ├── Enums/PlacementChangeStatus.php
-│   ├── Livewire/
-│   │   ├── Forms/
-│   │   │   ├── DirectPlacementForm.php
-│   │   │   ├── PlacementChangeForm.php
-│   │   │   └── PlacementForm.php
-│   │   ├── DirectPlacementManager.php
-│   │   ├── PlacementChangeManager.php
-│   │   ├── PlacementIndex.php
-│   │   └── StudentPlacementChangeRequest.php
-│   ├── Models/
-│   │   ├── Placement.php
-│   │   └── PlacementChangeRequest.php
-│   └── Policies/
-│       ├── PlacementChangeRequestPolicy.php
-│       └── PlacementPolicy.php
-└── Registration/
-    ├── Actions/
-    │   ├── RegisterInternshipAction.php
-    │   ├── UploadRegistrationDocumentAction.php
-    │   └── VerifyRegistrationAction.php
-    ├── Data/RegistrationData.php
-    ├── Entities/RegistrationState.php
-    ├── Enums/RegistrationDocumentStatus.php
-    ├── Events/StudentRegistered.php
-    ├── Listeners/ClearDashboardOnRegistration.php
-    ├── Livewire/
-    │   ├── Forms/RegistrationWizardForm.php
-    │   ├── RegistrationCenter.php
-    │   ├── RegistrationDocumentUpload.php
-    │   ├── RegistrationVerification.php
-    │   └── RegistrationWizard.php
-    ├── Models/
-    │   ├── Registration.php
-    │   └── RegistrationDocument.php
-    └── Policies/
-        ├── RegistrationDocumentPolicy.php
-        └── RegistrationPolicy.php
-```
 
 ---
 

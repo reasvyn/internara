@@ -1,6 +1,7 @@
 # Journals — Technical Reference
 
-> Last updated: 2026-06-10
+> **Last updated:** 2026-06-16
+> **Changes:** sync — fix file tree indentation (6→8 spaces under Attendance/ and Logbook/)
 
 Detailed structural and implementation reference for the **Journals** module.
 
@@ -9,14 +10,6 @@ Detailed structural and implementation reference for the **Journals** module.
 ## Overview
 
 Manages daily student activity tracking: logbooks, attendance (clock in/out), and absence requests.
-
-### Submodules
-
-- `Logbook` — Daily activity log entries
-- `Attendance` — Clock in/out and attendance tracking
-- `AbsenceRequest` — Absence submissions and approvals
-
----
 
 ## Actions
 
@@ -96,6 +89,12 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | `Attendance/Http/Requests/ClockOutRequest.php` | `ClockOutRequest` | Clock out validation |
 | `AbsenceRequest/Http/Requests/SubmitAbsenceRequest.php` | `SubmitAbsenceRequest` | Absence request validation |
 
+## HTTP Controllers
+
+| File | Controller | Extends |
+| ---- | ---------- | ------- |
+| `Http/Controllers/LogbookReportController.php` | `LogbookReportController` | `BaseController` |
+
 ---
 
 ## Routes
@@ -128,55 +127,6 @@ Tests are located in `tests/{Feature,Unit}/Journals/`. See [Testing](../infrastr
 
 ---
 
-## File Organization
-
-```
-app/Journals/
-├── AbsenceRequest/
-│   ├── Actions/
-│   │   ├── ProcessAbsenceAction.php
-│   │   └── SubmitAbsenceAction.php
-│   ├── Entities/AbsenceRequestStatus.php
-│   ├── Enums/
-│   │   ├── AbsenceReasonType.php
-│   │   └── AbsenceRequestStatus.php
-│   ├── Http/Requests/SubmitAbsenceRequest.php
-│   ├── Livewire/AbsenceRequestForm.php
-│   └── Models/AbsenceRequest.php
-├── Attendance/
-│   ├── Actions/
-│   │   ├── ClockInAction.php
-│   │   ├── ClockOutAction.php
-│   │   ├── CreateAttendanceAction.php
-│   │   ├── DeleteAttendanceAction.php
-│   │   ├── UpdateAttendanceAction.php
-│   │   └── VerifyAttendanceAction.php
-│   ├── Entities/AttendanceStatus.php
-│   ├── Enums/AttendanceStatus.php
-│   ├── Http/Requests/
-│   │   ├── ClockInRequest.php
-│   │   └── ClockOutRequest.php
-│   ├── Livewire/
-│   │   ├── AttendanceManager.php
-│   │   └── StudentClockIn.php
-    │   ├── Models/Attendance.php
-    │   └── Policies/AttendancePolicy.php
-├── Logbook/
-│   ├── Actions/
-│   │   ├── CompileLogbookReportAction.php
-│   │   ├── CreateLogbookAction.php
-│   │   ├── DeleteLogbookAction.php
-│   │   ├── SubmitLogbookAction.php
-│   │   └── UpdateLogbookAction.php
-│   ├── Entities/LogbookState.php
-│   ├── Enums/LogbookStatus.php
-│   ├── Http/Requests/CreateLogbookEntryRequest.php
-│   ├── Livewire/
-│   │   ├── LogbookEntry.php
-│   │   └── LogbookManager.php
-    │   ├── Models/Logbook.php
-    │   └── Policies/LogbookPolicy.php
-```
 
 ---
 

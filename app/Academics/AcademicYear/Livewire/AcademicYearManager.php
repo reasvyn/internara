@@ -102,6 +102,8 @@ class AcademicYearManager extends BaseRecordManager
 
     public function create(): void
     {
+        $this->authorize('create', AcademicYear::class);
+
         $this->resetErrorBag();
         $this->form->reset();
         $this->editingYearId = null;
@@ -111,6 +113,7 @@ class AcademicYearManager extends BaseRecordManager
     public function edit(string $id): void
     {
         $year = AcademicYear::findOrFail($id);
+        $this->authorize('update', $year);
 
         $this->resetErrorBag();
         $this->editingYearId = $year->id;
@@ -123,6 +126,8 @@ class AcademicYearManager extends BaseRecordManager
 
     public function store(CreateAcademicYearAction $action): void
     {
+        $this->authorize('create', AcademicYear::class);
+
         $this->form->validate($this->form->rules());
 
         $action->execute($this->form->toArray());
@@ -136,6 +141,7 @@ class AcademicYearManager extends BaseRecordManager
     public function update(UpdateAcademicYearAction $action): void
     {
         $year = AcademicYear::findOrFail($this->editingYearId);
+        $this->authorize('update', $year);
 
         $this->form->validate($this->form->rules($this->editingYearId));
 
@@ -209,6 +215,8 @@ class AcademicYearManager extends BaseRecordManager
     private function executeActivate(string $id, ActivateAcademicYearAction $action): void
     {
         $year = AcademicYear::findOrFail($id);
+        $this->authorize('activate', $year);
+
         $action->execute($year);
         flash()->success(__('academic_year.activated'));
     }
@@ -216,6 +224,8 @@ class AcademicYearManager extends BaseRecordManager
     private function executeDelete(string $id, DeleteAcademicYearAction $action): void
     {
         $year = AcademicYear::findOrFail($id);
+        $this->authorize('delete', $year);
+
         $action->execute($year);
         flash()->success(__('academic_year.deleted'));
     }

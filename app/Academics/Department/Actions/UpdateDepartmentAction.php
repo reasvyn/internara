@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Academics\Department\Actions;
 
+use App\Academics\Department\Events\DepartmentUpdated;
 use App\Academics\Department\Models\Department;
 use App\Core\Actions\BaseCommandAction;
 use Illuminate\Support\Facades\Validator;
@@ -21,6 +22,8 @@ final class UpdateDepartmentAction extends BaseCommandAction
             $department->update($validated);
 
             $this->log('department_updated', $department, $validated);
+
+            event(new DepartmentUpdated($department));
 
             return $department;
         });

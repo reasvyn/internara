@@ -1,6 +1,6 @@
 # Assignment — Technical Reference
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-16
 
 Detailed structural and implementation reference for the **Assignment** module.
 
@@ -9,12 +9,6 @@ Detailed structural and implementation reference for the **Assignment** module.
 ## Overview
 
 Manages course assignments and submission tracking with grading workflows.
-
-### Submodules
-
-- `Submission` — Assignment submission, grading, and feedback
-
----
 
 ## Actions
 
@@ -119,37 +113,6 @@ Tests are located in `tests/{Feature,Unit}/Assignment/`. See [Testing](../infras
 
 ---
 
-## File Organization
-
-```
-app/Assignment/
-├── Actions/
-│   ├── CreateAssignmentAction.php
-│   ├── DeleteAssignmentAction.php
-│   ├── PublishAssignmentAction.php
-│   └── UpdateAssignmentAction.php
-├── Entities/AssignmentRules.php
-├── Enums/AssignmentStatus.php
-├── Http/Requests/CreateAssignmentRequest.php
-├── Livewire/AssignmentManager.php
-├── Models/Assignment.php
-├── Notifications/AssignmentNotification.php
-├── Policies/AssignmentPolicy.php
-└── Submission/
-    ├── Actions/
-    │   ├── GradeSubmissionAction.php
-    │   ├── SubmitAssignmentAction.php
-    │   └── VerifySubmissionAction.php
-    ├── Entities/SubmissionState.php
-    ├── Enums/SubmissionStatus.php
-    ├── Http/Requests/SubmitAssignmentRequest.php
-    ├── Livewire/
-    │   ├── SubmissionGrading.php
-    │   └── SubmitAssignment.php
-    ├── Models/Submission.php
-    ├── Notifications/SubmissionFeedbackNotification.php
-    └── Policies/SubmissionPolicy.php
-```
 
 ---
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Academics\AcademicYear\Actions;
 
+use App\Academics\AcademicYear\Events\AcademicYearUpdated;
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Actions\BaseCommandAction;
 
@@ -21,6 +22,8 @@ final class UpdateAcademicYearAction extends BaseCommandAction
             $year->update($data);
 
             $this->log('academic_year_updated', $year, $data);
+
+            event(new AcademicYearUpdated($year));
 
             return $year;
         });

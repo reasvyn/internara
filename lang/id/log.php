@@ -39,6 +39,7 @@ return [
     'super_admin_recovery_invalid_key' => 'Pemulihan administrator super dicoba dengan kunci pemulihan yang tidak valid.',
     'settings_updated' => 'Pengaturan sistem telah diperbarui.',
     'settings_updated_batch' => 'Pengaturan sistem telah diperbarui secara batch.',
+    'school_profile_updated' => 'Profil sekolah telah diperbarui.',
     'setting.updated' => 'Pengaturan sistem telah diperbarui.',
     'account_auto_inactivated' => 'Akun pengguna telah dinonaktifkan secara otomatis karena tidak aktif.',
     'smtp_test_failed' => 'Pengujian konfigurasi SMTP gagal.',

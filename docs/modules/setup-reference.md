@@ -1,6 +1,6 @@
 # Setup — Technical Reference
 
-> Last updated: 2026-06-14
+> Last updated: 2026-06-16
 > Changes: sync — add SetupData DTO to Data section
 
 Detailed structural and implementation reference for the **Setup** module.
@@ -10,13 +10,6 @@ Detailed structural and implementation reference for the **Setup** module.
 ## Overview
 
 Handles one-time technical installation, environment checks, database provisioning, setup token lifecycle, and the interactive setup wizard for initial configuration.
-
-### Submodules
-
-- `Installation` — Technical installation and provisioning
-- `SetupWizard` — Interactive initial configuration wizard
-
----
 
 ## Actions
 
@@ -84,6 +77,12 @@ Handles one-time technical installation, environment checks, database provisioni
 | `Installation/Http/Middleware/ProtectSetupRouteMiddleware.php` | `ProtectSetupRouteMiddleware` | Protects setup routes from unauthorized access |
 | `Installation/Http/Middleware/RequireSetupAccessMiddleware.php` | `RequireSetupAccessMiddleware` | Ensures setup access requirements |
 
+## HTTP Controllers
+
+| File | Controller | Extends |
+| ---- | ---------- | ------- |
+| `Http/Controllers/SetupController.php` | `SetupController` | `BaseController` |
+
 ## Support
 
 | File | Class | Purpose |
@@ -128,44 +127,6 @@ None.
 
 ---
 
-## File Organization
-
-```
-app/Setup/
-├── Data/
-│   ├── SetupData.php
-│   ├── AdminData.php
-│   └── SchoolData.php
-├── Entities/SetupEntity.php
-├── Installation/
-│   ├── Actions/
-│   │   ├── GenerateSetupTokenAction.php
-│   │   ├── InstallSystemAction.php
-│   │   └── ValidateSetupTokenAction.php
-│   ├── Console/Commands/
-│   │   ├── Traits/InteractsWithInstallerCli.php
-│   │   ├── SetupInstallCommand.php
-│   │   └── SetupResetTokenCommand.php
-│   ├── Data/SetupTokenData.php
-│   ├── Http/Middleware/
-│   │   ├── ProtectSetupRouteMiddleware.php
-│   │   └── RequireSetupAccessMiddleware.php
-│   └── Support/SystemProvisioner.php
-└── SetupWizard/
-    ├── Actions/
-    │   ├── FinalizeSetupAction.php
-    │   ├── SetupDepartmentAction.php
-    │   ├── SetupSchoolAction.php
-    │   └── SetupSuperAdminAction.php
-    ├── Events/SetupFinalized.php
-    ├── Listeners/LogSetupFinalized.php
-    └── Livewire/
-        ├── Forms/
-        │   ├── DepartmentForm.php
-        │   ├── SchoolForm.php
-        │   └── SuperAdminForm.php
-        └── SetupWizard.php
-```
 
 ---
 
