@@ -38,7 +38,7 @@
 
 | Document                                                    | Description                                                                     |
 | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| [User Manual (9 chapters)](guide/00-guide-index.md)         | Step-by-step user guide: installation, wizard, post-setup, login & dashboard, profile & recovery, health, upgrades, admin recovery, system settings, institution & academics |
+| [User Manual (10 chapters)](guide/00-guide-index.md)         | Step-by-step user guide: installation, wizard, post-setup, login & dashboard, profile & recovery, health, upgrades, admin recovery, system settings, institution & academics, user management |
 
 ---
 

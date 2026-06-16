@@ -7,6 +7,7 @@ namespace App\User\UserManagement\Livewire;
 use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
+use App\Core\Support\CsvHandler;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\CreateUserAction;
 use App\User\UserManagement\Actions\DeleteUserAction;
@@ -16,6 +17,7 @@ use App\User\UserManagement\Livewire\Forms\SupervisorForm;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SupervisorManager extends BaseRecordManager
 {
@@ -172,6 +174,31 @@ class SupervisorManager extends BaseRecordManager
         $this->showConfirm = false;
         $this->confirmTarget = null;
         $this->confirmActionType = '';
+    }
+
+    public function export(CsvHandler $csv): StreamedResponse
+    {
+        $users = User::query()
+            ->role(RoleEnum::SUPERVISOR->value)
+            ->with('profile.company')
+            ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
+            ->orderBy('name')
+            ->get();
+
+        return $csv->export(
+            $users,
+            [
+                __('user.fields.full_name'),
+                __('user.fields.email'),
+                __('user.supervisor.company'),
+            ],
+            fn ($u) => [
+                $u->name,
+                $u->email,
+                $u->profile?->company?->name ?? '',
+            ],
+            'supervisors.csv',
+        );
     }
 
     public function render(): View

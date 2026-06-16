@@ -6,6 +6,10 @@
         <x-mary-button :label="__('user.admin.new')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
     </x-slot:headerActions>
 
+    <x-slot:extraMenu>
+        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
+    </x-slot:extraMenu>
+
     <x-core::ui.selection-bar>
         <x-mary-button
             :label="__('common.actions.delete_selected')"

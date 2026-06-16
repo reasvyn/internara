@@ -6,6 +6,10 @@
         <x-mary-button :label="__('user.teacher.new')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
     </x-slot:headerActions>
 
+    <x-slot:extraMenu>
+        <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
+    </x-slot:extraMenu>
+
     <x-slot:filters>
         <label class="text-xs font-semibold uppercase tracking-wider text-base-content/50">{{ __('user.teacher.created_from') }}</label>
         <input wire:model.live="filters.created_from" type="date" class="input input-bordered input-sm w-full text-sm" />
