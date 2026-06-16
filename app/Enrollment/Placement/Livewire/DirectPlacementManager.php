@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Enrollment\Placement\Livewire;
 
 use App\Auth\Permissions\Enums\Role;
-use App\Enrollment\Placement;
 use App\Enrollment\Placement\Actions\DirectPlacementAction;
 use App\Enrollment\Placement\Livewire\Forms\DirectPlacementForm;
+use App\Enrollment\Placement\Models\Placement;
 use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use Illuminate\Contracts\View\View;
@@ -53,6 +53,8 @@ class DirectPlacementManager extends Component
 
     public function submit(DirectPlacementAction $placementAction): void
     {
+        $this->authorize('create', Registration::class);
+
         $this->form->validate();
 
         $student = User::findOrFail($this->form->student_id);

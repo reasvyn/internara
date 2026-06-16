@@ -14,16 +14,16 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Internship/Actions/CreateInternshipAction.php` | `CreateInternshipAction` | `BaseAction` |
-| `Internship/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseAction` |
-| `Internship/Actions/DeleteInternshipAction.php` | `DeleteInternshipAction` | `BaseAction` |
-| `Internship/Actions/BatchUpdateInternshipStatusAction.php` | `BatchUpdateInternshipStatusAction` | `BaseAction` |
-| `Internship/Actions/ReadCloseReadinessAction.php` | `ReadCloseReadinessAction` | Read |
-| `InternshipGroup/Actions/CreateInternshipGroupAction.php` | `CreateInternshipGroupAction` | `BaseAction` |
-| `InternshipGroup/Actions/UpdateInternshipGroupAction.php` | `UpdateInternshipGroupAction` | `BaseAction` |
-| `InternshipGroup/Actions/DeleteInternshipGroupAction.php` | `DeleteInternshipGroupAction` | `BaseAction` |
-| `InternshipGroup/Actions/AddMemberToGroupAction.php` | `AddMemberToGroupAction` | `BaseAction` |
-| `InternshipGroup/Actions/RemoveMemberFromGroupAction.php` | `RemoveMemberFromGroupAction` | `BaseAction` |
+| `Internship/Actions/CreateInternshipAction.php` | `CreateInternshipAction` | `BaseCommandAction` |
+| `Internship/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseCommandAction` |
+| `Internship/Actions/DeleteInternshipAction.php` | `DeleteInternshipAction` | `BaseCommandAction` |
+| `Internship/Actions/BatchUpdateInternshipStatusAction.php` | `BatchUpdateInternshipStatusAction` | `BaseCommandAction` |
+| `Internship/Actions/ReadCloseReadinessAction.php` | `ReadCloseReadinessAction` | `BaseReadAction` |
+| `InternshipGroup/Actions/CreateInternshipGroupAction.php` | `CreateInternshipGroupAction` | `BaseCommandAction` |
+| `InternshipGroup/Actions/UpdateInternshipGroupAction.php` | `UpdateInternshipGroupAction` | `BaseCommandAction` |
+| `InternshipGroup/Actions/DeleteInternshipGroupAction.php` | `DeleteInternshipGroupAction` | `BaseCommandAction` |
+| `InternshipGroup/Actions/AddMemberToGroupAction.php` | `AddMemberToGroupAction` | `BaseCommandAction` |
+| `InternshipGroup/Actions/RemoveMemberFromGroupAction.php` | `RemoveMemberFromGroupAction` | `BaseCommandAction` |
 
 ---
 

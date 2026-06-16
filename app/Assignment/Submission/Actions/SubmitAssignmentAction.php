@@ -6,6 +6,7 @@ namespace App\Assignment\Submission\Actions;
 
 use App\Assignment\Enums\AssignmentStatus;
 use App\Assignment\Models\Assignment;
+use App\Assignment\Submission\Data\SubmitAssignmentData;
 use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseCommandAction;
@@ -15,7 +16,7 @@ use App\User\Models\User;
 
 final class SubmitAssignmentAction extends BaseCommandAction
 {
-    public function execute(User $student, Assignment $assignment, array $data): Submission
+    public function execute(User $student, Assignment $assignment, SubmitAssignmentData $data): Submission
     {
         if ($assignment->status !== AssignmentStatus::PUBLISHED) {
             throw new RejectedException('Cannot submit to unpublished assignment.');
@@ -52,7 +53,7 @@ final class SubmitAssignmentAction extends BaseCommandAction
                 'student_id' => $student->id,
                 'registration_id' => $registration->id,
                 'assignment_id' => $assignment->id,
-                'content' => $data['content'],
+                'content' => $data->content,
                 'status' => SubmissionStatus::SUBMITTED->value,
                 'submitted_at' => now(),
             ]);

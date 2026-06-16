@@ -100,7 +100,7 @@ Handles one-time technical installation, environment checks, database provisioni
 
 | File | Trait | Purpose |
 | ---- | ----- | ------- |
-| `Installation/Console/Commands/Traits/InteractsWithInstallerCli.php` | `InteractsWithInstallerCli` | CLI interaction helpers for installer commands |
+| `Installation/Console/Commands/Concerns/InteractsWithInstallerCli.php` | `InteractsWithInstallerCli` | CLI interaction helpers for installer commands |
 
 ---
 

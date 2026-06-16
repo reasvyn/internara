@@ -7,7 +7,6 @@ namespace App\Assignment\Submission\Livewire;
 use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Actions\GradeSubmissionAction;
 use App\Assignment\Submission\Models\Submission;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -34,9 +33,7 @@ class SubmissionGrading extends Component
 
     public function boot(): void
     {
-        if (! Auth::user()?->hasAnyRole(['super_admin', 'admin', 'teacher', 'supervisor'])) {
-            abort(403);
-        }
+        $this->authorize('viewAny', Submission::class);
     }
 
     public function viewSubmission(string $submissionId): void

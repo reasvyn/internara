@@ -1,12 +1,12 @@
 <div>
-    <x-mary-header title="Assessment Grading" subtitle="Score student competencies and finalize assessment" separator />
+    <x-mary-header :title="__('assessment.grading')" :subtitle="__('assessment.grading_subtitle')" separator />
 
     @if($this->assessment === null)
         <x-mary-card>
             <div class="text-center py-12 text-base-content/40">
                 <x-mary-icon name="o-exclamation-triangle" class="size-16 mx-auto mb-4 opacity-30" />
-                <p class="text-lg font-medium">No rubric available</p>
-                <p class="text-sm">This internship does not have an active rubric defined.</p>
+                <p class="text-lg font-medium">{{ __('assessment.no_rubric_available') }}</p>
+                <p class="text-sm">{{ __('assessment.no_rubric_desc') }}</p>
             </div>
         </x-mary-card>
     @else
@@ -18,9 +18,9 @@
                 </div>
                 <div class="flex items-center gap-2">
                     @if($this->assessment->finalized_at)
-                        <span class="badge badge-success">Finalized</span>
+                        <span class="badge badge-success">{{ __('assessment.finalized') }}</span>
                     @else
-                        <span class="badge badge-warning">Draft</span>
+                        <span class="badge badge-warning">{{ __('assessment.draft') }}</span>
                     @endif
                 </div>
             </div>
@@ -28,7 +28,7 @@
 
         @unless($this->isFinalized)
             <div class="flex gap-2 mb-4">
-                <x-mary-button label="Auto-Import Scores" icon="o-arrow-down-tray" wire:click="autoImport" class="btn-sm btn-outline" />
+                <x-mary-button :label="__('assessment.auto_import')" icon="o-arrow-down-tray" wire:click="autoImport" class="btn-sm btn-outline" />
             </div>
         @endunless
 
@@ -42,14 +42,14 @@
 
         @if(count($autoScores) > 0)
             <x-mary-card class="mb-4">
-                <h4 class="font-medium mb-2 text-sm">Auto-Imported Scores</h4>
+                <h4 class="font-medium mb-2 text-sm">{{ __('assessment.auto_scores') }}</h4>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="p-3 bg-base-200/50 rounded-xl">
-                        <p class="text-xs text-base-content/40">Average Submission Score</p>
+                        <p class="text-xs text-base-content/40">{{ __('assessment.avg_submission_score') }}</p>
                         <p class="text-xl font-bold">{{ $autoScores['avg_submission_score'] ?? '-' }}</p>
                     </div>
                     <div class="p-3 bg-base-200/50 rounded-xl">
-                        <p class="text-xs text-base-content/40">Logbook Completeness</p>
+                        <p class="text-xs text-base-content/40">{{ __('assessment.logbook_completeness') }}</p>
                         <p class="text-xl font-bold">{{ $autoScores['logbook_completeness'] ?? '-' }}%</p>
                     </div>
                 </div>
@@ -102,8 +102,8 @@
                         $totalWeight += $competency->weight;
                     @endphp
                     <div class="text-right text-sm text-base-content/60 mt-2">
-                        Subtotal: {{ number_format($compScore, 1) }} / 100
-                        (contributes {{ number_format($competencyContribution, 1) }}% to final)
+                        {{ __('assessment.subtotal') }}: {{ number_format($compScore, 1) }} / 100
+                        ({{ __('assessment.contributes', ['pct' => number_format($competencyContribution, 1)]) }})
                     </div>
                 @endif
             </x-mary-card>
@@ -142,8 +142,8 @@
             <x-mary-card>
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="font-semibold text-lg">Final Score</p>
-                        <p class="text-sm text-base-content/60">Weighted total from all evaluable competencies</p>
+                        <p class="font-semibold text-lg">{{ __('assessment.final_score') }}</p>
+                        <p class="text-sm text-base-content/60">{{ __('assessment.weighted_total_desc') }}</p>
                     </div>
                     <p class="text-3xl font-bold text-primary">{{ number_format($totalWeightedScore, 1) }}</p>
                 </div>
@@ -152,7 +152,7 @@
 
         @unless($this->isFinalized)
             <div class="mt-4 flex justify-end">
-                <x-mary-button label="Finalize Assessment" icon="o-lock" wire:click="askFinalize" class="btn-success" />
+                <x-mary-button :label="__('assessment.finalize')" icon="o-lock" wire:click="askFinalize" class="btn-success" />
             </div>
         @endunless
     @endif

@@ -8,9 +8,6 @@ use App\Assessment\Models\Assessment;
 use App\Core\Policies\BasePolicy;
 use App\User\Models\User;
 
-/**
- * S1 - Secure: Only teachers can create/update assessments. Students can only view their own.
- */
 class AssessmentPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
@@ -44,8 +41,17 @@ class AssessmentPolicy extends BasePolicy
             return true;
         }
 
-        return $assessment->evaluator_id === $user->id &&
-            ! $assessment->asAssessmentResult()->isFinalized();
+        if ($assessment->evaluator_id === $user->id && ! $assessment->asAssessmentResult()->isFinalized()) {
+            return true;
+        }
+
+        $registration = $assessment->registration;
+
+        if ($registration && $this->mentorProxyFor($registration, $user)?->canScoreCompetency($user, 'supervisor')) {
+            return true;
+        }
+
+        return false;
     }
 
     public function finalize(User $user, Assessment $assessment): bool

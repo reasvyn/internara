@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Enrollment\Placement\Actions;
 
 use App\Core\Actions\BaseCommandAction;
-use App\Enrollment\Placement;
+use App\Enrollment\Placement\Models\Placement;
 
 final class CreatePlacementAction extends BaseCommandAction
 {

@@ -16,18 +16,18 @@ Manages student registration, placement slot assignment, placement change reques
 | ---- | ----- | ------- |
 | `Registration/Actions/ReadRegistrationAvailabilityAction.php` | `ReadRegistrationAvailabilityAction` | `BaseReadAction` |
 | `Registration/Actions/RegisterInternshipAction.php` | `RegisterInternshipAction` | Process `BaseAction` |
-| `Registration/Actions/VerifyRegistrationAction.php` | `VerifyRegistrationAction` | `BaseAction` |
-| `Registration/Actions/UploadRegistrationDocumentAction.php` | `UploadRegistrationDocumentAction` | `BaseAction` |
-| `Placement/Actions/CreatePlacementAction.php` | `CreatePlacementAction` | `BaseAction` |
-| `Placement/Actions/UpdatePlacementAction.php` | `UpdatePlacementAction` | `BaseAction` |
-| `Placement/Actions/DeletePlacementAction.php` | `DeletePlacementAction` | `BaseAction` |
-| `Placement/Actions/DirectPlacementAction.php` | `DirectPlacementAction` | `BaseAction` |
-| `Placement/Actions/RequestPlacementChangeAction.php` | `RequestPlacementChangeAction` | `BaseAction` |
-| `Placement/Actions/ApprovePlacementChangeAction.php` | `ApprovePlacementChangeAction` | `BaseAction` |
-| `Placement/Actions/RejectPlacementChangeAction.php` | `RejectPlacementChangeAction` | `BaseAction` |
-| `AccountApplication/Actions/ApplyAccountAction.php` | `ApplyAccountAction` | `BaseAction` |
-| `AccountApplication/Actions/ApproveAccountApplicationAction.php` | `ApproveAccountApplicationAction` | `BaseAction` |
-| `AccountApplication/Actions/RejectAccountApplicationAction.php` | `RejectAccountApplicationAction` | `BaseAction` |
+| `Registration/Actions/VerifyRegistrationAction.php` | `VerifyRegistrationAction` | `BaseCommandAction` |
+| `Registration/Actions/UploadRegistrationDocumentAction.php` | `UploadRegistrationDocumentAction` | `BaseCommandAction` |
+| `Placement/Actions/CreatePlacementAction.php` | `CreatePlacementAction` | `BaseCommandAction` |
+| `Placement/Actions/UpdatePlacementAction.php` | `UpdatePlacementAction` | `BaseCommandAction` |
+| `Placement/Actions/DeletePlacementAction.php` | `DeletePlacementAction` | `BaseCommandAction` |
+| `Placement/Actions/DirectPlacementAction.php` | `DirectPlacementAction` | `BaseCommandAction` |
+| `Placement/Actions/RequestPlacementChangeAction.php` | `RequestPlacementChangeAction` | `BaseCommandAction` |
+| `Placement/Actions/ApprovePlacementChangeAction.php` | `ApprovePlacementChangeAction` | `BaseCommandAction` |
+| `Placement/Actions/RejectPlacementChangeAction.php` | `RejectPlacementChangeAction` | `BaseCommandAction` |
+| `AccountApplication/Actions/ApplyAccountAction.php` | `ApplyAccountAction` | `BaseCommandAction` |
+| `AccountApplication/Actions/ApproveAccountApplicationAction.php` | `ApproveAccountApplicationAction` | `BaseCommandAction` |
+| `AccountApplication/Actions/RejectAccountApplicationAction.php` | `RejectAccountApplicationAction` | `BaseCommandAction` |
 
 ---
 

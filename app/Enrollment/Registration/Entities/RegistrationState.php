@@ -12,8 +12,8 @@ final readonly class RegistrationState extends BaseEntity
 {
     public function __construct(
         private ?string $status,
-        private ?Carbon $startDate,
-        private ?Carbon $endDate,
+        private Carbon|string|null $startDate,
+        private Carbon|string|null $endDate,
         private bool $hasPlacement,
         private array $phases = [],
     ) {}
@@ -26,6 +26,16 @@ final readonly class RegistrationState extends BaseEntity
             endDate: $model->end_date,
             hasPlacement: $model->placement_id !== null,
         );
+    }
+
+    private function startCarbon(): ?Carbon
+    {
+        return $this->startDate instanceof Carbon ? $this->startDate : ($this->startDate ? Carbon::parse($this->startDate) : null);
+    }
+
+    private function endCarbon(): ?Carbon
+    {
+        return $this->endDate instanceof Carbon ? $this->endDate : ($this->endDate ? Carbon::parse($this->endDate) : null);
     }
 
     public function withPhases(array $phases): static
@@ -48,23 +58,26 @@ final readonly class RegistrationState extends BaseEntity
     public function isCurrentlyOngoing(?Carbon $today = null): bool
     {
         $today ??= new Carbon;
+        $start = $this->startCarbon();
+        $end = $this->endCarbon();
 
-        if (! $this->startDate || ! $this->endDate) {
+        if (! $start || ! $end) {
             return false;
         }
 
-        return $today->between($this->startDate, $this->endDate, true);
+        return $today->between($start, $end, true);
     }
 
     public function hasEnded(?Carbon $today = null): bool
     {
         $today ??= new Carbon;
+        $end = $this->endCarbon();
 
-        if (! $this->endDate) {
+        if (! $end) {
             return false;
         }
 
-        return $today->isAfter($this->endDate);
+        return $today->isAfter($end);
     }
 
     public function canBeApproved(): bool
@@ -75,21 +88,25 @@ final readonly class RegistrationState extends BaseEntity
     public function daysRemaining(?Carbon $today = null): int
     {
         $today ??= new Carbon;
+        $end = $this->endCarbon();
 
-        if (! $this->endDate) {
+        if (! $end) {
             return 0;
         }
 
-        return max(0, (int) $today->diffInDays($this->endDate, false));
+        return max(0, (int) $today->diffInDays($end, false));
     }
 
     public function totalDuration(): int
     {
-        if (! $this->startDate || ! $this->endDate) {
+        $start = $this->startCarbon();
+        $end = $this->endCarbon();
+
+        if (! $start || ! $end) {
             return 0;
         }
 
-        return (int) $this->startDate->diffInDays($this->endDate);
+        return (int) $start->diffInDays($end);
     }
 
     /**
@@ -102,18 +119,21 @@ final readonly class RegistrationState extends BaseEntity
 
     public function currentPhaseIndex(?Carbon $now = null): ?int
     {
-        if ($this->phases === [] || ! $this->startDate || ! $this->endDate) {
+        $start = $this->startCarbon();
+        $end = $this->endCarbon();
+
+        if ($this->phases === [] || ! $start || ! $end) {
             return null;
         }
 
         $now ??= new Carbon;
-        $totalDays = $this->startDate->diffInDays($this->endDate);
+        $totalDays = $start->diffInDays($end);
 
         if ($totalDays <= 0) {
             return null;
         }
 
-        $elapsedDays = $this->startDate->diffInDays($now, false);
+        $elapsedDays = $start->diffInDays($now, false);
         $elapsedPercent = ($elapsedDays / $totalDays) * 100;
 
         if ($elapsedPercent <= 0) {

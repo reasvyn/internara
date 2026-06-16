@@ -8,14 +8,11 @@ use App\Core\Policies\BasePolicy;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\User\Models\User;
 
-/**
- * S1 - Secure: Teachers/mentors can only manage logs for their assigned students.
- */
 class SupervisionLogPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher', 'supervisor']);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'supervisor', 'student']);
     }
 
     public function view(User $user, SupervisionLog $log): bool
@@ -24,56 +21,39 @@ class SupervisionLogPolicy extends BasePolicy
             return true;
         }
 
+        $registration = $log->registration;
+
+        if ($registration && $registration->student_id === $user->id) {
+            return true;
+        }
+
         if ($log->supervisor_id === $user->id) {
             return true;
         }
 
-        $registration = $log->registration;
-
-        if (
-            $this->isTeacher($user) &&
-            $registration &&
-            $registration
-                ->mentors()
-                ->where('user_id', $user->id)
-                ->where('internship_group_members.role', 'teacher')
-                ->exists()
-        ) {
-            return true;
-        }
-
-        if (
-            $this->isSupervisor($user) &&
-            $registration &&
-            $registration
-                ->mentors()
-                ->where('user_id', $user->id)
-                ->where('internship_group_members.role', 'supervisor')
-                ->exists()
-        ) {
-            return true;
-        }
-
-        return $registration && $registration->student_id === $user->id;
+        return $this->mentorProxyFor($registration, $user)?->canReviewSupervisionLog($user) ?? false;
     }
 
     public function create(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, ['teacher', 'supervisor']);
+        return $user->hasRole('student');
     }
 
     public function update(User $user, SupervisionLog $log): bool
     {
-        if ($this->isAdmin($user)) {
+        $registration = $log->registration;
+
+        return $registration && $registration->student_id === $user->id
+            && $log->asSupervisionLogState()->canBeEdited();
+    }
+
+    public function review(User $user, SupervisionLog $log): bool
+    {
+        if ($log->supervisor_id === $user->id && $user->hasRole('supervisor')) {
             return true;
         }
 
-        return $log->supervisor_id === $user->id && ! $log->is_verified;
-    }
-
-    public function verify(User $user, SupervisionLog $log): bool
-    {
-        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
+        return $this->mentorProxyFor($log->registration, $user)?->canReviewSupervisionLog($user) ?? false;
     }
 
     public function delete(User $user, SupervisionLog $log): bool
@@ -82,6 +62,7 @@ class SupervisionLogPolicy extends BasePolicy
             return true;
         }
 
-        return $log->supervisor_id === $user->id && ! $log->is_verified;
+        return $log->registration?->student_id === $user->id
+            && $log->asSupervisionLogState()->canBeEdited();
     }
 }

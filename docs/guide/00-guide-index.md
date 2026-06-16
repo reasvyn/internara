@@ -1,7 +1,7 @@
 # User Manual — Getting Started with Internara
 
 > **Last updated:** 2026-06-16
-> **Changes:** add chapter 12 user management guide
+> **Changes:** add chapter 12 user management guide, chapter 13 supervisor & partnership, chapters 14-15 internship management & registration
 
 Welcome to Internara — the vocational fieldwork management system for Indonesian schools.
 
@@ -34,6 +34,16 @@ Estimated total time: **1–2 hours** for installation and initial setup.
 | 10 | [System Settings & Backups](10-system-settings-and-backups.md) | Configure branding, mail, locale; manage system backups | 10–15 min |
 | 11 | [Institution & Academics](11-institution-and-academics.md) | Manage school profile, departments, academic years | 10–15 min |
 | 12 | [User Management](12-user-management.md) | Manage users across all roles (admins, students, teachers, supervisors) | 15–20 min |
+| 13 | [Supervisor & Partnership](13-supervisor-and-partnership.md) | Manage supervisors, companies, and partnership agreements | 15–20 min |
+| 14 | [Internship Management & Handbook](14-internship-management-and-handbook.md) | Create programs, manage groups, publish handbooks | 15–20 min |
+| 15 | [Internship Registration & Placement](15-internship-registration-and-placement.md) | Student applications, direct placement, placement changes | 15–20 min |
+| 16 | [Attendance & Logbook](16-attendance-and-logbook.md) | Clock in/out, logbook entries, absence requests, mentor verification | 15–20 min |
+| 17 | [Monitoring Visit & Supervision Log](17-monitoring-visit-and-supervision-log.md) | Teacher site visits, student mentoring logs, supervisor review | 10–15 min |
+| 18 | [Assignment & Assessment](18-assignment-and-assessment.md) | Task management, submissions, rubric-based competency evaluation | 15–20 min |
+| 19 | [Student Report & Certification](19-student-report-and-certification.md) | Final report drafting, grading, certificate issuance | 15–20 min |
+| 20 | [Evaluation & Incident](20-evaluation-and-incident.md) | Feedback forms, workplace issue reporting and resolution | 10–15 min |
+| 21 | [Announcement & Notifications](21-announcement-and-notifications.md) | Broadcast messages, personal alerts, notification center | 10–15 min |
+| 22 | [System Observability](22-system-observability.md) | Health checks, Pulse monitoring, audit logs, backups | 15–20 min |
 
 ---
 

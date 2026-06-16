@@ -78,7 +78,7 @@
         {{-- Submission Detail / Grading Form --}}
         <x-mary-card shadow class="!bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 overflow-hidden">
             <div class="mb-6">
-                <x-mary-button icon="o-arrow-left" label="Back to list" wire:click="back" class="btn-ghost rounded-[1.5rem] font-black uppercase tracking-widest text-[10px]" />
+                <x-mary-button icon="o-arrow-left" :label="__('common.actions.back')" wire:click="back" class="btn-ghost rounded-[1.5rem] font-black uppercase tracking-widest text-[10px]" />
             </div>
 
             {{-- Student & Assignment Info --}}
@@ -146,7 +146,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <x-mary-input
-                                label="Score (0-100)"
+                                :label="__('submission.score')"
                                 type="number"
                                 wire:model="score"
                                 min="0"
@@ -156,7 +156,7 @@
                         </div>
                         <div>
                             <x-mary-select
-                                label="Status"
+                                :label="__('submission.status')"
                                 wire:model="gradeStatus"
                                 :options="['verified' => 'Verified (Accepted)', 'revision_required' => 'Revision Required']"
                                 class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50"
@@ -166,7 +166,7 @@
 
                     <div>
                         <x-mary-textarea
-                            label="Feedback"
+                            :label="__('submission.feedback')"
                             wire:model="feedback"
                             placeholder="Provide detailed feedback for the student..."
                             rows="4"
@@ -176,12 +176,12 @@
 
                     <div class="flex justify-end gap-4 pt-6 border-t border-base-content/5">
                         <x-mary-button
-                            label="Cancel"
+                            :label="__('common.actions.cancel')"
                             wire:click="back"
                             class="btn-ghost rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] px-8"
                         />
                         <x-mary-button
-                            label="Submit Grade"
+                            :label="__('submission.submit_grade')"
                             icon="o-check-circle"
                             class="btn-primary rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 h-12 shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-transform"
                             wire:click="grade"

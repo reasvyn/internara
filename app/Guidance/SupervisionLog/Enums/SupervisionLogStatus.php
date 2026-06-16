@@ -4,48 +4,43 @@ declare(strict_types=1);
 
 namespace App\Guidance\SupervisionLog\Enums;
 
+use App\Core\Contracts\LabelEnum;
 use App\Core\Contracts\StatusEnum;
 
-enum SupervisionLogStatus: string implements StatusEnum
+enum SupervisionLogStatus: string implements LabelEnum, StatusEnum
 {
-    case PENDING = 'pending';
-    case IN_PROGRESS = 'in_progress';
+    case DRAFT = 'draft';
     case SUBMITTED = 'submitted';
-    case VERIFIED = 'verified';
-    case COMPLETED = 'completed';
-    case CANCELLED = 'cancelled';
+    case REVIEWED = 'reviewed';
+    case ACKNOWLEDGED = 'acknowledged';
 
     public function isActive(): bool
     {
-        return in_array($this, [self::PENDING, self::IN_PROGRESS, self::SUBMITTED], true);
+        return in_array($this, [self::DRAFT, self::SUBMITTED], true);
     }
 
     public function isTerminal(): bool
     {
-        return in_array($this, [self::COMPLETED, self::CANCELLED, self::VERIFIED], true);
+        return in_array($this, [self::REVIEWED, self::ACKNOWLEDGED], true);
     }
 
     public function label(): string
     {
         return match ($this) {
-            self::PENDING => __('Pending'),
-            self::IN_PROGRESS => __('In Progress'),
-            self::SUBMITTED => __('Submitted'),
-            self::VERIFIED => __('Verified'),
-            self::COMPLETED => __('Completed'),
-            self::CANCELLED => __('Cancelled'),
+            self::DRAFT => __('guidance.status_draft'),
+            self::SUBMITTED => __('guidance.status_submitted'),
+            self::REVIEWED => __('guidance.status_reviewed'),
+            self::ACKNOWLEDGED => __('guidance.status_acknowledged'),
         };
     }
 
     public function validTransitions(): array
     {
         return match ($this) {
-            self::PENDING => [self::IN_PROGRESS, self::CANCELLED],
-            self::IN_PROGRESS => [self::SUBMITTED, self::CANCELLED],
-            self::SUBMITTED => [self::VERIFIED, self::COMPLETED, self::CANCELLED],
-            self::VERIFIED => [self::COMPLETED],
-            self::COMPLETED => [],
-            self::CANCELLED => [],
+            self::DRAFT => [self::SUBMITTED],
+            self::SUBMITTED => [self::REVIEWED, self::DRAFT],
+            self::REVIEWED => [self::ACKNOWLEDGED],
+            self::ACKNOWLEDGED => [],
         };
     }
 

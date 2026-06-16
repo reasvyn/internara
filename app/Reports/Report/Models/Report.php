@@ -18,9 +18,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[
     Fillable([
         'registration_id',
-        'title',
-        'content',
-        'chapter_structure',
         'supervisor_score',
         'teacher_score',
         'exam_score',
@@ -28,12 +25,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
         'grade_letter',
         'industry_feedback',
         'status',
-        'supervisor_notes',
-        'submitted_at',
-        'score',
-        'feedback',
-        'graded_by',
-        'graded_at',
         'finalized_by',
         'finalized_at',
         'archived_data',
@@ -122,11 +113,6 @@ class Report extends BaseModel
             'final_score' => 'float',
             'finalized_at' => 'datetime',
             'archived_data' => 'json',
-            'content' => 'json',
-            'chapter_structure' => 'json',
-            'submitted_at' => 'datetime',
-            'graded_at' => 'datetime',
-            'score' => 'float',
         ];
     }
 

@@ -234,21 +234,22 @@ class InternshipFactory extends Factory
 
 ## 6. Cross-Cutting Protocols
 
-### Dual Mentor Fallback Protocol
+### Cross-Role Proxy Protocol
 
-Internara implements a **Dual Mentor Fallback & Optionality Protocol** to ensure that academic
-progress and student workflows are never blocked by industry supervisor inactivity.
+Internara implements a **Cross-Role Proxy** mechanism (see [ADR-014](../adr/adr-cross-role-proxy.md))
+that allows teachers to act as proxy for supervisors, and admins to proxy for both teachers and
+supervisors — all at the application layer without multi-role assignment.
 
 1. **Actions & Parameters Optionality** — Any Action that performs verification or sign-off must
-   accept nullable parameters or have fallback paths if the industry supervisor is unavailable.
-2. **Bypass Window (Journals/Attendance)** — Reflective logbooks and attendances support a Teacher
-   override after a bypass window (default: 48 hours). The Command Action must transition to
-   `FINALIZED` / `VERIFIED`, record `verified_by_fallback = true`, append audit log, and clear the
-   supervisor's pending queue.
-3. **Grading & Rubric Fallback** — End-of-placement evaluations support proxy entry and weight
-   redistribution when no supervisor scores are submitted.
-4. **Transparent Compliance Stamping** — Documents compiled using fallback weights or proxy scores
-   must be stamped with a metadata tag (`fallback_weights` or `proxy_scores`) for audit trails.
+   accept nullable parameters or have proxy paths if the industry supervisor is unavailable.
+2. **Inactivity Window (Journals/Attendance)** — Reflective logbooks and attendances support a
+   teacher proxy after an inactivity window (default: 48 hours). The Command Action must transition
+   to `FINALIZED` / `VERIFIED`, record `proxy_role = 'supervisor'` in the activity log, and clear
+   the supervisor's pending queue.
+3. **Grading & Rubric Proxy** — End-of-placement evaluations support proxy entry and weight
+   redistribution via the Cross-Role Proxy gate when the supervisor has not submitted scores.
+4. **Transparent Compliance Stamping** — Documents compiled using proxy weights or proxy scores
+   must be stamped with a metadata tag (`proxy_weights` or `proxy_scores`) for audit trails.
 
 ---
 

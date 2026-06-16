@@ -21,7 +21,21 @@ class SupervisorDashboard extends UserDashboard
 
     public function boot(): void
     {
-        abort_unless(auth()->user()?->hasRole('supervisor'), 403);
+        $user = auth()->user();
+
+        if (! $user) {
+            abort(403);
+        }
+
+        if ($user->hasRole('supervisor')) {
+            return;
+        }
+
+        if ($user->hasRole('admin')) {
+            return;
+        }
+
+        abort(403);
     }
 
     public function mount(ReadSupervisorDashboardAction $action): void

@@ -49,7 +49,7 @@ final readonly class CertificateRenderer
             '{certificate_number}' => $certificate->certificate_number,
             '{issued_date}' => $certificate->issued_at?->format('d F Y') ?? now()->format('d F Y'),
             '{principal_name}' => '',
-            '{supervisor_name}' => $registration->mentors()->wherePivot('role', 'supervisor')->first()?->user?->name ??
+            '{supervisor_name}' => $registration->mentors()->wherePivot('role', 'supervisor')->first()?->name ??
                 '—',
         ];
     }

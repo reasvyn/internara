@@ -79,11 +79,11 @@ final class ReadStudentDashboardAction extends BaseReadAction
                 ->count();
         }
 
-        $handbookTotalCount = Document::where('type', 'policy')->where('is_active', true)->count();
+        $handbookTotalCount = Document::where('type', 'handbook')->where('is_active', true)->count();
         $handbookReadCount = Activity::causedBy($user)
             ->inLog('document')
             ->forEvent('acknowledged')
-            ->whereHas('subject', fn ($q) => $q->where('type', 'policy'))
+            ->whereHas('subject', fn ($q) => $q->where('type', 'handbook'))
             ->count();
 
         return [

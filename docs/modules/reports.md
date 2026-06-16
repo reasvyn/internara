@@ -37,9 +37,12 @@ Once a grade card is marked `finalized` by the coordinator, all scores are locke
 
 The grade card captures a full snapshot at finalization time: student NISN, name, and class; host company name and address; department name; school teacher name; industry supervisor name; all component scores and composite score. This ensures the grade card remains readable and valid even if the student's account, the company, or the program is later deleted.
 
-### Dual Mentor Fallback
+### Cross-Role Proxy
 
-If the Assessment module's dual mentor fallback/proxy bypass is active (industry supervisor unavailable), the grade aggregation adjusts: the supervisor weight may be redistributed to teacher and exam components. The grade card records the fallback status for audit transparency.
+If the Assessment module's cross-role proxy is active (teacher acting as supervisor proxy, see
+[ADR-014](../adr/adr-cross-role-proxy.md)), the grade aggregation adjusts: the supervisor weight
+may be redistributed to teacher and exam components. The grade card records the proxy status for
+audit transparency.
 
 ## Dependencies
 

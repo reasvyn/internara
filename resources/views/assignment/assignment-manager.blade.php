@@ -5,7 +5,7 @@
             <h2 class="text-3xl font-black tracking-tightest text-base-content">Assignments</h2>
             <p class="text-[10px] font-black uppercase tracking-[0.3em] text-base-content/40 mt-2">Manage internship tasks</p>
         </div>
-        <x-mary-button label="New Assignment" icon="o-plus" class="btn-primary rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-8 h-12 shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-transform" wire:click="create" />
+        <x-mary-button :label="__('assignment.create')" icon="o-plus" class="btn-primary rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-8 h-12 shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-transform" wire:click="create" />
     </div>
 
     {{-- Controls Section --}}
@@ -14,7 +14,7 @@
             <div class="absolute inset-0 bg-primary/5 rounded-[1.5rem] blur-md transition-opacity duration-300 opacity-0 group-focus-within:opacity-100"></div>
             <x-mary-input
                 wire:model.live.debounce.300ms="search"
-                placeholder="Search assignments..."
+                :placeholder="__('assignment.search_placeholder')"
                 icon="o-magnifying-glass"
                 clearable
                 class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 transition-all duration-300 bg-base-200/50 focus:bg-base-100 h-14 relative z-10"
@@ -34,9 +34,9 @@
                 class="rounded-[1.5rem] border-base-content/5 bg-base-200/50 h-14 min-w-[160px]"
             />
             <x-mary-select
-                wire:model.live="filters.type_id"
+                wire:model.live="filters.assignment_type"
                 placeholder="Type"
-                :options="$this->assignmentTypes->pluck('name', 'id')"
+                :options="['project' => 'Project', 'report' => 'Report', 'essay' => 'Essay']"
                 class="rounded-[1.5rem] border-base-content/5 bg-base-200/50 h-14 min-w-[160px]"
             />
         </div>
@@ -57,7 +57,7 @@
             <div class="flex items-center gap-4 pr-2">
                 <div class="flex gap-2">
                     <x-mary-button
-                        label="Delete Selected"
+                        :title="__('common.actions.delete_selected')"
                         icon="o-trash"
                         class="btn-error text-white font-black uppercase tracking-widest text-[10px] rounded-xl h-10 px-6 shadow-lg shadow-error/20 hover:scale-105 transition-transform"
                         wire:click="askDeleteSelected"
@@ -65,7 +65,7 @@
                 </div>
                 <div class="w-px h-8 bg-primary/20 mx-2"></div>
                 <x-mary-button
-                    label="Cancel"
+                    :label="__('common.actions.cancel')"
                     wire:click="clearSelection"
                     class="btn-ghost rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-base-content/5"
                 />
@@ -138,10 +138,10 @@
     {{-- Assignment Modal --}}
     <x-mary-modal wire:model="assignmentModal" :title="$formData['id'] ? 'Edit Assignment' : 'Create Assignment'" class="backdrop-blur-sm" box-class="rounded-[2.5rem] p-6 border border-base-content/5 shadow-2xl">
         <div class="grid grid-cols-1 gap-6 pt-4">
-            <x-mary-input label="Title" wire:model="formData.title" icon="o-document-text" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('assignment.title')" wire:model="formData.title" icon="o-document-text" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
 
             <x-mary-select
-                label="Type"
+                :label="__('assignment.type')"
                 wire:model="formData.assignment_type_id"
                 :options="$this->assignmentTypes->pluck('name', 'id')"
                 placeholder="Select type"
@@ -149,24 +149,24 @@
             />
 
             <x-mary-select
-                label="Internship"
+                :label="__('assignment.internship')"
                 wire:model="formData.internship_id"
                 :options="$this->internships->pluck('name', 'id')"
                 placeholder="Select internship"
                 class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50"
             />
 
-            <x-mary-input label="Due Date" type="date" wire:model="formData.due_date" icon="o-calendar" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
+            <x-mary-input :label="__('assignment.due_date')" type="date" wire:model="formData.due_date" icon="o-calendar" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50 py-3" />
 
-            <x-mary-textarea label="Description" wire:model="formData.description" rows="3" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50" />
+            <x-mary-textarea :label="__('assignment.description')" wire:model="formData.description" rows="3" class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50" />
 
-            <x-mary-toggle label="Mandatory assignment" wire:model="formData.is_mandatory" class="rounded-xl" />
+            <x-mary-toggle :label="__('assignment.is_mandatory')" wire:model="formData.is_mandatory" class="rounded-xl" />
         </div>
 
         <x-slot:actions>
             <div class="flex gap-4 pt-6 border-t border-base-content/5 w-full justify-end">
-                <x-mary-button label="Cancel" wire:click="$set('assignmentModal', false)" class="btn-ghost rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] px-8" />
-                <x-mary-button label="Save" type="submit" class="btn-primary rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 shadow-xl shadow-primary/20" wire:click="save" spinner="save" />
+                <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('assignmentModal', false)" class="btn-ghost rounded-[1.5rem] font-black uppercase tracking-widest text-[10px] px-8" />
+                <x-mary-button :label="__('common.actions.save')" type="submit" class="btn-primary rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 shadow-xl shadow-primary/20" wire:click="save" spinner="save" />
             </div>
         </x-slot:actions>
     </x-mary-modal>

@@ -25,7 +25,9 @@ final class IssueCertificateAction extends BaseCommandAction
                 ),
             );
 
-            $count = Certificate::whereYear('created_at', now()->year)->count() + 1;
+            $count = Certificate::whereYear('created_at', now()->year)
+                ->lockForUpdate()
+                ->count() + 1;
             $certificateNumber =
                 "{$prefix}/".now()->year.'/'.str_pad((string) $count, 4, '0', STR_PAD_LEFT);
 
@@ -42,7 +44,7 @@ final class IssueCertificateAction extends BaseCommandAction
 
             $qrHash = hash('sha256', implode('|', [
                 $registration->mentee?->user?->id ?? '',
-                $registration->internship?->academicYear?->school?->name ?? '',
+                setting('school.name', ''),
                 (string) ($report?->score ?? ''),
                 (string) auth()->id(),
                 $certificateNumber,

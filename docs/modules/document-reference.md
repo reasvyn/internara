@@ -1,6 +1,7 @@
 # Document — Technical Reference
 
 > Last updated: 2026-06-16
+> **Changes:** sync — add handbook to DocumentCategory enum values
 
 Detailed structural and implementation reference for the **Document** module.
 
@@ -34,7 +35,7 @@ Manages official document templates, correspondence generation (MoU, agreements)
 
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
-| `Enums/DocumentCategory.php` | `DocumentCategory` | `LabelEnum` | application, permit, certificate, report, letter, policy |
+| `Enums/DocumentCategory.php` | `DocumentCategory` | `LabelEnum` | application, permit, certificate, report, letter, policy, handbook |
 
 ---
 

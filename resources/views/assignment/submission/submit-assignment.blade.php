@@ -58,7 +58,7 @@
         {{-- Assignment Detail --}}
         <x-mary-card shadow class="!bg-base-100 shadow-2xl shadow-base-content/5 border border-base-content/5 overflow-hidden">
             <div class="mb-6">
-                <x-mary-button icon="o-arrow-left" label="Back to assignments" wire:click="back" class="btn-ghost rounded-[1.5rem] font-black uppercase tracking-widest text-[10px]" />
+                <x-mary-button icon="o-arrow-left" :label="__('common.actions.back')" wire:click="back" class="btn-ghost rounded-[1.5rem] font-black uppercase tracking-widest text-[10px]" />
             </div>
 
             <div class="flex items-center gap-3 mb-4">
@@ -159,7 +159,7 @@
                     <div class="space-y-6">
                         <div>
                             <x-mary-textarea
-                                label="Content / Description"
+                                :label="__('submission.content')"
                                 wire:model="content"
                                 placeholder="Describe your work or paste your report content..."
                                 rows="5"
@@ -169,7 +169,7 @@
 
                         <div>
                             <x-mary-file
-                                label="Upload File (PDF, DOC, DOCX, ZIP, PPT - max 10MB)"
+                                :label="__('submission.upload_file')"
                                 wire:model="file"
                                 class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50"
                             />
@@ -177,7 +177,7 @@
 
                         <div class="flex justify-end pt-4 border-t border-base-content/5">
                             <x-mary-button
-                                label="Submit Assignment"
+                                :label="__('submission.submit')"
                                 icon-right="o-paper-airplane"
                                 class="btn-primary rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 h-12 shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-transform"
                                 wire:click="submit('{{ $selectedAssignment->id }}')"

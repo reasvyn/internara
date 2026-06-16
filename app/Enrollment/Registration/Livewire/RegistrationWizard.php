@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Registration\Livewire;
 
-use App\Enrollment\Placement;
+use App\Enrollment\Placement\Models\Placement;
 use App\Enrollment\Registration\Actions\RegisterInternshipAction;
 use App\Enrollment\Registration\Livewire\Forms\RegistrationWizardForm;
 use App\Enrollment\Registration\Models\Registration;
@@ -65,6 +65,8 @@ class RegistrationWizard extends Component
 
     public function submit(RegisterInternshipAction $registerAction): void
     {
+        $this->authorize('create', Registration::class);
+
         $this->form->validate();
 
         $registerAction->execute(auth()->user(), [

@@ -3,7 +3,7 @@
     :subtitle="__('placement.subtitle')"
 >
     <x-slot:headerActions>
-        <x-mary-button label="Add Placement" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-mary-button :label="__('placement.add')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
@@ -13,23 +13,23 @@
     </x-slot:extraMenu>
 
     <x-slot:stats>
-        <x-core::widgets.stat-card icon="o-briefcase" title="Total Placements" :value="$this->stats['total']" />
-        <x-core::widgets.stat-card icon="o-user-group" title="Total Quota" :value="$this->stats['total_quota']" />
-        <x-core::widgets.stat-card icon="o-check-circle" title="Filled" :value="$this->stats['filled']" color="text-success" />
-        <x-core::widgets.stat-card icon="o-plus-circle" title="Available" :value="$this->stats['available']" />
+        <x-core::widgets.stat-card icon="o-briefcase" :title="__('placement.stats.total')" :value="$this->stats['total']" />
+        <x-core::widgets.stat-card icon="o-user-group" :title="__('placement.stats.total_quota')" :value="$this->stats['total_quota']" />
+        <x-core::widgets.stat-card icon="o-check-circle" :title="__('placement.stats.filled')" :value="$this->stats['filled']" color="text-success" />
+        <x-core::widgets.stat-card icon="o-plus-circle" :title="__('placement.stats.available')" :value="$this->stats['available']" />
     </x-slot:stats>
 
     <x-slot:filters>
         <x-mary-select
             wire:model.live="filters.company_id"
             :options="$this->companies"
-            placeholder="Filter by Company"
+            :placeholder="__('placement.filter_by_company')"
             clearable
         />
         <x-mary-select
             wire:model.live="filters.internship_id"
             :options="$this->internships"
-            placeholder="Filter by Batch"
+            :placeholder="__('placement.filter_by_batch')"
             clearable
         />
     </x-slot:filters>
@@ -37,10 +37,10 @@
     <x-core::ui.selection-bar>
         <x-mary-dropdown>
             <x-slot:trigger>
-                <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" label="Actions" />
+                <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" :label="__('common.actions.actions')" />
             </x-slot:trigger>
             <div class="p-1.5 w-48">
-                <x-mary-menu-item title="Delete Selected" icon="o-trash" class="text-error"
+                <x-mary-menu-item :title="__('common.actions.delete_selected')" icon="o-trash" class="text-error"
                     wire:click="askDeleteSelected" />
             </div>
         </x-mary-dropdown>
@@ -69,35 +69,35 @@
 
             @scope('actions', $placement)
                 <div class="flex justify-end gap-1">
-                    <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $placement->id }}')" aria-label="Edit" />
+                    <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $placement->id }}')" :aria-label="__('common.actions.edit')" />
                     <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error"
                         wire:click="askDelete('{{ $placement->id }}')"
-                        aria-label="Delete" />
+                        :aria-label="__('common.actions.delete')" />
                 </div>
             @endscope
         </x-mary-table>
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showModal" title="{{ $form->id ? 'Edit Placement' : 'New Placement' }}" class="backdrop-blur-sm">
+        <x-mary-modal wire:model="showModal" :title="$form->id ? __('placement.edit') : __('placement.new')" class="backdrop-blur-sm">
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
-                    <x-mary-input label="Placement Name" wire:model="form.name" placeholder="e.g. Frontend Web Developer" />
+                    <x-mary-input :label="__('placement.name')" wire:model="form.name" :placeholder="__('placement.name_placeholder')" />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-select label="Partner Company" wire:model="form.company_id" :options="$this->companies" placeholder="Select Company" />
-                        <x-mary-select label="Internship Batch" wire:model="form.internship_id" :options="$this->internships" placeholder="Select Batch" />
-                        <x-mary-input label="Quota" type="number" wire:model="form.quota" />
+                        <x-mary-select :label="__('placement.company')" wire:model="form.company_id" :options="$this->companies" :placeholder="__('placement.select_company')" />
+                        <x-mary-select :label="__('placement.batch')" wire:model="form.internship_id" :options="$this->internships" :placeholder="__('placement.select_batch')" />
+                        <x-mary-input :label="__('placement.quota')" type="number" wire:model="form.quota" />
                     </div>
-                    <x-mary-textarea label="Worksite Address (Optional)" wire:model="form.address" rows="2" placeholder="Leave empty to use company address" />
-                    <x-mary-textarea label="Job Description" wire:model="form.description" rows="3" />
+                    <x-mary-textarea :label="__('placement.worksite_address')" wire:model="form.address" rows="2" :placeholder="__('placement.worksite_address_placeholder')" />
+                    <x-mary-textarea :label="__('placement.job_description')" wire:model="form.description" rows="3" />
                 </div>
                 <x-slot:actions>
-                    <x-mary-button label="Cancel" wire:click="$set('showModal', false)" class="btn-ghost btn-sm" />
-                    <x-mary-button label="Save Placement" class="btn-primary btn-sm" type="submit" spinner="save" />
+                    <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('showModal', false)" class="btn-ghost btn-sm" />
+                    <x-mary-button :label="__('placement.save')" class="btn-primary btn-sm" type="submit" spinner="save" />
                 </x-slot:actions>
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
 
-    <x-core::ui.confirm message="Are you sure?" />
+    <x-core::ui.confirm :message="__('common.actions.confirm_message')" />
 </x-core::ui.record-manager>

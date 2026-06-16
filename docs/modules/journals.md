@@ -6,14 +6,14 @@ Daily activity tracking: logbook entries with mentor verification, attendance wi
 
 ## Purpose & Boundary
 
-Journals is the operational hub for daily internship activities. Students record daily logbook entries (one per calendar day), clock attendance in and out, and request absences with justification. Industry supervisors review and verify logbook entries. Teachers have fallback verification capability when supervisors are inactive.
+Journals is the operational hub for daily internship activities. Students record daily logbook entries (one per calendar day), clock attendance in and out, and request absences with justification. Industry supervisors review and verify logbook entries. Teachers have Cross-Role Proxy verification capability when supervisors are inactive.
 
 Out of scope: rubric-based competency assessment (Assessment), task assignments (Assignment), final grade compilation (Reports).
 
 ## Submodules
 
 ### Logbook
-Daily journal entry: date, activities performed, learnings, challenges, future plans, and optional file attachments. Status workflow: `draft` → `submitted` → `verified` (by supervisor or teacher fallback). Mentor can return to `draft` via `revision_required`. Exactly one entry per student per calendar day — duplicates return `ConflictException`. Compliance monitoring notifies mentors after N days (default 3) of missing entries.
+Daily journal entry: date, activities performed, learnings, challenges, future plans, and optional file attachments. Status workflow: `draft` → `submitted` → `verified` (by supervisor or teacher via Cross-Role Proxy). Mentor can return to `draft` via `revision_required`. Exactly one entry per student per calendar day — duplicates return `ConflictException`. Compliance monitoring notifies mentors after N days (default 3) of missing entries.
 
 ### Attendance
 Clock-in/clock-out records with auto-computed duration and optional GPS metadata. Records become immutable after a configurable grace period (default 24 hours from clock-out). Admin override available for corrections. Duration calculations power compliance monitoring and attendance reports.
@@ -23,9 +23,12 @@ Planned or unplanned absence submission with reason, optional supporting documen
 
 ## Key Concepts
 
-### Teacher Fallback Verification
+### Cross-Role Proxy Verification
 
-To prevent blocking student workflows when industry supervisors are inactive, school teachers can bypass the supervisor queue after 48 hours. Entries verified via fallback are tagged `verified_by_fallback` in audit logs. This ensures logbook progression is never blocked by supervisor unavailability.
+To prevent blocking student workflows when industry supervisors are inactive, school teachers can
+activate Cross-Role Proxy (see [ADR-014](../adr/adr-cross-role-proxy.md)) to verify entries via the
+mentor proxy bridge. Entries verified via proxy are tagged with `proxy_role = 'supervisor'` in the
+activity log. This ensures logbook progression is never blocked by supervisor unavailability.
 
 ### Compliance Monitoring
 

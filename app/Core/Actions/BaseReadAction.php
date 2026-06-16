@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Actions;
 
-use App\Core\Support\HandlesActionErrors;
+use App\Core\Actions\Concerns\HandlesActionErrors;
 use App\Core\Support\PiiMasker;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;

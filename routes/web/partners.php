@@ -6,7 +6,7 @@ use App\Partners\Company\Livewire\CompanyManager;
 use App\Partners\Partnership\Livewire\PartnershipManager;
 
 Route::prefix('admin')
-    ->name('sysadmin.')
+    ->name('partners.')
     ->middleware(['auth', 'role:super_admin|admin'])
     ->group(function () {
         Route::livewire('/companies', CompanyManager::class)->name('companies');

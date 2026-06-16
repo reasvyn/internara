@@ -43,6 +43,8 @@ class RegistrationDocumentUpload extends Component
             return;
         }
 
+        $this->authorize('update', $this->registration);
+
         $documentIds = $this->registration->internship->required_document_ids ?? [];
         $documents = Document::whereIn('id', $documentIds)->get();
 

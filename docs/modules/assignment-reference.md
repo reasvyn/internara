@@ -14,13 +14,13 @@ Manages course assignments and submission tracking with grading workflows.
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Actions/CreateAssignmentAction.php` | `CreateAssignmentAction` | `BaseAction` |
-| `Actions/UpdateAssignmentAction.php` | `UpdateAssignmentAction` | `BaseAction` |
-| `Actions/DeleteAssignmentAction.php` | `DeleteAssignmentAction` | `BaseAction` |
-| `Actions/PublishAssignmentAction.php` | `PublishAssignmentAction` | `BaseAction` |
-| `Submission/Actions/SubmitAssignmentAction.php` | `SubmitAssignmentAction` | `BaseAction` |
-| `Submission/Actions/GradeSubmissionAction.php` | `GradeSubmissionAction` | `BaseAction` |
-| `Submission/Actions/VerifySubmissionAction.php` | `VerifySubmissionAction` | `BaseAction` |
+| `Actions/CreateAssignmentAction.php` | `CreateAssignmentAction` | `BaseCommandAction` |
+| `Actions/UpdateAssignmentAction.php` | `UpdateAssignmentAction` | `BaseCommandAction` |
+| `Actions/DeleteAssignmentAction.php` | `DeleteAssignmentAction` | `BaseCommandAction` |
+| `Actions/PublishAssignmentAction.php` | `PublishAssignmentAction` | `BaseCommandAction` |
+| `Submission/Actions/SubmitAssignmentAction.php` | `SubmitAssignmentAction` | `BaseCommandAction` |
+| `Submission/Actions/GradeSubmissionAction.php` | `GradeSubmissionAction` | `BaseCommandAction` |
+| `Submission/Actions/VerifySubmissionAction.php` | `VerifySubmissionAction` | `BaseCommandAction` |
 
 ---
 

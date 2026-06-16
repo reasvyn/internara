@@ -47,7 +47,7 @@ Schools entrust Internara with sensitive student data — grades, attendance rec
 
 - **Data resides on school infrastructure.** No telemetry, no usage reporting, no external API calls for core functionality.
 - **Privacy by design.** PII masking, configurable retention policies, GDPR-compliant deletion workflows.
-- **Transparent compliance.** Dual mentor fallback, audit trails, immutable activity logs — every action is traceable and accountable.
+- **Transparent compliance.** Cross-role proxy, audit trails, immutable activity logs — every action is traceable and accountable.
 - **No dark patterns.** No upsells, no data collection, no analytics pings.
 
 ## 6. Built for Indonesian Education, Designed for Adaptation

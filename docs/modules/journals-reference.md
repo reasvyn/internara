@@ -15,19 +15,19 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `Logbook/Actions/CreateLogbookAction.php` | `CreateLogbookAction` | `BaseAction` |
-| `Logbook/Actions/UpdateLogbookAction.php` | `UpdateLogbookAction` | `BaseAction` |
-| `Logbook/Actions/DeleteLogbookAction.php` | `DeleteLogbookAction` | `BaseAction` |
-| `Logbook/Actions/SubmitLogbookAction.php` | `SubmitLogbookAction` | `BaseAction` |
+| `Logbook/Actions/CreateLogbookAction.php` | `CreateLogbookAction` | `BaseCommandAction` |
+| `Logbook/Actions/UpdateLogbookAction.php` | `UpdateLogbookAction` | `BaseCommandAction` |
+| `Logbook/Actions/DeleteLogbookAction.php` | `DeleteLogbookAction` | `BaseCommandAction` |
+| `Logbook/Actions/SubmitLogbookAction.php` | `SubmitLogbookAction` | `BaseCommandAction` |
 | `Logbook/Actions/CompileLogbookReportAction.php` | `CompileLogbookReportAction` | Read |
-| `Attendance/Actions/CreateAttendanceAction.php` | `CreateAttendanceAction` | `BaseAction` |
-| `Attendance/Actions/UpdateAttendanceAction.php` | `UpdateAttendanceAction` | `BaseAction` |
-| `Attendance/Actions/DeleteAttendanceAction.php` | `DeleteAttendanceAction` | `BaseAction` |
-| `Attendance/Actions/ClockInAction.php` | `ClockInAction` | `BaseAction` |
-| `Attendance/Actions/ClockOutAction.php` | `ClockOutAction` | `BaseAction` |
-| `Attendance/Actions/VerifyAttendanceAction.php` | `VerifyAttendanceAction` | `BaseAction` |
-| `AbsenceRequest/Actions/SubmitAbsenceAction.php` | `SubmitAbsenceAction` | `BaseAction` |
-| `AbsenceRequest/Actions/ProcessAbsenceAction.php` | `ProcessAbsenceAction` | `BaseAction` |
+| `Attendance/Actions/CreateAttendanceAction.php` | `CreateAttendanceAction` | `BaseCommandAction` |
+| `Attendance/Actions/UpdateAttendanceAction.php` | `UpdateAttendanceAction` | `BaseCommandAction` |
+| `Attendance/Actions/DeleteAttendanceAction.php` | `DeleteAttendanceAction` | `BaseCommandAction` |
+| `Attendance/Actions/ClockInAction.php` | `ClockInAction` | `BaseCommandAction` |
+| `Attendance/Actions/ClockOutAction.php` | `ClockOutAction` | `BaseCommandAction` |
+| `Attendance/Actions/VerifyAttendanceAction.php` | `VerifyAttendanceAction` | `BaseCommandAction` |
+| `AbsenceRequest/Actions/SubmitAbsenceAction.php` | `SubmitAbsenceAction` | `BaseCommandAction` |
+| `AbsenceRequest/Actions/ProcessAbsenceAction.php` | `ProcessAbsenceAction` | `BaseCommandAction` |
 
 ---
 
@@ -46,8 +46,8 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
 | `Logbook/Enums/LogbookStatus.php` | `LogbookStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, verified, rejected |
-| `Attendance/Enums/AttendanceStatus.php` | `AttendanceStatus` | `LabelEnum`, `StatusEnum` | present, late, absent, excused |
-| `AbsenceRequest/Enums/AbsenceReasonType.php` | `AbsenceReasonType` | `LabelEnum` | sick, personal, family, other |
+| `Attendance/Enums/AttendanceStatus.php` | `AttendanceStatus` | `LabelEnum`, `StatusEnum` | present, late, early_out, absent, permission, sick |
+| `AbsenceRequest/Enums/AbsenceReasonType.php` | `AbsenceReasonType` | `LabelEnum` | sick, permission, emergency, other |
 | `AbsenceRequest/Enums/AbsenceRequestStatus.php` | `AbsenceRequestStatus` | `LabelEnum`, `StatusEnum` | pending, approved, rejected |
 
 ---
@@ -57,8 +57,8 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | File | Class | Extends |
 | ---- | ----- | ------- |
 | `Logbook/Entities/LogbookState.php` | `LogbookState` | `BaseEntity` |
-| `Attendance/Entities/AttendanceStatus.php` | `AttendanceStatus` | `BaseEntity` |
-| `AbsenceRequest/Entities/AbsenceRequestStatus.php` | `AbsenceRequestStatus` | `BaseEntity` |
+| `Attendance/Entities/AttendanceState.php` | `AttendanceState` | `BaseEntity` |
+| `AbsenceRequest/Entities/AbsenceRequestState.php` | `AbsenceRequestState` | `BaseEntity` |
 
 ---
 

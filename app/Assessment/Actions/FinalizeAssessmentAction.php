@@ -95,7 +95,6 @@ final class FinalizeAssessmentAction extends BaseCommandAction
                 'score' => $finalScore,
                 'finalized_at' => now(),
                 'evaluator_id' => $finalizer->id,
-                'content' => $content,
             ]);
 
             $this->log('assessment_finalized', $assessment, ['final_score' => $finalScore]);

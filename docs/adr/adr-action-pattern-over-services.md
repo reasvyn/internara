@@ -55,6 +55,6 @@ Extend `BaseAction` and compose other Actions via constructor injection. They co
 ## References
 
 - `app/Core/Actions/BaseAction.php` — Base class for Command and Process Actions
-- `app/Core/Support/HandlesActionErrors.php` — Error handling trait
+- `app/Core/Actions/Concerns/HandlesActionErrors.php` — Error handling trait
 - `docs/architecture.md` — Action Triad section
 - `docs/conventions.md` — Actions section

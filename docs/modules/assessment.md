@@ -2,11 +2,11 @@
 
 > **Last updated:** 2026-06-10
 
-Rubric-based competency evaluation: rubric templates with structured criteria stored as JSON, and student assessment grading with dual mentor fallback.
+Rubric-based competency evaluation: rubric templates with structured criteria stored as JSON, and student assessment grading with supervisor proxy.
 
 ## Purpose & Boundary
 
-Assessment defines the scoring framework for evaluating student performance during internships. Rubrics are reusable evaluation templates containing weighted competencies and indicators stored as JSON. Assessments record actual grades submitted by evaluators against rubric indicators, with support for finalization immutability and dual mentor fallback when industry supervisors are unavailable.
+Assessment defines the scoring framework for evaluating student performance during internships. Rubrics are reusable evaluation templates containing weighted competencies and indicators stored as JSON. Assessments record actual grades submitted by evaluators against rubric indicators, with support for finalization immutability and supervisor proxy when industry supervisors are unavailable.
 
 Out of scope: program-level grade aggregation (Reports), evaluation feedback collection (Evaluation), task-specific grading (Assignment).
 
@@ -32,15 +32,22 @@ Competencies and indicators are stored as a structured JSON column rather than n
 
 Once an assessment record is finalized, all scores become immutable. This preserves grade integrity for audit purposes. Correcting a finalized assessment requires creating a new assessment round, which preserves the original as a historical record.
 
-### Dual Mentor Grading Fallback
+### Cross-Role Proxy (Supervisor Proxy)
 
-Industry supervisor evaluations are optional to prevent blocking student workflows. When a supervisor is inactive:
-- **Proxy Evaluation**: The school teacher inputs scores on behalf of the supervisor based on physical paperwork or verbal report.
-- **Weight Redistribution**: The supervisor's grading weight is shifted to the teacher and exam components in the Reports module.
+Industry supervisor evaluations are optional to prevent blocking student workflows. Teachers can
+act as proxy for supervisors via the Cross-Role Proxy mechanism (see [ADR-014](../adr/adr-cross-role-proxy.md)):
+
+- **Supervisor Proxy**: The school teacher inputs scores on behalf of the supervisor — covering
+  scoring, feedback, and all supervisor-scoped actions. The action is logged with the teacher's
+  identity and a `proxy_role = 'supervisor'` property in the audit trail.
+- **Weight Redistribution**: If the supervisor is unavailable and no proxy acts, the supervisor's
+  grading weight is shifted to the teacher and exam components in the Reports module.
+- **Scope**: Teacher can only proxy for students assigned to their mentorship. Admin can proxy
+  for any student.
 
 ## Dependencies
 
-- Core (base classes)
+- Core (base classes, Cross-Role Proxy trait)
 - Enrollment (registrations for student context)
 - User (evaluator identity)
 
