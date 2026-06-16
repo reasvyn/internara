@@ -35,11 +35,11 @@ class AcademicYearPolicy extends BasePolicy
 
     public function activate(User $user, AcademicYear $year): bool
     {
-        return $user->hasRole('super_admin');
+        return false;
     }
 
     public function delete(User $user, AcademicYear $year): bool
     {
-        return $user->hasRole('super_admin');
+        return false;
     }
 }
