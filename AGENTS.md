@@ -1,6 +1,6 @@
 <laravel-boost-guidelines>
-> **Last updated:** 2026-06-15
-> **Changes:** add Documentation Quality section — avoid brittle numbers, states, statuses, and lists
+> **Last updated:** 2026-06-16
+> **Changes:** sync — fix derivative doc rules (constrained table arg, pint --dirty, missing print_r), remove assertModelExists rule not in SSOT
 >
 > **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
 > provides quick-reference essentials and project-specific rules that cannot wait for doc lookups.
@@ -67,10 +67,10 @@ agent level:
 ## Quick-Reference Rules
 
 - `declare(strict_types=1)` in all PHP files except migrations and config.
-- No `dd()`, `dump()`, `ray()`, `var_dump()`, `die()` in committed code.
+- No `dd()`, `dump()`, `ray()`, `var_dump()`, `print_r()`, `die()` in committed code.
 - All user-facing strings use `__()` helper.
-- Foreign keys use `foreignUuid()->constrained()`.
-- Run `vendor/bin/pint --format agent` after modifying PHP files.
+- Foreign keys use `foreignUuid()->constrained('{table}')`.
+- Run `vendor/bin/pint --dirty --format agent` after modifying PHP files.
 - Run `php artisan test --compact --filter=TestName` for targeted tests.
 
 ## Documentation Quality

@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Academics\School\Entities;
-
 use App\Academics\School\Entities\SchoolEntity;
 use App\Settings\Support\Settings;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('SchoolEntity get method returns populated entity from settings', function () {
     Settings::set([

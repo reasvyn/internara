@@ -1,6 +1,6 @@
 # Incident — Technical Reference
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-16
 
 Detailed structural and implementation reference for the **Incident** module.
 
@@ -9,12 +9,6 @@ Detailed structural and implementation reference for the **Incident** module.
 ## Overview
 
 Manages workplace incident reports, severity classification, and resolution tracking.
-
-### Submodules
-
-- `IncidentReport` — Incident documentation and management
-
----
 
 ## Actions
 
@@ -94,26 +88,6 @@ Tests are located in `tests/{Feature,Unit}/Incident/`. See [Testing](../infrastr
 
 ---
 
-## File Organization
-
-```
-app/Incident/
-└── IncidentReport/
-    ├── Actions/
-    │   ├── ReportIncidentAction.php
-    │   ├── ResolveIncidentAction.php
-    │   └── UpdateIncidentAction.php
-    ├── Enums/
-    │   ├── IncidentSeverity.php
-    │   ├── IncidentStatus.php
-    │   └── IncidentType.php
-    ├── Livewire/
-    │   ├── IncidentForm.php
-    │   └── IncidentManager.php
-    ├── Models/IncidentReport.php
-    ├── Notifications/IncidentReportedNotification.php
-    └── Policies/IncidentReportPolicy.php
-```
 
 ---
 

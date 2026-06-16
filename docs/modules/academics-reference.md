@@ -1,6 +1,7 @@
 # Academics — Technical Reference
 
-> Last updated: 2026-06-10
+> **Last updated:** 2026-06-16
+> **Changes:** sync — add SaveSchoolProfileAction, SchoolForm, 3 new Events (AcademicYearUpdated, AcademicYearDeleted, DepartmentUpdated) with dispatch mappings
 
 Detailed structural and implementation reference for the **Academics** module.
 
@@ -9,14 +10,6 @@ Detailed structural and implementation reference for the **Academics** module.
 ## Overview
 
 Manages educational structure: academic years, departments (jurusan), and school information.
-
-### Submodules
-
-- `AcademicYear` — Academic calendar periods
-- `Department` — Study programs / jurusan
-- `School` — School identity information
-
----
 
 ## Actions
 
@@ -30,6 +23,7 @@ Manages educational structure: academic years, departments (jurusan), and school
 | `Department/Actions/CreateDepartmentAction.php` | `CreateDepartmentAction` | `BaseAction` |
 | `Department/Actions/UpdateDepartmentAction.php` | `UpdateDepartmentAction` | `BaseAction` |
 | `Department/Actions/DeleteDepartmentAction.php` | `DeleteDepartmentAction` | `BaseAction` |
+| `School/Actions/SaveSchoolProfileAction.php` | `SaveSchoolProfileAction` | `BaseCommandAction` |
 
 ---
 
@@ -63,8 +57,11 @@ Manages educational structure: academic years, departments (jurusan), and school
 | ---- | ----- | ------------- |
 | `AcademicYear/Events/AcademicYearCreated.php` | `AcademicYearCreated` | `CreateAcademicYearAction` |
 | `AcademicYear/Events/AcademicYearActivated.php` | `AcademicYearActivated` | `ActivateAcademicYearAction` |
+| `AcademicYear/Events/AcademicYearUpdated.php` | `AcademicYearUpdated` | `UpdateAcademicYearAction` |
+| `AcademicYear/Events/AcademicYearDeleted.php` | `AcademicYearDeleted` | `DeleteAcademicYearAction`, `BulkDeleteAcademicYearsAction` |
 | `Department/Events/DepartmentCreated.php` | `DepartmentCreated` | `CreateDepartmentAction` |
 | `Department/Events/DepartmentDeleted.php` | `DepartmentDeleted` | `DeleteDepartmentAction` |
+| `Department/Events/DepartmentUpdated.php` | `DepartmentUpdated` | `UpdateDepartmentAction` |
 
 ---
 
@@ -91,6 +88,7 @@ Manages educational structure: academic years, departments (jurusan), and school
 | ---- | ---- |
 | `AcademicYear/Livewire/Forms/AcademicYearForm.php` | `AcademicYearForm` |
 | `Department/Livewire/Forms/DepartmentForm.php` | `DepartmentForm` |
+| `School/Livewire/Forms/SchoolForm.php` | `SchoolForm` |
 
 ---
 
@@ -123,46 +121,6 @@ Tests are located in `tests/{Feature,Unit}/Academics/`. See [Testing](../infrast
 
 ---
 
-## File Organization
-
-```
-app/Academics/
-├── AcademicYear/
-│   ├── Actions/
-│   │   ├── ActivateAcademicYearAction.php
-│   │   ├── BulkDeleteAcademicYearsAction.php
-│   │   ├── CreateAcademicYearAction.php
-│   │   ├── DeleteAcademicYearAction.php
-│   │   └── UpdateAcademicYearAction.php
-│   ├── Data/AcademicYearData.php
-│   ├── Entities/AcademicYearState.php
-│   ├── Events/
-│   │   ├── AcademicYearActivated.php
-│   │   └── AcademicYearCreated.php
-│   ├── Livewire/
-│   │   ├── Forms/AcademicYearForm.php
-│   │   └── AcademicYearManager.php
-│   ├── Models/AcademicYear.php
-│   └── Policies/AcademicYearPolicy.php
-├── Department/
-│   ├── Actions/
-│   │   ├── CreateDepartmentAction.php
-│   │   ├── DeleteDepartmentAction.php
-│   │   └── UpdateDepartmentAction.php
-│   ├── Data/DepartmentData.php
-│   ├── Entities/DepartmentState.php
-│   ├── Events/
-│   │   ├── DepartmentCreated.php
-│   │   └── DepartmentDeleted.php
-│   ├── Livewire/
-│   │   ├── Forms/DepartmentForm.php
-│   │   └── DepartmentManager.php
-│   ├── Models/Department.php
-│   └── Policies/DepartmentPolicy.php
-└── School/
-    ├── Entities/SchoolEntity.php
-    └── Livewire/SchoolEditor.php
-```
 
 ---
 

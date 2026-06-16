@@ -39,6 +39,7 @@ return [
     'super_admin_recovery_invalid_key' => 'Super administrator recovery was attempted with an invalid recovery key.',
     'settings_updated' => 'System settings have been updated.',
     'settings_updated_batch' => 'System settings have been updated in batch.',
+    'school_profile_updated' => 'School profile has been updated.',
     'setting.updated' => 'A system setting has been updated.',
     'account_auto_inactivated' => 'User account has been automatically inactivated due to inactivity.',
     'smtp_test_failed' => 'SMTP mail configuration test failed.',

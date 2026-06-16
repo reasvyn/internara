@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Academics\AcademicYear\Actions;
 
+use App\Academics\AcademicYear\Events\AcademicYearDeleted;
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
@@ -42,6 +43,8 @@ final class BulkDeleteAcademicYearsAction extends BaseCommandAction
                 $year->delete();
 
                 $this->log('academic_year_deleted', $year, ['name' => $yearName]);
+
+                event(new AcademicYearDeleted($year));
 
                 $count++;
             }

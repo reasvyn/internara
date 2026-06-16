@@ -1,6 +1,6 @@
 # Reports — Technical Reference
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-16
 > Changes: sync — add SaveReportDraftAction to action table and file tree
 
 Detailed structural and implementation reference for the **Reports** module.
@@ -10,12 +10,6 @@ Detailed structural and implementation reference for the **Reports** module.
 ## Overview
 
 Manages final student grade compilation, score aggregation, coordinator sign-off, and report revision workflows.
-
-### Submodules
-
-- `Report` — Final reports, grade cards, and revisions
-
----
 
 ## Actions
 
@@ -59,6 +53,12 @@ Manages final student grade compilation, score aggregation, coordinator sign-off
 | ---- | --------- | ------- |
 | `Report/Livewire/ReportWriter.php` | `ReportWriter` | `Component` |
 
+## Observers
+
+| File | Observer | Observes |
+| ---- | -------- | -------- |
+| `Report/Observers/ReportObserver.php` | `ReportObserver` | `Report` |
+
 ---
 
 ## Routes
@@ -88,26 +88,6 @@ Tests are located in `tests/{Feature,Unit}/Reports/`. See [Testing](../infrastru
 
 ---
 
-## File Organization
-
-```
-app/Reports/
-└── Report/
-    ├── Actions/
-    │   ├── AddSupervisorReportNotesAction.php
-    │   ├── ApproveReportAction.php
-    │   ├── CreateReportAction.php
-    │   ├── RequestReportRevisionAction.php
-    │   ├── SaveReportDraftAction.php
-    │   └── SubmitReportAction.php
-    ├── Enums/ReportStatus.php
-    ├── Http/Controllers/ReportController.php
-    ├── Livewire/ReportWriter.php
-    ├── Models/
-    │   ├── Report.php
-    │   └── ReportRevision.php
-    └── Policies/
-```
 
 ---
 

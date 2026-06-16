@@ -1,6 +1,6 @@
 # Partners — Technical Reference
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-16
 
 Detailed structural and implementation reference for the **Partners** module.
 
@@ -9,13 +9,6 @@ Detailed structural and implementation reference for the **Partners** module.
 ## Overview
 
 Manages industrial partner companies and partnership agreements for internship placements.
-
-### Submodules
-
-- `Company` — Partner company profiles
-- `Partnership` — Partnership agreements and renewals
-
----
 
 ## Actions
 
@@ -134,38 +127,6 @@ Tests are located in `tests/{Feature,Unit}/Partners/`. See [Testing](../infrastr
 
 ---
 
-## File Organization
-
-```
-app/Partners/
-├── Company/
-│   ├── Actions/
-│   │   ├── BatchDeleteCompanyAction.php
-│   │   ├── CreateCompanyAction.php
-│   │   ├── DeleteCompanyAction.php
-│   │   └── UpdateCompanyAction.php
-│   ├── Entities/CompanyState.php
-│   ├── Livewire/
-│   │   ├── Forms/CompanyForm.php
-│   │   └── CompanyManager.php
-│   ├── Models/Company.php
-│   └── Policies/CompanyPolicy.php
-└── Partnership/
-    ├── Actions/
-    │   ├── BatchDeletePartnershipAction.php
-    │   ├── CreatePartnershipAction.php
-    │   ├── DeletePartnershipAction.php
-    │   ├── RenewPartnershipAction.php
-    │   ├── TerminatePartnershipAction.php
-    │   └── UpdatePartnershipAction.php
-    ├── Entities/PartnershipState.php
-    ├── Enums/PartnershipStatus.php
-    ├── Livewire/
-    │   ├── Forms/PartnershipForm.php
-    │   └── PartnershipManager.php
-    ├── Models/Partnership.php
-    └── Policies/PartnershipPolicy.php
-```
 
 ---
 

@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-06-15
-> **Changes:** sync — fix test count (463→416), update metadata
+> **Last updated:** 2026-06-16
+> **Changes:** sync — replace brittle test count (~416) with structural statement
 
 Detailed structural and implementation reference for the **Core** module, including both abstract infrastructure and concrete shared components.
 
@@ -29,7 +29,7 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 - **Console Commands**: 1 (`module:discover`)
 - **Global Helpers**: 1 (`app_info()` in `helpers.php`)
 - **Config Files**: 1 (`config/cache-keys.php` — centralized cache key registry)
-- **Tests**: ~416 across Unit and Feature suites
+- **Tests**: across Unit and Feature suites
 - **Routes**: 0 (health check at `/up` in `bootstrap/app.php`)
 
 ---
@@ -161,83 +161,6 @@ The helpers `setting()` and `brand()` are defined in `app/Settings/Support/helpe
 
 ---
 
-## File Organization
-
-```
-app/Core/
-├── Actions/
-│   └── BaseAction.php
-├── Channels/
-│   └── CustomDatabaseChannel.php
-├── Console/Commands/
-│   └── ModuleDiscoverCommand.php
-├── Contracts/
-│   ├── ColorableEnum.php
-│   ├── LabelEnum.php
-│   ├── SendsNotifications.php
-│   ├── SettingsStore.php
-│   └── StatusEnum.php
-├── Data/
-│   ├── ActionResponse.php
-│   ├── AuditCheck.php
-│   ├── AuditReport.php
-│   └── BaseData.php
-├── Entities/
-│   └── BaseEntity.php
-├── Enums/
-│   ├── AuditCategory.php
-│   ├── AuditStatus.php
-│   └── CsvRowResult.php
-├── Events/
-│   └── BaseEvent.php
-├── Exceptions/
-│   ├── Concerns/HasExceptionContext.php
-│   ├── ActionException.php
-│   ├── AppException.php
-│   ├── ConflictException.php
-│   ├── InfrastructureException.php
-│   ├── ModuleException.php
-│   ├── NotFoundException.php
-│   ├── PresentationException.php
-│   ├── RateLimitException.php
-│   ├── RejectedException.php
-│   ├── UnauthorizedException.php
-│   └── ValidationFailedException.php
-├── Http/
-│   ├── Controllers/BaseController.php
-│   ├── Middleware/LogContext.php
-│   ├── Middleware/SecurityHeaders.php
-│   └── Requests/BaseFormRequest.php
-├── Livewire/
-│   ├── Concerns/
-│   │   ├── WithRecordSelection.php
-│   │   └── WithSorting.php
-│   └── BaseRecordManager.php
-├── Models/
-│   ├── Concerns/
-│   │   └── HasCommonScopes.php
-│   ├── ActivityLog.php
-│   ├── BaseAuthenticatable.php
-│   └── BaseModel.php
-├── Policies/
-│   ├── Concerns/
-│   │   ├── AuthorizesOwnership.php
-│   │   └── AuthorizesRoles.php
-│   └── BasePolicy.php
-└── Support/
-    ├── AppInfo.php
-    ├── AppIntegrity.php
-    ├── Color.php
-    ├── CsvHandler.php
-    ├── Environment.php
-    ├── HandlesActionErrors.php
-    ├── LangChecker.php
-    ├── PasswordRules.php
-    ├── PiiMasker.php
-    ├── SmartLogger.php
-    ├── Spotlight.php
-    └── helpers.php
-```
 
 ## Routes
 

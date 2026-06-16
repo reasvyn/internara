@@ -16,9 +16,9 @@ Apply this skill when implementing file uploads, managing media collections and 
 - **Partnership model (MoU)**: `app/Partners/Partnership/Models/Partnership.php` — partnership documents
 - **Document model**: `app/Document/Models/Document.php` — official documents
 - **Logbook model**: `app/Journals/Logbook/Models/Logbook.php` — logbook attachments
-- **RegistrationDocument model**: `app/Enrollment/Models/RegistrationDocument.php` — enrollment documents
+- **RegistrationDocument model**: `app/Enrollment/Registration/Models/RegistrationDocument.php` — enrollment documents
 - **Submission model**: `app/Assignment/Submission/Models/Submission.php` — assignment submissions
-- **Spatie docs**: `docs/modules/medialibrary.md` (if available)
+- **Media library docs**: `docs/infrastructure/media-library.md`
 
 ## Models with Media Collections (8 total)
 

@@ -15,6 +15,7 @@ use App\Core\Livewire\BaseRecordManager;
 use App\Core\Support\CsvHandler;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Livewire\Attributes\Computed;
 use Livewire\WithFileUploads;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -65,6 +66,8 @@ class DepartmentManager extends BaseRecordManager
 
     public function create(): void
     {
+        $this->authorize('create', Department::class);
+
         $this->resetErrorBag();
         $this->form->reset();
         $this->form->id = null;
@@ -74,6 +77,7 @@ class DepartmentManager extends BaseRecordManager
     public function edit(string $id): void
     {
         $department = Department::findOrFail($id);
+        $this->authorize('update', $department);
 
         $this->resetErrorBag();
         $this->form->id = $department->id;
@@ -88,9 +92,11 @@ class DepartmentManager extends BaseRecordManager
 
         if ($this->form->id) {
             $department = Department::findOrFail($this->form->id);
+            $this->authorize('update', $department);
             $update->execute($department, $this->form->toArray());
             flash()->success(__('department.save_success_updated'));
         } else {
+            $this->authorize('create', Department::class);
             $create->execute($this->form->toArray());
             flash()->success(__('department.save_success_created'));
         }
@@ -146,6 +152,7 @@ class DepartmentManager extends BaseRecordManager
     private function executeDelete(string $id, DeleteDepartmentAction $action): void
     {
         $department = Department::findOrFail($id);
+        $this->authorize('delete', $department);
 
         if (! $department->asDepartmentState()->canBeDeleted()) {
             flash()->error(
@@ -207,6 +214,8 @@ class DepartmentManager extends BaseRecordManager
 
     public function import(CsvHandler $csv, CreateDepartmentAction $create): void
     {
+        $this->authorize('create', Department::class);
+
         $this->validate([
             'importFile' => ['required', 'file', 'mimes:csv,txt', 'max:2048'],
         ]);
@@ -250,6 +259,8 @@ class DepartmentManager extends BaseRecordManager
 
     public function export(CsvHandler $csv): StreamedResponse
     {
+        $this->authorize('viewAny', Department::class);
+
         $departments = Department::query()
             ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
             ->orderBy('name')
@@ -290,6 +301,7 @@ class DepartmentManager extends BaseRecordManager
         );
     }
 
+    #[Computed]
     public function stats(): array
     {
         return [
@@ -301,7 +313,7 @@ class DepartmentManager extends BaseRecordManager
     public function render(): View
     {
         return view('academics.department.department-manager', [
-            'stats' => $this->stats(),
+            'stats' => $this->stats,
         ]);
     }
 }

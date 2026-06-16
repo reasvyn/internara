@@ -16,7 +16,7 @@ test('can be deleted returns false when has profiles', function () {
     expect($entity->canBeDeleted())->toBeFalse();
 });
 
-test('has profiles returns true when profiles exist', function () {
+test('can be deleted returns false when has many profiles', function () {
     $entity = new DepartmentState(profileCount: 5, hasProfiles: true);
 
     expect($entity->canBeDeleted())->toBeFalse();

@@ -91,16 +91,19 @@
                                 icon="o-pencil"
                                 class="btn-ghost btn-sm"
                                 wire:click="edit('{{ $year->id }}')"
+                                :aria-label="__('common.actions.edit')"
                             />
                             <x-mary-button
                                 icon="o-check"
                                 class="btn-ghost btn-sm text-success"
                                 wire:click="askActivate('{{ $year->id }}')"
+                                :aria-label="__('academic_year.activate')"
                             />
                             <x-mary-button
                                 icon="o-trash"
                                 class="btn-ghost btn-sm text-error"
                                 wire:click="askDestroy('{{ $year->id }}')"
+                                :aria-label="__('common.actions.delete')"
                             />
                         @else
                             <span class="badge badge-sm badge-success">{{ __('academic_year.active') }}</span>

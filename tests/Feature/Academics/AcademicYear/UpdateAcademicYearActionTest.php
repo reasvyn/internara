@@ -3,10 +3,16 @@
 declare(strict_types=1);
 
 use App\Academics\AcademicYear\Actions\UpdateAcademicYearAction;
+use App\Academics\AcademicYear\Events\AcademicYearUpdated;
 use App\Academics\AcademicYear\Models\AcademicYear;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Event;
 
 uses(LazilyRefreshDatabase::class);
+
+beforeEach(function () {
+    Event::fake();
+});
 
 test('updates academic year name', function () {
     $year = AcademicYear::factory()->create(['name' => 'Old Name']);
@@ -29,4 +35,16 @@ test('updates academic year dates', function () {
     $updated = $year->fresh();
     expect($updated->start_date->format('Y-m-d'))->toBe('2025-01-01');
     expect($updated->end_date->format('Y-m-d'))->toBe('2025-12-31');
+});
+
+test('dispatches AcademicYearUpdated event', function () {
+    $year = AcademicYear::factory()->create();
+    $action = app(UpdateAcademicYearAction::class);
+
+    $action->execute($year, ['name' => 'Updated']);
+
+    Event::assertDispatched(
+        AcademicYearUpdated::class,
+        fn ($event) => $event->academicYear->id === $year->id,
+    );
 });

@@ -1,6 +1,6 @@
 # Guidance — Technical Reference
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-16
 
 Detailed structural and implementation reference for the **Guidance** module.
 
@@ -9,12 +9,6 @@ Detailed structural and implementation reference for the **Guidance** module.
 ## Overview
 
 Manages mentor-student supervision logs, field supervision visits, and mentoring relationship coordination.
-
-### Submodules
-
-- `SupervisionLog` — Field supervision visit logs
-
----
 
 ## Actions
 
@@ -94,24 +88,6 @@ Tests are located in `tests/{Feature,Unit}/Guidance/`. See [Testing](../infrastr
 
 ---
 
-## File Organization
-
-```
-app/Guidance/
-└── SupervisionLog/
-    ├── Actions/
-    │   ├── CreateSupervisionLogAction.php
-    │   └── VerifySupervisionLogAction.php
-    ├── Entities/SupervisionStatus.php
-    ├── Enums/
-    │   ├── SupervisionLogStatus.php
-    │   └── SupervisionType.php
-    ├── Livewire/
-    │   ├── SupervisionManager.php
-    │   └── SupervisorLogManager.php
-    ├── Models/SupervisionLog.php
-    └── Policies/SupervisionLogPolicy.php
-```
 
 ---
 

@@ -1,7 +1,7 @@
 # Events, Listeners & Notifications Pattern
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — fix broken link to architecture.md
+> **Last updated:** 2026-06-16
+> **Changes:** sync — remove `readonly` from event requirement (BaseEvent is not readonly; PHP 8.4 forbids readonly subclass of non-readonly parent)
 >
 > **Audience:** Developers working with event-driven side effects and multi-channel notifications.
 > **Prerequisites:** [12-Layer Architecture](../architecture.md), [Action Pattern](action-pattern.md),
@@ -63,7 +63,7 @@ abstract class BaseEvent
 
 ### Rules
 
-- Events are **`final readonly`** classes.
+- Events are **`final`** classes.
 - Properties are `public` with typed constructor promotion.
 - Only scalar types, Model instances, and objects with `toArray()` are allowed as properties.
 - Events belong to the **module that emits them** (`app/{Module}/{SubModule}/Events/`).

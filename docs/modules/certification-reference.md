@@ -1,6 +1,6 @@
 # Certification — Technical Reference
 
-> Last updated: 2026-06-10
+> Last updated: 2026-06-16
 
 Detailed structural and implementation reference for the **Certification** module.
 
@@ -9,12 +9,6 @@ Detailed structural and implementation reference for the **Certification** modul
 ## Overview
 
 Manages certificate generation, template management, and credential issuance for completed internships.
-
-### Submodules
-
-- `Certificate` — Certificate lifecycle, templates, and rendering
-
----
 
 ## Actions
 
@@ -32,6 +26,7 @@ Manages certificate generation, template management, and credential issuance for
 | File | Class | Extends |
 | ---- | ----- | ------- |
 | `Certificate/Models/Certificate.php` | `Certificate` | `BaseModel` |
+| `Certificate/Models/CertificateTemplate.php` | `CertificateTemplate` | `BaseModel` |
 
 ---
 
@@ -101,28 +96,6 @@ Tests are located in `tests/{Feature,Unit}/Certification/`. See [Testing](../inf
 
 ---
 
-## File Organization
-
-```
-app/Certification/
-└── Certificate/
-    ├── Actions/
-    │   ├── BatchIssueCertificateAction.php
-    │   ├── CreateCertificateTemplateAction.php
-    │   ├── IssueCertificateAction.php
-    │   └── RevokeCertificateAction.php
-    ├── Enums/CertificateStatus.php
-    ├── Http/Controllers/CertificateDownloadController.php
-    ├── Livewire/
-    │   ├── CertificateList.php
-    │   ├── CertificateTemplateManager.php
-    │   └── StudentCertificates.php
-    ├── Models/Certificate.php
-    ├── Policies/
-    │   ├── CertificatePolicy.php
-    │   └── CertificateTemplatePolicy.php
-    └── Support/CertificateRenderer.php
-```
 
 ---
 

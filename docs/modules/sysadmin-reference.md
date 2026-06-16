@@ -1,7 +1,7 @@
 # SysAdmin — Technical Reference
 
-> Last updated: 2026-06-15
-> Changes: sync — remove stale UserManagement actions (belong to User module), fix action list with actual SysAdmin actions (ReadAdminDashboard, Backups)
+> **Last updated:** 2026-06-16
+> **Changes:** sync — remove phantom CreateAdminCommand (actually in Auth/SuperAdmin) and accounts:auto-inactivate (actually in User/UserManagement); restore PruneNotificationsCommand in file tree
 
 Detailed structural and implementation reference for the **SysAdmin** module.
 
@@ -10,14 +10,6 @@ Detailed structural and implementation reference for the **SysAdmin** module.
 ## Overview
 
 Handles user administration, announcements, super admin recovery, system health monitoring, audit logging, Pulse observability, and GDPR compliance.
-
-### Submodules
-
-- `Announcement` — System announcements
-- `Backups` — Database and storage backup management
-- `Observability` — Health monitoring, Pulse, audit logs, GDPR
-
----
 
 ## Actions
 
@@ -96,6 +88,13 @@ Handles user administration, announcements, super admin recovery, system health 
 | File | Notification |
 | ---- | ------------ |
 | `Announcement/Notifications/AnnouncementNotification.php` | `AnnouncementNotification` |
+| `Backups/Notifications/BackupFailedNotification.php` | `BackupFailedNotification` |
+
+## Listeners
+
+| File | Listener | Listens To |
+| ---- | -------- | ---------- |
+| `Backups/Listeners/SendBackupFailedNotification.php` | `SendBackupFailedNotification` | `BackupFailed` |
 
 ## Console Commands
 
@@ -106,12 +105,11 @@ Handles user administration, announcements, super admin recovery, system health 
 | `system:cache-warm` | `SystemCacheWarmCommand` | Pre-warms config, views, events, settings, brand caches |
 | `pulse:record-snapshots` | `PulseRecordSnapshotsCommand` | Records Pulse metric snapshots |
 | `announcements:publish` | `PublishScheduledAnnouncementsCommand` | Publishes scheduled announcements |
-| `accounts:auto-inactivate` | `AutoInactivateAccounts` | Inactivates accounts inactive 90+ days |
-| `admin:create` | `CreateAdminCommand` | Creates initial superadmin |
 | `admin:recover` | `RecoverAdminCommand` | Interactive superadmin password reset |
 | `admin:recovery-show` | `ShowRecoveryKeyCommand` | Displays current recovery key |
 | `admin:recovery-path` | `ShowRecoveryPathCommand` | Shows recovery key file path |
 | `notifications:prune` | `PruneNotificationsCommand` | Prunes old notifications |
+| `backups:run` | `SystemBackupCommand` | Runs manual database/storage backup |
 
 ## Pulse Recorders
 
@@ -119,6 +117,13 @@ Handles user administration, announcements, super admin recovery, system health 
 | ---- | -------- | ------- |
 | `Observability/Recorders/SystemRecorder.php` | `SystemRecorder` | System health Pulse recording |
 | `Observability/Recorders/RegistrationRecorder.php` | `RegistrationRecorder` | Registration metrics Pulse recording |
+
+## HTTP Controllers
+
+| File | Controller | Extends | Purpose |
+| ---- | ---------- | ------- | ------- |
+| `Http/Controllers/AccountSlipController.php` | `AccountSlipController` | `BaseController` | Account slip downloads |
+| `Http/Controllers/CronController.php` | `CronController` | `BaseController` | Health check cron endpoint |
 
 ## Services
 
@@ -158,72 +163,6 @@ Tests are located in `tests/{Feature,Unit}/SysAdmin/`. See [Testing](../infrastr
 
 ---
 
-## File Organization
-
-```
-app/SysAdmin/
-├── Actions/ReadAdminDashboardAction.php
-├── Announcement/
-│   ├── Actions/
-│   │   ├── DeleteAnnouncementAction.php
-│   │   ├── PublishAnnouncementAction.php
-│   │   └── SendAnnouncementAction.php
-│   ├── Console/Commands/PublishScheduledAnnouncementsCommand.php
-│   ├── Enums/AnnouncementStatus.php
-│   ├── Entities/AnnouncementState.php
-│   ├── Livewire/
-│   │   ├── Forms/AnnouncementForm.php
-│   │   └── AnnouncementManager.php
-│   ├── Models/Announcement.php
-│   └── Notifications/AnnouncementNotification.php
-├── Backups/
-│   ├── Actions/
-│   │   ├── CleanupBackupsAction.php
-│   │   ├── CreateBackupAction.php
-│   │   ├── DeleteBackupAction.php
-│   │   ├── ReadBackupHistoryAction.php
-│   │   └── ReadBackupStatsAction.php
-│   ├── Enums/BackupStatus.php
-│   ├── Enums/BackupType.php
-│   ├── Entities/BackupState.php
-│   ├── Events/BackupCompleted.php
-│   ├── Events/BackupFailed.php
-│   ├── Listeners/
-│   ├── Livewire/BackupManager.php
-│   ├── Models/Backup.php
-│   ├── Notifications/
-│   ├── Policies/BackupPolicy.php
-│   └── Support/BackupRunner.php
-├── Console/Commands/
-│   ├── CreateAdminCommand.php
-│   ├── PruneNotificationsCommand.php
-│   ├── RecoverAdminCommand.php
-│   ├── ShowRecoveryKeyCommand.php
-│   └── ShowRecoveryPathCommand.php
-├── Livewire/ApplicationReview.php
-├── Observability/
-│   ├── Console/Commands/
-│   │   ├── PulseRecordSnapshotsCommand.php
-│   │   ├── SystemCacheWarmCommand.php
-│   │   ├── SystemCleanupCommand.php
-│   │   └── SystemHealthCommand.php
-│   ├── GdprDeletionLog/
-│   │   ├── Livewire/GdprDeletionLogs.php
-│   │   ├── Models/GdprDeletionLog.php
-│   │   └── Policies/GdprDeletionLogPolicy.php
-│   ├── Livewire/
-│   │   ├── Pulse/
-│   │   │   ├── RegistrationsCard.php
-│   │   │   └── SystemCard.php
-│   │   ├── AccountCloneDetector.php
-│   │   └── AuditLogManager.php
-│   ├── Recorders/
-│   │   ├── RegistrationRecorder.php
-│   │   └── SystemRecorder.php
-│   └── Services/
-│       ├── EnvironmentAuditor.php
-│       └── PulseGuard.php
-```
 
 ---
 

@@ -1,6 +1,6 @@
 # Settings — Technical Reference
 
-> **Last updated:** 2026-06-15
+> **Last updated:** 2026-06-16
 
 Detailed structural and implementation reference for the **Settings** module.
 
@@ -9,14 +9,6 @@ Detailed structural and implementation reference for the **Settings** module.
 ## Overview
 
 Manages system-wide configuration: key-value settings store, brand identity (logo, colors), localization (locale switching), mail configuration, theme management (dark/light), and global feature toggles.
-
-### Submodules
-
-- `Branding` — Brand assets, logo, color presets
-- `Locale` — Language switching (EN/ID)
-- `Theme` — Dark/light mode and CSS variable generation
-
----
 
 ## Actions
 
@@ -85,6 +77,12 @@ Manages system-wide configuration: key-value settings store, brand identity (log
 | File | Cast | Purpose |
 | ---- | ---- | ------- |
 | `Casts/SettingValueCast.php` | `SettingValueCast` | Casts setting values to appropriate types |
+
+## Events
+
+| File | Event | Dispatched By |
+| ---- | ----- | ------------- |
+| `Events/SettingUpdated.php` | `SettingUpdated` | `SetSettingAction`, `BatchSetSettingAction` |
 
 ## Middleware
 
@@ -174,47 +172,6 @@ Tests are located in `tests/{Feature,Unit}/Settings/`. See [Testing](../infrastr
 
 ---
 
-## File Organization
-
-```
-app/Settings/
-├── Actions/
-│   ├── BatchSetSettingAction.php
-│   ├── DeleteSettingAction.php
-│   ├── ReadAcademicYearAction.php
-│   ├── SaveSystemSettingsAction.php
-│   ├── SetSettingAction.php
-│   └── TestMailSettingsAction.php
-├── Branding/
-│   ├── Actions/UploadBrandAssetAction.php
-│   └── Livewire/Forms/BrandingForm.php
-├── Casts/SettingValueCast.php
-├── Enums/MediaCollection.php
-├── Enums/SettingGroup.php
-├── Enums/SettingType.php
-├── Locale/
-│   ├── Http/Middleware/SetLocaleMiddleware.php
-│   └── Support/Locale.php
-├── Livewire/
-│   ├── Forms/
-│   │   ├── GeneralSettingsForm.php
-│   │   └── MailSettingsForm.php
-│   ├── LangSwitcher.php
-│   ├── SystemSetting.php
-│   └── ThemeSwitcher.php
-├── Data/
-│   ├── SettingData.php
-│   └── SettingGroupData.php
-├── Models/Setting.php
-├── Policies/SettingPolicy.php
-├── Rules/ValidSettingKey.php
-├── Support/
-│   ├── Brand.php
-│   ├── Settings.php
-│   └── helpers.php
-└── Theme/
-    └── Support/Theme.php
-```
 
 ---
 

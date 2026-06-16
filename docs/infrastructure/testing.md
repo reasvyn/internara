@@ -1,6 +1,7 @@
 # Testing
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-16
+> **Changes:** sync — add Assertion Conventions section (assertModelExists over assertDatabaseHas)
 >
 > For the complete catalog of testing patterns, conventions, and practices, see
 > [Testing Pattern Reference](../architecture/testing-pattern.md).
@@ -192,3 +193,7 @@ The `composer run coverage` script handles this automatically.
 - `composer.json` — test scripts in `scripts` section
 - `docs/conventions.md` — Section 22 (Testing)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
+
+## Assertion Conventions
+
+- **Prefer `assertModelExists()` over `assertDatabaseHas()`** — `assertModelExists()` loads the actual model, enabling subsequent assertions on model attributes and relationships without re-querying. Use `assertDatabaseHas()` only when you need to verify data without loading the model (e.g., soft-deleted records).

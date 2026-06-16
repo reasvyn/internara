@@ -1,7 +1,7 @@
 # Documentation Index
 
-> **Last updated:** 2026-06-15
-> **Changes:** add chapter 10 system settings & backups guide; resolve all 23 settings/backups audit findings; update known-issues.md
+> **Last updated:** 2026-06-16
+> **Changes:** add chapter 11 institution & academics guide; add erd.md to Product & Vision; fix derivative docs (AGENTS.md, GEMINI.md), fix skill paths (medialibrary), fix module ref docs (core brittle count, journals indentation, sysadmin phantom paths, auth missing files, D-1 resolved: added 15+ missing file entries, removed brittle File Organization trees and Submodules listings from all 19 reference docs)
 >
 > Complete catalog of all documentation in the `docs/` directory. This index is the single entry point for navigating Internara's documentation. Every file listed here is part of the authoritative system documentation and must be kept in sync with the implementation.
 
@@ -19,6 +19,7 @@
 | [Modular Pattern Reference](architecture/modular-pattern.md) | Comprehensive catalog of all design patterns, conventions, workflow patterns, and architectural rules                   |
 | [Testing Pattern Reference](architecture/testing-pattern.md) | Comprehensive catalog of all testing patterns, conventions, and practices                                               |
 | [Coding Conventions](conventions.md)                   | Mandatory base classes, file structure conventions, PHP rules, naming, policy/enum conventions, testing standards       |
+| [Entity Relationship Diagram](foundation/erd.md)       | Full ERD schema: 36 domain tables + 18 system/package tables                                                           |
 
 ---
 
@@ -37,7 +38,7 @@
 
 | Document                                                    | Description                                                                     |
 | ----------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| [User Manual (8 chapters)](guide/00-guide-index.md)         | Step-by-step user guide: installation, wizard, post-setup, login & dashboard, profile & recovery, health, upgrades, admin recovery |
+| [User Manual (9 chapters)](guide/00-guide-index.md)         | Step-by-step user guide: installation, wizard, post-setup, login & dashboard, profile & recovery, health, upgrades, admin recovery, system settings, institution & academics |
 
 ---
 

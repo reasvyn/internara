@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Academics\AcademicYear\Actions;
 
+use App\Academics\AcademicYear\Events\AcademicYearDeleted;
 use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
@@ -16,7 +17,7 @@ use App\Core\Exceptions\RejectedException;
 final class DeleteAcademicYearAction extends BaseCommandAction
 {
     /**
-     * @throws RuntimeException when the year is active or has linked data
+     * @throws RejectedException when the year is active or has linked data
      */
     public function execute(AcademicYear $year): void
     {
@@ -36,6 +37,8 @@ final class DeleteAcademicYearAction extends BaseCommandAction
 
         $this->transaction(function () use ($year) {
             $this->log('academic_year_deleted', $year, ['name' => $year->name]);
+
+            event(new AcademicYearDeleted($year));
 
             $year->delete();
         });

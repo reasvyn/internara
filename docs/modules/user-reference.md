@@ -1,6 +1,6 @@
 # User — Technical Reference
 
-> Last updated: 2026-06-15
+> Last updated: 2026-06-16
 
 Detailed structural and implementation reference for the **User** module.
 
@@ -9,16 +9,6 @@ Detailed structural and implementation reference for the **User** module.
 ## Overview
 
 Handles user identity, profiles, notifications, account status, dashboards, and activity feeds.
-
-### Submodules
-
-- `Profile`
-- `Notifications`
-- `Dashboard`
-- `AccountStatus`
-- `UserManagement`
-
----
 
 ## Actions
 
@@ -186,8 +176,15 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 | File | Controller | Extends |
 | ---- | ---------- | ------- |
+| `Http/Controllers/AuthController.php` | `AuthController` | `BaseController` |
 | `Http/Controllers/DashboardController.php` | `DashboardController` | `BaseController` |
 | `Http/Controllers/HomeController.php` | `HomeController` | `BaseController` |
+
+## Observers
+
+| File | Observer | Observes |
+| ---- | -------- | -------- |
+| `Observers/UserObserver.php` | `UserObserver` | `User` |
 
 ---
 
@@ -252,113 +249,6 @@ Tests are located in `tests/{Feature,Unit}/User/`. See [Testing](../infrastructu
 
 ---
 
-## File Organization
-
-```
-app/User/
-├── Actions/ReadActivityLogAction.php
-├── AccountStatus/
-│   ├── Actions/
-│   │   ├── DetectUserAccountCloneAction.php
-│   │   ├── LockUserAccountAction.php
-│   │   └── UnlockUserAccountAction.php
-│   ├── Livewire/AccountLifecycleManager.php
-│   └── Notifications/AccountStatusNotification.php
-├── Dashboard/
-│   ├── Actions/
-│   │   ├── ReadStudentDashboardAction.php
-│   │   ├── ReadSupervisorDashboardAction.php
-│   │   └── ReadTeacherDashboardAction.php
-│   └── Livewire/
-│       ├── AdminDashboard.php
-│       ├── StudentDashboard.php
-│       ├── SupervisorDashboard.php
-│       ├── TeacherDashboard.php
-│       └── UserDashboard.php
-├── Entities/Apprentice.php
-├── Enums/
-│   ├── AccountStatus.php
-│   ├── BloodType.php
-│   ├── EmploymentStatus.php
-│   ├── Gender.php
-│   └── StructuralPosition.php
-├── Http/Controllers/
-│   ├── DashboardController.php
-│   └── HomeController.php
-├── Livewire/
-│   ├── ActivityFeedManager.php
-│   └── RecentActivityList.php
-├── Models/User.php
-├── Notifications/
-│   ├── Actions/
-│   │   ├── DeleteNotificationAction.php
-│   │   ├── MarkAllAsReadAction.php
-│   │   ├── MarkAsReadAction.php
-│   │   ├── MarkBatchAsReadAction.php
-│   │   └── SendNotificationAction.php
-│   ├── Data/NotificationData.php
-│   ├── Events/
-│   │   ├── NotificationRead.php
-│   │   └── NotificationSent.php
-│   ├── Listeners/ClearUnreadNotificationCache.php
-│   ├── Livewire/
-│   │   ├── NotificationBell.php
-│   │   └── NotificationCenter.php
-│   ├── Models/Notification.php
-│   ├── Policies/NotificationPolicy.php
-│   ├── GeneralNotification.php
-│   ├── TestMailNotification.php
-│   └── WelcomeNotification.php
-├── Profile/
-│   ├── Actions/
-│   │   ├── ReadProfileFormAction.php
-│   │   └── UpdateProfileAction.php
-│   ├── Livewire/
-│   │   ├── Forms/
-│   │   │   ├── PasswordForm.php
-│   │   │   └── ProfileForm.php
-│   │   └── ProfileEditor.php
-│   ├── Models/Profile.php
-│   └── Policies/ProfilePolicy.php
-├── Rules/
-│   ├── ReservedAuthoritativeName.php
-│   └── SystemUsername.php
-├── Services/DashboardService.php
-├── Support/UserIdentifierGenerator.php
-└── UserManagement/
-    ├── Actions/
-    │   ├── ArchiveStudentAccountsAction.php
-    │   ├── BatchDeleteUserAction.php
-    │   ├── CreateUserAction.php
-    │   ├── DeleteUserAction.php
-    │   ├── GenerateAccountSlipAction.php
-    │   ├── ReadRecoveryKeyAction.php
-    │   ├── ReadUserManagerStatsAction.php
-    │   ├── RevokeUserActivationTokensAction.php
-    │   ├── SaveRecoveryKeyAction.php
-    │   ├── SetUserStatusAction.php
-    │   ├── ToggleUserStatusAction.php
-    │   └── UpdateUserAction.php
-    ├── Console/
-    │   └── Commands/
-    │       └── AutoInactivateAccounts.php
-    ├── Livewire/
-    │   ├── AdminManager.php
-    │   ├── StudentManager.php
-    │   ├── SupervisorManager.php
-    │   ├── TeacherManager.php
-    │   ├── UserManager.php
-    │   ├── Concerns/
-    │   │   └── DownloadsAccountSlips.php
-    │   └── Forms/
-    │       ├── AdminUserForm.php
-    │       ├── StudentForm.php
-    │       ├── SupervisorForm.php
-    │       ├── TeacherForm.php
-    │       └── UserForm.php
-    └── Notifications/
-        └── ActivationCodeNotification.php
-```
 
 ---
 
