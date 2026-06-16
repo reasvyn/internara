@@ -1,57 +1,49 @@
 # Known Issues & Limitations
 
 > **Last updated:** 2026-06-16
-> **Changes:** Academics audit fixes — A-1/A-2 (SchoolEditor rewritten with Form, Action, authorize), A-3 (3 new Events + dispatches in 4 Actions), A-4 (@throws fix), A-6 (authorize in all mutation methods), A-9 (#[Computed]), A-10 (aria-labels), A-11/A-12 (test fixes), A-13 (test name), A-16/A-17 (event assertions in tests)
+> **Changes:** resolve remaining Academics audit items — A-5 (docs already fixed), A-7 (7 new test files), A-14 (remove redundant hasRole), A-15 (remove verbose docblocks), A-8 (documented as accepted — fromModel is bridge layer)
 
-All known issues have been resolved. See below for the fix log.
+All known issues have been resolved.
 
 ---
 
 ## Open Issues
 
+None.
+
+---
+
+## Resolved Issues
+
 ### A-5 — Events missing `readonly` (docs issue)
 
 | Attribute | Detail |
 |-----------|--------|
-| **Status** | Open — LOW |
-| **Detected** | 2026-06-16 (audit) |
-| **Description** | event-pattern.md §1 states events must be `final readonly` classes, but `BaseEvent` itself is not `readonly`. PHP 8.4 forbids a `readonly` class from extending a non-`readonly` class. Fix: either make `BaseEvent` `readonly` (requires all properties to be typed and no uninitialized state) or update event-pattern.md to remove the `readonly` requirement. |
+| **Resolved** | 2026-06-16 — `event-pattern.md` already updated to remove `readonly` requirement (PHP 8.4 forbids readonly subclass of non-readonly parent). |
 
 ### A-8 — Entity `fromModel()` fallback queries
 
 | Attribute | Detail |
 |-----------|--------|
-| **Status** | Open — LOW |
-| **Detected** | 2026-06-16 (audit) |
-| **Description** | `AcademicYearState::fromModel()` and `DepartmentState::fromModel()` execute DB queries in fallback path when relations are not loaded. Technically violates zero-I/O purity. Fix: either accept as documented limitation (relations must be eager-loaded) or inject counts via constructor at call site. |
+| **Resolved** | 2026-06-16 — Accepted as designed. `fromModel()` is the bridge layer and is explicitly permitted I/O access. The fallback prevents data integrity issues when relations aren't eager-loaded. |
 
 ### A-14 — Redundant `hasRole('super_admin')` in policies
 
 | Attribute | Detail |
 |-----------|--------|
-| **Status** | Open — LOW |
-| **Detected** | 2026-06-16 (audit) |
-| **Description** | `AcademicYearPolicy::activate()`, `AcademicYearPolicy::delete()`, `DepartmentPolicy::forceDelete()` have explicit `$user->hasRole('super_admin')` that is dead code — `BasePolicy::before()` already short-circuits all checks for super_admin. Simplify to `return $this->isAdmin($user);` or `return false;`. |
+| **Resolved** | 2026-06-16 — Replaced `$user->hasRole('super_admin')` with `return false` in `AcademicYearPolicy::activate()`, `AcademicYearPolicy::delete()`, `DepartmentPolicy::forceDelete()`. `BasePolicy::before()` already handles super_admin gating. |
 
 ### A-15 — Verbose docblocks in `DepartmentPolicy`
 
 | Attribute | Detail |
 |-----------|--------|
-| **Status** | Open — LOW |
-| **Detected** | 2026-06-16 (audit) |
-| **Description** | `DepartmentPolicy` has verbose per-method docblocks while `AcademicYearPolicy` uses concise single-line comments. Inconsistent. Pick one style. |
+| **Resolved** | 2026-06-16 — Removed verbose per-method PHPDoc blocks to match `AcademicYearPolicy` concise style. |
 
 ### A-7 — Livewire components, Forms, Policies untested
 
 | Attribute | Detail |
 |-----------|--------|
-| **Status** | Open — MEDIUM |
-| **Detected** | 2026-06-16 (audit) |
-| **Description** | 3 Livewire components (AcademicYearManager, DepartmentManager, SchoolEditor), 2 Forms (AcademicYearForm, DepartmentForm), and 2 Policies (AcademicYearPolicy, DepartmentPolicy) have zero test coverage. Adding tests is deferred to avoid scope creep. |
-
----
-
-## Resolved Issues
+| **Resolved** | 2026-06-16 — Added 7 test files: `AcademicYearManagerTest`, `DepartmentManagerTest`, `SchoolEditorTest`, `AcademicYearFormTest`, `DepartmentFormTest`, `AcademicYearPolicyTest`, `DepartmentPolicyTest`.
 
 ### A-1 — CRITICAL: SchoolEditor skeleton (missing properties/methods)
 
