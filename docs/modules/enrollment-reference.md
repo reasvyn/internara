@@ -1,6 +1,7 @@
 # Enrollment — Technical Reference
 
-> **Last updated:** 2026-06-16
+> **Last updated:** 2026-06-17
+> **Changes:** sync — add Livewire Components and Forms sections (14 files)
 
 Detailed structural and implementation reference for the **Enrollment** module.
 
@@ -76,6 +77,30 @@ Manages student registration, placement slot assignment, placement change reques
 | File | Class | Listens To |
 | ---- | ----- | ---------- |
 | `Registration/Listeners/ClearDashboardOnRegistration.php` | `ClearDashboardOnRegistration` | `StudentRegistered` |
+
+## Livewire Components
+
+| File | Component | Extends |
+| ---- | --------- | ------- |
+| `Registration/Livewire/RegistrationCenter.php` | `RegistrationCenter` | `Component` |
+| `Registration/Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload` | `Component` |
+| `Registration/Livewire/RegistrationVerification.php` | `RegistrationVerification` | `Component` |
+| `Registration/Livewire/RegistrationWizard.php` | `RegistrationWizard` | `Component` |
+| `Placement/Livewire/DirectPlacementManager.php` | `DirectPlacementManager` | `Component` |
+| `Placement/Livewire/PlacementChangeManager.php` | `PlacementChangeManager` | `Component` |
+| `Placement/Livewire/PlacementIndex.php` | `PlacementIndex` | `Component` |
+| `Placement/Livewire/StudentPlacementChangeRequest.php` | `StudentPlacementChangeRequest` | `Component` |
+| `AccountApplication/Livewire/ApplyPage.php` | `ApplyPage` | `Component` |
+
+## Livewire Forms
+
+| File | Form |
+| ---- | ---- |
+| `Registration/Livewire/Forms/RegistrationWizardForm.php` | `RegistrationWizardForm` |
+| `Placement/Livewire/Forms/DirectPlacementForm.php` | `DirectPlacementForm` |
+| `Placement/Livewire/Forms/PlacementChangeForm.php` | `PlacementChangeForm` |
+| `Placement/Livewire/Forms/PlacementForm.php` | `PlacementForm` |
+| `AccountApplication/Livewire/Forms/AccountApplicationForm.php` | `AccountApplicationForm` |
 
 ## Policies
 

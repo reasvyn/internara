@@ -1,6 +1,6 @@
 <laravel-boost-guidelines>
-> **Last updated:** 2026-06-16
-> **Changes:** sync — fix derivative doc rules (constrained table arg, pint --dirty, missing print_r), remove assertModelExists rule not in SSOT
+> **Last updated:** 2026-06-17
+> **Changes:** sync — fix php style guide section ref (#3→#2), add blank line before heading
 >
 > **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
 > provides quick-reference essentials and project-specific rules that cannot wait for doc lookups.
@@ -33,6 +33,7 @@ Project skills are in `.agents/skills/`. Activate the relevant skill when workin
 - `tailwindcss-development` — styling, daisyUI, maryUI
 - `audit-protocol` — comprehensive multi-layer codebase audit against conventions, patterns, security, and industry standards
 - `sync-docs` — synchronize ALL markdown documentation with actual implementation
+
 ## Documentation (NOT Duplicated Here)
 
 The following topics are fully covered in `docs/` and MUST NOT be duplicated here:
@@ -124,7 +125,7 @@ Prefer existing Artisan commands and tests over custom tinker code.
 - Null-safe `?->` and null coalescing `??` over explicit null checks.
 - Trailing commas on multiline arrays, function calls, constructor params.
 
-See `docs/conventions.md` (#3) for the complete PHP style guide.
+See `docs/conventions.md` (#2) for the complete PHP style guide.
 
 === deployments ===
 

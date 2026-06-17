@@ -1,6 +1,7 @@
 # User — Technical Reference
 
-> Last updated: 2026-06-16
+> **Last updated:** 2026-06-17
+> **Changes:** sync — remove phantom HomeController; add MentorEntity, DownloadsAccountSlips trait
 
 Detailed structural and implementation reference for the **User** module.
 
@@ -74,6 +75,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Entities/StudentEntity.php` | `StudentEntity` | `BaseEntity` |
 | `Entities/SupervisorEntity.php` | `SupervisorEntity` | `BaseEntity` |
 | `Entities/TeacherEntity.php` | `TeacherEntity` | `BaseEntity` |
+| `Entities/MentorEntity.php` | `MentorEntity` | `BaseEntity` |
 
 ---
 
@@ -115,6 +117,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `UserManagement/Livewire/SupervisorManager.php` | `SupervisorManager` | `BaseRecordManager` |
 | `UserManagement/Livewire/TeacherManager.php` | `TeacherManager` | `BaseRecordManager` |
 | `UserManagement/Livewire/UserManager.php` | `UserManager` | `BaseRecordManager` |
+| `UserManagement/Livewire/Concerns/DownloadsAccountSlips.php` | `DownloadsAccountSlips` (trait) | — |
 
 ## Livewire Forms
 
@@ -178,7 +181,6 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | ---- | ---------- | ------- |
 | `Http/Controllers/AuthController.php` | `AuthController` | `BaseController` |
 | `Http/Controllers/DashboardController.php` | `DashboardController` | `BaseController` |
-| `Http/Controllers/HomeController.php` | `HomeController` | `BaseController` |
 
 ## Observers
 

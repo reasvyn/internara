@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-06-16
-> **Changes:** sync — replace brittle test count (~416) with structural statement
+> **Last updated:** 2026-06-17
+> **Changes:** sync — add BaseCommandAction, BaseReadAction, BaseProcessAction to base classes table and statistics
 
 Detailed structural and implementation reference for the **Core** module, including both abstract infrastructure and concrete shared components.
 
@@ -21,6 +21,9 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 - **Middleware**: 2 (`SecurityHeaders`, `LogContext`)
 - **Support Classes**: 11 (`SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`, `Color`, `CsvHandler`, `Environment`, `PasswordRules`, `PiiMasker`, `Spotlight`, `helpers.php`)
 - **Action Traits**: 1 (`HandlesActionErrors`)
+- **Command Action Base**: 1 (`BaseCommandAction`)
+- **Read Action Base**: 1 (`BaseReadAction`)
+- **Process Action Base**: 1 (`BaseProcessAction`)
 - **Models**: 2 concrete (`ActivityLog`, `BaseAuthenticatable`) + 1 abstract (`BaseModel`)
 - **Events**: 1 (`BaseEvent`, abstract)
 - **Livewire Components**: 1 (`BaseRecordManager`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
@@ -57,6 +60,9 @@ Located in `app/Core/`:
 | ----- | ---- | ------- | ------------- |
 | `BaseModel` | `Models/BaseModel.php` | UUID PKs, HasFactory, soft-delete, global scopes | All models (User extends `Authenticatable` with manual HasUuids) |
 | `BaseAction` | `Actions/BaseAction.php` | Transaction management, activity logging, error handling | All Command & Process Actions |
+| `BaseCommandAction` | `Actions/BaseCommandAction.php` | Command action contract: wraps mutations in transaction + logging | Command Actions |
+| `BaseReadAction` | `Actions/BaseReadAction.php` | Read action contract: query-only, no transaction or logging | Read Actions |
+| `BaseProcessAction` | `Actions/BaseProcessAction.php` | Process action contract: multi-step orchestration with transaction + logging | Process Actions |
 | `BaseEntity` | `Entities/BaseEntity.php` | `final readonly`, zero framework dependencies, `fromModel()` bridge | All entities |
 | `BasePolicy` | `Policies/BasePolicy.php` | Superadmin `before()` bypass, role checks, ownership checks | All policies |
 | `BaseRecordManager` | `Livewire/BaseRecordManager.php` | CRUD table: search, sort, filter, paginate, bulk actions, row selection | All CRUD Livewire components |
