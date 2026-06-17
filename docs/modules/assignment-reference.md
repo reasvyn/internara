@@ -1,6 +1,7 @@
 # Assignment — Technical Reference
 
-> Last updated: 2026-06-16
+> **Last updated:** 2026-06-17
+> **Changes:** sync — add Data/DTOs and Events sections (SubmitAssignmentData, AssignmentPublished)
 
 Detailed structural and implementation reference for the **Assignment** module.
 
@@ -59,6 +60,18 @@ Manages course assignments and submission tracking with grading workflows.
 | `Submission/Policies/SubmissionPolicy.php` | `SubmissionPolicy` | `BasePolicy` |
 
 ---
+
+## Data / DTOs
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Submission/Data/SubmitAssignmentData.php` | `SubmitAssignmentData` | `BaseData` |
+
+## Events
+
+| File | Event | Dispatched By |
+| ---- | ----- | ------------- |
+| `Events/AssignmentPublished.php` | `AssignmentPublished` | `PublishAssignmentAction` |
 
 ## Notifications
 

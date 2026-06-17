@@ -1,7 +1,7 @@
 # SysAdmin — Technical Reference
 
-> **Last updated:** 2026-06-16
-> **Changes:** sync — remove phantom CreateAdminCommand (actually in Auth/SuperAdmin) and accounts:auto-inactivate (actually in User/UserManagement); restore PruneNotificationsCommand in file tree
+> **Last updated:** 2026-06-17
+> **Changes:** sync — add Backup model to Models table; add Backups Events and Support sections
 
 Detailed structural and implementation reference for the **SysAdmin** module.
 
@@ -32,6 +32,7 @@ Handles user administration, announcements, super admin recovery, system health 
 | File | Class | Extends |
 | ---- | ----- | ------- |
 | `Announcement/Models/Announcement.php` | `Announcement` | `BaseModel` |
+| `Backups/Models/Backup.php` | `Backup` | `BaseModel` |
 | `Observability/GdprDeletionLog/Models/GdprDeletionLog.php` | `GdprDeletionLog` | `BaseModel` |
 
 ---
@@ -82,6 +83,19 @@ Handles user administration, announcements, super admin recovery, system health 
 | File | Form |
 | ---- | ---- |
 | `Announcement/Livewire/Forms/AnnouncementForm.php` | `AnnouncementForm` |
+
+## Events
+
+| File | Event | Dispatched By |
+| ---- | ----- | ------------- |
+| `Backups/Events/BackupCompleted.php` | `BackupCompleted` | `CreateBackupAction` |
+| `Backups/Events/BackupFailed.php` | `BackupFailed` | `CreateBackupAction` |
+
+## Services
+
+| File | Service | Purpose |
+| ---- | ------- | ------- |
+| `Backups/Support/BackupRunner.php` | `BackupRunner` | Backup execution orchestration |
 
 ## Notifications
 

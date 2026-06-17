@@ -1,7 +1,7 @@
 # Reports — Technical Reference
 
-> Last updated: 2026-06-16
-> Changes: sync — add SaveReportDraftAction to action table and file tree
+> **Last updated:** 2026-06-17
+> **Changes:** sync — add CalculateFinalGradeAction; add Events section (GradeCalculated, ReportApproved, ReportFinalized)
 
 Detailed structural and implementation reference for the **Reports** module.
 
@@ -21,6 +21,7 @@ Manages final student grade compilation, score aggregation, coordinator sign-off
 | `Report/Actions/RequestReportRevisionAction.php` | `RequestReportRevisionAction` | `BaseAction` |
 | `Report/Actions/AddSupervisorReportNotesAction.php` | `AddSupervisorReportNotesAction` | `BaseAction` |
 | `Report/Actions/SaveReportDraftAction.php` | `SaveReportDraftAction` | `BaseAction` |
+| `Report/Actions/CalculateFinalGradeAction.php` | `CalculateFinalGradeAction` | Process `BaseAction` |
 
 ---
 
@@ -40,6 +41,14 @@ Manages final student grade compilation, score aggregation, coordinator sign-off
 | `Report/Enums/ReportStatus.php` | `ReportStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, approved, revision_requested, finalized |
 
 ---
+
+## Events
+
+| File | Event | Dispatched By |
+| ---- | ----- | ------------- |
+| `Report/Events/GradeCalculated.php` | `GradeCalculated` | `CalculateFinalGradeAction` |
+| `Report/Events/ReportApproved.php` | `ReportApproved` | `ApproveReportAction` |
+| `Report/Events/ReportFinalized.php` | `ReportFinalized` | `SubmitReportAction` |
 
 ## HTTP Controllers
 

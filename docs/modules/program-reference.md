@@ -1,6 +1,7 @@
 # Program — Technical Reference
 
-> Last updated: 2026-06-16
+> **Last updated:** 2026-06-17
+> **Changes:** sync — add missing InternshipStatusBatchUpdated event
 
 Detailed structural and implementation reference for the **Program** module.
 
@@ -77,6 +78,7 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 | File | Event | Extends |
 | ---- | ----- | ------- |
 | `Internship/Events/InternshipCreated.php` | `InternshipCreated` | `BaseEvent` |
+| `Internship/Events/InternshipStatusBatchUpdated.php` | `InternshipStatusBatchUpdated` | `BaseEvent` |
 
 ## Listeners
 

@@ -1,8 +1,7 @@
 # Coding Conventions
 
-> **Last updated:** 2026-06-10
-> **Changes:** Trimmed pattern-heavy sections — replaced with references to `docs/architecture/*-pattern.md`. Keep only code style, naming, and structural conventions.
-> **Context:** ✅ All conventions are enforced through code review.
+> **Last updated:** 2026-06-17
+> **Changes:** sync — add curly braces rule to §2 General PHP; fix pre-commit checklist missing print_r/die; fix broken ADR-014 link
 
 This document describes conventions for writing code in the Internara codebase. These rules exist to
 produce consistent, predictable code that any team member can read without context-switching.
@@ -87,6 +86,7 @@ pattern doc rather than duplicating conventions here:
 
 ## 2. General PHP
 
+- Curly braces `{ }` required for all control structures (no omitting braces, even for single-line bodies).
 - `declare(strict_types=1)` in every file except migrations and config.
 - Constructor property promotion: `public function __construct(protected readonly X $x) {}`. Do not
   leave empty zero-parameter constructors unless private.
@@ -236,7 +236,7 @@ class InternshipFactory extends Factory
 
 ### Cross-Role Proxy Protocol
 
-Internara implements a **Cross-Role Proxy** mechanism (see [ADR-014](../adr/adr-cross-role-proxy.md))
+Internara implements a **Cross-Role Proxy** mechanism (see [ADR-014](adr/adr-cross-role-proxy.md))
 that allows teachers to act as proxy for supervisors, and admins to proxy for both teachers and
 supervisors — all at the application layer without multi-role assignment.
 
@@ -265,7 +265,7 @@ supervisors — all at the application layer without multi-role assignment.
 ### Pre-commit Checklist
 
 - [ ] `declare(strict_types=1)` present
-- [ ] No `dd()`, `dump()`, `var_dump()`, `ray()` left in code
+- [ ] No `dd()`, `dump()`, `ray()`, `var_dump()`, `print_r()`, `die()` left in code
 - [ ] All user-facing strings use `__()` helper
 - [ ] Action follows the correct triad pattern (Command/Read/Process)
 - [ ] Cache keys registered in `config/cache-keys.php`

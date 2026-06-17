@@ -1,7 +1,7 @@
 # Journals — Technical Reference
 
-> **Last updated:** 2026-06-16
-> **Changes:** sync — fix file tree indentation (6→8 spaces under Attendance/ and Logbook/)
+> **Last updated:** 2026-06-17
+> **Changes:** sync — add Livewire Forms section (LogbookForm)
 
 Detailed structural and implementation reference for the **Journals** module.
 
@@ -79,6 +79,12 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | `Attendance/Livewire/AttendanceManager.php` | `AttendanceManager` | `BaseRecordManager` |
 | `Attendance/Livewire/StudentClockIn.php` | `StudentClockIn` | `Component` |
 | `AbsenceRequest/Livewire/AbsenceRequestForm.php` | `AbsenceRequestForm` | `Component` |
+
+## Livewire Forms
+
+| File | Form |
+| ---- | ---- |
+| `Logbook/Livewire/Forms/LogbookForm.php` | `LogbookForm` |
 
 ## Form Requests
 

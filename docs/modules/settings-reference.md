@@ -1,6 +1,7 @@
 # Settings — Technical Reference
 
-> **Last updated:** 2026-06-16
+> **Last updated:** 2026-06-17
+> **Changes:** sync — add Data/DTOs section (SettingData, SettingGroupData)
 
 Detailed structural and implementation reference for the **Settings** module.
 
@@ -41,6 +42,13 @@ Manages system-wide configuration: key-value settings store, brand identity (log
 | `Enums/MediaCollection.php` | `MediaCollection` | `LabelEnum` | brand_logo, brand_favicon |
 
 ---
+
+## Data / DTOs
+
+| File | Class | Extends |
+| ---- | ----- | ------- |
+| `Data/SettingData.php` | `SettingData` | `BaseData` |
+| `Data/SettingGroupData.php` | `SettingGroupData` | `BaseData` |
 
 ## Entities
 

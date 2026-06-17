@@ -1,7 +1,9 @@
 # Internara
 
-> **Self-hosted, single-tenant vocational fieldwork management system** designed for schools and
-> educational institutions running compulsory industrial work placement programs.
+> **Last updated:** 2026-06-17
+> **Changes:** sync — fix project description per product-definition; clarify Reverb as install separately
+>
+> **Self-hosted, single-tenant vocational fieldwork management system** engineered for managing compulsory industrial fieldwork (PKL) programs at Indonesian vocational upper-secondary schools (SMA/SMK) and technical education institutions.
 
 Internara manages the entire fieldwork (PKL - _Praktik Kerja Lapangan_) program lifecycle: from
 initial student enrollment and slot-based company placement, to daily geofenced attendance,
@@ -55,7 +57,7 @@ keeping submodules isolated and highly maintainable.
 | **Build System**        | Vite 8                                                      |
 | **Database Support**    | SQLite (default), MySQL 8+, MariaDB 10+, PostgreSQL 15+     |
 | **Background Services** | Redis / Database Queues, Scheduler Cron                     |
-| **WebSockets**          | Laravel Reverb (optional)                                         |
+| **WebSockets**          | Laravel Reverb (optional — install separately)              |
 | **Observability**       | Laravel Pulse, dual-channel SmartLogger                     |
 | **Quality & Styling**   | Laravel Pint, PHPStan, Pest 4                               |
 
