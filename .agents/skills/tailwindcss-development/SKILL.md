@@ -1,6 +1,11 @@
 ---
 name: tailwindcss-development
-description: Apply this skill whenever styling Blade templates, building responsive layouts, implementing dark mode, fixing spacing or typography, or working with daisyUI and maryUI components. Always invoke when the task involves Tailwind utility classes in HTML, Blade, or JSX templates.
+description: SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized UI/styling development — Blade templates, responsive layouts, dark mode, daisyUI, maryUI, Tailwind CSS v4.
+upstream:
+  - feature-building
+  - livewire-development
+downstream:
+  - sync-docs
 ---
 
 # Tailwind CSS Development Skill
@@ -8,6 +13,16 @@ description: Apply this skill whenever styling Blade templates, building respons
 ## When to Activate
 
 Apply this skill whenever styling Blade templates, building responsive layouts, implementing dark mode, fixing spacing or typography, or working with daisyUI and maryUI components.
+
+## SDLC Context
+
+| Role | Skill |
+|------|-------|
+| **Upstream (input)** | `feature-building` — roadmap task requiring UI work |
+| | `livewire-development` — component needing styling |
+| **This skill** | **IMPLEMENTATION (UI/Styling)** — produces styled Blade templates |
+| **Downstream (output)** | `sync-docs` — documentation after UI changes |
+| **Phase** | [Planning] → [Analysis] → [Design] → Implementation → [Testing] → [Maintenance] |
 
 ## Key References
 

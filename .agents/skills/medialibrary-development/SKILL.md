@@ -1,6 +1,11 @@
 ---
 name: medialibrary-development
-description: Apply this skill when implementing file uploads, managing media collections and conversions, generating responsive images, or retrieving media URLs and paths. Activates whenever a Model needs file attachments or when working with spatie/laravel-medialibrary.
+description: SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized file upload and media management — Spatie MediaLibrary collections, conversions, responsive images, and retrieval.
+upstream:
+  - feature-building
+downstream:
+  - pest-testing
+  - sync-docs
 ---
 
 # Media Library Development Skill
@@ -8,6 +13,16 @@ description: Apply this skill when implementing file uploads, managing media col
 ## When to Activate
 
 Apply this skill when implementing file uploads, managing media collections and conversions, generating responsive images, or retrieving media URLs and paths. Activates whenever a Model needs file attachments.
+
+## SDLC Context
+
+| Role | Skill |
+|------|-------|
+| **Upstream (input)** | `feature-building` — roadmap task requiring file uploads |
+| **This skill** | **IMPLEMENTATION (Media)** — produces MediaLibrary integrations |
+| **Downstream (output)** | `pest-testing` — tests for upload functionality |
+| | `sync-docs` — documentation after media changes |
+| **Phase** | [Planning] → [Analysis] → [Design] → Implementation → [Testing] → [Maintenance] |
 
 ## Key References
 

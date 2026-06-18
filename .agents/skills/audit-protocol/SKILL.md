@@ -1,32 +1,44 @@
 ---
 name: audit-protocol
-description: Systematic multi-layer audit of the entire codebase against conventions, architecture patterns, industry standards, security best practices, and project requirements. Every finding must be recorded in docs/known-issues.md with reproduction steps and fix recommendations. Focus on bug fixes, code smells, convention violations, and security holes — NOT feature enhancements.
+description: SDLC Phase: ANALYSIS. Systematic multi-layer codebase audit enforcing conventions, architecture patterns, security, and industry best practices. Every finding is recorded in docs/known-issues.md with actionable fix recommendations. Focus: pattern violations, code smells, security holes, convention drift — NOT feature enhancements.
+downstream: [roadmap-planning, code-refactoring]
 ---
 
 # Audit Protocol Skill
 
 ## When to Activate
 
-Apply this skill when performing a comprehensive codebase audit. This covers code quality, architecture compliance, security, performance, convention enforcement, testing adequacy, and documentation alignment. Every phase produces structured entries in `docs/known-issues.md`.
+Apply this skill when performing a comprehensive codebase audit. Covers architecture compliance, convention enforcement, security, performance, testing adequacy, and documentation alignment. Every phase produces structured entries in `docs/known-issues.md`.
+
+## SDLC Context
+
+| Role | Skill |
+|------|-------|
+| **Upstream (input)** | Existing codebase |
+| **This skill** | **ANALYSIS** — produces `docs/known-issues.md` |
+| **Downstream (output)** | `roadmap-planning` — findings feed bug/refactor pipeline |
+| | `code-refactoring` — findings guide refactoring targets |
+| | `security-audit` — deep-dive on security findings (if needed) |
+| **Phase** | [Planning] → Analysis → [Design] → [Implementation] → [Testing] → [Maintenance] |
 
 ## Audit Layers (Execute in Order)
 
 Each layer depends on the previous. Do not skip layers.
 
-The audit covers these layers in sequence:
-
 | Phase | Layer | Scope |
 |-------|-------|-------|
 | 0 | Preparation | Load context, run baseline, initialize findings |
-| 1 | Application (`app/`) | Models, Actions, Entities, Enums, Policies, Livewire, Exceptions |
-| 2 | Configuration (`config/`) | Module registration, cache keys, environment vars, permissions |
-| 3 | Jobs & Queue (`app/Jobs/`) | Serialization, error handling, queue configuration |
-| 4 | Views (`resources/views/`) | Blade templates, localization, accessibility, XSS |
-| 5 | Routes (`routes/`) | Route files, middleware, naming, security |
-| 6 | Tests (`tests/`) | Coverage, conventions, quality |
-| 7 | Documentation Alignment | Cross-reference, known issues |
-| 8 | Industry Standards | OWASP, PSR, SOLID, PHP 8.4 |
-| 9 | Report Generation | Consolidation, classification, final verification |
+| 1 | Action Triad (`app/**/Actions/`) | Command/Read/Process patterns, base classes, transaction, log, events |
+| 2 | Livewire Components (`app/**/Livewire/`) | Thin component rule, injection, exception handling |
+| 3 | Entities & Models (`app/**/Entities/`, `app/**/Models/`) | Entity purity, model responsibilities, bridge pattern |
+| 4 | Enums (`app/**/Enums/`, `app/Core/Enums/`) | LabelEnum, StatusEnum, naming, defaults |
+| 5 | Exceptions (`app/**/Exceptions/`, `app/Core/Exceptions/`) | Hierarchy, RejectedException usage |
+| 6 | Security (`app/`, `routes/`, `resources/views/`) | XSS, SQL injection, mass assignment, CSRF, CSP, PII |
+| 7 | Performance (`app/`, `resources/views/`) | N+1 queries, eager loading, query optimization, caching |
+| 8 | Configuration (`config/`) | Cache keys, module registration, event mapping, env vars |
+| 9 | Tests (`tests/`) | Coverage, conventions, mocking, completeness |
+| 10 | Cross-Cutting | DI etiquette, commit conventions, code review, docs alignment |
+| 11 | Report Generation | Consolidation, classification, final verification |
 
 ---
 
@@ -36,33 +48,33 @@ The audit covers these layers in sequence:
 
 Read these documents before starting (concurrent read):
 - `docs/architecture.md` — 12-layer architecture, Action Triad, patterns
-- `docs/conventions.md` — all coding conventions
+- `docs/conventions.md` — all coding conventions (especially §3 Security, §5 Performance, §7 HTTP, §8 DI, §10 Testing)
 - `docs/modules/module-index.md` — module boundaries
 - `docs/doc-index.md` — full documentation catalog
 - `AGENTS.md` — project invariants, quick rules
-- `docs/infrastructure/testing.md` — testing conventions
 - `docs/known-issues.md` — existing known issues (to avoid duplicates)
 
 ### 0.2 Establish Baseline
 
-```
+```bash
 php artisan test --compact              # verify current test suite passes
 vendor/bin/pint --format agent          # check code style baseline
-composer run test:coverage              # coverage baseline
+vendor/bin/phpstan analyse --no-progress # static analysis baseline
+composer run test:coverage              # coverage baseline (if available)
 ```
 
 ### 0.3 Initialize Findings
 
-Create or append to `docs/known-issues.md`. Every finding entry follows this template:
+Create or append to `docs/known-issues.md`. Every finding uses this template:
 
 ```markdown
 ### ID-{N} — {Severity}: {Short Description}
 
 | Attribute | Detail |
 |-----------|--------|
-| **Severity** | HIGH / MEDIUM / LOW |
+| **Severity** | CRITICAL / HIGH / MEDIUM / LOW |
 | **File** | `{file}:{line}` |
-| **Pattern violated** | `docs/conventions.md #{section}` or `docs/architecture.md #{section}` |
+| **Pattern violated** | `{doc-ref}` |
 | **What's wrong** | Explain in 1-2 sentences |
 | **Fix recommendation** | Actionable steps to resolve |
 | **Impact** | Runtime / Maintainability / Security / Performance |
@@ -76,402 +88,520 @@ Severity definitions:
 
 ---
 
-## Phase 1 — Application Layer Audit (`app/`)
+## Phase 1 — Action Triad Audit (`app/**/Actions/`)
 
-### 1.1 File Structure Audit
+### 1.1 File Structure
 
-**Scope:** Every directory and file under `app/`.
+- Actions live at `app/{Module}/{SubModule}/Actions/{ClassName}.php`
+- Cross-submodule actions at `app/{Module}/Actions/{ClassName}.php`
+- No Action files outside these locations.
+- **Check:** `find app -path '*/Actions/*.php' | sort` — verify every Action matches convention.
 
-**Checks:**
-1. Does every module match `docs/modules/module-index.md`? Are there undeclared modules?
-2. Does every submodule directory have a corresponding `resources/views/{module}/{submodule}/` directory? (Unless it's a shared cross-module component.)
-3. Are there orphan view directories (in `resources/views/`) with no matching `app/` submodule?
-4. Does the directory structure follow the convention:
-   ```
-   app/{Module}/{SubModule}/{Component}/{ClassName}.php
-   ```
-   Check for redundant namespace segments (e.g., `app/User/User/Models/User.php`).
+**Record findings** under `TRIAD-STRUCT-*` IDs.
 
-**Record findings** under `STRUCTURE-*` IDs.
+### 1.2 Base Class Compliance
 
-### 1.2 Convention Compliance Audit
+| You need | Must extend | Violation if extends |
+|----------|-------------|---------------------|
+| Mutation | `BaseCommandAction` | `BaseReadAction`, `BaseAction`, plain class |
+| Query | `BaseReadAction` | `BaseCommandAction`, `BaseProcessAction` |
+| Orchestration (multi-step) | `BaseProcessAction` | `BaseCommandAction`, `BaseAction` |
 
-#### 1.2.1 `declare(strict_types=1)`
+**Check:** For every Action file, verify the `extends` clause matches the operation type.
+- Grep for `extends BaseAction` — flag as HIGH (should be Command/Read/Process).
+- Grep for Actions that compose other Actions but extend `BaseCommandAction` instead of `BaseProcessAction` (e.g., `FinalizeSetupAction`).
 
-Grep all PHP files under `app/` (exclude `config/` and `database/migrations/`). List files missing the declaration.
+**Record findings** under `TRIAD-BASE-*` IDs.
 
-**Requirement:** `docs/conventions.md` §2 — every PHP file except migrations and config.
+### 1.3 Command Action Contract
 
-#### 1.2.2 Base Class Mandate
+Every Command Action MUST:
 
-Every file must use the correct base class:
+1. **`$this->transaction()`** wrapping all DB writes. Grep for `Model::create(`, `Model::update(`, `Model::delete(`, `DB::`, `::updateOrCreate(` inside Actions — if outside `$this->transaction()`, flag as HIGH.
+2. **`$this->log()`** after successful mutation. Every Command Action should call `$this->log()`.
+3. **Single `execute()`** — exactly one public method. Grep for additional `public function` in Action files.
+4. **Dispatch event** for significant state changes (status transitions, creates, deletes). Flag Actions that change status without dispatching an event.
+5. **`RejectedException`** for business rule violations, never `RuntimeException`.
+6. **No inline `canX()` checks** — delegate to Entity methods.
 
-| You need | You must use |
-|----------|-------------|
-| Database table (not User) | `extends BaseModel` |
-| Auth model | `extends BaseAuthenticatable` |
-| Business mutation | `extends BaseCommandAction` (NOT bare `BaseAction`) |
-| Business query | `extends BaseReadAction` (NOT bare `BaseAction`) |
-| Multi-step orchestration | `extends BaseProcessAction` (NOT bare `BaseAction`) |
-| Business rules (immutable) | `extends BaseEntity` (final readonly) |
-| Authorization gate | `extends BasePolicy` |
-| CRUD table UI | `extends BaseRecordManager` |
-| DTO / value object | `extends BaseData` (final readonly) |
-| Event | `extends BaseEvent` (final) |
-| Enum | `implements LabelEnum` |
-| State machine enum | `implements StatusEnum` (+ `LabelEnum`) |
-| Exception | `extends AppException` or `extends ModuleException` |
+**Check:**
+```bash
+# Find Command Actions missing transaction wrapping
+rg -l "BaseCommandAction" app/ | xargs rg -l "Model::create\|Model::update\|Model::delete\|DB::" | xargs rg -c '\$this->transaction\(\)' | grep ':0$'
 
-**Check:** List every file that violates its mandated base class. Pay special attention to:
-- Actions still extending `BaseAction` instead of `BaseCommandAction`/`BaseReadAction`/`BaseProcessAction`
-- Enums missing `LabelEnum`
-- Exceptions not in the dual hierarchy
+# Find Command Actions missing log call
+rg -l "BaseCommandAction" app/ | xargs rg -c '\$this->log('
+```
 
-**Record findings** under `BASE-*` IDs.
+**Record findings** under `TRIAD-CMD-*` IDs.
 
-#### 1.2.3 Naming Convention Audit
+### 1.4 Read Action Contract
 
-| Element | Rule | Examples |
-|---------|------|----------|
-| Command Action | `{Verb}{Entity}Action` | `CreateUserAction` |
-| Read Action | `Read{Entity}Action` | `ReadActivityLogAction` |
-| Process Action | `Process{Entity}Action` | `ProcessRegistrationAction` |
-| Entity | `{Name}` (business role) | `Apprentice`, `InternshipPeriod` |
-| DTO | `{Verb}{Entity}Data` or `{Entity}Data` | `LoginData`, `SetupTokenData` |
-| Event | `{Entity}{PastTenseAction}` | `InternshipCreated` |
-| Console command | `{module}:{action}` | `system:health` |
-| Route name | `{prefix}.{resource}.{action}` | `admin.users.index` |
-| Cache key | `{module}.{purpose}[.{qualifier}]` | `setup.is_installed` |
-| Boolean method | `is`/`has`/`can`/`requires`/`allows` prefix | `isActive()`, `canTransitionTo()` |
+Every Read Action MUST:
 
-**Check:** List naming violations. Flag old `Get*` / `Check*` prefix still used instead of `Read*`.
+1. **Extend `BaseReadAction`** or be a plain class.
+2. **NOT** call `transaction()` or `log()` — grep for these in Read Actions.
+3. **NOT** mutate database state — grep for any `create/update/delete/save` in Read Actions.
+4. Return typed objects or collections, not raw arrays.
 
-**Record findings** under `NAMING-*` IDs.
+**Record findings** under `TRIAD-READ-*` IDs.
 
-### 1.3 Action Triad Audit
+### 1.5 Process Action Contract
 
-#### 1.3.1 Command Actions
+Every Process Action MUST:
 
-**Requirement:** `docs/architecture.md` §Action Triad.
+1. **Extend `BaseProcessAction`**.
+2. **Compose** other Actions via constructor injection.
+3. **Handle partial failure** — document the approach in docblock.
+4. **Emit a single module event** after completion.
 
-1. Check that Command Actions extend `BaseCommandAction` (or at minimum `BaseAction` for legacy).
-2. **MUST** call `$this->transaction()` wrapping all DB writes.
-3. **MUST** call `$this->log()` after successful mutation.
-4. **SHOULD** dispatch an event (`event(new ...)`) for significant state changes.
-5. **MUST** have exactly one public method: `execute()`.
-6. **MUST NOT** contain inline business rules — delegate to Entity methods or check via `RejectedException`.
-7. **MUST NOT** use `dd()`, `dump()`, `ray()`, `var_dump()`, `die()`.
+**Record findings** under `TRIAD-PROC-*` IDs.
 
-**Check each Action file.** List violations per Action.
+### 1.6 ActionResponse Usage
 
-#### 1.3.2 Read Actions
+- Return `ActionResponse` when caller needs structured feedback.
+- Use factory methods: `ActionResponse::ok()`, `created()`, `updated()`, `deleted()`, `error()`.
+- **Check:** Actions returning raw `array` or `mixed` where callers need typed feedback.
 
-1. Check that Read Actions extend `BaseReadAction` (or are plain classes).
-2. **MUST NOT** call `transaction()` or `log()`.
-3. **MUST NOT** mutate any database state.
-4. **SHOULD** return typed objects or collections.
+**Record findings** under `TRIAD-RESP-*` IDs.
 
-#### 1.3.3 Process Actions
+---
 
-1. **MUST** extend `BaseProcessAction`.
-2. **MUST** compose other Actions via constructor injection.
-3. **MUST** handle partial failure.
-4. **SHOULD** emit a single module event after completion.
+## Phase 2 — Livewire Component Audit (`app/**/Livewire/`)
 
-### 1.4 Exception Handling Audit
+### 2.1 Thin Component Rule
 
-1. Flag every `throw new RuntimeException(...)` in Actions that should be `throw new RejectedException(...)`.
-2. **Rule:** Business rule violations → `RejectedException`. Never bare `RuntimeException`.
-3. **Rule:** Input validation → `ValidationFailedException`.
-4. **Rule:** Duplicate/conflict → `ConflictException`.
-5. **Rule:** Resource missing → `NotFoundException`.
-6. Check that Entities never throw exceptions that require framework imports — they should only throw `RejectedException` or nothing.
-7. Check that `try/catch` blocks in Livewire catch `RejectedException` (not `RuntimeException`) from Action calls.
+**Allowed:** UI state, `$this->validate()`, delegation to Actions, read-only queries in `render()`, flash messages.
+**NOT Allowed:**
 
-**Record findings** under `EXCEPTION-*` IDs.
+1. Inline DB mutations (`Model::create()`, `Model::update()`, `Model::delete()`, `DB::transaction()`).
+2. Inline business rules (`if ($model->status === 'x')`, date comparisons).
+3. Side effects (`Log::info()`, `event(new ...)`, `Notification::send()`).
+4. Static helper methods.
+5. maryUI Toast methods (`$this->success()`, `$this->error()`).
+6. `app()->make()` or `new Action()` — must use method injection.
 
-### 1.5 Event & Listener Audit
+**Check:**
+```bash
+# Find Livewire components with inline DB calls
+rg -l "extends Component" app/ --type php | xargs rg -l "Model::create\|Model::update\|Model::delete\|DB::\|::create("
+```
 
-1. Every Command Action that changes significant state SHOULD dispatch an event.
-2. Every event MUST extend `BaseEvent`.
-3. Every listener MUST be registered in `config/event.php`.
-4. Listeners performing I/O (email, cache clear, API calls) MUST implement `ShouldQueue`.
-5. **Check:** Are there actions that update status/state but don't dispatch events?
+**Record findings** under `LW-*` IDs.
 
-**Record findings** under `EVENT-*` IDs.
+### 2.2 Action Injection Pattern
 
-### 1.6 Cache Audit
+- Actions are injected as **method parameters**, never via `app()` or `new`.
+- **Catch `RejectedException`** (not `RuntimeException`) from Action calls.
+- Every Action call in a Livewire component should have `try/catch` with user-facing flash message.
 
-1. Every cache key MUST be declared in `config/cache-keys.php`.
-2. Every cache read MUST reference via `config('cache-keys.{key}')` — never raw strings.
-3. **Check:** Grep for `Cache::remember('` or `Cache::put('` or `Cache::forget('` with string literals — flag all.
-4. **Check:** Grep for `Cache::` calls in Actions — should invalidate on mutations.
+**Check:**
+```bash
+# Find catch RuntimeException (should be RejectedException)
+rg "catch.*RuntimeException" app/ --type php
+```
 
-**Record findings** under `CACHE-*` IDs.
+**Record findings** under `LW-INJECT-*` IDs.
 
-### 1.7 Model Audit
+### 2.3 Form Objects
 
-1. **Business logic check:** Every `canX()`, `isX()`, `hasX()` method on a Model that is not a simple passthrough should be in an Entity. List violations.
-2. **Entity bridge check:** Every Model with business-rule conditionals in its module's Actions should have an `as{Entity}()` bridge method. Check if entities exist but aren't used.
-3. **Fillable check:** All Models MUST use `#[Fillable]` attribute, NOT `$fillable` property.
-4. **Relationship naming:** `BelongsTo`/`HasOne` = singular, `HasMany`/`BelongsToMany` = plural.
-5. **Cast check:** Status columns use enum FQCN casts (`'status' => StatusEnum::class`), not string.
+- Forms with 5+ fields or conditional validation must use a Form Object (`app/{Module}/Livewire/Forms/{Name}Form.php`).
+- Form Objects extend `Livewire\Form`, never `BaseAction`.
+- Form Objects must NOT call Actions directly — they only prepare data.
+
+**Record findings** under `LW-FORM-*` IDs.
+
+### 2.4 Confirmation Dialog
+
+- Destructive operations must use two-step `askAction()` → `confirmAction()` pattern.
+- No bare `wire:confirm` for destructive actions.
+- Use shared `<x-core::ui.confirm />` component.
+
+**Record findings** under `LW-CONFIRM-*` IDs.
+
+---
+
+## Phase 3 — Entities & Models Audit
+
+### 3.1 Entity Purity
+
+Every Entity MUST:
+- Be `final readonly class` extending `BaseEntity`.
+- Have all properties `private` typed constructor properties.
+- Implement `fromModel(Model $model): static`.
+- **NOT** touch database, HTTP, files, cache, facades, service container.
+- **NOT** dispatch events or notifications.
+- The only allowed framework import is `Illuminate\Database\Eloquent\Model` (in `fromModel()` parameter).
+
+**Check:**
+```bash
+# Find non-final or non-readonly entities
+rg "class \w+ extends BaseEntity" app/ --type php | grep -v "final readonly"
+```
+
+**Record findings** under `ENTITY-*` IDs.
+
+### 3.2 Model Responsibilities
+
+Models MUST:
+- Use `#[Fillable]` attribute (not `$fillable` property).
+- **NOT** contain business rule methods (`canX()`, `isX()`, `hasX()` that are not simple passthroughs).
+- Expose entities via named `as{EntityName}()` bridge methods.
+- UUID primary keys via `HasUuids` (BaseModel provides this).
+- Status casts: use enum FQCN (`'status' => StatusEnum::class`).
+
+**Check:**
+```bash
+# Find business logic on models (should be in Entities)
+rg "function can\|function is\|function has" app/ --type php --include '**/Models/*.php'
+```
 
 **Record findings** under `MODEL-*` IDs.
 
-### 1.8 Enum Audit
+### 3.3 Entity Bridge Pattern
 
-1. Every enum MUST implement `LabelEnum` — flag violations.
-2. State machine enums MUST implement `StatusEnum` with `canTransitionTo()`, `isTerminal()`, `validTransitions()`.
-3. Case naming: `UPPER_SNAKE`. Backing values: lowercase.
-4. Model defaults use `->value` (e.g., `InternshipStatus::DRAFT->value`), never hardcoded strings.
-5. `match()` is exhaustive — every case must appear.
+- Every Model with business-rule conditionals in its module's Actions should have `as{Entity}()` bridge.
+- Bridge method naming: `as{Role}(): EntityType` — never generic `entity()`.
+- Models may expose multiple entities for different business roles.
+
+**Record findings** under `BRIDGE-*` IDs.
+
+---
+
+## Phase 4 — Enum Audit (`app/**/Enums/`, `app/Core/Enums/`)
+
+### 4.1 LabelEnum Compliance
+
+Every enum MUST implement `LabelEnum`:
+```bash
+rg "enum \w+: string" app/ --type php | grep -v "implements LabelEnum" | grep -v "implements StatusEnum"
+```
+
+### 4.2 StatusEnum Compliance
+
+State machine enums MUST implement `StatusEnum` with:
+- `canTransitionTo(self $target): bool`
+- `isTerminal(): bool`
+- `validTransitions(): array` — exhaustive `match()`, every case listed.
+
+**Check:**
+- `match()` must be exhaustive — every case appears.
+- Terminal states return `[]`.
+
+### 4.3 Case Naming
+
+- Case names: `UPPER_SNAKE`.
+- Backing values: lowercase `snake_case`.
+- Model defaults use `->value` (`EnumCase::DRAFT->value`), never hardcoded strings.
+
+**Check:**
+```bash
+rg "protected \$attributes" app/ --type php -A 5 | grep "=> '"
+```
 
 **Record findings** under `ENUM-*` IDs.
 
-### 1.9 Dependency & Cross-Module Audit
+---
 
-1. Core (layers 3-4) must NOT import any business module.
-2. Check for broken cross-module references (importing classes that don't exist).
-3. Check for circular dependencies between modules.
-4. Check that Service classes never do Action work (mutations, transactions, complex queries).
+## Phase 5 — Exception Audit
 
-**Record findings** under `DEP-*` IDs.
+### 5.1 Exception Hierarchy
 
-### 1.10 Security Audit
+Two independent trees:
+- `AppException (abstract)` — application/infrastructure/HTTP failures
+- `ModuleException (abstract)` → `RejectedException` — business rule violations
 
-1. **Mass assignment:** Check for `Model::create($request->all())` or `Model::create($this->all())` — flag violations.
-2. **SQL injection:** Search for `DB::raw()`, `whereRaw()`, `orderByRaw()` with concatenated user input.
-3. **XSS:** Check Blade templates for `{!! $var !!}` with user-supplied content — flag as HIGH.
-4. **Authorization:** Every Livewire mutation method must have `$this->authorize()` or `Gate::authorize()`. Flag missing checks.
-5. **PII masking:** Every SmartLogger call outside Action context should call `withPiiMasking()`. Flag omissions.
-6. **Rate limiting:** Auth endpoints should have rate limiting.
-7. **CSV injection:** CSV exports must escape formula characters (=, +, -, @).
+Every concrete exception must:
+- Extend the correct abstract (either `AppException` or `ModuleException`).
+- `RejectedException` is ONLY for business rules — NOT for validation or infrastructure errors.
+
+### 5.2 Action Error Handling
+
+- Business rule violations → `RejectedException` (never `RuntimeException`).
+- Input validation → `Validator::validate()` → `ValidationException`.
+- Duplicate/conflict → `ConflictException`.
+- Resource missing → `NotFoundException`.
+- Infrastructure failure → `HandlesActionErrors` logs + rethrows as `RuntimeException`.
+
+**Check:**
+```bash
+# Find throw RuntimeException in Actions (should be RejectedException)
+rg "throw new RuntimeException" app/ --type php
+```
+
+### 5.3 Livewire Catch Blocks
+
+- `try/catch` in Livewire must catch `RejectedException` first, then `Throwable`.
+- Business errors show `$e->getMessage()`, infrastructure errors show generic message.
+
+**Record findings** under `EX-*` IDs.
+
+---
+
+## Phase 6 — Security Audit
+
+### 6.1 XSS Prevention (§3.1 conventions.md)
+
+- All user-supplied content in Blade uses `{{ $var }}` (escaped).
+- `{!! $var !!}` is ONLY permitted for trusted, sanitized content — every occurrence must have an inline comment justifying safety.
+- Alpine.js `x-html` follows the same rule.
+- **Check:**
+  ```bash
+  rg '\{!!.*\$' resources/ --type blade
+  ```
+
+### 6.2 SQL Injection Prevention (§3.2 conventions.md)
+
+- Raw SQL (`DB::raw()`, `whereRaw()`, `orderByRaw()`, etc.) is FORBIDDEN unless:
+  - Uses parameterized binding EXCLUSIVELY (`->whereRaw('col = ?', [$value])`).
+  - Has explicit exception documented in method docblock.
+- No concatenated user input in queries.
+- **Check:**
+  ```bash
+  rg "whereRaw\|orderByRaw\|havingRaw\|selectRaw\|DB::raw" app/ --type php
+  ```
+
+### 6.3 Mass Assignment (§3.3 conventions.md)
+
+- Every model uses `#[Fillable]` attribute.
+- **No** `Model::create($request->all())` or `Model::create($this->all())`.
+- Always use explicit key selection: `$request->only([...])`, `$this->form->toArray()`.
+- **Check:**
+  ```bash
+  rg "->all\(\)" app/ --type php | grep "create\|update\|fill"
+  ```
+
+### 6.4 CSRF & CSP (§3.4–3.5 conventions.md)
+
+- All state-changing HTML forms include `@csrf` (or use Livewire which handles CSRF).
+- CSP exemptions in `bootstrap/app.php` must have code comments.
+- **Check:** `grep -r 'validateCsrfTokens' bootstrap/app.php`
+
+### 6.5 File Upload Security (§3.6 conventions.md)
+
+- All uploads go through Spatie MediaLibrary, never `Storage::put()`.
+- Each media collection defines MIME and size validation.
+
+### 6.6 PII Masking
+
+- Every SmartLogger call outside Action context calls `withPiiMasking()`.
+- **Check:** Search for SmartLogger calls missing `withPiiMasking()`.
+
+### 6.7 Authorization
+
+- Every Livewire mutation method has `$this->authorize()` or `Gate::authorize()`.
+- **Check:**
+  ```bash
+  rg "public function (create|update|delete|save|restore|toggle|approve|reject|lock|unlock)" app/ --type php -A 2 | grep -v "authorize"
+  ```
 
 **Record findings** under `SEC-*` IDs.
 
-### 1.11 Performance Audit
+---
 
-1. **N+1 queries:** Check for relationship access inside loops in Livewire components and Blade views.
-2. **Heavy queries in Livewire:** Check `render()` methods for expensive aggregations — should use Read Actions + cache.
-3. **Missing eager loading:** Check for `->load()` after collection retrieval instead of `->with()` on the query.
-4. **Missing cache:** Check dashboard/aggregation queries for caching.
-5. **Missing `->fresh()`:** Check if models are used after `save()`/`update()` without `->fresh()`.
+## Phase 7 — Performance Audit
+
+### 7.1 N+1 Prevention (§5.1 conventions.md)
+
+- No relationship access inside Blade loops or Livewire `@foreach` without eager loading (`->with()`).
+- Livewire `render()` must not trigger N+1 — use `->with()` on the query, never `->load()` in loops.
+- **Check:** Look for `\n.*->\w+->\w+\n.*endfor\|endforeach` patterns in Blade views (relationship calls in loops).
+
+### 7.2 Query Optimization (§5.2 conventions.md)
+
+- Large datasets (≥1000 rows) use `chunk()` or `lazy()` instead of `get()`.
+- `exists()` over `count() > 0` for existence checks.
+- `pluck()` over `get()->pluck()` to avoid hydrating full models.
+- No `$collection->filter()` on large collections — move filter to database.
+- **Check:** `rg "chunk\|lazy" app/ --type php` — verify large data processing uses these.
+
+### 7.3 Eager Loading (§5.3 conventions.md)
+
+- Default: `->with()` for all relationships used in current view/response.
+- Constrained eager loading: `->with(['relation' => fn ($q) => $q->where(...)])`.
+- Avoid `->load()` in loops — move to `->with()` on initial query.
+
+### 7.4 Caching Conventions (§5.5 conventions.md)
+
+- Every cache key declared in `config/cache-keys.php` — never inline strings.
+- Cache invalidation follows event-driven pattern.
+- **Check:**
+  ```bash
+  # Find inline cache keys not in registry
+  rg "Cache::(remember|put|forget|get)\('" app/ --type php
+  ```
 
 **Record findings** under `PERF-*` IDs.
 
 ---
 
-## Phase 2 — Configuration Layer Audit (`config/`)
+## Phase 8 — Configuration Audit (`config/`)
 
-### 2.1 Module Registration Audit
+### 8.1 Module Registration
 
-1. Check `config/module.php` `'list'` array includes every business module directory under `app/`.
-2. Flag missing modules: every `app/{Module}/` directory with Actions/ or Models/ must be registered.
-3. Flag orphan modules: modules listed in config but with no corresponding `app/{Module}/` directory.
-4. Verify module dependency order in `'list'` matches actual import dependencies.
+- `config/module.php` `'list'` includes every business module under `app/`.
+- No orphan modules (listed but no directory).
+- Module dependency order matches actual import graph.
 
-### 2.2 Cache Key Registry Audit
+### 8.2 Cache Key Registry
 
-1. Open `config/cache-keys.php` — verify every key follows `{module}.{purpose}[.{qualifier}]` naming.
-2. **Critical check:** Search all `app/` PHP files for raw `Cache::remember('`, `Cache::put('`, `Cache::forget('`, `Cache::get('` calls with string literal keys that are NOT in the registry. Flag each as a violation — every cache key MUST be declared in `config/cache-keys.php`.
-3. Check that every key declared in `config/cache-keys.php` is actually used somewhere in `app/`. Flag unused keys.
+- Every cache key in `config/cache-keys.php` follows `{module}.{purpose}[.{qualifier}]`.
+- Every key used in `app/` is in the registry.
+- No unused keys in the registry.
+- **Check:**
+  ```bash
+  # Compare used vs declared keys
+  rg -o "cache-keys\.\w+" app/ --type php | sort -u
+  ```
 
-### 2.3 Environment Variable Audit
+### 8.3 Event Mapping
 
-1. Check `.env.example` against all `env()` calls in `config/*.php`:
-   - Every `env('KEY', default)` in config files should have a corresponding entry in `.env.example`.
-   - Flag missing example values.
-2. Check for hardcoded secrets in config files (API keys, passwords, tokens).
-3. Verify `APP_KEY` generation and `APP_ENV` production settings.
+- `config/event.php` maps every event to its listener(s).
+- Both event and listener classes exist and are autoloadable.
+- I/O-bound listeners implement `ShouldQueue`.
 
-### 2.4 Permission & Auth Config Audit
+### 8.4 Environment Variables
 
-1. `config/permission.php` — verify spatie/laravel-permission configuration is correct.
-2. `config/auth.php` — verify guard configuration, password policies.
-3. `config/cors.php` or equivalent — verify CORS settings are locked down for production.
-4. `config/session.php` — verify session driver (`database` for tier 1, `redis` for tier 2+), secure cookies in production.
+- Every `env('KEY', default)` in `config/*.php` has a corresponding entry in `.env.example`.
+- No hardcoded secrets in config files.
+- **Check:** `rg "env\(" config/ --type php | sort -u`
 
-### 2.5 Service-Specific Config Audit
+### 8.5 Service Config
 
-Check each module's config section:
-1. `config/settings.php` — theme cache keys, default values, supported types.
-2. `config/setup.php` — defaults for admin name/username, security limits, token expiry.
-3. `config/module.php` — paths, livewire discovery, policy discovery, factory namespaces.
-4. `config/event.php` — all event-listener mappings are valid (both classes exist).
-5. `config/media-library.php` — file size limits, image conversions, queue status.
-6. `config/pulse.php` — recorders, thresholds, ingest settings.
+| File | Check |
+|------|-------|
+| `config/setup.php` | admin name/username defaults, security limits, token expiry |
+| `config/permission.php` | spatie/laravel-permission configuration |
+| `config/auth.php` | guard configuration, password policies |
+| `config/session.php` | session driver, secure cookies in production |
+| `config/media-library.php` | file size limits, image conversions, queue config |
+| `config/pulse.php` | recorders, thresholds, ingest settings |
 
 **Record findings** under `CONFIG-*` IDs.
 
 ---
 
-## Phase 4 — Jobs & Queue Audit (`app/Jobs/`)
+## Phase 9 — Test Audit (`tests/`)
 
-### 4.1 Job Serialization Audit
+### 9.1 Coverage Completeness
 
-1. Every Job constructor should accept **model IDs** (strings), not full model instances. Full models are serialized and can cause stale data or large payloads.
-2. Search for `public function __construct(Model $model)` in Jobs — flag each as HIGH severity.
+- Every Action file has a matching test file under `tests/Feature/`.
+- Every Livewire component has a matching test file.
+- Every Entity has a matching unit test.
+- Every Console Command has a matching feature test.
+- **Check:**
+  ```bash
+  # Find Actions without tests
+  for f in $(find app -name '*Action.php'); do basename="${f##*/}"; testfile="tests/Feature/$(echo $f | sed 's|app/||; s|\.php|Test.php|')"; [ ! -f "$testfile" ] && echo "MISSING: $testfile"; done
+  ```
 
-### 4.2 Job Error Handling Audit
+### 9.2 Convention Compliance
 
-1. Every Job should implement a `failed()` method or have `$tries` and `$backoff` configured.
-2. Search for Jobs without `$tries` or `$backoff` properties — flag as MEDIUM.
-3. Check that Jobs use `dispatch()->onQueue()` correctly for the `documents` vs `default` pipeline.
+- Test file naming: `{Name}Test.php`.
+- Test structure mirrors source: `tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php`.
+- Feature tests use `LazilyRefreshDatabase` (preferred) or `RefreshDatabase`.
+- Entity tests do NOT use `LazilyRefreshDatabase`/`RefreshDatabase` (no DB needed).
+- `assertModelExists()` preferred over `assertDatabaseHas()`.
+- `Event::fake()` positioned AFTER factory setup, not before.
+- No `dd()`/`dump()` in test files.
 
-### 4.3 Queue Configuration Audit
+### 9.3 Mocking Strategy (§10.1 conventions.md)
 
-1. Check `config/queue.php` for proper connection settings.
-2. Verify `QUEUE_CONNECTION` default (`sync` for tier 1, `redis` for tier 2+).
-3. Check that the dual pipeline (`default` + `documents`) matches what Supervisor config expects.
+| Scenario | Must use | Must NOT use |
+|----------|----------|--------------|
+| External HTTP | `Http::fake()` | Real HTTP calls |
+| SmartLogger (unit) | `Event::fake()` / partial mock | Real logger |
+| Eloquent | Factories + real DB | `Mockery::mock(Model::class)` |
+| File system | `Storage::fake()` | Real file operations |
+| Queue | `Queue::fake()` | Real queue worker |
+| Notifications | `Notification::fake()` | Real mail sending |
+| Events | `Event::fake([SpecificEvent::class])` | `Mockery::spy()` |
 
-**Record findings** under `JOB-*` IDs.
+**Check:** Flag use of `Mockery::spy()`, `Mockery::mock(Model::class)`.
 
----
+### 9.4 Coverage Thresholds (§10.2 conventions.md)
 
-## Phase 5 — View Layer Audit (`resources/views/`)
+| Layer | Minimum Coverage |
+|-------|-----------------|
+| Entities | 100% |
+| Enums | 100% |
+| DTOs / Data | 100% |
+| Command Actions | ≥ 90% |
+| Read Actions | ≥ 80% |
+| Process Actions | ≥ 90% |
+| Livewire components | ≥ 80% |
+| Policies | 100% |
+| Console Commands | ≥ 80% |
+| **Overall** | **≥ 85%** |
 
-### 5.1 Structure Audit
+**Check:** `php artisan test --coverage` or `composer run test:coverage`.
 
-1. Every `resources/views/{module}/{submodule}/` directory must correspond to an `app/{Module}/{SubModule}/` directory.
-2. No orphan view directories (views without backend code).
-3. View naming: no redundant nesting (e.g., `auth.login` not `auth.login.login`).
+### 9.5 Test Quality
 
-### 5.2 Convention Audit
-
-1. All user-facing strings use `__()` helper — flag hardcoded English text.
-2. maryUI Toast (`$this->success()`/`$this->error()`) NOT used — should be `flash()->success()`/`flash()->error()`.
-3. Icon-only buttons have `aria-label` with translated text.
-4. No `dd()`/`dump()`/`var_dump()` in Blade.
-
-### 5.3 Security Audit (XSS)
-
-1. `{!! $var !!}` is dangerous with user content. Flag every occurrence and verify the variable is trusted/sanitized.
-2. `wire:model` on user-input fields is safe (Livewire handles escaping).
-3. Check for inline `<script>` tags.
-
-### 5.4 Accessibility Audit
-
-1. Forms have `<label>` elements associated with inputs.
-2. Buttons have descriptive text or `aria-label`.
-3. Error messages are associated with inputs.
-
-**Record findings** under `VIEW-*` IDs.
-
----
-
-## Phase 6 — Route Layer Audit (`routes/`)
-
-### 6.1 Structure Audit
-
-1. Every module (except Core) should have a corresponding `routes/web/{module}.php`.
-2. `routes/web.php` should include them in dependency order.
-3. No Closure-based routes in route files (incompatible with `route:cache`).
-
-### 6.2 Naming Audit
-
-1. Route names follow `{prefix}.{resource}.{action}` pattern.
-2. Route URIs follow `kebab-case`.
-3. Middleware groups applied correctly: `auth`, `guest`, `role:...`, `throttle`.
-
-### 6.3 Security Audit
-
-1. Every state-changing route has `auth` middleware.
-2. Admin routes have `role:super_admin|admin` middleware.
-3. No debug routes in production (`_debugbar`, `telescope`, `clockwork`).
-4. Route model binding uses UUID columns.
-
-**Record findings** under `ROUTE-*` IDs.
-
----
-
-## Phase 7 — Test Layer Audit (`tests/`)
-
-### 7.1 Coverage Audit
-
-1. Every Action file has a corresponding test file — flag missing tests.
-2. Every Livewire component has a test — flag missing tests.
-3. Entity tests don't use `LazilyRefreshDatabase` or `RefreshDatabase`.
-4. Feature tests use `LazilyRefreshDatabase` (preferred) or `RefreshDatabase`.
-
-### 7.2 Convention Audit
-
-1. Test file naming: `{Name}Test.php`.
-2. Test structure: `tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php`.
-3. Assertion preference: `assertModelExists()` over `assertDatabaseHas()`.
-4. `Event::fake()` positioned AFTER factory setup (not before).
-5. No `dd()`/`dump()` in test files.
-
-### 7.3 Quality Audit
-
-1. Run the full test suite — record any failures.
-2. Check for flaky tests (tests that depend on state from other tests).
-3. Check for slow tests (queries in loops, missing `LazilyRefreshDatabase`).
-4. Run `vendor/bin/phpstan analyse --no-progress` — record any level > 0 findings.
+- No flaky tests (tests depending on state from other tests).
+- No slow tests (queries in loops, missing `LazilyRefreshDatabase`).
+- `vendor/bin/phpstan analyse --no-progress` — record level > 0 findings.
 
 **Record findings** under `TEST-*` IDs.
 
 ---
 
-## Phase 8 — Documentation Alignment Audit
+## Phase 10 — Cross-Cutting Audit
 
-### 8.1 Cross-Reference Audit
+### 10.1 Dependency Injection Etiquette (§8 conventions.md)
 
-1. Every module documented in `docs/modules/` matches `app/{Module}/`.
-2. Every reference doc's claims (models count, actions count, enum values) match actual code.
-3. `docs/doc-index.md` links are valid (no broken links).
-4. `docs/modules/module-index.md` numbers match actual implementation.
+- Constructor injection for mandatory, long-lived dependencies.
+- Method injection for contextual dependencies (Livewire Actions).
+- **FORBIDDEN:** `app()->make()`, `new ClassName()` in controllers/Livewire, `resolve()`, static facades for business logic.
+- Exception: `app()` permitted in service providers and factory methods.
 
-### 8.2 Known Issues Verification
-
-1. Re-check every existing entry in `docs/known-issues.md` — is it still valid? Mark resolved issues.
-2. Add all new findings from this audit to `docs/known-issues.md`.
-3. Validate that all `[RESOLVED]` entries are actually resolved.
-
-**Record findings** under `DOC-*` IDs.
-
----
-
-## Phase 9 — Industry Standards Audit
-
-### 9.1 OWASP Top 10
-
-Check for:
-1. Broken Access Control — verify policy enforcement in all mutation endpoints.
-2. Cryptographic Failures — passwords hashed? PII encrypted? UUIDs not sequential?
-3. Injection — SQL, XSS, CSV injection.
-4. Insecure Design — business logic flaws, missing rate limits.
-5. Security Misconfiguration — debug mode, CORS, CSP headers.
-6. Vulnerable Components — `composer audit` for package vulnerabilities.
-
-### 9.2 PSR/Laravel Standards
-
-1. PSR-4 autoloading compliance.
-2. PSR-12 code style (via Pint).
-3. SOLID principles — especially Single Responsibility (Actions), Dependency Inversion (injection).
-
-### 9.3 PHP 8.4 Features
-
-1. Property promotion used consistently in constructors.
-2. `readonly` classes where appropriate (DTOs, Entities).
-3. No deprecated PHP 8.3/8.4 features.
-
-**Record findings** under `STANDARD-*` IDs.
-
----
-
-## Phase 10 — Report Generation
-
-### 10.1 Consolidate Findings
-
-1. Remove duplicate findings (same issue found by multiple checks).
-2. Sort by severity (CRITICAL → HIGH → MEDIUM → LOW).
-3. Update the master change summary at the top of `docs/known-issues.md`.
-
-### 10.2 Summary Statistics
-
-Include in the report:
+**Check:**
+```bash
+rg "app\(\)->make\|resolve\(" app/ --type php -g '!Providers/*' -g '!*Factory.php'
 ```
+
+### 10.2 Technical Debt Annotations (§10.4 conventions.md)
+
+- Format: `TODO(author, YYYY-MM-DD): message`
+- `FIXME(author, YYYY-MM-DD): message` for known bugs
+- `HACK` must explain why
+- `XXX` must explain the risk
+
+**Check:** Find occurrences without date/author.
+
+### 10.3 Commit & Branch Naming (§10.3 conventions.md)
+
+- Branches: `feat/`, `fix/`, `hotfix/`, `refactor/`, `docs/`, `chore/`.
+- Commits: `type(scope): description`.
+- **Check:** Git log for recent commit messages.
+
+### 10.4 Code Review Checklist (§9 conventions.md §Code Review Checklist)
+
+Reviewers verify:
+- Pattern compliance (Action triad, base classes).
+- Security (XSS, SQL injection, mass assignment).
+- N+1 audit (eager loading present).
+- Exception handling (RejectedException, Livewire catch blocks).
+- Cache invalidation (event-driven for every mutation).
+- Test coverage (new Actions have tests).
+- Documentation updated.
+
+**Record findings** under `CROSS-*` IDs.
+
+---
+
+## Phase 11 — Report Generation
+
+### 11.1 Consolidate Findings
+
+1. Remove duplicate findings (same issue found by multiple phases).
+2. Sort by severity (CRITICAL → HIGH → MEDIUM → LOW).
+3. Within same severity, sort by module alphabetically.
+4. Update the master change summary at the top of `docs/known-issues.md`.
+
+### 11.2 Summary Statistics
+
+```markdown
 ## Audit Summary — {date}
 
 | Severity | Count |
@@ -482,23 +612,53 @@ Include in the report:
 | LOW      | N |
 | **Total** | **N** |
 
-### By Category
-{Category breakdown}
+### By Module
+{Module breakdown with counts}
+
+### By Pattern
+| Pattern | Violations |
+|---------|-----------|
+| Action Triad | N |
+| Livewire | N |
+| Entity/Model | N |
+| Enum | N |
+| Exception | N |
+| Security | N |
+| Performance | N |
+| Config | N |
+| Tests | N |
+| Cross-Cutting | N |
 ```
 
-### 10.3 Final Verification
+### 11.3 Final Verification
 
 ```bash
 php artisan test --compact              # verify nothing is broken
 vendor/bin/pint --format agent          # verify code style
 vendor/bin/phpstan analyse --no-progress # verify static analysis
+git diff --stat                          # review all changes
 ```
+
+---
 
 ## References
 
-- `docs/architecture.md` — all architecture patterns
-- `docs/conventions.md` — all conventions
-- `docs/doc-index.md` — documentation catalog
-- `docs/modules/module-index.md` — module catalog
-- `docs/known-issues.md` — findings target
-- `AGENTS.md` — project invariants
+| Document | Purpose |
+|----------|---------|
+| `docs/architecture.md` | 12-layer architecture, Action Triad, cross-module communication |
+| `docs/conventions.md` | All coding conventions (§2–§12) |
+| `docs/architecture/action-pattern.md` | Action Triad deep-dive |
+| `docs/architecture/livewire-pattern.md` | Thin component rule, Form Objects, BaseRecordManager |
+| `docs/architecture/entity-pattern.md` | Entity-Model separation, bridge pattern |
+| `docs/architecture/enum-pattern.md` | LabelEnum, StatusEnum, state machines |
+| `docs/architecture/exception-pattern.md` | Dual exception hierarchy, RejectedException |
+| `docs/architecture/event-pattern.md` | BaseEvent, dispatch patterns, ShouldQueue |
+| `docs/architecture/cache-pattern.md` | Centralized key registry, event-driven invalidation |
+| `docs/architecture/model-pattern.md` | BaseModel, UUID, Fillable, scopes |
+| `docs/architecture/testing-pattern.md` | Testing conventions, scope isolation |
+| `docs/architecture/data-pattern.md` | DTO patterns, BaseData |
+| `docs/infrastructure/testing.md` | Testing infrastructure, coverage, performance |
+| `docs/modules/module-index.md` | Module catalog |
+| `docs/doc-index.md` | Documentation catalog |
+| `docs/known-issues.md` | Findings target |
+| `AGENTS.md` | Project invariants, quick-reference rules |

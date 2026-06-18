@@ -1,6 +1,17 @@
 ---
 name: sync-docs
-description: Comprehensive markdown documentation sync against actual code implementation. Dynamically discovers patterns and rules from authoritative docs, then verifies them against code — never hardcodes rules that can go stale. Avoids brittle numbers, states, statuses, and enumerated lists in documentation.
+description: SDLC Phase: MAINTENANCE. Comprehensive markdown documentation sync against actual code implementation. Dynamically discovers patterns and rules from authoritative docs, then verifies them against code. Runs after any implementation or refactoring to keep docs in sync.
+upstream:
+  - feature-building
+  - code-refactoring
+  - livewire-development
+  - tailwindcss-development
+  - medialibrary-development
+  - pulse-development
+  - pest-testing
+  - audit-protocol
+  - security-audit
+  - roadmap-planning
 ---
 
 # Documentation Sync Skill
@@ -8,6 +19,15 @@ description: Comprehensive markdown documentation sync against actual code imple
 ## When to Activate
 
 Apply this skill when asked to synchronize, update, refresh, or align documentation with implementation. Covers **every `.md` file in the repository** (excl. `node_modules/`, `vendor/`, `.git/`, `storage/`).
+
+## SDLC Context
+
+| Role | Skill |
+|------|-------|
+| **Upstream (input)** | ALL skills — any change that affects documentation |
+| **This skill** | **MAINTENANCE** — keeps docs in sync with code |
+| **Downstream (output)** | Updated documentation across all `docs/` |
+| **Phase** | [Planning] → [Analysis] → [Design] → [Implementation] → [Testing] → Maintenance |
 
 ## Core Principles
 
