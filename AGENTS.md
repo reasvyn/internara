@@ -1,6 +1,6 @@
 <laravel-boost-guidelines>
 > **Last updated:** 2026-06-18
-> **Changes:** sync — fix skills list (match actual .agents/skills/), fix conventions.md section refs (§3→§4, §5→§7)
+> **Changes:** add english-only communication rule
 >
 > **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
 > provides quick-reference essentials and project-specific rules that cannot wait for doc lookups.
@@ -64,6 +64,10 @@ agent level:
 - `SetupSuperAdminAction::execute()` accepts ONLY `(string $email, string $password)`.
 - `InitializeSuperAdminAction` must use config defaults, not caller-provided values.
 - `FinalizeSetupAction` must extract only `email` and `password` from `adminData` array.
+
+## Language
+
+- **English only.** Always communicate in English, even when the user writes in Indonesian. Code, comments, commit messages, and documentation must all be in English.
 
 ## Quick-Reference Rules
 
