@@ -1,6 +1,6 @@
 <laravel-boost-guidelines>
-> **Last updated:** 2026-06-17
-> **Changes:** sync — fix php style guide section ref (#3→#2), add blank line before heading
+> **Last updated:** 2026-06-18
+> **Changes:** sync — fix skills list (match actual .agents/skills/), fix conventions.md section refs (§3→§4, §5→§7)
 >
 > **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
 > provides quick-reference essentials and project-specific rules that cannot wait for doc lookups.
@@ -21,17 +21,17 @@ PHP 8.4, Laravel v13, Livewire v4, Boost v2.
 
 Project skills are in `.agents/skills/`. Activate the relevant skill when working in that domain:
 
-- `livewire-development` — building/editing Livewire components
-- `livewire-refactoring` — extracting business logic from Livewire
-- `action-refactoring` — creating/modifying Action classes
-- `entity-refactoring` — creating/modifying Models and Entities
+- `code-refactoring` — all code refactoring (Actions, Entities, Models, Livewire, Enums, Views)
 - `feature-building` — full feature lifecycle workflow
 - `laravel-best-practices` — general Laravel patterns
 - `pest-testing` — writing/modifying tests
+- `livewire-development` — building/editing Livewire components
 - `pulse-development` — Laravel Pulse setup
 - `medialibrary-development` — file uploads, media collections
 - `tailwindcss-development` — styling, daisyUI, maryUI
-- `audit-protocol` — comprehensive multi-layer codebase audit against conventions, patterns, security, and industry standards
+- `audit-protocol` — comprehensive multi-layer codebase audit
+- `security-audit` — dedicated security and privacy audit
+- `roadmap-planning` — structured roadmap planning
 - `sync-docs` — synchronize ALL markdown documentation with actual implementation
 
 ## Documentation (NOT Duplicated Here)
@@ -45,13 +45,13 @@ The following topics are fully covered in `docs/` and MUST NOT be duplicated her
 | Base class mandate | `docs/architecture.md` (Base Class Mandate §) |
 | File structure conventions | `docs/architecture/modular-pattern.md` |
 | PHP language rules | `docs/conventions.md` (§2 General PHP) |
-| Naming conventions | `docs/conventions.md` (§3 Naming Conventions) |
+| Naming conventions | `docs/conventions.md` (§4 Naming Conventions) |
 | Models & Entities | `docs/architecture/entity-pattern.md`, `docs/architecture/model-pattern.md` |
 | Enums (LabelEnum, StatusEnum) | `docs/architecture/enum-pattern.md` |
 | Livewire components | `docs/architecture/livewire-pattern.md` |
 | Events & Notifications | `docs/architecture/event-pattern.md` |
 | Routes & Controllers | `docs/architecture/modular-pattern.md` |
-| Migrations, Factories, Seeders | `docs/conventions.md` (§5 Migrations, Factories & Seeders) |
+| Migrations, Factories, Seeders | `docs/conventions.md` (§7 Migrations, Factories & Seeders) |
 | Testing conventions | `docs/architecture/testing-pattern.md` |
 
 ## Module Invariants (DO NOT VIOLATE)

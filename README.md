@@ -1,7 +1,7 @@
 # Internara
 
-> **Last updated:** 2026-06-17
-> **Changes:** sync — fix project description per product-definition; clarify Reverb as install separately
+> **Last updated:** 2026-06-18
+> **Changes:** sync — fix Read Action base class description (plain classes → BaseReadAction)
 >
 > **Self-hosted, single-tenant vocational fieldwork management system** engineered for managing compulsory industrial fieldwork (PKL) programs at Indonesian vocational upper-secondary schools (SMA/SMK) and technical education institutions.
 
@@ -42,7 +42,7 @@ app/
 ```
 
 Each business module colocates its domain models, single-use Actions (Command/Process extend
-`BaseAction`; Read actions are plain classes), policies (`BasePolicy`), and Livewire components,
+`BaseAction`; Read actions extend `BaseReadAction`), policies (`BasePolicy`), and Livewire components,
 keeping submodules isolated and highly maintainable.
 
 ---

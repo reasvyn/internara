@@ -1,7 +1,7 @@
 # Action-based MVC Architecture
 
-> **Last updated:** 2026-06-15
-> **Changes:** sync — fix model count (40+→38), update action count to reflect triad migration
+> **Last updated:** 2026-06-18
+> **Changes:** sync — fix shared views section (lang-switcher/theme-switcher paths & alias were wrong)
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad pattern, data flow, cross-module communication, exception handling, validation, caching, testing strategy, and invariant rules. Every decision here serves three goals:
 >
@@ -419,7 +419,7 @@ app/{Module}/
 | Module-specific       | `app/{Module}/{Submodule}/{Component}/{ClassName}.php`            | `app/User/Profile/Actions/UpdateProfileAction.php`       |
 | Shared (cross-module) | `app/{Component}/{ClassName}.php`                                 | `app/Core/Data/AuditCheck.php`                           |
 | Module views          | `resources/views/{module}/{submodule}/{component-name}.blade.php` | `resources/views/user/profile/profile-editor.blade.php`  |
-| Shared views          | `resources/views/{component}/{component-name}.blade.php`          | `resources/views/livewire/lang-switcher.blade.php`       |
+| Module-root views     | `resources/views/{module}/{component-name}.blade.php`             | `resources/views/user/activity-feed.blade.php`             |
 | Module tests          | `tests/{Feature,Unit}/{Module}/{Submodule}/{Name}Test.php`        | `tests/Feature/User/Profile/UpdateProfileActionTest.php` |
 | Shared tests          | `tests/{Feature,Unit}/{Component}/{Name}Test.php`                 | `tests/Unit/Data/AuditDtoTest.php`                       |
 
@@ -509,10 +509,10 @@ resources/views/{module}/
 | `app/User/UserManagement/Livewire/UserManager.php` | `resources/views/user/user-management/user-manager.blade.php` | `view('user.user-management.user-manager')` |
 | `app/Assessment/Livewire/AssessmentGrading.php` | `resources/views/assessment/assessment-grading.blade.php` | `view('assessment.assessment-grading')` |
 
-Shared cross-module views live directly under `resources/views/{component}/`:
+Module-root views (no submodule) go directly under `resources/views/{module}/`:
 
 ```
-resources/views/livewire/
+resources/views/settings/livewire/
 ├── lang-switcher.blade.php          → app/Settings/Livewire/LangSwitcher.php
 └── theme-switcher.blade.php         → app/Settings/Livewire/ThemeSwitcher.php
 ```
@@ -522,8 +522,7 @@ resources/views/livewire/
 | Scope             | Pattern                                               | Example                             |
 | ----------------- | ----------------------------------------------------- | ----------------------------------- |
 | Submodule         | `{kebab-module}.{kebab-submodule}.{kebab-name}`       | `admin.user.user-manager`           |
-| Cross-submodule   | `{kebab-module}.{kebab-name}`                         | `user.profile-editor`               |
-| Shared            | `{kebab-component-name}`                              | `livewire.lang-switcher`            |
+| Module-root       | `{kebab-module}.{kebab-name}`                         | `user.profile-editor`               |
 
 ---
 

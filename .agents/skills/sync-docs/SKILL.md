@@ -60,7 +60,7 @@ Numbers, states, statuses, and enumerated lists are **brittle** — they become 
 
 1. If the doc is **not** a catalog (e.g. `docs/architecture.md`, guide chapters, pattern docs): rewrite the brittle statement into a structural/locational/factual form
 2. If the doc **is** a catalog (e.g. `docs/doc-index.md`, `docs/modules/module-index.md`): keep the listing but note that counts will drift — do not exhaustively correct them
-3. If the doc is **derivative** (AGENTS.md, GEMINI.md, README.md): remove duplicated version numbers and counts entirely; they should reference authoritative sources instead
+3. If the doc is **derivative** (AGENTS.md, README.md): remove duplicated version numbers and counts entirely; they should reference authoritative sources instead
 
 ## Scope
 
@@ -69,7 +69,7 @@ Every `.md` file in the repo. Grouped into two categories:
 | Category | Examples | Role |
 |----------|----------|------|
 | **SSOT** | `docs/architecture.md`, `docs/conventions.md`, `docs/architecture/*.md`, `docs/modules/*.md`, `docs/infrastructure/*.md` | Define what's correct |
-| **Derivative** | `README.md`, `AGENTS.md`, `GEMINI.md`, `.agents/skills/*/SKILL.md` | Reference/summarize SSOT; must be verified against it |
+| **Derivative** | `README.md`, `AGENTS.md`, `.agents/skills/*/SKILL.md` | Reference/summarize SSOT; must be verified against it |
 
 ---
 
@@ -118,7 +118,7 @@ find . -name "*.md" -not -path "*/node_modules/*" -not -path "*/vendor/*" -not -
 
 Categorize each file: SSOT or Derivative.
 
-### Phase 3: Verify Derivative Files (AGENTS.md, GEMINI.md, README.md)
+### Phase 3: Verify Derivative Files (AGENTS.md, README.md)
 
 These are the **most likely to be stale** because they're manual summaries of `docs/`.
 
@@ -139,11 +139,7 @@ For each section, extract claims and verify:
 
 **Fix**: If AGENTS.md and `docs/` disagree, `docs/` is authoritative. Update AGENTS.md.
 
-#### 3.2 GEMINI.md
-
-Same structure as AGENTS.md. Run the same checks. GEMINI.md must not contain rules or claims that contradict AGENTS.md or `docs/`.
-
-#### 3.3 README.md
+#### 3.2 README.md
 
 | Claim | How to verify |
 |-------|---------------|
@@ -330,7 +326,7 @@ done
 
 | Finding | Action |
 |---------|--------|
-| Derivative doc (AGENTS.md/GEMINI.md/README.md) contradicts `docs/` | Fix derivative, `docs/` wins |
+| Derivative doc (AGENTS.md/README.md) contradicts `docs/` | Fix derivative, `docs/` wins |
 | Doc claims behavior X but code does Y | Fix doc to match code |
 | Doc claims behavior X, code should do X but doesn't | Add to `docs/known-issues.md` as code gap |
 | Doc file path points to nonexistent file | Fix path or remove reference |
@@ -370,13 +366,12 @@ Based on past syncs, these are the most frequently encountered issues:
 | Test count stale | `docs/modules/core-reference.md` | `find tests -name "*Test.php" \| wc -l` |
 | Command examples in skills reference renamed classes | `.agents/skills/*/SKILL.md` | `grep -oP 'app/[a-zA-Z/]+\.php'` and check existence |
 | AGENTS.md skill list out of sync with `.agents/skills/` | `AGENTS.md` | `ls -d .agents/skills/*/` vs listed skills |
-| Derivative doc says rule X but ssot doc says Y | `AGENTS.md`, `GEMINI.md` | Cross-check every rule against `docs/conventions.md` |
+| Derivative doc says rule X but ssot doc says Y | `AGENTS.md` | Cross-check every rule against `docs/conventions.md` |
 | Doc references class that was renamed | Any `.md` file | `grep -oP 'App\\[a-zA-Z\\\\]+'` and check `app/` path |
 
 ## Quality Checklist
 
 - [ ] AGENTS.md verified — no contradictions with `docs/` or actual code
-- [ ] GEMINI.md verified — matches AGENTS.md and `docs/`
 - [ ] README.md — module listing, tech stack, quick start all accurate
 - [ ] Skill files — all referenced paths and classes exist
 - [ ] All module reference action/model/policy listings verified against actual files

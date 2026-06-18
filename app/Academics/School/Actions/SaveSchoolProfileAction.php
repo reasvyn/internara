@@ -32,7 +32,7 @@ class SaveSchoolProfileAction extends BaseCommandAction
 
             $this->batchSetSetting->execute($settings);
 
-            Cache::forget('school_entity');
+            Cache::forget(config('cache-keys.school_entity'));
 
             $this->log('school_profile_updated', null, ['keys' => array_keys($data)]);
         });

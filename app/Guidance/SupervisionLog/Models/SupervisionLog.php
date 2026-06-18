@@ -33,6 +33,7 @@ class SupervisionLog extends BaseModel
 
     protected $attributes = [
         'status' => SupervisionLogStatus::DRAFT->value,
+        'type' => 'mentoring',
     ];
 
     protected function casts(): array

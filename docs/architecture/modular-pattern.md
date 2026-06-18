@@ -33,13 +33,13 @@ Every architectural layer has one Core base class: `BaseModel`, `BaseAction`, `B
 
 ## 3. Contract Patterns (Layer 3)
 
-**LabelEnum** — every enum provides a human-readable label. **StatusEnum** — state machine enums with `isTerminal()`, `canTransitionTo()`, `validTransitions()`. **ColorableEnum** — UI color/badge variants. **SendsNotifications / SettingsStore** — infrastructure contracts bound via container. See: `docs/conventions.md` §8.
+**LabelEnum** — every enum provides a human-readable label. **StatusEnum** — state machine enums with `isTerminal()`, `canTransitionTo()`, `validTransitions()`. **ColorableEnum** — UI color/badge variants. **SendsNotifications / SettingsStore** — infrastructure contracts bound via container. See: `docs/architecture/enum-pattern.md`.
 
 ---
 
 ## 4. Action Patterns
 
-**Action Injection** — Livewire components inject Actions as method parameters via DI. **ActionResponse** — standardized return envelope with `ok()`, `created()`, `updated()`, `deleted()`, `error()`, `withRedirect()`. **Transaction Safety** — `BaseAction::transaction()` auto-detects nesting, queues events until commit, retries on deadlock. **Single execute()** — every Action has exactly one public method. See: `docs/conventions.md` §6.
+**Action Injection** — Livewire components inject Actions as method parameters via DI. **ActionResponse** — standardized return envelope with `ok()`, `created()`, `updated()`, `deleted()`, `error()`, `withRedirect()`. **Transaction Safety** — `BaseAction::transaction()` auto-detects nesting, queues events until commit, retries on deadlock. **Single execute()** — every Action has exactly one public method. See: `docs/architecture/action-pattern.md`.
 
 ---
 
@@ -51,37 +51,37 @@ Every architectural layer has one Core base class: `BaseModel`, `BaseAction`, `B
 
 ## 6. Enum Patterns
 
-String-backed, UPPER_SNAKE case. Business logic methods (e.g., `isActive()`) live directly on the enum. Model defaults use `EnumCase::value`. See: `docs/conventions.md` §8.
+String-backed, UPPER_SNAKE case. Business logic methods (e.g., `isActive()`) live directly on the enum. Model defaults use `EnumCase::value`. See: `docs/architecture/enum-pattern.md`.
 
 ---
 
 ## 7. Policy & Authorization Patterns
 
-**Flat RBAC** — roles with no inheritance, functional roles derived at runtime. **Three-Layer Authorization** — route middleware, Livewire `authorize()`, Policy gates. **Super Admin Gate::before** — single bypass callback. **AuthorizesRoles Trait** — role-checking methods. **AuthorizesOwnership Trait** — `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()`. See: `docs/conventions.md` §9, `docs/foundation/rbac.md`.
+**Flat RBAC** — roles with no inheritance, functional roles derived at runtime. **Three-Layer Authorization** — route middleware, Livewire `authorize()`, Policy gates. **Super Admin Gate::before** — single bypass callback. **AuthorizesRoles Trait** — role-checking methods. **AuthorizesOwnership Trait** — `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()`. See: `docs/architecture/policy-pattern.md`, `docs/foundation/rbac.md`.
 
 ---
 
 ## 8. Livewire Component Patterns
 
-**Thin Component Rule** — UI state and validation only; no `Model::create/update/delete`, `DB::` queries, or business logic. **Action Injection** — Actions are method parameters. **Confirmation Dialog** — `actionTarget`/`confirmingAction` state with `askAction()`/`confirmAction()`. **Form Object** — complex forms extracted into `Livewire\Form` subclasses. **Component Alias** — submodule: `{mod}.{sub}.{name}`, cross-module: `{mod}.{name}`, shared: `{component-name}`. See: `docs/conventions.md` §10.
+**Thin Component Rule** — UI state and validation only; no `Model::create/update/delete`, `DB::` queries, or business logic. **Action Injection** — Actions are method parameters. **Confirmation Dialog** — `actionTarget`/`confirmingAction` state with `askAction()`/`confirmAction()`. **Form Object** — complex forms extracted into `Livewire\Form` subclasses. **Component Alias** — submodule: `{mod}.{sub}.{name}`, cross-module: `{mod}.{name}`, shared: `{component-name}`. See: `docs/architecture/livewire-pattern.md`.
 
 ---
 
 ## 9. Model Patterns
 
-UUID primary keys via `HasUuids`. `#[Fillable]` PHP 8.4 attribute. Named entity bridge accessors. Singular `BelongsTo`/`HasOne` and plural `HasMany`/`BelongsToMany` relationships. Common scopes: `scopeActive()`, `scopeInactive()`, `scopeRecent()`, `scopeCreatedAfter()`, `scopeCreatedBefore()`, `scopeOrdered()`. See: `docs/conventions.md` §5.
+UUID primary keys via `HasUuids`. `#[Fillable]` PHP 8.4 attribute. Named entity bridge accessors. Singular `BelongsTo`/`HasOne` and plural `HasMany`/`BelongsToMany` relationships. Common scopes: `scopeActive()`, `scopeInactive()`, `scopeRecent()`, `scopeCreatedAfter()`, `scopeCreatedBefore()`, `scopeOrdered()`. See: `docs/architecture/model-pattern.md`.
 
 ---
 
 ## 10. Logging & Error Handling Patterns
 
-**SmartLogger** — fluent dual-channel (system + activity) logging with PII masking. **Dual Exception Hierarchy** — `AppException` and `ModuleException` sibling trees. **HandlesActionErrors** — catches unexpected `Throwable`, logs, rethrows. **HasExceptionContext** — `withHint()`, `withContext()`, `toCliOutput()`, `getSanitizedContext()`. See: `docs/conventions.md` §20.
+**SmartLogger** — fluent dual-channel (system + activity) logging with PII masking. **Dual Exception Hierarchy** — `AppException` and `ModuleException` sibling trees. **HandlesActionErrors** — catches unexpected `Throwable`, logs, rethrows. **HasExceptionContext** — `withHint()`, `withContext()`, `toCliOutput()`, `getSanitizedContext()`. See: `docs/architecture/logging-pattern.md`, `docs/architecture/exception-pattern.md`.
 
 ---
 
 ## 11. Testing Patterns
 
-**Module-First** — `tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php`. **Scope Isolation** — one test file per Action/component. **Layer Strategy** — enums/entities/DTOs/policies: unit (no DB); Actions/Livewire: feature (with DB). **Performance** — `LazilyRefreshDatabase`, `assertModelExists()`. **TDD Order** — Enum → Entity → Command → Read → Process → Livewire → Policy → Console. See: `docs/conventions.md` §22, `docs/infrastructure/testing.md`.
+**Module-First** — `tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php`. **Scope Isolation** — one test file per Action/component. **Layer Strategy** — enums/entities/DTOs/policies: unit (no DB); Actions/Livewire: feature (with DB). **Performance** — `LazilyRefreshDatabase`, `assertModelExists()`. **TDD Order** — Enum → Entity → Command → Read → Process → Livewire → Policy → Console. See: `docs/architecture/testing-pattern.md`, `docs/infrastructure/testing.md`.
 
 ---
 
@@ -93,19 +93,19 @@ UUID primary keys via `HasUuids`. `#[Fillable]` PHP 8.4 attribute. Named entity 
 
 ## 13. Route & Controller Patterns
 
-Module-split route files under `routes/web/`. Naming: `{prefix}.{resource}.{action}`. Middleware groups: `auth`, `guest`, `role:{roles}`, `auth.throttle`. Controller suffix required, delegate to Actions. See: `docs/conventions.md` §14.
+Module-split route files under `routes/web/`. Naming: `{prefix}.{resource}.{action}`. Middleware groups: `auth`, `guest`, `role:{roles}`, `auth.throttle`. Controller suffix required, delegate to Actions. See: `docs/architecture/modular-pattern.md`.
 
 ---
 
 ## 14. Notification Patterns
 
-Multi-channel via `mail`, `broadcast`, `CustomDatabaseChannel`. Naming: `{Entity}{Type}Notification`. All user-facing strings via `__()`. See: `docs/conventions.md` §13.
+Multi-channel via `mail`, `broadcast`, `CustomDatabaseChannel`. Naming: `{Entity}{Type}Notification`. All user-facing strings via `__()`. See: `docs/architecture/event-pattern.md`.
 
 ---
 
 ## 15. Migration & Database Patterns
 
-`foreignUuid()->constrained()` with explicit `onDelete()`/`onUpdate()`. Composite indexes defined explicitly. Seeders: `firstOrCreate()` for reference, `create()` for test data, respecting module dependencies. One table per migration. See: `docs/conventions.md` §17.
+`foreignUuid()->constrained()` with explicit `onDelete()`/`onUpdate()`. Composite indexes defined explicitly. Seeders: `firstOrCreate()` for reference, `create()` for test data, respecting module dependencies. One table per migration. See: `docs/conventions.md` §7.
 
 ---
 
@@ -114,8 +114,8 @@ Multi-channel via `mail`, `broadcast`, `CustomDatabaseChannel`. Naming: `{Entity
 | Element | Convention |
 |---------|-----------|
 | Command Action | `{Verb}{Entity}Action` |
-| Read Action | `{Context}Reader`, `{Entity}Query` |
-| Process Action | `{Verb}{Entity}Process` |
+| Read Action | `Read{Entity}Action` |
+| Process Action | `Process{Entity}Action` |
 | Entity | `{Name}` |
 | DTO | `{Verb}{Entity}Data` |
 | Event | `{Entity}{PastTenseAction}` |
@@ -137,13 +137,13 @@ See: `docs/conventions.md` §4.
 
 ## 17. PHP Language Conventions
 
-`declare(strict_types=1)` in all files except migrations/config. Constructor property promotion. Explicit return/parameter types. `===` over `==`. `match()` over `switch()`. `str_contains()`/`str_starts_with()`/`str_ends_with()`. Null-safe `?->` and `??`. Trailing commas. `__()` for user-facing strings. No `dd()`, `dump()`, `ray()`, `var_dump()`, `die()` in committed code. See: `docs/conventions.md` §3.
+`declare(strict_types=1)` in all files except migrations/config. Constructor property promotion. Explicit return/parameter types. `===` over `==`. `match()` over `switch()`. `str_contains()`/`str_starts_with()`/`str_ends_with()`. Null-safe `?->` and `??`. Trailing commas. `__()` for user-facing strings. No `dd()`, `dump()`, `ray()`, `var_dump()`, `die()` in committed code. See: `docs/conventions.md` §2.
 
 ---
 
 ## 18. Quality Enforcement
 
-Pint (PSR-12), PHPStan (type safety), Prettier (formatting), Code Review (architecture). Pre-commit: strict_types, no debug calls, `__()` for strings, correct Action triad, cache keys in config, tests pass, Pint clean. See: `docs/conventions.md` §23.
+Pint (PSR-12), PHPStan (type safety), Prettier (formatting), Code Review (architecture). Pre-commit: strict_types, no debug calls, `__()` for strings, correct Action triad, cache keys in config, tests pass, Pint clean. See: `docs/conventions.md` §11.
 
 ---
 
@@ -157,7 +157,7 @@ Pint (PSR-12), PHPStan (type safety), Prettier (formatting), Code Review (archit
 
 Teachers can proxy as supervisor; admins can proxy both teacher and supervisor. Implemented at
 the application layer — no multi-role assignment. See [ADR-014](../adr/adr-cross-role-proxy.md)
-and `docs/conventions.md` §21.
+and `docs/conventions.md` §8.
 
 ---
 

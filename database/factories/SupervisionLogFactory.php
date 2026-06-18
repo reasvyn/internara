@@ -27,7 +27,7 @@ class SupervisionLogFactory extends Factory
             'date' => now()->toDateString(),
             'topic' => $this->faker->sentence(),
             'notes' => $this->faker->paragraph(),
-            'status' => SupervisionLogStatus::PENDING,
+            'status' => SupervisionLogStatus::DRAFT,
         ];
     }
 }

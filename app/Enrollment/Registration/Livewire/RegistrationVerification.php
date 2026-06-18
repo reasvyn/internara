@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Registration\Livewire;
 
+use App\Core\Exceptions\RejectedException;
 use App\Enrollment\Placement\Models\Placement;
 use App\Enrollment\Registration\Actions\VerifyRegistrationAction;
 use App\Enrollment\Registration\Models\Registration;
@@ -104,7 +105,7 @@ class RegistrationVerification extends Component
             $this->processId = null;
             $this->placement_id = '';
             $this->mentor_ids = [];
-        } catch (\RuntimeException $e) {
+        } catch (RejectedException|\RuntimeException $e) {
             flash()->error($e->getMessage());
         }
     }

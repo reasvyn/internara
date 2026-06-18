@@ -140,7 +140,7 @@ class DepartmentManager extends BaseRecordManager
                 'delete_selected' => $this->executeDeleteSelected($deleteAction),
                 default => null,
             };
-        } catch (\RuntimeException $e) {
+        } catch (RejectedException|\RuntimeException $e) {
             flash()->error($e->getMessage());
         }
 

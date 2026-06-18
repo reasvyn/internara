@@ -25,4 +25,5 @@ return [
     'settings_group' => 'settings.group.',
     'settings_keys' => 'settings.keys',
     'settings_key' => 'settings.',
+    'school_entity' => 'academics.school.entity',
 ];

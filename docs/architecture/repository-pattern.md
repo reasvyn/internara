@@ -64,10 +64,10 @@ Even simple queries must pass through authorization (Layer 8) via `Gate::authori
 **Complex queries** — aggregations, cross-module data assembly, multi-step filtering with business
 rules — are extracted into **Read Actions** (Layer 7).
 
-Read Actions are **plain classes** (no base class required). They MUST NOT mutate state, call
+Read Actions extend **BaseReadAction**. They MUST NOT mutate state, call
 `transaction()`, or call `log()`.
 
-**Naming:** `{Context}Reader`, `Get{Dashboard}Data`, `{Entity}Query`.
+**Naming:** `Read{Entity}Action`.
 
 ---
 

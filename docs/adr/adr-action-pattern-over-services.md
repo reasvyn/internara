@@ -1,7 +1,7 @@
 # ADR-003: Action Pattern over Service Classes
 
-> **Status:** Accepted
-> **Last updated:** 2026-06-10
+> **Status:** Superseded (see Evolution Note)
+> **Last updated:** 2026-06-18
 
 ## Context
 
@@ -28,7 +28,9 @@ Extend `BaseAction` which provides `transaction()`, `log()`, and `HandlesActionE
 
 ### 2. Read Actions (Queries)
 
-Plain classes with constructor injection — no base class required. They must NOT mutate state, call `transaction()`, or call `log()`. Used for complex aggregations, filtering, or cross-module data assembly. Simple `Model::find()` stays inline in Livewire. Named `{Context}Reader` or `{Entity}Query`.
+*[2026-06-18: Pattern evolved — Read Actions now extend `BaseReadAction` and follow `Read{Entity}Action` naming. See `docs/architecture/action-pattern.md` for the current contract.]*
+
+Extend `BaseReadAction` which provides `remember()`, `rememberForever()`, `forget()`, caching utilities, and `withErrorHandling()`. They must NOT mutate state, call `transaction()`, or call `log()`. Used for complex aggregations, filtering, or cross-module data assembly. Simple `Model::find()` stays inline in Livewire. Named `Read{Entity}Action`.
 
 ### 3. Process Actions (Orchestration)
 
@@ -41,12 +43,12 @@ Extend `BaseAction` and compose other Actions via constructor injection. They co
 | Create/update/delete | Command | BaseAction | Required | Required | Recommended |
 | State transition | Command | BaseAction | Required | Required | Required |
 | Simple list query | Inline | None | No | No | No |
-| Complex query | Read Action | None | No | No | No |
+| Complex query | Read Action | BaseReadAction | No | No | No |
 | Multi-step workflow | Process | BaseAction | Required | Required | Required |
 
 ## Consequences
 
-- **Positive**: Each action type has a contract matching its actual needs — mutations have transactions and logging, reads carry no overhead.
+- **Positive**: Each action type has a contract matching its actual needs — mutations have transactions and logging, reads use a lightweight base with caching utilities.
 - **Positive**: The triad mirrors CQRS without infrastructure cost. Same models, same database — different class contracts.
 - **Positive**: Process Actions solve the coordination problem that previously forced orchestration logic into Livewire or single Actions.
 - **Positive**: Every action is independently testable. Test files map 1:1 with action classes.
@@ -55,6 +57,7 @@ Extend `BaseAction` and compose other Actions via constructor injection. They co
 ## References
 
 - `app/Core/Actions/BaseAction.php` — Base class for Command and Process Actions
+- `app/Core/Actions/BaseReadAction.php` — Base class for Read Actions
 - `app/Core/Actions/Concerns/HandlesActionErrors.php` — Error handling trait
 - `docs/architecture.md` — Action Triad section
 - `docs/conventions.md` — Actions section

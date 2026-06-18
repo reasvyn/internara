@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Program\InternshipGroup\Livewire;
 
+use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Program\Internship\Models\Internship;
 use App\Program\InternshipGroup\Actions\AddMemberToGroupAction;
@@ -146,7 +147,7 @@ class InternshipGroupManager extends BaseRecordManager
             $this->authorize('delete', $group);
             $deleteAction->execute($group);
             flash()->success(__('internship.group_deleted'));
-        } catch (\RuntimeException $e) {
+        } catch (RejectedException|\RuntimeException $e) {
             flash()->error($e->getMessage());
         }
 
