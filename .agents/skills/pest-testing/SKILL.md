@@ -1,6 +1,14 @@
 ---
 name: pest-testing
-description: Apply this skill whenever writing, editing, or fixing tests for this project. Activates for all testing tasks — feature tests, unit tests, architecture tests, and Livewire component tests using Pest.
+description: SDLC Phase: TESTING. Test writing, editing, and fixing using Pest — feature tests, unit tests, architecture tests, Livewire component tests.
+upstream:
+  - feature-building
+  - code-refactoring
+  - livewire-development
+  - medialibrary-development
+downstream:
+  - feature-building
+  - sync-docs
 ---
 
 # Pest Testing Skill
@@ -8,6 +16,19 @@ description: Apply this skill whenever writing, editing, or fixing tests for thi
 ## When to Activate
 
 Apply this skill whenever writing, editing, or fixing tests. Activates for all testing tasks — feature tests, unit tests, and Livewire component tests using Pest.
+
+## SDLC Context
+
+| Role | Skill |
+|------|-------|
+| **Upstream (input)** | `feature-building` — new code needing tests |
+| | `code-refactoring` — refactored code needing characterization tests |
+| | `livewire-development` — new components |
+| | `medialibrary-development` — upload functionality |
+| **This skill** | **TESTING** — produces test files |
+| **Downstream (output)** | `feature-building` — tests integrated into feature completion |
+| | `sync-docs` — documentation updated with test references |
+| **Phase** | [Planning] → [Analysis] → [Design] → [Implementation] → Testing → [Maintenance] |
 
 ## Key References
 

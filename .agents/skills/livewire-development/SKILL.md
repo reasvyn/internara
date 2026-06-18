@@ -1,6 +1,12 @@
 ---
 name: livewire-development
-description: Apply this skill for any task involving Livewire — building new components, debugging reactivity, handling file uploads, implementing real-time validation, managing CRUD tables, or migrating existing components. Activates whenever you see wire: directives, Livewire classes, or Alpine.js integration in Blade templates.
+description: SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized Livewire component development — building new components, debugging reactivity, file uploads, real-time validation, CRUD tables.
+upstream:
+  - feature-building
+downstream:
+  - pest-testing
+  - tailwindcss-development
+  - sync-docs
 ---
 
 # Livewire Development Skill
@@ -8,6 +14,17 @@ description: Apply this skill for any task involving Livewire — building new c
 ## When to Activate
 
 Apply this skill for any task involving Livewire — building new components, debugging reactivity, handling file uploads, implementing real-time validation, managing CRUD tables, or migrating existing components.
+
+## SDLC Context
+
+| Role | Skill |
+|------|-------|
+| **Upstream (input)** | `feature-building` — roadmap task requiring Livewire component |
+| **This skill** | **IMPLEMENTATION (Livewire)** — produces Livewire components + views |
+| **Downstream (output)** | `pest-testing` — tests for component |
+| | `tailwindcss-development` — styling during component build |
+| | `sync-docs` — documentation after component creation |
+| **Phase** | [Planning] → [Analysis] → [Design] → Implementation → [Testing] → [Maintenance] |
 
 ## Thin Component Rule
 

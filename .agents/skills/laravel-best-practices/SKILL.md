@@ -1,6 +1,12 @@
 ---
 name: laravel-best-practices
-description: Apply this skill whenever writing, reviewing, or refactoring any Laravel PHP code including controllers, models, migrations, form requests, policies, jobs, queries, routes, and Blade views. Context-aware of the Module-first Action-based MVC architecture.
+description: SDLC Phase: IMPLEMENTATION (Cross-cutting). Context-aware Laravel guidance that overrides default conventions where they conflict with the Module-first Action-based MVC architecture. Referenced by all implementation skills.
+upstream:
+  - feature-building
+  - code-refactoring
+  - livewire-development
+downstream:
+  - all implementation skills
 ---
 
 # Laravel Best Practices Skill
@@ -8,6 +14,15 @@ description: Apply this skill whenever writing, reviewing, or refactoring any La
 ## When to Activate
 
 Apply this skill whenever writing, reviewing, or refactoring any Laravel PHP code — controllers, models, migrations, form requests, policies, jobs, queries, routes, Blade views. Overrides default Laravel conventions where they conflict with the Action-based MVC architecture.
+
+## SDLC Context
+
+| Role | Skill |
+|------|-------|
+| **Upstream (input)** | Called by any implementation/deign skill |
+| **This skill** | **IMPLEMENTATION (Cross-cutting Laravel guidance)** |
+| **Downstream (output)** | Feeds into all implementation work |
+| **Phase** | [Planning] → [Analysis] → [Design] → Implementation → [Testing] → [Maintenance] |
 
 ## Key References
 

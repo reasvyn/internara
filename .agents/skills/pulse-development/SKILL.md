@@ -1,6 +1,10 @@
 ---
 name: pulse-development
-description: Apply this skill when setting up Laravel Pulse, configuring the dashboard or authorization gate, defining recorders and filters, building custom Pulse cards, or optimizing with Redis ingest. Activates when the task involves /pulse, pulse:check, pulse:work, Pulse::record(), or application monitoring.
+description: SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized Laravel Pulse setup — dashboard, authorization, recorders, filters, custom cards, and Redis ingest.
+upstream:
+  - feature-building
+downstream:
+  - sync-docs
 ---
 
 # Laravel Pulse Development Skill
@@ -8,6 +12,15 @@ description: Apply this skill when setting up Laravel Pulse, configuring the das
 ## When to Activate
 
 Apply this skill when setting up Laravel Pulse, configuring the dashboard or authorization gate, defining recorders and filters, building custom Pulse cards, or optimizing with Redis ingest. Activates for `/pulse`, `pulse:check`, `pulse:work`, `Pulse::record()`, or application monitoring.
+
+## SDLC Context
+
+| Role | Skill |
+|------|-------|
+| **Upstream (input)** | `feature-building` — roadmap task requiring Pulse monitoring |
+| **This skill** | **IMPLEMENTATION (Pulse)** — produces Pulse dashboards and recorders |
+| **Downstream (output)** | `sync-docs` — documentation after Pulse changes |
+| **Phase** | [Planning] → [Analysis] → [Design] → Implementation → [Testing] → [Maintenance] |
 
 ## Key References
 
