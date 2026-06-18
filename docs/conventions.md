@@ -1,10 +1,7 @@
 # Coding Conventions
 
 > **Last updated:** 2026-06-18
-> **Changes:** sync — add SQL injection, XSS, mass assignment, N+1, HTTP status codes, commit/branch
-> conventions, code review checklist, DI etiquette, file upload security, query optimization, CSP,
-> coverage thresholds, mocking strategy, resource cleanup, error response format (industry best
-> practices audit)
+> **Changes:** sync — fix section numbering (duplicate §4, out-of-order §7–§12)
 
 This document describes conventions for writing code in the Internara codebase. These rules exist to
 produce consistent, predictable code that any team member can read without context-switching.
@@ -236,7 +233,7 @@ pattern doc rather than duplicating conventions here:
 
 ---
 
-## 4. Console Commands
+## 5. Console Commands
 
 - Command signature follows `{module}:{action}` naming.
 - Use verb-noun pairs: `system:health`, `admin:recover`, `notifications:prune`.
@@ -262,7 +259,7 @@ class HealthCommand extends Command
 
 ---
 
-## 5. Performance Conventions
+## 6. Performance Conventions
 
 ### 5.1 N+1 Query Prevention
 
@@ -364,7 +361,7 @@ class HealthCommand extends Command
 
 ---
 
-## 6. Migrations, Factories & Seeders
+## 7. Migrations, Factories & Seeders
 
 ### Migrations
 
@@ -432,7 +429,7 @@ class InternshipFactory extends Factory
 
 ---
 
-## 12. Cross-Cutting Protocols
+## 8. Cross-Cutting Protocols
 
 ### Cross-Role Proxy Protocol
 
@@ -453,7 +450,7 @@ supervisors — all at the application layer without multi-role assignment.
 
 ---
 
-## 7. HTTP & API Conventions
+## 9. HTTP & API Conventions
 
 ### 7.1 HTTP Status Code Mapping
 
@@ -494,7 +491,7 @@ All JSON error responses follow a consistent envelope:
 
 ---
 
-## 8. Dependency Injection Conventions
+## 10. Dependency Injection Conventions
 
 ### 8.1 Constructor Injection (Preferred)
 
@@ -535,7 +532,7 @@ where the container is not available (e.g., `database/factories/`).
 
 ---
 
-## 9. Code Quality Enforcement
+## 11. Code Quality Enforcement
 
 | Tool             | What It Enforces                                              | How                                         |
 | ---------------- | ------------------------------------------------------------- | ------------------------------------------- |
@@ -574,7 +571,7 @@ where the container is not available (e.g., `database/factories/`).
 
 ---
 
-## 10. Testing Conventions
+## 12. Testing Conventions
 
 ### 10.1 Mocking Strategy
 
@@ -675,7 +672,7 @@ Use these annotations in code comments for tracking technical debt:
 
 ---
 
-## 11. Localization
+## 13. Localization
 
 ### File Structure
 

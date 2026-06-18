@@ -4,28 +4,17 @@ declare(strict_types=1);
 
 namespace App\Journals\Logbook\Actions;
 
+use App\Core\Actions\BaseReadAction;
 use App\Enrollment\Registration\Models\Registration;
 use App\Journals\Logbook\Models\Logbook;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Blade;
 
-final class CompileLogbookReportAction
+final class CompileLogbookReportAction extends BaseReadAction
 {
-    /**
-     * Generate a PDF report of verified logbook entries for a registration.
-     *
-     * @param bool $includeSupervisorNotes Whether to include supervisor notes in the report
-     */
     public function execute(Registration $registration, bool $includeSupervisorNotes = true): Response
     {
-        return $this->download($registration, $includeSupervisorNotes);
-    }
-
-    public function download(
-        Registration $registration,
-        bool $includeSupervisorNotes = true,
-    ): Response {
         $entries = Logbook::query()
             ->with(['user', 'supervisor', 'media'])
             ->where('registration_id', $registration->id)

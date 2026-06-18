@@ -193,5 +193,5 @@ Group by method name with `describe()`. Use anonymous classes with trait usage. 
 ---
 
 *This document is auto-synchronized with the codebase. When testing practices evolve, update the
-relevant sections in `docs/infrastructure/testing.md`, `docs/conventions.md` §22, or the skill
+relevant sections in `docs/infrastructure/testing.md`, `docs/conventions.md` §12, or the skill
 files, then reflect changes here. See `docs/doc-index.md` for the complete documentation catalog.*

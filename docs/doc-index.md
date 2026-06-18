@@ -1,7 +1,7 @@
 # Documentation Index
 
-> **Last updated:** 2026-06-17
-> **Changes:** sync — full doc sync pass: AGENTS.md (section ref fix, blank line), conventions.md (curly braces rule, pre-commit checklist fix, ADR link fix), README.md (description fix, Reverb clarification), action-refactoring SKILL.md (HandlesActionErrors path fix), core-reference.md (add action base classes), enrollment-reference.md (add Livewire sections), guidance-reference.md (add Handbook/MonitoringVisit submodules, fix phantom entity), user-reference.md (remove phantom HomeController, add missed files), sysadmin-reference.md (add Backup model/events), settings-reference.md (add Data/DTOs), program/assignment/journals/reports ref docs (add missed files/sections)
+> **Last updated:** 2026-06-18
+> **Changes:** sync — deep sync + main module audit: known-issues.md add CACHE-1, LW-1, TEST-1, TEST-2
 >
 > Complete catalog of all documentation in the `docs/` directory. This index is the single entry point for navigating Internara's documentation. Every file listed here is part of the authoritative system documentation and must be kept in sync with the implementation.
 
