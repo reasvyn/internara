@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth\Account\Entities;
 
-use App\Auth\ApiTokens\Models\ApiToken;
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\Core\Entities\BaseEntity;
 use App\User\Models\User;
 use Carbon\Carbon;
@@ -21,7 +21,7 @@ final readonly class AccountActivation extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
-        $token = ApiToken::where('user_id', $model->id)
+        $token = AccessToken::where('user_id', $model->id)
             ->where('token_type', 'activation')
             ->whereNull('revoked_at')
             ->first();

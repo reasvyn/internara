@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Auth\ApiTokens\Models;
+namespace App\Auth\AccessTokens\Models;
 
+use App\Auth\AccessTokens\Entities\AccessTokenState;
+use App\Auth\AccessTokens\Entities\ActivationToken;
 use App\Auth\AccountRecovery\Entities\RecoveryCodeState;
-use App\Auth\ApiTokens\Entities\ActivationToken;
-use App\Auth\ApiTokens\Entities\ApiTokenState;
 use App\Core\Models\BaseModel;
 use App\User\Models\User;
-use Database\Factories\ApiTokenFactory;
+use Database\Factories\AccessTokenFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,11 +29,11 @@ use Illuminate\Support\Facades\Hash;
         'revoked_at',
     ]),
 ]
-class ApiToken extends BaseModel
+class AccessToken extends BaseModel
 {
     use HasFactory;
 
-    protected $table = 'api_tokens';
+    protected $table = 'access_tokens';
 
     protected $casts = [
         'expires_at' => 'datetime',
@@ -44,9 +44,9 @@ class ApiToken extends BaseModel
         'scopes' => 'array',
     ];
 
-    protected static function newFactory(): ApiTokenFactory
+    protected static function newFactory(): AccessTokenFactory
     {
-        return ApiTokenFactory::new();
+        return AccessTokenFactory::new();
     }
 
     public function user(): BelongsTo
@@ -59,9 +59,9 @@ class ApiToken extends BaseModel
         return ActivationToken::fromModel($this);
     }
 
-    public function asApiTokenState(): ApiTokenState
+    public function asAccessTokenState(): AccessTokenState
     {
-        return ApiTokenState::fromModel($this);
+        return AccessTokenState::fromModel($this);
     }
 
     public function asRecoveryCodeState(): RecoveryCodeState

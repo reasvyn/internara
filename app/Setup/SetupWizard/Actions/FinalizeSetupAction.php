@@ -70,19 +70,19 @@ final class FinalizeSetupAction extends BaseCommandAction
                 'updated_at' => now()->toIso8601String(),
             ]);
 
+            $this->dispatchEvent(
+                new SetupFinalized(
+                    departmentId: $department->id,
+                    installedAt: now()->toDateTimeImmutable(),
+                ),
+            );
+
             return [
                 'plaintext' => $plaintext,
                 'departmentId' => $department->id,
                 'adminId' => $admin->id,
             ];
         });
-
-        $this->dispatchEvent(
-            new SetupFinalized(
-                departmentId: $result['departmentId'],
-                installedAt: now()->toDateTimeImmutable(),
-            ),
-        );
 
         $this->sendNotification->execute(
             userId: $result['adminId'],

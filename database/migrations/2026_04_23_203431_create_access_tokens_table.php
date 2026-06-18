@@ -10,7 +10,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('api_tokens', function (Blueprint $table) {
+        Schema::create('access_tokens', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
             $table->string('token')->index();
@@ -24,13 +24,13 @@ return new class extends Migration
             $table->dateTime('revoked_at')->nullable();
             $table->timestamps();
 
-            $table->unique(['user_id', 'token_type', 'token'], 'api_tokens_unique_active');
+            $table->unique(['user_id', 'token_type', 'token'], 'access_tokens_unique_active');
             $table->index(['expires_at', 'created_at']);
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('api_tokens');
+        Schema::dropIfExists('access_tokens');
     }
 };

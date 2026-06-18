@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth\AccountRecovery\Actions;
 
-use App\Auth\ApiTokens\Models\ApiToken;
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
@@ -21,7 +21,7 @@ class RedeemRecoverySlipAction extends BaseCommandAction
                 throw new RejectedException(__('auth.failed'));
             }
 
-            $recoveryCodes = ApiToken::where('user_id', $user->id)
+            $recoveryCodes = AccessToken::where('user_id', $user->id)
                 ->where('token_type', 'account_recovery')
                 ->whereNull('revoked_at')
                 ->whereNull('last_used_at')

@@ -8,11 +8,11 @@ describe('maskArray', function () {
     it('fully masks sensitive keys', function () {
         $result = PiiMasker::maskArray([
             'password' => 'secret123',
-            'api_token' => 'tok_abc',
+            'access_token' => 'tok_abc',
         ]);
 
         expect($result['password'])->toBe('***');
-        expect($result['api_token'])->toBe('***');
+        expect($result['access_token'])->toBe('***');
     });
 
     it('partially masks email', function () {

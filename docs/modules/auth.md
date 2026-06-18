@@ -22,10 +22,10 @@ Integrity constraints enforcing exactly one super admin instance. Name is locked
 Email/username authentication with a 4-step sequential validation pipeline: identifier format, existence, account status, password hash. Rate-limited to 5 attempts per 60 seconds per IP+identifier combination. Auto-lock after 10 failures.
 
 ### Account
-User account activation (migrated from `ActivationToken`). Email-based verification for newly provisioned accounts. Uses `ApiToken` model for token storage with secure hashing and soft-revocation.
+User account activation (migrated from `ActivationToken`). Email-based verification for newly provisioned accounts. Uses `AccessToken` model for token storage with secure hashing and soft-revocation.
 
-### ApiTokens
-General-purpose token management (`api_tokens` table). Supports activation tokens, recovery codes, and extensible token types. Tokens are hashed via `Hash::make()`, support soft-revocation (`revoked_at`), scoping, and expiry. Entity bridge `ApiToken::asActivationToken()` follows the `$model->asEntity()` pattern.
+### AccessTokens
+General-purpose token management (`access_tokens` table). Supports activation tokens, recovery codes, and extensible token types. Tokens are hashed via `Hash::make()`, support soft-revocation (`revoked_at`), scoping, and expiry. Entity bridge `AccessToken::asActivationToken()` follows the `$model->asEntity()` pattern.
 
 ### AccountRecovery
 Self-service unlock and password reset mechanism. Admin generates 10 single-use, cryptographically random recovery codes (Bcrypt hashed in storage, displayed once). Users redeem codes to unlock accounts and reset passwords without email dependency. Rate-limited to 3 attempts per 300 seconds per username+IP.

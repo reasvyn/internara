@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Auth\ApiTokens\Models\ApiToken;
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\GenerateAccountSlipAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -31,7 +31,7 @@ test('download creates activation token for user', function () {
     $action = app(GenerateAccountSlipAction::class);
     $action->download($user);
 
-    expect(ApiToken::where('user_id', $user->id)->where('token_type', 'activation')->exists())->toBeTrue();
+    expect(AccessToken::where('user_id', $user->id)->where('token_type', 'activation')->exists())->toBeTrue();
 });
 
 test('downloadBatch generates PDF response with multiple users', function () {
@@ -54,6 +54,6 @@ test('downloadBatch creates tokens for all users', function () {
     $action->downloadBatch($users->all());
 
     foreach ($users as $user) {
-        expect(ApiToken::where('user_id', $user->id)->where('token_type', 'activation')->exists())->toBeTrue();
+        expect(AccessToken::where('user_id', $user->id)->where('token_type', 'activation')->exists())->toBeTrue();
     }
 });

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Auth\AccountRecovery\Actions;
 
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\Auth\AccountRecovery\Data\RecoveryCodeData;
 use App\Auth\AccountRecovery\Events\RecoverySlipGenerated;
-use App\Auth\ApiTokens\Models\ApiToken;
 use App\Core\Actions\BaseCommandAction;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -18,7 +18,7 @@ class GenerateRecoverySlipAction extends BaseCommandAction
     /** @return array{code: RecoveryCodeData, plaintext: array<int, string>, expires_at: null} */
     public function execute(User $user): array
     {
-        ApiToken::revokeFor($user, 'account_recovery');
+        AccessToken::revokeFor($user, 'account_recovery');
 
         $codes = [];
         $firstCode = null;
@@ -33,7 +33,7 @@ class GenerateRecoverySlipAction extends BaseCommandAction
                 'expiresAt' => now()->addYears(100)->toDateTimeString(),
             ]);
 
-            ApiToken::create([
+            AccessToken::create([
                 'user_id' => $user->id,
                 'token' => $hashed,
                 'token_type' => 'account_recovery',

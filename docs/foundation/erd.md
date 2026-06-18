@@ -35,7 +35,7 @@ that do not justify their own existence are eliminated.
 | Table | Description | Key Columns |
 |-------|-------------|-------------|
 | `settings` | Global key-value configuration registry. Replaces `setups` and `schools`. | `key` PK, `group`, `value`, `type`, `description` |
-| `api_tokens` | Password resets, email verification, account recovery, API tokens | `user_id` FK, `token` (hashed), `token_type`, `expires_at`, `attempts` |
+| `access_tokens` | Password resets, email verification, account recovery, API tokens | `user_id` FK, `token` (hashed), `token_type`, `expires_at`, `attempts` |
 | `gdpr_deletion_logs` | Compliance audit for data erasure requests | `user_id`, `metadata_snapshot` JSON |
 | `account_applications` | Prospective student pre-registration portal | `name`, `email`, `student_id_number`, `department_id` FK, `form_data` JSON, `status`, `rejection_reason`, `processed_by` FK, `processed_at` |
 
@@ -137,7 +137,7 @@ erDiagram
     users ||--|| profiles : "1:1"
     profiles ||--o| departments : "belongs to"
     profiles ||--o| companies : "belongs to"
-    users ||--oN api_tokens : "has"
+    users ||--oN access_tokens : "has"
     companies ||--oN partnerships : "has"
     internships ||--oN placements : "has"
     placements ||--oN registrations : "receives"

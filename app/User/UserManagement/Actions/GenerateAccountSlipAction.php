@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Actions;
 
-use App\Auth\ApiTokens\Models\ApiToken;
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\Core\Actions\BaseCommandAction;
 use App\User\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -24,7 +24,7 @@ final class GenerateAccountSlipAction extends BaseCommandAction
 
     public function download(User $user): Response
     {
-        $result = ApiToken::generateFor($user, 'activation', ['name' => 'Account Activation']);
+        $result = AccessToken::generateFor($user, 'activation', ['name' => 'Account Activation']);
 
         $html = Blade::render(
             'user.user-management.account-slip-pdf',
@@ -42,7 +42,7 @@ final class GenerateAccountSlipAction extends BaseCommandAction
         $html = '';
 
         foreach ($users as $i => $user) {
-            $result = ApiToken::generateFor($user, 'activation', ['name' => 'Account Activation']);
+            $result = AccessToken::generateFor($user, 'activation', ['name' => 'Account Activation']);
 
             $html .= Blade::render(
                 'user.user-management.account-slip-pdf',
