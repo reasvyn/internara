@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Auth\ApiTokens\Entities\ActivationToken;
+use App\Auth\AccessTokens\Entities\ActivationToken;
 use Carbon\Carbon;
 
 test('activation token can be created with constructor', function () {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Auth\ApiTokens\Entities;
+namespace App\Auth\AccessTokens\Entities;
 
-use App\Auth\ApiTokens\Models\ApiToken;
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\Core\Entities\BaseEntity;
 use App\User\Models\User;
 use Carbon\Carbon;
@@ -48,7 +48,7 @@ final readonly class ActivationToken extends BaseEntity
         $raw = bin2hex(random_bytes(32));
         $ttlDays = $options['ttl_days'] ?? 30;
 
-        $token = ApiToken::create([
+        $token = AccessToken::create([
             'user_id' => $user->id,
             'token' => Hash::make($raw),
             'token_type' => 'activation',

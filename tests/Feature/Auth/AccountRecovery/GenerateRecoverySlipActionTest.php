@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\Auth\AccountRecovery\Actions\GenerateRecoverySlipAction;
 use App\Auth\AccountRecovery\Data\RecoveryCodeData;
-use App\Auth\ApiTokens\Models\ApiToken;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -21,7 +21,7 @@ test('generates 10 recovery codes for user', function () {
     expect($result['code'])->toBeInstanceOf(RecoveryCodeData::class);
     expect($result['plaintext'])->toHaveCount(10);
     expect(
-        ApiToken::where('user_id', $this->user->id)
+        AccessToken::where('user_id', $this->user->id)
             ->where('token_type', 'account_recovery')
             ->count(),
     )->toBe(10);
@@ -36,7 +36,7 @@ test('generated codes have unique plaintext values', function () {
 test('all generated codes are unused', function () {
     $this->action->execute($this->user);
 
-    $usedCount = ApiToken::where('user_id', $this->user->id)
+    $usedCount = AccessToken::where('user_id', $this->user->id)
         ->where('token_type', 'account_recovery')
         ->whereNotNull('last_used_at')
         ->count();

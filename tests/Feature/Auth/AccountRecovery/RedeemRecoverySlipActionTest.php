@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\Auth\AccountRecovery\Actions\GenerateRecoverySlipAction;
 use App\Auth\AccountRecovery\Actions\RedeemRecoverySlipAction;
-use App\Auth\ApiTokens\Models\ApiToken;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -33,7 +33,7 @@ test('marks code as used after redemption', function () {
 
     $this->redeemAction->execute('testuser', $plaintextCode, 'NewPass123!');
 
-    $usedToken = ApiToken::where('user_id', $this->user->id)
+    $usedToken = AccessToken::where('user_id', $this->user->id)
         ->where('token_type', 'account_recovery')
         ->whereNotNull('last_used_at')
         ->first();

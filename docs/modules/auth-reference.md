@@ -33,7 +33,7 @@ Handles authentication: login, password management, account activation, account 
 
 | File | Class | Extends |
 | ---- | ----- | ------- |
-| `ApiTokens/Models/ApiToken.php` | `ApiToken` | `BaseModel` |
+| `AccessTokens/Models/AccessToken.php` | `AccessToken` | `BaseModel` |
 
 ---
 
@@ -52,8 +52,8 @@ Handles authentication: login, password management, account activation, account 
 | `Account/Entities/AccountActivation.php` | `AccountActivation` | `BaseEntity` |
 | `AccountRecovery/Entities/RecoveryCodeState.php` | `RecoveryCodeState` | `BaseEntity` |
 | `SuperAdmin/Entities/SuperAdminIntegrityRules.php` | `SuperAdminIntegrityRules` | `BaseEntity` |
-| `ApiTokens/Entities/ActivationToken.php` | `ActivationToken` | `BaseEntity` |
-| `ApiTokens/Entities/ApiTokenState.php` | `ApiTokenState` | `BaseEntity` |
+| `AccessTokens/Entities/ActivationToken.php` | `ActivationToken` | `BaseEntity` |
+| `AccessTokens/Entities/AccessTokenState.php` | `AccessTokenState` | `BaseEntity` |
 
 ---
 
@@ -160,7 +160,7 @@ None.
 
 | Migration | Table |
 | --------- | ----- |
-| `create_api_tokens_table` | `api_tokens` |
+| `create_access_tokens_table` | `access_tokens` |
 | `create_permission_tables` | `permissions` |
 
 ---
@@ -170,7 +170,7 @@ None.
 
 ## Architectural Integration
 
-- **Submodules**: `Login`, `Password`, `Account`, `ApiTokens`, `AccountRecovery`, `Permissions`, `SuperAdmin`
+- **Submodules**: `Login`, `Password`, `Account`, `AccessTokens`, `AccountRecovery`, `Permissions`, `SuperAdmin`
 - **Business Logic**: `app/Auth/`
 - **Routing**: `routes/web/auth.php`
 - **Views**: `resources/views/auth/`

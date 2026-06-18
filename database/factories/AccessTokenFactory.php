@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
-use App\Auth\ApiTokens\Models\ApiToken;
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<ApiToken>
+ * @extends Factory<AccessToken>
  */
-class ApiTokenFactory extends Factory
+class AccessTokenFactory extends Factory
 {
-    protected $model = ApiToken::class;
+    protected $model = AccessToken::class;
 
     public function definition(): array
     {

@@ -87,7 +87,7 @@ User → /recover-account
 
 ### Database
 
-**Table:** `api_tokens` (with `token_type = 'account_recovery'`)
+**Table:** `access_tokens` (with `token_type = 'account_recovery'`)
 
 | Column | Type | Purpose |
 |--------|------|---------|

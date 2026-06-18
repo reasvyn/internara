@@ -14,7 +14,6 @@ final class PiiMasker
         'secret',
         'token',
         'api_key',
-        'api_token',
         'access_token',
         'refresh_token',
         'authorization',

@@ -1,7 +1,10 @@
 # Coding Conventions
 
-> **Last updated:** 2026-06-17
-> **Changes:** sync — add curly braces rule to §2 General PHP; fix pre-commit checklist missing print_r/die; fix broken ADR-014 link
+> **Last updated:** 2026-06-18
+> **Changes:** sync — add SQL injection, XSS, mass assignment, N+1, HTTP status codes, commit/branch
+> conventions, code review checklist, DI etiquette, file upload security, query optimization, CSP,
+> coverage thresholds, mocking strategy, resource cleanup, error response format (industry best
+> practices audit)
 
 This document describes conventions for writing code in the Internara codebase. These rules exist to
 produce consistent, predictable code that any team member can read without context-switching.
@@ -103,7 +106,102 @@ pattern doc rather than duplicating conventions here:
 
 ---
 
-## 3. Naming Conventions
+## 3. Security Conventions
+
+### 3.1 XSS Prevention
+
+- Use `{{ $var }}` (double curly braces) for **all** user-supplied content in Blade — Laravel's
+  Blade engine automatically escapes HTML entities.
+- `{!! $var !!}` (unescaped) is **only** permitted for trusted content that has been explicitly
+  sanitized (e.g., markdown-rendered text passed through a whitelist-based HTML purifier).
+- Every `{!! $var !!}` occurrence must have an inline comment justifying why it is safe:
+
+  ```blade
+  {{-- Safe: rendered from Markdown with HTML purifier --}}
+  {!! $content !!}
+  ```
+- **Never** use `{!! $var !!}` with raw user input (`$_GET`, `$_POST`, `request()->input()`,
+  database fields containing user-submitted HTML).
+- Alpine.js `x-html` must follow the same rule — only trusted sanitized content.
+- Avoid inline `<script>` tags in Blade; use Alpine.js `x-data` and `@entangle` instead.
+
+### 3.2 SQL Injection Prevention
+
+- Raw SQL (`DB::raw()`, `whereRaw()`, `orderByRaw()`, `havingRaw()`, `selectRaw()`) is
+  **forbidden** in application code unless:
+  1. The SQL uses **parameterized binding** exclusively (`->whereRaw('col = ?', [$value])`).
+  2. An explicit exception is documented in the method's docblock.
+- Always use Eloquent's query builder or the `where('column', $value)` syntax — these use
+  parameterized binding by default.
+- Never concatenate user input into query strings:
+
+  ```php
+  // ❌ Wrong — SQL injection vector
+  User::whereRaw("name = '$input'")->get();
+
+  // ✅ Correct — parameterized
+  User::where('name', $input)->get();
+  User::whereRaw('name = ?', [$input])->get();
+  ```
+
+### 3.3 Mass Assignment Protection
+
+- Every model **must** use the `#[Fillable]` attribute (PHP 8.4). The legacy `$fillable` property
+  is not used anywhere in this codebase.
+- **Never** pass raw request input to `create()` or `update()`:
+
+  ```php
+  // ❌ Wrong — allows mass assignment of any column
+  Model::create($request->all());
+  Model::create($this->all());
+
+  // ✅ Correct — explicit allowed keys
+  Model::create($request->only(['name', 'email']));
+  Model::create($this->form->toArray());
+  ```
+
+- All mass assignment is routed through `#[Fillable]` + explicit key selection. `$guarded` is not
+  used — always whitelist with `#[Fillable]`.
+
+### 3.4 CSRF Protection
+
+- All state-changing HTML forms (`POST`, `PUT`, `PATCH`, `DELETE`) must include `@csrf` or use
+  Livewire (which manages CSRF automatically).
+- Exempt routes (for webhook handlers, external API callbacks) are listed in `bootstrap/app.php`
+  `validateCsrfTokens(except: [...])`. Each exemption must have a code comment explaining why it
+  is required.
+- API consumers that authenticate via token (not session) are exempt.
+
+### 3.5 Content Security Policy
+
+- The `SecurityHeaders` middleware (applied globally in the `web` group) sets a strict CSP header.
+- Inline `<script>` tags are blocked by default. Use Alpine.js `x-data` / `@click` / `x-on` for
+  interactivity instead of inline `onclick` handlers.
+- External resources (scripts, fonts, images) must be added to the CSP `default-src` / `script-src`
+  / `img-src` directives in `SecurityHeaders` before use.
+- The CSP is enforced via `Content-Security-Policy` header, not `Content-Security-Policy-Report-Only`.
+  Violations break the page — test thoroughly.
+
+### 3.6 File Upload Security
+
+- All file uploads go through Spatie MediaLibrary (`spatie/laravel-medialibrary`), never `Storage::put()`.
+- Each media collection defines its own validation rules (max file size, allowed MIME types) via
+  `registerMediaCollections()`.
+- For file type validation, check MIME type server-side (`$file->getMimeType()`), not just the
+  extension — a `.jpg` file can contain arbitrary data.
+- Generated filenames are sanitized: `Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))`.
+- Path traversal is prevented automatically by Spatie's internal storage handling.
+
+### 3.7 Rate Limiting
+
+- Authentication endpoints (`login`, `recover-account`) use the `auth.throttle` middleware.
+- Setup wizard token validation uses a dedicated rate limiter (`setup:{$ip}`) with configurable
+  attempts and decay window (`config/setup.php security.*`).
+- Custom rate limiters are defined in `bootstrap/app.php` and referenced by name in route middleware.
+
+---
+
+## 4. Naming Conventions
 
 | Element                    | Convention                                                    | Example                                                               |
 | -------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
@@ -164,7 +262,109 @@ class HealthCommand extends Command
 
 ---
 
-## 5. Migrations, Factories & Seeders
+## 5. Performance Conventions
+
+### 5.1 N+1 Query Prevention
+
+- **Never** access Eloquent relationships inside Blade loops or Livewire `@foreach` without eager
+  loading:
+
+  ```blade
+  {{-- ❌ Wrong — N+1: each iteration queries the DB --}}
+  @foreach($users as $user)
+      {{ $user->profile->bio }}
+  @endforeach
+
+  {{-- ✅ Correct — preloaded --}}
+  {{-- Controller/Livewire: User::with('profile')->get() --}}
+  ```
+
+- Always use `->with()` on the query before iterating. `->load()` on an existing collection is
+  acceptable but `with()` is preferred (fewer queries).
+- For conditional eager loading, use `->when()` with `with()`:
+
+  ```php
+  User::query()
+      ->when($loadProfile, fn ($q) => $q->with('profile'))
+      ->get();
+  ```
+
+- Livewire `render()` methods must not trigger N+1. Use `->with()` in the query, never `->load()`
+  inside a loop.
+- Read Actions and Livewire queries must be audited for N+1 during code review.
+
+### 5.2 Query Optimization
+
+- For large datasets (≥1,000 rows), use `chunk()` or `lazy()` instead of `get()` to avoid memory
+  exhaustion:
+
+  ```php
+  // Batch processing
+  User::chunk(200, function (Collection $users) { ... });
+
+  // Lazy collection (memory-efficient)
+  foreach (User::lazy(200) as $user) { ... }
+  ```
+
+- Avoid `$collection->filter()` on large Eloquent collections — move the filter to the database:
+
+  ```php
+  // ❌ Wrong — loads all rows, filters in PHP memory
+  Model::all()->filter(fn ($m) => $m->isActive());
+
+  // ✅ Correct — filters at database level
+  Model::where('is_active', true)->get();
+  ```
+
+- Use `exists()` instead of `count() > 0` for existence checks.
+- Use `pluck()` instead of `get()->pluck()` to avoid hydrating full models.
+- Index strategy: every `WHERE` / `ORDER BY` / `JOIN` column used in frequent queries must have a
+  database index. Composite indexes for multi-column filters.
+
+### 5.3 Eager Loading Convention
+
+- Default: `->with()` for all regular relationships used in the current view/response.
+- Lazy eager loading (`->load()`) for optional relationships loaded conditionally.
+- Sub-relationship eager loading: `->with(['posts.comments'])`.
+- Constrained eager loading: `->with(['comments' => fn ($q) => $q->where('approved', true)])`.
+- Avoid `->loadMissing()` in loops — move to `->with()` on the initial query.
+
+### 5.4 Resource Cleanup
+
+- Temporary files created during request processing must be cleaned up in `finally` blocks:
+
+  ```php
+  $tempFile = tempnam(sys_get_temp_dir(), 'export_');
+  try {
+      // ... generate file content
+  } finally {
+      @unlink($tempFile);
+  }
+  ```
+
+- Long-running commands and queued jobs must unset large variables after use:
+
+  ```php
+  $chunk = Model::lazy(200);
+  foreach ($chunk as $row) {
+      // process $row
+      unset($row); // release memory
+  }
+  ```
+
+- Open file handles and streams must be closed explicitly (`fclose()`, `curl_close()`).
+
+### 5.5 Caching Conventions
+
+- Every cache key is declared in `config/cache-keys.php` — never inline strings.
+- Cache invalidation follows event-driven pattern: Command Action → event → listener → `Cache::forget()`.
+- TTL categories: Short (<5 min), Medium (5 min–1 h), Long (1–24 h), Forever.
+- Use `remember()` for reads, `forget()` for invalidations. Never use `Cache::put()` with a raw key
+  unless registering it in `cache-keys.php` first.
+
+---
+
+## 6. Migrations, Factories & Seeders
 
 ### Migrations
 
@@ -232,7 +432,7 @@ class InternshipFactory extends Factory
 
 ---
 
-## 6. Cross-Cutting Protocols
+## 12. Cross-Cutting Protocols
 
 ### Cross-Role Proxy Protocol
 
@@ -253,28 +453,229 @@ supervisors — all at the application layer without multi-role assignment.
 
 ---
 
-## 7. Code Quality Enforcement
+## 7. HTTP & API Conventions
+
+### 7.1 HTTP Status Code Mapping
+
+| Scenario | Status Code | When |
+|----------|-------------|------|
+| Resource created | `201 Created` | `POST` returning the new resource |
+| Resource updated | `200 OK` | `PUT`/`PATCH` returning the updated resource |
+| Resource deleted | `204 No Content` | `DELETE` — no response body |
+| List/read | `200 OK` | `GET` returning resource(s) |
+| Validation error | `422 Unprocessable Entity` | `ValidationException` |
+| Unauthorized | `401 Unauthorized` | Missing or invalid authentication |
+| Forbidden | `403 Forbidden` | Authenticated but not authorized |
+| Not found | `404 Not Found` | Resource does not exist |
+| Conflict | `409 Conflict` | Duplicate / state conflict |
+| Rate limited | `429 Too Many Requests` | Rate limiter hit |
+| Server error | `500 Internal Server Error` | Unhandled exception |
+
+The exception hierarchy status codes (`AppException::statusCode()`) match this table. Controllers
+and API endpoints must return the correct status code — never default to `200` for errors.
+
+### 7.2 Error Response Format (JSON)
+
+All JSON error responses follow a consistent envelope:
+
+```json
+{
+    "message": "Human-readable description",
+    "errors": {
+        "field_name": ["Validation error 1", "Validation error 2"]
+    }
+}
+```
+
+- `message` is always present.
+- `errors` is present only for validation failures (422).
+- Non-validation errors omit the `errors` key.
+- Paginated responses include `meta` with `current_page`, `last_page`, `per_page`, `total`.
+
+---
+
+## 8. Dependency Injection Conventions
+
+### 8.1 Constructor Injection (Preferred)
+
+Mandatory, long-lived dependencies are injected via constructor property promotion:
+
+```php
+public function __construct(
+    protected readonly SomeService $service,
+    protected readonly AnotherService $another,
+) {}
+```
+
+This applies to all classes instantiated by the container: Actions, Services, Middleware, Console
+Commands, Controllers, Listeners, Repositories.
+
+### 8.2 Method Injection (Contextual)
+
+Dependencies that vary per call or are only needed in one method are injected as method parameters.
+This is the standard pattern for Livewire component methods:
+
+```php
+public function save(CreateUserAction $action): void
+{
+    $action->execute($this->form->toArray());
+}
+```
+
+### 8.3 Forbidden Patterns
+
+- `app()->make(ClassName::class)` — use constructor or method injection instead.
+- `new ClassName()` inside Controllers or Livewire components — let the container resolve.
+- `resolve(ClassName::class)` — use method injection.
+- Static facades for business logic — `User::where(...)` is acceptable for simple queries but
+  complex logic must be inside Actions (injected).
+
+The exception: `app()` is permitted in service providers (`boot()`, `register()`) and factory methods
+where the container is not available (e.g., `database/factories/`).
+
+---
+
+## 9. Code Quality Enforcement
 
 | Tool             | What It Enforces                                              | How                                         |
 | ---------------- | ------------------------------------------------------------- | ------------------------------------------- |
-| **Laravel Pint** | PHP code style (PSR-12 + Laravel conventions)                 | `vendor/bin/pint` before finalizing changes |
-| **PHPStan**      | Static analysis (type safety, dead code, boundary violations) | `vendor/bin/phpstan analyse`                |
+| **Laravel Pint** | PHP code style (PSR-12 + Laravel conventions)                 | `vendor/bin/pint --dirty` before finalizing |
+| **PHPStan**      | Static analysis (type safety, dead code, boundary violations) | `vendor/bin/phpstan analyse --no-progress`   |
 | **Prettier**     | Markdown, JSON, YAML, Blade formatting                        | `npm run format`                            |
-| **Code Review**  | Architecture conventions, pattern compliance                  | Manual review of every PR                   |
+| **Code Review**  | Architecture conventions, pattern compliance, security        | Manual review of every PR                   |
 
-### Pre-commit Checklist
+### Pre-commit Checklist (Author)
 
 - [ ] `declare(strict_types=1)` present
 - [ ] No `dd()`, `dump()`, `ray()`, `var_dump()`, `print_r()`, `die()` left in code
 - [ ] All user-facing strings use `__()` helper
 - [ ] Action follows the correct triad pattern (Command/Read/Process)
 - [ ] Cache keys registered in `config/cache-keys.php`
+- [ ] No N+1 queries — eager loading verified
+- [ ] No unescaped `{!! !!}` for user content
 - [ ] Tests pass: `php artisan test --compact`
 - [ ] Pint clean: `vendor/bin/pint --dirty --format agent`
+- [ ] PHPStan passes: `vendor/bin/phpstan analyse --no-progress`
+- [ ] Relevant docs updated (see §0 Documentation-First)
+
+### Code Review Checklist (Reviewer)
+
+- [ ] **Pattern compliance**: Action uses correct base class, single `execute()`, `transaction()` +
+  `log()` for commands, no `transaction()`/`log()` for reads
+- [ ] **Security scan**: No XSS vectors (`{!! $userContent !!}`), no SQL injection
+  (`whereRaw()` with concatenation), no mass assignment (`create($request->all())`)
+- [ ] **N+1 audit**: All relationship accesses in loops have matching `->with()` on the query
+- [ ] **Exception handling**: Business rules throw `RejectedException`, not `RuntimeException`;
+  Livewire catches `RejectedException` specifically
+- [ ] **Cache invalidation**: Every mutation that changes cached data has corresponding
+  `Cache::forget()` or event-driven invalidation
+- [ ] **Test coverage**: New Actions have test files; existing tests still pass
+- [ ] **Documentation**: Module doc, reference doc, or `known-issues.md` updated if behavior changed
 
 ---
 
-## 8. Localization
+## 10. Testing Conventions
+
+### 10.1 Mocking Strategy
+
+| Scenario | Approach | Example |
+|----------|----------|---------|
+| External HTTP calls | `Http::fake()` | `Http::fake(['api.example.com/*' => Http::response(...)])` |
+| SmartLogger (unit tests) | `Event::fake()` or partial mock | `Mail::fake()`, `Notification::fake()` |
+| SmartLogger (feature tests) | Use real implementation | Let SmartLogger write to the log — assertions verify via `ActivityLog` model |
+| Eloquent models | Use factories + real database | Never mock Eloquent — always test against real DB (feature tests) |
+| File system | `Storage::fake()` | `Storage::fake('local')` → `Storage::disk('local')->assertExists(...)` |
+| Cache | `Cache::shouldReceive()` (only in unit) | Prefer `Cache::forget()` assertions via event listeners in feature tests |
+| Queue | `Queue::fake()` | `Queue::assertPushed(Job::class)` |
+| Notifications | `Notification::fake()` | `Notification::assertSentTo(User::class, ...)` |
+| Events | `Event::fake([SpecificEvent::class])` | Assert event was dispatched with correct payload |
+
+**Rules:**
+- Never mock Eloquent models or the Query Builder — use real database in feature tests.
+- Never use `Mockery::spy()` for assertions — use Laravel's built-in `fake()` methods.
+- Mock external boundaries only (HTTP, mail, queue, filesystem, cache).
+- Business logic in Actions is tested with real dependencies — only infrastructure boundaries are mocked.
+
+### 10.2 Coverage Requirements
+
+| Layer | Minimum Coverage | Testing Type |
+|-------|-----------------|--------------|
+| Entities | 100% | Unit |
+| Enums | 100% | Unit |
+| DTOs / Data | 100% | Unit |
+| Command Actions | ≥ 90% | Feature |
+| Read Actions | ≥ 80% | Feature |
+| Process Actions | ≥ 90% | Feature |
+| Livewire components | ≥ 80% | Feature |
+| Policies | 100% | Unit |
+| Console Commands | ≥ 80% | Feature |
+| **Overall** | **≥ 85%** | |
+
+Coverage is verified via `php artisan test --coverage` or `composer run test:coverage`. A PR that
+causes overall coverage to drop below threshold must add missing tests before merging.
+
+### 10.3 Commit & Branch Conventions
+
+**Branch naming:**
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Feature | `feat/{kebab-description}` | `feat/add-internship-export` |
+| Bug fix | `fix/{issue-short-description}` | `fix/login-redirect-loop` |
+| Hotfix | `hotfix/{description}` | `hotfix/critical-security-patch` |
+| Refactor | `refactor/{module}-{scope}` | `refactor/setup-audit-cache` |
+| Docs | `docs/{what}` | `docs/conventions-security` |
+| Chore | `chore/{task}` | `chore/update-dependencies` |
+
+**Commit message format:**
+
+```
+type(scope): description
+
+- Bullet points for details (optional)
+- Reference issues: #123
+```
+
+| Type | When |
+|------|------|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `refactor` | Code change with no behavior change |
+| `docs` | Documentation only |
+| `chore` | Maintenance, deps, tooling |
+| `test` | Adding or fixing tests |
+| `perf` | Performance improvement |
+| `security` | Security fix |
+
+Examples:
+
+```
+feat(internship): add CSV export for approved registrations
+
+fix(auth): prevent infinite redirect after setup completion
+
+refactor(setup): move dispatchEvent inside transaction callback
+```
+
+### 10.4 Technical Debt Annotation
+
+Use these annotations in code comments for tracking technical debt:
+
+| Annotation | Meaning | Convention |
+|------------|---------|------------|
+| `TODO(username, YYYY-MM-DD): message` | Planned work | Include author and date |
+| `FIXME(username, YYYY-MM-DD): message` | Known bug | Include author and date |
+| `HACK` | Suboptimal code that works | Must explain why |
+| `XXX` | Danger — fragile or risky code | Must explain the risk |
+
+```php
+// TODO(alice, 2026-07-01): Extract this inline query into a Read Action
+// HACK: This works but bypasses the standard validation chain because...
+```
+
+---
+
+## 11. Localization
 
 ### File Structure
 

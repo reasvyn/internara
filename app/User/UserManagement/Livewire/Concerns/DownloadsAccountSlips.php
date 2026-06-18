@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Livewire\Concerns;
 
-use App\Auth\ApiTokens\Models\ApiToken;
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\User\Models\User;
 use App\User\UserManagement\Notifications\ActivationCodeNotification;
 
@@ -19,7 +19,7 @@ trait DownloadsAccountSlips
     public function showSlip(string $id): void
     {
         $this->slipUser = User::findOrFail($id);
-        $this->slipCode = ApiToken::generateFor($this->slipUser, 'activation', ['name' => 'Account Activation'])['plain_text'];
+        $this->slipCode = AccessToken::generateFor($this->slipUser, 'activation', ['name' => 'Account Activation'])['plain_text'];
         $this->showAccountSlip = true;
     }
 
@@ -29,7 +29,7 @@ trait DownloadsAccountSlips
             return;
         }
 
-        $this->slipCode = ApiToken::generateFor($this->slipUser, 'activation', ['name' => 'Account Activation'])['plain_text'];
+        $this->slipCode = AccessToken::generateFor($this->slipUser, 'activation', ['name' => 'Account Activation'])['plain_text'];
         flash()->success(__('user.manager.code_regenerated'));
     }
 

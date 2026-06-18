@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Setup\SetupWizard\Livewire;
 
+use App\Core\Exceptions\RejectedException;
 use App\Core\Support\AppInfo;
 use App\Core\Support\SmartLogger;
 use App\Setup\Entities\SetupEntity;
@@ -13,6 +14,7 @@ use App\Setup\SetupWizard\Livewire\Forms\SchoolForm;
 use App\Setup\SetupWizard\Livewire\Forms\SuperAdminForm;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -262,15 +264,8 @@ class SetupWizard extends Component
             $this->currentStep = 6;
             session()->put('setup.completed', true);
             flash()->success(__('setup.wizard.setup_complete'));
-        } catch (\RuntimeException $e) {
-            SmartLogger::error('Setup wizard failed')
-                ->module('Setup')
-                ->event('wizard.failed')
-                ->withPayload(['error' => $e->getMessage()])
-                ->withPiiMasking()
-                ->systemOnly()
-                ->save();
-            flash()->error(__('setup.wizard.install_failed_generic'));
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
         } catch (\Throwable $e) {
             SmartLogger::error('Setup wizard crashed')
                 ->module('Setup')
@@ -283,10 +278,11 @@ class SetupWizard extends Component
         }
     }
 
-    public function finishSession(): void
+    public function finishSession(): RedirectResponse
     {
         session()->forget('setup.completed');
-        $this->redirect(route('login'));
+
+        return redirect()->to(route('login'));
     }
 
     public function title(): string

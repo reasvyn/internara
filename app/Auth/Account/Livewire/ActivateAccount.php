@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Auth\Account\Livewire;
 
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\Auth\Account\Actions\ActivateAccountAction;
 use App\Auth\Account\Entities\AccountActivation;
-use App\Auth\ApiTokens\Models\ApiToken;
 use App\User\Models\User;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -58,7 +58,7 @@ class ActivateAccount extends Component
             return;
         }
 
-        if (! ApiToken::verify($user, 'activation', $this->code)) {
+        if (! AccessToken::verify($user, 'activation', $this->code)) {
             RateLimiter::hit($throttleKey, 300);
 
             $this->addError('code', __('auth.activate.invalid_code'));
@@ -66,7 +66,7 @@ class ActivateAccount extends Component
             return;
         }
 
-        ApiToken::revokeFor($user, 'activation');
+        AccessToken::revokeFor($user, 'activation');
 
         $action->execute($user, $this->password);
 

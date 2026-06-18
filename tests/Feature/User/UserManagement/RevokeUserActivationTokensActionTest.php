@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Auth\ApiTokens\Models\ApiToken;
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\RevokeUserActivationTokensAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -11,7 +11,7 @@ uses(LazilyRefreshDatabase::class);
 
 test('revokes activation tokens for user', function () {
     $user = User::factory()->create();
-    $token = ApiToken::factory()->create([
+    $token = AccessToken::factory()->create([
         'user_id' => $user->id,
         'token_type' => 'activation',
         'revoked_at' => null,
@@ -34,12 +34,12 @@ test('does not fail when user has no activation tokens', function () {
 
 test('only revokes activation type tokens', function () {
     $user = User::factory()->create();
-    $activation = ApiToken::factory()->create([
+    $activation = AccessToken::factory()->create([
         'user_id' => $user->id,
         'token_type' => 'activation',
         'revoked_at' => null,
     ]);
-    $other = ApiToken::factory()->create([
+    $other = AccessToken::factory()->create([
         'user_id' => $user->id,
         'token_type' => 'api',
         'revoked_at' => null,

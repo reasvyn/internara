@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Auth\ApiTokens\Entities;
+namespace App\Auth\AccessTokens\Entities;
 
 use App\Core\Entities\BaseEntity;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-final readonly class ApiTokenState extends BaseEntity
+final readonly class AccessTokenState extends BaseEntity
 {
     public function __construct(
         private ?Carbon $expiresAt,
