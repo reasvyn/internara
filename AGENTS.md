@@ -1,6 +1,6 @@
 <project-guidelines>
 > **Last updated:** 2026-06-24
-> **Changes:** migration consolidation sync — document 57→sequential layers (2026_01_01 through 2026_01_06); add app/Core/Services layer; verified models 44, policies 31; remove known-issues.md redirect
+> **Changes:** add 4-layer data flow with DTO boundaries to prevent circular dependencies; add Action DTO/ActionResponse rules; add dependency safety rules for Entities/Models/DTOs
 >
 > **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
 > provides the essential mental model, quick-reference essentials, and project-specific rules needed
@@ -80,6 +80,9 @@ Layer  1: Infrastructure (PHP 8.4, Laravel 13, Composer packages)
 - Complex queries go in Read Actions
 - `BaseAction::transaction()` auto-detects nesting, queues events until commit, retries on deadlock
   (3 attempts)
+- **Command/Process Actions MUST accept a DTO (`BaseData`) as primary parameter** — never raw `array`
+- **Command/Process Actions MUST return `ActionResponse`** — never return Model directly
+- **Actions MUST delegate business rules to Entities** — throw `RejectedException` on violation
 
 ## Base Class Mandate
 
@@ -98,6 +101,50 @@ Layer  1: Infrastructure (PHP 8.4, Laravel 13, Composer packages)
 | Enum                 | `implements LabelEnum`                          | Plain PHP enum              |
 | State machine        | `implements StatusEnum` + `LabelEnum`           | Boolean field               |
 | Exception            | `extends AppException` or `ModuleException`     | `\Exception`                |
+| Action return        | `ActionResponse`                               | Returning Model directly     |
+| Action input         | `BaseData` DTO                                 | Raw `array` parameter        |
+
+## 4-Layer Data Flow (DTO Boundaries)
+
+```
+UI LAYER (Livewire/Controller/Console)
+    │  receives: FormRequest/LivewireForm (validated)
+    │  outputs: DTO (BaseData) ── IMMUTABLE BOUNDARY
+    ▼
+BUSINESS LAYER (Action/Service/Support)
+    │  receives: DTO (BaseData) ONLY
+    │  delegates: business rules → Entity
+    │  persists: via Model (DTO values → Model attributes)
+    │  returns: ActionResponse ── IMMUTABLE BOUNDARY
+    ▼
+DOMAIN LAYER (Entity/Event)
+    │  created from: Model record (via fromModel())
+    │  answers: boolean/enum business questions (canBeDeleted, isActive)
+    │  dispatches: Events (after transaction commit)
+    ▼
+DATA LAYER (Model)
+    │  Eloquent persistence — knows nothing about layers above
+```
+
+**Boundary rules:**
+- UI → Business: ALWAYS via DTO (never raw array, never Request, never Model)
+- Business → Domain: Entity created FROM Model WITHIN Action (never passed from UI)
+- Business → Data: Model::create/update with DTO values only
+- Livewire MUST NOT call `Model::create/update/delete` directly
+- Livewire MUST NOT access Entity methods directly
+- Entity MUST NOT import Action, Service, Livewire, or Controller
+
+## Circular Dependency Prevention
+
+Dependencies flow ONE direction: UI → Business → Domain → Data
+
+| Entity type | May depend on | Must NOT depend on |
+|-------------|--------------|-------------------|
+| DTO (BaseData) | Core BaseData, scalars, enums, Carbon | Models, Actions, Entities, Livewire, HTTP |
+| Entity (BaseEntity) | Core BaseEntity, Carbon, enums | Actions, Services, Livewire, HTTP |
+| Model (BaseModel) | Core BaseModel, Eloquent | Actions, Livewire, HTTP (except asEntity bridges) |
+| Action | Models, Entities, DTOs, other Actions | Livewire, Controllers, HTTP |
+| Livewire | Actions (via injection), Models (read-only) | Entity directly, Model::create/update/delete |
 
 ## Cross-Module Communication
 
@@ -127,9 +174,9 @@ RuntimeException
 
 ## Data Flow
 
-**Mutations:** Livewire/Controller → Policy → Command Action (Transaction → Log → Event) → DB
-**Simple reads:** Livewire → Model::query() → DB **Complex reads:** Livewire → Read Action → Model →
-DB
+**Mutations:** Livewire/Controller → Policy → Command Action (DTO → Entity check → Transaction → Log → Event) → DB
+**Simple reads:** Livewire → Model::query() → DB
+**Complex reads:** Livewire → Read Action (DTO) → Model → DB
 
 # Module Map
 
@@ -275,6 +322,11 @@ php artisan notifications:prune        # Prune old notifications
 - Cache keys must be registered in `config/cache-keys.php` — never inline strings
 - Livewire components must NOT call `Model::create/update/delete` directly — use Actions
 - Actions must extend the correct base class (Command/Read/Process)
+- Command/Process Actions MUST accept `BaseData` DTO, never raw `array`
+- Command/Process Actions MUST return `ActionResponse`, never Model directly
+- Livewire components must NOT access Entity methods directly — delegate to Action
+- Entity classes must NOT import Actions, Services, Livewire, or Controllers
+- DTOs must NOT import Models, Actions, Entities, or Livewire — only Core BaseData, scalars, enums, Carbon
 
 ## Testing
 
@@ -307,6 +359,8 @@ flowchart LR
 | Architecture & 12 layers     | `docs/architecture.md`                                                   |
 | Action Triad                 | `docs/architecture.md` (§Action Triad)                                   |
 | Base Class Mandate           | `docs/architecture.md` (§Base Class Mandate)                             |
+| Data Flow & DTO boundaries   | `docs/architecture.md` (§Data Flow)                                      |
+| Circular Dependency Prevention | `docs/architecture.md` (§Circular Dependency Prevention)                |
 | File structure               | `docs/architecture/modular-pattern.md`                                   |
 | Naming conventions           | `docs/conventions.md` (§4)                                               |
 | PHP language rules           | `docs/conventions.md` (§2)                                               |
@@ -335,7 +389,7 @@ searching.
 ## Product & Architecture
 
 - `docs/foundation/product-definition.md` — Product scope, personas, system boundary
-- `docs/architecture.md` — 12-layer architecture, Action Triad, data flow
+- `docs/architecture.md` — 12-layer architecture, Action Triad, 4-layer data flow, circular dep. prevention
 - `docs/conventions.md` — PHP rules, naming, security, testing conventions
 - `docs/key-features.md` — Feature inventory across all 19 modules
 - `docs/foundation/rbac.md` — Role-based access control, permissions model
@@ -471,6 +525,7 @@ Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
 - [ ] No debug calls (`dd/dump/ray/var_dump/print_r/die`)
 - [ ] All user-facing strings use `__()` helper
 - [ ] Action uses correct triad pattern
+- [ ] Command/Process Action accepts DTO and returns ActionResponse
 - [ ] Cache keys registered in `config/cache-keys.php`
 - [ ] No N+1 queries — eager loading verified
 - [ ] No unescaped `{!! !!}` for user content

@@ -4,14 +4,17 @@
 
 All business logic is encapsulated in Action classes with a single `execute()` method. Actions live
 in `app/{Module}/Actions/{Verb}{Noun}Action.php` and extend `BaseAction`. They are the sole
-orchestrators of validation, persistence, and side effects.
+orchestrators of validation, persistence, and side effects. Actions enforce the 4-layer data flow:
+receive a DTO (never raw array), delegate business rules to Entities, persist via Models, and return
+ActionResponse (never Model directly).
 
 ## Why It Matters
 
 The Action pattern creates a predictable, testable boundary around every business operation. Callers
 (Livewire components, Controllers, Artisan commands) always interact the same way: inject the Action
-via dependency injection, call `execute()` with the required parameters, and handle the result. This
-eliminates scattered business logic and makes every operation independently verifiable.
+via dependency injection, call `execute()` with a DTO, and handle the `ActionResponse`. This
+eliminates scattered business logic, prevents circular dependencies, and makes every operation
+independently verifiable.
 
 ## When It Applies
 
@@ -21,11 +24,17 @@ business process.
 
 The `execute()` method follows these conventions:
 
-- Create: `execute(array $data): Model`
-- Update: `execute(Model $model, array $data): Model`
-- Delete: `execute(Model $model): void`
-- Toggle/state change: `execute(Model $model): Model`
-- Complex operations: `execute(array $data): array`
+- Create: `execute(Data $data): ActionResponse`
+- Update: `execute(Model $model, Data $data): ActionResponse`
+- Delete: `execute(Model $model): ActionResponse`
+- Toggle/state change: `execute(Model $model, Data $data): ActionResponse`
+- Complex operations: `execute(Data $data): ActionResponse`
+
+**Key rules:**
+- Command/Process Actions MUST accept a DTO (`BaseData`) as primary parameter — never raw `array`
+- Command/Process Actions MUST return `ActionResponse` — never return Model directly
+- Actions MUST delegate business rules to Entity methods — throw `RejectedException` on violation
+- Read Actions accept DTO or explicit typed parameters — never raw `array`
 
 Exceptions: Read-only queries for display purposes (the query in a Livewire component's `render()`
 method) do not need to be Actions.

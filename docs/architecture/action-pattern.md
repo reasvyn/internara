@@ -67,6 +67,8 @@ Action did it.
 - MUST NOT contain inline `canX()` checks — delegate to Entity methods and throw `RejectedException`
 - MUST throw `RejectedException` for business rule violations, never `RuntimeException`
 - MUST have exactly one public method: `execute()`
+- **MUST accept a DTO (`BaseData`) as the primary parameter** — never raw `array`
+- **MUST return `ActionResponse`** — never return the Model directly
 - SHOULD dispatch a module event for significant state changes
 
 ### Structure
@@ -77,7 +79,9 @@ declare(strict_types=1);
 namespace App\{Module}\{SubModule}\Actions;
 
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 use App\{Module}\{SubModule}\Models\{Entity};
+use App\{Module}\{SubModule}\Data\{Entity}Data;
 
 class {Verb}{Entity}Action extends BaseCommandAction
 {
@@ -85,7 +89,7 @@ class {Verb}{Entity}Action extends BaseCommandAction
         protected readonly {Dependency}Action $dependency,
     ) {}
 
-    public function execute({Entity} ${entity}, {Data} $data): {Entity}
+    public function execute({Entity} ${entity}, {Entity}Data $data): ActionResponse
     {
         ${entity}->as{Entity}()->ensureCan{Verb}();
 
@@ -97,7 +101,7 @@ class {Verb}{Entity}Action extends BaseCommandAction
             ]);
             event(new {Entity}{Vebed}(${entity}));
 
-            return ${entity};
+            return $this->respondUpdated(${entity});
         });
     }
 }
@@ -105,9 +109,10 @@ class {Verb}{Entity}Action extends BaseCommandAction
 
 ### Return Type Conventions
 
-- Create: returns the created Model
-- Update: returns the updated Model
-- Delete: returns `void` or an `ActionResponse`
+- Create: `ActionResponse::created()` — wraps the created Model
+- Update: `ActionResponse::updated()` — wraps the updated Model
+- Delete: `ActionResponse::deleted()` — success message
+- State transition: `ActionResponse::updated()` with entity data
 - State transition: returns the Model
 - Complex operations: return an array, DTO, or `ActionResponse`
 

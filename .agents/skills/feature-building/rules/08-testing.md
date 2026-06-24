@@ -17,10 +17,10 @@ integration tests confirm everything works together.
 
 Every new feature must have tests at the appropriate level:
 
+- DTO: test construction, `fromArray()` hydration, `toArray()` serialization, `merge()` immutability
 - Entity: test business rules directly — instantiate the Entity, call methods, assert booleans
-- Action: test validation, persistence, side effects — resolve Action, call execute, assert model
-  exists or exception thrown
-- Livewire: test component interactions — set properties, call methods, assert state changes
+- Action: test with DTO input, assert `ActionResponse` properties, verify persistence and side effects
+- Livewire: test component interactions — build DTO, call Action via method injection, assert state changes
 
 Test recommendations:
 

@@ -96,6 +96,9 @@ docs/architecture/livewire-pattern.md
 docs/architecture/policy-pattern.md
 docs/architecture/logging-pattern.md
 docs/architecture/testing-pattern.md
+docs/architecture/data-pattern.md
+docs/architecture/cache-pattern.md
+docs/architecture/service-pattern.md
 
 # If syncing module docs:
 docs/modules/{module}.md
