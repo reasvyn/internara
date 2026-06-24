@@ -1,7 +1,7 @@
 # Service Pattern
 
-> **Last updated:** 2026-06-10
->
+> **Last updated:** 2026-06-24
+> **Changes:** add note about app/Core/Services layer establishment; clarify when to use vs Actions
 > This document explains when and why Services exist despite the deliberate architectural
 > choice of Actions over traditional Service classes. It is not an endorsement of the Service pattern
 > — it is a boundary document that prevents Service scope creep.
@@ -25,7 +25,12 @@ The Action Triad (Command, Read, Process) solves this by splitting business oper
 
 ## 2. When Services Are Appropriate
 
-Services are the **exception**, not the rule. A class belongs in `Services/` only when all of the following are true:
+Services are the **exception**, not the rule. They are colocated in `app/Core/Services/` as a dedicated layer for infrastructure-aware utilities that do not fit the Action model. 
+
+**Existing services:**
+- `ModuleDiscoverService` — module discovery and registration during boot
+
+A class belongs in `Services/` only when all of the following are true:
 
 1. **It is infrastructure code**, not business logic. The class interacts with the framework, container, config, facades, or system environment — not with domain models or business rules.
 2. **It does not fit a single Action**. The class provides multiple loosely related capabilities where extracting each into its own Action would create more surface area than value.

@@ -1,7 +1,7 @@
 # Documentation Index
 
-> **Last updated:** 2026-06-23
-> **Changes:** sync — fix ADR count (13→14); remove known-issues.md, redirect to GitHub Issues
+> **Last updated:** 2026-06-24
+> **Changes:** sync — document migration consolidation (57 migrations into sequential layers); add Services layer reference; model/policy counts verified (44/31 models/policies)
 >
 > Complete catalog of all documentation in the `docs/` directory. This index is the single entry point for navigating Internara's documentation. Every file listed here is part of the authoritative system documentation and must be kept in sync with the implementation.
 
