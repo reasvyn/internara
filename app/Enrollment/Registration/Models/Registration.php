@@ -134,14 +134,13 @@ class Registration extends BaseModel
 
     public function mentee(): HasOne
     {
-        return $this->hasOne(InternshipGroupMember::class, 'registration_id')
-            ->where('role', 'student');
+        return $this->hasOne(InternshipGroupMember::class, 'registration_id');
     }
 
     public function mentors(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'internship_group_members', 'registration_id', 'mentor_id')
-            ->withPivot('role', 'joined_at')
+        return $this->belongsToMany(User::class, 'internship_group_members', 'registration_id', 'user_id')
+            ->withPivot('joined_at')
             ->withTimestamps();
     }
 

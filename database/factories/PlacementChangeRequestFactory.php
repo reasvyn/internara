@@ -17,18 +17,25 @@ class PlacementChangeRequestFactory extends Factory
 
     public function definition(): array
     {
-        $internship = Internship::factory()->create();
-        $registration = Registration::factory()->create(['internship_id' => $internship->id]);
-
         return [
-            'registration_id' => $registration->id,
-            'from_placement_id' => Placement::factory()->create([
-                'internship_id' => $internship->id,
-            ])->id,
-            'to_placement_id' => Placement::factory()->create(['internship_id' => $internship->id])
-                ->id,
+            'registration_id' => Registration::factory(),
+            'from_placement_id' => Placement::factory(),
+            'to_placement_id' => Placement::factory(),
             'reason' => fake()->paragraph(),
             'requested_by' => User::factory(),
         ];
+    }
+
+    public function forRegistration(Registration $registration): static
+    {
+        return $this->state(fn (array $attrs) => [
+            'registration_id' => $registration->id,
+            'from_placement_id' => Placement::factory()->state([
+                'internship_id' => $registration->internship_id,
+            ]),
+            'to_placement_id' => Placement::factory()->state([
+                'internship_id' => $registration->internship_id,
+            ]),
+        ]);
     }
 }
