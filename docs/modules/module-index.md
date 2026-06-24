@@ -1,7 +1,7 @@
 # Module Documentation Index
 
-> Last updated: 2026-06-23
-> Changes: sync — fix model/policy/migration counts (38→40+, 27→28+, 49→51)
+> **Last updated:** 2026-06-24
+> **Changes:** sync — fix migration count (51→43+); sync with latest database schema
 
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire
@@ -369,7 +369,7 @@ All 19 modules are vertical slices cross-cutting the 12-layer architecture defin
 | Layer | Name              | Description                                                                                      |
 | ----- | ----------------- | ------------------------------------------------------------------------------------------------ |
 | 1     | Infrastructure    | PHP 8.4, Laravel 13, Composer/Spatie packages, npm assets                                        |
-| 2     | Persistence       | Database (SQLite/MySQL), 51 migrations, config, media library, cache, queue                      |
+| 2     | Persistence       | Database (SQLite/MySQL), 43+ migrations, config, media library, cache, queue                      |
 | 3     | Core Contracts    | LabelEnum, StatusEnum, ColorableEnum, exception hierarchy                                        |
 | 4     | Core Base Classes | BaseModel, BaseAuthenticatable, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, BaseController, BaseFormRequest, BaseData, BaseEvent |
 | 5     | Module Models     | Eloquent models (40+), UUID PKs, factories, seeders                                               |

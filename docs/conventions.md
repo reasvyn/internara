@@ -1,7 +1,7 @@
 # Coding Conventions
 
-> **Last updated:** 2026-06-18
-> **Changes:** sync — fix section numbering (duplicate §4, out-of-order §7–§12)
+> **Last updated:** 2026-06-24
+> **Changes:** sync — add 2 missing pre-commit items (DTO/ActionResponse check, doc metadata check); sync with AGENTS.md pre-commit checklist
 
 This document describes conventions for writing code in the Internara codebase. These rules exist to
 produce consistent, predictable code that any team member can read without context-switching.
@@ -547,9 +547,11 @@ where the container is not available (e.g., `database/factories/`).
 - [ ] No `dd()`, `dump()`, `ray()`, `var_dump()`, `print_r()`, `die()` left in code
 - [ ] All user-facing strings use `__()` helper
 - [ ] Action follows the correct triad pattern (Command/Read/Process)
+- [ ] Command/Process Action accepts DTO (for 3+ params) and returns ActionResponse (for structured feedback)
 - [ ] Cache keys registered in `config/cache-keys.php`
 - [ ] No N+1 queries — eager loading verified
 - [ ] No unescaped `{!! !!}` for user content
+- [ ] Doc metadata updated: Last updated date + one-line Changes description
 - [ ] Tests pass: `php artisan test --compact`
 - [ ] Pint clean: `vendor/bin/pint --dirty --format agent`
 - [ ] PHPStan passes: `vendor/bin/phpstan analyse --no-progress`
