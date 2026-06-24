@@ -19,7 +19,6 @@ class InternshipGroupMemberFactory extends Factory
             'internship_group_id' => InternshipGroup::factory(),
             'registration_id' => Registration::factory(),
             'user_id' => null,
-            'role' => 'student',
             'joined_at' => now(),
         ];
     }
