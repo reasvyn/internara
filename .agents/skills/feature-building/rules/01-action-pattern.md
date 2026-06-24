@@ -24,17 +24,17 @@ business process.
 
 The `execute()` method follows these conventions:
 
-- Create: `execute(Data $data): ActionResponse`
-- Update: `execute(Model $model, Data $data): ActionResponse`
-- Delete: `execute(Model $model): ActionResponse`
-- Toggle/state change: `execute(Model $model, Data $data): ActionResponse`
+- Create: `execute(Data $data): Model|ActionResponse`
+- Update: `execute(Model $model, Data|array $data): Model|ActionResponse`
+- Delete: `execute(Model $model): void|ActionResponse`
+- Toggle/state change: `execute(Model $model, mixed ...$params): Model|ActionResponse`
 - Complex operations: `execute(Data $data): ActionResponse`
 
 **Key rules:**
-- Command/Process Actions MUST accept a DTO (`BaseData`) as primary parameter — never raw `array`
-- Command/Process Actions MUST return `ActionResponse` — never return Model directly
+- Command/Process Actions SHOULD accept `BaseData` DTO for 3+ params — never raw `array`
+- Command/Process Actions SHOULD return `ActionResponse` for structured feedback
 - Actions MUST delegate business rules to Entity methods — throw `RejectedException` on violation
-- Read Actions accept DTO or explicit typed parameters — never raw `array`
+- Read Actions may accept explicit typed params; use DTO for complex filters
 
 Exceptions: Read-only queries for display purposes (the query in a Livewire component's `render()`
 method) do not need to be Actions.

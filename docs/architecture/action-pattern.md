@@ -67,8 +67,10 @@ Action did it.
 - MUST NOT contain inline `canX()` checks — delegate to Entity methods and throw `RejectedException`
 - MUST throw `RejectedException` for business rule violations, never `RuntimeException`
 - MUST have exactly one public method: `execute()`
-- **MUST accept a DTO (`BaseData`) as the primary parameter** — never raw `array`
-- **MUST return `ActionResponse`** — never return the Model directly
+- **SHOULD accept a DTO (`BaseData`) for 3+ params or multiple callers.** Simple ops may use typed
+  scalars. NEVER accept raw `array` — if you need an array, create a DTO.
+- **SHOULD return `ActionResponse`** when the caller needs message/redirect/error context. Simple
+  create/update MAY return the Model directly.
 - SHOULD dispatch a module event for significant state changes
 
 ### Structure
@@ -109,10 +111,11 @@ class {Verb}{Entity}Action extends BaseCommandAction
 
 ### Return Type Conventions
 
-- Create: `ActionResponse::created()` — wraps the created Model
-- Update: `ActionResponse::updated()` — wraps the updated Model
-- Delete: `ActionResponse::deleted()` — success message
+- Create: prefer `ActionResponse::created()` or return Model directly for simple cases
+- Update: prefer `ActionResponse::updated()` or return Model directly for simple cases
+- Delete: `ActionResponse::deleted()` or `void`
 - State transition: `ActionResponse::updated()` with entity data
+- When in doubt, default to `ActionResponse` — it is always the safe choice
 - State transition: returns the Model
 - Complex operations: return an array, DTO, or `ActionResponse`
 
@@ -131,6 +134,7 @@ statistics — that are too heavy for inline `Model::query()` in a Livewire comp
 - MUST NOT mutate any database state
 - MUST NOT call `transaction()` or `log()`
 - Single public `execute()` method — never add a second public method
+- MAY accept typed scalars (e.g., `int $id`, `string $status`). Use a DTO for 3+ filter params.
 - SHOULD return typed objects or collections, never raw arrays
 - MUST pass through authorization unless the calling layer already authorized
 

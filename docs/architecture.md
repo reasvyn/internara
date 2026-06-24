@@ -3,7 +3,9 @@
 > **Last updated:** 2026-06-24
 > **Changes:** complete rewrite — new 4-layer data flow with DTO boundaries to prevent circular
 > dependencies; consolidated Action Triad, Validation Strategy, and Dependency Rules; added
-> Layer Interaction Flow diagram with explicit boundary contracts
+> Layer Interaction Flow diagram with explicit boundary contracts.
+> **Rebalanced:** DTO only for 3+ params (not mandatory for all), ActionResponse for structured
+> feedback (not mandatory for simple returns), Livewire can access Entities for read-only UI checks
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad
 > pattern, DTO-boundary data flow, cross-module communication, exception handling, validation
@@ -232,10 +234,10 @@ The 12 infrastructure layers group into 4 logical layers that govern **data flow
 
 **Boundary contract summary:**
 
-| Boundary | What crosses | What NEVER crosses |
-|----------|-------------|-------------------|
-| **UI → Business** | DTO (`BaseData`), FormRequest, LivewireForm (validated) | Raw `Request`, raw arrays, Eloquent Models, Entities |
-| **Business → Domain** | Model record (for Entity construction), explicit scalar values | DTOs (already consumed), raw arrays, UI classes |
+| Boundary | What crosses | What SHOULD NOT cross |
+|----------|-------------|----------------------|
+| **UI → Business** | DTO (`BaseData`), FormRequest, LivewireForm (validated), typed scalars | Raw `Request`, raw arrays (prefer DTO for 3+ params), Eloquent Models |
+| **Business → Domain** | Model record (for Entity construction), explicit scalar values | DTOs (already consumed), UI classes |
 | **Domain → Data** | Eloquent query results, Model instances | DTOs, Entities (they are readonly snapshots) |
 | **Event → Listener** | Event object (extends `BaseEvent`) | UI classes, HTTP context |
 
@@ -296,13 +298,15 @@ upload files.
 - MUST wrap all database operations in `$this->transaction()`
 - MUST call `$this->log()` after successful mutation
 - MUST be preceded by a policy check in the calling layer (Livewire/Controller)
-- **MUST accept a DTO (`BaseData`) as the primary parameter** — never raw `array`, never
-  `Illuminate\Http\Request`
+- **SHOULD accept a DTO (`BaseData`) as the primary parameter** for complex operations (3+ params
+  or multiple callers). Simple operations with 1-2 typed parameters may use direct scalars.
+  **NEVER accept raw `array`** — if you need an array, create a DTO.
 - MAY accept a Model instance as a second parameter for update/delete operations (to identify the
-  record), but the mutation data itself MUST be a DTO
+  record), but the mutation data itself MUST use a DTO or typed params
 - MUST delegate business rule checks to Entity methods and throw `RejectedException` on violation
 - MUST throw `RejectedException` for business rule violations, never `RuntimeException`
-- **MUST return `ActionResponse`** — never return the Model directly
+- **SHOULD return `ActionResponse`** for operations that communicate status, message, redirect, or
+  errors. Simple create/update MAY return the Model directly; delete MAY return `void`.
 - MUST have exactly one public method: `execute()`
 - SHOULD dispatch a module event for significant state changes via `event()` or
   `$this->dispatchEvent()`
@@ -369,8 +373,9 @@ or `log()`)
 - MUST extend `BaseReadAction`
 - MUST NOT mutate any database state
 - MUST NOT call `transaction()` or `log()`
-- MUST accept a DTO or explicit typed parameters — never raw `array`
-- SHOULD return typed objects, collections, or `ActionResponse` — never raw arrays
+- MAY accept explicit typed parameters (e.g., `int $id`, `string $status`). Use a DTO when there
+  are 3+ filter/sort parameters.
+- SHOULD return typed objects, collections, or arrays — avoid `mixed`
 - MUST pass through authorization (unless the calling layer already authorized)
 - Single public `execute()` method — never add a second public method
 
@@ -417,7 +422,8 @@ level).
 - MUST extend `BaseProcessAction`
 - MUST compose other Actions via constructor injection
 - MUST handle partial failure — if step 3 of 5 fails, what happens to steps 1–2?
-- **MUST accept a DTO as the primary parameter** — same rule as Command Actions
+- SHOULD accept a DTO for workflow-level orchestration data. Simple orchestration may accept
+  typed scalars. The composed Command Actions handle their own DTO contracts internally.
 - SHOULD emit a single module event representing the completed process
 - MUST NOT duplicate business logic that already exists in Command Actions
 
@@ -469,9 +475,10 @@ final class ProcessRegistrationAction extends BaseProcessAction
 
 ### Core Principle: DTOs as Layer Boundaries
 
-The defining architectural rule of Internara: **every layer boundary is crossed with a DTO.** No
-layer ever receives raw request input, and no layer ever passes internal state as a raw array. This
-prevents circular dependencies by making dependency direction explicit at compile time.
+Data crosses layer boundaries through typed contracts, not raw arrays. For complex operations (3+
+params), use a DTO (`BaseData`). For simple operations (1-2 params), typed scalars are sufficient.
+The key invariant: **no layer receives raw `Illuminate\Http\Request` or unchecked user input.**
+This prevents circular dependencies by keeping dependency direction explicit.
 
 ### Mutation Flow (Writes)
 
@@ -778,14 +785,13 @@ only exception.
 
 ### What MUST NOT Cross Each Boundary
 
-| Boundary | NEVER crosses | Why |
-|----------|--------------|-----|
-| **UI → Business** | `Eloquent Model` | Breaks layer isolation; couples UI to persistence |
+| Boundary | MUST NOT cross | Why |
+|----------|---------------|-----|
+| **UI → Business** | `Eloquent Model` (for writes) | Breaks layer isolation; couples UI to persistence |
 | **UI → Business** | `Request` object | Action becomes untestable without HTTP |
-| **UI → Business** | Raw `array` | No type safety, no documentation |
-| **UI → Domain** | Entity directly | Entity creation is the Action's responsibility |
-| **Business → UI** | `Eloquent Model` directly | UI would depend on Model; use `ActionResponse` |
-| **Business → UI** | `RejectedException` as control flow | Use `ActionResponse` for expected failures |
+| **UI → Business** | Raw `array` for 3+ params (use DTO) | Type safety and documentation |
+| **UI → Domain** | Entity for WRITE decisions | Entity creation is the Action's responsibility |
+| **Business → UI** | `RejectedException` as control flow | Use `ActionResponse` or return type for expected failures |
 | **Domain → Business** | DTO (already consumed) | DTOs are input-only, consumed once |
 | **Domain → Data** | Entity (it is readonly) | Entities are snapshots, never persisted |
 
@@ -913,9 +919,11 @@ asynchronously.
 5. **Livewire components must never call `Model::create()` or `Model::update()` or
    `Model::delete()` directly.** All persistence goes through a Command Action.
 
-6. **Livewire components must never access Entities directly.** Entity creation is the
-   responsibility of Actions. If a Livewire component needs to check a business rule, it calls an
-   Action, which uses an Entity internally.
+6. **Livewire components may access Entities for READ-ONLY UI decisions** (e.g., conditionally
+   showing a "delete" button based on `$entity->canBeDeleted()`). For WRITE decisions (e.g.,
+   "can this registration be approved?"), the check MUST go through an Action. Rule of thumb:
+   if the Entity check determines whether to SHOW something → OK. If it determines whether to
+   DO something → delegate to Action.
 
 7. **Services must never call Actions.** If a Service needs business logic, it must be refactored
    into an Action. Services are infrastructure code and must remain stateless and action-unaware.
@@ -1225,25 +1233,20 @@ public function execute(RegisterStudentData $data): ActionResponse
   `fromModel()` methods in Entities)
 - `App\{Module}\*\Livewire\*` must not import `App\{OtherModule}\*\Livewire\*` (use events)
 
-### Data Flow Rules
+### Essential Data Flow Rules
 
 These rules encode the 4-layer data flow. Violations are structural and must be corrected before
 merge.
 
 | # | Rule | Violation Example |
 |---|------|-------------------|
-| D1 | A DTO must carry only scalar, enum, and Carbon types. Never Models, never Actions, never Entities. | `CompanyData` with a `Company` property (should be scalar) |
-| D2 | A DTO's only base class is `BaseData`. | Extending `BaseData` with a custom base |
-| D3 | An Entity must never import an Action, Service, Livewire, or Controller. | `RegistrationState` importing `ApproveRegistrationAction` |
-| D4 | A Model must never import a non-Core Action. | `User` model calling `CreateProfileAction` in an accessor |
-| D5 | A Command/Process Action must return `ActionResponse`, not a Model directly. | `return $company` instead of `return $this->respondCreated($company)` |
-| D6 | A Command/Process Action's `execute()` must accept a DTO as its primary parameter. | `execute(array $data)` (should be `execute(CompanyData $data)`) |
-| D7 | A Livewire component must not call `Model::create()`, `Model::update()`, or `Model::delete()`. | `Company::create($this->form->toArray())` in Livewire |
-| D8 | A Livewire component must not access Entity methods directly. Must delegate to an Action. | `$company->asCompanyState()->canBeDeleted()` in Livewire |
-| D9 | A Service must not call an Action. | `ModuleDiscoverService` calling `CreateCompanyAction` |
-| D10 | A Listener must not call UI methods directly. Should call Actions for side-effect logic. | Listener calling `redirect()` or `flash()` |
-| D11 | An Entity method must not perform I/O (DB queries, HTTP, file writes, event dispatch). | Entity calling `Cache::get()` or `DB::select()` |
-| D12 | An Event must not carry HTTP context, request instances, or Livewire references. | Event carrying a `Request` object |
+| R1 | **DTOs are leaf classes.** Carry only scalars, enums, Carbon. Never Models, Actions, Entities. | `CompanyData` with a `Company` property |
+| R2 | **Entities must not import Business/UI layers.** Zero imports of Actions, Services, Livewire, Controllers. | `RegistrationState` importing `ApproveRegistrationAction` |
+| R3 | **Livewire must not write to Models directly.** All persistence goes through Command Actions. Read-only queries are fine. | `Company::create(...)` in Livewire |
+| R4 | **Livewire must not access Entities for WRITE decisions.** Read-only UI checks (show/hide button) are acceptable. | `$reg->asState()->canBeApproved()` before calling Action |
+| R5 | **Actions prefer DTO for complex input.** 3+ params → DTO. 1-2 typed scalars → acceptable. Never raw `array`. | `execute(array $data)` for a 5-param operation |
+| R6 | **Services must not call Actions.** Services are infrastructure code. If business logic is needed, refactor to Action. | `ModuleDiscoverService` calling `CreateCompanyAction` |
+| R7 | **Entities must not perform I/O.** No DB queries, HTTP, cache, events, facades, or notifications. | Entity calling `Cache::get()` or `DB::select()` |
 
 ### Dependency Graph (Allowed)
 
@@ -1293,33 +1296,15 @@ Livewire Component
 
 ## Migration Paths
 
-### Array → DTO Migration
+Existing code uses three patterns that should converge toward the target architecture.
+These are guidance, not strict gates — prioritize based on actual pain points.
 
-Existing Actions that accept `array $data` should be migrated to DTOs in three phases:
-
-| Phase | Signature | Status |
-|-------|-----------|--------|
-| **1 — Array** | `execute(array $data)` | Current (many Actions still here) |
-| **2 — Union** | `execute(Data|array $data)` | Transitional — both paths work |
-| **3 — DTO only** | `execute(Data $data)` | Target state |
-
-### Model → ActionResponse Return Migration
-
-Actions that currently return a Model directly should be migrated to return `ActionResponse`:
-
-| Phase | Return Type | Status |
-|-------|-------------|--------|
-| **1 — Model** | `execute(): Model` | Current (some Actions still here) |
-| **2 — ActionResponse** | `execute(): ActionResponse` | Target state |
-
-### Inline Entity → Action Migration
-
-Livewire components that access Entities directly should be migrated to delegate to Actions:
-
-| Phase | Location | Status |
-|-------|----------|--------|
-| **1 — In Livewire** | `$model->asEntity()->canX()` in Livewire | Current (some components still here) |
-| **2 — In Action** | `$model->asEntity()->canX()` inside Action | Target state |
+| Current Pattern | Target | When to Migrate |
+|----------------|--------|-----------------|
+| `execute(array $data)` | DTO for 3+ params; typed scalars for 1-2 params | Multiple callers exist or params keep growing |
+| `execute(): Model` | `ActionResponse` when caller needs feedback. Plain Model return is fine for simple cases | Caller needs message/redirect/error handling |
+| Entity check in Livewire (WRITE decision) | Entity check in Action | When business rules are duplicated across components |
+| Entity check in Livewire (READ-ONLY) | Stay in Livewire — this is acceptable | Never — this is the desired pattern |
 
 ---
 

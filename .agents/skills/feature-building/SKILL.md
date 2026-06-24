@@ -316,8 +316,8 @@ Read `docs/modules/{module}.md` and `docs/modules/{module}-reference.md`. Unders
 **Command Action (mutation):**
 - Extends `BaseCommandAction`
 - Single `execute()` method
-- **MUST accept DTO (`BaseData`) as primary parameter** — never raw `array`
-- **MUST return `ActionResponse`** — never return Model directly
+- **SHOULD accept DTO (`BaseData`) for 3+ params** — simple ops may use typed scalars. Never raw `array`
+- **SHOULD return `ActionResponse`** for structured feedback. Simple create/update may return Model directly
 - `$this->transaction()` wrapping all DB writes
 - `$this->log()` after successful mutation
 - Dispatch event for significant state changes
@@ -326,14 +326,13 @@ Read `docs/modules/{module}.md` and `docs/modules/{module}-reference.md`. Unders
 **Read Action (complex query):**
 - Extends `BaseReadAction`
 - Single `execute()` method
-- Accepts DTO or explicit typed parameters — never raw `array`
-- Returns typed objects, collections, or `ActionResponse`
+- May accept typed scalars; use DTO for 3+ filter params
+- Returns typed objects, collections, or arrays
 - No `transaction()` or `log()`
 
 **Process Action (orchestration):**
 - Extends `BaseProcessAction`
-- MUST accept DTO as primary parameter
-- MUST return `ActionResponse`
+- SHOULD accept DTO for workflow-level data
 - Composes other Actions via constructor injection
 - Handles partial failure
 - Emits single module event
@@ -351,8 +350,8 @@ Read `docs/modules/{module}.md` and `docs/modules/{module}-reference.md`. Unders
 - Thin: delegates writes to Actions, complex queries to Read Actions
 - Form state in Form Object (`app/{Module}/Livewire/Forms/{Name}Form.php`) for 5+ fields
 - Action injection via method parameters, never `app()` or `new`
-- Pass DTO (`BaseData::from($form->toArray())`) to Actions — never raw arrays
-- **NEVER access Entity methods directly** — delegate all business rules to Actions
+- Build DTO from validated form data for the Action (when 3+ params)
+- **Entity access for READ-ONLY UI decisions is OK** (e.g., hide a button). WRITE decisions must go through Action
 - Catch `RejectedException` specifically — show user-facing error
 - Flash messages via `flash()->success()` / `flash()->error()`, never maryUI Toast
 

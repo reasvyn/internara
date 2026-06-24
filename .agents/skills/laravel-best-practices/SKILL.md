@@ -78,11 +78,11 @@ UI (Livewire/Controller/Console) → DTO → ACTION → Entity checks → Model 
 
 - Controllers and Livewire are thin — handle UI state, build DTOs, delegate to Actions
 - One Action = one business operation = one `execute()` method
-- **Command/Process Actions MUST accept `BaseData` DTO** as primary parameter — never raw `array`
-- **Command/Process Actions MUST return `ActionResponse`** — never return Model directly
-- Actions validate input, delegate rule checks to Entities, persist in transactions, return `ActionResponse`
+- **Command/Process Actions SHOULD accept `BaseData` DTO for 3+ params** — typed scalars OK for simple. Never raw `array`.
+- **Command/Process Actions SHOULD return `ActionResponse`** for structured feedback. Simple create/update may return Model directly.
+- Actions validate input, delegate rule checks to Entities, persist in transactions, return result
 - Actions must NOT contain inline `canX()` checks — those belong in Entities
-- Livewire must NOT access Entity methods directly — delegate all business rules to Actions
+- Livewire may access Entity methods for READ-ONLY UI checks. WRITE decisions must go through Actions.
 - DTOs must NOT import Models, Actions, Entities, or Livewire — only scalars, enums, Carbon
 
 ## UUID Primary Keys
