@@ -1,6 +1,6 @@
 <project-guidelines>
 > **Last updated:** 2026-06-24
-> **Changes:** add 4-layer data flow with DTO boundaries to prevent circular dependencies; add Action DTO/ActionResponse rules; add dependency safety rules for Entities/Models/DTOs; balance overengineering — DTO only for 3+ params, ActionResponse for structured feedback, allow READ-ONLY Entity access in Livewire
+> **Changes:** add comprehensive Documentation Rules section with metadata, content, structure, and language conventions; replace brief Documentation Quality section
 >
 > **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
 > provides the essential mental model, quick-reference essentials, and project-specific rules needed
@@ -534,15 +534,76 @@ Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
 - [ ] Tests pass: `php artisan test --compact`
 - [ ] Pint clean: `vendor/bin/pint --dirty --format agent`
 - [ ] PHPStan passes: `vendor/bin/phpstan analyse --no-progress`
+- [ ] Doc metadata updated: Last updated date + one-line Changes description
 - [ ] Relevant docs updated (documentation-first approach)
 
-## Documentation Quality
+## Documentation Rules
 
-- Prefer **structural statements** over counts: "Models extend `BaseModel`" not "There are 42
-  models"
-- Prefer **locational statements** over listings: "Actions live under `app/{Module}/*/Actions/`"
-- Prefer **factual statements** over status: describe what exists, not project phase
-- Do NOT duplicate version numbers or counts in derivative files (AGENTS.md, README.md)
+### Metadata (Every `.md` File)
+
+```
+> **Last updated:** YYYY-MM-DD
+> **Changes:** brief one-line description of changes
+```
+
+- **Last updated** is mandatory — reflects the date of the most recent content change, not file creation
+- **Changes** is mandatory — must be a single line. Use `sync —` prefix for derivative syncs, or describe the actual change. Files with no history use `initial metadata — no content changes`
+- `> **Status:**` must NEVER appear in any doc. If a doc needs context, use factual statements instead
+- `> **Purpose:**` is optional — use only in audience-specific docs (pattern references, guides)
+
+### Content Rules
+
+| Rule | Correct | Wrong |
+|------|---------|-------|
+| **Structural** over counts | "Models extend `BaseModel`" | "There are 42 models" |
+| **Locational** over listings | "Actions live under `app/{Module}/*/Actions/`" | "Auth module has 10 actions" |
+| **Factual** over status | Describe what exists | "Currently in ALPHA stage" |
+| **No phase labels** | Describe what works | "Not yet implemented" |
+| **No promises** | Document current design only | "Future versions will support X" |
+| **No version numbers** in derivative docs | "See composer.json" | "Laravel 13, Livewire 4" in AGENTS.md |
+
+### What to Avoid (Brittle Content)
+
+| Brittle (gets stale) | Resilient alternative |
+|---|---|
+| "There are 40 models" | "Models extend `BaseModel`" |
+| "Auth module has 10 actions" | "Actions live under `app/Auth/*/Actions/`" |
+| "Stage: ALPHA / BETA / PRODUCTION" | Describe current state factually |
+| "Planned for Q3 2026" | File a GitHub issue, do not document |
+| "Version 0.1.0" (in derivative docs) | Keep version only in composer.json |
+| Enumeration of features that may grow | Describe the concept without exhaustive list |
+
+### Structure
+
+- Every doc starts with a `# Title` H1 heading followed by the metadata block
+- Metadata block uses blockquote (`>`) lines immediately after the H1
+- Use `---` horizontal rules between major sections
+- Keep paragraphs short (3-5 sentences max). Use tables for reference data
+- Reference other docs by relative path: `[Action Triad](architecture/action-pattern.md)`
+- Anchor links for section references: `[see §Data Flow](architecture.md#data-flow)`
+
+### Language
+
+- **Full English** — all documentation, code comments, commit messages, and communication
+- No Indonesian in docs. Translation files (`lang/id/`) are the only exception
+- Use `__('key')` syntax only in code examples, never in prose documentation
+
+### Two-Tier Module Docs
+
+| Doc | Audience | Content |
+|-----|----------|---------|
+| `docs/modules/{module}.md` | Architects, devs, stakeholders | Purpose, design principles, boundary |
+| `docs/modules/{module}-reference.md` | Developers, reviewers | File paths, classes, schemas, deps |
+
+- Every module must have exactly one conceptual doc and one reference doc
+- Conceptual doc must NOT contain implementation details (file paths, schema definitions)
+- Reference doc must NOT contain design rationale
+
+### Doc References in AGENTS.md
+
+- AGENTS.md is the thin agentic instruction layer — never duplicate content from `docs/`
+- Reference authoritative docs with relative paths like `docs/architecture.md (§Data Flow)`
+- The Doc Navigation table and Quick Links are the canonical entry points — add new entries there instead of duplicating descriptions
 
 ## Security
 
