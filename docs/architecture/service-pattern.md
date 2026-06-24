@@ -1,7 +1,8 @@
 # Service Pattern
 
-> **Last updated:** 2026-06-24 **Changes:** add note about app/Core/Services layer establishment;
-> clarify when to use vs Actions This document explains when and why Services exist despite the
+> **Last updated:** 2026-06-24
+> **Changes:** add note about app/Core/Services layer establishment; clarify when to use vs Actions
+> This document explains when and why Services exist despite the
 > deliberate architectural choice of Actions over traditional Service classes. It is not an
 > endorsement of the Service pattern — it is a boundary document that prevents Service scope creep.
 

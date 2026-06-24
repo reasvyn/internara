@@ -1,6 +1,7 @@
 # Model Pattern Reference
 
 > **Last updated:** 2026-06-10
+> **Changes:** initial metadata — no content changes
 >
 > **Purpose:** Comprehensive reference on Eloquent Model (Active Record) patterns used in the
 > Internara codebase. Models handle **persistence and relationships only** — business rules live in

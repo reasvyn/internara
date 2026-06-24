@@ -1,6 +1,7 @@
 # Exception Pattern
 
 > **Last updated:** 2026-06-13
+> **Changes:** initial metadata — no content changes
 >
 > Dual exception hierarchy used throughout Internara. Covers both trees, the shared context trait,
 > error handling in Actions, and the user-facing vs system-facing distinction.

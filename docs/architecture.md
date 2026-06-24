@@ -1,11 +1,7 @@
 # Action-based MVC Architecture
 
 > **Last updated:** 2026-06-24
-> **Changes:** complete rewrite — new 4-layer data flow with DTO boundaries to prevent circular
-> dependencies; consolidated Action Triad, Validation Strategy, and Dependency Rules; added
-> Layer Interaction Flow diagram with explicit boundary contracts.
-> **Rebalanced:** DTO only for 3+ params (not mandatory for all), ActionResponse for structured
-> feedback (not mandatory for simple returns), Livewire can access Entities for read-only UI checks
+> **Changes:** complete rewrite with 4-layer DTO boundary flow, Action Triad consolidation, circular dep prevention, DTO/ActionResponse rebalanced — DTO only for 3+ params, ActionResponse for structured feedback, Livewire Entity access allowed for read-only UI checks
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad
 > pattern, DTO-boundary data flow, cross-module communication, exception handling, validation

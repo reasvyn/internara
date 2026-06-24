@@ -1,6 +1,7 @@
 # Data / DTO Pattern Reference
 
 > **Last updated:** 2026-06-10
+> **Changes:** initial metadata — no content changes
 
 This document is a comprehensive reference on the Data Transfer Object (DTO) pattern as implemented
 in the Internara codebase. It covers philosophy, the `BaseData` contract, conventions, specialized

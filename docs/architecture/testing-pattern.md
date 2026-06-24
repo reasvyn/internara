@@ -1,6 +1,7 @@
 # Testing Pattern Reference
 
 > **Last updated:** 2026-06-10
+> **Changes:** initial metadata — no content changes
 >
 > Pattern reference for testing conventions across the codebase. Describes **what** to test and
 > **how to approach** each layer — not exact implementation.
