@@ -18,9 +18,10 @@ harder to test and more likely to contain bugs.
 Every Livewire component must follow these rules:
 
 - Business logic: delegate to Actions via method injection
-- Business rules: delegate to Entity methods
+- Business rules: delegate to Action (NEVER access Entity methods directly)
 - DB mutations: never directly in the component
 - Side effects: audit, events in Actions only
+- Data input: pass validated data as DTOs (`BaseData`) to Actions, never raw arrays
 - Authorization: `boot()` for role checks, Gate for granular
 - UI state: typed public properties
 - Layout: `#[Layout('layouts::app')]` attribute

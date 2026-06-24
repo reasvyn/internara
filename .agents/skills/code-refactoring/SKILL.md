@@ -111,7 +111,7 @@ final class {Verb}{Entity}Action extends BaseCommandAction
         protected readonly {Dependency} $dependency,
     ) {}
 
-    public function execute({Entity} ${entity}, array $data): {Entity}
+    public function execute({Entity} ${entity}, {Entity}Data $data): ActionResponse
     {
         ${entity}->as{Entity}()->ensureCan{Verb}();
 
@@ -121,7 +121,7 @@ final class {Verb}{Entity}Action extends BaseCommandAction
             $this->log('{entity}_{verbed}', ${entity});
             event(new {Entity}{Vebed}(${entity}));
 
-            return ${entity};
+            return $this->respondUpdated(${entity});
         });
     }
 }
@@ -129,6 +129,8 @@ final class {Verb}{Entity}Action extends BaseCommandAction
 
 **Key rules:**
 - Single `execute()` method — never add a second public method
+- **MUST accept DTO (`BaseData`) as primary parameter** — never raw `array`
+- **MUST return `ActionResponse`** — never return Model directly
 - Command: `$this->transaction()` + `$this->log()`
 - Read: NO `transaction()` or `log()`
 - Process: compose other Actions, handle partial failure
@@ -188,7 +190,9 @@ $user = User::create([...]);
 // After:
 public function save(CreateUserAction $action): void
 {
-    $user = $action->execute($this->form->toArray());
+    $dto = UserData::from($this->form->toArray());
+    $result = $action->execute($dto);
+    flash()->success($result->message);
 }
 ```
 
@@ -198,8 +202,9 @@ public function save(CreateUserAction $action): void
 public function save(CreateUserAction $action): void
 {
     try {
-        $user = $action->execute($this->form->toArray());
-        flash()->success(__('created'));
+        $dto = UserData::from($this->form->toArray());
+        $result = $action->execute($dto);
+        flash()->success($result->message);
     } catch (RejectedException $e) {
         flash()->error($e->getMessage());
     }
@@ -210,6 +215,8 @@ public function save(CreateUserAction $action): void
 - [ ] Action created in correct module/submodule directory
 - [ ] Extends correct base class (Command/Read/Process)
 - [ ] Single `execute()` method
+- [ ] **Command/Process Action accepts DTO (`BaseData`) — never raw `array`**
+- [ ] **Command/Process Action returns `ActionResponse` — never Model directly**
 - [ ] DB writes wrapped in `$this->transaction()`
 - [ ] `$this->log()` called after mutation
 - [ ] Event dispatched for significant state change
@@ -728,9 +735,10 @@ public function canAccess(User $user): bool
 
 ### Pattern Enforcement After Refactoring
 
-- [ ] Livewire: no inline DB mutations, no business rules, no side effects
-- [ ] Action: single `execute()`, correct base class, `transaction()` + `log()` for commands
-- [ ] Entity: `final readonly`, zero I/O, `fromModel()` factory
+- [ ] Livewire: no inline DB mutations, no Entity access, no business rules, no side effects
+- [ ] Action: single `execute()`, correct base class, **accepts DTO**, **returns ActionResponse**, `transaction()` + `log()` for commands
+- [ ] DTO: `final readonly` extends `BaseData`, carries only scalars/enums/Carbon — never Models
+- [ ] Entity: `final readonly`, zero I/O, zero Action/Service imports, `fromModel()` factory
 - [ ] Model: no business rule methods, `#[Fillable]`, entity bridges
 - [ ] Enum: `implements LabelEnum`, state machines `implements StatusEnum`
 - [ ] Exception: business rules → `RejectedException`, not `RuntimeException`

@@ -39,7 +39,7 @@ Every architectural layer has one Core base class: `BaseModel`, `BaseAction`, `B
 
 ## 4. Action Patterns
 
-**Action Injection** — Livewire components inject Actions as method parameters via DI. **ActionResponse** — standardized return envelope with `ok()`, `created()`, `updated()`, `deleted()`, `error()`, `withRedirect()`. **Transaction Safety** — `BaseAction::transaction()` auto-detects nesting, queues events until commit, retries on deadlock. **Single execute()** — every Action has exactly one public method. See: `docs/architecture/action-pattern.md`.
+**Action Injection** — Livewire components inject Actions as method parameters via DI. **ActionResponse** — standardized return envelope with `ok()`, `created()`, `updated()`, `deleted()`, `error()`, `withRedirect()`. **DTO Input** — Command/Process Actions accept `BaseData` DTO as primary parameter, never raw `array`. **Transaction Safety** — `BaseAction::transaction()` auto-detects nesting, queues events until commit, retries on deadlock. **Single execute()** — every Action has exactly one public method. See: `docs/architecture/action-pattern.md`.
 
 ---
 
@@ -81,7 +81,7 @@ UUID primary keys via `HasUuids`. `#[Fillable]` PHP 8.4 attribute. Named entity 
 
 ## 11. Testing Patterns
 
-**Module-First** — `tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php`. **Scope Isolation** — one test file per Action/component. **Layer Strategy** — enums/entities/DTOs/policies: unit (no DB); Actions/Livewire: feature (with DB). **Performance** — `LazilyRefreshDatabase`, `assertModelExists()`. **TDD Order** — Enum → Entity → Command → Read → Process → Livewire → Policy → Console. See: `docs/architecture/testing-pattern.md`, `docs/infrastructure/testing.md`.
+**Module-First** — `tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php`. **Scope Isolation** — one test file per Action/component. **Layer Strategy** — enums/entities/DTOs/policies: unit (no DB); Actions/Livewire: feature (with DB). **Action Testing** — test DTO construction, ActionResponse handling, Entity rule enforcement, event dispatch. **Performance** — `LazilyRefreshDatabase`, `assertModelExists()`. **TDD Order** — Enum → Entity → DTO → Command → Read → Process → Livewire → Policy → Console. See: `docs/architecture/testing-pattern.md`, `docs/infrastructure/testing.md`.
 
 ---
 
@@ -163,4 +163,4 @@ and `docs/conventions.md` §8.
 
 ## 21. Workflow Patterns
 
-**Feature Building:** Docs → Migration/Model → Entity → Enum → Action → Policy → Livewire → Blade → Routes → Translations → Tests → Quality. **Action Extraction:** Identify inline `Model::create/update/delete` → Create Action → Move validation → Transaction → Log → Event → Inject. **Entity Extraction:** Identify conditionals → Create Entity → Extract state → `fromModel()` → Named bridge → Update callers. **Livewire Refactoring:** Logic → Action, Rules → Entity, UI patterns → Component/Trait, Utilities → Support. **Data Flow:** Mutation goes through Action (Policy → Transaction → Log → Event), simple queries go directly to Model, complex queries through Read Action.
+**Feature Building:** Docs → Migration/Model → Enum → Entity → DTO → Action → Policy → Livewire → Blade → Routes → Translations → Tests → Quality. **Action Extraction:** Identify inline `Model::create/update/delete` → Create Action (accept DTO, return ActionResponse) → Move validation → Transaction → Log → Entity rules → Event → Inject. **Entity Extraction:** Identify conditionals → Create Entity → Extract state → `fromModel()` → Named bridge → Update callers. **Livewire Refactoring:** Logic → Action, Rules → Action (not Entity directly), UI patterns → Component/Trait, Utilities → Support. **Data Flow:** Mutations go UI→DTO→Action(Entity check→Transaction→Log→Event)→Model; simple queries go directly to Model; complex queries through Read Action with DTO.

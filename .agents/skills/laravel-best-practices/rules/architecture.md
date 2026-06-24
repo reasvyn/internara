@@ -7,6 +7,19 @@ Views mirror in `resources/views/{domain}/`. Every business operation is an Acti
 single `execute()` method. Dependencies are injected via constructor promotion. Interfaces define
 system boundaries.
 
+The 4-layer data flow with DTO boundaries prevents circular dependencies:
+- **UI Layer** (Livewire/Controller/Console) → builds DTO from validated input
+- **Business Logic Layer** (Action/Service/Support) → receives DTO only, delegates rules to Entity
+- **Domain Rules Layer** (Entity/Event) → created FROM Model, answers business questions
+- **Data Layer** (Model) → Eloquent persistence, knows nothing about layers above
+
+**Key boundary rules:**
+- Command/Process Actions MUST accept `BaseData` DTO (never `array`, never `Request`)
+- Command/Process Actions MUST return `ActionResponse` (never Model directly)
+- Livewire MUST NOT access Entity methods directly (delegate to Actions)
+- Entities MUST NOT import Actions, Services, Livewire, or Controllers
+- DTOs MUST NOT import Models, Actions, Entities, or Livewire — only scalars, enums, Carbon
+
 ## Why It Matters
 
 Module-first grouping keeps every concept self-contained. When working on "Academic Year," all its
@@ -17,6 +30,9 @@ is scattered across `app/Models/`, `app/Http/Controllers/`, etc.
 Constructor injection over `app()` or `resolve()` makes dependencies explicit and testable.
 Interfaces at system boundaries (PaymentGateway, NotificationService) allow swapping implementations
 without changing business logic.
+
+The DTO-boundary architecture prevents circular dependencies by ensuring data flows in one direction:
+UI → Business → Domain → Data. No layer ever reaches upward.
 
 ## When It Applies
 

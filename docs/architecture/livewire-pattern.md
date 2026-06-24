@@ -30,6 +30,8 @@ side effects belong in lower layers.
 
 - Inline DB mutations (`Model::create()`, `DB::transaction()`, `Model::update()`)
 - Inline business rules (`if ($model->status === 'x')`, date comparisons)
+- **Direct Entity method access** (`$model->asEntity()->canX()`) — delegate to Actions
+- **Raw array passed to Actions** — always build a DTO (`BaseData`) from validated form data
 - Side effects (`Log::info()`, `event(new ...)`, `Notification::send()`)
 - Static helper methods (`public static function formatSomething()`)
 - Bare `wire:confirm` for destructive actions (use the two-step pattern)
@@ -168,13 +170,16 @@ public function save(Create{Entity}Action $createAction, Update{Entity}Action $u
 {
     $this->form->validate();
 
+    // Build DTO from validated form data — crosses the UI→Business boundary
+    $dto = {Entity}Data::from($this->form->toArray());
+
     if ($this->form->id) {
         $entity = {Entity}::findOrFail($this->form->id);
-        $updateAction->execute($entity, $this->form->toArray());
-        flash()->success(__('{module}.{entity}.success_updated'));
+        $result = $updateAction->execute($entity, $dto);
+        flash()->success($result->message);
     } else {
-        $entity = $createAction->execute($this->form->toArray());
-        flash()->success(__('{module}.{entity}.success_created'));
+        $result = $createAction->execute($dto);
+        flash()->success($result->message);
     }
 
     $this->modal = false;

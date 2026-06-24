@@ -123,6 +123,8 @@ Every Command Action MUST:
 4. **Dispatch event** for significant state changes (status transitions, creates, deletes). Flag Actions that change status without dispatching an event.
 5. **`RejectedException`** for business rule violations, never `RuntimeException`.
 6. **No inline `canX()` checks** — delegate to Entity methods.
+7. **MUST accept DTO (`BaseData`) as primary parameter** — flag `execute(array $data)` as HIGH (violates DTO boundary rule).
+8. **MUST return `ActionResponse`** — flag `execute(...): Model` as HIGH (violates ActionResponse rule).
 
 **Check:**
 ```bash
@@ -157,11 +159,16 @@ Every Process Action MUST:
 
 **Record findings** under `TRIAD-PROC-*` IDs.
 
-### 1.6 ActionResponse Usage
+### 1.6 ActionResponse & DTO Compliance
 
-- Return `ActionResponse` when caller needs structured feedback.
+- Command/Process Actions MUST return `ActionResponse` (not Model, not array).
+- Command/Process Actions MUST accept `BaseData` DTO as primary parameter (not raw `array`).
+- DTOs MUST NOT import Models, Actions, Entities, or Livewire — only Core BaseData, scalars, enums, Carbon.
+- DTOs extend `BaseData` — flag any DTO extending a custom base.
 - Use factory methods: `ActionResponse::ok()`, `created()`, `updated()`, `deleted()`, `error()`.
-- **Check:** Actions returning raw `array` or `mixed` where callers need typed feedback.
+- **Check:** `rg "function execute\(array" app/ --type php` — flag as HIGH should be DTO.
+- **Check:** `rg "function execute\(.*\):\s*(\\?)?\w+(?!ActionResponse)" app/ --type php | grep -v "void\|bool\|int\|string\|array\|Collection\|LengthAwarePaginator\|Builder\|mixed"` — flag Actions returning Model directly as HIGH.
+- **Check:** DTO purity: `rg "use App.*Models" app/**/Data/*.php` — flag imports of Models in DTOs.
 
 **Record findings** under `TRIAD-RESP-*` IDs.
 
@@ -176,10 +183,12 @@ Every Process Action MUST:
 
 1. Inline DB mutations (`Model::create()`, `Model::update()`, `Model::delete()`, `DB::transaction()`).
 2. Inline business rules (`if ($model->status === 'x')`, date comparisons).
-3. Side effects (`Log::info()`, `event(new ...)`, `Notification::send()`).
-4. Static helper methods.
-5. maryUI Toast methods (`$this->success()`, `$this->error()`).
-6. `app()->make()` or `new Action()` — must use method injection.
+3. **Direct Entity method access** (`$model->asEntity()->canX()`) — must delegate to Action.
+4. **Raw array passed to Actions** — must build DTO (`BaseData::from()`) from validated form data.
+5. Side effects (`Log::info()`, `event(new ...)`, `Notification::send()`).
+6. Static helper methods.
+7. maryUI Toast methods (`$this->success()`, `$this->error()`).
+8. `app()->make()` or `new Action()` — must use method injection.
 
 **Check:**
 ```bash
@@ -231,6 +240,7 @@ Every Entity MUST:
 - Implement `fromModel(Model $model): static`.
 - **NOT** touch database, HTTP, files, cache, facades, service container.
 - **NOT** dispatch events or notifications.
+- **NOT** import Actions, Services, Livewire, or Controllers.
 - The only allowed framework import is `Illuminate\Database\Eloquent\Model` (in `fromModel()` parameter).
 
 **Check:**
@@ -265,6 +275,24 @@ rg "function can\|function is\|function has" app/ --type php --include '**/Model
 - Models may expose multiple entities for different business roles.
 
 **Record findings** under `BRIDGE-*` IDs.
+
+### 3.4 DTO Purity
+
+Every DTO MUST:
+- Be `final readonly class` extending `BaseData`.
+- Carry ONLY scalar types, enums, and Carbon instances — never Models, never Entities.
+- **NOT** import Models, Actions, Entities, or Livewire — only `App\Core\Data\BaseData`, scalars, enums, Carbon.
+
+**Check:**
+```bash
+# Find DTOs importing prohibited types
+rg "use App.*Models" app/**/Data/*.php
+rg "use App.*Actions" app/**/Data/*.php
+rg "use App.*Livewire" app/**/Data/*.php
+rg "use App.*Entities" app/**/Data/*.php
+```
+
+**Record findings** under `DTO-*` IDs.
 
 ---
 

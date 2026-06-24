@@ -26,9 +26,12 @@ Apply this skill whenever writing, reviewing, or refactoring any Laravel PHP cod
 
 ## Key References
 
-- **Architecture**: `docs/architecture.md` — complete architectural foundation
+- **Architecture**: `docs/architecture.md` — 12-layer architecture, 4-layer data flow with DTO boundaries, circular dep. prevention
 - **Conventions**: `docs/conventions.md` — coding conventions with examples
 - **Base classes**: `app/Core/` — Actions, Entities, Policies, Livewire, Models, Http, Data
+- **Action pattern**: `docs/architecture/action-pattern.md` — DTO input, ActionResponse return, Entity delegation
+- **Data pattern**: `docs/architecture/data-pattern.md` — DTO lifecycle, immutability, boundary rules
+- **Entity pattern**: `docs/architecture/entity-pattern.md` — purity rules, zero Action/Service imports
 - **Model pattern**: `docs/architecture/model-pattern.md`
 - **Testing pattern**: `docs/architecture/testing-pattern.md`
 - **Event pattern**: `docs/architecture/event-pattern.md`
@@ -63,12 +66,24 @@ All code lives under `app/{Module}/` instead of the default flat structure:
 | State enum | Implements `StatusEnum` | `canTransitionTo()`, `isTerminal()` |
 | Exception | `AppException` or `ModuleException` | `HasExceptionContext` trait |
 
-## Action-Based MVC
+## Action-Based MVC & 4-Layer Data Flow
 
-- Controllers and Livewire are thin — handle UI state, delegate to Actions
+```
+UI (Livewire/Controller/Console) → DTO → ACTION → Entity checks → Model → DB
+                                            ↓
+                                     ActionResponse
+                                            ↓
+                                     UI (flash/redirect)
+```
+
+- Controllers and Livewire are thin — handle UI state, build DTOs, delegate to Actions
 - One Action = one business operation = one `execute()` method
-- Actions validate input, delegate rule checks to Entities, persist in transactions, emit side effects
+- **Command/Process Actions MUST accept `BaseData` DTO** as primary parameter — never raw `array`
+- **Command/Process Actions MUST return `ActionResponse`** — never return Model directly
+- Actions validate input, delegate rule checks to Entities, persist in transactions, return `ActionResponse`
 - Actions must NOT contain inline `canX()` checks — those belong in Entities
+- Livewire must NOT access Entity methods directly — delegate all business rules to Actions
+- DTOs must NOT import Models, Actions, Entities, or Livewire — only scalars, enums, Carbon
 
 ## UUID Primary Keys
 

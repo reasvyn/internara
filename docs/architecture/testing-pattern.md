@@ -26,7 +26,8 @@ first (unit), then Actions (feature), then Livewire components that consume them
 |-------|----------------|---------------------|
 | **Enum** | Unit test | Labels, transition rules, terminal states |
 | **Entity** | Unit test | Construct, assert business rule methods |
-| **Command Action** | Feature test | Execute → assert database state changed |
+| **DTO (BaseData)** | Unit test | Constructor, `fromArray()`, `toArray()`, `merge()`, `only()`/`except()` |
+| **Command Action** | Feature test | Execute with DTO → assert `ActionResponse` + database state changed |
 | **Read Action** | Feature test | Set up data → assert returned structure |
 | **Process Action** | Feature test | Full workflow + partial failure scenarios |
 | **Livewire** | Feature test | Render → interact → assert component state |
@@ -129,9 +130,10 @@ conversion (snake_case to camelCase). Test only/except filtering, merge immutabi
 polymorphic from() sources.
 
 ### 6.4 Command Action Tests (Feature)
-Resolve from container, execute with data, assert database changes via `assertModelExists()`.
-Assert result is a model instance, use `fresh()` to verify DB state. Assert validation exceptions
-and domain rule exceptions.
+Resolve from container, construct a DTO, execute the Action with it. Assert the returned
+`ActionResponse` is successful and wraps the expected data. Assert database changes via
+`assertModelExists()`. Assert validation exceptions and domain rule exceptions (`RejectedException`).
+Verify `ActionResponse::failed()` returns `true` on error responses.
 
 ### 6.5 Read Action Tests (Feature)
 Set up data, call the reader, assert return structure and types. No database mutation expected.
