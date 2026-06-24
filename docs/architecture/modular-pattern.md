@@ -1,5 +1,8 @@
 # Modular Pattern Reference
 
+> **Last updated:** 2026-06-24
+> **Changes:** sync — add Data/ directory, DTO patterns, update workflow for 4-layer data flow; initial metadata
+>
 > Comprehensive catalog of design patterns, conventions, and architectural rules used across the
 > Internara codebase. This document distils patterns from `docs/architecture.md`,
 > `docs/conventions.md`, all ADRs, and the implementation code into a single reference.

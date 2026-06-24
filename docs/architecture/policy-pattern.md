@@ -1,6 +1,7 @@
 # Policy Pattern
 
 > **Last updated:** 2026-06-13
+> **Changes:** initial metadata — no content changes
 
 Authorization reference for the Internara codebase. Describes the Flat RBAC model, the three-layer
 authorization stack, the `BasePolicy` contract, policy traits, auto-discovery, and the complete

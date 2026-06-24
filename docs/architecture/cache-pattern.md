@@ -1,6 +1,7 @@
 # Cache Pattern
 
 > **Last updated:** 2026-06-14
+> **Changes:** initial metadata — no content changes
 >
 > Cache philosophy, key management conventions, driver strategy, invalidation strategy, warming,
 > and anti-pattern concepts in Internara.

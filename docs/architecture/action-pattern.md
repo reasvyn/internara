@@ -1,6 +1,7 @@
 # Action Triad Pattern Reference
 
-> **Last updated:** 2026-06-10
+> **Last updated:** 2026-06-24
+> **Changes:** sync — update Command contract: DTO for 3+ params, ActionResponse for structured feedback; sync with architecture.md rebalancing
 >
 > Comprehensive deep-dive on the Command/Read/Process Action Triad — the single most important
 > architectural decision in Internara. This document covers every facet of the Action pattern:

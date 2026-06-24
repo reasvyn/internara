@@ -1,7 +1,7 @@
 # Repository Pattern: Why Internara Doesn't Use It
 
-> **Status:** Living document
 > **Last updated:** 2026-06-10
+> **Changes:** initial metadata — no content changes
 
 ---
 
