@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     Fillable([
         'registration_id',
         'supervisor_id',
+        'type',
         'date',
         'topic',
         'notes',
@@ -25,6 +26,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
         'supervisor_feedback',
         'reviewed_by',
         'reviewed_at',
+        'is_verified',
+        'verified_by',
+        'verified_at',
     ]),
 ]
 class SupervisionLog extends BaseModel

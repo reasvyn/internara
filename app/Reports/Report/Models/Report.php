@@ -13,7 +13,6 @@ use Database\Factories\ReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[
     Fillable([
@@ -39,63 +38,38 @@ class Report extends BaseModel
         static::observe(ReportObserver::class);
     }
 
-    /**
-     * @todo Extract snapshot logic into a ReportSnapshot entity.
-     */
     public function captureSnapshot(): void
     {
-        if ($this->registration_id && $this->registration) {
-            $registration = $this->registration;
-            $student = $registration->student;
-            $profile = $student?->profile;
-            $internship = $registration->internship;
-            $placement = $registration->placement;
-            $company = $placement?->company;
-            $department = $profile?->department;
-
-            if ($student) {
-                $this->student_name = $student->name;
-                $this->student_email = $student->email;
-            }
-            if ($profile) {
-                $this->student_number = $profile->id_number;
-            }
-
-            if ($internship) {
-                $this->internship_name = $internship->name;
-            }
-            if ($company) {
-                $this->company_name = $company->name;
-            } elseif ($registration->proposed_company_details) {
-                $this->company_name =
-                    $registration->proposed_company_details['company_name'] ?? null;
-            }
-            if ($department) {
-                $this->department_name = $department->name;
-            }
-
-            $supervisor = $registration->mentors->first(
-                fn ($m) => $m->pivot?->role === 'supervisor' || $m->pivot?->role === 'mentor',
-            );
-            if ($supervisor) {
-                $this->supervisor_name = $supervisor->name;
-            }
-
-            $teacher = $registration->mentors->first(
-                fn ($m) => $m->pivot?->role === 'teacher' || $m->pivot?->role === 'advisor',
-            );
-            if ($teacher) {
-                $this->teacher_name = $teacher->name;
-            }
-
-            $this->archived_data = array_merge($this->archived_data ?? [], [
-                'captured_at' => now()->toIso8601String(),
-                'student_phone' => $profile?->phone,
-                'company_address' => $company?->address ??
-                    ($registration->proposed_company_details['address'] ?? null),
-                'academic_year' => $internship?->academicYear?->name,
-            ]);
+        if (! $this->registration_id || ! $this->registration) {
+            return;
         }
+
+        $registration = $this->registration;
+        $student = $registration->student;
+        $profile = $student?->profile;
+        $internship = $registration->internship;
+        $placement = $registration->placement;
+        $company = $placement?->company;
+        $department = $profile?->department;
+
+        $mentors = $registration->mentors;
+
+        $this->archived_data = array_merge($this->archived_data ?? [], array_filter([
+            'captured_at' => now()->toIso8601String(),
+            'student_name' => $student?->name,
+            'student_email' => $student?->email,
+            'student_number' => $profile?->id_number,
+            'student_phone' => $profile?->phone,
+            'internship_name' => $internship?->name,
+            'company_name' => $company?->name
+                ?? ($registration->proposed_company_details['company_name'] ?? null),
+            'company_address' => $company?->address
+                ?? ($registration->proposed_company_details['address'] ?? null),
+            'department_name' => $department?->name,
+            'supervisor_name' => $mentors->first(fn ($m) => $m->hasRole('supervisor'))?->name,
+            'teacher_name' => $mentors->first(fn ($m) => $m->hasRole('teacher'))?->name,
+            'academic_year' => $internship?->academicYear?->name,
+        ], fn ($v) => $v !== null));
     }
 
     protected $attributes = [
@@ -123,11 +97,6 @@ class Report extends BaseModel
     public function finalizedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'finalized_by');
-    }
-
-    public function revisions(): HasMany
-    {
-        return $this->hasMany(ReportRevision::class, 'report_id');
     }
 
     protected static function newFactory(): ReportFactory

@@ -41,7 +41,7 @@ class AccessToken extends BaseModel
         'last_used_at' => 'datetime',
         'revoked_at' => 'datetime',
         'attempts' => 'integer',
-        'scopes' => 'array',
+        'scopes' => 'object',
     ];
 
     protected static function newFactory(): AccessTokenFactory

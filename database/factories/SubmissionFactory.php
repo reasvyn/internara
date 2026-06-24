@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Assignment\Enums\SubmissionStatus;
 use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Models\Submission;
 use App\Enrollment\Registration\Models\Registration;
@@ -35,7 +36,7 @@ class SubmissionFactory extends Factory
     {
         return $this->state(
             fn (array $attributes) => [
-                'status' => 'verified',
+                'status' => SubmissionStatus::GRADED->value,
                 'score' => $score ?? $this->faker->randomFloat(1, 70, 100),
                 'feedback' => $this->faker->sentence(),
                 'graded_by' => User::factory(),
@@ -46,14 +47,14 @@ class SubmissionFactory extends Factory
 
     public function verified(): static
     {
-        return $this->state(fn (array $attributes) => ['status' => 'verified']);
+        return $this->state(fn (array $attributes) => ['status' => SubmissionStatus::VERIFIED->value]);
     }
 
     public function draft(): static
     {
         return $this->state(
             fn (array $attributes) => [
-                'status' => 'draft',
+                'status' => SubmissionStatus::DRAFT->value,
                 'submitted_at' => null,
             ],
         );

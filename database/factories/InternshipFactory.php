@@ -27,7 +27,7 @@ class InternshipFactory extends Factory
                 [
                     'name' => 'Persiapan',
                     'start_date' => $start->format('Y-m-d'),
-                    'end_date' => $start->format('Y-m-d'),
+                    'end_date' => (clone $start)->modify('+1 month')->format('Y-m-d'),
                 ],
             ],
             'required_document_ids' => [],

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Assessment\Rubric\Models;
 
+use App\Assessment\Models\Assessment;
 use App\Core\Models\BaseModel;
+use App\Program\Internship\Models\Internship;
 use App\User\Models\User;
 use Database\Factories\RubricFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
