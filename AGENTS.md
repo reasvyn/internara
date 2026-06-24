@@ -1,6 +1,6 @@
 <project-guidelines>
-> **Last updated:** 2026-06-23
-> **Changes:** complete rewrite — comprehensive first-contact agent map; enhanced 6 sub-skills to comprehensive SDLC-integrated workflows; sync — fix model/policy counts (38→40+, 27→28+), remove known-issues.md, redirect to GitHub Issues
+> **Last updated:** 2026-06-24
+> **Changes:** migration consolidation sync — document 57→sequential layers (2026_01_01 through 2026_01_06); add app/Core/Services layer; verified models 44, policies 31; remove known-issues.md redirect
 >
 > **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
 > provides the essential mental model, quick-reference essentials, and project-specific rules needed
@@ -85,6 +85,7 @@ Layer  1: Infrastructure (PHP 8.4, Laravel 13, Composer packages)
 | Mutation | `extends BaseCommandAction` | Custom service |
 | Complex query | `extends BaseReadAction` | Using `transaction()` |
 | Orchestration | `extends BaseProcessAction` | Duplicating logic |
+| Infrastructure logic | `app/Core/Services/` with constructor injection | Custom support class |
 | Business rules | `extends BaseEntity` (final readonly) | Inline in model |
 | Authorization | `extends BasePolicy` | Custom closure |
 | CRUD table UI | `extends BaseRecordManager` | Bespoke Livewire |

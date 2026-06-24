@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-06-17
-> **Changes:** sync — add BaseCommandAction, BaseReadAction, BaseProcessAction to base classes table and statistics
+> **Last updated:** 2026-06-24
+> **Changes:** sync — add Services layer (ModuleDiscoverService); update statistics
 
 Detailed structural and implementation reference for the **Core** module, including both abstract infrastructure and concrete shared components.
 
@@ -12,6 +12,8 @@ Detailed structural and implementation reference for the **Core** module, includ
 Provides foundational infrastructure, base classes, contracts, exception hierarchy, middleware, request lifecycle utilities, and cross-module concrete implementations that every other module depends on.
 
 ### Module Statistics
+
+- **Services**: 1 (`ModuleDiscoverService`)
 
 - **Contracts**: 5 (`LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`, `SettingsStore`)
 - **Base Classes**: 10 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`, `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`) + 3 concern traits (`HasCommonScopes`, `WithSorting`, `WithRecordSelection`)
@@ -35,6 +37,16 @@ Provides foundational infrastructure, base classes, contracts, exception hierarc
 - **Config Files**: 1 (`config/cache-keys.php` — centralized cache key registry)
 - **Tests**: across Unit and Feature suites
 - **Routes**: 0 (health check at `/up` in `bootstrap/app.php`)
+
+---
+
+## Services
+
+Located in `app/Core/Services/`:
+
+| Service | Purpose | Public Methods |
+| ------- | ------- | --------------- |
+| `ModuleDiscoverService` | Auto-discover modules during boot; resolve module registration order and dependencies | `discoverModules()`, `resolveModuleOrder()` |
 
 ---
 

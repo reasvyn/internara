@@ -1,13 +1,13 @@
 # Database
 
-> **Last updated:** 2026-06-14
-> **Changes:** sync — fix migration file count (41→49)
+> **Last updated:** 2026-06-24
+> **Changes:** sync — migration consolidation: 57 scattered migrations → sequential layers (2026_01_01 through 2026_01_06)
 
 ## Design Philosophy
 
 The database is organized around the concept that every piece of persistent state belongs to a module. Tables are grouped into five conceptual categories: core, operational, assessment, security, and supporting. This structure makes it obvious where data lives and how it relates.
 
-The schema encompasses over 40 tables (from 49 migration files, including both domain-specific tables and framework/package tables such as cache, sessions, jobs, media, notifications, and activity logs).
+The schema encompasses 44 domain models plus 9+ framework/package tables (settings, cache, jobs, notifications, pulse, backups, media, activity logs, permissions).
 
 ---
 
@@ -41,9 +41,26 @@ SQLite is intended for development and testing only. In shared hosting productio
 
 ---
 
+## Migration Structure
+
+Migrations are organized into **six sequential layers** (2026_01_01 through 2026_01_06) representing the initialization order. Each layer groups logically related tables:
+
+| Layer | Date Prefix | Purpose | Example Tables |
+|-------|-------------|---------|----------------|
+| **Foundation** | 2026_01_01 | Framework tables: config, caching, jobs, observability | settings, cache, jobs, notifications, pulse, backups, announcements |
+| **Authentication** | 2026_01_02 | Users, tokens, RBAC, audit, profiles | users, access_tokens, permissions, activity_log, gdpr_deletion_logs, profiles |
+| **Configuration** | 2026_01_03 | School organization and shared entities | academic_years, departments, companies, media, documents, rubrics, partnerships |
+| **Internship Core** | 2026_01_04 | PKL workflow: placements, attendance, reports, evaluation | internships, placements, registrations, applications, attendances, logbooks, supervision_logs, assignments, submissions, assessments, reports, certificates, incidents |
+| **Grouping** | 2026_01_05 | Student grouping and document tracking | internship_groups, registration_documents, placement_change_requests |
+| **Evaluation** | 2026_01_06 | Feedback forms and survey infrastructure | evaluation_forms, evaluation_sections, evaluation_questions, evaluation_responses, evaluation_answers |
+
+This structure ensures clean dependency resolution: foundation tables before auth, auth before domain models, domain models before business workflows.
+
+---
+
 ## Schema Organization
 
-All migrations live in a flat `database/migrations/` directory with chronological timestamp prefixes. Migration filenames indicate which table they create (e.g., `2026_04_29_092750_create_users_table.php`). Module ownership is evident from the table name.
+Module ownership is evident from the table name (e.g., `internship_groups`, `supervision_logs`, `incident_reports`). Each table's migration file is named to match its table (e.g., `2026_01_04_000001_create_internships_table.php`).
 
 Foreign key delete behaviors:
 
