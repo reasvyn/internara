@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Assessment\Models;
 
 use App\Assessment\Entities\AssessmentResult;
+use App\Assessment\Rubric\Models\Rubric;
 use App\Core\Models\BaseModel;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use Database\Factories\AssessmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

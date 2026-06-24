@@ -8,6 +8,8 @@ use App\Assignment\Entities\AssignmentRules;
 use App\Assignment\Enums\AssignmentStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Models\BaseModel;
+use App\Document\Models\Document;
+use App\Program\Internship\Models\Internship;
 use App\User\Models\User;
 use Database\Factories\AssignmentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

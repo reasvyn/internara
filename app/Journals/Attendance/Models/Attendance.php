@@ -52,8 +52,8 @@ class Attendance extends BaseModel
 
     protected $casts = [
         'date' => 'date',
-        'clock_in' => 'datetime:H:i',
-        'clock_out' => 'datetime:H:i',
+        'clock_in' => 'string',
+        'clock_out' => 'string',
         'status' => AttendanceStatus::class,
         'absence_processed_at' => 'datetime',
         'is_verified' => 'boolean',

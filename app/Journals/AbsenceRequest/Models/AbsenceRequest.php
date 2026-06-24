@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Journals\AbsenceRequest\Models;
 
 use App\Core\Models\BaseModel;
+use App\Enrollment\Registration\Models\Registration;
 use App\Journals\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Journals\AbsenceRequest\Enums\AbsenceRequestStatus;
 use App\User\Models\User;
@@ -68,5 +69,10 @@ class AbsenceRequest extends BaseModel
     public function processor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'absence_processed_by');
+    }
+
+    public function registration(): BelongsTo
+    {
+        return $this->belongsTo(Registration::class, 'registration_id');
     }
 }
