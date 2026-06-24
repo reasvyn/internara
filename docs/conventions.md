@@ -567,7 +567,7 @@ where the container is not available (e.g., `database/factories/`).
 - [ ] **Cache invalidation**: Every mutation that changes cached data has corresponding
   `Cache::forget()` or event-driven invalidation
 - [ ] **Test coverage**: New Actions have test files; existing tests still pass
-- [ ] **Documentation**: Module doc, reference doc, or `known-issues.md` updated if behavior changed
+- [ ] **Documentation**: Module doc or reference doc updated if behavior changed
 
 ---
 

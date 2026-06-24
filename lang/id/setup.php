@@ -141,11 +141,12 @@ return [
             'storage_link' => 'Memautkan direktori penyimpanan',
             'optimize' => 'Mengoptimalkan aplikasi',
             'optimize_skip' => 'Melewati optimasi aplikasi (gunakan --optimize untuk produksi)',
+            'discover_modules' => 'Mendaftarkan komponen modul',
             'discover_livewire' => 'Mendaftarkan komponen Livewire',
             'discover_policies' => 'Mendaftarkan kebijakan',
             'discover_views' => 'Mendaftarkan namespace tampilan',
             'discover_complete' => 'Cache penemuan module dihangatkan.',
-            'discover_failed' => 'Penemuan module gagal',
+            'discover_failed' => 'Pendaftaran modul gagal',
         ],
     ],
 

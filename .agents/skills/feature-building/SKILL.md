@@ -142,7 +142,7 @@ Identify vulnerability type (XSS, SQLi, mass assignment, CSRF, auth bypass, etc.
 - [ ] Vulnerability confirmed closed (test proves it).
 - [ ] Same vulnerability pattern searched across codebase — fix similar occurrences.
 - [ ] No breaking changes to existing functionality.
-- [ ] Security fix has an entry in `docs/known-issues.md` (if not already there).
+- [ ] Security fix has an entry in [GitHub Issues](https://github.com/reasvyn/internara/issues) (if not already there).
 
 ---
 
@@ -447,7 +447,7 @@ After completing a task, update `docs/roadmap.md`:
 
 #### 4.2 Update Known Issues
 
-If the task resolves a known issue in `docs/known-issues.md`:
+If the task resolves a known issue in [GitHub Issues](https://github.com/reasvyn/internara/issues):
 
 ```markdown
 ### ID-{N} — {Original Severity}: {Original Description} [RESOLVED in Roadmap Task N.M]
@@ -505,7 +505,7 @@ If any gate fails, fix before marking the task complete.
 | `docs/architecture/model-pattern.md` | BaseModel, UUID, Fillable |
 | `docs/architecture/testing-pattern.md` | Testing conventions |
 | `docs/infrastructure/testing.md` | Testing infrastructure |
-| `docs/known-issues.md` | Known issues to resolve |
+| [GitHub Issues](https://github.com/reasvyn/internara/issues) | Known issues to resolve |
 | `AGENTS.md` | Project invariants |
 | `.agents/skills/roadmap-planning/SKILL.md` | Planning phase (upstream) |
 | `.agents/skills/code-refactoring/SKILL.md` | Refactoring guidance (upstream for clean-up tasks) |

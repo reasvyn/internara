@@ -328,11 +328,11 @@ done
 |---------|--------|
 | Derivative doc (AGENTS.md/README.md) contradicts `docs/` | Fix derivative, `docs/` wins |
 | Doc claims behavior X but code does Y | Fix doc to match code |
-| Doc claims behavior X, code should do X but doesn't | Add to `docs/known-issues.md` as code gap |
+| Doc claims behavior X, code should do X but doesn't | Add to [GitHub Issues](https://github.com/reasvyn/internara/issues) as code gap |
 | Doc file path points to nonexistent file | Fix path or remove reference |
 | Broken markdown link | Fix target or remove |
 | Doc contains stale inline code example | Fix example to match actual code |
-| Architecture pattern rule violated in code | Add to `docs/known-issues.md` |
+| Architecture pattern rule violated in code | Add to [GitHub Issues](https://github.com/reasvyn/internara/issues) |
 | Inconsistent terminology across docs | Align all to canonical term from `docs/architecture.md` |
 | Stale numeric count | Replace with generic (e.g. "40+") — not worth chasing |
 
@@ -346,7 +346,7 @@ done
 
 2. **Update `docs/doc-index.md`** — date, changes summary, ensure all `.md` files referenced exist
 
-3. **Update `docs/known-issues.md`** — add new gaps found, mark resolved ones
+3. **Update [GitHub Issues](https://github.com/reasvyn/internara/issues)** — add new gaps found, mark resolved ones
 
 4. **Run quality commands:**
    ```bash
@@ -379,5 +379,5 @@ Based on past syncs, these are the most frequently encountered issues:
 - [ ] Inline code examples verified against actual class signatures
 - [ ] Architecture pattern claims spot-checked against actual code
 - [ ] `doc-index.md` up to date
-- [ ] `known-issues.md` updated
+- [ ] All GitHub Issues documented, resolved issues closed
 - [ ] `vendor/bin/pint --format agent` passes

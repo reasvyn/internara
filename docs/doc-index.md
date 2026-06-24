@@ -1,7 +1,7 @@
 # Documentation Index
 
-> **Last updated:** 2026-06-18
-> **Changes:** sync — deep sync + main module audit: known-issues.md add CACHE-1, LW-1, TEST-1, TEST-2
+> **Last updated:** 2026-06-23
+> **Changes:** sync — fix ADR count (13→14); remove known-issues.md, redirect to GitHub Issues
 >
 > Complete catalog of all documentation in the `docs/` directory. This index is the single entry point for navigating Internara's documentation. Every file listed here is part of the authoritative system documentation and must be kept in sync with the implementation.
 
@@ -97,7 +97,7 @@
 | [Scaling Guide](infrastructure/scaling.md)                       | Scaling from MVP to 2000+ users, tier transitions, load testing, monitoring thresholds     |
 | [Backup & Recovery](infrastructure/backup-recovery.md)           | Backup strategies, database dumps, file backup, restoration, point-in-time recovery         |
 | [Localization](infrastructure/localization.md)                   | Supported languages, translation structure, locale resolution, community contribution guide |
-| [Known Issues](known-issues.md)                                  | Known limitations, caveats, and workarounds                                                 |
+| [GitHub Issues](https://github.com/reasvyn/internara/issues)     | Bug tracker, known issues, and feature requests                                            |
 | [Roadmap](roadmap.md)                                            | Feature plans and implementation roadmap                                                     |
 
 ---
@@ -113,7 +113,7 @@ Refer to the [Module Documentation Index](modules/module-index.md) for the compl
 
 ## Architecture Decision Records
 
-Refer to the [ADR Index](adr/adr-index.md) for the complete listing of all 13 records covering foundation, observability, quality, and strategic decisions.
+Refer to the [ADR Index](adr/adr-index.md) for the complete listing of all 14 records covering foundation, observability, quality, and strategic decisions.
 
 ---
 

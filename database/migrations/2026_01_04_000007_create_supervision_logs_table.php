@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     public function up(): void
     {
         Schema::create('supervision_logs', function (Blueprint $table) {
@@ -22,9 +21,14 @@ return new class extends Migration
             $table->string('topic')->nullable();
             $table->text('notes');
             $table->string('status')->default('pending');
+            // Verification
             $table->boolean('is_verified')->default(false);
             $table->timestamp('verified_at')->nullable();
             $table->foreignUuid('verified_by')->nullable()->constrained('users')->nullOnDelete();
+            // Supervisor Feedback
+            $table->text('supervisor_feedback')->nullable()->after('notes');
+            $table->foreignUuid('reviewed_by')->nullable()->constrained('users')->nullOnDelete()->after('supervisor_feedback');
+            $table->timestamp('reviewed_at')->nullable()->after('reviewed_by');
             $table->timestamps();
 
             $table->index('registration_id');

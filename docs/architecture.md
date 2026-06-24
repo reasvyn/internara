@@ -1,7 +1,7 @@
 # Action-based MVC Architecture
 
-> **Last updated:** 2026-06-18
-> **Changes:** sync — fix shared views section (lang-switcher/theme-switcher paths & alias were wrong)
+> **Last updated:** 2026-06-23
+> **Changes:** sync — fix model/policy/migration counts (38→40, 27→28, 49→51)
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad pattern, data flow, cross-module communication, exception handling, validation, caching, testing strategy, and invariant rules. Every decision here serves three goals:
 >
@@ -89,7 +89,7 @@ Layer 9 ┌───────────────────────
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
   Layer 8 ┌──────────────────────────────────────────────────────────────┐
-   Author. │  Policies (27)  RBAC (5 roles)  Functional roles (2)       │
+   Author. │  Policies (28+)  RBAC (5 roles)  Functional roles (2)       │
          │  BasePolicy → AuthorizesRoles + AuthorizesOwnership         │
          │  spatie/laravel-permission auto-registers Gate::before      │
          └──────────────────────────────────────────────────────────────┘
@@ -108,10 +108,10 @@ Layer 6 ┌───────────────────────
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
   Layer 5 ┌──────────────────────────────────────────────────────────────┐
-  Module  │  Eloquent Models (38)  →  extend BaseModel                  │
+  Module  │  Eloquent Models (40+)  →  extend BaseModel                  │
   Models  │  UUID primary keys (HasUuids)  HasFactory                   │
           │  Relationships, Scopes, Accessors, Mutators                 │
-           │  app/{Module}/**/Models/ (38)  + factories + seeders       │
+           │  app/{Module}/**/Models/ (40+)  + factories + seeders       │
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
 Layer 4 ┌──────────────────────────────────────────────────────────────┐
@@ -133,7 +133,7 @@ Layer 2 ┌───────────────────────
          │  Config: .env, config/*.php, Runtime settings table        │
          │  Files: Spatie Media Library (polymorphic attachments)     │
          │  Cache: Laravel cache + queue (jobs) + session             │
-           │  database/migrations/ (49 files)  config/  storage/        │
+            │  database/migrations/ (51 files)  config/  storage/        │
          └──────────────────────────────────────────────────────────────┘
                                               ▲ depends on
 Layer 1 ┌──────────────────────────────────────────────────────────────┐

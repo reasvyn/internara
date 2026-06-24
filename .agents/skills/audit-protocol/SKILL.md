@@ -1,6 +1,6 @@
 ---
 name: audit-protocol
-description: SDLC Phase: ANALYSIS. Systematic multi-layer codebase audit enforcing conventions, architecture patterns, security, and industry best practices. Every finding is recorded in docs/known-issues.md with actionable fix recommendations. Focus: pattern violations, code smells, security holes, convention drift — NOT feature enhancements.
+description: SDLC Phase: ANALYSIS. Systematic multi-layer codebase audit enforcing conventions, architecture patterns, security, and industry best practices. Every finding is recorded in [GitHub Issues](https://github.com/reasvyn/internara/issues) with actionable fix recommendations. Focus: pattern violations, code smells, security holes, convention drift — NOT feature enhancements.
 downstream: [roadmap-planning, code-refactoring]
 ---
 
@@ -8,14 +8,14 @@ downstream: [roadmap-planning, code-refactoring]
 
 ## When to Activate
 
-Apply this skill when performing a comprehensive codebase audit. Covers architecture compliance, convention enforcement, security, performance, testing adequacy, and documentation alignment. Every phase produces structured entries in `docs/known-issues.md`.
+Apply this skill when performing a comprehensive codebase audit. Covers architecture compliance, convention enforcement, security, performance, testing adequacy, and documentation alignment. Every phase produces structured entries in [GitHub Issues](https://github.com/reasvyn/internara/issues).
 
 ## SDLC Context
 
 | Role | Skill |
 |------|-------|
 | **Upstream (input)** | Existing codebase |
-| **This skill** | **ANALYSIS** — produces `docs/known-issues.md` |
+| **This skill** | **ANALYSIS** — produces [GitHub Issues](https://github.com/reasvyn/internara/issues) |
 | **Downstream (output)** | `roadmap-planning` — findings feed bug/refactor pipeline |
 | | `code-refactoring` — findings guide refactoring targets |
 | | `security-audit` — deep-dive on security findings (if needed) |
@@ -52,7 +52,7 @@ Read these documents before starting (concurrent read):
 - `docs/modules/module-index.md` — module boundaries
 - `docs/doc-index.md` — full documentation catalog
 - `AGENTS.md` — project invariants, quick rules
-- `docs/known-issues.md` — existing known issues (to avoid duplicates)
+- [GitHub Issues](https://github.com/reasvyn/internara/issues) — existing known issues (to avoid duplicates)
 
 ### 0.2 Establish Baseline
 
@@ -65,7 +65,7 @@ composer run test:coverage              # coverage baseline (if available)
 
 ### 0.3 Initialize Findings
 
-Create or append to `docs/known-issues.md`. Every finding uses this template:
+Create or append to [GitHub Issues](https://github.com/reasvyn/internara/issues). Every finding uses this template:
 
 ```markdown
 ### ID-{N} — {Severity}: {Short Description}
@@ -597,7 +597,7 @@ Reviewers verify:
 1. Remove duplicate findings (same issue found by multiple phases).
 2. Sort by severity (CRITICAL → HIGH → MEDIUM → LOW).
 3. Within same severity, sort by module alphabetically.
-4. Update the master change summary at the top of `docs/known-issues.md`.
+4. Update the master change summary at the top of [GitHub Issues](https://github.com/reasvyn/internara/issues).
 
 ### 11.2 Summary Statistics
 
@@ -660,5 +660,5 @@ git diff --stat                          # review all changes
 | `docs/infrastructure/testing.md` | Testing infrastructure, coverage, performance |
 | `docs/modules/module-index.md` | Module catalog |
 | `docs/doc-index.md` | Documentation catalog |
-| `docs/known-issues.md` | Findings target |
+| [GitHub Issues](https://github.com/reasvyn/internara/issues) | Findings target |
 | `AGENTS.md` | Project invariants, quick-reference rules |

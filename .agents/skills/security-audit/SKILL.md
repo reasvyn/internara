@@ -1,6 +1,6 @@
 ---
 name: security-audit
-description: SDLC Phase: ANALYSIS. Dedicated security and privacy audit for the entire codebase. Covers OWASP Top 10, PII handling, authentication, authorization, session security, rate limiting, secrets management, and dependency vulnerabilities. Produces structured findings in docs/known-issues.md with actionable fix recommendations.
+description: SDLC Phase: ANALYSIS. Dedicated security and privacy audit for the entire codebase. Covers OWASP Top 10, PII handling, authentication, authorization, session security, rate limiting, secrets management, and dependency vulnerabilities. Produces structured findings in [GitHub Issues](https://github.com/reasvyn/internara/issues) with actionable fix recommendations.
 upstream: [audit-protocol]
 downstream: [roadmap-planning, code-refactoring]
 ---
@@ -19,7 +19,7 @@ security and privacy issues:
 |------|-------|
 | **Upstream (input)** | `audit-protocol` — broad findings that need security deep-dive |
 | | Existing codebase |
-| **This skill** | **ANALYSIS (Security)** — produces `docs/known-issues.md` |
+| **This skill** | **ANALYSIS (Security)** — produces [GitHub Issues](https://github.com/reasvyn/internara/issues) |
 | **Downstream (output)** | `roadmap-planning` — security findings feed roadmap |
 | | `code-refactoring` — fixes security issues found |
 | **Phase** | [Planning] → Analysis → [Design] → [Implementation] → [Testing] → [Maintenance] |
@@ -31,13 +31,13 @@ security and privacy issues:
 - **Infrastructure security** — CSP, CORS, secrets management, dependency CVEs
 - **Audit trail** — missing logs, insufficient event coverage
 
-Every finding is recorded in `docs/known-issues.md` with reproduction steps and fix recommendations.
+Every finding is recorded in [GitHub Issues](https://github.com/reasvyn/internara/issues) with reproduction steps and fix recommendations.
 
 ---
 
 ## Audit Modules (Execute in Order)
 
-Each module produces findings in `docs/known-issues.md`. Modules are independent — run the relevant
+Each module produces findings in [GitHub Issues](https://github.com/reasvyn/internara/issues). Modules are independent — run the relevant
 ones based on scope.
 
 ```
@@ -65,7 +65,7 @@ ones based on scope.
 | `docs/architecture/logging-pattern.md` | PII masking rules |
 | `docs/architecture/exception-pattern.md` | Exception information leakage |
 | `.env.example` | Secret keys that must never be committed |
-| `docs/known-issues.md` | Existing security findings (avoid duplicates) |
+| [GitHub Issues](https://github.com/reasvyn/internara/issues) | Existing security findings (avoid duplicates) |
 
 ### 0.2 Baseline
 
@@ -77,7 +77,7 @@ php artisan test --compact --filter="Security\|Auth" # security-related tests
 
 ### 0.3 Initialize Findings File
 
-Open `docs/known-issues.md`. Every security finding uses this template:
+Open [GitHub Issues](https://github.com/reasvyn/internara/issues). Every security finding uses this template:
 
 ```markdown
 ### SEC-{N} — {Severity}: {Short Description}
@@ -362,7 +362,7 @@ composer audit 2>/dev/null
 - Flag packages with known CVEs. For each:
   - Note the CVE ID, severity, and affected versions.
   - Check if a patched version is available.
-  - If not, document the risk and mitigation in `docs/known-issues.md`.
+  - If not, document the risk and mitigation in [GitHub Issues](https://github.com/reasvyn/internara/issues).
 
 ### 6.2 NPM Dependencies
 
@@ -398,7 +398,7 @@ npm outdated 2>/dev/null
 | Every status transition logs | `rg 'status.*=.*match\|->update\(\['status'\]' app/ --type php -A 10` | Has `$this->log()` or `SmartLogger` call |
 | Auth events logged (login, logout, failed) | `app/Auth/Login/Actions/LoginAction.php` | Login success, failure, lockout logged |
 | Recovery events logged | `app/Auth/AccountRecovery/Actions/` | Slip generation, redemption, admin recovery logged |
-| Authorization failures logged | `app/Core/Http/Middleware/CheckRoleMiddleware.php` | Unauthorized access attempts logged |
+| Authorization failures logged | `app/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` | Unauthorized access attempts logged |
 
 **Record findings** under `SEC-AUDIT-*` IDs.
 
@@ -421,7 +421,7 @@ npm outdated 2>/dev/null
 1. Remove duplicates (same issue found by multiple modules).
 2. Sort by severity (CRITICAL → HIGH → MEDIUM → LOW).
 3. Group by category for readability.
-4. Update `docs/known-issues.md` header with latest audit date.
+4. Update [GitHub Issues](https://github.com/reasvyn/internara/issues) header with latest audit date.
 
 ### 8.2 Summary Statistics
 
@@ -482,7 +482,7 @@ composer audit 2>/dev/null
 | `docs/infrastructure/observability.md` | Audit logging, health checks |
 | `docs/architecture/logging-pattern.md` | PII masking rules |
 | `docs/architecture/exception-pattern.md` | Exception information leakage |
-| `docs/known-issues.md` | Findings target |
+| [GitHub Issues](https://github.com/reasvyn/internara/issues) | Findings target |
 | `AGENTS.md` | Project invariants |
 | `.agents/skills/audit-protocol/SKILL.md` | General codebase audit (upstream) |
 | `.agents/skills/code-refactoring/SKILL.md` | Fix implementation after audit |
