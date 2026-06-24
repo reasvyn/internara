@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace App\Auth\AccessTokens\Entities;
 
-use App\Auth\AccessTokens\Models\AccessToken;
 use App\Core\Entities\BaseEntity;
-use App\User\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
 
 final readonly class ActivationToken extends BaseEntity
 {
@@ -40,27 +37,6 @@ final readonly class ActivationToken extends BaseEntity
             plainText: '',
             tokenId: $model->id,
             expiresAt: $model->expires_at ?? now()->addDays(30),
-        );
-    }
-
-    public static function generate(User $user, array $options = []): self
-    {
-        $raw = bin2hex(random_bytes(32));
-        $ttlDays = $options['ttl_days'] ?? 30;
-
-        $token = AccessToken::create([
-            'user_id' => $user->id,
-            'token' => Hash::make($raw),
-            'token_type' => 'activation',
-            'name' => $options['name'] ?? 'Account Activation',
-            'expires_at' => now()->addDays($ttlDays),
-            'attempts' => 0,
-        ]);
-
-        return new self(
-            plainText: $raw,
-            tokenId: $token->id,
-            expiresAt: now()->addDays($ttlDays),
         );
     }
 }

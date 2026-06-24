@@ -33,14 +33,14 @@ final readonly class MentorEntity extends BaseEntity
     public function isTeacher(User $user): bool
     {
         return $this->mentors->contains(
-            fn (User $m) => $m->id === $user->id && ($m->pivot->role ?? null) === 'teacher',
+            fn (User $m) => $m->id === $user->id && $m->hasRole('teacher'),
         );
     }
 
     public function isSupervisor(User $user): bool
     {
         return $this->mentors->contains(
-            fn (User $m) => $m->id === $user->id && ($m->pivot->role ?? null) === 'supervisor',
+            fn (User $m) => $m->id === $user->id && $m->hasRole('supervisor'),
         );
     }
 

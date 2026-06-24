@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth\Account\Entities;
 
-use App\Auth\AccessTokens\Models\AccessToken;
 use App\Core\Entities\BaseEntity;
-use App\User\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,22 +19,16 @@ final readonly class AccountActivation extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
-        $token = AccessToken::where('user_id', $model->id)
-            ->where('token_type', 'activation')
-            ->whereNull('revoked_at')
-            ->first();
+        $token = $model->relationLoaded('activationToken') && $model->activationToken
+            ? $model->activationToken
+            : null;
 
         return new self(
             isActivated: $token === null,
             tokenExpiresAt: $token?->expires_at,
-            tokenIsValid: $token?->expires_at === null || ($token->expires_at !== null && $token->expires_at->isFuture()),
+            tokenIsValid: $token === null || ($token->expires_at !== null && $token->expires_at->isFuture()),
             attempts: $token?->attempts ?? 0,
         );
-    }
-
-    public static function forUser(User $user): self
-    {
-        return self::fromModel($user);
     }
 
     public function requiresActivation(): bool
