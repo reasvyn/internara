@@ -14,9 +14,9 @@ The 4-layer data flow with DTO boundaries prevents circular dependencies:
 - **Data Layer** (Model) → Eloquent persistence, knows nothing about layers above
 
 **Key boundary rules:**
-- Command/Process Actions MUST accept `BaseData` DTO (never `array`, never `Request`)
-- Command/Process Actions MUST return `ActionResponse` (never Model directly)
-- Livewire MUST NOT access Entity methods directly (delegate to Actions)
+- Command/Process Actions SHOULD accept `BaseData` DTO for 3+ params — simple ops may use typed scalars
+- Command/Process Actions SHOULD return `ActionResponse` for structured feedback — simple returns may use Model directly
+- Livewire may access Entity methods for READ-ONLY UI checks (show/hide buttons). WRITE decisions go through Actions.
 - Entities MUST NOT import Actions, Services, Livewire, or Controllers
 - DTOs MUST NOT import Models, Actions, Entities, or Livewire — only scalars, enums, Carbon
 

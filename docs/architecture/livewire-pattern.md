@@ -29,13 +29,16 @@ side effects belong in lower layers.
 ### NOT Allowed
 
 - Inline DB mutations (`Model::create()`, `DB::transaction()`, `Model::update()`)
-- Inline business rules (`if ($model->status === 'x')`, date comparisons)
-- **Direct Entity method access** (`$model->asEntity()->canX()`) — delegate to Actions
-- **Raw array passed to Actions** — always build a DTO (`BaseData`) from validated form data
+- Inline business rules for WRITE decisions (`if ($model->status === 'x')` before calling Action)
+- **Raw array (3+ keys) passed to Actions** — build a DTO (`BaseData::from()`) from validated form data
 - Side effects (`Log::info()`, `event(new ...)`, `Notification::send()`)
 - Static helper methods (`public static function formatSomething()`)
 - Bare `wire:confirm` for destructive actions (use the two-step pattern)
 - maryUI Toast methods (`$this->success()`, `$this->error()`)
+
+**Allowed (read-only UI decisions):** `$model->asEntity()->canX()` to conditionally show/hide UI
+elements (e.g., disable a delete button when `! $entity->canBeDeleted()`). For WRITE decisions
+(e.g., "can this be approved?"), the check must go through an Action.
 
 ### Why
 

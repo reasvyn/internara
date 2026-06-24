@@ -123,8 +123,8 @@ Every Command Action MUST:
 4. **Dispatch event** for significant state changes (status transitions, creates, deletes). Flag Actions that change status without dispatching an event.
 5. **`RejectedException`** for business rule violations, never `RuntimeException`.
 6. **No inline `canX()` checks** — delegate to Entity methods.
-7. **MUST accept DTO (`BaseData`) as primary parameter** — flag `execute(array $data)` as HIGH (violates DTO boundary rule).
-8. **MUST return `ActionResponse`** — flag `execute(...): Model` as HIGH (violates ActionResponse rule).
+7. **SHOULD accept DTO for 3+ params** — flag complex `execute(array $data)` as MEDIUM (prefer DTO).
+8. **SHOULD return `ActionResponse`** when caller needs feedback. Flag returning Model when Action has messages/errors to communicate (MEDIUM).
 
 **Check:**
 ```bash
@@ -183,8 +183,8 @@ Every Process Action MUST:
 
 1. Inline DB mutations (`Model::create()`, `Model::update()`, `Model::delete()`, `DB::transaction()`).
 2. Inline business rules (`if ($model->status === 'x')`, date comparisons).
-3. **Direct Entity method access** (`$model->asEntity()->canX()`) — must delegate to Action.
-4. **Raw array passed to Actions** — must build DTO (`BaseData::from()`) from validated form data.
+3. **Direct Entity method access for WRITE decisions** — READ-ONLY UI checks are acceptable (e.g., hide button). Flag Entity access before calling an Action for the same operation (MEDIUM).
+4. **Raw array (3+ keys) passed to Actions** — prefer DTO (`BaseData::from()`) from validated form data.
 5. Side effects (`Log::info()`, `event(new ...)`, `Notification::send()`).
 6. Static helper methods.
 7. maryUI Toast methods (`$this->success()`, `$this->error()`).

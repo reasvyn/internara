@@ -1,6 +1,6 @@
 <project-guidelines>
 > **Last updated:** 2026-06-24
-> **Changes:** add 4-layer data flow with DTO boundaries to prevent circular dependencies; add Action DTO/ActionResponse rules; add dependency safety rules for Entities/Models/DTOs
+> **Changes:** add 4-layer data flow with DTO boundaries to prevent circular dependencies; add Action DTO/ActionResponse rules; add dependency safety rules for Entities/Models/DTOs; balance overengineering — DTO only for 3+ params, ActionResponse for structured feedback, allow READ-ONLY Entity access in Livewire
 >
 > **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
 > provides the essential mental model, quick-reference essentials, and project-specific rules needed
@@ -80,9 +80,10 @@ Layer  1: Infrastructure (PHP 8.4, Laravel 13, Composer packages)
 - Complex queries go in Read Actions
 - `BaseAction::transaction()` auto-detects nesting, queues events until commit, retries on deadlock
   (3 attempts)
-- **Command/Process Actions MUST accept a DTO (`BaseData`) as primary parameter** — never raw `array`
-- **Command/Process Actions MUST return `ActionResponse`** — never return Model directly
+- **Command/Process Actions SHOULD accept a DTO (`BaseData`) for 3+ params** — simple ops may use typed scalars. Never raw `array`.
+- **Command/Process Actions SHOULD return `ActionResponse`** for structured feedback. Simple create/update may return Model directly.
 - **Actions MUST delegate business rules to Entities** — throw `RejectedException` on violation
+- **Livewire may use Entities for READ-ONLY UI checks** (show/hide buttons). WRITE decisions go through Actions.
 
 ## Base Class Mandate
 
@@ -102,7 +103,7 @@ Layer  1: Infrastructure (PHP 8.4, Laravel 13, Composer packages)
 | State machine        | `implements StatusEnum` + `LabelEnum`           | Boolean field               |
 | Exception            | `extends AppException` or `ModuleException`     | `\Exception`                |
 | Action return        | `ActionResponse`                               | Returning Model directly     |
-| Action input         | `BaseData` DTO                                 | Raw `array` parameter        |
+| Action input         | `BaseData` DTO (for 3+ params)                 | Raw `array` parameter        |
 
 ## 4-Layer Data Flow (DTO Boundaries)
 
@@ -127,11 +128,11 @@ DATA LAYER (Model)
 ```
 
 **Boundary rules:**
-- UI → Business: ALWAYS via DTO (never raw array, never Request, never Model)
-- Business → Domain: Entity created FROM Model WITHIN Action (never passed from UI)
+- UI → Business: ALWAYS via DTO (for 3+ params), typed scalars OK for simple. Never Request, never Model.
+- Business → Domain: Entity created FROM Model WITHIN Action (never passed from UI for writes)
 - Business → Data: Model::create/update with DTO values only
 - Livewire MUST NOT call `Model::create/update/delete` directly
-- Livewire MUST NOT access Entity methods directly
+- Livewire may access Entity methods for READ-ONLY UI checks (e.g., `canBeDeleted()` to hide a button)
 - Entity MUST NOT import Action, Service, Livewire, or Controller
 
 ## Circular Dependency Prevention
@@ -322,9 +323,10 @@ php artisan notifications:prune        # Prune old notifications
 - Cache keys must be registered in `config/cache-keys.php` — never inline strings
 - Livewire components must NOT call `Model::create/update/delete` directly — use Actions
 - Actions must extend the correct base class (Command/Read/Process)
-- Command/Process Actions MUST accept `BaseData` DTO, never raw `array`
-- Command/Process Actions MUST return `ActionResponse`, never Model directly
-- Livewire components must NOT access Entity methods directly — delegate to Action
+- Command/Process Actions SHOULD accept `BaseData` DTO for 3+ params — never raw `array`
+- Command/Process Actions SHOULD return `ActionResponse` for structured feedback
+- Livewire components must NOT access Entity methods for WRITE decisions — delegate to Action
+- Livewire components MAY access Entity methods for READ-ONLY UI checks (show/hide buttons)
 - Entity classes must NOT import Actions, Services, Livewire, or Controllers
 - DTOs must NOT import Models, Actions, Entities, or Livewire — only Core BaseData, scalars, enums, Carbon
 
@@ -525,7 +527,7 @@ Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
 - [ ] No debug calls (`dd/dump/ray/var_dump/print_r/die`)
 - [ ] All user-facing strings use `__()` helper
 - [ ] Action uses correct triad pattern
-- [ ] Command/Process Action accepts DTO and returns ActionResponse
+- [ ] Command/Process Action accepts DTO (for 3+ params) and returns ActionResponse (for structured feedback)
 - [ ] Cache keys registered in `config/cache-keys.php`
 - [ ] No N+1 queries — eager loading verified
 - [ ] No unescaped `{!! !!}` for user content

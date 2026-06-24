@@ -129,8 +129,8 @@ final class {Verb}{Entity}Action extends BaseCommandAction
 
 **Key rules:**
 - Single `execute()` method — never add a second public method
-- **MUST accept DTO (`BaseData`) as primary parameter** — never raw `array`
-- **MUST return `ActionResponse`** — never return Model directly
+- **Accept DTO for 3+ params** — simple ops may use typed scalars. Never raw `array`
+- **Return `ActionResponse`** when caller needs message/redirect/errors. Model return OK for simple cases
 - Command: `$this->transaction()` + `$this->log()`
 - Read: NO `transaction()` or `log()`
 - Process: compose other Actions, handle partial failure
@@ -215,8 +215,8 @@ public function save(CreateUserAction $action): void
 - [ ] Action created in correct module/submodule directory
 - [ ] Extends correct base class (Command/Read/Process)
 - [ ] Single `execute()` method
-- [ ] **Command/Process Action accepts DTO (`BaseData`) — never raw `array`**
-- [ ] **Command/Process Action returns `ActionResponse` — never Model directly**
+- [ ] **Command/Process Action accepts DTO for 3+ params — never raw `array`**
+- [ ] **Command/Process Action returns `ActionResponse` for structured feedback**
 - [ ] DB writes wrapped in `$this->transaction()`
 - [ ] `$this->log()` called after mutation
 - [ ] Event dispatched for significant state change
