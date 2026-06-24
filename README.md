@@ -1,7 +1,7 @@
 # Internara
 
-> **Last updated:** 2026-06-18
-> **Changes:** sync — fix Read Action base class description (plain classes → BaseReadAction)
+> **Last updated:** 2026-06-24
+> **Changes:** sync — file path fixes, update metadata consistent with documentation rules
 >
 > **Self-hosted, single-tenant vocational fieldwork management system** engineered for managing compulsory industrial fieldwork (PKL) programs at Indonesian vocational upper-secondary schools (SMA/SMK) and technical education institutions.
 

@@ -1,7 +1,7 @@
 # Action-based MVC Architecture
 
 > **Last updated:** 2026-06-24
-> **Changes:** complete rewrite with 4-layer DTO boundary flow, Action Triad consolidation, circular dep prevention, DTO/ActionResponse rebalanced — DTO only for 3+ params, ActionResponse for structured feedback, Livewire Entity access allowed for read-only UI checks
+> **Changes:** complete rewrite with 4-layer DTO boundary flow, Action Triad consolidation, circular dep prevention, DTO/ActionResponse rebalanced — DTO only for 3+ params, ActionResponse for structured feedback, Livewire Entity access allowed for read-only UI checks; sync — add MariaDB to Layer 2
 >
 > Complete architectural foundation of Internara. Covers the 12-layer architecture, Action Triad
 > pattern, DTO-boundary data flow, cross-module communication, exception handling, validation
@@ -153,7 +153,7 @@ Layer 3 ┌───────────────────────
           └──────────────────────────────────────────────────────────────┘
                                                ▲ depends on
 Layer 2 ┌──────────────────────────────────────────────────────────────┐
-  Persist.│  Database: SQLite (default) / MySQL / PostgreSQL            │
+  Persist.│  Database: SQLite (default) / MySQL / MariaDB / PostgreSQL   │
           │  Config: .env, config/*.php, Runtime settings table        │
           │  Files: Spatie Media Library (polymorphic attachments)     │
           │  Cache: Laravel cache + queue (jobs) + session             │

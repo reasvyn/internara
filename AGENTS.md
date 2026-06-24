@@ -1,6 +1,6 @@
 <project-guidelines>
 > **Last updated:** 2026-06-24
-> **Changes:** add comprehensive Documentation Rules section with metadata, content, structure, and language conventions; replace brief Documentation Quality section
+> **Changes:** sync — remove version numbers from tech stack (derivative doc rule); fix migration count 51→43+; comprehensive doc sync
 >
 > **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
 > provides the essential mental model, quick-reference essentials, and project-specific rules needed
@@ -25,18 +25,18 @@ logbooks, competency assessments, report revisions, and cryptographic certificat
 
 # Tech Stack
 
-| Layer         | Technology                                                                                                                                                                                             |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Language      | PHP 8.4                                                                                                                                                                                                |
-| Framework     | Laravel 13                                                                                                                                                                                             |
-| Frontend      | Livewire 4, Alpine.js, maryUI 2, DaisyUI 5, Tailwind CSS v4                                                                                                                                            |
-| Build         | Vite 8                                                                                                                                                                                                 |
-| Database      | SQLite (default), MySQL 8+, MariaDB 10+, PostgreSQL 15+                                                                                                                                                |
-| Queue/Cache   | Redis / Database                                                                                                                                                                                       |
-| WebSockets    | Laravel Reverb (optional)                                                                                                                                                                              |
-| Observability | Laravel Pulse, SmartLogger (dual-channel)                                                                                                                                                              |
-| Testing       | Pest 4, PHPStan 2, Laravel Pint                                                                                                                                                                        |
-| Quality       | Larastan, Mockery                                                                                                                                                                                      |
+| Layer         | Technology                                                                                                                                                                                       |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Language      | PHP                                                                                                                                                                                              |
+| Framework     | Laravel                                                                                                                                                                                          |
+| Frontend      | Livewire, Alpine.js, maryUI, DaisyUI, Tailwind CSS                                                                                                                                               |
+| Build         | Vite                                                                                                                                                                                             |
+| Database      | SQLite (default), MySQL, MariaDB, PostgreSQL                                                                                                                                                     |
+| Queue/Cache   | Redis / Database                                                                                                                                                                                 |
+| WebSockets    | Laravel Reverb (optional)                                                                                                                                                                        |
+| Observability | Laravel Pulse, SmartLogger (dual-channel)                                                                                                                                                        |
+| Testing       | Pest, PHPStan, Laravel Pint                                                                                                                                                                      |
+| Quality       | Larastan, Mockery                                                                                                                                                                                |
 | Key packages  | `spatie/laravel-permission`, `spatie/laravel-medialibrary`, `spatie/laravel-activitylog`, `spatie/laravel-model-status`, `livewire/livewire`, `php-flasher/flasher-laravel`, `barryvdh/laravel-dompdf` |
 
 # Architecture Core
@@ -256,7 +256,7 @@ tests/
 ├── Feature/{Module}/{SubModule}/{Name}Test.php
 └── Unit/{Module}/{SubModule}/{Name}Test.php
 database/
-├── migrations/                   # 51 migration files
+├── migrations/                   # 43+ migration files
 ├── factories/                    # Model factories
 └── seeders/                      # Database seeders
 ```
