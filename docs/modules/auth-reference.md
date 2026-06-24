@@ -1,7 +1,7 @@
 # Auth — Technical Reference
 
 > **Last updated:** 2026-06-16
-> **Changes:** sync — add Console Commands section (admin:create), add missing Events (SuperAdminRecovered, RecoverySlipGenerated), add missing Listeners (NotifySuperAdminsOfRecovery), update SuperAdmin file tree
+> **Changes:** sync — add missing Events (SuperAdminRecovered, RecoverySlipGenerated, PasswordUpdated), add missing Listeners (NotifySuperAdminsOfRecovery), update SuperAdmin file tree
 
 Detailed structural and implementation reference for the **Auth** module.
 
@@ -80,6 +80,7 @@ Handles authentication: login, password management, account activation, account 
 | `Login/Events/LoginFailed.php` | `LoginFailed` | `LoginAction` |
 | `AccountRecovery/Events/RecoverySlipGenerated.php` | `RecoverySlipGenerated` | `GenerateRecoverySlipAction` |
 | `SuperAdmin/Events/SuperAdminRecovered.php` | `SuperAdminRecovered` | `RecoverSuperAdminAction` |
+| `Password/Events/PasswordUpdated.php` | `PasswordUpdated` | `UpdateUserPasswordAction` |
 
 ## Listeners
 

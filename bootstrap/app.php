@@ -49,7 +49,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->trustProxies(at: '*');
 
-        $middleware->validateCsrfTokens(except: ['setup']);
+        $middleware->preventRequestForgery(except: ['setup']);
 
         $middleware->web(
             append: [
@@ -72,7 +72,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 default => 500,
             };
 
-            $message = $e->isUserFacing() ? $e->getMessage() : __('An unexpected error occurred.');
+            $message = $e->isUserFacing() ? $e->getMessage() : __('exceptions.unexpected');
 
             if ($request->expectsJson()) {
                 return response()->json(['message' => $message], $status);

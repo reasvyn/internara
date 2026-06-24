@@ -24,7 +24,7 @@ task-level breakdowns, dependencies, and testing strategy.
 |------|-------|
 | **Upstream (input)** | `audit-protocol` — findings feed bug/refactor pipeline |
 | | `security-audit` — findings feed security pipeline |
-| | `docs/known-issues.md` — known bugs and tech debt |
+| | [GitHub Issues](https://github.com/reasvyn/internara/issues) — known bugs and tech debt |
 | **This skill** | **PLANNING** — produces `docs/roadmap.md` |
 | **Downstream (output)** | `feature-building` — executes roadmap tasks |
 | **Phase** | Planning → [Analysis] → [Design] → [Implementation] → [Testing] → [Maintenance] |
@@ -51,7 +51,7 @@ Read these documents before planning (concurrent read):
 | Document | Purpose |
 |----------|---------|
 | `docs/roadmap.md` | Existing roadmap — understand what's planned, in progress, completed |
-| `docs/known-issues.md` | Known bugs, code smells, security gaps — source of bug-fix pipeline |
+| [GitHub Issues](https://github.com/reasvyn/internara/issues) | Known bugs, code smells, security gaps — source of bug-fix pipeline |
 | `docs/architecture.md` | Architecture constraints that affect feature placement |
 | `docs/modules/module-index.md` | Module boundaries — where new features belong |
 | `docs/conventions.md` | Conventions that feature implementations must follow |
@@ -87,7 +87,7 @@ Collect actionable items from these sources:
 
 | Source | What to extract | Priority heuristic |
 |--------|----------------|-------------------|
-| `docs/known-issues.md` | Bug descriptions, severity, affected files | CRITICAL/HIGH → immediate |
+| [GitHub Issues](https://github.com/reasvyn/internara/issues) | Bug descriptions, severity, affected files | CRITICAL/HIGH → immediate |
 | `docs/architecture.md` | Deprecated patterns needing migration | Based on frequency of use |
 | `audit-protocol` results | Convention violations, security holes | Severity in findings |
 | `tests/` flaky tests | Tests that fail intermittently | MEDIUM (erodes trust) |
@@ -338,7 +338,7 @@ Organize by severity: Critical → High → Medium → Low.
 
 ### 5.2 Cross-Reference Known Issues
 
-- Every bug fix task in roadmap should reference the corresponding `docs/known-issues.md` entry.
+- Every bug fix task in roadmap should reference the corresponding [GitHub Issues](https://github.com/reasvyn/internara/issues) entry.
 - Every security task should reference the audit finding or CVE.
 - Every feature task should reference the ADR or `key-features.md` section.
 
@@ -366,7 +366,7 @@ Organize by severity: Critical → High → Medium → Low.
 - [ ] Every task specifies which files to modify.
 - [ ] Testing strategy covers happy path + edge cases + error handling.
 - [ ] No pipeline dominates >60% of total effort.
-- [ ] All known critical/high bugs from `docs/known-issues.md` are scheduled.
+- [ ] All known critical/high bugs from [GitHub Issues](https://github.com/reasvyn/internara/issues) are scheduled.
 - [ ] No-change zones are documented and justified.
 - [ ] Dependencies between tasks are accurate and complete.
 
@@ -409,7 +409,7 @@ When a roadmap initiative is complete:
 1. Move the completed roadmap content to `docs/roadmap/archive/{initiative}-{YYYY-MM}.md`.
 2. Remove the content from `docs/roadmap.md` (keep a stub or start new initiative).
 3. Update `docs/doc-index.md` to reference the archive file.
-4. Update `docs/known-issues.md` — mark all resolved entries as `[RESOLVED in {initiative}]`.
+4. Update [GitHub Issues](https://github.com/reasvyn/internara/issues) — mark all resolved entries as `[RESOLVED in {initiative}]`.
 
 ---
 
@@ -418,7 +418,7 @@ When a roadmap initiative is complete:
 | Document | Purpose |
 |----------|---------|
 | `docs/roadmap.md` | Roadmap document (target file for this skill) |
-| `docs/known-issues.md` | Bug and tech debt inventory (input to bug-fix pipeline) |
+| [GitHub Issues](https://github.com/reasvyn/internara/issues) | Bug and tech debt inventory (input to bug-fix pipeline) |
 | `docs/architecture.md` | Architecture constraints for feature design |
 | `docs/conventions.md` | Implementation standards |
 | `docs/modules/module-index.md` | Module boundaries |
@@ -439,7 +439,7 @@ When a roadmap initiative is complete:
 
 ```
                           ┌──────────────────────────┐
-                          │     docs/known-issues.md  │
+                          │     [GitHub Issues](https://github.com/reasvyn/internara/issues)  │
                           └──────────┬───────────────┘
                                      │
               ┌──────────────────────┼──────────────────────┐

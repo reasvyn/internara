@@ -6,14 +6,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
+            // Basic data
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
@@ -21,13 +21,16 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            // Additional data
             $table->boolean('setup_required')->default(false);
+            $table->timestamp('first_login_at')->nullable();
             $table->timestamp('locked_at')->nullable();
             $table->string('locked_reason')->nullable();
             $table->string('status')->default('provisioned')->index();
             $table->boolean('is_active')->default(true)->index();
+            // Timestamps
             $table->timestamps();
-
+            // Indexs
             $table->index('locked_at');
             $table->index('setup_required');
         });

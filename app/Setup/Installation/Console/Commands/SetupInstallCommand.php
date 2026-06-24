@@ -8,7 +8,6 @@ use App\Core\Data\AuditReport;
 use App\Core\Enums\AuditCategory;
 use App\Core\Enums\AuditStatus;
 use App\Core\Support\SmartLogger;
-use App\Providers\AppServiceProvider;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
 use App\Setup\Installation\Console\Commands\Concerns\InteractsWithInstallerCli;
 use App\Setup\Installation\Support\SystemProvisioner;
@@ -29,7 +28,7 @@ final class SetupInstallCommand extends Command
         {--force : Force installation even if already installed}
         {--check-only : Run environment audit without provisioning}
         {--optimize : Cache config, routes, views, and events (production only)}
-        {--url= : The application URL (e.g., https://internara.example.com)}';
+        {--url= : The application URL (e.g., https://example.com)}';
 
     public function __construct(
         private EnvironmentAuditor $auditor,
@@ -42,15 +41,18 @@ final class SetupInstallCommand extends Command
 
     public function handle(): int
     {
+        // Display banner
         $this->displayBanner();
 
         try {
+            // System checks
             $earlyExit = $this->handlePreFlight();
 
             if ($earlyExit !== null) {
                 return $earlyExit;
             }
 
+            // Starting installation
             $this->displaySection(__('setup.cli.starting_installation'));
 
             SmartLogger::info(__('setup.cli.starting_installation'))
@@ -85,18 +87,9 @@ final class SetupInstallCommand extends Command
             }
 
             $this->newLine();
-            $provider = app()->getProvider(AppServiceProvider::class);
             $this->components->task(
-                __('setup.cli.tasks.discover_livewire'),
-                fn () => $provider->discoverLivewireComponents(),
-            );
-            $this->components->task(
-                __('setup.cli.tasks.discover_policies'),
-                fn () => $provider->discoverPolicies(),
-            );
-            $this->components->task(
-                __('setup.cli.tasks.discover_views'),
-                fn () => $provider->registerBladeNamespaces(),
+                __('setup.cli.tasks.discover_modules'),
+                fn () => $this->call('module:discover'),
             );
 
             $this->displaySuccess($tokenData->plaintext, $tokenData->expiresAt);

@@ -41,7 +41,6 @@ class Report extends BaseModel
 
     /**
      * @todo Extract snapshot logic into a ReportSnapshot entity.
-     *       See C-13 in docs/known-issues.md.
      */
     public function captureSnapshot(): void
     {

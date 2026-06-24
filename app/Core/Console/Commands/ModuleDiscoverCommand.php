@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Console\Commands;
 
+use App\Core\Services\ModuleDiscoverService;
 use App\Core\Support\SmartLogger;
 use App\Providers\AppServiceProvider;
 use Illuminate\Console\Command;
@@ -18,25 +19,25 @@ class ModuleDiscoverCommand extends Command
     public function handle(): int
     {
         try {
-            $provider = app()->getProvider(AppServiceProvider::class);
+            $service = app(ModuleDiscoverService::class);
 
-            if ($provider === null) {
+            if (app()->getProvider(AppServiceProvider::class) === null) {
                 throw new RuntimeException('AppServiceProvider is not registered.');
             }
 
             $this->components->task(
                 __('setup.cli.tasks.discover_livewire'),
-                fn () => $provider->discoverLivewireComponents(),
+                fn () => $service->discoverLivewireComponents(),
             );
 
             $this->components->task(
                 __('setup.cli.tasks.discover_policies'),
-                fn () => $provider->discoverPolicies(),
+                fn () => $service->discoverPolicies(),
             );
 
             $this->components->task(
                 __('setup.cli.tasks.discover_views'),
-                fn () => $provider->registerBladeNamespaces(),
+                fn () => $service->registerBladeNamespaces(),
             );
 
             $this->newLine();

@@ -1,7 +1,7 @@
 # Guidance — Technical Reference
 
 > **Last updated:** 2026-06-17
-> **Changes:** sync — add Handbook and MonitoringVisit submodules; fix SupervisionStatus → SupervisionLogState entity; add missed SupervisionLog actions and Livewire components
+> **Changes:** sync — add Handbook and MonitoringVisit submodules; fix SupervisionStatus → SupervisionLogState entity; add missed SupervisionLog actions (CreateLogAction) and Livewire components
 
 Detailed structural and implementation reference for the **Guidance** module.
 
@@ -16,6 +16,7 @@ Manages mentor-student supervision logs, field supervision visits, and mentoring
 | File | Class | Extends |
 | ---- | ----- | ------- |
 | `SupervisionLog/Actions/CreateSupervisionLogAction.php` | `CreateSupervisionLogAction` | `BaseCommandAction` |
+| `SupervisionLog/Actions/CreateLogAction.php` | `CreateLogAction` | `BaseCommandAction` |
 | `SupervisionLog/Actions/DeleteLogAction.php` | `DeleteLogAction` | `BaseCommandAction` |
 | `SupervisionLog/Actions/ReviewLogAction.php` | `ReviewLogAction` | `BaseCommandAction` |
 | `SupervisionLog/Actions/VerifySupervisionLogAction.php` | `VerifySupervisionLogAction` | `BaseCommandAction` |

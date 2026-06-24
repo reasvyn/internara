@@ -141,6 +141,7 @@ return [
             'storage_link' => 'Linking storage directory',
             'optimize' => 'Optimizing application',
             'optimize_skip' => 'Skipping application optimization (use --optimize for production)',
+            'discover_modules' => 'Discovering modules',
             'discover_livewire' => 'Discovering Livewire components',
             'discover_policies' => 'Discovering policies',
             'discover_views' => 'Registering view namespaces',
