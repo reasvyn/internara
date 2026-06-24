@@ -16,15 +16,18 @@ return new class extends Migration
         Schema::create('placements', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('company_id')->constrained('companies')->onDelete('cascade');
-            $table->index('company_id');
             $table->foreignUuid('internship_id')->constrained('internships')->onDelete('cascade');
-            $table->index('internship_id');
             $table->string('name');
             $table->text('address')->nullable();
             $table->integer('quota')->default(1);
             $table->integer('filled_quota')->default(0);
             $table->text('description')->nullable();
             $table->timestamps();
+
+            // Prevent duplicate placements for the same company in the same internship
+            $table->unique(['company_id', 'internship_id'], 'placement_company_internship_unique');
+            $table->index(['company_id', 'internship_id']);
+            $table->index(['internship_id', 'filled_quota']);
         });
     }
 

@@ -25,7 +25,6 @@ return new class () extends Migration {
             $table->uuid('id')->primary();
             $table
                 ->foreignUuid('internship_group_id')
-                ->nullable()
                 ->constrained('internship_groups')
                 ->cascadeOnDelete();
             $table->foreignUuid('registration_id')
@@ -38,6 +37,10 @@ return new class () extends Migration {
                 ->nullOnDelete();
             $table->dateTime('joined_at')->useCurrent();
             $table->timestamps();
+
+            // At least one FK should exist (registration_id OR user_id)
+            $table->unique(['internship_group_id', 'registration_id'], 'group_member_registration_unique');
+            $table->unique(['internship_group_id', 'user_id'], 'group_member_user_unique');
         });
     }
 

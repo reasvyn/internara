@@ -47,8 +47,10 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['user_id', 'date']);
+            $table->unique(['registration_id', 'date'], 'logbook_reg_date_unique');
             $table->index(['registration_id', 'is_verified']);
             $table->index(['user_id', 'status']);
+            $table->index(['user_id', 'date']);
         });
     }
 

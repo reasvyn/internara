@@ -13,7 +13,7 @@
 
 # Project Identity
 
-**Internara** is a self-hosted, single-tenant vocational fieldwork (PKL — *Praktik Kerja Lapangan*)
+**Internara** is a self-hosted, single-tenant vocational fieldwork (PKL — _Praktik Kerja Lapangan_)
 management system for Indonesian SMA/SMK and technical education institutions. It manages the entire
 PKL lifecycle: student enrollment, slot-based company placement, geofenced attendance, reflective
 logbooks, competency assessments, report revisions, and cryptographic certificate issuance.
@@ -25,19 +25,19 @@ logbooks, competency assessments, report revisions, and cryptographic certificat
 
 # Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Language | PHP 8.4 |
-| Framework | Laravel 13 |
-| Frontend | Livewire 4, Alpine.js, maryUI 2, DaisyUI 5, Tailwind CSS v4 |
-| Build | Vite 8 |
-| Database | SQLite (default), MySQL 8+, MariaDB 10+, PostgreSQL 15+ |
-| Queue/Cache | Redis / Database |
-| WebSockets | Laravel Reverb (optional) |
-| Observability | Laravel Pulse, SmartLogger (dual-channel) |
-| Testing | Pest 4, PHPStan 2, Laravel Pint |
-| Quality | Larastan, Mockery |
-| Key packages | `spatie/laravel-permission`, `spatie/laravel-medialibrary`, `spatie/laravel-activitylog`, `spatie/laravel-model-status`, `livewire/livewire`, `php-flasher/flasher-laravel`, `barryvdh/laravel-dompdf` |
+| Layer         | Technology                                                                                                                                                                                             |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Language      | PHP 8.4                                                                                                                                                                                                |
+| Framework     | Laravel 13                                                                                                                                                                                             |
+| Frontend      | Livewire 4, Alpine.js, maryUI 2, DaisyUI 5, Tailwind CSS v4                                                                                                                                            |
+| Build         | Vite 8                                                                                                                                                                                                 |
+| Database      | SQLite (default), MySQL 8+, MariaDB 10+, PostgreSQL 15+                                                                                                                                                |
+| Queue/Cache   | Redis / Database                                                                                                                                                                                       |
+| WebSockets    | Laravel Reverb (optional)                                                                                                                                                                              |
+| Observability | Laravel Pulse, SmartLogger (dual-channel)                                                                                                                                                              |
+| Testing       | Pest 4, PHPStan 2, Laravel Pint                                                                                                                                                                        |
+| Quality       | Larastan, Mockery                                                                                                                                                                                      |
+| Key packages  | `spatie/laravel-permission`, `spatie/laravel-medialibrary`, `spatie/laravel-activitylog`, `spatie/laravel-model-status`, `livewire/livewire`, `php-flasher/flasher-laravel`, `barryvdh/laravel-dompdf` |
 
 # Architecture Core
 
@@ -47,6 +47,7 @@ Code is organized by **business module**, not by technical layer. Each module is
 through all 12 layers (infrastructure → persistence → models → actions → policies → UI).
 
 **12-Layer Architecture** — strict downward-only dependency:
+
 ```
 Layer 12: Business Modules (19 vertical slices)
 Layer 11: UI/Presentation (Livewire 4, Blade, maryUI/DaisyUI)
@@ -64,40 +65,44 @@ Layer  1: Infrastructure (PHP 8.4, Laravel 13, Composer packages)
 
 ## Action Triad
 
-| Type | Base Class | Transaction | Logging | Events | Use Case |
-|------|-----------|-------------|---------|--------|----------|
-| **Command** | `BaseCommandAction` | ✅ Required | ✅ Required | ✅ Recommended | All mutations (CUD, state transitions) |
-| **Read** | `BaseReadAction` | ❌ | ❌ | ❌ | Complex queries, aggregation, dashboards |
-| **Process** | `BaseProcessAction` | ✅ Level | ✅ Level | ✅ Required | Multi-step orchestration |
+| Type        | Base Class          | Transaction | Logging     | Events         | Use Case                                 |
+| ----------- | ------------------- | ----------- | ----------- | -------------- | ---------------------------------------- |
+| **Command** | `BaseCommandAction` | ✅ Required | ✅ Required | ✅ Recommended | All mutations (CUD, state transitions)   |
+| **Read**    | `BaseReadAction`    | ❌          | ❌          | ❌             | Complex queries, aggregation, dashboards |
+| **Process** | `BaseProcessAction` | ✅ Level    | ✅ Level    | ✅ Required    | Multi-step orchestration                 |
 
 **Key rules:**
+
 - Every Action has **exactly one public `execute()` method**
-- Actions are the **only** entry point for mutations — Livewire never calls `Model::create()` directly
+- Actions are the **only** entry point for mutations — Livewire never calls `Model::create()`
+  directly
 - Simple queries (`Model::find()`, `Model::where()->get()`) stay in Livewire
 - Complex queries go in Read Actions
-- `BaseAction::transaction()` auto-detects nesting, queues events until commit, retries on deadlock (3 attempts)
+- `BaseAction::transaction()` auto-detects nesting, queues events until commit, retries on deadlock
+  (3 attempts)
 
 ## Base Class Mandate
 
-| You Need... | Use This | Not This |
-|------------|----------|----------|
-| Database table | `extends BaseModel` | `extends Model` |
-| Mutation | `extends BaseCommandAction` | Custom service |
-| Complex query | `extends BaseReadAction` | Using `transaction()` |
-| Orchestration | `extends BaseProcessAction` | Duplicating logic |
-| Infrastructure logic | `app/Core/Services/` with constructor injection | Custom support class |
-| Business rules | `extends BaseEntity` (final readonly) | Inline in model |
-| Authorization | `extends BasePolicy` | Custom closure |
-| CRUD table UI | `extends BaseRecordManager` | Bespoke Livewire |
-| DTO/Value object | `extends BaseData` (final readonly) | Raw arrays |
-| Event | `extends BaseEvent` | Implements `ShouldDispatch` |
-| Enum | `implements LabelEnum` | Plain PHP enum |
-| State machine | `implements StatusEnum` + `LabelEnum` | Boolean field |
-| Exception | `extends AppException` or `ModuleException` | `\Exception` |
+| You Need...          | Use This                                        | Not This                    |
+| -------------------- | ----------------------------------------------- | --------------------------- |
+| Database table       | `extends BaseModel`                             | `extends Model`             |
+| Mutation             | `extends BaseCommandAction`                     | Custom service              |
+| Complex query        | `extends BaseReadAction`                        | Using `transaction()`       |
+| Orchestration        | `extends BaseProcessAction`                     | Duplicating logic           |
+| Infrastructure logic | `app/Core/Services/` with constructor injection | Custom support class        |
+| Business rules       | `extends BaseEntity` (final readonly)           | Inline in model             |
+| Authorization        | `extends BasePolicy`                            | Custom closure              |
+| CRUD table UI        | `extends BaseRecordManager`                     | Bespoke Livewire            |
+| DTO/Value object     | `extends BaseData` (final readonly)             | Raw arrays                  |
+| Event                | `extends BaseEvent`                             | Implements `ShouldDispatch` |
+| Enum                 | `implements LabelEnum`                          | Plain PHP enum              |
+| State machine        | `implements StatusEnum` + `LabelEnum`           | Boolean field               |
+| Exception            | `extends AppException` or `ModuleException`     | `\Exception`                |
 
 ## Cross-Module Communication
 
 Direct imports are **allowed** (no strict boundaries). Four patterns:
+
 1. **Direct import** — no side effects (e.g., `use App\Academics\Models\AcademicYear;`)
 2. **Action call** — cross-module business operation (inject and call `->execute()`)
 3. **Module event** — fire-and-forget side effects
@@ -123,32 +128,32 @@ RuntimeException
 ## Data Flow
 
 **Mutations:** Livewire/Controller → Policy → Command Action (Transaction → Log → Event) → DB
-**Simple reads:** Livewire → Model::query() → DB
-**Complex reads:** Livewire → Read Action → Model → DB
+**Simple reads:** Livewire → Model::query() → DB **Complex reads:** Livewire → Read Action → Model →
+DB
 
 # Module Map
 
-| # | Module | Purpose | Key Models | Depends On | Used By |
-|---|--------|---------|------------|------------|---------|
-| 1 | **Core** | Base classes, contracts, utilities, exceptions | BaseModel, BaseAction, ActivityLog | — | All modules |
-| 2 | **Auth** | Login, password, RBAC, recovery, super admin | User (via Authenticatable) | Core, User | All modules |
-| 3 | **User** | Profiles, notifications, dashboards, account status | User | Core, SysAdmin | All modules |
-| 4 | **SysAdmin** | User management, announcements, audit, Pulse | — | User, Academics, Core | User |
-| 5 | **Setup** | One-time install wizard, environment audit | Setup (entity) | Core, Academics | — (one-time) |
-| 6 | **Settings** | Config, branding, feature flags, locale | Setting | Core, Academics | All modules |
-| 7 | **Academics** | School profile, departments, academic years | Department, AcademicYear, School | Core | Program, Enrollment, Assessment |
-| 8 | **Program** | Internship lifecycle, groups, phases | Internship, InternshipGroup | Academics, Partners, Core | Enrollment, Journals, Evaluation |
-| 9 | **Enrollment** | Registration, placement, change requests | Registration, Placement, AccountApplication | User, Program, Academics, Core | Journals, Assessment, Evaluation |
-| 10 | **Assessment** | Rubrics, evaluation, grading | Rubric, Assessment | Core | Evaluation |
-| 11 | **Evaluation** | Feedback forms, surveys, auto-scoring | EvaluationForm, Section, Question | User, Assessment, Program, Core | Certification |
-| 12 | **Assignment** | Tasks, submissions, grading | Assignment, Submission | User, Program, Core | — |
-| 13 | **Journals** | Logbooks, attendance, absence | Logbook, Attendance, AbsenceRequest | Enrollment, Program, Core | Evaluation |
-| 14 | **Guidance** | Supervision logs, mentoring | SupervisionLog | User, Program, Core | — |
-| 15 | **Incident** | Issue reporting, resolution | IncidentReport | User, Program, Core | — |
-| 16 | **Partners** | Companies, partnerships, MoU | Company, Partnership | Core | Program, Guidance |
-| 17 | **Certification** | Certificates, templates, QR | Certificate, CertificateTemplate | User, Evaluation, Program, Core | — |
-| 18 | **Reports** | Grade cards, score aggregation | FinalGradeCard | User, Program, Assessment, Enrollment, Core | — |
-| 19 | **Document** | Templates, handbooks, rendering | OfficialDocument | Core, User | — |
+| #   | Module            | Purpose                                             | Key Models                                  | Depends On                                  | Used By                          |
+| --- | ----------------- | --------------------------------------------------- | ------------------------------------------- | ------------------------------------------- | -------------------------------- |
+| 1   | **Core**          | Base classes, contracts, utilities, exceptions      | BaseModel, BaseAction, ActivityLog          | —                                           | All modules                      |
+| 2   | **Auth**          | Login, password, RBAC, recovery, super admin        | User (via Authenticatable)                  | Core, User                                  | All modules                      |
+| 3   | **User**          | Profiles, notifications, dashboards, account status | User                                        | Core, SysAdmin                              | All modules                      |
+| 4   | **SysAdmin**      | User management, announcements, audit, Pulse        | —                                           | User, Academics, Core                       | User                             |
+| 5   | **Setup**         | One-time install wizard, environment audit          | Setup (entity)                              | Core, Academics                             | — (one-time)                     |
+| 6   | **Settings**      | Config, branding, feature flags, locale             | Setting                                     | Core, Academics                             | All modules                      |
+| 7   | **Academics**     | School profile, departments, academic years         | Department, AcademicYear, School            | Core                                        | Program, Enrollment, Assessment  |
+| 8   | **Program**       | Internship lifecycle, groups, phases                | Internship, InternshipGroup                 | Academics, Partners, Core                   | Enrollment, Journals, Evaluation |
+| 9   | **Enrollment**    | Registration, placement, change requests            | Registration, Placement, AccountApplication | User, Program, Academics, Core              | Journals, Assessment, Evaluation |
+| 10  | **Assessment**    | Rubrics, evaluation, grading                        | Rubric, Assessment                          | Core                                        | Evaluation                       |
+| 11  | **Evaluation**    | Feedback forms, surveys, auto-scoring               | EvaluationForm, Section, Question           | User, Assessment, Program, Core             | Certification                    |
+| 12  | **Assignment**    | Tasks, submissions, grading                         | Assignment, Submission                      | User, Program, Core                         | —                                |
+| 13  | **Journals**      | Logbooks, attendance, absence                       | Logbook, Attendance, AbsenceRequest         | Enrollment, Program, Core                   | Evaluation                       |
+| 14  | **Guidance**      | Supervision logs, mentoring                         | SupervisionLog                              | User, Program, Core                         | —                                |
+| 15  | **Incident**      | Issue reporting, resolution                         | IncidentReport                              | User, Program, Core                         | —                                |
+| 16  | **Partners**      | Companies, partnerships, MoU                        | Company, Partnership                        | Core                                        | Program, Guidance                |
+| 17  | **Certification** | Certificates, templates, QR                         | Certificate, CertificateTemplate            | User, Evaluation, Program, Core             | —                                |
+| 18  | **Reports**       | Grade cards, score aggregation                      | FinalGradeCard                              | User, Program, Assessment, Enrollment, Core | —                                |
+| 19  | **Document**      | Templates, handbooks, rendering                     | OfficialDocument                            | Core, User                                  | —                                |
 
 # Directory Map
 
@@ -250,6 +255,7 @@ php artisan notifications:prune        # Prune old notifications
 # Critical Rules (DO NOT VIOLATE)
 
 ## Super Admin
+
 - Name is ALWAYS `Administrator` (config `setup.defaults.admin_name`)
 - Username is ALWAYS `superadmin` (config `setup.defaults.admin_username`)
 - `SetupSuperAdminAction::execute()` accepts ONLY `(string $email, string $password)`
@@ -257,6 +263,7 @@ php artisan notifications:prune        # Prune old notifications
 - `FinalizeSetupAction` must extract only `email` and `password` from `adminData` array
 
 ## Coding
+
 - `declare(strict_types=1)` in ALL PHP files except migrations and config
 - No `dd()`, `dump()`, `ray()`, `var_dump()`, `print_r()`, `die()` in committed code
 - All user-facing strings use `__()` helper — never hardcode display text
@@ -270,6 +277,7 @@ php artisan notifications:prune        # Prune old notifications
 - Actions must extend the correct base class (Command/Read/Process)
 
 ## Testing
+
 - Every Action MUST have its own test file
 - Use `LazilyRefreshDatabase` over `RefreshDatabase`
 - Use `assertModelExists()` over `assertDatabaseHas()`
@@ -294,30 +302,30 @@ flowchart LR
     D --> I[docs/modules/{module}-reference.md]
 ```
 
-| Topic Area | Start Here |
-|------------|-----------|
-| Architecture & 12 layers | `docs/architecture.md` |
-| Action Triad | `docs/architecture.md` (§Action Triad) |
-| Base Class Mandate | `docs/architecture.md` (§Base Class Mandate) |
-| File structure | `docs/architecture/modular-pattern.md` |
-| Naming conventions | `docs/conventions.md` (§4) |
-| PHP language rules | `docs/conventions.md` (§2) |
-| Models & Entities | `docs/architecture/model-pattern.md`, `entity-pattern.md` |
-| Enums | `docs/architecture/enum-pattern.md` |
-| Livewire | `docs/architecture/livewire-pattern.md` |
-| Policies & RBAC | `docs/architecture/policy-pattern.md`, `docs/foundation/rbac.md` |
-| Events & Notifications | `docs/architecture/event-pattern.md` |
-| Validation & Exceptions | `docs/architecture/exception-pattern.md` |
-| Logging & SmartLogger | `docs/architecture/logging-pattern.md` |
-| Caching | `docs/architecture/cache-pattern.md`, `config/cache-keys.php` |
-| Testing | `docs/architecture/testing-pattern.md`, `docs/infrastructure/testing.md` |
-| Migrations/Factories/Seeders | `docs/conventions.md` (§7) |
-| Deployment | `docs/infrastructure/deployment.md` |
-| Configuration | `docs/infrastructure/configuration.md` |
-| Database schema | `docs/infrastructure/database.md`, `docs/foundation/erd.md` |
-| Known issues | [GitHub Issues](https://github.com/reasvyn/internara/issues) |
-| Roadmap | `docs/roadmap.md` |
-| ADRs | `docs/adr/adr-index.md` |
+| Topic Area                   | Start Here                                                               |
+| ---------------------------- | ------------------------------------------------------------------------ |
+| Architecture & 12 layers     | `docs/architecture.md`                                                   |
+| Action Triad                 | `docs/architecture.md` (§Action Triad)                                   |
+| Base Class Mandate           | `docs/architecture.md` (§Base Class Mandate)                             |
+| File structure               | `docs/architecture/modular-pattern.md`                                   |
+| Naming conventions           | `docs/conventions.md` (§4)                                               |
+| PHP language rules           | `docs/conventions.md` (§2)                                               |
+| Models & Entities            | `docs/architecture/model-pattern.md`, `entity-pattern.md`                |
+| Enums                        | `docs/architecture/enum-pattern.md`                                      |
+| Livewire                     | `docs/architecture/livewire-pattern.md`                                  |
+| Policies & RBAC              | `docs/architecture/policy-pattern.md`, `docs/foundation/rbac.md`         |
+| Events & Notifications       | `docs/architecture/event-pattern.md`                                     |
+| Validation & Exceptions      | `docs/architecture/exception-pattern.md`                                 |
+| Logging & SmartLogger        | `docs/architecture/logging-pattern.md`                                   |
+| Caching                      | `docs/architecture/cache-pattern.md`, `config/cache-keys.php`            |
+| Testing                      | `docs/architecture/testing-pattern.md`, `docs/infrastructure/testing.md` |
+| Migrations/Factories/Seeders | `docs/conventions.md` (§7)                                               |
+| Deployment                   | `docs/infrastructure/deployment.md`                                      |
+| Configuration                | `docs/infrastructure/configuration.md`                                   |
+| Database schema              | `docs/infrastructure/database.md`, `docs/foundation/erd.md`              |
+| Known issues                 | [GitHub Issues](https://github.com/reasvyn/internara/issues)             |
+| Roadmap                      | `docs/roadmap.md`                                                        |
+| ADRs                         | `docs/adr/adr-index.md`                                                  |
 
 # Quick Links
 
@@ -325,6 +333,7 @@ These are the most frequently referenced files during development. Open them dir
 searching.
 
 ## Product & Architecture
+
 - `docs/foundation/product-definition.md` — Product scope, personas, system boundary
 - `docs/architecture.md` — 12-layer architecture, Action Triad, data flow
 - `docs/conventions.md` — PHP rules, naming, security, testing conventions
@@ -334,11 +343,13 @@ searching.
 - `docs/roadmap.md` — Planned features and roadmap
 
 ## Module References
+
 - `docs/modules/module-index.md` — Module dependency graph and navigation
 - `docs/modules/{module}.md` — Business overview for a specific module
 - `docs/modules/{module}-reference.md` — API reference for a specific module
 
 ## Architecture Patterns
+
 - `docs/architecture/action-pattern.md` — Action contract details
 - `docs/architecture/model-pattern.md` — Eloquent model conventions
 - `docs/architecture/entity-pattern.md` — Entity-model separation
@@ -352,6 +363,7 @@ searching.
 - `docs/architecture/event-pattern.md` — Events and notifications
 
 ## Infrastructure
+
 - `docs/infrastructure/database.md` — Schema design, UUIDs, engine comparison
 - `docs/infrastructure/deployment.md` — Deployment options
 - `docs/infrastructure/configuration.md` — Three-tier config system
@@ -361,6 +373,7 @@ searching.
 - `docs/infrastructure/media-library.md` — File uploads and media
 
 ## Key Source Files
+
 - `app/Core/Actions/BaseAction.php` — Base action with transaction/event/log
 - `app/Core/Actions/BaseCommandAction.php` — Command action with respond/validate/authorize
 - `app/Core/Actions/BaseReadAction.php` — Read action contract
@@ -374,6 +387,7 @@ searching.
 - `app/Core/Exceptions/ModuleException.php` — Base exception (business rules)
 
 ## Key Config Files
+
 - `config/cache-keys.php` — ALL cache keys (never inline)
 - `config/permission.php` — RBAC permissions
 - `config/setup.php` — Setup wizard defaults and security
@@ -383,15 +397,18 @@ searching.
 - `config/media-library.php` — File upload configuration
 
 ## ADRs
+
 - `docs/adr/adr-index.md` — All architecture decision records
 
 # MCP & Tooling
 
 ## Boost Tools (preferred over manual alternatives)
+
 Prefer `database-query`, `database-schema`, `get-absolute-url`, `browser-logs` over raw SQL/tinker.
 Use `search-docs` with `packages` array before code changes.
 
 ## MCP Servers (configured in `opencode.json`)
+
 - `docsgrep` — search documentation (`@anovise/docsgrep`, local npx)
 - `laravel-boost` — Laravel Boost MCP (`php artisan boost:mcp`)
 
@@ -399,25 +416,28 @@ Use `search-docs` with `packages` array before code changes.
 
 Activate the relevant skill when working in that SDLC phase:
 
-| Phase | Skills |
-|-------|--------|
-| **PLANNING** | `roadmap-planning` |
-| **ANALYSIS** | `audit-protocol`, `security-audit` |
-| **DESIGN / REFACTORING** | `code-refactoring` |
-| **IMPLEMENTATION** | `feature-building`, `laravel-best-practices`, `livewire-development`, `pulse-development`, `medialibrary-development`, `tailwindcss-development` |
-| **TESTING** | `pest-testing` |
-| **MAINTENANCE** | `sync-docs` |
+| Phase                    | Skills                                                                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **PLANNING**             | `roadmap-planning`                                                                                                                               |
+| **ANALYSIS**             | `audit-protocol`, `security-audit`                                                                                                               |
+| **DESIGN / REFACTORING** | `code-refactoring`                                                                                                                               |
+| **IMPLEMENTATION**       | `feature-building`, `laravel-best-practices`, `livewire-development`, `pulse-development`, `medialibrary-development`, `tailwindcss-development` |
+| **TESTING**              | `pest-testing`                                                                                                                                   |
+| **MAINTENANCE**          | `sync-docs`                                                                                                                                      |
 
 ### boost.json
+
 Enables guidelines mode, MCP, and 6 implementation skills for Boost tooling.
 
 # Quick Reference
 
 ## Language
+
 **English only.** Always communicate in English, even when the user writes in Indonesian. Code,
 comments, commit messages, and documentation must all be in English.
 
 ## PHP Syntax
+
 - Curly braces `{ }` required for ALL control structures (even single-line)
 - Constructor property promotion: `public function __construct(protected readonly X $x) {}`
 - Explicit return types on ALL methods: `function execute(): void`
@@ -430,19 +450,23 @@ comments, commit messages, and documentation must all be in English.
 - Readonly properties prefer promoted constructor parameters
 
 ## Commit Format
+
 ```
 type(scope): description
 
 - Bullet points for details (optional)
 - Reference issues: #123
 ```
+
 Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
 
 ## Branch Naming
-`feat/{kebab-description}`, `fix/{description}`, `refactor/{module}-{scope}`,
-`docs/{what}`, `chore/{task}`, `hotfix/{description}`
+
+`feat/{kebab-description}`, `fix/{description}`, `refactor/{module}-{scope}`, `docs/{what}`,
+`chore/{task}`, `hotfix/{description}`
 
 ## Pre-commit Checklist
+
 - [ ] `declare(strict_types=1)` present
 - [ ] No debug calls (`dd/dump/ray/var_dump/print_r/die`)
 - [ ] All user-facing strings use `__()` helper
@@ -456,12 +480,15 @@ Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
 - [ ] Relevant docs updated (documentation-first approach)
 
 ## Documentation Quality
-- Prefer **structural statements** over counts: "Models extend `BaseModel`" not "There are 42 models"
+
+- Prefer **structural statements** over counts: "Models extend `BaseModel`" not "There are 42
+  models"
 - Prefer **locational statements** over listings: "Actions live under `app/{Module}/*/Actions/`"
 - Prefer **factual statements** over status: describe what exists, not project phase
 - Do NOT duplicate version numbers or counts in derivative files (AGENTS.md, README.md)
 
 ## Security
+
 - `{{ $var }}` for ALL user-supplied content in Blade (auto-escaped)
 - `{!! $var !!}` ONLY for trusted sanitized content, with inline justification comment
 - No inline `<script>` — use Alpine.js `x-data` / `@click` / `x-on`

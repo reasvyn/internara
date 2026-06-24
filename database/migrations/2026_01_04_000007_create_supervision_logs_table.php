@@ -15,7 +15,7 @@ return new class () extends Migration {
                 ->foreignUuid('registration_id')
                 ->constrained('registrations')
                 ->onDelete('cascade');
-            $table->foreignUuid('supervisor_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('supervisor_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('type');
             $table->date('date');
             $table->string('topic')->nullable();
@@ -34,6 +34,8 @@ return new class () extends Migration {
             $table->index('registration_id');
             $table->index(['supervisor_id', 'date']);
             $table->index('status');
+            $table->index(['registration_id', 'is_verified']);
+            $table->index(['supervisor_id', 'is_verified']);
         });
     }
 

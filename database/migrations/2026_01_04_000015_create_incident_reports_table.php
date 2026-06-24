@@ -14,7 +14,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('registration_id')->constrained('registrations')->cascadeOnDelete();
             $table->index('registration_id');
-            $table->foreignUuid('reported_by')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('reported_by')->nullable()->constrained('users')->nullOnDelete();
             $table->dateTime('incident_date');
             $table->string('type')->index();
             $table->string('severity')->index();
@@ -26,6 +26,9 @@ return new class extends Migration
             $table->dateTime('resolved_at')->nullable();
             $table->text('resolution_notes')->nullable();
             $table->timestamps();
+
+            $table->index(['registration_id', 'status']);
+            $table->index('severity');
         });
     }
 

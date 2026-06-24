@@ -28,7 +28,10 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->index(['student_id', 'internship_id']);
+            // Unique index to prevent duplicate registrations per student per internship
+            $table->unique(['student_id', 'internship_id'], 'reg_student_internship_unique');
+            $table->index(['student_id', 'status']);
+            $table->index(['internship_id', 'status']);
             $table->index(['start_date', 'end_date']);
         });
     }
