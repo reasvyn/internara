@@ -34,6 +34,7 @@ return new class extends Migration
             $table->unique(['registration_id', 'assessment_type', 'evaluator_id']);
             $table->index(['registration_id', 'assessment_type']);
             $table->index(['evaluator_id', 'assessment_type']);
+            $table->index('assessment_type');
         });
     }
 

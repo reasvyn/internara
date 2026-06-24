@@ -1,66 +1,91 @@
 # Database
 
-> **Last updated:** 2026-06-24
-> **Changes:** sync — migration consolidation: 57 scattered migrations → sequential layers (2026_01_01 through 2026_01_06)
+> **Last updated:** 2026-06-24 **Changes:** sync — migration consolidation: 57 scattered migrations
+> → sequential layers (2026_01_01 through 2026_01_06)
 
 ## Design Philosophy
 
-The database is organized around the concept that every piece of persistent state belongs to a module. Tables are grouped into five conceptual categories: core, operational, assessment, security, and supporting. This structure makes it obvious where data lives and how it relates.
+The database is organized around the concept that every piece of persistent state belongs to a
+module. Tables are grouped into five conceptual categories: core, operational, assessment, security,
+and supporting. This structure makes it obvious where data lives and how it relates.
 
-The schema encompasses 44 domain models plus 9+ framework/package tables (settings, cache, jobs, notifications, pulse, backups, media, activity logs, permissions).
+The schema encompasses 44 domain models plus 9+ framework/package tables (settings, cache, jobs,
+notifications, pulse, backups, media, activity logs, permissions).
 
 ---
 
 ## UUID Primary Keys
 
-Every business model uses a UUID v7 primary key instead of an auto-incrementing integer. UUIDs are globally unique without a central sequence, making database merging, seeding across environments, and distributed deployment safe. UUIDs also prevent information leakage — unlike sequential IDs, they reveal nothing about the total number of records or the order of creation.
+Every business model uses a UUID v7 primary key instead of an auto-incrementing integer. UUIDs are
+globally unique without a central sequence, making database merging, seeding across environments,
+and distributed deployment safe. UUIDs also prevent information leakage — unlike sequential IDs,
+they reveal nothing about the total number of records or the order of creation.
 
-All foreign key columns use UUIDs to match their parent primary keys, and every foreign key is explicitly indexed. Models extending `BaseModel` automatically gain UUID support via Laravel's `HasUuids` trait. The `User` model applies it manually since it extends `Authenticatable` directly.
+All foreign key columns use UUIDs to match their parent primary keys, and every foreign key is
+explicitly indexed. Models extending `BaseModel` automatically gain UUID support via Laravel's
+`HasUuids` trait. The `User` model applies it manually since it extends `Authenticatable` directly.
 
 ---
 
 ## SQLite as Default
 
-The default database driver is SQLite. It requires zero configuration — no server process, no credentials, no port management. For development and testing, this eliminates operational friction. Testing also uses SQLite (in-memory mode), which makes the test suite fast and self-contained.
+The default database driver is SQLite. It requires zero configuration — no server process, no
+credentials, no port management. For development and testing, this eliminates operational friction.
+Testing also uses SQLite (in-memory mode), which makes the test suite fast and self-contained.
 
-SQLite is intended for development and testing only. In shared hosting production, use MySQL or MariaDB provided by your hosting service. Scale to PostgreSQL when exceeding 500 registered users per PKL period. The application abstracts database access through Eloquent, so switching drivers requires changing only the environment variable.
+SQLite is intended for development and testing only. In shared hosting production, use MySQL or
+MariaDB provided by your hosting service. Scale to PostgreSQL when exceeding 500 registered users
+per PKL period. The application abstracts database access through Eloquent, so switching drivers
+requires changing only the environment variable.
 
 ---
 
 ## Key Table Categories
 
-**Core tables** are the foundation: `users`, `profiles`, `departments`, and `academic_years`. These define who the participants are and what organizational structure they belong to.
+**Core tables** are the foundation: `users`, `profiles`, `departments`, and `academic_years`. These
+define who the participants are and what organizational structure they belong to.
 
-**Operational tables** track the primary workflows: `internships`, `placements`, `registrations`, `attendances`, `logbooks`, `supervision_logs`, `assignments`, and `submissions`. These record what happens during the internship lifecycle.
+**Operational tables** track the primary workflows: `internships`, `placements`, `registrations`,
+`attendances`, `logbooks`, `supervision_logs`, `assignments`, and `submissions`. These record what
+happens during the internship lifecycle.
 
-**Assessment & Certification tables** handle evaluation and credentials: `rubrics`, `assessments`, `evaluations`, `reports`, and `certificates`. These are separated because evaluation and certification have their own data lifecycles and access patterns.
+**Assessment & Certification tables** handle evaluation and credentials: `rubrics`, `assessments`,
+`evaluations`, `reports`, and `certificates`. These are separated because evaluation and
+certification have their own data lifecycles and access patterns.
 
-**Security and Audit tables** manage access control and auditing: `roles`, `permissions`, `model_has_roles`, `model_has_permissions`, `role_has_permissions`, `activity_log`, and `gdpr_deletion_logs`. Every mutating action is logged immutably.
+**Security and Audit tables** manage access control and auditing: `roles`, `permissions`,
+`model_has_roles`, `model_has_permissions`, `role_has_permissions`, `activity_log`, and
+`gdpr_deletion_logs`. Every mutating action is logged immutably.
 
-**Supporting tables** enable the application to function: `settings`, `media`, `notifications`, `absence_requests`, `announcements`, `incident_reports`, and `placement_change_requests`.
+**Supporting tables** enable the application to function: `settings`, `media`, `notifications`,
+`absence_requests`, `announcements`, `incident_reports`, and `placement_change_requests`.
 
 ---
 
 ## Migration Structure
 
-Migrations are organized into **six sequential layers** (2026_01_01 through 2026_01_06) representing the initialization order. Each layer groups logically related tables:
+Migrations are organized into **six sequential layers** (2026_01_01 through 2026_01_06) representing
+the initialization order. Each layer groups logically related tables:
 
-| Layer | Date Prefix | Purpose | Example Tables |
-|-------|-------------|---------|----------------|
-| **Foundation** | 2026_01_01 | Framework tables: config, caching, jobs, observability | settings, cache, jobs, notifications, pulse, backups, announcements |
-| **Authentication** | 2026_01_02 | Users, tokens, RBAC, audit, profiles | users, access_tokens, permissions, activity_log, gdpr_deletion_logs, profiles |
-| **Configuration** | 2026_01_03 | School organization and shared entities | academic_years, departments, companies, media, documents, rubrics, partnerships |
-| **Internship Core** | 2026_01_04 | PKL workflow: placements, attendance, reports, evaluation | internships, placements, registrations, applications, attendances, logbooks, supervision_logs, assignments, submissions, assessments, reports, certificates, incidents |
-| **Grouping** | 2026_01_05 | Student grouping and document tracking | internship_groups, registration_documents, placement_change_requests |
-| **Evaluation** | 2026_01_06 | Feedback forms and survey infrastructure | evaluation_forms, evaluation_sections, evaluation_questions, evaluation_responses, evaluation_answers |
+| Layer               | Date Prefix | Purpose                                                   | Example Tables                                                                                                                                                         |
+| ------------------- | ----------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Foundation**      | 2026_01_01  | Framework tables: config, caching, jobs, observability    | settings, cache, jobs, notifications, pulse, backups, announcements                                                                                                    |
+| **Authentication**  | 2026_01_02  | Users, tokens, RBAC, audit, profiles                      | users, access_tokens, permissions, activity_log, gdpr_deletion_logs, profiles                                                                                          |
+| **Configuration**   | 2026_01_03  | School organization and shared entities                   | academic_years, departments, companies, media, documents, rubrics, partnerships                                                                                        |
+| **Internship Core** | 2026_01_04  | PKL workflow: placements, attendance, reports, evaluation | internships, placements, registrations, applications, attendances, logbooks, supervision_logs, assignments, submissions, assessments, reports, certificates, incidents |
+| **Grouping**        | 2026_01_05  | Student grouping and document tracking                    | internship_groups, registration_documents, placement_change_requests                                                                                                   |
+| **Evaluation**      | 2026_01_06  | Feedback forms and survey infrastructure                  | evaluation_forms, evaluation_sections, evaluation_questions, evaluation_responses, evaluation_answers                                                                  |
 
-This structure ensures clean dependency resolution: foundation tables before auth, auth before domain models, domain models before business workflows.
+This structure ensures clean dependency resolution: foundation tables before auth, auth before
+domain models, domain models before business workflows.
 
 ---
 
 ## Schema Organization
 
-Module ownership is evident from the table name (e.g., `internship_groups`, `supervision_logs`, `incident_reports`). Each table's migration file is named to match its table (e.g., `2026_01_04_000001_create_internships_table.php`).
+Module ownership is evident from the table name (e.g., `internship_groups`, `supervision_logs`,
+`incident_reports`). Each table's migration file is named to match its table (e.g.,
+`2026_01_04_000001_create_internships_table.php`).
 
 Foreign key delete behaviors:
 
@@ -76,7 +101,9 @@ Composite indexes are created for known query patterns, not speculatively:
 | User + date lookup | `[user_id, date]` on `logbooks` and `attendances` |
 | Polymorphic lookup | `[subject_type, subject_id]` on `activity_log`    |
 
-Factories and seeders mirror the module structure. Seeders are idempotent — they can be run multiple times without duplicating data. The seeding order respects module dependencies: school data before user data, permissions before role assignments, internships before registrations.
+Factories and seeders mirror the module structure. Seeders are idempotent — they can be run multiple
+times without duplicating data. The seeding order respects module dependencies: school data before
+user data, permissions before role assignments, internships before registrations.
 
 ---
 

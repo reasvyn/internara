@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('evaluation_questions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('form_id')->constrained('evaluation_forms')->cascadeOnDelete();
-            $table->uuid('section_id')->nullable()->index();
+            $table->foreignUuid('section_id')->nullable()->constrained('evaluation_sections')->nullOnDelete();
             $table->text('question_text');
             $table->string('question_type', 30)->default('rating_1_5')->comment('rating_1_5, rating_1_10, yes_no, multiple_choice, text, agreement');
             $table->json('options')->nullable()->comment('Choices for multiple_choice');
@@ -23,6 +23,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['form_id', 'order']);
+            $table->index(['section_id', 'order']);
         });
     }
 

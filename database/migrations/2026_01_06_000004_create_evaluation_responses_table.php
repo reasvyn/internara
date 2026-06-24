@@ -25,6 +25,8 @@ return new class extends Migration
             $table->index(['form_id', 'evaluator_id']);
             $table->index(['target_type', 'target_id']);
             $table->index('submitted_at');
+            $table->index(['registration_id', 'form_id']);
+            $table->index('registration_id');
         });
     }
 

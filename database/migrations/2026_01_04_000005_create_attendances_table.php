@@ -28,10 +28,10 @@ return new class extends Migration
             $table->string('clock_in_ip')->nullable();
             $table->string('clock_out_ip')->nullable();
 
-            $table->decimal('clock_in_latitude', 10, 8)->nullable();
-            $table->decimal('clock_in_longitude', 11, 8)->nullable();
-            $table->decimal('clock_out_latitude', 10, 8)->nullable();
-            $table->decimal('clock_out_longitude', 11, 8)->nullable();
+            $table->decimal('clock_in_latitude', 8, 6)->nullable();
+            $table->decimal('clock_in_longitude', 9, 6)->nullable();
+            $table->decimal('clock_out_latitude', 8, 6)->nullable();
+            $table->decimal('clock_out_longitude', 9, 6)->nullable();
 
             $table->string('status')->default('present')->index();
             $table->string('absence_type')->nullable()->comment('sick, permission, other');
@@ -58,6 +58,8 @@ return new class extends Migration
 
             $table->unique(['user_id', 'date']);
             $table->index(['registration_id', 'date', 'status']);
+            $table->index(['user_id', 'status']);
+            $table->index('status');
         });
     }
 

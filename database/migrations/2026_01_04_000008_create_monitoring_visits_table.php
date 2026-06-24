@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('monitoring_visits', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('registration_id')->constrained('registrations')->cascadeOnDelete();
-            $table->foreignUuid('teacher_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('teacher_id')->nullable()->constrained('users')->nullOnDelete();
             $table->date('visit_date');
             $table->string('method');
             $table->string('location', 512)->nullable();
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->timestamp('verified_at')->nullable();
             $table->index(['teacher_id', 'visit_date']);
             $table->index('registration_id');
+            $table->index(['registration_id', 'is_verified']);
             $table->timestamps();
         });
     }

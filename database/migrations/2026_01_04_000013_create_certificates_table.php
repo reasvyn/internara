@@ -17,11 +17,12 @@ return new class extends Migration
             $table->string('qr_hash')->unique();
             $table->string('status')->default('issued')->index();
             $table->text('template_content')->nullable();
-            $table->foreignUuid('issued_by')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('issued_by')->nullable()->constrained('users')->nullOnDelete();
             $table->dateTime('issued_at');
             $table->timestamps();
 
             $table->index('registration_id');
+            $table->index('status');
         });
     }
 

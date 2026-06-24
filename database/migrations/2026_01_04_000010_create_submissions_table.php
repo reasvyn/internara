@@ -42,9 +42,11 @@ return new class extends Migration
 
             $table->timestamps();
 
+            $table->unique(['assignment_id', 'registration_id'], 'submission_assign_reg_unique');
             $table->index(['student_id', 'status']);
             $table->index(['assignment_id', 'status']);
             $table->index(['registration_id', 'status']);
+            $table->index('status');
         });
     }
 
