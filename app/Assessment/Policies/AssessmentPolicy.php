@@ -7,9 +7,11 @@ namespace App\Assessment\Policies;
 use App\Assessment\Models\Assessment;
 use App\Core\Policies\BasePolicy;
 use App\User\Models\User;
+use App\User\Policies\Concerns\HasMentorProxy;
 
 class AssessmentPolicy extends BasePolicy
 {
+    use HasMentorProxy;
     public function viewAny(User $user): bool
     {
         return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);

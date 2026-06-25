@@ -7,9 +7,11 @@ namespace App\Assignment\Submission\Policies;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Policies\BasePolicy;
 use App\User\Models\User;
+use App\User\Policies\Concerns\HasMentorProxy;
 
 class SubmissionPolicy extends BasePolicy
 {
+    use HasMentorProxy;
     public function viewAny(User $user): bool
     {
         return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);

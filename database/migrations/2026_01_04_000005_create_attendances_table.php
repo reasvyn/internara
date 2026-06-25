@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -57,9 +56,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['user_id', 'date']);
-            $table->index(['registration_id', 'date', 'status']);
-            $table->index(['user_id', 'status']);
-            $table->index('status');
+            $table->index(['user_id', 'registration_id', 'date', 'status']);
         });
     }
 

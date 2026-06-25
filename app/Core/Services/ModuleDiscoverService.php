@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Core\Services;
 
 use App\Core\Policies\BasePolicy;

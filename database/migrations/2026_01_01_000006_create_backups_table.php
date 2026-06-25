@@ -6,11 +6,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     public function up(): void
     {
         Schema::create('backups', function (Blueprint $table) {
+            // Basic data
             $table->uuid('id')->primary();
             $table->string('type', 20);
             $table->string('file_path', 512)->nullable();
@@ -19,10 +19,11 @@ return new class extends Migration
             $table->json('metadata')->nullable();
             $table->text('error_output')->nullable();
             $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
+            // Timestamps
             $table->timestamp('started_at')->nullable();
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
-
+            // Indexes
             $table->index(['status', 'created_at']);
         });
     }

@@ -7,9 +7,11 @@ namespace App\Guidance\SupervisionLog\Policies;
 use App\Core\Policies\BasePolicy;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\User\Models\User;
+use App\User\Policies\Concerns\HasMentorProxy;
 
 class SupervisionLogPolicy extends BasePolicy
 {
+    use HasMentorProxy;
     public function viewAny(User $user): bool
     {
         return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'supervisor', 'student']);

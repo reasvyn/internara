@@ -13,16 +13,20 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::create('jobs', function (Blueprint $table) {
+            // Basic data
             $table->bigIncrements('id');
-            $table->string('queue')->index();
+            $table->text('queue');
             $table->longText('payload');
             $table->unsignedTinyInteger('attempts');
             $table->unsignedInteger('reserved_at')->nullable();
             $table->unsignedInteger('available_at');
             $table->unsignedInteger('created_at');
+            // Indexes
+            $table->index(['queue']);
         });
 
         Schema::create('failed_jobs', function (Blueprint $table) {
+            // Basic data
             $table->id();
             $table->string('uuid')->unique();
             $table->text('connection');
@@ -30,6 +34,8 @@ return new class () extends Migration {
             $table->longText('payload');
             $table->longText('exception');
             $table->timestamp('failed_at')->useCurrent();
+            // Indexes
+            $table->index(['queue']);
         });
 
         Schema::create('job_batches', function (Blueprint $table) {
