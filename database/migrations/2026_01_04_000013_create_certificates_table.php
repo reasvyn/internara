@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     public function up(): void
     {
         Schema::create('certificates', function (Blueprint $table) {
@@ -15,7 +14,7 @@ return new class extends Migration
             $table->foreignUuid('registration_id')->constrained('registrations')->cascadeOnDelete();
             $table->string('certificate_number')->unique();
             $table->string('qr_hash')->unique();
-            $table->string('status')->default('issued')->index();
+            $table->string('status')->default('issued');
             $table->text('template_content')->nullable();
             $table->foreignUuid('issued_by')->nullable()->constrained('users')->nullOnDelete();
             $table->dateTime('issued_at');

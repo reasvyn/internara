@@ -6,7 +6,6 @@ namespace App\Core\Console\Commands;
 
 use App\Core\Services\ModuleDiscoverService;
 use App\Core\Support\SmartLogger;
-use App\Providers\AppServiceProvider;
 use Illuminate\Console\Command;
 use RuntimeException;
 
@@ -21,7 +20,9 @@ class ModuleDiscoverCommand extends Command
         try {
             $service = app(ModuleDiscoverService::class);
 
-            if (app()->getProvider(AppServiceProvider::class) === null) {
+            $providers = $this->getLaravel()->getLoadedProviders();
+
+            if (! isset($providers['App\Providers\AppServiceProvider']) || ! $providers['App\Providers\AppServiceProvider']) {
                 throw new RuntimeException('AppServiceProvider is not registered.');
             }
 

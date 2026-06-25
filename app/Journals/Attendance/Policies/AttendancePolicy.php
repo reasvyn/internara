@@ -7,9 +7,11 @@ namespace App\Journals\Attendance\Policies;
 use App\Core\Policies\BasePolicy;
 use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;
+use App\User\Policies\Concerns\HasMentorProxy;
 
 class AttendancePolicy extends BasePolicy
 {
+    use HasMentorProxy;
     public function viewAny(User $user): bool
     {
         return $this->hasAnyOfRoles($user, [

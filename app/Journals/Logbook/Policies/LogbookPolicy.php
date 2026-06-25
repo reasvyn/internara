@@ -8,9 +8,11 @@ use App\Core\Policies\BasePolicy;
 use App\Journals\Logbook\Enums\LogbookStatus;
 use App\Journals\Logbook\Models\Logbook;
 use App\User\Models\User;
+use App\User\Policies\Concerns\HasMentorProxy;
 
 class LogbookPolicy extends BasePolicy
 {
+    use HasMentorProxy;
     public function viewAny(User $user): bool
     {
         return $this->hasAnyOfRoles($user, [

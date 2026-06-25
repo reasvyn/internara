@@ -9,7 +9,6 @@ return [
     'theme_css_variables' => 'theme.css_variables',
     'brand_colors' => 'brand.colors',
     'notification_unread' => 'notification.unread:',
-    'core_integrity' => 'core.integrity_verified',
     'core_app_name' => 'core.app_name',
     'appinfo_metadata' => 'core.appinfo_metadata',
     'module_livewire' => 'module.discovered_livewire',
