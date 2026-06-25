@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-06-24 **Changes:** sync — add Services layer (ModuleDiscoverService);
-> update statistics
+> **Last updated:** 2026-06-24
+> **Changes:** sync — fix ModuleDiscoverService method names (discoverModules → discoverLivewireComponents)
 
 Detailed structural and implementation reference for the **Core** module, including both abstract
 infrastructure and concrete shared components.
@@ -55,7 +55,7 @@ Located in `app/Core/Services/`:
 
 | Service                 | Purpose                                                                               | Public Methods                              |
 | ----------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------- |
-| `ModuleDiscoverService` | Auto-discover modules during boot; resolve module registration order and dependencies | `discoverModules()`, `resolveModuleOrder()` |
+| `ModuleDiscoverService` | Scan module directories to auto-register Livewire components, Gate policies, and Blade view namespaces | `discoverLivewireComponents()`, `discoverPolicies()`, `registerBladeNamespaces()` |
 
 ---
 

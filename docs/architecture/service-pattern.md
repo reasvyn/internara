@@ -36,7 +36,7 @@ dedicated layer for infrastructure-aware utilities that do not fit the Action mo
 
 **Existing services:**
 
-- `ModuleDiscoverService` — module discovery and registration during boot
+- `ModuleDiscoverService` — auto-discovers Livewire components, Gate policies, and Blade namespaces across all modules during boot
 
 A class belongs in `Services/` only when all of the following are true:
 
