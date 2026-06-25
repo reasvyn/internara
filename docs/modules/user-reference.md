@@ -1,7 +1,7 @@
 # User — Technical Reference
 
-> **Last updated:** 2026-06-17
-> **Changes:** sync — remove phantom HomeController; add MentorEntity, DownloadsAccountSlips trait
+> **Last updated:** 2026-06-24
+> **Changes:** sync — add HasMentorProxy trait in Policies/Concerns; update policy section
 
 Detailed structural and implementation reference for the **User** module.
 
@@ -85,6 +85,12 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | ---- | ------ | ------- |
 | `Profile/Policies/ProfilePolicy.php` | `ProfilePolicy` | `BasePolicy` |
 | `Notifications/Policies/NotificationPolicy.php` | `NotificationPolicy` | `BasePolicy` |
+
+### Shared Concerns
+
+| File | Trait | Purpose |
+| ---- | ----- | ------- |
+| `Policies/Concerns/HasMentorProxy.php` | `HasMentorProxy` | Mentor-scoped authorization via `mentorProxyFor(?Registration, User): ?MentorEntity`; used by 5 cross-module policies |
 
 ---
 
