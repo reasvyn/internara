@@ -1,7 +1,7 @@
 # Service Pattern
 
-> **Last updated:** 2026-06-24
-> **Changes:** add note about app/Core/Services layer establishment; clarify when to use vs Actions
+> **Last updated:** 2026-06-27
+> **Changes:** fix: Services can exist at Core/Module/SubModule level (not only Core); add all 4 existing services; update Support vs Service distinction
 > This document explains when and why Services exist despite the
 > deliberate architectural choice of Actions over traditional Service classes. It is not an
 > endorsement of the Service pattern — it is a boundary document that prevents Service scope creep.
@@ -31,12 +31,23 @@ each with a single `execute()` method, a tailored contract, and 1:1 test-to-clas
 
 ## 2. When Services Are Appropriate
 
-Services are the **exception**, not the rule. They are colocated in `app/Core/Services/` as a
-dedicated layer for infrastructure-aware utilities that do not fit the Action model.
+Services are the **exception**, not the rule. They live at the same scope as their owning module —
+**not** limited to `app/Core/Services/`.
+
+| Scope | Path | Example |
+|-------|------|---------|
+| Global (cross-module infrastructure) | `app/Core/Services/` | `ModuleDiscoverService` |
+| Module-level | `app/{Module}/Services/` | `User/Services/DashboardService` |
+| Submodule-level | `app/{Module}/{SubModule}/Services/` | `SysAdmin/Observability/Services/PulseGuard` |
 
 **Existing services:**
 
-- `ModuleDiscoverService` — auto-discovers Livewire components, Gate policies, and Blade namespaces across all modules during boot
+| File | Class | Scope | Purpose |
+|------|-------|-------|---------|
+| `Core/Services/ModuleDiscoverService.php` | `ModuleDiscoverService` | Global | Auto-discovers Livewire components, Gate policies, and Blade namespaces across all modules during boot |
+| `User/Services/DashboardService.php` | `DashboardService` | Module | Resolves dashboard route name and shared stats by user role |
+| `SysAdmin/Observability/Services/EnvironmentAuditor.php` | `EnvironmentAuditor` | Submodule | Audits PHP version, extensions, permissions, DB, terminal, frontend assets |
+| `SysAdmin/Observability/Services/PulseGuard.php` | `PulseGuard` | Submodule | Pulse dashboard access guard (admin-only) |
 
 A class belongs in `Services/` only when all of the following are true:
 
@@ -48,7 +59,7 @@ A class belongs in `Services/` only when all of the following are true:
 4. **It is NOT a complex query**. If the class reads and transforms data from multiple models, it
    must be a Read Action.
 5. **Constructor injection is used**. No `app()` make, no `resolve()` inside methods — dependencies
-   are explicit.
+   are explicit. Static methods are acceptable only for framework hooks that require callables.
 
 ---
 
@@ -57,13 +68,24 @@ A class belongs in `Services/` only when all of the following are true:
 The `Services/` and `Support/` directories serve different purposes. See the
 [Support Pattern](support-pattern.md) for the complete Support reference. In summary:
 
-- **Support** (`app/{Module}/Support/`, `app/Core/Support/`): Module-level utilities. May or may not
-  have framework dependencies. Not infrastructure-wide enough for Services.
-- **Services** (`app/Core/Services/`): Global infrastructure code. Depends on the Laravel container,
-  config, or facades. Serves the entire application.
+| Concern | Service | Support |
+|---------|---------|---------|
+| **Nature** | Infrastructure code | Utility/helper code |
+| **Framework dependency** | Required (config, container, facades) | Optional |
+| **Scope** | Service scope defines its reach | Module or submodule |
+| **Multiple methods** | Allowed but should be minimal | Allowed |
+| **Business logic** | Never | Never |
+| **Database writes** | Never | Never |
+| **Example** | `ModuleDiscoverService` (framework scanning) | `PiiMasker` (data transformation) |
 
-**Rule of thumb:** If the utility serves only one module, keep it in `Support/`. If it serves the
-entire application AND depends on framework container, use `Services/`.
+**Rule of thumb:**
+
+- **Service** when the class operates framework infrastructure (container, facades, config) at any
+  scope — Core, Module, or SubModule.
+- **Support** when the class provides pure utilities, transformations, or renderers that could
+  theoretically work without the framework (even if they currently use it).
+- When in doubt, prefer `Support/` over `Services/`. A Support class is easier to promote to a
+  Service later than to downgrade a Service that accumulated Action-like responsibilities.
 
 ---
 
@@ -86,21 +108,21 @@ methods. This is permissible only when:
 ### Static Methods
 
 Static methods in Services are the exception, not the rule. They are only acceptable when a
-framework hook (e.g., an authorization callable) requires a static callable. New Services should use
-instance methods with constructor injection.
+framework hook (e.g., an authorization callable `PulseGuard::viewPulse()`) requires a static
+callable. New Services should use instance methods with constructor injection.
 
 ---
 
 ## 5. How Services Differ from Actions
 
-| Concern            | Service       | Action                         |
-| ------------------ | ------------- | ------------------------------ |
-| **Base class**     | None          | `BaseAction` (Command/Process) |
-| **Transaction**    | Not available | Required (Command/Process)     |
-| **Logging**        | Not available | Required (Command/Process)     |
-| **Public methods** | One or more   | Exactly one (`execute()`)      |
-| **State mutation** | Never         | Always (Command)               |
-| **Business logic** | Never         | Primary owner                  |
+| Concern | Service | Action |
+| ------- | ------- | ------ |
+| **Base class** | None | `BaseAction` (Command/Process) |
+| **Transaction** | Not available | Required (Command/Process) |
+| **Logging** | Not available | Required (Command/Process) |
+| **Public methods** | One or more | Exactly one (`execute()`) |
+| **State mutation** | Never | Always (Command) |
+| **Business logic** | Never | Primary owner |
 
 ### Key Boundary
 
@@ -137,6 +159,10 @@ If you need any of the above, you need an Action.
 - **Service Injecting HTTP Dependencies** — Services must never depend on Livewire components,
   request instances, or session state. Move the logic into the Livewire component itself or into an
   Action that receives HTTP-scoped data as parameters.
+
+- **Service as Action Wrapper** — never create a Service that calls Actions "to simplify the
+  interface". Callers should inject Actions directly. If orchestration is needed, create a Process
+  Action.
 
 ---
 
