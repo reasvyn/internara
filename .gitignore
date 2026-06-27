@@ -63,5 +63,10 @@ yarn-error.log
 .opencode/
 opencode.json
 
+# Backup Files
+/**/*.backup
+/**/*.bak
+/**/*.bk
+
 # Legacy Files
 /legacy
