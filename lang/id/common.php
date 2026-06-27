@@ -81,7 +81,6 @@ return [
         'completed' => 'Selesai',
         'failed' => 'Gagal',
         'verified' => 'Terverifikasi',
-        'revision_required' => 'Butuh Revisi',
     ],
 
     'name' => 'Nama',

@@ -1,0 +1,18 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\User\UserManagement\Events;
+
+use App\Core\Events\BaseEvent;
+use App\User\Models\User;
+
+final class UserDeleted extends BaseEvent
+{
+    public function __construct(public User $user) {}
+
+    public function eventName(): string
+    {
+        return 'user.deleted';
+    }
+}

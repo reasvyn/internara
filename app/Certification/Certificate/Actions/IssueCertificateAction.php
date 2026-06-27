@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Certification\Certificate\Actions;
 
+use App\Certification\Certificate\Events\CertificateIssued;
 use App\Certification\Certificate\Models\Certificate;
 use App\Certification\Certificate\Models\CertificateTemplate;
 use App\Certification\Certificate\Support\CertificateRenderer;
@@ -68,6 +69,8 @@ final class IssueCertificateAction extends BaseCommandAction
                 'certificate_number' => $certificateNumber,
                 'registration_id' => $registration->id,
             ]);
+
+            event(new CertificateIssued($certificate));
 
             return $certificate->fresh();
         });

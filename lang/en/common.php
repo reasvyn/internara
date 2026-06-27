@@ -81,7 +81,6 @@ return [
         'completed' => 'Completed',
         'failed' => 'Failed',
         'verified' => 'Verified',
-        'revision_required' => 'Revision Required',
     ],
 
     'name' => 'Name',

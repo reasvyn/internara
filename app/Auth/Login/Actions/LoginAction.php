@@ -9,7 +9,6 @@ use App\Auth\Login\Events\LoginFailed;
 use App\Auth\Login\Events\LoginSucceeded;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
-use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Carbon;
@@ -49,13 +48,7 @@ final class LoginAction extends BaseCommandAction
         $this->clearFailedAttempts($identifierHash);
         session()->regenerate();
 
-        SmartLogger::info('login_success')
-            ->event('login_success')
-            ->module('Auth')
-            ->about($user)
-            ->withPiiMasking()
-            ->activityOnly()
-            ->save();
+        $this->log('login_success', $user, ['identifier' => $data->identifier]);
 
         Event::dispatch(new LoginSucceeded($user, $data->identifier));
 

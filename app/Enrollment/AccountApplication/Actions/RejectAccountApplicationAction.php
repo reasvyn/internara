@@ -7,6 +7,7 @@ namespace App\Enrollment\AccountApplication\Actions;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\AccountApplication\Enums\AccountApplicationStatus;
+use App\Enrollment\AccountApplication\Events\AccountApplicationRejected;
 use App\Enrollment\AccountApplication\Models\AccountApplication;
 use App\User\Models\User;
 
@@ -28,5 +29,7 @@ final class RejectAccountApplicationAction extends BaseCommandAction
         ]);
 
         $this->log('account_application_rejected', $application, ['reason' => $reason]);
+
+        event(new AccountApplicationRejected($application));
     }
 }

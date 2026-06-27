@@ -7,6 +7,7 @@ namespace App\Enrollment\AccountApplication\Actions;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Enrollment\AccountApplication\Enums\AccountApplicationStatus;
+use App\Enrollment\AccountApplication\Events\AccountApplicationApproved;
 use App\Enrollment\AccountApplication\Models\AccountApplication;
 use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
@@ -73,6 +74,8 @@ final class ApproveAccountApplicationAction extends BaseCommandAction
                 'user_id' => $user->id,
                 'registration_id' => $registration->id,
             ]);
+
+            event(new AccountApplicationApproved($application));
 
             return $registration;
         });

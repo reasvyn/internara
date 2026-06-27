@@ -9,6 +9,7 @@ use App\Core\Exceptions\RejectedException;
 use App\User\AccountStatus\Notifications\AccountStatusNotification;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
+use App\User\UserManagement\Events\UserStatusChanged;
 
 final class SetUserStatusAction extends BaseCommandAction
 {
@@ -50,6 +51,8 @@ final class SetUserStatusAction extends BaseCommandAction
             'to' => $newStatus->value,
             'reason' => $reason,
         ]);
+
+        event(new UserStatusChanged($user));
 
         return $user;
     }

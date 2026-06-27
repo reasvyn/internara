@@ -39,7 +39,11 @@ final class InstallSystemAction extends BaseCommandAction
         return $this->transaction(function () use ($force) {
             $this->provisioner->executeAll($force);
 
-            return $this->generateToken->execute();
+            $token = $this->generateToken->execute();
+
+            $this->log('system_installed', null, ['token_id' => $token->token ?? null]);
+
+            return $token;
         });
     }
 }

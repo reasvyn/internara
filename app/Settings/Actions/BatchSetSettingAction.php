@@ -40,6 +40,8 @@ class BatchSetSettingAction extends BaseCommandAction
                 $results->push($setting);
             }
 
+            $this->log('settings_batch_set', null, ['count' => $results->count()]);
+
             return $results;
         });
     }

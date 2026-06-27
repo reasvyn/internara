@@ -18,9 +18,16 @@ final class DeleteNotificationAction extends BaseCommandAction
 {
     public function execute(Notification $notification): void
     {
-        $userId = $notification->user_id;
-        $notification->delete();
+        $this->transaction(function () use ($notification) {
+            $userId = $notification->user_id;
+            $notification->delete();
 
-        Cache::forget(config('cache-keys.notification_unread').$userId);
+            Cache::forget(config('cache-keys.notification_unread').$userId);
+
+            $this->log('notification_deleted', $notification, [
+                'notification_id' => $notification->id,
+                'user_id' => $userId,
+            ]);
+        });
     }
 }

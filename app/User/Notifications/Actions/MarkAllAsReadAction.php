@@ -27,6 +27,11 @@ final class MarkAllAsReadAction extends BaseCommandAction
 
         Cache::forget(config('cache-keys.notification_unread').$userId);
 
+        $this->log('notifications_marked_all_read', null, [
+            'user_id' => $userId,
+            'count' => $updated,
+        ]);
+
         return $updated;
     }
 }

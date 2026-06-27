@@ -6,6 +6,7 @@ namespace App\User\AccountStatus\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
+use App\User\AccountStatus\Events\UserAccountLocked;
 use App\User\Models\User;
 
 final class LockUserAccountAction extends BaseCommandAction
@@ -29,6 +30,8 @@ final class LockUserAccountAction extends BaseCommandAction
             ]);
 
             $this->log('user_account_locked', $user, ['reason' => $reason]);
+
+            event(new UserAccountLocked($user));
         });
     }
 }

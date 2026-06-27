@@ -65,6 +65,11 @@ final class SendNotificationAction extends BaseCommandAction implements SendsNot
 
         Event::dispatch(new NotificationSent($notification));
 
+        $this->log('notification_sent', $notification, [
+            'user_id' => $user->id,
+            'type' => $notificationData->type,
+        ]);
+
         return $notification;
     }
 }

@@ -28,9 +28,6 @@ return [
     'approve' => 'Setujui & Nilai',
     'approve_success' => 'Laporan berhasil disetujui.',
     'grade_title' => 'Nilai Laporan',
-    'revision_requested' => 'Revisi diminta.',
-    'request_revision' => 'Minta Revisi',
-
     'supervisor_notes_title' => 'Catatan Laporan Siswa',
     'supervisor_notes_subtitle' => 'Tambahkan catatan opsional pada laporan PKL siswa',
     'supervisor_notes' => 'Catatan',

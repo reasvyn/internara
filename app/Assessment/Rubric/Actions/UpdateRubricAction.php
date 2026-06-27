@@ -15,12 +15,16 @@ final class UpdateRubricAction extends BaseCommandAction
         ?string $description = null,
         bool $isActive = true,
     ): Rubric {
-        $rubric->update([
-            'name' => $name,
-            'description' => $description,
-            'is_active' => $isActive,
-        ]);
+        return $this->transaction(function () use ($rubric, $name, $description, $isActive) {
+            $rubric->update([
+                'name' => $name,
+                'description' => $description,
+                'is_active' => $isActive,
+            ]);
 
-        return $rubric->fresh();
+            $this->log('rubric_updated', $rubric, ['name' => $name]);
+
+            return $rubric->fresh();
+        });
     }
 }

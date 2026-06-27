@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Assessment\Actions;
 
+use App\Assessment\Events\AssessmentFinalized;
 use App\Assessment\Models\Assessment;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
@@ -98,6 +99,8 @@ final class FinalizeAssessmentAction extends BaseCommandAction
             ]);
 
             $this->log('assessment_finalized', $assessment, ['final_score' => $finalScore]);
+
+            event(new AssessmentFinalized($assessment));
 
             return $assessment->fresh();
         });

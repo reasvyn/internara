@@ -26,6 +26,8 @@ final class ArchiveStudentAccountsAction extends BaseCommandAction
             }
         });
 
+        $this->log('student_accounts_archived', null, ['count' => $count]);
+
         return $count;
     }
 }

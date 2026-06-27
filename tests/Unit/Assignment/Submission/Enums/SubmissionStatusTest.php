@@ -44,7 +44,7 @@ test('verified and graded are terminal', function () {
 test('valid transitions', function () {
     expect(SubmissionStatus::DRAFT->validTransitions())->toContain(SubmissionStatus::SUBMITTED);
     expect(SubmissionStatus::SUBMITTED->validTransitions())->toContain(SubmissionStatus::VERIFIED, SubmissionStatus::GRADED, SubmissionStatus::REVISION_REQUIRED);
-    expect(SubmissionStatus::REVISION_REQUIRED->validTransitions())->toContain(SubmissionStatus::DRAFT);
+    expect(SubmissionStatus::REVISION_REQUIRED->validTransitions())->toContain(SubmissionStatus::SUBMITTED);
     expect(SubmissionStatus::VERIFIED->validTransitions())->toBe([]);
     expect(SubmissionStatus::GRADED->validTransitions())->toBe([]);
 });
@@ -53,7 +53,7 @@ test('can transition correctly', function () {
     expect(SubmissionStatus::DRAFT->canTransitionTo(SubmissionStatus::SUBMITTED))->toBeTrue();
     expect(SubmissionStatus::SUBMITTED->canTransitionTo(SubmissionStatus::GRADED))->toBeTrue();
     expect(SubmissionStatus::SUBMITTED->canTransitionTo(SubmissionStatus::REVISION_REQUIRED))->toBeTrue();
-    expect(SubmissionStatus::REVISION_REQUIRED->canTransitionTo(SubmissionStatus::DRAFT))->toBeTrue();
+    expect(SubmissionStatus::REVISION_REQUIRED->canTransitionTo(SubmissionStatus::SUBMITTED))->toBeTrue();
     expect(SubmissionStatus::DRAFT->canTransitionTo(SubmissionStatus::VERIFIED))->toBeFalse();
     expect(SubmissionStatus::GRADED->canTransitionTo(SubmissionStatus::DRAFT))->toBeFalse();
 });

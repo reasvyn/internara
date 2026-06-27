@@ -19,6 +19,8 @@ final class GenerateAccountSlipAction extends BaseCommandAction
 
     public function execute(User $user): Response
     {
+        $this->log('account_slip_generated', $user, ['user_id' => $user->id]);
+
         return $this->download($user);
     }
 

@@ -6,6 +6,7 @@ namespace App\Journals\Attendance\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
+use App\Journals\Attendance\Events\AttendanceClockOut;
 use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;
 use Carbon\Carbon;
@@ -37,6 +38,8 @@ final class ClockOutAction extends BaseCommandAction
             ]);
 
             $this->log('clock_out', $log, ['time' => $log->clock_out]);
+
+            event(new AttendanceClockOut($log));
 
             return $log;
         });

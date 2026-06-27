@@ -6,6 +6,7 @@ namespace App\Journals\Attendance\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
+use App\Journals\Attendance\Events\AttendanceClockIn;
 use App\Journals\Attendance\Models\Attendance;
 use App\User\Models\User;
 use Carbon\Carbon;
@@ -43,6 +44,8 @@ final class ClockInAction extends BaseCommandAction
             ]);
 
             $this->log('clock_in', $log, ['time' => $log->clock_in]);
+
+            event(new AttendanceClockIn($log));
 
             return $log;
         });

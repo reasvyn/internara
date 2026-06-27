@@ -1,7 +1,7 @@
 # Assignment — Technical Reference
 
-> **Last updated:** 2026-06-17
-> **Changes:** sync — add Data/DTOs and Events sections (SubmitAssignmentData, AssignmentPublished)
+> **Last updated:** 2026-06-27
+> **Changes:** add RequestSubmissionRevisionAction and SubmissionRevisionRequested event; fix SubmissionStatus values
 
 Detailed structural and implementation reference for the **Assignment** module.
 
@@ -9,7 +9,7 @@ Detailed structural and implementation reference for the **Assignment** module.
 
 ## Overview
 
-Manages course assignments and submission tracking with grading workflows.
+Manages course assignments and submission tracking with grading and revision workflows.
 
 ## Actions
 
@@ -22,6 +22,7 @@ Manages course assignments and submission tracking with grading workflows.
 | `Submission/Actions/SubmitAssignmentAction.php` | `SubmitAssignmentAction` | `BaseCommandAction` |
 | `Submission/Actions/GradeSubmissionAction.php` | `GradeSubmissionAction` | `BaseCommandAction` |
 | `Submission/Actions/VerifySubmissionAction.php` | `VerifySubmissionAction` | `BaseCommandAction` |
+| `Submission/Actions/RequestSubmissionRevisionAction.php` | `RequestSubmissionRevisionAction` | `BaseCommandAction` |
 
 ---
 
@@ -39,7 +40,7 @@ Manages course assignments and submission tracking with grading workflows.
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
 | `Enums/AssignmentStatus.php` | `AssignmentStatus` | `LabelEnum`, `StatusEnum` | draft, published, closed, archived |
-| `Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, graded, returned |
+| `Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, verified, graded, revision_required |
 
 ---
 
@@ -72,6 +73,7 @@ Manages course assignments and submission tracking with grading workflows.
 | File | Event | Dispatched By |
 | ---- | ----- | ------------- |
 | `Events/AssignmentPublished.php` | `AssignmentPublished` | `PublishAssignmentAction` |
+| `Submission/Events/SubmissionRevisionRequested.php` | `SubmissionRevisionRequested` | `RequestSubmissionRevisionAction` |
 
 ## Notifications
 
@@ -123,9 +125,6 @@ Tests are located in `tests/{Feature,Unit}/Assignment/`. See [Testing](../infras
 | --------- | ----- |
 | `create_assignments_table` | `assignments` |
 | `create_submissions_table` | `submissions` |
-
----
-
 
 ---
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Actions\SubmitAssignmentAction;
+use App\Assignment\Submission\Data\SubmitAssignmentData;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
@@ -20,7 +21,7 @@ test('submits assignment for published assignment', function () {
     $submission = app(SubmitAssignmentAction::class)->execute(
         $student,
         $assignment,
-        ['content' => 'My submission content'],
+        new SubmitAssignmentData(content: 'My submission content'),
     );
 
     expect($submission)->toBeInstanceOf(Submission::class);
@@ -35,6 +36,6 @@ test('throws when submitting to unpublished assignment', function () {
     app(SubmitAssignmentAction::class)->execute(
         $student,
         $assignment,
-        ['content' => 'Content'],
+        new SubmitAssignmentData(content: 'Content'),
     );
 })->throws(RejectedException::class, 'Cannot submit to unpublished assignment.');
