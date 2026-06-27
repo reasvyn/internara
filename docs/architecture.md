@@ -20,7 +20,7 @@
 > [Event](architecture/event-pattern.md) · [Enum](architecture/enum-pattern.md) ·
 > [Livewire](architecture/livewire-pattern.md) · [Exception](architecture/exception-pattern.md) ·
 > [Policy](architecture/policy-pattern.md) · [Logging](architecture/logging-pattern.md) ·
-> [Cache](architecture/cache-pattern.md) · [Service](architecture/service-pattern.md) ·
+> [Cache](architecture/cache-pattern.md) · [Service](architecture/service-pattern.md) · [Support](architecture/support-pattern.md) ·
 > [Repository](architecture/repository-pattern.md) · [Testing](architecture/testing-pattern.md)
 
 ---

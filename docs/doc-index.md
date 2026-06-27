@@ -81,6 +81,7 @@
 | [Logging & PII](architecture/logging-pattern.md)          | SmartLogger dual-channel fluent API, PII masking (32 keys), translation resolution         |
 | [Caching](architecture/cache-pattern.md)                  | Centralized key registry, TTL categories, event-driven invalidation, driver tiers          |
 | [Service Layer](architecture/service-pattern.md)          | When to use Services vs Actions, existing services inventory, migration path               |
+| [Support Utilities](architecture/support-pattern.md)      | Module-level helpers, Action vs Service vs Support boundaries, placement rules             |
 | [Repository](architecture/repository-pattern.md)          | Why no Repository layer, Eloquent as Repository, query tier patterns                       |
 | [Testing](architecture/testing-pattern.md)                | All testing patterns, scope isolation, layer strategies, assertions, performance           |
 

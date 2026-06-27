@@ -54,13 +54,16 @@ A class belongs in `Services/` only when all of the following are true:
 
 ## 3. Services vs Support Convention
 
-The `Services/` and `Support/` directories serve different purposes. `Support/` contains pure
-utility classes with no Eloquent or framework dependencies — they can be unit-tested without booting
-Laravel. `Services/` contains framework-aware infrastructure code that depends on the Laravel
-container, config, or facades.
+The `Services/` and `Support/` directories serve different purposes. See the
+[Support Pattern](support-pattern.md) for the complete Support reference. In summary:
 
-**Rule of thumb:** If you can unit-test the class without booting Laravel, it belongs in `Support/`.
-If it needs `config()`, `app()`, or a framework service container, it belongs in `Services/`.
+- **Support** (`app/{Module}/Support/`, `app/Core/Support/`): Module-level utilities. May or may not
+  have framework dependencies. Not infrastructure-wide enough for Services.
+- **Services** (`app/Core/Services/`): Global infrastructure code. Depends on the Laravel container,
+  config, or facades. Serves the entire application.
+
+**Rule of thumb:** If the utility serves only one module, keep it in `Support/`. If it serves the
+entire application AND depends on framework container, use `Services/`.
 
 ---
 
