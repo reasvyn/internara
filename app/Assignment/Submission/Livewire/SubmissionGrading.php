@@ -6,7 +6,9 @@ namespace App\Assignment\Submission\Livewire;
 
 use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Actions\GradeSubmissionAction;
+use App\Assignment\Submission\Actions\RequestSubmissionRevisionAction;
 use App\Assignment\Submission\Models\Submission;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -57,26 +59,29 @@ class SubmissionGrading extends Component
         $this->reset(['score', 'feedback', 'gradeStatus']);
     }
 
-    public function grade(GradeSubmissionAction $action): void
+    public function grade(GradeSubmissionAction $gradeAction, RequestSubmissionRevisionAction $revisionAction): void
     {
         $this->validate([
-            'score' => 'required|numeric|min:0|max:100',
+            'score' => 'required_if:gradeStatus,graded|numeric|min:0|max:100',
             'feedback' => 'required|string|min:10',
-            'gradeStatus' => 'required|in:verified,revision_required',
+            'gradeStatus' => 'required|in:graded,revision_required',
         ]);
 
         $submission = Submission::findOrFail($this->selectedSubmissionId);
         $this->authorize('verify', $submission);
 
-        $action->execute(
-            submission: $submission,
-            grader: Auth::user(),
-            score: $this->score,
-            status: $this->gradeStatus,
-            feedback: $this->feedback,
-        );
+        if ($this->gradeStatus === 'revision_required') {
+            $revisionAction->execute($submission, $this->feedback);
+            flash()->success('Revision requested successfully.');
+        } else {
+            $gradeAction->execute(
+                $submission,
+                (int) $this->score,
+                $this->feedback,
+            );
+            flash()->success('Submission graded successfully.');
+        }
 
-        flash()->success('Submission graded successfully.');
         $this->back();
     }
 

@@ -46,7 +46,7 @@ enum SubmissionStatus: string implements LabelEnum, StatusEnum
         return match ($this) {
             self::DRAFT => [self::SUBMITTED],
             self::SUBMITTED => [self::VERIFIED, self::GRADED, self::REVISION_REQUIRED],
-            self::REVISION_REQUIRED => [self::DRAFT],
+            self::REVISION_REQUIRED => [self::SUBMITTED],
             self::VERIFIED => [],
             self::GRADED => [],
         };

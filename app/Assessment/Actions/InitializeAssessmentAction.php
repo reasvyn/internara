@@ -25,10 +25,17 @@ final class InitializeAssessmentAction extends BaseCommandAction
         }
 
         $assessment = $this->transaction(function () use ($registrationId, $rubric) {
-            return Assessment::firstOrCreate(
+            $assessment = Assessment::firstOrCreate(
                 ['registration_id' => $registrationId],
                 ['rubric_id' => $rubric->id],
             );
+
+            $this->log('assessment_initialized', $assessment, [
+                'registration_id' => $registrationId,
+                'rubric_id' => $rubric->id,
+            ]);
+
+            return $assessment;
         });
 
         return ['assessment' => $assessment, 'rubric' => $rubric];

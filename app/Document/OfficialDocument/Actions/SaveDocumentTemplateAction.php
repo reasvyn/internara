@@ -14,9 +14,15 @@ final class SaveDocumentTemplateAction extends BaseCommandAction
     {
         $slug = Str::of($data['name'])->slug()->toString();
 
-        return Document::updateOrCreate(
-            ['id' => $data['id'] ?? null],
-            array_merge($data, ['slug' => $slug]),
-        );
+        return $this->transaction(function () use ($data, $slug) {
+            $document = Document::updateOrCreate(
+                ['id' => $data['id'] ?? null],
+                array_merge($data, ['slug' => $slug]),
+            );
+
+            $this->log('document_template_saved', $document, ['name' => $document->name]);
+
+            return $document;
+        });
     }
 }

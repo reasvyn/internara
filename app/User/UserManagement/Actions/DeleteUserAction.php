@@ -7,6 +7,7 @@ namespace App\User\UserManagement\Actions;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
+use App\User\UserManagement\Events\UserDeleted;
 use Illuminate\Support\Facades\Auth;
 
 final class DeleteUserAction extends BaseCommandAction
@@ -26,6 +27,8 @@ final class DeleteUserAction extends BaseCommandAction
                 'name' => $user->name,
                 'email' => $user->email,
             ]);
+
+            event(new UserDeleted($user));
 
             $user->delete();
         });

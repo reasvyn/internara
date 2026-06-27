@@ -6,6 +6,7 @@ namespace App\Assignment\Submission\Livewire;
 
 use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Actions\SubmitAssignmentAction;
+use App\Assignment\Submission\Data\SubmitAssignmentData;
 use App\Assignment\Submission\Models\Submission;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -49,20 +50,11 @@ class SubmitAssignment extends Component
         ]);
 
         $assignment = Assignment::findOrFail($this->assignmentId);
-        $registration = Auth::user()->getActiveRegistration();
-
-        if (! $registration) {
-            flash()->error('No active internship registration.');
-
-            return;
-        }
 
         $action->execute(
+            student: Auth::user(),
             assignment: $assignment,
-            registrationId: $registration->id,
-            studentId: Auth::id(),
-            content: $this->content,
-            file: $this->file,
+            data: new SubmitAssignmentData(content: $this->content),
         );
 
         $this->reset(['content', 'file', 'assignmentId']);

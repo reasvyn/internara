@@ -28,9 +28,6 @@ return [
     'approve' => 'Approve & Grade',
     'approve_success' => 'Report approved successfully.',
     'grade_title' => 'Grade Report',
-    'revision_requested' => 'Revision requested.',
-    'request_revision' => 'Request Revision',
-
     'supervisor_notes_title' => 'Student Report Notes',
     'supervisor_notes_subtitle' => 'Add optional notes to student internship reports',
     'supervisor_notes' => 'Notes',

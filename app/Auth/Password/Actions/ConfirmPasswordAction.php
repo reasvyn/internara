@@ -6,7 +6,6 @@ namespace App\Auth\Password\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
-use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -15,14 +14,6 @@ class ConfirmPasswordAction extends BaseCommandAction
     public function execute(User $user, string $password): void
     {
         if (! Hash::check($password, $user->password)) {
-            SmartLogger::info('password_confirmation_failed')
-                ->event('password_confirmation_failed')
-                ->module('Auth')
-                ->about($user)
-                ->withPiiMasking()
-                ->activityOnly()
-                ->save();
-
             throw new RejectedException(
                 __('auth.password_confirmation_failed') ??
                     'The provided password does not match your current password.',
@@ -31,12 +22,6 @@ class ConfirmPasswordAction extends BaseCommandAction
 
         session(['auth.password_confirmed_at' => time()]);
 
-        SmartLogger::info('password_confirmed')
-            ->event('password_confirmed')
-            ->module('Auth')
-            ->about($user)
-            ->withPiiMasking()
-            ->activityOnly()
-            ->save();
+        $this->log('password_confirmed', $user);
     }
 }

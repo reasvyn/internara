@@ -9,6 +9,7 @@ use App\Core\Exceptions\RejectedException;
 use App\User\AccountStatus\Notifications\AccountStatusNotification;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
+use App\User\UserManagement\Events\UserStatusChanged;
 
 final class ToggleUserStatusAction extends BaseCommandAction
 {
@@ -35,6 +36,13 @@ final class ToggleUserStatusAction extends BaseCommandAction
         $user->notify(
             new AccountStatusNotification($newStatus, $reason ?? 'Updated by Administrator'),
         );
+
+        $this->log('user_status_toggled', $user, [
+            'previous_status' => $currentStatus,
+            'new_status' => $newStatus,
+        ]);
+
+        event(new UserStatusChanged($user));
 
         return $user;
     }

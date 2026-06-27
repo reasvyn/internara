@@ -1,7 +1,7 @@
 # Reports — Technical Reference
 
-> **Last updated:** 2026-06-17
-> **Changes:** sync — add CalculateFinalGradeAction; add Events section (GradeCalculated, ReportApproved, ReportFinalized)
+> **Last updated:** 2026-06-27
+> **Changes:** remove revision feature, ReportRevision model, revision_requested enum value from Reports module
 
 Detailed structural and implementation reference for the **Reports** module.
 
@@ -9,7 +9,7 @@ Detailed structural and implementation reference for the **Reports** module.
 
 ## Overview
 
-Manages final student grade compilation, score aggregation, coordinator sign-off, and report revision workflows.
+Manages final student grade compilation, score aggregation, and coordinator sign-off.
 
 ## Actions
 
@@ -18,7 +18,6 @@ Manages final student grade compilation, score aggregation, coordinator sign-off
 | `Report/Actions/CreateReportAction.php` | `CreateReportAction` | `BaseAction` |
 | `Report/Actions/SubmitReportAction.php` | `SubmitReportAction` | `BaseAction` |
 | `Report/Actions/ApproveReportAction.php` | `ApproveReportAction` | `BaseAction` |
-| `Report/Actions/RequestReportRevisionAction.php` | `RequestReportRevisionAction` | `BaseAction` |
 | `Report/Actions/AddSupervisorReportNotesAction.php` | `AddSupervisorReportNotesAction` | `BaseAction` |
 | `Report/Actions/SaveReportDraftAction.php` | `SaveReportDraftAction` | `BaseAction` |
 | `Report/Actions/CalculateFinalGradeAction.php` | `CalculateFinalGradeAction` | Process `BaseAction` |
@@ -30,7 +29,6 @@ Manages final student grade compilation, score aggregation, coordinator sign-off
 | File | Class | Extends |
 | ---- | ----- | ------- |
 | `Report/Models/Report.php` | `Report` | `BaseModel` |
-| `Report/Models/ReportRevision.php` | `ReportRevision` | `BaseModel` |
 
 ---
 
@@ -38,7 +36,7 @@ Manages final student grade compilation, score aggregation, coordinator sign-off
 
 | File | Enum | Implements | Values |
 | ---- | ---- | ---------- | ------ |
-| `Report/Enums/ReportStatus.php` | `ReportStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, approved, revision_requested, finalized |
+| `Report/Enums/ReportStatus.php` | `ReportStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, approved, finalized |
 
 ---
 
@@ -48,7 +46,8 @@ Manages final student grade compilation, score aggregation, coordinator sign-off
 | ---- | ----- | ------------- |
 | `Report/Events/GradeCalculated.php` | `GradeCalculated` | `CalculateFinalGradeAction` |
 | `Report/Events/ReportApproved.php` | `ReportApproved` | `ApproveReportAction` |
-| `Report/Events/ReportFinalized.php` | `ReportFinalized` | `SubmitReportAction` |
+| `Report/Events/ReportSubmitted.php` | `ReportSubmitted` | `SubmitReportAction` |
+| `Report/Events/ReportFinalized.php` | `ReportFinalized` | `FinalizeReportAction` |
 
 ## HTTP Controllers
 
@@ -94,9 +93,6 @@ Tests are located in `tests/{Feature,Unit}/Reports/`. See [Testing](../infrastru
 | Migration | Table |
 | --------- | ----- |
 | `create_reports_table` | `reports` |
-
----
-
 
 ---
 

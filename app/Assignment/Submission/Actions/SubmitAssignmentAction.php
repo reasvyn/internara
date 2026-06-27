@@ -38,12 +38,23 @@ final class SubmitAssignmentAction extends BaseCommandAction
 
             $existing = Submission::where('student_id', $student->id)
                 ->where('assignment_id', $assignment->id)
-                ->whereIn('status', [
-                    SubmissionStatus::DRAFT->value,
-                    SubmissionStatus::SUBMITTED->value,
-                    SubmissionStatus::VERIFIED->value,
-                ])
                 ->first();
+
+            if ($existing && $existing->status === SubmissionStatus::REVISION_REQUIRED) {
+                $existing->update([
+                    'content' => $data->content,
+                    'status' => SubmissionStatus::SUBMITTED->value,
+                    'submitted_at' => now(),
+                    'feedback' => null,
+                ]);
+
+                $this->log('assignment_submitted', $existing, [
+                    'assignment_title' => $assignment->title,
+                    'user_id' => $student->id,
+                ]);
+
+                return $existing->fresh();
+            }
 
             if ($existing) {
                 throw new RejectedException('You have already submitted this assignment.');

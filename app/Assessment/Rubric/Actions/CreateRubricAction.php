@@ -14,11 +14,17 @@ final class CreateRubricAction extends BaseCommandAction
         ?string $description = null,
         bool $isActive = true,
     ): Rubric {
-        return Rubric::create([
-            'name' => $name,
-            'description' => $description,
-            'is_active' => $isActive,
-            'created_by' => auth()->id(),
-        ]);
+        return $this->transaction(function () use ($name, $description, $isActive) {
+            $rubric = Rubric::create([
+                'name' => $name,
+                'description' => $description,
+                'is_active' => $isActive,
+                'created_by' => auth()->id(),
+            ]);
+
+            $this->log('rubric_created', $rubric, ['name' => $rubric->name]);
+
+            return $rubric;
+        });
     }
 }

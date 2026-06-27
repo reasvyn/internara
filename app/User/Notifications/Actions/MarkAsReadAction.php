@@ -28,6 +28,11 @@ final class MarkAsReadAction extends BaseCommandAction
 
         Event::dispatch(new NotificationRead($notification));
 
+        $this->log('notification_marked_read', $notification, [
+            'notification_id' => $notification->id,
+            'user_id' => $notification->user_id,
+        ]);
+
         return $notification->fresh();
     }
 }

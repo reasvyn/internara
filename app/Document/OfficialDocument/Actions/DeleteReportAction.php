@@ -11,6 +11,10 @@ final class DeleteReportAction extends BaseCommandAction
 {
     public function execute(Document $report): void
     {
-        $report->delete();
+        $this->transaction(function () use ($report) {
+            $report->delete();
+
+            $this->log('report_deleted', $report, ['title' => $report->title]);
+        });
     }
 }

@@ -24,8 +24,12 @@ class ResetUserPasswordAction extends BaseCommandAction
 
         $newPassword = Str::password(12);
 
-        $user->update(['password' => Hash::make($newPassword)]);
+        return $this->transaction(function () use ($user, $newPassword) {
+            $user->update(['password' => Hash::make($newPassword)]);
 
-        return ['user' => $user, 'new_password' => $newPassword];
+            $this->log('user_password_reset', $user, ['user_id' => $user->id]);
+
+            return ['user' => $user, 'new_password' => $newPassword];
+        });
     }
 }

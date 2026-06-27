@@ -103,10 +103,7 @@ scores are present.
 
 ### 19.3.2 Approved
 
-A teacher or coordinator reviews the submitted grade card. They can:
-
-- **Approve** — accept the calculated scores and provide feedback
-- **Request Revision** — flag the grade card for adjustments (e.g., if scores need correction)
+A teacher or coordinator reviews the submitted grade card and can **Approve** it to accept the calculated scores and provide feedback.
 
 ### 19.3.3 Finalised
 
@@ -122,8 +119,6 @@ A finalised grade card **cannot be edited** under normal circumstances.
 
 ```
 Draft ──> Submitted ──> Approved ──> Finalised
-                           │
-                           └── Revision Required ──> Submitted
 ```
 
 | Status | Meaning | Editable? |
@@ -131,7 +126,6 @@ Draft ──> Submitted ──> Approved ──> Finalised
 | **Draft** | Scores are being collected | Yes (system) |
 | **Submitted** | All scores present, awaiting review | No |
 | **Approved** | Reviewed and accepted | No |
-| **Revision Required** | Needs correction | Yes (admin override) |
 | **Finalised** | Locked permanently | No |
 
 ---

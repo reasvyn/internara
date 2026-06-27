@@ -7,6 +7,7 @@ namespace App\Reports\Report\Actions;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use App\Reports\Report\Enums\ReportStatus;
+use App\Reports\Report\Events\ReportSubmitted;
 use App\Reports\Report\Models\Report;
 
 final class SubmitReportAction extends BaseCommandAction
@@ -25,6 +26,8 @@ final class SubmitReportAction extends BaseCommandAction
             ]);
 
             $this->log('report_submitted', $report, ['title' => $report->title]);
+
+            event(new ReportSubmitted($report));
 
             return $report->fresh();
         });

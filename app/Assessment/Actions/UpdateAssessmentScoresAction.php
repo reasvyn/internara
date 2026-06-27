@@ -31,6 +31,11 @@ final class UpdateAssessmentScoresAction extends BaseCommandAction
 
         $assessment->update(['scores_data' => $scoresData]);
 
+        $this->log('assessment_scores_updated', $assessment, [
+            'competency_id' => $competencyId,
+            'indicator_id' => $indicatorId,
+        ]);
+
         return $assessment->fresh();
     }
 }

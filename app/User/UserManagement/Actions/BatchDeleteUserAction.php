@@ -44,6 +44,11 @@ final class BatchDeleteUserAction extends BaseCommandAction
             }
         }
 
+        $this->log('users_batch_deleted', null, [
+            'deleted' => $deleted,
+            'skipped' => $skipped,
+        ]);
+
         return ['deleted' => $deleted, 'skipped' => $skipped];
     }
 }

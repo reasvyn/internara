@@ -158,7 +158,7 @@
                             <x-mary-select
                                 :label="__('submission.status')"
                                 wire:model="gradeStatus"
-                                :options="['verified' => 'Verified (Accepted)', 'revision_required' => 'Revision Required']"
+                                :options="['graded' => 'Grade & Accept', 'revision_required' => 'Request Revision']"
                                 class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50"
                             />
                         </div>

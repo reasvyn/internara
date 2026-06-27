@@ -17,6 +17,10 @@ final class DeleteAssignmentAction extends BaseCommandAction
 {
     public function execute(Assignment $assignment): void
     {
-        $assignment->delete();
+        $this->transaction(function () use ($assignment) {
+            $assignment->delete();
+
+            $this->log('assignment_deleted', $assignment, ['title' => $assignment->title]);
+        });
     }
 }

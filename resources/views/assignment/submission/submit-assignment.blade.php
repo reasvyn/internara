@@ -110,7 +110,51 @@
                 $existingSubmission = $selectedAssignment->submissions->first();
             @endphp
 
-            @if($existingSubmission)
+            @if($existingSubmission && $existingSubmission->status->value === 'revision_required')
+                {{-- Revision Required --}}
+                <div class="p-6 bg-warning/5 border border-warning/20 rounded-[2rem] shadow-xl shadow-warning/5 mb-6">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="size-12 rounded-[1.5rem] bg-warning text-warning-content flex items-center justify-center shadow-lg shadow-warning/30">
+                            <x-mary-icon name="o-exclamation-triangle" class="size-6" />
+                        </div>
+                        <div>
+                            <h4 class="font-black text-sm text-warning uppercase tracking-tight">Revision requested</h4>
+                            <p class="text-[9px] uppercase font-black tracking-[0.3em] text-warning/40 mt-1">Please revise and resubmit</p>
+                        </div>
+                    </div>
+                    @if($existingSubmission->feedback)
+                        <div class="p-4 bg-base-200/50 rounded-[1.5rem]">
+                            <span class="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/40 block mb-2">Feedback</span>
+                            <p class="text-sm text-base-content/70">{{ $existingSubmission->feedback }}</p>
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Resubmission Form --}}
+                <div class="p-6 bg-base-200/30 border border-base-content/5 rounded-[2rem]">
+                    <h4 class="font-black text-sm uppercase tracking-tight text-base-content mb-6">Revise & Resubmit</h4>
+                    <div class="space-y-6">
+                        <div>
+                            <x-mary-textarea
+                                :label="__('submission.content')"
+                                wire:model="content"
+                                placeholder="Update your work based on the feedback..."
+                                rows="5"
+                                class="rounded-[1.5rem] border-base-content/5 focus:border-primary/30 bg-base-200/50"
+                            />
+                        </div>
+                        <div class="flex justify-end pt-4 border-t border-base-content/5">
+                            <x-mary-button
+                                label="Resubmit"
+                                icon-right="o-paper-airplane"
+                                class="btn-warning rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] px-10 h-12 shadow-2xl shadow-warning/30 hover:scale-[1.02] transition-transform"
+                                wire:click="submit"
+                                spinner="submit"
+                            />
+                        </div>
+                    </div>
+                </div>
+            @elseif($existingSubmission)
                 {{-- Already Submitted --}}
                 <div class="p-6 bg-success/5 border border-success/20 rounded-[2rem] shadow-xl shadow-success/5">
                     <div class="flex items-center gap-4 mb-4">
@@ -138,17 +182,17 @@
                                 <p class="text-sm text-base-content/70">{{ $existingSubmission->feedback }}</p>
                             </div>
                         @endif
-                    @elseif($existingSubmission->status->value === 'revision_required')
-                        <div class="flex items-center gap-4 p-4 bg-warning/10 rounded-[1.5rem]">
-                            <x-mary-icon name="o-exclamation-triangle" class="size-5 text-warning" />
-                            <span class="font-black text-sm text-warning uppercase tracking-tight">Revision requested</span>
-                        </div>
-                        @if($existingSubmission->feedback)
-                            <div class="mt-3 p-4 bg-base-200/50 rounded-[1.5rem]">
-                                <span class="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/40 block mb-2">Feedback</span>
+                    @elseif($existingSubmission->status->value === 'graded')
+                        <div class="mt-3 p-4 bg-base-200/50 rounded-[1.5rem]">
+                            @if($existingSubmission->score)
+                                <span class="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/40 block mb-2">Score</span>
+                                <p class="text-sm font-black text-base-content">{{ $existingSubmission->score }}/100</p>
+                            @endif
+                            @if($existingSubmission->feedback)
+                                <span class="text-[9px] font-black uppercase tracking-[0.2em] text-base-content/40 block mt-3 mb-2">Feedback</span>
                                 <p class="text-sm text-base-content/70">{{ $existingSubmission->feedback }}</p>
-                            </div>
-                        @endif
+                            @endif
+                        </div>
                     @endif
                 </div>
             @elseif(!$selectedAssignment->asAssignmentRules()->isOverdue())

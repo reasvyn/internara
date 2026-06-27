@@ -6,6 +6,7 @@ namespace App\User\AccountStatus\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
+use App\User\AccountStatus\Events\UserAccountUnlocked;
 use App\User\Models\User;
 
 class UnlockUserAccountAction extends BaseCommandAction
@@ -32,6 +33,8 @@ class UnlockUserAccountAction extends BaseCommandAction
                 ]);
 
                 $this->log('user_account_unlocked', $user);
+
+                event(new UserAccountUnlocked($user));
             });
         }, 'Failed to unlock user account');
     }
