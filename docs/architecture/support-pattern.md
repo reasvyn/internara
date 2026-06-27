@@ -83,10 +83,10 @@ If any of these are true, use an Action. A Support class is never a downgrade pa
 
 | Concern | Support | Service |
 |---------|---------|---------|
-| **Scope** | Module or submodule | Global (`app/Core/Services/`) |
-| **Framework dependency** | Optional (may use Cache, Config, Facades) | Required (container, config, facades) |
+| **Scope** | Module or submodule | Core, module, or submodule |
+| **Framework dependency** | Optional (may use Cache, Config, Facades) | Required (config, container, facades) |
 | **Framework injection** | Possible but optional | Required (constructor injection) |
-| **Number of classes** | 20+ across modules | 1 (`ModuleDiscoverService`) |
+| **Number of classes** | 20+ across modules | 4 total |
 | **Unit-testable without Laravel** | Ideally yes, but not required | No |
 | **Business logic** | Utility only | Infrastructure only |
 
@@ -169,10 +169,12 @@ Create a Support utility when:
 │              └────────── uses ─────────────┘                     │
 │                                                                  │
 │  ┌──────────────────────────────────────────────────────────┐    │
-│  │                    SERVICE (global infra)                 │    │
-│  │  • framework-aware, container-dependent                  │    │
+│  │        SERVICE (infrastructure at any scope)              │    │
+│  │  • framework-aware, config/facade/container deps         │    │
+│  │  • may live at Core, Module, or SubModule level          │    │
 │  │  • never calls Actions, never writes DB                  │    │
-│  │  • exactly 1 class (ModuleDiscoverService)               │    │
+│  │  • 4 existing: ModuleDiscover, Dashboard, Environment,   │    │
+│  │    PulseGuard                                            │    │
 │  └──────────────────────────────────────────────────────────┘    │
 └──────────────────────────────────────────────────────────────────┘
 ```
@@ -180,8 +182,8 @@ Create a Support utility when:
 **Key boundaries:**
 
 - **Action** → owns business operations. Transactions, logging, events.
-- **Support** → owns module utilities. Stateless or stateful, no business decisions.
-- **Service** → owns global infrastructure. Framework-aware, application-wide.
+- **Support** → owns module utilities. Transformations, renderers, generators.
+- **Service** → owns infrastructure at any scope (Core/Module/SubModule). Framework-aware.
 
 An Action may use a Support utility. A Support utility may use a Service. A Service must never
 call an Action.
