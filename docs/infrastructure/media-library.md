@@ -1,10 +1,13 @@
-# Media Library
+# Media Library — File Uploads & Media Management
 
 > **Last updated:** 2026-06-13
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Internara uses [spatie/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) to associate files with Eloquent models. This package handles uploads, storage, image conversions, and file retrieval — replacing the need to manually manage file paths, validation, and processing for each model.
 
 ---
+
 
 ## Storage Architecture
 

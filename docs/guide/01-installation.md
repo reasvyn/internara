@@ -1,13 +1,16 @@
 # Chapter 1: Installation
 
 > **Last updated:** 2026-06-14
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 In this chapter, you'll prepare your server, install Internara, and run the initial setup command.
 
 By the end of this chapter, you'll have a signed URL to open in your browser — which leads to the
 [Setup Wizard](02-setup-wizard.md).
 
 ---
+
 
 ## 1.1 Check Requirements
 

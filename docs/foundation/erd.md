@@ -1,12 +1,11 @@
-# Entity Relationship Diagram
+# Entity Relationship Diagram — Database Schema Overview
 
 > **Last updated:** 2026-06-24
->
 > **Total: 55 tables** (37 Domain Tables + 18 System/Package Tables)
->
 > **Changes:** Migration audit & optimization; add monitoring_visits, backups; update internship_group_members structure; add evaluation forms architecture
+## Description
 
----
+Entity Relationship Diagram showing all database tables, relationships, and key fields across all 19 modules.
 
 ## Design Philosophy
 

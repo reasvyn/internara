@@ -1,11 +1,13 @@
 # Setup — Technical Reference
 
-> Last updated: 2026-06-16
-> Changes: sync — add SetupData DTO to Data section
+> **Last updated:** 2026-06-27
+> **Changes:** sync — add SetupData DTO to Data section
 
+## Description
 Detailed structural and implementation reference for the **Setup** module.
 
 ---
+
 
 ## Overview
 
@@ -126,7 +128,6 @@ None.
 None.
 
 ---
-
 
 ---
 

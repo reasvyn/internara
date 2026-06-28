@@ -1,12 +1,15 @@
 # Chapter 19: Student Report & Certification
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers the final stage of the internship program: the **final grade card** (Nilai Raport
 PKL) which aggregates scores from all assessment sources, and the **completion certificate** that
 is issued after the grade is finalised.
 
 ---
+
 
 ## 19.1 Final Grade Card Overview
 

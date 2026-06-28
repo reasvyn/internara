@@ -38,6 +38,8 @@ Apply this skill whenever writing, editing, or fixing tests. Activates for all t
 - **BaseEntity**: `app/Core/Entities/BaseEntity.php`
 - **BaseAction**: `app/Core/Actions/BaseAction.php`
 - **BasePolicy**: `app/Core/Policies/BasePolicy.php`
+- **Service Pattern**: `docs/architecture/service-pattern.md` — infrastructure logic vs domain logic
+- **Support Pattern**: `docs/architecture/support-pattern.md` — static utilities, no constructor injection
 
 ## Module-First Test Structure
 

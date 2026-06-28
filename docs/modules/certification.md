@@ -1,8 +1,11 @@
-# Certification
+# Certification — Certificates, Templates & QR
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Certificate generation, serial numbering, digital QR signature, public verification, and credential revocation.
+
 
 ## Purpose & Boundary
 

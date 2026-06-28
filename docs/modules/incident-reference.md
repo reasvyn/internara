@@ -1,10 +1,13 @@
 # Incident — Technical Reference
 
-> Last updated: 2026-06-16
+> **Last updated:** 2026-06-27
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Detailed structural and implementation reference for the **Incident** module.
 
 ---
+
 
 ## Overview
 
@@ -87,7 +90,6 @@ Tests are located in `tests/{Feature,Unit}/Incident/`. See [Testing](../infrastr
 | `create_incident_reports_table` | `incident_reports` |
 
 ---
-
 
 ---
 

@@ -1,7 +1,12 @@
 # ADR-001: UUID Primary Keys
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+All models use UUID v7 primary keys instead of auto-incrementing integers to prevent enumeration attacks, enable distributed ID generation, and maintain consistent key types across all tables.
 
 ## Context
 

@@ -424,6 +424,8 @@ When a roadmap initiative is complete:
 | `docs/modules/module-index.md` | Module boundaries |
 | `docs/key-features.md` | Feature inventory (input to feature pipeline) |
 | `docs/doc-index.md` | Documentation catalog |
+| `docs/architecture/service-pattern.md` | Service vs Support vs Action (infra vs domain vs static) |
+| `docs/architecture/support-pattern.md` | Support utilities: static-only, no constructor injection |
 | `AGENTS.md` | Project invariants |
 | `docs/infrastructure/testing.md` | Testing infrastructure |
 | `.agents/skills/audit-protocol/SKILL.md` | Audit findings (input to bug/security/perf pipelines) |

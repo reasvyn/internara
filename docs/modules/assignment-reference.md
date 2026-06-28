@@ -3,9 +3,11 @@
 > **Last updated:** 2026-06-27
 > **Changes:** add RequestSubmissionRevisionAction and SubmissionRevisionRequested event; fix SubmissionStatus values
 
+## Description
 Detailed structural and implementation reference for the **Assignment** module.
 
 ---
+
 
 ## Overview
 

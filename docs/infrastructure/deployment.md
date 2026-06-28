@@ -1,14 +1,17 @@
-# Deployment
+# Deployment — Options, Requirements & CI/CD
 
 > **Last updated:** 2026-06-14
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Internara is designed to be installed on the school's own infrastructure. This guide covers the three supported deployment paths and the operational requirements for each.
 
 For prerequisites and PHP extension requirements, see [Installation](../guide/01-installation.md#prerequisites). For application installation steps (migrations, setup wizard, build), see [Installation](../guide/01-installation.md#application-installation-steps).
 
 ---
 
-## Deployment Path A: Shared Hosting (Primary)
+
+#Deployment — Options, Requirements & CI/CD Path A: Shared Hosting (Primary)
 
 Shared hosting is the **recommended starting point** for most schools. It handles up to 500 registered users per PKL period with zero devops overhead.
 
@@ -40,7 +43,7 @@ Most Indonesian hosting providers (Niagahoster, Domainesia, Jagoan Hosting, etc.
 
 All core features: authentication, registration, attendance, logbook, assignments, assessments, reports, certificates, mentoring, email notifications.
 
-### Deployment Steps
+##Deployment — Options, Requirements & CI/CD Steps
 
 **1. Build locally:**
 
@@ -123,7 +126,7 @@ SESSION_DRIVER=redis
 
 ---
 
-## Deployment Path B: VPS / Dedicated Server
+#Deployment — Options, Requirements & CI/CD Path B: VPS / Dedicated Server
 
 ### 1. Web Server: Nginx
 
@@ -299,7 +302,7 @@ Follow the application installation steps in [Installation](../guide/01-installa
 
 ---
 
-## Deployment Path C: Docker
+#Deployment — Options, Requirements & CI/CD Path C: Docker
 
 ### Docker Compose Services
 

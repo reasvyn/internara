@@ -3,10 +3,12 @@
 > **Last updated:** 2026-06-24
 > **Changes:** sync — fix ModuleDiscoverService method names (discoverModules → discoverLivewireComponents)
 
+## Description
 Detailed structural and implementation reference for the **Core** module, including both abstract
 infrastructure and concrete shared components.
 
 ---
+
 
 ## Overview
 

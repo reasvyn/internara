@@ -1,11 +1,14 @@
-# Project Requirements
+# Project Requirements — Constraints & Specifications
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Functional and non-functional requirements for the Internara PKL management system, tailored to
 Indonesian SMA/SMK vocational school regulations.
 
 ---
+
 
 ## 1. Context
 

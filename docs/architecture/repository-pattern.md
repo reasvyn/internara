@@ -1,9 +1,10 @@
-# Repository Pattern: Why Internara Doesn't Use It
+# Repository Pattern — Why Internara Doesn't Use It
 
 > **Last updated:** 2026-06-10
 > **Changes:** initial metadata — no content changes
+## Description
 
----
+Explanation of why Internara does not use the Repository pattern — direct Eloquent usage through Models and Read Actions instead.
 
 ## 1. Why No Repository Layer
 
@@ -54,7 +55,7 @@ interleaved, keep it inline.
 
 ### Authorization
 
-Even simple queries must pass through authorization (Layer 8) via `Gate::authorize()` or
+Even simple queries must pass through authorization (Layer 4 — Presentation/UI) via `Gate::authorize()` or
 `$this->authorize()` in Livewire.
 
 ---
@@ -62,7 +63,7 @@ Even simple queries must pass through authorization (Layer 8) via `Gate::authori
 ## 4. Complex Query Pattern (Read Actions)
 
 **Complex queries** — aggregations, cross-module data assembly, multi-step filtering with business
-rules — are extracted into **Read Actions** (Layer 7).
+rules — are extracted into **Read Actions** (Layer 3 — Business/Domain Ops).
 
 Read Actions extend **BaseReadAction**. They MUST NOT mutate state, call
 `transaction()`, or call `log()`.

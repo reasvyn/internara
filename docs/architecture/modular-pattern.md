@@ -1,21 +1,18 @@
-# Modular Pattern Reference
+# Modular Pattern Reference — Design Patterns, Conventions & Architecture Rules
 
 > **Last updated:** 2026-06-24
 > **Changes:** sync — add Data/ directory, DTO patterns, update workflow for 4-layer data flow; initial metadata
->
-> Comprehensive catalog of design patterns, conventions, and architectural rules used across the
-> Internara codebase. This document distils patterns from `docs/architecture.md`,
-> `docs/conventions.md`, all ADRs, and the implementation code into a single reference.
+## Description
 
----
+Complete catalog of design patterns, conventions, and architectural rules used across all 19 business modules.
 
 ## 1. Architectural Patterns
 
 ### 1.1 Module-Colocated Vertical Slicing (Action-Based MVC)
 Organize code by business domain, not by technical layer. Each module groups all components under a single root. See: `docs/architecture.md`.
 
-### 1.2 12-Layer Architecture
-Strict downward-only dependency graph. Core depends on nothing except Laravel and Spatie. No business module may be imported by Core. See: `docs/architecture.md`.
+### 1.2 4-Layer Architecture
+Strict downward-only dependency graph. Core (Layer 1) depends on nothing except Laravel and Spatie. No business module may be imported by Core. See: `docs/architecture.md`.
 
 ### 1.3 Action Triad (Command / Read / Process)
 Three distinct contracts: **Command** mutations with transactions and logging, **Read** queries without transactions, **Process** orchestration of multiple Commands. See: `docs/architecture.md`.

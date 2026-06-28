@@ -1,7 +1,12 @@
 # ADR-005: SmartLogger Dual-Channel Logging
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+A custom SmartLogger writes to both the system log file and the activity log database table simultaneously, with configurable PII masking and deduplication.
 
 ## Context
 

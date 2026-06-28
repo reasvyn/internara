@@ -1,8 +1,12 @@
 # ADR-008: Flat RBAC with Functional Roles
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-14
-> > **Changes:** sync — fix Auth module paths (Enums/Role.php → Permissions/Enums/Role.php, Http/Middleware → Permissions/Http/Middleware)
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+A flat role-based access control system with five static roles (super_admin, admin, kepala_program, pembimbing, student) plus two runtime functional roles (mentor, supervisor).
 
 ## Context
 

@@ -1,12 +1,15 @@
-# Infrastructure
+# Infrastructure — System Architecture Overview
 
 > **Last updated:** 2026-06-14
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This document describes the infrastructure design for Internara — what the system looks like at each deployment tier and how components relate. It serves as a reference for provisioning, scaling, and maintenance.
 
 The same codebase runs across all tiers; only configuration differs.
 
 ---
+
 
 ## 1. Three Deployment Tiers
 

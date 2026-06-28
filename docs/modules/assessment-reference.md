@@ -1,10 +1,13 @@
 # Assessment — Technical Reference
 
-> Last updated: 2026-06-16
+> **Last updated:** 2026-06-27
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Detailed structural and implementation reference for the **Assessment** module.
 
 ---
+
 
 ## Overview
 
@@ -100,7 +103,6 @@ Tests are located in `tests/{Feature,Unit}/Assessment/`. See [Testing](../infras
 | `create_rubrics_table` | `rubrics` |
 
 ---
-
 
 ---
 

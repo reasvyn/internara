@@ -1,13 +1,16 @@
 # Chapter 3: Post-Setup — First Actions as Administrator
 
 > **Last updated:** 2026-06-14
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 The setup wizard is complete. Now you'll configure Internara for daily use — add your school's
 structure, create user accounts, set up internship programs, and go live.
 
 This chapter is organised into four phases. Follow them in order.
 
 ---
+
 
 ## Phase 1: Foundation Setup
 

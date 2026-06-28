@@ -1,11 +1,14 @@
 # Chapter 22: System Observability
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers system observability tools: **health checks**, **Laravel Pulse monitoring**,
 **audit logs**, **system cleanup**, and **backup management**.
 
 ---
+
 
 ## 22.1 System Health Check
 

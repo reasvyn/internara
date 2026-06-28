@@ -1,8 +1,11 @@
-# Setup
+# Setup — One-Time Install Wizard
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 One-time system installation wizard, environment auditing, initial database provisioning (roles, academic years, super admin), and setup token lifecycle management.
+
 
 ## Purpose & Boundary
 
@@ -18,7 +21,7 @@ Core installation orchestration via `php artisan setup:install`. Provisions the 
 ### Wizard
 6-step browser-based setup wizard: environment audit → super admin account (email + password) → school profile (name, NPSN, address) → department (name, description) → finalization & recovery key → complete. Each step validates before proceeding.
 
-### SetupToken
+##Setup — One-Time Install WizardToken
 Single-use, time-limited (default 60 minutes), cryptographically random token stored encrypted in the database. Required to access any setup route. Can be regenerated via `php artisan setup:reset-token` only if installation is not yet finalized.
 
 ### SystemProvisioner
@@ -30,7 +33,7 @@ Handles the atomic seeding of initial records: Spatie roles, default academic ye
 
 The `is_installed` flag in settings permanently disables all setup actions and routes once finalization completes. Running `php artisan setup:install` on an installed system throws a `ModuleException`. This is the primary security boundary between setup and runtime.
 
-### Setup Token Security
+##Setup — One-Time Install Wizard Token Security
 
 The setup token follows a strict lifecycle: generated encrypted → stored in database → one-time redeem during finalization → invalidated on completion. The token file (`.setup-token`) is created during CLI installation for headless environments and must be secured appropriately.
 

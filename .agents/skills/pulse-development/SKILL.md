@@ -32,7 +32,7 @@ Apply this skill when setting up Laravel Pulse, configuring the dashboard or aut
 - **RegistrationRecorder**: `app/SysAdmin/Observability/Recorders/RegistrationRecorder.php` — custom recorder (registration lifecycle snapshots)
 - **Snapshot Command**: `app/SysAdmin/Observability/Console/Commands/PulseRecordSnapshotsCommand.php` — cron-based recorder trigger
 - **AppServiceProvider**: `app/Providers/AppServiceProvider.php` — `boot()` for Pulse filters/register/alert
-- **Architecture**: `docs/architecture.md#layered-architecture` (Layer 9 — Communications)
+- **Architecture**: `docs/architecture.md#4-layer-architecture` (Layer 3 — Events/Listeners)
 - **Observability**: `docs/infrastructure/observability.md` — Pulse overview, SmartLogger, health, cleanup
 - **Logging**: `docs/architecture/logging-pattern.md` — SmartLogger, BaseAction::log(), event integration
 

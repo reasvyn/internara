@@ -1,8 +1,12 @@
 # ADR-011: Cross-Module Communication Discipline
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-14
-> > **Changes:** sync — fix Program event path (Events/ → Internship/Events/)
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+Modules communicate through direct imports (allowed freely), Action calls, module events (fire-and-forget), and core contracts — with no enforced module boundaries.
 
 ## Context
 

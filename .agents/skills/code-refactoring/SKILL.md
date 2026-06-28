@@ -749,7 +749,7 @@ public function canAccess(User $user): bool
 
 | Document | Purpose |
 |----------|---------|
-| `docs/architecture.md` | 12-layer architecture, Action Triad |
+| `docs/architecture.md` | 4-layer architecture, Action Triad |
 | `docs/conventions.md` | All coding conventions |
 | `docs/architecture/action-pattern.md` | Action Triad deep-dive |
 | `docs/architecture/entity-pattern.md` | Entity-Model separation |
@@ -759,5 +759,7 @@ public function canAccess(User $user): bool
 | `docs/architecture/model-pattern.md` | BaseModel, Fillable, scopes |
 | `docs/conventions.md §8` | DI etiquette |
 | `docs/conventions.md §10` | Testing conventions |
+| `docs/architecture/service-pattern.md` | Service vs Support vs Action (infra vs domain vs static) |
+| `docs/architecture/support-pattern.md` | Support utilities: static-only, no constructor injection |
 | `AGENTS.md` | Project invariants |
 | `.agents/skills/feature-building/SKILL.md` | Feature implementation workflow |

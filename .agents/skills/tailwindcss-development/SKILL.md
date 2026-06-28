@@ -27,7 +27,7 @@ Apply this skill whenever styling Blade templates, building responsive layouts, 
 ## Key References
 
 - **CSS entrypoint**: `resources/css/app.css` — Tailwind v4 config with `@import`, `@theme`, `@plugin`
-- **Architecture**: `docs/architecture.md#layered-architecture` (Layer 11 — UI/Presentation)
+- **Architecture**: `docs/architecture.md#4-layer-architecture` (Layer 4 — Presentation/UI)
 - **Livewire Pattern**: `docs/architecture/livewire-pattern.md`
 - **Conventions**: `docs/conventions.md` (§3 Security, §6 Performance)
 

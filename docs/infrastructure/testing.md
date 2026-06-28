@@ -1,10 +1,10 @@
-# Testing
+# Testing — Testing Strategy & Infrastructure
 
 > **Last updated:** 2026-06-16
 > **Changes:** sync — add Assertion Conventions section (assertModelExists over assertDatabaseHas)
->
-> For the complete catalog of testing patterns, conventions, and practices, see
-> [Testing Pattern Reference](../architecture/testing-pattern.md).
+## Description
+
+Testing strategy, scope isolation, Pest conventions, factory usage, mocking boundaries, and coverage thresholds.
 
 ## Testing Philosophy
 

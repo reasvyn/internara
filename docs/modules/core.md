@@ -1,8 +1,11 @@
-# Core
+# Core — Base Classes, Contracts & Exceptions
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Foundational infrastructure, abstract base classes, contracts, cross-module utilities, concrete implementations, and architectural mechanisms that every other module depends on.
+
 
 ## Purpose & Boundary
 

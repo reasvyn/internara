@@ -1,8 +1,9 @@
-# Coding Conventions
+# Coding Conventions — PHP Rules, Naming & Testing
 
 > **Last updated:** 2026-06-24
 > **Changes:** sync — add 2 missing pre-commit items (DTO/ActionResponse check, doc metadata check); sync with AGENTS.md pre-commit checklist
 
+## Description
 This document describes conventions for writing code in the Internara codebase. These rules exist to
 produce consistent, predictable code that any team member can read without context-switching.
 
@@ -11,6 +12,7 @@ produce consistent, predictable code that any team member can read without conte
 code style, naming, file structure, and project rules.
 
 ---
+
 
 ## 0. Documentation-First
 

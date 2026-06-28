@@ -1,11 +1,14 @@
 # Chapter 9: User Profile & Recovery
 
 > **Last updated:** 2026-06-15
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers how to manage your personal profile, change your password, generate recovery
 codes, and use the notification center.
 
 ---
+
 
 ## 9.1 Accessing Your Profile
 

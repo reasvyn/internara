@@ -482,6 +482,8 @@ composer audit 2>/dev/null
 | `docs/infrastructure/observability.md` | Audit logging, health checks |
 | `docs/architecture/logging-pattern.md` | PII masking rules |
 | `docs/architecture/exception-pattern.md` | Exception information leakage |
+| `docs/architecture/service-pattern.md` | Service vs Support vs Action (infra vs domain vs static) |
+| `docs/architecture/support-pattern.md` | Support utilities: static-only, no constructor injection |
 | [GitHub Issues](https://github.com/reasvyn/internara/issues) | Findings target |
 | `AGENTS.md` | Project invariants |
 | `.agents/skills/audit-protocol/SKILL.md` | General codebase audit (upstream) |

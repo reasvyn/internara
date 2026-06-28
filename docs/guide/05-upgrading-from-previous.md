@@ -1,12 +1,15 @@
 # Chapter 5: Upgrading Internara
 
 > **Last updated:** 2026-06-14
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter explains how to upgrade your Internara installation from one version to the next.
 Whether you're applying a patch, a feature release, or a major version, the process follows the
 same steps.
 
 ---
+
 
 ## 5.1 Before You Start
 

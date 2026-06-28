@@ -3,9 +3,11 @@
 > **Last updated:** 2026-06-17
 > **Changes:** sync — add missing InternshipStatusBatchUpdated event
 
+## Description
 Detailed structural and implementation reference for the **Program** module.
 
 ---
+
 
 ## Overview
 
@@ -152,7 +154,6 @@ Tests are located in `tests/{Feature,Unit}/Program/`. See [Testing](../infrastru
 | `create_internship_group_members_table` | `internship_group_members` |
 
 ---
-
 
 ---
 

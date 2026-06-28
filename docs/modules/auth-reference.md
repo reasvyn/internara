@@ -3,9 +3,11 @@
 > **Last updated:** 2026-06-16
 > **Changes:** sync — add missing Events (SuperAdminRecovered, RecoverySlipGenerated, PasswordUpdated), add missing Listeners (NotifySuperAdminsOfRecovery), update SuperAdmin file tree
 
+## Description
 Detailed structural and implementation reference for the **Auth** module.
 
 ---
+
 
 ## Overview
 
@@ -165,7 +167,6 @@ None.
 | `create_permission_tables` | `permissions` |
 
 ---
-
 
 ---
 

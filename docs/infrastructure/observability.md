@@ -1,7 +1,10 @@
-# Observability
+# Observability — Monitoring, Logging & Health
 
 > **Last updated:** 2026-06-13
 > **Changes:** sync — fix PiiMasker path (app/Support → app/Core/Support)
+## Description
+
+Monitoring stack: Laravel Pulse, SmartLogger logging, system health checks, and performance tracking.
 
 ## What Is Monitored and Why
 

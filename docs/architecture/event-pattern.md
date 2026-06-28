@@ -1,13 +1,10 @@
-# Events, Listeners & Notifications Pattern
+# Events, Listeners & Notifications Pattern — Dispatch, Listeners & Multi-Channel
 
 > **Last updated:** 2026-06-16
 > **Changes:** sync — remove `readonly` from event requirement (BaseEvent is not readonly; PHP 8.4 forbids readonly subclass of non-readonly parent)
->
-> **Audience:** Developers working with event-driven side effects and multi-channel notifications.
-> **Prerequisites:** [12-Layer Architecture](../architecture.md), [Action Pattern](action-pattern.md),
-> [Logging Pattern](logging-pattern.md).
+## Description
 
----
+Event dispatch patterns, listener registration, notification channels, ShouldQueue conventions, and cross-module event communication.
 
 ## Table of Contents
 

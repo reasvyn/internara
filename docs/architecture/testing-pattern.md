@@ -1,12 +1,13 @@
-# Testing Pattern Reference
+# Testing Pattern Reference — Testing Conventions, Scope Isolation & Coverage
 
 > **Last updated:** 2026-06-10
 > **Changes:** initial metadata — no content changes
->
-> Pattern reference for testing conventions across the codebase. Describes **what** to test and
+
+## Description
 > **how to approach** each layer — not exact implementation.
 
 ---
+
 
 ## 1. Testing Philosophy
 

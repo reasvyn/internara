@@ -1,7 +1,12 @@
-# ADR-012: Gradual Migration / Optional Complexity
+# ADR-012: Gradual Migration
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+Complexity is added progressively: start with simple arrays for Action input, migrate to DTOs when stable; start with direct Model reads, extract to Read Actions when duplicated.
 
 ## Context
 

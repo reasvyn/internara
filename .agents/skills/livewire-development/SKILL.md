@@ -46,6 +46,8 @@ They must **NOT** contain:
 - **WithSorting**: `app/Core/Livewire/Concerns/WithSorting.php`
 - **Architecture**: `docs/architecture.md#data-flow`
 - **Livewire Pattern**: `docs/architecture/livewire-pattern.md`
+- **Service Pattern**: `docs/architecture/service-pattern.md` — infrastructure logic vs domain logic
+- **Support Pattern**: `docs/architecture/support-pattern.md` — static utilities, no constructor injection
 - **Livewire Docs**: `https://livewire.laravel.com/docs`
 
 ## Component Location & Auto-Discovery

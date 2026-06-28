@@ -1,7 +1,9 @@
 # Chapter 12: User Management
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Internara provides five user management interfaces, each tailored to a specific role. Navigate to
 **Admin → [Role]** or use the corresponding URL path.
 
@@ -14,6 +16,7 @@ Internara provides five user management interfaces, each tailored to a specific 
 | **Supervisor Manager** | `supervisor` | `/sysadmin/supervisors` |
 
 ---
+
 
 ## 12.1 Creating a User
 

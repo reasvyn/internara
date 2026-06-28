@@ -1,12 +1,15 @@
 # Chapter 11: Institution & Academics
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers how to manage your school's institutional profile, academic departments (jurusan),
 and academic years (tahun ajaran). These three elements form the foundation that all other features —
 programs, enrollments, assessments — are built on.
 
 ---
+
 
 ## 11.1 School Profile
 

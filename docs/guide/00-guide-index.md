@@ -1,14 +1,16 @@
-# User Manual — Getting Started with Internara
+# Chapter 0: User Manual Overview
 
 > **Last updated:** 2026-06-16
 > **Changes:** add chapter 12 user management guide, chapter 13 supervisor & partnership, chapters 14-15 internship management & registration
 
+## Description
 Welcome to Internara — the vocational fieldwork management system for Indonesian schools.
 
 This manual walks you through everything you need to set up and start using Internara, step by step.
 No technical background required beyond following instructions.
 
 ---
+
 
 ## How to Use This Manual
 

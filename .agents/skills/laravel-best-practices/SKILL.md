@@ -26,7 +26,7 @@ Apply this skill whenever writing, reviewing, or refactoring any Laravel PHP cod
 
 ## Key References
 
-- **Architecture**: `docs/architecture.md` — 12-layer architecture, 4-layer data flow with DTO boundaries, circular dep. prevention
+- **Architecture**: `docs/architecture.md` — 4-layer architecture, data flow with DTO boundaries, circular dep. prevention
 - **Conventions**: `docs/conventions.md` — coding conventions with examples
 - **Base classes**: `app/Core/` — Actions, Entities, Policies, Livewire, Models, Http, Data
 - **Action pattern**: `docs/architecture/action-pattern.md` — DTO input, ActionResponse return, Entity delegation
@@ -35,6 +35,8 @@ Apply this skill whenever writing, reviewing, or refactoring any Laravel PHP cod
 - **Model pattern**: `docs/architecture/model-pattern.md`
 - **Testing pattern**: `docs/architecture/testing-pattern.md`
 - **Event pattern**: `docs/architecture/event-pattern.md`
+- **Service pattern**: `docs/architecture/service-pattern.md` — infrastructure logic vs domain logic
+- **Support pattern**: `docs/architecture/support-pattern.md` — static utilities, no constructor injection
 
 ## Module-First Organization
 

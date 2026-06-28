@@ -1,10 +1,13 @@
-# Backup & Recovery
+# Backup & Recovery — Backup Strategies & Restoration
 
 > **Last updated:** 2026-06-14
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Regular backups protect your school's data against hardware failure, accidental deletion, and security incidents. This guide covers what to back up, how to automate it, and how to restore when needed.
 
 ---
+
 
 ## What to Back Up
 

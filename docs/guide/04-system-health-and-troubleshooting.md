@@ -1,12 +1,15 @@
 # Chapter 4: System Health & Troubleshooting
 
 > **Last updated:** 2026-06-14
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter helps you monitor your Internara installation, diagnose problems, and perform routine
 maintenance. You don't need to read it cover to cover — use it as a reference when something goes
 wrong.
 
 ---
+
 
 ## 4.1 Quick Health Check
 

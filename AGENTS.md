@@ -1,13 +1,12 @@
 <project-guidelines>
-> **Last updated:** 2026-06-24
-> **Changes:** sync — remove version numbers from tech stack (derivative doc rule); fix migration count 51→43+; comprehensive doc sync
->
-> **Purpose:** Thin agentic instruction layer. All authoritative docs live under `docs/`. This file
-> provides the essential mental model, quick-reference essentials, and project-specific rules needed
-> when first opening the project. Do NOT duplicate content already covered in `docs/` — refer to it.
->
-> **Reading order for new agents:** Project Identity → Tech Stack → Architecture Core → Module Map →
-> Directory Map → Dev Commands → Critical Rules → Doc Navigation → Quick Reference
+> **Last updated:** 2026-06-27
+> **Changes:** sync — add Two Kinds of Logic reference (domain vs infra vs static); architecture.md relabeled Business Operations Layer; service-pattern.md and support-pattern.md rewritten with clear boundaries
+
+Provides the essential mental model, quick-reference essentials, and project-specific rules needed
+when first opening the project. Do NOT duplicate content already covered in `docs/` — refer to it.
+
+**Reading order for new agents:** Project Identity → Tech Stack → Architecture Core → Module Map →
+Directory Map → Dev Commands → Critical Rules → Doc Navigation → Quick Reference
 
 === foundation ===
 
@@ -44,23 +43,18 @@ logbooks, competency assessments, report revisions, and cryptographic certificat
 ## Action-Based MVC (Vertical Slicing)
 
 Code is organized by **business module**, not by technical layer. Each module is a vertical slice
-through all 12 layers (infrastructure → persistence → models → actions → policies → UI).
+through all 4 layers (Framework/Infra → Data/Persistent → Business/Domain Ops → Presentation/UI).
 
-**12-Layer Architecture** — strict downward-only dependency:
+**4-Layer Architecture** — strict downward-only dependency:
 
 ```
-Layer 12: Business Modules (19 vertical slices)
-Layer 11: UI/Presentation (Livewire 4, Blade, maryUI/DaisyUI)
-Layer 10: HTTP (Controllers, Middleware, 17 route files)
-Layer  9: Communication (Events, Listeners, Notifications, Console)
-Layer  8: Authorization (28+ Policies, 5 roles, Gate::before bypass)
-Layer  7: Business Ops (Actions: Command/Read/Process)
-Layer  6: Domain Rules (Entities, DTOs, Enums)
-Layer  5: Module Models (40+ Eloquent models, UUID PKs)
-Layer  4: Core Base Classes (BaseModel, BaseAction, BasePolicy, etc.)
-Layer  3: Core Contracts (LabelEnum, StatusEnum, SettingsStore)
-Layer  2: Persistence (DB, config, media library, cache, queue)
-Layer  1: Infrastructure (PHP 8.4, Laravel 13, Composer packages)
+Layer 4: Presentation/UI (Livewire 4, Blade, maryUI/DaisyUI, Controllers,
+         Middleware, Policies, Routes, Console)
+Layer 3: Business/Domain Ops (Actions: Command/Read/Process, Events,
+         Listeners, Notifications)
+Layer 2: Data/Persistent (Models, Entities, DTOs, Enums, Database, Config)
+Layer 1: Framework/Infrastructure/Utilities (PHP 8.4, Laravel 13, Core
+         base classes, Contracts, Services, Support, packages)
 ```
 
 ## Action Triad
@@ -358,7 +352,7 @@ flowchart LR
 
 | Topic Area                   | Start Here                                                               |
 | ---------------------------- | ------------------------------------------------------------------------ |
-| Architecture & 12 layers     | `docs/architecture.md`                                                   |
+| Architecture & 4 layers     | `docs/architecture.md`                                                   |
 | Action Triad                 | `docs/architecture.md` (§Action Triad)                                   |
 | Base Class Mandate           | `docs/architecture.md` (§Base Class Mandate)                             |
 | Data Flow & DTO boundaries   | `docs/architecture.md` (§Data Flow)                                      |
@@ -391,7 +385,7 @@ searching.
 ## Product & Architecture
 
 - `docs/foundation/product-definition.md` — Product scope, personas, system boundary
-- `docs/architecture.md` — 12-layer architecture, Action Triad, 4-layer data flow, circular dep. prevention
+- `docs/architecture.md` — 4-layer architecture, Two Kinds of Logic (domain vs infra vs static), Action Triad, data flow, circular dep. prevention
 - `docs/conventions.md` — PHP rules, naming, security, testing conventions
 - `docs/key-features.md` — Feature inventory across all 19 modules
 - `docs/foundation/rbac.md` — Role-based access control, permissions model
@@ -417,6 +411,8 @@ searching.
 - `docs/architecture/cache-pattern.md` — Cache key registry, invalidation
 - `docs/architecture/testing-pattern.md` — Testing patterns
 - `docs/architecture/event-pattern.md` — Events and notifications
+- `docs/architecture/service-pattern.md` — Services vs Actions vs Support (domain logic vs infra logic vs static utilities)
+- `docs/architecture/support-pattern.md` — Support utilities: static-only, no constructor injection
 
 ## Infrastructure
 
@@ -549,7 +545,7 @@ Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
 - **Last updated** is mandatory — reflects the date of the most recent content change, not file creation
 - **Changes** is mandatory — must be a single line. Use `sync —` prefix for derivative syncs, or describe the actual change. Files with no history use `initial metadata — no content changes`
 - `> **Status:**` must NEVER appear in any doc. If a doc needs context, use factual statements instead
-- `> **Purpose:**` is optional — use only in audience-specific docs (pattern references, guides)
+- Metadata block MUST contain ONLY `**Last updated:**` and `**Changes:**`. No other fields.
 
 ### Content Rules
 
@@ -575,9 +571,35 @@ Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
 
 ### Structure
 
-- Every doc starts with a `# Title` H1 heading followed by the metadata block
-- Metadata block uses blockquote (`>`) lines immediately after the H1
-- Use `---` horizontal rules between major sections
+Every markdown document should follow this section order:
+
+```
++-------------------------------------------+
+| YAML frontmatter (optional)               |
++-------------------------------------------+
+| # Title — Short Description (subtitle)     |
++-------------------------------------------+
+| > **Last updated:** YYYY-MM-DD             |
+| > **Changes:** one-line description        |
++-------------------------------------------+
+| ## Description                           |
+| ...                                       |
++-------------------------------------------+
+| Body — topic headings directly            |
+| (no "Body/Content" wrapper heading)       |
+| ...                                       |
++-------------------------------------------+
+| ## Quick References (optional,            |
+|     recommended for pattern docs)         |
+| ...                                       |
++-------------------------------------------+
+```
+
+**Rules:**
+- Every doc starts with a `# Title — Short Description` H1 heading with the short description inline on the same line (use `—` em dash or `-` dash after the title)
+- Metadata blockquote (`> **Last updated:**`, `> **Changes:**`) goes immediately after the H1 line (separated by a blank line)
+- `## Description` is the first body heading — never write "Body/Content" as a heading
+- `---` horizontal rules between major sections
 - Keep paragraphs short (3-5 sentences max). Use tables for reference data
 - Reference other docs by relative path: `[Action Triad](architecture/action-pattern.md)`
 - Anchor links for section references: `[see §Data Flow](architecture.md#data-flow)`

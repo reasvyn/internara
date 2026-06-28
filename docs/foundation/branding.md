@@ -1,8 +1,10 @@
-# Branding & Theming
+# Branding — Visual Identity & Brand Assets
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
+## Description
 
----
+Brand assets, color palette, typography, logo usage, and visual identity guidelines for Internara.
 
 ## 1. Dynamic Theming
 

@@ -1,7 +1,9 @@
 # Chapter 2: Setup Wizard
 
 > **Last updated:** 2026-06-14
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 The setup wizard is a 6-step form in your browser. It creates your super admin account, enters your
 school information, and prepares Internara for first use.
 
@@ -9,6 +11,7 @@ school information, and prepares Internara for first use.
 chapter. If you don't have it, run `php artisan setup:install` on your server to generate one.
 
 ---
+
 
 ## Step 1: Welcome & Health Check
 

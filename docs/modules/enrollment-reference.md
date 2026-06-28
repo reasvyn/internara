@@ -3,9 +3,11 @@
 > **Last updated:** 2026-06-17
 > **Changes:** sync — add Livewire Components and Forms sections (14 files)
 
+## Description
 Detailed structural and implementation reference for the **Enrollment** module.
 
 ---
+
 
 ## Overview
 
@@ -148,7 +150,6 @@ Tests are located in `tests/{Feature,Unit}/Enrollment/`. See [Testing](../infras
 | `create_account_applications_table` | `account_applications` |
 
 ---
-
 
 ---
 

@@ -1,8 +1,10 @@
-# UI/UX Design
+# UI/UX Design — Principles & Guidelines
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
+## Description
 
----
+UI/UX design principles, component library usage (DaisyUI, maryUI), layout patterns, and accessibility guidelines.
 
 ## 1. Design System Philosophy
 

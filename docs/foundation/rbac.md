@@ -1,11 +1,10 @@
-# Role-Based Access Control
+# Role-Based Access Control — RBAC Implementation & Permission Model
 
 > **Last updated:** 2026-06-10
->
-> RBAC is fully implemented. See [Auth Module](../modules/auth-reference.md) and
-> [Core Module](../modules/core-reference.md) reference docs.
+> **Changes:** sync — initial metadata sync with new format
+## Description
 
----
+Flat RBAC model with five static roles, two functional roles, permission registration, and the super_admin bypass.
 
 ## 1. Authentication Flow
 

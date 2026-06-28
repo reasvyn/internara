@@ -1,6 +1,10 @@
-# Configuration
+# Configuration — Three-Tier Config System
 
 > **Last updated:** 2026-06-13
+> **Changes:** sync — initial metadata sync with new format
+## Description
+
+Three-tier configuration system: .env, config files, and runtime database settings with cache-first resolution.
 
 ## Config File Organization
 

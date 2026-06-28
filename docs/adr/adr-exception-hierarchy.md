@@ -1,7 +1,12 @@
-# ADR-007: Exception Hierarchy — AppException vs ModuleException
+# ADR-007: Exception Hierarchy
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+Two independent exception trees — AppException for infrastructure failures and ModuleException for business rule violations — prevent generic catch blocks from mixing unrelated error types.
 
 ## Context
 

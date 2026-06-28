@@ -1,10 +1,10 @@
-# Project Philosophy
+# Project Philosophy — Guiding Principles, Values & Vision
 
 > **Last updated:** 2026-06-10
->
-> The guiding principles, values, and vision that shape Internara — beyond architecture, beyond code.
+> **Changes:** sync — initial metadata sync with new format
+## Description
 
----
+Guiding principles, values, and vision that shape Internara — beyond architecture, beyond code.
 
 ## 1. Education First, Technology Second
 

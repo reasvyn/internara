@@ -1,7 +1,10 @@
-# Database
+# Database — Schema Design & Migration Strategy
 
 > **Last updated:** 2026-06-24 **Changes:** sync — migration consolidation: 57 scattered migrations
-> → sequential layers (2026_01_01 through 2026_01_06)
+> **Changes:** sync — initial metadata sync with new format
+## Description
+
+Schema design principles, migration conventions, supported database engines, UUID primary keys, and indexing strategy.
 
 ## Design Philosophy
 

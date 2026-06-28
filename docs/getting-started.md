@@ -1,10 +1,10 @@
-# Getting Started
+# Getting Started — From Clone to Running Application
 
 > **Last updated:** 2026-06-13
->
-> End-to-end walkthrough from cloning the repository to completing the setup wizard. Everything you need to get Internara running on your server.
+> **Changes:** sync — initial metadata sync with new format
+## Description
 
----
+End-to-end walkthrough from cloning the repository to completing the setup wizard and first login.
 
 ## Prerequisites
 

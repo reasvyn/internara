@@ -1,11 +1,13 @@
 # Document — Technical Reference
 
-> Last updated: 2026-06-16
+> **Last updated:** 2026-06-27
 > **Changes:** sync — add handbook to DocumentCategory enum values
 
+## Description
 Detailed structural and implementation reference for the **Document** module.
 
 ---
+
 
 ## Overview
 
@@ -100,7 +102,6 @@ Tests are located in `tests/{Feature,Unit}/Document/`. See [Testing](../infrastr
 | `create_documents_table` | `documents` |
 
 ---
-
 
 ---
 

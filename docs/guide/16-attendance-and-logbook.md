@@ -1,11 +1,14 @@
 # Chapter 16: Attendance & Logbook
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers daily student activities: clocking in/out for attendance, recording logbook
 entries, submitting absence requests, and how mentors verify these records.
 
 ---
+
 
 ## 16.1 Student Attendance
 

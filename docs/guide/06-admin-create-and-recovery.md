@@ -1,10 +1,13 @@
 # Chapter 6: Admin Accounts & Recovery
 
 > **Last updated:** 2026-06-14
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers how to create super admin accounts and regain access if you lose the password.
 
 ---
+
 
 ## 6.1 The Super Admin Account
 
