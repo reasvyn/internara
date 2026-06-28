@@ -3,9 +3,11 @@
 > **Last updated:** 2026-06-17
 > **Changes:** sync — add Backup model to Models table; add Backups Events and Support sections
 
+## Description
 Detailed structural and implementation reference for the **SysAdmin** module.
 
 ---
+
 
 ## Overview
 
@@ -176,7 +178,6 @@ Tests are located in `tests/{Feature,Unit}/SysAdmin/`. See [Testing](../infrastr
 | `create_gdpr_deletion_logs_table` | `gdpr_deletion_logs` |
 
 ---
-
 
 ---
 

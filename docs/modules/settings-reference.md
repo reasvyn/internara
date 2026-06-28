@@ -3,9 +3,11 @@
 > **Last updated:** 2026-06-17
 > **Changes:** sync — add Data/DTOs section (SettingData, SettingGroupData)
 
+## Description
 Detailed structural and implementation reference for the **Settings** module.
 
 ---
+
 
 ## Overview
 
@@ -179,7 +181,6 @@ Tests are located in `tests/{Feature,Unit}/Settings/`. See [Testing](../infrastr
 | `create_settings_table` | `settings` |
 
 ---
-
 
 ---
 

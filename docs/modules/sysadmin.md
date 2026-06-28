@@ -1,8 +1,11 @@
-# SysAdmin
+# SysAdmin — User Management, Announcements & Audit
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 User account administration, system-wide announcements, observability and health monitoring, audit logging, and GDPR compliance tracking.
+
 
 ## Purpose & Boundary
 

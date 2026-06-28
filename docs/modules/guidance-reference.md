@@ -3,9 +3,11 @@
 > **Last updated:** 2026-06-17
 > **Changes:** sync — add Handbook and MonitoringVisit submodules; fix SupervisionStatus → SupervisionLogState entity; add missed SupervisionLog actions (CreateLogAction) and Livewire components
 
+## Description
 Detailed structural and implementation reference for the **Guidance** module.
 
 ---
+
 
 ## Overview
 
@@ -131,7 +133,6 @@ Tests are located in `tests/{Feature,Unit}/Guidance/`. See [Testing](../infrastr
 | `create_monitoring_visits_table` | `monitoring_visits` |
 
 ---
-
 
 ---
 

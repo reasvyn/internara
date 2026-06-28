@@ -47,7 +47,7 @@ Each layer depends on the previous. Do not skip layers.
 ### 0.1 Load Context
 
 Read these documents before starting (concurrent read):
-- `docs/architecture.md` — 12-layer architecture, Action Triad, patterns
+- `docs/architecture.md` — 4-layer architecture, Action Triad, patterns
 - `docs/conventions.md` — all coding conventions (especially §3 Security, §5 Performance, §7 HTTP, §8 DI, §10 Testing)
 - `docs/modules/module-index.md` — module boundaries
 - `docs/doc-index.md` — full documentation catalog
@@ -673,7 +673,7 @@ git diff --stat                          # review all changes
 
 | Document | Purpose |
 |----------|---------|
-| `docs/architecture.md` | 12-layer architecture, Action Triad, cross-module communication |
+| `docs/architecture.md` | 4-layer architecture, Action Triad, cross-module communication |
 | `docs/conventions.md` | All coding conventions (§2–§12) |
 | `docs/architecture/action-pattern.md` | Action Triad deep-dive |
 | `docs/architecture/livewire-pattern.md` | Thin component rule, Form Objects, BaseRecordManager |
@@ -685,6 +685,8 @@ git diff --stat                          # review all changes
 | `docs/architecture/model-pattern.md` | BaseModel, UUID, Fillable, scopes |
 | `docs/architecture/testing-pattern.md` | Testing conventions, scope isolation |
 | `docs/architecture/data-pattern.md` | DTO patterns, BaseData |
+| `docs/architecture/service-pattern.md` | Service vs Support vs Action (infra vs domain vs static) |
+| `docs/architecture/support-pattern.md` | Support utilities: static-only, no constructor injection |
 | `docs/infrastructure/testing.md` | Testing infrastructure, coverage, performance |
 | `docs/modules/module-index.md` | Module catalog |
 | `docs/doc-index.md` | Documentation catalog |

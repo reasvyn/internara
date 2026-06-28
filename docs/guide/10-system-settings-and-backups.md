@@ -1,11 +1,14 @@
 # Chapter 10: System Settings & Backups
 
 > **Last updated:** 2026-06-15
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers how to configure your Internara system — branding, mail, locale, and appearance
 — and how to manage automated backups.
 
 ---
+
 
 ## 10.1 Accessing System Settings
 

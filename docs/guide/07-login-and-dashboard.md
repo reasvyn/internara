@@ -1,11 +1,14 @@
 # Chapter 7: Login & Dashboard
 
 > **Last updated:** 2026-06-15
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers how to log into Internara, what you'll see on your dashboard, and how to
 navigate the application based on your role.
 
 ---
+
 
 ## 7.1 Logging In
 

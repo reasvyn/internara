@@ -1,34 +1,31 @@
 # ADR-002: Action-based MVC Architecture
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+Code is organized by business module (vertical slicing) rather than by technical layer, with each module owning its complete stack from persistence to UI.
 
 ## Context
 
 Internara manages vocational fieldwork across 19 modules, each owning a complete business vertical. Traditional flat layering (`app/Models/`, `app/Controllers/`, `app/Livewire/`) scatters a single feature across many directories, making boundaries unclear, encapsulation impossible to enforce, and refactoring expensive.
 
-An alternative — module colocation — ensures everything related to "Enrollment" lives under `app/Enrollment/`. Each module is a vertical slice through 12 architectural layers, from infrastructure at the bottom to business logic at the top.
+An alternative — module colocation — ensures everything related to "Enrollment" lives under `app/Enrollment/`. Each module is a vertical slice through 4 architectural layers, from framework/infrastructure at the bottom to presentation/UI at the top.
 
-The 12 layers are:
+The 4 layers are:
 
 ```
-Layer 12 — Business Modules (19 modules, each a vertical slice)
-Layer 11 — UI / Presentation (Livewire, Blade, Tailwind)
-Layer 10 — HTTP Layer (Controllers, Middleware, Routes)
-Layer  9 — Communication (Events, Listeners, Notifications, Console)
-Layer  8 — Authorization (Policies, RBAC)
-Layer  7 — Business Operations (Command, Read, Process Actions)
-Layer  6 — Domain Rules (Entities, Enums, DTOs)
-Layer  5 — Module Models (Eloquent)
-Layer  4 — Core Base Classes (BaseModel, BaseAction, etc.)
-Layer  3 — Core Contracts (LabelEnum, StatusEnum)
-Layer  2 — Persistence (Database, Config, Cache, Queue, Files)
-Layer  1 — Infrastructure (PHP 8.4, Laravel 13, Spatie packages)
+Layer 4 — Presentation/UI (Livewire, Blade, Controllers, Middleware, Policies, Routes, Console)
+Layer 3 — Business/Domain Ops (Command, Read, Process Actions, Events, Listeners, Notifications)
+Layer 2 — Data/Persistent (Models, Entities, DTOs, Enums, Database, Config, Cache, Queue)
+Layer 1 — Framework/Infrastructure/Utilities (PHP 8.4, Laravel 13, Core base classes, Contracts, Services, Support, packages)
 ```
 
 ## Decision
 
-Code is organized by **business module**, not by technical layer. Each module at `app/{Module}/` is a vertical slice crossing layers 5-11. Layers 1-4 are shared infrastructure provided by the **Core** module.
+Code is organized by **business module**, not by technical layer. Each module at `app/{Module}/` is a vertical slice crossing layers 2-4. Layer 1 (Framework/Infrastructure) is shared infrastructure provided by the **Core** module.
 
 ### Module Directory Layout
 
@@ -76,5 +73,5 @@ Architecture tests that previously enforced module boundaries were removed due t
 - `app/` — 19 business module directories
 - `app/Core/` — Base classes, contracts, exceptions
 - `app/Providers/AppServiceProvider.php` — Auto-discovery and manual registrations
-- `docs/architecture.md` — 12-layer architecture, dependency rules
+- `docs/architecture.md` — 4-layer architecture, dependency rules
 - `docs/conventions.md` — Coding conventions

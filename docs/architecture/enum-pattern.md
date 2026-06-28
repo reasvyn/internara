@@ -1,12 +1,10 @@
-# Enum Pattern Reference
+# Enum Pattern Reference — LabelEnum, StatusEnum & State Machine Patterns
 
 > **Last updated:** 2026-06-13
 > **Changes:** sync — fix shared enum path (app/Enums → app/Core/Enums)
->
-> **Scope:** Enum contracts, state machine patterns, case conventions, business logic methods, and
-> testing strategies used across all Internara modules.
+## Description
 
----
+Enum contracts (LabelEnum, StatusEnum), state machine patterns, case naming conventions, business logic methods, and testing strategies.
 
 ## 1. Enum Architecture Overview
 

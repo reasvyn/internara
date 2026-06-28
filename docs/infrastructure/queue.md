@@ -1,6 +1,10 @@
-# Queue
+# Queue — Queue Configuration & Job Processing
 
 > **Last updated:** 2026-06-13
+> **Changes:** sync — initial metadata sync with new format
+## Description
+
+Queue driver configuration, job classes, failure handling, and worker management across different environments.
 
 ## Purpose
 
@@ -149,7 +153,7 @@ class ProcessMediaConversion implements ShouldQueue
 
 ---
 
-## Queueing in Sync Mode (Tier 1 — Shared Hosting)
+#Queue — Queue Configuration & Job Processinging in Sync Mode (Tier 1 — Shared Hosting)
 
 With `QUEUE_CONNECTION=sync`, every job executes immediately during the HTTP request. This is the correct default for deployments with up to 500 registered users per PKL period.
 

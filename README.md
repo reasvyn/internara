@@ -1,9 +1,9 @@
-# Internara
+# Internara — Self-hosted Vocational Fieldwork Management System
 
-> **Last updated:** 2026-06-24
-> **Changes:** sync — file path fixes, update metadata consistent with documentation rules
->
-> **Self-hosted, single-tenant vocational fieldwork management system** engineered for managing compulsory industrial fieldwork (PKL) programs at Indonesian vocational upper-secondary schools (SMA/SMK) and technical education institutions.
+> **Last updated:** 2026-06-27
+> **Changes:** fix format — short description inline on H1; metadata directly after H1
+
+## Description
 
 Internara manages the entire fieldwork (PKL - _Praktik Kerja Lapangan_) program lifecycle: from
 initial student enrollment and slot-based company placement, to daily geofenced attendance,

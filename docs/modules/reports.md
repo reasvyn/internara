@@ -1,8 +1,11 @@
-# Reports
+# Reports — Grade Cards & Score Aggregation
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Final student grade card (Nilai Raport PKL): grade aggregation from multiple assessment sources, composite score calculation, coordinator sign-off, and certificate eligibility trigger.
+
 
 ## Purpose & Boundary
 

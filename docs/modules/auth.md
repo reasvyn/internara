@@ -1,8 +1,11 @@
-# Auth
+# Auth — Authentication, RBAC & Account Recovery
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Authentication, authorization (RBAC), account lifecycle, login throttling, password management, account activation, and recovery.
+
 
 ## Purpose & Boundary
 

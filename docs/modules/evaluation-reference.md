@@ -1,10 +1,13 @@
 # Evaluation — Technical Reference
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Detailed structural and implementation reference for the **Evaluation** module.
 
 ---
+
 
 ## Overview
 
@@ -131,7 +134,6 @@ No dedicated tests. Tests will be added with feature implementation.
 | `2026_06_12_110004_create_evaluation_sections_table` | `evaluation_sections` |
 
 ---
-
 
 No Actions, Entities, Policies, or Livewire components yet — these will be added with
 the form builder and response collection features.

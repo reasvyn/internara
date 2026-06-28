@@ -3,9 +3,11 @@
 > **Last updated:** 2026-06-27
 > **Changes:** remove revision feature, ReportRevision model, revision_requested enum value from Reports module
 
+## Description
 Detailed structural and implementation reference for the **Reports** module.
 
 ---
+
 
 ## Overview
 

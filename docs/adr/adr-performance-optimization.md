@@ -1,7 +1,12 @@
 # ADR-009: Performance & Optimization Strategy
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-13
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+Performance strategy combines database query optimization, multi-level caching with event-driven invalidation, queue offloading for heavy operations, and pagination for all list views.
 
 ## Context
 

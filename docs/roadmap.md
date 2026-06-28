@@ -3,11 +3,12 @@
 > **Last updated:** 2026-06-16
 > **Changes:** replace Guidance restructuring (deferred) with Cross-Role Proxy implementation plan
 
-> **Status:** Design approved — pending implementation
+## Description
 > **Target:** Application-wide authorization layer
 > **Dependencies:** `MentorEntity` (existing), `BasePolicy`, all module policies and Livewire components
 
 ---
+
 
 ## 1. Overview
 

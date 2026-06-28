@@ -1,13 +1,10 @@
-# Entity-Model Separation Pattern
+# Entity Pattern — Entity-Model Separation & Purity Rules
 
 > **Last updated:** 2026-06-13
 > **Changes:** sync — fix broken link to architecture.md
->
-> **Audience:** Architects and developers working with business logic in the Internara codebase.
-> **Prerequisites:** Familiarity with [ADR-004: Entity-Model Separation](../adr/adr-entity-model-separation.md)
-> and the [12-Layer Architecture](../architecture.md).
+## Description
 
----
+Rules for Entity-Model separation: Entity purity, bridge pattern, business rule extraction, and testing without database.
 
 ## Table of Contents
 

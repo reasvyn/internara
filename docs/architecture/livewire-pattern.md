@@ -1,16 +1,10 @@
-# Livewire Component Patterns
+# Livewire Component Patterns — Thin Components, Injection & Forms
 
 > **Last updated:** 2026-06-13
 > **Changes:** sync — update confirmation dialog pattern to reference shared <x-core::ui.confirm> component
->
-> **Audience:** Developers building or maintaining Livewire components in Internara.
->
-> **Purpose:** This document is the authoritative reference for how Livewire components are
-> structured, how they communicate with the backend, and the patterns they must follow. It covers
-> the Thin Component Rule, auto-discovery, CRUD tables via `BaseRecordManager`, Action injection,
-> Form Objects, confirmation dialogs, flash messages, concerns, testing, and common pitfalls.
+## Description
 
----
+Thin component rule, auto-discovery, CRUD tables via BaseRecordManager, Action injection, Form Objects, and common pitfalls.
 
 ## 1. Thin Component Rule
 

@@ -1,11 +1,14 @@
 # Chapter 20: Evaluation & Incident
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers two separate features: **Evaluation** (feedback forms for collecting stakeholder
 opinions) and **Incident** (workplace issue reporting and resolution tracking).
 
 ---
+
 
 ## 20.1 Evaluation Overview
 

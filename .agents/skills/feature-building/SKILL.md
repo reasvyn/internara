@@ -497,7 +497,7 @@ If any gate fails, fix before marking the task complete.
 | Document | Purpose |
 |----------|---------|
 | `docs/roadmap.md` | Task specification (input) |
-| `docs/architecture.md` | 12-layer architecture, Action Triad |
+| `docs/architecture.md` | 4-layer architecture, Action Triad |
 | `docs/conventions.md` | All coding conventions |
 | `docs/modules/{module}.md` | Module-specific context |
 | `docs/modules/{module}-reference.md` | Module API reference |
@@ -510,6 +510,8 @@ If any gate fails, fix before marking the task complete.
 | `docs/architecture/cache-pattern.md` | Centralized key registry |
 | `docs/architecture/model-pattern.md` | BaseModel, UUID, Fillable |
 | `docs/architecture/testing-pattern.md` | Testing conventions |
+| `docs/architecture/service-pattern.md` | Service vs Support vs Action (infra vs domain vs static) |
+| `docs/architecture/support-pattern.md` | Support utilities: static-only, no constructor injection |
 | `docs/infrastructure/testing.md` | Testing infrastructure |
 | [GitHub Issues](https://github.com/reasvyn/internara/issues) | Known issues to resolve |
 | `AGENTS.md` | Project invariants |

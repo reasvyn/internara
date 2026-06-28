@@ -1,7 +1,12 @@
 # ADR-006: Base Class Mandate
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+Every architectural role in the system has a dedicated base class (BaseModel, BaseCommandAction, BasePolicy, etc.) that enforces contracts and provides consistent behavior.
 
 ## Context
 

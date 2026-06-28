@@ -1,7 +1,9 @@
-# Account Recovery
+# Account Recovery — Recovery Flow & Security
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Internara provides three account recovery mechanisms, each designed for a different loss scenario:
 
 | Mechanism | When to Use | Initiator | Requirements |
@@ -11,6 +13,7 @@ Internara provides three account recovery mechanisms, each designed for a differ
 | **Super Admin Recovery** | All super admin accounts inaccessible | Server admin via CLI | SSH access, recovery key |
 
 ---
+
 
 ## 1. Password Reset (Self-Service)
 

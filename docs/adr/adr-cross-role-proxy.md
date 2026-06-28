@@ -1,7 +1,12 @@
 # ADR-014: Cross-Role Proxy
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+Authorization supports proxy relationships where one user (e.g., kepala_program) can act on behalf of another (e.g., pembimbing) for selected operations within the same internship context.
 
 ## Context
 

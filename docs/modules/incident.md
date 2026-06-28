@@ -1,8 +1,11 @@
-# Incident
+# Incident — Issue Reporting & Resolution
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Structured incident reporting, severity classification, investigation workflow, resolution tracking, and escalation management.
+
 
 ## Purpose & Boundary
 
@@ -12,7 +15,7 @@ Out of scope: daily complaints in logbooks (Journals), disciplinary actions (Sys
 
 ## Submodules
 
-### IncidentReport
+##Incident — Issue Reporting & ResolutionReport
 Core entity: date/time, location, description, category, severity, current status, resolution outcome, and evidence file attachments. Immutable after creation — reports cannot be deleted, only status-transitioned. Linked to the reporter (always recorded — no anonymous reports), optional affected student, and optional program.
 
 ## Key Concepts

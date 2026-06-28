@@ -1,7 +1,12 @@
 # ADR-003: Action Pattern over Service Classes
 
-> **Status:** Superseded (see Evolution Note)
 > **Last updated:** 2026-06-18
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+Business operations follow the Action Triad — Command, Read, and Process actions — each with a single execute() method, replacing traditional multi-method Service classes.
 
 ## Context
 

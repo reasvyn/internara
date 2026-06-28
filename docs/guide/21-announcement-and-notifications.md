@@ -1,11 +1,14 @@
 # Chapter 21: Announcement & Notifications
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers two communication features: **Announcements** (broadcast messages sent by
 administrators) and **Notifications** (personal alerts received by users).
 
 ---
+
 
 ## 21.1 Announcements Overview
 

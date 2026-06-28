@@ -1,6 +1,10 @@
-# Cache
+# Cache — Caching Strategy & Configuration
 
 > **Last updated:** 2026-06-13
+> **Changes:** sync — initial metadata sync with new format
+## Description
+
+Cache driver configuration, key naming conventions, event-driven invalidation strategy, and warming patterns.
 
 ## Purpose
 
@@ -201,7 +205,7 @@ REDIS_PASSWORD=cluster-password
 
 ---
 
-## Cache vs Session
+#Cache — Caching Strategy & Configuration vs Session
 
 |               | Cache                                    | Session                          |
 | ------------- | ---------------------------------------- | -------------------------------- |
@@ -221,16 +225,16 @@ php artisan optimize
 
 # Individual caches
 php artisan config:cache      # Merge config files
-php artisan route:cache       # Cache route registration (no Closure routes)
+php artisan route:cache       Cache — Caching Strategy & Configuration route registration (no Closure routes)
 php artisan view:cache        # Compile all Blade templates
-php artisan event:cache       # Cache event discovery
+php artisan event:cache       Cache — Caching Strategy & Configuration event discovery
 
 # Maintenance
 php artisan cache:clear       # Flush only the cache store (not config/route/view)
 php artisan optimize:clear    # Clear ALL caches (config, route, view, events, cache store)
 ```
 
-### Cache Warming
+##Cache — Caching Strategy & Configuration Warming
 
 ```bash
 php artisan system:cache-warm

@@ -1,13 +1,15 @@
-# Module Documentation Index
+# Module Index — Module Dependency Graph & Navigation
 
-> **Last updated:** 2026-06-24
-> **Changes:** sync — fix migration count (51→43+); sync with latest database schema
+> **Last updated:** 2026-06-28
+> **Changes:** sync — update architecture table to 4-layer model; sync with latest architecture
 
+## Description
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire
 components.
 
 ---
+
 
 ## Documentation Structure
 
@@ -363,26 +365,14 @@ handbooks, and compliance acknowledgements
 
 ## Architecture Overview
 
-All 19 modules are vertical slices cross-cutting the 12-layer architecture defined in
+All 19 modules are vertical slices cross-cutting the 4-layer architecture defined in
 [architecture.md](../architecture.md):
 
 | Layer | Name              | Description                                                                                      |
 | ----- | ----------------- | ------------------------------------------------------------------------------------------------ |
-| 1     | Infrastructure    | PHP 8.4, Laravel 13, Composer/Spatie packages, npm assets                                        |
-| 2     | Persistence       | Database (SQLite/MySQL), 43+ migrations, config, media library, cache, queue                      |
-| 3     | Core Contracts    | LabelEnum, StatusEnum, ColorableEnum, exception hierarchy                                        |
-| 4     | Core Base Classes | BaseModel, BaseAuthenticatable, BaseAction, BaseEntity, BasePolicy, BaseRecordManager, BaseController, BaseFormRequest, BaseData, BaseEvent |
-| 5     | Module Models     | Eloquent models (40+), UUID PKs, factories, seeders                                               |
-| 6     | Module Rules      | Enums, Entities (final readonly), Data DTOs                                                      |
-| 7     | Business Ops      | Command Actions (mutations), Read Actions (queries), Process Actions (orchestration)             |
-| 8     | Authorization     | Policies (28+), RBAC (5 roles + 2 functional), spatie/permission                                 |
-| 9     | Communication     | Events, Listeners, Notifications, Console Commands                                               |
-| 10    | HTTP Layer        | Controllers, Middleware, 17 module route files (Evaluation pending)                              |
-| 11    | UI / Presentation | Livewire 4 components, Blade templates, maryUI + DaisyUI + Tailwind CSS v4                       |
-| 12    | Business Modules  | Each module is a vertical slice of layers 1–11                                                   |
+| 4     | Presentation/UI   | Livewire 4, Blade templates, maryUI + DaisyUI + Tailwind CSS v4, Controllers, Middleware, 17 route files, Policies (28+), RBAC, Console |
+| 3     | Business/Domain Ops | Command Actions (mutations), Read Actions (queries), Process Actions (orchestration), Events, Listeners, Notifications |
+| 2     | Data/Persistent   | Eloquent models (40+), UUID PKs, Entities (final readonly), DTOs (BaseData), Enums, Database, Config, Cache, Media Library |
+| 1     | Framework/Infra   | PHP 8.4, Laravel 13, Core base classes (BaseModel, BaseAction, BasePolicy, etc.), Contracts (LabelEnum, StatusEnum), Exceptions, Services, Support |
 
 Each module is a vertical slice cross-cutting all layers.
-
----
-
-_Last synchronized with architecture at 2026-06-15_

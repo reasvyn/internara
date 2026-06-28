@@ -1,10 +1,13 @@
-# Evaluation
+# Evaluation — Feedback Forms, Surveys & Auto-Scoring
 
 > **Last updated:** 2026-06-12
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Generic feedback collection system with a Google Forms-like architecture: admins build reusable
 evaluation forms with weighted questions, sections, and answer scoring. Evaluations target
 any PKL aspect (mentor, program, company, overall satisfaction) via a polymorphic type system.
+
 
 ## Purpose & Boundary
 
@@ -22,7 +25,7 @@ None — all components are directly under `app/Evaluation/`.
 
 ## Key Concepts
 
-### Evaluation Forms
+##Evaluation — Feedback Forms, Surveys & Auto-Scoring Forms
 
 Forms are the core entity (`evaluation_forms`). Each form targets a specific aspect
 (`target_type`: mentor, program, company, overall). Admins create forms via a form builder UI:

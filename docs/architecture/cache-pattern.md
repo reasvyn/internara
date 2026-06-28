@@ -1,12 +1,10 @@
-# Cache Pattern
+# Cache Pattern — Cache Philosophy, Key Management & Invalidation
 
 > **Last updated:** 2026-06-14
 > **Changes:** initial metadata — no content changes
->
-> Cache philosophy, key management conventions, driver strategy, invalidation strategy, warming,
-> and anti-pattern concepts in Internara.
+## Description
 
----
+Cache philosophy, key management conventions, driver strategy, event-driven invalidation, and anti-pattern prevention across all modules.
 
 ## 1. Cache Philosophy
 

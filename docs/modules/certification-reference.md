@@ -1,10 +1,13 @@
 # Certification — Technical Reference
 
-> Last updated: 2026-06-16
+> **Last updated:** 2026-06-27
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Detailed structural and implementation reference for the **Certification** module.
 
 ---
+
 
 ## Overview
 
@@ -95,7 +98,6 @@ Tests are located in `tests/{Feature,Unit}/Certification/`. See [Testing](../inf
 | `create_certificates_table` | `certificates` |
 
 ---
-
 
 ---
 

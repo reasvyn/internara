@@ -1,11 +1,14 @@
 # Chapter 17: Monitoring Visit & Supervision Log
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers two guidance features: **Monitoring Visits** (teacher site visits to check on
 students) and **Supervision Logs** (student mentoring records reviewed by industry supervisors).
 
 ---
+
 
 ## 17.1 Overview
 

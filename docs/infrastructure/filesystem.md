@@ -1,6 +1,10 @@
-# Filesystem
+# Filesystem — File Storage & Directory Layout
 
 > **Last updated:** 2026-06-13
+> **Changes:** sync — initial metadata sync with new format
+## Description
+
+File storage architecture, directory structure, disk configuration, and media file handling conventions.
 
 ## Storage Architecture
 

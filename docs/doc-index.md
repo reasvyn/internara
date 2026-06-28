@@ -1,12 +1,10 @@
-# Documentation Index
+# Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-06-27 **Changes:** sync — architecture.md redistributed; add support-pattern.md entry
->
-> Complete catalog of all documentation in the `docs/` directory. This index is the single entry
-> point for navigating Internara's documentation. Every file listed here is part of the
-> authoritative system documentation and must be kept in sync with the implementation.
+> **Last updated:** 2026-06-27 **Changes:** sync — architecture.md adds Two Kinds of Logic (domain vs infra vs static); service-pattern.md and support-pattern.md rewritten with clear boundaries
+> **Changes:** sync — initial metadata sync with new format
+## Description
 
----
+Complete catalog of all documentation files in the docs/ directory, organized by topic and audience.
 
 ## Product & Vision
 
@@ -16,7 +14,7 @@
 | [Project Requirements](foundation/project-requirements.md)   | Functional and non-functional requirements for Indonesian SMA/SMK PKL management, scalability targets, and compliance    |
 | [Key Features](key-features.md)                              | Complete feature inventory across all 19 modules, organized by program lifecycle from foundation through program closure |
 | [Project Philosophy](philosophy.md)                          | Guiding principles, values, and vision that shape the project — beyond architecture and code                             |
-| [Action-based MVC Architecture](architecture.md)             | 12-layer architecture, 4-layer data flow, Action Triad concept, dependency rules, patterns index  |
+| [Action-based MVC Architecture](architecture.md)             | 4-layer architecture, data flow, domain vs infrastructure vs static logic, Action Triad, dependency rules, patterns index  |
 | [Modular Pattern Reference](architecture/modular-pattern.md) | Comprehensive catalog of all design patterns, conventions, workflow patterns, and architectural rules                    |
 | [Testing Pattern Reference](architecture/testing-pattern.md) | Comprehensive catalog of all testing patterns, conventions, and practices                                                |
 | [Coding Conventions](conventions.md)                         | Mandatory base classes, file structure conventions, PHP rules, naming, policy/enum conventions, testing standards        |

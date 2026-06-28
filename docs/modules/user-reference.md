@@ -3,9 +3,11 @@
 > **Last updated:** 2026-06-24
 > **Changes:** sync — add HasMentorProxy trait in Policies/Concerns; update policy section
 
+## Description
 Detailed structural and implementation reference for the **User** module.
 
 ---
+
 
 ## Overview
 
@@ -256,7 +258,6 @@ Tests are located in `tests/{Feature,Unit}/User/`. See [Testing](../infrastructu
 | `create_notifications_table` | `notifications` |
 
 ---
-
 
 ---
 

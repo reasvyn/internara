@@ -1,10 +1,13 @@
-# Key Features
+# Key Features — Feature Inventory Across All Modules
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Complete feature inventory across all 19 modules, organized by program lifecycle phase.
 
 ---
+
 
 ## Foundation Phase
 

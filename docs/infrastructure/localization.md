@@ -1,12 +1,15 @@
-# Localization
+# Localization — Translation & Locale System
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Internara is designed for a global audience with Indonesian vocational education as its primary design reference. The interface and data model use international terminology, and the application ships with two complete language packs.
 
 **Community contributions for additional languages are welcome.**
 
 ---
+
 
 ## Supported Languages
 

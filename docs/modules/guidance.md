@@ -1,8 +1,11 @@
-# Guidance
+# Guidance — Supervision Logs & Mentoring
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Mentoring relationship coordination and teacher supervision field logging: dual-mentor assignments and immutable supervision visit records.
+
 
 ## Purpose & Boundary
 

@@ -3,9 +3,11 @@
 > **Last updated:** 2026-06-17
 > **Changes:** sync — add Livewire Forms section (LogbookForm)
 
+## Description
 Detailed structural and implementation reference for the **Journals** module.
 
 ---
+
 
 ## Overview
 
@@ -132,7 +134,6 @@ Tests are located in `tests/{Feature,Unit}/Journals/`. See [Testing](../infrastr
 | `create_attendances_table` | `attendances` |
 
 ---
-
 
 ---
 

@@ -1,7 +1,10 @@
-# Routes
+# Routes — Route Structure, Middleware & Naming
 
 > **Last updated:** 2026-06-13
 > **Changes:** sync — fix route file count (18→17)
+## Description
+
+Route structure, middleware stack, named route conventions, module split across 17 route files, and URL design.
 
 ## Philosophy
 

@@ -1,12 +1,10 @@
-# Exception Pattern
+# Exception Pattern — Dual Exception Hierarchy & Error Handling
 
 > **Last updated:** 2026-06-13
 > **Changes:** initial metadata — no content changes
->
-> Dual exception hierarchy used throughout Internara. Covers both trees, the shared context trait,
-> error handling in Actions, and the user-facing vs system-facing distinction.
+## Description
 
----
+Dual exception hierarchy with AppException (infrastructure) and ModuleException (business rules), error handling patterns, and Livewire catch blocks.
 
 ## Dual Hierarchy Overview
 

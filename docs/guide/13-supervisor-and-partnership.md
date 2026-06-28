@@ -1,11 +1,14 @@
 # Chapter 13: Supervisor & Partnership Management
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers managing **supervisor accounts** (field mentors) who guide students at partner
 companies, and the **company and partnership records** that define external placement relationships.
 
 ---
+
 
 ## 13.1 Supervisor Management
 

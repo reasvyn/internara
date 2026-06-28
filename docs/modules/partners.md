@@ -1,8 +1,11 @@
-# Partners
+# Partners — Companies, Partnerships & MoU
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 External relationship management: company profiles, partnership agreements (MoU), placement slot capacity, and agreement lifecycle.
+
 
 ## Purpose & Boundary
 
@@ -15,12 +18,12 @@ Out of scope: student placement assignment (Enrollment), internship program defi
 ### Company
 Organization profile: legal name, trading name, address, industry classification, website, phone, email, and notes. Soft-deletes preserve historical placements and partnerships. Companies are referenced by partnerships and placement records.
 
-### Partnership
+##Partners — Companies, Partnerships & MoUhip
 Formal agreement record: agreement number, title, description, start/end dates, scope of cooperation, contact person, signing parties, and MoU document upload (via Spatie Media Library). Status lifecycle: `active` → `expired` (automatic on end date) or `active` → `terminated` (admin action). Both `expired` and `terminated` are terminal states. Only active partnerships allow new placements. Expiry warning notifications fire 30 days before end_date.
 
 ## Key Concepts
 
-### Partnership Lifecycle
+##Partners — Companies, Partnerships & MoUhip Lifecycle
 
 Partnerships follow a controlled lifecycle:
 1. **ACTIVE**: New placements can be created. MoU is current.

@@ -1,8 +1,11 @@
-# Docker Environments
+# Docker — Container Configuration & Setup Environments
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Internara provides three Docker environments for different use cases.
+
 
 ## 1. Development (Laravel Sail)
 

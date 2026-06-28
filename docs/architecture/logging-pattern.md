@@ -1,12 +1,10 @@
-# Logging & Error Handling Pattern
+# Logging & Error Handling Pattern — SmartLogger, PII Masking & Error Handling
 
 > **Last updated:** 2026-06-10
 > **Changes:** initial metadata — no content changes
->
-> Complete reference for the SmartLogger dual-channel logging system, PII masking,
-> translation resolution, BaseEvent integration, and error handling in Internara.
+## Description
 
----
+SmartLogger dual-channel system, PII masking, translation resolution, error context, and observability integration.
 
 ## Table of Contents
 

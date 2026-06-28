@@ -1,8 +1,11 @@
-# Document
+# Document — Templates, Handbooks & Rendering
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Official correspondence template management, PDF letter rendering, policy handbook storage, and compliance acknowledgement tracking.
+
 
 ## Purpose & Boundary
 

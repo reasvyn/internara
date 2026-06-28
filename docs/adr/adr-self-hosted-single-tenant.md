@@ -1,7 +1,12 @@
 # ADR-010: Self-Hosted Single-Tenant Architecture
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-13
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+Each school runs their own instance on their own infrastructure. No multi-tenant isolation, no centralized auth, no billing tiers — everything works out of the box.
 
 ## Context
 

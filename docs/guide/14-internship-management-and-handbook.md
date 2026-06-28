@@ -1,11 +1,14 @@
 # Chapter 14: Internship Management & Handbook
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers how to create and manage internship programs (lowongan PKL), organize students
 into groups, and publish handbooks for students to read and acknowledge.
 
 ---
+
 
 ## 14.1 Internship Programs
 

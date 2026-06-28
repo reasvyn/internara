@@ -1,8 +1,11 @@
-# Program
+# Program — Internship Lifecycle, Groups & Phases
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Internship program definition, timeline phases, grading weight configuration, cohort group management, and closure readiness checking.
+
 
 ## Purpose & Boundary
 

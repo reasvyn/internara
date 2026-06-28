@@ -1,6 +1,10 @@
-# Notification System
+# Notification — Multi-Channel Notification System
 
 > **Last updated:** 2026-06-13
+> **Changes:** sync — initial metadata sync with new format
+## Description
+
+Multi-channel notification system covering mail, database, and broadcast channels with ShouldQueue conventions.
 
 ## Channel Architecture
 

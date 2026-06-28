@@ -3,9 +3,11 @@
 > **Last updated:** 2026-06-16
 > **Changes:** sync — add SaveSchoolProfileAction, SchoolForm, 3 new Events (AcademicYearUpdated, AcademicYearDeleted, DepartmentUpdated) with dispatch mappings
 
+## Description
 Detailed structural and implementation reference for the **Academics** module.
 
 ---
+
 
 ## Overview
 
@@ -120,7 +122,6 @@ Tests are located in `tests/{Feature,Unit}/Academics/`. See [Testing](../infrast
 | `create_departments_table` | `departments` |
 
 ---
-
 
 ---
 

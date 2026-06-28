@@ -1,6 +1,10 @@
-# Session
+# Session — Session Configuration & Security
 
 > **Last updated:** 2026-06-13
+> **Changes:** sync — initial metadata sync with new format
+## Description
+
+Session driver configuration, security settings, cookie parameters, and session lifecycle management.
 
 ## Purpose
 
@@ -55,7 +59,7 @@ The `last_activity` column is indexed because garbage collection queries against
 
 ---
 
-## Session Lifetime
+#Session — Session Configuration & Security Lifetime
 
 The session lifetime defaults to **120 minutes of inactivity**. This balances security and convenience:
 
@@ -75,7 +79,7 @@ The "remember me" option on login creates a longer-lived remember token (via `re
 
 ## Security
 
-### Session Fixation Prevention
+##Session — Session Configuration & Security Fixation Prevention
 
 The session ID is regenerated on every authentication state change:
 

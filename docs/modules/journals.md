@@ -1,8 +1,11 @@
-# Journals
+# Journals — Logbooks, Attendance & Absence
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Daily activity tracking: logbook entries with mentor verification, attendance with clock-in/out, and absence requests with approval workflow.
+
 
 ## Purpose & Boundary
 

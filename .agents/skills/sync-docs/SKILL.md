@@ -99,6 +99,7 @@ docs/architecture/testing-pattern.md
 docs/architecture/data-pattern.md
 docs/architecture/cache-pattern.md
 docs/architecture/service-pattern.md
+docs/architecture/support-pattern.md
 
 # If syncing module docs:
 docs/modules/{module}.md
@@ -131,7 +132,7 @@ For each section, extract claims and verify:
 
 | Section in AGENTS.md | How to verify |
 |----------------------|---------------|
-| **Project Context**: stack versions | Check `composer.json` require section, `docs/architecture.md` Layer 1 |
+| **Project Context**: stack versions | Check `composer.json` require section, `docs/architecture.md` Layer 1 (Framework/Infra) |
 | **Skills Activation**: listed skills | `ls -d .agents/skills/*/` — every skill directory must be listed; no extra, no missing |
 | **Documentation (NOT Duplicated Here)**: topic→location mappings | Each mapped file must actually exist and cover that topic |
 | **Module Invariants**: listed invariants | Check each against actual code/config. Example: "Super Admin name is ALWAYS `Administrator`" → check `config/setup.php` key `defaults.admin_name` |

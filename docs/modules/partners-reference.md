@@ -1,10 +1,13 @@
 # Partners — Technical Reference
 
-> Last updated: 2026-06-16
+> **Last updated:** 2026-06-27
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Detailed structural and implementation reference for the **Partners** module.
 
 ---
+
 
 ## Overview
 
@@ -132,7 +135,6 @@ Tests are located in `tests/{Feature,Unit}/Partners/`. See [Testing](../infrastr
 | `create_partnerships_table` | `partnerships` |
 
 ---
-
 
 ---
 

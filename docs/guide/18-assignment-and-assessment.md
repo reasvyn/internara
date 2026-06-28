@@ -1,11 +1,14 @@
 # Chapter 18: Assignment & Assessment
 
 > **Last updated:** 2026-06-16
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This chapter covers two related features: **Assignments** (tasks and submissions with grading) and
 **Assessment** (rubric-based competency evaluation and final scoring).
 
 ---
+
 
 ## 18.1 Assignment Overview
 

@@ -9,7 +9,7 @@ system boundaries.
 
 The 4-layer data flow with DTO boundaries prevents circular dependencies:
 - **UI Layer** (Livewire/Controller/Console) → builds DTO from validated input
-- **Business Logic Layer** (Action/Service/Support) → receives DTO only, delegates rules to Entity
+- **Business Operations Layer** (Action — domain logic / Service — infra logic / Support — static utilities) → receives DTO only, delegates rules to Entity
 - **Domain Rules Layer** (Entity/Event) → created FROM Model, answers business questions
 - **Data Layer** (Model) → Eloquent persistence, knows nothing about layers above
 

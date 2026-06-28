@@ -1,8 +1,12 @@
 # ADR-013: Program Closure & Archival
 
-> **Status:** Accepted
 > **Last updated:** 2026-06-14
-> > **Changes:** sync — fix Action path (CheckCloseReadiness → ReadCloseReadiness), fix Auth→User and Program→Program/Internship enum paths
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+Completed internship programs are archived rather than deleted, preserving all associated data (registrations, placements, logbooks, assessments) in read-only state.
 
 ## Context
 

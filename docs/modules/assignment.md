@@ -1,8 +1,11 @@
-# Assignment
+# Assignment — Tasks, Submissions & Grading
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 Task management and submission tracking: assignments with deadlines, student submissions with draft workflow, grading with feedback, and revision loops.
+
 
 ## Purpose & Boundary
 
@@ -12,7 +15,7 @@ Out of scope: daily logbook entries (Journals), rubric-based competency assessme
 
 ## Submodules
 
-### Assignment
+##Assignment — Tasks, Submissions & Grading
 Task definition entity: title, description, due dates, point value, optional rubric reference, and resource file attachments (via Spatie Media Library). Teachers CRUD assignments scoped to a program. Per-student extensions adjust individual deadlines. Deadlines cannot be set in the past.
 
 ### Submission

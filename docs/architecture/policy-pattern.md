@@ -1,8 +1,9 @@
-# Policy Pattern
+# Policy Pattern — Authorization Gates, RBAC & Functional Roles
 
 > **Last updated:** 2026-06-13
 > **Changes:** initial metadata — no content changes
 
+## Description
 Authorization reference for the Internara codebase. Describes the Flat RBAC model, the three-layer
 authorization stack, the `BasePolicy` contract, policy traits, auto-discovery, and the complete
 policy inventory across all modules.
@@ -13,6 +14,7 @@ See also:
 - [Modular Pattern Reference](modular-pattern.md) (§7 Policy & Authorization Patterns)
 
 ---
+
 
 ## 1. Flat RBAC — 5 User Roles + 2 Functional Roles
 

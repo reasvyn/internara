@@ -1,7 +1,9 @@
-# Scaling Guide
+# Scaling — Performance & Scaling Strategies
 
 > **Last updated:** 2026-06-14
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This document is the operational companion to [Infrastructure](infrastructure.md). It describes _when_ and _how_ to scale Internara from a shared hosting setup serving 500 registered users to a multi-server high-availability cluster serving 2000+.
 
 User counts in this document refer to **total registered users per PKL period**, not concurrent users. For Internara's usage patterns, peak concurrency is typically 10-15% of registered users.
@@ -9,6 +11,7 @@ User counts in this document refer to **total registered users per PKL period**,
 The philosophy is **start simple, scale by measured need** -- codified in [ADR: Gradual Migration](../adr/adr-gradual-migration.md).
 
 ---
+
 
 ## 1. Decision Framework: When to Scale
 

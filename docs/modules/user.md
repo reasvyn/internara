@@ -1,8 +1,11 @@
-# User
+# User — Profiles, Notifications & Dashboards
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 User identity, personal profiles, notification system, role-specific dashboards, and account lifecycle status management.
+
 
 ## Purpose & Boundary
 
@@ -30,7 +33,7 @@ Role-specific portals rendered post-login: admin, teacher, supervisor, and stude
 
 The `User` model handles authentication concerns only (email, password, status). The `Profile` model holds personal data. This separation keeps auth logic lean and allows profile schema to evolve independently. Both are UUID-keyed and soft-deletable.
 
-### Username Generation
+##User — Profiles, Notifications & Dashboardsname Generation
 
 Usernames are auto-derived from the email local part, lowercased and alphanumeric-only. Collisions are resolved by appending numeric suffixes (`user` → `user1` → `user2`). Emails are globally unique.
 

@@ -1,7 +1,12 @@
 # ADR-004: Entity-Model Separation
 
-> **Status:** Accepted (Revised 2026-06-01)
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
+
+
+## Description
+
+Business rules are extracted from Eloquent models into separate final readonly Entity classes, keeping persistence concerns separate from domain logic.
 
 ## Context
 

@@ -1,16 +1,13 @@
 # Architecture Decision Records
 
 > **Last updated:** 2026-06-16
-> **Records:** 14 ADRs documenting the key architectural decisions behind Internara.
+> **Changes:** sync — initial metadata sync with new format
 
-Each ADR follows the standard template: **Context** — the forces and trade-offs that drove the decision,
-**Decision** — what was chosen and why, **Consequences** — the resulting benefits and drawbacks,
-and **References** — pointers to the relevant code and documentation.
+## Description
 
----
+Index of all Architecture Decision Records (ADRs) documenting key architectural decisions behind Internara.
 
 ## Foundation
-
 Decisions that establish the core structural principles of the codebase.
 
 | Record | Status |
@@ -60,6 +57,6 @@ Broad architectural strategies that span the entire system.
 
 ## References
 
-- `docs/architecture.md` — high-level architecture overview and 12-layer model
+- `docs/architecture.md` — high-level architecture overview and 4-layer model
 - `docs/conventions.md` — coding conventions derived from these ADRs
 - [ADR-014: Cross-Role Proxy](adr-cross-role-proxy.md) — Application-layer role delegation

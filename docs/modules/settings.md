@@ -1,8 +1,11 @@
-# Settings
+# Settings — Config, Branding & Feature Flags
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 System-wide configuration management: key-value store with type enforcement, brand identity (colors, logo, favicon, site title), localization preferences, SMTP mail configuration, and global feature toggles.
+
 
 ## Purpose & Boundary
 

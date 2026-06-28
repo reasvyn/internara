@@ -1,11 +1,14 @@
-# Product Definition & System Boundary
+# Product Definition — Scope, Personas & System Boundary
 
 > **Last updated:** 2026-06-10
+> **Changes:** sync — initial metadata sync with new format
 
+## Description
 This document defines the core product scope, design principles, user personas, system boundary,
 deployment model, localization parameters, and licensing for the Internara system.
 
 ---
+
 
 ## 1. Executive Summary
 

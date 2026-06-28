@@ -1,16 +1,10 @@
-# Action Triad Pattern Reference
+# Action Triad Pattern Reference — Command/Read/Process Deep-Dive
 
 > **Last updated:** 2026-06-24
 > **Changes:** sync — update Command contract: DTO for 3+ params, ActionResponse for structured feedback; sync with architecture.md rebalancing
->
-> Comprehensive deep-dive on the Command/Read/Process Action Triad — the single most important
-> architectural decision in Internara. This document covers every facet of the Action pattern:
-> contracts, mechanics, conventions, and migration workflows.
->
-> For the high-level overview, see [Modular Pattern Reference](modular-pattern.md). For the ADR
-> that formalised this pattern, see [ADR-003](../adr/adr-action-pattern-over-services.md).
+## Description
 
----
+Reference covering the Command, Read, and Process action types, their contracts, transaction safety, logging protocol, event dispatch, validation strategy, and naming conventions.
 
 ## Action Triad Overview
 
