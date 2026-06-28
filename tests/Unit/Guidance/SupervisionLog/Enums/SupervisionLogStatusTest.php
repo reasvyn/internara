@@ -7,13 +7,11 @@ use App\Guidance\SupervisionLog\Enums\SupervisionLogStatus;
 test('supervision log status has all expected cases', function () {
     $cases = SupervisionLogStatus::cases();
 
-    expect($cases)->toHaveCount(6);
-    expect(SupervisionLogStatus::PENDING->value)->toBe('pending');
-    expect(SupervisionLogStatus::IN_PROGRESS->value)->toBe('in_progress');
+    expect($cases)->toHaveCount(4);
+    expect(SupervisionLogStatus::DRAFT->value)->toBe('draft');
     expect(SupervisionLogStatus::SUBMITTED->value)->toBe('submitted');
-    expect(SupervisionLogStatus::VERIFIED->value)->toBe('verified');
-    expect(SupervisionLogStatus::COMPLETED->value)->toBe('completed');
-    expect(SupervisionLogStatus::CANCELLED->value)->toBe('cancelled');
+    expect(SupervisionLogStatus::REVIEWED->value)->toBe('reviewed');
+    expect(SupervisionLogStatus::ACKNOWLEDGED->value)->toBe('acknowledged');
 });
 
 test('supervision log status label returns non-empty string', function () {
@@ -22,79 +20,61 @@ test('supervision log status label returns non-empty string', function () {
     }
 });
 
-test('active states are pending, in progress, and submitted', function () {
-    expect(SupervisionLogStatus::PENDING->isActive())->toBeTrue();
-    expect(SupervisionLogStatus::IN_PROGRESS->isActive())->toBeTrue();
+test('active states are draft and submitted', function () {
+    expect(SupervisionLogStatus::DRAFT->isActive())->toBeTrue();
     expect(SupervisionLogStatus::SUBMITTED->isActive())->toBeTrue();
-    expect(SupervisionLogStatus::VERIFIED->isActive())->toBeFalse();
-    expect(SupervisionLogStatus::COMPLETED->isActive())->toBeFalse();
-    expect(SupervisionLogStatus::CANCELLED->isActive())->toBeFalse();
+    expect(SupervisionLogStatus::REVIEWED->isActive())->toBeFalse();
+    expect(SupervisionLogStatus::ACKNOWLEDGED->isActive())->toBeFalse();
 });
 
-test('terminal states are verified, completed, and cancelled', function () {
-    expect(SupervisionLogStatus::PENDING->isTerminal())->toBeFalse();
-    expect(SupervisionLogStatus::IN_PROGRESS->isTerminal())->toBeFalse();
+test('terminal states are reviewed and acknowledged', function () {
+    expect(SupervisionLogStatus::DRAFT->isTerminal())->toBeFalse();
     expect(SupervisionLogStatus::SUBMITTED->isTerminal())->toBeFalse();
-    expect(SupervisionLogStatus::VERIFIED->isTerminal())->toBeTrue();
-    expect(SupervisionLogStatus::COMPLETED->isTerminal())->toBeTrue();
-    expect(SupervisionLogStatus::CANCELLED->isTerminal())->toBeTrue();
+    expect(SupervisionLogStatus::REVIEWED->isTerminal())->toBeTrue();
+    expect(SupervisionLogStatus::ACKNOWLEDGED->isTerminal())->toBeTrue();
 });
 
-test('valid transitions from pending', function () {
-    $transitions = SupervisionLogStatus::PENDING->validTransitions();
+test('valid transitions from draft', function () {
+    $transitions = SupervisionLogStatus::DRAFT->validTransitions();
 
-    expect($transitions)->toHaveCount(2);
-    expect($transitions)->toContain(SupervisionLogStatus::IN_PROGRESS, SupervisionLogStatus::CANCELLED);
-});
-
-test('valid transitions from in progress', function () {
-    $transitions = SupervisionLogStatus::IN_PROGRESS->validTransitions();
-
-    expect($transitions)->toHaveCount(2);
-    expect($transitions)->toContain(SupervisionLogStatus::SUBMITTED, SupervisionLogStatus::CANCELLED);
+    expect($transitions)->toHaveCount(1);
+    expect($transitions)->toContain(SupervisionLogStatus::SUBMITTED);
 });
 
 test('valid transitions from submitted', function () {
     $transitions = SupervisionLogStatus::SUBMITTED->validTransitions();
 
-    expect($transitions)->toHaveCount(3);
-    expect($transitions)->toContain(SupervisionLogStatus::VERIFIED, SupervisionLogStatus::COMPLETED, SupervisionLogStatus::CANCELLED);
+    expect($transitions)->toHaveCount(2);
+    expect($transitions)->toContain(SupervisionLogStatus::REVIEWED, SupervisionLogStatus::DRAFT);
 });
 
-test('verified can only go to completed', function () {
-    $transitions = SupervisionLogStatus::VERIFIED->validTransitions();
+test('reviewed can only go to acknowledged', function () {
+    $transitions = SupervisionLogStatus::REVIEWED->validTransitions();
 
     expect($transitions)->toHaveCount(1);
-    expect($transitions)->toContain(SupervisionLogStatus::COMPLETED);
+    expect($transitions)->toContain(SupervisionLogStatus::ACKNOWLEDGED);
 });
 
-test('completed has no valid transitions', function () {
-    expect(SupervisionLogStatus::COMPLETED->validTransitions())->toBe([]);
-});
-
-test('cancelled has no valid transitions', function () {
-    expect(SupervisionLogStatus::CANCELLED->validTransitions())->toBe([]);
+test('acknowledged has no valid transitions', function () {
+    expect(SupervisionLogStatus::ACKNOWLEDGED->validTransitions())->toBe([]);
 });
 
 test('can transition to allowed targets', function () {
-    expect(SupervisionLogStatus::PENDING->canTransitionTo(SupervisionLogStatus::IN_PROGRESS))->toBeTrue();
-    expect(SupervisionLogStatus::PENDING->canTransitionTo(SupervisionLogStatus::CANCELLED))->toBeTrue();
-    expect(SupervisionLogStatus::IN_PROGRESS->canTransitionTo(SupervisionLogStatus::SUBMITTED))->toBeTrue();
-    expect(SupervisionLogStatus::SUBMITTED->canTransitionTo(SupervisionLogStatus::VERIFIED))->toBeTrue();
-    expect(SupervisionLogStatus::SUBMITTED->canTransitionTo(SupervisionLogStatus::COMPLETED))->toBeTrue();
-    expect(SupervisionLogStatus::VERIFIED->canTransitionTo(SupervisionLogStatus::COMPLETED))->toBeTrue();
+    expect(SupervisionLogStatus::DRAFT->canTransitionTo(SupervisionLogStatus::SUBMITTED))->toBeTrue();
+    expect(SupervisionLogStatus::SUBMITTED->canTransitionTo(SupervisionLogStatus::REVIEWED))->toBeTrue();
+    expect(SupervisionLogStatus::SUBMITTED->canTransitionTo(SupervisionLogStatus::DRAFT))->toBeTrue();
+    expect(SupervisionLogStatus::REVIEWED->canTransitionTo(SupervisionLogStatus::ACKNOWLEDGED))->toBeTrue();
 });
 
 test('cannot transition to disallowed targets', function () {
-    expect(SupervisionLogStatus::PENDING->canTransitionTo(SupervisionLogStatus::VERIFIED))->toBeFalse();
-    expect(SupervisionLogStatus::PENDING->canTransitionTo(SupervisionLogStatus::COMPLETED))->toBeFalse();
-    expect(SupervisionLogStatus::IN_PROGRESS->canTransitionTo(SupervisionLogStatus::VERIFIED))->toBeFalse();
-    expect(SupervisionLogStatus::COMPLETED->canTransitionTo(SupervisionLogStatus::PENDING))->toBeFalse();
-    expect(SupervisionLogStatus::CANCELLED->canTransitionTo(SupervisionLogStatus::PENDING))->toBeFalse();
-    expect(SupervisionLogStatus::VERIFIED->canTransitionTo(SupervisionLogStatus::SUBMITTED))->toBeFalse();
+    expect(SupervisionLogStatus::DRAFT->canTransitionTo(SupervisionLogStatus::REVIEWED))->toBeFalse();
+    expect(SupervisionLogStatus::DRAFT->canTransitionTo(SupervisionLogStatus::ACKNOWLEDGED))->toBeFalse();
+    expect(SupervisionLogStatus::SUBMITTED->canTransitionTo(SupervisionLogStatus::ACKNOWLEDGED))->toBeFalse();
+    expect(SupervisionLogStatus::ACKNOWLEDGED->canTransitionTo(SupervisionLogStatus::DRAFT))->toBeFalse();
+    expect(SupervisionLogStatus::REVIEWED->canTransitionTo(SupervisionLogStatus::SUBMITTED))->toBeFalse();
 });
 
 test('cannot transition to self', function () {
-    expect(SupervisionLogStatus::PENDING->canTransitionTo(SupervisionLogStatus::PENDING))->toBeFalse();
-    expect(SupervisionLogStatus::COMPLETED->canTransitionTo(SupervisionLogStatus::COMPLETED))->toBeFalse();
+    expect(SupervisionLogStatus::DRAFT->canTransitionTo(SupervisionLogStatus::DRAFT))->toBeFalse();
+    expect(SupervisionLogStatus::ACKNOWLEDGED->canTransitionTo(SupervisionLogStatus::ACKNOWLEDGED))->toBeFalse();
 });

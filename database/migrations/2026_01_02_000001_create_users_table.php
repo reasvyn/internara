@@ -28,6 +28,7 @@ return new class () extends Migration {
             $table->string('locked_reason')->nullable();
             $table->string('status')->default('provisioned')->index();
             $table->boolean('is_active')->default(true)->index();
+            $table->timestamp('last_activity_at')->nullable();
             // Timestamps
             $table->timestamps();
             // Indexs
