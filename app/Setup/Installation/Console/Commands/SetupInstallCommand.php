@@ -10,7 +10,7 @@ use App\Core\Enums\AuditStatus;
 use App\Core\Support\SmartLogger;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
 use App\Setup\Installation\Console\Commands\Concerns\InteractsWithInstallerCli;
-use App\Setup\Installation\Support\SystemProvisioner;
+use App\Setup\Installation\Services\SystemProvisioner;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use Illuminate\Console\Command;
 use Illuminate\Container\Container;

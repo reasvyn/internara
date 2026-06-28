@@ -6,7 +6,7 @@ namespace App\Document\OfficialDocument\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Document\Models\Document;
-use App\Document\Support\DocumentRenderer;
+use App\Document\Services\DocumentRenderer;
 use App\Enrollment\Registration\Models\Registration;
 use Illuminate\Support\Facades\Storage;
 

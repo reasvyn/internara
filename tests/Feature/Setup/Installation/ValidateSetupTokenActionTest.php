@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup\Installation\Actions;
 
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use App\Setup\Installation\Actions\ValidateSetupTokenAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Crypt;

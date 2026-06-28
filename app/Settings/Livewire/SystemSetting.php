@@ -15,7 +15,7 @@ use App\Settings\Enums\MediaCollection;
 use App\Settings\Livewire\Forms\GeneralSettingsForm;
 use App\Settings\Livewire\Forms\MailSettingsForm;
 use App\Settings\Models\Setting;
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;

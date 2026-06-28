@@ -6,7 +6,7 @@ namespace Tests\Feature\Setup\SetupWizard\Actions;
 
 use App\Academics\Department\Models\Department;
 use App\Core\Contracts\SendsNotifications;
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
 use App\Setup\SetupWizard\Actions\SetupDepartmentAction;

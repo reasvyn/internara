@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\User\Support;
+namespace App\User\Services;
 
 use App\User\Models\User;
 

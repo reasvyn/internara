@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Certification\Certificate\Support;
+namespace App\Certification\Certificate\Services;
 
 use App\Certification\Certificate\Models\Certificate;
 use App\Enrollment\Registration\Models\Registration;

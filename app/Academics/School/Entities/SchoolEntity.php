@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Academics\School\Entities;
 
 use App\Core\Entities\BaseEntity;
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use Illuminate\Database\Eloquent\Model;
 
 final readonly class SchoolEntity extends BaseEntity

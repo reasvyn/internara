@@ -7,7 +7,7 @@ namespace App\Document\OfficialDocument\Http\Controllers;
 use App\Core\Http\Controllers\BaseController;
 use App\Document\Models\Document;
 use App\Document\OfficialDocument\Actions\RenderDocumentAction;
-use App\Document\Support\DocumentRenderer;
+use App\Document\Services\DocumentRenderer;
 use App\Enrollment\Registration\Models\Registration;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;

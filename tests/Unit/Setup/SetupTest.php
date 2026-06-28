@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Setup\Models;
 
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use App\Setup\Entities\SetupEntity;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Support;
+namespace App\Core\Services;
 
+use App\Core\Support\SmartLogger;
 use Illuminate\Translation\Translator;
 
 final class LangChecker extends Translator
@@ -39,7 +40,7 @@ final class LangChecker extends Translator
             if (
                 $file === '' ||
                 str_contains($file, '/vendor/') ||
-                str_contains($file, '/Support/LangChecker') ||
+                str_contains($file, '/Services/LangChecker') ||
                 str_contains($file, '/Translation/')
             ) {
                 continue;

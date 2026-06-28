@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup\Installation;
 
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
 use App\Setup\Installation\Data\SetupTokenData;
 use Illuminate\Foundation\Testing\RefreshDatabase;

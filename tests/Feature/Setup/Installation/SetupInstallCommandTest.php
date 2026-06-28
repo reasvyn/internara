@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup\Installation\Console\Commands;
 
-use App\Settings\Support\Settings;
-use App\Setup\Installation\Support\SystemProvisioner;
+use App\Settings\Services\Settings;
+use App\Setup\Installation\Services\SystemProvisioner;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 

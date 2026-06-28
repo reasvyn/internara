@@ -6,7 +6,7 @@ namespace App\SysAdmin\Backups\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\SysAdmin\Backups\Models\Backup;
-use App\SysAdmin\Backups\Support\BackupRunner;
+use App\SysAdmin\Backups\Services\BackupRunner;
 
 final class CleanupBackupsAction extends BaseCommandAction
 {

@@ -6,7 +6,7 @@ use App\Settings\Data\SettingData;
 use App\Settings\Events\SettingUpdated;
 use App\Settings\Listeners\InvalidateSettingsCache;
 use App\Settings\Models\Setting;
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;

@@ -7,7 +7,7 @@ namespace App\Certification\Certificate\Actions;
 use App\Certification\Certificate\Events\CertificateIssued;
 use App\Certification\Certificate\Models\Certificate;
 use App\Certification\Certificate\Models\CertificateTemplate;
-use App\Certification\Certificate\Support\CertificateRenderer;
+use App\Certification\Certificate\Services\CertificateRenderer;
 use App\Core\Actions\BaseCommandAction;
 use App\Enrollment\Registration\Models\Registration;
 
