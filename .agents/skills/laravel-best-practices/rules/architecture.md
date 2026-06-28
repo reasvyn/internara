@@ -1,5 +1,8 @@
 # Architecture
 
+> **Last updated:** 2026-06-28
+> **Changes:** sync — update data flow layer naming to match new 4-layer model
+
 ## What It Enforces
 
 All code lives under `app/{Module}/` — no top-level `app/Models/`, `app/Http/Controllers/`, etc.
@@ -7,11 +10,10 @@ Views mirror in `resources/views/{domain}/`. Every business operation is an Acti
 single `execute()` method. Dependencies are injected via constructor promotion. Interfaces define
 system boundaries.
 
-The 4-layer data flow with DTO boundaries prevents circular dependencies:
-- **UI Layer** (Livewire/Controller/Console) → builds DTO from validated input
-- **Business Operations Layer** (Action — domain logic / Service — infra logic / Support — static utilities) → receives DTO only, delegates rules to Entity
-- **Domain Rules Layer** (Entity/Event) → created FROM Model, answers business questions
-- **Data Layer** (Model) → Eloquent persistence, knows nothing about layers above
+The data flow with DTO boundaries prevents circular dependencies:
+- **Presentation/UI** (Livewire/Controller/Console/Policies) → builds DTO from validated input
+- **Business/Domain Ops** (Action/Event/Middleware) → receives DTO only, delegates rules to Entity
+- **Data/Persistent** (Model/Entity/DTO/Enum/Database) → Eloquent persistence, knows nothing about layers above
 
 **Key boundary rules:**
 - Command/Process Actions SHOULD accept `BaseData` DTO for 3+ params — simple ops may use typed scalars

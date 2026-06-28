@@ -1,7 +1,7 @@
 # Modular Pattern Reference — Design Patterns, Conventions & Architecture Rules
 
-> **Last updated:** 2026-06-24
-> **Changes:** sync — add Data/ directory, DTO patterns, update workflow for 4-layer data flow; initial metadata
+> **Last updated:** 2026-06-28
+> **Changes:** sync — update Base Class/Contract layer annotations to new 4-layer model
 ## Description
 
 Complete catalog of design patterns, conventions, and architectural rules used across all 19 business modules.
@@ -25,13 +25,13 @@ Three-phase migration: `execute(array $data)` → `execute(Data|array $data)` �
 
 ---
 
-## 2. Base Class Patterns (Layer 4)
+## 2. Base Class Patterns (Layer 1 — Framework/Infra)
 
 Every architectural layer has one Core base class: `BaseModel`, `BaseAction`, `BaseEntity`, `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`, and contracts `LabelEnum`/`StatusEnum`. See: `docs/conventions.md` §1.
 
 ---
 
-## 3. Contract Patterns (Layer 3)
+## 3. Contract Patterns (Layer 1 — Framework/Infra)
 
 **LabelEnum** — every enum provides a human-readable label. **StatusEnum** — state machine enums with `isTerminal()`, `canTransitionTo()`, `validTransitions()`. **ColorableEnum** — UI color/badge variants. **SendsNotifications / SettingsStore** — infrastructure contracts bound via container. See: `docs/architecture/enum-pattern.md`.
 

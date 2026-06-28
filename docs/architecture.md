@@ -179,7 +179,7 @@ For the complete directory tree and path conventions, see [Modular Pattern](arch
 
 ### Two Kinds of Logic: Domain vs Infrastructure
 
-The "Business Operations" layer holds **three** class types — Actions, Services, Support — but only
+The project distinguishes **three** class types — Actions (Layer 3), Services (Layer 1), Support (Layer 1) — but only
 Actions contain **domain business logic**. This distinction is critical and prevents the Service
 scope creep that motivated the Action Triad in the first place.
 
