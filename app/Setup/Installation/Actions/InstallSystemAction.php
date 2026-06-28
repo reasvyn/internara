@@ -8,7 +8,7 @@ use App\Core\Actions\BaseCommandAction;
 use App\Core\Data\AuditReport;
 use App\Core\Exceptions\RejectedException;
 use App\Setup\Installation\Data\SetupTokenData;
-use App\Setup\Installation\Support\SystemProvisioner;
+use App\Setup\Installation\Services\SystemProvisioner;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 
 /**

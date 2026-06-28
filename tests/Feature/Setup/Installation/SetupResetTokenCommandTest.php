@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup\Installation\Console\Commands;
 
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;

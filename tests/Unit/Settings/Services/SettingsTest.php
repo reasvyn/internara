@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Settings\Models\Setting;
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;

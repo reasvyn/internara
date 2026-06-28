@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Certification\Certificate\Http\Controllers;
 
 use App\Certification\Certificate\Models\Certificate;
-use App\Certification\Certificate\Support\CertificateRenderer;
+use App\Certification\Certificate\Services\CertificateRenderer;
 use App\Core\Http\Controllers\BaseController;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;

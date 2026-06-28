@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Academics\School\Entities\SchoolEntity;
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);

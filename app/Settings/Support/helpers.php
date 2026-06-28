@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Settings\Support\Brand;
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 
 if (! function_exists('setting')) {
     /**

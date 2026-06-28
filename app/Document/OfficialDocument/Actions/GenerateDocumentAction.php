@@ -6,7 +6,7 @@ namespace App\Document\OfficialDocument\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Document\Models\Document;
-use App\Document\Support\DocumentRenderer;
+use App\Document\Services\DocumentRenderer;
 
 final class GenerateDocumentAction extends BaseCommandAction
 {

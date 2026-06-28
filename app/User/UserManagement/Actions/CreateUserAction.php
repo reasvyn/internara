@@ -9,7 +9,7 @@ use App\User\Models\User;
 use App\User\Notifications\WelcomeNotification;
 use App\User\Rules\ReservedAuthoritativeName;
 use App\User\Rules\SystemUsername;
-use App\User\Support\UserIdentifierGenerator;
+use App\User\Services\UserIdentifierGenerator;
 use App\User\UserManagement\Events\UserCreated;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;

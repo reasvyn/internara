@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\User\Models\User;
-use App\User\Support\UserIdentifierGenerator;
+use App\User\Services\UserIdentifierGenerator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

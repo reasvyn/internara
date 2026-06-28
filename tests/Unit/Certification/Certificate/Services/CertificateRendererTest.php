@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Certification\Certificate\Models\Certificate;
-use App\Certification\Certificate\Support\CertificateRenderer;
+use App\Certification\Certificate\Services\CertificateRenderer;
 use App\Enrollment\Registration\Models\Registration;
 
 test('resolves placeholders for certificate', function () {

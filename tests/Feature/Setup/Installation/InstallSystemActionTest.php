@@ -11,7 +11,7 @@ use App\Core\Enums\AuditStatus;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
 use App\Setup\Installation\Actions\InstallSystemAction;
 use App\Setup\Installation\Data\SetupTokenData;
-use App\Setup\Installation\Support\SystemProvisioner;
+use App\Setup\Installation\Services\SystemProvisioner;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;

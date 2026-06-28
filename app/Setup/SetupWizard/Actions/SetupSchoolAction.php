@@ -6,7 +6,7 @@ namespace App\Setup\SetupWizard\Actions;
 
 use App\Academics\School\Entities\SchoolEntity;
 use App\Core\Actions\BaseCommandAction;
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use Illuminate\Support\Facades\Validator;
 
 final class SetupSchoolAction extends BaseCommandAction

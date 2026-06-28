@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Enrollment\Registration\Actions\ReadRegistrationAvailabilityAction;
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use Carbon\Carbon;
 
 describe('ReadRegistrationAvailabilityAction', function () {

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\User\Models\User;
-use App\User\Support\UserIdentifierGenerator;
+use App\User\Services\UserIdentifierGenerator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Settings\Support\Settings;
+use App\Settings\Services\Settings;
 use App\Setup\Installation\Http\Middleware\RequireSetupAccessMiddleware;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Setup\Installation\Support;
+namespace App\Setup\Installation\Services;
 
 use Database\Seeders\SetupSeeder;
 use Illuminate\Support\Facades\Artisan;

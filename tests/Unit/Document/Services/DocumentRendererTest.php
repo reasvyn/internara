@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Document\Models\Document;
-use App\Document\Support\DocumentRenderer;
+use App\Document\Services\DocumentRenderer;
 
 test('renderHtml compiles blade content', function () {
     $renderer = app(DocumentRenderer::class);

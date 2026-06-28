@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup\Installation\Support;
 
-use App\Setup\Installation\Support\SystemProvisioner;
+use App\Setup\Installation\Services\SystemProvisioner;
 use Database\Seeders\SetupSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;

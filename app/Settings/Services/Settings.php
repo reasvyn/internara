@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Settings\Support;
+namespace App\Settings\Services;
 
 use App\Core\Support\AppInfo;
 use App\Core\Support\SmartLogger;

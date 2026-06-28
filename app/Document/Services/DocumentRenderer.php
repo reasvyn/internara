@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Document\Support;
+namespace App\Document\Services;
 
 use App\Document\Models\Document;
 use Barryvdh\DomPDF\Facade\Pdf;

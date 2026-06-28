@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Core\Support;
+namespace Tests\Unit\Core\Services;
 
-use App\Core\Support\LangChecker;
+use App\Core\Services\LangChecker;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Mockery;
