@@ -5,6 +5,9 @@ declare(strict_types=1);
 use App\Auth\Permissions\Enums\Role;
 use App\SysAdmin\Observability\Services\PulseGuard;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 test('view pulse returns true for super admin', function () {
     $user = User::factory()->create();

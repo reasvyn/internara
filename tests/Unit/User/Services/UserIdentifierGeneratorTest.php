@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use App\User\Models\User;
 use App\User\Services\UserIdentifierGenerator;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('generates username from email local part', function () {
     $username = UserIdentifierGenerator::generateUsername('john.doe@example.com');

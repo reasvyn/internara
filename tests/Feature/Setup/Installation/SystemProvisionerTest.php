@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Setup\Installation\Support;
+namespace Tests\Feature\Setup\Installation;
 
 use App\Setup\Installation\Services\SystemProvisioner;
 use Database\Seeders\SetupSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Mockery;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('system provisioner tasks list is complete', function () {
     $provisioner = new SystemProvisioner;
