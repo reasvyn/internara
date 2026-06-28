@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 use App\Document\Models\Document;
 use App\Document\Services\DocumentRenderer;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 test('renderHtml compiles blade content', function () {
     $renderer = app(DocumentRenderer::class);
-    $document = Document::factory()->make(['content' => '<p>Hello {{ \$target->name ?? "World" }}</p>']);
+    $document = Document::factory()->make(['content' => '<p>Hello {{ $target->name ?? "World" }}</p>']);
 
     $target = new class
     {

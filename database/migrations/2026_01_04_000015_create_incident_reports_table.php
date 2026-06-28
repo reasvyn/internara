@@ -28,7 +28,6 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['registration_id', 'status']);
-            $table->index('severity');
         });
     }
 
