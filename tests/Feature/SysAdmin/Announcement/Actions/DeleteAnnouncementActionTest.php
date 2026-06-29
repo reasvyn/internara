@@ -21,6 +21,5 @@ test('logs the deletion event', function () {
 
     app(DeleteAnnouncementAction::class)->execute($announcement);
 
-    $announcement = Announcement::withTrashed()->find($announcement->id);
-    expect($announcement)->not->toBeNull();
+    expect(Announcement::find($announcement->id))->toBeNull();
 });

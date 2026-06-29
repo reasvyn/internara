@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Assignment\Notifications\AssignmentNotification;
+use App\Core\Channels\CustomDatabaseChannel;
 
 test('notification constructs with correct data', function () {
     $notification = new AssignmentNotification(

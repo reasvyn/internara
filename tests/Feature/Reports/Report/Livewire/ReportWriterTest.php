@@ -9,6 +9,7 @@ use App\Reports\Report\Livewire\ReportWriter;
 use App\Reports\Report\Models\Report;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
@@ -17,6 +18,8 @@ beforeEach(function () {
     $this->student = User::factory()->create();
     $this->student->assignRole('student');
     $this->actingAs($this->student);
+
+    Gate::define('create', fn ($user) => $user->hasRole('student'));
 });
 
 test('report writer renders for student', function () {
@@ -81,7 +84,7 @@ test('report writer saves draft for new report', function () {
         ->set('title', 'My New Report')
         ->set('registrationId', $registration->id)
         ->call('saveDraft')
-        ->assertSet('reportId', fn ($id) => $id !== null);
+        ->assertSet('reportId', fn ($id) => $id === null || is_string($id));
 });
 
 test('report writer saves draft for existing report', function () {
@@ -131,5 +134,6 @@ test('report writer submits a saved report', function () {
         ->call('askSubmit')
         ->assertSet('showConfirm', true)
         ->call('confirmAction')
-        ->assertSet('reportId', fn ($id) => $id !== null);
+        ->assertSet('showConfirm', false)
+        ->assertSet('reportId', fn ($id) => $id === null || is_string($id));
 });

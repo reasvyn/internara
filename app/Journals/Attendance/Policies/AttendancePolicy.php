@@ -43,7 +43,7 @@ class AttendancePolicy extends BasePolicy
 
     public function verify(User $user, Attendance $log): bool
     {
-        if ($this->isAdmin($user)) {
+        if ($this->isAdminOrTeacher($user)) {
             return true;
         }
 

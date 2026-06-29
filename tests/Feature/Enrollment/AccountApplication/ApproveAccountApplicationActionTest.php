@@ -14,7 +14,11 @@ uses(LazilyRefreshDatabase::class);
 test('approves pending application and creates user and registration', function () {
     $admin = User::factory()->create();
     $admin->assignRole('admin');
-    $application = AccountApplication::factory()->pending()->create();
+
+    $internship = App\Program\Internship\Models\Internship::factory()->create();
+    $application = AccountApplication::factory()->pending()->create([
+        'form_data' => ['internship_id' => $internship->id],
+    ]);
 
     $registration = app(ApproveAccountApplicationAction::class)->execute($application->id, $admin);
 

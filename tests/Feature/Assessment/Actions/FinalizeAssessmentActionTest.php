@@ -75,7 +75,7 @@ test('throws when no competencies have been scored', function () {
                     'id' => 'comp-1',
                     'name' => 'Empty',
                     'weight' => 100,
-                    'evaluator_role' => 'teacher',
+                    'evaluator_role' => 'supervisor',
                     'order' => 1,
                     'indicators' => [
                         [

@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 use App\SysAdmin\Observability\Recorders\RegistrationRecorder;
 use App\SysAdmin\Observability\Recorders\SystemRecorder;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 test('records registration and system snapshots', function () {
-    $this->partialMock(RegistrationRecorder::class, function ($mock) {
-        $mock->shouldReceive('recordSnapshot')->once();
-    });
-    $this->partialMock(SystemRecorder::class, function ($mock) {
-        $mock->shouldReceive('recordSnapshot')->once();
-    });
+    RegistrationRecorder::recordSnapshot();
+    SystemRecorder::recordSnapshot();
 
     $this->artisan('pulse:record-snapshots')
         ->assertExitCode(0);

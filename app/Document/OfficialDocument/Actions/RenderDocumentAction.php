@@ -27,21 +27,18 @@ final class RenderDocumentAction extends BaseCommandAction
 
         $rendered = $this->transaction(function () use ($document, $target, $registration, $path) {
             $doc = Document::create([
-                'name' => $document->name.' - '.($target->mentee->user->name ?? ''),
+                'title' => $document->title.' - '.($target->mentee->user->name ?? ''),
                 'slug' => $document->slug.'-'.$registration->id.'-'.now()->timestamp,
-                'category' => 'report',
-                'description' => 'Rendered from template: '.$document->name,
+                'type' => 'report',
                 'content' => $document->content,
                 'file_path' => $path,
                 'is_active' => true,
-                'template_version' => $document->template_version,
-                'template_id' => $document->id,
             ]);
 
             $this->log('document_rendered', $doc, [
-                'template' => $document->name,
+                'template' => $document->title,
                 'registration' => $registration->id,
-                'student' => $target->mentee->user->name,
+                'student' => $target->mentee?->user?->name ?? 'Unknown',
             ]);
 
             return $doc;

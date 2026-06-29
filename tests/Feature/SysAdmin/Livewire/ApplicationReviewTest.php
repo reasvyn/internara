@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use App\Enrollment\AccountApplication\Models\AccountApplication;
-use App\Program\Actions\ApproveAccountApplicationAction;
-use App\Program\Actions\RejectAccountApplicationAction;
+use App\Enrollment\AccountApplication\Actions\ApproveAccountApplicationAction;
+use App\Enrollment\AccountApplication\Actions\RejectAccountApplicationAction;
 use App\SysAdmin\Livewire\ApplicationReview;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;

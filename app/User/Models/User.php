@@ -38,6 +38,7 @@ use Spatie\Permission\Traits\HasRoles;
         'username',
         'password',
         'setup_required',
+        'first_login_at',
         'locked_at',
         'locked_reason',
         'status',

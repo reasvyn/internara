@@ -28,5 +28,5 @@ test('updates existing document template', function () {
     ]);
 
     expect($updated->id)->toBe($existing->id);
-    expect($updated->name)->toBe('Updated Name');
+    expect($updated->title)->toBe('Updated Name');
 });

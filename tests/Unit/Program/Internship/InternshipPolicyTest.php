@@ -2,9 +2,14 @@
 
 declare(strict_types=1);
 
+use App\Enrollment\Placement\Models\Placement;
+use App\Enrollment\Registration\Models\Registration;
 use App\Program\Internship\Models\Internship;
 use App\Program\Internship\Policies\InternshipPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->policy = new InternshipPolicy;
@@ -144,27 +149,11 @@ test('admin can delete internship without placements or registrations', function
 });
 
 test('admin cannot delete internship with placements', function () {
-    $user = new class extends User
-    {
-        public function hasAnyRole(...$roles): bool
-        {
-            foreach ($roles as $role) {
-                if (is_array($role) && in_array('admin', $role, true)) {
-                    return true;
-                }
-                if ($role === 'admin' || $role === 'super_admin') {
-                    return true;
-                }
-            }
+    $user = User::factory()->create();
+    $user->assignRole('admin');
 
-            return false;
-        }
-    };
-    $user->id = 1;
-
-    $internship = Internship::factory()->make();
-    $internship->setRelation('placements', collect([new stdClass]));
-    $internship->setRelation('registrations', collect());
+    $internship = Internship::factory()->create();
+    Placement::factory()->create(['internship_id' => $internship->id]);
 
     expect($this->policy->delete($user, $internship))->toBeFalse();
 });

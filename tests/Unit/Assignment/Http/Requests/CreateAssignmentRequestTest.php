@@ -9,7 +9,7 @@ test('create assignment request rules exist', function () {
 
     $rules = $request->rules();
 
-    expect($rules)->toHaveKeys(['title', 'description', 'type', 'due_date', 'internship_id']);
+    expect($rules)->toHaveKeys(['title', 'description', 'due_date', 'internship_id']);
     expect($rules['title'])->toContain('required');
     expect($rules['due_date'])->toContain('after:today');
 });

@@ -35,6 +35,7 @@ return new class () extends Migration {
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
+            $table->string('role')->nullable();
             $table->dateTime('joined_at')->useCurrent();
             $table->timestamps();
 

@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Program\InternshipGroup\Models\InternshipGroup;
 use App\Program\InternshipGroup\Policies\InternshipGroupPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->policy = new InternshipGroupPolicy;
@@ -73,7 +77,8 @@ test('admin can update group', function () {
     };
     $user->id = 1;
 
-    expect($this->policy->update($user))->toBeTrue();
+    $group = InternshipGroup::factory()->make();
+    expect($this->policy->update($user, $group))->toBeTrue();
 });
 
 test('non-admin cannot update group', function () {
@@ -86,7 +91,8 @@ test('non-admin cannot update group', function () {
     };
     $user->id = 1;
 
-    expect($this->policy->update($user))->toBeFalse();
+    $group = InternshipGroup::factory()->make();
+    expect($this->policy->update($user, $group))->toBeFalse();
 });
 
 test('admin can delete group', function () {
@@ -108,7 +114,8 @@ test('admin can delete group', function () {
     };
     $user->id = 1;
 
-    expect($this->policy->delete($user))->toBeTrue();
+    $group = InternshipGroup::factory()->make();
+    expect($this->policy->delete($user, $group))->toBeTrue();
 });
 
 test('non-admin cannot delete group', function () {
@@ -121,5 +128,6 @@ test('non-admin cannot delete group', function () {
     };
     $user->id = 1;
 
-    expect($this->policy->delete($user))->toBeFalse();
+    $group = InternshipGroup::factory()->make();
+    expect($this->policy->delete($user, $group))->toBeFalse();
 });

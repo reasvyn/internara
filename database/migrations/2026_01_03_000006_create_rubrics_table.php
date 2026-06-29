@@ -20,6 +20,7 @@ return new class extends Migration
             $table->index('internship_id');
             $table->string('name');
             $table->json('structure')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });

@@ -24,8 +24,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
         'grade_letter',
         'industry_feedback',
         'status',
+        'supervisor_notes',
+        'content',
+        'title',
+        'chapter_structure',
         'finalized_by',
         'finalized_at',
+        'submitted_at',
         'archived_data',
     ]),
 ]
@@ -85,7 +90,9 @@ class Report extends BaseModel
             'exam_score' => 'float',
             'final_score' => 'float',
             'finalized_at' => 'datetime',
+            'content' => 'json',
             'archived_data' => 'json',
+            'chapter_structure' => 'array',
         ];
     }
 

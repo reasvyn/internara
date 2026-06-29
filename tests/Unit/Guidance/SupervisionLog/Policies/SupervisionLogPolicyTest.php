@@ -10,7 +10,6 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
-
     $this->policy = app(SupervisionLogPolicy::class);
 });
 
@@ -21,44 +20,34 @@ test('admin can view any log', function () {
     expect($this->policy->viewAny($admin))->toBeTrue();
 });
 
-test('student cannot view any log', function () {
+test('student can view any log', function () {
     $student = User::factory()->create();
     $student->assignRole('student');
 
-    expect($this->policy->viewAny($student))->toBeFalse();
+    expect($this->policy->viewAny($student))->toBeTrue();
 });
 
-test('teacher can create log', function () {
+test('only student can create log', function () {
+    $student = User::factory()->create();
+    $student->assignRole('student');
+    expect($this->policy->create($student))->toBeTrue();
+
     $teacher = User::factory()->create();
     $teacher->assignRole('teacher');
+    expect($this->policy->create($teacher))->toBeFalse();
 
-    expect($this->policy->create($teacher))->toBeTrue();
-});
-
-test('student cannot create log', function () {
-    $student = User::factory()->create();
-    $student->assignRole('student');
-
-    expect($this->policy->create($student))->toBeFalse();
-});
-
-test('supervisor can create log', function () {
     $supervisor = User::factory()->create();
     $supervisor->assignRole('supervisor');
+    expect($this->policy->create($supervisor))->toBeFalse();
 
-    expect($this->policy->create($supervisor))->toBeTrue();
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    expect($this->policy->create($admin))->toBeFalse();
 });
 
-test('admin can verify log', function () {
+test('admin can delete log', function () {
     $admin = User::factory()->create();
     $admin->assignRole('admin');
 
-    expect($this->policy->verify($admin, SupervisionLog::factory()->create()))->toBeTrue();
-});
-
-test('supervisor cannot verify log', function () {
-    $supervisor = User::factory()->create();
-    $supervisor->assignRole('supervisor');
-
-    expect($this->policy->verify($supervisor, SupervisionLog::factory()->create()))->toBeFalse();
+    expect($this->policy->delete($admin, SupervisionLog::factory()->create()))->toBeTrue();
 });

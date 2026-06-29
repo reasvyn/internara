@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Partners\Partnership\Models;
 
 use App\Core\Models\BaseModel;
+use App\Partners\Company\Models\Company;
 use App\Partners\Partnership\Entities\PartnershipState;
 use App\Partners\Partnership\Enums\PartnershipStatus;
 use Database\Factories\PartnershipFactory;

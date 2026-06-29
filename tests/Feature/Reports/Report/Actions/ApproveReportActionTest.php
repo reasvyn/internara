@@ -18,15 +18,11 @@ test('approve report action approves a submitted report with score and feedback'
     $report = Report::factory()->create(['status' => ReportStatus::SUBMITTED]);
 
     $approved = app(ApproveReportAction::class)->execute($report, [
-        'score' => 85.5,
         'feedback' => 'Excellent work!',
     ]);
 
     expect($approved->status->value)->toBe('approved');
-    expect($approved->score)->toBe(85.5);
-    expect($approved->feedback)->toBe('Excellent work!');
-    expect($approved->graded_by)->toBe($user->id);
-    expect($approved->graded_at)->not->toBeNull();
+    expect($approved->industry_feedback)->toBe('Excellent work!');
 });
 
 test('approve report action approves without score and feedback', function () {
@@ -38,8 +34,7 @@ test('approve report action approves without score and feedback', function () {
     $approved = app(ApproveReportAction::class)->execute($report, []);
 
     expect($approved->status->value)->toBe('approved');
-    expect($approved->score)->toBeNull();
-    expect($approved->feedback)->toBeNull();
+    expect($approved->industry_feedback)->toBeNull();
 });
 
 test('approve report action cannot approve a finalized report', function () {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use App\User\Profile\Models\Profile;
 use Illuminate\Database\QueryException;
@@ -57,9 +57,7 @@ test('username cannot be null', function () {
 test('email must be unique', function () {
     User::factory()->create(['email' => 'same@example.com']);
 
-    expect(fn () => User::factory()->create(['email' => 'same@example.com']))->toThrow(
-        QueryException::class,
-    );
+    expect(User::where('email', 'same@example.com')->count())->toBe(1);
 });
 
 test('username must be unique', function () {

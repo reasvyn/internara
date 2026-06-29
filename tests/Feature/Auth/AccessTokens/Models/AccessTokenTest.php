@@ -39,7 +39,8 @@ test('generated token has hashed token stored', function () {
 test('generated token expires after configured TTL', function () {
     $result = AccessToken::generateFor($this->user, 'activation', ['ttl_days' => 7]);
 
-    expect($result['token']->expires_at->diffInDays(now()))->toBeGreaterThanOrEqual(6);
+    expect($result['token']->expires_at->isFuture())->toBeTrue();
+    expect($result['token']->expires_at->greaterThan(now()->addDays(6)))->toBeTrue();
 });
 
 test('verify returns true for valid token', function () {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Announcement\Console\Commands;
 
-use App\SysAdmin\Announcement\Actions\SendAnnouncementAction;
+use App\SysAdmin\Announcement\Actions\PublishAnnouncementAction;
 use App\SysAdmin\Announcement\Enums\AnnouncementStatus;
 use App\SysAdmin\Announcement\Models\Announcement;
 use Illuminate\Console\Command;
@@ -15,7 +15,7 @@ class PublishScheduledAnnouncementsCommand extends Command
 
     protected $description = 'Publish all scheduled announcements whose scheduled_at has passed';
 
-    public function handle(SendAnnouncementAction $action): int
+    public function handle(PublishAnnouncementAction $action): int
     {
         $due = Announcement::where('status', AnnouncementStatus::SCHEDULED)
             ->where('scheduled_at', '<=', now())
@@ -28,7 +28,7 @@ class PublishScheduledAnnouncementsCommand extends Command
         }
 
         foreach ($due as $announcement) {
-            $action->publish($announcement);
+            $action->execute($announcement);
             $this->components->task(
                 __('sysadmin.publish_announcements.published', ['title' => $announcement->title]),
                 fn () => true,

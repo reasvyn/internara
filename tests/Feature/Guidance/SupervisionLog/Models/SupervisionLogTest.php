@@ -23,8 +23,8 @@ test('supervision log belongs to supervisor', function () {
     expect($log->supervisor)->toBeInstanceOf(User::class);
 });
 
-test('default status is pending', function () {
+test('default status is draft', function () {
     $log = SupervisionLog::factory()->create();
 
-    expect($log->status->value)->toBe('pending');
+    expect($log->status->value)->toBe('draft');
 });

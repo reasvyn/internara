@@ -40,6 +40,7 @@ test('reports pending assessments when some are not finalized', function () {
     $internship = Internship::factory()->create();
     $registration = Registration::factory()
         ->create(['internship_id' => $internship->id]);
+    $registration->update(['status' => 'active']);
     Assessment::factory()->create([
         'registration_id' => $registration->id,
         'finalized_at' => null,

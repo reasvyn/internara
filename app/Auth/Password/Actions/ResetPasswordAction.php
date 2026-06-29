@@ -6,6 +6,7 @@ namespace App\Auth\Password\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
+use App\Core\Support\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;

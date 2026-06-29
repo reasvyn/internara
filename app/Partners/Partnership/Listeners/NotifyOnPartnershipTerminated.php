@@ -17,9 +17,14 @@ final class NotifyOnPartnershipTerminated implements ShouldQueue
     public function handle(PartnershipTerminated $event): void
     {
         $partnership = $event->partnership;
+        $userId = $partnership->company?->created_by;
+
+        if ($userId === null) {
+            return;
+        }
 
         $this->sendNotification->execute(
-            userId: $partnership->company?->created_by,
+            userId: $userId,
             type: 'partnership_terminated',
             title: __('notifications.partnership_terminated.title'),
             message: __('notifications.partnership_terminated.message', [

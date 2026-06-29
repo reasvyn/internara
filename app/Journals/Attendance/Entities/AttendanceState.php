@@ -15,7 +15,10 @@ final readonly class AttendanceState extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
-        return new self(status: $model->status, clockOut: $model->clock_out);
+        return new self(
+            status: $model->status,
+            clockOut: $model->clock_out ? Carbon::parse($model->clock_out) : null,
+        );
     }
 
     public function hasClockOut(): bool

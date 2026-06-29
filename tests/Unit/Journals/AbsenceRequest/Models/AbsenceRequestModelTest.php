@@ -69,9 +69,11 @@ test('absence request casts absence_processed_at to datetime', function () {
 test('absence request fillable attributes are mass assignable', function () {
     $user = User::factory()->create();
 
+    $registration = \App\Enrollment\Registration\Models\Registration::factory()->create(['student_id' => $user->id]);
+
     $request = AbsenceRequest::create([
         'user_id' => $user->id,
-        'registration_id' => null,
+        'registration_id' => $registration->id,
         'date' => now()->toDateString(),
         'absence_type' => AbsenceReasonType::SICK->value,
         'absence_reason' => 'Family emergency.',

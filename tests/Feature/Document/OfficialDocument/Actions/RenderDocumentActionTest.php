@@ -16,7 +16,7 @@ test('renders document for registration', function () {
     $rendered = app(RenderDocumentAction::class)->execute($document, $registration);
 
     expect($rendered)->toBeInstanceOf(Document::class);
-    expect($rendered->template_id)->toBe($document->id);
+    expect($rendered->slug)->toStartWith($document->slug);
 });
 
 test('download returns file path for existing document', function () {

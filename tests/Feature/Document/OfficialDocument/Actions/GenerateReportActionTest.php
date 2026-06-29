@@ -17,7 +17,7 @@ test('generates report with valid data', function () {
     ]);
 
     expect($document)->toBeInstanceOf(Document::class);
-    expect($document->name)->toBe('Annual Report');
+    expect($document->title)->toBe('Annual Report');
 });
 
 test('throws validation error with missing required fields', function () {

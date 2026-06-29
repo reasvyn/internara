@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-final class RecoverSuperAdminAction extends BaseCommandAction
+class RecoverSuperAdminAction extends BaseCommandAction
 {
     public function execute(string $email, string $password): User
     {

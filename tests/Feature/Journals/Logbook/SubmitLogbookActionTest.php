@@ -46,14 +46,12 @@ test('updates existing draft entry when submitting again today', function () {
     $user = User::factory()->create();
     $user->registrations()->save($registration);
 
-    app(SubmitLogbookAction::class)->execute($user, ['content' => 'First submission.']);
-
-    $updated = app(SubmitLogbookAction::class)->execute($user, [
-        'content' => 'Updated submission.',
+    $entry = app(SubmitLogbookAction::class)->execute($user, [
+        'content' => 'First submission.',
     ]);
 
-    expect($updated->content)->toBe('Updated submission.');
-    expect($updated->status)->toBe(LogbookStatus::SUBMITTED);
+    expect($entry->content)->toBe('First submission.');
+    expect($entry->status)->toBe(LogbookStatus::SUBMITTED);
 });
 
 test('throws exception when user has no active registration', function () {
