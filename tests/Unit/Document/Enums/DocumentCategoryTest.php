@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Document\Enums\DocumentCategory;
 
 test('document category has all cases', function () {
-    expect(DocumentCategory::cases())->toHaveCount(5);
+    expect(DocumentCategory::cases())->toHaveCount(7);
     expect(DocumentCategory::APPLICATION->value)->toBe('application');
     expect(DocumentCategory::PERMIT->value)->toBe('permit');
     expect(DocumentCategory::CERTIFICATE->value)->toBe('certificate');

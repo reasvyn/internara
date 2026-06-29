@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Journals\Attendance\Entities\AttendanceStatus as AttendanceStatusEntity;
+use App\Journals\Attendance\Entities\AttendanceState as AttendanceStatusEntity;
 use App\Journals\Attendance\Enums\AttendanceStatus;
 use Carbon\Carbon;
 

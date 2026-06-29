@@ -6,6 +6,9 @@ use App\User\Mentor\Entities\MentorEntity;
 use App\User\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 function createTestUser(string $id, bool $admin = false, bool $teacher = false): User
 {
@@ -47,7 +50,25 @@ function createTestUser(string $id, bool $admin = false, bool $teacher = false):
 
 function createTestMentor(string $id, string $role): User
 {
-    $user = tap(new User)->forceFill(['id' => $id]);
+    $user = new class extends User
+    {
+        private string $testRole = '';
+
+        public function setTestRole(string $role): void
+        {
+            $this->testRole = $role;
+        }
+
+        public function hasRole($roles, ?string $guard = null): bool
+        {
+            $roles = is_array($roles) ? $roles : [$roles];
+
+            return in_array($this->testRole, $roles);
+        }
+    };
+
+    $user->forceFill(['id' => $id]);
+    $user->setTestRole($role);
     $pivot = tap(new Pivot)->forceFill(['role' => $role]);
     $user->setRelation('pivot', $pivot);
 

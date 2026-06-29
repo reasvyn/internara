@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['internship_group_id', 'registration_id', 'user_id', 'joined_at'])]
+#[Fillable(['internship_group_id', 'registration_id', 'user_id', 'role', 'joined_at'])]
 class InternshipGroupMember extends BaseModel
 {
     use HasFactory;

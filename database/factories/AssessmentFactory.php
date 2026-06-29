@@ -20,6 +20,7 @@ class AssessmentFactory extends Factory
     {
         return [
             'registration_id' => Registration::factory(),
+            'rubric_id' => \App\Assessment\Rubric\Models\Rubric::factory(),
             'evaluator_id' => User::factory(),
             'assessment_type' => $this->faker->randomElement([
                 'midterm',

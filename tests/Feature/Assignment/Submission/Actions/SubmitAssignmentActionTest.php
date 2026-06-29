@@ -7,6 +7,7 @@ use App\Assignment\Submission\Actions\SubmitAssignmentAction;
 use App\Assignment\Submission\Data\SubmitAssignmentData;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Exceptions\RejectedException;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
@@ -17,6 +18,11 @@ test('submits assignment for published assignment', function () {
     $student->assignRole('student');
 
     $assignment = Assignment::factory()->create(['status' => 'published']);
+    Registration::factory()->create([
+        'student_id' => $student->id,
+        'internship_id' => $assignment->internship_id,
+        'status' => 'active',
+    ]);
 
     $submission = app(SubmitAssignmentAction::class)->execute(
         $student,

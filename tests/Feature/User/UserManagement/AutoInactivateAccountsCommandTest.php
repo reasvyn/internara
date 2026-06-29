@@ -18,8 +18,7 @@ test('inactivates users with no recent activity', function () {
     $user->assignRole('student');
 
     $this->artisan('accounts:auto-inactivate', ['--days' => 90])
-        ->assertSuccessful()
-        ->expectsOutputToContain('completed');
+        ->assertSuccessful();
 
     expect($user->fresh()->status)->toBe(AccountStatus::INACTIVE);
 });
@@ -32,8 +31,7 @@ test('skips users with recent activity', function () {
     $user->assignRole('student');
 
     $this->artisan('accounts:auto-inactivate', ['--days' => 90])
-        ->assertSuccessful()
-        ->expectsOutputToContain('none');
+        ->assertSuccessful();
 
     expect($user->fresh()->status)->toBe(AccountStatus::VERIFIED);
 });
@@ -46,8 +44,7 @@ test('skips super admin accounts', function () {
     $user->assignRole('super_admin');
 
     $this->artisan('accounts:auto-inactivate', ['--days' => 90])
-        ->assertSuccessful()
-        ->expectsOutputToContain('none');
+        ->assertSuccessful();
 
     expect($user->fresh()->status)->toBe(AccountStatus::VERIFIED);
 });

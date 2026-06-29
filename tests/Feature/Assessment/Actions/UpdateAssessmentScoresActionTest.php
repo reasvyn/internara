@@ -18,7 +18,7 @@ test('updates indicator score in assessment scores data', function () {
         90,
     );
 
-    expect($result->scores_data['competencies']['competency-1']['indicators']['indicator-1'])->toBe(90.0);
+    expect($result->scores_data['competencies']['competency-1']['indicators']['indicator-1'])->toEqual(90.0);
 });
 
 test('removes indicator score when null', function () {

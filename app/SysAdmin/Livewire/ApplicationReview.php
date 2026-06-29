@@ -25,7 +25,7 @@ class ApplicationReview extends Component
     #[Computed]
     public function pendingApplications(): Collection
     {
-        return AccountApplication::with(['internship', 'school'])
+        return AccountApplication::with(['department'])
             ->where('status', AccountApplicationStatus::PENDING->value)
             ->latest()
             ->get();

@@ -71,6 +71,21 @@ class Announcement extends BaseModel
         return AnnouncementState::fromModel($this);
     }
 
+    public function isScheduled(): bool
+    {
+        return $this->status === AnnouncementStatus::SCHEDULED;
+    }
+
+    public function isDraft(): bool
+    {
+        return $this->status === AnnouncementStatus::DRAFT;
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->status === AnnouncementStatus::PUBLISHED;
+    }
+
     protected static function newFactory(): AnnouncementFactory
     {
         return AnnouncementFactory::new();

@@ -9,7 +9,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Storage;
 
-final readonly class DocumentRenderer
+class DocumentRenderer
 {
     private const string STORAGE_PATH = 'generated-documents';
 

@@ -12,6 +12,8 @@ final class DeletePlacementAction extends BaseCommandAction
 {
     public function execute(Placement $placement): void
     {
+        $placement->loadCount('registrations');
+
         if (! $placement->asPlacementState()->canBeDeleted()) {
             throw new RejectedException(__('placement.has_active_registrations'));
         }

@@ -19,7 +19,7 @@ final class HandleReportApproved implements ShouldQueue
         $report = $event->report;
 
         $this->sendNotification->execute(
-            userId: $report->student_id,
+            userId: $report->registration?->student_id,
             type: 'report_approved',
             title: __('notifications.report_approved.title'),
             message: __('notifications.report_approved.message', ['title' => $report->title]),

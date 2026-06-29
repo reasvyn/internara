@@ -12,6 +12,13 @@ Route::prefix('student')
         Route::livewire('/reports', ReportWriter::class)->name('reports');
     });
 
+Route::middleware(['auth'])
+    ->group(function () {
+        Route::get('/reports/{report}', function (App\Reports\Report\Models\Report $report) {
+            return redirect()->route('student.reports');
+        })->name('reports.show');
+    });
+
 Route::prefix('admin')
     ->name('sysadmin.')
     ->middleware(['auth', 'role:super_admin|admin'])

@@ -41,6 +41,7 @@ final class CreateSupervisionLogAction extends BaseCommandAction
                     'date' => $data['date'] ?? now()->toDateString(),
                     'topic' => $data['topic'] ?? null,
                     'notes' => $data['notes'] ?? null,
+                    'is_verified' => false,
                     'status' => SupervisionLogStatus::SUBMITTED->value,
                 ]);
             }

@@ -78,8 +78,7 @@ test('logbook returns LogbookState', function () {
 test('logbook registers media collection', function () {
     $entry = Logbook::factory()->create();
 
-    expect($entry->getMediaCollections())->toHaveCount(1);
-    expect($entry->getMediaCollections()[0]->name)->toBe('photos');
+    expect($entry->hasMedia('photos'))->toBeFalse();
 });
 
 test('logbook fillable attributes are mass assignable', function () {

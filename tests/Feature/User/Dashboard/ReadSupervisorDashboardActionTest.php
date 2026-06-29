@@ -3,15 +3,18 @@
 declare(strict_types=1);
 
 use App\User\Dashboard\Actions\ReadSupervisorDashboardAction;
+use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
 
-beforeEach(function () {});
+beforeEach(function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('super_admin');
+    $this->actingAs($admin);
+});
 
 test('returns default zero stats when supervisor has no activity', function () {
-    $this->actingAsSuperAdmin();
-
     $action = app(ReadSupervisorDashboardAction::class);
     $stats = $action->execute();
 
@@ -25,8 +28,6 @@ test('returns default zero stats when supervisor has no activity', function () {
 });
 
 test('stats are cached', function () {
-    $this->actingAsSuperAdmin();
-
     $action = app(ReadSupervisorDashboardAction::class);
     $stats = $action->execute();
 

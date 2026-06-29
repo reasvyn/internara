@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Document\Models\Document;
 use App\Document\OfficialDocument\Actions\GenerateDocumentAction;
+use App\Document\Services\DocumentRenderer;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
@@ -20,10 +21,11 @@ describe('GenerateDocumentAction', function () {
             public string $name = 'Test Student';
         };
 
-        $renderer = Mockery::mock('overload:App\Document\Support\DocumentRenderer');
+        $renderer = Mockery::mock(DocumentRenderer::class);
         $renderer->shouldReceive('storePdf')
             ->once()
             ->andReturn('generated-documents/test-doc-12345.pdf');
+        app()->instance(DocumentRenderer::class, $renderer);
 
         $result = app(GenerateDocumentAction::class)->execute($document, $target);
 
@@ -43,10 +45,11 @@ describe('GenerateDocumentAction', function () {
             public string $name = 'Test Student';
         };
 
-        $renderer = Mockery::mock('overload:App\Document\Support\DocumentRenderer');
+        $renderer = Mockery::mock(DocumentRenderer::class);
         $renderer->shouldReceive('storePdf')
             ->once()
             ->andReturn('generated-documents/test-doc-67890.pdf');
+        app()->instance(DocumentRenderer::class, $renderer);
 
         $result = app(GenerateDocumentAction::class)->execute($document, $target);
 

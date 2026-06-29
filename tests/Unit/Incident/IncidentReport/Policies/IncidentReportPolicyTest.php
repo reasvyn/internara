@@ -5,6 +5,9 @@ declare(strict_types=1);
 use App\Incident\IncidentReport\Models\IncidentReport;
 use App\Incident\IncidentReport\Policies\IncidentReportPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->policy = app(IncidentReportPolicy::class);

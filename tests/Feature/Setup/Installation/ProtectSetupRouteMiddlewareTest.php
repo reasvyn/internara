@@ -2,15 +2,21 @@
 
 declare(strict_types=1);
 
+use App\Settings\Livewire\LangSwitcher;
+use App\Settings\Livewire\ThemeSwitcher;
 use App\Settings\Services\Settings;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    Livewire::component('settings.theme-switcher', ThemeSwitcher::class);
+    Livewire::component('settings.lang-switcher', LangSwitcher::class);
+
     Route::get('/_test_setup_protect', function () {
         return 'ok';
     })->middleware('setup.protected');

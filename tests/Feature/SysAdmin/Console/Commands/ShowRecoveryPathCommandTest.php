@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 test('shows the recovery key file path', function () {
-    File::shouldReceive('exists')
-        ->with(storage_path('app/private/.recovery-key'))
-        ->andReturn(true);
+    Storage::fake('local');
+    Storage::disk('local')->put('.recovery-key', 'test-key');
 
     $this->artisan('admin:recovery-path')
         ->assertExitCode(0)
@@ -15,9 +14,7 @@ test('shows the recovery key file path', function () {
 });
 
 test('shows missing status when file does not exist', function () {
-    File::shouldReceive('exists')
-        ->with(storage_path('app/private/.recovery-key'))
-        ->andReturn(false);
+    Storage::fake('local');
 
     $this->artisan('admin:recovery-path')
         ->assertExitCode(0)

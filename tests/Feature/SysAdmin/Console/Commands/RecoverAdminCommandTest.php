@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Auth\SuperAdmin\Actions\RecoverSuperAdminAction;
-use App\Setup\Entities\SetupEntity;
+use App\Settings\Services\Settings;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\ReadRecoveryKeyAction;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
@@ -16,10 +16,11 @@ beforeEach(function () {
     $admin = User::factory()->create(['email' => 'admin@example.com']);
     $admin->assignRole('super_admin');
 
-    $entity = Mockery::mock(SetupEntity::class);
-    $entity->shouldReceive('recoveryKey')->andReturn(Hash::make('valid-key'));
-    SetupEntity::shouldReceive('get')->andReturn($entity);
-    SetupEntity::shouldReceive('update')->andReturnTrue();
+    Settings::set([
+        'setup.install_recovery_key' => ['value' => Hash::make('valid-key'), 'group' => 'setup', 'type' => 'string'],
+        'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
+        'setup.updated_at' => ['value' => now()->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
+    ]);
 
     $this->mock(ReadRecoveryKeyAction::class)
         ->shouldReceive('execute')
@@ -39,6 +40,9 @@ test('recovers admin with valid key and email', function () {
         'email' => 'admin@example.com',
         '--key' => 'valid-key',
     ])
+        ->expectsQuestion(__('sysadmin.field_new_password'), 'password123')
+        ->expectsQuestion(__('sysadmin.field_confirm_password'), 'password123')
+        ->expectsQuestion(__('sysadmin.recover.confirm_prompt'), 'admin@example.com')
         ->assertExitCode(0)
         ->expectsOutputToContain(__('sysadmin.recover.success_reset'));
 });

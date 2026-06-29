@@ -79,9 +79,9 @@ test('attendance verifier belongs to user', function () {
 test('attendance returns AttendanceStatus entity', function () {
     $log = Attendance::factory()->create(['clock_out' => now()]);
 
-    $status = $log->asAttendanceStatus();
+    $status = $log->asAttendanceState();
 
-    expect($status)->toBeInstanceOf(App\Journals\Attendance\Entities\AttendanceStatus::class);
+    expect($status)->toBeInstanceOf(App\Journals\Attendance\Entities\AttendanceState::class);
 });
 
 test('attendance fillable attributes are mass assignable', function () {

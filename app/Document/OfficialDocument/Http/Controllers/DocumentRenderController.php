@@ -11,14 +11,14 @@ use App\Document\Services\DocumentRenderer;
 use App\Enrollment\Registration\Models\Registration;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Http\Response;
 
 class DocumentRenderController extends BaseController
 {
     public function show(
         Document $document,
         Registration $registration,
-    ): StreamedResponse|RedirectResponse {
+    ): Response|RedirectResponse {
         $target = $registration->loadMissing([
             'mentee.user.profile',
             'internship',

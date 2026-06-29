@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['internship_id', 'name', 'structure', 'created_by'])]
+#[Fillable(['internship_id', 'name', 'structure', 'is_active', 'created_by'])]
 class Rubric extends BaseModel
 {
     use HasFactory;
@@ -23,6 +23,7 @@ class Rubric extends BaseModel
     {
         return [
             'structure' => 'json',
+            'is_active' => 'boolean',
         ];
     }
 

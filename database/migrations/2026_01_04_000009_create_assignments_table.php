@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('assignment_type')->default('project'); // report | essay | project
             $table->string('title');
             $table->text('description')->nullable();
+            $table->boolean('is_mandatory')->default(false);
             $table->dateTime('due_date')->nullable();
             $table->string('status', 20)->default('draft');
             $table->foreignUuid('created_by')->nullable()->constrained('users')->nullOnDelete();

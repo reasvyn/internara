@@ -57,7 +57,7 @@ test('non-user-facing exception returns generic json message', function () {
     $response = $this->getJson('/_test_exception/rate_limit');
 
     $response->assertStatus(429);
-    $response->assertJson(['message' => 'An unexpected error occurred.']);
+    $response->assertJson(['message' => 'Kesalahan tidak diketahui.']);
 });
 
 test('user-facing action exception returns its message in json', function () {

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Certification\Certificate\Models\Certificate;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
@@ -13,7 +14,7 @@ test('guest cannot download certificate', function () {
 
     $response = $this->get(route('certificates.download', $certificate));
 
-    $response->assertStatus(403);
+    $response->assertStatus(302);
 });
 
 test('student can download own certificate', function () {
@@ -21,7 +22,14 @@ test('student can download own certificate', function () {
     $student->assignRole('student');
     $this->actingAs($student);
 
-    $certificate = Certificate::factory()->create();
+    $registration = Registration::factory()->create(['student_id' => $student->id]);
+    \App\Program\InternshipGroup\Models\InternshipGroupMember::factory()->create([
+        'registration_id' => $registration->id,
+        'user_id' => $student->id,
+    ]);
+    $certificate = Certificate::factory()->create([
+        'registration_id' => $registration->id,
+    ]);
 
     $response = $this->get(route('certificates.download', $certificate));
 

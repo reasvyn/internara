@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
         'assignment_type',
         'title',
         'description',
+        'is_mandatory',
         'due_date',
         'status',
         'created_by',
@@ -42,6 +43,7 @@ class Assignment extends BaseModel
 
     protected $casts = [
         'due_date' => 'datetime',
+        'is_mandatory' => 'boolean',
         'status' => AssignmentStatus::class,
     ];
 

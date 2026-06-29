@@ -12,6 +12,7 @@ uses(LazilyRefreshDatabase::class);
 
 test('creates supervision log by teacher', function () {
     $teacher = User::factory()->create();
+    $teacher->assignRole('teacher');
     $registration = Registration::factory()->create();
 
     $log = app(CreateSupervisionLogAction::class)->execute(

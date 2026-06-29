@@ -6,6 +6,9 @@ use App\Core\Channels\CustomDatabaseChannel;
 use App\Program\Internship\Notifications\InternshipCreatedNotification;
 use App\User\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 test('implements should queue', function () {
     $notification = new InternshipCreatedNotification('PKL 2025', 'Admin');

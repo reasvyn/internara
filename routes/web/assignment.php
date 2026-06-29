@@ -23,6 +23,13 @@ Route::prefix('admin')
         );
     });
 
+Route::middleware(['auth'])
+    ->group(function () {
+        Route::get('/assignments/{assignment}', function (App\Assignment\Models\Assignment $assignment) {
+            return redirect()->route('sysadmin.assignments');
+        })->name('assignment.show');
+    });
+
 Route::prefix('supervision')
     ->name('supervision.')
     ->middleware(['auth', 'role:teacher|supervisor'])

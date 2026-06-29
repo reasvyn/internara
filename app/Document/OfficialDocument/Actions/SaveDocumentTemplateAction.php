@@ -17,7 +17,13 @@ final class SaveDocumentTemplateAction extends BaseCommandAction
         return $this->transaction(function () use ($data, $slug) {
             $document = Document::updateOrCreate(
                 ['id' => $data['id'] ?? null],
-                array_merge($data, ['slug' => $slug]),
+                [
+                    'title' => $data['name'] ?? $data['title'] ?? '',
+                    'slug' => $slug,
+                    'content' => $data['content'] ?? null,
+                    'type' => $data['type'] ?? 'template',
+                    'is_active' => $data['is_active'] ?? true,
+                ],
             );
 
             $this->log('document_template_saved', $document, ['name' => $document->name]);

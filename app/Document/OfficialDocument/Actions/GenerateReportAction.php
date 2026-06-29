@@ -35,10 +35,9 @@ final class GenerateReportAction extends BaseCommandAction
 
         return $this->transaction(function () use ($validated, $slug, $content, $fileName) {
             $document = Document::create([
-                'name' => $validated['name'],
+                'title' => $validated['name'],
                 'slug' => $slug,
-                'category' => 'report',
-                'description' => $validated['description'] ?? 'Auto-generated report',
+                'type' => 'report',
                 'content' => $content,
                 'file_path' => "reports/{$fileName}",
                 'is_active' => true,

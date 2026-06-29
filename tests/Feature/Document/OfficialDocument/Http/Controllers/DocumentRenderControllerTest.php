@@ -17,7 +17,7 @@ test('show renders document pdf', function () {
     $document = Document::factory()->create();
     $registration = Registration::factory()->create();
 
-    $response = $this->get(route('documents.render.show', [$document, $registration]));
+    $response = $this->get(route('sysadmin.documents.render', [$document, $registration]));
 
     $response->assertStatus(200);
 });

@@ -24,6 +24,7 @@ test('rejects deletion when internship has placements', function () {
     $internship = Internship::factory()->create();
     $placement = Placement::factory()
         ->create(['internship_id' => $internship->id]);
+    $internship->loadCount(['placements', 'registrations']);
     $action = app(DeleteInternshipAction::class);
 
     expect(fn () => $action->execute($internship))->toThrow(RejectedException::class);
@@ -35,6 +36,7 @@ test('rejects deletion when internship has registrations', function () {
     $internship = Internship::factory()->create();
     Registration::factory()
         ->create(['internship_id' => $internship->id]);
+    $internship->loadCount(['placements', 'registrations']);
     $action = app(DeleteInternshipAction::class);
 
     expect(fn () => $action->execute($internship))->toThrow(RejectedException::class);

@@ -12,6 +12,7 @@ final class CreatePlacementAction extends BaseCommandAction
     public function execute(array $data): Placement
     {
         return $this->transaction(function () use ($data) {
+            $data['quota'] ??= 10;
             $data['filled_quota'] = 0;
             $placement = Placement::create($data);
 

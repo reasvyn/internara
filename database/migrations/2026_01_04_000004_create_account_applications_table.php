@@ -13,7 +13,7 @@ return new class extends Migration
         Schema::create('account_applications', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->index();
             $table->string('student_id_number', 50); // Target NISN
             $table->foreignUuid('department_id')->constrained('departments')->onDelete('cascade');
             $table->json('form_data');

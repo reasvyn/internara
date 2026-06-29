@@ -9,9 +9,9 @@ use App\Core\Actions\BaseCommandAction;
 
 final class DeleteCompetencyAction extends BaseCommandAction
 {
-    public function execute(Rubric $rubric, string $competencyId): void
+    public function execute(Rubric $rubric, string $competencyId): Rubric
     {
-        $this->transaction(function () use ($rubric, $competencyId) {
+        return $this->transaction(function () use ($rubric, $competencyId) {
             $structure = $rubric->structure;
 
             $structure['competencies'] = array_values(
@@ -24,6 +24,8 @@ final class DeleteCompetencyAction extends BaseCommandAction
                 'rubric_id' => $rubric->id,
                 'competency_id' => $competencyId,
             ]);
+
+            return $rubric->fresh();
         });
     }
 }

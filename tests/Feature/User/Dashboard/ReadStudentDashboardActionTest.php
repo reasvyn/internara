@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Document\Models\Document;
-use App\Enrollment\Models\Registration;
+use App\Enrollment\Registration\Models\Registration;
 use App\User\Dashboard\Actions\ReadStudentDashboardAction;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -17,11 +17,11 @@ test('get student dashboard data action returns statistics correctly', function 
         'status' => 'active',
     ]);
 
-    $policy1 = Document::factory()->create(['type' => 'policy', 'is_active' => true]);
-    $policy2 = Document::factory()->create(['type' => 'policy', 'is_active' => true]);
+    $handbook1 = Document::factory()->create(['type' => 'handbook', 'is_active' => true]);
+    $handbook2 = Document::factory()->create(['type' => 'handbook', 'is_active' => true]);
 
     activity()
-        ->performedOn($policy1)
+        ->performedOn($handbook1)
         ->causedBy($student)
         ->inLog('document')
         ->withProperties(['ip_address' => '127.0.0.1'])

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Assignment\Submission\Notifications\SubmissionFeedbackNotification;
+use App\Core\Channels\CustomDatabaseChannel;
 
 test('notification constructs with feedback data', function () {
     $notification = new SubmissionFeedbackNotification(

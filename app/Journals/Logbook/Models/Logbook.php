@@ -46,8 +46,7 @@ class Logbook extends BaseModel implements HasMedia
                 'image/webp',
                 'image/heic',
                 'image/heif',
-            ])
-            ->maxFileSize(10 * 1024 * 1024);
+            ]);
     }
 
     protected static function newFactory(): LogbookFactory

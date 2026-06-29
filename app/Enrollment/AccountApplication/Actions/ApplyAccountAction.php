@@ -22,6 +22,18 @@ final class ApplyAccountAction extends BaseCommandAction
         }
 
         return $this->transaction(function () use ($data) {
+            $existingRejected = AccountApplication::where('email', $data['email'])
+                ->where('status', AccountApplicationStatus::REJECTED->value)
+                ->first();
+
+            if ($existingRejected) {
+                $existingRejected->update(array_merge($data, ['status' => AccountApplicationStatus::PENDING->value]));
+
+                $this->log('account_applied', $existingRejected, $data);
+
+                return $existingRejected->fresh();
+            }
+
             $application = AccountApplication::create(array_merge($data, ['status' => AccountApplicationStatus::PENDING->value]));
 
             $this->log('account_applied', $application, $data);

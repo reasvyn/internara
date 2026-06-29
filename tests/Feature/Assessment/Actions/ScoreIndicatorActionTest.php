@@ -58,7 +58,7 @@ test('scores an indicator on a non-finalized assessment', function () {
     );
 
     $compData = collect($result->scores_data['competencies'])->firstWhere('id', $compId);
-    expect($compData['indicators'][$indId])->toBe(85.0);
+    expect($compData['indicators'][$indId])->toEqual(85.0);
 });
 
 test('throws when scoring a finalized assessment', function () {
