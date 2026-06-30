@@ -64,25 +64,10 @@ class LogbookManager extends BaseRecordManager
 
         $query = Logbook::query()->with(['user', 'registration', 'verifier', 'supervisor']);
 
-        if ($user->hasRole('teacher')) {
-            $query->whereHas(
+        if ($user->hasRole('teacher') || $user->hasRole('supervisor')) {
+            $query->whereRelation(
                 'registration',
-                fn ($q) => $q->whereHas(
-                    'mentors',
-                    fn ($mq) => $mq
-                        ->where('user_id', $user->id)
-                        ->where('internship_group_members.role', 'teacher'),
-                ),
-            );
-        } elseif ($user->hasRole('supervisor')) {
-            $query->whereHas(
-                'registration',
-                fn ($q) => $q->whereHas(
-                    'mentors',
-                    fn ($mq) => $mq
-                        ->where('user_id', $user->id)
-                        ->where('internship_group_members.role', 'supervisor'),
-                ),
+                fn ($q) => $q->whereHasMentor($user),
             );
         }
 
@@ -115,26 +100,8 @@ class LogbookManager extends BaseRecordManager
         $query = User::role('student');
 
         $user = auth()->user();
-        if ($user->hasRole('teacher')) {
-            $query->whereHas(
-                'registrations',
-                fn ($q) => $q->whereHas(
-                    'mentors',
-                    fn ($mq) => $mq
-                        ->where('user_id', $user->id)
-                        ->where('internship_group_members.role', 'teacher'),
-                ),
-            );
-        } elseif ($user->hasRole('supervisor')) {
-            $query->whereHas(
-                'registrations',
-                fn ($q) => $q->whereHas(
-                    'mentors',
-                    fn ($mq) => $mq
-                        ->where('user_id', $user->id)
-                        ->where('internship_group_members.role', 'supervisor'),
-                ),
-            );
+        if ($user->hasRole('teacher') || $user->hasRole('supervisor')) {
+            $query->whereHas('registrations', fn ($q) => $q->whereHasMentor($user));
         }
 
         return $query

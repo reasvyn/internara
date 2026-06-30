@@ -35,6 +35,10 @@ class SupervisorDashboard extends UserDashboard
             return;
         }
 
+        if ($user->hasRole('teacher')) {
+            return;
+        }
+
         abort(403);
     }
 

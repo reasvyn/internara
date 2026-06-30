@@ -46,7 +46,7 @@ final readonly class MentorEntity extends BaseEntity
 
     public function isMentor(User $user): bool
     {
-        return $this->mentors->contains($user->id);
+        return $this->mentors->contains(fn (User $m) => $m->id === $user->id);
     }
 
     // ---- Cross-Role Proxy ----

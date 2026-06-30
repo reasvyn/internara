@@ -101,11 +101,19 @@ class AssessmentGrading extends Component
 
     private function isAssignedAsMentor(string $evaluatorRole): bool
     {
-        return $this->registration
-            ->mentors()
-            ->where('user_id', auth()->id())
-            ->where('internship_group_members.role', $evaluatorRole)
-            ->exists();
+        $user = auth()->user();
+
+        if ($user === null) {
+            return false;
+        }
+
+        $entity = $this->registration->asMentorEntity();
+
+        return match ($evaluatorRole) {
+            'teacher' => $entity->canGradeSubmission($user) || $entity->canVerifyAttendance($user),
+            'supervisor' => $entity->canVerifyLogbook($user) || $entity->canReviewSupervisionLog($user),
+            default => $entity->isMentor($user),
+        };
     }
 
     #[Computed]
