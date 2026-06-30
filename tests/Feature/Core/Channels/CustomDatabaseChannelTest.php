@@ -7,7 +7,7 @@ namespace Tests\Feature\Core\Channels;
 use App\Core\Channels\CustomDatabaseChannel;
 use App\Core\Contracts\SendsNotifications;
 use App\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Notifications\Notification;
 
 // ─── Test Doubles ────────────────────────────────────────────────────────────────────────────
@@ -58,7 +58,7 @@ class MockNotificationMissingKeys extends Notification
 
 // ─── Tests ───────────────────────────────────────────────────────────────────────────────────
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('it sends notifications via custom database channel', function () {
     $sender = new RecordingNotificationSender;

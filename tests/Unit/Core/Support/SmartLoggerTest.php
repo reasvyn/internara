@@ -7,11 +7,11 @@ namespace Tests\Unit\Core\Support;
 use App\Core\Models\ActivityLog;
 use App\Core\Support\SmartLogger;
 use App\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\Facades\Event;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('success face creates logger and writes with info level', function () {
     Event::fake([MessageLogged::class]);

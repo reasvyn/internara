@@ -6,10 +6,10 @@ namespace Tests\Feature\Setup\SetupWizard\Actions;
 
 use App\Settings\Models\Setting;
 use App\Setup\SetupWizard\Actions\SetupSchoolAction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Validation\ValidationException;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('setup school action successfully stores school data in settings', function () {
     $action = new SetupSchoolAction;

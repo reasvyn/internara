@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use App\Settings\Services\Settings;
 use App\Setup\Installation\Http\Middleware\RequireSetupAccessMiddleware;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Settings::set([

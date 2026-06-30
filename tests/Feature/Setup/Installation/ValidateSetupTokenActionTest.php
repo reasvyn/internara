@@ -6,11 +6,11 @@ namespace Tests\Feature\Setup\Installation\Actions;
 
 use App\Settings\Services\Settings;
 use App\Setup\Installation\Actions\ValidateSetupTokenAction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Crypt;
 use RuntimeException;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Settings::set([

@@ -6,10 +6,10 @@ namespace Tests\Feature\Setup\Installation\Console\Commands;
 
 use App\Settings\Services\Settings;
 use App\Setup\Installation\Services\SystemProvisioner;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Settings::set([

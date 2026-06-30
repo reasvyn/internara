@@ -13,12 +13,12 @@ use App\Setup\Installation\Actions\InstallSystemAction;
 use App\Setup\Installation\Data\SetupTokenData;
 use App\Setup\Installation\Services\SystemProvisioner;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Carbon;
 use Mockery;
 use RuntimeException;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('install system action successfully runs audits, provisions, and returns token', function () {
     $passingCheck = new AuditCheck(

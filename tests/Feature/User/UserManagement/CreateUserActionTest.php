@@ -6,10 +6,10 @@ namespace Tests\Feature\User\UserManagement;
 
 use App\User\Models\User;
 use App\User\UserManagement\Actions\CreateUserAction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Spatie\Permission\Models\Role;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('create user action successfully creates user with profile and role', function () {
     // Setup role

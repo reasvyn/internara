@@ -6,9 +6,9 @@ use App\User\Models\User;
 use App\User\Notifications\Actions\SendNotificationAction;
 use App\User\Notifications\Models\Notification;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();

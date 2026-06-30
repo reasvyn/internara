@@ -5,9 +5,9 @@ declare(strict_types=1);
 use App\Core\Exceptions\RejectedException;
 use App\Setup\SetupWizard\Actions\SetupSuperAdminAction;
 use App\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {});
 

@@ -8,7 +8,7 @@ use App\Core\Events\BaseEvent;
 use App\Core\Models\ActivityLog;
 use App\Core\Support\SmartLogger;
 use App\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Log\Events\MessageLogged;
 use Illuminate\Support\Facades\Event;
 
@@ -22,7 +22,7 @@ class TestUserCreatedEvent extends BaseEvent
     }
 }
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('smart logger can write system log', function () {
     Event::fake([MessageLogged::class]);

@@ -6,9 +6,9 @@ use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use App\User\Profile\Models\Profile;
 use Illuminate\Database\QueryException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {});
 

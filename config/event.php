@@ -184,11 +184,27 @@ return [
             SendBackupFailedNotification::class,
         ],
 
+        // Events needing listener implementation (TODO):
+        // AssessmentFinalized — needs cache invalidation
+        // SubmissionRevisionRequested — needs student notification
+        // AccountApplicationApproved — needs applicant notification
+        // AccountApplicationRejected — needs applicant notification
+        // ReportSubmitted — needs supervisor notification
+        // UserCreated — needs user cache invalidation
+        // UserDeleted — needs user cache invalidation
+        // UserStatusChanged — needs user cache invalidation
+        // UserUpdated — needs user cache invalidation
+
         // Fire-and-forget events (intentionally no listeners):
         // BackupCompleted — logged in CreateBackupAction, no side effects needed
         // GradeCalculated — synchronous calculation, logged in action
         // RecoverySlipGenerated — OTP flow, logged in action
         // InternshipStatusBatchUpdated — batch operation, logged in action
         // ReportFinalized — not currently dispatched from any Action
+        // CertificateIssued — logged in action, QR generation is synchronous
+        // AttendanceClockIn — logged in action, geofence check is synchronous
+        // AttendanceClockOut — logged in action, duration calculation is synchronous
+        // UserAccountLocked — logged in action, status change is synchronous
+        // UserAccountUnlocked — logged in action, status change is synchronous
     ],
 ];
