@@ -1,11 +1,24 @@
 # Roadmap — Cross-Role Proxy Implementation
 
-> **Last updated:** 2026-06-16
-> **Changes:** replace Guidance restructuring (deferred) with Cross-Role Proxy implementation plan
+> **Last updated:** 2026-06-28
+> **Changes:** update all phase status after implementation; document isMentor() bug fix
 
 ## Description
 > **Target:** Application-wide authorization layer
 > **Dependencies:** `MentorEntity` (existing), `BasePolicy`, all module policies and Livewire components
+
+## Implementation Status
+
+| Phase | Status |
+|-------|--------|
+| Phase 1 — Wire MentorEntity into Core | ✅ Complete (Tasks 1.1 and 1.2) |
+| Phase 2 — Policy Integration | ✅ Complete (Tasks 2.1–2.5) |
+| Phase 3 — Livewire Query Scope | ✅ Complete (Tasks 3.1–3.2) |
+| Phase 4 — AuthorizesRoles Deprecation | ✅ Complete (deprecation notices added) |
+| Phase 5 — Dashboard Routing | ✅ Complete (getProxyDashboardForUser added) |
+| Tests | ✅ Complete (MentorEntityProxyTest — 6 tests) |
+
+**Bug fix discovered during implementation:** `MentorEntity::isMentor()` used `Collection::contains(string)` which never matched User model objects. Fixed to use closure comparison.
 
 ---
 
@@ -230,21 +243,21 @@ test('teacher can proxy as supervisor for assigned student', function () {
 
 ## 5. Integration Order
 
-| # | Phase | Task | Files | Depends On |
-|---|-------|------|-------|------------|
-| 1 | 1 | BasePolicy proxy helper | `BasePolicy.php` or new trait | — |
-| 2 | 1 | Fix SupervisorDashboard 403 | `SupervisorDashboard.php` | — |
-| 3 | 1 | Fix TeacherDashboard 403 | `TeacherDashboard.php` | — |
-| 4 | 2 | LogbookPolicy | `LogbookPolicy.php` | 1 |
-| 5 | 2 | AttendancePolicy | `AttendancePolicy.php` | 1 |
-| 6 | 2 | SupervisionLogPolicy | `SupervisionLogPolicy.php` | 1 |
-| 7 | 2 | SubmissionPolicy | `SubmissionPolicy.php` | 1 |
-| 8 | 2 | AssessmentPolicy + AssessmentGrading | `AssessmentPolicy.php`, `AssessmentGrading.php` | 1 |
-| 9 | 3 | LogbookManager query scope | `LogbookManager.php` | 1 |
-| 10 | 3 | SubmissionGrading query scope | `SubmissionGrading.php` | 1 |
-| 11 | 4 | AuthorizesRoles deprecation + migration | `AuthorizesRoles.php`, all policies | 2, 3 |
-| 12 | 5 | Dashboard routing | `DashboardService.php` | 2 |
-| 13 | — | Tests | All test files | 1–5 |
+| # | Phase | Task | Files | Status |
+|---|-------|------|-------|--------|
+| 1 | 1 | BasePolicy proxy helper | `HasMentorProxy` trait (existing) | ✅ Pre-existing |
+| 2 | 1 | Fix SupervisorDashboard 403 | `SupervisorDashboard.php` | ✅ Done |
+| 3 | 1 | Fix TeacherDashboard 403 | `TeacherDashboard.php` | ✅ Already allowed admin |
+| 4 | 2 | LogbookPolicy | `LogbookPolicy.php` | ✅ Pre-existing |
+| 5 | 2 | AttendancePolicy | `AttendancePolicy.php` | ✅ Fixed verify() |
+| 6 | 2 | SupervisionLogPolicy | `SupervisionLogPolicy.php` | ✅ Pre-existing |
+| 7 | 2 | SubmissionPolicy | `SubmissionPolicy.php` | ✅ Fixed view() |
+| 8 | 2 | AssessmentPolicy + AssessmentGrading | `AssessmentPolicy.php`, `AssessmentGrading.php` | ✅ Fixed isAssignedAsMentor() |
+| 9 | 3 | LogbookManager query scope | `LogbookManager.php` | ✅ Fixed query() + students() |
+| 10 | 3 | SubmissionGrading query scope | `SubmissionGrading.php` | ✅ No mentor queries |
+| 11 | 4 | AuthorizesRoles deprecation | `AuthorizesRoles.php` | ✅ Added @deprecated |
+| 12 | 5 | Dashboard routing | `DashboardService.php` | ✅ Added getProxyDashboardForUser() |
+| 13 | — | Tests | `MentorEntityProxyTest.php` | ✅ 6 tests added |
 
 ---
 
