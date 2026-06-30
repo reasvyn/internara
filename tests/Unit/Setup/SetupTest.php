@@ -6,9 +6,9 @@ namespace Tests\Unit\Setup\Models;
 
 use App\Settings\Services\Settings;
 use App\Setup\Entities\SetupEntity;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('setup entity from settings returns SetupEntity', function () {
     Settings::set([

@@ -5,9 +5,9 @@ declare(strict_types=1);
 use App\Certification\Certificate\Models\Certificate;
 use App\Certification\Certificate\Services\CertificateRenderer;
 use App\Enrollment\Registration\Models\Registration;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->renderer = app(CertificateRenderer::class);

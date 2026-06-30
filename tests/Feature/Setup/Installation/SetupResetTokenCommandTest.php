@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\Feature\Setup\Installation\Console\Commands;
 
 use App\Settings\Services\Settings;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Settings::set([

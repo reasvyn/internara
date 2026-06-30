@@ -6,10 +6,10 @@ use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use App\User\Profile\Actions\UpdateProfileAction;
 use App\User\Profile\Models\Profile;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Validation\ValidationException;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();

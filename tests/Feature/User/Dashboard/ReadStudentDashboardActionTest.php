@@ -6,9 +6,9 @@ use App\Document\Models\Document;
 use App\Enrollment\Registration\Models\Registration;
 use App\User\Dashboard\Actions\ReadStudentDashboardAction;
 use App\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('get student dashboard data action returns statistics correctly', function () {
     $student = User::factory()->create();

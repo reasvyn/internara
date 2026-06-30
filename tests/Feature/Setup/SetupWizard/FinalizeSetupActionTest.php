@@ -13,11 +13,11 @@ use App\Setup\SetupWizard\Actions\SetupDepartmentAction;
 use App\Setup\SetupWizard\Actions\SetupSchoolAction;
 use App\Setup\SetupWizard\Actions\SetupSuperAdminAction;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Mockery;
 use RuntimeException;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Settings::set([

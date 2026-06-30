@@ -8,7 +8,7 @@ use App\Core\Livewire\BaseRecordManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -129,7 +129,7 @@ class TestRecordManager extends BaseRecordManager
 
 // ─── Test Setup ───────────────────────────────────────────────────────────────────────────────
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Schema::create('test_records', function (Blueprint $table) {

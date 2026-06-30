@@ -6,10 +6,10 @@ namespace Tests\Feature\Setup\SetupWizard\Actions;
 
 use App\Academics\Department\Models\Department;
 use App\Setup\SetupWizard\Actions\SetupDepartmentAction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Validation\ValidationException;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('setup department action successfully creates department', function () {
     $action = new SetupDepartmentAction;

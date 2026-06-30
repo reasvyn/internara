@@ -6,9 +6,9 @@ use App\Auth\AccessTokens\Models\AccessToken;
 use App\Auth\AccountRecovery\Actions\GenerateRecoverySlipAction;
 use App\Auth\AccountRecovery\Data\RecoveryCodeData;
 use App\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();

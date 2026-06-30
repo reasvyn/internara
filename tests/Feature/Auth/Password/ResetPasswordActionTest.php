@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 use App\Auth\Password\Actions\ResetPasswordAction;
 use App\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->user = User::factory()->create();

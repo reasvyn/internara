@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use App\User\Models\User;
 use App\User\Services\DashboardService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {});
 

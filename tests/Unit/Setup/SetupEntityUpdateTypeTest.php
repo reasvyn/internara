@@ -6,9 +6,9 @@ namespace Tests\Unit\Setup\Entities;
 
 use App\Settings\Models\Setting;
 use App\Setup\Entities\SetupEntity;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('update uses known type from map for known keys', function () {
     SetupEntity::update(['is_installed' => true]);

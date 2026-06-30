@@ -8,11 +8,11 @@ use App\Core\Contracts\SendsNotifications;
 use App\Settings\Services\Settings;
 use App\Setup\SetupWizard\Livewire\SetupWizard;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 use Mockery;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     Settings::set([

@@ -7,12 +7,12 @@ use App\Auth\SuperAdmin\Notifications\RecoveryOtpNotification;
 use App\Settings\Models\Setting;
 use App\User\Enums\AccountStatus;
 use App\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
 

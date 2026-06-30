@@ -6,12 +6,12 @@ namespace Tests\Feature\Core\Http\Middleware;
 
 use App\Core\Http\Middleware\LogContext;
 use App\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Mockery;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('log context middleware pushes context parameters', function () {
     Log::shouldReceive('withContext')->twice()->with(

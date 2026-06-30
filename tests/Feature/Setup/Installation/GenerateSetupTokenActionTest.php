@@ -7,10 +7,10 @@ namespace Tests\Feature\Setup\Installation;
 use App\Settings\Services\Settings;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
 use App\Setup\Installation\Data\SetupTokenData;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Crypt;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('generate setup token action creates token and increments version', function () {
     $action = new GenerateSetupTokenAction;
