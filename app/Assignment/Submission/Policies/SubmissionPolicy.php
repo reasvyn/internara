@@ -23,13 +23,11 @@ class SubmissionPolicy extends BasePolicy
             return true;
         }
 
-        $assignment = $submission->assignment;
-
-        if ($this->isTeacher($user) && $assignment && $assignment->created_by === $user->id) {
+        if ($submission->student_id === $user->id) {
             return true;
         }
 
-        return $submission->student_id === $user->id;
+        return $this->mentorProxyFor($submission->registration, $user)?->canGradeSubmission($user) ?? false;
     }
 
     public function create(User $user): bool

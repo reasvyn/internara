@@ -19,6 +19,21 @@ class DashboardService
         };
     }
 
+    /**
+     * Resolve dashboard route with proxy awareness.
+     *
+     * Teachers proxying as supervisors see the supervisor dashboard.
+     * Admins proxying as teachers/supervisors see the target dashboard.
+     */
+    public function getProxyDashboardForUser(User $user): ?string
+    {
+        if ($user->hasRole('teacher')) {
+            return 'supervisor.dashboard';
+        }
+
+        return null;
+    }
+
     /** @return array<string, mixed> */
     public function getSharedStats(): array
     {
