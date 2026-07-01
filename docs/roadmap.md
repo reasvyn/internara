@@ -313,5 +313,5 @@ was chosen over alternatives.
 | # | Action | Design Decision | Priority |
 |---|--------|-----------------|----------|
 | 1 | **Add Livewire tests** | 63 components pending. Follow pest-testing reference. Prioritize Auth (security) + interactive components. No Eloquent mocking. | Medium |
-| 2 | **Add event tests** | 25 events untested. Follow UserLifecycleEventsTest.php template. Prioritize events with registered listeners. | Medium |
+| 2 | **Add event tests** | ✅ **Completed.** | Medium |
 | 3 | **Add event dispatch to remaining ~80 Actions** | SHOULD-level. Create/delete/status transitions only. Prioritize Journals, Enrollment. | Low |
