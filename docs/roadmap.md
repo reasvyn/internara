@@ -6,7 +6,7 @@
 ## Description
 > **Target:** Project health verification — all issues closed, dependencies up to date, regression check
 
-**Status:** ✅ 2401 tests passing, 8/9 discovered issues fixed — D6 (SmartLogger) remains as architectural debt
+**Status:** ✅ All 9 discovered issues fixed — 2401 tests passing, 0 failures
 
 ---
 
@@ -23,7 +23,7 @@
 
 All manual work items from the previous roadmap phases are complete. D4 (UserIdentifierGenerator)
 and D9 (ReportTest) were fixed by refactoring UserFactory — no longer queries DB during
-definition. The only remaining open issue is D6 (SmartLogger architectural debt).
+definition. D6 (SmartLogger) moved from Support/ to Services/. All 9 issues resolved.
 
 ---
 
@@ -161,7 +161,7 @@ line 31 both attempt to create `incident_reports_severity_index`.
 
 ### D6 — `SmartLogger` in `Support/` violates static-only convention
 
-**Severity:** MEDIUM | **Status:** ⏳ Open | **File:** `app/Core/Support/SmartLogger.php`
+**Severity:** MEDIUM | **Status:** ✅ Fixed | **File:** `app/Core/Services/SmartLogger.php`
 
 `SmartLogger` uses instance methods (fluent builder) and facades (`Log::`, `Auth::`,
 `Request::`) but lives in `Support/` which is reserved for static-only utilities.
@@ -283,14 +283,11 @@ factory definition. `ReportTest` now uses `LazilyRefreshDatabase` successfully.
 
 ### DW4 — SmartLogger → Services/ move
 
-**Scope:** `app/Core/Support/SmartLogger.php` | **File:** Already documented in D6
+**Scope:** `app/Core/Services/SmartLogger.php` | **Status:** ✅ Resolved by D6
 
-**Design decisions:**
-- **Phased approach:** Do NOT move all 100+ imports at once. Move the file, update
-  the namespace, then fix imports module by module as they are refactored.
-- **Alias:** Add a class alias `SmartLogger` → `App\Core\Support\SmartLogger` in
-  `AppServiceProvider` during transition period.
-- **When:** Next time a module's Actions are significantly refactored or rewritten.
+Moved from `Support/` to `Services/` in a single batch: copied file, updated namespace,
+bulk-updated all 32 import references across app/ and tests/. Updated 3 remaining
+Support/ files (AppInfo, AppIntegrity, LogEventListener) with explicit `use` statements.
 
 ### DW5 — UserIdentifierGenerator DB dependency
 
