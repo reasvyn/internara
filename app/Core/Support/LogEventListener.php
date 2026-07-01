@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Support;
 
 use App\Core\Events\BaseEvent;
+use App\Core\Services\SmartLogger;
 
 /**
  * Generic event listener that logs all event dispatches.

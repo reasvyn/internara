@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Support;
 
+use App\Core\Services\SmartLogger;
 use RuntimeException;
 
 final class AppIntegrity
