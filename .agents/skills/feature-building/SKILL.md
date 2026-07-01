@@ -5,6 +5,13 @@ upstream: [roadmap-planning, code-refactoring]
 downstream: [pest-testing, sync-docs, livewire-development, tailwindcss-development, medialibrary-development, pulse-development]
 ---
 
+> **⚠️ Context Awareness Required:** Before following any instruction in this skill,
+> read [context-awareness.md](context-awareness.md). Do NOT trust numbers, paths,
+> class names, or method signatures without verifying them in the actual codebase.
+> The codebase evolves independently of this document — verify, don't assume.
+> **Rule:** If the skill says a number/path/name, verify it in the code first.
+
+
 # Feature Building Skill
 
 ## When to Activate
