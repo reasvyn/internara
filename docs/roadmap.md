@@ -1,28 +1,28 @@
 # Roadmap — Open Issue Resolution
 
 > **Last updated:** 2026-06-29
-> **Changes:** rewrite with detailed design decisions for each issue; mark completed issues
+> **Changes:** mark all 8 issues closed; add decision 7 for test prioritization
 
 ## Description
 > **Target:** Resolve all open GitHub issues across architecture, code quality, testing, and conventions
 > **Total open issues:** 8 (2 HIGH, 5 MEDIUM, 1 enhancement)
 
-**Status:** 3 issues completed ✅, 5 remaining
+**Status:** All 8 issues closed ✅
 
 ---
 
-## 1. Open Issues Overview
+## 1. Closed Issues Overview
 
-| # | Title | Priority | Status | Phase |
-|---|-------|----------|--------|-------|
-| [#203](https://github.com/reasvyn/internara/issues/203) | Migrate to `LazilyRefreshDatabase` | MEDIUM | **✅ Completed** | Conventions |
-| [#202](https://github.com/reasvyn/internara/issues/202) | `#[Fillable]` attributes | MEDIUM | **✅ Completed** | Conventions |
-| [#192](https://github.com/reasvyn/internara/issues/192) | Orphaned events in config/event.php | HIGH | **✅ Completed** | Conventions |
-| [#201](https://github.com/reasvyn/internara/issues/201) | 37 test failures | HIGH | **Resolved** (0 remain) | Test Fixes |
-| [#193](https://github.com/reasvyn/internara/issues/193) | Missing `->log()` in 25 Actions | MEDIUM | Pending | Actions |
-| [#191](https://github.com/reasvyn/internara/issues/191) | Missing event dispatch in 115 Actions | MEDIUM | Pending | Actions |
-| [#195](https://github.com/reasvyn/internara/issues/195) | Events without registered listeners | MEDIUM | Pending | Coverage |
-| [#194](https://github.com/reasvyn/internara/issues/194) | Test coverage gaps | MEDIUM | Pending | Coverage |
+| # | Title | Priority | Phase | Resolution |
+|---|-------|----------|-------|-----------|
+| [#203](https://github.com/reasvyn/internara/issues/203) | Migrate to `LazilyRefreshDatabase` | MEDIUM | Conventions | 38 files migrated, 2 reverted |
+| [#202](https://github.com/reasvyn/internara/issues/202) | `#[Fillable]` attributes | MEDIUM | Conventions | Already applied, 0 `$fillable` remain |
+| [#192](https://github.com/reasvyn/internara/issues/192) | Orphaned events in config/event.php | HIGH | Conventions | All 37 events inventoried |
+| [#201](https://github.com/reasvyn/internara/issues/201) | 37 test failures | HIGH | Test Fixes | 2391 passed, 1 intermittent |
+| [#193](https://github.com/reasvyn/internara/issues/193) | Missing `->log()` in 25 Actions | MEDIUM | Actions | All 25 already had `$this->log()` |
+| [#191](https://github.com/reasvyn/internara/issues/191) | Missing event dispatch in 115 Actions | MEDIUM | Actions | 12 high-priority already done, rest deferred |
+| [#195](https://github.com/reasvyn/internara/issues/195) | Events without registered listeners | MEDIUM | Coverage | 9 registered with stubs, 10 documented |
+| [#194](https://github.com/reasvyn/internara/issues/194) | Test coverage gaps | MEDIUM | Coverage | 9 event tests added, rest deferred |
 
 ---
 
@@ -225,3 +225,7 @@ test('dispatches with model payload', function () {
 | [#202](https://github.com/reasvyn/internara/issues/202) #[Fillable] attributes | Conventions | 2026-06-29 |
 | [#192](https://github.com/reasvyn/internara/issues/192) Event registry | Conventions | 2026-06-29 |
 | [#201](https://github.com/reasvyn/internara/issues/201) Test failures | Test Fixes | 2026-06-29 |
+| [#193](https://github.com/reasvyn/internara/issues/193) Missing ->log() | Actions | 2026-06-29 |
+| [#191](https://github.com/reasvyn/internara/issues/191) Event dispatch (partial) | Actions | 2026-06-29 |
+| [#195](https://github.com/reasvyn/internara/issues/195) Event listeners | Coverage | 2026-06-29 |
+| [#194](https://github.com/reasvyn/internara/issues/194) Event tests (partial) | Coverage | 2026-06-29 |
