@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Settings\Casts;
 
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use App\Settings\Enums\SettingType;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Encryption\DecryptException;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Console\Commands;
 
 use App\Core\Services\ModuleDiscoverService;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use Illuminate\Console\Command;
 use RuntimeException;
 

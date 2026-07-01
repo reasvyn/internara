@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Settings\Support;
 
 use App\Core\Support\AppInfo;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use App\Settings\Branding\Data\BrandData;
 use App\Settings\Models\Setting as SettingModel;
 use App\Settings\Theme\Support\Theme;

@@ -6,7 +6,7 @@ namespace App\Auth\Password\Livewire;
 
 use App\Auth\Password\Actions\ConfirmPasswordAction;
 use App\Auth\Password\Livewire\Forms\ConfirmPasswordForm;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;

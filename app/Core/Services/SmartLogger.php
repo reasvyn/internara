@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Support;
+namespace App\Core\Services;
 
 use App\Core\Events\BaseEvent;
+use App\Core\Support\PiiMasker;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;

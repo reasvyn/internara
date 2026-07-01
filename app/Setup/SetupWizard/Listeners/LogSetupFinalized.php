@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Setup\SetupWizard\Listeners;
 
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use Illuminate\Support\Facades\Cache;
 

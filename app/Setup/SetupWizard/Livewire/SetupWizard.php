@@ -6,7 +6,7 @@ namespace App\Setup\SetupWizard\Livewire;
 
 use App\Core\Exceptions\RejectedException;
 use App\Core\Support\AppInfo;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
 use App\Setup\SetupWizard\Livewire\Forms\DepartmentForm;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Actions;
 
 use App\Core\Exceptions\RejectedException;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use Illuminate\Contracts\Notifications\Notification;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Throwable;

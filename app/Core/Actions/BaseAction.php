@@ -6,7 +6,7 @@ namespace App\Core\Actions;
 
 use App\Core\Actions\Concerns\HandlesActionErrors;
 use App\Core\Events\BaseEvent;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Observability\Console\Commands;
 
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 

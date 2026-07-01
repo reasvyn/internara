@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Setup\Installation\Console\Commands;
 
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
 use App\Setup\Installation\Console\Commands\Concerns\InteractsWithInstallerCli;

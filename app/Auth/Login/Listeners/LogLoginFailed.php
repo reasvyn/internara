@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Auth\Login\Listeners;
 
 use App\Auth\Login\Events\LoginFailed;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 
 final class LogLoginFailed
 {

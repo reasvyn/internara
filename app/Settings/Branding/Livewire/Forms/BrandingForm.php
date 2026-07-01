@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Settings\Branding\Livewire\Forms;
 
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use App\Settings\Theme\Support\Theme;
 use Livewire\Form;
 

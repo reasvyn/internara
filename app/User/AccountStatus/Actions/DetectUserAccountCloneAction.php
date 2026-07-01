@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\AccountStatus\Actions;
 
 use App\Core\Actions\BaseReadAction;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Support\Collection;
 
