@@ -352,6 +352,14 @@ Organize by severity: Critical → High → Medium → Low.
 | Feature / Area | Reason |
 |----------------|--------|
 | {Module} | {Rationale} |
+
+## 7. Next Steps
+
+List concrete actions to take after the roadmap is implemented, ordered by priority:
+
+1. **{First action}** — {why it matters, what it unblocks}
+2. **{Second action}** — {who benefits, when to do it}
+3. **{Third action}** — {what depends on it}
 ```
 
 ### 5.2 Cross-Reference Known Issues
@@ -370,8 +378,11 @@ Organize by severity: Critical → High → Medium → Low.
    phases.
 4. **Dates are accurate.** The `last updated` header reflects the most recent content change.
    Version history is tracked in `git log`.
+5. **Next Steps is mandatory.** Every roadmap MUST end with a `## Next Steps` section that lists
+   the concrete follow-up actions in priority order. This ensures the roadmap produces actionable
+   output, not just documentation.
 
-**Output:** Updated `docs/roadmap.md` with all phases, tasks, dependencies, and testing strategy.
+**Output:** Updated `docs/roadmap.md` with all phases, tasks, dependencies, design decisions, testing strategy, and next steps.
 
 ---
 
