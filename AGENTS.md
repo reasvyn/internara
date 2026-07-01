@@ -1,4 +1,5 @@
-<project-guidelines>
+# AGENTS.md — Project Guidelines for AI Agents
+
 > **Last updated:** 2026-07-01
 > **Changes:** add Metacognitive Loop section (Construct → Evaluate → Verify → Decide) as universal agent thinking framework
 
