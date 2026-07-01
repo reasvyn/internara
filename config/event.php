@@ -44,6 +44,12 @@ use App\Settings\Listeners\InvalidateSettingsCache;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\Setup\SetupWizard\Listeners\LogSetupFinalized;
 use App\SysAdmin\Backups\Events\BackupCompleted;
+use App\Assessment\Events\AssessmentFinalized;
+use App\Assignment\Submission\Events\SubmissionRevisionRequested;
+use App\Core\Support\LogEventListener;
+use App\Enrollment\AccountApplication\Events\AccountApplicationApproved;
+use App\Enrollment\AccountApplication\Events\AccountApplicationRejected;
+use App\Reports\Report\Events\ReportSubmitted;
 use App\SysAdmin\Backups\Events\BackupFailed;
 use App\SysAdmin\Backups\Listeners\SendBackupFailedNotification;
 use App\User\Dashboard\Listeners\ClearDashboardCacheOnDepartmentChange;
@@ -52,6 +58,10 @@ use App\User\Notifications\Events\NotificationRead;
 use App\User\Notifications\Events\NotificationSent;
 use App\User\Notifications\Listeners\ClearUnreadNotificationCache;
 use App\User\Profile\Events\ProfileUpdated;
+use App\User\UserManagement\Events\UserCreated;
+use App\User\UserManagement\Events\UserDeleted;
+use App\User\UserManagement\Events\UserStatusChanged;
+use App\User\UserManagement\Events\UserUpdated;
 
 return [
     'listen' => [
@@ -184,16 +194,41 @@ return [
             SendBackupFailedNotification::class,
         ],
 
-        // Events needing listener implementation (TODO):
-        // AssessmentFinalized — needs cache invalidation
-        // SubmissionRevisionRequested — needs student notification
-        // AccountApplicationApproved — needs applicant notification
-        // AccountApplicationRejected — needs applicant notification
-        // ReportSubmitted — needs supervisor notification
-        // UserCreated — needs user cache invalidation
-        // UserDeleted — needs user cache invalidation
-        // UserStatusChanged — needs user cache invalidation
-        // UserUpdated — needs user cache invalidation
+        AssessmentFinalized::class => [
+            LogEventListener::class,
+        ],
+
+        SubmissionRevisionRequested::class => [
+            LogEventListener::class,
+        ],
+
+        AccountApplicationApproved::class => [
+            LogEventListener::class,
+        ],
+
+        AccountApplicationRejected::class => [
+            LogEventListener::class,
+        ],
+
+        ReportSubmitted::class => [
+            LogEventListener::class,
+        ],
+
+        UserCreated::class => [
+            LogEventListener::class,
+        ],
+
+        UserDeleted::class => [
+            LogEventListener::class,
+        ],
+
+        UserStatusChanged::class => [
+            LogEventListener::class,
+        ],
+
+        UserUpdated::class => [
+            LogEventListener::class,
+        ],
 
         // Fire-and-forget events (intentionally no listeners):
         // BackupCompleted — logged in CreateBackupAction, no side effects needed
