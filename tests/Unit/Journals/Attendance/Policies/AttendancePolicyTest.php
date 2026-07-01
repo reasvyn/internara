@@ -62,7 +62,7 @@ test('verify allows admin roles', function (string $role) {
     $log = Attendance::factory()->make();
 
     expect(createAttendancePolicy()->verify($user, $log))->toBeTrue();
-})->with(['super_admin', 'admin', 'teacher']);
+})->with(['super_admin', 'admin']);
 
 test('verify denies non-admin roles', function (string $role) {
     $user = User::factory()->create();
@@ -70,7 +70,7 @@ test('verify denies non-admin roles', function (string $role) {
     $log = Attendance::factory()->make();
 
     expect(createAttendancePolicy()->verify($user, $log))->toBeFalse();
-})->with(['supervisor', 'student']);
+})->with(['teacher', 'supervisor', 'student']);
 
 test('update only allows admin', function () {
     $admin = User::factory()->create();
