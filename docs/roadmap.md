@@ -289,3 +289,13 @@ test('dispatches with model payload', function () {
 | [#191](https://github.com/reasvyn/internara/issues/191) Event dispatch (partial) | Actions | 2026-06-29 |
 | [#195](https://github.com/reasvyn/internara/issues/195) Event listeners | Coverage | 2026-06-29 |
 | [#194](https://github.com/reasvyn/internara/issues/194) Event tests (partial) | Coverage | 2026-06-29 |
+
+---
+
+## Next Steps
+
+1. **Merge 10 Dependabot PRs** — all safe semver bumps, merge after CI passes
+2. **Fix intermittent test failure** — investigate shared state leakage between tests
+3. **Add Livewire tests** — template in Decision 6, 63 components pending
+4. **Add event tests** — 25 events still untested, follow template in Decision 6
+5. **Add event dispatch to remaining Actions** — ~80 Actions, SHOULD-level
