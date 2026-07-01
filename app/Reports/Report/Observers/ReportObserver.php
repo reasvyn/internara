@@ -8,8 +8,12 @@ use App\Reports\Report\Models\Report;
 
 class ReportObserver
 {
-    public function saving(Report $report): void
+    public function saved(Report $report): void
     {
         $report->captureSnapshot();
+
+        if ($report->isDirty()) {
+            $report->saveQuietly();
+        }
     }
 }

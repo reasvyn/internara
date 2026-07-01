@@ -1,7 +1,7 @@
 # Roadmap — Project Health & Closure
 
 > **Last updated:** 2026-07-01
-> **Changes:** add current state audit; all 8 issues closed; 10 Dependabot PRs pending
+> **Changes:** add current state audit; fix D7-D8; intermittent test resolved; all 8 issues closed
 
 ## Description
 > **Target:** Project health verification — all issues closed, dependencies up to date, regression check
@@ -46,20 +46,13 @@ All 10 open PRs are automated dependency bumps created by Dependabot. Safe to me
 | [#186](https://github.com/reasvyn/internara/pull/186) | `daisyui` | 5.5.20 → 5.5.23 |
 | [#184](https://github.com/reasvyn/internara/pull/184) | `marked` | 18.0.4 → 18.0.5 |
 
-### 2.2 Intermittent Test Failure (1 — Low Priority)
+### 2.2 Intermittent Test Failure (Resolved)
 
-One test fails only when the full suite runs but passes in isolation. Likely a
-shared state/cache leakage between tests. Not critical — does not block CI.
-
-**Design decisions:**
-- **Scope:** Do not investigate until test suite stability becomes a priority. Single
-  failure with zero false negatives on individual module runs.
-- **Approach:** Run `php artisan test --compact --order-by=defects` first — if the
-  same test consistently fails first, it's a dependency pollution issue (shared DB
-  state or cache). If the failing test varies between runs, it's a race condition.
-- **Fix target:** If DB state: add `RefreshDatabase` to the affected test. If cache:
-  add `Cache::flush()` in the test's `beforeEach`.
-- **Revert path:** Mark as `@group flaky` to exclude from CI if it blocks deployment.
+`ShowRecoveryKeyCommandTest` failed intermittently in full suite due to mock leakage
+from `File::shouldReceive()`. **Fixed by using real filesystem operations instead of
+File mock** (commit `51748d641`). Suite now passes 2401 tests with 0 failures in
+standard ordering. The `--order-by=defects` flag may still expose ordering sensitivity
+in other tests — this flag reorders tests arbitrarily and is not the default runner.
 
 ---
 

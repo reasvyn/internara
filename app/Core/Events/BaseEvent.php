@@ -15,6 +15,17 @@ abstract class BaseEvent
 
     abstract public function eventName(): string;
 
+    /**
+     * Serialize constructor properties into a payload array.
+     *
+     * Key naming rules:
+     * - Model properties → `{model}_id` (scalar primary key).
+     *   Example: `public Assessment $assessment` becomes `['assessment_id' => 'uuid-...']`.
+     *   Use `$event->assessment` (not payload) to access the full model object.
+     * - Object with `toArray()` → recursively serialized under the original key.
+     * - Scalars (string, int, bool, null) → kept as-is under the original key.
+     * - Objects without `toArray()` → excluded from payload.
+     */
     public function toPayload(): array
     {
         $result = [];
