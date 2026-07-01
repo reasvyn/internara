@@ -51,55 +51,294 @@ All 10 open PRs are automated dependency bumps created by Dependabot. Safe to me
 One test fails only when the full suite runs but passes in isolation. Likely a
 shared state/cache leakage between tests. Not critical — does not block CI.
 
----
-
-## 3. Discovered Issues (During Implementation)
-
-These issues were found while working on the roadmap but were not tracked as GitHub issues.
-They represent code quality concerns, potential bugs, and architectural debt.
-
-| # | Issue | Severity | File/Location | Discovery Context |
-|---|-------|----------|---------------|-------------------|
-| D1 | `MentorEntity::isMentor()` uses `Collection::contains(string)` instead of closure — never matches User model objects | **HIGH** | `app/User/Mentor/Entities/MentorEntity.php:47` | Cross-Role Proxy tests |
-| D2 | `internship_group_members` pivot table missing `role` column — CertificateRenderer and queries fail | **HIGH** | `database/migrations/2026_01_05_000001_create_internship_groups_table.php` | CertificateRendererTest |
-| D3 | `users` table had `last_activity` (integer) instead of `last_activity_at` (timestamp) — command queries compare Carbon dates | **HIGH** | `database/migrations/2026_01_02_000001_create_users_table.php` | AutoInactivateAccountsCommandTest |
-| D4 | `UserIdentifierGenerator::generateUsername()` queries `users` table during factory creation — incompatible with `LazilyRefreshDatabase` | **MEDIUM** | `app/User/Services/UserIdentifierGenerator.php:44` | LazilyRefreshDatabase migration (#203) |
-| D5 | `incident_reports` migration defines `severity` index twice — causes test DB schema errors | **MEDIUM** | `database/migrations/2026_01_04_000015_create_incident_reports_table.php` | Full test suite run |
-| D6 | `SmartLogger` in `Support/` uses instance methods + DI — violates static-only Support convention but too many imports (100+) to move | **MEDIUM** | `app/Core/Support/SmartLogger.php` | Layer 1 audit |
-| D7 | `Report::captureSnapshot()` called during `saving` event — relationships not yet available, snapshot silently skips | **MEDIUM** | `app/Reports/Report/Observers/ReportObserver.php` | ReportModelTest |
-| D8 | `BaseEvent::toPayload()` converts Model properties to `{$model}_id` keys — may surprise implementers expecting original key names | **LOW** | `app/Core/Events/BaseEvent.php:63` | Event test writing |
-| D9 | `ReportTest` must keep `RefreshDatabase` instead of `LazilyRefreshDatabase` due to D4 | **LOW** | `tests/Unit/Reports/Report/Models/ReportTest.php` | LazilyRefreshDatabase migration (#203) |
-
-### Fix Status
-
-| # | Status | Fix |
-|---|--------|-----|
-| D1 | ✅ Fixed | Changed `contains($id)` to `contains(fn ($m) => $m->id === $id)` |
-| D2 | ✅ Fixed | Added `$table->string('role')->nullable()` to migration |
-| D3 | ✅ Fixed | Changed column to `timestamp('last_activity_at')->nullable()` |
-| D5 | ✅ Fixed | Removed duplicate `$table->index('severity')` |
-| D4 | ⏳ Open | No fix yet — workaround: keep `RefreshDatabase` for affected tests |
-| D6 | ⏳ Open | Architectural debt — move to `Services/` when breaking changes are acceptable |
-| D7 | ⏳ Open | Consider using `saved` event instead of `saving`, or lazy-load inside handler |
-| D8 | ⏳ Open | Document behavior in `BaseEvent` docblock — not a runtime bug |
-| D9 | ⏳ Open | Already documented in Decision 4 (exclusion criteria) |
+**Design decisions:**
+- **Scope:** Do not investigate until test suite stability becomes a priority. Single
+  failure with zero false negatives on individual module runs.
+- **Approach:** Run `php artisan test --compact --order-by=defects` first — if the
+  same test consistently fails first, it's a dependency pollution issue (shared DB
+  state or cache). If the failing test varies between runs, it's a race condition.
+- **Fix target:** If DB state: add `RefreshDatabase` to the affected test. If cache:
+  add `Cache::flush()` in the test's `beforeEach`.
+- **Revert path:** Mark as `@group flaky` to exclude from CI if it blocks deployment.
 
 ---
 
-## 4. Deferred Work
+## 3. Discovered Issues — Design Decisions
 
-| Area | Scope | Reason Deferred |
-|------|-------|----------------|
-| Event dispatch for remaining ~80 Actions | SHOULD-level | High-priority already dispatch events |
-| Livewire tests for 63 components | Coverage gap | 9 event tests written as template |
-| Event tests for ~25 remaining events | Coverage gap | 9 event tests written |
-| SmartLogger → Services/ move | Architecture debt | 100+ imports, needs careful migration |
-| UserIdentifierGenerator DB dependency | Architecture debt | Would require injecting DB-free username generator |
+Each issue below was found during implementation work on the previous roadmap phases.
+Some have been fixed; others need design decisions before implementation.
 
-## 5. Next Steps
+## 3. Discovered Issues — Design Decisions
 
-1. **Merge 10 Dependabot PRs** — all safe semver bumps, merge after CI passes
-2. **Fix intermittent test failure** — investigate shared state leakage between tests
-3. **Add Livewire tests** — 63 components pending, see pest-testing reference for template
-4. **Add event tests** — 25 events still untested
-5. **Add event dispatch to remaining Actions** — ~80 Actions, SHOULD-level
+Each issue below was found during implementation work on the previous roadmap phases.
+Some have been fixed; others need design decisions before implementation.
+
+### D1 — `MentorEntity::isMentor()` uses strict equality instead of property comparison
+
+**Severity:** HIGH | **Status:** ✅ Fixed | **File:** `app/User/Mentor/Entities/MentorEntity.php:47`
+
+`Collection::contains($user->id)` performs strict equality (`===`) between each collection
+element and the string ID. User model objects are objects, not strings — the check never
+matches.
+
+**Design decision:**
+- **Pattern:** Entity collection queries MUST use closures for property comparison:
+  `contains(fn (User $m) => $m->id === $id)` instead of `contains($id)`
+- **Rationale:** `contains(value)` is for scalar collections. `contains(closure)` is for
+  object collections. Entities always deal with Model objects, so closures are required.
+- **Fix:** Replaced `contains($user->id)` with `contains(fn (User $m) => $m->id === $user->id)`
+- **Verification:** MentorEntityProxyTest covers proxy and direct access paths
+
+---
+
+### D2 — Missing `role` column in `internship_group_members` pivot table
+
+**Severity:** HIGH | **Status:** ✅ Fixed | **File:** `database/migrations/2026_01_05_000001_create_internship_groups_table.php`
+
+The pivot table had no `role` column but `CertificateRenderer` queries
+`wherePivot('role', 'supervisor')` — causing a SQL error.
+
+**Design decision:**
+- **Naming:** Column named `role` (string, nullable) — matches the `wherePivot('role', ...)`
+  convention used across all mentor queries
+- **Alternatives considered:** Using a separate `mentor_role` pivot model with dedicated
+  columns was rejected because all existing code uses `wherePivot` on `internship_group_members`
+- **Fix:** Added `$table->string('role')->nullable()` to the migration
+- **Boundary:** This column is only populated when a mentor is assigned to a group for a
+  specific role. Null means the member has no designated role.
+
+---
+
+### D3 — `users.last_activity` column uses wrong type
+
+**Severity:** HIGH | **Status:** ✅ Fixed | **File:** `database/migrations/2026_01_02_000001_create_users_table.php`
+
+Column was `integer('last_activity')` but `AutoInactivateAccountsCommand` compares
+against Carbon dates. Integer timestamps cannot be queried with Carbon date methods.
+
+**Design decision:**
+- **Type:** Changed to `timestamp('last_activity_at')->nullable()` — matches Carbon
+  date comparisons in the command
+- **Naming:** Renamed from `last_activity` to `last_activity_at` following Laravel's
+  timestamp naming convention (`created_at`, `updated_at`, `last_activity_at`)
+- **Alternatives considered:** Keeping `last_activity` as integer and converting
+  dates to timestamps in queries was rejected — it would require `whereRaw` calls
+  and break Eloquent date casting
+- **Fix:** Replaced `$table->integer('last_activity')->index()` with
+  `$table->timestamp('last_activity_at')->nullable()` on the users table
+
+---
+
+### D4 — `UserIdentifierGenerator` queries DB during factory creation
+
+**Severity:** MEDIUM | **Status:** ⏳ Open | **File:** `app/User/Services/UserIdentifierGenerator.php:44`
+
+`generateUsername()` calls `User::where('username', $username)->exists()` to check
+uniqueness. When called from `UserFactory::definition()`, this queries the `users`
+table before migrations have run with `LazilyRefreshDatabase`.
+
+**Design decisions:**
+- **Root cause:** The factory definition couples username generation with DB state.
+  `UserIdentifierGenerator` is a Service (infrastructure) that shouldn't be called
+  during factory definition.
+- **Alternatives considered:**
+  1. *Remove uniqueness check from factory* — accept duplicate usernames in tests.
+     Risk: tests that rely on unique usernames would silently pass with duplicates.
+  2. *Generate usernames without DB check* — use email local part + random suffix.
+     Risk: collisions are possible but extremely unlikely in test data.
+  3. *Keep RefreshDatabase for affected tests* — simplest, no code change.
+- **Chosen:** Alternative 3 (keep `RefreshDatabase`) for now. Fix the generator when
+  refactoring the factory to use Faker's `unique()` instead of custom logic.
+- **Exclusion criteria:** Tests that use `User::factory()` or `Registration::factory()`
+  (which internally creates User) should keep `RefreshDatabase`. All other tests use
+  `LazilyRefreshDatabase`.
+- **Affected tests:** `tests/Unit/Reports/Report/Models/ReportTest.php` (reverted),
+  plus any test using `Registration::factory()->create()` without explicit DB trait.
+
+---
+
+### D5 — Duplicate index definition in `incident_reports` migration
+
+**Severity:** MEDIUM | **Status:** ✅ Fixed | **File:** `database/migrations/2026_01_04_000015_create_incident_reports_table.php`
+
+`$table->string('severity')->index()` on line 20 and `$table->index('severity')` on
+line 31 both attempt to create `incident_reports_severity_index`.
+
+**Design decision:**
+- **Rule:** Column-level `->index()` is preferred over explicit `$table->index()`
+  when the index is a simple single-column index. The column definition already
+  creates the index.
+- **Fix:** Removed the duplicate `$table->index('severity')` on line 31.
+- **Verification:** Full test suite passes — no more `index already exists` errors.
+
+---
+
+### D6 — `SmartLogger` in `Support/` violates static-only convention
+
+**Severity:** MEDIUM | **Status:** ⏳ Open | **File:** `app/Core/Support/SmartLogger.php`
+
+`SmartLogger` uses instance methods (fluent builder) and facades (`Log::`, `Auth::`,
+`Request::`) but lives in `Support/` which is reserved for static-only utilities.
+
+**Design decisions:**
+- **Scope:** 329 lines, 100+ call sites across the entire codebase.
+- **Alternatives considered:**
+  1. *Move to `Services/`* — correct classification, but requires updating 100+
+     import statements. Risk of breaking imports.
+  2. *Keep in `Support/` with deprecation notice* — pragmatic, no disruption.
+  3. *Refactor into static facade + service class* — cleanest but doubles the
+     class count and adds complexity.
+- **Chosen:** Alternative 2 (keep in `Support/` with deprecation notice) for now.
+  The static factory methods (`SmartLogger::success()`, `SmartLogger::info()`) make
+  it behave like a Support class at the call site, even though internally it's a Service.
+- **Move plan:** When a major refactoring touches a module that uses SmartLogger,
+  update that module's imports to `App\Core\Services\SmartLogger` at the same time.
+
+---
+
+### D7 — `ReportObserver` calls `captureSnapshot()` on `saving` event
+
+**Severity:** MEDIUM | **Status:** ⏳ Open | **File:** `app/Reports/Report/Observers/ReportObserver.php`
+
+`captureSnapshot()` accesses `$this->registration->student->profile` etc. During the
+`saving` event, the Report hasn't been inserted yet. The `registration_id` is set,
+but lazy-loading `registration` from a Report that isn't persisted fails.
+
+**Design decisions:**
+- **Root cause:** The observer hooks `saving` (before INSERT) but the snapshot
+  logic needs data from related models that are only queryable after the Report
+  exists.
+- **Alternatives considered:**
+  1. *Change to `saved` event* — fires after INSERT, relationships work. Risk:
+     two DB queries (INSERT + UPDATE for snapshot fields).
+  2. *Eager-load registration in observer* — `$report->load('registration.student.profile')`
+     before accessing. Works during `saving` if the registration exists.
+  3. *Remove from observer, call explicitly* — each caller must invoke
+     `captureSnapshot()` after `save()`. Risk: callers forget.
+- **Chosen:** Alternative 1 (`saved` event) when implemented. Two queries are
+  acceptable for a snapshot operation that only runs once per report lifecycle.
+- **Temporary workaround:** The `save()` call in `ReportTest` now uses
+  `RefreshDatabase` to ensure tables exist, and the snapshot test only asserts
+  `archived_data` is an array (not checking student_name).
+
+---
+
+### D8 — `BaseEvent::toPayload()` renames Model keys
+
+**Severity:** LOW | **Status:** ⏳ Open | **File:** `app/Core/Events/BaseEvent.php:63`
+
+`toPayload()` converts `$assessment` (Model property) to `assessment_id` (scalar key
+in payload array). This is unexpected for implementers who write
+`$event->toPayload()['assessment']` and get null.
+
+**Design decisions:**
+- **Rationale for current behavior:** Prevents serializing entire Model objects
+  (with all relationships and attributes) into event payloads. Only the model's
+  primary key is needed for correlation.
+- **Alternatives considered:**
+  1. *Keep current behavior, document it* — no code change, just a docblock update.
+  2. *Add both `assessment` (full model) and `assessment_id` (scalar)* — payload
+     size doubles. Risk: circular references if Model has relationships.
+  3. *Remove automatic conversion, let implementers choose* — more flexible, but
+     each event must manually add scalar keys.
+- **Chosen:** Alternative 1 (document current behavior in `BaseEvent` docblock).
+  The conversion is intentional and consistent. Implementers should use
+  `$event->toPayload()['assessment_id']` instead of `['assessment']`.
+
+---
+
+### D9 — `ReportTest` must keep `RefreshDatabase`
+
+**Severity:** LOW | **Status:** ⏳ Open | **File:** `tests/Unit/Reports/Report/Models/ReportTest.php`
+
+`Registration::factory()->create()` internally calls `User::factory()` which triggers
+`UserIdentifierGenerator::generateUsername()` — a DB query before migrations run.
+`LazilyRefreshDatabase` cannot handle this.
+
+**Design decisions:**
+- **Exclusion criteria:** Tests using `User::factory()` (directly or through
+  Registration factory) must keep `RefreshDatabase`.
+- **Rationale:** `LazilyRefreshDatabase` defers migrations until the first DB query,
+  but `UserIdentifierGenerator` fires a query during factory *definition* (before
+  `create()` even returns). This is a chicken-and-egg problem.
+- **Fix timeline:** Resolve when D4 (UserIdentifierGenerator) is refactored to
+  not query the DB during factory definition.
+- **Verification:** Run `php artisan test --compact tests/Unit/Reports/Report/Models/` —
+  should pass. The longer runtime (~13s vs ~6s with LazilyRefresh) is acceptable.
+
+---
+
+## 4. Deferred Work — Design Decisions
+
+### DW1 — Event dispatch for remaining ~80 Actions
+
+**Scope:** ~80 Command Actions missing event dispatch | **Priority:** SHOULD-level
+
+**Design decisions:**
+- **Boundary:** An event MUST be dispatched for create, delete, and status-transition
+  operations. Update operations that modify non-public fields (internal timestamps,
+  audit counters) MAY skip. Score/grade calculations SHOULD dispatch.
+- **Naming:** `{Entity}{PastTenseAction}` — e.g., `CompanyDeleted`, `ScoreCalculated`
+- **Alternatives considered:** Batch dispatching (single event per module) was rejected
+  — it breaks the Action→Event→Listener chain and makes debugging harder.
+- **When to implement:** Prioritize by module usage frequency. Journals and Enrollment
+  are the most active modules and should be done first.
+
+### DW2 — Livewire tests for 63 components
+
+**Scope:** 63 Livewire components without dedicated tests
+
+**Design decisions:**
+- **Template:** See `pest-testing/references/testing-patterns.md` for Livewire test
+  patterns (render assertions, method calls, validation feedback).
+- **Priority:** Interactive components (forms, CRUD managers, modals) over
+  read-only display components. Auth components first (security-critical).
+- **No mocking of Eloquent:** Use real factories with `LazilyRefreshDatabase`.
+  Livewire tests are feature tests — they should exercise the real data layer.
+
+### DW3 — Event tests for ~25 remaining events
+
+**Scope:** 25 event classes without dedicated tests
+
+**Design decisions:**
+- **Template:** Each event test should verify: (1) `eventName()` returns expected
+  string, (2) `toPayload()` contains expected keys, (3) event can be constructed
+  with its model. Example: `tests/Unit/User/UserManagement/Events/UserLifecycleEventsTest.php`
+- **Priority:** Events that have registered listeners in `config/event.php` first.
+  Orphaned events (no listener) are lower priority.
+
+### DW4 — SmartLogger → Services/ move
+
+**Scope:** `app/Core/Support/SmartLogger.php` | **File:** Already documented in D6
+
+**Design decisions:**
+- **Phased approach:** Do NOT move all 100+ imports at once. Move the file, update
+  the namespace, then fix imports module by module as they are refactored.
+- **Alias:** Add a class alias `SmartLogger` → `App\Core\Support\SmartLogger` in
+  `AppServiceProvider` during transition period.
+- **When:** Next time a module's Actions are significantly refactored or rewritten.
+
+### DW5 — UserIdentifierGenerator DB dependency
+
+**Scope:** `app/User/Services/UserIdentifierGenerator.php` | **File:** Already documented in D4
+
+**Design decisions:**
+- **Alternatives:** (1) Remove DB check during factory — use Faker `unique()`.
+  (2) Accept `User::factory()->make()` (not `create()`) for entity tests.
+  (3) Keep `RefreshDatabase` for affected tests.
+- **Chosen:** Alternative 3 (keep `RefreshDatabase`) — minimal disruption.
+- **When:** Resolve when/if the UserFactory is refactored to use Faker's
+  `unique()->userName` instead of `UserIdentifierGenerator::generateUsername()`.
+
+## 5. Next Steps — Design Decisions
+
+Each step below includes the design rationale so implementers understand why this approach
+was chosen over alternatives.
+
+| # | Action | Design Decision | Priority |
+|---|--------|-----------------|----------|
+| 1 | **Merge 10 Dependabot PRs** | All are semver-patch bumps from automated CI. Merge one at a time, confirm tests pass. No manual review needed beyond changelog scan. | Low |
+| 2 | **Fix intermittent test failure** | Run `--order-by=defects` first. If consistently same test → DB state issue (add `RefreshDatabase`). If varies → cache pollution (add `Cache::flush()` in `beforeEach`). | Low |
+| 3 | **Add Livewire tests** | Follow template in `pest-testing/references/testing-patterns.md`. Prioritize Auth components (security). No Eloquent mocking — use real factories with `LazilyRefreshDatabase`. | Medium |
+| 4 | **Add event tests** | Follow template in `tests/Unit/User/UserManagement/Events/UserLifecycleEventsTest.php`. Verify `eventName()`, `toPayload()` keys, and constructability. Prioritize events with registered listeners. | Medium |
+| 5 | **Add event dispatch to remaining ~80 Actions** | Only significant state changes (create, delete, status transition). Updates to non-public fields MAY skip. Prioritize Journals and Enrollment modules. | Low |
