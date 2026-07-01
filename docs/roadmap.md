@@ -1,7 +1,7 @@
 # Roadmap — Project Health & Closure
 
 > **Last updated:** 2026-07-01
-> **Changes:** add Lessons Learned section from implementation experience
+> **Changes:** add new issues from cache/event/Livewire audits (#205, #206, #207)
 
 ## Description
 > **Target:** Project health verification — all issues closed, dependencies up to date, regression check
@@ -291,7 +291,17 @@ Issues discovered *during* implementation that weren't obvious from the initial 
 
 ---
 
-## 6. Next Steps — Design Decisions
+## 6. Open Issues from Recent Audits
+
+| # | Title | Priority | Scope |
+|---|-------|----------|-------|
+| [#205](https://github.com/reasvyn/internara/issues/205) | Cache audit: inline invalidation, redundant flushes, unregistered keys | MEDIUM | `config/cache-keys.php`, 6+ listeners, inline Cache::forget calls |
+| [#206](https://github.com/reasvyn/internara/issues/206) | Event audit: 9 stub listeners, dead events, redundant invalidators | MEDIUM | `config/event.php`, LogEventListener, admin_dashboard_stats listeners |
+| [#207](https://github.com/reasvyn/internara/issues/207) | Livewire components: missing imports and property naming bugs | LOW | `SupervisorLogManager`, `LogbookManager`, blade template |
+
+---
+
+## 7. Next Steps — Design Decisions
 
 Each step below includes the design rationale so implementers understand why this approach
 was chosen over alternatives.
