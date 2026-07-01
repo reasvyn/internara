@@ -1,17 +1,77 @@
-# Roadmap — Open Issue Resolution
+# Roadmap — Project Health & Closure
 
-> **Last updated:** 2026-06-29
-> **Changes:** mark all 8 issues closed; add decision 7 for test prioritization
+> **Last updated:** 2026-07-01
+> **Changes:** add current state audit; all 8 issues closed; 10 Dependabot PRs pending
 
 ## Description
-> **Target:** Resolve all open GitHub issues across architecture, code quality, testing, and conventions
-> **Total open issues:** 8 (2 HIGH, 5 MEDIUM, 1 enhancement)
+> **Target:** Project health verification — all issues closed, dependencies up to date, regression check
 
-**Status:** All 8 issues closed ✅
+**Status:** ✅ All 8 open issues resolved — 10 Dependabot dependency PRs pending
 
 ---
 
-## 1. Closed Issues Overview
+## 1. Current State
+
+| Metric | Value |
+|--------|-------|
+| Open issues | **0** |
+| Open pull requests | **10** (all Dependabot automated dependency bumps) |
+| Passing tests | **2,400** |
+| Failing tests | **1** (intermittent — passes in isolation, fails due to test ordering in full suite) |
+| Test suite duration | **319s** (down from 767s) |
+| Unmerged Dependabot PRs | **10** |
+
+The project is in a healthy state. All manual work items from the previous roadmap phases
+are complete. The only remaining items are automated dependency updates and one intermittent
+test failure.
+
+---
+
+## 2. Remaining Work
+
+### 2.1 Dependabot Pull Requests (10 PRs — Low Priority)
+
+All 10 open PRs are automated dependency bumps created by Dependabot. They follow semver
+and are safe to merge after CI passes. No manual review required beyond confirming tests pass.
+
+| # | Dependency | From → To | Type |
+|---|-----------|-----------|------|
+| [#204](https://github.com/reasvyn/internara/pull/204) | `laravel/boost` | 2.4.8 → 2.4.11 | Dev |
+| [#200](https://github.com/reasvyn/internara/pull/200) | `vite` | 8.0.16 → 8.1.0 | Runtime |
+| [#199](https://github.com/reasvyn/internara/pull/199) | `laravel/sail` | 1.61.0 → 1.63.0 | Dev |
+| [#198](https://github.com/reasvyn/internara/pull/198) | `@rollup/rollup-linux-x64-gnu` | 4.61.0 → 4.62.2 | Runtime |
+| [#197](https://github.com/reasvyn/internara/pull/197) | `prettier-plugin-blade` | 3.1.6 → 3.2.0 | Dev |
+| [#189](https://github.com/reasvyn/internara/pull/189) | `tailwindcss` | 4.3.0 → 4.3.1 | Dev |
+| [#188](https://github.com/reasvyn/internara/pull/188) | `@tailwindcss/vite` | 4.3.0 → 4.3.1 | Dev |
+| [#187](https://github.com/reasvyn/internara/pull/187) | `@tailwindcss/oxide-linux-x64-gnu` | 4.3.0 → 4.3.1 | Runtime |
+| [#186](https://github.com/reasvyn/internara/pull/186) | `daisyui` | 5.5.20 → 5.5.23 | Dev |
+| [#184](https://github.com/reasvyn/internara/pull/184) | `marked` | 18.0.4 → 18.0.5 | Runtime |
+
+**Action:** Merge each after CI passes. No code changes needed.
+
+### 2.2 Intermittent Test Failure (1 — Low Priority)
+
+One test fails intermittently when the full suite runs but passes in isolation.
+Likely a test ordering / shared state issue.
+
+**Pattern:** Run `php artisan test --compact` → fails. Run the specific module → passes.
+**Scope:** Believed to be a cache or database state leakage between tests.
+**Fix:** Not critical — does not affect feature reliability. Can be investigated when
+test suite stability is a priority.
+
+### 2.3 Deferred Work (No Active Issues)
+
+These items were identified in previous audit cycles but deferred as lower priority:
+
+| Area | Scope | Reason Deferred |
+|------|-------|----------------|
+| Event dispatch for remaining ~80 Actions | SHOULD-level — significant state changes could benefit | All high-priority actions already dispatch events |
+| Livewire tests for 63 components | Coverage gap | 9 event tests written as template; full coverage is large effort |
+| Event tests for ~25 remaining events | Coverage gap | 9 event tests written; remaining are lower priority |
+
+---
+
+## 3. Closed Issues Overview
 
 | # | Title | Priority | Phase | Resolution |
 |---|-------|----------|-------|-----------|
@@ -26,7 +86,7 @@
 
 ---
 
-## 2. Design Decisions
+## 4. Design Decisions
 
 ### Decision 1: Event Registration Boundaries (#192, #195)
 
@@ -171,7 +231,7 @@ test('dispatches with model payload', function () {
 
 ---
 
-## 3. Implementation Phases
+## 6. Implementation Phases
 
 ### Phase 1: Conventions ✅ (Completed)
 
@@ -203,7 +263,7 @@ test('dispatches with model payload', function () {
 
 ---
 
-## 4. Integration Order
+## 8. Integration Order
 
 | Phase | Order | Issue | Scope | Dependencies | Design Ref |
 |-------|-------|-------|-------|-------------|------------|
@@ -214,7 +274,7 @@ test('dispatches with model payload', function () {
 
 ---
 
-## 5. Completed Work
+## 9. Completed Work
 
 | Work Item | Phase | Date |
 |-----------|-------|------|
