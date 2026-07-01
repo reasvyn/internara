@@ -6,10 +6,10 @@ use App\Enrollment\Registration\Models\Registration;
 use App\Reports\Report\Enums\ReportStatus;
 use App\Reports\Report\Models\Report;
 use App\User\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Carbon;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('report factory creates valid model', function () {
     $report = Report::factory()->create();

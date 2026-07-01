@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\User\Models\User;
-use App\User\Services\UserIdentifierGenerator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 /**
  * @extends Factory<User>
@@ -19,11 +19,12 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $email = $this->faker->unique()->safeEmail();
+        $local = Str::of($email)->before('@')->replaceMatches('/[^a-zA-Z0-9]/', '')->value();
 
         return [
             'name' => $this->faker->name(),
             'email' => $email,
-            'username' => UserIdentifierGenerator::generateUsername($email),
+            'username' => $local ?: 'user',
             'password' => Hash::make('password'),
             'email_verified_at' => now(),
             'setup_required' => false,

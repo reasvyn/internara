@@ -6,7 +6,7 @@
 ## Description
 > **Target:** Project health verification — all issues closed, dependencies up to date, regression check
 
-**Status:** ✅ All 8 open issues resolved — 10 Dependabot dependency PRs pending
+**Status:** ✅ 2401 tests passing, 8/9 discovered issues fixed — D6 (SmartLogger) remains as architectural debt
 
 ---
 
@@ -16,14 +16,14 @@
 |--------|-------|
 | Open issues | **0** |
 | Open pull requests | **10** (all Dependabot automated dependency bumps) |
-| Passing tests | **2,400** |
-| Failing tests | **1** (intermittent — passes in isolation, fails due to test ordering in full suite) |
-| Test suite duration | **319s** (down from 767s) |
+| Passing tests | **2,401** |
+| Failing tests | **0** |
+| Test suite duration | **306s** (down from 767s) |
 | Unmerged Dependabot PRs | **10** |
 
-The project is in a healthy state. All manual work items from the previous roadmap phases
-are complete. The only remaining items are automated dependency updates and one intermittent
-test failure.
+All manual work items from the previous roadmap phases are complete. D4 (UserIdentifierGenerator)
+and D9 (ReportTest) were fixed by refactoring UserFactory — no longer queries DB during
+definition. The only remaining open issue is D6 (SmartLogger architectural debt).
 
 ---
 
@@ -124,29 +124,22 @@ against Carbon dates. Integer timestamps cannot be queried with Carbon date meth
 
 ### D4 — `UserIdentifierGenerator` queries DB during factory creation
 
-**Severity:** MEDIUM | **Status:** ⏳ Open | **File:** `app/User/Services/UserIdentifierGenerator.php:44`
+**Severity:** MEDIUM | **Status:** ✅ Fixed | **File:** `app/User/Services/UserIdentifierGenerator.php:44`
 
 `generateUsername()` calls `User::where('username', $username)->exists()` to check
 uniqueness. When called from `UserFactory::definition()`, this queries the `users`
 table before migrations have run with `LazilyRefreshDatabase`.
 
 **Design decisions:**
-- **Root cause:** The factory definition couples username generation with DB state.
-  `UserIdentifierGenerator` is a Service (infrastructure) that shouldn't be called
-  during factory definition.
-- **Alternatives considered:**
-  1. *Remove uniqueness check from factory* — accept duplicate usernames in tests.
-     Risk: tests that rely on unique usernames would silently pass with duplicates.
-  2. *Generate usernames without DB check* — use email local part + random suffix.
-     Risk: collisions are possible but extremely unlikely in test data.
-  3. *Keep RefreshDatabase for affected tests* — simplest, no code change.
-- **Chosen:** Alternative 3 (keep `RefreshDatabase`) for now. Fix the generator when
-  refactoring the factory to use Faker's `unique()` instead of custom logic.
-- **Exclusion criteria:** Tests that use `User::factory()` or `Registration::factory()`
-  (which internally creates User) should keep `RefreshDatabase`. All other tests use
-  `LazilyRefreshDatabase`.
-- **Affected tests:** `tests/Unit/Reports/Report/Models/ReportTest.php` (reverted),
-  plus any test using `Registration::factory()->create()` without explicit DB trait.
+- **Root cause:** The factory definition coupled username generation with DB state.
+- **Fix:** UserFactory now generates the username inline using `Str::of($email)->before('@')`
+  with non-alphanumeric stripping — identical logic to `UserIdentifierGenerator` but without
+  the DB uniqueness check. The generated username is derived from the already-unique email,
+  so collisions are prevented by Faker's `unique()->safeEmail()`.
+- **Verification:** `UserIdentifierGeneratorTest` still passes (tests the Service itself).
+  `ReportTest` now uses `LazilyRefreshDatabase` without failure.
+- **Affected tests resolved:** `tests/Unit/Reports/Report/Models/ReportTest.php` migrated
+  back to `LazilyRefreshDatabase`. All 2401 tests pass.
 
 ---
 
@@ -242,22 +235,10 @@ in payload array). This is unexpected for implementers who write
 
 ### D9 — `ReportTest` must keep `RefreshDatabase`
 
-**Severity:** LOW | **Status:** ⏳ Open | **File:** `tests/Unit/Reports/Report/Models/ReportTest.php`
+**Severity:** LOW | **Status:** ✅ Fixed | **File:** `tests/Unit/Reports/Report/Models/ReportTest.php`
 
-`Registration::factory()->create()` internally calls `User::factory()` which triggers
-`UserIdentifierGenerator::generateUsername()` — a DB query before migrations run.
-`LazilyRefreshDatabase` cannot handle this.
-
-**Design decisions:**
-- **Exclusion criteria:** Tests using `User::factory()` (directly or through
-  Registration factory) must keep `RefreshDatabase`.
-- **Rationale:** `LazilyRefreshDatabase` defers migrations until the first DB query,
-  but `UserIdentifierGenerator` fires a query during factory *definition* (before
-  `create()` even returns). This is a chicken-and-egg problem.
-- **Fix timeline:** Resolve when D4 (UserIdentifierGenerator) is refactored to
-  not query the DB during factory definition.
-- **Verification:** Run `php artisan test --compact tests/Unit/Reports/Report/Models/` —
-  should pass. The longer runtime (~13s vs ~6s with LazilyRefresh) is acceptable.
+Resolved by D4 fix — `UserFactory` no longer calls `UserIdentifierGenerator` during
+factory definition. `ReportTest` now uses `LazilyRefreshDatabase` successfully.
 
 ---
 
