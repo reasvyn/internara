@@ -15,11 +15,11 @@
 | Metric | Value |
 |--------|-------|
 | Open issues | **0** |
-| Open pull requests | **10** (all Dependabot automated dependency bumps) |
+| Open pull requests | **1** (#173 — test suite fix branch) |
 | Passing tests | **2,401** |
 | Failing tests | **0** |
-| Test suite duration | **306s** (down from 767s) |
-| Unmerged Dependabot PRs | **10** |
+| Test suite duration | **~474s** (down from 767s) |
+| Dependabot PRs merged (this session) | **8** (+ 5 closed/updated directly) |
 
 All manual work items from the previous roadmap phases are complete. D4 (UserIdentifierGenerator)
 and D9 (ReportTest) were fixed by refactoring UserFactory — no longer queries DB during
@@ -29,23 +29,10 @@ definition. D6 (SmartLogger) moved from Support/ to Services/. All 9 issues reso
 
 ## 2. Remaining Work
 
-### 2.1 Dependabot Pull Requests (10 PRs — Low Priority)
+### 2.1 Dependabot Pull Requests (Resolved)
 
-All 10 open PRs are automated dependency bumps created by Dependabot. Safe to merge after CI passes.
-
-| # | Dependency | From → To |
-|---|-----------|-----------|
-| [#204](https://github.com/reasvyn/internara/pull/204) | `laravel/boost` | 2.4.8 → 2.4.11 |
-| [#200](https://github.com/reasvyn/internara/pull/200) | `vite` | 8.0.16 → 8.1.0 |
-| [#199](https://github.com/reasvyn/internara/pull/199) | `laravel/sail` | 1.61.0 → 1.63.0 |
-| [#198](https://github.com/reasvyn/internara/pull/198) | `@rollup/rollup-linux-x64-gnu` | 4.61.0 → 4.62.2 |
-| [#197](https://github.com/reasvyn/internara/pull/197) | `prettier-plugin-blade` | 3.1.6 → 3.2.0 |
-| [#189](https://github.com/reasvyn/internara/pull/189) | `tailwindcss` | 4.3.0 → 4.3.1 |
-| [#188](https://github.com/reasvyn/internara/pull/188) | `@tailwindcss/vite` | 4.3.0 → 4.3.1 |
-| [#187](https://github.com/reasvyn/internara/pull/187) | `@tailwindcss/oxide-linux-x64-gnu` | 4.3.0 → 4.3.1 |
-| [#186](https://github.com/reasvyn/internara/pull/186) | `daisyui` | 5.5.20 → 5.5.23 |
-| [#184](https://github.com/reasvyn/internara/pull/184) | `marked` | 18.0.4 → 18.0.5 |
-
+All 10 Dependabot PRs were processed. 8 merged, 6 closed via direct updates.
+Only 1 open PR remains: #173 (manual test fix branch).
 ### 2.2 Intermittent Test Failure (Resolved)
 
 `ShowRecoveryKeyCommandTest` failed intermittently in full suite due to mock leakage
