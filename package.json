@@ -27,7 +27,7 @@
         "@tailwindcss/vite": "^4.1.18",
         "daisyui": "^5.5.19",
         "prettier": "^3.8.1",
-        "prettier-plugin-blade": "^3.0",
+        "prettier-plugin-blade": "^3.2",
         "tailwindcss": "^4.2.4"
     }
 }
