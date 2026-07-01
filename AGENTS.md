@@ -1,12 +1,97 @@
 <project-guidelines>
-> **Last updated:** 2026-06-27
-> **Changes:** sync — add Two Kinds of Logic reference (domain vs infra vs static); architecture.md relabeled Business Operations Layer; service-pattern.md and support-pattern.md rewritten with clear boundaries
+> **Last updated:** 2026-07-01
+> **Changes:** add Metacognitive Loop section (Construct → Evaluate → Verify → Decide) as universal agent thinking framework
 
 Provides the essential mental model, quick-reference essentials, and project-specific rules needed
 when first opening the project. Do NOT duplicate content already covered in `docs/` — refer to it.
 
 **Reading order for new agents:** Project Identity → Tech Stack → Architecture Core → Module Map →
 Directory Map → Dev Commands → Critical Rules → Doc Navigation → Quick Reference
+
+---
+
+## Metacognitive Loop — Construct, Evaluate, Verify, Decide
+
+Every task — whether fixing a bug, adding a feature, refactoring code, or writing docs — should
+follow this four-phase loop. It prevents blind execution, surface-level fixes, and premature
+closure.
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    METACOGNITIVE LOOP                                │
+│                                                                     │
+│  1. CONSTRUCT ──► 2. EVALUATE ──► 3. VERIFY ──► 4. DECIDE          │
+│       │                │               │             │              │
+│       │ Build /        │ Assess         │ Test,       │ Determine   │
+│       │ implement      │ against        │ lint,       │ next step:  │
+│       │ with context   │ requirements,  │ analyze,    │ accept,     │
+│       │ awareness      │ conventions,   │ confirm     │ revise,     │
+│       │                │ trade-offs      │             │ or escalate │
+│       └────────────────┴───────────────┴─────────────┘              │
+│                                                                     │
+│  ↻ Loop until DECIDE → "Done" or "Escalate"                        │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### 1. CONSTRUCT — Build with Context
+
+Before writing code or making changes:
+
+- **Understand the problem domain** — read the relevant docs, module references, and ADRs
+- **Read the existing code** — understand patterns, conventions, and current implementation
+- **Check for stale information** — verify file paths, class names, signatures, and counts in the
+  actual codebase; do NOT trust what docs or skills say without verification
+- **Consider alternatives** — at least two approaches before committing to one
+- **Follow architecture** — stay within the 4-layer dependency rules, Action Triad, DTO boundaries
+
+Output: A change (code, doc, config, migration, etc.)
+
+### 2. EVALUATE — Assess What Was Built
+
+After constructing, assess the result against multiple dimensions:
+
+- **Requirements match** — does the change actually solve the stated problem?
+- **Convention compliance** — `declare(strict_types=1)`, `#[Fillable]`, naming rules, base classes
+- **Architecture fit** — does the change respect layer boundaries, dependency direction, data flow?
+- **Trade-off awareness** — what was sacrificed? (performance for readability? speed for safety?)
+- **Scope discipline** — does the change do ONE thing? If it grew beyond the original scope, split it
+
+Output: A judgment about the change's quality and completeness.
+
+### 3. VERIFY — Confirm It Works
+
+Run the appropriate verification steps before declaring done:
+
+- **Read what you wrote** — review the diff for obvious issues before running anything
+- **Run relevant tests** — at minimum the tests for the changed files: `php artisan test --compact --filter={TestName}`
+- **Run static analysis** — `vendor/bin/phpstan analyse --no-progress` for PHP changes
+- **Check for regressions** — run the full test suite for anything beyond a trivial change
+- **Verify conventions** — no `dd()/dump()/ray()`, `__()` for user strings, `declare(strict_types=1)`
+
+Output: A pass/fail signal. If any check fails, return to CONSTRUCT with new information.
+
+### 4. DECIDE — Determine Next Action
+
+Based on evaluation and verification, pick ONE:
+
+| Decision | When | Action |
+|----------|------|--------|
+| **Accept** | Change is correct, complete, and verified | Commit, push, close issue |
+| **Revise** | Change works but has quality/structure issues | Return to CONSTRUCT with specific feedback |
+| **Split** | Change grew beyond original scope | Create separate task for the extra scope, commit original |
+| **Escalate** | Change reveals a deeper problem or dependency | File a new issue, link it, note it as blocker |
+| **Defer** | Change is lower priority than other open work | Move to backlog, document why |
+
+The loop continues until DECIDE → "Accept" or "Escalate".
+
+### When to Use
+
+- **Every task, every time.** Even a one-line fix benefits from Evaluate + Verify before commit.
+- **The loop is recursive.** Subtasks discovered during CONSTRUCT get their own mini-loop.
+- **Speed vs rigor.** A typo fix needs seconds per phase. A new feature needs hours. Adapt the
+  depth to the scope.
+
+---
 
 === foundation ===
 
