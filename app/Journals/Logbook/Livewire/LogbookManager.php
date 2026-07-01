@@ -11,6 +11,7 @@ use App\Journals\Logbook\Actions\DeleteLogbookAction;
 use App\Journals\Logbook\Actions\UpdateLogbookAction;
 use App\Journals\Logbook\Livewire\Forms\LogbookForm;
 use App\Journals\Logbook\Models\Logbook;
+use App\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
@@ -125,12 +126,12 @@ class LogbookManager extends BaseRecordManager
     {
         $this->resetErrorBag();
         $this->form->id = $entry->id;
-        $this->form->userId = $entry->user_id;
+        $this->form->user_id = $entry->user_id;
         $this->form->date = $entry->date->format('Y-m-d');
         $this->form->content = $entry->content;
-        $this->form->learningOutcomes = $entry->learning_outcomes ?? '';
+        $this->form->learning_outcomes = $entry->learning_outcomes ?? '';
         $this->form->status = $entry->status->value;
-        $this->form->mentorFeedback = $entry->mentor_feedback ?? '';
+        $this->form->mentor_feedback = $entry->mentor_feedback ?? '';
         $this->showModal = true;
     }
 
@@ -147,9 +148,9 @@ class LogbookManager extends BaseRecordManager
             $update->execute($entry, $this->form->toArray());
             flash()->success(__('logbook.success_updated'));
         } else {
-            $this->validate(['form.userId' => 'required|exists:users,id']);
+            $this->validate(['form.user_id' => 'required|exists:users,id']);
 
-            $create->execute($this->form->userId, $this->form->toArray());
+            $create->execute($this->form->user_id, $this->form->toArray());
             flash()->success(__('logbook.success_created'));
         }
 

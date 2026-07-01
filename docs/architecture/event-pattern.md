@@ -1,10 +1,29 @@
 # Events, Listeners & Notifications Pattern — Dispatch, Listeners & Multi-Channel
 
-> **Last updated:** 2026-06-16
-> **Changes:** sync — remove `readonly` from event requirement (BaseEvent is not readonly; PHP 8.4 forbids readonly subclass of non-readonly parent)
+> **Last updated:** 2026-07-01
+> **Changes:** clarify: events are for async communication only — not mandatory; only create when a listener exists
 ## Description
 
 Event dispatch patterns, listener registration, notification channels, ShouldQueue conventions, and cross-module event communication.
+
+## Design Principle: Events Are for Async Communication
+
+Events exist to decouple **producers** (Actions) from **consumers** (listeners) across module
+boundaries. They are **not** a required part of every Command Action.
+
+**Rules:**
+- Only create an event class when at least one listener needs to react to it (cache invalidation,
+  cross-module notification, logging beyond `$this->log()`).
+- Do NOT create events "just in case" a listener might exist in the future. Add the event when the
+  listener is implemented.
+- Simple CRUD operations that are logged via `$this->log()` do NOT need events.
+- Status transitions that only affect the current model (no cross-module side effects) do NOT need
+  events.
+- Events are registered in `config/event.php`. An event without a listener registration is dead
+  code — either register a listener or remove the event class.
+
+**Before adding an event, ask:** "Is there a listener that will react to this?"
+If no → skip the event. The Action's `$this->log()` provides the audit trail.
 
 ## Table of Contents
 

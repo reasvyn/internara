@@ -2,26 +2,29 @@
 
 ## What It Enforces
 
-Events are auto-discovered (no manual EventServiceProvider registration). Queued listeners use
-`ShouldQueue`. Notifications implement `ShouldQueue` by default. Events use
+Events are registered manually in `config/event.php` — NOT auto-discovered. Only create an event
+when a listener needs to react asynchronously (cache invalidation, cross-module notification).
+Simple CRUD operations that are logged via `$this->log()` do NOT need events.
+
+Queued listeners use `ShouldQueue`. Notifications implement `ShouldQueue` by default. Events use
 `ShouldDispatchAfterCommit` inside transactions. On-demand notifications replace dummy models.
 
 ## Why It Matters
 
-Event discovery reduces boilerplate — Laravel scans listener `handle()` type-hints to wire events
-automatically. `ShouldDispatchAfterCommit` prevents queued listeners from processing before the
-triggering transaction commits, avoiding reads of non-existent data. On-demand notifications
-eliminate the need to create fake notifiable models just to send a notification.
+Over-engineering events for every Action creates dead code — event classes without listeners are
+noise. Events should only exist when there's a clear async consumer. `$this->log()` provides
+sufficient audit trail for most mutations. Manual registration in `config/event.php` makes the
+event→listener mapping explicit and auditable.
 
 ## When It Applies
 
-- Events: auto-discovered, dispatched from Actions, implement `ShouldDispatchAfterCommit` when
-  inside transactions
-- Listeners: implement `ShouldQueue` for side effects, auto-discovered by `handle()` type-hint
+- Events: registered in `config/event.php`, dispatched from Actions only when a listener exists
+- Listeners: implement `ShouldQueue` for side effects, registered alongside events in `config/event.php`
 - Notifications: implement `ShouldQueue` + `Queueable`, queue via `viaQueues()` for channel-specific
   queues
 - On-demand: `Notification::route('mail', 'email')->route('slack', '#channel')->notify(...)`
 - Caching: run `php artisan event:cache` in production
+- **Rule of thumb:** If there's no listener, there's no event. Skip it.
 
 Multi-channel notifications route through mail, broadcast, and database channels. Use
 `afterCommit()` on individual notifications when the notification is sent inside a transaction.

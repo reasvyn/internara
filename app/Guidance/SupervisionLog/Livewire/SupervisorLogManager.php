@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Guidance\SupervisionLog\Livewire;
 
+use App\Enrollment\Registration\Models\Registration;
 use App\Guidance\SupervisionLog\Actions\CreateSupervisionLogAction;
 use App\Guidance\SupervisionLog\Actions\VerifySupervisionLogAction;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;

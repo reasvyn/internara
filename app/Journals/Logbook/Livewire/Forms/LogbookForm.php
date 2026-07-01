@@ -10,37 +10,37 @@ class LogbookForm extends Form
 {
     public ?string $id = null;
 
-    public string $userId = '';
+    public string $user_id = '';
 
     public string $date = '';
 
     public string $content = '';
 
-    public string $learningOutcomes = '';
+    public string $learning_outcomes = '';
 
     public string $status = 'draft';
 
-    public ?string $mentorFeedback = null;
+    public ?string $mentor_feedback = null;
 
     public function rules(): array
     {
         return [
-            'userId' => ['required', 'exists:users,id'],
+            'user_id' => ['required', 'exists:users,id'],
             'date' => ['required', 'date'],
             'content' => ['required', 'string'],
-            'learningOutcomes' => ['nullable', 'string'],
+            'learning_outcomes' => ['nullable', 'string'],
         ];
     }
 
     public function toArray(): array
     {
         return [
-            'user_id' => $this->userId,
+            'user_id' => $this->user_id,
             'date' => $this->date,
             'content' => $this->content,
-            'learning_outcomes' => $this->learningOutcomes,
+            'learning_outcomes' => $this->learning_outcomes,
             'status' => $this->status,
-            'mentor_feedback' => $this->mentorFeedback,
+            'mentor_feedback' => $this->mentor_feedback,
         ];
     }
 }
