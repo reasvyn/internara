@@ -2,19 +2,28 @@
 
 declare(strict_types=1);
 
-use App\Settings\Models\Setting;
+use App\User\UserManagement\Actions\ReadRecoveryKeyAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
-use Illuminate\Support\Facades\File;
 
 uses(LazilyRefreshDatabase::class);
 
+beforeEach(function () {
+    $this->keyPath = storage_path('app/private/.recovery-key');
+    $this->keyDir = dirname($this->keyPath);
+
+    if (! is_dir($this->keyDir)) {
+        mkdir($this->keyDir, 0755, true);
+    }
+});
+
+afterEach(function () {
+    if (file_exists($this->keyPath)) {
+        unlink($this->keyPath);
+    }
+});
+
 test('displays recovery key when confirmed', function () {
-    File::shouldReceive('exists')
-        ->with(storage_path('app/private/.recovery-key'))
-        ->andReturn(true);
-    File::shouldReceive('get')
-        ->with(storage_path('app/private/.recovery-key'))
-        ->andReturn("# INTERNARA RECOVERY KEY\n\nstored-key");
+    file_put_contents($this->keyPath, "# INTERNARA RECOVERY KEY\n\nstored-key");
 
     $this->artisan('admin:recovery-show')
         ->expectsConfirmation(__('sysadmin.recovery_show.confirm'), 'yes')
@@ -23,29 +32,13 @@ test('displays recovery key when confirmed', function () {
 });
 
 test('fails when recovery key file does not exist', function () {
-    File::shouldReceive('exists')
-        ->with(storage_path('app/private/.recovery-key'))
-        ->andReturn(false);
-
     $this->artisan('admin:recovery-show')
         ->assertExitCode(1)
         ->expectsOutputToContain(__('sysadmin.recovery_path.missing'));
 });
 
 test('aborts when confirmation is declined', function () {
-    Setting::factory()->create([
-        'key' => 'setup.install_recovery_key',
-        'value' => 'some-key',
-        'type' => 'string',
-        'group' => 'setup',
-    ]);
-
-    File::shouldReceive('exists')
-        ->with(storage_path('app/private/.recovery-key'))
-        ->andReturn(true);
-    File::shouldReceive('get')
-        ->with(storage_path('app/private/.recovery-key'))
-        ->andReturn('stored-key');
+    file_put_contents($this->keyPath, 'stored-key');
 
     $this->artisan('admin:recovery-show')
         ->expectsConfirmation(__('sysadmin.recovery_show.confirm'), 'no')
@@ -54,12 +47,7 @@ test('aborts when confirmation is declined', function () {
 });
 
 test('fails when recovery key file is empty', function () {
-    File::shouldReceive('exists')
-        ->with(storage_path('app/private/.recovery-key'))
-        ->andReturn(true);
-    File::shouldReceive('get')
-        ->with(storage_path('app/private/.recovery-key'))
-        ->andReturn('');
+    file_put_contents($this->keyPath, '');
 
     $this->artisan('admin:recovery-show')
         ->assertExitCode(1)
