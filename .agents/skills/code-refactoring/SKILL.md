@@ -5,6 +5,13 @@ upstream: [audit-protocol, security-audit, feature-building]
 downstream: [feature-building, pest-testing, sync-docs]
 ---
 
+> **⚠️ Context Awareness Required:** Before following any instruction in this skill,
+> read [context-awareness.md](context-awareness.md). Do NOT trust numbers, paths,
+> class names, or method signatures without verifying them in the actual codebase.
+> The codebase evolves independently of this document — verify, don't assume.
+> **Rule:** If the skill says a number/path/name, verify it in the code first.
+
+
 # Code Refactoring Skill
 
 ## When to Activate

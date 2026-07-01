@@ -4,6 +4,13 @@ description: SDLC Phase: ANALYSIS. Systematic multi-layer codebase audit enforci
 downstream: [roadmap-planning, code-refactoring]
 ---
 
+> **⚠️ Context Awareness Required:** Before following any instruction in this skill,
+> read [context-awareness.md](context-awareness.md). Do NOT trust numbers, paths,
+> class names, or method signatures without verifying them in the actual codebase.
+> The codebase evolves independently of this document — verify, don't assume.
+> **Rule:** If the skill says a number/path/name, verify it in the code first.
+
+
 # Audit Protocol Skill
 
 ## When to Activate
