@@ -21,5 +21,5 @@ describe('DeleteUserAction', function () {
         $action = app(DeleteUserAction::class);
 
         $action->execute($user);
-    })->throws(RuntimeException::class, 'cannot delete your own account');
+    })->throws(RuntimeException::class, 'Super administrator accounts cannot be deleted.');
 });

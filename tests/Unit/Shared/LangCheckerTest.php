@@ -3,9 +3,14 @@
 declare(strict_types=1);
 
 use App\Domain\Shared\Support\LangChecker;
+use App\Providers\AppServiceProvider;
 use Illuminate\Translation\Translator;
 
 describe('LangChecker', function () {
+    beforeEach(function () {
+        config(['app.debug' => true]);
+        (new AppServiceProvider(app()))->register();
+    });
     it('extends Laravel Translator', function () {
         $checker = app()->make('translator');
 

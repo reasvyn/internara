@@ -39,7 +39,7 @@ class AssignmentNotification extends Notification implements ShouldQueue
 
     public function toMail($notifiable): MailMessage
     {
-        $message = new MailMessage()
+        $message = (new MailMessage)
             ->subject(
                 __('notifications.assignment.mail_subject', ['title' => $this->assignmentTitle]),
             )
