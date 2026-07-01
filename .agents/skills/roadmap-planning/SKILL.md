@@ -213,12 +213,17 @@ Each phase MUST:
 3. **Have clear entry/exit criteria.**
 4. **Include testing requirements.**
 5. **Identify affected files.**
+6. **Include design decisions** — document WHY each approach is chosen, what alternatives were
+   considered, and what boundaries/exclusions apply. Decisions can be per-task or in a dedicated
+   section. Without explicit design decisions, implementers will make arbitrary choices.
 
 Phase naming: `Phase {N}: {Short Description} (Priority: {P0–P3})`
 
 ### 4.2 Write Task Specifications
 
-For each task within a phase:
+For each task within a phase, include **design decisions** — either inline per task or in a
+standalone design decisions section. Design decisions prevent implementers from making arbitrary
+choices that contradict the project's architecture.
 
 ```
 ### Task {N}.{M} — {Verb}{Entity}
@@ -236,10 +241,16 @@ For each task within a phase:
 
 **Target state:** What the code should do after implementation.
 
+**Design decisions:**
+- Naming conventions (e.g., event name pattern: `{entity}_{past_tense_action}`)
+- Boundary rules (e.g., which events need listeners vs fire-and-forget)
+- Exclusion criteria (e.g., which tests must keep `RefreshDatabase`)
+- Pattern references (e.g., `docs/architecture/action-pattern.md`)
+- Rationale for WHY this approach over alternatives
+
 **Implementation notes:**
 - Step-by-step approach
 - Key files to modify
-- Pattern references (e.g., `docs/architecture/action-pattern.md`)
 
 **Testing:**
 - What to test (happy path, edge cases, error handling)
