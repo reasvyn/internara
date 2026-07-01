@@ -1,7 +1,7 @@
 # Roadmap — Project Health & Closure
 
 > **Last updated:** 2026-07-01
-> **Changes:** add current state audit; fix D7-D8; intermittent test resolved; all 8 issues closed
+> **Changes:** add Lessons Learned section from implementation experience
 
 ## Description
 > **Target:** Project health verification — all issues closed, dependencies up to date, regression check
@@ -288,15 +288,30 @@ Support/ files (AppInfo, AppIntegrity, LogEventListener) with explicit `use` sta
 - **When:** Resolve when/if the UserFactory is refactored to use Faker's
   `unique()->userName` instead of `UserIdentifierGenerator::generateUsername()`.
 
-## 5. Next Steps — Design Decisions
+## 5. Lessons Learned
+
+Issues discovered *during* implementation that weren't obvious from the initial audit:
+
+| # | Lesson | Context | Fix/Criteria |
+|---|--------|---------|-------------|
+| L1 | **Same-namespace coupling hides dependencies.** Files in `App\Core\Support` referenced `SmartLogger` without `use` — it worked because both were in the same namespace. Moving SmartLogger to `Services/` broke 3 files silently. | D6 refactoring | Always add explicit `use` statements, even when in the same namespace. The namespace may change later. |
+| L2 | **Factory `definition()` must not query the database.** `UserFactory::definition()` called `UserIdentifierGenerator::generateUsername()` which hit `users` table. This prevented `LazilyRefreshDatabase` in any test using `User::factory()`. | D4, D9 | Factory definitions should be pure transformations. Use Faker's `unique()` for uniqueness, not DB queries. |
+| L3 | **`Collection::contains($value)` on object collections NEVER matches.** It does strict `===` between the value and each element. User model objects are never `===` to a string ID. | D1 — MentorEntity | Use `contains(fn ($item) => $item->id === $value)` for object collections. |
+| L4 | **Observer event timing matters: `saving` vs `saved`.** During `saving`, the model has no ID yet — relationships that rely on the foreign key fail silently. Use `saved` when you need related data. | D7 — ReportObserver | `saved` fires after INSERT/UPDATE. If you modify the model inside `saved`, use `saveQuietly()` to avoid infinite loops. |
+| L5 | **Mocking facades causes test ordering failures.** `File::shouldReceive()` in one test can leak expectations to another test when run in sequence. Mockery's isolation is per-test-method, not per-facade. | Intermittent test | Prefer real filesystem (`file_put_contents`, `Storage::fake()`) over `File::shouldReceive()`. |
+| L6 | **Dependabot PRs accumulate merge conflicts quickly.** When left unmerged for 2+ weeks, semver bumps conflict as `composer.lock` and `package-lock.json` change. | Dependabot batch | Merge dependabot PRs within 1 week. Use `gh pr merge --auto` to enable auto-merge on CI pass. |
+| L7 | **Migration columns and query code must agree on name and type.** `last_activity` (integer) vs `last_activity_at` (timestamp) — the command used Carbon comparisons that silently failed with integer timestamps. | D3 | Always name timestamp columns with `_at` suffix. Never store timestamps as integers if Carbon comparison is needed. |
+| L8 | **Don't trust `grep` with namespace separators.** `grep "App\\\\Core\\\\Support\\\\SmartLogger"` fails due to shell escaping. Use `rg` (ripgrep) for namespace searches, or `grep -F` for fixed strings. | D6 — import audit | Use `rg "App\\\\Core\\\\Support"` (ripgrep) or `grep -rn "App\\\\Core\\\\Support" —include="*.php" without extra escaping. |
+
+---
+
+## 6. Next Steps — Design Decisions
 
 Each step below includes the design rationale so implementers understand why this approach
 was chosen over alternatives.
 
 | # | Action | Design Decision | Priority |
 |---|--------|-----------------|----------|
-| 1 | **Merge 10 Dependabot PRs** | All are semver-patch bumps from automated CI. Merge one at a time, confirm tests pass. No manual review needed beyond changelog scan. | Low |
-| 2 | **Fix intermittent test failure** | Run `--order-by=defects` first. If consistently same test → DB state issue (add `RefreshDatabase`). If varies → cache pollution (add `Cache::flush()` in `beforeEach`). | Low |
-| 3 | **Add Livewire tests** | Follow template in `pest-testing/references/testing-patterns.md`. Prioritize Auth components (security). No Eloquent mocking — use real factories with `LazilyRefreshDatabase`. | Medium |
-| 4 | **Add event tests** | Follow template in `tests/Unit/User/UserManagement/Events/UserLifecycleEventsTest.php`. Verify `eventName()`, `toPayload()` keys, and constructability. Prioritize events with registered listeners. | Medium |
-| 5 | **Add event dispatch to remaining ~80 Actions** | Only significant state changes (create, delete, status transition). Updates to non-public fields MAY skip. Prioritize Journals and Enrollment modules. | Low |
+| 1 | **Add Livewire tests** | 63 components pending. Follow pest-testing reference. Prioritize Auth (security) + interactive components. No Eloquent mocking. | Medium |
+| 2 | **Add event tests** | 25 events untested. Follow UserLifecycleEventsTest.php template. Prioritize events with registered listeners. | Medium |
+| 3 | **Add event dispatch to remaining ~80 Actions** | SHOULD-level. Create/delete/status transitions only. Prioritize Journals, Enrollment. | Low |
