@@ -156,19 +156,19 @@
     </x-mary-modal>
 
     {{-- Form Modal --}}
-    <x-mary-modal wire:model="showModal" :title="$formData['id'] ? __('logbook.edit') : __('logbook.new')" separator class="backdrop-blur-sm">
+    <x-mary-modal wire:model="showModal" :title="$this->form->id ? __('logbook.edit') : __('logbook.new')" separator class="backdrop-blur-sm">
         <div class="space-y-6">
-            @if(!$formData['id'])
-                <x-mary-select :label="__('logbook.student')" wire:model="formData.user_id" :options="$this->students" placeholder="Select student..." class="rounded-xl border-base-300" />
+            @if(!$this->form->id)
+                <x-mary-select :label="__('logbook.student')" wire:model="form.user_id" :options="$this->students" placeholder="Select student..." class="rounded-xl border-base-300" />
             @endif
 
-            <x-mary-datepicker :label="__('logbook.date')" wire:model="formData.date" icon="o-calendar" class="rounded-xl border-base-300" />
+            <x-mary-datepicker :label="__('logbook.date')" wire:model="form.date" icon="o-calendar" class="rounded-xl border-base-300" />
 
-            <x-mary-textarea :label="__('logbook.content')" wire:model="formData.content" rows="4" class="rounded-xl border-base-300" />
+            <x-mary-textarea :label="__('logbook.content')" wire:model="form.content" rows="4" class="rounded-xl border-base-300" />
 
-            <x-mary-textarea :label="__('logbook.learning_outcomes')" wire:model="formData.learning_outcomes" rows="2" class="rounded-xl border-base-300" />
+            <x-mary-textarea :label="__('logbook.learning_outcomes')" wire:model="form.learning_outcomes" rows="2" class="rounded-xl border-base-300" />
 
-            <x-mary-textarea :label="__('logbook.mentor_feedback')" wire:model="formData.mentor_feedback" rows="2" class="rounded-xl border-base-300" />
+            <x-mary-textarea :label="__('logbook.mentor_feedback')" wire:model="form.mentor_feedback" rows="2" class="rounded-xl border-base-300" />
         </div>
 
         <x-slot:actions>

@@ -147,9 +147,9 @@ Layer 1: Framework/Infrastructure/Utilities (PHP 8.4, Laravel 13, Core
 
 | Type        | Base Class          | Transaction | Logging     | Events         | Use Case                                 |
 | ----------- | ------------------- | ----------- | ----------- | -------------- | ---------------------------------------- |
-| **Command** | `BaseCommandAction` | ✅ Required | ✅ Required | ✅ Recommended | All mutations (CUD, state transitions)   |
+| **Command** | `BaseCommandAction` | ✅ Required | ✅ Required | ❌ Only if listener exists | All mutations (CUD, state transitions)   |
 | **Read**    | `BaseReadAction`    | ❌          | ❌          | ❌             | Complex queries, aggregation, dashboards |
-| **Process** | `BaseProcessAction` | ✅ Level    | ✅ Level    | ✅ Required    | Multi-step orchestration                 |
+| **Process** | `BaseProcessAction` | ✅ Level    | ✅ Level    | ❌ Only if listener exists | Multi-step orchestration                 |
 
 **Key rules:**
 
@@ -163,6 +163,9 @@ Layer 1: Framework/Infrastructure/Utilities (PHP 8.4, Laravel 13, Core
 - **Command/Process Actions SHOULD accept a DTO (`BaseData`) for 3+ params** — simple ops may use typed scalars. Never raw `array`.
 - **Command/Process Actions SHOULD return `ActionResponse`** for structured feedback. Simple create/update may return Model directly.
 - **Actions MUST delegate business rules to Entities** — throw `RejectedException` on violation
+- **Events are for async communication only.** Do NOT create events unless a listener exists
+  (cache invalidation, cross-module notification). Simple CRUD + `$this->log()` is sufficient.
+  See `docs/architecture/event-pattern.md`.
 - **Livewire may use Entities for READ-ONLY UI checks** (show/hide buttons). WRITE decisions go through Actions.
 
 ## Base Class Mandate

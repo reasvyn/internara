@@ -170,11 +170,15 @@ return $this->transaction(function () use (${entity}, $data) {
 });
 ```
 
-#### Step 5 — Dispatch Event
+#### Step 5 — Dispatch Event (Only If a Listener Exists)
 
 ```php
 event(new {Entity}{Actioned}(${entity}));
 ```
+
+**Important:** Only dispatch an event if there is a registered listener that needs to react
+(cache invalidation, cross-module notification, logging beyond `$this->log()`). If no listener
+exists, skip the event. `$this->log()` provides sufficient audit trail for most operations.
 
 #### Step 6 — Delegate Business Rules to Entity
 
@@ -226,7 +230,7 @@ public function save(CreateUserAction $action): void
 - [ ] **Command/Process Action returns `ActionResponse` for structured feedback**
 - [ ] DB writes wrapped in `$this->transaction()`
 - [ ] `$this->log()` called after mutation
-- [ ] Event dispatched for significant state change
+- [ ] Event dispatched only if a listener exists (otherwise skip)
 - [ ] Business rules delegated to Entity
 - [ ] `RejectedException` for rule violations
 - [ ] Caller injects Action via method parameter

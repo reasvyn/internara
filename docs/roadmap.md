@@ -231,21 +231,7 @@ factory definition. `ReportTest` now uses `LazilyRefreshDatabase` successfully.
 
 ## 4. Deferred Work — Design Decisions
 
-### DW1 — Event dispatch for remaining ~80 Actions
-
-**Scope:** ~80 Command Actions missing event dispatch | **Priority:** SHOULD-level
-
-**Design decisions:**
-- **Boundary:** An event MUST be dispatched for create, delete, and status-transition
-  operations. Update operations that modify non-public fields (internal timestamps,
-  audit counters) MAY skip. Score/grade calculations SHOULD dispatch.
-- **Naming:** `{Entity}{PastTenseAction}` — e.g., `CompanyDeleted`, `ScoreCalculated`
-- **Alternatives considered:** Batch dispatching (single event per module) was rejected
-  — it breaks the Action→Event→Listener chain and makes debugging harder.
-- **When to implement:** Prioritize by module usage frequency. Journals and Enrollment
-  are the most active modules and should be done first.
-
-### DW2 — Livewire tests for 63 components
+### DW1 — Livewire tests for 63 components
 
 **Scope:** 63 Livewire components without dedicated tests
 
@@ -314,4 +300,4 @@ was chosen over alternatives.
 |---|--------|-----------------|----------|
 | 1 | **Add Livewire tests** | 63 components pending. Follow pest-testing reference. Prioritize Auth (security) + interactive components. No Eloquent mocking. | Medium |
 | 2 | **Add event tests** | ✅ **Completed.** | Medium |
-| 3 | **Add event dispatch to remaining ~80 Actions** | SHOULD-level. Create/delete/status transitions only. Prioritize Journals, Enrollment. | Low |
+| 3 | **Add event dispatch to remaining ~80 Actions** | ❌ **Removed.** Events are for async-only communication. No listener → no event needed. `$this->log()` is sufficient. | — |

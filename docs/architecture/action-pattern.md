@@ -66,7 +66,7 @@ Action did it.
   scalars. NEVER accept raw `array` — if you need an array, create a DTO.
 - **SHOULD return `ActionResponse`** when the caller needs message/redirect/error context. Simple
   create/update MAY return the Model directly.
-- SHOULD dispatch a module event for significant state changes
+- MAY dispatch an event if a listener needs to react asynchronously (cache invalidation, cross-module notification). Do NOT create events preemptively — only add them when a listener exists.
 
 ### Structure
 
@@ -160,7 +160,7 @@ complex business processes.
 - MUST extend `BaseProcessAction` (extends `BaseAction` — transaction + logging at the process level)
 - MUST compose other Actions via constructor injection
 - MUST handle partial failure — if step N of M fails, what happens to earlier steps?
-- SHOULD emit a single module event representing the completed process
+- MAY emit an event if downstream listeners exist. Omit if no listener needs to react.
 - MUST NOT duplicate business logic that already exists in Command Actions
 
 ### Partial Failure Handling
