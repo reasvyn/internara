@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Services;
 
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use Illuminate\Translation\Translator;
 
 final class LangChecker extends Translator

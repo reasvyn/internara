@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Core\Support;
+namespace Tests\Unit\Core\Services;
 
 use App\Core\Models\ActivityLog;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Log\Events\MessageLogged;

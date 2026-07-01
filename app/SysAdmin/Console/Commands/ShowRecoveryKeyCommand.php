@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Console\Commands;
 
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use App\User\UserManagement\Actions\ReadRecoveryKeyAction;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;

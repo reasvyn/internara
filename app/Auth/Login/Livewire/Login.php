@@ -6,7 +6,7 @@ namespace App\Auth\Login\Livewire;
 
 use App\Auth\Login\Actions\LoginAction;
 use App\Auth\Login\Livewire\Forms\LoginForm;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;

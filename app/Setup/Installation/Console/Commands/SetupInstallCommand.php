@@ -7,7 +7,7 @@ namespace App\Setup\Installation\Console\Commands;
 use App\Core\Data\AuditReport;
 use App\Core\Enums\AuditCategory;
 use App\Core\Enums\AuditStatus;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
 use App\Setup\Installation\Console\Commands\Concerns\InteractsWithInstallerCli;
 use App\Setup\Installation\Services\SystemProvisioner;

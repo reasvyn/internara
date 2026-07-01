@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth\Permissions\Http\Middleware;
 
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;

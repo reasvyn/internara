@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Setup\Installation\Http\Middleware;
 
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\Installation\Actions\ValidateSetupTokenAction;
 use Closure;

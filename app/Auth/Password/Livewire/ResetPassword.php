@@ -6,7 +6,7 @@ namespace App\Auth\Password\Livewire;
 
 use App\Auth\Password\Actions\ResetPasswordAction;
 use App\Auth\Password\Livewire\Forms\ResetPasswordForm;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;

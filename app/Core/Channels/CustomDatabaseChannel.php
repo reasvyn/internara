@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Channels;
 
 use App\Core\Contracts\SendsNotifications;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notification;
 

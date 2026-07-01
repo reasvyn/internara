@@ -6,7 +6,7 @@ namespace App\Core\Actions\Concerns;
 
 use App\Core\Exceptions\AppException;
 use App\Core\Exceptions\ModuleException;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;

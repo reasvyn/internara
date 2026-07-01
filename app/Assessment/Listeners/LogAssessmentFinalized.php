@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Assessment\Listeners;
 
 use App\Assessment\Events\AssessmentFinalized;
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 
 class LogAssessmentFinalized
 {

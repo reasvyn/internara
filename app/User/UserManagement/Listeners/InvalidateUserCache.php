@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Listeners;
 
-use App\Core\Support\SmartLogger;
+use App\Core\Services\SmartLogger;
 
 class InvalidateUserCache
 {
