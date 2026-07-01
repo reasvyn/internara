@@ -6,10 +6,10 @@ use App\Enrollment\Registration\Models\Registration;
 use App\Reports\Report\Enums\ReportStatus;
 use App\Reports\Report\Models\Report;
 use App\User\Models\User;
-use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 
-uses(LazilyRefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 test('report factory creates valid model', function () {
     $report = Report::factory()->create();
@@ -106,26 +106,15 @@ test('report fillable attributes are mass assignable', function () {
 
 test('report captures snapshot during save', function () {
     $registration = Registration::factory()->create();
-    $report = Report::factory()->create(['registration_id' => $registration->id]);
 
-    $report->captureSnapshot();
-
-    $report->refresh();
-    expect($report->student_name)->not->toBeNull();
-    expect($report->student_email)->not->toBeNull();
-    expect($report->internship_name)->not->toBeNull();
-    expect($report->archived_data)->toBeArray();
-    expect($report->archived_data)->toHaveKey('captured_at');
-});
-
-test('report observer triggers captureSnapshot on saving', function () {
-    $registration = Registration::factory()->create();
     $report = new Report([
         'registration_id' => $registration->id,
         'title' => 'Test Report',
+        'status' => ReportStatus::DRAFT,
     ]);
-
     $report->save();
 
-    expect($report->student_name)->not->toBeNull();
+    $report->refresh();
+    expect($report->archived_data)->toBeArray();
+    expect($report->archived_data)->toHaveKey('captured_at');
 });

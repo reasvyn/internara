@@ -5,6 +5,9 @@ declare(strict_types=1);
 use App\SysAdmin\Observability\GdprDeletionLog\Models\GdprDeletionLog;
 use App\SysAdmin\Observability\GdprDeletionLog\Policies\GdprDeletionLogPolicy;
 use App\User\Models\User;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
+
+uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
     $this->policy = new GdprDeletionLogPolicy;
