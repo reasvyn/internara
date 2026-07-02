@@ -20,9 +20,12 @@ return [
     'health_check' => 'system.health_check',
     'recover_admin_attempts' => 'auth.recover.attempts:',
     'recovery_otp' => 'auth.recover.otp:',
+    'recovery_otp_hash' => 'auth.recover.otp_hash:',
     'settings_all' => 'settings.all',
     'settings_group' => 'settings.group.',
     'settings_keys' => 'settings.keys',
     'settings_key' => 'settings.',
     'school_entity' => 'academics.school.entity',
+    'user_single' => 'user.',
+    'users_count' => 'users.count',
 ];

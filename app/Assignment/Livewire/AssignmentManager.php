@@ -12,6 +12,7 @@ use App\Assignment\Models\Assignment;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Program\Internship\Models\Internship;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 
@@ -77,6 +78,16 @@ class AssignmentManager extends BaseRecordManager
                 $this->filters['is_mandatory'] ?? null,
                 fn ($q, $v) => $q->where('is_mandatory', $v === 'yes'),
             );
+    }
+
+    #[Computed]
+    public function assignmentTypes(): \Illuminate\Support\Collection
+    {
+        return collect([
+            ['id' => 'project', 'name' => 'Project'],
+            ['id' => 'report', 'name' => 'Report'],
+            ['id' => 'essay', 'name' => 'Essay'],
+        ]);
     }
 
     #[Computed]

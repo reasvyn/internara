@@ -165,7 +165,7 @@ class RecoverAdminCommand extends Command
             return false;
         }
 
-        Cache::put('recovery_otp_'.$email, Hash::make($otp), 300);
+        Cache::put(config('cache-keys.recovery_otp_hash').$email, Hash::make($otp), 300);
 
         try {
             $user->notify(new RecoveryOtpNotification($otp));
@@ -181,7 +181,7 @@ class RecoverAdminCommand extends Command
             label: __('sysadmin.recover.otp_prompt'),
             required: true,
             validate: function (string $value) use ($email) {
-                $stored = Cache::get('recovery_otp_'.$email);
+                $stored = Cache::get(config('cache-keys.recovery_otp_hash').$email);
 
                 if ($stored === null) {
                     return __('sysadmin.recover.otp_expired');
@@ -195,7 +195,7 @@ class RecoverAdminCommand extends Command
             },
         );
 
-        Cache::forget('recovery_otp_'.$email);
+        Cache::forget(config('cache-keys.recovery_otp_hash').$email);
 
         return true;
     }

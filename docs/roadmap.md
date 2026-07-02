@@ -291,13 +291,13 @@ Issues discovered *during* implementation that weren't obvious from the initial 
 
 ---
 
-## 6. Open Issues from Recent Audits
+## 6. Closed Issues
 
-| # | Title | Priority | Scope |
-|---|-------|----------|-------|
-| [#205](https://github.com/reasvyn/internara/issues/205) | Cache audit: inline invalidation, redundant flushes, unregistered keys | MEDIUM | `config/cache-keys.php`, 6+ listeners, inline Cache::forget calls |
-| [#206](https://github.com/reasvyn/internara/issues/206) | Event audit: 9 stub listeners, dead events, redundant invalidators | MEDIUM | `config/event.php`, LogEventListener, admin_dashboard_stats listeners |
-| [#207](https://github.com/reasvyn/internara/issues/207) | Livewire components: missing imports and property naming bugs | LOW | `SupervisorLogManager`, `LogbookManager`, blade template |
+| # | Title | Status | Resolution |
+|---|-------|--------|------------|
+| [#205](https://github.com/reasvyn/internara/issues/205) | Cache audit | ✅ Closed | Registered 3 missing cache keys, updated consumers |
+| [#206](https://github.com/reasvyn/internara/issues/206) | Event audit | ✅ Closed | Removed 9 stub LogEventListener registrations |
+| [#207](https://github.com/reasvyn/internara/issues/207) | Livewire bugs | ✅ Closed | Already fixed in previous session |
 
 ---
 

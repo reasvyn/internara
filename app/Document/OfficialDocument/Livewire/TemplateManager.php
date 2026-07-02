@@ -6,6 +6,7 @@ namespace App\Document\OfficialDocument\Livewire;
 
 use App\Document\Models\Document;
 use App\Document\OfficialDocument\Actions\SaveDocumentTemplateAction;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;

@@ -13,6 +13,7 @@ use App\Settings\Branding\Actions\UploadBrandAssetAction;
 use App\Settings\Branding\Livewire\Forms\BrandingForm;
 use App\Settings\Enums\MediaCollection;
 use App\Settings\Livewire\Forms\GeneralSettingsForm;
+use App\Settings\Theme\Support\Theme;
 use App\Settings\Livewire\Forms\MailSettingsForm;
 use App\Settings\Models\Setting;
 use App\Settings\Services\Settings;
@@ -46,7 +47,7 @@ class SystemSetting extends Component
     {
         $this->authorize('viewAny', Setting::class);
 
-        $defaults = App\Settings\Theme\Support\Theme::defaults();
+        $defaults = Theme::defaults();
 
         $this->app_name = Settings::get('app_name', app_info('name'));
         $this->app_version = Settings::get('app_version', app_info('version'));
@@ -256,7 +257,7 @@ class SystemSetting extends Component
     public function render(): View
     {
         return view('settings.system-setting', [
-            'presets' => App\Settings\Theme\Support\Theme::presets(),
+            'presets' => Theme::presets(),
         ]);
     }
 }
