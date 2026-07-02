@@ -12,8 +12,8 @@ class InvalidateUserCache
     {
         $user = $event->user ?? $event->{$event->user ?? null};
 
-        cache()->forget('user_'.$event->user?->id);
-        cache()->forget('users_count');
+        cache()->forget(config('cache-keys.user_single').$event->user?->id);
+        cache()->forget(config('cache-keys.users_count'));
 
         SmartLogger::info('User cache invalidated')
             ->withPayload(['event' => $event::class])

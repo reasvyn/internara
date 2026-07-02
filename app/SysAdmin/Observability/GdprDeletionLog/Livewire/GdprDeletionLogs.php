@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\SysAdmin\Observability\GdprDeletionLog\Livewire;
 
+use App\Core\Livewire\Concerns\WithSorting;
 use App\SysAdmin\Observability\GdprDeletionLog\Models\GdprDeletionLog;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
@@ -13,7 +14,7 @@ use Livewire\WithPagination;
 
 class GdprDeletionLogs extends Component
 {
-    use WithPagination;
+    use WithPagination, WithSorting;
 
     public string $search = '';
 

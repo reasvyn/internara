@@ -12,7 +12,7 @@ use Livewire\Component;
 
 class AccountCloneDetector extends Component
 {
-    public array $clones = [];
+    public $clones = [];
 
     public function mount(DetectUserAccountCloneAction $action): void
     {
