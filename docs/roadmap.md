@@ -1,313 +1,185 @@
-# Roadmap — Project Health & Closure
+# Roadmap — Reports Module Overhaul: Grade Card Purification
 
-> **Last updated:** 2026-07-01
-> **Changes:** add new issues from cache/event/Livewire audits (#205, #206, #207)
+> **Last updated:** 2026-07-03
+> **Changes:** replace completed Core + Settings roadmaps with active Reports overhaul
 
-## Description
-> **Target:** Project health verification — all issues closed, dependencies up to date, regression check
-
-**Status:** ✅ All 9 discovered issues fixed — 2401 tests passing, 0 failures
-
----
-
-## 1. Current State
-
-| Metric | Value |
-|--------|-------|
-| Open issues | **0** |
-| Open pull requests | **1** (#173 — test suite fix branch) |
-| Passing tests | **2,401** |
-| Failing tests | **0** |
-| Test suite duration | **~474s** (down from 767s) |
-| Dependabot PRs merged (this session) | **8** (+ 5 closed/updated directly) |
-
-All manual work items from the previous roadmap phases are complete. D4 (UserIdentifierGenerator)
-and D9 (ReportTest) were fixed by refactoring UserFactory — no longer queries DB during
-definition. D6 (SmartLogger) moved from Support/ to Services/. All 9 issues resolved.
+> **Status:** In progress
+> **Target:** Report module — remove all student thesis/written-report concepts, simplify to pure final grade card with DRAFT->FINALIZED workflow
+> **Dependencies:** Completed: Core module hardening (12 issues), Settings module hardening (15 issues)
 
 ---
 
-## 2. Remaining Work
+## Completed Roadmaps
 
-### 2.1 Dependabot Pull Requests (Resolved)
-
-All 10 Dependabot PRs were processed. 8 merged, 6 closed via direct updates.
-Only 1 open PR remains: #173 (manual test fix branch).
-### 2.2 Intermittent Test Failure (Resolved)
-
-`ShowRecoveryKeyCommandTest` failed intermittently in full suite due to mock leakage
-from `File::shouldReceive()`. **Fixed by using real filesystem operations instead of
-File mock** (commit `51748d641`). Suite now passes 2401 tests with 0 failures in
-standard ordering. The `--order-by=defects` flag may still expose ordering sensitivity
-in other tests — this flag reorders tests arbitrarily and is not the default runner.
+| Initiative | Issues | Status |
+|------------|--------|--------|
+| Core module hardening | 12 issues (#208-#219) | All resolved |
+| Settings module hardening | 15 issues (#220-#234) | All resolved |
 
 ---
 
-## 3. Discovered Issues — Design Decisions
+## 1. Overview
 
-Each issue below was found during implementation work on the previous roadmap phases.
-Some have been fixed; others need design decisions before implementation.
+The Report module audit revealed that the module conflates two distinct concepts:
+final grade card (correct) and student written report/thesis (belongs in Assignment).
+This roadmap strips all written-report infrastructure and restores the module to its
+intended function: storing final scores, grade letter, and student snapshot.
 
-## 3. Discovered Issues — Design Decisions
-
-Each issue below was found during implementation work on the previous roadmap phases.
-Some have been fixed; others need design decisions before implementation.
-
-### D1 — `MentorEntity::isMentor()` uses strict equality instead of property comparison
-
-**Severity:** HIGH | **Status:** ✅ Fixed | **File:** `app/User/Mentor/Entities/MentorEntity.php:47`
-
-`Collection::contains($user->id)` performs strict equality (`===`) between each collection
-element and the string ID. User model objects are objects, not strings — the check never
-matches.
-
-**Design decision:**
-- **Pattern:** Entity collection queries MUST use closures for property comparison:
-  `contains(fn (User $m) => $m->id === $id)` instead of `contains($id)`
-- **Rationale:** `contains(value)` is for scalar collections. `contains(closure)` is for
-  object collections. Entities always deal with Model objects, so closures are required.
-- **Fix:** Replaced `contains($user->id)` with `contains(fn (User $m) => $m->id === $user->id)`
-- **Verification:** MentorEntityProxyTest covers proxy and direct access paths
+Per AGENTS.md Critical Rules: Report module is grade card only.
 
 ---
 
-### D2 — Missing `role` column in `internship_group_members` pivot table
+## 2. Current State (Open Issues)
 
-**Severity:** HIGH | **Status:** ✅ Fixed | **File:** `database/migrations/2026_01_05_000001_create_internship_groups_table.php`
+### 2.1 HIGH
 
-The pivot table had no `role` column but `CertificateRenderer` queries
-`wherePivot('role', 'supervisor')` — causing a SQL error.
+| # | Issue | File | Impact |
+|---|-------|------|--------|
+| #244 | Overhaul: hybrid grade-card/writing to pure grade card | Module-wide | Conceptual pollution |
+| #235 | Missing FinalizeReportAction | (created) | Workflow stuck at APPROVED -- FIXED |
 
-**Design decision:**
-- **Naming:** Column named `role` (string, nullable) — matches the `wherePivot('role', ...)`
-  convention used across all mentor queries
-- **Alternatives considered:** Using a separate `mentor_role` pivot model with dedicated
-  columns was rejected because all existing code uses `wherePivot` on `internship_group_members`
-- **Fix:** Added `$table->string('role')->nullable()` to the migration
-- **Boundary:** This column is only populated when a mentor is assigned to a group for a
-  specific role. Null means the member has no designated role.
+### 2.2 MEDIUM
 
----
+| # | Issue | File | Impact |
+|---|-------|------|--------|
+| #236 | Nested 3-level whereHas in mount() | ReportWriter.php:37 | Deleted in overhaul |
+| #237 | CreateReportAction raw array | CreateReportAction.php:13 | No type safety |
+| #238 | event() instead of dispatchEvent() | 3 Action files | Events fire before txn commit -- FIXED |
+| #239 | ReportController redirect to non-existent route | ReportController.php:34 | Crashes on file-not-found -- FIXED |
 
-### D3 — `users.last_activity` column uses wrong type
+### 2.3 LOW
 
-**Severity:** HIGH | **Status:** ✅ Fixed | **File:** `database/migrations/2026_01_02_000001_create_users_table.php`
-
-Column was `integer('last_activity')` but `AutoInactivateAccountsCommand` compares
-against Carbon dates. Integer timestamps cannot be queried with Carbon date methods.
-
-**Design decision:**
-- **Type:** Changed to `timestamp('last_activity_at')->nullable()` — matches Carbon
-  date comparisons in the command
-- **Naming:** Renamed from `last_activity` to `last_activity_at` following Laravel's
-  timestamp naming convention (`created_at`, `updated_at`, `last_activity_at`)
-- **Alternatives considered:** Keeping `last_activity` as integer and converting
-  dates to timestamps in queries was rejected — it would require `whereRaw` calls
-  and break Eloquent date casting
-- **Fix:** Replaced `$table->integer('last_activity')->index()` with
-  `$table->timestamp('last_activity_at')->nullable()` on the users table
+| # | Issue | File |
+|---|-------|------|
+| #243 | Redundant abort_unless in boot() | ReportWriter.php:32 |
+| #240 | json_encode(null) shows "null" in editor | ReportWriter.php:49 |
+| #241 | Orphaned ReportFinalized event | Events/ReportFinalized.php -- FIXED |
+| #242 | Notification link to placeholder route | Listeners/HandleReportApproved.php:26 |
+| #245 | Docs still reference thesis concepts | docs/modules/reports*.md |
 
 ---
 
-### D4 — `UserIdentifierGenerator` queries DB during factory creation
+## 3. Implementation Phases
 
-**Severity:** MEDIUM | **Status:** ✅ Fixed | **File:** `app/User/Services/UserIdentifierGenerator.php:44`
+### Phase 1: Strip Written-Report Infrastructure (P0)
 
-`generateUsername()` calls `User::where('username', $username)->exists()` to check
-uniqueness. When called from `UserFactory::definition()`, this queries the `users`
-table before migrations have run with `LazilyRefreshDatabase`.
+#### Task 1.1 -- Delete obsolete actions and files
+
+| Field | Value |
+|-------|-------|
+| **Pipeline** | refactor |
+| **Module** | Reports |
+| **Effort** | Medium |
+| **Issue** | #244 |
+
+**Target state:** Only CalculateFinalGradeAction, FinalizeReportAction, GradeCalculated,
+ReportFinalized remain. Status is DRAFT to FINALIZED. Fields are grade-card only.
 
 **Design decisions:**
-- **Root cause:** The factory definition coupled username generation with DB state.
-- **Fix:** UserFactory now generates the username inline using `Str::of($email)->before('@')`
-  with non-alphanumeric stripping — identical logic to `UserIdentifierGenerator` but without
-  the DB uniqueness check. The generated username is derived from the already-unique email,
-  so collisions are prevented by Faker's `unique()->safeEmail()`.
-- **Verification:** `UserIdentifierGeneratorTest` still passes (tests the Service itself).
-  `ReportTest` now uses `LazilyRefreshDatabase` without failure.
-- **Affected tests resolved:** `tests/Unit/Reports/Report/Models/ReportTest.php` migrated
-  back to `LazilyRefreshDatabase`. All 2401 tests pass.
+- Delete instead of deprecate: files have zero callers outside the module
+- Drop columns title, content, chapter_structure, supervisor_notes from migration
+- Move snapshot capture from observer to FinalizeReportAction
+
+**Delete files:**
+- Actions: SaveReportDraftAction, SubmitReportAction, ApproveReportAction, AddSupervisorReportNotesAction
+- Events: ReportSubmitted, ReportApproved
+- Listeners: HandleReportApproved
+- Livewire: ReportWriter + report-writer.blade.php
+- Tests: SubmitReportActionTest, SaveReportDraftActionTest, ApproveReportActionTest, AddSupervisorReportNotesActionTest, ReportWriterTest
+
+**Update files:**
+- Models/Report.php: remove title, content, chapter_structure, supervisor_notes from Fillable/casts
+- Enums/ReportStatus.php: keep only DRAFT, FINALIZED
+- Observers/ReportObserver.php: snapshot only on FINALIZED
+- Actions/FinalizeReportAction.php: add captureSnapshot()
+- Routes: remove student routes, placeholder redirect
+- Config/event.php: remove ReportApproved mapping
+- Migration: drop columns title, content, chapter_structure, supervisor_notes
+
+#### Task 1.2 -- Simplify ReportStatus enum
+
+Two states only: DRAFT, FINALIZED. isTerminal() returns true for FINALIZED.
+validTransitions(): DRAFT -> [FINALIZED], FINALIZED -> [].
+
+#### Task 1.3 -- Move snapshot to FinalizeReportAction
+
+Observer currently calls captureSnapshot() on every save. Move to FinalizeReportAction.
+Observer only triggers snapshot on FINALIZED status transition.
+
+### Phase 2: Fix Remaining Bugs (P1)
+
+#### Task 2.1 -- Create DTO for CreateReportAction
+
+| Field | Value |
+|-------|-------|
+| **Pipeline** | refactor |
+| **Module** | Reports |
+| **Effort** | Small |
+| **Issue** | #237 |
+
+Accept typed DTO instead of raw array.
+
+#### Task 2.2 -- Fix minor bugs
+
+| Field | Value |
+|-------|-------|
+| **Issues** | #240, #243 |
+
+Files already deleted in Phase 1 (ReportWriter and boot issues are moot now).
+
+### Phase 3: Documentation & Cleanup (P2)
+
+#### Task 3.1 -- Update documentation
+
+| Field | Value |
+|-------|-------|
+| **Pipeline** | docs |
+| **Module** | Reports |
+| **Effort** | Small |
+| **Files** | docs/modules/reports.md, docs/modules/reports-reference.md |
+| **Issue** | #245 |
+
+Remove all thesis/written-report references. Update action list, event list, status flow.
+
+#### Task 3.2 -- Close fixed issues
+
+Close #235, #238, #239, #241 with resolution comments.
 
 ---
 
-### D5 — Duplicate index definition in `incident_reports` migration
+## 4. Testing Strategy
 
-**Severity:** MEDIUM | **Status:** ✅ Fixed | **File:** `database/migrations/2026_01_04_000015_create_incident_reports_table.php`
-
-`$table->string('severity')->index()` on line 20 and `$table->index('severity')` on
-line 31 both attempt to create `incident_reports_severity_index`.
-
-**Design decision:**
-- **Rule:** Column-level `->index()` is preferred over explicit `$table->index()`
-  when the index is a simple single-column index. The column definition already
-  creates the index.
-- **Fix:** Removed the duplicate `$table->index('severity')` on line 31.
-- **Verification:** Full test suite passes — no more `index already exists` errors.
+| Test | Type | What It Verifies |
+|------|------|------------------|
+| FinalizeReportActionTest | Feature | Finalization workflow, snapshot capture |
+| CalculateFinalGradeActionTest | Feature | Grade calculation with simplified status |
+| ReportStatusTest | Unit | DRAFT to FINALIZED transitions |
+| ReportModelTest | Unit | No deleted fields in fillable/casts |
 
 ---
 
-### D6 — `SmartLogger` in `Support/` violates static-only convention
+## 5. Integration Order
 
-**Severity:** MEDIUM | **Status:** ✅ Fixed | **File:** `app/Core/Services/SmartLogger.php`
-
-`SmartLogger` uses instance methods (fluent builder) and facades (`Log::`, `Auth::`,
-`Request::`) but lives in `Support/` which is reserved for static-only utilities.
-
-**Design decisions:**
-- **Scope:** 329 lines, 100+ call sites across the entire codebase.
-- **Alternatives considered:**
-  1. *Move to `Services/`* — correct classification, but requires updating 100+
-     import statements. Risk of breaking imports.
-  2. *Keep in `Support/` with deprecation notice* — pragmatic, no disruption.
-  3. *Refactor into static facade + service class* — cleanest but doubles the
-     class count and adds complexity.
-- **Chosen:** Alternative 2 (keep in `Support/` with deprecation notice) for now.
-  The static factory methods (`SmartLogger::success()`, `SmartLogger::info()`) make
-  it behave like a Support class at the call site, even though internally it's a Service.
-- **Move plan:** When a major refactoring touches a module that uses SmartLogger,
-  update that module's imports to `App\Core\Services\SmartLogger` at the same time.
+| # | Phase | Task | Depends On |
+|---|-------|------|------------|
+| 1 | 1 | Delete obsolete files + update model/enum/observer/migration/routes/config | - |
+| 2 | 2 | Create DTO for CreateReportAction | 1 |
+| 3 | 3 | Update docs, close issues | 1 |
 
 ---
 
-### D7 — `ReportObserver` calls `captureSnapshot()` on `saving` event
+## 6. No-Change Zones
 
-**Severity:** MEDIUM | **Status:** ⏳ Open | **File:** `app/Reports/Report/Observers/ReportObserver.php`
-
-`captureSnapshot()` accesses `$this->registration->student->profile` etc. During the
-`saving` event, the Report hasn't been inserted yet. The `registration_id` is set,
-but lazy-loading `registration` from a Report that isn't persisted fails.
-
-**Design decisions:**
-- **Root cause:** The observer hooks `saving` (before INSERT) but the snapshot
-  logic needs data from related models that are only queryable after the Report
-  exists.
-- **Alternatives considered:**
-  1. *Change to `saved` event* — fires after INSERT, relationships work. Risk:
-     two DB queries (INSERT + UPDATE for snapshot fields).
-  2. *Eager-load registration in observer* — `$report->load('registration.student.profile')`
-     before accessing. Works during `saving` if the registration exists.
-  3. *Remove from observer, call explicitly* — each caller must invoke
-     `captureSnapshot()` after `save()`. Risk: callers forget.
-- **Chosen:** Alternative 1 (`saved` event) when implemented. Two queries are
-  acceptable for a snapshot operation that only runs once per report lifecycle.
-- **Temporary workaround:** The `save()` call in `ReportTest` now uses
-  `RefreshDatabase` to ensure tables exist, and the snapshot test only asserts
-  `archived_data` is an array (not checking student_name).
+| Feature / Area | Reason |
+|----------------|--------|
+| CalculateFinalGradeAction | Core grade aggregation logic |
+| FinalizeReportAction | Already working with snapshot |
+| archived_data + industry_feedback fields | Grade-card related |
 
 ---
 
-### D8 — `BaseEvent::toPayload()` renames Model keys
+## 7. Next Steps
 
-**Severity:** LOW | **Status:** ⏳ Open | **File:** `app/Core/Events/BaseEvent.php:63`
-
-`toPayload()` converts `$assessment` (Model property) to `assessment_id` (scalar key
-in payload array). This is unexpected for implementers who write
-`$event->toPayload()['assessment']` and get null.
-
-**Design decisions:**
-- **Rationale for current behavior:** Prevents serializing entire Model objects
-  (with all relationships and attributes) into event payloads. Only the model's
-  primary key is needed for correlation.
-- **Alternatives considered:**
-  1. *Keep current behavior, document it* — no code change, just a docblock update.
-  2. *Add both `assessment` (full model) and `assessment_id` (scalar)* — payload
-     size doubles. Risk: circular references if Model has relationships.
-  3. *Remove automatic conversion, let implementers choose* — more flexible, but
-     each event must manually add scalar keys.
-- **Chosen:** Alternative 1 (document current behavior in `BaseEvent` docblock).
-  The conversion is intentional and consistent. Implementers should use
-  `$event->toPayload()['assessment_id']` instead of `['assessment']`.
-
----
-
-### D9 — `ReportTest` must keep `RefreshDatabase`
-
-**Severity:** LOW | **Status:** ✅ Fixed | **File:** `tests/Unit/Reports/Report/Models/ReportTest.php`
-
-Resolved by D4 fix — `UserFactory` no longer calls `UserIdentifierGenerator` during
-factory definition. `ReportTest` now uses `LazilyRefreshDatabase` successfully.
-
----
-
-## 4. Deferred Work — Design Decisions
-
-### DW1 — Livewire tests for 63 components
-
-**Scope:** 63 Livewire components without dedicated tests
-
-**Design decisions:**
-- **Template:** See `pest-testing/references/testing-patterns.md` for Livewire test
-  patterns (render assertions, method calls, validation feedback).
-- **Priority:** Interactive components (forms, CRUD managers, modals) over
-  read-only display components. Auth components first (security-critical).
-- **No mocking of Eloquent:** Use real factories with `LazilyRefreshDatabase`.
-  Livewire tests are feature tests — they should exercise the real data layer.
-
-### DW3 — Event tests for ~25 remaining events
-
-**Scope:** 25 event classes without dedicated tests
-
-**Design decisions:**
-- **Template:** Each event test should verify: (1) `eventName()` returns expected
-  string, (2) `toPayload()` contains expected keys, (3) event can be constructed
-  with its model. Example: `tests/Unit/User/UserManagement/Events/UserLifecycleEventsTest.php`
-- **Priority:** Events that have registered listeners in `config/event.php` first.
-  Orphaned events (no listener) are lower priority.
-
-### DW4 — SmartLogger → Services/ move
-
-**Scope:** `app/Core/Services/SmartLogger.php` | **Status:** ✅ Resolved by D6
-
-Moved from `Support/` to `Services/` in a single batch: copied file, updated namespace,
-bulk-updated all 32 import references across app/ and tests/. Updated 3 remaining
-Support/ files (AppInfo, AppIntegrity, LogEventListener) with explicit `use` statements.
-
-### DW5 — UserIdentifierGenerator DB dependency
-
-**Scope:** `app/User/Services/UserIdentifierGenerator.php` | **File:** Already documented in D4
-
-**Design decisions:**
-- **Alternatives:** (1) Remove DB check during factory — use Faker `unique()`.
-  (2) Accept `User::factory()->make()` (not `create()`) for entity tests.
-  (3) Keep `RefreshDatabase` for affected tests.
-- **Chosen:** Alternative 3 (keep `RefreshDatabase`) — minimal disruption.
-- **When:** Resolve when/if the UserFactory is refactored to use Faker's
-  `unique()->userName` instead of `UserIdentifierGenerator::generateUsername()`.
-
-## 5. Lessons Learned
-
-Issues discovered *during* implementation that weren't obvious from the initial audit:
-
-| # | Lesson | Context | Fix/Criteria |
-|---|--------|---------|-------------|
-| L1 | **Same-namespace coupling hides dependencies.** Files in `App\Core\Support` referenced `SmartLogger` without `use` — it worked because both were in the same namespace. Moving SmartLogger to `Services/` broke 3 files silently. | D6 refactoring | Always add explicit `use` statements, even when in the same namespace. The namespace may change later. |
-| L2 | **Factory `definition()` must not query the database.** `UserFactory::definition()` called `UserIdentifierGenerator::generateUsername()` which hit `users` table. This prevented `LazilyRefreshDatabase` in any test using `User::factory()`. | D4, D9 | Factory definitions should be pure transformations. Use Faker's `unique()` for uniqueness, not DB queries. |
-| L3 | **`Collection::contains($value)` on object collections NEVER matches.** It does strict `===` between the value and each element. User model objects are never `===` to a string ID. | D1 — MentorEntity | Use `contains(fn ($item) => $item->id === $value)` for object collections. |
-| L4 | **Observer event timing matters: `saving` vs `saved`.** During `saving`, the model has no ID yet — relationships that rely on the foreign key fail silently. Use `saved` when you need related data. | D7 — ReportObserver | `saved` fires after INSERT/UPDATE. If you modify the model inside `saved`, use `saveQuietly()` to avoid infinite loops. |
-| L5 | **Mocking facades causes test ordering failures.** `File::shouldReceive()` in one test can leak expectations to another test when run in sequence. Mockery's isolation is per-test-method, not per-facade. | Intermittent test | Prefer real filesystem (`file_put_contents`, `Storage::fake()`) over `File::shouldReceive()`. |
-| L6 | **Dependabot PRs accumulate merge conflicts quickly.** When left unmerged for 2+ weeks, semver bumps conflict as `composer.lock` and `package-lock.json` change. | Dependabot batch | Merge dependabot PRs within 1 week. Use `gh pr merge --auto` to enable auto-merge on CI pass. |
-| L7 | **Migration columns and query code must agree on name and type.** `last_activity` (integer) vs `last_activity_at` (timestamp) — the command used Carbon comparisons that silently failed with integer timestamps. | D3 | Always name timestamp columns with `_at` suffix. Never store timestamps as integers if Carbon comparison is needed. |
-| L8 | **Don't trust `grep` with namespace separators.** `grep "App\\\\Core\\\\Support\\\\SmartLogger"` fails due to shell escaping. Use `rg` (ripgrep) for namespace searches, or `grep -F` for fixed strings. | D6 — import audit | Use `rg "App\\\\Core\\\\Support"` (ripgrep) or `grep -rn "App\\\\Core\\\\Support" —include="*.php" without extra escaping. |
-
----
-
-## 6. Closed Issues
-
-| # | Title | Status | Resolution |
-|---|-------|--------|------------|
-| [#205](https://github.com/reasvyn/internara/issues/205) | Cache audit | ✅ Closed | Registered 3 missing cache keys, updated consumers |
-| [#206](https://github.com/reasvyn/internara/issues/206) | Event audit | ✅ Closed | Removed 9 stub LogEventListener registrations |
-| [#207](https://github.com/reasvyn/internara/issues/207) | Livewire bugs | ✅ Closed | Already fixed in previous session |
-
----
-
-## 7. Next Steps — Design Decisions
-
-Each step below includes the design rationale so implementers understand why this approach
-was chosen over alternatives.
-
-| # | Action | Design Decision | Priority |
-|---|--------|-----------------|----------|
-| 1 | **Add Livewire tests** | 63 components pending. Follow pest-testing reference. Prioritize Auth (security) + interactive components. No Eloquent mocking. | Medium |
-| 2 | **Add event tests** | ✅ **Completed.** | Medium |
-| 3 | **Add event dispatch to remaining ~80 Actions** | ❌ **Removed.** Events are for async-only communication. No listener → no event needed. `$this->log()` is sufficient. | — |
+1. Execute Phase 1 -- Bulk deletion of written-report files, model/enum cleanup, migration edit
+2. Execute Phase 2 -- DTO for CreateReportAction
+3. Execute Phase 3 -- Documentation sync + close issues

@@ -218,5 +218,6 @@ return [
         'internshipData.end_date' => 'end date',
         'dataVerified' => 'data verification',
         'securityAware' => 'security awareness',
+        'valid_setting_key' => 'The setting key must be lowercase alphanumeric with underscores or dots. Got: :value.',
     ],
 ];

@@ -71,7 +71,7 @@ final class CalculateFinalGradeAction extends BaseCommandAction
                 'weights' => $weights,
             ]);
 
-            event(new GradeCalculated($report));
+            $this->dispatchEvent(new GradeCalculated($report));
 
             return $report->fresh();
         });

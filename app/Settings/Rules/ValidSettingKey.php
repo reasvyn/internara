@@ -12,9 +12,7 @@ final class ValidSettingKey implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (! preg_match('/^[a-z][a-z0-9_.]*$/', $value)) {
-            $fail(
-                "The setting key must be lowercase alphanumeric with underscores or dots. Got: {$value}",
-            );
+            $fail(__('validation.valid_setting_key', ['value' => $value]));
         }
     }
 }

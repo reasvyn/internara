@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Settings\Actions\BatchSetSettingAction;
 use App\Settings\Actions\SetSettingAction;
+use App\Settings\Data\SettingEntryData;
 use App\Settings\Models\Setting;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
@@ -11,13 +12,12 @@ uses(LazilyRefreshDatabase::class);
 
 test('batch set creates multiple settings', function () {
     $action = new BatchSetSettingAction(new SetSettingAction);
-    $settings = [
-        'key_one' => 'value_one',
-        'key_two' => 42,
-        'key_three' => true,
-    ];
 
-    $results = $action->execute($settings);
+    $results = $action->execute(
+        new SettingEntryData(key: 'key_one', value: 'value_one'),
+        new SettingEntryData(key: 'key_two', value: 42),
+        new SettingEntryData(key: 'key_three', value: true),
+    );
 
     expect($results)->toHaveCount(3);
     expect(Setting::where('key', 'key_one')->exists())->toBeTrue();
@@ -27,16 +27,10 @@ test('batch set creates multiple settings', function () {
 
 test('batch set with array config applies type and group', function () {
     $action = new BatchSetSettingAction(new SetSettingAction);
-    $settings = [
-        'encrypted_key' => [
-            'value' => 'secret',
-            'type' => 'encrypted',
-            'group' => 'system',
-            'description' => 'A secret',
-        ],
-    ];
 
-    $results = $action->execute($settings);
+    $results = $action->execute(
+        new SettingEntryData(key: 'encrypted_key', value: 'secret', type: 'encrypted', group: 'system', description: 'A secret'),
+    );
     $setting = $results->first();
 
     expect($setting->type)->toBe('encrypted');
@@ -47,7 +41,10 @@ test('batch set with array config applies type and group', function () {
 test('batch set is transactional', function () {
     $action = new BatchSetSettingAction(new SetSettingAction);
 
-    $results = $action->execute(['key_a' => 'val_a', 'key_b' => 'val_b']);
+    $results = $action->execute(
+        new SettingEntryData(key: 'key_a', value: 'val_a'),
+        new SettingEntryData(key: 'key_b', value: 'val_b'),
+    );
 
     expect($results)->toHaveCount(2);
 });

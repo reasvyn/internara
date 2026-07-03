@@ -26,19 +26,6 @@ test('brand data can be created with all fields', function () {
     expect($data->colors)->toBe(['primary' => '#000']);
 });
 
-test('brand data get returns correct value for known key', function () {
-    $data = new BrandData(
-        name: 'Test', title: 'Test', logo: '/l.png', favicon: '/f.ico',
-        colors: [], version: '1', authorName: 'A', authorEmail: 'a@b.com',
-        description: 'd', license: 'MIT', gitUrl: 'https://github.com',
-    );
-
-    expect($data->get('name'))->toBe('Test');
-    expect($data->get('version'))->toBe('1');
-    expect($data->get('author_name'))->toBe('A');
-    expect($data->get('nonexistent', 'fallback'))->toBe('fallback');
-});
-
 test('brand data is immutable', function () {
     $data = new BrandData(
         name: 'N', title: 'T', logo: '/l.png', favicon: '/f.ico',

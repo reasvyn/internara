@@ -16,4 +16,9 @@ class ReadAcademicYearAction extends BaseReadAction
             ->orderByDesc('start_date')
             ->get(['name', 'start_date', 'end_date']);
     }
+
+    public function findByName(string $name): ?AcademicYear
+    {
+        return AcademicYear::where('name', $name)->first();
+    }
 }

@@ -28,6 +28,17 @@ class Setting extends BaseModel implements HasMedia
 
     protected $keyType = 'string';
 
+    protected static function booted(): void
+    {
+        static::creating(function (Setting $setting): void {
+            if ($setting->key === null || $setting->key === '') {
+                throw new \RuntimeException(
+                    'Setting model requires an explicit key. Use Setting::create([\'key\' => \'...\', ...]).',
+                );
+            }
+        });
+    }
+
     protected $casts = [
         'value' => SettingValueCast::class,
     ];

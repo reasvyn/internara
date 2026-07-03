@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Support\AppInfo;
+use App\Core\Services\AppInfo;
 
 beforeEach(function () {
     AppInfo::clearCache();

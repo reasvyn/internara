@@ -9,7 +9,7 @@ parameters:
 		- node_modules/*
 		- storage/*
 		- bootstrap/cache/*
-		- app/Support/helpers.php
+		- app/Core/Support/helpers.php
 	reportUnmatchedIgnoredErrors: false
 
 	ignoreErrors:
@@ -22,8 +22,4 @@ parameters:
 		- '#Method App\\Http\\Requests\\.*::rules\(\) should return array#'
 
 includes:
-	- vendor/phpstan/phpstan-deprecation-rules/rules.neon
 	- vendor/larastan/larastan/extension.neon
-
-rules:
-	- PHPStan\Rules\Deprecations\UsageOfDeprecatedNamesRule

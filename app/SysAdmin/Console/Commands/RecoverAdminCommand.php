@@ -6,7 +6,7 @@ namespace App\SysAdmin\Console\Commands;
 
 use App\Auth\SuperAdmin\Actions\RecoverSuperAdminAction;
 use App\Auth\SuperAdmin\Notifications\RecoveryOtpNotification;
-use App\Core\Support\AppInfo;
+use App\Core\Services\AppInfo;
 use App\Core\Services\SmartLogger;
 use App\Setup\Entities\SetupEntity;
 use App\User\Models\User;

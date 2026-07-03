@@ -29,10 +29,6 @@ return new class extends Migration
             $table->timestamp('finalized_at')->nullable();
 
             $table->json('archived_data')->nullable();
-            $table->text('supervisor_notes')->nullable();
-            $table->text('content')->nullable();
-            $table->string('title')->nullable();
-            $table->json('chapter_structure')->nullable();
 
             $table->timestamps();
         });

@@ -57,11 +57,12 @@ class ActivityLog extends Activity
 
     public function scopeForModule(Builder $query, string $module): Builder
     {
-        return $query->where(function (Builder $q) use ($module) {
-            // Namespace structure: App\{Module}\...
-            $q->where('subject_type', 'like', "App\\{$module}\\%")
-                ->orWhere('log_name', strtolower($module))
-                ->orWhere('log_name', $module);
+        $safe = addcslashes($module, '%_');
+
+        return $query->where(function (Builder $q) use ($safe) {
+            $q->where('subject_type', 'like', "App\\{$safe}\\%")
+                ->orWhere('log_name', strtolower($safe))
+                ->orWhere('log_name', $safe);
         });
     }
 

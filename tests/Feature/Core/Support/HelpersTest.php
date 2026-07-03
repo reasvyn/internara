@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Core\Support;
 
-use App\Core\Support\AppInfo;
+use App\Core\Services\AppInfo;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 

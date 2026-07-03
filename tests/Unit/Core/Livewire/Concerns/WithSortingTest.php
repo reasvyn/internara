@@ -17,7 +17,7 @@ beforeEach(function () {
     {
         use WithSorting;
 
-        public array $sortBy = ['column' => 'id', 'direction' => 'asc'];
+        public array $sortBy = ['column' => 'created_at', 'direction' => 'desc'];
 
         public function render(): string
         {
@@ -41,8 +41,8 @@ beforeEach(function () {
     };
 });
 
-test('with sorting defaults to id ascending', function () {
-    expect($this->component->sortBy)->toBe(['column' => 'id', 'direction' => 'asc']);
+test('with sorting defaults to created_at desc', function () {
+    expect($this->component->sortBy)->toBe(['column' => 'created_at', 'direction' => 'desc']);
 });
 
 test('with sorting applies valid column and direction', function () {
@@ -54,20 +54,20 @@ test('with sorting applies valid column and direction', function () {
     expect($result)->toBe($query);
 });
 
-test('with sorting falls back to id for invalid column', function () {
+test('with sorting falls back to created_at for invalid column', function () {
     $query = SortableModel::query();
 
-    $this->component->setSortBy(['column' => 'invalid_column', 'direction' => 'asc']);
+    $this->component->setSortBy(['column' => 'invalid_column', 'direction' => 'desc']);
     $result = $this->component->callApplySorting($query);
 
     expect($result->getQuery()->orders)->toHaveCount(1);
     expect($result->getQuery()->orders[0])->toMatchArray([
-        'column' => 'id',
-        'direction' => 'asc',
+        'column' => 'created_at',
+        'direction' => 'desc',
     ]);
 });
 
-test('with sorting falls back to asc for invalid direction', function () {
+test('with sorting falls back to desc for invalid direction', function () {
     $query = SortableModel::query();
 
     $this->component->setSortBy(['column' => 'name', 'direction' => 'invalid']);
@@ -76,7 +76,7 @@ test('with sorting falls back to asc for invalid direction', function () {
     expect($result->getQuery()->orders)->toHaveCount(1);
     expect($result->getQuery()->orders[0])->toMatchArray([
         'column' => 'name',
-        'direction' => 'asc',
+        'direction' => 'desc',
     ]);
 });
 
@@ -88,8 +88,8 @@ test('with sorting uses default column when sort by is empty', function () {
 
     expect($result->getQuery()->orders)->toHaveCount(1);
     expect($result->getQuery()->orders[0])->toMatchArray([
-        'column' => 'id',
-        'direction' => 'asc',
+        'column' => 'created_at',
+        'direction' => 'desc',
     ]);
 });
 
@@ -111,13 +111,13 @@ test('with sorting respects custom sortable columns', function () {
 test('with sorting handles null column gracefully', function () {
     $query = SortableModel::query();
 
-    $this->component->setSortBy(['column' => null, 'direction' => 'asc']);
+    $this->component->setSortBy(['column' => null, 'direction' => 'desc']);
     $result = $this->component->callApplySorting($query);
 
     expect($result->getQuery()->orders)->toHaveCount(1);
     expect($result->getQuery()->orders[0])->toMatchArray([
-        'column' => 'id',
-        'direction' => 'asc',
+        'column' => 'created_at',
+        'direction' => 'desc',
     ]);
 });
 
@@ -130,7 +130,7 @@ test('with sorting handles null direction gracefully', function () {
     expect($result->getQuery()->orders)->toHaveCount(1);
     expect($result->getQuery()->orders[0])->toMatchArray([
         'column' => 'name',
-        'direction' => 'asc',
+        'direction' => 'desc',
     ]);
 });
 
@@ -142,13 +142,13 @@ test('with sorting without sortBy key falls back to defaults', function () {
 
     expect($result->getQuery()->orders)->toHaveCount(1);
     expect($result->getQuery()->orders[0])->toMatchArray([
-        'column' => 'id',
-        'direction' => 'asc',
+        'column' => 'created_at',
+        'direction' => 'desc',
     ]);
 });
 
 test('with sorting rejects column outside sortable columns', function () {
-    $this->component->setSortableColumns(['id']);
+    $this->component->setSortableColumns(['id', 'created_at']);
 
     $query = SortableModel::query();
 
@@ -157,7 +157,7 @@ test('with sorting rejects column outside sortable columns', function () {
 
     expect($result->getQuery()->orders)->toHaveCount(1);
     expect($result->getQuery()->orders[0])->toMatchArray([
-        'column' => 'id',
+        'column' => 'created_at',
         'direction' => 'desc',
     ]);
 });

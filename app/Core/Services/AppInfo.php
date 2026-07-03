@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Core\Support;
+namespace App\Core\Services;
 
-use App\Core\Services\SmartLogger;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;

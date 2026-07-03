@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Settings\Enums;
 
 use App\Core\Contracts\LabelEnum;
+use App\Settings\Support\SettingCaster;
 
 enum SettingType: string implements LabelEnum
 {
@@ -48,13 +49,6 @@ enum SettingType: string implements LabelEnum
 
     public function cast(mixed $value): mixed
     {
-        return match ($this) {
-            self::BOOLEAN => filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? (bool) $value,
-            self::INTEGER => (int) $value,
-            self::FLOAT => (float) $value,
-            self::JSON => is_string($value) ? json_decode($value, true) : (array) $value,
-            self::NULL => null,
-            default => (string) $value,
-        };
+        return SettingCaster::cast($value, $this);
     }
 }

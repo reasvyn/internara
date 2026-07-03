@@ -6,6 +6,8 @@ namespace App\Settings\Actions;
 
 use App\Core\Actions\BaseCommandAction;
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
+use App\Settings\Data\SettingEntryData;
+use App\Settings\Data\SystemSettingsData;
 use App\Settings\Locale\Support\Locale;
 use Illuminate\Http\UploadedFile;
 
@@ -16,46 +18,52 @@ class SaveSystemSettingsAction extends BaseCommandAction
         protected readonly UploadBrandAssetAction $uploadBrand,
     ) {}
 
-    public function execute(array $general, array $branding, array $mail): void
+    public function execute(SystemSettingsData $data): void
     {
-        $this->transaction(function () use ($general, $branding, $mail) {
-            $settings = [
-                'brand_name' => $general['brand_name'] ?? '',
-                'site_title' => $general['site_title'] ?? '',
-                'default_locale' => $general['default_locale'] ?? Locale::DEFAULT_LOCALE,
-                'active_academic_year' => $general['active_academic_year'] ?? '',
-                'primary_color' => $branding['primary_color'] ?? '',
-                'secondary_color' => $branding['secondary_color'] ?? '',
-                'accent_color' => $branding['accent_color'] ?? '',
-                'base_color' => $branding['base_color'] ?? '',
-                'mail_from_address' => $mail['mail_from_address'] ?? '',
-                'mail_from_name' => $mail['mail_from_name'] ?? '',
-                'mail_host' => $mail['mail_host'] ?? '',
-                'mail_port' => $mail['mail_port'] ?? '587',
-                'mail_encryption' => $mail['mail_encryption'] ?? 'tls',
-                'mail_username' => $mail['mail_username'] ?? '',
-            ];
+        $this->transaction(function () use ($data) {
+            $entries = [];
 
-            if (! empty($mail['mail_password'])) {
-                $settings['mail_password'] = [
-                    'value' => $mail['mail_password'],
-                    'type' => 'encrypted',
-                ];
+            $add = function (string $key, mixed $value, ?string $type = null) use (&$entries): void {
+                if ($value !== null && $value !== '') {
+                    $entries[] = new SettingEntryData(key: $key, value: $value, type: $type);
+                }
+            };
+
+            $add('brand_name', $data->brandName);
+            $add('site_title', $data->siteTitle);
+            $add('default_locale', $data->defaultLocale ?: Locale::DEFAULT_LOCALE);
+            $add('active_academic_year', $data->activeAcademicYear);
+            $add('primary_color', $data->primaryColor);
+            $add('secondary_color', $data->secondaryColor);
+            $add('accent_color', $data->accentColor);
+            $add('base_color', $data->baseColor);
+            $add('mail_from_address', $data->mailFromAddress);
+            $add('mail_from_name', $data->mailFromName);
+            $add('mail_host', $data->mailHost);
+            $add('mail_port', $data->mailPort ?: '587');
+            $add('mail_encryption', $data->mailEncryption ?: 'tls');
+            $add('mail_username', $data->mailUsername);
+
+            if ($data->mailPassword !== null && $data->mailPassword !== '') {
+                $add('mail_password', $data->mailPassword, 'encrypted');
             }
 
-            $brandLogo = $branding['brand_logo'] ?? null;
-            if ($brandLogo instanceof UploadedFile) {
-                $settings['brand_logo'] = $this->uploadBrand->execute($brandLogo);
+            if ($data->brandLogo instanceof UploadedFile) {
+                $add('brand_logo', $this->uploadBrand->execute($data->brandLogo));
             }
 
-            $siteFavicon = $branding['site_favicon'] ?? null;
-            if ($siteFavicon instanceof UploadedFile) {
-                $settings['site_favicon'] = $this->uploadBrand->execute($siteFavicon, 'favicon');
+            if ($data->siteFavicon instanceof UploadedFile) {
+                $add('site_favicon', $this->uploadBrand->execute($data->siteFavicon, 'favicon'));
             }
 
-            $this->batchSetSetting->execute($settings);
+            if ($entries !== []) {
+                $this->batchSetSetting->execute(...$entries);
+            }
 
-            $this->log('settings_updated', null, ['keys' => array_keys($settings)]);
+            $this->log('settings_updated', null, ['keys' => array_column(
+                array_map(fn (SettingEntryData $e) => ['key' => $e->key], $entries),
+                'key',
+            )]);
         });
     }
 }

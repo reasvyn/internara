@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Settings\Support\Brand;
 use App\Settings\Services\Settings;
+use App\Settings\Support\Brand;
 
 if (! function_exists('setting')) {
     /**

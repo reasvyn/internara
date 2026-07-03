@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Auth\SuperAdmin\Console\Commands;
 
 use App\Auth\SuperAdmin\Actions\InitializeSuperAdminAction;
-use App\Core\Support\AppInfo;
+use App\Core\Services\AppInfo;
 use App\Setup\Entities\SetupEntity;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;

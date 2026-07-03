@@ -10,16 +10,12 @@ use App\Core\Contracts\StatusEnum;
 enum ReportStatus: string implements LabelEnum, StatusEnum
 {
     case DRAFT = 'draft';
-    case SUBMITTED = 'submitted';
-    case APPROVED = 'approved';
     case FINALIZED = 'finalized';
 
     public function label(): string
     {
         return match ($this) {
             self::DRAFT => __('Draft'),
-            self::SUBMITTED => __('Submitted'),
-            self::APPROVED => __('Approved'),
             self::FINALIZED => __('Finalized'),
         };
     }
@@ -32,9 +28,7 @@ enum ReportStatus: string implements LabelEnum, StatusEnum
     public function validTransitions(): array
     {
         return match ($this) {
-            self::DRAFT => [self::SUBMITTED],
-            self::SUBMITTED => [self::APPROVED],
-            self::APPROVED => [self::FINALIZED],
+            self::DRAFT => [self::FINALIZED],
             self::FINALIZED => [],
         };
     }
