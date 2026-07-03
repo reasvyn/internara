@@ -86,7 +86,7 @@ test('mounts with empty filters', function () {
 
 test('mounts with default sort order', function () {
     Livewire::test(IntegrationRecordManager::class)
-        ->assertSet('sortBy', ['column' => 'id', 'direction' => 'asc']);
+        ->assertSet('sortBy', ['column' => 'created_at', 'direction' => 'desc']);
 });
 
 test('can update search property', function () {

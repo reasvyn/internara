@@ -12,9 +12,4 @@ final readonly class PasswordRules
     {
         return ['required', 'string', Password::min(8)->mixedCase()->numbers()];
     }
-
-    public static function defaultAsArray(): array
-    {
-        return ['required', 'string', 'min:8', 'regex:/[A-Z]/', 'regex:/[a-z]/', 'regex:/[0-9]/'];
-    }
 }

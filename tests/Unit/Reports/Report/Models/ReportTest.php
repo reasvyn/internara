@@ -104,17 +104,20 @@ test('report fillable attributes are mass assignable', function () {
     expect($report->industry_feedback)->toBe('Great job!');
 });
 
-test('report captures snapshot during save', function () {
+test('report captures snapshot on finalization', function () {
     $registration = Registration::factory()->create();
+    $existing = Report::factory()->create();
 
-    $report = new Report([
+    $report = Report::factory()->create([
         'registration_id' => $registration->id,
-        'title' => 'Test Report',
         'status' => ReportStatus::DRAFT,
     ]);
-    $report->save();
 
+    $report = $report->fresh();
+    $report->captureSnapshot();
+    $report->saveQuietly();
     $report->refresh();
+
     expect($report->archived_data)->toBeArray();
     expect($report->archived_data)->toHaveKey('captured_at');
 });

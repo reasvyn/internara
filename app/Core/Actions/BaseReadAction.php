@@ -40,6 +40,12 @@ abstract class BaseReadAction
         return implode('.', $parts);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param list<string> $fields
+     *
+     * @return array<string, mixed>
+     */
     protected function mask(array $data, array $fields = []): array
     {
         if ($fields === []) {
@@ -57,11 +63,17 @@ abstract class BaseReadAction
         return $result;
     }
 
+    /**
+     * @param list<string> $columns
+     */
     protected function paginate(Builder $query, int $perPage = 15, array $columns = ['*']): LengthAwarePaginator
     {
         return $query->paginate($perPage, $columns);
     }
 
+    /**
+     * @return array{data: mixed, meta: array{total: int|null, per_page: int}}
+     */
     protected function format(mixed $data, ?int $total = null, int $perPage = 15): array
     {
         return [

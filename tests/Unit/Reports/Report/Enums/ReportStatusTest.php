@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 use App\Reports\Report\Enums\ReportStatus;
 
-test('report status has all required cases', function () {
-    expect(ReportStatus::cases())->toHaveCount(4);
+test('report status has required cases', function () {
+    expect(ReportStatus::cases())->toHaveCount(2);
     expect(ReportStatus::DRAFT->value)->toBe('draft');
-    expect(ReportStatus::SUBMITTED->value)->toBe('submitted');
-    expect(ReportStatus::APPROVED->value)->toBe('approved');
     expect(ReportStatus::FINALIZED->value)->toBe('finalized');
 });
 
@@ -23,17 +21,9 @@ test('only finalized is terminal', function () {
     expect(ReportStatus::FINALIZED->isTerminal())->toBeTrue();
 });
 
-test('draft can transition to submitted', function () {
-    expect(ReportStatus::DRAFT->validTransitions())->toContain(ReportStatus::SUBMITTED);
-    expect(ReportStatus::DRAFT->canTransitionTo(ReportStatus::SUBMITTED))->toBeTrue();
-});
-
-test('submitted can transition to approved', function () {
-    expect(ReportStatus::SUBMITTED->validTransitions())->toContain(ReportStatus::APPROVED);
-});
-
-test('approved can transition to finalized', function () {
-    expect(ReportStatus::APPROVED->validTransitions())->toContain(ReportStatus::FINALIZED);
+test('draft can transition to finalized', function () {
+    expect(ReportStatus::DRAFT->validTransitions())->toContain(ReportStatus::FINALIZED);
+    expect(ReportStatus::DRAFT->canTransitionTo(ReportStatus::FINALIZED))->toBeTrue();
 });
 
 test('finalized cannot transition', function () {

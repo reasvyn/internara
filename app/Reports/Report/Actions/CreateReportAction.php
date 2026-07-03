@@ -5,27 +5,19 @@ declare(strict_types=1);
 namespace App\Reports\Report\Actions;
 
 use App\Core\Actions\BaseCommandAction;
+use App\Reports\Report\Data\CreateReportData;
 use App\Reports\Report\Models\Report;
-use Illuminate\Support\Facades\Validator;
 
 final class CreateReportAction extends BaseCommandAction
 {
-    public function execute(array $data): Report
+    public function execute(CreateReportData $data): Report
     {
-        $validated = Validator::validate($data, [
-            'registration_id' => 'required|exists:registrations,id',
-            'title' => 'required|string|max:255',
-            'chapter_structure' => 'nullable|array',
-        ]);
-
-        return $this->transaction(function () use ($validated) {
+        return $this->transaction(function () use ($data) {
             $report = Report::create([
-                'registration_id' => $validated['registration_id'],
-                'title' => $validated['title'],
-                'chapter_structure' => $validated['chapter_structure'] ?? null,
+                'registration_id' => $data->registrationId,
             ]);
 
-            $this->log('report_created', $report, ['title' => $report->title]);
+            $this->log('report_created', $report);
 
             return $report;
         });

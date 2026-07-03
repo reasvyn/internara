@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Core\Actions;
 
 use App\Core\Data\ActionResponse;
-use App\Core\Exceptions\RejectedException;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 
@@ -23,11 +22,20 @@ abstract class BaseCommandAction extends BaseAction
         return ActionResponse::deleted($message);
     }
 
+    /**
+     * @param array<string, list<string>> $errors
+     */
     protected function respondError(string $message, array $errors = []): ActionResponse
     {
         return ActionResponse::error($message, $errors);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $rules
+     *
+     * @return array<string, mixed>
+     */
     protected function validate(array $data, array $rules): array
     {
         return Validator::validate($data, $rules);
@@ -47,10 +55,5 @@ abstract class BaseCommandAction extends BaseAction
             'info' => flash()->info($message),
             default => flash()->success($message),
         };
-    }
-
-    protected function fail(string $message, array $context = []): never
-    {
-        throw new RejectedException($message, context: $context);
     }
 }

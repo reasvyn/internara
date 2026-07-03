@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Settings\Services;
 
-use App\Core\Support\AppInfo;
+use App\Core\Services\AppInfo;
 use App\Core\Services\SmartLogger;
 use App\Settings\Data\SettingData;
 use App\Settings\Events\SettingUpdated;

@@ -176,14 +176,14 @@ test('smart logger adds event description translation when available', function 
     );
 });
 
-test('smart logger dispatches base event and writes activity log', function () {
+test('smart logger extracts payload from base event without dispatching it', function () {
     Event::fake();
 
     $event = new TestUserCreatedEvent('uuid-123', 'test@example.com');
 
     SmartLogger::info('User created')->event($event)->module('TestModule')->activityOnly()->save();
 
-    Event::assertDispatched(TestUserCreatedEvent::class);
+    Event::assertNotDispatched(TestUserCreatedEvent::class);
 
     $log = ActivityLog::latest()->first();
     expect($log)->not->toBeNull();

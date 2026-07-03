@@ -37,8 +37,6 @@ use App\Partners\Partnership\Listeners\ClearDashboardOnPartnershipChange;
 use App\Partners\Partnership\Listeners\NotifyOnPartnershipTerminated;
 use App\Program\Internship\Events\InternshipCreated;
 use App\Program\Internship\Listeners\NotifyAdminsInternshipCreated;
-use App\Reports\Report\Events\ReportApproved;
-use App\Reports\Report\Listeners\HandleReportApproved;
 use App\Settings\Events\SettingUpdated;
 use App\Settings\Listeners\InvalidateSettingsCache;
 use App\Setup\SetupWizard\Events\SetupFinalized;
@@ -150,10 +148,6 @@ return [
 
         AssignmentPublished::class => [
             NotifyOnAssignmentPublished::class,
-        ],
-
-        ReportApproved::class => [
-            HandleReportApproved::class,
         ],
 
         PasswordUpdated::class => [

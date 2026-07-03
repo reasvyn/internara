@@ -89,14 +89,14 @@ abstract class BaseController
         return $this->jsonError($message, 422, $errors);
     }
 
-    protected function jsonNotFound(?string $message = 'Resource not found', array $extra = []): JsonResponse
+    protected function jsonNotFound(string $message = 'Resource not found', array $extra = []): JsonResponse
     {
-        return $this->jsonError($message ?? 'Resource not found', 404, null, $extra);
+        return $this->jsonError($message, 404, null, $extra);
     }
 
-    protected function jsonForbidden(?string $message = 'Forbidden', array $extra = []): JsonResponse
+    protected function jsonForbidden(string $message = 'Forbidden', array $extra = []): JsonResponse
     {
-        return $this->jsonError($message ?? 'Forbidden', 403, null, $extra);
+        return $this->jsonError($message, 403, null, $extra);
     }
 
     private function mergeExtra(array $base, array $extra): array

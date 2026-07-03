@@ -6,6 +6,7 @@ namespace App\Settings\Casts;
 
 use App\Core\Services\SmartLogger;
 use App\Settings\Enums\SettingType;
+use App\Settings\Support\SettingCaster;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
@@ -22,15 +23,15 @@ class SettingValueCast implements CastsAttributes
 
         $type = SettingType::tryFrom($attributes['type'] ?? 'string') ?? SettingType::STRING;
 
-        return match ($type) {
-            SettingType::JSON => $this->decodeJson($value, $model, $key),
-            SettingType::BOOLEAN => (bool) $value,
-            SettingType::INTEGER => (int) $value,
-            SettingType::FLOAT => (float) $value,
-            SettingType::ENCRYPTED => $this->decrypt($value, $model, $key),
-            SettingType::NULL => null,
-            default => $value,
-        };
+        if ($type === SettingType::ENCRYPTED) {
+            return $this->decrypt($value, $model, $key);
+        }
+
+        if ($type === SettingType::JSON) {
+            return $this->decodeJson($value, $model, $key);
+        }
+
+        return SettingCaster::cast($value, $type);
     }
 
     public function set(Model $model, string $key, mixed $value, array $attributes): array

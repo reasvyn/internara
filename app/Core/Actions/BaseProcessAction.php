@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Core\Actions;
 
-use App\Core\Exceptions\RejectedException;
 use App\Core\Services\SmartLogger;
 use Illuminate\Contracts\Notifications\Notification;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
@@ -12,8 +11,10 @@ use Throwable;
 
 abstract class BaseProcessAction extends BaseAction
 {
+    /** @var array{percent: float, message: ?string} */
     private array $progress = [];
 
+    /** @var array<string, array{success: bool, error?: string}> */
     private array $results = [];
 
     protected function step(string $name, callable $callback): mixed
@@ -42,11 +43,13 @@ abstract class BaseProcessAction extends BaseAction
         ];
     }
 
+    /** @return array{percent: float, message: ?string} */
     protected function getProgress(): array
     {
         return $this->progress;
     }
 
+    /** @return array<string, array{success: bool, error?: string}> */
     protected function getResults(): array
     {
         return $this->results;
@@ -63,16 +66,14 @@ abstract class BaseProcessAction extends BaseAction
         return true;
     }
 
-    protected function fail(string $message, array $context = []): never
-    {
-        throw new RejectedException($message, context: $context);
-    }
-
     protected function notify(mixed $notifiables, Notification $notification): void
     {
         NotificationFacade::send($notifiables, $notification);
     }
 
+    /**
+     * @param array<string, mixed> $context
+     */
     protected function logProgress(string $action, array $context = []): void
     {
         SmartLogger::info($action)

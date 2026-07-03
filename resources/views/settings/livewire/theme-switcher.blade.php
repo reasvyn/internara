@@ -1,3 +1,5 @@
+@props(['theme' => 'system'])
+
 <x-mary-dropdown>
     <x-slot:trigger>
         <button class="btn btn-ghost btn-sm btn-circle" aria-label="{{ __('common.theme.switch') }}">

@@ -1,7 +1,7 @@
 # Reports — Grade Cards & Score Aggregation
 
-> **Last updated:** 2026-06-10
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-03
+> **Changes:** simplify — pure grade card, remove all thesis/written-report references; status flow now DRAFT to FINALIZED
 
 ## Description
 Final student grade card (Nilai Raport PKL): grade aggregation from multiple assessment sources, composite score calculation, coordinator sign-off, and certificate eligibility trigger.
@@ -30,9 +30,15 @@ Final Grade = (Industry Supervisor × 40%) + (School Teacher × 20%) + (Exam × 
 
 Weights are configurable per internship program in the Program module. The `CalculateFinalGradeAction` reads weights from the program and computes the composite score.
 
+### Status Flow
+
+Grade cards have two statuses: **DRAFT** (editable) and **FINALIZED** (locked). Finalization is
+triggered by a coordinator or auto-finalized when the linked internship period ends.
+
 ### Finalization Immutability
 
-Once a grade card is marked `finalized` by the coordinator, all scores are locked. No further changes are permitted without administrative override (special permission in `UpdateReportCardAction`). Finalization triggers:
+Once a grade card is marked `finalized` by the coordinator, all scores are locked. No further
+changes are permitted. Finalization triggers:
 1. Immutable snapshot capture of all related identity and metadata.
 2. Certificate eligibility flag on the registration.
 

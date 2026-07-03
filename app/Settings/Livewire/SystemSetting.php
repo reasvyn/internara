@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace App\Settings\Livewire;
 
 use App\Academics\AcademicYear\Actions\ActivateAcademicYearAction;
-use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Settings\Actions\ReadAcademicYearAction;
 use App\Settings\Actions\SaveSystemSettingsAction;
 use App\Settings\Actions\TestMailSettingsAction;
+use App\Settings\Branding\Actions\RemoveBrandAssetAction;
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
 use App\Settings\Branding\Livewire\Forms\BrandingForm;
-use App\Settings\Enums\MediaCollection;
+use App\Settings\Data\SystemSettingsData;
 use App\Settings\Livewire\Forms\GeneralSettingsForm;
-use App\Settings\Theme\Support\Theme;
 use App\Settings\Livewire\Forms\MailSettingsForm;
 use App\Settings\Models\Setting;
 use App\Settings\Services\Settings;
+use App\Settings\Theme\Support\Theme;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
@@ -42,6 +42,13 @@ class SystemSetting extends Component
     public bool $showConfirm = false;
 
     public ?string $confirmTarget = null;
+
+    private ?ReadAcademicYearAction $readYearAction = null;
+
+    public function boot(ReadAcademicYearAction $action): void
+    {
+        $this->readYearAction = $action;
+    }
 
     public function mount(): void
     {
@@ -82,7 +89,7 @@ class SystemSetting extends Component
     #[Computed]
     public function academicYears(): Collection
     {
-        return app(ReadAcademicYearAction::class)->execute();
+        return $this->readYearAction?->execute() ?? collect();
     }
 
     #[Computed]
@@ -129,37 +136,24 @@ class SystemSetting extends Component
         }
     }
 
-    public function confirmRemoveBrandLogo(): void
+    public function confirmRemoveBrandLogo(RemoveBrandAssetAction $action): void
     {
         $this->authorize('update', Setting::class);
-        $setting = Setting::firstOrCreate(['key' => 'brand_logo_ref']);
 
-        $logos = $setting->getMedia(MediaCollection::LOGO->value);
-        foreach ($logos as $media) {
-            $properties = $media->getCustomProperties();
-            if (($properties['type'] ?? '') === 'logo') {
-                $media->delete();
-            }
-        }
+        $action->execute('logo');
 
-        Settings::set('brand_logo', '');
         $this->brandingForm->current_logo_url = null;
         $this->brandingForm->brand_logo = null;
 
         flash()->success(__('setting.messages.logo_removed'));
     }
 
-    public function confirmRemoveFavicon(): void
+    public function confirmRemoveFavicon(RemoveBrandAssetAction $action): void
     {
         $this->authorize('update', Setting::class);
-        $setting = Setting::firstOrCreate(['key' => 'brand_favicon_ref']);
 
-        $favicons = $setting->getMedia(MediaCollection::FAVICON->value);
-        foreach ($favicons as $media) {
-            $media->delete();
-        }
+        $action->execute('favicon');
 
-        Settings::set('site_favicon', '');
         $this->brandingForm->current_favicon_url = null;
         $this->brandingForm->site_favicon = null;
 
@@ -188,36 +182,32 @@ class SystemSetting extends Component
         $this->brandingForm->validate();
         $this->mailSettingsForm->validate();
 
-        $selectedYear = $this->generalForm->active_academic_year;
-
-        $action->execute(
-            general: [
-                'brand_name' => $this->generalForm->brand_name,
-                'site_title' => $this->generalForm->site_title,
-                'default_locale' => $this->generalForm->default_locale,
-                'active_academic_year' => $selectedYear,
-            ],
-            branding: [
-                'primary_color' => $this->brandingForm->primary_color,
-                'secondary_color' => $this->brandingForm->secondary_color,
-                'accent_color' => $this->brandingForm->accent_color,
-                'base_color' => $this->brandingForm->base_color,
-                'brand_logo' => $this->brandingForm->brand_logo,
-                'site_favicon' => $this->brandingForm->site_favicon,
-            ],
-            mail: [
-                'mail_from_address' => $this->mailSettingsForm->mail_from_address,
-                'mail_from_name' => $this->mailSettingsForm->mail_from_name,
-                'mail_host' => $this->mailSettingsForm->mail_host,
-                'mail_port' => $this->mailSettingsForm->mail_port,
-                'mail_encryption' => $this->mailSettingsForm->mail_encryption,
-                'mail_username' => $this->mailSettingsForm->mail_username,
-                'mail_password' => $this->mailSettingsForm->mail_password,
-            ],
+        $data = new SystemSettingsData(
+            brandName: $this->generalForm->brand_name,
+            siteTitle: $this->generalForm->site_title,
+            defaultLocale: $this->generalForm->default_locale,
+            activeAcademicYear: $this->generalForm->active_academic_year,
+            primaryColor: $this->brandingForm->primary_color,
+            secondaryColor: $this->brandingForm->secondary_color,
+            accentColor: $this->brandingForm->accent_color,
+            baseColor: $this->brandingForm->base_color,
+            brandLogo: $this->brandingForm->brand_logo,
+            siteFavicon: $this->brandingForm->site_favicon,
+            mailFromAddress: $this->mailSettingsForm->mail_from_address,
+            mailFromName: $this->mailSettingsForm->mail_from_name,
+            mailHost: $this->mailSettingsForm->mail_host,
+            mailPort: $this->mailSettingsForm->mail_port,
+            mailEncryption: $this->mailSettingsForm->mail_encryption,
+            mailUsername: $this->mailSettingsForm->mail_username,
+            mailPassword: $this->mailSettingsForm->mail_password ?: null,
         );
 
+        $action->execute($data);
+
+        $selectedYear = $this->generalForm->active_academic_year;
+
         if ($selectedYear) {
-            $year = AcademicYear::where('name', $selectedYear)->first();
+            $year = $this->readYearAction?->findByName($selectedYear);
 
             if ($year && $year->asAcademicYearState()->canBeActivated()) {
                 $activateYear->execute($year);

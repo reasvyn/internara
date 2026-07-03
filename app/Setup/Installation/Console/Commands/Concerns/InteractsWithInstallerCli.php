@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Setup\Installation\Console\Commands\Concerns;
 
-use App\Core\Support\AppInfo;
+use App\Core\Services\AppInfo;
 use App\Setup\Entities\SetupEntity;
 
 trait InteractsWithInstallerCli

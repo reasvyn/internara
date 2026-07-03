@@ -218,5 +218,6 @@ return [
         'internshipData.end_date' => 'tanggal selesai',
         'dataVerified' => 'verifikasi data',
         'securityAware' => 'kesadaran keamanan',
+        'valid_setting_key' => 'Kunci pengaturan harus berupa huruf kecil alfanumerik dengan garis bawah atau titik. Mendapatkan: :value.',
     ],
 ];

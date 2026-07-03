@@ -5,6 +5,7 @@ use App\Settings\Actions\BatchSetSettingAction;
 use App\Settings\Actions\SaveSystemSettingsAction;
 use App\Settings\Actions\SetSettingAction;
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
+use App\Settings\Data\SystemSettingsData;
 use App\Settings\Models\Setting;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
@@ -16,29 +17,25 @@ test('save system settings saves general branding and mail', function () {
         new UploadBrandAssetAction,
     );
 
-    $action->execute(
-        general: [
-            'brand_name' => 'Test Brand',
-            'site_title' => 'Test Site',
-            'default_locale' => 'id',
-            'active_academic_year' => '2026/2027',
-        ],
-        branding: [
-            'primary_color' => '#059669',
-            'secondary_color' => '#6b7280',
-            'accent_color' => '#f97316',
-            'base_color' => '#ffffff',
-        ],
-        mail: [
-            'mail_from_address' => 'test@example.com',
-            'mail_from_name' => 'Test',
-            'mail_host' => 'smtp.example.com',
-            'mail_port' => '587',
-            'mail_encryption' => 'tls',
-            'mail_username' => 'user',
-            'mail_password' => '',
-        ],
+    $data = new SystemSettingsData(
+        brandName: 'Test Brand',
+        siteTitle: 'Test Site',
+        defaultLocale: 'id',
+        activeAcademicYear: '2026/2027',
+        primaryColor: '#059669',
+        secondaryColor: '#6b7280',
+        accentColor: '#f97316',
+        baseColor: '#ffffff',
+        mailFromAddress: 'test@example.com',
+        mailFromName: 'Test',
+        mailHost: 'smtp.example.com',
+        mailPort: '587',
+        mailEncryption: 'tls',
+        mailUsername: 'user',
+        mailPassword: null,
     );
+
+    $action->execute($data);
 
     expect(Setting::where('key', 'brand_name')->exists())->toBeTrue();
     expect(Setting::where('key', 'primary_color')->exists())->toBeTrue();
@@ -51,15 +48,23 @@ test('save system settings encrypts mail password', function () {
         new UploadBrandAssetAction,
     );
 
-    $action->execute(
-        general: ['brand_name' => 'Test', 'site_title' => 'Test', 'default_locale' => 'id', 'active_academic_year' => '2026/2027'],
-        branding: ['primary_color' => '#000000', 'secondary_color' => '#000000', 'accent_color' => '#000000', 'base_color' => '#ffffff'],
-        mail: ['mail_from_address' => '', 'mail_from_name' => '', 'mail_host' => '', 'mail_port' => '587', 'mail_encryption' => 'tls', 'mail_username' => '', 'mail_password' => 's3cret'],
+    $data = new SystemSettingsData(
+        brandName: 'Test',
+        siteTitle: 'Test',
+        defaultLocale: 'id',
+        activeAcademicYear: '2026/2027',
+        primaryColor: '#000000',
+        secondaryColor: '#000000',
+        accentColor: '#000000',
+        baseColor: '#ffffff',
+        mailPassword: 's3cret',
     );
+
+    $action->execute($data);
 
     $passwordSetting = Setting::where('key', 'mail_password')->first();
 
     expect($passwordSetting)->not->toBeNull();
     expect($passwordSetting->type)->toBe('encrypted');
-    expect($passwordSetting->getRawOriginal('value'))->toContain('eyJpdiI'); // encrypted payload prefix
+    expect($passwordSetting->getRawOriginal('value'))->toContain('eyJpdiI');
 });

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Settings\Support;
 
-use App\Core\Support\AppInfo;
+use App\Core\Services\AppInfo;
 use App\Core\Services\SmartLogger;
 use App\Settings\Branding\Data\BrandData;
 use App\Settings\Models\Setting as SettingModel;
@@ -100,7 +100,24 @@ final class Brand
 
     public static function get(string $key, mixed $default = null): mixed
     {
-        return self::resolve()->get($key, $default);
+        $data = self::resolve();
+        $normalized = str_replace('.', '_', $key);
+
+        return match ($normalized) {
+            'name' => $data->name,
+            'title', 'site_title' => $data->title,
+            'logo' => $data->logo,
+            'favicon' => $data->favicon,
+            'colors' => $data->colors,
+            'version' => $data->version,
+            'author_name' => $data->authorName,
+            'author_email' => $data->authorEmail,
+            'description' => $data->description,
+            'license' => $data->license,
+            'gitUrl' => $data->gitUrl,
+            'tagline' => __('common.app_tagline'),
+            default => $default,
+        };
     }
 
     private static function resolveValue(string|array $key, string $fallback): string

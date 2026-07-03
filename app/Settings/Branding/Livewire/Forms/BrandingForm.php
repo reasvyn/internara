@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Settings\Branding\Livewire\Forms;
 
-use App\Core\Services\SmartLogger;
 use App\Settings\Theme\Support\Theme;
 use Livewire\Form;
 
@@ -94,40 +93,12 @@ class BrandingForm extends Form
 
     public function brandLogoPreviewUrl(): ?string
     {
-        if ($this->brand_logo === null) {
-            return null;
-        }
-
-        try {
-            return $this->brand_logo->temporaryUrl();
-        } catch (\Exception $e) {
-            SmartLogger::warning('Failed to generate brand logo preview')
-                ->withPayload(['error' => $e->getMessage()])
-                ->withPiiMasking()
-                ->systemOnly()
-                ->save();
-
-            return null;
-        }
+        return $this->brand_logo?->temporaryUrl();
     }
 
     public function faviconPreviewUrl(): ?string
     {
-        if ($this->site_favicon === null) {
-            return null;
-        }
-
-        try {
-            return $this->site_favicon->temporaryUrl();
-        } catch (\Exception $e) {
-            SmartLogger::warning('Failed to generate favicon preview')
-                ->withPayload(['error' => $e->getMessage()])
-                ->withPiiMasking()
-                ->systemOnly()
-                ->save();
-
-            return null;
-        }
+        return $this->site_favicon?->temporaryUrl();
     }
 
     public function getPresets(): array

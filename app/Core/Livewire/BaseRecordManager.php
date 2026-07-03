@@ -8,7 +8,6 @@ use App\Core\Livewire\Concerns\WithRecordSelection;
 use App\Core\Livewire\Concerns\WithSorting;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -91,7 +90,6 @@ abstract class BaseRecordManager extends Component
     protected function performBulkAction(
         string $name,
         callable $callback,
-        bool $transactional = true,
     ): void {
         if (empty($this->selectedIds)) {
             flash()->warning(__('common.actions.no_records_selected'));
@@ -99,16 +97,8 @@ abstract class BaseRecordManager extends Component
             return;
         }
 
-        $work = function () use ($callback): void {
-            foreach ($this->selectedIds as $id) {
-                $callback($id);
-            }
-        };
-
-        if ($transactional) {
-            DB::transaction($work);
-        } else {
-            $work();
+        foreach ($this->selectedIds as $id) {
+            $callback($id);
         }
 
         flash()->success(

@@ -8,22 +8,22 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait WithSorting
 {
-    public array $sortBy = ['column' => 'id', 'direction' => 'asc'];
+    public array $sortBy = ['column' => 'created_at', 'direction' => 'desc'];
 
     /** @var string[] */
     protected array $sortableColumns = ['id', 'name', 'created_at', 'updated_at'];
 
     protected function applySorting(Builder $query): Builder
     {
-        $column = $this->sortBy['column'] ?? 'id';
-        if (! in_array($column, $this->sortableColumns, true)) {
-            $column = 'id';
-        }
+        $defaultColumn = $this->sortBy['column'] ?? 'created_at';
+        $column = in_array($defaultColumn, $this->sortableColumns, true)
+            ? $defaultColumn
+            : 'created_at';
 
-        $direction = $this->sortBy['direction'] ?? 'asc';
-        if (! in_array($direction, ['asc', 'desc'], true)) {
-            $direction = 'asc';
-        }
+        $defaultDirection = $this->sortBy['direction'] ?? 'desc';
+        $direction = in_array($defaultDirection, ['asc', 'desc'], true)
+            ? $defaultDirection
+            : 'desc';
 
         return $query->orderBy($column, $direction);
     }

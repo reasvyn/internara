@@ -1,7 +1,7 @@
 # AGENTS.md — Project Guidelines for AI Agents
 
-> **Last updated:** 2026-07-01
-> **Changes:** add Metacognitive Loop section (Construct → Evaluate → Verify → Decide) as universal agent thinking framework
+> **Last updated:** 2026-07-03
+> **Changes:** add Critical Rule: Report module is grade-card only — no student thesis/final-report content
 
 Provides the essential mental model, quick-reference essentials, and project-specific rules needed
 when first opening the project. Do NOT duplicate content already covered in `docs/` — refer to it.
@@ -392,6 +392,12 @@ php artisan notifications:prune        # Prune old notifications
 - `SetupSuperAdminAction::execute()` accepts ONLY `(string $email, string $password)`
 - `InitializeSuperAdminAction` must use config defaults, NOT caller-provided values
 - `FinalizeSetupAction` must extract only `email` and `password` from `adminData` array
+
+## Report Module
+
+- Report module is **grade card only** — final scores, grade letter, archived snapshot
+- NEVER add student thesis/final report content (`title`, `content`, `chapter_structure`, `supervisor_notes`, or submission/approval workflows) to `app/Reports/`
+- Student thesis/final project belongs in `app/Assignment/` as an Assignment type
 
 ## Coding
 

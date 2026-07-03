@@ -180,7 +180,6 @@ final class SmartLogger
     private function processEventPayload(): void
     {
         if ($this->event instanceof BaseEvent) {
-            event($this->event);
             $this->payload = array_merge($this->event->toPayload(), $this->payload);
         }
     }

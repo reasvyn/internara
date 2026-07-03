@@ -48,6 +48,6 @@ class NotificationBell extends Component
 
     public function render(): View
     {
-        return view('user.notifications.notification-bell');
+        return view('user.notifications.livewire.notification-bell');
     }
 }

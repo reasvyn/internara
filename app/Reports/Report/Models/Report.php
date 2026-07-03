@@ -7,7 +7,6 @@ namespace App\Reports\Report\Models;
 use App\Core\Models\BaseModel;
 use App\Enrollment\Registration\Models\Registration;
 use App\Reports\Report\Enums\ReportStatus;
-use App\Reports\Report\Observers\ReportObserver;
 use App\User\Models\User;
 use Database\Factories\ReportFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -24,13 +23,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
         'grade_letter',
         'industry_feedback',
         'status',
-        'supervisor_notes',
-        'content',
-        'title',
-        'chapter_structure',
         'finalized_by',
         'finalized_at',
-        'submitted_at',
         'archived_data',
     ]),
 ]
@@ -38,9 +32,21 @@ class Report extends BaseModel
 {
     use HasFactory;
 
-    protected static function booted(): void
+    protected $attributes = [
+        'status' => ReportStatus::DRAFT->value,
+    ];
+
+    protected function casts(): array
     {
-        static::observe(ReportObserver::class);
+        return [
+            'status' => ReportStatus::class,
+            'supervisor_score' => 'float',
+            'teacher_score' => 'float',
+            'exam_score' => 'float',
+            'final_score' => 'float',
+            'finalized_at' => 'datetime',
+            'archived_data' => 'json',
+        ];
     }
 
     public function captureSnapshot(): void
@@ -75,25 +81,6 @@ class Report extends BaseModel
             'teacher_name' => $mentors->first(fn ($m) => $m->hasRole('teacher'))?->name,
             'academic_year' => $internship?->academicYear?->name,
         ], fn ($v) => $v !== null));
-    }
-
-    protected $attributes = [
-        'status' => ReportStatus::DRAFT->value,
-    ];
-
-    protected function casts(): array
-    {
-        return [
-            'status' => ReportStatus::class,
-            'supervisor_score' => 'float',
-            'teacher_score' => 'float',
-            'exam_score' => 'float',
-            'final_score' => 'float',
-            'finalized_at' => 'datetime',
-            'content' => 'json',
-            'archived_data' => 'json',
-            'chapter_structure' => 'array',
-        ];
     }
 
     public function registration(): BelongsTo
