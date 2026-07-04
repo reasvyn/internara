@@ -6,7 +6,7 @@
 Provides the essential mental model, quick-reference essentials, and project-specific rules needed
 when first opening the project. Do NOT duplicate content already covered in `docs/` — refer to it.
 
-**Reading order for new agents:** Project Identity → Tech Stack → Architecture Core → Module Map →
+**Reading order for new agents:** Context Awareness Skill → Project Identity → Tech Stack → Architecture Core → Module Map →
 Directory Map → Dev Commands → Critical Rules → Doc Navigation → Quick Reference
 
 ---
@@ -560,6 +560,10 @@ Use `search-docs` with `packages` array before code changes.
 - `laravel-boost` — Laravel Boost MCP (`php artisan boost:mcp`)
 
 ## Skills — SDLC Phase Map (in `.agents/skills/`)
+
+**Load `context-awareness` first on every session** — it provides universal project
+orientation, architecture rules, decision framework, and navigation patterns.
+All other skills assume you have this context.
 
 Activate the relevant skill when working in that SDLC phase:
 
