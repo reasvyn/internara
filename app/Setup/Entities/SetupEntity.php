@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\Entities;
 
 use App\Core\Entities\BaseEntity;
+use App\Settings\Data\SettingEntryData;
 use App\Settings\Services\Settings;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -70,24 +71,30 @@ final readonly class SetupEntity extends BaseEntity
         );
     }
 
-    public static function update(array $attributes): void
+    public static function toSettingsEntries(array $attributes): array
     {
-        $payload = [];
+        $entries = [];
 
         foreach ($attributes as $key => $value) {
-            $type = self::TYPE_MAP[$key]
-                ?? (is_bool($value) ? 'boolean'
-                    : (is_array($value) ? 'json'
-                        : (is_int($value) ? 'integer' : 'string')));
+            $type =
+                self::TYPE_MAP[$key] ??
+                (is_bool($value)
+                    ? 'boolean'
+                    : (is_array($value)
+                        ? 'json'
+                        : (is_int($value)
+                            ? 'integer'
+                            : 'string')));
 
-            $payload["setup.{$key}"] = [
-                'value' => $value,
-                'group' => 'setup',
-                'type' => $type,
-            ];
+            $entries[] = new SettingEntryData(
+                key: "setup.{$key}",
+                value: $value,
+                group: 'setup',
+                type: $type,
+            );
         }
 
-        Settings::set($payload);
+        return $entries;
     }
 
     public function isInstalled(): bool
@@ -117,7 +124,7 @@ final readonly class SetupEntity extends BaseEntity
 
     public function isTokenExpired(?Carbon $now = null): bool
     {
-        $now ??= new Carbon;
+        $now ??= new Carbon();
 
         return $this->tokenExpiresAt === null || $now->greaterThan($this->tokenExpiresAt);
     }
@@ -152,7 +159,7 @@ final readonly class SetupEntity extends BaseEntity
             return $this->completedSteps !== [];
         }
 
-        return ! array_diff($expectedSteps, $this->completedSteps);
+        return !array_diff($expectedSteps, $this->completedSteps);
     }
 
     public function updatedAt(): ?Carbon

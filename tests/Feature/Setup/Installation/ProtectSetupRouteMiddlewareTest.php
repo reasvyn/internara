@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Settings\Livewire\LangSwitcher;
 use App\Settings\Livewire\ThemeSwitcher;
-use App\Settings\Services\Settings;
+use Tests\Support\WithSettingsSeed;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Session;
 use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
+uses(WithSettingsSeed::class);
 
 beforeEach(function () {
     Livewire::component('settings.theme-switcher', ThemeSwitcher::class);
@@ -23,7 +24,7 @@ beforeEach(function () {
 });
 
 test('blocks access without token when system is installed', function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
     ]);
     Cache::flush();
@@ -34,7 +35,7 @@ test('blocks access without token when system is installed', function () {
 });
 
 test('allows access when session has completed flag', function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
         'setup.updated_at' => [
             'value' => now()->toIso8601String(),
@@ -51,7 +52,7 @@ test('allows access when session has completed flag', function () {
 });
 
 test('shows token entry form when system is not installed and no token', function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
     ]);
     Cache::flush();

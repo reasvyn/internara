@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Setup\Models;
 
-use App\Settings\Services\Settings;
+use Tests\Support\WithSettingsSeed;
 use App\Setup\Entities\SetupEntity;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
+uses(WithSettingsSeed::class);
 
 test('setup entity from settings returns SetupEntity', function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
         'setup.completed_steps' => [
             'value' => ['step1', 'step2'],

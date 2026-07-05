@@ -4,43 +4,41 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Setup\Entities;
 
-use App\Settings\Models\Setting;
+use App\Settings\Data\SettingEntryData;
 use App\Setup\Entities\SetupEntity;
-use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(LazilyRefreshDatabase::class);
+test('toSettingsEntries uses known type from map for known keys', function () {
+    $entries = SetupEntity::toSettingsEntries(['is_installed' => true]);
 
-test('update uses known type from map for known keys', function () {
-    SetupEntity::update(['is_installed' => true]);
-
-    $record = Setting::where('key', 'setup.is_installed')->first();
-    expect($record->type)->toBe('boolean');
+    expect($entries)->toHaveCount(1);
+    expect($entries[0])->toBeInstanceOf(SettingEntryData::class);
+    expect($entries[0]->key)->toBe('setup.is_installed');
+    expect($entries[0]->value)->toBeTrue();
+    expect($entries[0]->type)->toBe('boolean');
+    expect($entries[0]->group)->toBe('setup');
 });
 
-test('update falls back to boolean type for bool values with unknown key', function () {
-    SetupEntity::update(['some_custom_flag' => false]);
+test('toSettingsEntries falls back to boolean type for bool values with unknown key', function () {
+    $entries = SetupEntity::toSettingsEntries(['some_custom_flag' => false]);
 
-    $record = Setting::where('key', 'setup.some_custom_flag')->first();
-    expect($record->type)->toBe('boolean');
+    expect($entries[0]->type)->toBe('boolean');
+    expect($entries[0]->key)->toBe('setup.some_custom_flag');
 });
 
-test('update falls back to json type for array values with unknown key', function () {
-    SetupEntity::update(['custom_list' => ['a', 'b']]);
+test('toSettingsEntries falls back to json type for array values with unknown key', function () {
+    $entries = SetupEntity::toSettingsEntries(['custom_list' => ['a', 'b']]);
 
-    $record = Setting::where('key', 'setup.custom_list')->first();
-    expect($record->type)->toBe('json');
+    expect($entries[0]->type)->toBe('json');
 });
 
-test('update falls back to integer type for int values with unknown key', function () {
-    SetupEntity::update(['custom_count' => 42]);
+test('toSettingsEntries falls back to integer type for int values with unknown key', function () {
+    $entries = SetupEntity::toSettingsEntries(['version' => 3]);
 
-    $record = Setting::where('key', 'setup.custom_count')->first();
-    expect($record->type)->toBe('integer');
+    expect($entries[0]->type)->toBe('integer');
 });
 
-test('update falls back to string type for string values with unknown key', function () {
-    SetupEntity::update(['custom_label' => 'hello']);
+test('toSettingsEntries falls back to string type for string values with unknown key', function () {
+    $entries = SetupEntity::toSettingsEntries(['label' => 'hello']);
 
-    $record = Setting::where('key', 'setup.custom_label')->first();
-    expect($record->type)->toBe('string');
+    expect($entries[0]->type)->toBe('string');
 });

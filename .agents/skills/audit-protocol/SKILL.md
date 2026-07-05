@@ -32,11 +32,16 @@ Using this skill follows 4 phases:
 
 ### 2. Execute — Audit Protocol
 
-- Audit Layer 4 (UI): Livewire, Blade, Controllers, Routes, Policies
-- Audit Layer 3 (Business): Actions, Events, Listeners
-- Audit Layer 2 (Data): Models, Entities, DTOs, Enums, Migrations
-- Audit Layer 1 (Infra): Services, Support, Config, Core
-- Record each finding as a GitHub Issue with severity, location, and fix recommendation
+Audit these 5 scopes in order:
+
+1. **Code** — Audit by 4 architectural layers (UI → Business → Data → Infra)
+2. **Testing** — Coverage, structure, mocking conventions
+3. **Security** — XSS, SQLi, mass assignment, auth, PII (cross-cutting)
+4. **Documentation** — Sync docs against actual code
+5. **Dependencies** — Versi package, known vulnerabilities
+
+Record each finding as a GitHub Issue with severity, location, and fix recommendation.
+
 - Output: GitHub Issues documenting audit findings with severity, location, and fix recommendations
 
 ### 3. Verify — Quality Gates
@@ -66,27 +71,25 @@ Using this skill follows 4 phases:
 | **This skill** | **ANALYSIS** — finds issues, records them                                                                     |
 | **Downstream** | `roadmap-planning` (prioritize fixes), `code-refactoring` (fix issues), `security-audit` (deep security pass) |
 
-## Audit Layers
+## Audit Scopes
 
-Audit each layer of the codebase separately. For each layer, check the relevant docs and record
-violations as GitHub Issues.
+Audit 5 scopes in order. Each scope has specific check items.
 
-### Layer 4 — Presentation/UI
+### 1. Code — 4 Architectural Layers
 
-Check Livewire components, Blade templates, Controllers, Policies, Routes:
+#### Layer 4 — Presentation/UI (`app/*/Livewire/`, `resources/views/`, `app/*/Policies/`, `routes/`)
 
 - No `Model::create/update/delete/save` in Livewire components
 - No `DB::transaction()` or `DB::beginTransaction()` in Livewire
-- No `app()->make()`, `resolve()`, or `new Action()` — injections must come via method parameters
-- `RejectedException` must be caught from Action calls (before generic `Throwable`)
+- No `app()->make()`, `resolve()`, or `new Action()` — method injection only
+- `RejectedException` caught from Action calls (before generic `Throwable`)
 - No unescaped `{!! !!}` for user content without inline justification
 - Policy methods return boolean — no inline authorization in Livewire
-- Routes registered in correct `routes/web/{module}.php` file
+- Routes in correct `routes/web/{module}.php` file
 - No maryUI Toast methods (`$this->success()`, `$this->error()`) — use flasher
+- No N+1 queries in Blade loops — eager loading verified
 
-### Layer 3 — Business/Domain Ops
-
-Check Actions, Events, Listeners, Notifications:
+#### Layer 3 — Business/Domain Ops (`app/*/Actions/`, `app/*/Events/`, `app/*/Listeners/`)
 
 - Action extends correct base class (Command/Read/Process)
 - Exactly one public `execute()` method
@@ -97,34 +100,71 @@ Check Actions, Events, Listeners, Notifications:
 - DTO used for 3+ params; raw `array` not accepted in execute()
 - ActionResponse returned for structured feedback
 
-### Layer 2 — Data/Persistent
+#### Layer 2 — Data/Persistent (`app/*/Models/`, `app/*/Entities/`, `app/*/Enums/`, `database/migrations/`)
 
-Check Models, Entities, DTOs, Enums, Migrations:
-
-- Entities are `final readonly` extending `BaseEntity` — zero I/O
-- Entities do not import Actions, Services, Livewire, Controllers
-- DTOs are `final readonly` extending `BaseData` — scalars, enums, Carbon only
-- Models use `#[Fillable]` attribute (not `$fillable`/`$guarded`)
-- Foreign keys use `foreignUuid()->constrained('{table}')` with explicit `onDelete()`/`onUpdate()`
-- Enums implement `LabelEnum` (all) and `StatusEnum` (state machines)
-- Cache keys registered in `config/cache-keys.php` — no inline strings
+- Entities: `final readonly`, `fromModel()`, zero I/O, no Action/Service/Controller imports
+- DTOs: `final readonly`, scalars/enums/Carbon only, no Model/Entity/Action imports
+- Models: `#[Fillable]` attribute (not `$fillable`/`$guarded`)
+- Foreign keys: `foreignUuid()->constrained()` + explicit `onDelete()`/`onUpdate()`
+- Enums: `implements LabelEnum` (all), `StatusEnum` for state machines
+- Cache keys: registered in `config/cache-keys.php` — no inline strings
 - No raw SQL without parameterized binding
 
-### Layer 1 — Framework/Infrastructure
+#### Layer 1 — Framework/Infrastructure (`app/Core/`, `app/*/Services/`, `app/*/Support/`, `config/`)
 
-Check Services, Support, Core classes, Config:
-
-- Services contain infrastructure logic only (not domain business rules)
-- Support classes are static-only with zero side effects
+- Services: infrastructure logic only (not domain business rules)
+- Support: static-only, zero side effects
 - Config files follow documented schema
+- Module discovery config includes all business modules
+
+### 2. Testing (`tests/`)
+
+- Every Action has a matching test file
+- Every Livewire component has a matching test file
+- Feature tests use `LazilyRefreshDatabase` (not `RefreshDatabase`)
+- `assertModelExists()` preferred over `assertDatabaseHas()`
+- No Eloquent mocking — use factories + real database
+- `Event::fake()` positioned AFTER factory setup
+- Coverage targets met: Entity/Enum/DTO 100%, Actions ≥ 90%, Livewire ≥ 80%
+
+### 3. Security (Cross-Cutting)
+
+- XSS: All Blade output uses `{{ }}`; every `{!! !!}` has inline justification
+- SQL injection: No raw SQL without parameterized binding
+- Mass assignment: `#[Fillable]` on every model; no `$request->all()` passed to create/update
+- Authorization: Every mutation method has `$this->authorize()` or Policy check
+- Rate limiting: Active on login, password reset, recovery flows
+- File uploads: Via Spatie MediaLibrary only (never `Storage::put()`)
+- PII: Isolated in separate tables; masked in logs via `SmartLogger::withPiiMasking()`
+- CSP: Enforced by `SecurityHeaders` middleware; no bypass without justification
+- CSRF: All state-changing forms include `@csrf` or use Livewire
+
+### 4. Documentation (`docs/`, `README.md`, `AGENTS.md`)
+
+- File paths in docs point to existing files
+- Class names and method signatures match actual code
+- Action listings include all `execute()` methods
+- Enum values include all cases
+- No broken relative links
+- Metadata (`Last updated`, `Changes`) present on every `.md` file
+- Module structure docs match actual `app/` directory layout
+
+### 5. Dependencies (`composer.json`, `package.json`)
+
+- Package versions current (not EOL or deprecated)
+- Known vulnerabilities: check `composer audit` output
+- No pinned dev-only packages in `require` section (belongs in `require-dev`)
+- Alat bantu: `composer audit`, `npm audit`, `composer outdated`
 
 ## Issue Format
 
 Each finding recorded as a GitHub Issue should include:
 
-- **Title:** `{layer}: {short description}` (e.g.,
-  `livewire: Model::create() in RegistrationCenter`)
+- **Title:** `{scope}: {short description}` (e.g.,
+  `code: Livewire:: Model::create() in RegistrationCenter`,
+  `testing: missing test for CreateInternshipAction`)
 - **Location:** File path and line number
+- **Scope:** Code / Testing / Security / Documentation / Dependencies
 - **Violation:** Which rule/pattern is violated (reference doc and section)
 - **Severity:** Critical / Major / Minor
 - **Fix:** Brief recommendation of the correct approach
@@ -138,11 +178,12 @@ Each finding recorded as a GitHub Issue should include:
 
 ## Verification Checklist
 
-- [ ] Layer 4 (UI) audited for direct DB mutations
-- [ ] Layer 3 (Business) audited for Action Triad compliance
-- [ ] Layer 2 (Data) audited for Entity purity and DTO boundaries
-- [ ] Layer 1 (Infra) audited for Service/Support boundaries
-- [ ] All findings recorded as GitHub Issues with severity and fix recommendation
+- [ ] **Code** — All 4 layers audited: UI, Business, Data, Infra
+- [ ] **Testing** — Coverage, structure, mocking conventions checked
+- [ ] **Security** — XSS, SQLi, mass assignment, auth, PII, CSP, CSRF checked
+- [ ] **Documentation** — Doc-to-code sync verified
+- [ ] **Dependencies** — Versions and known vulnerabilities checked
+- [ ] All findings recorded as GitHub Issues with scope, severity, and fix recommendation
 - [ ] No fixes applied during audit (scope discipline)
 - [ ] Existing issues checked for duplicates before filing
 
@@ -158,4 +199,9 @@ Each finding recorded as a GitHub Issue should include:
 | Livewire component rules   | `docs/architecture/livewire-pattern.md`  |
 | Exception hierarchy        | `docs/architecture/exception-pattern.md` |
 | Caching conventions        | `docs/architecture/cache-pattern.md`     |
+| Testing patterns           | `docs/architecture/testing-pattern.md`   |
+| Security conventions       | `docs/conventions.md` (§3)               |
+| RBAC & authorization       | `docs/foundation/rbac.md`                |
+| Documentation conventions  | `docs/conventions.md` (§0)               |
+| Docs metadata rules        | `AGENTS.md` (§Quick Reference)           |
 | Critical invariants        | `AGENTS.md` (§Critical Invariants)       |

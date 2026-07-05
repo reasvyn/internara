@@ -7,6 +7,7 @@ namespace App\Setup\SetupWizard\Actions;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Exceptions\RejectedException;
+use App\Settings\Actions\BatchSetSettingAction;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
@@ -22,6 +23,7 @@ final class FinalizeSetupAction extends BaseCommandAction
         protected readonly SetupSuperAdminAction $setupAdmin,
         protected readonly SendsNotifications $sendNotification,
         protected readonly SaveRecoveryKeyAction $saveRecoveryKey,
+        protected readonly BatchSetSettingAction $batchSetSetting,
     ) {}
 
     public function execute(
@@ -52,7 +54,7 @@ final class FinalizeSetupAction extends BaseCommandAction
             $completedSteps = $state->completedSteps();
 
             foreach ($stepsToComplete as $step) {
-                if (! in_array($step, $completedSteps)) {
+                if (!in_array($step, $completedSteps)) {
                     $completedSteps[] = $step;
                 }
             }
@@ -61,14 +63,16 @@ final class FinalizeSetupAction extends BaseCommandAction
             $plaintext = Str::random($keyLength);
             $hashed = Hash::make($plaintext);
 
-            SetupEntity::update([
-                'is_installed' => true,
-                'completed_steps' => $completedSteps,
-                'install_token' => null,
-                'token_expires_at' => null,
-                'install_recovery_key' => $hashed,
-                'updated_at' => now()->toIso8601String(),
-            ]);
+            $this->batchSetSetting->execute(
+                ...SetupEntity::toSettingsEntries([
+                    'is_installed' => true,
+                    'completed_steps' => $completedSteps,
+                    'install_token' => null,
+                    'token_expires_at' => null,
+                    'install_recovery_key' => $hashed,
+                    'updated_at' => now()->toIso8601String(),
+                ]),
+            );
 
             $this->dispatchEvent(
                 new SetupFinalized(

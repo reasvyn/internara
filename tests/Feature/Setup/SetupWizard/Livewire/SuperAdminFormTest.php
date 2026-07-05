@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-use App\Settings\Services\Settings;
+use Tests\Support\WithSettingsSeed;
 use App\Setup\SetupWizard\Livewire\SetupWizard;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
+uses(WithSettingsSeed::class);
 
 beforeEach(function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
         'setup.install_token' => ['value' => null, 'group' => 'setup', 'type' => 'string'],
         'setup.token_expires_at' => ['value' => null, 'group' => 'setup', 'type' => 'datetime'],
@@ -21,6 +22,5 @@ beforeEach(function () {
 });
 
 test('renders within setup wizard', function () {
-    Livewire::test(SetupWizard::class)
-        ->assertSuccessful();
+    Livewire::test(SetupWizard::class)->assertSuccessful();
 });

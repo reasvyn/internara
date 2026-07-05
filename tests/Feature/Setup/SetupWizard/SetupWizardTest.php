@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Setup\SetupWizard;
 
 use App\Core\Contracts\SendsNotifications;
-use App\Settings\Services\Settings;
+use Tests\Support\WithSettingsSeed;
 use App\Setup\SetupWizard\Livewire\SetupWizard;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
@@ -13,9 +13,10 @@ use Livewire\Livewire;
 use Mockery;
 
 uses(LazilyRefreshDatabase::class);
+uses(WithSettingsSeed::class);
 
 beforeEach(function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
         'setup.install_token' => ['value' => null, 'group' => 'setup', 'type' => 'string'],
         'setup.token_expires_at' => ['value' => null, 'group' => 'setup', 'type' => 'datetime'],
@@ -37,7 +38,6 @@ test('wizard step 1 requires audit to pass before proceeding', function () {
 });
 
 test('wizard proceeds through all steps and completes setup', function () {
-
     $saveRecoveryKeyMock = Mockery::mock(SaveRecoveryKeyAction::class);
     $saveRecoveryKeyMock->shouldReceive('execute')->once()->andReturn('mock_recovery_key_123');
     app()->instance(SaveRecoveryKeyAction::class, $saveRecoveryKeyMock);

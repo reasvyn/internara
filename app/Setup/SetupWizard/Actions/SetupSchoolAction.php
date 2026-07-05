@@ -6,11 +6,14 @@ namespace App\Setup\SetupWizard\Actions;
 
 use App\Academics\School\Entities\SchoolEntity;
 use App\Core\Actions\BaseCommandAction;
-use App\Settings\Services\Settings;
+use App\Settings\Actions\BatchSetSettingAction;
+use App\Settings\Data\SettingEntryData;
 use Illuminate\Support\Facades\Validator;
 
 final class SetupSchoolAction extends BaseCommandAction
 {
+    public function __construct(protected readonly BatchSetSettingAction $batchSetSetting) {}
+
     public function execute(array $data): void
     {
         Validator::validate($data, [
@@ -34,7 +37,18 @@ final class SetupSchoolAction extends BaseCommandAction
                 ];
             }
 
-            Settings::set($payload);
+            $this->batchSetSetting->execute(
+                ...array_map(
+                    fn(string $key, array $config) => new SettingEntryData(
+                        key: $key,
+                        value: $config['value'],
+                        group: $config['group'],
+                        type: $config['type'],
+                    ),
+                    array_keys($payload),
+                    $payload,
+                ),
+            );
 
             $this->log('school_setup_completed', null, [
                 'name' => $data['name'],

@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 use App\Academics\School\Entities\SchoolEntity;
-use App\Settings\Services\Settings;
+use Tests\Support\WithSettingsSeed;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
+uses(WithSettingsSeed::class);
 
 test('SchoolEntity get method returns populated entity from settings', function () {
-    Settings::set([
+    $this->seedSettings([
         'school.name' => ['value' => 'SMK Negeri 1 Test', 'group' => 'school', 'type' => 'string'],
         'school.institutional_code' => [
             'value' => '12345678',

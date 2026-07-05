@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 uses(LazilyRefreshDatabase::class);
 
 test('setup school action successfully stores school data in settings', function () {
-    $action = new SetupSchoolAction;
+    $action = app(SetupSchoolAction::class);
 
     $data = [
         'name' => 'State Vocational School 1',
@@ -33,7 +33,7 @@ test('setup school action successfully stores school data in settings', function
 });
 
 test('setup school action throws validation exception on invalid website', function () {
-    $action = new SetupSchoolAction;
+    $action = app(SetupSchoolAction::class);
 
     $data = [
         'name' => 'State Vocational School 1',
@@ -42,5 +42,5 @@ test('setup school action throws validation exception on invalid website', funct
         'website' => 'not-a-valid-url',
     ];
 
-    expect(fn () => $action->execute($data))->toThrow(ValidationException::class);
+    expect(fn() => $action->execute($data))->toThrow(ValidationException::class);
 });
