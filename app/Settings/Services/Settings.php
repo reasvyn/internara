@@ -6,15 +6,10 @@ namespace App\Settings\Services;
 
 use App\Core\Services\AppInfo;
 use App\Core\Services\SmartLogger;
-use App\Settings\Data\SettingData;
-use App\Settings\Events\SettingUpdated;
 use App\Settings\Models\Setting;
-use App\Settings\Rules\ValidSettingKey;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Validator;
 
 final class Settings
 {
@@ -30,8 +25,12 @@ final class Settings
         'author' => 'author.name',
     ];
 
-    private static function logQuery(string $level, string $message, QueryException $e, array $context = []): void
-    {
+    private static function logQuery(
+        string $level,
+        string $message,
+        QueryException $e,
+        array $context = [],
+    ): void {
         SmartLogger::{$level}($message)
             ->withPayload(array_merge($context, ['error' => $e->getMessage()]))
             ->withPiiMasking()
@@ -66,7 +65,7 @@ final class Settings
         try {
             return Cache::rememberForever(
                 config('cache-keys.settings_all'),
-                fn () => Setting::all()->pluck('value', 'key'),
+                fn() => Setting::all()->pluck('value', 'key'),
             );
         } catch (QueryException $e) {
             self::logQuery('error', 'Failed to fetch all settings from database', $e);
@@ -77,19 +76,19 @@ final class Settings
 
     public static function has(string $key): bool
     {
-        return ! is_null(self::get($key));
+        return !is_null(self::get($key));
     }
 
     public static function group(string $name, bool $skipCache = false): Collection
     {
         if ($skipCache) {
-            Cache::forget(config('cache-keys.settings_group').$name);
+            Cache::forget(config('cache-keys.settings_group') . $name);
         }
 
         try {
             return Cache::rememberForever(
-                config('cache-keys.settings_group').$name,
-                fn () => Setting::group($name)->get(),
+                config('cache-keys.settings_group') . $name,
+                fn() => Setting::group($name)->get(),
             );
         } catch (QueryException $e) {
             self::logQuery('error', 'Failed to fetch settings group from database', $e, [
@@ -110,43 +109,6 @@ final class Settings
         self::$overrides = [];
     }
 
-    public static function set(array $settings): int
-    {
-        $updated = 0;
-
-        foreach ($settings as $key => $attributes) {
-            Validator::validate(
-                ['key' => $key],
-                [
-                    'key' => ['required', new ValidSettingKey],
-                ],
-            );
-            $value = is_array($attributes) ? $attributes['value'] ?? null : $attributes;
-            $extra = is_array($attributes) ? array_diff_key($attributes, ['value' => null]) : [];
-
-            $model = Setting::updateOrCreate(
-                ['key' => $key],
-                array_merge(['value' => $value], $extra),
-            );
-
-            if ($model->wasRecentlyCreated || $model->wasChanged()) {
-                Event::dispatch(new SettingUpdated(
-                    setting: new SettingData(
-                        key: $key,
-                        value: $value,
-                        type: $model->type,
-                        group: $model->group,
-                    ),
-                    wasRecentlyCreated: $model->wasRecentlyCreated,
-                ));
-
-                $updated++;
-            }
-        }
-
-        return $updated;
-    }
-
     public static function hasGroup(string $name): bool
     {
         try {
@@ -162,7 +124,7 @@ final class Settings
 
     public static function forgetGroup(string $name): void
     {
-        Cache::forget(config('cache-keys.settings_group').$name);
+        Cache::forget(config('cache-keys.settings_group') . $name);
         Cache::forget(config('cache-keys.settings_all'));
         Cache::forget(config('cache-keys.theme_css_variables'));
 
@@ -170,7 +132,7 @@ final class Settings
             $keys = Setting::group($name)->pluck('key');
 
             foreach ($keys as $key) {
-                Cache::forget(config('cache-keys.settings_key').$key);
+                Cache::forget(config('cache-keys.settings_key') . $key);
             }
         } catch (QueryException $e) {
             self::logQuery('warning', 'Failed to forget group cache keys', $e, [
@@ -188,7 +150,7 @@ final class Settings
         try {
             return Cache::rememberForever(
                 config('cache-keys.settings_keys'),
-                fn () => Setting::query()->orderBy('key')->pluck('key'),
+                fn() => Setting::query()->orderBy('key')->pluck('key'),
             );
         } catch (QueryException $e) {
             self::logQuery('error', 'Failed to fetch setting keys', $e);
@@ -230,16 +192,16 @@ final class Settings
 
     public static function forget(string $key, ?string $group = null): void
     {
-        Cache::forget(config('cache-keys.settings_key').$key);
+        Cache::forget(config('cache-keys.settings_key') . $key);
 
         if ($group !== null) {
-            Cache::forget(config('cache-keys.settings_group').$group);
+            Cache::forget(config('cache-keys.settings_group') . $group);
         } else {
             try {
                 $setting = Setting::where('key', $key)->first();
 
                 if ($setting?->group) {
-                    Cache::forget(config('cache-keys.settings_group').$setting->group);
+                    Cache::forget(config('cache-keys.settings_group') . $setting->group);
                 }
             } catch (QueryException $e) {
                 self::logQuery('warning', 'Failed to invalidate setting group cache', $e, [
@@ -271,17 +233,18 @@ final class Settings
         }
 
         if ($skipCache) {
-            Cache::forget(config('cache-keys.settings_key').$key);
+            Cache::forget(config('cache-keys.settings_key') . $key);
         }
 
         try {
-            $dbValue = Cache::rememberForever(config('cache-keys.settings_key').$key, function () use (
-                $key,
-            ) {
-                $setting = Setting::where('key', $key)->first();
+            $dbValue = Cache::rememberForever(
+                config('cache-keys.settings_key') . $key,
+                function () use ($key) {
+                    $setting = Setting::where('key', $key)->first();
 
-                return $setting?->value;
-            });
+                    return $setting?->value;
+                },
+            );
         } catch (QueryException $e) {
             self::logQuery('warning', 'Failed to resolve setting from database', $e, [
                 'key' => $key,
@@ -290,7 +253,7 @@ final class Settings
             $dbValue = null;
         }
 
-        if (! is_null($dbValue)) {
+        if (!is_null($dbValue)) {
             return $dbValue;
         }
 

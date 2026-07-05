@@ -6,7 +6,7 @@ namespace Tests\Feature\Setup\SetupWizard\Actions;
 
 use App\Academics\Department\Models\Department;
 use App\Core\Contracts\SendsNotifications;
-use App\Settings\Services\Settings;
+use Tests\Support\WithSettingsSeed;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
 use App\Setup\SetupWizard\Actions\SetupDepartmentAction;
@@ -18,9 +18,10 @@ use Mockery;
 use RuntimeException;
 
 uses(LazilyRefreshDatabase::class);
+uses(WithSettingsSeed::class);
 
 beforeEach(function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
         'setup.install_token' => ['value' => null, 'group' => 'setup', 'type' => 'string'],
         'setup.token_expires_at' => ['value' => null, 'group' => 'setup', 'type' => 'datetime'],
@@ -33,24 +34,19 @@ beforeEach(function () {
 test(
     'finalize setup action successfully sets up school, department, admin, and saves recovery key',
     function () {
-
         $saveRecoveryKeyMock = Mockery::mock(SaveRecoveryKeyAction::class);
         $saveRecoveryKeyMock->shouldReceive('execute')->once()->andReturn('/path/to/key');
 
         $sendNotificationMock = Mockery::mock(SendsNotifications::class);
         $sendNotificationMock->shouldReceive('execute')->once();
 
-        $setupSchool = app(SetupSchoolAction::class);
-        $setupDept = app(SetupDepartmentAction::class);
-        $setupAdmin = app(SetupSuperAdminAction::class);
-
-        $finalizeAction = new FinalizeSetupAction(
-            $setupSchool,
-            $setupDept,
-            $setupAdmin,
-            $sendNotificationMock,
-            $saveRecoveryKeyMock,
-        );
+        $finalizeAction = app(FinalizeSetupAction::class, [
+            'setupSchool' => app(SetupSchoolAction::class),
+            'setupDept' => app(SetupDepartmentAction::class),
+            'setupAdmin' => app(SetupSuperAdminAction::class),
+            'sendNotification' => $sendNotificationMock,
+            'saveRecoveryKey' => $saveRecoveryKeyMock,
+        ]);
 
         $schoolData = [
             'name' => 'Test School',
@@ -79,13 +75,13 @@ test(
 );
 
 test('finalize setup action throws exception if system is already installed', function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
     ]);
 
     $finalizeAction = app(FinalizeSetupAction::class);
 
-    expect(fn () => $finalizeAction->execute([], [], []))->toThrow(
+    expect(fn() => $finalizeAction->execute([], [], []))->toThrow(
         RuntimeException::class,
         'System is already installed',
     );

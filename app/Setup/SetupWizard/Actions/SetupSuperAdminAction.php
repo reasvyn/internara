@@ -21,7 +21,7 @@ final class SetupSuperAdminAction extends BaseCommandAction
             ['email' => $email, 'password' => $password],
             [
                 'email' => ['required', 'email'],
-                'password' => PasswordRules::defaultAsArray(),
+                'password' => PasswordRules::default(),
             ],
         )->validate();
 

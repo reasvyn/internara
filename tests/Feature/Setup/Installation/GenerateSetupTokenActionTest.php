@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Crypt;
 uses(LazilyRefreshDatabase::class);
 
 test('generate setup token action creates token and increments version', function () {
-    $action = new GenerateSetupTokenAction;
+    $action = app(GenerateSetupTokenAction::class);
 
     $result = $action->execute();
 

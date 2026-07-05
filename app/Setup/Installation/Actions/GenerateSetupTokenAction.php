@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\Installation\Actions;
 
 use App\Core\Actions\BaseCommandAction;
+use App\Settings\Actions\BatchSetSettingAction;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\Installation\Data\SetupTokenData;
 use Illuminate\Support\Facades\Cache;
@@ -14,6 +15,8 @@ use Illuminate\Support\Str;
 
 final class GenerateSetupTokenAction extends BaseCommandAction
 {
+    public function __construct(protected readonly BatchSetSettingAction $batchSetSetting) {}
+
     public function execute(): SetupTokenData
     {
         $lockKey = Config::get('cache-keys.setup_token_generation', 'setup.token.generation');
@@ -30,12 +33,14 @@ final class GenerateSetupTokenAction extends BaseCommandAction
                 $state = SetupEntity::get();
                 $version = $state->tokenVersion() + 1;
 
-                SetupEntity::update([
-                    'install_token' => $encrypted,
-                    'token_expires_at' => $expiresAt->toIso8601String(),
-                    'token_version' => $version,
-                    'updated_at' => now()->toIso8601String(),
-                ]);
+                $this->batchSetSetting->execute(
+                    ...SetupEntity::toSettingsEntries([
+                        'install_token' => $encrypted,
+                        'token_expires_at' => $expiresAt->toIso8601String(),
+                        'token_version' => $version,
+                        'updated_at' => now()->toIso8601String(),
+                    ]),
+                );
 
                 $this->log('setup_token_generated', null, [
                     'token_version' => $version,

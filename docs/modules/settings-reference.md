@@ -1,7 +1,8 @@
 # Settings — Technical Reference
 
-> **Last updated:** 2026-06-17 **Changes:** sync — add Data/DTOs section (SettingData,
-> SettingGroupData)
+> **Last updated:** 2026-07-05 **Changes:** sync — fix Setting model contract
+> (SettingsStore→HasMedia); fix Settings path (Support→Services); add missing DTOs; note Service
+> write path
 
 ## Description
 
@@ -31,9 +32,9 @@ feature toggles.
 
 ## Models
 
-| File                 | Class     | Extends                                  |
-| -------------------- | --------- | ---------------------------------------- |
-| `Models/Setting.php` | `Setting` | `BaseModel` (implements `SettingsStore`) |
+| File                 | Class     | Extends                             |
+| -------------------- | --------- | ----------------------------------- |
+| `Models/Setting.php` | `Setting` | `BaseModel` (implements `HasMedia`) |
 
 ---
 
@@ -49,10 +50,12 @@ feature toggles.
 
 ## Data / DTOs
 
-| File                        | Class              | Extends    |
-| --------------------------- | ------------------ | ---------- |
-| `Data/SettingData.php`      | `SettingData`      | `BaseData` |
-| `Data/SettingGroupData.php` | `SettingGroupData` | `BaseData` |
+| File                          | Class                | Extends    |
+| ----------------------------- | -------------------- | ---------- |
+| `Data/SettingData.php`        | `SettingData`        | `BaseData` |
+| `Data/SettingEntryData.php`   | `SettingEntryData`   | `BaseData` |
+| `Data/SettingGroupData.php`   | `SettingGroupData`   | `BaseData` |
+| `Data/SystemSettingsData.php` | `SystemSettingsData` | `BaseData` |
 
 ## Entities
 
@@ -92,9 +95,9 @@ feature toggles.
 
 ## Events
 
-| File                        | Event            | Dispatched By                               |
-| --------------------------- | ---------------- | ------------------------------------------- |
-| `Events/SettingUpdated.php` | `SettingUpdated` | `SetSettingAction`, `BatchSetSettingAction` |
+| File                        | Event            | Dispatched By                                                            |
+| --------------------------- | ---------------- | ------------------------------------------------------------------------ |
+| `Events/SettingUpdated.php` | `SettingUpdated` | `SetSettingAction`, `BatchSetSettingAction`, `Settings::set()` (Service) |
 
 ## Middleware
 
@@ -104,13 +107,13 @@ feature toggles.
 
 ## Support
 
-| File                        | Class      | Purpose                                    |
-| --------------------------- | ---------- | ------------------------------------------ |
-| `Support/Settings.php`      | `Settings` | Runtime settings manager with cached reads |
-| `Support/Brand.php`         | `Brand`    | Dynamic branding values from database      |
-| `Support/helpers.php`       | —          | `setting()`, `brand()` global helpers      |
-| `Locale/Support/Locale.php` | `Locale`   | Locale management                          |
-| `Theme/Support/Theme.php`   | `Theme`    | Theme engine (CSS variables)               |
+| File                        | Class      | Purpose                                                                                      |
+| --------------------------- | ---------- | -------------------------------------------------------------------------------------------- |
+| `Services/Settings.php`     | `Settings` | Runtime settings manager with cached reads (note: includes write path that bypasses Actions) |
+| `Support/Brand.php`         | `Brand`    | Dynamic branding values from database                                                        |
+| `Support/helpers.php`       | —          | `setting()`, `brand()` global helpers                                                        |
+| `Locale/Support/Locale.php` | `Locale`   | Locale management                                                                            |
+| `Theme/Support/Theme.php`   | `Theme`    | Theme engine (CSS variables)                                                                 |
 
 ## Listeners
 

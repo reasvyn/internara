@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace App\Settings\Branding\Actions;
 
 use App\Core\Actions\BaseCommandAction;
+use App\Settings\Actions\SetSettingAction;
 use App\Settings\Enums\MediaCollection;
 use App\Settings\Models\Setting;
-use App\Settings\Services\Settings;
 
 class RemoveBrandAssetAction extends BaseCommandAction
 {
+    public function __construct(protected readonly SetSettingAction $setSetting) {}
+
     public function execute(string $type): void
     {
         $this->transaction(function () use ($type) {
@@ -29,7 +31,7 @@ class RemoveBrandAssetAction extends BaseCommandAction
                 $media->delete();
             }
 
-            Settings::set($settingsKey, '');
+            $this->setSetting->execute(key: $settingsKey, value: '');
 
             $this->log('brand_asset_removed', $setting, ['type' => $type]);
         });

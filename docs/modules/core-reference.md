@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-06-24 **Changes:** sync — fix ModuleDiscoverService method names
-> (discoverModules → discoverLivewireComponents)
+> **Last updated:** 2026-07-05 **Changes:** sync — fix service/support class counts and directories;
+> fix base class count
 
 ## Description
 
@@ -18,11 +18,11 @@ depends on.
 
 ### Module Statistics
 
-- **Services**: 1 (`ModuleDiscoverService`)
+- **Services**: 5 (`ModuleDiscoverService`, `SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`)
 
 - **Contracts**: 5 (`LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`,
   `SettingsStore`)
-- **Base Classes**: 10 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`,
+- **Base Classes**: 12 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`,
   `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`) +
   3 concern traits (`HasCommonScopes`, `WithSorting`, `WithRecordSelection`)
 - **Concrete DTOs**: 3 (`ActionResponse`, `AuditCheck`, `AuditReport`)
@@ -30,8 +30,8 @@ depends on.
 - **Concrete Exceptions**: 6 (`ConflictException`, `NotFoundException`, `RateLimitException`,
   `RejectedException`, `UnauthorizedException`, `ValidationFailedException`)
 - **Middleware**: 2 (`SecurityHeaders`, `LogContext`)
-- **Support Classes**: 11 (`SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`, `Color`,
-  `CsvHandler`, `Environment`, `PasswordRules`, `PiiMasker`, `Spotlight`, `helpers.php`)
+- **Support Classes**: 7 (`Color`, `CsvHandler`, `Environment`, `PasswordRules`, `PiiMasker`,
+  `Spotlight`, `helpers.php`)
 - **Action Traits**: 1 (`HandlesActionErrors`)
 - **Command Action Base**: 1 (`BaseCommandAction`)
 - **Read Action Base**: 1 (`BaseReadAction`)
@@ -58,6 +58,10 @@ Located in `app/Core/Services/`:
 | Service                 | Purpose                                                                                                | Public Methods                                                                    |
 | ----------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
 | `ModuleDiscoverService` | Scan module directories to auto-register Livewire components, Gate policies, and Blade view namespaces | `discoverLivewireComponents()`, `discoverPolicies()`, `registerBladeNamespaces()` |
+| `SmartLogger`           | Dual-channel logger: system + activity, PII masking                                                    | Fluent API: `info()`, `event()`, `module()`, `about()`, `withPayload()`, `save()` |
+| `LangChecker`           | Dev helper: warns on missing translation keys                                                          | `check()`, `report()`                                                             |
+| `AppInfo`               | Static metadata from composer.json + config                                                            | `name()`, `version()`, `author()`, `repository()`                                 |
+| `AppIntegrity`          | Author verification                                                                                    | `verify()`, `isValid()`                                                           |
 
 ---
 
@@ -65,13 +69,13 @@ Located in `app/Core/Services/`:
 
 Located in `app/Core/Contracts/`:
 
-| Contract             | Purpose                                                                  | Implemented By               |
-| -------------------- | ------------------------------------------------------------------------ | ---------------------------- |
-| `LabelEnum`          | `label(): string` for UI display                                         | All enums across all modules |
-| `StatusEnum`         | State machine: `canTransitionTo()`, `isTerminal()`, `validTransitions()` | State machine enums          |
-| `ColorableEnum`      | CSS color variant (`color(): string`)                                    | Enums with visual state      |
-| `SendsNotifications` | Binds notification dispatch to `SendNotificationAction`                  | Notification infrastructure  |
-| `SettingsStore`      | Key-value store for runtime configuration                                | Settings `Setting` model     |
+| Contract             | Purpose                                                                  | Implemented By                                              |
+| -------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| `LabelEnum`          | `label(): string` for UI display                                         | All enums across all modules                                |
+| `StatusEnum`         | State machine: `canTransitionTo()`, `isTerminal()`, `validTransitions()` | State machine enums                                         |
+| `ColorableEnum`      | CSS color variant (`color(): string`)                                    | Enums with visual state                                     |
+| `SendsNotifications` | Binds notification dispatch to `SendNotificationAction`                  | Notification infrastructure                                 |
+| `SettingsStore`      | Key-value store for runtime configuration                                | Anonymous class in `AppServiceProvider` (container binding) |
 
 ---
 
@@ -173,20 +177,16 @@ ModuleException (abstract, extends RuntimeException)
 
 ## Support Classes
 
-| Class                 | Path                                       | Purpose                                                                          |
-| --------------------- | ------------------------------------------ | -------------------------------------------------------------------------------- |
-| `SmartLogger`         | `Support/SmartLogger.php`                  | Dual-channel logger: system + activity, PII masking                              |
-| `LangChecker`         | `Support/LangChecker.php`                  | Dev helper: warns on missing translation keys                                    |
-| `AppInfo`             | `Support/AppInfo.php`                      | Static metadata from composer.json + config                                      |
-| `AppIntegrity`        | `Support/AppIntegrity.php`                 | Author verification (Reas Vyn). Duplicate `Integrity` class removed in refactor. |
-| `Color`               | `Support/Color.php`                        | Hex-to-RGB, HSL conversion, color manipulation                                   |
-| `CsvHandler`          | `Support/CsvHandler.php`                   | CSV parsing, heading validation, export generation                               |
-| `Environment`         | `Support/Environment.php`                  | Environment detection (staging, production, dev)                                 |
-| `HandlesActionErrors` | `Actions/Concerns/HandlesActionErrors.php` | Generic try-catch-log-rethrow for actions                                        |
-| `PasswordRules`       | `Support/PasswordRules.php`                | Common password strength validation rules                                        |
-| `PiiMasker`           | `Support/PiiMasker.php`                    | Regex-based PII redaction (IDs, phone numbers)                                   |
-| `Spotlight`           | `Support/Spotlight.php`                    | Debug/development helper utilities                                               |
-| `helpers.php`         | `Support/helpers.php`                      | `app_info()` helper function                                                     |
+| Class                 | Path                                       | Purpose                                            |
+| --------------------- | ------------------------------------------ | -------------------------------------------------- |
+| `Color`               | `Support/Color.php`                        | Hex-to-RGB, HSL conversion, color manipulation     |
+| `CsvHandler`          | `Support/CsvHandler.php`                   | CSV parsing, heading validation, export generation |
+| `Environment`         | `Support/Environment.php`                  | Environment detection (staging, production, dev)   |
+| `HandlesActionErrors` | `Actions/Concerns/HandlesActionErrors.php` | Generic try-catch-log-rethrow for actions          |
+| `PasswordRules`       | `Support/PasswordRules.php`                | Common password strength validation rules          |
+| `PiiMasker`           | `Support/PiiMasker.php`                    | Regex-based PII redaction (IDs, phone numbers)     |
+| `Spotlight`           | `Support/Spotlight.php`                    | Debug/development helper utilities                 |
+| `helpers.php`         | `Support/helpers.php`                      | `app_info()` helper function                       |
 
 The helpers `setting()` and `brand()` are defined in `app/Settings/Support/helpers.php`.
 

@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Setup\Installation\Console\Commands;
 
-use App\Settings\Services\Settings;
+use Tests\Support\WithSettingsSeed;
 use App\Setup\Installation\Services\SystemProvisioner;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 
 uses(LazilyRefreshDatabase::class);
+uses(WithSettingsSeed::class);
 
 beforeEach(function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
         'setup.install_token' => ['value' => null, 'group' => 'setup', 'type' => 'string'],
         'setup.token_expires_at' => ['value' => null, 'group' => 'setup', 'type' => 'datetime'],
@@ -21,7 +22,7 @@ beforeEach(function () {
 });
 
 test('fails when system is already installed', function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
     ]);
     Cache::flush();
@@ -32,7 +33,7 @@ test('fails when system is already installed', function () {
 });
 
 test('fails when system is installed and force is used in restricted environment', function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
     ]);
     config(['setup.force_allowed_environments' => ['local', 'dev']]);
@@ -63,7 +64,7 @@ test('aborts when confirmation is declined', function () {
 });
 
 test('force reinstall succeeds in testing environment and outputs token', function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
     ]);
 

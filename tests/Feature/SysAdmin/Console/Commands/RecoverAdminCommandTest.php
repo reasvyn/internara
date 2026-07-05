@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Auth\SuperAdmin\Actions\RecoverSuperAdminAction;
-use App\Settings\Services\Settings;
+use Tests\Support\WithSettingsSeed;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\ReadRecoveryKeyAction;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
@@ -11,28 +11,33 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 
 uses(LazilyRefreshDatabase::class);
+uses(WithSettingsSeed::class);
 
 beforeEach(function () {
     $admin = User::factory()->create(['email' => 'admin@example.com']);
     $admin->assignRole('super_admin');
 
-    Settings::set([
-        'setup.install_recovery_key' => ['value' => Hash::make('valid-key'), 'group' => 'setup', 'type' => 'string'],
+    $this->seedSettings([
+        'setup.install_recovery_key' => [
+            'value' => Hash::make('valid-key'),
+            'group' => 'setup',
+            'type' => 'string',
+        ],
         'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
-        'setup.updated_at' => ['value' => now()->toIso8601String(), 'group' => 'setup', 'type' => 'datetime'],
+        'setup.updated_at' => [
+            'value' => now()->toIso8601String(),
+            'group' => 'setup',
+            'type' => 'datetime',
+        ],
     ]);
 
-    $this->mock(ReadRecoveryKeyAction::class)
-        ->shouldReceive('execute')
-        ->andReturn('valid-key');
+    $this->mock(ReadRecoveryKeyAction::class)->shouldReceive('execute')->andReturn('valid-key');
 
     $this->mock(SaveRecoveryKeyAction::class)
         ->shouldReceive('execute')
         ->andReturn(storage_path('app/private/.recovery-key'));
 
-    $this->mock(RecoverSuperAdminAction::class)
-        ->shouldReceive('execute')
-        ->andReturn($admin);
+    $this->mock(RecoverSuperAdminAction::class)->shouldReceive('execute')->andReturn($admin);
 });
 
 test('recovers admin with valid key and email', function () {
@@ -62,5 +67,7 @@ test('fails when user email does not exist', function () {
         '--key' => 'valid-key',
     ])
         ->assertExitCode(1)
-        ->expectsOutputToContain(__('sysadmin.recover.not_found', ['email' => 'nonexistent@example.com']));
+        ->expectsOutputToContain(
+            __('sysadmin.recover.not_found', ['email' => 'nonexistent@example.com']),
+        );
 });

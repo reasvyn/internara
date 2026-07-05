@@ -9,13 +9,14 @@ use App\Settings\Actions\ReadAcademicYearAction;
 use App\Settings\Actions\SaveSystemSettingsAction;
 use App\Settings\Actions\TestMailSettingsAction;
 use App\Settings\Branding\Actions\RemoveBrandAssetAction;
+use App\Settings\Actions\SetSettingAction;
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
+use App\Settings\Services\Settings;
 use App\Settings\Branding\Livewire\Forms\BrandingForm;
 use App\Settings\Data\SystemSettingsData;
 use App\Settings\Livewire\Forms\GeneralSettingsForm;
 use App\Settings\Livewire\Forms\MailSettingsForm;
 use App\Settings\Models\Setting;
-use App\Settings\Services\Settings;
 use App\Settings\Theme\Support\Theme;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
@@ -64,7 +65,7 @@ class SystemSetting extends Component
         $this->generalForm->default_locale = Settings::get('default_locale', 'id');
         $this->generalForm->active_academic_year = Settings::get(
             'active_academic_year',
-            date('Y').'/'.(date('Y') + 1),
+            date('Y') . '/' . (date('Y') + 1),
         );
 
         $this->brandingForm->primary_color = Settings::get('primary_color', $defaults['primary']);
@@ -97,7 +98,7 @@ class SystemSetting extends Component
     {
         return $this->academicYears
             ->map(
-                fn ($year) => [
+                fn($year) => [
                     'id' => $year->name,
                     'name' => $year->name,
                 ],
@@ -110,27 +111,31 @@ class SystemSetting extends Component
         $this->brandingForm->applyPreset($key);
     }
 
-    public function updatedBrandingFormBrandLogo(UploadBrandAssetAction $uploadBrand): void
-    {
+    public function updatedBrandingFormBrandLogo(
+        UploadBrandAssetAction $uploadBrand,
+        SetSettingAction $setSetting,
+    ): void {
         $this->authorize('update', Setting::class);
         $this->brandingForm->validate(['brand_logo' => 'nullable|image|max:1024']);
 
         if ($this->brandingForm->brand_logo instanceof UploadedFile) {
             $url = $uploadBrand->execute($this->brandingForm->brand_logo);
-            Settings::set('brand_logo', $url);
+            $setSetting->execute(key: 'brand_logo', value: $url, group: 'branding');
             $this->brandingForm->current_logo_url = $url;
             flash()->success(__('setting.messages.logo_saved'));
         }
     }
 
-    public function updatedBrandingFormSiteFavicon(UploadBrandAssetAction $uploadBrand): void
-    {
+    public function updatedBrandingFormSiteFavicon(
+        UploadBrandAssetAction $uploadBrand,
+        SetSettingAction $setSetting,
+    ): void {
         $this->authorize('update', Setting::class);
         $this->brandingForm->validate(['site_favicon' => 'nullable|image|max:512']);
 
         if ($this->brandingForm->site_favicon instanceof UploadedFile) {
             $url = $uploadBrand->execute($this->brandingForm->site_favicon, 'favicon');
-            Settings::set('site_favicon', $url);
+            $setSetting->execute(key: 'site_favicon', value: $url, group: 'branding');
             $this->brandingForm->current_favicon_url = $url;
             flash()->success(__('setting.messages.favicon_saved'));
         }

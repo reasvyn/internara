@@ -6,6 +6,7 @@ namespace App\Auth\SuperAdmin\Console\Commands;
 
 use App\Auth\SuperAdmin\Actions\InitializeSuperAdminAction;
 use App\Core\Services\AppInfo;
+use App\Settings\Actions\BatchSetSettingAction;
 use App\Setup\Entities\SetupEntity;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
@@ -24,6 +25,7 @@ class CreateAdminCommand extends Command
     public function __construct(
         private InitializeSuperAdminAction $action,
         private SaveRecoveryKeyAction $saveRecoveryKey,
+        private BatchSetSettingAction $batchSetSetting,
     ) {
         parent::__construct();
         $this->description = __('superadmin.create.description');
@@ -46,7 +48,7 @@ class CreateAdminCommand extends Command
             text(
                 label: __('superadmin.field_email'),
                 required: true,
-                validate: fn (string $value) => ! filter_var($value, FILTER_VALIDATE_EMAIL)
+                validate: fn(string $value) => !filter_var($value, FILTER_VALIDATE_EMAIL)
                     ? __('superadmin.create.invalid_email')
                     : null,
             );
@@ -56,16 +58,13 @@ class CreateAdminCommand extends Command
             password(
                 label: __('superadmin.field_password'),
                 required: true,
-                validate: fn (string $value) => strlen($value) < 8
+                validate: fn(string $value) => strlen($value) < 8
                     ? __('superadmin.create.password_min')
                     : null,
             );
 
         if ($this->argument('password') === null) {
-            $confirm = password(
-                label: __('superadmin.field_confirm_password'),
-                required: true,
-            );
+            $confirm = password(label: __('superadmin.field_confirm_password'), required: true);
 
             if ($password !== $confirm) {
                 $this->displayError(__('superadmin.create.password_mismatch'));
@@ -98,7 +97,9 @@ class CreateAdminCommand extends Command
         $keyLength = (int) config('setup.recovery_key.length', 64);
         $plaintext = Str::random($keyLength);
 
-        SetupEntity::update(['install_recovery_key' => Hash::make($plaintext)]);
+        $this->batchSetSetting->execute(
+            ...SetupEntity::toSettingsEntries(['install_recovery_key' => Hash::make($plaintext)]),
+        );
 
         try {
             $this->saveRecoveryKey->execute($plaintext);
@@ -112,12 +113,12 @@ class CreateAdminCommand extends Command
     private function displayHeader(): void
     {
         $this->newLine();
-        $this->line('  <fg=white;options=bold;bg=blue> '.__('superadmin.title').' </>');
+        $this->line('  <fg=white;options=bold;bg=blue> ' . __('superadmin.title') . ' </>');
         $this->line(
-            '  <fg=blue>'.
-                __('superadmin.create.subtitle').
-                '</> <fg=gray>'.
-                __('superadmin.version', ['version' => AppInfo::version()]).
+            '  <fg=blue>' .
+                __('superadmin.create.subtitle') .
+                '</> <fg=gray>' .
+                __('superadmin.version', ['version' => AppInfo::version()]) .
                 '</>',
         );
         $this->newLine();
@@ -125,7 +126,7 @@ class CreateAdminCommand extends Command
 
     private function displayGuide(): void
     {
-        $this->line('  <fg=gray>'.__('superadmin.create.guide').'</>');
+        $this->line('  <fg=gray>' . __('superadmin.create.guide') . '</>');
         $this->newLine();
     }
 
@@ -133,7 +134,7 @@ class CreateAdminCommand extends Command
     {
         $this->newLine();
         $this->line('  <fg=white;options=bold;bg=red> ERROR </>');
-        $this->line('  <fg=red>'.$message.'</>');
+        $this->line('  <fg=red>' . $message . '</>');
     }
 
     private function hasSuperAdmin(): bool
@@ -151,24 +152,28 @@ class CreateAdminCommand extends Command
         $this->components->info(__('superadmin.create.success'));
         $this->newLine();
         $this->line(
-            '  <fg=yellow>'.
-                __('superadmin.field_email_result').
-                '</>  <fg=cyan>'.
-                $user->email.
+            '  <fg=yellow>' .
+                __('superadmin.field_email_result') .
+                '</>  <fg=cyan>' .
+                $user->email .
                 '</>',
         );
         $this->line(
-            '  <fg=yellow>'.
-                __('superadmin.field_username').
-                '</> <fg=cyan>'.
-                $user->username.
+            '  <fg=yellow>' .
+                __('superadmin.field_username') .
+                '</> <fg=cyan>' .
+                $user->username .
                 '</>',
         );
         $this->newLine();
-        $this->line('  <fg=white;options=bold;bg=yellow> '.mb_strtoupper(__('superadmin.create.recovery_key_title')).' </>');
-        $this->line('  <fg=yellow>'.__('superadmin.create.recovery_key_desc').'</>');
+        $this->line(
+            '  <fg=white;options=bold;bg=yellow> ' .
+                mb_strtoupper(__('superadmin.create.recovery_key_title')) .
+                ' </>',
+        );
+        $this->line('  <fg=yellow>' . __('superadmin.create.recovery_key_desc') . '</>');
         $this->newLine();
-        $this->line('  <fg=black;bg=yellow> '.$recoveryKey.' </>');
+        $this->line('  <fg=black;bg=yellow> ' . $recoveryKey . ' </>');
         $this->newLine();
         $this->components->warn(__('superadmin.create.change_password'));
     }

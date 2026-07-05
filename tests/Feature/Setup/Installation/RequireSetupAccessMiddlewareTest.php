@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-use App\Settings\Services\Settings;
+use Tests\Support\WithSettingsSeed;
 use App\Setup\Installation\Http\Middleware\RequireSetupAccessMiddleware;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 uses(LazilyRefreshDatabase::class);
+uses(WithSettingsSeed::class);
 
 beforeEach(function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => false, 'group' => 'setup', 'type' => 'boolean'],
     ]);
     Cache::flush();
@@ -26,7 +27,7 @@ beforeEach(function () {
 });
 
 test('allows access when system is installed', function () {
-    Settings::set([
+    $this->seedSettings([
         'setup.is_installed' => ['value' => true, 'group' => 'setup', 'type' => 'boolean'],
     ]);
     Cache::flush();
