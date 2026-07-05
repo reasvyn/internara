@@ -1,30 +1,29 @@
 # Chapter 6: Admin Accounts & Recovery
 
-> **Last updated:** 2026-06-14
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
 
 ## Description
+
 This chapter covers how to create super admin accounts and regain access if you lose the password.
 
 ---
 
-
 ## 6.1 The Super Admin Account
 
-The super admin is the master account with full access to every part of Internara. There is only
-one super admin, and it has special protections:
+The super admin is the master account with full access to every part of Internara. There is only one
+super admin, and it has special protections:
 
-| Property | Value |
-|---|---|
-| **Name** | `Administrator` — cannot be changed |
-| **Username** | `superadmin` — cannot be changed |
-| **Status** | `PROTECTED` — cannot be deleted, locked, or suspended |
-| **Access** | Bypasses all permission checks |
+| Property     | Value                                                 |
+| ------------ | ----------------------------------------------------- |
+| **Name**     | `Administrator` — cannot be changed                   |
+| **Username** | `superadmin` — cannot be changed                      |
+| **Status**   | `PROTECTED` — cannot be deleted, locked, or suspended |
+| **Access**   | Bypasses all permission checks                        |
 
 ### Where Is It Created?
 
-During the [Setup Wizard](02-setup-wizard.md) (Step 2), you provide an email and password. The
-super admin is created automatically with the fixed name and username above.
+During the [Setup Wizard](02-setup-wizard.md) (Step 2), you provide an email and password. The super
+admin is created automatically with the fixed name and username above.
 
 You can also create it after installation using the command line (see below).
 
@@ -51,8 +50,8 @@ You can also provide them directly:
 php artisan admin:create admin@sekolah.sch.id
 ```
 
-> **Note:** `admin:create` only works if no super admin exists yet. If one already exists,
-> the command will abort.
+> **Note:** `admin:create` only works if no super admin exists yet. If one already exists, the
+> command will abort.
 
 ### What Happens After Creation
 
@@ -81,8 +80,7 @@ The recovery key is the **backup plan** for your super admin account.
 
 1. When the super admin is created, a random 64-character key is generated
 2. A **bcrypt hash** of this key is stored in the database (never the plaintext)
-3. The plaintext key is saved to a file on your server at:
-   `storage/app/private/.recovery-key`
+3. The plaintext key is saved to a file on your server at: `storage/app/private/.recovery-key`
 4. This file is readable only by the server owner (`chmod 0600`)
 
 ### Where to Find It
@@ -126,8 +124,8 @@ The key is verified against the stored hash in the database.
 
 **Step 2 — OTP Verification (Production Only)**
 
-On production servers, a 6-digit OTP is sent to the admin's email address. Enter the OTP to
-proceed. This prevents unauthorized recovery even if someone has the recovery key file.
+On production servers, a 6-digit OTP is sent to the admin's email address. Enter the OTP to proceed.
+This prevents unauthorized recovery even if someone has the recovery key file.
 
 **Step 3 — Enter New Password**
 
@@ -144,8 +142,8 @@ notified about the recovery.
 
 **Step 5 — Save the New Recovery Key**
 
-A new recovery key is generated after the password is reset. **Save this key** — the previous
-key is no longer valid.
+A new recovery key is generated after the password is reset. **Save this key** — the previous key is
+no longer valid.
 
 ---
 
@@ -165,8 +163,8 @@ Shows the expected path and whether the file exists.
 php artisan admin:recovery-show
 ```
 
-Shows the stored recovery key. You'll need to confirm before it's displayed. This action is
-logged as a security event.
+Shows the stored recovery key. You'll need to confirm before it's displayed. This action is logged
+as a security event.
 
 ### Regenerate the File
 
@@ -184,14 +182,14 @@ This writes the key back to `storage/app/private/.recovery-key`.
 
 ### Commands
 
-| Command | Purpose |
-|---|---|
-| `php artisan admin:create` | Create super admin (no existing admin) |
-| `php artisan admin:recover` | Reset super admin password |
-| `php artisan admin:recover --key=<key>` | Recover with explicit key |
+| Command                                       | Purpose                                |
+| --------------------------------------------- | -------------------------------------- |
+| `php artisan admin:create`                    | Create super admin (no existing admin) |
+| `php artisan admin:recover`                   | Reset super admin password             |
+| `php artisan admin:recover --key=<key>`       | Recover with explicit key              |
 | `php artisan admin:recover --regenerate-file` | Rewrite recovery key file from `--key` |
-| `php artisan admin:recovery-path` | Show recovery key file location |
-| `php artisan admin:recovery-show` | Display stored recovery key |
+| `php artisan admin:recovery-path`             | Show recovery key file location        |
+| `php artisan admin:recovery-show`             | Display stored recovery key            |
 
 ### Security Notes
 
@@ -206,5 +204,5 @@ This writes the key back to `storage/app/private/.recovery-key`.
 
 ---
 
-**← Previous:** [Chapter 5: Upgrading Internara](05-upgrading-from-previous.md)
-**Next →** [Back to Manual Index](00-guide-index.md)
+**← Previous:** [Chapter 5: Upgrading Internara](05-upgrading-from-previous.md) **Next →**
+[Back to Manual Index](index.md)

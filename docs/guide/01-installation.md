@@ -1,9 +1,9 @@
 # Chapter 1: Installation
 
-> **Last updated:** 2026-06-14
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
 
 ## Description
+
 In this chapter, you'll prepare your server, install Internara, and run the initial setup command.
 
 By the end of this chapter, you'll have a signed URL to open in your browser — which leads to the
@@ -11,18 +11,17 @@ By the end of this chapter, you'll have a signed URL to open in your browser —
 
 ---
 
-
 ## 1.1 Check Requirements
 
 Your server needs these to run Internara:
 
-| Requirement | Minimum Version |
-|---|---|
-| PHP | 8.4.0 or higher |
-| Composer | 2.5 or higher |
-| Node.js | 20 or higher |
-| npm | 10 or higher |
-| Database | SQLite (built-in), MySQL 8+, MariaDB 10+, or PostgreSQL 15+ |
+| Requirement | Minimum Version                                             |
+| ----------- | ----------------------------------------------------------- |
+| PHP         | 8.4.0 or higher                                             |
+| Composer    | 2.5 or higher                                               |
+| Node.js     | 20 or higher                                                |
+| npm         | 10 or higher                                                |
+| Database    | SQLite (built-in), MySQL 8+, MariaDB 10+, or PostgreSQL 15+ |
 
 ### Required PHP Extensions
 
@@ -45,10 +44,10 @@ Plus one database driver matching your chosen engine: `pdo_sqlite`, `pdo_mysql`,
 
 ### Optional but Recommended
 
-| Extension | Why |
-|---|---|
-| `opcache` | Makes your site **much** faster in production |
-| `redis` | High-speed cache, session storage, and queue backend |
+| Extension | Why                                                        |
+| --------- | ---------------------------------------------------------- |
+| `opcache` | Makes your site **much** faster in production              |
+| `redis`   | High-speed cache, session storage, and queue backend       |
 | `sockets` | Required for real-time WebSocket features (Laravel Reverb) |
 
 ---
@@ -63,8 +62,8 @@ cd /var/www/internara
 Replace `<repository-url>` with the actual repository URL you received from your IT team or
 downloaded package.
 
-If you don't have `git` installed, extract the downloaded ZIP archive into `/var/www/internara`
-(or any directory you prefer).
+If you don't have `git` installed, extract the downloaded ZIP archive into `/var/www/internara` (or
+any directory you prefer).
 
 ---
 
@@ -96,14 +95,14 @@ cp .env.example .env
 
 Open `.env` in a text editor and update these settings:
 
-| Setting | What to Put | Example |
-|---|---|---|
-| `APP_URL` | The address where Internara will be accessed | `https://internara.sekolah.sch.id` |
-| `APP_ENV` | Set to `production` for live use | `production` |
-| `APP_DEBUG` | Set to `false` for live use | `false` |
-| `DB_*` | Your database credentials | See below |
-| `MAIL_*` | SMTP settings for email notifications | (Optional) |
-| `CRON_SECRET` | Run `php -r "echo bin2hex(random_bytes(16));"` and paste the output | A random 32-character string |
+| Setting       | What to Put                                                         | Example                            |
+| ------------- | ------------------------------------------------------------------- | ---------------------------------- |
+| `APP_URL`     | The address where Internara will be accessed                        | `https://internara.sekolah.sch.id` |
+| `APP_ENV`     | Set to `production` for live use                                    | `production`                       |
+| `APP_DEBUG`   | Set to `false` for live use                                         | `false`                            |
+| `DB_*`        | Your database credentials                                           | See below                          |
+| `MAIL_*`      | SMTP settings for email notifications                               | (Optional)                         |
+| `CRON_SECRET` | Run `php -r "echo bin2hex(random_bytes(16));"` and paste the output | A random 32-character string       |
 
 ### Database Quick Start
 
@@ -181,8 +180,8 @@ Copy the signed URL from the output. It looks like:
 https://internara.sekolah.sch.id/setup?setup_token=a1b2c3d4e5f6...
 ```
 
-> **Important:** This URL expires in **60 minutes**. If it expires, run `php artisan setup:reset-token`
-> to generate a new one (only before the wizard is completed).
+> **Important:** This URL expires in **60 minutes**. If it expires, run
+> `php artisan setup:reset-token` to generate a new one (only before the wizard is completed).
 
 Open this URL in your browser to continue with the [Setup Wizard](02-setup-wizard.md).
 
@@ -196,25 +195,25 @@ Open this URL in your browser to continue with the [Setup Wizard](02-setup-wizar
 php artisan system:health
 ```
 
-This runs a 15-point health check. All items should show green (pass) or yellow (warning).
-Red (fail) items must be resolved before continuing.
+This runs a 15-point health check. All items should show green (pass) or yellow (warning). Red
+(fail) items must be resolved before continuing.
 
 ---
 
 ## Troubleshooting
 
-| Problem | Likely Cause | Solution |
-|---|---|---|
-| Blank white page | Storage not writable | `chmod -R 775 storage bootstrap/cache` |
-| Images not loading | Storage link missing | `php artisan storage:link` |
-| "Vite manifest not found" | Assets not built | `npm run build` |
-| "Database is locked" | Using SQLite with multiple users | Switch to MySQL or PostgreSQL |
-| Setup URL shows 403 | Token invalid or expired | Run `php artisan setup:reset-token` again |
-| Setup URL shows 404 | Already installed | Run `php artisan setup:install --force` to reset |
+| Problem                   | Likely Cause                     | Solution                                         |
+| ------------------------- | -------------------------------- | ------------------------------------------------ |
+| Blank white page          | Storage not writable             | `chmod -R 775 storage bootstrap/cache`           |
+| Images not loading        | Storage link missing             | `php artisan storage:link`                       |
+| "Vite manifest not found" | Assets not built                 | `npm run build`                                  |
+| "Database is locked"      | Using SQLite with multiple users | Switch to MySQL or PostgreSQL                    |
+| Setup URL shows 403       | Token invalid or expired         | Run `php artisan setup:reset-token` again        |
+| Setup URL shows 404       | Already installed                | Run `php artisan setup:install --force` to reset |
 
 ---
 
 ---
 
-**← Previous:** [User Manual Index](00-guide-index.md)
-**Next →** [Chapter 2: Setup Wizard](02-setup-wizard.md)
+**← Previous:** [User Manual Index](index.md) **Next →**
+[Chapter 2: Setup Wizard](02-setup-wizard.md)

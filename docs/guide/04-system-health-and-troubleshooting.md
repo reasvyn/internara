@@ -1,15 +1,14 @@
 # Chapter 4: System Health & Troubleshooting
 
-> **Last updated:** 2026-06-14
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
 
 ## Description
+
 This chapter helps you monitor your Internara installation, diagnose problems, and perform routine
 maintenance. You don't need to read it cover to cover — use it as a reference when something goes
 wrong.
 
 ---
-
 
 ## 4.1 Quick Health Check
 
@@ -45,11 +44,11 @@ You'll see a table like this:
 
 ### Reading the Results
 
-| Icon | Meaning | What to Do |
-|---|---|---|
-| **OK** | Everything is fine | Nothing |
+| Icon     | Meaning                             | What to Do                 |
+| -------- | ----------------------------------- | -------------------------- |
+| **OK**   | Everything is fine                  | Nothing                    |
 | **WARN** | Not critical, but could be improved | Optional — see notes below |
-| **FAIL** | Something is broken | Fix it before continuing |
+| **FAIL** | Something is broken                 | Fix it before continuing   |
 
 For JSON output (useful for monitoring tools):
 
@@ -63,53 +62,53 @@ php artisan system:health --json
 
 ### Cannot Access the Application
 
-| Symptom | Cause | Solution |
-|---|---|---|
-| Blank white page | Storage directory not writable | `chmod -R 775 storage bootstrap/cache` |
-| "419 Page Expired" | Session issue | Clear cookies, or check `SESSION_DRIVER` in `.env` |
-| "503 Service Unavailable" | Maintenance mode is on | `php artisan up` |
-| 404 on all pages | Web server not configured correctly | Check your web server (Nginx/Apache) configuration |
+| Symptom                   | Cause                               | Solution                                           |
+| ------------------------- | ----------------------------------- | -------------------------------------------------- |
+| Blank white page          | Storage directory not writable      | `chmod -R 775 storage bootstrap/cache`             |
+| "419 Page Expired"        | Session issue                       | Clear cookies, or check `SESSION_DRIVER` in `.env` |
+| "503 Service Unavailable" | Maintenance mode is on              | `php artisan up`                                   |
+| 404 on all pages          | Web server not configured correctly | Check your web server (Nginx/Apache) configuration |
 
 ### File Uploads & Media
 
-| Symptom | Cause | Solution |
-|---|---|---|
-| Images not showing | Storage link missing | `php artisan storage:link` |
-| File upload fails | PHP upload limits too low | Increase `upload_max_filesize` and `post_max_size` in `php.ini` |
-| PDF preview not working | Missing `ext-imagick` or `ext-gd` | Install the required PHP extension |
+| Symptom                 | Cause                             | Solution                                                        |
+| ----------------------- | --------------------------------- | --------------------------------------------------------------- |
+| Images not showing      | Storage link missing              | `php artisan storage:link`                                      |
+| File upload fails       | PHP upload limits too low         | Increase `upload_max_filesize` and `post_max_size` in `php.ini` |
+| PDF preview not working | Missing `ext-imagick` or `ext-gd` | Install the required PHP extension                              |
 
 ### Performance
 
-| Symptom | Cause | Solution |
-|---|---|---|
-| Pages load slowly | Caches not enabled | `php artisan optimize` (production only) |
-| "Vite manifest not found" | Frontend assets not built | `npm run build` |
-| High memory usage | PHP memory limit too low | Set `memory_limit = 256M` in `php.ini` |
+| Symptom                   | Cause                     | Solution                                 |
+| ------------------------- | ------------------------- | ---------------------------------------- |
+| Pages load slowly         | Caches not enabled        | `php artisan optimize` (production only) |
+| "Vite manifest not found" | Frontend assets not built | `npm run build`                          |
+| High memory usage         | PHP memory limit too low  | Set `memory_limit = 256M` in `php.ini`   |
 
 ### Database
 
-| Symptom | Cause | Solution |
-|---|---|---|
+| Symptom              | Cause                              | Solution                      |
+| -------------------- | ---------------------------------- | ----------------------------- |
 | "Database is locked" | Using SQLite with concurrent users | Switch to MySQL or PostgreSQL |
-| "Connection refused" | Database server not running | Start your database service |
-| "Table not found" | Migrations not run | `php artisan migrate --force` |
+| "Connection refused" | Database server not running        | Start your database service   |
+| "Table not found"    | Migrations not run                 | `php artisan migrate --force` |
 
 ### Queue & Background Jobs
 
-| Symptom | Cause | Solution |
-|---|---|---|
-| Emails not sending | Queue worker not running | Start worker: `php artisan queue:work --queue=default` |
+| Symptom                         | Cause                        | Solution                                                 |
+| ------------------------------- | ---------------------------- | -------------------------------------------------------- |
+| Emails not sending              | Queue worker not running     | Start worker: `php artisan queue:work --queue=default`   |
 | PDF certificates not generating | Documents worker not running | Start worker: `php artisan queue:work --queue=documents` |
-| Jobs failing silently | Check failed jobs | `php artisan queue:failed` |
+| Jobs failing silently           | Check failed jobs            | `php artisan queue:failed`                               |
 
 ### Setup & Installation
 
-| Symptom | Cause | Solution |
-|---|---|---|
-| Setup URL shows 403 | Token invalid or expired | `php artisan setup:reset-token` |
-| Setup URL shows 404 | Already installed | `php artisan setup:install --force` to reset |
-| "Class not found" | Dependencies not installed | `composer install --no-interaction` |
-| "APP_KEY not set" | Key not generated | `php artisan key:generate` |
+| Symptom             | Cause                      | Solution                                     |
+| ------------------- | -------------------------- | -------------------------------------------- |
+| Setup URL shows 403 | Token invalid or expired   | `php artisan setup:reset-token`              |
+| Setup URL shows 404 | Already installed          | `php artisan setup:install --force` to reset |
+| "Class not found"   | Dependencies not installed | `composer install --no-interaction`          |
+| "APP_KEY not set"   | Key not generated          | `php artisan key:generate`                   |
 
 ---
 
@@ -161,45 +160,45 @@ php artisan optimize
 
 ### Monitoring
 
-| Command | What It Does |
-|---|---|
-| `php artisan system:health` | 15-point system health check |
-| `php artisan system:health --json` | Same, but machine-readable JSON |
-| `php artisan system:cache-warm` | Pre-load settings and brand values for faster response |
-| `php artisan system:cleanup` | Prune stale data (Pulse, activity logs, failed jobs) |
-| `php artisan queue:failed` | List failed queue jobs |
-| `php artisan queue:monitor` | Monitor queue sizes |
+| Command                            | What It Does                                           |
+| ---------------------------------- | ------------------------------------------------------ |
+| `php artisan system:health`        | 15-point system health check                           |
+| `php artisan system:health --json` | Same, but machine-readable JSON                        |
+| `php artisan system:cache-warm`    | Pre-load settings and brand values for faster response |
+| `php artisan system:cleanup`       | Prune stale data (Pulse, activity logs, failed jobs)   |
+| `php artisan queue:failed`         | List failed queue jobs                                 |
+| `php artisan queue:monitor`        | Monitor queue sizes                                    |
 
 ### Cache Management
 
-| Command | What It Does |
-|---|---|
-| `php artisan optimize` | Cache everything (config, routes, views, events) — **production only** |
-| `php artisan optimize:clear` | Clear all caches |
-| `php artisan cache:clear` | Clear the application cache only |
-| `php artisan view:cache` | Compile Blade templates |
-| `php artisan view:clear` | Clear compiled templates |
+| Command                      | What It Does                                                           |
+| ---------------------------- | ---------------------------------------------------------------------- |
+| `php artisan optimize`       | Cache everything (config, routes, views, events) — **production only** |
+| `php artisan optimize:clear` | Clear all caches                                                       |
+| `php artisan cache:clear`    | Clear the application cache only                                       |
+| `php artisan view:cache`     | Compile Blade templates                                                |
+| `php artisan view:clear`     | Clear compiled templates                                               |
 
 ### Setup & Recovery
 
-| Command | What It Does |
-|---|---|
-| `php artisan setup:install` | Run installer and generate setup URL |
-| `php artisan setup:install --force` | Full reset — wipes database and starts fresh |
-| `php artisan setup:install --check-only` | Run environment audit without installing |
-| `php artisan setup:reset-token` | Generate a new setup token (before installation only) |
-| `php artisan admin:recover` | Recover super admin access using stored key |
-| `php artisan admin:recovery-path` | Show where the recovery key is stored |
-| `php artisan admin:recovery-show` | Display the stored recovery key |
-| `php artisan admin:create` | Create a new admin account from the command line |
+| Command                                  | What It Does                                          |
+| ---------------------------------------- | ----------------------------------------------------- |
+| `php artisan setup:install`              | Run installer and generate setup URL                  |
+| `php artisan setup:install --force`      | Full reset — wipes database and starts fresh          |
+| `php artisan setup:install --check-only` | Run environment audit without installing              |
+| `php artisan setup:reset-token`          | Generate a new setup token (before installation only) |
+| `php artisan admin:recover`              | Recover super admin access using stored key           |
+| `php artisan admin:recovery-path`        | Show where the recovery key is stored                 |
+| `php artisan admin:recovery-show`        | Display the stored recovery key                       |
+| `php artisan admin:create`               | Create a new admin account from the command line      |
 
 ### Queue Workers
 
-| Command | What It Does |
-|---|---|
-| `php artisan queue:work --queue=default` | Process emails, alerts, notifications |
-| `php artisan queue:work --queue=documents` | Process PDF certificates, reports |
-| `php artisan queue:restart` | Gracefully restart all workers after deployment |
+| Command                                    | What It Does                                    |
+| ------------------------------------------ | ----------------------------------------------- |
+| `php artisan queue:work --queue=default`   | Process emails, alerts, notifications           |
+| `php artisan queue:work --queue=documents` | Process PDF certificates, reports               |
+| `php artisan queue:restart`                | Gracefully restart all workers after deployment |
 
 ---
 
@@ -249,5 +248,5 @@ For production installations, consider:
 
 ---
 
-**← Previous:** [Chapter 7: Login & Dashboard](07-login-and-dashboard.md)
-**Next →** [Back to Manual Index](00-guide-index.md)
+**← Previous:** [Chapter 7: Login & Dashboard](07-login-and-dashboard.md) **Next →**
+[Back to Manual Index](index.md)

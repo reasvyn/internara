@@ -11,153 +11,148 @@ downstream:
   - sync-docs
 ---
 
-> **⚠️ Context Awareness Required:** Before following any instruction in this skill,
-> read [context-awareness.md](context-awareness.md). Do NOT trust numbers, paths,
-> class names, or method signatures without verifying them in the actual codebase.
-> The codebase evolves independently of this document — verify, don't assume.
-> **Rule:** If the skill says a number/path/name, verify it in the code first.
+# Pest Testing
 
-
-# Pest Testing Skill
-
-> **Last updated:** 2026-07-01
-> **Changes:** split detailed pattern sections into references/testing-patterns.md
+> **Prerequisite:** Load `context-awareness` for testing conventions.
 
 ## When to Activate
 
-Apply this skill whenever writing, editing, or fixing tests. Activates for all testing tasks — feature tests, unit tests, and Livewire component tests using Pest.
+Use this skill when writing new tests, fixing failing tests, or reviewing test coverage. Covers all
+test types: feature, unit, Livewire component, and architecture tests.
 
-## SDLC Context
+## Agent Workflow
 
-| Role | Skill |
-|------|-------|
-| **Upstream (input)** | `feature-building` — new code needing tests |
-| | `code-refactoring` — refactored code needing characterization tests |
-| | `livewire-development` — new components |
-| | `medialibrary-development` — upload functionality |
-| **This skill** | **TESTING** — produces test files |
-| **Downstream (output)** | `feature-building` — tests integrated into feature completion |
-| | `sync-docs` — documentation updated with test references |
-| **Phase** | [Planning] → [Analysis] → [Design] → [Implementation] → Testing → [Maintenance] |
+Using this skill follows 4 phases:
 
-## Key References
+### 1. Construct — Knowledge, Context & Scope
 
-- **Architecture (testing strategy)**: `docs/architecture.md#testing-strategy`
-- **Testing Pattern**: `docs/architecture/testing-pattern.md`
-- **Testing Patterns Reference (assertions, examples)**: `references/testing-patterns.md`
-- **Testing Guide**: `docs/infrastructure/testing.md`
-- **BaseEntity**: `app/Core/Entities/BaseEntity.php`
-- **BaseAction**: `app/Core/Actions/BaseAction.php`
-- **BasePolicy**: `app/Core/Policies/BasePolicy.php`
-- **Service Pattern**: `docs/architecture/service-pattern.md`
-- **Support Pattern**: `docs/architecture/support-pattern.md`
+- Load `context-awareness` skill for project orientation
+- Read relevant docs: module docs, pattern docs, reference docs
+- Understand task scope: what needs to be done, which files are affected
+- Verify paths, class names, signatures against actual code (don't trust docs blindly)
+- Determine approach: at least 2 options before deciding
 
-## Module-First Test Structure
+### 2. Execute — Write Tests
 
-Tests mirror source structure exactly:
+- Write unit tests for Entity, Enum, DTO (100% coverage)
+- Write feature tests for Action, Livewire, Console Command
+- Use LazilyRefreshDatabase, factories, assertModelExists()
+- Do not mock Eloquent — use real database
+- Test happy path + business rule violations + validation errors
+- Output: test files covering happy path, edge cases, business rule violations, and validation
+  errors
+
+### 3. Verify — Quality Gates
+
+- Run linter: `vendor/bin/pint --dirty --format agent`
+- Run static analysis: `vendor/bin/phpstan analyse --no-progress`
+- Run unit/feature tests: `php artisan test --compact --filter={TestName}`
+- Ensure pre-commit checklist is satisfied
+- Check no debug calls (`dd/dump/ray`) were left behind
+
+### 4. Report & Commit
+
+- Deliver a comprehensive report to the user:
+    - Summary of tests written
+    - Coverage by layer (Entity/Enum/DTO/Action/Livewire)
+    - Test suite status (pass/fail)
+- Feeds into: feature-building (quality gate), sync-docs (test documentation)
+- Commit using format: `type(scope): description`
+- Push if requested
+
+## Phase Context
+
+| Role           | Skill                                                                                                                                              |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Upstream**   | `feature-building` (code to test), `code-refactoring` (refactored code), `livewire-development` (components), `medialibrary-development` (uploads) |
+| **This skill** | **TESTING** — writes and verifies tests                                                                                                            |
+| **Downstream** | `feature-building` (integrated), `sync-docs` (doc updates)                                                                                         |
+
+## Test Structure
 
 ```
-tests/Feature/{Module}/{SubModule}/{Name}Test.php   → Actions, Livewire (integration)
-tests/Unit/{Module}/{SubModule}/{Name}Test.php      → Entities, Enums (pure unit)
-tests/{Feature,Unit}/{Component}/{Name}Test.php     → Shared components (Data, Enums, Livewire)
-tests/Arch/                                          → Architecture rules (expect/arch)
+tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
 ```
 
-Create tests: `php artisan make:test --pest {Name}Test` (omit `Feature/` or `Unit/` prefix).
+- **Feature tests** (`tests/Feature/`) — use DB, factories, full Laravel stack
+- **Unit tests** (`tests/Unit/`) — no DB, pure logic (Entities, Enums, DTOs)
+- **Livewire tests** — always in `tests/Feature/`
 
-## Scope Isolation (Critical)
+## Test Priorities (Build Order)
 
-**Each Action, command, and component gets its own dedicated test file.** Do not combine multiple scopes into a single file (e.g., `ConsoleCommandsTest` grouping separate commands).
+| Priority | What to Test        | Type    | Coverage Target |
+| -------- | ------------------- | ------- | --------------- |
+| 1        | Enums               | Unit    | 100%            |
+| 2        | Entities            | Unit    | 100%            |
+| 3        | DTOs                | Unit    | 100%            |
+| 4        | Command Actions     | Feature | ≥ 90%           |
+| 5        | Read Actions        | Feature | ≥ 80%           |
+| 6        | Policies            | Unit    | 100%            |
+| 7        | Livewire components | Feature | ≥ 80%           |
+| 8        | Console Commands    | Feature | ≥ 80%           |
 
-## Layer Testing Strategy
+## Key Conventions
 
-| Layer | Test Type | Database | Base Class |
-|-------|-----------|----------|------------|
-| Entity | Unit | No | Instantiate directly: `new Entity(...)` |
-| Enum | Unit | No | Assert `label()`, transitions, terminals |
-| DTO/Data | Unit | No | Constructor → `toArray()` |
-| Policy | Unit | No | Mock user/model → assert gates |
-| Command Action | Feature | Yes (`LazilyRefreshDatabase`) | Resolve from container, call `execute()` |
-| Read Action | Feature | Yes | Resolve, call method, assert result |
-| Process Action | Feature | Yes | Full workflow + partial failure scenarios |
-| Livewire | Feature | Yes | `Livewire::test()` → interact → assert |
-| Console Command | Feature | Yes | `$this->artisan()` → assert exit code |
-| HTTP | Feature | Yes | `$this->get()` / `$this->post()` → assert status |
+### Database
 
-### Entity Tests (No Database)
+- Use `LazilyRefreshDatabase` trait (not `RefreshDatabase`)
+- Use `assertModelExists()` over `assertDatabaseHas()`
+- Never mock Eloquent models — use factories + real database
+
+### Mocking
+
+| Boundary      | Approach                         |
+| ------------- | -------------------------------- |
+| External HTTP | `Http::fake()`                   |
+| File system   | `Storage::fake()`                |
+| Queue         | `Queue::fake()`                  |
+| Notifications | `Notification::fake()`           |
+| Events        | `Event::fake([Specific::class])` |
+| Cache         | `Cache::fake()`                  |
+| Auth          | `actingAs($user)`                |
+
+If you're using `shouldReceive()`, reconsider — prefer `fake()` methods.
+
+### Action Test Pattern
 
 ```php
-describe('Apprentice', function () {
-    it('prevents login when locked', function () {
-        $entity = new Apprentice(status: 'active', emailVerifiedAt: now(), setupRequired: false, lockedAt: now()->toDateTimeString());
+it('creates a resource with valid data', function () {
+    // Arrange
+    $data = CreateResourceData::from([...]);
 
-        expect($entity->allowsLogin())->toBeFalse();
-    });
+    // Act
+    $result = app(CreateResourceAction::class)->execute($data);
+
+    // Assert
+    expect($result)->toBeInstanceOf(ActionResponse::class);
+    expect($result->success)->toBeTrue();
+    assertModelExists($result->data);
 });
 ```
 
-### Action Tests (With Database)
-
 ```php
-describe('CreateInternshipAction', function () {
-    it('creates an internship with valid data', function () {
-        $action = app(CreateInternshipAction::class);
-        $data = new CreateInternshipData(name: 'Summer Program', ...);
+it('rejects invalid state transitions', function () {
+    $record = Record::factory()->create(['status' => 'finalized']);
 
-        $internship = $action->execute($data);
-
-        assertModelExists($internship);
-        expect($internship->name)->toBe('Summer Program');
-    });
-});
+    app(FinalizeAction::class)->execute($record);
+})->throws(RejectedException::class);
 ```
 
-## Performance Preferences
+## Verification Checklist
 
-| Preference | Over |
-|------------|------|
-| `LazilyRefreshDatabase` | `RefreshDatabase` (skips replay if schema current) |
-| `assertModelExists()` | `assertDatabaseHas()` (clearer intent) |
-| Factory states and sequences | Manual model creation |
-| Fakes **after** factory setup | Fakes before (UUID events must not be silenced) |
-| `usingTestCase()` / `beforeEach()` | Repeated setup in each test |
+- [ ] Every Action has a test file
+- [ ] Happy path and business rule violation tested
+- [ ] `LazilyRefreshDatabase` used for feature tests
+- [ ] No Eloquent mocking
+- [ ] Entity/DTO/Enum tests: 100% method coverage
+- [ ] `assertModelExists()` preferred over `assertDatabaseHas()`
+- [ ] Tests are isolated — no shared state between tests
+- [ ] Full suite passes: `php artisan test --compact`
 
-## TDD Workflow
+## References
 
-Follow the architecture's bottom-up dependency order:
-
-1. **Enum** — define state machine, transitions (unit test)
-2. **Entity** — define business rules (unit test, no DB)
-3. **Command Action** — persistence, transactions (feature test)
-4. **Read Action** — complex queries (feature test)
-5. **Process Action** — multi-step orchestration (feature test)
-6. **Livewire** — UI interactions (feature test)
-7. **Policy** — authorization gates (unit test)
-8. **Console Command** — CLI interactions (feature test)
-
-## Verification
-
-- [ ] Tests in correct directory (Feature vs Unit, right Module/SubModule)?
-- [ ] Entity tests avoid `RefreshDatabase` entirely?
-- [ ] Action tests use `LazilyRefreshDatabase`?
-- [ ] `assertModelExists()` preferred over `assertDatabaseHas()`?
-- [ ] `Event::fake()` and `Http::fake()` positioned **after** factory setup?
-- [ ] Each Action/component has its own dedicated test file?
-- [ ] Action triad type correct (Command, Read, Process)?
-- [ ] Livewire tests use `Livewire::test()` with `actingAs()` where needed?
-- [ ] Console commands test exit codes AND output expectations?
-- [ ] Events asserted with `assertDispatched()` + payload callback?
-- [ ] Notifications and mail faked with `assertSentTo()` / `assertSent()`?
-- [ ] Queue jobs tested with `assertPushed()` / `assertPushedOn()`?
-- [ ] Policy tests cover both allowed and denied scenarios?
-- [ ] Exception tests cover `ValidationFailedException`, `RejectedException`, domain errors?
-- [ ] HTTP tests assert status, redirect, session, and JSON structure?
-- [ ] Factory sequences used for state transition tests?
-- [ ] `Storage::fake()`, `Http::fake()`, `Date::setTestNow()` used instead of real I/O?
-- [ ] Datasets used for repetitive data-driven tests?
-- [ ] Architecture tests enforce base class extensions and naming rules?
-- [ ] Coverage at or above 80% threshold?
-- [ ] No debug calls (`dd/dump/ray/var_dump/print_r/die`) in tests?
-- [ ] `declare(strict_types=1)` present at top of test file?
-- [ ] Test passes: `php artisan test --compact --filter={TestName}`?
-- [ ] Pint clean: `vendor/bin/pint --dirty --format agent`?
+| Topic                   | Doc                                    |
+| ----------------------- | -------------------------------------- |
+| Testing patterns (full) | `docs/architecture/testing-pattern.md` |
+| Testing infrastructure  | `docs/infrastructure/testing.md`       |
+| Pest documentation      | `search-docs` with `pestphp/pest`      |

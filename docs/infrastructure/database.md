@@ -2,9 +2,11 @@
 
 > **Last updated:** 2026-06-24 **Changes:** sync — migration consolidation: 57 scattered migrations
 > **Changes:** sync — initial metadata sync with new format
+
 ## Description
 
-Schema design principles, migration conventions, supported database engines, UUID primary keys, and indexing strategy.
+Schema design principles, migration conventions, supported database engines, UUID primary keys, and
+indexing strategy.
 
 ## Design Philosophy
 
@@ -178,5 +180,5 @@ php artisan migrate
 - Seeders: `database/seeders/`
 - Base model: `app/Core/Models/BaseModel.php`
 - Database configuration: `config/database.php` (overridable via `.env`)
-- Module reference: [Module Index](../modules/module-index.md)
+- Module reference: [Module Index](../modules/index.md)
 - Infrastructure design: [Infrastructure](infrastructure.md#4-database-strategy)

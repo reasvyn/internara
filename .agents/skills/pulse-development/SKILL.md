@@ -7,101 +7,115 @@ downstream:
   - sync-docs
 ---
 
-> **⚠️ Context Awareness Required:** Before following any instruction in this skill,
-> read [context-awareness.md](context-awareness.md). Do NOT trust numbers, paths,
-> class names, or method signatures without verifying them in the actual codebase.
-> The codebase evolves independently of this document — verify, don't assume.
-> **Rule:** If the skill says a number/path/name, verify it in the code first.
+# Pulse Development
 
-
-# Laravel Pulse Development Skill
+> **Prerequisite:** Load `context-awareness` for project orientation.
 
 ## When to Activate
 
-Apply this skill when setting up Laravel Pulse, configuring the dashboard or authorization gate, defining recorders and filters, building custom Pulse cards, optimizing with Redis ingest, creating custom recorders, integrating business metrics, or deploying Pulse in production. Activates for `/pulse`, `pulse:check`, `pulse:work`, `pulse:restart`, `pulse:clear`, `Pulse::record()`, `Pulse::filter()`, `Pulse::alert()`, `Pulse::resister()`, and application monitoring.
+Use this skill when configuring or extending Laravel Pulse — setting up the dashboard, adding
+recorders, creating custom cards, or configuring Redis ingest.
 
-## SDLC Context
+## Agent Workflow
 
-| Role | Skill |
-|------|-------|
-| **Upstream (input)** | `feature-building` — roadmap task requiring Pulse monitoring |
-| **This skill** | **IMPLEMENTATION (Pulse)** — produces Pulse dashboards and recorders |
-| **Downstream (output)** | `sync-docs` — documentation after Pulse changes |
-| **Phase** | [Planning] → [Analysis] → [Design] → Implementation → [Testing] → [Maintenance] |
+Using this skill follows 4 phases:
 
-## Key References
+### 1. Construct — Knowledge, Context & Scope
 
-- **Pulse config**: `config/pulse.php` — recorder configuration, storage, ingest, caching
-- **Pulse dashboard**: `resources/views/vendor/pulse/dashboard.blade.php` — card layout
-- **SystemCard**: `app/SysAdmin/Observability/Livewire/Pulse/SystemCard.php` — custom card (users, unread notifications)
-- **RegistrationsCard**: `app/SysAdmin/Observability/Livewire/Pulse/RegistrationsCard.php` — custom card (registration stats)
-- **SystemRecorder**: `app/SysAdmin/Observability/Recorders/SystemRecorder.php` — custom recorder (user/notification snapshots)
-- **RegistrationRecorder**: `app/SysAdmin/Observability/Recorders/RegistrationRecorder.php` — custom recorder (registration lifecycle snapshots)
-- **Snapshot Command**: `app/SysAdmin/Observability/Console/Commands/PulseRecordSnapshotsCommand.php` — cron-based recorder trigger
-- **AppServiceProvider**: `app/Providers/AppServiceProvider.php` — `boot()` for Pulse filters/register/alert
-- **Architecture**: `docs/architecture.md#4-layer-architecture` (Layer 3 — Events/Listeners)
-- **Observability**: `docs/infrastructure/observability.md` — Pulse overview, SmartLogger, health, cleanup
-- **Logging**: `docs/architecture/logging-pattern.md` — SmartLogger, BaseAction::log(), event integration
-- **Commands reference**: `references/commands.md` — recorder config, CLI commands, slow request profiling, snapshot commands, deployment, environment config, common mistakes
-- **Patterns reference**: `references/patterns.md` — Pulse::record() patterns, card layout, alerting, filtering, Redis, user tracking, custom cards, performance, business metrics
+- Load `context-awareness` skill for project orientation
+- Read relevant docs: module docs, pattern docs, reference docs
+- Understand task scope: what needs to be done, which files are affected
+- Verify paths, class names, signatures against actual code (don't trust docs blindly)
+- Determine approach: at least 2 options before deciding
 
-## Dashboard Authorization
+### 2. Execute — Configure/Extend Pulse
 
-The `/pulse` dashboard requires a `viewPulse` Gate for production access. Without this gate, the dashboard is only visible in local environments:
+- Configure Pulse recorders in config/pulse.php
+- Set authorization: Gate::define('viewPulse', ...)
+- Choose ingest driver according to deployment tier
+- Create custom Pulse card if needed
+- Test dashboard access for correct roles
+- Output: Pulse configuration, authorization gate, recorder settings, and optional custom cards
 
-```php
-Gate::define('viewPulse', function (User $user) {
-    return $user->hasRole('super_admin');
-});
-```
+### 3. Verify — Quality Gates
 
-For more granular authorization, check specific permissions or use the `BasePolicy` pattern:
+- Run linter: `vendor/bin/pint --dirty --format agent`
+- Run static analysis: `vendor/bin/phpstan analyse --no-progress`
+- Run unit/feature tests: `php artisan test --compact --filter={TestName}`
+- Ensure pre-commit checklist is satisfied
+- Check no debug calls (`dd/dump/ray`) were left behind
 
-```php
-Gate::define('viewPulse', function (User $user) {
-    if ($user->hasRole('super_admin')) return true;
-    return $user->can('view monitoring');
-});
-```
+### 4. Report & Commit
 
-The `Authorize` middleware class is registered in `config/pulse.php` as the last middleware. Custom middleware can be prepended for additional access logging or IP restrictions:
+- Deliver a comprehensive report to the user:
+    - Summary of Pulse configuration
+    - Recorders enabled and thresholds
+    - Authorization setup
+- Feeds into: sync-docs (configuration documentation)
+- Commit using format: `type(scope): description`
+- Push if requested
 
-```php
-'middleware' => ['web', 'auth', 'log.pulse.access', Authorize::class],
-```
+## Phase Context
 
-## Verification
+| Role           | Skill                                           |
+| -------------- | ----------------------------------------------- |
+| **Upstream**   | `feature-building` (implementation flow)        |
+| **This skill** | **IMPLEMENTATION (Sub-skill)** — Pulse-specific |
+| **Downstream** | `sync-docs`                                     |
 
-### Standard Verification
+## Key Configuration
 
-- [ ] Pulse migration has run? (`php artisan migrate --path=/vendor/laravel/pulse/database/migrations`)
-- [ ] `viewPulse` Gate defined for production?
-- [ ] `pulse:check` configured as Supervisor daemon?
-- [ ] `pulse:work` running if Redis ingest configured?
-- [ ] Custom cards registered and visible on dashboard?
-- [ ] Recorders configured with appropriate thresholds and sample rates?
-- [ ] All custom recorders have tests (`tests/Unit/SysAdmin/Observability/Recorders/`)
-- [ ] Snapshot command registered in scheduler or cron controller?
+Pulse configuration lives in `config/pulse.php`. Key settings:
 
-### Recorder-Specific Verification
+| Setting      | Purpose                                        |
+| ------------ | ---------------------------------------------- |
+| `domain`     | Pulse dashboard domain (restrict by subdomain) |
+| `middleware` | Auth + authorization middleware group          |
+| `recorders`  | Which recorders are enabled                    |
+| `ingest`     | `redis` (production) or `file` (development)   |
 
-- [ ] Each custom recorder calls `Pulse::record()` with at least one aggregation method
-- [ ] Recorder config excludes Pulse dashboard and health check paths from `ignore`
-- [ ] URI grouping patterns normalize dynamic segments in SlowRequests/SlowOutgoingRequests
-- [ ] Sample rates set below 1.0 for high-traffic environments
-- [ ] `PULSE_ENABLED=false` set in `phpunit.xml` for testing
+## Authorization
 
-### Alert-Specific Verification
+Pulse access is controlled via `Gate::define('viewPulse', ...)` in
+`app/Providers/AppServiceProvider.php`. Only users with `admin` or `superadmin` roles should have
+access.
 
-- [ ] `Pulse::alert()` registered in `AppServiceProvider::boot()`
-- [ ] Each alert has a cooldown period to prevent notification fatigue
-- [ ] Alert thresholds are reasonable for the environment
-- [ ] Notification channels (email, Slack, Discord) are properly configured
+## Recorders
 
-### Deployment Verification
+Enable recorders in `config/pulse.php`:
 
-- [ ] `pulse:restart` added to deploy script
-- [ ] Supervisor config for `pulse:check` and `pulse:work` (if Redis)
-- [ ] Redis memory limits configured if using Redis ingest
-- [ ] Storage pruning configured via `trim.keep` (default 7 days)
-- [ ] Pulse data lifecycle integrated with `system:cleanup` command
+| Recorder               | What It Captures             |
+| ---------------------- | ---------------------------- |
+| `SlowRequests`         | Requests exceeding threshold |
+| `SlowJobs`             | Slow queue jobs              |
+| `SlowQueries`          | Slow database queries        |
+| `SlowOutgoingRequests` | Slow HTTP calls              |
+| `Exceptions`           | Exception frequency          |
+| `Cache`                | Cache hit/miss ratio         |
+| `UserSessions`         | Active user count            |
+
+## Adding Custom Cards
+
+Custom Pulse cards extend `Pulse\Livewire\Card`. Live in `app/Providers/PulseServiceProvider.php` or
+as standalone Livewire components.
+
+1. Create the card class extending `Card`
+2. Register in `config/pulse.php` under `dashboard.cards`
+3. Define authorization via `authorize()` method
+
+## Verification Checklist
+
+- [ ] Pulse dashboard accessible only by authorized roles
+- [ ] Recorders configured for production ingest (Redis)
+- [ ] Custom cards have proper authorization
+- [ ] Ingest configured appropriately for the deployment tier
+- [ ] Pulse data retention set in config
+
+## References
+
+| Topic                  | Doc                                    |
+| ---------------------- | -------------------------------------- |
+| Pulse configuration    | `config/pulse.php`                     |
+| Observability overview | `docs/infrastructure/observability.md` |
+| Deployment tiers       | `docs/infrastructure/deployment.md`    |
+| Laravel Pulse docs     | `search-docs` with `laravel/pulse`     |
