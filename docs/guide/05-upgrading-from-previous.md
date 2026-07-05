@@ -1,15 +1,14 @@
 # Chapter 5: Upgrading Internara
 
-> **Last updated:** 2026-06-14
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
 
 ## Description
+
 This chapter explains how to upgrade your Internara installation from one version to the next.
-Whether you're applying a patch, a feature release, or a major version, the process follows the
-same steps.
+Whether you're applying a patch, a feature release, or a major version, the process follows the same
+steps.
 
 ---
-
 
 ## 5.1 Before You Start
 
@@ -38,15 +37,16 @@ Each release includes a changelog. Always read it before upgrading — it lists:
 
 #### Option A — Built-in Backup Command
 
-If your system has backups configured (see [Chapter 4: System Health](04-system-health-and-troubleshooting.md)):
+If your system has backups configured (see
+[Chapter 4: System Health](04-system-health-and-troubleshooting.md)):
 
 ```bash
 # Run a manual full backup
 php artisan system:backup --type=both --force
 ```
 
-This creates a backup through the system's backup manager, stored in `storage/app/backup/`
-and recorded in the database.
+This creates a backup through the system's backup manager, stored in `storage/app/backup/` and
+recorded in the database.
 
 #### Option B — Manual Backup
 
@@ -134,14 +134,14 @@ php artisan up
 
 ## 5.3 What Can Go Wrong
 
-| Problem | Likely Cause | Solution |
-|---|---|---|
-| Migration fails | Database user lacks permissions | Grant `ALTER` and `CREATE` privileges |
-| White screen after upgrade | Cached config conflicts with new code | `php artisan optimize:clear` |
-| "Class not found" | Dependencies not updated | `composer install --no-interaction` |
-| Assets look broken | Frontend not rebuilt | `npm install && npm run build` |
-| Features not working | Migration not run | `php artisan migrate --force` |
-| Queue jobs failing | Worker running old code | `php artisan queue:restart` |
+| Problem                    | Likely Cause                          | Solution                              |
+| -------------------------- | ------------------------------------- | ------------------------------------- |
+| Migration fails            | Database user lacks permissions       | Grant `ALTER` and `CREATE` privileges |
+| White screen after upgrade | Cached config conflicts with new code | `php artisan optimize:clear`          |
+| "Class not found"          | Dependencies not updated              | `composer install --no-interaction`   |
+| Assets look broken         | Frontend not rebuilt                  | `npm install && npm run build`        |
+| Features not working       | Migration not run                     | `php artisan migrate --force`         |
+| Queue jobs failing         | Worker running old code               | `php artisan queue:restart`           |
 
 ### Rolling Back
 
@@ -176,11 +176,11 @@ php artisan up
 
 Internara follows [Semantic Versioning](https://semver.org/):
 
-| Change | Example | When |
-|---|---|---|
+| Change    | Example       | When                                       |
+| --------- | ------------- | ------------------------------------------ |
 | **Major** | 1.0.0 → 2.0.0 | Breaking changes that require manual steps |
-| **Minor** | 1.0.0 → 1.1.0 | New features, no breaking changes |
-| **Patch** | 1.0.0 → 1.0.1 | Bug fixes and small improvements |
+| **Minor** | 1.0.0 → 1.1.0 | New features, no breaking changes          |
+| **Patch** | 1.0.0 → 1.0.1 | Bug fixes and small improvements           |
 
 Current version: **0.1.0** (development preview — not yet stable).
 
@@ -225,5 +225,6 @@ Before upgrading your live site:
 
 ---
 
-**← Previous:** [Chapter 4: System Health & Troubleshooting](04-system-health-and-troubleshooting.md)
-**Next →** [Back to Manual Index](00-guide-index.md)
+**← Previous:**
+[Chapter 4: System Health & Troubleshooting](04-system-health-and-troubleshooting.md) **Next →**
+[Back to Manual Index](index.md)

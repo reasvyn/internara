@@ -1,182 +1,159 @@
-# Internara — Self-hosted Vocational Fieldwork Management System
+<p align="center">
+    <img src="https://img.shields.io/badge/PHP-8.4-777BB4?style=flat-square&logo=php" alt="PHP 8.4">
+    <img src="https://img.shields.io/badge/Laravel-13-FF2D20?style=flat-square&logo=laravel" alt="Laravel 13">
+    <img src="https://img.shields.io/badge/Livewire-4-fb70a9?style=flat-square&logo=livewire" alt="Livewire 4">
+    <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License">
+</p>
 
-> **Last updated:** 2026-06-27
-> **Changes:** fix format — short description inline on H1; metadata directly after H1
+# Internara — Vocational Fieldwork Management System
 
-## Description
-
-Internara manages the entire fieldwork (PKL - _Praktik Kerja Lapangan_) program lifecycle: from
-initial student enrollment and slot-based company placement, to daily geofenced attendance,
-reflective logs, competency assessments, final report revisions, and cryptographic certificate
-issuance.
+Self-hosted, single-tenant platform for managing compulsory industrial fieldwork programs (PKL —
+_Praktik Kerja Lapangan_) at Indonesian SMA/SMK and technical education institutions.
 
 ---
 
-## Technical Architecture Overview
+## Features
 
-Internara is structured as an **Action-based MVC** application, grouping components by **business
-module** (vertical slicing) rather than separating them into general technical layers. This
-guarantees high domain cohesion and clean component encapsulation.
+- **Student Lifecycle** — registration wizard, slot-based company placement, change requests
+- **Daily Operations** — geotagged attendance, reflective logbooks, absence requests
+- **Assessment & Evaluation** — competency rubrics, multi-evaluator grading, Google Forms-like
+  surveys
+- **Program Management** — internship periods, phases, cohort groups, document requirements
+- **Partnerships** — company registry, MoU management, slot quota tracking
+- **Reporting** — final grade card compilation, weight-based score aggregation, coordinator sign-off
+- **Certification** — certificate templates, batch issuance, QR-code verification
+- **Account Management** — RBAC with 5 flat roles, 8-state account lifecycle, recovery mechanisms
+- **Observability** — Laravel Pulse, dual-channel SmartLogger (file + DB)
+- **Localization** — English codebase, bilingual UI (EN/ID)
+
+---
+
+## Architecture
+
+**Action-based MVC with vertical slicing.** Code is organized by business module, not technical
+layer. Each of the 19 modules owns its complete stack — persistence, business rules, UI, and
+authorization — colocated under `app/{Module}/`.
 
 ```
 app/
-├── Core/           Abstract base classes, contracts, middleware, and cross-module utilities
-├── Auth/           Authentication, password management, account recovery, RBAC
-├── User/           Identity, profiles, notifications, dashboards, account status
-├── SysAdmin/       User management, announcements, audit logs, pulse monitoring
-├── Setup/          One-time installation wizard, environment audit, super admin creation
-├── Settings/       System configuration, dynamic branding, feature flags, locale
-├── Academics/      School profile, departments, academic years
-├── Program/        Internship lifecycle, phases, groups, document requirements
-├── Enrollment/     Student registration, placement slots, change requests
-├── Assessment/     Competency rubrics, evaluation, presentation scheduling
-├── Evaluation/     Mentor feedback, program quality surveys
-├── Assignment/     Task management, student submissions, grading workflow
-├── Journals/       Logbook entries, attendance, absence requests, scheduling
-├── Guidance/       Supervision logs, mentoring assignments
-├── Incident/       Issue reporting, investigation, resolution
-├── Partners/       Company profiles, partnership agreements
-├── Certification/  Certificate templates, batch issuance, QR verification
-├── Reports/        Final grade cards, score aggregation, coordinator sign-off
-└── Document/       Document templates, handbooks, rendering pipeline
+├── Core/         Base classes, contracts, exceptions, utilities
+├── Auth/         Login, RBAC, account recovery
+├── User/         Profiles, notifications, status
+├── SysAdmin/     User management, audit, announcements
+├── Setup/        Installation wizard, provisioning
+├── Settings/     Config, branding, feature flags
+├── Academics/    Departments, academic years
+├── Program/      Internship lifecycle, phases, groups
+├── Enrollment/   Registration, placement, change requests
+├── Assessment/   Rubrics, competency scoring
+├── Evaluation/   Feedback forms, auto-scoring
+├── Assignment/   Tasks, submissions, grading
+├── Journals/     Logbooks, attendance, absences
+├── Guidance/     Supervision logs, mentoring
+├── Incident/     Issue reporting, resolution
+├── Partners/     Companies, MoU agreements
+├── Certification/Certificates, templates, QR
+├── Reports/      Final grade cards, aggregation
+└── Document/     Templates, handbooks, rendering
 ```
 
-Each business module colocates its domain models, single-use Actions (Command/Process extend
-`BaseAction`; Read actions extend `BaseReadAction`), policies (`BasePolicy`), and Livewire components,
-keeping submodules isolated and highly maintainable.
+The architecture follows a **4-layer model** with strict downward dependency:
+
+| Layer                   | Content                                | Location                                 |
+| ----------------------- | -------------------------------------- | ---------------------------------------- |
+| **Presentation/UI**     | Livewire, Blade, Policies, Routes      | `{Module}/Livewire/`, `resources/views/` |
+| **Business/Domain Ops** | Command/Read/Process Actions, Events   | `{Module}/Actions/`, `{Module}/Events/`  |
+| **Data/Persistent**     | Models, Entities, DTOs, Enums          | `{Module}/Models/`, `{Module}/Entities/` |
+| **Framework/Infra**     | Core base classes, Contracts, Services | `app/Core/`, `{Module}/Services/`        |
+
+**Key patterns:**
+
+- **Action Triad** — every mutation is a Command Action (transaction + log + event); complex queries
+  go in Read Actions; multi-step workflows in Process Actions
+- **Entity separation** — business rules live in `final readonly` Entity classes, not in Models
+- **DTO boundaries** — immutable `BaseData` objects carry data between layers; `ActionResponse`
+  returns structured results
+- **State machines** — status enums implement `StatusEnum` contract with explicit transition rules
 
 ---
 
-## Tech Stack & Specifications
+## Quick Start
 
-| Layer                   | Specifications                                              |
-| ----------------------- | ----------------------------------------------------------- |
-| **Language & Engine**   | PHP 8.4+, Node.js 20+                                       |
-| **Framework**           | Laravel 13                                                  |
-| **Frontend UI**         | Livewire 4, maryUI 2, DaisyUI 5, Tailwind CSS v4, Alpine.js |
-| **Build System**        | Vite 8                                                      |
-| **Database Support**    | SQLite (default), MySQL 8+, MariaDB 10+, PostgreSQL 15+     |
-| **Background Services** | Redis / Database Queues, Scheduler Cron                     |
-| **WebSockets**          | Laravel Reverb (optional — install separately)              |
-| **Observability**       | Laravel Pulse, dual-channel SmartLogger                     |
-| **Quality & Styling**   | Laravel Pint, PHPStan, Pest 4                               |
+```bash
+# Clone & install
+git clone https://github.com/reasvyn/internara.git
+cd internara
+composer install
+npm install && npm run build
 
----
+# Configure & provision
+cp .env.example .env
+php artisan key:generate
+php artisan setup:install          # audits env, runs migrations, seeds defaults
 
-## Prerequisites
+# Start development
+composer run dev                   # serves app + queue + logs + vite concurrently
+```
+
+Complete the 6-step setup wizard by opening the signed URL output by `setup:install`.
+
+### Prerequisites
 
 - **PHP 8.4+** with extensions: `bcmath`, `ctype`, `curl`, `fileinfo`, `gd`, `intl`, `mbstring`,
   `openssl`, `pdo`, `tokenizer`, `xml`, `zip`
-- **Composer 2.x**
-- **Node.js 20+** with npm
+- **Composer 2.x**, **Node.js 20+**, **npm 10+**
+- Database: SQLite (default, zero-config), MySQL 8+, MariaDB 10.6+, or PostgreSQL 15+
 
 ---
 
-## Quick Start (Development Environment)
+## Documentation
 
-1. **Clone & Install Dependencies**:
+All documentation lives in `docs/`. Start here:
 
-    ```bash
-    git clone https://github.com/reasvyn/internara.git
-    cd internara
-    composer install
-    npm install
-    ```
-
-2. **Configure Environment**:
-
-    ```bash
-    cp .env.example .env
-    php artisan key:generate
-    ```
-
-3. **Install System (Audits & Provisioning)**:
-
-    ```bash
-    php artisan setup:install
-    ```
-
-    _This command audits your environment, runs migrations, seeds defaults, and outputs a one-time
-    signed setup URL._
-
-4. **Start Dev Processes**: Run the dev server and queue workers in separate shells, or run:
-
-    ```bash
-    composer run dev
-    ```
-
-5. **Complete Setup**: Open the signed setup URL in your browser to complete the 6-step setup
-   wizard.
+| Topic              | Document                                                                 |
+| ------------------ | ------------------------------------------------------------------------ |
+| Getting started    | [`docs/getting-started.md`](docs/getting-started.md)                     |
+| Architecture       | [`docs/architecture.md`](docs/architecture.md)                           |
+| Module overviews   | [`docs/modules/index.md`](docs/modules/index.md)                         |
+| Coding conventions | [`docs/conventions.md`](docs/conventions.md)                             |
+| Deployment         | [`docs/infrastructure/deployment.md`](docs/infrastructure/deployment.md) |
+| Testing guide      | [`docs/infrastructure/testing.md`](docs/infrastructure/testing.md)       |
+| Full doc index     | [`docs/index.md`](docs/index.md)                                         |
 
 ---
 
-## Documentation Index
+## Quality
 
-Explore the complete system guides under `docs/`:
+```bash
+composer run test                  # Full test suite
+composer run analyse               # PHPStan static analysis
+composer run quality               # Lint + analyse + feature tests
+vendor/bin/pint --dirty --format agent  # Code style
+```
 
-### Vision & Concepts
+- **Testing:** Pest 4 with `LazilyRefreshDatabase`, feature + unit tests for every Action
+- **Static analysis:** PHPStan at level 6 (configured in `phpstan.neon`)
+- **Code style:** Laravel Pint (PSR-12 + Laravel conventions)
 
-- [Product Definition & Scope](docs/foundation/product-definition.md)
-- [Key Feature Catalog](docs/key-features.md)
-- [Project Philosophy](docs/philosophy.md)
-- [Action-based MVC Architecture](docs/architecture.md)
-- [Coding Conventions](docs/conventions.md)
+---
 
-### Setup & Operation
+## Contributing
 
-- [Getting Started Guide](docs/getting-started.md)
-- [Setup Wizard Walkthrough](docs/guide/02-setup-wizard.md)
-- [Post-Setup Administrative Tasks](docs/guide/03-post-setup.md)
-- [Infrastructure Overview](docs/infrastructure/infrastructure.md)
-- [Installation Reference](docs/guide/01-installation.md)
-- [Deployment Options](docs/infrastructure/deployment.md)
-- [Configuration Settings](docs/infrastructure/configuration.md)
+1. Read the [architecture](docs/architecture.md) and [conventions](docs/conventions.md) docs first
+2. Load the `context-awareness` skill for project orientation
+3. Follow the metacognitive loop: **Construct → Evaluate → Verify → Decide**
+4. Ensure pre-commit checklist passes (tests, pint, phpstan)
+5. Submit a PR with a descriptive title following `type(scope): description` format
 
-### Security & Access
+---
 
-- [Role-Based Access Control](docs/foundation/rbac.md)
-- [Account Recovery Flows](docs/foundation/account-recovery.md)
-- [Observability & Monitoring](docs/infrastructure/observability.md)
-- [Backup & Disaster Recovery](docs/infrastructure/backup-recovery.md)
+## Security
 
-### Technical Reference
-
-- [Database Schema](docs/infrastructure/database.md)
-- [Cache Strategy & Invalidation](docs/infrastructure/cache.md)
-- [Filesystem & Media Storage](docs/infrastructure/filesystem.md)
-- [Media Library](docs/infrastructure/media-library.md)
-- [Routes & Middleware](docs/infrastructure/routes.md)
-- [Session Configuration](docs/infrastructure/session.md)
-- [Notifications](docs/infrastructure/notification.md)
-- [Queue & Workers](docs/infrastructure/queue.md)
-- [Testing Guide](docs/infrastructure/testing.md)
-- [Scaling Guide](docs/infrastructure/scaling.md)
-- [Localization](docs/infrastructure/localization.md)
-
-### Module References
-
-- [Core](docs/modules/core.md) / [Reference](docs/modules/core-reference.md)
-- [Auth](docs/modules/auth.md) / [Reference](docs/modules/auth-reference.md)
-- [User](docs/modules/user.md) / [Reference](docs/modules/user-reference.md)
-- [SysAdmin](docs/modules/sysadmin.md) / [Reference](docs/modules/sysadmin-reference.md)
-- [Setup](docs/modules/setup.md) / [Reference](docs/modules/setup-reference.md)
-- [Settings](docs/modules/settings.md) / [Reference](docs/modules/settings-reference.md)
-- [Academics](docs/modules/academics.md) / [Reference](docs/modules/academics-reference.md)
-- [Program](docs/modules/program.md) / [Reference](docs/modules/program-reference.md)
-- [Enrollment](docs/modules/enrollment.md) / [Reference](docs/modules/enrollment-reference.md)
-- [Assessment](docs/modules/assessment.md) / [Reference](docs/modules/assessment-reference.md)
-- [Evaluation](docs/modules/evaluation.md) / [Reference](docs/modules/evaluation-reference.md)
-- [Assignment](docs/modules/assignment.md) / [Reference](docs/modules/assignment-reference.md)
-- [Journals](docs/modules/journals.md) / [Reference](docs/modules/journals-reference.md)
-- [Guidance](docs/modules/guidance.md) / [Reference](docs/modules/guidance-reference.md)
-- [Incident](docs/modules/incident.md) / [Reference](docs/modules/incident-reference.md)
-- [Partners](docs/modules/partners.md) / [Reference](docs/modules/partners-reference.md)
-- [Certification](docs/modules/certification.md) / [Reference](docs/modules/certification-reference.md)
-- [Reports](docs/modules/reports.md) / [Reference](docs/modules/reports-reference.md)
-- [Document](docs/modules/document.md) / [Reference](docs/modules/document-reference.md)
+If you discover a security vulnerability, please report it privately via
+[reasvyn@gmail.com](mailto:reasvyn@gmail.com) rather than opening a public issue.
 
 ---
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+[MIT](LICENSE) &mdash; &copy; 2025&ndash;2026 Reas Vyn

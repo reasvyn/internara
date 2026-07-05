@@ -1,14 +1,13 @@
 # Chapter 10: System Settings & Backups
 
-> **Last updated:** 2026-06-15
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-15 **Changes:** sync — initial metadata sync with new format
 
 ## Description
+
 This chapter covers how to configure your Internara system — branding, mail, locale, and appearance
 — and how to manage automated backups.
 
 ---
-
 
 ## 10.1 Accessing System Settings
 
@@ -25,11 +24,11 @@ Identity** controls.
 
 The General card controls how your system identifies itself:
 
-| Field | Description |
-|-------|-------------|
-| **Brand Name** | Your school or institution name (e.g. "SMKN 1 Jakarta") |
-| **Site Title** | The browser tab title for Internara pages |
-| **Default Language** | System language — **Bahasa Indonesia** or **English** |
+| Field                    | Description                                                                       |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| **Brand Name**           | Your school or institution name (e.g. "SMKN 1 Jakarta")                           |
+| **Site Title**           | The browser tab title for Internara pages                                         |
+| **Default Language**     | System language — **Bahasa Indonesia** or **English**                             |
 | **Active Academic Year** | The current academic year (e.g. "2025/2026") used as the default for new programs |
 
 Select the correct academic year from the dropdown. This setting determines which academic year new
@@ -56,17 +55,17 @@ The currently active preset shows a checkmark. Click **Save** to apply it.
 ### 10.3.2 Custom Colors
 
 If you prefer a custom look, set each color individually using the color pickers. Clicking any color
-input clears the selected preset, switching to custom mode. Changes appear immediately in the
-color input but are only applied system-wide after saving.
+input clears the selected preset, switching to custom mode. Changes appear immediately in the color
+input but are only applied system-wide after saving.
 
 The four color values are:
 
-| Color | Purpose | Default |
-|-------|---------|---------|
-| **Primary** | Main brand color — buttons, links, active elements | `#059669` (emerald) |
-| **Secondary** | Supporting UI elements | `#6b7280` (grey) |
-| **Accent** | Highlight and call-to-action elements | `#f97316` (orange) |
-| **Base** | Page background | `#ffffff` (white) |
+| Color         | Purpose                                            | Default             |
+| ------------- | -------------------------------------------------- | ------------------- |
+| **Primary**   | Main brand color — buttons, links, active elements | `#059669` (emerald) |
+| **Secondary** | Supporting UI elements                             | `#6b7280` (grey)    |
+| **Accent**    | Highlight and call-to-action elements              | `#f97316` (orange)  |
+| **Base**      | Page background                                    | `#ffffff` (white)   |
 
 ---
 
@@ -98,15 +97,15 @@ To remove the favicon, hover over the image and click the **X** button.
 
 The Mail card configures SMTP settings for outgoing emails (password resets, notifications, etc.).
 
-| Field | Description |
-|-------|-------------|
+| Field            | Description                                                    |
+| ---------------- | -------------------------------------------------------------- |
 | **From Address** | The email address shown in the "From" field of outgoing emails |
-| **From Name** | The name shown alongside the from address |
-| **SMTP Host** | Your mail server hostname (e.g. `smtp.gmail.com`) |
-| **SMTP Port** | The SMTP port (587 for TLS, 465 for SSL) |
-| **Encryption** | TLS, SSL, or None |
-| **Username** | SMTP authentication username |
-| **Password** | SMTP authentication password |
+| **From Name**    | The name shown alongside the from address                      |
+| **SMTP Host**    | Your mail server hostname (e.g. `smtp.gmail.com`)              |
+| **SMTP Port**    | The SMTP port (587 for TLS, 465 for SSL)                       |
+| **Encryption**   | TLS, SSL, or None                                              |
+| **Username**     | SMTP authentication username                                   |
+| **Password**     | SMTP authentication password                                   |
 
 ### 10.5.1 Testing Mail Settings
 
@@ -136,8 +135,8 @@ the database, uploaded files, or both.
 
 ### 10.7.1 Accessing Backup Manager
 
-Navigate to **Admin → Backups** (`/admin/backups`). Both Super Admin and Admin roles can access
-this page.
+Navigate to **Admin → Backups** (`/admin/backups`). Both Super Admin and Admin roles can access this
+page.
 
 The backup page shows:
 
@@ -149,11 +148,11 @@ The backup page shows:
 
 Click the **Create Backup** dropdown and choose one of three types:
 
-| Type | Content | File Format |
-|------|---------|-------------|
+| Type         | Content                                         | File Format              |
+| ------------ | ----------------------------------------------- | ------------------------ |
 | **Database** | Complete database dump (tables, data, routines) | `.sql.gz` or SQLite file |
-| **Storage** | All uploaded files from `storage/app/public` | `.tar.gz` |
-| **Full** | Database + storage combined | `.tar.gz` |
+| **Storage**  | All uploaded files from `storage/app/public`    | `.tar.gz`                |
+| **Full**     | Database + storage combined                     | `.tar.gz`                |
 
 1. Click **Create Backup**
 2. Select the backup type
@@ -207,21 +206,25 @@ The CLI reports the backup file size on completion and shows any errors encounte
 ## 10.9 Troubleshooting
 
 **Settings won't save**
+
 - Ensure all required fields (Brand Name, Site Title) are filled in
 - Check that the active academic year is selected
 - Verify the default locale is either `id` or `en`
 
 **Colors not updating after save**
+
 - Clear your browser cache
 - Try switching to a preset palette and saving, then customize from there
 
 **Test email fails**
+
 - Verify SMTP host and port are correct
 - Check that your mail server allows connections from your server's IP
 - Try TLS on port 587 (most common) or SSL on port 465
 - Ensure the from address is accepted by your mail server
 
 **Backup fails**
+
 - Check server disk space — backups require free space
 - Verify database credentials are correct in `.env`
 - Ensure the `storage/app/backup/` directory is writable
@@ -230,5 +233,5 @@ The CLI reports the backup file size on completion and shows any errors encounte
 
 ---
 
-**← Previous:** [User Profile & Recovery](09-user-profile-and-recovery.md)
-**Next →** [Back to Manual Index](00-guide-index.md)
+**← Previous:** [User Profile & Recovery](09-user-profile-and-recovery.md) **Next →**
+[Back to Manual Index](index.md)

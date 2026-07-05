@@ -1,10 +1,10 @@
 # Coding Rules — Practical Application Guide
 
-> **Last updated:** 2026-07-03
-> **Changes:** initial — practical patterns and verification checklist, not doc replacement
+> **Last updated:** 2026-07-03 **Changes:** initial — practical patterns and verification checklist,
+> not doc replacement
 
-This is NOT a replacement for `docs/conventions.md`. It's a practical checklist
-of what to verify when writing code. Read `docs/conventions.md` for the full spec.
+This is NOT a replacement for `docs/conventions.md`. It's a practical checklist of what to verify
+when writing code. Read `docs/conventions.md` for the full spec.
 
 ## Before Writing Any Class
 
@@ -19,6 +19,7 @@ Ask yourself:
 ## Class Contract Checklist
 
 ### Action
+
 ```php
 // Verify these when writing or reviewing an Action
 #[ ] Extends correct base class (BaseCommandAction / BaseReadAction / BaseProcessAction)
@@ -32,6 +33,7 @@ Ask yourself:
 ```
 
 ### Entity
+
 ```php
 #[ ] final readonly class extends BaseEntity
 #[ ] Has fromModel(Model $model): static
@@ -42,6 +44,7 @@ Ask yourself:
 ```
 
 ### DTO
+
 ```php
 #[ ] final readonly class extends BaseData
 #[ ] Properties are only: string, int, float, bool, enum, Carbon, nested DTO
@@ -49,6 +52,7 @@ Ask yourself:
 ```
 
 ### Model
+
 ```php
 #[ ] Extends BaseModel (or BaseAuthenticatable for user models)
 #[ ] Uses #[Fillable([...])] attribute (NOT $fillable/$guarded)
@@ -58,6 +62,7 @@ Ask yourself:
 ```
 
 ### Enum
+
 ```php
 #[ ] Implements LabelEnum (all enums)
 #[ ] Implements StatusEnum (state machine enums)
@@ -68,8 +73,9 @@ Ask yourself:
 ## Translation Key Patterns
 
 When adding a user-facing string:
+
 - NEVER hardcode English text
-- Always use `__('key')`  
+- Always use `__('key')`
 - Convention: `{module}.{sub_noun}.{descriptive_key}` (e.g., `setting.messages.saved`)
 - Always add key to BOTH `lang/en/` and `lang/id/`
 - Check `lang/{locale}/{module}.php` for existing keys in the same module

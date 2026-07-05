@@ -1,11 +1,9 @@
 # Testing Rules — What to Verify
 
-> **Last updated:** 2026-07-03
-> **Changes:** initial — practical test patterns, not doc replacement
+> **Last updated:** 2026-07-03 **Changes:** initial — practical test patterns, not doc replacement
 
 This is NOT a replacement for `docs/architecture/testing-pattern.md` or
-`docs/infrastructure/testing.md`. Use this as a quick checklist when writing
-or reviewing tests.
+`docs/infrastructure/testing.md`. Use this as a quick checklist when writing or reviewing tests.
 
 ## Test Structure
 
@@ -20,6 +18,7 @@ tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
 ## Quick Checklist Per Test
 
 ### Action Tests (Feature)
+
 ```
 [ ] Uses LazilyRefreshDatabase (not RefreshDatabase)
 [ ] Uses real factories, no Mockery for Eloquent
@@ -31,6 +30,7 @@ tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
 ```
 
 ### Livewire Tests (Feature)
+
 ```
 [ ] Uses LazilyRefreshDatabase
 [ ] Tests render: assertSuccessful(), assertViewIs()
@@ -41,6 +41,7 @@ tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
 ```
 
 ### Entity/DTO/Enum Tests (Unit)
+
 ```
 [ ] No LazilyRefreshDatabase (no DB needed)
 [ ] Entity: test every business question method
@@ -52,29 +53,29 @@ tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
 
 ## Mocking Rules
 
-| Scenario | Use | Never Use |
-|----------|-----|-----------|
-| Eloquent models | Factories + real DB | `Mockery::mock(Model::class)` |
-| External HTTP | `Http::fake()` | Real HTTP calls |
-| File system | `Storage::fake()` | `File::shouldReceive()` |
-| Queue | `Queue::fake()` | Real queue worker |
-| Notifications | `Notification::fake()` | Real mail sending |
-| Events | `Event::fake([Specific::class])` | `Mockery::spy()` |
-| Cache | `Cache::fake()` | `Cache::shouldReceive()` |
-| Auth | `actingAs($user)` | Auth facade mock |
-| Cookies | `Cookie::fake()` | `Cookie::shouldReceive()` |
+| Scenario        | Use                              | Never Use                     |
+| --------------- | -------------------------------- | ----------------------------- |
+| Eloquent models | Factories + real DB              | `Mockery::mock(Model::class)` |
+| External HTTP   | `Http::fake()`                   | Real HTTP calls               |
+| File system     | `Storage::fake()`                | `File::shouldReceive()`       |
+| Queue           | `Queue::fake()`                  | Real queue worker             |
+| Notifications   | `Notification::fake()`           | Real mail sending             |
+| Events          | `Event::fake([Specific::class])` | `Mockery::spy()`              |
+| Cache           | `Cache::fake()`                  | `Cache::shouldReceive()`      |
+| Auth            | `actingAs($user)`                | Auth facade mock              |
+| Cookies         | `Cookie::fake()`                 | `Cookie::shouldReceive()`     |
 
-**Rule of thumb:** If you're using `shouldReceive()`, you're probably doing it wrong.
-Prefer `fake()` methods which are scoped to the test and don't leak between tests.
+**Rule of thumb:** If you're using `shouldReceive()`, you're probably doing it wrong. Prefer
+`fake()` methods which are scoped to the test and don't leak between tests.
 
 ## Coverage Targets
 
-| Layer | Target |
-|-------|--------|
-| Entities | 100% |
-| Enums | 100% |
-| DTOs | 100% |
-| Command Actions | >= 90% |
-| Read Actions | >= 80% |
+| Layer               | Target |
+| ------------------- | ------ |
+| Entities            | 100%   |
+| Enums               | 100%   |
+| DTOs                | 100%   |
+| Command Actions     | >= 90% |
+| Read Actions        | >= 80% |
 | Livewire components | >= 80% |
-| Policies | 100% |
+| Policies            | 100%   |

@@ -1,223 +1,174 @@
-# Context Awareness — Internara Project Compass
-
-> **Last updated:** 2026-07-03
-> **Changes:** comprehensive rewrite covering all 19 modules, infrastructure, and cross-cutting concerns across the entire project
-
-This skill is your universal orientation for Internara. It covers what exists,
-how things connect, and WHERE to look for details. It does NOT duplicate content
-from `docs/` — it tells you which doc to read for each topic.
-
+---
+name: context-awareness
+description: SDLC Phase: ORIENTATION. Universal project orientation for Internara — architecture rules, module map, decision framework, critical rules, and navigation patterns. Must be loaded first on every session. All other skills assume this context.
+downstream:
+  - audit-protocol
+  - code-refactoring
+  - feature-building
+  - laravel-best-practices
+  - livewire-development
+  - medialibrary-development
+  - pest-testing
+  - pulse-development
+  - roadmap-planning
+  - security-audit
+  - sync-docs
+  - tailwindcss-development
 ---
 
-## 1. What Is Internara
+# Context Awareness
 
-**Self-hosted, single-tenant PKL management system** for Indonesian SMA/SMK.
-Manages the complete industrial fieldwork lifecycle: enrollment, placement,
-attendance, logbooks, assessments, grade cards, and certificates.
+> **Prerequisite:** None — this is the first skill to load.
 
-**3S Governing Doctrine:** Secure (PII isolation, layered auth) | Sustain (19 modules, colocation) | Scalable (single-tenant, CQRS-inspired)
+## When to Activate
 
-**Deployment:** Tier 1 (shared hosting, SQLite, sync queue) — Tier 2 (VPS, Redis, Supervisor) — Tier 3 (HA, cluster, S3). Same codebase, different config.
+Load this skill at the start of every session. It provides the mental model needed by all other
+skills. Without it, you lack the architectural context to make sound decisions.
 
-**Bilingual:** English codebase, Indonesian UI (`lang/id/`), local terms: NISN, NPSN, PKL, DUDI.
+## Agent Workflow
 
----
+Using this skill follows 4 phases:
 
-## 2. Architecture Orientation
+### 1. Construct — Knowledge, Context & Scope
 
-Read `docs/architecture.md` for the full spec. Key things to know:
+- Load `context-awareness` skill for project orientation
+- Read relevant docs: module docs, pattern docs, reference docs
+- Understand task scope: what needs to be done, which files are affected
+- Verify paths, class names, signatures against actual code (don't trust docs blindly)
+- Determine approach: at least 2 options before deciding
 
-**4 layers, strictly downward:** UI (Livewire/Blade) → Business (Actions) → Data (Models/Entities) → Framework (Core)
+### 2. Execute — Context Awareness
 
-**Action Triad:** Command (mutation, transaction+log) | Read (complex query, no DB writes) | Process (orchestration, composes other Actions). Contracts in `app/Core/Actions/`
+- Read `docs/architecture.md`, `docs/conventions.md`, `docs/modules/index.md`
+- Understand 4-layer architecture, Action Triad, DTO boundaries
+- Identify which module is relevant to the task
+- Read module docs: `docs/modules/{module}.md` and `docs/modules/{module}-reference.md`
+- Build project mental model before using other skills
+- Output: project mental model — understanding of 4-layer architecture, Action Triad, module
+  boundaries, and critical rules
 
-**DTO boundaries:** UI→Business via `BaseData` | Business→UI via `ActionResponse`. Never raw arrays for 3+ params.
+### 3. Verify — Quality Gates
 
-**File structure:** `app/{Module}/{SubModule}/{Layer}/{Class}.php` — vertical slices. Tests mirror: `tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php`
+- Run linter: `vendor/bin/pint --dirty --format agent`
+- Run static analysis: `vendor/bin/phpstan analyse --no-progress`
+- Run unit/feature tests: `php artisan test --compact --filter={TestName}`
+- Ensure pre-commit checklist is satisfied
+- Check no debug calls (`dd/dump/ray`) were left behind
 
-**Routes:** 17 files in `routes/web/{module}.php`, required by master `routes/web.php`. Livewire auto-discovered from `app/*/Livewire/`.
+### 4. Report & Commit
 
----
+- Deliver a comprehensive report to the user:
+    - Summary of orientation work done
+    - Architecture understanding: layers, Action Triad, patterns
+    - Module map understanding
+- Feeds into: any downstream skill (audit, planning, refactoring, implementation, testing,
+  maintenance)
+- Commit using format: `type(scope): description`
+- Push if requested
 
-## 3. Complete Module Map
+## Project Identity
 
-**Foundation:** Core → Setup → Settings
-**Identity:** Auth → User → SysAdmin
-**Institution:** Academics → Partners → Program
-**Enrollment:** Enrollment
-**Operations:** Journals → Guidance → Incident
-**Assessment:** Assessment → Assignment → Evaluation
-**Output:** Reports → Certification
-**Cross-cutting:** Document
+Self-hosted, single-tenant PKL management for Indonesian SMA/SMK. MIT license. Repository:
+`reasvyn/internara`.
 
-Read each module's `.md` for business rules, `-reference.md` for technical structure.
+**Tech:** PHP 8.4, Laravel 13, Livewire 4, Alpine.js, maryUI 2, DaisyUI 5, Tailwind CSS v4.
+Database: SQLite (default), MySQL 8+, MariaDB 10.6+, PostgreSQL 15+. Testing: Pest 4, PHPStan,
+Laravel Pint.
 
-### Key Business Rules Per Module
+## Architecture Compass
 
-| Module | Key Invariant | Read Docs For |
-|--------|--------------|---------------|
-| Core | Base classes, exceptions, SmartLogger, contracts | `docs/modules/core.md` |
-| Auth | 5 flat roles, super admin bypass via `Gate::before` | `docs/modules/auth.md`, `docs/foundation/rbac.md` |
-| User | 8-state account machine, PII-isolated profiles | `docs/modules/user.md` |
-| SysAdmin | User CRUD, announcements lifecycle, audit | `docs/modules/sysadmin.md` |
-| Setup | Single execution, 6-step wizard, recovery key | `docs/modules/setup.md` |
-| Settings | Three-tier config, brand colors, feature flags | `docs/modules/settings.md` |
-| Academics | Single-active academic year, guarded dept deletion | `docs/modules/academics.md` |
-| Partners | Partnership lifecycle EXPIRED/TERMINATED terminal | `docs/modules/partners.md` |
-| Program | DRAFT→PUBLISHED→ACTIVE→COMPLETED→CANCELLED | `docs/modules/program.md` |
-| Enrollment | Atomic quota enforcement, guest→student pipeline | `docs/modules/enrollment.md` |
-| Journals | One entry/day, DRAFT→SUBMITTED→VERIFIED, GPS clock-in | `docs/modules/journals.md` |
-| Guidance | Dual-mentor model, private supervision logs | `docs/modules/guidance.md` |
-| Assessment | JSON rubrics, finalization immutability, cross-role proxy | `docs/modules/assessment.md` |
-| Assignment | DRAFT→PUBLISHED→CLOSED, late flagging, version history | `docs/modules/assignment.md` |
-| Evaluation | Google Forms-like, polymorphic targeting, auto-scoring | `docs/modules/evaluation.md` |
-| Incident | REPORTED→INVESTIGATING→RESOLVED→CLOSED, CRITICAL escalation | `docs/modules/incident.md` |
-| Reports | Grade card only, DRAFT→FINALIZED, weight-based scoring | `docs/modules/reports.md` |
-| Certification | QR crypto verification, revocation terminal, batch issuance | `docs/modules/certification.md` |
-| Document | Unified table, Blade+DomPDF rendering, template versioning | `docs/modules/document.md` |
+### 4-Layer Model
 
----
+Strictly downward — each layer depends only on layers below.
 
-## 4. Cross-Cutting Patterns
+| Layer                       | Content                                                     | Directory Prefix                         |
+| --------------------------- | ----------------------------------------------------------- | ---------------------------------------- |
+| **4 — Presentation/UI**     | Livewire, Blade, Policies, Routes, Controllers              | `{Module}/Livewire/`, `routes/web/`      |
+| **3 — Business/Domain Ops** | Command/Read/Process Actions, Events, Listeners             | `{Module}/Actions/`, `{Module}/Events/`  |
+| **2 — Data/Persistent**     | Models, Entities (final readonly), DTOs (BaseData), Enums   | `{Module}/Models/`, `{Module}/Entities/` |
+| **1 — Framework/Infra**     | Core base classes, Contracts, Exceptions, Services, Support | `app/Core/`, `{Module}/Services/`        |
 
-These patterns span multiple modules. Read the referenced docs for details.
+### Action Triad
 
-### RBAC & Authorization (`docs/foundation/rbac.md`)
-- 5 flat roles (no inheritance). Super admin bypasses ALL checks via `Gate::before`
-- 2 functional roles (mentor/mentee) resolved at runtime, never stored in DB
-- 3-level auth: routes (CheckRoleMiddleware), Livewire (inline authorize), Policies (BasePolicy)
+| Type        | Base                | Transaction | Log | Use                      |
+| ----------- | ------------------- | ----------- | --- | ------------------------ |
+| **Command** | `BaseCommandAction` | ✅          | ✅  | All mutations            |
+| **Read**    | `BaseReadAction`    | ❌          | ❌  | Complex queries          |
+| **Process** | `BaseProcessAction` | ✅          | ✅  | Multi-step orchestration |
 
-### State Machines (`docs/architecture/enum-pattern.md`)
-Many modules use `StatusEnum` for lifecycle management. Common across modules:
-- Linear: DRAFT→SUBMITTED→VERIFIED/FINALIZED (Logbook, Submission, Report)
-- Multi-path: AccountStatus (8 states), CertificateStatus (issued/revoked)
-- Terminal states return `[]` from `validTransitions()`
+- Exactly one public method: `execute()`
+- Actions are the ONLY entry point for mutations — never in Livewire
+- Accept DTO for 3+ params; return ActionResponse for structured feedback
+- Delegate business rules to Entities; throw `RejectedException` on violation
+- Events for async only — skip if no listener exists
 
-### SmartLogger (`docs/architecture/logging-pattern.md`)
-Dual-channel: system log (files) + activity log (DB). PII masking automatic
-via `->withPiiMasking()`. Actions call `$this->log()` which auto-configures.
+### Key Design Decisions
 
-### File Uploads (`docs/infrastructure/media-library.md`)
-ALL uploads through Spatie Media Library (never `Storage::put()`) with
-named collections and image conversions. 10MB default max.
+| Principle         | Rule                                                                         |
+| ----------------- | ---------------------------------------------------------------------------- |
+| Module colocation | Business logic lives with its module, not globally                           |
+| DTO boundaries    | UI↔Business via BaseData; Business↔UI via ActionResponse                     |
+| Entity purity     | `final readonly`, zero I/O, `fromModel(Model)`, business rules return `bool` |
+| Model role        | Persistence only — no business methods, use `as{Role}()` bridges             |
+| Cross-module      | Direct imports allowed; prefer events for side effects                       |
 
-### Cache (`docs/infrastructure/cache.md`)
-Centralized key registry in `config/cache-keys.php` — NEVER inline strings.
-Invalidation is event-driven. Settings cached forever, dashboard stats 5 min.
-
-### Queue (`docs/infrastructure/queue.md`)
-Dual pipeline: `default` (emails, notifications, media) + `documents` (PDF).
-Tier 1 = sync, Tier 2+ = Redis via Supervisor.
-
-### Notifications (`docs/infrastructure/notification.md`)
-Multi-channel: CustomDatabaseChannel (in-app) + Mail + future Webhook.
-Notifications sent from Actions or listeners — never from Livewire.
-Mail notifications implement `ShouldQueue`.
-
-### Cross-Role Proxy (`docs/adr/adr-cross-role-proxy.md`)
-Teachers proxy for inactive supervisors (after 48h). Logged with proxy_role.
-Admin proxies for any role. Relevant in Assessment, Journals, Reports.
-
-### Three Recovery Mechanisms (`docs/foundation/account-recovery.md`)
-1. Password reset (email token, self-service) — 3/3600s rate limit
-2. Recovery slip (admin generates 10 codes, offline) — 3/300s rate limit
-3. Super admin recovery (CLI, 64-char key, emergency only)
-
----
-
-## 5. Decision Framework (Metacognitive Loop)
-
-Every task: **CONSTRUCT → EVALUATE → VERIFY → DECIDE**
-
-### CONSTRUCT — Before Writing
-1. Read business context: `docs/modules/{module}.md`
-2. Read technical structure: `docs/modules/{module}-reference.md`
-3. Read pattern: `docs/architecture/{pattern}-pattern.md`
-4. Read actual code: similar features in the module
-5. Verify everything — paths, signatures, column names, counts
-
-### EVALUATE — After Building
-- Matches requirements? Follows 4-layer direction? Correct base class?
-- No `Model::create/update/delete` in Livewire? No `app()->make`?
-- Has test? Passes?
-
-### VERIFY — Before Done
-```bash
-php artisan test --compact --filter={TestName}
-vendor/bin/pint --dirty --format agent
-vendor/bin/phpstan analyse --no-progress
-grep -rn 'dd(\|dump(\|ray(' app/ --include='*.php'
-```
-
-### DECIDE
-Accept | Revise | Split | Escalate
-
----
-
-## 6. Critical Rules (NEVER Violate)
-
-| Rule | Reference |
-|------|-----------|
-| No `Model::create/update/delete` in Livewire | `docs/architecture.md` §R3 |
-| No `event()` inside Action — use `dispatchEvent()` | `docs/architecture/action-pattern.md` |
-| No `app()->make()` in app code — use injection | `docs/conventions.md` §8 |
-| Business violations → `RejectedException`, not `RuntimeException` | `docs/architecture/exception-pattern.md` |
-| No raw SQL without parameterized binding | `docs/conventions.md` §3.2 |
-| All cache keys in `config/cache-keys.php` | `docs/architecture/cache-pattern.md` |
-| All user-facing strings use `__()` — both EN and ID | `docs/conventions.md` §3 |
-| Report = grade card only, no thesis content | `AGENTS.md` |
-| No `dd/dump/ray` in committed code | `AGENTS.md` |
-
----
-
-## 7. Source of Truth Hierarchy
+## Metacognitive Loop
 
 ```
-1. Code (always wins)
-2. Tests (expected behavior)
-3. Migrations (actual schema)
-4. Config files (actual configuration)
-5. AGENTS.md (project invariants)
-6. docs/architecture.md (patterns)
-7. docs/conventions.md (standards)
-8. docs/modules/*.md (business context)
-9. Skill files (advisory, may be stale)
+CONSTRUCT → EVALUATE → VERIFY → DECIDE
 ```
 
-**When in doubt, `find`, `grep`, or `ls` — don't guess.**
+1. **CONSTRUCT** — Read relevant docs and existing code; verify paths and signatures; consider
+   multiple approaches
+2. **EVALUATE** — Does it match requirements? Respect layer boundaries? Do ONE thing?
+3. **VERIFY** — Lint + static analysis + tests pass; no debug calls; `__()` for strings
+4. **DECIDE** — Accept / Revise / Split / Escalate / Defer
 
----
+## Critical Invariants
 
-## 8. Where to Find Everything
+| #   | Rule                                                                    |
+| --- | ----------------------------------------------------------------------- |
+| C1  | No `Model::create/update/delete` in Livewire                            |
+| C2  | No `app()->make()` / `resolve()` — use injection                        |
+| C3  | No raw SQL without parameterized binding                                |
+| C4  | Cache keys in `config/cache-keys.php` — never inline                    |
+| C5  | Entities must not import Actions/Services/Livewire/Controllers          |
+| C6  | DTOs must not import Models/Entities/Actions                            |
+| C7  | Business rules → `RejectedException`, not `RuntimeException`            |
+| D1  | `declare(strict_types=1)` in all PHP files except migrations and config |
+| D2  | No `dd/dump/ray/var_dump/print_r/die` in committed code                 |
+| D3  | All user-facing strings use `__()` — both `lang/en/` and `lang/id/`     |
 
-| You need | Go to |
-|----------|-------|
-| Module business rules | `docs/modules/{module}.md` |
-| Module API reference | `docs/modules/{module}-reference.md` |
-| Implementation pattern | `docs/architecture/{pattern}-pattern.md` |
-| DB schema | migrations + `docs/infrastructure/database.md` |
-| ERD | `docs/foundation/erd.md` |
-| RBAC | `docs/foundation/rbac.md` + `config/permission.php` |
-| Deployment | `docs/infrastructure/deployment.md` |
-| Testing conventions | `docs/architecture/testing-pattern.md` |
-| Coding standards | `docs/conventions.md` |
-| ADRs | `docs/adr/adr-index.md` |
-| All features | `docs/key-features.md` |
+## Pre-commit Checklist
 
-```bash
-# Find files
-find app/{Module} -path '*/Actions/*.php'
-find tests -path '*{Module}*{TestName}*'
-grep -rn 'Route::' routes/web/{module}.php
-grep -rn 'use.*{Class}' app/
-```
+- `declare(strict_types=1)` present
+- No debug calls in code
+- Action uses correct triad base class
+- DTO for 3+ params; ActionResponse for structured returns
+- Business rules in Entity, not inline
+- Cache keys registered
+- No N+1 queries
+- Tests pass; Pint clean; PHPStan passes
+- Docs updated for new/changed behavior
 
----
+## Documentation Map
 
-## 9. Communication Rules
+Start here for any topic:
 
-- **English only** in code, comments, commits, docs, Issues
-- User writes Indonesian → you reply English
-- Exception: `lang/id/` translation files
-- Every `__('key')` must exist in BOTH `lang/en/` and `lang/id/`
-- Key convention: `{module}.{sub_noun}.{descriptive_key}`
+| Topic                               | Doc                                                              |
+| ----------------------------------- | ---------------------------------------------------------------- |
+| Architecture                        | `docs/architecture.md`                                           |
+| 4-layer, Action Triad, Base Classes | `docs/architecture.md` (§Action Triad, §Base Class Mandate)      |
+| Coding conventions                  | `docs/conventions.md`                                            |
+| Module overviews                    | `docs/modules/index.md`                                          |
+| Pattern deep-dives                  | `docs/architecture/{pattern}-pattern.md`                         |
+| RBAC & Policies                     | `docs/foundation/rbac.md`, `docs/architecture/policy-pattern.md` |
+| Exception hierarchy                 | `docs/architecture/exception-pattern.md`                         |
+| Caching                             | `docs/architecture/cache-pattern.md`                             |
+| Logging                             | `docs/architecture/logging-pattern.md`                           |
+| Testing                             | `docs/architecture/testing-pattern.md`                           |
+| Deployment                          | `docs/infrastructure/deployment.md`                              |
+| Database schema                     | `docs/infrastructure/database.md`                                |
+| Full doc catalog                    | `docs/index.md`                                                  |
+| ADRs                                | `docs/adr/index.md`                                              |
+| Known issues                        | GitHub Issues                                                    |
