@@ -1,14 +1,13 @@
 # Chapter 13: Supervisor & Partnership Management
 
-> **Last updated:** 2026-06-16
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-16 **Changes:** sync — initial metadata sync with new format
 
 ## Description
+
 This chapter covers managing **supervisor accounts** (field mentors) who guide students at partner
 companies, and the **company and partnership records** that define external placement relationships.
 
 ---
-
 
 ## 13.1 Supervisor Management
 
@@ -21,25 +20,26 @@ supervisors are assigned to a company and oversee placement slots.
 2. Click **New Supervisor**
 3. Fill in the required fields:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Name** | Full name | Budi Santoso |
-| **Email** | Login email (must be unique) | budi@techcompany.co.id |
-| **Phone** | Contact number | 0812-3456-7890 |
-| **Company** | The company they represent | PT Teknologi Maju |
+| Field       | Description                  | Example                |
+| ----------- | ---------------------------- | ---------------------- |
+| **Name**    | Full name                    | Budi Santoso           |
+| **Email**   | Login email (must be unique) | budi@techcompany.co.id |
+| **Phone**   | Contact number               | 0812-3456-7890         |
+| **Company** | The company they represent   | PT Teknologi Maju      |
 
 4. Click **Save**
 
 ### 13.1.2 Account Slip & Activation
 
-After saving, Internara generates an **account slip** containing the supervisor's initial credentials:
+After saving, Internara generates an **account slip** containing the supervisor's initial
+credentials:
 
-| Item | Description |
-|------|-------------|
-| **Email** | The email address used during creation |
-| **Initial Password** | A one-time use password for first login |
-| **Account Status** | Set to PROVISIONED — requires activation |
-| **Activation Code** | A 16–19 character code for the activation step |
+| Item                 | Description                                    |
+| -------------------- | ---------------------------------------------- |
+| **Email**            | The email address used during creation         |
+| **Initial Password** | A one-time use password for first login        |
+| **Account Status**   | Set to PROVISIONED — requires activation       |
+| **Activation Code**  | A 16–19 character code for the activation step |
 
 #### Downloading the Account Slip
 
@@ -57,13 +57,14 @@ Supervisors receive their account in a **PROVISIONED** state. Before they can lo
 
 1. **Option A — Via activation link:** Check email for an activation link sent to the address on
    file. Click the link and follow the prompts.
-2. **Option B — Via activation page:** Visit `/activate` on your Internara installation, enter
-   their email and the activation code from the slip.
+2. **Option B — Via activation page:** Visit `/activate` on your Internara installation, enter their
+   email and the activation code from the slip.
 3. **Set a password:** Choose a personal password (minimum 8 characters).
 4. **Login:** After activation, log in at `/login` with the registered email and new password.
 
-> The activation process is the same for all user roles. See [Chapter 7: Login &
-> Dashboard](07-login-and-dashboard.md#74-account-activation-first-time-users) for more details.
+> The activation process is the same for all user roles. See
+> [Chapter 7: Login & Dashboard](07-login-and-dashboard.md#74-account-activation-first-time-users)
+> for more details.
 
 Once activated, the supervisor's status changes from PROVISIONED to ACTIVE, and they can access
 their dashboard.
@@ -96,15 +97,15 @@ Navigate to **Admin → Companies** or go directly to `/admin/companies`.
 1. Click **Add Company**
 2. Fill in the fields:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Name** | Legal company name | PT Teknologi Maju |
-| **Industry Sector** | Industry classification | Technology |
-| **Address** | Full street address | Jl. Sudirman No. 10, Jakarta |
-| **Phone** | Company phone number | 021-1234567 |
-| **Email** | Company contact email | info@teknologimaju.co.id |
-| **Website** | Company website URL | https://teknologimaju.co.id |
-| **Description** | Optional notes | Software development and IT consulting |
+| Field               | Description             | Example                                |
+| ------------------- | ----------------------- | -------------------------------------- |
+| **Name**            | Legal company name      | PT Teknologi Maju                      |
+| **Industry Sector** | Industry classification | Technology                             |
+| **Address**         | Full street address     | Jl. Sudirman No. 10, Jakarta           |
+| **Phone**           | Company phone number    | 021-1234567                            |
+| **Email**           | Company contact email   | info@teknologimaju.co.id               |
+| **Website**         | Company website URL     | https://teknologimaju.co.id            |
+| **Description**     | Optional notes          | Software development and IT consulting |
 
 3. Click **Save**
 
@@ -124,21 +125,22 @@ still has existing relationships, you must resolve them first:
 - Reassign or close active placements
 
 **Bulk operations:** Select multiple companies for batch deletion. Companies that are still
-referenced by placements or partnerships are automatically skipped — the system shows a summary
-of how many were deleted and how many were blocked.
+referenced by placements or partnerships are automatically skipped — the system shows a summary of
+how many were deleted and how many were blocked.
 
 ### 13.2.4 Import & Export
 
 The Company Manager supports CSV operations:
 
-| Action | Description |
-|--------|-------------|
-| **Import** | Upload a CSV file to create multiple companies at once. Existing companies (matched by name) are skipped. |
-| **Export** | Download all visible companies as a CSV file |
-| **Export Selected** | Download only the selected companies as a CSV file |
-| **Download Template** | Get a blank CSV template with the correct column format |
+| Action                | Description                                                                                               |
+| --------------------- | --------------------------------------------------------------------------------------------------------- |
+| **Import**            | Upload a CSV file to create multiple companies at once. Existing companies (matched by name) are skipped. |
+| **Export**            | Download all visible companies as a CSV file                                                              |
+| **Export Selected**   | Download only the selected companies as a CSV file                                                        |
+| **Download Template** | Get a blank CSV template with the correct column format                                                   |
 
-**CSV column order:** `Name`, `Address`, `Phone`, `Email`, `Website`, `Description`, `Industry Sector`
+**CSV column order:** `Name`, `Address`, `Phone`, `Email`, `Website`, `Description`,
+`Industry Sector`
 
 ---
 
@@ -155,22 +157,22 @@ Navigate to **Admin → Partnerships** or go directly to `/admin/companies/partn
 1. Click **Add Partnership**
 2. Fill in the fields:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Company** | Select the partner company | PT Teknologi Maju |
-| **Agreement Number** | Unique reference number | MOU-001/2026 |
-| **Title** | Agreement title | Software Engineering Internship Program |
-| **Start Date** | Agreement effective date | 14 July 2025 |
-| **End Date** | Agreement expiration date | 26 June 2026 |
-| **Scope** | Description of cooperation scope | Web development projects, QA testing |
-| **Contact Person** | Company liaison name | Budi Santoso |
-| **Contact Phone** | Liaison phone number | 0812-3456-7890 |
-| **Contact Email** | Liaison email | budi@teknologimaju.co.id |
-| **Signed By (School)** | School representative name | Drs. Ahmad Fauzi |
-| **Signed By (Company)** | Company representative name | Rina Wijaya, HRD Manager |
-| **Signed At** | Signing date | 10 July 2025 |
-| **Notes** | Internal notes | Extended from previous agreement |
-| **MoU Document** | Upload the signed agreement (PDF, JPG, PNG) | mou-001-2026.pdf |
+| Field                   | Description                                 | Example                                 |
+| ----------------------- | ------------------------------------------- | --------------------------------------- |
+| **Company**             | Select the partner company                  | PT Teknologi Maju                       |
+| **Agreement Number**    | Unique reference number                     | MOU-001/2026                            |
+| **Title**               | Agreement title                             | Software Engineering Internship Program |
+| **Start Date**          | Agreement effective date                    | 14 July 2025                            |
+| **End Date**            | Agreement expiration date                   | 26 June 2026                            |
+| **Scope**               | Description of cooperation scope            | Web development projects, QA testing    |
+| **Contact Person**      | Company liaison name                        | Budi Santoso                            |
+| **Contact Phone**       | Liaison phone number                        | 0812-3456-7890                          |
+| **Contact Email**       | Liaison email                               | budi@teknologimaju.co.id                |
+| **Signed By (School)**  | School representative name                  | Drs. Ahmad Fauzi                        |
+| **Signed By (Company)** | Company representative name                 | Rina Wijaya, HRD Manager                |
+| **Signed At**           | Signing date                                | 10 July 2025                            |
+| **Notes**               | Internal notes                              | Extended from previous agreement        |
+| **MoU Document**        | Upload the signed agreement (PDF, JPG, PNG) | mou-001-2026.pdf                        |
 
 3. Click **Save**
 
@@ -194,11 +196,11 @@ stateDiagram-v2
     TERMINATED --> [*]
 ```
 
-| Status | Meaning | Placements Allowed? |
-|--------|---------|---------------------|
-| **ACTIVE** | Agreement is current and valid | Yes |
-| **EXPIRED** | End date has passed | No (existing placements remain) |
-| **TERMINATED** | Ended early by admin | No (existing placements remain) |
+| Status         | Meaning                        | Placements Allowed?             |
+| -------------- | ------------------------------ | ------------------------------- |
+| **ACTIVE**     | Agreement is current and valid | Yes                             |
+| **EXPIRED**    | End date has passed            | No (existing placements remain) |
+| **TERMINATED** | Ended early by admin           | No (existing placements remain) |
 
 **Transition rules:**
 
@@ -250,6 +252,7 @@ To reassign a supervisor to a different company, edit their profile and change t
 ### Cannot delete a company
 
 The system blocks deletion if the company has:
+
 - Active placements (students currently assigned)
 - Active or expired partnerships
 
@@ -258,6 +261,7 @@ Resolve the blocking relationships first, then delete the company.
 ### Cannot delete a partnership
 
 Active partnerships cannot be deleted. Either:
+
 - Wait for the end date to pass (automatic expiry)
 - Terminate the partnership first
 
@@ -269,6 +273,7 @@ placement slots under their company's active partnership agreements.
 ### CSV import reports invalid rows
 
 Check that:
+
 - The file is in CSV format with UTF-8 encoding
 - Column headers match the template order exactly
 - Required fields (Name) are not empty
@@ -276,5 +281,5 @@ Check that:
 
 ---
 
-**← Previous: [Chapter 12: User Management](12-user-management.md)**
-**Next: [Chapter 14: Internship Management & Handbook](14-internship-management-and-handbook.md)**
+**← Previous: [Chapter 12: User Management](12-user-management.md)** **Next:
+[Chapter 14: Internship Management & Handbook](14-internship-management-and-handbook.md)**

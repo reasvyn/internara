@@ -1,10 +1,11 @@
 # Entity Pattern — Entity-Model Separation & Purity Rules
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — fix broken link to architecture.md
+> **Last updated:** 2026-06-13 **Changes:** sync — fix broken link to architecture.md
+
 ## Description
 
-Rules for Entity-Model separation: Entity purity, bridge pattern, business rule extraction, and testing without database.
+Rules for Entity-Model separation: Entity purity, bridge pattern, business rule extraction, and
+testing without database.
 
 ## Table of Contents
 
@@ -35,14 +36,14 @@ effects:
 
 The Entity-Model Separation pattern addresses this by splitting concerns into two class types:
 
-| Concern | Class | Responsibilities |
-|---------|-------|-----------------|
-| Data access | Model | Relationships, scopes, casts, attributes, factory config, entity bridge |
-| Business rules | Entity | Capability checks, state queries, date logic, policy decisions |
+| Concern        | Class  | Responsibilities                                                        |
+| -------------- | ------ | ----------------------------------------------------------------------- |
+| Data access    | Model  | Relationships, scopes, casts, attributes, factory config, entity bridge |
+| Business rules | Entity | Capability checks, state queries, date logic, policy decisions          |
 
 Entities are `final readonly` snapshots of state extracted from a Model at a point in time. They
-answer business questions — *can this user log in?*, *is this registration window open?*, *can this
-record be deleted?* — without touching the database.
+answer business questions — _can this user log in?_, _is this registration window open?_, _can this
+record be deleted?_ — without touching the database.
 
 This separation follows the Single Responsibility Principle: a Model changes because the data model
 changes; an Entity changes because the business requirement changes. These are different forces that
@@ -50,14 +51,14 @@ should not drive changes in the same class.
 
 ### Relationship to DTOs
 
-| Aspect | Entity (BaseEntity) | DTO (BaseData) |
-|--------|---------------------|----------------|
-| Purpose | Business rules, state queries | Data transfer, input/output contracts |
-| Mutation | Never | Never |
-| Framework deps | Pragmatic — allowed | Pragmatic — allowed |
-| `fromModel()` | Yes — persistence bridge | Optional |
-| Property visibility | `private` (expose via methods) | `public` |
-| Used by | Actions, Policies, Livewire | Actions (input), Livewire (form mapping) |
+| Aspect              | Entity (BaseEntity)            | DTO (BaseData)                           |
+| ------------------- | ------------------------------ | ---------------------------------------- |
+| Purpose             | Business rules, state queries  | Data transfer, input/output contracts    |
+| Mutation            | Never                          | Never                                    |
+| Framework deps      | Pragmatic — allowed            | Pragmatic — allowed                      |
+| `fromModel()`       | Yes — persistence bridge       | Optional                                 |
+| Property visibility | `private` (expose via methods) | `public`                                 |
+| Used by             | Actions, Policies, Livewire    | Actions (input), Livewire (form mapping) |
 
 ---
 
@@ -89,8 +90,8 @@ abstract readonly class BaseEntity implements JsonSerializable
 }
 ```
 
-The contract mandates only `fromModel()`. The remaining methods are inherited and provide
-consistent serialization, comparison, and mutation semantics across all entities.
+The contract mandates only `fromModel()`. The remaining methods are inherited and provide consistent
+serialization, comparison, and mutation semantics across all entities.
 
 ---
 
@@ -109,14 +110,14 @@ Models are strictly **data access objects**. They define:
 
 Business rules of any kind are forbidden on Models:
 
-| ❌ Don't | ✅ Do instead |
-|----------|--------------|
-| `canLogin()` | `$user->asRole()->allowsLogin()` |
-| `isActive()` | `$entity->asState()->isActive()` |
-| `canBeDeleted()` | `$entity->asState()->canBeDeleted()` |
+| ❌ Don't              | ✅ Do instead                                |
+| --------------------- | -------------------------------------------- |
+| `canLogin()`          | `$user->asRole()->allowsLogin()`             |
+| `isActive()`          | `$entity->asState()->isActive()`             |
+| `canBeDeleted()`      | `$entity->asState()->canBeDeleted()`         |
 | `hasAvailableSlots()` | `$entity->asCapacity()->hasAvailableSlots()` |
-| `isExpired()` | `$entity->asPeriod()->isAfterWindow()` |
-| `canTransitionTo()` | Delegate to the status enum directly |
+| `isExpired()`         | `$entity->asPeriod()->isAfterWindow()`       |
+| `canTransitionTo()`   | Delegate to the status enum directly         |
 
 ### Permitted Convenience Methods
 
@@ -135,7 +136,7 @@ public function initials(): string
 }
 ```
 
-The litmus test: *"Would this method still make sense if I swapped the database for an API?"* If yes
+The litmus test: _"Would this method still make sense if I swapped the database for an API?"_ If yes
 (relationships, scopes, casts), keep it on the Model. If no (business decisions), move it to the
 Entity.
 
@@ -155,9 +156,7 @@ final readonly class SomeEntity extends BaseEntity
 {
     public static function fromModel(Model $model): static
     {
-        $related = $model->relationLoaded('related')
-            ? $model->related
-            : null;
+        $related = $model->relationLoaded('related') ? $model->related : null;
 
         return new self(
             status: $model->status,
@@ -278,15 +277,15 @@ The single allowed framework import is `Illuminate\Database\Eloquent\Model` — 
 
 Entity methods return **business answers**, not raw data:
 
-| Return Type | Examples |
-|-------------|----------|
-| `bool` | `canLogin()`, `isTerminal()`, `requiresAction()`, `canTransitionTo()`, `canBeDeleted()` |
-| `int` | `daysRemaining()`, `totalDuration()`, `availableSlots()` |
-| `string` | `scoreBand()` — computed business categorization |
-| Enum | `status()` — entity-owned typed state |
+| Return Type | Examples                                                                                |
+| ----------- | --------------------------------------------------------------------------------------- |
+| `bool`      | `canLogin()`, `isTerminal()`, `requiresAction()`, `canTransitionTo()`, `canBeDeleted()` |
+| `int`       | `daysRemaining()`, `totalDuration()`, `availableSlots()`                                |
+| `string`    | `scoreBand()` — computed business categorization                                        |
+| Enum        | `status()` — entity-owned typed state                                                   |
 
-Methods like `toArray()` and `jsonSerialize()` are exempt — they are serialization concerns
-provided by the base class.
+Methods like `toArray()` and `jsonSerialize()` are exempt — they are serialization concerns provided
+by the base class.
 
 ---
 
@@ -294,17 +293,17 @@ provided by the base class.
 
 The project explicitly chooses **pragmatism over purity**. Framework dependencies are allowed in
 entities when they serve business logic without introducing testability costs. `Carbon\Carbon` is
-permitted for date math, `Illuminate\Database\Eloquent\Model` for `fromModel()` parameter hints,
-and enum types for status machine logic. All other framework access (Eloquent queries, facades,
-service container, HTTP, file system) remains off-limits.
+permitted for date math, `Illuminate\Database\Eloquent\Model` for `fromModel()` parameter hints, and
+enum types for status machine logic. All other framework access (Eloquent queries, facades, service
+container, HTTP, file system) remains off-limits.
 
 ---
 
 ## 7. Immutability & with()
 
 Entities are **immutable** — once constructed, their state never changes. This eliminates entire
-classes of bugs (accidental mutation) and makes business rules predictable: given the same state,
-an entity method always returns the same answer.
+classes of bugs (accidental mutation) and makes business rules predictable: given the same state, an
+entity method always returns the same answer.
 
 ### The `with()` Method
 
@@ -333,7 +332,7 @@ $current = new SomeEntity(
 $updated = $current->with('hasRelated', true);
 
 $current->hasRelated; // false — unchanged
-$updated->hasRelated;  // true — new instance
+$updated->hasRelated; // true — new instance
 ```
 
 ### When to Use `with()`
@@ -364,20 +363,12 @@ Two entities are equal if:
 This enables comparison without worrying about object identity:
 
 ```php
-$a = new SomeEntity(
-    status: Status::ACTIVE,
-    isLocked: false,
-    setupRequired: false,
-);
+$a = new SomeEntity(status: Status::ACTIVE, isLocked: false, setupRequired: false);
 
-$b = new SomeEntity(
-    status: Status::ACTIVE,
-    isLocked: false,
-    setupRequired: false,
-);
+$b = new SomeEntity(status: Status::ACTIVE, isLocked: false, setupRequired: false);
 
 $a->equals($b); // true — same values
-$a === $b;      // false — different instances
+$a === $b; // false — different instances
 ```
 
 ---

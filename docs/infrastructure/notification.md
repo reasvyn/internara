@@ -1,14 +1,17 @@
 # Notification — Multi-Channel Notification System
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+
 ## Description
 
-Multi-channel notification system covering mail, database, and broadcast channels with ShouldQueue conventions.
+Multi-channel notification system covering mail, database, and broadcast channels with ShouldQueue
+conventions.
 
 ## Channel Architecture
 
-Internara delivers notifications through multiple channels, each serving a different purpose. A single notification can be sent through several channels simultaneously — for example, a welcome message is delivered as email (external reach) and in-app notification (persistent record).
+Internara delivers notifications through multiple channels, each serving a different purpose. A
+single notification can be sent through several channels simultaneously — for example, a welcome
+message is delivered as email (external reach) and in-app notification (persistent record).
 
 ```
 Notification sent
@@ -20,17 +23,18 @@ Notification sent
 
 ### Channel Selection by Tier
 
-| Channel           | Tier 1 (Shared) | Tier 2 (VPS)          | Tier 3 (HA)           |
-| ----------------- | --------------- | --------------------- | --------------------- |
-| In-app (database) | ✅              | ✅                    | ✅                    |
-| Mail              | ✅ (sync)       | ✅ (async via queue)  | ✅ (async via queue)  |
-| Flash messages    | ✅              | ✅                    | ✅                    |
+| Channel           | Tier 1 (Shared) | Tier 2 (VPS)         | Tier 3 (HA)          |
+| ----------------- | --------------- | -------------------- | -------------------- |
+| In-app (database) | ✅              | ✅                   | ✅                   |
+| Mail              | ✅ (sync)       | ✅ (async via queue) | ✅ (async via queue) |
+| Flash messages    | ✅              | ✅                   | ✅                   |
 
 ---
 
 ## CustomDatabaseChannel (Primary In-App)
 
-The in-app channel stores notifications in a custom `notifications` table. This is the **canonical record** of all notifications a user has received. It is always used for every notification.
+The in-app channel stores notifications in a custom `notifications` table. This is the **canonical
+record** of all notifications a user has received. It is always used for every notification.
 
 ### Table Schema
 
@@ -50,7 +54,8 @@ notifications
 
 ### Notification Class Contract
 
-Each notification class must implement `toCustomDatabase($notifiable)` returning the structured data array:
+Each notification class must implement `toCustomDatabase($notifiable)` returning the structured data
+array:
 
 ```php
 public function toCustomDatabase($notifiable): array
@@ -82,7 +87,8 @@ $notification->markAsRead();
 
 ## Mail Channel
 
-Used for communications that must reach the user outside the application. Mail is always queued (Tier 2+) or sent synchronously (Tier 1).
+Used for communications that must reach the user outside the application. Mail is always queued
+(Tier 2+) or sent synchronously (Tier 1).
 
 | Notification Type      | When                          | Priority |
 | ---------------------- | ----------------------------- | -------- |
@@ -103,7 +109,7 @@ Used for communications that must reach the user outside the application. Mail i
 | `ses`      | ❌              | ✅           | ✅          | AWS account, SES verified domain     |
 | `mailgun`  | ❌              | ✅           | ✅          | Mailgun account, domain verification |
 | `postmark` | ❌              | ✅           | ✅          | Postmark account, server token       |
-| `sendmail` | ⚠️ Unreliable  | ❌           | ❌          | `sendmail` binary on server          |
+| `sendmail` | ⚠️ Unreliable   | ❌           | ❌          | `sendmail` binary on server          |
 
 ### SMTP Configuration (Tier 1–2)
 
@@ -137,7 +143,8 @@ AWS_SECRET_ACCESS_KEY=your-secret
 AWS_DEFAULT_REGION=ap-southeast-1
 ```
 
-SES requires domain verification and may start in sandbox mode (verified emails only). Request production access for sending to unverified recipients.
+SES requires domain verification and may start in sandbox mode (verified emails only). Request
+production access for sending to unverified recipients.
 
 ### Development Configuration
 
@@ -177,7 +184,8 @@ class WelcomeNotification extends Notification implements ShouldQueue
 }
 ```
 
-In Tier 2+, the `default` queue worker processes mail delivery. In Tier 1 (Shared Hosting — up to 500 registered users, `QUEUE_CONNECTION=sync`), mail is sent synchronously during the HTTP request.
+In Tier 2+, the `default` queue worker processes mail delivery. In Tier 1 (Shared Hosting — up to
+500 registered users, `QUEUE_CONNECTION=sync`), mail is sent synchronously during the HTTP request.
 
 ### Rate Limiting
 
@@ -206,7 +214,8 @@ Most providers impose sending limits:
 
 ## Flash Messages
 
-Flash messages provide **instant action feedback** — "Profile updated successfully" or "Settings saved." They are displayed as toast notifications and disappear after a few seconds.
+Flash messages provide **instant action feedback** — "Profile updated successfully" or "Settings
+saved." They are displayed as toast notifications and disappear after a few seconds.
 
 ```php
 flash()->success(__('profile.updated'));
@@ -225,7 +234,8 @@ flash()->warning(__('disk_space_low'));
 
 ## Sending Notifications from Actions
 
-Notifications are sent from Command Actions or listener classes, never directly from Livewire components.
+Notifications are sent from Command Actions or listener classes, never directly from Livewire
+components.
 
 ```php
 class NotifyAdminsInternshipCreated implements ShouldQueue

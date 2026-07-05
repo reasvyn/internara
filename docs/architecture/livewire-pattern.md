@@ -1,10 +1,12 @@
 # Livewire Component Patterns — Thin Components, Injection & Forms
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — update confirmation dialog pattern to reference shared <x-core::ui.confirm> component
+> **Last updated:** 2026-06-13 **Changes:** sync — update confirmation dialog pattern to reference
+> shared <x-core::ui.confirm> component
+
 ## Description
 
-Thin component rule, auto-discovery, CRUD tables via BaseRecordManager, Action injection, Form Objects, and common pitfalls.
+Thin component rule, auto-discovery, CRUD tables via BaseRecordManager, Action injection, Form
+Objects, and common pitfalls.
 
 ## 1. Thin Component Rule
 
@@ -14,9 +16,11 @@ side effects belong in lower layers.
 ### Allowed in Components
 
 - **UI state:** public properties for form bindings, modal visibility, search input, selection state
-- **UX validation:** `$this->validate()` for inline feedback (the Action re-validates authoritatively)
+- **UX validation:** `$this->validate()` for inline feedback (the Action re-validates
+  authoritatively)
 - **Delegation:** calling Actions via method injection
-- **Read-only queries:** searchable, paginated, filtered queries in `render()` — these are presentation logic
+- **Read-only queries:** searchable, paginated, filtered queries in `render()` — these are
+  presentation logic
 - **Authorization:** role or Gate checks in `boot()`
 - **Flash messages:** `flash()->success()` / `flash()->error()` via PHPFlasher
 
@@ -24,7 +28,8 @@ side effects belong in lower layers.
 
 - Inline DB mutations (`Model::create()`, `DB::transaction()`, `Model::update()`)
 - Inline business rules for WRITE decisions (`if ($model->status === 'x')` before calling Action)
-- **Raw array (3+ keys) passed to Actions** — build a DTO (`BaseData::from()`) from validated form data
+- **Raw array (3+ keys) passed to Actions** — build a DTO (`BaseData::from()`) from validated form
+  data
 - Side effects (`Log::info()`, `event(new ...)`, `Notification::send()`)
 - Static helper methods (`public static function formatSomething()`)
 - Bare `wire:confirm` for destructive actions (use the two-step pattern)
@@ -64,9 +69,12 @@ resources/views/{module}/{component-name}.blade.php
 
 ### View Name Resolution Rules
 
-1. Submodule components: `view('{module}.{submodule}.{component-name}')` — maps to `resources/views/{module}/{submodule}/{component-name}.blade.php`.
-2. Module-root components: `view('{module}.{component-name}')` — maps to `resources/views/{module}/{component-name}.blade.php`.
-3. Avoid redundant nesting: when the component name matches the submodule name, flatten to `{module}.{submodule}`.
+1. Submodule components: `view('{module}.{submodule}.{component-name}')` — maps to
+   `resources/views/{module}/{submodule}/{component-name}.blade.php`.
+2. Module-root components: `view('{module}.{component-name}')` — maps to
+   `resources/views/{module}/{component-name}.blade.php`.
+3. Avoid redundant nesting: when the component name matches the submodule name, flatten to
+   `{module}.{submodule}`.
 4. The `view()` call must match the actual file location. Any mismatch is a bug.
 
 ### Shared Cross-Module Components
@@ -92,11 +100,11 @@ checks they subclass `Livewire\Component`, and registers them with a kebab-case 
 
 ### Alias Patterns
 
-| Scope | Pattern | Example |
-|-------|---------|---------|
-| Submodule | `{kebab-module}.{kebab-submodule}.{kebab-name}` | `{module}.{submodule}.{name}` |
-| Cross-submodule | `{kebab-module}.{kebab-name}` | `{module}.{name}` |
-| Shared | `{kebab-component-name}` | `{component-name}` |
+| Scope           | Pattern                                         | Example                       |
+| --------------- | ----------------------------------------------- | ----------------------------- |
+| Submodule       | `{kebab-module}.{kebab-submodule}.{kebab-name}` | `{module}.{submodule}.{name}` |
+| Cross-submodule | `{kebab-module}.{kebab-name}`                   | `{module}.{name}`             |
+| Shared          | `{kebab-component-name}`                        | `{component-name}`            |
 
 ### How the Alias Is Computed
 
@@ -134,15 +142,15 @@ abstract protected function query(): Builder;
 
 ### Built-in State & Methods
 
-| Property / Method | Purpose |
-|---|---|
-| `$search` | Resets page on update via `updatedSearch()` |
-| `$filters` | Arbitrary filter state; resets via `resetFilters()` |
-| `$perPage` | Page size; options controlled by `perPageOptions()` (default: 10, 25, 50, 100) |
-| `$selectedIds` | Selection state from `WithRecordSelection` |
-| `rows()` | Returns `LengthAwarePaginator` with search/filter/sort/pagination applied |
-| `performBulkAction(string, callable)` | Iterates selected IDs with optional transaction |
-| `performMassAction(string, callable)` | Applies callback to entire filtered query |
+| Property / Method                     | Purpose                                                                        |
+| ------------------------------------- | ------------------------------------------------------------------------------ |
+| `$search`                             | Resets page on update via `updatedSearch()`                                    |
+| `$filters`                            | Arbitrary filter state; resets via `resetFilters()`                            |
+| `$perPage`                            | Page size; options controlled by `perPageOptions()` (default: 10, 25, 50, 100) |
+| `$selectedIds`                        | Selection state from `WithRecordSelection`                                     |
+| `rows()`                              | Returns `LengthAwarePaginator` with search/filter/sort/pagination applied      |
+| `performBulkAction(string, callable)` | Iterates selected IDs with optional transaction                                |
+| `performMassAction(string, callable)` | Applies callback to entire filtered query                                      |
 
 ### Override Points
 
@@ -157,8 +165,8 @@ protected function applySorting(Builder): Builder // Custom sort logic (rare)
 
 ## 5. Action Injection via Method Parameters
 
-Actions are injected as method parameters — never resolved manually with `app()` or `new` inside
-the component body. Laravel's container resolves the Action from the method signature.
+Actions are injected as method parameters — never resolved manually with `app()` or `new` inside the
+component body. Laravel's container resolves the Action from the method signature.
 
 ### Create / Update Pattern
 
@@ -282,17 +290,17 @@ destructive actions — it does not provide user feedback on failure.
 
 ### Shared Component
 
-A reusable confirmation modal is available at `resources/views/core/ui/confirm.blade.php`, namespaced
-as `<x-core::ui.confirm />`. It accepts these props:
+A reusable confirmation modal is available at `resources/views/core/ui/confirm.blade.php`,
+namespaced as `<x-core::ui.confirm />`. It accepts these props:
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `string` | `__('common.actions.confirm_action')` | Modal heading |
-| `message` | `string` | `''` | Body text explaining what will happen |
-| `icon` | `string` | `o-exclamation-triangle` | maryUI icon name |
-| `confirmText` | `string` | `__('common.actions.confirm')` | Confirm button label |
-| `cancelText` | `string` | `__('common.actions.cancel')` | Cancel button label |
-| `confirmClass` | `string` | `btn-error` | Tailwind class for the confirm button |
+| Prop           | Type     | Default                               | Description                           |
+| -------------- | -------- | ------------------------------------- | ------------------------------------- |
+| `title`        | `string` | `__('common.actions.confirm_action')` | Modal heading                         |
+| `message`      | `string` | `''`                                  | Body text explaining what will happen |
+| `icon`         | `string` | `o-exclamation-triangle`              | maryUI icon name                      |
+| `confirmText`  | `string` | `__('common.actions.confirm')`        | Confirm button label                  |
+| `cancelText`   | `string` | `__('common.actions.cancel')`         | Cancel button label                   |
+| `confirmClass` | `string` | `btn-error`                           | Tailwind class for the confirm button |
 
 The component binds to `$showConfirm` via `wire:model` and calls `confirmAction` on confirmation.
 
@@ -329,7 +337,11 @@ public function confirmDelete(Delete{Entity}Action $deleteAction): void
 ### Blade
 
 ```blade
-<x-mary-button label="{{ __('common.delete') }}" wire:click="askDelete('{{ $row->id }}')" class="btn-error btn-sm" />
+<x-mary-button
+    label="{{ __('common.delete') }}"
+    wire:click="askDelete('{{ $row->id }}')"
+    class="btn-error btn-sm"
+/>
 
 <x-core::ui.confirm
     :title="__('{module}.confirm_delete_title')"
@@ -409,9 +421,9 @@ Provides `$selectedIds` array and methods `clearSelection()`, `selectAll(array $
 
 ### WithSorting
 
-Provides `$sortBy` state (`['column' => 'id', 'direction' => 'asc']`), `$sortableColumns`
-whitelist, and `applySorting(Builder)` logic. Used automatically by `BaseRecordManager`.
-Override `$sortableColumns` in the subclass or configure per-column in the header array with
+Provides `$sortBy` state (`['column' => 'id', 'direction' => 'asc']`), `$sortableColumns` whitelist,
+and `applySorting(Builder)` logic. Used automatically by `BaseRecordManager`. Override
+`$sortableColumns` in the subclass or configure per-column in the header array with
 `'sortable' => true`.
 
 ---
@@ -435,10 +447,10 @@ tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
 
 ---
 
-## 11. Guide Component Pattern (*-guide.blade.php)
+## 11. Guide Component Pattern (\*-guide.blade.php)
 
-Every page with a non-trivial workflow MUST include a `*-guide.blade.php` component that serves
-as contextual help for the user. The pattern follows the setup wizard's guide component at
+Every page with a non-trivial workflow MUST include a `*-guide.blade.php` component that serves as
+contextual help for the user. The pattern follows the setup wizard's guide component at
 `resources/views/setup/components/setup-guide.blade.php`.
 
 ### Requirements
@@ -447,9 +459,9 @@ as contextual help for the user. The pattern follows the setup wizard's guide co
 2. **Trigger:** A fixed floating button (bottom-right, `z-50`) with a question mark icon
 3. **Modal:** Uses `<x-mary-modal>` with step-by-step instructions for the current page
 4. **Content:** Each guide must include:
-   - An introductory sentence explaining the page's purpose
-   - Numbered steps (1 through N) with a title and description per step
-   - A tip section (warning icon) for best practices or common pitfalls
+    - An introductory sentence explaining the page's purpose
+    - Numbered steps (1 through N) with a title and description per step
+    - A tip section (warning icon) for best practices or common pitfalls
 5. **Localization:** All strings use `__('{module}.guide.*')` translation keys
 
 ### Integration in the Parent Component
@@ -459,7 +471,7 @@ as contextual help for the user. The pattern follows the setup wizard's guide co
 public bool $showGuide = false;
 
 {{-- In the Blade view --}}
-@include('{module}.components.{page-name}-guide')
+@include ('{module}.components.{page-name}-guide')
 ```
 
 ### Translation Keys
@@ -488,7 +500,8 @@ See `resources/views/setup/components/setup-guide.blade.php` for the canonical i
 - **Inline DB calls** — extract to an Action and inject it
 - **Bare `wire:confirm`** — use two-step `askAction()` / `confirmAction()` pattern instead
 - **maryUI Toast** — use `flash()->success()` / `flash()->error()` instead
-- **Forgetting `wire:key` in loops** — always add `wire:key` on the outermost element inside `@foreach`
+- **Forgetting `wire:key` in loops** — always add `wire:key` on the outermost element inside
+  `@foreach`
 - **Forgetting `updatedSearch` page reset** — `BaseRecordManager` already handles this
 - **Over-relying on `#[Computed]`** — use for expensive/derived values only, not trivial getters
 - **Business rules in components** — extract to Entity methods

@@ -1,22 +1,26 @@
 # Routes — Route Structure, Middleware & Naming
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — fix route file count (18→17)
+> **Last updated:** 2026-06-13 **Changes:** sync — fix route file count (18→17)
+
 ## Description
 
-Route structure, middleware stack, named route conventions, module split across 17 route files, and URL design.
+Route structure, middleware stack, named route conventions, module split across 17 route files, and
+URL design.
 
 ## Philosophy
 
-Routes are owned by modules, not by a single file. Each module registers its own routes in its own file under `routes/web/{module}.php`. The master `routes/web.php` simply stitches them together.
+Routes are owned by modules, not by a single file. Each module registers its own routes in its own
+file under `routes/web/{module}.php`. The master `routes/web.php` simply stitches them together.
 
-This approach avoids merge conflicts on a monolithic file and makes it obvious which module owns which route. A registration route lives in `registration.php`, not in a thousand-line file.
+This approach avoids merge conflicts on a monolithic file and makes it obvious which module owns
+which route. A registration route lives in `registration.php`, not in a thousand-line file.
 
 ---
 
 ## Architecture
 
-The master file `routes/web.php` `require`s 17 module route files in dependency order. If two files register the same route name, the later one wins.
+The master file `routes/web.php` `require`s 17 module route files in dependency order. If two files
+register the same route name, the later one wins.
 
 ```mermaid
 flowchart LR
@@ -82,16 +86,18 @@ Route files contain:
 
 Two route types exist:
 
-- **Livewire pages** (`Route::livewire()`) — full-page components that handle both GET and POST. Used for most interactive features.
-- **Controller endpoints** (`Route::get()`) — traditional controller methods. Used for downloads, document rendering, file serving, and the logout action.
+- **Livewire pages** (`Route::livewire()`) — full-page components that handle both GET and POST.
+  Used for most interactive features.
+- **Controller endpoints** (`Route::get()`) — traditional controller methods. Used for downloads,
+  document rendering, file serving, and the logout action.
 
 Additional route files outside `web/`:
 
-| File               | Purpose                                               | Status          |
-| ------------------ | ----------------------------------------------------- | --------------- |
-| `console.php`      | Artisan command registrations                         | Active          |
-| `ai.php`           | AI integration routes                                 | Active          |
-| `channels.php`     | Broadcasting channel definitions                      | Not implemented |
+| File           | Purpose                          | Status          |
+| -------------- | -------------------------------- | --------------- |
+| `console.php`  | Artisan command registrations    | Active          |
+| `ai.php`       | AI integration routes            | Active          |
+| `channels.php` | Broadcasting channel definitions | Not implemented |
 
 ---
 
@@ -112,7 +118,8 @@ flowchart LR
 1. `web` (Laravel core) — session, CSRF, encryption, cookies
 2. `SecurityHeaders` — Content-Security-Policy, X-Frame-Options, Permissions-Policy
 3. `LogContext` — request tracing (request ID, session ID)
-4. `RequireSetupAccessMiddleware` — redirects unauthenticated visitors to `/setup` when the system has not been installed yet. Allows bypass for Livewire subrequests and the `/setup` route itself.
+4. `RequireSetupAccessMiddleware` — redirects unauthenticated visitors to `/setup` when the system
+   has not been installed yet. Allows bypass for Livewire subrequests and the `/setup` route itself.
 5. `SetLocaleMiddleware` — language preference from session/database
 6. Route handler — Livewire or Controller routes
 
@@ -135,13 +142,13 @@ $middleware->web(
 
 These middleware are applied per-route or per-group:
 
-| Alias             | Class                                                                                       | Applied To                                                                 | Purpose                                                                             |
-| ----------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `setup.protected` | `ProtectSetupRouteMiddleware`                                                               | Routes in `routes/web/setup.php`                                           | Token-gates the setup wizard, rate-limits access, self-destructs after installation |
-| `guest`           | Laravel core                                                                                | Login, register, forgot-password                                           | Blocks authenticated users                                                          |
-| `auth`            | Laravel core                                                                                | Most application routes                                                    | Requires authenticated session                                                      |
-| `auth.throttle`   | `AuthThrottleMiddleware`                                                                    | All auth routes (login, register, forgot/reset password, confirm password) | Global rate limit (30 requests/min/IP) across all auth endpoints                    |
-| `role:{roles}`    | `CheckRoleMiddleware`                                                                       | Admin, teacher, supervisor routes                                          | Aborts 403 if user lacks required role                                              |
+| Alias             | Class                         | Applied To                                                                 | Purpose                                                                             |
+| ----------------- | ----------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `setup.protected` | `ProtectSetupRouteMiddleware` | Routes in `routes/web/setup.php`                                           | Token-gates the setup wizard, rate-limits access, self-destructs after installation |
+| `guest`           | Laravel core                  | Login, register, forgot-password                                           | Blocks authenticated users                                                          |
+| `auth`            | Laravel core                  | Most application routes                                                    | Requires authenticated session                                                      |
+| `auth.throttle`   | `AuthThrottleMiddleware`      | All auth routes (login, register, forgot/reset password, confirm password) | Global rate limit (30 requests/min/IP) across all auth endpoints                    |
+| `role:{roles}`    | `CheckRoleMiddleware`         | Admin, teacher, supervisor routes                                          | Aborts 403 if user lacks required role                                              |
 
 ---
 
@@ -159,9 +166,13 @@ All routes use `<prefix>.<resource>.<action>` naming. Prefixes match URL structu
 
 ## Livewire Auto-Discovery
 
-Livewire components are NOT registered in route files. The `AppServiceProvider` scans `app/*/Livewire/` at boot, automatically registering each component with the alias `{kebab-module}.{kebab-class-name}` (submodule components) or `{kebab-component-name}` (shared components).
+Livewire components are NOT registered in route files. The `AppServiceProvider` scans
+`app/*/Livewire/` at boot, automatically registering each component with the alias
+`{kebab-module}.{kebab-class-name}` (submodule components) or `{kebab-component-name}` (shared
+components).
 
-A new Livewire component works immediately without any registration step — just create the class and its Blade view. The route file only needs `Route::livewire('/path', Component::class)`.
+A new Livewire component works immediately without any registration step — just create the class and
+its Blade view. The route file only needs `Route::livewire('/path', Component::class)`.
 
 ---
 
@@ -172,7 +183,8 @@ A new Livewire component works immediately without any registration step — jus
 3. Name it with `->name('{prefix}.{resource}.{action}')`
 4. Add sidebar menu entry in `config/menu.php`
 
-For a new module: create `routes/web/{module}.php`, add `require` in `routes/web.php` at the correct position for load-order precedence.
+For a new module: create `routes/web/{module}.php`, add `require` in `routes/web.php` at the correct
+position for load-order precedence.
 
 ---
 
@@ -182,7 +194,8 @@ For a new module: create `routes/web/{module}.php`, add `require` in `routes/web
 php artisan route:cache
 ```
 
-Before caching, ensure no route files contain Closure routes (replace with controller classes). `Route::livewire()` is compatible with route caching. Clear and rebuild after route changes:
+Before caching, ensure no route files contain Closure routes (replace with controller classes).
+`Route::livewire()` is compatible with route caching. Clear and rebuild after route changes:
 
 ```bash
 php artisan route:clear

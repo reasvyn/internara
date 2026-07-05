@@ -1,10 +1,12 @@
 # Action Triad Pattern Reference — Command/Read/Process Deep-Dive
 
-> **Last updated:** 2026-06-24
-> **Changes:** sync — update Command contract: DTO for 3+ params, ActionResponse for structured feedback; sync with architecture.md rebalancing
+> **Last updated:** 2026-06-24 **Changes:** sync — update Command contract: DTO for 3+ params,
+> ActionResponse for structured feedback; sync with architecture.md rebalancing
+
 ## Description
 
-Reference covering the Command, Read, and Process action types, their contracts, transaction safety, logging protocol, event dispatch, validation strategy, and naming conventions.
+Reference covering the Command, Read, and Process action types, their contracts, transaction safety,
+logging protocol, event dispatch, validation strategy, and naming conventions.
 
 ## Action Triad Overview
 
@@ -17,20 +19,20 @@ event sourcing.
 
 ### The Three Types
 
-| Type | Purpose | Base Class | Transaction | Logging |
-|------|---------|-----------|-------------|---------|
-| **Command** | Every write — create, update, delete, state transitions | `BaseCommandAction` | Required | Required |
-| **Read** | Complex queries, aggregations, dashboard assembly | `BaseReadAction` | Never | Never |
-| **Process** | Multi-step orchestration composing Command/Read Actions | `BaseProcessAction` | Required | Required |
+| Type        | Purpose                                                 | Base Class          | Transaction | Logging  |
+| ----------- | ------------------------------------------------------- | ------------------- | ----------- | -------- |
+| **Command** | Every write — create, update, delete, state transitions | `BaseCommandAction` | Required    | Required |
+| **Read**    | Complex queries, aggregations, dashboard assembly       | `BaseReadAction`    | Never       | Never    |
+| **Process** | Multi-step orchestration composing Command/Read Actions | `BaseProcessAction` | Required    | Required |
 
 ### Base Class Utilities
 
 Each base class provides utilities tailored to its action type:
 
-| Base Class | Utilities |
-|---|---|
-| `BaseCommandAction` | `respond()` / `respondDeleted()` / `respondError()` — structured `ActionResponse` returns; `validate()` — inline `Validator::validate()`; `authorize()` — `Gate::authorize()` shortcut; `flash()` — flash message helper; `fail()` — throw `RejectedException`; inherits `transaction()`, `log()`, `dispatchEvent()` from `BaseAction` |
-| `BaseReadAction` | `remember()` / `rememberForever()` / `forget()` — caching with auto key generation; `cacheKey()` — module-scoped cache key builder; `mask()` — PII masking; `paginate()` — consistent `LengthAwarePaginator`; `format()` — standardised response envelope; `withErrorHandling()` from `HandlesActionErrors` trait |
+| Base Class          | Utilities                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `BaseCommandAction` | `respond()` / `respondDeleted()` / `respondError()` — structured `ActionResponse` returns; `validate()` — inline `Validator::validate()`; `authorize()` — `Gate::authorize()` shortcut; `flash()` — flash message helper; `fail()` — throw `RejectedException`; inherits `transaction()`, `log()`, `dispatchEvent()` from `BaseAction`                                                                       |
+| `BaseReadAction`    | `remember()` / `rememberForever()` / `forget()` — caching with auto key generation; `cacheKey()` — module-scoped cache key builder; `mask()` — PII masking; `paginate()` — consistent `LengthAwarePaginator`; `format()` — standardised response envelope; `withErrorHandling()` from `HandlesActionErrors` trait                                                                                            |
 | `BaseProcessAction` | `step()` — wrapped step execution with success/failure tracking; `trackProgress()` / `getProgress()` — progress percentage; `getResults()` — per-step result inspection; `allStepsSucceeded()` — quick status check; `fail()` — throw `RejectedException`; `notify()` — send `Notification`; `logProgress()` — log with step context; inherits `transaction()`, `log()`, `dispatchEvent()` from `BaseAction` |
 
 ### Clean Code Rationale
@@ -66,7 +68,9 @@ Action did it.
   scalars. NEVER accept raw `array` — if you need an array, create a DTO.
 - **SHOULD return `ActionResponse`** when the caller needs message/redirect/error context. Simple
   create/update MAY return the Model directly.
-- MAY dispatch an event if a listener needs to react asynchronously (cache invalidation, cross-module notification). Do NOT create events preemptively — only add them when a listener exists.
+- MAY dispatch an event if a listener needs to react asynchronously (cache invalidation,
+  cross-module notification). Do NOT create events preemptively — only add them when a listener
+  exists.
 
 ### Structure
 
@@ -137,6 +141,7 @@ statistics — that are too heavy for inline `Model::query()` in a Livewire comp
 
 Simple `Model::find()` or single `where` clauses should remain inline in Livewire. Use a Read Action
 for:
+
 - Aggregation with multiple conditions
 - Cross-module data assembly
 - Dashboard with charts and stats
@@ -157,7 +162,8 @@ complex business processes.
 
 ### Contract
 
-- MUST extend `BaseProcessAction` (extends `BaseAction` — transaction + logging at the process level)
+- MUST extend `BaseProcessAction` (extends `BaseAction` — transaction + logging at the process
+  level)
 - MUST compose other Actions via constructor injection
 - MUST handle partial failure — if step N of M fails, what happens to earlier steps?
 - MAY emit an event if downstream listeners exist. Omit if no listener needs to react.
@@ -186,20 +192,17 @@ flag-and-continue are documented in the Process Action's docblock.
 
 The `transaction()` method handles three critical concerns:
 
-**1. Nested transaction detection:**
-When a Process Action calls `$this->transaction()` which calls a Command Action that also calls
-`$this->transaction()`, the inner call detects it is already inside a transaction via
-`DB::transactionLevel() > 0` and executes the callback directly without wrapping. This prevents
-Laravel's `DB::transaction()` from creating a savepoint or committing prematurely.
+**1. Nested transaction detection:** When a Process Action calls `$this->transaction()` which calls
+a Command Action that also calls `$this->transaction()`, the inner call detects it is already inside
+a transaction via `DB::transactionLevel() > 0` and executes the callback directly without wrapping.
+This prevents Laravel's `DB::transaction()` from creating a savepoint or committing prematurely.
 
-**2. Deferred event dispatch:**
-Events are collected via `$this->dispatchEvent()` into a `$pendingEvents` array and dispatched
-only after the transaction commits (via `dispatchPendingEvents()`). This prevents listeners from
-seeing uncommitted data.
+**2. Deferred event dispatch:** Events are collected via `$this->dispatchEvent()` into a
+`$pendingEvents` array and dispatched only after the transaction commits (via
+`dispatchPendingEvents()`). This prevents listeners from seeing uncommitted data.
 
-**3. Deadlock retry:**
-The outer `DB::transaction()` retries on serialisation failures. This is important for
-high-concurrency workflows.
+**3. Deadlock retry:** The outer `DB::transaction()` retries on serialisation failures. This is
+important for high-concurrency workflows.
 
 ### Lifecycle Hooks
 
@@ -208,8 +211,8 @@ protected function beforeExecute(): void {}  // Called before every transaction
 protected function afterExecute(mixed $result): void {}  // Called after every transaction
 ```
 
-Override these in Command/Process Actions to set up context or clean up resources. Most Actions
-do not need them.
+Override these in Command/Process Actions to set up context or clean up resources. Most Actions do
+not need them.
 
 ---
 
@@ -236,17 +239,17 @@ protected function log(string $action, ?Model $subject = null, array $payload = 
 
 ### What to Log
 
-| Data Point | Included? | Notes |
-|------------|-----------|-------|
-| Action identifier | Always | `snake_case` describing what happened |
-| Subject model | Always | The affected entity |
-| Context payload | Recommended | IDs, status values, relevant metadata |
-| PII | Masked | `withPiiMasking()` handles this |
+| Data Point        | Included?   | Notes                                 |
+| ----------------- | ----------- | ------------------------------------- |
+| Action identifier | Always      | `snake_case` describing what happened |
+| Subject model     | Always      | The affected entity                   |
+| Context payload   | Recommended | IDs, status values, relevant metadata |
+| PII               | Masked      | `withPiiMasking()` handles this       |
 
 ### Where NOT to Log
 
-Read Actions must NEVER call `log()`. If you need to log a read operation (e.g., for analytics),
-use an explicit SmartLogger call outside the Action — never via `$this->log()`.
+Read Actions must NEVER call `log()`. If you need to log a read operation (e.g., for analytics), use
+an explicit SmartLogger call outside the Action — never via `$this->log()`.
 
 ---
 
@@ -269,10 +272,10 @@ $this->transaction(function () use ($data) {
 
 Two mechanisms exist:
 
-| Method | Behaviour | When to Use |
-|--------|-----------|-------------|
+| Method                                   | Behaviour                                              | When to Use                     |
+| ---------------------------------------- | ------------------------------------------------------ | ------------------------------- |
 | `$this->dispatchEvent(BaseEvent $event)` | Queues the event; dispatched after transaction commits | Inside `transaction()` callback |
-| `event($event)` or `Event::dispatch()` | Dispatches immediately | After `transaction()` returns |
+| `event($event)` or `Event::dispatch()`   | Dispatches immediately                                 | After `transaction()` returns   |
 
 In most cases, use `event()` inside the `transaction()` callback — the deferred dispatch in
 `BaseAction::transaction()` handles the "dispatch after commit" concern automatically.
@@ -282,12 +285,12 @@ transaction success, even in nested contexts.
 
 ### Event-to-Action Ratio
 
-| Action Type | Events |
-|-------------|--------|
-| Command (create/update/delete) | 0–1 recommended |
-| Command (state transition) | 1 required |
-| Command (notification-only) | 0 |
-| Process | 1 required (the completed-process event) |
+| Action Type                    | Events                                   |
+| ------------------------------ | ---------------------------------------- |
+| Command (create/update/delete) | 0–1 recommended                          |
+| Command (state transition)     | 1 required                               |
+| Command (notification-only)    | 0                                        |
+| Process                        | 1 required (the completed-process event) |
 
 ---
 
@@ -297,24 +300,25 @@ transaction success, even in nested contexts.
 
 The error-handling strategy distinguishes three distinct failure modes:
 
-| Failure Mode | Exception | Handled By | User Experience |
-|-------------|-----------|------------|-----------------|
-| Format/invalid input | `ValidationException` | Livewire error bag | Inline field errors |
-| Business rule violation | `RejectedException` | Component try/catch | Flash error message |
-| Infrastructure failure | `RuntimeException` (rethrown) | Component try/catch | Generic error message |
+| Failure Mode            | Exception                     | Handled By          | User Experience       |
+| ----------------------- | ----------------------------- | ------------------- | --------------------- |
+| Format/invalid input    | `ValidationException`         | Livewire error bag  | Inline field errors   |
+| Business rule violation | `RejectedException`           | Component try/catch | Flash error message   |
+| Infrastructure failure  | `RuntimeException` (rethrown) | Component try/catch | Generic error message |
 
 ### HandlesActionErrors Trait
 
-Known exception types pass through unmodified. Unknown `Throwable` is logged to the system log
-(with full context) and rethrown as a generic `RuntimeException`. The trait is used by `BaseAction`
-and is available to any class that needs it.
+Known exception types pass through unmodified. Unknown `Throwable` is logged to the system log (with
+full context) and rethrown as a generic `RuntimeException`. The trait is used by `BaseAction` and is
+available to any class that needs it.
 
 ### Error Handling Rules
 
 1. Business rule violations → `RejectedException` (never bare `RuntimeException`)
 2. Format validation → `Validator::validate()` → `ValidationException` (automatic)
 3. Infrastructure failure → `HandlesActionErrors` logs + rethrows as `RuntimeException`
-4. `RejectedException` is ONLY for business rules — do not use it for validation or infrastructure errors
+4. `RejectedException` is ONLY for business rules — do not use it for validation or infrastructure
+   errors
 
 ---
 
@@ -322,25 +326,25 @@ and is available to any class that needs it.
 
 ### Two Layers of Validation
 
-| Layer | Purpose | Mechanism | Authoritative? |
-|-------|---------|-----------|----------------|
-| Livewire component | User experience — inline errors, button state | `$this->validate()` | No (UX only) |
-| Action | Data integrity — last gate before persistence | `Validator::make()->validate()` | Yes |
+| Layer              | Purpose                                       | Mechanism                       | Authoritative? |
+| ------------------ | --------------------------------------------- | ------------------------------- | -------------- |
+| Livewire component | User experience — inline errors, button state | `$this->validate()`             | No (UX only)   |
+| Action             | Data integrity — last gate before persistence | `Validator::make()->validate()` | Yes            |
 
 ### Why Validate in Both Layers
 
 Livewire validation runs in the browser context and can be bypassed — accidentally (JavaScript
-disabled) or intentionally (crafted requests). The Action runs server-side and cannot be circumvented
-because it's the last validation gate before persistence. This is defence in depth.
+disabled) or intentionally (crafted requests). The Action runs server-side and cannot be
+circumvented because it's the last validation gate before persistence. This is defence in depth.
 
 ### Types of Validation
 
-| Concern | Tool | Exception |
-|---------|------|-----------|
-| Format (required, email, length) | `Validator::validate()` | `ValidationException` |
-| Uniqueness constraints | `Validator` with `unique:` rule | `ValidationException` |
-| State-based business rules | Entity method + `RejectedException` | `RejectedException` |
-| Authorisation | Policy `Gate` check | `AuthorizationException` |
+| Concern                          | Tool                                | Exception                |
+| -------------------------------- | ----------------------------------- | ------------------------ |
+| Format (required, email, length) | `Validator::validate()`             | `ValidationException`    |
+| Uniqueness constraints           | `Validator` with `unique:` rule     | `ValidationException`    |
+| State-based business rules       | Entity method + `RejectedException` | `RejectedException`      |
+| Authorisation                    | Policy `Gate` check                 | `AuthorizationException` |
 
 ### Where Rules Live
 
@@ -363,11 +367,11 @@ structured feedback beyond the model.
 ### Factory Methods
 
 ```php
-ActionResponse::ok($data, 'Operation completed');          // Generic success
-ActionResponse::created($model, '{Entity} created');       // Resource created
-ActionResponse::updated($model, '{Entity} updated');       // Resource updated
-ActionResponse::deleted('{Entity} removed');               // Resource deleted
-ActionResponse::error('Something went wrong', $errors);    // Failure
+ActionResponse::ok($data, 'Operation completed'); // Generic success
+ActionResponse::created($model, '{Entity} created'); // Resource created
+ActionResponse::updated($model, '{Entity} updated'); // Resource updated
+ActionResponse::deleted('{Entity} removed'); // Resource deleted
+ActionResponse::error('Something went wrong', $errors); // Failure
 ```
 
 All factory methods accept an optional message. `created()`, `updated()`, and `deleted()` have
@@ -376,19 +380,18 @@ sensible defaults via `__()` translation keys.
 ### WithRedirect
 
 ```php
-return ActionResponse::created(${entity})
-    ->withRedirect(route('{entities}.show', ${entity}));
+return ActionResponse::created(${entity})->withRedirect(route('{entities}.show', ${entity}));
 ```
 
 ### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `success` | `bool` | Whether the operation succeeded |
-| `data` | `mixed` | The result model, collection, or array |
-| `message` | `?string` | User-facing message |
-| `redirect` | `?string` | URL to redirect to |
-| `errors` | `array` | Validation or business errors |
+| Property   | Type      | Description                            |
+| ---------- | --------- | -------------------------------------- |
+| `success`  | `bool`    | Whether the operation succeeded        |
+| `data`     | `mixed`   | The result model, collection, or array |
+| `message`  | `?string` | User-facing message                    |
+| `redirect` | `?string` | URL to redirect to                     |
+| `errors`   | `array`   | Validation or business errors          |
 
 ### JSON Serialization
 
@@ -397,14 +400,14 @@ values.
 
 ### When to Use ActionResponse vs. Direct Return
 
-| Return Type | When |
-|-------------|------|
-| `Model` directly | Simple create/update — caller just needs the model |
+| Return Type      | When                                                                |
+| ---------------- | ------------------------------------------------------------------- |
+| `Model` directly | Simple create/update — caller just needs the model                  |
 | `ActionResponse` | Caller needs structured feedback (message, redirect, error context) |
-| `void` | Delete operations |
-| `array` | Complex results that don't map to a single model |
-| `Collection` | Read Action returning multiple results |
-| `int` / `bool` | Simple counters or existence checks in Read Actions |
+| `void`           | Delete operations                                                   |
+| `array`          | Complex results that don't map to a single model                    |
+| `Collection`     | Read Action returning multiple results                              |
+| `int` / `bool`   | Simple counters or existence checks in Read Actions                 |
 
 ---
 
@@ -412,8 +415,9 @@ values.
 
 ### Intent
 
-Data Transfer Objects (DTOs) provide type safety for Action parameters. Instead of passing `array $data`
-around, a DTO gives you named, typed parameters, IDE autocompletion, and compile-time safety.
+Data Transfer Objects (DTOs) provide type safety for Action parameters. Instead of passing
+`array $data` around, a DTO gives you named, typed parameters, IDE autocompletion, and compile-time
+safety.
 
 ### BaseData
 
@@ -457,10 +461,10 @@ abstract readonly class BaseData implements JsonSerializable
 
 ### Action Names
 
-| Type | Pattern |
-|------|---------|
-| Command | `{Verb}{Entity}Action` |
-| Read | `Read{Entity}Action` |
+| Type    | Pattern                 |
+| ------- | ----------------------- |
+| Command | `{Verb}{Entity}Action`  |
+| Read    | `Read{Entity}Action`    |
 | Process | `Process{Entity}Action` |
 
 ### File Location
@@ -481,7 +485,8 @@ app/{Module}/Actions/{ClassName}.php  ← cross-submodule
 
 1. `declare(strict_types=1)`
 2. Namespace
-3. Use statements (`BaseCommandAction`, `BaseReadAction`, `BaseProcessAction`, `RejectedException`, Model, Validator, dependencies)
+3. Use statements (`BaseCommandAction`, `BaseReadAction`, `BaseProcessAction`, `RejectedException`,
+   Model, Validator, dependencies)
 4. Class declaration extending the appropriate base class
 5. Constructor with `protected readonly` promotion for injected dependencies
 6. Single `execute()` method
@@ -509,14 +514,14 @@ tests/Feature/{Module}/{SubModule}/{Name}Test.php
 
 ### What to Test
 
-| Concern | How |
-|---------|-----|
-| Happy path | Execute → assert model state/event/log |
-| Business rule violation | Assert `RejectedException` is thrown |
-| Validation failure | Assert `ValidationException` is thrown |
-| Side effects | Assert `event()` dispatched, `log()` called |
-| Partial failure (Process) | Test rollback when a composed Action fails |
-| Policy enforcement | Test via feature test with authorised/unauthorised users |
+| Concern                   | How                                                      |
+| ------------------------- | -------------------------------------------------------- |
+| Happy path                | Execute → assert model state/event/log                   |
+| Business rule violation   | Assert `RejectedException` is thrown                     |
+| Validation failure        | Assert `ValidationException` is thrown                   |
+| Side effects              | Assert `event()` dispatched, `log()` called              |
+| Partial failure (Process) | Test rollback when a composed Action fails               |
+| Policy enforcement        | Test via feature test with authorised/unauthorised users |
 
 ### Testing Conventions
 
@@ -555,8 +560,9 @@ execute).
 
 **3. Move validation into the Action.**
 
-Copy the validation rules from the component's `rules()` method into the Action's `execute()` method.
-The component may keep its own validation for UX purposes, but the Action is the authoritative source.
+Copy the validation rules from the component's `rules()` method into the Action's `execute()`
+method. The component may keep its own validation for UX purposes, but the Action is the
+authoritative source.
 
 **4. Wrap persistence in `$this->transaction()`.**
 

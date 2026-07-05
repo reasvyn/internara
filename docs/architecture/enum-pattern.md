@@ -1,16 +1,17 @@
 # Enum Pattern Reference — LabelEnum, StatusEnum & State Machine Patterns
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — fix shared enum path (app/Enums → app/Core/Enums)
+> **Last updated:** 2026-06-13 **Changes:** sync — fix shared enum path (app/Enums → app/Core/Enums)
+
 ## Description
 
-Enum contracts (LabelEnum, StatusEnum), state machine patterns, case naming conventions, business logic methods, and testing strategies.
+Enum contracts (LabelEnum, StatusEnum), state machine patterns, case naming conventions, business
+logic methods, and testing strategies.
 
 ## 1. Enum Architecture Overview
 
-All enums in Internara are PHP 8 `string`-backed enums. Every enum **must** implement
-`LabelEnum`. State machine enums additionally implement `StatusEnum`. UI badge enums optionally
-implement `ColorableEnum`.
+All enums in Internara are PHP 8 `string`-backed enums. Every enum **must** implement `LabelEnum`.
+State machine enums additionally implement `StatusEnum`. UI badge enums optionally implement
+`ColorableEnum`.
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -30,11 +31,11 @@ implement `ColorableEnum`.
 
 ### Three-Tier Contract Hierarchy
 
-| Contract | Mandate | Purpose |
-|----------|---------|---------|
-| `LabelEnum` | All enums | Human-readable label via `__()` translation |
-| `StatusEnum` | Lifecycle enums | State machine transitions, terminal detection |
-| `ColorableEnum` | UI badge enums | Tailwind/UI color per status |
+| Contract        | Mandate         | Purpose                                       |
+| --------------- | --------------- | --------------------------------------------- |
+| `LabelEnum`     | All enums       | Human-readable label via `__()` translation   |
+| `StatusEnum`    | Lifecycle enums | State machine transitions, terminal detection |
+| `ColorableEnum` | UI badge enums  | Tailwind/UI color per status                  |
 
 ### File Location Rules
 
@@ -125,6 +126,7 @@ public function canTransitionTo(StatusEnum $target): bool
 ```
 
 This pattern:
+
 1. Rejects cross-enum transitions (type safety)
 2. Delegates valid targets to `validTransitions()`
 3. Uses strict `in_array()` — no implicit enum-to-string coercion
@@ -185,11 +187,11 @@ enum ExampleStatus: string implements StatusEnum
 
 ### Value Convention Table
 
-| Convention | Rule | Example |
-|------------|------|---------|
-| Case name | `UPPER_SNAKE` | `REVISION_REQUIRED` |
-| Backing value | lowercase | `'revision_required'` |
-| Multi-word value | `snake_case` | `'multi_word_value'` |
+| Convention       | Rule          | Example               |
+| ---------------- | ------------- | --------------------- |
+| Case name        | `UPPER_SNAKE` | `REVISION_REQUIRED`   |
+| Backing value    | lowercase     | `'revision_required'` |
+| Multi-word value | `snake_case`  | `'multi_word_value'`  |
 
 ### Edge Cases
 
@@ -214,13 +216,13 @@ the natural home for behavior that depends solely on the enum's value.
 Boolean methods that answer questions about the current state. Prefixed with `is`, `has`, `can`,
 `requires`, or `allows`:
 
-| Prefix | Semantics | Example |
-|--------|-----------|---------|
-| `is` | Boolean state query | `isTerminal()`, `isActive()` |
-| `has` | Feature/attribute presence | `hasProperty()` |
-| `can` | Permission or ability | `canTransitionTo()` |
-| `requires` | Prerequisite needed | `requiresAttachment()` |
-| `allows` | Permission granted | `allowsLogin()` |
+| Prefix     | Semantics                  | Example                      |
+| ---------- | -------------------------- | ---------------------------- |
+| `is`       | Boolean state query        | `isTerminal()`, `isActive()` |
+| `has`      | Feature/attribute presence | `hasProperty()`              |
+| `can`      | Permission or ability      | `canTransitionTo()`          |
+| `requires` | Prerequisite needed        | `requiresAttachment()`       |
+| `allows`   | Permission granted         | `allowsLogin()`              |
 
 ---
 
@@ -247,8 +249,8 @@ state can transition to the next stage or to a terminal cancelled state.
 
 ### Incident Lifecycle
 
-A reported state moves through investigation to resolution and finally closure, with the option
-to skip directly from reporting to resolution.
+A reported state moves through investigation to resolution and finally closure, with the option to
+skip directly from reporting to resolution.
 
 ### Two-State (Binary)
 
@@ -287,6 +289,7 @@ public function validTransitions(): array
 ```
 
 Rules:
+
 - Terminal states return `[]` (empty array, no further transitions).
 - All valid destinations are listed explicitly — no wildcards.
 - `match()` is exhaustive: every case must appear.
@@ -303,7 +306,7 @@ class SubmitAction extends BaseAction
     {
         $target = TargetStatus::TARGET_STATE;
 
-        if (! $entry->status->canTransitionTo($target)) {
+        if (!$entry->status->canTransitionTo($target)) {
             throw new RejectedException(
                 __('Cannot transition from :current to :target', [
                     'current' => $entry->status->label(),

@@ -1,13 +1,13 @@
 # Incident — Technical Reference
 
-> **Last updated:** 2026-06-27
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-05 **Changes:** sync — fix base class extends: BaseAction →
+> BaseCommandAction/BaseReadAction
 
 ## Description
+
 Detailed structural and implementation reference for the **Incident** module.
 
 ---
-
 
 ## Overview
 
@@ -15,78 +15,79 @@ Manages workplace incident reports, severity classification, and resolution trac
 
 ## Actions
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `IncidentReport/Actions/ReportIncidentAction.php` | `ReportIncidentAction` | `BaseAction` |
-| `IncidentReport/Actions/UpdateIncidentAction.php` | `UpdateIncidentAction` | `BaseAction` |
-| `IncidentReport/Actions/ResolveIncidentAction.php` | `ResolveIncidentAction` | `BaseAction` |
+| File                                               | Class                   | Extends             |
+| -------------------------------------------------- | ----------------------- | ------------------- |
+| `IncidentReport/Actions/ReportIncidentAction.php`  | `ReportIncidentAction`  | `BaseCommandAction` |
+| `IncidentReport/Actions/UpdateIncidentAction.php`  | `UpdateIncidentAction`  | `BaseCommandAction` |
+| `IncidentReport/Actions/ResolveIncidentAction.php` | `ResolveIncidentAction` | `BaseCommandAction` |
 
 ---
 
 ## Models
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
+| File                                       | Class            | Extends     |
+| ------------------------------------------ | ---------------- | ----------- |
 | `IncidentReport/Models/IncidentReport.php` | `IncidentReport` | `BaseModel` |
 
 ---
 
 ## Enums
 
-| File | Enum | Implements | Values |
-| ---- | ---- | ---------- | ------ |
-| `IncidentReport/Enums/IncidentSeverity.php` | `IncidentSeverity` | `LabelEnum` | low, medium, high, critical |
-| `IncidentReport/Enums/IncidentStatus.php` | `IncidentStatus` | `LabelEnum`, `StatusEnum` | reported, investigating, resolved, closed |
-| `IncidentReport/Enums/IncidentType.php` | `IncidentType` | `LabelEnum` | accident, harassment, safety, misconduct, other |
+| File                                        | Enum               | Implements                | Values                                          |
+| ------------------------------------------- | ------------------ | ------------------------- | ----------------------------------------------- |
+| `IncidentReport/Enums/IncidentSeverity.php` | `IncidentSeverity` | `LabelEnum`               | low, medium, high, critical                     |
+| `IncidentReport/Enums/IncidentStatus.php`   | `IncidentStatus`   | `LabelEnum`, `StatusEnum` | reported, investigating, resolved, closed       |
+| `IncidentReport/Enums/IncidentType.php`     | `IncidentType`     | `LabelEnum`               | accident, harassment, safety, misconduct, other |
 
 ---
 
 ## Policies
 
-| File | Policy | Extends |
-| ---- | ------ | ------- |
+| File                                               | Policy                 | Extends      |
+| -------------------------------------------------- | ---------------------- | ------------ |
 | `IncidentReport/Policies/IncidentReportPolicy.php` | `IncidentReportPolicy` | `BasePolicy` |
 
 ---
 
 ## Notifications
 
-| File | Notification |
-| ---- | ------------ |
+| File                                                            | Notification                   |
+| --------------------------------------------------------------- | ------------------------------ |
 | `IncidentReport/Notifications/IncidentReportedNotification.php` | `IncidentReportedNotification` |
 
 ## Livewire Components
 
-| File | Component | Extends |
-| ---- | --------- | ------- |
+| File                                          | Component         | Extends             |
+| --------------------------------------------- | ----------------- | ------------------- |
 | `IncidentReport/Livewire/IncidentManager.php` | `IncidentManager` | `BaseRecordManager` |
-| `IncidentReport/Livewire/IncidentForm.php` | `IncidentForm` | `Component` |
+| `IncidentReport/Livewire/IncidentForm.php`    | `IncidentForm`    | `Component`         |
 
 ---
 
 ## Routes
 
-File: `routes/web/incident.php`
-Naming pattern: `incident.{resource}.{action}`
+File: `routes/web/incident.php` Naming pattern: `incident.{resource}.{action}`
 
 ## Views
 
-Views are located in `resources/views/incident/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+Views are located in `resources/views/incident/`. See [UI/UX](../foundation/ui-ux.md) for the design
+system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Incident/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+Tests are located in `tests/{Feature,Unit}/Incident/`. See [Testing](../infrastructure/testing.md)
+for the testing conventions.
 
 ## Factories
 
-| Factory | Model |
-| ------- | ----- |
+| Factory                 | Model            |
+| ----------------------- | ---------------- |
 | `IncidentReportFactory` | `IncidentReport` |
 
 ## Migrations
 
-| Migration | Table |
-| --------- | ----- |
+| Migration                       | Table              |
+| ------------------------------- | ------------------ |
 | `create_incident_reports_table` | `incident_reports` |
 
 ---
@@ -102,4 +103,4 @@ Tests are located in `tests/{Feature,Unit}/Incident/`. See [Testing](../infrastr
 - **Testing**: `tests/Feature/Incident/`, `tests/Unit/Incident/`
 - **Dependencies**: User, Program, Core
 
-*For overview and business context, see [incident.md](incident.md).*
+_For overview and business context, see [incident.md](incident.md)._

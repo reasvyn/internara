@@ -1,14 +1,13 @@
 # Chapter 9: User Profile & Recovery
 
-> **Last updated:** 2026-06-15
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-15 **Changes:** sync — initial metadata sync with new format
 
 ## Description
+
 This chapter covers how to manage your personal profile, change your password, generate recovery
 codes, and use the notification center.
 
 ---
-
 
 ## 9.1 Accessing Your Profile
 
@@ -24,6 +23,7 @@ Your profile page is divided into three sections:
 The main card shows your editable profile fields. Available fields depend on your role:
 
 **All users can edit:**
+
 - **Name** — your full display name (immutable for Super Admin)
 - **Username** — your login identifier (immutable for Super Admin)
 - **Email** — your email address
@@ -32,6 +32,7 @@ The main card shows your editable profile fields. Available fields depend on you
 - **Bio** — a short description about yourself
 
 **Staff only** (Super Admin, Admin, Teacher):
+
 - **Employment Status** — e.g., permanent, contract, temporary
 - **Job Title** — your position
 - **ID Number** — employee or identification number
@@ -131,8 +132,8 @@ The user can then use the codes at `/recover-account` as described above.
 
 ### 9.4.1 Accessing Notifications
 
-Click the **bell icon** in the top navigation bar to view your notification count. Click the icon
-or navigate to `/notifications` to open the full notification center.
+Click the **bell icon** in the top navigation bar to view your notification count. Click the icon or
+navigate to `/notifications` to open the full notification center.
 
 ### 9.4.2 Managing Notifications
 
@@ -169,5 +170,5 @@ Your profile summary card appears on dashboards and throughout the system, showi
 
 ---
 
-**← Previous:** [Login & Dashboard](07-login-and-dashboard.md)
-**Next →** [System Settings & Backups](10-system-settings-and-backups.md)
+**← Previous:** [Login & Dashboard](07-login-and-dashboard.md) **Next →**
+[System Settings & Backups](10-system-settings-and-backups.md)

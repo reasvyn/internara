@@ -1,5 +1,8 @@
 # Chapter 0: User Manual Overview
 
+> **Last updated:** 2026-07-05 **Changes:** sync — convert chapter table to list format; fix
+> getting-started troubleshooting link
+
 Welcome to Internara — the vocational fieldwork management system for Indonesian schools.
 
 This manual walks you through everything you need to set up and start using Internara, step by step.
@@ -84,7 +87,7 @@ Don't worry if you're missing something — Chapter 1 covers everything in detai
 If you get stuck:
 
 - Run `php artisan system:health` for a system check
-- See the [Troubleshooting](../getting-started.md#troubleshooting) section
+- See the [Troubleshooting chapter](04-system-health-and-troubleshooting.md) for common issues
 - Each chapter has its own troubleshooting notes at the end
 
 ---

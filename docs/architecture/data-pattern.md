@@ -1,15 +1,14 @@
 # Data / DTO Pattern Reference — DTO Lifecycle, Immutability & Boundary Rules
 
-> **Last updated:** 2026-06-10
-> **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-06-10 **Changes:** initial metadata — no content changes
 
 ## Description
+
 This document is a comprehensive reference on the Data Transfer Object (DTO) pattern as implemented
 in the Internara codebase. It covers philosophy, the `BaseData` contract, conventions, specialized
 subtypes, and the testing approach.
 
 ---
-
 
 ## 1. DTO Philosophy
 
@@ -24,8 +23,7 @@ purposes:
    hands a DTO to an Action; the Action never touches raw request input.
 
 DTOs are **optional** — use them when the input has stabilized (3+ parameters or multiple callers).
-For new or volatile code, start with a plain `array` parameter and migrate to a DTO later (see
-§13).
+For new or volatile code, start with a plain `array` parameter and migrate to a DTO later (see §13).
 
 ---
 
@@ -34,16 +32,16 @@ For new or volatile code, start with a plain `array` parameter and migrate to a 
 All DTOs extend `BaseData`, a `readonly` abstract class that implements `JsonSerializable`. It
 provides five instance methods and three static methods:
 
-| Method | Signature | Purpose |
-|--------|-----------|---------|
-| `toArray()` | `(): array` | Recursively serialises all public properties to a camelCase associative array. Nested `BaseData` instances are recursively converted. Arrays of `BaseData` are mapped. Other `JsonSerializable` instances delegate to `jsonSerialize()`. |
-| `jsonSerialize()` | `(): array` | Delegates to `toArray()`. Enables `json_encode($dto)` to produce the expected shape. |
-| `only()` | `(string ...$keys): array` | Extracts a subset of keys into a new array. Silently ignores missing keys. |
-| `except()` | `(string ...$keys): array` | Removes specified keys from the array representation. |
-| `merge()` | `(array $overrides): static` | Returns a **new instance** with the given overrides applied. The original is never mutated. |
-| `fromArray()` | `(array $data): static` (static) | Hydrates a new instance from an array. Resolves constructor parameters by name, falling back to `snake_case` keys. Throws `InvalidArgumentException` when a required parameter is missing. |
-| `from()` | `(mixed $source): static` (static) | Polymorphic factory. Accepts an array or any object with a `toArray()` method. Delegates to `fromArray()` in both cases. Throws `InvalidArgumentException` for unsupported types. |
-| `clearParamCache()` | `(): void` (static) | Clears the internal reflection cache. Used in tests to prevent stale metadata when mock DTOs change. |
+| Method              | Signature                          | Purpose                                                                                                                                                                                                                                  |
+| ------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `toArray()`         | `(): array`                        | Recursively serialises all public properties to a camelCase associative array. Nested `BaseData` instances are recursively converted. Arrays of `BaseData` are mapped. Other `JsonSerializable` instances delegate to `jsonSerialize()`. |
+| `jsonSerialize()`   | `(): array`                        | Delegates to `toArray()`. Enables `json_encode($dto)` to produce the expected shape.                                                                                                                                                     |
+| `only()`            | `(string ...$keys): array`         | Extracts a subset of keys into a new array. Silently ignores missing keys.                                                                                                                                                               |
+| `except()`          | `(string ...$keys): array`         | Removes specified keys from the array representation.                                                                                                                                                                                    |
+| `merge()`           | `(array $overrides): static`       | Returns a **new instance** with the given overrides applied. The original is never mutated.                                                                                                                                              |
+| `fromArray()`       | `(array $data): static` (static)   | Hydrates a new instance from an array. Resolves constructor parameters by name, falling back to `snake_case` keys. Throws `InvalidArgumentException` when a required parameter is missing.                                               |
+| `from()`            | `(mixed $source): static` (static) | Polymorphic factory. Accepts an array or any object with a `toArray()` method. Delegates to `fromArray()` in both cases. Throws `InvalidArgumentException` for unsupported types.                                                        |
+| `clearParamCache()` | `(): void` (static)                | Clears the internal reflection cache. Used in tests to prevent stale metadata when mock DTOs change.                                                                                                                                     |
 
 Key design decision: `toArray()` uses `get_object_vars($this)`, which — because the class is
 `readonly` — returns only the public promoted properties. This eliminates the risk of accidentally
@@ -52,7 +50,7 @@ including private/internal state.
 ### Recursive Serialisation
 
 ```php
-$child  = new ChildData('Alice', 25);
+$child = new ChildData('Alice', 25);
 $parent = new ParentData('Parent', $child);
 
 $parent->toArray();
@@ -71,10 +69,10 @@ This makes DTOs safe to serialise deeply nested structures without manual mappin
 DTO names follow the pattern `{Verb}{Entity}Data` or `{Entity}Data`. The `Data` suffix distinguishes
 them from Entities and Models:
 
-| Pattern | Description |
-|---------|-------------|
-| `{Entity}Data` | Simple data carrier for a single entity concept |
-| `{Verb}{Entity}Data` | Data for a specific operation on an entity |
+| Pattern              | Description                                     |
+| -------------------- | ----------------------------------------------- |
+| `{Entity}Data`       | Simple data carrier for a single entity concept |
+| `{Verb}{Entity}Data` | Data for a specific operation on an entity      |
 
 Specialised DTOs that are not pure data carriers use suffixes like `ActionResponse`.
 
@@ -94,10 +92,10 @@ This guarantees that once a DTO is constructed, its state is fixed for its entir
 
 ```php
 $original = new EntityData(name: 'Original', code: 'C001', email: 'a@b.com');
-$merged   = $original->merge(['name' => 'Updated']);
+$merged = $original->merge(['name' => 'Updated']);
 
 $original->name; // 'Original' — unchanged
-$merged->name;   // 'Updated'   — new instance
+$merged->name; // 'Updated'   — new instance
 ```
 
 ---
@@ -112,11 +110,7 @@ Preferred when all values are available in the calling scope. Full IDE autocompl
 checking:
 
 ```php
-$data = new EntityData(
-    identifier: 'user@example.com',
-    label: 'Example',
-    active: true,
-);
+$data = new EntityData(identifier: 'user@example.com', label: 'Example', active: true);
 ```
 
 ### `fromArray()` (reflection hydration)
@@ -132,8 +126,7 @@ $data = EntityData::fromArray([
 ```
 
 Missing required parameters throw `\InvalidArgumentException`. Optional parameters (those with a
-default value in the constructor) are silently filled with their default when absent from the
-array.
+default value in the constructor) are silently filled with their default when absent from the array.
 
 ---
 
@@ -212,8 +205,8 @@ its consumers (e.g., building a response payload without internal fields).
 
 ## 9. Merging
 
-`merge(array $overrides): static` creates a **new instance** with the provided overrides applied
-on top of the existing DTO data:
+`merge(array $overrides): static` creates a **new instance** with the provided overrides applied on
+top of the existing DTO data:
 
 ```php
 $original = new EntityData(
@@ -227,7 +220,7 @@ $original = new EntityData(
 $updated = $original->merge(['address' => '123 Main St', 'phone' => '555-0100']);
 
 $original->phone; // ''              — original unchanged
-$updated->phone;  // '555-0100'      — new instance
+$updated->phone; // '555-0100'      — new instance
 ```
 
 This is critical for immutability: `merge()` calls `static::fromArray()` internally, returning a
@@ -251,28 +244,28 @@ json_encode($dto);
 // {"identifier":"user@a.com","label":"s","active":true}
 ```
 
-The `jsonSerialize()` method simply delegates to `toArray()`, so the JSON output matches the
-array representation.
+The `jsonSerialize()` method simply delegates to `toArray()`, so the JSON output matches the array
+representation.
 
 For `ActionResponse`, `jsonSerialize()` uses `array_filter` to omit `null` and empty-array fields
 from the output, producing a clean payload:
 
 ```json
-{"success":true,"data":{"id":1},"message":"Created"}
+{ "success": true, "data": { "id": 1 }, "message": "Created" }
 ```
 
 ---
 
 ## 11. ActionResponse — Specialized Result DTO
 
-`ActionResponse` is a `final readonly` class that does **not** extend `BaseData` — it has a
-distinct contract tailored for Action return values.
+`ActionResponse` is a `final readonly` class that does **not** extend `BaseData` — it has a distinct
+contract tailored for Action return values.
 
 ### Purpose
 
 Provides a uniform return type from Command and Process Actions so that calling code (Livewire
-components, controllers, tests) can handle success/failure without inspecting catch blocks or
-return types.
+components, controllers, tests) can handle success/failure without inspecting catch blocks or return
+types.
 
 ### Properties
 
@@ -292,9 +285,9 @@ return types.
 
 ### Helper Methods
 
-| Method | Purpose |
-|--------|---------|
-| `failed(): bool` | Convenience: `! $this->success` |
+| Method                            | Purpose                                                                          |
+| --------------------------------- | -------------------------------------------------------------------------------- |
+| `failed(): bool`                  | Convenience: `! $this->success`                                                  |
 | `withRedirect(string $url): self` | Returns a **new instance** with the redirect URL set. The original is unchanged. |
 
 ### Immutability
@@ -318,14 +311,14 @@ $withRedirect->redirect; // '/dashboard'
 
 ## 12. DTO Migration Path
 
-DTOs follow a three-phase introduction process. This prevents premature abstraction while keeping the
-door open to typing:
+DTOs follow a three-phase introduction process. This prevents premature abstraction while keeping
+the door open to typing:
 
-| Phase | Signature | Description |
-|-------|-----------|-------------|
+| Phase         | Signature              | Description                                                                                                     |
+| ------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | **1 — Array** | `execute(array $data)` | Rapid development. No DTO exists. Parameters are documented in the Action docblock or inferred from call sites. |
-| **2 — Union** | `execute(Data|array $data)` | DTO exists but callers can still pass raw arrays. `BaseData::from()` handles both inside the Action body. Migration is non-breaking. |
-| **3 — Typed** | `execute(Data $data)` | DTO is mandatory. All callers have been migrated. The array path is removed. |
+| **2 — Union** | `execute(Data          | array $data)`                                                                                                   | DTO exists but callers can still pass raw arrays. `BaseData::from()` handles both inside the Action body. Migration is non-breaking. |
+| **3 — Typed** | `execute(Data $data)`  | DTO is mandatory. All callers have been migrated. The array path is removed.                                    |
 
 ```php
 // Phase 1 — volatile, don't commit to a shape yet

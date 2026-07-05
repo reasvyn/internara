@@ -1,10 +1,12 @@
 # Events, Listeners & Notifications Pattern — Dispatch, Listeners & Multi-Channel
 
-> **Last updated:** 2026-07-01
-> **Changes:** clarify: events are for async communication only — not mandatory; only create when a listener exists
+> **Last updated:** 2026-07-01 **Changes:** clarify: events are for async communication only — not
+> mandatory; only create when a listener exists
+
 ## Description
 
-Event dispatch patterns, listener registration, notification channels, ShouldQueue conventions, and cross-module event communication.
+Event dispatch patterns, listener registration, notification channels, ShouldQueue conventions, and
+cross-module event communication.
 
 ## Design Principle: Events Are for Async Communication
 
@@ -12,6 +14,7 @@ Events exist to decouple **producers** (Actions) from **consumers** (listeners) 
 boundaries. They are **not** a required part of every Command Action.
 
 **Rules:**
+
 - Only create an event class when at least one listener needs to react to it (cache invalidation,
   cross-module notification, logging beyond `$this->log()`).
 - Do NOT create events "just in case" a listener might exist in the future. Add the event when the
@@ -19,11 +22,11 @@ boundaries. They are **not** a required part of every Command Action.
 - Simple CRUD operations that are logged via `$this->log()` do NOT need events.
 - Status transitions that only affect the current model (no cross-module side effects) do NOT need
   events.
-- Events are registered in `config/event.php`. An event without a listener registration is dead
-  code — either register a listener or remove the event class.
+- Events are registered in `config/event.php`. An event without a listener registration is dead code
+  — either register a listener or remove the event class.
 
-**Before adding an event, ask:** "Is there a listener that will react to this?"
-If no → skip the event. The Action's `$this->log()` provides the audit trail.
+**Before adding an event, ask:** "Is there a listener that will react to this?" If no → skip the
+event. The Action's `$this->log()` provides the audit trail.
 
 ## Table of Contents
 
@@ -47,17 +50,17 @@ If no → skip the event. The Action's `$this->log()` provides the audit trail.
 All events **must** extend `BaseEvent`. The base class provides the foundational contract and a set
 of built-in capabilities:
 
-| Trait / Method | Purpose |
-|---|---|
-| `Dispatchable` | Static `dispatch()` and instance `dispatch()` via `Illuminate\Foundation\Events\Dispatchable` |
-| `InteractsWithSockets` | Broadcasting scaffold (defaults to no broadcast) |
-| `SerializesModels` | Safe queue serialization for Eloquent models |
-| `eventName(): string` | **Abstract** — returns a dot-notation key used by SmartLogger for log translation |
-| `toPayload(): array` | Extracts public properties for logging, converting Models to `{name}_id` |
-| `broadcastOn(): array` | Returns `[]` (override to enable broadcasting) |
-| `shouldBroadcast(): bool` | Returns `false` (override to enable) |
-| `shouldQueue(): bool` | Returns `false` (override to queue the event itself) |
-| `queue(): string` | Returns `'default'` |
+| Trait / Method            | Purpose                                                                                       |
+| ------------------------- | --------------------------------------------------------------------------------------------- |
+| `Dispatchable`            | Static `dispatch()` and instance `dispatch()` via `Illuminate\Foundation\Events\Dispatchable` |
+| `InteractsWithSockets`    | Broadcasting scaffold (defaults to no broadcast)                                              |
+| `SerializesModels`        | Safe queue serialization for Eloquent models                                                  |
+| `eventName(): string`     | **Abstract** — returns a dot-notation key used by SmartLogger for log translation             |
+| `toPayload(): array`      | Extracts public properties for logging, converting Models to `{name}_id`                      |
+| `broadcastOn(): array`    | Returns `[]` (override to enable broadcasting)                                                |
+| `shouldBroadcast(): bool` | Returns `false` (override to enable)                                                          |
+| `shouldQueue(): bool`     | Returns `false` (override to queue the event itself)                                          |
+| `queue(): string`         | Returns `'default'`                                                                           |
 
 ### BaseEvent Source
 
@@ -68,12 +71,30 @@ abstract class BaseEvent
 
     abstract public function eventName(): string;
 
-    public function toPayload(): array { /* ... */ }
-    public function broadcastOn(): array { return []; }
-    public function broadcastAs(): string { return $this->eventName(); }
-    public function shouldBroadcast(): bool { return false; }
-    public function shouldQueue(): bool { return false; }
-    public function queue(): string { return 'default'; }
+    public function toPayload(): array
+    {
+        /* ... */
+    }
+    public function broadcastOn(): array
+    {
+        return [];
+    }
+    public function broadcastAs(): string
+    {
+        return $this->eventName();
+    }
+    public function shouldBroadcast(): bool
+    {
+        return false;
+    }
+    public function shouldQueue(): bool
+    {
+        return false;
+    }
+    public function queue(): string
+    {
+        return 'default';
+    }
 }
 ```
 
@@ -92,17 +113,17 @@ abstract class BaseEvent
 
 The class name reads as a completed fact: `{Entity}Created`, `{Login}Failed`, `{Student}Registered`.
 
-| Convention | Example |
-|---|---|
-| Entity + Created | `{Entity}Created` |
+| Convention         | Example             |
+| ------------------ | ------------------- |
+| Entity + Created   | `{Entity}Created`   |
 | Entity + Activated | `{Entity}Activated` |
-| Entity + Deleted | `{Entity}Deleted` |
-| Entity + Updated | `{Entity}Updated` |
+| Entity + Deleted   | `{Entity}Deleted`   |
+| Entity + Updated   | `{Entity}Updated`   |
 | Entity + Succeeded | `{Entity}Succeeded` |
-| Entity + Failed | `{Entity}Failed` |
+| Entity + Failed    | `{Entity}Failed`    |
 | Entity + Finalized | `{Entity}Finalized` |
-| Entity + Read | `{Entity}Read` |
-| Entity + Sent | `{Entity}Sent` |
+| Entity + Read      | `{Entity}Read`      |
+| Entity + Sent      | `{Entity}Sent`      |
 
 The `eventName()` method returns a **dot-notation key** (`{entity}.{action}`) that doubles as the
 log translation key for SmartLogger.
@@ -131,11 +152,11 @@ final class {Entity}{Action} extends BaseEvent
 `toPayload()` extracts public properties into a flat array for SmartLogger payload merging. It
 applies three rules:
 
-| Property Type | Output |
-|---|---|
-| `Model` instance | Converted to `{name}_id` using `$value->getKey()` |
-| Object with `toArray()` | Converted via `$value->toArray()` |
-| Scalar / array | Passed as-is |
+| Property Type           | Output                                            |
+| ----------------------- | ------------------------------------------------- |
+| `Model` instance        | Converted to `{name}_id` using `$value->getKey()` |
+| Object with `toArray()` | Converted via `$value->toArray()`                 |
+| Scalar / array          | Passed as-is                                      |
 
 Hidden properties: `socket` and any key starting with `__` are skipped.
 
@@ -197,9 +218,9 @@ class {Entity}Action extends BaseAction
 }
 ```
 
-`BaseAction` collects deferred events in `$this->pendingEvents[]` and dispatches them via the
-global `event()` helper after the `transaction()` callback completes (or after the inner closure
-if already inside a transaction).
+`BaseAction` collects deferred events in `$this->pendingEvents[]` and dispatches them via the global
+`event()` helper after the `transaction()` callback completes (or after the inner closure if already
+inside a transaction).
 
 ### 4c. SmartLogger `->event($baseEvent)->save()` (Auto-Dispatch + Log)
 
@@ -235,11 +256,11 @@ SmartLogger::success('{Entity} {Action}')
 
 Listeners are named by what they **do**, not what event they handle:
 
-| Name | Event | Action |
-|---|---|---|
+| Name               | Event              | Action                                                |
+| ------------------ | ------------------ | ----------------------------------------------------- |
 | `{Action}{Entity}` | `{Entity}{Action}` | Sends notification, clears cache, logs activity, etc. |
-| `{Action}{Entity}` | `{Entity}{Action}` | Clears cached settings |
-| `{Action}{Entity}` | `{Entity}{Action}` | Invalidates per-user cache |
+| `{Action}{Entity}` | `{Entity}{Action}` | Clears cached settings                                |
+| `{Action}{Entity}` | `{Entity}{Action}` | Invalidates per-user cache                            |
 
 ### Registration
 
@@ -307,8 +328,9 @@ public function handle({Entity}{Action}|{OtherEntity}{Action} $event): void
 }
 ```
 
-**Rule of thumb:** If the listener does anything slower than a cache `forget()`, it should be queued.
-Synchronous listeners are acceptable only for microsecond operations (cache forget, in-memory state).
+**Rule of thumb:** If the listener does anything slower than a cache `forget()`, it should be
+queued. Synchronous listeners are acceptable only for microsecond operations (cache forget,
+in-memory state).
 
 ---
 
@@ -328,10 +350,10 @@ public function via($notifiable): array
 }
 ```
 
-| Channel | Delivery | When |
-|---|---|---|
-| `mail` | Email via `MailMessage` | Always for important notifications |
-| `broadcast` | Realtime via Laravel Echo | When the user is online |
+| Channel                        | Delivery                     | When                                     |
+| ------------------------------ | ---------------------------- | ---------------------------------------- |
+| `mail`                         | Email via `MailMessage`      | Always for important notifications       |
+| `broadcast`                    | Realtime via Laravel Echo    | When the user is online                  |
 | `CustomDatabaseChannel::class` | In-app database notification | Always (stored in `notifications` table) |
 
 ### Notification Structure
@@ -409,12 +431,12 @@ queue worker, except trivial synchronous notifications.
 
 The class name combines the subject entity with the notification type, suffixed with `Notification`:
 
-| Pattern | Entity | Type |
-|---|---|---|
+| Pattern                       | Entity | Type    |
+| ----------------------------- | ------ | ------- |
 | `{Entity}CreatedNotification` | Entity | Created |
-| `{Entity}{Type}Notification` | Entity | Type |
-| `WelcomeNotification` | (none) | Welcome |
-| `{Entity}{Type}Notification` | Entity | Type |
+| `{Entity}{Type}Notification`  | Entity | Type    |
+| `WelcomeNotification`         | (none) | Welcome |
+| `{Entity}{Type}Notification`  | Entity | Type    |
 
 ---
 
@@ -427,13 +449,13 @@ The `CustomDatabaseChannel` is the internal notification delivery mechanism. It 
 
 Each notification must implement `toCustomDatabase($notifiable): array` returning:
 
-| Key | Required | Description |
-|---|---|---|
-| `type` | ✅ Yes | Machine-readable type string (e.g. `'{entity}_{action}'`) |
-| `title` | ✅ Yes | Human-readable title (use `__()`) |
-| `message` | ❌ No | Human-readable body text |
-| `link` | ❌ No | URL to navigate to |
-| `data` | ❌ No | Arbitrary metadata array |
+| Key       | Required | Description                                               |
+| --------- | -------- | --------------------------------------------------------- |
+| `type`    | ✅ Yes   | Machine-readable type string (e.g. `'{entity}_{action}'`) |
+| `title`   | ✅ Yes   | Human-readable title (use `__()`)                         |
+| `message` | ❌ No    | Human-readable body text                                  |
+| `link`    | ❌ No    | URL to navigate to                                        |
+| `data`    | ❌ No    | Arbitrary metadata array                                  |
 
 ### Missing Key Warnings
 
@@ -441,7 +463,7 @@ If `toCustomDatabase()` omits `type` or `title`, `CustomDatabaseChannel` writes 
 SmartLogger (system-only) to aid debugging:
 
 ```php
-if (! isset($data['type'])) {
+if (!isset($data['type'])) {
     SmartLogger::warning('Notification missing type key')
         ->withPayload(['notification_class' => get_class($notification)])
         ->systemOnly()
@@ -630,10 +652,10 @@ test('{side effect} occurs on {event}', function () {
 
 ### Testing Summary
 
-| What | How | Tool |
-|---|---|---|
-| Event was dispatched | `Event::fake([...])` + `assertDispatched()` | Laravel |
-| Payload correctness | Closure in `assertDispatched()` | Laravel |
-| Listener side effect | Dispatch event + assert state change | Manual |
-| SmartLogger event integration | `Event::fake()` + assert both event and log | SmartLogger |
-| BaseEvent contract | Unit tests on `toPayload()`, `dispatch()`, etc. | Pest |
+| What                          | How                                             | Tool        |
+| ----------------------------- | ----------------------------------------------- | ----------- |
+| Event was dispatched          | `Event::fake([...])` + `assertDispatched()`     | Laravel     |
+| Payload correctness           | Closure in `assertDispatched()`                 | Laravel     |
+| Listener side effect          | Dispatch event + assert state change            | Manual      |
+| SmartLogger event integration | `Event::fake()` + assert both event and log     | SmartLogger |
+| BaseEvent contract            | Unit tests on `toPayload()`, `dispatch()`, etc. | Pest        |

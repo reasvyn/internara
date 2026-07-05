@@ -1,13 +1,13 @@
 # Assignment — Technical Reference
 
-> **Last updated:** 2026-06-27
-> **Changes:** add RequestSubmissionRevisionAction and SubmissionRevisionRequested event; fix SubmissionStatus values
+> **Last updated:** 2026-06-27 **Changes:** add RequestSubmissionRevisionAction and
+> SubmissionRevisionRequested event; fix SubmissionStatus values
 
 ## Description
+
 Detailed structural and implementation reference for the **Assignment** module.
 
 ---
-
 
 ## Overview
 
@@ -15,116 +15,117 @@ Manages course assignments and submission tracking with grading and revision wor
 
 ## Actions
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `Actions/CreateAssignmentAction.php` | `CreateAssignmentAction` | `BaseCommandAction` |
-| `Actions/UpdateAssignmentAction.php` | `UpdateAssignmentAction` | `BaseCommandAction` |
-| `Actions/DeleteAssignmentAction.php` | `DeleteAssignmentAction` | `BaseCommandAction` |
-| `Actions/PublishAssignmentAction.php` | `PublishAssignmentAction` | `BaseCommandAction` |
-| `Submission/Actions/SubmitAssignmentAction.php` | `SubmitAssignmentAction` | `BaseCommandAction` |
-| `Submission/Actions/GradeSubmissionAction.php` | `GradeSubmissionAction` | `BaseCommandAction` |
-| `Submission/Actions/VerifySubmissionAction.php` | `VerifySubmissionAction` | `BaseCommandAction` |
+| File                                                     | Class                             | Extends             |
+| -------------------------------------------------------- | --------------------------------- | ------------------- |
+| `Actions/CreateAssignmentAction.php`                     | `CreateAssignmentAction`          | `BaseCommandAction` |
+| `Actions/UpdateAssignmentAction.php`                     | `UpdateAssignmentAction`          | `BaseCommandAction` |
+| `Actions/DeleteAssignmentAction.php`                     | `DeleteAssignmentAction`          | `BaseCommandAction` |
+| `Actions/PublishAssignmentAction.php`                    | `PublishAssignmentAction`         | `BaseCommandAction` |
+| `Submission/Actions/SubmitAssignmentAction.php`          | `SubmitAssignmentAction`          | `BaseCommandAction` |
+| `Submission/Actions/GradeSubmissionAction.php`           | `GradeSubmissionAction`           | `BaseCommandAction` |
+| `Submission/Actions/VerifySubmissionAction.php`          | `VerifySubmissionAction`          | `BaseCommandAction` |
 | `Submission/Actions/RequestSubmissionRevisionAction.php` | `RequestSubmissionRevisionAction` | `BaseCommandAction` |
 
 ---
 
 ## Models
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `Models/Assignment.php` | `Assignment` | `BaseModel` |
+| File                               | Class        | Extends     |
+| ---------------------------------- | ------------ | ----------- |
+| `Models/Assignment.php`            | `Assignment` | `BaseModel` |
 | `Submission/Models/Submission.php` | `Submission` | `BaseModel` |
 
 ---
 
 ## Enums
 
-| File | Enum | Implements | Values |
-| ---- | ---- | ---------- | ------ |
-| `Enums/AssignmentStatus.php` | `AssignmentStatus` | `LabelEnum`, `StatusEnum` | draft, published, closed, archived |
+| File                                    | Enum               | Implements                | Values                                                |
+| --------------------------------------- | ------------------ | ------------------------- | ----------------------------------------------------- |
+| `Enums/AssignmentStatus.php`            | `AssignmentStatus` | `LabelEnum`, `StatusEnum` | draft, published, closed, archived                    |
 | `Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, verified, graded, revision_required |
 
 ---
 
 ## Entities
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `Entities/AssignmentRules.php` | `AssignmentRules` | `BaseEntity` |
+| File                                      | Class             | Extends      |
+| ----------------------------------------- | ----------------- | ------------ |
+| `Entities/AssignmentRules.php`            | `AssignmentRules` | `BaseEntity` |
 | `Submission/Entities/SubmissionState.php` | `SubmissionState` | `BaseEntity` |
 
 ---
 
 ## Policies
 
-| File | Policy | Extends |
-| ---- | ------ | ------- |
-| `Policies/AssignmentPolicy.php` | `AssignmentPolicy` | `BasePolicy` |
+| File                                       | Policy             | Extends      |
+| ------------------------------------------ | ------------------ | ------------ |
+| `Policies/AssignmentPolicy.php`            | `AssignmentPolicy` | `BasePolicy` |
 | `Submission/Policies/SubmissionPolicy.php` | `SubmissionPolicy` | `BasePolicy` |
 
 ---
 
 ## Data / DTOs
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
+| File                                       | Class                  | Extends    |
+| ------------------------------------------ | ---------------------- | ---------- |
 | `Submission/Data/SubmitAssignmentData.php` | `SubmitAssignmentData` | `BaseData` |
 
 ## Events
 
-| File | Event | Dispatched By |
-| ---- | ----- | ------------- |
-| `Events/AssignmentPublished.php` | `AssignmentPublished` | `PublishAssignmentAction` |
+| File                                                | Event                         | Dispatched By                     |
+| --------------------------------------------------- | ----------------------------- | --------------------------------- |
+| `Events/AssignmentPublished.php`                    | `AssignmentPublished`         | `PublishAssignmentAction`         |
 | `Submission/Events/SubmissionRevisionRequested.php` | `SubmissionRevisionRequested` | `RequestSubmissionRevisionAction` |
 
 ## Notifications
 
-| File | Notification |
-| ---- | ------------ |
-| `Notifications/AssignmentNotification.php` | `AssignmentNotification` |
+| File                                                          | Notification                     |
+| ------------------------------------------------------------- | -------------------------------- |
+| `Notifications/AssignmentNotification.php`                    | `AssignmentNotification`         |
 | `Submission/Notifications/SubmissionFeedbackNotification.php` | `SubmissionFeedbackNotification` |
 
 ## Livewire Components
 
-| File | Component | Extends |
-| ---- | --------- | ------- |
-| `Livewire/AssignmentManager.php` | `AssignmentManager` | `BaseRecordManager` |
-| `Submission/Livewire/SubmitAssignment.php` | `SubmitAssignment` | `Component` |
-| `Submission/Livewire/SubmissionGrading.php` | `SubmissionGrading` | `Component` |
+| File                                        | Component           | Extends             |
+| ------------------------------------------- | ------------------- | ------------------- |
+| `Livewire/AssignmentManager.php`            | `AssignmentManager` | `BaseRecordManager` |
+| `Submission/Livewire/SubmitAssignment.php`  | `SubmitAssignment`  | `Component`         |
+| `Submission/Livewire/SubmissionGrading.php` | `SubmissionGrading` | `Component`         |
 
 ## Form Requests
 
-| File | Request | Purpose |
-| ---- | ------- | ------- |
-| `Http/Requests/CreateAssignmentRequest.php` | `CreateAssignmentRequest` | Assignment creation validation |
-| `Submission/Http/Requests/SubmitAssignmentRequest.php` | `SubmitAssignmentRequest` | Submission validation |
+| File                                                   | Request                   | Purpose                        |
+| ------------------------------------------------------ | ------------------------- | ------------------------------ |
+| `Http/Requests/CreateAssignmentRequest.php`            | `CreateAssignmentRequest` | Assignment creation validation |
+| `Submission/Http/Requests/SubmitAssignmentRequest.php` | `SubmitAssignmentRequest` | Submission validation          |
 
 ---
 
 ## Routes
 
-File: `routes/web/assignment.php`
-Naming pattern: `assignment.{resource}.{action}`
+File: `routes/web/assignment.php` Naming pattern: `assignment.{resource}.{action}`
 
 ## Views
 
-Views are located in `resources/views/assignment/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+Views are located in `resources/views/assignment/`. See [UI/UX](../foundation/ui-ux.md) for the
+design system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Assignment/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+Tests are located in `tests/{Feature,Unit}/Assignment/`. See [Testing](../infrastructure/testing.md)
+for the testing conventions.
 
 ## Factories
 
-| Factory | Model |
-| ------- | ----- |
+| Factory             | Model        |
+| ------------------- | ------------ |
 | `AssignmentFactory` | `Assignment` |
 | `SubmissionFactory` | `Submission` |
 
 ## Migrations
 
-| Migration | Table |
-| --------- | ----- |
+| Migration                  | Table         |
+| -------------------------- | ------------- |
 | `create_assignments_table` | `assignments` |
 | `create_submissions_table` | `submissions` |
 
@@ -139,4 +140,4 @@ Tests are located in `tests/{Feature,Unit}/Assignment/`. See [Testing](../infras
 - **Testing**: `tests/Feature/Assignment/`, `tests/Unit/Assignment/`
 - **Dependencies**: User, Program, Core
 
-*For overview and business context, see [assignment.md](assignment.md).*
+_For overview and business context, see [assignment.md](assignment.md)._

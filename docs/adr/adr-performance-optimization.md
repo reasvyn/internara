@@ -1,24 +1,26 @@
 # ADR-009: Performance & Optimization Strategy
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — initial metadata sync with new format
-
+> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
 
 ## Description
 
-Performance strategy combines database query optimization, multi-level caching with event-driven invalidation, queue offloading for heavy operations, and pagination for all list views.
+Performance strategy combines database query optimization, multi-level caching with event-driven
+invalidation, queue offloading for heavy operations, and pagination for all list views.
 
 ## Context
 
-Internara serves vocational schools from 100 to 2000+ registered users across widely varying infrastructure. Current development is in the MVP phase -- every infrastructure decision (Redis, queue workers, S3) consumes time that could be spent on features. However, the architecture must not require a rewrite when a school grows from 500 to 2000 users.
+Internara serves vocational schools from 100 to 2000+ registered users across widely varying
+infrastructure. Current development is in the MVP phase -- every infrastructure decision (Redis,
+queue workers, S3) consumes time that could be spent on features. However, the architecture must not
+require a rewrite when a school grows from 500 to 2000 users.
 
 Three deployment tiers are already defined:
 
-| Tier | Registered Users | Database | Queue | Cache | Session | Storage |
-|---|---|---|---|---|---|---|
-| 1 (Shared) | <= 500 | MySQL / MariaDB | sync | file | database | local |
-| 2 (VPS) | 500-2000 | MySQL | Redis | Redis | Redis | local + S3 |
-| 3 (HA) | 2000+ | MySQL + replica | Redis | Redis cluster | Redis cluster | S3 |
+| Tier       | Registered Users | Database        | Queue | Cache         | Session       | Storage    |
+| ---------- | ---------------- | --------------- | ----- | ------------- | ------------- | ---------- |
+| 1 (Shared) | <= 500           | MySQL / MariaDB | sync  | file          | database      | local      |
+| 2 (VPS)    | 500-2000         | MySQL           | Redis | Redis         | Redis         | local + S3 |
+| 3 (HA)     | 2000+            | MySQL + replica | Redis | Redis cluster | Redis cluster | S3         |
 
 ## Decision
 
@@ -30,12 +32,14 @@ These optimizations cost nothing during development but prevent regressions at a
 - **Composite indexes on foreign keys** -- prevents full table scans on JOIN-heavy queries
 - **Eager loading convention** -- N+1 queries are the single biggest Livewire performance risk
 - **Activity log composite indexes** -- prevents full scans at 1M+ rows
-- **Cache key registry** (`config/cache-keys.php`) -- prevents key collisions, makes invalidation discoverable
+- **Cache key registry** (`config/cache-keys.php`) -- prevents key collisions, makes invalidation
+  discoverable
 - **Action triad separation** -- Read Actions avoid transaction overhead
 
 ### Tier 1 -- Shared Hosting Defaults (Entry)
 
-Zero external services required beyond MySQL/MariaDB. All features available, some synchronous instead of asynchronous:
+Zero external services required beyond MySQL/MariaDB. All features available, some synchronous
+instead of asynchronous:
 
 - Queue: sync (jobs run inline)
 - Cache: file (atomic on ext4/XFS)
@@ -71,7 +75,8 @@ Trigger: sustained > 2000 registered users OR DB write latency > 50ms.
 
 ### Explicitly Deferred
 
-These are deferred until evidence proves need: Laravel Octane, horizontal auto-scaling, CDN for static assets, database sharding, queue job batching.
+These are deferred until evidence proves need: Laravel Octane, horizontal auto-scaling, CDN for
+static assets, database sharding, queue job batching.
 
 ### When Not to Optimize
 
@@ -81,12 +86,18 @@ These are deferred until evidence proves need: Laravel Octane, horizontal auto-s
 
 ## Consequences
 
-- **Positive**: MVP velocity preserved -- no wasted infrastructure ceremony during feature development.
-- **Positive**: Every tier transition is a configuration change, not a code change. The same binary runs at 500 and 2000 users.
-- **Positive**: No-regret moves are built into the foundation -- developers don't need to think about them.
-- **Positive**: Deferred optimizations are explicitly listed -- no ambiguity about whether Octane is needed.
-- **Negative**: Default configuration is not production-optimal -- deployers must override `.env.example` values.
-- **Negative**: Tier 3 assumes Redis availability -- schools without Redis experience need documentation support.
+- **Positive**: MVP velocity preserved -- no wasted infrastructure ceremony during feature
+  development.
+- **Positive**: Every tier transition is a configuration change, not a code change. The same binary
+  runs at 500 and 2000 users.
+- **Positive**: No-regret moves are built into the foundation -- developers don't need to think
+  about them.
+- **Positive**: Deferred optimizations are explicitly listed -- no ambiguity about whether Octane is
+  needed.
+- **Negative**: Default configuration is not production-optimal -- deployers must override
+  `.env.example` values.
+- **Negative**: Tier 3 assumes Redis availability -- schools without Redis experience need
+  documentation support.
 
 ## References
 

@@ -1,153 +1,155 @@
 # Auth — Technical Reference
 
-> **Last updated:** 2026-06-16
-> **Changes:** sync — add missing Events (SuperAdminRecovered, RecoverySlipGenerated, PasswordUpdated), add missing Listeners (NotifySuperAdminsOfRecovery), update SuperAdmin file tree
+> **Last updated:** 2026-07-05 **Changes:** sync — fix base class extends: BaseAction →
+> BaseCommandAction/BaseReadAction
 
 ## Description
+
 Detailed structural and implementation reference for the **Auth** module.
 
 ---
 
-
 ## Overview
 
-Handles authentication: login, password management, account activation, account recovery, and RBAC permissions.
+Handles authentication: login, password management, account activation, account recovery, and RBAC
+permissions.
 
 ## Actions
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `Login/Actions/LoginAction.php` | `LoginAction` | `BaseAction` |
-| `Password/Actions/ConfirmPasswordAction.php` | `ConfirmPasswordAction` | `BaseAction` |
-| `Password/Actions/ResetPasswordAction.php` | `ResetPasswordAction` | `BaseAction` |
-| `Password/Actions/ResetUserPasswordAction.php` | `ResetUserPasswordAction` | `BaseAction` |
-| `Password/Actions/SendPasswordResetLinkAction.php` | `SendPasswordResetLinkAction` | `BaseAction` |
-| `Password/Actions/UpdateUserPasswordAction.php` | `UpdateUserPasswordAction` | `BaseAction` |
-| `Account/Actions/ActivateAccountAction.php` | `ActivateAccountAction` | `BaseAction` |
-| `AccountRecovery/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction` | `BaseAction` |
-| `AccountRecovery/Actions/RedeemRecoverySlipAction.php` | `RedeemRecoverySlipAction` | `BaseAction` |
-| `SuperAdmin/Actions/InitializeSuperAdminAction.php` | `InitializeSuperAdminAction` | `BaseAction` |
-| `SuperAdmin/Actions/RecoverSuperAdminAction.php` | `RecoverSuperAdminAction` | `BaseAction` |
+| File                                                     | Class                         | Extends             |
+| -------------------------------------------------------- | ----------------------------- | ------------------- |
+| `Login/Actions/LoginAction.php`                          | `LoginAction`                 | `BaseCommandAction` |
+| `Password/Actions/ConfirmPasswordAction.php`             | `ConfirmPasswordAction`       | `BaseCommandAction` |
+| `Password/Actions/ResetPasswordAction.php`               | `ResetPasswordAction`         | `BaseCommandAction` |
+| `Password/Actions/ResetUserPasswordAction.php`           | `ResetUserPasswordAction`     | `BaseCommandAction` |
+| `Password/Actions/SendPasswordResetLinkAction.php`       | `SendPasswordResetLinkAction` | `BaseCommandAction` |
+| `Password/Actions/UpdateUserPasswordAction.php`          | `UpdateUserPasswordAction`    | `BaseCommandAction` |
+| `Account/Actions/ActivateAccountAction.php`              | `ActivateAccountAction`       | `BaseCommandAction` |
+| `AccountRecovery/Actions/GenerateRecoverySlipAction.php` | `GenerateRecoverySlipAction`  | `BaseCommandAction` |
+| `AccountRecovery/Actions/RedeemRecoverySlipAction.php`   | `RedeemRecoverySlipAction`    | `BaseCommandAction` |
+| `SuperAdmin/Actions/InitializeSuperAdminAction.php`      | `InitializeSuperAdminAction`  | `BaseCommandAction` |
+| `SuperAdmin/Actions/RecoverSuperAdminAction.php`         | `RecoverSuperAdminAction`     | `BaseCommandAction` |
 
 ---
 
 ## Models
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
+| File                                  | Class         | Extends     |
+| ------------------------------------- | ------------- | ----------- |
 | `AccessTokens/Models/AccessToken.php` | `AccessToken` | `BaseModel` |
 
 ---
 
 ## Enums
 
-| File | Enum | Implements | Values |
-| ---- | ---- | ---------- | ------ |
+| File                         | Enum   | Implements  | Values                                                                     |
+| ---------------------------- | ------ | ----------- | -------------------------------------------------------------------------- |
 | `Permissions/Enums/Role.php` | `Role` | `LabelEnum` | super_admin, admin, teacher, supervisor, student, func_mentor, func_mentee |
 
 ---
 
 ## Entities
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `Account/Entities/AccountActivation.php` | `AccountActivation` | `BaseEntity` |
-| `AccountRecovery/Entities/RecoveryCodeState.php` | `RecoveryCodeState` | `BaseEntity` |
+| File                                               | Class                      | Extends      |
+| -------------------------------------------------- | -------------------------- | ------------ |
+| `Account/Entities/AccountActivation.php`           | `AccountActivation`        | `BaseEntity` |
+| `AccountRecovery/Entities/RecoveryCodeState.php`   | `RecoveryCodeState`        | `BaseEntity` |
 | `SuperAdmin/Entities/SuperAdminIntegrityRules.php` | `SuperAdminIntegrityRules` | `BaseEntity` |
-| `AccessTokens/Entities/ActivationToken.php` | `ActivationToken` | `BaseEntity` |
-| `AccessTokens/Entities/AccessTokenState.php` | `AccessTokenState` | `BaseEntity` |
+| `AccessTokens/Entities/ActivationToken.php`        | `ActivationToken`          | `BaseEntity` |
+| `AccessTokens/Entities/AccessTokenState.php`       | `AccessTokenState`         | `BaseEntity` |
 
 ---
 
 ## Policies
 
-| File | Policy | Extends |
-| ---- | ------ | ------- |
+| File                                  | Policy       | Extends      |
+| ------------------------------------- | ------------ | ------------ |
 | `Permissions/Policies/UserPolicy.php` | `UserPolicy` | `BasePolicy` |
 
 ---
 
 ## Data / DTOs
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `Login/Data/LoginData.php` | `LoginData` | `BaseData` |
+| File                                        | Class              | Extends    |
+| ------------------------------------------- | ------------------ | ---------- |
+| `Login/Data/LoginData.php`                  | `LoginData`        | `BaseData` |
 | `AccountRecovery/Data/RecoveryCodeData.php` | `RecoveryCodeData` | `BaseData` |
 
 ## Events
 
-| File | Class | Dispatched By |
-| ---- | ----- | ------------- |
-| `Login/Events/LoginSucceeded.php` | `LoginSucceeded` | `LoginAction` |
-| `Login/Events/LoginFailed.php` | `LoginFailed` | `LoginAction` |
+| File                                               | Class                   | Dispatched By                |
+| -------------------------------------------------- | ----------------------- | ---------------------------- |
+| `Login/Events/LoginSucceeded.php`                  | `LoginSucceeded`        | `LoginAction`                |
+| `Login/Events/LoginFailed.php`                     | `LoginFailed`           | `LoginAction`                |
 | `AccountRecovery/Events/RecoverySlipGenerated.php` | `RecoverySlipGenerated` | `GenerateRecoverySlipAction` |
-| `SuperAdmin/Events/SuperAdminRecovered.php` | `SuperAdminRecovered` | `RecoverSuperAdminAction` |
-| `Password/Events/PasswordUpdated.php` | `PasswordUpdated` | `UpdateUserPasswordAction` |
+| `SuperAdmin/Events/SuperAdminRecovered.php`        | `SuperAdminRecovered`   | `RecoverSuperAdminAction`    |
+| `Password/Events/PasswordUpdated.php`              | `PasswordUpdated`       | `UpdateUserPasswordAction`   |
 
 ## Listeners
 
-| File | Class | Listens To |
-| ---- | ----- | ---------- |
-| `Login/Listeners/SendSuperAdminWelcomeNotification.php` | `SendSuperAdminWelcomeNotification` | `LoginSucceeded` |
-| `SuperAdmin/Listeners/NotifySuperAdminsOfRecovery.php` | `NotifySuperAdminsOfRecovery` | `SuperAdminRecovered` |
+| File                                                    | Class                               | Listens To            |
+| ------------------------------------------------------- | ----------------------------------- | --------------------- |
+| `Login/Listeners/SendSuperAdminWelcomeNotification.php` | `SendSuperAdminWelcomeNotification` | `LoginSucceeded`      |
+| `SuperAdmin/Listeners/NotifySuperAdminsOfRecovery.php`  | `NotifySuperAdminsOfRecovery`       | `SuperAdminRecovered` |
 
 ## Livewire Components
 
-| File | Component | Extends |
-| ---- | --------- | ------- |
-| `Login/Livewire/Login.php` | `Login` | `Component` |
-| `Password/Livewire/ForgotPassword.php` | `ForgotPassword` | `Component` |
-| `Password/Livewire/ResetPassword.php` | `ResetPassword` | `Component` |
-| `Password/Livewire/ConfirmPassword.php` | `ConfirmPassword` | `Component` |
-| `Account/Livewire/ActivateAccount.php` | `ActivateAccount` | `Component` |
-| `AccountRecovery/Livewire/AccountRecovery.php` | `AccountRecovery` | `Component` |
-| `AccountRecovery/Livewire/RecoveryCode.php` | `RecoveryCode` | `Component` |
+| File                                               | Component             | Extends     |
+| -------------------------------------------------- | --------------------- | ----------- |
+| `Login/Livewire/Login.php`                         | `Login`               | `Component` |
+| `Password/Livewire/ForgotPassword.php`             | `ForgotPassword`      | `Component` |
+| `Password/Livewire/ResetPassword.php`              | `ResetPassword`       | `Component` |
+| `Password/Livewire/ConfirmPassword.php`            | `ConfirmPassword`     | `Component` |
+| `Account/Livewire/ActivateAccount.php`             | `ActivateAccount`     | `Component` |
+| `AccountRecovery/Livewire/AccountRecovery.php`     | `AccountRecovery`     | `Component` |
+| `AccountRecovery/Livewire/RecoveryCode.php`        | `RecoveryCode`        | `Component` |
 | `AccountRecovery/Livewire/RecoverySlipManager.php` | `RecoverySlipManager` | `Component` |
 
 ## Notifications
 
-| File | Class | Purpose |
-| ---- | ----- | ------- |
+| File                                                           | Class                             | Purpose                     |
+| -------------------------------------------------------------- | --------------------------------- | --------------------------- |
 | `SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` | `SuperAdminRecoveredNotification` | Notifies admins on recovery |
-| `SuperAdmin/Notifications/RecoveryOtpNotification.php` | `RecoveryOtpNotification` | Notifies on recovery OTP |
+| `SuperAdmin/Notifications/RecoveryOtpNotification.php`         | `RecoveryOtpNotification`         | Notifies on recovery OTP    |
 
 ## Livewire Forms
 
-| File | Form |
-| ---- | ---- |
-| `Login/Livewire/Forms/LoginForm.php` | `LoginForm` |
-| `Password/Livewire/Forms/ConfirmPasswordForm.php` | `ConfirmPasswordForm` |
-| `Password/Livewire/Forms/ForgotPasswordForm.php` | `ForgotPasswordForm` |
-| `Password/Livewire/Forms/ResetPasswordForm.php` | `ResetPasswordForm` |
+| File                                                     | Form                  |
+| -------------------------------------------------------- | --------------------- |
+| `Login/Livewire/Forms/LoginForm.php`                     | `LoginForm`           |
+| `Password/Livewire/Forms/ConfirmPasswordForm.php`        | `ConfirmPasswordForm` |
+| `Password/Livewire/Forms/ForgotPasswordForm.php`         | `ForgotPasswordForm`  |
+| `Password/Livewire/Forms/ResetPasswordForm.php`          | `ResetPasswordForm`   |
 | `AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` | `AccountRecoveryForm` |
 
 ## Middleware
 
-| File | Middleware | Purpose |
-| ---- | ---------- | ------- |
-| `Login/Http/Middleware/AuthThrottleMiddleware.php` | `AuthThrottleMiddleware` | Rate-limits login attempts |
-| `Permissions/Http/Middleware/CheckRoleMiddleware.php` | `CheckRoleMiddleware` | Route-level role gate |
+| File                                                  | Middleware               | Purpose                    |
+| ----------------------------------------------------- | ------------------------ | -------------------------- |
+| `Login/Http/Middleware/AuthThrottleMiddleware.php`    | `AuthThrottleMiddleware` | Rate-limits login attempts |
+| `Permissions/Http/Middleware/CheckRoleMiddleware.php` | `CheckRoleMiddleware`    | Route-level role gate      |
 
 ## Form Requests
 
-| File | Request | Purpose |
-| ---- | ------- | ------- |
+| File                                        | Request       | Purpose                    |
+| ------------------------------------------- | ------------- | -------------------------- |
 | `Permissions/Http/Requests/RoleRequest.php` | `RoleRequest` | Role assignment validation |
 
 ---
 
 ## Routes
 
-File: `routes/web/auth.php`
-Naming pattern: `auth.{resource}.{action}`
+File: `routes/web/auth.php` Naming pattern: `auth.{resource}.{action}`
 
 ## Views
 
-Views are located in `resources/views/auth/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+Views are located in `resources/views/auth/`. See [UI/UX](../foundation/ui-ux.md) for the design
+system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Auth/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+Tests are located in `tests/{Feature,Unit}/Auth/`. See [Testing](../infrastructure/testing.md) for
+the testing conventions.
 
 ## Factories
 
@@ -155,16 +157,16 @@ None.
 
 ## Console Commands
 
-| Command Signature | Class | Description |
-| ----------------- | ----- | ----------- |
-| `admin:create` | `CreateAdminCommand` | Creates initial superadmin |
+| Command Signature | Class                | Description                |
+| ----------------- | -------------------- | -------------------------- |
+| `admin:create`    | `CreateAdminCommand` | Creates initial superadmin |
 
 ## Migrations
 
-| Migration | Table |
-| --------- | ----- |
+| Migration                    | Table           |
+| ---------------------------- | --------------- |
 | `create_access_tokens_table` | `access_tokens` |
-| `create_permission_tables` | `permissions` |
+| `create_permission_tables`   | `permissions`   |
 
 ---
 
@@ -172,11 +174,12 @@ None.
 
 ## Architectural Integration
 
-- **Submodules**: `Login`, `Password`, `Account`, `AccessTokens`, `AccountRecovery`, `Permissions`, `SuperAdmin`
+- **Submodules**: `Login`, `Password`, `Account`, `AccessTokens`, `AccountRecovery`, `Permissions`,
+  `SuperAdmin`
 - **Business Logic**: `app/Auth/`
 - **Routing**: `routes/web/auth.php`
 - **Views**: `resources/views/auth/`
 - **Testing**: `tests/Feature/Auth/`, `tests/Unit/Auth/`
 - **Dependencies**: Core, User
 
-*For overview and business context, see [auth.md](auth.md).*
+_For overview and business context, see [auth.md](auth.md)._

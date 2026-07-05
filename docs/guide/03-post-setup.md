@@ -1,16 +1,15 @@
 # Chapter 3: Post-Setup — First Actions as Administrator
 
-> **Last updated:** 2026-06-14
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
 
 ## Description
+
 The setup wizard is complete. Now you'll configure Internara for daily use — add your school's
 structure, create user accounts, set up internship programs, and go live.
 
 This chapter is organised into four phases. Follow them in order.
 
 ---
-
 
 ## Phase 1: Foundation Setup
 
@@ -33,24 +32,24 @@ Go to **Admin → Backups** to set up automated backups:
 - **Include database** — include a dump of all data
 - **Include storage** — include uploaded files and media
 
-Backups are stored in `storage/app/backup/` and are only accessible to super administrators.
-You can also run manual backups at any time from this page.
+Backups are stored in `storage/app/backup/` and are only accessible to super administrators. You can
+also run manual backups at any time from this page.
 
 ### Step 2 — Create Academic Years
 
 Go to **School → Academic Years** and add the current and upcoming school years.
 
-| Field | Example |
-|---|---|
-| Name | `2025/2026` |
-| Start Date | 14 July 2025 |
-| End Date | 26 June 2026 |
-| Active | **Yes** (only one year can be active at a time) |
+| Field      | Example                                         |
+| ---------- | ----------------------------------------------- |
+| Name       | `2025/2026`                                     |
+| Start Date | 14 July 2025                                    |
+| End Date   | 26 June 2026                                    |
+| Active     | **Yes** (only one year can be active at a time) |
 
 ### Step 3 — Complete Departments
 
-Go to **School → Departments** and add all study programs (jurusan). The wizard created one
-default department — add the rest here:
+Go to **School → Departments** and add all study programs (jurusan). The wizard created one default
+department — add the rest here:
 
 - Software Engineering (Rekayasa Perangkat Lunak)
 - Network Administration (Teknik Komputer dan Jaringan)
@@ -65,13 +64,13 @@ default department — add the rest here:
 
 Go to **Partnership → Companies** and add every company that hosts interns.
 
-| Field | Description |
-|---|---|
-| Name | Official company name |
-| Address | Company street address |
-| Email | Contact email address |
-| Phone | Contact phone number |
-| PIC | Person in Charge name |
+| Field     | Description                   |
+| --------- | ----------------------------- |
+| Name      | Official company name         |
+| Address   | Company street address        |
+| Email     | Contact email address         |
+| Phone     | Contact phone number          |
+| PIC       | Person in Charge name         |
 | PIC Phone | Person in Charge phone number |
 
 ### Step 5 — Create Partnerships (MoU)
@@ -89,18 +88,18 @@ For each company, create a partnership record under **Partnership**:
 
 Go to **Admin → User Management** and create accounts for:
 
-| Role | Who |
-|---|---|
-| **Teacher** | School-based mentors who supervise and grade students |
-| **Supervisor** | Company-based mentors who guide daily work |
-| **Student** | Internship participants |
+| Role           | Who                                                   |
+| -------------- | ----------------------------------------------------- |
+| **Teacher**    | School-based mentors who supervise and grade students |
+| **Supervisor** | Company-based mentors who guide daily work            |
+| **Student**    | Internship participants                               |
 
 Students can also register themselves if you enable registration (see Phase 3).
 
 ### Step 7 — Assign Mentors
 
-In each teacher's or supervisor's profile, toggle the **Is Mentor** flag.
-Active mentors appear in placement and supervision flows.
+In each teacher's or supervisor's profile, toggle the **Is Mentor** flag. Active mentors appear in
+placement and supervision flows.
 
 ---
 
@@ -110,12 +109,12 @@ Active mentors appear in placement and supervision flows.
 
 Go to **Internship** and create the placement program:
 
-| Field | Example |
-|---|---|
-| Name | `Work Placement 2025/2026` |
+| Field       | Example                                    |
+| ----------- | ------------------------------------------ |
+| Name        | `Work Placement 2025/2026`                 |
 | Description | Industrial practice for grade XII students |
-| Start Date | 1 August 2025 |
-| End Date | 19 December 2025 |
+| Start Date  | 1 August 2025                              |
+| End Date    | 19 December 2025                           |
 
 ### Step 9 — Configure Document Requirements
 
@@ -144,8 +143,8 @@ Students will now be able to register through the student portal.
 
 ### Step 11 — Review & Approve Registrations
 
-Go to **Registration → Review** to approve or reject student applications.
-Each approved student becomes eligible for placement.
+Go to **Registration → Review** to approve or reject student applications. Each approved student
+becomes eligible for placement.
 
 ### Step 12 — Place Students at Companies
 
@@ -161,17 +160,17 @@ Go to **Placement** and assign each approved student to a company with:
 
 Test that everything works by running through these workflows:
 
-| Workflow | How It Works |
-|---|---|
-| **Attendance** | Student clocks in → attendance record is created |
-| **Logbook** | Student writes a journal entry → mentor can view and comment |
-| **Assignment** | Teacher creates task → student submits → teacher grades |
-| **Absence Request** | Student submits request → mentor approves or rejects |
+| Workflow            | How It Works                                                 |
+| ------------------- | ------------------------------------------------------------ |
+| **Attendance**      | Student clocks in → attendance record is created             |
+| **Logbook**         | Student writes a journal entry → mentor can view and comment |
+| **Assignment**      | Teacher creates task → student submits → teacher grades      |
+| **Absence Request** | Student submits request → mentor approves or rejects         |
 
 ### Step 14 — Configure Notifications
 
-Notifications appear in the in-app notification centre (bell icon in the top bar).
-For email notifications, configure SMTP settings under **Admin → Settings → Mail**.
+Notifications appear in the in-app notification centre (bell icon in the top bar). For email
+notifications, configure SMTP settings under **Admin → Settings → Mail**.
 
 For real-time alerts (optional), set up Laravel Reverb — see the infrastructure documentation.
 
@@ -210,20 +209,20 @@ Phase 4 — Go-Live
 
 Your school is now live on Internara. Here are some resources for ongoing use:
 
-| Topic | Where to Find It |
-|---|---|
-| User roles & permissions | [RBAC Guide](../foundation/rbac.md) |
-| Managing academic years | [Academics Module](../modules/academics.md) |
-| Managing companies | [Partners Module](../modules/partners.md) |
+| Topic                            | Where to Find It                              |
+| -------------------------------- | --------------------------------------------- |
+| User roles & permissions         | [RBAC Guide](../foundation/rbac.md)           |
+| Managing academic years          | [Academics Module](../modules/academics.md)   |
+| Managing companies               | [Partners Module](../modules/partners.md)     |
 | Student registration & placement | [Enrollment Module](../modules/enrollment.md) |
-| Internship programs | [Program Module](../modules/program.md) |
-| Mentoring & supervision | [Guidance Module](../modules/guidance.md) |
-| Daily journals & attendance | [Journals Module](../modules/journals.md) |
-| Tasks & assignments | [Assignment Module](../modules/assignment.md) |
+| Internship programs              | [Program Module](../modules/program.md)       |
+| Mentoring & supervision          | [Guidance Module](../modules/guidance.md)     |
+| Daily journals & attendance      | [Journals Module](../modules/journals.md)     |
+| Tasks & assignments              | [Assignment Module](../modules/assignment.md) |
 
 ---
 
 ---
 
-**← Previous:** [Chapter 2: Setup Wizard](02-setup-wizard.md)
-**Next →** [Chapter 7: Login & Dashboard](07-login-and-dashboard.md)
+**← Previous:** [Chapter 2: Setup Wizard](02-setup-wizard.md) **Next →**
+[Chapter 7: Login & Dashboard](07-login-and-dashboard.md)

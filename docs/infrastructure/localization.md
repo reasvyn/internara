@@ -1,15 +1,16 @@
 # Localization — Translation & Locale System
 
-> **Last updated:** 2026-06-10
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
 
 ## Description
-Internara is designed for a global audience with Indonesian vocational education as its primary design reference. The interface and data model use international terminology, and the application ships with two complete language packs.
+
+Internara is designed for a global audience with Indonesian vocational education as its primary
+design reference. The interface and data model use international terminology, and the application
+ships with two complete language packs.
 
 **Community contributions for additional languages are welcome.**
 
 ---
-
 
 ## Supported Languages
 
@@ -24,9 +25,12 @@ Internara is designed for a global audience with Indonesian vocational education
 
 Internara uses Laravel's built-in localization system. Translation files are stored in two formats:
 
-1. **PHP files** — `lang/{locale}/{module}.php` for structured translations. Keys follow `{module}.{key}` dot notation. Example: `auth.failed`, `validation.required`, `registration.status.pending`.
+1. **PHP files** — `lang/{locale}/{module}.php` for structured translations. Keys follow
+   `{module}.{key}` dot notation. Example: `auth.failed`, `validation.required`,
+   `registration.status.pending`.
 
-2. **JSON files** — `lang/{locale}.json` for short strings and UI labels that don't belong to a specific module.
+2. **JSON files** — `lang/{locale}.json` for short strings and UI labels that don't belong to a
+   specific module.
 
 ### Locale Resolution
 
@@ -36,7 +40,8 @@ The active locale is determined by this priority order:
 2. **`APP_LOCALE`** environment variable (fallback default)
 3. **Browser `Accept-Language` header** (last resort)
 
-Users can switch languages at any time using the language switcher in the interface. Their preference persists across sessions.
+Users can switch languages at any time using the language switcher in the interface. Their
+preference persists across sessions.
 
 ---
 
@@ -95,7 +100,8 @@ __('attendance.status.present');
 
 ### JSON Translation Files
 
-JSON files contain short strings and UI labels. The key is the English string, and the value is the translation:
+JSON files contain short strings and UI labels. The key is the English string, and the value is the
+translation:
 
 ```json
 {
@@ -116,7 +122,8 @@ __('Save');
 
 ## Enum Labels
 
-All enums implement the `LabelEnum` contract with a `label()` method. Labels use the `__()` helper for translation:
+All enums implement the `LabelEnum` contract with a `label()` method. Labels use the `__()` helper
+for translation:
 
 ```php
 enum AttendanceStatus: string implements LabelEnum
@@ -163,12 +170,13 @@ cp lang/en.json lang/fr.json
 
 ### Step 3: Translate String Values
 
-Translate the **values** in each file. Keep the **keys** unchanged — they must match the English version exactly.
+Translate the **values** in each file. Keep the **keys** unchanged — they must match the English
+version exactly.
 
 ```php
 // Translated (French)
 return [
-    'clock_in' => "Pointer à l'arrivée",  // ← only values change
+    'clock_in' => "Pointer à l'arrivée", // ← only values change
     'clock_out' => 'Pointer au départ',
     'status' => [
         'present' => 'Présent',
@@ -191,6 +199,7 @@ Add the new locale to `config/app.php`:
 ### Step 5: Submit Contribution
 
 Open a pull request with:
+
 - The new `lang/{locale}/` directory
 - Updated `config/app.php` if locale configuration needs changes
 - No changes to PHP or JavaScript code — translations are purely data files

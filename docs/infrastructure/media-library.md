@@ -1,13 +1,15 @@
 # Media Library — File Uploads & Media Management
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
 
 ## Description
-Internara uses [spatie/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) to associate files with Eloquent models. This package handles uploads, storage, image conversions, and file retrieval — replacing the need to manually manage file paths, validation, and processing for each model.
+
+Internara uses [spatie/laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) to
+associate files with Eloquent models. This package handles uploads, storage, image conversions, and
+file retrieval — replacing the need to manually manage file paths, validation, and processing for
+each model.
 
 ---
-
 
 ## Storage Architecture
 
@@ -30,7 +32,8 @@ php artisan storage:link
 
 ## Media Collections
 
-Each model that implements `HasMedia` registers named collections. A collection is a named group of files — a model can have multiple collections, each with its own rules.
+Each model that implements `HasMedia` registers named collections. A collection is a named group of
+files — a model can have multiple collections, each with its own rules.
 
 | Model                  | Collection     | Files    | Purpose                            |
 | ---------------------- | -------------- | -------- | ---------------------------------- |
@@ -67,9 +70,9 @@ class YourModel extends BaseModel implements HasMedia
 ### Retrieving Files
 
 ```php
-$url = $model->getFirstMediaUrl('avatar');           // URL of first file
-$media = $model->getFirstMedia('avatar');            // Full media object
-$files = $model->getMedia('documents');              // All files in collection
+$url = $model->getFirstMediaUrl('avatar'); // URL of first file
+$media = $model->getFirstMedia('avatar'); // Full media object
+$files = $model->getMedia('documents'); // All files in collection
 $thumb = $model->getFirstMediaUrl('avatar', 'thumb'); // Thumbnail conversion
 ```
 
@@ -77,7 +80,8 @@ $thumb = $model->getFirstMediaUrl('avatar', 'thumb'); // Thumbnail conversion
 
 ## Image Conversions
 
-When images are uploaded, the media library can generate resized versions automatically. Conversions are defined in the model:
+When images are uploaded, the media library can generate resized versions automatically. Conversions
+are defined in the model:
 
 ```php
 public function registerMediaConversions(?Media $media = null): void
@@ -93,7 +97,8 @@ public function registerMediaConversions(?Media $media = null): void
 | ---------- | ----- | ------ | ------------- |
 | `thumb`    | 400px | WebP   | Yes (default) |
 
-The image driver defaults to `gd` (built into PHP). For higher quality conversions, switch to `imagick`:
+The image driver defaults to `gd` (built into PHP). For higher quality conversions, switch to
+`imagick`:
 
 ```env
 IMAGE_DRIVER=imagick
@@ -101,10 +106,13 @@ IMAGE_DRIVER=imagick
 
 ### Queue Integration
 
-Conversions are queued by default (`queue_conversions_by_default: true` in `config/media-library.php`). The queue connection is inherited from `QUEUE_CONNECTION`:
+Conversions are queued by default (`queue_conversions_by_default: true` in
+`config/media-library.php`). The queue connection is inherited from `QUEUE_CONNECTION`:
 
-- **Tier 1 (Shared Hosting — up to 500 registered users):** conversions run synchronously during the upload request
-- **Tier 2+ (Redis, dual pipeline):** conversions process asynchronously via the `default` queue worker
+- **Tier 1 (Shared Hosting — up to 500 registered users):** conversions run synchronously during the
+  upload request
+- **Tier 2+ (Redis, dual pipeline):** conversions process asynchronously via the `default` queue
+  worker
 
 If a conversion must be available immediately (synchronous):
 
@@ -171,7 +179,9 @@ User uploads file → Livewire temporary upload → media library attaches to mo
                                             File accessible via getFirstMediaUrl()
 ```
 
-Files are validated before upload: MIME type, file size, and extension checks run on the server side. The media library stores files with UUID-based filenames to prevent name collisions and path traversal.
+Files are validated before upload: MIME type, file size, and extension checks run on the server
+side. The media library stores files with UUID-based filenames to prevent name collisions and path
+traversal.
 
 ---
 
@@ -179,7 +189,8 @@ Files are validated before upload: MIME type, file size, and extension checks ru
 
 - `config/media-library.php` — global media library configuration
 - `config/filesystems.php` — disk definitions (local, public, s3)
-- `app/*/Models/*.php` — `registerMediaCollections()` and `registerMediaConversions()` methods on each model
+- `app/*/Models/*.php` — `registerMediaCollections()` and `registerMediaConversions()` methods on
+  each model
 - `database/migrations/` — the `media` table migration
 - [Filesystem](filesystem.md) — storage architecture and disk definitions
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design

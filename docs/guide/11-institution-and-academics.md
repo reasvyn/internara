@@ -1,15 +1,14 @@
 # Chapter 11: Institution & Academics
 
-> **Last updated:** 2026-06-16
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-16 **Changes:** sync — initial metadata sync with new format
 
 ## Description
-This chapter covers how to manage your school's institutional profile, academic departments (jurusan),
-and academic years (tahun ajaran). These three elements form the foundation that all other features —
-programs, enrollments, assessments — are built on.
+
+This chapter covers how to manage your school's institutional profile, academic departments
+(jurusan), and academic years (tahun ajaran). These three elements form the foundation that all
+other features — programs, enrollments, assessments — are built on.
 
 ---
-
 
 ## 11.1 School Profile
 
@@ -20,17 +19,18 @@ Navigate to **School → School Profile** or go directly to `/academics/school`.
 
 ### 11.1.1 Profile Fields
 
-| Field | Key | Description |
-|-------|-----|-------------|
-| **School Name** | `school.name` | Full official name (e.g. "SMKN 1 Jakarta") |
-| **NPSN** | `school.institutional_code` | National school identification number |
-| **Email** | `school.email` | General school contact email |
-| **Phone** | `school.phone` | School phone number |
-| **Address** | `school.address` | Full street address |
-| **Website** | `school.website` | School website URL |
-| **Principal Name** | `school.principal_name` | Name of the head of school |
+| Field              | Key                         | Description                                |
+| ------------------ | --------------------------- | ------------------------------------------ |
+| **School Name**    | `school.name`               | Full official name (e.g. "SMKN 1 Jakarta") |
+| **NPSN**           | `school.institutional_code` | National school identification number      |
+| **Email**          | `school.email`              | General school contact email               |
+| **Phone**          | `school.phone`              | School phone number                        |
+| **Address**        | `school.address`            | Full street address                        |
+| **Website**        | `school.website`            | School website URL                         |
+| **Principal Name** | `school.principal_name`     | Name of the head of school                 |
 
-These values are referenced throughout the system — on certificates, reports, and official documents.
+These values are referenced throughout the system — on certificates, reports, and official
+documents.
 
 ### 11.1.2 Editing the Profile
 
@@ -52,9 +52,9 @@ Navigate to **School → Departments** or go directly to `/academics/departments
 1. Click **Add Department**
 2. Fill in the fields:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Name** | Full department name | Software Engineering |
+| Field           | Description                           | Example                                    |
+| --------------- | ------------------------------------- | ------------------------------------------ |
+| **Name**        | Full department name                  | Software Engineering                       |
 | **Description** | Optional details about the department | Includes mobile and web development tracks |
 
 3. Click **Save**
@@ -94,12 +94,12 @@ Navigate to **School → Academic Years** or go directly to `/academics/academic
 1. Click **Add Academic Year**
 2. Fill in the fields:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Name** | Display name for the year | 2025/2026 |
-| **Start Date** | First day of the academic year | 14 July 2025 |
-| **End Date** | Last day of the academic year | 26 June 2026 |
-| **Active** | Toggle to make this the active year | Only one year can be active |
+| Field          | Description                         | Example                     |
+| -------------- | ----------------------------------- | --------------------------- |
+| **Name**       | Display name for the year           | 2025/2026                   |
+| **Start Date** | First day of the academic year      | 14 July 2025                |
+| **End Date**   | Last day of the academic year       | 26 June 2026                |
+| **Active**     | Toggle to make this the active year | Only one year can be active |
 
 3. Click **Save**
 
@@ -161,14 +161,13 @@ records, then try again.
 
 ### Cannot activate an academic year
 
-Verify that the year's date range does not overlap with another existing year. Each year must have
-a unique date range — no two years can share periods.
+Verify that the year's date range does not overlap with another existing year. Each year must have a
+unique date range — no two years can share periods.
 
 ### School profile changes not visible
 
-The school profile is cached for performance. Changes take effect immediately, but if you are
-using a page-level cache (e.g. Varnish, CloudFlare), you may need to purge the cache to see
-updates.
+The school profile is cached for performance. Changes take effect immediately, but if you are using
+a page-level cache (e.g. Varnish, CloudFlare), you may need to purge the cache to see updates.
 
 ### Academic year not appearing in dropdowns
 

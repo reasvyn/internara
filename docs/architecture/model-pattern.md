@@ -1,10 +1,11 @@
 # Model Pattern Reference — Persistence, Relationships & Entity Bridges
 
-> **Last updated:** 2026-06-10
-> **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-06-10 **Changes:** initial metadata — no content changes
+
 ## Description
 
-Model conventions: BaseModel, UUID primary keys, #[Fillable] attribute, scopes, relationships, factories, and Entity bridge pattern.
+Model conventions: BaseModel, UUID primary keys, #[Fillable] attribute, scopes, relationships,
+factories, and Entity bridge pattern.
 
 ## 1. Active Record Philosophy
 
@@ -26,12 +27,12 @@ extracted into Entity classes (see [entity-pattern.md](entity-pattern.md)).
 
 All models (except User) extend `BaseModel`, which configures:
 
-| Concern              | Implementation                                        |
-| -------------------- | ----------------------------------------------------- |
-| UUID primary key     | `use HasUuids;` (Laravel's trait, generates UUID v7)  |
-| Non-incrementing     | Inherits `$incrementing = false` from `HasUuids`      |
-| String key type      | Inherits `$keyType = 'string'` from `HasUuids`        |
-| Common scopes        | `scopeActive()`, `scopeInactive()`, `scopeRecent()`, `scopeCreatedAfter()`, `scopeCreatedBefore()`, `scopeOrdered()` |
+| Concern          | Implementation                                                                                                       |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------- |
+| UUID primary key | `use HasUuids;` (Laravel's trait, generates UUID v7)                                                                 |
+| Non-incrementing | Inherits `$incrementing = false` from `HasUuids`                                                                     |
+| String key type  | Inherits `$keyType = 'string'` from `HasUuids`                                                                       |
+| Common scopes    | `scopeActive()`, `scopeInactive()`, `scopeRecent()`, `scopeCreatedAfter()`, `scopeCreatedBefore()`, `scopeOrdered()` |
 
 ---
 
@@ -77,8 +78,8 @@ are permitted. Enforced through code review.
 
 ## 6. `#[Fillable]` Attribute Convention
 
-Mass assignment protection uses PHP 8 **attributes**, not the traditional `$fillable` property.
-This keeps the fillable declaration adjacent to the class signature for visibility.
+Mass assignment protection uses PHP 8 **attributes**, not the traditional `$fillable` property. This
+keeps the fillable declaration adjacent to the class signature for visibility.
 
 Multi-line attribute syntax is required when the array spans multiple values. For a single value,
 inline is acceptable.
@@ -92,12 +93,12 @@ The traditional `$fillable` property is **not used** anywhere in the codebase. A
 
 Relationships follow a strict singular/plural convention based on cardinality:
 
-| Type                        | Method Name | Example                       |
-| --------------------------- | ----------- | ----------------------------- |
-| `BelongsTo` / `HasOne`      | Singular    | `user()`, `academicYear()`    |
-| `HasMany` / `BelongsToMany` | Plural      | `users()`, `registrations()`  |
-| `MorphTo`                   | Singular    | `verifiable()`                |
-| `MorphMany`                 | Plural      | `comments()`                  |
+| Type                        | Method Name | Example                      |
+| --------------------------- | ----------- | ---------------------------- |
+| `BelongsTo` / `HasOne`      | Singular    | `user()`, `academicYear()`   |
+| `HasMany` / `BelongsToMany` | Plural      | `users()`, `registrations()` |
+| `MorphTo`                   | Singular    | `verifiable()`               |
+| `MorphMany`                 | Plural      | `comments()`                 |
 
 Always define the inverse relationship. The optional `$foreignKey` parameter is used when the column
 name deviates from convention.
@@ -116,8 +117,8 @@ A model may expose multiple entity accessors when it contains data for multiple 
 
 ## 9. Scope Pattern
 
-Query scopes encapsulate common WHERE conditions. Scopes are defined at the model level and
-chain naturally through Eloquent queries.
+Query scopes encapsulate common WHERE conditions. Scopes are defined at the model level and chain
+naturally through Eloquent queries.
 
 ### Base Scopes (inherited from BaseModel / BaseAuthenticatable)
 

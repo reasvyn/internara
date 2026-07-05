@@ -1,15 +1,15 @@
 # Branding — Visual Identity & Brand Assets
 
-> **Last updated:** 2026-06-10
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+
 ## Description
 
 Brand assets, color palette, typography, logo usage, and visual identity guidelines for Internara.
 
 ## 1. Dynamic Theming
 
-Branding is fully dynamic — colors, logos, and site metadata are configurable at runtime through
-the admin panel. No code changes or build steps required.
+Branding is fully dynamic — colors, logos, and site metadata are configurable at runtime through the
+admin panel. No code changes or build steps required.
 
 ### Resolution Chain
 
@@ -41,12 +41,12 @@ The `app_info()` helper returns metadata from `composer.json`: version, author, 
 
 Four brand colors are configurable:
 
-| Color | Usage | Dark Mode |
-|-------|-------|-----------|
-| **Primary** | Main actions, links, active navigation | Lightened by 40% |
-| **Secondary** | Supporting elements | Lightened |
-| **Accent** | Highlights, call-to-action | Lightened |
-| **Base** | Page background | Darkened |
+| Color         | Usage                                  | Dark Mode        |
+| ------------- | -------------------------------------- | ---------------- |
+| **Primary**   | Main actions, links, active navigation | Lightened by 40% |
+| **Secondary** | Supporting elements                    | Lightened        |
+| **Accent**    | Highlights, call-to-action             | Lightened        |
+| **Base**      | Page background                        | Darkened         |
 
 The system automatically computes:
 
@@ -73,55 +73,55 @@ system auto-detects when manual colors match a preset and re-selects it.
 ## 3. Dynamic Configuration vs Compile-Time CSS
 
 Brand colors are **not hardcoded in CSS**. The `Theme::cssVariables()` method generates CSS custom
-properties for both light and dark themes, injected as an inline `<style>` block on every page
-load. A color change in the admin panel is reflected on the next page refresh — no CSS rebuild,
-no deployment, no cache clear.
+properties for both light and dark themes, injected as an inline `<style>` block on every page load.
+A color change in the admin panel is reflected on the next page refresh — no CSS rebuild, no
+deployment, no cache clear.
 
 Only color values are dynamic. Component styles, layout grid, spacing, and typography are compiled
-at build time. The inline style block is approximately 50 CSS custom properties — negligible
-impact on page size.
+at build time. The inline style block is approximately 50 CSS custom properties — negligible impact
+on page size.
 
 ---
 
 ## 4. Logo Management
 
 Brand logo and favicon are uploaded through the admin settings panel. Files stored in
-`public/brand/`. The URL is saved as a setting value. The `brand('logo')` helper returns this
-URL, falling back to a default file if none uploaded.
+`public/brand/`. The URL is saved as a setting value. The `brand('logo')` helper returns this URL,
+falling back to a default file if none uploaded.
 
-Light/dark mode display uses an `invert` CSS filter — the image renders as a solid white
-silhouette on dark backgrounds.
+Light/dark mode display uses an `invert` CSS filter — the image renders as a solid white silhouette
+on dark backgrounds.
 
-A separate **school logo** is managed through the media library and displayed on the school
-profile page.
+A separate **school logo** is managed through the media library and displayed on the school profile
+page.
 
 ---
 
 ## 5. Font Strategy
 
-| Context | Typeface | Weights | Strategy |
-|---------|----------|---------|----------|
-| UI | Instrument Sans | 400, 500, 600 | Self-hosted WOFF2, `font-display: swap` |
-| Headings | Instrument Sans | 900 (Heavy) | Tight letter-spacing |
-| Email | Arial | — | Maximum email client compatibility |
-| PDF - recovery codes | Courier New | — | Monospace for readability |
-| PDF - body | System fonts | — | Broad compatibility |
+| Context              | Typeface        | Weights       | Strategy                                |
+| -------------------- | --------------- | ------------- | --------------------------------------- |
+| UI                   | Instrument Sans | 400, 500, 600 | Self-hosted WOFF2, `font-display: swap` |
+| Headings             | Instrument Sans | 900 (Heavy)   | Tight letter-spacing                    |
+| Email                | Arial           | —             | Maximum email client compatibility      |
+| PDF - recovery codes | Courier New     | —             | Monospace for readability               |
+| PDF - body           | System fonts    | —             | Broad compatibility                     |
 
 Self-hosting eliminates external requests and ensures reliable loading. The `font-display: swap`
-strategy prevents invisible text (FOIT) — browser renders with fallback first, swaps when
-Instrument Sans finishes loading.
+strategy prevents invisible text (FOIT) — browser renders with fallback first, swaps when Instrument
+Sans finishes loading.
 
 ---
 
 ## 6. Key Locations
 
-| Component | Path |
-|-----------|------|
-| `brand()` / `app_info()` helpers | `app/Settings/Support/helpers.php` |
-| Brand resolver | `app/Settings/Support/Brand.php` |
-| Theme (color computation) | `app/Settings/Theme/Support/Theme.php` |
-| Color utility | `app/Core/Support/Color.php` |
-| Admin branding form | `app/Settings/Livewire/SystemSetting.php` |
-| Color presets config | `config/settings.php` |
-| Font files | `resources/fonts/` |
-| CSS entry point | `resources/css/app.css` |
+| Component                        | Path                                      |
+| -------------------------------- | ----------------------------------------- |
+| `brand()` / `app_info()` helpers | `app/Settings/Support/helpers.php`        |
+| Brand resolver                   | `app/Settings/Support/Brand.php`          |
+| Theme (color computation)        | `app/Settings/Theme/Support/Theme.php`    |
+| Color utility                    | `app/Core/Support/Color.php`              |
+| Admin branding form              | `app/Settings/Livewire/SystemSetting.php` |
+| Color presets config             | `config/settings.php`                     |
+| Font files                       | `resources/fonts/`                        |
+| CSS entry point                  | `resources/css/app.css`                   |
