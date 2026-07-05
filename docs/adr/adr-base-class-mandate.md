@@ -1,53 +1,65 @@
 # ADR-006: Base Class Mandate
 
-> **Last updated:** 2026-06-10
-> **Changes:** sync — initial metadata sync with new format
-
+> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
 
 ## Description
 
-Every architectural role in the system has a dedicated base class (BaseModel, BaseCommandAction, BasePolicy, etc.) that enforces contracts and provides consistent behavior.
+Every architectural role in the system has a dedicated base class (BaseModel, BaseCommandAction,
+BasePolicy, etc.) that enforces contracts and provides consistent behavior.
 
 ## Context
 
-In a 19-module codebase with 12 architectural layers and 155+ Actions across 38 models, consistency is not optional. Without enforcement, drift accumulates silently: a model without UUID keys breaks foreign key assumptions, a policy without role checks allows unauthorized access, and an action without transaction wrapping leaves partial database writes on failure.
+In a 19-module codebase with 12 architectural layers and 155+ Actions across 38 models, consistency
+is not optional. Without enforcement, drift accumulates silently: a model without UUID keys breaks
+foreign key assumptions, a policy without role checks allows unauthorized access, and an action
+without transaction wrapping leaves partial database writes on failure.
 
-Architecture tests previously caught these violations but were removed due to a `pest-plugin-arch` compatibility bug. Until restored, enforcement relies on PHPStan custom rules and code review.
+Architecture tests previously caught these violations but were removed due to a `pest-plugin-arch`
+compatibility bug. Until restored, enforcement relies on PHPStan custom rules and code review.
 
 ## Decision
 
-Every architectural layer has exactly one base class from Core. There is no alternative. The following table defines the mapping:
+Every architectural layer has exactly one base class from Core. There is no alternative. The
+following table defines the mapping:
 
-| Layer | Base Class | Provides | Enforced By |
-|---|---|---|---|
-| Model | BaseModel | UUID v7 (HasUuids), non-incrementing, string key type | extends check |
-| Action (Command/Process) | BaseAction | transaction(), log(), HandlesActionErrors | extends check |
-| Action (Read) | None required | — | — |
-| Entity | BaseEntity | final readonly, fromModel bridge | extends + final check |
-| Policy | BasePolicy | AuthorizesRoles + AuthorizesOwnership traits | extends check |
-| Livewire CRUD | BaseRecordManager | Search, filter, sort, pagination, bulk actions | extends check |
-| Controller | BaseController | Cross-cutting HTTP concerns | extends check |
-| Form Request | BaseFormRequest (Core's) | Consistent ValidationFailedException | extends check |
-| Enum | Implements LabelEnum | label(): string method | implements check |
-| Status Enum | Implements StatusEnum + LabelEnum | canTransitionTo(), isTerminal() | implements check |
-| Exception | AppException or ModuleException | HasExceptionContext trait | extends check |
-| Cache key | `config/cache-keys.php` | Centralized key registry | config array |
+| Layer                    | Base Class                        | Provides                                              | Enforced By           |
+| ------------------------ | --------------------------------- | ----------------------------------------------------- | --------------------- |
+| Model                    | BaseModel                         | UUID v7 (HasUuids), non-incrementing, string key type | extends check         |
+| Action (Command/Process) | BaseAction                        | transaction(), log(), HandlesActionErrors             | extends check         |
+| Action (Read)            | None required                     | —                                                     | —                     |
+| Entity                   | BaseEntity                        | final readonly, fromModel bridge                      | extends + final check |
+| Policy                   | BasePolicy                        | AuthorizesRoles + AuthorizesOwnership traits          | extends check         |
+| Livewire CRUD            | BaseRecordManager                 | Search, filter, sort, pagination, bulk actions        | extends check         |
+| Controller               | BaseController                    | Cross-cutting HTTP concerns                           | extends check         |
+| Form Request             | BaseFormRequest (Core's)          | Consistent ValidationFailedException                  | extends check         |
+| Enum                     | Implements LabelEnum              | label(): string method                                | implements check      |
+| Status Enum              | Implements StatusEnum + LabelEnum | canTransitionTo(), isTerminal()                       | implements check      |
+| Exception                | AppException or ModuleException   | HasExceptionContext trait                             | extends check         |
+| Cache key                | `config/cache-keys.php`           | Centralized key registry                              | config array          |
 
 ### Exception
 
-The `User` model cannot extend `BaseModel` — it must extend `Authenticatable` for authentication features. It manually applies `HasUuids` and overrides `getIncrementing()` and `getKeyType()` to maintain UUID consistency. This is the sole exception.
+The `User` model cannot extend `BaseModel` — it must extend `Authenticatable` for authentication
+features. It manually applies `HasUuids` and overrides `getIncrementing()` and `getKeyType()` to
+maintain UUID consistency. This is the sole exception.
 
 ### Enforcement Gap
 
-Until architecture tests are restored (planned when `pest-plugin-arch` stabilizes), PHPStan custom rules and code review serve as enforcement. Violations are considered blocking in code review.
+Until architecture tests are restored (planned when `pest-plugin-arch` stabilizes), PHPStan custom
+rules and code review serve as enforcement. Violations are considered blocking in code review.
 
 ## Consequences
 
-- **Positive**: Every class in a given layer behaves identically — UUID keys, transactional actions, authorized policies. Predictable across 465+ files.
-- **Positive**: Cross-cutting changes (e.g., adding a new feature to `BaseAction`) apply to all 150+ actions automatically.
-- **Positive**: New developers can look at any module file and know the structure — every model, action, and policy follows the same pattern.
-- **Negative**: The User model exception is documented but adds a maintenance burden — it must be kept in sync with BaseModel features.
-- **Negative**: Changing a base class affects all consuming classes — requires careful testing and impact analysis.
+- **Positive**: Every class in a given layer behaves identically — UUID keys, transactional actions,
+  authorized policies. Predictable across 465+ files.
+- **Positive**: Cross-cutting changes (e.g., adding a new feature to `BaseAction`) apply to all 150+
+  actions automatically.
+- **Positive**: New developers can look at any module file and know the structure — every model,
+  action, and policy follows the same pattern.
+- **Negative**: The User model exception is documented but adds a maintenance burden — it must be
+  kept in sync with BaseModel features.
+- **Negative**: Changing a base class affects all consuming classes — requires careful testing and
+  impact analysis.
 
 ## References
 

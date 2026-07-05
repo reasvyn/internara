@@ -340,7 +340,10 @@ acknowledgements.
 All 19 modules are vertical slices cross-cutting the 4-layer architecture defined in
 [`docs/architecture.md`](../architecture.md):
 
-- **Layer 4 — Presentation/UI** — Livewire, Blade, maryUI/DaisyUI, Controllers, Policies, Routes, Console
+- **Layer 4 — Presentation/UI** — Livewire, Blade, maryUI/DaisyUI, Controllers, Policies, Routes,
+  Console
 - **Layer 3 — Business/Domain Ops** — Command/Read/Process Actions, Events, Listeners, Notifications
-- **Layer 2 — Data/Persistent** — Eloquent models, Entities (final readonly), DTOs, Enums, Database, Config
-- **Layer 1 — Framework/Infra** — PHP 8.4, Laravel 13, Core base classes, Contracts, Exceptions, Services
+- **Layer 2 — Data/Persistent** — Eloquent models, Entities (final readonly), DTOs, Enums, Database,
+  Config
+- **Layer 1 — Framework/Infra** — PHP 8.4, Laravel 13, Core base classes, Contracts, Exceptions,
+  Services

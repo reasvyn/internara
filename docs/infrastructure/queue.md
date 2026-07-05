@@ -1,27 +1,30 @@
 # Queue — Queue Configuration & Job Processing
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+
 ## Description
 
-Queue driver configuration, job classes, failure handling, and worker management across different environments.
+Queue driver configuration, job classes, failure handling, and worker management across different
+environments.
 
 ## Purpose
 
-The queue layer enables asynchronous job processing. In Tier 1 (shared hosting), all jobs run **synchronously** via `QUEUE_CONNECTION=sync` — no worker process needed. In Tier 2+, Supervisor manages dual pipeline workers to move heavy operations off the HTTP request cycle.
+The queue layer enables asynchronous job processing. In Tier 1 (shared hosting), all jobs run
+**synchronously** via `QUEUE_CONNECTION=sync` — no worker process needed. In Tier 2+, Supervisor
+manages dual pipeline workers to move heavy operations off the HTTP request cycle.
 
 ---
 
 ## Driver Strategy by Tier
 
-| Aspect          | Tier 1 (Shared Hosting — up to 500 registered users) | Tier 2+ (Standard / HA)      |
-| --------------- | ---------------------------------------------------- | ---------------------------- |
-| **Driver**      | `sync`                                               | `redis`                      |
-| **Worker**      | None (inline)                                        | Supervisor-managed           |
-| **Pipelines**   | N/A                                                  | `default` + `documents`      |
-| **Retries**     | N/A (inline)                                         | 3 attempts with backoff      |
-| **Failed jobs** | N/A                                                  | `failed_jobs` table          |
-| **Throughput**  | N/A                                                  | ~1,000+ jobs/min             |
+| Aspect          | Tier 1 (Shared Hosting — up to 500 registered users) | Tier 2+ (Standard / HA) |
+| --------------- | ---------------------------------------------------- | ----------------------- |
+| **Driver**      | `sync`                                               | `redis`                 |
+| **Worker**      | None (inline)                                        | Supervisor-managed      |
+| **Pipelines**   | N/A                                                  | `default` + `documents` |
+| **Retries**     | N/A (inline)                                         | 3 attempts with backoff |
+| **Failed jobs** | N/A                                                  | `failed_jobs` table     |
+| **Throughput**  | N/A                                                  | ~1,000+ jobs/min        |
 
 ```env
 # Tier 1 (default) — no worker needed
@@ -61,12 +64,12 @@ flowchart LR
 
 ### Pipeline Responsibilities
 
-| Queue        | Jobs Processed                                  | Priority |
-| ------------ | ----------------------------------------------- | -------- |
-| `default`    | Email delivery, in-app notifications, alerts    | High     |
-| `default`    | Media conversions (image thumbnails, WebP)      | Medium   |
-| `documents`  | Certificate PDF generation                      | Low      |
-| `documents`  | Report compilation (final grade cards, etc.)    | Low      |
+| Queue       | Jobs Processed                               | Priority |
+| ----------- | -------------------------------------------- | -------- |
+| `default`   | Email delivery, in-app notifications, alerts | High     |
+| `default`   | Media conversions (image thumbnails, WebP)   | Medium   |
+| `documents` | Certificate PDF generation                   | Low      |
+| `documents` | Report compilation (final grade cards, etc.) | Low      |
 
 ### Supervisor Configuration (Tier 2+)
 
@@ -113,7 +116,8 @@ php artisan queue:monitor default:default,documents:documents --max=100
 
 ## Job Design
 
-Jobs are written the same way regardless of driver — the same code works in sync mode today and async mode tomorrow:
+Jobs are written the same way regardless of driver — the same code works in sync mode today and
+async mode tomorrow:
 
 ```php
 class ProcessMediaConversion implements ShouldQueue
@@ -155,7 +159,8 @@ class ProcessMediaConversion implements ShouldQueue
 
 #Queue — Queue Configuration & Job Processinging in Sync Mode (Tier 1 — Shared Hosting)
 
-With `QUEUE_CONNECTION=sync`, every job executes immediately during the HTTP request. This is the correct default for deployments with up to 500 registered users per PKL period.
+With `QUEUE_CONNECTION=sync`, every job executes immediately during the HTTP request. This is the
+correct default for deployments with up to 500 registered users per PKL period.
 
 | Operation                  | Behavior                          | User Experience                 |
 | -------------------------- | --------------------------------- | ------------------------------- |

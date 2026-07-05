@@ -1,14 +1,18 @@
 # Cache — Caching Strategy & Configuration
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+
 ## Description
 
-Cache driver configuration, key naming conventions, event-driven invalidation strategy, and warming patterns.
+Cache driver configuration, key naming conventions, event-driven invalidation strategy, and warming
+patterns.
 
 ## Purpose
 
-The cache layer reduces database load and response latency by storing computed or frequently accessed data in a fast retrieval store. It is a **performance optimization**, not a persistence mechanism. Data cached today may not be cached tomorrow, and the application must function correctly on cache miss.
+The cache layer reduces database load and response latency by storing computed or frequently
+accessed data in a fast retrieval store. It is a **performance optimization**, not a persistence
+mechanism. Data cached today may not be cached tomorrow, and the application must function correctly
+on cache miss.
 
 ---
 
@@ -59,7 +63,8 @@ REDIS_PORT=6379
 
 ### OpCache (Bytecode Cache)
 
-PHP OpCache caches compiled PHP bytecode in shared memory — essential for production performance. Without it, PHP re-parses and compiles every PHP file on every request.
+PHP OpCache caches compiled PHP bytecode in shared memory — essential for production performance.
+Without it, PHP re-parses and compiles every PHP file on every request.
 
 ```ini
 ; /etc/php/8.4/cli/conf.d/opcache.ini
@@ -87,7 +92,8 @@ opcache.revalidate_freq=0               ; Check every request
 
 1. **If you update a value, invalidate its cache entry.** This is the fundamental rule.
 2. Prefer **targeted invalidation** — clear only the keys that changed, not everything.
-3. Use **event-driven invalidation** for cross-module cache keys — the Command Action dispatches an event, a listener flushes the affected keys.
+3. Use **event-driven invalidation** for cross-module cache keys — the Command Action dispatches an
+   event, a listener flushes the affected keys.
 4. Full cache flushes (`php artisan cache:clear`) are for maintenance only, not normal operations.
 
 ### Invalidation Flow
@@ -124,7 +130,8 @@ Cache::forget(config('cache-keys.theme_css_variables'));
 
 ### Centralized Registry
 
-Every cache key MUST be declared in `config/cache-keys.php`. This prevents collisions, makes dependencies discoverable, and enables systematic flushing.
+Every cache key MUST be declared in `config/cache-keys.php`. This prevents collisions, makes
+dependencies discoverable, and enables systematic flushing.
 
 ```php
 // config/cache-keys.php
@@ -164,7 +171,8 @@ Examples:
 
 ### Single Instance for Multiple Services
 
-A single Redis instance can serve cache, session, and queue by using separate databases. Session and queue use their own dedicated drivers (not the cache store).
+A single Redis instance can serve cache, session, and queue by using separate databases. Session and
+queue use their own dedicated drivers (not the cache store).
 
 ```env
 CACHE_STORE=redis
@@ -240,7 +248,8 @@ php artisan optimize:clear    # Clear ALL caches (config, route, view, events, c
 php artisan system:cache-warm
 ```
 
-This pre-warms settings, brand values, compiles config/views/events, and prepares the cache for first requests after deployment.
+This pre-warms settings, brand values, compiles config/views/events, and prepares the cache for
+first requests after deployment.
 
 ---
 

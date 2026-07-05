@@ -1,14 +1,13 @@
 # Chapter 14: Internship Management & Handbook
 
-> **Last updated:** 2026-06-16
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-16 **Changes:** sync — initial metadata sync with new format
 
 ## Description
+
 This chapter covers how to create and manage internship programs (lowongan PKL), organize students
 into groups, and publish handbooks for students to read and acknowledge.
 
 ---
-
 
 ## 14.1 Internship Programs
 
@@ -22,15 +21,15 @@ Navigate to **Internship → Programs** or go directly to `/admin/internships`.
 1. Click **Add Program**
 2. Fill in the fields:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Name** | Program/batch name | PKL 2025/2026 — Software Engineering |
-| **Academic Year** | The school year this program belongs to | 2025/2026 |
-| **Start Date** | First day of the internship period | 14 July 2025 |
-| **End Date** | Last day of the internship period | 26 June 2026 |
-| **Description** | Optional program description | |
-| **Registration Start** | When student registration opens (optional) | 1 June 2025 |
-| **Registration End** | When student registration closes (optional) | 10 July 2025 |
+| Field                  | Description                                 | Example                              |
+| ---------------------- | ------------------------------------------- | ------------------------------------ |
+| **Name**               | Program/batch name                          | PKL 2025/2026 — Software Engineering |
+| **Academic Year**      | The school year this program belongs to     | 2025/2026                            |
+| **Start Date**         | First day of the internship period          | 14 July 2025                         |
+| **End Date**           | Last day of the internship period           | 26 June 2026                         |
+| **Description**        | Optional program description                |                                      |
+| **Registration Start** | When student registration opens (optional)  | 1 June 2025                          |
+| **Registration End**   | When student registration closes (optional) | 10 July 2025                         |
 
 3. Click **Save**
 
@@ -51,13 +50,13 @@ stateDiagram-v2
     CANCELLED --> [*]
 ```
 
-| Status | Meaning | Registrations Allowed? |
-|--------|---------|----------------------|
-| **Draft** | Being set up, not visible to students | No |
-| **Published** | Open for student registration | Yes |
-| **Active** | Program is running | No (existing registrations proceed) |
-| **Completed** | All students finished, grades finalized | No |
-| **Cancelled** | Program cancelled | No |
+| Status        | Meaning                                 | Registrations Allowed?              |
+| ------------- | --------------------------------------- | ----------------------------------- |
+| **Draft**     | Being set up, not visible to students   | No                                  |
+| **Published** | Open for student registration           | Yes                                 |
+| **Active**    | Program is running                      | No (existing registrations proceed) |
+| **Completed** | All students finished, grades finalized | No                                  |
+| **Cancelled** | Program cancelled                       | No                                  |
 
 ### 14.1.3 Editing a Program
 
@@ -109,12 +108,12 @@ Navigate to **Internship → Groups** or go directly to `/admin/internships/grou
 1. Click **Add Group**
 2. Fill in the fields:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Name** | Group name | Group A — PT Teknologi Maju |
-| **Internship** | The program this group belongs to | PKL 2025/2026 |
-| **Placement** | The company slot assigned to this group | PT Teknologi Maju (3 slots) |
-| **Description** | Optional notes | |
+| Field           | Description                             | Example                     |
+| --------------- | --------------------------------------- | --------------------------- |
+| **Name**        | Group name                              | Group A — PT Teknologi Maju |
+| **Internship**  | The program this group belongs to       | PKL 2025/2026               |
+| **Placement**   | The company slot assigned to this group | PT Teknologi Maju (3 slots) |
+| **Description** | Optional notes                          |                             |
 
 3. Click **Save**
 
@@ -123,11 +122,11 @@ Navigate to **Internship → Groups** or go directly to `/admin/internships/grou
 1. Open a group and click **Manage Members**
 2. Add members by selecting their role:
 
-| Role | Description |
-|------|-------------|
-| **Student** | A registered student placed in this group |
-| **School Teacher** | The teacher supervising this group |
-| **Industry Supervisor** | The company mentor for this group |
+| Role                    | Description                               |
+| ----------------------- | ----------------------------------------- |
+| **Student**             | A registered student placed in this group |
+| **School Teacher**      | The teacher supervising this group        |
+| **Industry Supervisor** | The company mentor for this group         |
 
 3. Click **Add** to confirm
 
@@ -156,13 +155,13 @@ Navigate to **System → Handbooks** or go directly to `/admin/handbooks`.
 1. Click **New Handbook**
 2. Fill in the fields:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Title** | Handbook title | PKL Code of Conduct 2025/2026 |
-| **Target Audience** | Who should see this handbook | All Roles / Students / Teachers / Supervisors |
-| **Description** | Short summary of the handbook | |
-| **PDF File** | Upload the handbook document (PDF, max 10 MB) | |
-| **Active** | Toggle visibility on/off | On |
+| Field               | Description                                   | Example                                       |
+| ------------------- | --------------------------------------------- | --------------------------------------------- |
+| **Title**           | Handbook title                                | PKL Code of Conduct 2025/2026                 |
+| **Target Audience** | Who should see this handbook                  | All Roles / Students / Teachers / Supervisors |
+| **Description**     | Short summary of the handbook                 |                                               |
+| **PDF File**        | Upload the handbook document (PDF, max 10 MB) |                                               |
+| **Active**          | Toggle visibility on/off                      | On                                            |
 
 3. Click **Save**
 
@@ -182,6 +181,7 @@ Click **Delete** to remove a handbook. This hides it from all users.
 Navigate to **Student Portal → Handbooks** from the sidebar.
 
 Each handbook card shows:
+
 - **Title** and description
 - **Version number**
 - **Status** — Acknowledged or needs acknowledgment
@@ -205,10 +205,10 @@ acknowledging them first.
 
 Handbooks are shown based on your role:
 
-| Your Role | Handbooks You See |
-|-----------|-------------------|
-| Student | Handbooks targeted at Students or All Roles |
-| Teacher | Handbooks targeted at Teachers or All Roles |
+| Your Role  | Handbooks You See                              |
+| ---------- | ---------------------------------------------- |
+| Student    | Handbooks targeted at Students or All Roles    |
+| Teacher    | Handbooks targeted at Teachers or All Roles    |
 | Supervisor | Handbooks targeted at Supervisors or All Roles |
 
 ---
@@ -218,6 +218,7 @@ Handbooks are shown based on your role:
 ### Cannot delete a program
 
 The system blocks deletion if the program has:
+
 - Active placements (company slots allocated)
 - Student registrations
 
@@ -226,6 +227,7 @@ Either cancel the program instead, or remove all placements and registrations fi
 ### Cannot close a program
 
 Run the **Check Readiness** tool to see exactly what's blocking closure. Common blockers:
+
 - Assessments not finalized
 - Submissions not graded
 - Supervision logs unverified
@@ -234,6 +236,7 @@ Run the **Check Readiness** tool to see exactly what's blocking closure. Common 
 ### Student cannot see a handbook
 
 Check that:
+
 - The handbook is set to **Active**
 - The handbook's **Target Audience** includes the student's role
 - The handbook has an uploaded PDF file
@@ -246,4 +249,5 @@ click **Mark as Read** again.
 ---
 
 **← Previous: [Chapter 13: Supervisor & Partnership Management](13-supervisor-and-partnership.md)**
-**Next: [Chapter 15: Internship Registration & Placement](15-internship-registration-and-placement.md)**
+**Next:
+[Chapter 15: Internship Registration & Placement](15-internship-registration-and-placement.md)**

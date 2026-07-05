@@ -1,15 +1,14 @@
 # Chapter 19: Student Report & Certification
 
-> **Last updated:** 2026-06-16
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-16 **Changes:** sync — initial metadata sync with new format
 
 ## Description
-This chapter covers the final stage of the internship program: the **final grade card** (Nilai Raport
-PKL) which aggregates scores from all assessment sources, and the **completion certificate** that
-is issued after the grade is finalised.
+
+This chapter covers the final stage of the internship program: the **final grade card** (Nilai
+Raport PKL) which aggregates scores from all assessment sources, and the **completion certificate**
+that is issued after the grade is finalised.
 
 ---
-
 
 ## 19.1 Final Grade Card Overview
 
@@ -24,12 +23,12 @@ The grade card is calculated per registration (1:1 with each student's internshi
 
 The final grade draws from these assessment sources:
 
-| Source | What It Represents | Who Provides It |
-|--------|-------------------|-----------------|
-| **Assessment rubric** | Competency evaluation (skills, attitude) | Teacher / Supervisor |
-| **Assignment submissions** | Task grades (including the final report) | Teacher |
-| **Attendance rate** | Clock-in/out compliance | System (auto) |
-| **Logbook compliance** | Journal submission rate | System (auto) |
+| Source                     | What It Represents                       | Who Provides It      |
+| -------------------------- | ---------------------------------------- | -------------------- |
+| **Assessment rubric**      | Competency evaluation (skills, attitude) | Teacher / Supervisor |
+| **Assignment submissions** | Task grades (including the final report) | Teacher              |
+| **Attendance rate**        | Clock-in/out compliance                  | System (auto)        |
+| **Logbook compliance**     | Journal submission rate                  | System (auto)        |
 
 ### 19.1.2 Grade Formula
 
@@ -50,19 +49,20 @@ Weights are defined in the **Internship Program** settings and can be customised
 
 When a grade card is finalised, it captures:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Supervisor Score** | Score from industry supervisor assessment | 85.5 |
-| **Teacher Score** | Score from school teacher assessment | 90.0 |
-| **Exam Score** | Exam or presentation score | 78.3 |
-| **Final Score** | Weighted composite score | 84.6 |
-| **Grade Letter** | Letter grade (A/B/C/D/E) | A |
-| **Industry Feedback** | Feedback from the host company | "Excellent performance" |
-| **Status** | Current workflow state | Approved |
+| Field                 | Description                               | Example                 |
+| --------------------- | ----------------------------------------- | ----------------------- |
+| **Supervisor Score**  | Score from industry supervisor assessment | 85.5                    |
+| **Teacher Score**     | Score from school teacher assessment      | 90.0                    |
+| **Exam Score**        | Exam or presentation score                | 78.3                    |
+| **Final Score**       | Weighted composite score                  | 84.6                    |
+| **Grade Letter**      | Letter grade (A/B/C/D/E)                  | A                       |
+| **Industry Feedback** | Feedback from the host company            | "Excellent performance" |
+| **Status**            | Current workflow state                    | Approved                |
 
 ### 19.2.1 Archived Snapshot
 
 On finalisation, the system captures a full **archived snapshot** of:
+
 - Student identity (name, email, NISN)
 - Internship program name and academic year
 - Company name and address
@@ -70,15 +70,14 @@ On finalisation, the system captures a full **archived snapshot** of:
 - Teacher and supervisor names
 - All component scores and the composite score
 
-This ensures the grade card remains readable even if the original records (student account,
-company, program) are later deleted.
+This ensures the grade card remains readable even if the original records (student account, company,
+program) are later deleted.
 
 ---
 
 ## 19.3 Grade Card Workflow
 
-The grade card follows a workflow driven by the student's assessment results, not by student
-input.
+The grade card follows a workflow driven by the student's assessment results, not by student input.
 
 ```
 Score Sources ──> System compiles ──> Draft ──> Submitted
@@ -106,7 +105,8 @@ scores are present.
 
 ### 19.3.2 Approved
 
-A teacher or coordinator reviews the submitted grade card and can **Approve** it to accept the calculated scores and provide feedback.
+A teacher or coordinator reviews the submitted grade card and can **Approve** it to accept the
+calculated scores and provide feedback.
 
 ### 19.3.3 Finalised
 
@@ -124,12 +124,12 @@ A finalised grade card **cannot be edited** under normal circumstances.
 Draft ──> Submitted ──> Approved ──> Finalised
 ```
 
-| Status | Meaning | Editable? |
-|--------|---------|-----------|
-| **Draft** | Scores are being collected | Yes (system) |
-| **Submitted** | All scores present, awaiting review | No |
-| **Approved** | Reviewed and accepted | No |
-| **Finalised** | Locked permanently | No |
+| Status        | Meaning                             | Editable?    |
+| ------------- | ----------------------------------- | ------------ |
+| **Draft**     | Scores are being collected          | Yes (system) |
+| **Submitted** | All scores present, awaiting review | No           |
+| **Approved**  | Reviewed and accepted               | No           |
+| **Finalised** | Locked permanently                  | No           |
 
 ---
 
@@ -142,13 +142,13 @@ The grade card supports the Cross-Role Proxy model (see [ADR-014](../adr/adr-cro
 - If the supervisor is unavailable, the teacher can **proxy** as supervisor — scoring their
   competencies and performing any supervisor action. The action is logged with
   `proxy_role = 'supervisor'` in the audit trail
-- If no proxy acts and the supervisor has not scored, their assessment weight is redistributed
-  to the teacher and exam components
+- If no proxy acts and the supervisor has not scored, their assessment weight is redistributed to
+  the teacher and exam components
 - **Admin** can proxy for both teacher and supervisor roles
 
 The grade card records the proxy status for audit transparency. See
-[Chapter 18: Assignment & Assessment](18-assignment-and-assessment.md) for details on how
-individual competencies are scored.
+[Chapter 18: Assignment & Assessment](18-assignment-and-assessment.md) for details on how individual
+competencies are scored.
 
 ---
 
@@ -157,10 +157,10 @@ individual competencies are scored.
 After a student's grade card is finalised, they become eligible for a **completion certificate**.
 Certificates are digitally signed with a QR code for authenticity verification.
 
-| Role | What They Can Do |
-|------|------------------|
-| **Admin** | Create certificate templates, issue certificates (single or batch), revoke certificates |
-| **Student** | View and download own certificates |
+| Role        | What They Can Do                                                                        |
+| ----------- | --------------------------------------------------------------------------------------- |
+| **Admin**   | Create certificate templates, issue certificates (single or batch), revoke certificates |
+| **Student** | View and download own certificates                                                      |
 
 ---
 
@@ -175,12 +175,12 @@ Navigate to **Admin → Certificate Templates** or go directly to `/admin/certif
 1. Click **Add Template**
 2. Fill in the fields:
 
-| Field | Description | Example |
-|-------|-------------|---------|
-| **Name** | Template name | Sertifikat PKL 2025/2026 |
-| **Layout** | Page orientation | Portrait or Landscape |
-| **Content Template** | HTML content with placeholders | See below |
-| **Active** | Toggle visibility | Yes |
+| Field                | Description                    | Example                  |
+| -------------------- | ------------------------------ | ------------------------ |
+| **Name**             | Template name                  | Sertifikat PKL 2025/2026 |
+| **Layout**           | Page orientation               | Portrait or Landscape    |
+| **Content Template** | HTML content with placeholders | See below                |
+| **Active**           | Toggle visibility              | Yes                      |
 
 3. Click **Save Template**
 
@@ -188,22 +188,22 @@ Navigate to **Admin → Certificate Templates** or go directly to `/admin/certif
 
 The content template supports these placeholders which are replaced with actual student data:
 
-| Placeholder | Replaced With |
-|-------------|---------------|
-| `{student_name}` | Student's full name |
-| `{student_nis}` | Student's NIS/NISN |
-| `{school_name}` | School name |
-| `{department_name}` | Department (jurusan) name |
-| `{company_name}` | Host company name |
-| `{internship_name}` | Internship program name |
-| `{start_date}` | Program start date |
-| `{end_date}` | Program end date |
-| `{duration}` | Program duration in months |
-| `{score}` | Final grade score |
-| `{score_letter}` | Letter grade (A/B/C/D/E) |
-| `{certificate_number}` | Unique certificate number |
-| `{issued_date}` | Date of issuance |
-| `{supervisor_name}` | Industry supervisor name |
+| Placeholder            | Replaced With              |
+| ---------------------- | -------------------------- |
+| `{student_name}`       | Student's full name        |
+| `{student_nis}`        | Student's NIS/NISN         |
+| `{school_name}`        | School name                |
+| `{department_name}`    | Department (jurusan) name  |
+| `{company_name}`       | Host company name          |
+| `{internship_name}`    | Internship program name    |
+| `{start_date}`         | Program start date         |
+| `{end_date}`           | Program end date           |
+| `{duration}`           | Program duration in months |
+| `{score}`              | Final grade score          |
+| `{score_letter}`       | Letter grade (A/B/C/D/E)   |
+| `{certificate_number}` | Unique certificate number  |
+| `{issued_date}`        | Date of issuance           |
+| `{supervisor_name}`    | Industry supervisor name   |
 
 Example template:
 
@@ -233,10 +233,10 @@ Navigate to **Admin → Certificates** or go directly to `/admin/certificates`.
 2. Select the **student registration** (only students with finalised grade cards are shown)
 3. Select the **certificate template**
 4. Click **Issue** — the system:
-   - Generates a unique certificate number
-   - Creates a QR hash for verification
-   - Renders the certificate PDF using the template
-   - Stores the certificate record
+    - Generates a unique certificate number
+    - Creates a QR hash for verification
+    - Renders the certificate PDF using the template
+    - Stores the certificate record
 
 ### 19.7.2 Batch Issuance
 
@@ -245,8 +245,8 @@ For issuing certificates to an entire cohort at once:
 1. Click **Batch Issue**
 2. Select the **certificate template**
 3. Choose the filter: students with finalised grade cards
-4. Click **Batch Issue** — the system issues certificates to all eligible students
-   (those who do not already have a certificate)
+4. Click **Batch Issue** — the system issues certificates to all eligible students (those who do not
+   already have a certificate)
 
 ### 19.7.3 Revoking a Certificate
 
@@ -256,8 +256,8 @@ If a certificate needs to be invalidated:
 2. Click **Revoke**
 3. Confirm — the certificate status changes to **Revoked**
 
-Revocation is permanent. The serial number is retired and cannot be reused.
-The certificate remains on record for audit purposes.
+Revocation is permanent. The serial number is retired and cannot be reused. The certificate remains
+on record for audit purposes.
 
 ---
 
@@ -265,14 +265,15 @@ The certificate remains on record for audit purposes.
 
 1. Navigate to **Student Portal → My Certificates** from the sidebar
 2. All issued certificates are displayed with:
-   - Certificate number
-   - Internship program name
-   - Issue date
-   - Download button
+    - Certificate number
+    - Internship program name
+    - Issue date
+    - Download button
 
 ### 19.8.1 Downloading a Certificate
 
 Click **Download** on any certificate to save the PDF. The certificate includes:
+
 - Student name and details
 - Internship program information
 - Final score
@@ -285,14 +286,13 @@ Click **Download** on any certificate to save the PDF. The certificate includes:
 
 ### Grade card shows incorrect score
 
-Finalised grade cards cannot be edited. If a score correction is needed, contact an
-administrator who can create a new assessment round. The original grade card remains as a
-historical record.
+Finalised grade cards cannot be edited. If a score correction is needed, contact an administrator
+who can create a new assessment round. The original grade card remains as a historical record.
 
 ### Certificate template not appearing
 
-Templates must be set to **Active** to appear in the issuance dropdown. Ask an administrator
-to activate the template.
+Templates must be set to **Active** to appear in the issuance dropdown. Ask an administrator to
+activate the template.
 
 ### Student not appearing in certificate issuance list
 
@@ -307,10 +307,10 @@ student's grade card status first.
 
 ### Certificate number shows duplicate
 
-Certificate numbers are generated sequentially. If two certificates show the same number,
-contact the system administrator (see RC-10 in known issues).
+Certificate numbers are generated sequentially. If two certificates show the same number, contact
+the system administrator (see RC-10 in known issues).
 
 ---
 
-**← Previous: [Chapter 18: Assignment & Assessment](18-assignment-and-assessment.md)**
-**Next: [Chapter 20: Evaluation & Incident](20-evaluation-and-incident.md)**
+**← Previous: [Chapter 18: Assignment & Assessment](18-assignment-and-assessment.md)** **Next:
+[Chapter 20: Evaluation & Incident](20-evaluation-and-incident.md)**

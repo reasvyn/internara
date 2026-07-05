@@ -1,14 +1,14 @@
 # Chapter 15: Internship Registration & Placement
 
-> **Last updated:** 2026-06-27
-> **Changes:** initial content — add registration, placement, and account application workflow
+> **Last updated:** 2026-06-27 **Changes:** initial content — add registration, placement, and
+> account application workflow
 
 ## Description
+
 This chapter covers how students register for internship programs, how administrators place students
 at partner companies, and how students apply for company accounts.
 
 ---
-
 
 ## 15.1 Student Registration
 
@@ -25,19 +25,19 @@ Students browse published internship programs and submit registration requests.
 1. Open the internship program you want to join
 2. Click **Register**
 3. The system checks eligibility:
-   - You must have an active academic year
-   - You must not already be registered for the same period
+    - You must have an active academic year
+    - You must not already be registered for the same period
 4. Submit your registration request
 
 Your registration appears as **Pending** until an administrator reviews it.
 
 ### 15.1.3 Registration Statuses
 
-| Status | Description |
-|--------|-------------|
-| **Pending** | Awaiting administrator review |
-| **Approved** | Registration accepted, awaiting placement |
-| **Rejected** | Registration declined (reason provided) |
+| Status        | Description                                |
+| ------------- | ------------------------------------------ |
+| **Pending**   | Awaiting administrator review              |
+| **Approved**  | Registration accepted, awaiting placement  |
+| **Rejected**  | Registration declined (reason provided)    |
 | **Cancelled** | Registration withdrawn by student or admin |
 
 ---
@@ -89,15 +89,16 @@ available when:
 4. Select the placement slot (if the company has multiple)
 5. Confirm the placement
 
-The student is notified of their placement and can view their assigned company in the student portal.
+The student is notified of their placement and can view their assigned company in the student
+portal.
 
 ### 15.3.3 Placement Statuses
 
-| Status | Description |
-|--------|-------------|
-| **Active** | Student is placed and the internship is ongoing |
-| **Completed** | Student has finished the internship period |
-| **Terminated** | Placement ended early (reason recorded) |
+| Status         | Description                                     |
+| -------------- | ----------------------------------------------- |
+| **Active**     | Student is placed and the internship is ongoing |
+| **Completed**  | Student has finished the internship period      |
+| **Terminated** | Placement ended early (reason recorded)         |
 
 ### 15.3.4 Reassigning a Placement
 
@@ -144,9 +145,9 @@ Students or administrators can request changes to an active placement.
 1. Navigate to **Placements → My Placement**
 2. Click **Request Change**
 3. Select the type of change:
-   - **Company transfer** — move to a different company
-   - **Schedule adjustment** — modify start/end dates
-   - **Withdrawal** — leave the program entirely
+    - **Company transfer** — move to a different company
+    - **Schedule adjustment** — modify start/end dates
+    - **Withdrawal** — leave the program entirely
 4. Provide a reason
 5. Submit the request
 
@@ -160,5 +161,6 @@ Administrators review change requests and approve or reject them:
 
 ---
 
-**← Previous: [Chapter 14: Internship Management & Handbook](14-internship-management-and-handbook.md)**
-**Next: [Chapter 16: Attendance & Logbook](16-attendance-and-logbook.md)**
+**← Previous:
+[Chapter 14: Internship Management & Handbook](14-internship-management-and-handbook.md)** **Next:
+[Chapter 16: Attendance & Logbook](16-attendance-and-logbook.md)**

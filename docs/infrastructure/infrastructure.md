@@ -1,23 +1,27 @@
 # Infrastructure — System Architecture Overview
 
-> **Last updated:** 2026-06-14
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
 
 ## Description
-This document describes the infrastructure design for Internara — what the system looks like at each deployment tier and how components relate. It serves as a reference for provisioning, scaling, and maintenance.
+
+This document describes the infrastructure design for Internara — what the system looks like at each
+deployment tier and how components relate. It serves as a reference for provisioning, scaling, and
+maintenance.
 
 The same codebase runs across all tiers; only configuration differs.
 
 ---
 
-
 ## 1. Three Deployment Tiers
 
-Internara uses the same codebase across all tiers — only configuration changes. Tiers reflect infrastructure capacity, not feature editions. All features work at every tier; some run synchronously instead of asynchronously on shared hosting.
+Internara uses the same codebase across all tiers — only configuration changes. Tiers reflect
+infrastructure capacity, not feature editions. All features work at every tier; some run
+synchronously instead of asynchronously on shared hosting.
 
 ### Tier 1: Shared Hosting (Primary — Recommended Start)
 
-The recommended starting point for most schools. Handles up to **500 registered users per PKL period** (~50–100 peak concurrent) with no external services beyond MySQL/MariaDB and SMTP.
+The recommended starting point for most schools. Handles up to **500 registered users per PKL
+period** (~50–100 peak concurrent) with no external services beyond MySQL/MariaDB and SMTP.
 
 ```
 +-------------------------------------------------+
@@ -42,7 +46,8 @@ The recommended starting point for most schools. Handles up to **500 registered 
 
 ### Tier 2: VPS / Dedicated Server
 
-When the school outgrows shared hosting or needs async queue workers, real-time updates, and dedicated resources.
+When the school outgrows shared hosting or needs async queue workers, real-time updates, and
+dedicated resources.
 
 ```
 +-------------------------------------------------+
@@ -90,19 +95,20 @@ For large institutions requiring redundancy, read replicas, and horizontal scali
 
 ### Feature Availability by Tier
 
-All features are available at every tier. The difference is whether certain operations run synchronously (inline during the HTTP request) or asynchronously (via queue workers).
+All features are available at every tier. The difference is whether certain operations run
+synchronously (inline during the HTTP request) or asynchronously (via queue workers).
 
-| Feature                     | Tier 1 (Shared) | Tier 2 (VPS)    | Tier 3 (HA)     |
-| --------------------------- | --------------- | --------------- | --------------- |
-| Authentication & RBAC       | Yes             | Yes             | Yes             |
-| Journals (Attendance, Logbook) | Yes          | Yes             | Yes             |
-| Assignments & Grading       | Yes             | Yes             | Yes             |
-| Reports & Certificates      | Yes             | Yes             | Yes             |
-| Email notifications         | Yes (sync)      | Yes (async)     | Yes (async)     |
-| Media conversions           | Yes (sync)      | Yes (async)     | Yes (async)     |
-| In-app notifications        | Yes (pull)      | Yes (pull)      | Yes (real-time) |
-| Pulse monitoring            | Yes (request)   | Yes (request)   | Yes (request)   |
-| Registered users per PKL    | <= 500          | 500-2000        | 2000+           |
+| Feature                        | Tier 1 (Shared) | Tier 2 (VPS)  | Tier 3 (HA)     |
+| ------------------------------ | --------------- | ------------- | --------------- |
+| Authentication & RBAC          | Yes             | Yes           | Yes             |
+| Journals (Attendance, Logbook) | Yes             | Yes           | Yes             |
+| Assignments & Grading          | Yes             | Yes           | Yes             |
+| Reports & Certificates         | Yes             | Yes           | Yes             |
+| Email notifications            | Yes (sync)      | Yes (async)   | Yes (async)     |
+| Media conversions              | Yes (sync)      | Yes (async)   | Yes (async)     |
+| In-app notifications           | Yes (pull)      | Yes (pull)    | Yes (real-time) |
+| Pulse monitoring               | Yes (request)   | Yes (request) | Yes (request)   |
+| Registered users per PKL       | <= 500          | 500-2000      | 2000+           |
 
 ---
 
@@ -145,11 +151,11 @@ Internet
 
 ### Background Processes by Tier
 
-| Process          | Command                          | Tier 1 (Shared)  | Tier 2+ (VPS) | Purpose                                    |
-| ---------------- | -------------------------------- | ---------------- | ------------- | ------------------------------------------ |
-| **Queue Worker (default)** | `queue:work --queue=default` | sync (inline)    | Supervisor    | Emails, alerts, notifications              |
-| **Queue Worker (documents)** | `queue:work --queue=documents` | sync (inline) | Supervisor    | PDF certificates, reports                  |
-| **Scheduler**    | `schedule:run`                   | `/cron/{secret}` | system cron   | Daily cleanup, cache warm, Pulse recording |
+| Process                      | Command                        | Tier 1 (Shared)  | Tier 2+ (VPS) | Purpose                                    |
+| ---------------------------- | ------------------------------ | ---------------- | ------------- | ------------------------------------------ |
+| **Queue Worker (default)**   | `queue:work --queue=default`   | sync (inline)    | Supervisor    | Emails, alerts, notifications              |
+| **Queue Worker (documents)** | `queue:work --queue=documents` | sync (inline)    | Supervisor    | PDF certificates, reports                  |
+| **Scheduler**                | `schedule:run`                 | `/cron/{secret}` | system cron   | Daily cleanup, cache warm, Pulse recording |
 
 ### Dual Pipeline Supervisor Configuration (Tier 2+)
 
@@ -217,7 +223,8 @@ Generate the secret: `php -r "echo bin2hex(random_bytes(16));"`
 | Tier 1      | MySQL / MariaDB          | Shared hosting MySQL (limited connections) |
 | Tier 2+     | MySQL 8 / PostgreSQL 14+ | Dedicated, tuned                           |
 
-All tables use UUID v7 primary keys via Laravel's `HasUuids` trait. The `BaseModel` automatically provides this; `User` applies it manually since it extends `Authenticatable`.
+All tables use UUID v7 primary keys via Laravel's `HasUuids` trait. The `BaseModel` automatically
+provides this; `User` applies it manually since it extends `Authenticatable`.
 
 ### Connection Pooling
 
@@ -259,11 +266,11 @@ php artisan migrate
 
 ### Disk Definitions
 
-| Disk     | Driver | Default               | Purpose                  | Web-Accessible   |
-| -------- | ------ | --------------------- | ------------------------ | ---------------- |
-| `local`  | Local  | `storage/app/private` | Internal files, exports  | No               |
+| Disk     | Driver | Default               | Purpose                  | Web-Accessible    |
+| -------- | ------ | --------------------- | ------------------------ | ----------------- |
+| `local`  | Local  | `storage/app/private` | Internal files, exports  | No                |
 | `public` | Local  | `storage/app/public`  | User-facing files        | Yes (via symlink) |
-| `s3`     | S3     | Bucket root           | Production cloud storage | Yes (via CDN)    |
+| `s3`     | S3     | Bucket root           | Production cloud storage | Yes (via CDN)     |
 
 ### Storage by Tier
 
@@ -296,11 +303,11 @@ php artisan storage:link
 
 ### Driver by Tier
 
-| Service | Tier 1 (Shared)     | Tier 2 (VPS)  | Tier 3 (HA)        |
-| ------- | ------------------- | ------------- | ------------------ |
-| Cache   | `file` / `database` | `redis`       | `redis` (cluster)  |
-| Session | `database`          | `redis`       | `redis` (cluster)  |
-| Queue   | `sync`              | `redis`       | `redis` (cluster)  |
+| Service | Tier 1 (Shared)     | Tier 2 (VPS) | Tier 3 (HA)       |
+| ------- | ------------------- | ------------ | ----------------- |
+| Cache   | `file` / `database` | `redis`      | `redis` (cluster) |
+| Session | `database`          | `redis`      | `redis` (cluster) |
+| Queue   | `sync`              | `redis`      | `redis` (cluster) |
 
 ### Redis Database Separation
 
@@ -337,16 +344,19 @@ REDIS_CACHE_DB=1  # Cache fallback (if different from above)
 +-------------------------------------------------------+
 ```
 
-SmartLogger supports three modes: `both()` (default -- logs to both system and activity channels), `systemOnly()` (technical operations), and `activityOnly()` (business audit). PII masking automatically obfuscates `password`, `token`, `secret`, `credit_card` (full); `email`, `phone`, `name` (partial); IP addresses (first two octets).
+SmartLogger supports three modes: `both()` (default -- logs to both system and activity channels),
+`systemOnly()` (technical operations), and `activityOnly()` (business audit). PII masking
+automatically obfuscates `password`, `token`, `secret`, `credit_card` (full); `email`, `phone`,
+`name` (partial); IP addresses (first two octets).
 
 ### Retention
 
-| Data Source   | Retention | Pruning                                       |
-| ------------- | --------- | --------------------------------------------- |
-| Pulse records | 7 days    | Automatic by scheduler                        |
-| Activity log  | 365 days  | `system:cleanup` via scheduler                |
-| System logs   | 14 days   | `daily` log driver rotation                   |
-| Failed jobs   | 7 days    | `queue:prune-failed` via scheduler            |
+| Data Source   | Retention | Pruning                            |
+| ------------- | --------- | ---------------------------------- |
+| Pulse records | 7 days    | Automatic by scheduler             |
+| Activity log  | 365 days  | `system:cleanup` via scheduler     |
+| System logs   | 14 days   | `daily` log driver rotation        |
+| Failed jobs   | 7 days    | `queue:prune-failed` via scheduler |
 
 ---
 
@@ -354,10 +364,10 @@ SmartLogger supports three modes: `both()` (default -- logs to both system and a
 
 ### Recovery Objectives
 
-| Metric                    | Tier 1 (Shared) | Tier 2 (VPS) | Tier 3 (HA)  |
-| ------------------------- | --------------- | ------------ | ------------ |
-| RPO (data loss tolerance) | 24 hours        | 24 hours     | 1 hour       |
-| RTO (restoration time)    | 4 hours         | 2 hours      | 30 minutes   |
+| Metric                    | Tier 1 (Shared) | Tier 2 (VPS) | Tier 3 (HA) |
+| ------------------------- | --------------- | ------------ | ----------- |
+| RPO (data loss tolerance) | 24 hours        | 24 hours     | 1 hour      |
+| RTO (restoration time)    | 4 hours         | 2 hours      | 30 minutes  |
 
 ### Backup Schedule
 
@@ -400,15 +410,15 @@ See [Backup & Recovery](backup-recovery.md) for detailed restoration procedures.
 
 ## 10. Component Sizing Reference
 
-| Component            | Tier 1 (Shared)     | Tier 2 (VPS)   | Tier 3 (HA)              |
-| -------------------- | ------------------- | -------------- | ------------------------ |
-| **CPU**              | 1-2 shared          | 2-4 dedicated  | 2-4 per app server, 4-8 DB |
-| **RAM**              | 256 MB - 512 MB     | 4 GB           | 4 GB per app, 16 GB DB   |
-| **Storage**          | 5-10 GB             | 50 GB SSD      | 100 GB SSD + S3          |
-| **PHP-FPM children** | 5-10                | 25             | 25-50 per server         |
-| **Database buffer**  | Shared host limit   | 2 GB (MySQL)   | 8 GB (MySQL)             |
-| **Redis memory**     | N/A                 | 512 MB         | 2 GB (cluster)           |
-| **Bandwidth**        | 1 TB/mo             | 2 TB/mo        | 5 TB/mo                  |
+| Component            | Tier 1 (Shared)   | Tier 2 (VPS)  | Tier 3 (HA)                |
+| -------------------- | ----------------- | ------------- | -------------------------- |
+| **CPU**              | 1-2 shared        | 2-4 dedicated | 2-4 per app server, 4-8 DB |
+| **RAM**              | 256 MB - 512 MB   | 4 GB          | 4 GB per app, 16 GB DB     |
+| **Storage**          | 5-10 GB           | 50 GB SSD     | 100 GB SSD + S3            |
+| **PHP-FPM children** | 5-10              | 25            | 25-50 per server           |
+| **Database buffer**  | Shared host limit | 2 GB (MySQL)  | 8 GB (MySQL)               |
+| **Redis memory**     | N/A               | 512 MB        | 2 GB (cluster)             |
+| **Bandwidth**        | 1 TB/mo           | 2 TB/mo       | 5 TB/mo                    |
 
 ---
 
@@ -434,20 +444,20 @@ See [Backup & Recovery](backup-recovery.md) for detailed restoration procedures.
 
 ## Where to Find It
 
-| Concern                                 | Document                                |
-| --------------------------------------- | --------------------------------------- |
-| Installation & prerequisites            | [Installation](../guide/01-installation.md)             |
-| Deployment steps (shared hosting, VPS, Docker) | [Deployment](deployment.md)       |
-| Environment configuration               | [Configuration](configuration.md)       |
-| Database design & engine comparison     | [Database](database.md)                 |
-| Cache management & OpCache              | [Cache](cache.md)                       |
-| Session configuration & security        | [Session](session.md)                   |
-| Backup & restore procedures             | [Backup & Recovery](backup-recovery.md) |
-| Performance monitoring, Pulse, logging  | [Observability](observability.md)       |
-| File storage, S3, media library         | [Filesystem](filesystem.md)             |
-| Queue infrastructure, worker management | [Queue](queue.md)                       |
-| Notification channels & delivery        | [Notifications](notification.md)         |
-| Routing & middleware                    | [Routes](routes.md)                     |
-| Localization & i18n                     | [Localization](localization.md)         |
-| Testing & CI/CD                         | [Testing](testing.md)                   |
-| Scaling guide                           | [Scaling](scaling.md)                   |
+| Concern                                        | Document                                    |
+| ---------------------------------------------- | ------------------------------------------- |
+| Installation & prerequisites                   | [Installation](../guide/01-installation.md) |
+| Deployment steps (shared hosting, VPS, Docker) | [Deployment](deployment.md)                 |
+| Environment configuration                      | [Configuration](configuration.md)           |
+| Database design & engine comparison            | [Database](database.md)                     |
+| Cache management & OpCache                     | [Cache](cache.md)                           |
+| Session configuration & security               | [Session](session.md)                       |
+| Backup & restore procedures                    | [Backup & Recovery](backup-recovery.md)     |
+| Performance monitoring, Pulse, logging         | [Observability](observability.md)           |
+| File storage, S3, media library                | [Filesystem](filesystem.md)                 |
+| Queue infrastructure, worker management        | [Queue](queue.md)                           |
+| Notification channels & delivery               | [Notifications](notification.md)            |
+| Routing & middleware                           | [Routes](routes.md)                         |
+| Localization & i18n                            | [Localization](localization.md)             |
+| Testing & CI/CD                                | [Testing](testing.md)                       |
+| Scaling guide                                  | [Scaling](scaling.md)                       |

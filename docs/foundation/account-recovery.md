@@ -1,19 +1,18 @@
 # Account Recovery — Recovery Flow & Security
 
-> **Last updated:** 2026-06-10
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
 
 ## Description
+
 Internara provides three account recovery mechanisms, each designed for a different loss scenario:
 
-| Mechanism | When to Use | Initiator | Requirements |
-|-----------|-------------|-----------|--------------|
-| **Password Reset** | User forgot password but has email access | User (self-service) | Registered email, inbox access |
-| **Recovery Slip** | User locked out, cannot access email | Admin generates, user redeems | Username, offline delivery of codes |
-| **Super Admin Recovery** | All super admin accounts inaccessible | Server admin via CLI | SSH access, recovery key |
+| Mechanism                | When to Use                               | Initiator                     | Requirements                        |
+| ------------------------ | ----------------------------------------- | ----------------------------- | ----------------------------------- |
+| **Password Reset**       | User forgot password but has email access | User (self-service)           | Registered email, inbox access      |
+| **Recovery Slip**        | User locked out, cannot access email      | Admin generates, user redeems | Username, offline delivery of codes |
+| **Super Admin Recovery** | All super admin accounts inaccessible     | Server admin via CLI          | SSH access, recovery key            |
 
 ---
-
 
 ## 1. Password Reset (Self-Service)
 
@@ -37,26 +36,26 @@ User clicks "Forgot Password" on login page
 
 ### Rate Limiting
 
-| Endpoint | Limit | Decay |
-|----------|-------|-------|
+| Endpoint             | Limit                   | Decay |
+| -------------------- | ----------------------- | ----- |
 | Forgot password form | 3 attempts per email+IP | 3600s |
-| Password reset form | 5 attempts per email+IP | 300s |
+| Password reset form  | 5 attempts per email+IP | 300s  |
 
 ### Key Classes
 
-| Class | Location | Purpose |
-|-------|----------|---------|
-| `ForgotPassword` | `Auth/Password/Livewire/ForgotPassword.php` | Email input form |
-| `ResetPassword` | `Auth/Password/Livewire/ResetPassword.php` | New password form |
-| `SendPasswordResetLinkAction` | `Auth/Password/Actions/SendPasswordResetLinkAction.php` | Sends reset link |
-| `ResetPasswordAction` | `Auth/Password/Actions/ResetPasswordAction.php` | Resets password |
+| Class                         | Location                                                | Purpose           |
+| ----------------------------- | ------------------------------------------------------- | ----------------- |
+| `ForgotPassword`              | `Auth/Password/Livewire/ForgotPassword.php`             | Email input form  |
+| `ResetPassword`               | `Auth/Password/Livewire/ResetPassword.php`              | New password form |
+| `SendPasswordResetLinkAction` | `Auth/Password/Actions/SendPasswordResetLinkAction.php` | Sends reset link  |
+| `ResetPasswordAction`         | `Auth/Password/Actions/ResetPasswordAction.php`         | Resets password   |
 
 ---
 
 ## 2. Recovery Slip (Admin-Mediated)
 
-Used when user is locked out and cannot access email. Admin generates one-time recovery codes
-and delivers them offline.
+Used when user is locked out and cannot access email. Admin generates one-time recovery codes and
+delivers them offline.
 
 ### Admin Flow
 
@@ -92,32 +91,32 @@ User → /recover-account
 
 **Table:** `access_tokens` (with `token_type = 'account_recovery'`)
 
-| Column | Type | Purpose |
-|--------|------|---------|
-| `user_id` | FK → users(id) | Code owner |
-| `token` | varchar(255) | Bcrypt hash of plaintext code |
-| `token_type` | varchar(20) | Always `'account_recovery'` |
-| `expires_at` | datetime | Non-expiring = far-future date |
-| `last_attempt_at` | datetime | Null = unused; set on redemption |
+| Column            | Type           | Purpose                          |
+| ----------------- | -------------- | -------------------------------- |
+| `user_id`         | FK → users(id) | Code owner                       |
+| `token`           | varchar(255)   | Bcrypt hash of plaintext code    |
+| `token_type`      | varchar(20)    | Always `'account_recovery'`      |
+| `expires_at`      | datetime       | Non-expiring = far-future date   |
+| `last_attempt_at` | datetime       | Null = unused; set on redemption |
 
 Each code is single-use. Multiple codes per user (10 per batch). Validity checked via
 `RecoveryCodeState::isValid()`: `last_attempt_at === null` AND `expires_at > now`.
 
 ### Rate Limiting
 
-| Endpoint | Limit | Decay |
-|----------|-------|-------|
-| Recovery slip redemption | 3 attempts per username+IP | 300s |
+| Endpoint                 | Limit                      | Decay |
+| ------------------------ | -------------------------- | ----- |
+| Recovery slip redemption | 3 attempts per username+IP | 300s  |
 
 ### Key Classes
 
-| Class | Location | Purpose |
-|-------|----------|---------|
-| `RecoverySlipManager` | `Auth/AccountRecovery/Livewire/RecoverySlipManager.php` | Admin UI for generating slips |
-| `AccountRecovery` | `Auth/AccountRecovery/Livewire/AccountRecovery.php` | User code redemption form |
-| `GenerateRecoverySlipAction` | `Auth/AccountRecovery/Actions/GenerateRecoverySlipAction.php` | Generates 10 codes |
-| `RedeemRecoverySlipAction` | `Auth/AccountRecovery/Actions/RedeemRecoverySlipAction.php` | Validates and redeems code |
-| `RecoveryCodeState` | `Auth/AccountRecovery/Entities/RecoveryCodeState.php` | Value object for code validity |
+| Class                        | Location                                                      | Purpose                        |
+| ---------------------------- | ------------------------------------------------------------- | ------------------------------ |
+| `RecoverySlipManager`        | `Auth/AccountRecovery/Livewire/RecoverySlipManager.php`       | Admin UI for generating slips  |
+| `AccountRecovery`            | `Auth/AccountRecovery/Livewire/AccountRecovery.php`           | User code redemption form      |
+| `GenerateRecoverySlipAction` | `Auth/AccountRecovery/Actions/GenerateRecoverySlipAction.php` | Generates 10 codes             |
+| `RedeemRecoverySlipAction`   | `Auth/AccountRecovery/Actions/RedeemRecoverySlipAction.php`   | Validates and redeems code     |
+| `RecoveryCodeState`          | `Auth/AccountRecovery/Entities/RecoveryCodeState.php`         | Value object for code validity |
 
 ---
 
@@ -173,14 +172,14 @@ Server admin SSH into machine
 
 ### Security
 
-| Measure | Detail |
-|---------|--------|
-| File permission | `0600` — server owner only |
-| Storage location | `storage/app/private/` — not web-accessible |
-| DB storage | Hashed only — plaintext never stored |
-| Auto-save | During setup finalization |
-| Clipboard | Copy button on setup complete screen |
-| Audit | Every recovery attempt logged via SmartLogger |
+| Measure          | Detail                                        |
+| ---------------- | --------------------------------------------- |
+| File permission  | `0600` — server owner only                    |
+| Storage location | `storage/app/private/` — not web-accessible   |
+| DB storage       | Hashed only — plaintext never stored          |
+| Auto-save        | During setup finalization                     |
+| Clipboard        | Copy button on setup complete screen          |
+| Audit            | Every recovery attempt logged via SmartLogger |
 
 ---
 
@@ -199,12 +198,12 @@ Global: AuthThrottleMiddleware (30 req/min/IP)
 
 ## Key Locations
 
-| Component | Path |
-|-----------|------|
-| RecoverAdminCommand | `SysAdmin/Console/Commands/RecoverAdminCommand.php` |
-| ShowRecoveryPathCommand | `SysAdmin/Console/Commands/ShowRecoveryPathCommand.php` |
-| ShowRecoveryKeyCommand | `SysAdmin/Console/Commands/ShowRecoveryKeyCommand.php` |
-| RecoverSuperAdminAction | `Auth/SuperAdmin/Actions/RecoverSuperAdminAction.php` |
-| SaveRecoveryKeyAction | `User/UserManagement/Actions/SaveRecoveryKeyAction.php` |
-| ReadRecoveryKeyAction | `User/UserManagement/Actions/ReadRecoveryKeyAction.php` |
+| Component                | Path                                                    |
+| ------------------------ | ------------------------------------------------------- |
+| RecoverAdminCommand      | `SysAdmin/Console/Commands/RecoverAdminCommand.php`     |
+| ShowRecoveryPathCommand  | `SysAdmin/Console/Commands/ShowRecoveryPathCommand.php` |
+| ShowRecoveryKeyCommand   | `SysAdmin/Console/Commands/ShowRecoveryKeyCommand.php`  |
+| RecoverSuperAdminAction  | `Auth/SuperAdmin/Actions/RecoverSuperAdminAction.php`   |
+| SaveRecoveryKeyAction    | `User/UserManagement/Actions/SaveRecoveryKeyAction.php` |
+| ReadRecoveryKeyAction    | `User/UserManagement/Actions/ReadRecoveryKeyAction.php` |
 | SuperAdminIntegrityRules | `Auth/SuperAdmin/Entities/SuperAdminIntegrityRules.php` |

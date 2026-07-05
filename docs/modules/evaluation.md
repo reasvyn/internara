@@ -1,13 +1,12 @@
 # Evaluation — Feedback Forms, Surveys & Auto-Scoring
 
-> **Last updated:** 2026-06-12
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-12 **Changes:** sync — initial metadata sync with new format
 
 ## Description
-Generic feedback collection system with a Google Forms-like architecture: admins build reusable
-evaluation forms with weighted questions, sections, and answer scoring. Evaluations target
-any PKL aspect (mentor, program, company, overall satisfaction) via a polymorphic type system.
 
+Generic feedback collection system with a Google Forms-like architecture: admins build reusable
+evaluation forms with weighted questions, sections, and answer scoring. Evaluations target any PKL
+aspect (mentor, program, company, overall satisfaction) via a polymorphic type system.
 
 ## Purpose & Boundary
 
@@ -16,8 +15,8 @@ Evaluation provides a unified feedback pipeline across all PKL stakeholders. Unl
 subjective feedback via configurable forms — mentor quality, program effectiveness, company
 satisfaction, and overall experience. Forms are fully customizable by admins without code changes.
 
-Out of scope: rubric-based competency scoring (Assessment), task-level feedback (Assignment),
-daily logbook reflections (Journals).
+Out of scope: rubric-based competency scoring (Assessment), task-level feedback (Assignment), daily
+logbook reflections (Journals).
 
 ## Submodules
 
@@ -27,8 +26,8 @@ None — all components are directly under `app/Evaluation/`.
 
 ##Evaluation — Feedback Forms, Surveys & Auto-Scoring Forms
 
-Forms are the core entity (`evaluation_forms`). Each form targets a specific aspect
-(`target_type`: mentor, program, company, overall). Admins create forms via a form builder UI:
+Forms are the core entity (`evaluation_forms`). Each form targets a specific aspect (`target_type`:
+mentor, program, company, overall). Admins create forms via a form builder UI:
 
 ```
 EvaluationForm
@@ -41,14 +40,14 @@ EvaluationForm
 
 ### Question Types
 
-| Type | Storage | Scoring |
-|------|---------|---------|
-| `rating_1_5` | Integer 1-5 | Normalized to percentage: `(value / 5) × 100` |
-| `rating_1_10` | Integer 1-10 | Normalized to percentage: `(value / 10) × 100` |
-| `yes_no` | Boolean | 100 or 0 |
-| `multiple_choice` | Selected option string | Configurable per-option score |
-| `agreement` | Likert 1-5 | Same as `rating_1_5` |
-| `text` | Free text | No score (qualitative only) |
+| Type              | Storage                | Scoring                                        |
+| ----------------- | ---------------------- | ---------------------------------------------- |
+| `rating_1_5`      | Integer 1-5            | Normalized to percentage: `(value / 5) × 100`  |
+| `rating_1_10`     | Integer 1-10           | Normalized to percentage: `(value / 10) × 100` |
+| `yes_no`          | Boolean                | 100 or 0                                       |
+| `multiple_choice` | Selected option string | Configurable per-option score                  |
+| `agreement`       | Likert 1-5             | Same as `rating_1_5`                           |
+| `text`            | Free text              | No score (qualitative only)                    |
 
 ### Score Calculation
 
@@ -60,8 +59,8 @@ overall_score = Σ(question_score × question_weight) / Σ(question_weight)
 
 ### Immutable Submissions
 
-Once submitted, an evaluation response cannot be modified. The audit trail preserves the
-original submission with timestamp, evaluator, and all answers.
+Once submitted, an evaluation response cannot be modified. The audit trail preserves the original
+submission with timestamp, evaluator, and all answers.
 
 ## Dependencies
 

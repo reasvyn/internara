@@ -1,14 +1,13 @@
 # Chapter 7: Login & Dashboard
 
-> **Last updated:** 2026-06-15
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-15 **Changes:** sync — initial metadata sync with new format
 
 ## Description
+
 This chapter covers how to log into Internara, what you'll see on your dashboard, and how to
 navigate the application based on your role.
 
 ---
-
 
 ## 7.1 Logging In
 
@@ -22,11 +21,11 @@ Navigate to `/login` on your Internara installation. You'll see a login form wit
 
 ### Login Rules
 
-| Rule | Limit |
-|------|-------|
-| Failed attempts before lockout | 5 attempts per 60 seconds |
-| Auto-lock threshold | 10 failed attempts triggers escalating lockout |
-| Lockout duration | Doubles with each additional attempt: 20s, 40s, 80s... |
+| Rule                           | Limit                                                  |
+| ------------------------------ | ------------------------------------------------------ |
+| Failed attempts before lockout | 5 attempts per 60 seconds                              |
+| Auto-lock threshold            | 10 failed attempts triggers escalating lockout         |
+| Lockout duration               | Doubles with each additional attempt: 20s, 40s, 80s... |
 
 ### What Can Prevent Login?
 
@@ -36,8 +35,8 @@ Your account may be blocked from logging in if:
 - **Account inactive** — The account has a status that does not allow login
 - **Setup required** — The account is marked as requiring initial setup (contact your administrator)
 
-If you cannot log in, contact your system administrator or use the **Forgot Password** or
-**Recover Account** options on the login page.
+If you cannot log in, contact your system administrator or use the **Forgot Password** or **Recover
+Account** options on the login page.
 
 ---
 
@@ -52,8 +51,8 @@ If you've forgotten your password, Internara provides a two-step password reset 
 3. Click **Send Reset Link**
 4. Check your email inbox for the reset link (may take a few minutes)
 
-> **Rate limit:** 3 requests per email per 60 minutes. If you exceed this limit, wait before
-> trying again.
+> **Rate limit:** 3 requests per email per 60 minutes. If you exceed this limit, wait before trying
+> again.
 
 ### Step 2 — Reset Your Password
 
@@ -73,12 +72,12 @@ If you've forgotten your password, Internara provides a two-step password reset 
 
 ### Troubleshooting Password Reset
 
-| Issue | What to Do |
-|-------|------------|
-| **Email doesn't arrive** | Check your spam/junk folder. If still missing, try again after the rate limit resets. |
-| **Reset link expired** | Password reset links expire after 60 minutes. Request a new one from the login page. |
-| **"This password reset token is invalid"** | You may have already used this link, or the link was mistyped. Request a new one. |
-| **Rate limit exceeded** | Wait 60 minutes before requesting another reset link. |
+| Issue                                      | What to Do                                                                            |
+| ------------------------------------------ | ------------------------------------------------------------------------------------- |
+| **Email doesn't arrive**                   | Check your spam/junk folder. If still missing, try again after the rate limit resets. |
+| **Reset link expired**                     | Password reset links expire after 60 minutes. Request a new one from the login page.  |
+| **"This password reset token is invalid"** | You may have already used this link, or the link was mistyped. Request a new one.     |
+| **Rate limit exceeded**                    | Wait 60 minutes before requesting another reset link.                                 |
 
 ### Confirm Password (For Sensitive Actions)
 
@@ -147,40 +146,47 @@ it before your first login:
 
 When you log in, you're redirected to your role-specific dashboard. Internara has four dashboards:
 
-| Dashboard | For Roles |
-|-----------|-----------|
-| Admin Dashboard | Super Admin, Admin |
-| Teacher Dashboard | Teacher |
-| Supervisor Dashboard | Supervisor |
-| Student Dashboard | Student |
+| Dashboard            | For Roles          |
+| -------------------- | ------------------ |
+| Admin Dashboard      | Super Admin, Admin |
+| Teacher Dashboard    | Teacher            |
+| Supervisor Dashboard | Supervisor         |
+| Student Dashboard    | Student            |
 
 ### 7.5.1 Admin Dashboard
 
 The admin dashboard is the most data-rich view. It shows:
 
 **People Overview** — 6 stat cards at the top:
+
 - Total Students, Instructors, Supervisors, Departments, Companies, Active Internships
 
 **PKL Funnel** — A visual pipeline showing student progression:
+
 ```
 Students → Registered → Placed → Active → Completed
 ```
+
 Each stage shows the count and drop-off percentage. Below the funnel:
+
 - **Absorption rate** — percentage of students placed
 - **Completion rate** — percentage of placed students who completed
 - **Bottleneck** — where students are getting stuck (high = problem area)
 
 **3-Column Metrics:**
+
 - **Registration funnel** — total, active, completed registrations
 - **Activity funnel** — attendance verification %, logbook verification %, pending logbooks
 - **Completion funnel** — placement fill %, certificates issued %, active companies, partnerships
 
 **System Readiness** — Health check indicators for:
+
 - Database, Mail, Cache, Queue, Storage
 
 **Recent Activity** — Latest system activity log entries
 
 **Quick Links:**
+
 - Edit Profile, Recovery Codes, Notifications
 - System Settings (Super Admin only)
 
@@ -190,6 +196,7 @@ If you are registered for an internship, you'll see your company name, position,
 top. If you haven't registered yet, you'll see a message guiding you to register.
 
 **Action Buttons:**
+
 - Write Journal — record daily activities
 - Clock In / Out — mark attendance
 - My Assignments — view and submit tasks
@@ -198,6 +205,7 @@ top. If you haven't registered yet, you'll see a message guiding you to register
 - Handbooks — read and acknowledge handbooks
 
 **Progress Widgets:**
+
 - **Journal Verification** — how many journals have been verified (with progress bar)
 - **Attendance Percentage** — your attendance rate
 - **Assignments Completed** — submitted vs total assignments
@@ -208,10 +216,12 @@ top. If you haven't registered yet, you'll see a message guiding you to register
 ### 7.5.3 Teacher Dashboard
 
 **Stat Cards:**
+
 - Supervised Students, Pending Journals, Active Companies
 - Ungraded Submissions, Supervision Logs, Unresolved Incidents
 
 **Action Buttons:**
+
 - Verify Logbooks — review and verify student journal entries
 - Grade Assignments — score student submissions
 - Supervision Logs — document mentoring sessions
@@ -221,12 +231,14 @@ top. If you haven't registered yet, you'll see a message guiding you to register
 ### 7.5.4 Supervisor Dashboard
 
 **Stat Cards:**
+
 - Active Interns, Pending Evaluations, Verified Journals
 - Pending Journals, Pending Attendance
 
 **Verification Queue** — List of journal entries awaiting your review
 
 **Action Buttons:**
+
 - Verify Logbooks — review and verify student journal entries
 - Submit Evaluation — complete student evaluations
 
@@ -240,27 +252,28 @@ Once logged in, you'll see the main application layout:
 
 ### Sidebar (Left)
 
-The sidebar shows navigation menu items based on your role. Each menu group is visible only to
-roles that need it:
+The sidebar shows navigation menu items based on your role. Each menu group is visible only to roles
+that need it:
 
-| Menu Group | Visible To |
-|------------|------------|
-| Dashboard | All roles |
-| Foundation (School, Academic Years, Departments) | Super Admin, Admin |
-| Internship (Programs, Groups, Companies, Placements) | Super Admin, Admin |
-| Registration (Applications, Direct Placement) | Super Admin, Admin |
-| People (Users, Students, Teachers, etc.) | Super Admin, Admin |
-| Assessment (Rubrics, Evaluations) | Super Admin, Admin |
+| Menu Group                                            | Visible To                              |
+| ----------------------------------------------------- | --------------------------------------- |
+| Dashboard                                             | All roles                               |
+| Foundation (School, Academic Years, Departments)      | Super Admin, Admin                      |
+| Internship (Programs, Groups, Companies, Placements)  | Super Admin, Admin                      |
+| Registration (Applications, Direct Placement)         | Super Admin, Admin                      |
+| People (Users, Students, Teachers, etc.)              | Super Admin, Admin                      |
+| Assessment (Rubrics, Evaluations)                     | Super Admin, Admin                      |
 | Operations (Notifications, Attendance, Logbook, etc.) | Super Admin, Admin, Teacher, Supervisor |
-| Student Portal | Student |
-| Teacher Portal | Teacher |
-| Supervisor Portal | Supervisor |
-| Reports (Certificates, Lifecycle, GDPR) | Super Admin, Admin |
-| System (Settings, Handbooks, Recovery Slips) | Super Admin, Admin |
+| Student Portal                                        | Student                                 |
+| Teacher Portal                                        | Teacher                                 |
+| Supervisor Portal                                     | Supervisor                              |
+| Reports (Certificates, Lifecycle, GDPR)               | Super Admin, Admin                      |
+| System (Settings, Handbooks, Recovery Slips)          | Super Admin, Admin                      |
 
 ### Top Navigation Bar
 
 The header contains:
+
 - **Mobile menu toggle** — shows/hides sidebar on small screens
 - **Page title** — current page name
 - **Theme switcher** — toggle light/dark mode
@@ -283,6 +296,7 @@ To access your profile:
 2. Select **Profile**
 
 From your profile you can:
+
 - Update your name, bio, and contact information
 - Upload or change your profile photo
 - Change your password
@@ -309,5 +323,5 @@ Your dashboard is your home base in Internara. From here:
 
 ---
 
-**← Previous:** [Post-Setup](03-post-setup.md)
-**Next:** [User Profile & Recovery](09-user-profile-and-recovery.md)
+**← Previous:** [Post-Setup](03-post-setup.md) **Next:**
+[User Profile & Recovery](09-user-profile-and-recovery.md)

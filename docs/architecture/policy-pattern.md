@@ -1,20 +1,20 @@
 # Policy Pattern — Authorization Gates, RBAC & Functional Roles
 
-> **Last updated:** 2026-06-13
-> **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-06-13 **Changes:** initial metadata — no content changes
 
 ## Description
+
 Authorization reference for the Internara codebase. Describes the Flat RBAC model, the three-layer
 authorization stack, the `BasePolicy` contract, policy traits, auto-discovery, and the complete
 policy inventory across all modules.
 
 See also:
+
 - [RBAC Foundation](../foundation/rbac.md) — authentication flow & role definitions
 - [ADR-008: Flat RBAC with Functional Roles](../adr/adr-flat-rbac-with-functional-roles.md)
 - [Modular Pattern Reference](modular-pattern.md) (§7 Policy & Authorization Patterns)
 
 ---
-
 
 ## 1. Flat RBAC — 5 User Roles + 2 Functional Roles
 
@@ -23,28 +23,28 @@ No role inherits permissions from another — adding a permission to one role ne
 
 ### User Roles (Stored in Database)
 
-| Role | Code (DB) | Scope | Description |
-|------|-----------|-------|-------------|
-| **Super Admin** | `superadmin` | Global | Bypasses all gates. Manages system settings, all accounts, all data. |
-| **Admin** | `admin` | School | Manages users, programs, companies, departments, announcements, audit logs. |
-| **Teacher** | `teacher` | School | Academic supervision: journal review, assignment grading, site visits, grade cards. |
-| **Supervisor** | `supervisor` | Company | Industry supervision: attendance verification, journal review, competency evaluation. |
-| **Student** | `student` | Self | Program participation: attendance, logbooks, assignments, certificate download. |
+| Role            | Code (DB)    | Scope   | Description                                                                           |
+| --------------- | ------------ | ------- | ------------------------------------------------------------------------------------- |
+| **Super Admin** | `superadmin` | Global  | Bypasses all gates. Manages system settings, all accounts, all data.                  |
+| **Admin**       | `admin`      | School  | Manages users, programs, companies, departments, announcements, audit logs.           |
+| **Teacher**     | `teacher`    | School  | Academic supervision: journal review, assignment grading, site visits, grade cards.   |
+| **Supervisor**  | `supervisor` | Company | Industry supervision: attendance verification, journal review, competency evaluation. |
+| **Student**     | `student`    | Self    | Program participation: attendance, logbooks, assignments, certificate download.       |
 
-> **Role normalization note:** spatie/laravel-permission stores `superadmin` (no underscore). All User
-> model methods (`hasRole`, `hasAnyRole`) transparently normalize `super_admin` → `superadmin` before
-> delegating to the package. Use `super_admin` everywhere in application code; never reference
-> `superadmin` directly.
+> **Role normalization note:** spatie/laravel-permission stores `superadmin` (no underscore). All
+> User model methods (`hasRole`, `hasAnyRole`) transparently normalize `super_admin` → `superadmin`
+> before delegating to the package. Use `super_admin` everywhere in application code; never
+> reference `superadmin` directly.
 
 ### Functional Roles (Derived, Not Stored)
 
 Functional roles exist for business logic only. They are resolved at runtime — never stored in the
 database, never used in route middleware.
 
-| Functional Role | Code | Resolves From | Purpose |
-|-----------------|------|--------------|---------|
-| `mentor` | `func_mentor` | `teacher`, `supervisor` | Anyone who supervises students |
-| `mentee` | `func_mentee` | `student` | Anyone being supervised |
+| Functional Role | Code          | Resolves From           | Purpose                        |
+| --------------- | ------------- | ----------------------- | ------------------------------ |
+| `mentor`        | `func_mentor` | `teacher`, `supervisor` | Anyone who supervises students |
+| `mentee`        | `func_mentee` | `student`               | Anyone being supervised        |
 
 Decouples the mentoring subsystem from specific user types.
 
@@ -103,19 +103,18 @@ method).
 
 ### Convenience Response Wrappers
 
-| Method | Description |
-|--------|-------------|
-| `allowIfAdmin()` | Returns `allow()` if `isAdmin()`, else `deny()` |
+| Method                    | Description                                              |
+| ------------------------- | -------------------------------------------------------- |
+| `allowIfAdmin()`          | Returns `allow()` if `isAdmin()`, else `deny()`          |
 | `allowIfAdminOrTeacher()` | Returns `allow()` if `isAdminOrTeacher()`, else `deny()` |
-| `allowIfOwner()` | Returns `allow()` if `isOwner()`, else `deny()` |
+| `allowIfOwner()`          | Returns `allow()` if `isOwner()`, else `deny()`          |
 
 These return `Illuminate\Auth\Access\Response` objects suitable for policy methods that use
 `Response` return types instead of `bool`.
 
-> [!IMPORTANT]
-> All policy methods must mark their parameter types explicitly (`User $user`, `Model $model`).
-> Laravel resolves the authenticated user as the first argument — use `?User $user` type-hints for
-> guest-accessible methods.
+> [!IMPORTANT] All policy methods must mark their parameter types explicitly (`User $user`,
+> `Model $model`). Laravel resolves the authenticated user as the first argument — use `?User $user`
+> type-hints for guest-accessible methods.
 
 ---
 
@@ -124,15 +123,15 @@ These return `Illuminate\Auth\Access\Response` objects suitable for policy metho
 Provides role-checking methods that reduce duplication of
 `$user->hasAnyRole(['super_admin', 'admin'])` across all policy classes.
 
-| Method | Description |
-|--------|-------------|
-| `isAdmin()` | `super_admin` \| `admin` |
-| `isTeacher()` | `teacher` only |
-| `isStudent()` | `student` only |
-| `isSupervisor()` | `supervisor` only |
-| `isAdminOrTeacher()` | `super_admin` \| `admin` \| `teacher` |
-| `canManageAnyRole()` | Alias for `isAdmin` |
-| `hasAnyOfRoles()` | Generic check against an arbitrary array of roles |
+| Method               | Description                                       |
+| -------------------- | ------------------------------------------------- |
+| `isAdmin()`          | `super_admin` \| `admin`                          |
+| `isTeacher()`        | `teacher` only                                    |
+| `isStudent()`        | `student` only                                    |
+| `isSupervisor()`     | `supervisor` only                                 |
+| `isAdminOrTeacher()` | `super_admin` \| `admin` \| `teacher`             |
+| `canManageAnyRole()` | Alias for `isAdmin`                               |
+| `hasAnyOfRoles()`    | Generic check against an arbitrary array of roles |
 
 Always write role checks against the conceptual role (`super_admin`), not the stored value
 (`superadmin`). The User model handles normalization.
@@ -141,11 +140,11 @@ Always write role checks against the conceptual role (`super_admin`), not the st
 
 ## 6. AuthorizesOwnership Trait
 
-| Method | Description |
-|--------|-------------|
-| `isOwner()` | Direct foreign key match: `$model->{$foreignKey} === $user->id` |
+| Method               | Description                                                                |
+| -------------------- | -------------------------------------------------------------------------- |
+| `isOwner()`          | Direct foreign key match: `$model->{$foreignKey} === $user->id`            |
 | `isRelatedThrough()` | Ownership through a relation: `$model->relation->foreignKey === $user->id` |
-| `isOwnerOrAdmin()` | Composite: owner OR admin (uses `isAdmin()` from `AuthorizesRoles`) |
+| `isOwnerOrAdmin()`   | Composite: owner OR admin (uses `isAdmin()` from `AuthorizesRoles`)        |
 
 ---
 

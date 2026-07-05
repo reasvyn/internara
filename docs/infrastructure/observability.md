@@ -1,10 +1,12 @@
 # Observability — Monitoring, Logging & Health
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — fix PiiMasker path (app/Support → app/Core/Support)
+> **Last updated:** 2026-06-13 **Changes:** sync — fix PiiMasker path (app/Support →
+> app/Core/Support)
+
 ## Description
 
-Monitoring stack: Laravel Pulse, SmartLogger logging, system health checks, and performance tracking.
+Monitoring stack: Laravel Pulse, SmartLogger logging, system health checks, and performance
+tracking.
 
 ## What Is Monitored and Why
 
@@ -29,51 +31,57 @@ Laravel Pulse provides a real-time performance dashboard with configurable recor
 | Cache         | Cache hit/miss ratio                 | Always    |
 | Queues        | Queue throughput                     | Always    |
 
-The dashboard is accessible at `/pulse` and restricted to authorized users. Pulse records are ingested synchronously by default (on every request) or asynchronously via Redis for high-traffic deployments. Old records are automatically pruned by the scheduler.
+The dashboard is accessible at `/pulse` and restricted to authorized users. Pulse records are
+ingested synchronously by default (on every request) or asynchronously via Redis for high-traffic
+deployments. Old records are automatically pruned by the scheduler.
 
 ---
 
 ## SmartLogger Dual-Channel Approach
 
-SmartLogger is the single entry point for all application logging. It dispatches to two channels simultaneously:
+SmartLogger is the single entry point for all application logging. It dispatches to two channels
+simultaneously:
 
-- **System log** — files in `storage/logs/`. Technical details: error messages, stack traces, debug information, infrastructure warnings. What an operator reads to diagnose problems.
-- **Activity log** — the `activity_log` database table. Business audit events: user registered, internship approved, role assigned, setting changed. Immutable records pruned by scheduled command after retention period.
+- **System log** — files in `storage/logs/`. Technical details: error messages, stack traces, debug
+  information, infrastructure warnings. What an operator reads to diagnose problems.
+- **Activity log** — the `activity_log` database table. Business audit events: user registered,
+  internship approved, role assigned, setting changed. Immutable records pruned by scheduled command
+  after retention period.
 
 ### Three Logging Modes
 
 SmartLogger supports three modes via its fluent API:
 
-| Mode                           | System Log | Activity Log | Usage                                        |
-| ------------------------------ | ---------- | ------------ | -------------------------------------------- |
-| `both()` (default)             | ✅         | ✅           | General purpose logging in Actions           |
-| `systemOnly()`                 | ✅         | ❌           | Technical operations (middleware, CLI)       |
-| `activityOnly()`               | ❌         | ✅           | Business audit via Actions                   |
+| Mode               | System Log | Activity Log | Usage                                  |
+| ------------------ | ---------- | ------------ | -------------------------------------- |
+| `both()` (default) | ✅         | ✅           | General purpose logging in Actions     |
+| `systemOnly()`     | ✅         | ❌           | Technical operations (middleware, CLI) |
+| `activityOnly()`   | ❌         | ✅           | Business audit via Actions             |
 
 ### PII Masking
 
 SmartLogger integrates with `PiiMasker` to automatically obfuscate sensitive data before logging:
 
-| Data Type       | Masking Strategy                 | Example                              |
-| --------------- | -------------------------------- | ------------------------------------ |
-| `password`      | Full mask                        | `********`                           |
-| `token`         | Full mask                        | `********`                           |
-| `secret`        | Full mask                        | `********`                           |
-| `credit_card`   | Full mask                        | `********`                           |
-| `email`         | Partial (first 2 chars + domain) | `jo***@example.com`                  |
-| `phone`         | Partial (last 4 digits shown)    | `********1234`                       |
-| `name`          | Partial (first char only)        | `J***`                               |
-| `ip`            | First two octets only            | `192.168.xxx.xxx`                    |
+| Data Type     | Masking Strategy                 | Example             |
+| ------------- | -------------------------------- | ------------------- |
+| `password`    | Full mask                        | `********`          |
+| `token`       | Full mask                        | `********`          |
+| `secret`      | Full mask                        | `********`          |
+| `credit_card` | Full mask                        | `********`          |
+| `email`       | Partial (first 2 chars + domain) | `jo***@example.com` |
+| `phone`       | Partial (last 4 digits shown)    | `********1234`      |
+| `name`        | Partial (first char only)        | `J***`              |
+| `ip`          | First two octets only            | `192.168.xxx.xxx`   |
 
 ### Fluent API
 
 ```php
 SmartLogger::info('internship_created')
-    ->by(auth()->user())              // causer
-    ->on($internship)                 // subject
-    ->withPayload(['key' => 'val'])   // context
+    ->by(auth()->user()) // causer
+    ->on($internship) // subject
+    ->withPayload(['key' => 'val']) // context
     ->inModule('program')
-    ->activityOnly()                  // or systemOnly(), both()
+    ->activityOnly() // or systemOnly(), both()
     ->save();
 ```
 
@@ -100,7 +108,8 @@ LOG_STACK=single
 LOG_LEVEL=debug
 ```
 
-Activity log retention is configured in `config/activitylog.php` and pruned by the `system:cleanup` command (default 365 days).
+Activity log retention is configured in `config/activitylog.php` and pruned by the `system:cleanup`
+command (default 365 days).
 
 ---
 
@@ -115,7 +124,8 @@ Every log entry from an HTTP request is automatically enriched by the `LogContex
 - Response duration in milliseconds
 - HTTP status code
 
-This enrichment makes log analysis significantly more useful — a slow query can be correlated with the specific request and user that triggered it.
+This enrichment makes log analysis significantly more useful — a slow query can be correlated with
+the specific request and user that triggered it.
 
 ---
 
@@ -139,7 +149,8 @@ The `php artisan system:health` command performs a 15-point system verification:
 14. Storage symlink exists
 15. Application is not in maintenance mode
 
-The command outputs a table with pass/fail/warning for each check, or JSON for integration with external monitoring systems (`--json`).
+The command outputs a table with pass/fail/warning for each check, or JSON for integration with
+external monitoring systems (`--json`).
 
 ---
 
@@ -147,12 +158,12 @@ The command outputs a table with pass/fail/warning for each check, or JSON for i
 
 The `php artisan system:cleanup` command runs nightly via the scheduler and prunes:
 
-| Data Source   | Retention | Configuration              |
-| ------------- | --------- | -------------------------- |
-| Pulse records | 7 days    | `config/pulse.php`         |
-| Activity log  | 365 days  | `config/activitylog.php`   |
-| Failed jobs   | 7 days    | `config/queue.php`         |
-| Notifications | 365 days  | Configurable via settings  |
+| Data Source   | Retention | Configuration             |
+| ------------- | --------- | ------------------------- |
+| Pulse records | 7 days    | `config/pulse.php`        |
+| Activity log  | 365 days  | `config/activitylog.php`  |
+| Failed jobs   | 7 days    | `config/queue.php`        |
+| Notifications | 365 days  | Configurable via settings |
 
 ---
 

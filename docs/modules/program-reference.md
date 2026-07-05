@@ -1,13 +1,12 @@
 # Program — Technical Reference
 
-> **Last updated:** 2026-06-17
-> **Changes:** sync — add missing InternshipStatusBatchUpdated event
+> **Last updated:** 2026-06-17 **Changes:** sync — add missing InternshipStatusBatchUpdated event
 
 ## Description
+
 Detailed structural and implementation reference for the **Program** module.
 
 ---
-
 
 ## Overview
 
@@ -15,142 +14,143 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 
 ## Actions
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `Internship/Actions/CreateInternshipAction.php` | `CreateInternshipAction` | `BaseCommandAction` |
-| `Internship/Actions/UpdateInternshipAction.php` | `UpdateInternshipAction` | `BaseCommandAction` |
-| `Internship/Actions/DeleteInternshipAction.php` | `DeleteInternshipAction` | `BaseCommandAction` |
+| File                                                       | Class                               | Extends             |
+| ---------------------------------------------------------- | ----------------------------------- | ------------------- |
+| `Internship/Actions/CreateInternshipAction.php`            | `CreateInternshipAction`            | `BaseCommandAction` |
+| `Internship/Actions/UpdateInternshipAction.php`            | `UpdateInternshipAction`            | `BaseCommandAction` |
+| `Internship/Actions/DeleteInternshipAction.php`            | `DeleteInternshipAction`            | `BaseCommandAction` |
 | `Internship/Actions/BatchUpdateInternshipStatusAction.php` | `BatchUpdateInternshipStatusAction` | `BaseCommandAction` |
-| `Internship/Actions/ReadCloseReadinessAction.php` | `ReadCloseReadinessAction` | `BaseReadAction` |
-| `InternshipGroup/Actions/CreateInternshipGroupAction.php` | `CreateInternshipGroupAction` | `BaseCommandAction` |
-| `InternshipGroup/Actions/UpdateInternshipGroupAction.php` | `UpdateInternshipGroupAction` | `BaseCommandAction` |
-| `InternshipGroup/Actions/DeleteInternshipGroupAction.php` | `DeleteInternshipGroupAction` | `BaseCommandAction` |
-| `InternshipGroup/Actions/AddMemberToGroupAction.php` | `AddMemberToGroupAction` | `BaseCommandAction` |
-| `InternshipGroup/Actions/RemoveMemberFromGroupAction.php` | `RemoveMemberFromGroupAction` | `BaseCommandAction` |
+| `Internship/Actions/ReadCloseReadinessAction.php`          | `ReadCloseReadinessAction`          | `BaseReadAction`    |
+| `InternshipGroup/Actions/CreateInternshipGroupAction.php`  | `CreateInternshipGroupAction`       | `BaseCommandAction` |
+| `InternshipGroup/Actions/UpdateInternshipGroupAction.php`  | `UpdateInternshipGroupAction`       | `BaseCommandAction` |
+| `InternshipGroup/Actions/DeleteInternshipGroupAction.php`  | `DeleteInternshipGroupAction`       | `BaseCommandAction` |
+| `InternshipGroup/Actions/AddMemberToGroupAction.php`       | `AddMemberToGroupAction`            | `BaseCommandAction` |
+| `InternshipGroup/Actions/RemoveMemberFromGroupAction.php`  | `RemoveMemberFromGroupAction`       | `BaseCommandAction` |
 
 ---
 
 ## Models
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `Internship/Models/Internship.php` | `Internship` | `BaseModel` |
-| `InternshipGroup/Models/InternshipGroup.php` | `InternshipGroup` | `BaseModel` |
+| File                                               | Class                   | Extends     |
+| -------------------------------------------------- | ----------------------- | ----------- |
+| `Internship/Models/Internship.php`                 | `Internship`            | `BaseModel` |
+| `InternshipGroup/Models/InternshipGroup.php`       | `InternshipGroup`       | `BaseModel` |
 | `InternshipGroup/Models/InternshipGroupMember.php` | `InternshipGroupMember` | `BaseModel` |
 
 ---
 
 ## Enums
 
-| File | Enum | Implements | Values |
-| ---- | ---- | ---------- | ------ |
-| `Internship/Enums/InternshipStatus.php` | `InternshipStatus` | `LabelEnum`, `StatusEnum` | draft, published, active, completed, cancelled |
-| `InternshipGroup/Enums/InternshipGroupRole.php` | `InternshipGroupRole` | `LabelEnum` | leader, member |
+| File                                            | Enum                  | Implements                | Values                                         |
+| ----------------------------------------------- | --------------------- | ------------------------- | ---------------------------------------------- |
+| `Internship/Enums/InternshipStatus.php`         | `InternshipStatus`    | `LabelEnum`, `StatusEnum` | draft, published, active, completed, cancelled |
+| `InternshipGroup/Enums/InternshipGroupRole.php` | `InternshipGroupRole` | `LabelEnum`               | leader, member                                 |
 
 ---
 
 ## Entities
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `Internship/Entities/InternshipPeriod.php` | `InternshipPeriod` | `BaseEntity` |
-| `Internship/Entities/InternshipState.php` | `InternshipState` | `BaseEntity` |
+| File                                                | Class                  | Extends      |
+| --------------------------------------------------- | ---------------------- | ------------ |
+| `Internship/Entities/InternshipPeriod.php`          | `InternshipPeriod`     | `BaseEntity` |
+| `Internship/Entities/InternshipState.php`           | `InternshipState`      | `BaseEntity` |
 | `InternshipGroup/Entities/InternshipGroupState.php` | `InternshipGroupState` | `BaseEntity` |
 
 ---
 
 ## Policies
 
-| File | Policy | Extends |
-| ---- | ------ | ------- |
-| `Internship/Policies/InternshipPolicy.php` | `InternshipPolicy` | `BasePolicy` |
+| File                                                 | Policy                  | Extends      |
+| ---------------------------------------------------- | ----------------------- | ------------ |
+| `Internship/Policies/InternshipPolicy.php`           | `InternshipPolicy`      | `BasePolicy` |
 | `InternshipGroup/Policies/InternshipGroupPolicy.php` | `InternshipGroupPolicy` | `BasePolicy` |
 
 ---
 
 ## Data / DTOs
 
-| File | Class | Extends |
-| ---- | ----- | ------- |
-| `Internship/Data/InternshipData.php` | `InternshipData` | `BaseData` |
+| File                                           | Class                 | Extends    |
+| ---------------------------------------------- | --------------------- | ---------- |
+| `Internship/Data/InternshipData.php`           | `InternshipData`      | `BaseData` |
 | `InternshipGroup/Data/InternshipGroupData.php` | `InternshipGroupData` | `BaseData` |
 
 ## Events
 
-| File | Event | Extends |
-| ---- | ----- | ------- |
-| `Internship/Events/InternshipCreated.php` | `InternshipCreated` | `BaseEvent` |
+| File                                                 | Event                          | Extends     |
+| ---------------------------------------------------- | ------------------------------ | ----------- |
+| `Internship/Events/InternshipCreated.php`            | `InternshipCreated`            | `BaseEvent` |
 | `Internship/Events/InternshipStatusBatchUpdated.php` | `InternshipStatusBatchUpdated` | `BaseEvent` |
 
 ## Listeners
 
-| File | Listener |
-| ---- | -------- |
+| File                                                     | Listener                        |
+| -------------------------------------------------------- | ------------------------------- |
 | `Internship/Listeners/NotifyAdminsInternshipCreated.php` | `NotifyAdminsInternshipCreated` |
 
 ## Notifications
 
-| File | Notification |
-| ---- | ------------ |
+| File                                                         | Notification                    |
+| ------------------------------------------------------------ | ------------------------------- |
 | `Internship/Notifications/InternshipCreatedNotification.php` | `InternshipCreatedNotification` |
-| `Notifications/RegistrationNotification.php` | `RegistrationNotification` |
+| `Notifications/RegistrationNotification.php`                 | `RegistrationNotification`      |
 
 ## Livewire Components
 
-| File | Component | Extends |
-| ---- | --------- | ------- |
-| `Internship/Livewire/InternshipManager.php` | `InternshipManager` | `BaseRecordManager` |
+| File                                                  | Component                | Extends             |
+| ----------------------------------------------------- | ------------------------ | ------------------- |
+| `Internship/Livewire/InternshipManager.php`           | `InternshipManager`      | `BaseRecordManager` |
 | `InternshipGroup/Livewire/InternshipGroupManager.php` | `InternshipGroupManager` | `BaseRecordManager` |
 
 ## Livewire Forms
 
-| File | Form |
-| ---- | ---- |
-| `Internship/Livewire/Forms/InternshipForm.php` | `InternshipForm` |
+| File                                                     | Form                  |
+| -------------------------------------------------------- | --------------------- |
+| `Internship/Livewire/Forms/InternshipForm.php`           | `InternshipForm`      |
 | `InternshipGroup/Livewire/Forms/InternshipGroupForm.php` | `InternshipGroupForm` |
 
 ## Rules
 
-| File | Rule | Purpose |
-| ---- | ---- | ------- |
+| File                                       | Rule                  | Purpose                                       |
+| ------------------------------------------ | --------------------- | --------------------------------------------- |
 | `Internship/Rules/OpenForRegistration.php` | `OpenForRegistration` | Validates internship is open for registration |
 
 ## Form Requests
 
-| File | Request | Purpose |
-| ---- | ------- | ------- |
-| `Http/Requests/CreateInternshipRequest.php` | `CreateInternshipRequest` | Create internship validation |
-| `Http/Requests/RegisterStudentRequest.php` | `RegisterStudentRequest` | Student registration validation |
+| File                                        | Request                   | Purpose                         |
+| ------------------------------------------- | ------------------------- | ------------------------------- |
+| `Http/Requests/CreateInternshipRequest.php` | `CreateInternshipRequest` | Create internship validation    |
+| `Http/Requests/RegisterStudentRequest.php`  | `RegisterStudentRequest`  | Student registration validation |
 
 ---
 
 ## Routes
 
-File: `routes/web/program.php`
-Naming pattern: `program.{resource}.{action}`
+File: `routes/web/program.php` Naming pattern: `program.{resource}.{action}`
 
 ## Views
 
-Views are located in `resources/views/program/`. See [UI/UX](../foundation/ui-ux.md) for the design system.
+Views are located in `resources/views/program/`. See [UI/UX](../foundation/ui-ux.md) for the design
+system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Program/`. See [Testing](../infrastructure/testing.md) for the testing conventions.
+Tests are located in `tests/{Feature,Unit}/Program/`. See [Testing](../infrastructure/testing.md)
+for the testing conventions.
 
 ## Factories
 
-| Factory | Model |
-| ------- | ----- |
-| `InternshipFactory` | `Internship` |
-| `InternshipGroupFactory` | `InternshipGroup` |
+| Factory                        | Model                   |
+| ------------------------------ | ----------------------- |
+| `InternshipFactory`            | `Internship`            |
+| `InternshipGroupFactory`       | `InternshipGroup`       |
 | `InternshipGroupMemberFactory` | `InternshipGroupMember` |
 
 ## Migrations
 
-| Migration | Table |
-| --------- | ----- |
-| `create_internships_table` | `internships` |
-| `create_internship_groups_table` | `internship_groups` |
+| Migration                               | Table                      |
+| --------------------------------------- | -------------------------- |
+| `create_internships_table`              | `internships`              |
+| `create_internship_groups_table`        | `internship_groups`        |
 | `create_internship_group_members_table` | `internship_group_members` |
 
 ---
@@ -167,4 +167,4 @@ Tests are located in `tests/{Feature,Unit}/Program/`. See [Testing](../infrastru
 - **Dependencies**: Academics, Partners, Core
 - **Used By**: Enrollment, Journals, Evaluation
 
-*For overview and business context, see [program.md](program.md).*
+_For overview and business context, see [program.md](program.md)._

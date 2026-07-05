@@ -1,15 +1,16 @@
 # Cache Pattern — Cache Philosophy, Key Management & Invalidation
 
-> **Last updated:** 2026-06-14
-> **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-06-14 **Changes:** initial metadata — no content changes
+
 ## Description
 
-Cache philosophy, key management conventions, driver strategy, event-driven invalidation, and anti-pattern prevention across all modules.
+Cache philosophy, key management conventions, driver strategy, event-driven invalidation, and
+anti-pattern prevention across all modules.
 
 ## 1. Cache Philosophy
 
-The cache layer is a **performance optimization, not a persistence mechanism**. The application
-must function correctly on every cache miss — data cached today may not be cached tomorrow.
+The cache layer is a **performance optimization, not a persistence mechanism**. The application must
+function correctly on every cache miss — data cached today may not be cached tomorrow.
 
 ### Core Principles
 
@@ -21,14 +22,14 @@ must function correctly on every cache miss — data cached today may not be cac
 
 ### What Gets Cached
 
-| Category               | Rationale                                        |
-| ---------------------- | ------------------------------------------------ |
-| Aggregated statistics  | Expensive COUNT/SUM queries across multiple tables|
-| Settings               | Read on every request, change rarely             |
-| Brand/theme values     | Read on every page load, change via admin UI     |
-| Rate-limit state       | Must be shared across requests (not session)     |
-| Module discovery       | Livewire/policy/view registration metadata       |
-| Health-check status    | Lightweight liveness probe                       |
+| Category              | Rationale                                          |
+| --------------------- | -------------------------------------------------- |
+| Aggregated statistics | Expensive COUNT/SUM queries across multiple tables |
+| Settings              | Read on every request, change rarely               |
+| Brand/theme values    | Read on every page load, change via admin UI       |
+| Rate-limit state      | Must be shared across requests (not session)       |
+| Module discovery      | Livewire/policy/view registration metadata         |
+| Health-check status   | Lightweight liveness probe                         |
 
 ### What Does NOT Get Cached
 
@@ -70,12 +71,12 @@ When a qualifier is dynamic, concatenate the registered prefix with the qualifie
 
 ## 4. TTL Categories
 
-| TTL        | Range          | Rationale                              |
-| ---------- | -------------- | -------------------------------------- |
-| **short**  | < 5 min        | Dashboard changes with every mutation  |
-| **medium** | 5 min – 1 h    | Changes infrequently, tolerable lag    |
-| **long**   | 1 h – 24 h     | Branding changes only via admin UI     |
-| **forever**| Never expires  | Cleared explicitly on write            |
+| TTL         | Range         | Rationale                             |
+| ----------- | ------------- | ------------------------------------- |
+| **short**   | < 5 min       | Dashboard changes with every mutation |
+| **medium**  | 5 min – 1 h   | Changes infrequently, tolerable lag   |
+| **long**    | 1 h – 24 h    | Branding changes only via admin UI    |
+| **forever** | Never expires | Cleared explicitly on write           |
 
 **Short/Medium/Long** — use `Cache::remember()` with explicit seconds.
 
@@ -85,13 +86,13 @@ When a qualifier is dynamic, concatenate the registered prefix with the qualifie
 
 ## 5. Driver Strategy
 
-| Environment | Driver             |
-| ----------- | ------------------ |
-| Tier 1      | `file`             |
-| Tier 2+     | `redis`            |
+| Environment | Driver  |
+| ----------- | ------- |
+| Tier 1      | `file`  |
+| Tier 2+     | `redis` |
 
-The same binary runs at every tier — only `.env` values change. Redis can serve cache, session,
-and queue simultaneously by using separate dedicated Laravel drivers.
+The same binary runs at every tier — only `.env` values change. Redis can serve cache, session, and
+queue simultaneously by using separate dedicated Laravel drivers.
 
 ---
 
@@ -107,8 +108,8 @@ and queue simultaneously by using separate dedicated Laravel drivers.
 ### Pattern: Event-Driven Invalidation (Preferred)
 
 Command Actions dispatch events; `CacheInvalidationListener` classes listen and flush affected keys
-via `Cache::forget(config('cache-keys.affected_key'))`. This decouples the mutation from the
-cache layer and allows multiple listeners to react to a single event.
+via `Cache::forget(config('cache-keys.affected_key'))`. This decouples the mutation from the cache
+layer and allows multiple listeners to react to a single event.
 
 ### Pattern: Direct Invalidation (Simple Cases)
 
@@ -125,8 +126,8 @@ consistency.
 
 ## 7. Cache Warming
 
-An Artisan command pre-populates caches after deployment so the first user request does not bear
-the cost of cold caches.
+An Artisan command pre-populates caches after deployment so the first user request does not bear the
+cost of cold caches.
 
 ### When to Run
 
@@ -144,18 +145,18 @@ collision-prone.
 
 ### Cache-as-Persistence
 
-Storing data exclusively in the cache that should live in the database. Cache is for performance
-— critical data belongs in the database.
+Storing data exclusively in the cache that should live in the database. Cache is for performance —
+critical data belongs in the database.
 
 ### Indiscriminate Full Flush
 
-Calling `Cache::flush()` in normal operations clears every key including rate-limit state and
-other active sessions. Use targeted `Cache::forget()` for individual keys.
+Calling `Cache::flush()` in normal operations clears every key including rate-limit state and other
+active sessions. Use targeted `Cache::forget()` for individual keys.
 
 ### Missing Invalidation
 
-Writing to the database without clearing the affected cache keys causes stale reads. Every
-mutation that changes data consumed via a cached read must trigger invalidation.
+Writing to the database without clearing the affected cache keys causes stale reads. Every mutation
+that changes data consumed via a cached read must trigger invalidation.
 
 ### Caching User-Specific Data Without a Qualifier
 
@@ -164,8 +165,8 @@ Storing user-scoped data in a global key causes cross-user contamination. Scope 
 
 ### Stale TTLs
 
-Using the same TTL for all keys ignores access patterns. Frequently-mutated data should have
-short TTLs; rarely-changed data can have long TTLs or be stored forever.
+Using the same TTL for all keys ignores access patterns. Frequently-mutated data should have short
+TTLs; rarely-changed data can have long TTLs or be stored forever.
 
 ### Cache Stampede
 

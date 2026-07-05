@@ -1,5 +1,8 @@
 # Documentation Index — Complete Catalog of docs/
 
+> **Last updated:** 2026-07-05 **Changes:** sync — convert tables to list format; add index links
+> for new architecture, foundation, infrastructure indexes; fix mermaid flowchart path
+
 Complete catalog of all documentation files, organized by topic and audience.
 
 ## Product & Vision
@@ -160,7 +163,7 @@ foundation, observability, quality, and strategic decisions.
 
 ```mermaid
 flowchart LR
-    A[product-definition.md] --> B[key-features.md]
+    A[foundation/product-definition.md] --> B[key-features.md]
     B --> C[philosophy.md]
     C --> D[getting-started.md]
     D --> E[architecture.md]

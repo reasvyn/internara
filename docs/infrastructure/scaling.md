@@ -1,35 +1,38 @@
 # Scaling — Performance & Scaling Strategies
 
-> **Last updated:** 2026-06-14
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
 
 ## Description
-This document is the operational companion to [Infrastructure](infrastructure.md). It describes _when_ and _how_ to scale Internara from a shared hosting setup serving 500 registered users to a multi-server high-availability cluster serving 2000+.
 
-User counts in this document refer to **total registered users per PKL period**, not concurrent users. For Internara's usage patterns, peak concurrency is typically 10-15% of registered users.
+This document is the operational companion to [Infrastructure](infrastructure.md). It describes
+_when_ and _how_ to scale Internara from a shared hosting setup serving 500 registered users to a
+multi-server high-availability cluster serving 2000+.
 
-The philosophy is **start simple, scale by measured need** -- codified in [ADR: Gradual Migration](../adr/adr-gradual-migration.md).
+User counts in this document refer to **total registered users per PKL period**, not concurrent
+users. For Internara's usage patterns, peak concurrency is typically 10-15% of registered users.
+
+The philosophy is **start simple, scale by measured need** -- codified in
+[ADR: Gradual Migration](../adr/adr-gradual-migration.md).
 
 ---
-
 
 ## 1. Decision Framework: When to Scale
 
 Do NOT scale preemptively. Scale when you observe these symptoms:
 
-| Symptom                                       | Probable Cause                           | Action                                    | Tier Trigger      |
-| --------------------------------------------- | ---------------------------------------- | ----------------------------------------- | ----------------- |
-| Page load > 1s (50th percentile) on shared    | Missing cache or slow queries            | Enable OpCache, optimize queries          | Tier 1 (Shared)   |
-| MySQL connection limit errors                 | Too many concurrent PHP-FPM children     | Reduce `pm.max_children`, check provider  | Tier 1 (Shared)   |
-| Email sending blocks page response > 3s       | Sync queue delaying HTTP                 | Switch to Redis queue, start workers      | Tier 1 -> Tier 2  |
-| Media conversions make uploads feel sluggish  | Sync queue blocking                      | Switch to Redis, async conversions        | Tier 1 -> Tier 2  |
-| Queue backlog > 100 jobs for > 5 min          | Sync queue blocking HTTP                 | Switch to Redis queue, start workers      | Tier 1 -> Tier 2  |
-| PHP-FPM max children reached (502 errors)     | Insufficient workers                     | Increase `pm.max_children`, add RAM       | Tier 2 -> Tier 3  |
-| Disk > 85% full                               | Media accumulation                       | Prune, archive, or migrate to S3          | Any tier          |
-| Database CPU > 80% for > 10 min               | Query bottleneck                         | Add indexes, then add read replica        | Tier 2 -> Tier 3  |
-| Rate limiter blocking legitimate users at NAT | IP-only throttle                         | Switch to user-based rate limiting        | Tier 3            |
-| Session cache hit rate < 90%                  | File/database session too slow           | Switch to Redis session                   | Tier 1 -> Tier 2  |
-| 5xx errors during peak hours                  | Resource exhaustion                      | Profile, then vertical -> horizontal scale | Any tier          |
+| Symptom                                       | Probable Cause                       | Action                                     | Tier Trigger     |
+| --------------------------------------------- | ------------------------------------ | ------------------------------------------ | ---------------- |
+| Page load > 1s (50th percentile) on shared    | Missing cache or slow queries        | Enable OpCache, optimize queries           | Tier 1 (Shared)  |
+| MySQL connection limit errors                 | Too many concurrent PHP-FPM children | Reduce `pm.max_children`, check provider   | Tier 1 (Shared)  |
+| Email sending blocks page response > 3s       | Sync queue delaying HTTP             | Switch to Redis queue, start workers       | Tier 1 -> Tier 2 |
+| Media conversions make uploads feel sluggish  | Sync queue blocking                  | Switch to Redis, async conversions         | Tier 1 -> Tier 2 |
+| Queue backlog > 100 jobs for > 5 min          | Sync queue blocking HTTP             | Switch to Redis queue, start workers       | Tier 1 -> Tier 2 |
+| PHP-FPM max children reached (502 errors)     | Insufficient workers                 | Increase `pm.max_children`, add RAM        | Tier 2 -> Tier 3 |
+| Disk > 85% full                               | Media accumulation                   | Prune, archive, or migrate to S3           | Any tier         |
+| Database CPU > 80% for > 10 min               | Query bottleneck                     | Add indexes, then add read replica         | Tier 2 -> Tier 3 |
+| Rate limiter blocking legitimate users at NAT | IP-only throttle                     | Switch to user-based rate limiting         | Tier 3           |
+| Session cache hit rate < 90%                  | File/database session too slow       | Switch to Redis session                    | Tier 1 -> Tier 2 |
+| 5xx errors during peak hours                  | Resource exhaustion                  | Profile, then vertical -> horizontal scale | Any tier         |
 
 ### Do NOT optimize until:
 
@@ -46,24 +49,25 @@ Do NOT scale preemptively. Scale when you observe these symptoms:
 
 **What changes:**
 
-| Concern          | Tier 1 (Shared)     | Tier 2 (VPS)                     |
-| ---------------- | ------------------- | -------------------------------- |
-| Server           | Shared hosting      | VPS (2 CPU, 4 GB RAM, 50 GB SSD) |
-| Database engine  | MySQL / MariaDB     | MySQL 8+ / PostgreSQL (dedicated)|
-| Cache driver     | `file`              | `redis`                          |
-| Session driver   | `database`          | `redis`                          |
-| Queue driver     | `sync`              | `redis`                          |
-| Queue workers    | none (inline)       | Supervisor (dual pipelines)      |
-| Cron             | webhook fallback    | system cron                      |
-| Media storage    | `public` disk (local) | local + backup to S3           |
-| Monitoring       | log files only      | Pulse + SmartLogger              |
-| PHP-FPM children | 10                  | 25                               |
-| Web server       | Apache / Nginx      | Nginx + HTTPS (Let's Encrypt)    |
+| Concern          | Tier 1 (Shared)       | Tier 2 (VPS)                      |
+| ---------------- | --------------------- | --------------------------------- |
+| Server           | Shared hosting        | VPS (2 CPU, 4 GB RAM, 50 GB SSD)  |
+| Database engine  | MySQL / MariaDB       | MySQL 8+ / PostgreSQL (dedicated) |
+| Cache driver     | `file`                | `redis`                           |
+| Session driver   | `database`            | `redis`                           |
+| Queue driver     | `sync`                | `redis`                           |
+| Queue workers    | none (inline)         | Supervisor (dual pipelines)       |
+| Cron             | webhook fallback      | system cron                       |
+| Media storage    | `public` disk (local) | local + backup to S3              |
+| Monitoring       | log files only        | Pulse + SmartLogger               |
+| PHP-FPM children | 10                    | 25                                |
+| Web server       | Apache / Nginx        | Nginx + HTTPS (Let's Encrypt)     |
 
 **Steps:**
 
 1. Provision a VPS (2 CPU, 4 GB RAM, 50 GB SSD)
-2. Install PHP 8.4 + extensions (bcmath, curl, gd, intl, mbstring, openssl, pdo_mysql, xml, zip, opcache, redis)
+2. Install PHP 8.4 + extensions (bcmath, curl, gd, intl, mbstring, openssl, pdo_mysql, xml, zip,
+   opcache, redis)
 3. Install MySQL 8+ or PostgreSQL 14+
 4. Install Redis 7+
 5. Clone codebase and run `composer install --optimize-autoloader --no-dev`
@@ -133,17 +137,17 @@ stopwaitsecs=3600
 
 **What changes:**
 
-| Concern       | Tier 2 (VPS)        | Tier 3 (HA)                  |
-| ------------- | ------------------- | ---------------------------- |
-| App servers   | 1                   | 2+ (Nginx load-balanced)     |
-| Database      | single (read/write) | primary + read replica(s)    |
-| Redis         | single instance     | cluster (3 nodes min)        |
-| Queue workers | 2 per pipeline      | 4-8 per pipeline             |
-| Session       | Redis single        | Redis cluster                |
-| Cache         | Redis single        | Redis cluster                |
-| Media storage | local + backup      | S3 primary                   |
-| Rate limiting | IP-based            | user-based                   |
-| Monitoring    | Pulse               | Pulse + APM (Blackfire)      |
+| Concern       | Tier 2 (VPS)        | Tier 3 (HA)               |
+| ------------- | ------------------- | ------------------------- |
+| App servers   | 1                   | 2+ (Nginx load-balanced)  |
+| Database      | single (read/write) | primary + read replica(s) |
+| Redis         | single instance     | cluster (3 nodes min)     |
+| Queue workers | 2 per pipeline      | 4-8 per pipeline          |
+| Session       | Redis single        | Redis cluster             |
+| Cache         | Redis single        | Redis cluster             |
+| Media storage | local + backup      | S3 primary                |
+| Rate limiting | IP-based            | user-based                |
+| Monitoring    | Pulse               | Pulse + APM (Blackfire)   |
 
 **Steps (in order):**
 
@@ -288,12 +292,12 @@ FILESYSTEM_DISK=s3
 
 Worker throughput: ~50-100 jobs/min per worker process.
 
-| Registered users | Workers per pipeline | Driver | Notes                          |
-| --------------- | -------------------- | ------ | ------------------------------ |
-| <= 500          | sync (inline)        | `sync` | No separate worker needed      |
-| 500-1000        | 2                    | `redis`| Supervisor on single VPS       |
-| 1000-2000       | 4                    | `redis`| Increase RAM per server        |
-| 2000+           | 6-8                  | `redis`| 2+ app servers x 3-4 each      |
+| Registered users | Workers per pipeline | Driver  | Notes                     |
+| ---------------- | -------------------- | ------- | ------------------------- |
+| <= 500           | sync (inline)        | `sync`  | No separate worker needed |
+| 500-1000         | 2                    | `redis` | Supervisor on single VPS  |
+| 1000-2000        | 4                    | `redis` | Increase RAM per server   |
+| 2000+            | 6-8                  | `redis` | 2+ app servers x 3-4 each |
 
 ---
 
@@ -451,7 +455,7 @@ k6 run --vus 200 --duration 5m path/to/Tier3Validation.js
 | Document                                                                  | Contents                                              |
 | ------------------------------------------------------------------------- | ----------------------------------------------------- |
 | [Infrastructure](infrastructure.md)                                       | Deployment tiers, target architecture, service layout |
-| [Installation](../guide/01-installation.md)                                | Prerequisites, command reference, troubleshooting     |
+| [Installation](../guide/01-installation.md)                               | Prerequisites, command reference, troubleshooting     |
 | [Deployment](deployment.md)                                               | Server config, Supervisor, Docker, shared hosting     |
 | [Configuration](configuration.md)                                         | .env reference, all config options                    |
 | [Observability](observability.md)                                         | Pulse, logging, health checks                         |

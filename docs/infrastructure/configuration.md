@@ -1,14 +1,17 @@
 # Configuration — Three-Tier Config System
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+
 ## Description
 
-Three-tier configuration system: .env, config files, and runtime database settings with cache-first resolution.
+Three-tier configuration system: .env, config files, and runtime database settings with cache-first
+resolution.
 
 ## Config File Organization
 
-Configuration files live in the `config/` directory, one file per subsystem. Each file returns a PHP array of default values. Environment variables (`.env`) override these defaults at runtime without modifying the files.
+Configuration files live in the `config/` directory, one file per subsystem. Each file returns a PHP
+array of default values. Environment variables (`.env`) override these defaults at runtime without
+modifying the files.
 
 Configuration is organized into three tiers:
 
@@ -45,7 +48,8 @@ Variables follow a naming convention that makes their origin clear:
 
 ### 1. Environment Tier (`.env` + `config/*.php`)
 
-The `.env` file is the highest-priority configuration. It stores environment-specific values that MUST NOT be committed to version control:
+The `.env` file is the highest-priority configuration. It stores environment-specific values that
+MUST NOT be committed to version control:
 
 ```env
 # .env — DO NOT COMMIT
@@ -61,7 +65,9 @@ Configuration files read environment variables via `env()`:
 'default' => env('DB_CONNECTION', 'sqlite'),
 ```
 
-Values from `config/*.php` are cached by `php artisan config:cache`, which merges all config files into a single cached file. After caching, `env()` calls inside config files become inert — only the cached values are used. Changes to `.env` require `php artisan config:cache` to take effect.
+Values from `config/*.php` are cached by `php artisan config:cache`, which merges all config files
+into a single cached file. After caching, `env()` calls inside config files become inert — only the
+cached values are used. Changes to `.env` require `php artisan config:cache` to take effect.
 
 ### 2. Code Defaults Tier (`config/*.php` fallbacks)
 
@@ -71,11 +77,13 @@ The second argument to `env()` provides a hardcoded default:
 'default' => env('DB_CONNECTION', 'sqlite'),  // sqlite is the code default
 ```
 
-These defaults are version-controlled and change only with deployments. They ensure the application works with zero configuration in a fresh installation.
+These defaults are version-controlled and change only with deployments. They ensure the application
+works with zero configuration in a fresh installation.
 
 ### 3. Runtime Settings Tier (Database `settings` table)
 
-The `setting()` helper reads from the `settings` database table, which stores runtime-configurable values:
+The `setting()` helper reads from the `settings` database table, which stores runtime-configurable
+values:
 
 ```php
 $value = setting('app_name', 'Internara'); // with default fallback
@@ -97,17 +105,17 @@ Settings take effect immediately — no deployment, no cache clear, no server re
 
 ## Development vs Production
 
-| Aspect             | Development         | Production (Shared)              | Production (Tier 2+) |
-| ------------------ | ------------------- | -------------------------------- | -------------------- |
-| **Database**       | SQLite (file)       | MySQL / MariaDB                  | MySQL / PostgreSQL   |
-| **Cache driver**   | `file`              | `file` or `database`             | `redis`              |
+| Aspect             | Development         | Production (Shared)              | Production (Tier 2+)    |
+| ------------------ | ------------------- | -------------------------------- | ----------------------- |
+| **Database**       | SQLite (file)       | MySQL / MariaDB                  | MySQL / PostgreSQL      |
+| **Cache driver**   | `file`              | `file` or `database`             | `redis`                 |
 | **Queue driver**   | `sync`              | `sync`                           | `redis` (dual pipeline) |
-| **Session driver** | `database`          | `database`                       | `redis`              |
-| **Mail driver**    | `log`               | SMTP                             | SES / SMTP           |
-| **Debug mode**     | `APP_DEBUG=true`    | `false`                          | `false`              |
-| **OpCache**        | Disabled            | Enabled                          | Enabled              |
-| **Composer**       | Full install        | `--optimize-autoloader --no-dev` | Same                 |
-| **Asset build**    | `npm run dev` (HMR) | `npm run build`                  | `npm run build`      |
+| **Session driver** | `database`          | `database`                       | `redis`                 |
+| **Mail driver**    | `log`               | SMTP                             | SES / SMTP              |
+| **Debug mode**     | `APP_DEBUG=true`    | `false`                          | `false`                 |
+| **OpCache**        | Disabled            | Enabled                          | Enabled                 |
+| **Composer**       | Full install        | `--optimize-autoloader --no-dev` | Same                    |
+| **Asset build**    | `npm run dev` (HMR) | `npm run build`                  | `npm run build`         |
 
 ---
 
@@ -183,15 +191,17 @@ See [Localization](localization.md) for adding new languages.
 
 ## The `brand()` Helper
 
-The companion `brand()` helper reads brand-specific settings (colors, logo, favicon) and returns structured data for use in Blade templates:
+The companion `brand()` helper reads brand-specific settings (colors, logo, favicon) and returns
+structured data for use in Blade templates:
 
 ```php
-brand('name');    // Application name from settings
-brand('logo');    // Logo URL (uploaded or default)
-brand('colors');  // Array of primary, secondary, accent, base
+brand('name'); // Application name from settings
+brand('logo'); // Logo URL (uploaded or default)
+brand('colors'); // Array of primary, secondary, accent, base
 ```
 
-Values resolve through a fallback chain: runtime settings → config defaults → hardcoded defaults. See [Branding](../foundation/branding.md) for details.
+Values resolve through a fallback chain: runtime settings → config defaults → hardcoded defaults.
+See [Branding](../foundation/branding.md) for details.
 
 ---
 

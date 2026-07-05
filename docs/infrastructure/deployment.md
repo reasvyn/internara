@@ -1,47 +1,53 @@
 # Deployment — Options, Requirements & CI/CD
 
-> **Last updated:** 2026-06-14
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
 
 ## Description
-Internara is designed to be installed on the school's own infrastructure. This guide covers the three supported deployment paths and the operational requirements for each.
 
-For prerequisites and PHP extension requirements, see [Installation](../guide/01-installation.md#prerequisites). For application installation steps (migrations, setup wizard, build), see [Installation](../guide/01-installation.md#application-installation-steps).
+Internara is designed to be installed on the school's own infrastructure. This guide covers the
+three supported deployment paths and the operational requirements for each.
+
+For prerequisites and PHP extension requirements, see
+[Installation](../guide/01-installation.md#prerequisites). For application installation steps
+(migrations, setup wizard, build), see
+[Installation](../guide/01-installation.md#application-installation-steps).
 
 ---
 
-
 #Deployment — Options, Requirements & CI/CD Path A: Shared Hosting (Primary)
 
-Shared hosting is the **recommended starting point** for most schools. It handles up to 500 registered users per PKL period with zero devops overhead.
+Shared hosting is the **recommended starting point** for most schools. It handles up to 500
+registered users per PKL period with zero devops overhead.
 
 ### Supported Providers
 
 Any shared hosting plan with these features works:
 
-| Feature              | Minimum Requirement                                 |
-| -------------------- | --------------------------------------------------- |
-| PHP                  | 8.4+                                                |
-| Database             | MySQL 8+ or MariaDB 10.6+                           |
-| Document root        | Configurable to `public/` directory                 |
-| SSH access           | Recommended (cPanel/S FTP fallback available)        |
-| Cron                 | At least 5-minute interval (1-minute preferred)     |
-| Disk space           | 5 GB minimum (10 GB recommended)                    |
+| Feature       | Minimum Requirement                             |
+| ------------- | ----------------------------------------------- |
+| PHP           | 8.4+                                            |
+| Database      | MySQL 8+ or MariaDB 10.6+                       |
+| Document root | Configurable to `public/` directory             |
+| SSH access    | Recommended (cPanel/S FTP fallback available)   |
+| Cron          | At least 5-minute interval (1-minute preferred) |
+| Disk space    | 5 GB minimum (10 GB recommended)                |
 
-Most Indonesian hosting providers (Niagahoster, Domainesia, Jagoan Hosting, etc.) meet these requirements.
+Most Indonesian hosting providers (Niagahoster, Domainesia, Jagoan Hosting, etc.) meet these
+requirements.
 
 ### Limitations
 
-| Feature                                   | Alternative                                                |
-| ----------------------------------------- | ---------------------------------------------------------- |
+| Feature                                   | Alternative                                                 |
+| ----------------------------------------- | ----------------------------------------------------------- |
 | Queue worker (no long-running processes)  | Set `QUEUE_CONNECTION=sync` -- jobs run during HTTP request |
-| Reverb WebSocket (no custom servers)      | Page refresh shows new notifications                       |
-| Redis / Memcached (not installed)         | Use `file` or `database` driver                            |
-| Minute-level cron (min interval 5-15 min) | Hit `/cron/{secret}` web endpoint                          |
+| Reverb WebSocket (no custom servers)      | Page refresh shows new notifications                        |
+| Redis / Memcached (not installed)         | Use `file` or `database` driver                             |
+| Minute-level cron (min interval 5-15 min) | Hit `/cron/{secret}` web endpoint                           |
 
 ### What Still Works
 
-All core features: authentication, registration, attendance, logbook, assignments, assessments, reports, certificates, mentoring, email notifications.
+All core features: authentication, registration, attendance, logbook, assignments, assessments,
+reports, certificates, mentoring, email notifications.
 
 ##Deployment — Options, Requirements & CI/CD Steps
 
@@ -53,7 +59,8 @@ npm install && npm run build
 rm -rf node_modules/
 ```
 
-**2. Upload files** to your host's document root. The document root must point to the `public/` directory.
+**2. Upload files** to your host's document root. The document root must point to the `public/`
+directory.
 
 **3. Configure environment:**
 
@@ -61,7 +68,10 @@ rm -rf node_modules/
 cp .env.example .env
 ```
 
-The `.env.example` defaults are already optimized for shared hosting (`QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, etc.). Key settings to customize: `APP_URL`, `APP_ENV=production`, `APP_DEBUG=false`, `DB_*` (your host's MySQL/MariaDB credentials), `MAIL_*` (SMTP settings), `CRON_SECRET`.
+The `.env.example` defaults are already optimized for shared hosting (`QUEUE_CONNECTION=sync`,
+`CACHE_STORE=file`, etc.). Key settings to customize: `APP_URL`, `APP_ENV=production`,
+`APP_DEBUG=false`, `DB_*` (your host's MySQL/MariaDB credentials), `MAIL_*` (SMTP settings),
+`CRON_SECRET`.
 
 **4. Run migrations:**
 
@@ -83,7 +93,8 @@ Copy the signed URL from the output and open it in your browser to complete the 
 * * * * * curl -s https://your-school.sch.id/cron/your-cron-secret-here
 ```
 
-If your provider limits cron to 5-minute intervals, that is acceptable -- scheduled tasks run with a slight delay.
+If your provider limits cron to 5-minute intervals, that is acceptable -- scheduled tasks run with a
+slight delay.
 
 **7. Storage link** -- create manually if SSH is not available:
 
@@ -93,16 +104,17 @@ public/storage -> storage/app/public
 
 ### Performance for 500 Users
 
-At 500 registered users (~50-100 peak concurrent), shared hosting handles all operations with these expected response times:
+At 500 registered users (~50-100 peak concurrent), shared hosting handles all operations with these
+expected response times:
 
-| Operation                  | Expected Time                |
-| -------------------------- | ---------------------------- |
-| Page load (cached)         | < 500ms                      |
-| Page load (uncached)       | < 1.5s                       |
-| Email sending (sync)       | 1-3s per message             |
-| Media upload + conversion  | 1-3s per file                |
-| PDF generation             | 2-5s per document            |
-| Report generation           | 3-8s per report              |
+| Operation                 | Expected Time     |
+| ------------------------- | ----------------- |
+| Page load (cached)        | < 500ms           |
+| Page load (uncached)      | < 1.5s            |
+| Email sending (sync)      | 1-3s per message  |
+| Media upload + conversion | 1-3s per file     |
+| PDF generation            | 2-5s per document |
+| Report generation         | 3-8s per report   |
 
 If response times degrade, upgrade to [Tier 2 (VPS)](#deployment-path-b-vps--dedicated-server).
 
@@ -164,7 +176,8 @@ server {
 }
 ```
 
-For Apache, ensure `mod_rewrite` is enabled -- the included `public/.htaccess` handles URL rewriting.
+For Apache, ensure `mod_rewrite` is enabled -- the included `public/.htaccess` handles URL
+rewriting.
 
 ### 2. PHP-FPM Tuning
 
@@ -294,11 +307,14 @@ Create the public storage symlink:
 php artisan storage:link
 ```
 
-For multi-server deployments, replace local storage with S3-compatible object storage. See [Media Library](media-library.md#s3-compatible-cloud-storage).
+For multi-server deployments, replace local storage with S3-compatible object storage. See
+[Media Library](media-library.md#s3-compatible-cloud-storage).
 
 ### 6. Complete the Installation
 
-Follow the application installation steps in [Installation](../guide/01-installation.md#application-installation-steps) -- build assets, run the setup wizard, enable caches, and verify with `php artisan system:health`.
+Follow the application installation steps in
+[Installation](../guide/01-installation.md#application-installation-steps) -- build assets, run the
+setup wizard, enable caches, and verify with `php artisan system:health`.
 
 ---
 
@@ -323,7 +339,9 @@ The project includes a production `docker-compose.yml` with all required service
 docker compose up -d
 ```
 
-The application is served on port 80 (configurable via `NGINX_PORT`). Run `php artisan setup:install` inside the `app` container to generate the signed setup URL, then open it in your browser.
+The application is served on port 80 (configurable via `NGINX_PORT`). Run
+`php artisan setup:install` inside the `app` container to generate the signed setup URL, then open
+it in your browser.
 
 ### Development with Laravel Sail
 

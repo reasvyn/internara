@@ -1,25 +1,27 @@
 # Getting Started — From Clone to Running Application
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+
 ## Description
 
 End-to-end walkthrough from cloning the repository to completing the setup wizard and first login.
 
 ## Prerequisites
 
-| Requirement | Development         | Production                          |
-| ----------- | ------------------- | ----------------------------------- |
-| PHP         | 8.4.0+              | 8.4.0+                              |
-| Composer    | 2.5+                | 2.5+                                |
-| Node.js     | 20+                 | 20+ (build only)                    |
-| NPM         | 10+                 | 10+ (build only)                    |
-| Database    | SQLite (built-in)   | MySQL 8+ / MariaDB 10.6+ (shared)   |
-| Queue       | `database` driver   | `sync` (shared) / Redis (VPS+)      |
-| Cache       | `database` driver   | `file` (shared) / Redis (VPS+)      |
-| Web server  | `php artisan serve` | Apache / Nginx (shared hosting)     |
+| Requirement | Development         | Production                        |
+| ----------- | ------------------- | --------------------------------- |
+| PHP         | 8.4.0+              | 8.4.0+                            |
+| Composer    | 2.5+                | 2.5+                              |
+| Node.js     | 20+                 | 20+ (build only)                  |
+| NPM         | 10+                 | 10+ (build only)                  |
+| Database    | SQLite (built-in)   | MySQL 8+ / MariaDB 10.6+ (shared) |
+| Queue       | `database` driver   | `sync` (shared) / Redis (VPS+)    |
+| Cache       | `database` driver   | `file` (shared) / Redis (VPS+)    |
+| Web server  | `php artisan serve` | Apache / Nginx (shared hosting)   |
 
-**Required PHP extensions:** `bcmath`, `ctype`, `curl`, `fileinfo`, `gd`, `intl`, `mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `zip`, plus the database driver matching your chosen engine (`pdo_sqlite`, `pdo_mysql`, or `pdo_pgsql`).
+**Required PHP extensions:** `bcmath`, `ctype`, `curl`, `fileinfo`, `gd`, `intl`, `mbstring`,
+`openssl`, `pdo`, `tokenizer`, `xml`, `zip`, plus the database driver matching your chosen engine
+(`pdo_sqlite`, `pdo_mysql`, or `pdo_pgsql`).
 
 ---
 
@@ -88,17 +90,22 @@ php artisan setup:install
 
 This command will:
 
-1. **Audit the environment** — checks PHP version (≥ 8.4.0), required extensions, storage permissions, database connectivity, and CLI tools. Stops with detailed output if any check fails.
-2. **Provision the system** — creates `.env` from `.env.example` if missing, generates `APP_KEY`, runs database migrations, creates the storage symlink, and seeds initial data.
-3. **Generate a setup URL** — produces a one-time signed URL with an expiring token, scoped to your `APP_URL`:
+1. **Audit the environment** — checks PHP version (≥ 8.4.0), required extensions, storage
+   permissions, database connectivity, and CLI tools. Stops with detailed output if any check fails.
+2. **Provision the system** — creates `.env` from `.env.example` if missing, generates `APP_KEY`,
+   runs database migrations, creates the storage symlink, and seeds initial data.
+3. **Generate a setup URL** — produces a one-time signed URL with an expiring token, scoped to your
+   `APP_URL`:
 
     ```
     https://internara.sekolah.sch.id/setup?setup_token=a1b2c3d4...
     ```
 
-After the command completes, you will see the URL printed in the terminal along with the token and its expiry time (default: 60 minutes).
+After the command completes, you will see the URL printed in the terminal along with the token and
+its expiry time (default: 60 minutes).
 
 > **Options:**
+>
 > - `--check-only` — run the environment audit without installing
 > - `--force` — reinstall even if already installed (development only)
 
@@ -116,11 +123,14 @@ Or use the all-in-one command:
 composer run dev
 ```
 
-**Production on shared hosting** uses sync queue (no worker needed) and webhook-based cron. **Production on VPS** requires Supervisor (or systemd) for queue workers, system cron, and optionally Reverb for WebSocket support. See [Deployment](infrastructure/deployment.md).
+**Production on shared hosting** uses sync queue (no worker needed) and webhook-based cron.
+**Production on VPS** requires Supervisor (or systemd) for queue workers, system cron, and
+optionally Reverb for WebSocket support. See [Deployment](infrastructure/deployment.md).
 
 ### Step 6: Complete the Setup Wizard
 
-Open the signed URL from Step 4 in your browser. The URL includes a `setup_token` parameter that authorizes access. The 6-step wizard guides you through:
+Open the signed URL from Step 4 in your browser. The URL includes a `setup_token` parameter that
+authorizes access. The 6-step wizard guides you through:
 
 | Step | What You Configure                          |
 | ---- | ------------------------------------------- |
@@ -153,8 +163,8 @@ Follow the [Setup Wizard](guide/02-setup-wizard.md) guide for a detailed walkthr
 
 | Document                                           | What It Covers                                              |
 | -------------------------------------------------- | ----------------------------------------------------------- |
-| [Installation](guide/01-installation.md)     | Detailed deployment options, server config, troubleshooting |
-| [Setup Wizard](guide/02-setup-wizard.md)                    | Complete walkthrough of all 6 wizard steps                  |
-| [Post-Setup](guide/03-post-setup.md)                        | First actions after the wizard completes                    |
+| [Installation](guide/01-installation.md)           | Detailed deployment options, server config, troubleshooting |
+| [Setup Wizard](guide/02-setup-wizard.md)           | Complete walkthrough of all 6 wizard steps                  |
+| [Post-Setup](guide/03-post-setup.md)               | First actions after the wizard completes                    |
 | [Architecture](architecture.md)                    | System design, modules, layers                              |
 | [Infrastructure](infrastructure/infrastructure.md) | Deployment options, background processes, storage           |

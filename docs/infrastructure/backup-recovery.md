@@ -1,13 +1,14 @@
 # Backup & Recovery — Backup Strategies & Restoration
 
-> **Last updated:** 2026-06-14
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
 
 ## Description
-Regular backups protect your school's data against hardware failure, accidental deletion, and security incidents. This guide covers what to back up, how to automate it, and how to restore when needed.
+
+Regular backups protect your school's data against hardware failure, accidental deletion, and
+security incidents. This guide covers what to back up, how to automate it, and how to restore when
+needed.
 
 ---
-
 
 ## What to Back Up
 
@@ -87,7 +88,8 @@ tar -czf backups/storage_$(date +%Y%m%d).tar.gz \
 
 ### S3-Compatible Storage
 
-If using S3 natively for file storage, enable versioning on the bucket for point-in-time recovery. The provider handles durability automatically.
+If using S3 natively for file storage, enable versioning on the bucket for point-in-time recovery.
+The provider handles durability automatically.
 
 ---
 
@@ -168,11 +170,13 @@ mysqlbinlog --stop-datetime="2026-01-01 12:00:00" \
 
 ### Lost Database
 
-Restore from the most recent database dump. Files remain intact. Data loss is limited to the interval between the last backup and the failure.
+Restore from the most recent database dump. Files remain intact. Data loss is limited to the
+interval between the last backup and the failure.
 
 ### Lost Files (Local Storage)
 
-Restore files from the most recent file backup. Database records referencing those files remain consistent because media library entries are tied to model UUIDs, not file paths.
+Restore files from the most recent file backup. Database records referencing those files remain
+consistent because media library entries are tied to model UUIDs, not file paths.
 
 ### Lost Everything (Server Failure)
 
@@ -186,7 +190,10 @@ Restore files from the most recent file backup. Database records referencing tho
 
 ### Accidental Data Deletion
 
-If data was deleted through the application (not a database-level drop), check the audit log (`activity_log` table) to identify what was changed and by whom. Most records are soft-deleted or status-transitioned rather than hard-deleted. If the deletion was recent, restore the affected records from the previous backup.
+If data was deleted through the application (not a database-level drop), check the audit log
+(`activity_log` table) to identify what was changed and by whom. Most records are soft-deleted or
+status-transitioned rather than hard-deleted. If the deletion was recent, restore the affected
+records from the previous backup.
 
 ---
 

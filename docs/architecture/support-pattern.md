@@ -1,14 +1,14 @@
 # Support Pattern — Static Utilities, Purity Rules & Boundaries
 
-> **Last updated:** 2026-06-27
-> **Changes:** rewrite — Support is now purely static utilities with no constructor injection; instance+framework classes moved to Service pattern
+> **Last updated:** 2026-06-27 **Changes:** rewrite — Support is now purely static utilities with no
+> constructor injection; instance+framework classes moved to Service pattern
 
 ## Description
+
 Defines the Support utility layer — purely static helper classes with minimal or no framework
 dependencies.
 
 ---
-
 
 ## 1. What Support Is
 
@@ -16,6 +16,7 @@ Support utilities are **`public static` methods only**. They serve one purpose: 
 transformations and helpers with zero side effects.
 
 **Rules:**
+
 - MUST use only `public static` methods — no `public function` instance methods
 - MUST NOT have constructor injection — no `__construct()` parameters
 - MAY use static framework calls (`config()`, `__()`, `trans()`) but SHOULD prefer pure PHP where
@@ -27,12 +28,12 @@ transformations and helpers with zero side effects.
 
 ### What Support Is NOT
 
-| If your class needs... | It belongs in |
-|-----------------------|---------------|
-| Constructor injection | **Service** (see [Service Pattern](service-pattern.md)) |
-| Instance methods (`public function` without `static`) | **Service** |
-| Framework facades in a constructor | **Service** |
-| To extend a framework class (`extends Translator`, `extends BaseSpotlight`) | **Service** |
+| If your class needs...                                                      | It belongs in                                           |
+| --------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Constructor injection                                                       | **Service** (see [Service Pattern](service-pattern.md)) |
+| Instance methods (`public function` without `static`)                       | **Service**                                             |
+| Framework facades in a constructor                                          | **Service**                                             |
+| To extend a framework class (`extends Translator`, `extends BaseSpotlight`) | **Service**                                             |
 
 ---
 
@@ -40,13 +41,14 @@ transformations and helpers with zero side effects.
 
 Support classes at their owning scope:
 
-| Scope | Path | Example |
-|-------|------|---------|
-| Cross-module | `app/Core/Support/` | `app/Core/Support/PiiMasker.php` |
-| Module-level | `app/{Module}/Support/` | `app/User/Support/UserIdentifierGenerator.php` |
-| Submodule-level | `app/{Module}/{SubModule}/Support/` | None currently |
+| Scope           | Path                                | Example                                        |
+| --------------- | ----------------------------------- | ---------------------------------------------- |
+| Cross-module    | `app/Core/Support/`                 | `app/Core/Support/PiiMasker.php`               |
+| Module-level    | `app/{Module}/Support/`             | `app/User/Support/UserIdentifierGenerator.php` |
+| Submodule-level | `app/{Module}/{SubModule}/Support/` | None currently                                 |
 
 **Placement rules:**
+
 - Pure utility without framework calls → `app/Core/Support/`
 - Module-specific utility → `app/{Module}/Support/`
 - If it needs constructor injection → `app/{Module}/{SubModule}/Services/` instead
@@ -55,43 +57,43 @@ Support classes at their owning scope:
 
 ## 3. Existing Support Classes — Correct vs Incorrect
 
-| Class | Location | Static only? | Framework deps? | Verdict |
-|-------|----------|-------------|----------------|---------|
-| `Color` | `Core/Support/` | ✅ Static only | ❌ Pure PHP | ✅ Correct |
-| `PiiMasker` | `Core/Support/` | ✅ Static only | ❌ Pure PHP | ✅ Correct |
-| `PasswordRules` | `Core/Support/` | ✅ Static only | ✅ Minimal (`Password` rule object) | ✅ Correct |
-| `helpers.php` | `Core/Support/` | ✅ Static functions | ✅ `app_info()` via `Cache`/`Config` | ✅ Correct (file, not class) |
-| `Environment` | `Core/Support/` | ✅ Static only | ✅ `config()`, `app()` | ✅ Correct (static, no injection) |
-| `UserIdentifierGenerator` | `User/Support/` | ✅ Static only | ✅ DB collision check | ✅ Correct (static read-only) |
-| `AppIntegrity` | `Core/Support/` | ✅ Static only | ❌ Pure PHP (`RuntimeException`) | ✅ Correct |
-| `helpers.php` (Settings) | `Settings/Support/` | ✅ Static functions | ✅ `setting()`, `brand()` via Cache | ✅ Correct |
-| `SmartLogger` | `Core/Support/` | ❌ Instance methods | ✅ Facades, DB, events | ❌ **Should be Service** |
-| `CsvHandler` | `Core/Support/` | ❌ Instance methods | ✅ `StreamedResponse`, `Collection` | ❌ **Should be Service** |
-| `Settings` | `Settings/Support/` | ❌ Instance methods | ✅ `Cache`, `Config` | ❌ **Should be Service** |
-| `Brand` | `Settings/Support/` | ❌ Instance methods | ✅ `Cache`, `Config` | ❌ **Should be Service** |
-| `Theme` | `Settings/Theme/Support/` | ❌ Instance methods | ✅ `Cache`, `SettingsStore` | ❌ **Should be Service** |
-| `Locale` | `Settings/Locale/Support/` | ❌ Instance methods | ✅ `App`, `Cookie` | ❌ **Should be Service** |
-| `DocumentRenderer` | `Document/Support/` | ❌ Constructor injection | ✅ `Pdf`, `Blade`, `Storage` | ❌ **Should be Service** |
-| `CertificateRenderer` | `Certification/Certificate/Support/` | ❌ Constructor injection | ✅ `Pdf`, `Blade`, `Storage` | ❌ **Should be Service** |
-| `BackupRunner` | `SysAdmin/Backups/Support/` | ❌ Instance methods | ✅ `storage_path()`, shell exec | ❌ **Should be Service** |
-| `SystemProvisioner` | `Setup/Installation/Support/` | ❌ Instance methods | ✅ `Artisan`, `File` | ❌ **Should be Service** |
-| `AppInfo` | `Core/Support/` | ✅ Static methods | ✅ `Cache`, `Config`, `File` facades | ⚠️ Borderline: static but framework-aware. Could stay with note. |
-| `LangChecker` | `Core/Support/` | ❌ Instance + `extends Translator` | ✅ Framework class | ❌ **Should be Service** |
-| `Spotlight` | `Core/Support/` | ❌ Instance + `extends BaseSpotlight` | ✅ maryUI component | ❌ **Should be Service** |
+| Class                     | Location                             | Static only?                          | Framework deps?                      | Verdict                                                          |
+| ------------------------- | ------------------------------------ | ------------------------------------- | ------------------------------------ | ---------------------------------------------------------------- |
+| `Color`                   | `Core/Support/`                      | ✅ Static only                        | ❌ Pure PHP                          | ✅ Correct                                                       |
+| `PiiMasker`               | `Core/Support/`                      | ✅ Static only                        | ❌ Pure PHP                          | ✅ Correct                                                       |
+| `PasswordRules`           | `Core/Support/`                      | ✅ Static only                        | ✅ Minimal (`Password` rule object)  | ✅ Correct                                                       |
+| `helpers.php`             | `Core/Support/`                      | ✅ Static functions                   | ✅ `app_info()` via `Cache`/`Config` | ✅ Correct (file, not class)                                     |
+| `Environment`             | `Core/Support/`                      | ✅ Static only                        | ✅ `config()`, `app()`               | ✅ Correct (static, no injection)                                |
+| `UserIdentifierGenerator` | `User/Support/`                      | ✅ Static only                        | ✅ DB collision check                | ✅ Correct (static read-only)                                    |
+| `AppIntegrity`            | `Core/Support/`                      | ✅ Static only                        | ❌ Pure PHP (`RuntimeException`)     | ✅ Correct                                                       |
+| `helpers.php` (Settings)  | `Settings/Support/`                  | ✅ Static functions                   | ✅ `setting()`, `brand()` via Cache  | ✅ Correct                                                       |
+| `SmartLogger`             | `Core/Support/`                      | ❌ Instance methods                   | ✅ Facades, DB, events               | ❌ **Should be Service**                                         |
+| `CsvHandler`              | `Core/Support/`                      | ❌ Instance methods                   | ✅ `StreamedResponse`, `Collection`  | ❌ **Should be Service**                                         |
+| `Settings`                | `Settings/Support/`                  | ❌ Instance methods                   | ✅ `Cache`, `Config`                 | ❌ **Should be Service**                                         |
+| `Brand`                   | `Settings/Support/`                  | ❌ Instance methods                   | ✅ `Cache`, `Config`                 | ❌ **Should be Service**                                         |
+| `Theme`                   | `Settings/Theme/Support/`            | ❌ Instance methods                   | ✅ `Cache`, `SettingsStore`          | ❌ **Should be Service**                                         |
+| `Locale`                  | `Settings/Locale/Support/`           | ❌ Instance methods                   | ✅ `App`, `Cookie`                   | ❌ **Should be Service**                                         |
+| `DocumentRenderer`        | `Document/Support/`                  | ❌ Constructor injection              | ✅ `Pdf`, `Blade`, `Storage`         | ❌ **Should be Service**                                         |
+| `CertificateRenderer`     | `Certification/Certificate/Support/` | ❌ Constructor injection              | ✅ `Pdf`, `Blade`, `Storage`         | ❌ **Should be Service**                                         |
+| `BackupRunner`            | `SysAdmin/Backups/Support/`          | ❌ Instance methods                   | ✅ `storage_path()`, shell exec      | ❌ **Should be Service**                                         |
+| `SystemProvisioner`       | `Setup/Installation/Support/`        | ❌ Instance methods                   | ✅ `Artisan`, `File`                 | ❌ **Should be Service**                                         |
+| `AppInfo`                 | `Core/Support/`                      | ✅ Static methods                     | ✅ `Cache`, `Config`, `File` facades | ⚠️ Borderline: static but framework-aware. Could stay with note. |
+| `LangChecker`             | `Core/Support/`                      | ❌ Instance + `extends Translator`    | ✅ Framework class                   | ❌ **Should be Service**                                         |
+| `Spotlight`               | `Core/Support/`                      | ❌ Instance + `extends BaseSpotlight` | ✅ maryUI component                  | ❌ **Should be Service**                                         |
 
 ---
 
 ## 4. Support vs Actions
 
-| Concern | Support | Action |
-|---------|---------|--------|
-| **Method style** | `public static` only | `public function execute()` |
-| **Base class** | None | `BaseAction` |
-| **Transaction** | Never | Required (Command/Process) |
-| **Logging** | Never | Required (Command/Process) |
-| **Event dispatch** | Never | Recommended (Command) |
-| **Database write** | Never | Always (Command) |
-| **Business rules** | Never | Primary owner |
+| Concern            | Support              | Action                      |
+| ------------------ | -------------------- | --------------------------- |
+| **Method style**   | `public static` only | `public function execute()` |
+| **Base class**     | None                 | `BaseAction`                |
+| **Transaction**    | Never                | Required (Command/Process)  |
+| **Logging**        | Never                | Required (Command/Process)  |
+| **Event dispatch** | Never                | Recommended (Command)       |
+| **Database write** | Never                | Always (Command)            |
+| **Business rules** | Never                | Primary owner               |
 
 ### When to Choose Action Over Support
 
@@ -105,17 +107,18 @@ If any of these are true, use an Action. A Support class is never a downgrade pa
 
 ## 5. Support vs Services
 
-| Concern | Support | Service |
-|---------|---------|---------|
-| **Method style** | `public static` only | Instance methods with constructor injection |
-| **Constructor injection** | Never | Required |
-| **Framework dependency** | Minimal (static `config()` OK) | Required (config, container, facades) |
-| **Override/extend framework class** | Never | May extend framework classes |
-| **Scope** | Module or submodule | Core, Module, or SubModule |
-| **Domain business logic** | Never | Never (infrastructure logic only) |
-| **Test style** | Unit (no Laravel boot needed) | Integration (needs Laravel container) |
+| Concern                             | Support                        | Service                                     |
+| ----------------------------------- | ------------------------------ | ------------------------------------------- |
+| **Method style**                    | `public static` only           | Instance methods with constructor injection |
+| **Constructor injection**           | Never                          | Required                                    |
+| **Framework dependency**            | Minimal (static `config()` OK) | Required (config, container, facades)       |
+| **Override/extend framework class** | Never                          | May extend framework classes                |
+| **Scope**                           | Module or submodule            | Core, Module, or SubModule                  |
+| **Domain business logic**           | Never                          | Never (infrastructure logic only)           |
+| **Test style**                      | Unit (no Laravel boot needed)  | Integration (needs Laravel container)       |
 
 **Quick decision:**
+
 ```
 Does the class need constructor injection?
 ├─ Yes → Service

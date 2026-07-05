@@ -1,14 +1,17 @@
 # Session — Session Configuration & Security
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+
 ## Description
 
-Session driver configuration, security settings, cookie parameters, and session lifecycle management.
+Session driver configuration, security settings, cookie parameters, and session lifecycle
+management.
 
 ## Purpose
 
-The session layer manages user authentication state across HTTP requests. It remembers who a user is after login without requiring credentials on every request, and provides per-user ephemeral storage for flash messages, locale preference, and multi-step form progress.
+The session layer manages user authentication state across HTTP requests. It remembers who a user is
+after login without requiring credentials on every request, and provides per-user ephemeral storage
+for flash messages, locale preference, and multi-step form progress.
 
 ---
 
@@ -21,7 +24,8 @@ The session layer manages user authentication state across HTTP requests. It rem
 | **Persistence**  | Durable (database)                                   | Memory + persistence  | Replicated         |
 | **Multi-server** | ✅ (shared DB)                                       | ✅ (shared Redis)     | ✅ (Redis cluster) |
 
-Default for new installations: `database` driver. The sessions table is created by migration and requires no external service.
+Default for new installations: `database` driver. The sessions table is created by migration and
+requires no external service.
 
 ```env
 # Tier 1 (default)
@@ -37,9 +41,12 @@ REDIS_PORT=6379
 
 ## How Sessions Work
 
-1. **Unauthenticated request arrives** — Laravel creates a session with a cryptographically random identifier stored in an HTTP-only cookie.
-2. **User logs in** — the session is regenerated (new ID, old discarded) to prevent session fixation. The user ID is stored in the session.
-3. **Subsequent requests** — the browser sends the session cookie; the server looks up session data and restores user state.
+1. **Unauthenticated request arrives** — Laravel creates a session with a cryptographically random
+   identifier stored in an HTTP-only cookie.
+2. **User logs in** — the session is regenerated (new ID, old discarded) to prevent session
+   fixation. The user ID is stored in the session.
+3. **Subsequent requests** — the browser sends the session cookie; the server looks up session data
+   and restores user state.
 4. **User logs out** — session is regenerated again. Session data is cleared from the store.
 
 ### Database Schema (default driver)
@@ -61,7 +68,8 @@ The `last_activity` column is indexed because garbage collection queries against
 
 #Session — Session Configuration & Security Lifetime
 
-The session lifetime defaults to **120 minutes of inactivity**. This balances security and convenience:
+The session lifetime defaults to **120 minutes of inactivity**. This balances security and
+convenience:
 
 | Duration    | Impact                                                      |
 | ----------- | ----------------------------------------------------------- |
@@ -73,7 +81,9 @@ After expiry, the user is redirected to login.
 
 ### Remember Me
 
-The "remember me" option on login creates a longer-lived remember token (via `recaller` cookie) separate from the session. This allows the session to persist across browser restarts within the token's lifetime (default: 5 years, hashed).
+The "remember me" option on login creates a longer-lived remember token (via `recaller` cookie)
+separate from the session. This allows the session to persist across browser restarts within the
+token's lifetime (default: 5 years, hashed).
 
 ---
 
@@ -93,11 +103,15 @@ session()->regenerate();
 
 ### Password Confirmation
 
-Sensitive operations (email change, password change, account deletion) require re-authentication within a configurable timeout (default: 15 minutes via `auth.password_timeout`). This prevents a stolen session from modifying credentials.
+Sensitive operations (email change, password change, account deletion) require re-authentication
+within a configurable timeout (default: 15 minutes via `auth.password_timeout`). This prevents a
+stolen session from modifying credentials.
 
 ### CSRF Protection
 
-Every mutating request validates a CSRF token stored in the session. Livewire handles this transparently; Blade forms include `@csrf`. The token is regenerated on logout and periodically refreshed during active sessions.
+Every mutating request validates a CSRF token stored in the session. Livewire handles this
+transparently; Blade forms include `@csrf`. The token is regenerated on logout and periodically
+refreshed during active sessions.
 
 ### Cookie Security Flags
 
@@ -119,9 +133,12 @@ Expired sessions are cleaned probabilistically:
 | `lottery`         | `[2, 100]` | 2% chance of GC per request   |
 | `expire_on_close` | `false`    | Don't expire on browser close |
 
-With `[2, 100]`, garbage collection runs on approximately 2% of requests. For a site with 10,000 requests/day, that is ~200 GC runs/day — sufficient to keep the sessions table lean without a separate cron job.
+With `[2, 100]`, garbage collection runs on approximately 2% of requests. For a site with 10,000
+requests/day, that is ~200 GC runs/day — sufficient to keep the sessions table lean without a
+separate cron job.
 
-In production with Redis (`SESSION_DRIVER=redis`), garbage collection is handled by Redis's key expiry — no application-level GC needed.
+In production with Redis (`SESSION_DRIVER=redis`), garbage collection is handled by Redis's key
+expiry — no application-level GC needed.
 
 ---
 
@@ -135,7 +152,8 @@ $locale = session('locale', config('app.locale'));
 app()->setLocale($locale);
 ```
 
-The preference is set by the `LanguageSwitcher` Livewire component and persists across requests. When Redis is the session driver, locale preference survives application restarts.
+The preference is set by the `LanguageSwitcher` Livewire component and persists across requests.
+When Redis is the session driver, locale preference survives application restarts.
 
 ---
 

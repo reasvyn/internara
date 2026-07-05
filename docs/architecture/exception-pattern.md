@@ -1,10 +1,11 @@
 # Exception Pattern — Dual Exception Hierarchy & Error Handling
 
-> **Last updated:** 2026-06-13
-> **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-06-13 **Changes:** initial metadata — no content changes
+
 ## Description
 
-Dual exception hierarchy with AppException (infrastructure) and ModuleException (business rules), error handling patterns, and Livewire catch blocks.
+Dual exception hierarchy with AppException (infrastructure) and ModuleException (business rules),
+error handling patterns, and Livewire catch blocks.
 
 ## Dual Hierarchy Overview
 
@@ -33,8 +34,8 @@ context trait is used by both trees.
 exceptions. It extends `RuntimeException` and uses the shared context trait. Every concrete
 exception in this tree must implement `statusCode()` — the HTTP status code it maps to.
 
-- **ActionException branch** — request-action failures (validation errors, conflict states).
-  These are user-facing.
+- **ActionException branch** — request-action failures (validation errors, conflict states). These
+  are user-facing.
 - **InfrastructureException branch** — system-level failures (I/O errors, rate limits). These are
   **not** user-facing by default.
 - **PresentationException branch** — HTTP-level presentation failures (resource not found,
@@ -44,8 +45,8 @@ exception in this tree must implement `statusCode()` — the HTTP status code it
 
 `ModuleException` is the abstract root for business rule violations. It extends `RuntimeException`
 directly — **not** `AppException`. Its sole concrete child is `RejectedException`, thrown when a
-domain invariant or business rule is violated. The exception message describes what was rejected
-and why. Every throw site provides the relevant details — there is no default message or hint.
+domain invariant or business rule is violated. The exception message describes what was rejected and
+why. Every throw site provides the relevant details — there is no default message or hint.
 
 ---
 
@@ -101,11 +102,11 @@ renderers.
 
 A dedicated trait provides a safety net for wrapping Action execution. It distinguishes between
 known exception types (which are re-thrown as-is since they already carry correct semantics) and
-unknown exceptions (which are logged with full context and wrapped in a generic exception to
-prevent stack traces from leaking to users or HTTP responses).
+unknown exceptions (which are logged with full context and wrapped in a generic exception to prevent
+stack traces from leaking to users or HTTP responses).
 
-The trait is applied to the base Action class and is available for opt-in use in any class
-that needs structured error handling.
+The trait is applied to the base Action class and is available for opt-in use in any class that
+needs structured error handling.
 
 ---
 
@@ -119,5 +120,5 @@ be displayed to end users from those that should be logged internally only.
 - **System-facing** — exceptions that should result in a generic error page while full details are
   logged internally (infrastructure failures, rate limits).
 
-The `shouldReport(): bool` method controls whether the exception is logged. All exceptions report
-by default. Override `shouldReport()` when an exception is expected and handled gracefully.
+The `shouldReport(): bool` method controls whether the exception is logged. All exceptions report by
+default. Override `shouldReport()` when an exception is expected and handled gracefully.

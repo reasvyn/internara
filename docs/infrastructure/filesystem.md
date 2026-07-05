@@ -1,14 +1,17 @@
 # Filesystem — File Storage & Directory Layout
 
-> **Last updated:** 2026-06-13
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+
 ## Description
 
-File storage architecture, directory structure, disk configuration, and media file handling conventions.
+File storage architecture, directory structure, disk configuration, and media file handling
+conventions.
 
 ## Storage Architecture
 
-The application uses Laravel's filesystem abstraction, providing a unified API over multiple storage backends. The same `Storage::disk('public')->put()` call works whether the underlying disk is a local directory or an S3 bucket — switching requires only a configuration change.
+The application uses Laravel's filesystem abstraction, providing a unified API over multiple storage
+backends. The same `Storage::disk('public')->put()` call works whether the underlying disk is a
+local directory or an S3 bucket — switching requires only a configuration change.
 
 ### Disk Definitions
 
@@ -62,7 +65,8 @@ Without this symlink, media URLs return 404.
 
 ## Media Library Integration
 
-Files attached to Eloquent models are managed by `spatie/laravel-medialibrary`. It provides media collections, automatic file naming, image conversions, and queue-based processing.
+Files attached to Eloquent models are managed by `spatie/laravel-medialibrary`. It provides media
+collections, automatic file naming, image conversions, and queue-based processing.
 
 ### Collections
 
@@ -80,10 +84,10 @@ Files attached to Eloquent models are managed by `spatie/laravel-medialibrary`. 
 ### Retrieving Files
 
 ```php
-$url = $user->getFirstMediaUrl('avatar');           // URL of first file
-$url = $user->getFirstMediaUrl('avatar', 'thumb');  // URL of thumbnail conversion
-$media = $user->getFirstMedia('avatar');            // Full media object
-$files = $model->getMedia('documents');             // All files in collection
+$url = $user->getFirstMediaUrl('avatar'); // URL of first file
+$url = $user->getFirstMediaUrl('avatar', 'thumb'); // URL of thumbnail conversion
+$media = $user->getFirstMedia('avatar'); // Full media object
+$files = $model->getMedia('documents'); // All files in collection
 ```
 
 ---
@@ -109,9 +113,11 @@ IMAGE_DRIVER=imagick
 
 ### Queue Integration
 
-Conversions are queued by default (`queue_conversions_by_default: true` in `config/media-library.php`). The queue connection is inherited from `QUEUE_CONNECTION`:
+Conversions are queued by default (`queue_conversions_by_default: true` in
+`config/media-library.php`). The queue connection is inherited from `QUEUE_CONNECTION`:
 
-- **Tier 1 (Shared Hosting — up to 500 registered users):** conversions run synchronously, uploads take longer
+- **Tier 1 (Shared Hosting — up to 500 registered users):** conversions run synchronously, uploads
+  take longer
 - **Tier 2+ (Redis, dual pipeline):** conversions run asynchronously via the `default` queue worker
 
 To make a conversion synchronous (available immediately):
@@ -181,7 +187,9 @@ User upload → Livewire temp (local disk)
           File accessible via getFirstMediaUrl()
 ```
 
-Files are validated before upload: MIME type, file size, and extension checks run on the server side. The media library stores files with UUID-based filenames to prevent name collisions and path traversal.
+Files are validated before upload: MIME type, file size, and extension checks run on the server
+side. The media library stores files with UUID-based filenames to prevent name collisions and path
+traversal.
 
 ---
 
