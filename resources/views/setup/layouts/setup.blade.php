@@ -11,9 +11,9 @@
                     <x-core::ui.brand size="sm" :invert="false" />
 
                     <div class="flex items-center gap-2">
-                        <livewire:settings.livewire.theme-switcher class="px-2" />
+                        <livewire:settings.theme-switcher class="px-2" />
                         <div class="bg-base-content/10 h-5 w-px"></div>
-                        <livewire:settings.livewire.lang-switcher class="px-2" />
+                        <livewire:settings.lang-switcher class="px-2" />
                     </div>
                 </div>
             </div>
