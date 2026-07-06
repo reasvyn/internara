@@ -286,7 +286,12 @@ class SetupWizard extends Component
 
     public function title(): string
     {
+        $stepIndex = max(0, $this->currentStep - 1);
+        $stepKey = self::STEP_KEYS[$stepIndex] ?? 'welcome';
+        $stepLabel = __("setup.wizard.step_labels.{$stepKey}");
+
         return __('setup.wizard.page_title', [
+            'step' => $stepLabel,
             'app_name' => AppInfo::get('name', config('app.name')),
         ]);
     }
