@@ -35,7 +35,8 @@ return [
         'broadcast' => "New assignment ':title' for :internship",
         'database' => "Assignment ':title' is now available.",
         'mail_subject' => 'New Assignment: :title',
-        'mail_line1' => "A new assignment has been published for your internship program ':internship'.",
+        'mail_line1' =>
+            "A new assignment has been published for your internship program ':internship'.",
         'mail_title' => 'Title: :title',
         'mail_due_date' => 'Due Date: :due_date',
     ],
@@ -51,7 +52,8 @@ return [
         'title' => 'Report Ready',
         'message' => 'Your :type report is ready to download.',
         'mail_subject' => 'Your :type Report is Ready',
-        'mail_line1' => 'The :type report you requested has been generated successfully and is now ready for download.',
+        'mail_line1' =>
+            'The :type report you requested has been generated successfully and is now ready for download.',
     ],
     'job_failed' => [
         'title' => 'Background Task Failed',
@@ -68,15 +70,21 @@ return [
     ],
     'system_installed' => [
         'title' => 'System Installed',
-        'message' => 'The internship management system has been successfully installed. Welcome aboard!',
+        'message' =>
+            'The internship management system has been successfully installed. Welcome aboard!',
     ],
     'welcome_to_dashboard' => [
         'title' => 'Welcome to the Dashboard!',
-        'super_admin' => 'You are now logged in as Super Administrator. Explore the system and start configuring your internship programs.',
-        'admin' => 'Welcome! Manage users, create programs, and monitor internship progress from this dashboard.',
-        'student' => 'Welcome! Write journals, track attendance, and stay on top of your internship assignments.',
-        'teacher' => 'Welcome! Verify logbooks, grade submissions, and supervise your assigned students.',
-        'supervisor' => 'Welcome! Review journals, submit evaluations, and track your interns\' progress.',
+        'super_admin' =>
+            'You are now logged in as Super Administrator. Explore the system and start configuring your internship programs.',
+        'admin' =>
+            'Welcome! Manage users, create programs, and monitor internship progress from this dashboard.',
+        'student' =>
+            'Welcome! Write journals, track attendance, and stay on top of your internship assignments.',
+        'teacher' =>
+            'Welcome! Verify logbooks, grade submissions, and supervise your assigned students.',
+        'supervisor' =>
+            'Welcome! Review journals, submit evaluations, and track your interns\' progress.',
     ],
     'super_admin_recovered' => [
         'title' => 'Super Admin Recovery Performed',
@@ -85,7 +93,8 @@ return [
         'mail_subject' => 'Security Alert: Super Admin Account Recovery',
         'mail_greeting' => 'Hello :name,',
         'mail_line1' => 'A super admin recovery action has been performed on the account: :email',
-        'mail_line2' => 'If you did not authorize this action, please contact your system administrator immediately.',
+        'mail_line2' =>
+            'If you did not authorize this action, please contact your system administrator immediately.',
         'mail_action' => 'View Admin Users',
     ],
     'recovery_otp' => [
@@ -93,7 +102,8 @@ return [
         'mail_greeting' => 'Recovery Code',
         'mail_line1' => 'Your one-time recovery code is:',
         'mail_line2' => 'This code expires in 5 minutes.',
-        'mail_line3' => 'If you did not request this recovery, please contact your system administrator immediately.',
+        'mail_line3' =>
+            'If you did not request this recovery, please contact your system administrator immediately.',
     ],
     'ui' => [
         'title' => 'Notification Center',
@@ -110,7 +120,8 @@ return [
         'success_mark_all' => 'All notifications marked as read.',
         'success_mark_selected' => 'Selected notifications marked as read.',
         'mark_read_batch' => 'Mark as Read',
-        'selected_count' => '{0} notifications selected|{1} notification selected|[2,*] notifications selected',
+        'selected_count' =>
+            '{0} notifications selected|{1} notification selected|[2,*] notifications selected',
     ],
 
     'view_details' => 'View details',
@@ -119,12 +130,20 @@ return [
         'title' => 'Notification Guide',
         'intro' => 'Learn how to manage your notifications:',
         'read_title' => 'Reading Notifications',
-        'read_desc' => 'Click a notification to view its details. Read notifications are visually distinguished from unread ones.',
+        'read_desc' =>
+            'Click a notification to view its details. Read notifications are visually distinguished from unread ones.',
         'mark_title' => 'Marking Notifications',
-        'mark_desc' => 'Use "Mark All as Read" to clear all notifications at once, or mark them individually.',
+        'mark_desc' =>
+            'Use "Mark All as Read" to clear all notifications at once, or mark them individually.',
         'batch_title' => 'Batch Actions',
         'batch_desc' => 'Select multiple notifications to delete or mark as read in bulk.',
         'bell_title' => 'Notification Bell',
-        'bell_desc' => 'The bell icon in the top-right corner shows your unread count. Click for quick access.',
+        'bell_desc' =>
+            'The bell icon in the top-right corner shows your unread count. Click for quick access.',
+    ],
+
+    'password_changed' => [
+        'title' => 'Password Changed',
+        'message' => 'Your password has been changed successfully.',
     ],
 ];

@@ -44,14 +44,16 @@ return [
         'broadcast' => "Pengajuan Anda untuk ':title' telah ditandai sebagai :status",
         'database' => "Pembaruan pada ':title': :status",
         'mail_subject' => 'Umpan Balik pada Tugas: :title',
-        'mail_line1' => "Pengajuan Anda untuk ':title' telah ditinjau dan ditandai sebagai: :status",
+        'mail_line1' =>
+            "Pengajuan Anda untuk ':title' telah ditinjau dan ditandai sebagai: :status",
         'mail_feedback' => 'Umpan Balik: :feedback',
     ],
     'report_generated' => [
         'title' => 'Laporan Siap',
         'message' => 'Laporan :type Anda siap untuk diunduh.',
         'mail_subject' => 'Laporan :type Anda Siap',
-        'mail_line1' => 'Laporan :type yang Anda minta telah berhasil dibuat dan sekarang siap untuk diunduh.',
+        'mail_line1' =>
+            'Laporan :type yang Anda minta telah berhasil dibuat dan sekarang siap untuk diunduh.',
     ],
     'job_failed' => [
         'title' => 'Tugas Latar Belakang Gagal',
@@ -72,11 +74,15 @@ return [
     ],
     'welcome_to_dashboard' => [
         'title' => 'Selamat Datang di Dashboard!',
-        'super_admin' => 'Anda sekarang login sebagai Super Administrator. Jelajahi sistem dan mulailah mengonfigurasi program magang Anda.',
-        'admin' => 'Selamat datang! Kelola pengguna, buat program, dan pantau progres magang dari dashboard ini.',
+        'super_admin' =>
+            'Anda sekarang login sebagai Super Administrator. Jelajahi sistem dan mulailah mengonfigurasi program magang Anda.',
+        'admin' =>
+            'Selamat datang! Kelola pengguna, buat program, dan pantau progres magang dari dashboard ini.',
         'student' => 'Selamat datang! Tulis jurnal, catat kehadiran, dan pantau tugas magang Anda.',
-        'teacher' => 'Selamat datang! Verifikasi logbook, nilai tugas, dan bimbing siswa yang ditugaskan.',
-        'supervisor' => 'Selamat datang! Tinjau jurnal, kirim evaluasi, dan pantau progres peserta magang.',
+        'teacher' =>
+            'Selamat datang! Verifikasi logbook, nilai tugas, dan bimbing siswa yang ditugaskan.',
+        'supervisor' =>
+            'Selamat datang! Tinjau jurnal, kirim evaluasi, dan pantau progres peserta magang.',
     ],
     'super_admin_recovered' => [
         'title' => 'Pemulihan Super Admin Dilakukan',
@@ -85,7 +91,8 @@ return [
         'mail_subject' => 'Peringatan Keamanan: Pemulihan Akun Super Admin',
         'mail_greeting' => 'Halo :name,',
         'mail_line1' => 'Tindakan pemulihan super admin telah dilakukan pada akun: :email',
-        'mail_line2' => 'Jika Anda tidak mengotorisasi tindakan ini, hubungi administrator sistem Anda segera.',
+        'mail_line2' =>
+            'Jika Anda tidak mengotorisasi tindakan ini, hubungi administrator sistem Anda segera.',
         'mail_action' => 'Lihat Pengguna Admin',
     ],
     'recovery_otp' => [
@@ -93,7 +100,8 @@ return [
         'mail_greeting' => 'Kode Pemulihan',
         'mail_line1' => 'Kode pemulihan sekali pakai Anda:',
         'mail_line2' => 'Kode ini kedaluwarsa dalam 5 menit.',
-        'mail_line3' => 'Jika Anda tidak meminta pemulihan ini, hubungi administrator sistem Anda segera.',
+        'mail_line3' =>
+            'Jika Anda tidak meminta pemulihan ini, hubungi administrator sistem Anda segera.',
     ],
     'ui' => [
         'title' => 'Pusat Notifikasi',
@@ -110,7 +118,8 @@ return [
         'success_mark_all' => 'Semua notifikasi telah ditandai sebagai dibaca.',
         'success_mark_selected' => 'Notifikasi terpilih telah ditandai sebagai dibaca.',
         'mark_read_batch' => 'Tandai Dibaca',
-        'selected_count' => '{0} notifikasi dipilih|{1} notifikasi dipilih|[2,*] notifikasi dipilih',
+        'selected_count' =>
+            '{0} notifikasi dipilih|{1} notifikasi dipilih|[2,*] notifikasi dipilih',
     ],
 
     'view_details' => 'Lihat detail',
@@ -119,12 +128,21 @@ return [
         'title' => 'Panduan Notifikasi',
         'intro' => 'Berikut cara mengelola notifikasi di sistem:',
         'read_title' => 'Membaca Notifikasi',
-        'read_desc' => 'Klik pada notifikasi untuk membaca detailnya. Notifikasi yang sudah dibaca akan berubah tampilan agar mudah dibedakan.',
+        'read_desc' =>
+            'Klik pada notifikasi untuk membaca detailnya. Notifikasi yang sudah dibaca akan berubah tampilan agar mudah dibedakan.',
         'mark_title' => 'Menandai Notifikasi',
-        'mark_desc' => 'Gunakan tombol "Tandai Semua Dibaca" untuk membersihkan semua notifikasi sekaligus, atau tandai satu per satu.',
+        'mark_desc' =>
+            'Gunakan tombol "Tandai Semua Dibaca" untuk membersihkan semua notifikasi sekaligus, atau tandai satu per satu.',
         'batch_title' => 'Aksi Berkelompok',
-        'batch_desc' => 'Centang beberapa notifikasi untuk menghapus atau menandai dibaca secara bersamaan.',
+        'batch_desc' =>
+            'Centang beberapa notifikasi untuk menghapus atau menandai dibaca secara bersamaan.',
         'bell_title' => 'Lonceng Notifikasi',
-        'bell_desc' => 'Ikon lonceng di pojok kanan atas menampilkan jumlah notifikasi yang belum dibaca. Klik untuk akses cepat.',
+        'bell_desc' =>
+            'Ikon lonceng di pojok kanan atas menampilkan jumlah notifikasi yang belum dibaca. Klik untuk akses cepat.',
+    ],
+
+    'password_changed' => [
+        'title' => 'Kata Sandi Diubah',
+        'message' => 'Kata sandi Anda telah berhasil diubah.',
     ],
 ];

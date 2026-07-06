@@ -10,9 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 final class InvalidateSessionOnPasswordChange implements ShouldQueue
 {
-    public function __construct(
-        protected SendsNotifications $sendNotification,
-    ) {}
+    public function __construct(protected SendsNotifications $sendNotification) {}
 
     public function handle(PasswordUpdated $event): void
     {
@@ -23,7 +21,7 @@ final class InvalidateSessionOnPasswordChange implements ShouldQueue
             type: 'password_changed',
             title: __('notifications.password_changed.title'),
             message: __('notifications.password_changed.message'),
-            link: route('user.profile'),
+            link: route('profile'),
         );
     }
 }
