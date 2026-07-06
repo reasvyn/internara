@@ -7,7 +7,7 @@ namespace App\Auth\Login\Listeners;
 use App\Auth\Login\Events\LoginSucceeded;
 use App\Core\Contracts\SendsNotifications;
 
-class SendSuperAdminWelcomeNotification
+class SendRoleWelcomeNotification
 {
     protected array $roleWelcomeMap = [
         'superadmin' => 'notifications.welcome_to_dashboard.super_admin',
@@ -17,9 +17,7 @@ class SendSuperAdminWelcomeNotification
         'supervisor' => 'notifications.welcome_to_dashboard.supervisor',
     ];
 
-    public function __construct(
-        protected SendsNotifications $sendNotification,
-    ) {}
+    public function __construct(protected SendsNotifications $sendNotification) {}
 
     public function handle(LoginSucceeded $event): void
     {
@@ -29,8 +27,9 @@ class SendSuperAdminWelcomeNotification
             return;
         }
 
-        $role = collect(array_keys($this->roleWelcomeMap))
-            ->first(fn ($role) => $user->hasRole($role));
+        $role = collect(array_keys($this->roleWelcomeMap))->first(
+            fn($role) => $user->hasRole($role),
+        );
 
         if ($role === null) {
             return;

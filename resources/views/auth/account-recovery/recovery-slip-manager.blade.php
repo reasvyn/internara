@@ -31,7 +31,7 @@
                         <div class="space-y-2">
                             @forelse($users as $user)
                                 <div wire:key="user-{{ $user->id }}" 
-                                     wire:click="selectUser('{{ $user->id }}')"
+                                     wire:click="selectUser({{ Js::from($user->id) }})"
                                      class="flex items-center gap-4 p-4 rounded-2xl border transition-all cursor-pointer {{ $selectedUser?->id === $user->id ? 'border-primary bg-primary/5' : 'border-base-content/5 hover:bg-base-200' }}">
                                     <x-core::ui.avatar :user="$user" size="size-10" />
                                     <div>

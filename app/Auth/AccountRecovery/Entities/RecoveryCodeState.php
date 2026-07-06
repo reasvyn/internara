@@ -14,12 +14,12 @@ final readonly class RecoveryCodeState extends BaseEntity
 
     public static function fromModel(Model $model): static
     {
-        return new self(usedAt: $model->last_attempt_at, expiresAt: $model->expires_at);
+        return new self(usedAt: $model->last_used_at, expiresAt: $model->expires_at);
     }
 
     public function isValid(?Carbon $now = null): bool
     {
-        $now ??= new Carbon;
+        $now ??= new Carbon();
 
         if ($this->usedAt !== null) {
             return false;
