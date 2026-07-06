@@ -6,7 +6,6 @@ namespace App\Auth\Account\Livewire;
 
 use App\Auth\AccessTokens\Models\AccessToken;
 use App\Auth\Account\Actions\ActivateAccountAction;
-use App\Auth\Account\Entities\AccountActivation;
 use App\User\Models\User;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -43,24 +42,21 @@ class ActivateAccount extends Component
 
         $user = User::where('email', $this->email)->first();
 
-        if (! $user) {
+        if (!$user) {
             RateLimiter::hit($throttleKey, 300);
             $this->addError('email', __('auth.activate.invalid_email'));
 
             return;
         }
 
-        $activation = AccountActivation::forUser($user);
-
-        if (! $activation->isTokenValid()) {
+        if (!$user->asAccountActivation()->isTokenValid()) {
             $this->addError('code', __('auth.activate.invalid_code'));
 
             return;
         }
 
-        if (! AccessToken::verify($user, 'activation', $this->code)) {
+        if (!AccessToken::verify($user, 'activation', $this->code)) {
             RateLimiter::hit($throttleKey, 300);
-
             $this->addError('code', __('auth.activate.invalid_code'));
 
             return;
@@ -81,7 +77,7 @@ class ActivateAccount extends Component
 
     protected function throttleKey(): string
     {
-        return Str::transliterate('activate|'.$this->email.'|'.request()->ip());
+        return Str::transliterate('activate|' . $this->email . '|' . request()->ip());
     }
 
     #[Layout('auth::layouts.auth', ['title' => 'Activate Account'])]
