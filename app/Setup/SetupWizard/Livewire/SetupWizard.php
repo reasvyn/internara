@@ -14,7 +14,7 @@ use App\Setup\SetupWizard\Livewire\Forms\SchoolForm;
 use App\Setup\SetupWizard\Livewire\Forms\SuperAdminForm;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use Livewire\Features\SupportRedirects\Redirector;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -143,7 +143,6 @@ class SetupWizard extends Component
                 }
             }
         }
-
     }
 
     public function runAudit(EnvironmentAuditor $auditor): void
@@ -168,7 +167,7 @@ class SetupWizard extends Component
         foreach ($report->checks as $check) {
             $categoryKey = $check->category->value;
 
-            if (! isset($categories[$categoryKey])) {
+            if (!isset($categories[$categoryKey])) {
                 $categories[$categoryKey] = [
                     'label' => $check->category->label(),
                     'checks' => [],
@@ -190,7 +189,7 @@ class SetupWizard extends Component
 
     public function nextStep(): void
     {
-        if ($this->currentStep === 1 && ! $this->auditPassed) {
+        if ($this->currentStep === 1 && !$this->auditPassed) {
             flash()->error(__('setup.wizard.audit_must_pass'));
 
             return;
@@ -278,7 +277,7 @@ class SetupWizard extends Component
         }
     }
 
-    public function finishSession(): RedirectResponse
+    public function finishSession(): Redirector
     {
         session()->forget('setup.completed');
 

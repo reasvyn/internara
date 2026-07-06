@@ -14,13 +14,16 @@ use Livewire\Livewire;
 
 class ModuleDiscoverService
 {
-    private const MODULE_PATH = __DIR__ . '/../..';
+    private static function appPath(): string
+    {
+        return app_path();
+    }
 
     public function discoverLivewireComponents(): void
     {
         $components = Cache::remember(config('cache-keys.module_livewire'), 86400, function () {
             $result = [];
-            $moduleDir = realpath(self::MODULE_PATH);
+            $moduleDir = self::appPath();
             if ($moduleDir === false) {
                 return $result;
             }
@@ -85,7 +88,7 @@ class ModuleDiscoverService
     {
         $policies = Cache::remember(config('cache-keys.module_policies'), 86400, function () {
             $result = [];
-            $moduleDir = realpath(self::MODULE_PATH);
+            $moduleDir = self::appPath();
             if ($moduleDir === false) {
                 return $result;
             }
@@ -147,9 +150,7 @@ class ModuleDiscoverService
     {
         $namespaces = Cache::remember(config('cache-keys.module_views'), 86400, function () {
             $result = [];
-            $viewsDir = realpath(
-                config('module.paths.views', self::MODULE_PATH . '/../resources/views'),
-            );
+            $viewsDir = realpath(config('module.paths.views', resource_path('views')));
             if ($viewsDir === false) {
                 return $result;
             }
