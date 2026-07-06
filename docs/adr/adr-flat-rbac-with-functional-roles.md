@@ -1,17 +1,21 @@
 # ADR-008: Flat RBAC with Functional Roles
 
-> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-05
+>
+> **Changes:** sync — add ADMIN as functional role for role grouping; fix role names; add
+> functionalRolesFor() documentation
 
 ## Description
 
-A flat role-based access control system with five static roles (super_admin, admin, kepala_program,
-pembimbing, student) plus two runtime functional roles (mentor, supervisor).
+A flat role-based access control system with five static roles (super_admin, admin, teacher,
+supervisor, student) plus three runtime functional roles (admin-group, mentor, mentee).
 
 ## Context
 
-The system has five user types (super_admin, admin, teacher, student, supervisor) and two behavioral
-concepts (mentor, mentee) that describe what a user does, not who they are. A teacher and a
-supervisor both act as mentors; a student is a mentee.
+The system has five user types (super_admin, admin, teacher, student, supervisor) and three
+behavioral concepts (admin-group, mentor, mentee) that describe what a user does, not who they are.
+A teacher and a supervisor both act as mentors; a student is a mentee; super_admin and admin share
+the "admin" functional grouping for permission checks.
 
 Two RBAC approaches were considered:
 
@@ -42,15 +46,29 @@ Each user has exactly one user role. Roles are flat — no inheritance:
 
 ### Functional Roles (Derived, Not Stored)
 
-Functional roles are derived via `Role::resolvesTo()`:
+Functional roles are runtime groupings that allow role-agnostic permission checks. They are resolved
+via `Role::resolvesTo()`:
 
-| Functional Role | Resolves From       | Purpose                        |
-| --------------- | ------------------- | ------------------------------ |
-| mentor          | teacher, supervisor | Anyone who supervises students |
-| mentee          | student             | Anyone being supervised        |
+| Functional Role | Resolves From       | Purpose                                       |
+| --------------- | ------------------- | --------------------------------------------- |
+| admin-group     | super_admin, admin  | Administrative grouping for permission checks |
+| mentor          | teacher, supervisor | Anyone who supervises students                |
+| mentee          | student             | Anyone being supervised                       |
 
-This keeps route security simple (concrete roles only) while allowing Actions to write role-agnostic
-logic.
+The `functionalRoles()` method returns all possible functional roles for enum-wide checks. The
+`functionalRolesFor()` method maps a concrete user role to its functional role at runtime:
+
+```php
+SUPER_ADMIN → [ADMIN]     // super_admin maps to admin functional group
+ADMIN       → [ADMIN]     // admin maps to admin functional group
+TEACHER     → [MENTOR]    // teacher maps to mentor
+SUPERVISOR  → [MENTOR]    // supervisor also maps to mentor
+STUDENT     → [MENTEE]    // student maps to mentee
+```
+
+This enables code like `$user->role->is(Role::ADMIN)` to match both super_admin and admin without
+explicit `||` checks. Route middleware still uses concrete roles only; functional roles are
+evaluated at the policy level.
 
 ### Super Admin Bypass
 
@@ -75,6 +93,8 @@ check methods) traits.
   hierarchy.
 - **Positive**: Functional roles decouple the mentoring system from specific user types. Adding a
   new mentor-like role requires only updating `Role::resolvesTo()`.
+- **Positive**: ADMIN functional role groups super_admin and admin under one check, eliminating
+  duplicate `||` conditions in policies.
 - **Positive**: `super_admin` bypass is fast — one `Gate::before()` check instead of enumerating
   database permissions.
 - **Positive**: Three-layer enforcement provides defense in depth.
@@ -85,10 +105,12 @@ check methods) traits.
 
 ## References
 
-- `app/Auth/Permissions/Enums/Role.php` — Role definitions with resolvesTo() mapping
+- `app/Auth/Permissions/Enums/Role.php` — Role definitions with resolvesTo(), functionalRoles(),
+  functionalRolesFor()
 - `app/Core/Policies/BasePolicy.php` — Base authorization class
 - `app/Core/Policies/Concerns/AuthorizesRoles.php` — Role check methods
 - `app/Core/Policies/Concerns/AuthorizesOwnership.php` — Ownership check methods
 - `app/Auth/Permissions/Http/Middleware/CheckRoleMiddleware.php` — Route-level gating
+- `docs/adr/adr-cross-role-proxy.md` — Cross-role proxy (separate from functional roles)
 - `docs/foundation/rbac.md` — Detailed RBAC documentation
 - `docs/architecture.md` — Authorization section

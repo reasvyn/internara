@@ -1,11 +1,16 @@
 # Role-Based Access Control — RBAC Implementation & Permission Model
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-05
+>
+> **Changes:** sync — add ADMIN functional role; add Cross-Role Proxy section; update functional
+> role docs
 
 ## Description
 
-Flat RBAC model with five static roles, two functional roles, permission registration, and the
-super_admin bypass.
+Flat RBAC model with five static roles, three functional roles, Cross-Role Proxy for delegation,
+permission registration, and the super_admin bypass.
+
+---
 
 ## 1. Authentication Flow
 
@@ -50,13 +55,27 @@ Roles).
 A second family of **functional roles** exists for business logic only. These are logical groupings
 resolved at runtime — never stored in the database, never used in route middleware.
 
-| Functional Role | Resolves From           |
-| --------------- | ----------------------- |
-| `mentor`        | `teacher`, `supervisor` |
-| `mentee`        | `student`               |
+| Functional Role | Resolves From           | Purpose                                              |
+| --------------- | ----------------------- | ---------------------------------------------------- |
+| `admin-group`   | `super_admin`, `admin`  | Administrative grouping for shared permission checks |
+| `mentor`        | `teacher`, `supervisor` | Anyone who supervises students                       |
+| `mentee`        | `student`               | Anyone being supervised                              |
 
-Decouples the mentoring subsystem from specific user types. See `Role::resolvesTo()` in
-`app/Auth/Permissions/Enums/Role.php`.
+The `functionalRoles()` method lists all functional role cases. The `functionalRolesFor()` method
+maps a concrete user role to its functional role:
+
+```
+super_admin → admin-group
+admin       → admin-group
+teacher     → mentor
+supervisor  → mentor
+student     → mentee
+```
+
+This allows policy code to check `$user->role->is(Role::ADMIN)` instead of writing
+`$user->hasRole('super_admin') || $user->hasRole('admin')`.
+
+See `Role::resolvesTo()` and `Role::functionalRolesFor()` in `app/Auth/Permissions/Enums/Role.php`.
 
 ---
 
@@ -106,7 +125,26 @@ All policies extend `app/Core/Policies/BasePolicy.php` and use:
 
 ---
 
-## 5. Key Locations
+## 6. Cross-Role Proxy
+
+In addition to functional roles, Internara implements **Cross-Role Proxy** for operational
+delegation. Unlike functional roles (which are static role groupings), proxy allows one user to act
+on behalf of another for specific operations.
+
+| Proxy Path           | Scope                                               |
+| -------------------- | --------------------------------------------------- |
+| Admin → Teacher      | Any student in any program                          |
+| Admin → Supervisor   | Any student in any program                          |
+| Teacher → Supervisor | Only students assigned to that teacher's mentorship |
+
+Proxy is checked at the policy layer via `MentorEntity` (bridged from Registration model as
+`asMentorEntity()`). The activity log records `proxy_role` metadata for audit trail.
+
+See [ADR-014: Cross-Role Proxy](../adr/adr-cross-role-proxy.md) for full details.
+
+---
+
+## 7. Key Locations
 
 | Component            | Path                                                           |
 | -------------------- | -------------------------------------------------------------- |
