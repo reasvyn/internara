@@ -43,7 +43,8 @@ return [
 
         'frontend_assets' => 'Aset Frontend',
         'frontend_assets_pass' => 'Aset build terdeteksi',
-        'frontend_assets_fail' => 'Aset build tidak ditemukan. Jalankan `npm install && npm run build`',
+        'frontend_assets_fail' =>
+            'Aset build tidak ditemukan. Jalankan `npm install && npm run build`',
     ],
 
     'cli' => [
@@ -55,36 +56,44 @@ return [
         'timezone' => 'Zona Waktu',
         'db_driver' => 'Driver Database',
         'already_installed' => 'Sistem sudah terinstal.',
-        'force_restricted' => 'Instalasi paksa (force) hanya diizinkan di lingkungan local, dev, atau testing untuk alasan keamanan.',
+        'force_restricted' =>
+            'Instalasi paksa (force) hanya diizinkan di lingkungan local, dev, atau testing untuk alasan keamanan.',
         'forcing_reinstall' => 'Memaksa instalasi ulang. Mereset pengaturan saat ini...',
         'starting_installation' => 'Memulai instalasi sistem...',
         'installation_failed' => 'Instalasi sistem gagal: :message',
         'installation_completed' => 'Instalasi sistem berhasil diselesaikan.',
         'next_steps' => 'LANGKAH SELANJUTNYA',
         'quick_access' => 'Akses Cepat (tautan langsung)',
-        'url_warning' => 'Catatan: URL mengandung token. Gunakan kode di bawah untuk alternatif tanpa URL.',
+        'url_warning' =>
+            'Catatan: URL mengandung token. Gunakan kode di bawah untuk alternatif tanpa URL.',
         'manual_entry' => 'Akses Manual (tanpa token di URL)',
         'visit_url_alt' => 'Kunjungi',
         'enter_code' => 'Masukkan kode',
         'visit_url' => 'Kunjungi URL setup di browser Anda untuk menyelesaikan konfigurasi:',
         'complete_wizard' => 'Selesaikan langkah-langkah web wizard untuk mengakhiri setup.',
         'token_expires' => 'Kedaluwarsa',
-        'token_note' => 'Simpan URL ini dengan aman. Jika kedaluwarsa, Anda perlu menjalankan perintah ini lagi.',
+        'token_note' =>
+            'Simpan URL ini dengan aman. Jika kedaluwarsa, Anda perlu menjalankan perintah ini lagi.',
         'running_audit' => 'Menjalankan audit lingkungan sistem...',
-        'audit_failed' => 'Audit pre-flight gagal. Silakan perbaiki masalah di atas sebelum melanjutkan.',
+        'audit_failed' =>
+            'Audit pre-flight gagal. Silakan perbaiki masalah di atas sebelum melanjutkan.',
         'force_warning' => 'Berjalan dalam mode paksa. Pengaturan yang ada akan ditimpa.',
         'proceed_confirm' => 'Apakah Anda ingin melanjutkan instalasi sistem?',
-        'configure_env_confirm' => 'Apakah Anda ingin mengkonfigurasi lingkungan (.env) secara interaktif?',
+        'configure_env_confirm' =>
+            'Apakah Anda ingin mengkonfigurasi lingkungan (.env) secara interaktif?',
         'env_configured' => 'Lingkungan berhasil dikonfigurasi.',
         'create_super_admin_confirm' => 'Apakah Anda ingin membuat akun Super Admin sekarang?',
         'admin_created' => 'Akun Super Admin berhasil dibuat.',
         'admin_creation_failed' => 'Gagal membuat Super Admin: :message',
-        'check_only_complete' => 'Audit lingkungan berhasil. Jalankan tanpa --check-only untuk memprovisi.',
+        'check_only_complete' =>
+            'Audit lingkungan berhasil. Jalankan tanpa --check-only untuk memprovisi.',
         'try_health_check' => 'Jalankan php artisan system:health untuk mengecek status sistem.',
         'aborted' => 'Instalasi dibatalkan.',
         'app_url_set' => 'APP_URL telah diatur ke: :url',
-        'app_url_warning' => 'APP_URL masih http://localhost. URL signed di bawah mungkin tidak dapat dijangkau.',
-        'app_url_hint' => '  Gunakan --url=https://domain-anda.com untuk mengatur URL yang benar sebelum instalasi.',
+        'app_url_warning' =>
+            'APP_URL masih http://localhost. URL signed di bawah mungkin tidak dapat dijangkau.',
+        'app_url_hint' =>
+            '  Gunakan --url=https://domain-anda.com untuk mengatur URL yang benar sebelum instalasi.',
         'start_server' => 'Jalankan web server (misalnya: php artisan serve)',
         'open_browser' => 'Buka URL signed di atas di browser untuk menyelesaikan setup wizard',
         'template_env_warning' => 'File .env Anda masih berisi nilai placeholder template.',
@@ -92,18 +101,22 @@ return [
         'template_env_fix' => '  Edit .env untuk mengisi nilai sebenarnya sebelum masuk produksi.',
         'expires_in_minutes' => ':count menit lagi',
         'executing_task' => 'Menjalankan instalasi sistem',
-        'not_installed' => 'Sistem belum terinstal. Jalankan php artisan setup:install terlebih dahulu.',
-        'admin_exists' => 'Super Admin sudah ada. Gunakan php artisan admin:recover untuk membuat yang lain.',
+        'not_installed' =>
+            'Sistem belum terinstal. Jalankan php artisan setup:install terlebih dahulu.',
+        'admin_exists' =>
+            'Super Admin sudah ada. Gunakan php artisan admin:recover untuk membuat yang lain.',
         'recover_description' => 'Pulihkan akses super admin menggunakan kunci pemulihan',
         'admin_not_found' => 'User dengan email :email tidak ditemukan.',
-        'admin_already_exists' => 'User dengan email :email sudah ada. Gunakan flag --reset untuk mereset password.',
+        'admin_already_exists' =>
+            'User dengan email :email sudah ada. Gunakan flag --reset untuk mereset password.',
         'password_mismatch' => 'Password tidak cocok.',
         'recovery_success' => 'Password berhasil direset!',
         'creation_success' => 'Super Administrator berhasil dibuat!',
         'change_password_warning' => 'Silakan ubah password setelah login pertama.',
         'recovery_key_required' => 'Kunci pemulihan diperlukan. Gunakan opsi --key.',
         'recovery_key_invalid' => 'Kunci pemulihan tidak valid. Akses ditolak.',
-        'recovery_confirmation_warning' => 'Anda akan melakukan tindakan pemulihan super admin yang sensitif. Mode: :mode, Email: :email.',
+        'recovery_confirmation_warning' =>
+            'Anda akan melakukan tindakan pemulihan super admin yang sensitif. Mode: :mode, Email: :email.',
         'recovery_confirmation_prompt' => 'Ketik email admin untuk konfirmasi:',
         'recovery_confirmation_mismatch' => 'Email tidak cocok. Pemulihan dibatalkan.',
         'recovery_aborted' => 'Pemulihan dibatalkan.',
@@ -152,26 +165,30 @@ return [
 
     'reset_token' => [
         'description' => 'Buat ulang token setup (hanya pra-instalasi).',
-        'protected' => 'Tidak dapat mereset token: sistem sudah terinstal. Perintah ini hanya dapat digunakan selama fase pra-instalasi.',
+        'protected' =>
+            'Tidak dapat mereset token: sistem sudah terinstal. Perintah ini hanya dapat digunakan selama fase pra-instalasi.',
         'new_token_generated' => 'Token setup baru telah dibuat:',
         'success' => 'Token setup telah dibuat ulang.',
         'table_missing' => 'Tabel database untuk setup belum tersedia.',
-        'table_missing_hint' => 'Jalankan php artisan setup:install terlebih dahulu untuk menginisialisasi sistem.',
+        'table_missing_hint' =>
+            'Jalankan php artisan setup:install terlebih dahulu untuk menginisialisasi sistem.',
     ],
 
     'code_entry' => [
         'title' => 'Masukkan Kode Setup',
-        'description' => 'Masukkan token setup yang dihasilkan saat menjalankan php artisan setup:install.',
+        'description' =>
+            'Masukkan token setup yang dihasilkan saat menjalankan php artisan setup:install.',
         'code_label' => 'Kode / Token Setup',
         'placeholder' => 'contoh: a1b2c3d4e5f6g7h8i9j0...',
         'submit' => 'Verifikasi dan Lanjutkan',
-        'help' => 'Jalankan php artisan setup:install di server untuk menghasilkan token baru jika tidak memilikinya.',
+        'help' =>
+            'Jalankan php artisan setup:install di server untuk menghasilkan token baru jika tidak memilikinya.',
         'expiry_note' => 'Token kedaluwarsa 60 menit setelah dibuat.',
     ],
 
     'wizard' => [
         'title' => 'Setup',
-        'page_title' => 'Instalasi :app_name',
+        'page_title' => ':step | Instalasi',
         'requirements' => 'Persyaratan',
         'permissions' => 'Izin',
         'database' => 'Database',
@@ -181,7 +198,8 @@ return [
         'progress_label' => 'Progres Setup',
         'progress_aria' => 'Langkah :current dari :total',
         'welcome' => 'Selamat Datang di Internara',
-        'welcome_desc' => 'Kami akan membantu Anda menyiapkan sistem manajemen magang profesional Anda hanya dalam beberapa langkah.',
+        'welcome_desc' =>
+            'Kami akan membantu Anda menyiapkan sistem manajemen magang profesional Anda hanya dalam beberapa langkah.',
         'audit_results' => 'Hasil Audit Sistem',
         'system_requirements' => 'Persyaratan Sistem',
         'start_setup' => 'Mulai Setup',
@@ -212,13 +230,15 @@ return [
         'email_address' => 'Alamat Email',
         'username' => 'Username Unik',
         'generated' => 'Digenerate',
-        'username_notice' => 'Username ini digenerate secara otomatis untuk keamanan dan bersifat permanen. Anda akan menggunakan ini untuk login ke sistem.',
+        'username_notice' =>
+            'Username ini digenerate secara otomatis untuk keamanan dan bersifat permanen. Anda akan menggunakan ini untuk login ke sistem.',
         'password' => 'Password',
         'confirm_password' => 'Konfirmasi Password',
 
         'department' => 'Jurusan Awal',
         'department_subtitle' => 'Spesialisasi Akademik',
-        'department_desc' => 'Buat jurusan pertama Anda. Anda dapat menambahkan lebih banyak nanti.',
+        'department_desc' =>
+            'Buat jurusan pertama Anda. Anda dapat menambahkan lebih banyak nanti.',
         'department_name' => 'Nama Jurusan',
         'department_name_placeholder' => 'contoh: Rekayasa Perangkat Lunak',
         'department_description' => 'Deskripsi (Opsional)',
@@ -242,18 +262,22 @@ return [
         'setup_complete' => 'Setup Selesai!',
         'install_failed' => 'Instalasi gagal: :message',
         'install_failed_generic' => 'Instalasi gagal. Silakan periksa log sistem untuk detail.',
-        'ready_desc' => 'Sistem siap untuk mengelola program magang Anda. Anda sekarang dapat login dengan akun administrator Anda.',
+        'ready_desc' =>
+            'Sistem siap untuk mengelola program magang Anda. Anda sekarang dapat login dengan akun administrator Anda.',
         'go_to_login' => 'Ke Halaman Login',
         'data_verified' => 'Saya menyatakan bahwa data yang dimasukkan sudah benar',
-        'data_verified_long' => 'Periksa kembali semua informasi sebelum melanjutkan. Tindakan ini tidak dapat dibatalkan.',
+        'data_verified_long' =>
+            'Periksa kembali semua informasi sebelum melanjutkan. Tindakan ini tidak dapat dibatalkan.',
         'security_aware' => 'Saya memahami persyaratan keamanan sistem ini',
         'security_aware_long' => 'Kredensial admin sangat penting. Simpan di tempat yang aman.',
         'summary' => 'Ringkasan Setup',
         'email' => 'Email',
-        'login_notice' => 'Simpan username dan email Anda — Anda akan membutuhkannya untuk masuk. Informasi ini tidak akan ditampilkan lagi.',
+        'login_notice' =>
+            'Simpan username dan email Anda — Anda akan membutuhkannya untuk masuk. Informasi ini tidak akan ditampilkan lagi.',
         'access_summary' => 'Kredensial Login',
         'recovery_key_title' => 'Kunci Pemulihan',
-        'recovery_key_desc' => 'Simpan kunci ini di tempat yang aman. Anda akan membutuhkannya untuk memulihkan akses administrator jika kata sandi hilang.',
+        'recovery_key_desc' =>
+            'Simpan kunci ini di tempat yang aman. Anda akan membutuhkannya untuk memulihkan akses administrator jika kata sandi hilang.',
         'copy' => 'Salin',
         'copied' => 'Tersalin!',
         'auto_redirect_in' => 'Mengarahkan ke login dalam',
@@ -294,19 +318,26 @@ return [
         'title' => 'Petunjuk Instalasi',
         'intro' => 'Ikuti langkah-langkah berikut untuk menyelesaikan pemasangan sistem:',
         'step1_title' => 'Sambutan & Audit Sistem',
-        'step1_desc' => 'Sistem akan memeriksa persyaratan teknis: versi PHP, ekstensi, izin direktori, koneksi database, dan lainnya. Pastikan semua pemeriksaan lulus sebelum melanjutkan.',
+        'step1_desc' =>
+            'Sistem akan memeriksa persyaratan teknis: versi PHP, ekstensi, izin direktori, koneksi database, dan lainnya. Pastikan semua pemeriksaan lulus sebelum melanjutkan.',
         'step2_title' => 'Informasi Sekolah',
-        'step2_desc' => 'Masukkan data institusi: nama sekolah, kode NPSN, alamat, kontak, dan nama kepala sekolah. Data ini menjadi identitas utama sistem.',
+        'step2_desc' =>
+            'Masukkan data institusi: nama sekolah, kode NPSN, alamat, kontak, dan nama kepala sekolah. Data ini menjadi identitas utama sistem.',
         'step3_title' => 'Jurusan',
-        'step3_desc' => 'Buat jurusan pertama. Anda dapat menambahkan lebih banyak jurusan nanti melalui panel administrator.',
+        'step3_desc' =>
+            'Buat jurusan pertama. Anda dapat menambahkan lebih banyak jurusan nanti melalui panel administrator.',
         'step4_title' => 'Akun Administrator',
-        'step4_desc' => 'Akun super administrator akan dibuat dengan nama dan username yang sudah ditentukan. Cukup masukkan email dan kata sandi yang aman.',
+        'step4_desc' =>
+            'Akun super administrator akan dibuat dengan nama dan username yang sudah ditentukan. Cukup masukkan email dan kata sandi yang aman.',
         'step5_title' => 'Program Magang (Opsional)',
-        'step5_desc' => 'Konfigurasi program magang pertama. Isi nama, tanggal mulai dan selesai. Langkah ini dapat dilewati dan dilakukan nanti.',
+        'step5_desc' =>
+            'Konfigurasi program magang pertama. Isi nama, tanggal mulai dan selesai. Langkah ini dapat dilewati dan dilakukan nanti.',
         'step6_title' => 'Finalisasi',
-        'step6_desc' => 'Periksa kembali semua data. Pastikan Anda memahami konsekuensi keamanan dari kredensial administrator.',
+        'step6_desc' =>
+            'Periksa kembali semua data. Pastikan Anda memahami konsekuensi keamanan dari kredensial administrator.',
         'step7_title' => 'Selesai',
-        'step7_desc' => 'Sistem siap digunakan! Simpan kredensial login dan kunci pemulihan di tempat aman. Kunci pemulihan diperlukan jika kata sandi hilang.',
+        'step7_desc' =>
+            'Sistem siap digunakan! Simpan kredensial login dan kunci pemulihan di tempat aman. Kunci pemulihan diperlukan jika kata sandi hilang.',
         'tip_title' => 'Tips',
         'tip_desc' => 'Semua data dapat diubah nanti melalui panel pengaturan setelah login.',
     ],
