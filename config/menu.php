@@ -50,27 +50,22 @@ return [
                     'label' => 'common.sidebar.groups',
                 ],
                 [
-                    'route' => 'sysadmin.internships.phases',
-                    'icon' => 'o-list-bullet',
-                    'label' => 'common.sidebar.phases',
-                ],
-                [
-                    'route' => 'sysadmin.companies',
+                    'route' => 'partners.companies',
                     'icon' => 'o-building-office',
                     'label' => 'company.title',
                 ],
                 [
-                    'route' => 'sysadmin.partnerships',
+                    'route' => 'partners.partnerships',
                     'icon' => 'o-hand-raised',
                     'label' => 'common.sidebar.partnerships',
                 ],
                 [
-                    'route' => 'sysadmin.internships.placements',
+                    'route' => 'enrollment.internships.placements',
                     'icon' => 'o-map-pin',
                     'label' => 'common.sidebar.placements',
                 ],
                 [
-                    'route' => 'sysadmin.internships.placements.changes',
+                    'route' => 'enrollment.internships.placements.changes',
                     'icon' => 'o-arrows-right-left',
                     'label' => 'common.sidebar.placement_changes',
                 ],
@@ -93,12 +88,12 @@ return [
                     'label' => 'common.sidebar.applications',
                 ],
                 [
-                    'route' => 'sysadmin.internships.registrations.pending',
+                    'route' => 'enrollment.internships.registrations.pending',
                     'icon' => 'o-clipboard-document-check',
                     'label' => 'common.sidebar.registrations',
                 ],
                 [
-                    'route' => 'sysadmin.internships.placements.direct',
+                    'route' => 'enrollment.internships.placements.direct',
                     'icon' => 'o-arrow-right-circle',
                     'label' => 'common.sidebar.direct_placement',
                 ],
@@ -111,38 +106,28 @@ return [
             'title' => 'common.sidebar.people',
             'items' => [
                 [
-                    'route' => 'sysadmin.users.index',
+                    'route' => 'admin.users.index',
                     'icon' => 'o-users',
                     'label' => 'user.manager.title',
                     'roles' => ['super_admin'],
                 ],
                 [
-                    'route' => 'sysadmin.users.students',
+                    'route' => 'admin.users.students',
                     'icon' => 'o-user-group',
                     'label' => 'user.student.title',
                 ],
                 [
-                    'route' => 'sysadmin.users.teachers',
+                    'route' => 'admin.users.teachers',
                     'icon' => 'o-academic-cap',
                     'label' => 'user.teacher.title',
                 ],
                 [
-                    'route' => 'sysadmin.users.supervisors',
+                    'route' => 'admin.users.supervisors',
                     'icon' => 'o-eye',
                     'label' => 'user.supervisor.title',
                 ],
                 [
-                    'route' => 'sysadmin.users.mentors',
-                    'icon' => 'o-user-plus',
-                    'label' => 'user.mentor.title',
-                ],
-                [
-                    'route' => 'sysadmin.users.mentees',
-                    'icon' => 'o-user',
-                    'label' => 'user.mentee.title',
-                ],
-                [
-                    'route' => 'sysadmin.users.admins',
+                    'route' => 'admin.users.admins',
                     'icon' => 'o-user-circle',
                     'label' => 'user.admin.title',
                 ],
@@ -241,12 +226,12 @@ return [
                     'label' => 'common.sidebar.assignments',
                 ],
                 [
-                    'route' => 'student.supervision',
+                    'route' => 'student.supervision-logs',
                     'icon' => 'o-user-group',
                     'label' => 'common.sidebar.supervision',
                 ],
                 [
-                    'route' => 'student.assessments',
+                    'route' => 'assessments',
                     'icon' => 'o-clipboard-document-check',
                     'label' => 'common.sidebar.assessments',
                 ],
@@ -254,11 +239,6 @@ return [
                     'route' => 'student.incidents.report',
                     'icon' => 'o-exclamation-triangle',
                     'label' => 'common.sidebar.report_incident',
-                ],
-                [
-                    'route' => 'student.reports',
-                    'icon' => 'o-document-text',
-                    'label' => 'common.sidebar.my_report',
                 ],
                 [
                     'route' => 'student.internships.placement-change',
@@ -304,11 +284,6 @@ return [
                     'label' => 'common.sidebar.submissions',
                 ],
                 [
-                    'route' => 'teacher.assess-internship',
-                    'icon' => 'o-clipboard-document-list',
-                    'label' => 'common.sidebar.assess',
-                ],
-                [
                     'route' => 'supervision.logs',
                     'icon' => 'o-clipboard-check',
                     'label' => 'common.sidebar.guidance_logs',
@@ -331,11 +306,6 @@ return [
                     'icon' => 'o-check-badge',
                     'label' => 'common.sidebar.submissions',
                 ],
-                [
-                    'route' => 'supervisor.reports.notes',
-                    'icon' => 'o-document-text',
-                    'label' => 'common.sidebar.report_notes',
-                ],
             ],
         ],
 
@@ -350,11 +320,6 @@ return [
                     'label' => 'common.sidebar.reports',
                 ],
                 [
-                    'route' => 'sysadmin.reports.review',
-                    'icon' => 'o-eye',
-                    'label' => 'common.sidebar.final_reports',
-                ],
-                [
                     'route' => 'sysadmin.certificates',
                     'icon' => 'o-document-check',
                     'label' => 'common.sidebar.certificates',
@@ -365,12 +330,12 @@ return [
                     'label' => 'common.sidebar.certificate_templates',
                 ],
                 [
-                    'route' => 'sysadmin.accounts.lifecycle',
+                    'route' => 'admin.users.index',
                     'icon' => 'o-arrow-path',
                     'label' => 'common.sidebar.account_lifecycle',
                 ],
                 [
-                    'route' => 'sysadmin.gdpr-logs',
+                    'route' => 'admin.gdpr-logs',
                     'icon' => 'o-shield-exclamation',
                     'label' => 'common.sidebar.gdpr_logs',
                 ],
@@ -392,11 +357,6 @@ return [
                     'route' => 'sysadmin.handbooks.index',
                     'icon' => 'o-bookmark-square',
                     'label' => 'common.sidebar.handbooks',
-                ],
-                [
-                    'route' => 'sysadmin.schedules.index',
-                    'icon' => 'o-calendar-days',
-                    'label' => 'common.sidebar.schedules',
                 ],
                 [
                     'route' => 'sysadmin.recovery-slips',
