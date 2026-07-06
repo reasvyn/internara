@@ -8,11 +8,19 @@ return [
     'add' => 'Add Department',
     'edit' => 'Edit Department',
     'new' => 'New Department',
-    'delete_confirm' => 'Are you sure you want to delete this department? This action cannot be undone.',
-    'delete_selected_confirm' => 'Are you sure you want to delete the selected departments? Only departments without students will be deleted.',
-    'confirm_delete_selected' => 'Are you sure you want to delete the selected departments? Only departments without students will be deleted.',
+    'delete_confirm' =>
+        'Are you sure you want to delete this department? This action cannot be undone.',
+    'delete_selected_confirm' =>
+        'Are you sure you want to delete the selected departments? Only departments without students will be deleted.',
+    'confirm_delete_selected' =>
+        'Are you sure you want to delete the selected departments? Only departments without students will be deleted.',
+    'confirm_delete' =>
+        'Are you sure you want to delete this department? Only departments without students will be deleted.',
+    'cannot_delete_with_profiles' =>
+        'This department cannot be deleted because it still has associated student profiles.',
     'delete_blocked' => 'Cannot delete: this department has :count student profile(s) associated.',
-    'selected_count' => '{0} departments selected|{1} department selected|[2,*] departments selected',
+    'selected_count' =>
+        '{0} departments selected|{1} department selected|[2,*] departments selected',
     'stats' => [
         'total' => 'Total Departments',
         'with_students' => 'Has Students',
@@ -27,8 +35,10 @@ return [
     'delete_success' => 'Department deleted successfully.',
     'cancel' => 'Cancel',
     'save' => 'Save',
-    'delete_success_bulk' => '{0} No departments deleted|{1} 1 department deleted|[2,*] :count departments deleted.',
-    'delete_blocked_bulk' => '{0} No departments skipped|{1} 1 department skipped (has profiles)|[2,*] :count departments skipped (have profiles).',
+    'delete_success_bulk' =>
+        '{0} No departments deleted|{1} 1 department deleted|[2,*] :count departments deleted.',
+    'delete_blocked_bulk' =>
+        '{0} No departments skipped|{1} 1 department skipped (has profiles)|[2,*] :count departments skipped (have profiles).',
     'import_invalid' => 'Invalid CSV format. The file must have a "name" column.',
     'import_summary' => ':created departments imported, :skipped skipped (duplicates).',
     'template_example_name' => 'e.g. Software Engineering',
@@ -38,12 +48,16 @@ return [
         'title' => 'Department Guide',
         'intro' => 'Manage academic organizational units (departments/competency areas):',
         'create_title' => 'Adding a Department',
-        'create_desc' => 'Create a new department with a name and description. The department name must be unique in the system.',
+        'create_desc' =>
+            'Create a new department with a name and description. The department name must be unique in the system.',
         'edit_title' => 'Editing a Department',
-        'edit_desc' => 'Update the name or description of an existing department. Changes apply system-wide immediately.',
+        'edit_desc' =>
+            'Update the name or description of an existing department. Changes apply system-wide immediately.',
         'import_title' => 'CSV Import',
-        'import_desc' => 'Import multiple departments at once from a CSV file. First column: name, second column: description (optional).',
+        'import_desc' =>
+            'Import multiple departments at once from a CSV file. First column: name, second column: description (optional).',
         'delete_title' => 'Deleting a Department',
-        'delete_desc' => 'Departments that still have student profiles cannot be deleted. Move students first if needed.',
+        'delete_desc' =>
+            'Departments that still have student profiles cannot be deleted. Move students first if needed.',
     ],
 ];
