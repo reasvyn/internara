@@ -16,8 +16,10 @@ return [
     'password_reset_success' => 'Password has been successfully reset.',
     'password_reset_failed' => 'Password reset attempt failed due to an invalid or expired token.',
     'password_reset_link_requested' => 'A password reset link has been requested.',
-    'password_reset_confirmation_mismatch' => 'Password reset failed because the confirmation password did not match.',
-    'password_confirmation_failed' => 'Password confirmation failed due to incorrect current password.',
+    'password_reset_confirmation_mismatch' =>
+        'Password reset failed because the confirmation password did not match.',
+    'password_confirmation_failed' =>
+        'Password confirmation failed due to incorrect current password.',
     'password_confirmed' => 'Identity has been verified via password confirmation.',
     'password_updated_manually' => 'User password has been updated by an administrator.',
     'profile_updated' => 'User profile information has been updated.',
@@ -27,21 +29,30 @@ return [
     'user_account_locked' => 'User account has been locked due to administrative action.',
     'user_account_unlocked' => 'User account lock has been removed by an administrator.',
     'super_admin_lock_blocked' => 'Attempt to lock the super administrator account was blocked.',
-    'super_admin_unlock_blocked' => 'Attempt to unlock the super administrator account was blocked.',
+    'super_admin_unlock_blocked' =>
+        'Attempt to unlock the super administrator account was blocked.',
     'super_admin_recovered' => 'Super administrator account has been recovered via recovery key.',
-    'super_admin.recovery.succeeded' => 'Super administrator account has been recovered via recovery key.',
+    'super_admin.recovery.succeeded' =>
+        'Super administrator account has been recovered via recovery key.',
     'super_admin.recovery.failed' => 'Super administrator account recovery attempt failed.',
-    'super_admin.recovery.blocked_not_found' => 'Super administrator recovery was blocked because no eligible account was found.',
-    'super_admin.recovery.invalid_key' => 'Super administrator recovery was attempted with an invalid recovery key.',
+    'super_admin.recovery.blocked_not_found' =>
+        'Super administrator recovery was blocked because no eligible account was found.',
+    'super_admin.recovery.invalid_key' =>
+        'Super administrator recovery was attempted with an invalid recovery key.',
     'super_admin_recovery_failed' => 'Super administrator account recovery attempt failed.',
-    'super_admin_recovery_blocked_exists' => 'Super administrator recovery was blocked because an account already exists.',
-    'super_admin_recovery_blocked_not_found' => 'Super administrator recovery was blocked because no eligible account was found.',
-    'super_admin_recovery_invalid_key' => 'Super administrator recovery was attempted with an invalid recovery key.',
+    'super_admin_recovery_blocked_exists' =>
+        'Super administrator recovery was blocked because an account already exists.',
+    'super_admin_recovery_blocked_not_found' =>
+        'Super administrator recovery was blocked because no eligible account was found.',
+    'super_admin_recovery_invalid_key' =>
+        'Super administrator recovery was attempted with an invalid recovery key.',
     'settings_updated' => 'System settings have been updated.',
     'settings_updated_batch' => 'System settings have been updated in batch.',
+    'settings_batch_set' => 'Settings batch set',
     'school_profile_updated' => 'School profile has been updated.',
     'setting.updated' => 'A system setting has been updated.',
-    'account_auto_inactivated' => 'User account has been automatically inactivated due to inactivity.',
+    'account_auto_inactivated' =>
+        'User account has been automatically inactivated due to inactivity.',
     'smtp_test_failed' => 'SMTP mail configuration test failed.',
     'notification_missing_type_key' => 'A notification was logged without a valid type key.',
     'notification_missing_title_key' => 'A notification was logged without a valid title key.',
@@ -67,11 +78,13 @@ return [
     'recovery_key.file_save_failed' => 'Failed to persist the recovery key to the filesystem.',
     'recovery_key_viewed_cli' => 'Recovery key was viewed via command line interface.',
     'failed_to_save_recovery_key_file' => 'Failed to persist the recovery key to the filesystem.',
-    'recovery_notification_failed' => 'Failed to notify existing administrators about a recovery event.',
+    'recovery_notification_failed' =>
+        'Failed to notify existing administrators about a recovery event.',
     'login.error' => 'An unexpected error occurred during the authentication process.',
     'login_error' => 'An unexpected error occurred during the authentication process.',
     'password_reset_error' => 'An unexpected error occurred during the password reset process.',
-    'password_confirmation_error' => 'An unexpected error occurred during the password confirmation process.',
+    'password_confirmation_error' =>
+        'An unexpected error occurred during the password confirmation process.',
     'account_recovery_error' => 'An unexpected error occurred during the account recovery process.',
     'setup_wizard_error' => 'An unexpected error occurred in the setup wizard.',
     'installation.started' => 'System installation has started.',
@@ -100,6 +113,9 @@ return [
     'announcement_deleted' => 'Announcement has been deleted.',
     'announcement_published' => 'Announcement has been published.',
     'announcement_sent' => 'Announcement notifications have been sent.',
+    'assessment_auto_calculated' => 'Assessment auto-calculated',
+    'assessment_scores_updated' => 'Assessment scores updated',
+    'brand_asset_uploaded' => 'Brand asset uploaded',
     'assessment_finalized' => 'Assessment has been finalized and is now immutable.',
     'assignment_created' => 'Assignment has been created.',
     'assignment_published' => 'Assignment has been published.',
@@ -124,11 +140,13 @@ return [
     'department_updated' => 'Department has been updated.',
     'direct_placement_created' => 'Student has been directly placed into a program.',
     'document_rendered' => 'Document has been rendered successfully.',
-    'incident_notification_roles_missing' => 'Incident notification could not be sent because no recipients matched the target roles.',
+    'incident_notification_roles_missing' =>
+        'Incident notification could not be sent because no recipients matched the target roles.',
     'incident_reported' => 'An incident has been reported.',
     'incident_resolved' => 'An incident has been resolved.',
     'incident_updated' => 'Incident report has been updated.',
     'indicator_created' => 'Indicator has been added to the competency.',
+    'indicator_scored' => 'Indicator scored',
     'indicator_deleted' => 'Indicator has been removed from the competency.',
     'indicator_updated' => 'Indicator has been updated.',
     'internship_deleted' => 'Internship program has been deleted.',
@@ -157,7 +175,8 @@ return [
     'recovery_slip_failed' => 'Recovery slip generation has failed.',
     'recovery_slip_redeemed' => 'A recovery code has been redeemed.',
     'recovery_slips_generated' => 'Recovery slips have been generated.',
-    'registration_verified_and_placed' => 'Registration has been verified and the student has been placed.',
+    'registration_verified_and_placed' =>
+        'Registration has been verified and the student has been placed.',
     'report_approved' => 'Report has been approved.',
     'report_created' => 'Report has been created.',
     'report_draft_saved' => 'Report draft has been saved.',

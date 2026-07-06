@@ -20,8 +20,8 @@ enum Gender: string implements LabelEnum
     public function label(): string
     {
         return match ($this) {
-            self::MALE => __('Male'),
-            self::FEMALE => __('Female'),
+            self::MALE => __('common.male'),
+            self::FEMALE => __('common.female'),
         };
     }
 }

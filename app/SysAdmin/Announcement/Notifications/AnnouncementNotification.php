@@ -31,7 +31,10 @@ class AnnouncementNotification extends Notification implements ShouldQueue
             ->subject($this->title)
             ->greeting(__('Hello!'))
             ->line($this->message)
-            ->when($this->link, fn ($m) => $m->action(__('View Details'), url($this->link)));
+            ->when(
+                $this->link,
+                fn($m) => $m->action(__('notifications.ui.view_details'), url($this->link)),
+            );
     }
 
     public function toBroadcast($notifiable): array

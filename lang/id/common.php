@@ -25,6 +25,9 @@ return [
     'preview' => 'Pratinjau',
     'write_your_announcement_in_markdown' => 'Tulis pengumuman Anda dalam Markdown...',
 
+    'male' => 'Laki-laki',
+    'female' => 'Perempuan',
+
     'setup_required' => [
         'title' => 'Pengaturan Akun Diperlukan',
         'description' => 'Silakan lengkapi informasi profil Anda untuk mengakses semua fitur.',

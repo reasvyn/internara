@@ -25,6 +25,9 @@ return [
     'preview' => 'Preview',
     'write_your_announcement_in_markdown' => 'Write your announcement in Markdown...',
 
+    'male' => 'Male',
+    'female' => 'Female',
+
     'setup_required' => [
         'title' => 'Account Setup Required',
         'description' => 'Please complete your profile information to access all features.',

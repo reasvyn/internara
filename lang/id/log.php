@@ -14,10 +14,13 @@ return [
     'login_blocked' => 'Percobaan masuk diblokir karena akun terkunci.',
     'login_throttle_triggered' => 'Batas percobaan masuk terlampaui.',
     'password_reset_success' => 'Kata sandi telah berhasil diatur ulang.',
-    'password_reset_failed' => 'Pengaturan ulang kata sandi gagal karena token tidak valid atau kedaluwarsa.',
+    'password_reset_failed' =>
+        'Pengaturan ulang kata sandi gagal karena token tidak valid atau kedaluwarsa.',
     'password_reset_link_requested' => 'Tautan pengaturan ulang kata sandi telah diminta.',
-    'password_reset_confirmation_mismatch' => 'Pengaturan ulang kata sandi gagal karena konfirmasi tidak cocok.',
-    'password_confirmation_failed' => 'Konfirmasi kata sandi gagal karena kata sandi saat ini salah.',
+    'password_reset_confirmation_mismatch' =>
+        'Pengaturan ulang kata sandi gagal karena konfirmasi tidak cocok.',
+    'password_confirmation_failed' =>
+        'Konfirmasi kata sandi gagal karena kata sandi saat ini salah.',
     'password_confirmed' => 'Identitas telah diverifikasi melalui konfirmasi kata sandi.',
     'password_updated_manually' => 'Kata sandi pengguna telah diperbarui oleh administrator.',
     'profile_updated' => 'Informasi profil pengguna telah diperbarui.',
@@ -28,20 +31,29 @@ return [
     'user_account_unlocked' => 'Kunci akun pengguna telah dibuka oleh administrator.',
     'super_admin_lock_blocked' => 'Percobaan mengunci akun administrator super diblokir.',
     'super_admin_unlock_blocked' => 'Percobaan membuka kunci administrator super diblokir.',
-    'super_admin_recovered' => 'Akun administrator super telah dipulihkan menggunakan kunci pemulihan.',
-    'super_admin.recovery.succeeded' => 'Akun administrator super telah dipulihkan menggunakan kunci pemulihan.',
+    'super_admin_recovered' =>
+        'Akun administrator super telah dipulihkan menggunakan kunci pemulihan.',
+    'super_admin.recovery.succeeded' =>
+        'Akun administrator super telah dipulihkan menggunakan kunci pemulihan.',
     'super_admin.recovery.failed' => 'Percobaan pemulihan akun administrator super gagal.',
-    'super_admin.recovery.blocked_not_found' => 'Pemulihan administrator super diblokir karena tidak ada akun yang memenuhi syarat.',
-    'super_admin.recovery.invalid_key' => 'Pemulihan administrator super dicoba dengan kunci pemulihan yang tidak valid.',
+    'super_admin.recovery.blocked_not_found' =>
+        'Pemulihan administrator super diblokir karena tidak ada akun yang memenuhi syarat.',
+    'super_admin.recovery.invalid_key' =>
+        'Pemulihan administrator super dicoba dengan kunci pemulihan yang tidak valid.',
     'super_admin_recovery_failed' => 'Percobaan pemulihan akun administrator super gagal.',
-    'super_admin_recovery_blocked_exists' => 'Pemulihan administrator super diblokir karena akun sudah ada.',
-    'super_admin_recovery_blocked_not_found' => 'Pemulihan administrator super diblokir karena tidak ada akun yang memenuhi syarat.',
-    'super_admin_recovery_invalid_key' => 'Pemulihan administrator super dicoba dengan kunci pemulihan yang tidak valid.',
+    'super_admin_recovery_blocked_exists' =>
+        'Pemulihan administrator super diblokir karena akun sudah ada.',
+    'super_admin_recovery_blocked_not_found' =>
+        'Pemulihan administrator super diblokir karena tidak ada akun yang memenuhi syarat.',
+    'super_admin_recovery_invalid_key' =>
+        'Pemulihan administrator super dicoba dengan kunci pemulihan yang tidak valid.',
     'settings_updated' => 'Pengaturan sistem telah diperbarui.',
     'settings_updated_batch' => 'Pengaturan sistem telah diperbarui secara batch.',
+    'settings_batch_set' => 'Pengaturan batch ditetapkan',
     'school_profile_updated' => 'Profil sekolah telah diperbarui.',
     'setting.updated' => 'Pengaturan sistem telah diperbarui.',
-    'account_auto_inactivated' => 'Akun pengguna telah dinonaktifkan secara otomatis karena tidak aktif.',
+    'account_auto_inactivated' =>
+        'Akun pengguna telah dinonaktifkan secara otomatis karena tidak aktif.',
     'smtp_test_failed' => 'Pengujian konfigurasi SMTP gagal.',
     'notification_missing_type_key' => 'Notifikasi dicatat tanpa kunci tipe yang valid.',
     'notification_missing_title_key' => 'Notifikasi dicatat tanpa kunci judul yang valid.',
@@ -58,21 +70,28 @@ return [
     'cleanup_failed' => 'Tugas pembersihan sistem gagal.',
     'health.check.failed' => 'Pemeriksaan kesehatan sistem mendeteksi masalah.',
     'health_failed' => 'Pemeriksaan kesehatan sistem mendeteksi masalah.',
-    'setup_route_accessed_without_token' => 'Rute pengaturan diakses tanpa token pengaturan yang valid.',
+    'setup_route_accessed_without_token' =>
+        'Rute pengaturan diakses tanpa token pengaturan yang valid.',
     'setup_token_invalid_attempt' => 'Token pengaturan yang tidak valid diberikan.',
     'token.missing' => 'Rute pengaturan diakses tanpa token pengaturan.',
-    'token.validation_failed' => 'Percobaan dengan token pengaturan yang tidak valid atau kedaluwarsa.',
-    'unauthorized_role_access' => 'Percobaan akses berdasarkan peran yang tidak sah telah diblokir.',
+    'token.validation_failed' =>
+        'Percobaan dengan token pengaturan yang tidak valid atau kedaluwarsa.',
+    'unauthorized_role_access' =>
+        'Percobaan akses berdasarkan peran yang tidak sah telah diblokir.',
     'recovery_key.viewed' => 'Kunci pemulihan dilihat melalui antarmuka baris perintah.',
     'recovery_key.file_save_failed' => 'Gagal menyimpan kunci pemulihan ke sistem berkas.',
     'recovery_key_viewed_cli' => 'Kunci pemulihan dilihat melalui antarmuka baris perintah.',
     'failed_to_save_recovery_key_file' => 'Gagal menyimpan kunci pemulihan ke sistem berkas.',
-    'recovery_notification_failed' => 'Gagal memberi tahu administrator yang ada tentang peristiwa pemulihan.',
+    'recovery_notification_failed' =>
+        'Gagal memberi tahu administrator yang ada tentang peristiwa pemulihan.',
     'login.error' => 'Terjadi kesalahan yang tidak terduga selama proses autentikasi.',
     'login_error' => 'Terjadi kesalahan yang tidak terduga selama proses autentikasi.',
-    'password_reset_error' => 'Terjadi kesalahan yang tidak terduga selama proses pengaturan ulang kata sandi.',
-    'password_confirmation_error' => 'Terjadi kesalahan yang tidak terduga selama proses konfirmasi kata sandi.',
-    'account_recovery_error' => 'Terjadi kesalahan yang tidak terduga selama proses pemulihan akun.',
+    'password_reset_error' =>
+        'Terjadi kesalahan yang tidak terduga selama proses pengaturan ulang kata sandi.',
+    'password_confirmation_error' =>
+        'Terjadi kesalahan yang tidak terduga selama proses konfirmasi kata sandi.',
+    'account_recovery_error' =>
+        'Terjadi kesalahan yang tidak terduga selama proses pemulihan akun.',
     'setup_wizard_error' => 'Terjadi kesalahan yang tidak terduga di wizard pengaturan.',
     'installation.started' => 'Instalasi sistem telah dimulai.',
     'installation.completed' => 'Instalasi sistem telah berhasil diselesaikan.',
@@ -85,7 +104,8 @@ return [
     'wizard.crashed' => 'Wizard pengaturan mengalami kesalahan kritis.',
     'wizard.failed' => 'Langkah wizard pengaturan gagal.',
     'wizard.mount_failed' => 'Wizard pengaturan gagal dimulai.',
-    'absence_request_pending' => 'Permintaan ketidakhadiran telah diajukan dan menunggu persetujuan.',
+    'absence_request_pending' =>
+        'Permintaan ketidakhadiran telah diajukan dan menunggu persetujuan.',
     'absence_request_approved' => 'Permintaan ketidakhadiran telah disetujui.',
     'absence_request_rejected' => 'Permintaan ketidakhadiran telah ditolak.',
     'absence_submitted' => 'Catatan ketidakhadiran telah diajukan.',
@@ -100,6 +120,9 @@ return [
     'announcement_deleted' => 'Pengumuman telah dihapus.',
     'announcement_published' => 'Pengumuman telah diterbitkan.',
     'announcement_sent' => 'Notifikasi pengumuman telah dikirim.',
+    'assessment_auto_calculated' => 'Penilaian dihitung otomatis',
+    'assessment_scores_updated' => 'Nilai penilaian diperbarui',
+    'brand_asset_uploaded' => 'Aset merek diunggah',
     'assessment_finalized' => 'Penilaian telah difinalisasi dan tidak dapat diubah.',
     'assignment_created' => 'Tugas telah dibuat.',
     'assignment_published' => 'Tugas telah diterbitkan.',
@@ -124,11 +147,13 @@ return [
     'department_updated' => 'Jurusan telah diperbarui.',
     'direct_placement_created' => 'Siswa telah ditempatkan langsung ke program.',
     'document_rendered' => 'Dokumen telah berhasil dirender.',
-    'incident_notification_roles_missing' => 'Notifikasi insiden tidak dapat dikirim karena tidak ada penerima yang cocok.',
+    'incident_notification_roles_missing' =>
+        'Notifikasi insiden tidak dapat dikirim karena tidak ada penerima yang cocok.',
     'incident_reported' => 'Insiden telah dilaporkan.',
     'incident_resolved' => 'Insiden telah diselesaikan.',
     'incident_updated' => 'Laporan insiden telah diperbarui.',
     'indicator_created' => 'Indikator telah ditambahkan ke kompetensi.',
+    'indicator_scored' => 'Indikator dinilai',
     'indicator_deleted' => 'Indikator telah dihapus dari kompetensi.',
     'indicator_updated' => 'Indikator telah diperbarui.',
     'internship_deleted' => 'Program magang telah dihapus.',
@@ -157,7 +182,8 @@ return [
     'recovery_slip_failed' => 'Pembuatan slip pemulihan gagal.',
     'recovery_slip_redeemed' => 'Kode pemulihan telah digunakan.',
     'recovery_slips_generated' => 'Slip pemulihan telah dibuat.',
-    'registration_verified_and_placed' => 'Pendaftaran telah diverifikasi dan siswa telah ditempatkan.',
+    'registration_verified_and_placed' =>
+        'Pendaftaran telah diverifikasi dan siswa telah ditempatkan.',
     'report_approved' => 'Laporan telah disetujui.',
     'report_created' => 'Laporan telah dibuat.',
     'report_draft_saved' => 'Draf laporan telah disimpan.',
@@ -170,5 +196,6 @@ return [
     'supervision_log_created' => 'Catatan supervisi telah dibuat.',
     'supervision_log_verified' => 'Catatan supervisi telah diverifikasi.',
     'user_status_changed' => 'Status akun pengguna telah berubah.',
-    'welcome_notification_failed' => 'Gagal mengirim notifikasi selamat datang kepada pengguna baru.',
+    'welcome_notification_failed' =>
+        'Gagal mengirim notifikasi selamat datang kepada pengguna baru.',
 ];

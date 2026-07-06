@@ -28,7 +28,9 @@ return [
     'deleted_selected' => ':count academic years deleted.',
     'already_active' => 'Academic year is already active.',
     'cannot_delete_active' => 'Cannot delete ":name" because it is the active academic year.',
-    'cannot_delete_has_data' => 'Cannot delete ":name" because it has linked internships or assessments.',
+    'cannot_delete_has_data' =>
+        'Cannot delete ":name" because it has linked internships or assessments.',
+    'activate' => 'Activate',
     'inactive' => 'Inactive',
     'name_placeholder' => 'e.g.: 2025/2026',
 
@@ -40,12 +42,16 @@ return [
         'title' => 'Academic Year Guide',
         'intro' => 'Manage academic periods used as a reference for internship programs:',
         'list_title' => 'Year List',
-        'list_desc' => 'Each academic year has a name, start date, and end date. The active year is marked with a green indicator.',
+        'list_desc' =>
+            'Each academic year has a name, start date, and end date. The active year is marked with a green indicator.',
         'create_title' => 'Creating a New Year',
-        'create_desc' => 'Click "New Year" to add a new period. Use academic year format, e.g. 2025/2026.',
+        'create_desc' =>
+            'Click "New Year" to add a new period. Use academic year format, e.g. 2025/2026.',
         'activate_title' => 'Activating',
-        'activate_desc' => 'Only one year can be active at a time. Activating a new year automatically deactivates the previous one.',
+        'activate_desc' =>
+            'Only one year can be active at a time. Activating a new year automatically deactivates the previous one.',
         'delete_title' => 'Deleting',
-        'delete_desc' => 'The active academic year or years with linked data cannot be deleted. Deactivate first if needed.',
+        'delete_desc' =>
+            'The active academic year or years with linked data cannot be deleted. Deactivate first if needed.',
     ],
 ];
