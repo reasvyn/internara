@@ -1,7 +1,9 @@
 # Auth — Technical Reference
 
-> **Last updated:** 2026-07-05 **Changes:** sync — fix base class extends: BaseAction →
-> BaseCommandAction/BaseReadAction
+> **Last updated:** 2026-07-05
+>
+> **Changes:** sync — add LogLoginFailed listener, RecoverAdminCommand; update renamed
+> SendRoleWelcomeNotification
 
 ## Description
 
@@ -87,10 +89,11 @@ permissions.
 
 ## Listeners
 
-| File                                                    | Class                               | Listens To            |
-| ------------------------------------------------------- | ----------------------------------- | --------------------- |
-| `Login/Listeners/SendSuperAdminWelcomeNotification.php` | `SendSuperAdminWelcomeNotification` | `LoginSucceeded`      |
-| `SuperAdmin/Listeners/NotifySuperAdminsOfRecovery.php`  | `NotifySuperAdminsOfRecovery`       | `SuperAdminRecovered` |
+| File                                                   | Class                         | Listens To            |
+| ------------------------------------------------------ | ----------------------------- | --------------------- |
+| `Login/Listeners/SendRoleWelcomeNotification.php`      | `SendRoleWelcomeNotification` | `LoginSucceeded`      |
+| `Login/Listeners/LogLoginFailed.php`                   | `LogLoginFailed`              | `LoginFailed`         |
+| `SuperAdmin/Listeners/NotifySuperAdminsOfRecovery.php` | `NotifySuperAdminsOfRecovery` | `SuperAdminRecovered` |
 
 ## Livewire Components
 
@@ -157,9 +160,10 @@ None.
 
 ## Console Commands
 
-| Command Signature | Class                | Description                |
-| ----------------- | -------------------- | -------------------------- |
-| `admin:create`    | `CreateAdminCommand` | Creates initial superadmin |
+| Command Signature | Class                 | Description                          |
+| ----------------- | --------------------- | ------------------------------------ |
+| `admin:create`    | `CreateAdminCommand`  | Creates initial superadmin           |
+| `admin:recover`   | `RecoverAdminCommand` | Super admin account recovery via CLI |
 
 ## Migrations
 

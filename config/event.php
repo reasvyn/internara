@@ -13,7 +13,7 @@ use App\Assignment\Listeners\NotifyOnAssignmentPublished;
 use App\Auth\Login\Events\LoginFailed;
 use App\Auth\Login\Events\LoginSucceeded;
 use App\Auth\Login\Listeners\LogLoginFailed;
-use App\Auth\Login\Listeners\SendSuperAdminWelcomeNotification;
+use App\Auth\Login\Listeners\SendRoleWelcomeNotification;
 use App\Auth\Password\Events\PasswordUpdated;
 use App\Auth\Password\Listeners\InvalidateSessionOnPasswordChange;
 use App\Auth\SuperAdmin\Events\SuperAdminRecovered;
@@ -53,130 +53,70 @@ use App\User\Profile\Events\ProfileUpdated;
 
 return [
     'listen' => [
-        SetupFinalized::class => [
-            LogSetupFinalized::class,
-        ],
+        SetupFinalized::class => [LogSetupFinalized::class],
 
-        SettingUpdated::class => [
-            InvalidateSettingsCache::class,
-        ],
+        SettingUpdated::class => [InvalidateSettingsCache::class],
 
-        AcademicYearCreated::class => [
-            ClearDashboardCacheOnYearChange::class,
-        ],
+        AcademicYearCreated::class => [ClearDashboardCacheOnYearChange::class],
 
-        AcademicYearActivated::class => [
-            ClearDashboardCacheOnYearChange::class,
-        ],
+        AcademicYearActivated::class => [ClearDashboardCacheOnYearChange::class],
 
-        AcademicYearUpdated::class => [
-            ClearDashboardCacheOnYearChange::class,
-        ],
+        AcademicYearUpdated::class => [ClearDashboardCacheOnYearChange::class],
 
-        AcademicYearDeleted::class => [
-            ClearDashboardCacheOnYearChange::class,
-        ],
+        AcademicYearDeleted::class => [ClearDashboardCacheOnYearChange::class],
 
-        DepartmentCreated::class => [
-            ClearDashboardCacheOnDepartmentChange::class,
-        ],
+        DepartmentCreated::class => [ClearDashboardCacheOnDepartmentChange::class],
 
-        DepartmentDeleted::class => [
-            ClearDashboardCacheOnDepartmentChange::class,
-        ],
+        DepartmentDeleted::class => [ClearDashboardCacheOnDepartmentChange::class],
 
-        DepartmentUpdated::class => [
-            ClearDashboardCacheOnDepartmentChange::class,
-        ],
+        DepartmentUpdated::class => [ClearDashboardCacheOnDepartmentChange::class],
 
-        NotificationSent::class => [
-            ClearUnreadNotificationCache::class,
-        ],
+        NotificationSent::class => [ClearUnreadNotificationCache::class],
 
-        NotificationRead::class => [
-            ClearUnreadNotificationCache::class,
-        ],
+        NotificationRead::class => [ClearUnreadNotificationCache::class],
 
-        ProfileUpdated::class => [
-            ClearUnreadNotificationCache::class,
-        ],
+        ProfileUpdated::class => [ClearUnreadNotificationCache::class],
 
-        CompanyCreated::class => [
-            ClearDashboardOnCompanyChange::class,
-        ],
+        CompanyCreated::class => [ClearDashboardOnCompanyChange::class],
 
-        CompanyUpdated::class => [
-            ClearDashboardOnCompanyChange::class,
-        ],
+        CompanyUpdated::class => [ClearDashboardOnCompanyChange::class],
 
-        CompanyDeleted::class => [
-            ClearDashboardOnCompanyChange::class,
-        ],
+        CompanyDeleted::class => [ClearDashboardOnCompanyChange::class],
 
-        PartnershipCreated::class => [
-            ClearDashboardOnPartnershipChange::class,
-        ],
+        PartnershipCreated::class => [ClearDashboardOnPartnershipChange::class],
 
-        PartnershipUpdated::class => [
-            ClearDashboardOnPartnershipChange::class,
-        ],
+        PartnershipUpdated::class => [ClearDashboardOnPartnershipChange::class],
 
-        PartnershipDeleted::class => [
-            ClearDashboardOnPartnershipChange::class,
-        ],
+        PartnershipDeleted::class => [ClearDashboardOnPartnershipChange::class],
 
-        PartnershipRenewed::class => [
-            ClearDashboardOnPartnershipChange::class,
-        ],
+        PartnershipRenewed::class => [ClearDashboardOnPartnershipChange::class],
 
         PartnershipTerminated::class => [
             ClearDashboardOnPartnershipChange::class,
             NotifyOnPartnershipTerminated::class,
         ],
 
-        HandbookCreated::class => [
-            ClearHandbookCache::class,
-        ],
+        HandbookCreated::class => [ClearHandbookCache::class],
 
-        HandbookUpdated::class => [
-            ClearHandbookCache::class,
-        ],
+        HandbookUpdated::class => [ClearHandbookCache::class],
 
-        HandbookDeleted::class => [
-            ClearHandbookCache::class,
-        ],
+        HandbookDeleted::class => [ClearHandbookCache::class],
 
-        AssignmentPublished::class => [
-            NotifyOnAssignmentPublished::class,
-        ],
+        AssignmentPublished::class => [NotifyOnAssignmentPublished::class],
 
-        PasswordUpdated::class => [
-            InvalidateSessionOnPasswordChange::class,
-        ],
+        PasswordUpdated::class => [InvalidateSessionOnPasswordChange::class],
 
-        LoginFailed::class => [
-            LogLoginFailed::class,
-        ],
+        LoginFailed::class => [LogLoginFailed::class],
 
-        InternshipCreated::class => [
-            NotifyAdminsInternshipCreated::class,
-        ],
+        InternshipCreated::class => [NotifyAdminsInternshipCreated::class],
 
-        StudentRegistered::class => [
-            ClearDashboardOnRegistration::class,
-        ],
+        StudentRegistered::class => [ClearDashboardOnRegistration::class],
 
-        LoginSucceeded::class => [
-            SendSuperAdminWelcomeNotification::class,
-        ],
+        LoginSucceeded::class => [SendRoleWelcomeNotification::class],
 
-        SuperAdminRecovered::class => [
-            NotifySuperAdminsOfRecovery::class,
-        ],
+        SuperAdminRecovered::class => [NotifySuperAdminsOfRecovery::class],
 
-        BackupFailed::class => [
-            SendBackupFailedNotification::class,
-        ],
+        BackupFailed::class => [SendBackupFailedNotification::class],
 
         // Fire-and-forget events (intentionally no listeners):
         // AssessmentFinalized — logged in FinalizeAssessmentAction, no side effects

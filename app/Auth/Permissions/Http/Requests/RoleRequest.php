@@ -42,8 +42,8 @@ class RoleRequest extends BaseFormRequest
     public function messages(): array
     {
         return [
-            'roles.required' => 'At least one role must be specified.',
-            'roles.*.exists' => 'The selected role :value is invalid.',
+            'roles.required' => __('validation.roles_required'),
+            'roles.*.exists' => __('validation.roles_invalid', ['value' => ':value']),
         ];
     }
 }

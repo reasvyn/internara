@@ -31,14 +31,14 @@ test('login succeeds with valid username and password', function () {
 });
 
 test('login fails with wrong password', function () {
-    expect(fn () => $this->action->execute($this->user->email, 'wrong-password'))->toThrow(
+    expect(fn() => $this->action->execute($this->user->email, 'wrong-password'))->toThrow(
         RuntimeException::class,
         trans('auth.failed'),
     );
 });
 
 test('login fails with non-existent email', function () {
-    expect(fn () => $this->action->execute('nonexistent@test.com', 'password'))->toThrow(
+    expect(fn() => $this->action->execute('nonexistent@test.com', 'password'))->toThrow(
         RuntimeException::class,
         trans('auth.failed'),
     );
@@ -47,7 +47,7 @@ test('login fails with non-existent email', function () {
 test('login fails when account is locked', function () {
     $this->user->update(['locked_at' => now(), 'locked_reason' => 'too_many_failed_attempts']);
 
-    expect(fn () => $this->action->execute($this->user->email, 'correct-password'))->toThrow(
+    expect(fn() => $this->action->execute($this->user->email, 'correct-password'))->toThrow(
         RuntimeException::class,
         trans('auth.blocked'),
     );
@@ -56,7 +56,7 @@ test('login fails when account is locked', function () {
 test('login fails when account status does not allow login', function () {
     $this->user->update(['status' => 'suspended']);
 
-    expect(fn () => $this->action->execute($this->user->email, 'correct-password'))->toThrow(
+    expect(fn() => $this->action->execute($this->user->email, 'correct-password'))->toThrow(
         RuntimeException::class,
         trans('auth.blocked'),
     );
@@ -65,7 +65,7 @@ test('login fails when account status does not allow login', function () {
 test('login fails when setup is required', function () {
     $this->user->update(['setup_required' => true]);
 
-    expect(fn () => $this->action->execute($this->user->email, 'correct-password'))->toThrow(
+    expect(fn() => $this->action->execute($this->user->email, 'correct-password'))->toThrow(
         RuntimeException::class,
         trans('auth.blocked'),
     );
@@ -79,7 +79,7 @@ test('login locks account after 10 failed attempts', function () {
         }
     }
 
-    expect(fn () => $this->action->execute($this->user->email, 'correct-password'))->toThrow(
+    expect(fn() => $this->action->execute($this->user->email, 'correct-password'))->toThrow(
         RuntimeException::class,
     );
 });
@@ -94,7 +94,7 @@ test('login clears failed attempts on success', function () {
 
     $this->action->execute($this->user->email, 'correct-password');
 
-    $attemptsKey = 'login:attempts:'.md5($this->user->email);
+    $attemptsKey = config('cache-keys.auth_login_attempts') . hash('crc32b', $this->user->email);
     expect(Cache::get($attemptsKey))->toBeNull();
 });
 
