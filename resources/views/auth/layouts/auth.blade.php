@@ -22,8 +22,8 @@
         {{ $slot }}
 
         <div class="mt-8 flex items-center justify-center gap-3 text-center">
-            <livewire:settings.livewire.theme-switcher />
-            <livewire:settings.livewire.lang-switcher />
+            <livewire:settings.theme-switcher />
+            <livewire:settings.lang-switcher />
         </div>
     </div>
 </x-core::layouts.base>

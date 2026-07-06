@@ -11,14 +11,14 @@
     {{-- Theme Switcher --}}
     @if ($showTheme)
         <div class="bg-base-200/50 border-base-content/5 hidden items-center gap-1 rounded-xl border p-1 md:flex">
-            <livewire:settings.livewire.theme-switcher />
+            <livewire:settings.theme-switcher />
         </div>
     @endif
 
     {{-- Language Switcher --}}
     @if ($showLanguage)
         <div class="hidden md:block">
-            <livewire:settings.livewire.lang-switcher />
+            <livewire:settings.lang-switcher />
         </div>
     @endif
 
@@ -26,7 +26,7 @@
         {{-- Notification Bell --}}
         @if ($showNotifications)
             <div class="relative">
-                <livewire:user.notifications.livewire.notification-bell />
+                <livewire:user.notifications.notification-bell />
             </div>
         @endif
         {{-- User Dropdown --}}
