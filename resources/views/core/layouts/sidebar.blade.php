@@ -23,7 +23,7 @@
 @php
     $itemRoles = $item['roles'] ?? $group['roles'];
     $disabled = $item['disabled'] ?? false;
-    $active = !$disabled && request()->routeIs($item['route'] . '*');
+    $active = !$disabled && request()->routeIs($item['route']);
     $url = '#';
     if (!$disabled) {
         try {
