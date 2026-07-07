@@ -21,29 +21,31 @@ final class ToggleUserStatusAction extends BaseCommandAction
 
         $integrity = $user->asSuperAdminIntegrityRules();
 
-        if (! $integrity->canBeLocked()) {
+        if (!$integrity->canBeLocked()) {
             throw new RejectedException('Cannot toggle super admin account status.');
         }
 
-        $currentStatus = $user->status?->value;
-        $newStatus =
-            $currentStatus === AccountStatus::VERIFIED->value
-                ? AccountStatus::SUSPENDED->value
-                : AccountStatus::VERIFIED->value;
+        return $this->transaction(function () use ($user, $reason) {
+            $currentStatus = $user->status?->value;
+            $newStatus =
+                $currentStatus === AccountStatus::VERIFIED->value
+                    ? AccountStatus::SUSPENDED->value
+                    : AccountStatus::VERIFIED->value;
 
-        $user->setStatus($newStatus, $reason ?? 'Toggled via User Manager');
+            $user->setStatus($newStatus, $reason ?? 'Toggled via User Manager');
 
-        $user->notify(
-            new AccountStatusNotification($newStatus, $reason ?? 'Updated by Administrator'),
-        );
+            $user->notify(
+                new AccountStatusNotification($newStatus, $reason ?? 'Updated by Administrator'),
+            );
 
-        $this->log('user_status_toggled', $user, [
-            'previous_status' => $currentStatus,
-            'new_status' => $newStatus,
-        ]);
+            $this->log('user_status_toggled', $user, [
+                'previous_status' => $currentStatus,
+                'new_status' => $newStatus,
+            ]);
 
-        event(new UserStatusChanged($user));
+            event(new UserStatusChanged($user));
 
-        return $user;
+            return $user;
+        });
     }
 }

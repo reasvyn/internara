@@ -53,23 +53,25 @@ final class SendNotificationAction extends BaseCommandAction implements SendsNot
 
         $user = User::findOrFail($notificationData->userId);
 
-        $notification = Notification::create([
-            'user_id' => $user->id,
-            'type' => $notificationData->type,
-            'title' => $notificationData->title,
-            'message' => $notificationData->message,
-            'data' => $notificationData->data,
-            'link' => $notificationData->link,
-            'is_read' => false,
-        ]);
+        return $this->transaction(function () use ($user, $notificationData) {
+            $notification = Notification::create([
+                'user_id' => $user->id,
+                'type' => $notificationData->type,
+                'title' => $notificationData->title,
+                'message' => $notificationData->message,
+                'data' => $notificationData->data,
+                'link' => $notificationData->link,
+                'is_read' => false,
+            ]);
 
-        Event::dispatch(new NotificationSent($notification));
+            $this->log('notification_sent', $notification, [
+                'user_id' => $user->id,
+                'type' => $notificationData->type,
+            ]);
 
-        $this->log('notification_sent', $notification, [
-            'user_id' => $user->id,
-            'type' => $notificationData->type,
-        ]);
+            event(new NotificationSent($notification));
 
-        return $notification;
+            return $notification;
+        });
     }
 }
