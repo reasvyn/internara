@@ -24,11 +24,11 @@ final class UpdateProfileAction extends BaseCommandAction
     ): Profile {
         $integrity = $user->asSuperAdminIntegrityRules();
 
-        if ($name !== null && ! $integrity->canChangeName()) {
+        if ($name !== null && !$integrity->canChangeName()) {
             throw new RejectedException('Cannot change super admin name.');
         }
 
-        if ($username !== null && ! $integrity->canChangeUsername()) {
+        if ($username !== null && !$integrity->canChangeUsername()) {
             throw new RejectedException('Cannot change super admin username.');
         }
 
@@ -39,7 +39,7 @@ final class UpdateProfileAction extends BaseCommandAction
             $userData['name'] = $name;
         }
         if ($email !== null) {
-            $userRules['email'] = ['required', 'email', 'unique:users,email,'.$user->id];
+            $userRules['email'] = ['required', 'email', 'unique:users,email,' . $user->id];
             $userData['email'] = $email;
         }
         if ($username !== null) {
@@ -49,7 +49,7 @@ final class UpdateProfileAction extends BaseCommandAction
                 'alpha_num',
                 'lowercase',
                 'max:50',
-                'unique:users,username,'.$user->id,
+                'unique:users,username,' . $user->id,
             ];
             $userData['username'] = $username;
         }
@@ -60,7 +60,7 @@ final class UpdateProfileAction extends BaseCommandAction
 
         $this->validateProfileData($data);
 
-        $data = array_filter($data, fn ($v) => $v !== null);
+        $data = array_filter($data, fn($v) => $v !== null);
 
         return $this->transaction(function () use ($user, $data, $userData, $avatar) {
             if ($userData !== []) {
@@ -73,7 +73,13 @@ final class UpdateProfileAction extends BaseCommandAction
 
             $profile = $user->profile()->updateOrCreate(['user_id' => $user->id], $data);
 
-            $this->dispatchEvent(new ProfileUpdated($profile));
+            $this->dispatchEvent(
+                new ProfileUpdated(
+                    profile: $profile,
+                    previousEmail: $user->getOriginal('email'),
+                    previousUsername: $user->getOriginal('username'),
+                ),
+            );
 
             $this->log('profile_updated', $profile, array_keys($data));
 

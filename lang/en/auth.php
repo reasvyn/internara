@@ -90,9 +90,11 @@ return [
         'title' => 'Recovery Slip',
         'subtitle' => 'Generate a one-time credential slip for offline delivery',
         'generated_title' => 'Credential Slip Generated',
-        'generated_desc' => 'Deliver these codes to the user offline. Each code can only be used once.',
+        'generated_desc' =>
+            'Deliver these codes to the user offline. Each code can only be used once.',
         'security_note' => 'Security Note',
-        'security_note_desc' => 'This code will not be shown again. It expires in 24 hours. Verify the recipient\'s identity before delivery.',
+        'security_note_desc' =>
+            'This code will not be shown again. It expires in 24 hours. Verify the recipient\'s identity before delivery.',
         'generate_another' => 'Generate Another',
         'search_user' => 'Search User',
         'search_placeholder' => 'Name, username, or email...',
@@ -100,5 +102,20 @@ return [
         'selected_user' => 'Selected: :name (:username)',
         'generate_slip' => 'Generate Recovery Slip',
         'back_to_dashboard' => 'Back to Dashboard',
+    ],
+
+    'notifications' => [
+        'credential_changed_subject' => 'Your Account Credentials Have Been Changed',
+        'credential_changed_greeting' => 'Hello :name!',
+        'password_changed_line' =>
+            'Your password has been changed. If you did not make this change, please contact support immediately.',
+        'email_changed_line' =>
+            'Your email address has been changed from :old_value to :new_value. If you did not authorize this, please contact support immediately.',
+        'username_changed_line' =>
+            'Your username has been changed. If you did not make this change, please contact support immediately.',
+        'old_value' => 'Previous value: :value',
+        'new_value' => 'New value: :value',
+        'credential_changed_warning' =>
+            'If you did not request these changes, please contact :support_email immediately.',
     ],
 ];
