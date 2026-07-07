@@ -10,56 +10,54 @@
         <x-mary-menu-item :title="__('common.actions.export')" icon="o-arrow-down-tray" wire:click="export" />
     </x-slot:extraMenu>
 
-    <x-core::ui.selection-bar>
+    <x-slot:selectionBar>
         <x-mary-button
             :label="__('common.actions.delete_selected')"
             icon="o-trash"
-            class="btn-sm btn-error text-white"
+            class="btn-sm btn-error"
             wire:click="askDeleteSelected"
         />
-    </x-core::ui.selection-bar>
+    </x-slot:selectionBar>
 
-    <div class="overflow-x-auto">
-        <x-mary-table
-            :headers="$this->headers()"
-            :rows="$this->rows()"
-            :sort-by="$sortBy"
-            with-pagination
-            selectable
-            wire:model="selectedIds"
-            class="table-sm"
-        >
-            @scope('cell_name', $user)
-                <div class="flex items-center gap-3 py-1">
-                    <x-core::ui.avatar :user="$user" size="size-9" />
-                    <div class="flex flex-col">
-                        <div class="flex items-center gap-2">
-                            <span class="font-medium text-sm">{{ $user->name }}</span>
-                            @if($user->hasRole('super_admin'))
-                                <x-mary-icon name="o-shield-check" class="size-4 text-primary" :tooltip="__('user.manager.protected')" />
-                            @endif
-                        </div>
-                        <span class="text-xs text-base-content/50">{{ $user->email }}</span>
-                    </div>
-                </div>
-            @endscope
-
-            @scope('actions', $user)
-                @if($user->hasRole('super_admin'))
-                    <div class="flex justify-end">
-                        <span class="text-xs text-base-content/40 italic">{{ __('user.admin.protected') }}</span>
-                    </div>
-                @else
-                    <div class="flex justify-end gap-1">
-                        <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $user->id }}')" :aria-label="__('common.actions.edit')" />
-                        @if($user->id !== auth()->id())
-                            <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:click="askDelete('{{ $user->id }}')" :aria-label="__('common.actions.delete')" />
+    <x-mary-table
+        :headers="$this->headers()"
+        :rows="$this->rows()"
+        :sort-by="$sortBy"
+        with-pagination
+        selectable
+        wire:model="selectedIds"
+        class="table-sm"
+    >
+        @scope('cell_name', $user)
+            <div class="flex items-center gap-3 py-1">
+                <x-core::ui.avatar :user="$user" size="size-9" />
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-2">
+                        <span class="font-medium text-sm">{{ $user->name }}</span>
+                        @if($user->hasRole('super_admin'))
+                            <x-mary-icon name="o-shield-check" class="size-4 text-primary" :tooltip="__('user.manager.protected')" />
                         @endif
                     </div>
-                @endif
-            @endscope
-        </x-mary-table>
-    </div>
+                    <span class="text-xs text-base-content/50">{{ $user->email }}</span>
+                </div>
+            </div>
+        @endscope
+
+        @scope('actions', $user)
+            @if($user->hasRole('super_admin'))
+                <div class="flex justify-end">
+                    <span class="text-xs text-base-content/40 italic">{{ __('user.admin.protected') }}</span>
+                </div>
+            @else
+                <div class="flex justify-end gap-1">
+                    <x-mary-button icon="o-pencil" class="btn-ghost btn-sm" wire:click="edit('{{ $user->id }}')" :aria-label="__('common.actions.edit')" />
+                    @if($user->id !== auth()->id())
+                        <x-mary-button icon="o-trash" class="btn-ghost btn-sm text-error" wire:click="askDelete('{{ $user->id }}')" :aria-label="__('common.actions.delete')" />
+                    @endif
+                </div>
+            @endif
+        @endscope
+    </x-mary-table>
 
     <x-slot:modal>
         <x-mary-modal wire:model="userModal" :title="$form->id ? __('user.admin.edit') : __('user.admin.new')" separator class="backdrop-blur-sm">
