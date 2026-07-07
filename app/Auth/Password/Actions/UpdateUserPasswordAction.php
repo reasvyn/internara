@@ -6,14 +6,15 @@ namespace App\Auth\Password\Actions;
 
 use App\Auth\Password\Events\PasswordUpdated;
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 use App\Core\Support\PasswordRules;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class UpdateUserPasswordAction extends BaseCommandAction
+final class UpdateUserPasswordAction extends BaseCommandAction
 {
-    public function execute(User $user, string $newPassword): void
+    public function execute(User $user, string $newPassword): ActionResponse
     {
         $this->validateNewPassword($newPassword);
 
@@ -27,6 +28,8 @@ class UpdateUserPasswordAction extends BaseCommandAction
                 $this->log('password_updated_manually', $user);
             });
         }, 'Failed to update user password');
+
+        return ActionResponse::ok();
     }
 
     protected function validateNewPassword(string $newPassword): void

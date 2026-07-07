@@ -23,25 +23,19 @@ class RecoverySlipManager extends Component
 
     public function boot(): void
     {
-        if (
-            ! auth()
-                ->user()
-                ?->hasAnyRole(['super_admin', 'admin'])
-        ) {
-            abort(403);
-        }
+        $this->authorize('viewAny', User::class);
     }
 
     public function generate(GenerateRecoverySlipAction $action): void
     {
-        if (! $this->selectedUser) {
+        if (!$this->selectedUser) {
             return;
         }
 
         $result = $action->execute($this->selectedUser);
 
-        $this->generatedCode = $result['plaintext'];
-        $this->expiresAt = $result['expires_at'];
+        $this->generatedCode = $result->data['plaintext'];
+        $this->expiresAt = $result->data['expires_at'];
 
         flash()->success(__('auth.recovery_slip_generated'));
     }

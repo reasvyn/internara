@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Auth\Password\Actions;
 
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Services\SmartLogger;
 use App\User\Models\User;
@@ -13,14 +14,14 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
-class ResetPasswordAction extends BaseCommandAction
+final class ResetPasswordAction extends BaseCommandAction
 {
     public function execute(
         string $email,
         string $token,
         string $password,
         string $passwordConfirmation,
-    ): bool {
+    ): ActionResponse {
         $throttleKey = 'reset-password:' . Str::lower($email) . '|' . request()->ip();
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
@@ -77,6 +78,6 @@ class ResetPasswordAction extends BaseCommandAction
             throw new RejectedException($message);
         }
 
-        return true;
+        return ActionResponse::ok();
     }
 }

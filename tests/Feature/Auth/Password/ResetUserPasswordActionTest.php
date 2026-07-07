@@ -22,10 +22,10 @@ test('resets password for regular user', function () {
 
     $result = $this->action->execute($user);
 
-    expect($result)->toHaveKeys(['user', 'new_password']);
-    expect($result['user']->id)->toBe($user->id);
-    expect($result['new_password'])->toBeString();
-    expect(strlen($result['new_password']))->toBe(12);
+    expect($result->data)->toHaveKeys(['user', 'new_password']);
+    expect($result->data['user']->id)->toBe($user->id);
+    expect($result->data['new_password'])->toBeString();
+    expect(strlen($result->data['new_password']))->toBe(12);
 });
 
 test('new password is hashed correctly', function () {
@@ -35,7 +35,7 @@ test('new password is hashed correctly', function () {
     $result = $this->action->execute($user);
 
     $user->refresh();
-    expect(Hash::check($result['new_password'], $user->password))->toBeTrue();
+    expect(Hash::check($result->data['new_password'], $user->password))->toBeTrue();
 });
 
 test('rejects reset for super admin', function () {
@@ -56,7 +56,7 @@ test('generates different passwords on each reset', function () {
     $result1 = $this->action->execute($user);
     $result2 = $this->action->execute($user);
 
-    expect($result1['new_password'])->not->toBe($result2['new_password']);
+    expect($result1->data['new_password'])->not->toBe($result2->data['new_password']);
 });
 
 test('password reset changes actual password in database', function () {

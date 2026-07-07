@@ -17,11 +17,11 @@ beforeEach(function () {
 test('sends password reset link for valid email', function () {
     $status = $this->action->execute($this->user->email);
 
-    expect($status)->toBe(Password::RESET_LINK_SENT);
+    expect($status->data)->toBe(Password::RESET_LINK_SENT);
 });
 
 test('returns error for non-existent email', function () {
     $status = $this->action->execute('nonexistent@test.com');
 
-    expect($status)->toBe(Password::INVALID_USER);
+    expect($status->data)->toBe(Password::INVALID_USER);
 });

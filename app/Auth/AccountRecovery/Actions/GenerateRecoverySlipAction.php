@@ -8,15 +8,15 @@ use App\Auth\AccessTokens\Models\AccessToken;
 use App\Auth\AccountRecovery\Data\RecoveryCodeData;
 use App\Auth\AccountRecovery\Events\RecoverySlipGenerated;
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class GenerateRecoverySlipAction extends BaseCommandAction
+final class GenerateRecoverySlipAction extends BaseCommandAction
 {
     public const int CODE_COUNT = 10;
 
-    /** @return array{code: RecoveryCodeData, plaintext: array<int, string>, expires_at: null} */
-    public function execute(User $user): array
+    public function execute(User $user): ActionResponse
     {
         AccessToken::revokeFor($user, 'account_recovery');
 
@@ -51,10 +51,10 @@ class GenerateRecoverySlipAction extends BaseCommandAction
         $this->log('recovery_slips_generated', $user, ['count' => self::CODE_COUNT]);
         $this->dispatchEvent(new RecoverySlipGenerated($user, self::CODE_COUNT));
 
-        return [
+        return ActionResponse::ok([
             'code' => $firstCode,
             'plaintext' => $codes,
             'expires_at' => null,
-        ];
+        ]);
     }
 }

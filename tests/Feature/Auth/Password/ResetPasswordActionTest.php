@@ -24,7 +24,7 @@ test('resets password with valid token', function () {
         'NewSecurePass123!',
     );
 
-    expect($result)->toBeTrue();
+    expect($result->success)->toBeTrue();
     expect(Hash::check('NewSecurePass123!', $this->user->fresh()->password))->toBeTrue();
 });
 
