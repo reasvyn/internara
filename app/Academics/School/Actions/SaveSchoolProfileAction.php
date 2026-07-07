@@ -11,7 +11,7 @@ use App\Settings\Data\SettingEntryData;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 
-class SaveSchoolProfileAction extends BaseCommandAction
+final class SaveSchoolProfileAction extends BaseCommandAction
 {
     public function __construct(
         protected readonly BatchSetSettingAction $batchSetSetting,

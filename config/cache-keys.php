@@ -15,6 +15,7 @@ return [
     'module_policies' => 'module.discovered_policies',
     'module_views' => 'module.discovered_views',
     'auth_login_lockout' => 'auth.login.lockout:',
+    'dashboard_student' => 'dashboard.student.',
     'auth_login_attempts' => 'auth.login.attempts:',
     'auth_login_failures' => 'auth.login-failures:',
     'health_check' => 'system.health_check',
