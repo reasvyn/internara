@@ -22,7 +22,7 @@ depends on.
 
 - **Contracts**: 5 (`LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`,
   `SettingsStore`)
-- **Base Classes**: 12 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`,
+- **Base Classes**: 16 (`BaseModel`, `BaseAuthenticatable`, `BaseAction`, `BaseEntity`,
   `BasePolicy`, `BaseRecordManager`, `BaseController`, `BaseFormRequest`, `BaseData`, `BaseEvent`) +
   3 concern traits (`HasCommonScopes`, `WithSorting`, `WithRecordSelection`)
 - **Concrete DTOs**: 3 (`ActionResponse`, `AuditCheck`, `AuditReport`)
@@ -92,7 +92,11 @@ Located in `app/Core/`:
 | `BaseProcessAction` | `Actions/BaseProcessAction.php`       | Process action contract: multi-step orchestration with transaction + logging | Process Actions                                                  |
 | `BaseEntity`        | `Entities/BaseEntity.php`             | `final readonly`, zero framework dependencies, `fromModel()` bridge          | All entities                                                     |
 | `BasePolicy`        | `Policies/BasePolicy.php`             | Superadmin `before()` bypass, role checks, ownership checks                  | All policies                                                     |
-| `BaseRecordManager` | `Livewire/BaseRecordManager.php`      | CRUD table: search, sort, filter, paginate, bulk actions, row selection      | All CRUD Livewire components                                     |
+| `BaseRecordManager` | `Livewire/BaseRecordManager.php`      | Sysadmin CRUD: search, sort, filter, paginate, bulk actions, row selection   | All admin CRUD tables                                            |
+| `BaseRecordEntry`   | `Livewire/BaseRecordEntry.php`        | User-facing CRUD: form modal, file upload, error handling                    | Non-admin create/edit forms (e.g., LogbookEntry)                 |
+| `BaseRecordList`    | `Livewire/BaseRecordList.php`         | Read-only list: paginated, searchable, no mutations                          | Read-only record displays                                        |
+| `BaseFormView`      | `Livewire/BaseFormView.php`           | Full-page/tab form: dirty tracking, file upload, RejectedException handling  | Profile editor, settings pages                                   |
+| `BaseWizard`        | `Livewire/BaseWizard.php`             | Multi-step wizard: step navigation, progress tracking, step validation       | SetupWizard                                                      |
 | `BaseController`    | `Http/Controllers/BaseController.php` | Common controller utilities                                                  | All HTTP controllers                                             |
 | `BaseFormRequest`   | `Http/Requests/BaseFormRequest.php`   | Validation without redirect, throws `ValidationFailedException`              | All form requests                                                |
 | `BaseData`          | `Data/BaseData.php`                   | Abstract readonly DTO with `fromArray()`, `toArray()`, `from()`              | All DTOs                                                         |

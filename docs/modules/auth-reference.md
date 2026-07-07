@@ -1,9 +1,9 @@
 # Auth — Technical Reference
 
-> **Last updated:** 2026-07-05
+> **Last updated:** 2026-07-06
 >
-> **Changes:** sync — add LogLoginFailed listener, RecoverAdminCommand; update renamed
-> SendRoleWelcomeNotification
+> **Changes:** sync — add SendPasswordChangedMail, InvalidateSessionOnPasswordChange listeners; add
+> CredentialChangedNotification
 
 ## Description
 
@@ -89,11 +89,13 @@ permissions.
 
 ## Listeners
 
-| File                                                   | Class                         | Listens To            |
-| ------------------------------------------------------ | ----------------------------- | --------------------- |
-| `Login/Listeners/SendRoleWelcomeNotification.php`      | `SendRoleWelcomeNotification` | `LoginSucceeded`      |
-| `Login/Listeners/LogLoginFailed.php`                   | `LogLoginFailed`              | `LoginFailed`         |
-| `SuperAdmin/Listeners/NotifySuperAdminsOfRecovery.php` | `NotifySuperAdminsOfRecovery` | `SuperAdminRecovered` |
+| File                                                       | Class                               | Listens To            |
+| ---------------------------------------------------------- | ----------------------------------- | --------------------- |
+| `Login/Listeners/SendRoleWelcomeNotification.php`          | `SendRoleWelcomeNotification`       | `LoginSucceeded`      |
+| `Login/Listeners/LogLoginFailed.php`                       | `LogLoginFailed`                    | `LoginFailed`         |
+| `Password/Listeners/InvalidateSessionOnPasswordChange.php` | `InvalidateSessionOnPasswordChange` | `PasswordUpdated`     |
+| `Password/Listeners/SendPasswordChangedMail.php`           | `SendPasswordChangedMail`           | `PasswordUpdated`     |
+| `SuperAdmin/Listeners/NotifySuperAdminsOfRecovery.php`     | `NotifySuperAdminsOfRecovery`       | `SuperAdminRecovered` |
 
 ## Livewire Components
 
@@ -110,10 +112,11 @@ permissions.
 
 ## Notifications
 
-| File                                                           | Class                             | Purpose                     |
-| -------------------------------------------------------------- | --------------------------------- | --------------------------- |
-| `SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` | `SuperAdminRecoveredNotification` | Notifies admins on recovery |
-| `SuperAdmin/Notifications/RecoveryOtpNotification.php`         | `RecoveryOtpNotification`         | Notifies on recovery OTP    |
+| File                                                           | Class                             | Purpose                                 |
+| -------------------------------------------------------------- | --------------------------------- | --------------------------------------- |
+| `SuperAdmin/Notifications/SuperAdminRecoveredNotification.php` | `SuperAdminRecoveredNotification` | Notifies admins on recovery             |
+| `SuperAdmin/Notifications/RecoveryOtpNotification.php`         | `RecoveryOtpNotification`         | Notifies on recovery OTP                |
+| `Notifications/CredentialChangedNotification.php`              | `CredentialChangedNotification`   | Email on password/email/username change |
 
 ## Livewire Forms
 
