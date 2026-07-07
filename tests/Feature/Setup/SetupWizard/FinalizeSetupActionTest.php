@@ -12,7 +12,6 @@ use App\Setup\SetupWizard\Actions\FinalizeSetupAction;
 use App\Setup\SetupWizard\Actions\SetupDepartmentAction;
 use App\Setup\SetupWizard\Actions\SetupSchoolAction;
 use App\Setup\SetupWizard\Actions\SetupSuperAdminAction;
-use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Mockery;
 use RuntimeException;
@@ -34,9 +33,6 @@ beforeEach(function () {
 test(
     'finalize setup action successfully sets up school, department, admin, and saves recovery key',
     function () {
-        $saveRecoveryKeyMock = Mockery::mock(SaveRecoveryKeyAction::class);
-        $saveRecoveryKeyMock->shouldReceive('execute')->once()->andReturn('/path/to/key');
-
         $sendNotificationMock = Mockery::mock(SendsNotifications::class);
         $sendNotificationMock->shouldReceive('execute')->once();
 
@@ -45,7 +41,6 @@ test(
             'setupDept' => app(SetupDepartmentAction::class),
             'setupAdmin' => app(SetupSuperAdminAction::class),
             'sendNotification' => $sendNotificationMock,
-            'saveRecoveryKey' => $saveRecoveryKeyMock,
         ]);
 
         $schoolData = [
