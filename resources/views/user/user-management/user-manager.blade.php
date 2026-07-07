@@ -45,10 +45,10 @@
         <input wire:model.live="filters.created_to" type="date" class="input input-bordered input-sm w-full text-sm" />
     </x-slot:filters>
 
-    <x-core::ui.selection-bar>
+    <x-slot:selectionBar>
         <x-mary-dropdown>
             <x-slot:trigger>
-                <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" :label="__('common.actions.bulk_actions')" />
+                <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary" :label="__('common.actions.bulk_actions')" />
             </x-slot:trigger>
             <div class="p-1.5 w-52">
                 <x-mary-menu-item :title="__('user.manager.download_slips')" icon="o-document-arrow-down" wire:click="downloadSelectedSlips" />
@@ -58,22 +58,20 @@
                 <hr class="border-base-content/10" />
                 <x-mary-menu-item :title="__('common.actions.export_selected')" icon="o-arrow-down-tray" wire:click="exportSelected" />
                 <hr class="border-base-content/10" />
-                <x-mary-menu-item :title="__('common.actions.delete_selected')" icon="o-trash" class="text-error"
-                    wire:click="askDeleteSelected" />
+                <x-mary-menu-item :title="__('common.actions.delete_selected')" icon="o-trash" class="text-error" wire:click="askDeleteSelected" />
             </div>
         </x-mary-dropdown>
-    </x-core::ui.selection-bar>
+    </x-slot:selectionBar>
 
-    <div class="overflow-x-auto">
-        <x-mary-table
-            :headers="$this->headers()"
-            :rows="$this->rows()"
-            :sort-by="$sortBy"
-            with-pagination
-            selectable
-            wire:model="selectedIds"
-            class="table-sm"
-        >
+    <x-mary-table
+        :headers="$this->headers()"
+        :rows="$this->rows()"
+        :sort-by="$sortBy"
+        with-pagination
+        selectable
+        wire:model="selectedIds"
+        class="table-sm"
+    >
             @scope('cell_name', $user)
                 <div class="flex items-center gap-3 py-1">
                     <x-core::ui.avatar :user="$user" size="size-9" />
@@ -141,7 +139,6 @@
                 @endif
             @endscope
         </x-mary-table>
-    </div>
 
     {{-- Status Modal --}}
     <x-mary-modal wire:model="showStatusModal" :title="__('user.manager.change_status')" separator class="backdrop-blur-sm">
