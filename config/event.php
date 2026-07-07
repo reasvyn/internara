@@ -16,6 +16,7 @@ use App\Auth\Login\Listeners\LogLoginFailed;
 use App\Auth\Login\Listeners\SendRoleWelcomeNotification;
 use App\Auth\Password\Events\PasswordUpdated;
 use App\Auth\Password\Listeners\InvalidateSessionOnPasswordChange;
+use App\Auth\Password\Listeners\SendPasswordChangedMail;
 use App\Auth\SuperAdmin\Events\SuperAdminRecovered;
 use App\Auth\SuperAdmin\Listeners\NotifySuperAdminsOfRecovery;
 use App\Enrollment\Registration\Events\StudentRegistered;
@@ -50,6 +51,7 @@ use App\User\Notifications\Events\NotificationRead;
 use App\User\Notifications\Events\NotificationSent;
 use App\User\Notifications\Listeners\ClearUnreadNotificationCache;
 use App\User\Profile\Events\ProfileUpdated;
+use App\User\Profile\Listeners\SendProfileChangedMail;
 
 return [
     'listen' => [
@@ -75,7 +77,10 @@ return [
 
         NotificationRead::class => [ClearUnreadNotificationCache::class],
 
-        ProfileUpdated::class => [ClearUnreadNotificationCache::class],
+        ProfileUpdated::class => [
+            ClearUnreadNotificationCache::class,
+            SendProfileChangedMail::class,
+        ],
 
         CompanyCreated::class => [ClearDashboardOnCompanyChange::class],
 
@@ -104,7 +109,10 @@ return [
 
         AssignmentPublished::class => [NotifyOnAssignmentPublished::class],
 
-        PasswordUpdated::class => [InvalidateSessionOnPasswordChange::class],
+        PasswordUpdated::class => [
+            InvalidateSessionOnPasswordChange::class,
+            SendPasswordChangedMail::class,
+        ],
 
         LoginFailed::class => [LogLoginFailed::class],
 

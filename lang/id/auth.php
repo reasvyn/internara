@@ -90,9 +90,11 @@ return [
         'title' => 'Slip Pemulihan',
         'subtitle' => 'Hasilkan slip kredensial satu kali untuk pengiriman offline',
         'generated_title' => 'Slip Kredensial Berhasil Dibuat',
-        'generated_desc' => 'Kirimkan kode-kode ini ke pengguna secara offline. Setiap kode hanya bisa digunakan sekali.',
+        'generated_desc' =>
+            'Kirimkan kode-kode ini ke pengguna secara offline. Setiap kode hanya bisa digunakan sekali.',
         'security_note' => 'Catatan Keamanan',
-        'security_note_desc' => 'Kode ini tidak akan ditampilkan lagi. Kedaluwarsa dalam 24 jam. Verifikasi identitas penerima sebelum memberikan kode.',
+        'security_note_desc' =>
+            'Kode ini tidak akan ditampilkan lagi. Kedaluwarsa dalam 24 jam. Verifikasi identitas penerima sebelum memberikan kode.',
         'generate_another' => 'Hasilkan Lagi',
         'search_user' => 'Cari Pengguna',
         'search_placeholder' => 'Nama, username, atau email...',
@@ -100,5 +102,20 @@ return [
         'selected_user' => 'Dipilih: :name (:username)',
         'generate_slip' => 'Hasilkan Slip Pemulihan',
         'back_to_dashboard' => 'Kembali ke Dasbor',
+    ],
+
+    'notifications' => [
+        'credential_changed_subject' => 'Kredensial Akun Anda Telah Diubah',
+        'credential_changed_greeting' => 'Halo :name!',
+        'password_changed_line' =>
+            'Kata sandi Anda telah diubah. Jika Anda tidak melakukan perubahan ini, segera hubungi dukungan.',
+        'email_changed_line' =>
+            'Alamat email Anda telah diubah dari :old_value menjadi :new_value. Jika Anda tidak menyetujui ini, segera hubungi dukungan.',
+        'username_changed_line' =>
+            'Nama pengguna Anda telah diubah. Jika Anda tidak melakukan perubahan ini, segera hubungi dukungan.',
+        'old_value' => 'Nilai sebelumnya: :value',
+        'new_value' => 'Nilai baru: :value',
+        'credential_changed_warning' =>
+            'Jika Anda tidak meminta perubahan ini, hubungi :support_email segera.',
     ],
 ];

@@ -9,7 +9,11 @@ use App\User\Profile\Models\Profile;
 
 final class ProfileUpdated extends BaseEvent
 {
-    public function __construct(public Profile $profile) {}
+    public function __construct(
+        public Profile $profile,
+        public ?string $previousEmail = null,
+        public ?string $previousUsername = null,
+    ) {}
 
     public function eventName(): string
     {
