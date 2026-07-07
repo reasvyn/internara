@@ -4,20 +4,19 @@ declare(strict_types=1);
 
 namespace App\Journals\Logbook\Livewire;
 
+use App\Core\Livewire\BaseRecordEntry;
 use App\Journals\Logbook\Actions\SubmitLogbookAction;
 use App\Journals\Logbook\Models\Logbook;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
-use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
-class LogbookEntry extends Component
+class LogbookEntry extends BaseRecordEntry
 {
-    use WithFileUploads, WithPagination;
+    use WithPagination;
 
-    public bool $showModal = false;
+    public ?string $journalId = null;
 
     public string $date = '';
 
@@ -25,15 +24,11 @@ class LogbookEntry extends Component
 
     public string $learning_outcomes = '';
 
-    public string $journalId = '';
-
     public array $photos = [];
 
     public function boot(): void
     {
-        if (! auth()->user()?->hasRole('student')) {
-            abort(403);
-        }
+        $this->authorize('create', Logbook::class);
     }
 
     public function mount(): void
@@ -43,13 +38,14 @@ class LogbookEntry extends Component
 
     public function create(): void
     {
+        parent::create();
         $this->reset(['journalId', 'content', 'learning_outcomes', 'photos']);
         $this->date = Carbon::today()->toDateString();
-        $this->showModal = true;
     }
 
-    public function edit(Logbook $journal): void
+    public function edit(string $id): void
     {
+        $journal = Logbook::findOrFail($id);
         $this->journalId = $journal->id;
         $this->date = $journal->date->toDateString();
         $this->content = $journal->content;
@@ -68,7 +64,7 @@ class LogbookEntry extends Component
             'photos.*' => 'nullable|image|max:10240',
         ]);
 
-        try {
+        $this->handleError(function () use ($submitJournal) {
             $submitJournal->execute(auth()->user(), [
                 'date' => $this->date,
                 'content' => $this->content,
@@ -78,9 +74,7 @@ class LogbookEntry extends Component
 
             $this->showModal = false;
             flash()->success('Journal entry saved successfully.');
-        } catch (\Throwable $e) {
-            flash()->error($e->getMessage());
-        }
+        });
     }
 
     public function removePhoto(int $index): void
