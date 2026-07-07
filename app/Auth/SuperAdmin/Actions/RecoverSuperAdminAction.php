@@ -13,11 +13,11 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-class RecoverSuperAdminAction extends BaseCommandAction
+final class RecoverSuperAdminAction extends BaseCommandAction
 {
     public function execute(string $email, string $password): User
     {
-        $cacheKey = config('cache-keys.recover_admin_attempts') . md5($email);
+        $cacheKey = config('cache-keys.recover_admin_attempts').md5($email);
         $attempts = (int) Cache::get($cacheKey, 0);
 
         if ($attempts >= 3) {
@@ -31,7 +31,7 @@ class RecoverSuperAdminAction extends BaseCommandAction
 
             $integrity = $user->asSuperAdminIntegrityRules();
 
-            if ($user->hasRole(Role::SUPER_ADMIN->value) && !$integrity->hasProtectedStatus()) {
+            if ($user->hasRole(Role::SUPER_ADMIN->value) && ! $integrity->hasProtectedStatus()) {
                 throw new RejectedException(
                     'Super admin account integrity violation: expected PROTECTED status.',
                 );

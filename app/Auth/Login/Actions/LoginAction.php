@@ -14,7 +14,6 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Event;
 
 final class LoginAction extends BaseCommandAction
 {
@@ -23,46 +22,48 @@ final class LoginAction extends BaseCommandAction
         string $password,
         bool $remember = false,
     ): Authenticatable {
-        $data = new LoginData(identifier: $identifier, password: $password, remember: $remember);
-        $identifierHash = hash('crc32b', $data->identifier);
+        return $this->transaction(function () use ($identifier, $password, $remember) {
+            $data = new LoginData(identifier: $identifier, password: $password, remember: $remember);
+            $identifierHash = hash('crc32b', $data->identifier);
 
-        $this->checkLockout($identifierHash);
+            $this->checkLockout($identifierHash);
 
-        $loginField = filter_var($data->identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        $user = User::where($loginField, $data->identifier)->first();
+            $loginField = filter_var($data->identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+            $user = User::where($loginField, $data->identifier)->first();
 
-        if ($user === null) {
-            $this->handleFailedAttempt($identifierHash, $data->identifier);
-            Event::dispatch(new LoginFailed($data->identifier, 'user_not_found'));
-            throw new RejectedException(__('auth.failed'));
-        }
+            if ($user === null) {
+                $this->handleFailedAttempt($identifierHash, $data->identifier);
+                $this->dispatchEvent(new LoginFailed($data->identifier, 'user_not_found'));
+                throw new RejectedException(__('auth.failed'));
+            }
 
-        $this->checkAccountStatus($user, $data->identifier);
+            $this->checkAccountStatus($user, $data->identifier);
 
-        if (
-            !Auth::attempt(
-                [$loginField => $data->identifier, 'password' => $data->password],
-                $data->remember,
-            )
-        ) {
-            $this->handleFailedAttempt($identifierHash, $data->identifier);
-            Event::dispatch(new LoginFailed($data->identifier, 'invalid_password'));
-            throw new RejectedException(__('auth.failed'));
-        }
+            if (
+                ! Auth::attempt(
+                    [$loginField => $data->identifier, 'password' => $data->password],
+                    $data->remember,
+                )
+            ) {
+                $this->handleFailedAttempt($identifierHash, $data->identifier);
+                $this->dispatchEvent(new LoginFailed($data->identifier, 'invalid_password'));
+                throw new RejectedException(__('auth.failed'));
+            }
 
-        $this->clearFailedAttempts($identifierHash);
-        session()->regenerate();
+            $this->clearFailedAttempts($identifierHash);
+            session()->regenerate();
 
-        $this->log('login_success', $user, ['identifier' => $data->identifier]);
+            $this->log('login_success', $user, ['identifier' => $data->identifier]);
 
-        Event::dispatch(new LoginSucceeded($user, $data->identifier));
+            $this->dispatchEvent(new LoginSucceeded($user, $data->identifier));
 
-        return $user;
+            return $user;
+        });
     }
 
     private function checkLockout(string $identifierHash): void
     {
-        $lockoutKey = config('cache-keys.auth_login_lockout') . $identifierHash;
+        $lockoutKey = config('cache-keys.auth_login_lockout').$identifierHash;
         $lockoutUntil = Cache::get($lockoutKey);
 
         if ($lockoutUntil !== null) {
@@ -82,25 +83,25 @@ final class LoginAction extends BaseCommandAction
         $apprentice = $user->asApprentice();
 
         if ($apprentice->isLocked()) {
-            Event::dispatch(new LoginFailed($identifier, 'locked'));
+            $this->dispatchEvent(new LoginFailed($identifier, 'locked'));
             throw new RejectedException(__('auth.blocked'));
         }
 
-        if (!$apprentice->status()->allowsLogin()) {
-            Event::dispatch(new LoginFailed($identifier, 'status_blocked'));
+        if (! $apprentice->status()->allowsLogin()) {
+            $this->dispatchEvent(new LoginFailed($identifier, 'status_blocked'));
             throw new RejectedException(__('auth.blocked'));
         }
 
         if ($apprentice->requiresSetup()) {
-            Event::dispatch(new LoginFailed($identifier, 'setup_required'));
+            $this->dispatchEvent(new LoginFailed($identifier, 'setup_required'));
             throw new RejectedException(__('auth.blocked'));
         }
     }
 
     private function handleFailedAttempt(string $identifierHash, string $identifier): void
     {
-        $attemptsKey = config('cache-keys.auth_login_attempts') . $identifierHash;
-        $lockoutKey = config('cache-keys.auth_login_lockout') . $identifierHash;
+        $attemptsKey = config('cache-keys.auth_login_attempts').$identifierHash;
+        $lockoutKey = config('cache-keys.auth_login_lockout').$identifierHash;
 
         $attempts = (int) Cache::get($attemptsKey, 0) + 1;
         Cache::put($attemptsKey, $attempts, now()->addHours(24));
@@ -117,7 +118,7 @@ final class LoginAction extends BaseCommandAction
 
     private function clearFailedAttempts(string $identifierHash): void
     {
-        Cache::forget(config('cache-keys.auth_login_attempts') . $identifierHash);
-        Cache::forget(config('cache-keys.auth_login_lockout') . $identifierHash);
+        Cache::forget(config('cache-keys.auth_login_attempts').$identifierHash);
+        Cache::forget(config('cache-keys.auth_login_lockout').$identifierHash);
     }
 }

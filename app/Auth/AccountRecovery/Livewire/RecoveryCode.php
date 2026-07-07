@@ -23,8 +23,8 @@ class RecoveryCode extends Component
 
         $result = $action->execute($user);
 
-        $this->codes = $result['plaintext'];
-        $this->expiresAt = $result['expires_at'];
+        $this->codes = $result->data['plaintext'];
+        $this->expiresAt = $result->data['expires_at'];
 
         session()->put('recovery_codes', $this->codes);
         session()->put('recovery_codes_expires_at', $this->expiresAt);

@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Auth\Password\Actions;
 
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Data\ActionResponse;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
-class SendPasswordResetLinkAction extends BaseCommandAction
+final class SendPasswordResetLinkAction extends BaseCommandAction
 {
-    public function execute(string $email): string
+    public function execute(string $email): ActionResponse
     {
         $throttleKey = 'forgot-password:' . Str::lower($email) . '|' . request()->ip();
 
@@ -23,7 +24,7 @@ class SendPasswordResetLinkAction extends BaseCommandAction
                 'seconds' => $seconds,
             ]);
 
-            return Password::RESET_LINK_SENT;
+            return ActionResponse::ok(Password::RESET_LINK_SENT);
         }
 
         RateLimiter::hit($throttleKey, 3600);
@@ -35,6 +36,6 @@ class SendPasswordResetLinkAction extends BaseCommandAction
             'status' => $status,
         ]);
 
-        return $status;
+        return ActionResponse::ok($status);
     }
 }

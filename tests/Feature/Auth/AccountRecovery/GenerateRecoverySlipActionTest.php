@@ -18,8 +18,8 @@ beforeEach(function () {
 test('generates 10 recovery codes for user', function () {
     $result = $this->action->execute($this->user);
 
-    expect($result['code'])->toBeInstanceOf(RecoveryCodeData::class);
-    expect($result['plaintext'])->toHaveCount(10);
+    expect($result->data['code'])->toBeInstanceOf(RecoveryCodeData::class);
+    expect($result->data['plaintext'])->toHaveCount(10);
     expect(
         AccessToken::where('user_id', $this->user->id)
             ->where('token_type', 'account_recovery')
@@ -30,7 +30,7 @@ test('generates 10 recovery codes for user', function () {
 test('generated codes have unique plaintext values', function () {
     $result = $this->action->execute($this->user);
 
-    expect(array_unique($result['plaintext']))->toHaveCount(10);
+    expect(array_unique($result->data['plaintext']))->toHaveCount(10);
 });
 
 test('all generated codes are unused', function () {

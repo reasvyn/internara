@@ -10,7 +10,7 @@ use App\Core\Exceptions\RejectedException;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class RedeemRecoverySlipAction extends BaseCommandAction
+final class RedeemRecoverySlipAction extends BaseCommandAction
 {
     public function execute(string $username, string $code, string $newPassword): User
     {
