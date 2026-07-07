@@ -17,7 +17,7 @@ test('download generates PDF response for single user', function () {
     $user->assignRole('student');
 
     $action = app(GenerateAccountSlipAction::class);
-    $response = $action->download($user);
+    $response = $action->execute($user);
 
     expect($response)->toBeInstanceOf(Response::class);
     expect($response->headers->get('Content-Type'))->toBe('application/pdf');
@@ -29,7 +29,7 @@ test('download creates activation token for user', function () {
     $user->assignRole('student');
 
     $action = app(GenerateAccountSlipAction::class);
-    $action->download($user);
+    $action->execute($user);
 
     expect(AccessToken::where('user_id', $user->id)->where('token_type', 'activation')->exists())->toBeTrue();
 });
@@ -39,7 +39,7 @@ test('downloadBatch generates PDF response with multiple users', function () {
     $users->each(fn ($u) => $u->assignRole('student'));
 
     $action = app(GenerateAccountSlipAction::class);
-    $response = $action->downloadBatch($users->all());
+    $response = $action->executeBatch($users->all());
 
     expect($response)->toBeInstanceOf(Response::class);
     expect($response->headers->get('Content-Type'))->toBe('application/pdf');
@@ -51,7 +51,7 @@ test('downloadBatch creates tokens for all users', function () {
     $users->each(fn ($u) => $u->assignRole('student'));
 
     $action = app(GenerateAccountSlipAction::class);
-    $action->downloadBatch($users->all());
+    $action->executeBatch($users->all());
 
     foreach ($users as $user) {
         expect(AccessToken::where('user_id', $user->id)->where('token_type', 'activation')->exists())->toBeTrue();

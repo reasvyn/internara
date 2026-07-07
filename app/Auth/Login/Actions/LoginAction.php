@@ -33,7 +33,7 @@ final class LoginAction extends BaseCommandAction
 
             if ($user === null) {
                 $this->handleFailedAttempt($identifierHash, $data->identifier);
-                $this->dispatchEvent(new LoginFailed($data->identifier, 'user_not_found'));
+                event(new LoginFailed($data->identifier, 'user_not_found'));
                 throw new RejectedException(__('auth.failed'));
             }
 
@@ -46,7 +46,7 @@ final class LoginAction extends BaseCommandAction
                 )
             ) {
                 $this->handleFailedAttempt($identifierHash, $data->identifier);
-                $this->dispatchEvent(new LoginFailed($data->identifier, 'invalid_password'));
+                event(new LoginFailed($data->identifier, 'invalid_password'));
                 throw new RejectedException(__('auth.failed'));
             }
 
@@ -55,7 +55,7 @@ final class LoginAction extends BaseCommandAction
 
             $this->log('login_success', $user, ['identifier' => $data->identifier]);
 
-            $this->dispatchEvent(new LoginSucceeded($user, $data->identifier));
+            event(new LoginSucceeded($user, $data->identifier));
 
             return $user;
         });
@@ -83,17 +83,17 @@ final class LoginAction extends BaseCommandAction
         $apprentice = $user->asApprentice();
 
         if ($apprentice->isLocked()) {
-            $this->dispatchEvent(new LoginFailed($identifier, 'locked'));
+            event(new LoginFailed($identifier, 'locked'));
             throw new RejectedException(__('auth.blocked'));
         }
 
         if (! $apprentice->status()->allowsLogin()) {
-            $this->dispatchEvent(new LoginFailed($identifier, 'status_blocked'));
+            event(new LoginFailed($identifier, 'status_blocked'));
             throw new RejectedException(__('auth.blocked'));
         }
 
         if ($apprentice->requiresSetup()) {
-            $this->dispatchEvent(new LoginFailed($identifier, 'setup_required'));
+            event(new LoginFailed($identifier, 'setup_required'));
             throw new RejectedException(__('auth.blocked'));
         }
     }

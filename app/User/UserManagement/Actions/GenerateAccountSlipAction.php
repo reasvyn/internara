@@ -24,27 +24,14 @@ final class GenerateAccountSlipAction extends BaseCommandAction
         return $this->download($user);
     }
 
-    public function download(User $user): Response
-    {
-        $result = AccessToken::generateFor($user, 'activation', ['name' => 'Account Activation']);
-
-        $html = Blade::render(
-            'user.user-management.account-slip-pdf',
-            ['user' => $user, 'code' => $result['plain_text']],
-            deleteCachedView: true,
-        );
-
-        return Pdf::loadHTML($html)
-            ->setPaper([0, 0, self::CARD_W, self::CARD_H])
-            ->stream('account-slip-'.$user->username.'.pdf');
-    }
-
-    public function downloadBatch(array $users): Response
+    public function executeBatch(array $users): Response
     {
         $html = '';
 
         foreach ($users as $i => $user) {
-            $result = AccessToken::generateFor($user, 'activation', ['name' => 'Account Activation']);
+            $result = AccessToken::generateFor($user, 'activation', [
+                'name' => 'Account Activation',
+            ]);
 
             $html .= Blade::render(
                 'user.user-management.account-slip-pdf',
@@ -56,5 +43,20 @@ final class GenerateAccountSlipAction extends BaseCommandAction
         return Pdf::loadHTML($html)
             ->setPaper([0, 0, self::CARD_W, self::CARD_H])
             ->stream('account-slips-batch.pdf');
+    }
+
+    private function download(User $user): Response
+    {
+        $result = AccessToken::generateFor($user, 'activation', ['name' => 'Account Activation']);
+
+        $html = Blade::render(
+            'user.user-management.account-slip-pdf',
+            ['user' => $user, 'code' => $result['plain_text']],
+            deleteCachedView: true,
+        );
+
+        return Pdf::loadHTML($html)
+            ->setPaper([0, 0, self::CARD_W, self::CARD_H])
+            ->stream('account-slip-' . $user->username . '.pdf');
     }
 }
