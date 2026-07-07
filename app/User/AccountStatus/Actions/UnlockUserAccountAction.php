@@ -9,7 +9,7 @@ use App\Core\Exceptions\RejectedException;
 use App\User\AccountStatus\Events\UserAccountUnlocked;
 use App\User\Models\User;
 
-class UnlockUserAccountAction extends BaseCommandAction
+final class UnlockUserAccountAction extends BaseCommandAction
 {
     public function execute(User $user): void
     {
