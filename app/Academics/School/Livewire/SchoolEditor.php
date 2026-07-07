@@ -7,6 +7,7 @@ namespace App\Academics\School\Livewire;
 use App\Academics\School\Actions\SaveSchoolProfileAction;
 use App\Academics\School\Livewire\Forms\SchoolForm;
 use App\Core\Livewire\BaseFormView;
+use App\Settings\Branding\Actions\RemoveBrandAssetAction;
 use App\Settings\Models\Setting;
 use Illuminate\View\View;
 use Livewire\WithFileUploads;
@@ -57,14 +58,11 @@ class SchoolEditor extends BaseFormView
         return $this->logoPreviewUrl;
     }
 
-    public function removeLogo(): void
+    public function removeLogo(RemoveBrandAssetAction $action): void
     {
         $this->authorize('update', Setting::class);
 
-        $setting = Setting::find('brand_logo');
-        if ($setting) {
-            $setting->clearMediaCollection('brand_logo');
-        }
+        $action->execute('logo');
 
         $this->logoPreviewUrl = null;
         $this->showConfirm = false;
