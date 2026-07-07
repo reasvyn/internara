@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Setup\SetupWizard\Livewire;
 
 use App\Core\Exceptions\RejectedException;
+use App\Core\Livewire\BaseWizard;
 use App\Core\Services\AppInfo;
 use App\Core\Services\SmartLogger;
 use App\Setup\Entities\SetupEntity;
@@ -16,21 +17,14 @@ use App\SysAdmin\Observability\Services\EnvironmentAuditor;
 use Illuminate\Contracts\View\View;
 use Livewire\Features\SupportRedirects\Redirector;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
 
 #[Layout('setup.layouts.setup')]
-class SetupWizard extends Component
+class SetupWizard extends BaseWizard
 {
-    private const array STEP_KEYS = [
-        'welcome',
-        'account',
-        'school',
-        'department',
-        'finalize',
-        'complete',
-    ];
-
-    public int $currentStep = 1;
+    protected function steps(): array
+    {
+        return ['welcome', 'account', 'school', 'department', 'finalize', 'complete'];
+    }
 
     public array $audit = [];
 
@@ -195,12 +189,10 @@ class SetupWizard extends Component
             return;
         }
 
-        $this->validateCurrentStep();
-
-        $this->currentStep++;
+        parent::nextStep();
     }
 
-    private function validateCurrentStep(): void
+    protected function validateCurrentStep(): void
     {
         match ($this->currentStep) {
             2 => $this->superAdminForm->validate(),
@@ -210,16 +202,9 @@ class SetupWizard extends Component
         };
     }
 
-    public function prevStep(): void
+    public function goToStepByKey(string $stepKey): void
     {
-        if ($this->currentStep > 1) {
-            $this->currentStep--;
-        }
-    }
-
-    public function goToStep(string $stepKey): void
-    {
-        $stepIndex = array_search($stepKey, self::STEP_KEYS, true);
+        $stepIndex = array_search($stepKey, $this->steps(), true);
 
         if ($stepIndex === false) {
             return;
@@ -228,7 +213,7 @@ class SetupWizard extends Component
         $targetStep = $stepIndex + 1;
 
         if ($targetStep < $this->currentStep || SetupEntity::get()->isStepCompleted($stepKey)) {
-            $this->currentStep = $targetStep;
+            $this->goToStep($targetStep);
         }
     }
 
@@ -286,9 +271,8 @@ class SetupWizard extends Component
 
     public function title(): string
     {
-        $stepIndex = max(0, $this->currentStep - 1);
-        $stepKey = self::STEP_KEYS[$stepIndex] ?? 'welcome';
-        $stepLabel = __("setup.wizard.step_labels.{$stepKey}");
+        $stepKey = $this->currentStepKey();
+        $stepLabel = $stepKey ? __("setup.wizard.step_labels.{$stepKey}") : '';
 
         return __('setup.wizard.page_title', [
             'step' => $stepLabel,
@@ -301,7 +285,7 @@ class SetupWizard extends Component
         return view('setup.setup-wizard.setup-wizard', [
             'appName' => AppInfo::get('name', config('app.name')),
             'appVersion' => AppInfo::version(),
-            'stepKeys' => self::STEP_KEYS,
+            'stepKeys' => $this->steps(),
         ]);
     }
 }

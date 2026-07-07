@@ -38,10 +38,6 @@ test('wizard step 1 requires audit to pass before proceeding', function () {
 });
 
 test('wizard proceeds through all steps and completes setup', function () {
-    $saveRecoveryKeyMock = Mockery::mock(SaveRecoveryKeyAction::class);
-    $saveRecoveryKeyMock->shouldReceive('execute')->once()->andReturn('mock_recovery_key_123');
-    app()->instance(SaveRecoveryKeyAction::class, $saveRecoveryKeyMock);
-
     $sendNotificationMock = Mockery::mock(SendsNotifications::class);
     $sendNotificationMock->shouldReceive('execute')->once();
     app()->instance(SendsNotifications::class, $sendNotificationMock);
@@ -77,15 +73,15 @@ test('wizard proceeds through all steps and completes setup', function () {
     expect(strlen($test->get('recoveryKey')))->toBe(64);
 });
 
-test('goToStep does nothing for unknown step key', function () {
+test('goToStepByKey does nothing for unknown step key', function () {
     Livewire::test(SetupWizard::class)
-        ->call('goToStep', 'nonexistent')
+        ->call('goToStepByKey', 'nonexistent')
         ->assertSet('currentStep', 1);
 });
 
-test('goToStep allows moving to completed step', function () {
+test('goToStepByKey allows moving to completed step', function () {
     Livewire::test(SetupWizard::class)
         ->assertSet('currentStep', 1)
-        ->call('goToStep', 'welcome')
+        ->call('goToStepByKey', 'welcome')
         ->assertSet('currentStep', 1);
 });
