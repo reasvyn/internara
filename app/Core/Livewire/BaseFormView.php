@@ -6,7 +6,6 @@ namespace App\Core\Livewire;
 
 use App\Core\Exceptions\RejectedException;
 use Livewire\Component;
-use Livewire\WithFileUploads;
 
 /**
  * Base class for full-page or multi-tab form components.
@@ -16,18 +15,16 @@ use Livewire\WithFileUploads;
  * visible — there is no show/hide modal toggle.
  *
  * Provides:
- * - File upload support via WithFileUploads
  * - Dirty state tracking (form modified indicator)
- * - Confirmation prompt for unsaved changes
- * - RejectedException handling pattern
+ * - RejectedException handling pattern (handleSave)
  * - Flash message helpers
+ *
+ * Does NOT include WithFileUploads — add it in subclasses that need it.
  *
  * Examples: ProfileEditor, SystemSetting, SchoolEditor
  */
 abstract class BaseFormView extends Component
 {
-    use WithFileUploads;
-
     /** @var bool Whether the form has unsaved changes */
     public bool $isDirty = false;
 

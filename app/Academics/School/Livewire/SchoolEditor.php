@@ -6,12 +6,12 @@ namespace App\Academics\School\Livewire;
 
 use App\Academics\School\Actions\SaveSchoolProfileAction;
 use App\Academics\School\Livewire\Forms\SchoolForm;
+use App\Core\Livewire\BaseFormView;
 use App\Settings\Models\Setting;
 use Illuminate\View\View;
-use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class SchoolEditor extends Component
+class SchoolEditor extends BaseFormView
 {
     use WithFileUploads;
 
@@ -36,10 +36,7 @@ class SchoolEditor extends Component
         $this->authorize('update', Setting::class);
         $this->validate();
 
-        $action->execute(
-            data: $this->form->toPayload(),
-            logoFile: $this->logo_file,
-        );
+        $action->execute(data: $this->form->toPayload(), logoFile: $this->logo_file);
 
         if ($this->logo_file) {
             $this->logoPreviewUrl = $this->getLogoUrl();

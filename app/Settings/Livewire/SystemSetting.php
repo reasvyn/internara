@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Settings\Livewire;
 
 use App\Academics\AcademicYear\Actions\ActivateAcademicYearAction;
+use App\Core\Livewire\BaseFormView;
 use App\Settings\Actions\ReadAcademicYearAction;
 use App\Settings\Actions\SaveSystemSettingsAction;
 use App\Settings\Actions\TestMailSettingsAction;
 use App\Settings\Branding\Actions\RemoveBrandAssetAction;
 use App\Settings\Actions\SetSettingAction;
-use App\Settings\Branding\Actions\UploadBrandAssetAction;
 use App\Settings\Services\Settings;
+use App\Settings\Branding\Actions\UploadBrandAssetAction;
 use App\Settings\Branding\Livewire\Forms\BrandingForm;
 use App\Settings\Data\SystemSettingsData;
 use App\Settings\Livewire\Forms\GeneralSettingsForm;
@@ -23,10 +24,9 @@ use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class SystemSetting extends Component
+class SystemSetting extends BaseFormView
 {
     use WithFileUploads;
 
