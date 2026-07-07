@@ -13,7 +13,7 @@ use App\Enrollment\Registration\Models\Registration;
 use App\User\Models\User;
 use App\User\Profile\Models\Profile;
 
-class ApproveAccountApplicationAction extends BaseCommandAction
+final class ApproveAccountApplicationAction extends BaseCommandAction
 {
     public function execute(string $applicationId, User $admin): Registration
     {

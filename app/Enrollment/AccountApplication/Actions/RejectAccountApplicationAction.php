@@ -11,7 +11,7 @@ use App\Enrollment\AccountApplication\Events\AccountApplicationRejected;
 use App\Enrollment\AccountApplication\Models\AccountApplication;
 use App\User\Models\User;
 
-class RejectAccountApplicationAction extends BaseCommandAction
+final class RejectAccountApplicationAction extends BaseCommandAction
 {
     public function execute(string $applicationId, User $admin, string $reason): void
     {

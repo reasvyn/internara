@@ -8,7 +8,7 @@ use App\Core\Actions\BaseCommandAction;
 use App\Core\Exceptions\RejectedException;
 use Illuminate\Support\Facades\File;
 
-class SaveRecoveryKeyAction extends BaseCommandAction
+final class SaveRecoveryKeyAction extends BaseCommandAction
 {
     public function execute(string $plaintext): string
     {

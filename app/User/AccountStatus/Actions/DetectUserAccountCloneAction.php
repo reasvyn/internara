@@ -9,7 +9,7 @@ use App\Core\Services\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Support\Collection;
 
-class DetectUserAccountCloneAction extends BaseReadAction
+final class DetectUserAccountCloneAction extends BaseReadAction
 {
     public function execute(): Collection
     {
