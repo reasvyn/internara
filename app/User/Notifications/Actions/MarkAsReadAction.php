@@ -19,20 +19,22 @@ final class MarkAsReadAction extends BaseCommandAction
 {
     public function execute(Notification $notification): Notification
     {
-        if (! $notification->is_read) {
-            $notification->update([
-                'is_read' => true,
-                'read_at' => now(),
+        return $this->transaction(function () use ($notification) {
+            if (!$notification->is_read) {
+                $notification->update([
+                    'is_read' => true,
+                    'read_at' => now(),
+                ]);
+            }
+
+            event(new NotificationRead($notification));
+
+            $this->log('notification_marked_read', $notification, [
+                'notification_id' => $notification->id,
+                'user_id' => $notification->user_id,
             ]);
-        }
 
-        Event::dispatch(new NotificationRead($notification));
-
-        $this->log('notification_marked_read', $notification, [
-            'notification_id' => $notification->id,
-            'user_id' => $notification->user_id,
-        ]);
-
-        return $notification->fresh();
+            return $notification->fresh();
+        });
     }
 }
