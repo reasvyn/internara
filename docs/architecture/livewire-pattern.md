@@ -1,7 +1,9 @@
 # Livewire Component Patterns — Thin Components, Injection & Forms
 
-> **Last updated:** 2026-06-13 **Changes:** sync — update confirmation dialog pattern to reference
-> shared <x-core::ui.confirm> component
+> **Last updated:** 2026-07-05
+>
+> **Changes:** sync — add BaseRecordEntry and BaseRecordList component hierarchy; update
+> BaseRecordManager to clarify sysadmin scope
 
 ## Description
 
@@ -126,12 +128,45 @@ php artisan cache:forget {cache-key}
 
 ---
 
-## 4. BaseRecordManager Pattern (CRUD Tables)
+## 4. Component Hierarchy
 
-All CRUD table components extend `BaseRecordManager`. This base class provides search, filter,
-sorting, pagination, selection, and bulk/mass actions out of the box.
+Livewire components in Internara follow a three-tier hierarchy based on access level and
+responsibility:
 
-### Abstract Contract
+```
+Component (Livewire\Component)
+├── BaseRecordManager (sysadmin full CRUD)
+│     • Search, sort, filter, paginate
+│     • Record selection + bulk/mass actions
+│     • Used by: UserManager, InternshipManager, CompanyManager
+│
+├── BaseRecordEntry (user-facing limited CRUD)
+│     • Form modal for create/edit individual records
+│     • File upload support via WithFileUploads
+│     • RejectedException handling
+│     • No table management or bulk actions
+│     • Used by: LogbookEntry, AbsenceRequestForm, SubmitAssignment
+│
+└── BaseRecordList (read-only list)
+      • Paginated, searchable record display
+      • No mutations, no selection, no bulk actions
+      • Used by: student logbook view, certificate list
+```
+
+---
+
+### 4.1 BaseRecordManager — Sysadmin Full CRUD
+
+All sysadmin CRUD table components extend `BaseRecordManager`. This base class provides search,
+filter, sorting, pagination, selection, and bulk/mass actions out of the box. It is the most
+feature-rich base class, intended for admin/super-admin interfaces.
+
+**Use when:** The user needs full control over records — search, filter, sort, select, bulk delete,
+export, mass update.
+
+**Examples:** `UserManager`, `AdminManager`, `InternshipManager`, `CompanyManager`
+
+#### Abstract Contract
 
 Subclasses must implement two methods:
 
@@ -140,7 +175,7 @@ abstract public function headers(): array;
 abstract protected function query(): Builder;
 ```
 
-### Built-in State & Methods
+#### Built-in State & Methods
 
 | Property / Method                     | Purpose                                                                        |
 | ------------------------------------- | ------------------------------------------------------------------------------ |
@@ -152,7 +187,7 @@ abstract protected function query(): Builder;
 | `performBulkAction(string, callable)` | Iterates selected IDs with optional transaction                                |
 | `performMassAction(string, callable)` | Applies callback to entire filtered query                                      |
 
-### Override Points
+#### Override Points
 
 ```php
 protected function perPageOptions(): array        // Custom page size options
@@ -160,6 +195,90 @@ protected function applySearch(Builder): Builder  // Custom search logic
 protected function applyFilters(Builder): Builder // Custom filter logic
 protected function applySorting(Builder): Builder // Custom sort logic (rare)
 ```
+
+---
+
+### 4.2 BaseRecordEntry — User-Facing Limited CRUD
+
+Base class for components where users create or edit individual records through a form modal. Unlike
+`BaseRecordManager`, there is no table management, record selection, or bulk actions.
+
+**Use when:** The user needs to create or edit records one at a time through a modal form, with no
+table management.
+
+**Examples:** `LogbookEntry` (student writing journal entries), `AbsenceRequestForm`,
+`SubmitAssignment`
+
+#### Built-in State
+
+| Property     | Type      | Purpose                                       |
+| ------------ | --------- | --------------------------------------------- |
+| `$showModal` | `bool`    | Whether the form modal is visible             |
+| `$editingId` | `?string` | ID of the record being edited (null = create) |
+
+#### Methods
+
+| Method                            | Purpose                                           |
+| --------------------------------- | ------------------------------------------------- |
+| `create()`                        | Open modal for new record, reset form             |
+| `edit(string $id)`                | Open modal and populate fields from existing      |
+| `cancel()`                        | Close modal and reset form                        |
+| `handleError(callable $callback)` | Wrap Action calls with RejectedException handling |
+
+#### Override Points
+
+```php
+abstract public function edit(string $id): void;  // Populate form from model
+protected function resetForm(): void;              // Reset custom properties
+```
+
+#### Contract Rules
+
+- MUST extend `BaseRecordEntry`
+- MUST provide file uploads via `WithFileUploads` (included in base)
+- MUST use Actions for persistence (no inline `Model::create/update/delete`)
+- SHOULD use `$this->handleError()` to catch `RejectedException` from Actions
+- Modal should be rendered via `<x-mary-modal wire:model="showModal">`
+
+---
+
+### 4.3 BaseRecordList — Read-Only Record Display
+
+Base class for read-only list views where records are displayed for reference only — no mutations,
+no selection, no bulk actions.
+
+**Use when:** The user needs to view a paginated, searchable list of records with no editing
+capability.
+
+**Examples:** Student's view of their own submissions, certificate list, supervision logs
+
+#### Built-in State
+
+| Property   | Type     | Purpose                            |
+| ---------- | -------- | ---------------------------------- |
+| `$search`  | `string` | Search term; resets page on update |
+| `$perPage` | `int`    | Page size                          |
+
+#### Methods
+
+| Method   | Purpose                                            |
+| -------- | -------------------------------------------------- |
+| `rows()` | Returns `LengthAwarePaginator` with search applied |
+
+#### Override Points
+
+```php
+abstract protected function query(): Builder;         // Base query
+protected function applySearch(Builder): Builder       // Custom search logic
+protected function perPageOptions(): array             // Custom page sizes
+```
+
+#### Contract Rules
+
+- MUST extend `BaseRecordList`
+- MUST NOT call any mutation methods
+- MUST NOT include selection or bulk actions
+- MUST **NOT** be used for admin interfaces (use `BaseRecordManager` instead)
 
 ---
 
