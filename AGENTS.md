@@ -149,8 +149,23 @@ These rules MUST NEVER be violated. If you find existing code that violates them
 Every task follows four phases. Loop until DECIDE resolves to **Accept** or **Escalate**.
 
 ```
-CONSTRUCT → EVALUATE → VERIFY → DECIDE
+SCOPE → CONSTRUCT → EVALUATE → VERIFY → DECIDE
 ```
+
+### 0. SCOPE — Define & Cross-check (Mandatory, Never Skip)
+
+Before any action, regardless of prior knowledge:
+
+- **Define scope** — what exactly needs to be done? Which modules, files, and layers are affected?
+- **Define purpose** — why is this change needed? What outcome is expected?
+- **Cross-check applicable rules** — re-read the specific docs, patterns, and conventions that apply
+  to this task. Do NOT rely solely on memory. Verify AGENTS.md invariants, architecture.md rules,
+  and the relevant pattern docs BEFORE writing any code or creating any issue.
+- **Identify risks** — what could go wrong? Are there dependencies, breaking changes, or existing
+  patterns that must not be violated?
+- State the scope + rules check explicitly in your response before proceeding.
+
+This step is **mandatory and non-negotiable** for every task, even for experienced agents.
 
 ### 1. CONSTRUCT — Build with Context
 
