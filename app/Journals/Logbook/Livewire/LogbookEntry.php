@@ -10,11 +10,12 @@ use App\Journals\Logbook\Models\Logbook;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 class LogbookEntry extends BaseRecordEntry
 {
-    use WithPagination;
+    use WithFileUploads, WithPagination;
 
     public ?string $journalId = null;
 

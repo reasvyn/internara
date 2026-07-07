@@ -6,7 +6,6 @@ namespace App\Core\Livewire;
 
 use App\Core\Exceptions\RejectedException;
 use Livewire\Component;
-use Livewire\WithFileUploads;
 
 /**
  * Base class for user-facing CRUD components with form modals.
@@ -18,16 +17,15 @@ use Livewire\WithFileUploads;
  * Provides:
  * - Modal state management (show/hide, reset on open)
  * - Form validation and error handling
- * - File upload support via WithFileUploads
+ * - RejectedException handling pattern (handleError)
  * - Flash message helpers
- * - RejectedException handling pattern
  *
- * Examples: LogbookEntry, AbsenceRequestForm, SubmitAssignment
+ * Does NOT include WithFileUploads — add it in subclasses that need it.
+ *
+ * Examples: LogbookEntry
  */
 abstract class BaseRecordEntry extends Component
 {
-    use WithFileUploads;
-
     /** @var bool Whether the form modal is visible */
     public bool $showModal = false;
 

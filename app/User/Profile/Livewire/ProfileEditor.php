@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\User\Profile\Livewire;
 
 use App\Auth\Password\Actions\UpdateUserPasswordAction;
+use App\Core\Livewire\BaseFormView;
 use App\User\Models\User;
 use App\User\Profile\Actions\ReadProfileFormAction;
 use App\User\Profile\Actions\UpdateProfileAction;
@@ -15,11 +16,10 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
 use Livewire\WithFileUploads;
 
 #[Layout('core::layouts.app')]
-class ProfileEditor extends Component
+class ProfileEditor extends BaseFormView
 {
     use WithFileUploads;
 
@@ -103,7 +103,7 @@ class ProfileEditor extends Component
         $this->authorize('update', $this->user);
 
         $rules = [
-            'profileForm.email' => 'required|email|unique:users,email,'.$this->user->id,
+            'profileForm.email' => 'required|email|unique:users,email,' . $this->user->id,
             'profileForm.phone' => 'nullable|string|max:20',
             'profileForm.address' => 'nullable|string|max:500',
             'profileForm.bio' => 'nullable|string|max:1000',
@@ -115,7 +115,7 @@ class ProfileEditor extends Component
 
         if ($this->canChangeUsername) {
             $rules['profileForm.username'] =
-                'required|string|alpha_num|lowercase|max:50|unique:users,username,'.
+                'required|string|alpha_num|lowercase|max:50|unique:users,username,' .
                 $this->user->id;
         }
 
@@ -189,7 +189,7 @@ class ProfileEditor extends Component
 
     protected function passwordThrottleKey(): string
     {
-        return Str::transliterate('change-password|'.$this->user->id.'|'.request()->ip());
+        return Str::transliterate('change-password|' . $this->user->id . '|' . request()->ip());
     }
 
     public function avatarPreviewUrl(): ?string
