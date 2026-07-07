@@ -10,6 +10,8 @@ use App\Core\Services\SmartLogger;
 use App\User\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class ResetPasswordAction extends BaseCommandAction
 {
@@ -19,6 +21,21 @@ class ResetPasswordAction extends BaseCommandAction
         string $password,
         string $passwordConfirmation,
     ): bool {
+        $throttleKey = 'reset-password:' . Str::lower($email) . '|' . request()->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            $this->log('password_reset_throttled', null, [
+                'email' => $email,
+                'seconds' => $seconds,
+            ]);
+
+            throw new RejectedException(__('auth.throttle', ['seconds' => $seconds]));
+        }
+
+        RateLimiter::hit($throttleKey, 300);
+
         if ($password !== $passwordConfirmation) {
             SmartLogger::info('password_reset_confirmation_mismatch')
                 ->event('password_reset_confirmation_mismatch')

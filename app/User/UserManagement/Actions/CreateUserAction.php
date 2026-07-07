@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Actions;
 
+use App\Auth\AccessTokens\Models\AccessToken;
 use App\Core\Actions\BaseCommandAction;
 use App\User\Models\User;
 use App\User\Notifications\WelcomeNotification;
@@ -11,6 +12,7 @@ use App\User\Rules\ReservedAuthoritativeName;
 use App\User\Rules\SystemUsername;
 use App\User\Services\UserIdentifierGenerator;
 use App\User\UserManagement\Events\UserCreated;
+use App\User\UserManagement\Notifications\ActivationCodeNotification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -26,16 +28,16 @@ final class CreateUserAction extends BaseCommandAction
             $userData['username'] ??
             UserIdentifierGenerator::generateUsername($userData['email'] ?? '');
         $plainPassword = $userData['password'] ?? str()->random(12);
-        $shouldSendWelcome = $sendNotification && ! isset($userData['password']);
+        $shouldSendWelcome = $sendNotification && !isset($userData['password']);
 
         Validator::make($userData, [
-            'name' => ['required', 'string', 'max:255', new ReservedAuthoritativeName],
+            'name' => ['required', 'string', 'max:255', new ReservedAuthoritativeName()],
             'username' => [
                 'required',
                 'string',
                 'unique:users,username',
-                new SystemUsername,
-                new ReservedAuthoritativeName,
+                new SystemUsername(),
+                new ReservedAuthoritativeName(),
             ],
             'email' => ['required', 'email', 'unique:users,email'],
         ])->validate();
@@ -54,11 +56,11 @@ final class CreateUserAction extends BaseCommandAction
                 'setup_required' => $userData['setup_required'] ?? false,
             ]);
 
-            if (! empty($profileData)) {
+            if (!empty($profileData)) {
                 $user->profile()->create($profileData);
             }
 
-            if (! empty($roles)) {
+            if (!empty($roles)) {
                 $user->syncRoles($roles);
             }
 
@@ -72,14 +74,28 @@ final class CreateUserAction extends BaseCommandAction
             return $user;
         });
 
-        if ($shouldSendWelcome && $user->email) {
+        if ($user->email) {
             try {
-                $user->notify(new WelcomeNotification($plainPassword));
+                $token = AccessToken::generateFor($user, 'activation', [
+                    'name' => 'Account Activation',
+                ]);
+                $user->notify(new ActivationCodeNotification($user, $token['plain_text']));
             } catch (\Throwable) {
-                $this->log('welcome_notification_failed', $user, [
+                $this->log('activation_notification_failed', $user, [
                     'user_id' => $user->id,
                     'email' => $user->email,
                 ]);
+            }
+
+            if ($shouldSendWelcome) {
+                try {
+                    $user->notify(new WelcomeNotification($plainPassword));
+                } catch (\Throwable) {
+                    $this->log('welcome_notification_failed', $user, [
+                        'user_id' => $user->id,
+                        'email' => $user->email,
+                    ]);
+                }
             }
         }
 
