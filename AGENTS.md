@@ -182,6 +182,10 @@ This step is **mandatory and non-negotiable** for every task, even for experienc
 
 ### 3. VERIFY — Confirm It Works
 
+> **⚠️ Efficiency rule:** Batch ALL changes first, then run tests ONCE at the end. Do NOT run tests
+> after every individual change — test suite is memory-intensive (~2GB+). Only run when you are ready
+> to verify the complete set of changes.
+
 ```bash
 php artisan test --compact --filter={TestName}
 vendor/bin/pint --dirty --format agent
