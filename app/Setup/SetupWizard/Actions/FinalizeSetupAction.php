@@ -7,6 +7,7 @@ namespace App\Setup\SetupWizard\Actions;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Exceptions\RejectedException;
+use Illuminate\Support\Facades\Cache;
 use App\Settings\Actions\BatchSetSettingAction;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Events\SetupFinalized;
@@ -87,6 +88,8 @@ final class FinalizeSetupAction extends BaseCommandAction
                 'adminId' => $admin->id,
             ];
         });
+
+        Cache::forget(config('cache-keys.setup_installed'));
 
         $this->sendNotification->execute(
             userId: $result['adminId'],
