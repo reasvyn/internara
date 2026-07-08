@@ -188,7 +188,7 @@ return [
 
     'wizard' => [
         'title' => 'Setup',
-        'page_title' => ':step | Instalasi',
+        'page_title' => ':step - Instalasi',
         'requirements' => 'Persyaratan',
         'permissions' => 'Izin',
         'database' => 'Database',

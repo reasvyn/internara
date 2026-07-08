@@ -182,7 +182,7 @@ return [
 
     'wizard' => [
         'title' => 'Setup',
-        'page_title' => ':step | Setup',
+        'page_title' => ':step - Setup',
         'requirements' => 'Requirements',
         'permissions' => 'Permissions',
         'database' => 'Database',
