@@ -70,6 +70,8 @@ return [
     'health.check.failed' => 'System health check detected issues.',
     'health_failed' => 'System health check detected issues.',
     'setup_route_accessed_without_token' => 'Setup route was accessed without a valid setup token.',
+    'setup_token_generated' => 'A new setup token has been generated.',
+    'setup_token_validated' => 'Setup token has been validated successfully.',
     'setup_token_invalid_attempt' => 'An invalid setup token was provided.',
     'token.missing' => 'Setup route was accessed without a setup token.',
     'token.validation_failed' => 'An attempt was made with an invalid or expired setup token.',

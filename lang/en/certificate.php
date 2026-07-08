@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 return [
+    'status' => [
+        'issued' => 'Issued',
+        'revoked' => 'Revoked',
+    ],
     'title' => 'Certificates',
     'subtitle' => 'Manage certificate templates and issue completion certificates',
     'add_template' => 'Add Template',

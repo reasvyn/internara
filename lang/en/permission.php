@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 return [
     'role' => [
+        'superadmin' => 'Super Administrator',
         'super_admin' => 'Super Administrator',
         'admin' => 'Administrator',
         'teacher' => 'Teacher',
