@@ -105,17 +105,15 @@ return [
     ],
 
     'notifications' => [
-        'credential_changed_subject' => 'Your Account Credentials Have Been Changed',
-        'credential_changed_greeting' => 'Hello :name!',
+        'credential_changed_subject' => 'Security Notice: Account Credential Updated',
+        'credential_changed_greeting' => 'Dear :name,',
         'password_changed_line' =>
-            'Your password has been changed. If you did not make this change, please contact support immediately.',
+            'Your password has been updated successfully. If you did not make this change, please contact your system administrator immediately.',
         'email_changed_line' =>
-            'Your email address has been changed from :old_value to :new_value. If you did not authorize this, please contact support immediately.',
+            'Your email address has been updated. If you did not authorize this change, please contact your system administrator immediately.',
         'username_changed_line' =>
-            'Your username has been changed. If you did not make this change, please contact support immediately.',
-        'old_value' => 'Previous value: :value',
-        'new_value' => 'New value: :value',
+            'Your username has been updated. If you did not make this change, please contact your system administrator immediately.',
         'credential_changed_warning' =>
-            'If you did not request these changes, please contact :support_email immediately.',
+            'For security concerns, please contact :support_email immediately.',
     ],
 ];
