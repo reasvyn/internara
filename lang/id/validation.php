@@ -234,7 +234,7 @@ return [
             'Kunci pengaturan harus berupa huruf kecil alfanumerik dengan garis bawah atau titik. Mendapatkan: :value.',
         'roles_required' => 'Setidaknya satu peran harus ditentukan.',
         'roles_invalid' => 'Peran yang dipilih :value tidak valid.',
-        'failed' => 'Validasi gagal.',
-        'failed_hint' => 'Silakan periksa input Anda dan coba lagi.',
     ],
+    'failed' => 'Validasi gagal.',
+    'failed_hint' => 'Silakan periksa input Anda dan coba lagi.',
 ];
