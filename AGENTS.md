@@ -250,7 +250,9 @@ vendor/bin/phpstan analyse --no-progress
 ## SDLC Phase Map
 
 Load the relevant skill when working in each phase. Always load **`context-awareness`** first on
-every session.
+every session. You MUST proactively load the matching skill for each task even if not explicitly
+told — do not proceed without it. Skills are listed per phase below; if your task spans multiple
+phases, load all matching skills.
 
 | Phase                    | Skills                                                                                                                                           |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
