@@ -22,7 +22,7 @@ final class Brand
 
     public static function name(): string
     {
-        return self::resolveValue('name', AppInfo::name());
+        return self::resolveValue(['brand_name', 'name'], AppInfo::name());
     }
 
     public static function title(): string
