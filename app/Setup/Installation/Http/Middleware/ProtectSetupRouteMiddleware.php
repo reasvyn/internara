@@ -128,6 +128,7 @@ class ProtectSetupRouteMiddleware
             return response()->view(
                 'setup.enter-code',
                 [
+                    'title' => __('setup.code_entry.title'),
                     'error' => __('setup.rate_limited', ['seconds' => $seconds]),
                     'errors' => session()->get('errors') ?? new ViewErrorBag,
                 ],
@@ -146,6 +147,7 @@ class ProtectSetupRouteMiddleware
         }
 
         return response()->view('setup.enter-code', [
+            'title' => __('setup.code_entry.title'),
             'errors' => session()->get('errors') ?? new ViewErrorBag,
         ]);
     }
