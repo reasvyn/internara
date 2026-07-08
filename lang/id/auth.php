@@ -114,6 +114,8 @@ return [
         'username_changed_line' =>
             'Nama pengguna Anda telah diperbarui. Jika Anda tidak melakukan perubahan ini, segera hubungi administrator sistem Anda.',
         'credential_changed_warning' =>
-            'Untuk masalah keamanan, hubungi :support_email segera.',
+            'Jika Anda tidak melakukan perubahan ini, segera hubungi administrator sistem Anda.',
+        'credential_changed_warning_with_email' =>
+            'Jika Anda tidak melakukan perubahan ini, hubungi administrator sistem Anda di :support_email.',
     ],
 ];
