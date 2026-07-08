@@ -4,7 +4,7 @@
         <div class="flex items-center justify-between mb-2">
             <h1 class="text-2xl font-bold tracking-tight">{{ __('setup.wizard.title') }}</h1>
             <span class="text-xs font-medium text-base-content/50" aria-live="polite">
-                {{ __('setup.wizard.step_of', ['current' => $currentStep]) }}
+                {{ __('setup.wizard.step_of', ['current' => $currentStep, 'total' => count($stepKeys)]) }}
                 &middot; {{ $appName }} v{{ $appVersion }}
             </span>
         </div>

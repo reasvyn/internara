@@ -1,8 +1,8 @@
 <div class="p-8 sm:p-12 text-center"
-    x-data="{ seconds: 59 }"
+    x-data="{ seconds: 19 }"
     x-init="
         let timer = setInterval(() => { if (seconds > 0) seconds--; }, 1000);
-        setTimeout(() => { window.location.href = @js(route('login')); }, 60000);
+        setTimeout(() => { window.location.href = @js(route('login')); }, 20000);
     "
 >
     <div class="inline-flex items-center justify-center size-16 rounded-full bg-primary/10 text-primary mb-6">
