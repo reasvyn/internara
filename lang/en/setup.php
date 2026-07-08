@@ -251,6 +251,8 @@ return [
         'ready_desc' =>
             'The system is ready to manage your internship programs. You can now log in with your administrator account.',
         'go_to_login' => 'Go to Login Page',
+        'installing_title' => 'Setting Up Your System',
+        'installing_desc' => 'Please wait while we configure your school, department, and administrator account.',
         'data_verified' => 'I declare that the data entered is correct',
         'data_verified_long' =>
             'Double-check all information before proceeding. This action cannot be undone.',

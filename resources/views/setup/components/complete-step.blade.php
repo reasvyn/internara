@@ -5,9 +5,18 @@
         setTimeout(() => { window.location.href = @js(route('login')); }, 20000);
     "
 >
-    <div class="inline-flex items-center justify-center size-16 rounded-full bg-primary/10 text-primary mb-6">
-        <x-mary-icon name="o-check" class="size-8" />
+    <div
+        class="inline-flex items-center justify-center size-16 rounded-full bg-primary/10 text-primary mb-6"
+        x-init="$el.querySelector('svg').style.animation = 'scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both'"
+    >
+        <x-mary-icon name="o-check" class="size-8" style="opacity: 0" />
     </div>
+
+    @push('styles')
+    <style>
+        @keyframes scaleIn { 0% { opacity: 0; transform: scale(0); } 100% { opacity: 1; transform: scale(1); } }
+    </style>
+    @endpush
 
     <h2 class="text-2xl font-bold mb-3">{{ __('setup.wizard.setup_complete') }}</h2>
     <p class="text-sm text-base-content/60 max-w-md mx-auto mb-10">
