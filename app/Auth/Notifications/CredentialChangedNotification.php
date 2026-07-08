@@ -22,16 +22,25 @@ final class CredentialChangedNotification extends Notification
 
     public function toMail(User $notifiable): MailMessage
     {
-        return (new MailMessage)
+        $supportEmail = Settings::get('support_email', '');
+
+        $message = (new MailMessage)
             ->subject(__('auth.notifications.credential_changed_subject'))
             ->greeting(
                 __('auth.notifications.credential_changed_greeting', ['name' => $notifiable->name]),
             )
-            ->line(__("auth.notifications.{$this->changeType}_changed_line"))
-            ->line(
-                __('auth.notifications.credential_changed_warning', [
-                    'support_email' => Settings::get('support_email', config('mail.from.address')),
+            ->line(__("auth.notifications.{$this->changeType}_changed_line"));
+
+        if ($supportEmail !== '') {
+            $message->line(
+                __('auth.notifications.credential_changed_warning_with_email', [
+                    'support_email' => $supportEmail,
                 ]),
             );
+        } else {
+            $message->line(__('auth.notifications.credential_changed_warning'));
+        }
+
+        return $message;
     }
 }

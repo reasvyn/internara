@@ -114,6 +114,8 @@ return [
         'username_changed_line' =>
             'Your username has been updated. If you did not make this change, please contact your system administrator immediately.',
         'credential_changed_warning' =>
-            'For security concerns, please contact :support_email immediately.',
+            'If you did not make this change, please contact your system administrator immediately.',
+        'credential_changed_warning_with_email' =>
+            'If you did not make this change, please contact your system administrator at :support_email.',
     ],
 ];
