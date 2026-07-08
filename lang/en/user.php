@@ -217,6 +217,10 @@ return [
 
     'home' => [
         'page_title' => 'Home',
+        'hero_desc' => 'A comprehensive platform for managing professional internship programs — from registration to certification.',
+        'hero_secure' => 'Enterprise Secure',
+        'hero_academic' => 'Academic Focused',
+        'hero_global' => 'Industry Ready',
         'registration_title' => 'Register for PKL',
         'registration_desc' => 'Register your internship program directly through our online system. Fast, easy, and fully integrated.',
         'registration_open' => 'Registration is open',
@@ -232,6 +236,7 @@ return [
         'login_title' => 'Already have an account?',
         'login_desc' => 'Sign in to access your dashboard, track progress, and manage your internship activities.',
         'login_action' => 'Sign In',
+        'no_account' => 'Don\'t have an account? Contact your school administrator.',
     ],
 
     'user_management' => [

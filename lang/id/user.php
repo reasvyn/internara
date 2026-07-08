@@ -217,6 +217,10 @@ return [
 
     'home' => [
         'page_title' => 'Beranda',
+        'hero_desc' => 'Platform komprehensif untuk mengelola program magang profesional — dari pendaftaran hingga sertifikasi.',
+        'hero_secure' => 'Keamanan Enterprise',
+        'hero_academic' => 'Fokus Akademik',
+        'hero_global' => 'Siap Industri',
         'registration_title' => 'Daftar PKL',
         'registration_desc' => 'Daftarkan program PKL Anda langsung melalui sistem online kami. Cepat, mudah, dan terintegrasi penuh.',
         'registration_open' => 'Pendaftaran dibuka',
@@ -232,6 +236,7 @@ return [
         'login_title' => 'Sudah punya akun?',
         'login_desc' => 'Masuk untuk mengakses dasbor, melacak kemajuan, dan mengelola kegiatan PKL Anda.',
         'login_action' => 'Masuk',
+        'no_account' => 'Belum punya akun? Hubungi administrator sekolah Anda.',
     ],
 
     'user_management' => [
