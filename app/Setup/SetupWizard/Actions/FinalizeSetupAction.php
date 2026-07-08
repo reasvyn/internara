@@ -7,8 +7,9 @@ namespace App\Setup\SetupWizard\Actions;
 use App\Core\Actions\BaseCommandAction;
 use App\Core\Contracts\SendsNotifications;
 use App\Core\Exceptions\RejectedException;
-use Illuminate\Support\Facades\Cache;
+use App\Settings\Data\SettingEntryData;
 use App\Settings\Actions\BatchSetSettingAction;
+use Illuminate\Support\Facades\Cache;
 use App\Setup\Entities\SetupEntity;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\User\UserManagement\Actions\SaveRecoveryKeyAction;
@@ -64,15 +65,31 @@ final class FinalizeSetupAction extends BaseCommandAction
             $plaintext = Str::random($keyLength);
             $hashed = Hash::make($plaintext);
 
+            $schoolName = $schoolData['name'] ?? config('app.name', 'Internara');
+
             $this->batchSetSetting->execute(
-                ...SetupEntity::toSettingsEntries([
-                    'is_installed' => true,
-                    'completed_steps' => $completedSteps,
-                    'install_token' => null,
-                    'token_expires_at' => null,
-                    'install_recovery_key' => $hashed,
-                    'updated_at' => now()->toIso8601String(),
-                ]),
+                ...[
+                    ...SetupEntity::toSettingsEntries([
+                        'is_installed' => true,
+                        'completed_steps' => $completedSteps,
+                        'install_token' => null,
+                        'token_expires_at' => null,
+                        'install_recovery_key' => $hashed,
+                        'updated_at' => now()->toIso8601String(),
+                    ]),
+                    new SettingEntryData(
+                        key: 'brand_name',
+                        value: $schoolName,
+                        group: 'general',
+                        type: 'string',
+                    ),
+                    new SettingEntryData(
+                        key: 'site_title',
+                        value: "{$schoolName} - PKL Management",
+                        group: 'general',
+                        type: 'string',
+                    ),
+                ],
             );
 
             $this->dispatchEvent(
