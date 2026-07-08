@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enrollment\AccountApplication\Livewire;
 
+use App\Core\Livewire\BaseFormView;
 use App\Enrollment\AccountApplication\Actions\ApplyAccountAction;
 use App\Enrollment\AccountApplication\Livewire\Forms\AccountApplicationForm;
 use App\Enrollment\AccountApplication\Models\AccountApplication;
@@ -12,9 +13,8 @@ use App\Program\Internship\Models\Internship;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
-use Livewire\Component;
 
-class ApplyPage extends Component
+class ApplyPage extends BaseFormView
 {
     public AccountApplicationForm $form;
 
@@ -50,10 +50,11 @@ class ApplyPage extends Component
 
         $this->form->validate();
 
-        $action->execute($this->form->toArray());
-
-        flash()->success(__('registration.account_application.success'));
-        $this->form->reset();
+        $this->handleSave(function () use ($action) {
+            $action->execute($this->form->toArray());
+            flash()->success(__('registration.account_application.success'));
+            $this->form->reset();
+        });
     }
 
     public function render(): View

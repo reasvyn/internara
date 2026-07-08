@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Journals\AbsenceRequest\Livewire;
 
+use App\Core\Livewire\BaseFormView;
 use App\Journals\AbsenceRequest\Actions\SubmitAbsenceAction;
 use App\Journals\AbsenceRequest\Enums\AbsenceReasonType;
 use App\Journals\AbsenceRequest\Models\AbsenceRequest;
 use App\Journals\Attendance\Models\Attendance;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
 
-class AbsenceRequestForm extends Component
+class AbsenceRequestForm extends BaseFormView
 {
     public string $startDate = '';
 
@@ -47,14 +47,16 @@ class AbsenceRequestForm extends Component
             return;
         }
 
-        $action->execute(auth()->user(), $registration->id, [
-            'start_date' => $this->startDate,
-            'reason_type' => $this->reasonType,
-            'reason_description' => $this->reasonDescription,
-        ]);
+        $this->handleSave(function () use ($registration, $action) {
+            $action->execute(auth()->user(), $registration->id, [
+                'start_date' => $this->startDate,
+                'reason_type' => $this->reasonType,
+                'reason_description' => $this->reasonDescription,
+            ]);
 
-        $this->reset(['startDate', 'reasonType', 'reasonDescription']);
-        flash()->success('Absence request submitted successfully.');
+            $this->reset(['startDate', 'reasonType', 'reasonDescription']);
+            flash()->success('Absence request submitted successfully.');
+        });
     }
 
     #[Layout('core::layouts.app')]
