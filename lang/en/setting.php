@@ -23,6 +23,7 @@ return [
         'site_favicon' => 'Site Favicon',
         'default_locale' => 'Default Language',
         'active_academic_year' => 'Active Academic Year',
+        'support_email' => 'Technical Support Email',
 
         'mail_from_address' => 'Mail From Address',
         'mail_from_name' => 'Mail From Name',
@@ -43,6 +44,7 @@ return [
         'site_favicon' => 'Recommended: Square PNG or ICO, 32x32px. Used for browser tabs.',
         'color_scheme' => 'Customize brand colors and background across the entire interface.',
         'mail' => 'Configure SMTP settings for email notifications.',
+        'support_email' => 'Used as the contact address in security notifications sent to users.',
     ],
 
     'presets_title' => 'Preset Palettes',

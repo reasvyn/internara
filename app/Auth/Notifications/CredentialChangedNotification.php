@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Auth\Notifications;
 
+use App\Settings\Services\Settings;
 use App\User\Models\User;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -29,7 +30,7 @@ final class CredentialChangedNotification extends Notification
             ->line(__("auth.notifications.{$this->changeType}_changed_line"))
             ->line(
                 __('auth.notifications.credential_changed_warning', [
-                    'support_email' => config('mail.from.address'),
+                    'support_email' => Settings::get('support_email', config('mail.from.address')),
                 ]),
             );
     }

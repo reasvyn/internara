@@ -31,6 +31,7 @@ class SaveSystemSettingsAction extends BaseCommandAction
 
             $add('brand_name', $data->brandName);
             $add('site_title', $data->siteTitle);
+            $add('support_email', $data->supportEmail);
             $add('default_locale', $data->defaultLocale ?: Locale::DEFAULT_LOCALE);
             $add('active_academic_year', $data->activeAcademicYear);
             $add('primary_color', $data->primaryColor);

@@ -16,6 +16,8 @@ class GeneralSettingsForm extends Form
 
     public string $active_academic_year = '';
 
+    public string $support_email = '';
+
     protected function rules(): array
     {
         return [
@@ -23,6 +25,7 @@ class GeneralSettingsForm extends Form
             'site_title' => 'required|string|max:100',
             'default_locale' => 'required|in:id,en',
             'active_academic_year' => 'required|string|regex:/^\d{4}\/\d{4}$/',
+            'support_email' => 'nullable|email|max:100',
         ];
     }
 
@@ -33,6 +36,7 @@ class GeneralSettingsForm extends Form
             'site_title' => __('setting.fields.site_title'),
             'default_locale' => __('setting.fields.default_locale'),
             'active_academic_year' => __('setting.fields.active_academic_year'),
+            'support_email' => __('setting.fields.support_email'),
         ];
     }
 }
