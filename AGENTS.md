@@ -182,12 +182,53 @@ This step is **mandatory and non-negotiable** for every task, even for experienc
 
 ### 3. VERIFY — Confirm It Works
 
-> **⚠️ Efficiency rule:** Batch ALL changes first, then run tests ONCE at the end. Do NOT run tests
-> after every individual change — test suite is memory-intensive (~2GB+). Only run when you are ready
-> to verify the complete set of changes.
+> **⚠️ Efficiency rule:** Batch ALL changes first, then run verification ONCE at the end. Do NOT run
+> tests after every individual change — the full test suite is memory-intensive (~2GB+) and takes
+> 10+ minutes. Plan your verification strategy based on **what kind of change** you made:
+
+| Change Type | Verification Strategy | Rationale |
+|-------------|----------------------|-----------|
+| **Translation keys** (`lang/*.php`) | `php -l` on each file + `php artisan tinker --execute="echo __('key');"` | No logic change, just data. Full suite won't catch missing keys. |
+| **Config/docs/markdown** | Visual inspection, `php -l` if PHP. No tests needed. | Zero runtime impact. |
+| **Blade templates / CSS / JS** | Vite build check (`npm run build`), no PHP tests needed. | Frontend only. |
+| **Refactoring (rename, extract)** | Run targeted test: `php artisan test --compact --filter={TestSuite}` | High risk of regression — test the affected module. |
+| **New feature / business logic** | Full test suite ONCE after all changes are batched. | Highest risk — verify nothing broke elsewhere. |
+| **Dependency updates (composer/npm)** | `php artisan test --compact --testsuite=Feature` (covers integration). Skip if only lock file changed. | Composer updates rarely break unit tests; feature tests catch integration issues. |
+
+**To run targeted tests efficiently:**
 
 ```bash
-php artisan test --compact --filter={TestName}
+# By test suite (fastest for broad coverage)
+php artisan test --compact --testsuite=Feature
+
+# By directory or class
+php artisan test --compact --testsuite=Unit
+php artisan test --compact --filter={ClassName}
+
+# Multiple specific tests (use && to batch)
+php artisan test --compact --filter="ActionResponse|BaseFormRequest|LangChecker" \
+  && php artisan test --compact --filter="CertificateStatus"
+
+# Quick syntax + resolve check (for lang/config changes)
+php -l path/to/file.php
+php artisan tinker --execute="echo __('your.key');"
+php artisan system:health  # quick boot check
+```
+
+**When to NOT run the full test suite:**
+- Translation key additions only → lint + tinker resolve check is sufficient
+- Documentation updates only → no tests needed
+- Config changes (`config/*.php`) → no tests needed
+- Single-line fixes to well-understood code → targeted test by filter
+
+**When you MUST run the full test suite:**
+- After refactoring Actions, Models, or Services
+- After upgrading any Composer or NPM dependency
+- Before merging any PR that touches `app/` logic files
+
+Full suite command:
+```bash
+php artisan test --compact
 vendor/bin/pint --dirty --format agent
 vendor/bin/phpstan analyse --no-progress
 ```
