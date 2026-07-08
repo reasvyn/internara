@@ -27,7 +27,7 @@ final class Brand
 
     public static function title(): string
     {
-        return self::resolveValue('title', self::name());
+        return self::resolveValue(['site_title', 'title'], self::name());
     }
 
     public static function logo(): string
