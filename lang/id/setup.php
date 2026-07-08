@@ -257,6 +257,8 @@ return [
         'ready_desc' =>
             'Sistem siap untuk mengelola program magang Anda. Anda sekarang dapat login dengan akun administrator Anda.',
         'go_to_login' => 'Ke Halaman Login',
+        'installing_title' => 'Menyiapkan Sistem',
+        'installing_desc' => 'Harap tunggu sementara kami mengkonfigurasi sekolah, jurusan, dan akun administrator.',
         'data_verified' => 'Saya menyatakan bahwa data yang dimasukkan sudah benar',
         'data_verified_long' =>
             'Periksa kembali semua informasi sebelum melanjutkan. Tindakan ini tidak dapat dibatalkan.',

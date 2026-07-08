@@ -63,31 +63,61 @@
         </div>
     </div>
 
-    {{-- Step Content --}}
-    <div class="bg-base-100 border border-base-content/10 rounded-xl">
-        @if($currentStep === 1)
-            @include('setup.components.welcome-step', ['auditResults' => $audit, 'auditPassed' => $auditPassed])
-        @endif
+    {{-- Step Content with Transition --}}
+    <div class="bg-base-100 border border-base-content/10 rounded-xl relative"
+        x-data="{ loading: false }"
+        x-on:finishing.window="loading = true"
+        x-on:finished.window="loading = false"
+    >
+        <div
+            wire:key="step-{{ $currentStep }}"
+            x-transition:enter="transition-all duration-300 ease-out"
+            x-transition:enter-start="opacity-0 translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+        >
+            @if($currentStep === 1)
+                @include('setup.components.welcome-step', ['auditResults' => $audit, 'auditPassed' => $auditPassed])
+            @endif
 
-        @if($currentStep === 2)
-            @include('setup.components.admin-step')
-        @endif
+            @if($currentStep === 2)
+                @include('setup.components.admin-step')
+            @endif
 
-        @if($currentStep === 3)
-            @include('setup.components.school-step')
-        @endif
+            @if($currentStep === 3)
+                @include('setup.components.school-step')
+            @endif
 
-        @if($currentStep === 4)
-            @include('setup.components.department-step')
-        @endif
+            @if($currentStep === 4)
+                @include('setup.components.department-step')
+            @endif
 
-        @if($currentStep === 5)
-            @include('setup.components.finalize-step')
-        @endif
+            @if($currentStep === 5)
+                @include('setup.components.finalize-step')
+            @endif
 
-        @if($currentStep === 6)
-            @include('setup.components.complete-step')
-        @endif
+            @if($currentStep === 6)
+                @include('setup.components.complete-step')
+            @endif
+        </div>
+
+        {{-- Loading Overlay for Finalization --}}
+        <div
+            wire:loading wire:target="finish"
+            class="absolute inset-0 z-20 bg-base-100/90 backdrop-blur-sm rounded-xl flex items-center justify-center"
+        >
+            <div class="text-center p-8">
+                <div class="flex items-center justify-center mb-5">
+                    <div class="loading loading-spinner loading-lg text-primary"></div>
+                </div>
+                <h3 class="text-lg font-bold mb-2">{{ __('setup.wizard.installing_title') }}</h3>
+                <p class="text-sm text-base-content/50 max-w-xs mx-auto">{{ __('setup.wizard.installing_desc') }}</p>
+                <div class="flex items-center justify-center gap-1.5 mt-5">
+                    <span class="size-2 rounded-full bg-primary animate-bounce" style="animation-delay: 0s"></span>
+                    <span class="size-2 rounded-full bg-primary animate-bounce" style="animation-delay: 0.15s"></span>
+                    <span class="size-2 rounded-full bg-primary animate-bounce" style="animation-delay: 0.3s"></span>
+                </div>
+            </div>
+        </div>
     </div>
 
     @include('setup.components.setup-guide')
