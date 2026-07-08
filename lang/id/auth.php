@@ -105,17 +105,15 @@ return [
     ],
 
     'notifications' => [
-        'credential_changed_subject' => 'Kredensial Akun Anda Telah Diubah',
-        'credential_changed_greeting' => 'Halo :name!',
+        'credential_changed_subject' => 'Pemberitahuan Keamanan: Kredensial Akun Diperbarui',
+        'credential_changed_greeting' => 'Yth. :name,',
         'password_changed_line' =>
-            'Kata sandi Anda telah diubah. Jika Anda tidak melakukan perubahan ini, segera hubungi dukungan.',
+            'Kata sandi Anda telah berhasil diperbarui. Jika Anda tidak melakukan perubahan ini, segera hubungi administrator sistem Anda.',
         'email_changed_line' =>
-            'Alamat email Anda telah diubah dari :old_value menjadi :new_value. Jika Anda tidak menyetujui ini, segera hubungi dukungan.',
+            'Alamat email Anda telah diperbarui. Jika Anda tidak menyetujui perubahan ini, segera hubungi administrator sistem Anda.',
         'username_changed_line' =>
-            'Nama pengguna Anda telah diubah. Jika Anda tidak melakukan perubahan ini, segera hubungi dukungan.',
-        'old_value' => 'Nilai sebelumnya: :value',
-        'new_value' => 'Nilai baru: :value',
+            'Nama pengguna Anda telah diperbarui. Jika Anda tidak melakukan perubahan ini, segera hubungi administrator sistem Anda.',
         'credential_changed_warning' =>
-            'Jika Anda tidak meminta perubahan ini, hubungi :support_email segera.',
+            'Untuk masalah keamanan, hubungi :support_email segera.',
     ],
 ];

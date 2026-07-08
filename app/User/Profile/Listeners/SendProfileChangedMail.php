@@ -25,13 +25,7 @@ final class SendProfileChangedMail implements ShouldQueue
             $event->previousUsername !== null && $event->previousUsername !== $user->username;
 
         if ($emailChanged) {
-            $user->notify(
-                new CredentialChangedNotification(
-                    'email',
-                    oldValue: $event->previousEmail,
-                    newValue: $user->email,
-                ),
-            );
+            $user->notify(new CredentialChangedNotification('email'));
         }
 
         if ($usernameChanged) {
