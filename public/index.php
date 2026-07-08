@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Core\Support\AppIntegrity;
+use App\Core\Services\AppIntegrity;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 

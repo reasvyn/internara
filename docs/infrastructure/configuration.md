@@ -212,5 +212,5 @@ See [Branding](../foundation/branding.md) for details.
 - Settings model: `app/Settings/Models/Setting.php`
 - Settings resolver: `app/Settings/Support/Settings.php`
 - Brand resolver: `app/Settings/Support/Brand.php`
-- App info (composer.json): `app/Core/Support/AppInfo.php`
+- App info (composer.json): `app/Core/Services/AppInfo.php`
 - Infrastructure tiers: [Infrastructure](infrastructure.md)

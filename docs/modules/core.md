@@ -70,13 +70,13 @@ Core has no submodules. Code is organized by architectural layer:
   results).
 - **Enums/** — System-wide enums: `CsvRowResult` (row import status), `AuditCategory` (health
   categories), `AuditStatus` (pass/fail/warn). All implement `LabelEnum`.
-- **Support/SmartLogger.php** — Fluent dual-channel logger writing to system (debug) and activity
+- **Services/SmartLogger.php** — Fluent dual-channel logger writing to system (debug) and activity
   (immutable audit) channels with automatic PII masking, event dispatching, and translation
   resolution.
-- **Support/LangChecker.php** — Dev helper that warns on missing translation keys via SmartLogger.
-- **Support/AppInfo.php** — Static application metadata from `composer.json` with config fallback
+- **Services/LangChecker.php** — Dev helper that warns on missing translation keys via SmartLogger.
+- **Services/AppInfo.php** — Static application metadata from `composer.json` with config fallback
   (name, version, author, license, gitUrl). Powers `app_info()` global helper.
-- **Support/AppIntegrity.php** — Composer author verification, enforcing that the author name must
+- **Services/AppIntegrity.php** — Composer author verification, enforcing that the author name must
   be "Reas Vyn".
 - **Support/** — Concrete utilities: `Color` (hex manipulation, luminance, contrast, shade
   computation), `CsvHandler` (CSV parsing/generation with safe file handle management),
