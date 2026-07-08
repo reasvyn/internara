@@ -234,5 +234,7 @@ return [
             'The setting key must be lowercase alphanumeric with underscores or dots. Got: :value.',
         'roles_required' => 'At least one role must be specified.',
         'roles_invalid' => 'The selected role :value is invalid.',
+        'failed' => 'Validation failed.',
+        'failed_hint' => 'Please check your input and try again.',
     ],
 ];

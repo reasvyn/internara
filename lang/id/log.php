@@ -72,6 +72,8 @@ return [
     'health_failed' => 'Pemeriksaan kesehatan sistem mendeteksi masalah.',
     'setup_route_accessed_without_token' =>
         'Rute pengaturan diakses tanpa token pengaturan yang valid.',
+    'setup_token_generated' => 'Token pengaturan baru telah dibuat.',
+    'setup_token_validated' => 'Token pengaturan telah berhasil divalidasi.',
     'setup_token_invalid_attempt' => 'Token pengaturan yang tidak valid diberikan.',
     'token.missing' => 'Rute pengaturan diakses tanpa token pengaturan.',
     'token.validation_failed' =>

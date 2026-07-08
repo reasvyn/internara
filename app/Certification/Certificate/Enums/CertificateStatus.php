@@ -14,8 +14,8 @@ enum CertificateStatus: string implements StatusEnum
     public function label(): string
     {
         return match ($this) {
-            self::ISSUED => __('Issued'),
-            self::REVOKED => __('Revoked'),
+            self::ISSUED => __('certificate.status.issued'),
+            self::REVOKED => __('certificate.status.revoked'),
         };
     }
 

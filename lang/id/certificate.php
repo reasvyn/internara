@@ -3,6 +3,10 @@
 declare(strict_types=1);
 
 return [
+    'status' => [
+        'issued' => 'Diterbitkan',
+        'revoked' => 'Dicabut',
+    ],
     'title' => 'Sertifikat',
     'subtitle' => 'Kelola template sertifikat dan terbitkan sertifikat kelulusan',
     'add_template' => 'Tambah Template',
