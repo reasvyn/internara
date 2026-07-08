@@ -10,6 +10,7 @@ downstream:
   - medialibrary-development
   - pest-testing
   - pulse-development
+  - verify-and-testing
   - roadmap-planning
   - security-audit
   - sync-docs

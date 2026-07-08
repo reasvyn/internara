@@ -258,7 +258,7 @@ every session.
 | **ANALYSIS**             | `audit-protocol`, `security-audit`                                                                                                               |
 | **DESIGN / REFACTORING** | `code-refactoring`                                                                                                                               |
 | **IMPLEMENTATION**       | `feature-building`, `laravel-best-practices`, `livewire-development`, `pulse-development`, `medialibrary-development`, `tailwindcss-development` |
-| **TESTING**              | `pest-testing`                                                                                                                                   |
+| **TESTING**              | `verify-and-testing`, `pest-testing`                                                                                                             |
 | **MAINTENANCE**          | `sync-docs`                                                                                                                                      |
 
 ---
