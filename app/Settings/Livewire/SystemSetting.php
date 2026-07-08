@@ -67,6 +67,7 @@ class SystemSetting extends BaseFormView
             'active_academic_year',
             date('Y') . '/' . (date('Y') + 1),
         );
+        $this->generalForm->support_email = Settings::get('support_email', '');
 
         $this->brandingForm->primary_color = Settings::get('primary_color', $defaults['primary']);
         $this->brandingForm->secondary_color = Settings::get(
@@ -190,6 +191,7 @@ class SystemSetting extends BaseFormView
         $data = new SystemSettingsData(
             brandName: $this->generalForm->brand_name,
             siteTitle: $this->generalForm->site_title,
+            supportEmail: $this->generalForm->support_email,
             defaultLocale: $this->generalForm->default_locale,
             activeAcademicYear: $this->generalForm->active_academic_year,
             primaryColor: $this->brandingForm->primary_color,

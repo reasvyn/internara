@@ -41,6 +41,13 @@
                             wire:model="generalForm.active_academic_year"
                             :options="$this->academicYearOptions"
                         />
+                        <x-mary-input
+                            label="{{ __('setting.fields.support_email') }}"
+                            type="email"
+                            wire:model="generalForm.support_email"
+                            icon="o-lifebuoy"
+                            hint="{{ __('setting.hints.support_email') }}"
+                        />
                     </div>
                 </x-mary-card>
 

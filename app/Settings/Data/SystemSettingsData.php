@@ -20,6 +20,7 @@ final readonly class SystemSettingsData extends BaseData
         public string $baseColor = '',
         public ?UploadedFile $brandLogo = null,
         public ?UploadedFile $siteFavicon = null,
+        public string $supportEmail = '',
         public string $mailFromAddress = '',
         public string $mailFromName = '',
         public string $mailHost = '',

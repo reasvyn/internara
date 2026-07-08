@@ -23,6 +23,7 @@ return [
         'site_favicon' => 'Favicon Situs',
         'default_locale' => 'Bahasa Default',
         'active_academic_year' => 'Tahun Akademik Aktif',
+        'support_email' => 'Email Dukungan Teknis',
 
         'mail_from_address' => 'Alamat Pengirim Email',
         'mail_from_name' => 'Nama Pengirim Email',
@@ -43,6 +44,7 @@ return [
         'site_favicon' => 'Disarankan: PNG atau ICO persegi, 32x32px. Digunakan untuk tab browser.',
         'color_scheme' => 'Sesuaikan warna brand dan latar di seluruh antarmuka.',
         'mail' => 'Konfigurasi pengaturan SMTP untuk notifikasi email.',
+        'support_email' => 'Digunakan sebagai alamat kontak dalam notifikasi keamanan yang dikirim ke pengguna.',
     ],
 
     'presets_title' => 'Palet Prasetel',
