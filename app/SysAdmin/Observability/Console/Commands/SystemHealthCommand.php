@@ -46,7 +46,7 @@ class SystemHealthCommand extends Command
             $this->healthHeader();
             $this->table(
                 [__('setup.system.service'), __('setup.system.status'), __('setup.system.details')],
-                $results,
+                array_map(fn ($r) => [$r[0], $this->formatStatus($r[1]), $r[2]], $results),
             );
 
             $hasFailures = collect($results)->contains(fn ($r) => $r[1] === 'FAIL');
@@ -95,6 +95,16 @@ class SystemHealthCommand extends Command
         $this->components->twoColumnDetail(__('setup.system.time'), now()->toDateTimeString());
         $this->components->twoColumnDetail(__('setup.system.environment'), app()->environment());
         $this->newLine();
+    }
+
+    protected function formatStatus(string $status): string
+    {
+        return match ($status) {
+            'OK' => '<fg=green>OK</>',
+            'WARN' => '<fg=yellow>WARN</>',
+            'FAIL' => '<fg=red>FAIL</>',
+            default => $status,
+        };
     }
 
     protected function checkEnvironment(): array
