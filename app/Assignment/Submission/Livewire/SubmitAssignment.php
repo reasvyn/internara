@@ -8,12 +8,12 @@ use App\Assignment\Models\Assignment;
 use App\Assignment\Submission\Actions\SubmitAssignmentAction;
 use App\Assignment\Submission\Data\SubmitAssignmentData;
 use App\Assignment\Submission\Models\Submission;
+use App\Core\Livewire\BaseFormView;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class SubmitAssignment extends Component
+class SubmitAssignment extends BaseFormView
 {
     use WithFileUploads;
 
@@ -51,15 +51,17 @@ class SubmitAssignment extends Component
 
         $assignment = Assignment::findOrFail($this->assignmentId);
 
-        $action->execute(
-            student: Auth::user(),
-            assignment: $assignment,
-            data: new SubmitAssignmentData(content: $this->content),
-        );
+        $this->handleSave(function () use ($action, $assignment) {
+            $action->execute(
+                student: Auth::user(),
+                assignment: $assignment,
+                data: new SubmitAssignmentData(content: $this->content),
+            );
 
-        $this->reset(['content', 'file', 'assignmentId']);
-        $this->showDetail = false;
-        flash()->success('Assignment submitted successfully.');
+            $this->reset(['content', 'file', 'assignmentId']);
+            $this->showDetail = false;
+            flash()->success('Assignment submitted successfully.');
+        });
     }
 
     public function render(): View

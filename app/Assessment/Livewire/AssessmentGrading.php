@@ -9,13 +9,13 @@ use App\Assessment\Actions\FinalizeAssessmentAction;
 use App\Assessment\Actions\InitializeAssessmentAction;
 use App\Assessment\Actions\UpdateAssessmentScoresAction;
 use App\Assessment\Models\Assessment;
+use App\Core\Livewire\BaseFormView;
 use App\Enrollment\Registration\Models\Registration;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
-use Livewire\Component;
 
-class AssessmentGrading extends Component
+class AssessmentGrading extends BaseFormView
 {
     public string $registrationId = '';
 
@@ -189,13 +189,11 @@ class AssessmentGrading extends Component
             return;
         }
 
-        try {
+        $this->handleSave(function () use ($action, $assessment) {
             $action->execute($assessment, auth()->user());
             $this->isFinalized = true;
             flash()->success('Assessment finalized.');
-        } catch (\Throwable $e) {
-            flash()->error($e->getMessage());
-        }
+        });
 
         $this->showConfirm = false;
     }

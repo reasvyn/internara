@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Registration\Livewire;
 
+use App\Core\Livewire\BaseFormView;
 use App\Document\Models\Document;
 use App\Enrollment\Registration\Actions\UploadRegistrationDocumentAction;
 use App\Enrollment\Registration\Models\Registration;
@@ -11,10 +12,9 @@ use App\Enrollment\Registration\Models\RegistrationDocument;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\UploadedFile;
-use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class RegistrationDocumentUpload extends Component
+class RegistrationDocumentUpload extends BaseFormView
 {
     use AuthorizesRequests, WithFileUploads;
 
@@ -55,10 +55,11 @@ class RegistrationDocumentUpload extends Component
 
         $this->validate($rules);
 
-        $action->execute($this->registration, $this->uploads);
-
-        $this->uploads = [];
-        flash()->success(__('registration.document_upload.success'));
+        $this->handleSave(function () use ($action) {
+            $action->execute($this->registration, $this->uploads);
+            $this->uploads = [];
+            flash()->success(__('registration.document_upload.success'));
+        });
     }
 
     public function render(): View

@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Incident\IncidentReport\Livewire;
 
+use App\Core\Livewire\BaseFormView;
 use App\Enrollment\Registration\Models\Registration;
 use App\Incident\IncidentReport\Actions\ReportIncidentAction;
 use App\Incident\IncidentReport\Models\IncidentReport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
 
-class IncidentForm extends Component
+class IncidentForm extends BaseFormView
 {
     public array $formData = [
         'registration_id' => '',
@@ -51,12 +51,12 @@ class IncidentForm extends Component
             'formData.action_taken' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        $action->execute([...$this->formData, 'reported_by' => auth()->id()]);
-
-        flash()->success(__('incident.report_success'));
-
-        $this->reset('formData');
-        $this->formData['incident_date'] = now()->format('Y-m-d\TH:i');
+        $this->handleSave(function () use ($action) {
+            $action->execute([...$this->formData, 'reported_by' => auth()->id()]);
+            flash()->success(__('incident.report_success'));
+            $this->reset('formData');
+            $this->formData['incident_date'] = now()->format('Y-m-d\TH:i');
+        });
     }
 
     #[Layout('core::layouts.app')]

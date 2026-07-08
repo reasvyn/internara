@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Enrollment\Placement\Livewire;
 
+use App\Core\Livewire\BaseFormView;
 use App\Enrollment\Placement\Actions\RequestPlacementChangeAction;
 use App\Enrollment\Placement\Livewire\Forms\PlacementChangeForm;
 use App\Enrollment\Placement\Models\Placement;
@@ -13,9 +14,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Attributes\Layout;
-use Livewire\Component;
 
-class StudentPlacementChangeRequest extends Component
+class StudentPlacementChangeRequest extends BaseFormView
 {
     use AuthorizesRequests;
 
@@ -55,17 +55,19 @@ class StudentPlacementChangeRequest extends Component
 
         $registration = Registration::findOrFail($this->registrationId);
 
-        $action->execute($registration, [
-            'to_placement_id' => $this->form->to_placement_id,
-            'reason' => $this->form->reason,
-            'requested_by' => auth()->id(),
-        ]);
+        $this->handleSave(function () use ($registration, $action) {
+            $action->execute($registration, [
+                'to_placement_id' => $this->form->to_placement_id,
+                'reason' => $this->form->reason,
+                'requested_by' => auth()->id(),
+            ]);
 
-        flash()->success(__('placement_change.request_success'));
-        $this->pendingRequest = PlacementChangeRequest::where('registration_id', $registration->id)
-            ->where('status', 'pending')
-            ->first();
-        $this->form->reset();
+            flash()->success(__('placement_change.request_success'));
+            $this->pendingRequest = PlacementChangeRequest::where('registration_id', $registration->id)
+                ->where('status', 'pending')
+                ->first();
+            $this->form->reset();
+        });
     }
 
     #[Layout('core::layouts.app')]
