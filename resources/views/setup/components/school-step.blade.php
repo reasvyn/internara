@@ -11,6 +11,7 @@
                 placeholder="{{ __('setup.wizard.school_name_placeholder') }}"
                 wire:model.live.debounce.500ms="schoolForm.name"
                 icon="o-academic-cap"
+                autofocus
             />
         </div>
 
@@ -31,6 +32,7 @@
 
         <x-mary-input
             label="{{ __('setup.wizard.school_phone') }}"
+            type="tel"
             placeholder="{{ __('setup.wizard.school_phone_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.phone"
             icon="o-phone"
@@ -44,11 +46,11 @@
             icon="o-globe-alt"
         />
 
-        <x-mary-input
+        <x-mary-textarea
             label="{{ __('setup.wizard.school_address') }}"
             placeholder="{{ __('setup.wizard.school_address_placeholder') }}"
             wire:model.live.debounce.500ms="schoolForm.address"
-            icon="o-map-pin"
+            rows="3"
         />
 
         <x-mary-input

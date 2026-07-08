@@ -194,7 +194,7 @@ return [
         'database' => 'Database',
         'terminal' => 'Terminal',
         'recommendations' => 'Rekomendasi',
-        'step_of' => 'Langkah :current dari 7',
+        'step_of' => 'Langkah :current dari :total',
         'progress_label' => 'Progres Setup',
         'progress_aria' => 'Langkah :current dari :total',
         'welcome' => 'Selamat Datang di Internara',
@@ -234,6 +234,7 @@ return [
             'Username ini digenerate secara otomatis untuk keamanan dan bersifat permanen. Anda akan menggunakan ini untuk login ke sistem.',
         'password' => 'Password',
         'confirm_password' => 'Konfirmasi Password',
+        'password_hint' => 'Password minimal 8 karakter dengan huruf besar, huruf kecil, dan angka.',
 
         'department' => 'Jurusan Awal',
         'department_subtitle' => 'Spesialisasi Akademik',
@@ -243,15 +244,6 @@ return [
         'department_name_placeholder' => 'contoh: Rekayasa Perangkat Lunak',
         'department_description' => 'Deskripsi (Opsional)',
         'department_description_placeholder' => 'Keterangan singkat mengenai jurusan ini...',
-
-        'internship' => 'Batch Magang',
-        'internship_subtitle' => 'Konfigurasi Program Awal',
-        'program_name' => 'Nama Program Magang',
-        'program_name_placeholder' => 'misal: PKL Semester Ganjil 2026',
-        'program_description' => 'Deskripsi Program (Opsional)',
-        'program_description_placeholder' => 'Gambaran singkat mengenai tujuan program magang...',
-        'start_date' => 'Tanggal Mulai',
-        'end_date' => 'Tanggal Selesai',
 
         'finalize' => 'Finalisasi',
         'finalize_subtitle' => 'Audit Kesiapan Sistem',
@@ -284,10 +276,9 @@ return [
         'seconds' => 'detik',
         'step_labels' => [
             'welcome' => 'Selamat Datang',
-            'school' => 'Sekolah',
             'account' => 'Akun Admin',
+            'school' => 'Sekolah',
             'department' => 'Jurusan',
-            'internship' => 'Magang',
             'finalize' => 'Finalisasi',
             'complete' => 'Selesai',
         ],
@@ -305,10 +296,6 @@ return [
             'adminData.email' => 'alamat email',
             'adminData.username' => 'username',
             'adminData.password' => 'password',
-            'internshipData.name' => 'nama program',
-            'internshipData.description' => 'deskripsi program',
-            'internshipData.start_date' => 'tanggal mulai',
-            'internshipData.end_date' => 'tanggal selesai',
             'dataVerified' => 'verifikasi data',
             'securityAware' => 'kesadaran keamanan',
         ],
@@ -320,23 +307,20 @@ return [
         'step1_title' => 'Sambutan & Audit Sistem',
         'step1_desc' =>
             'Sistem akan memeriksa persyaratan teknis: versi PHP, ekstensi, izin direktori, koneksi database, dan lainnya. Pastikan semua pemeriksaan lulus sebelum melanjutkan.',
-        'step2_title' => 'Informasi Sekolah',
+        'step2_title' => 'Akun Administrator',
         'step2_desc' =>
-            'Masukkan data institusi: nama sekolah, kode NPSN, alamat, kontak, dan nama kepala sekolah. Data ini menjadi identitas utama sistem.',
-        'step3_title' => 'Jurusan',
-        'step3_desc' =>
-            'Buat jurusan pertama. Anda dapat menambahkan lebih banyak jurusan nanti melalui panel administrator.',
-        'step4_title' => 'Akun Administrator',
-        'step4_desc' =>
             'Akun super administrator akan dibuat dengan nama dan username yang sudah ditentukan. Cukup masukkan email dan kata sandi yang aman.',
-        'step5_title' => 'Program Magang (Opsional)',
+        'step3_title' => 'Informasi Sekolah',
+        'step3_desc' =>
+            'Masukkan data institusi: nama sekolah, kode NPSN, alamat, kontak, dan nama kepala sekolah. Data ini menjadi identitas utama sistem.',
+        'step4_title' => 'Jurusan',
+        'step4_desc' =>
+            'Buat jurusan pertama. Anda dapat menambahkan lebih banyak jurusan nanti melalui panel administrator.',
+        'step5_title' => 'Finalisasi',
         'step5_desc' =>
-            'Konfigurasi program magang pertama. Isi nama, tanggal mulai dan selesai. Langkah ini dapat dilewati dan dilakukan nanti.',
-        'step6_title' => 'Finalisasi',
-        'step6_desc' =>
             'Periksa kembali semua data. Pastikan Anda memahami konsekuensi keamanan dari kredensial administrator.',
-        'step7_title' => 'Selesai',
-        'step7_desc' =>
+        'step6_title' => 'Selesai',
+        'step6_desc' =>
             'Sistem siap digunakan! Simpan kredensial login dan kunci pemulihan di tempat aman. Kunci pemulihan diperlukan jika kata sandi hilang.',
         'tip_title' => 'Tips',
         'tip_desc' => 'Semua data dapat diubah nanti melalui panel pengaturan setelah login.',

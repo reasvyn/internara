@@ -188,7 +188,7 @@ return [
         'database' => 'Database',
         'terminal' => 'Terminal',
         'recommendations' => 'Recommendations',
-        'step_of' => 'Step :current of 7',
+        'step_of' => 'Step :current of :total',
         'progress_label' => 'Setup Progress',
         'progress_aria' => 'Step :current of :total',
         'welcome' => 'Welcome to Internara',
@@ -228,6 +228,7 @@ return [
             'This username is automatically generated for security and is permanent. You will use this to log in to the system.',
         'password' => 'Password',
         'confirm_password' => 'Confirm Password',
+        'password_hint' => 'Password must be at least 8 characters with uppercase, lowercase, and numbers.',
 
         'department' => 'Initial Department',
         'department_subtitle' => 'Academic Specialization',
@@ -236,15 +237,6 @@ return [
         'department_name_placeholder' => 'e.g.: Software Engineering',
         'department_description' => 'Description (Optional)',
         'department_description_placeholder' => 'Short description of this department...',
-
-        'internship' => 'Internship Batch',
-        'internship_subtitle' => 'Initial Program Configuration',
-        'program_name' => 'Internship Program Name',
-        'program_name_placeholder' => 'e.g.: Odd Semester PKL 2026',
-        'program_description' => 'Program Description (Optional)',
-        'program_description_placeholder' => 'Brief overview of the internship program goals...',
-        'start_date' => 'Start Date',
-        'end_date' => 'End Date',
 
         'finalize' => 'Finalize',
         'finalize_subtitle' => 'System Readiness Audit',
@@ -279,10 +271,9 @@ return [
         'seconds' => 'seconds',
         'step_labels' => [
             'welcome' => 'Welcome',
-            'school' => 'School',
             'account' => 'Admin Account',
+            'school' => 'School',
             'department' => 'Department',
-            'internship' => 'Internship',
             'finalize' => 'Finalization',
             'complete' => 'Complete',
         ],
@@ -300,10 +291,6 @@ return [
             'adminData.email' => 'email address',
             'adminData.username' => 'username',
             'adminData.password' => 'password',
-            'internshipData.name' => 'program name',
-            'internshipData.description' => 'program description',
-            'internshipData.start_date' => 'start date',
-            'internshipData.end_date' => 'end date',
             'dataVerified' => 'data verification',
             'securityAware' => 'security awareness',
         ],
@@ -315,23 +302,20 @@ return [
         'step1_title' => 'Welcome & System Audit',
         'step1_desc' =>
             'The system checks technical requirements: PHP version, extensions, directory permissions, database connection, and more. Ensure all checks pass before proceeding.',
-        'step2_title' => 'School Information',
+        'step2_title' => 'Admin Account',
         'step2_desc' =>
-            'Enter your institution data: school name, institutional code, address, contact details, and principal name. This becomes the system\'s primary identity.',
-        'step3_title' => 'Department',
-        'step3_desc' =>
-            'Create your first department. You can add more departments later through the admin panel.',
-        'step4_title' => 'Admin Account',
-        'step4_desc' =>
             'The super administrator account will be created with a pre-set name and username. Simply enter a valid email and a strong password.',
-        'step5_title' => 'Internship Program (Optional)',
+        'step3_title' => 'School Information',
+        'step3_desc' =>
+            'Enter your institution data: school name, institutional code, address, contact details, and principal name. This becomes the system\'s primary identity.',
+        'step4_title' => 'Department',
+        'step4_desc' =>
+            'Create your first department. You can add more departments later through the admin panel.',
+        'step5_title' => 'Finalize',
         'step5_desc' =>
-            'Configure your first internship program. Enter the program name, start and end dates. This step can be skipped and done later.',
-        'step6_title' => 'Finalize',
-        'step6_desc' =>
             'Review all entered data. Make sure you understand the security implications of the administrator credentials.',
-        'step7_title' => 'Complete',
-        'step7_desc' =>
+        'step6_title' => 'Complete',
+        'step6_desc' =>
             'The system is ready! Save your login credentials and recovery key in a secure place. The recovery key is required if the password is lost.',
         'tip_title' => 'Tip',
         'tip_desc' => 'All data can be modified later through the settings panel after logging in.',

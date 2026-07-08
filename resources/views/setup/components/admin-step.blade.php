@@ -22,6 +22,7 @@
             type="email"
             wire:model.live.debounce.500ms="superAdminForm.email"
             icon="o-envelope"
+            autofocus
         />
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -38,6 +39,11 @@
                 wire:model.live.debounce.500ms="superAdminForm.password_confirmation"
                 icon="o-key"
             />
+        </div>
+
+        <div class="alert bg-info/5 border-info/20 text-sm mt-3">
+            <x-mary-icon name="o-information-circle" class="size-5 shrink-0" />
+            <span>{{ __('setup.wizard.password_hint') }}</span>
         </div>
     </div>
 
