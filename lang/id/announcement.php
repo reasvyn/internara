@@ -36,4 +36,17 @@ return [
         'link_placeholder' => 'https://...',
         'target_roles' => 'Peran Target',
     ],
+
+    'guide' => [
+        'title' => 'Panduan Pengumuman',
+        'intro' => 'Buat dan kelola pengumuman di seluruh sistem:',
+        'create_title' => 'Membuat Pengumuman',
+        'create_desc' => 'Tulis pengumuman Anda menggunakan format Markdown. Tambahkan judul, pesan, dan pilih tipe (Info, Sukses, Peringatan, Error).',
+        'schedule_title' => 'Penjadwalan',
+        'schedule_desc' => 'Simpan sebagai draf untuk diselesaikan nanti, jadwalkan untuk tanggal tertentu, atau publikasikan segera.',
+        'publish_title' => 'Publikasi',
+        'publish_desc' => 'Pengumuman yang dipublikasikan dikirim ke pengguna yang ditargetkan melalui notifikasi. Anda dapat mempublikasikan draf kapan saja.',
+        'target_title' => 'Penargetan',
+        'target_desc' => 'Kirim ke semua pengguna atau pilih peran tertentu. Pilih dengan bijak untuk menghindari kelelahan notifikasi.',
+    ],
 ];

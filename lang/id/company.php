@@ -47,4 +47,17 @@ return [
         'active_partnerships' => 'Kemitraan Aktif',
         'available_slots' => 'Slot Tersedia',
     ],
+
+    'guide' => [
+        'title' => 'Panduan Perusahaan',
+        'intro' => 'Kelola perusahaan mitra dan mitra industri:',
+        'create_title' => 'Menambahkan Perusahaan',
+        'create_desc' => 'Daftarkan perusahaan dengan nama, sektor industri, dan detail kontak. Ini memungkinkan pelacakan penempatan dan kemitraan.',
+        'contact_title' => 'Info Kontak',
+        'contact_desc' => 'Simpan email, telepon, website, dan alamat untuk setiap perusahaan. Informasi ini digunakan dalam laporan dan dokumen kemitraan.',
+        'import_title' => 'Impor CSV',
+        'import_desc' => 'Impor beberapa perusahaan sekaligus dari file CSV. Unduh template untuk format yang benar.',
+        'stats_title' => 'Statistik',
+        'stats_desc' => 'Lihat total perusahaan, kemitraan aktif, slot tersedia, dan perusahaan dengan penempatan sekilas.',
+    ],
 ];

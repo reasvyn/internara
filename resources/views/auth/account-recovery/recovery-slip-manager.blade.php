@@ -63,3 +63,5 @@
         </div>
     </div>
 </div>
+
+@include('auth.account-recovery.components.recovery-slip-manager-guide')

@@ -46,4 +46,21 @@ return [
 
     'issued_title' => 'Sertifikat Terbit',
     'issued_subtitle' => 'Lihat dan kelola sertifikat yang telah diterbitkan',
+
+    'guide' => [
+        'title' => 'Panduan Sertifikat',
+        'intro' => 'Terbitkan dan kelola sertifikat siswa:',
+        'issue_title' => 'Menerbitkan Sertifikat',
+        'issue_desc' => 'Hasilkan sertifikat untuk siswa yang telah menyelesaikan PKL. Setiap sertifikat memiliki kode verifikasi unik.',
+        'revoke_title' => 'Mencabut Sertifikat',
+        'revoke_desc' => 'Jika sertifikat diterbitkan karena kesalahan, Anda dapat mencabutnya. Sertifikat yang dicabut akan ditampilkan sebagai tidak valid saat diverifikasi.',
+        'verify_title' => 'Verifikasi QR',
+        'verify_desc' => 'Setiap sertifikat menyertakan kode QR yang dapat dipindai untuk memverifikasi keasliannya.',
+        'template_title' => 'Panduan Template Sertifikat',
+        'template_intro' => 'Desain dan kelola template sertifikat:',
+        'template_create_title' => 'Membuat Template',
+        'template_create_desc' => 'Buat template sertifikat baru dengan merek dan tata letak institusi Anda.',
+        'template_design_title' => 'Pengaturan Desain',
+        'template_design_desc' => 'Konfigurasikan tata letak, font, warna, dan bidang placeholder untuk pembuatan sertifikat otomatis.',
+    ],
 ];

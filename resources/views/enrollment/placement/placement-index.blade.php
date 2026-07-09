@@ -100,4 +100,5 @@
     </x-slot:modal>
 
     <x-core::ui.confirm :message="__('common.actions.confirm_message')" />
+@include('enrollment.placement.components.placement-guide')
 </x-core::ui.record-manager>

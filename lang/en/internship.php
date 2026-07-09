@@ -116,4 +116,23 @@ return [
     // Requirements
     'requirement_saved' => 'Requirement saved successfully.',
     'requirement_removed' => 'Requirement removed.',
+
+    'guide' => [
+        'title' => 'Internship Batch Guide',
+        'intro' => 'Manage internship batches — the core academic periods for PKL:',
+        'create_title' => 'Creating Batches',
+        'create_desc' => 'Define a new batch with name, academic year, and description. Set the internship and registration date ranges.',
+        'period_title' => 'Period Settings',
+        'period_desc' => 'Set start and end dates for the internship itself and the registration window separately.',
+        'status_title' => 'Batch Status',
+        'status_desc' => 'Batches move through statuses: Draft → Published → Active → Completed. Use bulk actions to mark filtered batches as completed.',
+        'group_title' => 'Student Groups',
+        'group_desc' => 'Organize students into groups within each batch. Manage members, assign mentors, and track group progress.',
+        'group_guide_title' => 'Internship Group Guide',
+        'group_guide_intro' => 'Organize students into groups and assign mentors:',
+        'group_create_title' => 'Creating Groups',
+        'group_create_desc' => 'Create a group within an internship batch. Give it a name and description.',
+        'group_member_title' => 'Managing Members',
+        'group_member_desc' => 'Add students to a group by registration ID. Assign a mentor to oversee the group.',
+    ],
 ];

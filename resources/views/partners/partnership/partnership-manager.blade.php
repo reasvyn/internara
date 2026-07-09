@@ -164,4 +164,5 @@
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
+    @include('partners.partnership.components.partnership-guide')
 </x-core::ui.record-manager>

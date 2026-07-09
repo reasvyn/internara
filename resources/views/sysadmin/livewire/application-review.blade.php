@@ -49,3 +49,5 @@
         </x-mary-form>
     </x-mary-modal>
 </div>
+
+@include('sysadmin.components.application-review-guide')

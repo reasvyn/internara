@@ -87,4 +87,5 @@
     </x-slot:modal>
 
     <x-core::ui.confirm :message="__('common.actions.confirm_action')" />
+    @include('user.user-management.components.admin-guide')
 </x-core::ui.record-manager>

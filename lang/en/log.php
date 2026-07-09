@@ -56,6 +56,8 @@ return [
     'smtp_test_failed' => 'SMTP mail configuration test failed.',
     'notification_missing_type_key' => 'A notification was logged without a valid type key.',
     'notification_missing_title_key' => 'A notification was logged without a valid title key.',
+    'notification_sent' => 'A notification has been sent to the user.',
+    'notifications_marked_all_read' => 'All notifications have been marked as read.',
     'module.discover.completed' => 'Module service discovery has completed successfully.',
     'module.discover.failed' => 'Module service discovery failed with errors.',
     'module_discovery_complete' => 'Module service discovery has completed successfully.',

@@ -149,4 +149,5 @@
             </x-slot:actions>
         </x-mary-modal>
     </x-slot:modal>
+    @include('program.internship.components.internship-guide')
 </x-core::ui.record-manager>

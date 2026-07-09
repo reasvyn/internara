@@ -104,3 +104,5 @@
         @endif
     </x-mary-card>
 </div>
+
+@include('sysadmin.observability.components.audit-log-guide')

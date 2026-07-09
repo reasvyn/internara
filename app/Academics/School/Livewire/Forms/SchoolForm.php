@@ -28,14 +28,14 @@ class SchoolForm extends Form
     public function rules(): array
     {
         return [
-            'form.name' => ['required', 'string', 'max:255'],
-            'form.institutional_code' => ['nullable', 'string', 'max:50'],
-            'form.email' => ['nullable', 'email', 'max:255'],
-            'form.phone' => ['nullable', 'string', 'max:50'],
-            'form.fax' => ['nullable', 'string', 'max:50'],
-            'form.address' => ['nullable', 'string', 'max:500'],
-            'form.website' => ['nullable', 'url', 'max:255'],
-            'form.principal_name' => ['nullable', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'institutional_code' => ['nullable', 'string', 'max:50'],
+            'email' => ['nullable', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'fax' => ['nullable', 'string', 'max:50'],
+            'address' => ['nullable', 'string', 'max:500'],
+            'website' => ['nullable', 'url', 'max:255'],
+            'principal_name' => ['nullable', 'string', 'max:255'],
         ];
     }
 

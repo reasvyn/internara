@@ -56,4 +56,15 @@ return [
     'terminate' => 'Akhiri',
     'terminate_success' => 'Kemitraan berhasil diakhiri.',
     'terminate_confirm' => 'Akhiri kemitraan ini? Tindakan ini tidak dapat dibatalkan.',
+
+    'guide' => [
+        'title' => 'Panduan Kemitraan',
+        'intro' => 'Kelola perjanjian MoU dengan perusahaan mitra:',
+        'create_title' => 'Membuat Kemitraan',
+        'create_desc' => 'Buat perjanjian kemitraan dengan perusahaan. Tetapkan tanggal mulai dan berakhir untuk periode perjanjian.',
+        'mou_title' => 'Manajemen MoU',
+        'mou_desc' => 'Unggah dokumen MoU dan lacak status perjanjian. Kemitraan dapat aktif, kedaluwarsa, atau diakhiri.',
+        'status_title' => 'Status Kemitraan',
+        'status_desc' => 'Perbarui kemitraan sebelum kedaluwarsa untuk mempertahankan kolaborasi berkelanjutan. Kemitraan yang diakhiri dapat ditinjau kembali.',
+    ],
 ];
