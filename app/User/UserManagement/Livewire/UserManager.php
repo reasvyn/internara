@@ -70,7 +70,7 @@ class UserManager extends BaseRecordManager
 
     protected function query(): Builder
     {
-        return User::query()->with(['roles', 'statuses', 'profile']);
+        return User::query()->with(['roles', 'profile']);
     }
 
     protected function applySearch(Builder $query): Builder
@@ -90,7 +90,7 @@ class UserManager extends BaseRecordManager
                 $q->role($role);
             })
             ->when($this->filters['status'] ?? null, function ($q, $status) {
-                $q->whereHas('statuses', fn ($qs) => $qs->where('name', $status)->latest('id'));
+                $q->where('status', $status);
             })
             ->when(
                 $this->filters['created_from'] ?? null,

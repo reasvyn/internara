@@ -82,7 +82,7 @@ class AccountLifecycleManager extends Component
     {
         Gate::authorize('viewLifecycleDashboard', User::class);
 
-        $users = User::with('statuses')->latest()->paginate(20);
+        $users = User::latest()->paginate(20);
 
         return view('user.account-status.accounts.lifecycle', [
             'users' => $users,
