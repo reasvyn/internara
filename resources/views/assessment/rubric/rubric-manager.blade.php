@@ -137,3 +137,5 @@
 
     <x-core::ui.confirm :message="$confirmMessage" />
 </div>
+
+@include('assessment.rubric.components.rubric-guide')

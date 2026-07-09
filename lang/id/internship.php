@@ -116,4 +116,23 @@ return [
     // Requirements
     'requirement_saved' => 'Persyaratan berhasil disimpan.',
     'requirement_removed' => 'Persyaratan berhasil dihapus.',
+
+    'guide' => [
+        'title' => 'Panduan Batch Magang',
+        'intro' => 'Kelola batch magang — periode akademik inti untuk PKL:',
+        'create_title' => 'Membuat Batch',
+        'create_desc' => 'Tentukan batch baru dengan nama, tahun akademik, dan deskripsi. Atur rentang tanggal magang dan pendaftaran.',
+        'period_title' => 'Pengaturan Periode',
+        'period_desc' => 'Tetapkan tanggal mulai dan selesai untuk magang itu sendiri dan jendela pendaftaran secara terpisah.',
+        'status_title' => 'Status Batch',
+        'status_desc' => 'Batch bergerak melalui status: Draft → Dipublikasikan → Aktif → Selesai. Gunakan tindakan massal untuk menandai batch yang difilter sebagai selesai.',
+        'group_title' => 'Kelompok Siswa',
+        'group_desc' => 'Atur siswa ke dalam kelompok di setiap batch. Kelola anggota, tetapkan mentor, dan lacak kemajuan kelompok.',
+        'group_guide_title' => 'Panduan Kelompok Magang',
+        'group_guide_intro' => 'Atur siswa ke dalam kelompok dan tetapkan mentor:',
+        'group_create_title' => 'Membuat Kelompok',
+        'group_create_desc' => 'Buat kelompok dalam batch magang. Beri nama dan deskripsi.',
+        'group_member_title' => 'Mengelola Anggota',
+        'group_member_desc' => 'Tambahkan siswa ke kelompok berdasarkan ID registrasi. Tetapkan mentor untuk mengawasi kelompok.',
+    ],
 ];

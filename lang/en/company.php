@@ -47,4 +47,17 @@ return [
         'active_partnerships' => 'Active Partnerships',
         'available_slots' => 'Available Slots',
     ],
+
+    'guide' => [
+        'title' => 'Company Guide',
+        'intro' => 'Manage partner companies and industry partners:',
+        'create_title' => 'Adding Companies',
+        'create_desc' => 'Register a company with its name, industry sector, and contact details. This enables placement and partnership tracking.',
+        'contact_title' => 'Contact Info',
+        'contact_desc' => 'Store email, phone, website, and address for each company. This information is used in reports and partnership documents.',
+        'import_title' => 'CSV Import',
+        'import_desc' => 'Import multiple companies at once from a CSV file. Download the template for the correct format.',
+        'stats_title' => 'Statistics',
+        'stats_desc' => 'View total companies, active partnerships, available slots, and companies with placements at a glance.',
+    ],
 ];

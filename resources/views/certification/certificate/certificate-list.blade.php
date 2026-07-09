@@ -84,4 +84,5 @@
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
+@include('certification.certificate.components.certificate-guide')
 </x-core::ui.record-manager>

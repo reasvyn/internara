@@ -120,3 +120,5 @@
         </x-slot:actions>
     </x-modal>
 </div>
+
+@include('sysadmin.backups.components.backup-guide')

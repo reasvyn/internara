@@ -56,4 +56,15 @@ return [
     'terminate' => 'Terminate',
     'terminate_success' => 'Partnership terminated successfully.',
     'terminate_confirm' => 'Terminate this partnership? This action cannot be undone.',
+
+    'guide' => [
+        'title' => 'Partnership Guide',
+        'intro' => 'Manage MoU agreements with partner companies:',
+        'create_title' => 'Creating Partnerships',
+        'create_desc' => 'Create a partnership agreement with a company. Set the start and end dates for the agreement period.',
+        'mou_title' => 'MoU Management',
+        'mou_desc' => 'Upload MoU documents and track agreement status. Partnerships can be active, expired, or terminated.',
+        'status_title' => 'Partnership Status',
+        'status_desc' => 'Renew partnerships before they expire to maintain continuous collaboration. Terminated partnerships can be reviewed.',
+    ],
 ];

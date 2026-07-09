@@ -36,4 +36,17 @@ return [
         'link_placeholder' => 'https://...',
         'target_roles' => 'Target Roles',
     ],
+
+    'guide' => [
+        'title' => 'Announcement Guide',
+        'intro' => 'Create and manage system-wide announcements:',
+        'create_title' => 'Creating Announcements',
+        'create_desc' => 'Write your announcement using Markdown formatting. Add a title, message, and choose a type (Info, Success, Warning, Error).',
+        'schedule_title' => 'Scheduling',
+        'schedule_desc' => 'Save as draft to finish later, schedule for a specific date, or publish immediately.',
+        'publish_title' => 'Publishing',
+        'publish_desc' => 'Published announcements are sent to targeted users via notification. You can publish a draft anytime.',
+        'target_title' => 'Targeting',
+        'target_desc' => 'Send to all users or select specific roles. Choose wisely to avoid notification fatigue.',
+    ],
 ];

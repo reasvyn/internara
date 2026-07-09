@@ -7,6 +7,7 @@ return [
     'login_failed' => 'Login Gagal',
     'login_blocked' => 'Login Diblokir',
     'logout_success' => 'Logout Berhasil',
+    'notification_sent' => 'Notifikasi Terkirim',
     'password_reset_success' => 'Reset Kata Sandi Berhasil',
     'password_reset_failed' => 'Reset Kata Sandi Gagal',
     'password_reset_link_requested' => 'Tautan Reset Kata Sandi Diminta',

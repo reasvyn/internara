@@ -77,4 +77,5 @@
             </div>
         </x-mary-modal>
     </x-slot:modal>
+    @include('program.internship-group.components.internship-group-guide')
 </x-core::ui.record-manager>

@@ -125,4 +125,5 @@
             </x-slot:actions>
         </x-mary-modal>
     </x-slot:modal>
+    @include('partners.company.components.company-guide')
 </x-core::ui.record-manager>

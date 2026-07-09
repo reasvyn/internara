@@ -49,4 +49,5 @@
             </x-mary-form>
         </x-mary-modal>
     </x-slot:modal>
+@include('enrollment.placement.components.placement-change-guide')
 </x-core::ui.record-manager>

@@ -30,4 +30,15 @@ return [
     'download' => 'Download',
     'file_uploaded' => 'PDF file uploaded successfully.',
     'remove_file' => 'Remove existing file?',
+
+    'guide' => [
+        'handbook_title' => 'Handbook Guide',
+        'handbook_intro' => 'Manage student handbooks and guidance materials:',
+        'handbook_create_title' => 'Creating Handbooks',
+        'handbook_create_desc' => 'Upload handbooks and guidance documents. Each handbook can be assigned to specific internship batches.',
+        'handbook_upload_title' => 'File Upload',
+        'handbook_upload_desc' => 'Upload PDF documents. Students can view and download assigned handbooks from their dashboard.',
+        'handbook_view_title' => 'Student Access',
+        'handbook_view_desc' => 'Students can view their assigned handbooks. Track who has read each document.',
+    ],
 ];

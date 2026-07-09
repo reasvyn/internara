@@ -78,4 +78,15 @@ return [
     'presentation_schedule' => 'Jadwalkan',
     'presentation_schedule_success' => 'Presentasi dijadwalkan.',
     'presentation_score_success' => 'Nilai berhasil disimpan.',
+
+    'guide' => [
+        'rubric_title' => 'Panduan Rubrik',
+        'rubric_intro' => 'Buat dan kelola rubrik penilaian:',
+        'rubric_create_title' => 'Membuat Rubrik',
+        'rubric_create_desc' => 'Tentukan rubrik penilaian dengan kompetensi dan indikator kinerja untuk mengevaluasi siswa.',
+        'rubric_competency_title' => 'Kompetensi & Indikator',
+        'rubric_competency_desc' => 'Setiap rubrik berisi beberapa kompetensi. Setiap kompetensi memiliki indikator yang menggambarkan tingkat kinerja.',
+        'rubric_score_title' => 'Penilaian',
+        'rubric_score_desc' => 'Nilai setiap indikator untuk siswa. Skor otomatis dihitung untuk menghasilkan nilai kompetensi akhir.',
+    ],
 ];

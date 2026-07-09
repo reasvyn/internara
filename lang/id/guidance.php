@@ -30,4 +30,15 @@ return [
     'download' => 'Unduh',
     'file_uploaded' => 'File PDF berhasil diunggah.',
     'remove_file' => 'Hapus file yang ada?',
+
+    'guide' => [
+        'handbook_title' => 'Panduan Buku Panduan',
+        'handbook_intro' => 'Kelola buku panduan siswa dan materi bimbingan:',
+        'handbook_create_title' => 'Membuat Buku Panduan',
+        'handbook_create_desc' => 'Unggah buku panduan dan dokumen bimbingan. Setiap buku panduan dapat ditetapkan ke batch magang tertentu.',
+        'handbook_upload_title' => 'Unggah File',
+        'handbook_upload_desc' => 'Unggah dokumen PDF. Siswa dapat melihat dan mengunduh buku panduan yang ditugaskan dari dasbor mereka.',
+        'handbook_view_title' => 'Akses Siswa',
+        'handbook_view_desc' => 'Siswa dapat melihat buku panduan yang ditugaskan. Lacak siapa yang telah membaca setiap dokumen.',
+    ],
 ];

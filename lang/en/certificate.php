@@ -46,4 +46,21 @@ return [
 
     'issued_title' => 'Issued Certificates',
     'issued_subtitle' => 'View and manage issued certificates',
+
+    'guide' => [
+        'title' => 'Certificate Guide',
+        'intro' => 'Issue and manage student certificates:',
+        'issue_title' => 'Issuing Certificates',
+        'issue_desc' => 'Generate certificates for students who have completed their internship. Each certificate has a unique verification code.',
+        'revoke_title' => 'Revoking Certificates',
+        'revoke_desc' => 'If a certificate was issued in error, you can revoke it. Revoked certificates show as invalid when verified.',
+        'verify_title' => 'QR Verification',
+        'verify_desc' => 'Each certificate includes a QR code that can be scanned to verify its authenticity.',
+        'template_title' => 'Certificate Template Guide',
+        'template_intro' => 'Design and manage certificate templates:',
+        'template_create_title' => 'Creating Templates',
+        'template_create_desc' => 'Create a new certificate template with your institution\'s branding and layout.',
+        'template_design_title' => 'Design Settings',
+        'template_design_desc' => 'Configure the layout, fonts, colors, and placeholder fields for automatic certificate generation.',
+    ],
 ];

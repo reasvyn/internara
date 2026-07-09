@@ -78,4 +78,15 @@ return [
     'presentation_schedule' => 'Schedule',
     'presentation_schedule_success' => 'Presentation scheduled.',
     'presentation_score_success' => 'Score recorded.',
+
+    'guide' => [
+        'rubric_title' => 'Rubric Guide',
+        'rubric_intro' => 'Create and manage assessment rubrics:',
+        'rubric_create_title' => 'Creating Rubrics',
+        'rubric_create_desc' => 'Define assessment rubrics with competencies and performance indicators for evaluating students.',
+        'rubric_competency_title' => 'Competencies & Indicators',
+        'rubric_competency_desc' => 'Each rubric contains multiple competencies. Each competency has indicators that describe performance levels.',
+        'rubric_score_title' => 'Scoring',
+        'rubric_score_desc' => 'Score each indicator for a student. Scores are automatically calculated to produce a final competency grade.',
+    ],
 ];

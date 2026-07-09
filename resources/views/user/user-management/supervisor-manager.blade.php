@@ -82,4 +82,5 @@
     @include('user.user-management.components.account-slip-modal')
 
     <x-core::ui.confirm :message="__('common.actions.confirm_action')" />
+    @include('user.user-management.components.supervisor-guide')
 </x-core::ui.record-manager>

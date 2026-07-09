@@ -55,4 +55,21 @@ return [
         'assign' => 'Assign Placement',
         'success' => 'Student placed successfully.',
     ],
+
+    'guide' => [
+        'placement_title' => 'Placement Guide',
+        'placement_intro' => 'Manage student placements at partner companies:',
+        'placement_create_title' => 'Creating Placements',
+        'placement_create_desc' => 'Assign students to companies for their internship. Each placement has a specific slot quota.',
+        'placement_direct_title' => 'Direct Placement',
+        'placement_direct_desc' => 'Use direct placement to assign a specific student to a company without going through the normal registration process.',
+        'placement_slot_title' => 'Slot Management',
+        'placement_slot_desc' => 'Each company has a limited number of slots. Monitor availability and adjust as needed.',
+        'change_title' => 'Placement Change Guide',
+        'change_intro' => 'Handle student requests to change their placement:',
+        'change_request_title' => 'Change Requests',
+        'change_request_desc' => 'Students can request a placement change. Each request includes a reason and proposed new placement.',
+        'change_approve_title' => 'Approval Process',
+        'change_approve_desc' => 'Review change requests and approve or reject them. Approved changes update the student\'s placement immediately.',
+    ],
 ];

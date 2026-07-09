@@ -132,4 +132,5 @@
         :confirmText="$confirmActionType === 'delete' ? __('common.actions.delete') : __('announcement.publish_now')"
         :confirmClass="$confirmActionType === 'publish' ? 'btn-success' : 'btn-error'"
     />
+    @include('sysadmin.announcement.components.announcement-guide')
 </div>

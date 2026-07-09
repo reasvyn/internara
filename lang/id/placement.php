@@ -55,4 +55,21 @@ return [
         'assign' => 'Tugaskan Penempatan',
         'success' => 'Siswa berhasil ditempatkan.',
     ],
+
+    'guide' => [
+        'placement_title' => 'Panduan Penempatan',
+        'placement_intro' => 'Kelola penempatan siswa di perusahaan mitra:',
+        'placement_create_title' => 'Membuat Penempatan',
+        'placement_create_desc' => 'Tetapkan siswa ke perusahaan untuk PKL mereka. Setiap penempatan memiliki kuota slot tertentu.',
+        'placement_direct_title' => 'Penempatan Langsung',
+        'placement_direct_desc' => 'Gunakan penempatan langsung untuk menugaskan siswa tertentu ke perusahaan tanpa melalui proses pendaftaran normal.',
+        'placement_slot_title' => 'Manajemen Slot',
+        'placement_slot_desc' => 'Setiap perusahaan memiliki jumlah slot terbatas. Pantau ketersediaan dan sesuaikan sesuai kebutuhan.',
+        'change_title' => 'Panduan Perubahan Penempatan',
+        'change_intro' => 'Tangani permintaan siswa untuk mengubah penempatan mereka:',
+        'change_request_title' => 'Permintaan Perubahan',
+        'change_request_desc' => 'Siswa dapat meminta perubahan penempatan. Setiap permintaan menyertakan alasan dan usulan penempatan baru.',
+        'change_approve_title' => 'Proses Persetujuan',
+        'change_approve_desc' => 'Tinjau permintaan perubahan dan setujui atau tolak. Perubahan yang disetujui akan langsung memperbarui penempatan siswa.',
+    ],
 ];

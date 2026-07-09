@@ -57,6 +57,8 @@ return [
     'smtp_test_failed' => 'Pengujian konfigurasi SMTP gagal.',
     'notification_missing_type_key' => 'Notifikasi dicatat tanpa kunci tipe yang valid.',
     'notification_missing_title_key' => 'Notifikasi dicatat tanpa kunci judul yang valid.',
+    'notification_sent' => 'Notifikasi telah dikirim kepada pengguna.',
+    'notifications_marked_all_read' => 'Semua notifikasi telah ditandai sebagai dibaca.',
     'module.discover.completed' => 'Penemuan layanan module telah selesai dengan sukses.',
     'module.discover.failed' => 'Penemuan layanan module gagal dengan kesalahan.',
     'module_discovery_complete' => 'Penemuan layanan module telah selesai dengan sukses.',

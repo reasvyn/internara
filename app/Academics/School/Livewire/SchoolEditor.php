@@ -32,18 +32,24 @@ class SchoolEditor extends BaseFormView
         $this->logoPreviewUrl = $this->getLogoUrl();
     }
 
+    public function updatedLogoFile(): void
+    {
+        $this->authorize('update', Setting::class);
+        $this->validate(['logo_file' => ['nullable', 'image', 'max:2048']]);
+
+        app(SaveSchoolProfileAction::class)->execute(data: [], logoFile: $this->logo_file);
+
+        $this->logoPreviewUrl = $this->getLogoUrl();
+        $this->logo_file = null;
+        flash()->success(__('school.logo_saved'));
+    }
+
     public function save(SaveSchoolProfileAction $action): void
     {
         $this->authorize('update', Setting::class);
         $this->validate();
 
-        $action->execute(data: $this->form->toPayload(), logoFile: $this->logo_file);
-
-        if ($this->logo_file) {
-            $this->logoPreviewUrl = $this->getLogoUrl();
-            $this->logo_file = null;
-            flash()->success(__('school.logo_saved'));
-        }
+        $action->execute(data: $this->form->toPayload());
 
         $this->form->loadFromEntity();
         flash()->success(__('school.save_success'));
@@ -58,20 +64,15 @@ class SchoolEditor extends BaseFormView
         return $this->logoPreviewUrl;
     }
 
-    public function removeLogo(RemoveBrandAssetAction $action): void
+    public function confirmAction(): void
     {
         $this->authorize('update', Setting::class);
 
-        $action->execute('logo');
+        app(RemoveBrandAssetAction::class)->execute('logo');
 
         $this->logoPreviewUrl = null;
         $this->showConfirm = false;
         flash()->success(__('school.logo_removed'));
-    }
-
-    public function confirmAction(): void
-    {
-        $this->removeLogo();
     }
 
     public function render(): View

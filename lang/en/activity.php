@@ -7,6 +7,7 @@ return [
     'login_failed' => 'Login Failed',
     'login_blocked' => 'Login Blocked',
     'logout_success' => 'Logout Success',
+    'notification_sent' => 'Notification Sent',
     'password_reset_success' => 'Password Reset Success',
     'password_reset_failed' => 'Password Reset Failed',
     'password_reset_link_requested' => 'Password Reset Link Requested',
