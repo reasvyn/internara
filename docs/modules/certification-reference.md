@@ -109,7 +109,7 @@ Tests are located in `tests/{Feature,Unit}/Certification/`. See
 - **Business Logic**: `app/Certification/`
 - **Routing**: `routes/web/certification.php`
 - **Views**: `resources/views/certification/`
-- **Testing**: `tests/Feature/Certification/`, `tests/Unit/Certification/`
+- **Testing**: `tests/Certification/`, `tests/Certification/`
 - **Dependencies**: User, Evaluation, Program, Core
 
 _For overview and business context, see [certification.md](certification.md)._

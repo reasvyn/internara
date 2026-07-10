@@ -1,6 +1,6 @@
 # Evaluation — Feedback Forms, Surveys & Auto-Scoring
 
-> **Last updated:** 2026-06-12 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-10 **Changes:** expand — add Actions reference, routes, scoring examples, file structure, and integration patterns
 
 ## Description
 
@@ -24,7 +24,7 @@ None — all components are directly under `app/Evaluation/`.
 
 ## Key Concepts
 
-##Evaluation — Feedback Forms, Surveys & Auto-Scoring Forms
+### Evaluation Forms
 
 Forms are the core entity (`evaluation_forms`). Each form targets a specific aspect (`target_type`:
 mentor, program, company, overall). Admins create forms via a form builder UI:
@@ -57,10 +57,47 @@ Overall score is auto-calculated from weighted question scores:
 overall_score = Σ(question_score × question_weight) / Σ(question_weight)
 ```
 
+**Score Band Mapping:**
+
+| Band                  | Range  | Label                     |
+| --------------------- | ------ | ------------------------- |
+| EXCELLENT             | 85-100 | Excellent                 |
+| GOOD                  | 70-84  | Good                      |
+| SATISFACTORY          | 55-69  | Satisfactory              |
+| NEEDS_IMPROVEMENT     | 40-54  | Needs Improvement         |
+| POOR                  | 0-39   | Poor                      |
+
 ### Immutable Submissions
 
-Once submitted, an evaluation response cannot be modified. The audit trail preserves the original
-submission with timestamp, evaluator, and all answers.
+Once submitted, an evaluation response cannot be modified. The audit trail preserves the original submission with timestamp, evaluator, and all answers. This immutability is enforced at the database level and the Action layer.
+
+### Actions
+
+| Action                                    | Type      | Description                                          |
+| ----------------------------------------- | --------- | ---------------------------------------------------- |
+| `CreateEvaluationFormAction`              | Command   | Create a new evaluation form with sections/questions |
+| `UpdateEvaluationFormAction`              | Command   | Update form structure (sections, questions, weights) |
+| `SubmitEvaluationResponseAction`          | Command   | Submit a completed evaluation response               |
+| `ReadEvaluationFormAction`                | Read      | Query forms with filters and structure               |
+| `ReadEvaluationResultsAction`             | Read      | Aggregated results with score bands and trends       |
+
+### Routes
+
+| Method | URI                                                   | Action                        |
+| ------ | ----------------------------------------------------- | ----------------------------- |
+| GET    | `/evaluation/forms`                                   | Form index                    |
+| POST   | `/evaluation/forms`                                   | Create form                   |
+| GET    | `/evaluation/forms/{evaluationForm}`                  | Show form with structure      |
+| PUT    | `/evaluation/forms/{evaluationForm}`                  | Update form                   |
+| POST   | `/evaluation/forms/{evaluationForm}/submit`           | Submit response               |
+| GET    | `/evaluation/forms/{evaluationForm}/results`          | View aggregated results       |
+
+### Integration Patterns
+
+- **Polymorphic Targeting**: Forms target any entity via `target_type`/`target_id` (mentor, program, company, overall)
+- **Reports Integration**: Aggregated scores per program feed into program quality metrics in the Reports module
+- **Certification Gate**: Minimum evaluation scores can be required before certificate issuance
+- **Cache Strategy**: Form structure is cached with key `evaluation.form.{id}`; invalidated on form update
 
 ## Dependencies
 
@@ -72,3 +109,32 @@ submission with timestamp, evaluator, and all answers.
 
 - Reports (program quality data)
 - Certification (eligibility checks)
+
+## File Structure
+
+```
+app/Evaluation/
+├── Actions/
+│   ├── CreateEvaluationFormAction.php
+│   ├── ReadEvaluationFormAction.php
+│   ├── ReadEvaluationResultsAction.php
+│   ├── SubmitEvaluationResponseAction.php
+│   └── UpdateEvaluationFormAction.php
+├── Enums/
+│   ├── EvaluationTargetType.php
+│   ├── QuestionType.php
+│   └── ScoreBand.php
+├── Events/
+│   └── EvaluationSubmitted.php
+├── Livewire/
+│   ├── EvaluationFormBuilder.php
+│   ├── EvaluationFormView.php
+│   └── EvaluationResultsView.php
+├── Models/
+│   ├── EvaluationForm.php
+│   ├── EvaluationSection.php
+│   ├── EvaluationQuestion.php
+│   ├── EvaluationResponse.php
+│   └── EvaluationAnswer.php
+└── Policies/
+    └── EvaluationFormPolicy.php

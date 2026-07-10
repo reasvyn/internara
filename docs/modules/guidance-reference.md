@@ -145,7 +145,7 @@ for the testing conventions.
 - **Business Logic**: `app/Guidance/`
 - **Routing**: `routes/web/guidance.php`
 - **Views**: `resources/views/guidance/`
-- **Testing**: `tests/Feature/Guidance/`, `tests/Unit/Guidance/`
+- **Testing**: `tests/Guidance/`, `tests/Guidance/`
 - **Dependencies**: User, Program, Core
 
 _For overview and business context, see [guidance.md](guidance.md)._

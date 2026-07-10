@@ -186,10 +186,10 @@ php artisan test --filter=testName
 Code coverage requires the **pcov** PHP extension. Configure it via `phpunit.coverage.xml`.
 
 ```bash
-composer run coverage                          # full app (unit + feature + arch)
-composer run coverage -- tests/Unit/Core       # single module (Core)
-composer run coverage -- tests/Unit            # unit tests only
-composer run coverage -- --filter=BaseAction   # specific test
+composer run coverage                                 # full app (all modules)
+composer run coverage -- --testsuite=Core             # single module (Core)
+composer run coverage -- --testsuite=User             # single module (User)
+composer run coverage -- --filter=BaseAction          # specific test
 ```
 
 Arguments after `--` are passed directly to Pest. The HTML report is written to
@@ -207,9 +207,10 @@ The `composer run coverage` script handles this automatically.
 
 ## Where to Find It
 
-- `tests/Feature/{Module}/{SubModule}/` — feature tests organized by module and submodule
-- `tests/Unit/{Module}/{SubModule}/` — unit tests organized by module and submodule
-- `tests/Unit/{Module}/Types/` — unit tests for value objects, flat enums, rules
+- `tests/{Module}/{SubModule}/` — all tests organized by module and submodule (no Unit/Feature split)
+- `tests/{Module}/Types/` — tests for value objects, flat enums, rules
+- `tests/{Module}/Enums/`, `tests/{Module}/Entities/` — pure logic tests (no database needed)
+- `tests/{Module}/Actions/`, `tests/{Module}/Livewire/` — integration tests (use `LazilyRefreshDatabase`)
 - `tests/TestCase.php` — base test case with `LazilyRefreshDatabase`
 - `tests/Pest.php` — Pest global configuration
 - `phpunit.xml` — PHPUnit configuration

@@ -57,14 +57,14 @@ tests/
 
 | Tier        | Directory                 | Database | Speed      | Tests What                                              |
 | ----------- | ------------------------- | -------- | ---------- | ------------------------------------------------------- |
-| **Unit**    | `tests/Unit/{Module}/`    | Never    | Fast (ms)  | Entities, Enums, DTOs, Policies, Support, Contracts     |
-| **Feature** | `tests/Feature/{Module}/` | Always   | Medium (s) | Actions, Livewire, Console Commands, Middleware, Events |
+| **Unit**    | `tests/{Module}/`    | Never    | Fast (ms)  | Entities, Enums, DTOs, Policies, Support, Contracts     |
+| **Feature** | `tests/{Module}/` | Always   | Medium (s) | Actions, Livewire, Console Commands, Middleware, Events |
 | **Arch**    | `tests/Arch/`             | Never    | Fast (ms)  | Structural rules via `arch()` expectations              |
 
 ### 2.3 Value Object Tests
 
 Value objects, flat enums, and small validation rules that belong to a module but are too small for
-their own submodule go under `tests/Unit/{Module}/Types/`.
+their own submodule go under `tests/{Module}/Types/`.
 
 ---
 

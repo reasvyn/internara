@@ -509,7 +509,8 @@ Every Action has its own test file. One class → one test file.
 ### File Structure
 
 ```
-tests/Feature/{Module}/{SubModule}/{Name}Test.php
+tests/{Module}/{SubModule}/{Name}Test.php
+
 ```
 
 ### What to Test

@@ -113,7 +113,7 @@ for the testing conventions.
 - **Business Logic**: `app/Document/`
 - **Routing**: `routes/web/document.php`
 - **Views**: `resources/views/document/`
-- **Testing**: `tests/Feature/Document/`, `tests/Unit/Document/`
+- **Testing**: `tests/Document/`, `tests/Document/`
 - **Dependencies**: Core, User
 
 _For overview and business context, see [document.md](document.md)._

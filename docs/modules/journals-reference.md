@@ -144,7 +144,7 @@ for the testing conventions.
 - **Business Logic**: `app/Journals/`
 - **Routing**: `routes/web/journals.php`
 - **Views**: `resources/views/journals/`
-- **Testing**: `tests/Feature/Journals/`, `tests/Unit/Journals/`
+- **Testing**: `tests/Journals/`, `tests/Journals/`
 - **Dependencies**: Enrollment, Program, Core
 - **Used By**: Evaluation
 

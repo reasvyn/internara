@@ -196,7 +196,7 @@ for the testing conventions.
 - **Business Logic**: `app/Settings/`
 - **Routing**: `routes/web/settings.php`
 - **Views**: `resources/views/settings/`
-- **Testing**: `tests/Feature/Settings/`, `tests/Unit/Settings/`
+- **Testing**: `tests/Settings/`, `tests/Settings/`
 - **Dependencies**: Core, Academics
 - **Used By**: All modules (via `setting()` and `brand()` helpers)
 

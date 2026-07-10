@@ -14,8 +14,8 @@ The database is organized around the concept that every piece of persistent stat
 module. Tables are grouped into five conceptual categories: core, operational, assessment, security,
 and supporting. This structure makes it obvious where data lives and how it relates.
 
-The schema encompasses 44 domain models plus 9+ framework/package tables (settings, cache, jobs,
-notifications, pulse, backups, media, activity logs, permissions).
+The schema encompasses **55 tables** (37 domain tables + 18 system/package tables covering settings, cache, jobs,
+notifications, pulse, backups, media, activity logs, permissions, roles, sessions, and more).
 
 ---
 

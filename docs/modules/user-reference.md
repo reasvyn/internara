@@ -268,7 +268,7 @@ the testing conventions.
 - **Business Logic**: `app/User/`
 - **Routing**: `routes/web/user.php`
 - **Views**: `resources/views/user/`
-- **Testing**: `tests/Feature/User/`, `tests/Unit/User/`
+- **Testing**: `tests/User/`, `tests/User/`
 - **Dependencies**: Core, SysAdmin
 
 _For overview and business context, see [user.md](user.md)._

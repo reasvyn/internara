@@ -234,7 +234,7 @@ None - Core provides base classes only.
 - **Business Logic**: `app/Core/`
 - **Routing**: None (health check `/up` in `bootstrap/app.php`)
 - **Views**: `resources/views/core/`
-- **Testing**: `tests/Feature/Core/`, `tests/Unit/Core/`
+- **Testing**: `tests/Core/`, `tests/Core/`
 - **Cache Config**: `config/cache-keys.php`
 
 _For overview and business context, see [core.md](core.md)._

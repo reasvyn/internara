@@ -100,7 +100,7 @@ for the testing conventions.
 - **Business Logic**: `app/Incident/`
 - **Routing**: `routes/web/incident.php`
 - **Views**: `resources/views/incident/`
-- **Testing**: `tests/Feature/Incident/`, `tests/Unit/Incident/`
+- **Testing**: `tests/Incident/`, `tests/Incident/`
 - **Dependencies**: User, Program, Core
 
 _For overview and business context, see [incident.md](incident.md)._

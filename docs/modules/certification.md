@@ -1,6 +1,6 @@
 # Certification — Certificates, Templates & QR
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-10 **Changes:** expand — add Actions reference, routes, verification endpoint spec, file structure, and integration patterns
 
 ## Description
 
@@ -51,10 +51,56 @@ no-op. Re-issuance requires a new serial number and a new certificate record.
 
 ### Embedded Layout Snapshots
 
-Certificate layouts (portrait/landscape orientation, background seals, text placeholders) are
-rendered dynamically at issuance time and frozen as immutable HTML snapshots within the certificate
-record. This ensures certificates always render exactly as they were at issuance, even if templates
-change later.
+Certificate layouts (portrait/landscape orientation, background seals, text placeholders) are rendered dynamically at issuance time and frozen as immutable HTML snapshots within the certificate record. This ensures certificates always render exactly as they were at issuance, even if templates change later.
+
+### Verification API
+
+Each certificate includes a QR code encoding a verification URL with SHA-256 hash. The public verification endpoint accepts the hash and returns authenticity status:
+
+```
+GET /verify/{hash}
+```
+
+**Response (JSON):**
+
+```json
+{
+    "valid": true,
+    "recipient": "John Doe",
+    "program": "PKL 2025/2026",
+    "issued_at": "2026-06-15T10:00:00Z",
+    "status": "active"
+}
+```
+
+### Actions
+
+| Action                       | Type      | Description                                        |
+| ---------------------------- | --------- | -------------------------------------------------- |
+| `IssueCertificateAction`     | Command   | Issue certificate (checks finalized report first)  |
+| `BatchIssueCertificatesAction` | Process  | Issue certificates for entire cohort (queued)      |
+| `RevokeCertificateAction`    | Command   | Revoke certificate (terminal — serial retired)     |
+| `VerifyCertificateAction`    | Read      | Public verification by QR hash                     |
+| `ReadCertificateListAction`  | Read      | Query certificates with filters                    |
+
+### Routes
+
+| Method | URI                     | Action                              |
+| ------ | ----------------------- | ----------------------------------- |
+| GET    | `/certificates`         | Certificate index (admin)           |
+| POST   | `/certificates/issue`   | Issue single certificate            |
+| POST   | `/certificates/batch`   | Batch issue for cohort              |
+| GET    | `/certificates/{cert}`  | Show certificate details            |
+| POST   | `/certificates/{cert}/revoke` | Revoke certificate            |
+| GET    | `/verify/{hash}`        | Public verification (no auth)       |
+
+### Integration Patterns
+
+- **Reports Gate**: `IssueCertificateAction` checks for finalized Report record — throws `RejectedException` if missing
+- **Queue**: Batch issuance dispatches individual jobs to the `documents` queue pipeline
+- **Serial Number Management**: Auto-generated sequential numbers, unique, permanently retired on revocation
+- **Event**: `CertificateIssued` event triggers notification to student and updates Pulse metrics
+- **Cache**: Verification hash results cached with TTL 24h (key: `certificate.verify.{hash}`)
 
 ## Dependencies
 
@@ -62,7 +108,36 @@ change later.
 - Reports (finalized grade card prerequisite)
 - Enrollment (registration context)
 - User (recipient and issuer identity)
+- Settings (institution code for hash generation)
 
 ## Used By
 
 - Public verification endpoints (no module dependency)
+
+## File Structure
+
+```
+app/Certification/
+├── Actions/
+│   ├── BatchIssueCertificatesAction.php
+│   ├── IssueCertificateAction.php
+│   ├── ReadCertificateListAction.php
+│   ├── RevokeCertificateAction.php
+│   └── VerifyCertificateAction.php
+├── Enums/
+│   └── CertificateStatus.php
+├── Events/
+│   └── CertificateIssued.php
+├── Livewire/
+│   ├── CertificateManager.php
+│   ├── CertificateIssuanceWizard.php
+│   └── CertificateVerification.php
+├── Models/
+│   ├── Certificate.php
+│   └── CertificateTemplate.php
+├── Notifications/
+│   └── CertificateIssuedNotification.php
+├── Policies/
+│   └── CertificatePolicy.php
+└── Services/
+    └── CertificateVerificationService.php

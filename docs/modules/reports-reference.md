@@ -87,7 +87,7 @@ for the testing conventions.
 - **Submodules**: `Report`
 - **Business Logic**: `app/Reports/`
 - **Routing**: `routes/web/reports.php`
-- **Testing**: `tests/Feature/Reports/`, `tests/Unit/Reports/`
+- **Testing**: `tests/Reports/`, `tests/Reports/`
 - **Dependencies**: User, Program, Assessment, Assignment, Enrollment, Core
 
 _For overview and business context, see [reports.md](reports.md)._

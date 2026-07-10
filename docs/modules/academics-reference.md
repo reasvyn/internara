@@ -132,7 +132,7 @@ for the testing conventions.
 - **Business Logic**: `app/Academics/`
 - **Routing**: `routes/web/academics.php`
 - **Views**: `resources/views/academics/`
-- **Testing**: `tests/Feature/Academics/`, `tests/Unit/Academics/`
+- **Testing**: `tests/Academics/`, `tests/Academics/`
 - **Dependencies**: Core (BaseModel, BaseAction, BaseEntity, BaseData, BasePolicy)
 - **Events Consumed By**: `User/Dashboard` (cache invalidation listeners)
 - **Used By**: Program, Enrollment, Assessment, User/Dashboard

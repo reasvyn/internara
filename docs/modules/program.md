@@ -1,6 +1,6 @@
 # Program — Internship Lifecycle, Groups & Phases
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-10 **Changes:** expand — add Actions reference, routes, status state machine, file structure, and integration patterns
 
 ## Description
 
@@ -53,16 +53,83 @@ Each internship program defines the weight distribution between evaluation sourc
 supervisor score, school teacher score, and exam/presentation score. These weights are consumed by
 the Reports module when calculating final grade cards.
 
+### Program State Machine
+
+```mermaid
+stateDiagram-v2
+    [*] --> DRAFT
+    DRAFT --> PUBLISHED: Publish
+    PUBLISHED --> ACTIVE: Auto on start date
+    ACTIVE --> COMPLETED: Auto on end date
+    ACTIVE --> CANCELLED: Cancel
+    COMPLETED --> [*]
+    CANCELLED --> [*]
+```
+
+DRAFT → PUBLISHED requires at least one placement slot configured. ACTIVE → CANCELLED requires a reason for audit trail.
+
 ### Closure Readiness
 
-Before a program can transition to `closed`, the system validates: all enrolled students have
-finalized grade cards, all required evaluations are collected, no pending incidents at HIGH/CRITICAL
-severity, and all logbook compliance checks pass. The readiness check returns a detailed report of
-blocking items.
+Before a program can transition to `closed`, the system validates:
+
+| Check                              | Description                                    |
+| ---------------------------------- | ---------------------------------------------- |
+| Grade Cards Finalized              | All enrolled students have finalized reports   |
+| Evaluations Collected              | Required evaluations completed for all targets |
+| No Pending HIGH/CRITICAL Incidents | All severe incidents resolved or closed        |
+| Logbook Compliance                 | Minimum logbook entry frequency met            |
+
+The readiness check returns a detailed report of blocking items with actionable remediation steps.
+
+### Grading Weights
+
+Each program defines weight distribution between evaluation sources:
+
+```
+supervisor_score: 40%
+teacher_score:    40%
+exam_score:       20%
+```
+
+These weights are consumed by the Reports module when calculating final grade cards. Weights must sum to 100%.
+
+### Actions
+
+| Action                                        | Type      | Description                                       |
+| --------------------------------------------- | --------- | ------------------------------------------------- |
+| `CreateInternshipAction`                      | Command   | Create a new program with dates, weights, phases  |
+| `UpdateInternshipAction`                      | Command   | Update program configuration                      |
+| `PublishInternshipAction`                     | Command   | Transition DRAFT → PUBLISHED                      |
+| `CancelInternshipAction`                      | Command   | Transition ACTIVE → CANCELLED with reason         |
+| `CheckClosureReadinessAction`                 | Read      | Validate all closure prerequisites                |
+| `CreateInternshipGroupAction`                 | Command   | Create student cohort group                       |
+| `ReadInternshipListAction`                    | Read      | Query programs with filters and status            |
+
+### Routes
+
+| Method | URI                                              | Action                       |
+| ------ | ------------------------------------------------ | ---------------------------- |
+| GET    | `/program/internships`                           | Program index                |
+| POST   | `/program/internships`                           | Create program               |
+| GET    | `/program/internships/{internship}`              | Show program                 |
+| PUT    | `/program/internships/{internship}`              | Update program               |
+| POST   | `/program/internships/{internship}/publish`      | Publish program              |
+| POST   | `/program/internships/{internship}/cancel`       | Cancel program               |
+| GET    | `/program/internships/{internship}/closure-check`| Closure readiness report     |
+| GET    | `/program/groups`                                | Group index                  |
+| POST   | `/program/groups`                                | Create group                 |
+
+### Integration Patterns
+
+- **Assessment**: Program grading weights consumed by Assessment scoring calculations
+- **Reports**: Final grade calculation uses program-defined weight distribution
+- **Enrollment**: Registration is scoped to program; placement capacity constrained by program dates
+- **Journals**: Activity tracking and attendance scoped to active program period
+- **Cache**: Program configuration cached with key `program.{id}`; invalidated on program update
 
 ## Dependencies
 
-- Core (base classes)
+- Core (base classes, SmartLogger)
 - Academics (academic year for date scoping)
 - Partners (company slots for placement)
 
@@ -72,3 +139,32 @@ blocking items.
 - Journals (activity context)
 - Assessment (grading context)
 - Reports (grade compilation)
+- Guidance (supervision scope)
+
+## File Structure
+
+```
+app/Program/
+├── Actions/
+│   ├── CancelInternshipAction.php
+│   ├── CheckClosureReadinessAction.php
+│   ├── CreateInternshipAction.php
+│   ├── CreateInternshipGroupAction.php
+│   ├── PublishInternshipAction.php
+│   ├── ReadInternshipListAction.php
+│   └── UpdateInternshipAction.php
+├── Enums/
+│   └── InternshipStatus.php
+├── Events/
+│   ├── InternshipPublished.php
+│   └── InternshipCancelled.php
+├── Livewire/
+│   ├── InternshipManager.php
+│   ├── InternshipEditor.php
+│   └── InternshipGroupManager.php
+├── Models/
+│   ├── Internship.php
+│   ├── InternshipGroup.php
+│   └── InternshipGroupMember.php
+└── Policies/
+    └── InternshipPolicy.php

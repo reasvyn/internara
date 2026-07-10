@@ -161,7 +161,7 @@ for the testing conventions.
 - **Business Logic**: `app/Enrollment/`
 - **Routing**: `routes/web/enrollment.php`
 - **Views**: `resources/views/enrollment/`
-- **Testing**: `tests/Feature/Enrollment/`, `tests/Unit/Enrollment/`
+- **Testing**: `tests/Enrollment/`, `tests/Enrollment/`
 - **Dependencies**: Core, Program, Partners, User
 - **Events Consumed By**: `User/Dashboard` (cache invalidation)
 

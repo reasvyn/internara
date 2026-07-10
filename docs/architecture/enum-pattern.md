@@ -42,7 +42,8 @@ State machine enums additionally implement `StatusEnum`. UI badge enums optional
 - **Module-specific enum** → `app/{Module}/{SubModule}/Enums/{Name}.php`
 - **Cross-submodule enum** → `app/{Module}/Enums/{Name}.php` (inside a module's root `Enums/`)
 - **Shared enum** → `app/Core/Enums/{Name}.php` (used by 2+ modules)
-- **Test** → `tests/Unit/{Module}/{SubModule}/Enums/{Name}Test.php`
+- **Test** → `tests/{Module}/{SubModule}/Enums/{Name}Test.php`
+
 
 ---
 

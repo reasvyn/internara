@@ -1,6 +1,6 @@
 # Cache — Caching Strategy & Configuration
 
-> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-10 **Changes:** fix — correct malformed headings and code block comments (#Cache → ## Cache)
 
 ## Description
 
@@ -213,7 +213,7 @@ REDIS_PASSWORD=cluster-password
 
 ---
 
-#Cache — Caching Strategy & Configuration vs Session
+## Cache vs Session
 
 |               | Cache                                    | Session                          |
 | ------------- | ---------------------------------------- | -------------------------------- |
@@ -233,16 +233,16 @@ php artisan optimize
 
 # Individual caches
 php artisan config:cache      # Merge config files
-php artisan route:cache       Cache — Caching Strategy & Configuration route registration (no Closure routes)
+php artisan route:cache      # Cache route registration (no Closure routes)
 php artisan view:cache        # Compile all Blade templates
-php artisan event:cache       Cache — Caching Strategy & Configuration event discovery
+php artisan event:cache       # Cache event discovery
 
 # Maintenance
 php artisan cache:clear       # Flush only the cache store (not config/route/view)
 php artisan optimize:clear    # Clear ALL caches (config, route, view, events, cache store)
 ```
 
-##Cache — Caching Strategy & Configuration Warming
+### Cache Warming
 
 ```bash
 php artisan system:cache-warm

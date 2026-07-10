@@ -136,7 +136,7 @@ None.
 - **Business Logic**: `app/Setup/`
 - **Routing**: `routes/web/setup.php`
 - **Views**: `resources/views/setup/`
-- **Testing**: `tests/Feature/Setup/`, `tests/Unit/Setup/`
+- **Testing**: `tests/Setup/`, `tests/Setup/`
 - **Dependencies**: Core, Academics
 
 _For overview and business context, see [setup.md](setup.md)._
