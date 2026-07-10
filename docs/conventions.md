@@ -14,6 +14,37 @@ pattern-specific: code style, naming, file structure, and project rules.
 
 ---
 
+## Table of Contents
+
+- [0. Documentation-First](#0-documentation-first)
+- [1. Architecture Patterns](#1-architecture-patterns)
+- [2. General PHP](#2-general-php)
+- [3. Security Conventions](#3-security-conventions)
+  - [3.1 XSS Prevention](#31-xss-prevention)
+  - [3.2 SQL Injection Prevention](#32-sql-injection-prevention)
+  - [3.3 Mass Assignment Protection](#33-mass-assignment-protection)
+  - [3.4 CSRF Protection](#34-csrf-protection)
+  - [3.5 Content Security Policy](#35-content-security-policy)
+  - [3.6 File Upload Security](#36-file-upload-security)
+  - [3.7 Rate Limiting](#37-rate-limiting)
+- [4. Naming Conventions](#4-naming-conventions)
+- [5. Console Commands](#5-console-commands)
+- [6. Performance Conventions](#6-performance-conventions)
+  - [6.1 N+1 Query Prevention](#61-n1-query-prevention)
+  - [6.2 Query Optimization](#62-query-optimization)
+  - [6.3 Eager Loading Convention](#63-eager-loading-convention)
+  - [6.4 Resource Cleanup](#64-resource-cleanup)
+  - [6.5 Caching Conventions](#65-caching-conventions)
+- [7. Migrations, Factories & Seeders](#7-migrations-factories--seeders)
+- [8. Cross-Cutting Protocols](#8-cross-cutting-protocols)
+- [9. HTTP & API Conventions](#9-http--api-conventions)
+- [10. Dependency Injection Conventions](#10-dependency-injection-conventions)
+- [11. Code Quality Enforcement](#11-code-quality-enforcement)
+- [12. Testing Conventions](#12-testing-conventions)
+- [13. Localization](#13-localization)
+
+---
+
 ## 0. Documentation-First
 
 ### Documentation as Single Source of Truth

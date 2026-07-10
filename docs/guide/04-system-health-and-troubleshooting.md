@@ -30,7 +30,7 @@ You'll see a table like this:
  │ Extensions                   │ OK       │ All 12 required extensions loaded  │
  │ Recommended Extensions       │ WARN     │ Missing: redis, pcntl, posix       │
  │ PHP Memory Limit             │ OK       │ 256M (minimum 128M met)            │
- │ Database                     │ OK       │ mysql — connected, 54 tables       │
+ │ Database                     │ OK       │ mysql — connected, 55 tables       │
  │ Migration Status             │ OK       │ All 49 migrations up to date       │
  │ Storage Permissions          │ OK       │ All storage directories writable   │
  │ Disk Space                   │ OK       │ Disk 23% full                      │

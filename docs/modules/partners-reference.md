@@ -144,7 +144,7 @@ for the testing conventions.
 - **Business Logic**: `app/Partners/`
 - **Routing**: `routes/web/partners.php`
 - **Views**: `resources/views/partners/`
-- **Testing**: `tests/Feature/Partners/`, `tests/Unit/Partners/`
+- **Testing**: `tests/Partners/`, `tests/Partners/`
 - **Dependencies**: Core
 - **Used By**: Program, Guidance
 

@@ -119,7 +119,7 @@ supervision logs signed, certificates issued. Program states:
 | Category     | Requirement                                                                    |
 | ------------ | ------------------------------------------------------------------------------ |
 | Performance  | Peak 1,000 concurrent clock-in writes (07:00–08:30)                            |
-| Database     | SQLite WAL mode or MySQL; UUID primary keys; 54 tables (36 domain + 18 system) |
+| Database     | SQLite WAL mode or MySQL; UUID primary keys; 55 tables (37 domain + 18 system) |
 | Cache        | Redis for production, file cache for development                               |
 | Queue        | Separate `default` and `documents` pipelines                                   |
 | Security     | PII masking in logs, rate limiting on all auth endpoints, CSP headers          |

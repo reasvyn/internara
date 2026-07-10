@@ -1,6 +1,6 @@
 # Deployment — Options, Requirements & CI/CD
 
-> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-10 **Changes:** fix — correct malformed headings (#Deployment → ## Deployment Path)
 
 ## Description
 
@@ -14,7 +14,7 @@ For prerequisites and PHP extension requirements, see
 
 ---
 
-#Deployment — Options, Requirements & CI/CD Path A: Shared Hosting (Primary)
+## Deployment Path A: Shared Hosting (Primary)
 
 Shared hosting is the **recommended starting point** for most schools. It handles up to 500
 registered users per PKL period with zero devops overhead.
@@ -49,7 +49,7 @@ requirements.
 All core features: authentication, registration, attendance, logbook, assignments, assessments,
 reports, certificates, mentoring, email notifications.
 
-##Deployment — Options, Requirements & CI/CD Steps
+### Steps
 
 **1. Build locally:**
 
@@ -138,7 +138,7 @@ SESSION_DRIVER=redis
 
 ---
 
-#Deployment — Options, Requirements & CI/CD Path B: VPS / Dedicated Server
+## Deployment Path B: VPS / Dedicated Server
 
 ### 1. Web Server: Nginx
 
@@ -318,7 +318,7 @@ setup wizard, enable caches, and verify with `php artisan system:health`.
 
 ---
 
-#Deployment — Options, Requirements & CI/CD Path C: Docker
+## Deployment Path C: Docker
 
 ### Docker Compose Services
 

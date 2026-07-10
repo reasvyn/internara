@@ -8,12 +8,11 @@ This is NOT a replacement for `docs/architecture/testing-pattern.md` or
 ## Test Structure
 
 ```
-tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
+tests/{Module}/{SubModule}/{Name}Test.php
 ```
 
-- **Feature tests** (`tests/Feature/`) — use DB, factories, full Laravel stack
-- **Unit tests** (`tests/Unit/`) — no DB, pure logic (Entities, Enums, DTOs)
-- **Livewire tests** → ALWAYS in `tests/Feature/`, never in `tests/Unit/`
+All tests live under `tests/{Module}/` — there is no Unit vs Feature directory split.
+Tests that need a database use `LazilyRefreshDatabase`; pure logic tests do not.
 
 ## Quick Checklist Per Test
 

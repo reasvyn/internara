@@ -129,6 +129,37 @@ tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
 
 ---
 
+## AI Agent Development
+
+Internara uses AI agents extensively. The project includes:
+
+- **Skills (.agents/skills/)** — Reusable workflows for tasks like code refactoring, testing, and auditing
+- **Agent rules (AGENTS.md)** — Project invariants and behavioral guidelines
+- **MCP server integration** — Laravel Boost MCP server for database schema, error logs, and doc search
+
+When creating new agents or updating agent configuration:
+
+1. Add new skills to `.agents/skills/{name}/SKILL.md`
+2. Follow the existing skill structure (description, workflow, rules, references)
+3. Avoid duplicating rules that already exist in `docs/` — reference them instead
+4. Update `AGENTS.md` if project-wide invariants change
+
+### MCP Server Resources
+
+The Laravel Boost MCP server exposes:
+
+| Resource | Purpose |
+| -------- | ------- |
+| Application info | PHP/Laravel versions, installed packages |
+| Database schema | Table structures, columns, indexes, FKs |
+| Error logs | Read last N entries from application log |
+| Browser logs | Read last N entries from browser console |
+| Documentation search | Version-specific Laravel ecosystem docs |
+
+For new MCP capabilities, update `boost.json` and document them in `docs/infrastructure/`.
+
+---
+
 ## Questions?
 
 Open a [discussion](https://github.com/reasvyn/internara/discussions) or email

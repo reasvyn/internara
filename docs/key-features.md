@@ -1,6 +1,6 @@
 # Key Features — Feature Inventory Across All Modules
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-10 **Changes:** update — add User Guide feature, guidance handbooks, cross-role proxy, and Pulse monitoring entries
 
 ## Description
 
@@ -116,6 +116,8 @@ User CRUD, announcements, audit logs, health monitoring.
 | Announcement Manager | DRAFT/SCHEDULED/PUBLISHED lifecycle, Markdown, role-targeted | Admin       |
 | Audit Log Manager    | Centralized read-only audit log with filters                 | Admin       |
 | Bulk Operations      | Mass user creation with result summaries                     | Admin       |
+| Pulse Monitoring     | Laravel Pulse: queue throughput, slow jobs, failed jobs      | Admin       |
+| System Health        | 15-point check: PHP, extensions, DB, cache, storage, queue   | Admin       |
 
 ---
 
@@ -207,10 +209,12 @@ Mentor relationships, supervision logs, and policy handbook management.
 | Feature                     | Description                                              | Access                         |
 | --------------------------- | -------------------------------------------------------- | ------------------------------ |
 | Supervision Logs            | Private notes: site visits, online, phone supervision    | Mentor                         |
+| Supervision Log Workflow    | DRAFT → SUBMITTED → VERIFIED with teacher bypass window  | Mentor                         |
 | Mentoring Assignments       | Maps teachers and supervisors to student registrations   | Admin                          |
 | Handbook Manager            | Upload and manage PDF handbooks by target role           | Admin                          |
 | Handbook List & Acknowledge | View, download, and acknowledge handbooks                | Student / Teacher / Supervisor |
 | Role-Targeted Visibility    | Handbooks scoped to student, teacher, supervisor, or all | System                         |
+| Cross-Role Proxy            | Teacher proxies supervisor log verification after 48h    | Teacher                        |
 
 ### Incident — Issue Reporting
 
@@ -231,12 +235,14 @@ Structured reporting and investigation.
 
 Rubric-based evaluation framework.
 
-| Feature            | Description                                                    | Access               |
-| ------------------ | -------------------------------------------------------------- | -------------------- |
-| Rubric Manager     | CRUD weighted evaluation sheets with nested JSON structures    | Admin                |
-| Assessment Grading | Score against rubric indicators, auto-calculate weighted total | Teacher / Supervisor |
-| Finalization       | Finalized assessments immutable                                | System               |
-| Cross-Role Proxy   | Teacher acts as proxy for supervisor; admin proxies both       | Teacher / Admin      |
+| Feature            | Description                                                    | Access                 |
+| ------------------ | -------------------------------------------------------------- | ---------------------- |
+| Rubric Manager     | CRUD weighted evaluation sheets with nested JSON structures    | Admin                  |
+| Assessment Grading | Score against rubric indicators, auto-calculate weighted total | Teacher / Supervisor   |
+| Finalization       | Finalized assessments immutable                                | System                 |
+| Cross-Role Proxy   | Teacher acts as proxy for supervisor; admin proxies both       | Teacher / Admin        |
+| Supervisor Grading | Industry supervisor submits scores via dedicated interface     | Supervisor             |
+| Proxy Stamping     | Proxy-graded assessments tagged with metadata for audit trail  | System                 |
 
 ### Assignment — Tasks & Submissions
 

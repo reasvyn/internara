@@ -72,12 +72,11 @@ Using this skill follows 4 phases:
 ## Test Structure
 
 ```
-tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
+tests/{Module}/{SubModule}/{Name}Test.php
 ```
 
-- **Feature tests** (`tests/Feature/`) — use DB, factories, full Laravel stack
-- **Unit tests** (`tests/Unit/`) — no DB, pure logic (Entities, Enums, DTOs)
-- **Livewire tests** — always in `tests/Feature/`
+All tests live under `tests/{Module}/` — the old `tests/Unit/` and `tests/Feature/` split has been removed.
+Tests that need a database use `LazilyRefreshDatabase`; pure logic tests do not.
 
 ## Test Priorities (Build Order)
 

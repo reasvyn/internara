@@ -192,7 +192,7 @@ Action handles the media library call.
 - [ ] `RejectedException` caught before `Throwable`
 - [ ] Form Objects used for 5+ fields
 - [ ] Validation rules defined (component or Form Object)
-- [ ] Component test exists in `tests/Feature/`
+- [ ] Component test exists in `tests/`
 
 ## References
 

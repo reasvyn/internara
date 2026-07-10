@@ -137,7 +137,7 @@ for the testing conventions.
 - **Business Logic**: `app/Assignment/`
 - **Routing**: `routes/web/assignment.php`
 - **Views**: `resources/views/assignment/`
-- **Testing**: `tests/Feature/Assignment/`, `tests/Unit/Assignment/`
+- **Testing**: `tests/Assignment/`, `tests/Assignment/`
 - **Dependencies**: User, Program, Core
 
 _For overview and business context, see [assignment.md](assignment.md)._

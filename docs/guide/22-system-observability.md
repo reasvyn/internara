@@ -56,7 +56,7 @@ Output example:
   Extensions                     OK        All 12 required extensions loaded
   Recommended Extensions         WARN      Missing: redis, pcntl
   PHP Memory                     OK        256M (minimum 128M met)
-  Database                       OK        sqlite — connected, 54 tables
+  Database                       OK        sqlite — connected, 55 tables
   Migration Status               OK        All 53 migrations up to date
   Storage                        OK        All storage directories are writable
   Disk Space                     OK        12% used — 42.5 GB free

@@ -1,7 +1,6 @@
 # Chapter 0: User Manual Overview
 
-> **Last updated:** 2026-07-05 **Changes:** sync — convert chapter table to list format; fix
-> getting-started troubleshooting link
+> **Last updated:** 2026-07-10 **Changes:** fix — document reserved chapter 8 gap in numbering
 
 Welcome to Internara — the vocational fieldwork management system for Indonesian schools.
 
@@ -35,6 +34,7 @@ Estimated total time: **1–2 hours** for installation and initial setup.
   access, manage recovery keys (10–15 min)
 - **[07 — Login & Dashboard](07-login-and-dashboard.md)** — Log in, navigate the dashboard, manage
   your profile (10–15 min)
+- **~~08 — (Reserved)~~** — Chapter number reserved for future content
 - **[09 — User Profile & Recovery](09-user-profile-and-recovery.md)** — Edit profile, manage
   recovery codes, use notifications (10–15 min)
 - **[10 — System Settings & Backups](10-system-settings-and-backups.md)** — Configure branding,

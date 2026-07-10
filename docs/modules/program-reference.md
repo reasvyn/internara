@@ -163,7 +163,7 @@ for the testing conventions.
 - **Business Logic**: `app/Program/`
 - **Routing**: `routes/web/program.php`
 - **Views**: `resources/views/program/`
-- **Testing**: `tests/Feature/Program/`, `tests/Unit/Program/`
+- **Testing**: `tests/Program/`, `tests/Program/`
 - **Dependencies**: Academics, Partners, Core
 - **Used By**: Enrollment, Journals, Evaluation
 

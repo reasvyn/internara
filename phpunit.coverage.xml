@@ -5,11 +5,65 @@
          colors="true"
 >
     <testsuites>
-        <testsuite name="Unit">
-            <directory>tests/Unit</directory>
+        <testsuite name="Academics">
+            <directory>tests/Academics</directory>
         </testsuite>
-        <testsuite name="Feature">
-            <directory>tests/Feature</directory>
+        <testsuite name="Assessment">
+            <directory>tests/Assessment</directory>
+        </testsuite>
+        <testsuite name="Assignment">
+            <directory>tests/Assignment</directory>
+        </testsuite>
+        <testsuite name="Auth">
+            <directory>tests/Auth</directory>
+        </testsuite>
+        <testsuite name="Certification">
+            <directory>tests/Certification</directory>
+        </testsuite>
+        <testsuite name="Core">
+            <directory>tests/Core</directory>
+        </testsuite>
+        <testsuite name="Document">
+            <directory>tests/Document</directory>
+        </testsuite>
+        <testsuite name="Enrollment">
+            <directory>tests/Enrollment</directory>
+        </testsuite>
+        <testsuite name="Evaluation">
+            <directory>tests/Evaluation</directory>
+        </testsuite>
+        <testsuite name="Guidance">
+            <directory>tests/Guidance</directory>
+        </testsuite>
+        <testsuite name="Incident">
+            <directory>tests/Incident</directory>
+        </testsuite>
+        <testsuite name="Journals">
+            <directory>tests/Journals</directory>
+        </testsuite>
+        <testsuite name="Partners">
+            <directory>tests/Partners</directory>
+        </testsuite>
+        <testsuite name="Program">
+            <directory>tests/Program</directory>
+        </testsuite>
+        <testsuite name="Providers">
+            <directory>tests/Providers</directory>
+        </testsuite>
+        <testsuite name="Reports">
+            <directory>tests/Reports</directory>
+        </testsuite>
+        <testsuite name="Settings">
+            <directory>tests/Settings</directory>
+        </testsuite>
+        <testsuite name="Setup">
+            <directory>tests/Setup</directory>
+        </testsuite>
+        <testsuite name="SysAdmin">
+            <directory>tests/SysAdmin</directory>
+        </testsuite>
+        <testsuite name="User">
+            <directory>tests/User</directory>
         </testsuite>
     </testsuites>
     <source>

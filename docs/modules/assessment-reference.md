@@ -112,7 +112,7 @@ for the testing conventions.
 - **Business Logic**: `app/Assessment/`
 - **Routing**: `routes/web/assessment.php`
 - **Views**: `resources/views/assessment/`
-- **Testing**: `tests/Feature/Assessment/`, `tests/Unit/Assessment/`
+- **Testing**: `tests/Assessment/`, `tests/Assessment/`
 - **Dependencies**: Core
 - **Used By**: Evaluation
 

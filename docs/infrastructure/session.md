@@ -1,6 +1,6 @@
 # Session — Session Configuration & Security
 
-> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-10 **Changes:** fix — correct malformed headings (#Session → ## Session)
 
 ## Description
 
@@ -66,7 +66,7 @@ The `last_activity` column is indexed because garbage collection queries against
 
 ---
 
-#Session — Session Configuration & Security Lifetime
+## Session Lifetime
 
 The session lifetime defaults to **120 minutes of inactivity**. This balances security and
 convenience:
@@ -89,7 +89,7 @@ token's lifetime (default: 5 years, hashed).
 
 ## Security
 
-##Session — Session Configuration & Security Fixation Prevention
+### Session Fixation Prevention
 
 The session ID is regenerated on every authentication state change:
 

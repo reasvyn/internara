@@ -189,7 +189,7 @@ for the testing conventions.
 - **Business Logic**: `app/SysAdmin/`
 - **Routing**: `routes/web/sysadmin.php`
 - **Views**: `resources/views/sysadmin/`
-- **Testing**: `tests/Feature/SysAdmin/`, `tests/Unit/SysAdmin/`
+- **Testing**: `tests/SysAdmin/`, `tests/SysAdmin/`
 - **Dependencies**: User, Academics, Core
 
 _For overview and business context, see [sysadmin.md](sysadmin.md)._

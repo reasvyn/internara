@@ -186,7 +186,7 @@ None.
 - **Business Logic**: `app/Auth/`
 - **Routing**: `routes/web/auth.php`
 - **Views**: `resources/views/auth/`
-- **Testing**: `tests/Feature/Auth/`, `tests/Unit/Auth/`
+- **Testing**: `tests/Auth/`, `tests/Auth/`
 - **Dependencies**: Core, User
 
 _For overview and business context, see [auth.md](auth.md)._

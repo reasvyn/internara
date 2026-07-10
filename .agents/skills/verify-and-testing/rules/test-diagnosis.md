@@ -3,13 +3,13 @@
 ## Reading Failure Output
 
 ```
-FAILED  Tests\Unit\Core\Services\LangCheckerTest > `LangChecker with real…   
+FAILED  Tests\Core\Services\LangCheckerTest > `LangChecker with real…   
 Expected: :step | Setup
 To contain: Internara
-at tests/Unit/Core/Services/LangCheckerTest.php:86
+at tests/Core/Services/LangCheckerTest.php:86
 ```
 
-1. **Test class** → `Tests\Unit\Core\Services\LangCheckerTest`
+1. **Test class** → `Tests\Core\Services\LangCheckerTest` (namespace reflects `tests/Core/`)
 2. **Test description** → `LangChecker with real…` (truncated, check full with `--verbose`)
 3. **Expected vs actual** → `Expected: :step | Setup` / `To contain: Internara`
 4. **File:line** → `LangCheckerTest.php:86`
