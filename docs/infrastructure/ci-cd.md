@@ -34,8 +34,8 @@ Every commit and pull request must pass the following gates before merge:
 | Code Style | Laravel Pint | No diffs | `vendor/bin/pint --test` |
 | Formatting | Prettier | No diffs | `npm run format:check` |
 | Static Analysis | PHPStan (level 8) | No errors | `vendor/bin/phpstan analyse --no-progress` |
-| Unit Tests | Pest | 100% pass | `composer run test:unit` |
-| Feature Tests | Pest | 100% pass | `composer run test:feature` |
+| Module Unit Tests | Pest | 100% pass | `vendor/bin/pest --testsuite={ModuleName}` |
+| Module Integration Tests | Pest | 100% pass | `vendor/bin/pest --testsuite={ModuleName}` |
 | Frontend Build | Vite | No errors | `npm run build` |
 | Coverage | Pest (pcov) | ≥ 85% | `composer run coverage` |
 
@@ -132,7 +132,7 @@ jobs:
 ## Local Quality Commands
 
 ```bash
-# Quick check (lint + analyse + feature tests)
+# Quick check (lint + analyse + module tests)
 composer run quality
 
 # Full check (format + strict analyse + coverage)
@@ -141,9 +141,10 @@ composer run quality:full
 # Individual gates
 composer run lint              # PHP + JS lint
 composer run analyse           # PHPStan level 8
-composer run test              # Full test suite
-composer run test:unit         # Unit tests only
-composer run test:feature      # Feature tests only
+# Run tests for a specific module:
+vendor/bin/pest --testsuite={ModuleName}   # replace {ModuleName} with the module, e.g., 'User'
+# Run full test suite (all modules)
+composer run test              # Full test suite (all modules)
 composer run coverage          # With coverage report
 npm run build                  # Vite production build
 ```

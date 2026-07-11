@@ -102,18 +102,17 @@ Self-hosted, single-tenant PKL management for Indonesian SMA/SMK (MIT).
 | Blade/CSS/JS | `npm run build` only |
 | Refactoring (rename, extract) | Targeted test: `php artisan test --compact --filter={TestSuite}` |
 | New feature / business logic | Full suite ONCE after all changes batched |
-| Dependency updates | `php artisan test --compact --testsuite=Feature` |
+| Dependency updates | `vendor/bin/pest --testsuite={ModuleName}` (run affected module suites) |
 
 ```bash
 # Targeted tests
-php artisan test --compact --testsuite=Feature
-php artisan test --compact --testsuite=Unit
+vendor/bin/pest --testsuite={ModuleName}   # Run tests for a specific module (replace {ModuleName})
 php artisan test --compact --filter={ClassName}
 php -l path/to/file.php
 php artisan system:health
 
 # Full verification (after refactoring or before merge)
-php artisan test --compact
+php artisan test --compact   # Run full test suite (all modules)
 vendor/bin/pint --dirty --format agent
 vendor/bin/phpstan analyse --no-progress
 ```
@@ -139,10 +138,10 @@ vendor/bin/phpstan analyse --no-progress
 ```bash
 composer run dev           # Serve + queue + logs + vite (concurrently)
 composer run test          # Full suite (optimize:clear + test)
-composer run test:feature  # Feature tests only
-composer run test:unit     # Unit tests only
+# Run tests for a specific module:
+vendor/bin/pest --testsuite={ModuleName}  # Replace {ModuleName} with module name, e.g., 'User'
 composer run analyse       # PHPStan level 8
-composer run quality       # Lint + analyse + feature tests
+composer run quality       # Lint + analyse + module tests
 php artisan system:health  # Health check
 php artisan admin:recover  # Super admin CLI recovery
 php artisan setup:install  # Audits env, runs migrations, seeds defaults

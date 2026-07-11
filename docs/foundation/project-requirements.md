@@ -1,6 +1,6 @@
 # Project Requirements — Constraints & Specifications
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-10 **Changes:** add UI/UX & interaction requirements (§6)
 
 ## Description
 
@@ -128,7 +128,76 @@ supervision logs signed, certificates issued. Program states:
 
 ---
 
-## 6. Security & Compliance
+## 6. UI/UX & Interaction Requirements
+
+### 6.1 User Guide Components
+
+Every page with a non-trivial workflow MUST include a `*-guide.blade.php` component providing
+contextual help. The pattern follows the setup wizard's guide at
+`resources/views/setup/components/setup-guide.blade.php`.
+
+- **Placement:** `resources/views/{module}/components/{page-name}-guide.blade.php`
+- **Trigger:** Fixed floating button (bottom-right, `z-50`) with question mark icon
+- **Modal:** `<x-mary-modal>` with step-by-step instructions
+- **Content:** Introductory sentence, numbered steps (1 through N), tip section for best practices
+- **Integration:** `$showGuide` boolean state + `@include` in parent Blade view
+
+### 6.2 Record Manager Capabilities
+
+Every record manager component (extending `BaseRecordManager`) MUST provide:
+
+| Capability       | Description                                                                 |
+| ---------------- | --------------------------------------------------------------------------- |
+| **Search**       | Full-text search across relevant columns                                     |
+| **Sort**         | Column-based sorting with visual indicators                                  |
+| **Filters**      | Dropdown/checkbox filters for status, date ranges, categories                |
+| **Batch Actions**| Bulk operations on selected records (delete, status change, export selection)|
+| **Extra Menu**   | Download template, import (CSV/Excel), export (CSV/Excel/PDF)               |
+
+### 6.3 Localization
+
+All user-facing strings MUST use `__()` helper with bilingual support:
+
+- **Minimum:** English (`lang/en/`) and Indonesian (`lang/id/`)
+- **No hardcoded strings:** Every visible text, flash message, validation message, and UI label
+- **Translation keys:** Follow `{module}.{context}.{key}` convention
+- **Parameters:** Use `:param` syntax for dynamic values
+- **Shared labels:** Use `common.php` for global terms (yes, no, save, cancel, etc.)
+
+### 6.4 Theming System
+
+Every Livewire component MUST implement the theming system from the Settings/Theme module:
+
+- **CSS variables:** Use `var(--color-primary)`, `var(--color-secondary)`, etc. for brand colors
+- **Dark/light mode:** Respect `theme.dark_mode` setting via CSS class or attribute
+- **Dynamic colors:** Never hardcode hex colors — use `brand()` helper or CSS variables
+- **Consistency:** All components must render correctly in both light and dark modes
+- **Accessibility:** Maintain sufficient contrast ratios (WCAG AA minimum)
+
+### 6.5 Form Field Icons
+
+Every form field MUST include an icon for visual clarity:
+
+- **Input fields:** Icon on the left side (e.g., `user`, `envelope`, `calendar`)
+- **Buttons:** Optional icon (recommended for primary actions)
+- **Icons:** Use Heroicons via maryUI icon system
+- **Consistency:** Same icon for same field type across all modules
+- **Accessibility:** Icons must not be the sole indicator — pair with labels
+
+### 6.6 UI Design Principles
+
+The interface MUST maintain a clean, modern, minimalist aesthetic with strong accessibility:
+
+- **Layout:** Consistent spacing, clear hierarchy, white space utilization
+- **Typography:** Readable fonts, appropriate sizes, clear contrast
+- **Components:** Use maryUI component library for consistency
+- **Accessibility:** ARIA labels, keyboard navigation, screen reader support
+- **Responsive:** Mobile-first design, works on all device sizes
+- **Feedback:** Clear loading states, success/error messages, progress indicators
+
+---
+
+## 7. Security & Compliance
 
 - **PII Redaction:** Email, phone, NISN, password, address masked in logs per PDP law (UU No.
   27/2022)

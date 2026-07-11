@@ -41,9 +41,9 @@ without running tests?
 | **CSS / JS / NPM** | `npm run build`, check for errors | Purely frontend |
 | **Helper / utility function** | Quick tinker test: `php artisan tinker --execute="dump(myFunction('test'));"` | Validate contract before writing test |
 | **Single method refactor** | Targeted: `php artisan test --compact --filter={ClassName}` | Isolated change, test only the affected class |
-| **Cross-module refactor** | `php artisan test --compact --testsuite=Feature` | Integration risk — feature suite covers real DB |
+| **Cross-module refactor** | `vendor/bin/pest --testsuite={ModuleName}` (run affected module suites) | Integration risk — module integration tests cover real DB |
 | **New Action / Model / Service** | Full suite ONCE after all changes batched | Highest risk — verify nothing broke elsewhere |
-| **Composer dependency bump** | `php artisan test --compact --testsuite=Feature` | Lock-only changes rarely break unit tests |
+| **Composer dependency bump** | Run affected module suites: `vendor/bin/pest --testsuite={ModuleName}` | Lock-only changes rarely break unit tests |
 | **NPM dependency bump** | `npm run build` | Frontend only |
 
 ### Lightweight Verification Toolkit
@@ -82,9 +82,9 @@ php artisan test --compact --filter={ClassName}
 php artisan test --compact --filter="ActionResponse|BaseFormRequest|LangChecker" \
   && php artisan test --compact --filter="CertificateStatus"
 
-# Entire test suite (use only when necessary)
-php artisan test --compact --testsuite=Feature   # Feature tests only
-php artisan test --compact --testsuite=Unit       # Unit tests only
+# Run tests for a specific module
+vendor/bin/pest --testsuite={ModuleName}   # Run tests for the specified module (replace {ModuleName})
+# Run full suite (all modules)
 php artisan test --compact                        # All tests
 ```
 
@@ -186,7 +186,7 @@ php artisan test --compact --filter={FailingTest}
 # 3. Run siblings (same file) to verify no collateral damage
 php artisan test --compact --filter={ClassName}
 
-# 4. Only if cross-module impact suspected → run feature suite
+# 4. Only if cross-module impact suspected → run affected module suites or run the full suite
 ```
 
 ### Common Test Failures & Fixes

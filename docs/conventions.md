@@ -1,6 +1,6 @@
 # Coding Conventions — PHP Rules, Naming & Testing
 
-> **Last updated:** 2026-06-24 **Changes:** sync — add 2 missing pre-commit items
+> **Last updated:** 2026-07-10 **Changes:** add theming & form field icon conventions; renumber §13→§14
 > (DTO/ActionResponse check, doc metadata check); sync with AGENTS.md pre-commit checklist
 
 ## Description
@@ -41,7 +41,8 @@ pattern-specific: code style, naming, file structure, and project rules.
 - [10. Dependency Injection Conventions](#10-dependency-injection-conventions)
 - [11. Code Quality Enforcement](#11-code-quality-enforcement)
 - [12. Testing Conventions](#12-testing-conventions)
-- [13. Localization](#13-localization)
+- [13. Theming & Visual Consistency](#13-theming--visual-consistency)
+- [14. Localization](#14-localization)
 
 ---
 
@@ -712,7 +713,44 @@ Use these annotations in code comments for tracking technical debt:
 
 ---
 
-## 13. Localization
+## 13. Theming & Visual Consistency
+
+### CSS Variable Usage
+
+All components MUST use CSS variables from the Settings/Theme module for brand colors:
+
+```blade
+{{-- ✅ Correct — uses CSS variable --}}
+<div class="bg-[var(--color-primary)]">
+
+{{-- ❌ Wrong — hardcoded color --}}
+<div class="bg-blue-500">
+```
+
+- Primary, secondary, accent colors from `brand()` helper or CSS variables
+- Never hardcode hex colors in Blade or CSS
+- Respect dark/light mode via `theme.dark_mode` setting
+
+### Form Field Icons
+
+Every form field MUST include an icon for visual clarity:
+
+| Field Type    | Icon Examples                          |
+| ------------- | -------------------------------------- |
+| Text input    | `o-user`, `o-envelope`, `o-phone`     |
+| Password      | `o-key`, `o-lock-closed`              |
+| Date          | `o-calendar`                          |
+| Time          | `o-clock`                             |
+| File upload   | `o-cloud-arrow-up`                    |
+| Search        | `o-magnifying-glass`                  |
+| Select/Dropdown | `o-chevron-down`                    |
+
+Icons use the Heroicons system via maryUI. Pair icons with labels — never use icons as the sole
+indicator for accessibility.
+
+---
+
+## 14. Localization
 
 ### File Structure
 

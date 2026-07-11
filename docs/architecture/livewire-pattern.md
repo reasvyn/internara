@@ -1,9 +1,9 @@
 # Livewire Component Patterns — Thin Components, Injection & Forms
 
-> **Last updated:** 2026-07-05
+> **Last updated:** 2026-07-10
 >
 > **Changes:** sync — add BaseRecordEntry and BaseRecordList component hierarchy; update
-> BaseRecordManager to clarify sysadmin scope
+> BaseRecordManager to clarify sysadmin scope; cross-reference project requirements §6
 
 ## Description
 
@@ -568,9 +568,12 @@ tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
 
 ## 11. Guide Component Pattern (\*-guide.blade.php)
 
-Every page with a non-trivial workflow MUST include a `*-guide.blade.php` component that serves as
+Every page with a non-trivial workflow MUST include a `*-guide.blade.php` component serving as
 contextual help for the user. The pattern follows the setup wizard's guide component at
 `resources/views/setup/components/setup-guide.blade.php`.
+
+> **See also:** [Project Requirements §6.1](../foundation/project-requirements.md#61-user-guide-components)
+> for the authoritative requirement specification.
 
 ### Requirements
 

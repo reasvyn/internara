@@ -17,29 +17,36 @@
 
 ## Module Maturity Overview
 
-| Module | Maturity | Test Coverage | Docs | Notes |
-| ------ | -------- | ------------- | ---- | ----- |
-| Core | ✅ Stable | ≥ 90% | ✅ Complete | Foundation complete |
-| Auth | ✅ Stable | ≥ 90% | ✅ Complete | Login, RBAC, recovery |
-| User | ✅ Stable | ≥ 85% | ✅ Complete | Profile, notifications, dashboards |
-| SysAdmin | ✅ Stable | ≥ 85% | ✅ Complete | User CRUD, announcements, audit |
-| Setup | ✅ Stable | ≥ 90% | ✅ Complete | Installation wizard |
-| Settings | ✅ Stable | ≥ 85% | ✅ Complete | System config, branding |
-| Academics | ✅ Stable | ≥ 85% | ✅ Complete | School, departments, academic years |
-| Program | 🟡 Stable | ≥ 80% | ✅ Complete | Internship lifecycle, groups |
-| Partners | 🟡 Stable | ≥ 80% | ✅ Complete | Companies, partnerships |
-| Enrollment | 🟡 Stable | ≥ 80% | ✅ Complete | Registration, placement, changes |
-| Journals | 🟡 Stable | ≥ 75% | ✅ Complete | Logbook, attendance, absences |
-| Guidance | 🟡 Stable | ≥ 75% | ✅ Complete | Supervision logs, handbooks |
-| Assessment | 🟡 Stable | ≥ 80% | ✅ Complete | Rubrics, grading |
-| Evaluation | 🟡 Stable | ≥ 75% | ✅ Complete | Feedback forms, auto-scoring |
-| Assignment | 🟡 Stable | ≥ 75% | ✅ Complete | Tasks, submissions, grading |
-| Incident | 🟡 Stable | ≥ 70% | ✅ Complete | Issue reporting, workflows |
-| Certification | 🟡 Stable | ≥ 75% | ✅ Complete | Certificates, QR, verification |
-| Reports | 🔄 Refactoring | ≥ 70% | 🔄 Updating | Grade card purification in progress |
-| Document | 🟡 Stable | ≥ 70% | ✅ Complete | Templates, rendering, handbooks |
+| Module | Maturity | Score | Test Coverage | Docs | Issues | Notes |
+| ------ | -------- | ----- | ------------- | ---- | ------ | ----- |
+| Core | ✅ Stable | — | ≥ 90% | ✅ Complete | — | Foundation complete |
+| Auth | ✅ Stable | — | ≥ 90% | ✅ Complete | — | Login, RBAC, recovery |
+| User | ✅ Stable | — | ≥ 85% | ✅ Complete | — | Profile, notifications, dashboards |
+| SysAdmin | ✅ Stable | — | ≥ 85% | ✅ Complete | — | User CRUD, announcements, audit |
+| Setup | ✅ Stable | — | ≥ 90% | ✅ Complete | — | Installation wizard |
+| Settings | ✅ Stable | — | ≥ 85% | ✅ Complete | — | System config, branding |
+| Academics | ✅ Stable | — | ≥ 85% | ✅ Complete | — | School, departments, academic years |
+| Program | 🟡 Stable | — | ≥ 80% | ✅ Complete | — | Internship lifecycle, groups |
+| Partners | 🟡 Stable | — | ≥ 80% | ✅ Complete | — | Companies, partnerships |
+| Enrollment | 🟡 Stable | — | ≥ 80% | ✅ Complete | — | Registration, placement, changes |
+| Program | 🟡 Stable | **72** | 184 passed | ⚠️ Stale | #301 | P1: dead DTOs, doc drift |
+| Partners | 🟡 Stable | **73** | 93 passed | 🔄 Updating | #298 | P0: event dispatch, app() locator |
+| Enrollment | 🟡 Stable | **72** | 208 passed (1 failed) | ✅ Complete | #299 | P0: broken Blade render |
+| Journals | 🔴 Needs Work | **64** | 189 passed | ✅ Complete | #292 | P0: wrong user_id, undefined method |
+| Guidance | 🟡 Stable | **78** | 91 passed (1 failed) | 🔄 Updating | #295 | P0: missing supervisors property |
+| Assessment | 🔴 Needs Work | **55** | 49 passed (3 failed) | ⚠️ Stale | #300 | P0: Blade array errors, 6 P0s |
+| Evaluation | 🔴 Skeleton | **35** | 32 passed (model-only) | ⚠️ Stale | #290 | P0: 95% structurally missing |
+| Assignment | 🟡 Stable | **62** | 67 passed | ⚠️ Stale | #296 | P0: runtime crash, ActionResponse gaps |
+| Incident | 🟡 Stable | **68** | 36 passed | ⚠️ Stale | #293 | P1: ActionResponse & DTO gaps |
+| Certification | 🔴 Needs Work | **58** | 38 passed (1 failed) | ⚠️ Stale | #297 | P0: schema mismatches, missing columns |
+| Reports | 🟡 Stable | **70** | 26 passed | 🔄 Updating | #294 | P1: ActionResponse gaps, dead code |
+| Document | 🔴 Broken | **42** | 27 passed | ⚠️ Stale | #291 | P0: non-existent columns, runtime errors |
 
-**Legend:** ✅ Complete / 🟡 Stable / 🔄 In Progress / 📋 Planned
+**Legend:** ✅ Complete / 🟡 Stable / 🔴 Needs Work / 🔄 In Progress / ⚠️ Stale / 📋 Planned
+
+**Scoring criteria:** Architecture compliance (Action Triad, DTOs, Entities), test coverage, localization, documentation accuracy, runtime stability, convention adherence.
+
+**Audit date:** 2026-07-10 — Batch 1 (lowest 6 modules). Remaining modules analyzed in subsequent batches.
 
 ---
 
