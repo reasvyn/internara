@@ -133,6 +133,14 @@ Update both fields when content changes.
 4. Conceptual docs contain NO implementation details (no file paths, no schemas)
 5. Reference docs contain NO design rationale
 
+## Automation Scripts
+
+| Script | What it does | Command |
+|--------|-------------|---------|
+| `scan_doc_links.py` | Validate all relative links in markdown files | `python3 scripts/scan_doc_links.py` |
+
+Output: `scripts/outputs/{timestamp}-doc-links.json` with broken link details (file, line, target).
+
 ## Verification Checklist
 
 - [ ] New modules/submodules have `.md` + `-reference.md` files

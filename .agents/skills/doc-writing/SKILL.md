@@ -269,6 +269,14 @@ Before committing doc changes, verify:
 | **This skill** | **DOCUMENTATION** — writes and maintains all documentation |
 | **Downstream** | `sync-docs` (automated sync verification) |
 
+## Automation Scripts
+
+| Script | What it does | Command |
+|--------|-------------|---------|
+| `scan_doc_links.py` | Validate all relative links in markdown files | `python3 scripts/scan_doc_links.py` |
+
+Output: `scripts/outputs/{timestamp}-doc-links.json`.
+
 ## References
 
 | Topic | Location |

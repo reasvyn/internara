@@ -100,6 +100,15 @@ Tests that need a database use `LazilyRefreshDatabase`; pure logic tests do not.
 - Use `assertModelExists()` over `assertDatabaseHas()`
 - Never mock Eloquent models — use factories + real database
 
+## Automation Scripts
+
+| Script | What it does | Command |
+|--------|-------------|---------|
+| `scan_tests.py` | Run test suite, parse per-module results | `python3 scripts/scan_tests.py` |
+
+Use `--module {Name}` to run tests for a single module. Output:
+`scripts/outputs/{timestamp}-tests.json`.
+
 ### Mocking
 
 | Boundary      | Approach                         |

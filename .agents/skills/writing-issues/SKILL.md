@@ -255,6 +255,14 @@ constraint | Business rule (quota check) belongs in domain layer; DB constraint 
 7. **Use relative paths** for file references within the project
 8. **Label according to type** — use labels already defined in the repo
 
+## Automation Scripts
+
+| Script | What it does | Command |
+|--------|-------------|---------|
+| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 scripts/scan_issues.py` |
+
+Output: `scripts/outputs/{timestamp}-issues.json`.
+
 ## Labels Reference
 
 | Label              | Color     | Description                |
