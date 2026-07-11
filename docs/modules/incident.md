@@ -1,6 +1,6 @@
 # Incident — Issue Reporting & Resolution
 
-> **Last updated:** 2026-07-10 **Changes:** expand — add file structure, Actions reference, state machine detail, and integration patterns
+> **Last updated:** 2026-07-11 **Changes:** sync — remove implementation details (Actions, Routes, File Structure) to reference doc
 
 ## Description
 
@@ -62,24 +62,6 @@ Each transition requires an authorized actor and cannot skip steps. Transitions 
 | `UNFOUNDED`              | Report could not be substantiated                  |
 | `REFERRED`               | Issue referred to external authority (e.g., police) |
 
-### Actions
-
-| Action                                  | Type      | Description                                    |
-| --------------------------------------- | --------- | ---------------------------------------------- |
-| `CreateIncidentReportAction`            | Command   | Create a new incident report with severity     |
-| `UpdateIncidentStatusAction`            | Command   | Transition incident state (INVESTIGATING, etc) |
-| `ResolveIncidentAction`                 | Command   | Resolve with outcome and resolution notes      |
-| `ReadIncidentReportAction`              | Read      | Query incidents with filters and pagination    |
-
-### Routes
-
-| Method | URI                                               | Action                     |
-| ------ | ------------------------------------------------- | -------------------------- |
-| GET    | `/incident/reports`                               | Incident Index             |
-| POST   | `/incident/reports`                               | Create Incident            |
-| GET    | `/incident/reports/{incidentReport}`              | Show Incident              |
-| PATCH  | `/incident/reports/{incidentReport}/status`       | Update Status              |
-
 ### Integration Patterns
 
 - **Notifications**: CRITICAL severity dispatches `IncidentEscalatedNotification` to all admin users via email + in-app
@@ -99,25 +81,4 @@ Each transition requires an authorized actor and cannot skip steps. Transitions 
 - SysAdmin (escalation handling, pulse monitoring)
 - Evaluation (incident data may influence program quality evaluation)
 
-## File Structure
 
-```
-app/Incident/
-├── Actions/
-│   ├── CreateIncidentReportAction.php
-│   ├── UpdateIncidentStatusAction.php
-│   ├── ResolveIncidentAction.php
-│   └── ReadIncidentReportAction.php
-├── Enums/
-│   ├── IncidentSeverity.php
-│   ├── IncidentStatus.php
-│   └── IncidentOutcome.php
-├── Events/
-│   └── IncidentEscalated.php
-├── Livewire/
-│   ├── IncidentCenter.php
-│   └── IncidentForm.php
-├── Models/
-│   └── IncidentReport.php
-└── Policies/
-    └── IncidentReportPolicy.php

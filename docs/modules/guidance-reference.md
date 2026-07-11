@@ -1,6 +1,6 @@
 # Guidance — Technical Reference
 
-> **Last updated:** 2026-06-17 **Changes:** sync — add Handbook and MonitoringVisit submodules; fix
+> **Last updated:** 2026-07-11 **Changes:** sync — add Handbook and MonitoringVisit submodules; fix
 > SupervisionStatus → SupervisionLogState entity; add missed SupervisionLog actions
 > (CreateLogAction) and Livewire components
 
@@ -134,8 +134,6 @@ for the testing conventions.
 | -------------------------------- | ------------------- |
 | `create_supervision_logs_table`  | `supervision_logs`  |
 | `create_monitoring_visits_table` | `monitoring_visits` |
-
----
 
 ---
 

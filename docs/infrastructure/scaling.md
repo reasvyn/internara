@@ -1,6 +1,6 @@
 # Scaling — Performance & Scaling Strategies
 
-> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
 
 ## Description
 
@@ -450,7 +450,7 @@ k6 run --vus 200 --duration 5m path/to/Tier3Validation.js
 
 ---
 
-## References
+## Where to Find It
 
 | Document                                                                  | Contents                                              |
 | ------------------------------------------------------------------------- | ----------------------------------------------------- |

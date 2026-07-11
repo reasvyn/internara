@@ -1,6 +1,6 @@
 # Program — Technical Reference
 
-> **Last updated:** 2026-06-17 **Changes:** sync — add missing InternshipStatusBatchUpdated event
+> **Last updated:** 2026-07-11 **Changes:** sync — add missing InternshipStatusBatchUpdated event
 
 ## Description
 
@@ -152,8 +152,6 @@ for the testing conventions.
 | `create_internships_table`              | `internships`              |
 | `create_internship_groups_table`        | `internship_groups`        |
 | `create_internship_group_members_table` | `internship_group_members` |
-
----
 
 ---
 

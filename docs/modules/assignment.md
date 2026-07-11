@@ -1,6 +1,6 @@
 # Assignment — Tasks, Submissions & Grading
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
 
 ## Description
 
@@ -20,10 +20,11 @@ final grade aggregation (Reports).
 
 ## Submodules
 
-##Assignment — Tasks, Submissions & Grading Task definition entity: title, description, due dates,
-point value, optional rubric reference, and resource file attachments (via Spatie Media Library).
-Teachers CRUD assignments scoped to a program. Per-student extensions adjust individual deadlines.
-Deadlines cannot be set in the past.
+### Assignment Task
+
+Task definition entity: title, description, due dates, point value, optional rubric reference, and
+resource file attachments (via Spatie Media Library). Teachers CRUD assignments scoped to a program.
+Per-student extensions adjust individual deadlines. Deadlines cannot be set in the past.
 
 ### Submission
 

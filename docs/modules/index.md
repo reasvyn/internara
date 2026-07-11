@@ -1,5 +1,7 @@
 # Module Index — Module Dependency Graph & Navigation
 
+> **Last updated:** 2026-07-11 **Changes:** sync — add metadata, verify module count
+
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire
 components.

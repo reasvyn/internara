@@ -1,6 +1,6 @@
 # Partners — Technical Reference
 
-> **Last updated:** 2026-06-27 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
 
 ## Description
 
@@ -133,8 +133,6 @@ for the testing conventions.
 | --------------------------- | -------------- |
 | `create_companies_table`    | `companies`    |
 | `create_partnerships_table` | `partnerships` |
-
----
 
 ---
 

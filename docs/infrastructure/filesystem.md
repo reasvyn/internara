@@ -1,6 +1,6 @@
 # Filesystem — File Storage & Directory Layout
 
-> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — consolidate Media Library content into media-library.md reference
 
 ## Description
 
@@ -65,66 +65,9 @@ Without this symlink, media URLs return 404.
 
 ## Media Library Integration
 
-Files attached to Eloquent models are managed by `spatie/laravel-medialibrary`. It provides media
-collections, automatic file naming, image conversions, and queue-based processing.
-
-### Collections
-
-| Model                  | Collection     | Files    | Purpose                            |
-| ---------------------- | -------------- | -------- | ---------------------------------- |
-| `User`                 | `avatar`       | Single   | Profile picture                    |
-| `School`               | `logo`         | Single   | Institution logo                   |
-| `Document`             | `file`         | Single   | Uploaded document template         |
-| `Submission`           | `file`         | Multiple | Assignment submission files        |
-| `RegistrationDocument` | `file`         | Single   | Identity or requirement document   |
-| `Logbook`              | `photos`       | Multiple | Daily activity photo documentation |
-| `Partnership`          | `mou_document` | Single   | Signed MoU agreement               |
-| `Certificate`          | `output`       | Single   | Generated certificate PDF          |
-
-### Retrieving Files
-
-```php
-$url = $user->getFirstMediaUrl('avatar'); // URL of first file
-$url = $user->getFirstMediaUrl('avatar', 'thumb'); // URL of thumbnail conversion
-$media = $user->getFirstMedia('avatar'); // Full media object
-$files = $model->getMedia('documents'); // All files in collection
-```
-
----
-
-## Image Conversions
-
-When images are uploaded, the media library generates resized versions automatically.
-
-| Conversion | Width | Format | Queued | Purpose                       |
-| ---------- | ----- | ------ | ------ | ----------------------------- |
-| `thumb`    | 400px | WebP   | Yes    | Avatars, thumbnails in tables |
-
-### Driver
-
-| Driver         | Quality | Setup                                              |
-| -------------- | ------- | -------------------------------------------------- |
-| `gd` (default) | Good    | Built into PHP, no setup                           |
-| `imagick`      | Better  | Requires `ext-imagick`, higher compression quality |
-
-```env
-IMAGE_DRIVER=imagick
-```
-
-### Queue Integration
-
-Conversions are queued by default (`queue_conversions_by_default: true` in
-`config/media-library.php`). The queue connection is inherited from `QUEUE_CONNECTION`:
-
-- **Tier 1 (Shared Hosting — up to 500 registered users):** conversions run synchronously, uploads
-  take longer
-- **Tier 2+ (Redis, dual pipeline):** conversions run asynchronously via the `default` queue worker
-
-To make a conversion synchronous (available immediately):
-
-```php
-$this->addMediaConversion('thumb')->nonQueued();
-```
+Files attached to Eloquent models are managed by `spatie/laravel-medialibrary`. For complete
+documentation on media collections, image conversions, queue integration, and file upload flow, see
+[Media Library](media-library.md).
 
 ---
 

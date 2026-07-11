@@ -1,6 +1,6 @@
 # Auth — Technical Reference
 
-> **Last updated:** 2026-07-06
+> **Last updated:** 2026-07-11
 >
 > **Changes:** sync — add SendPasswordChangedMail, InvalidateSessionOnPasswordChange listeners; add
 > CredentialChangedNotification
@@ -174,8 +174,6 @@ None.
 | ---------------------------- | --------------- |
 | `create_access_tokens_table` | `access_tokens` |
 | `create_permission_tables`   | `permissions`   |
-
----
 
 ---
 

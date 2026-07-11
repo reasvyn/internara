@@ -4,6 +4,7 @@ description: SDLC Phase: MAINTENANCE. Comprehensive markdown documentation sync 
 upstream:
   - feature-building
   - code-refactoring
+  - doc-writing
   - livewire-development
   - tailwindcss-development
   - medialibrary-development

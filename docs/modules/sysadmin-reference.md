@@ -1,6 +1,6 @@
 # SysAdmin — Technical Reference
 
-> **Last updated:** 2026-06-17 **Changes:** sync — add Backup model to Models table; add Backups
+> **Last updated:** 2026-07-11 **Changes:** sync — add Backup model to Models table; add Backups
 > Events and Support sections
 
 ## Description
@@ -96,9 +96,11 @@ logging, Pulse observability, and GDPR compliance.
 
 ## Services
 
-| File                               | Service        | Purpose                        |
-| ---------------------------------- | -------------- | ------------------------------ |
-| `Backups/Support/BackupRunner.php` | `BackupRunner` | Backup execution orchestration |
+| File                                            | Service              | Purpose                       |
+| ----------------------------------------------- | -------------------- | ----------------------------- |
+| `Backups/Services/BackupRunner.php`             | `BackupRunner`       | Backup execution orchestration |
+| `Observability/Services/EnvironmentAuditor.php` | `EnvironmentAuditor` | Environment health assessment |
+| `Observability/Services/PulseGuard.php`         | `PulseGuard`         | Pulse monitoring guard        |
 
 ## Notifications
 
@@ -142,15 +144,6 @@ logging, Pulse observability, and GDPR compliance.
 | `Http/Controllers/AccountSlipController.php` | `AccountSlipController` | `BaseController` | Account slip downloads     |
 | `Http/Controllers/CronController.php`        | `CronController`        | `BaseController` | Health check cron endpoint |
 
-## Services
-
-| File                                            | Service              | Purpose                       |
-| ----------------------------------------------- | -------------------- | ----------------------------- |
-| `Observability/Services/EnvironmentAuditor.php` | `EnvironmentAuditor` | Environment health assessment |
-| `Observability/Services/PulseGuard.php`         | `PulseGuard`         | Pulse monitoring guard        |
-
----
-
 ## Routes
 
 File: `routes/web/sysadmin.php` Naming pattern: `sysadmin.{resource}.{action}`
@@ -181,15 +174,13 @@ for the testing conventions.
 
 ---
 
----
-
 ## Architectural Integration
 
 - **Submodules**: `Announcement`, `Backups`, `Observability`
 - **Business Logic**: `app/SysAdmin/`
 - **Routing**: `routes/web/sysadmin.php`
 - **Views**: `resources/views/sysadmin/`
-- **Testing**: `tests/SysAdmin/`, `tests/SysAdmin/`
+- **Testing**: `tests/SysAdmin/`
 - **Dependencies**: User, Academics, Core
 
 _For overview and business context, see [sysadmin.md](sysadmin.md)._

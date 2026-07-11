@@ -1,6 +1,6 @@
 # Certification — Technical Reference
 
-> **Last updated:** 2026-07-05 **Changes:** sync — fix base class extends: BaseAction →
+> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
 > BaseCommandAction/BaseReadAction
 
 ## Description
@@ -98,8 +98,6 @@ Tests are located in `tests/{Feature,Unit}/Certification/`. See
 | Migration                   | Table          |
 | --------------------------- | -------------- |
 | `create_certificates_table` | `certificates` |
-
----
 
 ---
 

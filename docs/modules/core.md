@@ -1,6 +1,6 @@
 # Core — Base Classes, Contracts & Exceptions
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — replace class-by-class listing with conceptual overview
 
 ## Description
 
@@ -27,66 +27,29 @@ Out of scope: domain-specific logic, domain enums, application settings, user-fa
 
 Core has no submodules. Code is organized by architectural layer:
 
-- **Actions/BaseAction.php** — Abstract foundation for Command and Process Action types. Provides
-  atomic `$this->transaction()` wrapping, auto-audit logging via SmartLogger, and consistent error
-  handling.
-- **Models/BaseModel.php** — Abstract model base enforcing UUID v7 primary keys (via `HasUuids`
-  trait), `HasFactory`, soft deletes, and consistent timestamp behavior. `Authenticatable` variant
-  for the User model. Common scopes (`active`, `inactive`, `recent`, `createdAfter`,
-  `createdBefore`, `ordered`) extracted into shared `HasCommonScopes` trait.
-- **Models/Concerns/HasCommonScopes.php** — Shared trait providing 6 common query scopes
-  (`scopeActive`, `scopeInactive`, `scopeRecent`, `scopeCreatedAfter`, `scopeCreatedBefore`,
-  `scopeOrdered`) used by both `BaseModel` and `BaseAuthenticatable`.
-- **Models/ActivityLog.php** — Concrete model for SmartLogger's dual-channel audit log persistence.
-- **Entities/BaseEntity.php** — `final readonly` base for domain entities. Zero framework
-  dependencies. Entities expose `fromModel()` static factories and `toArray()` for serialization.
-- **Policies/BasePolicy.php** — Abstract policy providing `before()` superadmin gate bypass, role
-  checks via `AuthorizesRoles`, and ownership checks via `AuthorizesOwnership`.
-- **Policies/Concerns/** — Reusable authorization traits: `AuthorizesRoles`, `AuthorizesOwnership`.
-  Used by all module policies.
-- **Livewire/BaseRecordManager.php** — Abstract CRUD table component with built-in sorting,
-  filtering, pagination, bulk actions, and record selection.
-- **Livewire/Concerns/** — UI state management traits: `WithSorting` (column sorting),
-  `WithRecordSelection` (checkbox row selection for bulk actions).
-- **Http/Controllers/BaseController.php** — Abstract controller providing consistent JSON error
-  responses and request context injection.
-- **Http/Requests/BaseFormRequest.php** — Abstract form request that throws
-  `ValidationFailedException` on failure (no redirects), compatible with API and Livewire
-  subrequests.
-- **Http/Middleware/** — Request pipeline middleware: `SecurityHeaders` (CSP, X-Frame-Options,
-  etc.), `LogContext` (request tracing).
-- **Contracts/** — Interfaces: `LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`,
-  `SettingsStore`.
-- **Exceptions/** — Dual hierarchy: `AppException` for infrastructure/presentation/action failures,
-  `ModuleException` for business rule violations. Concrete subclasses: `ConflictException` (409),
-  `NotFoundException` (404), `RateLimitException` (429), `RejectedException` (400),
-  `UnauthorizedException` (403), `ValidationFailedException` (422). All implement
-  `HasExceptionContext`.
-- **Events/BaseEvent.php** — Abstract base for event objects with `Dispatchable`, `eventName()`, and
-  `toPayload()`.
-- **Data/BaseData.php** — Abstract readonly DTO base for type-safe data transfer objects with
-  `fromArray()`, `toArray()`, `only()`, `except()`, `merge()`. Concrete DTOs: `ActionResponse`
-  (standardized action result), `AuditCheck` (single audit check), `AuditReport` (aggregated audit
-  results).
-- **Enums/** — System-wide enums: `CsvRowResult` (row import status), `AuditCategory` (health
-  categories), `AuditStatus` (pass/fail/warn). All implement `LabelEnum`.
-- **Services/SmartLogger.php** — Fluent dual-channel logger writing to system (debug) and activity
-  (immutable audit) channels with automatic PII masking, event dispatching, and translation
-  resolution.
-- **Services/LangChecker.php** — Dev helper that warns on missing translation keys via SmartLogger.
-- **Services/AppInfo.php** — Static application metadata from `composer.json` with config fallback
-  (name, version, author, license, gitUrl). Powers `app_info()` global helper.
-- **Services/AppIntegrity.php** — Composer author verification, enforcing that the author name must
-  be "Reas Vyn".
-- **Support/** — Concrete utilities: `Color` (hex manipulation, luminance, contrast, shade
-  computation), `CsvHandler` (CSV parsing/generation with safe file handle management),
-  `Environment` (system environment detection), `PasswordRules` (password policy presets),
-  `PiiMasker` (PII redaction for emails, phones, names, IPs, user agents).
-- **Actions/Concerns/** — Action traits: `HandlesActionErrors` (generic try-catch-log-rethrow).
-- **helpers.php** — Global helper function: `app_info()` for static metadata access.
+**Abstract infrastructure** (contracts, base classes, interfaces): `Actions/BaseAction.php`,
+`Models/BaseModel.php`, `Entities/BaseEntity.php`, `Policies/BasePolicy.php`,
+`Events/BaseEvent.php`, `Data/BaseData.php`, `Http/Controllers/BaseController.php`,
+`Http/Requests/BaseFormRequest.php`, `Contracts/` (LabelEnum, StatusEnum, ColorableEnum,
+SendsNotifications, SettingsStore).
 
-The helpers `setting()` and `brand()` are defined in the Settings module at
-`app/Settings/Support/helpers.php`.
+**Concrete implementations** (reusable across all modules): `Data/ActionResponse`,
+`Data/AuditCheck`, `Data/AuditReport`, `Enums/` (CsvRowResult, AuditCategory, AuditStatus),
+`Exceptions/` (full dual hierarchy with HasExceptionContext), `Livewire/BaseRecordManager` and
+concerns (WithSorting, WithRecordSelection), `Policies/Concerns/` (AuthorizesRoles,
+AuthorizesOwnership), `Http/Middleware/` (SecurityHeaders, LogContext), `Support/` (Color,
+CsvHandler, Environment, PasswordRules, PiiMasker, Spotlight).
+
+**Infrastructure services** (system-level, not domain logic): `Services/SmartLogger` (dual-channel
+audit logging with PII masking), `Services/AppInfo` (static metadata), `Services/AppIntegrity`
+(author verification), `Services/LangChecker` (missing translation detection),
+`Services/ModuleDiscoverService` (dynamic module registration).
+
+**Shared models**: `Models/ActivityLog` (SmartLogger persistence), `Models/BaseAuthenticatable`
+(User model base with manual HasUuids).
+
+**Helper functions**: `app/Core/Support/helpers.php` provides `app_info()`. The `setting()` and
+`brand()` helpers live in `app/Settings/Support/helpers.php`.
 
 ## Key Concepts
 

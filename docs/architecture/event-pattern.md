@@ -1,6 +1,6 @@
 # Events, Listeners & Notifications Pattern — Dispatch, Listeners & Multi-Channel
 
-> **Last updated:** 2026-07-01 **Changes:** clarify: events are for async communication only — not
+> **Last updated:** 2026-07-11 **Changes:** clarify: events are for async communication only — not
 > mandatory; only create when a listener exists
 
 ## Description
@@ -202,7 +202,7 @@ Inside Command or Process Actions, use `$this->dispatchEvent()` to **defer** dis
 transaction commits. This prevents listeners from seeing uncommitted data:
 
 ```php
-class {Entity}Action extends BaseAction
+class {Entity}Action extends BaseCommandAction
 {
     public function execute(Model $entry, array $data): Model
     {

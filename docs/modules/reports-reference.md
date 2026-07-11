@@ -1,6 +1,6 @@
 # Reports — Technical Reference
 
-> **Last updated:** 2026-07-03 **Changes:** remove deleted actions/events/Livewire; add
+> **Last updated:** 2026-07-11 **Changes:** remove deleted actions/events/Livewire; add
 > FinalizeReportAction, CreateReportData DTO; update ReportStatus enum
 
 ## Description

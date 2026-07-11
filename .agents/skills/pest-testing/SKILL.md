@@ -2,7 +2,8 @@
 name: pest-testing
 description: SDLC Phase: TESTING. Test writing, editing, and fixing using Pest — feature tests, unit tests, architecture tests, Livewire component tests.
 upstream:
-  - verify-and-testing
+  - test-writing
+  - code-writing
   - feature-building
   - code-refactoring
   - livewire-development

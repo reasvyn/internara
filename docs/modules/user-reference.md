@@ -1,6 +1,6 @@
 # User — Technical Reference
 
-> **Last updated:** 2026-07-05 **Changes:** sync — fix base class extends: BaseAction →
+> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
 > BaseCommandAction/BaseReadAction
 
 ## Description
@@ -17,18 +17,18 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 | File                                                          | Class                              | Extends             |
 | ------------------------------------------------------------- | ---------------------------------- | ------------------- |
-| `Actions/ReadActivityLogAction.php`                           | `ReadActivityLogAction`            | Read                |
-| `Profile/Actions/ReadProfileFormAction.php`                   | `ReadProfileFormAction`            | Read                |
+| `Actions/ReadActivityLogAction.php`                           | `ReadActivityLogAction`            | `BaseReadAction`    |
+| `Profile/Actions/ReadProfileFormAction.php`                   | `ReadProfileFormAction`            | `BaseReadAction`    |
 | `Profile/Actions/UpdateProfileAction.php`                     | `UpdateProfileAction`              | `BaseCommandAction` |
 | `Notifications/Actions/DeleteNotificationAction.php`          | `DeleteNotificationAction`         | `BaseCommandAction` |
 | `Notifications/Actions/MarkAllAsReadAction.php`               | `MarkAllAsReadAction`              | `BaseCommandAction` |
 | `Notifications/Actions/MarkAsReadAction.php`                  | `MarkAsReadAction`                 | `BaseCommandAction` |
 | `Notifications/Actions/MarkBatchAsReadAction.php`             | `MarkBatchAsReadAction`            | `BaseAction`        |
 | `Notifications/Actions/SendNotificationAction.php`            | `SendNotificationAction`           | `BaseCommandAction` |
-| `Dashboard/Actions/ReadStudentDashboardAction.php`            | `ReadStudentDashboardAction`       | Read                |
-| `Dashboard/Actions/ReadSupervisorDashboardAction.php`         | `ReadSupervisorDashboardAction`    | Read                |
-| `Dashboard/Actions/ReadTeacherDashboardAction.php`            | `ReadTeacherDashboardAction`       | Read                |
-| `AccountStatus/Actions/DetectUserAccountCloneAction.php`      | `DetectUserAccountCloneAction`     | Read                |
+| `Dashboard/Actions/ReadStudentDashboardAction.php`            | `ReadStudentDashboardAction`       | `BaseReadAction`    |
+| `Dashboard/Actions/ReadSupervisorDashboardAction.php`         | `ReadSupervisorDashboardAction`    | `BaseReadAction`    |
+| `Dashboard/Actions/ReadTeacherDashboardAction.php`            | `ReadTeacherDashboardAction`       | `BaseReadAction`    |
+| `AccountStatus/Actions/DetectUserAccountCloneAction.php`      | `DetectUserAccountCloneAction`     | `BaseReadAction`    |
 | `AccountStatus/Actions/LockUserAccountAction.php`             | `LockUserAccountAction`            | `BaseCommandAction` |
 | `AccountStatus/Actions/UnlockUserAccountAction.php`           | `UnlockUserAccountAction`          | `BaseCommandAction` |
 | `UserManagement/Actions/ArchiveStudentAccountsAction.php`     | `ArchiveStudentAccountsAction`     | `BaseAction`        |
@@ -36,8 +36,8 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `UserManagement/Actions/CreateUserAction.php`                 | `CreateUserAction`                 | `BaseAction`        |
 | `UserManagement/Actions/DeleteUserAction.php`                 | `DeleteUserAction`                 | `BaseAction`        |
 | `UserManagement/Actions/GenerateAccountSlipAction.php`        | `GenerateAccountSlipAction`        | `BaseAction`        |
-| `UserManagement/Actions/ReadRecoveryKeyAction.php`            | `ReadRecoveryKeyAction`            | Read                |
-| `UserManagement/Actions/ReadUserManagerStatsAction.php`       | `ReadUserManagerStatsAction`       | Read                |
+| `UserManagement/Actions/ReadRecoveryKeyAction.php`            | `ReadRecoveryKeyAction`            | `BaseReadAction`    |
+| `UserManagement/Actions/ReadUserManagerStatsAction.php`       | `ReadUserManagerStatsAction`       | `BaseReadAction`    |
 | `UserManagement/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseAction`        |
 | `UserManagement/Actions/SaveRecoveryKeyAction.php`            | `SaveRecoveryKeyAction`            | `BaseAction`        |
 | `UserManagement/Actions/SetUserStatusAction.php`              | `SetUserStatusAction`              | `BaseAction`        |
@@ -77,7 +77,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Entities/StudentEntity.php`    | `StudentEntity`    | `BaseEntity` |
 | `Entities/SupervisorEntity.php` | `SupervisorEntity` | `BaseEntity` |
 | `Entities/TeacherEntity.php`    | `TeacherEntity`    | `BaseEntity` |
-| `Entities/MentorEntity.php`     | `MentorEntity`     | `BaseEntity` |
+| `Mentor/Entities/MentorEntity.php` | `MentorEntity` | `BaseEntity` |
 
 ---
 
@@ -173,7 +173,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 | File                                  | Class                     | Purpose                             |
 | ------------------------------------- | ------------------------- | ----------------------------------- |
-| `Support/UserIdentifierGenerator.php` | `UserIdentifierGenerator` | Generates usernames and identifiers |
+| `Services/UserIdentifierGenerator.php` | `UserIdentifierGenerator` | Generates usernames and identifiers |
 | `Services/DashboardService.php`       | `DashboardService`        | Dashboard data aggregation          |
 
 ## Rules
@@ -220,7 +220,7 @@ the testing conventions.
 | `Unit/User/Rules/ReservedAuthoritativeNameTest.php`                    | Reserved name validation                                                 |
 | `Unit/User/Rules/SystemUsernameTest.php`                               | Username format validation                                               |
 | `Unit/User/Services/DashboardServiceTest.php`                          | Dashboard routing by role                                                |
-| `Unit/User/Support/UserIdentifierGeneratorTest.php`                    | Username generation from email, collision handling                       |
+| `Unit/User/Services/UserIdentifierGeneratorTest.php`                   | Username generation from email, collision handling                       |
 | `Unit/User/Notifications/Data/NotificationDataTest.php`                | NotificationData DTO                                                     |
 | `Feature/User/Profile/ProfileModelTest.php`                            | Profile model: relationships, fields, cascade delete                     |
 | `Feature/User/Profile/UpdateProfileActionTest.php`                     | UpdateProfileAction                                                      |
@@ -260,15 +260,13 @@ the testing conventions.
 
 ---
 
----
-
 ## Architectural Integration
 
 - **Submodules**: `Profile`, `Notifications`, `Dashboard`, `AccountStatus`, `UserManagement`
 - **Business Logic**: `app/User/`
 - **Routing**: `routes/web/user.php`
 - **Views**: `resources/views/user/`
-- **Testing**: `tests/User/`, `tests/User/`
+- **Testing**: `tests/User/`
 - **Dependencies**: Core, SysAdmin
 
 _For overview and business context, see [user.md](user.md)._

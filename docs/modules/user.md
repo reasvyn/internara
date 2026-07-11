@@ -1,6 +1,6 @@
 # User — Profiles, Notifications & Dashboards
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
 
 ## Description
 
@@ -51,7 +51,7 @@ The `User` model handles authentication concerns only (email, password, status).
 holds personal data. This separation keeps auth logic lean and allows profile schema to evolve
 independently. Both are UUID-keyed and soft-deletable.
 
-##User — Profiles, Notifications & Dashboardsname Generation
+### Username Generation
 
 Usernames are auto-derived from the email local part, lowercased and alphanumeric-only. Collisions
 are resolved by appending numeric suffixes (`user` → `user1` → `user2`). Emails are globally unique.
