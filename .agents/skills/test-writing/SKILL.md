@@ -242,6 +242,14 @@ During full suite run:
 | **This skill** | **VERIFY & TEST** — verification strategy, efficient test execution, fix diagnosis |
 | **Downstream** | `pest-testing` (detailed test writing), `sync-docs` (doc updates after verification) |
 
+## Automation Scripts
+
+| Script | What it does | Command |
+|--------|-------------|---------|
+| `scan_tests.py` | Run test suite, parse per-module results | `python3 scripts/scan_tests.py` |
+
+Use `--module {Name}` to scope. Output: `scripts/outputs/{timestamp}-tests.json`.
+
 ## References
 
 | Topic | Location |

@@ -367,3 +367,12 @@ Start here for any topic:
 | Full doc catalog                    | `docs/index.md`                                                  |
 | ADRs                                | `docs/adr/index.md`                                              |
 | Known issues                        | GitHub Issues                                                    |
+
+## Automation Scripts
+
+| Script | What it does | Command |
+|--------|-------------|---------|
+| `scan_files.py` | File counts and lines of code per module | `python3 scripts/scan_files.py` |
+| `scan_architecture.py` | Component counts per module, submodule structure | `python3 scripts/scan_architecture.py` |
+
+Output: `scripts/outputs/{timestamp}-{description}.json`.

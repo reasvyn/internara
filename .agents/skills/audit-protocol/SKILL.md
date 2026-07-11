@@ -176,6 +176,20 @@ Each finding recorded as a GitHub Issue should include:
 3. Do NOT fix issues during audit — that is the refactoring phase
 4. Verify findings against actual code — docs and skills may be stale
 
+## Automation Scripts
+
+Pre-built scripts for efficient auditing. Run from project root.
+
+| Script | What it does | Command |
+|--------|-------------|---------|
+| `scan_architecture.py` | Component counts per module, submodule structure | `python3 scripts/scan_architecture.py` |
+| `scan_conventions.py` | strict_types, Fillable, debug calls, hardcoded strings | `python3 scripts/scan_conventions.py` |
+| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 scripts/scan_dead_code.py` |
+| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `python3 scripts/scan_issues.py` |
+
+All scripts output to `scripts/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to scope
+to a single module. See `scripts/README.md` for full documentation.
+
 ## Verification Checklist
 
 - [ ] **Code** — All 4 layers audited: UI, Business, Data, Infra

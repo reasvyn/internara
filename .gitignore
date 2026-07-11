@@ -62,6 +62,7 @@ yarn-error.log
 .gemini/
 .opencode/
 opencode.json
+/scripts/outputs/*.json
 
 # Backup Files
 /**/*.backup

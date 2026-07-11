@@ -149,6 +149,15 @@ lines.
 - [ ] `declare(strict_types=1)` in new files
 - [ ] Pint clean; PHPStan passes
 
+## Automation Scripts
+
+| Script | What it does | Command |
+|--------|-------------|---------|
+| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `python3 scripts/scan_dead_code.py` |
+| `scan_architecture.py` | Component counts per module, submodule structure | `python3 scripts/scan_architecture.py` |
+
+Use `--module {Name}` to scope. Output: `scripts/outputs/{timestamp}-{description}.json`.
+
 ## References
 
 | Topic                        | Doc                                                          |

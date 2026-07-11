@@ -504,6 +504,14 @@ ActionResponse::error('Something went wrong', $errors);
 | **This skill** | **CODE WRITING** — writes PHP/Blade/JS following all conventions |
 | **Downstream** | `test-writing` (verification), `pest-testing` (test writing), `doc-writing` (documentation), `sync-docs` (doc sync) |
 
+## Automation Scripts
+
+| Script | What it does | Command |
+|--------|-------------|---------|
+| `scan_conventions.py` | strict_types, Fillable, debug calls, hardcoded strings | `python3 scripts/scan_conventions.py` |
+
+Output: `scripts/outputs/{timestamp}-conventions.json`.
+
 ## References
 
 | Topic | Location |
