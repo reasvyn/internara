@@ -158,6 +158,13 @@ lines.
 
 Use `--module {Name}` to scope. Output: `scripts/outputs/{timestamp}-{description}.json`.
 
+## Quality Gate — arch-guard
+
+After refactoring, validate against arch-guard:
+- Run `python3 scripts/scan_violations.py` to verify no new violations
+- Run `python3 scripts/scan_class_contracts.py` for contract compliance
+- See `arch-guard` skill for full rule reference
+
 ## References
 
 | Topic                        | Doc                                                          |

@@ -17,6 +17,8 @@ downstream:
   - sync-docs
   - tailwindcss-development
   - test-writing
+  - arch-guard
+  - script-automation
 ---
 
 # Context Awareness

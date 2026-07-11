@@ -109,6 +109,14 @@ Tests that need a database use `LazilyRefreshDatabase`; pure logic tests do not.
 Use `--module {Name}` to run tests for a single module. Output:
 `scripts/outputs/{timestamp}-tests.json`.
 
+## Quality Gate — arch-guard
+
+Test files must also pass arch-guard checks:
+- Test files must have `declare(strict_types=1)` (D1)
+- No debug calls in tests (D2) — use `->dd()` or `->dump()` Pest methods instead
+- Test naming follows `it_{behavior}()` convention
+- See `arch-guard` skill for full rule reference
+
 ### Mocking
 
 | Boundary      | Approach                         |
