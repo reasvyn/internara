@@ -1,6 +1,6 @@
 # Certification — Certificates, Templates & QR
 
-> **Last updated:** 2026-07-10 **Changes:** expand — add Actions reference, routes, verification endpoint spec, file structure, and integration patterns
+> **Last updated:** 2026-07-11 **Changes:** sync — remove implementation details (Actions, Routes, File Structure) to reference doc
 
 ## Description
 
@@ -73,27 +73,6 @@ GET /verify/{hash}
 }
 ```
 
-### Actions
-
-| Action                       | Type      | Description                                        |
-| ---------------------------- | --------- | -------------------------------------------------- |
-| `IssueCertificateAction`     | Command   | Issue certificate (checks finalized report first)  |
-| `BatchIssueCertificatesAction` | Process  | Issue certificates for entire cohort (queued)      |
-| `RevokeCertificateAction`    | Command   | Revoke certificate (terminal — serial retired)     |
-| `VerifyCertificateAction`    | Read      | Public verification by QR hash                     |
-| `ReadCertificateListAction`  | Read      | Query certificates with filters                    |
-
-### Routes
-
-| Method | URI                     | Action                              |
-| ------ | ----------------------- | ----------------------------------- |
-| GET    | `/certificates`         | Certificate index (admin)           |
-| POST   | `/certificates/issue`   | Issue single certificate            |
-| POST   | `/certificates/batch`   | Batch issue for cohort              |
-| GET    | `/certificates/{cert}`  | Show certificate details            |
-| POST   | `/certificates/{cert}/revoke` | Revoke certificate            |
-| GET    | `/verify/{hash}`        | Public verification (no auth)       |
-
 ### Integration Patterns
 
 - **Reports Gate**: `IssueCertificateAction` checks for finalized Report record — throws `RejectedException` if missing
@@ -114,30 +93,4 @@ GET /verify/{hash}
 
 - Public verification endpoints (no module dependency)
 
-## File Structure
 
-```
-app/Certification/
-├── Actions/
-│   ├── BatchIssueCertificatesAction.php
-│   ├── IssueCertificateAction.php
-│   ├── ReadCertificateListAction.php
-│   ├── RevokeCertificateAction.php
-│   └── VerifyCertificateAction.php
-├── Enums/
-│   └── CertificateStatus.php
-├── Events/
-│   └── CertificateIssued.php
-├── Livewire/
-│   ├── CertificateManager.php
-│   ├── CertificateIssuanceWizard.php
-│   └── CertificateVerification.php
-├── Models/
-│   ├── Certificate.php
-│   └── CertificateTemplate.php
-├── Notifications/
-│   └── CertificateIssuedNotification.php
-├── Policies/
-│   └── CertificatePolicy.php
-└── Services/
-    └── CertificateVerificationService.php

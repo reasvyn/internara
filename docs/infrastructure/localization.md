@@ -1,6 +1,6 @@
 # Localization — Translation & Locale System
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
 
 ## Description
 
@@ -216,7 +216,7 @@ Before submitting, verify:
 
 ---
 
-## References
+## Where to Find It
 
 - `config/app.php` — `locale`, `fallback_locale`, `available_locales`
 - `config/localization.php` — locale resolution configuration

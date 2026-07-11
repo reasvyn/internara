@@ -1,6 +1,6 @@
 # Testing — Testing Strategy & Infrastructure
 
-> **Last updated:** 2026-06-16 **Changes:** sync — add Assertion Conventions section
+> **Last updated:** 2026-07-11 **Changes:** sync — add Assertion Conventions section
 > (assertModelExists over assertDatabaseHas)
 
 ## Description
@@ -205,6 +205,15 @@ The `composer run coverage` script handles this automatically.
 
 ---
 
+## Assertion Conventions
+
+- **Prefer `assertModelExists()` over `assertDatabaseHas()`** — `assertModelExists()` loads the
+  actual model, enabling subsequent assertions on model attributes and relationships without
+  re-querying. Use `assertDatabaseHas()` only when you need to verify data without loading the model
+  (e.g., soft-deleted records).
+
+---
+
 ## Where to Find It
 
 - `tests/{Module}/{SubModule}/` — all tests organized by module and submodule (no Unit/Feature split)
@@ -216,12 +225,5 @@ The `composer run coverage` script handles this automatically.
 - `phpunit.xml` — PHPUnit configuration
 - `phpunit.coverage.xml` — coverage-specific configuration
 - `composer.json` — test scripts in `scripts` section
-- `docs/conventions.md` — Section 22 (Testing)
+- `docs/conventions.md` — Section 12 (Testing)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design
-
-## Assertion Conventions
-
-- **Prefer `assertModelExists()` over `assertDatabaseHas()`** — `assertModelExists()` loads the
-  actual model, enabling subsequent assertions on model attributes and relationships without
-  re-querying. Use `assertDatabaseHas()` only when you need to verify data without loading the model
-  (e.g., soft-deleted records).

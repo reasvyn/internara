@@ -1,6 +1,6 @@
 # Journals — Technical Reference
 
-> **Last updated:** 2026-06-17 **Changes:** sync — add Livewire Forms section (LogbookForm)
+> **Last updated:** 2026-07-11 **Changes:** sync — add Livewire Forms section (LogbookForm)
 
 ## Description
 
@@ -133,8 +133,6 @@ for the testing conventions.
 | -------------------------- | ------------- |
 | `create_logbooks_table`    | `logbooks`    |
 | `create_attendances_table` | `attendances` |
-
----
 
 ---
 

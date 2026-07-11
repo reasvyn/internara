@@ -1,6 +1,6 @@
 # Media Library — File Uploads & Media Management
 
-> **Last updated:** 2026-06-13 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — consolidate S3 config into filesystem.md, keep migration guidance
 
 ## Description
 
@@ -134,26 +134,8 @@ $this->addMediaConversion('thumb')->nonQueued();
 
 ## S3-Compatible Cloud Storage
 
-For multi-server deployments, configure S3-compatible object storage:
-
-```env
-FILESYSTEM_DISK=s3
-AWS_ACCESS_KEY_ID=your-key
-AWS_SECRET_ACCESS_KEY=your-secret
-AWS_DEFAULT_REGION=us-east-1
-AWS_BUCKET=internara-uploads
-AWS_ENDPOINT=https://s3.amazonaws.com
-AWS_USE_PATH_STYLE_ENDPOINT=false
-```
-
-### Supported Providers
-
-| Provider                | Endpoint                             | Notes                                  |
-| ----------------------- | ------------------------------------ | -------------------------------------- |
-| **AWS S3**              | `s3.amazonaws.com`                   | Native S3, no special config needed    |
-| **MinIO** (self-hosted) | Your server URL                      | Set `AWS_USE_PATH_STYLE_ENDPOINT=true` |
-| **DigitalOcean Spaces** | `{region}.digitaloceanspaces.com`    | S3-compatible API                      |
-| **Cloudflare R2**       | `{account}.r2.cloudflarestorage.com` | No egress fees                         |
+For S3 configuration, environment variables, and supported providers, see
+[Filesystem — S3-Compatible Cloud Storage](filesystem.md#s3-compatible-cloud-storage).
 
 ### Migrating from Local to S3
 

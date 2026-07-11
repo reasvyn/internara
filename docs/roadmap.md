@@ -1,6 +1,6 @@
 # Roadmap — Feature Plans & Implementation Status
 
-> **Last updated:** 2026-07-10 **Changes:** expand — add broader module roadmap, milestones, and v1.0 target
+> **Last updated:** 2026-07-11 **Changes:** expand — add broader module roadmap, milestones, and v1.0 target
 
 ---
 
@@ -60,7 +60,7 @@ simplify to a pure final grade card with DRAFT → FINALIZED workflow.
 **Status:** 🔄 In Progress
 **Issues:** #235–#245
 
-See [Reports Overhaul Detail](#) for the full implementation plan.
+See the [Reports module documentation](modules/reports.md) for the full implementation plan.
 
 #### Remaining Work
 

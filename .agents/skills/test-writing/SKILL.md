@@ -1,5 +1,5 @@
 ---
-name: verify-and-testing
+name: test-writing
 description: SDLC Phase: TESTING. Comprehensive code verification, efficient test execution, and failing test diagnosis — prioritizes lightweight verification over full test suite to conserve memory and time.
 upstream:
   - feature-building

@@ -1,6 +1,6 @@
 # Incident — Technical Reference
 
-> **Last updated:** 2026-07-05 **Changes:** sync — fix base class extends: BaseAction →
+> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
 > BaseCommandAction/BaseReadAction
 
 ## Description
@@ -89,8 +89,6 @@ for the testing conventions.
 | Migration                       | Table              |
 | ------------------------------- | ------------------ |
 | `create_incident_reports_table` | `incident_reports` |
-
----
 
 ---
 

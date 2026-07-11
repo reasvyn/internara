@@ -1,6 +1,6 @@
 # Enum Pattern Reference — LabelEnum, StatusEnum & State Machine Patterns
 
-> **Last updated:** 2026-06-13 **Changes:** sync — fix shared enum path (app/Enums → app/Core/Enums)
+> **Last updated:** 2026-07-11 **Changes:** sync — fix shared enum path (app/Enums → app/Core/Enums)
 
 ## Description
 
@@ -301,7 +301,7 @@ Rules:
 Command Actions enforce `canTransitionTo()` before persisting:
 
 ```php
-class SubmitAction extends BaseAction
+class SubmitAction extends BaseCommandAction
 {
     public function execute(Model $entry, array $data): Model
     {

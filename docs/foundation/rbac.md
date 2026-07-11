@@ -1,6 +1,6 @@
 # Role-Based Access Control — RBAC Implementation & Permission Model
 
-> **Last updated:** 2026-07-05
+> **Last updated:** 2026-07-11
 >
 > **Changes:** sync — add ADMIN functional role; add Cross-Role Proxy section; update functional
 > role docs
@@ -116,7 +116,9 @@ All policies extend `app/Core/Policies/BasePolicy.php` and use:
 - `AuthorizesOwnership` — checks if user owns the resource
 - `HandlesAuthorizationErrors` — consistent 403 response format
 
-### Super Admin Integrity Rules
+---
+
+## 5. Super Admin Integrity Rules
 
 - **Uniqueness:** Exactly one super_admin account in the database
 - **Immutability:** Name always "Administrator", username always "superadmin"

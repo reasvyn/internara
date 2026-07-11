@@ -1,6 +1,6 @@
 # Document — Templates, Handbooks & Rendering
 
-> **Last updated:** 2026-07-10 **Changes:** expand — add Actions reference, routes, file structure, rendering pipeline detail, and integration patterns
+> **Last updated:** 2026-07-11 **Changes:** sync — remove implementation details (Actions, Routes, File Structure) to reference doc
 
 ## Description
 
@@ -66,27 +66,6 @@ Compliance-driven mandatory read-and-sign workflow for school policies. Key rule
 - IP address and user agent are captured for compliance audit.
 - The acknowledgement log is queryable by policy type, version, and date range for reporting.
 
-### Actions
-
-| Action                                | Type      | Description                                         |
-| ------------------------------------- | --------- | --------------------------------------------------- |
-| `RenderDocumentAction`                | Command   | Render a template with context and return PDF path  |
-| `AcknowledgeHandbookAction`           | Command   | Record handbook acknowledgement for current version |
-| `CreateDocumentTemplateAction`        | Command   | Create a new document template                      |
-| `UpdateDocumentTemplateAction`        | Command   | Update template content (creates new version)       |
-| `ReadDocumentListAction`              | Read      | List documents with type/status filters             |
-
-### Routes
-
-| Method | URI                           | Action                            |
-| ------ | ----------------------------- | --------------------------------- |
-| GET    | `/documents/templates`        | Template index                    |
-| POST   | `/documents/templates`        | Create template                   |
-| GET    | `/documents/templates/{id}`   | Show template                     |
-| PUT    | `/documents/templates/{id}`   | Update template                   |
-| GET    | `/documents/templates/{id}/render/{registration}` | Render PDF        |
-| POST   | `/documents/handbooks/{id}/acknowledge`           | Acknowledge handbook |
-
 ### Integration Patterns
 
 - **Version Control**: Template updates create new versions; previous versions remain accessible for historical rendering
@@ -107,24 +86,4 @@ Compliance-driven mandatory read-and-sign workflow for school policies. Key rule
 - Enrollment (document upload verification references)
 - SysAdmin (compliance reporting)
 
-## File Structure
 
-```
-app/Document/
-├── Actions/
-│   ├── AcknowledgeHandbookAction.php
-│   ├── CreateDocumentTemplateAction.php
-│   ├── ReadDocumentListAction.php
-│   ├── RenderDocumentAction.php
-│   └── UpdateDocumentTemplateAction.php
-├── Enums/
-│   └── DocumentType.php
-├── Livewire/
-│   ├── DocumentManager.php
-│   └── HandbookViewer.php
-├── Models/
-│   └── Document.php
-├── Policies/
-│   └── DocumentPolicy.php
-└── Services/
-    └── DocumentRenderer.php

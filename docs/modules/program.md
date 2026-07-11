@@ -1,6 +1,6 @@
 # Program — Internship Lifecycle, Groups & Phases
 
-> **Last updated:** 2026-07-10 **Changes:** expand — add Actions reference, routes, status state machine, file structure, and integration patterns
+> **Last updated:** 2026-07-11 **Changes:** sync — remove implementation details (Actions, Routes, File Structure) to reference doc; remove duplicate Grading Weights section
 
 ## Description
 
@@ -81,44 +81,6 @@ Before a program can transition to `closed`, the system validates:
 
 The readiness check returns a detailed report of blocking items with actionable remediation steps.
 
-### Grading Weights
-
-Each program defines weight distribution between evaluation sources:
-
-```
-supervisor_score: 40%
-teacher_score:    40%
-exam_score:       20%
-```
-
-These weights are consumed by the Reports module when calculating final grade cards. Weights must sum to 100%.
-
-### Actions
-
-| Action                                        | Type      | Description                                       |
-| --------------------------------------------- | --------- | ------------------------------------------------- |
-| `CreateInternshipAction`                      | Command   | Create a new program with dates, weights, phases  |
-| `UpdateInternshipAction`                      | Command   | Update program configuration                      |
-| `PublishInternshipAction`                     | Command   | Transition DRAFT → PUBLISHED                      |
-| `CancelInternshipAction`                      | Command   | Transition ACTIVE → CANCELLED with reason         |
-| `CheckClosureReadinessAction`                 | Read      | Validate all closure prerequisites                |
-| `CreateInternshipGroupAction`                 | Command   | Create student cohort group                       |
-| `ReadInternshipListAction`                    | Read      | Query programs with filters and status            |
-
-### Routes
-
-| Method | URI                                              | Action                       |
-| ------ | ------------------------------------------------ | ---------------------------- |
-| GET    | `/program/internships`                           | Program index                |
-| POST   | `/program/internships`                           | Create program               |
-| GET    | `/program/internships/{internship}`              | Show program                 |
-| PUT    | `/program/internships/{internship}`              | Update program               |
-| POST   | `/program/internships/{internship}/publish`      | Publish program              |
-| POST   | `/program/internships/{internship}/cancel`       | Cancel program               |
-| GET    | `/program/internships/{internship}/closure-check`| Closure readiness report     |
-| GET    | `/program/groups`                                | Group index                  |
-| POST   | `/program/groups`                                | Create group                 |
-
 ### Integration Patterns
 
 - **Assessment**: Program grading weights consumed by Assessment scoring calculations
@@ -141,30 +103,4 @@ These weights are consumed by the Reports module when calculating final grade ca
 - Reports (grade compilation)
 - Guidance (supervision scope)
 
-## File Structure
 
-```
-app/Program/
-├── Actions/
-│   ├── CancelInternshipAction.php
-│   ├── CheckClosureReadinessAction.php
-│   ├── CreateInternshipAction.php
-│   ├── CreateInternshipGroupAction.php
-│   ├── PublishInternshipAction.php
-│   ├── ReadInternshipListAction.php
-│   └── UpdateInternshipAction.php
-├── Enums/
-│   └── InternshipStatus.php
-├── Events/
-│   ├── InternshipPublished.php
-│   └── InternshipCancelled.php
-├── Livewire/
-│   ├── InternshipManager.php
-│   ├── InternshipEditor.php
-│   └── InternshipGroupManager.php
-├── Models/
-│   ├── Internship.php
-│   ├── InternshipGroup.php
-│   └── InternshipGroupMember.php
-└── Policies/
-    └── InternshipPolicy.php

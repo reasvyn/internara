@@ -1,6 +1,6 @@
 # Document — Technical Reference
 
-> **Last updated:** 2026-07-05 **Changes:** sync — fix base class extends: BaseAction →
+> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
 > BaseCommandAction/BaseReadAction
 
 ## Description
@@ -73,7 +73,7 @@ and compliance acknowledgements.
 
 | File                           | Class              | Purpose                                |
 | ------------------------------ | ------------------ | -------------------------------------- |
-| `Support/DocumentRenderer.php` | `DocumentRenderer` | Renders document templates to PDF/HTML |
+| `Services/DocumentRenderer.php` | `DocumentRenderer` | Renders document templates to PDF/HTML |
 
 ---
 
@@ -102,8 +102,6 @@ for the testing conventions.
 | Migration                | Table       |
 | ------------------------ | ----------- |
 | `create_documents_table` | `documents` |
-
----
 
 ---
 

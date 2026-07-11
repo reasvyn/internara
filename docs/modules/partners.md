@@ -1,6 +1,6 @@
 # Partners — Companies, Partnerships & MoU
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
 
 ## Description
 
@@ -27,16 +27,17 @@ Organization profile: legal name, trading name, address, industry classification
 email, and notes. Soft-deletes preserve historical placements and partnerships. Companies are
 referenced by partnerships and placement records.
 
-##Partners — Companies, Partnerships & MoUhip Formal agreement record: agreement number, title,
-description, start/end dates, scope of cooperation, contact person, signing parties, and MoU
-document upload (via Spatie Media Library). Status lifecycle: `active` → `expired` (automatic on end
-date) or `active` → `terminated` (admin action). Both `expired` and `terminated` are terminal
-states. Only active partnerships allow new placements. Expiry warning notifications fire 30 days
-before end_date.
+### Partnership
+
+Formal agreement record: agreement number, title, description, start/end dates, scope of
+cooperation, contact person, signing parties, and MoU document upload (via Spatie Media Library).
+Status lifecycle: `active` → `expired` (automatic on end date) or `active` → `terminated` (admin
+action). Both `expired` and `terminated` are terminal states. Only active partnerships allow new
+placements. Expiry warning notifications fire 30 days before end_date.
 
 ## Key Concepts
 
-##Partners — Companies, Partnerships & MoUhip Lifecycle
+### Partnership Lifecycle
 
 Partnerships follow a controlled lifecycle:
 

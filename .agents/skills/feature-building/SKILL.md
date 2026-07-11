@@ -6,6 +6,8 @@ upstream:
   - code-refactoring
   - writing-issues
 downstream:
+  - code-writing
+  - doc-writing
   - pest-testing
   - sync-docs
   - livewire-development

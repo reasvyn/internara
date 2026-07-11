@@ -1,6 +1,6 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-07-05 **Changes:** sync — fix service/support class counts and directories;
+> **Last updated:** 2026-07-11 **Changes:** sync — fix service/support class counts and directories;
 > fix base class count
 
 ## Description

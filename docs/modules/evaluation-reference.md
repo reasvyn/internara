@@ -1,6 +1,6 @@
 # Evaluation — Technical Reference
 
-> **Last updated:** 2026-06-16 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
 
 ## Description
 

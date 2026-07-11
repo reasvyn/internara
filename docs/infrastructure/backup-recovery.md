@@ -1,6 +1,6 @@
 # Backup & Recovery — Backup Strategies & Restoration
 
-> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
 
 ## Description
 
@@ -197,7 +197,7 @@ records from the previous backup.
 
 ---
 
-## References
+## Where to Find It
 
 - [Deployment](deployment.md) — installation and server setup
 - [Observability](observability.md) — monitoring and health checks

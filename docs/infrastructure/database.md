@@ -1,7 +1,6 @@
 # Database — Schema Design & Migration Strategy
 
-> **Last updated:** 2026-06-24 **Changes:** sync — migration consolidation: 57 scattered migrations
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — migration consolidation: 57 scattered migrations
 
 ## Description
 

@@ -104,9 +104,8 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 ---
 
-## API & Technical Reference
+## Technical Reference
 
-- **[API Reference](api/index.md)** — Complete HTTP endpoint catalog (100+ routes)
 - **[Infrastructure Index](infrastructure/index.md)** — Browse all infrastructure and operations docs
 - **[Database](infrastructure/database.md)** — Schema design, UUID PKs, engine comparison, index strategy
 - **[Cache](infrastructure/cache.md)** — Caching strategy, key registry, invalidation, Redis

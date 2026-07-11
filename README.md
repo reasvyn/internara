@@ -132,7 +132,7 @@ vendor/bin/pint --dirty --format agent  # Code style
 ```
 
 - **Testing:** Pest 4 with `LazilyRefreshDatabase`, feature + unit tests for every Action
-- **Static analysis:** PHPStan at level 6 (configured in `phpstan.neon`)
+- **Static analysis:** PHPStan at level 8 (configured in `phpstan.neon`)
 - **Code style:** Laravel Pint (PSR-12 + Laravel conventions)
 
 ---

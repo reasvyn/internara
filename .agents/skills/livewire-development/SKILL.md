@@ -4,6 +4,7 @@ description: SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized Livewire compon
 upstream:
   - feature-building
 downstream:
+  - code-writing
   - pest-testing
   - tailwindcss-development
   - sync-docs

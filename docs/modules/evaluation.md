@@ -1,6 +1,6 @@
 # Evaluation — Feedback Forms, Surveys & Auto-Scoring
 
-> **Last updated:** 2026-07-10 **Changes:** expand — add Actions reference, routes, scoring examples, file structure, and integration patterns
+> **Last updated:** 2026-07-11 **Changes:** sync — remove implementation details (Actions, Routes, File Structure) to reference doc
 
 ## Description
 
@@ -71,27 +71,6 @@ overall_score = Σ(question_score × question_weight) / Σ(question_weight)
 
 Once submitted, an evaluation response cannot be modified. The audit trail preserves the original submission with timestamp, evaluator, and all answers. This immutability is enforced at the database level and the Action layer.
 
-### Actions
-
-| Action                                    | Type      | Description                                          |
-| ----------------------------------------- | --------- | ---------------------------------------------------- |
-| `CreateEvaluationFormAction`              | Command   | Create a new evaluation form with sections/questions |
-| `UpdateEvaluationFormAction`              | Command   | Update form structure (sections, questions, weights) |
-| `SubmitEvaluationResponseAction`          | Command   | Submit a completed evaluation response               |
-| `ReadEvaluationFormAction`                | Read      | Query forms with filters and structure               |
-| `ReadEvaluationResultsAction`             | Read      | Aggregated results with score bands and trends       |
-
-### Routes
-
-| Method | URI                                                   | Action                        |
-| ------ | ----------------------------------------------------- | ----------------------------- |
-| GET    | `/evaluation/forms`                                   | Form index                    |
-| POST   | `/evaluation/forms`                                   | Create form                   |
-| GET    | `/evaluation/forms/{evaluationForm}`                  | Show form with structure      |
-| PUT    | `/evaluation/forms/{evaluationForm}`                  | Update form                   |
-| POST   | `/evaluation/forms/{evaluationForm}/submit`           | Submit response               |
-| GET    | `/evaluation/forms/{evaluationForm}/results`          | View aggregated results       |
-
 ### Integration Patterns
 
 - **Polymorphic Targeting**: Forms target any entity via `target_type`/`target_id` (mentor, program, company, overall)
@@ -110,31 +89,4 @@ Once submitted, an evaluation response cannot be modified. The audit trail prese
 - Reports (program quality data)
 - Certification (eligibility checks)
 
-## File Structure
 
-```
-app/Evaluation/
-├── Actions/
-│   ├── CreateEvaluationFormAction.php
-│   ├── ReadEvaluationFormAction.php
-│   ├── ReadEvaluationResultsAction.php
-│   ├── SubmitEvaluationResponseAction.php
-│   └── UpdateEvaluationFormAction.php
-├── Enums/
-│   ├── EvaluationTargetType.php
-│   ├── QuestionType.php
-│   └── ScoreBand.php
-├── Events/
-│   └── EvaluationSubmitted.php
-├── Livewire/
-│   ├── EvaluationFormBuilder.php
-│   ├── EvaluationFormView.php
-│   └── EvaluationResultsView.php
-├── Models/
-│   ├── EvaluationForm.php
-│   ├── EvaluationSection.php
-│   ├── EvaluationQuestion.php
-│   ├── EvaluationResponse.php
-│   └── EvaluationAnswer.php
-└── Policies/
-    └── EvaluationFormPolicy.php

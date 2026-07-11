@@ -1,6 +1,6 @@
 # Settings — Technical Reference
 
-> **Last updated:** 2026-07-05 **Changes:** sync — fix Setting model contract
+> **Last updated:** 2026-07-11 **Changes:** sync — fix Setting model contract
 > (SettingsStore→HasMedia); fix Settings path (Support→Services); add missing DTOs; note Service
 > write path
 
@@ -185,8 +185,6 @@ for the testing conventions.
 | Migration               | Table      |
 | ----------------------- | ---------- |
 | `create_settings_table` | `settings` |
-
----
 
 ---
 

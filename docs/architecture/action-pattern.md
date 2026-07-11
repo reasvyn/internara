@@ -1,6 +1,6 @@
 # Action Triad Pattern Reference — Command/Read/Process Deep-Dive
 
-> **Last updated:** 2026-06-24 **Changes:** sync — update Command contract: DTO for 3+ params,
+> **Last updated:** 2026-07-11 **Changes:** sync — update Command contract: DTO for 3+ params,
 > ActionResponse for structured feedback; sync with architecture.md rebalancing
 
 ## Description
@@ -100,7 +100,7 @@ class {Verb}{Entity}Action extends BaseCommandAction
             $this->log('{entity}_{verbed}', ${entity}, [
                 '{entity}_id' => ${entity}->id,
             ]);
-            event(new {Entity}{Vebed}(${entity}));
+            event(new {Entity}{Actioned}(${entity}));
 
             return $this->respondUpdated(${entity});
         });

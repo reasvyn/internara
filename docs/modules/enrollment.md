@@ -1,6 +1,6 @@
 # Enrollment — Registration, Placement & Change Requests
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
 
 ## Description
 
@@ -65,7 +65,7 @@ Unauthenticated users submit an AccountApplication. On admin approval, the syste
 User (with activation token), Registration, and initial Placement in a single atomic transaction.
 The applicant receives an activation email to set their password.
 
-##Enrollment — Registration, Placement & Change Requests-Driven Access
+### Status-Driven Access
 
 A student's enrollment status determines their feature access within a program. Active enrollments
 unlock journals, assignments, and assessments. Archived or pending enrollments present read-only or

@@ -3,13 +3,130 @@
 Essential mental model, non-negotiable rules, and quick-reference for AI agents.
 Does NOT duplicate content in `docs/` — refer there for depth.
 
-## Agent Onboarding
+## Agent Workflow — Mandatory Steps
 
-1. Load `context-awareness` skill first
-2. Read `docs/architecture.md` (4-layer model, Action Triad, dependency rules)
-3. Read `docs/conventions.md` (coding standards, naming, security)
-4. Read Critical Invariants below — rules that MUST NOT be violated
-5. Read relevant pattern docs before writing code in that area
+Every task MUST follow these 9 steps in order. **No step may be skipped.** If a step is
+not applicable, explicitly note why and move on. Steps may be lightweight for simple tasks, but
+they must never be omitted.
+
+```
+UNDERSTAND → DEFINE & SCOPE → EXPLORE & CONSTRUCT → PLAN → DESIGN → DEVELOP → TEST & VERIFY → DOCUMENT → COMMIT & REPORT
+```
+
+---
+
+### 1. Understand Instruction
+
+**Goal:** Internalize what the user actually wants — not just what they literally said.
+
+- Read the instruction carefully; identify the **intent**, not just the literal request
+- Clarify ambiguities: ask the user if the request could mean multiple things
+- Identify constraints: deadline, scope, compatibility, performance
+- Determine if this is a new feature, bug fix, refactor, docs update, or investigation
+- **Output:** Clear restatement of the task in your own words, confirmed with user if ambiguous
+
+### 2. Define & Scope
+
+**Goal:** Bound the work. Know what's in, what's out, and what's affected.
+
+- Identify which module(s) and layer(s) (4-layer model) are affected
+- List the files that will be created, modified, or deleted
+- Determine dependencies: does this block or get blocked by other work?
+- Check for existing issues on GitHub that overlap
+- Decide: is this one atomic change or should it be split?
+- **Output:** Scope statement — affected modules, layers, files, dependencies, risks
+
+### 3. Explore & Construct
+
+**Goal:** Build a mental model of the existing code before writing anything.
+
+- Read `docs/architecture.md`, `docs/conventions.md`, `docs/modules/index.md`
+- Read the relevant module docs: `docs/modules/{module}.md` and `{module}-reference.md`
+- Read the relevant pattern doc: `docs/architecture/{pattern}-pattern.md`
+- Read existing code in the affected submodule — match its conventions exactly
+- Verify paths, class names, signatures against actual source (never trust docs blindly)
+- Trace the data flow for the feature you're about to build or change
+- **Output:** Complete understanding of existing patterns, conventions, and code structure
+
+### 4. Plan
+
+**Goal:** Determine the implementation strategy before writing code.
+
+- Consider at least 2 approaches; document why you chose one over the other
+- Identify which Action type to use (Command / Read / Process) and why
+- Determine Entity boundaries: what business rules go where?
+- Determine DTO structure: what parameters, what types?
+- Plan the test strategy: what to test, what verification approach to use
+- Identify risks: N+1 queries, mass assignment, cache invalidation, event side effects
+- **Output:** Implementation plan with approach, file list, test strategy, risk assessment
+
+### 5. Design
+
+**Goal:** Define contracts before implementation — class signatures, data flow, error handling.
+
+- Define the Action signature: `execute()` parameters and return type
+- Define the Entity: `final readonly` properties, `fromModel()`, business question methods
+- Define the DTO: `final readonly` properties (scalars, enums, Carbon only)
+- Define the enum: cases, backing values, `validTransitions()`, `label()`
+- Define error handling: which exceptions, which failure modes
+- Define events: which events fire, which listeners handle them
+- Review against Critical Invariants (C1-C8, D1-D6) before coding
+- **Output:** Class signatures, data flow diagram, error handling plan
+
+### 6. Develop
+
+**Goal:** Write code that follows all conventions and passes all quality gates.
+
+- Follow file header order: `declare(strict_types=1)` → namespace → use → class → constructor → execute()
+- Follow class contracts exactly (see `docs/architecture/{pattern}-pattern.md`)
+- Follow naming conventions (see `docs/conventions.md` §4)
+- Use `__()` for all user-facing strings
+- Register cache keys in `config/cache-keys.php`
+- Write code that is testable — inject dependencies, avoid static calls
+- **Output:** Working code that matches the design from step 5
+
+### 7. Test & Verify
+
+**Goal:** Confirm the code works correctly and doesn't break anything.
+
+- Choose verification strategy based on change type (see `test-writing` skill)
+- Write tests covering: happy path, business rule violations, validation errors
+- Run linter: `vendor/bin/pint --dirty --format agent`
+- Run static analysis: `vendor/bin/phpstan analyse --no-progress`
+- Run targeted tests: `php artisan test --compact --filter={ClassName}`
+- Only run full suite if changes affect core infrastructure or cross-module logic
+- Check: no debug calls, no N+1 queries, no missing eager loads
+- **Output:** All tests pass, linter clean, static analysis clean
+
+### 8. Document
+
+**Goal:** Ensure documentation reflects the current code state (documentation-first principle).
+
+- Update module conceptual doc if business rules changed
+- Update module reference doc if file structure, Actions, or schemas changed
+- Update `docs/architecture/{pattern}-pattern.md` if base class contracts changed
+- Update metadata: `**Last updated:** YYYY-MM-DD **Changes:** ...`
+- Verify all cross-references resolve to existing files
+- Add PHPDoc if complex logic needs explanation (see `doc-writing` skill)
+- **Output:** Docs match code; metadata current; links valid
+
+### 9. Commit & Report
+
+**Goal:** Deliver a clear summary and clean commit.
+
+- Deliver report to user:
+  - What was done (summary)
+  - Files created/modified
+  - Architecture decisions made
+  - Tests written
+  - Docs updated
+  - Any risks or follow-ups
+- Commit using format: `type(scope): description`
+- Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
+- Push only if requested
+- **Output:** Clean commit, user informed
+
+---
 
 ## Project Identity
 

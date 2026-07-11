@@ -1,6 +1,6 @@
 # Setup — Technical Reference
 
-> **Last updated:** 2026-07-05 **Changes:** sync — fix base class extends: BaseAction →
+> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
 > BaseCommandAction/BaseReadAction
 
 ## Description
@@ -87,7 +87,7 @@ lifecycle, and the interactive setup wizard for initial configuration.
 
 | File                                         | Class               | Purpose                           |
 | -------------------------------------------- | ------------------- | --------------------------------- |
-| `Installation/Support/SystemProvisioner.php` | `SystemProvisioner` | System provisioning orchestration |
+| `Installation/Services/SystemProvisioner.php` | `SystemProvisioner` | System provisioning orchestration |
 
 ## Console Commands
 
@@ -125,8 +125,6 @@ None.
 ## Migrations
 
 None.
-
----
 
 ---
 

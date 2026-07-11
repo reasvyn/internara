@@ -1,6 +1,6 @@
 # Assignment — Technical Reference
 
-> **Last updated:** 2026-06-27 **Changes:** add RequestSubmissionRevisionAction and
+> **Last updated:** 2026-07-11 **Changes:** add RequestSubmissionRevisionAction and
 > SubmissionRevisionRequested event; fix SubmissionStatus values
 
 ## Description

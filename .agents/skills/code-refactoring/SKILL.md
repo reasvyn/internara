@@ -6,6 +6,8 @@ upstream:
   - security-audit
   - feature-building
 downstream:
+  - code-writing
+  - doc-writing
   - feature-building
   - pest-testing
   - sync-docs
