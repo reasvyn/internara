@@ -250,11 +250,20 @@ During full suite run:
 
 Use `--module {Name}` to scope. Output: `scripts/outputs/{timestamp}-tests.json`.
 
+## Quality Gate — arch-guard
+
+Test files must also pass arch-guard checks:
+- Test files must have `declare(strict_types=1)` (D1)
+- No debug calls in tests (D2) — use `->dd()` or `->dump()` Pest methods instead
+- Test naming follows `it_{behavior}()` convention
+- See `arch-guard` skill for full rule reference
+
 ## References
 
 | Topic | Location |
 |-------|----------|
 | Testing patterns | `docs/architecture/testing-pattern.md` |
 | Pest testing skill | `.agents/skills/pest-testing/SKILL.md` |
+| arch-guard skill | `.agents/skills/arch-guard/SKILL.md` |
 | Pre-commit checklist | `AGENTS.md` (end of file) |
 | Critical invariants | `AGENTS.md` (§Critical Invariants) |

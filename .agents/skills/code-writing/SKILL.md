@@ -512,6 +512,14 @@ ActionResponse::error('Something went wrong', $errors);
 
 Output: `scripts/outputs/{timestamp}-conventions.json`.
 
+## Quality Gate — arch-guard
+
+Validate all code against `arch-guard` rules before completing:
+- Run `python3 scripts/scan_violations.py` for C1-C8, D1-D6
+- Run `python3 scripts/scan_class_contracts.py` for class contracts
+- Run `python3 scripts/scan_naming.py` for naming conventions
+- See `arch-guard` skill for full rule reference
+
 ## References
 
 | Topic | Location |

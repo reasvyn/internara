@@ -190,6 +190,14 @@ Pre-built scripts for efficient auditing. Run from project root.
 All scripts output to `scripts/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to scope
 to a single module. See `scripts/README.md` for full documentation.
 
+## Architecture Enforcement — arch-guard
+
+Use `arch-guard` skill for comprehensive architecture/convention enforcement:
+- Run `python3 scripts/scan_violations.py --module {Module}` for targeted checks
+- Run `python3 scripts/scan_class_contracts.py --module {Module}` for contract checks
+- Run `python3 scripts/scan_security.py` for security vulnerabilities
+- See `arch-guard` skill for full rule reference and severity classification
+
 ## Verification Checklist
 
 - [ ] **Code** — All 4 layers audited: UI, Business, Data, Infra
