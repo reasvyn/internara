@@ -87,18 +87,10 @@
             "@php artisan optimize:clear --ansi",
             "vendor/bin/pest --coverage --min=80"
         ],
-"test:feature": [
-    "@php artisan optimize:clear --ansi",
-    "vendor/bin/pest --colors=never"
-],
-"test:module": [
-    "@php artisan optimize:clear --ansi",
-    "vendor/bin/pest --testsuite="
-],
-"test:unit": [
-    "@php artisan optimize:clear --ansi",
-    "vendor/bin/pest --testsuite=Core --colors=never"
-],
+        "test:suite": [
+            "@php artisan optimize:clear --ansi",
+            "vendor/bin/pest --testsuite="
+        ],
         "coverage": [
             "@php artisan optimize:clear --ansi",
             "php -d extension=pcov.so -d pcov.enabled=1 vendor/bin/pest --coverage --configuration=phpunit.coverage.xml"

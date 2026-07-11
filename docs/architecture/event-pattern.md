@@ -658,4 +658,4 @@ test('{side effect} occurs on {event}', function () {
 | Payload correctness           | Closure in `assertDispatched()`                 | Laravel     |
 | Listener side effect          | Dispatch event + assert state change            | Manual      |
 | SmartLogger event integration | `Event::fake()` + assert both event and log     | SmartLogger |
-| BaseEvent contract            | Unit tests on `toPayload()`, `dispatch()`, etc. | Pest        |
+| BaseEvent contract            | Module unit tests on `toPayload()`, `dispatch()`, etc. | Pest        |
