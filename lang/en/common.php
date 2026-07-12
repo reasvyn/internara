@@ -127,6 +127,7 @@ return [
         'assignments' => 'Assignments',
         'logbook' => 'Logbook',
         'incidents' => 'Incidents',
+        'visits' => 'Visits',
         'reports' => 'Reports',
         'final_reports' => 'Final Reports',
         'certificates' => 'Certificates',
