@@ -69,11 +69,6 @@ return [
                     'icon' => 'o-arrows-right-left',
                     'label' => 'common.sidebar.placement_changes',
                 ],
-                [
-                    'route' => 'sysadmin.internships.requirements',
-                    'icon' => 'o-document-text',
-                    'label' => 'common.sidebar.requirements',
-                ],
             ],
         ],
 
@@ -149,17 +144,6 @@ return [
                     'icon' => 'o-check-badge',
                     'label' => 'common.sidebar.submissions',
                 ],
-                [
-                    'route' => 'sysadmin.presentations',
-                    'icon' => 'o-presentation-chart-line',
-                    'label' => 'common.sidebar.presentations',
-                ],
-                [
-                    'route' => 'sysadmin.evaluations',
-                    'icon' => 'o-star',
-                    'label' => 'common.sidebar.evaluations',
-                    'disabled' => true,
-                ],
             ],
         ],
 
@@ -196,6 +180,11 @@ return [
                     'route' => 'sysadmin.incidents',
                     'icon' => 'o-exclamation-triangle',
                     'label' => 'common.sidebar.incidents',
+                ],
+                [
+                    'route' => 'supervision.visits',
+                    'icon' => 'o-map-pin',
+                    'label' => 'common.sidebar.visits',
                 ],
             ],
         ],
@@ -256,6 +245,11 @@ return [
                     'label' => 'common.sidebar.handbooks',
                 ],
                 [
+                    'route' => 'student.visits',
+                    'icon' => 'o-map-pin',
+                    'label' => 'common.sidebar.visits',
+                ],
+                [
                     'route' => 'registration.center',
                     'icon' => 'o-briefcase',
                     'label' => 'common.sidebar.browse_programs',
@@ -285,7 +279,7 @@ return [
                 ],
                 [
                     'route' => 'supervision.logs',
-                    'icon' => 'o-clipboard-check',
+                    'icon' => 'o-clipboard-document-check',
                     'label' => 'common.sidebar.guidance_logs',
                 ],
             ],
@@ -298,7 +292,7 @@ return [
             'items' => [
                 [
                     'route' => 'supervision.logs',
-                    'icon' => 'o-clipboard-check',
+                    'icon' => 'o-clipboard-document-check',
                     'label' => 'common.sidebar.guidance_logs',
                 ],
                 [
@@ -330,7 +324,7 @@ return [
                     'label' => 'common.sidebar.certificate_templates',
                 ],
                 [
-                    'route' => 'admin.users.index',
+                    'route' => 'sysadmin.accounts.lifecycle',
                     'icon' => 'o-arrow-path',
                     'label' => 'common.sidebar.account_lifecycle',
                 ],

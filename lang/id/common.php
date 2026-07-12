@@ -127,6 +127,7 @@ return [
         'assignments' => 'Tugas',
         'logbook' => 'Jurnal',
         'incidents' => 'Insiden',
+        'visits' => 'Kunjungan',
         'reports' => 'Laporan',
         'final_reports' => 'Laporan Akhir',
         'certificates' => 'Sertifikat',

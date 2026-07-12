@@ -7,6 +7,7 @@ return [
         'issued' => 'Issued',
         'revoked' => 'Revoked',
     ],
+    'filter_status' => 'Filter by status',
     'title' => 'Certificates',
     'subtitle' => 'Manage certificate templates and issue completion certificates',
     'add_template' => 'Add Template',
