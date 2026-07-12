@@ -31,30 +31,33 @@ _Praktik Kerja Lapangan_) at Indonesian SMA/SMK and technical education institut
 ## Architecture
 
 **Action-based MVC with vertical slicing.** Code is organized by business module, not technical
-layer. Each of the 19 modules owns its complete stack — persistence, business rules, UI, and
+layer. Each of the 22 modules owns its complete stack — persistence, business rules, UI, and
 authorization — colocated under `app/{Module}/`.
 
 ```
 app/
-├── Core/         Base classes, contracts, exceptions, utilities
-├── Auth/         Login, RBAC, account recovery
-├── User/         Profiles, notifications, status
-├── SysAdmin/     User management, audit, announcements
-├── Setup/        Installation wizard, provisioning
-├── Settings/     Config, branding, feature flags
-├── Academics/    Departments, academic years
-├── Program/      Internship lifecycle, phases, groups
-├── Enrollment/   Registration, placement, change requests
-├── Assessment/   Rubrics, competency scoring
-├── Evaluation/   Feedback forms, auto-scoring
-├── Assignment/   Tasks, submissions, grading
-├── Journals/     Logbooks, attendance, absences
-├── Guidance/     Supervision logs, mentoring
-├── Incident/     Issue reporting, resolution
-├── Partners/     Companies, MoU agreements
-├── Certification/Certificates, templates, QR
-├── Reports/      Final grade cards, aggregation
-└── Document/     Templates, handbooks, rendering
+├── Core/           Base classes, contracts, exceptions, utilities
+├── Auth/           Login, RBAC, account recovery, activation
+├── User/           Profiles, notifications, status, dashboards
+├── SysAdmin/       User management, audit, announcements, health
+├── Setup/          Installation wizard, provisioning
+├── Settings/       Config, branding, feature flags, localization
+├── Academics/      Departments, academic years
+├── Program/        Internship lifecycle, phases, groups
+├── Enrollment/     Registration, placement, change requests
+├── Assessment/     Rubrics, competency scoring
+├── Evaluation/     Feedback forms, auto-scoring
+├── Assignment/     Tasks, submissions, grading
+├── Journals/       Logbooks, attendance, absences
+├── Guidance/       Supervision logs, mentoring
+├── Incident/       Issue reporting, resolution
+├── Partners/       Companies, MoU agreements
+├── Certification/  Certificates, templates, QR
+├── Reports/        Final grade cards, aggregation
+├── Document/       Templates, handbooks, rendering
+├── Console/        Artisan commands
+├── Jobs/           Queued jobs
+└── Providers/      Service providers
 ```
 
 The architecture follows a **4-layer model** with strict downward dependency:

@@ -119,13 +119,14 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[Scaling Guide](infrastructure/scaling.md)** — MVP to 2000+ users, tier transitions
 - **[Backup & Recovery](infrastructure/backup-recovery.md)** — Backup strategies, restoration
 - **[Localization](infrastructure/localization.md)** — Translations, locale resolution, contributing
+- **[Developer Tools](infrastructure/tools.md)** — Python scan scripts, CLI flags, output schema
 - **[Troubleshooting](infrastructure/troubleshooting.md)** — Common issues and resolutions
 
 ---
 
 ## Modules
 
-Refer to the [Module Documentation Index](modules/index.md) for the complete listing of all 19 business modules plus Core. Each module has two documents:
+Refer to the [Module Documentation Index](modules/index.md) for the complete listing of all 22 modules. Each module has two documents:
 
 - **Overview** (`docs/modules/{module}.md`) — purpose, boundary, features, design principles
 - **Reference** (`docs/modules/{module}-reference.md`) — complete API reference (Models, Actions, Routes, Policies, Livewire, events)
@@ -159,7 +160,6 @@ flowchart LR
     E --> F[architecture.md]
     F --> G[conventions.md]
     G --> H[modules/index.md]
-    H --> I[api/index.md]
 ```
 
 ### For Operations / DevOps
