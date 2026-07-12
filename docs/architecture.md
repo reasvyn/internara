@@ -303,5 +303,5 @@ See [ADR-010](adr/adr-cross-module-communication.md).
 | **Testing patterns**                                                               | [Testing Pattern](architecture/testing-pattern.md)                                                     |
 | **Validation strategy**                                                            | [Modular Pattern](architecture/modular-pattern.md) §4                                                  |
 | **Module structure & naming**                                                      | [Modular Pattern](architecture/modular-pattern.md)                                                     |
-| **19 modules overview**                                                            | [Module Index](modules/index.md)                                                                       |
+| **22 modules overview**                                                            | [Module Index](modules/index.md)                                                                       |
 | **Module invariants**                                                              | [Coding Conventions](conventions.md), AGENTS.md                                                        |

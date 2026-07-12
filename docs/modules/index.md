@@ -339,7 +339,7 @@ acknowledgements.
 
 ## Architecture Overview
 
-All 19 modules are vertical slices cross-cutting the 4-layer architecture defined in
+All 22 modules are vertical slices cross-cutting the 4-layer architecture defined in
 [`docs/architecture.md`](../architecture.md):
 
 - **Layer 4 — Presentation/UI** — Livewire, Blade, maryUI/DaisyUI, Controllers, Policies, Routes,

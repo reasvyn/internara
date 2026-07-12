@@ -107,7 +107,7 @@ See the [Reports module documentation](modules/reports.md) for the full implemen
 
 | Criterion | Target | Status |
 | --------- | ------ | ------ |
-| All 19 modules ≥ 85% test coverage | 85% | 🔄 75-90% |
+| All 22 modules ≥ 85% test coverage | 85% | 🔄 75-90% |
 | No P0/P1 bugs | 0 open | ✅ Achieved |
 | PHPStan level 8 clean | 0 errors | ✅ Achieved |
 | Documentation complete | All docs current | 🔄 In Progress |

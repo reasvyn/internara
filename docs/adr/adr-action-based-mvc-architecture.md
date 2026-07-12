@@ -9,7 +9,7 @@ module owning its complete stack from persistence to UI.
 
 ## Context
 
-Internara manages vocational fieldwork across 19 modules, each owning a complete business vertical.
+Internara manages vocational fieldwork across 22 modules, each owning a complete business vertical.
 Traditional flat layering (`app/Models/`, `app/Controllers/`, `app/Livewire/`) scatters a single
 feature across many directories, making boundaries unclear, encapsulation impossible to enforce, and
 refactoring expensive.

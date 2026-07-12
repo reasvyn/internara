@@ -10,49 +10,113 @@ not applicable, explicitly note why and move on. Steps may be lightweight for si
 they must never be omitted.
 
 ```
-UNDERSTAND → DEFINE & SCOPE → EXPLORE & CONSTRUCT → PLAN → DESIGN → DEVELOP → TEST & VERIFY → DOCUMENT → COMMIT & REPORT
+UNDERSTAND → DEFINE & SCOPE → EXPLORE → PLAN → DESIGN → DEVELOP → TEST & VERIFY → DOCUMENT → COMMIT & REPORT
 ```
 
-### 1. Understand Instruction
+### 1. Understand
 
 Internalize the user's **intent**, not just literal words. Clarify ambiguities. Identify constraints.
-Output: clear restatement of the task, confirmed with user if ambiguous.
+
+- **First session?** Load `context-awareness` skill before anything else.
+- **Identify task type:** bug fix, new feature, refactoring, docs update, audit, review.
+- **Check `docs/roadmap.md`** for planned work or existing issues.
+- Output: clear restatement of the task, confirmed with user if ambiguous.
 
 ### 2. Define & Scope
 
-Identify affected module(s), layer(s), files. Check dependencies. Output: scope statement.
+Identify affected module(s), layer(s), files. Check dependencies.
 
-### 3. Explore & Construct
+- **List affected modules** using Module Quick Reference below.
+- **Identify affected layers:** Presentation (Livewire/Blade), Business (Action/Entity), Data (Model/DTO), Infrastructure.
+- **Check for blockers:** migrations needed? config changes? service provider registration?
+- **Select skills to load** based on task type (see Skill Map).
+- Output: scope statement with affected files and required skills.
 
-Read the relevant docs (see Where to Find What below). Read existing code. Verify against source.
-Output: complete understanding of existing patterns and code.
+### 3. Explore
+
+Read the relevant docs and existing code. Build mental model before writing.
+
+- **Load required skills** from Skill Map.
+- **Read module docs** (`docs/modules/{module}.md`) for affected modules.
+- **Read architecture docs** (`docs/architecture/`) for relevant patterns.
+- **Read existing code** in affected files — understand current patterns, naming, structure.
+- **Check conventions** (`docs/conventions.md`) for invariants C1-C8, D1-D6.
+- Output: complete understanding of existing patterns and code.
 
 ### 4. Plan
 
-Consider 2+ approaches. Choose Action type, Entity boundaries, DTO structure, test strategy.
-Output: implementation plan.
+Consider 2+ approaches. Choose the best fit.
+
+- **Action type:** Command (write), Read (query), Process (business logic).
+- **Entity boundaries:** what goes in Entity vs Action vs DTO.
+- **DTO needs:** required if Command/Process has 3+ parameters (C7).
+- **Test strategy:** which test type, which verification commands (see Verification Strategy).
+- **Document changes:** what docs need updating.
+- Output: implementation plan with chosen approach.
 
 ### 5. Design
 
-Define class contracts before coding. Review against invariants (see Where to Find What).
-Output: class signatures, data flow, error handling plan.
+Define class contracts before coding.
+
+- **Action signature:** constructor params, return type (ActionResponse).
+- **Entity contract:** `final readonly`, `fromModel()`, forbidden imports (C5).
+- **DTO contract:** extends `BaseData`, forbidden imports (C6).
+- **Model contract:** `#[Fillable]`, entity bridge method.
+- **Error handling:** which exceptions (C8: RejectedException, not RuntimeException).
+- **Cache strategy:** key registration (C4), TTL, invalidation.
+- Output: class signatures, data flow, error handling plan.
 
 ### 6. Develop
 
-Write code matching the design. Follow conventions. Output: working code.
+Write code matching the design. Follow conventions.
+
+- **`declare(strict_types=1)`** in every PHP file (D1).
+- **No debug calls** — `dd/dump/ray/var_dump/print_r/die` (D2).
+- **`__()` for all user-facing strings** (D3).
+- **No raw request** for create/update — use validated DTOs (D5).
+- **No Model mutations in Livewire** — use Actions (C1).
+- **No service locator** — use constructor injection (C2).
+- Output: working code matching design.
 
 ### 7. Test & Verify
 
-Choose verification strategy (see `test-writing` skill). Write tests. Run linter + static analysis.
-Output: all tests pass, linter clean.
+Choose verification level. Run targeted checks first, full suite once at end.
+
+- **Batch changes** before running full suite (expensive: ~2GB+, 10+ min).
+- **Run incremental checks** during development:
+  - `php -l path/to/file.php` — syntax check
+  - `vendor/bin/pint --dirty --format agent` — code style
+- **Run targeted tests** after completing a logical unit:
+  - `vendor/bin/pest --testsuite={ModuleName}`
+  - `php artisan test --compact --filter={ClassName}`
+- **Run arch-guard scripts** before commit:
+  - `python3 scripts/scan_violations.py` — C1-C8, D1-D6
+  - `python3 scripts/scan_class_contracts.py` — class contracts
+  - `python3 scripts/scan_security.py` — security patterns
+- **Run full suite** only once at the end:
+  - `php artisan test --compact`
+  - `vendor/bin/phpstan analyse --no-progress`
+- Output: all tests pass, linter clean, arch-guard clean.
 
 ### 8. Document
 
-Update docs before/after code changes (documentation-first). Output: docs match code.
+Update docs before/after code changes (documentation-first).
+
+- **Module docs** (`docs/modules/{module}.md`) — update if features/API changed.
+- **Architecture docs** (`docs/architecture/`) — update if patterns changed.
+- **Conventions** (`docs/conventions.md`) — update if new rules added.
+- **PHPDoc blocks** — required on all public methods.
+- Output: docs match code.
 
 ### 9. Commit & Report
 
-Deliver report. Commit with conventional format. Output: clean commit, user informed.
+Deliver report. Commit with conventional format.
+
+- **Conventional format:** `type(scope): description`
+- **Scope = module name** (e.g., `feat(enrollment): add bulk placement`)
+- **Types:** `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
+- **Report:** summarize what changed, what was verified, any caveats.
+- Output: clean commit, user informed.
 
 ---
 
@@ -60,13 +124,78 @@ Deliver report. Commit with conventional format. Output: clean commit, user info
 
 Self-hosted, single-tenant PKL management for Indonesian SMA/SMK (MIT).
 
-| Layer | Technology |
-|-------|-----------|
-| Language | PHP 8.4 |
-| Framework | Laravel 13 |
-| Frontend | Livewire 4, Alpine.js, maryUI 2, DaisyUI 5, Tailwind CSS v4 |
-| Database | SQLite (default), MySQL 8+, MariaDB 10.6+, PostgreSQL 15+ |
-| Testing | Pest 4, PHPStan (level 8), Laravel Pint |
+| Technology | Layer | Version |
+|------------|-------|---------|
+| PHP | Language | v8.4 |
+| Laravel | Framework | v13.0 |
+| Livewire | Frontend | v4.0 |
+| Alpine.js | Frontend JS | — |
+| Tailwind CSS | CSS | v4.3 |
+| DaisyUI | UI Component | v5.6 |
+| maryUI | UI Component | v2.4 |
+| Flatpickr | Date Picker | v4.6 |
+| Marked | Markdown Parser | v18.0 |
+| Vite | Build Tool | v8.1 |
+| laravel-vite-plugin | Build Plugin | v3.0 |
+| SQLite | Database | — |
+| MySQL | Database | v8.0 |
+| MariaDB | Database | v10.6 |
+| PostgreSQL | Database | v15.0 |
+| barryvdh/laravel-dompdf | PDF Generation | v3.1 |
+| laravel-lang/lang | Localization | v15.26 |
+| Laravel Pulse | Monitoring | v1.0 |
+| php-flasher/flasher-laravel | Flash Messages | v2.4 |
+| spatie/laravel-activitylog | Audit Log | v5.0 |
+| spatie/laravel-medialibrary | Media Upload | v11.17 |
+| spatie/laravel-model-status | Model Status | v1.18 |
+| spatie/laravel-permission | RBAC | v8.0 |
+| Pest | Testing | v4.2 |
+| PHPStan | Static Analysis | v2.1 |
+| Larastan | Laravel PHPStan | v3.10 |
+| Laravel Pint | Code Style | v1.24 |
+| Mockery | Mocking | v1.6 |
+| Faker | Test Data | v1.23 |
+| Collision | Error Handler | v8.6 |
+| Laravel Tinker | REPL | v3.0 |
+| Laravel Pail | Log Viewer | v1.2 |
+| Laravel Sail | Docker Dev | v1.41 |
+| Prettier | Formatter | v3.9 |
+| @prettier/plugin-php | PHP Formatter | v0.25 |
+| prettier-plugin-blade | Blade Formatter | v3.2 |
+| concurrently | Task Runner | v10.0 |
+
+---
+
+## Project Definition
+
+**Internara** is a self-hosted, single-tenant web application for managing compulsory industrial
+fieldwork programs (PKL — _Praktik Kerja Lapangan_) at Indonesian vocational schools (SMA/SMK).
+
+### Target Users
+
+| Persona | Role |
+|---------|------|
+| **Students (Interns)** | Register, daily logbook, attendance, assignments, certificates |
+| **Schools (Admin/Teacher)** | System config, enrollment, grading, supervision, reporting |
+| **Companies (Supervisors)** | Attendance verification, logbook review, competency evaluation |
+
+### Design Principles (3S Doctrine)
+
+| Principle | Definition |
+|-----------|------------|
+| **S1 — Secure** | Enforce authorization at every layer, protect data integrity and PII |
+| **S2 — Sustain** | Module colocation, Action single-responsibility, clear boundaries |
+| **S3 — Scalable** | Single-tenant (no tenant-ID overhead), CQRS-inspired Action triad |
+
+### Lifecycle Scope
+
+Foundation → Partnerships → Programs → Enrollment → Daily Operations → Assessment → Evaluation → Certification → Reporting → Closure
+
+### Out-of-Scope
+
+Multi-tenant SaaS, HR/payroll, real-time chat, government DB sync (CSV import/export only).
+
+Full definition: `docs/foundation/product-definition.md`
 
 ---
 

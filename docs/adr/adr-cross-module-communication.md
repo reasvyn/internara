@@ -9,7 +9,7 @@ Modules communicate through direct imports (allowed freely), Action calls, modul
 
 ## Context
 
-The Action-based MVC architecture organizes code into 19 modules, each owning a complete vertical
+The Action-based MVC architecture organizes code into 22 modules, each owning a complete vertical
 slice. Business processes naturally span multiple modules — student registration involves
 Enrollment, Program, and User modules. Closing a program involves Assessment, Certification, and
 Reports modules.
