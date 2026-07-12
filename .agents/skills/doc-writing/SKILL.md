@@ -115,7 +115,7 @@ Every markdown file MUST have a metadata blockquote on line 3 (immediately after
 
 ## 4. Document Structure Template
 
-Every markdown doc follows this structure:
+Every markdown doc follows this **minimal** structure:
 
 ```markdown
 # Title — Subtitle/Scope
@@ -128,25 +128,41 @@ Every markdown doc follows this structure:
 
 ---
 
-## {First Section}
+## {Content Heading}
 
-{Content}
+{Body content — explanation, rules, guidelines, etc.}
+
+### {Sub-section}
+
+{Deeper detail under the content heading}
 
 ---
 
-## Where to Find It
+## Quick References
 
 - `{path}` — {what's there}
 - `{path}` — {what's there}
 - [Related Doc](relative-path.md) — {why it's relevant}
 ```
 
+**Structure breakdown:**
+
+| Level | Element | Purpose |
+|-------|---------|---------|
+| H1 | `# Title` | Document identity — one per file, always first |
+| H2 | `## Description` | What this doc covers — mandatory on every doc |
+| H2 | `## {Content}` | Main body — as many H2 sections as needed |
+| H3 | `### {Sub-section}` | Deeper detail under a content H2 |
+| H2 | `## Quick References` | Links to related files, always last section |
+
 **Rules:**
-- H1 title: `# Subject — Subtitle` format
-- `## Description` section is mandatory on every doc
-- `## Where to Find It` is the standard footer section (not `## References`)
-- `---` horizontal rules separate major sections
-- Use `##` for top-level, `###` for subsections, `####` for sub-subsections
+- H1 title: `# Subject — Subtitle` format, exactly one per file
+- `## Description` is always the first H2 after metadata
+- Content sections (`##`) are topical — name them after what they explain
+- `###` subsections group related detail under a content H2
+- `## Quick References` is the standard footer (not `## References`, not `## Where to Find It`)
+- `---` horizontal rules separate major H2 sections
+- Never skip heading levels: H1 → H2 → H3 (no H4 unless truly necessary)
 
 ---
 
@@ -212,7 +228,7 @@ public function execute(CreateUserData $data): ActionResponse
 
 | Purpose | Correct Name | Wrong Names |
 |---------|-------------|-------------|
-| File/code location pointers | `## Where to Find It` | `## References`, `## See Also`, `## Resources` |
+| File/code location pointers | `## Quick References` | `## References`, `## See Also`, `## Resources`, `## Where to Find It` |
 | Module overview | `## Description` | `## Summary`, `## Overview` |
 | Behavior explanation | `## How It Works` | `## Implementation`, `## Details` |
 
@@ -277,7 +293,7 @@ Before committing doc changes, verify:
 
 Output: `scripts/outputs/{timestamp}-doc-links.json`.
 
-## References
+## Quick References
 
 | Topic | Location |
 |-------|----------|
