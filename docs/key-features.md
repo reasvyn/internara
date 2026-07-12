@@ -4,7 +4,7 @@
 
 ## Description
 
-Complete feature inventory across all 19 modules, organized by program lifecycle phase.
+Complete feature inventory across all 22 modules, organized by program lifecycle phase.
 
 ---
 
@@ -323,6 +323,6 @@ Handbooks managed by Guidance/Handbook module.
 
 ## Summary
 
-**19 modules with 150+ features** covering the complete program lifecycle: Foundation → User
+**22 modules with 150+ features** covering the complete program lifecycle: Foundation → User
 Management → Academic Setup → Program Management → Enrollment → Daily Operations → Assessment →
 Evaluation → Certification → Reporting → Closure.

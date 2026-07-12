@@ -22,7 +22,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[Foundation Index](foundation/index.md)** — Browse all foundation documents
 - **[Product Definition](foundation/product-definition.md)** — Core product scope, design principles, user personas, system boundary
 - **[Project Requirements](foundation/project-requirements.md)** — Functional, non-functional, and UI/UX requirements
-- **[Key Features](key-features.md)** — Complete 150+ feature inventory across all 19 modules
+- **[Key Features](key-features.md)** — Complete 150+ feature inventory across all 22 modules
 - **[Project Philosophy](philosophy.md)** — Guiding principles, values, and vision
 - **[Architecture](architecture.md)** — 4-layer architecture, data flow, Action Triad, dependency rules
 - **[Entity Relationship Diagram](foundation/erd.md)** — Full ERD schema (55 tables)
