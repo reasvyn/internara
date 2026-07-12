@@ -8,8 +8,7 @@ Python devtool scripts in `scripts/` for codebase scanning, validation, and metr
 Each script is self-contained, accepts `--module` and `--output` flags, and produces
 JSON output to `scripts/outputs/{timestamp}-{scan_name}.json` (gitignored).
 
-Scripts are referenced by agent skills (`arch-guard`, `audit-protocol`, `test-writing`, etc.)
-and can be run standalone or piped to `jq`.
+Can be run standalone or piped to `jq`.
 
 ---
 
@@ -95,8 +94,6 @@ python3 scripts/scan_violations.py
 python3 scripts/scan_violations.py --module Auth --strict
 ```
 
-**Skill reference:** `arch-guard`
-
 ---
 
 ### scan_class_contracts.py
@@ -115,8 +112,6 @@ python3 scripts/scan_violations.py --module Auth --strict
 python3 scripts/scan_class_contracts.py
 python3 scripts/scan_class_contracts.py --module Assessment
 ```
-
-**Skill reference:** `arch-guard`
 
 ---
 
@@ -138,8 +133,6 @@ python3 scripts/scan_security.py
 python3 scripts/scan_security.py --module Auth
 ```
 
-**Skill reference:** `arch-guard`, `security-audit`
-
 ---
 
 ### scan_naming.py
@@ -159,8 +152,6 @@ python3 scripts/scan_naming.py
 python3 scripts/scan_naming.py --module Journals
 ```
 
-**Skill reference:** `arch-guard`
-
 ---
 
 ## Scan Scripts — Code Quality
@@ -179,8 +170,6 @@ python3 scripts/scan_naming.py --module Journals
 ```bash
 python3 scripts/scan_conventions.py
 ```
-
-**Skill reference:** `arch-guard`
 
 ---
 
@@ -214,8 +203,6 @@ python3 scripts/scan_dead_code.py
 ```bash
 python3 scripts/scan_doc_links.py
 ```
-
-**Skill reference:** `doc-writing`, `sync-docs`
 
 ---
 
@@ -270,8 +257,6 @@ python3 scripts/scan_tests.py
 python3 scripts/scan_tests.py --module User
 ```
 
-**Skill reference:** `test-writing`, `pest-testing`
-
 ---
 
 ### scan_issues.py
@@ -288,40 +273,18 @@ python3 scripts/scan_tests.py --module User
 python3 scripts/scan_issues.py
 ```
 
-**Skill reference:** `writing-issues`
-
----
-
-## Integration with Skills
-
-| Skill | Scripts it references |
-|-------|----------------------|
-| `arch-guard` | `scan_violations`, `scan_class_contracts`, `scan_security`, `scan_naming`, `scan_conventions` |
-| `audit-protocol` | `scan_violations`, `scan_class_contracts`, `scan_security`, `scan_naming`, `scan_architecture`, `scan_conventions`, `scan_doc_links` |
-| `test-writing` | `scan_tests` |
-| `pest-testing` | `scan_tests` |
-| `doc-writing` | `scan_doc_links` |
-| `sync-docs` | `scan_doc_links` |
-| `writing-issues` | `scan_issues` |
-| `code-refactoring` | `scan_violations`, `scan_class_contracts`, `scan_conventions` |
-| `code-writing` | `scan_violations`, `scan_class_contracts`, `scan_conventions` |
-| `context-awareness` | `scan_architecture`, `scan_files` |
-
 ---
 
 ## Adding New Scripts
-
-See `.agents/skills/script-automation/SKILL.md` for full standards.
 
 **Quick checklist:**
 1. Create `scripts/scan_{name}.py` following existing script structure
 2. Accept standard CLI flags (`--module`, `--output`, `--format`, `--quiet`, `--strict`, `--json`)
 3. Produce JSON output matching the standard schema
 4. Output to `scripts/outputs/{timestamp}-{scan_name}.json`
-5. Add `## Automation Scripts` entry to relevant skill(s)
-6. Add entry to this document
-7. Test: `python3 scripts/scan_{name}.py --module {Module}`
-8. Commit: `chore(scripts): add {name} scan`
+5. Add entry to this document
+6. Test: `python3 scripts/scan_{name}.py --module {Module}`
+7. Commit: `chore(scripts): add {name} scan`
 
 ---
 
@@ -329,8 +292,6 @@ See `.agents/skills/script-automation/SKILL.md` for full standards.
 
 | Topic | Location |
 |-------|----------|
-| Script automation standards | `.agents/skills/script-automation/SKILL.md` |
-| arch-guard skill | `.agents/skills/arch-guard/SKILL.md` |
 | Architecture patterns | `docs/architecture/*.md` |
 | Coding conventions | `docs/conventions.md` |
 | Module index | `docs/modules/index.md` |
