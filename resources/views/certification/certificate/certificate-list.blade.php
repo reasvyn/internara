@@ -8,7 +8,7 @@
     </x-slot:headerActions>
 
     <x-slot:filters>
-        <x-mary-select wire:model.live="filters.status" :placeholder="__('certificate.status')"
+        <x-mary-select wire:model.live="filters.status" :placeholder="__('certificate.filter_status')"
             :options="collect($statusOptions)->mapWithKeys(fn($s) => [$s->value => $s->label()])->toArray()" />
     </x-slot:filters>
 

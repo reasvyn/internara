@@ -103,6 +103,6 @@
             </x-mary-table>
         @endif
     </x-mary-card>
-</div>
 
-@include('sysadmin.observability.components.audit-log-guide')
+    @include('sysadmin.observability.components.audit-log-guide')
+</div>

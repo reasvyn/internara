@@ -105,7 +105,7 @@
                     <x-core::widgets.quick-link :label="__('dashboard.edit_profile')" icon="o-user" link="{{ route('profile') }}" />
                     <x-core::widgets.quick-link :label="__('profile.recovery.title')" icon="o-key" link="{{ route('profile.recovery') }}" />
                     <x-core::widgets.quick-link :label="__('dashboard.notifications')" icon="o-bell" link="{{ route('notifications') }}" />
-                    <x-core::widgets.quick-link :label="__('View Evaluations')" icon="o-star" link="{{ route('mentor.evaluate') }}" />
+                    <x-core::widgets.quick-link :label="__('View Evaluations')" icon="o-star" link="#" />
                 </div>
             </x-mary-card>
         </div>

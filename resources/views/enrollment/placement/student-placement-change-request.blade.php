@@ -1,6 +1,6 @@
-<x-core::ui.page-header :title="__('placement_change.request_title')" :subtitle="__('placement_change.request_subtitle')" />
-
 <div class="max-w-2xl mx-auto mt-6">
+    <x-core::ui.page-header :title="__('placement_change.request_title')" :subtitle="__('placement_change.request_subtitle')" />
+
     @if(!$registration)
         <x-mary-card>
             <div class="p-6 text-center">
