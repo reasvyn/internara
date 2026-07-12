@@ -77,6 +77,24 @@ write the code to match.
 
 ---
 
+## 1b. Edit, Don't Rewrite
+
+**Always prefer targeted edits over full rewrites.** Full rewrites risk silently dropping details —
+naming conventions, edge case notes, cross-references, or nuance that took effort to capture.
+
+| Scenario | Approach |
+|----------|----------|
+| Update a section | Edit that section only — leave everything else untouched |
+| Rename a term across doc | Use `replaceAll` edit — never rewrite the file |
+| Add new content | Insert at the right position — don't reconstruct the file |
+| Restructure headings | Move sections individually — preserve all content |
+| Fix a typo | Edit the line — not the whole paragraph |
+
+**When a full rewrite seems necessary:** read the entire file first, confirm no details will be lost,
+then proceed. But ask yourself — can this be done with 2-3 targeted edits instead?
+
+---
+
 ## 2. Two-Tier Model
 
 Every module has exactly two documents. The separation is strict.
