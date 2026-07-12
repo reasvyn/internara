@@ -6,4 +6,4 @@ use App\Settings\Livewire\SystemSetting;
 
 Route::livewire('/admin/settings', SystemSetting::class)
     ->name('admin.settings')
-    ->middleware(['auth', 'role:superadmin']);
+    ->middleware(['auth', 'role:super_admin|admin']);
