@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Assessment\Livewire\AssessmentGrading;
 use App\Assessment\Livewire\AssessmentView;
-use App\Assessment\Presentation\Livewire\PresentationSchedule;
 use App\Assessment\Rubric\Livewire\RubricManager;
 
 Route::middleware('auth')->group(function () {
@@ -19,5 +18,4 @@ Route::prefix('admin')
         Route::livewire('/assessments/{registration}/grade', AssessmentGrading::class)->name(
             'assessments.grade',
         );
-        Route::livewire('/presentations', PresentationSchedule::class)->name('presentations');
     });
