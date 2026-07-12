@@ -156,6 +156,14 @@ Every markdown doc follows this **minimal** structure:
 
 ---
 
+## AI Agent Guides  *(optional)*
+
+{Structured, machine-readable instructions optimized for AI agents — checklists,
+decision tables, scan commands, quick lookups. Only add when the doc serves as a
+reference that agents will consult during tasks.}
+
+---
+
 ## Quick References
 
 - `{path}` — {what's there}
@@ -171,7 +179,31 @@ Every markdown doc follows this **minimal** structure:
 | H2 | `## Description` | What this doc covers — mandatory on every doc |
 | H2 | `## {Content}` | Main body — as many H2 sections as needed |
 | H3 | `### {Sub-section}` | Deeper detail under a content H2 |
+| H2 | `## AI Agent Guides` | Optional — machine-readable instructions for AI agents |
 | H2 | `## Quick References` | Links to related files, always last section |
+
+### AI Agent Guides Rules
+
+This section is **optional**. Add it only when the document is a reference that AI agents
+will consult during coding tasks.
+
+**What goes here:**
+- Checklists agents can step through
+- Decision tables (if X → do Y)
+- Scan/verification commands
+- Quick-lookup tables (invariant → file path, rule → line number)
+- Anti-pattern → fix mapping
+
+**What does NOT go here:**
+- Explanations (those belong in the content body)
+- Design rationale (that's for humans)
+- Full code examples (link to source instead)
+
+**Format principles:**
+- Prefer tables over prose — agents parse tables faster
+- Prefer concrete over abstract — `python3 scripts/scan_violations.py` not "run the scan"
+- Prefer flat over nested — avoid deep heading trees inside this section
+- Every entry should be actionable without reading surrounding context
 
 **Rules:**
 - H1 title: `# Subject — Subtitle` format, exactly one per file
