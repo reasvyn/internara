@@ -62,6 +62,6 @@
             <a href="{{ route('sysadmin.dashboard') }}" class="text-xs font-bold uppercase tracking-widest text-base-content/40 hover:text-primary" wire:navigate>{{ __('auth.recovery_slip.back_to_dashboard') }}</a>
         </div>
     </div>
-</div>
 
-@include('auth.account-recovery.components.recovery-slip-manager-guide')
+    @include('auth.account-recovery.components.recovery-slip-manager-guide')
+</div>

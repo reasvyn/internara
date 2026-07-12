@@ -1,6 +1,6 @@
-<x-core::ui.page-header :title="__('certificate.my_certificates')" :subtitle="__('certificate.my_certificates_subtitle')" />
-
 <div class="max-w-3xl mx-auto mt-6">
+    <x-core::ui.page-header :title="__('certificate.my_certificates')" :subtitle="__('certificate.my_certificates_subtitle')" />
+
     @forelse($certificates as $certificate)
         <x-mary-card class="mb-4">
             <div class="flex items-center justify-between">

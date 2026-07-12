@@ -136,6 +136,6 @@
     </x-mary-modal>
 
     <x-core::ui.confirm :message="$confirmMessage" />
-</div>
 
-@include('assessment.rubric.components.rubric-guide')
+    @include('assessment.rubric.components.rubric-guide')
+</div>

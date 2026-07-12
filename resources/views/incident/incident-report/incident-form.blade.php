@@ -1,6 +1,6 @@
-<x-core::ui.page-header :title="__('incident.report_title')" :subtitle="__('incident.report_subtitle')" />
-
 <div class="max-w-2xl mx-auto mt-6">
+    <x-core::ui.page-header :title="__('incident.report_title')" :subtitle="__('incident.report_subtitle')" />
+
     <x-mary-form wire:submit="save">
         <x-mary-card>
             <div class="space-y-5">

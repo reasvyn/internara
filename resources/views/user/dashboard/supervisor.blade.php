@@ -25,7 +25,7 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <x-core::widgets.action-button :label="__('Verify Logbooks')" icon="o-pencil-square" link="{{ route('sysadmin.logbook') }}" color="btn-primary" />
-                <x-core::widgets.action-button :label="__('Submit Evaluation')" icon="o-star" link="{{ route('mentor.evaluate') }}" color="btn-secondary" />
+                <x-core::widgets.action-button :label="__('Submit Evaluation')" icon="o-star" link="#" color="btn-secondary" />
             </div>
         </div>
 

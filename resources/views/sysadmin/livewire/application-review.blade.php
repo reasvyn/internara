@@ -48,6 +48,6 @@
             </x-slot:actions>
         </x-mary-form>
     </x-mary-modal>
-</div>
 
-@include('sysadmin.components.application-review-guide')
+    @include('sysadmin.components.application-review-guide')
+</div>
