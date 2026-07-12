@@ -36,7 +36,7 @@ class InternshipGroupMember extends BaseModel
         return $this->belongsTo(Registration::class);
     }
 
-    public function memberUser(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }

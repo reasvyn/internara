@@ -9,8 +9,10 @@ use App\Core\Livewire\BaseRecordManager;
 use App\Guidance\SupervisionLog\Actions\CreateLogAction;
 use App\Guidance\SupervisionLog\Actions\DeleteLogAction;
 use App\Guidance\SupervisionLog\Models\SupervisionLog;
+use App\User\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Layout;
 
 class StudentLogManager extends BaseRecordManager
@@ -30,6 +32,13 @@ class StudentLogManager extends BaseRecordManager
     public string $topic = '';
 
     public string $notes = '';
+
+    public Collection $supervisors;
+
+    public function mount(): void
+    {
+        $this->supervisors = User::whereHas('roles', fn ($q) => $q->whereIn('name', ['teacher', 'supervisor']))->get();
+    }
 
     public function headers(): array
     {

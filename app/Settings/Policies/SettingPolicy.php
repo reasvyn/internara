@@ -27,7 +27,7 @@ class SettingPolicy extends BasePolicy
 
     public function update(User $user): bool
     {
-        return $user->hasRole('super_admin');
+        return $this->isAdmin($user);
     }
 
     public function delete(User $user): bool
