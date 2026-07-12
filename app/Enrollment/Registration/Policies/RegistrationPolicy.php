@@ -36,7 +36,7 @@ class RegistrationPolicy extends BasePolicy
 
     public function create(User $user): bool
     {
-        return $this->isStudent($user);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'student']);
     }
 
     public function update(User $user, Registration $registration): bool

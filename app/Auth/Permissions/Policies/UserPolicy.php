@@ -16,7 +16,7 @@ class UserPolicy extends BasePolicy
 
     public function viewAdmin(User $user): bool
     {
-        return $user->hasRole('super_admin');
+        return $user->hasAnyRole(['super_admin', 'admin']);
     }
 
     public function view(User $user, User $model): bool
@@ -75,6 +75,29 @@ class UserPolicy extends BasePolicy
         }
 
         if ($user->id === $model->id) {
+            return false;
+        }
+
+        return $user->hasAnyRole(['super_admin', 'admin']);
+    }
+
+    public function viewLifecycleDashboard(User $user): bool
+    {
+        return $user->hasAnyRole(['super_admin', 'admin']);
+    }
+
+    public function lockAccount(User $user, User $model): bool
+    {
+        if ($model->hasRole('super_admin')) {
+            return false;
+        }
+
+        return $user->hasAnyRole(['super_admin', 'admin']);
+    }
+
+    public function unlockAccount(User $user, User $model): bool
+    {
+        if ($model->hasRole('super_admin')) {
             return false;
         }
 

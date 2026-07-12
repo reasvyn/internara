@@ -12,9 +12,10 @@ use App\User\Policies\Concerns\HasMentorProxy;
 class SubmissionPolicy extends BasePolicy
 {
     use HasMentorProxy;
+
     public function viewAny(User $user): bool
     {
-        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher']);
+        return $this->hasAnyOfRoles($user, ['super_admin', 'admin', 'teacher', 'supervisor']);
     }
 
     public function view(User $user, Submission $submission): bool

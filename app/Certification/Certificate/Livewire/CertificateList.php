@@ -47,7 +47,7 @@ class CertificateList extends BaseRecordManager
                 'sortable' => true,
             ],
             ['key' => 'student_name', 'label' => __('certificate.student'), 'sortable' => true],
-            ['key' => 'status', 'label' => __('certificate.status'), 'sortable' => true],
+            ['key' => 'status', 'label' => __('certificate.filter_status'), 'sortable' => true],
             ['key' => 'issued_at', 'label' => __('certificate.issued_at'), 'sortable' => true],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];

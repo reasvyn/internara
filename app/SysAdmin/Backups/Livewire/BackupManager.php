@@ -58,9 +58,9 @@ final class BackupManager extends BaseRecordManager
     }
 
     #[Computed]
-    public function stats(ReadBackupStatsAction $action): array
+    public function stats(): array
     {
-        return $action->execute();
+        return app(ReadBackupStatsAction::class)->execute();
     }
 
     public function createBackup(string $type): void
