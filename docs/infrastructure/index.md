@@ -20,3 +20,4 @@ Deployment, configuration, CI/CD, database, and operations.
 - **[Scaling Guide](scaling.md)** — Scaling from MVP to 2000+ users, tier transitions, load testing, monitoring thresholds
 - **[Backup & Recovery](backup-recovery.md)** — Backup strategies, database dumps, file backup, restoration, point-in-time recovery
 - **[Localization](localization.md)** — Supported languages, translation structure, locale resolution, community contribution guide
+- **[Developer Tools](tools.md)** — Python scan scripts, CLI flags, output schema, skill integration
