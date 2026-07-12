@@ -1,6 +1,6 @@
 # Project Overview
 
-> **Last updated:** 2026-07-11 **Changes:** rewrite — qualitative dashboard, remove stale-prone numbers
+> **Last updated:** 2026-07-12 **Changes:** fix — correct version, module count, module statuses, script list; remove phantom Console module
 
 ---
 
@@ -17,10 +17,10 @@ reporting.
 
 ## Where We Are
 
-**Phase: v0.2.0 — Polish & Test Coverage** (in progress)
+**Phase: v0.14.0 — Stabilization** (in progress)
 
-The foundation is complete. All 22 modules exist with their full stack: models, actions,
-livewire components, events, policies, routes, and translations. The architecture is sound —
+21 modules in `app/` (19 domain + 2 infrastructure) with their stack: models, actions,
+livewire components, events, policies, routes, and translations. Architecture is sound —
 4-layer model, Action Triad, Entity boundaries, DTO contracts.
 
 The current phase focuses on three things:
@@ -60,25 +60,27 @@ These modules work but have known issues (tracked in GitHub Issues):
 - **Enrollment** — registration, placement. Broken Blade template, DTO gaps.
 - **Journals** — attendance, logbook. Wrong user_id in attendance creation, undefined method.
 - **Guidance** — supervisor mentoring. Missing computed property, DTO gaps.
-- **Incident** — incident reporting. ActionResponse and DTO non-compliance.
+- **Incident** — incident reporting. ActionResponse gaps. Structurally lean (no Entities, no Events).
 - **Assignment** — thesis/supervisor assignment. Runtime crash, ActionResponse gaps.
-- **Reports** — grade cards. ActionResponse gaps, dead code. Being purified (removing thesis concepts).
+- **Reports** — grade cards. ActionResponse gaps, dead code. Empty Livewire directory. Being purified.
 
 ### Needs Work
 
-These modules have significant structural issues:
+These modules have significant issues — some structural, some runtime:
 
-- **Assessment** — Blade array errors, multiple root elements, broken relationships. Multiple P0 issues.
-- **Certification** — schema mismatches, missing columns in migration. Runtime errors.
-- **Document** — non-existent columns referenced everywhere. SQL errors, undefined properties.
+- **Assessment** — structurally complete (Actions, Entities, Events, Livewire, Policies) but has
+  runtime errors: Blade array errors, multiple root elements, broken relationships. Multiple P0 issues.
+- **Certification** — structurally reasonable (Actions, Livewire, Events, Policies) but has runtime
+  errors from schema mismatches and missing columns in migration.
+- **Document** — has Models, Enums, Services, Support, and an OfficialDocument submodule with
+  Actions/Livewire. No Entities layer. Non-existent columns referenced in code cause SQL errors.
 
 ### Skeleton
 
-- **Evaluation** — models only, zero Actions/Entities/Livewire/Routes. Structurally incomplete.
+- **Evaluation** — models only. Zero Actions, Entities, Livewire, Routes, Events.
 
 ### Infrastructure (No Business Logic)
 
-- **Console** — artisan commands
 - **Jobs** — queued jobs
 - **Providers** — service providers
 
@@ -151,15 +153,19 @@ Automation scripts produce timestamped JSON reports in `scripts/outputs/`:
 
 ```bash
 python3 scripts/scan_architecture.py    # Component counts per module
-python3 scripts/scan_conventions.py     # Convention compliance
-python3 scripts/scan_tests.py           # Test results
+python3 scripts/scan_class_contracts.py # Action/Entity/DTO/Model contract compliance
+python3 scripts/scan_conventions.py     # Convention compliance (strict_types, Fillable, debug)
 python3 scripts/scan_dead_code.py       # Unused code detection
 python3 scripts/scan_doc_links.py       # Broken links in docs
-python3 scripts/scan_issues.py          # GitHub issue summary
 python3 scripts/scan_files.py           # File inventory and LOC
+python3 scripts/scan_issues.py          # GitHub issue summary
+python3 scripts/scan_naming.py          # Naming conventions
+python3 scripts/scan_security.py        # XSS, SQLi, CSRF, auth patterns
+python3 scripts/scan_tests.py           # Test results
+python3 scripts/scan_violations.py      # Architecture invariants C1-C8, D1-D6
 ```
 
-Use `--module {Name}` to scope to a single module. See `scripts/README.md`.
+Use `--module {Name}` to scope to a single module. See `docs/infrastructure/tools.md`.
 
 ### Key Files
 
@@ -170,5 +176,5 @@ Use `--module {Name}` to scope to a single module. See `scripts/README.md`.
 | Module docs | `docs/modules/{name}.md` (conceptual), `docs/modules/{name}-reference.md` (reference) |
 | Agent skills | `.agents/skills/` |
 | Test suite | `tests/{Module}/` |
-| Routes | `routes/web/{module}.php` |
+| Routes | `routes/web/{module}.php` (most modules; not all have routes) |
 | Translations | `lang/en/`, `lang/id/` |
