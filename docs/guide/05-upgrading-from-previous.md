@@ -182,13 +182,13 @@ Internara follows [Semantic Versioning](https://semver.org/):
 | **Minor** | 1.0.0 → 1.1.0 | New features, no breaking changes          |
 | **Patch** | 1.0.0 → 1.0.1 | Bug fixes and small improvements           |
 
-Current version: **0.1.0** (development preview — not yet stable).
+Current version: **0.14.0** (development preview — not yet stable).
 
 ---
 
 ## 5.5 Major Version Upgrades
 
-Major version upgrades (e.g., 0.1.0 → 1.0.0) may include:
+Major version upgrades (e.g., 0.14.0 → 1.0.0) may include:
 
 - **Database schema changes** that are not automatically migrated
 - **Configuration file changes** — compare your `.env` with the new `.env.example`
