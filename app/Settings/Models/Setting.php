@@ -9,6 +9,7 @@ use App\Settings\Casts\SettingValueCast;
 use App\Settings\Entities\SettingEntity;
 use App\Settings\Enums\MediaCollection;
 use App\Settings\Enums\SettingType;
+use App\Settings\Observers\SettingObserver;
 use Database\Factories\SettingFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,6 +31,8 @@ class Setting extends BaseModel implements HasMedia
 
     protected static function booted(): void
     {
+        static::observe(SettingObserver::class);
+
         static::creating(function (Setting $setting): void {
             if ($setting->key === null || $setting->key === '') {
                 throw new \RuntimeException(
