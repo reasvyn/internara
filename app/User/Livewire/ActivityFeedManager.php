@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\User\Livewire;
 
 use App\User\Actions\ReadActivityLogAction;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -15,7 +16,19 @@ class ActivityFeedManager extends Component
 
     public function render(): View
     {
-        $activities = app(ReadActivityLogAction::class)->execute(userId: auth()->id());
+        $userId = auth()->id();
+
+        if ($userId === null) {
+            return view('user.activity-feed', [
+                'activities' => new LengthAwarePaginator(
+                    collect(),
+                    0,
+                    15,
+                ),
+            ]);
+        }
+
+        $activities = app(ReadActivityLogAction::class)->execute(userId: (string) $userId);
 
         return view('user.activity-feed', [
             'activities' => $activities,

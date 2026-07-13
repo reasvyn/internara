@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\User\Livewire;
 
 use App\Core\Models\ActivityLog;
-use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
@@ -14,10 +13,16 @@ class RecentActivityList extends Component
     #[Computed]
     public function activities()
     {
-        return ActivityLog::causedBy(auth()->user())->latest()->take(10)->get();
+        $user = auth()->user();
+
+        if ($user === null) {
+            return collect();
+        }
+
+        return ActivityLog::causedBy($user)->latest()->take(10)->get();
     }
 
-    public function render(): View
+    public function render(): string
     {
         return <<<'HTML'
         <div>
