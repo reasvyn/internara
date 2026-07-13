@@ -7,8 +7,11 @@ namespace App\Academics\School\Livewire;
 use App\Academics\School\Actions\SaveSchoolProfileAction;
 use App\Academics\School\Livewire\Forms\SchoolForm;
 use App\Core\Livewire\BaseFormView;
+use App\Settings\Actions\SetSettingAction;
 use App\Settings\Branding\Actions\RemoveBrandAssetAction;
+use App\Settings\Branding\Actions\UploadBrandAssetAction;
 use App\Settings\Models\Setting;
+use App\Settings\Services\Settings;
 use Illuminate\View\View;
 use Livewire\WithFileUploads;
 
@@ -29,12 +32,16 @@ class SchoolEditor extends BaseFormView
         $this->form->loadFromEntity();
     }
 
-    public function updatedLogoFile(): void
-    {
+    public function updatedLogoFile(
+        UploadBrandAssetAction $uploadBrand,
+        SetSettingAction $setSetting,
+    ): void {
         $this->authorize('update', Setting::class);
         $this->validate(['logo_file' => ['nullable', 'image', 'max:2048']]);
 
-        app(SaveSchoolProfileAction::class)->execute(data: [], logoFile: $this->logo_file);
+        $url = $uploadBrand->execute($this->logo_file);
+
+        $setSetting->execute(key: 'brand_logo', value: $url, group: 'branding');
 
         $this->logo_file = null;
         flash()->success(__('school.logo_saved'));
@@ -70,6 +77,8 @@ class SchoolEditor extends BaseFormView
 
         app(RemoveBrandAssetAction::class)->execute('logo');
 
+        Settings::forget('brand_logo');
+
         $this->showConfirm = false;
         flash()->success(__('school.logo_removed'));
     }
@@ -81,7 +90,7 @@ class SchoolEditor extends BaseFormView
 
     private function getLogoUrl(): ?string
     {
-        $setting = Setting::find('brand_logo');
+        $setting = Setting::find('brand_logo_ref');
 
         if (! $setting) {
             return null;
