@@ -18,16 +18,12 @@
             class="space-y-3 mb-8"
         >
             @foreach($auditResults['categories'] as $key => $category)
-                @php
-                    $hasIssue = collect($category['checks'])->contains(fn ($check) => in_array($check['status'], ['fail', 'warn']));
-                @endphp
-
-                <x-mary-collapse :open="$hasIssue" :name="'audit-'.$key">
+                <x-mary-collapse :open="$category['has_issue']" :name="'audit-'.$key">
                     <x-slot:heading>
                         <div class="flex items-center gap-2">
-                            @if($hasIssue && collect($category['checks'])->contains('status', 'fail'))
+                            @if($category['icon'] === 'fail')
                                 <x-mary-icon name="o-x-circle" class="size-4 text-error shrink-0" />
-                            @elseif($hasIssue)
+                            @elseif($category['icon'] === 'warn')
                                 <x-mary-icon name="o-exclamation-triangle" class="size-4 text-warning shrink-0" />
                             @else
                                 <x-mary-icon name="o-check-circle" class="size-4 text-success shrink-0" />
