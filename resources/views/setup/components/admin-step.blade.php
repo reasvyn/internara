@@ -25,47 +25,20 @@
             autofocus
         />
 
-        <div
-            class="grid grid-cols-1 md:grid-cols-2 gap-5"
-            x-data="{ showPass: false }"
-        >
-            <x-mary-input
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <x-mary-password
                 label="{{ __('setup.wizard.password') }}"
                 wire:model.live.debounce.500ms="superAdminForm.password"
                 icon="o-key"
-                x-bind:type="showPass ? 'text' : 'password'"
-            >
-                <x-slot:append>
-                    <button
-                        type="button"
-                        @click="showPass = !showPass"
-                        class="btn btn-ghost btn-square btn-sm"
-                        tabindex="-1"
-                    >
-                        <x-mary-icon x-show="!showPass" name="o-eye" class="size-4" />
-                        <x-mary-icon x-show="showPass" name="o-eye-slash" class="size-4" />
-                    </button>
-                </x-slot:append>
-            </x-mary-input>
+                right
+            />
 
-            <x-mary-input
+            <x-mary-password
                 label="{{ __('setup.wizard.confirm_password') }}"
                 wire:model.live.debounce.500ms="superAdminForm.password_confirmation"
                 icon="o-key"
-                x-bind:type="showPass ? 'text' : 'password'"
-            >
-                <x-slot:append>
-                    <button
-                        type="button"
-                        @click="showPass = !showPass"
-                        class="btn btn-ghost btn-square btn-sm"
-                        tabindex="-1"
-                    >
-                        <x-mary-icon x-show="!showPass" name="o-eye" class="size-4" />
-                        <x-mary-icon x-show="showPass" name="o-eye-slash" class="size-4" />
-                    </button>
-                </x-slot:append>
-            </x-mary-input>
+                right
+            />
         </div>
 
         <div class="alert bg-info/5 border-info/20 text-sm mt-3">
