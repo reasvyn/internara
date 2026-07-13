@@ -116,18 +116,18 @@
             <div class="bg-base-100 border border-base-content/10 rounded-xl p-6">
                 <div class="flex flex-col items-center">
                     <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('school.logo') }}</p>
-                    <div class="relative mb-2 group">
-                        <div class="cursor-pointer relative" onclick="document.getElementById('school-logo-upload').click()">
-                            <input id="school-logo-upload" type="file" wire:model="logo_file" accept="image/png,image/jpeg,image/webp" class="hidden" />
-                            @if($this->logoPreviewUrl())
-                                <img src="{{ $this->logoPreviewUrl() }}"
-                                     alt="School logo"
-                                     class="size-24 rounded-xl object-contain border border-base-content/10" />
-                            @else
-                                <div class="size-24 rounded-xl bg-base-200 flex items-center justify-center border border-dashed border-base-content/20">
-                                    <x-mary-icon name="o-building-office" class="size-8 text-base-content/30" />
-                                </div>
-                            @endif
+                        <div class="relative mb-2 group">
+                            <div class="cursor-pointer relative" onclick="document.getElementById('school-logo-upload').click()">
+                                <input id="school-logo-upload" type="file" wire:model="logo_file" accept="image/png,image/jpeg,image/webp" class="hidden" />
+                                @if($this->logoPreviewUrl())
+                                    <img src="{{ $this->logoPreviewUrl() }}"
+                                         alt="{{ __('school.logo') }}"
+                                         class="size-24 rounded-xl object-contain border border-base-content/10" />
+                                @else
+                                    <div class="size-24 rounded-xl bg-base-200 flex items-center justify-center border border-dashed border-base-content/20">
+                                        <x-mary-icon name="o-building-office" class="size-8 text-base-content/30" />
+                                    </div>
+                                @endif
                             <div class="absolute inset-0 flex items-center justify-center rounded-xl bg-base-content/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                 <x-mary-icon name="o-camera" class="size-8 text-base-100" />
                             </div>
