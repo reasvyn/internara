@@ -177,6 +177,17 @@ class SetupWizard extends BaseWizard
             ];
         }
 
+        foreach ($categories as &$category) {
+            $statuses = array_column($category['checks'], 'status');
+            $category['has_issue'] = in_array('fail', $statuses) || in_array('warn', $statuses);
+            $category['icon'] = match (true) {
+                in_array('fail', $statuses) => 'fail',
+                in_array('warn', $statuses) => 'warn',
+                default => 'pass',
+            };
+        }
+        unset($category);
+
         $this->audit = ['categories' => $categories];
         $this->auditPassed = $report->passed();
     }
