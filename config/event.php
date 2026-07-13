@@ -38,8 +38,6 @@ use App\Partners\Partnership\Listeners\ClearDashboardOnPartnershipChange;
 use App\Partners\Partnership\Listeners\NotifyOnPartnershipTerminated;
 use App\Program\Internship\Events\InternshipCreated;
 use App\Program\Internship\Listeners\NotifyAdminsInternshipCreated;
-use App\Settings\Events\SettingUpdated;
-use App\Settings\Listeners\InvalidateSettingsCache;
 use App\Setup\SetupWizard\Events\SetupFinalized;
 use App\Setup\SetupWizard\Listeners\LogSetupFinalized;
 use App\SysAdmin\Backups\Events\BackupCompleted;
@@ -56,8 +54,6 @@ use App\User\Profile\Listeners\SendProfileChangedMail;
 return [
     'listen' => [
         SetupFinalized::class => [LogSetupFinalized::class],
-
-        SettingUpdated::class => [InvalidateSettingsCache::class],
 
         AcademicYearCreated::class => [ClearDashboardCacheOnYearChange::class],
 
