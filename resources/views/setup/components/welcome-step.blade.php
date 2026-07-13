@@ -23,7 +23,7 @@
                 @endphp
 
                 <x-mary-collapse :open="$hasFailure" :name="'audit-'.$key">
-                    <x:heading>
+                    <x-slot:heading>
                         <div class="flex items-center gap-2">
                             @if($hasFailure)
                                 <x-mary-icon name="o-x-circle" class="size-4 text-error shrink-0" />
@@ -35,8 +35,8 @@
                             <span>{{ $category['label'] }}</span>
                             <span class="text-xs text-base-content/40">({{ count($category['checks']) }})</span>
                         </div>
-                    </x:heading>
-                    <x:content>
+                    </x-slot:heading>
+                    <x-slot:content>
                         <div class="space-y-2" role="list">
                             @foreach($category['checks'] as $check)
                                 <div
@@ -78,7 +78,7 @@
                                 </div>
                             @endforeach
                         </div>
-                    </x:content>
+                    </x-slot:content>
                 </x-mary-collapse>
             @endforeach
         </section>
