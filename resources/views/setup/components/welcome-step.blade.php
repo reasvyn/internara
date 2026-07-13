@@ -15,56 +15,71 @@
         <section
             aria-label="{{ __('setup.wizard.audit_results') }}"
             aria-live="polite"
-            class="space-y-6 mb-8"
+            class="space-y-3 mb-8"
         >
             @foreach($auditResults['categories'] as $key => $category)
-                <div>
-                    <h3 class="text-xs font-semibold uppercase tracking-wider text-base-content/40 mb-3">
-                        {{ $category['label'] }}
-                    </h3>
+                @php
+                    $hasFailure = collect($category['checks'])->contains('status', 'fail');
+                @endphp
 
-                    <div class="space-y-2" role="list">
-                        @foreach($category['checks'] as $check)
-                            <div
-                                role="listitem"
-                                @class([
-                                    'flex items-center gap-3 px-4 py-3 rounded-lg border text-sm transition-colors',
-                                    'border-success/20 bg-success/5' => $check['status'] === 'pass',
-                                    'border-error/20 bg-error/5' => $check['status'] === 'fail',
-                                    'border-warning/20 bg-warning/5' => $check['status'] === 'warn',
-                                ])
-                            >
-                                @php
-                                    $statusLabels = [
-                                        'pass' => __('setup.system.pass'),
-                                        'fail' => __('setup.system.fail'),
-                                        'warn' => __('setup.system.warn'),
-                                    ];
-                                    $statusLabel = $statusLabels[$check['status']] ?? $check['status'];
-                                @endphp
+                <x-mary-collapse :open="$hasFailure" :name="'audit-'.$key">
+                    <x:heading>
+                        <div class="flex items-center gap-2">
+                            @if($hasFailure)
+                                <x-mary-icon name="o-x-circle" class="size-4 text-error shrink-0" />
+                            @elseif(collect($category['checks'])->contains('status', 'warn'))
+                                <x-mary-icon name="o-exclamation-triangle" class="size-4 text-warning shrink-0" />
+                            @else
+                                <x-mary-icon name="o-check-circle" class="size-4 text-success shrink-0" />
+                            @endif
+                            <span>{{ $category['label'] }}</span>
+                            <span class="text-xs text-base-content/40">({{ count($category['checks']) }})</span>
+                        </div>
+                    </x:heading>
+                    <x:content>
+                        <div class="space-y-2" role="list">
+                            @foreach($category['checks'] as $check)
+                                <div
+                                    role="listitem"
+                                    @class([
+                                        'flex items-center gap-3 px-4 py-3 rounded-lg border text-sm transition-colors',
+                                        'border-success/20 bg-success/5' => $check['status'] === 'pass',
+                                        'border-error/20 bg-error/5' => $check['status'] === 'fail',
+                                        'border-warning/20 bg-warning/5' => $check['status'] === 'warn',
+                                    ])
+                                >
+                                    @php
+                                        $statusLabels = [
+                                            'pass' => __('setup.system.pass'),
+                                            'fail' => __('setup.system.fail'),
+                                            'warn' => __('setup.system.warn'),
+                                        ];
+                                        $statusLabel = $statusLabels[$check['status']] ?? $check['status'];
+                                    @endphp
 
-                                <span class="sr-only">{{ $statusLabel }}</span>
+                                    <span class="sr-only">{{ $statusLabel }}</span>
 
-                                @if($check['status'] === 'pass')
-                                    <x-mary-icon name="o-check-circle" class="size-5 text-success shrink-0" aria-hidden="true" />
-                                @elseif($check['status'] === 'fail')
-                                    <x-mary-icon name="o-x-circle" class="size-5 text-error shrink-0" aria-hidden="true" />
-                                @else
-                                    <x-mary-icon name="o-exclamation-triangle" class="size-5 text-warning shrink-0" aria-hidden="true" />
-                                @endif
+                                    @if($check['status'] === 'pass')
+                                        <x-mary-icon name="o-check-circle" class="size-5 text-success shrink-0" aria-hidden="true" />
+                                    @elseif($check['status'] === 'fail')
+                                        <x-mary-icon name="o-x-circle" class="size-5 text-error shrink-0" aria-hidden="true" />
+                                    @else
+                                        <x-mary-icon name="o-exclamation-triangle" class="size-5 text-warning shrink-0" aria-hidden="true" />
+                                    @endif
 
-                                <div class="flex-1 min-w-0">
-                                    <p class="font-medium text-sm">
-                                        {{ __('setup.checks.' . $check['name'], $check['name_params'] ?? []) }}
-                                    </p>
-                                    <p class="text-xs text-base-content/50">
-                                        {{ __('setup.checks.' . $check['message'], $check['message_params'] ?? []) }}
-                                    </p>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-medium text-sm">
+                                            {{ __('setup.checks.' . $check['name'], $check['name_params'] ?? []) }}
+                                        </p>
+                                        <p class="text-xs text-base-content/50">
+                                            {{ __('setup.checks.' . $check['message'], $check['message_params'] ?? []) }}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+                            @endforeach
+                        </div>
+                    </x:content>
+                </x-mary-collapse>
             @endforeach
         </section>
     @endif
