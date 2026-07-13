@@ -22,14 +22,11 @@ class SchoolEditor extends BaseFormView
 
     public bool $showConfirm = false;
 
-    public ?string $logoPreviewUrl = null;
-
     public function mount(): void
     {
         $this->authorize('update', Setting::class);
 
         $this->form->loadFromEntity();
-        $this->logoPreviewUrl = $this->getLogoUrl();
     }
 
     public function updatedLogoFile(): void
@@ -39,7 +36,6 @@ class SchoolEditor extends BaseFormView
 
         app(SaveSchoolProfileAction::class)->execute(data: [], logoFile: $this->logo_file);
 
-        $this->logoPreviewUrl = $this->getLogoUrl();
         $this->logo_file = null;
         flash()->success(__('school.logo_saved'));
     }
@@ -58,10 +54,14 @@ class SchoolEditor extends BaseFormView
     public function logoPreviewUrl(): ?string
     {
         if ($this->logo_file) {
-            return $this->logo_file->temporaryUrl();
+            try {
+                return $this->logo_file->temporaryUrl();
+            } catch (\Throwable) {
+                return null;
+            }
         }
 
-        return $this->logoPreviewUrl;
+        return $this->getLogoUrl();
     }
 
     public function confirmAction(): void
@@ -70,7 +70,6 @@ class SchoolEditor extends BaseFormView
 
         app(RemoveBrandAssetAction::class)->execute('logo');
 
-        $this->logoPreviewUrl = null;
         $this->showConfirm = false;
         flash()->success(__('school.logo_removed'));
     }
@@ -84,6 +83,14 @@ class SchoolEditor extends BaseFormView
     {
         $setting = Setting::find('brand_logo');
 
-        return $setting?->getFirstMediaUrl('brand_logo', 'thumb');
+        if (! $setting) {
+            return null;
+        }
+
+        try {
+            return $setting->getFirstMediaUrl('brand_logo', 'thumb') ?: null;
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }
