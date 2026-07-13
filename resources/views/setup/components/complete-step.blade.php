@@ -9,7 +9,7 @@
         class="inline-flex items-center justify-center size-16 rounded-full bg-primary/10 text-primary mb-6"
         x-init="$el.querySelector('svg').style.animation = 'scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both'"
     >
-        <x-mary-icon name="o-check" class="size-8" style="opacity: 0" />
+        <x-mary-icon name="o-check" class="size-8" />
     </div>
 
     @push('styles')
