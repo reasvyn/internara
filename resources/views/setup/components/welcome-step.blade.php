@@ -18,7 +18,7 @@
             class="space-y-3 mb-8"
         >
             @foreach($auditResults['categories'] as $key => $category)
-                <x-mary-collapse :open="$category['has_issue']" :name="'audit-'.$key">
+                <x-mary-collapse :open="$category['has_issue']" :name="'audit-'.$key" class="rounded-lg">
                     <x-slot:heading>
                         <div class="flex items-center gap-2">
                             @if($category['icon'] === 'fail')
