@@ -15,7 +15,7 @@
             aria-valuemin="1"
             aria-valuemax="{{ count($stepKeys) }}"
             aria-label="{{ __('setup.wizard.progress_aria', ['current' => $currentStep, 'total' => count($stepKeys)]) }}"
-            class="flex items-center gap-1"
+            class="flex items-center justify-between"
         >
             @foreach($stepKeys as $index => $stepKey)
                 @php
@@ -24,41 +24,44 @@
                     $isCurrent = $stepNum === $currentStep;
                     $label = __('setup.wizard.step_labels.' . $stepKey);
                 @endphp
-                <div class="flex-1 flex items-center">
+                <div class="flex flex-col items-center gap-1.5 flex-1">
                     <div
                         @class([
-                            'h-2 rounded-full flex-1 transition-colors duration-300',
-                            'bg-primary' => $isCompleted || $isCurrent,
-                            'bg-base-content/10' => !$isCompleted && !$isCurrent,
+                            'size-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 shrink-0',
+                            'bg-primary text-primary-content' => $isCompleted,
+                            'bg-primary/20 text-primary ring-2 ring-primary' => $isCurrent,
+                            'bg-base-content/10 text-base-content/30' => !$isCompleted && !$isCurrent,
                         ])
                         @if($isCurrent)
                             wire:key="step-indicator-{{ $stepNum }}"
                         @endif
-                        role="presentation"
-                    ></div>
-                    @if(!$loop->last)
-                        <div class="w-px h-2 mx-0.5 bg-base-content/10" aria-hidden="true"></div>
-                    @endif
+                        role="status"
+                    >
+                        @if($isCompleted)
+                            <x-mary-icon name="o-check" class="size-4" />
+                        @else
+                            {{ $stepNum }}
+                        @endif
+                    </div>
+                    <span @class([
+                        'text-[10px] font-medium uppercase tracking-wider transition-colors text-center leading-tight',
+                        'text-primary' => $isCurrent,
+                        'text-base-content/30' => !$isCurrent && !$isCompleted,
+                        'text-base-content/50' => $isCompleted && !$isCurrent,
+                    ])>
+                        {{ $label }}
+                    </span>
                 </div>
-            @endforeach
-        </div>
-
-        <div class="flex items-center justify-between mt-2" aria-hidden="true">
-            @foreach($stepKeys as $index => $stepKey)
-                @php
-                    $stepNum = $index + 1;
-                    $isCompleted = $stepNum < $currentStep;
-                    $isCurrent = $stepNum === $currentStep;
-                    $label = __('setup.wizard.step_labels.' . $stepKey);
-                @endphp
-                <span @class([
-                    'text-[10px] font-medium uppercase tracking-wider transition-colors',
-                    'text-primary' => $isCurrent,
-                    'text-base-content/30' => !$isCurrent && !$isCompleted,
-                    'text-base-content/50' => $isCompleted && !$isCurrent,
-                ])>
-                    {{ $label }}
-                </span>
+                @if(!$loop->last)
+                    <div
+                        @class([
+                            'flex-1 h-0.5 mx-1 transition-colors duration-300 -mt-5',
+                            'bg-primary' => $isCompleted,
+                            'bg-base-content/10' => !$isCompleted,
+                        ])
+                        aria-hidden="true"
+                    ></div>
+                @endif
             @endforeach
         </div>
     </div>
