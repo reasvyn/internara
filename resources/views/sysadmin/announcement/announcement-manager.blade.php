@@ -96,7 +96,7 @@
                                         @else badge-success
                                         @endif" />
                                 </div>
-                                <div class="text-xs text-base-content/60 mt-0.5 line-clamp-2 prose prose-sm max-w-none">{!! Str::markdown($announcement->message) !!}</div>
+                                <div class="text-xs text-base-content/60 mt-0.5 line-clamp-2 prose prose-sm max-w-none">{!! Str::markdown($announcement->message, ['html_input' => 'strip', 'allow_unsafe_links' => false]) !!}</div>
                                 <p class="text-[10px] text-base-content/40 mt-1.5">
                                     {{ $announcement->created_at->format('d M Y H:i') }}
                                     @if($announcement->isScheduled() && $announcement->scheduled_at)

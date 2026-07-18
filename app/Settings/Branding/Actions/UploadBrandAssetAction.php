@@ -10,7 +10,7 @@ use App\Settings\Enums\MediaCollection;
 use App\Settings\Models\Setting;
 use Illuminate\Http\UploadedFile;
 
-class UploadBrandAssetAction extends BaseCommandAction
+final class UploadBrandAssetAction extends BaseCommandAction
 {
     public function execute(UploadedFile $file, string $type = 'logo'): string
     {

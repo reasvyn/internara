@@ -9,7 +9,7 @@ use App\User\Notifications\TestMailNotification;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Notification;
 
-class TestMailSettingsAction extends BaseCommandAction
+final class TestMailSettingsAction extends BaseCommandAction
 {
     public function execute(string $recipientEmail, array $config): bool
     {

@@ -43,7 +43,7 @@ final class SmartLogger
 
     private bool $toActivity = true;
 
-    private bool $maskPii = false;
+    private bool $maskPii = true;
 
     private function __construct(string $face, string $message, array $context = [])
     {
@@ -141,6 +141,13 @@ final class SmartLogger
     public function withPiiMasking(): self
     {
         $this->maskPii = true;
+
+        return $this;
+    }
+
+    public function withoutPiiMasking(): self
+    {
+        $this->maskPii = false;
 
         return $this;
     }

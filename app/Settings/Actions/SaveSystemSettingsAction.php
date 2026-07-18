@@ -11,7 +11,7 @@ use App\Settings\Data\SystemSettingsData;
 use App\Settings\Locale\Support\Locale;
 use Illuminate\Http\UploadedFile;
 
-class SaveSystemSettingsAction extends BaseCommandAction
+final class SaveSystemSettingsAction extends BaseCommandAction
 {
     public function __construct(
         protected readonly BatchSetSettingAction $batchSetSetting,

@@ -9,6 +9,5 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('setup.protected')->group(function () {
     Route::get('/setup', SetupWizard::class)->name('setup');
     Route::post('/setup', [SetupController::class, 'redirect']);
+    Route::post('/setup/cleanup', [SetupController::class, 'cleanup'])->name('setup.cleanup');
 });
-
-Route::post('/setup/cleanup', [SetupController::class, 'cleanup'])->name('setup.cleanup');

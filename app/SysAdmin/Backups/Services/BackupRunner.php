@@ -10,10 +10,18 @@ class BackupRunner
 
     private string $timestamp;
 
+    /** @var string[] Paths to temp files that contain credentials */
+    private array $tempFiles = [];
+
     public function __construct()
     {
         $this->backupDir = storage_path('app/backup');
         $this->timestamp = now()->format('Y-m-d_His');
+    }
+
+    public function __destruct()
+    {
+        $this->cleanupTempFiles();
     }
 
     public function runDatabaseDump(): string
@@ -33,7 +41,11 @@ class BackupRunner
             default => throw new \RuntimeException("Unsupported database driver: {$driver}"),
         };
 
-        $this->execute($command);
+        try {
+            $this->execute($command);
+        } finally {
+            $this->cleanupTempFiles();
+        }
 
         return $path;
     }
@@ -104,6 +116,26 @@ class BackupRunner
         return file_exists($path) ? filesize($path) : 0;
     }
 
+    private function createTempFile(string $prefix, string $content): string
+    {
+        $file = tempnam(sys_get_temp_dir(), $prefix);
+        file_put_contents($file, $content);
+        chmod($file, 0600);
+        $this->tempFiles[] = $file;
+
+        return $file;
+    }
+
+    private function cleanupTempFiles(): void
+    {
+        foreach ($this->tempFiles as $file) {
+            if (file_exists($file)) {
+                @unlink($file);
+            }
+        }
+        $this->tempFiles = [];
+    }
+
     private function mysqlDumpCommand(string $path): string
     {
         $host = config('database.connections.mysql.host');
@@ -112,10 +144,7 @@ class BackupRunner
         $user = config('database.connections.mysql.username');
         $pass = config('database.connections.mysql.password');
 
-        $configFile = tempnam(sys_get_temp_dir(), 'my_cnf_');
-        $configContent = "[client]\nuser={$user}\npassword={$pass}\nhost={$host}\nport={$port}\n";
-        file_put_contents($configFile, $configContent);
-        chmod($configFile, 0600);
+        $configFile = $this->createTempFile('my_cnf_', "[client]\nuser={$user}\npassword={$pass}\nhost={$host}\nport={$port}\n");
 
         return sprintf(
             'mysqldump --defaults-extra-file=%s --single-transaction --routines --skip-lock-tables %s 2>/dev/null | gzip > %s',
@@ -133,10 +162,7 @@ class BackupRunner
         $user = config('database.connections.pgsql.username');
         $pass = config('database.connections.pgsql.password');
 
-        $passFile = tempnam(sys_get_temp_dir(), 'pgpass_');
-        $passContent = "{$host}:{$port}:{$db}:{$user}:{$pass}\n";
-        file_put_contents($passFile, $passContent);
-        chmod($passFile, 0600);
+        $passFile = $this->createTempFile('pgpass_', "{$host}:{$port}:{$db}:{$user}:{$pass}\n");
 
         return sprintf(
             'PGPASSFILE=%s pg_dump --host=%s --port=%s --username=%s --no-password --format=c %s 2>/dev/null | gzip > %s',

@@ -86,7 +86,7 @@
                             </div>
                         </summary>
                         <div class="mt-2 text-xs max-w-none text-base-content/70 leading-relaxed prose prose-sm">
-                            {!! Str::markdown($notification->message) !!}
+                            {!! Str::markdown($notification->message, ['html_input' => 'strip', 'allow_unsafe_links' => false]) !!}
                         </div>
                     </details>
                 @else
@@ -137,7 +137,7 @@
         @if($this->viewedNotification)
             <div class="space-y-4">
                 <div class="prose prose-sm max-w-none">
-                    {!! Str::markdown($this->viewedNotification->message ?? '') !!}
+                    {!! Str::markdown($this->viewedNotification->message ?? '', ['html_input' => 'strip', 'allow_unsafe_links' => false]) !!}
                 </div>
                 <div class="text-xs text-base-content/40 border-t border-base-content/10 pt-3">
                     {{ $this->viewedNotification->created_at->format('d M Y H:i') }}

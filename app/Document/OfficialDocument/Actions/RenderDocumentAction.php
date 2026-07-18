@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Document\OfficialDocument\Actions;
 
 use App\Core\Actions\BaseCommandAction;
+use App\Core\Exceptions\RejectedException;
 use App\Document\Models\Document;
 use App\Document\Services\DocumentRenderer;
 use App\Enrollment\Registration\Models\Registration;
@@ -59,6 +60,6 @@ final class RenderDocumentAction extends BaseCommandAction
             return $mediaUrl;
         }
 
-        throw new \RuntimeException('Document file not found.');
+        throw new RejectedException(__('exceptions.document_file_not_found'));
     }
 }
