@@ -215,6 +215,7 @@ Full definition: `docs/foundation/product-definition.md`
 | Writing GitHub issues | `writing-issues` | Structured issue format |
 | Security review | `security-audit` | OWASP, PII, auth patterns |
 | Architecture audit | `audit-protocol` | Multi-layer codebase audit |
+| Independent QA audit | `qa-protocol` | Blind test against global standards (OWASP, ISO 25010, CWE, WCAG, PSR) |
 | Enforcing architecture rules | `arch-guard` | C1-C8, D1-D6, contracts, naming |
 | Writing scripts | `script-automation` | Standards for `scripts/` devtools |
 | CSS/styling | `tailwindcss-development` | Tailwind, DaisyUI, maryUI |
