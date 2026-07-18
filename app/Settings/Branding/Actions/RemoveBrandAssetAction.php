@@ -9,7 +9,7 @@ use App\Settings\Actions\SetSettingAction;
 use App\Settings\Enums\MediaCollection;
 use App\Settings\Models\Setting;
 
-class RemoveBrandAssetAction extends BaseCommandAction
+final class RemoveBrandAssetAction extends BaseCommandAction
 {
     public function __construct(protected readonly SetSettingAction $setSetting) {}
 

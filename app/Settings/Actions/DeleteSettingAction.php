@@ -9,7 +9,7 @@ use App\Settings\Data\SettingData;
 use App\Settings\Events\SettingUpdated;
 use App\Settings\Models\Setting;
 
-class DeleteSettingAction extends BaseCommandAction
+final class DeleteSettingAction extends BaseCommandAction
 {
     public function execute(string|array $keys): int
     {

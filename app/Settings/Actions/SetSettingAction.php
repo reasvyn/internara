@@ -11,7 +11,7 @@ use App\Settings\Models\Setting;
 use App\Settings\Rules\ValidSettingKey;
 use Illuminate\Support\Facades\Validator;
 
-class SetSettingAction extends BaseCommandAction
+final class SetSettingAction extends BaseCommandAction
 {
     public function execute(
         string $key,

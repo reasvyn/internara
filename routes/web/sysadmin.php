@@ -53,4 +53,6 @@ Route::get('/admin/announcements', AnnouncementManager::class)
 // Cron / system
 // ──────────────────────────────────────────────
 
-Route::get('/cron/{secret}', CronController::class)->name('cron');
+Route::get('/cron/{secret}', CronController::class)
+    ->middleware('throttle:10,1')
+    ->name('cron');

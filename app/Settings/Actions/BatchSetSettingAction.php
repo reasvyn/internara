@@ -9,7 +9,7 @@ use App\Settings\Data\SettingEntryData;
 use App\Settings\Enums\SettingGroup;
 use Illuminate\Support\Collection;
 
-class BatchSetSettingAction extends BaseCommandAction
+final class BatchSetSettingAction extends BaseCommandAction
 {
     public function __construct(protected readonly SetSettingAction $setSettingAction) {}
 

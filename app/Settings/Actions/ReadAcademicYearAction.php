@@ -8,7 +8,7 @@ use App\Academics\AcademicYear\Models\AcademicYear;
 use App\Core\Actions\BaseReadAction;
 use Illuminate\Support\Collection;
 
-class ReadAcademicYearAction extends BaseReadAction
+final class ReadAcademicYearAction extends BaseReadAction
 {
     public function execute(): Collection
     {

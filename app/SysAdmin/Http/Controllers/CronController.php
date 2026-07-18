@@ -13,7 +13,9 @@ final class CronController
 {
     public function __invoke(string $secret): JsonResponse
     {
-        if ($secret !== config('app.cron_secret')) {
+        $expected = config('app.cron_secret');
+
+        if (! is_string($expected) || ! hash_equals($expected, $secret)) {
             throw new UnauthorizedException('Invalid cron secret.');
         }
 
