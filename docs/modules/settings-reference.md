@@ -1,8 +1,7 @@
 # Settings — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — fix Setting model contract
-> (SettingsStore→HasMedia); fix Settings path (Support→Services); add missing DTOs; note Service
-> write path
+> **Last updated:** 2026-07-21 **Changes:** sync — replace InvalidateSettingsCache listener with
+> SettingObserver; update events, observers, and tests
 
 ## Description
 
@@ -95,9 +94,9 @@ feature toggles.
 
 ## Events
 
-| File                        | Event            | Dispatched By                                                            |
-| --------------------------- | ---------------- | ------------------------------------------------------------------------ |
-| `Events/SettingUpdated.php` | `SettingUpdated` | `SetSettingAction`, `BatchSetSettingAction`, `Settings::set()` (Service) |
+| File                        | Event            | Dispatched By                                                            | Notes                                              |
+| --------------------------- | ---------------- | ------------------------------------------------------------------------ | -------------------------------------------------- |
+| `Events/SettingUpdated.php` | `SettingUpdated` | `SetSettingAction`, `BatchSetSettingAction`, `Settings::set()` (Service) | Audit/logging only — no listener for cache invalidation |
 
 ## Middleware
 
@@ -115,11 +114,11 @@ feature toggles.
 | `Locale/Support/Locale.php` | `Locale`   | Locale management                                                                            |
 | `Theme/Support/Theme.php`   | `Theme`    | Theme engine (CSS variables)                                                                 |
 
-## Listeners
+## Observers
 
-| File                                    | Listener                  | Handles                                       |
-| --------------------------------------- | ------------------------- | --------------------------------------------- |
-| `Listeners/InvalidateSettingsCache.php` | `InvalidateSettingsCache` | `SettingUpdated` — clears affected cache keys |
+| File                                    | Observer          | Handles                                                          |
+| --------------------------------------- | ----------------- | ---------------------------------------------------------------- |
+| `Observers/SettingObserver.php`         | `SettingObserver` | Eloquent `created`/`updated`/`deleted` — clears affected cache keys |
 
 ## Rules
 
@@ -169,8 +168,8 @@ for the testing conventions.
 | `Feature/Settings/Actions/ReadAcademicYearActionTest.php`      | `ReadAcademicYearAction`                                           |
 | `Feature/Settings/Actions/TestMailSettingsActionTest.php`      | TestMailSettingsAction SMTP test                                   |
 | `Feature/Settings/Actions/UploadBrandAssetActionTest.php`      | UploadBrandAssetAction, media upload                               |
-| `Feature/Settings/Events/SettingUpdatedEventTest.php`          | SettingUpdated event dispatch and listener                         |
-| `Feature/Settings/Listeners/InvalidateSettingsCacheTest.php`   | InvalidateSettingsCache: single key, group, theme cache            |
+| `Feature/Settings/Events/SettingUpdatedEventTest.php`          | SettingUpdated event dispatch                                      |
+| `Feature/Settings/Observers/SettingObserverTest.php`           | SettingObserver: cache invalidation on create/update/delete        |
 | `Feature/Settings/Http/Middleware/SetLocaleMiddlewareTest.php` | SetLocaleMiddleware locale resolution                              |
 | `Feature/Settings/SettingsRouteTest.php`                       | Settings route accessibility                                       |
 

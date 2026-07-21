@@ -343,7 +343,7 @@ enum {Name}: string implements LabelEnum, StatusEnum
 | Livewire alias (submodule) | `{kebab-module}.{kebab-submodule}.{kebab-name}` | `admin.user.user-manager` |
 | Livewire Form | `{Entity}Form` | `AcademicYearForm` |
 | Policy | `{Name}Policy` | `UserPolicy` |
-| Exception | `{Name}Exception` | `ConflictException` |
+| Exception | `{Name}Exception` | `RejectedException` |
 | Event | `{Entity}{Actioned}` (past tense) | `InternshipCreated` |
 | Listener | `{Verb}{Entity}` | `NotifyAdminsInternshipCreated` |
 | Notification | `{Entity}{NotificationType}Notification` | `WelcomeNotification` |

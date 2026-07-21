@@ -1,6 +1,7 @@
 # Database — Schema Design & Migration Strategy
 
-> **Last updated:** 2026-07-11 **Changes:** sync — migration consolidation: 57 scattered migrations
+> **Last updated:** 2026-07-21 **Changes:** sync — add single-column indexes (users.email,
+> attendances.registration_id, attendances.is_verified)
 
 ## Description
 
@@ -104,6 +105,14 @@ Composite indexes are created for known query patterns, not speculatively:
 | FK + status filter | `[registration_id, status]` on `attendances`      |
 | User + date lookup | `[user_id, date]` on `logbooks` and `attendances` |
 | Polymorphic lookup | `[subject_type, subject_id]` on `activity_log`    |
+
+Single-column indexes are added for high-cardinality lookup columns:
+
+| Column                   | Table          | Purpose                              |
+| ------------------------ | -------------- | ------------------------------------ |
+| `email`                  | `users`        | Login lookup performance             |
+| `registration_id`        | `attendances`  | FK join performance (1:N from registration) |
+| `is_verified`            | `attendances`  | Filter unverified attendance records |
 
 Factories and seeders mirror the module structure. Seeders are idempotent — they can be run multiple
 times without duplicating data. The seeding order respects module dependencies: school data before

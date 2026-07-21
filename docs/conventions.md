@@ -1,7 +1,7 @@
 # Coding Conventions — PHP Rules, Naming & Testing
 
-> **Last updated:** 2026-07-10 **Changes:** add theming & form field icon conventions; renumber §13→§14
-> (DTO/ActionResponse check, doc metadata check); sync with AGENTS.md pre-commit checklist
+> **Last updated:** 2026-07-21 **Changes:** sync — replace ConflictException with
+> RejectedException in naming examples
 
 ## Description
 
@@ -254,7 +254,7 @@ doc rather than duplicating conventions here:
 | Livewire alias (root)      | `{kebab-module}.{kebab-name}`                                 | `user.profile-editor`                                                 |
 | Livewire Form              | `{Entity}Form` (extending `Livewire\Form`)                    | `AcademicYearForm`, `SchoolForm`                                      |
 | Policy                     | `{Name}Policy`                                                | `UserPolicy`, `InternshipPolicy`                                      |
-| Exception                  | `{Name}Exception`                                             | `ConflictException`, `ValidationFailedException`                      |
+| Exception                  | `{Name}Exception`                                             | `RejectedException`, `ValidationFailedException`                    |
 | Controller                 | `{Name}Controller`                                            | `DashboardController`, `ReportController`                             |
 | Middleware                 | `{Name}Middleware`                                            | `CheckRoleMiddleware`, `SetLocaleMiddleware`                          |
 | Event                      | `{Entity}{Actioned}` — past tense                             | `InternshipCreated`, `ReportApproved`, `StudentRegistered`            |
