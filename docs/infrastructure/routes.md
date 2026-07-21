@@ -1,6 +1,6 @@
 # Routes — Route Structure, Middleware & Naming
 
-> **Last updated:** 2026-07-21 **Changes:** add submodule route file convention
+> **Last updated:** 2026-07-21 **Changes:** fix submodule route file convention — remove module prefix, clarify route naming
 
 ## Description
 
@@ -19,17 +19,16 @@ which route. A registration route lives in `registration.php`, not in a thousand
 
 Modules with multiple submodules may split routes into per-submodule files for better colocation.
 When a submodule grows large enough to warrant its own route file, place it alongside the module
-route file using the `{module}.{submodule}.php` naming convention:
+route file using the `{submodule}.php` naming convention (no module prefix):
 
 ```
 routes/web/
-├── settings.php              # Module-level routes (shared/general)
-├── settings.branding.php     # Submodule: Branding
-├── settings.locale.php       # Submodule: Locale
-├── settings.theme.php        # Submodule: Theme
-├── auth.php                  # Module-level routes
-├── auth.login.php            # Submodule: Login
-├── auth.password.php         # Submodule: Password
+├── auth.php                  # Module-level routes (shared/general)
+├── login.php                 # Submodule: Login
+├── password.php              # Submodule: Password
+├── settings.php              # Module-level routes
+├── locale.php                # Submodule: Locale
+├── theme.php                 # Submodule: Theme
 └── ...
 ```
 
@@ -39,8 +38,8 @@ are valid:
 | Scenario | File | Example |
 |----------|------|---------|
 | Small module, all routes together | `{module}.php` | `auth.php` |
-| Large module, submodule split | `{module}.{submodule}.php` | `auth.login.php` |
-| Mixed (some shared, some split) | Both files | `settings.php` + `settings.locale.php` |
+| Large module, submodule split | `{submodule}.php` | `login.php` |
+| Mixed (some shared, some split) | Both files | `settings.php` + `locale.php` |
 
 **Rule:** A module _may_ have submodule route files — this is _not_ required. Keep routes in the
 parent module file unless the submodule has 5+ routes or belongs to a distinct business domain.
@@ -70,7 +69,7 @@ flowchart LR
         direction TB
         setup[setup.php]
         auth[auth.php]
-        auth_login[auth.login.php<br/>submodule]
+        login[login.php<br/>submodule]
         user[user.php]
         sysadmin[sysadmin.php]
         document[document.php]
@@ -87,12 +86,12 @@ flowchart LR
         certification[certification.php]
         reports[reports.php]
         settings[settings.php]
-        settings_locale[settings.locale.php<br/>submodule]
+        locale[locale.php<br/>submodule]
     end
 
     web --> setup
     web --> auth
-    web --> auth_login
+    web --> login
     web --> user
     web --> sysadmin
     web --> document
@@ -109,7 +108,7 @@ flowchart LR
     web --> certification
     web --> reports
     web --> settings
-    web --> settings_locale
+    web --> locale
 ```
 
 Route files contain:
@@ -189,13 +188,18 @@ These middleware are applied per-route or per-group:
 
 ## Route Naming Convention
 
-All routes use `<prefix>.<resource>.<action>` naming. Prefixes match URL structure:
+Route names should be clear and preferably describe the URL path. There is no rigid prefix
+convention — name routes based on their URL structure:
 
-- `admin.*` — administration (role: super_admin|admin)
-- `student.*` — student portal
-- `teacher.*`, `supervisor.*` — mentor role portals
-- `password.*` — password management (shared across roles)
-- `certificates.*` — certificate operations
+| URL Pattern | Route Name | Rationale |
+|-------------|------------|-----------|
+| `/login` | `login` | Simple, matches the path |
+| `/admin/users` | `admin.users.index` | Describes admin section + resource |
+| `/student/supervision-logs` | `student.supervision-logs` | Describes student portal + resource |
+| `/supervision/logs` | `supervision.logs` | Describes path segments |
+
+**Principle:** Route names should make it obvious which URL they point to. Use dot notation to
+mirror the URL path hierarchy.
 
 ---
 
@@ -218,7 +222,7 @@ its Blade view. The route file only needs `Route::livewire('/path', Component::c
 3. Name it with `->name('{prefix}.{resource}.{action}')`
 4. Add sidebar menu entry in `config/menu.php`
 
-For a submodule route: open `routes/web/{module}.{submodule}.php` (or create it if it does not
+For a submodule route: open `routes/web/{submodule}.php` (or create it if it does not
 exist). Add the `require` in `routes/web.php` after the parent module file.
 
 For a new module: create `routes/web/{module}.php`, add `require` in `routes/web.php` at the correct
@@ -253,7 +257,7 @@ php artisan route:cache
 ## Where to Find It
 
 - `routes/web.php` — master file with `require`s in dependency order
-- `routes/web/` — 17 module route files (plus optional submodule files: `{module}.{submodule}.php`)
+- `routes/web/` — 17 module route files (plus optional submodule files: `{submodule}.php`)
 - `routes/console.php` — Artisan command registrations
 - `routes/channels.php` — broadcasting channel definitions (not implemented)
 - `routes/ai.php` — AI integration routes
