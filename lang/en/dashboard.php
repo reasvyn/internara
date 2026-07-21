@@ -98,7 +98,7 @@ return [
     'teacher' => [
         'recent_journals' => 'Recent Student Journals',
         'no_journals' => 'No journals pending review.',
-        'guidance_logs' => 'Guidance Logs',
+        'supervision_logs' => 'Supervision Logs',
     ],
 
     'supervisor' => [

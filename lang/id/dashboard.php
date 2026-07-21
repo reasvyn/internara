@@ -98,7 +98,7 @@ return [
     'teacher' => [
         'recent_journals' => 'Jurnal Siswa Terbaru',
         'no_journals' => 'Belum ada jurnal yang perlu diperiksa.',
-        'guidance_logs' => 'Catatan Bimbingan',
+        'supervision_logs' => 'Catatan Bimbingan',
     ],
 
     'supervisor' => [

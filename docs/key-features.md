@@ -1,6 +1,6 @@
 # Key Features — Feature Inventory Across All Modules
 
-> **Last updated:** 2026-07-10 **Changes:** update — add User Guide feature, guidance handbooks, cross-role proxy, and Pulse monitoring entries
+> **Last updated:** 2026-07-21 **Changes:** sync — remove Guidance module, split SupervisionLog to Journals and Handbook to Document
 
 ## Description
 
@@ -202,19 +202,26 @@ Daily activity tracking.
 | Absence Approval      | Mentor approves single-day, extended requires admin                      | Mentor + Admin   |
 | Attendance Manager    | CRUD records, filter, sort, reports                                      | Admin            |
 
-### Guidance — Mentoring, Supervision & Handbooks
+### Journals — Supervision Logs & Monitoring Visits
 
-Mentor relationships, supervision logs, and policy handbook management.
+Mentor relationships and supervision log management within the Journals module.
 
 | Feature                     | Description                                              | Access                         |
 | --------------------------- | -------------------------------------------------------- | ------------------------------ |
 | Supervision Logs            | Private notes: site visits, online, phone supervision    | Mentor                         |
-| Supervision Log Workflow    | DRAFT → SUBMITTED → VERIFIED with teacher bypass window  | Mentor                         |
+| Supervision Log Workflow    | DRAFT → SUBMITTED → REVIEWED → ACKNOWLEDGED               | Mentor                         |
 | Mentoring Assignments       | Maps teachers and supervisors to student registrations   | Admin                          |
+| Cross-Role Proxy            | Teacher proxies supervisor log verification after 48h    | Teacher                        |
+
+### Document — Handbooks & Templates
+
+Policy handbook storage and compliance acknowledgement tracking within the Document module.
+
+| Feature                     | Description                                              | Access                         |
+| --------------------------- | -------------------------------------------------------- | ------------------------------ |
 | Handbook Manager            | Upload and manage PDF handbooks by target role           | Admin                          |
 | Handbook List & Acknowledge | View, download, and acknowledge handbooks                | Student / Teacher / Supervisor |
 | Role-Targeted Visibility    | Handbooks scoped to student, teacher, supervisor, or all | System                         |
-| Cross-Role Proxy            | Teacher proxies supervisor log verification after 48h    | Teacher                        |
 
 ### Incident — Issue Reporting
 

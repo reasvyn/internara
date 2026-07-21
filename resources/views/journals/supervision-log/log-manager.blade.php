@@ -1,5 +1,5 @@
 <div class="p-8">
-    <x-mary-header title="Supervision Management" subtitle="Manage bimbingan and mentoring for students" separator progress-indicator>
+    <x-mary-header title="Supervision Management" subtitle="Manage mentoring sessions for students" separator progress-indicator>
         <x-slot:actions>
             <x-mary-button label="Log New Session" icon="o-plus" class="btn-primary" wire:click="create" />
         </x-slot:actions>
@@ -55,7 +55,7 @@
             
             <x-mary-input label="Topic / Discussion" wire:model="topic" placeholder="e.g. Discussing project milestones" />
             
-            <x-mary-textarea label="Session Notes" wire:model="notes" rows="4" placeholder="Summary of the guidance/mentoring session..." />
+            <x-mary-textarea label="Session Notes" wire:model="notes" rows="4" placeholder="Summary of the mentoring session..." />
         </div>
 
         <x-slot:actions>

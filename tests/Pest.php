@@ -16,7 +16,6 @@ pest()
         __DIR__.'/Document',
         __DIR__.'/Enrollment',
         __DIR__.'/Evaluation',
-        __DIR__.'/Guidance',
         __DIR__.'/Incident',
         __DIR__.'/Journals',
         __DIR__.'/Partners',

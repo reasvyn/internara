@@ -25,7 +25,6 @@ return [
         'Partners',
         'Program',
         'Enrollment',
-        'Guidance',
         'Journals',
         'Assignment',
         'Reports',

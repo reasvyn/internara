@@ -242,7 +242,7 @@ Full definition: `docs/foundation/product-definition.md`
 | **Assessment** | Rubrics, assessments, scoring frameworks | `docs/modules/assessment.md` |
 | **Evaluation** | Feedback forms, sections, weighted questions | `docs/modules/evaluation.md` |
 | **Assignment** | Course work, submissions, grading | `docs/modules/assignment.md` |
-| **Journals** | Logbooks, attendance, absence requests, monitoring visits | `docs/modules/journals.md` |
+| **Journals** | Logbooks, attendance, absence requests, supervision logs, monitoring visits | `docs/modules/journals.md` |
 | **Incident** | Incident reports, workplace concerns | `docs/modules/incident.md` |
 | **Partners** | Companies, partnerships | `docs/modules/partners.md` |
 | **Certification** | Certificate generation, credentials | `docs/modules/certification.md` |

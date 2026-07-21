@@ -1,5 +1,5 @@
 <div class="p-8">
-    <x-mary-header title="Supervision Logs" subtitle="Track your guidance and mentoring sessions" separator progress-indicator />
+    <x-mary-header title="Supervision Logs" subtitle="Track your mentoring sessions" separator progress-indicator />
 
     @if(!$registration)
         <div class="alert alert-warning">

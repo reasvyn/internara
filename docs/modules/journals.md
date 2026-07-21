@@ -40,6 +40,14 @@ Single-day absences approved by mentor. Extended absences (configurable threshol
 require secondary approval from coordinator. Unapproved absences auto-escalate after program grace
 period.
 
+### SupervisionLog
+
+Student mentoring session records reviewed by industry supervisors. Students log mentoring topics and
+learnings; supervisors review and provide feedback with optional revision requests. Status workflow:
+`draft` → `submitted` → `reviewed` → `acknowledged`. Supervisor can request revision at any review
+stage, returning the entry to `submitted`. Teacher Cross-Role Proxy applies after 48h supervisor
+inactivity window.
+
 ### MonitoringVisit
 
 Field monitoring visit scheduling, verification, and tracking. Supports multiple visit methods
@@ -77,5 +85,5 @@ daily record.
 
 ## Used By
 
-- Evaluation (logbook and attendance data for scoring)
-- Reports (attendance, logbook compliance, and visit compliance data for grade card)
+- Evaluation (logbook, attendance, and supervision log data for scoring)
+- Reports (attendance, logbook compliance, supervision log, and visit compliance data for grade card)
