@@ -145,7 +145,7 @@ Every spec document follows this structure:
 
 ---
 
-## 6. API / Data Contract
+## 6. API / Data Contracts
 
 {Data structures, action signatures, routes, events, config values}
 
@@ -241,7 +241,7 @@ For `FR-` and `NFR-`, add a single-letter area code when the feature has multipl
 - Separate categories: Security, Performance, Reliability, Usability, Maintainability
 - NFR must be testable — if you can't test it, rewrite it
 
-### API / Data Contract
+### API / Data Contracts
 
 - Include exact class signatures, method signatures, config arrays
 - Show data types for all properties

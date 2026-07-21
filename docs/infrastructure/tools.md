@@ -196,8 +196,8 @@ python3 scripts/scan_dead_code.py
 
 | What it checks |
 |----------------|
-| `[text](path)` resolves to existing file |
-| `[text](path#anchor)` matches existing heading |
+| Markdown link syntax resolves to existing file |
+| Anchor link syntax resolves to existing heading |
 | No broken cross-references |
 
 ```bash

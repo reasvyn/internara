@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-07-21 **Changes:** feat — add core-infra spec to Feature Specifications
+> **Last updated:** 2026-07-21 **Changes:** feat — add cache-and-session and logging-and-error-handling specs
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -144,6 +144,8 @@ Refer to the [ADR Index](adr/index.md) for all 14 records covering foundation, o
 - **[Specs Index](specs/index.md)** — All feature specification documents
 - **[Install & Setup](specs/install-and-setup.md)** — Installation & setup wizard specification
 - **[Core Infrastructure](specs/core-infra.md)** — Dependencies, framework config, database, base classes, contracts, cache, session
+- **[Cache & Session](specs/cache-and-session.md)** — Cache driver strategy, key registry, invalidation, session lifecycle & security
+- **[Logging & Error Handling](specs/logging-and-error-handling.md)** — SmartLogger dual-channel, PII masking, exception hierarchy, error handling
 
 ---
 
