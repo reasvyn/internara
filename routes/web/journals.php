@@ -8,6 +8,8 @@ use App\Journals\Attendance\Livewire\StudentClockIn;
 use App\Journals\Http\Controllers\LogbookReportController;
 use App\Journals\Logbook\Livewire\LogbookEntry;
 use App\Journals\Logbook\Livewire\LogbookManager;
+use App\Journals\SupervisionLog\Livewire\StudentLogManager;
+use App\Journals\SupervisionLog\Livewire\SupervisorReviewManager;
 
 Route::prefix('student')
     ->name('student.')
@@ -18,6 +20,7 @@ Route::prefix('student')
         Route::livewire('/attendance/absence', AbsenceRequestForm::class)->name(
             'attendance.absence',
         );
+        Route::get('/supervision-logs', StudentLogManager::class)->name('supervision-logs');
     });
 
 Route::prefix('admin')
@@ -34,3 +37,10 @@ Route::livewire('/admin/logbook', LogbookManager::class)
 Route::get('/admin/logbook/report/{registration}', LogbookReportController::class)
     ->name('sysadmin.logbook.report')
     ->middleware(['auth', 'role:super_admin|admin|teacher|supervisor']);
+
+Route::prefix('supervision')
+    ->name('supervision.')
+    ->middleware(['auth', 'role:supervisor'])
+    ->group(function () {
+        Route::get('/logs', SupervisorReviewManager::class)->name('logs');
+    });

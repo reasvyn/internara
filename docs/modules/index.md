@@ -208,33 +208,33 @@ Assignment management and submission tracking.
 
 ## Tracking & Activity Modules
 
-### Journals — Student Activity Tracking
+### Journals — Student Activity Tracking & Supervision Logs
 
-Logbooks, attendance, and absence requests.
+Logbooks, attendance, absence requests, and teacher supervision logs.
 
 - Overview: [journals.md](journals.md)
 - Reference: [journals-reference.md](journals-reference.md)
 
-**Key Concepts:** Logbook, Attendance, AbsenceRequest
+**Key Concepts:** Logbook, Attendance, AbsenceRequest, SupervisionLog
 
 **Dependencies:** Enrollment, Program, Core
 
-**Used By:** Evaluation
+**Used By:** Evaluation, Reports
 
 ---
 
-### Guidance — Supervision Logs & Monitoring Visits
+### Guidance — Monitoring Visits
 
-Teacher supervision field logging and field monitoring visit coordination.
+Field monitoring visit scheduling, verification, and tracking.
 
 - Overview: [guidance.md](guidance.md)
 - Reference: [guidance-reference.md](guidance-reference.md)
 
-**Key Concepts:** SupervisionLog, MonitoringVisit
+**Key Concepts:** MonitoringVisit
 
 **Dependencies:** User, Program, Core
 
-**Used By:** Reports (supervision compliance data)
+**Used By:** Reports (visit compliance data)
 
 ---
 
