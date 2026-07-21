@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-07-10 **Changes:** expand — add API, CI/CD, troubleshooting, changelog; reorganize sections; add suggested reading paths
+> **Last updated:** 2026-07-21 **Changes:** feat — add core-infra spec to Feature Specifications
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -143,6 +143,7 @@ Refer to the [ADR Index](adr/index.md) for all 14 records covering foundation, o
 
 - **[Specs Index](specs/index.md)** — All feature specification documents
 - **[Install & Setup](specs/install-and-setup.md)** — Installation & setup wizard specification
+- **[Core Infrastructure](specs/core-infra.md)** — Dependencies, framework config, database, base classes, contracts, cache, session
 
 ---
 
