@@ -1,6 +1,6 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-07-21 **Changes:** feat — initial index with install-and-setup spec
+> **Last updated:** 2026-07-21 **Changes:** feat — add core-infra spec to directory
 
 ## Description
 
@@ -18,6 +18,7 @@ update the spec first, then implement.
 | Spec | Module | Status |
 | ---- | ------ | ------ |
 | [Install & Setup](install-and-setup.md) | Setup | ✅ Complete |
+| [Core Infrastructure](core-infra.md) | Core | ✅ Complete |
 
 ---
 
