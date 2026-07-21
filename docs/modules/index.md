@@ -223,18 +223,18 @@ Logbooks, attendance, and absence requests.
 
 ---
 
-### Guidance — Mentoring & Supervision
+### Guidance — Supervision Logs & Monitoring Visits
 
-Mentor relationships coordination and private field supervision logs.
+Teacher supervision field logging and field monitoring visit coordination.
 
 - Overview: [guidance.md](guidance.md)
 - Reference: [guidance-reference.md](guidance-reference.md)
 
-**Key Concepts:** SupervisionLog, Mentoring Assignments
+**Key Concepts:** SupervisionLog, MonitoringVisit
 
 **Dependencies:** User, Program, Core
 
-**Used By:** None
+**Used By:** Reports (supervision compliance data)
 
 ---
 

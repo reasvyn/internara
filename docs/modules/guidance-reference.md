@@ -1,8 +1,6 @@
 # Guidance — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — add Handbook and MonitoringVisit submodules; fix
-> SupervisionStatus → SupervisionLogState entity; add missed SupervisionLog actions
-> (CreateLogAction) and Livewire components
+> **Last updated:** 2026-07-21 **Changes:** sync — remove Handbook submodule (moved back to Document); update submodule list
 
 ## Description
 
@@ -26,10 +24,6 @@ coordination.
 | `SupervisionLog/Actions/VerifySupervisionLogAction.php` | `VerifySupervisionLogAction` | `BaseCommandAction` |
 | `MonitoringVisit/Actions/CreateVisitAction.php`         | `CreateVisitAction`          | `BaseCommandAction` |
 | `MonitoringVisit/Actions/VerifyVisitAction.php`         | `VerifyVisitAction`          | `BaseCommandAction` |
-| `Handbook/Actions/CreateHandbookAction.php`             | `CreateHandbookAction`       | `BaseCommandAction` |
-| `Handbook/Actions/UpdateHandbookAction.php`             | `UpdateHandbookAction`       | `BaseCommandAction` |
-| `Handbook/Actions/DeleteHandbookAction.php`             | `DeleteHandbookAction`       | `BaseCommandAction` |
-| `Handbook/Actions/AcknowledgeHandbookAction.php`        | `AcknowledgeHandbookAction`  | `BaseCommandAction` |
 
 ---
 
@@ -49,7 +43,6 @@ coordination.
 | `SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, verified           |
 | `SupervisionLog/Enums/SupervisionType.php`      | `SupervisionType`      | `LabelEnum`               | onsite, remote, scheduled, emergency |
 | `MonitoringVisit/Enums/VisitMethod.php`         | `VisitMethod`          | `LabelEnum`               | onsite, remote                       |
-| `Handbook/Enums/HandbookAudience.php`           | `HandbookAudience`     | `LabelEnum`               | student, supervisor, teacher, all    |
 
 ---
 
@@ -59,7 +52,6 @@ coordination.
 | ------------------------------------------------- | --------------------- | ------------ |
 | `SupervisionLog/Entities/SupervisionLogState.php` | `SupervisionLogState` | `BaseEntity` |
 | `MonitoringVisit/Entities/VisitState.php`         | `VisitState`          | `BaseEntity` |
-| `Handbook/Entities/HandbookEntity.php`            | `HandbookEntity`      | `BaseEntity` |
 
 ---
 
@@ -74,17 +66,11 @@ coordination.
 
 ## Data / DTOs
 
-| File                             | Class          | Extends    |
-| -------------------------------- | -------------- | ---------- |
-| `Handbook/Data/HandbookData.php` | `HandbookData` | `BaseData` |
+_No DTOs for this module._
 
 ## Events
 
-| File                                  | Class             | Dispatched By          |
-| ------------------------------------- | ----------------- | ---------------------- |
-| `Handbook/Events/HandbookCreated.php` | `HandbookCreated` | `CreateHandbookAction` |
-| `Handbook/Events/HandbookUpdated.php` | `HandbookUpdated` | `UpdateHandbookAction` |
-| `Handbook/Events/HandbookDeleted.php` | `HandbookDeleted` | `DeleteHandbookAction` |
+_No events for this module._
 
 ## Livewire Components
 
@@ -96,14 +82,10 @@ coordination.
 | `SupervisionLog/Livewire/SupervisorReviewManager.php` | `SupervisorReviewManager` | `Component`         |
 | `MonitoringVisit/Livewire/VisitManager.php`           | `VisitManager`            | `BaseRecordManager` |
 | `MonitoringVisit/Livewire/StudentVisitList.php`       | `StudentVisitList`        | `Component`         |
-| `Handbook/Livewire/HandbookManager.php`               | `HandbookManager`         | `BaseRecordManager` |
-| `Handbook/Livewire/StudentHandbookList.php`           | `StudentHandbookList`     | `Component`         |
 
 ## Livewire Forms
 
-| File                                       | Form           |
-| ------------------------------------------ | -------------- |
-| `Handbook/Livewire/Forms/HandbookForm.php` | `HandbookForm` |
+_No Livewire forms for this module._
 
 ---
 
@@ -139,7 +121,7 @@ for the testing conventions.
 
 ## Architectural Integration
 
-- **Submodules**: `SupervisionLog`, `MonitoringVisit`, `Handbook`
+- **Submodules**: `SupervisionLog`, `MonitoringVisit`
 - **Business Logic**: `app/Guidance/`
 - **Routing**: `routes/web/guidance.php`
 - **Views**: `resources/views/guidance/`

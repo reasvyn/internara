@@ -310,7 +310,7 @@ Score aggregation and sign-off.
 ### Document — Templates & Handbooks
 
 Rendering engine for official documents (unified in `documents` table with `type` discriminator).
-Handbooks managed by Guidance/Handbook module.
+Handbooks managed by Document module.
 
 | Feature                | Description                                                                                 | Access |
 | ---------------------- | ------------------------------------------------------------------------------------------- | ------ |

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Document\Models;
 
 use App\Core\Models\BaseModel;
-use App\Guidance\Handbook\Entities\HandbookEntity;
+use App\Document\Handbook\Entities\HandbookEntity;
 use App\User\Models\User;
 use Database\Factories\DocumentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

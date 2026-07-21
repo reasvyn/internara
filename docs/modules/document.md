@@ -1,6 +1,6 @@
 # Document — Templates, Handbooks & Rendering
 
-> **Last updated:** 2026-07-11 **Changes:** sync — remove implementation details (Actions, Routes, File Structure) to reference doc
+> **Last updated:** 2026-07-21 **Changes:** sync — Handbook submodule returned from Guidance; update boundary and submodule descriptions
 
 ## Description
 
@@ -10,9 +10,9 @@ compliance acknowledgement tracking.
 ## Purpose & Boundary
 
 Document manages the school's official document repository — correspondence templates (permits,
-parent consent letters) rendered via Blade + DomPDF. Handbooks are managed by the Guidance/Handbook
-module and share the same unified `documents` table distinguished by `type = 'handbook'`. All
-acknowledgements are recorded in the `activity_log` table for compliance audit.
+parent consent letters) rendered via Blade + DomPDF, and policy handbooks with acknowledgement
+tracking. Both use the same unified `documents` table distinguished by `type`. All acknowledgements
+are recorded in the `activity_log` table for compliance audit.
 
 Out of scope: certificate generation (Certification), final grade card (Reports), daily logbook
 entries (Journals).
@@ -26,11 +26,13 @@ DomPDF compilation. Supports variable substitution for student name, program det
 school information. Generated PDFs can be downloaded individually. Templates are versioned — updates
 create new versions while preserving old ones for historical accuracy.
 
-### Handbook (Moved to Guidance/Handbook)
+### Handbook
 
-Handbooks are now managed by the **Guidance/Handbook** module (`app/Guidance/Handbook/`). They use
-the same `documents` table with `type = 'handbook'` and the same `activity_log` for acknowledgment
-tracking. See [Guidance module](guidance.md) for the full Handbook reference.
+Policy handbook storage and compliance acknowledgement tracking. Handbooks are created and managed
+by school admins, assigned to specific student audiences (all, students, teachers, supervisors),
+and tracked for read acknowledgement. Uses the same `documents` table with `type = 'handbook'`
+and the same `activity_log` for acknowledgment tracking. Supports PDF file upload and versioned
+handbook updates that require new acknowledgements.
 
 ## Key Concepts
 
