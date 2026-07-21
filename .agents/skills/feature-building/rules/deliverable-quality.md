@@ -31,8 +31,8 @@ Every new file must pass:
 ## Feature Completeness
 
 - [ ] Tests: happy path + edge cases minimum
-- [ ] Translations: keys in both `lang/en/` and `lang/id/`
-- [ ] Routes: in correct `routes/web/{module}.php` file
+- [ ] Translations: keys in both `lang/en/` and `lang/id/` (submodule files colocated in same dir)
+- [ ] Routes: in correct `routes/web/{module}.php` file (submodule files: `{module}.{submodule}.php`)
 - [ ] Authorization: Policy or inline `$this->authorize()`
 - [ ] Cache invalidation: event-driven or explicit `Cache::forget()`
 - [ ] Docs updated: `{module}.md` and/or `{module}-reference.md`

@@ -92,8 +92,8 @@ The ability to navigate, understand, and reason about the codebase efficiently.
 | Base contracts | `app/Core/Actions/`, `app/Core/Entities/`, `app/Core/Enums/` |
 | Tests | `tests/{Module}/{Submodule}/` |
 | Config | `config/{module}.php` |
-| Routes | `routes/web/{module}.php` |
-| Translations | `lang/en/{module}.php`, `lang/id/{module}.php` |
+| Routes | `routes/web/{module}.php` (submodules: `{module}.{submodule}.php`) |
+| Translations | `lang/en/{module}.php`, `lang/id/{module}.php` (submodules: `{submodule}.php` in same dir) |
 
 ### Pattern Recognition
 
