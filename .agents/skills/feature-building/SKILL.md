@@ -1,8 +1,9 @@
 ---
 name: feature-building
-description: SDLC Phase: IMPLEMENTATION (Orchestrator). Execution phase that takes task specifications from docs/roadmap.md and implements them — coordinating specialized sub-skills for each concern.
+description: SDLC Phase: IMPLEMENTATION (Orchestrator). Execution phase that takes task specifications from docs/roadmap.md or docs/specs/ and implements them — coordinating specialized sub-skills for each concern.
 upstream:
   - roadmap-planning
+  - spec-writing
   - code-refactoring
   - writing-issues
 downstream:
@@ -72,7 +73,7 @@ Using this skill follows 4 phases:
 
 | Role           | Skill                                                                |
 | -------------- | -------------------------------------------------------------------- |
-| **Upstream**   | `roadmap-planning` (task spec), `code-refactoring` (refactored code) |
+| **Upstream**   | `roadmap-planning` (task spec), `spec-writing` (feature specs), `code-refactoring` (refactored code) |
 | **This skill** | **IMPLEMENTATION (Orchestrator)** — executes the build               |
 | **Downstream** | `pest-testing` (tests), `sync-docs` (doc updates), sub-skills        |
 
@@ -81,6 +82,8 @@ Using this skill follows 4 phases:
 ### 1. Understand the Task
 
 - Read the task specification from `docs/roadmap.md` or the issue description
+- If a feature spec exists in `docs/specs/`, read it — it contains requirements (FR/NFR IDs),
+  data contracts, design decisions, and success metrics that MUST guide implementation
 - Read the relevant module docs: `docs/modules/{module}.md` (business rules) and
   `docs/modules/{module}-reference.md` (file structure)
 - Read the relevant pattern doc: `docs/architecture/{pattern}-pattern.md`
@@ -140,16 +143,18 @@ Recommended build order for new features:
 
 ## References
 
-| Topic                | Doc                                      |
-| -------------------- | ---------------------------------------- |
-| Module structure     | `docs/modules/index.md`                  |
-| Action patterns      | `docs/architecture/action-pattern.md`    |
-| Entity patterns      | `docs/architecture/entity-pattern.md`    |
-| Model conventions    | `docs/architecture/model-pattern.md`     |
-| Data / DTOs          | `docs/architecture/data-pattern.md`      |
-| Livewire conventions | `docs/architecture/livewire-pattern.md`  |
-| Policy conventions   | `docs/architecture/policy-pattern.md`    |
-| Event conventions    | `docs/architecture/event-pattern.md`     |
-| Exception hierarchy  | `docs/architecture/exception-pattern.md` |
-| Enum conventions     | `docs/architecture/enum-pattern.md`      |
-| Testing patterns     | `docs/architecture/testing-pattern.md`   |
+| Topic                | Doc                                        |
+| -------------------- | ------------------------------------------ |
+| Feature specs        | `docs/specs/index.md`                      |
+| Spec template        | `.agents/skills/spec-writing/SKILL.md`     |
+| Module structure     | `docs/modules/index.md`                    |
+| Action patterns      | `docs/architecture/action-pattern.md`      |
+| Entity patterns      | `docs/architecture/entity-pattern.md`      |
+| Model conventions    | `docs/architecture/model-pattern.md`       |
+| Data / DTOs          | `docs/architecture/data-pattern.md`        |
+| Livewire conventions | `docs/architecture/livewire-pattern.md`    |
+| Policy conventions   | `docs/architecture/policy-pattern.md`      |
+| Event conventions    | `docs/architecture/event-pattern.md`       |
+| Exception hierarchy  | `docs/architecture/exception-pattern.md`   |
+| Enum conventions     | `docs/architecture/enum-pattern.md`        |
+| Testing patterns     | `docs/architecture/testing-pattern.md`     |
