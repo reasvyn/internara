@@ -101,6 +101,6 @@ The readiness check returns a detailed report of blocking items with actionable 
 - Journals (activity context)
 - Assessment (grading context)
 - Reports (grade compilation)
-- Guidance (supervision scope)
+- Journals (monitoring visits scope)
 
 

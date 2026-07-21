@@ -23,12 +23,17 @@ Default output: `scripts/outputs/{YYYYMMDDHHMMSS}-{description}.json`
 | Script | Focus | Output | Used by |
 |--------|-------|--------|---------|
 | `scan_architecture.py` | Component counts per module, submodule structure | `{ts}-architecture.json` | audit-protocol, context-awareness |
-| `scan_conventions.py` | strict_types, Fillable, debug calls, hardcoded strings | `{ts}-conventions.json` | audit-protocol, code-writing |
-| `scan_tests.py` | Run test suite, parse per-module results | `{ts}-tests.json` | pest-testing, test-writing |
-| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `{ts}-dead-code.json` | audit-protocol, code-refactoring |
+| `scan_class_contracts.py` | Action, Entity, DTO, Model, Enum contract compliance | `{ts}-class-contracts.json` | arch-guard, audit-protocol |
+| `scan_conventions.py` | strict_types, Fillable, debug calls, hardcoded strings | `{ts}-conventions.json` | arch-guard, audit-protocol, code-writing |
+| `scan_dead_code.py` | Unregistered observers, unused DTOs, orphan events | `{ts}-dead-code.json` | arch-guard, audit-protocol, code-refactoring |
 | `scan_doc_links.py` | Validate relative links in markdown files | `{ts}-doc-links.json` | sync-docs, doc-writing |
-| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `{ts}-issues.json` | writing-issues, audit-protocol |
 | `scan_files.py` | File counts and lines of code per module | `{ts}-files.json` | context-awareness |
+| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | `{ts}-issues.json` | writing-issues, audit-protocol |
+| `scan_naming.py` | File, class, method, variable naming conventions | `{ts}-naming.json` | arch-guard, audit-protocol |
+| `scan_security.py` | XSS, SQL injection, auth gaps, hardcoded secrets | `{ts}-security.json` | arch-guard, audit-protocol, security-audit |
+| `scan_tests.py` | Run test suite, parse per-module results | `{ts}-tests.json` | pest-testing, test-writing |
+| `scan_violations.py` | C1-C8, D1-D6 architecture invariant violations | `{ts}-violations.json` | arch-guard, audit-protocol |
+| `clean_outputs.py` | Remove old JSON output files by age or date range | — | maintenance |
 
 ## Dependencies
 

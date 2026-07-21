@@ -31,7 +31,7 @@ class SupervisionManager extends Component
             ->latest('date')
             ->paginate(10);
 
-        return view('guidance.supervision-log.manager', [
+        return view('journals.supervision-log.manager', [
             'logs' => $logs,
         ]);
     }

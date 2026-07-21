@@ -80,7 +80,6 @@ flowchart LR
         assignment[assignment.php]
         assessment[assessment.php]
         evaluation[evaluation.php]
-        guidance[guidance.php]
         journals[journals.php]
         incident[incident.php]
         certification[certification.php]
@@ -102,7 +101,6 @@ flowchart LR
     web --> assignment
     web --> assessment
     web --> evaluation
-    web --> guidance
     web --> journals
     web --> incident
     web --> certification

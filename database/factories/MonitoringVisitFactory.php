@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\MonitoringVisit\Enums\VisitMethod;
-use App\Guidance\MonitoringVisit\Models\MonitoringVisit;
+use App\Journals\MonitoringVisit\Enums\VisitMethod;
+use App\Journals\MonitoringVisit\Models\MonitoringVisit;
 use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

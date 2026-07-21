@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Guidance\MonitoringVisit\Models;
+namespace App\Journals\MonitoringVisit\Models;
 
 use App\Core\Models\BaseModel;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\MonitoringVisit\Entities\VisitState;
-use App\Guidance\MonitoringVisit\Enums\VisitMethod;
+use App\Journals\MonitoringVisit\Entities\VisitState;
+use App\Journals\MonitoringVisit\Enums\VisitMethod;
 use App\User\Models\User;
 use Database\Factories\MonitoringVisitFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

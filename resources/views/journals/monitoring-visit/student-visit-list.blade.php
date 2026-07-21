@@ -1,5 +1,5 @@
 <div>
-    <x-mary-header :title="__('guidance.visit_title')" :subtitle="__('guidance.visit_student_subtitle')" separator />
+    <x-mary-header :title="__('journals.visit_title')" :subtitle="__('journals.visit_student_subtitle')" separator />
 
     <div class="space-y-4">
         @forelse($this->visits as $visit)
@@ -12,12 +12,12 @@
                             <p class="text-sm text-base-content/50">{{ $visit->location }}</p>
                         @endif
                     </div>
-                    <x-mary-badge :value="$visit->is_verified ? __('guidance.verified') : __('guidance.pending')"
+                    <x-mary-badge :value="$visit->is_verified ? __('journals.verified') : __('journals.pending')"
                         :class="$visit->is_verified ? 'badge-success' : 'badge-warning'" />
                 </div>
             </x-mary-card>
         @empty
-            <x-mary-alert :title="__('guidance.no_visits')" icon="o-information-circle" class="bg-base-200" />
+            <x-mary-alert :title="__('journals.no_visits')" icon="o-information-circle" class="bg-base-200" />
         @endforelse
     </div>
 </div>

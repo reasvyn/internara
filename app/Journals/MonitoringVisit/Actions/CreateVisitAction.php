@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Guidance\MonitoringVisit\Actions;
+namespace App\Journals\MonitoringVisit\Actions;
 
 use App\Core\Actions\BaseCommandAction;
-use App\Guidance\MonitoringVisit\Models\MonitoringVisit;
+use App\Journals\MonitoringVisit\Models\MonitoringVisit;
 use App\User\Models\User;
 
 final class CreateVisitAction extends BaseCommandAction

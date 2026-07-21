@@ -84,4 +84,4 @@ restricted views.
 - Journals (activity context per registration)
 - Assessment (grading per registration)
 - Reports (grade card per registration)
-- Guidance (supervision per registration)
+- Journals (monitoring visits per registration)

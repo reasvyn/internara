@@ -8,8 +8,8 @@ use App\Assessment\Models\Assessment;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseCommandAction;
 use App\Guidance\MonitoringVisit\Models\MonitoringVisit;
-use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\Journals\Attendance\Models\Attendance;
+use App\Journals\SupervisionLog\Models\SupervisionLog;
 use App\Reports\Report\Models\Report;
 use Illuminate\Support\Facades\DB;
 

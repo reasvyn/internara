@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Guidance\MonitoringVisit\Livewire;
+namespace App\Journals\MonitoringVisit\Livewire;
 
-use App\Guidance\MonitoringVisit\Models\MonitoringVisit;
+use App\Journals\MonitoringVisit\Models\MonitoringVisit;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
@@ -32,6 +32,6 @@ class StudentVisitList extends Component
     #[Layout('core::layouts.app')]
     public function render(): View
     {
-        return view('guidance.monitoring-visit.student-visit-list');
+        return view('journals.monitoring-visit.student-visit-list');
     }
 }

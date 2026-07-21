@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Guidance\MonitoringVisit\Livewire\VisitManager;
-use App\Guidance\MonitoringVisit\Models\MonitoringVisit;
+use App\Journals\MonitoringVisit\Livewire\VisitManager;
+use App\Journals\MonitoringVisit\Models\MonitoringVisit;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;

@@ -216,7 +216,7 @@ Your school is now live on Internara. Here are some resources for ongoing use:
 | Managing companies               | [Partners Module](../modules/partners.md)     |
 | Student registration & placement | [Enrollment Module](../modules/enrollment.md) |
 | Internship programs              | [Program Module](../modules/program.md)       |
-| Mentoring & supervision          | [Guidance Module](../modules/guidance.md)     |
+| Mentoring & supervision          | [Journals Module](../modules/journals.md)      |
 | Daily journals & attendance      | [Journals Module](../modules/journals.md)     |
 | Tasks & assignments              | [Assignment Module](../modules/assignment.md) |
 

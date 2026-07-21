@@ -11,8 +11,8 @@ use App\Certification\Certificate\Enums\CertificateStatus;
 use App\Certification\Certificate\Models\Certificate;
 use App\Core\Actions\BaseReadAction;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\Journals\Attendance\Models\Attendance;
+use App\Journals\SupervisionLog\Models\SupervisionLog;
 use App\Program\Internship\Models\Internship;
 
 final class ReadCloseReadinessAction extends BaseReadAction
