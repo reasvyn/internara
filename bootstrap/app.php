@@ -5,8 +5,7 @@ declare(strict_types=1);
 use App\Auth\Login\Http\Middleware\AuthThrottleMiddleware;
 use App\Auth\Permissions\Http\Middleware\CheckRoleMiddleware;
 use App\Core\Exceptions\AppException;
-use App\Core\Exceptions\NotFoundException;
-use App\Core\Exceptions\RateLimitException;
+use App\Core\Exceptions\ModuleException;
 use App\Core\Exceptions\UnauthorizedException;
 use App\Core\Exceptions\ValidationFailedException;
 use App\Core\Http\Middleware\LogContext;
@@ -66,10 +65,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (AppException $e, Request $request) {
             $status = match (true) {
-                $e instanceof NotFoundException => 404,
                 $e instanceof UnauthorizedException => 403,
                 $e instanceof ValidationFailedException => 422,
-                $e instanceof RateLimitException => 429,
                 default => 500,
             };
 
@@ -84,6 +81,16 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             abort($status, $message);
+        });
+
+        $exceptions->render(function (ModuleException $e, Request $request) {
+            $message = $e->getMessage();
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $message], 400);
+            }
+
+            abort(400, $message);
         });
     })
     ->create();
