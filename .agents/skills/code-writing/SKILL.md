@@ -348,7 +348,7 @@ enum {Name}: string implements LabelEnum, StatusEnum
 | Listener | `{Verb}{Entity}` | `NotifyAdminsInternshipCreated` |
 | Notification | `{Entity}{NotificationType}Notification` | `WelcomeNotification` |
 | Console command | `{module}:{action}` | `system:health` |
-| Route name | `{prefix}.{resource}.{action}` | `admin.users.index` |
+| Route name | descriptive (mirror URL path) | `login`, `admin.users.index` |
 | Config key | `snake_case` with `{file}.{key}` | `app.name` |
 | Column/table | `snake_case` | `user_id`, `academic_years` |
 | Boolean methods | `is`/`has`/`can`/`should` prefix | `isActive()`, `allowsLogin()` |

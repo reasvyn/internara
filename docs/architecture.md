@@ -1,7 +1,6 @@
 # Action-based MVC Architecture — 4-Layer Architecture, Data Flow & Dependency Rules
 
-> **Last updated:** 2026-06-28 **Changes:** simplify 12-layer architecture to 4 layers
-> (Presentation/UI → Business/Domain Ops → Data/Persistent → Framework/Infra)
+> **Last updated:** 2026-07-21 **Changes:** update route/translation file paths to reflect submodule convention (no module prefix)
 
 ## Description
 
@@ -45,7 +44,7 @@ only on layers below it — never the reverse.
 │  maryUI + DaisyUI + Alpine.js + Tailwind CSS v4                             │
 │                                                                             │
 │  app/{Module}/**/Livewire/  app/{Module}/**/Policies/  app/{Module}/Http/  │
-│  resources/views/{module}/  routes/web/{module}.php                         │
+│  resources/views/{module}/  routes/web/{module}.php (+ {submodule}.php)    │
 │  See: docs/architecture/livewire-pattern.md                                 │
 │  See: docs/architecture/policy-pattern.md                                   │
 └──────────────────────────────────────────────────────────────────────────▲──┘
@@ -113,7 +112,7 @@ only on layers below it — never the reverse.
 
 | Layer                       | Directory / Location                                                                                                          |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| **4 — Presentation/UI**     | `{SubModule}/Livewire/`, `resources/views/{module}/`, `routes/web/{module}.php`, `{SubModule}/Policies/`, `{SubModule}/Http/` |
+| **4 — Presentation/UI**     | `{SubModule}/Livewire/`, `resources/views/{module}/`, `routes/web/{module}.php` (+ `{submodule}.php`), `{SubModule}/Policies/`, `{SubModule}/Http/` |
 | **3 — Business/Domain Ops** | `{SubModule}/Actions/`, `{SubModule}/Events/`, `{SubModule}/Listeners/`, `{SubModule}/Notifications/`, `Console/`             |
 | **2 — Data/Persistent**     | `{SubModule}/Models/`, `{SubModule}/Entities/`, `{SubModule}/Enums/`, `{SubModule}/Data/`, `Types/`, database, config         |
 | **1 — Framework/Infra**     | `app/Core/`, `{SubModule}/Services/`, `{SubModule}/Support/`, PHP, Laravel, packages                                          |

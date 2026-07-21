@@ -1,6 +1,6 @@
 # Project Overview
 
-> **Last updated:** 2026-07-12 **Changes:** fix — correct version, module count, module statuses, script list; remove phantom Console module
+> **Last updated:** 2026-07-21 **Changes:** sync — add submodule route file convention (no module prefix)
 
 ---
 
@@ -176,5 +176,5 @@ Use `--module {Name}` to scope to a single module. See `docs/infrastructure/tool
 | Module docs | `docs/modules/{name}.md` (conceptual), `docs/modules/{name}-reference.md` (reference) |
 | Agent skills | `.agents/skills/` |
 | Test suite | `tests/{Module}/` |
-| Routes | `routes/web/{module}.php` (most modules; not all have routes) |
+| Routes | `routes/web/{module}.php` (+ `{submodule}.php` for split submodules) |
 | Translations | `lang/en/`, `lang/id/` |

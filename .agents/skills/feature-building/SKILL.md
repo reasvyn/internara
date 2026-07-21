@@ -121,7 +121,7 @@ Recommended build order for new features:
 8. **Policy** — `BasePolicy`, CRUD methods
 9. **Livewire component** — thin, delegates to Actions
 10. **Blade view** — follows existing view patterns
-11. **Route** — in correct `routes/web/{module}.php`
+11. **Route** — in correct `routes/web/{module}.php` (or `{submodule}.php` for split submodules)
 12. **Tests** — every Action gets a test file
 13. **Translations** — `__()` keys in both `lang/en/` and `lang/id/`
 
