@@ -1,7 +1,6 @@
 # Coding Conventions — PHP Rules, Naming & Testing
 
-> **Last updated:** 2026-07-21 **Changes:** sync — replace ConflictException with
-> RejectedException in naming examples
+> **Last updated:** 2026-07-21 **Changes:** sync — fix submodule route/translation file convention (no module prefix)
 
 ## Description
 
@@ -755,7 +754,8 @@ indicator for accessibility.
 ### File Structure
 
 Each module and submodule gets its own flat translation file under `lang/{locale}/`. No
-subdirectories. Modules may optionally split submodule keys into separate files.
+subdirectories. Modules may optionally split submodule keys into separate files using the
+`{submodule}.php` naming convention (no module prefix):
 
 | Scope           | File                                                | Example Keys                                                                                                       |
 | --------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
