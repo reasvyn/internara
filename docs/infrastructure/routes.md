@@ -1,6 +1,6 @@
 # Routes — Route Structure, Middleware & Naming
 
-> **Last updated:** 2026-06-13 **Changes:** sync — fix route file count (18→17)
+> **Last updated:** 2026-07-21 **Changes:** add submodule route file convention
 
 ## Description
 
@@ -15,12 +15,43 @@ file under `routes/web/{module}.php`. The master `routes/web.php` simply stitche
 This approach avoids merge conflicts on a monolithic file and makes it obvious which module owns
 which route. A registration route lives in `registration.php`, not in a thousand-line file.
 
+### Submodule Route Files
+
+Modules with multiple submodules may split routes into per-submodule files for better colocation.
+When a submodule grows large enough to warrant its own route file, place it alongside the module
+route file using the `{module}.{submodule}.php` naming convention:
+
+```
+routes/web/
+├── settings.php              # Module-level routes (shared/general)
+├── settings.branding.php     # Submodule: Branding
+├── settings.locale.php       # Submodule: Locale
+├── settings.theme.php        # Submodule: Theme
+├── auth.php                  # Module-level routes
+├── auth.login.php            # Submodule: Login
+├── auth.password.php         # Submodule: Password
+└── ...
+```
+
+The master `routes/web.php` `require`s submodule files after the parent module file. Both formats
+are valid:
+
+| Scenario | File | Example |
+|----------|------|---------|
+| Small module, all routes together | `{module}.php` | `auth.php` |
+| Large module, submodule split | `{module}.{submodule}.php` | `auth.login.php` |
+| Mixed (some shared, some split) | Both files | `settings.php` + `settings.locale.php` |
+
+**Rule:** A module _may_ have submodule route files — this is _not_ required. Keep routes in the
+parent module file unless the submodule has 5+ routes or belongs to a distinct business domain.
+
 ---
 
 ## Architecture
 
-The master file `routes/web.php` `require`s 17 module route files in dependency order. If two files
-register the same route name, the later one wins.
+The master file `routes/web.php` `require`s 17 module route files in dependency order. Modules with
+submodules may additionally `require` submodule-specific route files (e.g., `auth.login.php`). If
+two files register the same route name, the later one wins.
 
 ```mermaid
 flowchart LR
@@ -39,6 +70,7 @@ flowchart LR
         direction TB
         setup[setup.php]
         auth[auth.php]
+        auth_login[auth.login.php<br/>submodule]
         user[user.php]
         sysadmin[sysadmin.php]
         document[document.php]
@@ -55,10 +87,12 @@ flowchart LR
         certification[certification.php]
         reports[reports.php]
         settings[settings.php]
+        settings_locale[settings.locale.php<br/>submodule]
     end
 
     web --> setup
     web --> auth
+    web --> auth_login
     web --> user
     web --> sysadmin
     web --> document
@@ -75,6 +109,7 @@ flowchart LR
     web --> certification
     web --> reports
     web --> settings
+    web --> settings_locale
 ```
 
 Route files contain:
@@ -183,6 +218,9 @@ its Blade view. The route file only needs `Route::livewire('/path', Component::c
 3. Name it with `->name('{prefix}.{resource}.{action}')`
 4. Add sidebar menu entry in `config/menu.php`
 
+For a submodule route: open `routes/web/{module}.{submodule}.php` (or create it if it does not
+exist). Add the `require` in `routes/web.php` after the parent module file.
+
 For a new module: create `routes/web/{module}.php`, add `require` in `routes/web.php` at the correct
 position for load-order precedence.
 
@@ -215,7 +253,7 @@ php artisan route:cache
 ## Where to Find It
 
 - `routes/web.php` — master file with `require`s in dependency order
-- `routes/web/` — 17 module route files
+- `routes/web/` — 17 module route files (plus optional submodule files: `{module}.{submodule}.php`)
 - `routes/console.php` — Artisan command registrations
 - `routes/channels.php` — broadcasting channel definitions (not implemented)
 - `routes/ai.php` — AI integration routes

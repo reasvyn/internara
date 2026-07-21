@@ -1,6 +1,6 @@
 # Localization — Translation & Locale System
 
-> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-21 **Changes:** add submodule translation file convention
 
 ## Description
 
@@ -72,6 +72,29 @@ lang/
 ├── en.json
 └── id.json
 ```
+
+### Submodule Translation Files
+
+Modules with multiple submodules may split translation keys into per-submodule files for better
+colocation. Use the `{submodule}.php` naming convention under the same `lang/{locale}/` directory:
+
+```
+lang/en/
+├── auth.php                  # Module-level keys (shared/general)
+├── login.php                 # Submodule: Login keys
+├── password.php              # Submodule: Password keys
+├── settings.php              # Module-level keys
+├── locale.php                # Submodule: Locale keys
+├── theme.php                 # Submodule: Theme keys
+└── ...
+```
+
+Keys in submodule files follow the same dot notation: `__('login.failed')`,
+`__('locale.switched')`. Both `en` and `id` copies must exist for every submodule file.
+
+**Rule:** A module _may_ have submodule translation files — this is _not_ required. Keep
+translations in the parent module file unless the submodule has 10+ keys or belongs to a distinct
+business domain.
 
 ### PHP Translation Files
 
@@ -222,6 +245,6 @@ Before submitting, verify:
 - `config/localization.php` — locale resolution configuration
 - `app/Settings/Locale/Http/Middleware/SetLocaleMiddleware.php` — locale detection
 - `app/Settings/Livewire/LangSwitcher.php` — UI language toggle
-- `lang/` — translation files
+- `lang/` — translation files (module-level `{module}.php` and optional submodule `{submodule}.php`)
 - `app/Core/Contracts/LabelEnum.php` — enum label contract
 - `app/Core/Contracts/StatusEnum.php` — state machine enum contract

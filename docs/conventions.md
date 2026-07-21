@@ -755,15 +755,19 @@ indicator for accessibility.
 ### File Structure
 
 Each module and submodule gets its own flat translation file under `lang/{locale}/`. No
-subdirectories.
+subdirectories. Modules may optionally split submodule keys into separate files.
 
 | Scope           | File                                                | Example Keys                                                                                                       |
 | --------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | Module root     | `{module}.php`                                      | `auth.php` → `__('auth.login.*')`, `__('auth.forgot_password.*')`                                                  |
-| Submodule       | `{submodule}.php`                                   | `superadmin.php` → `__('superadmin.create.*')`, `__('superadmin.field_*')`                                         |
+| Submodule       | `{submodule}.php`                                   | `login.php` → `__('login.failed')`, `__('login.throttle')`                                                        |
 | Shared utility  | `common.php`                                        | Global labels: `__('common.actions.save')`, `__('common.yes')`, `__('common.status.*')`                            |
 | Domain-specific | `{domain}.php`                                      | `activity.php` → `__('activity.login_success')` (dynamic DB lookup), `notifications.php` → `__('notifications.*')` |
 | Framework       | `passwords.php`, `pagination.php`, `validation.php` | Laravel built-in files — keep as shipped                                                                           |
+
+Submodule files are colocated in the same `lang/{locale}/` directory — no subdirectories. Both
+`en` and `id` copies must exist for every submodule file. See
+`docs/infrastructure/localization.md` §Submodule Translation Files for details.
 
 ### `__()` Usage Rules
 
