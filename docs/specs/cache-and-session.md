@@ -239,6 +239,8 @@ opt-in performance gains on Tier 2+, without code changes — only `.env` config
 | NFR-U2 | Tier upgrade (file→Redis) must require only `.env` changes and cache flush |
 | NFR-M1 | All 26+ cache keys must be discoverable in a single file (`config/cache-keys.php`) |
 | NFR-M2 | Cache invalidation logic must be traceable from Observer/Listener to key name |
+| NFR-L1 | All user-facing cache error messages must use `__()` translation helper |
+| NFR-A1 | Cache-related error pages must be accessible (keyboard-navigable, screen-reader friendly) |
 
 ---
 

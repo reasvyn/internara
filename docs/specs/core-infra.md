@@ -349,6 +349,8 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | NFR-M3 | DTOs carry only scalars/Enums/Carbon — never Models or Actions (C6 invariant) |
 | NFR-M4 | Cache key registry in single file (`config/cache-keys.php`) — discoverable, auditable |
 | NFR-M5 | Module discovery at runtime — no manual registration of Livewire/Policies/Views |
+| NFR-L1 | All user-facing error messages in base classes must use `__()` translation helper |
+| NFR-A1 | Error pages rendered by exception handlers must meet WCAG 2.1 Level AA |
 
 ---
 

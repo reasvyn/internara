@@ -131,6 +131,98 @@ resources/views/{module}/{submodule}/{action}.blade.php
 4. Dark mode must work without visual breakage
 5. Do NOT write custom CSS unless DaisyUI/maryUI cannot achieve the design
 6. Follow existing component patterns in the same module
+7. **Accessibility is mandatory** — WCAG 2.1 AA compliance (see below)
+
+## Accessibility (WCAG 2.1 AA)
+
+Every styled component MUST meet accessibility requirements. See `docs/architecture/modular-pattern.md`
+§22 and `docs/foundation/ui-ux.md` §6 for full rules.
+
+### Color & Contrast
+
+- Use DaisyUI theme colors — they are pre-validated for contrast ratios.
+- Minimum 4.5:1 for normal text, 3:1 for large text (≥18pt or ≥14pt bold).
+- Never use arbitrary Tailwind color utilities (`text-red-500`, `bg-blue-200`) that may fail
+  contrast checks — prefer DaisyUI semantic colors (`text-error`, `bg-info/10`).
+- Status indicators must include text labels alongside color (e.g., `badge-success` + "Active",
+  not just a green badge).
+
+### Focus Indicators
+
+- Never suppress focus rings with `outline-none` without providing a visible replacement.
+- DaisyUI `focus:ring` is the default — preserve it on all interactive elements.
+- Custom interactive elements (Alpine.js dropdowns, custom buttons) must include
+  `focus:ring focus:ring-primary`.
+
+### Keyboard Navigation
+
+- All interactive elements must be reachable via Tab key.
+- Dropdowns must open on Enter/Space and close on Escape.
+- Modals must trap focus (DaisyUI default — verify it's not overridden).
+- No positive `tabindex` values — follow natural DOM order.
+
+### Responsive & Reflow
+
+- No horizontal scrolling at 320px viewport width (WCAG 1.4.10).
+- Tables must reflow to card layout or provide horizontal scroll with visible indicators on mobile.
+- Content must not be clipped or overlap at any breakpoint.
+
+### Icon Accessibility
+
+- Icon-only buttons must include `aria-label`:
+  ```blade
+  <x-mary-button icon="o-trash" aria-label="{{ __('common.delete') }}" />
+  ```
+- Icons paired with text should NOT duplicate the text in `alt` attributes.
+
+## Localization
+
+All user-facing strings MUST use `__()` for EN/ID bilingual support. See `docs/conventions.md` §14.
+
+### Rules
+
+- All visible text in Blade views uses `{{ __('key') }}` — no hardcoded English.
+- Button labels, modal titles, table headers: all via `__()`.
+- Date formatting: `Carbon::locale(app()->getLocale())->isoFormat(...)`.
+- HTML `lang` attribute set in `base.blade.php`.
+- Every key must exist in both `lang/en/` and `lang/id/`.
+
+### Key Patterns
+
+| Scope            | Pattern                | Example                            |
+| ---------------- | ---------------------- | ---------------------------------- |
+| Module-level     | `{module}.key`         | `__('enrollment.register')`        |
+| Submodule-level  | `{submodule}.key`      | `__('internship.create_success')`  |
+| Shared           | `common.key`           | `__('common.actions.save')`        |
+
+## Routing
+
+See `docs/infrastructure/routes.md` and `docs/architecture/modular-pattern.md` §13.
+
+### Route File Convention
+
+- Module-level: `routes/web/{module}.php`
+- Submodule-level: `routes/web/{submodule}.php` (no module prefix)
+
+### Route Naming
+
+Flexible — describe the URL path. No rigid `{prefix}.{resource}.{action}` convention.
+
+### Livewire Route Registration
+
+```php
+Route::livewire('/register', RegistrationWizard::class)->name('registration.wizard');
+```
+
+Middleware applied at route level: `auth`, `guest`, `role:{roles}`, `auth.throttle`.
+
+### URL Structure
+
+| Scope       | Pattern                         | Example                                  |
+| ----------- | ------------------------------- | ---------------------------------------- |
+| Guest       | `/{resource}`                   | `/apply`, `/login`                       |
+| Student     | `/student/{module}/{resource}`  | `/student/internships/placement-change`  |
+| Admin       | `/admin/{module}/{resource}`    | `/admin/internships/placements`          |
 
 ## Verification Checklist
 
@@ -140,6 +232,12 @@ resources/views/{module}/{submodule}/{action}.blade.php
 - [ ] Follows existing view patterns in the module
 - [ ] No custom CSS when framework components suffice
 - [ ] No inline styles — use Tailwind utilities
+- [ ] All visible text uses `__()` for localization
+- [ ] Focus indicators visible on all interactive elements
+- [ ] Icon-only buttons include `aria-label`
+- [ ] Color is not the sole indicator for status/errors
+- [ ] Color contrast meets WCAG 2.1 AA (4.5:1 normal, 3:1 large)
+- [ ] No horizontal scrolling at 320px viewport width
 
 ## References
 

@@ -265,6 +265,14 @@ encrypted values are transparently decrypted on read.
 | NFR-U2 | Usability      | Color preset selection must show a visual preview of all 4 colors before applying |
 | NFR-M1 | Maintainability| Every setting key must be declared in exactly one place (config or code) — no ad-hoc key strings scattered across modules |
 | NFR-M2 | Maintainability| All setting reads must go through `setting()` helper or `Settings::get()` — no direct `Setting::find()` calls outside the Settings module |
+| NFR-A1 | Accessibility | All settings UI (branding, theme, locale) must meet WCAG 2.1 Level AA |
+| NFR-A2 | Accessibility | Logo/favicon upload must show alt text preview for screen readers |
+| NFR-A3 | Accessibility | Color preset picker must indicate selection via non-color means (check icon, border) |
+| NFR-A4 | Accessibility | Theme and locale switches must announce the change to screen readers via `aria-live` |
+| NFR-A5 | Accessibility | All form inputs in settings pages must have associated labels |
+| NFR-L1 | Localization | All settings UI labels, messages, and status text must use `__()` translation helper |
+| NFR-L2 | Localization | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-L3 | Localization | Locale switcher must update `app()->setLocale()` and persist preference in cookie |
 
 ---
 

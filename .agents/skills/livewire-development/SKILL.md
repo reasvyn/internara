@@ -185,6 +185,113 @@ class ProfileEditor extends Component
 
 Action handles the media library call.
 
+## Accessibility (WCAG 2.1 AA)
+
+All Livewire components MUST meet WCAG 2.1 Level AA. See `docs/architecture/livewire-pattern.md`
+§13 and `docs/foundation/ui-ux.md` §6 for full rules.
+
+### Focus Management
+
+- **Modal open:** Focus moves to first focusable element inside the modal (maryUI default).
+- **Modal close:** Focus returns to the trigger element. Implement via Alpine:
+  `x-on:close.window="$focus(target)"`.
+- **wire:navigate transitions:** Focus resets to `<h1>` or first interactive element after page
+  transition.
+
+### Dynamic Content
+
+- Livewire partial DOM updates are invisible to screen readers — wrap in `aria-live="polite"`
+  containers.
+- Flash messages: verify `aria-live` is present on the flash container.
+- Loading states: use `aria-busy="true"` and `role="status"`.
+
+### Form Accessibility
+
+- Every `<x-mary-input>` must have a `label` prop (renders `<label>` with proper `for`).
+- Use `required` prop (HTML `required` attribute) — not just visual indicators.
+- Validation errors from `$this->validate()` are announced by maryUI's `aria-live` regions.
+- After failed validation, focus must move to the first invalid field or error summary.
+
+### Table Accessibility
+
+- `x-mary-table` headers use `scope` attributes by default — verify not overridden.
+- Sortable headers must include `aria-sort`.
+- Bulk selection header checkbox must have `aria-label="Select all rows"`.
+
+### Icon-Only Elements
+
+Any button or link with only an icon MUST include `aria-label`:
+
+```blade
+<x-mary-button icon="o-trash" wire:click="delete('{{ $id }}')" aria-label="{{ __('common.delete') }}" />
+```
+
+## Localization
+
+See `docs/conventions.md` §14 and `docs/architecture/modular-pattern.md` §23.
+
+### Rules
+
+- Every user-facing string in component or Blade view MUST use `__()` — no hardcoded text.
+- Flash messages: `__('{module}.{entity}.{action}_success')` — never hardcoded strings.
+- Status labels: use `LabelEnum::label()` (calls `__()` internally) — never translate in view.
+- Modal titles, button labels, table headers: all via `__()`.
+- Form Object `messages()`: return translated validation messages via `__()`.
+- Every key must exist in both `lang/en/` and `lang/id/`.
+
+### Key Patterns
+
+| Scope            | Pattern                | Example                            |
+| ---------------- | ---------------------- | ---------------------------------- |
+| Module-level     | `{module}.key`         | `__('enrollment.register')`        |
+| Submodule-level  | `{submodule}.key`      | `__('internship.create_success')`  |
+| Shared           | `common.key`           | `__('common.actions.save')`        |
+
+### Confirmation Dialog
+
+```blade
+<x-core::ui.confirm
+    :title="__('internship.confirm_delete_title')"
+    :message="__('internship.confirm_delete_message')"
+    :confirmText="__('common.actions.delete')"
+    :cancelText="__('common.actions.cancel')"
+/>
+```
+
+## Routing
+
+See `docs/infrastructure/routes.md` and `docs/architecture/modular-pattern.md` §13.
+
+### Route Registration
+
+Livewire components are registered directly in route files:
+
+```php
+// routes/web/{submodule}.php (no module prefix)
+Route::livewire('/register', RegistrationWizard::class)->name('registration.wizard');
+```
+
+### Route File Convention
+
+- Module-level: `routes/web/{module}.php`
+- Submodule-level: `routes/web/{submodule}.php` (no module prefix)
+
+### Route Naming
+
+Flexible — describe the URL path. No rigid convention.
+
+### Middleware
+
+Applied at route level: `auth`, `guest`, `role:{roles}`, `auth.throttle`.
+
+### URL Structure
+
+| Scope       | Pattern                         | Example                                  |
+| ----------- | ------------------------------- | ---------------------------------------- |
+| Guest       | `/{resource}`                   | `/apply`, `/login`                       |
+| Student     | `/student/{module}/{resource}`  | `/student/internships/placement-change`  |
+| Admin       | `/admin/{module}/{resource}`    | `/admin/internships/placements`          |
+
 ## Verification Checklist
 
 - [ ] No `Model::create/update/delete` in component
@@ -194,6 +301,12 @@ Action handles the media library call.
 - [ ] Form Objects used for 5+ fields
 - [ ] Validation rules defined (component or Form Object)
 - [ ] Component test exists in `tests/`
+- [ ] All user-facing strings use `__()` for localization
+- [ ] Focus management correct (modal open/close, wire:navigate)
+- [ ] Dynamic content wrapped in `aria-live` containers
+- [ ] Icon-only buttons include `aria-label`
+- [ ] Form inputs have associated labels (via maryUI `label` prop)
+- [ ] Status labels use `LabelEnum::label()` (not hardcoded text)
 
 ## References
 

@@ -289,6 +289,14 @@ add UI must adapt its input fields based on the selected role, and enforce uniqu
 | NFR-U4 | Deletion blocked messages must explain which related records prevent deletion |
 | NFR-M1 | All Program module classes must use `declare(strict_types=1)` |
 | NFR-M2 | All Internship/Group/Member models must use `#[Fillable]` attribute (no `$fillable` property) |
+| NFR-A1 | All internship management UI must meet WCAG 2.1 Level AA |
+| NFR-A2 | Status badges must include text labels alongside color (not color-only indicators) |
+| NFR-A3 | Pre-close readiness modal must trap focus and be keyboard-navigable |
+| NFR-A4 | Group member modal inputs must have associated labels |
+| NFR-A5 | All interactive elements must have visible focus indicators |
+| NFR-L1 | All user-facing strings in internship UI must use `__()` translation helper |
+| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-L3 | Internship status labels must use `InternshipStatus::label()` (calls `__()` internally) |
 
 ---
 
