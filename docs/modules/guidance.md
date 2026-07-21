@@ -1,22 +1,20 @@
-# Guidance — Supervision Logs & Mentoring
+# Guidance — Supervision Logs & Monitoring Visits
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-21 **Changes:** sync — remove Handbook (moved to Document); add MonitoringVisit submodule description
 
 ## Description
 
-Mentoring relationship coordination and teacher supervision field logging: dual-mentor assignments
-and immutable supervision visit records.
+Teacher supervision field logging and field monitoring visit coordination for internship programs.
 
 ## Purpose & Boundary
 
-Guidance manages the mentoring relationships between students and their assigned school teachers
-(Guru Pembimbing) and industry supervisors (Pembimbing Lapangan). It also provides teachers with a
-private supervision log system for recording site visits, virtual meetings, and phone supervisions.
-These logs are immutable and private to school mentors and administrators — students cannot read
-them.
+Guidance provides teachers with a private supervision log system for recording site visits, virtual
+me meetings, and phone supervisions. It also manages monitoring visit scheduling, verification,
+and tracking for internship fieldwork. These logs are immutable and private to school mentors and
+administrators — students cannot read them.
 
 Out of scope: student-facing daily logbooks (Journals), rubric-based assessment (Assessment), user
-profiles (User).
+profiles (User), policy handbooks (Document).
 
 ## Submodules
 
@@ -27,12 +25,12 @@ Immutable record of teacher supervision activities: date of visit/meeting, super
 Linked to a specific registration. Once submitted, logs cannot be edited — corrections require a new
 entry. Students have no read access to these logs.
 
-### MentorAssignment
+### MonitoringVisit
 
-Tracks the mapping of school teachers and industry supervisors to students via
-`internship_group_members` with role classification. Teachers are assigned during enrollment
-verification. Supervisors are assigned when a placement is confirmed. The `AssignMentorAction` and
-`RemoveMentorAction` handle these mappings.
+Scheduling and tracking of field monitoring visits by school administrators and teachers. Supports
+multiple visit methods (site visit, virtual meeting, phone call), location tracking, and supervisor
+verification workflow. Visit status progresses through scheduled → verified. Linked to a registration
+and requires teacher assignment.
 
 ## Key Concepts
 
@@ -46,7 +44,7 @@ Every student has two mentors:
   verification, and industry-specific guidance. Assigned at placement time.
 
 Both mentor roles are tracked in the `internship_group_members` table rather than a separate mentors
-table, keeping the schema lean.
+table, keeping the schema lean. Mentor assignment and removal are handled by the Enrollment module.
 
 ### Private Supervision Logs
 
