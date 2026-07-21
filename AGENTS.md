@@ -204,6 +204,7 @@ Full definition: `docs/foundation/product-definition.md`
 | Task | Skill | Notes |
 |------|-------|-------|
 | First session, any task | `context-awareness` | Load first — project orientation |
+| Writing feature specs | `spec-writing` | 10-section spec template, requirements IDs |
 | Writing PHP code | `code-writing` | Action Triad, Entity/DTO/Model contracts |
 | Refactoring existing code | `code-refactoring` | Extract Actions, thin Livewire |
 | Building a feature end-to-end | `feature-building` | Orchestrator — coordinates sub-skills |
@@ -273,6 +274,14 @@ Full dependency graph: `docs/modules/index.md`
 | Service registration | `docs/architecture/service-pattern.md` |
 | Testing patterns | `docs/architecture/testing-pattern.md` |
 | Modular architecture | `docs/architecture/modular-pattern.md` |
+
+### Feature Specs
+
+| I need to know about... | Look at |
+|-------------------------|---------|
+| Feature spec index | `docs/specs/index.md` |
+| Spec template & conventions | `.agents/skills/spec-writing/SKILL.md` |
+| Writing a new spec | Load `spec-writing` skill |
 
 ### Coding Conventions
 

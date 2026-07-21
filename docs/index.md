@@ -139,6 +139,13 @@ Refer to the [ADR Index](adr/index.md) for all 14 records covering foundation, o
 
 ---
 
+## Feature Specifications
+
+- **[Specs Index](specs/index.md)** — All feature specification documents
+- **[Install & Setup](specs/install-and-setup.md)** — Installation & setup wizard specification
+
+---
+
 ## Roadmap & Planning
 
 - **[Roadmap](roadmap.md)** — Feature plans, module maturity, milestone timeline
