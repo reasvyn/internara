@@ -85,7 +85,7 @@ Audit 5 scopes in order. Each scope has specific check items.
 - `RejectedException` caught from Action calls (before generic `Throwable`)
 - No unescaped `{!! !!}` for user content without inline justification
 - Policy methods return boolean — no inline authorization in Livewire
-- Routes in correct `routes/web/{module}.php` file
+- Routes in correct `routes/web/{module}.php` file (or `{submodule}.php` for split submodules)
 - No maryUI Toast methods (`$this->success()`, `$this->error()`) — use flasher
 - No N+1 queries in Blade loops — eager loading verified
 

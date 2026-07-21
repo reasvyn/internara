@@ -260,7 +260,7 @@ doc rather than duplicating conventions here:
 | Listener                   | `{Verb}{Entity}` or react to event name                       | `NotifyAdminsInternshipCreated`, `LogSetupFinalized`                  |
 | Notification               | `{Entity}{NotificationType}Notification`                      | `InternshipCreatedNotification`, `WelcomeNotification`                |
 | Console command            | `{module}:{action}`                                           | `system:health`, `admin:recover`, `notifications:prune`               |
-| Route name                 | `{prefix}.{resource}.{action}`                                | `admin.users.index`, `internship.reports.show`                        |
+| Route name                 | descriptive (mirror URL path)                                | `login`, `admin.users.index`, `student.logbook`                      |
 | Config key                 | `snake_case` with `{file}.{key}`                              | `app.name`, `database.default`                                        |
 | Column / table             | `snake_case`                                                  | `user_id`, `academic_year_id`, `academic_years`                       |
 | Boolean method             | `is`/`has`/`can`/`should` prefix                              | `isActive()`, `allowsLogin()`, `canTransitionTo()`                    |

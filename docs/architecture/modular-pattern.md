@@ -1,7 +1,6 @@
 # Modular Pattern Reference — Design Patterns, Conventions & Architecture Rules
 
-> **Last updated:** 2026-06-28 **Changes:** sync — update Base Class/Contract layer annotations to
-> new 4-layer model
+> **Last updated:** 2026-07-21 **Changes:** sync — update route naming convention to flexible (describe URL path)
 
 ## Description
 
@@ -143,9 +142,10 @@ Command → event → listener → `Cache::forget()`. **TTL Categorization** —
 
 ## 13. Route & Controller Patterns
 
-Module-split route files under `routes/web/`. Naming: `{prefix}.{resource}.{action}`. Middleware
+Module-split route files under `routes/web/`. Module-level: `{module}.php`. Submodule-level: `{submodule}.php`
+(no module prefix). Route names: flexible, describe the URL path. Middleware
 groups: `auth`, `guest`, `role:{roles}`, `auth.throttle`. Controller suffix required, delegate to
-Actions. See: `docs/architecture/modular-pattern.md`.
+Actions. See: `docs/infrastructure/routes.md`.
 
 ---
 
@@ -181,7 +181,7 @@ dependencies. One table per migration. See: `docs/conventions.md` §7.
 | Policy            | `{Model}Policy`                                       |
 | Controller        | `{Name}Controller`                                    |
 | Console command   | `{module}:{action}`                                   |
-| Route / Cache key | `{prefix}.{resource}.{action}` / `{module}.{purpose}` |
+| Route / Cache key | descriptive (mirror URL path) / `{module}.{purpose}` |
 | Column / table    | `snake_case`                                          |
 | Boolean method    | `is`/`has`/`can`/`should`                             |
 | Test / Factory    | `{Name}Test.php` / `{Name}Factory`                    |

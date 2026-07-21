@@ -1,8 +1,8 @@
 # Livewire Component Patterns — Thin Components, Injection & Forms
 
-> **Last updated:** 2026-07-10
+> **Last updated:** 2026-07-21
 >
-> **Changes:** sync — add BaseRecordEntry and BaseRecordList component hierarchy; update
+> **Changes:** sync — update translation key convention to support submodule-level files
 > BaseRecordManager to clarify sysadmin scope; cross-reference project requirements §6
 
 ## Description
@@ -584,7 +584,7 @@ contextual help for the user. The pattern follows the setup wizard's guide compo
     - An introductory sentence explaining the page's purpose
     - Numbered steps (1 through N) with a title and description per step
     - A tip section (warning icon) for best practices or common pitfalls
-5. **Localization:** All strings use `__('{module}.guide.*')` translation keys
+5. **Localization:** All strings use `__()` translation keys (module-level `{module}.key` or submodule-level `submodule.key`)
 
 ### Integration in the Parent Component
 
@@ -599,7 +599,8 @@ public bool $showGuide = false;
 ### Translation Keys
 
 ```
-// resources/lang/{lang}/{module}.php
+// lang/en/{module}.php (module-level)
+// lang/en/{submodule}.php (submodule-level, no module prefix)
 'guide' => [
     'title' => '...',
     'intro' => '...',
