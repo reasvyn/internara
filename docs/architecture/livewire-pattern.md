@@ -1,9 +1,6 @@
 # Livewire Component Patterns — Thin Components, Injection & Forms
 
-> **Last updated:** 2026-07-21
->
-> **Changes:** sync — update translation key convention to support submodule-level files
-> BaseRecordManager to clarify sysadmin scope; cross-reference project requirements §6
+> **Last updated:** 2026-07-21 **Changes:** feat — add WCAG accessibility (§13) and localization (§14) patterns
 
 ## Description
 
@@ -630,3 +627,154 @@ See `resources/views/setup/components/setup-guide.blade.php` for the canonical i
 - **Business rules in components** — extract to Entity methods
 - **Skipping `RejectedException` handling** — always wrap Action calls in `try`/`catch`
 - **Manual resolution** — inject via method parameter, never `app()->make()`
+
+---
+
+## 13. Accessibility (WCAG 2.1 AA)
+
+All Livewire components MUST meet WCAG 2.1 Level AA. See `docs/architecture/modular-pattern.md`
+§22 for project-wide accessibility rules.
+
+### 13.1 Focus Management
+
+- **Modal open:** Focus must move to the first focusable element inside the modal on open.
+  `x-mary-modal` handles this automatically.
+- **Modal close:** Focus must return to the element that triggered the modal. Implement via
+  `x-on:close.window="$focus(target)"` or Alpine `$refs`.
+- **Livewire navigation:** After `wire:navigate` page transitions, focus must reset to the page
+  heading or first interactive element. Use `wire:navigate` with
+  `x-init="$nextTick(() => $el.querySelector('h1, [autofocus]')?.focus())"`.
+
+### 13.2 Dynamic Content Announcements
+
+Livewire partial DOM updates are invisible to screen readers. Wrap dynamically updated regions in
+`aria-live` containers:
+
+```blade
+{{-- Flash messages (handled by PHPFlasher — verify aria-live is present) --}}
+<div wire:ignore aria-live="polite">
+    @flash()
+</div>
+
+{{-- Partial table updates --}}
+<div wire:poll.5s aria-live="polite" aria-busy="{{ $isLoading }}">
+    <x-mary-table ... />
+</div>
+```
+
+### 13.3 Form Accessibility
+
+- Every `<x-mary-input>` must have a `label` prop — this renders the `<label>` element with
+  proper `for` association. Never use placeholder as a label substitute.
+- Validation errors from `$this->validate()` are announced by maryUI's built-in `aria-live`
+  regions. Do not suppress this with custom error rendering unless the replacement also includes
+  `aria-live`.
+- Required fields: use the `required` attribute (maryUI `required` prop) — not just visual
+  indicators.
+- Error summary: after failed validation, focus must move to the first error or an error summary.
+  Use `$this->dispatch('focus-error')` and Alpine to focus the element.
+
+### 13.4 Table Accessibility
+
+- `x-mary-table` headers are associated via `scope` attributes by default. Verify this is not
+  overridden.
+- Sortable column headers must include `aria-sort` (`ascending`, `descending`, or `none`).
+- Bulk selection checkboxes must have an `aria-label` on the header checkbox
+  (`aria-label="Select all rows"`).
+
+### 13.5 Confirmation Dialog Accessibility
+
+- The shared `<x-core::ui.confirm />` modal must trap focus. Confirm button must be the default
+  focus target on open.
+- Cancel must be operable via Escape key (DaisyUI modal default).
+
+### 13.6 Icon-Only Interactive Elements
+
+Any button or link that uses only an icon (no visible text) MUST include an `aria-label`:
+
+```blade
+<x-mary-button icon="o-trash" wire:click="delete('{{ $id }}')" aria-label="{{ __('common.delete') }}" />
+```
+
+---
+
+## 14. Localization in Livewire Components
+
+See `docs/architecture/modular-pattern.md` §23 and `docs/conventions.md` §14 for project-wide
+localization rules.
+
+### 14.1 Translation Key Usage
+
+Every user-facing string in a Livewire component or its Blade view MUST use `__()`:
+
+```php
+// ✅ Correct — translated flash message
+flash()->success(__('{module}.{entity}.created'));
+
+// ❌ Wrong — hardcoded string
+flash()->success('Record created successfully');
+```
+
+### 14.2 Flash Messages
+
+| Context    | Pattern                                  | Example                                        |
+| ---------- | ---------------------------------------- | ---------------------------------------------- |
+| Success    | `__('{module}.{entity}.{action}_success')` | `__('internship.create_success')`              |
+| Error      | `$e->getMessage()` (already translated)  | Action throws `RejectedException` with `__()`  |
+| Warning    | `__('{module}.{context}.{reason}')`      | `__('enrollment.placement_full')`              |
+| Bulk       | `__('common.actions.bulk_action_done')`  | Pass `count` and `action` params               |
+
+### 14.3 Status Labels
+
+Status display MUST use the enum's `label()` method, which calls `__()` internally:
+
+```blade
+{{-- ✅ Correct — delegates to LabelEnum --}}
+<span>{{ $model->statusEnum->label() }}</span>
+
+{{-- ❌ Wrong — hardcoded status text --}}
+<span>{{ ucfirst($model->status) }}</span>
+```
+
+### 14.4 Form Objects
+
+Form Object `messages()` methods must return translated strings:
+
+```php
+public function messages(): array
+{
+    return [
+        'name.required' => __('validation.required'),
+        'name.max' => __('validation.max.string', ['max' => 255]),
+    ];
+}
+```
+
+### 14.5 Guide Components
+
+Guide component strings MUST use submodule-level keys (no module prefix):
+
+```php
+// lang/en/internship.php (submodule-level)
+'guide' => [
+    'title' => 'How to Create an Internship',
+    'step1_title' => 'Select Academic Year',
+    'step1_desc' => 'Choose the academic year for this internship program.',
+    'tip_title' => 'Tip',
+    'tip_desc' => 'You can edit the internship after creation.',
+],
+```
+
+### 14.6 Modal & Dialog Labels
+
+Modal titles, confirmation dialog text, and button labels passed to shared components must use
+`__()`:
+
+```blade
+<x-core::ui.confirm
+    :title="__('internship.confirm_delete_title')"
+    :message="__('internship.confirm_delete_message')"
+    :confirmText="__('common.actions.delete')"
+    :cancelText="__('common.actions.cancel')"
+/>
+```

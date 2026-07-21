@@ -258,6 +258,13 @@ source provided a particular setting value.
 | NFR-U2 | Department deletion blocked message must explain why and how to resolve |
 | NFR-M1 | School profile must be accessed via Settings service, not a dedicated model |
 | NFR-M2 | All settings keys must follow `{module}.{key}` naming convention |
+| NFR-A1 | All institutional and academic management UI must meet WCAG 2.1 Level AA |
+| NFR-A2 | Academic year status indicators must include text labels alongside color |
+| NFR-A3 | Department deletion blocked messages must be accessible to screen readers |
+| NFR-A4 | All form inputs must have associated labels |
+| NFR-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-L3 | Academic year status labels must use `LabelEnum::label()` (calls `__()` internally) |
 
 ---
 

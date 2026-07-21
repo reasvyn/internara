@@ -1,6 +1,6 @@
 # Modular Pattern Reference — Design Patterns, Conventions & Architecture Rules
 
-> **Last updated:** 2026-07-21 **Changes:** sync — update route naming convention to flexible (describe URL path)
+> **Last updated:** 2026-07-21 **Changes:** feat — add WCAG accessibility (§22) and localization (§23) patterns
 
 ## Description
 
@@ -237,3 +237,109 @@ Refactoring:** Logic → Action, Rules → Action (not Entity directly), UI patt
 Utilities → Support. **Data Flow:** Mutations go UI→DTO→Action(Entity
 check→Transaction→Log→Event)→Model; simple queries go directly to Model; complex queries through
 Read Action with DTO.
+
+---
+
+## 22. Accessibility (WCAG 2.1 AA)
+
+All user-facing interfaces MUST meet WCAG 2.1 Level AA. Accessibility is not a post-launch
+afterthought — it is a design constraint enforced at every layer.
+
+### 22.1 Perceivable
+
+- **Color contrast:** 4.5:1 minimum for normal text, 3:1 for large text (≥18pt or ≥14pt bold).
+  DaisyUI theme colors are pre-validated; never override with arbitrary Tailwind colors that fail
+  contrast.
+- **Color is not the sole indicator:** Status badges, error states, and capacity indicators must
+  include text labels or icons alongside color. Use `badge-success` + "Verified" text, never color
+  alone.
+- **Text alternatives:** All `<img>` tags require `alt` attributes. Decorative images use `alt=""`.
+  Icons paired with text must not duplicate the text in the `alt`.
+- **Content reflow:** No horizontal scrolling at 320px viewport width (WCAG 1.4.10). Responsive
+  breakpoints must prevent content clipping.
+
+### 22.2 Operable
+
+- **Keyboard navigation:** All interactive elements (buttons, links, form fields, modals, dropdowns)
+  must be reachable and operable via keyboard alone. Tab order must follow logical reading order.
+- **Focus indicators:** Every focusable element must have a visible focus ring. DaisyUI provides
+  `focus:ring` by default — do not suppress it with `outline-none` without a replacement.
+- **Skip links:** Pages with navigation must provide a "Skip to main content" link as the first
+  focusable element.
+- **Modal focus trap:** Modals (`x-mary-modal`) must trap focus within the modal when open. Focus
+  must return to the trigger element on close.
+- **No keyboard traps:** Users must be able to navigate away from any component using standard
+  keyboard shortcuts.
+
+### 22.3 Understandable
+
+- **Language attribute:** `<html>` must include `lang="{{ locale }}"` attribute.
+- **Form labels:** Every form input must have an associated `<label>` (via `for`/`id` or wrapping).
+  Placeholder text is not a label substitute.
+- **Error identification:** Validation errors must be announced to screen readers via `aria-live`
+  regions. maryUI form components handle this automatically — do not bypass it.
+- **Consistent navigation:** Navigation menus must appear in the same relative order across all
+  pages.
+
+### 22.4 Robust
+
+- **ARIA landmarks:** Layout must use semantic HTML5 landmarks (`<nav>`, `<main>`, `<header>`,
+  `<footer>`) or ARIA equivalents. The app layout provides `<nav>` (sidebar) and `<main>` (content).
+- **aria-live for dynamic content:** Flash messages, real-time validation feedback, and Livewire
+  partial updates must use `aria-live="polite"` or `aria-live="assertive"` to announce changes to
+  screen readers.
+- **Icon buttons:** Icon-only buttons must include `aria-label` (e.g.,
+  `<button aria-label="Close modal">`).
+
+### 22.5 Implementation Rules
+
+- maryUI components (`x-mary-modal`, `x-mary-table`, `x-mary-input`) provide built-in ARIA
+  attributes and keyboard support. Prefer these over custom HTML.
+- DaisyUI `drawer`, `modal`, `collapse`, `dropdown` components include keyboard and ARIA support.
+  Use them rather than building custom equivalents.
+- Livewire `wire:model` updates are not announced by default — wrap dynamic output regions in
+  `aria-live` containers.
+- Guide modals (`*-guide.blade.php`) must be keyboard-accessible and announce their content via
+  ARIA.
+
+See: `docs/foundation/ui-ux.md` §6 (Accessibility), `docs/conventions.md` §13.
+
+---
+
+## 23. Localization Patterns
+
+All user-facing strings MUST use the `__()` helper for translation. See `docs/conventions.md` §14
+and `docs/infrastructure/localization.md` for file structure and key conventions.
+
+### 23.1 Key Conventions by Layer
+
+| Layer           | Pattern                                        | Example                                       |
+| --------------- | ---------------------------------------------- | --------------------------------------------- |
+| Module-level    | `{module}.key`                                 | `__('enrollment.register')`                   |
+| Submodule-level | `{submodule}.key` (no module prefix)           | `__('internship.create_success')`             |
+| Shared          | `common.key`                                   | `__('common.actions.save')`                   |
+| Validation      | Laravel built-in `validation.*` keys            | `__('validation.required')`                   |
+| Guide components | `{module}.guide.step{N}_desc`                | `__('setup.guide.step1_desc')`                |
+
+### 3.2 Livewire Component Rules
+
+- Flash messages: always `__('{module}.{entity}.{action}_success')` — never hardcoded strings.
+- Status labels: use `LabelEnum::label()` which internally calls `__()` — never translate status
+  in the view layer.
+- Modal titles, button labels, table headers: all via `__()`.
+- Form Object `messages()`: return translated validation messages via `__()`.
+- Confirmation dialogs: pass translated `title`, `message`, `confirmText`, `cancelText` props.
+
+### 23.3 Blade View Rules
+
+- All visible text uses `{{ __('key') }}` — no hardcoded English strings in templates.
+- HTML `lang` attribute: `<html lang="{{ app()->getLocale() }}">` (set in `base.blade.php`).
+- Date/time formatting: use `Carbon::locale(app()->getLocale())->isoFormat(...)` for
+  locale-aware dates.
+- Number formatting: use `Number::locale(app()->getLocale())` for locale-aware numbers.
+
+### 23.4 Dual Locale Requirement
+
+Every translation key must exist in both `lang/en/{file}.php` and `lang/id/{file}.php`. Adding a
+key to one locale without the other is a bug. The `LangChecker` static utility validates locale
+completeness at runtime.

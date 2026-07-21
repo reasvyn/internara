@@ -261,6 +261,10 @@ others would leak stack traces, and debugging would require inspecting each Acti
 | NFR-U2 | CLI output must display full context with PII masking for developer debugging |
 | NFR-M1 | Exception hierarchy must be flat — no more than 3 levels deep |
 | NFR-M2 | Every exception class must be a single file with single responsibility |
+| NFR-L1 | All user-facing error messages must use `__()` translation helper |
+| NFR-L2 | SmartLogger system channel names must be translatable via `__()` |
+| NFR-A1 | Error pages must be keyboard-navigable and screen-reader accessible |
+| NFR-A2 | Error page status codes must use semantic HTML (`<main>`, proper headings) |
 
 ---
 

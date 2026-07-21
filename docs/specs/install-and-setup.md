@@ -344,6 +344,14 @@ accessible via token.
 | NFR-M2 | Setup actions must follow Action Triad pattern (Command/Read/Process) |
 | NFR-M3 | Setup entity must be `final readonly` with zero I/O                  |
 | NFR-M4 | All setup behavior must be testable via Pest test suite              |
+| NFR-A1 | Setup wizard must meet WCAG 2.1 Level AA |
+| NFR-A2 | Step indicators must be keyboard-accessible and announced to screen readers |
+| NFR-A3 | Environment audit results must include non-color indicators (icons alongside pass/fail colors) |
+| NFR-A4 | All form inputs in setup wizard must have associated labels |
+| NFR-A5 | Recovery key display must be accessible (copy button has `aria-label`) |
+| NFR-L1 | All wizard text must use `__()` translation helper (already covered by NFR-U8, but reinforcing for all strings) |
+| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-L3 | Environment audit status must be translatable via `__()` |
 
 ---
 

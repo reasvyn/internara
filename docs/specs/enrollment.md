@@ -313,6 +313,14 @@ technical debt.
 | NFR-U3 | `ApplyPage` must work without JavaScript for basic form submission (progressive enhancement) |
 | NFR-M1 | All enrollment Actions must extend appropriate base classes (BaseCommandAction, BaseReadAction) |
 | NFR-M2 | Registration status must be migrated to a backed enum before production launch (see DD-1 @todo) |
+| NFR-A1 | All enrollment UI (wizard, verification, placement management) must meet WCAG 2.1 Level AA |
+| NFR-A2 | Registration wizard step indicators must be keyboard-accessible and announced to screen readers |
+| NFR-A3 | Form inputs in wizard and placement forms must have associated labels |
+| NFR-A4 | Dynamic content updates (step transitions, validation errors) must use `aria-live` regions |
+| NFR-A5 | Color contrast must meet 4.5:1 minimum for all enrollment UI text |
+| NFR-L1 | All user-facing strings in enrollment UI must use `__()` translation helper |
+| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-L3 | Registration status labels must use `LabelEnum::label()` (calls `__()` internally) |
 
 ---
 

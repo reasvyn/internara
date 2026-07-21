@@ -264,6 +264,14 @@ instructions are the standard distribution method in Indonesian schools.
 | NFR-U2 | Account slip must display school branding (logo) |
 | NFR-M1 | User CRUD must use Action classes, not inline Livewire logic |
 | NFR-M2 | All form validation must use Form Objects, not inline rules |
+| NFR-A1 | All user management UI must meet WCAG 2.1 Level AA |
+| NFR-A2 | Account status badges must include text labels alongside color indicators |
+| NFR-A3 | CSV import form must have associated labels and accessible error messages |
+| NFR-A4 | Bulk action confirmation modals must trap focus and be keyboard-navigable |
+| NFR-A5 | Account slip PDF must include proper heading structure for screen readers |
+| NFR-L1 | All user-facing strings in user management UI must use `__()` translation helper |
+| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-L3 | Account status labels must use `LabelEnum::label()` (calls `__()` internally) |
 
 ---
 

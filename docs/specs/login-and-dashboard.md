@@ -257,6 +257,14 @@ retry. With aggressive backoff, legitimate users may be locked out for hours.
 | NFR-U1 | Lockout message must include the number of seconds to wait |
 | NFR-U2 | Dashboard must display role-appropriate content without manual selection |
 | NFR-M1 | Dashboard data aggregation must be delegated to Read Actions, not inline in Livewire |
+| NFR-A1 | All login and dashboard UI must meet WCAG 2.1 Level AA |
+| NFR-A2 | Login form must have associated labels for all inputs (not just placeholders) |
+| NFR-A3 | Lockout and error messages must be announced to screen readers via `aria-live` regions |
+| NFR-A4 | Dashboard must be navigable via keyboard alone (tab order follows logical reading order) |
+| NFR-A5 | Focus must be managed correctly on modal open/close and page transitions |
+| NFR-L1 | All user-facing strings (login form, error messages, dashboard labels) must use `__()` translation helper |
+| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-L3 | Dashboard status labels must use `LabelEnum::label()` which calls `__()` internally |
 
 ---
 

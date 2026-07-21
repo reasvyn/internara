@@ -274,6 +274,13 @@ proceeds.
 | NFR-U1 | Admin must see real-time validation feedback on company and partnership forms |
 | NFR-U2 | CSV import errors must display per-row with row number, field, and error message |
 | NFR-M1 | All PHP files must declare `strict_types=1` and follow PSR-12 coding standard |
+| NFR-A1 | All partnership and company management UI must meet WCAG 2.1 Level AA |
+| NFR-A2 | CSV import error messages must be associated with their fields via `aria-describedby` |
+| NFR-A3 | Real-time validation feedback must be announced to screen readers via `aria-live` |
+| NFR-A4 | All form inputs must have associated labels |
+| NFR-L1 | All user-facing strings must use `__()` translation helper |
+| NFR-L2 | Translation keys must exist in both `lang/en/` and `lang/id/` locale files |
+| NFR-L3 | Partnership status labels must use `LabelEnum::label()` (calls `__()` internally) |
 
 ---
 
