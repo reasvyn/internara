@@ -1,6 +1,6 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-07-21 **Changes:** feat — add cache-and-session and logging-and-error-handling specs
+> **Last updated:** 2026-07-21 **Changes:** feat — add login-and-dashboard, user-management, institutional-and-academics specs
 
 ## Description
 
@@ -21,6 +21,9 @@ update the spec first, then implement.
 | [Core Infrastructure](core-infra.md) | Core | ✅ Complete |
 | [Cache & Session](cache-and-session.md) | Core | ✅ Complete |
 | [Logging & Error Handling](logging-and-error-handling.md) | Core | ✅ Complete |
+| [Login & Dashboard](login-and-dashboard.md) | Auth / User | ✅ Complete |
+| [User Management](user-management.md) | User / SysAdmin | ✅ Complete |
+| [Institutional & Academics](institutional-and-academics.md) | Academics / Settings | ✅ Complete |
 
 ---
 
