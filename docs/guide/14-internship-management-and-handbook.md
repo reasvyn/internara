@@ -144,7 +144,7 @@ A group can be deleted only if it has no members. Remove all members first, then
 ## 14.3 Handbooks
 
 Handbooks are policy documents (PDF) that administrators upload for students, teachers, and
-supervisors to read and acknowledge. They are managed under the Guidance module.
+supervisors to read and acknowledge. They are managed under the Document module.
 
 ### 14.3.1 Admin: Managing Handbooks
 

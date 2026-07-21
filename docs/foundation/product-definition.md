@@ -41,7 +41,7 @@ The architecture follows the **3S Governing Doctrine**:
 | Principle         | Definition                                                                                                                                   |
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **S1 — Secure**   | Protect data integrity, enforce authorization at every layer, prevent leakage. Credentials and PII are separated into distinct tables.       |
-| **S2 — Sustain**  | Module colocation ensures the codebase remains maintainable across 22 modules. Actions enforce single responsibility by construction.        |
+| **S2 — Sustain**  | Module colocation ensures the codebase remains maintainable across 18 modules. Actions enforce single responsibility by construction.        |
 | **S3 — Scalable** | Single-tenant design eliminates tenant-ID overhead. CQRS-inspired Action triad (Command/Read/Process) keeps queries and mutations decoupled. |
 
 ---

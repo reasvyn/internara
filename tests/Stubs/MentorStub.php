@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Guidance\Mentor\Models;
+namespace App\User\Mentor\Models;
 
 class Mentor
 {

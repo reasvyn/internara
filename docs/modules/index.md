@@ -1,6 +1,6 @@
 # Module Index — Module Dependency Graph & Navigation
 
-> **Last updated:** 2026-07-11 **Changes:** sync — add metadata, verify module count
+> **Last updated:** 2026-07-21 **Changes:** sync — remove Guidance module, verify module count
 
 Complete index of module documentation for the Internara internship management system. Each module
 manages a vertical slice of the application with colocated Actions, Models, Policies, and Livewire
@@ -325,7 +325,7 @@ acknowledgements.
 
 ## Architecture Overview
 
-All 21 modules are vertical slices cross-cutting the 4-layer architecture defined in
+All 18 modules are vertical slices cross-cutting the 4-layer architecture defined in
 [`docs/architecture.md`](../architecture.md):
 
 - **Layer 4 — Presentation/UI** — Livewire, Blade, maryUI/DaisyUI, Controllers, Policies, Routes,

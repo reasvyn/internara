@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'title' => 'Handbooks',
-    'subtitle' => 'Manage guidance documents for students, teachers, and supervisors',
+    'subtitle' => 'Manage handbooks for students, teachers, and supervisors',
     'create' => 'New Handbook',
     'edit' => 'Edit Handbook',
     'title_field' => 'Title',
@@ -23,7 +23,7 @@ return [
     'audience_student' => 'Students',
     'audience_teacher' => 'Teachers',
     'audience_supervisor' => 'Supervisors',
-    'student_subtitle' => 'Read and acknowledge guidance documents',
+    'student_subtitle' => 'Read and acknowledge handbooks',
     'version' => 'Version',
     'acknowledge' => 'Mark as Read',
     'no_handbooks' => 'No handbooks available.',
@@ -34,9 +34,9 @@ return [
 
     'guide' => [
         'handbook_title' => 'Handbook Guide',
-        'handbook_intro' => 'Manage student handbooks and guidance materials:',
+        'handbook_intro' => 'Manage student handbooks and policy documents:',
         'handbook_create_title' => 'Creating Handbooks',
-        'handbook_create_desc' => 'Upload handbooks and guidance documents. Each handbook can be assigned to specific internship batches.',
+        'handbook_create_desc' => 'Upload handbooks and policy documents. Each handbook can be assigned to specific internship batches.',
         'handbook_upload_title' => 'File Upload',
         'handbook_upload_desc' => 'Upload PDF documents. Students can view and download assigned handbooks from their dashboard.',
         'handbook_view_title' => 'Student Access',

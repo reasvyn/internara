@@ -280,7 +280,7 @@ return [
                 [
                     'route' => 'supervision.logs',
                     'icon' => 'o-clipboard-document-check',
-                    'label' => 'common.sidebar.guidance_logs',
+                    'label' => 'common.sidebar.supervision_logs',
                 ],
             ],
         ],
@@ -293,7 +293,7 @@ return [
                 [
                     'route' => 'supervision.logs',
                     'icon' => 'o-clipboard-document-check',
-                    'label' => 'common.sidebar.guidance_logs',
+                    'label' => 'common.sidebar.supervision_logs',
                 ],
                 [
                     'route' => 'supervision.submissions.grading',

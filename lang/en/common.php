@@ -150,7 +150,7 @@ return [
         'register_internship' => 'Register Internship',
         'my_documents' => 'My Documents',
         'teacher_portal' => 'Teacher Portal',
-        'guidance_logs' => 'Guidance Logs',
+        'supervision_logs' => 'Supervision Logs',
         'assess' => 'Assess',
         'supervisor_portal' => 'Supervisor Portal',
         'report_notes' => 'Report Notes',

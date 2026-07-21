@@ -1,6 +1,6 @@
 # Roadmap — Development Direction
 
-> **Last updated:** 2026-07-12 **Changes:** rewrite — remove milestones, fabricated data, and feature plans; focus on direction
+> **Last updated:** 2026-07-21 **Changes:** sync — remove Guidance module from known issues
 
 ---
 
@@ -111,7 +111,6 @@ These modules have the foundation but are missing key architectural pieces:
 These modules work but need verification, testing, and cleanup:
 
 - **Journals** — wrong user_id in attendance creation, undefined method
-- **Guidance** — missing computed property, DTO gaps
 - **Assignment** — runtime crash, ActionResponse gaps
 - **Program** — dead DTOs, documentation drift
 - **Partners** — event dispatch violations, service locator usage

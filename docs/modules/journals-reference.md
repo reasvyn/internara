@@ -32,6 +32,11 @@ field monitoring visit scheduling/verification.
 | `AbsenceRequest/Actions/ProcessAbsenceAction.php` | `ProcessAbsenceAction`       | `BaseCommandAction` |
 | `MonitoringVisit/Actions/CreateVisitAction.php`   | `CreateVisitAction`          | `BaseCommandAction` |
 | `MonitoringVisit/Actions/VerifyVisitAction.php`   | `VerifyVisitAction`          | `BaseCommandAction` |
+| `SupervisionLog/Actions/CreateLogAction.php`      | `CreateLogAction`            | `BaseCommandAction` |
+| `SupervisionLog/Actions/CreateSupervisionLogAction.php` | `CreateSupervisionLogAction` | `BaseCommandAction` |
+| `SupervisionLog/Actions/DeleteLogAction.php`      | `DeleteLogAction`            | `BaseCommandAction` |
+| `SupervisionLog/Actions/ReviewLogAction.php`      | `ReviewLogAction`            | `BaseCommandAction` |
+| `SupervisionLog/Actions/VerifySupervisionLogAction.php` | `VerifySupervisionLogAction` | `BaseCommandAction` |
 
 ---
 
@@ -43,6 +48,7 @@ field monitoring visit scheduling/verification.
 | `Attendance/Models/Attendance.php`         | `Attendance`     | `BaseModel`                            |
 | `AbsenceRequest/Models/AbsenceRequest.php` | `AbsenceRequest` | `BaseModel` (uses `attendances` table) |
 | `MonitoringVisit/Models/MonitoringVisit.php` | `MonitoringVisit` | `BaseModel`                          |
+| `SupervisionLog/Models/SupervisionLog.php`   | `SupervisionLog`  | `BaseModel`                          |
 
 ---
 
@@ -55,6 +61,8 @@ field monitoring visit scheduling/verification.
 | `AbsenceRequest/Enums/AbsenceReasonType.php`    | `AbsenceReasonType`    | `LabelEnum`               | sick, permission, emergency, other                 |
 | `AbsenceRequest/Enums/AbsenceRequestStatus.php` | `AbsenceRequestStatus` | `LabelEnum`, `StatusEnum` | pending, approved, rejected                        |
 | `MonitoringVisit/Enums/VisitMethod.php`         | `VisitMethod`           | `LabelEnum`               | site_visit, virtual_meeting, phone_call            |
+| `SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, reviewed, acknowledged           |
+| `SupervisionLog/Enums/SupervisionType.php`      | `SupervisionType`      | `LabelEnum`               | site_visit, online, phone                          |
 
 ---
 
@@ -66,6 +74,7 @@ field monitoring visit scheduling/verification.
 | `Attendance/Entities/AttendanceState.php`         | `AttendanceState`     | `BaseEntity` |
 | `AbsenceRequest/Entities/AbsenceRequestState.php` | `AbsenceRequestState` | `BaseEntity` |
 | `MonitoringVisit/Entities/VisitState.php`          | `VisitState`           | `BaseEntity` |
+| `SupervisionLog/Entities/SupervisionLogState.php`  | `SupervisionLogState`  | `BaseEntity` |
 
 ---
 
@@ -76,6 +85,7 @@ field monitoring visit scheduling/verification.
 | `Logbook/Policies/LogbookPolicy.php`       | `LogbookPolicy`    | `BasePolicy` |
 | `Attendance/Policies/AttendancePolicy.php` | `AttendancePolicy` | `BasePolicy` |
 | `MonitoringVisit/Policies/MonitoringVisitPolicy.php` | `MonitoringVisitPolicy` | `BasePolicy` |
+| `SupervisionLog/Policies/SupervisionLogPolicy.php`   | `SupervisionLogPolicy`  | `BasePolicy` |
 
 ---
 
@@ -90,6 +100,10 @@ field monitoring visit scheduling/verification.
 | `AbsenceRequest/Livewire/AbsenceRequestForm.php` | `AbsenceRequestForm` | `Component`         |
 | `MonitoringVisit/Livewire/VisitManager.php`       | `VisitManager`       | `BaseRecordManager` |
 | `MonitoringVisit/Livewire/StudentVisitList.php`   | `StudentVisitList`   | `Component`         |
+| `SupervisionLog/Livewire/StudentLogManager.php`    | `StudentLogManager`    | `Component`         |
+| `SupervisionLog/Livewire/SupervisionManager.php`   | `SupervisionManager`   | `BaseRecordManager` |
+| `SupervisionLog/Livewire/SupervisorLogManager.php` | `SupervisorLogManager` | `BaseRecordManager` |
+| `SupervisionLog/Livewire/SupervisorReviewManager.php` | `SupervisorReviewManager` | `BaseRecordManager` |
 
 ## Livewire Forms
 
@@ -147,7 +161,7 @@ for the testing conventions.
 
 ## Architectural Integration
 
-- **Submodules**: `Logbook`, `Attendance`, `AbsenceRequest`, `MonitoringVisit`
+- **Submodules**: `Logbook`, `Attendance`, `AbsenceRequest`, `MonitoringVisit`, `SupervisionLog`
 - **Business Logic**: `app/Journals/`
 - **Routing**: `routes/web/journals.php`
 - **Views**: `resources/views/journals/`

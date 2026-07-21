@@ -32,9 +32,6 @@
         <testsuite name="Evaluation">
             <directory>tests/Evaluation</directory>
         </testsuite>
-        <testsuite name="Guidance">
-            <directory>tests/Guidance</directory>
-        </testsuite>
         <testsuite name="Incident">
             <directory>tests/Incident</directory>
         </testsuite>

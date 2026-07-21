@@ -1,17 +1,17 @@
 # Chapter 17: Monitoring Visit & Supervision Log
 
-> **Last updated:** 2026-06-16 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-21 **Changes:** sync — remove Guidance module references, update to Journals module
 
 ## Description
 
-This chapter covers two guidance features: **Monitoring Visits** (teacher site visits to check on
+This chapter covers two Journals features: **Monitoring Visits** (teacher site visits to check on
 students) and **Supervision Logs** (student mentoring records reviewed by industry supervisors).
 
 ---
 
 ## 17.1 Overview
 
-The guidance system has two separate workflows depending on who fills the entry:
+The Journals module has two separate workflows depending on who fills the entry:
 
 | Feature              | Filled By | Purpose                                                 | Visibility                                            |
 | -------------------- | --------- | ------------------------------------------------------- | ----------------------------------------------------- |

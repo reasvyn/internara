@@ -1,6 +1,6 @@
 # Project Overview
 
-> **Last updated:** 2026-07-21 **Changes:** sync — add submodule route file convention (no module prefix)
+> **Last updated:** 2026-07-21 **Changes:** sync — remove Guidance module from known issues
 
 ---
 
@@ -19,7 +19,7 @@ reporting.
 
 **Phase: v0.14.0 — Stabilization** (in progress)
 
-21 modules in `app/` (19 domain + 2 infrastructure) with their stack: models, actions,
+18 modules in `app/` with their stack: models, actions,
 livewire components, events, policies, routes, and translations. Architecture is sound —
 4-layer model, Action Triad, Entity boundaries, DTO contracts.
 
@@ -58,8 +58,7 @@ These modules work but have known issues (tracked in GitHub Issues):
 - **Program** — internship lifecycle, groups. Dead DTOs, documentation drift.
 - **Partners** — companies, partnerships. Event dispatch violations, service locator usage.
 - **Enrollment** — registration, placement. Broken Blade template, DTO gaps.
-- **Journals** — attendance, logbook. Wrong user_id in attendance creation, undefined method.
-- **Guidance** — supervisor mentoring. Missing computed property, DTO gaps.
+- **Journals** — attendance, logbook, supervision logs, monitoring visits. Wrong user_id in attendance creation, undefined method.
 - **Incident** — incident reporting. ActionResponse gaps. Structurally lean (no Entities, no Events).
 - **Assignment** — thesis/supervisor assignment. Runtime crash, ActionResponse gaps.
 - **Reports** — grade cards. ActionResponse gaps, dead code. Empty Livewire directory. Being purified.

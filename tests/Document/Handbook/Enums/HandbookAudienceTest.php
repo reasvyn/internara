@@ -11,6 +11,6 @@ test('handbook audience has label for every case', function () {
 });
 
 test('handbook audience label returns translation', function () {
-    expect(HandbookAudience::ALL->label())->toBe(__('guidance.audience_all'));
-    expect(HandbookAudience::STUDENT->label())->toBe(__('guidance.audience_student'));
+    expect(HandbookAudience::ALL->label())->toBe(__('handbook.audience_all'));
+    expect(HandbookAudience::STUDENT->label())->toBe(__('handbook.audience_student'));
 });

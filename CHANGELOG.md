@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Foundation modules: Core, Auth, User, SysAdmin, Setup, Settings
 - Academic modules: Academics, Program, Enrollment
 - Assessment modules: Assessment, Assignment, Evaluation
-- Tracking modules: Journals, Guidance, Incident
+- Tracking modules: Journals, Incident
 - Supporting modules: Partners, Certification, Reports, Document
 - Setup wizard: 6-step guided installation with environment audit
 - Flat RBAC with 5 roles + 2 functional roles (mentor, mentee)

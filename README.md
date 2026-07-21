@@ -48,8 +48,7 @@ app/
 ├── Assessment/     Rubrics, competency scoring
 ├── Evaluation/     Feedback forms, auto-scoring
 ├── Assignment/     Tasks, submissions, grading
-├── Journals/       Logbooks, attendance, absences
-├── Guidance/       Supervision logs, mentoring
+├── Journals/       Logbooks, attendance, supervision logs, monitoring visits
 ├── Incident/       Issue reporting, resolution
 ├── Partners/       Companies, MoU agreements
 ├── Certification/  Certificates, templates, QR

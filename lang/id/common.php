@@ -150,7 +150,7 @@ return [
         'register_internship' => 'Daftar Magang',
         'my_documents' => 'Dokumen Saya',
         'teacher_portal' => 'Portal Guru',
-        'guidance_logs' => 'Log Bimbingan',
+        'supervision_logs' => 'Log Bimbingan',
         'assess' => 'Nilai',
         'supervisor_portal' => 'Portal Pembimbing',
         'report_notes' => 'Catatan Laporan',
