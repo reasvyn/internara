@@ -1,6 +1,6 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-07-21 **Changes:** feat — add core-infra spec to directory
+> **Last updated:** 2026-07-21 **Changes:** feat — add cache-and-session and logging-and-error-handling specs
 
 ## Description
 
@@ -19,6 +19,8 @@ update the spec first, then implement.
 | ---- | ------ | ------ |
 | [Install & Setup](install-and-setup.md) | Setup | ✅ Complete |
 | [Core Infrastructure](core-infra.md) | Core | ✅ Complete |
+| [Cache & Session](cache-and-session.md) | Core | ✅ Complete |
+| [Logging & Error Handling](logging-and-error-handling.md) | Core | ✅ Complete |
 
 ---
 
@@ -44,7 +46,7 @@ Every spec follows the 10-section format defined in `.agents/skills/spec-writing
 3. User Stories / Use Cases
 4. Functional Requirements (FR-IDs)
 5. Non-Functional Requirements (NFR-IDs)
-6. API / Data Contract
+6. API / Data Contracts
 7. Design Decisions (DD-IDs)
 8. Success Metrics
 

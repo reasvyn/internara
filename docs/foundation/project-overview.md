@@ -128,7 +128,7 @@ The main categories of debt, in priority order:
 
 ## What's Next
 
-See [roadmap.md](roadmap.md) for the full release timeline.
+See [roadmap.md](../roadmap.md) for the full release timeline.
 
 Current priorities:
 - Fix P0 runtime errors in broken modules

@@ -352,7 +352,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 
 ---
 
-## 6. API / Data Contract
+## 6. API / Data Contracts
 
 ### 6.1 Production Dependencies
 
