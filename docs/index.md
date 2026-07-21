@@ -149,6 +149,10 @@ Refer to the [ADR Index](adr/index.md) for all 14 records covering foundation, o
 - **[Login & Dashboard](specs/login-and-dashboard.md)** — Login flow, dual throttling, session lifecycle, role-based dashboards
 - **[User Management](specs/user-management.md)** — CRUD, account status lifecycle, profiles, CSV import/export, account slips
 - **[Institutional & Academics](specs/institutional-and-academics.md)** — School profile, departments, academic years, settings integration
+- **[Partners](specs/partnership.md)** — Company & partnership management, MoU lifecycle, CSV import/export
+- **[Internships](specs/internships.md)** — Program lifecycle, groups, registration windows, pre-close readiness
+- **[Enrollment](specs/enrollment.md)** — Registration, placement, account application, placement change requests
+- **[System Settings](specs/system-settings.md)** — Settings store, branding, theme, locale
 
 ---
 

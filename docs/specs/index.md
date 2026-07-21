@@ -1,6 +1,6 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-07-21 **Changes:** feat — add login-and-dashboard, user-management, institutional-and-academics specs
+> **Last updated:** 2026-07-21 **Changes:** feat — add partnership, internships, enrollment, system-settings specs (11 total)
 
 ## Description
 
@@ -24,6 +24,10 @@ update the spec first, then implement.
 | [Login & Dashboard](login-and-dashboard.md) | Auth / User | ✅ Complete |
 | [User Management](user-management.md) | User / SysAdmin | ✅ Complete |
 | [Institutional & Academics](institutional-and-academics.md) | Academics / Settings | ✅ Complete |
+| [Internships](internships.md) | Program | ✅ Complete |
+| [Partners — Company & Partnership](partnership.md) | Partners | ✅ Complete |
+| [System Settings](system-settings.md) | Settings | ✅ Complete |
+| [Enrollment](enrollment.md) | Enrollment | ✅ Complete |
 
 ---
 
