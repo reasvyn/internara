@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Guidance\MonitoringVisit\Livewire;
+namespace App\Journals\MonitoringVisit\Livewire;
 
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\MonitoringVisit\Actions\CreateVisitAction;
-use App\Guidance\MonitoringVisit\Actions\VerifyVisitAction;
-use App\Guidance\MonitoringVisit\Enums\VisitMethod;
-use App\Guidance\MonitoringVisit\Models\MonitoringVisit;
+use App\Journals\MonitoringVisit\Actions\CreateVisitAction;
+use App\Journals\MonitoringVisit\Actions\VerifyVisitAction;
+use App\Journals\MonitoringVisit\Enums\VisitMethod;
+use App\Journals\MonitoringVisit\Models\MonitoringVisit;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
@@ -52,11 +52,11 @@ class VisitManager extends BaseRecordManager
     public function headers(): array
     {
         return [
-            ['key' => 'visit_date', 'label' => __('guidance.visit_date'), 'sortable' => true],
-            ['key' => 'teacher.name', 'label' => __('guidance.teacher')],
-            ['key' => 'method', 'label' => __('guidance.method')],
-            ['key' => 'location', 'label' => __('guidance.location')],
-            ['key' => 'is_verified', 'label' => __('guidance.status')],
+            ['key' => 'visit_date', 'label' => __('journals.visit_date'), 'sortable' => true],
+            ['key' => 'teacher.name', 'label' => __('journals.teacher')],
+            ['key' => 'method', 'label' => __('journals.method')],
+            ['key' => 'location', 'label' => __('journals.location')],
+            ['key' => 'is_verified', 'label' => __('journals.status')],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }
@@ -130,7 +130,7 @@ class VisitManager extends BaseRecordManager
             'follow_up_actions' => $this->followUpActions ?: null,
         ]);
 
-        flash()->success(__('guidance.visit_created'));
+        flash()->success(__('journals.visit_created'));
         $this->showModal = false;
     }
 
@@ -165,12 +165,12 @@ class VisitManager extends BaseRecordManager
         $visit = MonitoringVisit::findOrFail($id);
         $this->authorize('verify', MonitoringVisit::class);
         $action->execute($visit, auth()->user());
-        flash()->success(__('guidance.visit_verified'));
+        flash()->success(__('journals.visit_verified'));
     }
 
     #[Layout('core::layouts.app')]
     public function render(): View
     {
-        return view('guidance.monitoring-visit.visit-manager');
+        return view('journals.monitoring-visit.visit-manager');
     }
 }

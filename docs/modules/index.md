@@ -208,33 +208,19 @@ Assignment management and submission tracking.
 
 ## Tracking & Activity Modules
 
-### Journals — Student Activity Tracking & Supervision Logs
+### Journals — Student Activity Tracking, Supervision Logs & Monitoring Visits
 
-Logbooks, attendance, absence requests, and teacher supervision logs.
+Logbooks, attendance, absence requests, teacher supervision logs, and field monitoring visit
+scheduling/verification.
 
 - Overview: [journals.md](journals.md)
 - Reference: [journals-reference.md](journals-reference.md)
 
-**Key Concepts:** Logbook, Attendance, AbsenceRequest, SupervisionLog
+**Key Concepts:** Logbook, Attendance, AbsenceRequest, SupervisionLog, MonitoringVisit
 
 **Dependencies:** Enrollment, Program, Core
 
 **Used By:** Evaluation, Reports
-
----
-
-### Guidance — Monitoring Visits
-
-Field monitoring visit scheduling, verification, and tracking.
-
-- Overview: [guidance.md](guidance.md)
-- Reference: [guidance-reference.md](guidance-reference.md)
-
-**Key Concepts:** MonitoringVisit
-
-**Dependencies:** User, Program, Core
-
-**Used By:** Reports (visit compliance data)
 
 ---
 
@@ -266,7 +252,7 @@ Company management and partnership agreements.
 
 **Dependencies:** Core
 
-**Used By:** Program, Guidance
+**Used By:** Program
 
 ---
 
@@ -323,7 +309,7 @@ acknowledgements.
 - **User Management**: User → SysAdmin
 - **Academic Setup**: Academics → Program → Enrollment
 - **Evaluation**: Assignment → Assessment → Evaluation → Certification
-- **Activity Tracking**: Enrollment → Journals → Guidance
+- **Activity Tracking**: Enrollment → Journals
 - **Reporting**: Reports
 - **Official Correspondence**: Document
 
@@ -331,15 +317,15 @@ acknowledgements.
 
 - **Super Admin**: SysAdmin, User
 - **Academics**: Academics, Program, Assignment
-- **Supervisor**: Program, Enrollment, Journals, Guidance
+- **Supervisor**: Program, Enrollment, Journals
 - **Teacher**: User, Evaluation, Incident
-- **Student**: Enrollment, Journals, Assignment, Guidance
+- **Student**: Enrollment, Journals, Assignment
 
 ---
 
 ## Architecture Overview
 
-All 22 modules are vertical slices cross-cutting the 4-layer architecture defined in
+All 21 modules are vertical slices cross-cutting the 4-layer architecture defined in
 [`docs/architecture.md`](../architecture.md):
 
 - **Layer 4 — Presentation/UI** — Livewire, Blade, maryUI/DaisyUI, Controllers, Policies, Routes,

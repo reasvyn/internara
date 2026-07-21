@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Guidance\MonitoringVisit\Entities\VisitState;
+use App\Journals\MonitoringVisit\Entities\VisitState;
 use Carbon\Carbon;
 
 test('visit state can be edited when not verified', function () {

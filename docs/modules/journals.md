@@ -1,7 +1,6 @@
-# Journals — Logbooks, Attendance & Absence
+# Journals — Logbooks, Attendance, Absence & Monitoring Visits
 
-> **Last updated:** 2026-07-21 **Changes:** sync — replace ConflictException with
-> RejectedException
+> **Last updated:** 2026-07-21 **Changes:** sync — absorb MonitoringVisit from Guidance module
 
 ## Description
 
@@ -41,6 +40,13 @@ Single-day absences approved by mentor. Extended absences (configurable threshol
 require secondary approval from coordinator. Unapproved absences auto-escalate after program grace
 period.
 
+### MonitoringVisit
+
+Field monitoring visit scheduling, verification, and tracking. Supports multiple visit methods
+(site visit, virtual meeting, phone call), location tracking, and supervisor verification workflow.
+Visit status progresses through scheduled → verified. Linked to a registration and requires teacher
+assignment.
+
 ## Key Concepts
 
 ### Cross-Role Proxy Verification
@@ -72,4 +78,4 @@ daily record.
 ## Used By
 
 - Evaluation (logbook and attendance data for scoring)
-- Reports (attendance and logbook compliance for grade card)
+- Reports (attendance, logbook compliance, and visit compliance data for grade card)

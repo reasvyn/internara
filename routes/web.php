@@ -15,7 +15,6 @@ require __DIR__.'/web/program.php';
 require __DIR__.'/web/enrollment.php';
 require __DIR__.'/web/assignment.php';
 require __DIR__.'/web/assessment.php';
-require __DIR__.'/web/guidance.php';
 // Merged into certification.php
 
 require __DIR__.'/web/reports.php';

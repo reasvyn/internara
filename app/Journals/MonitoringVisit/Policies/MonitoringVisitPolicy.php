@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Guidance\MonitoringVisit\Policies;
+namespace App\Journals\MonitoringVisit\Policies;
 
 use App\Core\Policies\BasePolicy;
-use App\Guidance\MonitoringVisit\Models\MonitoringVisit;
+use App\Journals\MonitoringVisit\Models\MonitoringVisit;
 use App\User\Models\User;
 
 class MonitoringVisitPolicy extends BasePolicy

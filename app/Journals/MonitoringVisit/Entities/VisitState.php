@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Guidance\MonitoringVisit\Entities;
+namespace App\Journals\MonitoringVisit\Entities;
 
 use App\Core\Entities\BaseEntity;
 use Carbon\Carbon;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Guidance\MonitoringVisit\Livewire\StudentVisitList;
+use App\Journals\MonitoringVisit\Livewire\StudentVisitList;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Livewire\Livewire;

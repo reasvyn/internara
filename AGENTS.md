@@ -93,6 +93,7 @@ Choose verification level. Run targeted checks first, full suite once at end.
   - `python3 scripts/scan_violations.py` — C1-C8, D1-D6
   - `python3 scripts/scan_class_contracts.py` — class contracts
   - `python3 scripts/scan_security.py` — security patterns
+  - `python3 scripts/scan_naming.py` — naming conventions
 - **Run full suite** only once at the end:
   - `php artisan test --compact`
   - `vendor/bin/phpstan analyse --no-progress`
@@ -241,8 +242,7 @@ Full definition: `docs/foundation/product-definition.md`
 | **Assessment** | Rubrics, assessments, scoring frameworks | `docs/modules/assessment.md` |
 | **Evaluation** | Feedback forms, sections, weighted questions | `docs/modules/evaluation.md` |
 | **Assignment** | Course work, submissions, grading | `docs/modules/assignment.md` |
-| **Journals** | Logbooks, attendance, absence requests | `docs/modules/journals.md` |
-| **Guidance** | Mentoring, supervision logs | `docs/modules/guidance.md` |
+| **Journals** | Logbooks, attendance, absence requests, monitoring visits | `docs/modules/journals.md` |
 | **Incident** | Incident reports, workplace concerns | `docs/modules/incident.md` |
 | **Partners** | Companies, partnerships | `docs/modules/partners.md` |
 | **Certification** | Certificate generation, credentials | `docs/modules/certification.md` |

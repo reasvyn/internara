@@ -1,6 +1,6 @@
 # Journals — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — add Livewire Forms section (LogbookForm)
+> **Last updated:** 2026-07-21 **Changes:** sync — absorb MonitoringVisit from Guidance module
 
 ## Description
 
@@ -10,7 +10,8 @@ Detailed structural and implementation reference for the **Journals** module.
 
 ## Overview
 
-Manages daily student activity tracking: logbooks, attendance (clock in/out), and absence requests.
+Manages daily student activity tracking: logbooks, attendance (clock in/out), absence requests, and
+field monitoring visit scheduling/verification.
 
 ## Actions
 
@@ -29,6 +30,8 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | `Attendance/Actions/VerifyAttendanceAction.php`   | `VerifyAttendanceAction`     | `BaseCommandAction` |
 | `AbsenceRequest/Actions/SubmitAbsenceAction.php`  | `SubmitAbsenceAction`        | `BaseCommandAction` |
 | `AbsenceRequest/Actions/ProcessAbsenceAction.php` | `ProcessAbsenceAction`       | `BaseCommandAction` |
+| `MonitoringVisit/Actions/CreateVisitAction.php`   | `CreateVisitAction`          | `BaseCommandAction` |
+| `MonitoringVisit/Actions/VerifyVisitAction.php`   | `VerifyVisitAction`          | `BaseCommandAction` |
 
 ---
 
@@ -39,6 +42,7 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | `Logbook/Models/Logbook.php`               | `Logbook`        | `BaseModel`                            |
 | `Attendance/Models/Attendance.php`         | `Attendance`     | `BaseModel`                            |
 | `AbsenceRequest/Models/AbsenceRequest.php` | `AbsenceRequest` | `BaseModel` (uses `attendances` table) |
+| `MonitoringVisit/Models/MonitoringVisit.php` | `MonitoringVisit` | `BaseModel`                          |
 
 ---
 
@@ -50,6 +54,7 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | `Attendance/Enums/AttendanceStatus.php`         | `AttendanceStatus`     | `LabelEnum`, `StatusEnum` | present, late, early_out, absent, permission, sick |
 | `AbsenceRequest/Enums/AbsenceReasonType.php`    | `AbsenceReasonType`    | `LabelEnum`               | sick, permission, emergency, other                 |
 | `AbsenceRequest/Enums/AbsenceRequestStatus.php` | `AbsenceRequestStatus` | `LabelEnum`, `StatusEnum` | pending, approved, rejected                        |
+| `MonitoringVisit/Enums/VisitMethod.php`         | `VisitMethod`           | `LabelEnum`               | site_visit, virtual_meeting, phone_call            |
 
 ---
 
@@ -60,6 +65,7 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | `Logbook/Entities/LogbookState.php`               | `LogbookState`        | `BaseEntity` |
 | `Attendance/Entities/AttendanceState.php`         | `AttendanceState`     | `BaseEntity` |
 | `AbsenceRequest/Entities/AbsenceRequestState.php` | `AbsenceRequestState` | `BaseEntity` |
+| `MonitoringVisit/Entities/VisitState.php`          | `VisitState`           | `BaseEntity` |
 
 ---
 
@@ -69,6 +75,7 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | ------------------------------------------ | ------------------ | ------------ |
 | `Logbook/Policies/LogbookPolicy.php`       | `LogbookPolicy`    | `BasePolicy` |
 | `Attendance/Policies/AttendancePolicy.php` | `AttendancePolicy` | `BasePolicy` |
+| `MonitoringVisit/Policies/MonitoringVisitPolicy.php` | `MonitoringVisitPolicy` | `BasePolicy` |
 
 ---
 
@@ -81,6 +88,8 @@ Manages daily student activity tracking: logbooks, attendance (clock in/out), an
 | `Attendance/Livewire/AttendanceManager.php`      | `AttendanceManager`  | `BaseRecordManager` |
 | `Attendance/Livewire/StudentClockIn.php`         | `StudentClockIn`     | `Component`         |
 | `AbsenceRequest/Livewire/AbsenceRequestForm.php` | `AbsenceRequestForm` | `Component`         |
+| `MonitoringVisit/Livewire/VisitManager.php`       | `VisitManager`       | `BaseRecordManager` |
+| `MonitoringVisit/Livewire/StudentVisitList.php`   | `StudentVisitList`   | `Component`         |
 
 ## Livewire Forms
 
@@ -138,12 +147,12 @@ for the testing conventions.
 
 ## Architectural Integration
 
-- **Submodules**: `Logbook`, `Attendance`, `AbsenceRequest`
+- **Submodules**: `Logbook`, `Attendance`, `AbsenceRequest`, `MonitoringVisit`
 - **Business Logic**: `app/Journals/`
 - **Routing**: `routes/web/journals.php`
 - **Views**: `resources/views/journals/`
-- **Testing**: `tests/Journals/`, `tests/Journals/`
+- **Testing**: `tests/Journals/`
 - **Dependencies**: Enrollment, Program, Core
-- **Used By**: Evaluation
+- **Used By**: Evaluation, Reports
 
 _For overview and business context, see [journals.md](journals.md)._

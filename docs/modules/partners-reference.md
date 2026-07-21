@@ -144,6 +144,6 @@ for the testing conventions.
 - **Views**: `resources/views/partners/`
 - **Testing**: `tests/Partners/`, `tests/Partners/`
 - **Dependencies**: Core
-- **Used By**: Program, Guidance
+- **Used By**: Program
 
 _For overview and business context, see [partners.md](partners.md)._

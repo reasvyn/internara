@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\SupervisionLog\Enums\SupervisionLogStatus;
-use App\Guidance\SupervisionLog\Enums\SupervisionType;
-use App\Guidance\SupervisionLog\Models\SupervisionLog;
+use App\Journals\SupervisionLog\Enums\SupervisionLogStatus;
+use App\Journals\SupervisionLog\Enums\SupervisionType;
+use App\Journals\SupervisionLog\Models\SupervisionLog;
 use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

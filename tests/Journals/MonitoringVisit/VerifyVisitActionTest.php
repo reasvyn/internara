@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use App\Core\Exceptions\RejectedException;
-use App\Guidance\MonitoringVisit\Actions\VerifyVisitAction;
-use App\Guidance\MonitoringVisit\Models\MonitoringVisit;
+use App\Journals\MonitoringVisit\Actions\VerifyVisitAction;
+use App\Journals\MonitoringVisit\Models\MonitoringVisit;
 use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
