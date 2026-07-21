@@ -1,6 +1,7 @@
 # Journals — Logbooks, Attendance & Absence
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-21 **Changes:** sync — replace ConflictException with
+> RejectedException
 
 ## Description
 
@@ -24,7 +25,7 @@ grade compilation (Reports).
 Daily journal entry: date, activities performed, learnings, challenges, future plans, and optional
 file attachments. Status workflow: `draft` → `submitted` → `verified` (by supervisor or teacher via
 Cross-Role Proxy). Mentor can return to `draft` via `revision_required`. Exactly one entry per
-student per calendar day — duplicates return `ConflictException`. Compliance monitoring notifies
+student per calendar day — duplicates return `RejectedException`. Compliance monitoring notifies
 mentors after N days (default 3) of missing entries.
 
 ### Attendance

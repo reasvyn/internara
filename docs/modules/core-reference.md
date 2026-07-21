@@ -1,7 +1,7 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — fix service/support class counts and directories;
-> fix base class count
+> **Last updated:** 2026-07-21 **Changes:** sync — remove ConflictException, NotFoundException,
+> RateLimitException (deleted); fix exception count 6→3
 
 ## Description
 
@@ -27,8 +27,8 @@ depends on.
   3 concern traits (`HasCommonScopes`, `WithSorting`, `WithRecordSelection`)
 - **Concrete DTOs**: 3 (`ActionResponse`, `AuditCheck`, `AuditReport`)
 - **Concrete Enums**: 3 (`CsvRowResult`, `AuditCategory`, `AuditStatus`)
-- **Concrete Exceptions**: 6 (`ConflictException`, `NotFoundException`, `RateLimitException`,
-  `RejectedException`, `UnauthorizedException`, `ValidationFailedException`)
+- **Concrete Exceptions**: 3 (`RejectedException`, `UnauthorizedException`,
+  `ValidationFailedException`)
 - **Middleware**: 2 (`SecurityHeaders`, `LogContext`)
 - **Support Classes**: 7 (`Color`, `CsvHandler`, `Environment`, `PasswordRules`, `PiiMasker`,
   `Spotlight`, `helpers.php`)
@@ -137,12 +137,9 @@ format):
 ```
 AppException (abstract, extends RuntimeException)
 ├── ActionException (abstract) — business operation failed
-│   ├── ConflictException (409) — duplicate resource
 │   └── ValidationFailedException (422) — input validation
 ├── InfrastructureException (abstract) — external system failure
-│   └── RateLimitException (429)
 └── PresentationException (abstract) — HTTP-layer failure
-    ├── NotFoundException (404)
     └── UnauthorizedException (403)
 
 ModuleException (abstract, extends RuntimeException)

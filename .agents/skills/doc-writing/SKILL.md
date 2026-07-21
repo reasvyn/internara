@@ -257,7 +257,7 @@ public function execute(): ActionResponse
  * Use blank line between description and tags.
  *
  * @throws RejectedException when the record is in a terminal state
- * @throws ConflictException when a duplicate exists
+ * @throws RejectedException when a duplicate exists
  */
 public function execute(CreateUserData $data): ActionResponse
 {

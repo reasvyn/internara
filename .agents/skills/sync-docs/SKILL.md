@@ -32,6 +32,10 @@ Using this skill follows 4 phases:
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
+- Review last 10 git commits (`git log --oneline -10`) to understand recent changes before syncing
+  - Run `git log -10 --stat` to see which files were touched per commit
+  - Run `git diff HEAD~10..HEAD --name-status` for a consolidated view of added/modified/deleted files
+  - This context prevents re-syncing already-correct docs and focuses effort on actual changes
 - Read relevant docs: module docs, pattern docs, reference docs
 - Understand task scope: what needs to be done, which files are affected
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
@@ -74,6 +78,20 @@ Using this skill follows 4 phases:
 | **Downstream** | None (final quality gate)                   |
 
 ## Sync Workflow
+
+### 0. Review Recent Git History
+
+Before making any doc changes, review what actually changed in the last 10 commits:
+
+```bash
+git log -10 --stat                          # summary per commit
+git diff HEAD~10..HEAD --name-status        # consolidated file changes
+git log -10 --format="%h %s"               # commit messages for context
+```
+
+- Note which modules, layers, and files were affected
+- Identify commits that already updated docs (skip those)
+- Identify commits that introduced new code without doc updates (focus here)
 
 ### 1. Identify What Changed
 
@@ -132,6 +150,8 @@ Update both fields when content changes.
 3. Every module must have exactly one conceptual doc and one reference doc
 4. Conceptual docs contain NO implementation details (no file paths, no schemas)
 5. Reference docs contain NO design rationale
+6. **Always use `edit` tool (not `write`) when updating docs** — rewrite only the changed
+   sections to minimize risk of accidentally deleting content or breaking formatting
 
 ## Automation Scripts
 

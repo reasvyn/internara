@@ -1,6 +1,7 @@
 # Academics — School Profile, Departments & Academic Years
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-21 **Changes:** sync — replace ConflictException with
+> RejectedException
 
 ## Description
 
@@ -29,7 +30,7 @@ one school per installation.
 
 Academic majors/divisions with CRUD management. Departments organize teachers, students, and
 internship programs. Guarded deletion: cannot delete a department with active programs, assigned
-users, or active placements. Returns a `ConflictException` listing blocking records.
+users, or active placements. Returns a `RejectedException` listing blocking records.
 
 ### AcademicYear
 

@@ -1,6 +1,7 @@
 # Settings — Config, Branding & Feature Flags
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-21 **Changes:** sync — update cache strategy to reflect
+> SettingObserver-based invalidation
 
 ## Description
 
@@ -62,9 +63,11 @@ setting model → config → AppInfo → hardcoded default.
 
 ### Cache Strategy
 
-All setting reads are cached forever. Cache invalidation happens synchronously on every write
-operation. Brand color cache (`brand.colors`) and theme CSS variable cache (`theme.css_variables`)
-are invalidated when relevant settings change, driven by `config('settings.theme_cache_keys')`.
+All setting reads are cached forever. Cache invalidation happens via `SettingObserver`, which
+responds to Eloquent model events (`created`, `updated`, `deleted`) and clears affected cache keys
+synchronously. Brand color cache (`brand.colors`) and theme CSS variable cache
+(`theme.css_variables`) are invalidated when relevant settings change, driven by
+`config('settings.theme_cache_keys')`.
 
 ### Superadmin-Only Mutations
 
