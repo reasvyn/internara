@@ -340,8 +340,8 @@ built or refactored.
 | **Journals/Logbook**        | Verify logbook entry                         | Teacher → Supervisor | High     |
 | **Assessment**              | Score competency (evaluator_role=supervisor) | Teacher → Supervisor | High     |
 | **Assessment**              | Finalize assessment                          | Teacher → Supervisor | High     |
-| **Guidance/SupervisionLog** | Review supervision log                       | Teacher → Supervisor | Medium   |
-| **Guidance/SupervisionLog** | Review supervision log                       | Admin → Teacher      | Low      |
+| **Journals/SupervisionLog** | Review supervision log                       | Teacher → Supervisor | Medium   |
+| **Journals/SupervisionLog** | Review supervision log                       | Admin → Teacher      | Low      |
 | **Assignment/Submission**   | Grade submission                             | Teacher → Supervisor | Medium   |
 
 ## Replaces

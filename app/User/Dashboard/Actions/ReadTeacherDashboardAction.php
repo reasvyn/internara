@@ -8,10 +8,10 @@ use App\Assignment\Submission\Enums\SubmissionStatus;
 use App\Assignment\Submission\Models\Submission;
 use App\Core\Actions\BaseReadAction;
 use App\Enrollment\Registration\Models\Registration;
-use App\Guidance\SupervisionLog\Models\SupervisionLog;
 use App\Incident\IncidentReport\Enums\IncidentStatus;
 use App\Incident\IncidentReport\Models\IncidentReport;
 use App\Journals\Logbook\Models\Logbook;
+use App\Journals\SupervisionLog\Models\SupervisionLog;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
