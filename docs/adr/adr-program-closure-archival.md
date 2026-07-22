@@ -118,4 +118,4 @@ regulatory expiry must use database-level operations (documented but not automat
 - `app/User/Enums/AccountStatus.php` — ARCHIVED status
 - `app/Program/Internship/Enums/InternshipStatus.php` — Program lifecycle enum
 - `docs/architecture.md` — Action Triad (Process Actions) section
-- `docs/key-features.md` — Program Closure & Archival section
+- `docs/specs/internship-lifecycle.md` — Program lifecycle specification

@@ -1,6 +1,6 @@
 ---
 name: code-refactoring
-description: SDLC Phase: DESIGN / REFACTORING. Systematic refactoring patterns for all code layers — extracting Actions, Entities, thinning Livewire, fixing exception handling, and enforcing architectural patterns.
+description: "SDLC Phase: DESIGN / REFACTORING. Systematic refactoring patterns for all code layers — extracting Actions, Entities, thinning Livewire, fixing exception handling, and enforcing architectural patterns."
 upstream:
   - audit-protocol
   - security-audit

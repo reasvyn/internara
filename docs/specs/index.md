@@ -1,6 +1,6 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-07-21 **Changes:** feat — add partnership, internships, enrollment, system-settings specs (11 total)
+> **Last updated:** 2026-07-22 **Changes:** feat — added assessment, evaluation, assignment, journals, incident, certification, reports, document specs (26 total)
 
 ## Description
 
@@ -17,17 +17,32 @@ update the spec first, then implement.
 
 | Spec | Module | Status |
 | ---- | ------ | ------ |
-| [Install & Setup](install-and-setup.md) | Setup | ✅ Complete |
-| [Core Infrastructure](core-infra.md) | Core | ✅ Complete |
+| [Installation](installation.md) | Setup | ✅ Complete |
+| [Setup Wizard](setup-wizard.md) | Setup | ✅ Complete |
+| [Module Discovery](module-discovery.md) | Core | ✅ Complete |
+| [System Requirements](system-requirements.md) | Core | ✅ Complete |
+| [Base Classes](base-classes.md) | Core | ✅ Complete |
 | [Cache & Session](cache-and-session.md) | Core | ✅ Complete |
 | [Logging & Error Handling](logging-and-error-handling.md) | Core | ✅ Complete |
 | [Login & Dashboard](login-and-dashboard.md) | Auth / User | ✅ Complete |
 | [User Management](user-management.md) | User / SysAdmin | ✅ Complete |
 | [Institutional & Academics](institutional-and-academics.md) | Academics / Settings | ✅ Complete |
-| [Internships](internships.md) | Program | ✅ Complete |
 | [Partners — Company & Partnership](partnership.md) | Partners | ✅ Complete |
-| [System Settings](system-settings.md) | Settings | ✅ Complete |
-| [Enrollment](enrollment.md) | Enrollment | ✅ Complete |
+| [Internship Lifecycle](internship-lifecycle.md) | Program | ✅ Complete |
+| [Internship Groups](internship-groups.md) | Program | ✅ Complete |
+| [Registration](registration.md) | Enrollment | ✅ Complete |
+| [Placement](placement.md) | Enrollment | ✅ Complete |
+| [Account Application](account-application.md) | Enrollment | ✅ Complete |
+| [Settings Infrastructure](settings-infrastructure.md) | Settings | ✅ Complete |
+| [Branding, Theme & Locale](branding-theme-locale.md) | Settings | ✅ Complete |
+| [Assessment](assessment.md) | Assessment | ✅ Complete |
+| [Evaluation](evaluation.md) | Evaluation | ✅ Complete |
+| [Assignment](assignment.md) | Assignment | ✅ Complete |
+| [Journals](journals.md) | Journals | ✅ Complete |
+| [Incident](incident.md) | Incident | ✅ Complete |
+| [Certification](certification.md) | Certification | ✅ Complete |
+| [Reports](reports.md) | Reports | ✅ Complete |
+| [Document](document.md) | Document | ✅ Complete |
 
 ---
 
@@ -63,6 +78,5 @@ Every spec follows the 10-section format defined in `.agents/skills/spec-writing
 
 - `.agents/skills/spec-writing/SKILL.md` — Spec writing conventions and template
 - `.agents/skills/feature-building/SKILL.md` — How specs feed into implementation
-- `docs/key-features.md` — Feature inventory (source of truth for what exists)
 - `docs/foundation/project-requirements.md` — High-level feature specs
 - `docs/modules/index.md` — Module dependency graph

@@ -6,7 +6,7 @@
 
 Complete high-level feature specifications for the Internara PKL management system. Lists every
 feature organized by program lifecycle phase, with descriptions, access control, and business rules.
-Referenced by `docs/key-features.md` for the feature inventory and `docs/modules/index.md` for module
+Referenced by `docs/specs/index.md` for feature specifications and `docs/modules/index.md` for module
 dependencies.
 
 ---
@@ -487,7 +487,7 @@ The interface MUST maintain a clean, modern, minimalist aesthetic with strong ac
 
 ## Quick References
 
-- `docs/key-features.md` — Feature inventory (same data, different presentation)
+- `docs/specs/index.md` — Feature specifications index
 - `docs/modules/index.md` — Module dependency graph
 - `docs/foundation/product-definition.md` — Scope, personas, system boundary
 - `docs/architecture.md` — 4-layer architecture, Action Triad

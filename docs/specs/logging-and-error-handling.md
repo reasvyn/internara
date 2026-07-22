@@ -455,7 +455,7 @@ activity_log
 
 ## 7. Design Decisions
 
-### DD-1 — Dual Exception Hierarchy (Reaffirmed from core-infra DD-2)
+### DD-1 — Dual Exception Hierarchy (Reaffirmed from base-classes DD-1)
 
 **Decision:** Two separate exception trees: `AppException` (framework) and `ModuleException` (business).
 **Rationale:** Allows precise catch-block targeting. `catch (ModuleException)` catches only business
@@ -566,4 +566,4 @@ correlation of timestamps, user IDs, and IP addresses.
 - `bootstrap/app.php` — exception rendering configuration
 - `docs/architecture/exception-pattern.md` — dual hierarchy rationale and patterns
 - `docs/architecture/logging-pattern.md` — SmartLogger architecture, PII masking, translation
-- `docs/specs/core-infra.md` — foundation spec (§6.4, §DD-2)
+- `docs/specs/base-classes.md` — foundation spec (§6.3, §DD-1)

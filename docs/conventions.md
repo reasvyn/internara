@@ -60,7 +60,7 @@ Every change — feature, refactor, bug fix — begins with documentation. Befor
 of code, the relevant docs must be updated to describe the intended outcome. This applies at all
 scales:
 
-- **New feature** → document the feature in `key-features.md`, update the module's conceptual doc
+- **New feature** → document the feature in `docs/specs/`, update the module's conceptual doc
   (`{module}.md`) and API reference (`{module}-reference.md`)
 - **Architecture change** → update `architecture.md` and any affected ADRs
 - **Bug fix** → if the fix changes behavior, update the affected docs

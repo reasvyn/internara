@@ -1,6 +1,6 @@
 ---
 name: spec-writing
-description: SDLC Phase: PLANNING / DOCUMENTATION. Writing comprehensive feature specification documents — problem statements, goals/non-goals, user stories, functional/non-functional requirements, API/data contracts, design decisions, and success metrics. Produces self-contained specs that serve as the authoritative source for feature implementation.
+description: "SDLC Phase: PLANNING / DOCUMENTATION. Writing comprehensive feature specification documents — problem statements, goals/non-goals, user stories, functional/non-functional requirements, API/data contracts, design decisions, and success metrics. Produces self-contained specs that serve as the authoritative source for feature implementation."
 upstream:
   - context-awareness
   - doc-writing
@@ -40,7 +40,7 @@ Use this skill when:
 
 - Load `context-awareness` and `doc-writing` skills
 - Read primary references:
-  - `docs/key-features.md` — feature inventory
+  - `docs/specs/index.md` — feature specifications index
   - `docs/foundation/project-requirements.md` — high-level feature specs
   - `docs/foundation/product-definition.md` — scope, personas, system boundary
   - `docs/modules/{module}.md` and `docs/modules/{module}-reference.md` — if feature belongs to a module
@@ -207,7 +207,34 @@ For `FR-` and `NFR-`, add a single-letter area code when the feature has multipl
 
 ---
 
-## Content Rules
+## Scoping Rules
+
+### One Initiative = One Spec
+
+Each spec file must cover exactly **one initiative** — a cohesive, independently deliverable unit of
+work. An initiative has a clear boundary: it can be planned, implemented, tested, and shipped without
+requiring changes outside its scope.
+
+**How to decide if something is one initiative or two:**
+
+| Signal | One spec | Two specs |
+|--------|----------|-----------|
+| Implementation | Single PR or tightly coupled PRs | Independent PRs |
+| Testing | Shared test suite, same mock boundaries | Separate test suites |
+| Deployment | Deploy together or not at all | Can deploy independently |
+| Rollback | Rollback means rollback both | Each can rollback alone |
+| Team ownership | One person/team owns it | Different people/teams own it |
+
+**When a spec grows too large, split it:**
+
+1. Identify distinct user-facing capabilities (e.g., "CLI install" vs "browser wizard")
+2. Each capability gets its own Problem Statements, Goals, Use Cases, and Requirements
+3. Shared infrastructure (data models, config) goes into the more foundational spec
+4. Cross-reference related specs instead of duplicating content
+
+**Rule of thumb:** If you can describe the feature without using "and" between two independent
+capabilities, it belongs in one spec. If the spec has sections that are only relevant to one
+capability, split it.
 
 ### Problem Statements
 
@@ -296,7 +323,7 @@ other way around.
 |-------|----------|
 | Documentation conventions | `docs/conventions.md` |
 | Doc-writing skill | `.agents/skills/doc-writing/SKILL.md` |
-| Feature inventory | `docs/key-features.md` |
+| Feature specs      | `docs/specs/index.md`  |
 | High-level specs | `docs/foundation/project-requirements.md` |
 | Product definition | `docs/foundation/product-definition.md` |
 | Module index | `docs/modules/index.md` |

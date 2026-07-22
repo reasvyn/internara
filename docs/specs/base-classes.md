@@ -1,56 +1,40 @@
-# Core Infrastructure — Foundation, Dependencies & Contracts
+# Base Classes — Contracts, Middleware, Cache & Session
 
-> **Last updated:** 2026-07-21 **Changes:** feat — initial spec covering dependencies, framework,
-> database, system requirements, base classes, contracts, middleware, cache, and session
+> **Last updated:** 2026-07-22 **Changes:** feat — split from core-infra.md; base classes,
+> contracts, exception hierarchy, middleware, cache infrastructure, session, policies, and
+> support utilities
 
 ## Description
 
-Complete specification of Internara's core infrastructure layer (Layer 1). Defines minimum system
-requirements, third-party dependencies, framework configuration, database support, all base classes
-and contracts, middleware stack, cache strategy, and session management. This is the foundation
-every module builds upon.
+Specification of Internara's base class layer — the architectural foundation every module builds
+upon. Defines the Action Triad base classes, Entity/DTO/Model contracts, Livewire base classes,
+exception hierarchy, middleware stack, cache infrastructure, session management, policies, and
+support utilities. System requirements, dependencies, and database portability are a separate
+initiative — see [system-requirements.md](system-requirements.md).
 
 ---
 
 ## 1. Problem Statements
 
-### PS-1 — Dependency Management
-
-The system relies on 12 production packages and 10 dev packages with specific version constraints.
-A broken dependency or version mismatch can cascade across all 22 modules. Package selection must
-balance feature needs with maintenance burden and security surface.
-
-### PS-2 — Minimum System Requirements
-
-Schools operate on diverse hosting environments — from shared hosting with PHP 8.4 to VPS with
-Redis. The system must clearly define what is required vs recommended, and fail gracefully when
-requirements aren't met rather than producing cryptic errors.
-
-### PS-3 — Database Portability
-
-Different schools have different database capabilities. SQLite for zero-config development, MySQL
-for shared hosting, PostgreSQL for larger deployments. The system must work across all three without
-module-specific SQL, using only portable Eloquent queries and migrations.
-
-### PS-4 — Base Class Consistency
+### PS-1 — Base Class Consistency
 
 22 modules with 150+ features share a common vocabulary: how to write Actions, Models, Entities,
 DTOs, Livewire components, and Policies. Without enforced base classes, each module would reinvent
 patterns, creating maintenance nightmares and subtle bugs.
 
-### PS-5 — Middleware Stack Integrity
+### PS-2 — Middleware Stack Integrity
 
 Security headers, request logging, setup gating, locale resolution, and role checking happen at the
 middleware layer. A missing or misordered middleware can silently break security (no CSP headers)
 or functionality (wrong locale, setup bypass).
 
-### PS-6 — Cache Coherence
+### PS-3 — Cache Coherence
 
 Caching improves performance but introduces staleness risk. Without a centralized key registry and
 invalidation strategy, cached data can silently diverge from the database, causing hard-to-debug
 inconsistencies across modules.
 
-### PS-7 — Session Security
+### PS-4 — Session Security
 
 Sessions hold authentication state, CSRF tokens, wizard progress, and locale preferences. A
 compromised session means a compromised account. Session configuration must enforce encryption,
@@ -64,27 +48,20 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 
 | ID  | Goal |
 | --- | ---- |
-| G1  | Define minimum PHP version (8.4) and required extensions with clear error messaging |
-| G2  | Enforce Action Triad pattern (Command/Read/Process) via abstract base classes |
-| G3  | Support SQLite (default), MySQL 8+, MariaDB 10.6+, PostgreSQL 15+ without module-specific SQL |
-| G4  | Provide 5 Livewire base classes covering all UI patterns (table CRUD, modal CRUD, list, form, wizard) |
-| G5  | Centralize cache keys in `config/cache-keys.php` with event-driven invalidation |
-| G6  | Enforce session security (encrypted, HTTP-only, SameSite, 120min lifetime) |
-| G7  | Apply security headers (CSP, HSTS, X-Frame-Options) via middleware on every response |
-| G8  | Maintain a dual exception hierarchy (AppException + ModuleException) for precise error handling |
-| G9  | Provide UUID primary keys (v7, time-ordered) on all models via `HasUuids` |
-| G10 | Support three deployment tiers: shared hosting (file cache, database session), VPS (Redis), HA (Redis cluster) |
+| G1  | Enforce Action Triad pattern (Command/Read/Process) via abstract base classes |
+| G2  | Provide 5 Livewire base classes covering all UI patterns (table CRUD, modal CRUD, list, form, wizard) |
+| G3  | Centralize cache keys in `config/cache-keys.php` with event-driven invalidation |
+| G4  | Enforce session security (encrypted, HTTP-only, SameSite, 120min lifetime) |
+| G5  | Apply security headers (CSP, HSTS, X-Frame-Options) via middleware on every response |
+| G6  | Maintain a dual exception hierarchy (AppException + ModuleException) for precise error handling |
 
 ### Non-Goals
 
 | ID   | Non-Goal |
 | ---- | -------- |
-| NG1  | Multi-tenant database partitioning (single-tenant design) |
-| NG2  | Real-time WebSocket infrastructure (out of scope per product definition) |
-| NG3  | GraphQL or REST API layer (Livewire-only frontend) |
-| NG4  | Custom ORM or query builder (Eloquent is the persistence layer) |
-| NG5  | Message queue abstraction beyond Laravel's built-in queue drivers |
-| NG6  | Container orchestration (Docker Compose only, no Kubernetes) |
+| NG1  | Real-time WebSocket infrastructure (out of scope per product definition) |
+| NG2  | GraphQL or REST API layer (Livewire-only frontend) |
+| NG3  | Message queue abstraction beyond Laravel's built-in queue drivers |
 
 ---
 
@@ -143,50 +120,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 
 ## 4. Functional Requirements
 
-### 4.1 Minimum System Requirements
-
-| ID    | Requirement |
-| ----- | ----------- |
-| FR-SY1 | PHP >= 8.4.0 is required |
-| FR-SY2 | Required extensions: bcmath, ctype, fileinfo, mbstring, openssl, pdo, tokenizer, xml, curl, gd, intl, zip |
-| FR-SY3 | Recommended extensions: redis, pcntl, posix |
-| FR-SY4 | Composer >= 2.0 is required for dependency management |
-| FR-SY5 | Node.js + npm required for frontend build (Vite, Tailwind CSS) |
-| FR-SY6 | `storage/` and `bootstrap/cache/` directories must be writable |
-| FR-SY7 | `APP_KEY` must be set (32-character base64 string) |
-
-### 4.2 Dependencies
-
-| ID    | Requirement |
-| ----- | ----------- |
-| FR-D1 | `laravel/framework` ^13.0 — core framework |
-| FR-D2 | `livewire/livewire` ^4.0 — reactive UI components |
-| FR-D3 | `spatie/laravel-permission` ^8.0 — RBAC (roles + permissions) |
-| FR-D4 | `spatie/laravel-activitylog` ^5.0 — audit trail logging |
-| FR-D5 | `spatie/laravel-medialibrary` ^11.17 — file upload + image conversions |
-| FR-D6 | `spatie/laravel-model-status` ^1.18 — model status tracking |
-| FR-D7 | `laravel-lang/lang` ^15.26 — bilingual translations (en/id) |
-| FR-D8 | `barryvdh/laravel-dompdf` ^3.1 — PDF generation |
-| FR-D9 | `laravel/pulse` * — performance monitoring dashboard |
-| FR-D10 | `php-flasher/flasher-laravel` ^2.4 — flash message UI |
-| FR-D11 | `robsontenorio/mary` ^2.4 — UI component library (maryUI) |
-| FR-D12 | `laravel/tinker` ^3.0 — REPL for debugging |
-
-### 4.3 Database
-
-| ID    | Requirement |
-| ----- | ----------- |
-| FR-DB1 | SQLite is the default and zero-config database (WAL mode, busy_timeout=5000) |
-| FR-DB2 | MySQL 8.0+ supported for shared hosting deployments |
-| FR-DB3 | MariaDB 10.6+ supported |
-| FR-DB4 | PostgreSQL 15+ supported for larger deployments |
-| FR-DB5 | All models use UUID v7 primary keys (time-ordered, via `HasUuids` trait) |
-| FR-DB6 | All foreign keys define `onDelete` and `onUpdate` behavior (D6 invariant) |
-| FR-DB7 | Migrations organized in 6 sequential layers: Foundation → Auth → Config → Internship Core → Grouping → Evaluation |
-| FR-DB8 | 55 tables total: 37 domain + 18 system/package |
-| FR-DB9 | Redis used for cache (database 1), session, and queue — separate DB numbers per service |
-
-### 4.4 Core Base Classes — Actions
+### 4.1 Core Base Classes — Actions
 
 | ID    | Requirement |
 | ----- | ----------- |
@@ -198,7 +132,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | FR-A6 | Command/Process Actions wrap DB operations in `$this->transaction()` |
 | FR-A7 | Command/Process Actions call `$this->log()` after successful mutation |
 
-### 4.5 Core Base Classes — Data Layer
+### 4.2 Core Base Classes — Data Layer
 
 | ID    | Requirement |
 | ----- | ----------- |
@@ -209,7 +143,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | FR-M5 | `ActionResponse` — final readonly DTO: `ok()`, `created()`, `updated()`, `deleted()`, `error()`, `withRedirect()` |
 | FR-M6 | `HasCommonScopes` — `active()`, `inactive()`, `recent()`, `createdAfter()`, `createdBefore()`, `ordered()` |
 
-### 4.6 Core Base Classes — UI Layer
+### 4.3 Core Base Classes — UI Layer
 
 | ID    | Requirement |
 | ----- | ----------- |
@@ -221,7 +155,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | FR-L6 | `BaseController` — JSON response helpers: `jsonSuccess()`, `jsonCreated()`, `jsonError()`, `jsonPaginated()`, etc. |
 | FR-L7 | `BaseFormRequest` — throws `ValidationFailedException` on failed validation |
 
-### 4.7 Contracts
+### 4.4 Contracts
 
 | ID    | Requirement |
 | ----- | ----------- |
@@ -231,7 +165,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | FR-C4 | `SendsNotifications` — interface for notification dispatch: `execute(userId, type, title, ...)` |
 | FR-C5 | `SettingsStore` — interface for settings retrieval: `get(key, default)` |
 
-### 4.8 Exception Hierarchy
+### 4.5 Exception Hierarchy
 
 | ID    | Requirement |
 | ----- | ----------- |
@@ -243,7 +177,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | FR-E6 | `InfrastructureException` extends `AppException` — HTTP 500, not user-facing |
 | FR-E7 | `HasExceptionContext` trait — `hint`, `context`, `toCliOutput()`, `isUserFacing()`, `shouldReport()` |
 
-### 4.9 Middleware
+### 4.6 Middleware
 
 | ID    | Requirement |
 | ----- | ----------- |
@@ -256,7 +190,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | FR-MW7 | `AuthThrottleMiddleware` — login/rate-limit throttling (aliased as `auth.throttle`) |
 | FR-MW8 | Middleware execution order: SecurityHeaders → LogContext → RequireSetupAccess → SetLocale → route-specific |
 
-### 4.10 Cache Infrastructure
+### 4.7 Cache Infrastructure
 
 | ID     | Requirement |
 | ------ | ----------- |
@@ -271,7 +205,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | FR-CACHE9 | Cache warming command: `php artisan system:cache-warm` |
 | FR-CACHE10 | Redis prefix: `internara-cache-` (via `CACHE_PREFIX` env) |
 
-### 4.11 Session Infrastructure
+### 4.8 Session Infrastructure
 
 | ID     | Requirement |
 | ------ | ----------- |
@@ -285,7 +219,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | FR-SESS8 | Redis driver: key expiry handles GC automatically (no application-level GC) |
 | FR-SESS9 | Session stores: auth state, CSRF token, locale preference, wizard progress, setup authorization |
 
-### 4.12 Policies
+### 4.9 Policies
 
 | ID    | Requirement |
 | ----- | ----------- |
@@ -293,7 +227,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | FR-P2 | `AuthorizesRoles` trait — `isAdmin()`, `canManageAnyRole()`, `hasAnyOfRoles()` |
 | FR-P3 | `AuthorizesOwnership` trait — `isOwner()`, `isRelatedThrough()`, `isOwnerOrAdmin()` |
 
-### 4.13 Support Utilities
+### 4.10 Support Utilities
 
 | ID    | Requirement |
 | ----- | ----------- |
@@ -314,22 +248,17 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-S1 | `declare(strict_types=1)` in every PHP file except migrations and config (D1 invariant) |
-| NFR-S2 | No debug calls in committed code: dd, dump, ray, var_dump, print_r, die (D2 invariant) |
-| NFR-S3 | CSP header must block inline scripts except explicitly whitelisted sources |
-| NFR-S4 | Session cookie must be HTTP-only, SameSite=lax, secure in production |
-| NFR-S5 | APP_KEY must be 32-byte base64 string; rotation supported via `APP_PREVIOUS_KEYS` |
-| NFR-S6 | Redis connections support retry with backoff (max_retries=3, decorrelated jitter) |
+| NFR-S1 | CSP header must block inline scripts except explicitly whitelisted sources |
+| NFR-S2 | Session cookie must be HTTP-only, SameSite=lax, secure in production |
+| NFR-S3 | Redis connections support retry with backoff (max_retries=3, decorrelated jitter) |
 
 ### 5.2 Performance
 
 | ID     | Requirement |
 | ------ | ----------- |
-| NFR-P1 | SQLite WAL mode with 5000ms busy timeout for concurrent reads |
-| NFR-P2 | OpCache enabled in production: 256MB memory, 20000 max files, validate_timestamps=0 |
-| NFR-P3 | Redis connection pool: persistent connections optional (`REDIS_PERSISTENT`) |
-| NFR-P4 | Cache warming reduces first-request latency after deployment |
-| NFR-P5 | Application cache (config/route/view/event) reduces bootstrap time by ~60% |
+| NFR-P1 | Redis connection pool: persistent connections optional (`REDIS_PERSISTENT`) |
+| NFR-P2 | Cache warming reduces first-request latency after deployment |
+| NFR-P3 | Application cache (config/route/view/event) reduces bootstrap time by ~60% |
 
 ### 5.3 Reliability
 
@@ -338,7 +267,6 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | NFR-R1 | Transaction wrapper retries up to 3 attempts on deadlock (BaseAction) |
 | NFR-R2 | Graceful degradation: cache miss returns fresh data, never cached error |
 | NFR-R3 | Redis backoff: decorrelated jitter with 100ms base, 1000ms cap |
-| NFR-R4 | SQLite foreign keys enforced (`DB_FOREIGN_KEYS=true`) |
 
 ### 5.4 Maintainability
 
@@ -356,27 +284,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 
 ## 6. API / Data Contracts
 
-### 6.1 Production Dependencies
-
-```json
-{
-  "php": "^8.4",
-  "laravel/framework": "^13.0",
-  "livewire/livewire": "^4.0",
-  "spatie/laravel-permission": "^8.0",
-  "spatie/laravel-activitylog": "^5.0",
-  "spatie/laravel-medialibrary": "^11.17",
-  "spatie/laravel-model-status": "^1.18",
-  "laravel-lang/lang": "^15.26",
-  "barryvdh/laravel-dompdf": "^3.1",
-  "laravel/pulse": "*",
-  "php-flasher/flasher-laravel": "^2.4",
-  "robsontenorio/mary": "^2.4",
-  "laravel/tinker": "^3.0"
-}
-```
-
-### 6.2 Base Class Signatures
+### 6.1 Base Class Signatures
 
 ```php
 // Action Triad
@@ -443,7 +351,7 @@ final readonly class ActionResponse implements JsonSerializable {
 }
 ```
 
-### 6.3 Contracts
+### 6.2 Contracts
 
 ```php
 interface LabelEnum {
@@ -469,7 +377,7 @@ interface SettingsStore {
 }
 ```
 
-### 6.4 Exception Hierarchy
+### 6.3 Exception Hierarchy
 
 ```
 RuntimeException
@@ -483,7 +391,7 @@ RuntimeException
     └── RejectedException (400)
 ```
 
-### 6.5 Middleware Stack
+### 6.4 Middleware Stack
 
 ```php
 // bootstrap/app.php — Web middleware stack (execution order)
@@ -502,7 +410,7 @@ RuntimeException
 })
 ```
 
-### 6.6 Cache Key Registry
+### 6.5 Cache Key Registry
 
 ```php
 // config/cache-keys.php
@@ -522,7 +430,7 @@ RuntimeException
 ]
 ```
 
-### 6.7 Session Configuration
+### 6.6 Session Configuration
 
 ```php
 // config/session.php
@@ -535,40 +443,11 @@ RuntimeException
 'lottery'      => [2, 100],  // 2% GC chance per request
 ```
 
-### 6.8 Database Configuration
-
-```php
-// config/database.php — key settings
-'default' => env('DB_CONNECTION', 'sqlite'),
-
-// SQLite (default)
-'sqlite' => [
-    'foreign_key_constraints' => true,
-    'busy_timeout' => 5000,
-    'journal_mode' => 'wal',
-],
-
-// Redis (multi-service)
-'redis' => [
-    'default' => ['database' => 0],  // Queue
-    'cache'   => ['database' => 1],  // Cache
-    // Session uses SESSION_CONNECTION env
-],
-```
-
 ---
 
 ## 7. Design Decisions
 
-### DD-1 — SQLite as Default Database
-
-**Decision:** SQLite is the default database driver, not MySQL.
-**Rationale:** Zero-config development and shared hosting. Schools often lack DBA expertise. SQLite
-with WAL mode handles concurrent reads well for single-tenant workloads up to 500 users.
-**Trade-off:** No connection pooling, limited concurrent writes. Mitigated by migration path to
-MySQL/PostgreSQL for larger deployments.
-
-### DD-2 — Dual Exception Hierarchy
+### DD-1 — Dual Exception Hierarchy
 
 **Decision:** Two separate exception trees: `AppException` (framework) and `ModuleException` (business).
 **Rationale:** Allows precise catch-block targeting. Framework errors (infrastructure, presentation)
@@ -577,7 +456,7 @@ exception) extends `ModuleException` and always returns HTTP 400.
 **Trade-off:** Slightly more complex exception hierarchy, but prevents the "catch everything as
 RuntimeException" anti-pattern.
 
-### DD-3 — Centralized Cache Key Registry
+### DD-2 — Centralized Cache Key Registry
 
 **Decision:** All cache keys MUST be declared in `config/cache-keys.php`, never inline.
 **Rationale:** Prevents key collisions across modules, makes cache dependencies discoverable,
@@ -586,7 +465,7 @@ conventions leading to conflicts.
 **Trade-off:** Extra step when adding new cache keys. Mitigated by the clear naming convention
 (`{module}.{purpose}[.{qualifier}]`).
 
-### DD-4 — File Cache as Default
+### DD-3 — File Cache as Default
 
 **Decision:** Default cache driver is `file`, not Redis.
 **Rationale:** Shared hosting deployments cannot install Redis. File cache works without external
@@ -594,7 +473,7 @@ services. For Tier 2+ deployments, switching to Redis is a one-line `.env` chang
 **Trade-off:** File cache is slower than Redis and doesn't support atomic operations. Acceptable
 for single-tenant workloads.
 
-### DD-5 — Database Session as Default
+### DD-4 — Database Session as Default
 
 **Decision:** Default session driver is `database`, not `file`.
 **Rationale:** Database sessions survive process restarts (important for queue workers), support
@@ -603,16 +482,7 @@ can be lost on deploy.
 **Trade-off:** Slightly higher DB load per request. Negligible for single-tenant with <1000
 concurrent users.
 
-### DD-6 — UUID v7 Primary Keys
-
-**Decision:** All models use UUID v7 (time-ordered) primary keys via Laravel's `HasUuids` trait.
-**Rationale:** Time-ordered UUIDs improve B-tree index performance. UUIDs eliminate sequential ID
-exposure (no user can guess `/users/2` → `/users/3`). No migration coordination needed across
-environments.
-**Trade-off:** 16 bytes per PK vs 4 bytes for auto-increment. Storage overhead is negligible for
-<100K rows.
-
-### DD-7 — Middleware Ordering
+### DD-5 — Middleware Ordering
 
 **Decision:** Security headers first, locale last in the global stack.
 **Rationale:** Security headers must be on every response regardless of downstream errors. Locale
@@ -621,7 +491,7 @@ precede locale to redirect uninstalled instances before any business logic.
 **Trade-off:** Fixed ordering prevents per-route customization. Route-specific middleware handles
 those cases.
 
-### DD-8 — Module Discovery at Runtime
+### DD-6 — Module Discovery at Runtime
 
 **Decision:** Livewire components, policies, and Blade namespaces are discovered dynamically via
 `ModuleDiscoverService`, not manually registered.
@@ -634,32 +504,7 @@ picks up new modules.
 
 ## 8. Success Metrics
 
-### 8.1 System Requirements
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| PHP version check | Always accurate | `php -v` parse result matches FR-SY1 |
-| Extension check | 11 required + 3 recommended | `php -m` comparison against FR-SY2/FR-SY3 |
-| First-run provisioning | < 30 seconds | `time php artisan setup:install` |
-
-### 8.2 Dependencies
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Composer install | 100% success on supported PHP | `composer install` exit code |
-| No abandoned packages | All 12 production deps maintained | `composer audit` |
-| Version lock | `composer.lock` committed | CI check |
-
-### 8.3 Database
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| SQLite out-of-box | Zero-config for dev | `php artisan migrate` without .env DB settings |
-| MySQL compatibility | 8.0+ | CI matrix test |
-| PostgreSQL compatibility | 15+ | CI matrix test |
-| Migration freshness | < 60 seconds | `time php artisan migrate:fresh` on 55 tables |
-
-### 8.4 Cache
+### 8.1 Cache
 
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
@@ -667,7 +512,7 @@ picks up new modules.
 | Stale data window | < 5 seconds for settings changes | Observer fires on every model event |
 | Cache warm time | < 5 seconds | `time php artisan system:cache-warm` |
 
-### 8.5 Session
+### 8.2 Session
 
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
@@ -675,7 +520,7 @@ picks up new modules.
 | Lifetime | 120 minutes | Default config value |
 | Fixation prevention | Regenerated on auth change | `session()->regenerate()` in login/logout flow |
 
-### 8.6 Security
+### 8.3 Security
 
 | Metric | Target | Measurement |
 | ------ | ------ | ----------- |
@@ -697,14 +542,12 @@ picks up new modules.
 - `docs/architecture/data-pattern.md` — DTO and ActionResponse contracts
 - `docs/architecture/exception-pattern.md` — Dual exception hierarchy
 - `docs/architecture/cache-pattern.md` — Cache strategy and key registry
-- `docs/infrastructure/database.md` — Schema design, engine comparison
 - `docs/infrastructure/cache.md` — Cache driver strategy, invalidation
 - `docs/infrastructure/session.md` — Session configuration and security
 - `docs/infrastructure/deployment.md` — Three deployment paths
 - `config/cache-keys.php` — Centralized cache key registry
 - `config/cache.php` — Cache store definitions
 - `config/session.php` — Session driver and cookie settings
-- `config/database.php` — Database connections and Redis configuration
 - `app/Core/` — All base classes, contracts, exceptions, services
 - `bootstrap/app.php` — Middleware registration
-- `.env.example` — Default configuration values
+- **Related specs:** [system-requirements.md](system-requirements.md) — Dependencies, platform & database

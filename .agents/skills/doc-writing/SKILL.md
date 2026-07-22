@@ -1,6 +1,6 @@
 ---
 name: doc-writing
-description: SDLC Phase: DOCUMENTATION. Writing and maintaining project documentation — PHPDoc blocks, markdown docs, module conceptual/reference docs, metadata format, cross-references, and the documentation-first (SSOT) principle.
+description: "SDLC Phase: DOCUMENTATION. Writing and maintaining project documentation — PHPDoc blocks, markdown docs, module conceptual/reference docs, metadata format, cross-references, and the documentation-first (SSOT) principle."
 upstream:
   - context-awareness
   - feature-building

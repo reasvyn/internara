@@ -386,7 +386,7 @@ automatically obfuscates `password`, `token`, `secret`, `credit_card` (full); `e
 | Monthly   | 12 months              |
 | Yearly    | Permanent (regulatory) |
 
-See [Backup & Recovery](backup-recovery.md) for detailed restoration procedures.
+See [Backup & Recovery](../foundation/backup-recovery.md) for detailed restoration procedures.
 
 ---
 
@@ -446,14 +446,14 @@ See [Backup & Recovery](backup-recovery.md) for detailed restoration procedures.
 
 | Concern                                        | Document                                    |
 | ---------------------------------------------- | ------------------------------------------- |
-| Installation & prerequisites                   | [Installation](../guide/01-installation.md) |
+| Installation & prerequisites                   | [Installation](../foundation/installation.md) |
 | Deployment steps (shared hosting, VPS, Docker) | [Deployment](deployment.md)                 |
 | Environment configuration                      | [Configuration](configuration.md)           |
 | Database design & engine comparison            | [Database](database.md)                     |
 | Cache management & OpCache                     | [Cache](cache.md)                           |
 | Session configuration & security               | [Session](session.md)                       |
-| Backup & restore procedures                    | [Backup & Recovery](backup-recovery.md)     |
-| Performance monitoring, Pulse, logging         | [Observability](observability.md)           |
+| Backup & restore procedures                    | [Backup & Recovery](../foundation/backup-recovery.md)     |
+| Performance monitoring, Pulse, logging         | [Observability](../foundation/system-observability.md)           |
 | File storage, S3, media library                | [Filesystem](filesystem.md)                 |
 | Queue infrastructure, worker management        | [Queue](queue.md)                           |
 | Notification channels & delivery               | [Notifications](notification.md)            |

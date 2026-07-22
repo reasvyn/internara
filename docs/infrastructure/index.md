@@ -15,9 +15,7 @@ Deployment, configuration, CI/CD, database, and operations.
 - **[Notifications](notification.md)** — Multi-channel notification system, CustomDatabaseChannel, mail deliverability, SPF/DKIM
 - **[Queue & Workers](queue.md)** — Queue drivers, worker management, Supervisor configuration, job lifecycle, retry/backoff
 - **[Testing Guide](testing.md)** — Testing philosophy, feature vs unit test distinction, LazilyRefreshDatabase, code coverage
-- **[Observability](observability.md)** — Monitoring categories, Laravel Pulse integration, SmartLogger dual-channel, health checks
-- **[Troubleshooting](troubleshooting.md)** — Common issues, diagnostic commands, resolution steps across all subsystems
+- **[Security](security.md)** — Network hardening, security headers, rate limiting, PII handling, GDPR, scanning, production checklist
 - **[Scaling Guide](scaling.md)** — Scaling from MVP to 2000+ users, tier transitions, load testing, monitoring thresholds
-- **[Backup & Recovery](backup-recovery.md)** — Backup strategies, database dumps, file backup, restoration, point-in-time recovery
 - **[Localization](localization.md)** — Supported languages, translation structure, locale resolution, community contribution guide
 - **[Developer Tools](tools.md)** — Python scan scripts, CLI flags, output schema

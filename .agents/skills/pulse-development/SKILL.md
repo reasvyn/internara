@@ -1,6 +1,6 @@
 ---
 name: pulse-development
-description: SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized Laravel Pulse setup — dashboard, authorization, recorders, filters, custom cards, and Redis ingest.
+description: "SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized Laravel Pulse setup — dashboard, authorization, recorders, filters, custom cards, and Redis ingest."
 upstream:
   - feature-building
 downstream:
@@ -116,6 +116,6 @@ as standalone Livewire components.
 | Topic                  | Doc                                    |
 | ---------------------- | -------------------------------------- |
 | Pulse configuration    | `config/pulse.php`                     |
-| Observability overview | `docs/infrastructure/observability.md` |
+| Observability overview | `docs/foundation/system-observability.md` |
 | Deployment tiers       | `docs/infrastructure/deployment.md`    |
 | Laravel Pulse docs     | `search-docs` with `laravel/pulse`     |

@@ -141,7 +141,7 @@ authorizes access. The 6-step wizard guides you through:
 | 5    | Final review and confirm                    |
 | 6    | Setup complete with recovery key            |
 
-Follow the [Setup Wizard](guide/02-setup-wizard.md) guide for a detailed walkthrough.
+Follow the [Setup Wizard](foundation/setup-wizard.md) guide for a detailed walkthrough.
 
 ---
 
@@ -163,8 +163,8 @@ Follow the [Setup Wizard](guide/02-setup-wizard.md) guide for a detailed walkthr
 
 | Document                                           | What It Covers                                              |
 | -------------------------------------------------- | ----------------------------------------------------------- |
-| [Installation](guide/01-installation.md)           | Detailed deployment options, server config, troubleshooting |
-| [Setup Wizard](guide/02-setup-wizard.md)           | Complete walkthrough of all 6 wizard steps                  |
-| [Post-Setup](guide/03-post-setup.md)               | First actions after the wizard completes                    |
+| [Installation](foundation/installation.md)           | Detailed deployment options, server config, troubleshooting |
+| [Setup Wizard](foundation/setup-wizard.md)           | Complete walkthrough of all 6 wizard steps                  |
+| [Post-Setup](foundation/post-setup.md)               | First actions after the wizard completes                    |
 | [Architecture](architecture.md)                    | System design, modules, layers                              |
 | [Infrastructure](infrastructure/infrastructure.md) | Deployment options, background processes, storage           |

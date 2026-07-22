@@ -11,7 +11,7 @@ lifecycle, security controls, and garbage collection. These subsystems are found
 performance (cache) and authentication state (session) across all 22 modules.
 
 This spec is a focused expansion of the cache and session foundations introduced in
-[core-infra.md](core-infra.md) (§6.6, §6.7, §DD-3, §DD-4, §DD-5).
+[base-classes.md](base-classes.md) (§6.5, §6.6, §DD-3, §DD-4).
 
 ---
 
@@ -405,7 +405,7 @@ Cache::forget('brand_colors')         // if theme key
 
 ## 7. Design Decisions
 
-### DD-1 — File Cache as Default (Reaffirmed from core-infra DD-4)
+### DD-1 — File Cache as Default (Reaffirmed from base-classes DD-3)
 
 **Decision:** Default cache driver is `file`, not Redis.
 **Rationale:** Shared hosting deployments (Tier 1) cannot install Redis. File cache works with zero
@@ -413,7 +413,7 @@ external services. The `storage/framework/cache/data` directory is automatically
 **Trade-off:** File cache is slower than Redis (~2-5ms vs ~0.5ms per read) and doesn't support
 atomic increment/decrement. Acceptable for single-tenant workloads with <500 concurrent users.
 
-### DD-2 — Database Session as Default (Reaffirmed from core-infra DD-5)
+### DD-2 — Database Session as Default (Reaffirmed from base-classes DD-4)
 
 **Decision:** Default session driver is `database`, not `file`.
 **Rationale:** Database sessions survive process restarts and `optimize:clear` commands. File
@@ -518,4 +518,4 @@ namespace separator in cache systems (Redis, Memcached).
 - `docs/architecture/cache-pattern.md` — cache philosophy, anti-patterns, warming
 - `docs/infrastructure/cache.md` — cache driver strategy, invalidation, Redis config
 - `docs/infrastructure/session.md` — session configuration and security
-- `docs/specs/core-infra.md` — foundation spec (§6.6, §6.7, §DD-3, §DD-4, §DD-5)
+- `docs/specs/base-classes.md` — foundation spec (§6.5, §6.6, §DD-3, §DD-4)

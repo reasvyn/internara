@@ -1,6 +1,6 @@
 ---
 name: roadmap-planning
-description: SDLC Phase: PLANNING. Structured roadmap planning for bug fixes, security/performance improvements, and feature development. Produces actionable implementation phases with clear priorities, dependencies, and testing strategy.
+description: "SDLC Phase: PLANNING. Structured roadmap planning for bug fixes, security/performance improvements, and feature development. Produces actionable implementation phases with clear priorities, dependencies, and testing strategy."
 upstream:
   - audit-protocol
   - security-audit
@@ -130,7 +130,7 @@ references, pattern docs to follow, and acceptance criteria.
 | Topic                  | Doc                                     |
 | ---------------------- | --------------------------------------- |
 | Module dependencies    | `docs/modules/index.md`                 |
-| Feature inventory      | `docs/key-features.md`                  |
+| Feature specs          | `docs/specs/index.md`                   |
 | Product scope          | `docs/foundation/product-definition.md` |
 | Architecture decisions | `docs/adr/index.md`                     |
 | Known issues           | GitHub Issues                           |

@@ -8,9 +8,9 @@ Internara is designed to be installed on the school's own infrastructure. This g
 three supported deployment paths and the operational requirements for each.
 
 For prerequisites and PHP extension requirements, see
-[Installation](../guide/01-installation.md#prerequisites). For application installation steps
+[Installation](../foundation/installation.md#prerequisites). For application installation steps
 (migrations, setup wizard, build), see
-[Installation](../guide/01-installation.md#application-installation-steps).
+[Installation](../foundation/installation.md#application-installation-steps).
 
 ---
 
@@ -123,7 +123,7 @@ If response times degrade, upgrade to [Tier 2 (VPS)](#deployment-path-b-vps--ded
 When the institution outgrows shared hosting:
 
 1. Set up a VPS with PHP 8.4, Redis, Supervisor
-2. Install the same codebase following [Installation](../guide/01-installation.md)
+2. Install the same codebase following [Installation](../foundation/installation.md)
 3. Change `.env`:
 
 ```env
@@ -313,7 +313,7 @@ For multi-server deployments, replace local storage with S3-compatible object st
 ### 6. Complete the Installation
 
 Follow the application installation steps in
-[Installation](../guide/01-installation.md#application-installation-steps) -- build assets, run the
+[Installation](../foundation/installation.md#application-installation-steps) -- build assets, run the
 setup wizard, enable caches, and verify with `php artisan system:health`.
 
 ---
@@ -370,17 +370,17 @@ See `docker-compose.dev.yml` for the Sail configuration.
 - [ ] Frontend assets built: `npm run build`
 - [ ] HTTPS configured at the web server or reverse proxy
 - [ ] `php artisan system:health` passes with no FAIL results
-- [ ] Backup automation configured (see [Backup & Recovery](backup-recovery.md))
-- [ ] Monitoring set up (see [Observability](observability.md))
+- [ ] Backup automation configured (see [Backup & Recovery](../foundation/backup-recovery.md))
+- [ ] Monitoring set up (see [Observability](../foundation/system-observability.md))
 
 ---
 
 ## References
 
-- [Installation](../guide/01-installation.md) -- prerequisites, command reference, troubleshooting
+- [Installation](../foundation/installation.md) -- prerequisites, command reference, troubleshooting
 - [Infrastructure](infrastructure.md) -- tier-based infrastructure design, scaling, sizing
 - [Configuration](configuration.md) -- environment variables and runtime settings
 - [Queue](queue.md) -- worker management, job lifecycle, enterprise scaling
 - [Media Library](media-library.md) -- file uploads, S3 storage, image conversions
-- [Backup & Recovery](backup-recovery.md) -- database dumps, restoration
-- [Observability](observability.md) -- logging, Pulse, health checks
+- [Backup & Recovery](../foundation/backup-recovery.md) -- account recovery, database dumps, restoration
+- [Observability](../foundation/system-observability.md) -- logging, Pulse, health checks

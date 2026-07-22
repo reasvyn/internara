@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-07-21 **Changes:** feat — add login-and-dashboard, user-management, institutional-and-academics specs
+> **Last updated:** 2026-07-22 **Changes:** feat — split enrollment, internships, system-settings specs
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -12,7 +12,6 @@ Complete catalog of all documentation files, organized by topic and audience.
 | -------- | -------- |
 | **[CONTRIBUTING.md](../CONTRIBUTING.md)** | Developers (root-level contribution guide) |
 | **[SECURITY.md](../SECURITY.md)** | Security researchers (vulnerability reporting) |
-| **[CHANGELOG.md](../CHANGELOG.md)** | All (release history) |
 | **[README.md](../README.md)** | All (project overview) |
 
 ---
@@ -22,10 +21,9 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[Foundation Index](foundation/index.md)** — Browse all foundation documents
 - **[Product Definition](foundation/product-definition.md)** — Core product scope, design principles, user personas, system boundary
 - **[Project Requirements](foundation/project-requirements.md)** — Functional, non-functional, and UI/UX requirements
-- **[Key Features](key-features.md)** — Complete 150+ feature inventory across all 22 modules
 - **[Project Philosophy](philosophy.md)** — Guiding principles, values, and vision
 - **[Architecture](architecture.md)** — 4-layer architecture, data flow, Action Triad, dependency rules
-- **[Entity Relationship Diagram](foundation/erd.md)** — Full ERD schema (55 tables)
+- **[Schema Design Philosophy](specs/system-requirements.md#73-schema-design-philosophy)** — 37 domain tables, 9 optimization decisions, package/framework tables
 - **[Coding Conventions](conventions.md)** — PHP rules, naming, security, testing standards (+ ToC)
 
 ---
@@ -37,34 +35,19 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[Deployment](infrastructure/deployment.md)** — Three deployment paths (shared hosting, VPS, Docker), production checklist
 - **[Configuration](infrastructure/configuration.md)** — Three-tier configuration system, environment variables, dev vs production
 - **[CI/CD Pipeline](infrastructure/ci-cd.md)** — GitHub Actions workflow, quality gates, artifact management
-- **[Troubleshooting](infrastructure/troubleshooting.md)** — Common issues, diagnostics, resolutions for all subsystems
+- **[System Health & Troubleshooting](foundation/system-health.md)** — Health checks, common problems, diagnostics
 
 ---
 
-## User Manual
+## Operational Guides
 
-- **[User Manual (22 chapters)](guide/index.md)** — Installation, setup wizard, daily operations, health, upgrades
-- Chapter 1: [Installation](guide/01-installation.md)
-- Chapter 2: [Setup Wizard](guide/02-setup-wizard.md)
-- Chapter 3: [Post-Setup](guide/03-post-setup.md)
-- Chapter 4: [System Health & Troubleshooting](guide/04-system-health-and-troubleshooting.md)
-- Chapter 5: [Upgrading](guide/05-upgrading-from-previous.md)
-- Chapter 6: [Admin Create & Recovery](guide/06-admin-create-and-recovery.md)
-- Chapter 7: [Login & Dashboard](guide/07-login-and-dashboard.md)
-- Chapter 9: [User Profile & Recovery](guide/09-user-profile-and-recovery.md)
-- Chapter 10: [System Settings & Backups](guide/10-system-settings-and-backups.md)
-- Chapter 11: [Institution & Academics](guide/11-institution-and-academics.md)
-- Chapter 12: [User Management](guide/12-user-management.md)
-- Chapter 13: [Supervisor & Partnership](guide/13-supervisor-and-partnership.md)
-- Chapter 14: [Internship & Handbook](guide/14-internship-management-and-handbook.md)
-- Chapter 15: [Registration & Placement](guide/15-internship-registration-and-placement.md)
-- Chapter 16: [Attendance & Logbook](guide/16-attendance-and-logbook.md)
-- Chapter 17: [Monitoring & Supervision](guide/17-monitoring-visit-and-supervision-log.md)
-- Chapter 18: [Assignment & Assessment](guide/18-assignment-and-assessment.md)
-- Chapter 19: [Report & Certification](guide/19-student-report-and-certification.md)
-- Chapter 20: [Evaluation & Incident](guide/20-evaluation-and-incident.md)
-- Chapter 21: [Announcement & Notifications](guide/21-announcement-and-notifications.md)
-- Chapter 22: [System Observability](guide/22-system-observability.md)
+- [Installation](foundation/installation.md) — Server prep, dependencies, first run
+- [Setup Wizard](foundation/setup-wizard.md) — Browser-based initial configuration
+- [Post-Setup](foundation/post-setup.md) — First actions after installation
+- [System Health & Troubleshooting](foundation/system-health.md) — Health checks, common problems, maintenance
+- [Upgrading](foundation/upgrading.md) — Upgrade procedure, rollback, versioning
+- [Backup & Recovery](foundation/backup-recovery.md) — Account recovery, system backup, restoration
+- [System Observability](foundation/system-observability.md) — Pulse, audit logs, cleanup, backups
 
 ---
 
@@ -72,7 +55,8 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 - **[SECURITY.md](../SECURITY.md)** — Vulnerability reporting policy (repo root)
 - **[RBAC](foundation/rbac.md)** — Authentication flow, flat role hierarchy, functional roles, permissions model
-- **[Observability](infrastructure/observability.md)** — Monitoring, Laravel Pulse, SmartLogger, health checks
+- **[System Observability](foundation/system-observability.md)** — SmartLogger, Pulse, audit logs, compliance
+- **[Security](infrastructure/security.md)** — Network hardening, security headers, rate limiting, PII, GDPR, scanning
 - **[Account Recovery](foundation/account-recovery.md)** — Recovery slip flow, recovery codes, CLI super admin recovery
 
 ---
@@ -117,10 +101,8 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[Queue](infrastructure/queue.md)** — Drivers, workers, Supervisor, job lifecycle
 - **[Testing Infrastructure](infrastructure/testing.md)** — Testing philosophy, scope isolation
 - **[Scaling Guide](infrastructure/scaling.md)** — MVP to 2000+ users, tier transitions
-- **[Backup & Recovery](infrastructure/backup-recovery.md)** — Backup strategies, restoration
 - **[Localization](infrastructure/localization.md)** — Translations, locale resolution, contributing
 - **[Developer Tools](infrastructure/tools.md)** — Python scan scripts, CLI flags, output schema
-- **[Troubleshooting](infrastructure/troubleshooting.md)** — Common issues and resolutions
 
 ---
 
@@ -142,17 +124,6 @@ Refer to the [ADR Index](adr/index.md) for all 14 records covering foundation, o
 ## Feature Specifications
 
 - **[Specs Index](specs/index.md)** — All feature specification documents
-- **[Install & Setup](specs/install-and-setup.md)** — Installation & setup wizard specification
-- **[Core Infrastructure](specs/core-infra.md)** — Dependencies, framework config, database, base classes, contracts, cache, session
-- **[Cache & Session](specs/cache-and-session.md)** — Cache driver strategy, key registry, invalidation, session lifecycle & security
-- **[Logging & Error Handling](specs/logging-and-error-handling.md)** — SmartLogger dual-channel, PII masking, exception hierarchy, error handling
-- **[Login & Dashboard](specs/login-and-dashboard.md)** — Login flow, dual throttling, session lifecycle, role-based dashboards
-- **[User Management](specs/user-management.md)** — CRUD, account status lifecycle, profiles, CSV import/export, account slips
-- **[Institutional & Academics](specs/institutional-and-academics.md)** — School profile, departments, academic years, settings integration
-- **[Partners](specs/partnership.md)** — Company & partnership management, MoU lifecycle, CSV import/export
-- **[Internships](specs/internships.md)** — Program lifecycle, groups, registration windows, pre-close readiness
-- **[Enrollment](specs/enrollment.md)** — Registration, placement, account application, placement change requests
-- **[System Settings](specs/system-settings.md)** — Settings store, branding, theme, locale
 
 ---
 
@@ -171,7 +142,7 @@ Refer to the [ADR Index](adr/index.md) for all 14 records covering foundation, o
 ```mermaid
 flowchart LR
     A[CONTRIBUTING.md] --> B[foundation/product-definition.md]
-    B --> C[key-features.md]
+    B --> C[specs/index.md]
     C --> D[philosophy.md]
     D --> E[getting-started.md]
     E --> F[architecture.md]
@@ -186,9 +157,9 @@ flowchart LR
     A[infrastructure/infrastructure.md] --> B[infrastructure/deployment.md]
     B --> C[infrastructure/ci-cd.md]
     C --> D[infrastructure/configuration.md]
-    D --> E[infrastructure/backup-recovery.md]
-    E --> F[infrastructure/observability.md]
-    F --> G[infrastructure/troubleshooting.md]
+    D --> E[foundation/backup-recovery.md]
+    E --> F[foundation/system-observability.md]
+    F --> G[foundation/system-health.md]
 ```
 
 ### For Contributors
