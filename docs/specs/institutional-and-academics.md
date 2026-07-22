@@ -1,16 +1,16 @@
-# Institutional & Academics — School Profile, Departments, Academic Years & Settings
+# Institutional & Academics — School Profile, Departments & Academic Years
 
-> **Last updated:** 2026-07-21 **Changes:** feat — initial spec covering school profile management,
-> department CRUD with guard logic, academic year lifecycle with activation singleton, and
-> system settings integration
+> **Last updated:** 2026-07-22 **Changes:** feat — cut overlap with settings-infrastructure.md
+> and branding-theme-locale.md; focused on school profile, departments, and academic years
 
 ## Description
 
-Complete specification of Internara's institutional and academics subsystem. Defines the school
+Specification of Internara's institutional and academics subsystem. Defines the school
 profile entity (stored as settings, not a standalone model), department management with profile
-dependency guards, academic year lifecycle (create → activate → delete with singleton activation),
-and the system settings infrastructure that underpins both. This subsystem establishes the
-institutional foundation that all other modules reference.
+dependency guards, and academic year lifecycle (create → activate → delete with singleton
+activation). Settings infrastructure, branding, theme, and locale are separate initiatives —
+see [settings-infrastructure.md](settings-infrastructure.md) and
+[branding-theme-locale.md](branding-theme-locale.md).
 
 ---
 
@@ -43,13 +43,6 @@ Academic years are referenced by internships, assessments, and registrations. De
 with active internships or completed assessments would break historical data integrity. The system
 must detect related records and block deletion.
 
-### PS-5 — Settings-Driven Configuration
-
-System settings (general, mail, branding, features, localization, notifications) flow through a
-resolution chain: in-memory overrides → AppInfo → database cache → config file → hardcoded
-defaults. This chain must be transparent and debuggable — administrators need to know which
-source provided a particular setting value.
-
 ---
 
 ## 2. Goals & Non-Goals
@@ -62,9 +55,8 @@ source provided a particular setting value.
 | G2  | Enforce department deletion guards (profiles must be reassigned first) |
 | G3  | Enforce academic year activation singleton (only one active at a time) |
 | G4  | Block academic year deletion when related records exist (internships, assessments) |
-| G5  | Provide settings resolution chain with clear precedence |
-| G6  | Support department CSV import/export with template download |
-| G7  | Cache school entity and invalidate on update |
+| G5  | Support department CSV import/export with template download |
+| G6  | Cache school entity and invalidate on update |
 
 ### Non-Goals
 
@@ -74,7 +66,8 @@ source provided a particular setting value.
 | NG2  | School logo auto-generation or cropping |
 | NG3  | Academic year archiving or soft-delete |
 | NG4  | Department merge or transfer operations |
-| NG5  | Settings versioning or rollback |
+| NG5  | Settings infrastructure or resolution chain (see [settings-infrastructure.md](settings-infrastructure.md)) |
+| NG6  | Branding, theme, or locale management (see [branding-theme-locale.md](branding-theme-locale.md)) |
 
 ---
 
@@ -204,60 +197,20 @@ source provided a particular setting value.
 | FR-AY13 | AcademicYear CRUD events must dispatch `AcademicYearCreated`/`Updated`/`Deleted`/`Activated` |
 | FR-AY14 | AcademicYear events must trigger dashboard cache invalidation |
 
-### Settings Integration
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-SI1 | `Settings::get()` must follow resolution chain: overrides → AppInfo → DB cache → config → default |
-| FR-SI2 | `Settings::all()` must return all settings as key-value Collection |
-| FR-SI3 | `Settings::group()` must return settings filtered by group name |
-| FR-SI4 | `Settings::forget()` must invalidate individual key, group, all, and theme cache keys |
-| FR-SI5 | `Settings::override()` must allow in-memory overrides that bypass cache |
-| FR-SI6 | `SettingObserver` must auto-invalidate cache on Setting model events |
-| FR-SI7 | `Setting` model must support 7 types: string, integer, float, boolean, json, encrypted, null |
-| FR-SI8 | `SettingValueCast` must handle encrypted decryption and JSON decoding |
-| FR-SI9 | `SystemSettings` must support 18 properties across general, mail, branding, features, localization |
-| FR-SI10 | `SaveSystemSettingsAction` must handle encrypted mail_password and logo/favicon uploads |
-| FR-SI11 | `TestMailSettingsAction` must test SMTP configuration with a temporary config swap |
-
-### Branding & Theme
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-BT1 | `Brand` class must resolve dynamic values from DB → config → AppInfo → hardcoded |
-| FR-BT2 | `Theme` class must provide CSS variables for light/dark mode via Color utility |
-| FR-BT3 | `BrandingForm` must support color presets, logo/favicon preview, hex validation |
-| FR-BT4 | `UploadBrandAssetAction` must use Spatie MediaLibrary with type custom property |
-| FR-BT5 | `RemoveBrandAssetAction` must delete media and clear setting URL |
-| FR-BT6 | Theme CSS variables must be cached via `theme.css_variables` cache key |
-
-### Locale
-
-| ID   | Requirement |
-| ---- | ----------- |
-| FR-LO1 | `SetLocaleMiddleware` must read locale from cookie, set App locale |
-| FR-LO2 | `LangSwitcher` must switch locale via cookie (EN/ID support) |
-| FR-LO3 | `ThemeSwitcher` must switch dark/light/system mode via cookie |
-
 ---
 
 ## 5. Non-Functional Requirements
 
 | ID    | Requirement |
 | ----- | ----------- |
-| NFR-P1 | Settings cache hit must return in < 1ms |
-| NFR-P2 | School entity resolution must complete in < 50ms (cache hit) |
-| NFR-P3 | Academic year activation must complete in < 1s (two model updates + events) |
-| NFR-S1 | Encrypted settings must use Laravel's `encrypted` cast |
-| NFR-S2 | Mail password must never be stored in plain text |
-| NFR-S3 | Setting key validation must enforce `^[a-z][a-z0-9_.]*$` pattern |
-| NFR-R1 | Settings must degrade gracefully on QueryException (return defaults) |
-| NFR-R2 | Department deletion must be atomic with profile dependency check |
-| NFR-R3 | Academic year activation must be atomic (deactivate old + activate new) |
+| NFR-P1 | School entity resolution must complete in < 50ms (cache hit) |
+| NFR-P2 | Academic year activation must complete in < 1s (two model updates + events) |
+| NFR-S1 | Setting key validation must enforce `^[a-z][a-z0-9_.]*$` pattern |
+| NFR-R1 | Department deletion must be atomic with profile dependency check |
+| NFR-R2 | Academic year activation must be atomic (deactivate old + activate new) |
 | NFR-U1 | Active academic year must be visually indicated in the manager |
 | NFR-U2 | Department deletion blocked message must explain why and how to resolve |
 | NFR-M1 | School profile must be accessed via Settings service, not a dedicated model |
-| NFR-M2 | All settings keys must follow `{module}.{key}` naming convention |
 | NFR-A1 | All institutional and academic management UI must meet WCAG 2.1 Level AA |
 | NFR-A2 | Academic year status indicators must include text labels alongside color |
 | NFR-A3 | Department deletion blocked messages must be accessible to screen readers |
@@ -355,46 +308,7 @@ final readonly class AcademicYearData extends BaseData
 }
 ```
 
-### 6.6 Settings Resolution Chain
-
-```
-Settings::get('key')
-  → 1. In-memory overrides (Settings::override())
-  → 2. AppInfo values (name, version, support, license)
-  → 3. Database cache (Cache::rememberForever with settings.{key})
-  → 4. Config file (config('key'))
-  → 5. Default value (caller-provided)
-```
-
-### 6.7 Settings Enums
-
-```php
-// app/Settings/Enums/SettingGroup.php
-enum SettingGroup: string
-{
-    case GENERAL = 'general';
-    case MAIL = 'mail';
-    case SYSTEM = 'system';
-    case BRANDING = 'branding';
-    case FEATURES = 'features';
-    case LOCALIZATION = 'localization';
-    case NOTIFICATIONS = 'notifications';
-}
-
-// app/Settings/Enums/SettingType.php
-enum SettingType: string
-{
-    case STRING = 'string';
-    case INTEGER = 'integer';
-    case FLOAT = 'float';
-    case BOOLEAN = 'boolean';
-    case JSON = 'json';
-    case ENCRYPTED = 'encrypted';
-    case NULL = 'null';
-}
-```
-
-### 6.8 Routes
+### 6.6 Routes
 
 ```php
 // routes/web/academics.php
@@ -403,11 +317,6 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin|admin'])->group(fu
     Route::get('/departments', DepartmentManager::class)->name('academics.departments');
     Route::get('/academic-years', AcademicYearManager::class)->name('academics.academic-years');
 });
-
-// routes/web/settings.php
-Route::get('/admin/settings', SystemSetting::class)
-    ->middleware(['auth', 'role:super_admin|admin'])
-    ->name('settings.index');
 ```
 
 ---
@@ -445,17 +354,7 @@ authorization makes both independently testable and follow their respective patt
 **Trade-off:** Extra class (DepartmentState) for a simple boolean check. Mitigated by the entity
 being reusable for other business rule queries.
 
-### DD-4 — Settings Resolution Chain with Clear Precedence
-
-**Decision:** Settings resolve through a 5-step chain: overrides → AppInfo → DB cache → config → default.
-**Rationale:** Each layer serves a purpose: overrides for testing, AppInfo for system metadata, DB
-for admin-configurable values, config for developer defaults, and caller defaults for fallback.
-The chain is documented and debuggable — `Settings::get()` with `skipCache=true` bypasses the
-DB cache layer for debugging.
-**Trade-off:** Complex resolution may confuse developers who expect a single source. Mitigated
-by clear documentation and the `skipCache` parameter.
-
-### DD-5 — CSV Import for Departments
+### DD-4 — CSV Import for Departments
 
 **Decision:** Department management includes CSV import/export via `CsvHandler`.
 **Rationale:** Schools may have 20-50 departments. Manual entry is tedious. CSV import allows
@@ -492,14 +391,6 @@ by reusing the shared `CsvHandler` service.
 | Deletion guard | Blocked when related records exist | `AcademicYearState::canBeDeleted()` unit tests |
 | First year auto-activate | `is_active = true` on first creation | `CreateAcademicYearAction` logic |
 
-### 8.4 Settings
-
-| Metric | Target | Measurement |
-| ------ | ------ | ----------- |
-| Resolution chain | 5-step chain documented and testable | `Settings::get()` unit tests |
-| Cache hit rate | > 95% for settings reads | Cache stats over 24h period |
-| Encrypted settings | Mail password encrypted at rest | `SettingValueCast` encrypted handling |
-
 ---
 
 ## Quick References
@@ -528,24 +419,8 @@ by reusing the shared `CsvHandler` service.
 - `app/Academics/AcademicYear/Livewire/Forms/AcademicYearForm.php` — year form validation
 - `app/Academics/AcademicYear/Policies/AcademicYearPolicy.php` — authorization
 - `app/Academics/AcademicYear/Events/` — AcademicYearActivated, Created, Deleted, Updated
-- `app/Settings/Services/Settings.php` — settings resolution chain
-- `app/Settings/Models/Setting.php` — setting model with media, observer, casts
-- `app/Settings/Observers/SettingObserver.php` — cache invalidation on model events
-- `app/Settings/Entities/SettingEntity.php` — typed value accessors
-- `app/Settings/Actions/SetSettingAction.php` — upsert with type detection
-- `app/Settings/Actions/BatchSetSettingAction.php` — batch upsert in transaction
-- `app/Settings/Actions/SaveSystemSettingsAction.php` — system settings save
-- `app/Settings/Actions/TestMailSettingsAction.php` — SMTP test
-- `app/Settings/Data/SystemSettingsData.php` — 18-property DTO for system settings
-- `app/Settings/Enums/SettingGroup.php` — 7 setting groups
-- `app/Settings/Enums/SettingType.php` — 7 value types
-- `app/Settings/Branding/` — Brand, BrandingForm, UploadBrandAssetAction, RemoveBrandAssetAction
-- `app/Settings/Theme/Support/Theme.php` — CSS variable generation and caching
-- `app/Settings/Locale/` — SetLocaleMiddleware, Locale class, LangSwitcher
-- `app/Settings/Livewire/SystemSetting.php` — main settings page
 - `routes/web/academics.php` — school, departments, academic years routes
-- `routes/web/settings.php` — system settings route
 - `docs/modules/academics.md` — Academics module overview
 - `docs/modules/academics-reference.md` — Academics module technical reference
-- `docs/modules/settings.md` — Settings module overview
-- `docs/modules/settings-reference.md` — Settings module technical reference
+- **Related specs:** [settings-infrastructure.md](settings-infrastructure.md) — Settings infrastructure & resolution chain
+- **Related specs:** [branding-theme-locale.md](branding-theme-locale.md) — Branding, theme & locale management

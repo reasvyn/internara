@@ -1,6 +1,6 @@
 ---
 name: code-writing
-description: SDLC Phase: IMPLEMENTATION. PHP and Laravel code writing — strict types, Action Triad, Entity/DTO/Model contracts, naming conventions, security patterns, performance rules, and non-negotiable invariants.
+description: "SDLC Phase: IMPLEMENTATION. PHP and Laravel code writing — strict types, Action Triad, Entity/DTO/Model contracts, naming conventions, security patterns, performance rules, and non-negotiable invariants."
 upstream:
   - context-awareness
   - laravel-best-practices

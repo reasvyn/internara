@@ -1,6 +1,6 @@
 ---
 name: laravel-best-practices
-description: SDLC Phase: IMPLEMENTATION (Cross-cutting). Context-aware Laravel guidance that overrides default conventions where they conflict with the Module-first Action-based MVC architecture. Referenced by all implementation sub-skills.
+description: "SDLC Phase: IMPLEMENTATION (Cross-cutting). Context-aware Laravel guidance that overrides default conventions where they conflict with the Module-first Action-based MVC architecture. Referenced by all implementation sub-skills."
 upstream:
   - feature-building
   - code-refactoring

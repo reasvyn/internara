@@ -1,6 +1,6 @@
 ---
 name: security-audit
-description: SDLC Phase: ANALYSIS. Dedicated security and privacy audit — OWASP Top 10, PII handling, authentication, authorization, session security, rate limiting, secrets management, and dependency vulnerabilities.
+description: "SDLC Phase: ANALYSIS. Dedicated security and privacy audit — OWASP Top 10, PII handling, authentication, authorization, session security, rate limiting, secrets management, and dependency vulnerabilities."
 upstream:
   - audit-protocol
 downstream:

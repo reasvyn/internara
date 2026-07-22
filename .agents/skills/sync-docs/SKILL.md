@@ -1,6 +1,6 @@
 ---
 name: sync-docs
-description: SDLC Phase: MAINTENANCE. Comprehensive markdown documentation sync against actual code implementation. Discovers patterns and rules from authoritative docs, then verifies them against code.
+description: "SDLC Phase: MAINTENANCE. Comprehensive markdown documentation sync against actual code implementation. Discovers patterns and rules from authoritative docs, then verifies them against code."
 upstream:
   - feature-building
   - code-refactoring
@@ -108,9 +108,9 @@ git log -10 --format="%h %s"               # commit messages for context
 | Architecture pattern | `docs/architecture.md` or `docs/architecture/{pattern}-pattern.md`   |
 | Conventions          | `docs/conventions.md`                                                |
 | Module dependencies  | `docs/modules/index.md`                                              |
-| Database schema      | `docs/infrastructure/database.md`, `docs/foundation/erd.md`          |
+| Database schema      | `docs/infrastructure/database.md`, `docs/specs/system-requirements.md` (§4.4, §7.3) |
 | ADR                  | `docs/adr/` (if decision is notable)                                 |
-| Features             | `docs/key-features.md`                                               |
+| Feature specs        | `docs/specs/index.md`                                                |
 | Config               | `docs/infrastructure/configuration.md`                               |
 
 ### 3. Verify Documentation Accuracy

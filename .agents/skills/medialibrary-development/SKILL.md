@@ -1,6 +1,6 @@
 ---
 name: medialibrary-development
-description: SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized file upload and media management — Spatie MediaLibrary collections, conversions, responsive images, and retrieval.
+description: "SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized file upload and media management — Spatie MediaLibrary collections, conversions, responsive images, and retrieval."
 upstream:
   - feature-building
 downstream:

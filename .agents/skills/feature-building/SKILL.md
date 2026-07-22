@@ -1,6 +1,6 @@
 ---
 name: feature-building
-description: SDLC Phase: IMPLEMENTATION (Orchestrator). Execution phase that takes task specifications from docs/roadmap.md or docs/specs/ and implements them — coordinating specialized sub-skills for each concern.
+description: "SDLC Phase: IMPLEMENTATION (Orchestrator). Execution phase that takes task specifications from docs/roadmap.md or docs/specs/ and implements them — coordinating specialized sub-skills for each concern."
 upstream:
   - roadmap-planning
   - spec-writing

@@ -1,6 +1,6 @@
 ---
 name: audit-protocol
-description: SDLC Phase: ANALYSIS. Systematic multi-layer codebase audit enforcing conventions, architecture patterns, security, and industry best practices. Produces structured findings in GitHub Issues with actionable fix recommendations.
+description: "SDLC Phase: ANALYSIS. Systematic multi-layer codebase audit enforcing conventions, architecture patterns, security, and industry best practices. Produces structured findings in GitHub Issues with actionable fix recommendations."
 downstream:
   - roadmap-planning
   - code-refactoring

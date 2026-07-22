@@ -1,6 +1,6 @@
 ---
 name: livewire-development
-description: SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized Livewire component development — building new components, debugging reactivity, file uploads, real-time validation, CRUD tables.
+description: "SDLC Phase: IMPLEMENTATION (Sub-skill). Specialized Livewire component development — building new components, debugging reactivity, file uploads, real-time validation, CRUD tables."
 upstream:
   - feature-building
 downstream:

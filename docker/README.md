@@ -36,7 +36,7 @@ Multi-service production environment with MySQL, Redis, Nginx, and Supervisor.
 docker compose up -d
 ```
 
-See `docker-compose.yml` for service definitions. See `docs/guide/01-installation.md` for production setup
+See `docker-compose.yml` for service definitions. See `docs/foundation/installation.md` for production setup
 guide.
 
 ## 3. Shared Hosting Simulation

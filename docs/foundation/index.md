@@ -12,6 +12,16 @@ Product scope, security model, and design foundations.
   mode, responsive
 - **[Branding](branding.md)** — Dynamic theming, color system, presets, logo management, font
   strategy
-- **[Entity Relationship Diagram](erd.md)** — Full ERD schema: domain tables + system/package tables
+- **[Schema Design Philosophy](../specs/system-requirements.md#73-schema-design-philosophy)** — Domain table design decisions and package/framework tables
 - **[Account Recovery](account-recovery.md)** — Recovery slip flow, recovery codes,
   administrative-mediated recovery, CLI super admin recovery
+
+### Operational Guides
+
+- **[Installation](installation.md)** — Server prep, dependencies, environment config, first run
+- **[Setup Wizard](setup-wizard.md)** — Browser-based 6-step initial configuration
+- **[Post-Setup](post-setup.md)** — First actions after installation: settings, users, programs
+- **[System Health & Troubleshooting](system-health.md)** — Health checks, common problems, maintenance commands
+- **[Upgrading](upgrading.md)** — Upgrade procedure, rollback, version numbering
+- **[Backup & Recovery](backup-recovery.md)** — Account recovery, system backup, restoration procedures
+- **[System Observability](system-observability.md)** — Pulse dashboard, audit logs, cleanup, backups

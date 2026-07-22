@@ -371,6 +371,6 @@ Mentor Fallback" is updated to "Cross-Role Proxy" — see docs sync.
 - `docs/adr/adr-cross-role-proxy.md` — This document
 - `docs/modules/assessment.md` — Assessment module (first proxy adopter)
 - `docs/modules/journals.md` — Logbook verification (proxy use case)
-- `docs/guide/18-assignment-and-assessment.md` — User guide
+- `docs/specs/assessment.md` — Assessment spec (proxy use case)
 - `app/Program/Internship/Listeners/NotifyAdminsInternshipCreated.php` — Existing notification
   pattern
