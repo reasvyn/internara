@@ -2,38 +2,117 @@
 
 declare(strict_types=1);
 
+/*
+|--------------------------------------------------------------------------
+| Module Registry
+|--------------------------------------------------------------------------
+|
+| Single source of truth for all modules and their submodules. Keys are
+| module names in dependency order (foundation → identity → institution
+| → business lifecycle → administration). Each value lists the module's
+| submodules — directories that contain domain-specific code beyond the
+| standard Action/Model/Entity/Enum/Livewire/Policy layers.
+|
+| Used by:
+|   - ModuleDiscoverService (Livewire, Policy, View auto-discovery)
+|   - routes/web.php (auto-include route files)
+|   - tests/Pest.php (test directory registration)
+|
+*/
+
+$modules = [
+    'Core' => [
+        'Channels', 'Console', 'Contracts', 'Exceptions',
+    ],
+    'Setup' => [
+        'Installation', 'SetupWizard',
+    ],
+    'Settings' => [
+        'Branding', 'Casts', 'Locale', 'Rules', 'Theme',
+    ],
+    'Auth' => [
+        'AccessTokens', 'Account', 'AccountRecovery', 'Login',
+        'Notifications', 'Password', 'Permissions', 'SuperAdmin',
+    ],
+    'User' => [
+        'AccountStatus', 'Dashboard', 'Mentor', 'Notifications',
+        'Profile', 'Rules', 'UserManagement',
+    ],
+    'SysAdmin' => [
+        'Announcement', 'Backups', 'Console', 'Observability',
+    ],
+    'Academics' => [
+        'AcademicYear', 'Department', 'School',
+    ],
+    'Partners' => [
+        'Company', 'Partnership',
+    ],
+    'Program' => [
+        'Internship', 'InternshipGroup', 'Notifications',
+    ],
+    'Enrollment' => [
+        'AccountApplication', 'Placement', 'Registration',
+    ],
+    'Journals' => [
+        'AbsenceRequest', 'Attendance', 'Logbook', 'MonitoringVisit', 'SupervisionLog',
+    ],
+    'Assignment' => [
+        'Notifications', 'Submission',
+    ],
+    'Reports' => [
+        'Report',
+    ],
+    'Assessment' => [
+        'Rubric',
+    ],
+    'Evaluation' => [],
+    'Certification' => [
+        'Certificate',
+    ],
+    'Incident' => [
+        'IncidentReport',
+    ],
+    'Document' => [
+        'Handbook', 'OfficialDocument',
+    ],
+];
+
 return [
+
     /*
     |--------------------------------------------------------------------------
     | Module List
     |--------------------------------------------------------------------------
     |
-    | All registered modules in dependency order. Foundation modules first,
-    | then identity, institution, business lifecycle, and administration.
-    | Used by AppServiceProvider for auto-discovery and registration.
+    | Module names in dependency order. Derived from $modules array keys.
     |
     */
 
-    'list' => [
-        'Core',
-        'Setup',
-        'Settings',
-        'Auth',
-        'User',
-        'SysAdmin',
-        'Academics',
-        'Partners',
-        'Program',
-        'Enrollment',
-        'Journals',
-        'Assignment',
-        'Reports',
-        'Assessment',
-        'Evaluation',
-        'Certification',
-        'Incident',
-        'Document',
-    ],
+    'list' => array_keys($modules),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Module Registry
+    |--------------------------------------------------------------------------
+    |
+    | Full module → submodule mapping. Used by ModuleDiscoverService to scope
+    | filesystem scanning to registered modules only.
+    |
+    */
+
+    'registry' => $modules,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Extra Test Directories
+    |--------------------------------------------------------------------------
+    |
+    | Additional directories under tests/ that are not domain modules but
+    | contain test code (e.g. Providers, Stubs, Support).
+    |
+    */
+
+    'test_dirs' => ['Providers', 'Stubs', 'Support'],
 
     /*
     |--------------------------------------------------------------------------

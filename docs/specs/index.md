@@ -21,8 +21,7 @@ update the spec first, then implement.
 | [Setup Wizard](setup-wizard.md) | Setup | ✅ Complete |
 | [Module Discovery](module-discovery.md) | Core | ✅ Complete |
 | [System Requirements](system-requirements.md) | Core | ✅ Complete |
-| [Base Classes](base-classes.md) | Core | ✅ Complete |
-| [Cache & Session](cache-and-session.md) | Core | ✅ Complete |
+| [Core Foundation](core-foundation.md) | Core | ✅ Complete |
 | [Logging & Error Handling](logging-and-error-handling.md) | Core | ✅ Complete |
 | [Login & Dashboard](login-and-dashboard.md) | Auth / User | ✅ Complete |
 | [User Management](user-management.md) | User / SysAdmin | ✅ Complete |

@@ -566,4 +566,4 @@ correlation of timestamps, user IDs, and IP addresses.
 - `bootstrap/app.php` — exception rendering configuration
 - `docs/architecture/exception-pattern.md` — dual hierarchy rationale and patterns
 - `docs/architecture/logging-pattern.md` — SmartLogger architecture, PII masking, translation
-- `docs/specs/base-classes.md` — foundation spec (§6.3, §DD-1)
+- `docs/specs/core-foundation.md` — foundation spec (§6.3, §DD-1)
