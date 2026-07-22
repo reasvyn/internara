@@ -1,6 +1,6 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-07-22 **Changes:** feat — added assessment, evaluation, assignment, journals, incident, certification, reports, document specs (26 total)
+> **Last updated:** 2026-07-23 **Changes:** refactor — grouped by lifecycle phase, ordered by build dependency (34 specs)
 
 ## Description
 
@@ -13,35 +13,109 @@ update the spec first, then implement.
 
 ---
 
-## Directory
+## Build Order
 
-| Spec | Module | Status |
-| ---- | ------ | ------ |
-| [Installation](installation.md) | Setup | ✅ Complete |
-| [Setup Wizard](setup-wizard.md) | Setup | ✅ Complete |
-| [Module Discovery](module-discovery.md) | Core | ✅ Complete |
-| [System Requirements](system-requirements.md) | Core | ✅ Complete |
-| [Core Foundation](core-foundation.md) | Core | ✅ Complete |
-| [Logging & Error Handling](logging-and-error-handling.md) | Core | ✅ Complete |
-| [Login & Dashboard](login-and-dashboard.md) | Auth / User | ✅ Complete |
-| [User Management](user-management.md) | User / SysAdmin | ✅ Complete |
-| [Institutional & Academics](institutional-and-academics.md) | Academics / Settings | ✅ Complete |
-| [Partners — Company & Partnership](partnership.md) | Partners | ✅ Complete |
-| [Internship Lifecycle](internship-lifecycle.md) | Program | ✅ Complete |
-| [Internship Groups](internship-groups.md) | Program | ✅ Complete |
-| [Registration](registration.md) | Enrollment | ✅ Complete |
-| [Placement](placement.md) | Enrollment | ✅ Complete |
-| [Account Application](account-application.md) | Enrollment | ✅ Complete |
-| [Settings Infrastructure](settings-infrastructure.md) | Settings | ✅ Complete |
-| [Branding, Theme & Locale](branding-theme-locale.md) | Settings | ✅ Complete |
-| [Assessment](assessment.md) | Assessment | ✅ Complete |
-| [Evaluation](evaluation.md) | Evaluation | ✅ Complete |
-| [Assignment](assignment.md) | Assignment | ✅ Complete |
-| [Journals](journals.md) | Journals | ✅ Complete |
-| [Incident](incident.md) | Incident | ✅ Complete |
-| [Certification](certification.md) | Certification | ✅ Complete |
-| [Reports](reports.md) | Reports | ✅ Complete |
-| [Document](document.md) | Document | ✅ Complete |
+Specs are grouped by **lifecycle phase** (mirrors `docs/foundation/product-definition.md`)
+and ordered by **dependency depth** within each phase. Build phases sequentially; specs within
+a phase may be built in listed order.
+
+```
+Phase 1        Phase 2         Phase 3      Phase 4        Phase 5           Phase 6              Phase 7          Phase 8
+Foundation  →  Partnerships →  Programs  →  Enrollment →  Daily Ops      →  Assessment & Eval  →  Certification  →  Reporting
+(install,     (companies,     (internship   (registration, (logbook,         (rubrics,            (templates,       (grade cards,
+ settings,      academics,      structure)    placement,     attendance,       scoring,             handbooks,        snapshots)
+ auth,          partnerships)                 user admin)    supervision)      feedback)            credentials)
+ dashboard)
+```
+
+### Phase 1 — Foundation
+
+Infrastructure, settings, auth, dashboard shell. No business-logic dependencies.
+
+| # | Spec | Module | Depends On |
+| - | ---- | ------ | ---------- |
+| 1 | [Core Foundation](core-foundation.md) | Core | — |
+| 2 | [System Requirements](system-requirements.md) | Core | — |
+| 3 | [Module Discovery](module-discovery.md) | Core | — |
+| 4 | [Logging & Error Handling](logging-and-error-handling.md) | Core | — |
+| 5 | [Installation](installation.md) | Setup | #1 |
+| 6 | [Setup Wizard](setup-wizard.md) | Setup | #5 |
+| 7 | [Settings Infrastructure](settings-infrastructure.md) | Settings | #1 |
+| 8 | [Branding, Theme & Locale](branding-theme-locale.md) | Settings | #7 |
+| 9 | [Authentication](authentication.md) | Auth | #1 |
+| 10 | [School Profile](school-profile.md) | Academics | #7 |
+| 11 | [Dashboard](dashboard.md) | User | #9 |
+
+### Phase 2 — Partnerships
+
+External partners and academic structure. Depends on Phase 1 (settings, auth, school profile).
+
+| # | Spec | Module | Depends On |
+| - | ---- | ------ | ---------- |
+| 12 | [Department Management](department-management.md) | Academics | #10 |
+| 13 | [Academic Year Management](academic-year-management.md) | Academics | #10 |
+| 14 | [Company Management](company-management.md) | Partners | #11, #12 |
+| 15 | [Partnership Management](partnership-management.md) | Partners | #14 |
+
+### Phase 3 — Programs
+
+Internship structure and grouping. Depends on Phase 2 (departments, academic years, companies).
+
+| # | Spec | Module | Depends On |
+| - | ---- | ------ | ---------- |
+| 16 | [Internship Lifecycle](internship-lifecycle.md) | Program | #13, #14 |
+| 17 | [Internship Groups](internship-groups.md) | Program | #16 |
+
+### Phase 4 — Enrollment
+
+Student intake, placement, user administration. Depends on Phase 3 (program, groups).
+
+| # | Spec | Module | Depends On |
+| - | ---- | ------ | ---------- |
+| 18 | [Registration](registration.md) | Enrollment | #16, #17 |
+| 19 | [Placement](placement.md) | Enrollment | #18, #14 |
+| 20 | [Account Application](account-application.md) | Enrollment | #18 |
+| 21 | [User CRUD & Status](user-crud-and-status.md) | User / SysAdmin | #9 |
+| 22 | [CSV Import & Export](csv-import-export.md) | Cross-Module | #21, #14, #12 |
+| 23 | [Account Slips](account-slips.md) | User / SysAdmin | #21 |
+
+### Phase 5 — Daily Operations
+
+Active internship period. Depends on Phase 4 (placement active).
+
+| # | Spec | Module | Depends On |
+| - | ---- | ------ | ---------- |
+| 24 | [Daily Activity](daily-activity.md) | Journals | #19 |
+| 25 | [Supervision](supervision.md) | Journals | #19, #24 |
+| 26 | [Incident](incident.md) | Incident | #19 |
+
+### Phase 6 — Assessment & Evaluation
+
+Scoring, feedback, coursework. Depends on Phase 4 (placement active).
+
+| # | Spec | Module | Depends On |
+| - | ---- | ------ | ---------- |
+| 27 | [Assessment](assessment.md) | Assessment | #19 |
+| 28 | [Evaluation](evaluation.md) | Evaluation | #19 |
+| 29 | [Assignment](assignment.md) | Assignment | #19 |
+
+### Phase 7 — Certification
+
+Credentials, documents, handbooks. Depends on Phases 5–6 (assessments, evaluations complete).
+
+| # | Spec | Module | Depends On |
+| - | ---- | ------ | ---------- |
+| 30 | [Document Templates](document-templates.md) | Document | #5 |
+| 31 | [Handbooks](handbooks.md) | Document | #30 |
+| 32 | [Certification](certification.md) | Certification | #27, #28 |
+
+### Phase 8 — Reporting
+
+Grade cards, archived snapshots. Depends on Phase 7 (certification complete).
+
+| # | Spec | Module | Depends On |
+| - | ---- | ------ | ---------- |
+| 33 | [Reports](reports.md) | Reports | #32 |
 
 ---
 

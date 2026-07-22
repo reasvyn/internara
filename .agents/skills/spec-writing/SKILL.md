@@ -291,6 +291,69 @@ capability, split it.
 
 ---
 
+## Indexing Rules
+
+Every spec must be registered in `docs/specs/index.md`. The index is ordered by **lifecycle
+phase** (mirrors `docs/foundation/product-definition.md`) and **dependency depth** within
+each phase — not alphabetically, not by module.
+
+### Lifecycle Phases
+
+```
+Foundation → Partnerships → Programs → Enrollment → Daily Operations → Assessment → Evaluation → Certification → Reporting
+```
+
+Each spec belongs to exactly one phase. Assign phase by asking: **"At what point in the PKL
+lifecycle does this feature first become usable?"**
+
+| Phase | What goes here |
+|-------|---------------|
+| Foundation | Infrastructure, settings, auth, base classes, dashboard shell |
+| Partnerships | Company/partner management, academic structure (departments, years) |
+| Programs | Internship program definition, grouping |
+| Enrollment | Student registration, placement, user CRUD, CSV utilities |
+| Daily Operations | Logbook, attendance, supervision, incidents |
+| Assessment | Rubrics, scoring frameworks |
+| Evaluation | Feedback forms, weighted questions, coursework |
+| Certification | Templates, credentials, handbooks |
+| Reports | Grade cards, archived snapshots |
+
+### Dependency Tracking
+
+The index table has a `Depends On` column with `#N` references to earlier specs. Rules:
+
+- Every spec must declare its dependencies — even if it's "none"
+- Dependencies are **spec numbers**, not module names
+- A spec may only depend on specs with a **lower `#` number** (acyclic)
+- If spec A is split from spec B, the new spec inherits B's dependencies
+- Cross-module dependencies are explicit (e.g., `#11, #12`)
+
+### When Adding a New Spec
+
+1. Determine lifecycle phase (see table above)
+2. Determine dependencies — which earlier specs must be built first?
+3. Assign the next available `#` number within the phase
+4. Add row to the correct phase table in `docs/specs/index.md`
+5. Update the ASCII flow diagram if adding a new phase
+6. Update the total count in the metadata line
+
+### When Splitting a Spec
+
+1. The new spec gets its own `#` number and table row
+2. The old spec's entry is **removed** from the index
+3. Each new spec declares which original dependencies it inherits
+4. Cross-reference related split specs in both files' Quick References
+5. Non-Goals in each new spec explicitly list capabilities that moved to siblings
+
+### Cross-Reference Conventions
+
+- Split specs must cross-reference siblings in their Quick References section
+- Use relative links: `[other-spec.md](other-spec.md)` (same directory)
+- Non-Goals should cite the sibling spec that covers the excluded capability
+- The Description block must state the split provenance: `"split from {original}.md"`
+
+---
+
 ## Spec Lifecycle
 
 | Phase    | Action                                              |
