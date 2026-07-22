@@ -105,6 +105,7 @@ git log -10 --format="%h %s"               # commit messages for context
 | -------------------- | -------------------------------------------------------------------- |
 | Module structure     | `docs/modules/{module}-reference.md` (file listing, actions, models) |
 | Business rules       | `docs/modules/{module}.md` (business context)                        |
+| Feature requirements | `docs/specs/{spec}.md` (FR, NFR, user stories, data contracts)       |
 | Architecture pattern | `docs/architecture.md` or `docs/architecture/{pattern}-pattern.md`   |
 | Conventions          | `docs/conventions.md`                                                |
 | Module dependencies  | `docs/modules/index.md`                                              |
@@ -165,6 +166,8 @@ Output: `scripts/outputs/{timestamp}-doc-links.json` with broken link details (f
 
 - [ ] New modules/submodules have `.md` + `-reference.md` files
 - [ ] Module index (`index.md`) updated with new dependencies
+- [ ] Feature specs in `docs/specs/` match implementation (FR, NFR, data contracts)
+- [ ] Spec index (`docs/specs/index.md`) lists all specs
 - [ ] File paths in docs verified against actual codebase
 - [ ] Class names and method signatures verified
 - [ ] Migration schemas match actual database
@@ -180,3 +183,4 @@ Output: `scripts/outputs/{timestamp}-doc-links.json` with broken link details (f
 | Documentation structure      | `docs/conventions.md` (§Documentation Rules) |
 | Full doc catalog             | `docs/index.md`                              |
 | Module index                 | `docs/modules/index.md`                      |
+| Feature specs                | `docs/specs/index.md`                        |
