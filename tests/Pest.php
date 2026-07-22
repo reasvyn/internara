@@ -1,32 +1,38 @@
 <?php
 
 declare(strict_types=1);
+
 use App\User\Models\User;
 use Tests\TestCase;
 
+/*
+|--------------------------------------------------------------------------
+| Test Directory Registration
+|--------------------------------------------------------------------------
+|
+| Module test directories. Must be kept in sync with config/module.php.
+| config() is not available at Pest discovery time, so this list is
+| maintained manually. When adding a new module, update BOTH files.
+|
+*/
+
+$modules = [
+    'Academics', 'Assessment', 'Assignment', 'Auth', 'Certification',
+    'Core', 'Document', 'Enrollment', 'Evaluation', 'Incident',
+    'Journals', 'Partners', 'Program', 'Reports', 'Settings',
+    'Setup', 'SysAdmin', 'User',
+];
+
+$extraDirs = ['Providers', 'Stubs', 'Support'];
+
+$dirs = array_merge(
+    array_map(fn (string $m) => __DIR__.'/'.$m, $modules),
+    array_map(fn (string $d) => __DIR__.'/'.$d, $extraDirs),
+);
+
 pest()
     ->extend(TestCase::class)
-    ->in(
-        __DIR__.'/Academics',
-        __DIR__.'/Assessment',
-        __DIR__.'/Assignment',
-        __DIR__.'/Auth',
-        __DIR__.'/Certification',
-        __DIR__.'/Core',
-        __DIR__.'/Document',
-        __DIR__.'/Enrollment',
-        __DIR__.'/Evaluation',
-        __DIR__.'/Incident',
-        __DIR__.'/Journals',
-        __DIR__.'/Partners',
-        __DIR__.'/Program',
-        __DIR__.'/Providers',
-        __DIR__.'/Reports',
-        __DIR__.'/Settings',
-        __DIR__.'/Setup',
-        __DIR__.'/SysAdmin',
-        __DIR__.'/User',
-    );
+    ->in(...$dirs);
 
 expect()->extend('toBeOne', function () {
     return $this->toBe(1);

@@ -14,26 +14,40 @@ use Livewire\Livewire;
 
 class ModuleDiscoverService
 {
-    private static function appPath(): string
+    /**
+     * Get the list of registered module names from config.
+     *
+     * @return list<string>
+     */
+    public static function getModuleNames(): array
     {
-        return app_path();
+        return config('module.list', []);
+    }
+
+    /**
+     * Check if a directory name is a registered module.
+     */
+    public static function isModule(string $name): bool
+    {
+        return in_array($name, self::getModuleNames(), true);
     }
 
     public function discoverLivewireComponents(): void
     {
         $components = Cache::remember(config('cache-keys.module_livewire'), 86400, function () {
             $result = [];
-            $moduleDir = self::appPath();
+            $moduleDir = app_path();
             if ($moduleDir === false) {
                 return $result;
             }
 
             $directory = config('module.livewire.directory', 'Livewire');
             $excludePaths = config('module.livewire.exclude_paths', ['Concerns', 'Traits']);
+            $registeredModules = self::getModuleNames();
             $files = $this->scanPhpFiles($moduleDir);
 
             foreach ($files as $filePath) {
-                if (!str_contains($filePath, '/' . $directory . '/')) {
+                if (! str_contains($filePath, '/'.$directory.'/')) {
                     continue;
                 }
 
@@ -41,20 +55,25 @@ class ModuleDiscoverService
                     continue;
                 }
 
+                $relativePath = str_replace($moduleDir.'/', '', $filePath);
+                $parts = explode('/', $relativePath);
+                $module = $parts[0] ?? '';
+
+                if (! in_array($module, $registeredModules, true)) {
+                    continue;
+                }
+
                 $content = file_get_contents($filePath);
-                if (!preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
+                if (! preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
                     continue;
                 }
 
                 $className = basename($filePath, '.php');
-                $fqcn = $nsMatch[1] . '\\' . $className;
+                $fqcn = $nsMatch[1].'\\'.$className;
 
-                if (!is_subclass_of($fqcn, 'Livewire\Component')) {
+                if (! is_subclass_of($fqcn, 'Livewire\Component')) {
                     continue;
                 }
-
-                $relativePath = str_replace($moduleDir . '/', '', $filePath);
-                $parts = explode('/', $relativePath);
 
                 if (($parts[0] ?? '') === $directory) {
                     continue;
@@ -62,16 +81,15 @@ class ModuleDiscoverService
 
                 // If structure: Module/Submodule/Livewire/Class.php
                 // index: 0=Module, 1=Submodule, 2=Livewire, 3=Class.php (or index 1 is Livewire)
-                $module = $parts[0] ?? '';
                 $submodule = $parts[1] !== $directory ? $parts[1] ?? '' : '';
 
                 $alias = $submodule
-                    ? Str::kebab($module) .
-                        '.' .
-                        Str::kebab($submodule) .
-                        '.' .
+                    ? Str::kebab($module).
+                        '.'.
+                        Str::kebab($submodule).
+                        '.'.
                         Str::kebab($className)
-                    : Str::kebab($module) . '.' . Str::kebab($className);
+                    : Str::kebab($module).'.'.Str::kebab($className);
 
                 $result[$alias] = $fqcn;
             }
@@ -88,17 +106,18 @@ class ModuleDiscoverService
     {
         $policies = Cache::remember(config('cache-keys.module_policies'), 86400, function () {
             $result = [];
-            $moduleDir = self::appPath();
+            $moduleDir = app_path();
             if ($moduleDir === false) {
                 return $result;
             }
 
             $directory = config('module.policies.directory', 'Policies');
             $excludePaths = config('module.policies.exclude_paths', ['Concerns', 'Traits']);
+            $registeredModules = self::getModuleNames();
             $files = $this->scanPhpFiles($moduleDir);
 
             foreach ($files as $filePath) {
-                if (!str_contains($filePath, '/' . $directory . '/')) {
+                if (! str_contains($filePath, '/'.$directory.'/')) {
                     continue;
                 }
 
@@ -106,24 +125,29 @@ class ModuleDiscoverService
                     continue;
                 }
 
+                $relativePath = str_replace($moduleDir.'/', '', $filePath);
+                $parts = explode('/', $relativePath);
+                $module = $parts[0] ?? '';
+
+                if (! in_array($module, $registeredModules, true)) {
+                    continue;
+                }
+
                 $className = basename($filePath, '.php');
-                if (!str_ends_with($className, 'Policy')) {
+                if (! str_ends_with($className, 'Policy')) {
                     continue;
                 }
 
                 $content = file_get_contents($filePath);
-                if (!preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
+                if (! preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
                     continue;
                 }
 
-                $policyClass = $nsMatch[1] . '\\' . $className;
-                if (!is_subclass_of($policyClass, BasePolicy::class)) {
+                $policyClass = $nsMatch[1].'\\'.$className;
+                if (! is_subclass_of($policyClass, BasePolicy::class)) {
                     continue;
                 }
 
-                $relativePath = str_replace($moduleDir . '/', '', $filePath);
-                $parts = explode('/', $relativePath);
-                $module = $parts[0] ?? '';
                 $submodule = $parts[1] !== $directory ? $parts[1] ?? '' : '';
 
                 $modelName = preg_replace('/Policy$/', '', $className);
@@ -131,7 +155,7 @@ class ModuleDiscoverService
                     ? "App\\{$module}\\{$submodule}\\Models\\{$modelName}"
                     : "App\\{$module}\\Models\\{$modelName}";
 
-                if (!class_exists($modelClass)) {
+                if (! class_exists($modelClass)) {
                     continue;
                 }
 
@@ -164,10 +188,14 @@ class ModuleDiscoverService
                 'vendor',
             ]);
 
-            $moduleDirs = glob($viewsDir . '/*', GLOB_ONLYDIR);
+            $registeredModules = self::getModuleNames();
+            $moduleDirs = glob($viewsDir.'/*', GLOB_ONLYDIR);
             foreach ($moduleDirs as $dir) {
                 $name = basename($dir);
                 if (in_array($name, $excluded, true)) {
+                    continue;
+                }
+                if (! in_array($name, $registeredModules, true)) {
                     continue;
                 }
                 $result[] = ['name' => $name, 'path' => $dir];
@@ -202,7 +230,7 @@ class ModuleDiscoverService
     private function isExcludedPath(string $filePath, array $excludePaths): bool
     {
         foreach ($excludePaths as $excluded) {
-            if (str_contains($filePath, '/' . $excluded . '/')) {
+            if (str_contains($filePath, '/'.$excluded.'/')) {
                 return true;
             }
         }

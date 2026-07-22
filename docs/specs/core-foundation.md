@@ -1,16 +1,15 @@
-# Base Classes — Contracts, Middleware, Cache & Session
+# Core Foundation — Base Classes, Contracts, Exceptions, Cache & Session
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from core-infra.md; base classes,
-> contracts, exception hierarchy, middleware, cache infrastructure, session, policies, and
-> support utilities
+> **Last updated:** 2026-07-22 **Changes:** feat — renamed from base-classes; core foundation
+> covering base classes, contracts, exception hierarchy, middleware, cache infrastructure,
+> session management, policies, and support utilities
 
 ## Description
 
-Specification of Internara's base class layer — the architectural foundation every module builds
+Specification of Internara's core foundation — the architectural base every module builds
 upon. Defines the Action Triad base classes, Entity/DTO/Model contracts, Livewire base classes,
 exception hierarchy, middleware stack, cache infrastructure, session management, policies, and
-support utilities. System requirements, dependencies, and database portability are a separate
-initiative — see [system-requirements.md](system-requirements.md).
+support utilities.
 
 ---
 
@@ -18,7 +17,7 @@ initiative — see [system-requirements.md](system-requirements.md).
 
 ### PS-1 — Base Class Consistency
 
-22 modules with 150+ features share a common vocabulary: how to write Actions, Models, Entities,
+18 modules with 150+ features share a common vocabulary: how to write Actions, Models, Entities,
 DTOs, Livewire components, and Policies. Without enforced base classes, each module would reinvent
 patterns, creating maintenance nightmares and subtle bugs.
 

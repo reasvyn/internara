@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-// cron.php → merged into sysadmin.php
-require __DIR__.'/web/setup.php';
-require __DIR__.'/web/auth.php';
-require __DIR__.'/web/user.php';
-require __DIR__.'/web/certification.php';
-require __DIR__.'/web/sysadmin.php';
-require __DIR__.'/web/document.php';
-require __DIR__.'/web/academics.php';
-require __DIR__.'/web/partners.php';
-require __DIR__.'/web/program.php';
-require __DIR__.'/web/enrollment.php';
-require __DIR__.'/web/assignment.php';
-require __DIR__.'/web/assessment.php';
-// Merged into certification.php
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Route files are auto-included based on the module registry in
+| config/module.php. For each registered module, if a route file
+| exists at routes/web/{lowercase_module}.php, it is required here.
+|
+*/
 
-require __DIR__.'/web/reports.php';
-require __DIR__.'/web/journals.php';
-require __DIR__.'/web/incident.php';
+$modules = config('module.list', []);
+$routesDir = __DIR__.'/web';
 
-require __DIR__.'/web/settings.php';
+foreach ($modules as $module) {
+    $file = $routesDir.'/'.Str::lower($module).'.php';
+    if (file_exists($file)) {
+        require $file;
+    }
+}
