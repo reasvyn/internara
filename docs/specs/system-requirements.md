@@ -263,12 +263,12 @@ decisions shaped the final schema — each documented in the relevant spec's Des
 
 | # | Optimization | Rationale | Spec Reference |
 | - | ------------ | --------- | -------------- |
-| 1 | `mentors` table eliminated — `users` profile-based `mentor_type` | Teachers are already users; mentor is a relationship, not an entity | [user-management.md](user-management.md) §2 |
+| 1 | `mentors` table eliminated — `users` profile-based `mentor_type` | Teachers are already users; mentor is a relationship, not an entity | [user-crud-and-status.md](user-crud-and-status.md) §2 |
 | 2 | `schools` table eliminated — single-tenant via settings key-value | One school per deployment; `settings.name = 'school_name'` suffices | [settings-infrastructure.md](settings-infrastructure.md) §3 |
-| 3 | `handbooks` merged into `documents` with `type = 'handbook'` | Single document engine with acknowledgement workflow via `activity_log` | [document.md](document.md) §DD-4 |
-| 4 | `absence_requests` merged into `attendances` | Shared table with status enum: `pending_absence` / `approved` / `rejected` | [journals.md](journals.md) §DD-1 |
+| 3 | `handbooks` merged into `documents` with `type = 'handbook'` | Single document engine with acknowledgement workflow via `activity_log` | [handbooks.md](handbooks.md) §DD-4 |
+| 4 | `absence_requests` merged into `attendances` | Shared table with status enum: `pending_absence` / `approved` / `rejected` | [daily-activity.md](daily-activity.md) §DD-1 |
 | 5 | `rubric_metrics` stored as JSON in `assessment_rubrics.metrics_json` | Variable schema per rubric type; avoids rigid column-per-metric | [assessment.md](assessment.md) §DD-1 |
-| 6 | `activity_log` replaces `handbook_acknowledgments` | Append-only audit log already captures IP, user agent, timestamp | [document.md](document.md) §DD-4 |
+| 6 | `activity_log` replaces `handbook_acknowledgments` | Append-only audit log already captures IP, user agent, timestamp | [handbooks.md](handbooks.md) §DD-4 |
 | 7 | `registration_mentor` eliminated — mentor via `internship_group_members` | Mentor assignment lives in the group membership layer | [internship-groups.md](internship-groups.md) §DD-2 |
 | 8 | `reports` uses snapshot columns (`data_snapshot_json`, `grade_breakdown_json`) | Grade cards are immutable point-in-time records; snapshots prevent retroactive drift | [reports.md](reports.md) §DD-1 |
 | 9 | `internship_phases` stored as JSON array on `internship_programs` | Phases are a fixed ordered set per program; JSON avoids extra table and JOINs | [internship-lifecycle.md](internship-lifecycle.md) §DD-1 |
