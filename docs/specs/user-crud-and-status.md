@@ -756,6 +756,26 @@ reliability at scale.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [authentication.md](authentication.md) | Auth state, role-based access — user CRUD requires admin authentication |
+
+### Build Guide
+After implementing this spec, the system has user CRUD with status management (active, inactive, suspended, locked), profile fields, and role assignment. Every module that references users (students, teachers, supervisors) depends on this user infrastructure. The next steps are to build CSV import/export for bulk operations and account slips for credential documents.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [csv-import-export.md](csv-import-export.md) | Bulk user import/export via CSV; uses `CsvHandler` from core-foundation |
+| 2 | [account-slips.md](account-slips.md) | Generates credential documents for placed students from user data |
+
+---
+
 ## Quick References
 
 - `app/User/Enums/AccountStatus.php` — 8-state status machine enum

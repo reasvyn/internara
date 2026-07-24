@@ -412,6 +412,19 @@ check silently skips missing files, so modules without routes don't need empty r
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+No prerequisites — this is a foundational spec.
+
+### Build Guide
+After implementing this spec, the system automatically discovers Livewire components, authorization policies, and Blade view namespaces at boot time. Discovery results are cached for 24 hours. The next step is to build the logging and error handling infrastructure that these discovered components will use.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [logging-and-error-handling.md](logging-and-error-handling.md) | Discovered Livewire components use `SmartLogger` and exception hierarchy |
+
 ## Quick References
 
 - `config/module.php` — Module registry (single source of truth)

@@ -232,6 +232,24 @@ without logging must use `$this->dispatchEvent()` directly.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [core-foundation.md](core-foundation.md) | `BaseEvent` class, `dispatchEvent()` method on `BaseAction` |
+| [logging-and-error-handling.md](logging-and-error-handling.md) | `SmartLogger` for event dispatch logging |
+
+### Build Guide
+After implementing this spec, the system has event dispatch infrastructure with synchronous and queued listeners, lazy event discovery, and `ShouldBroadcast` support. Events are used across the system for cache invalidation, audit logging, and cross-module communication. The next step is to build RBAC, which defines the authorization policies that middleware and Livewire components enforce.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [rbac-and-authorization.md](rbac-and-authorization.md) | Authorization events dispatched via `BaseEvent`, audit logged via `SmartLogger` |
+
 ## Quick References
 
 - `app/Core/Events/BaseEvent.php` — Base event class

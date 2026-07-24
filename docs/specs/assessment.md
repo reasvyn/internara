@@ -461,6 +461,26 @@ assessments:
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [placement.md](placement.md) | Active placement records — assessment scores student performance within a placement |
+
+### Build Guide
+After implementing this spec, the system has rubric-based assessment with scoring frameworks, competency evaluation, and grade calculation. Assessments are the primary scoring mechanism for student performance. The next step is to build evaluation, which gathers qualitative feedback alongside these quantitative scores.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [evaluation.md](evaluation.md) | Evaluation gathers feedback that complements assessment scores |
+| 2 | [certification.md](certification.md) | Certification combines assessment scores with evaluation data |
+
+---
+
 ## Quick References
 
 - `app/Assessment/Models/Assessment.php` — Assessment model with fillable, casts, bridge

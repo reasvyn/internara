@@ -458,6 +458,23 @@ Document module.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [certification.md](certification.md) | Certificate data — reports archive certification results as snapshots |
+
+### Build Guide
+After implementing this spec, the system generates grade cards and archived snapshots — immutable point-in-time records of student performance. Reports are the end of the PKL lifecycle: all data (attendance, logbooks, assessments, evaluations, certificates) is consolidated into final grade cards.
+
+### Next Steps
+| — | End of lifecycle — no downstream consumers |
+
+---
+
 ## Quick References
 
 - `app/Actions/Reports/CreateReportAction.php` — Report creation Action

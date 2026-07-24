@@ -452,6 +452,25 @@ App\Partners\Company\Enums\CsvRowResult: string
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [school-profile.md](school-profile.md) | School entity — companies partner with this school |
+| [department-management.md](department-management.md) | Department entities — companies offer internships to specific departments |
+
+### Build Guide
+After implementing this spec, the system has company CRUD with industry type, contact info, address, and company status. Companies are the external partners that host student internships. The next step is to build partnership management, which formalizes the relationship between companies and the school's internship programs.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [partnership-management.md](partnership-management.md) | Partnerships link companies from this spec to departments and academic years |
+| 2 | [csv-import-export.md](csv-import-export.md) | Bulk company import/export via CSV |
+
 ## Quick References
 
 - `app/Partners/Company/Models/Company.php` — Company model with `#[Fillable]` attribute and relationships

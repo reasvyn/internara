@@ -217,6 +217,25 @@ A student's profile photo and a certificate template have completely different c
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [core-foundation.md](core-foundation.md) | `BaseCommandAction` for file operation logging |
+
+### Build Guide
+After implementing this spec, the system has file upload infrastructure via Spatie MediaLibrary with collections, conversions, responsive images, and file type validation. Every module that handles file uploads (logbook evidence, certificate PDFs, assignment submissions) depends on this. The next step is to build PDF generation, which uses media storage for rendered documents.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [pdf-generation.md](pdf-generation.md) | Generated PDFs are stored as media via this spec's infrastructure |
+
+---
+
 ## Quick References
 
 - `config/media-library.php` — MediaLibrary configuration

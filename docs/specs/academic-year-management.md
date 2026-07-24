@@ -411,6 +411,26 @@ creation source (UI, seeder, API).
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [school-profile.md](school-profile.md) | School entity — academic years are scoped to this school |
+| [settings-infrastructure.md](settings-infrastructure.md) | Settings store for active year configuration |
+
+### Build Guide
+After implementing this spec, the system has academic year CRUD with start/end dates, phase definitions (preparation, active, evaluation, closing), and active year tracking. Academic years define the time boundaries for internship programs. The next step is to build company management, which registers the external partners that offer internships within these academic years.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [company-management.md](company-management.md) | Companies offer internships within academic year date ranges; partnership dates reference academic years |
+
+---
+
 ## Quick References
 
 - `app/Academics/AcademicYear/` — All AcademicYear module code (Models, Entities, Actions, Events, Data, Livewire, Policies)

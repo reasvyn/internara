@@ -537,6 +537,26 @@ the likelihood of identifier confusion.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [core-foundation.md](core-foundation.md) | `BaseAuthenticatable`, `PasswordRules`, exception hierarchy |
+| [rbac-and-authorization.md](rbac-and-authorization.md) | Role assignment on login, `BasePolicy` auto-allow for super_admin |
+
+### Build Guide
+After implementing this spec, the system has login, password reset, recovery slips, account lockout, and session management. Every protected route and Livewire component depends on the authentication state established here. The next step is to build the school profile, which stores the school identity that departments and companies reference.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [school-profile.md](school-profile.md) | Authenticated admin creates school profile; profile data used in documents and certificates |
+
+---
+
 ## Quick References
 
 - `app/Auth/Login/Actions/LoginAction.php` — login pipeline with dual throttling

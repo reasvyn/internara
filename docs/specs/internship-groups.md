@@ -398,6 +398,23 @@ process (future scope).
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [internship-lifecycle.md](internship-lifecycle.md) | Internship program entities — groups belong to programs |
+
+### Build Guide
+After implementing this spec, the system has group CRUD with student and mentor assignments, capacity limits, and group status. Groups organize students into cohorts for supervision and scheduling. The next step is to build registration, which enrolls students into these groups.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [registration.md](registration.md) | Registration creates enrollment records that are assigned to groups from this spec |
+
 ## Quick References
 
 - `app/Program/InternshipGroup/Models/InternshipGroup.php` — Group model with placement FK

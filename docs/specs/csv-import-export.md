@@ -518,6 +518,27 @@ the single source of truth — managers simply delegate to them.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [user-crud-and-status.md](user-crud-and-status.md) | User entities — bulk import/export of students, teachers |
+| [company-management.md](company-management.md) | Company entities — bulk import/export of companies |
+| [department-management.md](department-management.md) | Department entities — bulk import/export of departments |
+
+### Build Guide
+After implementing this spec, the system has reusable CSV import/export with template download, header validation, and error reporting. This utility is used across user, company, and department modules. The next step is to build account slips, which generates credential documents for placed students.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [account-slips.md](account-slips.md) | Account slips reference user data that CSV import manages |
+
+---
+
 ## Quick References
 
 - `app/Core/Support/CsvHandler.php` — shared CSV import/export/template service

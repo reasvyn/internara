@@ -215,6 +215,25 @@ for failure logging only.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [core-foundation.md](core-foundation.md) | `BaseProcessAction` for job orchestration, `SendsNotifications` interface |
+
+### Build Guide
+After implementing this spec, the system has async job processing via Laravel queues, batch tracking, failed job management, and notification dispatch. Queued notifications (like OTP emails) and background file processing depend on this infrastructure. The next step is to build the installation system, which provisions the database and generates the setup token.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [installation.md](installation.md) | Uses `config:cache`, `route:cache`, `event:cache` from queue warm-up; `RecoveryOtpNotification` uses `ShouldQueue` |
+
+---
+
 ## Quick References
 
 - `app/Jobs/` — All queued jobs (5 files)

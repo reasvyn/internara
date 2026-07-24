@@ -280,6 +280,25 @@ retry before investing more time in the form.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [settings-infrastructure.md](settings-infrastructure.md) | `SettingsStore` interface, `brand.*` and `theme.*` settings keys, `SettingObserver` cache invalidation |
+
+### Build Guide
+After implementing this spec, the system has customizable branding (school name, logo, colors), dark mode theming, and bilingual locale (English/Indonesian). CSS variables are generated from settings and applied via middleware. The next step is to build authentication, which uses these locale preferences for localized error messages.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [authentication.md](authentication.md) | Locale preference from this spec used for login error messages; `SetLocaleMiddleware` resolves locale |
+
+---
+
 ## Quick References
 
 - `app/Settings/Support/Brand.php` — Dual-path brand resolution (DB + AppInfo)

@@ -1,6 +1,7 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-07-24 **Changes:** feat — add recovery ecosystem spec (41 specs)
+> **Last updated:** 2026-07-24 **Changes:** feat — split Phase 2 into Institutional + Partnerships,
+> add §9 Roadmap sections (41 specs, 9 phases)
 
 ## Description
 
@@ -20,11 +21,11 @@ and ordered by **dependency depth** within each phase. Build phases sequentially
 a phase may be built in listed order.
 
 ```
-Phase 1        Phase 2         Phase 3      Phase 4        Phase 5           Phase 6              Phase 7          Phase 8
-Foundation  →  Partnerships →  Programs  →  Enrollment →  Daily Ops      →  Assessment & Eval  →  Certification  →  Reporting
-(install,     (companies,     (internship   (registration, (logbook,         (rubrics,            (templates,       (grade cards,
- settings,      academics,      structure)    placement,     attendance,       scoring,             handbooks,        snapshots)
- auth,          partnerships)                 user admin)    supervision)      feedback)            credentials)
+Phase 1        Phase 2          Phase 3         Phase 4      Phase 5        Phase 6           Phase 7          Phase 8           Phase 9
+Foundation  →  Institutional →  Partnerships →  Programs  →  Enrollment →  Daily Ops     →  Assessment   →  Certification  →  Reporting
+(install,     (departments,    (companies,      (internship  (registration, (logbook,        (rubrics,        (templates,        (grade cards,
+ settings,      academic yrs)   partnerships)    structure)    placement,     attendance,      scoring,         handbooks,         snapshots)
+ auth,                                                     user admin)    supervision)     feedback)        credentials)
  dashboard)
 ```
 
@@ -52,29 +53,36 @@ Infrastructure, settings, auth, dashboard shell, core infrastructure. No busines
 | 16 | [School Profile](school-profile.md) | Academics | #13 |
 | 17 | [Dashboard](dashboard.md) | User | #15 |
 
-### Phase 2 — Partnerships
+### Phase 2 — Institutional
 
-External partners and academic structure. Depends on Phase 1 (settings, auth, school profile).
+Internal academic structure. Depends on Phase 1 (school profile).
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
 | 18 | [Department Management](department-management.md) | Academics | #16 |
 | 19 | [Academic Year Management](academic-year-management.md) | Academics | #16 |
-| 20 | [Company Management](company-management.md) | Partners | #17, #18 |
+
+### Phase 3 — Partnerships
+
+External partners and formal collaborations. Depends on Phase 1 (school profile) and Phase 2 (departments).
+
+| # | Spec | Module | Depends On |
+| - | ---- | ------ | ---------- |
+| 20 | [Company Management](company-management.md) | Partners | #16, #18 |
 | 21 | [Partnership Management](partnership-management.md) | Partners | #20 |
 
-### Phase 3 — Programs
+### Phase 4 — Programs
 
-Internship structure and grouping. Depends on Phase 2 (departments, academic years, companies).
+Internship structure and grouping. Depends on Phase 2 (academic years) and Phase 3 (partnerships).
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
 | 22 | [Internship Lifecycle](internship-lifecycle.md) | Program | #19, #21 |
 | 23 | [Internship Groups](internship-groups.md) | Program | #22 |
 
-### Phase 4 — Enrollment
+### Phase 5 — Enrollment
 
-Student intake, placement, user administration. Depends on Phase 3 (program, groups).
+Student intake, placement, user administration. Depends on Phase 4 (program, groups).
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
@@ -85,9 +93,9 @@ Student intake, placement, user administration. Depends on Phase 3 (program, gro
 | 28 | [CSV Import & Export](csv-import-export.md) | Cross-Module | #27, #20, #18 |
 | 29 | [Account Slips](account-slips.md) | User / SysAdmin | #27 |
 
-### Phase 5 — Daily Operations
+### Phase 6 — Daily Operations
 
-Active internship period. Depends on Phase 4 (placement active).
+Active internship period. Depends on Phase 5 (placement active).
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
@@ -95,9 +103,9 @@ Active internship period. Depends on Phase 4 (placement active).
 | 31 | [Supervision](supervision.md) | Journals | #25, #30 |
 | 32 | [Incident](incident.md) | Incident | #25 |
 
-### Phase 6 — Assessment & Evaluation
+### Phase 7 — Assessment
 
-Scoring, feedback, coursework. Depends on Phase 4 (placement active).
+Scoring, feedback, coursework. Depends on Phase 5 (placement active).
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
@@ -105,9 +113,9 @@ Scoring, feedback, coursework. Depends on Phase 4 (placement active).
 | 34 | [Evaluation](evaluation.md) | Evaluation | #25 |
 | 35 | [Assignment](assignment.md) | Assignment | #25 |
 
-### Phase 7 — Certification
+### Phase 8 — Certification
 
-Credentials, documents, handbooks, media, PDF. Depends on Phases 5–6 (assessments, evaluations complete).
+Credentials, documents, handbooks, media, PDF. Depends on Phases 6–7 (assessments, evaluations complete).
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
@@ -117,9 +125,9 @@ Credentials, documents, handbooks, media, PDF. Depends on Phases 5–6 (assessme
 | 39 | [File Uploads & Media](file-uploads-media.md) | Core | #1 |
 | 40 | [PDF Generation](pdf-generation.md) | Core | #39 |
 
-### Phase 8 — Reporting
+### Phase 9 — Reporting
 
-Grade cards, archived snapshots. Depends on Phase 7 (certification complete).
+Grade cards, archived snapshots. Depends on Phase 8 (certification complete).
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
@@ -142,7 +150,7 @@ spec-writing → docs/specs/{feature}.md → feature-building → code-writing �
 
 ## Spec Template
 
-Every spec follows the 10-section format defined in `.agents/skills/spec-writing/SKILL.md`:
+Every spec follows the 11-section format defined in `.agents/skills/spec-writing/SKILL.md`:
 
 1. Problem Statements
 2. Goals & Non-Goals
@@ -152,6 +160,7 @@ Every spec follows the 10-section format defined in `.agents/skills/spec-writing
 6. API / Data Contracts
 7. Design Decisions (DD-IDs)
 8. Success Metrics
+9. Roadmap (prerequisites, build guide, next steps)
 
 ---
 

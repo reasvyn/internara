@@ -293,6 +293,25 @@ registration_documents:
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [document-templates.md](document-templates.md) | Document template engine — handbooks use the same rendering infrastructure |
+
+### Build Guide
+After implementing this spec, the system has student and supervisor handbooks with acknowledgement tracking (students must confirm they've read the handbook). Handbooks are versioned and tracked via activity log. The next step is to build certification, which generates the final certificates.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [certification.md](certification.md) | Certification generates certificates; handbook acknowledgement is a prerequisite for certificate issuance |
+
+---
+
 ## Quick References
 
 - `app/Document/Handbook/Actions/CreateHandbookAction.php` — Handbook creation

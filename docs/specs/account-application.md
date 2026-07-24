@@ -386,6 +386,23 @@ existing users.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [registration.md](registration.md) | Registration workflow — account application is the self-service entry point |
+
+### Build Guide
+After implementing this spec, new students can self-register through a public form, creating an account application that admins review before granting access. This is the first touchpoint for students entering the PKL system. The next step is to build user CRUD and status management, which handles the student accounts created through this flow.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [user-crud-and-status.md](user-crud-and-status.md) | Admin manages student accounts created via this application; status transitions flow to user CRUD |
+
 ## Quick References
 
 - `app/Enrollment/AccountApplication/Models/AccountApplication.php` — Application model

@@ -239,6 +239,23 @@ admin is a single-purpose recovery account.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [core-foundation.md](core-foundation.md) | `BasePolicy`, `AuthorizesRoles`, `AuthorizesOwnership` traits |
+
+### Build Guide
+After implementing this spec, the system has role-based access control with 5 roles (super_admin, admin, teacher, student, supervisor), per-route middleware enforcement, and ownership-based policy checks. Every protected route and Livewire component depends on these policies. The next step is to build the middleware pipeline that applies these role checks.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [middleware-pipeline.md](middleware-pipeline.md) | `CheckRoleMiddleware` uses roles from this spec, `BasePolicy.before()` auto-allows super_admin |
+
 ## Quick References
 
 - `app/Core/Policies/BasePolicy.php` — Base policy with super admin bypass

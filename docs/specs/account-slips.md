@@ -524,6 +524,25 @@ well-defined views.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [user-crud-and-status.md](user-crud-and-status.md) | User entities — account slips are generated for placed students |
+
+### Build Guide
+After implementing this spec, the system can generate account slips — credential documents given to students for their internship placement. Slips contain student info, company details, and placement dates. The next phase is daily operations — once students are placed with slips, they begin logging activities and attendance.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [daily-activity.md](daily-activity.md) | Students with active placements (confirmed by account slips) begin logbook entries |
+
+---
+
 ## Quick References
 
 - `app/User/UserManagement/Actions/GenerateAccountSlipAction.php` — PDF slip generation (single + batch)

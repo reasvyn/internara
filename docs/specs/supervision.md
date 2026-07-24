@@ -257,6 +257,26 @@ monitoring_visits:
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [placement.md](placement.md) | Active placement records — supervision is scoped to placements |
+| [daily-activity.md](daily-activity.md) | Logbook entries and attendance records — supervisors review and comment on these |
+
+### Build Guide
+After implementing this spec, supervisors can log monitoring visits, review student logbooks, and generate supervision reports. This closes the feedback loop between students (who log activities) and supervisors (who evaluate them). The next step is to build incident reporting for workplace issues.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [incident.md](incident.md) | Incident reports reference placement and supervision context |
+
+---
+
 ## Quick References
 
 - `app/Journals/SupervisionLog/` — SupervisionLog submodule (Actions, Entities, Enums, Livewire, Models, Policies)

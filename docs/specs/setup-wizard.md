@@ -420,6 +420,25 @@ be permanently inaccessible to prevent re-entry. The window is configurable via
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [installation.md](installation.md) | Setup token, provisioned database, seeded roles, `setup.is_installed` flag |
+
+### Build Guide
+After implementing this spec, the system has a 6-step browser wizard that creates the super admin account, school profile, department, and generates the recovery key. The wizard is the entry point for all configuration. The next step is to build the recovery ecosystem, which enables emergency super admin access via the recovery key generated during finalization.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [recovery-ecosystem.md](recovery-ecosystem.md) | Recovery key hash stored in `setup.recovery_key` during finalization; `admin:recover` verifies against this hash |
+
+---
+
 ## Quick References
 
 - `docs/modules/setup.md` — Module conceptual overview
