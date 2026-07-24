@@ -1,11 +1,12 @@
 # Authentication — Login, Throttling & Session Lifecycle
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from login-and-dashboard.md;
-> authentication, throttling, session lifecycle, logout, events, lockout recovery
+> **Last updated:** 2026-07-24 **Changes:** feat — split from login-and-dashboard.md;
+> authentication, throttling, session lifecycle, logout, events, lockout recovery,
+> account activation, access token lifecycle, credential change notifications
 
 ## Description
 
-Complete specification of Internara's authentication system: login flow (email/username identifier detection), dual throttling (HTTP middleware rate limiting + cache-based lockout with exponential backoff), session lifecycle (regeneration on login/logout, fixation prevention), logout with CSRF rotation, domain events and listener pipeline, AccountStatus state machine reference, and lockout recovery UX. Covers the full path from unauthenticated visitor through credential validation to established session.
+Complete specification of Internara's authentication system: login flow (email/username identifier detection), dual throttling (HTTP middleware rate limiting + cache-based lockout with exponential backoff), session lifecycle (regeneration on login/logout, fixation prevention), logout with CSRF rotation, domain events and listener pipeline, AccountStatus state machine reference, lockout recovery UX, account activation (token verification, attempt limiting, password setup), access token lifecycle (generate, verify, revoke with type-based TTLs), and credential change notifications (email + in-app). Covers the full path from unauthenticated visitor through credential validation to established session.
 
 ---
 
@@ -51,6 +52,22 @@ which identifier they registered with creates friction. The system must accept b
 username transparently, detecting the type automatically without requiring the user to select
 a login mode.
 
+### PS-6 — Account Activation
+
+New users provisioned by school administrators start with `PROVISIONED` status and cannot
+log in until they complete an activation flow. The system must provide a secure activation
+process with token verification (time-limited, hashed storage), attempt limiting to prevent
+brute-force token guessing, and a one-time password setup step. Without this, provisioned
+accounts remain inaccessible and administrators must manually intervene for each new user.
+
+### PS-7 — Credential Change Notifications
+
+When a user changes their password, they need both email and in-app notification for security
+awareness. If a password change occurs without notification, a compromised account could be
+taken over silently — the legitimate user would not know their credentials were changed.
+Dual-channel notifications (email + in-app) ensure the user is informed even if one channel
+is unavailable or compromised.
+
 ---
 
 ## 2. Goals & Non-Goals
@@ -67,6 +84,8 @@ a login mode.
 | G6  | Prevent user enumeration via identical error responses and timing-safe lockout checks |
 | G7  | Dispatch domain events for login success/failure with SmartLogger integration |
 | G8  | Enforce account status checks (PROVISIONED, SUSPENDED, ARCHIVED reject login) |
+| G9  | Support secure account activation with token verification, attempt limiting, and password setup |
+| G10 | Notify users via email and in-app notification when credentials change |
 
 ### Non-Goals
 
@@ -78,6 +97,7 @@ a login mode.
 | NG4  | OAuth2 / OpenID Connect provider functionality |
 | NG5  | Password reset or account recovery flows (separate initiative) |
 | NG6  | Remember-me / persistent token authentication beyond Laravel's built-in |
+| NG7  | Multi-factor authentication enrollment beyond password (separate initiative) |
 
 ---
 
@@ -156,6 +176,37 @@ a login mode.
 5. After 60 seconds: HTTP throttle resets
 **Postconditions:** Volumetric attack from single IP blocked at HTTP layer
 
+### UC-6 — Account Activation
+
+**Actor:** Student (new user)
+**Preconditions:** Student account exists with `PROVISIONED` status; activation token issued
+**Flow:**
+1. Student receives activation code (email or manual distribution)
+2. Student navigates to activation form (Livewire component in `app/Auth/Account/Livewire/`)
+3. Student enters activation code and desired password
+4. `ActivateAccountAction` receives user, code, and password
+5. `AccessToken::verify($user, 'activation', $code)` validates the token (not revoked, not expired, hash matches)
+6. On valid token: `AccessToken::revokeFor($user, 'activation')` revokes the token
+7. Password set via `Hash::make()` and saved to user model
+8. `account_activated` logged via `$this->log()` with user as subject
+9. Account transitions from `PROVISIONED` to `ACTIVATED`
+**Postconditions:** Account activated, password set, activation token revoked, user can now log in
+
+### UC-7 — Password Changed Notification
+
+**Actor:** Any authenticated user
+**Preconditions:** User is logged in and changes their password
+**Flow:**
+1. User initiates password change via profile or settings
+2. Password change action validates and updates the password
+3. `PasswordUpdated` event dispatched with user model
+4. `SendPasswordChangedMail` listener (queued) receives event
+5. Listener sends `CredentialChangedNotification('password')` via mail channel
+6. `InvalidateSessionOnPasswordChange` listener (queued) receives event
+7. Listener sends in-app notification via `SendsNotifications` interface with type `password_changed`
+8. `CredentialChangedNotification` includes localized subject, greeting with user name, change type line, and optional support email from settings
+**Postconditions:** Password updated, email notification sent, in-app notification sent, user aware of credential change
+
 ---
 
 ## 4. Functional Requirements
@@ -212,6 +263,37 @@ a login mode.
 | FR-LO2 | Must call `session()->invalidate()` to destroy session data |
 | FR-LO3 | Must call `session()->regenerateToken()` to rotate CSRF token |
 | FR-LO4 | Must redirect to `/login` after logout |
+
+### Account Activation (FR-ACT)
+
+| ID     | Requirement |
+| ------ | ----------- |
+| FR-ACT1 | `ActivateAccountAction` must verify token via `AccessToken::verify($user, 'activation', $code)` |
+| FR-ACT2 | Must revoke activation token after successful verification via `AccessToken::revokeFor()` |
+| FR-ACT3 | Must set hashed password via `Hash::make()` on successful activation |
+| FR-ACT4 | Must log `account_activated` via `$this->log()` |
+| FR-ACT5 | Must throw `RejectedException` with localized message on invalid/expired token |
+| FR-ACT6 | `AccountActivation` entity must expose `requiresActivation()`, `isTokenValid()`, `isTokenExpired()`, `hasExceededMaxAttempts()` |
+
+### Access Token Lifecycle (FR-TOK)
+
+| ID     | Requirement |
+| ------ | ----------- |
+| FR-TOK1 | `AccessToken::generateFor()` must create hashed token with configurable TTL per type (activation: 30d, recovery: 7d, default: 1d) |
+| FR-TOK2 | `AccessToken::verify()` must check not revoked, not expired, hash matches; increment attempts on failure |
+| FR-TOK3 | `AccessToken::revokeFor()` must set `revoked_at` timestamp for user+type |
+| FR-TOK4 | `AccessToken::revokeAllExpired()` must bulk-revoke all expired unrevoked tokens |
+| FR-TOK5 | `AccessTokenState` entity must expose `isExpired()`, `isRevoked()`, `isValid()`, `hasExceededMaxAttempts()` |
+| FR-TOK6 | `ActivationToken` entity must expose `plainText()`, `tokenId()`, `expiresAt()` |
+
+### Credential Change Notifications (FR-CRED)
+
+| ID      | Requirement |
+| ------- | ----------- |
+| FR-CRED1 | `PasswordUpdated` event must be dispatched after successful password change |
+| FR-CRED2 | `SendPasswordChangedMail` listener (queued) must send `CredentialChangedNotification` via mail channel |
+| FR-CRED3 | `InvalidateSessionOnPasswordChange` listener (queued) must send in-app notification via `SendsNotifications` interface |
+| FR-CRED4 | `CredentialChangedNotification` must include localized subject, greeting with user name, change type line, and optional support email from settings |
 
 ---
 
@@ -409,6 +491,39 @@ return [
 | 20 | 5120 seconds (~85 min) | `10 * 2^(20-10)` |
 | 25 | ~9 hours | `10 * 2^(25-10)` |
 
+### 6.11 AccessToken Model
+
+```php
+// app/Auth/AccessTokens/Models/AccessToken.php
+class AccessToken extends BaseModel {
+    // Types: activation (30d), recovery (7d), default (1d)
+    public static function generateFor(User $user, string $type, array $options = []): array;
+    public static function verify(User $user, string $type, string $plainText): bool;
+    public static function revokeFor(User $user, string $type): void;
+    public static function revokeAllExpired(): int;
+    public function asActivationToken(): ActivationToken;
+    public function asAccessTokenState(): AccessTokenState;
+}
+```
+
+### 6.12 ActivateAccountAction
+
+```php
+// app/Auth/Account/Actions/ActivateAccountAction.php
+final class ActivateAccountAction extends BaseCommandAction {
+    public function execute(User $user, string $code, string $password): User;
+    // Pipeline: verify token → revoke → set password → log
+}
+```
+
+### 6.13 Credential Change Events & Listeners
+
+| Event/Listener | Trigger | Channel | Action |
+| -------------- | ------- | ------- | ------ |
+| `PasswordUpdated` | Password change | n/a | Dispatched by password change action |
+| `SendPasswordChangedMail` | `PasswordUpdated` | mail | Sends `CredentialChangedNotification` |
+| `InvalidateSessionOnPasswordChange` | `PasswordUpdated` | in-app | Sends `password_changed` notification via `SendsNotifications` |
+
 ---
 
 ## 7. Design Decisions
@@ -544,11 +659,11 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [core-foundation.md](core-foundation.md) | `BaseAuthenticatable`, `PasswordRules`, exception hierarchy |
+| [base-classes.md](base-classes.md) (#2) | `BaseAuthenticatable`, `PasswordRules`, exception hierarchy |
 | [rbac-and-authorization.md](rbac-and-authorization.md) | Role assignment on login, `BasePolicy` auto-allow for super_admin |
 
 ### Build Guide
-After implementing this spec, the system has login, password reset, recovery slips, account lockout, and session management. Every protected route and Livewire component depends on the authentication state established here. The next step is to build the school profile, which stores the school identity that departments and companies reference.
+After implementing this spec, the system has login, account activation (token verification, attempt limiting, password setup), credential change notifications (email + in-app), password reset, recovery slips, account lockout, and session management. The access token lifecycle supports activation tokens (30-day TTL), recovery tokens (7-day TTL), and general tokens (1-day TTL) with hashed storage, attempt tracking, and revocation. Every protected route and Livewire component depends on the authentication state established here. The next step is to build the school profile, which stores the school identity that departments and companies reference.
 
 ### Next Steps
 | Order | Spec | Connection |
@@ -574,4 +689,13 @@ After implementing this spec, the system has login, password reset, recovery sli
 - `routes/web/auth.php` — login/logout routes
 - `docs/modules/auth.md` — Auth module overview
 - `docs/modules/auth-reference.md` — Auth module technical reference
+- `app/Auth/AccessTokens/Models/AccessToken.php` — token lifecycle (generate, verify, revoke)
+- `app/Auth/AccessTokens/Entities/AccessTokenState.php` — token validity state
+- `app/Auth/AccessTokens/Entities/ActivationToken.php` — activation token value object
+- `app/Auth/Account/Actions/ActivateAccountAction.php` — account activation pipeline
+- `app/Auth/Account/Entities/AccountActivation.php` — activation state entity
+- `app/Auth/Password/Events/PasswordUpdated.php` — credential change event
+- `app/Auth/Password/Listeners/SendPasswordChangedMail.php` — email notification on password change
+- `app/Auth/Password/Listeners/InvalidateSessionOnPasswordChange.php` — in-app notification on password change
+- `app/Auth/Notifications/CredentialChangedNotification.php` — credential change mail notification
 - **Related specs:** [registration.md](registration.md) — account provisioning and registration

@@ -224,7 +224,7 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [core-foundation.md](core-foundation.md) | `BaseCommandAction` for file operation logging |
+| [base-classes.md](base-classes.md) (#2) | `BaseCommandAction` for file operation logging |
 
 ### Build Guide
 After implementing this spec, the system has file upload infrastructure via Spatie MediaLibrary with collections, conversions, responsive images, and file type validation. Every module that handles file uploads (logbook evidence, certificate PDFs, assignment submissions) depends on this. The next step is to build PDF generation, which uses media storage for rendered documents.

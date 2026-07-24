@@ -771,7 +771,7 @@ After implementing this spec, the system has user CRUD with status management (a
 ### Next Steps
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [csv-import-export.md](csv-import-export.md) | Bulk user import/export via CSV; uses `CsvHandler` from core-foundation |
+| 1 | [csv-import-export.md](csv-import-export.md) | Bulk user import/export via CSV; uses `CsvHandler` from shared-utilities |
 | 2 | [account-slips.md](account-slips.md) | Generates credential documents for placed students from user data |
 
 ---
