@@ -239,7 +239,7 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [core-foundation.md](core-foundation.md) | `BaseEvent` class, `dispatchEvent()` method on `BaseAction` |
+| [base-classes.md](base-classes.md) (#2) | `BaseEvent` class, `dispatchEvent()` method on `BaseAction` |
 | [logging-and-error-handling.md](logging-and-error-handling.md) | `SmartLogger` for event dispatch logging |
 
 ### Build Guide
@@ -257,5 +257,5 @@ After implementing this spec, the system has event dispatch infrastructure with 
 - `app/Core/Services/SmartLogger.php` — SmartLogger with event integration
 - `docs/architecture/event-pattern.md` — Architecture pattern documentation
 - `docs/architecture/logging-pattern.md` — SmartLogger architecture
-- `docs/specs/core-foundation.md` — Base classes and contracts
+- `docs/specs/base-classes.md` (#2) — Base classes and contracts
 - `docs/specs/logging-and-error-handling.md` — SmartLogger full specification

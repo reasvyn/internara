@@ -216,7 +216,7 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [core-foundation.md](core-foundation.md) | `SecurityHeaders`, `LogContext`, `RequireSetupAccessMiddleware`, `SetLocaleMiddleware` base implementations |
+| [base-classes.md](base-classes.md) (#2) | `SecurityHeaders`, `LogContext`, `RequireSetupAccessMiddleware`, `SetLocaleMiddleware` base implementations |
 | [rbac-and-authorization.md](rbac-and-authorization.md) | `CheckRoleMiddleware` for route-level role enforcement |
 
 ### Build Guide

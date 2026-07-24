@@ -564,7 +564,7 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [core-foundation.md](core-foundation.md) | `BaseCommandAction`, `BaseWizard`, exception hierarchy for error handling |
+| [base-classes.md](base-classes.md) (#2) | `BaseCommandAction`, `BaseWizard`, exception hierarchy for error handling |
 
 ### Build Guide
 After implementing this spec, the system can provision itself from zero: environment audit, database schema, APP_KEY, seeded roles, and a setup token that bridges CLI to browser wizard. The next step is to build the setup wizard, which consumes the setup token and guides the user through super admin creation, school profile, and department setup.

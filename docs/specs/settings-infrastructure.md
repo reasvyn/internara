@@ -335,7 +335,7 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [core-foundation.md](core-foundation.md) | `BaseCommandAction`, `BaseReadAction`, cache key registry (`config/cache-keys.php`) |
+| [base-classes.md](base-classes.md) (#2) | `BaseCommandAction`, `BaseReadAction`, cache key registry (`config/cache-keys.php`) |
 
 ### Build Guide
 After implementing this spec, the system has a key-value settings store with caching, type enforcement, group-based organization, and CRUD via Livewire UI. Every module reads configuration from this store. The next step is to build branding, theme, and locale, which reads CSS variables and locale preferences from settings.

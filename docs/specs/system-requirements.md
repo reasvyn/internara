@@ -8,7 +8,7 @@
 Specification of Internara's minimum system requirements, third-party dependencies, and database
 portability. Defines the PHP version, required extensions, Composer packages, supported database
 engines, and migration strategy. Base classes, contracts, middleware, cache, and session are a
-separate initiative — see [core-foundation.md](core-foundation.md).
+separate initiative — see [base-classes.md](base-classes.md).
 
 ---
 
@@ -327,4 +327,4 @@ After implementing this spec, the system has a verified dependency manifest, dat
 - `docs/infrastructure/deployment.md` — Three deployment paths
 - `app/Core/` — All base classes, contracts, exceptions, services
 - `.env.example` — Default configuration values
-- **Related specs:** [core-foundation.md](core-foundation.md) — Base classes, contracts, middleware, cache, session
+- **Related specs:** [base-classes.md](base-classes.md) (#2) — Base classes, contracts, middleware, cache, session

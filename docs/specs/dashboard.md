@@ -217,8 +217,10 @@ proxy user sees their own dashboard instead of the target role's dashboard.
 | FR-DU3 | `StudentDashboard` must extend `UserDashboard`, enforce `abort_unless(hasRole('student'), 403)` in `boot()`, call `ReadStudentDashboardAction::execute($userId)` in `mount()`, render `user.dashboard.student` |
 | FR-DU4 | `TeacherDashboard` must extend `UserDashboard`, enforce role gate in `boot()` (allows `teacher` or `admin`), call `ReadTeacherDashboardAction::execute()` in `mount()`, render `user.dashboard.teacher` |
 | FR-DU5 | `SupervisorDashboard` must extend `UserDashboard`, enforce role gate in `boot()` (allows `supervisor`, `admin`, or `teacher`), call `ReadSupervisorDashboardAction::execute()` in `mount()`, render `user.dashboard.supervisor` |
-| FR-DU6 | `AdminDashboard` readiness checks: DB (`DB::connection()->getPdo()`), mail (host not empty/localhost), cache (write-read roundtrip), queue (sync = ready, otherwise DB), storage (symlink + writable logs/cache dirs) |
+| FR-DU6 | `AdminDashboard` readiness checks: DB (`DB::connection()->getPdo()`), mail (host not empty/localhost, `log` mailer counts as configured), cache (write-read roundtrip via `config('cache-keys.health_check')`), queue (sync = ready, otherwise DB), storage (symlink + writable logs/cache dirs) |
 | FR-DU7 | Each dashboard must use constructor injection for its Read Action in `mount()` — no service locator |
+| FR-DU8 | `AdminDashboard::render()` must pass `roleContent => true` to the view alongside `$stats` and `$readiness` |
+| FR-DU9 | `AdminDashboard` view must conditionally render super admin-only system cards (audit entries, PHP/Laravel version, storage summary) gated by `auth()->user()?->hasRole('super_admin')` |
 
 ### Dashboard — Routes
 
@@ -304,6 +306,7 @@ class AdminDashboard extends UserDashboard
     public array $stats = [];
     public array $readiness = []; // database, mail, cache, queue, storage
     public function mount(ReadAdminDashboardAction $statsAction): void;
+    public function render(): View; // user.dashboard.admin — passes roleContent, stats, readiness
 }
 
 // StudentDashboard — extends UserDashboard, 8 stats

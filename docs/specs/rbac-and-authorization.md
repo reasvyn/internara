@@ -246,7 +246,7 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [core-foundation.md](core-foundation.md) | `BasePolicy`, `AuthorizesRoles`, `AuthorizesOwnership` traits |
+| [base-classes.md](base-classes.md) (#2) | `BasePolicy`, `AuthorizesRoles`, `AuthorizesOwnership` traits |
 
 ### Build Guide
 After implementing this spec, the system has role-based access control with 5 roles (super_admin, admin, teacher, student, supervisor), per-route middleware enforcement, and ownership-based policy checks. Every protected route and Livewire component depends on these policies. The next step is to build the middleware pipeline that applies these role checks.
