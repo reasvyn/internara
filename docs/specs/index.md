@@ -1,7 +1,7 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-07-24 **Changes:** feat — split Phase 2 into Institutional + Partnerships,
-> add §9 Roadmap sections (41 specs, 9 phases)
+> **Last updated:** 2026-07-24 **Changes:** feat — add 4 Phase 3 specs (password-reset,
+> password-confirmation, account-recovery-slips, profile-management); renumber all specs
 
 ## Description
 
@@ -16,122 +16,163 @@ update the spec first, then implement.
 
 ## Build Order
 
-Specs are grouped by **lifecycle phase** (mirrors `docs/foundation/product-definition.md`)
-and ordered by **dependency depth** within each phase. Build phases sequentially; specs within
-a phase may be built in listed order.
+Specs are grouped by **lifecycle phase** and ordered by **dependency depth** within each phase.
+Build phases sequentially; specs within a phase may be built in listed order.
 
 ```
-Phase 1        Phase 2          Phase 3         Phase 4      Phase 5        Phase 6           Phase 7          Phase 8           Phase 9
-Foundation  →  Institutional →  Partnerships →  Programs  →  Enrollment →  Daily Ops     →  Assessment   →  Certification  →  Reporting
-(install,     (departments,    (companies,      (internship  (registration, (logbook,        (rubrics,        (templates,        (grade cards,
- settings,      academic yrs)   partnerships)    structure)    placement,     attendance,      scoring,         handbooks,         snapshots)
- auth,                                                     user admin)    supervision)     feedback)        credentials)
- dashboard)
+Phase 1         Phase 2           Phase 3            Phase 4         Phase 5
+Foundation   →  Configuration  →  Identity & Auth →  Institutional →  Partnerships
+(PHP/Laravel,   (install,         (auth, notify,      (departments,   (companies,
+ base classes,   settings,         dashboard)          academic yrs)   partnerships)
+ utilities)     branding)
+
+Phase 6         Phase 7           Phase 8            Phase 9          Phase 10
+Programs      →  Enrollment    →  Daily Ops       →  Assessment   →  Certification
+(internship      (registration,    (logbook,           (rubrics,        (templates,
+ structure)       placement)       attendance)         scoring)         credentials)
+
+Phase 11         Phase 12
+Reporting      → Maintenance
+(grade cards,     (backup, GDPR, job queues,
+ snapshots)        archiving, cleanup)
 ```
 
 ### Phase 1 — Foundation
 
-Infrastructure, settings, auth, dashboard shell, core infrastructure. No business-logic dependencies.
+Core technology, architectural base classes, and shared utilities. Everything else depends on these.
 
-| # | Spec | Module | Depends On |
-| - | ---- | ------ | ---------- |
-| 1 | [Core Foundation](core-foundation.md) | Core | — |
-| 2 | [System Requirements](system-requirements.md) | Core | — |
-| 3 | [Module Discovery](module-discovery.md) | Core | — |
-| 4 | [Logging & Error Handling](logging-and-error-handling.md) | Core | — |
-| 5 | [Event System](event-system.md) | Core | #1 |
-| 6 | [RBAC & Authorization](rbac-and-authorization.md) | Core | #1 |
-| 7 | [Middleware Pipeline](middleware-pipeline.md) | Core | #1 |
-| 8 | [Security Headers](security-headers.md) | Core | #7 |
-| 9 | [Job & Queue Infrastructure](job-queue-infrastructure.md) | Core | #1 |
-| 10 | [Installation](installation.md) | Setup | #1 |
-| 11 | [Setup Wizard](setup-wizard.md) | Setup | #10 |
-| 12 | [Recovery Ecosystem](recovery-ecosystem.md) | Auth / Setup | #1, #10 |
-| 13 | [Settings Infrastructure](settings-infrastructure.md) | Settings | #1 |
-| 14 | [Branding, Theme & Locale](branding-theme-locale.md) | Settings | #13 |
-| 15 | [Authentication](authentication.md) | Auth | #1 |
-| 16 | [School Profile](school-profile.md) | Academics | #13 |
-| 17 | [Dashboard](dashboard.md) | User | #15 |
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 1  | [Tech Stack](tech-stack.md) | Core | — |
+| 2  | [Base Classes](base-classes.md) | Core | #1 |
+| 3  | [Shared Utilities](shared-utilities.md) | Core | #1, #2 |
+| 4  | [System Requirements](system-requirements.md) | Core | #1 |
+| 5  | [Module Discovery](module-discovery.md) | Core | #1, #2 |
+| 6  | [Logging & Error Handling](logging-and-error-handling.md) | Core | #1, #2 |
+| 7  | [Event System](event-system.md) | Core | #2 |
+| 8  | [RBAC & Authorization](rbac-and-authorization.md) | Core | #2 |
+| 9  | [Middleware Pipeline](middleware-pipeline.md) | Core | #2 |
+| 10 | [Security Headers](security-headers.md) | Core | #9 |
 
-### Phase 2 — Institutional
+### Phase 2 — Configuration
 
-Internal academic structure. Depends on Phase 1 (school profile).
+System installation, settings, and visual identity. Depends on Phase 1.
 
-| # | Spec | Module | Depends On |
-| - | ---- | ------ | ---------- |
-| 18 | [Department Management](department-management.md) | Academics | #16 |
-| 19 | [Academic Year Management](academic-year-management.md) | Academics | #16 |
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 11 | [Installation](installation.md) | Setup | #1, #2 |
+| 12 | [Setup Wizard](setup-wizard.md) | Setup | #11 |
+| 13 | [Recovery Ecosystem](recovery-ecosystem.md) | Setup | #1, #11 |
+| 14 | [Settings Infrastructure](settings-infrastructure.md) | Settings | #2 |
+| 15 | [Branding, Theme & Locale](branding-theme-locale.md) | Settings | #14 |
+| 16 | [School Profile](school-profile.md) | Academics | #14 |
 
-### Phase 3 — Partnerships
+### Phase 3 — Identity & Auth
 
-External partners and formal collaborations. Depends on Phase 1 (school profile) and Phase 2 (departments).
+Authentication, password management, profile, notifications, and dashboards. Depends on Phases 1–2.
 
-| # | Spec | Module | Depends On |
-| - | ---- | ------ | ---------- |
-| 20 | [Company Management](company-management.md) | Partners | #16, #18 |
-| 21 | [Partnership Management](partnership-management.md) | Partners | #20 |
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 17 | [Authentication](authentication.md) | Auth | #2, #8 |
+| 18 | [Notification Infrastructure](notification-infrastructure.md) | User | #2, #7 |
+| 19 | [Announcement System](announcement-system.md) | SysAdmin | #14, #18 |
+| 20 | [Dashboard](dashboard.md) | User | #17, #18 |
+| 21 | [Password Reset](password-reset.md) | Auth | #2, #17 |
+| 22 | [Password Confirmation](password-confirmation.md) | Auth | #2, #17 |
+| 23 | [Account Recovery Slips](account-recovery-slips.md) | Auth | #2, #17, #42 |
+| 24 | [Profile Management](profile-management.md) | User | #2, #8, #17, #42 |
 
-### Phase 4 — Programs
+### Phase 4 — Institutional
 
-Internship structure and grouping. Depends on Phase 2 (academic years) and Phase 3 (partnerships).
+Internal academic structure. Depends on Phase 2 (school profile).
 
-| # | Spec | Module | Depends On |
-| - | ---- | ------ | ---------- |
-| 22 | [Internship Lifecycle](internship-lifecycle.md) | Program | #19, #21 |
-| 23 | [Internship Groups](internship-groups.md) | Program | #22 |
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 25 | [Department Management](department-management.md) | Academics | #16 |
+| 26 | [Academic Year Management](academic-year-management.md) | Academics | #16 |
 
-### Phase 5 — Enrollment
+### Phase 5 — Partnerships
 
-Student intake, placement, user administration. Depends on Phase 4 (program, groups).
+External partners and formal collaborations. Depends on Phase 4 (departments).
 
-| # | Spec | Module | Depends On |
-| - | ---- | ------ | ---------- |
-| 24 | [Registration](registration.md) | Enrollment | #22, #23 |
-| 25 | [Placement](placement.md) | Enrollment | #24, #20 |
-| 26 | [Account Application](account-application.md) | Enrollment | #24 |
-| 27 | [User CRUD & Status](user-crud-and-status.md) | User / SysAdmin | #15 |
-| 28 | [CSV Import & Export](csv-import-export.md) | Cross-Module | #27, #20, #18 |
-| 29 | [Account Slips](account-slips.md) | User / SysAdmin | #27 |
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 27 | [Company Management](company-management.md) | Partners | #16, #25 |
+| 28 | [Partnership Management](partnership-management.md) | Partners | #27 |
 
-### Phase 6 — Daily Operations
+### Phase 6 — Programs
 
-Active internship period. Depends on Phase 5 (placement active).
+Internship structure and grouping. Depends on Phases 4–5.
 
-| # | Spec | Module | Depends On |
-| - | ---- | ------ | ---------- |
-| 30 | [Daily Activity](daily-activity.md) | Journals | #25 |
-| 31 | [Supervision](supervision.md) | Journals | #25, #30 |
-| 32 | [Incident](incident.md) | Incident | #25 |
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 29 | [Internship Lifecycle](internship-lifecycle.md) | Program | #26, #28 |
+| 30 | [Internship Groups](internship-groups.md) | Program | #29 |
 
-### Phase 7 — Assessment
+### Phase 7 — Enrollment
 
-Scoring, feedback, coursework. Depends on Phase 5 (placement active).
+Student intake, placement, user administration. Depends on Phase 6.
 
-| # | Spec | Module | Depends On |
-| - | ---- | ------ | ---------- |
-| 33 | [Assessment](assessment.md) | Assessment | #25 |
-| 34 | [Evaluation](evaluation.md) | Evaluation | #25 |
-| 35 | [Assignment](assignment.md) | Assignment | #25 |
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 31 | [Registration](registration.md) | Enrollment | #29, #30 |
+| 32 | [Placement](placement.md) | Enrollment | #31, #27 |
+| 33 | [Account Application](account-application.md) | Enrollment | #31 |
+| 34 | [User CRUD & Status](user-crud-and-status.md) | User | #17 |
+| 35 | [CSV Import & Export](csv-import-export.md) | Enrollment | #34, #27, #25 |
+| 36 | [Account Slips](account-slips.md) | User | #34 |
 
-### Phase 8 — Certification
+### Phase 8 — Daily Operations
 
-Credentials, documents, handbooks, media, PDF. Depends on Phases 6–7 (assessments, evaluations complete).
+Active internship period. Depends on Phase 7 (placement active).
 
-| # | Spec | Module | Depends On |
-| - | ---- | ------ | ---------- |
-| 36 | [Document Templates](document-templates.md) | Document | #10 |
-| 37 | [Handbooks](handbooks.md) | Document | #36 |
-| 38 | [Certification](certification.md) | Certification | #33, #34 |
-| 39 | [File Uploads & Media](file-uploads-media.md) | Core | #1 |
-| 40 | [PDF Generation](pdf-generation.md) | Core | #39 |
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 37 | [Daily Activity](daily-activity.md) | Journals | #32 |
+| 38 | [Supervision](supervision.md) | Journals | #32, #37 |
+| 39 | [Incident](incident.md) | Incident | #32 |
 
-### Phase 9 — Reporting
+### Phase 9 — Assessment
 
-Grade cards, archived snapshots. Depends on Phase 8 (certification complete).
+Scoring, feedback, coursework. Depends on Phase 7 (placement active).
 
-| # | Spec | Module | Depends On |
-| - | ---- | ------ | ---------- |
-| 41 | [Reports](reports.md) | Reports | #38 |
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 40 | [Assessment](assessment.md) | Assessment | #32 |
+| 41 | [Evaluation](evaluation.md) | Evaluation | #32 |
+| 42 | [Assignment](assignment.md) | Assignment | #32 |
+
+### Phase 10 — Certification
+
+Credentials, documents, handbooks, media, PDF. Depends on Phases 8–9.
+
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 43 | [Document Templates](document-templates.md) | Document | #11 |
+| 44 | [Handbooks](handbooks.md) | Document | #43 |
+| 45 | [Certification](certification.md) | Certification | #40, #41 |
+| 46 | [File Uploads & Media](file-uploads-media.md) | Core | #2 |
+| 47 | [PDF Generation](pdf-generation.md) | Core | #46 |
+
+### Phase 11 — Reporting
+
+Archived snapshots, grade cards, official correspondence, and final lifecycle records. End of PKL lifecycle.
+
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 48 | [Reports](reports.md) | Reports | #45 |
+| 49 | [Official Documents](official-documents.md) | Document | #31, #43, #48 |
+
+### Phase 12 — Maintenance
+
+Backup, compliance, job queues, archiving, and system cleanup. Runs continuously after Phase 11.
+
+| #  | Spec | Module | Depends On |
+| -- | ---- | ------ | ---------- |
+| 50 | [Job & Queue Infrastructure](job-queue-infrastructure.md) | Core | #2, #7 |
+| 51 | [Backup System](backup-system.md) | SysAdmin | #7, #8, #14, #18, #50 |
+| 52 | [GDPR Compliance](gdpr-compliance.md) | SysAdmin | #14, #34 |
+| 53 | [System Maintenance](system-maintenance.md) | SysAdmin | #6, #8, #50, #51 |
 
 ---
 
@@ -161,6 +202,7 @@ Every spec follows the 11-section format defined in `.agents/skills/spec-writing
 7. Design Decisions (DD-IDs)
 8. Success Metrics
 9. Roadmap (prerequisites, build guide, next steps)
+10. (Quick References)
 
 ---
 
