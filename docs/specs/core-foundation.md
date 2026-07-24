@@ -150,7 +150,7 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | FR-L2 | `BaseRecordEntry` — modal CRUD: create/edit modal with form, `handleError()` for RejectedException |
 | FR-L3 | `BaseRecordList` — read-only list: search, pagination (no create/edit) |
 | FR-L4 | `BaseFormView` — full-page form: dirty tracking, `handleSave()` |
-| FR-L5 | `BaseWizard` — multi-step wizard: step navigation, validation, completion tracking |
+| FR-L5 | `BaseWizard` — multi-step wizard: `steps()` (abstract, returns key array), `nextStep()` (validates + advances), `prevStep()`, `goToStep()` (with access check), `isStepAccessible()` (all prior steps completed), `progressPercent()`, `currentStepKey()`, `handleStepError()` (catches `RejectedException`), state persistence hooks |
 | FR-L6 | `BaseController` — JSON response helpers: `jsonSuccess()`, `jsonCreated()`, `jsonError()`, `jsonPaginated()`, etc. |
 | FR-L7 | `BaseFormRequest` — throws `ValidationFailedException` on failed validation |
 
