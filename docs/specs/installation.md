@@ -148,6 +148,9 @@ accessible via token.
 | FR-A7 | Audit results must be categorized: REQUIREMENTS, PERMISSIONS, DATABASE, TERMINAL, RECOMMENDATIONS |
 | FR-A8 | Each check must show pass/fail/warning status with specific details      |
 | FR-A9 | Audit must be re-runnable (Recheck button in wizard)                    |
+| FR-A10 | Frontend assets check: verify `public/build/manifest.json` exists (Vite build output) |
+| FR-A11 | TERMINAL checks: `pcntl_fork` (animations) and `posix_isatty` (interactive terminal) — WARN if missing |
+| FR-A12 | Post-install template `.env` warnings: detect placeholder values in APP_URL, DB_PASSWORD, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM_ADDRESS |
 
 ### 4.2 System Provisioning
 
@@ -182,11 +185,12 @@ accessible via token.
 | FR-C1 | `setup:install` — provisions system, generates token, displays URL       |
 | FR-C2 | `setup:install --check-only` — runs audit only, no provisioning         |
 | FR-C3 | `setup:install --force` — wipes DB and re-provisions (restricted envs)   |
-| FR-C4 | `setup:install --url=URL` — sets APP_URL and generates URL with token    |
-| FR-C5 | `setup:reset-token` — generates new token, invalidates old              |
-| FR-C6 | `admin:recover` — generates new password for super admin                |
-| FR-C7 | `setup:install` on installed system must fail unless `--force`           |
-| FR-C8 | `--force` on non-local environments must be rejected                    |
+| FR-C4 | `setup:install --url=URL` — sets APP_URL in `.env` and generates token URL |
+| FR-C5 | `setup:install --optimize` — caches config, routes, views, events (production) |
+| FR-C6 | `setup:reset-token` — generates new token, invalidates old              |
+| FR-C7 | `admin:recover` — generates new password for super admin (see [recovery-ecosystem.md](recovery-ecosystem.md)) |
+| FR-C8 | `setup:install` on installed system must fail unless `--force`           |
+| FR-C9 | `--force` on non-local environments must be rejected                    |
 
 ### 4.5 Module Discovery
 
@@ -489,6 +493,33 @@ update when adding/removing modules.
 **Trade-off:** `tests/Pest.php` must maintain a parallel hardcoded list because `config()` is
 not available at Pest discovery time. Comment explains the sync requirement.
 
+### DD-8 — Optional Optimization During Install
+
+**Decision:** Provide `--optimize` flag to run `config:cache`, `route:cache`, `view:cache`,
+`event:cache` during installation. Not enabled by default.
+
+**Rationale:** Caching improves first-request performance (~60% faster bootstrap). However,
+caching during install can cause issues in development (cached config prevents `.env` changes
+from taking effect). Making it opt-in lets production deployments enable it while keeping
+development smooth.
+
+**Trade-off:** After caching, the Container and Facade instances must be rebound (via
+`Container::setInstance()` and `Facade::setFacadeApplication()`) to prevent stale references.
+This is an implementation detail documented in the command.
+
+### DD-9 — Localhost URL Detection
+
+**Decision:** When `--url` is not provided and `APP_URL` contains `localhost`, `127.0.0.1`,
+or `your-domain.com`, display a warning suggesting the administrator set a proper URL.
+
+**Rationale:** The default `.env.example` has `APP_URL=http://localhost`. Production deployments
+must set a real URL for password reset links, notification URLs, and asset loading. Detecting
+this early prevents broken links in production.
+
+**Trade-off:** The check is heuristic (string matching), not authoritative. A deployment on
+`localhost` (e.g., Docker health checks) would see a false warning. Acceptable because the
+warning is informational, not blocking.
+
 ---
 
 ## 8. Success Metrics
@@ -535,6 +566,7 @@ not available at Pest discovery time. Comment explains the sync requirement.
 - `docs/foundation/product-definition.md` — Scope, personas, system boundary
 - `docs/foundation/installation.md` — Detailed server prep guide
 - `docs/foundation/account-recovery.md` — Recovery key lifecycle
+- **Related specs:** [recovery-ecosystem.md](recovery-ecosystem.md) — Super admin emergency access, CLI commands, OTP
 - `config/setup.php` — Setup configuration values
 - `config/module.php` — Module registry (SSOT)
 - `app/Setup/` — Full module source code

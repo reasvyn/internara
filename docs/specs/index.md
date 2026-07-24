@@ -1,6 +1,6 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-07-23 **Changes:** feat — add infrastructure specs (event system, RBAC, middleware, security headers, jobs, media, PDF) (40 specs)
+> **Last updated:** 2026-07-24 **Changes:** feat — add recovery ecosystem spec (41 specs)
 
 ## Description
 
@@ -45,11 +45,12 @@ Infrastructure, settings, auth, dashboard shell, core infrastructure. No busines
 | 9 | [Job & Queue Infrastructure](job-queue-infrastructure.md) | Core | #1 |
 | 10 | [Installation](installation.md) | Setup | #1 |
 | 11 | [Setup Wizard](setup-wizard.md) | Setup | #10 |
-| 12 | [Settings Infrastructure](settings-infrastructure.md) | Settings | #1 |
-| 13 | [Branding, Theme & Locale](branding-theme-locale.md) | Settings | #12 |
-| 14 | [Authentication](authentication.md) | Auth | #1 |
-| 15 | [School Profile](school-profile.md) | Academics | #12 |
-| 16 | [Dashboard](dashboard.md) | User | #14 |
+| 12 | [Recovery Ecosystem](recovery-ecosystem.md) | Auth / Setup | #1, #10 |
+| 13 | [Settings Infrastructure](settings-infrastructure.md) | Settings | #1 |
+| 14 | [Branding, Theme & Locale](branding-theme-locale.md) | Settings | #13 |
+| 15 | [Authentication](authentication.md) | Auth | #1 |
+| 16 | [School Profile](school-profile.md) | Academics | #13 |
+| 17 | [Dashboard](dashboard.md) | User | #15 |
 
 ### Phase 2 — Partnerships
 
@@ -57,10 +58,10 @@ External partners and academic structure. Depends on Phase 1 (settings, auth, sc
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
-| 17 | [Department Management](department-management.md) | Academics | #15 |
-| 18 | [Academic Year Management](academic-year-management.md) | Academics | #15 |
-| 19 | [Company Management](company-management.md) | Partners | #16, #17 |
-| 20 | [Partnership Management](partnership-management.md) | Partners | #19 |
+| 18 | [Department Management](department-management.md) | Academics | #16 |
+| 19 | [Academic Year Management](academic-year-management.md) | Academics | #16 |
+| 20 | [Company Management](company-management.md) | Partners | #17, #18 |
+| 21 | [Partnership Management](partnership-management.md) | Partners | #20 |
 
 ### Phase 3 — Programs
 
@@ -68,8 +69,8 @@ Internship structure and grouping. Depends on Phase 2 (departments, academic yea
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
-| 21 | [Internship Lifecycle](internship-lifecycle.md) | Program | #18, #19 |
-| 22 | [Internship Groups](internship-groups.md) | Program | #21 |
+| 22 | [Internship Lifecycle](internship-lifecycle.md) | Program | #19, #21 |
+| 23 | [Internship Groups](internship-groups.md) | Program | #22 |
 
 ### Phase 4 — Enrollment
 
@@ -77,12 +78,12 @@ Student intake, placement, user administration. Depends on Phase 3 (program, gro
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
-| 23 | [Registration](registration.md) | Enrollment | #21, #22 |
-| 24 | [Placement](placement.md) | Enrollment | #23, #19 |
-| 25 | [Account Application](account-application.md) | Enrollment | #23 |
-| 26 | [User CRUD & Status](user-crud-and-status.md) | User / SysAdmin | #14 |
-| 27 | [CSV Import & Export](csv-import-export.md) | Cross-Module | #26, #19, #17 |
-| 28 | [Account Slips](account-slips.md) | User / SysAdmin | #26 |
+| 24 | [Registration](registration.md) | Enrollment | #22, #23 |
+| 25 | [Placement](placement.md) | Enrollment | #24, #20 |
+| 26 | [Account Application](account-application.md) | Enrollment | #24 |
+| 27 | [User CRUD & Status](user-crud-and-status.md) | User / SysAdmin | #15 |
+| 28 | [CSV Import & Export](csv-import-export.md) | Cross-Module | #27, #20, #18 |
+| 29 | [Account Slips](account-slips.md) | User / SysAdmin | #27 |
 
 ### Phase 5 — Daily Operations
 
@@ -90,9 +91,9 @@ Active internship period. Depends on Phase 4 (placement active).
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
-| 29 | [Daily Activity](daily-activity.md) | Journals | #24 |
-| 30 | [Supervision](supervision.md) | Journals | #24, #29 |
-| 31 | [Incident](incident.md) | Incident | #24 |
+| 30 | [Daily Activity](daily-activity.md) | Journals | #25 |
+| 31 | [Supervision](supervision.md) | Journals | #25, #30 |
+| 32 | [Incident](incident.md) | Incident | #25 |
 
 ### Phase 6 — Assessment & Evaluation
 
@@ -100,9 +101,9 @@ Scoring, feedback, coursework. Depends on Phase 4 (placement active).
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
-| 32 | [Assessment](assessment.md) | Assessment | #24 |
-| 33 | [Evaluation](evaluation.md) | Evaluation | #24 |
-| 34 | [Assignment](assignment.md) | Assignment | #24 |
+| 33 | [Assessment](assessment.md) | Assessment | #25 |
+| 34 | [Evaluation](evaluation.md) | Evaluation | #25 |
+| 35 | [Assignment](assignment.md) | Assignment | #25 |
 
 ### Phase 7 — Certification
 
@@ -110,11 +111,11 @@ Credentials, documents, handbooks, media, PDF. Depends on Phases 5–6 (assessme
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
-| 35 | [Document Templates](document-templates.md) | Document | #10 |
-| 36 | [Handbooks](handbooks.md) | Document | #35 |
-| 37 | [Certification](certification.md) | Certification | #32, #33 |
-| 38 | [File Uploads & Media](file-uploads-media.md) | Core | #1 |
-| 39 | [PDF Generation](pdf-generation.md) | Core | #38 |
+| 36 | [Document Templates](document-templates.md) | Document | #10 |
+| 37 | [Handbooks](handbooks.md) | Document | #36 |
+| 38 | [Certification](certification.md) | Certification | #33, #34 |
+| 39 | [File Uploads & Media](file-uploads-media.md) | Core | #1 |
+| 40 | [PDF Generation](pdf-generation.md) | Core | #39 |
 
 ### Phase 8 — Reporting
 
@@ -122,7 +123,7 @@ Grade cards, archived snapshots. Depends on Phase 7 (certification complete).
 
 | # | Spec | Module | Depends On |
 | - | ---- | ------ | ---------- |
-| 40 | [Reports](reports.md) | Reports | #37 |
+| 41 | [Reports](reports.md) | Reports | #38 |
 
 ---
 
