@@ -129,7 +129,7 @@ Refer to the [ADR Index](adr/index.md) for all 14 records covering foundation, o
 
 ## Roadmap & Planning
 
-- **[Roadmap](roadmap.md)** — Feature plans, module maturity, milestone timeline
+- **[Roadmap](roadmap.md)** — Development status tracker, phase progress, production readiness
 - **[GitHub Issues](https://github.com/reasvyn/internara/issues)** — Bug tracker, known issues, feature requests
 - **[GitHub Discussions](https://github.com/reasvyn/internara/discussions)** — Q&A, ideas, community
 

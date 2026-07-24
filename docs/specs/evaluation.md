@@ -419,6 +419,26 @@ evaluation_answers:
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [placement.md](placement.md) | Active placement records — evaluation gathers feedback within a placement context |
+
+### Build Guide
+After implementing this spec, the system has weighted feedback forms with section-based questions, Likert scales, and qualitative comments. Evaluations complement assessment scores with stakeholder perspectives (supervisors, students, teachers). The next step is to build assignment management for coursework submissions.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [assignment.md](assignment.md) | Assignment submissions are evaluated alongside this feedback |
+| 2 | [certification.md](certification.md) | Certification combines evaluation feedback with assessment scores |
+
+---
+
 ## Quick References
 
 - `app/Evaluation/Models/EvaluationForm.php` — Form model with target_type and is_active

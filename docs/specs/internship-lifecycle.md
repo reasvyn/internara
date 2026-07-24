@@ -453,6 +453,24 @@ batch close, UI preview), keeping close Actions focused.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [academic-year-management.md](academic-year-management.md) | Academic year entities — programs run within year date ranges |
+| [partnership-management.md](partnership-management.md) | Partnership entities — programs are scoped to partnerships |
+
+### Build Guide
+After implementing this spec, the system has internship program CRUD with phases (preparation, active, evaluation, closing), date ranges, and status tracking. Programs define the structure that students enroll in. The next step is to build internship groups, which divide students within a program into manageable cohorts with assigned mentors.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [internship-groups.md](internship-groups.md) | Groups belong to programs; group members reference program phases for scheduling |
+
 ## Quick References
 
 - `app/Program/Internship/Models/Internship.php` — Internship model with JSON columns and entity bridges

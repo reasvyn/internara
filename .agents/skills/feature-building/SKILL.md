@@ -1,8 +1,7 @@
 ---
 name: feature-building
-description: "SDLC Phase: IMPLEMENTATION (Orchestrator). Execution phase that takes task specifications from docs/roadmap.md or docs/specs/ and implements them — coordinating specialized sub-skills for each concern."
+description: "SDLC Phase: IMPLEMENTATION (Orchestrator). Execution phase that takes task specifications from docs/specs/ and implements them — coordinating specialized sub-skills for each concern."
 upstream:
-  - roadmap-planning
   - spec-writing
   - code-refactoring
   - writing-issues
@@ -41,7 +40,7 @@ Using this skill follows 4 phases:
 
 ### 2. Execute — Feature Building
 
-- Read task spec from docs/roadmap.md
+- Read task spec from docs/specs/ (use spec §9 Roadmap for build sequence)
 - Follow build sequence: Docs → Migration/Model → Enum → Entity → Action → Policy → Livewire ->
   Blade → Routes → Translations → Tests
 - Delegate sub-skills as needed (livewire, tailwindcss, medialibrary, pulse)
@@ -73,7 +72,7 @@ Using this skill follows 4 phases:
 
 | Role           | Skill                                                                |
 | -------------- | -------------------------------------------------------------------- |
-| **Upstream**   | `roadmap-planning` (task spec), `spec-writing` (feature specs), `code-refactoring` (refactored code) |
+| **Upstream**   | `spec-writing` (feature specs), `code-refactoring` (refactored code) |
 | **This skill** | **IMPLEMENTATION (Orchestrator)** — executes the build               |
 | **Downstream** | `pest-testing` (tests), `sync-docs` (doc updates), sub-skills        |
 
@@ -81,7 +80,7 @@ Using this skill follows 4 phases:
 
 ### 1. Understand the Task
 
-- Read the task specification from `docs/roadmap.md` or the issue description
+- Read the task specification from `docs/specs/` (check §9 Roadmap for prerequisites and build sequence)
 - If a feature spec exists in `docs/specs/`, read it — it contains requirements (FR/NFR IDs),
   data contracts, design decisions, and success metrics that MUST guide implementation
 - Read the relevant module docs: `docs/modules/{module}.md` (business rules) and

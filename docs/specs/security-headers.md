@@ -225,6 +225,25 @@ force the browser to remember HTTPS-only, potentially breaking local development
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [middleware-pipeline.md](middleware-pipeline.md) | `SecurityHeaders` middleware registration in the global stack |
+
+### Build Guide
+After implementing this spec, every HTTP response has CSP, HSTS, X-Frame-Options, Referrer-Policy, and Permissions-Policy headers. This spec is a leaf in the foundation chain — the headers are applied automatically by the middleware. The next step is to build the job queue infrastructure for async processing.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [job-queue-infrastructure.md](job-queue-infrastructure.md) | Queued jobs run in the same security context; headers applied to web responses only |
+
+---
+
 ## Quick References
 
 - `app/Core/Http/Middleware/SecurityHeaders.php` — Security headers middleware

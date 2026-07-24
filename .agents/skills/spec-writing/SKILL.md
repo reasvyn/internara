@@ -4,7 +4,6 @@ description: "SDLC Phase: PLANNING / DOCUMENTATION. Writing comprehensive featur
 upstream:
   - context-awareness
   - doc-writing
-  - roadmap-planning
 downstream:
   - feature-building
   - code-writing
@@ -60,10 +59,11 @@ Use this skill when:
 
 ### 3. Verify — Quality Gates
 
-- All 10 sections are present and populated
+- All 11 sections are present and populated
 - Every functional requirement has a unique ID (`FR-{area}{number}`)
 - Every non-functional requirement has a unique ID (`NFR-{category}{number}`)
 - Every design decision has a unique ID (`DD-{number}`)
+- §9 Roadmap has Prerequisites (with specific artifacts), Build Guide (1-2 sentences), and Next Steps
 - All cross-references resolve to existing files
 - All file paths reference real files in the codebase
 - Metadata block present with current date
@@ -79,7 +79,7 @@ Use this skill when:
 
 ---
 
-## 10-Section Spec Template
+## 11-Section Spec Template
 
 Every spec document follows this structure:
 
@@ -164,6 +164,29 @@ Every spec document follows this structure:
 ## 8. Success Metrics
 
 {Measurable targets for the feature}
+
+---
+
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [{name}](link.md) | {specific artifact, class, or state} |
+
+{If no prerequisites: "No prerequisites — this is a foundational spec."}
+
+### Build Guide
+{1-2 sentence narrative: what was built by this spec, and what the developer
+should build next. Use active voice. Name specific classes, methods, or config
+keys that connect to the next spec.}
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [{name}](link.md) | {what artifact flows and how} |
 
 ---
 
@@ -289,6 +312,17 @@ capability, split it.
 - Include both positive metrics (what should work) and negative metrics (what should NOT happen)
 - Metrics should be achievable — set aspirational but realistic targets
 
+### Roadmap (§9)
+
+- **Prerequisites are enforcement, not decoration** — only list specs whose implementation is a hard dependency (code literally calls classes from the prerequisite)
+- Prerequisite table must name the **specific artifact** provided (class, method, config key, state flag)
+- **Build Guide** is 1-2 sentences, active voice, tells the developer what to do next
+- **Next Steps** lists only direct downstream specs (not transitive A→B→C)
+- "Connection" column names the artifact that flows and the mechanism that transfers it
+- Leaf specs (no downstream consumers) say "End of lifecycle — no downstream consumers"
+- Foundation specs (no upstream dependencies) say "No prerequisites — this is a foundational spec"
+- When splitting a spec, each new spec gets its own Roadmap referencing the sibling specs
+
 ---
 
 ## Indexing Rules
@@ -300,7 +334,7 @@ each phase — not alphabetically, not by module.
 ### Lifecycle Phases
 
 ```
-Foundation → Partnerships → Programs → Enrollment → Daily Operations → Assessment → Evaluation → Certification → Reporting
+Foundation → Institutional → Partnerships → Programs → Enrollment → Daily Operations → Assessment → Certification → Reporting
 ```
 
 Each spec belongs to exactly one phase. Assign phase by asking: **"At what point in the PKL
@@ -309,13 +343,13 @@ lifecycle does this feature first become usable?"**
 | Phase | What goes here |
 |-------|---------------|
 | Foundation | Infrastructure, settings, auth, base classes, dashboard shell |
-| Partnerships | Company/partner management, academic structure (departments, years) |
+| Institutional | Academic structure (departments, academic years) — internal school setup |
+| Partnerships | External partners (companies, formal partnerships) |
 | Programs | Internship program definition, grouping |
 | Enrollment | Student registration, placement, user CRUD, CSV utilities |
 | Daily Operations | Logbook, attendance, supervision, incidents |
-| Assessment | Rubrics, scoring frameworks |
-| Evaluation | Feedback forms, weighted questions, coursework |
-| Certification | Templates, credentials, handbooks |
+| Assessment | Rubrics, scoring frameworks, evaluations, assignments |
+| Certification | Templates, credentials, handbooks, media, PDF |
 | Reports | Grade cards, archived snapshots |
 
 ### Dependency Tracking
@@ -336,6 +370,7 @@ The index table has a `Depends On` column with `#N` references to earlier specs.
 4. Add row to the correct phase table in `docs/specs/index.md`
 5. Update the ASCII flow diagram if adding a new phase
 6. Update the total count in the metadata line
+7. Set §9 Roadmap: identify prerequisites (with specific artifacts) and next steps from dependency graph
 
 ### When Splitting a Spec
 
@@ -374,7 +409,7 @@ other way around.
 
 | Role | Skill |
 |------|-------|
-| **Upstream** | `context-awareness` (project orientation), `doc-writing` (documentation conventions), `roadmap-planning` (feature identification) |
+| **Upstream** | `context-awareness` (project orientation), `doc-writing` (documentation conventions) |
 | **This skill** | **SPEC WRITING** — defines feature specifications before implementation |
 | **Downstream** | `feature-building` (implementation), `code-writing` (coding), `pest-testing` (verification), `writing-issues` (if spec reveals gaps) |
 

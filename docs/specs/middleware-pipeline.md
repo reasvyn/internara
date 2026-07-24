@@ -209,6 +209,26 @@ understand actual limits.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [core-foundation.md](core-foundation.md) | `SecurityHeaders`, `LogContext`, `RequireSetupAccessMiddleware`, `SetLocaleMiddleware` base implementations |
+| [rbac-and-authorization.md](rbac-and-authorization.md) | `CheckRoleMiddleware` for route-level role enforcement |
+
+### Build Guide
+After implementing this spec, the system has a complete middleware stack: security headers on every response, request logging with duration tracking, setup gating for uninstalled instances, locale resolution, and role-based route protection. The next step is to implement security headers details, which extends the CSP and HSTS policies defined in this pipeline.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [security-headers.md](security-headers.md) | `SecurityHeaders` middleware from this spec applies CSP, HSTS, X-Frame-Options defined in that spec |
+
+---
+
 ## Quick References
 
 - `app/Core/Http/Middleware/LogContext.php` — Request context enrichment

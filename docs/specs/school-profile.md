@@ -422,6 +422,26 @@ Prevents ad-hoc key strings and enables bulk invalidation.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [settings-infrastructure.md](settings-infrastructure.md) | `school.*` settings keys, `SchoolEntity` cached via `SettingsStore` |
+
+### Build Guide
+After implementing this spec, the system has the school's identity (name, NPSN, address, contact info) stored as settings. This is the single-tenant school profile — one school per deployment. Departments and academic years are scoped to this school. The next step is to build department management, which creates the academic departments that companies reference in internship offerings.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [department-management.md](department-management.md) | Departments belong to this school; `school_profile` entity used in department context |
+| 2 | [company-management.md](company-management.md) | Companies offer internships to departments from this school |
+
+---
+
 ## Quick References
 
 - `app/Academics/School/Entities/SchoolEntity.php` — School profile value object (7 typed properties)

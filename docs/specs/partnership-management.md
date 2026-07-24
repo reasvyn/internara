@@ -485,6 +485,23 @@ partnerships:
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [company-management.md](company-management.md) | Company entities — partnerships are formalized relationships with these companies |
+
+### Build Guide
+After implementing this spec, the system has partnership CRUD linking companies to departments with date ranges, status tracking, and supervisor assignments. Partnerships are the bridge between external companies and internal academic structure. The next step is to build the internship lifecycle, which defines the programs that run within these partnerships.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [internship-lifecycle.md](internship-lifecycle.md) | Internship programs are scoped to partnerships; program phases reference partnership date ranges |
+
 ## Quick References
 
 - `app/Partners/Partnership/Models/Partnership.php` — Partnership model with MediaLibrary, Fillable, relationships

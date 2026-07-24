@@ -391,6 +391,27 @@ certificate_templates:
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [assessment.md](assessment.md) | Assessment scores — certificate eligibility requires minimum scores |
+| [evaluation.md](evaluation.md) | Evaluation data — certificate includes evaluation summary |
+
+### Build Guide
+After implementing this spec, the system generates PDF certificates for students who complete the PKL program. Certificates combine assessment scores, evaluation data, and template rendering. Certificate credentials can be verified via unique certificate numbers. The next step is to build file uploads and media management for evidence attachments.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [file-uploads-media.md](file-uploads-media.md) | Certificate PDFs and evidence files use Spatie MediaLibrary for storage |
+| 2 | [pdf-generation.md](pdf-generation.md) | Certificate PDFs are rendered via DomPDF with templates from document-templates |
+
+---
+
 ## Quick References
 
 - `app/Certification/Certificate/Models/Certificate.php` — Certificate model with status and QR hash

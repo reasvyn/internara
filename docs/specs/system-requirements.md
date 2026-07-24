@@ -304,6 +304,19 @@ decisions shaped the final schema — each documented in the relevant spec's Des
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+No prerequisites — this is a foundational spec.
+
+### Build Guide
+After implementing this spec, the system has a verified dependency manifest, database portability across SQLite/MySQL/PostgreSQL, and clear minimum requirements. This spec is reference material — its requirements are enforced by `composer.json` and `config/database.php`. The next step is to implement module discovery, which scans the module directories defined in this spec's schema.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [module-discovery.md](module-discovery.md) | Uses module directory structure defined in §4.4 |
+
 ## Quick References
 
 - `docs/architecture.md` — 4-layer architecture, Action Triad, dependency rules

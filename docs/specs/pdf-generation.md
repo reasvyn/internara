@@ -240,6 +240,25 @@ should delegate to Renderers for any PDF-specific work.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [file-uploads-media.md](file-uploads-media.md) | Media storage for rendered PDF files |
+
+### Build Guide
+After implementing this spec, the system can generate PDFs via DomPDF for certificates, grade cards, and official documents. PDFs use templates from document-templates and store output via media library. The final step in the lifecycle is reports, which archive grade cards as snapshots.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [reports.md](reports.md) | Reports generate grade card snapshots using PDF generation infrastructure |
+
+---
+
 ## Quick References
 
 - `config/dompdf.php` — Dompdf configuration

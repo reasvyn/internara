@@ -546,6 +546,26 @@ total for all 5).
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [authentication.md](authentication.md) | Authenticated user with role; session state for dashboard personalization |
+
+### Build Guide
+After implementing this spec, role-based dashboards display relevant stats, quick actions, and notifications for each user type (admin, teacher, student, supervisor). This is the landing page after login. Dashboard stats are read-only views — the data comes from other modules. The next phase is to build the institutional structure (departments, academic years) that programs and enrollment depend on.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [department-management.md](department-management.md) | Admin dashboard shows department count; department data feeds program statistics |
+| 2 | [academic-year-management.md](academic-year-management.md) | Dashboard shows active academic year; year status affects all module visibility |
+
+---
+
 ## Quick References
 
 - `app/User/Services/DashboardService.php` — role-based dashboard resolution (47 lines)

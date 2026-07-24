@@ -543,6 +543,23 @@ picks up new modules.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+No prerequisites — this is a foundational spec.
+
+### Build Guide
+After implementing this spec, every module in the system has base classes to extend: Action Triad for business logic, Entity/DTO for data, Livewire base classes for UI, and the exception hierarchy for error handling. The next step is to implement the specs that depend on these foundations — event system, RBAC, middleware pipeline, and job queue infrastructure.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [event-system.md](event-system.md) | Uses `BaseEvent` and `dispatchEvent()` from `BaseAction` |
+| 2 | [rbac-and-authorization.md](rbac-and-authorization.md) | Uses `BasePolicy`, `AuthorizesRoles`, `AuthorizesOwnership` |
+| 3 | [middleware-pipeline.md](middleware-pipeline.md) | Defines middleware that `bootstrap/app.php` registers |
+| 4 | [job-queue-infrastructure.md](job-queue-infrastructure.md) | Uses `BaseProcessAction` for queued jobs |
+| 5 | [installation.md](installation.md) | Uses `BaseWizard`, `BaseCommandAction`, exception hierarchy |
+
 ## Quick References
 
 - `docs/architecture.md` — 4-layer architecture, Action Triad, dependency rules

@@ -374,6 +374,25 @@ relationship (Registration has many RegistrationDocuments).
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [internship-lifecycle.md](internship-lifecycle.md) | Program entities — registration enrolls students into programs |
+| [internship-groups.md](internship-groups.md) | Group entities — enrolled students are assigned to groups |
+
+### Build Guide
+After implementing this spec, students can register for internship programs and be assigned to groups. Registration creates enrollment records with status tracking (pending, approved, rejected). The next step is to build placement, which matches enrolled students to companies via partnerships.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [placement.md](placement.md) | Placement reads enrollment records from this spec and matches with companies from #20 partnership-management |
+| 2 | [account-application.md](account-application.md) | New students self-register through this flow before reaching registration |
+
 ## Quick References
 
 - `app/Enrollment/Registration/Models/Registration.php` — Registration model (UUID PK, status strings)

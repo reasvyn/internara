@@ -381,6 +381,25 @@ incident_reports:
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [placement.md](placement.md) | Active placement records — incidents are tied to specific placements |
+
+### Build Guide
+After implementing this spec, students and supervisors can report workplace incidents (safety concerns, harassment, policy violations) with severity tracking and resolution workflow. Incidents are logged against the student's active placement. The next phase is assessment — scoring student work against competency rubrics.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [assessment.md](assessment.md) | Assessment evaluates student competency; incidents may affect assessment context |
+
+---
+
 ## Quick References
 
 - `app/Incident/IncidentReport/Models/IncidentReport.php` — Incident model with 12 fillable fields and 3 enum casts

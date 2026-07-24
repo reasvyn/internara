@@ -456,6 +456,26 @@ file permissions.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [installation.md](installation.md) | `setup.recovery_key` setting (bcrypt hash), `SetupEntity` for key verification |
+| [setup-wizard.md](setup-wizard.md) | Recovery key generated during finalization, saved to `storage/app/private/.recovery-key` |
+
+### Build Guide
+After implementing this spec, the system has emergency super admin recovery via CLI: 3 commands (`admin:recover`, `admin:recovery-show`, `admin:recovery-path`), OTP verification in production, key file read/write, and key regeneration after each recovery. The next step is to build settings infrastructure, which provides the key-value store that all modules use for configuration.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [settings-infrastructure.md](settings-infrastructure.md) | `BatchSetSettingAction` used for recovery key hash updates; `settings` table stores all configuration |
+
+---
+
 ## Quick References
 
 - `docs/modules/setup.md` — Setup module conceptual overview

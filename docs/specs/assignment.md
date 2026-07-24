@@ -479,6 +479,25 @@ submissions:
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [placement.md](placement.md) | Active placement records — assignments are scoped to placements |
+
+### Build Guide
+After implementing this spec, teachers can create assignments with deadlines, students submit work (file uploads or text), and teachers grade submissions. Assignments are the coursework component of the PKL evaluation. The next step is to build document templates for certificate and report generation.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [document-templates.md](document-templates.md) | Assignment grades feed into report cards generated from templates |
+
+---
+
 ## Quick References
 
 - `app/Assignment/Models/Assignment.php` — Assignment model with status and relationships

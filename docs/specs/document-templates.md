@@ -295,6 +295,26 @@ documents:
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [installation.md](installation.md) | System provisioned with default template configurations |
+
+### Build Guide
+After implementing this spec, the system has PDF template infrastructure for certificates, grade cards, and official documents. Templates use variable placeholders for dynamic data (student name, scores, dates). The next step is to build handbooks, which use the document engine for student and supervisor handbooks.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [handbooks.md](handbooks.md) | Handbooks use the document template engine for rendering and acknowledgement tracking |
+| 2 | [certification.md](certification.md) | Certificate generation uses templates from this spec |
+
+---
+
 ## Quick References
 
 - `app/Document/Models/Document.php` — Document model with fillable, casts, media, scopes, bridge

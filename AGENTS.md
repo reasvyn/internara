@@ -19,7 +19,7 @@ Internalize the user's **intent**, not just literal words. Clarify ambiguities. 
 
 - **First session?** Load `context-awareness` skill before anything else.
 - **Identify task type:** bug fix, new feature, refactoring, docs update, audit, review.
-- **Check `docs/roadmap.md`** for planned work or existing issues.
+- **Check `docs/roadmap.md`** for current development status and phase progress.
 - Output: clear restatement of the task, confirmed with user if ambiguous.
 
 ### 2. Define & Scope

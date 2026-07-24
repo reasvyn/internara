@@ -709,6 +709,27 @@ check per-item guard or dispatch individual events).
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [school-profile.md](school-profile.md) | School entity (name, NPSN) — departments belong to this school |
+| [settings-infrastructure.md](settings-infrastructure.md) | Settings store for department-related configuration |
+
+### Build Guide
+After implementing this spec, the system has academic department CRUD with name, code, and description. Departments are the organizational unit for grouping internship programs. The next step is to build academic year management, which defines the calendar periods that programs run within.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [academic-year-management.md](academic-year-management.md) | Academic years span departments; programs are scoped to year + department |
+| 2 | [company-management.md](company-management.md) | Companies offer internships to specific departments |
+
+---
+
 ## Quick References
 
 - `app/Academics/Department/Models/Department.php` — Department model with `#[Fillable]` and `hasMany` Profile

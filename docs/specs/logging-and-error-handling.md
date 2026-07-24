@@ -550,6 +550,19 @@ correlation of timestamps, user IDs, and IP addresses.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+No prerequisites — this is a foundational spec.
+
+### Build Guide
+After implementing this spec, the system has a dual exception hierarchy (AppException + ModuleException), SmartLogger for dual-channel logging, PiiMasker for sensitive data protection, and LogContext middleware for request tracing. Every Action and Livewire component in the system depends on these error handling and logging facilities. The next step is to build the event system, which uses SmartLogger for event dispatch logging.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [event-system.md](event-system.md) | Event dispatch logs via `SmartLogger`, listeners handle `LogContext` |
+
 ## Quick References
 
 - `app/Core/Services/SmartLogger.php` — single entry point for all logging (336 lines)

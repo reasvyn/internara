@@ -312,6 +312,26 @@ separation of concerns.
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [registration.md](registration.md) | Enrollment records — placement matches these to companies |
+| [partnership-management.md](partnership-management.md) | Partnership entities — placement assigns students to company partnerships |
+
+### Build Guide
+After implementing this spec, the system can match enrolled students to company partnerships, creating active placement records. Placement is the trigger for daily operations — once a student is placed, they can log activities, attend, and be assessed. The next steps are to build daily activity logging and the assessment framework.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [daily-activity.md](daily-activity.md) | Reads active placement records for logbook and attendance tracking |
+| 2 | [assessment.md](assessment.md) | Scores student work against rubrics using placement context |
+| 3 | [evaluation.md](evaluation.md) | Gathers feedback using placement context |
+
 ## Quick References
 
 - `app/Enrollment/Placement/Models/Placement.php` — Placement model (UUID PK, quota/filled_quota)

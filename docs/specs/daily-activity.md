@@ -351,6 +351,25 @@ logbooks:
 
 ---
 
+## 9. Roadmap
+
+### Prerequisites
+This spec can only be implemented after the following specs are **fully complete**:
+
+| Spec | What It Provides |
+|------|-----------------|
+| [placement.md](placement.md) | Active placement records — logbook and attendance are scoped to placements |
+
+### Build Guide
+After implementing this spec, students can log daily activities (logbook entries with task description, hours, evidence) and record attendance (check-in/check-out with status). Supervisors can review and comment on entries. The next step is to build supervision, which adds monitoring visit logs and supervision reports.
+
+### Next Steps
+| Order | Spec | Connection |
+|-------|------|------------|
+| 1 | [supervision.md](supervision.md) | Supervisors review logbook entries from this spec; monitoring visits reference attendance data |
+
+---
+
 ## Quick References
 
 - `app/Journals/Logbook/` — Logbook submodule (Actions, Entities, Enums, Livewire, Models, Policies)
