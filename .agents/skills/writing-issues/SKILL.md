@@ -65,7 +65,7 @@ Using this skill follows 4 phases:
 
 | Role           | Skill                                                                                                      |
 | -------------- | ---------------------------------------------------------------------------------------------------------- |
-| **Upstream**   | `audit-protocol` (audit findings), `security-audit` (security findings), `code-refactoring` (tech debt)    |
+| **Upstream**   | `arch-guard` (code quality), `security-audit` (security findings), `code-refactoring` (tech debt)    |
 | **This skill** | **ANALYSIS / PLANNING** — produces GitHub Issues                                                           |
 | **Downstream** | `roadmap-planning` (prioritization), `feature-building` (implementation), `code-refactoring` (refactoring) |
 

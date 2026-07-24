@@ -2,8 +2,9 @@
 name: code-refactoring
 description: "SDLC Phase: DESIGN / REFACTORING. Systematic refactoring patterns for all code layers — extracting Actions, Entities, thinning Livewire, fixing exception handling, and enforcing architectural patterns."
 upstream:
-  - audit-protocol
+  - arch-guard
   - security-audit
+  - spec-audit
   - feature-building
 downstream:
   - code-writing
@@ -68,7 +69,7 @@ Using this skill follows 4 phases:
 
 | Role           | Skill                                                                                              |
 | -------------- | -------------------------------------------------------------------------------------------------- |
-| **Upstream**   | `audit-protocol` (issue findings), `security-audit` (security findings)                            |
+| **Upstream**   | `arch-guard` (code quality), `security-audit` (security findings), `spec-audit` (spec drift)   |
 | **This skill** | **DESIGN / REFACTORING** — restructures code                                                       |
 | **Downstream** | `feature-building` (integrates refactored code), `pest-testing` (tests), `sync-docs` (doc updates) |
 
