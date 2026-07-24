@@ -72,6 +72,18 @@ npm run build
 
 ## 2. Efficient Test Execution
 
+### Testing Audit Scope
+
+When auditing test coverage, verify these items:
+
+- Every Action has a matching test file
+- Every Livewire component has a matching test file
+- Feature tests use `LazilyRefreshDatabase` (not `RefreshDatabase`)
+- `assertModelExists()` preferred over `assertDatabaseHas()`
+- No Eloquent mocking — use factories + real database
+- `Event::fake()` positioned AFTER factory setup
+- Coverage targets met: Entity/Enum/DTO 100%, Actions ≥ 90%, Livewire ≥ 80%
+
 ### Targeted Test Commands
 
 ```bash
