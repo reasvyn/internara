@@ -1,7 +1,7 @@
 # Development Roadmap — Status Tracker
 
-> **Last updated:** 2026-07-24 **Changes:** refactor — repurpose from feature planning to
-> development status tracker
+> **Last updated:** 2026-07-24 **Changes:** feat — add spec-audit skill; update phase ranges
+> and spec count to match 53-spec index
 
 ---
 
@@ -31,15 +31,18 @@ Specs are ordered by lifecycle phase. See `docs/specs/index.md` for full depende
 
 | Phase | Name | Specs | Status |
 |-------|------|-------|--------|
-| 1 | Foundation | #1–#17 | ✅ Complete |
-| 2 | Institutional | #18–#19 | 🔲 Not started |
-| 3 | Partnerships | #20–#21 | 🔲 Not started |
-| 4 | Programs | #22–#23 | 🔲 Not started |
-| 5 | Enrollment | #24–#29 | 🔲 Not started |
-| 6 | Daily Operations | #30–#32 | 🔲 Not started |
-| 7 | Assessment | #33–#35 | 🔲 Not started |
-| 8 | Certification | #36–#40 | 🔲 Not started |
-| 9 | Reporting | #41 | 🔲 Not started |
+| 1 | Foundation | #1–#10 | ✅ Complete |
+| 2 | Configuration | #11–#16 | 🔲 Not started |
+| 3 | Identity & Auth | #17–#24 | 🔲 Not started |
+| 4 | Institutional | #25–#26 | 🔲 Not started |
+| 5 | Partnerships | #27–#28 | 🔲 Not started |
+| 6 | Programs | #29–#30 | 🔲 Not started |
+| 7 | Enrollment | #31–#36 | 🔲 Not started |
+| 8 | Daily Operations | #37–#39 | 🔲 Not started |
+| 9 | Assessment | #40–#42 | 🔲 Not started |
+| 10 | Certification | #43–#47 | 🔲 Not started |
+| 11 | Reporting | #48–#49 | 🔲 Not started |
+| 12 | Maintenance | #50–#53 | 🔲 Not started |
 
 ---
 
@@ -73,7 +76,7 @@ Not a milestone, but a description of the state the project should reach:
 ## Quick References
 
 - `docs/specs/index.md` — Full spec dependency graph with lifecycle phases
-- `docs/specs/` — All feature specifications (41 specs)
+- `docs/specs/` — All feature specifications (53 specs)
 - `docs/architecture.md` — 4-layer model, Action Triad, conventions
 - `docs/conventions.md` — Coding standards, invariants C1-C8, D1-D6
 - `docs/modules/index.md` — All 19 modules with links
