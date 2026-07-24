@@ -1,8 +1,6 @@
 ---
 name: security-audit
 description: "SDLC Phase: ANALYSIS. Dedicated security and privacy audit — OWASP Top 10, PII handling, authentication, authorization, session security, rate limiting, secrets management, and dependency vulnerabilities."
-upstream:
-  - audit-protocol
 downstream:
   - roadmap-planning
   - code-refactoring
@@ -10,7 +8,7 @@ downstream:
 
 # Security Audit
 
-> **Prerequisite:** Load `context-awareness` for project orientation. Running `audit-protocol` first
+> **Prerequisite:** Load `context-awareness` for project orientation. Running `arch-guard` first
 > provides the baseline code quality audit.
 
 ## When to Activate
@@ -64,7 +62,7 @@ Using this skill follows 4 phases:
 
 | Role           | Skill                                                                  |
 | -------------- | ---------------------------------------------------------------------- |
-| **Upstream**   | `audit-protocol` (baseline audit)                                      |
+| **Upstream**   | `arch-guard` (baseline audit)                                          |
 | **This skill** | **ANALYSIS** — security-specific                                       |
 | **Downstream** | `roadmap-planning` (prioritize fixes), `code-refactoring` (fix issues) |
 
@@ -91,7 +89,7 @@ Using this skill follows 4 phases:
 - All Blade output uses `{{ }}` (double curly braces) — escaped
 - Every `{!! !!}` (unescaped) has an inline justification comment
 - No inline `<script>` tags — everything uses Alpine.js
-- CSP enforced via `SecurityHeaders` middleware
+- CSP enforced via `SecurityHeaders` middleware; no bypass without justification
 - Check CSP allows only necessary external resources
 
 ### SQL Injection
@@ -108,7 +106,7 @@ Using this skill follows 4 phases:
 
 ### File Upload Security
 
-- ALL uploads go through Spatie MediaLibrary
+- ALL uploads go through Spatie MediaLibrary (never `Storage::put()`)
 - MIME type validated server-side (not just extension)
 - Filenames sanitized with `Str::slug()`
 - File size limits defined per collection
@@ -119,6 +117,7 @@ Using this skill follows 4 phases:
 - Check `app/Core/Support/PiiMasker.php` — PII masking in logs
 - Activity log does not store raw PII
 - GDPR deletion path exists (`gdpr_deletion_logs` table)
+- PII masked in logs via `SmartLogger::withPiiMasking()`
 
 ### Secrets & Configuration
 
@@ -136,7 +135,7 @@ Using this skill follows 4 phases:
 ### Cross-Cutting
 
 - CSRF: all state-changing HTML forms include `@csrf` or use Livewire
-- Rate limiting on: login, password reset, recovery slip, setup token
+- Rate limiting on: login, password reset, recovery slip, setup token, account recovery
 - Session timeout configured appropriately
 - HTTPS enforced in production
 

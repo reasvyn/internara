@@ -16,6 +16,10 @@ This is the **single source of truth** for all quality rules — every other ski
 
 ## When to Use
 
+Use this skill when performing a systematic audit of the codebase. Audits focus on pattern
+violations, code smells, security holes, and convention drift — NOT feature enhancements.
+Activates during ANALYSIS phase or as a periodic quality gate.
+
 | Scenario | Action |
 |----------|--------|
 | Before any commit | Run targeted checks on changed files |
@@ -248,10 +252,55 @@ Rules are checked in this priority order:
 | `$results_array` | `$results` |
 | `getData()` | Property access on DTO |
 
+## Code Layer Audit Checks
+
+Audit code by 4 architectural layers in order. Each layer has specific check items beyond
+the contract rules above.
+
+### Layer 4 — Presentation/UI (`app/*/Livewire/`, `resources/views/`, `app/*/Policies/`, `routes/`)
+
+- No `Model::create/update/delete/save` in Livewire components
+- No `DB::transaction()` or `DB::beginTransaction()` in Livewire
+- No `app()->make()`, `resolve()`, or `new Action()` — method injection only
+- `RejectedException` caught from Action calls (before generic `Throwable`)
+- No unescaped `{!! !!}` for user content without inline justification
+- Policy methods return boolean — no inline authorization in Livewire
+- Routes in correct `routes/web/{module}.php` file (or `{submodule}.php` for split submodules)
+- No maryUI Toast methods (`$this->success()`, `$this->error()`) — use flasher
+- No N+1 queries in Blade loops — eager loading verified
+
+### Layer 3 — Business/Domain Ops (`app/*/Actions/`, `app/*/Events/`, `app/*/Listeners/`)
+
+- Action extends correct base class (Command/Read/Process)
+- Exactly one public `execute()` method
+- Command/Process uses `$this->transaction()` for DB writes
+- `$this->log()` called after mutation
+- `$this->dispatchEvent()` only if listener exists (check `config/event.php`)
+- Business rules delegate to Entity — throw `RejectedException`, not `RuntimeException`
+- DTO used for 3+ params; raw `array` not accepted in execute()
+- ActionResponse returned for structured feedback
+
+### Layer 2 — Data/Persistent (`app/*/Models/`, `app/*/Entities/`, `app/*/Enums/`, `database/migrations/`)
+
+- Entities: `final readonly`, `fromModel()`, zero I/O, no Action/Service/Controller imports
+- DTOs: `final readonly`, scalars/enums/Carbon only, no Model/Entity/Action imports
+- Models: `#[Fillable]` attribute (not `$fillable`/`$guarded`)
+- Foreign keys: `foreignUuid()->constrained()` + explicit `onDelete()`/`onUpdate()`
+- Enums: `implements LabelEnum` (all), `StatusEnum` for state machines
+- Cache keys: registered in `config/cache-keys.php` — no inline strings
+- No raw SQL without parameterized binding
+
+### Layer 1 — Framework/Infrastructure (`app/Core/`, `app/*/Services/`, `app/*/Support/`, `config/`)
+
+- Services: infrastructure logic only (not domain business rules)
+- Support: static-only, zero side effects
+- Config files follow documented schema
+- Module discovery config includes all business modules
+
 ## Quality Gate Commands
 
 ```bash
-# Full violation scan
+# Full violation scan (C1-C8, D1-D6, security, performance)
 python3 scripts/scan_violations.py
 
 # Class contract compliance
@@ -263,15 +312,21 @@ python3 scripts/scan_security.py
 # Naming conventions
 python3 scripts/scan_naming.py
 
-# Combined architecture audit
+# Combined architecture audit (component counts, submodule structure)
 python3 scripts/scan_architecture.py
 
-# Conventions check
+# Conventions check (strict_types, Fillable, debug calls, hardcoded strings)
 python3 scripts/scan_conventions.py
+
+# Dead code detection (unregistered observers, unused DTOs, orphan events)
+python3 scripts/scan_dead_code.py
 
 # Doc link integrity
 python3 scripts/scan_doc_links.py
 ```
+
+All scripts output to `scripts/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to scope
+to a single module. See `scripts/README.md` for full documentation.
 
 ## Integration with Other Skills
 
@@ -281,7 +336,7 @@ python3 scripts/scan_doc_links.py
 | `code-refactoring` | Verify refactored code maintains contracts |
 | `livewire-development` | Check Livewire components for C1 violations |
 | `pest-testing` | Verify test structure conventions |
-| `audit-protocol` | Use as reference for finding severity classification |
+| `spec-audit` | Use as reference for contract verification and severity classification |
 | `writing-issues` | Use violation data for issue descriptions |
 | `sync-docs` | Use conventions for documentation accuracy |
 | `test-writing` | Validate test file conventions |

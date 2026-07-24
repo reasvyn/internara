@@ -10,7 +10,6 @@ upstream:
   - medialibrary-development
   - pulse-development
   - pest-testing
-  - audit-protocol
   - security-audit
   - roadmap-planning
 ---
@@ -114,7 +113,19 @@ git log -10 --format="%h %s"               # commit messages for context
 | Feature specs        | `docs/specs/index.md`                                                |
 | Config               | `docs/infrastructure/configuration.md`                               |
 
-### 3. Verify Documentation Accuracy
+### 3. Documentation Audit Scope
+
+When auditing documentation against code, verify these items:
+
+- File paths in docs point to existing files
+- Class names and method signatures match actual code
+- Action listings include all `execute()` methods
+- Enum values include all cases
+- No broken relative links
+- Metadata (`Last updated`, `Changes`) present on every `.md` file
+- Module structure docs match actual `app/` directory layout
+
+### 4. Verify Documentation Accuracy
 
 For each doc, check:
 
@@ -127,7 +138,7 @@ For each doc, check:
 - Migration schemas match database tables
 - Dependency graphs reflect actual imports
 
-### 4. Update Metadata
+### 5. Update Metadata
 
 Every `.md` file has metadata:
 
@@ -137,7 +148,7 @@ Every `.md` file has metadata:
 
 Update both fields when content changes.
 
-### 5. Verify No Broken Links
+### 6. Verify No Broken Links
 
 - Relative paths in `[text](path)` must resolve
 - Check for renamed or deleted files referenced in docs
