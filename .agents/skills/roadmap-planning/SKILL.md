@@ -2,8 +2,9 @@
 name: roadmap-planning
 description: "SDLC Phase: PLANNING. Structured roadmap planning for bug fixes, security/performance improvements, and feature development. Produces actionable implementation phases with clear priorities, dependencies, and testing strategy."
 upstream:
-  - audit-protocol
+  - arch-guard
   - security-audit
+  - spec-audit
 downstream:
   - feature-building
 ---
@@ -61,7 +62,7 @@ Using this skill follows 4 phases:
 
 | Role           | Skill                                                               |
 | -------------- | ------------------------------------------------------------------- |
-| **Upstream**   | `audit-protocol` (issues found), `security-audit` (vulnerabilities) |
+| **Upstream**   | `arch-guard` (code quality), `security-audit` (vulnerabilities), `spec-audit` (spec drift) |
 | **This skill** | **PLANNING** — prioritizes and sequences work                       |
 | **Downstream** | `feature-building` (implements planned work)                        |
 
@@ -71,7 +72,8 @@ Using this skill follows 4 phases:
 
 Gather findings from:
 
-- `audit-protocol` — code quality and pattern violations
+- `arch-guard` — code quality and pattern violations
+- `spec-audit` — spec-implementation drift
 - `security-audit` — security vulnerabilities
 - GitHub Issues — bug reports and feature requests
 - `docs/roadmap.md` — existing planned work

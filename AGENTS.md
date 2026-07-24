@@ -190,7 +190,7 @@ fieldwork programs (PKL — _Praktik Kerja Lapangan_) at Indonesian vocational s
 
 ### Lifecycle Scope
 
-Foundation → Partnerships → Programs → Enrollment → Daily Operations → Assessment → Evaluation → Certification → Reporting → Closure
+Foundation → Configuration → Identity & Auth → Institutional → Partnerships → Programs → Enrollment → Daily Ops → Assessment → Certification → Reporting → Maintenance
 
 ### Out-of-Scope
 
@@ -205,7 +205,7 @@ Full definition: `docs/foundation/product-definition.md`
 | Task | Skill | Notes |
 |------|-------|-------|
 | First session, any task | `context-awareness` | Load first — project orientation |
-| Writing feature specs | `spec-writing` | 10-section spec template, requirements IDs |
+| Writing feature specs | `spec-writing` | 11-section spec template, requirements IDs |
 | Writing PHP code | `code-writing` | Action Triad, Entity/DTO/Model contracts |
 | Refactoring existing code | `code-refactoring` | Extract Actions, thin Livewire |
 | Building a feature end-to-end | `feature-building` | Orchestrator — coordinates sub-skills |
@@ -216,7 +216,8 @@ Full definition: `docs/foundation/product-definition.md`
 | Syncing docs with code | `sync-docs` | Automated verification |
 | Writing GitHub issues | `writing-issues` | Structured issue format |
 | Security review | `security-audit` | OWASP, PII, auth patterns |
-| Architecture audit | `audit-protocol` | Multi-layer codebase audit |
+| Spec↔Code sync audit | `spec-audit` | Bidirectional spec-implementation verification |
+| Spec↔Code sync audit | `spec-audit` | Bidirectional spec-implementation verification |
 | Independent QA audit | `qa-protocol` | Blind test against global standards (OWASP, ISO 25010, CWE, WCAG, PSR) |
 | Enforcing architecture rules | `arch-guard` | C1-C8, D1-D6, contracts, naming |
 | Writing scripts | `script-automation` | Standards for `scripts/` devtools |
@@ -226,30 +227,10 @@ Full definition: `docs/foundation/product-definition.md`
 
 ---
 
-## Module Quick Reference
+## Module & Spec Reference
 
-| Module | Focus | Docs |
-|--------|-------|------|
-| **Core** | Base classes, contracts, exceptions, helpers | `docs/modules/core.md` |
-| **Auth** | Login, password, activation, recovery, RBAC | `docs/modules/auth.md` |
-| **User** | Profiles, notifications, account status, dashboards | `docs/modules/user.md` |
-| **SysAdmin** | User admin, announcements, audit, health | `docs/modules/sysadmin.md` |
-| **Setup** | One-time installation, environment, provisioning | `docs/modules/setup.md` |
-| **Settings** | System config, branding, localization, feature toggles | `docs/modules/settings.md` |
-| **Academics** | Departments, academic calendar | `docs/modules/academics.md` |
-| **Program** | Internship programs, timelines, groups | `docs/modules/program.md` |
-| **Enrollment** | Registration, placement, change requests | `docs/modules/enrollment.md` |
-| **Assessment** | Rubrics, assessments, scoring frameworks | `docs/modules/assessment.md` |
-| **Evaluation** | Feedback forms, sections, weighted questions | `docs/modules/evaluation.md` |
-| **Assignment** | Course work, submissions, grading | `docs/modules/assignment.md` |
-| **Journals** | Logbooks, attendance, absence requests, supervision logs, monitoring visits | `docs/modules/journals.md` |
-| **Incident** | Incident reports, workplace concerns | `docs/modules/incident.md` |
-| **Partners** | Companies, partnerships | `docs/modules/partners.md` |
-| **Certification** | Certificate generation, credentials | `docs/modules/certification.md` |
-| **Document** | Official document rendering, templates | `docs/modules/document.md` |
-| **Reports** | Grade cards, archived snapshots | `docs/modules/reports.md` |
-
-Full dependency graph: `docs/modules/index.md`
+Full module list with docs: `docs/modules/index.md`
+Full spec list with build order: `docs/specs/index.md`
 
 ---
 

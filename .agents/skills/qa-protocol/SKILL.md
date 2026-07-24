@@ -21,8 +21,8 @@ Activates during ANALYSIS phase or as a periodic quality gate. Completely indepe
 internal audit protocols — this skill evaluates the codebase as if it were an unknown project
 being reviewed for the first time.
 
-**Key distinction from `audit-protocol`:**
-- `audit-protocol` checks compliance with project-defined rules (C1-C8, D1-D6, etc.)
+**Key distinction from `arch-guard`:**
+- `arch-guard` checks compliance with project-defined rules (C1-C8, D1-D6, etc.)
 - `qa-protocol` checks compliance with global industry standards (OWASP, ISO 25010, CWE, etc.)
 - This skill does NOT know or care about the project's internal conventions
 - Findings are evaluated purely against external benchmarks
@@ -515,7 +515,7 @@ See `rules/performance.md`
 Merge all phase outputs into a single deduplicated findings list:
 
 1. **Deduplicate** — If the same issue appears in multiple phases, keep the highest-severity instance and note the other phases where it appeared
-2. **Cross-reference with `audit-protocol`** — Check if any QA findings overlap with project-internal audit findings (from `audit-protocol` skill). Note overlaps but file independently — the QA perspective may be different
+2. **Cross-reference with `arch-guard`** — Check if any QA findings overlap with project-internal audit findings (from `arch-guard` skill). Note overlaps but file independently — the QA perspective may be different
 3. **Assign final severity** using CVSS mapping (see `rules/owasp-top10.md` §Scoring)
 
 ### 6.2 Create GitHub Issues
@@ -530,7 +530,7 @@ For each finding, create a GitHub Issue using the `writing-issues` skill templat
   - Affected standard (OWASP A01, CWE-79, PSR-12, WCAG 2.1.1, etc.)
   - Evidence (file path, line number, code snippet)
   - Recommended fix direction (not implementation)
-  - Overlap note (if also found by `audit-protocol`)
+  - Overlap note (if also found by `arch-guard`)
 
 **Batch creation:** Use `gh issue create` for each finding. If many findings, group related ones into a single issue (e.g., "All XSS findings in Journals module").
 
@@ -558,7 +558,7 @@ Deliver a final summary to the user:
 - Phases executed: 6/6
 - Total findings: X (Critical: X, High: X, Medium: X, Low: X)
 - GitHub Issues created: X
-- Overlaps with `audit-protocol`: X findings
+- Overlaps with `arch-guard`: X findings
 
 ## Compliance Scorecard
 
@@ -635,7 +635,7 @@ After all 6 phases, produce a consolidated report:
 ### Phase 6: Report, Issues & Commit
 - GitHub Issues created: X
 - Skill committed: yes/no
-- Overlaps with audit-protocol: X findings
+- Overlaps with arch-guard: X findings
 
 ## Findings by Severity
 
@@ -666,7 +666,7 @@ After all 6 phases, produce a consolidated report:
 ## Issue Writing
 
 Each finding is written as a GitHub Issue using the `writing-issues` template format.
-Findings that overlap with project-internal audit findings (from `audit-protocol`) should
+Findings that overlap with project-internal audit findings (from `arch-guard`) should
 note this overlap but still be filed independently — the QA perspective may be different.
 
 ## Key Rules
@@ -680,7 +680,7 @@ note this overlap but still be filed independently — the QA perspective may be
 7. **Comprehensive scope** — Check every module, every route, every model — not just the changed code
 8. **Independent of project rules** — C1-C8, D1-D6, etc. are NOT part of this audit; this audit uses only global standards
 9. **Create Issues and commit** — Every audit must end with GitHub Issues created for each finding, skill files committed, and a summary report delivered to the user
-10. **Overlap transparency** — When a QA finding overlaps with an `audit-protocol` finding, note the overlap in the Issue body but still file independently
+10. **Overlap transparency** — When a QA finding overlaps with an `arch-guard` finding, note the overlap in the Issue body but still file independently
 
 ## References
 

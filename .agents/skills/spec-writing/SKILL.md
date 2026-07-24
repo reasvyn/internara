@@ -334,23 +334,26 @@ each phase — not alphabetically, not by module.
 ### Lifecycle Phases
 
 ```
-Foundation → Institutional → Partnerships → Programs → Enrollment → Daily Operations → Assessment → Certification → Reporting
+Foundation → Configuration → Identity & Auth → Institutional → Partnerships → Programs → Enrollment → Daily Ops → Assessment → Certification → Reporting → Maintenance
 ```
 
-Each spec belongs to exactly one phase. Assign phase by asking: **"At what point in the PKL
-lifecycle does this feature first become usable?"**
+Each spec belongs to exactly one phase. Assign phase by asking: **"At what point in the build
+order does this feature first become usable?"** — not when it's used in the PKL lifecycle.
 
-| Phase | What goes here |
-|-------|---------------|
-| Foundation | Infrastructure, settings, auth, base classes, dashboard shell |
-| Institutional | Academic structure (departments, academic years) — internal school setup |
-| Partnerships | External partners (companies, formal partnerships) |
-| Programs | Internship program definition, grouping |
-| Enrollment | Student registration, placement, user CRUD, CSV utilities |
-| Daily Operations | Logbook, attendance, supervision, incidents |
-| Assessment | Rubrics, scoring frameworks, evaluations, assignments |
-| Certification | Templates, credentials, handbooks, media, PDF |
-| Reports | Grade cards, archived snapshots |
+| Phase | What goes here | Key Dependencies |
+|-------|---------------|-----------------|
+| Foundation | PHP/Laravel stack, base classes, utilities, event system, RBAC, middleware | None (everything depends on this) |
+| Configuration | Installation, setup wizard, settings, branding, school profile | Foundation |
+| Identity & Auth | Authentication, notifications, announcements, dashboards | Foundation + Configuration |
+| Institutional | Academic structure (departments, academic years) | Configuration (school profile) |
+| Partnerships | External partners (companies, formal partnerships) | Institutional |
+| Programs | Internship program definition, grouping | Institutional + Partnerships |
+| Enrollment | Student registration, placement, user CRUD, CSV utilities | Programs |
+| Daily Operations | Logbook, attendance, supervision, incidents | Enrollment |
+| Assessment | Rubrics, scoring frameworks, evaluations, assignments | Enrollment |
+| Certification | Templates, credentials, handbooks, media, PDF | Daily Ops + Assessment |
+| Reporting | Grade cards, archived snapshots, final lifecycle records | Certification |
+| Maintenance | Backup, GDPR, job queues, archiving, system cleanup | Runs continuously after Reporting |
 
 ### Dependency Tracking
 

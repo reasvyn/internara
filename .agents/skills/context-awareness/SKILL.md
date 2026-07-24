@@ -2,7 +2,6 @@
 name: context-awareness
 description: "SDLC Phase: ORIENTATION. Universal project orientation for Internara — architecture rules, module map, decision framework, critical rules, and navigation patterns. Must be loaded first on every session. All other skills assume this context."
 downstream:
-  - audit-protocol
   - code-refactoring
   - code-writing
   - doc-writing
@@ -13,6 +12,7 @@ downstream:
   - pest-testing
   - pulse-development
   - roadmap-planning
+  - spec-audit
   - security-audit
   - sync-docs
   - tailwindcss-development
