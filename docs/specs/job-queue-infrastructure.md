@@ -222,15 +222,18 @@ This spec can only be implemented after the following specs are **fully complete
 
 | Spec | What It Provides |
 |------|-----------------|
-| [core-foundation.md](core-foundation.md) | `BaseProcessAction` for job orchestration, `SendsNotifications` interface |
+| [base-classes.md](base-classes.md) (#2) | `BaseProcessAction` for job orchestration, `SendsNotifications` contract |
+| [event-system.md](event-system.md) (#7) | `BaseEvent` contract for job-dispatched events |
 
 ### Build Guide
-After implementing this spec, the system has async job processing via Laravel queues, batch tracking, failed job management, and notification dispatch. Queued notifications (like OTP emails) and background file processing depend on this infrastructure. The next step is to build the installation system, which provisions the database and generates the setup token.
+After implementing this spec, the system has async job processing via Laravel queues, batch tracking, failed job management, and notification dispatch. Queued notifications (like OTP emails) and background file processing depend on this infrastructure. This spec is placed in Phase 12 (Maintenance) because the queue infrastructure powers backup operations, account archival, notification delivery, and system cleanup — all maintenance-phase features.
 
 ### Next Steps
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [installation.md](installation.md) | Uses `config:cache`, `route:cache`, `event:cache` from queue warm-up; `RecoveryOtpNotification` uses `ShouldQueue` |
+| 1 | [backup-system.md](backup-system.md) (#51) | `SystemBackupCommand` and `CreateBackupAction` use queues for async backup operations |
+| 2 | [system-maintenance.md](system-maintenance.md) (#53) | `ArchiveStudentAccountsJob` and cleanup tasks dispatch via queue |
+| 3 | [notification-infrastructure.md](notification-infrastructure.md) (#18) | `SendNotificationAction` and `ShouldQueue` notifications dispatch via queue |
 
 ---
 
