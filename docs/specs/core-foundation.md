@@ -1,8 +1,8 @@
 # Core Foundation — Base Classes, Contracts, Exceptions, Cache & Session
 
-> **Last updated:** 2026-07-22 **Changes:** feat — renamed from base-classes; core foundation
-> covering base classes, contracts, exception hierarchy, middleware, cache infrastructure,
-> session management, policies, and support utilities
+> **Last updated:** 2026-07-23 **Changes:** refactor — cross-ref exception hierarchy, SmartLogger,
+> and middleware to dedicated specs (logging-and-error-handling, middleware-pipeline,
+> security-headers)
 
 ## Description
 
@@ -166,6 +166,11 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 
 ### 4.5 Exception Hierarchy
 
+> **Canonical source:** [logging-and-error-handling.md](logging-and-error-handling.md) §4.5
+
+The dual exception hierarchy (`AppException` + `ModuleException`) is fully specified in the
+logging-and-error-handling spec. This section provides a brief overview for reference.
+
 | ID    | Requirement |
 | ----- | ----------- |
 | FR-E1 | `AppException` (abstract) — framework-level errors, `statusCode()` abstract, `HasExceptionContext` trait |
@@ -176,18 +181,24 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 | FR-E6 | `InfrastructureException` extends `AppException` — HTTP 500, not user-facing |
 | FR-E7 | `HasExceptionContext` trait — `hint`, `context`, `toCliOutput()`, `isUserFacing()`, `shouldReport()` |
 
+For full hierarchy, error handling in Actions, `HandlesActionErrors` trait, and exception
+rendering — see [logging-and-error-handling.md](logging-and-error-handling.md).
+
 ### 4.6 Middleware
+
+> **Canonical sources:** [middleware-pipeline.md](middleware-pipeline.md) (execution order,
+> registration), [security-headers.md](security-headers.md) (CSP, HSTS details)
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-MW1 | `SecurityHeaders` — applies CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy, HSTS |
-| FR-MW2 | `LogContext` — adds request_id, method, URL, IP, user_id, user_role, duration_ms to log context |
+| FR-MW1 | `SecurityHeaders` — applies CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy, HSTS. Full spec: [security-headers.md](security-headers.md) |
+| FR-MW2 | `LogContext` — adds request_id, method, URL, IP, user_id, user_role, duration_ms. Full spec: [logging-and-error-handling.md](logging-and-error-handling.md) §4.6 |
 | FR-MW3 | `RequireSetupAccessMiddleware` — globally applied, redirects to `/setup` when not installed |
 | FR-MW4 | `SetLocaleMiddleware` — resolves locale from session, sets `app()->setLocale()` |
 | FR-MW5 | `ProtectSetupRouteMiddleware` — validates setup token, rate limits, session versioning |
-| FR-MW6 | `CheckRoleMiddleware` — role-based route protection (aliased as `role`) |
-| FR-MW7 | `AuthThrottleMiddleware` — login/rate-limit throttling (aliased as `auth.throttle`) |
-| FR-MW8 | Middleware execution order: SecurityHeaders → LogContext → RequireSetupAccess → SetLocale → route-specific |
+| FR-MW6 | `CheckRoleMiddleware` — role-based route protection. Full spec: [rbac-and-authorization.md](rbac-and-authorization.md) |
+| FR-MW7 | `AuthThrottleMiddleware` — login/rate-limit throttling. Full spec: [authentication.md](authentication.md) |
+| FR-MW8 | Middleware execution order: SecurityHeaders → LogContext → RequireSetupAccess → SetLocale → route-specific. Full spec: [middleware-pipeline.md](middleware-pipeline.md) |
 
 ### 4.7 Cache Infrastructure
 
@@ -228,16 +239,18 @@ HTTP-only cookies, SameSite protection, and proper lifetime limits.
 
 ### 4.10 Support Utilities
 
+> **SmartLogger canonical source:** [logging-and-error-handling.md](logging-and-error-handling.md)
+
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-SUP1 | `SmartLogger` — dual-channel (system + activity) fluent logger with PII masking |
-| FR-SUP2 | `PiiMasker` — masks 29+ sensitive keys, partial masks for email/phone/name |
+| FR-SUP1 | `SmartLogger` — dual-channel (system + activity) fluent logger with PII masking. Full spec: [logging-and-error-handling.md](logging-and-error-handling.md) |
+| FR-SUP2 | `PiiMasker` — masks 29+ sensitive keys, partial masks for email/phone/name. Full spec: [logging-and-error-handling.md](logging-and-error-handling.md) §4.3 |
 | FR-SUP3 | `PasswordRules` — default password validation: 8+ chars, mixed case, numbers |
 | FR-SUP4 | `AppInfo` — reads composer.json metadata with 24h cache |
 | FR-SUP5 | `Environment` — environment detection helpers (isProduction, isTesting, etc.) |
-| FR-SUP6 | `CsvHandler` — export, import, template download with header validation |
+| FR-SUP6 | `CsvHandler` — export, import, template download with header validation. Full spec: [csv-import-export.md](csv-import-export.md) |
 | FR-SUP7 | `Color` — hex/RGB conversion, contrast calculation, DaisyUI shade generation |
-| FR-SUP8 | `ModuleDiscoverService` — runtime discovery of Livewire components, policies, Blade namespaces |
+| FR-SUP8 | `ModuleDiscoverService` — runtime discovery of Livewire components, policies, Blade namespaces. Full spec: [module-discovery.md](module-discovery.md) |
 
 ---
 
@@ -454,6 +467,7 @@ are caught differently from business rule violations. `RejectedException` (the m
 exception) extends `ModuleException` and always returns HTTP 400.
 **Trade-off:** Slightly more complex exception hierarchy, but prevents the "catch everything as
 RuntimeException" anti-pattern.
+**Full specification:** [logging-and-error-handling.md](logging-and-error-handling.md) §4.5, §7.1
 
 ### DD-2 — Centralized Cache Key Registry
 
@@ -541,12 +555,16 @@ picks up new modules.
 - `docs/architecture/data-pattern.md` — DTO and ActionResponse contracts
 - `docs/architecture/exception-pattern.md` — Dual exception hierarchy
 - `docs/architecture/cache-pattern.md` — Cache strategy and key registry
-- `docs/infrastructure/cache.md` — Cache driver strategy, invalidation
-- `docs/infrastructure/session.md` — Session configuration and security
-- `docs/infrastructure/deployment.md` — Three deployment paths
 - `config/cache-keys.php` — Centralized cache key registry
 - `config/cache.php` — Cache store definitions
 - `config/session.php` — Session driver and cookie settings
 - `app/Core/` — All base classes, contracts, exceptions, services
 - `bootstrap/app.php` — Middleware registration
 - **Related specs:** [system-requirements.md](system-requirements.md) — Dependencies, platform & database
+- **Related specs:** [logging-and-error-handling.md](logging-and-error-handling.md) — Exception hierarchy, SmartLogger, error handling
+- **Related specs:** [middleware-pipeline.md](middleware-pipeline.md) — Middleware execution order and registration
+- **Related specs:** [security-headers.md](security-headers.md) — CSP, HSTS, security header details
+- **Related specs:** [rbac-and-authorization.md](rbac-and-authorization.md) — Policies, roles, authorization
+- **Related specs:** [event-system.md](event-system.md) — Event dispatch and listener infrastructure
+- **Related specs:** [module-discovery.md](module-discovery.md) — Module discovery and caching
+- **Related specs:** [csv-import-export.md](csv-import-export.md) — CsvHandler utility

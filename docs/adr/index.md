@@ -35,6 +35,8 @@ Decisions that enforce consistency, maintainability, and security.
   for infrastructure, ModuleException for business rules) was chosen over Laravel's default
 - **[Flat RBAC with Functional Roles](adr-flat-rbac-with-functional-roles.md)** — Why roles are flat
   without inheritance, with functional roles (mentor/mentee) resolved at runtime
+- **[Eloquent Observers](adr-eloquent-observers.md)** — When to use Eloquent Observers vs
+  Event+Listeners for model-level side effects, with decision framework and current observer inventory
 
 ## Proxy
 
