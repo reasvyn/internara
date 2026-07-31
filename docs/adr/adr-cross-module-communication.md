@@ -1,6 +1,6 @@
 # ADR-011: Cross-Module Communication Discipline
 
-> **Last updated:** 2026-06-14 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18
 
 ## Description
 
@@ -9,7 +9,7 @@ Modules communicate through direct imports (allowed freely), Action calls, modul
 
 ## Context
 
-The Action-based MVC architecture organizes code into 22 modules, each owning a complete vertical
+The Action-based MVC architecture organizes code into 18 modules, each owning a complete vertical
 slice. Business processes naturally span multiple modules — student registration involves
 Enrollment, Program, and User modules. Closing a program involves Assessment, Certification, and
 Reports modules.

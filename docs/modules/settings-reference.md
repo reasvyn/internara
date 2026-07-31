@@ -1,7 +1,6 @@
 # Settings — Technical Reference
 
-> **Last updated:** 2026-07-21 **Changes:** sync — replace InvalidateSettingsCache listener with
-> SettingObserver; update events, observers, and tests
+> **Last updated:** 2026-07-31 **Changes:** sync — add RemoveBrandAssetAction + BrandData, fix SystemSetting extends + SettingUpdated dispatchers, route names, flat test paths
 
 ## Description
 
@@ -26,6 +25,7 @@ feature toggles.
 | `Actions/ReadAcademicYearAction.php`          | `ReadAcademicYearAction`   | `BaseReadAction`    |
 | `Actions/TestMailSettingsAction.php`          | `TestMailSettingsAction`   | `BaseCommandAction` |
 | `Branding/Actions/UploadBrandAssetAction.php` | `UploadBrandAssetAction`   | `BaseCommandAction` |
+| `Branding/Actions/RemoveBrandAssetAction.php` | `RemoveBrandAssetAction`   | `BaseCommandAction` |
 
 ---
 
@@ -55,6 +55,7 @@ feature toggles.
 | `Data/SettingEntryData.php`   | `SettingEntryData`   | `BaseData` |
 | `Data/SettingGroupData.php`   | `SettingGroupData`   | `BaseData` |
 | `Data/SystemSettingsData.php` | `SystemSettingsData` | `BaseData` |
+| `Branding/Data/BrandData.php` | `BrandData`          | `BaseData` |
 
 ## Entities
 
@@ -74,7 +75,7 @@ feature toggles.
 
 | File                         | Component       | Extends     |
 | ---------------------------- | --------------- | ----------- |
-| `Livewire/SystemSetting.php` | `SystemSetting` | `Component` |
+| `Livewire/SystemSetting.php` | `SystemSetting` | `BaseFormView` |
 | `Livewire/LangSwitcher.php`  | `LangSwitcher`  | `Component` |
 | `Livewire/ThemeSwitcher.php` | `ThemeSwitcher` | `Component` |
 
@@ -96,7 +97,7 @@ feature toggles.
 
 | File                        | Event            | Dispatched By                                                            | Notes                                              |
 | --------------------------- | ---------------- | ------------------------------------------------------------------------ | -------------------------------------------------- |
-| `Events/SettingUpdated.php` | `SettingUpdated` | `SetSettingAction`, `BatchSetSettingAction`, `Settings::set()` (Service) | Audit/logging only — no listener for cache invalidation |
+| `Events/SettingUpdated.php` | `SettingUpdated` | `SetSettingAction`, `DeleteSettingAction` | Audit/logging only — no listener for cache invalidation |
 
 ## Middleware
 
@@ -130,7 +131,7 @@ feature toggles.
 
 ## Routes
 
-File: `routes/web/settings.php` Naming pattern: `settings.{resource}.{action}`
+File: `routes/web/settings.php` Named route: `admin.settings`
 
 ## Views
 
@@ -139,39 +140,39 @@ system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Settings/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Settings/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 | File                                                           | What It Tests                                                      |
 | -------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `Unit/Settings/Enums/SettingGroupTest.php`                     | SettingGroup enum cases, labels, defaults                          |
-| `Unit/Settings/Enums/SettingTypeTest.php`                      | SettingType detect, cast, values, labels                           |
-| `Unit/Settings/Enums/MediaCollectionTest.php`                  | MediaCollection cases                                              |
-| `Unit/Settings/Data/SettingDataTest.php`                       | SettingData DTO construction and serialization                     |
-| `Unit/Settings/Data/SettingGroupDataTest.php`                  | SettingGroupData DTO                                               |
-| `Unit/Settings/Entities/SettingEntityTest.php`                 | SettingEntity fromModel, type checks, boolean/json/int helpers     |
-| `Unit/Settings/Models/SettingModelTest.php`                    | Setting model scopes, casts, media collections                     |
-| `Unit/Settings/Casts/SettingValueCastTest.php`                 | SettingValueCast get/set for all types                             |
-| `Unit/Settings/Policies/SettingPolicyTest.php`                 | Policy authorization gates                                         |
-| `Unit/Settings/Rules/ValidSettingKeyTest.php`                  | Key validation rule                                                |
-| `Unit/Settings/Support/SettingsTest.php`                       | Settings facade: get, set, has, groups, forget, cache invalidation |
-| `Unit/Settings/Support/BrandTest.php`                          | Brand facade: name, logo, colors, get routing                      |
-| `Unit/Settings/Support/ThemeTest.php`                          | Theme: defaults, presets, cssVariables, color computation          |
-| `Unit/Settings/Support/LocaleTest.php`                         | Locale switching, supported locales, metadata                      |
-| `Unit/Settings/Branding/Data/BrandDataTest.php`                | BrandData DTO, get(), immutability                                 |
-| `Unit/Settings/Livewire/LangSwitcherTest.php`                  | LangSwitcher component                                             |
-| `Unit/Settings/Livewire/ThemeSwitcherTest.php`                 | ThemeSwitcher component                                            |
-| `Feature/Settings/Actions/SetSettingActionTest.php`            | SetSettingAction execute, type detection, validation               |
-| `Feature/Settings/Actions/BatchSetSettingActionTest.php`       | BatchSetSettingAction, transactional, array config                 |
-| `Feature/Settings/Actions/DeleteSettingActionTest.php`         | DeleteSettingAction, key deletion                                  |
-| `Feature/Settings/Actions/SaveSystemSettingsActionTest.php`    | SaveSystemSettingsAction, combined form save                       |
-| `Feature/Settings/Actions/ReadAcademicYearActionTest.php`      | `ReadAcademicYearAction`                                           |
-| `Feature/Settings/Actions/TestMailSettingsActionTest.php`      | TestMailSettingsAction SMTP test                                   |
-| `Feature/Settings/Actions/UploadBrandAssetActionTest.php`      | UploadBrandAssetAction, media upload                               |
-| `Feature/Settings/Events/SettingUpdatedEventTest.php`          | SettingUpdated event dispatch                                      |
-| `Feature/Settings/Observers/SettingObserverTest.php`           | SettingObserver: cache invalidation on create/update/delete        |
-| `Feature/Settings/Http/Middleware/SetLocaleMiddlewareTest.php` | SetLocaleMiddleware locale resolution                              |
-| `Feature/Settings/SettingsRouteTest.php`                       | Settings route accessibility                                       |
+| `Settings/Enums/SettingGroupTest.php`                     | SettingGroup enum cases, labels, defaults                          |
+| `Settings/Enums/SettingTypeTest.php`                      | SettingType detect, cast, values, labels                           |
+| `Settings/Enums/MediaCollectionTest.php`                  | MediaCollection cases                                              |
+| `Settings/Data/SettingDataTest.php`                       | SettingData DTO construction and serialization                     |
+| `Settings/Data/SettingGroupDataTest.php`                  | SettingGroupData DTO                                               |
+| `Settings/Entities/SettingEntityTest.php`                 | SettingEntity fromModel, type checks, boolean/json/int helpers     |
+| `Settings/Models/SettingModelTest.php`                    | Setting model scopes, casts, media collections                     |
+| `Settings/Casts/SettingValueCastTest.php`                 | SettingValueCast get/set for all types                             |
+| `Settings/Policies/SettingPolicyTest.php`                 | Policy authorization gates                                         |
+| `Settings/Rules/ValidSettingKeyTest.php`                  | Key validation rule                                                |
+| `Settings/Support/SettingsTest.php`                       | Settings facade: get, set, has, groups, forget, cache invalidation |
+| `Settings/Support/BrandTest.php`                          | Brand facade: name, logo, colors, get routing                      |
+| `Settings/Support/ThemeTest.php`                          | Theme: defaults, presets, cssVariables, color computation          |
+| `Settings/Support/LocaleTest.php`                         | Locale switching, supported locales, metadata                      |
+| `Settings/Branding/Data/BrandDataTest.php`                | BrandData DTO, get(), immutability                                 |
+| `Settings/Livewire/LangSwitcherTest.php`                  | LangSwitcher component                                             |
+| `Settings/Livewire/ThemeSwitcherTest.php`                 | ThemeSwitcher component                                            |
+| `Settings/Actions/SetSettingActionTest.php`            | SetSettingAction execute, type detection, validation               |
+| `Settings/Actions/BatchSetSettingActionTest.php`       | BatchSetSettingAction, transactional, array config                 |
+| `Settings/Actions/DeleteSettingActionTest.php`         | DeleteSettingAction, key deletion                                  |
+| `Settings/Actions/SaveSystemSettingsActionTest.php`    | SaveSystemSettingsAction, combined form save                       |
+| `Settings/Actions/ReadAcademicYearActionTest.php`      | `ReadAcademicYearAction`                                           |
+| `Settings/Actions/TestMailSettingsActionTest.php`      | TestMailSettingsAction SMTP test                                   |
+| `Settings/Actions/UploadBrandAssetActionTest.php`      | UploadBrandAssetAction, media upload                               |
+| `Settings/Events/SettingUpdatedEventTest.php`          | SettingUpdated event dispatch                                      |
+| `Settings/Observers/SettingObserverTest.php`           | SettingObserver: cache invalidation on create/update/delete        |
+| `Settings/Http/Middleware/SetLocaleMiddlewareTest.php` | SetLocaleMiddleware locale resolution                              |
+| `Settings/SettingsRouteTest.php`                       | Settings route accessibility                                       |
 
 ## Factories
 
@@ -193,7 +194,7 @@ for the testing conventions.
 - **Business Logic**: `app/Settings/`
 - **Routing**: `routes/web/settings.php`
 - **Views**: `resources/views/settings/`
-- **Testing**: `tests/Settings/`, `tests/Settings/`
+- **Testing**: `tests/Settings/`
 - **Dependencies**: Core, Academics
 - **Used By**: All modules (via `setting()` and `brand()` helpers)
 

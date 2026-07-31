@@ -31,7 +31,7 @@ _Praktik Kerja Lapangan_) at Indonesian SMA/SMK and technical education institut
 ## Architecture
 
 **Action-based MVC with vertical slicing.** Code is organized by business module, not technical
-layer. Each of the 22 modules owns its complete stack — persistence, business rules, UI, and
+layer. Each of the 18 modules owns its complete stack — persistence, business rules, UI, and
 authorization — colocated under `app/{Module}/`.
 
 ```

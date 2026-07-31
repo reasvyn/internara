@@ -1,6 +1,6 @@
 # Incident — Issue Reporting & Resolution
 
-> **Last updated:** 2026-07-11 **Changes:** sync — remove implementation details (Actions, Routes, File Structure) to reference doc
+> **Last updated:** 2026-07-31 **Changes:** sync — correct notification routing
 
 ## Description
 
@@ -64,7 +64,7 @@ Each transition requires an authorized actor and cannot skip steps. Transitions 
 
 ### Integration Patterns
 
-- **Notifications**: CRITICAL severity dispatches `IncidentEscalatedNotification` to all admin users via email + in-app
+- **Notifications**: All incidents notify admins and supervising teachers via `IncidentReportedNotification` (email + in-app)
 - **Audit Trail**: Every state change is logged via SmartLogger with the activity key `incident.status_changed`
 - **Pulse Monitoring**: CRITICAL incidents increment a Pulse counter for real-time ops awareness
 - **Evaluation Impact**: Incident density per program feeds into program quality evaluation in the Evaluation module

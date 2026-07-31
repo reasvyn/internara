@@ -1,7 +1,6 @@
 # System Requirements — Dependencies, Platform & Database
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from core-infra.md; system requirements,
-> dependencies, and database portability
+> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18
 
 ## Description
 
@@ -17,7 +16,7 @@ separate initiative — see [base-classes.md](base-classes.md).
 ### PS-1 — Dependency Management
 
 The system relies on 12 production packages and 10 dev packages with specific version constraints.
-A broken dependency or version mismatch can cascade across all 22 modules. Package selection must
+A broken dependency or version mismatch can cascade across all 18 modules. Package selection must
 balance feature needs with maintenance burden and security surface.
 
 ### PS-2 — Minimum System Requirements

@@ -1,6 +1,6 @@
 # SysAdmin — User Management, Announcements & Audit
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-31 **Changes:** sync — remove unverified dismissal-tracking claim
 
 ## Description
 
@@ -28,7 +28,7 @@ account recovery. All mutations are audit-logged via SmartLogger.
 ### Announcement
 
 System-wide message broadcasting with scheduling support. Announcements can target specific roles or
-all users. Supports publication date ranges and dismissal tracking.
+all users (`scheduled_at`, `target_roles`, status flow).
 
 ### Observability
 

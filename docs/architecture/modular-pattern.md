@@ -1,6 +1,6 @@
 # Modular Pattern Reference — Design Patterns, Conventions & Architecture Rules
 
-> **Last updated:** 2026-07-21 **Changes:** feat — add WCAG accessibility (§22) and localization (§23) patterns
+> **Last updated:** 2026-07-31 **Changes:** sync — fix test path convention to flat tests/{Module}/ layout
 
 ## Description
 
@@ -123,7 +123,7 @@ unexpected `Throwable`, logs, rethrows. **HasExceptionContext** — `withHint()`
 
 ## 11. Testing Patterns
 
-**Module-First** — `tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php`. **Scope Isolation** —
+**Module-First** — `tests/{Module}/{SubModule}/{Name}Test.php`. **Scope Isolation** —
 one test file per Action/component. **Layer Strategy** — enums/entities/DTOs/policies: unit (no DB);
 Actions/Livewire: feature (with DB). **Action Testing** — test DTO construction, ActionResponse
 handling, Entity rule enforcement, event dispatch. **Performance** — `LazilyRefreshDatabase`,

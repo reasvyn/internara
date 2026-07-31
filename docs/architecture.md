@@ -1,6 +1,6 @@
 # Action-based MVC Architecture — 4-Layer Architecture, Data Flow & Dependency Rules
 
-> **Last updated:** 2026-07-21 **Changes:** update route/translation file paths to reflect submodule convention (no module prefix)
+> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18 in module index link
 
 ## Description
 
@@ -302,5 +302,5 @@ See [ADR-010](adr/adr-cross-module-communication.md).
 | **Testing patterns**                                                               | [Testing Pattern](architecture/testing-pattern.md)                                                     |
 | **Validation strategy**                                                            | [Modular Pattern](architecture/modular-pattern.md) §4                                                  |
 | **Module structure & naming**                                                      | [Modular Pattern](architecture/modular-pattern.md)                                                     |
-| **22 modules overview**                                                            | [Module Index](modules/index.md)                                                                       |
+| **18 modules overview**                                                            | [Module Index](modules/index.md)                                                                       |
 | **Module invariants**                                                              | [Coding Conventions](conventions.md), AGENTS.md                                                        |

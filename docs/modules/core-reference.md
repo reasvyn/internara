@@ -1,7 +1,6 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-07-21 **Changes:** sync — remove ConflictException, NotFoundException,
-> RateLimitException (deleted); fix exception count 6→3
+> **Last updated:** 2026-07-31 **Changes:** sync — fix CsvRowResult/AuditCategory values, LangChecker/AppInfo/AppIntegrity methods, abstract model count, Livewire base count, jobs migration
 
 ## Description
 
@@ -36,10 +35,10 @@ depends on.
 - **Command Action Base**: 1 (`BaseCommandAction`)
 - **Read Action Base**: 1 (`BaseReadAction`)
 - **Process Action Base**: 1 (`BaseProcessAction`)
-- **Models**: 2 concrete (`ActivityLog`, `BaseAuthenticatable`) + 1 abstract (`BaseModel`)
+- **Models**: 1 concrete (`ActivityLog`) + 2 abstract (`BaseModel`, `BaseAuthenticatable`)
 - **Events**: 1 (`BaseEvent`, abstract)
-- **Livewire Components**: 1 (`BaseRecordManager`) + 2 concerns (`WithSorting`,
-  `WithRecordSelection`)
+- **Livewire Components**: 5 (`BaseRecordManager`, `BaseRecordEntry`, `BaseRecordList`,
+  `BaseFormView`, `BaseWizard`) + 2 concerns (`WithSorting`, `WithRecordSelection`)
 - **Policies**: 1 (`BasePolicy`) + 2 concern traits (`AuthorizesRoles`, `AuthorizesOwnership`)
 - **Data/DTOs**: 1 abstract (`BaseData`) + 3 concrete
 - **Channels**: 1 (`CustomDatabaseChannel`)
@@ -59,9 +58,9 @@ Located in `app/Core/Services/`:
 | ----------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
 | `ModuleDiscoverService` | Scan module directories to auto-register Livewire components, Gate policies, and Blade view namespaces | `discoverLivewireComponents()`, `discoverPolicies()`, `registerBladeNamespaces()` |
 | `SmartLogger`           | Dual-channel logger: system + activity, PII masking                                                    | Fluent API: `info()`, `event()`, `module()`, `about()`, `withPayload()`, `save()` |
-| `LangChecker`           | Dev helper: warns on missing translation keys                                                          | `check()`, `report()`                                                             |
-| `AppInfo`               | Static metadata from composer.json + config                                                            | `name()`, `version()`, `author()`, `repository()`                                 |
-| `AppIntegrity`          | Author verification                                                                                    | `verify()`, `isValid()`                                                           |
+| `LangChecker`           | Dev helper: warns on missing translation keys; extends `Translator`            | Overrides `get()`                                                                  |
+| `AppInfo`               | Static metadata from composer.json + config                                    | `all()`, `get()`, `name()`, `version()`, `author()`, `support()`, `gitUrl()`      |
+| `AppIntegrity`          | Author verification                                                                                    | `verify()`                                                          |
 
 ---
 
@@ -123,8 +122,8 @@ Located in `app/Core/Enums/`. All implement `LabelEnum`:
 
 | Enum            | Purpose                                                                   |
 | --------------- | ------------------------------------------------------------------------- |
-| `CsvRowResult`  | Row import status: SUCCESS, ERROR, SKIPPED                                |
-| `AuditCategory` | System health categories: DATABASE, SYSTEM, ENVIRONMENT, SECURITY, HEALTH |
+| `CsvRowResult`  | Row import status: CREATED, SKIPPED                                            |
+| `AuditCategory` | System health categories: REQUIREMENTS, PERMISSIONS, DATABASE, TERMINAL, RECOMMENDATIONS |
 | `AuditStatus`   | Audit check results: PASS, FAIL, WARN                                     |
 
 ---
@@ -205,7 +204,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Core/`. See [Testing](../infrastructure/testing.md) for
+Tests are located in `tests/Core/`. See [Testing](../infrastructure/testing.md) for
 the testing conventions.
 
 ## Factories
@@ -218,9 +217,7 @@ None - Core provides base classes only.
 | --------------------------- | -------------- |
 | `create_activity_log_table` | `activity_log` |
 | `create_cache_table`        | `cache`        |
-| `create_jobs_table`         | `jobs`         |
-| `create_failed_jobs_table`  | `failed_jobs`  |
-| `create_job_batches_table`  | `job_batches`  |
+| `create_jobs_table`         | `jobs` (also creates `failed_jobs` + `job_batches`) |
 | `create_media_table`        | `media`        |
 | `create_pulse_tables`       | `pulse_*`      |
 
@@ -231,7 +228,7 @@ None - Core provides base classes only.
 - **Business Logic**: `app/Core/`
 - **Routing**: None (health check `/up` in `bootstrap/app.php`)
 - **Views**: `resources/views/core/`
-- **Testing**: `tests/Core/`, `tests/Core/`
+- **Testing**: `tests/Core/`
 - **Cache Config**: `config/cache-keys.php`
 
 _For overview and business context, see [core.md](core.md)._

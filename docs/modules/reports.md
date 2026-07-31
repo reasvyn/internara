@@ -1,7 +1,6 @@
 # Reports — Grade Cards & Score Aggregation
 
-> **Last updated:** 2026-07-03 **Changes:** simplify — pure grade card, remove all
-> thesis/written-report references; status flow now DRAFT to FINALIZED
+> **Last updated:** 2026-07-31 **Changes:** sync — fix grade formula to include assignment weight
 
 ## Description
 
@@ -35,7 +34,7 @@ company details, department, and supervisor names for standalone archival persis
 The composite final grade is calculated using program-defined weights. The standard formula:
 
 ```
-Final Grade = (Industry Supervisor × 40%) + (School Teacher × 20%) + (Exam × 40%)
+Final Grade = (Industry Supervisor × 40%) + (School Teacher × 20%) + (Assignment × 20%) + (Exam × 20%)
 ```
 
 Weights are configurable per internship program in the Program module. The

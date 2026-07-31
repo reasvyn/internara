@@ -1,7 +1,6 @@
 # Certification — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
-> BaseCommandAction/BaseReadAction
+> **Last updated:** 2026-07-31 **Changes:** sync — fix CertificateStatus interface, add CertificateIssued event, template migration/factory, Livewire extends, route names, test paths
 
 ## Description
 
@@ -38,9 +37,15 @@ internships.
 
 | File                                      | Enum                | Implements                | Values          |
 | ----------------------------------------- | ------------------- | ------------------------- | --------------- |
-| `Certificate/Enums/CertificateStatus.php` | `CertificateStatus` | `LabelEnum`, `StatusEnum` | issued, revoked |
+| `Certificate/Enums/CertificateStatus.php` | `CertificateStatus` | `StatusEnum` | issued, revoked |
 
 ---
+
+## Events
+
+| File                                                  | Event                | Dispatched By          |
+| ----------------------------------------------------- | -------------------- | ---------------------- |
+| `Certificate/Events/CertificateIssued.php`            | `CertificateIssued`  | `IssueCertificateAction` |
 
 ## Policies
 
@@ -63,7 +68,7 @@ internships.
 | ----------------------------------------------------- | ---------------------------- | ------------------- |
 | `Certificate/Livewire/CertificateList.php`            | `CertificateList`            | `BaseRecordManager` |
 | `Certificate/Livewire/StudentCertificates.php`        | `StudentCertificates`        | `Component`         |
-| `Certificate/Livewire/CertificateTemplateManager.php` | `CertificateTemplateManager` | `Component`         |
+| `Certificate/Livewire/CertificateTemplateManager.php` | `CertificateTemplateManager` | `BaseRecordManager` |
 
 ## Support
 
@@ -75,7 +80,8 @@ internships.
 
 ## Routes
 
-File: `routes/web/certification.php` Naming pattern: `certification.{resource}.{action}`
+File: `routes/web/certification.php` Named routes: `certificates.download`,
+`student.certificates`, `sysadmin.certificates`, `sysadmin.certificates.templates`
 
 ## Views
 
@@ -84,20 +90,22 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Certification/`. See
+Tests are located in `tests/Certification/`. See
 [Testing](../infrastructure/testing.md) for the testing conventions.
 
 ## Factories
 
-| Factory              | Model         |
-| -------------------- | ------------- |
-| `CertificateFactory` | `Certificate` |
+| Factory                    | Model                 |
+| -------------------------- | --------------------- |
+| `CertificateFactory`       | `Certificate`         |
+| `CertificateTemplateFactory` | `CertificateTemplate` |
 
 ## Migrations
 
-| Migration                   | Table          |
-| --------------------------- | -------------- |
-| `create_certificates_table` | `certificates` |
+| Migration                          | Table                 |
+| ---------------------------------- | --------------------- |
+| `create_certificates_table`        | `certificates`        |
+| `create_certificate_templates_table` | `certificate_templates` |
 
 ---
 
@@ -107,7 +115,7 @@ Tests are located in `tests/{Feature,Unit}/Certification/`. See
 - **Business Logic**: `app/Certification/`
 - **Routing**: `routes/web/certification.php`
 - **Views**: `resources/views/certification/`
-- **Testing**: `tests/Certification/`, `tests/Certification/`
+- **Testing**: `tests/Certification/`
 - **Dependencies**: User, Evaluation, Program, Core
 
 _For overview and business context, see [certification.md](certification.md)._

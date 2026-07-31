@@ -1,6 +1,6 @@
 # Document — Templates, Handbooks & Rendering
 
-> **Last updated:** 2026-07-21 **Changes:** sync — Handbook submodule returned from Guidance; update boundary and submodule descriptions
+> **Last updated:** 2026-07-31 **Changes:** sync — correct cache invalidation target
 
 ## Description
 
@@ -73,7 +73,7 @@ Compliance-driven mandatory read-and-sign workflow for school policies. Key rule
 - **Version Control**: Template updates create new versions; previous versions remain accessible for historical rendering
 - **Rendering Queue**: PDF generation for batch operations is dispatched to the `documents` queue pipeline (Tier 2+)
 - **Compliance Reports**: Acknowledgement data feeds into SysAdmin compliance dashboards
-- **Cache Invalidation**: Template updates invalidate the template cache key `document.templates`
+- **Cache Invalidation**: Handbook changes invalidate the admin dashboard stats cache (`admin_dashboard_stats`)
 
 ## Dependencies
 

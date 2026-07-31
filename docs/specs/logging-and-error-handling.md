@@ -1,7 +1,6 @@
 # Logging & Error Handling — SmartLogger, PII Masking & Exception Hierarchy
 
-> **Last updated:** 2026-07-21 **Changes:** feat — initial spec covering SmartLogger dual-channel
-> system, PII masking, exception hierarchy, error handling in Actions, and middleware context
+> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18
 
 ## Description
 
@@ -47,7 +46,7 @@ unsustainable.
 
 ### PS-5 — Action Layer Error Consistency
 
-With 22 modules containing hundreds of Actions, each potentially throwing different exception types,
+With 18 modules containing hundreds of Actions, each potentially throwing different exception types,
 error handling must be consistent. Without a unified pattern, some Actions would swallow exceptions,
 others would leak stack traces, and debugging would require inspecting each Action individually.
 
@@ -506,7 +505,7 @@ methods with no business logic.
 
 **Decision:** A global `LogContext` middleware generates a UUID `request_id` and injects request
 metadata into every log entry.
-**Rationale:** In a system with 22 modules, tracing a single user action across multiple log entries
+**Rationale:** In a system with 18 modules, tracing a single user action across multiple log entries
 requires a correlation ID. Without request context, debugging production issues requires manual
 correlation of timestamps, user IDs, and IP addresses.
 **Trade-off:** One extra middleware in the stack (~0.1ms overhead). Negligible.

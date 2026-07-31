@@ -1,6 +1,6 @@
 # Partners — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-31 **Changes:** sync — add missing partnership listeners, fix dashboard listener events, route naming, test paths
 
 ## Description
 
@@ -68,9 +68,11 @@ Manages industrial partner companies and partnership agreements for internship p
 
 ## Listeners
 
-| File                                                  | Class                           | Listens To       |
-| ----------------------------------------------------- | ------------------------------- | ---------------- |
-| `Company/Listeners/ClearDashboardOnCompanyChange.php` | `ClearDashboardOnCompanyChange` | `CompanyCreated` |
+| File                                                  | Class                           | Listens To                                                      |
+| ----------------------------------------------------- | ------------------------------- | --------------------------------------------------------------- |
+| `Company/Listeners/ClearDashboardOnCompanyChange.php` | `ClearDashboardOnCompanyChange` | `CompanyCreated`, `CompanyUpdated`, `CompanyDeleted`            |
+| `Partnership/Listeners/ClearDashboardOnPartnershipChange.php` | `ClearDashboardOnPartnershipChange` | `PartnershipCreated`, `PartnershipUpdated`, `PartnershipDeleted`, `PartnershipRenewed`, `PartnershipTerminated` |
+| `Partnership/Listeners/NotifyOnPartnershipTerminated.php` | `NotifyOnPartnershipTerminated` | `PartnershipTerminated`
 
 ## Entities
 
@@ -108,7 +110,7 @@ Manages industrial partner companies and partnership agreements for internship p
 
 ## Routes
 
-File: `routes/web/partners.php` Naming pattern: `partners.{resource}.{action}`
+File: `routes/web/partners.php` Naming pattern: `partners.companies`, `partners.partnerships`
 
 ## Views
 
@@ -117,7 +119,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Partners/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Partners/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -142,7 +144,7 @@ for the testing conventions.
 - **Business Logic**: `app/Partners/`
 - **Routing**: `routes/web/partners.php`
 - **Views**: `resources/views/partners/`
-- **Testing**: `tests/Partners/`, `tests/Partners/`
+- **Testing**: `tests/Partners/`
 - **Dependencies**: Core
 - **Used By**: Program
 

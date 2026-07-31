@@ -1,6 +1,6 @@
 # User — Profiles, Notifications & Dashboards
 
-> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-31 **Changes:** sync — correct soft-delete and unique-email claims
 
 ## Description
 
@@ -49,12 +49,12 @@ dashboard renders when a user holds multiple roles.
 
 The `User` model handles authentication concerns only (email, password, status). The `Profile` model
 holds personal data. This separation keeps auth logic lean and allows profile schema to evolve
-independently. Both are UUID-keyed and soft-deletable.
+independently. Both are UUID-keyed (no soft deletes).
 
 ### Username Generation
 
 Usernames are auto-derived from the email local part, lowercased and alphanumeric-only. Collisions
-are resolved by appending numeric suffixes (`user` → `user1` → `user2`). Emails are globally unique.
+are resolved by appending numeric suffixes (`user` → `user1` → `user2`). Usernames are globally unique.
 
 ### Super Admin Role Mapping
 

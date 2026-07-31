@@ -1,7 +1,6 @@
 # Incident — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
-> BaseCommandAction/BaseReadAction
+> **Last updated:** 2026-07-31 **Changes:** sync — fix IncidentStatus/IncidentType, IncidentForm extends, route names, test paths
 
 ## Description
 
@@ -36,8 +35,8 @@ Manages workplace incident reports, severity classification, and resolution trac
 | File                                        | Enum               | Implements                | Values                                          |
 | ------------------------------------------- | ------------------ | ------------------------- | ----------------------------------------------- |
 | `IncidentReport/Enums/IncidentSeverity.php` | `IncidentSeverity` | `LabelEnum`               | low, medium, high, critical                     |
-| `IncidentReport/Enums/IncidentStatus.php`   | `IncidentStatus`   | `LabelEnum`, `StatusEnum` | reported, investigating, resolved, closed       |
-| `IncidentReport/Enums/IncidentType.php`     | `IncidentType`     | `LabelEnum`               | accident, harassment, safety, misconduct, other |
+| `IncidentReport/Enums/IncidentStatus.php`   | `IncidentStatus`   | `StatusEnum`, `ColorableEnum` | reported, investigating, resolved, closed     |
+| `IncidentReport/Enums/IncidentType.php`     | `IncidentType`     | `LabelEnum`               | accident, safety_violation, harassment, disciplinary, other |
 
 ---
 
@@ -60,13 +59,13 @@ Manages workplace incident reports, severity classification, and resolution trac
 | File                                          | Component         | Extends             |
 | --------------------------------------------- | ----------------- | ------------------- |
 | `IncidentReport/Livewire/IncidentManager.php` | `IncidentManager` | `BaseRecordManager` |
-| `IncidentReport/Livewire/IncidentForm.php`    | `IncidentForm`    | `Component`         |
+| `IncidentReport/Livewire/IncidentForm.php`    | `IncidentForm`    | `BaseFormView`     |
 
 ---
 
 ## Routes
 
-File: `routes/web/incident.php` Naming pattern: `incident.{resource}.{action}`
+File: `routes/web/incident.php` Named routes: `student.incidents.report`, `sysadmin.incidents`
 
 ## Views
 
@@ -75,7 +74,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Incident/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Incident/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -98,7 +97,7 @@ for the testing conventions.
 - **Business Logic**: `app/Incident/`
 - **Routing**: `routes/web/incident.php`
 - **Views**: `resources/views/incident/`
-- **Testing**: `tests/Incident/`, `tests/Incident/`
+- **Testing**: `tests/Incident/`
 - **Dependencies**: User, Program, Core
 
 _For overview and business context, see [incident.md](incident.md)._

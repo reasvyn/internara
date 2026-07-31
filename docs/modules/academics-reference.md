@@ -1,7 +1,6 @@
 # Academics — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
-> BaseCommandAction/BaseReadAction
+> **Last updated:** 2026-07-31 **Changes:** sync — fix SchoolEditor extends, route names, test paths
 
 ## Description
 
@@ -82,7 +81,7 @@ Manages educational structure: academic years, departments (jurusan), and school
 | ----------------------------------------------- | --------------------- | ------------------- |
 | `AcademicYear/Livewire/AcademicYearManager.php` | `AcademicYearManager` | `BaseRecordManager` |
 | `Department/Livewire/DepartmentManager.php`     | `DepartmentManager`   | `BaseRecordManager` |
-| `School/Livewire/SchoolEditor.php`              | `SchoolEditor`        | `Component`         |
+| `School/Livewire/SchoolEditor.php`              | `SchoolEditor`        | `BaseFormView`     |
 
 ## Livewire Forms
 
@@ -96,7 +95,8 @@ Manages educational structure: academic years, departments (jurusan), and school
 
 ## Routes
 
-File: `routes/web/academics.php` Naming pattern: `academics.{resource}.{action}`
+File: `routes/web/academics.php` Named routes: `sysadmin.school`, `sysadmin.departments`,
+`sysadmin.academic-years`
 
 ## Views
 
@@ -105,7 +105,7 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Academics/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Academics/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -130,7 +130,7 @@ for the testing conventions.
 - **Business Logic**: `app/Academics/`
 - **Routing**: `routes/web/academics.php`
 - **Views**: `resources/views/academics/`
-- **Testing**: `tests/Academics/`, `tests/Academics/`
+- **Testing**: `tests/Academics/`
 - **Dependencies**: Core (BaseModel, BaseAction, BaseEntity, BaseData, BasePolicy)
 - **Events Consumed By**: `User/Dashboard` (cache invalidation listeners)
 - **Used By**: Program, Enrollment, Assessment, User/Dashboard

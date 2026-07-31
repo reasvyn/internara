@@ -41,7 +41,8 @@ model that all subsequent skills depend on.
 - Determine scope: is this a single file change, a cross-module refactor, or a new feature?
 - Identify which module(s) are affected
 - Read relevant docs: module docs, pattern docs, reference docs
-- Verify paths, class names, signatures against actual code — never trust docs blindly
+- Verify paths, class names, signatures against actual code — never trust docs blindly; on
+  code/doc mismatch, check git history before deciding which side is correct
 
 ### 2. Execute — Build Mental Model
 
@@ -211,6 +212,23 @@ Doc drift happens when code changes but docs don't. Detect it by asking:
 | Do the enum cases in the doc match the code? | Read the Enum class |
 | Do the migration descriptions match the actual migrations? | Check `database/migrations/` |
 | Are the cross-references still valid? | Verify every `[text](path)` resolves |
+
+### Mismatch Resolution — Git History First
+
+When code and docs disagree — or a claim cannot be confirmed in either — the discrepancy may be an
+**unrecorded change**. Do NOT assume the code is the source of truth just because it runs, nor that
+the doc is authoritative just because it was written first. **Both can be stale.**
+
+Before picking a side:
+
+1. **Check git history** (`git log -p -- {file}`, `git blame {file}`) for the code and the doc to
+   see when each last changed
+2. **Look for the intent** — does a commit message explain the change (e.g., a refactor that moved
+   a file, or an intentional behavior change that skipped the docs)?
+3. **If a commit explains it**, update the other side to match the documented intent
+4. **If neither side explains it**, treat it as a finding: report it, don't silently decide
+
+Only trust a claim after confirming it against the codebase **and** git history.
 
 ### Tier Selection
 

@@ -1,6 +1,6 @@
 # Documentation Index — Complete Catalog of docs/
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split enrollment, internships, system-settings specs
+> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18
 
 Complete catalog of all documentation files, organized by topic and audience.
 
@@ -108,7 +108,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 
 ## Modules
 
-Refer to the [Module Documentation Index](modules/index.md) for the complete listing of all 22 modules. Each module has two documents:
+Refer to the [Module Documentation Index](modules/index.md) for the complete listing of all 18 modules. Each module has two documents:
 
 - **Overview** (`docs/modules/{module}.md`) — purpose, boundary, features, design principles
 - **Reference** (`docs/modules/{module}-reference.md`) — complete API reference (Models, Actions, Routes, Policies, Livewire, events)

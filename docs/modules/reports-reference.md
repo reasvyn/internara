@@ -1,7 +1,6 @@
 # Reports — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** remove deleted actions/events/Livewire; add
-> FinalizeReportAction, CreateReportData DTO; update ReportStatus enum
+> **Last updated:** 2026-07-31 **Changes:** sync — flat test paths
 
 ## Description
 
@@ -65,7 +64,7 @@ File: `routes/web/reports.php` Only admin download route: `sysadmin.reports.down
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Reports/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Reports/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -87,7 +86,7 @@ for the testing conventions.
 - **Submodules**: `Report`
 - **Business Logic**: `app/Reports/`
 - **Routing**: `routes/web/reports.php`
-- **Testing**: `tests/Reports/`, `tests/Reports/`
+- **Testing**: `tests/Reports/`
 - **Dependencies**: User, Program, Assessment, Assignment, Enrollment, Core
 
 _For overview and business context, see [reports.md](reports.md)._

@@ -1,7 +1,6 @@
 # User — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
-> BaseCommandAction/BaseReadAction
+> **Last updated:** 2026-07-31 **Changes:** sync — fix Action base classes, AccountStatus/EmploymentStatus, add events + listeners, Livewire extends, route names, flat test paths
 
 ## Description
 
@@ -23,7 +22,7 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `Notifications/Actions/DeleteNotificationAction.php`          | `DeleteNotificationAction`         | `BaseCommandAction` |
 | `Notifications/Actions/MarkAllAsReadAction.php`               | `MarkAllAsReadAction`              | `BaseCommandAction` |
 | `Notifications/Actions/MarkAsReadAction.php`                  | `MarkAsReadAction`                 | `BaseCommandAction` |
-| `Notifications/Actions/MarkBatchAsReadAction.php`             | `MarkBatchAsReadAction`            | `BaseAction`        |
+| `Notifications/Actions/MarkBatchAsReadAction.php`             | `MarkBatchAsReadAction`            | `BaseCommandAction`  |
 | `Notifications/Actions/SendNotificationAction.php`            | `SendNotificationAction`           | `BaseCommandAction` |
 | `Dashboard/Actions/ReadStudentDashboardAction.php`            | `ReadStudentDashboardAction`       | `BaseReadAction`    |
 | `Dashboard/Actions/ReadSupervisorDashboardAction.php`         | `ReadSupervisorDashboardAction`    | `BaseReadAction`    |
@@ -31,18 +30,18 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | `AccountStatus/Actions/DetectUserAccountCloneAction.php`      | `DetectUserAccountCloneAction`     | `BaseReadAction`    |
 | `AccountStatus/Actions/LockUserAccountAction.php`             | `LockUserAccountAction`            | `BaseCommandAction` |
 | `AccountStatus/Actions/UnlockUserAccountAction.php`           | `UnlockUserAccountAction`          | `BaseCommandAction` |
-| `UserManagement/Actions/ArchiveStudentAccountsAction.php`     | `ArchiveStudentAccountsAction`     | `BaseAction`        |
-| `UserManagement/Actions/BatchDeleteUserAction.php`            | `BatchDeleteUserAction`            | `BaseAction`        |
-| `UserManagement/Actions/CreateUserAction.php`                 | `CreateUserAction`                 | `BaseAction`        |
-| `UserManagement/Actions/DeleteUserAction.php`                 | `DeleteUserAction`                 | `BaseAction`        |
-| `UserManagement/Actions/GenerateAccountSlipAction.php`        | `GenerateAccountSlipAction`        | `BaseAction`        |
+| `UserManagement/Actions/ArchiveStudentAccountsAction.php`     | `ArchiveStudentAccountsAction`     | `BaseCommandAction` |
+| `UserManagement/Actions/BatchDeleteUserAction.php`            | `BatchDeleteUserAction`            | `BaseCommandAction` |
+| `UserManagement/Actions/CreateUserAction.php`                 | `CreateUserAction`                 | `BaseCommandAction` |
+| `UserManagement/Actions/DeleteUserAction.php`                 | `DeleteUserAction`                 | `BaseCommandAction` |
+| `UserManagement/Actions/GenerateAccountSlipAction.php`        | `GenerateAccountSlipAction`        | `BaseCommandAction` |
 | `UserManagement/Actions/ReadRecoveryKeyAction.php`            | `ReadRecoveryKeyAction`            | `BaseReadAction`    |
 | `UserManagement/Actions/ReadUserManagerStatsAction.php`       | `ReadUserManagerStatsAction`       | `BaseReadAction`    |
-| `UserManagement/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseAction`        |
-| `UserManagement/Actions/SaveRecoveryKeyAction.php`            | `SaveRecoveryKeyAction`            | `BaseAction`        |
-| `UserManagement/Actions/SetUserStatusAction.php`              | `SetUserStatusAction`              | `BaseAction`        |
-| `UserManagement/Actions/ToggleUserStatusAction.php`           | `ToggleUserStatusAction`           | `BaseAction`        |
-| `UserManagement/Actions/UpdateUserAction.php`                 | `UpdateUserAction`                 | `BaseAction`        |
+| `UserManagement/Actions/RevokeUserActivationTokensAction.php` | `RevokeUserActivationTokensAction` | `BaseCommandAction` |
+| `UserManagement/Actions/SaveRecoveryKeyAction.php`            | `SaveRecoveryKeyAction`            | `BaseCommandAction` |
+| `UserManagement/Actions/SetUserStatusAction.php`              | `SetUserStatusAction`              | `BaseCommandAction` |
+| `UserManagement/Actions/ToggleUserStatusAction.php`           | `ToggleUserStatusAction`           | `BaseCommandAction` |
+| `UserManagement/Actions/UpdateUserAction.php`                 | `UpdateUserAction`                 | `BaseCommandAction` |
 
 ---
 
@@ -60,9 +59,9 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 | File                           | Enum                 | Implements                | Values                                                                                 |
 | ------------------------------ | -------------------- | ------------------------- | -------------------------------------------------------------------------------------- |
-| `Enums/AccountStatus.php`      | `AccountStatus`      | `LabelEnum`, `StatusEnum` | provisioned, activated, verified, protected, restricted, suspended, inactive, archived |
+| `Enums/AccountStatus.php`      | `AccountStatus`      | `ColorableEnum`, `StatusEnum` | provisioned, activated, verified, protected, restricted, suspended, inactive, archived |
 | `Enums/BloodType.php`          | `BloodType`          | `LabelEnum`               | A, B, AB, O                                                                            |
-| `Enums/EmploymentStatus.php`   | `EmploymentStatus`   | `LabelEnum`               | active, resigned, retired                                                              |
+| `Enums/EmploymentStatus.php`   | `EmploymentStatus`   | `LabelEnum`               | full_time, part_time, contract, temporary, volunteer                                   |
 | `Enums/Gender.php`             | `Gender`             | `LabelEnum`               | male, female                                                                           |
 | `Enums/StructuralPosition.php` | `StructuralPosition` | `LabelEnum`               | principal, vice_principal, head_department, teacher, staff                             |
 
@@ -100,25 +99,27 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 | File                                                            | Class                                   | Listens To                                     |
 | --------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------- |
-| `Dashboard/Listeners/ClearDashboardCacheOnYearChange.php`       | `ClearDashboardCacheOnYearChange`       | `AcademicYearCreated`, `AcademicYearActivated` |
-| `Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` | `ClearDashboardCacheOnDepartmentChange` | `DepartmentCreated`, `DepartmentDeleted`       |
-| `Notifications/Listeners/ClearUnreadNotificationCache.php`      | `ClearUnreadNotificationCache`          | `NotificationSent`, `NotificationRead`         |
+| `Dashboard/Listeners/ClearDashboardCacheOnYearChange.php`       | `ClearDashboardCacheOnYearChange`       | `AcademicYearCreated`, `AcademicYearActivated`, `AcademicYearUpdated`, `AcademicYearDeleted` |
+| `Dashboard/Listeners/ClearDashboardCacheOnDepartmentChange.php` | `ClearDashboardCacheOnDepartmentChange` | `DepartmentCreated`, `DepartmentDeleted`, `DepartmentUpdated`       |
+| `Notifications/Listeners/ClearUnreadNotificationCache.php`      | `ClearUnreadNotificationCache`          | `NotificationSent`, `NotificationRead`, `ProfileUpdated`         |
+| `Profile/Listeners/SendProfileChangedMail.php`                  | `SendProfileChangedMail`                | `ProfileUpdated`                                             |
+| `UserManagement/Listeners/InvalidateUserCache.php`              | `InvalidateUserCache`                   | `object` (user model events)                                       |
 
 ## Livewire Components
 
 | File                                                         | Component                       | Extends             |
 | ------------------------------------------------------------ | ------------------------------- | ------------------- |
-| `Profile/Livewire/ProfileEditor.php`                         | `ProfileEditor`                 | `Component`         |
+| `Profile/Livewire/ProfileEditor.php`                         | `ProfileEditor`                 | `BaseFormView`     |
 | `Notifications/Livewire/NotificationBell.php`                | `NotificationBell`              | `Component`         |
-| `Notifications/Livewire/NotificationCenter.php`              | `NotificationCenter`            | `Component`         |
+| `Notifications/Livewire/NotificationCenter.php`              | `NotificationCenter`            | `BaseRecordManager` |
 | `Livewire/HomePage.php`                                      | `HomePage`                      | `Component`         |
 | `Livewire/ActivityFeedManager.php`                           | `ActivityFeedManager`           | `Component`         |
 | `Livewire/RecentActivityList.php`                            | `RecentActivityList`            | `Component`         |
 | `Dashboard/Livewire/UserDashboard.php`                       | `UserDashboard`                 | `Component`         |
-| `Dashboard/Livewire/AdminDashboard.php`                      | `AdminDashboard`                | `Component`         |
-| `Dashboard/Livewire/StudentDashboard.php`                    | `StudentDashboard`              | `Component`         |
-| `Dashboard/Livewire/TeacherDashboard.php`                    | `TeacherDashboard`              | `Component`         |
-| `Dashboard/Livewire/SupervisorDashboard.php`                 | `SupervisorDashboard`           | `Component`         |
+| `Dashboard/Livewire/AdminDashboard.php`                      | `AdminDashboard`                | `UserDashboard`     |
+| `Dashboard/Livewire/StudentDashboard.php`                    | `StudentDashboard`              | `UserDashboard`     |
+| `Dashboard/Livewire/TeacherDashboard.php`                    | `TeacherDashboard`              | `UserDashboard`     |
+| `Dashboard/Livewire/SupervisorDashboard.php`                 | `SupervisorDashboard`           | `UserDashboard`     |
 | `AccountStatus/Livewire/AccountLifecycleManager.php`         | `AccountLifecycleManager`       | `Component`         |
 | `UserManagement/Livewire/AdminManager.php`                   | `AdminManager`                  | `BaseRecordManager` |
 | `UserManagement/Livewire/StudentManager.php`                 | `StudentManager`                | `BaseRecordManager` |
@@ -151,7 +152,13 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 | ------------------------------------------- | ------------------ | ------------------------ | ------------------------------ |
 | `Notifications/Events/NotificationSent.php` | `NotificationSent` | `SendNotificationAction` | `ClearUnreadNotificationCache` |
 | `Notifications/Events/NotificationRead.php` | `NotificationRead` | `MarkAsReadAction`       | `ClearUnreadNotificationCache` |
-| `Profile/Events/ProfileUpdated.php`         | `ProfileUpdated`   | `UpdateProfileAction`    | —                              |
+| `Profile/Events/ProfileUpdated.php`         | `ProfileUpdated`   | `UpdateProfileAction`    | `ClearUnreadNotificationCache`, `SendProfileChangedMail` |
+| `AccountStatus/Events/UserAccountLocked.php` | `UserAccountLocked` | `LockUserAccountAction` | — |
+| `AccountStatus/Events/UserAccountUnlocked.php` | `UserAccountUnlocked` | `UnlockUserAccountAction` | — |
+| `UserManagement/Events/UserCreated.php`     | `UserCreated`       | `CreateUserAction`       | — |
+| `UserManagement/Events/UserUpdated.php`     | `UserUpdated`       | `UpdateUserAction`       | — |
+| `UserManagement/Events/UserDeleted.php`     | `UserDeleted`       | `DeleteUserAction`       | — |
+| `UserManagement/Events/UserStatusChanged.php` | `UserStatusChanged` | `SetUserStatusAction`, `ToggleUserStatusAction` | — |
 
 ## Notifications (Mail)
 
@@ -200,7 +207,10 @@ Handles user identity, profiles, notifications, account status, dashboards, and 
 
 ## Routes
 
-File: `routes/web/user.php` Naming pattern: `user.{resource}.{action}`
+File: `routes/web/user.php` Named routes: `home`, `dashboard`, `user.dashboard`, `profile`,
+`profile.recovery`, `notifications`, `logout`, `password.request`, `password.reset`,
+`recover.account`, `password.confirm`; role dashboards at `sysadmin.dashboard`,
+`student.dashboard`, `teacher.dashboard`, `supervisor.dashboard`
 
 ## Views
 
@@ -209,38 +219,38 @@ system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/User/`. See [Testing](../infrastructure/testing.md) for
+Tests are located in `tests/User/`. See [Testing](../infrastructure/testing.md) for
 the testing conventions.
 
 | File                                                                   | What It Tests                                                            |
 | ---------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| `Unit/User/Enums/AccountStatusTest.php`                                | AccountStatus: allowsLogin, isTerminal, transitions, color               |
-| `Unit/User/Enums/UserEnumsTest.php`                                    | BloodType, Gender, EmploymentStatus, StructuralPosition cases and labels |
-| `Unit/User/Entities/ApprenticeTest.php`                                | Apprentice: status, locked, setup required, transitions                  |
-| `Unit/User/Rules/ReservedAuthoritativeNameTest.php`                    | Reserved name validation                                                 |
-| `Unit/User/Rules/SystemUsernameTest.php`                               | Username format validation                                               |
-| `Unit/User/Services/DashboardServiceTest.php`                          | Dashboard routing by role                                                |
-| `Unit/User/Services/UserIdentifierGeneratorTest.php`                   | Username generation from email, collision handling                       |
-| `Unit/User/Notifications/Data/NotificationDataTest.php`                | NotificationData DTO                                                     |
-| `Feature/User/Profile/ProfileModelTest.php`                            | Profile model: relationships, fields, cascade delete                     |
-| `Feature/User/Profile/UpdateProfileActionTest.php`                     | UpdateProfileAction                                                      |
-| `Feature/User/Dashboard/*Test.php`                                     | Dashboard data actions                                                   |
-| `Feature/User/AccountStatus/*Test.php`                                 | Lock/Unlock account actions                                              |
-| `Feature/User/Notifications/*Test.php`                                 | Send, mark read, notification events                                     |
-| `Feature/User/Models/UserTest.php`                                     | User model: roles, UUID, scopes                                          |
-| `Feature/User/UserManagement/CreateUserActionTest.php`                 | CreateUserAction                                                         |
-| `Feature/User/UserManagement/UpdateUserActionTest.php`                 | UpdateUserAction                                                         |
-| `Feature/User/UserManagement/DeleteUserActionTest.php`                 | DeleteUserAction                                                         |
-| `Feature/User/UserManagement/BatchDeleteUserActionTest.php`            | BatchDeleteUserAction                                                    |
-| `Feature/User/UserManagement/ReadUserManagerStatsActionTest.php`       | ReadUserManagerStatsAction                                               |
-| `Feature/User/UserManagement/ArchiveStudentAccountsActionTest.php`     | ArchiveStudentAccountsAction                                             |
-| `Feature/User/UserManagement/ToggleUserStatusActionTest.php`           | ToggleUserStatusAction                                                   |
-| `Feature/User/UserManagement/SetUserStatusActionTest.php`              | SetUserStatusAction                                                      |
-| `Feature/User/UserManagement/RevokeUserActivationTokensActionTest.php` | RevokeUserActivationTokensAction                                         |
-| `Feature/User/UserManagement/GenerateAccountSlipActionTest.php`        | GenerateAccountSlipAction                                                |
-| `Feature/User/UserManagement/Actions/SaveRecoveryKeyActionTest.php`    | SaveRecoveryKeyAction                                                    |
-| `Feature/User/UserManagement/Actions/ReadRecoveryKeyActionTest.php`    | ReadRecoveryKeyAction                                                    |
-| `Feature/User/UserManagement/AutoInactivateAccountsCommandTest.php`    | AutoInactivateAccounts command                                           |
+| `User/Enums/AccountStatusTest.php`                                | AccountStatus: allowsLogin, isTerminal, transitions, color               |
+| `User/Enums/UserEnumsTest.php`                                    | BloodType, Gender, EmploymentStatus, StructuralPosition cases and labels |
+| `User/Entities/ApprenticeTest.php`                                | Apprentice: status, locked, setup required, transitions                  |
+| `User/Rules/ReservedAuthoritativeNameTest.php`                    | Reserved name validation                                                 |
+| `User/Rules/SystemUsernameTest.php`                               | Username format validation                                               |
+| `User/Services/DashboardServiceTest.php`                          | Dashboard routing by role                                                |
+| `User/Services/UserIdentifierGeneratorTest.php`                   | Username generation from email, collision handling                       |
+| `User/Notifications/Data/NotificationDataTest.php`                | NotificationData DTO                                                     |
+| `User/Profile/ProfileModelTest.php`                            | Profile model: relationships, fields, cascade delete                     |
+| `User/Profile/UpdateProfileActionTest.php`                     | UpdateProfileAction                                                      |
+| `User/Dashboard/*Test.php`                                     | Dashboard data actions                                                   |
+| `User/AccountStatus/*Test.php`                                 | Lock/Unlock account actions                                              |
+| `User/Notifications/*Test.php`                                 | Send, mark read, notification events                                     |
+| `User/Models/UserTest.php`                                     | User model: roles, UUID, scopes                                          |
+| `User/UserManagement/CreateUserActionTest.php`                 | CreateUserAction                                                         |
+| `User/UserManagement/UpdateUserActionTest.php`                 | UpdateUserAction                                                         |
+| `User/UserManagement/DeleteUserActionTest.php`                 | DeleteUserAction                                                         |
+| `User/UserManagement/BatchDeleteUserActionTest.php`            | BatchDeleteUserAction                                                    |
+| `User/UserManagement/ReadUserManagerStatsActionTest.php`       | ReadUserManagerStatsAction                                               |
+| `User/UserManagement/ArchiveStudentAccountsActionTest.php`     | ArchiveStudentAccountsAction                                             |
+| `User/UserManagement/ToggleUserStatusActionTest.php`           | ToggleUserStatusAction                                                   |
+| `User/UserManagement/SetUserStatusActionTest.php`              | SetUserStatusAction                                                      |
+| `User/UserManagement/RevokeUserActivationTokensActionTest.php` | RevokeUserActivationTokensAction                                         |
+| `User/UserManagement/GenerateAccountSlipActionTest.php`        | GenerateAccountSlipAction                                                |
+| `User/UserManagement/Actions/SaveRecoveryKeyActionTest.php`    | SaveRecoveryKeyAction                                                    |
+| `User/UserManagement/Actions/ReadRecoveryKeyActionTest.php`    | ReadRecoveryKeyAction                                                    |
+| `User/UserManagement/AutoInactivateAccountsCommandTest.php`    | AutoInactivateAccounts command                                           |
 
 ## Factories
 

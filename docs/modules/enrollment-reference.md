@@ -1,7 +1,6 @@
 # Enrollment — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
-> BaseCommandAction/BaseReadAction
+> **Last updated:** 2026-07-31 **Changes:** sync — add account-application events, fix Livewire extends, route names, test paths
 
 ## Description
 
@@ -74,6 +73,8 @@ applications, and registration document uploads.
 | File                                        | Class               | Dispatched By              |
 | ------------------------------------------- | ------------------- | -------------------------- |
 | `Registration/Events/StudentRegistered.php` | `StudentRegistered` | `RegisterInternshipAction` |
+| `AccountApplication/Events/AccountApplicationApproved.php` | `AccountApplicationApproved` | `ApproveAccountApplicationAction` |
+| `AccountApplication/Events/AccountApplicationRejected.php` | `AccountApplicationRejected` | `RejectAccountApplicationAction` |
 
 ## Listeners
 
@@ -86,14 +87,14 @@ applications, and registration document uploads.
 | File                                                   | Component                       | Extends     |
 | ------------------------------------------------------ | ------------------------------- | ----------- |
 | `Registration/Livewire/RegistrationCenter.php`         | `RegistrationCenter`            | `Component` |
-| `Registration/Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload`    | `Component` |
+| `Registration/Livewire/RegistrationDocumentUpload.php` | `RegistrationDocumentUpload`    | `BaseFormView` |
 | `Registration/Livewire/RegistrationVerification.php`   | `RegistrationVerification`      | `Component` |
 | `Registration/Livewire/RegistrationWizard.php`         | `RegistrationWizard`            | `Component` |
-| `Placement/Livewire/DirectPlacementManager.php`        | `DirectPlacementManager`        | `Component` |
-| `Placement/Livewire/PlacementChangeManager.php`        | `PlacementChangeManager`        | `Component` |
-| `Placement/Livewire/PlacementIndex.php`                | `PlacementIndex`                | `Component` |
-| `Placement/Livewire/StudentPlacementChangeRequest.php` | `StudentPlacementChangeRequest` | `Component` |
-| `AccountApplication/Livewire/ApplyPage.php`            | `ApplyPage`                     | `Component` |
+| `Placement/Livewire/DirectPlacementManager.php`        | `DirectPlacementManager`        | `BaseFormView` |
+| `Placement/Livewire/PlacementChangeManager.php`        | `PlacementChangeManager`        | `BaseRecordManager` |
+| `Placement/Livewire/PlacementIndex.php`                | `PlacementIndex`                | `BaseRecordManager` |
+| `Placement/Livewire/StudentPlacementChangeRequest.php` | `StudentPlacementChangeRequest` | `BaseFormView` |
+| `AccountApplication/Livewire/ApplyPage.php`            | `ApplyPage`                     | `BaseFormView` |
 
 ## Livewire Forms
 
@@ -119,7 +120,10 @@ applications, and registration document uploads.
 
 ## Routes
 
-File: `routes/web/enrollment.php` Naming pattern: `enrollment.{resource}.{action}`
+File: `routes/web/enrollment.php` Named routes: `apply`, `registration.center`,
+`registration.wizard`, `registration.documents`, `student.internships.placement-change`,
+`enrollment.internships.registrations.pending`, `enrollment.internships.placements`,
+`enrollment.internships.placements.direct`, `enrollment.internships.placements.changes`
 
 ## Views
 
@@ -128,7 +132,7 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Enrollment/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Enrollment/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -159,7 +163,7 @@ for the testing conventions.
 - **Business Logic**: `app/Enrollment/`
 - **Routing**: `routes/web/enrollment.php`
 - **Views**: `resources/views/enrollment/`
-- **Testing**: `tests/Enrollment/`, `tests/Enrollment/`
+- **Testing**: `tests/Enrollment/`
 - **Dependencies**: Core, Program, Partners, User
 - **Events Consumed By**: `User/Dashboard` (cache invalidation)
 
