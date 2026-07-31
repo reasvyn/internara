@@ -1,6 +1,6 @@
 # Journals — Technical Reference
 
-> **Last updated:** 2026-07-21 **Changes:** sync — absorb MonitoringVisit from Guidance module
+> **Last updated:** 2026-07-31 **Changes:** sync — fix LogbookStatus/SupervisionType/SupervisionLogStatus values, Livewire extends, add attendance events, factories, migrations, route names, test paths
 
 ## Description
 
@@ -21,7 +21,7 @@ field monitoring visit scheduling/verification.
 | `Logbook/Actions/UpdateLogbookAction.php`         | `UpdateLogbookAction`        | `BaseCommandAction` |
 | `Logbook/Actions/DeleteLogbookAction.php`         | `DeleteLogbookAction`        | `BaseCommandAction` |
 | `Logbook/Actions/SubmitLogbookAction.php`         | `SubmitLogbookAction`        | `BaseCommandAction` |
-| `Logbook/Actions/CompileLogbookReportAction.php`  | `CompileLogbookReportAction` | Read                |
+| `Logbook/Actions/CompileLogbookReportAction.php`  | `CompileLogbookReportAction` | `BaseReadAction`  |
 | `Attendance/Actions/CreateAttendanceAction.php`   | `CreateAttendanceAction`     | `BaseCommandAction` |
 | `Attendance/Actions/UpdateAttendanceAction.php`   | `UpdateAttendanceAction`     | `BaseCommandAction` |
 | `Attendance/Actions/DeleteAttendanceAction.php`   | `DeleteAttendanceAction`     | `BaseCommandAction` |
@@ -56,13 +56,13 @@ field monitoring visit scheduling/verification.
 
 | File                                            | Enum                   | Implements                | Values                                             |
 | ----------------------------------------------- | ---------------------- | ------------------------- | -------------------------------------------------- |
-| `Logbook/Enums/LogbookStatus.php`               | `LogbookStatus`        | `LabelEnum`, `StatusEnum` | draft, submitted, verified, rejected               |
+| `Logbook/Enums/LogbookStatus.php`               | `LogbookStatus`        | `LabelEnum`, `StatusEnum` | draft, submitted, verified, revision_required      |
 | `Attendance/Enums/AttendanceStatus.php`         | `AttendanceStatus`     | `LabelEnum`, `StatusEnum` | present, late, early_out, absent, permission, sick |
 | `AbsenceRequest/Enums/AbsenceReasonType.php`    | `AbsenceReasonType`    | `LabelEnum`               | sick, permission, emergency, other                 |
 | `AbsenceRequest/Enums/AbsenceRequestStatus.php` | `AbsenceRequestStatus` | `LabelEnum`, `StatusEnum` | pending, approved, rejected                        |
 | `MonitoringVisit/Enums/VisitMethod.php`         | `VisitMethod`           | `LabelEnum`               | site_visit, virtual_meeting, phone_call            |
-| `SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, reviewed, acknowledged           |
-| `SupervisionLog/Enums/SupervisionType.php`      | `SupervisionType`      | `LabelEnum`               | site_visit, online, phone                          |
+| `SupervisionLog/Enums/SupervisionLogStatus.php` | `SupervisionLogStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, reviewed, acknowledged, verified, completed |
+| `SupervisionLog/Enums/SupervisionType.php`      | `SupervisionType`      | `LabelEnum`               | guidance, mentoring, monitoring                    |
 
 ---
 
@@ -87,6 +87,13 @@ field monitoring visit scheduling/verification.
 | `MonitoringVisit/Policies/MonitoringVisitPolicy.php` | `MonitoringVisitPolicy` | `BasePolicy` |
 | `SupervisionLog/Policies/SupervisionLogPolicy.php`   | `SupervisionLogPolicy`  | `BasePolicy` |
 
+## Events
+
+| File                                             | Event                 | Dispatched By      |
+| ------------------------------------------------ | --------------------- | ------------------ |
+| `Attendance/Events/AttendanceClockIn.php`        | `AttendanceClockIn`   | `ClockInAction`    |
+| `Attendance/Events/AttendanceClockOut.php`       | `AttendanceClockOut`  | `ClockOutAction`   |
+
 ---
 
 ## Livewire Components
@@ -94,15 +101,15 @@ field monitoring visit scheduling/verification.
 | File                                             | Component            | Extends             |
 | ------------------------------------------------ | -------------------- | ------------------- |
 | `Logbook/Livewire/LogbookManager.php`            | `LogbookManager`     | `BaseRecordManager` |
-| `Logbook/Livewire/LogbookEntry.php`              | `LogbookEntry`       | `Component`         |
-| `Attendance/Livewire/AttendanceManager.php`      | `AttendanceManager`  | `BaseRecordManager` |
-| `Attendance/Livewire/StudentClockIn.php`         | `StudentClockIn`     | `Component`         |
-| `AbsenceRequest/Livewire/AbsenceRequestForm.php` | `AbsenceRequestForm` | `Component`         |
+| `Logbook/Livewire/LogbookEntry.php`              | `LogbookEntry`       | `BaseRecordEntry`   |
+| `Attendance/Livewire/AttendanceManager.php`      | `AttendanceManager`  | `Component`         |
+| `Attendance/Livewire/StudentClockIn.php`         | `StudentClockIn`     | `BaseFormView`      |
+| `AbsenceRequest/Livewire/AbsenceRequestForm.php` | `AbsenceRequestForm` | `BaseFormView`      |
 | `MonitoringVisit/Livewire/VisitManager.php`       | `VisitManager`       | `BaseRecordManager` |
 | `MonitoringVisit/Livewire/StudentVisitList.php`   | `StudentVisitList`   | `Component`         |
-| `SupervisionLog/Livewire/StudentLogManager.php`    | `StudentLogManager`    | `Component`         |
-| `SupervisionLog/Livewire/SupervisionManager.php`   | `SupervisionManager`   | `BaseRecordManager` |
-| `SupervisionLog/Livewire/SupervisorLogManager.php` | `SupervisorLogManager` | `BaseRecordManager` |
+| `SupervisionLog/Livewire/StudentLogManager.php`    | `StudentLogManager`    | `BaseRecordManager` |
+| `SupervisionLog/Livewire/SupervisionManager.php`   | `SupervisionManager`   | `Component` + `WithPagination` |
+| `SupervisionLog/Livewire/SupervisorLogManager.php` | `SupervisorLogManager` | `Component` + `WithPagination` |
 | `SupervisionLog/Livewire/SupervisorReviewManager.php` | `SupervisorReviewManager` | `BaseRecordManager` |
 
 ## Livewire Forms
@@ -130,7 +137,10 @@ field monitoring visit scheduling/verification.
 
 ## Routes
 
-File: `routes/web/journals.php` Naming pattern: `journals.{resource}.{action}`
+File: `routes/web/journals.php` Named routes: `student.logbook`, `student.attendance`,
+`student.attendance.absence`, `student.supervision-logs`, `student.monitoring-visits`,
+`sysadmin.attendance`, `sysadmin.logbook`, `sysadmin.logbook.report`, `supervision.logs`,
+`monitoring-visits.index`
 
 ## Views
 
@@ -139,7 +149,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Journals/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Journals/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -149,13 +159,17 @@ for the testing conventions.
 | `LogbookFactory`        | `Logbook`        |
 | `AttendanceFactory`     | `Attendance`     |
 | `AbsenceRequestFactory` | `AbsenceRequest` |
+| `MonitoringVisitFactory` | `MonitoringVisit` |
+| `SupervisionLogFactory` | `SupervisionLog` |
 
 ## Migrations
 
-| Migration                  | Table         |
-| -------------------------- | ------------- |
-| `create_logbooks_table`    | `logbooks`    |
-| `create_attendances_table` | `attendances` |
+| Migration                      | Table          |
+| ------------------------------ | -------------- |
+| `create_attendances_table`     | `attendances`  |
+| `create_logbooks_table`        | `logbooks`     |
+| `create_supervision_logs_table` | `supervision_logs` |
+| `create_monitoring_visits_table` | `monitoring_visits` |
 
 ---
 

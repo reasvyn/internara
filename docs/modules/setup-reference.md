@@ -1,7 +1,6 @@
 # Setup — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
-> BaseCommandAction/BaseReadAction
+> **Last updated:** 2026-07-31 **Changes:** sync — fix SetupWizard extends, route names, test paths
 
 ## Description
 
@@ -60,7 +59,7 @@ lifecycle, and the interactive setup wizard for initial configuration.
 
 | File                                   | Component     | Extends     |
 | -------------------------------------- | ------------- | ----------- |
-| `SetupWizard/Livewire/SetupWizard.php` | `SetupWizard` | `Component` |
+| `SetupWizard/Livewire/SetupWizard.php` | `SetupWizard` | `BaseWizard` |
 
 ## Livewire Forms
 
@@ -106,7 +105,7 @@ lifecycle, and the interactive setup wizard for initial configuration.
 
 ## Routes
 
-File: `routes/web/setup.php` Naming pattern: `setup.{resource}.{action}`
+File: `routes/web/setup.php` Named routes: `setup`, `setup.cleanup` (setup-token protected)
 
 ## Views
 
@@ -115,7 +114,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Setup/`. See [Testing](../infrastructure/testing.md) for
+Tests are located in `tests/Setup/`. See [Testing](../infrastructure/testing.md) for
 the testing conventions.
 
 ## Factories
@@ -134,7 +133,7 @@ None.
 - **Business Logic**: `app/Setup/`
 - **Routing**: `routes/web/setup.php`
 - **Views**: `resources/views/setup/`
-- **Testing**: `tests/Setup/`, `tests/Setup/`
+- **Testing**: `tests/Setup/`
 - **Dependencies**: Core, Academics
 
 _For overview and business context, see [setup.md](setup.md)._

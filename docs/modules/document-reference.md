@@ -1,7 +1,6 @@
 # Document — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — fix base class extends: BaseAction →
-> BaseCommandAction/BaseReadAction
+> **Last updated:** 2026-07-31 **Changes:** sync — add Handbook submodule, route names, test paths
 
 ## Description
 
@@ -68,6 +67,8 @@ and compliance acknowledgements.
 | ----------------------------------------------- | ----------------- | ----------- |
 | `OfficialDocument/Livewire/TemplateManager.php` | `TemplateManager` | `Component` |
 | `OfficialDocument/Livewire/ReportsManager.php`  | `ReportsManager`  | `Component` |
+| `Handbook/Livewire/HandbookManager.php`         | `HandbookManager` | `BaseRecordManager` |
+| `Handbook/Livewire/StudentHandbookList.php`     | `StudentHandbookList` | `Component` |
 
 ## Support
 
@@ -77,9 +78,33 @@ and compliance acknowledgements.
 
 ---
 
+## Handbook Submodule
+
+| Kind      | File                                           | Class                     | Extends / Implements    |
+| --------- | ---------------------------------------------- | ------------------------- | ----------------------- |
+| Action    | `Handbook/Actions/CreateHandbookAction.php`    | `CreateHandbookAction`    | `BaseCommandAction`     |
+| Action    | `Handbook/Actions/UpdateHandbookAction.php`    | `UpdateHandbookAction`    | `BaseCommandAction`     |
+| Action    | `Handbook/Actions/DeleteHandbookAction.php`    | `DeleteHandbookAction`    | `BaseCommandAction`     |
+| Action    | `Handbook/Actions/AcknowledgeHandbookAction.php` | `AcknowledgeHandbookAction` | `BaseCommandAction`   |
+| Data      | `Handbook/Data/HandbookData.php`               | `HandbookData`            | `BaseData`              |
+| Entity    | `Handbook/Entities/HandbookEntity.php`         | `HandbookEntity`          | `BaseEntity`            |
+| Enum      | `Handbook/Enums/HandbookAudience.php`          | `HandbookAudience`        | `LabelEnum` (all, student, teacher, supervisor) |
+| Event     | `Handbook/Events/HandbookCreated.php`          | `HandbookCreated`         | `BaseEvent`             |
+| Event     | `Handbook/Events/HandbookUpdated.php`          | `HandbookUpdated`         | `BaseEvent`             |
+| Event     | `Handbook/Events/HandbookDeleted.php`          | `HandbookDeleted`         | `BaseEvent`             |
+| Listener  | `Handbook/Listeners/ClearHandbookCache.php`    | `ClearHandbookCache`      | —                       |
+| Form      | `Handbook/Livewire/Forms/HandbookForm.php`     | `HandbookForm`            | —                       |
+
+Handbooks are stored in the shared `documents` table (category `handbook`); no separate
+migration or factory.
+
+---
+
 ## Routes
 
-File: `routes/web/document.php` Naming pattern: `document.{resource}.{action}`
+File: `routes/web/document.php` Named routes: `sysadmin.reports.index`,
+`sysadmin.documents.render`, `sysadmin.documents.render.store`, `sysadmin.handbooks.index`,
+`student.handbooks`
 
 ## Views
 
@@ -88,7 +113,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Document/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Document/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -107,11 +132,11 @@ for the testing conventions.
 
 ## Architectural Integration
 
-- **Submodules**: `OfficialDocument`
+- **Submodules**: `OfficialDocument`, `Handbook`
 - **Business Logic**: `app/Document/`
 - **Routing**: `routes/web/document.php`
 - **Views**: `resources/views/document/`
-- **Testing**: `tests/Document/`, `tests/Document/`
+- **Testing**: `tests/Document/`
 - **Dependencies**: Core, User
 
 _For overview and business context, see [document.md](document.md)._

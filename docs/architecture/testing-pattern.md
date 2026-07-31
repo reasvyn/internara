@@ -1,6 +1,6 @@
 # Testing Pattern Reference — Testing Conventions, Scope Isolation & Coverage
 
-> **Last updated:** 2026-06-10 **Changes:** initial metadata — no content changes
+> **Last updated:** 2026-07-31 **Changes:** sync — fix test structure tree to flat tests/{Module}/ layout
 
 ## Description
 
@@ -48,10 +48,12 @@ Tests mirror the source structure exactly. Every file in `app/` has a correspond
 
 ```
 tests/
-├── Feature/{Module}/{SubModule}/{Name}Test.php   → Integration tests (Actions, Livewire)
-├── Unit/{Module}/{SubModule}/{Name}Test.php        → Isolated tests (Entities, Enums)
-└── {Feature,Unit}/{Component}/{Name}Test.php       → Shared component tests
+├── {Module}/{SubModule}/{Name}Test.php   → Integration tests (Actions, Livewire)
+├── {Module}/{SubModule}/{Name}Test.php   → Isolated tests (Entities, Enums)
+└── {Module}/{Component}/{Name}Test.php   → Shared component tests
 ```
+
+Both unit and feature tests live flat under `tests/{Module}/` (no `Feature/`/`Unit/` split).
 
 ### 2.2 Three Test Tiers
 

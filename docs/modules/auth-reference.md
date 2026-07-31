@@ -1,9 +1,6 @@
 # Auth — Technical Reference
 
-> **Last updated:** 2026-07-11
->
-> **Changes:** sync — add SendPasswordChangedMail, InvalidateSessionOnPasswordChange listeners; add
-> CredentialChangedNotification
+> **Last updated:** 2026-07-31 **Changes:** sync — fix Role enum value (superadmin), move RecoverAdminCommand to SysAdmin, route names, test paths
 
 ## Description
 
@@ -46,7 +43,7 @@ permissions.
 
 | File                         | Enum   | Implements  | Values                                                                     |
 | ---------------------------- | ------ | ----------- | -------------------------------------------------------------------------- |
-| `Permissions/Enums/Role.php` | `Role` | `LabelEnum` | super_admin, admin, teacher, supervisor, student, func_mentor, func_mentee |
+| `Permissions/Enums/Role.php` | `Role` | `LabelEnum` | superadmin, admin, teacher, supervisor, student, func_mentor, func_mentee |
 
 ---
 
@@ -145,7 +142,7 @@ permissions.
 
 ## Routes
 
-File: `routes/web/auth.php` Naming pattern: `auth.{resource}.{action}`
+File: `routes/web/auth.php` Named routes: `login`, `activate` (password/recovery routes live in `routes/web/user.php`)
 
 ## Views
 
@@ -154,7 +151,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Auth/`. See [Testing](../infrastructure/testing.md) for
+Tests are located in `tests/Auth/`. See [Testing](../infrastructure/testing.md) for
 the testing conventions.
 
 ## Factories
@@ -166,7 +163,6 @@ None.
 | Command Signature | Class                 | Description                          |
 | ----------------- | --------------------- | ------------------------------------ |
 | `admin:create`    | `CreateAdminCommand`  | Creates initial superadmin           |
-| `admin:recover`   | `RecoverAdminCommand` | Super admin account recovery via CLI |
 
 ## Migrations
 
@@ -184,7 +180,7 @@ None.
 - **Business Logic**: `app/Auth/`
 - **Routing**: `routes/web/auth.php`
 - **Views**: `resources/views/auth/`
-- **Testing**: `tests/Auth/`, `tests/Auth/`
+- **Testing**: `tests/Auth/`
 - **Dependencies**: Core, User
 
 _For overview and business context, see [auth.md](auth.md)._

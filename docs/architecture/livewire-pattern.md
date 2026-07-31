@@ -1,6 +1,6 @@
 # Livewire Component Patterns — Thin Components, Injection & Forms
 
-> **Last updated:** 2026-07-21 **Changes:** feat — add WCAG accessibility (§13) and localization (§14) patterns
+> **Last updated:** 2026-07-31 **Changes:** sync — fix test path convention to flat tests/{Module}/ layout
 
 ## Description
 
@@ -56,7 +56,7 @@ mirror** the `app/` module structure.
 ```
 app/{Module}/{SubModule}/Livewire/{Name}.php
 resources/views/{module}/{submodule}/{component-name}.blade.php
-tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
+tests/{Module}/{SubModule}/Livewire/{Name}Test.php
 ```
 
 ### Cross-Submodule Components (within a module)
@@ -549,7 +549,7 @@ and `applySorting(Builder)` logic. Used automatically by `BaseRecordManager`. Ov
 Test files mirror the component structure:
 
 ```
-tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
+tests/{Module}/{SubModule}/Livewire/{Name}Test.php
 ```
 
 ### Key Practices

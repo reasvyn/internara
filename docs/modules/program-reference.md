@@ -1,6 +1,6 @@
 # Program — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — add missing InternshipStatusBatchUpdated event
+> **Last updated:** 2026-07-31 **Changes:** sync — fix InternshipGroupRole values, group-member migration, route naming, test paths
 
 ## Description
 
@@ -44,7 +44,7 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 | File                                            | Enum                  | Implements                | Values                                         |
 | ----------------------------------------------- | --------------------- | ------------------------- | ---------------------------------------------- |
 | `Internship/Enums/InternshipStatus.php`         | `InternshipStatus`    | `LabelEnum`, `StatusEnum` | draft, published, active, completed, cancelled |
-| `InternshipGroup/Enums/InternshipGroupRole.php` | `InternshipGroupRole` | `LabelEnum`               | leader, member                                 |
+| `InternshipGroup/Enums/InternshipGroupRole.php` | `InternshipGroupRole` | `LabelEnum`               | student, school_teacher, industry_supervisor    |
 
 ---
 
@@ -125,7 +125,7 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 
 ## Routes
 
-File: `routes/web/program.php` Naming pattern: `program.{resource}.{action}`
+File: `routes/web/program.php` Naming pattern: `sysadmin.internships` (admin prefix)
 
 ## Views
 
@@ -134,7 +134,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Program/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Program/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -147,11 +147,10 @@ for the testing conventions.
 
 ## Migrations
 
-| Migration                               | Table                      |
-| --------------------------------------- | -------------------------- |
-| `create_internships_table`              | `internships`              |
-| `create_internship_groups_table`        | `internship_groups`        |
-| `create_internship_group_members_table` | `internship_group_members` |
+| Migration                                | Table                         |
+| ---------------------------------------- | ----------------------------- |
+| `create_internships_table`               | `internships`                 |
+| `create_internship_groups_table`         | `internship_groups` + `internship_group_members` |
 
 ---
 
@@ -161,7 +160,7 @@ for the testing conventions.
 - **Business Logic**: `app/Program/`
 - **Routing**: `routes/web/program.php`
 - **Views**: `resources/views/program/`
-- **Testing**: `tests/Program/`, `tests/Program/`
+- **Testing**: `tests/Program/`
 - **Dependencies**: Academics, Partners, Core
 - **Used By**: Enrollment, Journals, Evaluation
 

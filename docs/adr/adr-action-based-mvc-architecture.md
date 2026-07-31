@@ -1,6 +1,6 @@
 # ADR-002: Action-based MVC Architecture
 
-> **Last updated:** 2026-06-10 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-31 **Changes:** sync — fix test path convention to flat tests/{Module}/ layout
 
 ## Description
 
@@ -9,7 +9,7 @@ module owning its complete stack from persistence to UI.
 
 ## Context
 
-Internara manages vocational fieldwork across 22 modules, each owning a complete business vertical.
+Internara manages vocational fieldwork across 18 modules, each owning a complete business vertical.
 Traditional flat layering (`app/Models/`, `app/Controllers/`, `app/Livewire/`) scatters a single
 feature across many directories, making boundaries unclear, encapsulation impossible to enforce, and
 refactoring expensive.
@@ -57,7 +57,7 @@ app/{Module}/
 - Module-specific: `app/{Module}/{Submodule}/{Component}/{ClassName}.php`
 - Shared (cross-module): `app/{Component}/{ClassName}.php`
 - Views: `resources/views/{module}/{submodule}/{component-name}.blade.php`
-- Tests: `tests/{Feature,Unit}/{Module}/{Submodule}/{Name}Test.php`
+- Tests: `tests/{Module}/{Submodule}/{Name}Test.php`
 
 No redundant namespace segments — the class name must never repeat in the path.
 

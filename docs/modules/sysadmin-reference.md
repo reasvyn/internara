@@ -1,7 +1,6 @@
 # SysAdmin — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — add Backup model to Models table; add Backups
-> Events and Support sections
+> **Last updated:** 2026-07-31 **Changes:** sync — fix Livewire extends, add backup migration/factory, route names, test paths
 
 ## Description
 
@@ -72,8 +71,8 @@ logging, Pulse observability, and GDPR compliance.
 
 | File                                                          | Component              | Extends     |
 | ------------------------------------------------------------- | ---------------------- | ----------- |
-| `Announcement/Livewire/AnnouncementManager.php`               | `AnnouncementManager`  | `Component` |
-| `Backups/Livewire/BackupManager.php`                          | `BackupManager`        | `Component` |
+| `Announcement/Livewire/AnnouncementManager.php`               | `AnnouncementManager`  | `BaseRecordManager` |
+| `Backups/Livewire/BackupManager.php`                          | `BackupManager`        | `BaseRecordManager` |
 | `Livewire/ApplicationReview.php`                              | `ApplicationReview`    | `Component` |
 | `Observability/Livewire/AuditLogManager.php`                  | `AuditLogManager`      | `Component` |
 | `Observability/Livewire/AccountCloneDetector.php`             | `AccountCloneDetector` | `Component` |
@@ -146,7 +145,10 @@ logging, Pulse observability, and GDPR compliance.
 
 ## Routes
 
-File: `routes/web/sysadmin.php` Naming pattern: `sysadmin.{resource}.{action}`
+File: `routes/web/sysadmin.php` Named routes: `admin.users.index`, `admin.users.admins`,
+`admin.users.students`, `admin.users.teachers`, `admin.users.supervisors`,
+`admin.users.account-slip`, `admin.users.account-slips.batch`, `admin.gdpr-logs`, `admin.audit-log`,
+`admin.accounts.clones`, `admin.backups`, `sysadmin.applications`, `sysadmin.announcements`, `cron`
 
 ## Views
 
@@ -155,7 +157,7 @@ system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/SysAdmin/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/SysAdmin/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -163,6 +165,7 @@ for the testing conventions.
 | Factory                  | Model             |
 | ------------------------ | ----------------- |
 | `AnnouncementFactory`    | `Announcement`    |
+| `BackupFactory`          | `Backup`          |
 | `GdprDeletionLogFactory` | `GdprDeletionLog` |
 
 ## Migrations
@@ -170,6 +173,7 @@ for the testing conventions.
 | Migration                         | Table                |
 | --------------------------------- | -------------------- |
 | `create_announcements_table`      | `announcements`      |
+| `create_backups_table`            | `backups`            |
 | `create_gdpr_deletion_logs_table` | `gdpr_deletion_logs` |
 
 ---

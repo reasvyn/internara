@@ -1,6 +1,6 @@
 # Assessment — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-07-31 **Changes:** sync — fix AssessmentGrading extends, add AssessmentFinalized event, route names, test paths
 
 ## Description
 
@@ -68,15 +68,22 @@ Manages competency rubrics, assessment scoring frameworks, and student evaluatio
 
 | File                                | Component           | Extends     |
 | ----------------------------------- | ------------------- | ----------- |
-| `Livewire/AssessmentGrading.php`    | `AssessmentGrading` | `Component` |
+| `Livewire/AssessmentGrading.php`    | `AssessmentGrading` | `BaseFormView` |
 | `Livewire/AssessmentView.php`       | `AssessmentView`    | `Component` |
 | `Rubric/Livewire/RubricManager.php` | `RubricManager`     | `Component` |
+
+## Events
+
+| File                            | Event                    | Dispatched By               |
+| ------------------------------- | ------------------------ | --------------------------- |
+| `Events/AssessmentFinalized.php` | `AssessmentFinalized`    | `FinalizeAssessmentAction`  |
 
 ---
 
 ## Routes
 
-File: `routes/web/assessment.php` Naming pattern: `assessment.{resource}.{action}`
+File: `routes/web/assessment.php` Named routes: `assessments`, `sysadmin.assessments.rubrics`,
+`sysadmin.assessments.grade`
 
 ## Views
 
@@ -85,7 +92,7 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Assessment/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Assessment/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -110,7 +117,7 @@ for the testing conventions.
 - **Business Logic**: `app/Assessment/`
 - **Routing**: `routes/web/assessment.php`
 - **Views**: `resources/views/assessment/`
-- **Testing**: `tests/Assessment/`, `tests/Assessment/`
+- **Testing**: `tests/Assessment/`
 - **Dependencies**: Core
 - **Used By**: Evaluation
 

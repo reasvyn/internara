@@ -1,13 +1,12 @@
 # Development Roadmap — Status Tracker
 
-> **Last updated:** 2026-07-24 **Changes:** feat — add spec-audit skill; update phase ranges
-> and spec count to match 53-spec index
+> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18
 
 ---
 
 ## Guiding Principle
 
-**Stabilize before expanding.** The project has 19 modules with most of the stack in place.
+**Stabilize before expanding.** The project has 18 modules with most of the stack in place.
 The priority is making what exists work correctly and reliably — not adding new features.
 
 New features should only be considered when there is a concrete, verified need from core
@@ -79,4 +78,4 @@ Not a milestone, but a description of the state the project should reach:
 - `docs/specs/` — All feature specifications (53 specs)
 - `docs/architecture.md` — 4-layer model, Action Triad, conventions
 - `docs/conventions.md` — Coding standards, invariants C1-C8, D1-D6
-- `docs/modules/index.md` — All 19 modules with links
+- `docs/modules/index.md` — All 18 modules with links

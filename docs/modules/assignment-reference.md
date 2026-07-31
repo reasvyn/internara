@@ -1,7 +1,6 @@
 # Assignment — Technical Reference
 
-> **Last updated:** 2026-07-11 **Changes:** add RequestSubmissionRevisionAction and
-> SubmissionRevisionRequested event; fix SubmissionStatus values
+> **Last updated:** 2026-07-31 **Changes:** sync — fix AssignmentStatus values, SubmitAssignment extends, add NotifyOnAssignmentPublished listener, route names, test paths
 
 ## Description
 
@@ -41,7 +40,7 @@ Manages course assignments and submission tracking with grading and revision wor
 
 | File                                    | Enum               | Implements                | Values                                                |
 | --------------------------------------- | ------------------ | ------------------------- | ----------------------------------------------------- |
-| `Enums/AssignmentStatus.php`            | `AssignmentStatus` | `LabelEnum`, `StatusEnum` | draft, published, closed, archived                    |
+| `Enums/AssignmentStatus.php`            | `AssignmentStatus` | `LabelEnum`, `StatusEnum` | draft, published, closed                         |
 | `Submission/Enums/SubmissionStatus.php` | `SubmissionStatus` | `LabelEnum`, `StatusEnum` | draft, submitted, verified, graded, revision_required |
 
 ---
@@ -77,6 +76,12 @@ Manages course assignments and submission tracking with grading and revision wor
 | `Events/AssignmentPublished.php`                    | `AssignmentPublished`         | `PublishAssignmentAction`         |
 | `Submission/Events/SubmissionRevisionRequested.php` | `SubmissionRevisionRequested` | `RequestSubmissionRevisionAction` |
 
+## Listeners
+
+| File                                                 | Listener                       | Listens To                     |
+| ---------------------------------------------------- | ------------------------------ | ------------------------------ |
+| `Listeners/NotifyOnAssignmentPublished.php`          | `NotifyOnAssignmentPublished`  | `AssignmentPublished`          |
+
 ## Notifications
 
 | File                                                          | Notification                     |
@@ -89,7 +94,7 @@ Manages course assignments and submission tracking with grading and revision wor
 | File                                        | Component           | Extends             |
 | ------------------------------------------- | ------------------- | ------------------- |
 | `Livewire/AssignmentManager.php`            | `AssignmentManager` | `BaseRecordManager` |
-| `Submission/Livewire/SubmitAssignment.php`  | `SubmitAssignment`  | `Component`         |
+| `Submission/Livewire/SubmitAssignment.php`  | `SubmitAssignment`  | `BaseFormView`      |
 | `Submission/Livewire/SubmissionGrading.php` | `SubmissionGrading` | `Component`         |
 
 ## Form Requests
@@ -103,7 +108,9 @@ Manages course assignments and submission tracking with grading and revision wor
 
 ## Routes
 
-File: `routes/web/assignment.php` Naming pattern: `assignment.{resource}.{action}`
+File: `routes/web/assignment.php` Named routes: `student.assignments`, `sysadmin.assignments`,
+`sysadmin.submissions.grading`, `teacher.submissions.grading`, `supervision.submissions.grading`,
+`assignment.show`
 
 ## Views
 
@@ -112,7 +119,7 @@ design system.
 
 ## Tests
 
-Tests are located in `tests/{Feature,Unit}/Assignment/`. See [Testing](../infrastructure/testing.md)
+Tests are located in `tests/Assignment/`. See [Testing](../infrastructure/testing.md)
 for the testing conventions.
 
 ## Factories
@@ -137,7 +144,7 @@ for the testing conventions.
 - **Business Logic**: `app/Assignment/`
 - **Routing**: `routes/web/assignment.php`
 - **Views**: `resources/views/assignment/`
-- **Testing**: `tests/Assignment/`, `tests/Assignment/`
+- **Testing**: `tests/Assignment/`
 - **Dependencies**: User, Program, Core
 
 _For overview and business context, see [assignment.md](assignment.md)._

@@ -1,7 +1,6 @@
 # Base Classes — Action Triad, Data Layer, UI Layer, Policies & Contracts
 
-> **Last updated:** 2026-07-24 **Changes:** feat — split from core-foundation.md; architectural
-> base classes, entity/DTO/model contracts, Livewire components, policies, contracts
+> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18
 
 ## Description
 
@@ -386,7 +385,7 @@ RuntimeException" anti-pattern.
 
 **Decision:** Livewire components, policies, and Blade namespaces are discovered dynamically via
 `ModuleDiscoverService`, not manually registered.
-**Rationale:** With 22 modules, manual registration in service providers would be error-prone and
+**Rationale:** With 18 modules, manual registration in service providers would be error-prone and
 a maintenance burden. Runtime scanning adds negligible startup cost (~50ms) and automatically
 picks up new modules.
 **Trade-off:** Slightly slower boot time. Mitigated by caching discovery results in Redis/file cache.

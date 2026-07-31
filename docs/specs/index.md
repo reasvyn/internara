@@ -1,7 +1,7 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-07-24 **Changes:** feat — add 4 Phase 3 specs (password-reset,
-> password-confirmation, account-recovery-slips, profile-management); renumber all specs
+> **Last updated:** 2026-07-31 **Changes:** fix — correct dependency for account-recovery-slips
+> (#23) and profile-management (#24): replace #42 (Assignment) with #46 (File Uploads & Media)
 
 ## Description
 
@@ -79,8 +79,8 @@ Authentication, password management, profile, notifications, and dashboards. Dep
 | 20 | [Dashboard](dashboard.md) | User | #17, #18 |
 | 21 | [Password Reset](password-reset.md) | Auth | #2, #17 |
 | 22 | [Password Confirmation](password-confirmation.md) | Auth | #2, #17 |
-| 23 | [Account Recovery Slips](account-recovery-slips.md) | Auth | #2, #17, #42 |
-| 24 | [Profile Management](profile-management.md) | User | #2, #8, #17, #42 |
+| 23 | [Account Recovery Slips](account-recovery-slips.md) | Auth | #2, #17, #46 |
+| 24 | [Profile Management](profile-management.md) | User | #2, #8, #17, #46 |
 
 ### Phase 4 — Institutional
 

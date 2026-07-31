@@ -1,6 +1,6 @@
 # Certification — Certificates, Templates & QR
 
-> **Last updated:** 2026-07-11 **Changes:** sync — remove implementation details (Actions, Routes, File Structure) to reference doc
+> **Last updated:** 2026-07-31 **Changes:** sync — fix status values, mark verification API and batch queue as not implemented
 
 ## Description
 
@@ -23,8 +23,8 @@ Out of scope: grade calculation (Reports), document templates (Document), evalua
 
 Core entity: serial number (auto-generated), recipient name, program details, issue date, embedded
 HTML layout snapshot (frozen at issuance for tamper-proof rendering), QR code hash, and status
-(`active` | `revoked`). Linked to the Registration record and the admin who authorized issuance.
-Batch issuance for entire cohorts via non-blocking job dispatch.
+(`issued` | `revoked`). Linked to the Registration record and the admin who authorized issuance.
+Batch issuance for entire cohorts via `BatchIssueCertificateAction`.
 
 ## Key Concepts
 
@@ -32,9 +32,8 @@ Batch issuance for entire cohorts via non-blocking job dispatch.
 
 Each printed certificate displays a QR code encoding a verification URL with a cryptographic hash.
 The hash is generated using SHA-256 over student ID, institutional code, final score, and issuer
-private key. Public verification endpoints accept the hash and return the certificate's authenticity
-status. This enables offline forgery detection without requiring database access at the verification
-point.
+private key (`qr_hash` column). This enables offline forgery detection without requiring database
+access at the verification point.
 
 ### Final Grade Prerequisite
 
@@ -55,13 +54,14 @@ Certificate layouts (portrait/landscape orientation, background seals, text plac
 
 ### Verification API
 
-Each certificate includes a QR code encoding a verification URL with SHA-256 hash. The public verification endpoint accepts the hash and returns authenticity status:
+Planned but not yet routed. Each certificate carries a QR code with a SHA-256 hash; a public
+verification endpoint has not been implemented:
 
 ```
-GET /verify/{hash}
+GET /verify/{hash}   (not yet implemented)
 ```
 
-**Response (JSON):**
+**Planned response (JSON):**
 
 ```json
 {
@@ -69,17 +69,17 @@ GET /verify/{hash}
     "recipient": "John Doe",
     "program": "PKL 2025/2026",
     "issued_at": "2026-06-15T10:00:00Z",
-    "status": "active"
+    "status": "issued"
 }
 ```
 
 ### Integration Patterns
 
 - **Reports Gate**: `IssueCertificateAction` checks for finalized Report record — throws `RejectedException` if missing
-- **Queue**: Batch issuance dispatches individual jobs to the `documents` queue pipeline
+- **Batch**: `BatchIssueCertificateAction` issues certificates for an entire cohort in a single process action
 - **Serial Number Management**: Auto-generated sequential numbers, unique, permanently retired on revocation
 - **Event**: `CertificateIssued` event triggers notification to student and updates Pulse metrics
-- **Cache**: Verification hash results cached with TTL 24h (key: `certificate.verify.{hash}`)
+- **Cache**: Verification hash caching (`certificate.verify.{hash}`) is not yet implemented — the key is not registered in `config/cache-keys.php`
 
 ## Dependencies
 
@@ -91,6 +91,6 @@ GET /verify/{hash}
 
 ## Used By
 
-- Public verification endpoints (no module dependency)
+- Student certificate list and admin issuance UI
 
 

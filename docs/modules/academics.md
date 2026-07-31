@@ -1,7 +1,6 @@
 # Academics — School Profile, Departments & Academic Years
 
-> **Last updated:** 2026-07-21 **Changes:** sync — replace ConflictException with
-> RejectedException
+> **Last updated:** 2026-07-31 **Changes:** sync — correct active-year constraint claim
 
 ## Description
 
@@ -49,7 +48,8 @@ dedicated database table. This eliminates table sprawl for a fundamentally singl
 ### Active Year Singleton
 
 Exactly one academic year can be active at any time. This invariant is enforced at the model level
-(deactivating others on activation) and at the database level (unique constraint on active flag).
+(deactivating others on activation); the database stores an `is_active` boolean without a unique
+constraint.
 All time-scoped features — programs, enrollments, reports — reference the active year by default.
 
 ## Dependencies
