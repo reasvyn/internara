@@ -13,11 +13,10 @@ declare(strict_types=1);
 |
 */
 
-$modules = config('module.list', []);
-$routesDir = __DIR__.'/web';
+use App\Core\Support\ModuleManager;
 
-foreach ($modules as $module) {
-    $file = $routesDir.'/'.Str::lower($module).'.php';
+foreach (ModuleManager::names() as $module) {
+    $file = ModuleManager::routeFilePath($module);
     if (file_exists($file)) {
         require $file;
     }

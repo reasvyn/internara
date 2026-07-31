@@ -199,7 +199,7 @@ accessible via token.
 | FR-D1 | System must discover Livewire components from registered modules at boot |
 | FR-D2 | System must discover authorization policies from registered modules at boot |
 | FR-D3 | System must register Blade view namespaces for registered modules        |
-| FR-D4 | Discovery must use `config('module.list')` to scope which directories are valid modules |
+| FR-D4 | Discovery must use `ModuleManager::names()` to scope which directories are valid modules |
 | FR-D5 | `module:discover` artisan command must re-run all discovery methods      |
 | FR-D6 | Discovery results must be cached (24h TTL) to avoid repeated filesystem scans |
 
@@ -484,7 +484,7 @@ is operational discipline.
 ### DD-7 — Config-Driven Module Registry
 
 **Decision:** Store module list and submodule mapping in `config/module.php` as the single source
-of truth, consumed by `ModuleDiscoverService`, `routes/web.php`, and `tests/Pest.php`.
+of truth, consumed by `ModuleManager`/`ModuleService`, `routes/web.php`, and `tests/Pest.php`.
 
 **Rationale:** Previously, module lists were hardcoded in 5+ locations (config, routes, tests,
 Python scripts). drift between these caused bugs. Centralizing in config ensures one place to
@@ -590,4 +590,4 @@ After implementing this spec, the system can provision itself from zero: environ
 - `config/setup.php` — Setup configuration values
 - `config/module.php` — Module registry (SSOT)
 - `app/Setup/` — Full module source code
-- `app/Core/Services/ModuleDiscoverService.php` — Module discovery implementation
+- `app/Core/Services/ModuleService.php` — Module discovery implementation

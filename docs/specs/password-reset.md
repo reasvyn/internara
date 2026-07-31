@@ -206,7 +206,7 @@ blocks actual email sends.
 | Spec | What It Provides |
 |------|-----------------|
 | [base-classes.md](base-classes.md) (#2) | `BaseCommandAction`, `ActionResponse`, `RejectedException` |
-| [authentication.md](authentication.md) (#17) | `User` model, auth infrastructure |
+| [authentication.md](authentication.md) (#18) | `User` model, auth infrastructure |
 
 ### Build Guide
 Implement `SendPasswordResetLinkAction` and `ResetPasswordAction` first (business logic),
@@ -227,5 +227,5 @@ then wire Livewire components. Routes are `guest`-only middleware.
 - `app/Auth/Password/Livewire/ResetPassword.php` — Reset password page
 - `app/Auth/Password/Livewire/Forms/ForgotPasswordForm.php` — Email validation
 - `app/Auth/Password/Livewire/Forms/ResetPasswordForm.php` — Token+password validation
-- **Related spec:** [authentication.md](authentication.md) (#17) — Login, activation, credential changes
-- **Related spec:** [password-confirmation.md](password-confirmation.md) (#22) — Re-authentication gate
+- **Related spec:** [authentication.md](authentication.md) (#18) — Login, activation, credential changes
+- **Related spec:** [password-confirmation.md](password-confirmation.md) (#23) — Re-authentication gate

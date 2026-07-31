@@ -38,12 +38,13 @@ SendsNotifications, SettingsStore).
 `Exceptions/` (full dual hierarchy with HasExceptionContext), `Livewire/BaseRecordManager` and
 concerns (WithSorting, WithRecordSelection), `Policies/Concerns/` (AuthorizesRoles,
 AuthorizesOwnership), `Http/Middleware/` (SecurityHeaders, LogContext), `Support/` (Color,
-CsvHandler, Environment, PasswordRules, PiiMasker, Spotlight).
+CsvHandler, Environment, ModuleManager, PasswordRules, PiiMasker, Spotlight).
 
 **Infrastructure services** (system-level, not domain logic): `Services/SmartLogger` (dual-channel
 audit logging with PII masking), `Services/AppInfo` (static metadata), `Services/AppIntegrity`
 (author verification), `Services/LangChecker` (missing translation detection),
-`Services/ModuleDiscoverService` (dynamic module registration).
+`Services/ModuleService` (module discovery orchestration; all module config reads go through
+`Support/ModuleManager`).
 
 **Shared models**: `Models/ActivityLog` (SmartLogger persistence), `Models/BaseAuthenticatable`
 (User model base with manual HasUuids).

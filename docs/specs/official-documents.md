@@ -455,9 +455,9 @@ This spec can only be implemented after the following specs are **fully complete
 | Spec | What It Provides |
 |------|-----------------|
 | [base-classes.md](base-classes.md) (#2) | `BaseCommandAction`, `BaseReadAction`, `BaseEntity`, `BaseModel` base classes |
-| [registration.md](registration.md) (#31) | `Registration` model, registration lifecycle, document upload infrastructure |
-| [document-templates.md](document-templates.md) (#43) | `DocumentRenderer`, `DocumentCategory` enum, template CRUD, PDF rendering pipeline |
-| [reports.md](reports.md) (#48) | `ReportFinalized` event triggers auto-generation of Completion Letter |
+| [registration.md](registration.md) (#32) | `Registration` model, registration lifecycle, document upload infrastructure |
+| [document-templates.md](document-templates.md) (#44) | `DocumentRenderer`, `DocumentCategory` enum, template CRUD, PDF rendering pipeline |
+| [reports.md](reports.md) (#49) | `ReportFinalized` event triggers auto-generation of Completion Letter |
 
 ### Build Guide
 

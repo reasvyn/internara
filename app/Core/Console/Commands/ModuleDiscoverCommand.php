@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core\Console\Commands;
 
-use App\Core\Services\ModuleDiscoverService;
+use App\Core\Services\ModuleService;
 use App\Core\Services\SmartLogger;
 use Illuminate\Console\Command;
 use RuntimeException;
@@ -18,7 +18,7 @@ class ModuleDiscoverCommand extends Command
     public function handle(): int
     {
         try {
-            $service = app(ModuleDiscoverService::class);
+            $service = app(ModuleService::class);
 
             $providers = $this->getLaravel()->getLoadedProviders();
 

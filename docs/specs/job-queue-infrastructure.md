@@ -231,9 +231,9 @@ After implementing this spec, the system has async job processing via Laravel qu
 ### Next Steps
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [backup-system.md](backup-system.md) (#51) | `SystemBackupCommand` and `CreateBackupAction` use queues for async backup operations |
-| 2 | [system-maintenance.md](system-maintenance.md) (#53) | `ArchiveStudentAccountsJob` and cleanup tasks dispatch via queue |
-| 3 | [notification-infrastructure.md](notification-infrastructure.md) (#18) | `SendNotificationAction` and `ShouldQueue` notifications dispatch via queue |
+| 1 | [backup-system.md](backup-system.md) (#52) | `SystemBackupCommand` and `CreateBackupAction` use queues for async backup operations |
+| 2 | [system-maintenance.md](system-maintenance.md) (#54) | `ArchiveStudentAccountsJob` and cleanup tasks dispatch via queue |
+| 3 | [notification-infrastructure.md](notification-infrastructure.md) (#19) | `SendNotificationAction` and `ShouldQueue` notifications dispatch via queue |
 
 ---
 

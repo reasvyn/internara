@@ -5,45 +5,33 @@ declare(strict_types=1);
 namespace App\Core\Services;
 
 use App\Core\Policies\BasePolicy;
+use App\Core\Support\ModuleManager;
+use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 
-class ModuleDiscoverService
+/**
+ * Orchestrates runtime module discovery (Livewire, policies, Blade namespaces).
+ *
+ * The single place that scans module directories. All configuration reads are
+ * delegated to ModuleManager; results are cached via the injected cache repository.
+ */
+final readonly class ModuleService
 {
-    /**
-     * Get the list of registered module names from config.
-     *
-     * @return list<string>
-     */
-    public static function getModuleNames(): array
-    {
-        return config('module.list', []);
-    }
-
-    /**
-     * Check if a directory name is a registered module.
-     */
-    public static function isModule(string $name): bool
-    {
-        return in_array($name, self::getModuleNames(), true);
-    }
+    public function __construct(private Repository $cache) {}
 
     public function discoverLivewireComponents(): void
     {
-        $components = Cache::remember(config('cache-keys.module_livewire'), 86400, function () {
+        $components = $this->cache->remember(config('cache-keys.module_livewire'), 86400, function () {
             $result = [];
             $moduleDir = app_path();
-            if ($moduleDir === false) {
-                return $result;
-            }
 
-            $directory = config('module.livewire.directory', 'Livewire');
-            $excludePaths = config('module.livewire.exclude_paths', ['Concerns', 'Traits']);
-            $registeredModules = self::getModuleNames();
+            $directory = ModuleManager::livewireDirectory();
+            $excludePaths = ModuleManager::livewireExcludePaths();
+            $registeredModules = ModuleManager::names();
             $files = $this->scanPhpFiles($moduleDir);
 
             foreach ($files as $filePath) {
@@ -57,14 +45,14 @@ class ModuleDiscoverService
 
                 $relativePath = str_replace($moduleDir.'/', '', $filePath);
                 $parts = explode('/', $relativePath);
-                $module = $parts[0] ?? '';
+                $module = $parts[0];
 
                 if (! in_array($module, $registeredModules, true)) {
                     continue;
                 }
 
                 $content = file_get_contents($filePath);
-                if (! preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
+                if ($content === false || ! preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
                     continue;
                 }
 
@@ -75,7 +63,7 @@ class ModuleDiscoverService
                     continue;
                 }
 
-                if (($parts[0] ?? '') === $directory) {
+                if ($parts[0] === $directory) {
                     continue;
                 }
 
@@ -104,16 +92,13 @@ class ModuleDiscoverService
 
     public function discoverPolicies(): void
     {
-        $policies = Cache::remember(config('cache-keys.module_policies'), 86400, function () {
+        $policies = $this->cache->remember(config('cache-keys.module_policies'), 86400, function () {
             $result = [];
             $moduleDir = app_path();
-            if ($moduleDir === false) {
-                return $result;
-            }
 
-            $directory = config('module.policies.directory', 'Policies');
-            $excludePaths = config('module.policies.exclude_paths', ['Concerns', 'Traits']);
-            $registeredModules = self::getModuleNames();
+            $directory = ModuleManager::policiesDirectory();
+            $excludePaths = ModuleManager::policiesExcludePaths();
+            $registeredModules = ModuleManager::names();
             $files = $this->scanPhpFiles($moduleDir);
 
             foreach ($files as $filePath) {
@@ -127,7 +112,7 @@ class ModuleDiscoverService
 
                 $relativePath = str_replace($moduleDir.'/', '', $filePath);
                 $parts = explode('/', $relativePath);
-                $module = $parts[0] ?? '';
+                $module = $parts[0];
 
                 if (! in_array($module, $registeredModules, true)) {
                     continue;
@@ -139,7 +124,7 @@ class ModuleDiscoverService
                 }
 
                 $content = file_get_contents($filePath);
-                if (! preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
+                if ($content === false || ! preg_match('/^namespace\s+(.+?);$/m', $content, $nsMatch)) {
                     continue;
                 }
 
@@ -172,30 +157,21 @@ class ModuleDiscoverService
 
     public function registerBladeNamespaces(): void
     {
-        $namespaces = Cache::remember(config('cache-keys.module_views'), 86400, function () {
+        $namespaces = $this->cache->remember(config('cache-keys.module_views'), 86400, function () {
             $result = [];
-            $viewsDir = realpath(config('module.paths.views', resource_path('views')));
+            $viewsDir = realpath(ModuleManager::viewsPath());
             if ($viewsDir === false) {
                 return $result;
             }
 
-            $excluded = config('module.views.exclude_directories', [
-                'components',
-                'emails',
-                'errors',
-                'mcp',
-                'pdf',
-                'vendor',
-            ]);
-
-            $registeredModules = self::getModuleNames();
-            $moduleDirs = glob($viewsDir.'/*', GLOB_ONLYDIR);
+            $excluded = ModuleManager::viewsExcludeDirectories();
+            $moduleDirs = glob($viewsDir.'/*', GLOB_ONLYDIR) ?: [];
             foreach ($moduleDirs as $dir) {
                 $name = basename($dir);
                 if (in_array($name, $excluded, true)) {
                     continue;
                 }
-                if (! in_array($name, $registeredModules, true)) {
+                if (! ModuleManager::isRegisteredDirectory($name)) {
                     continue;
                 }
                 $result[] = ['name' => $name, 'path' => $dir];
@@ -212,6 +188,11 @@ class ModuleDiscoverService
         }
     }
 
+    /**
+     * Scan a directory recursively for PHP files.
+     *
+     * @return list<string>
+     */
     private function scanPhpFiles(string $dir): array
     {
         $iterator = new \RecursiveIteratorIterator(
@@ -227,6 +208,11 @@ class ModuleDiscoverService
         return $files;
     }
 
+    /**
+     * Check whether a file path is inside an excluded subdirectory.
+     *
+     * @param list<string> $excludePaths
+     */
     private function isExcludedPath(string $filePath, array $excludePaths): bool
     {
         foreach ($excludePaths as $excluded) {

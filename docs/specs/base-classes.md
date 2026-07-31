@@ -384,7 +384,7 @@ RuntimeException" anti-pattern.
 ### DD-2 — Module Discovery at Runtime
 
 **Decision:** Livewire components, policies, and Blade namespaces are discovered dynamically via
-`ModuleDiscoverService`, not manually registered.
+`ModuleService`, not manually registered.
 **Rationale:** With 18 modules, manual registration in service providers would be error-prone and
 a maintenance burden. Runtime scanning adds negligible startup cost (~50ms) and automatically
 picks up new modules.

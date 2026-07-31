@@ -390,7 +390,7 @@ After implementing this spec, students can register for internship programs and 
 ### Next Steps
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [placement.md](placement.md) | Placement reads enrollment records from this spec and matches with companies from #20 partnership-management |
+| 1 | [placement.md](placement.md) | Placement reads enrollment records from this spec and matches with companies from #29 partnership-management |
 | 2 | [account-application.md](account-application.md) | New students self-register through this flow before reaching registration |
 
 ## Quick References
