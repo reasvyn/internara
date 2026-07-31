@@ -621,9 +621,9 @@ This spec can only be implemented after the following specs are **fully complete
 | [base-classes.md](base-classes.md) (#2) | `BaseCommandAction`, `BaseEvent`, `BaseData`, `BaseModel`, `BasePolicy` base classes |
 | [logging-and-error-handling.md](logging-and-error-handling.md) (#6) | `SmartLogger` for notification event logging |
 | [event-system.md](event-system.md) (#7) | `BaseEvent` contract, event dispatch and listener registration patterns |
-| [authentication.md](authentication.md) (#17) | `User` model with `Notifiable` trait, authenticated user context, `LoginSucceeded` event |
+| [authentication.md](authentication.md) (#18) | `User` model with `Notifiable` trait, authenticated user context, `LoginSucceeded` event |
 | [rbac-and-authorization.md](rbac-and-authorization.md) (#8) | `isAdmin()` policy helper, role-based `create`/`delete` gate |
-| [settings-infrastructure.md](settings-infrastructure.md) (#14) | `Settings::get()` used by `CredentialChangedNotification` for support email |
+| [settings-infrastructure.md](settings-infrastructure.md) (#15) | `Settings::get()` used by `CredentialChangedNotification` for support email |
 
 ### Build Guide
 

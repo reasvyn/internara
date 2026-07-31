@@ -733,9 +733,9 @@ This spec can only be implemented after the following specs are **fully complete
 | [logging-and-error-handling.md](logging-and-error-handling.md) (#6) | `SmartLogger` for backup event logging |
 | [event-system.md](event-system.md) (#7) | `BaseEvent` contract, event dispatch and listener registration patterns |
 | [rbac-and-authorization.md](rbac-and-authorization.md) (#8) | `isAdmin()` policy helper, role-based `viewAny`/`create`/`delete` gates, `super_admin\|admin` middleware |
-| [settings-infrastructure.md](settings-infrastructure.md) (#14) | `config('backup.enabled')` and `config('backup.retention_days')` settings integration |
-| [notification-infrastructure.md](notification-infrastructure.md) (#18) | Database notification channel for `BackupFailedNotification` delivery |
-| [job-queue-infrastructure.md](job-queue-infrastructure.md) (#50) | Queue configuration for async backup operations |
+| [settings-infrastructure.md](settings-infrastructure.md) (#15) | `config('backup.enabled')` and `config('backup.retention_days')` settings integration |
+| [notification-infrastructure.md](notification-infrastructure.md) (#19) | Database notification channel for `BackupFailedNotification` delivery |
+| [job-queue-infrastructure.md](job-queue-infrastructure.md) (#51) | Queue configuration for async backup operations |
 
 ### Build Guide
 
@@ -745,9 +745,9 @@ After implementing this spec, the backup system is fully operational: admins can
 
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [system-maintenance.md](system-maintenance.md) (#53) | Backup cleanup runs alongside system maintenance tasks |
-| 2 | [settings-infrastructure.md](settings-infrastructure.md) (#14) | `backup.enabled`, `backup.retention_days` settings exposed in Admin → Settings UI |
-| 3 | [notification-infrastructure.md](notification-infrastructure.md) (#18) | `BackupFailedNotification` registers in the notification center via database channel |
+| 1 | [system-maintenance.md](system-maintenance.md) (#54) | Backup cleanup runs alongside system maintenance tasks |
+| 2 | [settings-infrastructure.md](settings-infrastructure.md) (#15) | `backup.enabled`, `backup.retention_days` settings exposed in Admin → Settings UI |
+| 3 | [notification-infrastructure.md](notification-infrastructure.md) (#19) | `BackupFailedNotification` registers in the notification center via database channel |
 
 ---
 

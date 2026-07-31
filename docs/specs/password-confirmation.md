@@ -159,7 +159,7 @@ hijacking is mitigated by other security measures (HTTPS, session cookies).
 | Spec | What It Provides |
 |------|-----------------|
 | [base-classes.md](base-classes.md) (#2) | `BaseCommandAction`, `ActionResponse`, `RejectedException` |
-| [authentication.md](authentication.md) (#17) | `User` model, auth infrastructure |
+| [authentication.md](authentication.md) (#18) | `User` model, auth infrastructure |
 
 ### Build Guide
 Single action + single Livewire component. Wire `password.confirm` middleware in
@@ -177,5 +177,5 @@ Single action + single Livewire component. Wire `password.confirm` middleware in
 - `app/Auth/Password/Actions/ConfirmPasswordAction.php` — Password verification (30 lines)
 - `app/Auth/Password/Livewire/ConfirmPassword.php` — Confirmation page
 - `app/Auth/Password/Livewire/Forms/ConfirmPasswordForm.php` — Validation
-- **Related spec:** [authentication.md](authentication.md) (#17) — Login, activation
-- **Related spec:** [password-reset.md](password-reset.md) (#20) — Forgot/reset flow
+- **Related spec:** [authentication.md](authentication.md) (#18) — Login, activation
+- **Related spec:** [password-reset.md](password-reset.md) (#22) — Forgot/reset flow

@@ -53,8 +53,8 @@ capability without exposing password reset to admins.
 
 | ID   | Non-Goal |
 | ---- | -------- |
-| NG1  | Super admin CLI recovery — see `recovery-ecosystem.md` (#13) |
-| NG2  | Email-based password reset — see `password-reset.md` (#20) |
+| NG1  | Super admin CLI recovery — see `recovery-ecosystem.md` (#14) |
+| NG2  | Email-based password reset — see `password-reset.md` (#22) |
 | NG3  | Multi-factor authentication (MFA/TOTP) |
 | NG4  | Recovery code regeneration on redemption (codes are consumed, not rotated) |
 
@@ -314,8 +314,8 @@ not retrievable after the generation page is closed.
 | Spec | What It Provides |
 |------|-----------------|
 | [base-classes.md](base-classes.md) (#2) | `BaseCommandAction`, `ActionResponse`, `RejectedException`, `BaseEntity`, `BaseData` |
-| [authentication.md](authentication.md) (#17) | `User` model, `AccessToken` model, auth infrastructure |
-| [file-uploads-media.md](file-uploads-media.md) (#46) | DomPDF for PDF generation |
+| [authentication.md](authentication.md) (#18) | `User` model, `AccessToken` model, auth infrastructure |
+| [file-uploads-media.md](file-uploads-media.md) (#47) | DomPDF for PDF generation |
 
 ### Build Guide
 Implement `GenerateRecoverySlipAction` and `RedeemRecoverySlipAction` first (business logic),
@@ -343,5 +343,5 @@ exist from Phase 3 authentication — recovery codes reuse this infrastructure w
 - `app/Auth/AccountRecovery/Livewire/Forms/AccountRecoveryForm.php` — Redemption form validation
 - `app/Auth/AccessTokens/Models/AccessToken.php` — Shared token model (reused for recovery)
 - `resources/views/auth/account-recovery/` — Blade views (recovery page, codes page, admin manager, PDF template, guides)
-- **Related spec:** [recovery-ecosystem.md](recovery-ecosystem.md) (#13) — Super admin CLI recovery
-- **Related spec:** [password-reset.md](password-reset.md) (#20) — Email-based password reset
+- **Related spec:** [recovery-ecosystem.md](recovery-ecosystem.md) (#14) — Super admin CLI recovery
+- **Related spec:** [password-reset.md](password-reset.md) (#22) — Email-based password reset

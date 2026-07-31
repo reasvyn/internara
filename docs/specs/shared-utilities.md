@@ -7,7 +7,7 @@
 
 Cross-cutting utility classes used by multiple modules. These are not architectural foundations
 (base classes) or infrastructure configuration (tech stack) — they are shared helpers that
-multiple features depend on. SmartLogger, CsvHandler, and ModuleDiscoverService have their own
+multiple features depend on. SmartLogger, CsvHandler, ModuleService, and ModuleManager have their own
 dedicated specs and are cross-referenced here only.
 
 ---
@@ -47,7 +47,7 @@ in production while allowing development flexibility.
 | ---- | -------- |
 | NG1  | SmartLogger, PiiMasker — see [logging-and-error-handling.md](logging-and-error-handling.md) |
 | NG2  | CsvHandler — see [csv-import-export.md](csv-import-export.md) |
-| NG3  | ModuleDiscoverService — see [module-discovery.md](module-discovery.md) |
+| NG3  | ModuleService/ModuleManager — see [module-discovery.md](module-discovery.md) and [module-manager.md](module-manager.md) |
 | NG4  | Base classes (Action, Entity, DTO, Model) — see [base-classes.md](base-classes.md) |
 
 ---
@@ -94,7 +94,7 @@ in production while allowing development flexibility.
 | ------- | --------- |
 | SmartLogger, PiiMasker | [logging-and-error-handling.md](logging-and-error-handling.md) |
 | CsvHandler | [csv-import-export.md](csv-import-export.md) |
-| ModuleDiscoverService | [module-discovery.md](module-discovery.md) |
+| ModuleService/ModuleManager | [module-manager.md](module-manager.md) |
 
 ---
 
@@ -262,4 +262,4 @@ solely on this — these utilities are used broadly.
 - **Related specs:** [base-classes.md](base-classes.md) — Architectural base classes
 - **Related specs:** [logging-and-error-handling.md](logging-and-error-handling.md) — SmartLogger, PiiMasker
 - **Related specs:** [csv-import-export.md](csv-import-export.md) — CsvHandler utility
-- **Related specs:** [module-discovery.md](module-discovery.md) — ModuleDiscoverService
+- **Related specs:** [module-manager.md](module-manager.md) — ModuleService/ModuleManager module gateway

@@ -59,8 +59,8 @@ setting a new one.
 
 | ID   | Non-Goal |
 | ---- | -------- |
-| NG1  | School profile management — see `school-profile.md` (#16) |
-| NG2  | User CRUD by admins — see `user-crud-and-status.md` (#34) |
+| NG1  | School profile management — see `school-profile.md` (#17) |
+| NG2  | User CRUD by admins — see `user-crud-and-status.md` (#35) |
 | NG3  | Two-factor authentication setup |
 | NG4  | Profile visibility/privacy settings |
 
@@ -309,9 +309,9 @@ lean for auth queries. Allows profile to be null (new user without completed pro
 | Spec | What It Provides |
 |------|-----------------|
 | [base-classes.md](base-classes.md) (#2) | `BaseCommandAction`, `BaseReadAction`, `ActionResponse`, `RejectedException` |
-| [authentication.md](authentication.md) (#17) | `User` model, `AccessToken`, auth infrastructure |
+| [authentication.md](authentication.md) (#18) | `User` model, `AccessToken`, auth infrastructure |
 | [rbac-and-authorization.md](rbac-and-authorization.md) (#8) | `ProfilePolicy`, role-based field visibility |
-| [file-uploads-media.md](file-uploads-media.md) (#46) | Spatie MediaLibrary for avatar uploads |
+| [file-uploads-media.md](file-uploads-media.md) (#47) | Spatie MediaLibrary for avatar uploads |
 
 ### Build Guide
 Implement `ReadProfileFormAction` and `UpdateProfileAction` first, then `ProfileEditor`
@@ -321,7 +321,7 @@ migration work. Avatar handling uses Spatie MediaLibrary's `avatar` collection.
 ### Next Steps
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [user-crud-and-status.md](user-crud-and-status.md) (#34) | Admin user management builds on profile infrastructure |
+| 1 | [user-crud-and-status.md](user-crud-and-status.md) (#35) | Admin user management builds on profile infrastructure |
 
 ---
 
@@ -341,5 +341,5 @@ migration work. Avatar handling uses Spatie MediaLibrary's `avatar` collection.
 - `resources/views/core/widgets/profile-summary.blade.php` — Dashboard widget
 - `database/migrations/2026_01_02_000006_create_profiles_table.php` — Profiles migration
 - `lang/en/profile.php` — English translations (117 lines)
-- **Related spec:** [authentication.md](authentication.md) (#17) — Login, activation, credential changes
-- **Related spec:** [account-recovery-slips.md](account-recovery-slips.md) (#23) — Recovery codes (linked from profile sidebar)
+- **Related spec:** [authentication.md](authentication.md) (#18) — Login, activation, credential changes
+- **Related spec:** [account-recovery-slips.md](account-recovery-slips.md) (#24) — Recovery codes (linked from profile sidebar)

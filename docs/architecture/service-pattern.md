@@ -37,15 +37,15 @@ Services are the **exception**, not the rule. They live at the same scope as the
 
 | Scope                                | Path                                 | Example                                      |
 | ------------------------------------ | ------------------------------------ | -------------------------------------------- |
-| Global (cross-module infrastructure) | `app/Core/Services/`                 | `ModuleDiscoverService`                      |
+| Global (cross-module infrastructure) | `app/Core/Services/`                 | `ModuleService`                              |
 | Module-level                         | `app/{Module}/Services/`             | `User/Services/DashboardService`             |
 | Submodule-level                      | `app/{Module}/{SubModule}/Services/` | `SysAdmin/Observability/Services/PulseGuard` |
 
 **Existing services:**
 
 | File                                                     | Class                   | Scope     | Method style                         | Purpose                                                            |
-| -------------------------------------------------------- | ----------------------- | --------- | ------------------------------------ | ------------------------------------------------------------------ |
-| `Core/Services/ModuleDiscoverService.php`                | `ModuleDiscoverService` | Global    | Instance + constructor injection     | Auto-discovers Livewire, policies, Blade namespaces across modules |
+| -------------------------------------------------------- | ----------------------- | --------- | ------------------------------------ | ----------------------------------------------------------------- |
+| `Core/Services/ModuleService.php`                         | `ModuleService`         | Global    | Instance + constructor injection     | Orchestrates module discovery; all module config reads go through `Support/ModuleManager` |
 | `User/Services/DashboardService.php`                     | `DashboardService`      | Module    | Instance (`auth()` facade)           | Resolves dashboard route name by user role                         |
 | `SysAdmin/Observability/Services/EnvironmentAuditor.php` | `EnvironmentAuditor`    | Submodule | Instance (`config()`, `base_path()`) | Audits PHP, extensions, permissions, DB, terminal, assets          |
 | `SysAdmin/Observability/Services/PulseGuard.php`         | `PulseGuard`            | Submodule | Static (framework hook)              | Pulse dashboard access guard                                       |
@@ -63,6 +63,10 @@ A class belongs in `Services/` only when all of the following are true:
 4. **It is NOT a mutation.** If it writes to the database, it must be a Command Action.
 5. **It is NOT a complex query.** If it reads from multiple models with business aggregation, it
    must be a Read Action.
+
+**Pure config reads** (no logic, no I/O) belong in `Support/`, not `Services/`. The module
+configuration gateway is `Core/Support/ModuleManager` — all `config('module.*')` reads across the
+application must go through it, and filesystem scanning is confined to `Core/Services/ModuleService`.
 
 ---
 
@@ -134,9 +138,9 @@ See the [Support Pattern](support-pattern.md) for the complete Support reference
 Services use constructor property promotion for framework dependencies:
 
 ```php
-final readonly class ModuleDiscoverService
+final readonly class ModuleService
 {
-    public function __construct(private Cache $cache) {}
+    public function __construct(private Repository $cache) {}
 }
 ```
 
@@ -162,7 +166,7 @@ These are the current Service classes and their verification against the rules:
 
 | Class                   | Instance methods? | Constructor injection?                          | Domain business logic?  | Verdict                                          |
 | ----------------------- | ----------------- | ----------------------------------------------- | ----------------------- | ------------------------------------------------ |
-| `ModuleDiscoverService` | ✅ Yes            | ✅ Yes (`Cache`)                                | ❌ No — pure infra      | ✅ Correct                                       |
+| `ModuleService`      | ✅ Yes            | ✅ Yes (`Repository`)                           | ❌ No — pure infra      | ✅ Correct                                       |
 | `EnvironmentAuditor`    | ✅ Yes            | ❌ No (uses `config()`, `base_path()` directly) | ❌ No — pure infra      | ✅ Correct (borderline: could add injection)     |
 | `PulseGuard`            | ❌ Static         | ❌ No                                           | ❌ No — infra guard     | ✅ Correct (static required by framework hook)   |
 | `DashboardService`      | ✅ Yes            | ❌ No (uses `auth()` facade)                    | ❌ No — UI routing only | ✅ Correct (could add injection for testability) |

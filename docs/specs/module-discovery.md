@@ -1,13 +1,18 @@
 # Module Discovery — Feature Specification
 
-> **Last updated:** 2026-07-22 **Changes:** feat — new spec for module registry and discovery
-> system
+> **Last updated:** 2026-07-31 **Changes:** feat — defer discovery API to module-manager (#11);
+> ModuleService replaces ModuleDiscoverService, config reads via ModuleManager
 
 ## Description
 
 Specification for Internara's centralized module registry and runtime discovery system.
 Covers the single-source-of-truth config, app boot auto-discovery (Livewire, Policies, Blade
 namespaces), route auto-inclusion, and test suite registration.
+
+> **Note:** The implementation API for discovery and module config access moved to
+> [module-manager.md](module-manager.md) (#11) — `Services/ModuleService` replaces
+> `ModuleDiscoverService`, and all `config('module.*')` reads go through `Support/ModuleManager`.
+> This spec remains the source of truth for the registry contract and discovery conventions.
 
 ---
 
@@ -96,10 +101,10 @@ kebab-case submodule prefix in alias (e.g., `enrollment.placement.show`).
 
 **Flow:**
 1. `AppServiceProvider::boot()` fires
-2. If `module.policies.enabled`, runs `ModuleDiscoverService::discoverPolicies()`
-3. If `module.livewire.enabled`, runs `ModuleDiscoverService::discoverLivewireComponents()`
-4. If `module.views.enabled`, runs `ModuleDiscoverService::registerBladeNamespaces()`
-5. Each method reads `config('module.list')`, scans only registered module directories,
+2. If `ModuleManager::policiesEnabled()`, runs `ModuleService::discoverPolicies()`
+3. If `ModuleManager::livewireEnabled()`, runs `ModuleService::discoverLivewireComponents()`
+4. If `ModuleManager::viewsEnabled()`, runs `ModuleService::registerBladeNamespaces()`
+5. Each method reads `ModuleManager::names()`, scans only registered module directories,
    caches results for 24 hours
 
 **Postconditions:** All Livewire components registered with aliases, all policies bound to
@@ -110,8 +115,8 @@ models, all Blade view namespaces registered.
 **Actor:** Laravel router (automatic)
 
 **Flow:**
-1. `routes/web.php` loads `config('module.list')`
-2. For each module name, checks if `routes/web/{lowercase}.php` exists
+1. `routes/web.php` loads `ModuleManager::names()`
+2. For each module name, resolves `ModuleManager::routeFilePath($module)`
 3. If file exists, `require`s it
 
 **Postconditions:** Module routes are available without manual editing of `routes/web.php`.
@@ -122,7 +127,7 @@ models, all Blade view namespaces registered.
 
 **Flow:**
 1. Developer runs `php artisan module:discover`
-2. Command resolves `ModuleDiscoverService` from container
+2. Command resolves `ModuleService` from container
 3. Runs `discoverLivewireComponents()`, `discoverPolicies()`, `registerBladeNamespaces()`
 4. Each method writes results to cache (overwriting previous)
 5. Command logs completion via SmartLogger
@@ -194,7 +199,7 @@ models, all Blade view namespaces registered.
 
 | ID    | Requirement                                                              |
 | ----- | ------------------------------------------------------------------------ |
-| FR-R1 | `routes/web.php` must auto-include route files from `config('module.list')` |
+| FR-R1 | `routes/web.php` must auto-include route files from `ModuleManager::names()` |
 | FR-R2 | Route file path must be `routes/web/{lowercase_module}.php`             |
 | FR-R3 | Non-existent route files must be silently skipped                        |
 | FR-R4 | Module names must be lowercased for file lookup                         |
@@ -244,7 +249,7 @@ models, all Blade view namespaces registered.
 | ID     | Requirement                                                          |
 | ------ | -------------------------------------------------------------------- |
 | NFR-M1 | `tests/Pest.php` sync comment must reference `config/module.php`    |
-| NFR-M2 | `ModuleDiscoverService` must use `getModuleNames()` for all module checks |
+| NFR-M2 | `ModuleService` must use `ModuleManager::names()` for all module checks |
 | NFR-M3 | All discovery methods must be individually testable                   |
 
 ### 5.4 Security
@@ -293,17 +298,13 @@ models, all Blade view namespaces registered.
 ]
 ```
 
-### 6.2 ModuleDiscoverService API
+### 6.2 ModuleService API
+
+The discovery implementation API lives in [module-manager.md](module-manager.md) (#11) §6.2:
 
 ```php
-class ModuleDiscoverService
+class ModuleService
 {
-    /** Get list of registered module names. */
-    public static function getModuleNames(): array;
-
-    /** Check if a directory name is a registered module. */
-    public static function isModule(string $name): bool;
-
     /** Scan and register Livewire components from registered modules. */
     public function discoverLivewireComponents(): void;
 
@@ -314,6 +315,8 @@ class ModuleDiscoverService
     public function registerBladeNamespaces(): void;
 }
 ```
+
+All module config reads go through `Support\ModuleManager` (see #11 §6.1).
 
 ### 6.3 Livewire Alias Convention
 
@@ -360,13 +363,15 @@ principle.
 vs `enrollment.registration.show`). The kebab-case convention (`placement-list`) matches
 Livewire's standard naming.
 
-### DD-3 — Static Methods for Module Checks
+### DD-3 — Static Config Reads Belong to ModuleManager
 
-**Decision:** `getModuleNames()` and `isModule()` are `public static` on `ModuleDiscoverService`.
+**Decision:** `ModuleManager::names()` and `ModuleManager::isModule()` are `public static` on
+`Core\Support\ModuleManager` (see #11 DD-1).
 
 **Rationale:** These are pure config reads that don't require instance state or I/O. Static
 access allows use in contexts where the container isn't available (e.g., route files, model
-boot methods) without violating the service pattern.
+boot methods) without violating the service pattern. `ModuleService` keeps instance methods with
+constructor injection for discovery orchestration.
 
 ### DD-4 — 24-Hour Cache TTL
 
@@ -378,8 +383,8 @@ balance between boot performance and freshness.
 
 ### DD-5 — Route Auto-Inclusion Pattern
 
-**Decision:** `routes/web.php` loops through `config('module.list')` and requires route files
-by convention (`routes/web/{lowercase}.php`).
+**Decision:** `routes/web.php` loops through `ModuleManager::names()` and requires route files
+by convention (`ModuleManager::routeFilePath()`).
 
 **Rationale:** Eliminates manual `require` statements when adding modules. The `file_exists`
 check silently skips missing files, so modules without routes don't need empty route files.
@@ -429,11 +434,13 @@ After implementing this spec, the system automatically discovers Livewire compon
 
 - `config/module.php` — Module registry (single source of truth)
 - `config/cache-keys.php` — Cache key definitions
-- `app/Core/Services/ModuleDiscoverService.php` — Discovery implementation
+- `app/Core/Support/ModuleManager.php` — Module config gateway (static)
+- `app/Core/Services/ModuleService.php` — Discovery orchestration
 - `app/Core/Console/Commands/ModuleDiscoverCommand.php` — CLI cache clear
 - `app/Providers/AppServiceProvider.php` — Boot-time discovery registration
 - `routes/web.php` — Route auto-inclusion
 - `tests/Pest.php` — Test directory registration
+- `docs/specs/module-manager.md` — Module manager spec (#11)
 - `docs/modules/core.md` — Core module conceptual overview
 - `docs/modules/core-reference.md` — Core module technical reference
 - `docs/architecture/service-pattern.md` — Service pattern documentation

@@ -551,8 +551,8 @@ This spec can only be implemented after the following specs are **fully complete
 | [logging-and-error-handling.md](logging-and-error-handling.md) (#6) | `SmartLogger` for GDPR event logging |
 | [event-system.md](event-system.md) (#7) | `BaseEvent` contract, event dispatch and listener registration patterns |
 | [rbac-and-authorization.md](rbac-and-authorization.md) (#8) | `isAdmin()` policy helper, role-based gates, `super_admin\|admin` middleware |
-| [settings-infrastructure.md](settings-infrastructure.md) (#14) | Settings infrastructure for compliance configuration |
-| [user-crud-and-status.md](user-crud-and-status.md) (#34) | `DeleteUserAction`, `BatchDeleteUserAction`, `UserManager` Livewire component |
+| [settings-infrastructure.md](settings-infrastructure.md) (#15) | Settings infrastructure for compliance configuration |
+| [user-crud-and-status.md](user-crud-and-status.md) (#35) | `DeleteUserAction`, `BatchDeleteUserAction`, `UserManager` Livewire component |
 
 ### Build Guide
 
@@ -562,8 +562,8 @@ After implementing this spec, every user deletion (admin or batch) automatically
 
 | Order | Spec | Connection |
 |-------|------|------------|
-| 1 | [system-maintenance.md](system-maintenance.md) (#53) | GDPR log retention and archival run alongside system maintenance |
-| 2 | [user-crud-and-status.md](user-crud-and-status.md) (#34) | `DeleteUserAction` updated with `reason` parameter and `DeleteUserGdprAction` dependency |
+| 1 | [system-maintenance.md](system-maintenance.md) (#54) | GDPR log retention and archival run alongside system maintenance |
+| 2 | [user-crud-and-status.md](user-crud-and-status.md) (#35) | `DeleteUserAction` updated with `reason` parameter and `DeleteUserGdprAction` dependency |
 
 ---
 
@@ -585,6 +585,6 @@ After implementing this spec, every user deletion (admin or batch) automatically
 - `tests/SysAdmin/Observability/GdprDeletionLog/Livewire/GdprDeletionLogsTest.php` — Livewire render test (21 lines)
 - **Related spec:** [base-classes.md](base-classes.md) (#2) — Base classes (`BaseCommandAction`, `BaseEntity`, `BaseEvent`)
 - **Related spec:** [rbac-and-authorization.md](rbac-and-authorization.md) (#8) — `isAdmin()` policy helper, role middleware
-- **Related spec:** [user-crud-and-status.md](user-crud-and-status.md) (#34) — `DeleteUserAction`, user lifecycle
+- **Related spec:** [user-crud-and-status.md](user-crud-and-status.md) (#35) — `DeleteUserAction`, user lifecycle
 - **Related doc:** [security.md](../infrastructure/security.md) — GDPR compliance section (§5)
 - **Related doc:** [system-observability.md](../foundation/system-observability.md) — GDPR deletion logs overview

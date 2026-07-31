@@ -14,7 +14,8 @@ declare(strict_types=1);
 | standard Action/Model/Entity/Enum/Livewire/Policy layers.
 |
 | Used by:
-|   - ModuleDiscoverService (Livewire, Policy, View auto-discovery)
+|   - ModuleManager (module config gateway)
+|   - ModuleService (Livewire, Policy, View auto-discovery)
 |   - routes/web.php (auto-include route files)
 |   - tests/Pest.php (test directory registration)
 |
@@ -95,7 +96,7 @@ return [
     | Module Registry
     |--------------------------------------------------------------------------
     |
-    | Full module → submodule mapping. Used by ModuleDiscoverService to scope
+    | Full module → submodule mapping. Used by ModuleManager/ModuleService to scope
     | filesystem scanning to registered modules only.
     |
     */

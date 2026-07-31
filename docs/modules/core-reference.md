@@ -1,6 +1,7 @@
 # Core — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix CsvRowResult/AuditCategory values, LangChecker/AppInfo/AppIntegrity methods, abstract model count, Livewire base count, jobs migration
+> **Last updated:** 2026-07-31 **Changes:** feat — add ModuleManager/ModuleService
+> (replaces ModuleDiscoverService), renumber specs #11-#54, migration to config gateway
 
 ## Description
 
@@ -17,7 +18,7 @@ depends on.
 
 ### Module Statistics
 
-- **Services**: 5 (`ModuleDiscoverService`, `SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`)
+- **Services**: 5 (`ModuleService`, `SmartLogger`, `LangChecker`, `AppInfo`, `AppIntegrity`)
 
 - **Contracts**: 5 (`LabelEnum`, `StatusEnum`, `ColorableEnum`, `SendsNotifications`,
   `SettingsStore`)
@@ -29,8 +30,8 @@ depends on.
 - **Concrete Exceptions**: 3 (`RejectedException`, `UnauthorizedException`,
   `ValidationFailedException`)
 - **Middleware**: 2 (`SecurityHeaders`, `LogContext`)
-- **Support Classes**: 7 (`Color`, `CsvHandler`, `Environment`, `PasswordRules`, `PiiMasker`,
-  `Spotlight`, `helpers.php`)
+- **Support Classes**: 8 (`ModuleManager`, `Color`, `CsvHandler`, `Environment`, `PasswordRules`,
+  `PiiMasker`, `Spotlight`, `helpers.php`)
 - **Action Traits**: 1 (`HandlesActionErrors`)
 - **Command Action Base**: 1 (`BaseCommandAction`)
 - **Read Action Base**: 1 (`BaseReadAction`)
@@ -56,7 +57,7 @@ Located in `app/Core/Services/`:
 
 | Service                 | Purpose                                                                                                | Public Methods                                                                    |
 | ----------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
-| `ModuleDiscoverService` | Scan module directories to auto-register Livewire components, Gate policies, and Blade view namespaces | `discoverLivewireComponents()`, `discoverPolicies()`, `registerBladeNamespaces()` |
+| `ModuleService` | Scan module directories to auto-register Livewire components, Gate policies, and Blade view namespaces | `discoverLivewireComponents()`, `discoverPolicies()`, `registerBladeNamespaces()` |
 | `SmartLogger`           | Dual-channel logger: system + activity, PII masking                                                    | Fluent API: `info()`, `event()`, `module()`, `about()`, `withPayload()`, `save()` |
 | `LangChecker`           | Dev helper: warns on missing translation keys; extends `Translator`            | Overrides `get()`                                                                  |
 | `AppInfo`               | Static metadata from composer.json + config                                    | `all()`, `get()`, `name()`, `version()`, `author()`, `support()`, `gitUrl()`      |
@@ -183,6 +184,7 @@ ModuleException (abstract, extends RuntimeException)
 | `CsvHandler`          | `Support/CsvHandler.php`                   | CSV parsing, heading validation, export generation |
 | `Environment`         | `Support/Environment.php`                  | Environment detection (staging, production, dev)   |
 | `HandlesActionErrors` | `Actions/Concerns/HandlesActionErrors.php` | Generic try-catch-log-rethrow for actions          |
+| `ModuleManager`       | `Support/ModuleManager.php`                | Static gateway for module config reads (`config('module.*')`) |
 | `PasswordRules`       | `Support/PasswordRules.php`                | Common password strength validation rules          |
 | `PiiMasker`           | `Support/PiiMasker.php`                    | Regex-based PII redaction (IDs, phone numbers)     |
 | `Spotlight`           | `Support/Spotlight.php`                    | Debug/development helper utilities                 |
