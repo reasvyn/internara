@@ -3,8 +3,8 @@ updates:
     - package-ecosystem: 'composer'
       directory: '/'
       schedule:
-          interval: 'weekly'
-      open-pull-requests-limit: 10
+          interval: 'monthly'
+      open-pull-requests-limit: 5
       reviewers:
           - reasvyn
       commit-message:
@@ -14,8 +14,8 @@ updates:
     - package-ecosystem: 'npm'
       directory: '/'
       schedule:
-          interval: 'weekly'
-      open-pull-requests-limit: 10
+          interval: 'monthly'
+      open-pull-requests-limit: 5
       reviewers:
           - reasvyn
       commit-message:
