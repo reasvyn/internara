@@ -14,16 +14,17 @@ use Tests\TestCase;
 | config() is not available at Pest discovery time, so this list is
 | maintained manually. When adding a new module, update BOTH files.
 |
+| Currently only the Core module suite exists (spec-driven rewrite).
+| As each module's spec-driven suite is rewritten, re-register it here
+| and in phpunit.xml.
+|
 */
 
 $modules = [
-    'Academics', 'Assessment', 'Assignment', 'Auth', 'Certification',
-    'Core', 'Document', 'Enrollment', 'Evaluation', 'Incident',
-    'Journals', 'Partners', 'Program', 'Reports', 'Settings',
-    'Setup', 'SysAdmin', 'User',
+    'Core',
 ];
 
-$extraDirs = ['Providers', 'Stubs', 'Support'];
+$extraDirs = ['Stubs', 'Support'];
 
 $dirs = array_merge(
     array_map(fn (string $m) => __DIR__.'/'.$m, $modules),
