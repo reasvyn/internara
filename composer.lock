@@ -5863,16 +5863,16 @@
         },
         {
             "name": "spatie/laravel-medialibrary",
-            "version": "11.23.1",
+            "version": "11.23.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-medialibrary.git",
-                "reference": "143106b61b945f1ca815e6a71598c03881469228"
+                "reference": "9f28da2b45ba5330887b307140c7a00dd2b0adcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/143106b61b945f1ca815e6a71598c03881469228",
-                "reference": "143106b61b945f1ca815e6a71598c03881469228",
+                "url": "https://api.github.com/repos/spatie/laravel-medialibrary/zipball/9f28da2b45ba5330887b307140c7a00dd2b0adcf",
+                "reference": "9f28da2b45ba5330887b307140c7a00dd2b0adcf",
                 "shasum": ""
             },
             "require": {
@@ -5957,7 +5957,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-medialibrary/issues",
-                "source": "https://github.com/spatie/laravel-medialibrary/tree/11.23.1"
+                "source": "https://github.com/spatie/laravel-medialibrary/tree/11.23.4"
             },
             "funding": [
                 {
@@ -5969,7 +5969,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-06-24T08:31:39+00:00"
+            "time": "2026-08-07T08:08:26+00:00"
         },
         {
             "name": "spatie/laravel-model-status",
