@@ -5,22 +5,53 @@ Mental model, workflow, and navigation map for AI agents.
 
 ## Agent Workflow — Mandatory Steps
 
-Every task MUST follow these 9 steps in order. **No step may be skipped.** If a step is
-not applicable, explicitly note why and move on. Steps may be lightweight for simple tasks, but
-they must never be omitted.
+**Every instruction MUST run the full cycle. No step may be skipped.** This applies to
+**any instruction, in any form** — a one-line question, a bug report, a feature request, a docs
+tweak, or an audit. Steps are **adaptive**: their depth scales with the instruction's SDLC phase
+(see table below). Omission is never allowed; when a step is not applicable to the phase, note
+it explicitly with the reason and move on.
 
 ```
 UNDERSTAND → DEFINE & SCOPE → EXPLORE → PLAN → DESIGN → DEVELOP → TEST & VERIFY → DOCUMENT → COMMIT & REPORT
 ```
 
+### Phase Classification — Adaptive Depth
+
+Before acting, classify the instruction into an SDLC phase (Step 1). The phase sets the depth of
+each step for that run: **Full** = mandatory, complete depth · **Light** = executed but minimal ·
+**Note** = note the reason and skip. Anything not listed under Full/Light defaults to Note.
+
+| SDLC Phase | Instruction examples | Full (mandatory) | Light | Note (skip w/ reason) |
+|------------|----------------------|------------------|-------|----------------------|
+| **Support** | questions, "what does X do", explanations | Understand, Explore | Document | Define, Plan, Design, Develop, Test, Commit |
+| **Analysis** | spec/QA/security audits, reviews, PII checks | Understand, Define, Explore, Document | Plan | Develop, Test, Commit (findings only — unless a fix is requested) |
+| **Planning** | specs, roadmap, GitHub issues | Understand, Define, Plan, Document | Explore | Develop, Test, Commit (unless implementation requested) |
+| **Design** | architecture, refactor design, class contracts | Understand, Define, Plan, Design, Document | Explore | Develop, Test, Commit (unless implementation requested) |
+| **Implementation** | new feature, bug fix, refactor | **All 9 steps** | — | — |
+| **Testing** | writing/fixing tests, verification | Understand, Define, Develop, Test, Document | Explore, Plan | Commit (unless requested) |
+| **Documentation** | docs updates, sync-docs | Understand, Explore, Document | Define, Plan | Develop, Test, Commit |
+| **Tooling** | scripts, devtools, automation | Understand, Define, Plan, Develop, Test, Document | Explore | Commit (unless requested) |
+| **Maintenance** | dependency updates, cleanup, migrations | Understand, Define, Test, Document | Explore, Plan, Develop | Commit (unless requested) |
+
+Even for Support/Analysis, the full cycle is still traversed — the table only controls depth, not
+attendance. A step skipped without a recorded reason is a workflow violation.
+
 ### 1. Understand
 
 Internalize the user's **intent**, not just literal words. Clarify ambiguities. Identify constraints.
 
-- **First session?** Load `context-awareness` skill before anything else.
+- **ALWAYS load `context-awareness` first** — before any other action, on every instruction,
+  whether or not the user asked for it. It is the universal orientation layer; all other skills
+  assume it. There is no exception, not even for trivial questions.
+- **Load related skill(s)** from the Skill Map that match the instruction (bug fix → `code-writing`,
+  tests → `pest-testing`, scripts → `script-automation`, etc.). Load **every** skill that applies —
+  loading a skill is cheap, a wrong assumption is not.
+- **Classify the SDLC phase** using the Phase Classification table — it sets the depth of the
+  9 steps for this run (Computational Thinking: pattern recognition).
 - **Identify task type:** bug fix, new feature, refactoring, docs update, audit, review.
 - **Check `docs/roadmap.md`** for current development status and phase progress.
-- Output: clear restatement of the task, confirmed with user if ambiguous.
+- Output: clear restatement of the task + phase classification + loaded skills, confirmed with
+  user if ambiguous.
 
 ### 2. Define & Scope
 
@@ -30,6 +61,8 @@ Identify affected module(s), layer(s), files. Check dependencies.
 - **Identify affected layers:** Presentation (Livewire/Blade), Business (Action/Entity), Data (Model/DTO), Infrastructure.
 - **Check for blockers:** migrations needed? config changes? service provider registration?
 - **Select skills to load** based on task type (see Skill Map).
+- **Scope the change surface** so work stays minimal — the smallest set of files that satisfies
+  the instruction (Computational Thinking: decomposition).
 - Output: scope statement with affected files and required skills.
 
 ### 3. Explore
@@ -37,9 +70,12 @@ Identify affected module(s), layer(s), files. Check dependencies.
 Read the relevant docs and existing code. Build mental model before writing.
 
 - **Load required skills** from Skill Map.
+- **Survey existing tooling first** — check `scripts/` and devtools for an existing scanner or
+  helper before doing manual or repeated work (Automation-First).
 - **Read module docs** (`docs/modules/{module}.md`) for affected modules.
 - **Read architecture docs** (`docs/architecture/`) for relevant patterns.
-- **Read existing code** in affected files — understand current patterns, naming, structure.
+- **Read the full current content of every file you may touch** — before any edit, understand the
+  existing code, patterns, naming, and structure so changes stay surgical (Edit Policy).
 - **Check conventions** (`docs/conventions.md`) for invariants C1-C8, D1-D6.
 - Output: complete understanding of existing patterns and code.
 
@@ -50,6 +86,9 @@ Consider 2+ approaches. Choose the best fit.
 - **Action type:** Command (write), Read (query), Process (business logic).
 - **Entity boundaries:** what goes in Entity vs Action vs DTO.
 - **DTO needs:** required if Command/Process has 3+ parameters (C7).
+- **Automation:** if the work is repetitive, batch, mechanical, or pattern-based (scanning,
+  bulk renames, mass edits, seed data), plan to script it or reuse an existing devtool instead
+  of doing it by hand (Automation-First, Computational Thinking: algorithm design).
 - **Test strategy:** which test type, which verification commands (see Verification Strategy).
 - **Document changes:** what docs need updating.
 - Output: implementation plan with chosen approach.
@@ -70,26 +109,34 @@ Define class contracts before coding.
 
 Write code matching the design. Follow conventions.
 
+- **Edit Policy — never full-rewrite by default.** First check what already exists. Edit
+  surgically (smallest possible change), preserve unrelated code, formatting, and context. A
+  full rewrite is only justified for small files where the rewrite IS the intent — never as a
+  shortcut on large files (risk of silently dropping important information).
 - **`declare(strict_types=1)`** in every PHP file (D1).
 - **No debug calls** — `dd/dump/ray/var_dump/print_r/die` (D2).
 - **`__()` for all user-facing strings** (D3).
 - **No raw request** for create/update — use validated DTOs (D5).
 - **No Model mutations in Livewire** — use Actions (C1).
 - **No service locator** — use constructor injection (C2).
-- Output: working code matching design.
+- Output: working code matching design, produced by surgical edits.
 
 ### 7. Test & Verify
 
 Choose verification level. Run targeted checks first, full suite once at end.
 
 - **Batch changes** before running full suite (expensive: ~2GB+, 10+ min).
+- **Verify with git before and after** — run `git status` + `git diff` to compare the changed
+  files against their previous state: confirm only intended files changed, no unrelated edits,
+  and no content was lost in any edit (version-control verification, Edit Policy).
 - **Run incremental checks** during development:
   - `php -l path/to/file.php` — syntax check
   - `vendor/bin/pint --dirty --format agent` — code style
 - **Run targeted tests** after completing a logical unit:
   - `vendor/bin/pest --testsuite={ModuleName}`
   - `php artisan test --compact --filter={ClassName}`
-- **Run arch-guard scripts** before commit:
+- **Run arch-guard scripts** before commit (Automation-First — never skip these in favor of
+  manual greps; they are faster and deterministic):
   - `python3 scripts/scan_violations.py` — C1-C8, D1-D6
   - `python3 scripts/scan_class_contracts.py` — class contracts
   - `python3 scripts/scan_security.py` — security patterns
@@ -97,7 +144,7 @@ Choose verification level. Run targeted checks first, full suite once at end.
 - **Run full suite** only once at the end:
   - `php artisan test --compact`
   - `vendor/bin/phpstan analyse --no-progress`
-- Output: all tests pass, linter clean, arch-guard clean.
+- Output: all tests pass, linter clean, arch-guard clean, git diff reviewed.
 
 ### 8. Document
 
@@ -113,11 +160,68 @@ Update docs before/after code changes (documentation-first).
 
 Deliver report. Commit with conventional format.
 
+- **Final git review** — `git status` + `git diff` before committing: stage only intended files,
+  never secrets, never unrelated changes. Confirm the final state matches the verified diff.
 - **Conventional format:** `type(scope): description`
 - **Scope = module name** (e.g., `feat(enrollment): add bulk placement`)
 - **Types:** `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
 - **Report:** summarize what changed, what was verified, any caveats.
 - Output: clean commit, user informed.
+
+---
+
+## Computational Thinking — Agent Decision Framework
+
+Apply these four pillars to every instruction to stay autonomous, anticipate the next step, and
+avoid blind execution. They are referenced throughout the workflow above.
+
+| Pillar | How the agent applies it |
+|--------|--------------------------|
+| **Decomposition** | Break the instruction into smaller sub-problems (files, layers, concerns). Solve each independently, then integrate. Never try to hold the whole problem at once. |
+| **Pattern recognition** | Classify the instruction (bug? feature? refactor? docs? audit?) and reuse known patterns: skills from the Skill Map, existing code, docs, past conventions. A known pattern is a solved problem. |
+| **Abstraction** | Filter out irrelevant detail (versions, formatting, noise) and focus on the essential structure — entities, flows, contracts, invariants. See the forest before the trees. |
+| **Algorithm design** | Plan ordered steps with clear inputs/outputs. Before acting, ask: what is the expected outcome, what could go wrong, what does the next step depend on? |
+
+**Decision loop** — before each action, run: *predict outcome → act → verify → adjust*. After
+every step, anticipate the next: what must follow, what can break, what to verify. When the
+instruction is ambiguous, resolve it yourself when the cost is low (look up the answer in code or
+docs); escalate to the user only when the decision changes scope or architecture.
+
+---
+
+## Automation-First — Scripts & Batch Patterns
+
+Speed up work by turning mechanical effort into scripts. Apply this **before** doing manual
+repetitive work, not after.
+
+- **Check `scripts/` before repeating anything** — scanning, bulk renames, mass edits, seed data,
+  report generation. If a devtool already covers the task, use it (they are faster, deterministic,
+  and arch-verified). Never redo by hand what a script does.
+- **Detect the pattern** — if the same operation would run on 3+ items (files, lines, records,
+  translations) or is scan/verify/batch-shaped, script it or reuse an existing tool
+  (Computational Thinking: algorithm design).
+- **Run the existing scanners** for quality gates instead of manual greps: `scan_violations.py`,
+  `scan_class_contracts.py`, `scan_security.py`, `scan_naming.py`, `scan_conventions.py`,
+  `scan_doc_links.py` (see Verification Strategy).
+- **When writing a new script**, load the `script-automation` skill first and follow its standards
+  (interface, output format, error handling). Keep scripts in `scripts/`.
+- **Batch your own operations too** — group edits, tests, and verification into few passes instead
+  of many small round-trips (full suite is ~2GB+, 10+ min; never run it per-edit).
+
+---
+
+## Edit Policy — Surgical Edits Only
+
+Guardrail against silent information loss.
+
+- **Read before edit** — read the full current content of every file you may touch (Step 3).
+- **Edit, don't rewrite** — change only what the instruction requires; preserve unrelated code,
+  comments, formatting, and context. A full rewrite is justified only for small files where the
+  rewrite IS the intent.
+- **Verify with git** — compare `git diff` before/after each change to prove nothing unintended
+  was altered or dropped (Step 7). This is the final check that an edit was lossless.
+- **Scope smallest** — keep the change surface minimal (Step 2). Fewer touched files = fewer
+  places for errors to hide.
 
 ---
 
@@ -204,7 +308,7 @@ Full definition: `docs/foundation/product-definition.md`
 
 | Task | Skill | Notes |
 |------|-------|-------|
-| First session, any task | `context-awareness` | Load first — project orientation |
+| Every instruction, any task | `context-awareness` | **ALWAYS load first** — universal orientation layer, no exceptions |
 | Writing feature specs | `spec-writing` | 11-section spec template, requirements IDs |
 | Writing PHP code | `code-writing` | Action Triad, Entity/DTO/Model contracts |
 | Refactoring existing code | `code-refactoring` | Extract Actions, thin Livewire |
@@ -328,6 +432,11 @@ Full spec list with build order: `docs/specs/index.md`
 | Dependency updates | `vendor/bin/pest --testsuite={ModuleName}` (run affected module suites) |
 
 ```bash
+# Version-control verification (before/after every change — Edit Policy)
+git status
+git diff                  # review every change before/after editing
+git diff --stat           # confirm only intended files were touched
+
 # Targeted tests
 vendor/bin/pest --testsuite={ModuleName}   # Run tests for a specific module (replace {ModuleName})
 php artisan test --compact --filter={ClassName}
@@ -364,6 +473,7 @@ python3 scripts/scan_doc_links.py          # Broken links in docs
 - [ ] `php artisan test --compact` passes
 - [ ] `vendor/bin/pint --dirty --format agent` clean
 - [ ] `vendor/bin/phpstan analyse --no-progress` passes
+- [ ] `git status` + `git diff` reviewed — only intended files changed, nothing dropped
 - [ ] Relevant docs updated (documentation-first approach)
 
 ---
