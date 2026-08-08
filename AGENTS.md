@@ -232,26 +232,26 @@ Self-hosted, single-tenant PKL management for Indonesian SMA/SMK (MIT).
 | Technology | Layer | Version |
 |------------|-------|---------|
 | PHP | Language | v8.4 |
-| Laravel | Framework | v13.0 |
-| Livewire | Frontend | v4.0 |
+| Laravel | Framework | v13.24 |
+| Livewire | Frontend | v4.3 |
 | Alpine.js | Frontend JS | — |
 | Tailwind CSS | CSS | v4.3 |
-| DaisyUI | UI Component | v5.6 |
-| maryUI | UI Component | v2.4 |
+| DaisyUI | UI Component | v5.7 |
+| maryUI | UI Component | v2.9 |
 | Flatpickr | Date Picker | v4.6 |
 | Marked | Markdown Parser | v18.0 |
 | Vite | Build Tool | v8.1 |
-| laravel-vite-plugin | Build Plugin | v3.0 |
+| laravel-vite-plugin | Build Plugin | v3.1 |
 | SQLite | Database | — |
 | MySQL | Database | v8.0 |
 | MariaDB | Database | v10.6 |
 | PostgreSQL | Database | v15.0 |
 | barryvdh/laravel-dompdf | PDF Generation | v3.1 |
-| laravel-lang/lang | Localization | v15.26 |
-| Laravel Pulse | Monitoring | v1.0 |
+| laravel-lang/lang | Localization | v15.34 |
+| Laravel Pulse | Monitoring | v1.8 |
 | php-flasher/flasher-laravel | Flash Messages | v2.4 |
 | spatie/laravel-activitylog | Audit Log | v5.0 |
-| spatie/laravel-medialibrary | Media Upload | v11.17 |
+| spatie/laravel-medialibrary | Media Upload | v11.23 |
 | spatie/laravel-model-status | Model Status | v1.18 |
 | spatie/laravel-permission | RBAC | v8.0 |
 | Pest | Testing | v4.2 |
@@ -263,7 +263,7 @@ Self-hosted, single-tenant PKL management for Indonesian SMA/SMK (MIT).
 | Collision | Error Handler | v8.6 |
 | Laravel Tinker | REPL | v3.0 |
 | Laravel Pail | Log Viewer | v1.2 |
-| Laravel Sail | Docker Dev | v1.41 |
+| Laravel Sail | Docker Dev | v1.65 |
 | Prettier | Formatter | v3.9 |
 | @prettier/plugin-php | PHP Formatter | v0.25 |
 | prettier-plugin-blade | Blade Formatter | v3.2 |
