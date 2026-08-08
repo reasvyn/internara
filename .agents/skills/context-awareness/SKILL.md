@@ -161,13 +161,16 @@ test suite. The full suite consumes ~2GB+ RAM and 10+ minutes.
 
 ### Test Pattern Recognition
 
+**Spec first, always.** Before choosing a pattern, map the requirement: which `FR-*` / `NFR-*` /
+`UC-*` ID in `docs/specs/{feature}.md` does this test verify? Test descriptions carry that ID.
+
 | What you're testing | Pattern to follow |
 |---------------------|-------------------|
-| Command Action | Arrange (factory + DTO) → Act (execute) → Assert (assertModelExists + ActionResponse) |
-| Read Action | Arrange (seed data) → Act (execute) → Assert (typed return, collection shape) |
-| Entity | Test every `canX()` / `isX()` method; no DB needed |
-| DTO | Test `fromArray()` / `toArray()` roundtrip; no DB needed |
-| Enum | Test every case has `label()`; test `validTransitions()` exhaustively |
+| Command Action (spec-defined mutation) | Arrange (factory + DTO) → Act (execute) → Assert (assertModelExists + ActionResponse) |
+| Read Action (spec-defined query) | Arrange (seed data) → Act (execute) → Assert (typed return, collection shape) |
+| Entity | Test only the business-rule methods a requirement names; no DB needed |
+| DTO | Test the shape the spec's §6 contract defines; no DB needed |
+| Enum | Test `label()` / transitions only for the cases and rules the spec lists |
 | Livewire | Test render, mount, form submission, authorization; use `actingAs()` |
 | Policy | Test `allow` / `deny` for each role; no DB needed beyond the model |
 
@@ -182,17 +185,19 @@ test suite. The full suite consumes ~2GB+ RAM and 10+ minutes.
 | Flaky test (sometimes passes) | Race condition or missing `RefreshDatabase` — isolate the test |
 | Test was failing before your change | Pre-existing issue — flag it, don't fix it unless asked |
 
-### Coverage Priorities
+### Coverage = Spec Coverage
 
-| Priority | Layer | Target | Why |
-|----------|-------|--------|-----|
-| 1 | Enums | 100% | State machines — wrong transitions break the system |
-| 2 | Entities | 100% | Business rules — the core correctness guarantee |
-| 3 | DTOs | 100% | Data contracts — wrong shapes cascade errors |
-| 4 | Command Actions | ≥90% | Mutations — most likely to introduce bugs |
-| 5 | Policies | 100% | Security — wrong auth = data breach |
-| 6 | Read Actions | ≥80% | Queries — wrong data = wrong decisions |
-| 7 | Livewire | ≥80% | UI — wrong input handling = bad UX |
+**Coverage is measured in spec requirements covered — never lines of code.** A requirement with no
+test is a **spec gap** (fill it). A test with no requirement is **orphan noise** (remove it). The
+old per-layer percentages (Enum/Entity/DTO 100%, Actions ≥90%, Livewire ≥80%) were removed because
+they produced padding tests; they may be used only as an internal diagnostic, never as a mandate.
+
+| Question | Answer |
+|----------|--------|
+| Which spec does this test verify? | Read `docs/specs/index.md` → `docs/specs/{feature}.md` |
+| Does this test trace to a requirement ID? | If no → orphan, candidate for deletion |
+| Does every requirement have a test? | If no → spec gap, write the test |
+| Is the scenario beyond what the spec names? | If yes → noise, don't write it |
 
 ---
 

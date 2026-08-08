@@ -101,21 +101,23 @@ Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `test`, `perf`, `security`
 
 ```bash
 composer run test              # Full test suite
-composer run test:feature      # Feature tests only
-composer run test:unit         # Unit tests only
+vendor/bin/pest --testsuite={ModuleName}   # Single module suite (replace {ModuleName})
+php artisan test --compact --filter={ClassName}   # Single test class
 composer run analyse           # PHPStan static analysis
 ```
 
-Every Action must have its own test file. Follow the existing test structure:
+Tests verify the spec — every test traces to a requirement ID (`FR-*` / `NFR-*` / `UC-*`) in
+`docs/specs/{feature}.md`. Follow the existing modular test structure:
 
 ```
-tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php
+tests/{Module}/{SubModule}/{Name}Test.php
 ```
 
 - Use `LazilyRefreshDatabase` over `RefreshDatabase`
 - Use `assertModelExists()` over `assertDatabaseHas()`
 - Never mock Eloquent models — use factories + real database
 - Mock external boundaries only (HTTP, mail, queue, filesystem)
+- Never write a test that no spec requirement demands — no orphan tests, no padding
 
 ---
 

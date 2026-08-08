@@ -1,6 +1,6 @@
 ---
 name: test-writing
-description: "SDLC Phase: TESTING. Comprehensive code verification, efficient test execution, and failing test diagnosis — prioritizes lightweight verification over full test suite to conserve memory and time."
+description: "SDLC Phase: TESTING. Comprehensive code verification, efficient test execution, and failing test diagnosis — prioritizes lightweight verification over full test suite and spec-traceable, noise-free tests."
 upstream:
   - feature-building
   - code-refactoring
@@ -21,12 +21,17 @@ Use this skill when:
 - Verifying code changes before committing (any layer)
 - Deciding what verification strategy to use for a given change
 - Writing new tests or fixing failing tests
+- Auditing tests against their specs (spec gaps, orphan tests)
 - Determining whether running the full test suite is necessary
 
-## Core Principle: Verify First, Test Second
+## Core Principles
 
-The full test suite consumes ~2GB+ RAM and takes 10+ minutes. **Always ask:** can I verify this change
-without running tests?
+**1. Verify first, test second.** The full test suite consumes ~2GB+ RAM and takes 10+ minutes.
+**Always ask:** can I verify this change without running tests?
+
+**2. Tests verify the spec.** A test exists only because a requirement in `docs/specs/{feature}.md`
+(`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it. Tests with no spec mapping are noise —
+audit them out, never write them.
 
 ---
 
@@ -72,17 +77,19 @@ npm run build
 
 ## 2. Efficient Test Execution
 
-### Testing Audit Scope
+### Spec-Test Audit Scope
 
-When auditing test coverage, verify these items:
+When auditing tests against specs, verify these items:
 
-- Every Action has a matching test file
-- Every Livewire component has a matching test file
+- Every requirement in the spec (`FR-*` / `NFR-*` / `UC-*` / §6 contracts) has a matching test —
+  **spec gaps** to fill
+- Every test maps to a requirement ID — **orphan tests** to remove
+- Test descriptions carry the requirement ID (e.g., `it('FR-A1: ...')`)
+- No padding: no tests for behavior the spec doesn't define
 - Feature tests use `LazilyRefreshDatabase` (not `RefreshDatabase`)
 - `assertModelExists()` preferred over `assertDatabaseHas()`
 - No Eloquent mocking — use factories + real database
 - `Event::fake()` positioned AFTER factory setup
-- Coverage targets met: Entity/Enum/DTO 100%, Actions ≥ 90%, Livewire ≥ 80%
 
 ### Targeted Test Commands
 
@@ -135,18 +142,25 @@ Copy the structure, imports, and patterns. This avoids:
 - Missing `LazilyRefreshDatabase` or `use RefreshDatabase` decisions
 - Inconsistent assertion style
 
-### Minimal Test Coverage Checklist
+### Spec-Scenario Checklist
 
-Not every test needs 100% coverage on the first pass. Cover:
+Cover exactly the scenarios the spec defines — nothing more:
 
-- [ ] **Happy path** — the primary success scenario
-- [ ] **Business rule violations** — each `RejectedException` path
-- [ ] **Validation errors** — missing/invalid input
-- [ ] **Edge cases** — null/empty/falsy values, boundary conditions
+- [ ] **Happy path** — the primary success scenario each FR/UC mandates
+- [ ] **Named rejections** — each `RejectedException` / validation rule the spec explicitly lists
+- [ ] **Named alternatives** — alternative flows the spec's use cases describe
 
-Skip until explicitly needed:
+Skip unless a requirement explicitly demands it:
+- Edge-case matrices (null/empty/boundary matrices not named in the spec)
 - HTTP status code assertions (for API-only changes)
-- UI rendering details (CSS classes, DOM structure) — unless the task requires it
+- UI rendering details (CSS classes, DOM structure)
+- Mock-orchestration of child Actions (unless the spec requires rollback semantics)
+
+### Noise Control
+
+Before writing any test, ask: **"which spec requirement does this verify?"** If the answer is
+"none", the test is noise — don't write it, and flag the existing one for removal. If the answer
+is "a requirement has no test", that is a **spec gap** — write the test now.
 
 ### Test Helper Pattern
 
@@ -222,6 +236,13 @@ If a test was already failing before your changes:
 - Document it as a known pre-existing issue
 - Verify your changes didn't introduce NEW failures
 
+### Orphan Test Handling
+
+If a test (failing or not) maps to no current spec requirement:
+- Do NOT fix it to make it pass
+- Flag it as orphan noise — candidate for deletion
+- Remove it only when the user approves the trim (per-module spec-driven pruning)
+
 ---
 
 ## 5. Full Suite Fire Drill
@@ -274,6 +295,7 @@ Test files must also pass arch-guard checks:
 
 | Topic | Location |
 |-------|----------|
+| Feature specs (source of truth for tests) | `docs/specs/index.md`, `docs/specs/{feature}.md` |
 | Testing patterns | `docs/architecture/testing-pattern.md` |
 | Pest testing skill | `.agents/skills/pest-testing/SKILL.md` |
 | arch-guard skill | `.agents/skills/arch-guard/SKILL.md` |

@@ -85,7 +85,7 @@
         ],
         "test:coverage": [
             "@php artisan optimize:clear --ansi",
-            "vendor/bin/pest --coverage --min=80"
+            "vendor/bin/pest --coverage"
         ],
         "test:suite": [
             "@php artisan optimize:clear --ansi",
@@ -104,7 +104,7 @@
         "quality": [
             "@lint",
             "@analyse",
-            "@test:feature"
+            "@test"
         ],
         "quality:full": [
             "@format",

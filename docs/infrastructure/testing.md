@@ -1,17 +1,19 @@
-# Testing — Testing Strategy & Infrastructure
+# Testing — Spec-Driven Testing Strategy & Infrastructure
 
-> **Last updated:** 2026-07-11 **Changes:** sync — add Assertion Conventions section
-> (assertModelExists over assertDatabaseHas)
+> **Last updated:** 2026-08-08 **Changes:** spec-driven doctrine — tests trace to spec requirements;
+> coverage as diagnostic, not mandate
 
 ## Description
 
-Testing strategy, scope isolation, Pest conventions, factory usage, mocking boundaries, and coverage
-thresholds.
+Testing strategy, spec traceability, scope isolation, Pest conventions, factory usage, and mocking
+boundaries.
 
 ## Testing Philosophy
 
-The test suite is organized by module and by test type. Every change to the codebase must be
-accompanied by tests that verify the change works correctly and does not break existing behavior.
+Tests verify the spec — nothing more. A test exists because a requirement in
+`docs/specs/{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it. Every test
+description prefixes its requirement ID. Coverage is measured in **spec requirements covered**, not
+lines of code.
 
 ---
 
@@ -21,89 +23,84 @@ To maintain strict modularity, high code quality, and predictable testing bounda
 enforces **Scope Isolation** in all test files:
 
 - **One File, One Scope**: Do not combine multiple distinct testing scopes into a single test file.
-  For example, do not group different console commands (e.g., `system:health` and `system:cleanup`)
-  or different actions/components under a single test file.
-- **Dedicated Test Files**: Every console command, action, and Livewire component must have its own
-  dedicated test file (e.g., `SystemHealthCommandTest.php` and `SystemCleanupCommandTest.php`).
-- **Comprehensive Coverage**: Each dedicated test file must thoroughly cover the target scope from
-  multiple angles:
-    - Happy path scenarios
-    - Validation constraints and failure modes
-    - Edge cases and boundary inputs
-    - Error handling (graceful failures, logging)
-    - Mocking dependencies/actions and verifying the entire execution chain
+  Scope follows the spec: one requirement (or one requirement area) per file.
+- **Spec-Aligned Files**: Test files map to spec requirements — e.g., an Action implementing an FR
+  gets its own test file.
+- **Spec-Scenario Coverage**: Each test file covers exactly the scenarios its requirement names:
+    - The happy path scenario the FR/UC defines
+    - Each rejection / alternative flow the requirement explicitly lists
+    - Never padding: no edge-case matrices, internals, or framework behavior the spec doesn't name
 
 ---
 
 ## TDD Approach
 
-This project follows **Test-Driven Development (TDD)** — write the test first, watch it fail, then
-write the implementation to make it pass.
+This project follows **Requirement-First Development**: write the spec requirement, then the test
+for it, then the implementation that satisfies it.
 
 ### Red-Green-Refactor Cycle
 
-Every feature or fix follows the same three-step cycle:
+Every requirement follows the same three-step cycle:
 
-1. **Red** — Write a failing test that describes the desired behavior.
+1. **Red** — Write a failing test that describes the requirement (named with its `FR-*` / `UC-*` ID).
 2. **Green** — Write the minimum implementation to make the test pass.
 3. **Refactor** — Clean up the implementation and test. The test stays green throughout.
 
 ### Test-First Workflow
 
 ```bash
-# 1. Write a failing test
+# 1. Read the spec requirement (docs/specs/{feature}.md, e.g., FR-INT1)
+# 2. Write a failing test
 php artisan make:test --pest CreateInternshipActionTest
 
-# 2. Confirm it fails
+# 3. Confirm it fails
 php artisan test --compact --filter=CreateInternshipAction
 
-# 3. Write the implementation in app/{Module}/Actions/
+# 4. Write the implementation in app/{Module}/Actions/
 
-# 4. Confirm it passes
+# 5. Confirm it passes
 php artisan test --compact --filter=CreateInternshipAction
 
-# 5. Refactor and re-run
+# 6. Refactor and re-run
 php artisan test --compact --filter=CreateInternshipAction
 ```
 
-### Layer-by-Layer TDD Entry Points
+### Layer-by-Layer Entry Points
 
-| Layer               | TDD Entry Point | What You Test First                                    |
-| ------------------- | --------------- | ------------------------------------------------------ |
-| **Entity**          | Unit test       | Construct with test data, assert business rule methods |
-| **Enum**            | Unit test       | Assert `label()`, transition rules, terminal states    |
-| **Command Action**  | Feature test    | Factory + execute → assert database state changed      |
-| **Read Action**     | Feature test    | Set up data → call method → assert returned structure  |
-| **Process Action**  | Feature test    | Complete workflow + partial failure scenarios          |
-| **Livewire**        | Feature test    | Render → interact → assert component state / redirect  |
-| **Policy**          | Unit test       | Mock user/model → assert boolean gate methods          |
-| **Console Command** | Feature test    | Call command → assert exit code / output               |
+| Layer               | Test Type      | Test Only If the Requirement Names It                              |
+| ------------------- | -------------- | ------------------------------------------------------------------ |
+| **Entity**          | Unit test      | Names a business-rule method the Entity owns                       |
+| **Enum**            | Unit test      | Names labels/transition rules/terminal states                      |
+| **Command Action**  | Feature test    | Mandates a mutation                                                |
+| **Read Action**     | Feature test    | Mandates a query and its returned shape                            |
+| **Process Action**  | Feature test    | Mandates orchestration / rollback semantics                        |
+| **Livewire**        | Feature test    | Mandates a UI behavior                                             |
+| **Policy**          | Unit test       | Mandates an authorization gate per role                            |
+| **Console Command** | Feature test    | Mandates a CLI behavior and its exit/output                        |
 
 ### TDD and the Action Triad
 
-The three Action types map to distinct TDD approaches:
+The three Action types map to distinct approaches:
 
-- **Command Action** → Test that the mutation happened (database row created, status changed, log
-  recorded). Use `LazilyRefreshDatabase` + factory + `assertDatabaseHas()`.
-- **Read Action** → Test that the correct data is returned given a known state. No database mutation
+- **Command Action** → Test the mutation the requirement mandates (row created, status changed).
+  Use `LazilyRefreshDatabase` + factory + `assertModelExists()`.
+- **Read Action** → Test that the required data shape is returned given known state. No mutation
   expected — assert return values only.
-- **Process Action** → Test the orchestration: that each sub-action was called with the correct
-  arguments. Use Mockery to mock child Actions and assert they received the right input.
+- **Process Action** → Test the orchestration the requirement names. Only mock child Actions when
+  the spec mandates rollback semantics.
 
 ### Test Naming Convention
 
-Tests use descriptive `it()` statements that read like specifications:
+Tests use descriptive `it()` statements that prefix the requirement ID:
 
 ```php
 describe('CreateInternshipAction', function () {
-    it('creates an internship with active academic year', function () { ... });
-    it('rejects creation when academic year is missing', function () { ... });
-    it('assigns default status of draft', function () { ... });
-    it('logs the creation event', function () { ... });
+    it('FR-INT1: creates an internship with an active academic year', function () { ... });
+    it('FR-INT2: rejects creation when the academic year is missing', function () { ... });
 });
 ```
 
-The `it()` description should complete the sentence: "it **creates an internship with active
+The `it()` description completes the sentence: "it **FR-INT1: creates an internship with an active
 academic year**".
 
 ### Running Tests Efficiently
@@ -203,6 +200,11 @@ php -d extension=pcov.so -d pcov.enabled=1 vendor/bin/pest --coverage
 
 The `composer run coverage` script handles this automatically.
 
+> **Coverage is a diagnostic, not a mandate.** Use the report to spot **spec gaps** (requirements
+> with no test). Never write padding tests to push percentages — tests that exist only for line
+> coverage are noise and are rejected. The quality bar is spec-requirement traceability, not
+> line-coverage thresholds.
+
 ---
 
 ## Assertion Conventions
@@ -225,5 +227,6 @@ The `composer run coverage` script handles this automatically.
 - `phpunit.xml` — PHPUnit configuration
 - `phpunit.coverage.xml` — coverage-specific configuration
 - `composer.json` — test scripts in `scripts` section
+- `docs/specs/index.md`, `docs/specs/{feature}.md` — the source of truth for what tests must exist
 - `docs/conventions.md` — Section 12 (Testing)
 - [Infrastructure](infrastructure.md) — tier-based infrastructure design

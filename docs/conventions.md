@@ -1,6 +1,6 @@
 # Coding Conventions — PHP Rules, Naming & Testing
 
-> **Last updated:** 2026-07-21 **Changes:** sync — fix submodule route/translation file convention (no module prefix)
+> **Last updated:** 2026-08-08 **Changes:** spec-driven testing — replace line-coverage mandates with spec-requirement traceability (§12.2, review checklist)
 
 ## Description
 
@@ -588,7 +588,8 @@ methods where the container is not available (e.g., `database/factories/`).
 - [ ] No N+1 queries — eager loading verified
 - [ ] No unescaped `{!! !!}` for user content
 - [ ] Doc metadata updated: Last updated date + one-line Changes description
-- [ ] Tests pass: `php artisan test --compact`
+- [ ] Tests pass: `php artisan test --compact` (every test traces to a spec requirement — no
+      orphan tests, no padding)
 - [ ] Pint clean: `vendor/bin/pint --dirty --format agent`
 - [ ] PHPStan passes: `vendor/bin/phpstan analyse --no-progress`
 - [ ] Relevant docs updated (see §0 Documentation-First)
@@ -605,13 +606,15 @@ methods where the container is not available (e.g., `database/factories/`).
 - [ ] **Cache invalidation**: Every mutation that changes cached data has corresponding
       `Cache::forget()` or event-driven invalidation
 - [ ] **Test coverage**: New Actions have test files; existing tests still pass
+- [ ] **Spec coverage**: every requirement of the affected spec has a spec-traced test; no orphan
+      tests (tests with no requirement mapping)
 - [ ] **Documentation**: Module doc or reference doc updated if behavior changed
 
 ---
 
 ## 12. Testing Conventions
 
-### 10.1 Mocking Strategy
+### 12.1 Mocking Strategy
 
 | Scenario                    | Approach                                | Example                                                                      |
 | --------------------------- | --------------------------------------- | ---------------------------------------------------------------------------- |
@@ -633,25 +636,28 @@ methods where the container is not available (e.g., `database/factories/`).
 - Business logic in Actions is tested with real dependencies — only infrastructure boundaries are
   mocked.
 
-### 10.2 Coverage Requirements
+### 12.2 Spec-Driven Coverage
 
-| Layer               | Minimum Coverage | Testing Type |
-| ------------------- | ---------------- | ------------ |
-| Entities            | 100%             | Unit         |
-| Enums               | 100%             | Unit         |
-| DTOs / Data         | 100%             | Unit         |
-| Command Actions     | ≥ 90%            | Feature      |
-| Read Actions        | ≥ 80%            | Feature      |
-| Process Actions     | ≥ 90%            | Feature      |
-| Livewire components | ≥ 80%            | Feature      |
-| Policies            | 100%             | Unit         |
-| Console Commands    | ≥ 80%            | Feature      |
-| **Overall**         | **≥ 85%**        |              |
+Tests verify the spec — nothing more. A test exists because a requirement in
+`docs/specs/{feature}.md` (`FR-*` / `NFR-*` / `UC-*` / §6 data contract) demands it.
 
-Coverage is verified via `php artisan test --coverage` or `composer run test:coverage`. A PR that
-causes overall coverage to drop below threshold must add missing tests before merging.
+| Signal | Meaning | Action |
+| ------ | ------- | ------ |
+| Requirement with no test | **Spec gap** | Write the test, traced to the requirement ID |
+| Test with no requirement | **Orphan noise** | Candidate for deletion |
+| Scenario beyond the spec | **Padding** | Do not write / remove |
 
-### 10.3 Commit & Branch Conventions
+Every test description prefixes its requirement ID so traceability is visible in test output:
+
+```php
+it('FR-REG1: creates a registration with valid data', function () { ... });
+```
+
+Code coverage (`php artisan test --coverage`) is a **diagnostic only** — never a mandate for
+writing padding tests. A PR is judged on spec requirements covered, not on line-coverage
+percentages. Tests that only chase percentages are noise and are rejected.
+
+### 12.3 Commit & Branch Conventions
 
 **Branch naming:**
 
