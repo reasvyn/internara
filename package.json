@@ -24,7 +24,7 @@
     },
     "devDependencies": {
         "@prettier/plugin-php": "^0.25.0",
-        "@tailwindcss/vite": "^4.3.2",
+        "@tailwindcss/vite": "^4.3.3",
         "daisyui": "^5.7.0",
         "prettier": "^3.9.6",
         "prettier-plugin-blade": "^3.2",
