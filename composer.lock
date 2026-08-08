@@ -5474,16 +5474,16 @@
         },
         {
             "name": "robsontenorio/mary",
-            "version": "2.9.0",
+            "version": "2.9.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/robsontenorio/mary.git",
-                "reference": "a48c94d77b92653c401a4e00b3d1d8f1a6240469"
+                "reference": "d02c03f54e16d28288cf26c15f33a8c18debd33e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/robsontenorio/mary/zipball/a48c94d77b92653c401a4e00b3d1d8f1a6240469",
-                "reference": "a48c94d77b92653c401a4e00b3d1d8f1a6240469",
+                "url": "https://api.github.com/repos/robsontenorio/mary/zipball/d02c03f54e16d28288cf26c15f33a8c18debd33e",
+                "reference": "d02c03f54e16d28288cf26c15f33a8c18debd33e",
                 "shasum": ""
             },
             "require": {
@@ -5548,7 +5548,7 @@
             ],
             "support": {
                 "issues": "https://github.com/robsontenorio/mary/issues",
-                "source": "https://github.com/robsontenorio/mary/tree/2.9.0"
+                "source": "https://github.com/robsontenorio/mary/tree/2.9.9"
             },
             "funding": [
                 {
@@ -5556,7 +5556,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-07-07T17:19:14+00:00"
+            "time": "2026-07-29T22:01:59+00:00"
         },
         {
             "name": "sabberworm/php-css-parser",
