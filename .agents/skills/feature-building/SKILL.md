@@ -121,7 +121,8 @@ Recommended build order for new features:
 9. **Livewire component** — thin, delegates to Actions
 10. **Blade view** — follows existing view patterns
 11. **Route** — in correct `routes/web/{module}.php` (or `{submodule}.php` for split submodules)
-12. **Tests** — every Action gets a test file
+12. **Tests** — a test for each spec requirement (FR/NFR/UC ID) this feature introduces; tests are
+    traced to their requirement IDs, never padded
 13. **Translations** — `__()` keys in both `lang/en/` and `lang/id/`
 
 ### 5. Verify
@@ -132,7 +133,8 @@ Recommended build order for new features:
 
 ## Key Rules
 
-1. New Action? Must have a test file before code review
+1. New spec requirement? Must have a spec-traced test (FR/NFR/UC ID) before code review — no orphan
+   tests, no padding
 2. New Entity? Must be `final readonly` with `fromModel()`
 3. New Model? Must use `#[Fillable]` and extend `BaseModel`
 4. New mutation? Must use Command Action, never direct `Model::create()` in Livewire

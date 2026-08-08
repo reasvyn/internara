@@ -1,7 +1,7 @@
 # Action Triad Pattern Reference — Command/Read/Process Deep-Dive
 
-> **Last updated:** 2026-07-11 **Changes:** sync — update Command contract: DTO for 3+ params,
-> ActionResponse for structured feedback; sync with architecture.md rebalancing
+> **Last updated:** 2026-08-08 **Changes:** spec-driven testing — Action tests exist per spec
+> requirement, organized under modular tests/{Module}/ scope
 
 ## Description
 
@@ -504,7 +504,10 @@ The class name must never be repeated in the path:
 
 ### Scope Isolation
 
-Every Action has its own test file. One class → one test file.
+Tests are organized by module scope, matching the spec requirement under test
+(`tests/{Module}/{SubModule}/{Name}Test.php`). An Action is tested when its behavior implements a
+spec requirement — the test is named after the requirement ID. One class → one test file for
+spec-defined behavior; never write an Action test the spec doesn't require.
 
 ### File Structure
 

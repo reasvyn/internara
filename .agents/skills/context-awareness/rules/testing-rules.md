@@ -1,9 +1,17 @@
 # Testing Rules — What to Verify
 
-> **Last updated:** 2026-07-03 **Changes:** initial — practical test patterns, not doc replacement
+> **Last updated:** 2026-08-08 **Changes:** spec-driven doctrine — tests trace to spec requirements,
+> coverage is measured in requirements not lines
 
 This is NOT a replacement for `docs/architecture/testing-pattern.md` or
 `docs/infrastructure/testing.md`. Use this as a quick checklist when writing or reviewing tests.
+
+## Core Rule
+
+**Tests verify the spec — nothing more.** A test exists because a requirement in
+`docs/specs/{feature}.md` (`FR-*` / `NFR-*` / `UC-*` / §6 contract) demands it. A test that cannot
+be traced to a requirement is noise: don't write it, and flag existing ones for removal. Coverage is
+measured in **spec requirements covered**, not lines of code.
 
 ## Test Structure
 
@@ -16,14 +24,22 @@ Tests that need a database use `LazilyRefreshDatabase`; pure logic tests do not.
 
 ## Quick Checklist Per Test
 
+### Every Test
+
+```
+[ ] Description prefixes the requirement ID: it('FR-A1: ...')
+[ ] Scenario is named by the spec (happy path or a named rejection/alternative)
+[ ] No padding — no edge-case matrices, internals, or framework behavior the spec doesn't name
+[ ] If it maps to no requirement → orphan: candidate for deletion
+```
+
 ### Action Tests (Feature)
 
 ```
+[ ] Traces to a spec FR/UC
 [ ] Uses LazilyRefreshDatabase (not RefreshDatabase)
 [ ] Uses real factories, no Mockery for Eloquent
-[ ] Tests happy path: creates/updates/deletes as expected
-[ ] Tests business rule: verify RejectedException on invalid state
-[ ] Tests validation: verify ValidationException on invalid input
+[ ] Tests the spec-defined happy path and the named RejectedException/validation rules
 [ ] Uses assertModelExists() over assertDatabaseHas()
 [ ] Event::fake() AFTER factory creation (not before)
 ```
@@ -31,6 +47,7 @@ Tests that need a database use `LazilyRefreshDatabase`; pure logic tests do not.
 ### Livewire Tests (Feature)
 
 ```
+[ ] Traces to a spec FR/UC (render/mount/authorization only where the spec requires)
 [ ] Uses LazilyRefreshDatabase
 [ ] Tests render: assertSuccessful(), assertViewIs()
 [ ] Tests mutations via Action calls
@@ -42,12 +59,11 @@ Tests that need a database use `LazilyRefreshDatabase`; pure logic tests do not.
 ### Entity/DTO/Enum Tests (Unit)
 
 ```
+[ ] Tested only when the spec's §6 contract defines them
 [ ] No LazilyRefreshDatabase (no DB needed)
-[ ] Entity: test every business question method
-[ ] DTO: test fromArray()/toArray() roundtrip
-[ ] Enum: test every case has non-empty label()
-[ ] Enum (StatusEnum): test validTransitions() for every case
-[ ] Enum (StatusEnum): test isTerminal() for terminal states
+[ ] Entity: test only the business-rule methods a requirement names
+[ ] DTO: test the shape the spec defines (fromArray()/toArray())
+[ ] Enum: label() / validTransitions() only for the cases and rules the spec lists
 ```
 
 ## Mocking Rules
@@ -67,14 +83,10 @@ Tests that need a database use `LazilyRefreshDatabase`; pure logic tests do not.
 **Rule of thumb:** If you're using `shouldReceive()`, you're probably doing it wrong. Prefer
 `fake()` methods which are scoped to the test and don't leak between tests.
 
-## Coverage Targets
+## Spec Coverage Targets
 
-| Layer               | Target |
-| ------------------- | ------ |
-| Entities            | 100%   |
-| Enums               | 100%   |
-| DTOs                | 100%   |
-| Command Actions     | >= 90% |
-| Read Actions        | >= 80% |
-| Livewire components | >= 80% |
-| Policies            | 100%   |
+| Signal | Meaning | Action |
+| ------ | ------- | ------ |
+| Requirement with no test | **Spec gap** | Write the test, traced to the ID |
+| Test with no requirement | **Orphan noise** | Candidate for deletion |
+| Scenario beyond the spec | **Padding** | Do not write / remove |

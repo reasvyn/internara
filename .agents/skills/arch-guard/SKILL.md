@@ -201,7 +201,7 @@ Rules are checked in this priority order:
 | Events | `{PastTenseVerb}{Entity}Event.php` | `StudentCreatedEvent.php` |
 | Listeners | `{Event}Listener.php` | `StudentCreatedListener.php` |
 | Migrations | `{timestamp}_{description}.php` | `2026_01_01_000001_create_students_table.php` |
-| Tests | `{Feature/Unit}/{Described}_Test.php` | `StoreStudentAction_Test.php` |
+| Tests | `{Module}/{SubModule}/{Described}Test.php` | `tests/Academics/AcademicYear/DeleteAcademicYearActionTest.php` |
 
 ### Class Naming
 

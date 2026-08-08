@@ -314,8 +314,8 @@ Full definition: `docs/foundation/product-definition.md`
 | Refactoring existing code | `code-refactoring` | Extract Actions, thin Livewire |
 | Building a feature end-to-end | `feature-building` | Orchestrator — coordinates sub-skills |
 | Livewire component | `livewire-development` | Component structure, reactivity |
-| Writing/fixing tests | `pest-testing` | Test structure, mocking, coverage |
-| Deciding verification strategy | `test-writing` | What to run, when, how much |
+| Writing spec-driven tests | `pest-testing` | Each test traces to a spec FR/NFR; no orphan tests |
+| Deciding verification strategy | `test-writing` | What to run, when, how much; spec-gap & orphan detection |
 | Writing documentation | `doc-writing` | Two-tier model, metadata, PHPDoc |
 | Syncing docs with code | `sync-docs` | Automated verification |
 | Writing GitHub issues | `writing-issues` | Structured issue format |
@@ -422,6 +422,11 @@ Full spec list with build order: `docs/specs/index.md`
 
 **Batch ALL changes first, then verify ONCE.** Full suite is ~2GB+ memory, 10+ minutes.
 
+**Tests verify the spec — nothing more.** Every test traces to a requirement ID (`FR-*` / `NFR-*` /
+`UC-*`) in `docs/specs/{feature}.md`. Coverage is measured in spec requirements covered, not lines
+of code. A requirement with no test is a spec gap (fill it); a test with no requirement is orphan
+noise (remove it).
+
 | Change Type | Verification |
 |-------------|-------------|
 | Translation keys (`lang/*.php`) | `php -l` + `php artisan tinker --execute="echo __('key');"` |
@@ -430,6 +435,7 @@ Full spec list with build order: `docs/specs/index.md`
 | Refactoring (rename, extract) | Targeted test: `php artisan test --compact --filter={TestSuite}` |
 | New feature / business logic | Full suite ONCE after all changes batched |
 | Dependency updates | `vendor/bin/pest --testsuite={ModuleName}` (run affected module suites) |
+| Test pruning / spec-gap filling | Manual per-module audit — map tests ↔ spec requirements, batch edits, then run targeted module tests once |
 
 ```bash
 # Version-control verification (before/after every change — Edit Policy)
@@ -471,6 +477,7 @@ python3 scripts/scan_doc_links.py          # Broken links in docs
 - [ ] No N+1 queries — eager loading verified
 - [ ] No unescaped `{!! !!}` for user content
 - [ ] `php artisan test --compact` passes
+- [ ] Every test traces to a spec requirement — no orphan tests, no padding (spec-driven testing)
 - [ ] `vendor/bin/pint --dirty --format agent` clean
 - [ ] `vendor/bin/phpstan analyse --no-progress` passes
 - [ ] `git status` + `git diff` reviewed — only intended files changed, nothing dropped

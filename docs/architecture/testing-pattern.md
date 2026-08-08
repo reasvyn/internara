@@ -1,6 +1,7 @@
-# Testing Pattern Reference — Testing Conventions, Scope Isolation & Coverage
+# Testing Pattern Reference — Spec-Driven Testing & Scope Isolation
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix test structure tree to flat tests/{Module}/ layout
+> **Last updated:** 2026-08-08 **Changes:** spec-driven doctrine — tests trace to spec requirements
+> (FR/NFR/UC IDs); coverage measured in requirements, not lines
 
 ## Description
 
@@ -10,32 +11,45 @@
 
 ## 1. Testing Philosophy
 
-### 1.1 Every Change Must Have Tests
+### 1.1 Every Spec Requirement Must Have Tests
 
-Every code change — feature, refactor, bug fix — must be accompanied by tests that verify the change
-works correctly and do not break existing behavior. A change is not complete until its tests pass.
+Tests exist because a requirement in `docs/specs/{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6
+data contract) demands it. A requirement with no test is a **spec gap**; a test with no requirement
+is **orphan noise**. Coverage is measured in spec requirements covered — never lines of code. Do not
+write padding tests for behavior no requirement mentions.
 
-### 1.2 Red-Green-Refactor (TDD)
+### 1.2 Requirement-First (Spec → Test → Implementation)
 
-Write the test first, watch it fail, then write the minimum implementation to make it pass, then
-refactor. The test stays green throughout refactoring.
+Write the spec requirement, then the test for it, then the minimum implementation that makes it
+pass. The test stays green throughout refactoring. When a requirement changes, its test changes;
+when a requirement is removed, its test is removed.
 
-### 1.3 Layer-by-Layer TDD Entry Points
+### 1.3 Traceability
 
-TDD order follows bottom-up dependency: enums and entities have no dependencies and are tested first
-(unit), then Actions (feature), then Livewire components that consume them (feature).
+Every test description prefixes its requirement ID:
 
-| Layer               | TDD Entry Point | What You Test First                                                     |
-| ------------------- | --------------- | ----------------------------------------------------------------------- |
-| **Enum**            | Unit test       | Labels, transition rules, terminal states                               |
-| **Entity**          | Unit test       | Construct, assert business rule methods                                 |
-| **DTO (BaseData)**  | Unit test       | Constructor, `fromArray()`, `toArray()`, `merge()`, `only()`/`except()` |
-| **Command Action**  | Feature test    | Execute with DTO → assert `ActionResponse` + database state changed     |
-| **Read Action**     | Feature test    | Set up data → assert returned structure                                 |
-| **Process Action**  | Feature test    | Full workflow + partial failure scenarios                               |
-| **Livewire**        | Feature test    | Render → interact → assert component state                              |
-| **Policy**          | Unit test       | Mock user/model → assert boolean gate methods                           |
-| **Console Command** | Feature test    | Call command → assert exit code / output                                |
+```php
+it('FR-A1: allows a supervisor to approve attendance', function () { ... });
+```
+
+Use `describe('{spec}')` or `describe('FR-{area}')` to group requirements of one feature.
+
+### 1.4 Layer-by-Layer Entry Points
+
+The layer you test is whatever layer implements the requirement. Layer order below is a guide, not a
+mandate: **test exactly the layer(s) the requirement touches, nothing more.**
+
+| Layer               | Test Type      | Test Only If the Requirement...                                        |
+| ------------------- | -------------- | ---------------------------------------------------------------------- |
+| **Enum**            | Unit test      | Names labels, transitions, or terminal states                           |
+| **Entity**          | Unit test      | Names a business rule the Entity owns                                   |
+| **DTO (BaseData)**  | Unit test      | Defines a data contract shape in §6                                     |
+| **Command Action**  | Feature test   | Mandates a mutation and its result                                      |
+| **Read Action**     | Feature test   | Mandates a query and its returned shape                                 |
+| **Process Action**  | Feature test   | Mandates multi-step orchestration or rollback semantics                 |
+| **Livewire**        | Feature test   | Mandates a UI behavior (render/submit/authz)                            |
+| **Policy**          | Unit test      | Mandates an authorization gate per role                                 |
+| **Console Command** | Feature test   | Mandates a CLI behavior and its exit/output                             |
 
 ---
 
@@ -74,16 +88,16 @@ their own submodule go under `tests/{Module}/Types/`.
 
 ### 3.1 One File, One Scope — CRITICAL
 
-Do **not** combine multiple distinct testing scopes into a single test file. Each dedicated test
-file must thoroughly cover its target from multiple angles: happy path, validation constraints, edge
-cases, and error handling.
+Do **not** combine multiple distinct testing scopes into a single test file. Scope follows the spec:
+group the tests of one requirement (or one requirement area) in one file. Cover exactly the
+scenarios the spec names — happy path plus each rejection/alternative the requirement lists.
 
-### 3.2 Dedicated Files for Each Component
+### 3.2 File Organization by Spec Scope
 
-- Every **Action** has its own test file
-- Every **Console Command** has its own test file
-- Every **Livewire component** has its own test file
-- Every **Policy** has its own test file
+- A spec's requirements map to test files by subject (e.g., one Action implementing an FR gets its
+  own file)
+- A spec with many requirements may group related ones under `describe('{spec}')`
+- Never split a single requirement's tests across files unless it spans distinct layers
 
 ---
 
@@ -95,12 +109,13 @@ Files use PascalCase with `Test.php` suffix.
 
 ### 4.2 Test Descriptions
 
-Use `it()` for descriptive sentences that read as specifications. The description should complete
-the sentence: "it **creates a resource with valid input**".
+Use `it()` with the requirement ID prefix. The description completes the sentence: "it **FR-A1:
+allows a supervisor to approve attendance**".
 
 ### 4.3 Grouping with `describe()`
 
-Use `describe()` to group related tests by subject (e.g., by Action name, by method name).
+Use `describe()` to group related requirements by spec or by requirement area
+(e.g., `describe('FR-ATT')`).
 
 ### 4.4 Simple `test()` for Flat Structure
 
@@ -213,12 +228,18 @@ for logger assertions.
 
 ## 8. What NOT to Test
 
-- **Eloquent relationships directly** — test through Actions
-- **Simple getters/setters** — trivial passthrough code
+- **Anything with no spec requirement** — the definitive test of noise: a test that cannot be traced
+  to an `FR-*` / `NFR-*` / `UC-*` ID or §6 contract must not exist
+- **Eloquent relationships directly** — test through the requirement's Action
+- **Simple getters/setters** — trivial passthrough code, unless a requirement names them
 - **Configuration loading** — framework behavior
 - **Framework-provided functionality** — UUID generation, pagination
-- **Simple model scopes in isolation** — test through Actions that use them
-- **Trivial views** — only needed when underlying Actions are untested
+- **Simple model scopes in isolation** — test through the Action that uses them
+- **Trivial views** — only needed when the requirement's underlying Action is untested
+- **Exhaustive edge-case matrices** — boundary/null matrices beyond what the requirement names
+- **Mock-orchestration of child Actions** — only when the spec mandates rollback semantics
+- **Line-coverage padding** — tests written only to push percentages; use coverage as a diagnostic
+  for gaps, never as a target for padding
 
 ---
 

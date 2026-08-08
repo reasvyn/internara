@@ -1,12 +1,22 @@
-# Test Quality — Measurable Coverage & Consistency
+# Test Quality — Spec Traceability & Noise Control
 
-Checklist to ensure tests are high-quality and measurable.
+Checklist to ensure tests are spec-traceable and free of noise.
+
+> **Core rule:** a test that cannot be traced to a spec requirement is noise. Coverage is measured
+> in spec requirements covered, not lines of code.
 
 ## Structure
 
-- [ ] Test file path: `tests/{Feature,Unit}/{Module}/{SubModule}/{Name}Test.php`
+- [ ] Test file path: `tests/{Module}/{SubModule}/{Name}Test.php`
 - [ ] File name: `{Name}Test.php` (PascalCase + Test suffix)
-- [ ] Every Action has its own test file
+- [ ] Every spec requirement (`FR-*` / `NFR-*` / `UC-*`) has at least one test
+
+## Spec Traceability
+
+- [ ] Each test description prefixes its requirement ID, e.g. `it('FR-A1: ...')`
+- [ ] Group with `describe('{spec}')` or `describe('FR-{area}')` when useful
+- [ ] Scenarios tested are exactly the ones the spec names (happy path + named rejections)
+- [ ] No test for behavior no requirement mentions
 
 ## Feature Tests
 
@@ -14,16 +24,13 @@ Checklist to ensure tests are high-quality and measurable.
 - [ ] `assertModelExists()` preferred over `assertDatabaseHas()`
 - [ ] No Eloquent mocking — use factories + real database
 - [ ] `Event::fake()` positioned AFTER factory setup
-- [ ] Happy path + business rule violation + validation error tested
 
 ## Unit Tests
 
 - [ ] No `LazilyRefreshDatabase`/`RefreshDatabase` (no DB needed)
-- [ ] Entity: every business question method tested
-- [ ] DTO: `fromArray()`/`toArray()` roundtrip tested
-- [ ] Enum: every case has non-empty `label()`
-- [ ] Enum (StatusEnum): `validTransitions()` for every case
-- [ ] Enum (StatusEnum): `isTerminal()` for terminal states
+- [ ] DTO/Entity/Enum tested **only when the spec's §6 contract defines them**
+- [ ] Enum: every case the spec lists has a non-empty `label()`
+- [ ] Enum (StatusEnum): `validTransitions()` only for transitions the spec defines
 
 ## Mocking Rules
 
@@ -36,13 +43,14 @@ Checklist to ensure tests are high-quality and measurable.
 | Notifications | `Notification::fake()`           | Real mail sending             |
 | Events        | `Event::fake([Specific::class])` | `Mockery::spy()`              |
 
-## Coverage Targets
+## Noise Signals — Delete or Never Write
 
-- Entity/Enum/DTO: 100%
-- Command Actions: ≥ 90%
-- Read Actions: ≥ 80%
-- Livewire: ≥ 80%
-- Policies: 100%
+- ❌ Tests for implementation internals the spec doesn't describe
+- ❌ Exhaustive validation/edge-case matrices not named in the spec
+- ❌ "Comprehensive multi-angle" padding (CSS classes, DOM structure, HTTP status codes)
+- ❌ Framework behavior tests (UUID generation, pagination, configuration loading)
+- ❌ Mock-orchestration of child Actions unless the spec requires rollback semantics
+- ❌ Tests left behind after their spec requirement was removed (orphan tests)
 
 ## Destructive Patterns
 

@@ -1,6 +1,6 @@
 ---
 name: pest-testing
-description: "SDLC Phase: TESTING. Test writing, editing, and fixing using Pest — feature tests, unit tests, architecture tests, Livewire component tests."
+description: "SDLC Phase: TESTING. Spec-driven test writing, editing, and fixing using Pest — every test traces to a spec requirement (FR/NFR/UC ID); no orphan tests."
 upstream:
   - test-writing
   - code-writing
@@ -17,10 +17,20 @@ downstream:
 
 > **Prerequisite:** Load `context-awareness` for testing conventions.
 
+## Core Doctrine — Tests Verify the Spec
+
+Tests exist **only** because a requirement in `docs/specs/{feature}.md` demands it. Every test maps
+to at least one requirement ID (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract). A test that cannot
+be traced to a spec requirement is **noise** and must not be written. Coverage is measured in
+**spec requirements covered**, never in lines of code.
+
 ## When to Activate
 
-Use this skill when writing new tests, fixing failing tests, or reviewing test coverage. Covers all
-test types: feature, unit, Livewire component, and architecture tests.
+Use this skill when:
+- Writing tests for a spec requirement (new or changed behavior defined in a spec)
+- Fixing failing tests
+- Filling a **spec gap** — a requirement in a spec with no corresponding test
+- Reviewing whether existing tests still match their specs
 
 ## Agent Workflow
 
@@ -29,35 +39,38 @@ Using this skill follows 4 phases:
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
+- **Read the spec first** (`docs/specs/{feature}.md`) — list the FR/NFR/UC IDs it defines
 - Read relevant docs: module docs, pattern docs, reference docs
-- Understand task scope: what needs to be done, which files are affected
+- Identify which requirements are already tested and which are gaps
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 - Determine approach: at least 2 options before deciding
 
 ### 2. Execute — Write Tests
 
-- Write unit tests for Entity, Enum, DTO (100% coverage)
-- Write feature tests for Action, Livewire, Console Command
+- Write **one test per requirement**, named with the requirement ID (see Spec Traceability)
+- Test only the scenarios the spec names: the happy path, and each rejection/validation rule the
+  spec explicitly defines
 - Use LazilyRefreshDatabase, factories, assertModelExists()
 - Do not mock Eloquent — use real database
-- Test happy path + business rule violations + validation errors
-- Output: test files covering happy path, edge cases, business rule violations, and validation
-  errors
+- **Do not pad** — skip edge-case matrices, implementation internals, and framework behavior that
+  no requirement mentions
+- Output: test files covering exactly the requirements in scope, each traceable to its ID
 
 ### 3. Verify — Quality Gates
 
 - Run linter: `vendor/bin/pint --dirty --format agent`
 - Run static analysis: `vendor/bin/phpstan analyse --no-progress`
-- Run unit/feature tests: `php artisan test --compact --filter={TestName}`
+- Run targeted tests: `php artisan test --compact --filter={TestName}`
 - Ensure pre-commit checklist is satisfied
 - Check no debug calls (`dd/dump/ray`) were left behind
+- **Do not run the full suite unless the user asks** — batch all changes, then verify once
 
 ### 4. Report & Commit
 
 - Deliver a comprehensive report to the user:
-    - Summary of tests written
-    - Coverage by layer (Entity/Enum/DTO/Action/Livewire)
-    - Test suite status (pass/fail)
+    - Spec requirements covered by new tests (with IDs)
+    - Spec gaps still open (requirements without tests)
+    - Tests removed and why (no spec mapping)
 - Feeds into: feature-building (quality gate), sync-docs (test documentation)
 - Commit using format: `type(scope): description`
 - Push if requested
@@ -79,18 +92,31 @@ tests/{Module}/{SubModule}/{Name}Test.php
 All tests live under `tests/{Module}/` — the old `tests/Unit/` and `tests/Feature/` split has been removed.
 Tests that need a database use `LazilyRefreshDatabase`; pure logic tests do not.
 
-## Test Priorities (Build Order)
+## Spec Traceability
 
-| Priority | What to Test        | Type    | Coverage Target |
-| -------- | ------------------- | ------- | --------------- |
-| 1        | Enums               | Unit    | 100%            |
-| 2        | Entities            | Unit    | 100%            |
-| 3        | DTOs                | Unit    | 100%            |
-| 4        | Command Actions     | Feature | ≥ 90%           |
-| 5        | Read Actions        | Feature | ≥ 80%           |
-| 6        | Policies            | Unit    | 100%            |
-| 7        | Livewire components | Feature | ≥ 80%           |
-| 8        | Console Commands    | Feature | ≥ 80%           |
+The spec is the source of truth. Tests are written per requirement, not per class:
+
+| Spec artifact | Test mapping |
+| ------------- | ------------ |
+| `FR-*` Functional Requirement | Feature test verifying the behavior it mandates |
+| `NFR-*` Non-Functional Requirement | Test only when the NFR is testable at code level (e.g., auth/security rules); skip metrics like "load time" |
+| `UC-*` Use Case | Feature test for the end-to-end flow (happy path + named alternatives) |
+| §6 Data contract | Unit test of the DTO/Enum/Entity shape only if the spec defines it |
+| Nothing in any spec | **Do not write a test** |
+
+**Test description convention** — prefix with the requirement ID so traceability is visible in test
+output:
+
+```php
+it('FR-REG1: creates a registration with valid data', function () { ... });
+it('FR-PL2: rejects placement when quota is full', function () { ... })->throws(RejectedException::class);
+```
+
+Use `describe('{spec}')` or `describe('FR-{area}')` when grouping many requirements of one feature.
+
+**When a spec changes, its tests change.** Requirement removed → remove its tests. Requirement
+rewritten → rewrite the test to match. A test left behind with no current requirement is orphaned
+noise — delete it.
 
 ## Key Conventions
 
@@ -134,7 +160,7 @@ If you're using `shouldReceive()`, reconsider — prefer `fake()` methods.
 ### Action Test Pattern
 
 ```php
-it('creates a resource with valid data', function () {
+it('FR-X1: creates a resource with valid data', function () {
     // Arrange
     $data = CreateResourceData::from([...]);
 
@@ -149,7 +175,7 @@ it('creates a resource with valid data', function () {
 ```
 
 ```php
-it('rejects invalid state transitions', function () {
+it('FR-X2: rejects invalid state transitions', function () {
     $record = Record::factory()->create(['status' => 'finalized']);
 
     app(FinalizeAction::class)->execute($record);
@@ -158,14 +184,14 @@ it('rejects invalid state transitions', function () {
 
 ## Verification Checklist
 
-- [ ] Every Action has a test file
-- [ ] Happy path and business rule violation tested
+- [ ] Read the spec; each new test maps to a requirement ID (`FR-*` / `NFR-*` / `UC-*`)
+- [ ] Only spec-defined scenarios tested — no padding, no exhaustive edge-case matrices
+- [ ] No test written for behavior that no requirement mentions
 - [ ] `LazilyRefreshDatabase` used for feature tests
 - [ ] No Eloquent mocking
-- [ ] Entity/DTO/Enum tests: 100% method coverage
 - [ ] `assertModelExists()` preferred over `assertDatabaseHas()`
 - [ ] Tests are isolated — no shared state between tests
-- [ ] Full suite passes: `php artisan test --compact`
+- [ ] Targeted tests pass (`php artisan test --compact --filter={TestName}`)
 
 ## References
 
