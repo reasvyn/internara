@@ -156,6 +156,14 @@ likely a bug or architecture violation.
 
 The ability to choose the right verification strategy, write effective tests, and detect problems.
 
+### Spec-Driven Minimalism
+
+**Write only the tests the spec requires, then stop.** This is deliberate, not lazy — it speeds up
+development and verification (spec-scoped tests run in seconds vs. 10+ minutes for the full suite),
+reduces resource usage (~2GB+ RAM for the full suite), and reduces cognitive overwhelm: a suite that
+maps 1:1 to requirement IDs is self-explaining. Every test answers "which `FR-*` / `NFR-*` / `UC-*`
+does this verify?"; if the answer is "none", don't write it.
+
 ### Verification Strategy Selection
 
 **Core principle:** Always ask "can I verify this without running tests?" before reaching for the

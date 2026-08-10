@@ -1,7 +1,7 @@
 # Testing Rules — What to Verify
 
-> **Last updated:** 2026-08-08 **Changes:** spec-driven doctrine — tests trace to spec requirements,
-> coverage is measured in requirements not lines
+> **Last updated:** 2026-08-10 **Changes:** spec-driven doctrine — tests trace to spec requirements,
+> coverage measured in requirements not lines; minimalism rationale
 
 This is NOT a replacement for `docs/architecture/testing-pattern.md` or
 `docs/infrastructure/testing.md`. Use this as a quick checklist when writing or reviewing tests.
@@ -12,6 +12,11 @@ This is NOT a replacement for `docs/architecture/testing-pattern.md` or
 `docs/specs/{feature}.md` (`FR-*` / `NFR-*` / `UC-*` / §6 contract) demands it. A test that cannot
 be traced to a requirement is noise: don't write it, and flag existing ones for removal. Coverage is
 measured in **spec requirements covered**, not lines of code.
+
+**Write only the tests the spec requires, then stop** — this accelerates development and verification
+(spec-scoped tests run in seconds vs. 10+ minutes for the full suite), reduces resource usage (~2GB+
+RAM for the full suite), and reduces cognitive overwhelm: a suite mapping 1:1 to requirement IDs is
+self-explaining and needs no archaeology to understand.
 
 ## Test Structure
 

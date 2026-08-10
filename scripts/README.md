@@ -81,7 +81,7 @@ contract source.
 | `scan_dead_code.py` | Unregistered observers, orphan events, unused DTOs/Actions/Jobs | `UNREGISTERED_OBSERVER`, `EVENT_NO_LISTENER`, `UNUSED_DTO`, `UNUSED_ACTION`, `UNUSED_JOB` | arch-guard, code-refactoring |
 | `scan_doc_links.py` | Validate relative links + in-page/other-file anchors in markdown | `BROKEN_FILE_LINK`, `BROKEN_ANCHOR` | sync-docs, doc-writing |
 | `scan_files.py` | File counts and lines of code per module | — (metadata only) | context-awareness |
-| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | — (data fetch) | writing-issues, arch-guard |
+| `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | — (data fetch) | issue-writing, arch-guard |
 | `scan_naming.py` | File and class naming conventions | `FILE_NAMING`, `CLASS_NAMING` | arch-guard |
 | `scan_security.py` | XSS, CSP, SQL injection, mass assignment, auth, secrets, CSRF, uploads, rate limiting | `S1`–`S9` | arch-guard, security-audit |
 | `scan_skills.py` | Agent SKILL.md meta-framework consistency (frontmatter, phase map, spec-first, size, git verify, handoffs) | `SKILL_FRONTMATTER`, `SKILL_PHASE_MAP`, `SKILL_SPEC_FIRST`, `SKILL_SIZE_TRIAGE`, `SKILL_GIT_VERIFY`, `SKILL_HANDOFFS` | script-automation, all skills |

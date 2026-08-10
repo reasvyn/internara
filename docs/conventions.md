@@ -641,6 +641,12 @@ methods where the container is not available (e.g., `database/factories/`).
 Tests verify the spec — nothing more. A test exists because a requirement in
 `docs/specs/{feature}.md` (`FR-*` / `NFR-*` / `UC-*` / §6 data contract) demands it.
 
+**Minimalism by design:** write only the tests the spec requires, then stop. This speeds up
+development and verification (spec-scoped tests run in seconds vs. 10+ minutes for the full suite),
+reduces resource usage (~2GB+ RAM for the full suite), and reduces cognitive load — a suite that maps
+1:1 to requirement IDs is self-explaining and needs no archaeology to understand. Less to write, less
+to read, less to maintain.
+
 | Signal | Meaning | Action |
 | ------ | ------- | ------ |
 | Requirement with no test | **Spec gap** | Write the test, traced to the requirement ID |

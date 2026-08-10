@@ -348,14 +348,14 @@ to a single module. See `scripts/README.md` for full documentation.
 | `livewire-development` | Check Livewire components for C1 violations |
 | `pest-testing` | Verify test structure conventions |
 | `spec-audit` | Use as reference for contract verification and severity classification |
-| `writing-issues` | Use violation data for issue descriptions |
+| `issue-writing` | Use violation data for issue descriptions |
 | `sync-docs` | Use conventions for documentation accuracy |
 | `test-writing` | Validate test file conventions |
 | `doc-writing` | Validate doc structure conventions |
 
 **Spec-first:** this skill is a quality gate, not a source of intent. It only verifies that code
 conforms to the governing spec's requirements (FR/NFR/UC IDs). If an audit surfaces a behavior
-change with no requirement, the finding is a spec gap — report it via `spec-audit` / `writing-issues`
+change with no requirement, the finding is a spec gap — report it via `spec-audit` / `issue-writing`
 rather than changing code.
 
 ## Severity Classification

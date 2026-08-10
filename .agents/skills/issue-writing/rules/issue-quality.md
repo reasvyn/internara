@@ -28,6 +28,8 @@ additional context.
 - [ ] No sensitive information (credentials, tokens)
 - [ ] Label matches type: bug/enhancement/security/refactor/perf/test/docs/chore
 - [ ] Check for duplicates with existing issues before submitting
+- [ ] Spec referenced: FR/NFR/UC ID for bugs; governing spec (or spec-needed note) for features
+- [ ] Pre-existing defects filed immediately, not deferred
 
 ## Destructive Patterns
 

@@ -1,5 +1,5 @@
 ---
-name: writing-issues
+name: issue-writing
 description: "SDLC Phase: ANALYSIS / PLANNING. Structured GitHub Issues writing for bugs, features, security, refactoring, and tech debt — with clear scope, impact, recommendations, and design decisions. Produces issues that are actionable by both developers and AI agents."
 downstream:
   - roadmap-planning
@@ -8,7 +8,7 @@ downstream:
   - security-audit
 ---
 
-# Writing Issues
+# Issue Writing
 
 > **Prerequisite:** Load `context-awareness` for project orientation.
 
@@ -17,6 +17,17 @@ downstream:
 Use this skill when creating GitHub Issues for any tracked work — bugs, features, security
 vulnerabilities, refactoring, performance, tech debt, or documentation. Every issue must be
 immediately actionable by a developer or AI agent without requiring additional context.
+
+Activation triggers include:
+
+- **Pre-existing defects** (AGENTS.md Pre-existing Defects — Fix or File): a warning/error noticed
+  during other work that cannot be safely fixed in-session (needs design decisions, significant
+  effort, or is out of scope) **must become a GitHub issue immediately** — a defect noticed is a
+  defect tracked, never silently tolerated.
+- **Audit findings** (spec-audit, qa-protocol, security-audit, arch-guard): each finding that
+  requires code, spec, or doc changes is filed as an issue with the finding's severity and evidence.
+- **Feature requests / bug reports / refactors / tech debt** that arrive as instructions or emerge
+  from code review.
 
 ## Agent Workflow
 
@@ -29,6 +40,9 @@ Verify = 7, Report & Commit = 8-9):
 - Understand affected modules and submodules
 - **Locate the governing spec** (`docs/specs/`) — cite the FR/NFR/UC ID an issue refers to when
   applicable (a bug that contradicts a spec must reference that requirement)
+- **Check for duplicate issues first** (Dedup-Align Doctrine): run `python3 scripts/scan_issues.py`
+  and search existing open issues for the same concern/module. Never file a second issue for
+  something already tracked — link to the existing one instead (or comment with new evidence)
 - Gather all relevant information (error logs, stack traces, user reports, code references)
 - Identify the correct issue type (bug/feature/security/refactor/perf/docs/chore)
 - Determine severity and priority
@@ -75,6 +89,16 @@ Verify = 7, Report & Commit = 8-9):
 | **Upstream**   | `arch-guard` (code quality), `security-audit` (security findings), `code-refactoring` (tech debt)    |
 | **This skill** | **ANALYSIS / PLANNING** — produces GitHub Issues                                                           |
 | **Downstream** | `roadmap-planning` (prioritization), `feature-building` (implementation), `code-refactoring` (refactoring) |
+
+## Skill Handoffs (Actionable)
+
+| Condition | Action |
+|-----------|--------|
+| Spec missing or incomplete for a feature/refactor issue | Load `spec-writing`, write/amend the spec, then file the issue against it |
+| Issue needs design decision | Load `spec-writing` (record decision) or `doc-writing` (ADR) before filing |
+| Finding from an audit | Load the source skill (`spec-audit` / `qa-protocol` / `security-audit` / `arch-guard`) to cite the finding ID and severity |
+| Issue is **L** size | Note the session-split plan in the body; inform user |
+| Implementation of the issue begins | Load `feature-building` or `code-refactoring` |
 
 ## Issue Types
 
@@ -261,6 +285,13 @@ constraint | Business rule (quota check) belongs in domain layer; DB constraint 
 6. **DO NOT include credentials, tokens, or sensitive data** in the issue
 7. **Use relative paths** for file references within the project
 8. **Label according to type** — use labels already defined in the repo
+9. **Spec-first:** a bug must reference the FR/NFR/UC ID it contradicts; a feature/refactor issue
+   must reference the governing spec (or note that a spec must be written first). No behavior
+   without a requirement.
+10. **Deduplicate before filing** — never file a second issue for a tracked concern; dedup with
+    existing open issues first (Dedup-Align Doctrine).
+11. **Pre-existing defect discovered?** File it immediately (AGENTS.md Pre-existing Defects —
+    Fix or File), don't leave it until the session ends.
 
 ## Automation Scripts
 
@@ -304,6 +335,9 @@ Output: `scripts/outputs/{timestamp}-issues.json`.
 | Topic                 | Doc                                      |
 | --------------------- | ---------------------------------------- |
 | GitHub Issues         | {url repo}/issues                        |
+| Issue workflow/rules  | `rules/issue-quality.md` (this skill)    |
+| Pre-existing defects  | `AGENTS.md` (§ Pre-existing Defects)     |
+| Dedup & alignment     | `AGENTS.md` (§ Clean Code & Dedup-Align Doctrine) |
 | Module structure      | `docs/modules/index.md`                  |
 | Architecture patterns | `docs/architecture/{pattern}-pattern.md` |
 | Critical invariants   | `AGENTS.md` (§ Critical Invariants)      |

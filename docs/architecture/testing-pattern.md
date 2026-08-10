@@ -1,7 +1,8 @@
 # Testing Pattern Reference — Spec-Driven Testing & Scope Isolation
 
-> **Last updated:** 2026-08-08 **Changes:** spec-driven doctrine — tests trace to spec requirements
-> (FR/NFR/UC IDs); coverage measured in requirements, not lines
+> **Last updated:** 2026-08-10 **Changes:** spec-driven doctrine — tests trace to spec requirements
+> (FR/NFR/UC IDs); coverage measured in requirements, not lines; minimalism rationale (speed, resource
+> use, cognitive load)
 
 ## Description
 
@@ -10,6 +11,21 @@
 ---
 
 ## 1. Testing Philosophy
+
+### 1.0 Why Minimalism Matters
+
+**Spec-driven testing writes only the tests the spec requires — nothing more.** This is deliberate,
+not lazy:
+
+- **Speed:** fewer tests → faster suite runs, faster feedback, faster development cycles. The full
+  suite costs ~2GB+ RAM and 10+ minutes; a spec-scoped test runs in seconds.
+- **Resource use:** every padded test consumes RAM, disk, and CI time for zero verification value.
+  Minimal suites keep CI cheap and local runs snappy.
+- **Cognitive load:** a test file that maps 1:1 to requirement IDs is self-explaining. Every test
+  answers "which requirement does this verify?"; there is no "why does this test exist?" archaeology.
+  Less to write, less to read, less to maintain.
+
+The doctrine is **write the minimum tests that prove the spec**, then stop.
 
 ### 1.1 Every Spec Requirement Must Have Tests
 

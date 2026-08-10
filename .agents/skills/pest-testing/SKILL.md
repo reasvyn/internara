@@ -24,6 +24,19 @@ to at least one requirement ID (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract)
 be traced to a spec requirement is **noise** and must not be written. Coverage is measured in
 **spec requirements covered**, never in lines of code.
 
+**Write only the tests the spec requires, then stop** (see `docs/architecture/testing-pattern.md`
+§1.0 for the rationale). Minimalism is deliberate:
+
+- **Speed** — spec-scoped tests run in seconds vs. 10+ minutes for the full suite; faster feedback,
+  faster cycles.
+- **Resource use** — the full suite consumes ~2GB+ RAM; every padded test wastes RAM, disk, and CI
+  time for zero verification value.
+- **Cognitive load** — a suite mapping 1:1 to requirement IDs is self-explaining; no "why does this
+  test exist?" archaeology. Less to write, less to read, less to maintain.
+
+Minimal is not thin — every requirement the spec names (happy path + each named rejection) still
+gets its test. It just gets **exactly** that, never more.
+
 ## When to Activate
 
 Use this skill when:

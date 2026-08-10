@@ -52,6 +52,28 @@ questions alike.
 - **Docs reflect the spec:** `docs/` and module docs stay in sync with specs and code.
 - Failing to consult or follow the governing spec — for any instruction — is a workflow violation.
 
+### Clean Code & Dedup-Align Doctrine — Non-Negotiable
+
+**Every instruction must leave the touched content and code deduplicated, aligned, and clean.**
+
+- **Deduplicate & align by default:** wherever the agent detects duplication or inconsistency —
+  repeated code, copy-pasted docs, divergent patterns, stale references, duplicated requirements —
+  deduplicate and align it as part of the work, even when the instruction did not ask for it
+  explicitly. Never introduce a second copy of something that already exists; reuse or extract.
+- **CLEAN CODE, DRY first:** apply clean-code principles with the **DRY** principle as the default
+  bias — extract repeated logic into shared, named, modular units (helper, trait, Action, DTO,
+  entity, doc cross-reference). Prefer **more, smaller, well-named modules** over one dense blob;
+  modularization is not over-engineering, it is the prescribed direction.
+- **Align spec ↔ code ↔ docs ↔ tests:** when one side drifts from the others, align the outlier to
+  the spec (Spec-First Doctrine) instead of tolerating the drift. No documented behavior without
+  code, no code without a requirement, no duplicated requirement across specs.
+- **Inform the user before every decision:** any decision the agent takes beyond the literal ask —
+  extraction, dedup, refactor, doc merge, re-scoping — **must be stated to the user first** with the
+  rationale, and confirmed when it changes scope, structure, or behavior. Dedup and alignment are
+  expected; silent structural changes are not.
+- **Record decisions:** if a dedup/alignment decision affects a spec or an invariant, record it
+  (ADR or spec amendment) rather than leaving it implicit.
+
 ### Phase Classification — Adaptive Depth
 
 Before acting, classify the instruction into an SDLC phase (Step 1). The phase sets the depth of
@@ -293,6 +315,27 @@ Guardrail against silent information loss.
 
 ---
 
+## Pre-existing Defects — Fix or File
+
+**The agent must not leave pre-existing warnings and errors untouched.**
+
+- **Fix by default, after the main work:** once the instruction's primary work is complete and
+  verified, fix pre-existing warnings and errors the agent noticed along the way (lint, PHPStan,
+  tests, arch-guard scans, deprecations, broken doc links). Do this before the final commit so the
+  repository is left cleaner than found.
+- **Fix only what is safe and in-scope-adjacent:** small, low-risk fixes (missing strict types,
+  unused imports, dead doc references, obvious typos) are applied directly without asking. Anything
+  that changes behavior, requires a design decision, or touches a spec needs the user informed
+  first (Clean Code & Dedup-Align Doctrine).
+- **Cannot fix? File an issue immediately:** if fixing requires design decisions, significant
+  effort, or is out of the current change surface, **create a GitHub issue first** (using the
+  `issue-writing` skill) before ending the session — never let a noticed defect go unrecorded.
+- **A defect noticed is a defect tracked:** no silent tolerance. Every pre-existing warn/error
+  either gets fixed, gets a GitHub issue, or is explicitly reported to the user as deferred with
+  the reason.
+
+---
+
 ## Project Identity
 
 Self-hosted, single-tenant PKL management for Indonesian SMA/SMK (MIT).
@@ -387,7 +430,7 @@ Full definition: `docs/foundation/product-definition.md`
 | Deciding verification strategy | `test-writing` | What to run, when, how much; spec-gap & orphan detection |
 | Writing documentation | `doc-writing` | Two-tier model, metadata, PHPDoc |
 | Syncing docs with code | `sync-docs` | Automated verification |
-| Writing GitHub issues | `writing-issues` | Structured issue format |
+| Writing GitHub issues | `issue-writing` | Structured issue format |
 | Planning the roadmap | `roadmap-planning` | Phased planning, priorities, dependencies |
 | Security review | `security-audit` | OWASP, PII, auth patterns |
 | Spec↔Code sync audit | `spec-audit` | Bidirectional spec-implementation verification |
@@ -495,6 +538,12 @@ Full spec list with build order: `docs/specs/index.md`
 `UC-*`) in `docs/specs/{feature}.md`. Coverage is measured in spec requirements covered, not lines
 of code. A requirement with no test is a spec gap (fill it); a test with no requirement is orphan
 noise (remove it).
+
+**Spec-driven minimalism — write only the tests the spec requires, then stop.** This is deliberate:
+it speeds up development and verification (spec-scoped tests run in seconds vs. 10+ minutes for the
+full suite), reduces resource usage (~2GB+ RAM for the full suite), and reduces cognitive overwhelm
+— a suite mapping 1:1 to requirement IDs is self-explaining. When tempted to add a test "for
+safety", ask which requirement it verifies; no requirement means don't write it.
 
 | Change Type | Verification |
 |-------------|-------------|
