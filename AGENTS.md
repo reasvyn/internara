@@ -15,6 +15,21 @@ it explicitly with the reason and move on.
 UNDERSTAND → DEFINE & SCOPE → EXPLORE → PLAN → DESIGN → DEVELOP → TEST & VERIFY → DOCUMENT → COMMIT & REPORT
 ```
 
+### Workflow Vocabulary — 9-Step Pipeline ↔ Skill 4-Phase
+
+Skills use a compact 4-phase model (**Construct → Execute → Verify → Report & Commit**). They are the
+same process at different granularity — a skill's phases are the 9 steps collapsed, and every skill
+phase maps back to this pipeline:
+
+| Skill 4-phase | AGENTS.md 9-step |
+|---------------|------------------|
+| **1. Construct** — spec, context, scope, approach | Steps 1-5 (Understand → Design) |
+| **2. Execute** — do the work | Step 6 (Develop) |
+| **3. Verify** — quality gates | Step 7 (Test & Verify) |
+| **4. Report & Commit** | Steps 8-9 (Document → Commit & Report) |
+
+Always map a skill's phases to these 9 steps — never treat them as separate processes.
+
 ### Spec-First Doctrine — Non-Negotiable
 
 **Every action, on every instruction, in any form, must be driven by the governing spec.**
@@ -58,6 +73,29 @@ each step for that run: **Full** = mandatory, complete depth · **Light** = exec
 Even for Support/Analysis, the full cycle is still traversed — the table only controls depth, not
 attendance. A step skipped without a recorded reason is a workflow violation.
 
+### Size Triage — Session Splitting (Mandatory)
+
+Before acting, classify the instruction by **size**, not just phase. Size decides whether the work
+runs in a single pass or **must be split into multiple sessions**. Both dimensions apply: phase sets
+depth, size sets duration.
+
+| Size | Criteria | Execution | User check-in |
+|------|----------|-----------|---------------|
+| **S** | ≤3 files, single concern, no cross-module | Single pass, full 9 steps at phase depth | None required |
+| **M** | 4-10 files, 2-3 concerns, or cross-layer | Single session, staged internally, batch verification | One checkpoint before commit |
+| **L** | >10 files, multi-module, cross-cutting, heavy effort, or long runtime | **MUST split into multiple sessions** | **MUST inform the user first** |
+
+**L-size protocol (non-negotiable):**
+1. After Step 1 (Understand), tell the user plainly: *"This instruction is too broad for a single
+   pass — I will split it into N sessions."*
+2. Propose a session plan (each session = one deliverable unit with its own scope, verify, and report).
+3. Execute sessions in order; each session starts from the verified state of the previous one.
+4. Each session ends with: `git status` + `git diff` review, targeted verification, and a short
+   user report. Commit per-session if requested.
+5. Never attempt an L-size task in one pass — context overload degrades quality and risks lost work.
+
+All 9 steps, skills, and verification rules below still apply **per session** at the appropriate depth.
+
 ### 1. Understand
 
 Internalize the user's **intent**, not just literal words. Clarify ambiguities. Identify constraints.
@@ -70,11 +108,14 @@ Internalize the user's **intent**, not just literal words. Clarify ambiguities. 
   loading a skill is cheap, a wrong assumption is not.
 - **Classify the SDLC phase** using the Phase Classification table — it sets the depth of the
   9 steps for this run (Computational Thinking: pattern recognition).
+- **Classify the size** (S/M/L) using Size Triage — if **L**, inform the user and propose a session
+  plan before proceeding (session splitting is mandatory, never optional).
 - **Identify task type:** bug fix, new feature, refactoring, docs update, audit, review.
 - **Locate the governing spec** in `docs/specs/` (foundation, module, or feature) — it is the
   source of truth for intent, scope, and acceptance criteria (Spec-First Doctrine, above). No
   instruction may proceed without a governing spec or an explicit recorded decision.
-- **Check `docs/roadmap.md`** for current development status and phase progress.
+- **Check `docs/roadmap.md`** for current development status and phase progress (for planning
+  work, load the `roadmap-planning` skill).
 - Output: clear restatement of the task + phase classification + loaded skills, confirmed with
   user if ambiguous.
 
@@ -166,6 +207,8 @@ Choose verification level. Run targeted checks first, full suite once at end.
   - `python3 scripts/scan_class_contracts.py` — class contracts
   - `python3 scripts/scan_security.py` — security patterns
   - `python3 scripts/scan_naming.py` — naming conventions
+  - `python3 scripts/scan_conventions.py` — strict_types, Fillable, debug
+  - `python3 scripts/scan_doc_links.py` — broken links in docs
 - **Run full suite** only once at the end:
   - `php artisan test --compact`
   - `vendor/bin/phpstan analyse --no-progress`
@@ -338,14 +381,15 @@ Full definition: `docs/foundation/product-definition.md`
 | Writing PHP code | `code-writing` | Action Triad, Entity/DTO/Model contracts |
 | Refactoring existing code | `code-refactoring` | Extract Actions, thin Livewire |
 | Building a feature end-to-end | `feature-building` | Orchestrator — coordinates sub-skills |
+| Laravel/architecture best practices | `laravel-best-practices` | Cross-cutting overrides for the Module-first Action architecture |
 | Livewire component | `livewire-development` | Component structure, reactivity |
 | Writing spec-driven tests | `pest-testing` | Each test traces to a spec FR/NFR; no orphan tests |
 | Deciding verification strategy | `test-writing` | What to run, when, how much; spec-gap & orphan detection |
 | Writing documentation | `doc-writing` | Two-tier model, metadata, PHPDoc |
 | Syncing docs with code | `sync-docs` | Automated verification |
 | Writing GitHub issues | `writing-issues` | Structured issue format |
+| Planning the roadmap | `roadmap-planning` | Phased planning, priorities, dependencies |
 | Security review | `security-audit` | OWASP, PII, auth patterns |
-| Spec↔Code sync audit | `spec-audit` | Bidirectional spec-implementation verification |
 | Spec↔Code sync audit | `spec-audit` | Bidirectional spec-implementation verification |
 | Independent QA audit | `qa-protocol` | Blind test against global standards (OWASP, ISO 25010, CWE, WCAG, PSR) |
 | Enforcing architecture rules | `arch-guard` | C1-C8, D1-D6, contracts, naming |
@@ -505,6 +549,7 @@ python3 scripts/scan_doc_links.py          # Broken links in docs
 - [ ] Every test traces to a spec requirement — no orphan tests, no padding (spec-driven testing)
 - [ ] `vendor/bin/pint --dirty --format agent` clean
 - [ ] `vendor/bin/phpstan analyse --no-progress` passes
+- [ ] Arch-guard scripts clean — `scan_violations.py`, `scan_class_contracts.py`, `scan_security.py`, `scan_naming.py`, `scan_conventions.py`, `scan_doc_links.py`
 - [ ] `git status` + `git diff` reviewed — only intended files changed, nothing dropped
 - [ ] Relevant docs updated (documentation-first approach)
 

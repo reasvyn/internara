@@ -35,6 +35,9 @@ Use this skill when:
 
 ## Agent Workflow
 
+Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
+Verify = 7, Report & Commit = 8-9):
+
 ### 1. Construct — Research & Scope
 
 - Load `context-awareness` and `doc-writing` skills
@@ -47,10 +50,12 @@ Use this skill when:
 - Read any existing specs in `docs/specs/` to follow established patterns
 - Identify the feature boundary: what's in scope, what's not
 - Determine the target audience: developers implementing, testers verifying, PMs reviewing
+- **Classify the size (S/M/L)** per AGENTS.md Size Triage — a spec split into multiple initiatives
+  is multi-session work; propose a plan to the user before writing
 
 ### 2. Execute — Write Specification
 
-- Follow the 10-section spec template (see below)
+- Follow the 11-section spec template (see below)
 - Use `edit` tool for existing files, `write` tool only for new files
 - Every statement must be verifiable or actionable
 - Reference source code with file paths where implementation exists
@@ -59,6 +64,8 @@ Use this skill when:
 
 ### 3. Verify — Quality Gates
 
+- Verify with git: `git status` + `git diff` — confirm only the intended spec file(s) changed and
+  no content was lost (version-control verification)
 - All 11 sections are present and populated
 - Every functional requirement has a unique ID (`FR-{area}{number}`)
 - Every non-functional requirement has a unique ID (`NFR-{category}{number}`)
@@ -396,7 +403,7 @@ The index table has a `Depends On` column with `#N` references to earlier specs.
 
 | Phase    | Action                                              |
 | -------- | --------------------------------------------------- |
-| Draft    | Write initial spec with all 10 sections             |
+| Draft    | Write initial spec with all 11 sections             |
 | Review   | Verify against code, check completeness             |
 | Approve  | User confirms spec before implementation begins     |
 | Implement| `feature-building` implements against spec          |
@@ -415,6 +422,16 @@ other way around.
 | **Upstream** | `context-awareness` (project orientation), `doc-writing` (documentation conventions) |
 | **This skill** | **SPEC WRITING** — defines feature specifications before implementation |
 | **Downstream** | `feature-building` (implementation), `code-writing` (coding), `pest-testing` (verification), `writing-issues` (if spec reveals gaps) |
+
+## Skill Handoffs (Actionable)
+
+| Condition | Action |
+|-----------|--------|
+| Spec approved, implementation starts | Load `feature-building` (orchestrator) |
+| Implementation hits a missing spec section | Amend the spec here first, then continue |
+| Spec reveals existing bugs/gaps | Load `writing-issues` to file issues |
+| Spec needs doc conventions | Load `doc-writing` |
+| Initiative spans multiple specs | Split per "One Initiative = One Spec" — plan across sessions, inform user |
 
 ---
 

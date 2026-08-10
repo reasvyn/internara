@@ -18,13 +18,19 @@ recorders, creating custom cards, or configuring Redis ingest.
 
 ## Agent Workflow
 
-Using this skill follows 4 phases:
+Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
+Verify = 7, Report & Commit = 8-9):
 
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
+- **Locate the governing spec** (`docs/specs/`) — confirm the NFR/UC IDs the Pulse setup serves
+  (Spec-First Doctrine: no behavior without a requirement; if the spec is missing, write it first
+  via `spec-writing`)
 - Read relevant docs: module docs, pattern docs, reference docs
 - Understand task scope: what needs to be done, which files are affected
+- **Classify the size (S/M/L)** per AGENTS.md Size Triage; if **L**, inform the user and propose a
+  session plan
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 - Determine approach: at least 2 options before deciding
 
@@ -39,9 +45,12 @@ Using this skill follows 4 phases:
 
 ### 3. Verify — Quality Gates
 
+- Run change-type-appropriate verification (see AGENTS.md Verification Strategy — not a fixed
+  command set)
 - Run linter: `vendor/bin/pint --dirty --format agent`
 - Run static analysis: `vendor/bin/phpstan analyse --no-progress`
 - Run unit/feature tests: `php artisan test --compact --filter={TestName}`
+- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
 - Ensure pre-commit checklist is satisfied
 - Check no debug calls (`dd/dump/ray`) were left behind
 
@@ -62,6 +71,15 @@ Using this skill follows 4 phases:
 | **Upstream**   | `feature-building` (implementation flow)        |
 | **This skill** | **IMPLEMENTATION (Sub-skill)** — Pulse-specific |
 | **Downstream** | `sync-docs`                                     |
+
+## Skill Handoffs (Actionable)
+
+| Condition | Action |
+|-----------|--------|
+| Writing a custom Pulse card | Load `livewire-development` — Pulse cards are Livewire components |
+| Spec missing or incomplete | Load `spec-writing`, write/amend the spec, get user approval, then continue |
+| Dashboard authorization | See `docs/architecture/policy-pattern.md` |
+| Feature is **L** size | Split into sessions; inform user first |
 
 ## Key Configuration
 

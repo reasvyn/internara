@@ -4,7 +4,6 @@ description: "SDLC Phase: IMPLEMENTATION (Orchestrator). Execution phase that ta
 upstream:
   - spec-writing
   - code-refactoring
-  - writing-issues
 downstream:
   - code-writing
   - doc-writing
@@ -24,35 +23,56 @@ downstream:
 
 Use this skill when implementing any new feature, bug fix, security patch, or performance
 optimization. This is the orchestrator that coordinates specialized sub-skills for each layer of the
-implementation.
+implementation. For features classified **L** (AGENTS.md Size Triage), split the build into multiple
+sessions — see Size Triage below.
+
+## Size Triage (AGENTS.md)
+
+| Size | Criteria | Execution | User check-in |
+|------|----------|-----------|---------------|
+| **S** | ≤3 files, single concern | Single pass | None |
+| **M** | 4-10 files, 2-3 concerns | Single session, staged, batch verify | One checkpoint before commit |
+| **L** | >10 files, multi-module, cross-cutting | **Split into sessions** | **MUST inform user first** |
+
+**L-size:** after Construct, tell the user *"This feature is too broad for a single pass — I will
+split it into N sessions"*, propose a session plan (each session = one layer or one concern with its
+own verify + report), then execute session by session — never all at once.
 
 ## Agent Workflow
 
-Using this skill follows 4 phases:
+Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
+Verify = 7, Report & Commit = 8-9):
 
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
+- Read the governing spec from `docs/specs/` — list the FR/NFR/UC IDs this feature must satisfy
+  (Spec-First Doctrine: no behavior without a requirement; if the spec is missing, write it first)
 - Read relevant docs: module docs, pattern docs, reference docs
 - Understand task scope: what needs to be done, which files are affected
+- **Classify the size (S/M/L)** and, if **L**, inform the user + propose a session plan
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 - Determine approach: at least 2 options before deciding
 
 ### 2. Execute — Feature Building
 
-- Read task spec from docs/specs/ (use spec §9 Roadmap for build sequence)
-- Follow build sequence: Docs → Migration/Model → Enum → Entity → Action → Policy → Livewire ->
-  Blade → Routes → Translations → Tests
+- Follow the build order (see Implementation Flow §4 — single source of truth for ordering)
 - Delegate sub-skills as needed (livewire, tailwindcss, medialibrary, pulse)
 - Follow Action Triad: Command for mutations, Read for queries, Process for orchestration
 - Ensure DTO for 3+ params, ActionResponse for structured returns
+- For **M/L** tasks: stage the build by layer/concern; after each stage, run `git status` + `git diff`
+  to confirm only intended files changed
 - Output: implemented feature with tests, translations, routes, and updated docs
 
 ### 3. Verify — Quality Gates
 
+- Run change-type-appropriate verification (see Verify Matrix below — not a fixed command set)
 - Run linter: `vendor/bin/pint --dirty --format agent`
 - Run static analysis: `vendor/bin/phpstan analyse --no-progress`
-- Run unit/feature tests: `php artisan test --compact --filter={TestName}`
+- Run targeted tests: `php artisan test --compact --filter={TestName}` (full suite ONCE at the end)
+- Run arch-guard scripts: `scan_violations.py`, `scan_class_contracts.py`, `scan_security.py`,
+  `scan_naming.py`, `scan_conventions.py`, `scan_doc_links.py`
+- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
 - Ensure pre-commit checklist is satisfied
 - Check no debug calls (`dd/dump/ray`) were left behind
 
@@ -64,6 +84,7 @@ Using this skill follows 4 phases:
     - Test suite status (pass/fail)
     - Deviation from original plan (if any)
     - Identified blockers or risks
+    - If sessions were split: per-session summary + what remains
 - Feeds into: pest-testing (test suite), sync-docs (doc updates)
 - Commit using format: `type(scope): description`
 - Push if requested
@@ -76,6 +97,18 @@ Using this skill follows 4 phases:
 | **This skill** | **IMPLEMENTATION (Orchestrator)** — executes the build               |
 | **Downstream** | `pest-testing` (tests), `sync-docs` (doc updates), sub-skills        |
 
+## Skill Handoffs (Actionable)
+
+| Condition | Action |
+|-----------|--------|
+| Spec missing or incomplete | Load `spec-writing`, write/amend the spec, get user approval, then continue |
+| Livewire component work | Load `livewire-development` before writing components |
+| File uploads / media | Load `medialibrary-development` before upload code |
+| UI / styling / layout | Load `tailwindcss-development` before Blade/CSS |
+| Pulse dashboard | Load `pulse-development` before dashboard code |
+| Refactoring involved | Load `code-refactoring` for verification |
+| Feature is **L** size | Split into sessions; inform user first |
+
 ## Implementation Flow
 
 ### 1. Understand the Task
@@ -83,6 +116,7 @@ Using this skill follows 4 phases:
 - Read the task specification from `docs/specs/` (check §9 Roadmap for prerequisites and build sequence)
 - If a feature spec exists in `docs/specs/`, read it — it contains requirements (FR/NFR IDs),
   data contracts, design decisions, and success metrics that MUST guide implementation
+- If the spec is missing, stop and write it first (`spec-writing`) — no behavior without a requirement
 - Read the relevant module docs: `docs/modules/{module}.md` (business rules) and
   `docs/modules/{module}-reference.md` (file structure)
 - Read the relevant pattern doc: `docs/architecture/{pattern}-pattern.md`
@@ -94,8 +128,7 @@ Using this skill follows 4 phases:
 - Follow Action Triad — Command (mutations), Read (queries), Process (orchestration)
 - Use DTOs for input boundaries (3+ params), ActionResponse for output
 - Delegate business rules to Entities
-- Plan the file structure: Model → Entity → Action → DTO → Event → Listener → Policy → Livewire →
-  Route → View
+- Plan the file structure using the single build order below (same order as Implementation §4)
 
 ### 3. Load Relevant Sub-skills
 
@@ -108,28 +141,46 @@ Using this skill follows 4 phases:
 
 ### 4. Implement (Build Order)
 
-Recommended build order for new features:
+Single source of truth for ordering — used by Agent Workflow §2 and Design §2:
 
-1. **Migration** — database table
-2. **Model** — extends `BaseModel`, `#[Fillable]`, relationships, entity bridge
-3. **Enum** — `implements LabelEnum` (+ `StatusEnum` for state machines)
-4. **Entity** — `final readonly`, `fromModel()`, business rules
-5. **DTO** — `final readonly`, `BaseData`, `fromArray()`
-6. **Action** — correct triad base, single `execute()`, DTO input, ActionResponse
-7. **Event + Listener** — only if async side effect is needed
-8. **Policy** — `BasePolicy`, CRUD methods
-9. **Livewire component** — thin, delegates to Actions
-10. **Blade view** — follows existing view patterns
-11. **Route** — in correct `routes/web/{module}.php` (or `{submodule}.php` for split submodules)
-12. **Tests** — a test for each spec requirement (FR/NFR/UC ID) this feature introduces; tests are
+1. **Docs** — documentation-first: draft/update module docs alongside the build
+2. **Migration** — database table
+3. **Model** — extends `BaseModel`, `#[Fillable]`, relationships, entity bridge
+4. **Enum** — `implements LabelEnum` (+ `StatusEnum` for state machines)
+5. **Entity** — `final readonly`, `fromModel()`, business rules
+6. **DTO** — `final readonly`, `BaseData`, `fromArray()`
+7. **Action** — correct triad base, single `execute()`, DTO input, ActionResponse
+8. **Event + Listener** — only if async side effect is needed
+9. **Policy** — `BasePolicy`, CRUD methods
+10. **Livewire component** — thin, delegates to Actions
+11. **Blade view** — follows existing view patterns
+12. **Route** — in correct `routes/web/{module}.php` (or `{submodule}.php` for split submodules)
+13. **Tests** — a test for each spec requirement (FR/NFR/UC ID) this feature introduces; tests are
     traced to their requirement IDs, never padded
-13. **Translations** — `__()` keys in both `lang/en/` and `lang/id/`
+14. **Translations** — `__()` keys in both `lang/en/` and `lang/id/`
+
+For **M/L** features, treat each build-order slice as a stage: verify (`git diff` + targeted check)
+before moving to the next slice. If the feature spans multiple modules or >10 files, split the
+slices across sessions per Size Triage.
 
 ### 5. Verify
 
+- Use the Verify Matrix below (change-type-appropriate), then run the arch-guard scripts
 - Run lint + static analysis + tests
 - Check pre-commit checklist from `context-awareness`
 - If refactoring was involved, load `code-refactoring` for verification
+
+## Verify Matrix
+
+| Change type | Verification |
+|-------------|-------------|
+| Config/docs/markdown | Visual inspection, no tests |
+| Blade/CSS/JS | `npm run build` only |
+| Translation keys | `php -l` + tinker echo |
+| PHP single file | `php -l` + targeted test |
+| PHP module refactor | `vendor/bin/pest --testsuite={ModuleName}` |
+| New feature / business logic | Full suite ONCE after all changes batched |
+| Always | `git status` + `git diff`, arch-guard scripts |
 
 ## Key Rules
 

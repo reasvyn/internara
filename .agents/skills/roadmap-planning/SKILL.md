@@ -20,13 +20,19 @@ or performance improvements. Produces structured phases in `docs/roadmap.md`.
 
 ## Agent Workflow
 
-Using this skill follows 4 phases:
+Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
+Verify = 7, Report & Commit = 8-9):
 
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
+- **Locate the governing spec** (`docs/specs/`) — each planned phase must trace to a requirement
+  (FR/NFR/UC ID); no behavior without a requirement (Spec-First Doctrine)
 - Read relevant docs: module docs, pattern docs, reference docs
+- Read `docs/roadmap.md` (current status) and `docs/specs/index.md` (dependency graph)
 - Understand task scope: what needs to be done, which files are affected
+- **Classify the size (S/M/L)** per AGENTS.md Size Triage — planning output must map directly to
+  session-sized work units, so each planned phase should be completable in one session
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 - Determine approach: at least 2 options before deciding
 
@@ -36,17 +42,19 @@ Using this skill follows 4 phases:
 - Categorize by severity and urgency
 - Evaluate dependencies between modules (use index.md)
 - Define phases with clear scope and acceptance criteria
+- **Size each phase (S/M/L)** — flag L-size phases for session-splitting so the implementing agent
+  knows to inform the user and split
 - Update docs/roadmap.md with prioritized phases
 - Output: updated `docs/roadmap.md` with prioritized phases, clear scope, dependencies, and
   acceptance criteria
 
 ### 3. Verify — Quality Gates
 
-- Run linter: `vendor/bin/pint --dirty --format agent`
-- Run static analysis: `vendor/bin/phpstan analyse --no-progress`
-- Run unit/feature tests: `php artisan test --compact --filter={TestName}`
+- **Markdown-only changes:** run `python3 scripts/scan_doc_links.py` (roadmap edits don't need
+  pint/phpstan/tests)
+- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
 - Ensure pre-commit checklist is satisfied
-- Check no debug calls (`dd/dump/ray`) were left behind
+- PHPStan/Pint only if PHP files were touched
 
 ### 4. Report & Commit
 
@@ -75,7 +83,7 @@ Gather findings from:
 - `arch-guard` — code quality and pattern violations
 - `spec-audit` — spec-implementation drift
 - `security-audit` — security vulnerabilities
-- GitHub Issues — bug reports and feature requests
+- GitHub Issues — `python3 scripts/scan_issues.py` (Automation-First) for a summary
 - `docs/roadmap.md` — existing planned work
 
 ### 2. Categorize
@@ -105,14 +113,16 @@ Each phase should:
 - Define acceptance criteria
 - Include testing requirements
 - Note documentation updates needed
+- **Classify the size (S/M/L)** — an L phase (>10 files / multi-module) is flagged for
+  session-splitting so the implementing agent informs the user and stages it
 
 ### 5. Update Roadmap
 
 Record planned work in `docs/roadmap.md` with:
 
-| Phase   | Scope             | Dependencies  | Status                       |
-| ------- | ----------------- | ------------- | ---------------------------- |
-| Phase 1 | Short description | Prerequisites | Planned / In Progress / Done |
+| Phase   | Scope             | Size | Dependencies  | Status                       |
+| ------- | ----------------- | ---- | ------------- | ---------------------------- |
+| Phase 1 | Short description | S/M/L | Prerequisites | Planned / In Progress / Done |
 
 ### 6. Hand Off
 

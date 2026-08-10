@@ -29,9 +29,14 @@ Use this skill when:
 **1. Verify first, test second.** The full test suite consumes ~2GB+ RAM and takes 10+ minutes.
 **Always ask:** can I verify this change without running tests?
 
-**2. Tests verify the spec.** A test exists only because a requirement in `docs/specs/{feature}.md`
-(`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it. Tests with no spec mapping are noise —
-audit them out, never write them.
+**2. Tests verify the spec.** A test exists only because a requirement in the governing spec
+`docs/specs/{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it (Spec-First
+Doctrine: no behavior without a requirement). Tests with no spec mapping are noise — audit them
+out, never write them.
+
+**3. Size first.** Classify the change per AGENTS.md Size Triage. If the verification/test work spans
+multiple modules or is **L** size, split it into sessions — inform the user and propose a plan
+before running anything.
 
 ---
 
@@ -259,6 +264,11 @@ php artisan test --compact \
   && vendor/bin/pint --dirty --format agent \
   && vendor/bin/phpstan analyse --no-progress
 ```
+
+Before that gate, verify with git — `git status` + `git diff` — that only intended files changed and
+nothing was dropped (Edit Policy). Run the arch-guard scripts (`scan_violations.py`,
+`scan_class_contracts.py`, `scan_security.py`, `scan_naming.py`, `scan_conventions.py`,
+`scan_doc_links.py`) before committing.
 
 During full suite run:
 - Do NOT interrupt — let it finish

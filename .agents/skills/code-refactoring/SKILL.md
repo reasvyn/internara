@@ -26,13 +26,19 @@ architectural patterns. Covers ALL layers.
 
 ## Agent Workflow
 
-Using this skill follows 4 phases:
+Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
+Verify = 7, Report & Commit = 8-9):
 
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
+- **Locate the governing spec** (`docs/specs/`) — confirm the FR/NFR/UC IDs the refactored code must
+  keep satisfying (Spec-First Doctrine: a refactor must not change spec-defined behavior; if a spec
+  is missing, write it first via `spec-writing`)
 - Read relevant docs: module docs, pattern docs, reference docs
 - Understand task scope: what needs to be done, which files are affected
+- **Classify the size (S/M/L)** per AGENTS.md Size Triage; if **L**, inform the user and propose a
+  session plan before refactoring
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 - Determine approach: at least 2 options before deciding
 
@@ -47,9 +53,15 @@ Using this skill follows 4 phases:
 
 ### 3. Verify — Quality Gates
 
+- Run change-type-appropriate verification (see AGENTS.md Verification Strategy — not a fixed
+  command set)
 - Run linter: `vendor/bin/pint --dirty --format agent`
 - Run static analysis: `vendor/bin/phpstan analyse --no-progress`
-- Run unit/feature tests: `php artisan test --compact --filter={TestName}`
+- Run unit/feature tests: `php artisan test --compact --filter={TestName}` (module suite for
+  refactors: `vendor/bin/pest --testsuite={ModuleName}`)
+- Run arch-guard scripts: `scan_violations.py`, `scan_class_contracts.py`, `scan_security.py`,
+  `scan_naming.py`, `scan_conventions.py`, `scan_doc_links.py`
+- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
 - Ensure pre-commit checklist is satisfied
 - Check no debug calls (`dd/dump/ray`) were left behind
 
@@ -159,11 +171,24 @@ lines.
 
 Use `--module {Name}` to scope. Output: `scripts/outputs/{timestamp}-{description}.json`.
 
+## Skill Handoffs (Actionable)
+
+| Condition | Action |
+|-----------|--------|
+| Spec missing or incomplete | Load `spec-writing`, write/amend the spec, get user approval, then continue |
+| Writing refactored code | Load `code-writing` for contract enforcement |
+| Writing tests for refactor | Load `test-writing` / `pest-testing` (characterization tests first) |
+| Livewire component refactor | Load `livewire-development` |
+| Feature is **L** size | Split into sessions; inform user first |
+
 ## Quality Gate — arch-guard
 
 After refactoring, validate against arch-guard:
 - Run `python3 scripts/scan_violations.py` to verify no new violations
 - Run `python3 scripts/scan_class_contracts.py` for contract compliance
+- Run `python3 scripts/scan_security.py` for security patterns
+- Run `python3 scripts/scan_naming.py` for naming conventions
+- Run `python3 scripts/scan_conventions.py` for strict_types, Fillable, debug
 - See `arch-guard` skill for full rule reference
 
 ## References
