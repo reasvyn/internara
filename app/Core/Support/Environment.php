@@ -16,6 +16,16 @@ final class Environment
         return app()->environment('local', 'dev');
     }
 
+    public static function isLocal(): bool
+    {
+        return app()->environment('local');
+    }
+
+    public static function isCLI(): bool
+    {
+        return app()->runningInConsole();
+    }
+
     public static function isStaging(): bool
     {
         return app()->environment('staging');

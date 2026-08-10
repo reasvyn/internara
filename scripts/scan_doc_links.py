@@ -1,111 +1,322 @@
 #!/usr/bin/env python3
-"""Validate all relative links in markdown documentation files."""
+"""
+scan_doc_links.py — Documentation Link Validation (v2.0.0)
+Validates all relative markdown links across docs/ (plus README.md, AGENTS.md):
+file targets must exist, and in-page anchors must resolve to a heading.
+"""
 
 from __future__ import annotations
 
 import argparse
 import json
 import re
-from datetime import datetime, timezone
+import sys
+import time
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from typing import Any
+
+# ─── Constants ──────────────────────────────────────────────────────────────
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCS_DIR = ROOT / "docs"
-LINK_PATTERN = re.compile(r'\[([^\]]*)\]\(([^)]+)\)')
+OUTPUT_DIR = Path(__file__).parent / "outputs"
+SCAN_NAME = "doc-links"
+SCAN_VERSION = "2.0.0"
+
+LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
+ANCHOR_TARGET = re.compile(r"^#(.+)$")
+HEADING_PATTERN = re.compile(r"^#{1,6}\s+(.+)$")
 
 
-def find_markdown_files() -> list[Path]:
+# ─── Data ───────────────────────────────────────────────────────────────────
+
+@dataclass
+class Finding:
+    id: str
+    rule: str
+    severity: str
+    category: str
+    file: str
+    line: int
+    column: int = 0
+    message: str = ""
+    suggestion: str = ""
+    reference: str = ""
+    context: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class ScanResult:
+    scan_version: str
+    scan_name: str
+    scan_type: str
+    module: str | None
+    timestamp: str
+    execution_time_ms: int
+    summary: dict[str, Any]
+    findings: list[dict[str, Any]]
+    metadata: dict[str, Any]
+
+
+# ─── Helpers ────────────────────────────────────────────────────────────────
+
+def relative_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
+def slugify_anchor(text: str) -> str:
+    """GitHub-style anchor slug for a heading."""
+    text = text.strip().lower()
+    text = re.sub(r"[^\w\- ]", "", text)
+    text = re.sub(r" ", "-", text)
+    return text
+
+
+def collect_headings(filepath: Path) -> set[str]:
+    """All GitHub-style anchor slugs for a file's headings."""
+    slugs: set[str] = set()
+    try:
+        lines = filepath.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return slugs
+    for line in lines:
+        m = HEADING_PATTERN.match(line)
+        if m:
+            slugs.add(slugify_anchor(m.group(1)))
+    return slugs
+
+
+# ─── Link extraction ────────────────────────────────────────────────────────
+
+def find_markdown_files(module: str | None = None) -> list[Path]:
+    if module:
+        module_path = DOCS_DIR / module
+        if module_path.exists():
+            return sorted(module_path.rglob("*.md"))
+        return []
     files = list(DOCS_DIR.rglob("*.md"))
     for name in ["README.md", "AGENTS.md"]:
         f = ROOT / name
         if f.exists():
             files.append(f)
-    return files
+    return sorted(files)
 
 
 def extract_links(filepath: Path) -> list[tuple[int, str, str]]:
-    links = []
+    links: list[tuple[int, str, str]] = []
     try:
         lines = filepath.read_text(encoding="utf-8", errors="replace").splitlines()
-        for i, line in enumerate(lines, 1):
-            for match in LINK_PATTERN.finditer(line):
-                text, target = match.group(1), match.group(2)
-                links.append((i, text, target))
     except OSError:
-        pass
+        return links
+    for i, line in enumerate(lines, 1):
+        for match in LINK_PATTERN.finditer(line):
+            text, target = match.group(1), match.group(2)
+            if target.lstrip().startswith(("<")):
+                continue
+            links.append((i, text, target))
     return links
 
 
-def is_valid_link(target: str, source_file: Path) -> bool:
-    if target.startswith(("http://", "https://", "mailto:", "#")):
+# ─── Validation ─────────────────────────────────────────────────────────────
+
+def validate_target(
+    target: str,
+    source_file: Path,
+    heading_slugs: set[str],
+    findings: list[Finding],
+    file_rel: str,
+    line_num: int,
+) -> bool:
+    # External / protocol links are always valid
+    if target.startswith(("http://", "https://", "mailto:", "tel:", "//")):
         return True
-    if target.startswith("phpstan:"):
+    if target.startswith(("phpstan:", "vscode://")):
         return True
 
-    # Strip anchor
-    path_part = target.split("#")[0]
+    anchor = ANCHOR_TARGET.match(target)
+    if anchor:
+        slug = slugify_anchor(anchor.group(1))
+        if slug not in heading_slugs:
+            findings.append(Finding(
+                id=f"LINK-{len(findings)+1:03d}",
+                rule="BROKEN_ANCHOR",
+                severity="low",
+                category="documentation",
+                file=file_rel,
+                line=line_num,
+                message=f"Anchor '#{anchor.group(1)}' not found in {file_rel}",
+                suggestion="Match the anchor to an existing heading, or remove it",
+                reference="docs/conventions.md §Documentation Conventions",
+                context={"target": target},
+            ))
+            return False
+        return True
+
+    path_part, _, anchor_part = target.partition("#")
     if not path_part:
         return True
 
     resolved = (source_file.parent / path_part).resolve()
-    return resolved.exists()
+    if not resolved.exists():
+        findings.append(Finding(
+            id=f"LINK-{len(findings)+1:03d}",
+            rule="BROKEN_FILE_LINK",
+            severity="low",
+            category="documentation",
+            file=file_rel,
+            line=line_num,
+            message=f"Target '{path_part}' does not exist",
+            suggestion="Point the link to an existing file, or remove it",
+            reference="docs/conventions.md §Documentation Conventions",
+            context={"target": target},
+        ))
+        return False
+
+    # Anchor on another file: verify heading exists in that file
+    if anchor_part:
+        other_slugs = collect_headings(resolved)
+        slug = slugify_anchor(anchor_part)
+        if slug not in other_slugs:
+            findings.append(Finding(
+                id=f"LINK-{len(findings)+1:03d}",
+                rule="BROKEN_ANCHOR",
+                severity="low",
+                category="documentation",
+                file=file_rel,
+                line=line_num,
+                message=f"Anchor '#{anchor_part}' not found in {relative_path(resolved)}",
+                suggestion="Match the anchor to an existing heading, or remove it",
+                reference="docs/conventions.md §Documentation Conventions",
+                context={"target": target},
+            ))
+            return False
+
+    return True
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", help="Output file path")
-    args = parser.parse_args()
+# ─── Report ─────────────────────────────────────────────────────────────────
 
-    print("Scanning documentation links...")
-    files = find_markdown_files()
+def build_report(
+    findings: list[Finding],
+    files: list[Path],
+    start_time: float,
+    total_links: int,
+) -> ScanResult:
+    elapsed_ms = int((time.time() - start_time) * 1000)
+    by_severity: dict[str, int] = {"critical": 0, "high": 0, "medium": 0, "low": 0}
+    for f in findings:
+        by_severity[f.severity] = by_severity.get(f.severity, 0) + 1
 
+    rules = set(f.rule for f in findings)
+    return ScanResult(
+        scan_version=SCAN_VERSION,
+        scan_name=SCAN_NAME,
+        scan_type="full",
+        module=None,
+        timestamp=datetime.now(timezone(timedelta(hours=7))).isoformat(),
+        execution_time_ms=elapsed_ms,
+        summary={
+            "total_checks": 2,
+            "passed": 2 - len(rules),
+            "failed": len(findings),
+            "by_severity": by_severity,
+            "total_links": total_links,
+            "valid_links": total_links - len(findings),
+        },
+        findings=[vars(f) for f in findings],
+        metadata={
+            "files_scanned": len(files),
+            "link_rule_broken_file": sum(1 for f in findings if f.rule == "BROKEN_FILE_LINK"),
+            "link_rule_broken_anchor": sum(1 for f in findings if f.rule == "BROKEN_ANCHOR"),
+        },
+    )
+
+
+def write_report(result: ScanResult, output_path: Path | None = None) -> Path:
+    if output_path is None:
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        output_path = OUTPUT_DIR / f"{timestamp}-{SCAN_NAME}.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps(vars(result), indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+    return output_path
+
+
+def print_summary(result: ScanResult) -> None:
+    s = result.summary
+    bs = s["by_severity"]
+    print(f"\n{'='*60}")
+    print(f"  DOC LINK SCAN RESULTS")
+    print(f"{'='*60}")
+    print(f"  Files scanned:      {result.metadata['files_scanned']}")
+    print(f"  Total links:        {s['total_links']}")
+    print(f"  Valid links:        {s['valid_links']}")
+    print(f"  Categories passed:  {s['passed']}")
+    print(f"  Findings:           {s['failed']}")
+    print(f"    Critical: {bs.get('critical', 0)}")
+    print(f"    High:     {bs.get('high', 0)}")
+    print(f"    Medium:   {bs.get('medium', 0)}")
+    print(f"    Low:      {bs.get('low', 0)}")
+    print(f"  Time: {result.execution_time_ms}ms")
+    print(f"{'='*60}\n")
+
+
+# ─── CLI ────────────────────────────────────────────────────────────────────
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Validate relative links and anchors in markdown docs",
+    )
+    parser.add_argument("--module", "-m", help="Target specific docs subdirectory")
+    parser.add_argument("--output", "-o", type=Path, help="Output file path")
+    parser.add_argument(
+        "--format", "-f", choices=["json", "text", "summary"], default="json"
+    )
+    parser.add_argument("--verbose", "-v", action="store_true")
+    parser.add_argument("--quiet", "-q", action="store_true")
+    parser.add_argument("--strict", "-s", action="store_true")
+    parser.add_argument("--json", action="store_true")
+    return parser.parse_args()
+
+
+# ─── Main ───────────────────────────────────────────────────────────────────
+
+def main() -> None:
+    args = parse_args()
+    start_time = time.time()
+    scan_type = "module" if args.module else "full"
+
+    files = find_markdown_files(args.module)
+    findings: list[Finding] = []
     total_links = 0
-    valid_links = 0
-    broken = []
-    by_file = {}
 
     for filepath in files:
-        rel = str(filepath.relative_to(ROOT))
-        links = extract_links(filepath)
-        file_total = len(links)
-        file_broken = []
-
-        for line_num, text, target in links:
+        rel = relative_path(filepath)
+        heading_slugs = collect_headings(filepath)
+        for line_num, text, target in extract_links(filepath):
             total_links += 1
-            if is_valid_link(target, filepath):
-                valid_links += 1
-            else:
-                file_broken.append({
-                    "line": line_num,
-                    "text": text[:60],
-                    "target": target,
-                })
+            validate_target(target, filepath, heading_slugs, findings, rel, line_num)
 
-        if file_broken:
-            broken.extend([{"file": rel, **b} for b in file_broken])
+    result = build_report(findings, files, start_time, total_links)
 
-        by_file[rel] = {
-            "total": file_total,
-            "broken": len(file_broken),
-        }
+    if args.json or args.format == "json":
+        print(json.dumps(vars(result), indent=2, ensure_ascii=False))
+    elif not args.quiet:
+        print_summary(result)
 
-    print(f"  Files scanned: {len(files)}")
-    print(f"  Total links: {total_links}")
-    print(f"  Valid: {valid_links}")
-    print(f"  Broken: {len(broken)}")
+    output_path = write_report(result, args.output)
+    if not args.quiet:
+        print(f"Report saved: {relative_path(output_path)}")
 
-    data = {
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-        "total_links": total_links,
-        "valid": valid_links,
-        "broken": broken,
-        "by_file": by_file,
-    }
-
-    out = Path(args.output) if args.output else ROOT / "scripts" / "outputs" / f"{datetime.now().strftime('%Y%m%d%H%M%S')}-doc-links.json"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"\nWritten to {out}")
+    if args.strict and result.summary["failed"] > 0:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

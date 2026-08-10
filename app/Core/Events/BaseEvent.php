@@ -23,7 +23,8 @@ abstract class BaseEvent
      *   Example: `public Assessment $assessment` becomes `['assessment_id' => 'uuid-...']`.
      *   Use `$event->assessment` (not payload) to access the full model object.
      * - Object with `toArray()` → recursively serialized under the original key.
-     * - Scalars (string, int, bool, null) → kept as-is under the original key.
+     * - Scalars (string, int, bool) → kept as-is under the original key.
+     * - Null values → skipped.
      * - Objects without `toArray()` → excluded from payload.
      */
     public function toPayload(): array
@@ -39,7 +40,7 @@ abstract class BaseEvent
                 $result[$key.'_id'] = $value->getKey();
             } elseif (is_object($value) && method_exists($value, 'toArray')) {
                 $result[$key] = $value->toArray();
-            } elseif (! is_object($value)) {
+            } elseif ($value !== null && ! is_object($value)) {
                 $result[$key] = $value;
             }
         }

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 scan_class_contracts.py — Class Contract Compliance
-Checks Action, Entity, DTO, Model, and Enum contracts.
+Checks Action, Entity, DTO, Model, Enum, Event, Policy, and Service contracts.
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "class-contracts"
-SCAN_VERSION = "1.0.0"
+SCAN_VERSION = "2.0.0"
 
 # ─── Data ───────────────────────────────────────────────────────────────────
 
@@ -79,6 +79,18 @@ def relative_path(path: Path) -> str:
         return str(path)
 
 
+def is_abstract_class(content: str) -> bool:
+    return bool(re.search(r"^\s*(?:final\s+)?abstract\s+class\s", content, re.M))
+
+
+def is_interface_or_trait(content: str) -> bool:
+    return bool(re.search(r"^\s*(?:abstract\s+)?(?:interface|trait)\s", content, re.M))
+
+
+def line_of(content: str, position: int) -> int:
+    return content[:position].count("\n") + 1
+
+
 # ─── Action Contracts ───────────────────────────────────────────────────────
 
 RE_ACTION_CLASS = re.compile(
@@ -86,8 +98,7 @@ RE_ACTION_CLASS = re.compile(
 )
 RE_EXECUTE_METHOD = re.compile(r"public\s+function\s+execute\s*\(")
 RE_HANDLE_METHOD = re.compile(r"public\s+function\s+handle\s*\(")
-RE_TRANSACTION_METHOD = re.compile(r"(?:protected|private)\s+function\s+transaction\s*\(")
-RE_LOG_METHOD = re.compile(r"(?:protected|private)\s+function\s+log\s*\(")
+RE_STATIC_DISPATCH = re.compile(r"(?:\w+::\s*dispatch\s*\(|\bEvent::\s*dispatch\s*\()")
 
 
 def scan_action_contracts(files: list[Path], module: str | None) -> list[Finding]:
@@ -115,10 +126,10 @@ def scan_action_contracts(files: list[Path], module: str | None) -> list[Finding
                 severity="high",
                 category="architecture",
                 file=rel,
-                line=1,
+                line=line_of(content, RE_HANDLE_METHOD.search(content).start()),
                 message=f"Action {class_name} has handle() instead of execute()",
                 suggestion="Rename handle() to execute() — all Action types use execute()",
-                reference="docs/architecture/action-pattern.md#action-triad",
+                reference="docs/architecture/action-pattern.md#command-actions",
             ))
 
         # Check for execute() method
@@ -132,16 +143,23 @@ def scan_action_contracts(files: list[Path], module: str | None) -> list[Finding
                 line=1,
                 message=f"Action {class_name} has no execute() method",
                 suggestion="Add a single public execute() method",
-                reference="docs/architecture/action-pattern.md#action-triad",
+                reference="docs/architecture/action-pattern.md#command-actions",
             ))
 
-        # Check transaction/log for Command/Process
-        if base_class in ("BaseCommandAction", "BaseProcessAction"):
-            has_transaction = bool(RE_TRANSACTION_METHOD.search(content))
-            has_log = bool(RE_LOG_METHOD.search(content))
-
-            # These are optional but recommended — mark as low severity
-            # Only flag if class has > 50 lines (likely complex enough to need them)
+        # Check for static event dispatch — must use $this->dispatchEvent()
+        dispatch_match = RE_STATIC_DISPATCH.search(content)
+        if dispatch_match:
+            findings.append(Finding(
+                id=f"ACT-{len(findings)+1:03d}",
+                rule="ACTION_STATIC_DISPATCH",
+                severity="high",
+                category="architecture",
+                file=rel,
+                line=line_of(content, dispatch_match.start()),
+                message=f"Action {class_name} uses static event dispatch — use $this->dispatchEvent()",
+                suggestion="Replace {Event}::dispatch(...) with $this->dispatchEvent(new {Event}(...))",
+                reference="docs/architecture/event-pattern.md#4b-basedispatch-event-deferred-dispatch",
+            ))
 
         # Check for multiple public methods (violation of single execute rule)
         public_methods = re.findall(r"public\s+function\s+(\w+)\s*\(", content)
@@ -151,7 +169,7 @@ def scan_action_contracts(files: list[Path], module: str | None) -> list[Finding
                          "hydrate", "mount", "updating", "updated", "updatingProp",
                          "updatedProp", "getRules", "messages", "validationAttributes")
         ]
-        if len(non_lifecycle) > 0 and base_class != "BaseReadAction":
+        if non_lifecycle and base_class != "BaseReadAction":
             findings.append(Finding(
                 id=f"ACT-{len(findings)+1:03d}",
                 rule="ACTION_MULTIPLE_PUBLIC",
@@ -160,8 +178,8 @@ def scan_action_contracts(files: list[Path], module: str | None) -> list[Finding
                 file=rel,
                 line=1,
                 message=f"Action {class_name} has public methods beyond execute(): {', '.join(non_lifecycle[:3])}",
-                suggestion="Actions should have a single public method: execute()",
-                reference="docs/architecture/action-pattern.md#action-triad",
+                suggestion="Extract secondary operations into their own Actions",
+                reference="docs/architecture/action-pattern.md#command-actions",
             ))
 
         # Check for DB::raw
@@ -175,7 +193,7 @@ def scan_action_contracts(files: list[Path], module: str | None) -> list[Finding
                 line=1,
                 message=f"Action {class_name} uses DB::raw()",
                 suggestion="Use parameterized queries",
-                reference="docs/conventions.md#sql-injection-prevention",
+                reference="docs/conventions.md#32-sql-injection-prevention",
             ))
 
     return findings
@@ -183,24 +201,24 @@ def scan_action_contracts(files: list[Path], module: str | None) -> list[Finding
 
 # ─── Entity Contracts ───────────────────────────────────────────────────────
 
-RE_ENTITY_CLASS = re.compile(r"class\s+(\w+)\s+extends\s+Entity")
-RE_FINAL_READONLY = re.compile(r"final\s+readonly\s+class")
+RE_ENTITY_CLASS = re.compile(r"class\s+(\w+)\s+extends\s+(BaseEntity|Entity)")
+RE_FINAL_READONLY = re.compile(r"^\s*final\s+readonly\s+class\s", re.M)
 RE_FROM_MODEL = re.compile(r"public\s+static\s+function\s+fromModel\s*\(")
-RE_TO_ARRAY = re.compile(r"public\s+function\s+toArray\s*\(")
-RE_IS_QUESTIONS = re.compile(r"public\s+function\s+is\w+\s*\(")
 
 ENTITY_FORBIDDEN = [
     "BaseCommandAction", "BaseReadAction", "BaseProcessAction",
     "ActionResponse", "ShouldQueue",
     "Illuminate\\Http\\Request",
     "Illuminate\\Support\\Facades\\",
-    "DB::", "Cache::", "Http::",
+    "DB::", "Cache::", "Http::", "Storage::", "Log::",
 ]
+
+ENTITY_FORBIDDEN_IO = re.compile(r"\b(?:DB::|Cache::|Http::|Storage::|Log::|event\s*\(|dispatch\s*\()")
 
 
 def scan_entity_contracts(files: list[Path], module: str | None) -> list[Finding]:
     findings: list[Finding] = []
-    entity_files = [f for f in files if "/Entities/" in str(f) and f.name != "Entity.php"]
+    entity_files = [f for f in files if "/Entities/" in str(f)]
 
     for fp in entity_files:
         content = read_file(fp)
@@ -208,7 +226,30 @@ def scan_entity_contracts(files: list[Path], module: str | None) -> list[Finding
             continue
         rel = relative_path(fp)
 
-        # Check final readonly
+        class_match = RE_ENTITY_CLASS.search(content)
+        if not class_match:
+            # Entities must extend BaseEntity — flag unknown entity-like files
+            if re.search(r"^\s*(?:final\s+)?(?:abstract\s+)?class\s", content, re.M):
+                findings.append(Finding(
+                    id=f"ENT-{len(findings)+1:03d}",
+                    rule="ENTITY_NO_BASE",
+                    severity="high",
+                    category="architecture",
+                    file=rel,
+                    line=1,
+                    message="Entity does not extend BaseEntity",
+                    suggestion="Extend BaseEntity (app/Core/Entities/BaseEntity.php)",
+                    reference="docs/architecture/entity-pattern.md#2-entity-contract-baseentity",
+                ))
+            continue
+
+        class_name = class_match.group(1)
+
+        # Skip the abstract base class itself
+        if is_abstract_class(content) or is_interface_or_trait(content):
+            continue
+
+        # Check final readonly (concrete entities only)
         if not RE_FINAL_READONLY.search(content):
             findings.append(Finding(
                 id=f"ENT-{len(findings)+1:03d}",
@@ -217,37 +258,23 @@ def scan_entity_contracts(files: list[Path], module: str | None) -> list[Finding
                 category="architecture",
                 file=rel,
                 line=1,
-                message="Entity class is not final readonly",
+                message=f"Entity {class_name} is not final readonly",
                 suggestion="Declare as 'final readonly class'",
-                reference="docs/architecture/entity-pattern.md#non-negotiable",
+                reference="docs/architecture/entity-pattern.md#51-final-readonly-class",
             ))
 
-        # Check fromModel()
+        # Check fromModel() — mandatory per contract
         if not RE_FROM_MODEL.search(content):
             findings.append(Finding(
                 id=f"ENT-{len(findings)+1:03d}",
                 rule="ENTITY_NO_FROM_MODEL",
-                severity="medium",
+                severity="high",
                 category="architecture",
                 file=rel,
                 line=1,
-                message="Entity missing fromModel() static factory method",
+                message=f"Entity {class_name} missing fromModel() static factory method",
                 suggestion="Add public static function fromModel(Model $model): static",
-                reference="docs/architecture/entity-pattern.md",
-            ))
-
-        # Check toArray()
-        if not RE_TO_ARRAY.search(content):
-            findings.append(Finding(
-                id=f"ENT-{len(findings)+1:03d}",
-                rule="ENTITY_NO_TO_ARRAY",
-                severity="low",
-                category="architecture",
-                file=rel,
-                line=1,
-                message="Entity missing toArray() method",
-                suggestion="Add public function toArray(): array for serialization",
-                reference="docs/architecture/entity-pattern.md",
+                reference="docs/architecture/entity-pattern.md#41-static-factory-frommodel-model-static",
             ))
 
         # Check for forbidden imports
@@ -267,18 +294,32 @@ def scan_entity_contracts(files: list[Path], module: str | None) -> list[Finding
                         line=i,
                         message=f"Entity imports forbidden: {forbidden}",
                         suggestion="Entities must be pure — no Actions, Services, Livewire, Controllers, DB, Cache",
-                        reference="docs/architecture/entity-pattern.md#non-negotiable",
+                        reference="docs/architecture/entity-pattern.md#5-entity-purity-rules",
                     ))
                     break
+
+        # Check for forbidden I/O calls in method bodies
+        io_match = ENTITY_FORBIDDEN_IO.search(content)
+        if io_match:
+            findings.append(Finding(
+                id=f"ENT-{len(findings)+1:03d}",
+                rule="ENTITY_FORBIDDEN_IO",
+                severity="high",
+                category="architecture",
+                file=rel,
+                line=line_of(content, io_match.start()),
+                message=f"Entity performs forbidden I/O: {io_match.group(0).strip()}",
+                suggestion="Entities must be pure — no DB/Cache/Http/Storage/Log/event access",
+                reference="docs/architecture/entity-pattern.md#5-entity-purity-rules",
+            ))
 
     return findings
 
 
 # ─── DTO Contracts ──────────────────────────────────────────────────────────
 
-RE_DTO_CLASS = re.compile(r"class\s+(\w+)\s+extends\s+(?:BaseData|Data)")
-RE_FINAL_READONLY_DTO = re.compile(r"final\s+readonly\s+class")
-RE_BASE_DATA_IMPORT = re.compile(r"use\s+.*BaseData")
+RE_DTO_CLASS = re.compile(r"class\s+(\w+)\s+extends\s+(BaseData|Data)")
+RE_FINAL_READONLY_DTO = re.compile(r"^\s*final\s+readonly\s+class\s", re.M)
 
 DTO_FORBIDDEN_PATTERNS = [
     (r"App\\[^\\]+\\Models\\", "Models"),
@@ -287,6 +328,7 @@ DTO_FORBIDDEN_PATTERNS = [
     (r"App\\[^\\]+\\Repositories\\", "Repositories"),
     (r"Illuminate\\Database\\Eloquent\\Model", "Eloquent Model"),
     (r"Illuminate\\Database\\Query\\Builder", "Query Builder"),
+    (r"App\\[^\\]+\\Services\\", "Services"),
 ]
 
 
@@ -300,6 +342,14 @@ def scan_dto_contracts(files: list[Path], module: str | None) -> list[Finding]:
             continue
         rel = relative_path(fp)
 
+        class_match = RE_DTO_CLASS.search(content)
+        if not class_match:
+            continue
+
+        # Skip abstract base (BaseData itself)
+        if is_abstract_class(content):
+            continue
+
         # Check final readonly
         if not RE_FINAL_READONLY_DTO.search(content):
             findings.append(Finding(
@@ -311,7 +361,7 @@ def scan_dto_contracts(files: list[Path], module: str | None) -> list[Finding]:
                 line=1,
                 message="DTO class is not final readonly",
                 suggestion="Declare as 'final readonly class' extending BaseData",
-                reference="docs/architecture/data-pattern.md#non-negotiable",
+                reference="docs/architecture/data-pattern.md#2-basedata-contract",
             ))
 
         # Check forbidden imports
@@ -331,7 +381,7 @@ def scan_dto_contracts(files: list[Path], module: str | None) -> list[Finding]:
                         line=i,
                         message=f"DTO imports forbidden: {desc}",
                         suggestion="DTOs must only contain scalars, enums, Carbon — no Models, Entities, Actions",
-                        reference="docs/architecture/data-pattern.md#non-negotiable",
+                        reference="docs/architecture/data-pattern.md#2-basedata-contract",
                     ))
                     break
 
@@ -340,14 +390,15 @@ def scan_dto_contracts(files: list[Path], module: str | None) -> list[Finding]:
 
 # ─── Model Contracts ────────────────────────────────────────────────────────
 
-RE_MODEL_CLASS = re.compile(r"class\s+(\w+)\s+extends\s+(?:Model|Authenticatable)")
-RE_FILLABLE_ATTR = re.compile(r"#\[Fillable\]")
+RE_MODEL_CLASS = re.compile(r"class\s+(\w+)\s+extends\s+(?:Model|Authenticatable|Activity)")
+RE_FILLABLE_ATTR = re.compile(r"#\[\s*Fillable.*?\]", re.S)
 RE_FILLABLE_PROP = re.compile(r"protected\s+(?:static\s+)?\$fillable\s*=")
 RE_GUARDED_PROP = re.compile(r"protected\s+(?:static\s+)?\$guarded\s*=")
-RE_ENTITY_METHOD = re.compile(r"public\s+function\s+entity\s*\(\)")
+RE_ENTITY_ACCESSOR = re.compile(r"public\s+function\s+as[A-Z]\w*\s*\(")
 RE_BUSINESS_METHODS = re.compile(
     r"public\s+function\s+(?:get|calculate|validate|process|send|notify)\w*\s*\("
 )
+RE_MODEL_MUTATION = re.compile(r"public\s+function\s+(?:update|delete|forceDelete|save)\s*\(")
 
 
 def scan_model_contracts(files: list[Path], module: str | None) -> list[Finding]:
@@ -355,10 +406,7 @@ def scan_model_contracts(files: list[Path], module: str | None) -> list[Finding]
     model_files = [
         f for f in files
         if "/Models/" in str(f)
-        and not f.name.endswith("Observer.php")
-        and not f.name.endswith("Policy.php")
-        and not f.name.endswith("Factory.php")
-        and not f.name.endswith("Pivot.php")
+        and not f.name.endswith(("Observer.php", "Policy.php", "Factory.php", "Pivot.php"))
     ]
 
     for fp in model_files:
@@ -369,9 +417,10 @@ def scan_model_contracts(files: list[Path], module: str | None) -> list[Finding]
 
         if not RE_MODEL_CLASS.search(content):
             continue
-
-        # Skip Pivot
         if "extends Pivot" in content:
+            continue
+        # Skip abstract base models (BaseModel, BaseAuthenticatable)
+        if is_abstract_class(content):
             continue
 
         # Check Fillable attribute
@@ -385,7 +434,7 @@ def scan_model_contracts(files: list[Path], module: str | None) -> list[Finding]
                 line=1,
                 message="Model uses legacy $fillable property",
                 suggestion="Replace with #[Fillable] attribute (PHP 8.4)",
-                reference="docs/architecture/model-pattern.md#non-negotiable",
+                reference="docs/architecture/model-pattern.md#6-fillable-attribute-convention",
             ))
 
         if RE_GUARDED_PROP.search(content):
@@ -398,28 +447,13 @@ def scan_model_contracts(files: list[Path], module: str | None) -> list[Finding]
                 line=1,
                 message="Model uses legacy $guarded property",
                 suggestion="Replace with #[Fillable] attribute (PHP 8.4)",
-                reference="docs/architecture/model-pattern.md#non-negotiable",
+                reference="docs/architecture/model-pattern.md#6-fillable-attribute-convention",
             ))
 
-        # Check for entity bridge method
-        if not RE_ENTITY_METHOD.search(content):
-            findings.append(Finding(
-                id=f"MOD-{len(findings)+1:03d}",
-                rule="MODEL_NO_ENTITY_BRIDGE",
-                severity="low",
-                category="architecture",
-                file=rel,
-                line=1,
-                message="Model missing entity() bridge method",
-                suggestion="Add public function entity(): {Module}Entity for domain object access",
-                reference="docs/architecture/model-pattern.md",
-            ))
-
-        # Check for business methods on Model
+        # Check for business methods on Model (delegate to Entity via as{Entity}())
         lines = content.split("\n")
         for i, line in enumerate(lines, 1):
             if RE_BUSINESS_METHODS.search(line) and "function" in line:
-                # Skip relationship methods, scopes, accessors, mutators
                 if any(skip in line for skip in [
                     "Scope", "Attribute", "accessor", "mutator",
                     "newQuery", "query", "getConnection", "getTable",
@@ -434,8 +468,8 @@ def scan_model_contracts(files: list[Path], module: str | None) -> list[Finding]
                     file=rel,
                     line=i,
                     message="Business logic method found on Model",
-                    suggestion="Delegate business logic to Entity methods",
-                    reference="docs/architecture/model-pattern.md",
+                    suggestion="Delegate business logic to Entity via as{EntityName}() accessor",
+                    reference="docs/architecture/model-pattern.md#3-model-responsibilities",
                 ))
 
     return findings
@@ -443,10 +477,12 @@ def scan_model_contracts(files: list[Path], module: str | None) -> list[Finding]
 
 # ─── Enum Contracts ─────────────────────────────────────────────────────────
 
-RE_ENUM_CLASS = re.compile(r"enum\s+(\w+)\s*:\s*(\w+)")
-RE_LABEL_METHOD = re.compile(r"public\s+function\s+label\s*\(\)")
-RE_VALID_TRANSITIONS = re.compile(r"public\s+function\s+validTransitions\s*\(\)")
-RE_BACKED_ENUM = re.compile(r"enum\s+\w+\s*:\s*(?:string|int)")
+RE_ENUM_CLASS = re.compile(r"^\s*enum\s+(\w+)\s*(?::\s*(\w+))?\s*(?:implements\s+([^\n{]+))?", re.M)
+RE_LABEL_METHOD = re.compile(r"public\s+function\s+label\s*\(")
+RE_VALID_TRANSITIONS = re.compile(r"public\s+function\s+validTransitions\s*\(")
+RE_IS_TERMINAL = re.compile(r"public\s+function\s+isTerminal\s*\(")
+RE_CAN_TRANSITION = re.compile(r"public\s+function\s+canTransitionTo\s*\(")
+RE_CASE_NAME = re.compile(r"^\s*case\s+([A-Za-z0-9_]+)", re.M)
 
 
 def scan_enum_contracts(files: list[Path], module: str | None) -> list[Finding]:
@@ -465,48 +501,246 @@ def scan_enum_contracts(files: list[Path], module: str | None) -> list[Finding]:
 
         enum_name = class_match.group(1)
         backing_type = class_match.group(2)
+        interfaces = (class_match.group(3) or "").strip()
 
-        # Check backing type
+        is_status = "StatusEnum" in interfaces
+        is_label = "LabelEnum" in interfaces or is_status
+
+        # Check backing type — enums must be backed string/int
         if backing_type not in ("string", "int"):
             findings.append(Finding(
                 id=f"ENUM-{len(findings)+1:03d}",
                 rule="ENUM_NO_BACKING",
-                severity="medium",
+                severity="high",
                 category="architecture",
                 file=rel,
                 line=1,
                 message=f"Enum {enum_name} has no backing type",
                 suggestion="Add :string or :int backing type",
-                reference="docs/architecture/enum-pattern.md",
+                reference="docs/architecture/enum-pattern.md#2-labelenum-contract",
             ))
 
-        # Check for label() method
-        if not RE_LABEL_METHOD.search(content):
+        # LabelEnum implementors must have label()
+        if is_label and not RE_LABEL_METHOD.search(content):
             findings.append(Finding(
                 id=f"ENUM-{len(findings)+1:03d}",
                 rule="ENUM_NO_LABEL",
-                severity="low",
+                severity="high",
                 category="architecture",
                 file=rel,
                 line=1,
-                message=f"Enum {enum_name} missing label() method",
+                message=f"Enum {enum_name} implements LabelEnum but missing label() method",
                 suggestion="Add public function label(): string for human-readable display",
-                reference="docs/architecture/enum-pattern.md",
+                reference="docs/architecture/enum-pattern.md#2-labelenum-contract",
             ))
 
-        # Check for StatusEnum-specific methods
-        if "StatusEnum" in content or "status" in enum_name.lower():
-            if not RE_VALID_TRANSITIONS.search(content):
+        # StatusEnum implementors must have the full state-machine contract
+        if is_status:
+            for method_re, method_name, ref in [
+                (RE_VALID_TRANSITIONS, "validTransitions", "docs/architecture/enum-pattern.md#3-statusenum-contract"),
+                (RE_IS_TERMINAL, "isTerminal", "docs/architecture/enum-pattern.md#3-statusenum-contract"),
+                (RE_CAN_TRANSITION, "canTransitionTo", "docs/architecture/enum-pattern.md#3-statusenum-contract"),
+            ]:
+                if not method_re.search(content):
+                    findings.append(Finding(
+                        id=f"ENUM-{len(findings)+1:03d}",
+                        rule="ENUM_STATUS_INCOMPLETE",
+                        severity="high",
+                        category="architecture",
+                        file=rel,
+                        line=1,
+                        message=f"StatusEnum {enum_name} missing {method_name}()",
+                        suggestion=f"Add public function {method_name}(): ... for the state machine contract",
+                        reference=ref,
+                    ))
+
+        # Check UPPER_SNAKE case names
+        for case_match in RE_CASE_NAME.finditer(content):
+            case_name = case_match.group(1)
+            if not re.fullmatch(r"[A-Z][A-Z0-9_]*", case_name):
                 findings.append(Finding(
                     id=f"ENUM-{len(findings)+1:03d}",
-                    rule="ENUM_STATUS_NO_TRANSITIONS",
-                    severity="medium",
+                    rule="ENUM_CASE_NAMING",
+                    severity="low",
+                    category="convention",
+                    file=rel,
+                    line=line_of(content, case_match.start()),
+                    message=f"Enum case '{case_name}' is not UPPER_SNAKE_CASE",
+                    suggestion="Use UPPER_SNAKE_CASE case names (e.g. REVISION_REQUIRED)",
+                    reference="docs/architecture/enum-pattern.md#5-case-convention",
+                ))
+
+    return findings
+
+
+# ─── Event Contracts ────────────────────────────────────────────────────────
+
+RE_EVENT_CLASS = re.compile(r"class\s+(\w+)\s+extends\s+BaseEvent")
+RE_EVENT_NAME = re.compile(r"public\s+function\s+eventName\s*\(")
+RE_LISTENER_CLASS = re.compile(r"class\s+(\w+)\s+")
+RE_SHOULD_QUEUE = re.compile(r"implements\s+ShouldQueue\b|ShouldHandleEventsAfterCommit")
+RE_HANDLE_METHOD_LISTENER = re.compile(r"public\s+function\s+handle\s*\(")
+RE_IO_PATTERN = re.compile(r"\b(?:Mail::|Http::|Notification::|Storage::|DB::)")
+RE_CACHE_WRITE = re.compile(r"Cache::(?:put|remember|add|forever|warmup)\s*\(")
+RE_ACTIVITY_LOG = re.compile(r"->event\s*\(|activity\(\)")
+
+
+def scan_event_contracts(files: list[Path], module: str | None) -> list[Finding]:
+    findings: list[Finding] = []
+    event_files = [f for f in files if "/Events/" in str(f)]
+
+    for fp in event_files:
+        content = read_file(fp)
+        if not content:
+            continue
+        rel = relative_path(fp)
+
+        class_match = RE_EVENT_CLASS.search(content)
+        if not class_match:
+            continue
+        if is_abstract_class(content) or is_interface_or_trait(content):
+            continue
+
+        class_name = class_match.group(1)
+
+        if not RE_EVENT_NAME.search(content):
+            findings.append(Finding(
+                id=f"EVT-{len(findings)+1:03d}",
+                rule="EVENT_NO_EVENT_NAME",
+                severity="high",
+                category="architecture",
+                file=rel,
+                line=1,
+                message=f"Event {class_name} missing eventName()",
+                suggestion="Add public function eventName(): string",
+                reference="docs/architecture/event-pattern.md#1-event-architecture-baseevent-contract",
+            ))
+
+    listener_files = [f for f in files if "/Listeners/" in str(f)]
+    for fp in listener_files:
+        content = read_file(fp)
+        if not content:
+            continue
+        rel = relative_path(fp)
+
+        if not RE_HANDLE_METHOD_LISTENER.search(content):
+            continue
+        if is_abstract_class(content) or is_interface_or_trait(content):
+            continue
+
+        # I/O listeners must implement ShouldQueue.
+        # Doc exception: cache forget() stays synchronous (event-pattern §6).
+        if not RE_SHOULD_QUEUE.search(content):
+            has_io = RE_IO_PATTERN.search(content) or RE_CACHE_WRITE.search(content) \
+                or RE_ACTIVITY_LOG.search(content)
+            if has_io:
+                findings.append(Finding(
+                    id=f"EVT-{len(findings)+1:03d}",
+                    rule="LISTENER_NOT_QUEUED",
+                    severity="high",
                     category="architecture",
                     file=rel,
                     line=1,
-                    message=f"StatusEnum {enum_name} missing validTransitions()",
-                    suggestion="Add validTransitions(): array for state machine",
-                    reference="docs/architecture/enum-pattern.md",
+                    message="I/O listener does not implement ShouldQueue",
+                    suggestion="Add 'implements ShouldQueue' — I/O work must be queued",
+                    reference="docs/architecture/event-pattern.md#6-shouldqueue-for-async-listeners",
+                ))
+
+    return findings
+
+
+# ─── Policy Contracts ───────────────────────────────────────────────────────
+
+RE_POLICY_CLASS = re.compile(r"class\s+(\w+)\s+extends\s+BasePolicy")
+RE_ABILITY_METHODS = re.compile(
+    r"public\s+function\s+(viewAny|view|create|update|delete|restore|forceDelete)\s*\("
+)
+
+
+def scan_policy_contracts(files: list[Path], module: str | None) -> list[Finding]:
+    findings: list[Finding] = []
+    policy_files = [f for f in files if "/Policies/" in str(f)]
+
+    for fp in policy_files:
+        content = read_file(fp)
+        if not content:
+            continue
+        rel = relative_path(fp)
+
+        class_match = RE_POLICY_CLASS.search(content)
+        if not class_match:
+            if re.search(r"^\s*(?:final\s+)?class\s", content, re.M):
+                findings.append(Finding(
+                    id=f"POL-{len(findings)+1:03d}",
+                    rule="POLICY_NO_BASE",
+                    severity="high",
+                    category="architecture",
+                    file=rel,
+                    line=1,
+                    message="Policy does not extend BasePolicy",
+                    suggestion="Extend BasePolicy (app/Core/Policies/BasePolicy.php)",
+                    reference="docs/architecture/policy-pattern.md",
+                ))
+            continue
+        if is_abstract_class(content):
+            continue
+
+        if not RE_ABILITY_METHODS.search(content):
+            findings.append(Finding(
+                id=f"POL-{len(findings)+1:03d}",
+                rule="POLICY_NO_ABILITIES",
+                severity="medium",
+                category="architecture",
+                file=rel,
+                line=1,
+                message="Policy has no standard ability methods",
+                suggestion="Implement viewAny/view/create/update/delete/restore/forceDelete",
+                reference="docs/architecture/policy-pattern.md",
+            ))
+
+    return findings
+
+
+# ─── Service Contracts ──────────────────────────────────────────────────────
+
+RE_SERVICE_CLASS = re.compile(r"class\s+(\w+)\s+")
+
+
+def scan_service_contracts(files: list[Path], module: str | None) -> list[Finding]:
+    findings: list[Finding] = []
+    service_files = [f for f in files if "/Services/" in str(f)]
+
+    for fp in service_files:
+        content = read_file(fp)
+        if not content:
+            continue
+        rel = relative_path(fp)
+
+        class_match = RE_SERVICE_CLASS.search(content)
+        if not class_match:
+            continue
+        if is_abstract_class(content) or is_interface_or_trait(content):
+            continue
+
+        class_name = class_match.group(1)
+
+        # Services should use constructor injection when they have dependencies
+        constructor_params = re.search(
+            r"public\s+function\s+__construct\s*\(([^)]*)\)", content
+        )
+        if constructor_params and constructor_params.group(1).strip():
+            # Has constructor params — check for service locator instead
+            if re.search(r"app\s*\(|\bresolve\s*\(", content):
+                findings.append(Finding(
+                    id=f"SVC-{len(findings)+1:03d}",
+                    rule="SERVICE_SERVICE_LOCATOR",
+                    severity="high",
+                    category="architecture",
+                    file=rel,
+                    line=1,
+                    message=f"Service {class_name} uses service locator instead of constructor injection",
+                    suggestion="Inject dependencies via the constructor",
+                    reference="docs/conventions.md#10-dependency-injection-conventions",
                 ))
 
     return findings
@@ -526,6 +760,8 @@ def build_report(
     for f in findings:
         by_severity[f.severity] = by_severity.get(f.severity, 0) + 1
 
+    rules = {f.rule.split("_")[0] for f in findings}
+
     return ScanResult(
         scan_version=SCAN_VERSION,
         scan_name=SCAN_NAME,
@@ -534,8 +770,8 @@ def build_report(
         timestamp=datetime.now(timezone(timedelta(hours=7))).isoformat(),
         execution_time_ms=elapsed_ms,
         summary={
-            "total_checks": 5,
-            "passed": 5 - len(set(f.rule.split("_")[0] for f in findings)),
+            "total_checks": 8,
+            "passed": 8 - len(rules),
             "failed": len(findings),
             "by_severity": by_severity,
         },
@@ -577,7 +813,7 @@ def print_summary(result: ScanResult) -> None:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Scan Action/Entity/DTO/Model/Enum contracts",
+        description="Scan Action/Entity/DTO/Model/Enum/Event/Policy/Service contracts",
     )
     parser.add_argument("--module", "-m", help="Target specific module")
     parser.add_argument("--output", "-o", type=Path, help="Output file path")
@@ -600,12 +836,16 @@ def main() -> None:
 
     files = find_php_files(args.module)
 
-    # Count by type
-    action_count = len([f for f in files if "/Actions/" in str(f)])
-    entity_count = len([f for f in files if "/Entities/" in str(f)])
-    dto_count = len([f for f in files if "/Data/" in str(f)])
-    model_count = len([f for f in files if "/Models/" in str(f)])
-    enum_count = len([f for f in files if "/Enums/" in str(f) or "/States/" in str(f)])
+    metadata = {
+        "actions": len([f for f in files if "/Actions/" in str(f)]),
+        "entities": len([f for f in files if "/Entities/" in str(f)]),
+        "dtos": len([f for f in files if "/Data/" in str(f)]),
+        "models": len([f for f in files if "/Models/" in str(f)]),
+        "enums": len([f for f in files if "/Enums/" in str(f) or "/States/" in str(f)]),
+        "events": len([f for f in files if "/Events/" in str(f)]),
+        "policies": len([f for f in files if "/Policies/" in str(f)]),
+        "services": len([f for f in files if "/Services/" in str(f)]),
+    }
 
     findings: list[Finding] = []
     findings.extend(scan_action_contracts(files, args.module))
@@ -613,16 +853,12 @@ def main() -> None:
     findings.extend(scan_dto_contracts(files, args.module))
     findings.extend(scan_model_contracts(files, args.module))
     findings.extend(scan_enum_contracts(files, args.module))
+    findings.extend(scan_event_contracts(files, args.module))
+    findings.extend(scan_policy_contracts(files, args.module))
+    findings.extend(scan_service_contracts(files, args.module))
 
     result = build_report(
-        findings, scan_type, args.module, start_time,
-        {
-            "actions": action_count,
-            "entities": entity_count,
-            "dtos": dto_count,
-            "models": model_count,
-            "enums": enum_count,
-        },
+        findings, scan_type, args.module, start_time, metadata,
     )
 
     if args.json or args.format == "json":

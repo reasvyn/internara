@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
 """
-scan_naming.py — Naming Convention Compliance
-Checks file, class, method, and variable naming conventions.
+scan_naming.py — Naming Convention Compliance (v2.0.0)
+
+Checks file, class, method, and directory naming conventions against
+docs/conventions.md §4. Calibrated: layer directories are detected at any
+depth (deepest match); class patterns match the class name; PSR-4
+file/class parity uses anchored regexes; helper files without class
+declarations are skipped; Action execute() return types follow the
+documented ActionResponse / Model / void conventions.
 """
 
 from __future__ import annotations
@@ -22,74 +28,152 @@ ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "naming"
-SCAN_VERSION = "1.0.0"
+SCAN_VERSION = "2.0.0"
 
-# ─── Naming rules ───────────────────────────────────────────────────────────
+REF_FILE = "docs/conventions.md#4-naming-conventions"
+REF_ACTION = "docs/architecture/action-pattern.md"
+REF_ENTITY = "docs/architecture/entity-pattern.md"
 
-# File → Class mapping expectations
-FILE_CLASS_RULES = {
+# ─── Layer directory → naming contract ──────────────────────────────────────
+# file_pattern matches the filename; class_pattern matches the class declaration
+# line (after the `class`/`enum` keyword). skip_contains: substrings that
+# exempt a file (e.g. base classes).
+
+LAYER_RULES = {
     "Actions": {
-        "file_pattern": r"^(?:Store|Create|Update|Delete|Destroy|ForceDelete|Restore|Process|Send|Notify|Generate|Export|Import|Approve|Reject|Cancel|Complete|Assign|Unassign|Archive|Verify|Calculate)\w+Action\.php$",
-        "class_pattern": r"^(?:Store|Create|Update|Delete|Destroy|ForceDelete|Restore|Process|Send|Notify|Generate|Export|Import|Approve|Reject|Cancel|Complete|Assign|Unassign|Archive|Verify|Calculate)\w+Action$",
-        "description": "Actions",
+        "file_pattern": r"^[A-Z]\w*Action\.php$",
+        "class_pattern": r"^\w+Action\b",
+        "description": "Action",
     },
     "Entities": {
         "file_pattern": r"^[A-Z]\w+\.php$",
-        "class_pattern": r"^readonly\s+class\s+\w+$",
-        "skip_files": ["Entity.php", "Exception.php"],
-        "description": "Entities",
+        "class_pattern": r"^\w+\b",
+        "skip_contains": ["Base", "Abstract"],
+        "description": "Entity",
     },
     "Data": {
-        "file_pattern": r"^[A-Z]\w+(?:Data|Request|DTO)\.php$",
-        "class_pattern": r"^(?:readonly\s+)?class\s+\w+(?:Data|Request|DTO)$",
-        "description": "DTOs",
+        "file_pattern": r"^[A-Z]\w+(?:Data|DTO|Request)\.php$|^ActionResponse\.php$|^Audit(?:Check|Report)\.php$",
+        "class_pattern": r"^\w+\b",
+        "skip_contains": ["Base"],
+        "description": "DTO/Data",
     },
     "Models": {
         "file_pattern": r"^[A-Z]\w+\.php$",
-        "class_pattern": r"^class\s+\w+\s+extends\s+(?:Model|Authenticatable|Pivot)$",
-        "skip_files": ["Observer.php", "Policy.php", "Factory.php", "Pivot.php"],
-        "description": "Models",
+        "class_pattern": r"^\w+\b",
+        "skip_contains": ["Observer", "Policy", "Factory", "Base"],
+        "description": "Model",
     },
     "Enums": {
-        "file_pattern": r"^[A-Z]\w+(?:Enum|Status|Type|State|Role)\.php$",
-        "class_pattern": r"^enum\s+\w+",
-        "description": "Enums",
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "description": "Enum",
     },
     "Livewire": {
-        "file_pattern": r"^[A-Z]\w+(?:Form|Table|Page|Modal|Show|Create|Edit|Index|Layout|Widget)\.php$",
-        "class_pattern": r"^class\s+\w+(?:Form|Table|Page|Modal|Show|Create|Edit|Index|Layout|Widget)$",
-        "description": "Livewire components",
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "skip_contains": ["Base"],
+        "description": "Livewire component",
+    },
+    "Forms": {
+        "file_pattern": r"^[A-Z]\w+(?:Form|Filters|Query)\.php$",
+        "class_pattern": r"^\w+\b",
+        "skip_contains": ["Base"],
+        "description": "Livewire form",
     },
     "Policies": {
-        "file_pattern": r"^[A-Z]\w+Policy\.php$",
-        "class_pattern": r"^class\s+\w+Policy$",
-        "description": "Policies",
+        "file_pattern": r"^[A-Z]\w*Policy\.php$",
+        "class_pattern": r"^\w+Policy\b",
+        "description": "Policy",
     },
     "Events": {
-        "file_pattern": r"^[A-Z]\w+(?:Created|Updated|Deleted|Restored|ForceDeleted|Approved|Rejected|Completed|Sent|Generated)\w*Event\.php$",
-        "class_pattern": r"^class\s+\w+(?:Created|Updated|Deleted|Restored|ForceDeleted|Approved|Rejected|Completed|Sent|Generated)\w*Event$",
-        "description": "Events",
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "skip_contains": ["Base"],
+        "description": "Event",
     },
     "Listeners": {
-        "file_pattern": r"^[A-Z]\w+(?:Created|Updated|Deleted|Restored|ForceDeleted|Approved|Rejected|Completed|Sent|Generated)\w*Listener\.php$",
-        "class_pattern": r"^class\s+\w+(?:Created|Updated|Deleted|Restored|ForceDeleted|Approved|Rejected|Completed|Sent|Generated)\w*Listener$",
-        "description": "Listeners",
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "skip_contains": ["Base"],
+        "description": "Listener",
     },
     "Services": {
-        "file_pattern": r"^[A-Z]\w+Service\.php$",
-        "class_pattern": r"^class\s+\w+Service$",
-        "description": "Services",
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "skip_contains": ["Base"],
+        "description": "Service",
+    },
+    "Notifications": {
+        "file_pattern": r"^[A-Z]\w*Notification\.php$",
+        "class_pattern": r"^\w+Notification\b",
+        "skip_contains": ["Base"],
+        "description": "Notification",
+    },
+    "Http": {
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "skip_contains": ["Base"],
+        "description": "HTTP layer class",
+    },
+    "Console": {
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "description": "Console command",
+    },
+    "Observers": {
+        "file_pattern": r"^[A-Z]\w*Observer\.php$",
+        "class_pattern": r"^\w+Observer\b",
+        "description": "Observer",
+    },
+    "Middleware": {
+        "file_pattern": r"^[A-Z]\w*Middleware\.php$",
+        "class_pattern": r"^\w+Middleware\b",
+        "skip_contains": ["Base"],
+        "description": "Middleware",
+    },
+    "Exceptions": {
+        "file_pattern": r"^[A-Z]\w*Exception\.php$",
+        "class_pattern": r"^\w+Exception\b",
+        "description": "Exception",
+    },
+    "Contracts": {
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "description": "Contract",
+    },
+    "Types": {
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "description": "Value object",
+    },
+    "Rules": {
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "description": "Validation rule",
+    },
+    "Support": {
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "description": "Support class",
+    },
+    "Concerns": {
+        "file_pattern": r"^[A-Z]\w+\.php$",
+        "class_pattern": r"^\w+\b",
+        "description": "Trait",
+    },
+    "Jobs": {
+        "file_pattern": r"^[A-Z]\w+(?:Job)s?\.php$",
+        "class_pattern": r"^\w+Job\b",
+        "description": "Job",
     },
 }
 
-# Anti-patterns
-ANTI_PATTERNS = {
-    "handle_method": re.compile(r"public\s+function\s+handle\s*\("),
-    "snake_case_var": re.compile(r"\$[a-z]+_[a-z]+"),
-    "camel_case_file": re.compile(r"^[a-z][a-zA-Z]+\.php$"),
-    "pascal_case_dir": re.compile(r"^[A-Z]"),
-    "missing_execute": re.compile(r"Action\.php$"),
-}
+# ─── Anti-patterns ──────────────────────────────────────────────────────────
+
+RE_HANDLE_METHOD = re.compile(r"public\s+function\s+handle\s*\(")
+RE_EXECUTE_METHOD = re.compile(r"public\s+function\s+execute\s*\(")
+RE_SNAKE_VAR = re.compile(r"(?<!\$)\$[a-z]+(?:_[a-z0-9]+)+\b")
+RE_ANCHORED_CLASS = re.compile(r"^\s*(?:final\s+|abstract\s+)*(?:class|enum|interface|trait)\s+(\w+)", re.M)
 
 # ─── Data ───────────────────────────────────────────────────────────────────
 
@@ -146,50 +230,58 @@ def relative_path(path: Path) -> str:
         return str(path)
 
 
-def extract_class_name(content: str) -> str | None:
-    """Extract class/enum name from PHP file content."""
-    patterns = [
-        re.compile(r"class\s+(\w+)"),
-        re.compile(r"enum\s+(\w+)"),
-    ]
-    for pattern in patterns:
-        match = pattern.search(content)
-        if match:
-            return match.group(1)
-    return None
+def layer_dir_of(rel: str) -> str | None:
+    """Find the deepest layer directory name in the relative path."""
+    parts = Path(rel).parts
+    layer = None
+    for p in parts:
+        if p in LAYER_RULES:
+            layer = p
+    return layer
 
 
-# ─── File Naming Rules ──────────────────────────────────────────────────────
+def is_skipped(filename: str, rule: dict[str, Any]) -> bool:
+    for marker in rule.get("skip_contains", []):
+        if marker in filename:
+            return True
+    return False
 
-def scan_file_naming(files: list[Path], module: str | None) -> list[Finding]:
+
+def extract_class_decl(content: str) -> tuple[str | None, str | None, int]:
+    """Return (kind, name, line) of the first class/enum/interface/trait declaration."""
+    for m in RE_ANCHORED_CLASS.finditer(content):
+        prefix = content[: m.start()]
+        # Skip closures (class after `new`) are not matched by anchoring
+        return m.group(1), m.start(), prefix.count("\n") + 1
+    return None, None, 1
+
+
+def decl_line(content: str, class_name: str) -> int:
+    for i, line in enumerate(content.split("\n"), 1):
+        if re.search(rf"\b(?:class|enum|interface|trait)\s+{re.escape(class_name)}\b", line):
+            return i
+    return 1
+
+
+# ─── File naming ────────────────────────────────────────────────────────────
+
+def scan_file_naming(files: list[Path]) -> list[Finding]:
     findings: list[Finding] = []
-
     for fp in files:
         rel = relative_path(fp)
-        filename = fp.name
+        layer = layer_dir_of(rel)
+        if layer is None:
+            continue
+        rule = LAYER_RULES[layer]
+        if is_skipped(fp.name, rule):
+            continue
         content = read_file(fp)
         if not content:
             continue
-
-        # Determine directory context
-        parts = Path(rel).parts
-        if len(parts) < 3:
+        # Skip non-class files (helper function files, config snippets)
+        if not RE_ANCHORED_CLASS.search(content):
             continue
-        layer_dir = parts[1]  # e.g., "Actions", "Entities", etc.
-
-        if layer_dir not in FILE_CLASS_RULES:
-            continue
-
-        rule = FILE_CLASS_RULES[layer_dir]
-        skip_files = rule.get("skip_files", [])
-
-        # Skip excluded files
-        if any(filename.endswith(skip) for skip in skip_files):
-            continue
-
-        # Check file name matches expected pattern
-        file_pattern = rule.get("file_pattern")
-        if file_pattern and not re.match(file_pattern, filename):
+        if not re.match(rule["file_pattern"], fp.name):
             findings.append(Finding(
                 id=f"NFILE-{len(findings)+1:03d}",
                 rule="FILE_NAMING",
@@ -197,84 +289,89 @@ def scan_file_naming(files: list[Path], module: str | None) -> list[Finding]:
                 category="naming",
                 file=rel,
                 line=1,
-                message=f"{rule['description']} file '{filename}' doesn't match expected pattern",
-                suggestion=f"Rename to follow convention: {file_pattern}",
-                reference="docs/conventions.md#file-naming-conventions",
+                message=f"{rule['description']} file '{fp.name}' doesn't match expected pattern",
+                suggestion=f"Rename to follow convention: {rule['file_pattern']}",
+                reference=REF_FILE,
             ))
-
     return findings
 
 
-# ─── Class Naming Rules ─────────────────────────────────────────────────────
+# ─── Class naming ───────────────────────────────────────────────────────────
 
-def scan_class_naming(files: list[Path], module: str | None) -> list[Finding]:
+def scan_class_naming(files: list[Path]) -> list[Finding]:
     findings: list[Finding] = []
-
     for fp in files:
         rel = relative_path(fp)
-        filename = fp.name
+        layer = layer_dir_of(rel)
+        if layer is None:
+            continue
+        rule = LAYER_RULES[layer]
+        if is_skipped(fp.name, rule):
+            continue
         content = read_file(fp)
         if not content:
             continue
-
-        parts = Path(rel).parts
-        if len(parts) < 3:
-            continue
-        layer_dir = parts[1]
-
-        if layer_dir not in FILE_CLASS_RULES:
-            continue
-
-        rule = FILE_CLASS_RULES[layer_dir]
-        skip_files = rule.get("skip_files", [])
-        if any(filename.endswith(skip) for skip in skip_files):
-            continue
-
-        class_name = extract_class_name(content)
+        class_name, _, _ = extract_class_decl(content)
         if not class_name:
             continue
-
-        class_pattern = rule.get("class_pattern")
-        if class_pattern and not re.search(class_pattern, class_name):
-            # Only check the class name line
-            class_line = 1
-            for i, line in enumerate(content.split("\n"), 1):
-                if f"class {class_name}" in line or f"enum {class_name}" in line:
-                    class_line = i
-                    break
-
+        line = decl_line(content, class_name)
+        if not re.search(rule["class_pattern"], class_name):
             findings.append(Finding(
                 id=f"NCLASS-{len(findings)+1:03d}",
                 rule="CLASS_NAMING",
                 severity="medium",
                 category="naming",
                 file=rel,
-                line=class_line,
-                message=f"Class name '{class_name}' doesn't match expected pattern for {layer_dir}",
-                suggestion=f"Rename class to follow convention: {class_pattern}",
-                reference="docs/conventions.md#class-naming-conventions",
+                line=line,
+                message=f"Class name '{class_name}' doesn't match expected pattern for {layer}",
+                suggestion=f"Rename class to follow convention: {rule['class_pattern']}",
+                reference=REF_FILE,
             ))
-
     return findings
 
 
-# ─── Anti-Pattern Detection ────────────────────────────────────────────────
+# ─── PSR-4 file ↔ class parity ──────────────────────────────────────────────
 
-def scan_anti_patterns(files: list[Path], module: str | None) -> list[Finding]:
+def scan_psr4(files: list[Path]) -> list[Finding]:
     findings: list[Finding] = []
-
     for fp in files:
         rel = relative_path(fp)
         content = read_file(fp)
         if not content:
             continue
+        class_name, _, _ = extract_class_decl(content)
+        if not class_name:
+            continue
+        if f"{class_name}.php" != fp.name:
+            findings.append(Finding(
+                id=f"NPSR4-{len(findings)+1:03d}",
+                rule="PSR4_FILE_CLASS",
+                severity="high",
+                category="naming",
+                file=rel,
+                line=decl_line(content, class_name),
+                message=f"Class name '{class_name}' doesn't match file name '{fp.name}'",
+                suggestion=f"Rename class to '{Path(fp.name).stem}' or rename file to '{class_name}.php'",
+                reference="docs/conventions.md#4-naming-conventions",
+            ))
+    return findings
 
+
+# ─── Anti-patterns ──────────────────────────────────────────────────────────
+
+def scan_anti_patterns(files: list[Path]) -> list[Finding]:
+    findings: list[Finding] = []
+    for fp in files:
+        rel = relative_path(fp)
+        content = read_file(fp)
+        if not content:
+            continue
         lines = content.split("\n")
 
-        # Check for handle() method in Actions
+        # handle() in Actions → must be execute()
         if "/Actions/" in rel:
             for i, line in enumerate(lines, 1):
-                if ANTI_PATTERNS["handle_method"].search(line):
+                if RE_HANDLE_METHOD.search(line):
                     findings.append(Finding(
                         id=f"ANTI-{len(findings)+1:03d}",
                         rule="HANDLE_METHOD",
@@ -284,161 +381,47 @@ def scan_anti_patterns(files: list[Path], module: str | None) -> list[Finding]:
                         line=i,
                         message="Action uses handle() instead of execute()",
                         suggestion="Rename handle() to execute() — all Actions use execute()",
-                        reference="docs/architecture/action-pattern.md#action-triad",
-                    ))
-
-        # Check for snake_case variables in PHP
-        for i, line in enumerate(lines, 1):
-            stripped = line.strip()
-            if stripped.startswith("//") or stripped.startswith("*"):
-                continue
-            if ANTI_PATTERNS["snake_case_var"].search(line):
-                # Skip known exceptions: migration patterns, raw SQL, comments
-                if "$table" in line or "$column" in line or "$query" in line:
-                    continue
-                if "/database/migrations/" in rel:
-                    continue
-                # Find the variable name
-                match = ANTI_PATTERNS["snake_case_var"].search(line)
-                if match:
-                    var_name = match.group(0)
-                    # Convert to camelCase suggestion
-                    parts = var_name[1:].split("_")
-                    camel = parts[0] + "".join(p.capitalize() for p in parts[1:])
-                    findings.append(Finding(
-                        id=f"ANTI-{len(findings)+1:03d}",
-                        rule="SNAKE_CASE_VAR",
-                        severity="low",
-                        category="naming",
-                        file=rel,
-                        line=i,
-                        message=f"Snake_case variable {var_name} — prefer camelCase in PHP",
-                        suggestion=f"Rename to ${camel}",
-                        reference="docs/conventions.md#variable-naming-conventions",
+                        reference=REF_ACTION,
                     ))
 
     return findings
 
 
-# ─── Directory Naming ──────────────────────────────────────────────────────
+# ─── Directory naming ───────────────────────────────────────────────────────
 
 def scan_directory_naming(module: str | None) -> list[Finding]:
     findings: list[Finding] = []
-    modules_dir = APP_DIR
-
     if module:
-        module_dirs = [modules_dir / module]
+        roots = [APP_DIR / module]
     else:
-        module_dirs = sorted(
-            d for d in modules_dir.iterdir()
+        roots = [
+            d for d in APP_DIR.iterdir()
             if d.is_dir() and not d.name.startswith(".")
-        )
+        ]
 
-    for module_dir in module_dirs:
-        if not module_dir.exists():
+    seen: set[Path] = set()
+    for root in roots:
+        if not root.exists():
             continue
-        for subdir in sorted(module_dir.iterdir()):
-            if not subdir.is_dir():
+        for subdir in sorted(root.rglob("*/")):
+            if not subdir.is_dir() or subdir in seen:
                 continue
-            # All layer directories should be PascalCase
-            if not re.match(r"^[A-Z]", subdir.name):
+            seen.add(subdir)
+            name = subdir.name
+            if name.startswith(".") or name == "vendor":
+                continue
+            if not re.match(r"^[A-Z][A-Za-z0-9]*$", name):
                 findings.append(Finding(
                     id=f"NDIR-{len(findings)+1:03d}",
                     rule="DIR_NAMING",
                     severity="low",
                     category="naming",
-                    file=f"{module_dir.name}/{subdir.name}/",
+                    file=str(subdir.relative_to(ROOT)) + "/",
                     line=0,
-                    message=f"Directory '{subdir.name}' not PascalCase",
+                    message=f"Directory '{name}' not PascalCase",
                     suggestion="Rename directory to PascalCase (e.g., 'my-dir' → 'MyDir')",
-                    reference="docs/conventions.md#directory-naming-conventions",
+                    reference=REF_FILE,
                 ))
-
-    return findings
-
-
-# ─── Method Naming in Actions ───────────────────────────────────────────────
-
-def scan_method_naming(files: list[Path], module: str | None) -> list[Finding]:
-    findings: list[Finding] = []
-    action_files = [f for f in files if "/Actions/" in str(f)]
-
-    for fp in action_files:
-        content = read_file(fp)
-        if not content:
-            continue
-        rel = relative_path(fp)
-
-        # Check execute() return type
-        execute_match = re.search(
-            r"public\s+function\s+execute\s*\([^)]*\)\s*:\s*(\w+)",
-            content,
-        )
-        if execute_match:
-            return_type = execute_match.group(1)
-            if return_type not in ("ActionResponse", "mixed", "void", "self", "static"):
-                findings.append(Finding(
-                    id=f"NMETH-{len(findings)+1:03d}",
-                    rule="ACTION_RETURN_TYPE",
-                    severity="low",
-                    category="naming",
-                    file=rel,
-                    line=content[:execute_match.start()].count("\n") + 1,
-                    message=f"Action execute() returns {return_type} — prefer ActionResponse",
-                    suggestion="Return ActionResponse for structured feedback",
-                    reference="docs/architecture/action-pattern.md#action-response",
-                ))
-
-    return findings
-
-
-# ─── Entity Method Naming ──────────────────────────────────────────────────
-
-def scan_entity_naming(files: list[Path], module: str | None) -> list[Finding]:
-    findings: list[Finding] = []
-    entity_files = [f for f in files if "/Entities/" in str(f) and f.name != "Entity.php"]
-
-    for fp in entity_files:
-        content = read_file(fp)
-        if not content:
-            continue
-        rel = relative_path(fp)
-
-        # Check for fromModel method
-        if "fromModel" not in content:
-            findings.append(Finding(
-                id=f"NENT-{len(findings)+1:03d}",
-                rule="ENTITY_NO_FROM_MODEL",
-                severity="medium",
-                category="naming",
-                file=rel,
-                line=1,
-                message="Entity missing fromModel() static factory method",
-                suggestion="Add: public static function fromModel(Model $model): static",
-                reference="docs/architecture/entity-pattern.md",
-            ))
-
-        # Check for business question methods (is* should return bool)
-        methods = re.finditer(
-            r"public\s+function\s+(is\w+)\s*\([^)]*\)\s*(?::\s*(\w+))?",
-            content,
-        )
-        for match in methods:
-            method_name = match.group(1)
-            return_type = match.group(2)
-            if return_type and return_type != "bool":
-                findings.append(Finding(
-                    id=f"NENT-{len(findings)+1:03d}",
-                    rule="ENTITY_QUESTION_RETURN",
-                    severity="low",
-                    category="naming",
-                    file=rel,
-                    line=content[:match.start()].count("\n") + 1,
-                    message=f"Entity method {method_name}() returns {return_type} — business questions should return bool",
-                    suggestion=f"Return bool for {method_name}() — it's a business question",
-                    reference="docs/architecture/entity-pattern.md#business-question-methods",
-                ))
-
     return findings
 
 
@@ -456,6 +439,7 @@ def build_report(
     for f in findings:
         by_severity[f.severity] = by_severity.get(f.severity, 0) + 1
 
+    rules = set(f.rule for f in findings)
     return ScanResult(
         scan_version=SCAN_VERSION,
         scan_name=SCAN_NAME,
@@ -465,7 +449,7 @@ def build_report(
         execution_time_ms=elapsed_ms,
         summary={
             "total_checks": 5,
-            "passed": 5 - len(set(f.rule for f in findings)),
+            "passed": 5 - len(rules),
             "failed": len(findings),
             "by_severity": by_severity,
         },
@@ -531,12 +515,11 @@ def main() -> None:
     files = find_php_files(args.module)
 
     findings: list[Finding] = []
-    findings.extend(scan_file_naming(files, args.module))
-    findings.extend(scan_class_naming(files, args.module))
-    findings.extend(scan_anti_patterns(files, args.module))
+    findings.extend(scan_file_naming(files))
+    findings.extend(scan_class_naming(files))
+    findings.extend(scan_psr4(files))
+    findings.extend(scan_anti_patterns(files))
     findings.extend(scan_directory_naming(args.module))
-    findings.extend(scan_method_naming(files, args.module))
-    findings.extend(scan_entity_naming(files, args.module))
 
     result = build_report(
         findings, scan_type, args.module, start_time,

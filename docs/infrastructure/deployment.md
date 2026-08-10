@@ -10,7 +10,7 @@ three supported deployment paths and the operational requirements for each.
 For prerequisites and PHP extension requirements, see
 [Installation](../foundation/installation.md#prerequisites). For application installation steps
 (migrations, setup wizard, build), see
-[Installation](../foundation/installation.md#application-installation-steps).
+[Installation](../foundation/installation.md#run-installer).
 
 ---
 
@@ -313,7 +313,7 @@ For multi-server deployments, replace local storage with S3-compatible object st
 ### 6. Complete the Installation
 
 Follow the application installation steps in
-[Installation](../foundation/installation.md#application-installation-steps) -- build assets, run the
+[Installation](../foundation/installation.md#run-installer) -- build assets, run the
 setup wizard, enable caches, and verify with `php artisan system:health`.
 
 ---
