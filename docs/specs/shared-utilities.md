@@ -1,7 +1,7 @@
 # Shared Utilities — Cross-Cutting Helpers & Services
 
-> **Last updated:** 2026-07-24 **Changes:** feat — split from core-foundation.md; AppInfo,
-> Environment, PasswordRules, Color, AppIntegrity, LangChecker
+> **Last updated:** 2026-08-08 **Changes:** sync — contrastColor returns `#1a1a1a`/`#f0f0f0`; Environment
+> isLocal/isCLI; Color rgbToHex; AppInfo rememberForever
 
 ## Description
 
@@ -161,7 +161,7 @@ final class Color
     public static function hexToRgb(string $hex): array;
     public static function rgbToHex(int $r, int $g, int $b): string;
     public static function relativeLuminance(int $r, int $g, int $b): float;
-    public static function contrastColor(string $hex): string;  // '#000000' or '#ffffff'
+    public static function contrastColor(string $hex): string;  // '#1a1a1a' (light bg) or '#f0f0f0' (dark bg)
     public static function lighten(string $hex, float $percent): string;
     public static function darken(string $hex, float $percent): string;
     public static function computeBaseShades(string $hex): array;

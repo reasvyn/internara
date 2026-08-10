@@ -1,7 +1,8 @@
 # Development Roadmap — Status Tracker
 
-> **Last updated:** 2026-07-31 **Changes:** sync — add Module Manager spec (#11), renumber all
-> subsequent specs #12–#54
+> **Last updated:** 2026-08-08 **Changes:** test — Foundation phase test coverage upgraded to
+> 266 Core tests (1080 assertions) with spec-driven suites; spec-first doctrine enforced in
+> AGENTS.md
 
 ---
 

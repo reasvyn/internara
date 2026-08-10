@@ -168,6 +168,10 @@ final class SmartLogger
         if ($this->shouldWriteActivityLog($causer)) {
             $this->writeActivityLog($causer, $eventName);
         }
+
+        if ($this->event instanceof BaseEvent) {
+            event($this->event);
+        }
     }
 
     private function resolveCauser(): ?Model

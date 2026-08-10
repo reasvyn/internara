@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Core\Actions;
 
 use App\Core\Services\SmartLogger;
-use Illuminate\Contracts\Notifications\Notification;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Throwable;
 
@@ -38,7 +38,7 @@ abstract class BaseProcessAction extends BaseAction
     protected function trackProgress(float $percent, ?string $message = null): void
     {
         $this->progress = [
-            'percent' => min(100, max(0, $percent)),
+            'percent' => (float) min(100, max(0, $percent)),
             'message' => $message,
         ];
     }

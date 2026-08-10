@@ -299,7 +299,7 @@ class HealthCommand extends Command
 
 ## 6. Performance Conventions
 
-### 5.1 N+1 Query Prevention
+### 6.1 N+1 Query Prevention
 
 - **Never** access Eloquent relationships inside Blade loops or Livewire `@foreach` without eager
   loading:
@@ -326,7 +326,7 @@ class HealthCommand extends Command
   inside a loop.
 - Read Actions and Livewire queries must be audited for N+1 during code review.
 
-### 5.2 Query Optimization
+### 6.2 Query Optimization
 
 - For large datasets (≥1,000 rows), use `chunk()` or `lazy()` instead of `get()` to avoid memory
   exhaustion:
@@ -354,7 +354,7 @@ class HealthCommand extends Command
 - Index strategy: every `WHERE` / `ORDER BY` / `JOIN` column used in frequent queries must have a
   database index. Composite indexes for multi-column filters.
 
-### 5.3 Eager Loading Convention
+### 6.3 Eager Loading Convention
 
 - Default: `->with()` for all regular relationships used in the current view/response.
 - Lazy eager loading (`->load()`) for optional relationships loaded conditionally.
@@ -362,7 +362,7 @@ class HealthCommand extends Command
 - Constrained eager loading: `->with(['comments' => fn ($q) => $q->where('approved', true)])`.
 - Avoid `->loadMissing()` in loops — move to `->with()` on the initial query.
 
-### 5.4 Resource Cleanup
+### 6.4 Resource Cleanup
 
 - Temporary files created during request processing must be cleaned up in `finally` blocks:
 
@@ -387,7 +387,7 @@ class HealthCommand extends Command
 
 - Open file handles and streams must be closed explicitly (`fclose()`, `curl_close()`).
 
-### 5.5 Caching Conventions
+### 6.5 Caching Conventions
 
 - Every cache key is declared in `config/cache-keys.php` — never inline strings.
 - Cache invalidation follows event-driven pattern: Command Action → event → listener →

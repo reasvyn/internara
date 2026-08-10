@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 use App\User\Models\User;
+use Illuminate\Log\Events\MessageLogged;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 
 /*
@@ -61,4 +64,15 @@ function actingAsStudent(): TestCase
     $user->assignRole('student');
 
     return test()->actingAs($user);
+}
+
+function captureLogs(): Collection
+{
+    $captured = collect();
+
+    Log::listen(function (MessageLogged $message) use ($captured) {
+        $captured->push($message);
+    });
+
+    return $captured;
 }

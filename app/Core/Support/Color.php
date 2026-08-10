@@ -13,6 +13,11 @@ final class Color
         return [hexdec(substr($hex, 0, 2)), hexdec(substr($hex, 2, 2)), hexdec(substr($hex, 4, 2))];
     }
 
+    public static function rgbToHex(int $r, int $g, int $b): string
+    {
+        return sprintf('#%02x%02x%02x', $r, $g, $b);
+    }
+
     public static function relativeLuminance(string $hex): float
     {
         $rgb = self::hexToRgb($hex);

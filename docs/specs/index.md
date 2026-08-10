@@ -1,7 +1,8 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-07-31 **Changes:** feat — add Module Manager spec (#11); renumber all
-> subsequent specs #12–#54 (previously #11–#53)
+> **Last updated:** 2026-08-08 **Changes:** test — Foundation specs (#1–#11) verified against
+> the rewritten Core suite (266 tests); spec↔code deviations reconciled (security-headers,
+> shared-utilities)
 
 ## Description
 

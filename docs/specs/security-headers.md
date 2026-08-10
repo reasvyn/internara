@@ -1,6 +1,7 @@
 # Security Headers — HTTP Response Protection
 
-> **Last updated:** 2026-07-23 **Changes:** feat — initial security headers specification
+> **Last updated:** 2026-08-08 **Changes:** sync — HSTS config-gated (hsts_enabled) instead of
+> APP_ENV-based; FR-SEC11/DD-3 updated
 
 ## Description
 
@@ -101,7 +102,7 @@ man-in-the-middle attacks.
 | FR-SEC8 | `Referrer-Policy` MUST be set to `strict-origin-when-cross-origin` |
 | FR-SEC9 | `Permissions-Policy` MUST disable unnecessary browser features (camera, microphone, geolocation) |
 | FR-SEC10 | In development (`APP_ENV=local`), CSP MUST include Vite dev server URL in `script-src` and `connect-src` |
-| FR-SEC11 | In development, HSTS header MUST be omitted |
+| FR-SEC11 | HSTS header MUST be omitted by default and only sent when `security-headers.hsts_enabled` is enabled (config-gated, independent of `APP_ENV`) |
 | FR-SEC12 | All header values MUST be configurable via `config/security-headers.php` |
 
 ---
@@ -133,8 +134,8 @@ class SecurityHeaders
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', $this->buildPermissionsPolicy());
 
-        if (!app()->environment('local')) {
-            $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+        if (config('security-headers.hsts_enabled', false)) {
+            $response->headers->set('Strict-Transport-Security', $this->buildHsts());
         }
 
         return $response;
@@ -202,14 +203,19 @@ are the primary XSS vector.
 **Trade-off:** Inline styles can theoretically be injected by XSS, but the practical risk is
 low compared to inline scripts.
 
-### DD-3 — HSTS Disabled in Development
+### DD-3 — HSTS Config-Gated (Off by Default)
 
-**Decision:** HSTS header is omitted when `APP_ENV=local`.
+**Decision:** HSTS is gated on the `security-headers.hsts_enabled` config flag (default `false`),
+independent of `APP_ENV`. Operators explicitly enable it (typically in production) via `.env`
+(`HSTS_ENABLED=true`).
 
 **Rationale:** Local development often uses HTTP (e.g., `http://localhost:8000`). HSTS would
 force the browser to remember HTTPS-only, potentially breaking local development workflows.
+Config-gating (instead of `APP_ENV` detection) keeps the behavior explicit and lets staging
+instances test HSTS with HTTPS enabled.
 
-**Trade-off:** Security testing of HSTS requires a staging environment with HTTPS configured.
+**Trade-off:** HSTS can be accidentally enabled in non-production environments if the flag is set;
+operators must configure it deliberately.
 
 ---
 

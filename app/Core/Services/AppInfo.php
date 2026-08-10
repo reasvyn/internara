@@ -88,7 +88,7 @@ final class AppInfo
 
     private static function load(): array
     {
-        return Cache::remember(self::cacheKey(), 86400, function () {
+        return Cache::rememberForever(self::cacheKey(), function () {
             return self::readFromComposer();
         });
     }

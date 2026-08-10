@@ -17,7 +17,7 @@ return [
     'auth_login_lockout' => 'auth.login.lockout:',
     'dashboard_student' => 'dashboard.student.',
     'auth_login_attempts' => 'auth.login.attempts:',
-    'auth_login_failures' => 'auth.login-failures:',
+    'auth_login_failures' => 'auth.login.failures:',
     'health_check' => 'system.health_check',
     'recover_admin_attempts' => 'auth.recover.attempts:',
     'recovery_otp' => 'auth.recover.otp:',
