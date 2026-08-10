@@ -1,7 +1,7 @@
 # Shared Utilities — Cross-Cutting Helpers & Services
 
-> **Last updated:** 2026-08-08 **Changes:** sync — contrastColor returns `#1a1a1a`/`#f0f0f0`; Environment
-> isLocal/isCLI; Color rgbToHex; AppInfo rememberForever
+> **Last updated:** 2026-08-10 **Changes:** add — `app_info()` global helper (project-requirements §4.4);
+> contrastColor returns `#1a1a1a`/`#f0f0f0`; Environment isLocal/isCLI; Color rgbToHex; AppInfo rememberForever
 
 ## Description
 
@@ -87,6 +87,7 @@ in production while allowing development flexibility.
 | FR-SUP7 | `Color` — `hexToRgb()`, `rgbToHex()`, `relativeLuminance()`, `contrastColor()`, `lighten()`, `darken()`, `computeBaseShades()`, `computeDarkShades()` |
 | FR-SUP9 | `AppIntegrity` — verifies composer.json author name; throws in production, warns in dev/test |
 | FR-SUP10 | `LangChecker` — extends Laravel `Translator`, logs missing translation keys with caller file/line via SmartLogger |
+| FR-SUP11 | `app_info()` global helper — returns all composer.json metadata (`AppInfo::all()`) or a single key (`AppInfo::get($key, $default)`); required by project-requirements §4.4 |
 
 ### Cross-References (Dedicated Specs)
 
@@ -125,6 +126,17 @@ final class AppInfo
     public static function license(): string;     // composer.json license
     public static function gitUrl(): string;      // composer.json homepage
     // All values cached 24h via Cache::rememberForever
+}
+```
+
+### app_info() Global Helper
+
+```php
+// app/Core/Support/helpers.php
+if (! function_exists('app_info')) {
+    function app_info(?string $key = null, mixed $default = null): mixed;
+    // app_info()          → AppInfo::all() — full metadata array
+    // app_info('name')    → AppInfo::get('name') — single metadata key
 }
 ```
 
@@ -252,6 +264,7 @@ solely on this — these utilities are used broadly.
 ## Quick References
 
 - `app/Core/Services/AppInfo.php` — Composer metadata with 24h cache
+- `app/Core/Support/helpers.php` — Global `app_info()` helper wrapping AppInfo
 - `app/Core/Services/Environment.php` — Environment detection helpers
 - `app/Core/Support/PasswordRules.php` — Password validation rules
 - `app/Core/Support/Color.php` — Color manipulation utilities

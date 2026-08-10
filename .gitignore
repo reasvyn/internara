@@ -63,6 +63,7 @@ yarn-error.log
 .opencode/
 opencode.json
 /scripts/outputs/*.json
+/scripts/__pycache__/
 
 # Backup Files
 /**/*.backup

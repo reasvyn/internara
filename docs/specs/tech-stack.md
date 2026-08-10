@@ -1,7 +1,7 @@
 # Tech Stack — Language, Framework & Infrastructure Configuration
 
-> **Last updated:** 2026-07-24 **Changes:** feat — split from core-foundation.md; PHP/Laravel
-> versions, cache, session, queue, database, mail configuration
+> **Last updated:** 2026-08-10 **Changes:** add — FR-Q6 separate `default`/`documents` queue pipelines
+> (project-requirements §5 NFR Queue); PHP/Laravel versions, cache, session, queue, database, mail configuration
 
 ## Description
 
@@ -165,6 +165,7 @@ queue. Scaling to Redis/database queue should be a single `.env` change.
 | FR-Q3  | Queue-specific tables auto-created by migration for `database` driver |
 | FR-Q4  | Failed jobs table: `failed_jobs` with full exception trace |
 | FR-Q5  | Horizon available for Redis queue monitoring (optional) |
+| FR-Q6  | Separate `default` and `documents` queue pipelines — batch document generation dispatches to `documents`, all other jobs to `default` (project-requirements §5 NFR Queue; see [job-queue-infrastructure.md](job-queue-infrastructure.md) and [official-documents.md](official-documents.md)) |
 
 ### Mail
 
@@ -242,6 +243,9 @@ return [
     ],
     'failed' => ['driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'), 'database' => 'failed_jobs', 'table' => 'failed_jobs'],
 ];
+
+// Batch document generation uses the 'documents' pipeline (FR-Q6):
+dispatch(new GenerateDocumentJob(...))->onQueue('documents');
 ```
 
 ### Mail Configuration
