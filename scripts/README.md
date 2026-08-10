@@ -84,6 +84,7 @@ contract source.
 | `scan_issues.py` | Fetch GitHub issues, summarize by module/severity | — (data fetch) | writing-issues, arch-guard |
 | `scan_naming.py` | File and class naming conventions | `FILE_NAMING`, `CLASS_NAMING` | arch-guard |
 | `scan_security.py` | XSS, CSP, SQL injection, mass assignment, auth, secrets, CSRF, uploads, rate limiting | `S1`–`S9` | arch-guard, security-audit |
+| `scan_skills.py` | Agent SKILL.md meta-framework consistency (frontmatter, phase map, spec-first, size, git verify, handoffs) | `SKILL_FRONTMATTER`, `SKILL_PHASE_MAP`, `SKILL_SPEC_FIRST`, `SKILL_SIZE_TRIAGE`, `SKILL_GIT_VERIFY`, `SKILL_HANDOFFS` | script-automation, all skills |
 | `scan_tests.py` | Run test suite, parse per-module results | — (data fetch) | pest-testing, test-writing |
 | `scan_violations.py` | C1-C8, D1-D6 architecture invariant violations | `C1`–`C8`, `D1`–`D6`, `P2`, `P5` | arch-guard |
 | `clean_outputs.py` | Remove old JSON output files by age or date range | — | maintenance |

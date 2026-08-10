@@ -28,6 +28,11 @@ Activates during ANALYSIS phase or as a periodic quality gate.
 | Onboarding new code | Validate against all contracts |
 | CI/CD gate | Run automated checks in pipeline |
 
+**Size-aware:** if the audit spans multiple modules or the codebase is **L** size (AGENTS.md Size
+Triage), split the scan by module into sessions — inform the user and propose a plan first, then run
+module-scoped scans (`--module {Name}`) session by session. Never run all 6+ scripts blindly on a
+full-module set without batching.
+
 ## Rule Reference Hierarchy
 
 Rules are checked in this priority order:
@@ -323,6 +328,12 @@ python3 scripts/scan_dead_code.py
 
 # Doc link integrity
 python3 scripts/scan_doc_links.py
+
+# Test suite runner (per-module results)
+python3 scripts/scan_tests.py
+
+# Spec↔code gap analysis
+python3 scripts/scan_issues.py
 ```
 
 All scripts output to `scripts/outputs/{timestamp}-{description}.json`. Use `--module {Name}` to scope
@@ -341,6 +352,11 @@ to a single module. See `scripts/README.md` for full documentation.
 | `sync-docs` | Use conventions for documentation accuracy |
 | `test-writing` | Validate test file conventions |
 | `doc-writing` | Validate doc structure conventions |
+
+**Spec-first:** this skill is a quality gate, not a source of intent. It only verifies that code
+conforms to the governing spec's requirements (FR/NFR/UC IDs). If an audit surfaces a behavior
+change with no requirement, the finding is a spec gap — report it via `spec-audit` / `writing-issues`
+rather than changing code.
 
 ## Severity Classification
 

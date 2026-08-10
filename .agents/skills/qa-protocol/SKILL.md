@@ -1,6 +1,6 @@
 ---
 name: qa-protocol
-description: "SDLC Phase: QUALITY GATE. Independent blind QA audit against global industry standards (OWASP, ISO 25010, CWE/SANS, WCAG, PSR, Laravel best practices). 5-phase protocol producing GitHub Issues and a compliance scorecard. No project-specific rules — purely external benchmarks."
+description: "SDLC Phase: QUALITY GATE. Independent blind QA audit against global industry standards (OWASP, ISO 25010, CWE/SANS, WCAG, PSR, Laravel best practices). 6-phase protocol producing GitHub Issues and a compliance scorecard. No project-specific rules — purely external benchmarks."
 downstream:
   - writing-issues
   - roadmap-planning
@@ -41,6 +41,10 @@ PHASE 1: Automated Scanning
         → PHASE 5: Performance & Efficiency
           → PHASE 6: Report, Issues & Commit
 ```
+
+**Size-aware:** classify the audit per AGENTS.md Size Triage. A full-project QA is **L** — inform the
+user, propose a session plan (e.g., by module), and run each phase per session. Never attempt all 6
+phases on the entire codebase in a single pass.
 
 ---
 
@@ -95,7 +99,13 @@ vendor/bin/pint --test 2>&1
 
 ### 1.4 Dead Code Detection
 
-Search for:
+Use the project's scanner first (Automation-First), then supplement manually:
+
+```bash
+python3 scripts/scan_dead_code.py
+```
+
+Then search for additional patterns:
 - Unused PHP classes (defined but never imported/instantiated)
 - Unused methods (defined but never called outside their own class)
 - Orphan event classes (defined but no listener registered)
@@ -104,7 +114,7 @@ Search for:
 - Unused composer packages (installed but never used in code)
 
 ```bash
-# Quick checks
+# Manual supplement — orphan exceptions (scanner may not cover all cases)
 grep -rn "class.*Exception" app/ | head -20  # Check for unused exceptions
 ```
 
@@ -536,13 +546,16 @@ For each finding, create a GitHub Issue using the `writing-issues` skill templat
 
 ### 6.3 Commit Skill Changes
 
-Commit the skill file and any rules files that were created or updated during this session:
+Commit the skill file and any rules files that were created or updated during this session.
+Verify with git first — `git status` + `git diff` — that only intended files changed:
 
 ```bash
+git status
+git diff
 git add .agents/skills/qa-protocol/
 git commit -m "docs(qa-protocol): add QA protocol skill with 19 rules files
 
-- 5-phase blind audit protocol against global industry standards
+- 6-phase blind audit protocol against global industry standards
 - Rules: OWASP, CWE/SANS, ISO 25010, WCAG, PSR, Laravel, crypto, etc.
 - Phase 6: consolidated reporting, GitHub Issues creation, user summary"
 ```
@@ -681,6 +694,23 @@ note this overlap but still be filed independently — the QA perspective may be
 8. **Independent of project rules** — C1-C8, D1-D6, etc. are NOT part of this audit; this audit uses only global standards
 9. **Create Issues and commit** — Every audit must end with GitHub Issues created for each finding, skill files committed, and a summary report delivered to the user
 10. **Overlap transparency** — When a QA finding overlaps with an `arch-guard` finding, note the overlap in the Issue body but still file independently
+
+## Phase Context
+
+| Role           | Skill                                            |
+| -------------- | ------------------------------------------------ |
+| **Upstream**   | `feature-building` (implementation), `arch-guard` (internal audits) |
+| **This skill** | **ANALYSIS** — independent blind QA audit         |
+| **Downstream** | `writing-issues` (file findings), `security-audit` (security overlap) |
+
+## Skill Handoffs (Actionable)
+
+| Condition | Action |
+|-----------|--------|
+| QA finding overlaps an internal finding | Note overlap in issue body; still file independently |
+| Findings produced | Load `writing-issues` to create structured GitHub Issues |
+| Security-heavy findings | Load `security-audit` for deeper security analysis |
+| Audit is **L** size (full project) | Split into per-module sessions; inform the user first |
 
 ## References
 

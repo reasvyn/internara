@@ -11,6 +11,40 @@ description: >
 
 Standards for writing, maintaining, and integrating Python devtool scripts in `scripts/`.
 
+## Agent Workflow
+
+This is a TOOLING standards reference — not a 4-phase implementation flow. When creating or
+modifying a script, follow the same decision discipline as other skills:
+
+- **Spec-first:** only add a scanner/script when a governing spec (or a documented automation need)
+  justifies it. Never build a script to work around a one-off problem a reusable script already
+  covers.
+- **Reuse before create:** check `scripts/README.md` and the `## Automation Scripts` tables in other
+  skills before writing a new script. If the pattern is covered, use the existing tool.
+- **Size-aware:** a multi-scanner initiative is **M/L** per AGENTS.md Size Triage — stage it per
+  script, and inform the user before committing if it crosses into **L**.
+- **Verify:** run `python3 scripts/{name}.py --module {Module} --strict` and confirm the JSON output
+  schema before integrating into any skill.
+- **Git verify:** before committing a script change, run `git status` + `git diff` to confirm only
+  intended files changed and no unrelated edits or lost content (version-control verification).
+
+## Phase Context
+
+| Role           | Skill                                        |
+| -------------- | -------------------------------------------- |
+| **Upstream**   | `arch-guard` (verify gates), all skills with `## Automation Scripts` tables |
+| **This skill** | **TOOLING** — script standards and conventions |
+| **Downstream** | `arch-guard`, `context-awareness` (Automation Scripts reference) |
+
+## Skill Handoffs (Actionable)
+
+| Condition | Action |
+|-----------|--------|
+| Creating/modifying a script in `scripts/` | Follow this skill's template and interface |
+| A skill needs a new automation | Check `scripts/README.md` + skill `## Automation Scripts` tables first (reuse-before-create) |
+| Script is a quality gate | Load `arch-guard` to integrate it into the Quality Gate Commands |
+| Multi-scanner initiative | Classify **M/L** per Size Triage; stage per script, inform user if **L** |
+
 ## Script Directory Structure
 
 ```
@@ -23,6 +57,7 @@ scripts/
 ├── scan_issues.py            # GitHub issue metrics
 ├── scan_naming.py            # Naming convention compliance
 ├── scan_security.py          # XSS, SQLi, mass assignment patterns
+├── scan_skills.py            # Agent SKILL.md meta-framework consistency
 ├── scan_tests.py             # Test pass/fail results
 ├── scan_violations.py        # C1-C8, D1-D6 violations
 ├── scan_files.py             # File inventory, LOC counts
@@ -76,7 +111,7 @@ Every script MUST produce JSON conforming to this schema:
 
 ```json
 {
-  "scan_version": "1.0.0",
+  "scan_version": "2.0.0",
   "scan_name": "violations",
   "scan_type": "full|module|targeted",
   "module": null,
@@ -160,7 +195,7 @@ ROOT = Path(__file__).resolve().parent.parent
 APP_DIR = ROOT / "app"
 OUTPUT_DIR = Path(__file__).parent / "outputs"
 SCAN_NAME = "{scan_name}"
-SCAN_VERSION = "1.0.0"
+SCAN_VERSION = "2.0.0"
 
 # ─── Data ───────────────────────────────────────────────────────────────────
 

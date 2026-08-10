@@ -88,6 +88,19 @@ SCOPE → DISCOVER → AUDIT (6 areas) → TRIAGE → FIX/ISSUE → FINALIZE →
 - Read `docs/modules/index.md` for module structure
 - Read `docs/roadmap.md` for current development status
 
+#### 1.1.1 Size Triage
+
+Classify the audit scope per AGENTS.md Size Triage **before** auditing:
+
+| Scope | Size | Execution |
+|-------|------|-----------|
+| Single spec | S | Single pass |
+| Module / phase / area | M | Single session, staged by area |
+| Full audit (`--all`, 50+ specs) | **L** | **Split into sessions** — inform the user, propose a plan (e.g., by phase), audit session by session |
+
+Never run a full `--all` audit in a single pass — split by lifecycle phase, verify each phase's
+findings, then combine the report.
+
 #### 1.2 Determine Scope
 
 Based on user input or context:
@@ -453,6 +466,8 @@ Update `docs/roadmap.md` based on findings:
 If any files were modified (auto-fixes, roadmap update):
 
 ```bash
+git status          # confirm only intended files changed
+git diff            # review every change before committing
 git add -A
 git commit -m "docs(spec-audit): synchronize specs with implementation
 

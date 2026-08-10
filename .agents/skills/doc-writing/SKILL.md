@@ -26,12 +26,20 @@ Use this skill when:
 
 ## Agent Workflow
 
+Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
+Verify = 7, Report & Commit = 8-9):
+
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
+- **Locate the governing spec** (`docs/specs/`) — docs reflect the spec (FR/NFR/UC IDs); if the
+  spec is missing or a behavior change has no requirement, raise it via `spec-writing` before
+  documenting (Spec-First Doctrine)
 - Identify which tier the doc belongs to: **conceptual** or **reference**
 - Read the existing doc (if updating) or a peer doc of the same type (if creating new)
 - Verify code paths, class names, and signatures against actual source — never trust docs blindly
+- **Classify the size (S/M/L)** per AGENTS.md Size Triage; a multi-module doc update is **M/L** —
+  stage it by module and inform the user if it crosses into **L**
 - Determine approach: at least 2 options before deciding
 
 ### 2. Execute — Write Documentation
@@ -45,14 +53,17 @@ Use this skill when:
 
 ### 3. Verify — Quality Gates
 
+- **Markdown-only changes:** run `python3 scripts/scan_doc_links.py` (doc changes don't need
+  pint/phpstan/tests)
 - All relative links resolve to existing files
 - Anchor links (`#section`) match actual section headings
 - Metadata block present with current date
 - `## Description` section present
 - No implementation details in conceptual docs
 - No design rationale in reference docs
-- PHPStan still passes (if PHPDoc was added): `vendor/bin/phpstan analyse --no-progress`
-- Pint still passes: `vendor/bin/pint --dirty --format agent`
+- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
+- PHPStan still passes (only if PHPDoc was added): `vendor/bin/phpstan analyse --no-progress`
+- Pint still passes (only if PHP files changed): `vendor/bin/pint --dirty --format agent`
 
 ### 4. Report & Commit
 
@@ -334,6 +345,16 @@ Before committing doc changes, verify:
 | **Upstream** | `feature-building` (new code needs docs), `code-refactoring` (changed code needs doc updates), `pest-testing` / `test-writing` (test docs) |
 | **This skill** | **DOCUMENTATION** — writes and maintains all documentation |
 | **Downstream** | `sync-docs` (automated sync verification) |
+
+## Skill Handoffs (Actionable)
+
+| Condition | Action |
+|-----------|--------|
+| Writing feature specs | Load `spec-writing` (spec template + indexing rules) |
+| Syncing docs against code | Load `sync-docs` |
+| Documenting code changes | Load `code-writing` for changed contracts |
+| Broken links found | Fix directly, then re-run `scan_doc_links.py` |
+| Multi-module doc update (**L**) | Split by module into sessions; inform user first |
 
 ## Automation Scripts
 

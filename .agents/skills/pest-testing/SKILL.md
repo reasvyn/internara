@@ -34,7 +34,8 @@ Use this skill when:
 
 ## Agent Workflow
 
-Using this skill follows 4 phases:
+Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
+Verify = 7, Report & Commit = 8-9):
 
 ### 1. Construct — Knowledge, Context & Scope
 
@@ -42,6 +43,8 @@ Using this skill follows 4 phases:
 - **Read the spec first** (`docs/specs/{feature}.md`) — list the FR/NFR/UC IDs it defines
 - Read relevant docs: module docs, pattern docs, reference docs
 - Identify which requirements are already tested and which are gaps
+- **Classify the size (S/M/L)** per AGENTS.md Size Triage; if test work spans multiple modules or is
+  **L**, inform the user and propose a session plan
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 - Determine approach: at least 2 options before deciding
 
@@ -60,7 +63,11 @@ Using this skill follows 4 phases:
 
 - Run linter: `vendor/bin/pint --dirty --format agent`
 - Run static analysis: `vendor/bin/phpstan analyse --no-progress`
-- Run targeted tests: `php artisan test --compact --filter={TestName}`
+- Run targeted tests: `php artisan test --compact --filter={TestName}` (module suite for
+  module-scoped changes: `vendor/bin/pest --testsuite={ModuleName}`)
+- Run arch-guard scripts: `scan_violations.py`, `scan_class_contracts.py`, `scan_security.py`,
+  `scan_naming.py`, `scan_conventions.py`, `scan_doc_links.py`
+- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
 - Ensure pre-commit checklist is satisfied
 - Check no debug calls (`dd/dump/ray`) were left behind
 - **Do not run the full suite unless the user asks** — batch all changes, then verify once

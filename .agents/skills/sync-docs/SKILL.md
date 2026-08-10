@@ -26,17 +26,22 @@ must agree.
 
 ## Agent Workflow
 
-Using this skill follows 4 phases:
+Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
+Verify = 7, Report & Commit = 8-9):
 
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
+- **Locate the governing spec** (`docs/specs/`) — docs stay in sync with specs and code; a spec
+  requirement with no matching doc is a sync gap (Spec-First Doctrine)
 - Review last 10 git commits (`git log --oneline -10`) to understand recent changes before syncing
   - Run `git log -10 --stat` to see which files were touched per commit
   - Run `git diff HEAD~10..HEAD --name-status` for a consolidated view of added/modified/deleted files
   - This context prevents re-syncing already-correct docs and focuses effort on actual changes
 - Read relevant docs: module docs, pattern docs, reference docs
 - Understand task scope: what needs to be done, which files are affected
+- **Classify the size (S/M/L)** per AGENTS.md Size Triage; a multi-module sync is **M/L** — stage by
+  module, inform the user before committing if **L**
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 - Determine approach: at least 2 options before deciding
 
@@ -51,11 +56,13 @@ Using this skill follows 4 phases:
 
 ### 3. Verify — Quality Gates
 
-- Run linter: `vendor/bin/pint --dirty --format agent`
-- Run static analysis: `vendor/bin/phpstan analyse --no-progress`
-- Run unit/feature tests: `php artisan test --compact --filter={TestName}`
+- **Markdown-only changes:** run `python3 scripts/scan_doc_links.py` (doc changes don't need
+  pint/phpstan/tests)
+- Cross-check against `rules/sync-verification.md` (the automated sync-verification rule asset)
+- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
 - Ensure pre-commit checklist is satisfied
-- Check no debug calls (`dd/dump/ray`) were left behind
+- PHPStan/Pint only if PHP files were touched: `vendor/bin/phpstan analyse --no-progress`,
+  `vendor/bin/pint --dirty --format agent`
 
 ### 4. Report & Commit
 

@@ -19,18 +19,24 @@ vulnerabilities.
 
 ## Agent Workflow
 
-Using this skill follows 4 phases:
+Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
+Verify = 7, Report & Commit = 8-9):
 
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
+- **Locate the governing spec** (`docs/specs/`) — verify that each audited behavior maps to a
+  requirement (FR/NFR/UC ID); a finding with no requirement is a spec gap (Spec-First Doctrine)
 - Read relevant docs: module docs, pattern docs, reference docs
 - Understand task scope: what needs to be done, which files are affected
+- **Classify the size (S/M/L)** per AGENTS.md Size Triage; a full-project security audit is **L** —
+  inform the user and propose a session plan (by module or audit category)
 - Verify paths, class names, signatures against actual code (don't trust docs blindly)
 - Determine approach: at least 2 options before deciding
 
 ### 2. Execute — Security Audit Execution
 
+- Run `python3 scripts/scan_security.py` first (Automation-First) — XSS, SQLi, mass assignment, auth
 - Audit authentication: password hashing, rate limiting, recovery flows
 - Audit authorization: Policy methods, super admin bypass, permissions config
 - Audit XSS: Blade escaping, {!! !!} occurrences, CSP headers
@@ -45,6 +51,7 @@ Using this skill follows 4 phases:
 - Run linter: `vendor/bin/pint --dirty --format agent`
 - Run static analysis: `vendor/bin/phpstan analyse --no-progress`
 - Run unit/feature tests: `php artisan test --compact --filter={TestName}`
+- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
 - Ensure pre-commit checklist is satisfied
 - Check no debug calls (`dd/dump/ray`) were left behind
 
@@ -156,6 +163,7 @@ Each finding should include:
 2. Record all findings even if out of scope — prioritization happens downstream
 3. Do NOT fix during audit — separate concerns
 4. Check existing issues before filing duplicates
+5. Automation-First — run `scan_security.py` and `scan_violations.py` before manual checks
 
 ## References
 

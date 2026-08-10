@@ -20,15 +20,20 @@ immediately actionable by a developer or AI agent without requiring additional c
 
 ## Agent Workflow
 
-Using this skill follows 4 phases:
+Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
+Verify = 7, Report & Commit = 8-9):
 
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
 - Understand affected modules and submodules
+- **Locate the governing spec** (`docs/specs/`) — cite the FR/NFR/UC ID an issue refers to when
+  applicable (a bug that contradicts a spec must reference that requirement)
 - Gather all relevant information (error logs, stack traces, user reports, code references)
 - Identify the correct issue type (bug/feature/security/refactor/perf/docs/chore)
 - Determine severity and priority
+- **Classify the size (S/M/L)** per AGENTS.md Size Triage; an L-size issue (multi-module scope)
+  should note the session-split plan in its body so the implementing agent knows to stage it
 
 ### 2. Execute — Issue Writing
 
@@ -42,6 +47,8 @@ Using this skill follows 4 phases:
 
 ### 3. Verify — Quality Gates
 
+- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
+  (version-control verification)
 - Review: can the issue be understood without additional context?
 - Review: is the scope specific enough (not multiple issues in one)?
 - Review: are all technical terms explained?

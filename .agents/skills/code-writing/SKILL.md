@@ -27,14 +27,22 @@ Use this skill when:
 
 ## Agent Workflow
 
+Using this skill follows 4 phases (mapped to AGENTS.md 9-step: Construct = Steps 1-5, Execute = 6,
+Verify = 7, Report & Commit = 8-9):
+
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
 - Read `laravel-best-practices` skill for Laravel-specific patterns
+- **Locate the governing spec** (`docs/specs/`) — list the FR/NFR/UC IDs this code must satisfy
+  (Spec-First Doctrine: no behavior without a requirement; if the spec is missing, write it first
+  via `spec-writing`)
 - Read relevant pattern docs: `docs/architecture/{pattern}-pattern.md`
 - Identify which module and submodule the code belongs to
 - Read existing code in the same submodule to match conventions
 - Check if the class already exists (avoid duplicates)
+- **Classify the size (S/M/L)** per AGENTS.md Size Triage; if **L**, inform the user and propose a
+  session plan before writing
 - Determine approach: at least 2 options before deciding
 
 ### 2. Execute — Write Code
@@ -50,6 +58,8 @@ Use this skill when:
 
 ### 3. Verify — Quality Gates
 
+- Run change-type-appropriate verification (see AGENTS.md Verification Strategy — not a fixed
+  command set)
 - `declare(strict_types=1)` present in all new PHP files
 - No debug calls (`dd`, `dump`, `ray`, `var_dump`, `print_r`, `die`)
 - No `app()->make()` or `resolve()` — constructor injection only
@@ -58,6 +68,7 @@ Use this skill when:
 - Lint: `vendor/bin/pint --dirty --format agent`
 - Static analysis: `vendor/bin/phpstan analyse --no-progress`
 - No N+1 queries — eager loading verified
+- Verify with git: `git status` + `git diff` — confirm only intended files changed, nothing lost
 
 ### 4. Report & Commit
 
@@ -73,7 +84,7 @@ Use this skill when:
 
 ## 1. Non-Negotiable Invariants
 
-These rules MUST be violated. No exceptions.
+These rules MUST be followed. No exceptions.
 
 ### Architecture Invariants
 
@@ -508,9 +519,24 @@ ActionResponse::error('Something went wrong', $errors);
 
 | Script | What it does | Command |
 |--------|-------------|---------|
+| `scan_violations.py` | C1-C8, D1-D6 violations | `python3 scripts/scan_violations.py` |
+| `scan_class_contracts.py` | Action/Entity/DTO/Model/Enum contracts | `python3 scripts/scan_class_contracts.py` |
+| `scan_security.py` | XSS, SQLi, CSRF, auth patterns | `python3 scripts/scan_security.py` |
+| `scan_naming.py` | Naming conventions | `python3 scripts/scan_naming.py` |
 | `scan_conventions.py` | strict_types, Fillable, debug calls, hardcoded strings | `python3 scripts/scan_conventions.py` |
 
-Output: `scripts/outputs/{timestamp}-conventions.json`.
+Output: `scripts/outputs/{timestamp}-{description}.json`.
+
+## Skill Handoffs (Actionable)
+
+| Condition | Action |
+|-----------|--------|
+| Spec missing or incomplete | Load `spec-writing`, write/amend the spec, get user approval, then continue |
+| Writing tests | Load `test-writing` / `pest-testing` |
+| Refactoring existing code | Load `code-refactoring` |
+| Livewire component work | Load `livewire-development` |
+| File uploads / media | Load `medialibrary-development` |
+| Feature is **L** size | Split into sessions; inform user first |
 
 ## Quality Gate — arch-guard
 
@@ -518,6 +544,9 @@ Validate all code against `arch-guard` rules before completing:
 - Run `python3 scripts/scan_violations.py` for C1-C8, D1-D6
 - Run `python3 scripts/scan_class_contracts.py` for class contracts
 - Run `python3 scripts/scan_naming.py` for naming conventions
+- Run `python3 scripts/scan_security.py` for security patterns
+- Run `python3 scripts/scan_conventions.py` for strict_types, Fillable, debug
+- Run `python3 scripts/scan_doc_links.py` for broken doc links
 - See `arch-guard` skill for full rule reference
 
 ## References
