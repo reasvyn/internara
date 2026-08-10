@@ -1,6 +1,6 @@
 # Project Requirements — High-Level Feature Specifications
 
-> **Last updated:** 2026-07-21 **Changes:** sync — remove Guidance module, split SupervisionLog to Journals and Handbook to Document
+> **Last updated:** 2026-08-10 **Changes:** full deduplication — merged duplicated feature entries (System Health, CSV Handler, Language/Theme Switchers, Compliance Monitoring, Cross-Role Proxy, Rate Limiting, Audit Trail) into authoritative sections, consolidated 7 cross-role usability indicators, and added CSV to output-format requirements
 
 ## Description
 
@@ -59,11 +59,8 @@ Base classes, contracts, middleware, and cross-module utilities that every other
 | LabelEnum           | All enums implement `label(): string`                                                    |
 | Security Headers    | CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy                                |
 | Log Context         | Request tracing: request_id, method, URL, IP, user                                       |
-| System Health       | 15-point check (PHP, extensions, memory, DB, migrations, storage, queue, cache, app key) |
+| System Health       | 15-point check (PHP, extensions, memory, DB, migrations, storage, queue, cache, app key); Admin-accessible |
 | Activity Logging    | Spatie Activity Log with query scopes                                                    |
-| CSV Handler         | Export, import, template download with header validation                                 |
-| Language Switcher   | Livewire bilingual toggle (en/id)                                                        |
-| Theme Switcher      | Livewire light/dark/system theme toggle                                                  |
 
 #### Setup — Installation & Provisioning
 
@@ -90,8 +87,8 @@ Key-value configuration store with dynamic resolution.
 | Branding Configuration | App name, logo, favicon, colors (primary/secondary/accent), custom CSS             | Super Admin |
 | Feature Flags          | Enable/disable features at runtime                                                 | Super Admin |
 | Mail Configuration     | SMTP settings with test email verification                                         | Super Admin |
-| Theme System           | Color resolution into CSS custom properties (light/dark)                           | System      |
-| Locale Management      | Bilingual with session preference, resolved from stored setting                    | System      |
+| Theme System           | Color resolution into CSS custom properties (light/dark); Livewire light/dark/system theme toggle | System      |
+| Locale Management      | Bilingual with session preference and Livewire en/id toggle, resolved from stored setting | System      |
 | Cache Invalidation     | Automatic via SettingObserver on Eloquent model events (created/updated/deleted)    | System      |
 
 #### Auth — Authentication & Authorization
@@ -104,7 +101,6 @@ Login, password management, account recovery, RBAC.
 | Forgot Password          | Email-based reset (60 min expiry, single-use token)                                    | Guest        |
 | Reset Password           | New password via email token                                                           | Guest        |
 | Confirm Password         | Re-authenticate before sensitive operations                                            | Auth         |
-| Rate Limiting            | Multi-endpoint throttling (login 5/60s, forgot 3/3600s, reset 5/300s, recovery 3/300s) | Guest + Auth |
 | Recovery Slip            | Admin generates 10 one-time codes, delivered offline, no expiry                        | Admin        |
 | Account Recovery         | User redeems code to unlock account and set new password                               | Guest        |
 | RBAC                     | 5 roles + 2 functional roles (mentor, mentee) with `Role::resolvesTo()`                | All          |
@@ -143,7 +139,6 @@ User CRUD, announcements, audit logs, health monitoring.
 | Audit Log Manager    | Centralized read-only audit log with filters                 | Admin       |
 | Bulk Operations      | Mass user creation with result summaries                     | Admin       |
 | Pulse Monitoring     | Laravel Pulse: queue throughput, slow jobs, failed jobs      | Admin       |
-| System Health        | 15-point check: PHP, extensions, DB, cache, storage, queue   | Admin       |
 
 ---
 
@@ -222,7 +217,6 @@ Daily activity tracking.
 | Logbook Entry         | Daily entry: date, activities, learnings, challenges, plans, attachments | Student          |
 | Logbook Workflow      | DRAFT → SUBMITTED → VERIFIED/FINALIZED, 48h teacher bypass               | Student + Mentor |
 | One Entry Per Day     | Maximum one entry per calendar day per student                           | System           |
-| Compliance Monitoring | Auto-notify mentor if N days without entry                               | System           |
 | Student Clock In/Out  | Timestamp-based, optional GPS data                                       | Student          |
 | Absence Request       | Submit planned/unplanned absence with reason                             | Student          |
 | Absence Approval      | Mentor approves single-day, extended requires admin                      | Mentor + Admin   |
@@ -237,7 +231,6 @@ Mentor relationships and supervision log management within the Journals module.
 | Supervision Logs            | Private notes: site visits, online, phone supervision    | Mentor                         |
 | Supervision Log Workflow    | DRAFT → SUBMITTED → REVIEWED → ACKNOWLEDGED               | Mentor                         |
 | Mentoring Assignments       | Maps teachers and supervisors to student registrations   | Admin                          |
-| Cross-Role Proxy            | Teacher proxies supervisor log verification after 48h    | Teacher                        |
 
 #### Document — Handbooks & Templates
 
@@ -273,7 +266,6 @@ Rubric-based evaluation framework.
 | Rubric Manager     | CRUD weighted evaluation sheets with nested JSON structures    | Admin                  |
 | Assessment Grading | Score against rubric indicators, auto-calculate weighted total | Teacher / Supervisor   |
 | Finalization       | Finalized assessments immutable                                | System                 |
-| Cross-Role Proxy   | Teacher acts as proxy for supervisor; admin proxies both       | Teacher / Admin        |
 | Supervisor Grading | Industry supervisor submits scores via dedicated interface     | Supervisor             |
 | Proxy Stamping     | Proxy-graded assessments tagged with metadata for audit trail  | System                 |
 
@@ -362,8 +354,8 @@ These features span multiple modules and are not owned by a single module.
 ### 4.1 Cross-Role Proxy
 
 Teachers can act as proxy for inactive industry supervisors after a configurable window (default
-48h). Applies to: logbook verification, assessment grading, supervision log verification.
-Proxy-graded items are tagged with metadata for audit trail. See
+48h); admin can proxy for either role. Applies to: logbook verification, assessment grading,
+supervision log verification. Proxy-graded items are tagged with metadata for audit trail. See
 [ADR-014: Cross-Role Proxy](../adr/adr-cross-role-proxy.md).
 
 ### 4.2 Compliance Monitoring
@@ -392,15 +384,24 @@ templates. Available on all Record Manager components.
 
 ## 5. Non-Functional Requirements
 
-| Category     | Requirement                                                                    |
-| ------------ | ------------------------------------------------------------------------------ |
-| Performance  | Peak 1,000 concurrent clock-in writes (07:00–08:30)                            |
-| Database     | SQLite WAL mode or MySQL; UUID primary keys; 55 tables (37 domain + 18 system) |
-| Cache        | Redis for production, file cache for development                               |
-| Queue        | Separate `default` and `documents` pipelines                                   |
-| Security     | PII masking in logs, rate limiting on all auth endpoints, CSP headers          |
-| Backup       | 4-hour RPO, under 1-hour RTO                                                   |
-| Localization | Bilingual English/Indonesian, locale stored in session                         |
+| Category                | Requirement                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------ |
+| Functional Completeness | Every feature — login, activity logging, and monitoring included — is complete and conforms to the design in §3 |
+| Performance             | Data processing completes within expected response times and pages load efficiently  |
+| Performance             | Application operates with efficient use of computing power and device memory          |
+| Performance             | System stays stable under data traffic load without crashing or lagging              |
+| Performance             | Consistent performance under varying internet connection speeds                       |
+| Database                | SQLite WAL mode or MySQL; UUID primary keys; 55 tables (37 domain + 18 system)       |
+| Cache                   | Redis for production, file cache for development                                      |
+| Queue                   | Separate `default` and `documents` pipelines                                          |
+| Security                | Tiered access control is accurate across Admin, Teacher, DUDI (Supervisor), and Student roles; credentials are stored and transmitted securely |
+| Security                | PII masking in logs, rate limiting on all auth endpoints, CSP headers                 |
+| Reliability             | Errors are handled precisely and communicated via informative, user-friendly messages |
+| Compatibility           | Access remains smooth and stable across web browsers (cross-browser)                 |
+| Output Quality          | Printed summaries and exported files (PDF/Excel/CSV) are neat, accurate, and precise in format |
+| Maintainability         | Clear, structured architecture that simplifies maintenance and future feature development |
+| Backup                  | 4-hour RPO, under 1-hour RTO                                                          |
+| Localization            | Bilingual English/Indonesian, locale stored in session                                |
 
 ---
 
@@ -471,6 +472,23 @@ The interface MUST maintain a clean, modern, minimalist aesthetic with strong ac
 - **Responsive:** Mobile-first design, works on all device sizes
 - **Feedback:** Clear loading states, success/error messages, progress indicators
 
+### 6.7 Visual & Usability Quality Criteria
+
+Every page and interactive flow MUST satisfy the following quality criteria:
+
+| Criterion                 | Requirement                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| **Layout**                | Neat, balanced, and consistent placement of elements on every page              |
+| **Color**                 | Harmonious, aesthetic, eye-friendly color combinations                           |
+| **Icons & Visuals**       | Intuitive icons and visual elements that clarify the function of each feature   |
+| **Typography**            | Readable font type, size, and text contrast on various backgrounds              |
+| **Responsiveness**        | Automatic layout adaptation across screen sizes (mobile & desktop)              |
+| **Navigation**            | Clear, easy-to-follow navigation flow between pages and features                |
+| **Feedback**              | Visual feedback (toast/notification/alert) on every user action                 |
+| **Component Consistency** | Consistent form and behavior of interactive components (buttons, forms) across the system |
+| **Learnability**          | New users can quickly understand and master application workflows               |
+| **Form Usability**        | Forms are easy to fill without imposing excessive cognitive load                |
+
 ---
 
 ## 7. Security & Compliance
@@ -478,10 +496,98 @@ The interface MUST maintain a clean, modern, minimalist aesthetic with strong ac
 - **PII Redaction:** Email, phone, NISN, password, address masked in logs per PDP law (UU No.
   27/2022)
 - **Rate Limiting:** Multi-layer: global (30/min/IP), per-endpoint (login 5/60s, forgot 3/3600s,
-  recovery 3/300s)
+  reset 5/300s, recovery 3/300s)
 - **Account Locking:** Auto-lock after 10 failed attempts
-- **Audit Trail:** All mutations logged via SmartLogger (system + activity dual channel)
 - **GDPR:** Deletion logging, data erasure workflows
+
+---
+
+## 8. Domain, Curriculum & Regulatory Compliance
+
+The system MUST align with the applicable vocational education regulations, curriculum structure,
+and PKL implementation standards (SOP) at the school.
+
+| Category                  | Requirement                                                                              |
+| ------------------------- | ---------------------------------------------------------------------------------------- |
+| **Curriculum Alignment**  | PKL operational stages in the system align with applicable regulations and vocational curriculum structure |
+| **Curriculum Alignment**  | Logbook (daily journal) components align with Learning Outcomes (CP) and the student's competency skill profile |
+| **Curriculum Alignment**  | Mentoring reporting flow aligns with PKL implementation standards in vocational schools  |
+| **Curriculum Alignment**  | DUDI work-role mapping (plotting) matches the student's competency skill profile          |
+| **Curriculum Alignment**  | Competency unit management is configurable independently by the school                    |
+| **Curriculum Alignment**  | Framework accommodates separation of technical competencies (hard skills) and work ethic (soft skills) |
+| **Assessment Flexibility**| Rubric customization facilitates adjusting assessment criteria to school/department-specific needs |
+| **Assessment Flexibility**| Score weighting accommodates varying proportions of DUDI vs. school score combination     |
+| **Assessment Accuracy**   | Dynamic weighting schemes are accurately computed into valid final grade predicates/conversions |
+| **SOP Compliance**        | Application workflow complies with the PKL implementation SOP at the school               |
+| **Administrative Instruments** | Digital administrative instruments (assignment letters, approval sheets, certificates) are complete and structurally correct |
+| **Attendance Verification** | Attendance verification and daily presence monitoring at the internship site use valid criteria |
+| **Mentoring Evidence**    | Digital mentoring trail serves as an authentic record of the educational process          |
+| **Reporting Format**      | Final report recapitulation format conforms to school administrative accountability standards |
+| **Digital Approval**      | Digital document approval mechanism conforms to school administrative legality principles |
+| **Terminology**           | Vocational education terms/terminology are used accurately and correctly across the system |
+| **Form Instructions**     | Clear, substantive instructions guide all actors when filling forms                       |
+| **Information Completeness** | DUDI profile and student placement data are presented completely and relevantly         |
+| **Feedback Support**      | Feedback features facilitate correction and revision of student work reports              |
+| **Mentoring Support**     | System effectively supports mentoring communication and handling of student field issues  |
+
+---
+
+## 9. Usability & User Experience Indicators (Per-Role)
+
+Role-specific practicality indicators that evaluate how easy the system is for each actor to use.
+
+**Deduplication policy:** an indicator that applies to more than one role is written **once**, with
+all applicable roles listed in the **Roles** column. Role-specific indicators are written as
+separate rows. Rows will be merged (not duplicated) as additional roles are added.
+
+| #  | Indicator                                                                                                 | Roles              |
+| -- | --------------------------------------------------------------------------------------------------------- | ------------------ |
+| 1  | Ease and smoothness of the login process into the account or dedicated dashboard                          | Student, Teacher, Admin, Supervisor |
+| 2  | Clear navigation structure for finding and moving between the main menus                                   | Student, Teacher, Supervisor |
+| 3  | Clear navigation and ease of monitoring the list and activity history of supervised students               | Teacher, Supervisor |
+| 4  | Clear filling instructions and available action buttons on every feature page / dashboard                  | Student, Teacher, Supervisor |
+| 5  | Visual confirmation messages (notification/alert) upon successful data action (upload, update, verify, grade input) | Student, Teacher, Supervisor |
+| 6  | Ease of inputting data and uploading files in digital forms                                                | Student            |
+| 7  | Practical daily logbook entry without disrupting work activities at DUDI                                   | Student            |
+| 8  | Ease and smoothness of daily check-in / presence recording                                                 | Student            |
+| 9  | Ease of re-checking the history of submitted daily activity entries                                        | Student            |
+| 10 | Ease of monitoring the approval status of daily journals by the supervisor                                 | Student            |
+| 11 | Practicality of monitoring and verifying students' daily attendance (remotely and during DUDI work hours)  | Teacher, Supervisor |
+| 12 | Ease of checking and approving daily journals submitted by students                                        | Teacher, Supervisor |
+| 13 | Clear, useful presentation of stored attendance and daily journal recapitulation for viewing discipline and activity levels | Teacher, Supervisor |
+| 14 | Practicality of uploading the final PKL report draft into the system                                       | Student            |
+| 15 | Ease of viewing and reading revision notes / feedback from the DUDI supervisor and teacher                  | Student            |
+| 16 | Practicality of giving revision notes, guidance, or feedback directly on students' logbook entries and report manuscripts | Teacher, Supervisor |
+| 17 | Smoothness of reviewing and monitoring the progress of students' final PKL reports                         | Teacher            |
+| 18 | Clear presentation and ease of checking grade recapitulations (own achievements and DUDI-entered scores)   | Student, Teacher   |
+| 19 | Ease and simplicity of inputting and processing grades (school-side final grades and industry performance scores) | Teacher, Supervisor |
+| 20 | Lighter, simpler mentoring and activity-checking flow compared to manual paper-based procedures           | Student, Teacher, Supervisor |
+| 21 | Lighter administrative burden in managing, monitoring, assessing, and recapitulating records              | Teacher, Admin, Supervisor |
+| 22 | Clear visual presentation of the DUDI location map and overall student PKL progress                        | Teacher, Admin    |
+| 23 | Smooth and stable app access when operated on a desktop, laptop, or smartphone                           | Student, Teacher, Admin, Supervisor |
+| 24 | Responsive, neat, and proportional interface on phone screens                                             | Student, Supervisor |
+| 25 | Neat, balanced, readable visual layout (text, tables, action buttons) on dashboards and pages             | Student, Teacher, Supervisor |
+| 26 | Learnability — all features are easy to understand and master on first use                                 | Student, Teacher, Admin, Supervisor |
+| 27 | Real benefit of Internara in simplifying the role's PKL workflow and administration                        | Student, Teacher   |
+| 28 | Accessible technical support channel when facing system issues                                             | Student            |
+| 29 | Overall satisfaction and comfort while operating Internara for PKL activities                              | Student, Teacher, Admin, Supervisor |
+| 30 | Clear flow for creating, activating, and managing user accounts (student, teacher, DUDI supervisor)        | Admin            |
+| 31 | Simple flow for configuring and restricting tiered access rights for each user role                        | Admin            |
+| 32 | Ease of inputting, uploading, and updating master data for students and DUDI partner companies             | Admin            |
+| 33 | Practical placement mapping of students and assignment of supervising teachers to DUDI locations            | Admin            |
+| 34 | Practical automated issuance of administrative documents (assignment letters, approval sheets)             | Admin            |
+| 35 | Smooth and practical collective printing or download of grade recapitulations, certificates, and report data into digital file formats (PDF/Excel/CSV) | Admin |
+| 36 | Lighter flow for creating official school documents compared to manual typing/printing procedures          | Admin            |
+| 37 | Ease of configuring rubric components and grade weighting per school policy                                | Admin            |
+| 38 | Clear flow for determining the PKL schedule and cycle deadlines                                            | Admin            |
+| 39 | Usefulness of system settings in adapting to the Pokja PKL's administrative needs                          | Admin            |
+| 40 | Ease of monitoring the completeness of administrative files and grade recaps from DUDI and teachers        | Admin            |
+| 41 | Smooth and easy search and filtering of specific data                                                      | Admin            |
+| 42 | Clear and simple initial view of the dedicated industry supervisor dashboard                               | Supervisor       |
+| 43 | Clear presentation of the assessment criteria and rubric to be filled by the industry supervisor           | Supervisor       |
+
+> Indicators 5 and 24–26 restate the Visual & Usability Quality Criteria (§6.7) from the roles'
+> experiential perspective and are recorded here for role-based evaluation only.
 
 ---
 
