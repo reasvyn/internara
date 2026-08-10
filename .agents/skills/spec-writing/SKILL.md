@@ -8,7 +8,7 @@ downstream:
   - feature-building
   - code-writing
   - pest-testing
-  - writing-issues
+  - issue-writing
 ---
 
 # Spec Writing
@@ -29,7 +29,7 @@ Use this skill when:
 - Module conceptual docs (`docs/modules/{module}.md`) — use `doc-writing`
 - Module reference docs (`docs/modules/{module}-reference.md`) — use `doc-writing`
 - Architecture decision records — use `doc-writing`
-- Bug reports or issue writing — use `writing-issues`
+- Bug reports or issue writing — use `issue-writing`
 
 ---
 
@@ -421,7 +421,7 @@ other way around.
 |------|-------|
 | **Upstream** | `context-awareness` (project orientation), `doc-writing` (documentation conventions) |
 | **This skill** | **SPEC WRITING** — defines feature specifications before implementation |
-| **Downstream** | `feature-building` (implementation), `code-writing` (coding), `pest-testing` (verification), `writing-issues` (if spec reveals gaps) |
+| **Downstream** | `feature-building` (implementation), `code-writing` (coding), `pest-testing` (verification), `issue-writing` (if spec reveals gaps) |
 
 ## Skill Handoffs (Actionable)
 
@@ -429,7 +429,7 @@ other way around.
 |-----------|--------|
 | Spec approved, implementation starts | Load `feature-building` (orchestrator) |
 | Implementation hits a missing spec section | Amend the spec here first, then continue |
-| Spec reveals existing bugs/gaps | Load `writing-issues` to file issues |
+| Spec reveals existing bugs/gaps | Load `issue-writing` to file issues |
 | Spec needs doc conventions | Load `doc-writing` |
 | Initiative spans multiple specs | Split per "One Initiative = One Spec" — plan across sessions, inform user |
 

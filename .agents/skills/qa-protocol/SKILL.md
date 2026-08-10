@@ -2,7 +2,7 @@
 name: qa-protocol
 description: "SDLC Phase: QUALITY GATE. Independent blind QA audit against global industry standards (OWASP, ISO 25010, CWE/SANS, WCAG, PSR, Laravel best practices). 6-phase protocol producing GitHub Issues and a compliance scorecard. No project-specific rules — purely external benchmarks."
 downstream:
-  - writing-issues
+  - issue-writing
   - roadmap-planning
   - code-refactoring
   - security-audit
@@ -530,7 +530,7 @@ Merge all phase outputs into a single deduplicated findings list:
 
 ### 6.2 Create GitHub Issues
 
-For each finding, create a GitHub Issue using the `writing-issues` skill template format.
+For each finding, create a GitHub Issue using the `issue-writing` skill template format.
 
 **Issue structure per finding:**
 - **Title:** `[QA] {severity_emoji} {concise_title}`
@@ -678,7 +678,7 @@ After all 6 phases, produce a consolidated report:
 
 ## Issue Writing
 
-Each finding is written as a GitHub Issue using the `writing-issues` template format.
+Each finding is written as a GitHub Issue using the `issue-writing` template format.
 Findings that overlap with project-internal audit findings (from `arch-guard`) should
 note this overlap but still be filed independently — the QA perspective may be different.
 
@@ -701,14 +701,14 @@ note this overlap but still be filed independently — the QA perspective may be
 | -------------- | ------------------------------------------------ |
 | **Upstream**   | `feature-building` (implementation), `arch-guard` (internal audits) |
 | **This skill** | **ANALYSIS** — independent blind QA audit         |
-| **Downstream** | `writing-issues` (file findings), `security-audit` (security overlap) |
+| **Downstream** | `issue-writing` (file findings), `security-audit` (security overlap) |
 
 ## Skill Handoffs (Actionable)
 
 | Condition | Action |
 |-----------|--------|
 | QA finding overlaps an internal finding | Note overlap in issue body; still file independently |
-| Findings produced | Load `writing-issues` to create structured GitHub Issues |
+| Findings produced | Load `issue-writing` to create structured GitHub Issues |
 | Security-heavy findings | Load `security-audit` for deeper security analysis |
 | Audit is **L** size (full project) | Split into per-module sessions; inform the user first |
 

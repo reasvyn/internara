@@ -185,7 +185,8 @@ slices across sessions per Size Triage.
 ## Key Rules
 
 1. New spec requirement? Must have a spec-traced test (FR/NFR/UC ID) before code review — no orphan
-   tests, no padding
+   tests, no padding. Write **only** the tests the spec requires (spec-driven minimalism: faster
+   verification, lower resource use, less cognitive load) — see `pest-testing` core doctrine
 2. New Entity? Must be `final readonly` with `fromModel()`
 3. New Model? Must use `#[Fillable]` and extend `BaseModel`
 4. New mutation? Must use Command Action, never direct `Model::create()` in Livewire

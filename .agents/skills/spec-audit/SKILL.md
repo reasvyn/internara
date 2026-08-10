@@ -2,7 +2,7 @@
 name: spec-audit
 description: "SDLC Phase: ANALYSIS. Bidirectional spec-implementation audit — verifies specs match code and code matches specs. Determines which side (spec or implementation) needs fixing. Creates GitHub Issues for significant findings, fixes minor issues directly. Flexible scope: audit by spec, module, phase, or audit area."
 downstream:
-  - writing-issues
+  - issue-writing
   - roadmap-planning
   - code-refactoring
   - feature-building
@@ -416,7 +416,7 @@ Create a GitHub Issue when:
 
 #### 4.3 Issue Format
 
-Use the `writing-issues` skill template. Issue type depends on finding:
+Use the `issue-writing` skill template. Issue type depends on finding:
 
 | Finding Type | Issue Type | Label |
 |-------------|-----------|-------|
@@ -650,7 +650,7 @@ to a single module. See `scripts/README.md` for full documentation.
 |------|-------|
 | **Upstream** | `context-awareness` (project orientation), `spec-writing` (spec conventions) |
 | **This skill** | **ANALYSIS** — bidirectional spec-implementation audit |
-| **Downstream** | `writing-issues` (GitHub Issues), `roadmap-planning` (prioritize), `code-refactoring` (fix code), `sync-docs` (fix docs), `feature-building` (implement gaps) |
+| **Downstream** | `issue-writing` (GitHub Issues), `roadmap-planning` (prioritize), `code-refactoring` (fix code), `sync-docs` (fix docs), `feature-building` (implement gaps) |
 
 ---
 
@@ -675,6 +675,6 @@ to a single module. See `scripts/README.md` for full documentation.
 | RBAC & authorization | `docs/foundation/rbac.md` |
 | Critical invariants | `AGENTS.md` (§Critical Invariants) |
 | Development status | `docs/roadmap.md` |
-| Issue writing | `.agents/skills/writing-issues/SKILL.md` |
+| Issue writing | `.agents/skills/issue-writing/SKILL.md` |
 | Architecture guard | `.agents/skills/arch-guard/SKILL.md` |
 | Doc sync | `.agents/skills/sync-docs/SKILL.md` |

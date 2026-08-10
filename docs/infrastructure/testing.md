@@ -1,7 +1,7 @@
 # Testing — Spec-Driven Testing Strategy & Infrastructure
 
-> **Last updated:** 2026-08-08 **Changes:** spec-driven doctrine — tests trace to spec requirements;
-> coverage as diagnostic, not mandate
+> **Last updated:** 2026-08-10 **Changes:** spec-driven doctrine — tests trace to spec requirements;
+> coverage as diagnostic, not mandate; minimalism rationale
 
 ## Description
 
@@ -14,6 +14,11 @@ Tests verify the spec — nothing more. A test exists because a requirement in
 `docs/specs/{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it. Every test
 description prefixes its requirement ID. Coverage is measured in **spec requirements covered**, not
 lines of code.
+
+**Write only the tests the spec requires.** The minimalism is the point, not a side effect:
+spec-scoped tests run fast (seconds vs. 10+ minutes), consume far fewer resources (~2GB+ RAM for the
+full suite), and keep the suite self-explaining — every test carries its requirement ID, so no
+archaeology is needed to understand why it exists. Less to write, less to read, less to maintain.
 
 ---
 

@@ -38,6 +38,13 @@ out, never write them.
 multiple modules or is **L** size, split it into sessions — inform the user and propose a plan
 before running anything.
 
+**4. Minimalism — only the tests the spec requires.** Spec-driven testing is about writing the
+minimum tests that prove the spec, then stopping. It accelerates development and verification
+(spec-scoped tests run in seconds vs. 10+ minutes for the full suite), reduces resource usage
+(~2GB+ RAM for the full suite), and reduces cognitive overwhelm — a suite mapping 1:1 to requirement
+IDs is self-explaining. When tempted to add "one more test for safety", ask: **which requirement
+does it verify?** No requirement → don't write it.
+
 ---
 
 ## 1. Verification Strategy by Change Type
