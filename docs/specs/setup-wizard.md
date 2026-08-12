@@ -1,7 +1,7 @@
 # Setup Wizard — Feature Specification
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from install-and-setup.md; browser
-> wizard initiative
+> **Last updated:** 2026-08-10 **Changes:** review — record school email required-at-setup vs
+> nullable-in-editor decision (DD-5, §6.1 note)
 
 ## Description
 
@@ -258,6 +258,11 @@ wizard rather than seeing a broken or empty application.
 
 School profile stored with `group = 'school'`:
 
+> **Email rule divergence (resolved in DD-5):** the setup wizard requires `school.email`
+> (FR-W6, SchoolForm `required|email`) so an installed system always has a working contact
+> address. The post-setup editor ([school-profile.md](school-profile.md) §6.3) allows `nullable`
+> so an admin may clear the email later. DD-5 records this as intentional, not a contradiction.
+
 | Key                  | Type   | Required | Description              |
 | -------------------- | ------ | -------- | ------------------------ |
 | `school.name`        | string | yes      | Institution name         |
@@ -389,6 +394,20 @@ remains in setup mode.
 **Rationale:** Installer needs time to copy the recovery key. After that, the setup route should
 be permanently inaccessible to prevent re-entry. The window is configurable via
 `config/setup.php`.
+
+### DD-5 — School Email Required at Setup, Nullable After
+
+**Decision:** The setup wizard requires `school.email` (FR-W6), while the post-setup school
+profile editor ([school-profile.md](school-profile.md) §6.3) allows `nullable`.
+
+**Rationale:** The wizard is a one-time provisioning act — requiring the email guarantees every
+installed instance has a working contact address for notifications and the welcome email
+(FR-F11). After install, the profile editor lets an admin correct or clear the address when the
+school's circumstances change. The two specs are different validation contexts for the same
+setting key, not a contradiction.
+
+**Trade-off:** A key whose requiredness varies by context. Acceptable — the wizard is
+unambiguous (always requires it) and the divergence is documented in both specs.
 
 ---
 

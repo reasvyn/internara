@@ -239,7 +239,8 @@ preserving the ability to recover access via recovery keys.
 | FR-LM3 | `UserManager` must support filters: role, status, created_from, created_to |
 | FR-LM4 | `UserManager` must display columns: name, email, profile.phone, roles_list, status, actions |
 | FR-LM5 | `UserManager` must eagerly load `roles` and `profile` to prevent N+1 queries |
-| FR-LM6 | `UserManager` must provide computed `roles()` excluding super_admin and admin roles |
+| FR-LM6 | `UserManager` must provide computed `roles()` excluding super_admin and admin roles (admin accounts are managed via `AdminManager`) |
+| FR-LM6a | `UserManager` list and CSV export must exclude users with the `admin` role; admin accounts are managed exclusively via `AdminManager` |
 | FR-LM7 | `UserManager` must provide computed `statusOptions()` excluding PROTECTED and ARCHIVED |
 | FR-LM8 | `StudentManager` must add department filter |
 | FR-LM9 | `TeacherManager` must include id_number column |

@@ -1,8 +1,7 @@
 # Department Management — CRUD, Deletion Guards & CSV Import
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from institutional-and-academics.md;
-> dedicated spec covering Department CRUD, profile dependency deletion guard, CSV import/export,
-> and event-driven cache invalidation
+> **Last updated:** 2026-08-10 **Changes:** review — resolve max-length contradiction (name 255 /
+> description 1000 canonical, DD-8); align UC-1, §6.4, §6.5 with FR-DM33/34 and DB schema
 
 ## Description
 
@@ -90,7 +89,7 @@ based on current data.
 2. `DepartmentManager` component loads and displays the department list
 3. Admin clicks "Create" button
 4. `DepartmentForm` modal opens with empty name and description fields
-5. Admin fills in department name (required, max 100 chars) and optional description
+5. Admin fills in department name (required, max 255 chars) and optional description (max 1000)
 6. Admin submits the form
 7. `DepartmentForm` validates input (name uniqueness, required fields)
 8. `CreateDepartmentAction` executes:
@@ -416,11 +415,15 @@ final readonly class DepartmentData extends BaseData
 final class CreateDepartmentAction extends BaseCommandAction
 {
     public function execute(array $data): Department;
-    // Validates: name (required, string, max:100, unique:departments,name)
-    //            description (nullable, string, max:500)
+    // Validates: name (required, string, max:255, unique:departments,name)
+    //            description (nullable, string, max:1000)
     // Transaction: Department::create → dispatch DepartmentCreated → log
 }
 ```
+
+> **Max-length canonical values:** `name` max 255, `description` max 1000 — matching the DB
+> schema (`string('name')` = varchar 255, `text('description')`) and `DepartmentForm` rules
+> (FR-DM33/34). Earlier draft values (max 100 / max 500) were superseded; see DD-8.
 
 ### 6.5 UpdateDepartmentAction
 
@@ -429,8 +432,8 @@ final class CreateDepartmentAction extends BaseCommandAction
 final class UpdateDepartmentAction extends BaseCommandAction
 {
     public function execute(Department $department, array $data): Department;
-    // Validates: name (required, string, max:100, unique:departments,name,{id})
-    //            description (nullable, string, max:500)
+    // Validates: name (required, string, max:255, unique:departments,name,{id})
+    //            description (nullable, string, max:1000)
     // Transaction: department->update → dispatch DepartmentUpdated → log
 }
 ```
@@ -665,6 +668,20 @@ department.
 **Trade-off:** Iterative execution is slower than a single bulk query. Mitigated by the typical
 batch size being small (10–50 departments). Rejected alternative: bulk delete query (cannot
 check per-item guard or dispatch individual events).
+
+### DD-8 — Canonical Max-Length Values for Name & Description
+
+**Decision:** Department `name` is capped at 255 chars and `description` at 1000 chars across all
+layers (Actions, `DepartmentForm`, and DB).
+
+**Rationale:** These values match the DB schema (`string('name')` → varchar 255,
+`text('description')`) and the Livewire form rules (FR-DM33/34). Earlier draft values in the
+Create/Update Action contracts (max 100 / max 500) contradicted the form and the column types;
+aligning everything to the largest schema-compatible bound removes the contradiction and avoids
+silent truncation where a 255-char name would be rejected by an overly strict Action rule.
+
+**Trade-off:** Longer names are permitted at the input layer. Acceptable — the DB column already
+supports them, and 255 chars is well above realistic department-name length.
 
 ---
 

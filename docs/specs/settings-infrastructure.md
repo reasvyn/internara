@@ -1,7 +1,8 @@
 # Settings Infrastructure — Type-Aware Store, Resolution & Cache Invalidation
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from system-settings.md; settings store,
-> type system, resolution chain, observer, admin page
+> **Last updated:** 2026-08-10 **Changes:** review — add feature flags contract (FR-FF1–FR-FF6),
+> color/image type handling decision (FR-S13/S14, DD-5), `brand.custom_css` key, `feature()`
+> helper
 
 ## Description
 
@@ -121,6 +122,33 @@ type at the storage layer.
 | FR-C3  | `SettingObserver` must invalidate synchronously (not queued) to prevent stale reads   |
 | FR-C4  | `brand.colors` cache TTL must be 86400s (24h)                                       |
 | FR-C5  | `theme.css_variables` cache TTL must be 3600s (1h)                                   |
+
+### Feature Flags
+
+Feature flags are runtime toggles for module behavior (project-requirements §3.2 Settings).
+They reuse the standard settings store under the `features.*` namespace with `BOOLEAN` type —
+no separate table, no separate cache. A dedicated `feature()` helper hides the key namespace.
+
+| ID     | Requirement                                                                          |
+| ------ | ------------------------------------------------------------------------------------ |
+| FR-FF1 | Feature flag keys must live under the `features.*` namespace (group `features`) and be stored via the standard `Setting` store with `BOOLEAN` type |
+| FR-FF2 | `feature($key, $default = false)` global helper must resolve `features.{key}` through the full settings resolution chain and cast to `bool` |
+| FR-FF3 | Feature flags must be immutable-only via `SetSettingAction`/`BatchSetSettingAction` — no bypass of type detection |
+| FR-FF4 | Toggling a feature flag must invalidate the same cache keys as any setting (`settings_key.{key}`, `settings_group.features`) via `SettingObserver` |
+| FR-FF5 | Only `super_admin` may create/update/delete feature flags (matches NFR-S3); `admin` may read   |
+| FR-FF6 | Feature flags must be documented in `config/settings.php` under a `features` key listing each flag key, default, and owning module |
+
+### Image & Color Settings
+
+The high-level requirement (project-requirements §3.2 Settings) lists "image" and "color" among
+enforced setting types. These are **not** dedicated `SettingType` cases — they are `STRING`/
+`JSON` values with domain-level validation (see DD-5). The requirements below make that contract
+explicit.
+
+| ID     | Requirement                                                                          |
+| ------ | ------------------------------------------------------------------------------------ |
+| FR-S13 | Color settings (e.g. `brand.*_color`, `theme.*`) must be stored as `STRING` and validated against hex pattern `^#[0-9a-fA-F]{6}$` at the form layer |
+| FR-S14 | Image settings (e.g. `brand_logo`, `site_favicon`) must store the media URL string (Spatie Media Library `getUrl()`), never raw binary, in the `Setting` store |
 
 ---
 
@@ -252,6 +280,7 @@ Route::livewire('/admin/settings', SystemSetting::class)
 | `secondary_color`     | branding      | string     | `#6b7280`              |
 | `accent_color`        | branding      | string     | `#f97316`              |
 | `base_color`          | branding      | string     | `#ffffff`              |
+| `brand.custom_css`    | branding      | string     | `''`                   |
 | `default_locale`      | localization  | string     | `id`                   |
 | `active_academic_year`| system        | string     | `YYYY/YYYY+1`          |
 | `support_email`       | general       | string     | `''`                   |
@@ -262,6 +291,18 @@ Route::livewire('/admin/settings', SystemSetting::class)
 | `mail_encryption`     | mail          | string     | `tls`                  |
 | `mail_username`       | mail          | string     | `''`                   |
 | `mail_password`       | mail          | encrypted  | `null`                 |
+
+### Feature Flag Helper
+
+```php
+// app/Settings/Support/helpers.php
+function feature(string $key, bool $default = false): bool;
+```
+
+Resolves `features.{key}` through the settings resolution chain and casts to `bool`. Returns
+`$default` when the flag is absent. Consumers must call `feature('key')` instead of
+`setting('features.key', false)` — the helper enforces the namespace and boolean contract (FR-FF2).
+Feature flag keys are declared in `config/settings.php` under the `features` key (FR-FF6).
 
 ---
 
@@ -296,6 +337,32 @@ values take precedence over config. Supports zero-config development and admin c
 **Rationale:** Prevents stale reads in the same request. The `setting()` helper reads from
 cache, so the observer must clear before any subsequent read.
 **Trade-off:** Slight overhead on every setting write. Negligible for admin-triggered operations.
+
+### DD-5 — Image & Color Are Validated STRINGs, Not Enum Cases
+
+**Decision:** `SettingType` keeps 7 storage cases (`STRING`, `INTEGER`, `FLOAT`, `BOOLEAN`,
+`JSON`, `ENCRYPTED`, `NULL`). "Image" and "color" from the high-level requirement are enforced
+at the domain/form layer, not as new enum cases.
+**Rationale:** Colors are single 6-digit hex strings — a dedicated case would add a cast layer
+without new storage semantics. Images are stored as media URLs (Spatie `getUrl()`), not raw
+binary, so the `Setting` column stays a string; the binary lives in the media library.
+Adding `COLOR`/`IMAGE` cases would complicate `detect()` (which sees only the string) and force
+cast plumbing for zero storage benefit.
+**Trade-off:** A caller could theoretically store a non-hex string under a color key. Mitigated
+by FR-S13 (form-layer hex validation) and FR-S14 (image URL contract); the `SettingPolicy`
+restricts writes to `super_admin`.
+
+### DD-6 — Feature Flags Reuse the Settings Store
+
+**Decision:** Feature flags are ordinary `features.*` boolean settings, exposed via the
+`feature()` helper, rather than a separate feature-flags package/table.
+**Rationale:** The settings store already provides caching, type enforcement, observer-driven
+invalidation, and RBAC. A separate table would duplicate that infrastructure for boolean toggles
+(DRY — single source of truth for runtime config). Declaring flags in `config/settings.php`
+(FR-FF6) keeps them discoverable and prevents ad-hoc toggles.
+**Trade-off:** Flags are visible in the settings key-value UI rather than a dedicated toggles UI.
+Acceptable — `admin` can read, only `super_admin` mutates (NFR-S3), and the group filter
+(`SettingGroup::FEATURES`) keeps them grouped.
 
 ---
 
@@ -356,7 +423,7 @@ After implementing this spec, the system has a key-value settings store with cac
 - `app/Settings/Enums/SettingType.php` — 7 type cases with auto-detection
 - `app/Settings/Casts/SettingValueCast.php` — Transparent type casting
 - `app/Settings/Support/SettingCaster.php` — Type casting logic
-- `app/Settings/Support/helpers.php` — `setting()` and `brand()` global helpers
+- `app/Settings/Support/helpers.php` — `setting()`, `brand()`, and `feature()` global helpers
 - `app/Settings/Observers/SettingObserver.php` — Synchronous cache invalidation
 - `app/Settings/Policies/SettingPolicy.php` — RBAC: view/update for admin, create/delete for super_admin
 - `app/Settings/Actions/SetSettingAction.php` — Single key set with type auto-detection

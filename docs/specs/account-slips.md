@@ -192,8 +192,8 @@ any situation where digital delivery is preferred over printed distribution.
 | FR-DA2 | `showSlip(string $id)` must find User by ID, generate activation code, set modal open state |
 | FR-DA3 | `regenerateCode()` must generate new activation code, flash success message |
 | FR-DA4 | `sendCode()` must send `ActivationCodeNotification` with current code, flash success message |
-| FR-DA5 | `downloadSlip()` must redirect to `sysadmin.users.account-slip` named route |
-| FR-DA6 | `downloadSelectedSlips()` must redirect to `sysadmin.users.account-slips.batch` route with comma-separated IDs |
+| FR-DA5 | `downloadSlip()` must redirect to `admin.users.account-slip` named route |
+| FR-DA6 | `downloadSelectedSlips()` must redirect to `admin.users.account-slips.batch` route with comma-separated IDs |
 | FR-DA7 | `downloadSelectedSlips()` must flash warning if `selectedIds` is empty |
 | FR-DA8 | All flash messages must use `__()` translation helper |
 
@@ -228,7 +228,7 @@ any situation where digital delivery is preferred over printed distribution.
 | FR-R2 | Batch slip route: `GET /admin/users/account-slips/download?ids=...` → `AccountSlipController::downloadBatch` |
 | FR-R3 | Both routes must require `auth` middleware |
 | FR-R4 | Both routes must require `role:super_admin\|admin` middleware |
-| FR-R5 | Route names: `sysadmin.users.account-slip` (single), `sysadmin.users.account-slips.batch` (batch) |
+| FR-R5 | Route names: `admin.users.account-slip` (single), `admin.users.account-slips.batch` (batch) |
 
 ---
 
@@ -368,11 +368,11 @@ Paper: [0, 0, 241, 156] mm (custom card)
 
 ```
 GET  /admin/users/{user}/account-slip        → AccountSlipController::download
-     Name: sysadmin.users.account-slip
+     Name: admin.users.account-slip
      Middleware: auth, role:super_admin|admin
 
 GET  /admin/users/account-slips/download?ids={csv}  → AccountSlipController::downloadBatch
-     Name: sysadmin.users.account-slips.batch
+     Name: admin.users.account-slips.batch
      Middleware: auth, role:super_admin|admin
 ```
 

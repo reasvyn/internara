@@ -1,8 +1,7 @@
 # Announcement System — Targeted Multi-Role Communication
 
-> **Last updated:** 2026-07-24 **Changes:** feat — initial spec documenting the announcement
-> system: role-targeted creation, scheduling with cron-based auto-publish, status lifecycle,
-> notification dispatch, and admin management UI
+> **Last updated:** 2026-08-10 **Changes:** review — resolve ownership-scope vs broadcast-tension
+> (DD-6); cross-reference project-requirements §3.1 SysAdmin (role-targeted delivery)
 
 ## Description
 
@@ -532,6 +531,23 @@ usability.
 **Trade-off:** Non-technical admins may find Markdown unfamiliar. The guide component and hint text
 mitigate this. If Markdown adoption proves problematic, the `Str::markdown()` call can be swapped
 for a rich text renderer without changing the data model.
+
+### DD-6 — Broadcast Delivery, Ownership-Scoped Management
+
+**Decision:** Delivery is broadcast to the targeted roles (project-requirements §3.1 SysAdmin,
+"Announcement Manager … role-targeted"), but the management UI is scoped to the creator
+(`where('created_by', Auth::id())`, FR-L2).
+
+**Rationale:** The two concerns are distinct. **Delivery** reaches every user in the target
+role(s) — this is what "broadcast" means for an announcement system; the sender's own roles are
+excluded to prevent self-notification (FR-A5). **Management** (edit/delete/publish/see-in-list)
+is ownership-scoped so each admin maintains their own announcements without cross-admin
+interference or accidental deletion of a colleague's message. This is deliberately narrower than
+"all admins manage all announcements."
+**Trade-off:** An admin cannot see or retract an announcement created by another admin. Acceptable
+for a single-tenant school where announcements are low-volume; the audit trail (FR-A6/A8/A11) and
+`created_by` FK preserve accountability. If central administration becomes required, extract an
+`AnnouncementPolicy` (see DD-4) to widen scope for `super_admin`.
 
 ---
 

@@ -7,7 +7,7 @@ namespace App\Program\InternshipGroup\Livewire;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Program\Internship\Models\Internship;
-use App\Program\InternshipGroup\Actions\AddMemberToGroupAction;
+use App\Program\InternshipGroup\Actions\AddMembersToGroupAction;
 use App\Program\InternshipGroup\Actions\CreateInternshipGroupAction;
 use App\Program\InternshipGroup\Actions\DeleteInternshipGroupAction;
 use App\Program\InternshipGroup\Actions\RemoveMemberFromGroupAction;
@@ -43,12 +43,8 @@ class InternshipGroupManager extends BaseRecordManager
 
     public InternshipGroupForm $form;
 
-    public array $memberFormData = [
-        'group_id' => '',
-        'role' => 'student',
-        'registration_id' => '',
-        'mentor_id' => '',
-    ];
+    /** @var array<int, array{role: string, registration_id: string, mentor_id: string}> */
+    public array $memberFormData = [];
 
     public function boot(): void
     {
@@ -67,7 +63,7 @@ class InternshipGroupManager extends BaseRecordManager
 
     protected function query(): Builder
     {
-        return InternshipGroup::query()->withCount('members');
+        return InternshipGroup::query()->with('internship')->withCount('members');
     }
 
     protected function applySearch(Builder $query): Builder
@@ -158,52 +154,72 @@ class InternshipGroupManager extends BaseRecordManager
 
     // --- Members ---
 
-    public function manageMembers(string $groupId): void
+    public ?string $memberGroupId = null;
+
+    /** @return array{role: string, registration_id: string, mentor_id: string} */
+    private function emptyMemberRow(): array
     {
-        $this->memberFormData = [
-            'group_id' => $groupId,
+        return [
             'role' => 'student',
             'registration_id' => '',
             'mentor_id' => '',
         ];
+    }
+
+    public function manageMembers(string $groupId): void
+    {
+        $this->memberGroupId = $groupId;
+        $this->resetMemberForm();
         $this->showMemberModal = true;
     }
 
-    public function addMember(AddMemberToGroupAction $action): void
+    public function resetMemberForm(): void
+    {
+        $this->memberFormData = [$this->emptyMemberRow()];
+        $this->resetErrorBag();
+    }
+
+    public function addMemberRow(): void
+    {
+        $this->memberFormData[] = $this->emptyMemberRow();
+    }
+
+    public function removeMemberRow(int $index): void
+    {
+        if (isset($this->memberFormData[$index])) {
+            unset($this->memberFormData[$index]);
+            $this->memberFormData = array_values($this->memberFormData);
+        }
+    }
+
+    public function addMembers(AddMembersToGroupAction $action): void
     {
         $allowedRoles = implode(',', array_map(fn ($r) => $r->value, InternshipGroupRole::cases()));
 
         $this->validate([
-            'memberFormData.role' => ['required', "in:{$allowedRoles}"],
-            'memberFormData.registration_id' => [
-                'required_if:memberFormData.role,student',
+            'memberFormData' => ['required', 'array', 'min:1'],
+            'memberFormData.*.role' => ['required', "in:{$allowedRoles}"],
+            'memberFormData.*.registration_id' => [
+                'required_if:memberFormData.*.role,student',
                 'nullable',
                 'exists:registrations,id',
             ],
-            'memberFormData.mentor_id' => [
-                'required_if:memberFormData.role,school_teacher,industry_supervisor',
+            'memberFormData.*.mentor_id' => [
+                'required_if:memberFormData.*.role,school_teacher,industry_supervisor',
                 'nullable',
                 'exists:users,id',
             ],
         ]);
 
-        $group = InternshipGroup::findOrFail($this->memberFormData['group_id']);
+        $group = InternshipGroup::findOrFail($this->memberGroupId);
         $this->authorize('update', $group);
 
-        $action->execute($group, [
-            'registration_id' => $this->memberFormData['registration_id'] ?: null,
-            'mentor_id' => $this->memberFormData['mentor_id'] ?: null,
-            'role' => $this->memberFormData['role'],
-        ]);
+        $action->execute($group, $this->memberFormData);
 
-        $this->memberFormData = [
-            'group_id' => $this->memberFormData['group_id'],
-            'role' => 'student',
-            'registration_id' => '',
-            'mentor_id' => '',
-        ];
+        $this->showMemberModal = false;
+        $this->memberGroupId = null;
 
-        flash()->success(__('internship.member_added'));
+        flash()->success(__('internship.members_added', ['count' => count($this->memberFormData)]));
     }
 
     public function removeMember(string $memberId, RemoveMemberFromGroupAction $action): void
@@ -221,7 +237,10 @@ class InternshipGroupManager extends BaseRecordManager
     #[Computed]
     public function internships(): array
     {
-        return Internship::pluck('name', 'id')->toArray();
+        return Internship::orderBy('name')
+            ->get(['id', 'name'])
+            ->map(fn ($internship) => ['id' => $internship->id, 'name' => $internship->name])
+            ->toArray();
     }
 
     #[Computed]

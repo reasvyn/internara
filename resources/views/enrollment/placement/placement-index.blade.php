@@ -3,7 +3,7 @@
     :subtitle="__('placement.subtitle')"
 >
     <x-slot:headerActions>
-        <x-mary-button :label="__('placement.add')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
+        <x-mary-button :label="__('placement.add_placement')" icon="o-plus" class="btn-primary btn-sm" wire:click="create" />
     </x-slot:headerActions>
 
     <x-slot:extraMenu>
@@ -37,7 +37,7 @@
     <x-core::ui.selection-bar>
         <x-mary-dropdown>
             <x-slot:trigger>
-                <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" :label="__('common.actions.actions')" />
+                <x-mary-button icon="o-chevron-down" class="btn-sm btn-primary font-medium" :label="__('common.actions.bulk_actions')" />
             </x-slot:trigger>
             <div class="p-1.5 w-48">
                 <x-mary-menu-item :title="__('common.actions.delete_selected')" icon="o-trash" class="text-error"
@@ -79,16 +79,16 @@
     </div>
 
     <x-slot:modal>
-        <x-mary-modal wire:model="showModal" :title="$form->id ? __('placement.edit') : __('placement.new')" class="backdrop-blur-sm">
+        <x-mary-modal wire:model="showModal" :title="$form->id ? __('placement.edit_placement') : __('placement.new_placement')" class="backdrop-blur-sm">
             <x-mary-form wire:submit="save">
                 <div class="space-y-5">
                     <x-mary-input :label="__('placement.name')" wire:model="form.name" :placeholder="__('placement.name_placeholder')" />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <x-mary-select :label="__('placement.company')" wire:model="form.company_id" :options="$this->companies" :placeholder="__('placement.select_company')" />
-                        <x-mary-select :label="__('placement.batch')" wire:model="form.internship_id" :options="$this->internships" :placeholder="__('placement.select_batch')" />
+                        <x-mary-select :label="__('placement.company')" wire:model="form.company_id" :options="$this->companies" :placeholder="__('placement.company_placeholder')" />
+                        <x-mary-select :label="__('placement.batch')" wire:model="form.internship_id" :options="$this->internships" :placeholder="__('placement.internship_placeholder')" />
                         <x-mary-input :label="__('placement.quota')" type="number" wire:model="form.quota" />
                     </div>
-                    <x-mary-textarea :label="__('placement.worksite_address')" wire:model="form.address" rows="2" :placeholder="__('placement.worksite_address_placeholder')" />
+                    <x-mary-textarea :label="__('placement.worksite_address')" wire:model="form.address" rows="2" :placeholder="__('placement.address_placeholder')" />
                     <x-mary-textarea :label="__('placement.job_description')" wire:model="form.description" rows="3" />
                 </div>
                 <x-slot:actions>

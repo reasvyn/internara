@@ -1,8 +1,8 @@
 # Company Management — CRUD, Deletion Guards, CSV Import & Dashboard Stats
 
-> **Last updated:** 2026-07-22 **Changes:** Split from `partnership.md` — company management
-> portion extracted into standalone spec covering company CRUD, dual deletion guards, CSV
-> import/export, and dashboard statistics
+> **Last updated:** 2026-08-10 **Changes:** review — align `CompanyPolicy::delete()` guard with
+> `CompanyState::canBeDeleted()` (deny on placements **or** partnerships, FR-CC6, DD-1); policy
+> and entity guards must never diverge
 
 ## Description
 
@@ -188,7 +188,7 @@ to ensure administrators always see current data.
 | FR-CC3 | `CompanyData` must require `name` (string); `address`, `phone`, `email`, `website`, `description`, `industrySector` must be nullable strings |
 | FR-CC4 | `Company` model must use `#[Fillable]` attribute with all seven fields: `name`, `address`, `phone`, `email`, `website`, `description`, `industry_sector` |
 | FR-CC5 | `CompanyPolicy::create()`, `update()`, `delete()` must require admin role via `isAdmin()` check |
-| FR-CC6 | `CompanyPolicy::delete()` must additionally check `$company->placements()->exists()` and deny if true |
+| FR-CC6 | `CompanyPolicy::delete()` must additionally deny when the company has placements **or** partnerships — matching `CompanyState::canBeDeleted()` (FR-CC10); the policy guard and entity guard must never diverge |
 | FR-CC7 | `CompanyPolicy::viewAny()` and `view()` must return true for all authenticated users |
 | FR-CC8 | `DeleteCompanyAction` must throw `RejectedException` if `CompanyState::canBeDeleted()` returns false |
 | FR-CC9 | `BatchDeleteCompanyAction` must iterate selected IDs, check `canBeDeleted()` per record, and delete only eligible records |
@@ -292,7 +292,7 @@ App\Partners\Company\Policies\CompanyPolicy
   view(User, Company): bool — all authenticated users
   create(User): bool — admin role required (isAdmin())
   update(User, Company): bool — admin role required (isAdmin())
-  delete(User, Company): bool — admin role required AND no existing placements
+  delete(User, Company): bool — admin role required AND no existing placements or partnerships (mirrors CompanyState::canBeDeleted(), FR-CC10)
   forceDelete(User, Company): bool — super_admin role required
 ```
 
@@ -374,8 +374,8 @@ App\Partners\Company\Enums\CsvRowResult: string
 
 ### DD-1 — Dual Deletion Guard Layers
 
-**Decision:** Enforce deletion guards at both the Action layer (query-based check before calling entity) and the Entity layer (`canBeDeleted()` using `withCount` aggregation).
-**Rationale:** The Action-layer check handles the common path with an upfront query for placements and partnerships. The Entity-layer check provides a safety net against race conditions where concurrent requests may have added dependent records between the Action check and the actual delete. Both must agree before deletion proceeds.
+**Decision:** Enforce deletion guards at the Action layer (query-based check before calling entity), the Entity layer (`canBeDeleted()` using `withCount` aggregation), **and the Policy layer** (`CompanyPolicy::delete()`). All three layers must evaluate the *same* predicate — a company is undeletable if it has any placements **or** partnerships. The Policy must not check a subset (e.g., placements only), otherwise authorization and business rules diverge and admins hit inconsistent "policy allowed but action rejected" states.
+**Rationale:** The Action-layer check handles the common path with an upfront query for placements and partnerships. The Entity-layer check provides a safety net against race conditions where concurrent requests may have added dependent records between the Action check and the actual delete. The Policy-layer check keeps the rule visible at the authorization boundary (FR-CC5/CC6). Both must agree before deletion proceeds.
 **Trade-off:** Slightly more code per deletion path, but significantly reduces risk of orphaned records.
 **Rejected alternative:** Single-layer guard at database constraint level only — cannot provide user-friendly error messages or granular skip reporting in batch operations.
 

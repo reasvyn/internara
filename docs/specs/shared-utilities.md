@@ -1,7 +1,6 @@
 # Shared Utilities — Cross-Cutting Helpers & Services
 
-> **Last updated:** 2026-08-10 **Changes:** add — `app_info()` global helper (project-requirements §4.4);
-> contrastColor returns `#1a1a1a`/`#f0f0f0`; Environment isLocal/isCLI; Color rgbToHex; AppInfo rememberForever
+> **Last updated:** 2026-08-10 **Changes:** add — cross-reference `setting()`/`brand()` helpers (project-requirements §4.4) to settings-infrastructure.md
 
 ## Description
 
@@ -96,6 +95,11 @@ in production while allowing development flexibility.
 | SmartLogger, PiiMasker | [logging-and-error-handling.md](logging-and-error-handling.md) |
 | CsvHandler | [csv-import-export.md](csv-import-export.md) |
 | ModuleService/ModuleManager | [module-manager.md](module-manager.md) |
+| `setting()` / `brand()` global helpers | [settings-infrastructure.md](settings-infrastructure.md) |
+
+> **Note:** project-requirements §4.4 lists three global helpers. `app_info()` (FR-SUP11) is
+> specified here; `setting()` and `brand()` are specified in settings-infrastructure.md and
+> cross-referenced above to avoid duplication.
 
 ---
 

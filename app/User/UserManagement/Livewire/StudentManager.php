@@ -150,7 +150,7 @@ class StudentManager extends BaseRecordManager
                 false,
             );
             $this->userModal = false;
-            $this->redirect(route('sysadmin.users.account-slip', $user));
+            $this->redirect(route('admin.users.account-slip', $user));
 
             return;
         }
