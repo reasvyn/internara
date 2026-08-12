@@ -1,6 +1,8 @@
 services:
     app:
-        build: .
+        build:
+            context: '${GIT_URL:-https://github.com/reasvyn/internara.git#main}'
+            dockerfile: Dockerfile
         ports:
             - '${APP_PORT:-9000}:9000'
         environment:
@@ -23,7 +25,9 @@ services:
                 condition: service_started
 
     queue:
-        build: .
+        build:
+            context: '${GIT_URL:-https://github.com/reasvyn/internara.git#main}'
+            dockerfile: Dockerfile
         command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
         environment:
             APP_ENV: production
@@ -45,7 +49,9 @@ services:
                 condition: service_started
 
     scheduler:
-        build: .
+        build:
+            context: '${GIT_URL:-https://github.com/reasvyn/internara.git#main}'
+            dockerfile: Dockerfile
         command: php artisan schedule:work
         environment:
             APP_ENV: production
@@ -83,11 +89,12 @@ services:
             retries: 5
 
     web:
-        image: nginx:alpine
+        build:
+            context: '${GIT_URL:-https://github.com/reasvyn/internara.git#main}'
+            dockerfile: .docker/nginx.Dockerfile
         ports:
             - '${NGINX_PORT:-80}:80'
         volumes:
-            - ./.docker/nginx.conf:/etc/nginx/conf.d/default.conf
             - storage_data:/app/storage
         depends_on:
             - app
