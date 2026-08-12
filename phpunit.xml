@@ -8,10 +8,13 @@
         <testsuite name="Core">
             <directory>tests/Core</directory>
         </testsuite>
+        <testsuite name="Program">
+            <directory>tests/Program</directory>
+        </testsuite>
         <!-- Test suites for other modules are re-added as their spec-driven
              suites are rewritten (Academics, Assessment, Assignment, Auth,
              Certification, Document, Enrollment, Evaluation, Incident,
-             Journals, Partners, Program, Reports, Settings, Setup, SysAdmin,
+             Journals, Partners, Reports, Settings, Setup, SysAdmin,
              User). -->
     </testsuites>
     <source>

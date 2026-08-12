@@ -22,14 +22,6 @@ abstract class BaseAction
     {
         $this->beforeExecute();
 
-        if (DB::transactionLevel() > 0) {
-            $result = $callback();
-            $this->dispatchPendingEvents();
-            $this->afterExecute($result);
-
-            return $result;
-        }
-
         $result = DB::transaction(function () use ($callback) {
             $result = $callback();
             $this->dispatchPendingEvents();

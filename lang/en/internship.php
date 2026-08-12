@@ -96,6 +96,10 @@ return [
     'members' => 'Members',
     'manage_members' => 'Manage Members',
     'add_member' => 'Add Member',
+    'add_member_row' => 'Add Another Member',
+    'add_members' => 'Add Members',
+    'member' => 'Member',
+    'remove_member_row' => 'Remove this member row',
     'member_role' => 'Role',
     'registration_id' => 'Registration ID',
     'registration_id_placeholder' => 'Enter student registration ID',
@@ -106,6 +110,7 @@ return [
     'group_updated' => 'Group updated.',
     'group_deleted' => 'Group deleted.',
     'member_added' => 'Member added.',
+    'members_added' => ':count members added.',
     'member_removed' => 'Member removed.',
 
     // Phases

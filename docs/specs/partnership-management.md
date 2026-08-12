@@ -1,8 +1,8 @@
 # Partnership Management — Lifecycle, MoU Documents & Renewal
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from partnership.md; expanded partnership
-> lifecycle CRUD, status transitions, MoU document management, renewal workflow, deletion guards,
-> and events/listeners into standalone spec
+> **Last updated:** 2026-08-10 **Changes:** review — add `ExpirePartnershipAction` for ACTIVE→EXPIRED
+> (FR-ST11–ST13), expiry-warning delivery mechanism via scheduled command + queued notification
+> (FR-EX1–EX5); align with project-requirements §3.2 "Expiry Detection Warns 30 days"
 
 ## Description
 
@@ -95,7 +95,7 @@ new placements can be created under that agreement.
 | NG3  | Internship program definitions and scheduling (owned by Program module) |
 | NG4  | Certificate issuance for completed internships (owned by Certification module) |
 | NG5  | Multi-file document uploads or document versioning beyond single-file MoU |
-| NG6  | Automated partnership expiry via scheduled tasks (manual or cron-driven outside this spec) |
+| NG6  | Automated expiry **status transition** on a schedule — expiry is a manual, explicit action (`ExpirePartnershipAction`); only the 30-day *warning* is delivered by a scheduled command (FR-EX1–FR-EX5) |
 | NG7  | Placement capacity tracking (covered in [company-management.md](company-management.md) §Dashboard Integration) |
 | NG8  | CSV import/export for companies (covered in [csv-import-export.md](csv-import-export.md) §Company CSV) |
 
@@ -229,6 +229,24 @@ new placements can be created under that agreement.
 | FR-ST8 | `PartnershipState::isExpiringSoon()` must accept configurable `thresholdDays` (default 30) and return true for ACTIVE partnerships with `end_date` within threshold |
 | FR-ST9 | New partnerships must default to `ACTIVE` status via model `$attributes` array |
 | FR-ST10 | `Partnership` model must cast `status` to `PartnershipStatus` enum |
+| FR-ST11 | `ExpirePartnershipAction` must validate `PartnershipState::isActive()` before transitioning to EXPIRED |
+| FR-ST12 | `ExpirePartnershipAction` must dispatch `PartnershipExpired` event and trigger `ClearDashboardOnPartnershipChange` |
+| FR-ST13 | `PartnershipStatus` transitions must be complete: `ACTIVE → [EXPIRED, TERMINATED]`, each performed by a dedicated action (`ExpirePartnershipAction`, `TerminatePartnershipAction`) — no transition without an action |
+
+### Expiry Warning Delivery
+
+The requirement (project-requirements §3.2 "Expiry Detection | Warns 30 days before partnership
+expiry | System") demands a proactive warning, not only a dashboard count. Delivery is a queued
+notification dispatched by a scheduled command; the status transition itself stays manual
+(FR-ST11) so no partnership silently expires without an admin decision.
+
+| ID     | Requirement |
+| ------ | ----------- |
+| FR-EX1 | `partnerships:check-expiry` scheduled command must run daily via the scheduler and query ACTIVE partnerships where `end_date` is within `thresholdDays` (30, from `config('partners.expiry_threshold_days')`) of today |
+| FR-EX2 | For each expiring partnership, the command must dispatch a queued `PartnershipExpiringNotification` (mail channel) to all `admin` and `super_admin` users |
+| FR-EX3 | `PartnershipExpiringNotification` must include partnership title, company name, `end_date`, and a link to the partnership detail page |
+| FR-EX4 | The command must log `partnership.expiry_check` with expiring count via SmartLogger; zero results must log at info level without error |
+| FR-EX5 | The expiry threshold must be configurable via `config('partners.expiry_threshold_days')` (default 30) and shared by `isExpiringSoon()` and the command |
 
 ### Renewal
 
@@ -345,6 +363,7 @@ App\Partners\Partnership\Enums\PartnershipStatus: string
 | `UpdatePartnershipAction` | `BaseCommandAction` | `Partnership, PartnershipData` | `ActionResponse` |
 | `DeletePartnershipAction` | `BaseCommandAction` | `Partnership` | `ActionResponse` |
 | `TerminatePartnershipAction` | `BaseCommandAction` | `Partnership` | `ActionResponse` |
+| `ExpirePartnershipAction` | `BaseCommandAction` | `Partnership` | `ActionResponse` |
 | `RenewPartnershipAction` | `BaseCommandAction` | `Partnership, PartnershipData` | `ActionResponse` |
 | `BatchDeletePartnershipAction` | `BaseCommandAction` | `Collection` | `ActionResponse` |
 
@@ -356,14 +375,21 @@ App\Partners\Partnership\Enums\PartnershipStatus: string
 | `PartnershipUpdated` | `UpdatePartnershipAction` |
 | `PartnershipDeleted` | `DeletePartnershipAction`, `BatchDeletePartnershipAction` |
 | `PartnershipTerminated` | `TerminatePartnershipAction` |
+| `PartnershipExpired` | `ExpirePartnershipAction` |
 | `PartnershipRenewed` | `RenewPartnershipAction` |
 
 ### Listeners
 
 | Listener | Event | Queued |
 | -------- | ----- | ------ |
-| `ClearDashboardOnPartnershipChange` | PartnershipCreated, PartnershipUpdated, PartnershipDeleted, PartnershipTerminated, PartnershipRenewed | No |
+| `ClearDashboardOnPartnershipChange` | PartnershipCreated, PartnershipUpdated, PartnershipDeleted, PartnershipTerminated, PartnershipExpired, PartnershipRenewed | No |
 | `NotifyOnPartnershipTerminated` | PartnershipTerminated | Yes |
+
+### Scheduled Commands
+
+| Command | Schedule | Purpose |
+| ------- | -------- | ------- |
+| `partnerships:check-expiry` | Daily | Dispatch `PartnershipExpiringNotification` for partnerships expiring within threshold (FR-EX1–FR-EX5) |
 
 ### Policy
 
@@ -513,7 +539,11 @@ After implementing this spec, the system has partnership CRUD linking companies 
 - `app/Partners/Partnership/Actions/DeletePartnershipAction.php` — Delete with terminal-state guard
 - `app/Partners/Partnership/Actions/BatchDeletePartnershipAction.php` — Batch delete with per-record guard
 - `app/Partners/Partnership/Actions/TerminatePartnershipAction.php` — Active → Terminated transition
+- `app/Partners/Partnership/Actions/ExpirePartnershipAction.php` — Active → Expired transition (FR-ST11–ST12)
 - `app/Partners/Partnership/Actions/RenewPartnershipAction.php` — Renewal creating new record with MoU transfer
+- `app/Partners/Partnership/Console/Commands/CheckPartnershipExpiryCommand.php` — Daily expiry-warning command (FR-EX1–FR-EX4)
+- `app/Partners/Partnership/Notifications/PartnershipExpiringNotification.php` — Queued expiring warning (FR-EX2–EX3)
+- `app/Partners/Partnership/Events/PartnershipExpired.php` — Expired transition event
 - `app/Partners/Partnership/Policies/PartnershipPolicy.php` — Authorization (admin writes, teacher read)
 - `app/Partners/Partnership/Livewire/PartnershipManager.php` — UI with company JOIN query
 - `app/Partners/Partnership/Livewire/Forms/PartnershipForm.php` — Form validation

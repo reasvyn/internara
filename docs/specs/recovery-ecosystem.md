@@ -1,7 +1,6 @@
 # Recovery Ecosystem — Super Admin Emergency Access
 
-> **Last updated:** 2026-07-24 **Changes:** feat — new spec; recovery key lifecycle, CLI commands,
-> OTP flow, key file operations
+> **Last updated:** 2026-08-10 **Changes:** review — fix PS-2 step reference (Step 6, not Step 7)
 
 ## Description
 
@@ -23,7 +22,7 @@ corrupted session. The web UI requires login, and email-based recovery may not b
 
 ### PS-2 — Recovery Key Lifecycle
 
-The recovery key is generated once during setup (Step 7), displayed once, and stored in two
+The recovery key is generated once during setup finalization (Step 6 of the wizard), displayed once, and stored in two
 forms: plaintext in a private file (for CLI retrieval) and bcrypt hash in the database (for
 verification). The lifecycle spans generation → storage → verification → reset → regeneration,
 and must be fully documented to prevent key loss or misuse.

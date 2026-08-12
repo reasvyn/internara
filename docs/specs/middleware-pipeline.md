@@ -1,6 +1,8 @@
 # Middleware Pipeline — HTTP Request Processing Chain
 
-> **Last updated:** 2026-07-23 **Changes:** feat — initial middleware pipeline specification
+> **Last updated:** 2026-08-10 **Changes:** align — centralize auth rate limits as canonical values
+> (login/forgot/reset/recovery/confirm); clarify enforcement points (AuthThrottleMiddleware config-driven
+> for login, inline RateLimiter for others); correct global limiter 120→30/min per IP per project-requirements §7
 
 ## Description
 
@@ -95,12 +97,12 @@ limiter to apply to which route group.
 | FR-MW2 | `LogContext` MUST attach `request_id` (UUID), `user_id`, `user_role`, `duration_ms` to log context |
 | FR-MW3 | `SecurityHeaders` MUST set CSP, HSTS, X-Frame-Options, Referrer-Policy, Permissions-Policy headers |
 | FR-MW4 | `SecurityHeaders` MUST inject Vite dev URL into CSP when `APP_ENV=local` |
-| FR-MW5 | `AuthThrottleMiddleware` MUST enforce login rate limiting (5 attempts/60s per IP) |
+| FR-MW5 | `AuthThrottleMiddleware` MUST enforce login rate limiting per config keys `auth.throttle.login_max_attempts` (5) / `login_decay_seconds` (60) — 5 attempts/60s per IP (see `authentication.md` FR-LT1) |
 | FR-MW6 | `CheckRoleMiddleware` MUST verify user has required role before route execution |
 | FR-MW7 | `SetLocaleMiddleware` MUST set locale from user preference or session |
 | FR-MW8 | `ProtectSetupRouteMiddleware` MUST block setup routes after installation is complete |
 | FR-MW9 | `RequireSetupAccessMiddleware` MUST require valid setup access token |
-| FR-MW10 | Rate limiters MUST be registered in `AppServiceProvider` with named aliases |
+| FR-MW10 | `AppServiceProvider` MUST register the route-level named limiters `admin` (60/min per user) and `global` (30/min per IP); per-endpoint auth limits (login/forgot/reset/recovery/confirm) are enforced at the Action/Component layer as specified in their governing specs and MUST use the canonical values in §6 Rate Limiters table, never ad-hoc numbers |
 | FR-MW11 | Module middleware MUST be registrable via route files without modifying core |
 
 ---
@@ -141,12 +143,31 @@ Request
 | Setup | `ProtectSetupRouteMiddleware` | All setup routes |
 | Setup | `RequireSetupAccessMiddleware` | All setup routes |
 
-### Rate Limiters (AppServiceProvider)
+### Rate Limiters (Route-Level Named)
 
 | Name | Limit | Use Case |
 |------|-------|----------|
 | `admin` | 60/min per user | Admin actions (settings, user management) |
-| `global` | 120/min per IP | General authenticated routes |
+| `global` | 30/min per IP | General authenticated routes (project-requirements §7) |
+
+Registered in `AppServiceProvider` via `RateLimiter::for()` and applied with `->middleware('throttle:admin')` / `throttle:global` on route groups.
+
+### Auth Endpoint Limits (Canonical Values)
+
+| Endpoint | Limit | Enforcement Point | Governing Spec |
+|----------|-------|-------------------|----------------|
+| Login | 5/60s per IP | `AuthThrottleMiddleware` (config `auth.throttle.login_max_attempts`/`login_decay_seconds`) | [authentication.md](authentication.md) FR-LT1 |
+| Forgot-password link | 3/3600s per email+IP | `SendPasswordResetLinkAction` (inline `RateLimiter`) | [password-reset.md](password-reset.md) FR-PR1 |
+| Password reset | 5/300s per email+IP | `ResetPasswordAction` (inline `RateLimiter`) | [password-reset.md](password-reset.md) FR-PR5 |
+| Recovery-slip redemption | 3/300s per IP | `RedeemRecoverySlipAction` / `AccountRecovery` (inline `RateLimiter`) | [account-recovery-slips.md](account-recovery-slips.md) FR-RD1 |
+| Password confirmation | 5/300s per user+IP | `ConfirmPassword` component (inline `RateLimiter`) | [password-confirmation.md](password-confirmation.md) FR-PC5 |
+
+> The table above is the **single registration point** for the canonical values of
+> project-requirements §7 (login 5/60s, forgot 3/3600s, reset 5/300s, recovery 3/300s) plus
+> password confirmation. Enforcement mechanics live in the governing specs (linked above) —
+> login via `AuthThrottleMiddleware`, the others via inline `RateLimiter` in Actions/Components.
+> Implementations MUST use these values; never ad-hoc numbers. Note `global` is per-IP at
+> 30/min per project-requirements §7 (an update from the code's current 120/min — see `git log`).
 
 ### LogContext Payload
 

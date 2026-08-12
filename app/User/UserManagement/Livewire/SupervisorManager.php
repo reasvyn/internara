@@ -8,6 +8,7 @@ use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
 use App\Core\Support\CsvHandler;
+use App\Partners\Company\Models\Company;
 use App\User\Models\User;
 use App\User\UserManagement\Actions\CreateUserAction;
 use App\User\UserManagement\Actions\DeleteUserAction;
@@ -17,6 +18,7 @@ use App\User\UserManagement\Livewire\Forms\SupervisorForm;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Livewire\Attributes\Computed;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SupervisorManager extends BaseRecordManager
@@ -83,6 +85,15 @@ class SupervisorManager extends BaseRecordManager
             );
     }
 
+    #[Computed]
+    public function companies(): array
+    {
+        return Company::orderBy('name')
+            ->get(['id', 'name'])
+            ->map(fn ($company) => ['id' => $company->id, 'name' => $company->name])
+            ->toArray();
+    }
+
     // --- Record Actions ---
 
     public function create(): void
@@ -132,7 +143,7 @@ class SupervisorManager extends BaseRecordManager
                 false,
             );
             $this->userModal = false;
-            $this->redirect(route('sysadmin.users.account-slip', $user));
+            $this->redirect(route('admin.users.account-slip', $user));
 
             return;
         }

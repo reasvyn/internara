@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Livewire\Forms;
 
+use App\Auth\Permissions\Enums\Role as RoleEnum;
+use Illuminate\Validation\Rule;
 use Livewire\Form;
 
 class UserForm extends Form
@@ -36,10 +38,16 @@ class UserForm extends Form
 
     public function rules(): array
     {
+        $assignable = array_map(
+            fn (RoleEnum $role): string => $role->value,
+            RoleEnum::excludeAdmin(),
+        );
+
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,'.($this->id ?? 'NULL'),
             'roles' => 'required|array|min:1',
+            'roles.*' => ['required', 'string', Rule::in($assignable)],
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
             'bio' => 'nullable|string|max:1000',

@@ -96,6 +96,10 @@ return [
     'members' => 'Anggota',
     'manage_members' => 'Kelola Anggota',
     'add_member' => 'Tambah Anggota',
+    'add_member_row' => 'Tambah Anggota Lain',
+    'add_members' => 'Tambah Anggota',
+    'member' => 'Anggota',
+    'remove_member_row' => 'Hapus baris anggota ini',
     'member_role' => 'Peran',
     'registration_id' => 'ID Registrasi',
     'registration_id_placeholder' => 'Masukkan ID registrasi siswa',
@@ -106,6 +110,7 @@ return [
     'group_updated' => 'Grup berhasil diperbarui.',
     'group_deleted' => 'Grup berhasil dihapus.',
     'member_added' => 'Anggota berhasil ditambahkan.',
+    'members_added' => ':count anggota berhasil ditambahkan.',
     'member_removed' => 'Anggota berhasil dihapus.',
 
     // Phases

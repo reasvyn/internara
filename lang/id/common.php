@@ -17,6 +17,7 @@ return [
     'created' => 'Berhasil dibuat.',
     'updated' => 'Berhasil diperbarui.',
     'deleted' => 'Berhasil dihapus.',
+    'notice' => 'Catatan',
     'or' => 'ATAU',
     'skip_to_content' => 'Lompat ke konten',
     'open_menu' => 'Buka menu',
@@ -67,6 +68,7 @@ return [
         'next' => 'Lanjut',
         'delete_selected' => 'Hapus Terpilih',
         'confirm_action' => 'Apakah Anda yakin?',
+        'confirm_message' => 'Apakah Anda yakin ingin melanjutkan?',
         'x_selected' => 'terpilih',
         'no_records_selected' => 'Tidak ada data yang dipilih.',
         'no_records_matching' => 'Tidak ada data yang cocok dengan filter saat ini.',
@@ -97,6 +99,7 @@ return [
     'description' => 'Deskripsi',
     'pagination' => [
         'per_page' => 'Per halaman',
+        'selected_count' => ':count terpilih',
     ],
 
     'sidebar' => [

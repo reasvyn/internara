@@ -1,6 +1,6 @@
 # Program — Technical Reference
 
-> **Last updated:** 2026-07-31 **Changes:** sync — fix InternshipGroupRole values, group-member migration, route naming, test paths
+> **Last updated:** 2026-08-12 **Changes:** add AddMembersToGroupAction (batch member add) to Actions table
 
 ## Description
 
@@ -25,6 +25,7 @@ Manages internship programs (lowongan PKL), program timelines, and student cohor
 | `InternshipGroup/Actions/UpdateInternshipGroupAction.php`  | `UpdateInternshipGroupAction`       | `BaseCommandAction` |
 | `InternshipGroup/Actions/DeleteInternshipGroupAction.php`  | `DeleteInternshipGroupAction`       | `BaseCommandAction` |
 | `InternshipGroup/Actions/AddMemberToGroupAction.php`       | `AddMemberToGroupAction`            | `BaseCommandAction` |
+| `InternshipGroup/Actions/AddMembersToGroupAction.php`      | `AddMembersToGroupAction`           | `BaseProcessAction` |
 | `InternshipGroup/Actions/RemoveMemberFromGroupAction.php`  | `RemoveMemberFromGroupAction`       | `BaseCommandAction` |
 
 ---

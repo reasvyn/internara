@@ -1,7 +1,7 @@
 # Branding, Theme & Locale — Identity, Appearance & Language Switching
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from system-settings.md; branding,
-> theme & locale
+> **Last updated:** 2026-08-10 **Changes:** review — add custom CSS (FR-B11–FR-B13, DD-4),
+> define locale resolution chain from stored `default_locale` setting (FR-L7, DD-5)
 
 ## Description
 
@@ -112,6 +112,9 @@ apply on every request via middleware without database queries.
 | FR-B8  | Favicon upload: `image|max:512` (KB), MIME: PNG, JPEG, WebP, ICO                    |
 | FR-B9  | `UploadBrandAssetAction` must store via Spatie Media Library under `brand_logo` or `brand_favicon` collections |
 | FR-B10 | `RemoveBrandAssetAction` must delete from media collection and clear setting key     |
+| FR-B11 | Custom CSS stored in `brand.custom_css` setting key, rendered after theme stylesheet in a dedicated `<style>` block |
+| FR-B12 | Custom CSS is a free-text `STRING` setting; only `super_admin` may write it (SettingPolicy) |
+| FR-B13 | Custom CSS must be escaped via `{!! $css !!}` only after the value passes a CSS safety scan (no `<script>`, `url(` to external hosts, `@import`, `expression()`) |
 
 ### Theme
 
@@ -135,6 +138,7 @@ apply on every request via middleware without database queries.
 | FR-L4  | `Locale::set()` must validate against `SUPPORTED_LOCALES`, queue cookie, set locale  |
 | FR-L5  | `LangSwitcher` Livewire component must render EN/ID dropdown and dispatch `language-changed` event |
 | FR-L6  | `Locale::metadata()` must return `['name' => '...', 'native' => '...']` for display  |
+| FR-L7  | `Locale::current()` must resolve via chain: cookie → stored `default_locale` setting → config `app.locale` → `DEFAULT_LOCALE` constant; first valid (supported) value wins |
 
 ---
 
@@ -233,6 +237,12 @@ final class Locale
 }
 ```
 
+`current()` resolution chain (FR-L7): `Cookie::get('locale')` → `setting('default_locale')` →
+`config('app.locale')` → `self::DEFAULT_LOCALE`. The `default_locale` setting (default `id`,
+declared in settings-infrastructure.md) is the admin-configured default; `DEFAULT_LOCALE = 'en'`
+is only the code-level last resort. `SetLocaleMiddleware` and `Locale::current()` share this
+chain so the stored setting drives the default on fresh installs before any cookie exists.
+
 ---
 
 ## 7. Design Decisions
@@ -257,6 +267,31 @@ avoid key collision with `AppInfo::name()`.
 **Rationale:** File uploads can fail. Immediate upload provides instant feedback and allows
 retry before investing more time in the form.
 **Trade-off:** Orphaned files if user cancels. Acceptable — small files, local storage.
+
+### DD-4 — Custom CSS as a Sandboxed STRING Setting
+
+**Decision:** Custom CSS is stored as plain text in `brand.custom_css` (STRING setting) and
+rendered in a dedicated `<style>` block after the theme stylesheet.
+**Rationale:** A single school-admin-facing textarea satisfies the "custom CSS" requirement
+without a file-upload pipeline or a build-time integration. Storing it as a setting means the
+`SettingObserver` invalidates caches on change, and `SettingPolicy` restricts writes to
+`super_admin`.
+**Trade-off:** Free-text CSS is powerful and risky. Mitigated by FR-B13 — a CSS safety scan
+rejects `<script>`, external `url()`, `@import`, and `expression()`, so the value cannot escalate
+to script execution. Acceptable because the writer is already `super_admin` (highest trust).
+
+### DD-5 — Locale Resolved From Stored Setting, Overridden by Cookie
+
+**Decision:** `Locale::current()` resolves cookie → stored `default_locale` setting → config →
+constant (FR-L7).
+**Rationale:** The project requirement ("Locale Management … resolved from stored setting",
+project-requirements §3.2) demands an admin-configurable default. The per-browser cookie
+preserves the "preference, not account setting" property (DD-1) while the stored `default_locale`
+drives fresh browsers and unauthenticated visitors. `DEFAULT_LOCALE = 'en'` remains the last
+resort only.
+**Trade-off:** Two sources of truth (cookie vs setting) for one value. Mitigated by a strict
+priority chain and a single `SUPPORTED_LOCALES` whitelist — invalid values at any layer fall
+through to the next.
 
 ---
 
