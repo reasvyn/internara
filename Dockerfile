@@ -3,7 +3,7 @@ FROM php:8.4-fpm
 RUN apt-get update && apt-get install -y \
     git unzip curl libpng-dev libonig-dev libxml2-dev zip \
     libpq-dev libzip-dev libicu-dev nodejs npm $PHPIZE_DEPS \
-    && docker-php-ext-install pdo_mysql pdo_pgsql bcmath gd zip intl exif \
+    && docker-php-ext-install pdo_mysql pdo_pgsql bcmath gd zip intl exif pcntl \
     && pecl install redis && docker-php-ext-enable redis \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
