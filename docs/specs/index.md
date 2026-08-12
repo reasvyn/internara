@@ -1,8 +1,8 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-08-08 **Changes:** test — Foundation specs (#1–#11) verified against
-> the rewritten Core suite (266 tests); spec↔code deviations reconciled (security-headers,
-> shared-utilities)
+> **Last updated:** 2026-08-12 **Changes:** add — Conditional Deployment spec (#55, Maintenance);
+> Foundation specs (#1–#11) verified against the rewritten Core suite (266 tests); spec↔code
+> deviations reconciled (security-headers, shared-utilities)
 
 ## Description
 
@@ -175,6 +175,7 @@ Backup, compliance, job queues, archiving, and system cleanup. Runs continuously
 | 52 | [Backup System](backup-system.md) | SysAdmin | #7, #8, #15, #19, #51 |
 | 53 | [GDPR Compliance](gdpr-compliance.md) | SysAdmin | #15, #35 |
 | 54 | [System Maintenance](system-maintenance.md) | SysAdmin | #6, #8, #51, #52 |
+| 55 | [Conditional Deployment](deployment.md) | Core | #4, #12, #51, #54 |
 
 ---
 
