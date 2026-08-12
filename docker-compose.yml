@@ -16,6 +16,8 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       QUEUE_CONNECTION: redis
+      RUN_SCHEDULER: "true"
+      RUN_QUEUE: "true"
     volumes:
       - storage_data:/app/storage
       - app_data:/app/public
@@ -24,54 +26,12 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-    restart: unless-stopped
-
-  queue:
-    image: internara-app
-    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
-    user: www-data
-    environment:
-      APP_ENV: "${APP_ENV:-production}"
-      APP_KEY: "${APP_KEY:?APP_KEY is required}"
-      DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: internara
-      DB_USERNAME: internara
-      DB_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD is required}"
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      QUEUE_CONNECTION: redis
-    volumes:
-      - storage_data:/app/storage
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
-
-  scheduler:
-    image: internara-app
-    command: php artisan schedule:work
-    user: www-data
-    environment:
-      APP_ENV: "${APP_ENV:-production}"
-      APP_KEY: "${APP_KEY:?APP_KEY is required}"
-      DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: internara
-      DB_USERNAME: internara
-      DB_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD is required}"
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      QUEUE_CONNECTION: redis
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@fsockopen('127.0.0.1', 9000) ? 0 : 1);"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
     restart: unless-stopped
 
   db:
@@ -121,7 +81,8 @@ services:
       - app_data:/app/public:ro
       - storage_data:/app/storage:ro
     depends_on:
-      - app
+      app:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:
