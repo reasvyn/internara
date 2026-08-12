@@ -26,9 +26,9 @@ return new class () extends Migration {
             $table->timestamp('verified_at')->nullable();
             $table->foreignUuid('verified_by')->nullable()->constrained('users')->nullOnDelete();
             // Supervisor Feedback
-            $table->text('supervisor_feedback')->nullable()->after('notes');
-            $table->foreignUuid('reviewed_by')->nullable()->constrained('users')->nullOnDelete()->after('supervisor_feedback');
-            $table->timestamp('reviewed_at')->nullable()->after('reviewed_by');
+            $table->text('supervisor_feedback')->nullable();
+            $table->foreignUuid('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('reviewed_at')->nullable();
             $table->timestamps();
 
             $table->index('registration_id');

@@ -19,6 +19,10 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->timestamps();
         });
+
+        Schema::table('profiles', function (Blueprint $table) {
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('set null');
+        });
     }
 
     /**
@@ -26,6 +30,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('profiles', function (Blueprint $table) {
+            $table->dropForeign(['department_id']);
+        });
+
         Schema::dropIfExists('departments');
     }
 };

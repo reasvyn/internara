@@ -14,9 +14,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table
                 ->foreignUuid('internship_id')
-                ->nullable()
-                ->constrained('internships')
-                ->cascadeOnDelete();
+                ->nullable();
             $table->index('internship_id');
             $table->string('name');
             $table->json('structure')->nullable();

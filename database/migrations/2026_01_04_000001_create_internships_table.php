@@ -32,6 +32,10 @@ return new class extends Migration
 
             $table->index(['academic_year_id', 'status']);
         });
+
+        Schema::table('rubrics', function (Blueprint $table) {
+            $table->foreign('internship_id')->references('id')->on('internships')->cascadeOnDelete();
+        });
     }
 
     /**
@@ -39,6 +43,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('rubrics', function (Blueprint $table) {
+            $table->dropForeign(['internship_id']);
+        });
+
         Schema::dropIfExists('internships');
     }
 };

@@ -35,14 +35,13 @@ return new class extends Migration
             $table->timestamp('verified_at')->nullable();
             $table->text('mentor_feedback')->nullable();
 
-            $table->text('supervisor_note')->nullable()->after('mentor_feedback');
-            $table->timestamp('supervisor_reviewed_at')->nullable()->after('supervisor_note');
+            $table->text('supervisor_note')->nullable();
+            $table->timestamp('supervisor_reviewed_at')->nullable();
             $table
                 ->foreignUuid('supervisor_id')
                 ->nullable()
                 ->constrained('users')
-                ->onDelete('set null')
-                ->after('supervisor_reviewed_at');
+                ->onDelete('set null');
 
             $table->timestamps();
 

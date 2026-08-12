@@ -811,7 +811,7 @@ After implementing this spec, the system has user CRUD with status management (a
 - `app/User/Profile/Actions/ReadProfileFormAction.php` — profile form data
 - `app/User/Profile/Livewire/ProfileEditor.php` — profile editing component
 - `app/User/Services/UserIdentifierGenerator.php` — username generation
-- `database/migrations/2026_01_02_000001_create_users_table.php` — users table schema
+- `database/migrations/2026_01_01_000000_create_users_table.php` — users table schema
 - `database/migrations/2026_01_02_000006_create_profiles_table.php` — profiles table schema
 - `docs/modules/user.md` — User module overview
 - `docs/modules/user-reference.md` — User module technical reference
