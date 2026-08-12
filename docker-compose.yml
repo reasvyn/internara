@@ -27,7 +27,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "php", "-r", "exit(@fsockopen('127.0.0.1', 9000) ? 0 : 1);"]
+      test: ["CMD", "/usr/local/bin/fpm-healthcheck"]
       interval: 5s
       timeout: 3s
       retries: 10

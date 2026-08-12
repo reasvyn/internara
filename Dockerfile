@@ -19,7 +19,8 @@ RUN composer install --no-dev --optimize-autoloader \
     && cp -a . /opt/app-src
 
 COPY docker/entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+COPY docker/fpm-healthcheck /usr/local/bin/fpm-healthcheck
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh /usr/local/bin/fpm-healthcheck
 
 EXPOSE 9000
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
