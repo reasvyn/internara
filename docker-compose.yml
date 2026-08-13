@@ -15,9 +15,9 @@ services:
       DB_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD is required}"
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      CACHE_STORE: redis
+      SESSION_DRIVER: redis
       QUEUE_CONNECTION: redis
-      RUN_SCHEDULER: "true"
-      RUN_QUEUE: "true"
     volumes:
       - storage_data:/app/storage
       - app_data:/app/public
