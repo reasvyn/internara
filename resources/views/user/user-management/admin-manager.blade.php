@@ -64,8 +64,10 @@
             <x-mary-form wire:submit="save" class="space-y-5">
                 <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
                     <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('user.admin.account') }}</p>
-                    <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
-                    <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" />
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <x-mary-input :label="__('user.fields.full_name')" wire:model="form.name" icon="o-user" />
+                        <x-mary-input :label="__('user.fields.email')" type="email" wire:model="form.email" icon="o-envelope" />
+                    </div>
 
                     @if(!$form->id)
                         <div class="bg-info/10 border border-info/20 text-info-content p-4 rounded-xl flex items-start gap-3 mt-4">

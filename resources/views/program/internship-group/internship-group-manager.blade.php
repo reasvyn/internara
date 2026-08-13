@@ -61,18 +61,30 @@
             </x-mary-form>
         </x-mary-modal>
 
-        {{-- Add Member --}}
+        {{-- Add Members --}}
         <x-mary-modal wire:model="showMemberModal" :title="__('internship.manage_members')" separator class="backdrop-blur-sm">
             <div class="space-y-4">
-                <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5">
-                    <x-mary-select :label="__('internship.member_role')" wire:model="memberFormData.role" :options="$this->roleOptions" icon="o-user" />
-                    <x-mary-input :label="__('internship.registration_id')" wire:model="memberFormData.registration_id" :placeholder="__('internship.registration_id_placeholder')" icon="o-document-text" class="mt-4" />
-                    <x-mary-input :label="__('internship.mentor_id')" wire:model="memberFormData.mentor_id" :placeholder="__('internship.mentor_id_placeholder')" icon="o-identification" class="mt-4" />
+                <div class="space-y-3">
+                    @foreach ($memberFormData as $index => $memberRow)
+                        <div class="bg-base-200/30 border border-base-content/10 rounded-xl p-5 relative">
+                            @if (count($memberFormData) > 1)
+                                <button type="button" wire:click="removeMemberRow({{ $index }})" class="absolute top-3 right-3 text-error btn btn-ghost btn-sm btn-square" :aria-label="__('internship.remove_member_row')">
+                                    <x-mary-icon name="o-x-mark" class="size-4" />
+                                </button>
+                            @endif
+                            <p class="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-4">{{ __('internship.member') }} #{{ $index + 1 }}</p>
+                            <x-mary-select :label="__('internship.member_role')" wire:model="memberFormData.{{ $index }}.role" :options="$this->roleOptions" icon="o-user" />
+                            <x-mary-input :label="__('internship.registration_id')" wire:model="memberFormData.{{ $index }}.registration_id" :placeholder="__('internship.registration_id_placeholder')" icon="o-document-text" class="mt-4" />
+                            <x-mary-input :label="__('internship.mentor_id')" wire:model="memberFormData.{{ $index }}.mentor_id" :placeholder="__('internship.mentor_id_placeholder')" icon="o-identification" class="mt-4" />
+                        </div>
+                    @endforeach
+
+                    <x-mary-button :label="__('internship.add_member_row')" icon="o-plus" wire:click="addMemberRow" class="btn-ghost btn-sm w-full border border-dashed" />
                 </div>
 
                 <x-slot:actions>
                     <x-mary-button :label="__('common.actions.cancel')" wire:click="$set('showMemberModal', false)" class="btn-ghost btn-sm" />
-                    <x-mary-button :label="__('internship.add_member')" wire:click="addMember" class="btn-primary btn-sm" spinner="addMember" />
+                    <x-mary-button :label="__('internship.add_members')" wire:click="addMembers" class="btn-primary btn-sm" spinner="addMembers" />
                 </x-slot:actions>
             </div>
         </x-mary-modal>

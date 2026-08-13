@@ -1,7 +1,7 @@
 # School Profile — Settings-Based Entity Management
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from institutional-and-academics.md;
-> school profile via Settings, SchoolEntity, SaveSchoolProfileAction, logo upload, cache
+> **Last updated:** 2026-08-10 **Changes:** review — cross-note email required-at-setup vs
+> nullable-in-editor (see setup-wizard.md DD-5)
 
 ## Description
 
@@ -308,6 +308,10 @@ class SchoolForm extends Form
 | `address` | `nullable\|string\|max:500` |
 | `website` | `nullable\|url\|max:255` |
 | `principal_name` | `nullable\|string\|max:255` |
+
+> `email` is `nullable` here but `required` in the setup wizard ([setup-wizard.md](setup-wizard.md)
+> §6.1, FR-W6). This is intentional — the wizard provisions a working contact address, the editor
+> allows clearing it later. See setup-wizard.md DD-5.
 
 ### 6.4 SchoolEditor
 

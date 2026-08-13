@@ -1,7 +1,7 @@
 services:
   app:
     build:
-      context: .
+      context: '${GIT_URL:-https://github.com/reasvyn/internara.git#main}'
       dockerfile: Dockerfile
     image: internara-app
     environment:
@@ -13,18 +13,16 @@ services:
       DB_DATABASE: internara
       DB_USERNAME: internara
       DB_PASSWORD: "${DB_PASSWORD:?DB_PASSWORD is required}"
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      QUEUE_CONNECTION: redis
+      QUEUE_CONNECTION: sync
+      CACHE_STORE: file
+      SESSION_DRIVER: database
+      BROADCAST_CONNECTION: log
       RUN_SCHEDULER: "true"
-      RUN_QUEUE: "true"
     volumes:
       - storage_data:/app/storage
       - app_data:/app/public
     depends_on:
       db:
-        condition: service_healthy
-      redis:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "/usr/local/bin/fpm-healthcheck"]
@@ -61,23 +59,14 @@ services:
       start_period: 10s
     restart: unless-stopped
 
-  redis:
-    image: redis:7-alpine
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-
   web:
-    image: nginx:alpine
+    build:
+      context: '${GIT_URL:-https://github.com/reasvyn/internara.git#main}'
+      dockerfile: .docker/nginx.Dockerfile
+    image: internara-web
     ports:
       - "${NGINX_PORT:-80}:80"
     volumes:
-      - ./.docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - app_data:/app/public:ro
       - storage_data:/app/storage:ro
     depends_on:
@@ -87,6 +76,5 @@ services:
 
 volumes:
   mysql_data:
-  redis_data:
   storage_data:
   app_data:

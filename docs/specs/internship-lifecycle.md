@@ -1,7 +1,8 @@
 # Internship Lifecycle — Program CRUD, Status Machine, Registration Windows & Pre-Close Readiness
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from internships.md; program lifecycle,
-> status, registration windows, readiness, CSV
+> **Last updated:** 2026-08-10 **Changes:** review — add department_id + type fields to Program
+> Manager (FR-IC13/14), add Requirement Manager with typed requirements DOCUMENT/SKILL/TEXT
+> (FR-RM1–RM5, DD-6), reconcile Phase Manager NG2 with project-requirements §3.3
 
 ## Description
 

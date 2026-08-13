@@ -1,6 +1,6 @@
 # System Requirements — Dependencies, Platform & Database
 
-> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18
+> **Last updated:** 2026-08-10 **Changes:** add — System Health 15-point contract (§4.5, project-requirements §3.1), cross-referencing system-maintenance.md
 
 ## Description
 
@@ -161,6 +161,19 @@ They are not part of the domain schema but coexist in the same database.
 | `password_reset_tokens` | laravel/framework | Password reset tracking |
 | `migrations` | laravel/framework | Migration version tracking |
 | `pulse_*` | laravel/pulse | Performance metrics (10+ tables) |
+
+### 4.5 System Health Check
+
+> **Governing spec:** [system-maintenance.md](system-maintenance.md) — the `system:health` command,
+> its 15-point check, CLI/JSON output, and admin-accessible surface are fully specified there
+> (Phase 12). This section records the Foundation-level contract referenced by project-requirements
+> §3.1 (System Health).
+
+| ID    | Requirement |
+| ----- | ----------- |
+| FR-SY8 | The system MUST provide a 15-point system health check covering: environment, setup status, PHP version, required extensions, recommended extensions, memory, database connectivity, migration freshness, storage writability, disk space, queue connectivity, cache connectivity, app key, storage symlink, and maintenance mode |
+| FR-SY9 | The health check MUST be accessible via `php artisan system:health` (CLI) and expose an admin-accessible web surface |
+| FR-SY10 | Health check results MUST be cached under the registered cache key (`system.health_check`) to avoid re-running expensive checks on every request |
 
 ---
 

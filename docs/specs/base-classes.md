@@ -1,6 +1,6 @@
 # Base Classes — Action Triad, Data Layer, UI Layer, Policies & Contracts
 
-> **Last updated:** 2026-07-31 **Changes:** sync — correct module count to 18
+> **Last updated:** 2026-08-10 **Changes:** add — BaseRecordManager Extra Menu capability (import/export/template download, project-requirements §6.2)
 
 ## Description
 
@@ -113,7 +113,7 @@ violations compile-time errors rather than runtime surprises.
 
 | ID    | Requirement |
 | ----- | ----------- |
-| FR-L1 | `BaseRecordManager` — table CRUD: search, filter, sort, pagination, bulk actions, selection |
+| FR-L1 | `BaseRecordManager` — table CRUD: search, filter, sort, pagination, selection, bulk actions, and **Extra Menu** (download template, import CSV/Excel, export CSV/Excel/PDF via `CsvHandler`) per project-requirements §6.2; import/export mechanics specified in [csv-import-export.md](csv-import-export.md) |
 | FR-L2 | `BaseRecordEntry` — modal CRUD: create/edit modal with form, `handleError()` for RejectedException |
 | FR-L3 | `BaseRecordList` — read-only list: search, pagination (no create/edit) |
 | FR-L4 | `BaseFormView` — full-page form: dirty tracking, `handleSave()` |

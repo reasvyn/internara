@@ -137,6 +137,8 @@ return [
         'success_created_activation' => 'Guru dibuat. Kode aktivasi: :code',
         'success_updated' => 'Guru berhasil diperbarui.',
         'success_deleted' => 'Guru berhasil dihapus.',
+        'created_from' => 'Dibuat Dari',
+        'created_to' => 'Dibuat Sampai',
     ],
     'supervisor' => [
         'title' => 'Manajemen Supervisor',

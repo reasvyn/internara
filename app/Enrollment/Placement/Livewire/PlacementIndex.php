@@ -45,7 +45,7 @@ class PlacementIndex extends BaseRecordManager
             ['key' => 'company.name', 'label' => __('placement.company')],
             ['key' => 'internship.name', 'label' => __('placement.batch')],
             ['key' => 'quota', 'label' => __('placement.quota'), 'class' => 'text-center'],
-            ['key' => 'filled_quota', 'label' => __('placement.filled'), 'class' => 'text-center'],
+            ['key' => 'filled_quota', 'label' => __('placement.stats.filled'), 'class' => 'text-center'],
             ['key' => 'actions', 'label' => '', 'sortable' => false],
         ];
     }

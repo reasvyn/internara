@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\User\UserManagement\Livewire;
 
+use App\Auth\Permissions\Enums\Role as RoleEnum;
 use App\Core\Enums\CsvRowResult;
 use App\Core\Exceptions\RejectedException;
 use App\Core\Livewire\BaseRecordManager;
@@ -70,7 +71,9 @@ class UserManager extends BaseRecordManager
 
     protected function query(): Builder
     {
-        return User::query()->with(['roles', 'profile']);
+        return User::query()
+            ->whereDoesntHave('roles', fn ($q) => $q->where('name', RoleEnum::ADMIN->value))
+            ->with(['roles', 'profile']);
     }
 
     protected function applySearch(Builder $query): Builder
@@ -105,7 +108,12 @@ class UserManager extends BaseRecordManager
     #[Computed]
     public function roles()
     {
-        return Role::whereNotIn('name', ['super_admin', 'admin'])->get();
+        $assignable = array_map(
+            fn (RoleEnum $role): string => $role->value,
+            RoleEnum::excludeAdmin(),
+        );
+
+        return Role::whereIn('name', $assignable)->orderBy('name')->get();
     }
 
     #[Computed]
@@ -191,7 +199,7 @@ class UserManager extends BaseRecordManager
                 $this->form->roles,
             );
             $this->userModal = false;
-            $this->redirect(route('sysadmin.users.account-slip', $user));
+            $this->redirect(route('admin.users.account-slip', $user));
 
             return;
         }
@@ -279,6 +287,45 @@ class UserManager extends BaseRecordManager
         });
     }
 
+    public function askChangeStatus(string $id): void
+    {
+        $this->resetErrorBag();
+        $this->statusTarget = $id;
+        $this->selectedStatus = '';
+        $this->statusReason = '';
+        $this->showStatusModal = true;
+    }
+
+    public function changeStatus(SetUserStatusAction $setStatus): void
+    {
+        $this->validate([
+            'selectedStatus' => ['required', 'string'],
+            'statusReason' => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $status = AccountStatus::tryFrom($this->selectedStatus);
+
+        if (! $status) {
+            flash()->error(__('user.manager.status_invalid'));
+
+            return;
+        }
+
+        $user = User::findOrFail($this->statusTarget);
+
+        try {
+            $setStatus->execute($user, $status, $this->statusReason ?: null);
+            flash()->success(__('user.manager.status_changed'));
+        } catch (RejectedException $e) {
+            flash()->error($e->getMessage());
+        }
+
+        $this->showStatusModal = false;
+        $this->statusTarget = null;
+        $this->selectedStatus = '';
+        $this->statusReason = '';
+    }
+
     // --- Import / Export ---
 
     public function updatedImportFile(): void
@@ -340,6 +387,7 @@ class UserManager extends BaseRecordManager
     public function export(CsvHandler $csv): StreamedResponse
     {
         $users = User::query()
+            ->whereDoesntHave('roles', fn ($q) => $q->where('name', RoleEnum::ADMIN->value))
             ->with('profile')
             ->when($this->search, fn ($q) => $q->where('name', 'like', "%{$this->search}%"))
             ->orderBy('name')

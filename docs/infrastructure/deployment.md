@@ -320,28 +320,85 @@ setup wizard, enable caches, and verify with `php artisan system:health`.
 
 ## Deployment Path C: Docker
 
-### Docker Compose Services
+### Git-based Docker Compose (zero-copy deploy)
 
-The project includes a production `docker-compose.yml` with all required services:
+The production `docker-compose.yml` supports building service images directly from the project's
+Git repository. This enables a "single-command" VPS deployment without cloning or uploading source
+files manually.
 
-| Service     | Image               | Purpose                    | Depends On |
-| ----------- | ------------------- | -------------------------- | ---------- |
-| `app`       | Custom (Dockerfile) | PHP-FPM application server | db, redis  |
-| `queue`     | Custom (Dockerfile) | Laravel queue worker       | db, redis  |
-| `scheduler` | Custom (Dockerfile) | Scheduler daemon           | db         |
-| `web`       | nginx:alpine        | Reverse proxy              | app        |
-| `db`        | mysql:8             | Database                   | --         |
-| `redis`     | redis:7-alpine      | Cache, queue, session      | --         |
+Key environment variables:
+- GIT_URL — repository URL with optional ref, e.g. `https://github.com/owner/repo.git#main` or
+  `git@github.com:owner/repo.git#main`. Defaults to the canonical repo.
+- NGINX_PORT — host port for the nginx service (default 80)
 
-### Start the Stack
+Services that build from Git: `app`, `queue`, `scheduler`, and `web`. The `web` image is built using
+`.docker/nginx.Dockerfile` and the repo's `./.docker/nginx.conf` is copied into the image, so no
+host bind-mount is required.
+
+Important: Docker BuildKit is required to build directly from Git. Enable it in the shell:
 
 ```bash
-docker compose up -d
+export DOCKER_BUILDKIT=1
 ```
 
-The application is served on port 80 (configurable via `NGINX_PORT`). Run
-`php artisan setup:install` inside the `app` container to generate the signed setup URL, then open
-it in your browser.
+### Start the Stack (public repo)
+
+1. Create an env file on the VPS with runtime secrets (recommended location `/etc/internara.env`):
+
+```bash
+sudo tee /etc/internara.env > /dev/null <<'ENV'
+DB_PASSWORD=REPLACE_WITH_STRONG_PASSWORD
+APP_KEY=base64:REPLACE_WITH_APP_KEY
+GIT_URL=https://github.com/owner/repo.git#main
+ENV
+sudo chmod 600 /etc/internara.env
+```
+
+2. Start the stack using the env file:
+
+```bash
+DOCKER_BUILDKIT=1 docker compose --env-file /etc/internara.env up --build -d
+```
+
+### Private repositories (SSH deploy key)
+
+For private repositories, create a read-only deploy key on GitHub and add the private key to the
+VPS (owner: root) at `~/.ssh/deploy_key` with permission 600. Then, before `docker compose` run the
+ssh-agent so the Docker build process can access the repo:
+
+```bash
+eval "$(ssh-agent -s)" && ssh-add ~/.ssh/deploy_key
+# Then run the compose command using SSH URL
+export GIT_URL='git@github.com:owner/repo.git#main'
+DOCKER_BUILDKIT=1 docker compose --env-file /etc/internara.env up --build -d
+```
+
+If using a CI/CD runner or systemd unit to start the stack on boot, ensure the ssh-agent is available
+to the docker build process (or use a build service with repository access).
+
+### DB_PASSWORD and secrets management
+
+Recommended: store environment secrets in a file outside the project (e.g. `/etc/internara.env`) with
+mode 600 and owner root. The compose command above loads that file. Alternatives:
+- Docker Secrets (requires swarm/kubernetes)
+- External secrets manager (Vault, AWS Secrets Manager)
+
+Generate a secure password on the VPS:
+
+```bash
+DB_PASSWORD=$(openssl rand -base64 32)
+```
+
+Do not commit `/etc/internara.env` or other secret files to Git.
+
+### Notes & caveats
+
+- The `web` image now builds from the repository and expects `./.docker/nginx.conf` to exist in the
+  repo. If you prefer a host-provided nginx.conf, revert to the previous bind-mount approach.
+- Build from Git pulls the repository at build-time — changes in the running container won't persist
+  unless stored in mounted volumes (e.g. `storage_data` volume is used for uploaded files).
+- The compose-based deployment requires Docker Engine and a reasonably recent Docker Compose that
+  supports BuildKit git contexts.
 
 ### Development with Laravel Sail
 

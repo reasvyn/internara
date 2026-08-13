@@ -1,8 +1,7 @@
 # Internship Groups — Group & Member Management
 
-> **Last updated:** 2026-07-22 **Changes:** feat — expanded DDs, API contracts, NFRs; corrected
-> member model to match code (mentor_id), added full action signatures, policy, form validation,
-> and member lifecycle edge cases
+> **Last updated:** 2026-08-12 **Changes:** feat — batch member add via repeater (add-more)
+> pattern with all-or-nothing semantics; new FR-MM9/MM10/MM11, DD-6, updated UC-2/NFR-U1
 
 ## Description
 
@@ -36,6 +35,12 @@ associated with a Placement, but this association is not enforced at the group l
 constraints are managed through the Placement layer. The group simply references the placement
 for informational purposes.
 
+### PS-4 — Single-Row Member Add Hinders Bulk Enrollment
+
+The member add modal accepts only one member per save. Adding a cohort of students requires
+repeated open → fill → save → reopen cycles, which is slow and error-prone for admins onboarding
+many registrations at once.
+
 ---
 
 ## 2. Goals & Non-Goals
@@ -50,6 +55,7 @@ for informational purposes.
 | G4  | Provide CRUD for internship groups with placement association |
 | G5  | Record member join timestamp on add |
 | G6  | Support group deactivation without deletion |
+| G7  | Support adding multiple members in a single modal save (repeater) |
 
 ### Non-Goals
 
@@ -81,15 +87,18 @@ for informational purposes.
 **Actor:** Admin
 **Preconditions:** Internship group exists; admin is authenticated
 **Flow:**
-1. Admin clicks "Manage Members"; member management modal opens
-2. Admin selects role to add:
+1. Admin clicks "Manage Members"; member management modal opens with one empty member row
+2. Admin clicks "Add Member" to append additional repeater rows (as many as needed)
+3. Per row, admin selects a role:
    - **Student:** enters registration ID → `AddMemberToGroupAction` links registration + student
    - **Teacher/Supervisor:** enters mentor (user) ID → `AddMemberToGroupAction` creates member with mentor reference
-3. System validates: role-specific required fields, uniqueness constraints
-4. `AddMemberToGroupAction` creates member with `joined_at = now()`
-5. Admin can remove members → `RemoveMemberFromGroupAction` deletes member record
-6. Admin clicks "Delete Group" → `DeleteInternshipGroupAction` checks `canBeDeleted()` (blocks if has members)
-**Postconditions:** Members added/removed; deletion guarded by member count
+4. Admin submits → `InternshipGroupManager::addMembers()` validates **all** rows; any invalid row
+   blocks the entire batch (all-or-nothing)
+5. `AddMembersToGroupAction` creates every row within a single transaction with `joined_at = now()`
+6. Admin can remove a repeater row via per-row remove button
+7. Admin can remove existing members → `RemoveMemberFromGroupAction` deletes member record
+8. Admin clicks "Delete Group" → `DeleteInternshipGroupAction` checks `canBeDeleted()` (blocks if has members)
+**Postconditions:** All valid batch rows become members atomically; deletion guarded by member count
 
 ### UC-3 — Admin Deactivates a Group
 
@@ -134,6 +143,9 @@ for informational purposes.
 | FR-MM6 | `RemoveMemberFromGroupAction` must accept member instance, log removal, then delete within transaction |
 | FR-MM7 | `InternshipGroupManager::addMember()` must validate: role (required, valid enum), registration_id (required_if:role=student, exists:registrations,id), mentor_id (required_if:role=school_teacher OR industry_supervisor, exists:users,id) |
 | FR-MM8 | `InternshipGroupManager::removeMember()` must authorize update on the parent group |
+| FR-MM9 | `AddMembersToGroupAction` must accept group + array of member rows; create all rows within a single transaction with `joined_at = now()`, returning the count created |
+| FR-MM10 | `InternshipGroupManager` must expose repeater row management: `memberFormData` array of rows, `addMemberRow()`, `removeMemberRow(int $index)`, and `resetMemberForm()` |
+| FR-MM11 | `InternshipGroupManager::addMembers()` must validate **all** repeater rows before calling `AddMembersToGroupAction`; one invalid row fails the entire batch (all-or-nothing) |
 
 ### Policies
 
@@ -161,7 +173,7 @@ for informational purposes.
 | ----- | ----------- |
 | NFR-S1 | Group member uniqueness constraints must be enforced at both database and application level |
 | NFR-S2 | Member add must authorize update permission on the parent group |
-| NFR-U1 | Group member modal must dynamically adapt input fields based on selected role (student → registration_id; teacher/supervisor → mentor_id) |
+| NFR-U1 | Member modal must dynamically adapt input fields **per repeater row** based on selected role (student → registration_id; teacher/supervisor → mentor_id) |
 | NFR-U2 | Deletion blocked messages must explain which related records prevent deletion |
 | NFR-U3 | Member count must update in real-time after add/remove |
 | NFR-U4 | Confirm dialog must show group name before deletion |
@@ -287,6 +299,15 @@ final class AddMemberToGroupAction extends BaseCommandAction
     // Executes within transaction, logs addition
 }
 
+// app/Program/InternshipGroup/Actions/AddMembersToGroupAction.php
+final class AddMembersToGroupAction extends BaseProcessAction
+{
+    public function execute(InternshipGroup $group, array $rows): int;
+    // Creates every row within a single transaction (all-or-nothing),
+    // delegates each row to AddMemberToGroupAction, logs batch addition,
+    // returns count of members created
+}
+
 // app/Program/InternshipGroup/Actions/RemoveMemberFromGroupAction.php
 final class RemoveMemberFromGroupAction extends BaseCommandAction
 {
@@ -376,6 +397,18 @@ no orphaned records.
 **Trade-off:** Inactive groups still occupy database space. Mitigated by eventual archival
 process (future scope).
 
+### DD-6 — Batch Member Add via Repeater (All-or-Nothing)
+
+**Decision:** The member modal uses a repeater ("add more") pattern backed by an array of
+member rows. `addMembers()` validates every row up front and delegates to
+`AddMembersToGroupAction`, which creates all rows inside a single transaction.
+**Rationale:** Onboarding a cohort one member per save is slow and error-prone (PS-4). An
+array of rows with add/remove buttons gives the admin full control over the batch, and
+all-or-nothing semantics prevent partial writes when one row is invalid — keeping group
+state consistent with what the admin intended to submit.
+**Trade-off:** Batch size is unbounded by design (admin-managed only, per NG3); the action
+loops rows serially, which is acceptable for group sizes in practice.
+
 ---
 
 ## 8. Success Metrics
@@ -395,6 +428,8 @@ process (future scope).
 | Join timestamp | 100% of members have joined_at | `AddMemberToGroupAction` sets `now()` |
 | Removal logging | Every removal logged | `RemoveMemberFromGroupAction` audit trail |
 | Authorization | Only admins can add/remove members | Policy + Livewire authorization tests |
+| Batch atomicity | 0 partial batches | `AddMembersToGroupAction` transaction + `addMembers()` validation tests |
+| Batch all-or-nothing | 1 invalid row blocks entire batch | Livewire validation tests (FR-MM11) |
 
 ---
 
@@ -426,6 +461,7 @@ After implementing this spec, the system has group CRUD with student and mentor 
 - `app/Program/InternshipGroup/Actions/UpdateInternshipGroupAction.php` — Group update
 - `app/Program/InternshipGroup/Actions/DeleteInternshipGroupAction.php` — Deletion with guard
 - `app/Program/InternshipGroup/Actions/AddMemberToGroupAction.php` — Role-based member add
+- `app/Program/InternshipGroup/Actions/AddMembersToGroupAction.php` — Batch (repeater) member add, all-or-nothing
 - `app/Program/InternshipGroup/Actions/RemoveMemberFromGroupAction.php` — Member removal
 - `app/Program/InternshipGroup/Policies/InternshipGroupPolicy.php` — Authorization
 - `app/Program/InternshipGroup/Livewire/InternshipGroupManager.php` — CRUD + member modal

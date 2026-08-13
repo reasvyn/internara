@@ -49,7 +49,7 @@ trait DownloadsAccountSlips
             return;
         }
 
-        $this->redirect(route('sysadmin.users.account-slip', $this->slipUser));
+        $this->redirect(route('admin.users.account-slip', $this->slipUser));
     }
 
     public function downloadSelectedSlips(): void
@@ -61,7 +61,7 @@ trait DownloadsAccountSlips
         }
 
         $this->redirect(
-            route('sysadmin.users.account-slips.batch', [
+            route('admin.users.account-slips.batch', [
                 'ids' => implode(',', $this->selectedIds),
             ]),
         );

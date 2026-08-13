@@ -1,6 +1,6 @@
 # RBAC & Authorization — Role-Based Access Control
 
-> **Last updated:** 2026-07-23 **Changes:** feat — initial RBAC and authorization specification
+> **Last updated:** 2026-08-10 **Changes:** add — canonical Cross-Role Proxy contract (§4.2, project-requirements §4.1): proxy matrix, configurable inactivity window, admin proxy, proxy metadata tagging; align FR-AUTH10
 
 ## Description
 
@@ -115,9 +115,25 @@ role model with explicit capabilities per role prevents this.
 | FR-AUTH7 | Auto-discovery MUST cache results for 24 hours |
 | FR-AUTH8 | `UserPolicy` MUST be registered manually in `AppServiceProvider` (exception to auto-discovery) |
 | FR-AUTH9 | Role normalization: code uses `super_admin`, Spatie stores `superadmin` |
-| FR-AUTH10 | Cross-Role Proxy: teachers may act as supervisors for assigned students |
+| FR-AUTH10 | Cross-Role Proxy — teachers may act as supervisors for assigned students (canonical contract in §4.2 Cross-Role Proxy below) |
 | FR-AUTH11 | Functional roles (`mentor`, `mentee`) MUST be resolved at runtime via profile accessor |
 | FR-AUTH12 | Every policy MUST extend `BasePolicy` |
+
+### 4.2 Cross-Role Proxy (Canonical Contract)
+
+> **Canonical source** for project-requirements §4.1 (Cross-Role Proxy). Implements the proxy
+> matrix defined in [ADR-014](../adr/adr-cross-role-proxy.md). Applies to: logbook verification
+> (`daily-activity.md`), assessment grading (`assessment.md`), and supervision log verification
+> (`supervision.md`).
+
+| ID     | Requirement |
+| ------ | ----------- |
+| FR-CRP1 | `HasMentorProxy` trait MUST be used by `AttendancePolicy`, `LogbookPolicy`, `SupervisionLogPolicy`, and `AssessmentPolicy` |
+| FR-CRP2 | Teachers MAY proxy for industry supervisors on records of students they mentor (mentor relationship to the student's registration) |
+| FR-CRP3 | Admins MAY proxy for either teacher or supervisor role on any record |
+| FR-CRP4 | Proxy activation for teachers MUST require supervisor inactivity of a configurable window, stored in settings key `journals.proxy_inactivity_hours` (default `48`) |
+| FR-CRP5 | Proxy verification MUST apply to logbook verification, assessment grading, and supervision log verification |
+| FR-CRP6 | Every proxy-graded item MUST be tagged with `proxy_role` and `proxy_reason` metadata in the activity log for audit trail |
 
 ---
 

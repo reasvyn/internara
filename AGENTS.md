@@ -231,7 +231,7 @@ Choose verification level. Run targeted checks first, full suite once at end.
   - `python3 scripts/scan_naming.py` — naming conventions
   - `python3 scripts/scan_conventions.py` — strict_types, Fillable, debug
   - `python3 scripts/scan_doc_links.py` — broken links in docs
-- **Run full suite** only once at the end:
+- **Run full suite** only when the user explicitly asks (on-demand only, never routine):
   - `php artisan test --compact`
   - `vendor/bin/phpstan analyse --no-progress`
 - Output: all tests pass, linter clean, arch-guard clean, git diff reviewed.
@@ -545,6 +545,12 @@ full suite), reduces resource usage (~2GB+ RAM for the full suite), and reduces 
 — a suite mapping 1:1 to requirement IDs is self-explaining. When tempted to add a test "for
 safety", ask which requirement it verifies; no requirement means don't write it.
 
+**Full suite + PHPStan are on-demand only.** Do NOT run `php artisan test --compact` (full suite) or
+`vendor/bin/phpstan analyse` as part of routine work — they are slow (~2GB+ RAM, 10+ minutes) and are
+only run when the user explicitly asks for them. Default verification is the targeted per-change
+checks in the table below (module suite, `--filter`, `php -l`, pint, arch-guard scanners). The full
+suite / PHPStan stay reserved for merge-day or user-requested full verification.
+
 | Change Type | Verification |
 |-------------|-------------|
 | Translation keys (`lang/*.php`) | `php -l` + `php artisan tinker --execute="echo __('key');"` |
@@ -567,7 +573,7 @@ php artisan test --compact --filter={ClassName}
 php -l path/to/file.php
 php artisan system:health
 
-# Full verification (after refactoring or before merge)
+# Full verification (after refactoring or before merge) — ONLY when the user explicitly asks
 php artisan test --compact   # Run full test suite (all modules)
 vendor/bin/pint --dirty --format agent
 vendor/bin/phpstan analyse --no-progress
@@ -594,10 +600,10 @@ python3 scripts/scan_doc_links.py          # Broken links in docs
 - [ ] Cache keys registered in `config/cache-keys.php`
 - [ ] No N+1 queries — eager loading verified
 - [ ] No unescaped `{!! !!}` for user content
-- [ ] `php artisan test --compact` passes
+- [ ] `php artisan test --compact` passes (only when the user requests full verification)
 - [ ] Every test traces to a spec requirement — no orphan tests, no padding (spec-driven testing)
 - [ ] `vendor/bin/pint --dirty --format agent` clean
-- [ ] `vendor/bin/phpstan analyse --no-progress` passes
+- [ ] `vendor/bin/phpstan analyse --no-progress` passes (only when the user requests full verification)
 - [ ] Arch-guard scripts clean — `scan_violations.py`, `scan_class_contracts.py`, `scan_security.py`, `scan_naming.py`, `scan_conventions.py`, `scan_doc_links.py`
 - [ ] `git status` + `git diff` reviewed — only intended files changed, nothing dropped
 - [ ] Relevant docs updated (documentation-first approach)

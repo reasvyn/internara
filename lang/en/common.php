@@ -17,6 +17,7 @@ return [
     'created' => 'Created successfully.',
     'updated' => 'Updated successfully.',
     'deleted' => 'Deleted successfully.',
+    'notice' => 'Note',
     'or' => 'OR',
     'skip_to_content' => 'Skip to content',
     'open_menu' => 'Open menu',
@@ -67,6 +68,7 @@ return [
         'next' => 'Next',
         'delete_selected' => 'Delete Selected',
         'confirm_action' => 'Are you sure?',
+        'confirm_message' => 'Are you sure you want to proceed?',
         'x_selected' => 'selected',
         'no_records_selected' => 'No records selected.',
         'no_records_matching' => 'No records matching current filters.',
@@ -97,6 +99,7 @@ return [
     'description' => 'Description',
     'pagination' => [
         'per_page' => 'Per page',
+        'selected_count' => ':count selected',
     ],
 
     'sidebar' => [
