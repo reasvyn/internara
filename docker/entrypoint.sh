@@ -11,6 +11,9 @@ chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/public/storage
 echo "[entrypoint] running migrations"
 su -s /bin/sh www-data -c "php /app/artisan migrate --force"
 
+echo "[entrypoint] running seeders"
+su -s /bin/sh www-data -c "php /app/artisan db:seed --class=Database\\\\Seeders\\\\SetupSeeder --force"
+
 if [ "$RUN_SCHEDULER" = "true" ]; then
     echo "[entrypoint] starting scheduler"
     su -s /bin/sh www-data -c "php /app/artisan schedule:work >> /app/storage/logs/scheduler.log 2>&1 &"
