@@ -1,6 +1,7 @@
 # Deployment — Options, Requirements & CI/CD
 
-> **Last updated:** 2026-07-10 **Changes:** fix — correct malformed headings (#Deployment → ## Deployment Path)
+> **Last updated:** 2026-08-13 **Changes:** amend — Docker low-memory profile (1 GB RAM): scheduler
+> default off, MySQL memory caps, per-service mem limits, PHP-FPM worker cap, multi-stage image
 
 ## Description
 
@@ -332,12 +333,17 @@ Key environment variables:
 - APP_KEY — required (`base64:`-encoded Laravel key). Compose fails fast when missing.
 - DB_PASSWORD — required. Compose fails fast when missing.
 - NGINX_PORT — host port for the nginx service (default 80)
+- RUN_SCHEDULER — set to `true` to start the scheduler daemon inside the `app` container. **Defaults
+  to `false`** so the stack idles at a very low memory footprint (fits a 1 GB RAM VPS). For a demo
+  deployment, keep it `false` — no background processing runs at all (`QUEUE_CONNECTION=sync` means
+  jobs run inline). Enable it only when scheduled tasks (announcements, backups, cache warm) are
+  needed.
 
 The stack is minimal: three services — `app`, `web`, and `db`. There is no Redis by default; the app
 runs the shared-hosting drivers (`QUEUE_CONNECTION=sync`, `CACHE_STORE=file`,
 `SESSION_DRIVER=database`), which is sufficient for single-tenant low-volume workloads. The `app`
-entrypoint runs `php artisan migrate --force` on start and starts the scheduler daemon
-(`RUN_SCHEDULER=true`); set `RUN_QUEUE=true` to also start a queue worker when a Redis service is
+entrypoint runs `php artisan migrate --force` on start and starts the scheduler daemon only when
+`RUN_SCHEDULER=true`; set `RUN_QUEUE=true` to also start a queue worker when a Redis service is
 added. Services that build from Git: `app` and `web`. The `web` image is built using
 `.docker/nginx.Dockerfile` and the repo's `./.docker/nginx.conf` is copied into the image, so no
 host bind-mount is required.
@@ -366,6 +372,25 @@ sudo chmod 600 /etc/internara.env
 ```bash
 DOCKER_BUILDKIT=1 docker compose --env-file /etc/internara.env up --build -d
 ```
+
+### Low-memory profile (1 GB RAM VPS)
+
+The default compose is tuned to run on a **1 GB RAM** VPS:
+
+- **No background processes.** `RUN_SCHEDULER` defaults to `false` and `QUEUE_CONNECTION=sync` runs
+  jobs inline — the `app` container only runs PHP-FPM. Enable the scheduler only if scheduled tasks
+  are actually needed.
+- **MySQL is memory-capped.** The `db` service overrides MySQL defaults (`innodb_buffer_pool_size=64M`,
+  `performance_schema=OFF`, `max_connections=50`, etc.) cutting idle memory from ~460 MB to ~125 MB.
+- **Per-service memory limits.** `app` is capped at `256m`, `db` at `384m`, `web` at `64m` — the total
+  hard ceiling (~700 MB) plus the host OS fits comfortably in 1 GB and no service can OOM the host.
+- **PHP-FPM is worker-capped.** `docker/php-fpm/www.conf` limits the pool to `pm.max_children=2`
+  (start 1, max spare 2) — enough for demo/school-scale traffic and keeps resident memory small.
+- **Multi-stage image.** The runtime `app` image excludes `node_modules`, build toolchain, and the Git
+  history, keeping the image lean and build memory low.
+
+To opt back in to background processing, export `RUN_SCHEDULER=true` (and add a `redis` service +
+`RUN_QUEUE=true` for async queues) when running compose.
 
 ### Private repositories (SSH deploy key)
 
@@ -427,7 +452,7 @@ See `docker-compose.dev.yml` for the Sail configuration.
 - [ ] `APP_KEY` set to a random 32-character base64 string
 - [ ] Database migrated: `php artisan migrate --force` (runs automatically via the Docker entrypoint)
 - [ ] Public storage link exists: `php artisan storage:link` (created in the Docker build)
-- [ ] Scheduler running: Docker `app` entrypoint (`RUN_SCHEDULER=true`); or system cron/webhook on shared hosting
+- [ ] Scheduler running: set `RUN_SCHEDULER=true` in the Docker env when scheduled tasks are needed (default is `false` — see low-memory profile); or system cron/webhook on shared hosting
 - [ ] Queue: `QUEUE_CONNECTION=sync` is the default — no worker needed; enable `RUN_QUEUE=true` + Redis for async workers (Tier 2+)
 - [ ] OpCache enabled and configured
 - [ ] All caches warmed: `php artisan optimize`
