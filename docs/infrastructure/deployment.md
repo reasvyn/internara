@@ -1,7 +1,8 @@
 # Deployment — Options, Requirements & CI/CD
 
 > **Last updated:** 2026-08-13 **Changes:** amend — Docker low-memory profile (1 GB RAM): scheduler
-> default off, MySQL memory caps, per-service mem limits, PHP-FPM worker cap, multi-stage image
+> default off, MySQL memory caps, per-service mem limits, PHP-FPM worker cap, multi-stage image;
+> add SESSION_SECURE_COOKIE env (plain-HTTP fix)
 
 ## Description
 
@@ -333,6 +334,9 @@ Key environment variables:
 - APP_KEY — required (`base64:`-encoded Laravel key). Compose fails fast when missing.
 - DB_PASSWORD — required. Compose fails fast when missing.
 - NGINX_PORT — host port for the nginx service (default 80)
+- SESSION_SECURE_COOKIE — controls the `secure` flag on session cookies. **Defaults to `false`** so
+  the stack works over plain HTTP (`http://host:port`). Set to `true` only when serving the app over
+  HTTPS — otherwise browsers drop secure cookies over HTTP and every request starts a fresh session.
 - RUN_SCHEDULER — set to `true` to start the scheduler daemon inside the `app` container. **Defaults
   to `false`** so the stack idles at a very low memory footprint (fits a 1 GB RAM VPS). For a demo
   deployment, keep it `false` — no background processing runs at all (`QUEUE_CONNECTION=sync` means
