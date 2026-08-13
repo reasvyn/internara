@@ -16,8 +16,9 @@ services:
       QUEUE_CONNECTION: sync
       CACHE_STORE: file
       SESSION_DRIVER: database
+      SESSION_SECURE_COOKIE: "${SESSION_SECURE_COOKIE:-false}"
       BROADCAST_CONNECTION: log
-      RUN_SCHEDULER: "true"
+      RUN_SCHEDULER: "${RUN_SCHEDULER:-false}"
     volumes:
       - storage_data:/app/storage
       - app_data:/app/public
@@ -31,9 +32,12 @@ services:
       retries: 10
       start_period: 10s
     restart: unless-stopped
+    mem_limit: 256m
+    cpus: 1.0
 
   db:
     image: mysql:8
+    command: --innodb-buffer-pool-size=64M --performance-schema=OFF --max-connections=50 --table-open-cache=256 --innodb-log-buffer-size=16M --innodb-doublewrite=OFF --innodb-flush-log-at-trx-commit=2
     environment:
       MYSQL_DATABASE: internara
       MYSQL_USER: internara
@@ -58,6 +62,8 @@ services:
       retries: 10
       start_period: 10s
     restart: unless-stopped
+    mem_limit: 384m
+    cpus: 1.0
 
   web:
     build:
@@ -73,6 +79,8 @@ services:
       app:
         condition: service_healthy
     restart: unless-stopped
+    mem_limit: 64m
+    cpus: 0.5
 
 volumes:
   mysql_data:
