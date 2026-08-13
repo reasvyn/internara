@@ -1,7 +1,7 @@
 # Docker — Container Configuration & Setup Environments
 
-> **Last updated:** 2026-06-10
-> **Changes:** sync — initial metadata sync with new format
+> **Last updated:** 2026-08-13
+> **Changes:** amend — document low-memory production defaults (scheduler off, MySQL caps, PHP-FPM cap, multi-stage image)
 
 ## Description
 Internara provides three Docker environments for different use cases.
@@ -35,6 +35,13 @@ Multi-service production environment with MySQL, Redis, Nginx, and Supervisor.
 ```bash
 docker compose up -d
 ```
+
+**Low-memory by default (runs on a 1 GB RAM VPS):** the scheduler is **off** unless
+`RUN_SCHEDULER=true` (no background processing — `QUEUE_CONNECTION=sync` runs jobs inline), MySQL
+runs with capped memory (`innodb_buffer_pool_size=64M`, `performance_schema=OFF`, etc.), each service
+has a `mem_limit` (`app` 256m, `db` 384m, `web` 64m), and PHP-FPM is capped at 2 workers
+(`docker/php-fpm/www.conf`). The runtime `app` image is multi-stage — it excludes `node_modules` and
+the build toolchain.
 
 See `docker-compose.yml` for service definitions. See `docs/foundation/installation.md` for production setup
 guide.
