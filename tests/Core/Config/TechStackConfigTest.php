@@ -100,7 +100,7 @@ it('FR-SESS1: defaults the session driver to database (auto-migrated)', function
 
     expect($config)->toContain("'driver' => env('SESSION_DRIVER', 'database')");
 
-    $usersMigration = (string) File::get(database_path('migrations/2026_01_02_000001_create_users_table.php'));
+    $usersMigration = (string) File::get(database_path('migrations/2026_01_01_000000_create_users_table.php'));
 
     expect($usersMigration)->toContain("Schema::create('sessions'");
 });

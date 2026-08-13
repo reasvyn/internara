@@ -26,6 +26,10 @@ return new class extends Migration
             $table->index('industry_sector');
             $table->timestamps();
         });
+
+        Schema::table('profiles', function (Blueprint $table) {
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('set null');
+        });
     }
 
     /**
@@ -33,6 +37,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('profiles', function (Blueprint $table) {
+            $table->dropForeign(['company_id']);
+        });
+
         Schema::dropIfExists('companies');
     }
 };

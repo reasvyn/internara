@@ -35,10 +35,10 @@ return new class () extends Migration {
             $table->string('job_title', 255)->nullable();
             $table->text('internal_notes')->nullable();
             // Department relation for Student and Teacher
-            $table->foreignUuid('department_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignUuid('department_id')->nullable();
             $table->index('department_id');
             // Company relation for Supervisor
-            $table->foreignUuid('company_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignUuid('company_id')->nullable();
             $table->index('company_id');
             // Timestamps
             $table->timestamps();
