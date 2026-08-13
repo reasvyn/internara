@@ -329,9 +329,16 @@ files manually.
 Key environment variables:
 - GIT_URL — repository URL with optional ref, e.g. `https://github.com/owner/repo.git#main` or
   `git@github.com:owner/repo.git#main`. Defaults to the canonical repo.
+- APP_KEY — required (`base64:`-encoded Laravel key). Compose fails fast when missing.
+- DB_PASSWORD — required. Compose fails fast when missing.
 - NGINX_PORT — host port for the nginx service (default 80)
 
-Services that build from Git: `app`, `queue`, `scheduler`, and `web`. The `web` image is built using
+The stack is minimal: three services — `app`, `web`, and `db`. There is no Redis by default; the app
+runs the shared-hosting drivers (`QUEUE_CONNECTION=sync`, `CACHE_STORE=file`,
+`SESSION_DRIVER=database`), which is sufficient for single-tenant low-volume workloads. The `app`
+entrypoint runs `php artisan migrate --force` on start and starts the scheduler daemon
+(`RUN_SCHEDULER=true`); set `RUN_QUEUE=true` to also start a queue worker when a Redis service is
+added. Services that build from Git: `app` and `web`. The `web` image is built using
 `.docker/nginx.Dockerfile` and the repo's `./.docker/nginx.conf` is copied into the image, so no
 host bind-mount is required.
 
@@ -418,10 +425,10 @@ See `docker-compose.dev.yml` for the Sail configuration.
 
 - [ ] `APP_DEBUG=false` and `APP_ENV=production` in `.env`
 - [ ] `APP_KEY` set to a random 32-character base64 string
-- [ ] Database migrated: `php artisan migrate --force`
-- [ ] Public storage link exists: `php artisan storage:link`
-- [ ] Queue workers running (Supervisor with dual pipelines: default + documents) -- Tier 2+ only
-- [ ] Scheduler cron entry configured (system cron or webhook)
+- [ ] Database migrated: `php artisan migrate --force` (runs automatically via the Docker entrypoint)
+- [ ] Public storage link exists: `php artisan storage:link` (created in the Docker build)
+- [ ] Scheduler running: Docker `app` entrypoint (`RUN_SCHEDULER=true`); or system cron/webhook on shared hosting
+- [ ] Queue: `QUEUE_CONNECTION=sync` is the default — no worker needed; enable `RUN_QUEUE=true` + Redis for async workers (Tier 2+)
 - [ ] OpCache enabled and configured
 - [ ] All caches warmed: `php artisan optimize`
 - [ ] Frontend assets built: `npm run build`

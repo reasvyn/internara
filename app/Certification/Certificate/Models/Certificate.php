@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
         'template_content',
         'issued_by',
         'issued_at',
+        'revoked_by',
+        'revoked_at',
     ]),
 ]
 class Certificate extends BaseModel
@@ -37,6 +39,7 @@ class Certificate extends BaseModel
         return [
             'status' => CertificateStatus::class,
             'issued_at' => 'datetime',
+            'revoked_at' => 'datetime',
         ];
     }
 
