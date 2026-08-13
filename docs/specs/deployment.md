@@ -1,8 +1,9 @@
 # Conditional Deployment — Shared Hosting & Docker VPS
 
-> **Last updated:** 2026-08-12 **Changes:** amend — Docker VPS path supports deployment without a
-> working-copy repo (Git build context, public repo); registry (GHCR) as an alternative; initial
-> — conditional deployment spec for shared hosting and Docker VPS
+> **Last updated:** 2026-08-13 **Changes:** amend — Docker VPS path supports deployment without a
+> working-copy repo (Git build context, public repo); registry (GHCR) as an alternative; amend —
+> minimal 3-service Docker topology (app/web/db) with entrypoint-managed scheduler/queue and
+> non-Redis drivers (DD-6); initial — conditional deployment spec for shared hosting and Docker VPS
 
 ## Description
 
@@ -21,8 +22,8 @@ directly from a public Git URL build context, or pulled from a container registr
 
 Shared hosting provides PHP 8.4, MySQL/MariaDB, and limited-interval cron, but no long-running
 daemons, no Redis/Memcached, no Composer/Node at runtime, and usually no SSH. A Docker VPS provides
-the full stack: Redis, queue workers, a scheduler daemon, and Nginx. No single static configuration
-can serve both — a config tuned for one breaks silently on the other.
+daemon capability (scheduler, queue workers), Nginx, and optional Redis. No single static
+configuration can serve both — a config tuned for one breaks silently on the other.
 
 ### PS-2 — Manual Per-Environment Tuning Is Error-Prone
 
@@ -98,13 +99,14 @@ root, and cron (5-15 minute intervals acceptable).
 
 **Flow:**
 1. Sysadmin clones the repository onto the VPS.
-2. Sysadmin runs `docker compose up -d` — app, queue, scheduler, web, db, and redis start.
+2. Sysadmin runs `docker compose up -d` — `app`, `web`, and `db` start; the `app` entrypoint runs
+   pending migrations and starts the scheduler (and queue worker when enabled).
 3. Sysadmin runs `php artisan setup:install` inside the `app` container.
 4. Sysadmin opens the signed setup URL and completes the setup wizard.
 5. Sysadmin runs `php artisan system:health` inside the `app` container.
 
-**Postconditions:** Full stack runs with Redis cache/queue/session, dual pipeline workers, and a
-scheduler daemon.
+**Postconditions:** Full stack runs with sync queue, file cache, database sessions, a scheduler
+daemon inside the `app` container, and a reverse-proxying nginx `web` service.
 
 ### UC-3 — Detection Recommends a Profile on an Unknown Server
 
@@ -191,18 +193,20 @@ preset.
 
 ### 4.5 Docker VPS Operation
 
-| ID    | Requirement |
-| ----- | ----------- |
-| FR-VD1 | `docker-compose.yml` must provide the services: `app`, `queue`, `scheduler`, `web`, `db`, `redis` |
-| FR-VD2 | The `app` service must run PHP-FPM from the project `Dockerfile` and depend on healthy `db` and `redis` |
-| FR-VD3 | The `queue` service must run `php artisan queue:work` with Redis as the connection |
-| FR-VD4 | The `scheduler` service must run `php artisan schedule:work` as a daemon |
-| FR-VD5 | The `web` service must be `nginx:alpine` proxying to `app` on port 80 (configurable via `NGINX_PORT`) |
+| ID     | Requirement |
+| ------ | ----------- |
+| FR-VD1 | `docker-compose.yml` must provide the services: `app`, `web`, `db`. The queue worker and scheduler run **inside the `app` container**, managed by the Docker entrypoint via `RUN_QUEUE` / `RUN_SCHEDULER` env flags |
+| FR-VD2 | The `app` service must run PHP-FPM from the project `Dockerfile`, depend on healthy `db`, and run `php artisan migrate --force` from the entrypoint before starting processes |
+| FR-VD3 | The queue worker must be started by the entrypoint when `RUN_QUEUE=true` (`php artisan queue:work --sleep=3 --tries=3`). The default deploy uses `QUEUE_CONNECTION=sync` and needs no worker; a Redis-backed worker is supported when a `redis` service is present |
+| FR-VD4 | The scheduler must be started by the entrypoint when `RUN_SCHEDULER=true` (`php artisan schedule:work` daemon) |
+| FR-VD5 | The `web` service must be an nginx image built from `.docker/nginx.Dockerfile` proxying to `app:9000` on port 80 (configurable via `NGINX_PORT`) |
 | FR-VD6 | The `db` service must be `mysql:8` with a named volume and healthcheck |
-| FR-VD7 | The `redis` service must be `redis:7-alpine` with a named volume and healthcheck |
-| FR-VD8 | Application storage must persist via the `storage_data` named volume shared across `app`, `queue`, and `web` |
-| FR-VD9 | Runtime drivers must be Redis-backed: `QUEUE_CONNECTION=redis`, `CACHE_STORE=redis`, `SESSION_DRIVER=redis` |
+| FR-VD7 | Redis is optional — omitted from the default stack; the app image bundles the `phpredis` extension so a `redis:7-alpine` service can be added later without rebuilding the app |
+| FR-VD8 | Application storage must persist via the `storage_data` named volume shared across `app` and `web`; compiled public assets must persist via the `app_data` named volume shared across `app` and `web` |
+| FR-VD9 | Default runtime drivers must be non-Redis and match the shared-hosting preset: `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`, `SESSION_DRIVER=database`, `BROADCAST_CONNECTION=log`; Redis-backed drivers remain supported when a `redis` service is present |
 | FR-VD10 | `php artisan setup:install` and `php artisan system:health` must be runnable inside the `app` container |
+| FR-VD11 | The `app` service must expose a healthcheck (`docker/fpm-healthcheck` probing FPM port 9000) and `web` must depend on `app` with `condition: service_healthy` |
+| FR-VD12 | The `app` and `db` services must fail fast at start when required secrets are missing (`APP_KEY`, `DB_PASSWORD`) and use `restart: unless-stopped` |
 
 ### 4.6 Verification & Documentation
 
@@ -210,7 +214,7 @@ preset.
 | ----- | ----------- |
 | FR-V1 | `php artisan system:health` must be the final acceptance gate for both deployment conditions |
 | FR-V2 | `docs/infrastructure/deployment.md` must present the two profiles and their presets as the canonical deployment guide |
-| FR-V3 | `docker/README.md` must document the mapping: `docker-compose.yml` = `vps-docker`, `docker/shared-hosting/` = shared-hosting simulation |
+| FR-V3 | `docker/README.md` must document the mapping: `docker-compose.yml` = minimal 3-service Docker topology running shared-hosting drivers (FR-VD1–FR-VD12), `docker/shared-hosting/` = shared-hosting simulation |
 | FR-V4 | `.env.example` must remain the shared-hosting-optimized default and document `DEPLOY_PROFILE` |
 | FR-V5 | Adding a new profile must not require changes to application business code |
 
@@ -233,7 +237,7 @@ preset.
 | ------ | ----------- |
 | NFR-P1 | `deploy:detect` must complete in under 5 seconds |
 | NFR-P2 | Shared-hosting page loads must remain within the documented targets (cached < 500ms, uncached < 1.5s at 500 users) |
-| NFR-P3 | Docker VPS must use Redis for cache and queue to avoid file/database contention under load |
+| NFR-P3 | Docker VPS default deploy must run with file cache and sync queue (sufficient for single-tenant low-volume PKL workloads); Redis-backed drivers must remain available when load demands them |
 
 ### 5.3 Reliability
 
@@ -242,7 +246,7 @@ preset.
 | NFR-R1 | Detection must be safe to run repeatedly and at any time (idempotent, non-mutating) |
 | NFR-R2 | An explicit profile override must survive `deploy:configure` re-runs |
 | NFR-R3 | A deployment must be reproducible from documented commands alone (`composer install`, `npm run build`, `setup:install`, `system:health`) |
-| NFR-R4 | Docker services must use healthchecks so Compose waits for `db`/`redis` before starting dependent services |
+| NFR-R4 | Docker services must use healthchecks so Compose waits for `db` before starting the `app`, and for a healthy `app` before starting `web` |
 
 ### 5.4 Usability
 
@@ -333,12 +337,12 @@ class DeployConfigureCommand extends Command
 
 | Service | Image | Purpose |
 | ------- | ----- | ------- |
-| `app` | Custom (Dockerfile) | PHP-FPM application server |
-| `queue` | Custom (Dockerfile) | Redis queue worker |
-| `scheduler` | Custom (Dockerfile) | `schedule:work` daemon |
-| `web` | nginx:alpine | Reverse proxy → `app` |
+| `app` | Custom (Dockerfile) | PHP-FPM application server; entrypoint runs migrations + scheduler (`RUN_SCHEDULER`) and optional queue worker (`RUN_QUEUE`) |
+| `web` | Custom (.docker/nginx.Dockerfile) | Reverse proxy → `app` |
 | `db` | mysql:8 | Database |
-| `redis` | redis:7-alpine | Cache, queue, sessions |
+
+Redis is optional (FR-VD7): no service by default; add a `redis:7-alpine` service and switch
+`QUEUE_CONNECTION`/`CACHE_STORE`/`SESSION_DRIVER` when throughput demands it.
 
 ### 6.6 Scheduler Webhook (existing)
 
@@ -388,25 +392,46 @@ Documented in UC-2/FR-P7.
 
 ### DD-4 — Reuse Existing Docker Topology
 
-**Decision:** The `vps-docker` profile maps 1:1 onto the existing `docker-compose.yml`; the spec
-references, does not redefine, the service topology.
+**Decision:** The spec references, does not redefine, the `docker-compose.yml` service topology; the
+compose stack is the single source of truth for services.
 
-**Rationale:** The compose stack already implements FR-VD1–FR-VD10 (six services, healthchecks,
-named volumes). Redefining it in the spec would create a second source of truth.
+**Rationale:** Redefining the topology in the spec would create a second source of truth and let the
+two drift (Clean Code / dedup doctrine).
 
-**Trade-off:** Future changes to `docker-compose.yml` must be reflected here — enforced by the
-spec↔code audit (`spec-audit`).
+**Trade-off:** The compose file must stay in sync with FR-VD1–FR-VD12; enforced by the arch-guard
+scanners, `docker compose config` validation, and the spec↔code audit (`spec-audit`).
 
 ### DD-5 — Configure Applies Drivers Only, Never Secrets
 
-**Decision:** `deploy:configure` writes only the four driver keys.
+**Decision:** `deploy:configure` writes only driver keys (queue/cache/session/broadcast); it never
+writes or rewrites secrets (`DB_PASSWORD`, `APP_KEY`, `MAIL_PASSWORD`).
 
-**Rationale:** Drivers are the output of profile resolution; secrets are environment-specific and
-must remain operator-owned. Writing secrets would make the tool a credential store and violate
-NFR-S3.
+**Rationale:** Secrets are deployment-specific and environment-owned; a config command that writes
+them would encourage committing them or complicate rotation.
 
-**Trade-off:** Operators still set `DB_PASSWORD`, `MAIL_*`, `CRON_SECRET` by hand — an acceptable,
-deliberate boundary.
+**Trade-off:** Operators must supply secrets themselves. Mitigated by fail-fast env validation in the
+compose file (FR-VD12) and `.env.example` documentation.
+
+### DD-6 — Minimal Docker Topology Without Redis
+
+**Decision:** The production `docker-compose.yml` provides a minimal three-service stack (`app`,
+`web`, `db`) with no Redis. The scheduler and optional queue worker run inside the `app` container,
+managed by the Docker entrypoint (`RUN_SCHEDULER` / `RUN_QUEUE`). Runtime drivers default to the
+non-Redis shared-hosting set: `QUEUE_CONNECTION=sync`, `CACHE_STORE=file`,
+`SESSION_DRIVER=database`, `BROADCAST_CONNECTION=log`.
+
+**Rationale:** Internara is single-tenant and low-volume (an SMA/SMK school). A sync queue executes
+jobs inline during the HTTP request — entirely sufficient for certificate/PDF generation and
+notifications at this scale — and removes a whole class of operational burden (Redis availability,
+memory, backup). Consolidating scheduler/queue into the app container keeps the stack to three
+services and a single restart policy. The image still bundles `phpredis` so a Redis service can be
+added later without rebuilding the app (FR-VD7, FR-VD9).
+
+**Trade-off:** Heavy or long-running document jobs block the request under the sync driver; the
+`documents` queue pipeline exists specifically to isolate such work once a Redis-backed worker is
+enabled. The entrypoint-managed background processes rely on the container init (`exec` → php-fpm)
+for lifecycle; this is acceptable for a single-app container and is revisited if graceful worker
+shutdown becomes a requirement.
 
 ---
 
