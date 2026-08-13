@@ -2,7 +2,8 @@
 
 > **Last updated:** 2026-08-13 **Changes:** amend — Docker low-memory profile (1 GB RAM): scheduler
 > default off, MySQL memory caps, per-service mem limits, PHP-FPM worker cap, multi-stage image;
-> add SESSION_SECURE_COOKIE env (plain-HTTP fix)
+> add SESSION_SECURE_COOKIE env (plain-HTTP fix); entrypoint now seeds SetupSeeder on boot
+> (roles/defaults so the setup wizard can finalize)
 
 ## Description
 
@@ -346,7 +347,10 @@ Key environment variables:
 The stack is minimal: three services — `app`, `web`, and `db`. There is no Redis by default; the app
 runs the shared-hosting drivers (`QUEUE_CONNECTION=sync`, `CACHE_STORE=file`,
 `SESSION_DRIVER=database`), which is sufficient for single-tenant low-volume workloads. The `app`
-entrypoint runs `php artisan migrate --force` on start and starts the scheduler daemon only when
+entrypoint runs `php artisan migrate --force` followed by
+`php artisan db:seed --class=Database\Seeders\SetupSeeder --force` on start (both idempotent — the
+roles, default settings, and academic year are seeded so the setup wizard can finalize) and starts
+the scheduler daemon only when
 `RUN_SCHEDULER=true`; set `RUN_QUEUE=true` to also start a queue worker when a Redis service is
 added. Services that build from Git: `app` and `web`. The `web` image is built using
 `.docker/nginx.Dockerfile` and the repo's `./.docker/nginx.conf` is copied into the image, so no
