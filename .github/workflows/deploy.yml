@@ -1,0 +1,33 @@
+name: Deploy to VPS
+
+on:
+    push:
+        branches: [docker-deploy]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: deploy-vps
+    cancel-in-progress: false
+
+jobs:
+    deploy:
+        name: Recreate containers on VPS
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Deploy via SSH
+              uses: appleboy/ssh-action@v1.2.5
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USER }}
+                  key: ${{ secrets.VPS_SSH_KEY }}
+                  port: 22
+                  script: |
+                      set -euo pipefail
+                      cd /home/andreas/apps/internara
+                      git fetch --quiet origin docker-deploy
+                      git reset --hard --quiet origin/docker-deploy
+                      bash .github/scripts/deploy.sh
