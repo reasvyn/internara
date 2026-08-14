@@ -1,9 +1,10 @@
 # Deployment — Options, Requirements & CI/CD
 
-> **Last updated:** 2026-08-13 **Changes:** amend — Docker low-memory profile (1 GB RAM): scheduler
-> default off, MySQL memory caps, per-service mem limits, PHP-FPM worker cap, multi-stage image;
-> add SESSION_SECURE_COOKIE env (plain-HTTP fix); entrypoint now seeds SetupSeeder on boot
-> (roles/defaults so the setup wizard can finalize)
+> **Last updated:** 2026-08-14 **Changes:** docs — Docker domain over HTTPS behind an aaPanel reverse
+> proxy (apex + `www` server_name, `X-Forwarded-Proto`, multi-domain Let's Encrypt cert, verification
+> commands); `APP_URL` + `SESSION_SECURE_COOKIE` defaults now `true`/HTTPS; CI/CD auto-deploy on
+> `docker-deploy` pushes (GitHub Actions + SSH deploy key, `GIT_URL=#docker-deploy`, secrets never in
+> repo); production debug mode confirmed off (`APP_DEBUG` unset → `false` when `APP_ENV=production`)
 
 ## Description
 
@@ -335,9 +336,12 @@ Key environment variables:
 - APP_KEY — required (`base64:`-encoded Laravel key). Compose fails fast when missing.
 - DB_PASSWORD — required. Compose fails fast when missing.
 - NGINX_PORT — host port for the nginx service (default 80)
-- SESSION_SECURE_COOKIE — controls the `secure` flag on session cookies. **Defaults to `false`** so
-  the stack works over plain HTTP (`http://host:port`). Set to `true` only when serving the app over
-  HTTPS — otherwise browsers drop secure cookies over HTTP and every request starts a fresh session.
+- SESSION_SECURE_COOKIE — controls the `secure` flag on session cookies. **Defaults to `true`**
+  because the default `APP_URL` is `https://internara.web.id` (HTTPS). Set it to `false` only for
+  plain-HTTP deployments (`http://host:port`) — with HTTPS enabled, browsers drop non-secure cookies
+  and every request starts a fresh session.
+- APP_URL — the public origin of the app. **Defaults to `https://internara.web.id`**; override with
+  `${APP_URL:-...}` semantics for other domains.
 - RUN_SCHEDULER — set to `true` to start the scheduler daemon inside the `app` container. **Defaults
   to `false`** so the stack idles at a very low memory footprint (fits a 1 GB RAM VPS). For a demo
   deployment, keep it `false` — no background processing runs at all (`QUEUE_CONNECTION=sync` means
@@ -380,6 +384,115 @@ sudo chmod 600 /etc/internara.env
 ```bash
 DOCKER_BUILDKIT=1 docker compose --env-file /etc/internara.env up --build -d
 ```
+
+### Serving on a domain over HTTPS (behind a reverse proxy)
+
+The compose stack's `web` service is an nginx container, but in production you typically front it
+with a host-level reverse proxy (aaPanel/BT Panel, Caddy, Nginx on the host) that terminates TLS.
+The steps below use the Internara production setup (aaPanel vhost `internara.web.id` proxying to
+`http://127.0.0.1:8080`) as the reference.
+
+**1. Environment on the VPS:**
+
+```env
+APP_URL=https://internara.web.id
+SESSION_SECURE_COOKIE=true
+NGINX_PORT=8080
+```
+
+`APP_URL` defaults to `https://internara.web.id` in `docker-compose.yml`, so it only needs to be
+overridden when the domain differs. `SESSION_SECURE_COOKIE=true` is the default; never use
+`false` when serving over HTTPS.
+
+**2. aaPanel vhost → Docker:**
+
+Edit `/www/server/panel/vhost/nginx/{domain}.conf`. The `server_name` must list every hostname that
+should reach the app (apex + `www`), and the proxy location must forward the original scheme so
+Laravel generates HTTPS URLs:
+
+```nginx
+server_name internara.web.id www.internara.web.id;
+
+location ^~ / {
+    proxy_pass http://127.0.0.1:8080;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;   # required for HTTPS URL generation
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
+```
+
+If the vhost declares a `proxy_cache_path`, create its directory before reloading nginx
+(`mkdir -p /www/wwwroot/{domain}/proxy_cache_dir`) or `nginx -t` will fail.
+
+**3. TLS certificate covering apex + `www`:**
+
+Let's Encrypt single-domain certs only cover the apex. Re-issue with both names (using the VPS's
+acme.sh — new root account so no other site's state is touched):
+
+```bash
+export HOME=/root
+acme.sh --home /root/.acme.sh --issue \
+  -d internara.web.id -d www.internara.web.id \
+  --webroot /www/wwwroot/internara.web.id --force
+
+acme.sh --home /root/.acme.sh --install-cert -d internara.web.id \
+  --fullchain-file /www/server/panel/vhost/cert/internara.web.id/fullchain.pem \
+  --key-file /www/server/panel/vhost/cert/internara.web.id/privkey.pem \
+  --reloadcmd "nginx -s reload"
+```
+
+Verify the SAN before reloading: `openssl x509 -in .../fullchain.pem -noout -text | grep -A1
+"Subject Alternative Name"` must list both `DNS:internara.web.id, DNS:www.internara.web.id`.
+
+**4. DNS:** both the apex and `www` must have `A` records pointing at the VPS public IP
+(`www.internara.web.id` is a CNAME to the apex).
+
+**5. Verify from outside the VPS:**
+
+```bash
+curl -skI https://internara.web.id -o /dev/null -w "%{http_code}\n"    # 200
+curl -skI https://www.internara.web.id -o /dev/null -w "%{http_code}\n" # 200
+curl -s https://internara.web.id | grep -c localhost                     # 0 (app, not default page)
+curl -s https://internara.web.id | grep -oE 'https://[^"]+\.(css|js)'    # assets served over https
+```
+
+### Continuous deployment (GitHub Actions → VPS)
+
+The `docker-deploy` branch is auto-deployed: every push recreates the stack on the VPS. The pipeline
+is `.github/workflows/deploy.yml`:
+
+1. **Trigger** — `push` to `docker-deploy` (also manual via `workflow_dispatch`).
+2. **SSH** — connects as `andreas` using a dedicated deploy key. The key and target are stored as
+   GitHub Actions secrets, **never in the repo**:
+   - `VPS_HOST` — VPS IP (e.g. `43.157.251.56`)
+   - `VPS_USER` — deploy user (`andreas`)
+   - `VPS_SSH_KEY` — the private half of the deploy keypair
+3. **Sync** — `git fetch origin docker-deploy && git reset --hard origin/docker-deploy` in
+   `/home/andreas/apps/internara` (the VPS's own clone — no secrets on the runner).
+4. **Deploy** — `.github/scripts/deploy.sh` runs `docker compose up -d --build`, prunes stale images,
+   then waits up to 60s for `https://internara.web.id` to respond; the job fails if the site stays
+   down.
+
+One-time VPS prerequisites (already applied to the Internara VPS):
+
+```bash
+# CI user can run docker without a password
+sudo usermod -aG docker andreas
+
+# The stack builds the pushed branch (not the default #main)
+printf '\nGIT_URL=https://github.com/reasvyn/internara.git#docker-deploy\n' >> .env
+
+# Install the CI public key for key-based SSH
+mkdir -p ~/.ssh && chmod 700 ~/.ssh
+echo 'ssh-ed25519 AAAA…internara-ci-deploy' >> ~/.ssh/authorized_keys
+```
+
+`GIT_URL` and `APP_URL`/`SESSION_SECURE_COOKIE` live in the VPS's `.env` (gitignored — see
+[Configuration](configuration.md)) so branch-specific values never have to be committed.
 
 ### Low-memory profile (1 GB RAM VPS)
 
@@ -456,7 +569,8 @@ See `docker-compose.dev.yml` for the Sail configuration.
 
 ## Production Checklist
 
-- [ ] `APP_DEBUG=false` and `APP_ENV=production` in `.env`
+- [ ] `APP_DEBUG=false` and `APP_ENV=production` in `.env` (`APP_DEBUG` can be left unset — it
+  defaults to `false` when `APP_ENV=production`)
 - [ ] `APP_KEY` set to a random 32-character base64 string
 - [ ] Database migrated: `php artisan migrate --force` (runs automatically via the Docker entrypoint)
 - [ ] Public storage link exists: `php artisan storage:link` (created in the Docker build)
