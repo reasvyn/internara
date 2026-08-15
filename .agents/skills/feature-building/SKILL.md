@@ -176,8 +176,8 @@ slices across sessions per Size Triage.
 |-------------|-------------|
 | Config/docs/markdown | Visual inspection, no tests |
 | Blade/CSS/JS | `npm run build` only |
-| Translation keys | `php -l` + tinker echo |
-| PHP single file | `php -l` + targeted test |
+| Translation keys | `vendor/bin/pint --dirty --test` + tinker echo |
+| PHP single file | `vendor/bin/pint --dirty --test` + targeted test |
 | PHP module refactor | `vendor/bin/pest --testsuite={ModuleName}` |
 | New feature / business logic | Full suite ONCE after all changes batched |
 | Always | `git status` + `git diff`, arch-guard scripts |
