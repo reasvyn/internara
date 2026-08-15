@@ -58,7 +58,7 @@ Before executing, ask the user (or infer from context) which scope to audit:
 | `requirements` | FR/NFR IDs have corresponding implementation |
 | `tests` | Test files exist for spec'd components |
 | `coverage` | Spec'd features are actually implemented (not just stubs) |
-| `cross-refs` | Internal spec cross-references are correct (names, numbers) |
+| `cross-refs` | Internal spec cross-references are correct (names, spec IDs) |
 | `roadmap` | §9 Roadmap prerequisites and next-steps are valid |
 | `all` | All areas combined (default for full audit) |
 
@@ -135,8 +135,8 @@ For each spec, produce a structured audit map:
 
 ```json
 {
-  "spec": "authentication.md",
-  "spec_number": 17,
+  "spec": "YB7RG-authentication.md",
+  "spec_id": "YB7RG",
   "phase": 3,
   "module": "Auth",
   "referenced_files": [...],
@@ -273,25 +273,25 @@ For each spec'd component:
 
 For each spec in scope:
 
-1. **§9 Roadmap prerequisites:** Do the referenced spec numbers and names match `index.md`?
-2. **§9 Roadmap next steps:** Do the referenced spec numbers and names match `index.md`?
-3. **Quick References related specs:** Do the referenced spec numbers match?
-4. **§1 Problem Statements:** Do referenced specs (e.g., "see `password-reset.md`") exist?
+1. **§9 Roadmap prerequisites:** Do the referenced spec IDs and names match `index.md`?
+2. **§9 Roadmap next steps:** Do the referenced spec IDs and names match `index.md`?
+3. **Quick References related specs:** Do the referenced spec IDs match?
+4. **§1 Problem Statements:** Do referenced specs (e.g., "see `3UOZP-dummy-data.md`") exist?
 5. **§2 Non-Goals:** Do referenced specs exist?
 
 ```
-For each cross-reference like [name.md](name.md) (#N):
-  grep "^| N |" docs/specs/index.md
-  Verify name matches at that number
+For each cross-reference like [name.md]({ID}-name.md) ({ID}):
+  grep "^| {ID} |" docs/specs/index.md
+  Verify name matches at that ID
 ```
 
 **Findings:**
 
 | ID | Type | Finding |
 |----|------|---------|
-| X-1 | Broken ref | `{spec}` references `#{N}` (`{name}`) but index has `{actual_name}` at #{N} |
+| X-1 | Broken ref | `{spec}` references `{ID}` (`{name}`) but index has `{actual_name}` at {ID} |
 | X-2 | Missing ref | `{spec}` references `{name}` which does not exist in `index.md` |
-| X-3 | Wrong number | `{spec}` references `{name.md}` as `#{N}` but it is `#{M}` in index |
+| X-3 | Wrong ID | `{spec}` references `{name}.md` as `{ID}` but it is `{ID2}` in index |
 
 #### Area 6: Spec Completeness
 
@@ -363,7 +363,7 @@ For each finding from Phase 2, determine:
 | Code→Spec (unspecified) | Code exists, spec doesn't | **Update spec** — code is ahead of spec |
 | Contract mismatch (spec older) | Git log shows code changed after spec | **Update spec** to match code |
 | Contract mismatch (code older) | Git log shows spec changed after code | **Update code** to match spec (or update spec if behavior is intentional) |
-| Broken cross-ref | Wrong number/name in spec | **Fix spec** — trivial fix |
+| Broken cross-ref | Wrong ID/name in spec | **Fix spec** — trivial fix |
 | Missing test | Code exists, no test | **Create GitHub Issue** — test gap |
 | Spec incomplete | Section missing/empty | **Update spec** — fill gap from code |
 | FR not implemented | Spec FR has no code | **Update roadmap** — track as TODO |
@@ -396,7 +396,7 @@ Fix directly (no GitHub Issue) when ALL of these are true:
 
 | Finding | Fix |
 |---------|-----|
-| Broken cross-reference number | Update the `(#N)` in spec |
+| Broken cross-reference ID | Update the `(ID)` reference in spec |
 | Stale `Last updated` metadata | Update date and changes line |
 | Typo in class name reference | Fix the typo in spec |
 | Missing Quick Reference entry | Add the entry |
@@ -431,7 +431,7 @@ Use the `issue-writing` skill template. Issue type depends on finding:
 
 Examples:
 - `[spec-audit] bug: authentication.md — LoginAction signature mismatch`
-- `[spec-audit] docs: password-reset.md — cross-ref #21 should be #22`
+- `[spec-audit] docs: {ID}-password-reset.md — cross-ref ID should reference canonical spec`
 - `[spec-audit] test: account-recovery-slips.md — missing test for GenerateRecoverySlipAction`
 - `[spec-audit] refactor: profile-management.md — ProfileEditor violates Livewire contract`
 
@@ -533,7 +533,7 @@ Legend: ✅ synced | ⚠️ drift (auto-fixed) | ❌ drift (issue created)
 
 | # | Spec | Finding | Fix Applied |
 |---|------|---------|-------------|
-| 1 | spec.md | Wrong cross-ref #30 → #34 | Updated to #34 |
+| 1 | spec.md | Wrong cross-ref ID | Updated to canonical spec ID |
 | 2 | spec.md | Stale metadata | Updated date |
 
 ### GitHub Issues Created

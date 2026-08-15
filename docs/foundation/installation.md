@@ -173,4 +173,4 @@ php artisan setup:install --check-only  # Audit without provisioning
 - [Setup Wizard](setup-wizard.md) — Next step after installation
 - [Post-Setup](post-setup.md) — Configuration after wizard completion
 - [System Health](system-health.md) — Health check reference
-- `docs/specs/installation.md` — Feature specification
+- `docs/specs/8NZAU-installation.md` — Feature specification

@@ -81,5 +81,5 @@ pattern.
 - `app/Settings/Observers/SettingObserver.php` — Cache invalidation observer
 - `app/User/Observers/UserObserver.php` — Deletion guard observer
 - `docs/architecture/event-pattern.md` — Event + Listener pattern (alternative)
-- `docs/specs/event-system.md` — Event system specification
+- `docs/specs/NUCY3-event-system.md` — Event system specification
 - `docs/specs/core-foundation.md` — Base classes and contracts

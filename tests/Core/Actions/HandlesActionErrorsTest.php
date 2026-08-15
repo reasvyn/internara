@@ -20,11 +20,11 @@ final class HandlesActionErrorsTestStub
     }
 }
 
-it('FR-EH*: returns the callback result on success', function () {
+it('89SRA-FR-EH*: returns the callback result on success', function () {
     expect((new HandlesActionErrorsTestStub)->run(fn () => 'done'))->toBe('done');
 });
 
-it('FR-EH*: rethrows known exception types unchanged', function (Throwable $exception) {
+it('89SRA-FR-EH*: rethrows known exception types unchanged', function (Throwable $exception) {
     expect(fn () => (new HandlesActionErrorsTestStub)->run(fn () => throw $exception))
         ->toThrow(get_class($exception));
 })->with([
@@ -36,7 +36,7 @@ it('FR-EH*: rethrows known exception types unchanged', function (Throwable $exce
     'NotFoundHttpException' => fn () => new NotFoundHttpException,
 ]);
 
-it('FR-EH*: wraps unknown exceptions in a RuntimeException with logging', function () {
+it('89SRA-FR-EH*: wraps unknown exceptions in a RuntimeException with logging', function () {
     $logs = captureLogs();
 
     expect(fn () => (new HandlesActionErrorsTestStub)->run(fn () => throw new LogicException('boom')))

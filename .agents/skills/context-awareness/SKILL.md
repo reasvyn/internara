@@ -181,7 +181,7 @@ test suite. The full suite consumes ~2GB+ RAM and 10+ minutes.
 ### Test Pattern Recognition
 
 **Spec first, always.** Before choosing a pattern, map the requirement: which `FR-*` / `NFR-*` /
-`UC-*` ID in `docs/specs/{feature}.md` does this test verify? Test descriptions carry that ID.
+`UC-*` ID in `docs/specs/{ID}-{feature}.md` does this test verify? Test descriptions carry that ID.
 
 | What you're testing | Pattern to follow |
 |---------------------|-------------------|
@@ -213,7 +213,7 @@ they produced padding tests; they may be used only as an internal diagnostic, ne
 
 | Question | Answer |
 |----------|--------|
-| Which spec does this test verify? | Read `docs/specs/index.md` → `docs/specs/{feature}.md` |
+| Which spec does this test verify? | Read `docs/specs/index.md` → `docs/specs/{ID}-{feature}.md` |
 | Does this test trace to a requirement ID? | If no → orphan, candidate for deletion |
 | Does every requirement have a test? | If no → spec gap, write the test |
 | Is the scenario beyond what the spec names? | If yes → noise, don't write it |

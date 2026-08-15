@@ -37,13 +37,13 @@ final class TestPolicy extends BasePolicy
     }
 }
 
-it('FR-P1: before() allows super admins unconditionally', function () {
+it('SE5Q9-FR-P1: before() allows super admins unconditionally', function () {
     $super = User::factory()->create()->assignRole('super_admin');
 
     expect((new TestPolicy)->before($super)->allowed())->toBeTrue();
 });
 
-it('FR-P1: before() defers to the policy method for other roles', function () {
+it('SE5Q9-FR-P1: before() defers to the policy method for other roles', function () {
     $admin = User::factory()->create()->assignRole('admin');
     $plain = User::factory()->create();
 
@@ -51,7 +51,7 @@ it('FR-P1: before() defers to the policy method for other roles', function () {
     expect((new TestPolicy)->before($plain))->toBeNull();
 });
 
-it('FR-P2: isOwner() allows the owner and denies strangers', function () {
+it('SE5Q9-FR-P2: isOwner() allows the owner and denies strangers', function () {
     $profile = Profile::factory()->create();
     $owner = $profile->user;
     $stranger = User::factory()->create();
@@ -60,7 +60,7 @@ it('FR-P2: isOwner() allows the owner and denies strangers', function () {
     expect((new TestPolicy)->view($stranger, $profile))->toBeFalse();
 });
 
-it('FR-P2: isOwnerOrAdmin() allows owners and admins', function () {
+it('SE5Q9-FR-P2: isOwnerOrAdmin() allows owners and admins', function () {
     $profile = Profile::factory()->create();
     $admin = User::factory()->create()->assignRole('admin');
     $stranger = User::factory()->create();
@@ -69,7 +69,7 @@ it('FR-P2: isOwnerOrAdmin() allows owners and admins', function () {
     expect((new TestPolicy)->manage($stranger, $profile))->toBeFalse();
 });
 
-it('FR-P2: isRelatedThrough() resolves ownership through a relation', function () {
+it('SE5Q9-FR-P2: isRelatedThrough() resolves ownership through a relation', function () {
     $profile = Profile::factory()->create();
     $owner = $profile->user;
     $stranger = User::factory()->create();
@@ -78,7 +78,7 @@ it('FR-P2: isRelatedThrough() resolves ownership through a relation', function (
     expect((new TestPolicy)->related($stranger, $profile))->toBeFalse();
 });
 
-it('FR-P2: isAdmin() accepts super_admin and admin roles', function () {
+it('SE5Q9-FR-P2: isAdmin() accepts super_admin and admin roles', function () {
     $super = User::factory()->create()->assignRole('super_admin');
     $admin = User::factory()->create()->assignRole('admin');
     $plain = User::factory()->create();
@@ -88,7 +88,7 @@ it('FR-P2: isAdmin() accepts super_admin and admin roles', function () {
     expect((new TestPolicy)->canAdmin($plain))->toBeFalse();
 });
 
-it('FR-P2: hasAnyOfRoles() checks any matching role', function () {
+it('SE5Q9-FR-P2: hasAnyOfRoles() checks any matching role', function () {
     $admin = User::factory()->create()->assignRole('admin');
     $plain = User::factory()->create();
 

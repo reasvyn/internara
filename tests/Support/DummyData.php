@@ -67,7 +67,7 @@ use Illuminate\Support\Str;
 /**
  * Factory-driven demo dataset generator (dev-only, autoloaded via `autoload-dev`).
  *
- * Implements docs/specs/dummy-data.md: generates a coherent, interconnected demo dataset using
+ * Implements docs/specs/3UOZP-dummy-data.md: generates a coherent, interconnected demo dataset using
  * the existing model factories. Runs inside a single DB transaction (FR-H13), reuses base-seeded
  * data (roles, settings, active academic year — FR-H14), and is idempotent via firstOrCreate on
  * natural keys (FR-H5). Indonesian-locale demo content via app.faker_locale = id_ID (DD-7).

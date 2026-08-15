@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
 
-it('FR-C10: seeds the demo dataset via DummySeeder after provisioning', function () {
+it('3UOZP-FR-C10: seeds the demo dataset via DummySeeder after provisioning', function () {
     $seeded = app(SeedDummyDataAction::class)->execute();
 
     expect($seeded)->toBeTrue();
@@ -17,7 +17,7 @@ it('FR-C10: seeds the demo dataset via DummySeeder after provisioning', function
     expect(User::firstWhere('email', config('dummy.accounts.admin_email')))->not->toBeNull();
 });
 
-it('NFR-S13: skips the demo seed in production without failing the install', function () {
+it('3UOZP-NFR-S13: skips the demo seed in production without failing the install', function () {
     app()->detectEnvironment(fn () => 'production');
 
     try {
@@ -30,7 +30,7 @@ it('NFR-S13: skips the demo seed in production without failing the install', fun
     }
 });
 
-it('FR-C10: setup:install exposes the --with-dummy option', function () {
+it('3UOZP-FR-C10: setup:install exposes the --with-dummy option', function () {
     $command = app(SetupInstallCommand::class);
     $signature = (new ReflectionClass($command))->getProperty('signature');
 

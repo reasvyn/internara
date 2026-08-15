@@ -19,7 +19,7 @@ downstream:
 ## When to Activate
 
 Use this skill when:
-- Writing a new feature specification document (`docs/specs/{feature}.md`)
+- Writing a new feature specification document (`docs/specs/{ID}-{feature}.md`)
 - Defining requirements before implementation begins
 - Documenting design decisions for complex features
 - Creating acceptance criteria for features
@@ -74,6 +74,7 @@ Verify = 7, Report & Commit = 8-9):
 - All cross-references resolve to existing files
 - All file paths reference real files in the codebase
 - Metadata block present with current date
+- `> **Spec ID:** XXXXX` metadata line present and matching the filename (see Spec IDs below)
 - No duplicate content across sections (cross-reference instead)
 
 ### 4. Report — Deliver
@@ -338,6 +339,29 @@ Every spec must be registered in `docs/specs/index.md`. The index is ordered by 
 phase** (mirrors `docs/foundation/product-definition.md`) and **dependency depth** within
 each phase — not alphabetically, not by module.
 
+### Spec IDs
+
+Every spec file carries a **unique 5-character alphanumeric spec ID** (`XXXXX`, uppercase
+`A-Z0-9`). IDs replace the old sequential `#N` numbering.
+
+| Where the ID lives | Format |
+|--------------------|--------|
+| Filename | `docs/specs/3UOZP-dummy-data.md` |
+| File metadata (first metadata line) | `> **Spec ID:** 3UOZP` |
+| Index `ID` column | `| 3UOZP | [Dummy Data](3UOZP-dummy-data.md) | …` |
+| Link reference | `[Dummy Data](3UOZP-dummy-data.md)` |
+| Prose short reference | `(3UOZP)` |
+
+Rules:
+
+- **Generate** a fresh random 5-char ID at spec creation — never reuse a retired ID
+- **Persist** it in the file's `> **Spec ID:**` metadata line and register the row in
+  `docs/specs/index.md` before committing — the index is the canonical ID registry
+- **Requirement IDs inside the spec are unchanged** — `FR-*`, `NFR-*`, `UC-*`, `DD-*` stay as-is
+- **Tests** reference specs by ID: test descriptions are prefixed `{ID}-{REQ}: description`
+  (e.g., `3UOZP-FR-C10: refuses to seed in production`)
+- When renaming a spec file, keep the ID stable — the filename becomes `{ID}-{new-description}.md`
+
 ### Lifecycle Phases
 
 ```
@@ -364,19 +388,20 @@ order does this feature first become usable?"** — not when it's used in the PK
 
 ### Dependency Tracking
 
-The index table has a `Depends On` column with `#N` references to earlier specs. Rules:
+The index table has a `Depends On` column with spec-ID references to earlier specs. Rules:
 
 - Every spec must declare its dependencies — even if it's "none"
-- Dependencies are **spec numbers**, not module names
-- A spec may only depend on specs with a **lower `#` number** (acyclic)
+- Dependencies are **spec IDs**, not module names
+- A spec may only depend on specs earlier in the build order (acyclic)
 - If spec A is split from spec B, the new spec inherits B's dependencies
-- Cross-module dependencies are explicit (e.g., `#11, #12`)
+- Cross-module dependencies are explicit (e.g., `T4B26, C8F0D`)
 
 ### When Adding a New Spec
 
 1. Determine lifecycle phase (see table above)
 2. Determine dependencies — which earlier specs must be built first?
-3. Assign the next available `#` number within the phase
+3. Generate a unique 5-char alphanumeric ID (see Spec IDs above) and record it in the
+   file's metadata line and `docs/specs/index.md`
 4. Add row to the correct phase table in `docs/specs/index.md`
 5. Update the ASCII flow diagram if adding a new phase
 6. Update the total count in the metadata line
@@ -384,7 +409,7 @@ The index table has a `Depends On` column with `#N` references to earlier specs.
 
 ### When Splitting a Spec
 
-1. The new spec gets its own `#` number and table row
+1. The new spec gets its own spec ID and table row
 2. The old spec's entry is **removed** from the index
 3. Each new spec declares which original dependencies it inherits
 4. Cross-reference related split specs in both files' Quick References
@@ -393,9 +418,9 @@ The index table has a `Depends On` column with `#N` references to earlier specs.
 ### Cross-Reference Conventions
 
 - Split specs must cross-reference siblings in their Quick References section
-- Use relative links: `[other-spec.md](other-spec.md)` (same directory)
+- Use relative links: `[other-spec.md]({ID}-other-spec.md)` (same directory)
 - Non-Goals should cite the sibling spec that covers the excluded capability
-- The Description block must state the split provenance: `"split from {original}.md"`
+- The Description block must state the split provenance: `"split from {ID}-{original}.md"`
 
 ---
 

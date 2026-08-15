@@ -53,7 +53,7 @@ final class BaseControllerTestStub extends BaseController
 
 uses(LazilyRefreshDatabase::class);
 
-it('FR-L6: jsonSuccess returns success payload with data', function () {
+it('SE5Q9-FR-L6: jsonSuccess returns success payload with data', function () {
     $json = (new BaseControllerTestStub)->success(['id' => 1], 'OK');
 
     expect($json->status())->toBe(200);
@@ -64,21 +64,21 @@ it('FR-L6: jsonSuccess returns success payload with data', function () {
     ]);
 });
 
-it('FR-L6: jsonSuccess omits the data key when data is null', function () {
+it('SE5Q9-FR-L6: jsonSuccess omits the data key when data is null', function () {
     $payload = (new BaseControllerTestStub)->success()->getData(true);
 
     expect($payload)->toHaveKeys(['success', 'message']);
     expect($payload)->not->toHaveKey('data');
 });
 
-it('FR-L6: jsonCreated returns 201', function () {
+it('SE5Q9-FR-L6: jsonCreated returns 201', function () {
     $json = (new BaseControllerTestStub)->created(['id' => 1]);
 
     expect($json->status())->toBe(201);
     expect($json->getData(true)['message'])->toBe('Resource created');
 });
 
-it('FR-L6: jsonDeleted returns 200 without a data key', function () {
+it('SE5Q9-FR-L6: jsonDeleted returns 200 without a data key', function () {
     $payload = (new BaseControllerTestStub)->deleted()->getData(true);
 
     expect($payload['success'])->toBeTrue();
@@ -86,7 +86,7 @@ it('FR-L6: jsonDeleted returns 200 without a data key', function () {
     expect($payload)->not->toHaveKey('data');
 });
 
-it('FR-L6: jsonPaginated returns pagination metadata', function () {
+it('SE5Q9-FR-L6: jsonPaginated returns pagination metadata', function () {
     User::factory()->count(5)->create();
     $paginator = User::paginate(2);
 
@@ -105,7 +105,7 @@ it('FR-L6: jsonPaginated returns pagination metadata', function () {
     ]);
 });
 
-it('FR-L6: jsonError returns success false and errors', function () {
+it('SE5Q9-FR-L6: jsonError returns success false and errors', function () {
     $json = (new BaseControllerTestStub)->error('Bad request', 400, ['name' => ['required']]);
 
     expect($json->status())->toBe(400);
@@ -116,19 +116,19 @@ it('FR-L6: jsonError returns success false and errors', function () {
     ]);
 });
 
-it('FR-L6: jsonValidationError returns 422', function () {
+it('SE5Q9-FR-L6: jsonValidationError returns 422', function () {
     $json = (new BaseControllerTestStub)->validationError(['email' => ['invalid']]);
 
     expect($json->status())->toBe(422);
     expect($json->getData(true)['errors'])->toBe(['email' => ['invalid']]);
 });
 
-it('FR-L6: jsonNotFound and jsonForbidden return 404 and 403', function () {
+it('SE5Q9-FR-L6: jsonNotFound and jsonForbidden return 404 and 403', function () {
     expect((new BaseControllerTestStub)->notFound()->status())->toBe(404);
     expect((new BaseControllerTestStub)->forbidden()->status())->toBe(403);
 });
 
-it('FR-L6: extra metadata is merged but reserved keys are protected', function () {
+it('SE5Q9-FR-L6: extra metadata is merged but reserved keys are protected', function () {
     $payload = (new BaseControllerTestStub)->success(['id' => 1], 'OK', 200, [
         'trace_id' => 'abc',
         'success' => false,

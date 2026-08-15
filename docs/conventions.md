@@ -639,7 +639,10 @@ methods where the container is not available (e.g., `database/factories/`).
 ### 12.2 Spec-Driven Coverage
 
 Tests verify the spec — nothing more. A test exists because a requirement in
-`docs/specs/{feature}.md` (`FR-*` / `NFR-*` / `UC-*` / §6 data contract) demands it.
+`docs/specs/{ID}-{feature}.md` (`FR-*` / `NFR-*` / `UC-*` / §6 data contract) demands it.
+Test descriptions are prefixed with the spec's 5-char ID: `{ID}-{REQ}: description`
+(e.g., `3UOZP-FR-C10: refuses to seed in production`). The ID appears in the filename
+(`{ID}-{feature}.md`), the file's `> **Spec ID:**` metadata line, and the index `ID` column.
 
 **Minimalism by design:** write only the tests the spec requires, then stop. This speeds up
 development and verification (spec-scoped tests run in seconds vs. 10+ minutes for the full suite),

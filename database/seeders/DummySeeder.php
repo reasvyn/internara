@@ -14,7 +14,7 @@ use Tests\Support\DummyData;
 /**
  * Opt-in entry point for the factory-driven demo dataset.
  *
- * Implements docs/specs/dummy-data.md §6.1: refuses to run in production (NFR-S1),
+ * Implements docs/specs/3UOZP-dummy-data.md §6.1: refuses to run in production (NFR-S1),
  * reuses base-seeded roles/settings/active academic year (FR-E4, FR-H14), delegates
  * all generation to Tests\Support\DummyData (FR-E2), and prints a bilingual per-entity
  * summary via __() (FR-E5, NFR-U1). Never registered in DatabaseSeeder or SetupSeeder

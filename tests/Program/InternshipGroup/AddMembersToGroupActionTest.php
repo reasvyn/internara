@@ -11,7 +11,7 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
 uses(LazilyRefreshDatabase::class);
 
-it('FR-MM9: AddMembersToGroupAction creates all rows with joined_at = now()', function () {
+it('IT0OE-FR-MM9: AddMembersToGroupAction creates all rows with joined_at = now()', function () {
     $group = InternshipGroup::factory()->create();
     $registrations = Registration::factory()->count(2)->create();
 
@@ -28,7 +28,7 @@ it('FR-MM9: AddMembersToGroupAction creates all rows with joined_at = now()', fu
     expect($group->members()->whereNull('joined_at')->count())->toBe(0);
 });
 
-it('FR-MM9: AddMembersToGroupAction rolls back the whole batch on DB constraint violation', function () {
+it('IT0OE-FR-MM9: AddMembersToGroupAction rolls back the whole batch on DB constraint violation', function () {
     $group = InternshipGroup::factory()->create();
     $registration = Registration::factory()->create();
 
@@ -43,7 +43,7 @@ it('FR-MM9: AddMembersToGroupAction rolls back the whole batch on DB constraint 
     expect($group->members()->count())->toBe(0);
 });
 
-it('FR-MM9: AddMembersToGroupAction supports mentor roles in the batch', function () {
+it('IT0OE-FR-MM9: AddMembersToGroupAction supports mentor roles in the batch', function () {
     $group = InternshipGroup::factory()->create();
     $mentors = User::factory()->count(2)->create();
 

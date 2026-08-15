@@ -5,7 +5,7 @@ declare(strict_types=1);
 use App\Core\Enums\CsvRowResult;
 use App\Core\Support\CsvHandler;
 
-it('FR-SUP3: export streams a CSV with headers and mapped rows', function () {
+it('C8F0D-FR-SUP3: export streams a CSV with headers and mapped rows', function () {
     $handler = new CsvHandler;
     $response = $handler->export(collect(['Alice', 'Bob']), ['name'], fn (string $name) => [$name], 'users.csv');
 
@@ -20,7 +20,7 @@ it('FR-SUP3: export streams a CSV with headers and mapped rows', function () {
     expect($content)->toBe("name\nAlice\nBob\n");
 });
 
-it('FR-SUP3: export escapes values that could break CSV structure', function () {
+it('C8F0D-FR-SUP3: export escapes values that could break CSV structure', function () {
     $handler = new CsvHandler;
     $response = $handler->export(collect(['a,b; "quoted"']), ['value'], fn (string $value) => [$value]);
 
@@ -31,7 +31,7 @@ it('FR-SUP3: export escapes values that could break CSV structure', function () 
     expect($content)->toContain('"a,b; ""quoted"""');
 });
 
-it('FR-SUP5: downloadTemplate streams headers and one example row', function () {
+it('C8F0D-FR-SUP5: downloadTemplate streams headers and one example row', function () {
     $handler = new CsvHandler;
     $response = $handler->downloadTemplate(['name', 'email'], ['Alice', 'alice@test.com'], 'template.csv');
 
@@ -44,7 +44,7 @@ it('FR-SUP5: downloadTemplate streams headers and one example row', function () 
     expect($content)->toBe("name,email\nAlice,alice@test.com\n");
 });
 
-it('FR-SUP4: import counts created and skipped rows', function () {
+it('C8F0D-FR-SUP4: import counts created and skipped rows', function () {
     $path = sys_get_temp_dir().'/import-'.uniqid('', true).'.csv';
     File::put($path, "name,email\nAlice,alice@test.com\nBob,skip@test.com\nCarol,carol@test.com\n");
 
@@ -62,7 +62,7 @@ it('FR-SUP4: import counts created and skipped rows', function () {
     File::delete($path);
 });
 
-it('FR-SUP4: import skips blank rows without counting them', function () {
+it('C8F0D-FR-SUP4: import skips blank rows without counting them', function () {
     $path = sys_get_temp_dir().'/import-'.uniqid('', true).'.csv';
     File::put($path, "name\nAlice\n\nBob\n");
 
@@ -76,7 +76,7 @@ it('FR-SUP4: import skips blank rows without counting them', function () {
     File::delete($path);
 });
 
-it('FR-SUP4: import rejects files whose header row does not match expected headers', function () {
+it('C8F0D-FR-SUP4: import rejects files whose header row does not match expected headers', function () {
     $path = sys_get_temp_dir().'/import-'.uniqid('', true).'.csv';
     File::put($path, "wrong,nope\nAlice,alice@test.com\n");
 

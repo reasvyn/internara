@@ -107,7 +107,8 @@ composer run analyse           # PHPStan static analysis
 ```
 
 Tests verify the spec — every test traces to a requirement ID (`FR-*` / `NFR-*` / `UC-*`) in
-`docs/specs/{feature}.md`. Follow the existing modular test structure:
+`docs/specs/{ID}-{feature}.md` (spec filenames use a 5-char alphanumeric ID, e.g.
+`3UOZP-dummy-data.md`). Follow the existing modular test structure:
 
 ```
 tests/{Module}/{SubModule}/{Name}Test.php

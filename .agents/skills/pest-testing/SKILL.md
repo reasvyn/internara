@@ -19,7 +19,7 @@ downstream:
 
 ## Core Doctrine — Tests Verify the Spec
 
-Tests exist **only** because a requirement in `docs/specs/{feature}.md` demands it. Every test maps
+Tests exist **only** because a requirement in `docs/specs/{ID}-{feature}.md` demands it. Every test maps
 to at least one requirement ID (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract). A test that cannot
 be traced to a spec requirement is **noise** and must not be written. Coverage is measured in
 **spec requirements covered**, never in lines of code.
@@ -53,7 +53,7 @@ Verify = 7, Report & Commit = 8-9):
 ### 1. Construct — Knowledge, Context & Scope
 
 - Load `context-awareness` skill for project orientation
-- **Read the spec first** (`docs/specs/{feature}.md`) — list the FR/NFR/UC IDs it defines
+- **Read the spec first** (`docs/specs/{ID}-{feature}.md`) — list the FR/NFR/UC IDs it defines
 - Read relevant docs: module docs, pattern docs, reference docs
 - Identify which requirements are already tested and which are gaps
 - **Classify the size (S/M/L)** per AGENTS.md Size Triage; if test work spans multiple modules or is

@@ -134,7 +134,7 @@ final class BaseWizardSingleStepTestStub extends BaseWizard
 
 uses(LazilyRefreshDatabase::class);
 
-it('FR-L1: BaseRecordManager rows() paginates with a valid perPage', function () {
+it('SE5Q9-FR-L1: BaseRecordManager rows() paginates with a valid perPage', function () {
     User::factory()->count(12)->create();
 
     $component = new BaseRecordManagerTestStub;
@@ -145,14 +145,14 @@ it('FR-L1: BaseRecordManager rows() paginates with a valid perPage', function ()
     expect($rows->total())->toBe(12);
 });
 
-it('FR-L1: BaseRecordManager falls back to 10 for invalid perPage values', function () {
+it('SE5Q9-FR-L1: BaseRecordManager falls back to 10 for invalid perPage values', function () {
     $component = new BaseRecordManagerTestStub;
     $component->perPage = 7;
 
     expect($component->rows()->perPage())->toBe(10);
 });
 
-it('FR-L1: BaseRecordManager applies search and eager loading', function () {
+it('SE5Q9-FR-L1: BaseRecordManager applies search and eager loading', function () {
     User::factory()->create(['name' => 'Alice']);
     User::factory()->create(['name' => 'Bob']);
 
@@ -163,7 +163,7 @@ it('FR-L1: BaseRecordManager applies search and eager loading', function () {
     expect($component->rows()->first()->name)->toBe('Alice');
 });
 
-it('FR-L1: BaseRecordManager resetFilters clears filters and updates reset the page', function () {
+it('SE5Q9-FR-L1: BaseRecordManager resetFilters clears filters and updates reset the page', function () {
     $component = new BaseRecordManagerTestStub;
     $component->filters = ['status' => 'active'];
 
@@ -172,7 +172,7 @@ it('FR-L1: BaseRecordManager resetFilters clears filters and updates reset the p
     expect($component->filters)->toBe([]);
 });
 
-it('FR-L1: bulk action warns when no records are selected', function () {
+it('SE5Q9-FR-L1: bulk action warns when no records are selected', function () {
     $component = new BaseRecordManagerTestStub;
     $called = 0;
 
@@ -183,7 +183,7 @@ it('FR-L1: bulk action warns when no records are selected', function () {
     expect($called)->toBe(0);
 });
 
-it('FR-L1: bulk action runs the callback per selected id and clears selection', function () {
+it('SE5Q9-FR-L1: bulk action runs the callback per selected id and clears selection', function () {
     $component = new BaseRecordManagerTestStub;
     $component->selectedIds = [1, 2, 3];
     $processed = [];
@@ -196,7 +196,7 @@ it('FR-L1: bulk action runs the callback per selected id and clears selection', 
     expect($component->selectedIds)->toBe([]);
 });
 
-it('FR-L1: mass action warns when no records match the query', function () {
+it('SE5Q9-FR-L1: mass action warns when no records match the query', function () {
     $component = new BaseRecordManagerTestStub;
     $component->search = 'no-such-user';
     $called = 0;
@@ -208,7 +208,7 @@ it('FR-L1: mass action warns when no records match the query', function () {
     expect($called)->toBe(0);
 });
 
-it('FR-L1: mass action runs the callback with the filtered query and clears selection', function () {
+it('SE5Q9-FR-L1: mass action runs the callback with the filtered query and clears selection', function () {
     User::factory()->count(3)->create();
     $component = new BaseRecordManagerTestStub;
     $component->selectedIds = [1];
@@ -222,7 +222,7 @@ it('FR-L1: mass action runs the callback with the filtered query and clears sele
     expect($component->selectedIds)->toBe([]);
 });
 
-it('FR-L3: BaseRecordList rows() paginates and searches', function () {
+it('SE5Q9-FR-L3: BaseRecordList rows() paginates and searches', function () {
     User::factory()->count(5)->create(['name' => 'Alpha']);
     User::factory()->count(2)->create(['name' => 'Beta']);
 
@@ -235,14 +235,14 @@ it('FR-L3: BaseRecordList rows() paginates and searches', function () {
     expect($rows->total())->toBe(5);
 });
 
-it('FR-L3: BaseRecordList falls back to 10 for invalid perPage values', function () {
+it('SE5Q9-FR-L3: BaseRecordList falls back to 10 for invalid perPage values', function () {
     $component = new BaseRecordListTestStub;
     $component->perPage = 33;
 
     expect($component->rows()->perPage())->toBe(10);
 });
 
-it('FR-L2: BaseRecordEntry create() resets the form and opens the modal', function () {
+it('SE5Q9-FR-L2: BaseRecordEntry create() resets the form and opens the modal', function () {
     $component = new BaseRecordEntryTestStub;
     $component->editingId = 'abc';
 
@@ -252,7 +252,7 @@ it('FR-L2: BaseRecordEntry create() resets the form and opens the modal', functi
     expect($component->editingId)->toBeNull();
 });
 
-it('FR-L2: BaseRecordEntry edit() opens the modal with the record id', function () {
+it('SE5Q9-FR-L2: BaseRecordEntry edit() opens the modal with the record id', function () {
     $component = new BaseRecordEntryTestStub;
 
     $component->edit('42');
@@ -261,7 +261,7 @@ it('FR-L2: BaseRecordEntry edit() opens the modal with the record id', function 
     expect($component->editingId)->toBe('42');
 });
 
-it('FR-L2: BaseRecordEntry cancel() closes the modal and resets the form', function () {
+it('SE5Q9-FR-L2: BaseRecordEntry cancel() closes the modal and resets the form', function () {
     $component = new BaseRecordEntryTestStub;
     $component->showModal = true;
     $component->editingId = '42';
@@ -272,7 +272,7 @@ it('FR-L2: BaseRecordEntry cancel() closes the modal and resets the form', funct
     expect($component->editingId)->toBeNull();
 });
 
-it('FR-L2: handleError catches RejectedException and generic errors without propagating', function () {
+it('SE5Q9-FR-L2: handleError catches RejectedException and generic errors without propagating', function () {
     $component = new BaseRecordEntryTestStub;
     $ran = false;
 
@@ -292,7 +292,7 @@ it('FR-L2: handleError catches RejectedException and generic errors without prop
     expect($ran)->toBeTrue();
 });
 
-it('FR-L4: BaseFormView handleSave clears dirty state on success and flags errors otherwise', function () {
+it('SE5Q9-FR-L4: BaseFormView handleSave clears dirty state on success and flags errors otherwise', function () {
     $component = new BaseFormViewTestStub;
     $component->isDirty = true;
 
@@ -310,7 +310,7 @@ it('FR-L4: BaseFormView handleSave clears dirty state on success and flags error
     expect($component->isDirty)->toBeFalse();
 });
 
-it('FR-L4: markDirty flags the form as modified', function () {
+it('SE5Q9-FR-L4: markDirty flags the form as modified', function () {
     $component = new BaseFormViewTestStub;
     $component->isDirty = false;
 
@@ -319,7 +319,7 @@ it('FR-L4: markDirty flags the form as modified', function () {
     expect($component->isDirty)->toBeTrue();
 });
 
-it('FR-L5: BaseWizard nextStep validates, marks completed and advances', function () {
+it('SE5Q9-FR-L5: BaseWizard nextStep validates, marks completed and advances', function () {
     $component = new BaseWizardTestStub;
 
     $component->nextStep();
@@ -333,7 +333,7 @@ it('FR-L5: BaseWizard nextStep validates, marks completed and advances', functio
     expect($component->currentStep)->toBe(3);
 });
 
-it('FR-L5: BaseWizard prevStep moves back but never below step one', function () {
+it('SE5Q9-FR-L5: BaseWizard prevStep moves back but never below step one', function () {
     $component = new BaseWizardTestStub;
     $component->currentStep = 3;
 
@@ -345,7 +345,7 @@ it('FR-L5: BaseWizard prevStep moves back but never below step one', function ()
     expect($component->currentStep)->toBe(1);
 });
 
-it('FR-L5: goToStep enforces range and accessibility', function () {
+it('SE5Q9-FR-L5: goToStep enforces range and accessibility', function () {
     $component = new BaseWizardTestStub;
 
     $component->goToStep(5);
@@ -363,7 +363,7 @@ it('FR-L5: goToStep enforces range and accessibility', function () {
     expect($component->currentStep)->toBe(3);
 });
 
-it('FR-L5: isStepAccessible requires all prior steps to be completed', function () {
+it('SE5Q9-FR-L5: isStepAccessible requires all prior steps to be completed', function () {
     $component = new BaseWizardTestStub;
 
     expect($component->isStepAccessible(1))->toBeTrue();
@@ -375,7 +375,7 @@ it('FR-L5: isStepAccessible requires all prior steps to be completed', function 
     expect($component->isStepAccessible(3))->toBeFalse();
 });
 
-it('FR-L5: progressPercent reflects position across steps', function () {
+it('SE5Q9-FR-L5: progressPercent reflects position across steps', function () {
     $component = new BaseWizardTestStub;
 
     expect($component->progressPercent())->toBe(0);
@@ -390,7 +390,7 @@ it('FR-L5: progressPercent reflects position across steps', function () {
     expect($single->progressPercent())->toBe(100);
 });
 
-it('FR-L5: currentStepKey returns the key of the active step', function () {
+it('SE5Q9-FR-L5: currentStepKey returns the key of the active step', function () {
     $component = new BaseWizardTestStub;
 
     expect($component->currentStepKey())->toBe('one');
@@ -399,7 +399,7 @@ it('FR-L5: currentStepKey returns the key of the active step', function () {
     expect($component->currentStepKey())->toBe('two');
 });
 
-it('FR-L5: handleStepError catches RejectedException and generic errors', function () {
+it('SE5Q9-FR-L5: handleStepError catches RejectedException and generic errors', function () {
     $component = new BaseWizardTestStub;
     $ran = false;
 
