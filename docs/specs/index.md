@@ -1,8 +1,9 @@
 # Feature Specifications — `docs/specs/`
 
-> **Last updated:** 2026-08-12 **Changes:** add — Conditional Deployment spec (#55, Maintenance);
-> Foundation specs (#1–#11) verified against the rewritten Core suite (266 tests); spec↔code
-> deviations reconciled (security-headers, shared-utilities)
+> **Last updated:** 2026-08-15 **Changes:** add — Dummy Data spec (#56, Maintenance); add —
+> Conditional Deployment spec (#55, Maintenance); Foundation specs (#1–#11) verified against the
+> rewritten Core suite (266 tests); spec↔code deviations reconciled (security-headers,
+> shared-utilities)
 
 ## Description
 
@@ -167,7 +168,7 @@ Archived snapshots, grade cards, official correspondence, and final lifecycle re
 
 ### Phase 12 — Maintenance
 
-Backup, compliance, job queues, archiving, and system cleanup. Runs continuously after Phase 11.
+Backup, compliance, job queues, archiving, system cleanup, and demo/test data provisioning. Runs continuously after Phase 11.
 
 | #  | Spec | Module | Depends On |
 | -- | ---- | ------ | ---------- |
@@ -176,6 +177,7 @@ Backup, compliance, job queues, archiving, and system cleanup. Runs continuously
 | 53 | [GDPR Compliance](gdpr-compliance.md) | SysAdmin | #15, #35 |
 | 54 | [System Maintenance](system-maintenance.md) | SysAdmin | #6, #8, #51, #52 |
 | 55 | [Conditional Deployment](deployment.md) | Core | #4, #12, #51, #54 |
+| 56 | [Dummy Data](dummy-data.md) | Core | #8, #26, #27, #28, #29, #30, #31, #32, #33, #38, #39, #40, #41, #42, #43, #46, #49 |
 
 ---
 

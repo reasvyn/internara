@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enrollment\Registration\Models\Registration;
+use App\Reports\Report\Enums\ReportStatus;
 use App\Reports\Report\Models\Report;
+use App\User\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReportFactory extends Factory
@@ -50,5 +52,14 @@ class ReportFactory extends Factory
                 'teacher_name' => fake()->name(),
             ],
         ];
+    }
+
+    public function finalized(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => ReportStatus::FINALIZED,
+            'finalized_by' => User::factory(),
+            'finalized_at' => now(),
+        ]);
     }
 }

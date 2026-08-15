@@ -5,23 +5,18 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Academics\AcademicYear\Models\AcademicYear;
-use Carbon\Carbon;
+use App\Academics\AcademicYear\Support\AcademicYearPeriod;
 use Illuminate\Database\Seeder;
 
 class AcademicYearSeeder extends Seeder
 {
     public function run(): void
     {
-        $now = Carbon::now();
-        $year = (int) $now->format('Y');
-
-        [$startYear, $endYear] = $now->month <= 6 ? [$year - 1, $year] : [$year, $year + 1];
-
         AcademicYear::updateOrCreate(
-            ['name' => "{$startYear}/{$endYear}"],
+            ['name' => AcademicYearPeriod::nameFor(now())],
             [
-                'start_date' => "{$startYear}-07-01",
-                'end_date' => "{$endYear}-06-30",
+                'start_date' => AcademicYearPeriod::startDateFor(now()),
+                'end_date' => AcademicYearPeriod::endDateFor(now()),
                 'is_active' => true,
             ],
         );

@@ -27,4 +27,19 @@ class LogbookFactory extends Factory
             'status' => LogbookStatus::DRAFT,
         ];
     }
+
+    public function submitted(): static
+    {
+        return $this->state(fn (array $attributes) => ['status' => LogbookStatus::SUBMITTED]);
+    }
+
+    public function verified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => LogbookStatus::VERIFIED,
+            'is_verified' => true,
+            'verified_by' => User::factory(),
+            'verified_at' => now(),
+        ]);
+    }
 }

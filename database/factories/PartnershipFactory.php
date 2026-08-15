@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Partners\Company\Models\Company;
-use App\Partners\Partnership\Models\Partnership;
 use App\Partners\Partnership\Enums\PartnershipStatus;
+use App\Partners\Partnership\Models\Partnership;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PartnershipFactory extends Factory
@@ -43,7 +43,7 @@ class PartnershipFactory extends Factory
         return $this->state(
             fn () => [
                 'status' => PartnershipStatus::EXPIRED->value,
-                'end_date' => fake()->pastDay()->format('Y-m-d'),
+                'end_date' => fake()->dateTimeBetween('-30 days', '-1 day')->format('Y-m-d'),
             ],
         );
     }

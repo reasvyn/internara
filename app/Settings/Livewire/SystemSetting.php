@@ -5,19 +5,20 @@ declare(strict_types=1);
 namespace App\Settings\Livewire;
 
 use App\Academics\AcademicYear\Actions\ActivateAcademicYearAction;
+use App\Academics\AcademicYear\Support\AcademicYearPeriod;
 use App\Core\Livewire\BaseFormView;
 use App\Settings\Actions\ReadAcademicYearAction;
 use App\Settings\Actions\SaveSystemSettingsAction;
+use App\Settings\Actions\SetSettingAction;
 use App\Settings\Actions\TestMailSettingsAction;
 use App\Settings\Branding\Actions\RemoveBrandAssetAction;
-use App\Settings\Actions\SetSettingAction;
-use App\Settings\Services\Settings;
 use App\Settings\Branding\Actions\UploadBrandAssetAction;
 use App\Settings\Branding\Livewire\Forms\BrandingForm;
 use App\Settings\Data\SystemSettingsData;
 use App\Settings\Livewire\Forms\GeneralSettingsForm;
 use App\Settings\Livewire\Forms\MailSettingsForm;
 use App\Settings\Models\Setting;
+use App\Settings\Services\Settings;
 use App\Settings\Theme\Support\Theme;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
@@ -65,7 +66,7 @@ class SystemSetting extends BaseFormView
         $this->generalForm->default_locale = Settings::get('default_locale', 'id');
         $this->generalForm->active_academic_year = Settings::get(
             'active_academic_year',
-            date('Y') . '/' . (date('Y') + 1),
+            AcademicYearPeriod::nameFor(now()),
         );
         $this->generalForm->support_email = Settings::get('support_email', '');
 
@@ -99,7 +100,7 @@ class SystemSetting extends BaseFormView
     {
         return $this->academicYears
             ->map(
-                fn($year) => [
+                fn ($year) => [
                     'id' => $year->name,
                     'name' => $year->name,
                 ],

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Academics\AcademicYear\Support\AcademicYearPeriod;
 use App\Core\Services\AppInfo;
 use App\Settings\Casts\SettingValueCast;
 use App\Settings\Models\Setting;
@@ -198,7 +199,7 @@ class AppSettingSeeder extends Seeder
             // Operational group
             [
                 'key' => 'active_academic_year',
-                'value' => date('Y') - 1 .'/'.date('Y'),
+                'value' => AcademicYearPeriod::nameFor(now()),
                 'type' => 'string',
                 'description' => 'The current active academic year for operational data.',
                 'group' => 'operational',

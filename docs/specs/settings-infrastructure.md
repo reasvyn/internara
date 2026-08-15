@@ -1,8 +1,9 @@
 # Settings Infrastructure — Type-Aware Store, Resolution & Cache Invalidation
 
-> **Last updated:** 2026-08-10 **Changes:** review — add feature flags contract (FR-FF1–FR-FF6),
-> color/image type handling decision (FR-S13/S14, DD-5), `brand.custom_css` key, `feature()`
-> helper
+> **Last updated:** 2026-08-15 **Changes:** amend — `active_academic_year` default resolved via
+> `AcademicYearPeriod` (month-aware, July–June convention, FR-AY40); review — add feature flags
+> contract (FR-FF1–FR-FF6), color/image type handling decision (FR-S13/S14, DD-5),
+> `brand.custom_css` key, `feature()` helper
 
 ## Description
 
@@ -282,7 +283,7 @@ Route::livewire('/admin/settings', SystemSetting::class)
 | `base_color`          | branding      | string     | `#ffffff`              |
 | `brand.custom_css`    | branding      | string     | `''`                   |
 | `default_locale`      | localization  | string     | `id`                   |
-| `active_academic_year`| system        | string     | `YYYY/YYYY+1`          |
+| `active_academic_year`| system        | string     | School year containing today (July–June, FR-AY40): `YYYY-1/YYYY` in Jan–Jun, `YYYY/YYYY+1` in Jul–Dec |
 | `support_email`       | general       | string     | `''`                   |
 | `mail_from_address`   | mail          | string     | `''`                   |
 | `mail_from_name`      | mail          | string     | `''`                   |
