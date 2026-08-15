@@ -171,17 +171,17 @@ or correction before the audience sees it.
 | FR-A1 | `SendAnnouncementAction` must extend `BaseCommandAction` and accept an `array $data` payload (→ `Actions/SendAnnouncementAction.php:15-17`) |
 | FR-A2 | `SendAnnouncementAction::execute()` must validate input via `Validator` with rules: title required|max:255, message required|max:5000, type required|in:info/success/warning/error, status nullable|in:draft/scheduled/published, scheduled_at nullable|date|after_or_equal:now, link nullable|max:500, target_roles nullable|array (→ `Actions/SendAnnouncementAction.php:19-28`) |
 | FR-A3 | `SendAnnouncementAction::execute()` must create an `Announcement` record within a transaction, setting `created_by` to `auth()->id()` (→ `Actions/SendAnnouncementAction.php:34-44`) |
-| FR-A4 | `SendAnnouncementAction::execute()` must call `sendNotifications()` only when status is `PUBLISHED` (→ `Actions/SendAnnouncementAction.php:46-48`) |
-| FR-A5 | `SendAnnouncementAction::sendNotifications()` must query users, excluding the sender's own roles when `target_roles` is non-empty, then dispatch `AnnouncementNotification` via `Notification::send()` (→ `Actions/SendAnnouncementAction.php:60-80`) |
+| FR-A4 | `SendAnnouncementAction::execute()` must call `SendAnnouncementNotificationsAction::execute()` only when status is `PUBLISHED` (→ `Actions/SendAnnouncementAction.php:48-50`) |
+| FR-A5 | `SendAnnouncementNotificationsAction::execute()` must query users, excluding the sender's own roles when `target_roles` is non-empty, then dispatch `AnnouncementNotification` via `Notification::send()` — extracted from the former `SendAnnouncementAction::sendNotifications()` per the single-`execute()` rule (→ `Actions/SendAnnouncementNotificationsAction.php:18-40`) |
 | FR-A6 | `SendAnnouncementAction::execute()` must log `announcement_sent` with title, status, and target_roles via `$this->log()` (→ `Actions/SendAnnouncementAction.php:50-54`) |
 
 ### PublishAnnouncementAction
 
 | ID   | Requirement |
 | ---- | ----------- |
-| FR-A7 | `PublishAnnouncementAction` must extend `BaseCommandAction` and accept an `Announcement $announcement` (→ `Actions/PublishAnnouncementAction.php:14-16`) |
-| FR-A8 | `PublishAnnouncementAction::execute()` must transition status to `PUBLISHED`, clear `scheduled_at` to null, send notifications to targeted users, and log `announcement_published` — all within a transaction (→ `Actions/PublishAnnouncementAction.php:17-44`) |
-| FR-A9 | `PublishAnnouncementAction` must query notification recipients with the same role-exclusion logic as `SendAnnouncementAction::sendNotifications()` (→ `Actions/PublishAnnouncementAction.php:24-32`) |
+| FR-A7 | `PublishAnnouncementAction` must extend `BaseCommandAction` and accept an `Announcement $announcement` (→ `Actions/PublishAnnouncementAction.php:17-18`) |
+| FR-A8 | `PublishAnnouncementAction::execute()` must transition status to `PUBLISHED`, clear `scheduled_at` to null, send notifications to targeted users, and log `announcement_published` — all within a transaction (→ `Actions/PublishAnnouncementAction.php:19-32`) |
+| FR-A9 | `PublishAnnouncementAction` must query notification recipients with the same role-exclusion logic as `SendAnnouncementNotificationsAction` (→ `Actions/PublishAnnouncementAction.php:25-27` + `Actions/SendAnnouncementNotificationsAction.php:22-34`) |
 
 ### DeleteAnnouncementAction
 

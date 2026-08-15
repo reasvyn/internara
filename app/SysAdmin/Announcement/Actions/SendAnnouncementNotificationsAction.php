@@ -20,7 +20,7 @@ final class SendAnnouncementNotificationsAction extends BaseProcessAction
         $users = User::query();
 
         if (! empty($config['target_roles'])) {
-            $senderRoles = auth()->user()->roles->pluck('name')->toArray();
+            $senderRoles = auth()->user()?->roles->pluck('name')->toArray() ?? [];
 
             $users
                 ->whereDoesntHave('roles', fn ($q) => $q->whereIn('name', $senderRoles))
