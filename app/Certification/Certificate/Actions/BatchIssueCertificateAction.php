@@ -7,7 +7,6 @@ namespace App\Certification\Certificate\Actions;
 use App\Certification\Certificate\Models\CertificateTemplate;
 use App\Core\Actions\BaseProcessAction;
 use App\Enrollment\Registration\Models\Registration;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 final class BatchIssueCertificateAction extends BaseProcessAction
@@ -38,12 +37,5 @@ final class BatchIssueCertificateAction extends BaseProcessAction
         }
 
         return $results;
-    }
-
-    public function executeFiltered(Builder $query, CertificateTemplate $template): array
-    {
-        $registrations = $query->get();
-
-        return $this->execute($registrations->pluck('id')->toArray(), $template);
     }
 }

@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Document\OfficialDocument\Actions;
 
 use App\Core\Actions\BaseCommandAction;
-use App\Core\Exceptions\RejectedException;
 use App\Document\Models\Document;
 use App\Document\Services\DocumentRenderer;
 use App\Enrollment\Registration\Models\Registration;
-use Illuminate\Support\Facades\Storage;
 
 final class RenderDocumentAction extends BaseCommandAction
 {
@@ -46,20 +44,5 @@ final class RenderDocumentAction extends BaseCommandAction
         });
 
         return $rendered;
-    }
-
-    public function download(Document $document): string
-    {
-        if ($document->file_path && Storage::disk('local')->exists($document->file_path)) {
-            return $document->file_path;
-        }
-
-        $mediaUrl = $document->getFirstMediaUrl('file');
-
-        if ($mediaUrl) {
-            return $mediaUrl;
-        }
-
-        throw new RejectedException(__('exceptions.document_file_not_found'));
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Core\Entities\BaseEntity;
 use Illuminate\Database\Eloquent\Model;
-use InvalidArgumentException;
 
 final readonly class TestEntity extends BaseEntity
 {
