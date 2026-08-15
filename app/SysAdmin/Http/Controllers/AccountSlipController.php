@@ -6,6 +6,7 @@ namespace App\SysAdmin\Http\Controllers;
 
 use App\User\Models\User;
 use App\User\UserManagement\Actions\GenerateAccountSlipAction;
+use App\User\UserManagement\Actions\GenerateAccountSlipBatchAction;
 use Illuminate\Http\Request;
 
 final class AccountSlipController
@@ -15,11 +16,11 @@ final class AccountSlipController
         return $action->execute($user);
     }
 
-    public function downloadBatch(Request $request, GenerateAccountSlipAction $action): mixed
+    public function downloadBatch(Request $request, GenerateAccountSlipBatchAction $action): mixed
     {
         $ids = explode(',', $request->string('ids', ''));
         $users = User::whereIn('id', $ids)->get();
 
-        return $action->executeBatch($users->all());
+        return $action->execute($users->all());
     }
 }
