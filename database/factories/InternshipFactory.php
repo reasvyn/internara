@@ -32,8 +32,10 @@ class InternshipFactory extends Factory
             ],
             'required_document_ids' => [],
             'grading_weights' => [
-                'assignments' => 40,
-                'rubrics' => 60,
+                'supervisor' => 40,
+                'teacher' => 20,
+                'assignment' => 20,
+                'exam' => 20,
             ],
         ];
     }

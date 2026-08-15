@@ -1,8 +1,9 @@
 # Academic Year Management — Singleton Activation & Lifecycle
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from institutional-and-academics.md;
-> expanded AcademicYear CRUD, singleton activation, deletion guard, bulk delete, events, and
-> dashboard cache invalidation into a dedicated spec
+> **Last updated:** 2026-08-15 **Changes:** feat — active-year convention July–June via shared
+> `AcademicYearPeriod` (FR-AY40, DD-6), aligning `AcademicYearSeeder` with `AppSettingSeeder` and
+> the settings UI default; amend — expanded AcademicYear CRUD, singleton activation, deletion
+> guard, bulk delete, events, and dashboard cache invalidation into a dedicated spec
 
 ## Description
 
@@ -204,6 +205,7 @@ administrators would see outdated statistics.
 | FR-AY37 | `AcademicYearForm` must validate: name (required, string, max 50, unique excluding current), start_date (required, date), end_date (required, date, after start_date) |
 | FR-AY38 | `AcademicYearPolicy` must grant `viewAny`/`view` to all authenticated users |
 | FR-AY39 | `AcademicYearPolicy` must grant `create`/`update` to admin roles only |
+| FR-AY40 | The active year is the school year containing today — the Indonesian school year runs July–June: a date in January–June maps to `Y-1/Y`, a date in July–December to `Y/Y+1` (DD-6). `AcademicYearSeeder` and the `active_academic_year` setting must both use this computation |
 
 ---
 
@@ -389,6 +391,26 @@ have temporal context. Auto-activate in the Action (not Livewire) applies regard
 creation source (UI, seeder, API).
 
 **Trade-off:** Implicit behavior. Mitigated by UI showing active badge immediately.
+
+### DD-6 — Active Year = School Year Containing Today (July–June)
+
+**Decision:** The active academic year is the school year containing the current date. The
+Indonesian school year runs **July–June**: January–June belongs to `Y-1/Y`, July–December to
+`Y/Y+1`. This computation lives in one place — `AcademicYearPeriod` support class
+(`app/Academics/AcademicYear/Support/AcademicYearPeriod.php`) — shared by `AcademicYearSeeder`,
+`AppSettingSeeder` (`active_academic_year`), and the settings UI default (FR-AY40).
+
+**Rationale:** Three independent computations existed and drifted: `AcademicYearSeeder` was
+month-aware (correct), while `AppSettingSeeder` hardcoded `Y-1/Y` and the settings UI default
+hardcoded `Y/Y+1` — both wrong for half the year. A single month-aware source removes the
+duplication (DRY) and guarantees the `active_academic_year` setting always matches the active
+`AcademicYear` row.
+
+**Trade-off:** Seeder behavior now depends on the shared class; mitigated by unit-testable pure
+methods (`nameFor`, `startDateFor`, `endDateFor`, `yearsFor`).
+
+**Rejected alternative:** Keeping hardcoded `Y/Y+1` or `Y-1/Y` defaults — correct only for one
+half of the calendar year; or computing independently in each consumer — reintroduces the drift.
 
 ---
 

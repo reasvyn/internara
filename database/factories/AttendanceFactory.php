@@ -28,4 +28,18 @@ class AttendanceFactory extends Factory
             'status' => AttendanceStatus::PRESENT,
         ];
     }
+
+    public function late(): static
+    {
+        return $this->state(fn (array $attributes) => ['status' => AttendanceStatus::LATE]);
+    }
+
+    public function verified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_verified' => true,
+            'verified_by' => User::factory(),
+            'verified_at' => now(),
+        ]);
+    }
 }

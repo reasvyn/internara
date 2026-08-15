@@ -118,6 +118,24 @@ Factories and seeders mirror the module structure. Seeders are idempotent — th
 times without duplicating data. The seeding order respects module dependencies: school data before
 user data, permissions before role assignments, internships before registrations.
 
+### Demo Data (`DummySeeder`)
+
+An opt-in demo dataset for development is provided by `Database\Seeders\DummySeeder`:
+
+```bash
+php artisan db:seed --class=Database\Seeders\DummySeeder
+```
+
+- Aborts when `APP_ENV=production` (NFR-S1) — see [Dummy Data spec](../specs/dummy-data.md).
+- Reuses base-seeded roles/settings/active academic year and seeds them only when absent (FR-E4).
+- Delegates all generation to `Tests\Support\DummyData` (dev-only, `autoload-dev`), which runs the
+  whole dataset inside a single transaction (FR-H13) and is idempotent via `firstOrCreate` on natural
+  keys (FR-H5).
+- Demo account/password values live in `config/dummy.php` (`dummy.accounts.*`, `dummy.password`) —
+  no hardcoding. Accounts: `admin@example.com`, `teacher1..4@example.com`,
+  `supervisor1..6@example.com`, `student1..24@example.com` (no superadmin, DD-8).
+- Never registered in `DatabaseSeeder` or `SetupSeeder` — opt-in only (FR-E3).
+
 ---
 
 ## Engine Comparison

@@ -30,4 +30,14 @@ class RegistrationFactory extends Factory
             ],
         ];
     }
+
+    public function active(): static
+    {
+        return $this->state(fn (array $attributes) => ['status' => 'active']);
+    }
+
+    public function pending(): static
+    {
+        return $this->state(fn (array $attributes) => ['status' => 'pending']);
+    }
 }

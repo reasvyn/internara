@@ -35,4 +35,9 @@ class AssignmentFactory extends Factory
     {
         return $this->state(fn (array $attributes) => ['status' => 'published']);
     }
+
+    public function closed(): static
+    {
+        return $this->state(fn (array $attributes) => ['status' => 'closed']);
+    }
 }
