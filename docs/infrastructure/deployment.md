@@ -1,10 +1,9 @@
 # Deployment — Options, Requirements & CI/CD
 
-> **Last updated:** 2026-08-14 **Changes:** docs — Docker domain over HTTPS behind an aaPanel reverse
-> proxy (apex + `www` server_name, `X-Forwarded-Proto`, multi-domain Let's Encrypt cert, verification
-> commands); `APP_URL` + `SESSION_SECURE_COOKIE` defaults now `true`/HTTPS; CI/CD auto-deploy on
-> `docker-deploy` pushes (GitHub Actions + SSH deploy key, `GIT_URL=#docker-deploy`, secrets never in
-> repo); production debug mode confirmed off (`APP_DEBUG` unset → `false` when `APP_ENV=production`)
+> **Last updated:** 2026-08-15 **Changes:** CI/CD moved out of this repo — the build-and-deploy
+> pipeline now lives in a separate private repository, triggered from here via `repository_dispatch`;
+> the deploy workflow/script were removed from this repo (no production credential or mechanism is
+> exposed)
 
 ## Description
 
@@ -460,39 +459,18 @@ curl -s https://internara.web.id | grep -c localhost                     # 0 (ap
 curl -s https://internara.web.id | grep -oE 'https://[^"]+\.(css|js)'    # assets served over https
 ```
 
-### Continuous deployment (GitHub Actions → VPS)
+### Continuous deployment (orchestrated from a private repo)
 
-The `docker-deploy` branch is auto-deployed: every push recreates the stack on the VPS. The pipeline
-is `.github/workflows/deploy.yml`:
+Pushes to `docker-deploy` are auto-deployed to the production server. The build-and-deploy pipeline
+(build test + `docker compose up -d --build`) is orchestrated from a **separate private repository**
+that only the owner's GitHub account can access; this public repo contains no deploy workflow,
+script, or credential.
 
-1. **Trigger** — `push` to `docker-deploy` (also manual via `workflow_dispatch`).
-2. **SSH** — connects as `andreas` using a dedicated deploy key. The key and target are stored as
-   GitHub Actions secrets, **never in the repo**:
-   - `VPS_HOST` — VPS IP (e.g. `43.157.251.56`)
-   - `VPS_USER` — deploy user (`andreas`)
-   - `VPS_SSH_KEY` — the private half of the deploy keypair
-3. **Sync** — `git fetch origin docker-deploy && git reset --hard origin/docker-deploy` in
-   `/home/andreas/apps/internara` (the VPS's own clone — no secrets on the runner).
-4. **Deploy** — `.github/scripts/deploy.sh` runs `docker compose up -d --build`, prunes stale images,
-   then waits up to 60s for `https://internara.web.id` to respond; the job fails if the site stays
-   down.
-
-One-time VPS prerequisites (already applied to the Internara VPS):
-
-```bash
-# CI user can run docker without a password
-sudo usermod -aG docker andreas
-
-# The stack builds the pushed branch (not the default #main)
-printf '\nGIT_URL=https://github.com/reasvyn/internara.git#docker-deploy\n' >> .env
-
-# Install the CI public key for key-based SSH
-mkdir -p ~/.ssh && chmod 700 ~/.ssh
-echo 'ssh-ed25519 AAAA…internara-ci-deploy' >> ~/.ssh/authorized_keys
-```
-
-`GIT_URL` and `APP_URL`/`SESSION_SECURE_COOKIE` live in the VPS's `.env` (gitignored — see
-[Configuration](configuration.md)) so branch-specific values never have to be committed.
+A push to `docker-deploy` here only fires a `repository_dispatch` notification
+(`.github/workflows/dispatch.yml`, using the `DEPLOY_TRIGGER_TOKEN` secret). The private deploy repo
+then runs its pipeline: it checks out `docker-deploy` and verifies the Docker build succeeds, then
+SSHs to the server and recreates the stack (`git fetch origin docker-deploy && git reset --hard
+origin/docker-deploy`, followed by `docker compose up -d --build`).
 
 ### Low-memory profile (1 GB RAM VPS)
 
