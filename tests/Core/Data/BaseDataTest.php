@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Core\Data\BaseData;
-use InvalidArgumentException;
 
 final readonly class TestData extends BaseData
 {

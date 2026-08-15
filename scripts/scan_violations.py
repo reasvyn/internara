@@ -34,6 +34,10 @@ ENTITY_FORBIDDEN_IMPORTS = [
     "Livewire\\",
     "Http\\Controllers\\",
 ]
+# The settings store (App\Settings\Services\Settings) is a data-access facade, not a business
+# Service. Settings-backed entities (entity-pattern.md §10 & §11.5) may read from it via a get()
+# static factory — documented exemption, so its import must not be flagged as C5.
+SETTINGS_STORE_IMPORT = "App\\Settings\\Services\\Settings;"
 
 DTO_FORBIDDEN_IMPORTS = [
     "Models\\",
@@ -383,6 +387,8 @@ def scan_c5_entity_imports(files: list[Path], module: str | None) -> list[Findin
         for i, line in enumerate(content.split("\n"), 1):
             stripped = line.strip()
             if not stripped.startswith("use ") or not stripped.endswith(";"):
+                continue
+            if stripped.endswith(SETTINGS_STORE_IMPORT):
                 continue
             for forbidden in ENTITY_FORBIDDEN_IMPORTS:
                 if forbidden in stripped:

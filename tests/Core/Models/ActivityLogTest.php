@@ -76,11 +76,11 @@ it('FR-M7: forModule() matches by subject namespace or log name', function () {
     expect(ActivityLog::forModule('User')->count())->toBe(2);
 });
 
-it('FR-M7: getGroupedByDay() returns daily counts', function () {
+it('FR-M7: groupedByDay() scope returns daily counts', function () {
     activity()->log('a');
     activity()->log('b');
 
-    $grouped = (new ActivityLog)->getGroupedByDay(30);
+    $grouped = ActivityLog::query()->groupedByDay(30)->get();
 
     expect($grouped)->toBeCollection();
     expect($grouped->first())->toHaveKeys(['date', 'count']);

@@ -143,7 +143,7 @@ class CertificateList extends BaseRecordManager
             ->where('status', $this->batchIssueFilter)
             ->whereDoesntHave('certificates');
 
-        $results = $batchAction->executeFiltered($query, $template);
+        $results = $batchAction->execute($query->pluck('id')->toArray(), $template);
 
         $this->batchResults = $results;
         flash()->success(

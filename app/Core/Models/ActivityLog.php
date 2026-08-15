@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Core\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use Spatie\Activitylog\Models\Activity;
 
 /**
@@ -66,13 +65,13 @@ class ActivityLog extends Activity
         });
     }
 
-    public function getGroupedByDay(int $days = 30): Collection
+    public function scopeGroupedByDay(Builder $query, int $days = 30): Builder
     {
-        return $this->lastDays($days)
+        return $query
+            ->where('created_at', '>=', now()->subDays($days))
             ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->groupBy('date')
-            ->orderBy('date')
-            ->get();
+            ->orderBy('date');
     }
 
     public function getSubjectModelAttribute(): ?string
