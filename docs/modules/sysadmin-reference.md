@@ -21,6 +21,7 @@ logging, Pulse observability, and GDPR compliance.
 | `Announcement/Actions/DeleteAnnouncementAction.php`  | `DeleteAnnouncementAction`  | `BaseCommandAction` |
 | `Announcement/Actions/PublishAnnouncementAction.php` | `PublishAnnouncementAction` | `BaseCommandAction` |
 | `Announcement/Actions/SendAnnouncementAction.php`    | `SendAnnouncementAction`    | `BaseCommandAction` |
+| `Announcement/Actions/SendAnnouncementNotificationsAction.php` | `SendAnnouncementNotificationsAction` | `BaseProcessAction` |
 | `Backups/Actions/CreateBackupAction.php`             | `CreateBackupAction`        | `BaseCommandAction` |
 | `Backups/Actions/DeleteBackupAction.php`             | `DeleteBackupAction`        | `BaseCommandAction` |
 | `Backups/Actions/CleanupBackupsAction.php`           | `CleanupBackupsAction`      | `BaseCommandAction` |
