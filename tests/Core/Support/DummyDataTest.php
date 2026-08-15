@@ -99,6 +99,22 @@ it('FR-E1/FR-E2/FR-E4/FR-E5/FR-H14/NFR-U1: DummySeeder is the opt-in entry point
     expect(Setting::count())->toBeGreaterThan(0);
 });
 
+it('FR-E4/FR-H14: gates each base seeder independently when base data is only partially present', function () {
+    // Roles exist (from setUp) — prove RolePermissionSeeder is skipped by deleting one role
+    // and asserting it is NOT re-created, while settings/years (absent) are still seeded.
+    DB::table('roles')->where('name', 'superadmin')->delete();
+    DB::table('settings')->delete();
+    DB::table('academic_years')->delete();
+
+    Artisan::call('db:seed', ['--class' => DummySeeder::class]);
+
+    // Roles untouched → RolePermissionSeeder skipped (roles exist).
+    expect(Role::count())->toBe(4);
+    // Settings and years were absent → their seeders ran.
+    expect(Setting::count())->toBeGreaterThan(0);
+    expect(AcademicYear::where('is_active', true)->count())->toBe(1);
+});
+
 it('FR-H13/NFR-R2: a mid-run failure rolls back the entire dataset', function () {
     Hash::shouldReceive('make')->andThrow(new RuntimeException('hash failure'));
 
