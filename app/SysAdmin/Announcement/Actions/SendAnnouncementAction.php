@@ -7,13 +7,14 @@ namespace App\SysAdmin\Announcement\Actions;
 use App\Core\Actions\BaseCommandAction;
 use App\SysAdmin\Announcement\Enums\AnnouncementStatus;
 use App\SysAdmin\Announcement\Models\Announcement;
-use App\SysAdmin\Announcement\Notifications\AnnouncementNotification;
-use App\User\Models\User;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 
 final class SendAnnouncementAction extends BaseCommandAction
 {
+    public function __construct(
+        private readonly SendAnnouncementNotificationsAction $sendNotifications,
+    ) {}
+
     public function execute(array $data): Announcement
     {
         $validated = Validator::validate($data, [
@@ -44,7 +45,7 @@ final class SendAnnouncementAction extends BaseCommandAction
             ]);
 
             if ($status === AnnouncementStatus::PUBLISHED) {
-                $this->sendNotifications($announcement, $validated);
+                $this->sendNotifications->execute($announcement, $validated);
             }
 
             $this->log('announcement_sent', $announcement, [
@@ -55,27 +56,5 @@ final class SendAnnouncementAction extends BaseCommandAction
 
             return $announcement;
         });
-    }
-
-    public function sendNotifications(Announcement $announcement, array $config): void
-    {
-        $users = User::query();
-
-        if (! empty($config['target_roles'])) {
-            $senderRoles = auth()->user()->roles->pluck('name')->toArray();
-
-            $users
-                ->whereDoesntHave('roles', fn ($q) => $q->whereIn('name', $senderRoles))
-                ->whereHas('roles', fn ($q) => $q->whereIn('name', $config['target_roles']));
-        }
-
-        Notification::send(
-            $users->get(),
-            new AnnouncementNotification(
-                title: $announcement->title,
-                message: $announcement->message,
-                link: $announcement->link,
-            ),
-        );
     }
 }
