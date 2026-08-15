@@ -9,6 +9,7 @@ use App\Core\Enums\AuditCategory;
 use App\Core\Enums\AuditStatus;
 use App\Core\Services\SmartLogger;
 use App\Setup\Installation\Actions\GenerateSetupTokenAction;
+use App\Setup\Installation\Actions\SeedDummyDataAction;
 use App\Setup\Installation\Console\Commands\Concerns\InteractsWithInstallerCli;
 use App\Setup\Installation\Services\SystemProvisioner;
 use App\SysAdmin\Observability\Services\EnvironmentAuditor;
@@ -28,12 +29,14 @@ final class SetupInstallCommand extends Command
         {--force : Force installation even if already installed}
         {--check-only : Run environment audit without provisioning}
         {--optimize : Cache config, routes, views, and events (production only)}
-        {--url= : The application URL (e.g., https://example.com)}';
+        {--url= : The application URL (e.g., https://example.com)}
+        {--with-dummy : Seed demo data (DummySeeder) after provisioning (dev only)}';
 
     public function __construct(
         private EnvironmentAuditor $auditor,
         private SystemProvisioner $provisioner,
         private GenerateSetupTokenAction $generateToken,
+        private SeedDummyDataAction $seedDummyData,
     ) {
         parent::__construct();
         $this->description = __('setup.cli.starting_installation');
@@ -68,6 +71,19 @@ final class SetupInstallCommand extends Command
                     $label,
                     fn () => $this->provisioner->executeTask($task, $force),
                 );
+            }
+
+            if ($this->option('with-dummy')) {
+                $this->newLine();
+
+                if ($this->seedDummyData->execute()) {
+                    $this->components->task(
+                        __('setup.cli.tasks.dummy_data'),
+                        fn () => true,
+                    );
+                } else {
+                    $this->components->warn(__('setup.cli.dummy_skipped_production'));
+                }
             }
 
             $tokenData = $this->generateToken->execute();

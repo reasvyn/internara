@@ -24,7 +24,9 @@ operations.
 Core installation orchestration via `php artisan setup:install`. Provisions the database schema
 (migrations), seeds base roles (`super_admin`, `admin`, `teacher`, `student`, `supervisor` via
 Spatie), creates the initial academic year, generates a cryptographically secure setup token, and
-marks the system as installed.
+marks the system as installed. With `--with-dummy`, the demo dataset (`DummySeeder`) is seeded
+after provisioning for development/demo environments; in `APP_ENV=production` the seed is skipped
+with a warning (installation spec FR-C10, NFR-S13).
 
 ### Wizard
 

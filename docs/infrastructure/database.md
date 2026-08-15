@@ -126,6 +126,9 @@ An opt-in demo dataset for development is provided by `Database\Seeders\DummySee
 php artisan db:seed --class=Database\Seeders\DummySeeder
 ```
 
+On a fresh install, `php artisan setup:install --with-dummy` seeds it right after provisioning
+(installation spec FR-C10); in `APP_ENV=production` the seed is skipped with a warning (NFR-S13).
+
 - Aborts when `APP_ENV=production` (NFR-S1) — see [Dummy Data spec](../specs/dummy-data.md).
 - Reuses base-seeded roles/settings/active academic year and seeds them only when absent (FR-E4).
 - Delegates all generation to `Tests\Support\DummyData` (dev-only, `autoload-dev`), which runs the

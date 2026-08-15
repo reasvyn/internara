@@ -55,8 +55,7 @@ return [
         'timezone' => 'Timezone',
         'db_driver' => 'Database Driver',
         'already_installed' => 'System is already installed.',
-        'force_restricted' =>
-            'Force installation is only allowed in local, dev, or testing environments for security.',
+        'force_restricted' => 'Force installation is only allowed in local, dev, or testing environments for security.',
         'forcing_reinstall' => 'Forcing reinstallation. Resetting current setup...',
         'starting_installation' => 'Starting technical installation...',
         'installation_failed' => 'Technical installation failed: :message',
@@ -65,8 +64,7 @@ return [
         'visit_url' => 'Visit the setup URL in your browser to complete the configuration:',
         'complete_wizard' => 'Complete the web wizard steps to finalize the setup.',
         'token_expires' => 'Expires',
-        'token_note' =>
-            'Keep this URL safe. If it expires, you will need to run this command again.',
+        'token_note' => 'Keep this URL safe. If it expires, you will need to run this command again.',
         'running_audit' => 'Running system environment audit...',
         'audit_failed' => 'Pre-flight audit failed. Please fix the issues above before proceeding.',
         'force_warning' => 'Running in force mode. Existing settings will be overwritten.',
@@ -80,13 +78,10 @@ return [
         'try_health_check' => 'Run php artisan system:health to check system status.',
         'aborted' => 'Installation aborted.',
         'app_url_set' => 'APP_URL has been set to: :url',
-        'app_url_warning' =>
-            'APP_URL is set to http://localhost. The signed URL below may not be reachable.',
-        'app_url_hint' =>
-            '  Use --url=https://your-domain.com to set the correct URL before installation.',
+        'app_url_warning' => 'APP_URL is set to http://localhost. The signed URL below may not be reachable.',
+        'app_url_hint' => '  Use --url=https://your-domain.com to set the correct URL before installation.',
         'quick_access' => 'Quick Access (clickable link)',
-        'url_warning' =>
-            'Note: URL contains the token. Use the code below for a URL-free alternative.',
+        'url_warning' => 'Note: URL contains the token. Use the code below for a URL-free alternative.',
         'manual_entry' => 'Manual Entry (no URL token)',
         'visit_url_alt' => 'Visit',
         'enter_code' => 'Enter code',
@@ -98,20 +93,17 @@ return [
         'expires_in_minutes' => ':count minutes from now',
         'executing_task' => 'Executing technical system installation',
         'not_installed' => 'System is not installed. Run php artisan setup:install first.',
-        'admin_exists' =>
-            'Super Admin already exists. Use php artisan admin:recover to create another.',
+        'admin_exists' => 'Super Admin already exists. Use php artisan admin:recover to create another.',
         'recover_description' => 'Recover super admin access using the setup recovery key',
         'admin_not_found' => 'User with email :email not found.',
-        'admin_already_exists' =>
-            'User with email :email already exists. Use --reset flag to reset password.',
+        'admin_already_exists' => 'User with email :email already exists. Use --reset flag to reset password.',
         'password_mismatch' => 'Passwords do not match.',
         'recovery_success' => 'Password reset successfully!',
         'creation_success' => 'Super Administrator created successfully!',
         'change_password_warning' => 'Please change the password after first login.',
         'recovery_key_required' => 'Recovery key is required. Use --key option.',
         'recovery_key_invalid' => 'Invalid recovery key. Access denied.',
-        'recovery_confirmation_warning' =>
-            'You are about to perform a sensitive super admin recovery action. Mode: :mode, Email: :email.',
+        'recovery_confirmation_warning' => 'You are about to perform a sensitive super admin recovery action. Mode: :mode, Email: :email.',
         'recovery_confirmation_prompt' => 'Type the admin email to confirm:',
         'recovery_confirmation_mismatch' => 'Email does not match. Recovery aborted.',
         'recovery_aborted' => 'Recovery aborted.',
@@ -145,6 +137,7 @@ return [
             'generate_key' => 'Generating application key (App Key)',
             'run_migrations' => 'Running database migrations',
             'run_seeders' => 'Running database seeders',
+            'dummy_data' => 'Seeding demo data (DummySeeder)',
             'system_settings' => 'Configuring initial system settings',
             'storage_link' => 'Linking storage directory',
             'optimize' => 'Optimizing application',
@@ -156,12 +149,12 @@ return [
             'discover_complete' => 'Module discovery caches warmed.',
             'discover_failed' => 'Module discovery failed',
         ],
+        'dummy_skipped_production' => 'Demo data skipped: APP_ENV is production. Demo seeding is not allowed in production.',
     ],
 
     'reset_token' => [
         'description' => 'Regenerate the setup token (pre-installation only).',
-        'protected' =>
-            'Cannot reset token: the system is already installed. This command can only be used during pre-installation setup.',
+        'protected' => 'Cannot reset token: the system is already installed. This command can only be used during pre-installation setup.',
         'new_token_generated' => 'A new setup token has been generated:',
         'success' => 'Setup token has been regenerated.',
         'table_missing' => 'Database table for setup does not exist yet.',
@@ -170,13 +163,11 @@ return [
 
     'code_entry' => [
         'title' => 'Enter Setup Code',
-        'description' =>
-            'Enter the setup token that was generated when you ran php artisan setup:install.',
+        'description' => 'Enter the setup token that was generated when you ran php artisan setup:install.',
         'code_label' => 'Setup Code / Token',
         'placeholder' => 'e.g., a1b2c3d4e5f6g7h8i9j0...',
         'submit' => 'Verify and Continue',
-        'help' =>
-            'Run php artisan setup:install on the server to generate a new token if you don\'t have one.',
+        'help' => 'Run php artisan setup:install on the server to generate a new token if you don\'t have one.',
         'expiry_note' => 'The token expires 60 minutes after generation.',
     ],
 
@@ -192,8 +183,7 @@ return [
         'progress_label' => 'Setup Progress',
         'progress_aria' => 'Step :current of :total',
         'welcome' => 'Welcome to Internara',
-        'welcome_desc' =>
-            'We will help you set up your professional internship management system in just a few steps.',
+        'welcome_desc' => 'We will help you set up your professional internship management system in just a few steps.',
         'audit_results' => 'System Audit Results',
         'system_requirements' => 'System Requirements',
         'start_setup' => 'Start Setup',
@@ -224,8 +214,7 @@ return [
         'email_address' => 'Email Address',
         'username' => 'Unique Username',
         'generated' => 'Generated',
-        'username_notice' =>
-            'This username is automatically generated for security and is permanent. You will use this to log in to the system.',
+        'username_notice' => 'This username is automatically generated for security and is permanent. You will use this to log in to the system.',
         'password' => 'Password',
         'confirm_password' => 'Confirm Password',
         'password_hint' => 'Password must be at least 8 characters with uppercase, lowercase, and numbers.',
@@ -246,27 +235,21 @@ return [
         'finish_setup' => 'Finish Setup',
         'setup_complete' => 'Setup Complete!',
         'install_failed' => 'Installation failed: :message',
-        'install_failed_generic' =>
-            'Installation failed. Please check the system logs for details.',
-        'ready_desc' =>
-            'The system is ready to manage your internship programs. You can now log in with your administrator account.',
+        'install_failed_generic' => 'Installation failed. Please check the system logs for details.',
+        'ready_desc' => 'The system is ready to manage your internship programs. You can now log in with your administrator account.',
         'go_to_login' => 'Go to Login Page',
         'installing_title' => 'Setting Up Your System',
         'installing_desc' => 'Please wait while we configure your school, department, and administrator account.',
         'data_verified' => 'I declare that the data entered is correct',
-        'data_verified_long' =>
-            'Double-check all information before proceeding. This action cannot be undone.',
+        'data_verified_long' => 'Double-check all information before proceeding. This action cannot be undone.',
         'security_aware' => 'I understand the security requirements of this system',
-        'security_aware_long' =>
-            'The admin credentials are critical. Store them in a secure location.',
+        'security_aware_long' => 'The admin credentials are critical. Store them in a secure location.',
         'summary' => 'Setup Summary',
         'email' => 'Email',
-        'login_notice' =>
-            'Save your username and email — you will need them to sign in. This information will not be shown again.',
+        'login_notice' => 'Save your username and email — you will need them to sign in. This information will not be shown again.',
         'access_summary' => 'Login Credentials',
         'recovery_key_title' => 'Recovery Key',
-        'recovery_key_desc' =>
-            'Save this key in a secure place. You will need it to recover administrator access if the password is lost.',
+        'recovery_key_desc' => 'Save this key in a secure place. You will need it to recover administrator access if the password is lost.',
         'copy' => 'Copy',
         'copied' => 'Copied!',
         'auto_redirect_in' => 'Redirecting to login in',
@@ -302,23 +285,17 @@ return [
         'title' => 'Setup Guide',
         'intro' => 'Follow these steps to complete the system installation:',
         'step1_title' => 'Welcome & System Audit',
-        'step1_desc' =>
-            'The system checks technical requirements: PHP version, extensions, directory permissions, database connection, and more. Ensure all checks pass before proceeding.',
+        'step1_desc' => 'The system checks technical requirements: PHP version, extensions, directory permissions, database connection, and more. Ensure all checks pass before proceeding.',
         'step2_title' => 'Admin Account',
-        'step2_desc' =>
-            'The super administrator account will be created with a pre-set name and username. Simply enter a valid email and a strong password.',
+        'step2_desc' => 'The super administrator account will be created with a pre-set name and username. Simply enter a valid email and a strong password.',
         'step3_title' => 'School Information',
-        'step3_desc' =>
-            'Enter your institution data: school name, institutional code, address, contact details, and principal name. This becomes the system\'s primary identity.',
+        'step3_desc' => 'Enter your institution data: school name, institutional code, address, contact details, and principal name. This becomes the system\'s primary identity.',
         'step4_title' => 'Department',
-        'step4_desc' =>
-            'Create your first department. You can add more departments later through the admin panel.',
+        'step4_desc' => 'Create your first department. You can add more departments later through the admin panel.',
         'step5_title' => 'Finalize',
-        'step5_desc' =>
-            'Review all entered data. Make sure you understand the security implications of the administrator credentials.',
+        'step5_desc' => 'Review all entered data. Make sure you understand the security implications of the administrator credentials.',
         'step6_title' => 'Complete',
-        'step6_desc' =>
-            'The system is ready! Save your login credentials and recovery key in a secure place. The recovery key is required if the password is lost.',
+        'step6_desc' => 'The system is ready! Save your login credentials and recovery key in a secure place. The recovery key is required if the password is lost.',
         'tip_title' => 'Tip',
         'tip_desc' => 'All data can be modified later through the settings panel after logging in.',
     ],

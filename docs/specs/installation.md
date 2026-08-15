@@ -1,7 +1,7 @@
 # Installation & Provisioning — Feature Specification
 
-> **Last updated:** 2026-07-22 **Changes:** feat — split from install-and-setup.md; CLI
-> provisioning initiative
+> **Last updated:** 2026-08-15 **Changes:** amend — add `setup:install --with-dummy` demo-seed
+> flag (UC-5, FR-C10, NFR-S13)
 
 ## Description
 
@@ -131,6 +131,23 @@ accessible via token.
 
 **Postconditions:** Administrator knows environment readiness status.
 
+### UC-5 — CLI Installation with Demo Dataset
+
+**Actor:** Server administrator / developer
+
+**Preconditions:** Same as UC-1.
+
+**Flow:**
+1. Administrator runs `php artisan setup:install --with-dummy`
+2. System provisions as in UC-1 (audit → provision → token)
+3. After provisioning, system seeds the demo dataset via `DummySeeder`
+   (see [dummy-data.md](dummy-data.md))
+4. In `APP_ENV=production`, the demo seed is refused — a warning is shown, the seed is skipped,
+   and the installation continues normally
+
+**Postconditions:** Database provisioned with demo data (non-production) or skip-warned
+(production); token valid for 60 minutes.
+
 ---
 
 ## 4. Functional Requirements
@@ -191,6 +208,7 @@ accessible via token.
 | FR-C7 | `admin:recover` — generates new password for super admin (see [recovery-ecosystem.md](recovery-ecosystem.md)) |
 | FR-C8 | `setup:install` on installed system must fail unless `--force`           |
 | FR-C9 | `--force` on non-local environments must be rejected                    |
+| FR-C10 | `setup:install --with-dummy` — after provisioning, seeds the demo dataset via `DummySeeder` (see [dummy-data.md](dummy-data.md)) |
 
 ### 4.5 Module Discovery
 
@@ -223,6 +241,7 @@ accessible via token.
 | NFR-S10 | Super admin account status must be PROTECTED (non-deletable, non-lockable) |
 | NFR-S11 | `--force` must be restricted to non-production environments          |
 | NFR-S12 | All setup actions must be logged via SmartLogger for audit trail     |
+| NFR-S13 | `--with-dummy` must be refused in production: the demo seed is skipped with a warning and the installation continues; `DummySeeder` keeps its own independent production guard (dummy-data NFR-S1) as defense in depth |
 
 ### 5.2 Performance
 
@@ -519,6 +538,21 @@ this early prevents broken links in production.
 **Trade-off:** The check is heuristic (string matching), not authoritative. A deployment on
 `localhost` (e.g., Docker health checks) would see a false warning. Acceptable because the
 warning is informational, not blocking.
+
+### DD-10 — Demo Dataset Seed on Install
+
+**Decision:** Provide `--with-dummy` flag to seed the demo dataset (`DummySeeder`) immediately
+after provisioning. In `APP_ENV=production` the seed is skipped with a warning and the install
+continues; it never fails the installation.
+
+**Rationale:** A fresh install is immediately demo-able for developers, presenters, and QA,
+removing the extra `db:seed --class=DummySeeder` step (dummy-data DD-3 trade-off). Skipping
+rather than failing in production keeps `setup:install`'s single-execution guarantee intact
+while `DummySeeder`'s own guard (dummy-data NFR-S1) remains the last line of defense.
+
+**Trade-off:** The production check is duplicated at orchestration level (the seeder also
+guards) — deliberate defense in depth: the command must not fail an otherwise-successful
+production install.
 
 ---
 
