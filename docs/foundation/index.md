@@ -12,7 +12,7 @@ Product scope, security model, and design foundations.
   mode, responsive
 - **[Branding](branding.md)** — Dynamic theming, color system, presets, logo management, font
   strategy
-- **[Schema Design Philosophy](../specs/system-requirements.md#73-schema-design-philosophy)** — Domain table design decisions and package/framework tables
+- **[Schema Design Philosophy](../specs/J68GZ-system-requirements.md#73-schema-design-philosophy)** — Domain table design decisions and package/framework tables
 - **[Account Recovery](account-recovery.md)** — Recovery slip flow, recovery codes,
   administrative-mediated recovery, CLI super admin recovery
 

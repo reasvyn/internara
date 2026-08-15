@@ -111,11 +111,11 @@ git log -10 --format="%h %s"               # commit messages for context
 | -------------------- | -------------------------------------------------------------------- |
 | Module structure     | `docs/modules/{module}-reference.md` (file listing, actions, models) |
 | Business rules       | `docs/modules/{module}.md` (business context)                        |
-| Feature requirements | `docs/specs/{spec}.md` (FR, NFR, user stories, data contracts)       |
+| Feature requirements | `docs/specs/{ID}-{feature}.md` (FR, NFR, user stories, data contracts)       |
 | Architecture pattern | `docs/architecture.md` or `docs/architecture/{pattern}-pattern.md`   |
 | Conventions          | `docs/conventions.md`                                                |
 | Module dependencies  | `docs/modules/index.md`                                              |
-| Database schema      | `docs/infrastructure/database.md`, `docs/specs/system-requirements.md` (§4.4, §7.3) |
+| Database schema      | `docs/infrastructure/database.md`, `docs/specs/J68GZ-system-requirements.md` (§4.4, §7.3) |
 | ADR                  | `docs/adr/` (if decision is notable)                                 |
 | Feature specs        | `docs/specs/index.md`                                                |
 | Config               | `docs/infrastructure/configuration.md`                               |

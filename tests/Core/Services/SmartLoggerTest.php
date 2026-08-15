@@ -26,11 +26,11 @@ final class TestLoggerEvent extends BaseEvent
     }
 }
 
-it('FR-SL1: SmartLogger is only reachable through its static factories', function () {
+it('89SRA-FR-SL1: SmartLogger is only reachable through its static factories', function () {
     expect((new ReflectionClass(SmartLogger::class))->getConstructor()->isPrivate())->toBeTrue();
 });
 
-it('FR-SL2/FR-DC1: system channel maps success to info and error to error', function () {
+it('89SRA-FR-SL2/FR-DC1: system channel maps success to info and error to error', function () {
     $logs = captureLogs();
 
     SmartLogger::success('Operation succeeded')->systemOnly()->save();
@@ -40,7 +40,7 @@ it('FR-SL2/FR-DC1: system channel maps success to info and error to error', func
     expect($logs->where('level', 'error')->pluck('message'))->toContain('Operation failed');
 });
 
-it('FR-SL3: for() and about() attach the causer and subject context', function () {
+it('89SRA-FR-SL3: for() and about() attach the causer and subject context', function () {
     $logs = captureLogs();
     $user = User::factory()->create();
     $subject = User::factory()->create();
@@ -52,7 +52,7 @@ it('FR-SL3: for() and about() attach the causer and subject context', function (
     expect($entry->context['user_id'])->toBe($user->id);
 });
 
-it('FR-SL6: PII masking scrubs sensitive payload keys in the system log', function () {
+it('89SRA-FR-SL6: PII masking scrubs sensitive payload keys in the system log', function () {
     $logs = captureLogs();
 
     SmartLogger::info('test message')
@@ -65,7 +65,7 @@ it('FR-SL6: PII masking scrubs sensitive payload keys in the system log', functi
     expect($entry->context['payload']['count'])->toBe(1);
 });
 
-it('FR-DC5: channel() tags the system log context', function () {
+it('89SRA-FR-DC5: channel() tags the system log context', function () {
     $logs = captureLogs();
 
     SmartLogger::info('test message')->channel('cron')->systemOnly()->save();
@@ -74,7 +74,7 @@ it('FR-DC5: channel() tags the system log context', function () {
     expect($entry->context['channel'])->toBe('cron');
 });
 
-it('FR-DC6: systemOnly() writes to the system channel and never to the activity log', function () {
+it('89SRA-FR-DC6: systemOnly() writes to the system channel and never to the activity log', function () {
     $logs = captureLogs();
 
     SmartLogger::info('test message')->systemOnly()->save();
@@ -83,13 +83,13 @@ it('FR-DC6: systemOnly() writes to the system channel and never to the activity 
     expect(DB::table('activity_log')->where('description', 'test message')->count())->toBe(0);
 });
 
-it('FR-DC6: activityOnly() writes an activity row even without a causer', function () {
+it('89SRA-FR-DC6: activityOnly() writes an activity row even without a causer', function () {
     SmartLogger::info('test message')->activityOnly()->save();
 
     expect(DB::table('activity_log')->where('description', 'test message')->count())->toBe(1);
 });
 
-it('FR-DC3: both() writes to the system and activity channels with a causer', function () {
+it('89SRA-FR-DC3: both() writes to the system and activity channels with a causer', function () {
     $logs = captureLogs();
     $user = User::factory()->create();
 
@@ -99,7 +99,7 @@ it('FR-DC3: both() writes to the system and activity channels with a causer', fu
     expect(DB::table('activity_log')->where('description', 'test message')->where('causer_id', $user->id)->count())->toBe(1);
 });
 
-it('FR-EI1: event() accepts a dot-notation event name and tags the system log', function () {
+it('89SRA-FR-EI1: event() accepts a dot-notation event name and tags the system log', function () {
     $logs = captureLogs();
 
     SmartLogger::info('test message')->event('module.discover.completed')->systemOnly()->save();
@@ -108,7 +108,7 @@ it('FR-EI1: event() accepts a dot-notation event name and tags the system log', 
     expect($entry->context['event'])->toBe('module.discover.completed');
 });
 
-it('FR-EI2: save() dispatches a BaseEvent through the event dispatcher', function () {
+it('89SRA-FR-EI2: save() dispatches a BaseEvent through the event dispatcher', function () {
     Event::fake();
     $subject = User::factory()->create();
 
@@ -117,7 +117,7 @@ it('FR-EI2: save() dispatches a BaseEvent through the event dispatcher', functio
     Event::assertDispatched(TestLoggerEvent::class);
 });
 
-it('FR-EI3/FR-EI4: event payload is merged and PII-masked before writing', function () {
+it('89SRA-FR-EI3/FR-EI4: event payload is merged and PII-masked before writing', function () {
     $logs = captureLogs();
     $subject = User::factory()->create();
 
@@ -134,7 +134,7 @@ it('FR-EI3/FR-EI4: event payload is merged and PII-masked before writing', funct
     expect($entry->context['payload']['password'])->toBe('***');
 });
 
-it('FR-TR1/FR-TR2: translation context resolves for the active and alternate locale', function () {
+it('89SRA-FR-TR1/FR-TR2: translation context resolves for the active and alternate locale', function () {
     $logs = captureLogs();
     App::setLocale('en');
 

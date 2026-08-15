@@ -30,7 +30,7 @@ Use this skill when:
 **Always ask:** can I verify this change without running tests?
 
 **2. Tests verify the spec.** A test exists only because a requirement in the governing spec
-`docs/specs/{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it (Spec-First
+`docs/specs/{ID}-{feature}.md` (`FR-*`, `NFR-*`, `UC-*`, or a §6 data contract) demands it (Spec-First
 Doctrine: no behavior without a requirement). Tests with no spec mapping are noise — audit them
 out, never write them.
 
@@ -315,7 +315,7 @@ Test files must also pass arch-guard checks:
 
 | Topic | Location |
 |-------|----------|
-| Feature specs (source of truth for tests) | `docs/specs/index.md`, `docs/specs/{feature}.md` |
+| Feature specs (source of truth for tests) | `docs/specs/index.md`, `docs/specs/{ID}-{feature}.md` |
 | Testing patterns | `docs/architecture/testing-pattern.md` |
 | Pest testing skill | `.agents/skills/pest-testing/SKILL.md` |
 | arch-guard skill | `.agents/skills/arch-guard/SKILL.md` |

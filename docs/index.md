@@ -23,7 +23,7 @@ Complete catalog of all documentation files, organized by topic and audience.
 - **[Project Requirements](foundation/project-requirements.md)** — Functional, non-functional, and UI/UX requirements
 - **[Project Philosophy](philosophy.md)** — Guiding principles, values, and vision
 - **[Architecture](architecture.md)** — 4-layer architecture, data flow, Action Triad, dependency rules
-- **[Schema Design Philosophy](specs/system-requirements.md#73-schema-design-philosophy)** — 37 domain tables, 9 optimization decisions, package/framework tables
+- **[Schema Design Philosophy](specs/J68GZ-system-requirements.md#73-schema-design-philosophy)** — 37 domain tables, 9 optimization decisions, package/framework tables
 - **[Coding Conventions](conventions.md)** — PHP rules, naming, security, testing standards (+ ToC)
 
 ---

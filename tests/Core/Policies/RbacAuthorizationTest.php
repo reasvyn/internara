@@ -9,6 +9,7 @@ use App\User\Models\User;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 uses(LazilyRefreshDatabase::class);
 
@@ -16,10 +17,10 @@ function checkRoleRun(Request $request, string ...$roles): Response
 {
     $next = fn (Request $r) => new Response('ok');
 
-    return (new CheckRoleMiddleware())->handle($request, $next, ...$roles);
+    return (new CheckRoleMiddleware)->handle($request, $next, ...$roles);
 }
 
-it('FR-AUTH5: CheckRoleMiddleware lets a user with the required role through', function () {
+it('T4B26-FR-AUTH5: CheckRoleMiddleware lets a user with the required role through', function () {
     $user = User::factory()->create()->assignRole('admin');
     $request = Request::create('/admin');
     $request->setUserResolver(fn () => $user);
@@ -29,7 +30,7 @@ it('FR-AUTH5: CheckRoleMiddleware lets a user with the required role through', f
     expect($response->getContent())->toBe('ok');
 });
 
-it('FR-AUTH5: CheckRoleMiddleware rejects a user without the required role', function () {
+it('T4B26-FR-AUTH5: CheckRoleMiddleware rejects a user without the required role', function () {
     $user = User::factory()->create()->assignRole('teacher');
     $request = Request::create('/admin');
     $request->headers->set('Accept', 'application/json');
@@ -40,15 +41,15 @@ it('FR-AUTH5: CheckRoleMiddleware rejects a user without the required role', fun
     expect($response->getStatusCode())->toBe(403);
 });
 
-it('FR-AUTH5: CheckRoleMiddleware aborts with 403 on non-JSON requests', function () {
+it('T4B26-FR-AUTH5: CheckRoleMiddleware aborts with 403 on non-JSON requests', function () {
     $user = User::factory()->create()->assignRole('teacher');
     $request = Request::create('/admin');
     $request->setUserResolver(fn () => $user);
 
-    expect(fn () => checkRoleRun($request, 'admin'))->toThrow(Symfony\Component\HttpKernel\Exception\HttpException::class);
+    expect(fn () => checkRoleRun($request, 'admin'))->toThrow(HttpException::class);
 });
 
-it('FR-AUTH5: CheckRoleMiddleware accepts pipe-delimited role lists', function () {
+it('T4B26-FR-AUTH5: CheckRoleMiddleware accepts pipe-delimited role lists', function () {
     $user = User::factory()->create()->assignRole('student');
     $request = Request::create('/guardian');
     $request->setUserResolver(fn () => $user);
@@ -58,7 +59,7 @@ it('FR-AUTH5: CheckRoleMiddleware accepts pipe-delimited role lists', function (
     expect($response->getContent())->toBe('ok');
 });
 
-it('FR-AUTH5: CheckRoleMiddleware rejects unauthenticated requests on JSON', function () {
+it('T4B26-FR-AUTH5: CheckRoleMiddleware rejects unauthenticated requests on JSON', function () {
     $request = Request::create('/admin');
     $request->headers->set('X-Livewire', 'true');
     $request->setUserResolver(fn () => null);
@@ -68,13 +69,13 @@ it('FR-AUTH5: CheckRoleMiddleware rejects unauthenticated requests on JSON', fun
     expect($response->getStatusCode())->toBe(401);
 });
 
-it('FR-AUTH8: UserPolicy is registered manually for the User model', function () {
-    $policy = Gate::getPolicyFor(new User());
+it('T4B26-FR-AUTH8: UserPolicy is registered manually for the User model', function () {
+    $policy = Gate::getPolicyFor(new User);
 
     expect($policy)->toBeInstanceOf(UserPolicy::class);
 });
 
-it('FR-AUTH9: super_admin role is normalized to superadmin for storage and lookups', function () {
+it('T4B26-FR-AUTH9: super_admin role is normalized to superadmin for storage and lookups', function () {
     $user = User::factory()->create()->assignRole('super_admin');
 
     expect($user->hasRole('super_admin'))->toBeTrue();
@@ -82,7 +83,7 @@ it('FR-AUTH9: super_admin role is normalized to superadmin for storage and looku
     expect($user->getRoleNames()->first())->toBe('superadmin');
 });
 
-it('FR-AUTH12: every concrete policy class extends BasePolicy', function () {
+it('T4B26-FR-AUTH12: every concrete policy class extends BasePolicy', function () {
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator(app_path(), RecursiveDirectoryIterator::SKIP_DOTS),
     );

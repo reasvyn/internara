@@ -58,13 +58,13 @@ final class TestAction extends BaseCommandAction
     }
 }
 
-it('FR-A6: execute() wraps the mutation in a transaction that commits', function () {
+it('SE5Q9-FR-A6: execute() wraps the mutation in a transaction that commits', function () {
     (new TestAction(fn () => User::factory()->create()))->execute();
 
     expect(User::count())->toBe(1);
 });
 
-it('FR-A1: a failing callback rolls back the transaction', function () {
+it('SE5Q9-FR-A1: a failing callback rolls back the transaction', function () {
     DB::rollBack();
 
     $action = new TestAction(function () {
@@ -79,13 +79,13 @@ it('FR-A1: a failing callback rolls back the transaction', function () {
     DB::beginTransaction();
 });
 
-it('FR-A1: nested transactions run without double-wrapping', function () {
+it('SE5Q9-FR-A1: nested transactions run without double-wrapping', function () {
     (new TestAction(fn () => User::factory()->create()))->executeNested();
 
     expect(User::count())->toBe(1);
 });
 
-it('FR-A7: execute() logs a successful mutation to the activity log', function () {
+it('SE5Q9-FR-A7: execute() logs a successful mutation to the activity log', function () {
     $user = User::factory()->create();
     $this->actingAs($user);
 
@@ -94,7 +94,7 @@ it('FR-A7: execute() logs a successful mutation to the activity log', function (
     expect(DB::table('activity_log')->where('description', 'test.action_completed')->count())->toBe(1);
 });
 
-it('FR-A1: fail() throws a RejectedException carrying context', function () {
+it('SE5Q9-FR-A1: fail() throws a RejectedException carrying context', function () {
     $action = new TestAction(fn () => null);
 
     try {
@@ -106,7 +106,7 @@ it('FR-A1: fail() throws a RejectedException carrying context', function () {
     }
 });
 
-it('FR-A1: queued events dispatch after the transaction commits', function () {
+it('SE5Q9-FR-A1: queued events dispatch after the transaction commits', function () {
     Event::fake();
     $subject = User::factory()->create();
 

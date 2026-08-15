@@ -39,14 +39,14 @@ final class TestEvent extends BaseEvent
     }
 }
 
-it('FR-EV3: eventName() returns a dot-notation {entity}.{past_tense_action} string', function () {
+it('NUCY3-FR-EV3: eventName() returns a dot-notation {entity}.{past_tense_action} string', function () {
     $event = new TestEvent(new TestEventSubject, 'updated');
 
     expect($event->eventName())->toBeString();
     expect($event->eventName())->toMatch('/^[a-z]+(\.[a-z_]+)+$/');
 });
 
-it('FR-EV4: toPayload() converts model properties to {name}_id keys', function () {
+it('NUCY3-FR-EV4: toPayload() converts model properties to {name}_id keys', function () {
     $subject = new TestEventSubject;
     $subject->setAttribute('id', 'uuid-1');
 
@@ -56,7 +56,7 @@ it('FR-EV4: toPayload() converts model properties to {name}_id keys', function (
     expect($payload)->not->toHaveKey('subject');
 });
 
-it('FR-EV11: toPayload() keeps scalars as-is and skips nulls', function () {
+it('NUCY3-FR-EV11: toPayload() keeps scalars as-is and skips nulls', function () {
     $subject = new TestEventSubject;
     $subject->setAttribute('id', 'uuid-1');
 
@@ -66,7 +66,7 @@ it('FR-EV11: toPayload() keeps scalars as-is and skips nulls', function () {
     expect($payload)->not->toHaveKey('note');
 });
 
-it('FR-EV11: toPayload() serializes objects that expose toArray()', function () {
+it('NUCY3-FR-EV11: toPayload() serializes objects that expose toArray()', function () {
     $subject = new TestEventSubject;
     $subject->setAttribute('id', 'uuid-1');
 
@@ -75,7 +75,7 @@ it('FR-EV11: toPayload() serializes objects that expose toArray()', function () 
     expect($payload['extra'])->toBe(['nested' => 'value']);
 });
 
-it('FR-EV2: event constructor uses typed promoted properties', function () {
+it('NUCY3-FR-EV2: event constructor uses typed promoted properties', function () {
     $event = new TestEvent(new TestEventSubject, 'updated');
 
     expect((new ReflectionClass($event))->getConstructor())->not->toBeNull();

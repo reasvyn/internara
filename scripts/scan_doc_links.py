@@ -28,6 +28,9 @@ SCAN_VERSION = "2.0.0"
 LINK_PATTERN = re.compile(r"\[([^\]]*)\]\(([^)]+)\)")
 ANCHOR_TARGET = re.compile(r"^#(.+)$")
 HEADING_PATTERN = re.compile(r"^#{1,6}\s+(.+)$")
+SPECS_DIR = ROOT / "docs" / "specs"
+SPEC_FILE_PATTERN = re.compile(r"^([A-Z0-9]{5})-[a-z0-9-]+\.md$")
+SPEC_ID_LINE = re.compile(r"^>\s*\*\*Spec ID:\*\*\s+([A-Z0-9]{5})\s*$", re.MULTILINE)
 
 
 # ─── Data ───────────────────────────────────────────────────────────────────
@@ -201,6 +204,65 @@ def validate_target(
 
 # ─── Report ─────────────────────────────────────────────────────────────────
 
+# ─── Spec convention validation ──────────────────────────────────────────────
+
+def validate_spec_conventions(findings: list[Finding]) -> int:
+    """Enforce the XXXXX-description.md spec-ID convention (see spec-writing skill).
+
+    Rules:
+      S-1  spec filename matches ^[A-Z0-9]{5}-[a-z0-9-]+\\.md$
+      S-2  the file's `> **Spec ID:**` metadata line matches the filename ID
+    Returns the number of spec-related findings added.
+    """
+    added = 0
+    if not SPECS_DIR.exists():
+        return added
+
+    for p in sorted(SPECS_DIR.glob("*.md")):
+        if p.name == "index.md":
+            continue
+        rel = relative_path(p)
+        m = SPEC_FILE_PATTERN.match(p.name)
+        if not m:
+            findings.append(Finding(
+                id=f"SPEC-{len(findings)+1:03d}",
+                rule="SPEC_ID",
+                severity="medium",
+                category="documentation",
+                file=rel,
+                line=1,
+                message=f"Spec file '{p.name}' does not follow the XXXXX-description.md naming convention",
+                suggestion="Rename to docs/specs/{ID}-{description}.md where {ID} is a unique 5-char A-Z0-9 ID",
+                reference=".agents/skills/spec-writing/SKILL.md §Spec IDs",
+            ))
+            added += 1
+            continue
+        spec_id = m.group(1)
+        content = p.read_text(encoding="utf-8", errors="replace")
+        meta_match = SPEC_ID_LINE.search(content)
+        meta_id = meta_match.group(1) if meta_match else None
+        if meta_id != spec_id:
+            findings.append(Finding(
+                id=f"SPEC-{len(findings)+1:03d}",
+                rule="SPEC_ID_METADATA",
+                severity="medium",
+                category="documentation",
+                file=rel,
+                line=3,
+                message=(
+                    f"Spec ID metadata mismatch in '{p.name}': filename ID '{spec_id}' "
+                    f"{'but metadata is missing' if meta_id is None else f'vs metadata ID {meta_id}'}"
+                ),
+                suggestion=f"Add/align the `> **Spec ID:** {spec_id}` metadata line",
+                reference=".agents/skills/spec-writing/SKILL.md §Spec IDs",
+            ))
+            added += 1
+
+    return added
+
+
+# ─── Report ──────────────────────────────────────────────────────────────────
+
 def build_report(
     findings: list[Finding],
     files: list[Path],
@@ -296,6 +358,9 @@ def main() -> None:
     files = find_markdown_files(args.module)
     findings: list[Finding] = []
     total_links = 0
+
+    if not args.module:
+        total_links += validate_spec_conventions(findings)
 
     for filepath in files:
         rel = relative_path(filepath)

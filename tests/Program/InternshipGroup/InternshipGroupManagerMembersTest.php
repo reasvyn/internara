@@ -10,7 +10,7 @@ use Livewire\Livewire;
 
 uses(LazilyRefreshDatabase::class);
 
-it('FR-MM10: manageMembers() initializes a single empty member row', function () {
+it('IT0OE-FR-MM10: manageMembers() initializes a single empty member row', function () {
     actingAsAdmin();
     $group = InternshipGroup::factory()->create();
 
@@ -21,7 +21,7 @@ it('FR-MM10: manageMembers() initializes a single empty member row', function ()
         ->assertSet('memberFormData.0.role', 'student');
 });
 
-it('FR-MM10: addMemberRow() appends a new empty row', function () {
+it('IT0OE-FR-MM10: addMemberRow() appends a new empty row', function () {
     actingAsAdmin();
 
     Livewire::test(InternshipGroupManager::class)
@@ -29,7 +29,7 @@ it('FR-MM10: addMemberRow() appends a new empty row', function () {
         ->assertCount('memberFormData', 1);
 });
 
-it('FR-MM10: removeMemberRow() removes a row by index and reindexes', function () {
+it('IT0OE-FR-MM10: removeMemberRow() removes a row by index and reindexes', function () {
     actingAsAdmin();
 
     Livewire::test(InternshipGroupManager::class)
@@ -39,7 +39,7 @@ it('FR-MM10: removeMemberRow() removes a row by index and reindexes', function (
         ->assertCount('memberFormData', 1);
 });
 
-it('FR-MM11: addMembers() creates the whole batch when all rows are valid', function () {
+it('IT0OE-FR-MM11: addMembers() creates the whole batch when all rows are valid', function () {
     actingAsAdmin();
     $group = InternshipGroup::factory()->create();
     $registrations = Registration::factory()->count(3)->create();
@@ -58,7 +58,7 @@ it('FR-MM11: addMembers() creates the whole batch when all rows are valid', func
     expect($group->members()->count())->toBe(3);
 });
 
-it('FR-MM11: addMembers() blocks the whole batch when one row is invalid (all-or-nothing)', function () {
+it('IT0OE-FR-MM11: addMembers() blocks the whole batch when one row is invalid (all-or-nothing)', function () {
     actingAsAdmin();
     $group = InternshipGroup::factory()->create();
     $registration = Registration::factory()->create();
@@ -75,7 +75,7 @@ it('FR-MM11: addMembers() blocks the whole batch when one row is invalid (all-or
     expect($group->members()->count())->toBe(0);
 });
 
-it('FR-MM11: addMembers() rejects a batch with no rows', function () {
+it('IT0OE-FR-MM11: addMembers() rejects a batch with no rows', function () {
     actingAsAdmin();
 
     Livewire::test(InternshipGroupManager::class)
@@ -85,7 +85,7 @@ it('FR-MM11: addMembers() rejects a batch with no rows', function () {
         ->assertHasErrors(['memberFormData']);
 });
 
-it('FR-MM11: addMembers() enforces role-based fields per row (mentor required for teacher)', function () {
+it('IT0OE-FR-MM11: addMembers() enforces role-based fields per row (mentor required for teacher)', function () {
     actingAsAdmin();
     $group = InternshipGroup::factory()->create();
 

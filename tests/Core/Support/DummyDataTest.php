@@ -19,7 +19,7 @@ use Tests\Support\DummyData;
 
 uses(LazilyRefreshDatabase::class);
 
-it('NFR-S1: DummySeeder refuses to run in production', function () {
+it('3UOZP-NFR-S1: DummySeeder refuses to run in production', function () {
     app()->detectEnvironment(fn () => 'production');
 
     try {
@@ -30,7 +30,7 @@ it('NFR-S1: DummySeeder refuses to run in production', function () {
     }
 });
 
-it('FR-H1/FR-H5/UC-2/FR-C7/DD-8/FR-H12/NFR-S2: generates a coherent dataset with deterministic demo accounts', function () {
+it('3UOZP-FR-H1/FR-H5/UC-2/FR-C7/DD-8/FR-H12/NFR-S2: generates a coherent dataset with deterministic demo accounts', function () {
     $counts = DummyData::make()->run();
 
     // FR-H1 — per-entity counts returned, matching the database.
@@ -71,7 +71,7 @@ it('FR-H1/FR-H5/UC-2/FR-C7/DD-8/FR-H12/NFR-S2: generates a coherent dataset with
     expect(User::count())->toBe(1 + config('dummy.accounts.teacher_count') + config('dummy.accounts.supervisor_count') + config('dummy.accounts.student_count'));
 });
 
-it('FR-E1/FR-E2/FR-E4/FR-E5/FR-H14/NFR-U1: DummySeeder is the opt-in entry point with base-data gating and a summary', function () {
+it('3UOZP-FR-E1/FR-E2/FR-E4/FR-E5/FR-H14/NFR-U1: DummySeeder is the opt-in entry point with base-data gating and a summary', function () {
     // Start from an empty base state to prove the seeder bootstraps it.
     DB::table('roles')->delete();
     DB::table('settings')->delete();
@@ -99,7 +99,7 @@ it('FR-E1/FR-E2/FR-E4/FR-E5/FR-H14/NFR-U1: DummySeeder is the opt-in entry point
     expect(Setting::count())->toBeGreaterThan(0);
 });
 
-it('FR-E4/FR-H14: gates each base seeder independently when base data is only partially present', function () {
+it('3UOZP-FR-E4/FR-H14: gates each base seeder independently when base data is only partially present', function () {
     // Roles exist (from setUp) — prove RolePermissionSeeder is skipped by deleting one role
     // and asserting it is NOT re-created, while settings/years (absent) are still seeded.
     DB::table('roles')->where('name', 'superadmin')->delete();
@@ -115,7 +115,7 @@ it('FR-E4/FR-H14: gates each base seeder independently when base data is only pa
     expect(AcademicYear::where('is_active', true)->count())->toBe(1);
 });
 
-it('FR-H13/NFR-R2: a mid-run failure rolls back the entire dataset', function () {
+it('3UOZP-FR-H13/NFR-R2: a mid-run failure rolls back the entire dataset', function () {
     Hash::shouldReceive('make')->andThrow(new RuntimeException('hash failure'));
 
     expect(fn () => DummyData::make()->run())

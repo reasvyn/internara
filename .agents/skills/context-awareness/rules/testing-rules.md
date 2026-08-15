@@ -9,7 +9,7 @@ This is NOT a replacement for `docs/architecture/testing-pattern.md` or
 ## Core Rule
 
 **Tests verify the spec — nothing more.** A test exists because a requirement in
-`docs/specs/{feature}.md` (`FR-*` / `NFR-*` / `UC-*` / §6 contract) demands it. A test that cannot
+`docs/specs/{ID}-{feature}.md` (`FR-*` / `NFR-*` / `UC-*` / §6 contract) demands it. A test that cannot
 be traced to a requirement is noise: don't write it, and flag existing ones for removal. Coverage is
 measured in **spec requirements covered**, not lines of code.
 

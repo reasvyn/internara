@@ -128,4 +128,4 @@ See [Backup & Recovery](backup-recovery.md) for admin account CLI commands.
 - [Installation](installation.md) — Prerequisites and CLI provisioning
 - [Post-Setup](post-setup.md) — Configuration after wizard
 - [Backup & Recovery](backup-recovery.md) — Recovery key lifecycle
-- `docs/specs/setup-wizard.md` — Feature specification
+- `docs/specs/VEJCX-setup-wizard.md` — Feature specification

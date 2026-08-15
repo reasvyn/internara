@@ -229,4 +229,4 @@ names, ID numbers). Helps administrators identify and merge duplicate accounts.
 - [System Health](system-health.md) — Health check, troubleshooting, diagnostic commands
 - [Backup & Recovery](backup-recovery.md) — Backup management and restoration
 - `docs/foundation/system-observability.md` — Architecture-level observability design
-- `docs/specs/system-requirements.md` — Database and dependency requirements
+- `docs/specs/J68GZ-system-requirements.md` — Database and dependency requirements

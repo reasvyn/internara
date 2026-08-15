@@ -536,7 +536,9 @@ Full spec list with build order: `docs/specs/index.md`
 **Batch ALL changes first, then verify ONCE.** Full suite is ~2GB+ memory, 10+ minutes.
 
 **Tests verify the spec — nothing more.** Every test traces to a requirement ID (`FR-*` / `NFR-*` /
-`UC-*`) in `docs/specs/{feature}.md`. Coverage is measured in spec requirements covered, not lines
+`UC-*`) in `docs/specs/{ID}-{feature}.md`. Test descriptions are prefixed with the spec's ID:
+`{ID}-{REQ}: description` (e.g., `3UOZP-FR-C10: refuses to seed in production`). Coverage is
+measured in spec requirements covered, not lines
 of code. A requirement with no test is a spec gap (fill it); a test with no requirement is orphan
 noise (remove it).
 
